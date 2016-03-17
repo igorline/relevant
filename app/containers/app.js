@@ -1,21 +1,41 @@
-import React, { Component } from 'react-native';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+'use strict';
 
-import * as reducers from '../reducers';
-import RelevantApp from './RelevantApp';
+import React, { Component, StyleSheet } from 'react-native';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as authActions from '../actions/authActions';
+import {
+  actions as routerActions,
+  NavBar,
+  Route,
+  Router,
+  Schema,
+  TabBar,
+  TabRoute
+} from 'react-native-router-redux';
+import Auth from './auth';
 
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-const reducer = combineReducers(reducers);
-const store = createStoreWithMiddleware(reducer);
-
-export default class App extends Component {
+class Application extends Component {
   render() {
     return (
-      <Provider store={store}>
-        <RelevantApp />
-      </Provider>
+      <Router {...this.props} initial="Auth">
+        <Route name="Auth" component={Auth} type="reset" hideNavBar={true} />
+      </Router>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  router: state.router,
+  auth: state.auth
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({
+    ...routerActions,
+    ...authActions
+  }, dispatch),
+  dispatch,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Application);

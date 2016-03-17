@@ -7,8 +7,11 @@ import React, {
   View,
   TextInput
 } from 'react-native';
+import { connect } from 'react-redux';
 var Button = require('react-native-button');
-import Login from './login';
+import Login from '../components/login';
+import * as authActions from '../actions/authActions';
+import { bindActionCreators } from 'redux';
 
 class Auth extends Component {
   componentDidMount() {
@@ -18,9 +21,8 @@ class Auth extends Component {
     var self = this;
     var auth;
     var message = '';
-    console.log(this)
-    // this.props.state.statusText ? message = this.props.state.statusText : null;
-    const { isAuthenticated, user } = this.props.state;
+    this.props.auth.statusText ? message = this.props.auth.statusText : null;
+    const { isAuthenticated, user } = this.props.auth;
     const { logout } = this.props.actions;
 
 
@@ -51,8 +53,17 @@ class Auth extends Component {
     );
   }
 }
-
 export default Auth
+
+// const mapStateToProps = (state) => ({
+//   router : state.router,
+//   auth : state.auth
+// });
+// const mapDispatchToProps = (dispatch) => ({
+//   actions: bindActionCreators(authActions, dispatch)
+// });
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Auth);
 
 const styles = StyleSheet.create({
   container: {

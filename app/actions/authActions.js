@@ -61,31 +61,29 @@ export function authMessage(message) {
 export function loginUser(user, redirect) {
   return function(dispatch) {
     dispatch(loginUserRequest());
-      fetch('http://localhost:3000/auth/local', {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: user
-      })
-      .then((response) => response.json())
-      .then((responseJSON) => {
-        console.log(responseJSON, 'response');
-        // if (responseJSON.message) dispatch(authMessage(responseJSON.message));
-        if (responseJSON.token) {
-          // dispatch(authMessage('token ' + responseJSON.token));
-          dispatch(loginUserSuccess(responseJSON.token));
-          dispatch(getUser(responseJSON.token, redirect));
-        } else {
-          dispatch(loginUserFailure(responseJSON.message));
-        }
-      })
-      .catch((error) => {
-        console.log(error, 'error');
-        dispatch(loginUserFailure('Server error'));
-      });
+    fetch('http://localhost:3000/auth/local', {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: user
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      console.log(responseJSON, 'response');
+      if (responseJSON.token) {
+        dispatch(loginUserSuccess(responseJSON.token));
+        dispatch(getUser(responseJSON.token, redirect));
+      } else {
+        dispatch(loginUserFailure(responseJSON.message));
+      }
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+      dispatch(loginUserFailure('Server error'));
+    });
   }
 }
 

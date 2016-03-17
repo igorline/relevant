@@ -20,6 +20,7 @@ class Login extends Component {
   }
 
   componentDidMount() {
+
   }
 
   componentDidUpdate() {
@@ -34,7 +35,7 @@ class Login extends Component {
     this.state.password ? currentPassword = this.state.password : null;
     const { loginUser } = this.props.actions;
     var message = '';
-    this.props.state.statusText ? message = this.props.state.statusText : null;
+    this.props.auth.statusText ? message = this.props.auth.statusText : null;
 
     return (
       <View style={styles.center}>
