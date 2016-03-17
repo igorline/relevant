@@ -1,7 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
 'use strict';
 import React, {
   AppRegistry,
@@ -11,100 +7,69 @@ import React, {
   View,
   TextInput
 } from 'react-native';
+import {reduxForm} from 'redux-form';
 var Button = require('react-native-button');
-
 
 class Login extends Component {
 
   constructor (props, context) {
     super(props, context)
     this.state = {
-      "message": null,
-      "email": null,
-      "password": null
+      "message": null
     }
   }
 
   componentDidMount() {
   }
 
+  componentDidUpdate() {
+    // console.log(this.props, 'login props')
+  }
+
   render() {
     var self = this;
-    var message = '';
     var currentEmail = null;
     var currentPassword = null;
-
     this.state.email ? currentEmail = this.state.email : null;
     this.state.password ? currentPassword = this.state.password : null;
-    this.state.message ? message = this.state.message : null;
-
-    function logIn() {
-      fetch('http://localhost:3000/auth/local', {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: self.state.email,
-          password: self.state.password
-        })
-      })
-      .then((response) => response.json())
-      .then((responseJSON) => {
-        console.log(responseJSON, 'response');
-        if (responseJSON.message) self.setState({"message": responseJSON.message})
-        if (responseJSON.token) self.setState({"message": 'token ' + responseJSON.token})
-      })
-      .catch((error) => {
-        console.warn(error, 'error');
-        self.setState({"message": error})
-      });
-    }
+    const { loginUser } = this.props.actions;
+    var message = '';
+    this.props.state.statusText ? message = this.props.state.statusText : null;
 
     return (
-      <View style={styles.container}>
+      <View style={styles.center}>
         <Text style={styles.welcome}>
-          You Relevant? { '\n' }Then log in.
+          You Relevant?
         </Text>
 
         <Text style={styles.instructions}>
           {message}
         </Text>
 
-        {/*<View style={styles.marginTop}>
-          <Text style={styles.instructions}>
-           {currentEmail ? currentEmail + '\n' : null}
-           {currentPassword ? currentPassword + '\n' : null}
-          </Text>
-        </View>*/}
-
         <View style={styles.marginTop}>
           <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="email" onChangeText={(email) => this.setState({"email": email})} value={this.state.email}  style={styles.input} />
         </View>
+
         <View style={styles.marginTop}>
           <TextInput autoCapitalize='none' secureTextEntry={true} keyboardType='default' clearTextOnFocus={false} placeholder="password" onChangeText={(password) => this.setState({"password": password})} value={this.state.password}  style={styles.input} />
         </View>
+
         <View style={styles.marginTop}>
-          <Button onPress={logIn} style={styles.button}>Log in</Button>
+          <Button onPress={loginUser.bind(null, JSON.stringify({email: self.state.email, password: self.state.password}))} style={styles.button}>Log in</Button>
         </View>
+
       </View>
     );
   }
 }
 
+
 export default Login
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  center: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
-    borderWidth: 20,
-    borderStyle: 'solid',
-    borderColor: 'transparent'
   },
   welcome: {
     fontSize: 20,

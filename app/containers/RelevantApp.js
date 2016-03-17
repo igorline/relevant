@@ -2,11 +2,11 @@
 
 import React, { Component } from 'react-native';
 import {bindActionCreators} from 'redux';
-import Login from '../components/login';
-import * as relevantActions from '../actions/relevantActions';
+import Auth from '../components/auth';
+import * as authActions from '../actions/authActions';
 import { connect } from 'react-redux';
 
-class RelevantApp extends Component {
+class Home extends Component {
   constructor(props) {
     super(props);
   }
@@ -14,15 +14,15 @@ class RelevantApp extends Component {
   render() {
     const { state, actions } = this.props;
     return (
-      <Login />
+      <Auth { ...this.props } />
     );
   }
 }
 
 export default connect(state => ({
-    state: state.relevant
+    state: state.auth
   }),
   (dispatch) => ({
-    actions: bindActionCreators(relevantActions, dispatch)
+    actions: bindActionCreators(authActions, dispatch)
   })
-)(RelevantApp);
+)(Home);
