@@ -7,7 +7,7 @@ import React, {
   View,
   TextInput
 } from 'react-native';
-import {reduxForm} from 'redux-form';
+// import {reduxForm} from 'redux-form';
 var Button = require('react-native-button');
 
 class Login extends Component {
@@ -29,6 +29,7 @@ class Login extends Component {
 
   render() {
     var self = this;
+    console.log(this)
     var currentEmail = null;
     var currentPassword = null;
     this.state.email ? currentEmail = this.state.email : null;
@@ -39,13 +40,7 @@ class Login extends Component {
 
     return (
       <View style={styles.center}>
-        <Text style={styles.welcome}>
-          You Relevant?
-        </Text>
 
-        <Text style={styles.instructions}>
-          {message}
-        </Text>
 
         <View style={styles.marginTop}>
           <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="email" onChangeText={(email) => this.setState({"email": email})} value={this.state.email}  style={styles.input} />
@@ -55,8 +50,8 @@ class Login extends Component {
           <TextInput autoCapitalize='none' secureTextEntry={true} keyboardType='default' clearTextOnFocus={false} placeholder="password" onChangeText={(password) => this.setState({"password": password})} value={this.state.password}  style={styles.input} />
         </View>
 
-        <View style={styles.marginTop}>
-          <Button onPress={loginUser.bind(null, JSON.stringify({email: self.state.email, password: self.state.password}))} style={styles.button}>Log in</Button>
+        <View style={styles.margin}>
+          <Button onPress={loginUser.bind(null, JSON.stringify({email: self.state.email, password: self.state.password}))} style={styles.button}>Submit</Button>
         </View>
 
       </View>
@@ -92,6 +87,9 @@ const styles = StyleSheet.create({
   },
   marginTop: {
     marginTop: 10
+  },
+    margin: {
+    margin: 10
   }
 });
 

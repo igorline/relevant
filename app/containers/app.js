@@ -20,6 +20,8 @@ class Application extends Component {
     return (
       <Router {...this.props} initial="Auth">
         <Route name="Auth" component={Auth} type="reset" hideNavBar={true} />
+        <Route name="SignUp" component={Auth} type="reset" hideNavBar={true} />
+        <Route name="LogIn" component={Auth} type="reset" hideNavBar={true} />
       </Router>
     );
   }
@@ -27,7 +29,8 @@ class Application extends Component {
 
 const mapStateToProps = state => ({
   router: state.router,
-  auth: state.auth
+  auth: state.auth,
+  form: state.formReducer
 });
 
 const mapDispatchToProps = (dispatch) => ({

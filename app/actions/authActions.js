@@ -102,42 +102,12 @@ export function createUser(user, redirect) {
   // }
 }
 
-// export function setCookie(token) {
-//   return function(dispatch) {
-
-//   }
-// }
-
 export function getUser(token, redirect){
 
-  // console.log('getUser', token, redirect)
-  // if(!token) token = getToken();
-  // console.log("TOKEN ", token)
   return dispatch => {
      console.log('get user')
     new Promise(function(resolve, reject) {
       if(!token) return dispatch(setUser());
-
-      // if(!process.env.BROWSER){
-      //   var userController = require('../../server/api/user/user.controller')
-      //   return userController.me()
-      // }
-
-      // return request
-      //   .get('/api/user/me')
-      //   .set({'Authorization': `Bearer ${token}`})
-      //   .end(function(err, res) {
-      //     console.log("ERROR ", err)
-      //     if(err) {
-      //       dispatch(loginUserFailure(err));
-      //       return reject;
-      //     }
-      //     console.log("USER ", res.body)
-      //     dispatch(setUser(res.body));
-      //     if(redirect) dispatch(push(redirect));
-      //     return resolve;
-      //   })
-
 
       return fetch('http://localhost:3000/api/user/me', {
         credentials: 'include',
