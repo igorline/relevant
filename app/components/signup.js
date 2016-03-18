@@ -12,12 +12,12 @@ var Button = require('react-native-button');
 
 class SignUp extends Component {
 
-  // constructor (props, context) {
-  //   super(props, context)
-  //   this.state = {
-  //     "message": null
-  //   }
-  // }
+  constructor (props, context) {
+    super(props, context)
+    this.state = {
+      "message": ''
+    }
+  }
 
   componentDidMount() {
 
@@ -29,20 +29,51 @@ class SignUp extends Component {
 
   render() {
     var self = this;
-    // console.log(this)
-    // var currentEmail = null;
-    // var currentPassword = null;
-    // this.state.email ? currentEmail = this.state.email : null;
-    // this.state.password ? currentPassword = this.state.password : null;
-    // const { loginUser } = this.props.actions;
-    // var message = '';
-    // this.props.auth.statusText ? message = this.props.auth.statusText : null;
+    const { createUser } = this.props.actions;
+    var message = self.state.message;
+    this.props.auth.statusText ? message = this.props.auth.statusText : null;
+
+    function checkPass(user) {
+      if (self.state.password) {
+        if (self.state.password == self.state.cPassword) {
+          createUser(user);
+        } else {;
+          self.setState({message: "passwords don't match"});
+        }
+      } else {
+        self.setState({message: 'no password'});
+      }
+    }
 
     return (
       <View style={styles.center}>
-        <View style={styles.margin}>
-         <Text>Sign Up</Text>
+
+      <Text style={styles.instructions}>{message}</Text>
+
+      <View style={styles.marginTop}>
+          <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="name" onChangeText={(name) => this.setState({"name": name})} value={this.state.name}  style={styles.input} />
         </View>
+
+        <View style={styles.marginTop}>
+          <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="email" onChangeText={(email) => this.setState({"email": email})} value={this.state.email}  style={styles.input} />
+        </View>
+
+        <View style={styles.marginTop}>
+          <TextInput autoCapitalize='none' keyboardType='phone-pad' clearTextOnFocus={false} placeholder="phone number" onChangeText={(phone) => this.setState({"phone": phone})} value={this.state.phone}  style={styles.input} />
+        </View>
+
+        <View style={styles.marginTop}>
+          <TextInput autoCapitalize='none' secureTextEntry={true} keyboardType='default' clearTextOnFocus={false} placeholder="password" onChangeText={(password) => this.setState({"password": password})} value={this.state.password}  style={styles.input} />
+        </View>
+
+         <View style={styles.marginTop}>
+          <TextInput autoCapitalize='none' secureTextEntry={true} keyboardType='default' clearTextOnFocus={false} placeholder="confirm password" onChangeText={(cPassword) => this.setState({"cPassword": cPassword})} value={this.state.cPassword}  style={styles.input} />
+        </View>
+
+        <View style={styles.margin}>
+          <Button onPress={checkPass.bind(null, JSON.stringify({name: self.state.name, phone: self.state.phone, email: self.state.email, password: self.state.password}))} style={styles.button}>Submit</Button>
+        </View>
+
       </View>
     );
   }

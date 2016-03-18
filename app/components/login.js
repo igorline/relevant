@@ -15,7 +15,6 @@ class Login extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      "message": null
     }
   }
 
@@ -29,11 +28,6 @@ class Login extends Component {
 
   render() {
     var self = this;
-    console.log(this)
-    var currentEmail = null;
-    var currentPassword = null;
-    this.state.email ? currentEmail = this.state.email : null;
-    this.state.password ? currentPassword = this.state.password : null;
     const { loginUser } = this.props.actions;
     var message = '';
     this.props.auth.statusText ? message = this.props.auth.statusText : null;

@@ -47,6 +47,7 @@ class Auth extends Component {
       auth = (
         <View style={styles.center}>
           <Text style={styles.welcome}>{user ? user.name : null}</Text>
+          <Button onPress={actions.routes.Import()}>Import page</Button>
           <Button onPress={logout}>Logout</Button>
         </View>
       );
@@ -62,12 +63,12 @@ class Auth extends Component {
           <Button onPress={actions.routes.SignUp()} >Sign Up</Button>
         </View>
       );
-      tagline = 'Stay Relevant'
+      tagline = 'Stay Relevant \n Log in'
     } else if (currentRoute == 'SignUp') {
       auth = (<View style={styles.center}>
         <SignUp {...this.props} />
       </View>);
-      tagline = 'Get Relevant';
+      tagline = 'Get Relevant \n Sign up';
       links = (
         <View style={styles.center}>
           <Button onPress={actions.routes.LogIn()} >Log In</Button>
@@ -95,6 +96,7 @@ class Auth extends Component {
         {auth}
 
         {links}
+            <Button onPress={actions.routes.Import()}>Import page</Button>
 
       </View>
     );

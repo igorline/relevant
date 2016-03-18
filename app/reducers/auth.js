@@ -8,17 +8,13 @@ const initialState = {
   isAuthenticated: false,
   isAuthenticating: false,
   statusText: null,
-  user: null
+  user: null,
+  userIndex: null
 };
 
 export default function auth(state = initialState, action) {
   console.log(action.type)
   switch (action.type) {
-
-    case types.SET_MESSAGE:
-      return Object.assign({}, state, {
-        'statusText': action.payload
-      })
 
     case types.LOGIN_USER_REQUEST:
       return Object.assign({}, state, {
@@ -78,6 +74,17 @@ export default function auth(state = initialState, action) {
         'isAuthenticated': action.payload ? true : false,
         'user': action.payload
       })
+
+    case types.SET_USER_INDEX:
+      return Object.assign({}, state, {
+        'userIndex': action.payload
+      })
+
+    case types.SET_CONTACTS:
+      return Object.assign({}, state, {
+        'contacts': action.payload
+      })
+
 
     default:
       return state

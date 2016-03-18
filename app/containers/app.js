@@ -14,6 +14,7 @@ import {
   TabRoute
 } from 'react-native-router-redux';
 import Auth from './auth';
+import Import from './import';
 
 class Application extends Component {
   render() {
@@ -22,6 +23,7 @@ class Application extends Component {
         <Route name="Auth" component={Auth} type="reset" hideNavBar={true} />
         <Route name="SignUp" component={Auth} type="reset" hideNavBar={true} />
         <Route name="LogIn" component={Auth} type="reset" hideNavBar={true} />
+        <Route name="Import" component={Import} type="reset" hideNavBar={true} />
       </Router>
     );
   }
