@@ -40,10 +40,7 @@ class SignUp extends Component {
 
     return (
       <View style={styles.center}>
-      <Text style={styles.welcome}>
-            Get Relevant.
-          </Text>
-        <View style={styles.marginTop}>
+        <View style={styles.margin}>
          <Text>Sign Up</Text>
         </View>
       </View>
@@ -61,8 +58,7 @@ const styles = StyleSheet.create({
   },
   welcome: {
     fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+    textAlign: 'center'
   },
   instructions: {
     textAlign: 'center',
@@ -79,6 +75,9 @@ const styles = StyleSheet.create({
   },
   marginTop: {
     marginTop: 10
+  },
+  margin: {
+    margin: 10
   }
 });
 

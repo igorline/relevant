@@ -6,7 +6,6 @@ import * as reducers from '../reducers';
 import Application from './app';
 
 const reducer = combineReducers(reducers);
-// const store = createStore(reducer);
 let store = applyMiddleware(thunk)(createStore)(reducer);
 
 export default class AppContainer extends Component {

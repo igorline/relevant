@@ -40,57 +40,67 @@ class Auth extends Component {
     const { currentRoute } = this.props.router;
     var message = '';
     this.props.auth.statusText ? message = this.props.auth.statusText : null;
-
-    console.log(this)
+    var tagline = '';
+    var links = null;
 
     if(isAuthenticated){
       auth = (
         <View style={styles.center}>
           <Text style={styles.welcome}>{user ? user.name : null}</Text>
-          <Text>{message}</Text>
           <Button onPress={logout}>Logout</Button>
         </View>
-        )
+      );
     }
     else if (currentRoute == 'LogIn') {
       auth = (
         <View style={styles.center}>
-          <Text style={styles.welcome}>
-            Stay Relevant.
-          </Text>
-
-          <Text style={styles.instructions}>
-            {message}
-          </Text>
-            <Login { ...this.props }/>
+          <Login { ...this.props }/>
         </View>
-      )
+      );
+      links = (
+        <View style={styles.center}>
+          <Button onPress={actions.routes.SignUp()} >Sign Up</Button>
+        </View>
+      );
+      tagline = 'Stay Relevant'
     } else if (currentRoute == 'SignUp') {
-      auth = (<View>
+      auth = (<View style={styles.center}>
         <SignUp {...this.props} />
-      </View>)
+      </View>);
+      tagline = 'Get Relevant';
+      links = (
+        <View style={styles.center}>
+          <Button onPress={actions.routes.LogIn()} >Log In</Button>
+        </View>
+      );
+    } else {
+      tagline = 'Welcome To Relevant';
+      links = (
+        <View style={styles.center}>
+          <Button onPress={actions.routes.LogIn()} >Log In</Button>
+          <Button onPress={actions.routes.SignUp()} >Sign Up</Button>
+        </View>
+        );
     }
 
     return (
       <View style={styles.container}>
+        <Text style={styles.welcome}>
+          {tagline}
+        </Text>
+        <Text style={styles.instructions}>
+          {message}
+        </Text>
+
         {auth}
-          <Button onPress={actions.routes.LogIn()} >Log In</Button>
-         <Button onPress={actions.routes.SignUp()} >Sign Up</Button>
+
+        {links}
+
       </View>
     );
   }
 }
 export default Auth
-
-// const mapStateToProps = (state) => ({
-//   router : state.router,
-//   auth : state.auth
-// });
-// const mapDispatchToProps = (dispatch) => ({
-//   actions: bindActionCreators(authActions, dispatch)
-// });
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Auth);
 
 const styles = StyleSheet.create({
   container: {
@@ -108,8 +118,7 @@ const styles = StyleSheet.create({
   },
   welcome: {
     fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+    textAlign: 'center'
   },
   instructions: {
     textAlign: 'center',
