@@ -12,53 +12,38 @@ import * as authActions from '../actions/authActions';
 
 class Contact extends Component {
 
-  componentDidMount(){
-    this.userIndex()
-  }
 
-
-  userIndex() {
-    var self = this;
-    fetch('http://localhost:3000/api/user', {
-        credentials: 'include',
-        method: 'GET'
-      })
-      .then((response) => response.json())
-      .then((responseJSON) => {
-        self.setState({userIndex: responseJSON});
-      })
-      .catch((error) => {
-        console.log(error, 'error');
-      });
-  }
 
   render() {
     var self = this;
-    var contactsList = null;
-    var usersNumberList = [];
+     console.log(this)
     var contactNumbersList = [];
     var userIndex = [];
-    var match = -1;
+    var matchUser = null;
 
-    if (this.state) {
-      if (this.state.userIndex) userIndex = this.state.userIndex;
+    if (this.props) {
+      if (this.props.userIndex) userIndex = this.props.userIndex;
     }
 
-    for (var i = 0; i < userIndex.length; i++) {
-      if (userIndex[i].phone) {
-        usersNumberList.push(userIndex[i].phone);
-      }
-      if (i == userIndex.length - 1) crossReference();
-    };
+    crossReference();
 
     function crossReference() {
       for (var i = 0; i < self.props.phoneNumbers.length; i++) {
         var altNum = self.props.phoneNumbers[i].number.replace(/\D/g,'');
         var num = Number(altNum);
         contactNumbersList.push(num);
+
         if (i == self.props.phoneNumbers.length - 1) {
-          for (var i = 0; i < contactNumbersList.length; i++) {
-            match = usersNumberList.indexOf(contactNumbersList[i])
+          for (var x = 0; x < contactNumbersList.length; x++) {
+
+            for (var y = 0; y < userIndex.length; y++) {
+              if (userIndex[y].phone) {
+                if (userIndex[y].phone == contactNumbersList[x]) {
+                  matchUser = userIndex[y];
+                }
+              }
+            }
+
           };
         }
       }
@@ -66,7 +51,7 @@ class Contact extends Component {
 
     return (
       <View style={styles.center}>
-        <Text style={match < 0 ? null : styles.green}>{this.props.firstName}</Text>
+        <Text style={matchUser ? styles.green : null}>{this.props.firstName}{matchUser ? ' ' + matchUser.name + ' ' + matchUser.phone : null}</Text>
       </View>
     );
   }

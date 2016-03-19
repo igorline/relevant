@@ -26,25 +26,35 @@ import { bindActionCreators } from 'redux';
 
 class Import extends Component {
 
-  // constructor (props, context) {
-  //   super(props, context)
-  //   this.state = {
-  //     "contacts": null
-  //   }
-  // }
+  componentDidMount(){
+    this.userIndex()
+  }
+
+  userIndex() {
+    var self = this;
+    fetch('http://localhost:3000/api/user', {
+        credentials: 'include',
+        method: 'GET'
+      })
+      .then((response) => response.json())
+      .then((responseJSON) => {
+        self.setState({userIndex: responseJSON});
+      })
+      .catch((error) => {
+        console.log(error, 'error');
+      });
+  }
 
   render() {
     var self = this;
     var contactsEl = null;
     var contacts = self.props.auth.contacts;
-
     const { getContacts } = this.props.actions;
-    console.log(this)
 
     if (contacts) {
       contactsEl = contacts.map(function(contact, i) {
       return (
-        <Contact key={i} {...contact} />
+        <Contact key={i} {...contact} userIndex={self.state.userIndex} />
       );
     });
     }
