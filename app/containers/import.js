@@ -25,6 +25,12 @@ import { bindActionCreators } from 'redux';
 
 
 class Import extends Component {
+  constructor (props, context) {
+    super(props, context)
+    this.state = {
+      userIndex: null
+    }
+  }
 
   componentDidMount(){
     this.userIndex()

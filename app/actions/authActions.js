@@ -2,7 +2,8 @@ import * as types from './actionTypes';
 import { push } from 'react-router-redux';
 import request from 'superagent';
 import thunk from 'redux-thunk';
-var AddressBook = require('react-native-addressbook')
+// var AddressBook = require('react-native-addressbook')
+var Contacts = require('react-native-contacts')
 
 export function setUser(user) {
   return {
@@ -161,11 +162,19 @@ export function userIndex(){
 
 export function getContacts() {
   return function(dispatch) {
-    AddressBook.getContacts(function (err, contacts) {
-      if (err && err.type === 'permissionDenied') {
-        console.log(err);
-      } else if (err) {
-        console.log(err);
+    console.log('trigger get contacts')
+    // AddressBook.getContacts(function (err, contacts) {
+    //   if (err && err.type === 'permissionDenied') {
+    //     console.log(err);
+    //   } else if (err) {
+    //     console.log(err);
+    //   } else {
+    //     dispatch(setContacts(contacts));
+    //   }
+    // });
+    Contacts.getAll((err, contacts) => {
+      if(err && err.type === 'permissionDenied'){
+        // x.x
       } else {
         dispatch(setContacts(contacts));
       }

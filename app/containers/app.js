@@ -15,6 +15,7 @@ import {
 } from 'react-native-router-redux';
 import Auth from './auth';
 import Import from './import';
+import Profile from './profile';
 
 class Application extends Component {
   render() {
@@ -24,6 +25,7 @@ class Application extends Component {
         <Route name="SignUp" component={Auth} type="reset" hideNavBar={true} />
         <Route name="LogIn" component={Auth} type="reset" hideNavBar={true} />
         <Route name="Import" component={Import} type="reset" hideNavBar={true} />
+        <Route name="Profile" component={Profile} type="reset" hideNavBar={true} />
       </Router>
     );
   }

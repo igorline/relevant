@@ -12,11 +12,8 @@ import * as authActions from '../actions/authActions';
 
 class Contact extends Component {
 
-
-
   render() {
     var self = this;
-     console.log(this)
     var contactNumbersList = [];
     var userIndex = [];
     var matchUser = null;
@@ -51,7 +48,7 @@ class Contact extends Component {
 
     return (
       <View style={styles.center}>
-        <Text style={matchUser ? styles.green : null}>{this.props.firstName}{matchUser ? ' ' + matchUser.name + ' ' + matchUser.phone : null}</Text>
+        <Text style={matchUser ? styles.green : null}>{this.props.givenName}{matchUser ? '  Relevant username: ' + matchUser.name : null}</Text>
       </View>
     );
   }
@@ -66,7 +63,7 @@ const styles = StyleSheet.create({
   },
   green: {
     color: 'green',
-    fontSize: 35
+    fontSize: 25
   },
   welcome: {
     fontSize: 20,

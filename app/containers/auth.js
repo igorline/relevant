@@ -47,6 +47,7 @@ class Auth extends Component {
       auth = (
         <View style={styles.center}>
           <Text style={styles.welcome}>{user ? user.name : null}</Text>
+          <Button onPress={actions.routes.Profile()}>Update profile</Button>
           <Button onPress={actions.routes.Import()}>Import page</Button>
           <Button onPress={logout}>Logout</Button>
         </View>
@@ -96,7 +97,7 @@ class Auth extends Component {
         {auth}
 
         {links}
-            <Button onPress={actions.routes.Import()}>Import page</Button>
+        <Button onPress={actions.routes.Profile()}>Update profile</Button>
 
       </View>
     );
