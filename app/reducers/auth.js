@@ -69,6 +69,7 @@ export default function auth(state = initialState, action) {
       })
 
     case types.SET_USER:
+      console.log(action.payload, 'set user payload')
       return Object.assign({}, state, {
         'isAuthenticating': false,
         'isAuthenticated': action.payload ? true : false,

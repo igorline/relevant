@@ -56,6 +56,7 @@ class Import extends Component {
     var contactsEl = null;
     var contacts = self.props.auth.contacts;
     const { getContacts } = this.props.actions;
+     const { actions } = this.props;
 
     if (contacts) {
       contactsEl = contacts.map(function(contact, i) {
@@ -70,6 +71,7 @@ class Import extends Component {
       <View>
         {contacts ? null : <Button onPress={getContacts}>Import contacts</Button>}
         {contactsEl}
+        <Button onPress={actions.routes.Auth()}>Home</Button>
         </View>
       </ScrollView>
     );

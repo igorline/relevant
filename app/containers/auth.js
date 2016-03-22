@@ -5,7 +5,8 @@ import React, {
   StyleSheet,
   Text,
   View,
-  TextInput
+  TextInput,
+  Image,
 } from 'react-native';
 
 import {
@@ -42,11 +43,18 @@ class Auth extends Component {
     this.props.auth.statusText ? message = this.props.auth.statusText : null;
     var tagline = '';
     var links = null;
+    var userImage = null;
+    if (user) {
+      if (this.props.auth.user.image) {
+        userImage = this.props.auth.user.image;
+      }
+    }
 
     if(isAuthenticated){
       auth = (
         <View style={styles.center}>
           <Text style={styles.welcome}>{user ? user.name : null}</Text>
+          {userImage ? <Image source={{uri: userImage}} style={styles.uploadAvatar} /> : null}
           <Button onPress={actions.routes.Profile()}>Update profile</Button>
           <Button onPress={actions.routes.Import()}>Import page</Button>
           <Button onPress={logout}>Logout</Button>
@@ -76,7 +84,7 @@ class Auth extends Component {
         </View>
       );
     } else {
-      tagline = 'Welcome To Relevant';
+      tagline = 'Relevant';
       links = (
         <View style={styles.center}>
           <Button onPress={actions.routes.LogIn()} >Log In</Button>
@@ -97,8 +105,7 @@ class Auth extends Component {
         {auth}
 
         {links}
-        <Button onPress={actions.routes.Profile()}>Update profile</Button>
-
+        {currentRoute != 'Auth' ?  <Button onPress={actions.routes.Auth()}>Home</Button> : null}
       </View>
     );
   }
@@ -106,6 +113,10 @@ class Auth extends Component {
 export default Auth
 
 const styles = StyleSheet.create({
+  uploadAvatar: {
+    width: 200,
+    height: 200
+  },
   container: {
     flex: 1,
     justifyContent: 'center',

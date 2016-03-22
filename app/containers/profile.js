@@ -23,11 +23,11 @@ var Button = require('react-native-button');
 import * as authActions from '../actions/authActions';
 import { bindActionCreators } from 'redux';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
-require('../aws-sdk.min.js');
-require('../secrets.js');
+// require('../aws-sdk.min.js');
+// require('../secrets.js');
 
-AWS.config.update({accessKeyId: process.env.AWS_KEY, secretAccessKey: process.env.AWS_SECRET});
-AWS.config.region = 'us-west-1';
+// AWS.config.update({accessKeyId: process.env.AWS_KEY, secretAccessKey: process.env.AWS_SECRET});
+// AWS.config.region = 'us-west-1';
 
 var pickerOptions = {
   title: 'Select Profile Picture', // specify null or empty string to remove the title
@@ -70,10 +70,17 @@ class Profile extends Component {
   render() {
     var self = this;
     var user = null;
-    if (this.props.auth.user) user = this.props.auth.user;
+    var userImage = null;
+    if (this.props.auth.user) {
+      user = this.props.auth.user;
+      if (this.props.auth.user.image) {
+        userImage = this.props.auth.user.image;
+      }
+    }
+    console.log(this)
+    const { actions } = this.props;
 
     function chooseImage() {
-      console.log(self);
       ImagePickerManager.showImagePicker(pickerOptions, (response) => {
         if (response.didCancel) {
           console.log('User cancelled image picker');
@@ -95,28 +102,70 @@ class Profile extends Component {
     }
 
     function toS3(file) {
-      console.log(file);
-      var bucket = new AWS.S3({params: {Bucket: 'relevant-images'}});
+      console.log(typeof file, 'file');
       if (file) {
-        var params = {Key: 'avatar', ContentType: 'jpg', Body: file};
-        bucket.upload(params, function (err, data) {
-          if (err) {
-            console.log(err, 'aws error');
-          } else {
-            console.log(data, 'aws data');
-          }
-        });
+          fetch('http://localhost:3000/api/s3', {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify( {
+              file: file
+            })
+          })
+          .then((response) => response.json())
+          .then((responseJSON) => {
+            console.log(responseJSON);
+            var filename = 'https://s3.amazonaws.com/relevant-images/' + responseJSON.filename;
+            self.setState({"filename": filename});
+            setPicture(filename);
+          })
+          .catch((error) => {
+            console.log(error, 'error');
+          });
+
       } else {
         console.log('nothing to upload')
       }
     }
 
+    function setPicture(file) {
+          fetch('http://localhost:3000/api/user/image', {
+            credentials: 'include',
+            method: 'PUT',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify( {
+              _id: user._id,
+              imageUrl: file
+            })
+          })
+          // .then((response) => response.json())
+          .then((response) => {
+            actions.getUser(self.props.auth.token, null);
+          })
+          .catch((error) => {
+            console.log(error, 'error');
+          });
+    }
+
+    var userImageEl = null;
+
+      if (userImage) {
+        userImageEl = (<Image source={{uri: userImage}} style={styles.uploadAvatar} />)
+      }
+
     return (
       <View style={styles.container}>
-       {this.state.avatarSource ? <Image source={{uri: this.state.avatarSource.uri}} style={styles.uploadAvatar} /> : null}
+       {userImageEl}
         <Text>{user ? user.name : null}</Text>
         <Text>{user ? user.email : null}</Text>
-        <Button onPress={chooseImage}>add pic</Button>
+        <Button onPress={chooseImage}>Add pic</Button>
+        <Button onPress={actions.routes.Auth()}>Home</Button>
       </View>
     );
   }
