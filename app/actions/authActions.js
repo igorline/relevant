@@ -7,7 +7,7 @@ import request from 'superagent';
 import thunk from 'redux-thunk';
 // var AddressBook = require('react-native-addressbook')
 var Contacts = require('react-native-contacts');
-require('../secrets.js');
+require('../publicenv');
 
 export
 function setUser(user) {
