@@ -17,50 +17,19 @@ import {
   TabRoute
 } from 'react-native-router-redux';
 
-
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import * as authActions from '../actions/authActions';
 import { bindActionCreators } from 'redux';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
-// require('../aws-sdk.min.js');
-// require('../secrets.js');
-
-// AWS.config.update({accessKeyId: process.env.AWS_KEY, secretAccessKey: process.env.AWS_SECRET});
-// AWS.config.region = 'us-west-1';
-
-var pickerOptions = {
-  title: 'Select Profile Picture', // specify null or empty string to remove the title
-  cancelButtonTitle: 'Cancel',
-  takePhotoButtonTitle: 'Take Photo...', // specify null or empty string to remove this button
-  chooseFromLibraryButtonTitle: 'Choose from Library...', // specify null or empty string to remove this button
-  // customButtons: {
-  //   'Choose Photo from Facebook': 'fb', // [Button Text] : [String returned upon selection]
-  // },
-  cameraType: 'back', // 'front' or 'back'
-  mediaType: 'photo', // 'photo' or 'video'
-  videoQuality: 'high', // 'low', 'medium', or 'high'
-  durationLimit: 10, // video recording max time in seconds
-  // maxWidth: 100, // photos only
-  // maxHeight: 100, // photos only
-  aspectX: 2, // android only - aspectX:aspectY, the cropping image's ratio of width to height
-  aspectY: 1, // android only - aspectX:aspectY, the cropping image's ratio of width to height
-  quality: 1, // 0 to 1, photos only
-  angle: 0, // android only, photos only
-  allowsEditing: false, // Built in functionality to resize/reposition the image after selection
-  noData: false, // photos only - disables the base64 `data` field from being generated (greatly improves performance on large photos)
-  storageOptions: { // if this key is provided, the image will get saved in the documents directory on ios, and the pictures directory on android (rather than a temporary directory)
-    skipBackup: true, // ios only - image will NOT be backed up to icloud
-    path: 'images' // ios only - will save image at /Documents/images rather than the root
-  }
-};
-
+// require('../secrets');
+require('../publicenv');
+import { pickerOptions } from '../pickerOptions';
 
 class Profile extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      avatarSource: null
     }
   }
 
@@ -77,7 +46,6 @@ class Profile extends Component {
         userImage = this.props.auth.user.image;
       }
     }
-    console.log(this)
     const { actions } = this.props;
 
     function chooseImage() {
@@ -93,18 +61,15 @@ class Profile extends Component {
         }
         else {
           const source = {uri: response.uri.replace('file://', ''), isStatic: true};
-          self.setState({
-            avatarSource: source
-          });
-          toS3(source.uri);
+          toS3Advanced(source.uri);
+          //toS3(source.uri);
         }
       });
     }
 
     function toS3(file) {
-      console.log(typeof file, 'file');
       if (file) {
-          fetch('http://localhost:3000/api/s3', {
+          fetch('http://localhost:3000/api/s3/upload', {
             credentials: 'include',
             method: 'POST',
             headers: {
@@ -131,8 +96,48 @@ class Profile extends Component {
       }
     }
 
+    function toS3Advanced(file) {
+      var s3_sign_put_url = 'http://'+ process.env.SERVER_IP + ':3000/api/s3/sign';
+      var s3_object_name = 'images/'+'xxx'+ Math.random().toString(36).substr(2, 9) + "_" + 'xxx.jpg';
+      executeOnSignedUrl(file);
+
+      function executeOnSignedUrl(file) {
+        fetch(s3_sign_put_url + '?s3_object_type=' + file.type + '&s3_object_name=' + s3_object_name, {
+          credentials: 'include',
+          method: 'GET',
+        })
+        .then((response) => response.json())
+        .then((responseJSON) => {
+          console.log(responseJSON, 'execute on signed url response');
+          uploadToS3(file, responseJSON.signed_request);
+        })
+        .catch((error) => {
+          console.log(error, 'error');
+        });
+      };
+
+      function uploadToS3(file, url) {
+        console.log('upload to s3');
+        console.log(url, 'url');
+        console.log(file, 'file');
+
+        fetch(url, {
+          method: 'PUT',
+        })
+        .then((response) => {
+          console.log(response, 'upload response')
+        })
+        // .then((responseJSON) => {
+        //   console.log(responseJSON, 'upload to s3 response');
+        // })
+        .catch((error) => {
+          console.log(error, 'error');
+        });
+      };
+    }
+
     function setPicture(file) {
-          fetch('http://localhost:3000/api/user/image', {
+          fetch('http://'+process.env.SERVER_IP+':3000/api/user/image', {
             credentials: 'include',
             method: 'PUT',
             headers: {

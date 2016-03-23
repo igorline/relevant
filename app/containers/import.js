@@ -22,6 +22,7 @@ var Button = require('react-native-button');
 import Contact from '../components/contact';
 import * as authActions from '../actions/authActions';
 import { bindActionCreators } from 'redux';
+require('../secrets.js');
 
 
 class Import extends Component {
@@ -38,7 +39,7 @@ class Import extends Component {
 
   userIndex() {
     var self = this;
-    fetch('http://localhost:3000/api/user', {
+    fetch('http://'+process.env.SERVER_IP+':3000/api/user', {
         credentials: 'include',
         method: 'GET'
       })
