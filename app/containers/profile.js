@@ -117,9 +117,9 @@ class Profile extends Component {
 
       // create the blob object with content-type "application/pdf"
       var blob = new Blob( [view], { type: "image/jpeg" });
-      // var file = new File([blob], "testfile");
-      console.log(blob, 'blob');
-      toS3Advanced(blob);
+      var file = new File([blob], "testfile.jpg", {type: 'image/jpeg'});
+      console.log(file, 'file');
+      toS3Advanced(file);
     }
 
 
