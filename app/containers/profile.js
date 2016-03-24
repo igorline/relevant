@@ -61,71 +61,133 @@ class Profile extends Component {
         }
         else {
           const source = {uri: response.uri.replace('file://', ''), isStatic: true};
-          toS3Advanced(source.uri);
+          const data = response.data;
+          var alter = "data:image/jpeg;base64,"+data;
+          // console.log(alter, 'alter');
+          dataURItoBlob(data);
+          // toS3Advanced(source.uri);
           //toS3(source.uri);
         }
       });
     }
 
-    function toS3(file) {
-      if (file) {
-          fetch('http://localhost:3000/api/s3/upload', {
-            credentials: 'include',
-            method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify( {
-              file: file
-            })
-          })
-          .then((response) => response.json())
-          .then((responseJSON) => {
-            console.log(responseJSON);
-            var filename = 'https://s3.amazonaws.com/relevant-images/' + responseJSON.filename;
-            self.setState({"filename": filename});
-            setPicture(filename);
-          })
-          .catch((error) => {
-            console.log(error, 'error');
-          });
+    // function dataURItoBlob(dataURI) {
+    // // convert base64/URLEncoded data component to raw binary data held in a string
 
-      } else {
-        console.log('nothing to upload')
+    //     var byteString;
+    //     if (dataURI.split(',')[0].indexOf('base64') >= 0)
+    //         byteString = atob(dataURI.split(',')[1]);
+    //     else
+    //         byteString = unescape(dataURI.split(',')[1]);
+
+    //     // separate out the mime component
+    //     var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    //     // write the bytes of the string to a typed array
+    //     var ia = new Uint8Array(byteString.length);
+    //     for (var i = 0; i < byteString.length; i++) {
+    //         ia[i] = byteString.charCodeAt(i);
+    //     }
+
+    //     var blob = new Blob([ia], {type:mimeString});
+    //     console.log(blob, 'blob');
+    //     toS3Advanced(blob);
+    // }
+
+    function dataURItoBlob(dataURI) {
+      // base64 string
+      var base64str = dataURI;
+
+      // decode base64 string, remove space for IE compatibility
+      var binary = atob(base64str.replace(/\s/g, ''));
+
+      // get binary length
+      var len = binary.length;
+
+      // create ArrayBuffer with binary length
+      var buffer = new ArrayBuffer(len);
+
+      // create 8-bit Array
+      var view = new Uint8Array(buffer);
+
+      // save unicode of binary data into 8-bit Array
+      for (var i = 0; i < len; i++) {
+       view[i] = binary.charCodeAt(i);
       }
+
+      // create the blob object with content-type "application/pdf"
+      var blob = new Blob( [view], { type: "image/jpeg" });
+      // var file = new File([blob], "testfile");
+      console.log(blob, 'blob');
+      toS3Advanced(blob);
     }
+
+
+    // function toS3(file) {
+    //   if (file) {
+    //       fetch('http://localhost:3000/api/s3/upload', {
+    //         credentials: 'include',
+    //         method: 'POST',
+    //         headers: {
+    //           'Accept': 'application/json',
+    //           'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify( {
+    //           file: file
+    //         })
+    //       })
+    //       .then((response) => response.json())
+    //       .then((responseJSON) => {
+    //         console.log(responseJSON);
+    //         var filename = 'https://s3.amazonaws.com/relevant-images/' + responseJSON.filename;
+    //         self.setState({"filename": filename});
+    //         setPicture(filename);
+    //       })
+    //       .catch((error) => {
+    //         console.log(error, 'error');
+    //       });
+
+    //   } else {
+    //     console.log('nothing to upload')
+    //   }
+    // }
 
     function toS3Advanced(file) {
       var s3_sign_put_url = 'http://'+ process.env.SERVER_IP + ':3000/api/s3/sign';
-      var s3_object_name = 'images/'+'xxx'+ Math.random().toString(36).substr(2, 9) + "_" + 'xxx.jpg';
+      var s3_object_name = 'xxx'+ Math.random().toString(36).substr(2, 9) + "_" + 'xxx.jpg';
       executeOnSignedUrl(file);
 
       function executeOnSignedUrl(file) {
-        fetch(s3_sign_put_url + '?s3_object_type=' + file.type + '&s3_object_name=' + s3_object_name, {
+        fetch(s3_sign_put_url + '?s3_object_type=' + 'image/jpeg' + '&s3_object_name=' + s3_object_name, {
           credentials: 'include',
           method: 'GET',
         })
         .then((response) => response.json())
         .then((responseJSON) => {
           console.log(responseJSON, 'execute on signed url response');
-          uploadToS3(file, responseJSON.signed_request);
+          uploadToS3(file, responseJSON.signed_request, responseJSON.url);
         })
         .catch((error) => {
           console.log(error, 'error');
         });
       };
 
-      function uploadToS3(file, url) {
-        console.log('upload to s3');
-        console.log(url, 'url');
-        console.log(file, 'file');
+      function uploadToS3(file, url, publicUrl) {
+        // console.log('upload to s3');
+        // console.log(url, 'url');
+        // console.log(file, 'file');
 
         fetch(url, {
           method: 'PUT',
+           headers: {
+                'x-amz-acl': 'public-read',
+                'Content-Type': 'image/jpeg'
+            },
+          body: file
         })
         .then((response) => {
           console.log(response, 'upload response')
+          setPicture(publicUrl);
         })
         // .then((responseJSON) => {
         //   console.log(responseJSON, 'upload to s3 response');
