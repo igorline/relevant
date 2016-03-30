@@ -28,6 +28,7 @@ import { bindActionCreators } from 'redux';
 
 class Auth extends Component {
   componentDidMount() {
+    this.props.actions.loginJay();
   }
 
   render() {

@@ -17,6 +17,7 @@ import {
   TabRoute
 } from 'react-native-router-redux';
 
+var FileUpload = require('NativeModules').FileUpload;
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import * as authActions from '../actions/authActions';
@@ -30,6 +31,7 @@ class Profile extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      newName: ''
     }
   }
 
@@ -64,35 +66,12 @@ class Profile extends Component {
           const data = response.data;
           var alter = "data:image/jpeg;base64,"+data;
           // console.log(alter, 'alter');
-          dataURItoBlob(data);
-          // toS3Advanced(source.uri);
+          // dataURItoBlob(data);
+          toS3Advanced(source.uri);
           //toS3(source.uri);
         }
       });
     }
-
-    // function dataURItoBlob(dataURI) {
-    // // convert base64/URLEncoded data component to raw binary data held in a string
-
-    //     var byteString;
-    //     if (dataURI.split(',')[0].indexOf('base64') >= 0)
-    //         byteString = atob(dataURI.split(',')[1]);
-    //     else
-    //         byteString = unescape(dataURI.split(',')[1]);
-
-    //     // separate out the mime component
-    //     var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-    //     // write the bytes of the string to a typed array
-    //     var ia = new Uint8Array(byteString.length);
-    //     for (var i = 0; i < byteString.length; i++) {
-    //         ia[i] = byteString.charCodeAt(i);
-    //     }
-
-    //     var blob = new Blob([ia], {type:mimeString});
-    //     console.log(blob, 'blob');
-    //     toS3Advanced(blob);
-    // }
 
     function dataURItoBlob(dataURI) {
       // base64 string
@@ -122,36 +101,6 @@ class Profile extends Component {
       toS3Advanced(file);
     }
 
-
-    // function toS3(file) {
-    //   if (file) {
-    //       fetch('http://localhost:3000/api/s3/upload', {
-    //         credentials: 'include',
-    //         method: 'POST',
-    //         headers: {
-    //           'Accept': 'application/json',
-    //           'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify( {
-    //           file: file
-    //         })
-    //       })
-    //       .then((response) => response.json())
-    //       .then((responseJSON) => {
-    //         console.log(responseJSON);
-    //         var filename = 'https://s3.amazonaws.com/relevant-images/' + responseJSON.filename;
-    //         self.setState({"filename": filename});
-    //         setPicture(filename);
-    //       })
-    //       .catch((error) => {
-    //         console.log(error, 'error');
-    //       });
-
-    //   } else {
-    //     console.log('nothing to upload')
-    //   }
-    // }
-
     function toS3Advanced(file) {
       var s3_sign_put_url = 'http://'+ process.env.SERVER_IP + ':3000/api/s3/sign';
       var s3_object_name = 'xxx'+ Math.random().toString(36).substr(2, 9) + "_" + 'xxx.jpg';
@@ -166,16 +115,41 @@ class Profile extends Component {
         .then((responseJSON) => {
           console.log(responseJSON, 'execute on signed url response');
           uploadToS3(file, responseJSON.signed_request, responseJSON.url);
+          //fileUpload(file, responseJSON.signed_request);
         })
         .catch((error) => {
           console.log(error, 'error');
         });
       };
 
+      function fileUpload(file, url) {
+        var obj = {
+          uploadUrl: url,
+          method: 'POST', // default 'POST',support 'POST' and 'PUT'
+          headers: {
+            'Accept': 'application/json',
+            'x-amz-acl': 'public-read',
+            'Content-Type': 'image/jpeg'
+          },
+          fields: {
+              'hello': 'world',
+          },
+          files: [
+            {
+              name: 'one', // optional, if none then `filename` is used instead
+              filename: 'one.jpg', // require, file name
+              filepath: file, // require, file absoluete path
+              filetype: 'image/jpeg', // options, if none, will get mimetype from `filepath` extension
+            },
+          ]
+        };
+
+        FileUpload.upload(obj, function(err, result) {
+          console.log('upload:', err, result);
+        })
+      }
+
       function uploadToS3(file, url, publicUrl) {
-        // console.log('upload to s3');
-        // console.log(url, 'url');
-        // console.log(file, 'file');
 
         fetch(url, {
           method: 'PUT',
@@ -222,15 +196,35 @@ class Profile extends Component {
 
     var userImageEl = null;
 
-      if (userImage) {
-        userImageEl = (<Image source={{uri: userImage}} style={styles.uploadAvatar} />)
-      }
+    if (userImage) {
+      userImageEl = (<Image source={{uri: userImage}} style={styles.uploadAvatar} />)
+    }
+
+    var edited = false;
+
+    function changeBio() {
+      actions.changeBio(self.state.newBio, user, self.props.auth.token);
+      self.setState({newBio: ''});
+    }
+
+    function changeName() {
+      actions.changeName(self.state.newName, user, self.props.auth.token);
+      self.setState({newName: ''});
+    }
+
+    var placeholder = 'enter a short bio';
+
+    if (user.bio) {
+      placeholder = user.bio;
+    }
+
+    //console.log(placeholder, 'placeholder');
 
     return (
       <View style={styles.container}>
        {userImageEl}
-        <Text>{user ? user.name : null}</Text>
-        <Text>{user ? user.email : null}</Text>
+          <TextInput style={styles.input} placeholder={user.name} onChangeText={(newName) => this.setState({newName})} value={this.state.newName} onSubmitEditing={changeName} returnKeyType='done' />
+          <TextInput style={styles.input} placeholder={placeholder} onChangeText={(newBio) => this.setState({newBio})} value={this.state.newBio} onSubmitEditing={changeBio} returnKeyType='done' />
         <Button onPress={chooseImage}>Add pic</Button>
         <Button onPress={actions.routes.Auth()}>Home</Button>
       </View>
@@ -253,6 +247,10 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderColor: 'transparent'
   },
+  flex: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   center: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -271,8 +269,9 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderWidth: 1,
     height: 30,
-    width: 250,
-    alignSelf: 'center'
+    width: 200,
+    alignSelf: 'center',
+    margin: 5
   },
   marginTop: {
     marginTop: 10

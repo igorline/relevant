@@ -26,6 +26,7 @@
 		2AD0F0D21CA0A3430039C7DB /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD0F0D11CA0A33B0039C7DB /* libRNImagePicker.a */; };
 		2AD7DF3C1C9B1F9F00FA1936 /* RNCookieManagerIOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD7DF3B1C9B1F9F00FA1936 /* RNCookieManagerIOS.m */; };
 		2AD7DF3D1C9B1F9F00FA1936 /* RNCookieManagerIOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD7DF3B1C9B1F9F00FA1936 /* RNCookieManagerIOS.m */; };
+		2AFF5B411CAAFF1600ADD4A7 /* FileUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AFF5B401CAAFF1600ADD4A7 /* FileUpload.m */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 /* End PBXBuildFile section */
 
@@ -149,7 +150,7 @@
 		00E356F21AD99517003FC87E /* relevantNativeTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = relevantNativeTests.m; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* relevantNative.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = relevantNative.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Relevant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Relevant.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = relevantNative/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = relevantNative/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -162,6 +163,7 @@
 		2AD0F0CC1CA0A33A0039C7DB /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		2AD7DF3A1C9B1F9F00FA1936 /* RNCookieManagerIOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCookieManagerIOS.h; sourceTree = "<group>"; };
 		2AD7DF3B1C9B1F9F00FA1936 /* RNCookieManagerIOS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCookieManagerIOS.m; sourceTree = "<group>"; };
+		2AFF5B401CAAFF1600ADD4A7 /* FileUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileUpload.m; path = "../node_modules/react-native-file-upload/FileUpload.m"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -365,6 +367,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				2AFF5B401CAAFF1600ADD4A7 /* FileUpload.m */,
 				2AD7DF391C9B1F9F00FA1936 /* RNCookieManagerIOS */,
 				13B07FAE1A68108700A75B9A /* relevantNative */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -378,7 +381,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* relevantNative.app */,
+				13B07F961A680F5B00A75B9A /* Relevant.app */,
 				00E356EE1AD99517003FC87E /* relevantNativeTests.xctest */,
 			);
 			name = Products;
@@ -420,7 +423,7 @@
 			);
 			name = relevantNative;
 			productName = "Hello World";
-			productReference = 13B07F961A680F5B00A75B9A /* relevantNative.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Relevant.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -662,6 +665,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AFF5B411CAAFF1600ADD4A7 /* FileUpload.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				2AD7DF3C1C9B1F9F00FA1936 /* RNCookieManagerIOS.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
@@ -744,7 +748,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = relevantNative;
+				PRODUCT_NAME = Relevant;
 			};
 			name = Debug;
 		};
@@ -761,7 +765,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = relevantNative;
+				PRODUCT_NAME = Relevant;
 			};
 			name = Release;
 		};

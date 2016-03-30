@@ -15,7 +15,7 @@
     "react-native-button": "^1.4.2",
     "react-native-contacts": "^0.2.3",
     "react-native-cookies": "0.0.5",
-    "react-native-fbsdklogin": "0.0.8",
+    "react-native-file-upload": "^1.0.4",
     "react-native-image-picker": "^0.18.3",
     "react-native-redux-router": "^1.0.6",
     "react-redux": "^4.4.1",
