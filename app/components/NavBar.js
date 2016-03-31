@@ -2,10 +2,10 @@
 
 var NavigationBar = require('react-native-navbar');
 var React = require('react-native');
-var {StyleSheet,View} = React;
+var {StyleSheet,View, Component} = React;
 var {Router, Route, Animations, Schema} = require('react-native-redux-router');
 
-class NavBarBase extends React.Component {
+class NavBarBase extends Component {
    onPrev(){
        var Actions = this.props.routes;
        if (this.props.onPrev){
@@ -33,7 +33,7 @@ class NavBarBase extends React.Component {
            />
    }
 }
-class NavBar extends React.Component {
+class NavBar extends Component {
    render() {
      var Actions = this.props.routes;
        return <NavBarBase customNext={<View/>} {...this.props} leftButton={{title:'Left', handler:this.props.onPrev || Actions.pop}}/>
@@ -41,7 +41,7 @@ class NavBar extends React.Component {
 }
 
 
-class NavBarModal extends React.Component {
+class NavBarModal extends Component {
    render() {
      var Actions = this.props.routes;
        return <NavBarBase customPrev={<View/>} nextTitle="Close" {...this.props} rightButton={{title:'Close', handler:this.props.onNext || Actions.pop}}/>

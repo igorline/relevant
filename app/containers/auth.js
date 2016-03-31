@@ -9,30 +9,19 @@ import React, {
   Image,
 } from 'react-native';
 
-import {
-  Route,
-  Router,
-  Schema,
-  TabBar,
-  TabRoute
-} from 'react-native-router-redux';
-
-
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import Login from '../components/login';
-import FbButton from '../components/fb';
 import SignUp from '../components/signup';
 import * as authActions from '../actions/authActions';
 import { bindActionCreators } from 'redux';
 
 class Auth extends Component {
   componentDidMount() {
-    // this.props.actions.loginJay();
+    this.props.actions.loginJay();
   }
 
   render() {
-    console.log(this, 'auth this')
     var self = this;
     var auth;
     var message = '';
@@ -57,8 +46,8 @@ class Auth extends Component {
         <View style={styles.center}>
           <Text style={styles.welcome}>{user ? user.name : null}</Text>
           {userImage ? <Image source={{uri: userImage}} style={styles.uploadAvatar} /> : null}
-          <Button onPress={actions.routes.Profile()}>Update profile</Button>
-          <Button onPress={actions.routes.Import()}>Import page</Button>
+          <Button onPress={self.props.routes.Profile}>Update profile</Button>
+          <Button onPress={self.props.routes.Import}>Import page</Button>
           <Button onPress={logout}>Logout</Button>
         </View>
       );
@@ -71,7 +60,7 @@ class Auth extends Component {
       );
       links = (
         <View style={styles.center}>
-          <Button onPress={actions.routes.SignUp()} >Sign Up</Button>
+          <Button onPress={self.props.routes.SignUp} >Sign Up</Button>
         </View>
       );
       tagline = 'Stay Relevant \n Log in'
@@ -82,15 +71,15 @@ class Auth extends Component {
       tagline = 'Get Relevant \n Sign up';
       links = (
         <View style={styles.center}>
-          <Button onPress={actions.routes.LogIn()} >Log In</Button>
+          <Button onPress={self.props.routes.LogIn} >Log In</Button>
         </View>
       );
     } else {
       tagline = 'Relevant';
       links = (
         <View style={styles.center}>
-          <Button onPress={actions.routes.LogIn()} >Log In</Button>
-          <Button onPress={actions.routes.SignUp()} >Sign Up</Button>
+          <Button onPress={self.props.routes.LogIn} >Log In</Button>
+          <Button onPress={self.props.routes.SignUp} >Sign Up</Button>
         </View>
         );
     }
@@ -107,12 +96,12 @@ class Auth extends Component {
         {auth}
 
         {links}
-        {currentRoute != 'Auth' ?  <Button onPress={actions.routes.Auth()}>Home</Button> : null}
+        {currentRoute != 'Auth' ?  <Button onPress={self.props.routes.Auth}>Home</Button> : null}
       </View>
     );
   }
 }
-export default Auth
+//export default Auth
 
 const styles = StyleSheet.create({
   uploadAvatar: {
@@ -153,4 +142,19 @@ const styles = StyleSheet.create({
     marginTop: 10
   }
 });
+
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    router: state.routerReducer
+   }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(authActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Auth)
 

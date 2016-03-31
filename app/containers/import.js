@@ -9,20 +9,11 @@ import React, {
   ScrollView
 } from 'react-native';
 
-import {
-  Route,
-  Router,
-  Schema,
-  TabBar,
-  TabRoute
-} from 'react-native-router-redux';
-
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import Contact from '../components/contact';
 import * as authActions from '../actions/authActions';
 import { bindActionCreators } from 'redux';
-// require('../secrets.js');
 
 
 class Import extends Component {
@@ -72,17 +63,33 @@ class Import extends Component {
       <View>
         {contacts ? null : <Button onPress={getContacts}>Import contacts</Button>}
         {contactsEl}
-        <Button onPress={actions.routes.Auth()}>Home</Button>
+        <Button onPress={self.props.routes.Auth}>Home</Button>
         </View>
       </ScrollView>
     );
   }
 }
-export default Import
+// export default Import
+function mapStateToProps(state) {
+  console.log(state, 'state')
+  return {
+    auth: state.auth,
+    router: state.routerReducer
+   }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(authActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Import)
 
 const styles = StyleSheet.create({
   contentContainer: {
     paddingVertical: 30,
+    backgroundColor: 'white'
   },
   container: {
     flex: 1,

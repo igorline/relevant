@@ -5,9 +5,9 @@ import { Provider } from 'react-redux';
 import * as reducers from '../reducers';
 import Application from './app';
 
-// const reducer = combineReducers(reducers);
-// let store = applyMiddleware(thunk)(createStore)(reducer);
-let store = createStore(combineReducers(reducers));
+const reducer = combineReducers(reducers);
+let store = applyMiddleware(thunk)(createStore)(reducer);
+// let store = createStore(combineReducers(reducers));
 
 export default class AppContainer extends Component {
   render() {
