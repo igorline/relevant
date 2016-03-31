@@ -22,7 +22,7 @@ var Button = require('react-native-button');
 import Contact from '../components/contact';
 import * as authActions from '../actions/authActions';
 import { bindActionCreators } from 'redux';
-require('../secrets.js');
+// require('../secrets.js');
 
 
 class Import extends Component {

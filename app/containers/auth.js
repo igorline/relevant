@@ -28,10 +28,11 @@ import { bindActionCreators } from 'redux';
 
 class Auth extends Component {
   componentDidMount() {
-    this.props.actions.loginJay();
+    // this.props.actions.loginJay();
   }
 
   render() {
+    console.log(this, 'auth this')
     var self = this;
     var auth;
     var message = '';
