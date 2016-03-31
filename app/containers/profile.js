@@ -65,10 +65,8 @@ class Profile extends Component {
           const source = {uri: response.uri.replace('file://', ''), isStatic: true};
           const data = response.data;
           var alter = "data:image/jpeg;base64,"+data;
-          // console.log(alter, 'alter');
-          // dataURItoBlob(data);
-          toS3Advanced(source.uri);
-          //toS3(source.uri);
+          // toS3Advanced(source.uri);
+          dataURItoBlob(data);
         }
       });
     }
@@ -96,8 +94,7 @@ class Profile extends Component {
 
       // create the blob object with content-type "application/pdf"
       var blob = new Blob( [view], { type: "image/jpeg" });
-      var file = new File([blob], "testfile.jpg", {type: 'image/jpeg'});
-      console.log(file, 'file');
+      var file = new File([blob], "default.jpg", {type: 'image/jpeg'});
       toS3Advanced(file);
     }
 
@@ -122,35 +119,8 @@ class Profile extends Component {
         });
       };
 
-      function fileUpload(file, url) {
-        var obj = {
-          uploadUrl: url,
-          method: 'POST', // default 'POST',support 'POST' and 'PUT'
-          headers: {
-            'Accept': 'application/json',
-            'x-amz-acl': 'public-read',
-            'Content-Type': 'image/jpeg'
-          },
-          fields: {
-              'hello': 'world',
-          },
-          files: [
-            {
-              name: 'one', // optional, if none then `filename` is used instead
-              filename: 'one.jpg', // require, file name
-              filepath: file, // require, file absoluete path
-              filetype: 'image/jpeg', // options, if none, will get mimetype from `filepath` extension
-            },
-          ]
-        };
-
-        FileUpload.upload(obj, function(err, result) {
-          console.log('upload:', err, result);
-        })
-      }
-
       function uploadToS3(file, url, publicUrl) {
-
+        console.log(file, 'uploading this')
         fetch(url, {
           method: 'PUT',
            headers: {
@@ -217,8 +187,6 @@ class Profile extends Component {
     if (user.bio) {
       placeholder = user.bio;
     }
-
-    //console.log(placeholder, 'placeholder');
 
     return (
       <View style={styles.container}>
