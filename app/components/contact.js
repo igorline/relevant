@@ -8,7 +8,6 @@ import React, {
   TextInput
 } from 'react-native';
 var Button = require('react-native-button');
-import * as authActions from '../actions/authActions';
 
 class Contact extends Component {
 
