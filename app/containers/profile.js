@@ -53,12 +53,10 @@ class Profile extends Component {
     function chooseImage() {
       pickImage(function(err, data){
         if(data){
-          // var blob = dataURItoBlob(data);
           toS3Advanced(data);
         }
       });
     }
-
 
     function pickImage(callback){
         ImagePickerManager.showImagePicker(pickerOptions, (response) => {
@@ -75,86 +73,29 @@ class Profile extends Component {
           callback("error");
         }
         else {
-          const source = {uri: response.uri.replace('file://', ''), isStatic: true};
-          const data = response.data;
-          var alter = "data:image/jpeg;base64,"+data;
-          // toS3Advanced(source.uri);
-          // console.log("data", data);
           callback(null, response.uri);
         }
       });
     }
 
-    function dataURItoBlob(dataURI) {
-      // convert base64/URLEncoded data component to raw binary data held in a string
-      var byteString;
-      if (dataURI.split(',')[0].indexOf('base64') >= 0)
-          byteString = atob(dataURI.split(',')[1]);
-      else
-          byteString = unescape(dataURI.split(',')[1]);
+    function toS3Advanced(uri) {
 
-      // separate out the mime component
-      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-      // write the bytes of the string to a typed array
-      var ia = new Uint8Array(byteString.length);
-      for (var i = 0; i < byteString.length; i++) {
-          ia[i] = byteString.charCodeAt(i);
-      }
-
-      return new Blob([ia], {type:mimeString});
-    }
-
-
-    // function dataURItoBlob(dataURI) {
-
-    //   // base64 string
-    //   var base64str = dataURI;
-
-    //   // decode base64 string, remove space for IE compatibility
-    //   var binary = atob(base64str.replace(/\s/g, ''));
-
-    //   // get binary length
-    //   var len = binary.length;
-
-    //   // create ArrayBuffer with binary length
-    //   var buffer = new ArrayBuffer(len);
-
-    //   // create 8-bit Array
-    //   var view = new Uint8Array(buffer);
-
-    //   // save unicode of binary data into 8-bit Array
-    //   for (var i = 0; i < len; i++) {
-    //    view[i] = binary.charCodeAt(i);
-    //   }
-
-    //   console.log('view', view)
-    //   // create the blob object with content-type "application/pdf"
-    //   var blob = new Blob( [view], { type: "image/jpeg" });
-    //   console.log("blob", blob);
-    //   var file = new File([blob], "default.jpg", {type: 'image/jpeg'});
-    //   console.log("file", file);
-    //   toS3Advanced(file);
-    // }
-
-    function toS3Advanced(blob) {
-
-      var file = new File([blob], "default.jpg", {type: 'image/jpeg'});
+      // var file = new File([blob], "default.jpg", {type: 'image/jpeg'});
 
 
       var s3_sign_put_url = 'http://'+ process.env.SERVER_IP + ':3000/api/s3/sign';
-      var s3_object_name = 'xxx'+ Math.random().toString(36).substr(2, 9) + "_" + 'xxx.jpg';
-      executeOnSignedUrl(file);
+      var s3_object_name = Math.random().toString(36).substr(2, 9) + "_" + '.jpg';
+      executeOnSignedUrl(uri);
 
-      function executeOnSignedUrl(file) {
+      function executeOnSignedUrl(uri) {
         fetch(s3_sign_put_url + '?s3_object_type=' + 'multipart/FormData' + '&s3_object_name=' + s3_object_name, {
           credentials: 'include',
           method: 'GET',
         })
         .then((response) => response.json())
         .then((responseJSON) => {
-          // console.log(responseJSON, 'execute on signed url response');
-          uploadToS3(file, responseJSON.signature.s3Policy, responseJSON.signature.s3Signature, responseJSON.url , responseJSON.url);
+          console.log(responseJSON, 'execute on signed url response');
+          uploadToS3(uri, responseJSON.signature.s3Policy, responseJSON.signature.s3Signature, responseJSON.url , responseJSON.publicUrl);
           //fileUpload(file, responseJSON.signed_request);
         })
         .catch((error) => {
@@ -163,8 +104,9 @@ class Profile extends Component {
       };
 
 
-      function uploadToS3(file, policy, signature, url, publicUrl) {
+      function uploadToS3(uri, policy, signature, url, publicUrl) {
 
+        console.log(url, publicUrl)
         var body = new FormData();
         // body.append('uri', blob)
         body.append("key", s3_object_name)
@@ -174,21 +116,22 @@ class Profile extends Component {
         body.append('Content-Type', 'image/jpeg')
         body.append('policy', policy)
         body.append('signature', signature)
-        body.append(file, {uri: blob, name: s3_object_name})
+        body.append('file', {uri: uri, name: s3_object_name})
+        //body.append(file, {uri: blob, name: s3_object_name})
 
         console.log('body',body);
 
         // console.log(file, 'uploading this')
-        fetch("https://relevant-images.s3.amazonaws.com/", {
-          method: 'PUT',
+        fetch(url, {
+          method: 'POST',
           headers: {
             'Content-Type': 'multipart/FormData'
           },
           body: body
         })
         .then((response) => {
-          console.log(response, 'upload response')
-          setPicture(publicUrl);
+          console.log(response, 'upload response');
+          if (response.status == 201) setPicture(publicUrl);
         })
         // .then((responseJSON) => {
         //   console.log(responseJSON, 'upload to s3 response');
@@ -199,7 +142,7 @@ class Profile extends Component {
       };
     }
 
-    function setPicture(file) {
+    function setPicture(url) {
           fetch('http://'+process.env.SERVER_IP+':3000/api/user/image', {
             credentials: 'include',
             method: 'PUT',
@@ -209,7 +152,7 @@ class Profile extends Component {
             },
             body: JSON.stringify( {
               _id: user._id,
-              imageUrl: file
+              imageUrl: url
             })
           })
           // .then((response) => response.json())
