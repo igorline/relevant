@@ -7,7 +7,6 @@ import React, {
   View,
   TextInput
 } from 'react-native';
-// import {reduxForm} from 'redux-form';
 var Button = require('react-native-button');
 
 class Login extends Component {
@@ -23,7 +22,6 @@ class Login extends Component {
   }
 
   componentDidUpdate() {
-    // console.log(this.props, 'login props')
   }
 
   render() {

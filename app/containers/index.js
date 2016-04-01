@@ -7,12 +7,13 @@ import Application from './app';
 
 const reducer = combineReducers(reducers);
 let store = applyMiddleware(thunk)(createStore)(reducer);
+// let store = createStore(combineReducers(reducers));
 
 export default class AppContainer extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Application />
+         <Application />
       </Provider>
     );
   }

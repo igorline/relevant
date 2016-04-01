@@ -21,7 +21,6 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		2A9F9A0C1C9C780400152D7D /* libRCTAddressBook.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A9F9A001C9C77EB00152D7D /* libRCTAddressBook.a */; };
 		2AD0F0CB1CA099370039C7DB /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD0F0C11CA099280039C7DB /* libRCTContacts.a */; };
 		2AD0F0D21CA0A3430039C7DB /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD0F0D11CA0A33B0039C7DB /* libRNImagePicker.a */; };
 		2AD7DF3C1C9B1F9F00FA1936 /* RNCookieManagerIOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD7DF3B1C9B1F9F00FA1936 /* RNCookieManagerIOS.m */; };
@@ -94,20 +93,6 @@
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
 		};
-		2A9F99FF1C9C77EB00152D7D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2A9F99F91C9C77EB00152D7D /* RCTAddressBook.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 145CC5701AED80100006342E;
-			remoteInfo = RCTAddressBook;
-		};
-		2A9F9A011C9C77EB00152D7D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2A9F99F91C9C77EB00152D7D /* RCTAddressBook.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 145CC57B1AED80100006342E;
-			remoteInfo = RCTAddressBookTests;
-		};
 		2AD0F0C01CA099280039C7DB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2AD0F0B91CA099280039C7DB /* RCTContacts.xcodeproj */;
@@ -158,7 +143,6 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = relevantNative/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = relevantNative/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
-		2A9F99F91C9C77EB00152D7D /* RCTAddressBook.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAddressBook.xcodeproj; path = "../node_modules/react-native-addressbook/RCTAddressBook.xcodeproj"; sourceTree = "<group>"; };
 		2AD0F0B91CA099280039C7DB /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
 		2AD0F0CC1CA0A33A0039C7DB /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		2AD7DF3A1C9B1F9F00FA1936 /* RNCookieManagerIOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCookieManagerIOS.h; sourceTree = "<group>"; };
@@ -182,7 +166,6 @@
 			files = (
 				2AD0F0D21CA0A3430039C7DB /* libRNImagePicker.a in Frameworks */,
 				2AD0F0CB1CA099370039C7DB /* libRCTContacts.a in Frameworks */,
-				2A9F9A0C1C9C780400152D7D /* libRCTAddressBook.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
@@ -294,15 +277,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		2A9F99FA1C9C77EB00152D7D /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				2A9F9A001C9C77EB00152D7D /* libRCTAddressBook.a */,
-				2A9F9A021C9C77EB00152D7D /* RCTAddressBookTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		2AD0F0BA1CA099280039C7DB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -341,7 +315,6 @@
 			children = (
 				2AD0F0CC1CA0A33A0039C7DB /* RNImagePicker.xcodeproj */,
 				2AD0F0B91CA099280039C7DB /* RCTContacts.xcodeproj */,
-				2A9F99F91C9C77EB00152D7D /* RCTAddressBook.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
 				00C302B51ABCB90400DB3ED1 /* RCTGeolocation.xcodeproj */,
@@ -458,10 +431,6 @@
 					ProjectRef = 00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */;
 				},
 				{
-					ProductGroup = 2A9F99FA1C9C77EB00152D7D /* Products */;
-					ProjectRef = 2A9F99F91C9C77EB00152D7D /* RCTAddressBook.xcodeproj */;
-				},
-				{
 					ProductGroup = 2AD0F0BA1CA099280039C7DB /* Products */;
 					ProjectRef = 2AD0F0B91CA099280039C7DB /* RCTContacts.xcodeproj */;
 				},
@@ -569,20 +538,6 @@
 			fileType = archive.ar;
 			path = libReact.a;
 			remoteRef = 146834031AC3E56700842450 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		2A9F9A001C9C77EB00152D7D /* libRCTAddressBook.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRCTAddressBook.a;
-			remoteRef = 2A9F99FF1C9C77EB00152D7D /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		2A9F9A021C9C77EB00152D7D /* RCTAddressBookTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = RCTAddressBookTests.xctest;
-			remoteRef = 2A9F9A011C9C77EB00152D7D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		2AD0F0C11CA099280039C7DB /* libRCTContacts.a */ = {

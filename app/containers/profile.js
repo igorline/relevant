@@ -194,12 +194,28 @@ class Profile extends Component {
           <TextInput style={styles.input} placeholder={user.name} onChangeText={(newName) => this.setState({newName})} value={this.state.newName} onSubmitEditing={changeName} returnKeyType='done' />
           <TextInput style={styles.input} placeholder={placeholder} onChangeText={(newBio) => this.setState({newBio})} value={this.state.newBio} onSubmitEditing={changeBio} returnKeyType='done' />
         <Button onPress={chooseImage}>Add pic</Button>
-        <Button onPress={actions.routes.Auth()}>Home</Button>
+        <Button onPress={self.props.routes.Auth}>Home</Button>
       </View>
     );
   }
 }
-export default Profile
+// export default Profile
+
+function mapStateToProps(state) {
+  console.log(state, 'state')
+  return {
+    auth: state.auth,
+    router: state.routerReducer
+   }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(authActions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 const styles = StyleSheet.create({
   uploadAvatar: {
