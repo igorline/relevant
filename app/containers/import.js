@@ -69,7 +69,7 @@ class Import extends Component {
     );
   }
 }
-// export default Import
+
 function mapStateToProps(state) {
   console.log(state, 'state')
   return {

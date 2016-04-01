@@ -9,22 +9,14 @@ import React, {
   TextInput
 } from 'react-native';
 
-import {
-  Route,
-  Router,
-  Schema,
-  TabBar,
-  TabRoute
-} from 'react-native-router-redux';
-
 var FileUpload = require('NativeModules').FileUpload;
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import * as authActions from '../actions/authActions';
 import { bindActionCreators } from 'redux';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
-// require('../secrets');
 require('../publicenv');
+import * as utils from '../utils';
 import { pickerOptions } from '../pickerOptions';
 
 class Profile extends Component {
@@ -53,10 +45,40 @@ class Profile extends Component {
     function chooseImage() {
       pickImage(function(err, data){
         if(data){
-          toS3Advanced(data);
+          var promise = utils.s3.toS3Advanced(data, 'profilepic', user, self.props.auth.token);
+          promise.then(function(results){
+            if (results.success) {
+              setPicture(results.url, user, self.props.auth.token);
+            } else {
+              console.log('err');
+            }
+          })
         }
       });
     }
+
+    function setPicture(url, user, token) {
+      fetch('http://localhost:3000/api/user/image', {
+          credentials: 'include',
+          method: 'PUT',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              _id: user._id,
+              imageUrl: url
+          })
+      })
+      .then((response) => {
+        console.log('yes')
+        actions.getUser(token, null);
+      })
+      .catch((error) => {
+          console.log(error, 'error');
+      });
+    }
+
 
     function pickImage(callback){
         ImagePickerManager.showImagePicker(pickerOptions, (response) => {
@@ -78,91 +100,6 @@ class Profile extends Component {
       });
     }
 
-    function toS3Advanced(uri) {
-
-      // var file = new File([blob], "default.jpg", {type: 'image/jpeg'});
-
-
-      var s3_sign_put_url = 'http://'+ process.env.SERVER_IP + ':3000/api/s3/sign';
-      var s3_object_name = Math.random().toString(36).substr(2, 9) + "_" + '.jpg';
-      executeOnSignedUrl(uri);
-
-      function executeOnSignedUrl(uri) {
-        fetch(s3_sign_put_url + '?s3_object_type=' + 'multipart/FormData' + '&s3_object_name=' + s3_object_name, {
-          credentials: 'include',
-          method: 'GET',
-        })
-        .then((response) => response.json())
-        .then((responseJSON) => {
-          console.log(responseJSON, 'execute on signed url response');
-          uploadToS3(uri, responseJSON.signature.s3Policy, responseJSON.signature.s3Signature, responseJSON.url , responseJSON.publicUrl);
-          //fileUpload(file, responseJSON.signed_request);
-        })
-        .catch((error) => {
-          console.log(error, 'error');
-        });
-      };
-
-
-      function uploadToS3(uri, policy, signature, url, publicUrl) {
-
-        console.log(url, publicUrl)
-        var body = new FormData();
-        // body.append('uri', blob)
-        body.append("key", s3_object_name)
-        body.append("AWSAccessKeyId", "AKIAIN6YT3LQ4EMODDQA")
-        body.append('acl', 'public-read')
-        body.append("success_action_status", "201")
-        body.append('Content-Type', 'image/jpeg')
-        body.append('policy', policy)
-        body.append('signature', signature)
-        body.append('file', {uri: uri, name: s3_object_name})
-        //body.append(file, {uri: blob, name: s3_object_name})
-
-        console.log('body',body);
-
-        // console.log(file, 'uploading this')
-        fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'multipart/FormData'
-          },
-          body: body
-        })
-        .then((response) => {
-          console.log(response, 'upload response');
-          if (response.status == 201) setPicture(publicUrl);
-        })
-        // .then((responseJSON) => {
-        //   console.log(responseJSON, 'upload to s3 response');
-        // })
-        .catch((error) => {
-          console.log(error);
-        });
-      };
-    }
-
-    function setPicture(url) {
-          fetch('http://'+process.env.SERVER_IP+':3000/api/user/image', {
-            credentials: 'include',
-            method: 'PUT',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify( {
-              _id: user._id,
-              imageUrl: url
-            })
-          })
-          // .then((response) => response.json())
-          .then((response) => {
-            actions.getUser(self.props.auth.token, null);
-          })
-          .catch((error) => {
-            console.log(error, 'error');
-          });
-    }
 
     var userImageEl = null;
 
@@ -199,7 +136,6 @@ class Profile extends Component {
     );
   }
 }
-// export default Profile
 
 function mapStateToProps(state) {
   console.log(state, 'state')
