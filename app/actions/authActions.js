@@ -130,7 +130,6 @@ function loginJay(user, redirect) {
 export
 function createUser(user, redirect) {
     return function(dispatch) {
-        console.log('wtf', user)
         //dispatch(loginUserRequest());
         fetch('http://'+process.env.SERVER_IP+':3000/api/user', {
             credentials: 'include',
@@ -211,18 +210,9 @@ export
 function getContacts() {
     return function(dispatch) {
         console.log('trigger get contacts')
-        // AddressBook.getContacts(function (err, contacts) {
-        //   if (err && err.type === 'permissionDenied') {
-        //     console.log(err);
-        //   } else if (err) {
-        //     console.log(err);
-        //   } else {
-        //     dispatch(setContacts(contacts));
-        //   }
-        // });
         Contacts.getAll((err, contacts) => {
             if (err && err.type === 'permissionDenied') {
-                // x.x
+                console.log(err, 'err')
             } else {
                 dispatch(setContacts(contacts));
             }

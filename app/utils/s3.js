@@ -1,5 +1,3 @@
-import * as authActions from '../actions/authActions';
-
 export
 function toS3Advanced(uri, type, user, token) {
   return executeOnSignedUrl(uri, type, user, token);

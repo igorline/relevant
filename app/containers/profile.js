@@ -23,7 +23,8 @@ class Profile extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      newName: ''
+      newName: '',
+      editing: false
     }
   }
 
@@ -107,8 +108,6 @@ class Profile extends Component {
       userImageEl = (<Image source={{uri: userImage}} style={styles.uploadAvatar} />)
     }
 
-    var edited = false;
-
     function changeBio() {
       actions.changeBio(self.state.newBio, user, self.props.auth.token);
       self.setState({newBio: ''});
@@ -116,7 +115,11 @@ class Profile extends Component {
 
     function changeName() {
       actions.changeName(self.state.newName, user, self.props.auth.token);
-      self.setState({newName: ''});
+      self.setState({newName: '', editing: false});
+    }
+
+    function startEditing() {
+      self.setState({editing: true});
     }
 
     var placeholder = 'enter a short bio';
@@ -125,12 +128,28 @@ class Profile extends Component {
       placeholder = user.bio;
     }
 
+    var changeNameEl = null;
+
+    if (self.state.editing) {
+      changeNameEl = (<View style={styles.pictureWidth}><TextInput style={styles.input} placeholder={user.name} onChangeText={(newName) => this.setState({newName})} value={this.state.newName} onSubmitEditing={changeName} returnKeyType='done' />
+      <Button onPress={changeName} style={styles.selfCenter}>Submit</Button></View>);
+    } else {
+      changeNameEl = (<View style={styles.pictureWidth}><Text style={styles.matchButton}>{self.props.auth.user.name}</Text>
+      <Button onPress={startEditing}>Edit</Button></View>);
+    }
+
     return (
       <View style={styles.container}>
+
+
+      {changeNameEl}
+
        {userImageEl}
-          <TextInput style={styles.input} placeholder={user.name} onChangeText={(newName) => this.setState({newName})} value={this.state.newName} onSubmitEditing={changeName} returnKeyType='done' />
-          <TextInput style={styles.input} placeholder={placeholder} onChangeText={(newBio) => this.setState({newBio})} value={this.state.newBio} onSubmitEditing={changeBio} returnKeyType='done' />
-        <Button onPress={chooseImage}>Add pic</Button>
+        {/*<View style={styles.wrap}>
+
+        </View>*/}
+          {/*<TextInput style={styles.input} placeholder={placeholder} onChangeText={(newBio) => this.setState({newBio})} value={this.state.newBio} onSubmitEditing={changeBio} returnKeyType='done' />*/}
+        <Button onPress={chooseImage}>Update profile picture</Button>
         <Button onPress={self.props.routes.Auth}>Home</Button>
       </View>
     );
@@ -138,7 +157,6 @@ class Profile extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state, 'state')
   return {
     auth: state.auth,
     router: state.routerReducer
@@ -155,8 +173,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 const styles = StyleSheet.create({
   uploadAvatar: {
-    width: 200,
-    height: 200
+    width: 250,
+    height: 250
   },
   container: {
     flex: 1,
@@ -167,9 +185,17 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderColor: 'transparent'
   },
-  flex: {
-    flexDirection: 'row',
+  pictureWidth: {
+    width: 250,
+    justifyContent: 'center',
     alignItems: 'center'
+  },
+  matchButton: {
+    fontSize: 20
+  },
+  wrap: {
+    flexDirection: 'row',
+    flexWrap: 'nowrap'
   },
   center: {
     justifyContent: 'center',
@@ -189,12 +215,13 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderWidth: 1,
     height: 30,
-    width: 200,
-    alignSelf: 'center',
-    margin: 5
+    width: 250
   },
   marginTop: {
     marginTop: 10
+  },
+  selfCenter: {
+    // alignSelf: 'center'
   }
 });
 
