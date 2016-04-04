@@ -14,15 +14,54 @@ import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
 
 class Read extends Component {
+  constructor (props, context) {
+    super(props, context)
+    this.state = {
+      posts: null
+    }
+  }
+
   componentDidMount() {
+    this.getPosts();
+  }
+
+  getPosts() {
+    var self = this;
+    fetch('http://localhost:3000/api/post/', {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+        console.log(responseJSON, 'response');
+        self.setState({posts: responseJSON});
+    })
+    .catch((error) => {
+        console.log(error, 'error');
+    });
   }
 
   render() {
     var self = this;
+    var postsEl = null;
+    var posts = null;
+    if (self.state.posts) {
+      posts = self.state.posts;
+      postsEl = posts.map(function(post, i) {
+        return (
+           <Text>{post.body}</Text>
+        );
+      });
+    }
 
     return (
       <View style={styles.container}>
-       <Text>Read</Text>
+       <Text style={styles.welcome}>Read</Text>
+       {postsEl}
       </View>
     );
   }

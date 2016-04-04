@@ -173,8 +173,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 const styles = StyleSheet.create({
   uploadAvatar: {
-    width: 250,
-    height: 250
+    width: 200,
+    height: 200
   },
   container: {
     flex: 1,
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent'
   },
   pictureWidth: {
-    width: 250,
+    width: 200,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderWidth: 1,
     height: 30,
-    width: 250
+    width: 200
   },
   marginTop: {
     marginTop: 10

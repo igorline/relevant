@@ -12,17 +12,32 @@ import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
+import DiscoverUser from '../components/discoverUser';
 
 class Discover extends Component {
   componentDidMount() {
+    this.props.actions.userIndex();
   }
 
   render() {
     var self = this;
+    var usersEl = null;
+
+    var userIndex = null;
+    if (this.props.auth.userIndex) {
+      userIndex = this.props.auth.userIndex;
+      usersEl = userIndex.map(function(user, i) {
+      return (
+         <DiscoverUser key={i} user={user}/>
+      );
+    });
+
+    }
+
 
     return (
       <View style={styles.container}>
-       <Text>Discover</Text>
+       {usersEl}
       </View>
     );
   }
