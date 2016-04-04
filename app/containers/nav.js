@@ -20,7 +20,7 @@ class Nav extends Component {
 
   render() {
     var self = this;
-    console.log(self, 'nav self');
+    // console.log(self, 'nav self');
     var authenticated = this.props.auth.isAuthenticated;
     var navEl = null;
     if (authenticated) {
