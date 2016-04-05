@@ -30,10 +30,9 @@ class Read extends Component {
     var self = this;
     var postsEl = null;
     var posts = null;
-    //console.log(this, 'read this')
+
     if (self.props.posts.index) {
       posts = self.props.posts.index;
-      //console.log(posts, 'posts');
       postsEl = posts.map(function(post, i) {
         return (
            <Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.body}</Text>
