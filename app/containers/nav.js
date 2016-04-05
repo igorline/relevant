@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     padding: 12,
-    backgroundColor: '#3C8AE8'
+    backgroundColor: 'black'
   },
   navItem: {
     flex: 1

@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     height: 60,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#3C8AE8'
+    backgroundColor: 'black'
   },
   navItem: {
     flex: 1
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   active: {
-    color: 'lightgreen'
+    color: '#007aff'
   },
   welcome: {
     fontSize: 20,
