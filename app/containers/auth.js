@@ -45,10 +45,10 @@ class Auth extends Component {
       auth = (
         <View style={styles.center}>
           <Text style={styles.welcome}>{user ? user.name : null}</Text>
-          {userImage ? <Image source={{uri: userImage}} style={styles.uploadAvatar} /> : null}
+          {/*{userImage ? <Image source={{uri: userImage}} style={styles.uploadAvatar} /> : null}
           <Button onPress={self.props.routes.Profile}>Update profile</Button>
           <Button onPress={self.props.routes.Import}>Import page</Button>
-          <Button onPress={logout}>Logout</Button>
+          <Button onPress={logout}>Logout</Button>*/}
         </View>
       );
     }

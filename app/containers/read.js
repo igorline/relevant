@@ -12,48 +12,31 @@ import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
+import * as postActions from '../actions/postActions';
+require('../publicenv');
 
 class Read extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      posts: null
     }
   }
 
   componentDidMount() {
-    this.getPosts();
-  }
-
-  getPosts() {
-    var self = this;
-    fetch('http://localhost:3000/api/post/', {
-        credentials: 'include',
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-      }
-    })
-    .then((response) => response.json())
-    .then((responseJSON) => {
-        console.log(responseJSON, 'response');
-        self.setState({posts: responseJSON});
-    })
-    .catch((error) => {
-        console.log(error, 'error');
-    });
+    this.props.actions.getPosts();
   }
 
   render() {
     var self = this;
     var postsEl = null;
     var posts = null;
-    if (self.state.posts) {
-      posts = self.state.posts;
+    //console.log(this, 'read this')
+    if (self.props.posts.index) {
+      posts = self.props.posts.index;
+      //console.log(posts, 'posts');
       postsEl = posts.map(function(post, i) {
         return (
-           <Text>{post.body}</Text>
+           <Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.body}</Text>
         );
       });
     }
@@ -70,13 +53,14 @@ class Read extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
+    posts: state.posts,
     router: state.routerReducer
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(authActions, dispatch)
+    actions: bindActionCreators({ ...authActions, ...postActions}, dispatch)
   }
 }
 

@@ -12,6 +12,8 @@ import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
+import * as postActions from '../actions/postActions';
+require('../publicenv');
 
 class Post extends Component {
   constructor (props, context) {
@@ -31,36 +33,15 @@ class Post extends Component {
       if (self.props.auth.user) user = self.props.auth.user;
     }
 
-    function submitPost() {
-      console.log(self.state.postText, 'postText');
-      var date = new Date();
-      var time = date.getTime();
-
-      fetch('http://localhost:3000/api/post/', {
-          credentials: 'include',
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            userId: user._id,
-            body: self.state.postText,
-            id: time
-        })
-      })
-      .then((response) => {
-        console.log(response, 'response');
-      })
-      .catch((error) => {
-          console.log(error, 'error');
-      });
+    function post() {
+      self.props.actions.submitPost(user._id, self.state.postText);
+      self.setState({postText: null});
     }
 
     return (
       <View style={styles.container}>
-       <TextInput style={styles.input} placeholder='Post text' multiline={true} onChangeText={(postText) => this.setState({postText})} value={this.state.postText} onSubmitEditing={submitPost} returnKeyType='done' />
-      <Button onPress={submitPost}>Submit</Button>
+       <TextInput style={styles.input} placeholder='Relevant text here...' multiline={true} onChangeText={(postText) => this.setState({postText})} value={this.state.postText} onSubmitEditing={post} returnKeyType='done' />
+      <Button onPress={post}>Submit</Button>
       </View>
     );
   }
@@ -75,7 +56,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(authActions, dispatch)
+    actions: bindActionCreators({...authActions, ...postActions}, dispatch)
   }
 }
 
@@ -93,6 +74,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0,
+    fontSize: 20,
     left: 0,
     bottom: 20,
     padding: 10,

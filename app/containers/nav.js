@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
+import * as postActions from '../actions/postActions';
 
 class Nav extends Component {
   componentDidMount() {
@@ -20,14 +21,23 @@ class Nav extends Component {
 
   render() {
     var self = this;
-    // console.log(self, 'nav self');
     var authenticated = this.props.auth.isAuthenticated;
     var navEl = null;
+    var title = '';
+
+    if (self.props.route.name == 'Profile') {
+      title = self.props.auth.user.name;
+    } else if (self.props.route.name == 'SinglePost') {
+      title = self.props.posts.activePost.body;
+    } else {
+      title = self.props.title;
+    }
+
     if (authenticated) {
       StatusBarIOS.setStyle('light-content');
       navEl = (<View style={styles.nav}>
         <View style={styles.navItem}>
-          <Button style={styles.navLink}>{self.props.title}</Button>
+          <Text style={styles.navLink}>{title}</Text>
         </View>
       </View>);
     } else {
@@ -45,13 +55,14 @@ class Nav extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
+    posts: state.posts,
     router: state.routerReducer
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(authActions, dispatch)
+    actions: bindActionCreators({...authActions, ...postActions }, dispatch)
   }
 }
 
@@ -91,7 +102,9 @@ const styles = StyleSheet.create({
     flex: 1
   },
   navLink: {
-    color: 'white'
+    color: 'white',
+    fontSize: 20,
+    textAlign: 'center'
   },
   active: {
     color: 'lightgreen'
