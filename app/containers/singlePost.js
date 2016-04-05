@@ -12,32 +12,29 @@ import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
+import * as postActions from '../actions/postActions';
+require('../publicenv');
 
-class Discover extends Component {
+class SinglePost extends Component {
+  constructor (props, context) {
+    super(props, context)
+    this.state = {
+    }
+  }
+
   componentDidMount() {
-    this.props.actions.userIndex();
+    // this.props.actions.getPosts();
   }
 
   render() {
     var self = this;
-    var usersEl = null;
-
-    var userIndex = null;
-    if (this.props.auth.userIndex) {
-      userIndex = this.props.auth.userIndex;
-      usersEl = userIndex.map(function(user, i) {
-      return (
-         <Text>{user.name}</Text>
-      );
-    });
-
-    }
-
+    var post = null;
+    if (this.props.posts.activePost) post = this.props.posts.activePost;
 
     return (
       <View style={styles.container}>
-      <Text style={styles.welcome}>Users</Text>
-       {usersEl}
+        <Text style={styles.twenty}>Reading post {post ? post._id : null}</Text>
+        <Text>{post ? post.body : null}</Text>
       </View>
     );
   }
@@ -46,17 +43,18 @@ class Discover extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
+    posts: state.posts,
     router: state.routerReducer
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(authActions, dispatch)
+    actions: bindActionCreators({ ...authActions, ...postActions}, dispatch)
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Discover)
+export default connect(mapStateToProps, mapDispatchToProps)(SinglePost)
 
 const styles = StyleSheet.create({
   uploadAvatar: {
@@ -80,9 +78,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center'
+  twenty: {
+    fontSize: 20
   },
   instructions: {
     textAlign: 'center',

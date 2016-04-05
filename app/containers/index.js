@@ -6,6 +6,10 @@ import * as reducers from '../reducers';
 import Application from './app';
 const reducer = combineReducers(reducers);
 let store = applyMiddleware(thunk)(createStore)(reducer);
+// const store = createStore(
+//   reducer,
+//   applyMiddleware(thunk)
+// );
 
 export default class AppContainer extends Component {
   render() {

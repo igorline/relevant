@@ -23,6 +23,7 @@ import Footer from './footer';
 import Post from './post';
 import Discover from './discover';
 import Nav from './nav';
+import SinglePost from './singlePost';
 
 
 class Application extends Component {
@@ -36,17 +37,19 @@ class Application extends Component {
       <View style={{flex:1}} >
       <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'white'}}/>
         <Router>
-          <Route name="Auth" component={Auth}  hideNavBar={false} hideFooter={false} type="replace" initial={true} title="Home" />
-          <Route name="SignUp" component={Auth} hideNavBar={false} hideFooter={false} type="replace" title="Sign up" />
-          <Route name="LogIn" component={Auth} hideNavBar={false} hideFooter={false} type="replace" title="Log in" />
-          <Route name="Import" component={Import} hideNavBar={false}  type="replace" title="Import" />
-          <Route name="Profile" component={Profile} hideNavBar={false}  type="replace" title="Profile" />
-          <Route name="Read" component={Read} hideNavBar={false}  type="replace" title="Read" />
-          <Route name="Post" component={Post} hideNavBar={false}  type="replace" title="Post" />
-          <Route name="Discover" component={Discover} hideNavBar={false}  type="replace" title="Discover" />
+          <Route name="Auth" component={Auth}  hideNavBar={false} hideFooter={false}  initial={true} title="Home" />
+          <Route name="SignUp" component={Auth} hideNavBar={false} hideFooter={false}  title="Sign up" />
+          <Route name="LogIn" component={Auth} hideNavBar={false} hideFooter={false}  title="Log in" />
+          <Route name="Import" component={Import} hideNavBar={false} title="Import" />
+          <Route name="Profile" component={Profile} hideNavBar={false} title="Profile" />
+          <Route name="Read" component={Read} hideNavBar={false} title="Read" />
+          <Route name="Post" component={Post} hideNavBar={false} title="Post" />
+          <Route name="Discover" component={Discover} hideNavBar={false} title="Discover" />
+          <Route name="SinglePost" component={SinglePost} hideNavBar={false} title="Single Post" />
 
-          {/*<Schema name="modal" sceneConfig={Animations.FlatFloatFromBottom} footer={Nav}/>*/}
-          <Schema name="default" sceneConfig={Animations.FlatFloatFromBottom} footer={Footer} navBar={Nav}/>
+          {/*<Schema name="modal" sceneConfig={Animations.FlatFloatFromBottom} footer={Nav} navBar={Nav}/>*/}
+          {/*<Schema name="default" sceneConfig={Animations.FlatFloatFromRight} footer={Footer} navBar={Nav}/>*/}
+          <Schema name="default" footer={Footer} navBar={Nav}/>
           {/*<Schema name="withoutAnimation" footer={Nav}/>*/}
           {/*<Schema name="tab" footer={Nav}/>*/}
         </Router>

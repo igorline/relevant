@@ -1,12 +1,11 @@
 import * as types from './actionTypes';
-import {
-    push
-}
-from 'react-router-redux';
+import { push } from 'react-router-redux';
 import request from 'superagent';
 import thunk from 'redux-thunk';
 var Contacts = require('react-native-contacts');
 require('../publicenv');
+var CookieManager = require('react-native-cookies');
+var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
 
 export
 function setUser(user) {
@@ -26,6 +25,7 @@ function setUserIndex(userIndex) {
 
 export
 function loginUserSuccess(token) {
+
     return {
         type: types.LOGIN_USER_SUCCESS,
         payload: {
@@ -82,10 +82,10 @@ function loginUser(user, redirect) {
         })
             .then((response) => response.json())
             .then((responseJSON) => {
-                console.log(responseJSON, 'response');
+                //console.log(responseJSON, 'response');
                 if (responseJSON.token) {
                     dispatch(loginUserSuccess(responseJSON.token));
-                    dispatch(getUser(responseJSON.token, redirect));
+                    dispatch(getUser(responseJSON.token, true));
                 } else {
                     dispatch(loginUserFailure(responseJSON.message));
                 }
@@ -112,10 +112,11 @@ function loginJay(user, redirect) {
         })
             .then((response) => response.json())
             .then((responseJSON) => {
-                console.log(responseJSON, 'response');
+                //console.log(responseJSON, 'response');
                 if (responseJSON.token) {
                     dispatch(loginUserSuccess(responseJSON.token));
-                    dispatch(getUser(responseJSON.token, redirect));
+                    dispatch(getUser(responseJSON.token, true));
+
                 } else {
                     dispatch(loginUserFailure(responseJSON.message));
                 }
@@ -142,10 +143,10 @@ function createUser(user, redirect) {
         })
             .then((response) => response.json())
             .then((responseJSON) => {
-                console.log(responseJSON, 'response');
+                //console.log(responseJSON, 'response');
                 if (responseJSON.token) {
                     dispatch(loginUserSuccess(responseJSON.token));
-                    dispatch(getUser(responseJSON.token, redirect));
+                    dispatch(getUser(responseJSON.token, true));
                 } else {
                     dispatch(loginUserFailure(responseJSON.message));
                 }
@@ -173,8 +174,10 @@ function getUser(token, redirect) {
                 })
                 .then((response) => response.json())
                 .then((responseJSON) => {
-                    console.log(responseJSON, 'response');
+                    //console.log(responseJSON, 'response');
                     dispatch(setUser(responseJSON));
+                    if (redirect) dispatch(Actions.Profile);
+
                 })
                 .catch((error) => {
                     console.log(error, 'error');
@@ -196,7 +199,7 @@ function userIndex() {
                 })
                 .then((response) => response.json())
                 .then((responseJSON) => {
-                    console.log(responseJSON, 'response');
+                    //console.log(responseJSON, 'response');
                     dispatch(setUserIndex(responseJSON));
                 })
                 .catch((error) => {

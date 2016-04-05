@@ -6,13 +6,17 @@ import React, {
   Text,
   View,
   Image,
-  TextInput
+  TextInput,
+  Dimensions
 } from 'react-native';
+var width = Dimensions.get('window').width; //full width
+var height = Dimensions.get('window').height; //full height
 
 var FileUpload = require('NativeModules').FileUpload;
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import * as authActions from '../actions/authActions';
+import * as postActions from '../actions/postActions';
 import { bindActionCreators } from 'redux';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
@@ -29,6 +33,7 @@ class Profile extends Component {
   }
 
   componentDidMount() {
+    if (!this.props.posts.index) this.props.actions.getUserPosts(this.props.auth.user._id);
   }
 
   render() {
@@ -41,6 +46,7 @@ class Profile extends Component {
         userImage = this.props.auth.user.image;
       }
     }
+
     const { actions } = this.props;
 
     function chooseImage() {
@@ -129,28 +135,43 @@ class Profile extends Component {
     }
 
     var changeNameEl = null;
+    var postsEl = null;
 
     if (self.state.editing) {
       changeNameEl = (<View style={styles.pictureWidth}><TextInput style={styles.input} placeholder={user.name} onChangeText={(newName) => this.setState({newName})} value={this.state.newName} onSubmitEditing={changeName} returnKeyType='done' />
       <Button onPress={changeName} style={styles.selfCenter}>Submit</Button></View>);
     } else {
-      changeNameEl = (<View style={styles.pictureWidth}><Text style={styles.matchButton}>{self.props.auth.user.name}</Text>
+      changeNameEl = (<View style={styles.pictureWidth}><Text style={styles.twenty}>{self.props.auth.user.name}</Text>
       <Button onPress={startEditing}>Edit</Button></View>);
+    }
+
+    if (self.props.posts.userPosts) {
+      postsEl = self.props.posts.userPosts.map(function(post, i) {
+      return (
+          <Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.body}</Text>
+
+      );
+    });
+    } else {
+      postsEl = (<View><Text>0 Posts</Text></View>)
     }
 
     return (
       <View style={styles.container}>
-
-
-      {changeNameEl}
-
-       {userImageEl}
-        {/*<View style={styles.wrap}>
-
-        </View>*/}
-          {/*<TextInput style={styles.input} placeholder={placeholder} onChangeText={(newBio) => this.setState({newBio})} value={this.state.newBio} onSubmitEditing={changeBio} returnKeyType='done' />*/}
-        <Button onPress={chooseImage}>Update profile picture</Button>
-        <Button onPress={self.props.routes.Auth}>Home</Button>
+        {/*changeNameEl*/}
+        <View style={styles.row}>
+          <View style={styles.insideRow}>{userImageEl}</View>
+          <View style={styles.insideRow}>
+            <Text>blah blah</Text>
+            <Text>Blah ballllshahsahsaks</Text>
+          </View>
+        </View>
+        {/*<Button onPress={chooseImage}>Update profile picture</Button>
+        <Button onPress={self.props.routes.Auth}>Home</Button>*/}
+        <View style={styles.column}>
+          <Text style={styles.twenty}>Posts</Text>
+          {postsEl}
+        </View>
       </View>
     );
   }
@@ -159,13 +180,14 @@ class Profile extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
+    posts: state.posts,
     router: state.routerReducer
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(authActions, dispatch)
+    actions: bindActionCreators({...authActions, ...postActions}, dispatch)
   }
 }
 
@@ -173,24 +195,38 @@ export default connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 const styles = StyleSheet.create({
   uploadAvatar: {
-    width: 200,
-    height: 200
+    height: 150,
+    width: 150,
+    resizeMode: 'cover',
+    borderRaidus: 100
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     backgroundColor: 'white',
-    borderWidth: 20,
-    borderStyle: 'solid',
-    borderColor: 'transparent'
+  },
+  row: {
+    flexDirection: 'row',
+    width: width,
+    padding: 20
+  },
+  column: {
+    flexDirection: 'column',
+    width: width,
+    paddingRight: 20,
+    paddingLeft: 20,
+    paddingBottom: 20,
+  },
+  insideRow: {
+    flex: 1,
   },
   pictureWidth: {
-    width: 200,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
   },
-  matchButton: {
+  twenty: {
     fontSize: 20
   },
   wrap: {

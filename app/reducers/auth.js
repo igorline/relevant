@@ -13,7 +13,7 @@ const initialState = {
 };
 
 export default function auth(state = initialState, action) {
-  console.log(action.type)
+  // console.log(action.type)
   switch (action.type) {
 
     case types.LOGIN_USER_REQUEST:
@@ -41,6 +41,7 @@ export default function auth(state = initialState, action) {
         'token': action.payload.token,
         'statusText': 'You have been successfully logged in.'
       })
+
     case types.LOGIN_USER_FAILURE:
       CookieManager.clearAll((err, res) => {
         console.log('cookies cleared!');
