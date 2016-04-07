@@ -163,10 +163,10 @@ class Profile extends Component {
     return (
       <View style={styles.profileContainer}>
         <View style={styles.row}>
-          <View style={styles.insideRow}>{userImageEl}</View>
-          <View style={styles.insideRow}>
-            <Text>blah blah</Text>
-            <Text>Blah ballllshahsahsaks</Text>
+          <View>{userImageEl}</View>
+          <View style={[styles.insideRow, styles.insidePadding]}>
+            <Text>Relevance: <Text style={styles.active}>999999999999</Text></Text>
+            <Text>more info more info</Text>
           </View>
         </View>
         <View style={styles.column}>
@@ -196,8 +196,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 const localStyles = StyleSheet.create({
   uploadAvatar: {
-    height: 150,
-    width: 150,
+    height: 100,
+    width: 100,
     resizeMode: 'cover'
   },
   profileContainer: {
@@ -220,6 +220,10 @@ const localStyles = StyleSheet.create({
   },
   insideRow: {
     flex: 1,
+  },
+  insidePadding: {
+    paddingLeft: 10,
+    paddingRight: 10
   },
   pictureWidth: {
     flex: 1,
