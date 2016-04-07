@@ -24,6 +24,8 @@ import Post from './post';
 import Discover from './discover';
 import Nav from './nav';
 import SinglePost from './singlePost';
+import User from './user';
+import ProfileOptions from './profileOptions';
 
 
 class Application extends Component {
@@ -46,6 +48,8 @@ class Application extends Component {
           <Route name="Post" component={Post} hideNavBar={false} title="Post" />
           <Route name="Discover" component={Discover} hideNavBar={false} title="Discover" />
           <Route name="SinglePost" component={SinglePost} hideNavBar={false} title="Single Post" />
+          <Route name="User" component={User} hideNavBar={false} title="User" />
+          <Route name="ProfileOptions" component={ProfileOptions} hideNavBar={false} title="Options" />
 
           {/*<Schema name="modal" sceneConfig={Animations.FlatFloatFromBottom} footer={Nav} navBar={Nav}/>*/}
           {/*<Schema name="default" sceneConfig={Animations.FlatFloatFromRight} footer={Footer} navBar={Nav}/>*/}

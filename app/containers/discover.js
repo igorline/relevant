@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
+import * as userActions from '../actions/userActions';
 
 class Discover extends Component {
   componentDidMount() {
@@ -20,14 +21,19 @@ class Discover extends Component {
 
   render() {
     var self = this;
+    // console.log(this, 'discover this')
     var usersEl = null;
+
+    function setSelected(id) {
+      self.props.actions.getSelectedUser(id, self.props.auth.token);
+    }
 
     var userIndex = null;
     if (this.props.auth.userIndex) {
       userIndex = this.props.auth.userIndex;
       usersEl = userIndex.map(function(user, i) {
       return (
-         <Text>{user.name}</Text>
+         <Text onPress={setSelected.bind(null, user._id)}>{user.name}</Text>
       );
     });
 
@@ -46,13 +52,14 @@ class Discover extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    router: state.routerReducer
+    router: state.routerReducer,
+    users: state.user
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(authActions, dispatch)
+    actions: bindActionCreators({...authActions, ...userActions}, dispatch)
   }
 }
 

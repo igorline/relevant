@@ -82,18 +82,18 @@ function loginUser(user, redirect) {
         })
             .then((response) => response.json())
             .then((responseJSON) => {
-                //console.log(responseJSON, 'response');
                 if (responseJSON.token) {
+                    console.log('login success')
                     dispatch(loginUserSuccess(responseJSON.token));
                     dispatch(getUser(responseJSON.token, true));
                 } else {
                     dispatch(loginUserFailure(responseJSON.message));
                 }
             })
-            .catch((error) => {
-                console.log(error, 'error');
-                dispatch(loginUserFailure('Server error'));
-            });
+            // .catch((error) => {
+            //     console.log(error, 'error');
+            //     dispatch(loginUserFailure('Server error'));
+            // });
     }
 }
 
@@ -121,10 +121,10 @@ function loginJay(user, redirect) {
                     dispatch(loginUserFailure(responseJSON.message));
                 }
             })
-            .catch((error) => {
-                console.log(error, 'error');
-                dispatch(loginUserFailure('Server error'));
-            });
+            // .catch((error) => {
+            //     console.log(error, 'error');
+            //     dispatch(loginUserFailure('Server error'));
+            // });
     }
 }
 
@@ -151,10 +151,10 @@ function createUser(user, redirect) {
                     dispatch(loginUserFailure(responseJSON.message));
                 }
             })
-            .catch((error) => {
-                console.log(error, 'error');
-                dispatch(loginUserFailure('Server error'));
-            });
+            // .catch((error) => {
+            //     console.log(error, 'error');
+            //     dispatch(loginUserFailure('Server error'));
+            // });
     }
 }
 
@@ -179,9 +179,9 @@ function getUser(token, redirect) {
                     if (redirect) dispatch(Actions.Profile);
 
                 })
-                .catch((error) => {
-                    console.log(error, 'error');
-                });
+                // .catch((error) => {
+                //     console.log(error, 'error');
+                // });
         })
     }
 }
@@ -202,9 +202,9 @@ function userIndex() {
                     //console.log(responseJSON, 'response');
                     dispatch(setUserIndex(responseJSON));
                 })
-                .catch((error) => {
-                    console.log(error, 'error');
-                });
+                // .catch((error) => {
+                //     console.log(error, 'error');
+                // });
         })
     }
 }
@@ -272,9 +272,9 @@ function changeName(name, user, token) {
       .then((response) => {
         dispatch(getUser(token, null));
       })
-      .catch((error) => {
-        console.log(error, 'error');
-      });
+      // .catch((error) => {
+      //   console.log(error, 'error');
+      // });
     }
 }
 
@@ -297,8 +297,8 @@ function changeBio(bio, user, token) {
       .then((response) => {
         dispatch(getUser(token, null));
       })
-      .catch((error) => {
-        console.log(error, 'error');
-      });
+      // .catch((error) => {
+      //   console.log(error, 'error');
+      // });
     }
 }

@@ -11,3 +11,4 @@ export const SET_USER_POSTS = 'SET_USER_POSTS';
 export const POST_ERROR = 'POST_ERROR';
 export const POST_SUCCESS = 'POST_SUCCESS';
 export const SET_ACTIVE_POST = 'SET_ACTIVE_POST';
+export const SET_SELECTED_USER = 'SET_SELECTED_USER';

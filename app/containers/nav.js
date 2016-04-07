@@ -7,7 +7,8 @@ import React, {
   View,
   Image,
   TextInput,
-  StatusBarIOS
+  StatusBarIOS,
+  TouchableHighlight
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -24,11 +25,24 @@ class Nav extends Component {
     var authenticated = this.props.auth.isAuthenticated;
     var navEl = null;
     var title = '';
+    var route = self.props.route.name;
+    // console.log(this, 'nav self')
 
-    if (self.props.route.name == 'Profile') {
-      title = self.props.auth.user.name;
-    } else if (self.props.route.name == 'SinglePost') {
+    if (route == 'Profile') {
+      if (self.props.auth.user) {
+        title = self.props.auth.user.name;
+      } else {
+        title = self.props.title;
+      }
+
+    } else if (route == 'SinglePost') {
       title = self.props.posts.activePost.body;
+    } else if (route == 'User') {
+      if (self.props.users.selectedUser) {
+       title = self.props.users.selectedUser.name;
+      } else {
+        title = self.props.title;
+      }
     } else {
       title = self.props.title;
     }
@@ -39,6 +53,7 @@ class Nav extends Component {
         <View style={styles.navItem}>
           <Text style={styles.navLink}>{title}</Text>
         </View>
+         {route == 'Profile' ? <View style={styles.gear}><TouchableHighlight onPress={self.props.routes.ProfileOptions} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View> : null}
       </View>);
     } else {
       StatusBarIOS.setStyle('default');
@@ -46,7 +61,7 @@ class Nav extends Component {
 
     return (
       <View>
-      {navEl}
+        {navEl}
       </View>
     );
   }
@@ -56,6 +71,7 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
+    users: state.user,
     router: state.routerReducer
    }
 }
@@ -70,6 +86,19 @@ export default connect(mapStateToProps, mapDispatchToProps)(Nav)
 //export default Nav
 
 const styles = StyleSheet.create({
+  gear: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: 60,
+    flex: 1,
+    justifyContent: 'flex-end',
+    padding: 12
+  },
+  gearImg: {
+    height: 25,
+    width: 25
+  },
   uploadAvatar: {
     width: 200,
     height: 200
