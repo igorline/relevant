@@ -89,9 +89,11 @@ function loginUser(user, redirect) {
             .then((response) => response.json())
             .then((responseJSON) => {
                 if (responseJSON.token) {
-                    console.log('login success')
-                    dispatch(loginUserSuccess(responseJSON.token));
-                    dispatch(getUser(responseJSON.token, true));
+                    AsyncStorage.setItem('token', responseJSON.token)
+                        .then( ()  => {
+                            dispatch(loginUserSuccess(responseJSON.token));
+                            dispatch(getUser(responseJSON.token, true));
+                        })
                 } else {
                     dispatch(loginUserFailure(responseJSON.message));
                 }
@@ -119,7 +121,7 @@ function loginJay(user, redirect) {
             .then((response) => response.json())
             .then((responseJSON) => {
                 if (responseJSON.token) {
-                    AsyncStorage.setItem('token', token)
+                    AsyncStorage.setItem('token', responseJSON.token)
                     .then( ()  => {
                         dispatch(loginUserSuccess(responseJSON.token));
                         dispatch(getUser(responseJSON.token, true));
