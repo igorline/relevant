@@ -15,6 +15,7 @@ import * as authActions from '../actions/authActions';
 import * as postActions from '../actions/postActions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+let xml = require('react-native').NativeModules.RNMXml;
 
 class Post extends Component {
   constructor (props, context) {
@@ -37,6 +38,19 @@ class Post extends Component {
 
     function post() {
       self.props.actions.submitPost(user._id, self.state.postText, self.state.postTitle);
+      // fetch(self.state.postText, {
+      //       method: 'GET',
+      //   })
+      //       // .then((response) => response.json())
+      //       .then((response) => {
+      //         console.log(response, 'response to post');
+      //         xml.queryHtml(response._bodyText,
+      //        results => console.log(results[0]))
+      //       })
+      //       .catch((error) => {
+      //           console.log(error, 'error');
+      //       });
+      // self.pro
       self.setState({postText: null, postTitle: null});
     }
 
