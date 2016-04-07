@@ -152,7 +152,7 @@ class Profile extends Component {
     if (self.props.posts.userPosts) {
       postsEl = self.props.posts.userPosts.map(function(post, i) {
       return (
-          <Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.body}</Text>
+          <Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.title}</Text>
 
       );
     });

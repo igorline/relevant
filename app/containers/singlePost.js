@@ -32,13 +32,16 @@ class SinglePost extends Component {
     var post = null;
     if (this.props.posts.activePost) post = this.props.posts.activePost;
     var title = null;
-    var body = null;
+    var description = null;
+    var image = null;
     if (post.title) title = post.title;
-    if (post.body) body = post.body;
+    if (post.description) description = post.description;
+    if (post.image) image = post.image;
     return (
       <View style={styles.container}>
+        {image ? <Image source={{uri: image}} style={styles.postImage} /> : null}
         {title ? <Text style={styles.font20}>{title}</Text> : null }
-        <Text>{body}</Text>
+        <Text style={styles.center}>{description}</Text>
       </View>
     );
   }
@@ -61,7 +64,10 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(SinglePost)
 
 const localStyles = StyleSheet.create({
-
+postImage: {
+  height: 50,
+  width: 50
+}
 });
 
 var styles = {...localStyles, ...globalStyles}
