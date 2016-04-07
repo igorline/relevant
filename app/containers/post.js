@@ -14,13 +14,14 @@ import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
 import * as postActions from '../actions/postActions';
 require('../publicenv');
-import { globalStyles } from '../styles/global';
+import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class Post extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      postText: null
+      postText: null,
+      postTitle: null
     }
   }
 
@@ -35,14 +36,15 @@ class Post extends Component {
     }
 
     function post() {
-      self.props.actions.submitPost(user._id, self.state.postText);
-      self.setState({postText: null});
+      self.props.actions.submitPost(user._id, self.state.postText, self.state.postTitle);
+      self.setState({postText: null, postTitle: null});
     }
 
     return (
-      <View style={styles.container}>
-       <TextInput style={styles.input} placeholder='Relevant text here...' multiline={true} onChangeText={(postText) => this.setState({postText})} value={this.state.postText} onSubmitEditing={post} returnKeyType='done' />
-      <Button onPress={post}>Submit</Button>
+      <View style={styles.fullContainer}>
+      <TextInput style={[styles.font20, styles.titleInput]} placeholder='Title' multiline={true} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} onSubmitEditing={post} returnKeyType='done' />
+       <TextInput style={[styles.postInput, styles.font20]} placeholder='Relevant text here...' multiline={true} onChangeText={(postText) => this.setState({postText})} value={this.state.postText} onSubmitEditing={post} returnKeyType='done' />
+      <Button style={styles.postSubmit} onPress={post}>Submit</Button>
       </View>
     );
   }
@@ -64,6 +66,25 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Post)
 
 const localStyles = StyleSheet.create({
+  fullContainer: {
+    flex: 1
+  },
+  postSubmit: {
+    padding: 10
+  },
+  postInput: {
+    flex: 1,
+    padding: 10,
+  },
+  titleInput: {
+    padding: 10,
+    flex: 0.075,
+    borderWidth: 0.5,
+    borderBottomColor: '#C7C7C7',
+    borderRightColor: 'transparent',
+    borderLeftColor: 'transparent',
+    borderTopColor: 'transparent',
+  }
 });
 
 var styles = {...localStyles, ...globalStyles};

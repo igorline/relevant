@@ -31,11 +31,14 @@ class SinglePost extends Component {
     var self = this;
     var post = null;
     if (this.props.posts.activePost) post = this.props.posts.activePost;
-
+    var title = null;
+    var body = null;
+    if (post.title) title = post.title;
+    if (post.body) body = post.body;
     return (
       <View style={styles.container}>
-        <Text style={styles.font20}>Reading post {post ? post._id : null}</Text>
-        <Text>{post ? post.body : null}</Text>
+        {title ? <Text style={styles.font20}>{title}</Text> : null }
+        <Text>{body}</Text>
       </View>
     );
   }

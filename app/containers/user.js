@@ -37,7 +37,7 @@ class User extends Component {
 
     return (
       <View style={styles.container}>
-        <Text>{self.props.users.selectedUser.name}</Text>
+        <Text style={styles.font20}>{self.props.users.selectedUser.name}</Text>
       </View>
     );
   }

@@ -36,7 +36,12 @@ class Nav extends Component {
       }
 
     } else if (route == 'SinglePost') {
-      title = self.props.posts.activePost.body;
+      if (self.props.posts.activePost.title) {
+        title = self.props.posts.activePost.title;
+      } else {
+        title = 'Untitled Post';
+      }
+
     } else if (route == 'User') {
       if (self.props.users.selectedUser) {
        title = self.props.users.selectedUser.name;
