@@ -26,16 +26,11 @@ function setUserIndex(userIndex) {
 
 export
 function loginUserSuccess(token) {
-    return dispatch => {
-        AsyncStorage.setItem('token', token)
-            .then(() => {
-                dispatch({
-                    type: types.LOGIN_USER_SUCCESS,
-                    payload: {
-                        token: token
-                    }
-                })
-            })
+    return  {
+        type: types.LOGIN_USER_SUCCESS,
+        payload: {
+            token: token
+        }
     }
 }
 
@@ -124,9 +119,11 @@ function loginJay(user, redirect) {
             .then((response) => response.json())
             .then((responseJSON) => {
                 if (responseJSON.token) {
-                    dispatch(loginUserSuccess(responseJSON.token));
-                    dispatch(getUser(responseJSON.token, true));
-
+                    AsyncStorage.setItem('token', token)
+                    .then( ()  => {
+                        dispatch(loginUserSuccess(responseJSON.token));
+                        dispatch(getUser(responseJSON.token, true));
+                    })
                 } else {
                     dispatch(loginUserFailure(responseJSON.message));
                 }
@@ -194,6 +191,7 @@ function getUser(token, redirect) {
                 })
                     .then((response) => response.json())
                     .then((responseJSON) => {
+                        dispatch(loginUserSuccess(token));
                         dispatch(setUser(responseJSON));
                         if (redirect) dispatch(Actions.Profile);
                     })
