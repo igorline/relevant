@@ -13,6 +13,7 @@ var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
 import * as userActions from '../actions/userActions';
+import { globalStyles } from '../styles/global';
 
 class Discover extends Component {
   componentDidMount() {
@@ -21,7 +22,6 @@ class Discover extends Component {
 
   render() {
     var self = this;
-    // console.log(this, 'discover this')
     var usersEl = null;
 
     function setSelected(id) {
@@ -42,8 +42,8 @@ class Discover extends Component {
 
     return (
       <View style={styles.container}>
-      <Text style={styles.welcome}>Users</Text>
-       {usersEl}
+        <Text style={styles.font20}>Users</Text>
+        {usersEl}
       </View>
     );
   }
@@ -65,11 +65,7 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Discover)
 
-const styles = StyleSheet.create({
-  uploadAvatar: {
-    width: 200,
-    height: 200
-  },
+const localStyles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -79,34 +75,7 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderColor: 'transparent'
   },
-  wrap: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center'
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  input: {
-    borderColor: '#cccccc',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 30,
-    width: 200,
-    alignSelf: 'center',
-    margin: 5
-  },
-  marginTop: {
-    marginTop: 10
-  }
 });
+
+var styles = {...localStyles, ...globalStyles};
 

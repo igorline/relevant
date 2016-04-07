@@ -14,6 +14,7 @@ import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
 import * as postActions from '../actions/postActions';
 require('../publicenv');
+import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class SinglePost extends Component {
   constructor (props, context) {
@@ -30,11 +31,14 @@ class SinglePost extends Component {
     var self = this;
     var post = null;
     if (this.props.posts.activePost) post = this.props.posts.activePost;
-
+    var title = null;
+    var body = null;
+    if (post.title) title = post.title;
+    if (post.body) body = post.body;
     return (
       <View style={styles.container}>
-        <Text style={styles.twenty}>Reading post {post ? post._id : null}</Text>
-        <Text>{post ? post.body : null}</Text>
+        {title ? <Text style={styles.font20}>{title}</Text> : null }
+        <Text>{body}</Text>
       </View>
     );
   }
@@ -56,47 +60,9 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(SinglePost)
 
-const styles = StyleSheet.create({
-  uploadAvatar: {
-    width: 200,
-    height: 200
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderWidth: 20,
-    borderStyle: 'solid',
-    borderColor: 'transparent'
-  },
-  wrap: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  twenty: {
-    fontSize: 20
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  input: {
-    borderColor: '#cccccc',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 30,
-    width: 200,
-    alignSelf: 'center',
-    margin: 5
-  },
-  marginTop: {
-    marginTop: 10
-  }
+const localStyles = StyleSheet.create({
+
 });
+
+var styles = {...localStyles, ...globalStyles}
 

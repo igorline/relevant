@@ -123,7 +123,6 @@ function loginJay(user, redirect) {
         })
             .then((response) => response.json())
             .then((responseJSON) => {
-                //console.log(responseJSON, 'response');
                 if (responseJSON.token) {
                     dispatch(loginUserSuccess(responseJSON.token));
                     dispatch(getUser(responseJSON.token, true));
@@ -132,10 +131,10 @@ function loginJay(user, redirect) {
                     dispatch(loginUserFailure(responseJSON.message));
                 }
             })
-            // .catch((error) => {
-            //     console.log(error, 'error');
-            //     dispatch(loginUserFailure('Server error'));
-            // });
+            .catch((error) => {
+                console.log(error, 'error');
+                dispatch(loginUserFailure('Server error'));
+            });
     }
 }
 
@@ -154,7 +153,6 @@ function createUser(user, redirect) {
         })
             .then((response) => response.json())
             .then((responseJSON) => {
-                //console.log(responseJSON, 'response');
                 if (responseJSON.token) {
                     dispatch(loginUserSuccess(responseJSON.token));
                     dispatch(getUser(responseJSON.token, true));
@@ -217,16 +215,14 @@ function userIndex() {
             return fetch('http://'+process.env.SERVER_IP+':3000/api/user', {
                     credentials: 'include',
                     method: 'GET'
-                    // headers: {'Authorization': `Bearer ${token}`}
                 })
                 .then((response) => response.json())
                 .then((responseJSON) => {
-                    //console.log(responseJSON, 'response');
                     dispatch(setUserIndex(responseJSON));
                 })
-                // .catch((error) => {
-                //     console.log(error, 'error');
-                // });
+                .catch((error) => {
+                    console.log(error, 'error');
+                });
         })
     }
 }
@@ -290,13 +286,12 @@ function changeName(name, user, token) {
           name: name
         })
       })
-      // .then((response) => response.json())
       .then((response) => {
         dispatch(getUser(token, null));
       })
-      // .catch((error) => {
-      //   console.log(error, 'error');
-      // });
+      .catch((error) => {
+        console.log(error, 'error');
+      });
     }
 }
 
@@ -315,12 +310,11 @@ function changeBio(bio, user, token) {
           bio: bio
         })
       })
-      // .then((response) => response.json())
       .then((response) => {
         dispatch(getUser(token, null));
       })
-      // .catch((error) => {
-      //   console.log(error, 'error');
-      // });
+      .catch((error) => {
+        console.log(error, 'error');
+      });
     }
 }
