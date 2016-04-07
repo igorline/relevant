@@ -23,7 +23,7 @@ require('../publicenv');
 import * as utils from '../utils';
 import { pickerOptions } from '../pickerOptions';
 
-class Profile extends Component {
+class ProfileOptions extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -44,14 +44,19 @@ class Profile extends Component {
     if (this.props.auth.user) {
       user = this.props.auth.user;
       if (this.props.auth.user.name) {
-         name  = this.props.auth.user.name;
-       }
+        name = this.props.auth.user.name;
+      }
       if (this.props.auth.user.image) {
         userImage = this.props.auth.user.image;
       }
     }
 
     const { actions } = this.props;
+
+    function logoutRedirect() {
+      logout();
+      self.props.routes.Auth();
+    }
 
     function chooseImage() {
       pickImage(function(err, data){
@@ -135,13 +140,11 @@ class Profile extends Component {
 
     var placeholder = 'enter a short bio';
 
-    // if (user.bio) {
-    //   placeholder = user.bio;
-    // }
-
     var changeNameEl = null;
     var postsEl = null;
 
+const { isAuthenticated} = this.props.auth;
+    if(isAuthenticated){
     if (self.state.editing) {
       changeNameEl = (<View style={styles.pictureWidth}><TextInput style={styles.input} placeholder={user.name} onChangeText={(newName) => this.setState({newName})} value={this.state.newName} onSubmitEditing={changeName} returnKeyType='done' />
       <Button onPress={changeName} style={styles.selfCenter}>Submit</Button></View>);
@@ -149,6 +152,7 @@ class Profile extends Component {
       changeNameEl = (<View style={styles.pictureWidth}><Text style={styles.twenty}>{name}</Text>
       <Button onPress={startEditing}>Edit</Button></View>);
     }
+  }
 
     if (self.props.posts.userPosts) {
       postsEl = self.props.posts.userPosts.map(function(post, i) {
@@ -160,23 +164,14 @@ class Profile extends Component {
     } else {
       postsEl = (<View><Text>0 Posts</Text></View>)
     }
+      const { logout } = this.props.actions;
 
     return (
       <View style={styles.container}>
-        {/*changeNameEl*/}
-        <View style={styles.row}>
-          <View style={styles.insideRow}>{userImageEl}</View>
-          <View style={styles.insideRow}>
-            <Text>blah blah</Text>
-            <Text>Blah ballllshahsahsaks</Text>
-          </View>
-        </View>
-        {/*<Button onPress={chooseImage}>Update profile picture</Button>
-        <Button onPress={self.props.routes.Auth}>Home</Button>*/}
-        <View style={styles.column}>
-          <Text style={styles.twenty}>Posts</Text>
-          {postsEl}
-        </View>
+        {changeNameEl}
+        {userImageEl}
+        <Button onPress={chooseImage}>Update profile picture</Button>
+        <Button onPress={logoutRedirect}>Logout</Button>
       </View>
     );
   }
@@ -196,7 +191,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile)
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileOptions)
 
 const styles = StyleSheet.create({
   uploadAvatar: {
@@ -206,8 +201,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'white',
   },
   row: {
@@ -226,7 +221,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pictureWidth: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
   },

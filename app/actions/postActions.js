@@ -46,7 +46,7 @@ function getUserPosts(userId) {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON, 'userPosts');
+      //console.log(responseJSON, 'userPosts');
       dispatch(setUserPosts(responseJSON));
       // self.setState({userPosts: responseJSON});
     })
