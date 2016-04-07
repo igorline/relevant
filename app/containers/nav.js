@@ -15,6 +15,7 @@ var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
 import * as postActions from '../actions/postActions';
+import { globalStyles } from '../styles/global';
 
 class Nav extends Component {
   componentDidMount() {
@@ -26,7 +27,6 @@ class Nav extends Component {
     var navEl = null;
     var title = '';
     var route = self.props.route.name;
-    // console.log(this, 'nav self')
 
     if (route == 'Profile') {
       if (self.props.auth.user) {
@@ -84,7 +84,7 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Nav)
 
-const styles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   gear: {
     position: 'absolute',
     top: 0,
@@ -97,27 +97,6 @@ const styles = StyleSheet.create({
   gearImg: {
     height: 25,
     width: 25
-  },
-  uploadAvatar: {
-    width: 200,
-    height: 200
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderWidth: 20,
-    borderStyle: 'solid',
-    borderColor: 'transparent'
-  },
-  wrap: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   nav: {
     height: 60,
@@ -133,27 +112,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     textAlign: 'center'
-  },
-  active: {
-    color: 'lightgreen'
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center'
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  input: {
-    borderColor: '#cccccc',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 30,
-    width: 200,
-    alignSelf: 'center',
-    margin: 5
   }
 });
+
+var styles = {...localStyles, ...globalStyles};
 

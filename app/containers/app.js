@@ -13,7 +13,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as authActions from '../actions/authActions';
 var {Router, routerReducer, Route, Container, Animations, Schema} = require('react-native-redux-router');
-var {NavBar, NavBarModal} = require('../components/NavBar');
 var Button = require('react-native-button');
 import Auth from './auth';
 import Import from './import';

@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
+import { globalStyles } from '../styles/global';
 
 class Footer extends Component {
   componentDidMount() {
@@ -23,18 +24,18 @@ class Footer extends Component {
     var authenticated = this.props.auth.isAuthenticated;
     var footerEl = null;
     if (authenticated) {
-      footerEl = ( <View style={styles.nav}>
-        <View style={styles.navItem}>
-          <Button style={currentRoute == 'Read' ? styles.active : styles.navLink} onPress={self.props.routes.Read} >Read</Button>
+      footerEl = ( <View style={styles.footer}>
+        <View style={styles.footerItem}>
+          <Button style={currentRoute == 'Read' ? styles.active : styles.footerLink} onPress={self.props.routes.Read} >Read</Button>
         </View>
-        <View style={styles.navItem}>
-          <Button style={currentRoute == 'Discover' ? styles.active : styles.navLink} onPress={self.props.routes.Discover}>Discover</Button>
+        <View style={styles.footerItem}>
+          <Button style={currentRoute == 'Discover' ? styles.active : styles.footerLink} onPress={self.props.routes.Discover}>Discover</Button>
         </View>
-        <View style={styles.navItem}>
-          <Button style={currentRoute == 'Post' ? styles.active : styles.navLink} onPress={self.props.routes.Post}>Post</Button>
+        <View style={styles.footerItem}>
+          <Button style={currentRoute == 'Post' ? styles.active : styles.footerLink} onPress={self.props.routes.Post}>Post</Button>
         </View>
-        <View style={styles.navItem}>
-          <Button style={currentRoute == 'Profile' ? styles.active : styles.navLink} onPress={self.props.routes.Profile}>Profile</Button>
+        <View style={styles.footerItem}>
+          <Button style={currentRoute == 'Profile' ? styles.active : styles.footerLink} onPress={self.props.routes.Profile}>Profile</Button>
         </View>
       </View>);
     }
@@ -58,65 +59,20 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Footer)
-//export default Nav
 
-const styles = StyleSheet.create({
-  uploadAvatar: {
-    width: 200,
-    height: 200
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderWidth: 20,
-    borderStyle: 'solid',
-    borderColor: 'transparent'
-  },
-  wrap: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  nav: {
+const localStyles = StyleSheet.create({
+  footer: {
     height: 60,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'black'
   },
-  navItem: {
+  footerItem: {
     flex: 1
   },
-  navLink: {
+  footerLink: {
     color: 'white'
   },
-  active: {
-    color: '#007aff'
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center'
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  input: {
-    borderColor: '#cccccc',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 30,
-    width: 200,
-    alignSelf: 'center',
-    margin: 5
-  },
-  marginTop: {
-    marginTop: 10
-  }
 });
 
+var styles = {...localStyles, ...globalStyles};

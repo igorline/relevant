@@ -24,13 +24,13 @@ class SignUp extends Component {
   }
 
   componentDidUpdate() {
-    // console.log(this.props, 'login props')
   }
 
   render() {
     var self = this;
     const { createUser } = this.props.actions;
     var message = self.state.message;
+    var styles = this.props.styles;
     this.props.auth.statusText ? message = this.props.auth.statusText : null;
 
     function checkPass(user) {
@@ -81,34 +81,4 @@ class SignUp extends Component {
 
 
 export default SignUp
-
-const styles = StyleSheet.create({
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center'
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  input: {
-    borderColor: '#cccccc',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 30,
-    width: 250,
-    alignSelf: 'center'
-  },
-  marginTop: {
-    marginTop: 10
-  },
-  margin: {
-    margin: 10
-  }
-});
 
