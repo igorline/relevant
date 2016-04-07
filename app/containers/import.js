@@ -14,6 +14,7 @@ var Button = require('react-native-button');
 import Contact from '../components/contact';
 import * as authActions from '../actions/authActions';
 import { bindActionCreators } from 'redux';
+import { globalStyles } from '../styles/global';
 
 
 class Import extends Component {
@@ -53,7 +54,7 @@ class Import extends Component {
     if (contacts) {
       contactsEl = contacts.map(function(contact, i) {
       return (
-        <Contact key={i} {...contact} userIndex={self.state.userIndex} />
+        <Contact key={i} {...contact} userIndex={self.state.userIndex} styles={styles} />
       );
     });
     }
@@ -63,7 +64,6 @@ class Import extends Component {
       <View>
         {contacts ? null : <Button onPress={getContacts}>Import contacts</Button>}
         {contactsEl}
-        <Button onPress={self.props.routes.Auth}>Home</Button>
         </View>
       </ScrollView>
     );
@@ -71,7 +71,6 @@ class Import extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state, 'state')
   return {
     auth: state.auth,
     router: state.routerReducer
@@ -86,43 +85,8 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Import)
 
-const styles = StyleSheet.create({
-  contentContainer: {
-    paddingVertical: 30,
-    backgroundColor: 'white'
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderWidth: 20,
-    borderStyle: 'solid',
-    borderColor: 'transparent'
-  },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center'
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  input: {
-    borderColor: '#cccccc',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 30,
-    width: 250,
-    alignSelf: 'center'
-  },
-  marginTop: {
-    marginTop: 10
-  }
+const localStyles = StyleSheet.create({
 });
+
+var styles = {...localStyles, ...globalStyles};
 

@@ -64,7 +64,7 @@ function setUserPosts(posts) {
     };
 }
 
-export function submitPost(userId, postText) {
+export function submitPost(userId, postText, postTitle) {
   console.log(userId, postText);
   return function(dispatch) {
     fetch('http://'+process.env.SERVER_IP+':3000/api/post/create', {
@@ -76,7 +76,8 @@ export function submitPost(userId, postText) {
       },
       body: JSON.stringify({
           userId: userId,
-          body: postText
+          body: postText,
+          title: postTitle
       })
     })
     .then((response) => {
@@ -90,6 +91,36 @@ export function submitPost(userId, postText) {
     .catch((error) => {
         console.log(error, 'error');
         dispatch(postError(error));
+    });
+  }
+}
+
+export function sendLink(userId, link) {
+  console.log(userId, postText);
+  return function(dispatch) {
+    fetch('http://'+process.env.SERVER_IP+':3000/api/post/link', {
+        credentials: 'include',
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          userId: userId,
+          link: postText
+      })
+    })
+    .then((response) => {
+      console.log(response, 'link response');
+      // if (response.status == 200) {
+      //   dispatch(Actions.Read);
+      // } else {
+      //   dispatch(postError(response.status));
+      // }
+    })
+    .catch((error) => {
+        console.log(error, 'error');
+        // dispatch(postError(error));
     });
   }
 }

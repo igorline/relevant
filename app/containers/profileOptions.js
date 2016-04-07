@@ -9,8 +9,7 @@ import React, {
   TextInput,
   Dimensions
 } from 'react-native';
-var width = Dimensions.get('window').width; //full width
-var height = Dimensions.get('window').height; //full height
+import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 var FileUpload = require('NativeModules').FileUpload;
 import { connect } from 'react-redux';
@@ -21,7 +20,7 @@ import { bindActionCreators } from 'redux';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
 import * as utils from '../utils';
-import { pickerOptions } from '../pickerOptions';
+import { pickerOptions } from '../utils/pickerOptions';
 
 class ProfileOptions extends Component {
   constructor (props, context) {
@@ -146,10 +145,10 @@ class ProfileOptions extends Component {
 const { isAuthenticated} = this.props.auth;
     if(isAuthenticated){
     if (self.state.editing) {
-      changeNameEl = (<View style={styles.pictureWidth}><TextInput style={styles.input} placeholder={user.name} onChangeText={(newName) => this.setState({newName})} value={this.state.newName} onSubmitEditing={changeName} returnKeyType='done' />
+      changeNameEl = (<View style={styles.center}><TextInput style={styles.input} placeholder={user.name} onChangeText={(newName) => this.setState({newName})} value={this.state.newName} onSubmitEditing={changeName} returnKeyType='done' />
       <Button onPress={changeName} style={styles.selfCenter}>Submit</Button></View>);
     } else {
-      changeNameEl = (<View style={styles.pictureWidth}><Text style={styles.twenty}>{name}</Text>
+      changeNameEl = (<View style={styles.center}><Text style={styles.font20}>{name}</Text>
       <Button onPress={startEditing}>Edit</Button></View>);
     }
   }
@@ -171,6 +170,7 @@ const { isAuthenticated} = this.props.auth;
         {changeNameEl}
         {userImageEl}
         <Button onPress={chooseImage}>Update profile picture</Button>
+        <Button onPress={self.props.routes.Import}>Find users from contacts</Button>
         <Button onPress={logoutRedirect}>Logout</Button>
       </View>
     );
@@ -193,66 +193,9 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileOptions)
 
-const styles = StyleSheet.create({
-  uploadAvatar: {
-    height: 150,
-    width: 150,
-    resizeMode: 'cover'
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
-  row: {
-    flexDirection: 'row',
-    width: width,
-    padding: 20
-  },
-  column: {
-    flexDirection: 'column',
-    width: width,
-    paddingRight: 20,
-    paddingLeft: 20,
-    paddingBottom: 20,
-  },
-  insideRow: {
-    flex: 1,
-  },
-  pictureWidth: {
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  twenty: {
-    fontSize: 20
-  },
-  wrap: {
-    flexDirection: 'row',
-    flexWrap: 'nowrap'
-  },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center'
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  input: {
-    borderColor: '#cccccc',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 30,
-    width: 200
-  },
-  marginTop: {
-    marginTop: 10
-  }
+const localStyles = StyleSheet.create({
+
 });
+
+var styles = {...localStyles, ...globalStyles};
 

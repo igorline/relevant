@@ -16,6 +16,7 @@ import SignUp from '../components/signup';
 import * as authActions from '../actions/authActions';
 import * as postActions from '../actions/postActions';
 import { bindActionCreators } from 'redux';
+import { globalStyles } from '../styles/global';
 
 class Auth extends Component {
   componentDidMount() {
@@ -46,18 +47,14 @@ class Auth extends Component {
     if(isAuthenticated){
       auth = (
         <View style={styles.center}>
-          <Text style={styles.welcome}>{user ? user.name : null}</Text>
-          {/*{userImage ? <Image source={{uri: userImage}} style={styles.uploadAvatar} /> : null}
-          <Button onPress={self.props.routes.Profile}>Update profile</Button>
-          <Button onPress={self.props.routes.Import}>Import page</Button>
-          <Button onPress={logout}>Logout</Button>*/}
+          <Text style={styles.font20}>{user ? user.name : null}</Text>
         </View>
       );
     }
     else if (currentRoute == 'LogIn') {
       auth = (
         <View style={styles.center}>
-          <Login { ...this.props }/>
+          <Login { ...this.props } styles={styles} />
         </View>
       );
       links = (
@@ -68,7 +65,7 @@ class Auth extends Component {
       tagline = 'Stay Relevant \n Log in'
     } else if (currentRoute == 'SignUp') {
       auth = (<View style={styles.center}>
-        <SignUp {...this.props} />
+        <SignUp {...this.props} styles={styles} />
       </View>);
       tagline = 'Get Relevant \n Sign up';
       links = (
@@ -88,10 +85,10 @@ class Auth extends Component {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
+        <Text style={[styles.center, styles.font20]}>
           {tagline}
         </Text>
-        <Text style={styles.instructions}>
+        <Text>
           {message}
         </Text>
 
@@ -103,47 +100,11 @@ class Auth extends Component {
     );
   }
 }
-//export default Auth
 
-const styles = StyleSheet.create({
-  uploadAvatar: {
-    width: 200,
-    height: 200
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderWidth: 20,
-    borderStyle: 'solid',
-    borderColor: 'transparent'
-  },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center'
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  input: {
-    borderColor: '#cccccc',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 30,
-    width: 250,
-    alignSelf: 'center'
-  },
-  marginTop: {
-    marginTop: 10
-  }
+const localStyles = StyleSheet.create({
 });
+
+var styles = {...localStyles, ...globalStyles};
 
 function mapStateToProps(state) {
   return {
