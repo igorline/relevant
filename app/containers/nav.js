@@ -83,7 +83,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Nav)
-//export default Nav
 
 const styles = StyleSheet.create({
   gear: {
@@ -155,9 +154,6 @@ const styles = StyleSheet.create({
     width: 200,
     alignSelf: 'center',
     margin: 5
-  },
-  marginTop: {
-    marginTop: 10
   }
 });
 

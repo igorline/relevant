@@ -14,6 +14,7 @@ var Button = require('react-native-button');
 import Login from '../components/login';
 import SignUp from '../components/signup';
 import * as authActions from '../actions/authActions';
+import * as postActions from '../actions/postActions';
 import { bindActionCreators } from 'redux';
 
 class Auth extends Component {
@@ -146,13 +147,15 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
   return {
     auth: state.auth,
+    posts: state.posts,
+    users: state.user,
     router: state.routerReducer
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(authActions, dispatch)
+    actions: bindActionCreators({...authActions, ...postActions }, dispatch)
   }
 }
 
