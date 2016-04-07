@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 var Contacts = require('react-native-contacts');
 require('../publicenv');
 var CookieManager = require('react-native-cookies');
+import {AsyncStorage} from 'react-native';
 var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
 
 export
@@ -25,23 +26,32 @@ function setUserIndex(userIndex) {
 
 export
 function loginUserSuccess(token) {
-
-    return {
-        type: types.LOGIN_USER_SUCCESS,
-        payload: {
-            token: token
-        }
-    };
+    return dispatch => {
+        AsyncStorage.setItem('token', token)
+            .then(() => {
+                dispatch({
+                    type: types.LOGIN_USER_SUCCESS,
+                    payload: {
+                        token: token
+                    }
+                })
+            })
+    }
 }
 
 export
 function loginUserFailure(error) {
-    return {
-        type: types.LOGIN_USER_FAILURE,
-        payload: {
-            status: '',
-            statusText: error
-        }
+    return dispatch => {
+        AsyncStorage.removeItem('token')
+            .then(() => {
+                dispatch({
+                    type: types.LOGIN_USER_FAILURE,
+                    payload: {
+                        status: '',
+                        statusText: error
+                    }
+                })
+            })
     };
 }
 
@@ -54,6 +64,7 @@ function loginUserRequest() {
 
 export
 function logout() {
+    AsyncStorage.removeItem('token')
     return {
         type: types.LOGOUT_USER
     }
@@ -69,7 +80,7 @@ function logoutAndRedirect() {
 
 export
 function loginUser(user, redirect) {
-    return function(dispatch) {
+    return dispatch => {
         dispatch(loginUserRequest());
         fetch('http://'+process.env.SERVER_IP+':3000/auth/local', {
             credentials: 'include',
@@ -90,7 +101,7 @@ function loginUser(user, redirect) {
                     dispatch(loginUserFailure(responseJSON.message));
                 }
             })
-            .catch((error) => {
+            .catch(error => {
                 console.log(error, 'error');
                 dispatch(loginUserFailure('Server error'));
             });
@@ -149,7 +160,7 @@ function createUser(user, redirect) {
                     dispatch(loginUserFailure(responseJSON.message));
                 }
             })
-            .catch((error) => {
+            .catch(error => {
                 console.log(error, 'error');
                 dispatch(loginUserFailure('Server error'));
             });
@@ -159,26 +170,38 @@ function createUser(user, redirect) {
 export
 function getUser(token, redirect) {
     return dispatch => {
-        console.log('get user')
         new Promise(function(resolve, reject) {
-            if (!token) return dispatch(setUser());
 
-            return fetch('http://'+process.env.SERVER_IP+':3000/api/user/me', {
+            if(!token){
+                AsyncStorage.getItem('token')
+                    .then(token => {
+                        console.log("GOT TOKEN", token)
+                        return fetchUser(token);
+                    })
+                    .catch(err => {
+                        if(err) return dispatch(setUser());
+                    })
+            }
+            else fetchUser(token);
+
+            fetchUser = (token) => {
+                return fetch('http://'+process.env.SERVER_IP+':3000/api/user/me', {
                     credentials: 'include',
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 })
-                .then((response) => response.json())
-                .then((responseJSON) => {
-                    dispatch(setUser(responseJSON));
-                    if (redirect) dispatch(Actions.Profile);
-
-                })
-                .catch((error) => {
-                    console.log(error, 'error');
-                });
+                    .then((response) => response.json())
+                    .then((responseJSON) => {
+                        dispatch(setUser(responseJSON));
+                        if (redirect) dispatch(Actions.Profile);
+                    })
+                    .catch(error => {
+                        console.log(error, 'error');
+                        dispatch(loginUserFailure('Server error'));
+                    });
+            }
         })
     }
 }
