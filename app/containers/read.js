@@ -36,7 +36,7 @@ class Read extends Component {
       posts = self.props.posts.index;
       postsEl = posts.map(function(post, i) {
         return (
-           <Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.body}</Text>
+           <Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.title}</Text>
         );
       });
     }

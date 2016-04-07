@@ -37,27 +37,16 @@ class Post extends Component {
     }
 
     function post() {
-      self.props.actions.submitPost(user._id, self.state.postText, self.state.postTitle);
-      // fetch(self.state.postText, {
-      //       method: 'GET',
-      //   })
-      //       // .then((response) => response.json())
-      //       .then((response) => {
-      //         console.log(response, 'response to post');
-      //         xml.queryHtml(response._bodyText,
-      //        results => console.log(results[0]))
-      //       })
-      //       .catch((error) => {
-      //           console.log(error, 'error');
-      //       });
-      // self.pro
+      //self.props.actions.submitPost(user._id, self.state.postText, self.state.postTitle);
+
+      self.props.actions.sendLink(user._id, self.state.postText);
       self.setState({postText: null, postTitle: null});
     }
 
     return (
       <View style={styles.fullContainer}>
-      <TextInput style={[styles.font20, styles.titleInput]} placeholder='Title' multiline={true} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} onSubmitEditing={post} returnKeyType='done' />
-       <TextInput style={[styles.postInput, styles.font20]} placeholder='Relevant text here...' multiline={true} onChangeText={(postText) => this.setState({postText})} value={this.state.postText} onSubmitEditing={post} returnKeyType='done' />
+      {/*<TextInput style={[styles.font20, styles.titleInput]} placeholder='Title' multiline={true} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} onSubmitEditing={post} returnKeyType='done' />*/}
+       <TextInput style={[styles.postInput, styles.font20]} placeholder='Enter URL here...' multiline={true} onChangeText={(postText) => this.setState({postText})} value={this.state.postText} onSubmitEditing={post} returnKeyType='done' />
       <Button style={styles.postSubmit} onPress={post}>Submit</Button>
       </View>
     );

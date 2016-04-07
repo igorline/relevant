@@ -96,7 +96,6 @@ export function submitPost(userId, postText, postTitle) {
 }
 
 export function sendLink(userId, link) {
-  console.log(userId, postText);
   return function(dispatch) {
     fetch('http://'+process.env.SERVER_IP+':3000/api/post/link', {
         credentials: 'include',
@@ -107,20 +106,16 @@ export function sendLink(userId, link) {
       },
       body: JSON.stringify({
           userId: userId,
-          link: postText
+          link: link
       })
     })
-    .then((response) => {
-      console.log(response, 'link response');
-      // if (response.status == 200) {
-      //   dispatch(Actions.Read);
-      // } else {
-      //   dispatch(postError(response.status));
-      // }
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      console.log(responseJSON, 'link responseJSON');
+       dispatch(Actions.Read);
     })
     .catch((error) => {
         console.log(error, 'error');
-        // dispatch(postError(error));
     });
   }
 }
