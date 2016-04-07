@@ -64,7 +64,7 @@ function setUserPosts(posts) {
     };
 }
 
-export function submitPost(userId, postText) {
+export function submitPost(userId, postText, postTitle) {
   console.log(userId, postText);
   return function(dispatch) {
     fetch('http://'+process.env.SERVER_IP+':3000/api/post/create', {
@@ -76,7 +76,8 @@ export function submitPost(userId, postText) {
       },
       body: JSON.stringify({
           userId: userId,
-          body: postText
+          body: postText,
+          title: postTitle
       })
     })
     .then((response) => {
