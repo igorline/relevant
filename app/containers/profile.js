@@ -9,8 +9,6 @@ import React, {
   TextInput,
   Dimensions
 } from 'react-native';
-var width = Dimensions.get('window').width; //full width
-var height = Dimensions.get('window').height; //full height
 
 var FileUpload = require('NativeModules').FileUpload;
 import { connect } from 'react-redux';
@@ -21,7 +19,8 @@ import { bindActionCreators } from 'redux';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
 import * as utils from '../utils';
-import { pickerOptions } from '../pickerOptions';
+import { pickerOptions } from '../utils/pickerOptions';
+import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class Profile extends Component {
   constructor (props, context) {
@@ -162,8 +161,7 @@ class Profile extends Component {
     }
 
     return (
-      <View style={styles.container}>
-        {/*changeNameEl*/}
+      <View style={styles.profileContainer}>
         <View style={styles.row}>
           <View style={styles.insideRow}>{userImageEl}</View>
           <View style={styles.insideRow}>
@@ -171,10 +169,8 @@ class Profile extends Component {
             <Text>Blah ballllshahsahsaks</Text>
           </View>
         </View>
-        {/*<Button onPress={chooseImage}>Update profile picture</Button>
-        <Button onPress={self.props.routes.Auth}>Home</Button>*/}
         <View style={styles.column}>
-          <Text style={styles.twenty}>Posts</Text>
+          <Text style={styles.font20}>Posts</Text>
           {postsEl}
         </View>
       </View>
@@ -198,13 +194,13 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)
 
-const styles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   uploadAvatar: {
     height: 150,
     width: 150,
     resizeMode: 'cover'
   },
-  container: {
+  profileContainer: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
@@ -212,12 +208,12 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    width: width,
+    width: fullWidth,
     padding: 20
   },
   column: {
     flexDirection: 'column',
-    width: width,
+    width: fullWidth,
     paddingRight: 20,
     paddingLeft: 20,
     paddingBottom: 20,
@@ -230,35 +226,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  twenty: {
-    fontSize: 20
-  },
   wrap: {
     flexDirection: 'row',
     flexWrap: 'nowrap'
   },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center'
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  input: {
-    borderColor: '#cccccc',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 30,
-    width: 200
-  },
-  marginTop: {
-    marginTop: 10
-  }
 });
+
+var styles = {...localStyles, ...globalStyles};
 

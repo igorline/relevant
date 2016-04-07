@@ -28,6 +28,7 @@ class Login extends Component {
     var self = this;
     const { loginUser } = this.props.actions;
     var message = '';
+    var styles = this.props.styles;
     this.props.auth.statusText ? message = this.props.auth.statusText : null;
 
     return (
@@ -53,33 +54,33 @@ class Login extends Component {
 
 export default Login
 
-const styles = StyleSheet.create({
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center'
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  input: {
-    borderColor: '#cccccc',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 30,
-    width: 250,
-    alignSelf: 'center'
-  },
-  marginTop: {
-    marginTop: 10
-  },
-    margin: {
-    margin: 10
-  }
-});
+// const styles = StyleSheet.create({
+//   center: {
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   welcome: {
+//     fontSize: 20,
+//     textAlign: 'center'
+//   },
+//   instructions: {
+//     textAlign: 'center',
+//     color: '#333333',
+//     marginBottom: 5,
+//   },
+//   input: {
+//     borderColor: '#cccccc',
+//     borderStyle: 'solid',
+//     borderWidth: 1,
+//     height: 30,
+//     width: 250,
+//     alignSelf: 'center'
+//   },
+//   marginTop: {
+//     marginTop: 10
+//   },
+//     margin: {
+//     margin: 10
+//   }
+// });
 

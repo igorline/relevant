@@ -14,6 +14,7 @@ import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
 import * as postActions from '../actions/postActions';
 require('../publicenv');
+import { globalStyles } from '../styles/global';
 
 class Post extends Component {
   constructor (props, context) {
@@ -62,24 +63,7 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Post)
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    paddingBottom: 10
-  },
-  input: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    fontSize: 20,
-    left: 0,
-    bottom: 20,
-    padding: 10,
-    flex: 1,
-    alignSelf: 'center',
-  }
+const localStyles = StyleSheet.create({
 });
 
+var styles = {...localStyles, ...globalStyles};

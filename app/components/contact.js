@@ -16,6 +16,7 @@ class Contact extends Component {
     var contactNumbersList = [];
     var userIndex = [];
     var matchUser = null;
+    var styles = this.props.styles;
 
     if (this.props) {
       if (this.props.userIndex) userIndex = this.props.userIndex;
@@ -55,37 +56,4 @@ class Contact extends Component {
 
 export default Contact
 
-const styles = StyleSheet.create({
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  green: {
-    color: 'green',
-    fontSize: 25
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center'
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  input: {
-    borderColor: '#cccccc',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 30,
-    width: 250,
-    alignSelf: 'center'
-  },
-  marginTop: {
-    marginTop: 10
-  },
-    margin: {
-    margin: 10
-  }
-});
 

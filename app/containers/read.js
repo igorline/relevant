@@ -14,6 +14,7 @@ import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
 import * as postActions from '../actions/postActions';
 require('../publicenv');
+import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class Read extends Component {
   constructor (props, context) {
@@ -42,7 +43,7 @@ class Read extends Component {
 
     return (
       <View style={styles.container}>
-       <Text style={styles.welcome}>Read</Text>
+       <Text style={styles.font20}>Read</Text>
        {postsEl}
       </View>
     );
@@ -65,48 +66,8 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Read)
 
-const styles = StyleSheet.create({
-  uploadAvatar: {
-    width: 200,
-    height: 200
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderWidth: 20,
-    borderStyle: 'solid',
-    borderColor: 'transparent'
-  },
-  wrap: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center'
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  input: {
-    borderColor: '#cccccc',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 30,
-    width: 200,
-    alignSelf: 'center',
-    margin: 5
-  },
-  marginTop: {
-    marginTop: 10
-  }
+const localStyles = StyleSheet.create({
 });
+
+var styles = {...localStyles, ...globalStyles};
 
