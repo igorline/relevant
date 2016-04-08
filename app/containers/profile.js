@@ -32,7 +32,8 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.posts.index) this.props.actions.getUserPosts(this.props.auth.user._id);
+    console.log(this, 'profile this')
+   if (!this.props.posts.index) this.props.actions.getUserPosts(this.props.auth.user._id);
   }
 
   render() {

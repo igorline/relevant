@@ -10,6 +10,7 @@ var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = req
 
 export
 function setUser(user) {
+    console.log('set user', user)
     return {
         type: types.SET_USER,
         payload: user
@@ -122,10 +123,10 @@ function loginJay(user, redirect) {
             .then((responseJSON) => {
                 if (responseJSON.token) {
                     AsyncStorage.setItem('token', responseJSON.token)
-                    .then( ()  => {
+                    // .then( ()  => {
                         dispatch(loginUserSuccess(responseJSON.token));
                         dispatch(getUser(responseJSON.token, true));
-                    })
+                    // })
                 } else {
                     dispatch(loginUserFailure(responseJSON.message));
                 }
@@ -169,40 +170,38 @@ function createUser(user, redirect) {
 export
 function getUser(token, redirect) {
     return dispatch => {
-        new Promise(function(resolve, reject) {
-
-            if(!token){
-                AsyncStorage.getItem('token')
-                    .then(token => {
-                        console.log("GOT TOKEN", token)
-                        return fetchUser(token);
-                    })
-                    .catch(err => {
-                        if(err) return dispatch(setUser());
-                    })
-            }
-            else fetchUser(token);
-
-            fetchUser = (token) => {
-                return fetch('http://'+process.env.SERVER_IP+':3000/api/user/me', {
-                    credentials: 'include',
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+        if(!token){
+            console.log('no token')
+            AsyncStorage.getItem('token')
+                .then(token => {
+                    console.log("GOT TOKEN", token)
+                    return fetchUser(token);
                 })
-                    .then((response) => response.json())
-                    .then((responseJSON) => {
-                        dispatch(loginUserSuccess(token));
-                        dispatch(setUser(responseJSON));
-                        if (redirect) dispatch(Actions.Profile);
-                    })
-                    .catch(error => {
-                        console.log(error, 'error');
-                        dispatch(loginUserFailure('Server error'));
-                    });
-            }
-        })
+                .catch(err => {
+                    if(err) return dispatch(setUser());
+                })
+        } else fetchUser(token);
+
+        function fetchUser(token) {
+            fetch('http://'+process.env.SERVER_IP+':3000/api/user/me', {
+                credentials: 'include',
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then((response) => response.json())
+            .then((responseJSON) => {
+                console.log('fetchuser response', responseJSON)
+                dispatch(loginUserSuccess(token));
+                dispatch(setUser(responseJSON));
+                if (redirect) dispatch(Actions.Profile);
+            })
+            .catch(error => {
+                console.log(error, 'error');
+                dispatch(loginUserFailure('Server error'));
+            });
+        }
     }
 }
 

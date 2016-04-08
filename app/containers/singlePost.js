@@ -40,7 +40,7 @@ class SinglePost extends Component {
     return (
       <View style={styles.container}>
         {image ? <Image source={{uri: image}} style={styles.postImage} /> : null}
-        {title ? <Text style={styles.font20}>{title}</Text> : null }
+        {title ? <Text style={[styles.font20, styles.textCenter]}>{title}</Text> : null }
         <Text style={styles.center}>{description}</Text>
       </View>
     );

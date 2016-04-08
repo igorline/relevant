@@ -15,7 +15,7 @@ import * as authActions from '../actions/authActions';
 import * as postActions from '../actions/postActions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-let xml = require('react-native').NativeModules.RNMXml;
+var cheerio = require('cheerio-without-node-native');
 
 class Post extends Component {
   constructor (props, context) {
@@ -37,9 +37,74 @@ class Post extends Component {
     }
 
     function post() {
-      //self.props.actions.submitPost(user._id, self.state.postText, self.state.postTitle);
+      var link = self.state.postText;
+      fetch(link, {
+          method: 'GET',
+      })
+      .then((response) => {
+        // console.log(response, 'link response');
+        // console.log(response._bodyText, '_bodyText');
 
-      self.props.actions.sendLink(user._id, self.state.postText);
+      var $ = cheerio.load(response._bodyText);
+      var data = {
+        'og:type':null,
+        'og:title':null,
+        'og:description':null,
+        'og:image':null,
+        'twitter:title':null,
+        'twitter:image':null,
+        'twitter:description':null,
+        'twitter:site':null,
+        'twitter:creator':null,
+      }
+      var meta = $('meta');
+      var keys = Object.keys(meta);
+      for (var s in data) {
+        keys.forEach(function(key) {
+          if ( meta[key].attribs
+            && meta[key].attribs.property
+            && meta[key].attribs.property === s) {
+              data[s] = meta[key].attribs.content;
+          }
+        })
+      }
+      var description = null;
+      var title = null;
+      var image = null;
+
+      if (data['og:title']) {
+        title = data['og:title'];
+      } else if (data['twitter:title']) {
+        title = data['twitter:title'];
+      }
+
+      if (data['og:description']) {
+        description = data['og:description'];
+      } else if (data['twitter:description']) {
+        description = data['twitter:description'];
+      }
+
+      if (data['og:image']) {
+        image = data['og:image'];
+      } else if (data['twitter:image']) {
+        image = data['twitter:image'];
+      }
+
+      var postBody = {
+        link: link,
+        userId: user._id,
+        title: title,
+        description: description,
+        image: image
+      };
+
+      console.log(postBody, 'postBody');
+      self.props.actions.submitPost(postBody);
+
+      })
+      .catch((error) => {
+          console.log(error, 'error');
+      });
       self.setState({postText: null, postTitle: null});
     }
 

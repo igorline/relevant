@@ -20,8 +20,8 @@ import { globalStyles } from '../styles/global';
 
 class Auth extends Component {
   componentDidMount() {
-    // this.props.actions.loginJay();
-    this.props.actions.getUser();
+    this.props.actions.loginJay();
+    //this.props.actions.getUser();
   }
 
   render() {
@@ -91,11 +91,8 @@ class Auth extends Component {
         <Text>
           {message}
         </Text>
-
         {auth}
-
         {links}
-        {currentRoute != 'Auth' ?  <Button onPress={self.props.routes.Auth}>Home</Button> : null}
       </View>
     );
   }
