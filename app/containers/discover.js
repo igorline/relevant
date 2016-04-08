@@ -23,10 +23,14 @@ class Discover extends Component {
   render() {
     var self = this;
     var usersEl = null;
-    console.log(this, 'discover this')
+    //console.log(this, 'discover this')
 
     function setSelected(id) {
-      self.props.actions.getSelectedUser(id, self.props.auth.token);
+      if (id == self.props.auth.user._id) {
+        self.props.routes.Profile();
+      } else {
+        self.props.actions.getSelectedUser(id, self.props.auth.token);
+      }
     }
 
     var userIndex = null;
