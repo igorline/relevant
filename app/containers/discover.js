@@ -23,6 +23,7 @@ class Discover extends Component {
   render() {
     var self = this;
     var usersEl = null;
+    console.log(this, 'discover this')
 
     function setSelected(id) {
       self.props.actions.getSelectedUser(id, self.props.auth.token);
@@ -66,15 +67,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Discover)
 
 const localStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderWidth: 20,
-    borderStyle: 'solid',
-    borderColor: 'transparent'
-  },
+
 });
 
 var styles = {...localStyles, ...globalStyles};

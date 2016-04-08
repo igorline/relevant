@@ -36,13 +36,13 @@ class Read extends Component {
       posts = self.props.posts.index;
       postsEl = posts.map(function(post, i) {
         return (
-           <Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.title}</Text>
+           <Text style={styles.textCenter} onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.title}</Text>
         );
       });
     }
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, styles.textCenter]}>
        <Text style={styles.font20}>Read</Text>
        {postsEl}
       </View>

@@ -64,8 +64,7 @@ function setUserPosts(posts) {
     };
 }
 
-export function submitPost(userId, postText, postTitle) {
-  console.log(userId, postText);
+export function submitPost(post) {
   return function(dispatch) {
     fetch('http://'+process.env.SERVER_IP+':3000/api/post/create', {
         credentials: 'include',
@@ -74,11 +73,7 @@ export function submitPost(userId, postText, postTitle) {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-          userId: userId,
-          body: postText,
-          title: postTitle
-      })
+      body: JSON.stringify(post)
     })
     .then((response) => {
       console.log(response, 'submitPost response');
