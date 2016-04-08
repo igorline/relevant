@@ -41,6 +41,7 @@ class Profile extends Component {
     var user = null;
     var userImage = null;
     var name = null;
+    var relevance = null;
     if (this.props.auth.user) {
       user = this.props.auth.user;
       if (this.props.auth.user.name) {
@@ -48,6 +49,11 @@ class Profile extends Component {
        }
       if (this.props.auth.user.image) {
         userImage = this.props.auth.user.image;
+      }
+      if (this.props.auth.user.relevance) {
+        relevance = this.props.auth.user.relevance;
+      } else {
+        relevance = 0;
       }
     }
 
@@ -166,7 +172,7 @@ class Profile extends Component {
         <View style={styles.row}>
           <View>{userImageEl}</View>
           <View style={[styles.insideRow, styles.insidePadding]}>
-            <Text>Relevance: <Text style={styles.active}>999999999999</Text></Text>
+            <Text>Relevance: <Text style={styles.active}>{relevance}</Text></Text>
             <Text>more info more info</Text>
           </View>
         </View>

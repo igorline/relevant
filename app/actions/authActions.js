@@ -117,7 +117,7 @@ function loginJay(user, redirect) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({email: 'testcase@gmail.com', password: 'testpass'})
+            body: JSON.stringify({email: 'jaygoss@gmail.com', password: 'test'})
         })
             .then((response) => response.json())
             .then((responseJSON) => {

@@ -15,7 +15,7 @@ var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/authActions';
 import * as postActions from '../actions/postActions';
-import { globalStyles } from '../styles/global';
+import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class Nav extends Component {
   componentDidMount() {
@@ -55,8 +55,8 @@ class Nav extends Component {
     if (authenticated) {
       StatusBarIOS.setStyle('light-content');
       navEl = (<View style={styles.nav}>
-        <View style={styles.navItem}>
-          <Text style={styles.navLink}>{title}</Text>
+        <View style={[styles.navItem]}>
+          <Text style={[styles.navLink, styles.maxWidth]} numberOfLines={1}>{title}</Text>
         </View>
          {route == 'Profile' ? <View style={styles.gear}><TouchableHighlight onPress={self.props.routes.ProfileOptions} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View> : null}
       </View>);
@@ -111,12 +111,18 @@ const localStyles = StyleSheet.create({
     backgroundColor: 'black'
   },
   navItem: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexWrap: 'nowrap'
   },
   navLink: {
     color: 'white',
     fontSize: 20,
-    textAlign: 'center'
+    textAlign: 'center',
+  },
+  maxWidth: {
+    width: fullWidth/1.25,
   }
 });
 
