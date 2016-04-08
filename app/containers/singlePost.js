@@ -6,7 +6,8 @@ import React, {
   Text,
   View,
   Image,
-  TextInput
+  TextInput,
+  Link
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -34,6 +35,8 @@ class SinglePost extends Component {
     var title = null;
     var description = null;
     var image = null;
+    var link = null;
+    if (post.link) link = post.link;
     if (post.title) title = post.title;
     if (post.description) description = post.description;
     if (post.image) image = post.image;
@@ -41,7 +44,8 @@ class SinglePost extends Component {
       <View style={styles.container}>
         {image ? <Image source={{uri: image}} style={styles.postImage} /> : null}
         {title ? <Text style={[styles.font20, styles.textCenter]}>{title}</Text> : null }
-        <Text style={styles.center}>{description}</Text>
+        {description ? <Text style={styles.center}>{description}</Text> : null}
+        <Text style={styles.center}>{link}</Text>
       </View>
     );
   }
@@ -65,8 +69,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(SinglePost)
 
 const localStyles = StyleSheet.create({
 postImage: {
-  height: 50,
-  width: 50
+  height: 200,
+  width: 200
 }
 });
 
