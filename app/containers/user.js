@@ -8,25 +8,14 @@ import React, {
     Image,
     TextInput,
     Dimensions
-}
-from 'react-native';
-import {
-    globalStyles, fullWidth, fullHeight
-}
-from '../styles/global';
-
+} from 'react-native';
+import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var FileUpload = require('NativeModules').FileUpload;
-import {
-    connect
-}
-from 'react-redux';
+import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import * as authActions from '../actions/authActions';
 import * as postActions from '../actions/postActions';
-import {
-    bindActionCreators
-}
-from 'redux';
+import { bindActionCreators } from 'redux';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
 import * as utils from '../utils';

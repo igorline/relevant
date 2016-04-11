@@ -2,8 +2,7 @@ import * as types from './actionTypes';
 require('../publicenv');
 var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
 
-export
-function getPosts() {
+export function getPosts() {
   return function(dispatch) {
     fetch('http://'+process.env.SERVER_IP+':3000/api/post/', {
         credentials: 'include',
@@ -24,16 +23,42 @@ function getPosts() {
   }
 }
 
-export
-function setPosts(posts) {
+export function getRecent() {
+  return function(dispatch) {
+    fetch('http://'+process.env.SERVER_IP+':3000/api/post/recent', {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+        console.log(responseJSON, 'recent response');
+        dispatch(setRecentPosts(responseJSON));
+    })
+    .catch((error) => {
+        console.log(error, 'error');
+    });
+  }
+}
+
+export function setPosts(posts) {
     return {
         type: types.SET_POSTS,
         payload: posts
     };
 }
 
-export
-function getUserPosts(userId) {
+export function setRecentPosts(posts) {
+    return {
+        type: types.SET_RECENT_POSTS,
+        payload: posts
+    };
+}
+
+export function getUserPosts(userId) {
   return function(dispatch) {
     fetch('http://'+process.env.SERVER_IP+':3000/api/post/', {
       credentials: 'include',
@@ -56,8 +81,7 @@ function getUserPosts(userId) {
   }
 }
 
-export
-function setUserPosts(posts) {
+export function setUserPosts(posts) {
     return {
         type: types.SET_USER_POSTS,
         payload: posts

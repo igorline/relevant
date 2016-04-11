@@ -27,6 +27,28 @@ function getSelectedUser(userId, token) {
 }
 
 export
+function getPostUser(userId, token) {
+  return function(dispatch) {
+    return fetch('http://'+process.env.SERVER_IP+':3000/api/user/'+userId+'?access_token='+token, {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+        console.log(responseJSON, 'postUser');
+        return responseJSON;
+    })
+    .catch((error) => {
+        console.log(error, 'error');
+    });
+  }
+}
+
+export
 function setSelectedUser(user) {
     return {
         type: types.SET_SELECTED_USER,
