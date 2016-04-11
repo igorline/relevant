@@ -32,8 +32,7 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-    //console.log(this, 'profile this')
-   if (!this.props.posts.index) this.props.actions.getUserPosts(this.props.auth.user._id);
+   this.props.actions.getUserPosts(this.props.auth.user._id);
   }
 
   render() {
@@ -44,12 +43,8 @@ class Profile extends Component {
     var relevance = null;
     if (this.props.auth.user) {
       user = this.props.auth.user;
-      if (this.props.auth.user.name) {
-         name  = this.props.auth.user.name;
-       }
-      if (this.props.auth.user.image) {
-        userImage = this.props.auth.user.image;
-      }
+      if (user.name) name  = this.props.auth.user.name;
+      if (user.image) userImage = this.props.auth.user.image;
       if (this.props.auth.user.relevance) {
         relevance = this.props.auth.user.relevance;
       } else {
@@ -62,7 +57,7 @@ class Profile extends Component {
     function chooseImage() {
       pickImage(function(err, data){
         if(data){
-          utils.s3.toS3Advanced(data, 'profilepic', user, self.props.auth.token).then(function(results){
+          utils.s3.toS3Advanced(data).then(function(results){
             if (results.success) {
               setPicture(results.url, user, self.props.auth.token);
             } else {
@@ -125,44 +120,12 @@ class Profile extends Component {
       userImageEl = (<Button onPress={chooseImage}>Update profile picture</Button>);
     }
 
-    function changeBio() {
-      actions.changeBio(self.state.newBio, user, self.props.auth.token);
-      self.setState({newBio: ''});
-    }
-
-    function changeName() {
-      actions.changeName(self.state.newName, user, self.props.auth.token);
-      self.setState({newName: '', editing: false});
-    }
-
-    function startEditing() {
-      self.setState({editing: true});
-    }
-
-    var placeholder = 'enter a short bio';
-
-    // if (user.bio) {
-    //   placeholder = user.bio;
-    // }
-
-    var changeNameEl = null;
     var postsEl = null;
-
-    if (self.state.editing) {
-      changeNameEl = (<View style={styles.pictureWidth}><TextInput style={styles.input} placeholder={user.name} onChangeText={(newName) => this.setState({newName})} value={this.state.newName} onSubmitEditing={changeName} returnKeyType='done' />
-      <Button onPress={changeName} style={styles.selfCenter}>Submit</Button></View>);
-    } else {
-      changeNameEl = (<View style={styles.pictureWidth}><Text style={styles.twenty}>{name}</Text>
-      <Button onPress={startEditing}>Edit</Button></View>);
-    }
 
     if (self.props.posts.userPosts) {
       postsEl = self.props.posts.userPosts.map(function(post, i) {
-      return (
-          <Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.title}</Text>
-
-      );
-    });
+        return (<Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.title ? post.title : 'Untitled'}</Text>);
+      });
     } else {
       postsEl = (<View><Text>0 Posts</Text></View>)
     }

@@ -25,7 +25,6 @@ class SinglePost extends Component {
   }
 
   componentDidMount() {
-    // this.props.actions.getPosts();
   }
 
   render() {
@@ -45,7 +44,7 @@ class SinglePost extends Component {
         {image ? <Image source={{uri: image}} style={styles.postImage} /> : null}
         {title ? <Text style={[styles.font20, styles.textCenter]}>{title}</Text> : null }
         {description ? <Text style={styles.center}>{description}</Text> : null}
-        <Text style={styles.center}>{link}</Text>
+        {link ? <Text style={styles.center}>{link}</Text> : null}
       </View>
     );
   }

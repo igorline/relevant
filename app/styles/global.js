@@ -14,6 +14,9 @@ const globalStyles = StyleSheet.create({
   font20: {
     fontSize: 20
   },
+    font40: {
+    fontSize: 40
+  },
   textCenter: {
     textAlign: 'center'
   },
@@ -57,7 +60,10 @@ const globalStyles = StyleSheet.create({
   },
     active: {
     color: '#007aff'
-  }
+  },
+    fullContainer: {
+    flex: 1
+  },
 });
 
 var fullWidth = Dimensions.get('window').width;

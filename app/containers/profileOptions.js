@@ -38,6 +38,7 @@ class ProfileOptions extends Component {
   render() {
     var self = this;
     var user = null;
+    console.log(self, 'profile options')
     var userImage = null;
     var name = null;
     if (this.props.auth.user) {
@@ -60,7 +61,7 @@ class ProfileOptions extends Component {
     function chooseImage() {
       pickImage(function(err, data){
         if(data){
-          utils.s3.toS3Advanced(data, 'profilepic', user, self.props.auth.token).then(function(results){
+          utils.s3.toS3Advanced(data, self.props.auth.token).then(function(results){
             if (results.success) {
               setPicture(results.url, user, self.props.auth.token);
             } else {
@@ -116,7 +117,7 @@ class ProfileOptions extends Component {
 
 
     var userImageEl = null;
-
+    console.log(userImage, 'userImage')
     if (userImage) {
       userImageEl = (<Image source={{uri: userImage}} style={styles.uploadAvatar} />)
     } else {
@@ -194,7 +195,10 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileOptions)
 
 const localStyles = StyleSheet.create({
-
+uploadAvatar: {
+  height: 200,
+  width: 200
+}
 });
 
 var styles = {...localStyles, ...globalStyles};

@@ -1,11 +1,13 @@
 export
-function toS3Advanced(uri, type, user, token) {
-  return executeOnSignedUrl(uri, type, user, token);
+function toS3Advanced(uri) {
+  return executeOnSignedUrl(uri);
 }
 
-function executeOnSignedUrl(uri, type, user, token) {
+function executeOnSignedUrl(uri) {
+  console.log(uri, 'uri');
+  var extension = uri.substr(uri.length - 4);
   var s3_sign_put_url = 'http://localhost:3000/api/s3/sign';
-   var s3_object_name = Math.random().toString(36).substr(2, 9) + "_" + '.jpg';
+  var s3_object_name = Math.random().toString(36).substr(2, 9) + "_" + extension;
 
   return fetch(s3_sign_put_url + '?s3_object_type=' + 'multipart/FormData' + '&s3_object_name=' + s3_object_name, {
       credentials: 'include',
@@ -14,14 +16,14 @@ function executeOnSignedUrl(uri, type, user, token) {
   .then((response) => response.json())
   .then((responseJSON) => {
       console.log(responseJSON, 'execute on signed url response');
-      return uploadToS3(uri, responseJSON.signature.s3Policy, responseJSON.signature.s3Signature, responseJSON.url, responseJSON.publicUrl, type, user, token, s3_object_name);
+      return uploadToS3(uri, responseJSON.signature.s3Policy, responseJSON.signature.s3Signature, responseJSON.url, responseJSON.publicUrl, s3_object_name);
   })
   .catch((error) => {
       console.log(error, 'error');
   });
 };
 
-function uploadToS3(uri, policy, signature, url, publicUrl, type, user, token, s3_object_name) {
+function uploadToS3(uri, policy, signature, url, publicUrl, s3_object_name) {
   var body = new FormData();
   body.append("key", s3_object_name)
   body.append("AWSAccessKeyId", "AKIAIN6YT3LQ4EMODDQA")

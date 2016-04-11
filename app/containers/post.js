@@ -16,6 +16,7 @@ import * as postActions from '../actions/postActions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var cheerio = require('cheerio-without-node-native');
+import * as utils from '../utils';
 
 class Post extends Component {
   constructor (props, context) {
@@ -90,16 +91,36 @@ class Post extends Component {
         image = data['twitter:image'];
       }
 
-      var postBody = {
-        link: link,
-        userId: user._id,
-        title: title,
-        description: description,
-        image: image
-      };
-
+      if (image) {
+        utils.s3.toS3Advanced(image).then(function(results){
+          if (results.success) {
+            var postBody = {
+              link: link,
+              user: user,
+              title: title,
+              userId: user._id,
+              description: description,
+              image: results.url
+            };
+            console.log(postBody, 'postBody altered');
+            self.props.actions.submitPost(postBody);
+          } else {
+            console.log('err');
+          }
+        })
+      } else {
+        var postBody = {
+          link: link,
+          user: user,
+          userId: user._id,
+          title: title,
+          description: description,
+          image: image
+        };
+        self.props.actions.submitPost(postBody);
+      }
       console.log(postBody, 'postBody');
-      self.props.actions.submitPost(postBody);
+
 
       })
       .catch((error) => {
@@ -134,9 +155,6 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Post)
 
 const localStyles = StyleSheet.create({
-  fullContainer: {
-    flex: 1
-  },
   postSubmit: {
     padding: 10
   },
