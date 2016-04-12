@@ -29,7 +29,17 @@ class Post extends Component {
   }
 
   componentDidMount() {
+    console.log("POST", this.props.post)
     // if (this.props.post.userId) this.postUser();
+  }
+
+  invest() {
+    var invest = {
+      postId: this.props.post._id,
+      sign: 1,
+      amount: 1
+    };
+    this.props.actions.invest(this.props.auth.token, invest);
   }
 
   // postUser() {
@@ -53,7 +63,7 @@ class Post extends Component {
     var postUserName = null;
 
     var postStyles = this.props.styles;
-    var styles = {...localStyles, ...postStyles};
+    var styles = {...localStyles, ...postStyles, ...globalStyles};
 
     if (this.props.post) {
       post = this.props.post;
@@ -79,6 +89,16 @@ class Post extends Component {
       imageEl = (<Image source={{uri: image}} style={styles.postImage} />);
     }
 
+    console.log("INVESTORS", post.investors);
+    let investButtonString = "Invest"
+    if( post.investors ){
+      var invested = post.investors.filter(el => {
+        return el.user == this.props.auth.user._id
+      })
+      if (invested.length) investButtonString = "UnInvest"
+    }
+
+
     return (
       <TouchableHighlight underlayColor={'transparent'} onPress={self.props.actions.getActivePost.bind(null, self.props.post._id)}>
       <View  style={[styles.postContainer]}>
@@ -90,7 +110,11 @@ class Post extends Component {
             {link ? <Text numberOfLines={1} style={[styles.link, styles.active]}>{link}</Text> : null}
           </View>
         </View>
+        <Button onPress={this.invest.bind(this)} containerStyle={styles.buttonContainer} style={styles.button}>
+          {investButtonString}
+        </Button>
         {description ? <Text>{description}</Text> : null}
+
       </View>
       </TouchableHighlight>
     );

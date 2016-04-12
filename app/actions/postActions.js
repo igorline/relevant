@@ -2,6 +2,8 @@ import * as types from './actionTypes';
 require('../publicenv');
 var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
 
+var apiServer = 'http://'+process.env.SERVER_IP+':3000/api/'
+
 export function getPosts() {
   return function(dispatch) {
     fetch('http://'+process.env.SERVER_IP+':3000/api/post/', {
@@ -56,6 +58,13 @@ export function setRecentPosts(posts) {
         type: types.SET_RECENT_POSTS,
         payload: posts
     };
+}
+
+export function updatePost(post) {
+  return {
+    type: types.UPDATE_POST,
+    payload: post
+  }
 }
 
 export function getUserPosts(userId) {
@@ -166,6 +175,25 @@ export function getActivePost(postId) {
     .catch((error) => {
       console.log(error, 'error');
     });
+  }
+}
+
+export function invest(token, invest){
+  console.log("INVESTING", invest)
+  return dispatch => {
+    fetch( apiServer + 'post/' + invest.postId + '/invest', {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(invest)
+    })
+    .then((response) => response.json())
+    .then((post) => {
+      dispatch(updatePost(post))
+    })
   }
 }
 
