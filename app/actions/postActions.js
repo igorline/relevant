@@ -4,6 +4,14 @@ var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = req
 
 var apiServer = 'http://'+process.env.SERVER_IP+':3000/api/'
 
+function handleErrors(response) {
+    if (!response.ok) {
+      console.log(response)
+      throw Error(response.statusText);
+    }
+    return response;
+}
+
 export function getPosts() {
   return function(dispatch) {
     fetch('http://'+process.env.SERVER_IP+':3000/api/post/', {
@@ -142,10 +150,15 @@ export function invest(token, invest){
       },
       body: JSON.stringify(invest)
     })
+    .then(handleErrors)
     .then((response) => response.json())
     .then((post) => {
+      console.log(post)
       dispatch(updatePost(post))
     })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 }
 
