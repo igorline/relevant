@@ -29,7 +29,6 @@ class Post extends Component {
   }
 
   componentDidMount() {
-    console.log("POST", this.props.post)
     // if (this.props.post.userId) this.postUser();
   }
 
