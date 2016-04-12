@@ -36,6 +36,22 @@ export default function auth(state = initialState, action) {
       })
     }
 
+    case types.UPDATE_POST: {
+      return Objext.assign({}, state, {
+        'index': state.index.map( post => {
+          console.log("POST ID", post._id)
+          console.log("PAYLOAD ID", action.payload._id)
+
+          if(post._id == action.payload._id){
+            post = action.payload;
+            console.log("GOT IT", post)
+          }
+          return post;
+        })
+      })
+    }
+
+
     default:
       return state
   }

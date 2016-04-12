@@ -39,7 +39,7 @@ class Read extends Component {
       posts = self.props.posts.index;
       postsEl = posts.map(function(post, i) {
         return (
-            <Post post={post} token={self.props.auth.token} styles={styles} actions={self.props.actions} />
+            <Post {...self.props} post={post} styles={styles} />
         );
       });
     }
