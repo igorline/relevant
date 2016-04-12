@@ -37,13 +37,14 @@ class Discover extends Component {
     var currentView = self.state.currentView;
     var postsEl = null;
     var posts = null;
-    // console.log(self, 'discover self')
+
+    console.log(self, 'discover self')
 
     if (self.props.posts.index) {
       posts = self.props.posts.index;
       postsEl = posts.map(function(post, i) {
         return (
-            <Post post={post} token={self.props.auth.token} styles={styles} actions={self.props.actions} />
+          <Post post={post} {...self.props} styles={styles} />
         );
       });
     }
