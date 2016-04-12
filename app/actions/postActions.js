@@ -23,37 +23,9 @@ export function getPosts() {
   }
 }
 
-export function getRecent() {
-  return function(dispatch) {
-    fetch('http://'+process.env.SERVER_IP+':3000/api/post/recent', {
-        credentials: 'include',
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-      }
-    })
-    .then((response) => response.json())
-    .then((responseJSON) => {
-        console.log(responseJSON, 'recent response');
-        dispatch(setRecentPosts(responseJSON));
-    })
-    .catch((error) => {
-        console.log(error, 'error');
-    });
-  }
-}
-
 export function setPosts(posts) {
     return {
         type: types.SET_POSTS,
-        payload: posts
-    };
-}
-
-export function setRecentPosts(posts) {
-    return {
-        type: types.SET_RECENT_POSTS,
         payload: posts
     };
 }
@@ -67,13 +39,11 @@ export function getUserPosts(userId) {
         'Content-Type': 'application/json'
       },
       method: 'POST',
-      body: JSON.stringify({'search': {'userId': userId}})
+      body: JSON.stringify({'search': {'user': userId}})
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      //console.log(responseJSON, 'userPosts');
       dispatch(setUserPosts(responseJSON));
-      // self.setState({userPosts: responseJSON});
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -114,31 +84,6 @@ export function submitPost(post) {
   }
 }
 
-export function sendLink(userId, link) {
-  return function(dispatch) {
-    fetch('http://'+process.env.SERVER_IP+':3000/api/post/link', {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-          userId: userId,
-          link: link
-      })
-    })
-    .then((response) => response.json())
-    .then((responseJSON) => {
-      console.log(responseJSON, 'link responseJSON');
-       dispatch(Actions.Read);
-    })
-    .catch((error) => {
-        console.log(error, 'error');
-    });
-  }
-}
-
 export function postError() {
   return {
     type: types.POST_ERROR,
@@ -175,6 +120,7 @@ export function setActivePost(post) {
         payload: post
     };
 }
+
 
 
 

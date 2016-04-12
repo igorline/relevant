@@ -273,41 +273,14 @@ export
 function changeName(name, user, token) {
     return function(dispatch) {
     console.log(name, user, token);
-      fetch('http://'+process.env.SERVER_IP+':3000/api/user/name', {
+      fetch('http://'+process.env.SERVER_IP+':3000/api/user?access_token='+token, {
         credentials: 'include',
         method: 'PUT',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify( {
-          _id: user._id,
-          name: name
-        })
-      })
-      .then((response) => {
-        dispatch(getUser(token, null));
-      })
-      .catch((error) => {
-        console.log(error, 'error');
-      });
-    }
-}
-
-export
-function changeBio(bio, user, token) {
-    return function(dispatch) {
-      fetch('http://'+process.env.SERVER_IP+':3000/api/user/bio', {
-        credentials: 'include',
-        method: 'PUT',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify( {
-          _id: user._id,
-          bio: bio
-        })
+        body: JSON.stringify(user)
       })
       .then((response) => {
         dispatch(getUser(token, null));

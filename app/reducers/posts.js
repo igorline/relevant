@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {index: null, userPosts: null, postError: null, activePost: null, recentPosts: null};
+const initialState = {index: null, userPosts: null, postError: null, activePost: null};
 
 export default function auth(state = initialState, action) {
   console.log(action.type)
@@ -9,12 +9,6 @@ export default function auth(state = initialState, action) {
     case types.SET_POSTS: {
       return Object.assign({}, state, {
         'index': action.payload
-      })
-    }
-
-     case types.SET_RECENT_POSTS: {
-      return Object.assign({}, state, {
-        'recentPosts': action.payload
       })
     }
 
