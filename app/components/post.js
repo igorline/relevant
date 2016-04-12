@@ -90,7 +90,6 @@ class Post extends Component {
       imageEl = (<Image source={{uri: image}} style={styles.postImage} />);
     }
 
-    console.log("INVESTORS", post.investors);
     let investButtonString = "Invest"
     if( post.investors ){
       var invested = post.investors.filter(el => {
@@ -132,12 +131,11 @@ class Post extends Component {
             {link ? <Text>from {extractDomain(link)}</Text> : null}
             {body ? <Text>{body}</Text> : null}
           </View>
+          {description ? <Text>{description}</Text> : null}
+          <Button onPress={this.invest.bind(this)} containerStyle={styles.buttonContainer} style={styles.button}>
+            {investButtonString}
+          </Button>
         </View>
-        {description ? <Text>{description}</Text> : null}
-        <Button onPress={this.invest.bind(this)} containerStyle={styles.buttonContainer} style={styles.button}>
-          {investButtonString}
-        </Button>
-
       </TouchableHighlight>
     );
   }
