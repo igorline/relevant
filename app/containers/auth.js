@@ -20,7 +20,6 @@ import { globalStyles } from '../styles/global';
 
 class Auth extends Component {
   componentDidMount() {
-    //this.props.actions.loginJay();
     this.props.actions.getUser();
   }
 
