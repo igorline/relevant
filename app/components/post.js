@@ -63,12 +63,8 @@ class Post extends Component {
     var postUserName = null;
     var body = null;
     var postStyles = this.props.styles;
-<<<<<<< HEAD
     var styles = {...localStyles, ...postStyles, ...globalStyles};
-=======
-    var styles = {...localStyles, ...postStyles};
     console.log(this.props.post, 'post')
->>>>>>> 4ba7b9b1aeb0c11f5c30b7270429e9d4b28ec577
 
     if (this.props.post) {
       post = this.props.post;
@@ -141,7 +137,6 @@ class Post extends Component {
         <Button onPress={this.invest.bind(this)} containerStyle={styles.buttonContainer} style={styles.button}>
           {investButtonString}
         </Button>
-      </View>
 
       </TouchableHighlight>
     );
