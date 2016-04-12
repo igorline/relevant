@@ -2,6 +2,17 @@ import * as types from '../actions/actionTypes';
 
 const initialState = {index: null, userPosts: null, postError: null, activePost: null};
 
+const updatePostElement = (array, post) => {
+  var index = array.findIndex(function(el){
+    return el._id == post._id
+  })
+  return [
+    ...array.slice(0, index),
+    post,
+    ...array.slice(index+1,)
+  ]
+}
+
 export default function auth(state = initialState, action) {
   console.log(action.type)
   switch (action.type) {
@@ -32,16 +43,7 @@ export default function auth(state = initialState, action) {
 
     case types.UPDATE_POST: {
       return Objext.assign({}, state, {
-        'index': state.index.map( post => {
-          console.log("POST ID", post._id)
-          console.log("PAYLOAD ID", action.payload._id)
-
-          if(post._id == action.payload._id){
-            post = action.payload;
-            console.log("GOT IT", post)
-          }
-          return post;
-        })
+        'index': updatePostElement(state.index, action.payload)
       })
     }
 
