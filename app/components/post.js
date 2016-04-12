@@ -51,16 +51,19 @@ class Post extends Component {
     var postUserImageEl = null;
     var postUser = null;
     var postUserName = null;
-
+    var body = null;
     var postStyles = this.props.styles;
     var styles = {...localStyles, ...postStyles};
+    console.log(this.props.post, 'post')
 
     if (this.props.post) {
       post = this.props.post;
+
       if (post.image) image = post.image;
       if (post.description) description = post.description;
       if (post.title) title = post.title;
       if (post.link) link = post.link;
+      if (post.body) body = post.body;
 
       if (post.user) {
         postUser = post.user;
@@ -68,8 +71,6 @@ class Post extends Component {
         if (postUser.name) postUserName = postUser.name;
       }
     }
-
-
 
     if (postUserImage) {
       postUserImageEl = (<Image source={{uri: postUserImage}} style={styles.userImage} />);
@@ -79,19 +80,40 @@ class Post extends Component {
       imageEl = (<Image source={{uri: image}} style={styles.postImage} />);
     }
 
+    function extractDomain(url) {
+      var domain;
+      if (url.indexOf("://") > -1) {
+        domain = url.split('/')[2];
+      }
+      else {
+        domain = url.split('/')[0];
+      }
+      domain = domain.split(':')[0];
+
+      if (domain.indexOf('www.') > -1) {
+        var noPrefix = domain.replace("www.","");
+      } else {
+        var noPrefix = domain;
+      }
+      return noPrefix;
+    }
+
     return (
       <TouchableHighlight underlayColor={'transparent'} onPress={self.props.actions.getActivePost.bind(null, self.props.post._id)}>
-      <View  style={[styles.postContainer]}>
-        <Text style={styles.font20}>{title}</Text>
-        <View style={styles.imageRow}>
-          {postUserImageEl}
-          <View style={styles.postInfo}>
-            {postUserName ? <Text>posted by {postUserName}</Text> : null}
-            {link ? <Text numberOfLines={1} style={[styles.link, styles.active]}>{link}</Text> : null}
+        <View  style={[styles.postContainer]}>
+          <View style={styles.postHeader}>
+            {postUserImageEl}
+            <View style={styles.postInfo}>
+              {postUserName ? <Text>posted by {postUserName}</Text> : null}
+            </View>
+          </View>
+          {imageEl}
+          <View style={styles.postText}>
+            <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
+            {link ? <Text>from {extractDomain(link)}</Text> : null}
+            {body ? <Text>{body}</Text> : null}
           </View>
         </View>
-        {description ? <Text>{description}</Text> : null}
-      </View>
       </TouchableHighlight>
     );
   }
@@ -106,30 +128,31 @@ const localStyles = StyleSheet.create({
     // borderWidth:1,
     // borderColor: 'blue'
   },
+  postText: {
+    padding: 15
+  },
   postImage: {
-    height: 100,
-    width: 100,
+    height: 200,
+    width: fullWidth,
+    obejctFit: 'contain'
   },
   userImage: {
-    height: 80,
-    width: 80,
-    borderRadius: 40
+    height: 30,
+    width: 30,
+    borderRadius: 15
   },
-  imageRow: {
+  postHeader: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    padding: 10
   },
   link: {
     flex: 1,
-    // width: 100,
-    // whiteSpace: 'wrap',
-    // flexWrap: 'wrap'
-    // borderWidth: 1,
-    // borderColor: 'red'
   },
   postInfo: {
     flex: 1,
-    paddingLeft: 10
+    paddingLeft: 5
   }
 });
 

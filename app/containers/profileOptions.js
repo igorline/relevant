@@ -73,17 +73,17 @@ class ProfileOptions extends Component {
     }
 
     function setPicture(url, user, token) {
-      fetch('http://localhost:3000/api/user/image', {
+      var newUser = user;
+      newUser.image = url;
+
+      fetch('http://'+process.env.SERVER_IP+':3000/api/user?access_token='+token, {
           credentials: 'include',
           method: 'PUT',
           headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-              _id: user._id,
-              imageUrl: url
-          })
+          body: JSON.stringify(newUser)
       })
       .then((response) => {
         console.log('yes')
@@ -130,7 +130,9 @@ class ProfileOptions extends Component {
     }
 
     function changeName() {
-      actions.changeName(self.state.newName, user, self.props.auth.token);
+      var newUser = user;
+      newUser.name = self.state.newName;
+      actions.changeName(self.state.newName, newUser, self.props.auth.token);
       self.setState({newName: '', editing: false});
     }
 
