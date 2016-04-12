@@ -74,9 +74,9 @@ export function setUserPosts(posts) {
     };
 }
 
-export function submitPost(post) {
-  return function(dispatch) {
-    fetch('http://'+process.env.SERVER_IP+':3000/api/post/create', {
+export function submitPost(post, token) {
+  console.log(post, 'submitPost init');
+    fetch('http://'+process.env.SERVER_IP+':3000/api/post/create?access_token='+token, {
         credentials: 'include',
         method: 'POST',
         headers: {
@@ -88,16 +88,15 @@ export function submitPost(post) {
     .then((response) => {
       console.log(response, 'submitPost response');
       if (response.status == 200) {
-        dispatch(Actions.Read);
+        Actions.Read();
       } else {
-        dispatch(postError(response.status));
+       postError(response.status);
       }
     })
     .catch((error) => {
         console.log(error, 'error');
-        dispatch(postError(error));
+        postError(error);
     });
-  }
 }
 
 export function postError() {

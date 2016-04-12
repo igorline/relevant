@@ -19,7 +19,7 @@ import Import from './import';
 import Profile from './profile';
 import Read from './read';
 import Footer from './footer';
-import Post from './post';
+import SubmitPost from './submitPost';
 import Discover from './discover';
 import Nav from './nav';
 import SinglePost from './singlePost';
@@ -44,7 +44,7 @@ class Application extends Component {
           <Route name="Import" component={Import} type="replace" hideNavBar={false} title="Import" />
           <Route name="Profile" component={Profile} type="replace" hideNavBar={false} title="Profile" />
           <Route name="Read" component={Read} type="replace" hideNavBar={false} title="Read" />
-          <Route name="Post" component={Post} type="replace" hideNavBar={false} title="Post" />
+          <Route name="SubmitPost" component={SubmitPost} type="replace" hideNavBar={false} title="SubmitPost" />
           <Route name="Discover" component={Discover} type="replace" hideNavBar={false} title="Discover" />
           <Route name="SinglePost" component={SinglePost} type="replace" hideNavBar={false} title="Single Post" />
           <Route name="User" component={User} type="replace" hideNavBar={false} title="User" />

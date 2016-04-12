@@ -7,7 +7,8 @@ import React, {
   View,
   Image,
   TextInput,
-  TouchableHighlight
+  TouchableHighlight,
+  LinkingIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -24,13 +25,11 @@ class Post extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      postUser: null
+      expanded: false
     }
   }
 
   componentDidMount() {
-    console.log("POST", this.props.post)
-    // if (this.props.post.userId) this.postUser();
   }
 
   invest() {
@@ -42,12 +41,31 @@ class Post extends Component {
     this.props.actions.invest(this.props.auth.token, invest);
   }
 
-  // postUser() {
-  //   var self = this;
-  //   this.props.actions.getPostUser(this.props.post.userId, this.props.token).then(function(results){
-  //       self.setState({postUser: results});
-  //   })
-  // }
+  openLink(url) {
+      LinkingIOS.openURL(url)
+  }
+
+  toggleExpanded(self, bool) {
+    self.setState({expanded: bool});
+  }
+
+  extractDomain(url) {
+    console.log(url, 'extract url')
+    var domain;
+    if (url.indexOf("://") > -1) {
+      domain = url.split('/')[2];
+    } else {
+      domain = url.split('/')[0];
+    }
+    domain = domain.split(':')[0];
+
+    if (domain.indexOf('www.') > -1) {
+      var noPrefix = domain.replace("www.","");
+    } else {
+      var noPrefix = domain;
+    }
+    return noPrefix;
+  }
 
   render() {
     var self = this;
@@ -63,12 +81,13 @@ class Post extends Component {
     var postUserName = null;
     var body = null;
     var postStyles = this.props.styles;
+    var user = null;
+    var expanded = this.state.expanded;
+    if (this.props.auth.user) user = this.props.auth.user;
     var styles = {...localStyles, ...postStyles, ...globalStyles};
-    console.log(this.props.post, 'post')
 
     if (this.props.post) {
       post = this.props.post;
-
       if (post.image) image = post.image;
       if (post.description) description = post.description;
       if (post.title) title = post.title;
@@ -87,38 +106,19 @@ class Post extends Component {
     }
 
     if (image) {
-      imageEl = (<Image source={{uri: image}} style={styles.postImage} />);
+      imageEl = (<Image resizeMode={'cover'} source={{uri: image}} style={styles.postImage} />);
     }
 
-    let investButtonString = "Invest"
-    if( post.investors ){
+    let investButtonString = "Invest";
+    if( post.investors){
       var invested = post.investors.filter(el => {
-        return el.user == this.props.auth.user._id
+        return el.user == user._id
       })
       if (invested.length) investButtonString = "UnInvest"
     }
 
-    function extractDomain(url) {
-      var domain;
-      if (url.indexOf("://") > -1) {
-        domain = url.split('/')[2];
-      }
-      else {
-        domain = url.split('/')[0];
-      }
-      domain = domain.split(':')[0];
-
-      if (domain.indexOf('www.') > -1) {
-        var noPrefix = domain.replace("www.","");
-      } else {
-        var noPrefix = domain;
-      }
-      return noPrefix;
-    }
-
     return (
-      <TouchableHighlight underlayColor={'transparent'} onPress={self.props.actions.getActivePost.bind(null, self.props.post._id)}>
-        <View  style={[styles.postContainer]}>
+        <View style={[styles.postContainer]}>
           <View style={styles.postHeader}>
             {postUserImageEl}
             <View style={styles.postInfo}>
@@ -126,17 +126,21 @@ class Post extends Component {
             </View>
           </View>
           {imageEl}
-          <View style={styles.postText}>
+          <View style={styles.postBody}>
             <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
-            {link ? <Text>from {extractDomain(link)}</Text> : null}
+            {link ? <Text>from {self.extractDomain(link)}  <Text style={styles.active} onPress={self.openLink.bind(null, link)}>Open Article</Text></Text> : null}
             {body ? <Text>{body}</Text> : null}
+            {!expanded ? <Text onPress={self.toggleExpanded.bind(null, this, true)}>Read more</Text> : null}
+            {expanded ?
+              <View>
+                <Button onPress={this.invest.bind(this)} containerStyle={styles.buttonContainer} style={styles.button}>
+                  {investButtonString}
+                </Button>
+                <Text onPress={self.toggleExpanded.bind(null, this, false)}>Read less</Text>
+              </View>
+            : null}
           </View>
-          {description ? <Text>{description}</Text> : null}
-          <Button onPress={this.invest.bind(this)} containerStyle={styles.buttonContainer} style={styles.button}>
-            {investButtonString}
-          </Button>
         </View>
-      </TouchableHighlight>
     );
   }
 }
@@ -147,16 +151,13 @@ const localStyles = StyleSheet.create({
   postContainer: {
     marginBottom: 25,
     textAlign: 'left',
-    // borderWidth:1,
-    // borderColor: 'blue'
   },
-  postText: {
+  postBody: {
     padding: 15
   },
   postImage: {
     height: 200,
     width: fullWidth,
-    obejctFit: 'contain'
   },
   userImage: {
     height: 30,
