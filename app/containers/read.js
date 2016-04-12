@@ -7,7 +7,8 @@ import React, {
   View,
   Image,
   TextInput,
-  ScrollView
+  ScrollView,
+  Linking
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -46,7 +47,6 @@ class Read extends Component {
 
     return (
       <ScrollView style={[styles.readContainer]}>
-       <Text style={[styles.font20, styles.readHeader]}>Read</Text>
        {postsEl}
       </ScrollView>
     );
@@ -71,7 +71,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Read)
 
 const localStyles = StyleSheet.create({
   readContainer: {
-   padding: 20,
+   // padding: 20,
    // borderWidth: 1,
    // borderColor: 'red'
   },

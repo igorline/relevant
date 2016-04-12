@@ -6,7 +6,8 @@ import React, {
   Text,
   View,
   Image,
-  TextInput
+  TextInput,
+  ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -15,6 +16,7 @@ import * as authActions from '../actions/authActions';
 import * as userActions from '../actions/userActions';
 import * as postActions from '../actions/postActions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import Post from '../components/post';
 
 class Discover extends Component {
   constructor (props, context) {
@@ -27,7 +29,6 @@ class Discover extends Component {
   componentDidMount() {
     this.props.actions.userIndex();
     this.props.actions.getPosts();
-    this.props.actions.getRecent();
   }
 
   render() {
@@ -36,24 +37,13 @@ class Discover extends Component {
     var currentView = self.state.currentView;
     var postsEl = null;
     var posts = null;
-    var recentPostsEl = null;
-    var recentPosts = null;
     // console.log(self, 'discover self')
 
     if (self.props.posts.index) {
       posts = self.props.posts.index;
       postsEl = posts.map(function(post, i) {
         return (
-           <Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.title ? post.title : 'Untitled'}</Text>
-        );
-      });
-    }
-
-    if (self.props.posts.recentPosts) {
-      recentPosts = self.props.posts.recentPosts;
-      recentPostsEl = recentPosts.map(function(post, i) {
-        return (
-           <Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.title ? post.title : 'Untitled'}</Text>
+            <Post post={post} token={self.props.auth.token} styles={styles} actions={self.props.actions} />
         );
       });
     }
@@ -82,18 +72,18 @@ class Discover extends Component {
 
 
     return (
-      <View style={styles.fullContainer}>
+      <ScrollView style={styles.fullContainer}>
         <View style={[styles.row, styles.discoverBar]}>
           <Text onPress={changeView.bind(null, 1)} style={[styles.font20, styles.category, currentView == 1? styles.active : null]}>New</Text>
           <Text onPress={changeView.bind(null, 2)} style={[styles.font20, styles.category, currentView == 2? styles.active : null]}>Top</Text>
           <Text onPress={changeView.bind(null, 3)} style={[styles.font20, styles.category, currentView == 3? styles.active : null]}>People</Text>
         </View>
-        <View style={styles.padding20}>
-          {currentView == 1 || !currentView ? recentPostsEl : null}
+        <View>
+          {currentView == 1 || !currentView ? postsEl : null}
           {currentView == 2 ? postsEl : null}
           {currentView == 3 ? usersEl : null}
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -129,9 +119,10 @@ padding20: {
 discoverBar: {
   width: fullWidth,
   paddingTop: 20,
-  // paddingRight: 20,
-  // paddingLeft: 20,
-  // justifyContent: 'space-between'
+  paddingBottom: 20
+},
+fullContainer: {
+
 }
 });
 

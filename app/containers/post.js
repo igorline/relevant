@@ -22,8 +22,8 @@ class Post extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      postText: null,
-      postTitle: null
+      postLink: null,
+      postBody: null
     }
   }
 
@@ -38,14 +38,13 @@ class Post extends Component {
     }
 
     function post() {
-      var link = self.state.postText;
+      console.log('post')
+      var link = self.state.postLink;
+      var body = self.state.postBody;
       fetch(link, {
           method: 'GET',
       })
       .then((response) => {
-        // console.log(response, 'link response');
-        // console.log(response._bodyText, '_bodyText');
-
       var $ = cheerio.load(response._bodyText);
       var data = {
         'og:type':null,
@@ -96,9 +95,9 @@ class Post extends Component {
           if (results.success) {
             var postBody = {
               link: link,
-              user: user,
+              body: body,
+              user: user._id,
               title: title,
-              userId: user._id,
               description: description,
               image: results.url
             };
@@ -111,8 +110,9 @@ class Post extends Component {
       } else {
         var postBody = {
           link: link,
-          user: user,
-          userId: user._id,
+          // date: date,
+          user: user._id,
+          body: body,
           title: title,
           description: description,
           image: image
@@ -131,8 +131,8 @@ class Post extends Component {
 
     return (
       <View style={styles.fullContainer}>
-      {/*<TextInput style={[styles.font20, styles.titleInput]} placeholder='Title' multiline={true} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} onSubmitEditing={post} returnKeyType='done' />*/}
-       <TextInput style={[styles.postInput, styles.font20]} placeholder='Enter URL here...' multiline={true} onChangeText={(postText) => this.setState({postText})} value={this.state.postText} onSubmitEditing={post} returnKeyType='done' />
+      <TextInput style={[styles.font20, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.linkText} returnKeyType='done' />
+       <TextInput style={[styles.postInput, styles.font20]} placeholder='Relevant text here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' />
       <Button style={styles.postSubmit} onPress={post}>Submit</Button>
       </View>
     );
@@ -162,7 +162,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
-  titleInput: {
+  linkInput: {
     padding: 10,
     flex: 0.075,
     borderWidth: 0.5,

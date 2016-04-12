@@ -66,7 +66,7 @@ function getSelectedUserPosts(userId) {
         'Content-Type': 'application/json'
       },
       method: 'POST',
-      body: JSON.stringify({'search': {'userId': userId}})
+      body: JSON.stringify({'search': {'user._id': userId}})
     })
     .then((response) => response.json())
     .then((responseJSON) => {
