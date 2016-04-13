@@ -13,8 +13,8 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var FileUpload = require('NativeModules').FileUpload;
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
-import * as authActions from '../actions/authActions';
-import * as postActions from '../actions/postActions';
+import * as authActions from '../actions/auth.actions';
+import * as postActions from '../actions/post.actions';
 import { bindActionCreators } from 'redux';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
@@ -29,32 +29,28 @@ class User extends Component {
     componentDidMount() {}
 
     render() {
-      // console.log(this, 'user self')
       var self = this;
       var user = null;
       var userImage = null;
       var name = null;
-      var relevance = null;
+      var relevance = 0;
+      var balance = 0;
       const {actions} = this.props;
       var userImageEl = null;
       var postsEl = null;
 
       if (this.props.users.selectedUser) {
           user = this.props.users.selectedUser;
-          if (user.name) name = this.props.users.selectedUser.name;
-          if (user.image) userImage = this.props.users.selectedUser.image;
-          if (user.relevance) {
-              relevance = this.props.users.selectedUser.relevance;
-          } else {
-              relevance = 0;
-          }
+          if (user.name) name = user.name;
+          if (user.image) userImage = user.image;
+          if (user.relevance) relevance = user.relevance;
+          if (user.balance) balance = user.balance;
       }
 
       if (userImage) {
         userImageEl = (<Image source={{uri: userImage}} style={styles.uploadAvatar} /> );
       }
 
-      var changeNameEl = (<View style={styles.pictureWidth}><Text style={styles.twenty}>{name}</Text></View>);
 
       if (self.props.users.posts) {
         if (self.props.users.posts.length > 0) {
@@ -74,7 +70,7 @@ class User extends Component {
             <View>{userImageEl}</View>
             <View style={[styles.insideRow, styles.insidePadding]}>
               <Text>Relevance: <Text style={styles.active}>{relevance}</Text ></Text>
-              <Text>more info more info</Text>
+              <Text>Balance: <Text style={styles.active}>{balance}</Text></Text>
             </View>
           </View>
           <View style={styles.column}>

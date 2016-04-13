@@ -1,4 +1,4 @@
-import { submitPost } from '../actions/postActions';
+import { submitPost } from '../actions/post.actions';
 import { toS3Advanced } from './s3';
 var cheerio = require('cheerio-without-node-native');
 

@@ -7,6 +7,7 @@ require('../publicenv');
 var CookieManager = require('react-native-cookies');
 import {AsyncStorage} from 'react-native';
 var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
+import * as utils from '../utils';
 
 export
 function setUser(user) {
@@ -87,22 +88,23 @@ function loginUser(user, redirect) {
             },
             body: user
         })
-            .then((response) => response.json())
-            .then((responseJSON) => {
-                if (responseJSON.token) {
-                    AsyncStorage.setItem('token', responseJSON.token)
-                        .then( ()  => {
-                            dispatch(loginUserSuccess(responseJSON.token));
-                            dispatch(getUser(responseJSON.token, true));
-                        })
-                } else {
-                    dispatch(loginUserFailure(responseJSON.message));
-                }
-            })
-            .catch(error => {
-                console.log(error, 'error');
-                dispatch(loginUserFailure('Server error'));
-            });
+        .then(utils.fetchError.handleErrors)
+        .then((response) => response.json())
+        .then((responseJSON) => {
+            if (responseJSON.token) {
+                AsyncStorage.setItem('token', responseJSON.token)
+                    .then( ()  => {
+                        dispatch(loginUserSuccess(responseJSON.token));
+                        dispatch(getUser(responseJSON.token, true));
+                    })
+            } else {
+                dispatch(loginUserFailure(responseJSON.message));
+            }
+        })
+        .catch(error => {
+            console.log(error, 'error');
+            dispatch(loginUserFailure('Server error'));
+        });
     }
 }
 
@@ -119,22 +121,21 @@ function loginJay(user, redirect) {
             },
             body: JSON.stringify({email: 'jaygoss@gmail.com', password: 'test'})
         })
-            .then((response) => response.json())
-            .then((responseJSON) => {
-                if (responseJSON.token) {
-                    AsyncStorage.setItem('token', responseJSON.token)
-                    // .then( ()  => {
-                        dispatch(loginUserSuccess(responseJSON.token));
-                        dispatch(getUser(responseJSON.token, true));
-                    // })
-                } else {
-                    dispatch(loginUserFailure(responseJSON.message));
-                }
-            })
-            .catch((error) => {
-                console.log(error, 'error');
-                dispatch(loginUserFailure('Server error'));
-            });
+        .then(utils.fetchError.handleErrors)
+        .then((response) => response.json())
+        .then((responseJSON) => {
+            if (responseJSON.token) {
+                AsyncStorage.setItem('token', responseJSON.token)
+                    dispatch(loginUserSuccess(responseJSON.token));
+                    dispatch(getUser(responseJSON.token, true));
+            } else {
+                dispatch(loginUserFailure(responseJSON.message));
+            }
+        })
+        .catch((error) => {
+            console.log(error, 'error');
+            dispatch(loginUserFailure('Server error'));
+        });
     }
 }
 
@@ -151,19 +152,20 @@ function createUser(user, redirect) {
             },
             body: user
         })
-            .then((response) => response.json())
-            .then((responseJSON) => {
-                if (responseJSON.token) {
-                    dispatch(loginUserSuccess(responseJSON.token));
-                    dispatch(getUser(responseJSON.token, true));
-                } else {
-                    dispatch(loginUserFailure(responseJSON.message));
-                }
-            })
-            .catch(error => {
-                console.log(error, 'error');
-                dispatch(loginUserFailure('Server error'));
-            });
+        .then(utils.fetchError.handleErrors)
+        .then((response) => response.json())
+        .then((responseJSON) => {
+            if (responseJSON.token) {
+                dispatch(loginUserSuccess(responseJSON.token));
+                dispatch(getUser(responseJSON.token, true));
+            } else {
+                dispatch(loginUserFailure(responseJSON.message));
+            }
+        })
+        .catch(error => {
+            console.log(error, 'error');
+            dispatch(loginUserFailure('Server error'));
+        });
     }
 }
 
@@ -181,7 +183,6 @@ function getUser(token, redirect) {
                     if(err) return dispatch(setUser());
                 })
         } else fetchUser(token);
-
         function fetchUser(token) {
             fetch('http://'+process.env.SERVER_IP+':3000/api/user/me', {
                 credentials: 'include',
@@ -190,6 +191,7 @@ function getUser(token, redirect) {
                     'Authorization': `Bearer ${token}`
                 }
             })
+            .then(utils.fetchError.handleErrors)
             .then((response) => response.json())
             .then((responseJSON) => {
                 console.log('fetchuser response', responseJSON)
@@ -215,6 +217,7 @@ function userIndex() {
                     credentials: 'include',
                     method: 'GET'
                 })
+                .then(utils.fetchError.handleErrors)
                 .then((response) => response.json())
                 .then((responseJSON) => {
                     dispatch(setUserIndex(responseJSON));
@@ -282,6 +285,7 @@ function changeName(name, user, token) {
         },
         body: JSON.stringify(user)
       })
+      .then(utils.fetchError.handleErrors)
       .then((response) => {
         dispatch(getUser(token, null));
       })

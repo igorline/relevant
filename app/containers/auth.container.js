@@ -11,10 +11,10 @@ import React, {
 
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
-import Login from '../components/login';
-import SignUp from '../components/signup';
-import * as authActions from '../actions/authActions';
-import * as postActions from '../actions/postActions';
+import Login from '../components/login.component';
+import SignUp from '../components/signup.component';
+import * as authActions from '../actions/auth.actions';
+import * as postActions from '../actions/post.actions';
 import { bindActionCreators } from 'redux';
 import { globalStyles } from '../styles/global';
 

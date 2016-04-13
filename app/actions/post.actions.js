@@ -1,16 +1,8 @@
 import * as types from './actionTypes';
 require('../publicenv');
 var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
-
+import * as utils from '../utils';
 var apiServer = 'http://'+process.env.SERVER_IP+':3000/api/'
-
-function handleErrors(response) {
-    if (!response.ok) {
-      console.log(response)
-      throw Error(response.statusText);
-    }
-    return response;
-}
 
 export function getPosts() {
   return function(dispatch) {
@@ -22,6 +14,7 @@ export function getPosts() {
             'Content-Type': 'application/json'
       }
     })
+    .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
         console.log(responseJSON, 'response');
@@ -65,6 +58,7 @@ export function getUserPosts(userId) {
       method: 'POST',
       body: JSON.stringify({'search': {'user': userId}})
     })
+    .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setUserPosts(responseJSON));
@@ -93,10 +87,11 @@ export function submitPost(post, token) {
       },
       body: JSON.stringify(post)
     })
+    .then(utils.fetchError.handleErrors)
     .then((response) => {
       console.log(response, 'submitPost response');
       if (response.status == 200) {
-        Actions.Read();
+        Actions.Discover();
       } else {
        postError(response.status);
       }
@@ -125,6 +120,7 @@ export function getActivePost(postId) {
       method: 'POST',
       body: JSON.stringify({'search': {'_id': postId}})
     })
+    .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       console.log(responseJSON, 'activePost');
@@ -149,7 +145,7 @@ export function invest(token, invest){
       },
       body: JSON.stringify(invest)
     })
-    .then(handleErrors)
+    .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((post) => {
       console.log(post)

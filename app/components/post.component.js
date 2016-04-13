@@ -13,9 +13,9 @@ import React, {
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/authActions';
-import * as postActions from '../actions/postActions';
-import * as userActions from '../actions/userActions';
+import * as authActions from '../actions/auth.actions';
+import * as postActions from '../actions/post.actions';
+import * as userActions from '../actions/user.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var postStyles = null;
@@ -45,8 +45,8 @@ class Post extends Component {
       LinkingIOS.openURL(url)
   }
 
-  toggleExpanded(self, bool) {
-    self.setState({expanded: bool});
+  toggleExpanded(bool) {
+    this.setState({expanded: bool});
   }
 
   extractDomain(url) {
@@ -130,13 +130,13 @@ class Post extends Component {
             <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
             {link ? <Text>from {self.extractDomain(link)}  <Text style={styles.active} onPress={self.openLink.bind(null, link)}>Open Article</Text></Text> : null}
             {body ? <Text>{body}</Text> : null}
-            {!expanded ? <Text onPress={self.toggleExpanded.bind(null, this, true)}>Read more</Text> : null}
+            {!expanded ? <Text onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
             {expanded ?
               <View>
                 <Button onPress={this.invest.bind(this)} containerStyle={styles.buttonContainer} style={styles.button}>
                   {investButtonString}
                 </Button>
-                <Text onPress={self.toggleExpanded.bind(null, this, false)}>Read less</Text>
+                <Text onPress={self.toggleExpanded.bind(this, false)}>Read less</Text>
               </View>
             : null}
           </View>
