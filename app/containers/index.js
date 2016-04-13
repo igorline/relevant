@@ -3,13 +3,9 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import * as reducers from '../reducers';
-import Application from './app';
+import Application from './app.container';
 const reducer = combineReducers(reducers);
 let store = applyMiddleware(thunk)(createStore)(reducer);
-// const store = createStore(
-//   reducer,
-//   applyMiddleware(thunk)
-// );
 
 export default class AppContainer extends Component {
   render() {

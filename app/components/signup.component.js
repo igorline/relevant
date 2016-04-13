@@ -7,7 +7,6 @@ import React, {
   View,
   TextInput
 } from 'react-native';
-// import {reduxForm} from 'redux-form';
 var Button = require('react-native-button');
 
 class SignUp extends Component {
@@ -26,24 +25,25 @@ class SignUp extends Component {
   componentDidUpdate() {
   }
 
+  checkPass(user) {
+    var self = this;
+    if (self.state.password) {
+      if (self.state.password == self.state.cPassword) {
+        createUser(user);
+      } else {;
+        self.setState({message: "passwords don't match"});
+      }
+    } else {
+      self.setState({message: 'no password'});
+    }
+  }
+
   render() {
     var self = this;
     const { createUser } = this.props.actions;
     var message = self.state.message;
     var styles = this.props.styles;
     this.props.auth.statusText ? message = this.props.auth.statusText : null;
-
-    function checkPass(user) {
-      if (self.state.password) {
-        if (self.state.password == self.state.cPassword) {
-          createUser(user);
-        } else {;
-          self.setState({message: "passwords don't match"});
-        }
-      } else {
-        self.setState({message: 'no password'});
-      }
-    }
 
     return (
       <View style={styles.center}>
@@ -71,7 +71,7 @@ class SignUp extends Component {
         </View>
 
         <View style={styles.margin}>
-          <Button onPress={checkPass.bind(null, JSON.stringify({name: self.state.name, phone: self.state.phone, email: self.state.email, password: self.state.password}))} style={styles.button}>Submit</Button>
+          <Button onPress={checkPass.bind(self, JSON.stringify({name: self.state.name, phone: self.state.phone, email: self.state.email, password: self.state.password}))} style={styles.button}>Submit</Button>
         </View>
 
       </View>

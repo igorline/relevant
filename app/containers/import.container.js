@@ -11,8 +11,8 @@ import React, {
 
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
-import Contact from '../components/contact';
-import * as authActions from '../actions/authActions';
+import Contact from '../components/contact.component';
+import * as authActions from '../actions/auth.actions';
 import { bindActionCreators } from 'redux';
 import { globalStyles } from '../styles/global';
 

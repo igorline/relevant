@@ -1,6 +1,7 @@
 import * as types from './actionTypes';
 require('../publicenv');
 var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
+import * as utils from '../utils';
 
 export
 function getSelectedUser(userId, token) {
@@ -13,6 +14,7 @@ function getSelectedUser(userId, token) {
             'Content-Type': 'application/json'
       }
     })
+    .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
         console.log(responseJSON, 'response');
@@ -37,6 +39,7 @@ function getPostUser(userId, token) {
             'Content-Type': 'application/json'
       }
     })
+    .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
         console.log(responseJSON, 'postUser');
@@ -68,11 +71,10 @@ function getSelectedUserPosts(userId) {
       method: 'POST',
       body: JSON.stringify({'search': {'user._id': userId}})
     })
+    .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      //console.log(responseJSON, 'userPosts');
       dispatch(setSelectedUserPosts(responseJSON));
-      // self.setState({userPosts: responseJSON});
     })
     .catch((error) => {
       console.log(error, 'error');

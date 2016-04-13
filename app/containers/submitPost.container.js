@@ -11,8 +11,8 @@ import React, {
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/authActions';
-import * as postActions from '../actions/postActions';
+import * as authActions from '../actions/auth.actions';
+import * as postActions from '../actions/post.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import * as utils from '../utils';
@@ -29,20 +29,19 @@ class SubmitPost extends Component {
   componentDidMount() {
   }
 
+  post() {
+    var self = this;
+    var link = self.state.postLink;
+    var body = self.state.postBody;
+    utils.post.generate(link, body, self.props.auth.token);
+    self.setState({postText: null, postTitle: null});
+  }
+
   render() {
     var self = this;
     var user = null;
     if (self.props.auth) {
       if (self.props.auth.user) user = self.props.auth.user;
-    }
-    console.log(self, 'post self')
-
-    function post() {
-      console.log('post')
-      var link = self.state.postLink;
-      var body = self.state.postBody;
-      utils.post.generate(link, body, self.props.auth.token);
-      self.setState({postText: null, postTitle: null});
     }
 
     return (
@@ -50,7 +49,7 @@ class SubmitPost extends Component {
       <TextInput style={[styles.font20, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.linkText} returnKeyType='done' />
         <View style={styles.divider}></View>
        <TextInput style={[styles.postInput, styles.font20]} placeholder='Relevant text here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' />
-      <Button style={styles.postSubmit} onPress={post}>Submit</Button>
+      <Button style={styles.postSubmit} onPress={self.post.bind(self)}>Submit</Button>
       </View>
     );
   }

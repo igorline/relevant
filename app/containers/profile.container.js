@@ -13,8 +13,8 @@ import React, {
 var FileUpload = require('NativeModules').FileUpload;
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
-import * as authActions from '../actions/authActions';
-import * as postActions from '../actions/postActions';
+import * as authActions from '../actions/auth.actions';
+import * as postActions from '../actions/post.actions';
 import { bindActionCreators } from 'redux';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
@@ -40,92 +40,31 @@ class Profile extends Component {
     var user = null;
     var userImage = null;
     var name = null;
-    var relevance = null;
+    var relevance = 0;
+    var balance = 0;
+    var userImageEl = null;
+    var postsEl = null;
+
     if (this.props.auth.user) {
       user = this.props.auth.user;
-      if (user.name) name  = this.props.auth.user.name;
-      if (user.image) userImage = this.props.auth.user.image;
-      if (this.props.auth.user.relevance) {
-        relevance = this.props.auth.user.relevance;
-      } else {
-        relevance = 0;
-      }
+      if (user.name) name = user.name;
+      if (user.image) userImage = user.image;
+      if (user.relevance) relevance = user.relevance;
+      if (user.balance) balance = user.balance;
     }
-
-    const { actions } = this.props;
-
-    function chooseImage() {
-      pickImage(function(err, data){
-        if(data){
-          utils.s3.toS3Advanced(data).then(function(results){
-            if (results.success) {
-              setPicture(results.url, user, self.props.auth.token);
-            } else {
-              console.log('err');
-            }
-          })
-        }
-      });
-    }
-
-    function setPicture(url, user, token) {
-      fetch('http://localhost:3000/api/user/image', {
-          credentials: 'include',
-          method: 'PUT',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              _id: user._id,
-              imageUrl: url
-          })
-      })
-      .then((response) => {
-        console.log('yes')
-        actions.getUser(token, null);
-      })
-      .catch((error) => {
-          console.log(error, 'error');
-      });
-    }
-
-
-    function pickImage(callback){
-        ImagePickerManager.showImagePicker(pickerOptions, (response) => {
-        if (response.didCancel) {
-          console.log('User cancelled image picker');
-          callback("cancelled");
-        }
-        else if (response.error) {
-          console.log('ImagePickerManager Error: ', response.error);
-          callback("error");
-        }
-        else if (response.customButton) {
-          console.log('User tapped custom button: ', response.customButton);
-          callback("error");
-        }
-        else {
-          callback(null, response.uri);
-        }
-      });
-    }
-
-
-    var userImageEl = null;
 
     if (userImage) {
       userImageEl = (<Image source={{uri: userImage}} style={styles.uploadAvatar} />)
-    } else {
-      userImageEl = (<Button onPress={chooseImage}>Update profile picture</Button>);
     }
 
-    var postsEl = null;
-
     if (self.props.posts.userPosts) {
-      postsEl = self.props.posts.userPosts.map(function(post, i) {
-        return (<Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.title ? post.title : 'Untitled'}</Text>);
-      });
+      if (self.props.posts.userPosts.length > 0) {
+        postsEl = self.props.posts.userPosts.map(function(post, i) {
+          return (<Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.title ? post.title : 'Untitled'}</Text>);
+        });
+      } else {
+         postsEl = (<View><Text>0 Posts</Text></View>)
+       }
     } else {
       postsEl = (<View><Text>0 Posts</Text></View>)
     }
@@ -136,7 +75,7 @@ class Profile extends Component {
           <View>{userImageEl}</View>
           <View style={[styles.insideRow, styles.insidePadding]}>
             <Text>Relevance: <Text style={styles.active}>{relevance}</Text></Text>
-            <Text>more info more info</Text>
+            <Text>Balance: <Text style={styles.active}>{balance}</Text></Text>
           </View>
         </View>
         <View style={styles.column}>
