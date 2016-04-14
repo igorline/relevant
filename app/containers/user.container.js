@@ -7,7 +7,8 @@ import React, {
     View,
     Image,
     TextInput,
-    Dimensions
+    Dimensions,
+    ScrollView
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var FileUpload = require('NativeModules').FileUpload;
@@ -19,6 +20,7 @@ import { bindActionCreators } from 'redux';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
 import * as utils from '../utils';
+import Post from '../components/post.component';
 
 class User extends Component {
     constructor(props, context) {
@@ -55,7 +57,7 @@ class User extends Component {
       if (self.props.users.posts) {
         if (self.props.users.posts.length > 0) {
           postsEl = self.props.users.posts.map(function(post, i) {
-            return (<Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.title}</Text>);
+            return (<Post post={post} {...self.props} styles={styles} />);
           });
         } else {
           postsEl = (<View><Text>0 Posts</Text></View>);
@@ -65,7 +67,7 @@ class User extends Component {
       }
 
       return (
-        <View style={styles.profileContainer}>
+        <ScrollView style={styles.fullContainer}>
           <View style={styles.row}>
             <View>{userImageEl}</View>
             <View style={[styles.insideRow, styles.insidePadding]}>
@@ -73,11 +75,11 @@ class User extends Component {
               <Text>Balance: <Text style={styles.active}>{balance}</Text></Text>
             </View>
           </View>
-          <View style={styles.column}>
-            <Text style={styles.font20}>Posts</Text>
+          <View>
+            <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
             {postsEl}
           </View>
-        </View>
+        </ScrollView>
       );
   }
 }
@@ -101,6 +103,9 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(User)
 
 const localStyles = StyleSheet.create({
+    postsHeader: {
+    padding: 20
+  },
   uploadAvatar: {
     height: 100,
     width: 100,

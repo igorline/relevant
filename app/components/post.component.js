@@ -8,7 +8,8 @@ import React, {
   Image,
   TextInput,
   TouchableHighlight,
-  LinkingIOS
+  LinkingIOS,
+  Picker
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -30,16 +31,10 @@ class Post extends Component {
   }
 
   componentDidMount() {
+    // this.calcMax(this);
   }
 
-  invest() {
-    var invest = {
-      postId: this.props.post._id,
-      sign: 1,
-      amount: 1
-    };
-    this.props.actions.invest(this.props.auth.token, invest);
-  }
+
 
   openLink(url) {
       LinkingIOS.openURL(url)
@@ -67,8 +62,23 @@ class Post extends Component {
     return noPrefix;
   }
 
+  // invest() {
+  //   var invest = {
+  //     postId: this.props.post._id,
+  //     sign: 1,
+  //     amount: 1
+  //   };
+  //   this.props.actions.invest(this.props.auth.token, invest);
+  // }
+
+  // initInvest() {
+  //   var postId = this.props.post._id;
+
+  // }
+
   render() {
     var self = this;
+    var pickerStatus = self.state.pickerStatus;
     var post = null;
     var title = null;
     var description = null;
@@ -80,10 +90,12 @@ class Post extends Component {
     var postUser = null;
     var postUserName = null;
     var body = null;
+    var balance = null;
     var postStyles = this.props.styles;
     var user = null;
     var expanded = this.state.expanded;
     if (this.props.auth.user) user = this.props.auth.user;
+    if (user && user.balance) balance = user.balance;
     var styles = {...localStyles, ...postStyles, ...globalStyles};
 
     if (this.props.post) {
@@ -93,7 +105,6 @@ class Post extends Component {
       if (post.title) title = post.title;
       if (post.link) link = post.link;
       if (post.body) body = post.body;
-
       if (post.user) {
         postUser = post.user;
         if (postUser.image) postUserImage = postUser.image;
@@ -130,12 +141,10 @@ class Post extends Component {
             <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
             {link ? <Text>from {self.extractDomain(link)}  <Text style={styles.active} onPress={self.openLink.bind(null, link)}>Open Article</Text></Text> : null}
             {body ? <Text>{body}</Text> : null}
+            <Button style={styles.investButton} onPress={self.props.actions.openInvest.bind(self, self.props.post._id)}>Inve$t</Button>
             {!expanded ? <Text onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
             {expanded ?
               <View>
-                <Button onPress={this.invest.bind(this)} containerStyle={styles.buttonContainer} style={styles.button}>
-                  {investButtonString}
-                </Button>
                 <Text onPress={self.toggleExpanded.bind(this, false)}>Read less</Text>
               </View>
             : null}
@@ -153,11 +162,17 @@ const localStyles = StyleSheet.create({
     textAlign: 'left',
   },
   postBody: {
-    padding: 15
+    padding: 15,
+    textAlign: 'left'
   },
   postImage: {
     height: 200,
     width: fullWidth,
+  },
+  investButton: {
+    textAlign: 'left',
+    paddingTop: 10,
+    paddingBottom: 10
   },
   userImage: {
     height: 30,

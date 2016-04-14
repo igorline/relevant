@@ -7,7 +7,8 @@ import React, {
   View,
   Image,
   TextInput,
-  Dimensions
+  Dimensions,
+  ScrollView
 } from 'react-native';
 
 var FileUpload = require('NativeModules').FileUpload;
@@ -21,6 +22,8 @@ require('../publicenv');
 import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import Post from '../components/post.component';
+import PickerComponent from '../components/picker.component';
 
 class Profile extends Component {
   constructor (props, context) {
@@ -60,7 +63,7 @@ class Profile extends Component {
     if (self.props.posts.userPosts) {
       if (self.props.posts.userPosts.length > 0) {
         postsEl = self.props.posts.userPosts.map(function(post, i) {
-          return (<Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.title ? post.title : 'Untitled'}</Text>);
+          return (<Post post={post} {...self.props} styles={styles} />);
         });
       } else {
          postsEl = (<View><Text>0 Posts</Text></View>)
@@ -70,7 +73,8 @@ class Profile extends Component {
     }
 
     return (
-      <View style={styles.profileContainer}>
+      <View style={styles.fullContainer}>
+      <ScrollView style={styles.fullContainer}>
         <View style={styles.row}>
           <View>{userImageEl}</View>
           <View style={[styles.insideRow, styles.insidePadding]}>
@@ -78,10 +82,12 @@ class Profile extends Component {
             <Text>Balance: <Text style={styles.active}>{balance}</Text></Text>
           </View>
         </View>
-        <View style={styles.column}>
-          <Text style={styles.font20}>Posts</Text>
+        <View>
+          <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
           {postsEl}
         </View>
+      </ScrollView>
+      <PickerComponent styles={styles} {...self.props} />
       </View>
     );
   }
@@ -104,6 +110,9 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 const localStyles = StyleSheet.create({
+  postsHeader: {
+    padding: 20
+  },
   uploadAvatar: {
     height: 100,
     width: 100,
@@ -114,11 +123,6 @@ const localStyles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     backgroundColor: 'white',
-  },
-  row: {
-    flexDirection: 'row',
-    width: fullWidth,
-    padding: 20
   },
   column: {
     flexDirection: 'column',
