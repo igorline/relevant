@@ -10,6 +10,10 @@ import React, {
   Dimensions
 } from 'react-native';
 
+
+var fullWidth = Dimensions.get('window').width;
+var fullHeight = Dimensions.get('window').height;
+
 const globalStyles = StyleSheet.create({
   font20: {
     fontSize: 20
@@ -64,6 +68,11 @@ const globalStyles = StyleSheet.create({
     fullContainer: {
     flex: 1
   },
+    row: {
+    flexDirection: 'row',
+    width: fullWidth,
+    padding: 20
+  },
   buttonContainer: {
     padding:10,
     height:45,
@@ -82,8 +91,6 @@ const globalStyles = StyleSheet.create({
   }
 });
 
-var fullWidth = Dimensions.get('window').width;
-var fullHeight = Dimensions.get('window').height;
 
 export {
   globalStyles,

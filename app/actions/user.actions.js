@@ -69,11 +69,12 @@ function getSelectedUserPosts(userId) {
         'Content-Type': 'application/json'
       },
       method: 'POST',
-      body: JSON.stringify({'search': {'user._id': userId}})
+      body: JSON.stringify({'search': {'user': userId}})
     })
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
+      console.log(responseJSON, 'json response getSelectedUserPosts')
       dispatch(setSelectedUserPosts(responseJSON));
     })
     .catch((error) => {

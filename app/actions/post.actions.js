@@ -33,6 +33,20 @@ export function setPosts(posts) {
     };
 }
 
+export function openInvest(postId) {
+  console.log(postId, 'open ivest postid')
+    return {
+        type: types.OPEN_INVEST,
+        payload: postId
+    };
+}
+
+export function closeInvest() {
+    return {
+        type: types.CLOSE_INVEST,
+    };
+}
+
 export function setRecentPosts(posts) {
     return {
         type: types.SET_RECENT_POSTS,
