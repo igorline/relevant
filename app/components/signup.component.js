@@ -45,6 +45,8 @@ class SignUp extends Component {
     var styles = this.props.styles;
     this.props.auth.statusText ? message = this.props.auth.statusText : null;
 
+
+
     return (
       <View style={styles.center}>
 

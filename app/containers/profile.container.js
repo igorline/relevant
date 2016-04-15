@@ -87,7 +87,7 @@ class Profile extends Component {
           {postsEl}
         </View>
       </ScrollView>
-      <PickerComponent styles={styles} {...self.props} />
+
       </View>
     );
   }

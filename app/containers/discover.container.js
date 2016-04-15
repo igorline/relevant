@@ -84,7 +84,7 @@ class Discover extends Component {
             {currentView == 3 ? usersEl : null}
           </View>
         </ScrollView>
-        <PickerComponent {...self.props} styles={styles} />
+
       </View>
     );
   }
