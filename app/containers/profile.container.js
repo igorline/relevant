@@ -23,7 +23,6 @@ import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
-import PickerComponent from '../components/picker.component';
 
 class Profile extends Component {
   constructor (props, context) {

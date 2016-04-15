@@ -9,7 +9,9 @@ import React, {
   TextInput,
   TouchableHighlight,
   LinkingIOS,
-  Picker
+  Picker,
+  Animated,
+  LayoutAnimation
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -23,17 +25,18 @@ var postStyles = null;
 
 
 class Post extends Component {
-  constructor (props, context) {
-    super(props, context)
+  constructor (props: any) {
+    super(props)
     this.state = {
       expanded: false,
       investAmount: 50,
-      expandedInvest: false
+      expandedInvest: false,
+      aniHeight: 0,
     }
   }
 
   componentDidMount() {
-    // this.calcMax(this);
+    LayoutAnimation.easeInEaseOut();
   }
 
   openLink(url) {
@@ -66,19 +69,25 @@ class Post extends Component {
     var expandedInvest = self.state.expandedInvest;
     expandedInvest = !expandedInvest;
     self.setState({'expandedInvest': expandedInvest});
+    if (expandedInvest) {
+      LayoutAnimation.easeInEaseOut();
+        self.setState({aniHeight: 200})
+    } else {
+      LayoutAnimation.easeInEaseOut();
+        self.setState({aniHeight: 0})
+    }
   }
 
   invest(toggle, functionBool) {
-    console.log(toggle, functionBool)
     var self = this;
     var invest = {
       postId: this.props.post._id,
       sign: 1,
       amount: self.state.investAmount
     };
-    console.log(invest, 'invest in component')
     if (functionBool) this.props.actions.invest(this.props.auth.token, invest);
     if (toggle) this.toggleInvest(this);
+    self.setState({investAmount: 50});
   }
 
 
@@ -178,15 +187,18 @@ class Post extends Component {
             {link ? <Text>from {self.extractDomain(link)}  <Text style={styles.active} onPress={self.openLink.bind(null, link)}>Open Article</Text></Text> : null}
             {body ? <Text>{body}</Text> : null}
             <Text>Current value: {value}</Text>
-              <Picker
-              style={expandedInvest ? styles.expandedInvest : styles.hiddenInvest}
+
+            <Picker
+              style={[styles.picker ,{height: self.state.aniHeight}]}
               selectedValue={self.state.investAmount}
               onValueChange={(investAmount) => this.setState({investAmount: investAmount})}>
               {pickerArray}
             </Picker>
-
-            <Button style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Button>
-
+            <View style={expandedInvest ? styles.buttonContainerExpanded : styles.buttonContainer}>
+              {expandedInvest ? <Button onPress={self.toggleInvest.bind(self)}>Cancel</Button> : null}
+              {expandedInvest ? <Button style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Button> : null}
+              {!expandedInvest ? <Button style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Button> : null}
+            </View>
             {!expanded ? <Text onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
             {expanded ?
               <View>
@@ -202,6 +214,12 @@ class Post extends Component {
 export default Post;
 
 const localStyles = StyleSheet.create({
+  opacZero: {
+    opacity: 0
+  },
+  picker: {
+    overflow: 'hidden'
+  },
   expandedInvest: {
     height: 200,
   },
@@ -220,6 +238,18 @@ const localStyles = StyleSheet.create({
   postImage: {
     height: 200,
     width: fullWidth,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+  buttonContainerExpanded: {
+flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-around',
+    alignItems: 'center'
   },
   investButton: {
     textAlign: 'left',
