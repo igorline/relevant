@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {index: null, userPosts: null, postError: null, activePost: null, pickerStatus: false, investId: null};
+const initialState = {index: null, userPosts: null, postError: null, activePost: null, pickerStatus: false, investPost: null};
 
 const updatePostElement = (array, post) => {
   var index = array.findIndex(function(el){
@@ -26,14 +26,14 @@ export default function auth(state = initialState, action) {
     case types.OPEN_INVEST: {
       return Object.assign({}, state, {
         'pickerStatus': true,
-        'investId': action.payload
+        'investPost': action.payload
       })
     }
 
     case types.CLOSE_INVEST: {
       return Object.assign({}, state, {
         'pickerStatus': false,
-        'investId': null
+        'investPost': null
       })
     }
 

@@ -33,10 +33,10 @@ class PickerComponent extends Component {
 
   }
 
-    invest() {
+  invest() {
     var self = this;
     var invest = {
-      postId: this.props.posts.investId,
+      postId: this.props.posts.investPost._id,
       sign: 1,
       amount: self.state.investAmount
     };
@@ -53,6 +53,12 @@ class PickerComponent extends Component {
     var styles = {...localStyles, ...parentStyles};
     var balance = self.props.auth.user.balance;
     var pickerArray = [];
+    var investPost = null;
+    var investors = null;
+    if (self.props.posts.investPost) {
+      investPost = self.props.posts.investPost;
+      if (investPost.investors) investors = investPost.investors;
+    }
     if (balance >= 50) pickerArray.push(<Picker.Item label='50' value={50} />);
     if (balance >= 100) pickerArray.push(<Picker.Item label='100' value={100} />);
     if (balance >= 500) pickerArray.push(<Picker.Item label='500' value={500} />);
@@ -60,6 +66,13 @@ class PickerComponent extends Component {
     if (balance >= 5000) pickerArray.push(<Picker.Item label='5000' value={5000} />);
     if (balance >= 10000) pickerArray.push(<Picker.Item label='10000' value={10000} />);
 
+    let investButtonString = "Sumbit";
+    if (investors) {
+      var invested = investors.filter(el => {
+        return el.user == self.props.auth.user._id
+      })
+      if (invested.length) investButtonString = "Change investment"
+    }
 
     return (
           <View pointerEvents={!pickerStatus ? 'none' : ''} style={[styles.pickerContainer, !pickerStatus ? styles.displayNone : '']}>
@@ -70,7 +83,7 @@ class PickerComponent extends Component {
             </Picker>
             <View style={[styles.buttonParent, styles.row]}>
             <Button onPress={self.props.actions.closeInvest}>Close</Button>
-            <Button onPress={self.invest.bind(this)}>Sumbit</Button>
+            <Button onPress={self.invest.bind(this)}>{investButtonString}</Button>
             </View>
           </View>
     );

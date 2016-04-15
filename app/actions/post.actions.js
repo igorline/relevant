@@ -33,11 +33,11 @@ export function setPosts(posts) {
     };
 }
 
-export function openInvest(postId) {
-  console.log(postId, 'open ivest postid')
+export function openInvest(post) {
+  console.log(post, 'open invest for post')
     return {
         type: types.OPEN_INVEST,
-        payload: postId
+        payload: post
     };
 }
 
@@ -149,7 +149,9 @@ export function getActivePost(postId) {
 
 export function invest(token, invest){
   console.log("INVESTING", invest)
+
   return dispatch => {
+    // dispatch(null);
     fetch( apiServer + 'post/' + invest.postId + '/invest', {
       method: 'PUT',
       credentials: 'include',

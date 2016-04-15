@@ -26,15 +26,15 @@ class Post extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      expanded: false
+      expanded: false,
+      investAmount: 50,
+      expandedInvest: false
     }
   }
 
   componentDidMount() {
     // this.calcMax(this);
   }
-
-
 
   openLink(url) {
       LinkingIOS.openURL(url)
@@ -45,7 +45,6 @@ class Post extends Component {
   }
 
   extractDomain(url) {
-    console.log(url, 'extract url')
     var domain;
     if (url.indexOf("://") > -1) {
       domain = url.split('/')[2];
@@ -62,19 +61,26 @@ class Post extends Component {
     return noPrefix;
   }
 
-  // invest() {
-  //   var invest = {
-  //     postId: this.props.post._id,
-  //     sign: 1,
-  //     amount: 1
-  //   };
-  //   this.props.actions.invest(this.props.auth.token, invest);
-  // }
+  toggleInvest() {
+    var self = this;
+    var expandedInvest = self.state.expandedInvest;
+    expandedInvest = !expandedInvest;
+    self.setState({'expandedInvest': expandedInvest});
+  }
 
-  // initInvest() {
-  //   var postId = this.props.post._id;
+  invest(toggle, functionBool) {
+    console.log(toggle, functionBool)
+    var self = this;
+    var invest = {
+      postId: this.props.post._id,
+      sign: 1,
+      amount: self.state.investAmount
+    };
+    console.log(invest, 'invest in component')
+    if (functionBool) this.props.actions.invest(this.props.auth.token, invest);
+    if (toggle) this.toggleInvest(this);
+  }
 
-  // }
 
   render() {
     var self = this;
@@ -93,10 +99,13 @@ class Post extends Component {
     var balance = null;
     var postStyles = this.props.styles;
     var user = null;
+    var value = 0;
+    var functionBool = false;
     var expanded = this.state.expanded;
     if (this.props.auth.user) user = this.props.auth.user;
     if (user && user.balance) balance = user.balance;
-    var styles = {...localStyles, ...postStyles, ...globalStyles};
+    var styles = {...localStyles, ...postStyles};
+    var pickerArray = [];
 
     if (this.props.post) {
       post = this.props.post;
@@ -105,12 +114,20 @@ class Post extends Component {
       if (post.title) title = post.title;
       if (post.link) link = post.link;
       if (post.body) body = post.body;
+      if (post.value) value = post.value;
       if (post.user) {
         postUser = post.user;
         if (postUser.image) postUserImage = postUser.image;
         if (postUser.name) postUserName = postUser.name;
       }
     }
+
+    if (balance >= 50) pickerArray.push(<Picker.Item label='50' value={50} />);
+    if (balance >= 100) pickerArray.push(<Picker.Item label='100' value={100} />);
+    if (balance >= 500) pickerArray.push(<Picker.Item label='500' value={500} />);
+    if (balance >= 1000) pickerArray.push(<Picker.Item label='1000' value={1000} />);
+    if (balance >= 5000) pickerArray.push(<Picker.Item label='5000' value={5000} />);
+    if (balance >= 10000) pickerArray.push(<Picker.Item label='10000' value={10000} />);
 
     if (postUserImage) {
       postUserImageEl = (<Image source={{uri: postUserImage}} style={styles.userImage} />);
@@ -120,13 +137,32 @@ class Post extends Component {
       imageEl = (<Image resizeMode={'cover'} source={{uri: image}} style={styles.postImage} />);
     }
 
-    let investButtonString = "Invest";
-    if( post.investors){
+    var expandedInvest = self.state.expandedInvest;
+    var investButtonString = "Inve$t";
+    if (expandedInvest) investButtonString = "$ubmit";
+    var previouslyInvested = false;
+    var toggleBool = null;
+
+    if (post.investors) {
       var invested = post.investors.filter(el => {
         return el.user == user._id
       })
-      if (invested.length) investButtonString = "UnInvest"
+      if (invested.length) {
+        investButtonString = "UnInve$t";
+        previouslyInvested = true;
+        toggleBool = false;
+        functionBool = true;
+      } else {
+        if (expandedInvest) {
+          toggleBool = true;
+          functionBool = true;
+        } else {
+          toggleBool = true;
+          functionBool = false;
+        }
+      }
     }
+
 
     return (
         <View style={[styles.postContainer]}>
@@ -141,7 +177,16 @@ class Post extends Component {
             <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
             {link ? <Text>from {self.extractDomain(link)}  <Text style={styles.active} onPress={self.openLink.bind(null, link)}>Open Article</Text></Text> : null}
             {body ? <Text>{body}</Text> : null}
-            <Button style={styles.investButton} onPress={self.props.actions.openInvest.bind(self, self.props.post._id)}>Inve$t</Button>
+            <Text>Current value: {value}</Text>
+              <Picker
+              style={expandedInvest ? styles.expandedInvest : styles.hiddenInvest}
+              selectedValue={self.state.investAmount}
+              onValueChange={(investAmount) => this.setState({investAmount: investAmount})}>
+              {pickerArray}
+            </Picker>
+
+            <Button style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Button>
+
             {!expanded ? <Text onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
             {expanded ?
               <View>
@@ -157,6 +202,13 @@ class Post extends Component {
 export default Post;
 
 const localStyles = StyleSheet.create({
+  expandedInvest: {
+    height: 200,
+  },
+  hiddenInvest: {
+    height: 0,
+    overflow: 'hidden'
+  },
   postContainer: {
     marginBottom: 25,
     textAlign: 'left',
@@ -172,6 +224,8 @@ const localStyles = StyleSheet.create({
   investButton: {
     textAlign: 'left',
     paddingTop: 10,
+    paddingLeft: 0,
+    padingRight: 0,
     paddingBottom: 10
   },
   userImage: {
