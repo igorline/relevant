@@ -73,18 +73,18 @@ const globalStyles = StyleSheet.create({
     width: fullWidth,
     padding: 20
   },
-  buttonContainer: {
-    padding:10,
-    height:45,
-    overflow:'hidden',
-    borderRadius:4,
-    backgroundColor: 'white',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'black',
-    width:160,
-    marginTop:20,
-    marginBottom:20,
-  },
+  // buttonContainer: {
+  //   padding:10,
+  //   height:45,
+  //   overflow:'hidden',
+  //   borderRadius:4,
+  //   backgroundColor: 'white',
+  //   borderWidth: StyleSheet.hairlineWidth,
+  //   borderColor: 'black',
+  //   width:160,
+  //   marginTop:20,
+  //   marginBottom:20,
+  // },
   button: {
     fontSize: 20,
     color: 'black'

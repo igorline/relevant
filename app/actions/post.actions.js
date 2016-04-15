@@ -33,20 +33,6 @@ export function setPosts(posts) {
     };
 }
 
-export function openInvest(post) {
-  console.log(post, 'open invest for post')
-    return {
-        type: types.OPEN_INVEST,
-        payload: post
-    };
-}
-
-export function closeInvest() {
-    return {
-        type: types.CLOSE_INVEST,
-    };
-}
-
 export function setRecentPosts(posts) {
     return {
         type: types.SET_RECENT_POSTS,

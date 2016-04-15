@@ -19,7 +19,6 @@ import * as postActions from '../actions/post.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import DiscoverUser from '../components/discoverUser.component';
-import PickerComponent from '../components/picker.component';
 
 class Discover extends Component {
   constructor (props, context) {
