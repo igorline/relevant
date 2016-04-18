@@ -79,16 +79,16 @@ export
 function loginUser(user, redirect) {
     return dispatch => {
         dispatch(loginUserRequest());
-        fetch('http://'+process.env.SERVER_IP+':3000/auth/local', {
+        return fetch('http://'+process.env.SERVER_IP+':3000/auth/local', {
             credentials: 'include',
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: user
+            body: JSON.stringify(user)
         })
-        .then(utils.fetchError.handleErrors)
+        //.then(utils.fetchError.handleErrors)
         .then((response) => response.json())
         .then((responseJSON) => {
             if (responseJSON.token) {
@@ -96,48 +96,51 @@ function loginUser(user, redirect) {
                     .then( ()  => {
                         dispatch(loginUserSuccess(responseJSON.token));
                         dispatch(getUser(responseJSON.token, true));
+                        return {status: true};
                     })
             } else {
                 dispatch(loginUserFailure(responseJSON.message));
+                return {status: false, message: responseJSON.message};
             }
         })
         .catch(error => {
             console.log(error, 'error');
             dispatch(loginUserFailure('Server error'));
+             return {status: false, message: 'Server error'};
         });
     }
 }
 
-export
-function loginJay(user, redirect) {
-    return function(dispatch) {
-        dispatch(loginUserRequest());
-        fetch('http://'+process.env.SERVER_IP+':3000/auth/local', {
-            credentials: 'include',
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({email: 'jaygoss@gmail.com', password: 'test'})
-        })
-        .then(utils.fetchError.handleErrors)
-        .then((response) => response.json())
-        .then((responseJSON) => {
-            if (responseJSON.token) {
-                AsyncStorage.setItem('token', responseJSON.token)
-                    dispatch(loginUserSuccess(responseJSON.token));
-                    dispatch(getUser(responseJSON.token, true));
-            } else {
-                dispatch(loginUserFailure(responseJSON.message));
-            }
-        })
-        .catch((error) => {
-            console.log(error, 'error');
-            dispatch(loginUserFailure('Server error'));
-        });
-    }
-}
+// export
+// function loginJay(user, redirect) {
+//     return function(dispatch) {
+//         dispatch(loginUserRequest());
+//         fetch('http://'+process.env.SERVER_IP+':3000/auth/local', {
+//             credentials: 'include',
+//             method: 'POST',
+//             headers: {
+//                 'Accept': 'application/json',
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({email: 'jaygoss@gmail.com', password: 'test'})
+//         })
+//         .then(utils.fetchError.handleErrors)
+//         .then((response) => response.json())
+//         .then((responseJSON) => {
+//             if (responseJSON.token) {
+//                 AsyncStorage.setItem('token', responseJSON.token)
+//                     dispatch(loginUserSuccess(responseJSON.token));
+//                     dispatch(getUser(responseJSON.token, true));
+//             } else {
+//                 dispatch(loginUserFailure(responseJSON.message));
+//             }
+//         })
+//         .catch((error) => {
+//             console.log(error, 'error');
+//             dispatch(loginUserFailure('Server error'));
+//         });
+//     }
+// }
 
 export
 function createUser(user, redirect) {
@@ -150,7 +153,7 @@ function createUser(user, redirect) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: user
+            body: JSON.stringify(user)
         })
         .then(utils.fetchError.handleErrors)
         .then((response) => response.json())
@@ -176,8 +179,12 @@ function getUser(token, redirect) {
             console.log('no token')
             AsyncStorage.getItem('token')
                 .then(token => {
-                    console.log("GOT TOKEN", token)
-                    return fetchUser(token);
+                    console.log("GOT TOKEN", token);
+                    if (token) {
+                        return fetchUser(token);
+                    } else {
+                        return;
+                    }
                 })
                 .catch(err => {
                     if(err) return dispatch(setUser());

@@ -7,6 +7,7 @@ import React, {
   View,
   TextInput,
   Image,
+  Animated
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -15,12 +16,50 @@ import Login from '../components/login.component';
 import SignUp from '../components/signup.component';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
+import * as notifActions from '../actions/notif.actions';
 import { bindActionCreators } from 'redux';
 import { globalStyles } from '../styles/global';
+import '../utils/socketConfig';
+import io from 'socket.io-client/socket.io';
+import Notification from '../components/notification.component';
 
 class Auth extends Component {
+
+    constructor (props, context) {
+    super(props, context)
+     this.socket = io('localhost:3000', {jsonp: false});
+    this.state = {
+      notifOpac: new Animated.Value(0),
+    }
+  }
+
+
   componentDidMount() {
     this.props.actions.getUser();
+    this.socket.on('connect', function(){
+      console.log('connect')
+    });
+  }
+
+  componentDidUpdate() {
+    var self = this;
+    if (this.props.notif.active) {
+      this.flashNotif(self.props.notif.text, self.props.notif.bool);
+    }
+  }
+
+  flashNotif(text, bool) {
+    var self = this;
+     Animated.timing(
+       self.state.notifOpac,
+       {toValue: 1}
+     ).start();
+    setTimeout(function() {
+       Animated.timing(
+       self.state.notifOpac,
+       {toValue: 0}
+     ).start();
+    }, 2000);
   }
 
   render() {
@@ -88,10 +127,13 @@ class Auth extends Component {
           {tagline}
         </Text>
         <Text>
-          {message}
+          {currentRoute == 'Auth' ? message : null}
         </Text>
         {auth}
         {links}
+          <Animated.View pointerEvents={'none'} style={[styles.notificationContainer, {opacity: self.state.notifOpac}]}>
+          <Notification bool={self.props.notif.bool} message={self.props.notif.text} {...self.props} />
+        </Animated.View>
       </View>
     );
   }
@@ -107,13 +149,14 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     users: state.user,
-    router: state.routerReducer
+    router: state.routerReducer,
+    notif: state.notif
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...authActions, ...postActions }, dispatch)
+    actions: bindActionCreators({...authActions, ...postActions, ...notifActions }, dispatch)
   }
 }
 

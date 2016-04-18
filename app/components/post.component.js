@@ -22,6 +22,7 @@ import * as userActions from '../actions/user.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var postStyles = null;
+var moment = require('moment');
 
 
 class Post extends Component {
@@ -31,12 +32,32 @@ class Post extends Component {
       expanded: false,
       investAmount: 50,
       expandedInvest: false,
-      aniHeight: 0,
+      aniHeight: new Animated.Value(0),
+      posted: null,
+      passed: false,
+      timeUntilString: null,
+      timePassedPercent: null
     }
   }
 
   componentDidMount() {
-    LayoutAnimation.easeInEaseOut();
+    this.props.post.created_at;
+    this.checkTime(this)
+  }
+
+  checkTime() {
+    var self = this;
+    var postTime = moment(self.props.post.created_at);
+    var fromNow = postTime.fromNow();
+    var timeNow = moment();
+    var dif = timeNow.diff(postTime);
+    var threshold = 21600000;
+    if (dif >= threshold) {
+      self.setState({passed: true});
+    } else {
+      self.setState({timeUntilString: moment.duration(threshold - dif).humanize(), timePassedPercent: dif/threshold})
+    }
+    self.setState({posted: fromNow});
   }
 
   openLink(url) {
@@ -70,11 +91,21 @@ class Post extends Component {
     expandedInvest = !expandedInvest;
     self.setState({'expandedInvest': expandedInvest});
     if (expandedInvest) {
-      LayoutAnimation.easeInEaseOut();
-        self.setState({aniHeight: 200})
+      Animated.timing(
+        self.state.aniHeight,
+        {
+          toValue: 200,
+          duration: 500
+        }
+      ).start();
     } else {
-      LayoutAnimation.easeInEaseOut();
-        self.setState({aniHeight: 0})
+      Animated.timing(
+        self.state.aniHeight,
+        {
+          toValue: 0,
+          duration: 500
+        }
+      ).start();
     }
   }
 
@@ -106,6 +137,7 @@ class Post extends Component {
     var postUserName = null;
     var body = null;
     var balance = null;
+    var createdAt = null;
     var postStyles = this.props.styles;
     var user = null;
     var value = 0;
@@ -124,6 +156,7 @@ class Post extends Component {
       if (post.link) link = post.link;
       if (post.body) body = post.body;
       if (post.value) value = post.value;
+      if (post.created_at) createdAt = post.created_at;
       if (post.user) {
         postUser = post.user;
         if (postUser.image) postUserImage = postUser.image;
@@ -186,14 +219,15 @@ class Post extends Component {
             <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
             {link ? <Text>from {self.extractDomain(link)}  <Text style={styles.active} onPress={self.openLink.bind(null, link)}>Open Article</Text></Text> : null}
             {body ? <Text>{body}</Text> : null}
-            <Text>Current value: {value}</Text>
-
-            <Picker
-              style={[styles.picker ,{height: self.state.aniHeight}]}
-              selectedValue={self.state.investAmount}
-              onValueChange={(investAmount) => this.setState({investAmount: investAmount})}>
-              {pickerArray}
-            </Picker>
+            <Text>Posted {self.state.posted}</Text>
+            {self.state.passed ? <Text>Current value: {value}</Text> : <View><Text>Value available in {self.state.timeUntilString}{'\n'}{Math.round(self.state.timePassedPercent*100)}% complete</Text></View>}
+            <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
+              <Picker
+                selectedValue={self.state.investAmount}
+                onValueChange={(investAmount) => this.setState({investAmount: investAmount})}>
+                {pickerArray}
+              </Picker>
+            </Animated.View>
             <View style={expandedInvest ? styles.buttonContainerExpanded : styles.buttonContainer}>
               {expandedInvest ? <Button onPress={self.toggleInvest.bind(self)}>Cancel</Button> : null}
               {expandedInvest ? <Button style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Button> : null}
@@ -217,9 +251,9 @@ const localStyles = StyleSheet.create({
   opacZero: {
     opacity: 0
   },
-  picker: {
-    overflow: 'hidden'
-  },
+  // picker: {
+  //   overflow: 'hidden'
+  // },
   expandedInvest: {
     height: 200,
   },

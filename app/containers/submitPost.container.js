@@ -6,23 +6,30 @@ import React, {
   Text,
   View,
   Image,
-  TextInput
+  TextInput,
+  LayoutAnimation,
+  Animated
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
+import * as notifActions from '../actions/notif.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import * as utils from '../utils';
+import Notification from '../components/notification.component'
 
 class SubmitPost extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       postLink: null,
-      postBody: null
+      postBody: null,
+      notifOpac: new Animated.Value(0),
+      notifText: null,
+      bool: false
     }
   }
 
@@ -33,23 +40,56 @@ class SubmitPost extends Component {
     var self = this;
     var link = self.state.postLink;
     var body = self.state.postBody;
-    utils.post.generate(link, body, self.props.auth.token);
-    self.setState({postText: null, postTitle: null});
+    utils.post.generate(link, body, self.props.auth.token).then(function(results){
+      if (!results) {
+         self.props.actions.setNotif(true, 'Post error please try again', false)
+      } else {
+        self.props.actions.setNotif(true, 'Posted', true)
+      }
+    });
+    self.setState({postText: null, postLink: null});
   }
+
+
+  componentDidUpdate() {
+    var self = this;
+    if (this.props.notif.active) {
+      this.flashNotif(self.props.notif.text, self.props.notif.bool);
+    }
+  }
+
+  flashNotif(text, bool) {
+    var self = this;
+     Animated.timing(
+       self.state.notifOpac,
+       {toValue: 1}
+     ).start();
+    setTimeout(function() {
+       Animated.timing(
+       self.state.notifOpac,
+       {toValue: 0}
+     ).start();
+    }, 2000);
+  }
+
 
   render() {
     var self = this;
     var user = null;
+    var postError = self.state.postError;
     if (self.props.auth) {
       if (self.props.auth.user) user = self.props.auth.user;
     }
 
     return (
       <View style={styles.fullContainer}>
-      <TextInput style={[styles.font20, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.linkText} returnKeyType='done' />
-        <View style={styles.divider}></View>
-       <TextInput style={[styles.postInput, styles.font20]} placeholder='Relevant text here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' />
-      <Button style={styles.postSubmit} onPress={self.post.bind(self)}>Submit</Button>
+        <TextInput style={[styles.font20, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.postLink} returnKeyType='done' />
+          <View style={styles.divider}></View>
+         <TextInput style={[styles.postInput, styles.font20]} placeholder='Relevant text here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' />
+        <Button style={styles.postSubmit} onPress={self.post.bind(self)}>Submit</Button>
+         <Animated.View pointerEvents={'none'} style={[styles.notificationContainer, {opacity: self.state.notifOpac}]}>
+          <Notification bool={self.props.notif.bool} message={self.props.notif.text} {...self.props} />
+        </Animated.View>
       </View>
     );
   }
@@ -58,13 +98,14 @@ class SubmitPost extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    router: state.routerReducer
+    router: state.routerReducer,
+    notif: state.notif
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...authActions, ...postActions}, dispatch)
+    actions: bindActionCreators({...authActions, ...postActions, ...notifActions}, dispatch)
   }
 }
 
@@ -73,6 +114,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(SubmitPost)
 const localStyles = StyleSheet.create({
   postSubmit: {
     padding: 10
+  },
+  postError: {
+    color: 'red',
   },
   postInput: {
     flex: 1,
