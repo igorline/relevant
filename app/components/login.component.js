@@ -5,15 +5,20 @@ import React, {
   StyleSheet,
   Text,
   View,
-  TextInput
+  TextInput,
+  Animated
 } from 'react-native';
 var Button = require('react-native-button');
+import {reduxForm} from 'redux-form';
+import Notification from './notification.component';
 
 class Login extends Component {
 
   constructor (props, context) {
     super(props, context)
     this.state = {
+      bool: false,
+      notifText: null
     }
   }
 
@@ -24,11 +29,23 @@ class Login extends Component {
   componentDidUpdate() {
   }
 
+  login() {
+    var self = this;
+    this.props.actions.loginUser({email: self.state.email, password: self.state.password}).then(function(results) {
+      if (!results.status) {
+        self.props.actions.setNotif(true, results.message, false)
+        // self.setState({bool: false, notifText: results.message});
+        // flashNotif(results.message, false)
+      }
+    })
+  }
+
   render() {
     var self = this;
     const { loginUser } = this.props.actions;
     var message = '';
     var styles = this.props.styles;
+    console.log(styles, 'styles')
     this.props.auth.statusText ? message = this.props.auth.statusText : null;
 
     return (
@@ -43,7 +60,7 @@ class Login extends Component {
         </View>
 
         <View style={styles.margin}>
-          <Button onPress={loginUser.bind(null, JSON.stringify({email: self.state.email, password: self.state.password}))} style={styles.button}>Submit</Button>
+          <Button onPress={self.login.bind(this)} style={styles.button}>Submit</Button>
         </View>
 
       </View>

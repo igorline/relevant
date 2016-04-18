@@ -24,6 +24,15 @@ const globalStyles = StyleSheet.create({
   textCenter: {
     textAlign: 'center'
   },
+  notificationContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   input: {
     borderColor: '#cccccc',
     borderStyle: 'solid',
@@ -86,8 +95,8 @@ const globalStyles = StyleSheet.create({
   //   marginBottom:20,
   // },
   button: {
-    fontSize: 20,
-    color: 'black'
+    // fontSize: 20,
+    color: '#007aff'
   }
 });
 

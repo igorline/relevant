@@ -3,7 +3,7 @@ import { toS3Advanced } from './s3';
 var cheerio = require('cheerio-without-node-native');
 
 export function generate(link, body, token) {
- fetch(link, {
+ return fetch(link, {
       method: 'GET',
   })
   .then((response) => {
@@ -53,7 +53,7 @@ export function generate(link, body, token) {
   }
 
   if (image) {
-    toS3Advanced(image).then(function(results){
+    return toS3Advanced(image).then(function(results){
       console.log(results, 's3 results')
       if (results.success) {
         var postBody = {
@@ -63,9 +63,10 @@ export function generate(link, body, token) {
           description: description,
           image: results.url
         };
-        submitPost(postBody, token);
+        return submitPost(postBody, token);
       } else {
         console.log('err');
+        return false;
       }
     })
   } else {
@@ -76,10 +77,11 @@ export function generate(link, body, token) {
       description: description,
       image: image
     };
-    submitPost(postBody, token);
+    return submitPost(postBody, token);
   }
   })
   .catch((error) => {
       console.log(error, 'error');
+      return false;
   });
 }
