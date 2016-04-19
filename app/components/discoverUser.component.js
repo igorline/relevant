@@ -45,7 +45,6 @@ class DiscoverUser extends Component {
     var styles = {...localStyles, ...parentStyles};
     var image = null;
     var imageEl = null;
-    console.log(self, 'discoverUser');
     if (user.image) {
       image = user.image;
       imageEl = (<Image style={styles.discoverAvatar} source={{uri: image}} />)

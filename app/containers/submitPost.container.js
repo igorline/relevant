@@ -40,6 +40,17 @@ class SubmitPost extends Component {
     var self = this;
     var link = self.state.postLink;
     var body = self.state.postBody;
+
+    if (!link) {
+       self.props.actions.setNotif(true, 'Add url', false);
+       return;
+    }
+
+    if (!body) {
+      self.props.actions.setNotif(true, 'Add relevant text', false);
+      return;
+    }
+
     utils.post.generate(link, body, self.props.auth.token).then(function(results){
       if (!results) {
          self.props.actions.setNotif(true, 'Post error please try again', false)
@@ -52,24 +63,7 @@ class SubmitPost extends Component {
 
 
   componentDidUpdate() {
-    var self = this;
-    if (this.props.notif.active) {
-      this.flashNotif(self.props.notif.text, self.props.notif.bool);
-    }
-  }
 
-  flashNotif(text, bool) {
-    var self = this;
-     Animated.timing(
-       self.state.notifOpac,
-       {toValue: 1}
-     ).start();
-    setTimeout(function() {
-       Animated.timing(
-       self.state.notifOpac,
-       {toValue: 0}
-     ).start();
-    }, 2000);
   }
 
 
@@ -87,9 +81,9 @@ class SubmitPost extends Component {
           <View style={styles.divider}></View>
          <TextInput style={[styles.postInput, styles.font20]} placeholder='Relevant text here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' />
         <Button style={styles.postSubmit} onPress={self.post.bind(self)}>Submit</Button>
-         <Animated.View pointerEvents={'none'} style={[styles.notificationContainer, {opacity: self.state.notifOpac}]}>
-          <Notification bool={self.props.notif.bool} message={self.props.notif.text} {...self.props} />
-        </Animated.View>
+          <View pointerEvents={'none'} style={styles.notificationContainer}>
+          <Notification />
+        </View>
       </View>
     );
   }

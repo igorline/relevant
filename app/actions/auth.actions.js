@@ -201,7 +201,6 @@ function getUser(token, redirect) {
             //.then(utils.fetchError.handleErrors)
             .then((response) => response.json())
             .then((responseJSON) => {
-                console.log('fetchuser response', responseJSON)
                 dispatch(loginUserSuccess(token));
                 dispatch(setUser(responseJSON));
                 if (redirect) dispatch(Actions.Profile);

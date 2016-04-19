@@ -1,9 +1,9 @@
 import * as types from '../actions/actionTypes';
 
 const initialState = {bool: false, text: null, active: false};
+const REPLACE = 'REPLACE';
 
 export default function auth(state = initialState, action) {
-  console.log(action.type)
   switch (action.type) {
 
     case types.SET_NOTIF: {
