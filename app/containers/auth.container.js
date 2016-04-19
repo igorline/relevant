@@ -59,6 +59,7 @@ class Auth extends Component {
        self.state.notifOpac,
        {toValue: 0}
      ).start();
+       self.props.actions.setNotif(false, null, false)
     }, 2000);
   }
 
