@@ -14,7 +14,6 @@ const updatePostElement = (array, post) => {
 }
 
 export default function auth(state = initialState, action) {
-  console.log(action.type)
   switch (action.type) {
 
     case types.SET_POSTS: {

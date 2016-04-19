@@ -34,8 +34,6 @@ class Login extends Component {
     this.props.actions.loginUser({email: self.state.email, password: self.state.password}).then(function(results) {
       if (!results.status) {
         self.props.actions.setNotif(true, results.message, false)
-        // self.setState({bool: false, notifText: results.message});
-        // flashNotif(results.message, false)
       }
     })
   }
@@ -45,7 +43,6 @@ class Login extends Component {
     const { loginUser } = this.props.actions;
     var message = '';
     var styles = this.props.styles;
-    console.log(styles, 'styles')
     this.props.auth.statusText ? message = this.props.auth.statusText : null;
 
     return (

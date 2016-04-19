@@ -8,7 +8,8 @@ import React, {
   Image,
   TextInput,
   TouchableHighlight,
-  LinkingIOS
+  LinkingIOS,
+  Animated
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -16,6 +17,7 @@ import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as userActions from '../actions/user.actions';
+import * as notifActions from '../actions/notif.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
@@ -23,11 +25,31 @@ class Notification extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      notifOpac: new Animated.Value(0),
     }
   }
 
-  componentDidMount() {
+  componentDidUpdate() {
+    var self = this;
+    if (this.props.notif.active) {
+      this.flashNotif();
+    }
   }
+
+  flashNotif() {
+    var self = this;
+     Animated.timing(
+       self.state.notifOpac,
+       {toValue: 1}
+     ).start();
+    setTimeout(function() {
+       Animated.timing(
+       self.state.notifOpac,
+       {toValue: 0}
+     ).start();
+    }, 2000);
+  }
+
 
   render() {
     var self = this;
@@ -37,14 +59,34 @@ class Notification extends Component {
     var bool = self.props.bool;
 
     return (
-      <View style={[styles.parent, bool ? styles.green : styles.red]}>
-        <Text style={styles.notifText}>{self.props.message}</Text>
-      </View>
+      <Animated.View style={[styles.parent, bool ? styles.green : styles.red, {opacity: self.state.notifOpac}]}>
+        <Text style={styles.notifText}>{self.props.notif.text}</Text>
+      </Animated.View>
     );
   }
 }
 
-export default Notification;
+// export default Notification;
+
+
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    posts: state.posts,
+    users: state.user,
+    router: state.routerReducer,
+    notif: state.notif
+   }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({...authActions, ...postActions, ...notifActions }, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Notification)
+
 
 const localStyles = StyleSheet.create({
 parent: {

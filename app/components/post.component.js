@@ -208,6 +208,13 @@ class Post extends Component {
       }
     }
 
+    var investButtonEl = null;
+    if (!expandedInvest) {
+      if (post.user._id != self.props.auth.user._id) {
+        investButtonEl = (<Button style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Button>);
+      }
+    }
+
 
     return (
         <View style={[styles.postContainer]}>
@@ -234,7 +241,7 @@ class Post extends Component {
             <View style={expandedInvest ? styles.buttonContainerExpanded : styles.buttonContainer}>
               {expandedInvest ? <Button onPress={self.toggleInvest.bind(self)}>Cancel</Button> : null}
               {expandedInvest ? <Button style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Button> : null}
-              {!expandedInvest ? <Button style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Button> : null}
+            {investButtonEl}
             </View>
             {!expanded ? <Text onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
             {expanded ?

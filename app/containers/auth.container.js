@@ -29,7 +29,7 @@ class Auth extends Component {
     super(props, context)
      this.socket = io('localhost:3000', {jsonp: false});
     this.state = {
-      notifOpac: new Animated.Value(0),
+      // notifOpac: new Animated.Value(0),
     }
   }
 
@@ -42,25 +42,7 @@ class Auth extends Component {
   }
 
   componentDidUpdate() {
-    var self = this;
-    if (this.props.notif.active) {
-      this.flashNotif(self.props.notif.text, self.props.notif.bool);
-    }
-  }
 
-  flashNotif(text, bool) {
-    var self = this;
-     Animated.timing(
-       self.state.notifOpac,
-       {toValue: 1}
-     ).start();
-    setTimeout(function() {
-       Animated.timing(
-       self.state.notifOpac,
-       {toValue: 0}
-     ).start();
-       self.props.actions.setNotif(false, null, false)
-    }, 2000);
   }
 
   render() {
@@ -132,9 +114,9 @@ class Auth extends Component {
         </Text>
         {auth}
         {links}
-          <Animated.View pointerEvents={'none'} style={[styles.notificationContainer, {opacity: self.state.notifOpac}]}>
-          <Notification bool={self.props.notif.bool} message={self.props.notif.text} {...self.props} />
-        </Animated.View>
+        <View pointerEvents={'none'} style={styles.notificationContainer}>
+          <Notification />
+        </View>
       </View>
     );
   }
