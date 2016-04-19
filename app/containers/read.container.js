@@ -28,22 +28,26 @@ class Read extends Component {
   }
 
   componentDidMount() {
-    //this.props.actions.getPosts();
+    var self = this;
+    this.props.actions.getFeed(this.props.auth.user._id);
+  }
+
+  componentDidUpdate() {
   }
 
   render() {
     var self = this;
     var postsEl = null;
     var posts = null;
-    //console.log(self, 'read self')
-    // if (self.props.posts.index) {
-    //   posts = self.props.posts.index;
-    //   postsEl = posts.map(function(post, i) {
-    //     return (
-    //         <Post {...self.props} post={post} styles={styles} />
-    //     );
-    //   });
-    // }
+    if (self.props.posts.feed) {
+      posts = self.props.posts.feed;
+      postsEl = posts.map(function(post) {
+        return (
+          <Post post={post} {...self.props} styles={styles} />
+        );
+      });
+    }
+
 
     return (
       <ScrollView style={[styles.readContainer]}>
@@ -57,6 +61,7 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
+    user: state.user,
     router: state.routerReducer
    }
 }

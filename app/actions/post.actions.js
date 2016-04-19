@@ -4,6 +4,39 @@ var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = req
 import * as utils from '../utils';
 var apiServer = 'http://'+process.env.SERVER_IP+':3000/api/'
 
+export function getFeed(id) {
+  return function(dispatch) {
+    fetch('http://'+process.env.SERVER_IP+':3000/api/post/feed', {
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({id})
+    })
+    //.then(utils.fetchError.handleErrors)
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      console.log(responseJSON, 'get feed response');
+      dispatch(setFeed(responseJSON));
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+    });
+  }
+}
+
+export
+function setFeed(feed) {
+    return {
+        type: types.SET_FEED,
+        payload: feed
+    };
+}
+
+
+
 export function getPosts() {
   return function(dispatch) {
     fetch('http://'+process.env.SERVER_IP+':3000/api/post/', {
@@ -87,14 +120,11 @@ export function submitPost(post, token) {
       },
       body: JSON.stringify(post)
     })
-    .then(utils.fetchError.handleErrors)
     .then((response) => {
       console.log(response, 'submitPost response');
       if (response.status == 200) {
-        // Actions.Discover();
         return true;
       } else {
-        //postError(response.status);
         return false;
       }
     })
@@ -139,7 +169,7 @@ export function invest(token, invest){
 
   return dispatch => {
     // dispatch(null);
-    fetch( apiServer + 'post/' + invest.postId + '/invest', {
+    fetch( apiServer + 'post/' + invest.post._id + '/invest', {
       method: 'PUT',
       credentials: 'include',
       headers: {
@@ -148,7 +178,7 @@ export function invest(token, invest){
       },
       body: JSON.stringify(invest)
     })
-    .then(utils.fetchError.handleErrors)
+    //.then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((post) => {
       console.log(post)

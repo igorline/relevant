@@ -10,6 +10,7 @@ import React, {
   TouchableHighlight,
   LinkingIOS,
   Picker,
+  PickerIOS,
   Animated,
   LayoutAnimation
 } from 'react-native';
@@ -23,6 +24,7 @@ require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var postStyles = null;
 var moment = require('moment');
+var PickerItemIOS = PickerIOS.Item;
 
 
 class Post extends Component {
@@ -112,7 +114,7 @@ class Post extends Component {
   invest(toggle, functionBool) {
     var self = this;
     var invest = {
-      postId: this.props.post._id,
+      post: this.props.post,
       sign: 1,
       amount: self.state.investAmount
     };
@@ -147,6 +149,7 @@ class Post extends Component {
     if (user && user.balance) balance = user.balance;
     var styles = {...localStyles, ...postStyles};
     var pickerArray = [];
+    var investOptions = [];
 
     if (this.props.post) {
       post = this.props.post;
@@ -164,12 +167,12 @@ class Post extends Component {
       }
     }
 
-    if (balance >= 50) pickerArray.push(<Picker.Item label='50' value={50} />);
-    if (balance >= 100) pickerArray.push(<Picker.Item label='100' value={100} />);
-    if (balance >= 500) pickerArray.push(<Picker.Item label='500' value={500} />);
-    if (balance >= 1000) pickerArray.push(<Picker.Item label='1000' value={1000} />);
-    if (balance >= 5000) pickerArray.push(<Picker.Item label='5000' value={5000} />);
-    if (balance >= 10000) pickerArray.push(<Picker.Item label='10000' value={10000} />);
+    if (balance >= 50) pickerArray.push(<PickerItemIOS label='50' value={50} />);
+    if (balance >= 100) pickerArray.push(<PickerItemIOS label='100' value={100} />);
+    if (balance >= 500) pickerArray.push(<PickerItemIOS label='500' value={500} />);
+    if (balance >= 1000) pickerArray.push(<PickerItemIOS label='1000' value={1000} />);
+    if (balance >= 5000) pickerArray.push(<PickerItemIOS label='5000' value={5000} />);
+    if (balance >= 10000) pickerArray.push(<PickerItemIOS label='10000' value={10000} />);
 
     if (postUserImage) {
       postUserImageEl = (<Image source={{uri: postUserImage}} style={styles.userImage} />);
@@ -222,11 +225,11 @@ class Post extends Component {
             <Text>Posted {self.state.posted}</Text>
             {self.state.passed ? <Text>Current value: {value}</Text> : <View><Text>Value available in {self.state.timeUntilString}{'\n'}{Math.round(self.state.timePassedPercent*100)}% complete</Text></View>}
             <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
-              <Picker
+              <PickerIOS
                 selectedValue={self.state.investAmount}
                 onValueChange={(investAmount) => this.setState({investAmount: investAmount})}>
                 {pickerArray}
-              </Picker>
+              </PickerIOS>
             </Animated.View>
             <View style={expandedInvest ? styles.buttonContainerExpanded : styles.buttonContainer}>
               {expandedInvest ? <Button onPress={self.toggleInvest.bind(self)}>Cancel</Button> : null}

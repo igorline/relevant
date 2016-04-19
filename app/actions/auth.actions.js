@@ -198,7 +198,7 @@ function getUser(token, redirect) {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            .then(utils.fetchError.handleErrors)
+            //.then(utils.fetchError.handleErrors)
             .then((response) => response.json())
             .then((responseJSON) => {
                 console.log('fetchuser response', responseJSON)
