@@ -5,7 +5,6 @@ import { Provider } from 'react-redux';
 import * as reducers from '../reducers';
 import Application from './app.container';
 import createSocketIoMiddleware from 'redux-socket.io';
-import '../utils/userAgent';
 import io from 'socket.io-client/socket.io';
 
 let socket = io('http://localhost:3000', {
