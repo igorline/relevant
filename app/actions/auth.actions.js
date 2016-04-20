@@ -144,7 +144,6 @@ function loginUser(user, redirect) {
 export
 function createUser(user, redirect) {
     return function(dispatch) {
-        //dispatch(loginUserRequest());
         fetch('http://'+process.env.SERVER_IP+':3000/api/user', {
             credentials: 'include',
             method: 'POST',
@@ -202,6 +201,7 @@ function getUser(token, redirect) {
             .then((responseJSON) => {
                 dispatch(loginUserSuccess(token));
                 dispatch(setUser(responseJSON));
+                dispatch({type:'server/storeUser', payload: responseJSON});
                 if (redirect) dispatch(Actions.Profile);
             })
             .catch(error => {

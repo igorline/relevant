@@ -299,7 +299,7 @@ flexDirection: 'row',
     textAlign: 'left',
     paddingTop: 10,
     paddingLeft: 0,
-    padingRight: 0,
+    paddingRight: 0,
     paddingBottom: 10
   },
   userImage: {

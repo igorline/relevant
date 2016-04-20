@@ -112,7 +112,7 @@ export function setUserPosts(posts) {
 
 export function submitPost(post, token) {
   console.log(post, 'submitPost init');
-    fetch(process.env.API_SERVER+'/api/post/create?access_token='+token, {
+    return fetch(process.env.API_SERVER+'/api/post/create?access_token='+token, {
         credentials: 'include',
         method: 'POST',
         headers: {
