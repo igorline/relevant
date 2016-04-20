@@ -35,6 +35,7 @@ class User extends Component {
 
     componentDidMount() {
       var self = this;
+      this.props.dispatch({type: 'server/notification', payload: {user: self.props.users.selectedUser._id, message: self.props.auth.user.name+' just visited your profile'}});
       subscriptionActions.getSubscriptionData('follower', self.props.users.selectedUser._id).then(function(data) {
         self.setState({following: data.data});
       })

@@ -24,7 +24,7 @@ import { pickerOptions } from '../utils/pickerOptions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import * as subscriptionActions from '../actions/subscription.actions';
-import io from 'socket.io-client/socket.io';
+// import io from 'socket.io-client/socket.io';
 import Notification from '../components/notification.component';
 
 class Profile extends Component {
@@ -40,7 +40,7 @@ class Profile extends Component {
 
   componentDidMount() {
     var self = this;
-    this.props.dispatch({type:'server/storeUser', payload: self.props.auth.user});
+    // this.props.dispatch({type:'server/storeUser', payload: self.props.auth.user});
    this.props.actions.getUserPosts(this.props.auth.user._id);
    subscriptionActions.getSubscriptionData('follower', this.props.auth.user._id).then(function(data) {
      self.setState({following: data.data});
@@ -65,7 +65,7 @@ class Profile extends Component {
   }
 
   sendNotification() {
-    this.props.dispatch({type: 'server/notification', payload: '5706ef322170009d5be58be4'});
+    // this.props.dispatch({type: 'server/notification', payload: '5706ef322170009d5be58be4'});
   }
 
   render() {

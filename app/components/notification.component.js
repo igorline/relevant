@@ -52,13 +52,13 @@ class Notification extends Component {
     var self = this;
     var parentStyles = this.props.styles;
     var styles = {...localStyles, ...parentStyles};
-    var message = this.props.message;
-    var bool = self.props.bool;
+    var message = this.props.notif.text;
+    var bool = self.props.notif.bool;
     console.log(this.props, 'notification props')
 
     return (
       <Animated.View style={[styles.parent, bool ? styles.green : styles.red, {opacity: self.state.notifOpac}]}>
-        <Text style={styles.notifText}>{self.props.notif.text}</Text>
+        <Text style={styles.notifText}>{message}</Text>
       </Animated.View>
     );
   }

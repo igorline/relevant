@@ -7,6 +7,7 @@ var apiServer = 'http://'+process.env.SERVER_IP+':3000/api/'
 
 export function setNotif(active, text, bool) {
     setTimeout(function() { reset() }, 3000);
+    console.log('sending bool', bool)
     return {
         type: types.SET_NOTIF,
         payload: {

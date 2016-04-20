@@ -4,12 +4,16 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import * as reducers from '../reducers';
 import Application from './app.container';
+window.navigator.userAgent = "react-native";
+var io = require('socket.io-client/socket.io');
 import createSocketIoMiddleware from 'redux-socket.io';
-import io from 'socket.io-client/socket.io';
-require('../publicenv');
+// let io = require('socket.io-client/socket.io');
 
+// import io from 'socket.io-client/socket.io';
+require('../publicenv');
 let socket = io('http://'+process.env.SERVER_IP+':3000', {
-  transports: ['websocket']
+  transports: ['websocket'],
+  jsonp: false
 });
 let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
 
