@@ -23,22 +23,49 @@ import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
+import * as subscriptionActions from '../actions/subscription.actions';
+import io from 'socket.io-client/socket.io';
+import Notification from '../components/notification.component';
 
 class Profile extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       newName: '',
-      editing: false
+      editing: false,
+      followers: null,
+      following: null
     }
   }
 
   componentDidMount() {
+    var self = this;
+    this.props.dispatch({type:'server/storeUser', payload: self.props.auth.user});
    this.props.actions.getUserPosts(this.props.auth.user._id);
+   subscriptionActions.getSubscriptionData('follower', this.props.auth.user._id).then(function(data) {
+     self.setState({following: data.data});
+   })
+   subscriptionActions.getSubscriptionData('following', this.props.auth.user._id).then(function(data) {
+    self.setState({followers: data.data});
+   })
   }
 
   sendTestSocketMessage() {
-    this.props.dispatch({type:'server/hello', payload:"Hello"})
+    var self = this;
+    this.props.dispatch({type:'server/hello', payload:"Hello"});
+  }
+
+  getClientData() {
+    var self = this;
+    this.props.dispatch({type:'server/clientData'});
+  }
+
+  componentDidUpdate() {
+    console.log(this, 'profile state')
+  }
+
+  sendNotification() {
+    this.props.dispatch({type: 'server/notification', payload: '5706ef322170009d5be58be4'});
   }
 
   render() {
@@ -50,6 +77,10 @@ class Profile extends Component {
     var balance = 0;
     var userImageEl = null;
     var postsEl = null;
+    var followers = null;
+    var following = null;
+    if (self.state.followers) followers = self.state.followers;
+    if (self.state.following) following = self.state.following;
 
     if (this.props.auth.user) {
       user = this.props.auth.user;
@@ -83,16 +114,22 @@ class Profile extends Component {
           <View style={[styles.insideRow, styles.insidePadding]}>
             <Text>Relevance: <Text style={styles.active}>{relevance}</Text></Text>
             <Text>Balance: <Text style={styles.active}>{balance}</Text></Text>
+            <Text>Followers: <Text style={styles.active}>{followers ? followers.length : 0}</Text></Text>
+            <Text>Following: <Text style={styles.active}>{following ? following.length : 0}</Text></Text>
           </View>
         </View>
         <View>
           <Button onPress={this.sendTestSocketMessage.bind(this)}>Send test socket message</Button>
-          <Text>{this.props.message}</Text>
+          <Button onPress={this.getClientData.bind(this)}>Get client data</Button>
+          <Button onPress={this.sendNotification.bind(this)}>send notif</Button>
+          <Text>{this.props.socket.message}</Text>
           <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
           {postsEl}
         </View>
       </ScrollView>
-
+        <View pointerEvents={'none'} style={styles.notificationContainer}>
+          <Notification />
+        </View>
       </View>
     );
   }
@@ -103,7 +140,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     router: state.routerReducer,
-    message: state.socket.message
+    socket: state.socket
    }
 }
 

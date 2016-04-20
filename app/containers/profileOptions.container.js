@@ -21,6 +21,7 @@ var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
 import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
+import Notification from '../components/notification.component';
 
 class ProfileOptions extends Component {
   constructor (props, context) {
@@ -174,6 +175,9 @@ class ProfileOptions extends Component {
         <Button onPress={self.chooseImage.bind(self)}>Update profile picture</Button>
         <Button onPress={self.props.routes.Import}>Find users from contacts</Button>
         <Button onPress={self.logoutRedirect.bind(self)}>Logout</Button>
+        <View pointerEvents={'none'} style={styles.notificationContainer}>
+          <Notification />
+        </View>
       </View>
     );
   }

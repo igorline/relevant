@@ -19,30 +19,25 @@ import * as postActions from '../actions/post.actions';
 import * as notifActions from '../actions/notif.actions';
 import { bindActionCreators } from 'redux';
 import { globalStyles } from '../styles/global';
-import '../utils/socketConfig';
-import io from 'socket.io-client/socket.io';
+// import '../utils/socketConfig';
+// import io from 'socket.io-client/socket.io';
 import Notification from '../components/notification.component';
 
 class Auth extends Component {
 
     constructor (props, context) {
     super(props, context)
-     this.socket = io('localhost:3000', {jsonp: false});
+     // this.socket = io('localhost:3000', {jsonp: false});
     this.state = {
-      // notifOpac: new Animated.Value(0),
     }
   }
 
-
   componentDidMount() {
     this.props.actions.getUser();
-    this.socket.on('connect', function(){
-      console.log('connect')
-    });
   }
 
   componentDidUpdate() {
-
+    //console.log(this)
   }
 
   render() {
@@ -133,7 +128,8 @@ function mapStateToProps(state) {
     posts: state.posts,
     users: state.user,
     router: state.routerReducer,
-    notif: state.notif
+    notif: state.notif,
+    socket: state.socket
    }
 }
 

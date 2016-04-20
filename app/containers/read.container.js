@@ -19,6 +19,7 @@ import * as userActions from '../actions/user.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
+import Notification from '../components/notification.component';
 
 class Read extends Component {
   constructor (props, context) {
@@ -52,6 +53,9 @@ class Read extends Component {
     return (
       <ScrollView style={[styles.readContainer]}>
        {postsEl}
+       <View pointerEvents={'none'} style={styles.notificationContainer}>
+          <Notification />
+        </View>
       </ScrollView>
     );
   }

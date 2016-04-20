@@ -13,7 +13,7 @@ const updatePostElement = (array, post) => {
   ]
 }
 
-export default function auth(state = initialState, action) {
+export default function post(state = initialState, action) {
   switch (action.type) {
 
     case types.SET_POSTS: {
