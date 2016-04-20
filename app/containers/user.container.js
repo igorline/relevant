@@ -37,6 +37,8 @@ class User extends Component {
       var name = null;
       var relevance = 0;
       var balance = 0;
+      var followers = 0;
+      var following = 0;
       const {actions} = this.props;
       var userImageEl = null;
       var postsEl = null;
@@ -47,6 +49,8 @@ class User extends Component {
           if (user.image) userImage = user.image;
           if (user.relevance) relevance = user.relevance;
           if (user.balance) balance = user.balance;
+          if (user.followers) followers = user.followers;
+          if (user.following) following = user.following;
       }
 
       if (userImage) {
@@ -73,6 +77,7 @@ class User extends Component {
             <View style={[styles.insideRow, styles.insidePadding]}>
               <Text>Relevance: <Text style={styles.active}>{relevance}</Text ></Text>
               <Text>Balance: <Text style={styles.active}>{balance}</Text></Text>
+
             </View>
           </View>
           <View>
