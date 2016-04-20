@@ -5,15 +5,20 @@ import React, {
   StyleSheet,
   Text,
   View,
-  TextInput
+  TextInput,
+  Animated
 } from 'react-native';
 var Button = require('react-native-button');
+import {reduxForm} from 'redux-form';
+import Notification from './notification.component';
 
 class Login extends Component {
 
   constructor (props, context) {
     super(props, context)
     this.state = {
+      bool: false,
+      notifText: null
     }
   }
 
@@ -22,6 +27,15 @@ class Login extends Component {
   }
 
   componentDidUpdate() {
+  }
+
+  login() {
+    var self = this;
+    this.props.actions.loginUser({email: self.state.email, password: self.state.password}).then(function(results) {
+      if (!results.status) {
+        self.props.actions.setNotif(true, results.message, false)
+      }
+    })
   }
 
   render() {
@@ -43,7 +57,7 @@ class Login extends Component {
         </View>
 
         <View style={styles.margin}>
-          <Button onPress={loginUser.bind(null, JSON.stringify({email: self.state.email, password: self.state.password}))} style={styles.button}>Submit</Button>
+          <Button onPress={self.login.bind(this)} style={styles.button}>Submit</Button>
         </View>
 
       </View>
@@ -54,33 +68,4 @@ class Login extends Component {
 
 export default Login
 
-// const styles = StyleSheet.create({
-//   center: {
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   welcome: {
-//     fontSize: 20,
-//     textAlign: 'center'
-//   },
-//   instructions: {
-//     textAlign: 'center',
-//     color: '#333333',
-//     marginBottom: 5,
-//   },
-//   input: {
-//     borderColor: '#cccccc',
-//     borderStyle: 'solid',
-//     borderWidth: 1,
-//     height: 30,
-//     width: 250,
-//     alignSelf: 'center'
-//   },
-//   marginTop: {
-//     marginTop: 10
-//   },
-//     margin: {
-//     margin: 10
-//   }
-// });
 

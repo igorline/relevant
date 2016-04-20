@@ -3,7 +3,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import * as reducers from '../reducers';
-import Application from './app';
+import Application from './app.container';
 import createSocketIoMiddleware from 'redux-socket.io';
 import '../utils/userAgent';
 import io from 'socket.io-client/socket.io';
@@ -15,6 +15,7 @@ let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
 
 const reducer = combineReducers(reducers);
 let store = applyMiddleware(thunk, socketIoMiddleware)(createStore)(reducer);
+
 
 export default class AppContainer extends Component {
   render() {

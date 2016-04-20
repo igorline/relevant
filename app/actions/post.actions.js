@@ -1,16 +1,42 @@
 import * as types from './actionTypes';
 require('../publicenv');
 var { Actions } = require('react-native-redux-router');
+import * as utils from '../utils';
 
 var apiServer = 'http://'+process.env.SERVER_IP+':3000/api/'
 
-function handleErrors(response) {
-    if (!response.ok) {
-      console.log(response)
-      throw Error(response.statusText);
-    }
-    return response;
+export function getFeed(id) {
+  return function(dispatch) {
+    fetch('http://'+process.env.SERVER_IP+':3000/api/post/feed', {
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify({id})
+    })
+    //.then(utils.fetchError.handleErrors)
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      console.log(responseJSON, 'get feed response');
+      dispatch(setFeed(responseJSON));
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+    });
+  }
 }
+
+export
+function setFeed(feed) {
+    return {
+        type: types.SET_FEED,
+        payload: feed
+    };
+}
+
+
 
 export function getPosts() {
   return function(dispatch) {
@@ -22,6 +48,7 @@ export function getPosts() {
             'Content-Type': 'application/json'
       }
     })
+    .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
         console.log(responseJSON, 'response');
@@ -65,6 +92,7 @@ export function getUserPosts(userId) {
       method: 'POST',
       body: JSON.stringify({'search': {'user': userId}})
     })
+    .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setUserPosts(responseJSON));
@@ -96,14 +124,13 @@ export function submitPost(post, token) {
     .then((response) => {
       console.log(response, 'submitPost response');
       if (response.status == 200) {
-        Actions.Read();
+        return true;
       } else {
-       postError(response.status);
+        return false;
       }
     })
     .catch((error) => {
-        console.log(error, 'error');
-        postError(error);
+      return false;
     });
 }
 
@@ -125,6 +152,7 @@ export function getActivePost(postId) {
       method: 'POST',
       body: JSON.stringify({'search': {'_id': postId}})
     })
+    .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       console.log(responseJSON, 'activePost');
@@ -137,7 +165,7 @@ export function getActivePost(postId) {
   }
 }
 
-export function invest(token, invest){
+export function invest(token, invest, following){
   return dispatch => {
     return fetch(process.env.API_SERVER+'/api/post/' + invest.postId + '/invest', {
       method: 'PUT',
@@ -148,10 +176,28 @@ export function invest(token, invest){
       },
       body: JSON.stringify(invest)
     })
-    .then(handleErrors)
     .then((response) => response.json())
     .then((post) => {
       dispatch(updatePost(post))
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+    fetch( apiServer + 'subscription/create?access_token='+token, {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        following: following
+      })
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      console.log(responseJSON, 'create subscription response');
     })
     .catch((error) => {
       console.log(error);

@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {index: null, userPosts: null, postError: null, activePost: null};
+const initialState = {index: null, userPosts: null, postError: null, activePost: null, feed: null};
 
 const updatePostElement = (array, post) => {
   var index = array.findIndex(function(el){
@@ -14,12 +14,17 @@ const updatePostElement = (array, post) => {
 }
 
 export default function auth(state = initialState, action) {
-  console.log(action.type)
   switch (action.type) {
 
     case types.SET_POSTS: {
       return Object.assign({}, state, {
         'index': action.payload
+      })
+    }
+
+    case types.SET_FEED: {
+      return Object.assign({}, state, {
+        'feed': action.payload
       })
     }
 

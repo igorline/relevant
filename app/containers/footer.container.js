@@ -11,7 +11,7 @@ import React, {
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/authActions';
+import * as authActions from '../actions/auth.actions';
 import { globalStyles } from '../styles/global';
 
 class Footer extends Component {

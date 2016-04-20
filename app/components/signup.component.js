@@ -7,7 +7,6 @@ import React, {
   View,
   TextInput
 } from 'react-native';
-// import {reduxForm} from 'redux-form';
 var Button = require('react-native-button');
 
 class SignUp extends Component {
@@ -26,6 +25,68 @@ class SignUp extends Component {
   componentDidUpdate() {
   }
 
+  checkPass(user) {
+    var self = this;
+    if (self.state.password) {
+      if (self.state.password == self.state.cPassword) {
+        createUser(user);
+      } else {;
+        self.setState({message: "passwords don't match"});
+      }
+    } else {
+      self.setState({message: 'no password'});
+    }
+  }
+
+  validate() {
+    var self = this;
+    var user = {
+      name: self.state.name,
+      phone: self.state.phone,
+      email: self.state.email,
+      password: self.state.password
+    }
+
+    if (self.state.name) {
+      if (self.state.name.length > 15) {
+        self.setState({message: 'name must be less than 15 characters'});
+        return;
+      }
+    } else {
+      self.setState({message: 'name required'});
+      return;
+    }
+
+    if (!self.state.email) {
+      self.setState({message: 'email required'});
+      return;
+    } else {
+      if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(self.state.email)) {
+        self.setState({message: 'invalid email address'});
+        return;
+      }
+    }
+
+
+    if (!self.state.phone) {
+      self.setState({message: 'phone number required'});
+      return;
+    }
+
+
+    if (self.state.password) {
+      if (self.state.password != self.state.cPassword) {
+        self.setState({message: "passwords don't match"});
+        return;
+      }
+    } else {
+      self.setState({message: 'password required'});
+      return;
+    }
+
+    self.props.actions.createUser(user);
+  }
+
   render() {
     var self = this;
     const { createUser } = this.props.actions;
@@ -33,17 +94,7 @@ class SignUp extends Component {
     var styles = this.props.styles;
     this.props.auth.statusText ? message = this.props.auth.statusText : null;
 
-    function checkPass(user) {
-      if (self.state.password) {
-        if (self.state.password == self.state.cPassword) {
-          createUser(user);
-        } else {;
-          self.setState({message: "passwords don't match"});
-        }
-      } else {
-        self.setState({message: 'no password'});
-      }
-    }
+
 
     return (
       <View style={styles.center}>
@@ -71,7 +122,7 @@ class SignUp extends Component {
         </View>
 
         <View style={styles.margin}>
-          <Button onPress={checkPass.bind(null, JSON.stringify({name: self.state.name, phone: self.state.phone, email: self.state.email, password: self.state.password}))} style={styles.button}>Submit</Button>
+          <Button onPress={self.validate.bind(self)} style={styles.button}>Submit</Button>
         </View>
 
       </View>

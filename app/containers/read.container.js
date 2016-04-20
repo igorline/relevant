@@ -13,12 +13,12 @@ import React, {
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/authActions';
-import * as postActions from '../actions/postActions';
-import * as userActions from '../actions/userActions';
+import * as authActions from '../actions/auth.actions';
+import * as postActions from '../actions/post.actions';
+import * as userActions from '../actions/user.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-import Post from '../components/post';
+import Post from '../components/post.component';
 
 class Read extends Component {
   constructor (props, context) {
@@ -28,22 +28,26 @@ class Read extends Component {
   }
 
   componentDidMount() {
-    this.props.actions.getPosts();
+    var self = this;
+    this.props.actions.getFeed(this.props.auth.user._id);
+  }
+
+  componentDidUpdate() {
   }
 
   render() {
     var self = this;
     var postsEl = null;
     var posts = null;
-    //console.log(self, 'read self')
-    if (self.props.posts.index) {
-      posts = self.props.posts.index;
-      postsEl = posts.map(function(post, i) {
+    if (self.props.posts.feed) {
+      posts = self.props.posts.feed;
+      postsEl = posts.map(function(post) {
         return (
-            <Post {...self.props} post={post} styles={styles} />
+          <Post post={post} {...self.props} styles={styles} />
         );
       });
     }
+
 
     return (
       <ScrollView style={[styles.readContainer]}>
@@ -57,6 +61,7 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
+    user: state.user,
     router: state.routerReducer
    }
 }

@@ -10,6 +10,10 @@ import React, {
   Dimensions
 } from 'react-native';
 
+
+var fullWidth = Dimensions.get('window').width;
+var fullHeight = Dimensions.get('window').height;
+
 const globalStyles = StyleSheet.create({
   font20: {
     fontSize: 20
@@ -19,6 +23,15 @@ const globalStyles = StyleSheet.create({
   },
   textCenter: {
     textAlign: 'center'
+  },
+  notificationContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   input: {
     borderColor: '#cccccc',
@@ -64,26 +77,29 @@ const globalStyles = StyleSheet.create({
     fullContainer: {
     flex: 1
   },
-  buttonContainer: {
-    padding:10,
-    height:45,
-    overflow:'hidden',
-    borderRadius:4,
-    backgroundColor: 'white',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'black',
-    width:160,
-    marginTop:20,
-    marginBottom:20,
+    row: {
+    flexDirection: 'row',
+    width: fullWidth,
+    padding: 20
   },
+  // buttonContainer: {
+  //   padding:10,
+  //   height:45,
+  //   overflow:'hidden',
+  //   borderRadius:4,
+  //   backgroundColor: 'white',
+  //   borderWidth: StyleSheet.hairlineWidth,
+  //   borderColor: 'black',
+  //   width:160,
+  //   marginTop:20,
+  //   marginBottom:20,
+  // },
   button: {
-    fontSize: 20,
-    color: 'black'
+    // fontSize: 20,
+    color: '#007aff'
   }
 });
 
-var fullWidth = Dimensions.get('window').width;
-var fullHeight = Dimensions.get('window').height;
 
 export {
   globalStyles,
