@@ -1,6 +1,6 @@
 import * as types from './actionTypes';
 require('../publicenv');
-var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
+var { Actions } = require('react-native-redux-router');
 
 var apiServer = 'http://'+process.env.SERVER_IP+':3000/api/'
 
@@ -14,7 +14,7 @@ function handleErrors(response) {
 
 export function getPosts() {
   return function(dispatch) {
-    fetch('http://'+process.env.SERVER_IP+':3000/api/post/', {
+    fetch(process.env.API_SERVER+'/api/post/', {
         credentials: 'include',
         method: 'GET',
         headers: {
@@ -56,7 +56,7 @@ export function updatePost(post) {
 
 export function getUserPosts(userId) {
   return function(dispatch) {
-    fetch('http://'+process.env.SERVER_IP+':3000/api/post/', {
+    fetch(process.env.API_SERVER+'/api/post/', {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
@@ -84,7 +84,7 @@ export function setUserPosts(posts) {
 
 export function submitPost(post, token) {
   console.log(post, 'submitPost init');
-    fetch('http://'+process.env.SERVER_IP+':3000/api/post/create?access_token='+token, {
+    fetch(process.env.API_SERVER+'/api/post/create?access_token='+token, {
         credentials: 'include',
         method: 'POST',
         headers: {
@@ -116,7 +116,7 @@ export function postError() {
 export function getActivePost(postId) {
   console.log(postId, 'postId')
   return function(dispatch) {
-    fetch('http://'+process.env.SERVER_IP+':3000/api/post', {
+    fetch(process.env.API_SERVER+'/api/post', {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
@@ -138,9 +138,8 @@ export function getActivePost(postId) {
 }
 
 export function invest(token, invest){
-  console.log("INVESTING", invest)
   return dispatch => {
-    fetch( apiServer + 'post/' + invest.postId + '/invest', {
+    return fetch(process.env.API_SERVER+'/api/post/' + invest.postId + '/invest', {
       method: 'PUT',
       credentials: 'include',
       headers: {
@@ -152,7 +151,6 @@ export function invest(token, invest){
     .then(handleErrors)
     .then((response) => response.json())
     .then((post) => {
-      console.log(post)
       dispatch(updatePost(post))
     })
     .catch((error) => {

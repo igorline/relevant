@@ -4,12 +4,17 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import * as reducers from '../reducers';
 import Application from './app';
+import createSocketIoMiddleware from 'redux-socket.io';
+import '../utils/userAgent';
+import io from 'socket.io-client/socket.io';
+
+let socket = io('http://localhost:3000', {
+  transports: ['websocket']
+});
+let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
+
 const reducer = combineReducers(reducers);
-let store = applyMiddleware(thunk)(createStore)(reducer);
-// const store = createStore(
-//   reducer,
-//   applyMiddleware(thunk)
-// );
+let store = applyMiddleware(thunk, socketIoMiddleware)(createStore)(reducer);
 
 export default class AppContainer extends Component {
   render() {

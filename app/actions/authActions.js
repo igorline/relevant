@@ -1,6 +1,5 @@
 import * as types from './actionTypes';
 import { push } from 'react-router-redux';
-import request from 'superagent';
 import thunk from 'redux-thunk';
 var Contacts = require('react-native-contacts');
 require('../publicenv');
