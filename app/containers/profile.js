@@ -35,6 +35,10 @@ class Profile extends Component {
    this.props.actions.getUserPosts(this.props.auth.user._id);
   }
 
+  sendTestSocketMessage() {
+    this.props.dispatch({type:'server/hello', payload:"Hello"})
+  }
+
   render() {
     var self = this;
     var user = null;
@@ -68,6 +72,7 @@ class Profile extends Component {
       });
     }
 
+    //this should be in an action
     function setPicture(url, user, token) {
       fetch('http://localhost:3000/api/user/image', {
           credentials: 'include',
@@ -140,6 +145,8 @@ class Profile extends Component {
           </View>
         </View>
         <View style={styles.column}>
+          <Button onPress={this.sendTestSocketMessage.bind(this)}>Send test socket message</Button>
+          <Text>{this.props.message}</Text>
           <Text style={styles.font20}>Posts</Text>
           {postsEl}
         </View>
@@ -152,7 +159,8 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
-    router: state.routerReducer
+    router: state.routerReducer,
+    message: state.socket.message
    }
 }
 
