@@ -11,26 +11,25 @@ import React, {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as authActions from '../actions/authActions';
+import * as authActions from '../actions/auth.actions';
 var {Router, routerReducer, Route, Container, Animations, Schema} = require('react-native-redux-router');
 var Button = require('react-native-button');
-import Auth from './auth';
-import Import from './import';
-import Profile from './profile';
-import Read from './read';
-import Footer from './footer';
-import SubmitPost from './submitPost';
-import Discover from './discover';
-import Nav from './nav';
-import SinglePost from './singlePost';
-import User from './user';
-import ProfileOptions from './profileOptions';
+import Auth from './auth.container';
+import Import from './import.container';
+import Profile from './profile.container';
+import Read from './read.container';
+import Footer from './footer.container';
+import SubmitPost from './submitPost.container';
+import Discover from './discover.container';
+import Nav from './nav.container';
+import SinglePost from './singlePost.container';
+import User from './user.container';
+import ProfileOptions from './profileOptions.container';
 
 
 class Application extends Component {
   componentDidMount() {
     // StatusBarIOS.setNetworkActivityIndicatorVisible(true);
-
   }
 
   render() {
@@ -62,54 +61,4 @@ class Application extends Component {
 }
 
 export default Application
-
-const styles = StyleSheet.create({
-  uploadAvatar: {
-    width: 200,
-    height: 200
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderWidth: 20,
-    borderStyle: 'solid',
-    borderColor: 'transparent'
-  },
-  nav: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#3C8AE8'
-  },
-  navItem: {
-    color: 'white'
-  },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center'
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  input: {
-    borderColor: '#cccccc',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 30,
-    width: 200,
-    alignSelf: 'center',
-    margin: 5
-  },
-  marginTop: {
-    marginTop: 10
-  }
-});
 

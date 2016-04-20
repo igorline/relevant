@@ -7,18 +7,20 @@ import React, {
     View,
     Image,
     TextInput,
-    Dimensions
+    Dimensions,
+    ScrollView
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var FileUpload = require('NativeModules').FileUpload;
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
-import * as authActions from '../actions/authActions';
-import * as postActions from '../actions/postActions';
+import * as authActions from '../actions/auth.actions';
+import * as postActions from '../actions/post.actions';
 import { bindActionCreators } from 'redux';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
 import * as utils from '../utils';
+import Post from '../components/post.component';
 
 class User extends Component {
     constructor(props, context) {
@@ -29,37 +31,37 @@ class User extends Component {
     componentDidMount() {}
 
     render() {
-      // console.log(this, 'user self')
       var self = this;
       var user = null;
       var userImage = null;
       var name = null;
-      var relevance = null;
+      var relevance = 0;
+      var balance = 0;
+      var followers = 0;
+      var following = 0;
       const {actions} = this.props;
       var userImageEl = null;
       var postsEl = null;
 
       if (this.props.users.selectedUser) {
           user = this.props.users.selectedUser;
-          if (user.name) name = this.props.users.selectedUser.name;
-          if (user.image) userImage = this.props.users.selectedUser.image;
-          if (user.relevance) {
-              relevance = this.props.users.selectedUser.relevance;
-          } else {
-              relevance = 0;
-          }
+          if (user.name) name = user.name;
+          if (user.image) userImage = user.image;
+          if (user.relevance) relevance = user.relevance;
+          if (user.balance) balance = user.balance;
+          if (user.followers) followers = user.followers;
+          if (user.following) following = user.following;
       }
 
       if (userImage) {
         userImageEl = (<Image source={{uri: userImage}} style={styles.uploadAvatar} /> );
       }
 
-      var changeNameEl = (<View style={styles.pictureWidth}><Text style={styles.twenty}>{name}</Text></View>);
 
       if (self.props.users.posts) {
         if (self.props.users.posts.length > 0) {
           postsEl = self.props.users.posts.map(function(post, i) {
-            return (<Text onPress={self.props.actions.getActivePost.bind(null, post._id)}>{post.title}</Text>);
+            return (<Post post={post} {...self.props} styles={styles} />);
           });
         } else {
           postsEl = (<View><Text>0 Posts</Text></View>);
@@ -69,19 +71,20 @@ class User extends Component {
       }
 
       return (
-        <View style={styles.profileContainer}>
+        <ScrollView style={styles.fullContainer}>
           <View style={styles.row}>
             <View>{userImageEl}</View>
             <View style={[styles.insideRow, styles.insidePadding]}>
               <Text>Relevance: <Text style={styles.active}>{relevance}</Text ></Text>
-              <Text>more info more info</Text>
+              <Text>Balance: <Text style={styles.active}>{balance}</Text></Text>
+
             </View>
           </View>
-          <View style={styles.column}>
-            <Text style={styles.font20}>Posts</Text>
+          <View>
+            <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
             {postsEl}
           </View>
-        </View>
+        </ScrollView>
       );
   }
 }
@@ -105,6 +108,9 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(User)
 
 const localStyles = StyleSheet.create({
+    postsHeader: {
+    padding: 20
+  },
   uploadAvatar: {
     height: 100,
     width: 100,

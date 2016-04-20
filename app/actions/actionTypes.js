@@ -15,3 +15,8 @@ export const SET_SELECTED_USER = 'SET_SELECTED_USER';
 export const SET_SELECTED_USER_POSTS = 'SET_SELECTED_USER_POSTS';
 export const SET_RECENT_POSTS = 'SET_RECENT_POSTS';
 export const UPDATE_POST = 'UPDATE_POST';
+export const OPEN_INVEST = 'OPEN_INVEST';
+export const CLOSE_INVEST = 'CLOSE_INVEST';
+export const SET_NOTIF = 'SET_NOTIF';
+export const SET_FEED = 'SET_FEED';
+

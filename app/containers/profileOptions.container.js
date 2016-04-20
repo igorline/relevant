@@ -14,8 +14,8 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var FileUpload = require('NativeModules').FileUpload;
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
-import * as authActions from '../actions/authActions';
-import * as postActions from '../actions/postActions';
+import * as authActions from '../actions/auth.actions';
+import * as postActions from '../actions/post.actions';
 import { bindActionCreators } from 'redux';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
@@ -35,35 +35,15 @@ class ProfileOptions extends Component {
     if (!this.props.posts.index) this.props.actions.getUserPosts(this.props.auth.user._id);
   }
 
-  render() {
-    var self = this;
-    var user = null;
-    console.log(self, 'profile options')
-    var userImage = null;
-    var name = null;
-    if (this.props.auth.user) {
-      user = this.props.auth.user;
-      if (this.props.auth.user.name) {
-        name = this.props.auth.user.name;
-      }
-      if (this.props.auth.user.image) {
-        userImage = this.props.auth.user.image;
-      }
-    }
 
-    const { actions } = this.props;
-
-    function logoutRedirect() {
-      logout();
-      self.props.routes.Auth();
-    }
-
-    function chooseImage() {
-      pickImage(function(err, data){
+    chooseImage() {
+      var self = this;
+      console.log(self, 'chooseImage')
+      self.pickImage(function(err, data){
         if(data){
           utils.s3.toS3Advanced(data, self.props.auth.token).then(function(results){
             if (results.success) {
-              setPicture(results.url, user, self.props.auth.token);
+              self.setPicture(results.url, self.props.auth.user, self.props.auth.token);
             } else {
               console.log('err');
             }
@@ -72,9 +52,11 @@ class ProfileOptions extends Component {
       });
     }
 
-    function setPicture(url, user, token) {
+    setPicture(url, user, token) {
       var newUser = user;
       newUser.image = url;
+      var self = this;
+      console.log(self, 'setPicture')
 
       fetch('http://'+process.env.SERVER_IP+':3000/api/user?access_token='+token, {
           credentials: 'include',
@@ -87,7 +69,7 @@ class ProfileOptions extends Component {
       })
       .then((response) => {
         console.log('yes')
-        actions.getUser(token, null);
+        self.props.actions.getUser(token, null);
       })
       .catch((error) => {
           console.log(error, 'error');
@@ -95,7 +77,9 @@ class ProfileOptions extends Component {
     }
 
 
-    function pickImage(callback){
+    pickImage(callback){
+      var self = this;
+      console.log(self, 'pickImage')
         ImagePickerManager.showImagePicker(pickerOptions, (response) => {
         if (response.didCancel) {
           console.log('User cancelled image picker');
@@ -115,46 +99,61 @@ class ProfileOptions extends Component {
       });
     }
 
+  logoutRedirect() {
+    var self = this;
+    self.props.actions.logout();
+    self.props.routes.Auth();
+  }
+
+  changeName() {
+    var self = this;
+    var newUser = self.props.auth.user;
+    newUser.name = self.state.newName;
+    self.props.actions.changeName(self.state.newName, newUser, self.props.auth.token);
+    self.setState({newName: '', editing: false});
+  }
+
+  startEditing() {
+    var self = this;
+    self.setState({editing: true});
+  }
+
+  render() {
+    var self = this;
+    var user = null;
+    var userImage = null;
+    var name = null;
+    if (this.props.auth.user) {
+      user = this.props.auth.user;
+      if (this.props.auth.user.name) {
+        name = this.props.auth.user.name;
+      }
+      if (this.props.auth.user.image) {
+        userImage = this.props.auth.user.image;
+      }
+    }
+
+    const { actions } = this.props;
 
     var userImageEl = null;
-    console.log(userImage, 'userImage')
     if (userImage) {
       userImageEl = (<Image source={{uri: userImage}} style={styles.uploadAvatar} />)
-    } else {
-      userImageEl = (<Button onPress={chooseImage}>Update profile picture</Button>);
     }
-
-    function changeBio() {
-      actions.changeBio(self.state.newBio, user, self.props.auth.token);
-      self.setState({newBio: ''});
-    }
-
-    function changeName() {
-      var newUser = user;
-      newUser.name = self.state.newName;
-      actions.changeName(self.state.newName, newUser, self.props.auth.token);
-      self.setState({newName: '', editing: false});
-    }
-
-    function startEditing() {
-      self.setState({editing: true});
-    }
-
-    var placeholder = 'enter a short bio';
 
     var changeNameEl = null;
     var postsEl = null;
 
-const { isAuthenticated} = this.props.auth;
+    const { isAuthenticated} = this.props.auth;
+
     if(isAuthenticated){
-    if (self.state.editing) {
-      changeNameEl = (<View style={styles.center}><TextInput style={styles.input} placeholder={user.name} onChangeText={(newName) => this.setState({newName})} value={this.state.newName} onSubmitEditing={changeName} returnKeyType='done' />
-      <Button onPress={changeName} style={styles.selfCenter}>Submit</Button></View>);
-    } else {
-      changeNameEl = (<View style={styles.center}><Text style={styles.font20}>{name}</Text>
-      <Button onPress={startEditing}>Edit</Button></View>);
+      if (self.state.editing) {
+        changeNameEl = (<View style={styles.center}><TextInput style={styles.input} placeholder={user.name} onChangeText={(newName) => this.setState({newName})} value={this.state.newName} onSubmitEditing={self.changeName.bind(self)} returnKeyType='done' />
+        <Button onPress={self.changeName.bind(self)} style={styles.selfCenter}>Submit</Button></View>);
+      } else {
+        changeNameEl = (<View style={styles.center}><Text style={styles.font20}>{name}</Text>
+        <Button onPress={self.startEditing.bind(self)}>Edit</Button></View>);
+      }
     }
-  }
 
     if (self.props.posts.userPosts) {
       postsEl = self.props.posts.userPosts.map(function(post, i) {
@@ -166,15 +165,15 @@ const { isAuthenticated} = this.props.auth;
     } else {
       postsEl = (<View><Text>0 Posts</Text></View>)
     }
-      const { logout } = this.props.actions;
+
 
     return (
       <View style={styles.container}>
         {changeNameEl}
         {userImageEl}
-        <Button onPress={chooseImage}>Update profile picture</Button>
+        <Button onPress={self.chooseImage.bind(self)}>Update profile picture</Button>
         <Button onPress={self.props.routes.Import}>Find users from contacts</Button>
-        <Button onPress={logoutRedirect}>Logout</Button>
+        <Button onPress={self.logoutRedirect.bind(self)}>Logout</Button>
       </View>
     );
   }

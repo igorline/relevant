@@ -6,6 +6,7 @@ require('../publicenv');
 var CookieManager = require('react-native-cookies');
 import {AsyncStorage} from 'react-native';
 var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
+import * as utils from '../utils';
 
 export
 function setUser(user) {
@@ -77,65 +78,68 @@ export
 function loginUser(user, redirect) {
     return dispatch => {
         dispatch(loginUserRequest());
-        fetch('http://'+process.env.SERVER_IP+':3000/auth/local', {
+        return fetch('http://'+process.env.SERVER_IP+':3000/auth/local', {
             credentials: 'include',
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: user
+            body: JSON.stringify(user)
         })
-            .then((response) => response.json())
-            .then((responseJSON) => {
-                if (responseJSON.token) {
-                    AsyncStorage.setItem('token', responseJSON.token)
-                        .then( ()  => {
-                            dispatch(loginUserSuccess(responseJSON.token));
-                            dispatch(getUser(responseJSON.token, true));
-                        })
-                } else {
-                    dispatch(loginUserFailure(responseJSON.message));
-                }
-            })
-            .catch(error => {
-                console.log(error, 'error');
-                dispatch(loginUserFailure('Server error'));
-            });
+        //.then(utils.fetchError.handleErrors)
+        .then((response) => response.json())
+        .then((responseJSON) => {
+            if (responseJSON.token) {
+                AsyncStorage.setItem('token', responseJSON.token)
+                    .then( ()  => {
+                        dispatch(loginUserSuccess(responseJSON.token));
+                        dispatch(getUser(responseJSON.token, true));
+                        return {status: true};
+                    })
+            } else {
+                dispatch(loginUserFailure(responseJSON.message));
+                return {status: false, message: responseJSON.message};
+            }
+        })
+        .catch(error => {
+            console.log(error, 'error');
+            dispatch(loginUserFailure('Server error'));
+             return {status: false, message: 'Server error'};
+        });
     }
 }
 
-export
-function loginJay(user, redirect) {
-    return function(dispatch) {
-        dispatch(loginUserRequest());
-        fetch('http://'+process.env.SERVER_IP+':3000/auth/local', {
-            credentials: 'include',
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({email: 'jaygoss@gmail.com', password: 'test'})
-        })
-            .then((response) => response.json())
-            .then((responseJSON) => {
-                if (responseJSON.token) {
-                    AsyncStorage.setItem('token', responseJSON.token)
-                    // .then( ()  => {
-                        dispatch(loginUserSuccess(responseJSON.token));
-                        dispatch(getUser(responseJSON.token, true));
-                    // })
-                } else {
-                    dispatch(loginUserFailure(responseJSON.message));
-                }
-            })
-            .catch((error) => {
-                console.log(error, 'error');
-                dispatch(loginUserFailure('Server error'));
-            });
-    }
-}
+// export
+// function loginJay(user, redirect) {
+//     return function(dispatch) {
+//         dispatch(loginUserRequest());
+//         fetch('http://'+process.env.SERVER_IP+':3000/auth/local', {
+//             credentials: 'include',
+//             method: 'POST',
+//             headers: {
+//                 'Accept': 'application/json',
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({email: 'jaygoss@gmail.com', password: 'test'})
+//         })
+//         .then(utils.fetchError.handleErrors)
+//         .then((response) => response.json())
+//         .then((responseJSON) => {
+//             if (responseJSON.token) {
+//                 AsyncStorage.setItem('token', responseJSON.token)
+//                     dispatch(loginUserSuccess(responseJSON.token));
+//                     dispatch(getUser(responseJSON.token, true));
+//             } else {
+//                 dispatch(loginUserFailure(responseJSON.message));
+//             }
+//         })
+//         .catch((error) => {
+//             console.log(error, 'error');
+//             dispatch(loginUserFailure('Server error'));
+//         });
+//     }
+// }
 
 export
 function createUser(user, redirect) {
@@ -148,21 +152,22 @@ function createUser(user, redirect) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: user
+            body: JSON.stringify(user)
         })
-            .then((response) => response.json())
-            .then((responseJSON) => {
-                if (responseJSON.token) {
-                    dispatch(loginUserSuccess(responseJSON.token));
-                    dispatch(getUser(responseJSON.token, true));
-                } else {
-                    dispatch(loginUserFailure(responseJSON.message));
-                }
-            })
-            .catch(error => {
-                console.log(error, 'error');
-                dispatch(loginUserFailure('Server error'));
-            });
+        .then(utils.fetchError.handleErrors)
+        .then((response) => response.json())
+        .then((responseJSON) => {
+            if (responseJSON.token) {
+                dispatch(loginUserSuccess(responseJSON.token));
+                dispatch(getUser(responseJSON.token, true));
+            } else {
+                dispatch(loginUserFailure(responseJSON.message));
+            }
+        })
+        .catch(error => {
+            console.log(error, 'error');
+            dispatch(loginUserFailure('Server error'));
+        });
     }
 }
 
@@ -173,14 +178,17 @@ function getUser(token, redirect) {
             console.log('no token')
             AsyncStorage.getItem('token')
                 .then(token => {
-                    console.log("GOT TOKEN", token)
-                    return fetchUser(token);
+                    console.log("GOT TOKEN", token);
+                    if (token) {
+                        return fetchUser(token);
+                    } else {
+                        return;
+                    }
                 })
                 .catch(err => {
                     if(err) return dispatch(setUser());
                 })
         } else fetchUser(token);
-
         function fetchUser(token) {
             fetch('http://'+process.env.SERVER_IP+':3000/api/user/me', {
                 credentials: 'include',
@@ -189,9 +197,9 @@ function getUser(token, redirect) {
                     'Authorization': `Bearer ${token}`
                 }
             })
+            //.then(utils.fetchError.handleErrors)
             .then((response) => response.json())
             .then((responseJSON) => {
-                console.log('fetchuser response', responseJSON)
                 dispatch(loginUserSuccess(token));
                 dispatch(setUser(responseJSON));
                 if (redirect) dispatch(Actions.Profile);
@@ -214,6 +222,7 @@ function userIndex() {
                     credentials: 'include',
                     method: 'GET'
                 })
+                .then(utils.fetchError.handleErrors)
                 .then((response) => response.json())
                 .then((responseJSON) => {
                     dispatch(setUserIndex(responseJSON));
@@ -281,6 +290,7 @@ function changeName(name, user, token) {
         },
         body: JSON.stringify(user)
       })
+      .then(utils.fetchError.handleErrors)
       .then((response) => {
         dispatch(getUser(token, null));
       })
