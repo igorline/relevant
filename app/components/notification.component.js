@@ -14,9 +14,6 @@ import React, {
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/auth.actions';
-import * as postActions from '../actions/post.actions';
-import * as userActions from '../actions/user.actions';
 import * as notifActions from '../actions/notif.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
@@ -66,22 +63,15 @@ class Notification extends Component {
   }
 }
 
-// export default Notification;
-
-
 function mapStateToProps(state) {
   return {
-    auth: state.auth,
-    posts: state.posts,
-    users: state.user,
-    router: state.routerReducer,
     notif: state.notif
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...authActions, ...postActions, ...notifActions }, dispatch)
+    actions: bindActionCreators({...notifActions }, dispatch)
   }
 }
 

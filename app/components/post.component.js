@@ -118,7 +118,7 @@ class Post extends Component {
       sign: 1,
       amount: self.state.investAmount
     };
-    if (functionBool) this.props.actions.invest(this.props.auth.token, invest);
+    if (functionBool) this.props.actions.invest(this.props.auth.token, invest, self.props.post.user._id);
     if (toggle) this.toggleInvest(this);
     self.setState({investAmount: 50});
   }

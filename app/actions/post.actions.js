@@ -164,11 +164,10 @@ export function getActivePost(postId) {
   }
 }
 
-export function invest(token, invest){
+export function invest(token, invest, following){
   console.log("INVESTING", invest)
 
   return dispatch => {
-    // dispatch(null);
     fetch( apiServer + 'post/' + invest.post._id + '/invest', {
       method: 'PUT',
       credentials: 'include',
@@ -178,11 +177,29 @@ export function invest(token, invest){
       },
       body: JSON.stringify(invest)
     })
-    //.then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((post) => {
       console.log(post)
       dispatch(updatePost(post))
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+    fetch( apiServer + 'subscription/create?access_token='+token, {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        following: following
+      })
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      console.log(responseJSON, 'create subscription response');
     })
     .catch((error) => {
       console.log(error);
