@@ -6,8 +6,9 @@ import * as reducers from '../reducers';
 import Application from './app.container';
 import createSocketIoMiddleware from 'redux-socket.io';
 import io from 'socket.io-client/socket.io';
+require('../publicenv');
 
-let socket = io('http://localhost:3000', {
+let socket = io('http://'+process.env.SERVER_IP+':3000', {
   transports: ['websocket']
 });
 let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');

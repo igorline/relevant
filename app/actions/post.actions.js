@@ -19,7 +19,7 @@ export function getFeed(id) {
     //.then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON, 'get feed response');
+      //console.log(responseJSON, 'get feed response');
       dispatch(setFeed(responseJSON));
     })
     .catch((error) => {
@@ -51,7 +51,7 @@ export function getPosts() {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-        console.log(responseJSON, 'response');
+        //console.log(responseJSON, 'response');
         dispatch(setPosts(responseJSON));
     })
     .catch((error) => {
@@ -155,7 +155,7 @@ export function getActivePost(postId) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON, 'activePost');
+      //console.log(responseJSON, 'activePost');
       dispatch(setActivePost(responseJSON[0]));
       dispatch(Actions.SinglePost);
     })

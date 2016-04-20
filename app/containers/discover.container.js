@@ -19,6 +19,7 @@ import * as postActions from '../actions/post.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import DiscoverUser from '../components/discoverUser.component';
+import Notification from '../components/notification.component';
 
 class Discover extends Component {
   constructor (props, context) {
@@ -83,7 +84,9 @@ class Discover extends Component {
             {currentView == 3 ? usersEl : null}
           </View>
         </ScrollView>
-
+<View pointerEvents={'none'} style={styles.notificationContainer}>
+          <Notification />
+        </View>
       </View>
     );
   }

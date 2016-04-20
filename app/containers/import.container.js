@@ -15,7 +15,7 @@ import Contact from '../components/contact.component';
 import * as authActions from '../actions/auth.actions';
 import { bindActionCreators } from 'redux';
 import { globalStyles } from '../styles/global';
-
+import Notification from '../components/notification.component';
 
 class Import extends Component {
   constructor (props, context) {
@@ -64,6 +64,9 @@ class Import extends Component {
       <View>
         {contacts ? null : <Button onPress={getContacts}>Import contacts</Button>}
         {contactsEl}
+        </View>
+        <View pointerEvents={'none'} style={styles.notificationContainer}>
+          <Notification />
         </View>
       </ScrollView>
     );

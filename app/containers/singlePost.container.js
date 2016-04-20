@@ -16,6 +16,7 @@ import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import Notification from '../components/notification.component';
 
 class SinglePost extends Component {
   constructor (props, context) {
@@ -45,6 +46,9 @@ class SinglePost extends Component {
         {title ? <Text style={[styles.font20, styles.textCenter]}>{title}</Text> : null }
         {description ? <Text style={styles.center}>{description}</Text> : null}
         {link ? null : null}
+        <View pointerEvents={'none'} style={styles.notificationContainer}>
+          <Notification />
+        </View>
       </View>
     );
   }

@@ -21,14 +21,27 @@ var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
 import * as utils from '../utils';
 import Post from '../components/post.component';
+import * as subscriptionActions from '../actions/subscription.actions';
+import Notification from '../components/notification.component';
 
 class User extends Component {
     constructor(props, context) {
         super(props, context)
-        this.state = {}
+        this.state = {
+          followers: null,
+          following: null
+        }
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+      var self = this;
+      subscriptionActions.getSubscriptionData('follower', self.props.users.selectedUser._id).then(function(data) {
+        self.setState({following: data.data});
+      })
+      subscriptionActions.getSubscriptionData('following', self.props.users.selectedUser._id).then(function(data) {
+        self.setState({followers: data.data});
+      })
+    }
 
     render() {
       var self = this;
@@ -37,11 +50,13 @@ class User extends Component {
       var name = null;
       var relevance = 0;
       var balance = 0;
-      var followers = 0;
-      var following = 0;
       const {actions} = this.props;
       var userImageEl = null;
       var postsEl = null;
+      var followers = null;
+      var following = null;
+      if (self.state.followers) followers = self.state.followers;
+      if (self.state.following) following = self.state.following;
 
       if (this.props.users.selectedUser) {
           user = this.props.users.selectedUser;
@@ -49,8 +64,6 @@ class User extends Component {
           if (user.image) userImage = user.image;
           if (user.relevance) relevance = user.relevance;
           if (user.balance) balance = user.balance;
-          if (user.followers) followers = user.followers;
-          if (user.following) following = user.following;
       }
 
       if (userImage) {
@@ -77,13 +90,17 @@ class User extends Component {
             <View style={[styles.insideRow, styles.insidePadding]}>
               <Text>Relevance: <Text style={styles.active}>{relevance}</Text ></Text>
               <Text>Balance: <Text style={styles.active}>{balance}</Text></Text>
-
+              <Text>Followers: <Text style={styles.active}>{followers ? followers.length : 0}</Text></Text>
+              <Text>Following: <Text style={styles.active}>{following ? following.length : 0}</Text></Text>
             </View>
           </View>
           <View>
             <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
             {postsEl}
           </View>
+          <View pointerEvents={'none'} style={styles.notificationContainer}>
+          <Notification />
+        </View>
         </ScrollView>
       );
   }

@@ -17,7 +17,7 @@ function getSelectedUser(userId, token) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-        console.log(responseJSON, 'response');
+        //console.log(responseJSON, 'response');
         dispatch(setSelectedUser(responseJSON));
         dispatch(getSelectedUserPosts(responseJSON._id));
         dispatch(Actions.User);
@@ -42,7 +42,7 @@ function getPostUser(userId, token) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-        console.log(responseJSON, 'postUser');
+        //console.log(responseJSON, 'postUser');
         return responseJSON;
     })
     .catch((error) => {
@@ -74,7 +74,7 @@ function getSelectedUserPosts(userId) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON, 'json response getSelectedUserPosts')
+      //console.log(responseJSON, 'json response getSelectedUserPosts')
       dispatch(setSelectedUserPosts(responseJSON));
     })
     .catch((error) => {

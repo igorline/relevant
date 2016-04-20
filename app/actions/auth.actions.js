@@ -214,9 +214,7 @@ function getUser(token, redirect) {
 
 export
 function userIndex() {
-    console.log('user index action')
     return dispatch => {
-        console.log('userIndex')
         new Promise(function(resolve, reject) {
             return fetch('http://'+process.env.SERVER_IP+':3000/api/user', {
                     credentials: 'include',
