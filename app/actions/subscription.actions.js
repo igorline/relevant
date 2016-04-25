@@ -7,7 +7,7 @@ export
 function getSubscriptionData(type, userId) {
   var searchObj = {'search':{}};
   searchObj.search[type] = userId;
-    return fetch('http://'+process.env.SERVER_IP+':3000/api/subscription', {
+    return fetch(process.env.API_SERVER+'/api/subscription', {
       credentials: 'include',
       method: 'POST',
       headers: {

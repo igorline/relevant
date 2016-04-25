@@ -3,11 +3,11 @@ require('../publicenv');
 var { Actions } = require('react-native-redux-router');
 import * as utils from '../utils';
 
-var apiServer = 'http://'+process.env.SERVER_IP+':3000/api/'
+var apiServer = process.env.API_SERVER+'/api/'
 
 export function getFeed(id) {
   return function(dispatch) {
-    fetch('http://'+process.env.SERVER_IP+':3000/api/post/feed', {
+    fetch(process.env.API_SERVER+'/api/post/feed', {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
@@ -155,7 +155,6 @@ export function getActivePost(postId) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      //console.log(responseJSON, 'activePost');
       dispatch(setActivePost(responseJSON[0]));
       dispatch(Actions.SinglePost);
     })
@@ -165,25 +164,36 @@ export function getActivePost(postId) {
   }
 }
 
-export function invest(token, invest, following){
+export function invest(token, amount, post, investingUser){
   return dispatch => {
-    return fetch(process.env.API_SERVER+'/api/post/' + invest.postId + '/invest', {
-      method: 'PUT',
+    return fetch( apiServer + 'invest/create?access_token='+token, {
       credentials: 'include',
+      method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`,
+        'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(invest)
+      body: JSON.stringify({
+        investor: investingUser._id,
+        poster: post.user._id,
+        amount: amount,
+        post: post._id
+      })
     })
     .then((response) => response.json())
-    .then((post) => {
-      dispatch(updatePost(post))
+    .then((responseJSON) => {
+      dispatch({type: 'server/notification', payload: {user: post.user._id, message: investingUser.name+' just invested in your post'}});
+      return true;
     })
     .catch((error) => {
       console.log(error);
+      return false;
     });
+  }
+}
 
+export function createSubscription(token, post) {
+  return dispatch => {
     fetch( apiServer + 'subscription/create?access_token='+token, {
       credentials: 'include',
       method: 'POST',
@@ -192,12 +202,11 @@ export function invest(token, invest, following){
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        following: following
+        following: post.user._id
       })
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON, 'create subscription response');
     })
     .catch((error) => {
       console.log(error);

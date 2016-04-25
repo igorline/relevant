@@ -25,6 +25,7 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import * as subscriptionActions from '../actions/subscription.actions';
 // import io from 'socket.io-client/socket.io';
+import * as investActions from '../actions/invest.actions';
 import Notification from '../components/notification.component';
 
 class Profile extends Component {
@@ -40,7 +41,6 @@ class Profile extends Component {
 
   componentDidMount() {
     var self = this;
-    // this.props.dispatch({type:'server/storeUser', payload: self.props.auth.user});
    this.props.actions.getUserPosts(this.props.auth.user._id);
    subscriptionActions.getSubscriptionData('follower', this.props.auth.user._id).then(function(data) {
      self.setState({following: data.data});
@@ -61,7 +61,7 @@ class Profile extends Component {
   }
 
   componentDidUpdate() {
-    console.log(this, 'profile state')
+    //console.log(this, 'profile state')
   }
 
   sendNotification() {
@@ -119,10 +119,10 @@ class Profile extends Component {
           </View>
         </View>
         <View>
-          <Button onPress={this.sendTestSocketMessage.bind(this)}>Send test socket message</Button>
+          {/*<Button onPress={this.sendTestSocketMessage.bind(this)}>Send test socket message</Button>
           <Button onPress={this.getClientData.bind(this)}>Get client data</Button>
           <Button onPress={this.sendNotification.bind(this)}>send notif</Button>
-          <Text>{this.props.socket.message}</Text>
+          <Text>{this.props.socket.message}</Text>*/}
           <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
           {postsEl}
         </View>
@@ -146,7 +146,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...authActions, ...postActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...postActions}, dispatch)
   }
 }
 

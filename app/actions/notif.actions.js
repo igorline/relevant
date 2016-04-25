@@ -2,12 +2,12 @@ import * as types from './actionTypes';
 require('../publicenv');
 var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
 import * as utils from '../utils';
-var apiServer = 'http://'+process.env.SERVER_IP+':3000/api/'
+var apiServer = process.env.API_SERVER+'/api/'
 
 
 export function setNotif(active, text, bool) {
     setTimeout(function() { reset() }, 3000);
-    console.log('sending bool', bool)
+    //console.log('sending bool', bool)
     return {
         type: types.SET_NOTIF,
         payload: {

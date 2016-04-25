@@ -19,6 +19,7 @@ import * as userActions from '../actions/user.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
+import * as investActions from '../actions/invest.actions';
 import Notification from '../components/notification.component';
 
 class Read extends Component {
@@ -72,7 +73,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ ...authActions, ...postActions, ...userActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...userActions}, dispatch)
   }
 }
 
