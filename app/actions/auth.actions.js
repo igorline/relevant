@@ -10,7 +10,7 @@ import * as utils from '../utils';
 
 export
 function setUser(user) {
-    console.log('set user', user)
+    //console.log('set user', user)
     return {
         type: types.SET_USER,
         payload: user
@@ -78,7 +78,7 @@ export
 function loginUser(user, redirect) {
     return dispatch => {
         dispatch(loginUserRequest());
-        return fetch('http://'+process.env.SERVER_IP+':3000/auth/local', {
+        return fetch(process.env.API_SERVER+'/auth/local', {
             credentials: 'include',
             method: 'POST',
             headers: {
@@ -110,41 +110,11 @@ function loginUser(user, redirect) {
     }
 }
 
-// export
-// function loginJay(user, redirect) {
-//     return function(dispatch) {
-//         dispatch(loginUserRequest());
-//         fetch('http://'+process.env.SERVER_IP+':3000/auth/local', {
-//             credentials: 'include',
-//             method: 'POST',
-//             headers: {
-//                 'Accept': 'application/json',
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({email: 'jaygoss@gmail.com', password: 'test'})
-//         })
-//         .then(utils.fetchError.handleErrors)
-//         .then((response) => response.json())
-//         .then((responseJSON) => {
-//             if (responseJSON.token) {
-//                 AsyncStorage.setItem('token', responseJSON.token)
-//                     dispatch(loginUserSuccess(responseJSON.token));
-//                     dispatch(getUser(responseJSON.token, true));
-//             } else {
-//                 dispatch(loginUserFailure(responseJSON.message));
-//             }
-//         })
-//         .catch((error) => {
-//             console.log(error, 'error');
-//             dispatch(loginUserFailure('Server error'));
-//         });
-//     }
-// }
 
 export
 function createUser(user, redirect) {
     return function(dispatch) {
-        fetch('http://'+process.env.SERVER_IP+':3000/api/user', {
+        fetch(process.env.API_SERVER+'/api/user', {
             credentials: 'include',
             method: 'POST',
             headers: {
@@ -174,10 +144,10 @@ export
 function getUser(token, redirect) {
     return dispatch => {
         if(!token){
-            console.log('no token')
+            //console.log('no token')
             AsyncStorage.getItem('token')
                 .then(token => {
-                    console.log("GOT TOKEN", token);
+                    //console.log("GOT TOKEN", token);
                     if (token) {
                         return fetchUser(token);
                     } else {
@@ -189,7 +159,7 @@ function getUser(token, redirect) {
                 })
         } else fetchUser(token);
         function fetchUser(token) {
-            fetch('http://'+process.env.SERVER_IP+':3000/api/user/me', {
+            fetch(process.env.API_SERVER+'/api/user/me', {
                 credentials: 'include',
                 method: 'GET',
                 headers: {
@@ -216,7 +186,7 @@ export
 function userIndex() {
     return dispatch => {
         new Promise(function(resolve, reject) {
-            return fetch('http://'+process.env.SERVER_IP+':3000/api/user', {
+            return fetch(process.env.API_SERVER+'/api/user', {
                     credentials: 'include',
                     method: 'GET'
                 })
@@ -278,8 +248,8 @@ function setContacts(contacts) {
 export
 function changeName(name, user, token) {
     return function(dispatch) {
-    console.log(name, user, token);
-      fetch('http://'+process.env.SERVER_IP+':3000/api/user?access_token='+token, {
+    //console.log(name, user, token);
+      fetch(process.env.API_SERVER+'/api/user?access_token='+token, {
         credentials: 'include',
         method: 'PUT',
         headers: {
@@ -294,6 +264,28 @@ function changeName(name, user, token) {
       })
       .catch((error) => {
         console.log(error, 'error');
+      });
+    }
+}
+
+export function setPicture(url, user, token) {
+    return function(dispatch) {
+      var newUser = user;
+      newUser.image = url;
+      fetch(process.env.API_SERVER+'/api/user?access_token='+token, {
+          credentials: 'include',
+          method: 'PUT',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(newUser)
+      })
+      .then((response) => {
+        dispatch(getUser(token, null));
+      })
+      .catch((error) => {
+          console.log(error, 'error');
       });
     }
 }

@@ -6,7 +6,7 @@ import * as utils from '../utils';
 export
 function getSelectedUser(userId, token) {
   return function(dispatch) {
-    fetch('http://'+process.env.SERVER_IP+':3000/api/user/'+userId+'?access_token='+token, {
+    fetch(process.env.API_SERVER+'/api/user/'+userId+'?access_token='+token, {
         credentials: 'include',
         method: 'GET',
         headers: {
@@ -31,7 +31,7 @@ function getSelectedUser(userId, token) {
 export
 function getPostUser(userId, token) {
   return function(dispatch) {
-    return fetch('http://'+process.env.SERVER_IP+':3000/api/user/'+userId+'?access_token='+token, {
+    return fetch(process.env.API_SERVER+'/api/user/'+userId+'?access_token='+token, {
         credentials: 'include',
         method: 'GET',
         headers: {
@@ -62,7 +62,7 @@ function setSelectedUser(user) {
 export
 function getSelectedUserPosts(userId) {
   return function(dispatch) {
-    fetch('http://'+process.env.SERVER_IP+':3000/api/post/', {
+    fetch(process.env.API_SERVER+'/api/post/', {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',

@@ -17,6 +17,7 @@ var Button = require('react-native-button');
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import { bindActionCreators } from 'redux';
+import * as investActions from '../actions/invest.actions';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
 import * as utils from '../utils';
@@ -119,7 +120,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...authActions, ...postActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...postActions}, dispatch)
   }
 }
 

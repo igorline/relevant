@@ -44,36 +44,12 @@ class ProfileOptions extends Component {
         if(data){
           utils.s3.toS3Advanced(data, self.props.auth.token).then(function(results){
             if (results.success) {
-              self.setPicture(results.url, self.props.auth.user, self.props.auth.token);
+              self.props.actions.setPicture(results.url, self.props.auth.user, self.props.auth.token);
             } else {
               console.log('err');
             }
           })
         }
-      });
-    }
-
-    setPicture(url, user, token) {
-      var newUser = user;
-      newUser.image = url;
-      var self = this;
-      console.log(self, 'setPicture')
-
-      fetch('http://'+process.env.SERVER_IP+':3000/api/user?access_token='+token, {
-          credentials: 'include',
-          method: 'PUT',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(newUser)
-      })
-      .then((response) => {
-        console.log('yes')
-        self.props.actions.getUser(token, null);
-      })
-      .catch((error) => {
-          console.log(error, 'error');
       });
     }
 

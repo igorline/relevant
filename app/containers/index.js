@@ -11,7 +11,7 @@ import createSocketIoMiddleware from 'redux-socket.io';
 
 // import io from 'socket.io-client/socket.io';
 require('../publicenv');
-let socket = io('http://'+process.env.SERVER_IP+':3000', {
+let socket = io(process.env.API_SERVER, {
   transports: ['websocket'],
   jsonp: false
 });

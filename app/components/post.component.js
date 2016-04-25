@@ -8,7 +8,7 @@ import React, {
   Image,
   TextInput,
   TouchableHighlight,
-  LinkingIOS,
+  Linking,
   Picker,
   PickerIOS,
   Animated,
@@ -20,6 +20,7 @@ import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as userActions from '../actions/user.actions';
+import * as investActions from '../actions/invest.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var postStyles = null;
@@ -38,13 +39,38 @@ class Post extends Component {
       posted: null,
       passed: false,
       timeUntilString: null,
-      timePassedPercent: null
+      timePassedPercent: null,
+      postValue: 0,
+      invested: false
     }
   }
 
   componentDidMount() {
     this.props.post.created_at;
-    this.checkTime(this)
+    this.checkTime(this);
+    this.getValues();
+  }
+
+  postValue() {
+    var self = this;
+    var defaultVal = 0;
+    this.props.actions.getInvestData('value', {post: this.props.post._id}).then(function(postInvests) {
+      postInvests.data.forEach(function(invest) {
+        defaultVal += invest.amount;
+      })
+      self.setState({postValue: defaultVal});
+    })
+  }
+
+  investors() {
+    var self = this;
+    this.props.actions.getInvestData('investors', {post: this.props.post._id, investor: this.props.auth.user._id}).then(function(investor) {
+      if (investor.data.length > 0) {
+        self.setState({invested: true});
+      } else {
+         self.setState({invested: false});
+      }
+    })
   }
 
   checkTime() {
@@ -63,7 +89,7 @@ class Post extends Component {
   }
 
   openLink(url) {
-      LinkingIOS.openURL(url)
+      Linking.openURL(url)
   }
 
   toggleExpanded(bool) {
@@ -111,14 +137,27 @@ class Post extends Component {
     }
   }
 
+  getValues() {
+    this.postValue();
+    this.investors();
+  }
+
   invest(toggle, functionBool) {
     var self = this;
-    var invest = {
-      post: this.props.post,
-      sign: 1,
-      amount: self.state.investAmount
-    };
-    if (functionBool) this.props.actions.invest(this.props.auth.token, invest, self.props.post.user._id);
+
+    if (functionBool) {
+      if (!self.state.invested) {
+        this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function(){
+          self.getValues();
+        })
+        this.props.actions.createSubscription(this.props.auth.token, self.props.post);
+      } else {
+        this.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function(){
+          self.getValues();
+        })
+      }
+
+    }
     if (toggle) this.toggleInvest(this);
     self.setState({investAmount: 50});
   }
@@ -188,23 +227,18 @@ class Post extends Component {
     var previouslyInvested = false;
     var toggleBool = null;
 
-    if (post.investors) {
-      var invested = post.investors.filter(el => {
-        return el.user == user._id
-      })
-      if (invested.length) {
-        investButtonString = "UnInve$t";
-        previouslyInvested = true;
-        toggleBool = false;
+    if (self.state.invested) {
+      investButtonString = "UnInve$t";
+      previouslyInvested = true;
+      toggleBool = false;
+      functionBool = true;
+    } else {
+      if (expandedInvest) {
+        toggleBool = true;
         functionBool = true;
       } else {
-        if (expandedInvest) {
-          toggleBool = true;
-          functionBool = true;
-        } else {
-          toggleBool = true;
-          functionBool = false;
-        }
+        toggleBool = true;
+        functionBool = false;
       }
     }
 
@@ -228,9 +262,9 @@ class Post extends Component {
           <View style={styles.postBody}>
             <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
             {link ? <Text>from {self.extractDomain(link)}  <Text style={styles.active} onPress={self.openLink.bind(null, link)}>Open Article</Text></Text> : null}
-            {body ? <Text>{body}</Text> : null}
+            {body ? <Text numberOfLines={expanded ? 999999 : 2}>{body}</Text> : null}
             <Text>Posted {self.state.posted}</Text>
-            {self.state.passed ? <Text>Current value: {value}</Text> : <View><Text>Value available in {self.state.timeUntilString}{'\n'}{Math.round(self.state.timePassedPercent*100)}% complete</Text></View>}
+            {self.state.passed ? <Text>Current value: {self.state.postValue}</Text> : <View><Text>Value available in {self.state.timeUntilString}{'\n'}{Math.round(self.state.timePassedPercent*100)}% complete</Text></View>}
             <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
               <PickerIOS
                 selectedValue={self.state.investAmount}
@@ -261,9 +295,6 @@ const localStyles = StyleSheet.create({
   opacZero: {
     opacity: 0
   },
-  // picker: {
-  //   overflow: 'hidden'
-  // },
   expandedInvest: {
     height: 200,
   },

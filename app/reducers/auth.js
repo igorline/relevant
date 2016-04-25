@@ -23,18 +23,18 @@ export default function auth(state = initialState, action) {
       })
 
     case types.LOGIN_USER_SUCCESS:
-      CookieManager.set({
-        name: 'myCookie',
-        value: action.payload.token,
-        domain: 'some domain',
-        origin: 'some origin',
-        path: '/',
-        version: '1',
-        expiration: '2015-05-30T12:30:00.00-05:00'
-      }, (err, res) => {
-        if (err) console.log('cookie ' + err);
-        console.log('cookie ' + res);
-      });
+      // CookieManager.set({
+      //   name: 'myCookie',
+      //   value: action.payload.token,
+      //   domain: 'some domain',
+      //   origin: 'some origin',
+      //   path: '/',
+      //   version: '1',
+      //   expiration: '2015-05-30T12:30:00.00-05:00'
+      // }, (err, res) => {
+      //   if (err) console.log('cookie ' + err);
+      //   console.log('cookie ' + res);
+      // });
       return Object.assign({}, state, {
         'isAuthenticating': false,
         'isAuthenticated': true,
@@ -43,11 +43,11 @@ export default function auth(state = initialState, action) {
       })
 
     case types.LOGIN_USER_FAILURE:
-      CookieManager.clearAll((err, res) => {
-        console.log('cookies cleared!');
-        if (err) console.log(err);
-        console.log(res);
-      });
+      // CookieManager.clearAll((err, res) => {
+      //   console.log('cookies cleared!');
+      //   if (err) console.log(err);
+      //   console.log(res);
+      // });
       return Object.assign({}, state, {
         'isAuthenticating': false,
         'isAuthenticated': false,
@@ -57,11 +57,11 @@ export default function auth(state = initialState, action) {
       })
 
     case types.LOGOUT_USER:
-      CookieManager.clearAll((err, res) => {
-        console.log('cookies cleared!');
-        if (err) console.log(err);
-        console.log(res);
-      });
+      // CookieManager.clearAll((err, res) => {
+      //   console.log('cookies cleared!');
+      //   if (err) console.log(err);
+      //   console.log(res);
+      // });
       return Object.assign({}, state, {
         'isAuthenticated': false,
         'token': null,

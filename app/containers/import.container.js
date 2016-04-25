@@ -31,7 +31,7 @@ class Import extends Component {
 
   userIndex() {
     var self = this;
-    fetch('http://'+process.env.SERVER_IP+':3000/api/user', {
+    fetch(process.env.API_SERVER+'/api/user', {
         credentials: 'include',
         method: 'GET'
       })

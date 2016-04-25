@@ -54,7 +54,7 @@ class Notification extends Component {
     var styles = {...localStyles, ...parentStyles};
     var message = this.props.notif.text;
     var bool = self.props.notif.bool;
-    console.log(this.props, 'notification props')
+    //console.log(this.props, 'notification props')
 
     return (
       <Animated.View style={[styles.parent, bool ? styles.green : styles.red, {opacity: self.state.notifOpac}]}>

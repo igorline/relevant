@@ -46,6 +46,8 @@ class Nav extends Component {
       } else {
         title = self.props.title;
       }
+    } else if (route == 'SubmitPost') {
+      title = 'Post';
     } else {
       title = self.props.title;
     }

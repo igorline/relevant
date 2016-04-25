@@ -7,7 +7,7 @@ export default function auth(state = initialState, action) {
   switch (action.type) {
 
     case types.SET_NOTIF: {
-      console.log('received bool ', action.payload.bool)
+      //console.log('received bool ', action.payload.bool)
       return Object.assign({}, state, {
         'active': action.payload.active,
         'bool': action.payload.bool,
