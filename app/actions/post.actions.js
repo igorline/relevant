@@ -175,9 +175,8 @@ export function invest(token, amount, post, investingUser){
       },
       body: JSON.stringify({
         investor: investingUser._id,
-        poster: post.user._id,
         amount: amount,
-        post: post._id
+        post: post
       })
     })
     .then((response) => response.json())
