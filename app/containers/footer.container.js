@@ -32,7 +32,7 @@ class Footer extends Component {
           <Button style={currentRoute == 'Discover' ? styles.active : styles.footerLink} onPress={self.props.routes.Discover}>Discover</Button>
         </View>
         <View style={styles.footerItem}>
-          <Button style={currentRoute == 'SubmitPost' ? styles.active : styles.footerLink} onPress={self.props.routes.SubmitPost}>Post</Button>
+          <Button style={currentRoute == 'CreatePost' ? styles.active : styles.footerLink} onPress={self.props.routes.CreatePost}>Post</Button>
         </View>
         <View style={styles.footerItem}>
           <Button style={currentRoute == 'Profile' ? styles.active : styles.footerLink} onPress={self.props.routes.Profile}>Profile</Button>

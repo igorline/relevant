@@ -76,7 +76,7 @@ class User extends Component {
       if (self.props.users.posts) {
         if (self.props.users.posts.length > 0) {
           postsEl = self.props.users.posts.map(function(post, i) {
-            return (<Post post={post} {...self.props} styles={styles} />);
+            return (<Post key={i} post={post} {...self.props} styles={styles} />);
           });
         } else {
           postsEl = (<View><Text>0 Posts</Text></View>);

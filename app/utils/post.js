@@ -2,7 +2,7 @@ import { submitPost } from '../actions/post.actions';
 import { toS3Advanced } from './s3';
 var cheerio = require('cheerio-without-node-native');
 
-export function generate(link, body, token) {
+export function generate(link, body, tags, token) {
  return fetch(link, {
       method: 'GET',
   })
@@ -58,6 +58,7 @@ export function generate(link, body, token) {
       if (results.success) {
         var postBody = {
           link: link,
+          tags: tags,
           body: body,
           title: title,
           description: description,
@@ -73,6 +74,7 @@ export function generate(link, body, token) {
     var postBody = {
       link: link,
       body: body,
+      tags: tags,
       title: title,
       description: description,
       image: image

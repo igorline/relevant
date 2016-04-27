@@ -54,7 +54,7 @@ class Discover extends Component {
       posts = self.props.posts.index;
       postsEl = posts.map(function(post, i) {
         return (
-          <Post post={post} {...self.props} styles={styles} />
+          <Post key={i} post={post} {...self.props} styles={styles} />
         );
       });
     }
@@ -65,7 +65,7 @@ class Discover extends Component {
       usersEl = userIndex.map(function(user, i) {
         if (user.name != 'Admin') {
           return (
-            <DiscoverUser {...self.props} user={user} styles={styles} />
+            <DiscoverUser key={i} {...self.props} user={user} styles={styles} />
           );
         }
       });
@@ -85,7 +85,7 @@ class Discover extends Component {
             {currentView == 3 ? usersEl : null}
           </View>
         </ScrollView>
-<View pointerEvents={'none'} style={styles.notificationContainer}>
+        <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
       </View>
