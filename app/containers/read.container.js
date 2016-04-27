@@ -43,9 +43,9 @@ class Read extends Component {
     var posts = null;
     if (self.props.posts.feed) {
       posts = self.props.posts.feed;
-      postsEl = posts.map(function(post) {
+      postsEl = posts.map(function(post, i) {
         return (
-          <Post post={post} {...self.props} styles={styles} />
+          <Post post={post} key={i} {...self.props} styles={styles} />
         );
       });
     }

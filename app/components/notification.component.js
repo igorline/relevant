@@ -85,7 +85,7 @@ parent: {
   padding: 10,
   justifyContent: 'center',
   alignItems: 'center',
-  textAlign: 'center'
+  // textAlign: 'center'
 },
 notifText: {
   color: 'white',

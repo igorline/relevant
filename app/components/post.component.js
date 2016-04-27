@@ -191,15 +191,19 @@ class Post extends Component {
     var styles = {...localStyles, ...postStyles};
     var pickerArray = [];
     var investOptions = [];
+    var tags = null;
+    var tagsEl = null;
 
     if (this.props.post) {
       post = this.props.post;
+      // console.log(post, 'post')
       if (post.image) image = post.image;
       if (post.description) description = post.description;
       if (post.title) title = post.title;
       if (post.link) link = post.link;
       if (post.body) body = post.body;
       if (post.value) value = post.value;
+      if (post.tags.length) tags = post.tags;
       if (post.created_at) createdAt = post.created_at;
       if (post.user) {
         postUser = post.user;
@@ -208,12 +212,19 @@ class Post extends Component {
       }
     }
 
-    if (balance >= 50) pickerArray.push(<PickerItemIOS label='50' value={50} />);
-    if (balance >= 100) pickerArray.push(<PickerItemIOS label='100' value={100} />);
-    if (balance >= 500) pickerArray.push(<PickerItemIOS label='500' value={500} />);
-    if (balance >= 1000) pickerArray.push(<PickerItemIOS label='1000' value={1000} />);
-    if (balance >= 5000) pickerArray.push(<PickerItemIOS label='5000' value={5000} />);
-    if (balance >= 10000) pickerArray.push(<PickerItemIOS label='10000' value={10000} />);
+    if (tags) {
+      tagsEl = [];
+      tags.forEach(function(tag, i) {
+        tagsEl.push(<Text style={styles.tagBox} key={i}>#{tag.name}</Text>)
+      })
+    }
+
+    if (balance >= 50) pickerArray.push(<PickerItemIOS key={0} label='50' value={50} />);
+    if (balance >= 100) pickerArray.push(<PickerItemIOS key={1} label='100' value={100} />);
+    if (balance >= 500) pickerArray.push(<PickerItemIOS key={2} label='500' value={500} />);
+    if (balance >= 1000) pickerArray.push(<PickerItemIOS key={3} label='1000' value={1000} />);
+    if (balance >= 5000) pickerArray.push(<PickerItemIOS key={4} label='5000' value={5000} />);
+    if (balance >= 10000) pickerArray.push(<PickerItemIOS key={5} label='10000' value={10000} />);
 
     if (postUserImage) {
       postUserImageEl = (<Image source={{uri: postUserImage}} style={styles.userImage} />);
@@ -261,10 +272,11 @@ class Post extends Component {
             </View>
           </View>
           {imageEl}
-          <View style={styles.postBody}>
+          <View style={styles.postSection}>
             <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
             {link ? <Text>from {self.extractDomain(link)}  <Text style={styles.active} onPress={self.openLink.bind(null, link)}>Open Article</Text></Text> : null}
-            {body ? <Text numberOfLines={expanded ? 999999 : 2}>{body}</Text> : null}
+            {tags ? <View style={styles.tagsRow}><Text>Tags: </Text>{tagsEl}</View> : null}
+            {body ? <View style={styles.postBody}><Text numberOfLines={expanded ? 999999 : 2}>{body}</Text></View> : null}
             <Text>Posted {self.state.posted}</Text>
             {self.state.passed ? <Text>Current value: {self.state.postValue}</Text> : <View><Text>Value available in {self.state.timeUntilString}{'\n'}{Math.round(self.state.timePassedPercent*100)}% complete</Text></View>}
             <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
@@ -306,11 +318,21 @@ const localStyles = StyleSheet.create({
   },
   postContainer: {
     marginBottom: 25,
-    textAlign: 'left',
+  },
+  tagsRow: {
+    flexDirection: 'row',
+    paddingTop: 10,
+    paddingBottom: 10,
+    alignItems: 'center'
+  },
+  postSection: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 15
   },
   postBody: {
-    padding: 15,
-    textAlign: 'left'
+       paddingTop: 10,
+    paddingBottom: 10,
   },
   postImage: {
     height: 200,

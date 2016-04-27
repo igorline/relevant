@@ -18,11 +18,11 @@ const globalStyles = StyleSheet.create({
   font20: {
     fontSize: 20
   },
-    font40: {
-    fontSize: 40
-  },
   textCenter: {
     textAlign: 'center'
+  },
+  font40: {
+    fontSize: 40
   },
   notificationContainer: {
     position: 'absolute',
@@ -32,6 +32,13 @@ const globalStyles = StyleSheet.create({
     right: 0,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+    tagBox: {
+    backgroundColor: 'lightgray',
+    padding: 5,
+    marginLeft: 5,
+    marginTop: 5,
+    color: 'white'
   },
   input: {
     borderColor: '#cccccc',
@@ -50,9 +57,8 @@ const globalStyles = StyleSheet.create({
   center: {
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign: 'center'
   },
-    container: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -61,7 +67,7 @@ const globalStyles = StyleSheet.create({
     borderStyle: 'solid',
     borderColor: 'transparent'
   },
-    contentContainer: {
+  contentContainer: {
     paddingVertical: 30,
     backgroundColor: 'white'
   },
@@ -74,28 +80,15 @@ const globalStyles = StyleSheet.create({
     active: {
     color: '#007aff'
   },
-    fullContainer: {
+  fullContainer: {
     flex: 1
   },
-    row: {
+  row: {
     flexDirection: 'row',
     width: fullWidth,
     padding: 20
   },
-  // buttonContainer: {
-  //   padding:10,
-  //   height:45,
-  //   overflow:'hidden',
-  //   borderRadius:4,
-  //   backgroundColor: 'white',
-  //   borderWidth: StyleSheet.hairlineWidth,
-  //   borderColor: 'black',
-  //   width:160,
-  //   marginTop:20,
-  //   marginBottom:20,
-  // },
   button: {
-    // fontSize: 20,
     color: '#007aff'
   }
 });

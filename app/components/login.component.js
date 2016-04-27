@@ -32,9 +32,12 @@ class Login extends Component {
   login() {
     var self = this;
     this.props.actions.loginUser({email: self.state.email, password: self.state.password}).then(function(results) {
-      if (!results.status) {
+      if (results) {
+              if (!results.status) {
         self.props.actions.setNotif(true, results.message, false)
       }
+      }
+
     })
   }
 

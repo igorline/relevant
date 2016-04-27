@@ -97,7 +97,7 @@ class Profile extends Component {
     if (self.props.posts.userPosts) {
       if (self.props.posts.userPosts.length > 0) {
         postsEl = self.props.posts.userPosts.map(function(post, i) {
-          return (<Post post={post} {...self.props} styles={styles} />);
+          return (<Post key={i} post={post} {...self.props} styles={styles} />);
         });
       } else {
          postsEl = (<View><Text>0 Posts</Text></View>)

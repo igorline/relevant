@@ -166,7 +166,7 @@ function getUser(token, redirect) {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            //.then(utils.fetchError.handleErrors)
+            .then(utils.fetchError.handleErrors)
             .then((response) => response.json())
             .then((responseJSON) => {
                 dispatch(loginUserSuccess(token));
@@ -238,12 +238,6 @@ function setContacts(contacts) {
         payload: contacts
     };
 }
-
-// export
-// function getToken() {
-//     var token = cookie.load('token');
-//     return token;
-// }
 
 export
 function changeName(name, user, token) {

@@ -101,7 +101,7 @@ class Auth extends Component {
 
     return (
       <View style={styles.container}>
-        <Text style={[styles.center, styles.font20]}>
+        <Text style={[styles.textCenter, styles.font20]}>
           {tagline}
         </Text>
         <Text>
