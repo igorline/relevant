@@ -153,10 +153,10 @@ class Post extends Component {
         })
         this.props.actions.createSubscription(this.props.auth.token, self.props.post);
       } else {
-        //console.log('destroy investment')
-        //this.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function(){
-          //self.getValues();
-        //})
+        console.log('destroy investment')
+        this.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function(){
+          self.getValues();
+        })
       }
 
     }
@@ -241,7 +241,7 @@ class Post extends Component {
     var toggleBool = null;
 
     if (self.state.invested) {
-      investButtonString = "Already invested";
+      investButtonString = "Uninve$t";
       previouslyInvested = true;
       toggleBool = false;
       functionBool = true;
