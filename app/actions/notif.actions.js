@@ -6,8 +6,8 @@ var apiServer = process.env.API_SERVER+'/api/'
 
 
 export function setNotif(active, text, bool) {
-    setTimeout(function() { reset() }, 3000);
-    //console.log('sending bool', bool)
+    // setTimeout(function() { reset() }, 3000);
+    // //console.log('sending bool', bool)
     return {
         type: types.SET_NOTIF,
         payload: {
@@ -18,17 +18,17 @@ export function setNotif(active, text, bool) {
     };
 }
 
-export function reset() {
-  console.log('reset')
-  return {
-    type: types.SET_NOTIF,
-    payload: {
-      active: false,
-      text: null,
-      bool: false
-    }
-  }
-}
+// export function reset() {
+//   console.log('reset')
+//   return {
+//     type: types.SET_NOTIF,
+//     payload: {
+//       active: false,
+//       text: null,
+//       bool: false
+//     }
+//   }
+// }
 
 
 
