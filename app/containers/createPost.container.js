@@ -98,7 +98,7 @@ class CreatePost extends Component {
     if (self.state.postTags.indexOf(tag) < 0) {
       self.state.postTags.push(tag);
       self.props.actions.setNotif(true, 'Added tag '+tag.name, true);
-      self.setState({preTag: null, tagStage: 1, autoTags: []});
+      self.setState({stage: 1, preTag: null, tagStage: 1, autoTags: []});
     } else {
       self.props.actions.setNotif(true, 'Cannot duplicate tag', false)
     }
@@ -139,7 +139,7 @@ class CreatePost extends Component {
       if (response.status) {
         self.state.postTags.push(response.data);
         self.props.actions.setNotif(true, 'Created and added tag', true);
-        self.setState({preTag: null, tagStage: 1, autoTags: []});
+        self.setState({stage: 1, preTag: null, tagStage: 1, autoTags: []});
       } else {
         self.props.actions.setNotif(true, 'Error creating tag', false)
       }
@@ -155,7 +155,7 @@ class CreatePost extends Component {
        return;
     }
 
-    if (!self.state.postBody && self.state.stage > 1) {
+    if (!self.state.postBody ) {
        self.props.actions.setNotif(true, 'Add text', false);
        return;
     }
@@ -196,7 +196,7 @@ class CreatePost extends Component {
       })
     }
 
-    var autoTags = (<Text>No suggested tags</Text>);
+    var autoTags = (<Text style={styles.padding10}>No suggested tags</Text>);
     if (self.state.autoTags.length) {
       autoTags = [];
       self.state.autoTags.forEach(function(tag, i) {
@@ -231,22 +231,23 @@ class CreatePost extends Component {
     return (
       <TouchableWithoutFeedback onPress={()=> dismissKeyboard()}>
       <View style={styles.fullContainer}>
-        <Text style={[styles.font20, styles.textCenter]}>{headline}</Text>
+       {/*} <Text style={[styles.font20, styles.textCenter]}>{headline}</Text>*/}
         {self.state.stage == 1 ? <TextInput numberOfLines={1} style={[styles.font20, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.postLink} returnKeyType='done' /> : null}
-        {self.state.stage == 2 ? <TextInput style={[styles.bodyInput, styles.font20]} placeholder='Relevant text here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /> : null}
-        {self.state.stage == 3 && self.state.tagStage == 1 && self.state.postTags.length ? <View style={styles.tagStringContainer}>{tagsString}</View> : null}
+        {self.state.stage == 1 ? <TextInput style={[styles.bodyInput, styles.font20]} placeholder='Relevant text here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /> : null}
+        {self.state.stage == 1 ? <View style={[styles.tagStringContainer, styles.padding10]}><Text style={styles.font20}>Tags: </Text>{tagsString}</View> : null}
+        {self.state.stage == 2 && self.state.tagStage == 1 && self.state.postTags.length ? <View style={styles.tagStringContainer}>{tagsString}</View> : null}
 
-        {self.state.stage == 3 && self.state.tagStage == 1 ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Enter tags...' multiline={false} onChangeText={(postTags) => this.searchTags(postTags)} value={self.state.preTag} returnKeyType='done' /> : null}
+        {self.state.stage == 2 && self.state.tagStage == 1 ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Enter tags...' multiline={false} onChangeText={(postTags) => this.searchTags(postTags)} value={self.state.preTag} returnKeyType='done' /> : null}
 
-        {self.state.stage == 3 && self.state.tagStage == 1 ? <View>{autoTags}</View> : null}
+        {self.state.stage == 2 && self.state.tagStage == 1 ? <View>{autoTags}</View> : null}
 
-        {self.state.stage == 3 && self.state.tagStage == 1 && self.state.preTag ? <View style={[styles.padding10]}><Text onPress={self.createTag.bind(self)}>Create tag: {self.state.preTag}</Text></View> : null}
+        {self.state.stage == 2 && self.state.tagStage == 1 && self.state.preTag ? <View style={[styles.padding10]}><Text onPress={self.createTag.bind(self)}>Create tag: {self.state.preTag}</Text></View> : null}
 
-        {self.state.stage == 3 && self.state.tagStage == 2 ? <View style={styles.center}><Text style={[styles.font20, styles.padding10]}>Select a parent tag</Text>{parentTagsEl}</View> : null}
-         {self.state.stage == 3 && self.state.tagStage == 1 && self.state.postTags.length ? <Button style={styles.nextButton} onPress={self.post.bind(self)}>Submit</Button> : null}
+        {self.state.stage == 2 && self.state.tagStage == 2 ? <View style={styles.center}><Text style={[styles.font20, styles.padding10]}>Select a parent tag</Text>{parentTagsEl}</View> : null}
+         {self.state.stage == 1 && self.state.postTags.length ? <Button style={styles.nextButton} onPress={self.post.bind(self)}>Submit</Button> : null}
 
-        {self.state.stage == 1 || self.state.stage == 2  && self.state.tagStage == 1 ? <Button style={styles.nextButton} onPress={self.next.bind(self)}>Next</Button> : null}
-        {self.state.stage == 2 || self.state.stage == 3 && self.state.tagStage == 1 ? <Button style={styles.nextButton} onPress={self.prev.bind(self)}>Prev</Button> : null}
+        {self.state.stage == 1 ? <Button style={styles.nextButton} onPress={self.next.bind(self)}>Add tags</Button> : null}
+        {self.state.stage == 2  ? <Button style={styles.nextButton} onPress={self.prev.bind(self)}>Cancel</Button> : null}
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
@@ -274,7 +275,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(CreatePost)
 
 const localStyles = StyleSheet.create({
   tagStringContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   padding10: {
     padding: 10
@@ -310,7 +312,9 @@ const localStyles = StyleSheet.create({
     height: 50,
     width: fullWidth,
     padding: 10,
-    textAlign: 'center',
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+    // textAlign: 'center',
   },
   createPostContainer: {
     flex: 1,
