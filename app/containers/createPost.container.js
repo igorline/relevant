@@ -98,7 +98,7 @@ class CreatePost extends Component {
     if (self.state.postTags.indexOf(tag) < 0) {
       self.state.postTags.push(tag);
       self.props.actions.setNotif(true, 'Added tag '+tag.name, true);
-      self.setState({preTag: null});
+      self.setState({preTag: null, tagStage: 1, autoTags: []});
     } else {
       self.props.actions.setNotif(true, 'Cannot duplicate tag', false)
     }
@@ -139,7 +139,7 @@ class CreatePost extends Component {
       if (response.status) {
         self.state.postTags.push(response.data);
         self.props.actions.setNotif(true, 'Created and added tag', true);
-        self.setState({preTag: null, tagStage: 1});
+        self.setState({preTag: null, tagStage: 1, autoTags: []});
       } else {
         self.props.actions.setNotif(true, 'Error creating tag', false)
       }
@@ -212,14 +212,32 @@ class CreatePost extends Component {
       })
     }
 
+    var headline = null;
+    switch(self.state.stage) {
+      case 1:
+        headline = 'Add URL';
+        break;
+      case 2:
+        headline = 'Add relevant text';
+        break;
+      case 3:
+        headline = 'Add tags';
+        break;
+      default:
+        return;
+    }
+
 
     return (
       <TouchableWithoutFeedback onPress={()=> dismissKeyboard()}>
       <View style={styles.fullContainer}>
+        <Text style={[styles.font20, styles.textCenter]}>{headline}</Text>
         {self.state.stage == 1 ? <TextInput numberOfLines={1} style={[styles.font20, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.postLink} returnKeyType='done' /> : null}
         {self.state.stage == 2 ? <TextInput style={[styles.bodyInput, styles.font20]} placeholder='Relevant text here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /> : null}
         {self.state.stage == 3 && self.state.tagStage == 1 && self.state.postTags.length ? <View style={styles.tagStringContainer}>{tagsString}</View> : null}
-        {self.state.stage == 3 && self.state.tagStage == 1 ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Enter tags...' multiline={false} onChangeText={(postTags) => this.searchTags(postTags)} returnKeyType='done' /> : null}
+
+        {self.state.stage == 3 && self.state.tagStage == 1 ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Enter tags...' multiline={false} onChangeText={(postTags) => this.searchTags(postTags)} value={self.state.preTag} returnKeyType='done' /> : null}
+
         {self.state.stage == 3 && self.state.tagStage == 1 ? <View>{autoTags}</View> : null}
 
         {self.state.stage == 3 && self.state.tagStage == 1 && self.state.preTag ? <View style={[styles.padding10]}><Text onPress={self.createTag.bind(self)}>Create tag: {self.state.preTag}</Text></View> : null}
