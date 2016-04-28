@@ -166,7 +166,7 @@ function getUser(token, redirect) {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            .then(utils.fetchError.handleErrors)
+            //.then(utils.fetchError.handleErrors)
             .then((response) => response.json())
             .then((responseJSON) => {
                 dispatch(loginUserSuccess(token));
@@ -252,7 +252,7 @@ function changeName(name, user, token) {
         },
         body: JSON.stringify(user)
       })
-      .then(utils.fetchError.handleErrors)
+      //.then(utils.fetchError.handleErrors)
       .then((response) => {
         dispatch(getUser(token, null));
       })
