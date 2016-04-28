@@ -30,6 +30,9 @@ class Notification extends Component {
     var self = this;
     if (this.props.notif.active) {
       this.flashNotif();
+      setTimeout(function() {
+        self.props.actions.setNotif(false, null, false);
+      }, 3000);
     }
   }
 

@@ -135,7 +135,6 @@ class CreatePost extends Component {
     }
 
     this.props.actions.createTag(self.props.auth.token, newTagObj).then(function(response) {
-      //console.log(response, 'createTag response');
       if (response.status) {
         self.state.postTags.push(response.data);
         self.props.actions.setNotif(true, 'Created and added tag', true);
