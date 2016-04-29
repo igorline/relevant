@@ -97,7 +97,7 @@ class CreatePost extends Component {
     var self = this;
     if (self.state.postTags.indexOf(tag) < 0) {
       self.state.postTags.push(tag);
-      self.props.actions.setNotif(true, 'Added tag '+tag.name, true);
+      //self.props.actions.setNotif(true, 'Added tag '+tag.name, true);
       self.setState({stage: 1, preTag: null, tagStage: 1, autoTags: []});
     } else {
       self.props.actions.setNotif(true, 'Cannot duplicate tag', false)
@@ -122,8 +122,18 @@ class CreatePost extends Component {
 
 
   createTag() {
-    console.log('create tag ', this.state.preTag);
-    this.setState({tagStage: 2});
+    var self = this;
+    this.props.actions.searchSpecific(this.state.preTag).then(function(results) {
+      if (results.status) {
+        if (results.data.length) {
+          self.addTagToPost(results.data[0]);
+        } else {
+          self.setState({tagStage: 2});
+        }
+      } else {
+        self.props.actions.setNotif(true, 'Server error', false)
+      }
+    })
   }
 
   addParent(parent) {
@@ -143,6 +153,13 @@ class CreatePost extends Component {
         self.props.actions.setNotif(true, 'Error creating tag', false)
       }
     })
+  }
+
+  removeTag(tag) {
+    var self = this;
+    var index = self.state.postTags.indexOf(tag);
+    self.state.postTags.splice(index, 1);
+    self.setState({});
   }
 
 
@@ -165,9 +182,12 @@ class CreatePost extends Component {
     }
 
     var url = self.state.postLink;
-    if (url.indexOf('http://') == -1 && url.indexOf('https://') == -1) {
-      self.setState({postLink: 'http://'+url});
+    if (url) {
+      if (url.indexOf('http://') == -1 && url.indexOf('https://') == -1) {
+        self.setState({postLink: 'http://'+url});
+      }
     }
+
 
     self.setState({stage: self.state.stage+1});
   }
@@ -207,7 +227,7 @@ class CreatePost extends Component {
     if (self.state.postTags) {
       tagsString = [];
       self.state.postTags.forEach(function(tag, i) {
-        tagsString.push(<Text style={styles.tagBox} key={i}>#{tag.name}</Text>);
+        tagsString.push(<Text onPress={self.removeTag.bind(self, tag)} style={styles.tagBox} key={i}>X {tag.name}</Text>);
       })
     }
 

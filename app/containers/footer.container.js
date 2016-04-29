@@ -37,6 +37,9 @@ class Footer extends Component {
         <View style={styles.footerItem}>
           <Button style={currentRoute == 'Profile' ? styles.active : styles.footerLink} onPress={self.props.routes.Profile}>Profile</Button>
         </View>
+        <View style={styles.footerItem}>
+          <Button style={currentRoute == 'Activity' ? styles.active : styles.footerLink} onPress={self.props.routes.Activity}>Activity</Button>
+        </View>
       </View>);
     }
     return (
