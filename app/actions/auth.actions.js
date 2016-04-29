@@ -168,6 +168,7 @@ function getUser(token, redirect) {
             })
             //.then(utils.fetchError.handleErrors)
             .then((response) => response.json())
+            //.then(utils.fetchError.handleErrors)
             .then((responseJSON) => {
                 dispatch(loginUserSuccess(token));
                 dispatch(setUser(responseJSON));

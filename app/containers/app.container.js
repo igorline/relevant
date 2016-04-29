@@ -25,6 +25,7 @@ import Nav from './nav.container';
 import SinglePost from './singlePost.container';
 import User from './user.container';
 import ProfileOptions from './profileOptions.container';
+import Activity from './activity.container';
 
 
 class Application extends Component {
@@ -48,6 +49,9 @@ class Application extends Component {
           <Route name="SinglePost" component={SinglePost} type="replace" hideNavBar={false} title="Single Post" />
           <Route name="User" component={User} type="replace" hideNavBar={false} title="User" />
           <Route name="ProfileOptions" component={ProfileOptions} type="replace" hideNavBar={false} title="Options" />
+          <Route name="Activity" component={Activity} type="replace" hideNavBar={false} title="Activity" />
+
+
 
           {/*<Schema name="modal" sceneConfig={Animations.FlatFloatFromBottom} footer={Nav} navBar={Nav}/>*/}
           {/*<Schema name="default" sceneConfig={Animations.FlatFloatFromRight} footer={Footer} navBar={Nav}/>*/}
