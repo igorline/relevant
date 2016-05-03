@@ -44,18 +44,22 @@ class User extends Component {
       subscriptionActions.getSubscriptionData('following', self.props.users.selectedUser._id).then(function(data) {
         self.setState({followers: data.data});
       })
-      self.checkOnline();
+      self.checkOnline(self.props.online);
     }
 
-      checkOnline() {
-    var self = this;
-    for (var index in self.props.online) {
-      if (index == self.props.users.selectedUser._id) {
-        self.setState({online: true});
-      }
+    componentWillReceiveProps(next) {
+      self.checkOnline(next.online);
     }
-    console.log(self.props.online, 'online')
-  }
+
+    checkOnline(online) {
+      var self = this;
+      for (var index in online) {
+        if (index == self.props.users.selectedUser._id) {
+          self.setState({online: true});
+        }
+      }
+      console.log(online, 'online')
+    }
 
     render() {
       var self = this;
