@@ -131,7 +131,8 @@ class Activity extends Component {
     }
 
     return (
-      <ScrollView style={[styles.readContainer]}>
+      <View style={styles.fullContainer}>
+      <ScrollView>
       <View style={styles.activityHeader}>
         <Text onPress={self.changeView.bind(self, 1)} style={[self.state.view == 1 ? styles.active : null, styles.font20]}>Personal</Text>
         <Text onPress={self.changeView.bind(self, 2)} style={[self.state.view == 2 ? styles.active : null, styles.font20]}>General</Text>
@@ -140,10 +141,12 @@ class Activity extends Component {
       {self.state.view == 1 ? personalActivityEl : null }
       {self.state.view == 2 ? generalActivityEl : null }
       {self.state.view == 3 ? onlineEl : null }
+      </ScrollView>
        <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
-      </ScrollView>
+
+      </View>
     );
   }
 }
