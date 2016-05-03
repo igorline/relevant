@@ -48,6 +48,7 @@ class User extends Component {
     }
 
     componentWillReceiveProps(next) {
+      var self = this;
       self.checkOnline(next.online);
     }
 
