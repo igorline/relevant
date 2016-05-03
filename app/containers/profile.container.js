@@ -48,7 +48,11 @@ class Profile extends Component {
    subscriptionActions.getSubscriptionData('following', this.props.auth.user._id).then(function(data) {
     self.setState({followers: data.data});
    });
-   self.checkOnline(self);
+   self.checkOnline(self.props.online);
+  }
+
+  componentWillReceiveProps(next) {
+    self.checkOnline(next.online);
   }
 
   sendTestSocketMessage() {
@@ -56,25 +60,22 @@ class Profile extends Component {
     this.props.dispatch({type:'server/hello', payload:"Hello"});
   }
 
-  checkOnline() {
+  checkOnline(online) {
     var self = this;
-    console.log(self.props.online)
-    for (var index in self.props.online) {
+    for (var index in online) {
       if (index == self.props.auth.user._id) {
-
         self.setState({online: true});
         return;
       }
     }
-    console.log(self.props.online, 'online')
+    console.log(online, 'online')
   }
 
   componentDidUpdate() {
-    //console.log(this, 'profile state')
   }
 
   sendNotification() {
-    // this.props.dispatch({type: 'server/notification', payload: '5706ef322170009d5be58be4'});
+    this.props.dispatch({type: 'server/notification', payload: '5706ef322170009d5be58be4'});
   }
 
   render() {
