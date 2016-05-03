@@ -31,7 +31,6 @@ class Read extends Component {
 
   componentDidMount() {
     var self = this;
-    console.log(this, 'read mount')
     this.props.actions.getFeed(this.props.auth.user._id);
   }
 

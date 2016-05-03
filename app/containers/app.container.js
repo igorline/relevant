@@ -33,59 +33,6 @@ import * as onlineActions from '../actions/online.actions';
 
 
 class Application extends Component {
-  // constructor (props, context) {
-  //   super(props, context)
-  //    // this.socket = io('localhost:3000', {jsonp: false});
-  //   this.state = {
-  //     currentAppState: AppState.currentState,
-  //   }
-  // }
-
-  // // getInitialState() {
-  // //   return {
-
-  // //   };
-  // // }
-
-  // componentDidMount() {
-  //   var self = this;
-  //   console.log(this, 'app this')
-  //   //this.props.actions.getUser();
-  //   //AppState.addEventListener('change', this.handleAppStateChange.bind(self));
-  // }
-
-  // componentWillReceiveProps(next) {
-  //   var self = this;
-  //   console.log(this)
-  //   // console.log('hello', next);
-  //   // console.log(self, 'update self')
-  //   if (self.props.auth.user != next.auth.user) {
-  //     //self.handleAppStateChange.bind(self);
-  //     // dispatch({type:'server/storeUser', payload: next.auth.user})
-  //     // console.log('send user to socket', next.auth.user);
-  //     //  self.props.actions.userToSocket(next.auth.user)
-  //     // console.log('ok')
-  //   }
-  // }
-
-  // componentWillUnmount() {
-  //   var self = this;
-  //   //AppState.removeEventListener('change', this.handleAppStateChange.bind(self));
-  // }
-
-  // handleAppStateChange(currentAppState) {
-  //   var self = this;
-
-  //   //console.log('wtfff')
-  //   //self.setState({ currentAppState: currentAppState});
-  //   console.log('hello', currentAppState, self.props.auth.user)
-  //   if (currentAppState == 'active' && self.props.auth.user) {
-  //       console.log('send user to socket', self.props.auth.user.name);
-  //       self.props.actions.userToSocket(self.props.auth.user)
-  //      // dispatch({type:'server/storeUser', payload: self.props.auth.user})
-  //   }
-  // }
-
 
   render() {
     return (

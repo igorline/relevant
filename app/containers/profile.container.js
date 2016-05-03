@@ -24,7 +24,6 @@ import { pickerOptions } from '../utils/pickerOptions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import * as subscriptionActions from '../actions/subscription.actions';
-// import io from 'socket.io-client/socket.io';
 import * as investActions from '../actions/invest.actions';
 import Notification from '../components/notification.component';
 
@@ -56,11 +55,6 @@ class Profile extends Component {
     var self = this;
     this.props.dispatch({type:'server/hello', payload:"Hello"});
   }
-
-  // getClientData() {
-  //   var self = this;
-  //   this.props.dispatch({type:'server/clientData'});
-  // }
 
   checkOnline() {
     var self = this;

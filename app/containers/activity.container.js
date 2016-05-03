@@ -54,8 +54,6 @@ class Activity extends Component {
 
   componentWillReceiveProps(next) {
     var self = this;
-
-    //console.log(next.online, 'next.online')
     if(next.online != self.props.online) self.populateUsers(next.online);
   }
 
@@ -67,7 +65,6 @@ class Activity extends Component {
         if (response.status) {
           self.state.online.push(response.data);
           self.setState({});
-          //console.log(self.state.online, 'online state now')
         }
       })
     }

@@ -80,10 +80,6 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(SinglePost)
 
 const localStyles = StyleSheet.create({
-// postImage: {
-//   height: 200,
-//   width: 200
-// },
 singlePostContainer: {
   width: fullWidth,
   flex: 1
