@@ -63,28 +63,25 @@ class Nav extends Component {
     var title = '';
     var route = self.props.route.name;
 
-    if (route == 'Profile') {
-      if (self.props.auth.user) {
-        title = self.props.auth.user.name;
-      } else {
+    switch(route) {
+      case 'Profile':
+        self.props.auth.user ? title = self.props.auth.user.name : title = self.props.title;
+        break;
+
+      case 'SinglePost':
+        self.props.posts.activePost.title ? title = self.props.posts.activePost.title : title = 'Untitled Post';
+        break;
+
+      case 'User':
+        self.props.users.selectedUser ? title = self.props.users.selectedUser.name : title = self.props.title;
+        break;
+
+      case 'CreatePost':
+        title = 'Post';
+        break;
+
+      default:
         title = self.props.title;
-      }
-    } else if (route == 'SinglePost') {
-      if (self.props.posts.activePost.title) {
-        title = self.props.posts.activePost.title;
-      } else {
-        title = 'Untitled Post';
-      }
-    } else if (route == 'User') {
-      if (self.props.users.selectedUser) {
-       title = self.props.users.selectedUser.name;
-      } else {
-        title = self.props.title;
-      }
-    } else if (route == 'CreatePost') {
-      title = 'Post';
-    } else {
-      title = self.props.title;
     }
 
     if (authenticated) {
