@@ -7,7 +7,8 @@ import React, {
   View,
   TextInput,
   Image,
-  Animated
+  Animated,
+  AppState
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -25,20 +26,40 @@ import Notification from '../components/notification.component';
 
 class Auth extends Component {
 
-    constructor (props, context) {
-    super(props, context)
-     // this.socket = io('localhost:3000', {jsonp: false});
-    this.state = {
-    }
-  }
+  // constructor (props, context) {
+  //   super(props, context)
+  //    // this.socket = io('localhost:3000', {jsonp: false});
+  //   this.state = {
+  //     currentAppState: AppState.currentState,
+  //   }
+  // }
+
+  // // getInitialState() {
+  // //   return {
+
+  // //   };
+  // // }
 
   componentDidMount() {
+    //var self = this;
     this.props.actions.getUser();
+    //AppState.addEventListener('change', this.handleAppStateChange.bind(self));
   }
 
-  componentDidUpdate() {
-    //console.log(this)
-  }
+  // componentWillUnmount() {
+  //   var self = this;
+  //   AppState.removeEventListener('change', this.handleAppStateChange.bind(self));
+  // }
+
+  // handleAppStateChange(currentAppState) {
+  //   var self = this;
+
+  //   self.setState({ currentAppState: currentAppState});
+  //   if (currentAppState == 'active' && self.props.auth.user) {
+  //       console.log('send user to socket', self.props.auth.user.name);
+  //      dispatch({type:'server/storeUser', payload: self.props.auth.user})
+  //   }
+  // }
 
   render() {
     var self = this;

@@ -35,7 +35,8 @@ class Profile extends Component {
       newName: '',
       editing: false,
       followers: null,
-      following: null
+      following: null,
+      online: false
     }
   }
 
@@ -47,7 +48,8 @@ class Profile extends Component {
    })
    subscriptionActions.getSubscriptionData('following', this.props.auth.user._id).then(function(data) {
     self.setState({followers: data.data});
-   })
+   });
+   self.checkOnline.bind(self);
   }
 
   sendTestSocketMessage() {
@@ -55,9 +57,20 @@ class Profile extends Component {
     this.props.dispatch({type:'server/hello', payload:"Hello"});
   }
 
-  getClientData() {
+  // getClientData() {
+  //   var self = this;
+  //   this.props.dispatch({type:'server/clientData'});
+  // }
+
+  checkOnline() {
     var self = this;
-    this.props.dispatch({type:'server/clientData'});
+    for (var index in self.props.online) {
+      if (index == self.props.auth.user._id) {
+        self.setState({online: true});
+        return;
+      }
+    }
+    console.log(self.props.online, 'online')
   }
 
   componentDidUpdate() {
@@ -112,6 +125,7 @@ class Profile extends Component {
         <View style={styles.row}>
           <View>{userImageEl}</View>
           <View style={[styles.insideRow, styles.insidePadding]}>
+           <View style={styles.onlineRow}><Text>{self.state.online ? 'Online' : 'Offline'}</Text><View style={self.state.online ? styles.onlineCirc : styles.offlineCirc}></View></View>
             <Text>Relevance: <Text style={styles.active}>{relevance}</Text></Text>
             <Text>Balance: <Text style={styles.active}>{balance}</Text></Text>
             <Text>Followers: <Text style={styles.active}>{followers ? followers.length : 0}</Text></Text>
@@ -119,10 +133,6 @@ class Profile extends Component {
           </View>
         </View>
         <View>
-          {/*<Button onPress={this.sendTestSocketMessage.bind(this)}>Send test socket message</Button>
-          <Button onPress={this.getClientData.bind(this)}>Get client data</Button>
-          <Button onPress={this.sendNotification.bind(this)}>send notif</Button>
-          <Text>{this.props.socket.message}</Text>*/}
           <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
           {postsEl}
         </View>
@@ -140,7 +150,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     router: state.routerReducer,
-    socket: state.socket
+    socket: state.socket,
+    online: state.online
    }
 }
 

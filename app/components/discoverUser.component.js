@@ -53,8 +53,8 @@ class DiscoverUser extends Component {
 
     return (
       <TouchableHighlight onPress={self.setSelected.bind(self, user._id)}>
-        <View style={[styles.row, styles.discoverUser]}>
-          <View style={[styles.row, styles.leftDiscoverUser]}>
+        <View style={[styles.discoverUser]}>
+          <View style={[styles.leftDiscoverUser]}>
             {imageEl}
             <Text>{user.name}</Text>
           </View>
@@ -74,17 +74,25 @@ const localStyles = StyleSheet.create({
     height: 50,
     width: 50,
     borderRadius: 25,
-    marginRight: 10
+    marginRight: 10,
+    marginLeft: 0
   },
   discoverUser: {
-    paddingBottom: 20,
-    paddingLeft: 20,
-    paddingRight: 20,
+    // paddingBottom: 20,
+    // paddingLeft: 20,
+    // paddingRight: 20,
+       flexDirection: 'row',
+       paddingTop: 10,
+       paddingRight: 20,
+       paddingBottom: 10,
+       paddingLeft: 20,
     alignItems: 'center',
   },
   leftDiscoverUser: {
     alignItems: 'center',
-    flex: 1
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'flex-start'
   },
   rightDiscoverUser: {
     flex: 1

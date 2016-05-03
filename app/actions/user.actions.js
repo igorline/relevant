@@ -29,6 +29,29 @@ function getSelectedUser(userId, token) {
 }
 
 export
+function getOnlineUser(userId, token) {
+  return function(dispatch) {
+    return fetch(process.env.API_SERVER+'/api/user/'+userId+'?access_token='+token, {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+      }
+    })
+    //.then(utils.fetchError.handleErrors)
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      return {status: true, data: responseJSON};
+    })
+    .catch((error) => {
+        console.log(error, 'error');
+        return {status: false, data: error};
+    });
+  }
+}
+
+export
 function getPostUser(userId, token) {
   return function(dispatch) {
     return fetch(process.env.API_SERVER+'/api/user/'+userId+'?access_token='+token, {

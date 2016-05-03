@@ -4,6 +4,7 @@ const initialState = {bool: false, text: null, active: false};
 const REPLACE = 'REPLACE';
 
 export default function auth(state = initialState, action) {
+  // console.log(action.type, 'action type')
   switch (action.type) {
 
     case types.SET_NOTIF: {
@@ -14,6 +15,11 @@ export default function auth(state = initialState, action) {
         'text': action.payload.text
       })
     }
+
+    // case 'SET_ONLINE_USERS': {
+    //   console.log(action.payload, 'setting online users');
+    //   return state;
+    // }
 
     default:
       return state

@@ -30,7 +30,8 @@ class User extends Component {
         super(props, context)
         this.state = {
           followers: null,
-          following: null
+          following: null,
+          online: false
         }
     }
 
@@ -43,7 +44,18 @@ class User extends Component {
       subscriptionActions.getSubscriptionData('following', self.props.users.selectedUser._id).then(function(data) {
         self.setState({followers: data.data});
       })
+      self.checkOnline();
     }
+
+      checkOnline() {
+    var self = this;
+    for (var index in self.props.online) {
+      if (index == self.props.users.selectedUser._id) {
+        self.setState({online: true});
+      }
+    }
+    console.log(self.props.online, 'online')
+  }
 
     render() {
       var self = this;
@@ -90,6 +102,7 @@ class User extends Component {
           <View style={styles.row}>
             <View>{userImageEl}</View>
             <View style={[styles.insideRow, styles.insidePadding]}>
+            <View style={styles.onlineRow}><Text>{self.state.online ? 'Online' : 'Offline'}</Text><View style={self.state.online ? styles.onlineCirc : styles.offlineCirc}></View></View>
               <Text>Relevance: <Text style={styles.active}>{relevance}</Text ></Text>
               <Text>Balance: <Text style={styles.active}>{balance}</Text></Text>
               <Text>Followers: <Text style={styles.active}>{followers ? followers.length : 0}</Text></Text>
@@ -114,7 +127,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     users: state.user,
-    router: state.routerReducer
+    router: state.routerReducer,
+    online: state.online
    }
 }
 
