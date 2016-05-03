@@ -7,15 +7,21 @@ import React, {
   View,
   Image,
   TextInput,
-  Link
+  ScrollView,
+  Picker,
+  Animated,
+  PickerIOS,
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
+import * as userActions from '../actions/user.actions';
 import * as postActions from '../actions/post.actions';
-require('../publicenv');
+import * as investActions from '../actions/invest.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import Post from '../components/post.component';
+import DiscoverUser from '../components/discoverUser.component';
 import Notification from '../components/notification.component';
 
 class SinglePost extends Component {
@@ -40,15 +46,17 @@ class SinglePost extends Component {
     if (post.title) title = post.title;
     if (post.description) description = post.description;
     if (post.image) image = post.image;
+
     return (
-      <View style={styles.container}>
-        {image ? <Image source={{uri: image}} style={styles.postImage} /> : null}
-        {title ? <Text style={[styles.font20, styles.textCenter]}>{title}</Text> : null }
-        {description ? <Text style={styles.center}>{description}</Text> : null}
-        {link ? null : null}
-        <View pointerEvents={'none'} style={styles.notificationContainer}>
-          <Notification />
-        </View>
+      <View style={styles.fullContainer}>
+        <ScrollView style={styles.fullContainer}>
+          <View>
+            <Post post={post} {...self.props} styles={styles} />
+          </View>
+          <View pointerEvents={'none'} style={styles.notificationContainer}>
+            <Notification />
+          </View>
+        </ScrollView>
       </View>
     );
   }
@@ -57,23 +65,28 @@ class SinglePost extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    posts: state.posts,
-    router: state.routerReducer
+    router: state.routerReducer,
+    users: state.user,
+    posts: state.posts
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ ...authActions, ...postActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...userActions, ...postActions}, dispatch)
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SinglePost)
 
 const localStyles = StyleSheet.create({
-postImage: {
-  height: 200,
-  width: 200
+// postImage: {
+//   height: 200,
+//   width: 200
+// },
+singlePostContainer: {
+  width: fullWidth,
+  flex: 1
 }
 });
 

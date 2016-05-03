@@ -33,6 +33,26 @@ const globalStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  onlineCirc: {
+  backgroundColor: '#009E1D',
+  width: 7,
+  height: 7,
+  borderRadius: 3.5,
+  marginLeft: 5,
+   marginRight: 5
+},
+  offlineCirc: {
+  backgroundColor: 'red',
+  width: 7,
+  height: 7,
+  borderRadius: 3.5,
+  marginLeft: 5,
+   marginRight: 5
+},
+  onlineRow: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
     tagBox: {
     backgroundColor: 'lightgray',
     padding: 5,

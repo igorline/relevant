@@ -8,18 +8,53 @@ import React, {
   Image,
   TextInput,
   StatusBarIOS,
-  TouchableHighlight
+  TouchableHighlight,
+  AppState
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
+import * as onlineActions from '../actions/online.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class Nav extends Component {
-  componentDidMount() {
+  constructor (props, context) {
+    super(props, context)
+    this.state = {
+      currentAppState: AppState.currentState,
+    }
   }
+
+  componentDidMount() {
+    var self = this;
+    AppState.addEventListener('change', this.handleAppStateChange.bind(self));
+  }
+
+  componentWillReceiveProps(next) {
+    var self = this;
+
+    if (self.props.auth.user != next.auth.user) {
+      self.props.actions.userToSocket(next.auth.user)
+    }
+  }
+
+  componentWillUnmount() {
+    var self = this;
+    AppState.removeEventListener('change', this.handleAppStateChange.bind(self));
+  }
+
+  handleAppStateChange(currentAppState) {
+    var self = this;
+
+    console.log('hello', currentAppState, self.props.auth.user)
+    if (currentAppState == 'active' && self.props.auth.user) {
+        console.log('send user to socket', self.props.auth.user.name);
+        self.props.actions.userToSocket(self.props.auth.user)
+    }
+  }
+
 
   render() {
     var self = this;
@@ -77,13 +112,14 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     users: state.user,
-    router: state.routerReducer
+    router: state.routerReducer,
+    online: state.online
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...authActions, ...postActions }, dispatch)
+    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions }, dispatch)
   }
 }
 

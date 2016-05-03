@@ -3,6 +3,7 @@ import posts from './posts';
 import user from './user';
 import socket from './socket';
 import notif from './notif';
+import online from './online';
 var {Router, routerReducer, Route, Container, Animations, Schema} = require('react-native-redux-router');
 // import { reducer as formReducer} from 'redux-form';
 
@@ -12,6 +13,7 @@ export {
   posts,
   user,
   socket,
-  notif
+  notif,
+  online
 };
 

@@ -1,3 +1,5 @@
+require('../publicenv');
+
 export
 function toS3Advanced(uri) {
   return executeOnSignedUrl(uri);
@@ -6,7 +8,7 @@ function toS3Advanced(uri) {
 function executeOnSignedUrl(uri) {
   console.log(uri, 'uri');
   var extension = uri.substr(uri.length - 4);
-  var s3_sign_put_url = 'http://localhost:3000/api/s3/sign';
+  var s3_sign_put_url = process.env.API_SERVER+'/api/s3/sign';
   var s3_object_name = Math.random().toString(36).substr(2, 9) + "_" + extension;
 
   return fetch(s3_sign_put_url + '?s3_object_type=' + 'multipart/FormData' + '&s3_object_name=' + s3_object_name, {

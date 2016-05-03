@@ -172,7 +172,7 @@ function getUser(token, redirect) {
             .then((responseJSON) => {
                 dispatch(loginUserSuccess(token));
                 dispatch(setUser(responseJSON));
-                dispatch({type:'server/storeUser', payload: responseJSON});
+                // dispatch({type:'server/storeUser', payload: responseJSON});
                 if (redirect) dispatch(Actions.Profile);
             })
             .catch(error => {
