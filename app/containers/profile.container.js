@@ -48,7 +48,7 @@ class Profile extends Component {
    subscriptionActions.getSubscriptionData('following', this.props.auth.user._id).then(function(data) {
     self.setState({followers: data.data});
    });
-   self.checkOnline.bind(self);
+   self.checkOnline(self);
   }
 
   sendTestSocketMessage() {
@@ -58,8 +58,10 @@ class Profile extends Component {
 
   checkOnline() {
     var self = this;
+    console.log(self.props.online)
     for (var index in self.props.online) {
       if (index == self.props.auth.user._id) {
+
         self.setState({online: true});
         return;
       }
