@@ -35,7 +35,7 @@ class Nav extends Component {
   componentWillReceiveProps(next) {
     var self = this;
 
-    if (self.props.auth.user != next.auth.user) {
+    if (self.props.auth.user != next.auth.user && next.auth.user) {
       self.props.actions.userToSocket(next.auth.user)
     }
   }

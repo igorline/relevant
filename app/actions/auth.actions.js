@@ -60,7 +60,7 @@ function loginUserRequest() {
 
 export
 function logout() {
-    AsyncStorage.removeItem('token')
+    AsyncStorage.removeItem('token');
     return {
         type: types.LOGOUT_USER
     }
