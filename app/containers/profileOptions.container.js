@@ -78,6 +78,7 @@ class ProfileOptions extends Component {
 
   logoutRedirect() {
     var self = this;
+    self.props.dispatch({type:'server/logout', payload: self.props.auth.user});
     self.props.actions.logout();
     self.props.routes.Auth();
   }
