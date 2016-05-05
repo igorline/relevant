@@ -19,7 +19,7 @@ export function getFeed(id) {
     //.then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON, 'get feed response');
+      //console.log(responseJSON, 'get feed response');
       dispatch(setFeed(responseJSON));
     })
     .catch((error) => {

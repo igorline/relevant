@@ -26,6 +26,7 @@ import Post from '../components/post.component';
 import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
 import Notification from '../components/notification.component';
+import Shimmer from 'react-native-shimmer';
 
 class Profile extends Component {
   constructor (props, context) {
@@ -120,6 +121,7 @@ class Profile extends Component {
     return (
       <View style={styles.fullContainer}>
       <ScrollView style={styles.fullContainer}>
+
         <View style={styles.row}>
           <View>{userImageEl}</View>
           <View style={[styles.insideRow, styles.insidePadding]}>

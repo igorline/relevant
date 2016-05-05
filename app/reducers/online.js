@@ -6,7 +6,7 @@ export default function auth(state = null, action) {
   switch (action.type) {
 
     case 'SET_ONLINE_USERS': {
-      console.log(action.payload, 'setting online users');
+      //console.log(action.payload, 'setting online users');
       return action.payload.users;
     }
 

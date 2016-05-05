@@ -26,6 +26,7 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var postStyles = null;
 var moment = require('moment');
 var PickerItemIOS = PickerIOS.Item;
+import Shimmer from 'react-native-shimmer';
 
 
 class Post extends Component {
@@ -46,7 +47,6 @@ class Post extends Component {
   }
 
   componentDidMount() {
-    this.props.post.created_at;
     this.checkTime(this);
     this.getValues();
   }
@@ -258,7 +258,7 @@ class Post extends Component {
     var investButtonEl = null;
     if (!expandedInvest) {
       if (post.user._id != self.props.auth.user._id) {
-        investButtonEl = (<Button style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Button>);
+        investButtonEl = (<Shimmer speed={50}><Text style={[styles.investButton, styles.active]} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Text></Shimmer>);
       }
     }
 
@@ -268,7 +268,7 @@ class Post extends Component {
           <View style={styles.postHeader}>
             {postUserImageEl}
             <View style={styles.postInfo}>
-              {postUserName ? <Text>posted by {postUserName}</Text> : null}
+              {postUserName ? <Text style={styles.shimmerText}>posted by {postUserName}</Text> : null}
             </View>
           </View>
           {imageEl}
@@ -345,7 +345,7 @@ const localStyles = StyleSheet.create({
     alignItems: 'center'
   },
   buttonContainerExpanded: {
-flexDirection: 'row',
+    flexDirection: 'row',
     flex: 1,
     justifyContent: 'space-around',
     alignItems: 'center'
@@ -355,7 +355,10 @@ flexDirection: 'row',
     paddingTop: 10,
     paddingLeft: 0,
     paddingRight: 0,
-    paddingBottom: 10
+    paddingBottom: 10,
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: 'rgba(0,122,255,0.5)'
   },
   userImage: {
     height: 30,
@@ -365,7 +368,7 @@ flexDirection: 'row',
   postHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.05)',
+    backgroundColor: 'rgba(0,0,0,1)',
     padding: 10
   },
   link: {
@@ -374,6 +377,13 @@ flexDirection: 'row',
   postInfo: {
     flex: 1,
     paddingLeft: 5
+  },
+  loading: {
+    fontSize: 40,
+    fontWeight: '100'
+  },
+  shimmerText: {
+    color: 'rgba(0,0,0,0.5)',
   }
 });
 

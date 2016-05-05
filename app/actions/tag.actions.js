@@ -103,7 +103,7 @@ export function getParentTags() {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON, 'parents json');
+      //console.log(responseJSON, 'parents json');
       return {'status': true, 'data': responseJSON}
     })
     .catch((error) => {

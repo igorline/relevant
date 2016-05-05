@@ -227,7 +227,7 @@ class CreatePost extends Component {
     if (self.state.postTags) {
       tagsString = [];
       self.state.postTags.forEach(function(tag, i) {
-        tagsString.push(<Text onPress={self.removeTag.bind(self, tag)} style={styles.tagBox} key={i}>X {tag.name}</Text>);
+        tagsString.push(<TouchableHighlight onPress={self.removeTag.bind(self, tag)} style={styles.tagBox}><View style={styles.tagRow}><Image style={styles.tagX} source={require('../assets/images/x.png')} /><Text style={styles.white} key={i}>{tag.name}</Text></View></TouchableHighlight>);
       })
     }
 
@@ -316,6 +316,11 @@ const localStyles = StyleSheet.create({
     textAlign: 'center',
     padding: 10
   },
+  tagX: {
+    height: 7.5,
+    width: 7.5,
+    marginRight: 3.5
+  },
   postInput: {
     height: 50,
     padding: 10,
@@ -333,7 +338,10 @@ const localStyles = StyleSheet.create({
     padding: 10,
     borderBottomColor: 'black',
     borderBottomWidth: 1,
-    // textAlign: 'center',
+  },
+  tagRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   createPostContainer: {
     flex: 1,

@@ -48,7 +48,7 @@ class Nav extends Component {
   handleAppStateChange(currentAppState) {
     var self = this;
 
-    console.log('hello', currentAppState, self.props.auth.user)
+    //console.log(currentAppState, self.props.auth.user)
     if (currentAppState == 'active' && self.props.auth.user) {
         console.log('send user to socket', self.props.auth.user.name);
         self.props.actions.userToSocket(self.props.auth.user)
