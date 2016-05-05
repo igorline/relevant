@@ -97,8 +97,11 @@ const globalStyles = StyleSheet.create({
   font25: {
     fontSize: 25
   },
-    active: {
+  active: {
     color: '#007aff'
+  },
+  white: {
+    color: 'white'
   },
   fullContainer: {
     flex: 1

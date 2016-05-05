@@ -25,6 +25,8 @@
 		2A06BDF61CB30E5700528796 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		2AD0F0CB1CA099370039C7DB /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD0F0C11CA099280039C7DB /* libRCTContacts.a */; };
 		2AD0F0D21CA0A3430039C7DB /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD0F0D11CA0A33B0039C7DB /* libRNImagePicker.a */; };
+		2AD6197D1CDA831D0014B519 /* libRNShimmer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD6197C1CDA83070014B519 /* libRNShimmer.a */; };
+		2AD6197E1CDA8A850014B519 /* libRNShimmer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD6197C1CDA83070014B519 /* libRNShimmer.a */; };
 		2AD7DF3C1C9B1F9F00FA1936 /* RNCookieManagerIOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD7DF3B1C9B1F9F00FA1936 /* RNCookieManagerIOS.m */; };
 		2AD7DF3D1C9B1F9F00FA1936 /* RNCookieManagerIOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AD7DF3B1C9B1F9F00FA1936 /* RNCookieManagerIOS.m */; };
 		2AFF5B411CAAFF1600ADD4A7 /* FileUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = 2AFF5B401CAAFF1600ADD4A7 /* FileUpload.m */; };
@@ -109,6 +111,13 @@
 			remoteGlobalIDString = 014A3B5C1C6CF33500B6D375;
 			remoteInfo = RNImagePicker;
 		};
+		2AD6197B1CDA83070014B519 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2AD6196B1CDA83070014B519 /* RNShimmer.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5D7E4C681C88C61600B72F0C;
+			remoteInfo = RNShimmer;
+		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */;
@@ -147,6 +156,7 @@
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		2AD0F0B91CA099280039C7DB /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
 		2AD0F0CC1CA0A33A0039C7DB /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
+		2AD6196B1CDA83070014B519 /* RNShimmer.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNShimmer.xcodeproj; path = "../node_modules/react-native-shimmer/ios/RNShimmer.xcodeproj"; sourceTree = "<group>"; };
 		2AD7DF3A1C9B1F9F00FA1936 /* RNCookieManagerIOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCookieManagerIOS.h; sourceTree = "<group>"; };
 		2AD7DF3B1C9B1F9F00FA1936 /* RNCookieManagerIOS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCookieManagerIOS.m; sourceTree = "<group>"; };
 		2AFF5B401CAAFF1600ADD4A7 /* FileUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileUpload.m; path = "../node_modules/react-native-file-upload/FileUpload.m"; sourceTree = "<group>"; };
@@ -159,6 +169,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AD6197D1CDA831D0014B519 /* libRNShimmer.a in Frameworks */,
 				2A06BDF61CB30E5700528796 /* libReact.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -167,6 +178,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AD6197E1CDA8A850014B519 /* libRNShimmer.a in Frameworks */,
 				2AD0F0D21CA0A3430039C7DB /* libRNImagePicker.a in Frameworks */,
 				2AD0F0CB1CA099370039C7DB /* libRCTContacts.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -296,6 +308,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		2AD6196C1CDA83070014B519 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2AD6197C1CDA83070014B519 /* libRNShimmer.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		2AD7DF391C9B1F9F00FA1936 /* RNCookieManagerIOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -316,6 +336,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				2AD6196B1CDA83070014B519 /* RNShimmer.xcodeproj */,
 				2AD0F0CC1CA0A33A0039C7DB /* RNImagePicker.xcodeproj */,
 				2AD0F0B91CA099280039C7DB /* RCTContacts.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -480,6 +501,10 @@
 					ProductGroup = 2AD0F0CD1CA0A33A0039C7DB /* Products */;
 					ProjectRef = 2AD0F0CC1CA0A33A0039C7DB /* RNImagePicker.xcodeproj */;
 				},
+				{
+					ProductGroup = 2AD6196C1CDA83070014B519 /* Products */;
+					ProjectRef = 2AD6196B1CDA83070014B519 /* RNShimmer.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -558,6 +583,13 @@
 			fileType = archive.ar;
 			path = libRNImagePicker.a;
 			remoteRef = 2AD0F0D01CA0A33B0039C7DB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2AD6197C1CDA83070014B519 /* libRNShimmer.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNShimmer.a;
+			remoteRef = 2AD6197B1CDA83070014B519 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {

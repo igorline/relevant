@@ -9,7 +9,8 @@ import React, {
   TextInput,
   ScrollView,
   Linking,
-  TouchableHighlight
+  TouchableHighlight,
+  LayoutAnimation
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -24,6 +25,7 @@ import * as investActions from '../actions/invest.actions';
 import * as notifActions from '../actions/notif.actions';
 import Notification from '../components/notification.component';
 import DiscoverUser from '../components/discoverUser.component';
+import Shimmer from 'react-native-shimmer';
 
 class Activity extends Component {
   constructor (props, context) {
@@ -31,7 +33,8 @@ class Activity extends Component {
     this.state = {
       personalActivity: null,
       view: 1,
-      online: []
+      online: [],
+      onlinePop: []
     }
   }
 
@@ -59,12 +62,19 @@ class Activity extends Component {
 
   populateUsers(users) {
     var self = this;
-    self.setState({online: []});
+    var i = 0;
+    var populated = [];
     for (var index in users) {
+      i += 1;
       self.props.actions.getOnlineUser(index, self.props.auth.token).then(function(response) {
         if (response.status) {
-          self.state.online.push(response.data);
-          self.setState({});
+          populated.push(response.data);
+          if (i == Object.keys(users).length) {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            self.setState({onlinePop: populated, online: users});
+          }
+        } else {
+          console.log('error');
         }
       })
     }
@@ -92,12 +102,10 @@ class Activity extends Component {
     var generalActivityEl = null;
     var onlineEl = null;
 
-    if (self.state.online.length) {
-      onlineEl = [];
-      console.log(self.state.online, 'onlineEl render')
-      self.state.online.forEach(function(user, i) {
-        onlineEl.push(<DiscoverUser key={i} {...self.props} user={user} styles={styles} />);
-      })
+    if (self.state.onlinePop.length) {
+      onlineEl = self.state.onlinePop.map(function(user, i) {
+          return <DiscoverUser key={user._id} {...self.props} user={user} styles={styles} />;
+      });
     }
 
     if (self.state.personalActivity) {
@@ -142,10 +150,9 @@ class Activity extends Component {
       {self.state.view == 2 ? generalActivityEl : null }
       {self.state.view == 3 ? onlineEl : null }
       </ScrollView>
-       <View pointerEvents={'none'} style={styles.notificationContainer}>
+        <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
-
       </View>
     );
   }

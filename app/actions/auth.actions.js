@@ -158,6 +158,7 @@ function getUser(token, redirect) {
                     if(err) return dispatch(setUser());
                 })
         } else fetchUser(token);
+
         function fetchUser(token) {
             fetch(process.env.API_SERVER+'/api/user/me', {
                 credentials: 'include',
@@ -166,7 +167,7 @@ function getUser(token, redirect) {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            //.then(utils.fetchError.handleErrors)
+            .then(utils.fetchError.handleErrors)
             .then((response) => response.json())
             //.then(utils.fetchError.handleErrors)
             .then((responseJSON) => {

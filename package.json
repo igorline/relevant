@@ -24,6 +24,7 @@
     "react-native-modal-picker": "0.0.13",
     "react-native-navbar": "^1.4.2",
     "react-native-redux-router": "^1.0.6",
+    "react-native-shimmer": "0.0.0",
     "react-redux": "^4.4.1",
     "react-router": "^2.0.1",
     "react-router-redux": "^4.0.0",
