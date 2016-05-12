@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {index: null, userPosts: null, postError: null, activePost: null, feed: null};
+const initialState = {pages: null, page: null, index: null, userPosts: null, postError: null, activePost: null, feed: null};
 
 const updatePostElement = (array, post) => {
   var index = array.findIndex(function(el){
@@ -18,7 +18,9 @@ export default function post(state = initialState, action) {
 
     case types.SET_POSTS: {
       return Object.assign({}, state, {
-        'index': action.payload
+        'index': action.payload.posts,
+        'pages': Math.ceil(action.payload.pages),
+        'page': action.payload.page
       })
     }
 

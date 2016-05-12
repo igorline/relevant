@@ -27,18 +27,20 @@ class Discover extends Component {
     super(props, context)
     this.state = {
       currentView: null,
-
     }
   }
 
-
   componentDidMount() {
     this.props.actions.userIndex();
-    this.props.actions.getPosts();
+    this.props.actions.getPosts(0);
   }
 
   changeView(view) {
     this.setState({currentView: view});
+  }
+
+  switchPage(page) {
+    this.props.actions.getPosts(page);
   }
 
 
@@ -48,6 +50,16 @@ class Discover extends Component {
     var currentView = self.state.currentView;
     var postsEl = null;
     var posts = null;
+    var paginationEl = null;
+    var pages = null;
+    if (self.props.posts.pages) {
+      pages = self.props.posts.pages;
+      console.log(self.props.posts.pages, 'pages');
+      paginationEl = [];
+      for (var i = 0; i < pages; i++) {
+          paginationEl.push(<Text onPress={self.switchPage.bind(self, i)}>Page {i+1}</Text>);
+      }
+    }
 
 
     if (self.props.posts.index) {
@@ -79,6 +91,7 @@ class Discover extends Component {
             <Text onPress={self.changeView.bind(self, 2)} style={[styles.font20, styles.category, currentView == 2? styles.active : null]}>Top</Text>
             <Text onPress={self.changeView.bind(self, 3)} style={[styles.font20, styles.category, currentView == 3? styles.active : null]}>People</Text>
           </View>
+          <View style={styles.pagination}>{paginationEl}</View>
           <View>
             {currentView == 1 || !currentView ? postsEl : null}
             {currentView == 2 ? postsEl : null}
@@ -123,6 +136,12 @@ discoverBar: {
   paddingTop: 20,
   paddingBottom: 20
 },
+pagination: {
+  padding: 20,
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-around'
+}
 });
 
 var styles = {...localStyles, ...globalStyles};
