@@ -5,16 +5,13 @@ import * as utils from '../utils';
 
 export
 function getSubscriptionData(type, userId) {
-  var searchObj = {'search':{}};
-  searchObj.search[type] = userId;
-    return fetch(process.env.API_SERVER+'/api/subscription', {
+    return fetch(process.env.API_SERVER+'/api/subscription/search?'+type+'='+userId, {
       credentials: 'include',
-      method: 'POST',
+      method: 'GET',
       headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
       },
-      body: JSON.stringify(searchObj)
     })
     .then((response) => response.json())
     .then((responseJSON) => {
