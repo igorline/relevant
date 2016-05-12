@@ -62,7 +62,8 @@ export function generate(link, body, tags, token) {
           body: body,
           title: title,
           description: description,
-          image: results.url
+          image: results.url,
+          investments: []
         };
         return submitPost(postBody, token);
       } else {
@@ -77,7 +78,8 @@ export function generate(link, body, tags, token) {
       tags: tags,
       title: title,
       description: description,
-      image: image
+      image: image,
+      investments: []
     };
     return submitPost(postBody, token);
   }

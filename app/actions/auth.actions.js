@@ -10,7 +10,6 @@ import * as utils from '../utils';
 
 export
 function setUser(user) {
-    //console.log('set user', user)
     return {
         type: types.SET_USER,
         payload: user
@@ -244,7 +243,6 @@ function setContacts(contacts) {
 export
 function changeName(name, user, token) {
     return function(dispatch) {
-    //console.log(name, user, token);
       fetch(process.env.API_SERVER+'/api/user?access_token='+token, {
         credentials: 'include',
         method: 'PUT',

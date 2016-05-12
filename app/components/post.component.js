@@ -48,29 +48,22 @@ class Post extends Component {
 
   componentDidMount() {
     this.checkTime(this);
-    this.getValues();
+    this.postValue();
   }
 
   postValue() {
     var self = this;
     var defaultVal = 0;
-    this.props.actions.getInvestData('value', {post: this.props.post._id}).then(function(postInvests) {
-      postInvests.data.forEach(function(invest) {
-        defaultVal += invest.amount;
+    var invested = false;
+    if (self.props.post.investments.length > 0) {
+      self.props.post.investments.forEach(function(investment, i) {
+        defaultVal += investment.amount;
+        if (investment.investor == self.props.auth.user._id) invested = true;
+        if (i == self.props.post.investments.length - 1) {
+          self.setState({postValue: defaultVal, invested: invested});
+        }
       })
-      self.setState({postValue: defaultVal});
-    })
-  }
-
-  investors() {
-    var self = this;
-    this.props.actions.getInvestData('investors', {post: this.props.post._id, investor: this.props.auth.user._id}).then(function(investor) {
-      if (investor.data.length > 0) {
-        self.setState({invested: true});
-      } else {
-         self.setState({invested: false});
-      }
-    })
+    }
   }
 
   checkTime() {
@@ -137,11 +130,6 @@ class Post extends Component {
     }
   }
 
-  getValues() {
-    this.postValue();
-    this.investors();
-  }
-
   invest(toggle, functionBool) {
     var self = this;
 
@@ -149,13 +137,13 @@ class Post extends Component {
       if (!self.state.invested) {
         console.log('create investment');
         this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function(){
-          self.getValues();
+          self.postValue();
         })
         this.props.actions.createSubscription(this.props.auth.token, self.props.post);
       } else {
         console.log('destroy investment')
         this.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function(){
-          self.getValues();
+          self.postValue();
         })
       }
 
@@ -258,7 +246,7 @@ class Post extends Component {
     var investButtonEl = null;
     if (!expandedInvest) {
       if (post.user._id != self.props.auth.user._id) {
-        investButtonEl = (<Shimmer speed={50}><Text style={[styles.investButton, styles.active]} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Text></Shimmer>);
+        investButtonEl = (<View style={styles.testShimmer}><Shimmer speed={50}><Text style={[styles.investButton]} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Text></Shimmer></View>);
       }
     }
 
@@ -268,7 +256,7 @@ class Post extends Component {
           <View style={styles.postHeader}>
             {postUserImageEl}
             <View style={styles.postInfo}>
-              {postUserName ? <Text style={styles.shimmerText}>posted by {postUserName}</Text> : null}
+              {postUserName ? <Text style={styles.white}>posted by {postUserName}</Text> : null}
             </View>
           </View>
           {imageEl}
@@ -358,7 +346,7 @@ const localStyles = StyleSheet.create({
     paddingBottom: 10,
     fontSize: 17,
     fontWeight: 'bold',
-    color: 'rgba(0,122,255,0.5)'
+    color: 'rgba(0,122,255,1)'
   },
   userImage: {
     height: 30,
@@ -382,9 +370,12 @@ const localStyles = StyleSheet.create({
     fontSize: 40,
     fontWeight: '100'
   },
-  shimmerText: {
-    color: 'rgba(0,0,0,0.5)',
-  }
+  // shimmerText: {
+  //   color: 'rgba(0,0,0,0.5)',
+  // },
+  // testShimmer: {
+  //   backgroundColor: 'white'
+  // }
 });
 
 

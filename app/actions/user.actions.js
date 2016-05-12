@@ -17,7 +17,6 @@ function getSelectedUser(userId, token) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-        //console.log(responseJSON, 'response');
         dispatch(setSelectedUser(responseJSON));
         dispatch(getSelectedUserPosts(responseJSON._id));
         dispatch(Actions.User);
@@ -39,7 +38,6 @@ function getOnlineUser(userId, token) {
             'Content-Type': 'application/json'
       }
     })
-    //.then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       return {status: true, data: responseJSON};
@@ -65,7 +63,6 @@ function getPostUser(userId, token) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-        //console.log(responseJSON, 'postUser');
         return responseJSON;
     })
     .catch((error) => {
@@ -85,19 +82,17 @@ function setSelectedUser(user) {
 export
 function getSelectedUserPosts(userId) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post/', {
+    fetch(process.env.API_SERVER+'/api/post/search?user='+userId, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      method: 'POST',
-      body: JSON.stringify({'search': {'user': userId}})
+      method: 'GET',
     })
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      //console.log(responseJSON, 'json response getSelectedUserPosts')
       dispatch(setSelectedUserPosts(responseJSON));
     })
     .catch((error) => {

@@ -7,19 +7,18 @@ var apiServer = process.env.API_SERVER+'/api/'
 
 export function getFeed(id) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post/feed', {
+    fetch(process.env.API_SERVER+'/api/post/feed?userId='+id, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      method: 'POST',
-      body: JSON.stringify({id})
+      method: 'GET',
     })
     //.then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      //console.log(responseJSON, 'get feed response');
+      console.log(responseJSON, 'get feed response');
       dispatch(setFeed(responseJSON));
     })
     .catch((error) => {
@@ -83,18 +82,19 @@ export function updatePost(post) {
 
 export function getUserPosts(userId) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post/', {
+    fetch(process.env.API_SERVER+'/api/post/search?user='+userId, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      method: 'POST',
-      body: JSON.stringify({'search': {'user': userId}})
+      method: 'GET',
+      // body: JSON.stringify({'search': {'user': userId}})
     })
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
+      //console.log(responseJSON, 'get user posts response')
       dispatch(setUserPosts(responseJSON));
     })
     .catch((error) => {
@@ -143,14 +143,14 @@ export function postError() {
 export function getActivePost(postId) {
   console.log(postId, 'postId')
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post', {
+    fetch(process.env.API_SERVER+'/api/post/search?_id='+postId, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      method: 'POST',
-      body: JSON.stringify({'search': {'_id': postId}})
+      method: 'GET',
+      // body: JSON.stringify({'search': {'_id': postId}})
     })
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
