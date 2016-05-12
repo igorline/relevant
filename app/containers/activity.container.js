@@ -42,7 +42,6 @@ class Activity extends Component {
     var self = this;
     notifActions.getActivity(this.props.auth.user._id).then(function(data) {
       self.setState({personalActivity: data.data});
-      console.log(data, 'get activity data')
     });
     self.populateUsers(self.props.online);
   }

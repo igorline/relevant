@@ -18,7 +18,6 @@ export function getFeed(id) {
     //.then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON, 'get feed response');
       dispatch(setFeed(responseJSON));
     })
     .catch((error) => {
@@ -37,9 +36,9 @@ function setFeed(feed) {
 
 
 
-export function getPosts() {
+export function getPosts(page) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post/', {
+    fetch(process.env.API_SERVER+'/api/post?page='+page, {
         credentials: 'include',
         method: 'GET',
         headers: {
@@ -50,8 +49,8 @@ export function getPosts() {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-        //console.log(responseJSON, 'response');
-        dispatch(setPosts(responseJSON));
+      //console.log('get posts response', responseJSON);
+      dispatch(setPosts(responseJSON));
     })
     .catch((error) => {
         console.log(error, 'error');
@@ -59,10 +58,14 @@ export function getPosts() {
   }
 }
 
-export function setPosts(posts) {
+export function setPosts(data) {
     return {
         type: types.SET_POSTS,
-        payload: posts
+        payload: {
+          posts: data.posts,
+          pages: data.pages,
+          page: data.page
+        }
     };
 }
 
@@ -89,12 +92,10 @@ export function getUserPosts(userId) {
         'Content-Type': 'application/json'
       },
       method: 'GET',
-      // body: JSON.stringify({'search': {'user': userId}})
     })
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      //console.log(responseJSON, 'get user posts response')
       dispatch(setUserPosts(responseJSON));
     })
     .catch((error) => {
@@ -150,7 +151,6 @@ export function getActivePost(postId) {
         'Content-Type': 'application/json'
       },
       method: 'GET',
-      // body: JSON.stringify({'search': {'_id': postId}})
     })
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
