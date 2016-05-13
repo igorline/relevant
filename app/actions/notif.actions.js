@@ -35,6 +35,26 @@ function getActivity(userId) {
   });
 }
 
+export
+function createNotification(token, obj) {
+  return fetch(process.env.API_SERVER+'/api/notification/create?access_token='+token, {
+    credentials: 'include',
+    method: 'POST',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(obj)
+  })
+  .then((response) => response.json())
+  .then((responseJSON) => {
+    return {'status': true, 'data': responseJSON}
+  })
+  .catch((error) => {
+    return {'status': false, 'data': error};
+  });
+}
+
 
 
 

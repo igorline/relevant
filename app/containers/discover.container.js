@@ -54,7 +54,6 @@ class Discover extends Component {
     var pages = null;
     if (self.props.posts.pages) {
       pages = self.props.posts.pages;
-      console.log(self.props.posts.pages, 'pages');
       paginationEl = [];
       for (var i = 0; i < pages; i++) {
           paginationEl.push(<Text onPress={self.switchPage.bind(self, i)}>Page {i+1}</Text>);
@@ -135,12 +134,6 @@ discoverBar: {
   width: fullWidth,
   paddingTop: 20,
   paddingBottom: 20
-},
-pagination: {
-  padding: 20,
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-around'
 }
 });
 

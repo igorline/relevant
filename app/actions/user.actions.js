@@ -18,7 +18,6 @@ function getSelectedUser(userId, token) {
     .then((response) => response.json())
     .then((responseJSON) => {
         dispatch(setSelectedUser(responseJSON));
-        dispatch(getSelectedUserPosts(responseJSON._id));
         dispatch(Actions.User);
     })
     .catch((error) => {
@@ -76,35 +75,5 @@ function setSelectedUser(user) {
     return {
         type: types.SET_SELECTED_USER,
         payload: user
-    };
-}
-
-export
-function getSelectedUserPosts(userId) {
-  return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post/search?user='+userId, {
-      credentials: 'include',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'GET',
-    })
-    .then(utils.fetchError.handleErrors)
-    .then((response) => response.json())
-    .then((responseJSON) => {
-      dispatch(setSelectedUserPosts(responseJSON));
-    })
-    .catch((error) => {
-      console.log(error, 'error');
-    });
-  }
-}
-
-export
-function setSelectedUserPosts(posts) {
-    return {
-        type: types.SET_SELECTED_USER_POSTS,
-        payload: posts
     };
 }

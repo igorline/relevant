@@ -18,6 +18,7 @@ import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import { bindActionCreators } from 'redux';
 import * as investActions from '../actions/invest.actions';
+import * as notifActions from '../actions/notif.actions';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
 import * as utils from '../utils';
@@ -37,7 +38,21 @@ class User extends Component {
 
     componentDidMount() {
       var self = this;
-      this.props.dispatch({type: 'server/notification', payload: {user: self.props.users.selectedUser._id, message: self.props.auth.user.name+' just visited your profile'}});
+
+      var notifObj = {
+        notification: {
+          post: null,
+          forUser: self.props.users.selectedUser._id,
+          byUser: self.props.auth.user._id,
+          amount: null,
+          type: 'profile',
+          personal: true
+        },
+        message: self.props.auth.user.name+' just visited your profile'
+      }
+
+      notifActions.createNotification(self.props.auth.token, notifObj)
+
       subscriptionActions.getSubscriptionData('follower', self.props.users.selectedUser._id).then(function(data) {
         self.setState({following: data.data});
       })
@@ -90,11 +105,19 @@ class User extends Component {
       }
 
 
-      if (self.props.users.posts) {
-        if (self.props.users.posts.length > 0) {
-          postsEl = self.props.users.posts.map(function(post, i) {
-            return (<Post key={i} post={post} {...self.props} styles={styles} />);
-          });
+      if (self.props.users.selectedUser.posts) {
+        if (self.props.users.selectedUser.posts.length > 0) {
+          var posts = null;
+
+          if (self.props.users.selectedUser.posts.length > 10) {
+            posts = self.props.users.selectedUser.posts.slice(0, 10);
+          } else {
+            posts = self.props.users.selectedUser.posts;
+          }
+
+          postsEl = posts.map(function(post, i) {
+            return (<Post key={i} post={post} {...self.props} styles={styles} />)
+          })
         } else {
           postsEl = (<View><Text>0 Posts</Text></View>);
         }
@@ -103,6 +126,7 @@ class User extends Component {
       }
 
       return (
+        <View style={styles.fullContainer}>
         <ScrollView style={styles.fullContainer}>
           <View style={styles.row}>
             <View>{userImageEl}</View>
@@ -118,10 +142,11 @@ class User extends Component {
             <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
             {postsEl}
           </View>
+            </ScrollView>
           <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
-        </ScrollView>
+        </View>
       );
   }
 }

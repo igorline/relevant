@@ -83,34 +83,6 @@ export function updatePost(post) {
   }
 }
 
-export function getUserPosts(userId) {
-  return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post/search?user='+userId, {
-      credentials: 'include',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'GET',
-    })
-    .then(utils.fetchError.handleErrors)
-    .then((response) => response.json())
-    .then((responseJSON) => {
-      dispatch(setUserPosts(responseJSON));
-    })
-    .catch((error) => {
-      console.log(error, 'error');
-    });
-  }
-}
-
-export function setUserPosts(posts) {
-    return {
-        type: types.SET_USER_POSTS,
-        payload: posts
-    };
-}
-
 export function submitPost(post, token) {
   console.log(post, 'submitPost init');
     return fetch(process.env.API_SERVER+'/api/post/create?access_token='+token, {
