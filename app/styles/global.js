@@ -24,6 +24,12 @@ const globalStyles = StyleSheet.create({
   font40: {
     fontSize: 40
   },
+  pagination: {
+  padding: 20,
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-around'
+},
   notificationContainer: {
     position: 'absolute',
     top: 0,

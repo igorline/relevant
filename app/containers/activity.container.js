@@ -126,6 +126,17 @@ class Activity extends Component {
               </Text>
             </View>
           );
+         } else if (singleActivity.type == 'profile') {
+          personalActivityEl.push(
+            <View style={styles.singleActivity}>
+              <Text>
+                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
+                  {singleActivity.byUser.name}
+                </Text>
+                &nbsp;just visited your profile
+              </Text>
+            </View>
+          );
          } else {
             personalActivityEl.push(
               <View style={styles.singleActivity}>

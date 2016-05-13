@@ -33,7 +33,6 @@ class ProfileOptions extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.posts.index) this.props.actions.getUserPosts(this.props.auth.user._id);
   }
 
 

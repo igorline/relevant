@@ -42,7 +42,7 @@ class Profile extends Component {
 
   componentDidMount() {
     var self = this;
-   this.props.actions.getUserPosts(this.props.auth.user._id);
+   //this.props.actions.getUserPosts(this.props.auth.user._id);
    subscriptionActions.getSubscriptionData('follower', this.props.auth.user._id).then(function(data) {
      self.setState({following: data.data});
    })
@@ -106,9 +106,17 @@ class Profile extends Component {
       userImageEl = (<Image source={{uri: userImage}} style={styles.uploadAvatar} />)
     }
 
-    if (self.props.posts.userPosts) {
-      if (self.props.posts.userPosts.length > 0) {
-        postsEl = self.props.posts.userPosts.map(function(post, i) {
+    if (self.props.auth.user.posts) {
+      if (self.props.auth.user.posts.length > 0) {
+        var posts = null;
+
+        if (self.props.auth.user.posts.length > 10) {
+          posts = self.props.auth.user.posts.slice(0, 10);
+        } else {
+          posts = self.props.auth.user.posts;
+        }
+
+        postsEl = posts.map(function(post, i) {
           return (<Post key={i} post={post} {...self.props} styles={styles} />);
         });
       } else {

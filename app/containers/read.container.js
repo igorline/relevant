@@ -26,23 +26,40 @@ class Read extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      selectedPosts: null
     }
   }
 
   componentDidMount() {
     var self = this;
-    this.props.actions.getFeed(this.props.auth.user._id);
+    self.setState({selectedPosts: self.props.auth.user.feed.slice(0, 10)});
   }
 
   componentDidUpdate() {
+    var self = this;
+  }
+
+  switchPage(page) {
+    var self = this;
+    var newArray = self.props.auth.user.feed.slice(page*10, (page*10)+10);
+    self.setState({selectedPosts: newArray});
   }
 
   render() {
     var self = this;
     var postsEl = null;
     var posts = null;
-    if (self.props.posts.feed) {
-      posts = self.props.posts.feed;
+    var paginationEl = null;
+
+    if (self.props.auth.user.feed && self.state.selectedPosts) {
+      posts = self.state.selectedPosts;
+      var pages = Math.ceil(self.props.auth.user.feed.length / 10);
+
+      paginationEl = [];
+      for (var i = 0; i < pages; i++) {
+          paginationEl.push(<Text onPress={self.switchPage.bind(self, i)}>Page {i+1}</Text>);
+      }
+
       postsEl = posts.map(function(post, i) {
         return (
           <Post post={post} key={i} {...self.props} styles={styles} />
@@ -53,6 +70,7 @@ class Read extends Component {
 
     return (
       <ScrollView style={[styles.readContainer]}>
+      <View style={styles.pagination}>{paginationEl}</View>
        {postsEl}
        <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
