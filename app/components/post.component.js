@@ -28,7 +28,6 @@ var moment = require('moment');
 var PickerItemIOS = PickerIOS.Item;
 import Shimmer from 'react-native-shimmer';
 
-
 class Post extends Component {
   constructor (props: any) {
     super(props)
@@ -41,28 +40,30 @@ class Post extends Component {
       passed: false,
       timeUntilString: null,
       timePassedPercent: null,
-      postValue: 0,
       invested: false
     }
   }
 
   componentDidMount() {
     this.checkTime(this);
-    this.postValue();
+    this.checkInvestments(this.props.post.investments);
   }
 
-  postValue() {
+  checkInvestments(investments) {
     var self = this;
-    var defaultVal = 0;
     var invested = false;
-    if (self.props.post.investments.length > 0) {
-      self.props.post.investments.forEach(function(investment, i) {
-        defaultVal += investment.amount;
-        if (investment.investor == self.props.auth.user._id) invested = true;
-        if (i == self.props.post.investments.length - 1) {
-          self.setState({postValue: defaultVal, invested: invested});
-        }
-      })
+    //console.log(investments, 'investments');
+    if (investments) {
+      if (investments.length > 0) {
+        investments.forEach(function(investment, i) {
+          if (investment.investor == self.props.auth.user._id) invested = true;
+          if (i == investments.length - 1) {
+            self.setState({invested: invested});
+          }
+        })
+      } else {
+        self.setState({invested: false});
+      }
     }
   }
 
@@ -87,6 +88,14 @@ class Post extends Component {
 
   toggleExpanded(bool) {
     this.setState({expanded: bool});
+  }
+
+  componentWillUpdate(nextProps) {
+    if (this.props.post.investments != nextProps.post.investments) {
+      //console.log('change');
+      //console.log(nextProps.post, 'changed post');
+      this.checkInvestments(nextProps.post.investments);
+    }
   }
 
   extractDomain(url) {
@@ -137,13 +146,13 @@ class Post extends Component {
       if (!self.state.invested) {
         console.log('create investment');
         this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function(){
-          self.postValue();
+          self.checkInvestments(self.props.post.investments);
         })
         this.props.actions.createSubscription(this.props.auth.token, self.props.post);
       } else {
         console.log('destroy investment')
         this.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function(){
-          self.postValue();
+           self.checkInvestments(self.props.post.investments);
         })
       }
 
@@ -169,6 +178,7 @@ class Post extends Component {
     var body = null;
     var balance = null;
     var createdAt = null;
+    var relevance = 0;
     var postStyles = this.props.styles;
     var user = null;
     var value = 0;
@@ -184,14 +194,16 @@ class Post extends Component {
 
     if (this.props.post) {
       post = this.props.post;
-      // console.log(post, 'post')
       if (post.image) image = post.image;
       if (post.description) description = post.description;
       if (post.title) title = post.title;
+      if (post.relevance) relevance = post.relevance;
       if (post.link) link = post.link;
       if (post.body) body = post.body;
       if (post.value) value = post.value;
-      if (post.tags.length) tags = post.tags;
+      if (post.tags) {
+        if (post.tags.length) tags = post.tags;
+      }
       if (post.created_at) createdAt = post.created_at;
       if (post.user) {
         postUser = post.user;
@@ -266,7 +278,8 @@ class Post extends Component {
             {tags ? <View style={styles.tagsRow}><Text>Tags: </Text>{tagsEl}</View> : null}
             {body ? <View style={styles.postBody}><Text numberOfLines={expanded ? 999999 : 2}>{body}</Text></View> : null}
             <Text>Posted {self.state.posted}</Text>
-            {self.state.passed ? <Text>Current value: {self.state.postValue}</Text> : <View><Text>Value available in {self.state.timeUntilString}{'\n'}{Math.round(self.state.timePassedPercent*100)}% complete</Text></View>}
+
+            {self.state.passed ? <View><Text>relevance: {relevance}</Text><Text>Value: {value}</Text></View> : <View><Text>Post value and relevance available in {self.state.timeUntilString}{'\n'}{Math.round(self.state.timePassedPercent*100)}% complete</Text></View>}
             <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
               <PickerIOS
                 selectedValue={self.state.investAmount}

@@ -28,6 +28,7 @@ class Auth extends Component {
 
   componentDidMount() {
     this.props.actions.getUser();
+    //console.log(this, 'auth this');
   }
 
 

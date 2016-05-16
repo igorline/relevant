@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {pages: null, page: null, index: null, postError: null, activePost: null};
+const initialState = {normalSort: {pages: null, page: null, index: null}, postError: null, activePost: null, ranked: {index: null, pages: null, page: null}};
 
 const updatePostElement = (array, post) => {
   var index = array.findIndex(function(el){
@@ -18,9 +18,29 @@ export default function post(state = initialState, action) {
 
     case types.SET_POSTS: {
       return Object.assign({}, state, {
-        'index': action.payload.posts,
-        'pages': Math.ceil(action.payload.pages),
-        'page': action.payload.page
+        'normalSort': {
+          'index': action.payload.posts,
+          'pages': Math.ceil(action.payload.pages),
+          'page': action.payload.page
+        }
+      })
+    }
+
+    case types.SET_POSTS_BY_RANK: {
+      return Object.assign({}, state, {
+        'ranked': {
+          'index': action.payload.posts,
+          'pages': Math.ceil(action.payload.pages),
+          'page': action.payload.page
+        }
+      })
+    }
+
+    case 'UPDATE_POSTS': {
+       return Object.assign({}, state, {
+        'index': action.payload,
+        'pages': state.pages,
+        'page': state.page
       })
     }
 
@@ -37,6 +57,7 @@ export default function post(state = initialState, action) {
     }
 
     case types.UPDATE_POST: {
+      console.log(state, 'update post state');
       return Object.assign({}, state, {
         'index': updatePostElement(state.index, action.payload)
       })

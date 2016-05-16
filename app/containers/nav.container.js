@@ -47,8 +47,6 @@ class Nav extends Component {
 
   handleAppStateChange(currentAppState) {
     var self = this;
-
-    //console.log(currentAppState, self.props.auth.user)
     if (currentAppState == 'active' && self.props.auth.user) {
         console.log('send user to socket', self.props.auth.user.name);
         self.props.actions.userToSocket(self.props.auth.user)
@@ -61,7 +59,25 @@ class Nav extends Component {
     var authenticated = this.props.auth.isAuthenticated;
     var navEl = null;
     var title = '';
+    var statsEl = null;
     var route = self.props.route.name;
+    var relevance = 0;
+    var balance = 0;
+    var user = null;
+    if (self.props.auth.user) {
+      user = self.props.auth.user;
+      if (user.relevance) relevance = user.relevance;
+      if (user.balance) balance = user.balance;
+      if (balance > 0) balance = balance.toFixed(2);
+      if (relevance > 0) relevance = relevance.toFixed(2);
+    }
+
+    if (self.props.auth.user) {
+      statsEl = (<View style={styles.stats}>
+          <Text style={styles.statsTxt}>&#1071;:{relevance}  ${balance}</Text>
+        </View>
+      )
+    }
 
     switch(route) {
       case 'Profile':
@@ -91,6 +107,7 @@ class Nav extends Component {
           <Text style={[styles.navLink, styles.maxWidth]} numberOfLines={1}>{title}</Text>
         </View>
          {route == 'Profile' ? <View style={styles.gear}><TouchableHighlight onPress={self.props.routes.ProfileOptions} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View> : null}
+         {statsEl}
       </View>);
     } else {
       StatusBarIOS.setStyle('default');
@@ -142,6 +159,18 @@ const localStyles = StyleSheet.create({
     alignItems: 'flex-end',
     padding: 12,
     backgroundColor: 'black'
+  },
+  stats: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    padding: 12,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'flex-end'
+  },
+  statsTxt: {
+    color: 'white'
   },
   navItem: {
     flex: 1,
