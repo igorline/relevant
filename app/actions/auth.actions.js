@@ -89,6 +89,7 @@ function loginUser(user, redirect) {
         //.then(utils.fetchError.handleErrors)
         .then((response) => response.json())
         .then((responseJSON) => {
+            console.log(responseJSON, 'login response')
             if (responseJSON.token) {
                 AsyncStorage.setItem('token', responseJSON.token)
                     .then( ()  => {

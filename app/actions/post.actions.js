@@ -58,9 +58,43 @@ export function getPosts(page) {
   }
 }
 
+export function getPostsByRank(page) {
+  return function(dispatch) {
+    fetch(process.env.API_SERVER+'/api/post/rank?page='+page, {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+      }
+    })
+    .then(utils.fetchError.handleErrors)
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      //console.log('get posts response', responseJSON);
+      dispatch(setPostsByRank(responseJSON));
+    })
+    .catch((error) => {
+        console.log(error, 'error');
+    });
+  }
+}
+
 export function setPosts(data) {
     return {
         type: types.SET_POSTS,
+        payload: {
+          posts: data.posts,
+          pages: data.pages,
+          page: data.page
+        }
+    };
+}
+
+
+export function setPostsByRank(data) {
+    return {
+        type: types.SET_POSTS_BY_RANK,
         payload: {
           posts: data.posts,
           pages: data.pages,
@@ -105,6 +139,31 @@ export function submitPost(post, token) {
     .catch((error) => {
       return false;
     });
+}
+
+export function dispatchPost(post, token) {
+   return function(dispatch) {
+    return fetch(process.env.API_SERVER+'/api/post/create?access_token='+token, {
+        credentials: 'include',
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(post)
+    })
+    .then((response) => {
+      console.log(response, 'submitPost response');
+      if (response.status == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+    .catch((error) => {
+      return false;
+    });
+   }
 }
 
 export function postError() {

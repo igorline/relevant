@@ -23,16 +23,19 @@ class Notification extends Component {
     super(props, context)
     this.state = {
       notifOpac: new Animated.Value(0),
+      active: false
     }
   }
 
   componentDidUpdate() {
     var self = this;
-    if (this.props.notif.active) {
+    if (this.props.notif.active && !self.state.active) {
+      self.setState({active: true});
       this.flashNotif();
       setTimeout(function() {
         self.props.actions.setNotif(false, null, false);
-      }, 3000);
+        self.setState({active: false});
+      }, 2000);
     }
   }
 
@@ -47,7 +50,7 @@ class Notification extends Component {
        self.state.notifOpac,
        {toValue: 0}
      ).start();
-    }, 2000);
+    }, 1000);
   }
 
 

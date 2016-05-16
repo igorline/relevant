@@ -30,6 +30,9 @@ const globalStyles = StyleSheet.create({
   alignItems: 'center',
   justifyContent: 'space-around'
 },
+relevantSymbol: {
+  fontSize: 25
+},
   notificationContainer: {
     position: 'absolute',
     top: 0,

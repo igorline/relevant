@@ -25,6 +25,8 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import * as utils from '../utils';
 import Notification from '../components/notification.component';
 var dismissKeyboard = require('react-native-dismiss-keyboard');
+var ImagePickerManager = require('NativeModules').ImagePickerManager;
+import { pickerOptions } from '../utils/pickerOptions';
 
 class CreatePost extends Component {
   constructor (props, context) {
@@ -36,8 +38,10 @@ class CreatePost extends Component {
       autoTags: [],
       preTag: null,
       parentTagsIndex: [],
+      type: 'url',
       stage: 1,
-      tagStage: 1
+      tagStage: 1,
+      postImage: null
     }
   }
 
@@ -52,10 +56,17 @@ class CreatePost extends Component {
     });
   }
 
+  switchType(type) {
+    var self = this;
+    self.setState({type: type});
+  }
+
   post() {
     var self = this;
     var link = self.state.postLink;
     var body = self.state.postBody;
+    var title = self.state.postTitle;
+    // var description = self.state
     var tags = [];
     self.state.postTags.forEach(function(tag) {
       tags.push(tag._id);
@@ -66,14 +77,50 @@ class CreatePost extends Component {
       return;
     }
 
-    utils.post.generate(link, body, tags, self.props.auth.token).then(function(results){
-      if (!results) {
-         self.props.actions.setNotif(true, 'Post error please try again', false)
-      } else {
-        self.props.actions.setNotif(true, 'Posted', true)
+    if (self.state.type == 'url') {
+      utils.post.generate(link, body, tags, self.props.auth.token).then(function(results){
+        if (!results) {
+           self.props.actions.setNotif(true, 'Post error please try again', false)
+        } else {
+          self.props.actions.setNotif(true, 'Posted', true)
+        }
+      });
+    }
+
+    if (self.state.type != 'url') {
+
+      if (self.state.type == 'text') {
+        var postBody = {
+          link: null,
+          body: body,
+          tags: tags,
+          title: title,
+          description: null,
+          image: null,
+        };
       }
-    });
-    self.setState({postText: null, postLink: null, stage: 1});
+
+      if (self.state.type == 'image') {
+        var postBody = {
+          link: null,
+          body: body,
+          tags: tags,
+          title: title,
+          description: null,
+          image: self.state.postImage,
+        };
+      }
+
+      self.props.actions.dispatchPost(postBody, self.props.auth.token).then(function(results) {
+         if (!results) {
+           self.props.actions.setNotif(true, 'Post error please try again', false)
+        } else {
+          self.props.actions.setNotif(true, 'Posted', true)
+        }
+      })
+    }
+
+    self.setState({postImage: null, postTitle: null, postBody: null, postLink: null, stage: 1});
   }
 
 
@@ -162,23 +209,39 @@ class CreatePost extends Component {
     self.setState({});
   }
 
+  removeImage() {
+    var self = this;
+    self.setState({postImage: null});
+    console.log('remove image', self.state)
+  }
+
 
   next() {
     var self = this;
 
-    if (!self.state.postLink) {
+    if (!self.state.postLink && self.state.type == 'url') {
        self.props.actions.setNotif(true, 'Add url', false);
        return;
     }
 
-    if (!self.state.postBody ) {
-       self.props.actions.setNotif(true, 'Add text', false);
+    if (!self.ValidURL() && self.state.type == 'url') {
+      self.props.actions.setNotif(true, 'not a valid url', false);
+      return;
+    }
+
+    if (self.state.type != 'url' && !self.state.postTitle) {
+      self.props.actions.setNotif(true, 'Add title', false);
+      return;
+    }
+
+    if (!self.state.postBody) {
+       self.props.actions.setNotif(true, 'Add body', false);
        return;
     }
 
-    if (!self.ValidURL()) {
-      self.props.actions.setNotif(true, 'not a valid url', false);
-      return;
+    if (self.state.type == 'image' && !self.state.postImage) {
+       self.props.actions.setNotif(true, 'Add an image', false);
+       return;
     }
 
     var url = self.state.postLink;
@@ -188,7 +251,6 @@ class CreatePost extends Component {
       }
     }
 
-
     self.setState({stage: self.state.stage+1});
   }
 
@@ -197,6 +259,45 @@ class CreatePost extends Component {
     self.setState({stage: self.state.stage-1});
   }
 
+    chooseImage() {
+      var self = this;
+      console.log('chooseImage')
+      self.pickImage(function(err, data){
+        if(data){
+          utils.s3.toS3Advanced(data, self.props.auth.token).then(function(results){
+            if (results.success) {
+              self.setState({postImage: results.url});
+            } else {
+              console.log('err');
+            }
+          })
+        }
+      });
+    }
+
+
+    pickImage(callback){
+      var self = this;
+      console.log(self, 'pickImage')
+        ImagePickerManager.showImagePicker(pickerOptions, (response) => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+          callback("cancelled");
+        }
+        else if (response.error) {
+          console.log('ImagePickerManager Error: ', response.error);
+          callback("error");
+        }
+        else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton);
+          callback("error");
+        }
+        else {
+          callback(null, response.uri);
+        }
+      });
+    }
+
 
   render() {
     var self = this;
@@ -204,6 +305,7 @@ class CreatePost extends Component {
     var parentTagsEl = null;
     var tagsString = null;
     var postError = self.state.postError;
+    var typeEl = null;
     if (self.props.auth) {
       if (self.props.auth.user) user = self.props.auth.user;
     }
@@ -231,28 +333,23 @@ class CreatePost extends Component {
       })
     }
 
-    var headline = null;
-    switch(self.state.stage) {
-      case 1:
-        headline = 'Add URL';
-        break;
-      case 2:
-        headline = 'Add relevant text';
-        break;
-      case 3:
-        headline = 'Add tags';
-        break;
-      default:
-        return;
-    }
-
+    typeEl = (<View style={[styles.row, styles.typeBar]}>
+        <Text onPress={self.switchType.bind(self, 'url')} style={[styles.type, styles.font20, self.state.type == 'url' ? styles.active : null]}>Url</Text>
+        <Text onPress={self.switchType.bind(self, 'text')} style={[styles.type, styles.font20, self.state.type == 'text' ? styles.active : null]}>Text</Text>
+        <Text onPress={self.switchType.bind(self, 'image')} style={[styles.type, styles.font20, self.state.type == 'image' ? styles.active : null]}>Image</Text>
+      </View>)
 
     return (
       <TouchableWithoutFeedback onPress={()=> dismissKeyboard()}>
       <View style={styles.fullContainer}>
-       {/*} <Text style={[styles.font20, styles.textCenter]}>{headline}</Text>*/}
-        {self.state.stage == 1 ? <TextInput numberOfLines={1} style={[styles.font20, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.postLink} returnKeyType='done' /> : null}
-        {self.state.stage == 1 ? <TextInput style={[styles.bodyInput, styles.font20]} placeholder='Relevant text here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /> : null}
+      {typeEl}
+
+        {self.state.stage == 1 && self.state.type == 'url' ? <TextInput numberOfLines={1} style={[styles.font20, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.postLink} returnKeyType='done' /> : null}
+        {self.state.stage == 1 && self.state.type == 'image' && !self.state.postImage ? <Text onPress={self.chooseImage.bind(self)} style={[styles.padding10, styles.font20, styles.active, styles.lightweight]}>Upload an image</Text> : null}
+        {self.state.stage == 1 && self.state.type == 'image' && self.state.postImage ? <TouchableHighlight onPress={self.removeImage.bind(self)}><Image source={{uri: self.state.postImage}} style={styles.previewImage} /></TouchableHighlight> : null}
+         {self.state.stage == 1 && self.state.type != 'url' ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Title here...' multiline={true} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} returnKeyType='done' /> : null}
+        {self.state.stage == 1 ? <TextInput style={[styles.bodyInput, styles.font20]} placeholder='Body here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /> : null}
+
         {self.state.stage == 1 ? <View style={[styles.tagStringContainer, styles.padding10]}><Text style={styles.font20}>Tags: </Text>{tagsString}</View> : null}
         {self.state.stage == 2 && self.state.tagStage == 1 && self.state.postTags.length ? <View style={styles.tagStringContainer}>{tagsString}</View> : null}
 
@@ -297,8 +394,17 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
+  type: {
+    flex: 1,
+    textAlign: 'center'
+  },
   padding10: {
     padding: 10
+  },
+  previewImage: {
+    height: 100,
+    width: 100,
+    margin: 10
   },
   list: {
     flex: 1,
@@ -336,13 +442,18 @@ const localStyles = StyleSheet.create({
     height: 50,
     width: fullWidth,
     padding: 10,
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,
+    // borderBottomColor: 'black',
+    // borderBottomWidth: 1,
   },
   tagRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  typeBar: {
+    width: fullWidth,
+    paddingTop: 20,
+    paddingBottom: 20
+},
   createPostContainer: {
     flex: 1,
     flexDirection: 'column',
