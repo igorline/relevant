@@ -25,14 +25,19 @@ const globalStyles = StyleSheet.create({
     fontSize: 40
   },
   pagination: {
-  padding: 20,
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-around'
-},
-relevantSymbol: {
-  fontSize: 25
-},
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around'
+  },
+  tags: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start'
+  },
+  relevantSymbol: {
+    fontSize: 25
+  },
   notificationContainer: {
     position: 'absolute',
     top: 0,
@@ -43,26 +48,26 @@ relevantSymbol: {
     justifyContent: 'center'
   },
   onlineCirc: {
-  backgroundColor: '#009E1D',
-  width: 7,
-  height: 7,
-  borderRadius: 3.5,
-  marginLeft: 5,
-   marginRight: 5
-},
+    backgroundColor: '#009E1D',
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+    marginLeft: 5,
+     marginRight: 5
+  },
   offlineCirc: {
-  backgroundColor: 'red',
-  width: 7,
-  height: 7,
-  borderRadius: 3.5,
-  marginLeft: 5,
-   marginRight: 5
-},
+    backgroundColor: 'red',
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+    marginLeft: 5,
+    marginRight: 5
+  },
   onlineRow: {
     flexDirection: 'row',
     alignItems: 'center'
   },
-    tagBox: {
+  tagBox: {
     backgroundColor: 'lightgray',
     padding: 5,
     marginLeft: 5,

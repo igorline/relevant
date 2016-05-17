@@ -26,82 +26,96 @@ class Discover extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      currentView: 1,
+      view: 1,
     }
   }
 
   componentDidMount() {
     this.props.actions.userIndex();
+    this.props.actions.getTopTags();
     this.props.actions.getPosts(0);
-    //this.props.actions.getPostsByRank(0);
   }
 
   componentDidUpdate() {
-    //console.log(this.props, 'new props')
   }
 
   changeView(view) {
-    this.setState({currentView: view});
+    var self = this;
+    self.setState({view: view});
+
+    switch(view) {
+      case 1:
+        self.props.actions.getPosts(0);
+        break;
+
+      case 2:
+        self.props.actions.getPostsByRank(0, null);
+        break;
+
+      default:
+        return;
+    }
   }
 
-  switchPageNormal(page) {
-    this.props.actions.getPosts(page);
+  switchPage(page) {
+    var self = this;
+
+    switch(self.state.view) {
+      case 1:
+        self.props.actions.getPosts(page);
+        break;
+
+      case 2:
+        self.props.actions.getPostsByRank(page, self.state.tag);
+        break;
+
+      default:
+        return;
+    }
   }
 
-  switchPageRanked(page) {
-    this.props.actions.getPostsByRank(page);
+  setTag(tag) {
+    var self = this;
+    self.setState({tag: tag})
+    self.props.actions.getPostsByRank(0, self.state.tag);
   }
-
 
   render() {
     var self = this;
     var usersEl = null;
-    var currentView = self.state.currentView;
-
+    var view = self.state.view;
     var postsEl = null;
     var posts = null;
     var paginationEl = null;
     var pages = null;
+    var tagsEl = null;
+    var tags = null;
 
-    // var postsEl = null;
-    // var posts = null;
-    // var paginationElNormal = null;
-    // var pages = null;
-    // if (self.state.currentView == 1) {
-      if (self.props.posts.pages) {
-        pages = self.props.posts.pages;
-        paginationEl = [];
-        for (var i = 0; i < pages; i++) {
-            paginationEl.push(<Text onPress={self.switchPageNormal.bind(self, i)}>Page {i+1}</Text>);
-        }
-      }
-      if (self.props.posts.index) {
-        posts = self.props.posts.index;
-        postsEl = posts.map(function(post, i) {
-          return (
-            <Post key={i} post={post} {...self.props} styles={styles} />
-          );
-        });
-      }
-    // }
+    if (self.props.posts.topTags) {
+      tags = self.props.posts.topTags;
 
-    // if (self.state.currentView == 2) {
-    //   if (self.props.posts.ranked.pages) {
-    //     pages = self.props.posts.ranked.pages;
-    //     paginationEl = [];
-    //     for (var i = 0; i < pages; i++) {
-    //         paginationEl.push(<Text onPress={self.switchPageRanked.bind(self, i)}>Page {i+1}</Text>);
-    //     }
-    //   }
-    //   if (self.props.posts.ranked.index) {
-    //     posts = self.props.posts.ranked.index;
-    //     postsEl = posts.map(function(post, i) {
-    //       return (
-    //         <Post key={i} post={post} {...self.props} styles={styles} />
-    //       );
-    //     });
-    //   }
-    // }
+      tagsEl = tags.map(function(tag, i) {
+        return (
+          <Text style={styles.tagBox} onPress={self.setTag.bind(self, tag)} key={i}>{tag.name}</Text>
+          )
+      })
+    }
+
+    if (self.props.posts.pages) {
+      pages = self.props.posts.pages;
+      paginationEl = [];
+      for (var i = 0; i < pages; i++) {
+          paginationEl.push(<Text onPress={self.switchPage.bind(self, i)}>Page {i+1}</Text>);
+      }
+    }
+    if (self.props.posts.index) {
+      posts = self.props.posts.index;
+      postsEl = posts.map(function(post, i) {
+        return (
+          <Post key={i} post={post} {...self.props} styles={styles} />
+        );
+      });
+    }
 
     var userIndex = null;
     if (this.props.auth.userIndex) {
@@ -118,16 +132,17 @@ class Discover extends Component {
     return (
       <View style={styles.fullContainer}>
         <ScrollView style={styles.fullContainer}>
+        <View style={styles.tags}>{tagsEl}</View>
           <View style={[styles.row, styles.discoverBar]}>
-            <Text onPress={self.changeView.bind(self, 1)} style={[styles.font20, styles.category, currentView == 1? styles.active : null]}>New</Text>
-            <Text onPress={self.changeView.bind(self, 2)} style={[styles.font20, styles.category, currentView == 2? styles.active : null]}>Top</Text>
-            <Text onPress={self.changeView.bind(self, 3)} style={[styles.font20, styles.category, currentView == 3? styles.active : null]}>People</Text>
+            <Text onPress={self.changeView.bind(self, 1)} style={[styles.font20, styles.category, view == 1? styles.active : null]}>New</Text>
+            <Text onPress={self.changeView.bind(self, 2)} style={[styles.font20, styles.category, view == 2? styles.active : null]}>Top</Text>
+            <Text onPress={self.changeView.bind(self, 3)} style={[styles.font20, styles.category, view == 3? styles.active : null]}>People</Text>
           </View>
-          {currentView != 3 ? <View style={styles.pagination}>{paginationEl}</View> : null}
+          {view != 3 ? <View style={styles.pagination}>{paginationEl}</View> : null}
           <View>
-            {currentView == 1 || !currentView ? postsEl : null}
-            {currentView == 2 ? postsEl : null}
-            {currentView == 3 ? usersEl : null}
+            {view == 1 || !view ? postsEl : null}
+            {view == 2 ? postsEl : null}
+            {view == 3 ? usersEl : null}
           </View>
         </ScrollView>
         <View pointerEvents={'none'} style={styles.notificationContainer}>

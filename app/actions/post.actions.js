@@ -58,9 +58,33 @@ export function getPosts(page) {
   }
 }
 
-export function getPostsByRank(page) {
+export function getTopTags() {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post/rank?page='+page, {
+    fetch(process.env.API_SERVER+'/api/post/topTags', {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+      }
+    })
+    .then(utils.fetchError.handleErrors)
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      //console.log('get posts response', responseJSON);
+      dispatch(setTopTags(responseJSON));
+    })
+    .catch((error) => {
+        console.log(error, 'error');
+    });
+  }
+}
+
+export function getPostsByRank(page, tag) {
+  var url = process.env.API_SERVER+'/api/post/rank?page='+page;
+  if (tag) url = process.env.API_SERVER+'/api/post/rank?page='+page+'&tag='+tag._id;
+  return function(dispatch) {
+    fetch(url, {
         credentials: 'include',
         method: 'GET',
         headers: {
@@ -88,6 +112,13 @@ export function setPosts(data) {
           pages: data.pages,
           page: data.page
         }
+    };
+}
+
+export function setTopTags(data) {
+    return {
+        type: types.SET_TOP_TAGS,
+        payload: data
     };
 }
 
