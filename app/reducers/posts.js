@@ -59,7 +59,12 @@ export default function post(state = initialState, action) {
     case types.UPDATE_POST: {
       console.log(state, 'update post state');
       return Object.assign({}, state, {
-        'index': updatePostElement(state.index, action.payload)
+        'ranked': {
+          'index': updatePostElement(state.ranked.index, action.payload)
+        },
+        'normalSort': {
+          'index':  updatePostElement(state.normalSort.index, action.payload)
+        }
       })
     }
 
