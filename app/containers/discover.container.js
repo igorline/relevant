@@ -33,7 +33,7 @@ class Discover extends Component {
   componentDidMount() {
     this.props.actions.userIndex();
     this.props.actions.getPosts(0);
-    this.props.actions.getPostsByRank(0);
+    //this.props.actions.getPostsByRank(0);
   }
 
   componentDidUpdate() {
@@ -67,41 +67,41 @@ class Discover extends Component {
     // var posts = null;
     // var paginationElNormal = null;
     // var pages = null;
-    if (self.state.currentView == 1) {
-      if (self.props.posts.normalSort.pages) {
-        pages = self.props.posts.normalSort.pages;
+    // if (self.state.currentView == 1) {
+      if (self.props.posts.pages) {
+        pages = self.props.posts.pages;
         paginationEl = [];
         for (var i = 0; i < pages; i++) {
             paginationEl.push(<Text onPress={self.switchPageNormal.bind(self, i)}>Page {i+1}</Text>);
         }
       }
-      if (self.props.posts.normalSort.index) {
-        posts = self.props.posts.normalSort.index;
+      if (self.props.posts.index) {
+        posts = self.props.posts.index;
         postsEl = posts.map(function(post, i) {
           return (
             <Post key={i} post={post} {...self.props} styles={styles} />
           );
         });
       }
-    }
+    // }
 
-    if (self.state.currentView == 2) {
-      if (self.props.posts.ranked.pages) {
-        pages = self.props.posts.ranked.pages;
-        paginationEl = [];
-        for (var i = 0; i < pages; i++) {
-            paginationEl.push(<Text onPress={self.switchPageRanked.bind(self, i)}>Page {i+1}</Text>);
-        }
-      }
-      if (self.props.posts.ranked.index) {
-        posts = self.props.posts.ranked.index;
-        postsEl = posts.map(function(post, i) {
-          return (
-            <Post key={i} post={post} {...self.props} styles={styles} />
-          );
-        });
-      }
-    }
+    // if (self.state.currentView == 2) {
+    //   if (self.props.posts.ranked.pages) {
+    //     pages = self.props.posts.ranked.pages;
+    //     paginationEl = [];
+    //     for (var i = 0; i < pages; i++) {
+    //         paginationEl.push(<Text onPress={self.switchPageRanked.bind(self, i)}>Page {i+1}</Text>);
+    //     }
+    //   }
+    //   if (self.props.posts.ranked.index) {
+    //     posts = self.props.posts.ranked.index;
+    //     postsEl = posts.map(function(post, i) {
+    //       return (
+    //         <Post key={i} post={post} {...self.props} styles={styles} />
+    //       );
+    //     });
+    //   }
+    // }
 
     var userIndex = null;
     if (this.props.auth.userIndex) {
@@ -123,7 +123,7 @@ class Discover extends Component {
             <Text onPress={self.changeView.bind(self, 2)} style={[styles.font20, styles.category, currentView == 2? styles.active : null]}>Top</Text>
             <Text onPress={self.changeView.bind(self, 3)} style={[styles.font20, styles.category, currentView == 3? styles.active : null]}>People</Text>
           </View>
-          <View style={styles.pagination}>{paginationEl}</View>
+          {currentView != 3 ? <View style={styles.pagination}>{paginationEl}</View> : null}
           <View>
             {currentView == 1 || !currentView ? postsEl : null}
             {currentView == 2 ? postsEl : null}

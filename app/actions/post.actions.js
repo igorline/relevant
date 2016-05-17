@@ -72,7 +72,7 @@ export function getPostsByRank(page) {
     .then((response) => response.json())
     .then((responseJSON) => {
       //console.log('get posts response', responseJSON);
-      dispatch(setPostsByRank(responseJSON));
+      dispatch(setPosts(responseJSON));
     })
     .catch((error) => {
         console.log(error, 'error');

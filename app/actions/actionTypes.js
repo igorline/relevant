@@ -18,4 +18,5 @@ export const CLOSE_INVEST = 'CLOSE_INVEST';
 export const SET_NOTIF = 'SET_NOTIF';
 export const SET_FEED = 'SET_FEED';
 export const SET_POSTS_BY_RANK = 'SET_POSTS_BY_RANK';
+export const UPDATE_FEED = 'UPDATE_FEED';
 

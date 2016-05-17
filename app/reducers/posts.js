@@ -1,8 +1,10 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {normalSort: {pages: null, page: null, index: null}, postError: null, activePost: null, ranked: {index: null, pages: null, page: null}};
+const initialState = {pages: null, page: null, postError: null, activePost: null, index: null};
 
 const updatePostElement = (array, post) => {
+  console.log('update posts', array);
+  if (!array) return;
   var index = array.findIndex(function(el){
     return el._id == post._id
   })
@@ -18,23 +20,21 @@ export default function post(state = initialState, action) {
 
     case types.SET_POSTS: {
       return Object.assign({}, state, {
-        'normalSort': {
           'index': action.payload.posts,
           'pages': Math.ceil(action.payload.pages),
           'page': action.payload.page
-        }
       })
     }
 
-    case types.SET_POSTS_BY_RANK: {
-      return Object.assign({}, state, {
-        'ranked': {
-          'index': action.payload.posts,
-          'pages': Math.ceil(action.payload.pages),
-          'page': action.payload.page
-        }
-      })
-    }
+    // case types.SET_POSTS_BY_RANK: {
+    //   return Object.assign({}, state, {
+    //     'ranked': {
+    //       'index': action.payload.posts,
+    //       'pages': Math.ceil(action.payload.pages),
+    //       'page': action.payload.page
+    //     }
+    //   })
+    // }
 
     case 'UPDATE_POSTS': {
        return Object.assign({}, state, {
@@ -57,14 +57,8 @@ export default function post(state = initialState, action) {
     }
 
     case types.UPDATE_POST: {
-      console.log(state, 'update post state');
       return Object.assign({}, state, {
-        'ranked': {
-          'index': updatePostElement(state.ranked.index, action.payload)
-        },
-        'normalSort': {
-          'index':  updatePostElement(state.normalSort.index, action.payload)
-        }
+        'index':  updatePostElement(state.index, action.payload)
       })
     }
 

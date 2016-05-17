@@ -37,6 +37,16 @@ class Read extends Component {
 
   componentDidUpdate() {
     var self = this;
+
+  }
+
+  componentWillUpdate(nextProps) {
+    var self = this;
+    console.log(nextProps);
+    if (nextProps.auth.user.feed != self.props.auth.user.feed) {
+      console.log('redo')
+      self.setState({selectedPosts: nextProps.auth.user.feed.slice(0, 10)});
+    }
   }
 
   switchPage(page) {
