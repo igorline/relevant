@@ -26,33 +26,26 @@ class Read extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      selectedPosts: null
+      page: 0
     }
   }
 
   componentDidMount() {
     var self = this;
-    self.setState({selectedPosts: self.props.auth.user.feed.slice(0, 10)});
+    this.props.actions.getFeed(self.props.auth.user._id);
   }
 
   componentDidUpdate() {
     var self = this;
-
   }
 
   componentWillUpdate(nextProps) {
     var self = this;
-    console.log(nextProps);
-    if (nextProps.auth.user.feed != self.props.auth.user.feed) {
-      console.log('redo')
-      self.setState({selectedPosts: nextProps.auth.user.feed.slice(0, 10)});
-    }
   }
 
   switchPage(page) {
     var self = this;
-    var newArray = self.props.auth.user.feed.slice(page*10, (page*10)+10);
-    self.setState({selectedPosts: newArray});
+    self.setState({page: page});
   }
 
   render() {
@@ -60,10 +53,11 @@ class Read extends Component {
     var postsEl = null;
     var posts = null;
     var paginationEl = null;
+    var page = self.state.page;
 
-    if (self.props.auth.user.feed && self.state.selectedPosts) {
-      posts = self.state.selectedPosts;
-      var pages = Math.ceil(self.props.auth.user.feed.length / 10);
+    if (self.props.posts.feed) {
+      posts = self.props.posts.feed.slice(page*10, (page*10)+10);
+      var pages = Math.ceil(self.props.posts.feed.length / 10);
 
       paginationEl = [];
       for (var i = 0; i < pages; i++) {
