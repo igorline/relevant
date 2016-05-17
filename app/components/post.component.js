@@ -93,7 +93,7 @@ class Post extends Component {
   componentWillUpdate(nextProps) {
     if (this.props.post.investments != nextProps.post.investments) {
       //console.log('change');
-      //console.log(nextProps.post, 'changed post');
+      console.log(nextProps.post, 'changed post');
       this.checkInvestments(nextProps.post.investments);
     }
   }
