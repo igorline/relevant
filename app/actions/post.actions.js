@@ -34,11 +34,16 @@ function setFeed(feed) {
     };
 }
 
+export
+function clearPosts() {
+    return {
+        type: types.CLEAR_POSTS
+    };
+}
 
-
-export function getPosts(page) {
+export function getPosts(skip) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post?page='+page, {
+    fetch(process.env.API_SERVER+'/api/post?skip='+skip, {
         credentials: 'include',
         method: 'GET',
         headers: {
@@ -80,9 +85,9 @@ export function getTopTags() {
   }
 }
 
-export function getPostsByRank(page, tag) {
-  var url = process.env.API_SERVER+'/api/post/rank?page='+page;
-  if (tag) url = process.env.API_SERVER+'/api/post/rank?page='+page+'&tag='+tag._id;
+export function getPostsByRank(skip, tag) {
+  var url = process.env.API_SERVER+'/api/post/rank?skip='+skip;
+  if (tag) url = process.env.API_SERVER+'/api/post/rank?skip='+skip+'&tag='+tag._id;
   return function(dispatch) {
     fetch(url, {
         credentials: 'include',

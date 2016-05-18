@@ -28,7 +28,9 @@ const globalStyles = StyleSheet.create({
     padding: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    borderWidth: 1,
+    borderColor: 'red'
   },
   tags: {
     flexDirection: 'row',

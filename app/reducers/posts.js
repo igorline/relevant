@@ -37,6 +37,12 @@ export default function post(state = initialState, action) {
       })
     }
 
+    case 'CLEAR_POSTS': {
+       return Object.assign({}, state, {
+        'index': []
+      })
+    }
+
     case types.POST_ERROR: {
       return Object.assign({}, state, {
         'postError': action.payload

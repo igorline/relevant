@@ -9,7 +9,8 @@ import React, {
   TextInput,
   ScrollView,
   Picker,
-  ListView
+  ListView,
+  RecyclerViewBackedScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -26,23 +27,34 @@ import Notification from '../components/notification.component';
 class Discover extends Component {
   constructor (props, context) {
     super(props, context)
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       view: 1,
+      dataSource: ds.cloneWithRows([]),
+      enabled: true,
+      tag: null
     }
   }
 
   componentDidMount() {
     this.props.actions.userIndex();
     this.props.actions.getTopTags();
-    this.props.actions.getPosts(0);
+    if (this.props.posts.index.length < 1) this.props.actions.getPosts(0);
   }
 
-  componentDidUpdate() {
+  componentWillUpdate(next) {
+    var self = this;
+    if (next.posts.index != self.props.posts.index) {
+      console.log(next.posts.index, 'index')
+      var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      self.setState({dataSource: ds.cloneWithRows(next.posts.index)});
+    }
   }
 
   changeView(view) {
     var self = this;
     self.setState({view: view});
+    self.props.actions.clearPosts();
 
     switch(view) {
       case 1:
@@ -58,27 +70,43 @@ class Discover extends Component {
     }
   }
 
-  switchPage(page) {
-    var self = this;
-
-    switch(self.state.view) {
-      case 1:
-        self.props.actions.getPosts(page);
-        break;
-
-      case 2:
-        self.props.actions.getPostsByRank(page, self.state.tag);
-        break;
-
-      default:
-        return;
-    }
-  }
-
   setTag(tag) {
     var self = this;
     self.setState({tag: tag})
+    self.props.actions.clearPosts();
     self.props.actions.getPostsByRank(0, self.state.tag);
+  }
+
+  renderRow(rowData) {
+    var self = this;
+      return (
+        <Post post={rowData} {...self.props} styles={styles} />
+      );
+  }
+
+  onScroll() {
+    var self = this;
+    if (self.refs.listview.scrollProperties.offset + self.refs.listview.scrollProperties.visibleLength >= self.refs.listview.scrollProperties.contentLength) {
+      self.loadMore();
+    }
+  }
+
+  loadMore() {
+    var self = this;
+    var length = self.props.posts.index.length;
+     console.log('load more, skip: ', length);
+    if (self.state.enabled) {
+      self.setState({enabled: false});
+      if (self.state.view == 1) {
+        self.props.actions.getPosts(length);
+      }
+      if (self.state.view == 2) {
+        self.props.actions.getPostsByRank(length, self.state.tag);
+      }
+      setTimeout(function() {
+        self.setState({enabled: true})
+      }, 1000);
+    }
   }
 
   render() {
@@ -118,20 +146,7 @@ class Discover extends Component {
       })
     }
 
-    if (self.props.posts.pages) {
-      pages = self.props.posts.pages;
-      paginationEl = [];
-      for (var i = 0; i < pages; i++) {
-          paginationEl.push(<Text onPress={self.switchPage.bind(self, i)}>Page {i+1}</Text>);
-      }
-    }
-    if (self.props.posts.index) {
-      posts = self.props.posts.index;
-      var mock = ['xxx', 'xxy'];
-      var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      ds.cloneWithRows(mock);
-      postsEl = (<ListView contentContainerStyle={styles.listStyle} dataSource={ds} renderRow={(post) => <Text>row</Text>} />)
-    }
+    postsEl = (<ListView ref="listview" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} />)
 
     var userIndex = null;
     if (this.props.auth.userIndex) {
@@ -155,13 +170,12 @@ class Discover extends Component {
           <Text onPress={self.changeView.bind(self, 2)} style={[styles.font20, styles.category, view == 2? styles.active : null]}>Top</Text>
           <Text onPress={self.changeView.bind(self, 3)} style={[styles.font20, styles.category, view == 3? styles.active : null]}>People</Text>
         </View>
-        <ScrollView style={styles.fullContainer}>
-          {view != 3 ? <View style={styles.pagination}>{paginationEl}</View> : null}
-          <View>
+        {/*<View style={styles.fullContainer}>*/}
+          {/*<View>*/}
             {view != 3 ? postsEl : null}
             {view == 3 ? usersEl : null}
-          </View>
-        </ScrollView>
+          {/*</View>*/}
+      {/*</View>*/}
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
@@ -196,15 +210,18 @@ padding20: {
   padding: 20
 },
 listStyle: {
-  flex: 1,
+  // flex: 1,
   height: 100,
-  borderWidth: 1,
-  borderColor: 'red'
 },
 discoverBar: {
   width: fullWidth,
   paddingTop: 20,
   paddingBottom: 20
+},
+listScroll: {
+  height: 100,
+  borderWidth: 1,
+  borderColor: 'red'
 }
 });
 
