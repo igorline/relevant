@@ -52,10 +52,10 @@ class Post extends Component {
   checkInvestments(investments) {
     var self = this;
     var invested = false;
-    //console.log(investments, 'investments');
     if (investments) {
       if (investments.length > 0) {
         investments.forEach(function(investment, i) {
+          console.log(investment.investor, self.props.auth.user._id)
           if (investment.investor == self.props.auth.user._id) invested = true;
           if (i == investments.length - 1) {
             self.setState({invested: invested});
@@ -91,9 +91,8 @@ class Post extends Component {
   }
 
   componentWillUpdate(nextProps) {
+
     if (this.props.post.investments != nextProps.post.investments) {
-      //console.log('change');
-      console.log(nextProps.post, 'changed post');
       this.checkInvestments(nextProps.post.investments);
     }
   }
@@ -184,8 +183,10 @@ class Post extends Component {
     var value = 0;
     var functionBool = false;
     var expanded = this.state.expanded;
-    if (this.props.auth.user) user = this.props.auth.user;
-    if (user && user.balance) balance = user.balance;
+    if (this.props.auth.user) {
+      user = this.props.auth.user;
+      if (user.balance) balance = user.balance;
+    }
     var styles = {...localStyles, ...postStyles};
     var pickerArray = [];
     var investOptions = [];

@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {pages: null, page: null, postError: null, activePost: null, index: null};
+const initialState = {pages: null, page: null, postError: null, activePost: null, index: null, feed: null, topTags: null};
 
 const updatePostElement = (array, post) => {
   console.log('update posts', array);
@@ -27,16 +27,6 @@ export default function post(state = initialState, action) {
       })
     }
 
-    // case types.SET_POSTS_BY_RANK: {
-    //   return Object.assign({}, state, {
-    //     'ranked': {
-    //       'index': action.payload.posts,
-    //       'pages': Math.ceil(action.payload.pages),
-    //       'page': action.payload.page
-    //     }
-    //   })
-    // }
-
     case 'UPDATE_POSTS': {
        return Object.assign({}, state, {
         'index': action.payload,
@@ -51,9 +41,28 @@ export default function post(state = initialState, action) {
       })
     }
 
+    case types.SET_TOP_TAGS: {
+      console.log(action.payload, 'top tags payload')
+      return Object.assign({}, state, {
+        'topTags': action.payload
+      })
+    }
+
     case types.SET_ACTIVE_POST: {
       return Object.assign({}, state, {
         'activePost': action.payload
+      })
+    }
+
+    case types.UPDATE_FEED: {
+      return Object.assign({}, state, {
+        'feed': updatePostElement(state.feed, action.payload)
+      })
+    }
+
+    case types.SET_FEED: {
+      return Object.assign({}, state, {
+        'feed':  action.payload
       })
     }
 
