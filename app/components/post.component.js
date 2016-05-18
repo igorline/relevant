@@ -69,7 +69,7 @@ class Post extends Component {
 
   checkTime() {
     var self = this;
-    var postTime = moment(self.props.post.created_at);
+    var postTime = moment(self.props.post.createdAt);
     var fromNow = postTime.fromNow();
     var timeNow = moment();
     var dif = timeNow.diff(postTime);
@@ -204,7 +204,7 @@ class Post extends Component {
       if (post.tags) {
         if (post.tags.length) tags = post.tags;
       }
-      if (post.created_at) createdAt = post.created_at;
+      if (post.createdAt) createdAt = post.createdAt;
       if (post.user) {
         postUser = post.user;
         if (postUser.image) postUserImage = postUser.image;
