@@ -7,7 +7,7 @@ var apiServer = process.env.API_SERVER+'/api/'
 
 export function getFeed(id) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post/feed?_id='+id, {
+    fetch(process.env.API_SERVER+'/api/feed/'+id, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
