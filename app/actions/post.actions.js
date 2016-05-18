@@ -107,11 +107,7 @@ export function getPostsByRank(page, tag) {
 export function setPosts(data) {
     return {
         type: types.SET_POSTS,
-        payload: {
-          posts: data.posts,
-          pages: data.pages,
-          page: data.page
-        }
+        payload: data
     };
 }
 

@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {pages: null, page: null, postError: null, activePost: null, index: null, feed: null, topTags: null};
+const initialState = {pages: null, page: null, postError: null, activePost: null, index: [], feed: null, topTags: null};
 
 const updatePostElement = (array, post) => {
   console.log('update posts', array);
@@ -19,18 +19,20 @@ export default function post(state = initialState, action) {
   switch (action.type) {
 
     case types.SET_POSTS: {
+      var newArr = state.index.concat(action.payload);
+      console.log(newArr, 'newArr')
       return Object.assign({}, state, {
-          'index': action.payload.posts,
-          'pages': Math.ceil(action.payload.pages),
-          'page': action.payload.page
+          'index': newArr,
+          // 'pages': Math.ceil(action.payload.pages),
+          // 'page': action.payload.page
       })
     }
 
     case 'UPDATE_POSTS': {
        return Object.assign({}, state, {
         'index': action.payload,
-        'pages': state.pages,
-        'page': state.page
+        // 'pages': state.pages,
+        // 'page': state.page
       })
     }
 

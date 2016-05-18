@@ -8,7 +8,8 @@ import React, {
   Image,
   TextInput,
   ScrollView,
-  Picker
+  Picker,
+  ListView
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -92,11 +93,27 @@ class Discover extends Component {
     var tags = null;
 
     if (self.props.posts.topTags) {
-      tags = self.props.posts.topTags;
+      tags = [];
 
-      tagsEl = tags.map(function(tag, i) {
+      self.props.posts.topTags.forEach(function(tag, i) {
+
+        var exists = false;
+        tags.forEach(function(innerTag, j) {
+          if (innerTag.tag._id == tag._id) {
+            innerTag.quantity += 1;
+            exists = true;
+          }
+        })
+        if (!exists) tags.push({tag: tag, quantity: 1});
+      });
+
+      tags.sort(function(a, b) {
+        return b.quantity - a.quantity
+      });
+
+      tagsEl = tags.map(function(data, i) {
         return (
-          <Text style={styles.tagBox} onPress={self.setTag.bind(self, tag)} key={i}>{tag.name}</Text>
+          <Text style={styles.tagBox} onPress={self.setTag.bind(self, data.tag)} key={i}>{data.tag.name}</Text>
           )
       })
     }
@@ -110,11 +127,10 @@ class Discover extends Component {
     }
     if (self.props.posts.index) {
       posts = self.props.posts.index;
-      postsEl = posts.map(function(post, i) {
-        return (
-          <Post key={i} post={post} {...self.props} styles={styles} />
-        );
-      });
+      var mock = ['xxx', 'xxy'];
+      var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      ds.cloneWithRows(mock);
+      postsEl = (<ListView contentContainerStyle={styles.listStyle} dataSource={ds} renderRow={(post) => <Text>row</Text>} />)
     }
 
     var userIndex = null;
@@ -131,17 +147,18 @@ class Discover extends Component {
 
     return (
       <View style={styles.fullContainer}>
+        <View>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView>
+        </View>
+        <View style={[styles.row, styles.discoverBar]}>
+          <Text onPress={self.changeView.bind(self, 1)} style={[styles.font20, styles.category, view == 1? styles.active : null]}>New</Text>
+          <Text onPress={self.changeView.bind(self, 2)} style={[styles.font20, styles.category, view == 2? styles.active : null]}>Top</Text>
+          <Text onPress={self.changeView.bind(self, 3)} style={[styles.font20, styles.category, view == 3? styles.active : null]}>People</Text>
+        </View>
         <ScrollView style={styles.fullContainer}>
-        <View style={styles.tags}>{tagsEl}</View>
-          <View style={[styles.row, styles.discoverBar]}>
-            <Text onPress={self.changeView.bind(self, 1)} style={[styles.font20, styles.category, view == 1? styles.active : null]}>New</Text>
-            <Text onPress={self.changeView.bind(self, 2)} style={[styles.font20, styles.category, view == 2? styles.active : null]}>Top</Text>
-            <Text onPress={self.changeView.bind(self, 3)} style={[styles.font20, styles.category, view == 3? styles.active : null]}>People</Text>
-          </View>
           {view != 3 ? <View style={styles.pagination}>{paginationEl}</View> : null}
           <View>
-            {view == 1 || !view ? postsEl : null}
-            {view == 2 ? postsEl : null}
+            {view != 3 ? postsEl : null}
             {view == 3 ? usersEl : null}
           </View>
         </ScrollView>
@@ -177,6 +194,12 @@ category: {
 },
 padding20: {
   padding: 20
+},
+listStyle: {
+  flex: 1,
+  height: 100,
+  borderWidth: 1,
+  borderColor: 'red'
 },
 discoverBar: {
   width: fullWidth,
