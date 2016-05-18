@@ -23,6 +23,7 @@
     "react-native-image-picker": "^0.18.3",
     "react-native-modal-picker": "0.0.13",
     "react-native-navbar": "^1.4.2",
+    "react-native-progress": "^2.2.2",
     "react-native-redux-router": "^1.0.6",
     "react-native-shimmer": "0.0.0",
     "react-redux": "^4.4.1",

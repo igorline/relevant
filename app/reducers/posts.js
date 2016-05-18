@@ -21,19 +21,14 @@ export default function post(state = initialState, action) {
 
     case types.SET_POSTS: {
       var newArr = state.index.concat(action.payload);
-      console.log(newArr, 'newArr')
       return Object.assign({}, state, {
-          'index': newArr,
-          // 'pages': Math.ceil(action.payload.pages),
-          // 'page': action.payload.page
+          'index': newArr
       })
     }
 
     case 'UPDATE_POSTS': {
        return Object.assign({}, state, {
-        'index': action.payload,
-        // 'pages': state.pages,
-        // 'page': state.page
+        'index': action.payload
       })
     }
 
@@ -51,7 +46,6 @@ export default function post(state = initialState, action) {
     }
 
     case types.SET_DISCOVER_TAGS: {
-      console.log(action.payload, 'discover tags payload')
       return Object.assign({}, state, {
         'discoverTags': action.payload
       })
@@ -71,8 +65,6 @@ export default function post(state = initialState, action) {
 
     case types.SET_FEED: {
       var newArr = state.feed.concat(action.payload);
-      console.log(newArr, 'newArr')
-
       return Object.assign({}, state, {
         'feed': newArr
       })
