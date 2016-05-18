@@ -3,6 +3,36 @@ require('../publicenv');
 var { Actions } = require('react-native-redux-router');
 import * as utils from '../utils';
 
+export function getDiscoverTags() {
+  return function(dispatch) {
+    fetch(process.env.API_SERVER+'/api/tag?sort=count', {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+      }
+    })
+    .then(utils.fetchError.handleErrors)
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      //console.log('get posts response', responseJSON);
+      dispatch(setDiscoverTags(responseJSON));
+    })
+    .catch((error) => {
+        console.log(error, 'error');
+    });
+  }
+}
+
+
+export function setDiscoverTags(data) {
+    return {
+        type: types.SET_DISCOVER_TAGS,
+        payload: data
+    };
+}
+
 export function searchTags(tag) {
     return function(dispatch) {
     return fetch(process.env.API_SERVER+'/api/tag/search?name='+tag, {
@@ -66,7 +96,7 @@ export function searchSpecific(tag) {
 
 export function createTag(token, tagObj) {
     return function(dispatch) {
-      return fetch(process.env.API_SERVER+'/api/tag/create?access_token='+token, {
+      return fetch(process.env.API_SERVER+'/api/tag?access_token='+token, {
         credentials: 'include',
         method: 'POST',
         headers: {

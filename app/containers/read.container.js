@@ -8,7 +8,8 @@ import React, {
   Image,
   TextInput,
   ScrollView,
-  Linking
+  Linking,
+  ListView
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -25,33 +26,65 @@ import Notification from '../components/notification.component';
 class Read extends Component {
   constructor (props, context) {
     super(props, context)
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      page: 0,
-      tag: null
+      tag: null,
+      enabled: true,
+      dataSource: ds.cloneWithRows([]),
     }
   }
 
   componentDidMount() {
     var self = this;
-    this.props.actions.getFeed(self.props.auth.token);
+    this.props.actions.clearPosts();
+    this.props.actions.getFeed(self.props.auth.token, 0, null);
   }
 
   componentDidUpdate() {
     var self = this;
   }
 
-  componentWillUpdate(nextProps) {
+  componentWillUpdate(next) {
     var self = this;
-  }
-
-  switchPage(page) {
-    var self = this;
-    self.setState({page: page});
+    if (next.posts.feed != self.props.posts.feed) {
+      console.log(next.posts.feed, 'feed')
+      var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      self.setState({dataSource: ds.cloneWithRows(next.posts.feed)});
+    }
   }
 
   setTag(tag) {
     var self = this;
-    self.setState({page: 0, tag: tag});
+    self.setState({tag: tag});
+    self.props.actions.clearPosts();
+    self.props.actions.getFeed(self.props.auth.token, 0, self.state.tag);
+  }
+
+  renderRow(rowData) {
+    var self = this;
+      return (
+        <Post post={rowData} {...self.props} styles={styles} />
+      );
+  }
+
+  onScroll() {
+    var self = this;
+    if (self.refs.listview.scrollProperties.offset + self.refs.listview.scrollProperties.visibleLength >= self.refs.listview.scrollProperties.contentLength) {
+      self.loadMore();
+    }
+  }
+
+  loadMore() {
+    var self = this;
+    var length = self.props.posts.feed.length;
+     console.log('load more, skip: ', length);
+    if (self.state.enabled) {
+      self.setState({enabled: false});
+        self.props.actions.getFeed(self.props.auth.token, length, self.state.tag);
+      setTimeout(function() {
+        self.setState({enabled: true})
+      }, 1000);
+    }
   }
 
   render() {
@@ -65,72 +98,46 @@ class Read extends Component {
     var page = self.state.page;
     var taggedPosts = null;
 
+    console.log(self.props.posts.feed, 'feed')
+
     if (self.props.posts.feed) {
 
-      self.props.posts.feed.forEach(function(post, i) {
-        post.tags.forEach(function(tag, j) {
-          var exists = false;
-          tags.forEach(function(innerTag, i) {
-            if (innerTag.tag._id == tag._id) {
-              innerTag.quantity += 1;
-              exists = true;
-            }
-          })
-          if (!exists) tags.push({tag: tag, quantity: 1});
-        })
-      })
+      //self.props.posts.feed.forEach(function(post, i) {
+      //   post.tags.forEach(function(tag, j) {
+      //     var exists = false;
+      //     tags.forEach(function(innerTag, i) {
+      //       if (innerTag.tag._id == tag._id) {
+      //         innerTag.quantity += 1;
+      //         exists = true;
+      //       }
+      //     })
+      //     if (!exists) tags.push({tag: tag, quantity: 1});
+      //   })
+      // })
 
-      tags.sort(function(a, b) {
-        return b.quantity - a.quantity
-      });
+      // tags.sort(function(a, b) {
+      //   return b.quantity - a.quantity
+      // });
 
-      tagsEl = tags.map(function(data, i) {
-        return (
-          <Text style={styles.tagBox} onPress={self.setTag.bind(self, data.tag)} key={i}>{data.tag.name}</Text>
-          )
-      })
+      // tagsEl = tags.map(function(data, i) {
+      //   return (
+      //     <Text style={styles.tagBox} onPress={self.setTag.bind(self, data.tag)} key={i}>{data.tag.name}</Text>
+      //     )
+      // })
 
-      if (!self.state.tag) {
-        posts = self.props.posts.feed.slice(page*10, (page*10)+10);
-        pages = Math.ceil(self.props.posts.feed.length / 10);
-      } else {
-        taggedPosts = [];
-        self.props.posts.feed.forEach(function(post, i) {
-          var tagged = false;
-          post.tags.forEach(function(tag, j) {
-            if (tag.name == self.state.tag.name) tagged = true;
-          })
-          if (tagged) taggedPosts.push(post);
-        })
-        posts = taggedPosts.slice(page*10, (page*10)+10);
-        pages = Math.ceil(taggedPosts.length / 10);;
-      }
-
-      paginationEl = [];
-      for (var i = 0; i < pages; i++) {
-          paginationEl.push(<Text onPress={self.switchPage.bind(self, i)}>Page {i+1}</Text>);
-      }
-
-      postsEl = posts.map(function(post, i) {
-        return (
-          <Post post={post} key={i} {...self.props} styles={styles} />
-        );
-      });
+      postsEl = (<ListView ref="listview" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} />)
     }
 
 
     return (
       <View style={styles.fullContainer}>
-       <View>
+       {/*<View>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView>
-        </View>
-        <View style={styles.pagination}>{paginationEl}</View>
-      <ScrollView style={[styles.readContainer]}>
+        </View>*/}
        {postsEl}
        <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
-      </ScrollView>
       </View>
     );
   }

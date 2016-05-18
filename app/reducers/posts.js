@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {pages: null, page: null, postError: null, activePost: null, index: [], feed: null, topTags: null};
+const initialState = {pages: null, page: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null};
 
 const updatePostElement = (array, post) => {
   console.log('update posts', array);
@@ -39,7 +39,8 @@ export default function post(state = initialState, action) {
 
     case 'CLEAR_POSTS': {
        return Object.assign({}, state, {
-        'index': []
+        'index': [],
+        'feed': []
       })
     }
 
@@ -49,10 +50,10 @@ export default function post(state = initialState, action) {
       })
     }
 
-    case types.SET_TOP_TAGS: {
-      console.log(action.payload, 'top tags payload')
+    case types.SET_DISCOVER_TAGS: {
+      console.log(action.payload, 'discover tags payload')
       return Object.assign({}, state, {
-        'topTags': action.payload
+        'discoverTags': action.payload
       })
     }
 
@@ -69,8 +70,11 @@ export default function post(state = initialState, action) {
     }
 
     case types.SET_FEED: {
+      var newArr = state.feed.concat(action.payload);
+      console.log(newArr, 'newArr')
+
       return Object.assign({}, state, {
-        'feed':  action.payload
+        'feed': newArr
       })
     }
 
