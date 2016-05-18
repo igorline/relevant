@@ -18,6 +18,7 @@ import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as userActions from '../actions/user.actions';
 import * as postActions from '../actions/post.actions';
+import * as tagActions from '../actions/tag.actions';
 import * as investActions from '../actions/invest.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
@@ -38,8 +39,9 @@ class Discover extends Component {
 
   componentDidMount() {
     this.props.actions.userIndex();
-    this.props.actions.getTopTags();
-    if (this.props.posts.index.length < 1) this.props.actions.getPosts(0);
+    this.props.actions.clearPosts();
+    this.props.actions.getDiscoverTags();
+    this.props.actions.getPosts(0, null);
   }
 
   componentWillUpdate(next) {
@@ -53,12 +55,12 @@ class Discover extends Component {
 
   changeView(view) {
     var self = this;
-    self.setState({view: view});
+    self.setState({view: view, tag: null});
     self.props.actions.clearPosts();
 
     switch(view) {
       case 1:
-        self.props.actions.getPosts(0);
+        self.props.actions.getPosts(0, null);
         break;
 
       case 2:
@@ -74,7 +76,8 @@ class Discover extends Component {
     var self = this;
     self.setState({tag: tag})
     self.props.actions.clearPosts();
-    self.props.actions.getPostsByRank(0, self.state.tag);
+    if (self.state.view == 1) self.props.actions.getPosts(0, self.state.tag);
+    if (self.state.view == 2) self.props.actions.getPostsByRank(0, self.state.tag);
   }
 
   renderRow(rowData) {
@@ -98,7 +101,7 @@ class Discover extends Component {
     if (self.state.enabled) {
       self.setState({enabled: false});
       if (self.state.view == 1) {
-        self.props.actions.getPosts(length);
+        self.props.actions.getPosts(length, self.state.tag);
       }
       if (self.state.view == 2) {
         self.props.actions.getPostsByRank(length, self.state.tag);
@@ -120,30 +123,16 @@ class Discover extends Component {
     var tagsEl = null;
     var tags = null;
 
-    if (self.props.posts.topTags) {
-      tags = [];
-
-      self.props.posts.topTags.forEach(function(tag, i) {
-
-        var exists = false;
-        tags.forEach(function(innerTag, j) {
-          if (innerTag.tag._id == tag._id) {
-            innerTag.quantity += 1;
-            exists = true;
-          }
+    if (self.props.posts.discoverTags) {
+      tags = self.props.posts.discoverTags;
+      console.log(tags, 'tags')
+      if (tags.length > 0) {
+        tagsEl = tags.map(function(data, i) {
+          return (
+            <Text style={styles.tagBox} onPress={self.setTag.bind(self, data)} key={i}>{data.name}</Text>
+            )
         })
-        if (!exists) tags.push({tag: tag, quantity: 1});
-      });
-
-      tags.sort(function(a, b) {
-        return b.quantity - a.quantity
-      });
-
-      tagsEl = tags.map(function(data, i) {
-        return (
-          <Text style={styles.tagBox} onPress={self.setTag.bind(self, data.tag)} key={i}>{data.tag.name}</Text>
-          )
-      })
+      }
     }
 
     postsEl = (<ListView ref="listview" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} />)
@@ -195,7 +184,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...investActions, ...authActions, ...userActions, ...postActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...userActions, ...postActions, ...tagActions}, dispatch)
   }
 }
 
@@ -210,7 +199,6 @@ padding20: {
   padding: 20
 },
 listStyle: {
-  // flex: 1,
   height: 100,
 },
 discoverBar: {

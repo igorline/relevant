@@ -5,9 +5,11 @@ import * as utils from '../utils';
 
 var apiServer = process.env.API_SERVER+'/api/'
 
-export function getFeed(token) {
+export function getFeed(token, skip, tag) {
+  var url = process.env.API_SERVER+'/api/feed?access_token='+token+'&skip='+skip;
+  if (tag) url = process.env.API_SERVER+'/api/feed?access_token='+token+'&skip='+skip+'&tag='+tag._id;
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/feed?access_token='+token, {
+    fetch(url, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
@@ -41,9 +43,11 @@ function clearPosts() {
     };
 }
 
-export function getPosts(skip) {
+export function getPosts(skip, tag) {
+  var url = process.env.API_SERVER+'/api/post?skip='+skip;
+  if (tag) url = process.env.API_SERVER+'/api/post?skip='+skip+'&tag='+tag._id;
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post?skip='+skip, {
+    fetch(url, {
         credentials: 'include',
         method: 'GET',
         headers: {
@@ -63,27 +67,7 @@ export function getPosts(skip) {
   }
 }
 
-export function getTopTags() {
-  return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post/topTags', {
-        credentials: 'include',
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-      }
-    })
-    .then(utils.fetchError.handleErrors)
-    .then((response) => response.json())
-    .then((responseJSON) => {
-      //console.log('get posts response', responseJSON);
-      dispatch(setTopTags(responseJSON));
-    })
-    .catch((error) => {
-        console.log(error, 'error');
-    });
-  }
-}
+
 
 export function getPostsByRank(skip, tag) {
   var url = process.env.API_SERVER+'/api/post/rank?skip='+skip;
@@ -115,14 +99,6 @@ export function setPosts(data) {
         payload: data
     };
 }
-
-export function setTopTags(data) {
-    return {
-        type: types.SET_TOP_TAGS,
-        payload: data
-    };
-}
-
 
 export function setPostsByRank(data) {
     return {
