@@ -5,9 +5,9 @@ import * as utils from '../utils';
 
 var apiServer = process.env.API_SERVER+'/api/'
 
-export function getFeed(id) {
+export function getFeed(token) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/feed/'+id, {
+    fetch(process.env.API_SERVER+'/api/feed?access_token='+token, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',

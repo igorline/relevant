@@ -33,7 +33,7 @@ class Read extends Component {
 
   componentDidMount() {
     var self = this;
-    this.props.actions.getFeed(self.props.auth.user._id);
+    this.props.actions.getFeed(self.props.auth.token);
   }
 
   componentDidUpdate() {
