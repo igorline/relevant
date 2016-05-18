@@ -5,14 +5,15 @@ const initialState = {pages: null, page: null, postError: null, activePost: null
 const updatePostElement = (array, post) => {
   console.log('update posts', array);
   if (!array) return;
-  var index = array.findIndex(function(el){
-    return el._id == post._id
-  })
+  var index = array.findIndex(function(el) {
+    return el._id == post._id;
+  });
+  if (!index) return array.slice(0);
   return [
     ...array.slice(0, index),
     post,
     ...array.slice(index + 1)
-  ]
+  ];
 }
 
 export default function post(state = initialState, action) {
