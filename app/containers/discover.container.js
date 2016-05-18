@@ -47,7 +47,6 @@ class Discover extends Component {
   componentWillUpdate(next) {
     var self = this;
     if (next.posts.index != self.props.posts.index) {
-      console.log(next.posts.index, 'index')
       var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({dataSource: ds.cloneWithRows(next.posts.index)});
     }
@@ -125,7 +124,6 @@ class Discover extends Component {
 
     if (self.props.posts.discoverTags) {
       tags = self.props.posts.discoverTags;
-      console.log(tags, 'tags')
       if (tags.length > 0) {
         tagsEl = tags.map(function(data, i) {
           return (

@@ -28,6 +28,7 @@ var postStyles = null;
 var moment = require('moment');
 var PickerItemIOS = PickerIOS.Item;
 import Shimmer from 'react-native-shimmer';
+var Progress = require('react-native-progress');
 
 class Post extends Component {
   constructor (props: any) {
@@ -216,7 +217,7 @@ class Post extends Component {
     if (tags) {
       tagsEl = [];
       tags.forEach(function(tag, i) {
-        tagsEl.push(<Text style={styles.tagBox} key={i}>#{tag.name}</Text>)
+        tagsEl.push(<Text style={[styles.white, styles.font10]} key={i}>#{tag.name}</Text>)
       })
     }
 
@@ -269,17 +270,22 @@ class Post extends Component {
           <View style={styles.postHeader}>
             {postUserImageEl}
             <View style={styles.postInfo}>
-              {postUserName ? <Text style={styles.white}>posted by {postUserName}</Text> : null}
+              <View style={[styles.infoLeft, styles.innerInfo]}>
+              <Text style={[styles.white, styles.font10]}>posted by {self.props.post.user.name}, Relevance: {self.props.post.user.relevance.toFixed(0)}</Text>
+               {tags ? tagsEl : null}
+               </View>
+               <View style={[styles.infoRight, styles.innerInfo]}>
+               {self.state.passed ? <View style={[styles.countdown]}><Text style={[styles.font10, styles.white, styles.textRight]}>relevance: {relevance}</Text><Text style={[styles.font10, styles.white]}>Value: {value}</Text></View> : <View style={[styles.countdown]}><Text style={[styles.font10, styles.white, styles.textRight]}>Results in {self.state.timeUntilString}</Text><Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} /></View>}
+               </View>
             </View>
           </View>
           {imageEl}
           <View style={styles.postSection}>
             <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
             {link ? <Text>from {self.extractDomain(link)}  <Text style={styles.active} onPress={self.openLink.bind(null, link)}>Open Article</Text></Text> : null}
-            {tags ? <View><ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView></View> : null}
+            {/*tags ? <View><ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}></ScrollView></View> : null*/}
             {body ? <View style={styles.postBody}><Text numberOfLines={expanded ? 999999 : 2}>{body}</Text></View> : null}
-            <Text>Posted {self.state.posted}</Text>
-            {self.state.passed ? <View><Text>relevance: {relevance}</Text><Text>Value: {value}</Text></View> : <View><Text>Post value and relevance available in {self.state.timeUntilString}{'\n'}{Math.round(self.state.timePassedPercent*100)}% complete</Text></View>}
+            {/*<Text>Posted {self.state.posted}</Text>*/}
             <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
               <PickerIOS
                 selectedValue={self.state.investAmount}
@@ -353,6 +359,19 @@ const localStyles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center'
   },
+  innerInfo: {
+    flex: 1,
+    // borderWidth: 1,
+    // borderColor: 'purple',
+    // alignItems: 'center',
+    // justifyContent: 'center'
+  },
+  infoLeft: {
+    justifyContent: 'flex-start'
+  },
+  infoRight: {
+    justifyContent: 'flex-end'
+  },
   investButton: {
     textAlign: 'left',
     paddingTop: 10,
@@ -377,14 +396,24 @@ const localStyles = StyleSheet.create({
   link: {
     flex: 1,
   },
+  countdown: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end'
+  },
   postInfo: {
     flex: 1,
-    paddingLeft: 5
+    paddingLeft: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: "center"
   },
   loading: {
     fontSize: 40,
     fontWeight: '100'
   },
+  progressCirc: {
+    marginTop: 5
+  }
 });
 
 

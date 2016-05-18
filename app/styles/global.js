@@ -21,8 +21,14 @@ const globalStyles = StyleSheet.create({
   textCenter: {
     textAlign: 'center'
   },
+  textRight: {
+    textAlign: 'right'
+  },
   font40: {
     fontSize: 40
+  },
+  font10: {
+    fontSize: 10
   },
   pagination: {
     padding: 20,
