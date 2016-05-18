@@ -20,4 +20,5 @@ export const SET_FEED = 'SET_FEED';
 export const SET_POSTS_BY_RANK = 'SET_POSTS_BY_RANK';
 export const UPDATE_FEED = 'UPDATE_FEED';
 export const SET_TOP_TAGS = 'SET_TOP_TAGS';
+export const CLEAR_POSTS = 'CLEAR_POSTS';
 
