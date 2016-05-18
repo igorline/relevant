@@ -69,13 +69,24 @@ class Read extends Component {
 
       self.props.posts.feed.forEach(function(post, i) {
         post.tags.forEach(function(tag, j) {
-          tags.push(tag);
+          var exists = false;
+          tags.forEach(function(innerTag, i) {
+            if (innerTag.tag._id == tag._id) {
+              innerTag.quantity += 1;
+              exists = true;
+            }
+          })
+          if (!exists) tags.push({tag: tag, quantity: 1});
         })
       })
-      console.log(tags, 'tags')
-      tagsEl = tags.map(function(tag, i) {
+
+      tags.sort(function(a, b) {
+        return b.quantity - a.quantity
+      });
+
+      tagsEl = tags.map(function(data, i) {
         return (
-          <Text style={styles.tagBox} onPress={self.setTag.bind(self, tag)} key={i}>{tag.name}</Text>
+          <Text style={styles.tagBox} onPress={self.setTag.bind(self, data.tag)} key={i}>{data.tag.name}</Text>
           )
       })
 
@@ -85,7 +96,11 @@ class Read extends Component {
       } else {
         taggedPosts = [];
         self.props.posts.feed.forEach(function(post, i) {
-          if (post.tags.indexOf(self.state.tag) > -1) taggedPosts.push(post);
+          var tagged = false;
+          post.tags.forEach(function(tag, j) {
+            if (tag.name == self.state.tag.name) tagged = true;
+          })
+          if (tagged) taggedPosts.push(post);
         })
         posts = taggedPosts.slice(page*10, (page*10)+10);
         pages = Math.ceil(taggedPosts.length / 10);;
@@ -105,14 +120,18 @@ class Read extends Component {
 
 
     return (
+      <View style={styles.fullContainer}>
+       <View>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView>
+        </View>
+        <View style={styles.pagination}>{paginationEl}</View>
       <ScrollView style={[styles.readContainer]}>
-      <View style={styles.tags}>{tagsEl}</View>
-      <View style={styles.pagination}>{paginationEl}</View>
        {postsEl}
        <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
       </ScrollView>
+      </View>
     );
   }
 }

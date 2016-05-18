@@ -12,7 +12,8 @@ import React, {
   Picker,
   PickerIOS,
   Animated,
-  LayoutAnimation
+  LayoutAnimation,
+  ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -55,7 +56,6 @@ class Post extends Component {
     if (investments) {
       if (investments.length > 0) {
         investments.forEach(function(investment, i) {
-          console.log(investment.investor, self.props.auth.user._id)
           if (investment.investor == self.props.auth.user._id) invested = true;
           if (i == investments.length - 1) {
             self.setState({invested: invested});
@@ -257,12 +257,12 @@ class Post extends Component {
     }
 
     var investButtonEl = null;
+
     if (!expandedInvest) {
       if (post.user._id != self.props.auth.user._id) {
         investButtonEl = (<View style={styles.testShimmer}><Shimmer speed={50}><Text style={[styles.investButton]} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Text></Shimmer></View>);
       }
     }
-
 
     return (
         <View style={[styles.postContainer]}>
@@ -276,10 +276,9 @@ class Post extends Component {
           <View style={styles.postSection}>
             <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
             {link ? <Text>from {self.extractDomain(link)}  <Text style={styles.active} onPress={self.openLink.bind(null, link)}>Open Article</Text></Text> : null}
-            {tags ? <View style={styles.tagsRow}><Text>Tags: </Text>{tagsEl}</View> : null}
+            {tags ? <View><ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView></View> : null}
             {body ? <View style={styles.postBody}><Text numberOfLines={expanded ? 999999 : 2}>{body}</Text></View> : null}
             <Text>Posted {self.state.posted}</Text>
-
             {self.state.passed ? <View><Text>relevance: {relevance}</Text><Text>Value: {value}</Text></View> : <View><Text>Post value and relevance available in {self.state.timeUntilString}{'\n'}{Math.round(self.state.timePassedPercent*100)}% complete</Text></View>}
             <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
               <PickerIOS
@@ -325,7 +324,9 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 10,
     paddingBottom: 10,
-    alignItems: 'center'
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    flex: 1
   },
   postSection: {
     paddingTop: 10,
@@ -384,12 +385,6 @@ const localStyles = StyleSheet.create({
     fontSize: 40,
     fontWeight: '100'
   },
-  // shimmerText: {
-  //   color: 'rgba(0,0,0,0.5)',
-  // },
-  // testShimmer: {
-  //   backgroundColor: 'white'
-  // }
 });
 
 

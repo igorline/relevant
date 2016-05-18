@@ -33,6 +33,8 @@ const globalStyles = StyleSheet.create({
   tags: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: 50,
+    flexWrap: 'nowrap',
     justifyContent: 'flex-start'
   },
   relevantSymbol: {
