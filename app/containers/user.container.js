@@ -25,6 +25,7 @@ import * as utils from '../utils';
 import Post from '../components/post.component';
 import * as subscriptionActions from '../actions/subscription.actions';
 import Notification from '../components/notification.component';
+import ProfileComponent from '../components/profile.component';
 
 class User extends Component {
     constructor(props, context) {
@@ -128,16 +129,7 @@ class User extends Component {
       return (
         <View style={styles.fullContainer}>
         <ScrollView style={styles.fullContainer}>
-          <View style={styles.row}>
-            <View>{userImageEl}</View>
-            <View style={[styles.insideRow, styles.insidePadding]}>
-            <View style={styles.onlineRow}><Text>{self.state.online ? 'Online' : 'Offline'}</Text><View style={self.state.online ? styles.onlineCirc : styles.offlineCirc}></View></View>
-              <Text>Relevance: <Text style={styles.active}>{relevance}</Text ></Text>
-              <Text>Balance: <Text style={styles.active}>{balance}</Text></Text>
-              <Text>Followers: <Text style={styles.active}>{followers ? followers.length : 0}</Text></Text>
-              <Text>Following: <Text style={styles.active}>{following ? following.length : 0}</Text></Text>
-            </View>
-          </View>
+          <ProfileComponent {...self.props} user={self.props.users.selectedUser} styles={styles} />
           <View>
             <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
             {postsEl}

@@ -21,4 +21,5 @@ export const SET_POSTS_BY_RANK = 'SET_POSTS_BY_RANK';
 export const UPDATE_FEED = 'UPDATE_FEED';
 export const SET_DISCOVER_TAGS = 'SET_DISCOVER_TAGS';
 export const CLEAR_POSTS = 'CLEAR_POSTS';
+export const SET_COMMENTS = 'SET_COMMENTS';
 

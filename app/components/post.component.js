@@ -31,9 +31,10 @@ import Shimmer from 'react-native-shimmer';
 var Progress = require('react-native-progress');
 
 class Post extends Component {
-  constructor (props: any) {
+  constructor (props) {
     super(props)
     this.state = {
+      progress: 0,
       expanded: false,
       investAmount: 50,
       expandedInvest: false,
@@ -42,7 +43,7 @@ class Post extends Component {
       passed: false,
       timeUntilString: null,
       timePassedPercent: null,
-      invested: false
+      invested: false,
     }
   }
 
@@ -161,6 +162,12 @@ class Post extends Component {
     self.setState({investAmount: 50});
   }
 
+  openComments() {
+    var self = this;
+    self.props.actions.setActivePost(self.props.post._id);
+    self.props.routes.Comments();
+  }
+
 
   render() {
     var self = this;
@@ -169,6 +176,7 @@ class Post extends Component {
     var title = null;
     var description = null;
     var image = null;
+    var commentString = 'Add comment';
     var link = null;
     var imageEl = null;
     var postUserImage = null;
@@ -181,6 +189,7 @@ class Post extends Component {
     var relevance = 0;
     var postStyles = this.props.styles;
     var user = null;
+    var comments = null;
     var value = 0;
     var functionBool = false;
     var expanded = this.state.expanded;
@@ -203,6 +212,7 @@ class Post extends Component {
       if (post.link) link = post.link;
       if (post.body) body = post.body;
       if (post.value) value = post.value;
+      if (post.comments) comments = post.comments;
       if (post.tags) {
         if (post.tags.length) tags = post.tags;
       }
@@ -212,6 +222,11 @@ class Post extends Component {
         if (postUser.image) postUserImage = postUser.image;
         if (postUser.name) postUserName = postUser.name;
       }
+    }
+
+    if (comments) {
+      if (comments.length == 1) commentString = '1 Comment';
+      if (comments.length > 1) commentString = comments.length+' Comments';
     }
 
     if (tags) {
@@ -267,25 +282,38 @@ class Post extends Component {
 
     return (
         <View style={[styles.postContainer]}>
-          <View style={styles.postHeader}>
-            {postUserImageEl}
-            <View style={styles.postInfo}>
-              <View style={[styles.infoLeft, styles.innerInfo]}>
-              <Text style={[styles.white, styles.font10]}>posted by {self.props.post.user.name}, Relevance: {self.props.post.user.relevance.toFixed(0)}</Text>
-               {tags ? tagsEl : null}
-               </View>
-               <View style={[styles.infoRight, styles.innerInfo]}>
-               {self.state.passed ? <View style={[styles.countdown]}><Text style={[styles.font10, styles.white, styles.textRight]}>relevance: {relevance}</Text><Text style={[styles.font10, styles.white]}>Value: {value}</Text></View> : <View style={[styles.countdown]}><Text style={[styles.font10, styles.white, styles.textRight]}>Results in {self.state.timeUntilString}</Text><Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} /></View>}
-               </View>
-            </View>
+        <TouchableHighlight underlayColor={'transparent'} onPress={self.openLink.bind(null, link)}>
+          <View>
+            <View style={styles.postHeader}>
+              {postUserImageEl}
+              <View style={styles.postInfo}>
+                <View style={[styles.infoLeft, styles.innerInfo]}>
+                <Text style={[styles.white, styles.font10]}>Posted by {self.props.post.user.name} &#8226; &#1071;<Text style={styles.active}>{self.props.post.user.relevance.toFixed(2)}</Text></Text>
+                 {tags ? tagsEl : null}
+                 </View>
+                 <View style={[styles.infoRight, styles.innerInfo]}>
+                   {self.state.passed ? <View><Text style={[styles.font10, styles.white, styles.textRight]}>&#1071;<Text style={styles.active}>{relevance.toFixed(2)}</Text></Text><Text style={[styles.font10, styles.white, styles.textRight]}>$<Text style={styles.active}>{value.toFixed(2)}</Text></Text></View> : <View style={[styles.countdown]}><Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} /><Text style={[styles.font10, styles.white, styles.textRight]}>Results in {self.state.timeUntilString}</Text></View>}
+                  </View>
+                </View>
+              </View>
+            {imageEl}
           </View>
-          {imageEl}
+        </TouchableHighlight>
+          <TouchableHighlight underlayColor={'transparent'} onPress={self.openLink.bind(null, link)}>
+            <View style={styles.postSection}>
+              <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
+              {link ? <Text style={styles.font10}>from {self.extractDomain(link)}</Text> : null}
+              {body ? <View style={styles.postBody}><Text numberOfLines={expanded ? 999999 : 2}>{body}</Text></View> : null}
+            </View>
+          </TouchableHighlight>
           <View style={styles.postSection}>
-            <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
-            {link ? <Text>from {self.extractDomain(link)}  <Text style={styles.active} onPress={self.openLink.bind(null, link)}>Open Article</Text></Text> : null}
-            {/*tags ? <View><ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}></ScrollView></View> : null*/}
-            {body ? <View style={styles.postBody}><Text numberOfLines={expanded ? 999999 : 2}>{body}</Text></View> : null}
-            {/*<Text>Posted {self.state.posted}</Text>*/}
+          {!expanded ? <Text style={styles.font10} onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
+            {expanded ?
+              <View>
+                <Text style={styles.font10} onPress={self.toggleExpanded.bind(this, false)}>Read less</Text>
+              </View>
+            : null}
+            <Text style={styles.font10} onPress={self.openComments.bind(self)}>{commentString}</Text>
             <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
               <PickerIOS
                 selectedValue={self.state.investAmount}
@@ -298,12 +326,6 @@ class Post extends Component {
               {expandedInvest ? <Button style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Button> : null}
             {investButtonEl}
             </View>
-            {!expanded ? <Text onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
-            {expanded ?
-              <View>
-                <Text onPress={self.toggleExpanded.bind(this, false)}>Read less</Text>
-              </View>
-            : null}
           </View>
         </View>
     );
@@ -336,12 +358,10 @@ const localStyles = StyleSheet.create({
   },
   postSection: {
     paddingTop: 10,
-    paddingBottom: 10,
     paddingLeft: 15
   },
   postBody: {
-       paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: 10,
   },
   postImage: {
     height: 200,
@@ -361,10 +381,6 @@ const localStyles = StyleSheet.create({
   },
   innerInfo: {
     flex: 1,
-    // borderWidth: 1,
-    // borderColor: 'purple',
-    // alignItems: 'center',
-    // justifyContent: 'center'
   },
   infoLeft: {
     justifyContent: 'flex-start'
@@ -398,7 +414,8 @@ const localStyles = StyleSheet.create({
   },
   countdown: {
     justifyContent: 'flex-end',
-    alignItems: 'flex-end'
+    alignItems: 'center',
+    flexDirection: 'row'
   },
   postInfo: {
     flex: 1,
@@ -412,7 +429,7 @@ const localStyles = StyleSheet.create({
     fontWeight: '100'
   },
   progressCirc: {
-    marginTop: 5
+    marginRight: 5
   }
 });
 

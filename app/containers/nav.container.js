@@ -74,7 +74,7 @@ class Nav extends Component {
 
     if (self.props.auth.user) {
       statsEl = (<View style={styles.stats}>
-          <Text style={styles.statsTxt}>&#1071;:{relevance}  ${balance}</Text>
+          <Text style={styles.statsTxt}>&#1071;<Text style={styles.active}>{relevance}</Text>  $<Text style={styles.active}>{balance}</Text></Text>
         </View>
       )
     }

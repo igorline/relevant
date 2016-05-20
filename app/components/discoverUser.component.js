@@ -59,7 +59,7 @@ class DiscoverUser extends Component {
             <Text>{user.name}</Text>
           </View>
           <View stlye={styles.rightDiscoverUser}>
-            <Text style={styles.active}>{user.relevance}</Text>
+            <Text>&#1071;<Text style={styles.active}>{user.relevance.toFixed(2)}</Text></Text>
           </View>
         </View>
       </TouchableHighlight>
@@ -78,9 +78,6 @@ const localStyles = StyleSheet.create({
     marginLeft: 0
   },
   discoverUser: {
-    // paddingBottom: 20,
-    // paddingLeft: 20,
-    // paddingRight: 20,
        flexDirection: 'row',
        paddingTop: 10,
        paddingRight: 20,

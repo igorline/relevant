@@ -181,9 +181,8 @@ export function postError() {
 }
 
 export function getActivePost(postId) {
-  console.log(postId, 'postId')
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post/search?_id='+postId, {
+    fetch(process.env.API_SERVER+'/api/post?_id='+postId, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
@@ -195,7 +194,51 @@ export function getActivePost(postId) {
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setActivePost(responseJSON[0]));
-      dispatch(Actions.SinglePost);
+      //dispatch(Actions.SinglePost);
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+    });
+  }
+}
+
+export function getComments(postId) {
+  return function(dispatch) {
+    fetch(process.env.API_SERVER+'/api/comments?post='+postId, {
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'GET',
+    })
+    .then(utils.fetchError.handleErrors)
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      dispatch(setComments(responseJSON));
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+    });
+  }
+}
+
+export function createComment(token, commentObj) {
+  return function(dispatch) {
+    fetch(process.env.API_SERVER+'/api/comments?access_token='+token, {
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'POST',
+      body: JSON.stringify(commentObj)
+    })
+    .then(utils.fetchError.handleErrors)
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      // dispatch(setComments(responseJSON));
+      console.log(responseJSON, 'created comment');
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -256,6 +299,13 @@ export function setActivePost(post) {
     return {
         type: types.SET_ACTIVE_POST,
         payload: post
+    };
+}
+
+export function setComments(comments) {
+    return {
+        type: types.SET_COMMENTS,
+        payload: comments
     };
 }
 

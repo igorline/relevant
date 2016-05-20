@@ -8,7 +8,10 @@ import React, {
   TextInput,
   Image,
   Animated,
-  AppState
+  AppState,
+  Dimensions,
+  ScrollView,
+  DeviceEventEmitter
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -25,12 +28,27 @@ import { globalStyles } from '../styles/global';
 import Notification from '../components/notification.component';
 
 class Auth extends Component {
+  constructor (props, context) {
+    super(props, context)
+    this.state = {
+      visibleHeight: Dimensions.get('window').height
+    }
+  }
+
+  keyboardWillShow (e) {
+    let newSize = (Dimensions.get('window').height - e.endCoordinates.height)
+    this.setState({visibleHeight: newSize})
+  }
+
+  keyboardWillHide (e) {
+    this.setState({visibleHeight: Dimensions.get('window').height})
+  }
 
   componentDidMount() {
     this.props.actions.getUser();
-    //console.log(this, 'auth this');
+    DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
+    DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
   }
-
 
   render() {
     var self = this;
@@ -54,37 +72,37 @@ class Auth extends Component {
 
     if(isAuthenticated){
       auth = (
-        <View style={styles.center}>
+        <View style={styles.alignAuth}>
           <Text style={styles.font20}>{user ? user.name : null}</Text>
         </View>
       );
     }
     else if (currentRoute == 'LogIn') {
       auth = (
-        <View style={styles.center}>
+        <View style={styles.alignAuth}>
           <Login { ...this.props } styles={styles} />
         </View>
       );
       links = (
-        <View style={styles.center}>
+        <View style={styles.alignAuth}>
           <Button onPress={self.props.routes.SignUp} >Sign Up</Button>
         </View>
       );
       tagline = 'Stay Relevant \n Log in'
     } else if (currentRoute == 'SignUp') {
-      auth = (<View style={styles.center}>
+      auth = (<View style={styles.alignAuth}>
         <SignUp {...this.props} styles={styles} />
       </View>);
       tagline = 'Get Relevant \n Sign up';
       links = (
-        <View style={styles.center}>
+        <View style={styles.alignAuth}>
           <Button onPress={self.props.routes.LogIn} >Log In</Button>
         </View>
       );
     } else {
       tagline = 'Relevant';
       links = (
-        <View style={styles.center}>
+        <View style={styles.alignAuth}>
           <Button onPress={self.props.routes.LogIn} >Log In</Button>
           <Button onPress={self.props.routes.SignUp} >Sign Up</Button>
         </View>
@@ -92,24 +110,34 @@ class Auth extends Component {
     }
 
     return (
-      <View style={styles.container}>
-        <Text style={[styles.textCenter, styles.font20]}>
-          {tagline}
-        </Text>
-        <Text>
-          {currentRoute == 'Auth' ? message : null}
-        </Text>
-        {auth}
-        {links}
-        <View pointerEvents={'none'} style={styles.notificationContainer}>
-          <Notification />
-        </View>
+      <View style={[{height: self.state.visibleHeight}]}>
+        <ScrollView contentContainerStyle={styles.authScroll}>
+          <Text style={[styles.textCenter, styles.font20]}>
+            {tagline}
+          </Text>
+          <Text>
+            {currentRoute == 'Auth' ? message : null}
+          </Text>
+          {auth}
+          {links}
+          <View pointerEvents={'none'} style={styles.notificationContainer}>
+            <Notification />
+          </View>
+        </ScrollView>
       </View>
     );
   }
 }
 
 const localStyles = StyleSheet.create({
+  authScroll: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  alignAuth: {
+    alignItems: 'center'
+  }
 });
 
 var styles = {...localStyles, ...globalStyles};

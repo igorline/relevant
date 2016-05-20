@@ -11,7 +11,9 @@ import React, {
   Animated,
   ScrollView,
   TouchableWithoutFeedback,
-  TouchableHighlight
+  TouchableHighlight,
+  DeviceEventEmitter,
+  Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -41,12 +43,24 @@ class CreatePost extends Component {
       type: 'url',
       stage: 1,
       tagStage: 1,
-      postImage: null
+      postImage: null,
+      visibleHeight: Dimensions.get('window').height - 120
     }
+  }
+
+  keyboardWillShow (e) {
+    let newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 120
+    this.setState({visibleHeight: newSize})
+  }
+
+  keyboardWillHide (e) {
+    this.setState({visibleHeight: Dimensions.get('window').height - 120})
   }
 
   componentDidMount() {
     var self = this;
+      DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
+    DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
     this.props.actions.getParentTags().then(function(response) {
       if (response.status) {
         self.setState({parentTagsIndex: response.data});
@@ -340,35 +354,34 @@ class CreatePost extends Component {
       </View>)
 
     return (
-      <TouchableWithoutFeedback onPress={()=> dismissKeyboard()}>
-      <View style={styles.fullContainer}>
-      {typeEl}
+      <View style={[{height: self.state.visibleHeight}]}>
+        <ScrollView>
+          {typeEl}
+          {self.state.stage == 1 && self.state.type == 'url' ? <TextInput numberOfLines={1} style={[styles.font20, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.postLink} returnKeyType='done' /> : null}
+          {self.state.stage == 1 && self.state.type == 'image' && !self.state.postImage ? <Text onPress={self.chooseImage.bind(self)} style={[styles.padding10, styles.font20, styles.active, styles.lightweight]}>Upload an image</Text> : null}
+          {self.state.stage == 1 && self.state.type == 'image' && self.state.postImage ? <TouchableHighlight onPress={self.removeImage.bind(self)}><Image source={{uri: self.state.postImage}} style={styles.previewImage} /></TouchableHighlight> : null}
+           {self.state.stage == 1 && self.state.type != 'url' ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Title here...' multiline={true} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} returnKeyType='done' /> : null}
+          {self.state.stage == 1 ? <TextInput style={[styles.bodyInput, styles.font20]} placeholder='Body here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /> : null}
 
-        {self.state.stage == 1 && self.state.type == 'url' ? <TextInput numberOfLines={1} style={[styles.font20, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.postLink} returnKeyType='done' /> : null}
-        {self.state.stage == 1 && self.state.type == 'image' && !self.state.postImage ? <Text onPress={self.chooseImage.bind(self)} style={[styles.padding10, styles.font20, styles.active, styles.lightweight]}>Upload an image</Text> : null}
-        {self.state.stage == 1 && self.state.type == 'image' && self.state.postImage ? <TouchableHighlight onPress={self.removeImage.bind(self)}><Image source={{uri: self.state.postImage}} style={styles.previewImage} /></TouchableHighlight> : null}
-         {self.state.stage == 1 && self.state.type != 'url' ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Title here...' multiline={true} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} returnKeyType='done' /> : null}
-        {self.state.stage == 1 ? <TextInput style={[styles.bodyInput, styles.font20]} placeholder='Body here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /> : null}
+          {self.state.stage == 1 ? <View style={[styles.tagStringContainer, styles.padding10]}><Text style={styles.font20}>Tags: </Text>{tagsString}</View> : null}
+          {self.state.stage == 2 && self.state.tagStage == 1 && self.state.postTags.length ? <View style={styles.tagStringContainer}>{tagsString}</View> : null}
 
-        {self.state.stage == 1 ? <View style={[styles.tagStringContainer, styles.padding10]}><Text style={styles.font20}>Tags: </Text>{tagsString}</View> : null}
-        {self.state.stage == 2 && self.state.tagStage == 1 && self.state.postTags.length ? <View style={styles.tagStringContainer}>{tagsString}</View> : null}
+          {self.state.stage == 2 && self.state.tagStage == 1 ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Enter tags...' multiline={false} onChangeText={(postTags) => this.searchTags(postTags)} value={self.state.preTag} returnKeyType='done' /> : null}
 
-        {self.state.stage == 2 && self.state.tagStage == 1 ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Enter tags...' multiline={false} onChangeText={(postTags) => this.searchTags(postTags)} value={self.state.preTag} returnKeyType='done' /> : null}
+          {self.state.stage == 2 && self.state.tagStage == 1 ? <View>{autoTags}</View> : null}
 
-        {self.state.stage == 2 && self.state.tagStage == 1 ? <View>{autoTags}</View> : null}
+          {self.state.stage == 2 && self.state.tagStage == 1 && self.state.preTag ? <View style={[styles.padding10]}><Text onPress={self.createTag.bind(self)}>Create tag: {self.state.preTag}</Text></View> : null}
 
-        {self.state.stage == 2 && self.state.tagStage == 1 && self.state.preTag ? <View style={[styles.padding10]}><Text onPress={self.createTag.bind(self)}>Create tag: {self.state.preTag}</Text></View> : null}
+          {self.state.stage == 2 && self.state.tagStage == 2 ? <View style={styles.center}><Text style={[styles.font20, styles.padding10]}>Select a parent tag</Text>{parentTagsEl}</View> : null}
+           {self.state.stage == 1 && self.state.postTags.length ? <Button style={styles.nextButton} onPress={self.post.bind(self)}>Submit</Button> : null}
 
-        {self.state.stage == 2 && self.state.tagStage == 2 ? <View style={styles.center}><Text style={[styles.font20, styles.padding10]}>Select a parent tag</Text>{parentTagsEl}</View> : null}
-         {self.state.stage == 1 && self.state.postTags.length ? <Button style={styles.nextButton} onPress={self.post.bind(self)}>Submit</Button> : null}
-
-        {self.state.stage == 1 ? <Button style={styles.nextButton} onPress={self.next.bind(self)}>Add tags</Button> : null}
-        {self.state.stage == 2  ? <Button style={styles.nextButton} onPress={self.prev.bind(self)}>Cancel</Button> : null}
+          {self.state.stage == 1 ? <Button style={styles.nextButton} onPress={self.next.bind(self)}>Add tags</Button> : null}
+          {self.state.stage == 2  ? <Button style={styles.nextButton} onPress={self.prev.bind(self)}>Cancel</Button> : null}
+        </ScrollView>
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
       </View>
-      </TouchableWithoutFeedback>
     );
   }
 }
@@ -437,13 +450,6 @@ const localStyles = StyleSheet.create({
     width: fullWidth,
     height: fullHeight/3,
     padding: 10
-  },
-  linkInput: {
-    height: 50,
-    width: fullWidth,
-    padding: 10,
-    // borderBottomColor: 'black',
-    // borderBottomWidth: 1,
   },
   tagRow: {
     flexDirection: 'row',
