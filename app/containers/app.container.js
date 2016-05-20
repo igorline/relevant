@@ -26,6 +26,7 @@ import SinglePost from './singlePost.container';
 import User from './user.container';
 import ProfileOptions from './profileOptions.container';
 import Activity from './activity.container';
+import Comments from './comments.container';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as notifActions from '../actions/notif.actions';
@@ -51,8 +52,7 @@ class Application extends Component {
           <Route name="User" component={User} type="replace" hideNavBar={false} title="User" />
           <Route name="ProfileOptions" component={ProfileOptions} type="replace" hideNavBar={false} title="Options" />
           <Route name="Activity" component={Activity} type="replace" hideNavBar={false} title="Activity" />
-
-
+          <Route name="Comments" component={Comments} type="replace" hideNavBar={false} title="Comments" />
 
           {/*<Schema name="modal" sceneConfig={Animations.FlatFloatFromBottom} footer={Nav} navBar={Nav}/>*/}
           {/*<Schema name="default" sceneConfig={Animations.FlatFloatFromRight} footer={Footer} navBar={Nav}/>*/}

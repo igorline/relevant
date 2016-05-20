@@ -18,11 +18,19 @@ const globalStyles = StyleSheet.create({
   font20: {
     fontSize: 20
   },
+  font15: {
+    fontSize: 15
+  },
   textCenter: {
     textAlign: 'center'
   },
   textRight: {
     textAlign: 'right'
+  },
+   linkInput: {
+    height: 50,
+    width: fullWidth,
+    padding: 10,
   },
   font40: {
     fontSize: 40
@@ -134,6 +142,9 @@ const globalStyles = StyleSheet.create({
     flexDirection: 'row',
     width: fullWidth,
     padding: 20
+  },
+  flexRow: {
+    flexDirection: 'row',
   },
   button: {
     color: '#007aff'
