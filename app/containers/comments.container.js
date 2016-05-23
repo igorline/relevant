@@ -12,7 +12,8 @@ import React, {
   TouchableHighlight,
   LayoutAnimation,
   DeviceEventEmitter,
-  Dimensions
+  Dimensions,
+  ListView
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -33,9 +34,17 @@ import Shimmer from 'react-native-shimmer';
 class Comments extends Component {
   constructor (props, context) {
     super(props, context)
+    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       comment: null,
-      visibleHeight: Dimensions.get('window').height - 120
+      visibleHeight: Dimensions.get('window').height - 120,
+      elHeight: null,
+      // list: ListView,
+      // footerY: null,
+      // listHeight: null,
+      scrollView: ScrollView,
+      scrollToBottomY: null,
+      dataSource: ds.cloneWithRows([]),
     }
   }
 
@@ -55,8 +64,30 @@ class Comments extends Component {
     this.setState({visibleHeight: Dimensions.get('window').height - 120})
   }
 
-  componentWillReceiveProps(next) {
+  componentWillUpdate(next) {
     var self = this;
+    if (next.posts.comments != self.props.posts.comments) {
+      var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      self.setState({dataSource: ds.cloneWithRows(next.posts.comments)});
+    }
+  }
+
+  componentDidUpdate(prev) {
+    var self = this;
+    console.log(prev, 'prev')
+    if (!prev) return;
+    if (prev.posts.comments && prev.posts.comments != self.props.posts.comments) {
+      setTimeout(function() {
+        self.scrollToBottom();
+      }, 500);
+    }
+  }
+
+
+  scrollToBottom() {
+    var self = this;
+    var scrollDistance = self.state.scrollToBottomY - self.state.elHeight;
+    self.state.scrollView.scrollTo({x: 0, y: scrollDistance, animated: true});
   }
 
   createComment() {
@@ -69,27 +100,40 @@ class Comments extends Component {
     self.props.actions.createComment(self.props.auth.token, commentObj);
   }
 
+  renderRow(rowData) {
+    var self = this;
+      return (
+        <Comment styles={styles} {...self.props} comment={rowData} />
+      );
+  }
+
+
   render() {
     var self = this;
     var comments = [];
     var commentsEl = null;
+
     if (self.props.posts.comments) {
       comments = self.props.posts.comments;
-      commentsEl = comments.map(function(comment, i) {
-        return (<Comment styles={styles} {...self.props} comment={comment} />)
+      // commentsEl = <ListView ref={(list) => { self.state.list = list; }}renderScrollComponent={props => <ScrollView {...props} />} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} onLayout={(e)=>{self.state.listHeight = e.nativeEvent.layout.height}} renderFooter={() => { return <View onLayout={(e)=> {self.state.footerY = e.nativeEvent.layout.y; }}/> }} />
+      commentsEl = comments.map(function(comment) {
+        return( <Comment styles={styles} {...self.props} comment={comment} />);
       })
     }
 
     return (
       <View style={[{height: self.state.visibleHeight}]}>
-        <ScrollView contentContainerStyle={[]} >
+        <ScrollView ref={(scrollView) => { self.state.scrollView = scrollView; }} onContentSizeChange={(height, width)=>{console.log(width, 'width');self.state.scrollToBottomY = width;}} onLayout={(e)=>{self.state.elHeight = e.nativeEvent.layout.height}}>
           {commentsEl}
-        </ScrollView>
+          </ScrollView>
         <View style={styles.commentInputParent}>
           <TextInput style={[styles.commentInput, styles.font20]} placeholder='Enter comment...' multiline={false} onChangeText={(comment) => this.setState({"comment": comment})} value={self.state.comment} returnKeyType='done' />
           <TouchableHighlight style={styles.commentSubmit} onPress={self.createComment.bind(self)}>
             <Text style={[styles.font15, styles.active]}>Submit</Text>
           </TouchableHighlight>
+        </View>
+        <View pointerEvents={'none'} style={styles.notificationContainer}>
+          <Notification />
         </View>
       </View>
     );

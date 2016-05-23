@@ -80,7 +80,6 @@ class CreatePost extends Component {
     var link = self.state.postLink;
     var body = self.state.postBody;
     var title = self.state.postTitle;
-    // var description = self.state
     var tags = [];
     self.state.postTags.forEach(function(tag) {
       tags.push(tag._id);
@@ -273,44 +272,44 @@ class CreatePost extends Component {
     self.setState({stage: self.state.stage-1});
   }
 
-    chooseImage() {
-      var self = this;
-      console.log('chooseImage')
-      self.pickImage(function(err, data){
-        if(data){
-          utils.s3.toS3Advanced(data, self.props.auth.token).then(function(results){
-            if (results.success) {
-              self.setState({postImage: results.url});
-            } else {
-              console.log('err');
-            }
-          })
-        }
-      });
-    }
+  chooseImage() {
+    var self = this;
+    console.log('chooseImage')
+    self.pickImage(function(err, data){
+      if(data){
+        utils.s3.toS3Advanced(data, self.props.auth.token).then(function(results){
+          if (results.success) {
+            self.setState({postImage: results.url});
+          } else {
+            console.log('err');
+          }
+        })
+      }
+    });
+  }
 
 
-    pickImage(callback){
-      var self = this;
-      console.log(self, 'pickImage')
-        ImagePickerManager.showImagePicker(pickerOptions, (response) => {
-        if (response.didCancel) {
-          console.log('User cancelled image picker');
-          callback("cancelled");
-        }
-        else if (response.error) {
-          console.log('ImagePickerManager Error: ', response.error);
-          callback("error");
-        }
-        else if (response.customButton) {
-          console.log('User tapped custom button: ', response.customButton);
-          callback("error");
-        }
-        else {
-          callback(null, response.uri);
-        }
-      });
-    }
+  pickImage(callback){
+    var self = this;
+    console.log(self, 'pickImage')
+      ImagePickerManager.showImagePicker(pickerOptions, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+        callback("cancelled");
+      }
+      else if (response.error) {
+        console.log('ImagePickerManager Error: ', response.error);
+        callback("error");
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+        callback("error");
+      }
+      else {
+        callback(null, response.uri);
+      }
+    });
+  }
 
 
   render() {
@@ -359,7 +358,10 @@ class CreatePost extends Component {
           {typeEl}
           {self.state.stage == 1 && self.state.type == 'url' ? <TextInput numberOfLines={1} style={[styles.font20, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.postLink} returnKeyType='done' /> : null}
           {self.state.stage == 1 && self.state.type == 'image' && !self.state.postImage ? <Text onPress={self.chooseImage.bind(self)} style={[styles.padding10, styles.font20, styles.active, styles.lightweight]}>Upload an image</Text> : null}
-          {self.state.stage == 1 && self.state.type == 'image' && self.state.postImage ? <TouchableHighlight onPress={self.removeImage.bind(self)}><Image source={{uri: self.state.postImage}} style={styles.previewImage} /></TouchableHighlight> : null}
+          {self.state.stage == 1 && self.state.type == 'image' && self.state.postImage ? <View style={styles.previewImageContainer}>
+          <Image source={{uri: self.state.postImage}} style={styles.previewImage} />
+          <Text style={[styles.active, styles.font20]} onPress={self.removeImage.bind(self)}>Remove image</Text>
+          </View> : null}
            {self.state.stage == 1 && self.state.type != 'url' ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Title here...' multiline={true} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} returnKeyType='done' /> : null}
           {self.state.stage == 1 ? <TextInput style={[styles.bodyInput, styles.font20]} placeholder='Body here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /> : null}
 
@@ -414,10 +416,13 @@ const localStyles = StyleSheet.create({
   padding10: {
     padding: 10
   },
+  previewImageContainer: {
+    padding: 10
+  },
   previewImage: {
     height: 100,
     width: 100,
-    margin: 10
+    marginBottom: 10
   },
   list: {
     flex: 1,

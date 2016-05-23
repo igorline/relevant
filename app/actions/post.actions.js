@@ -225,6 +225,7 @@ export function getComments(postId) {
 
 export function createComment(token, commentObj) {
   return function(dispatch) {
+    console.log('sending comment')
     fetch(process.env.API_SERVER+'/api/comments?access_token='+token, {
       credentials: 'include',
       headers: {

@@ -98,32 +98,7 @@ class Read extends Component {
     var page = self.state.page;
     var taggedPosts = null;
 
-    console.log(self.props.posts.feed, 'feed')
-
     if (self.props.posts.feed) {
-
-      //self.props.posts.feed.forEach(function(post, i) {
-      //   post.tags.forEach(function(tag, j) {
-      //     var exists = false;
-      //     tags.forEach(function(innerTag, i) {
-      //       if (innerTag.tag._id == tag._id) {
-      //         innerTag.quantity += 1;
-      //         exists = true;
-      //       }
-      //     })
-      //     if (!exists) tags.push({tag: tag, quantity: 1});
-      //   })
-      // })
-
-      // tags.sort(function(a, b) {
-      //   return b.quantity - a.quantity
-      // });
-
-      // tagsEl = tags.map(function(data, i) {
-      //   return (
-      //     <Text style={styles.tagBox} onPress={self.setTag.bind(self, data.tag)} key={i}>{data.tag.name}</Text>
-      //     )
-      // })
 
       postsEl = (<ListView ref="listview" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} />)
     }
@@ -131,9 +106,6 @@ class Read extends Component {
 
     return (
       <View style={styles.fullContainer}>
-       {/*<View>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView>
-        </View>*/}
        {postsEl}
        <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />

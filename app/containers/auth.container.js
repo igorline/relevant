@@ -110,7 +110,7 @@ class Auth extends Component {
     }
 
     return (
-      <View style={[{height: self.state.visibleHeight}]}>
+      <View style={{height: isAuthenticated ? self.state.visibleHeight - 120 : self.state.visibleHeight}}>
         <ScrollView contentContainerStyle={styles.authScroll}>
           <Text style={[styles.textCenter, styles.font20]}>
             {tagline}
