@@ -42,14 +42,18 @@ class Comment extends Component {
         <View style={[styles.flexRow]}>
           <Image style={styles.commentAvatar} source={{uri: comment.user.image}} />
           <View>
-            <View style={styles.flexRow}>
-              <Text>{createdTime} ago &#8226; </Text>
-              <Text>{comment.user.name}</Text>
+            <View style={styles.commentHeaderTextContainer}>
+              <View style={[styles.flexRow]}>
+                <Text style={styles.font10}>{createdTime} ago &#8226; </Text>
+                <Text style={styles.font10}>{comment.user.name}</Text>
+              </View>
+              <Text style={styles.font10}>&#1071;<Text style={styles.active}>{comment.user.relevance.toFixed(0)}</Text></Text>
             </View>
-            <Text>&#1071;<Text style={styles.active}>{comment.user.relevance.toFixed(0)}</Text></Text>
+            <View style={styles.commentBody}>
+              <Text>{comment.text}</Text>
+            </View>
           </View>
         </View>
-        <Text>{comment.text}</Text>
       </View>
     );
   }
@@ -58,8 +62,19 @@ class Comment extends Component {
 export default Comment
 
 const localStyles = StyleSheet.create({
+  commentBody: {
+    // paddingTop: 10
+  },
+  commentHeaderTextContainer: {
+    height: 50,
+    justifyContent: 'center',
+    // borderWidth: 1,
+    // borderColor: 'blue'
+  },
   commentContainer: {
-    padding: 10
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray'
   },
   commentAvatar: {
     height: 50,

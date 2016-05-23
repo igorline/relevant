@@ -282,7 +282,7 @@ class Post extends Component {
 
     return (
         <View style={[styles.postContainer]}>
-        <TouchableHighlight underlayColor={'transparent'} onPress={self.openLink.bind(null, link)}>
+        <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(null, link) : null}>
           <View>
             <View style={styles.postHeader}>
               {postUserImageEl}
@@ -299,7 +299,7 @@ class Post extends Component {
             {imageEl}
           </View>
         </TouchableHighlight>
-          <TouchableHighlight underlayColor={'transparent'} onPress={self.openLink.bind(null, link)}>
+          <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(null, link) : null}>
             <View style={styles.postSection}>
               <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
               {link ? <Text style={styles.font10}>from {self.extractDomain(link)}</Text> : null}

@@ -94,6 +94,12 @@ class Activity extends Component {
     self.setState({view: num});
   }
 
+  goToPost(activity) {
+    var self = this;
+    self.props.actions.getActivePost(activity.post._id);
+    self.props.routes.SinglePost();
+  }
+
 
   render() {
     var self = this;
@@ -101,6 +107,7 @@ class Activity extends Component {
     var personalActivityEl = null;
     var generalActivityEl = null;
     var onlineEl = null;
+    console.log('activity self ', self.state)
 
     if (self.state.onlinePop.length) {
       onlineEl = self.state.onlinePop.map(function(user, i) {
@@ -116,11 +123,11 @@ class Activity extends Component {
            personalActivityEl.push(
             <View style={styles.singleActivity}>
               <Text>
-                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
+                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser)}>
                   {singleActivity.byUser.name}
                 </Text>
                 &nbsp;invested {'$'+singleActivity.amount} in your post
-                <Text onPress={self.props.actions.getActivePost.bind(self, singleActivity.post._id)} style={styles.active}>
+                <Text onPress={self.goToPost.bind(self, singleActivity)} style={styles.active}>
                   &nbsp;{singleActivity.post.title}
                 </Text>
               </Text>
@@ -130,10 +137,22 @@ class Activity extends Component {
           personalActivityEl.push(
             <View style={styles.singleActivity}>
               <Text>
-                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
+                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser)}>
                   {singleActivity.byUser.name}
                 </Text>
                 &nbsp;just visited your profile
+              </Text>
+            </View>
+          );
+         } else if (singleActivity.type == 'comment') {
+          personalActivityEl.push(
+            <View style={styles.singleActivity}>
+              <Text>
+                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser)}>
+                  {singleActivity.byUser.name}
+                </Text>
+                &nbsp;just commented your
+                <Text onPress={self.goToPost.bind(self, singleActivity)} style={styles.active}>&nbsp;{singleActivity.post.title}</Text>
               </Text>
             </View>
           );
