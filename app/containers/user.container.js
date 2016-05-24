@@ -75,7 +75,10 @@ class User extends Component {
           self.setState({online: true});
         }
       }
-      console.log(online, 'online')
+    }
+
+    sendThirst() {
+      var self = this;
     }
 
     render() {
@@ -130,6 +133,7 @@ class User extends Component {
         <View style={styles.fullContainer}>
         <ScrollView style={styles.fullContainer}>
           <ProfileComponent {...self.props} user={self.props.users.selectedUser} styles={styles} />
+          <Text style={styles.thirstyIcon} onPress={self.props.routes.Thirst} >👅💦</Text>
           <View>
             <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
             {postsEl}
@@ -165,6 +169,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(User)
 const localStyles = StyleSheet.create({
     postsHeader: {
     padding: 20
+  },
+  thirstyIcon: {
+    marginLeft: 20,
+    marginTop: 10,
+    marginBottom: 10
   },
   uploadAvatar: {
     height: 100,

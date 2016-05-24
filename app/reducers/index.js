@@ -4,6 +4,7 @@ import user from './user';
 import socket from './socket';
 import notif from './notif';
 import online from './online';
+import messages from './messages';
 var {Router, routerReducer, Route, Container, Animations, Schema} = require('react-native-redux-router');
 // import { reducer as formReducer} from 'redux-form';
 
@@ -14,6 +15,7 @@ export {
   user,
   socket,
   notif,
-  online
+  online,
+  messages
 };
 

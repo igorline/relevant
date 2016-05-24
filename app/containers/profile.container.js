@@ -60,12 +60,17 @@ class Profile extends Component {
       if (self.props.auth.user.posts.length > 0) {
         var posts = null;
 
-        // if (self.props.auth.user.posts.length > 10) {
-        //   posts = self.props.auth.user.posts.slice(0, 10);
-        // } else {
-          posts = self.props.auth.user.posts;
-          posts.reverse();
-        // }
+        posts = self.props.auth.user.posts;
+        // console.log(posts);
+
+        posts.sort(function(a, b) {
+          var aDate = new Date(a.createdAt);
+          var bDate = new Date(b.createdAt);
+          var aTime = aDate.getTime();
+          var bTime = bDate.getTime();
+
+          return bTime - aTime;
+        });
 
         postsEl = posts.map(function(post, i) {
           return (<Post key={i} post={post} {...self.props} styles={styles} />);

@@ -17,6 +17,8 @@ import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as userActions from '../actions/user.actions';
+import * as tagActions from '../actions/tag.actions';
+import * as messageActions from '../actions/message.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
@@ -26,11 +28,14 @@ import Notification from '../components/notification.component';
 class Read extends Component {
   constructor (props, context) {
     super(props, context)
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    var md = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       tag: null,
       enabled: true,
-      dataSource: ds.cloneWithRows([]),
+      feedData: fd.cloneWithRows([]),
+      messagesData: md.cloneWithRows([]),
+      view: 1
     }
   }
 
@@ -38,6 +43,7 @@ class Read extends Component {
     var self = this;
     this.props.actions.clearPosts();
     this.props.actions.getFeed(self.props.auth.token, 0, null);
+    this.props.actions.getMessages(self.props.auth.user._id);
   }
 
   componentDidUpdate() {
@@ -47,9 +53,12 @@ class Read extends Component {
   componentWillUpdate(next) {
     var self = this;
     if (next.posts.feed != self.props.posts.feed) {
-      console.log(next.posts.feed, 'feed')
-      var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      self.setState({dataSource: ds.cloneWithRows(next.posts.feed)});
+      var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      self.setState({feedData: fd.cloneWithRows(next.posts.feed)});
+    }
+    if (next.messages.index != self.props.messages.index) {
+      var md = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      self.setState({messagesData: md.cloneWithRows(next.messages.index)});
     }
   }
 
@@ -60,16 +69,36 @@ class Read extends Component {
     self.props.actions.getFeed(self.props.auth.token, 0, self.state.tag);
   }
 
-  renderRow(rowData) {
+  renderFeedRow(rowData) {
     var self = this;
       return (
         <Post post={rowData} {...self.props} styles={styles} />
       );
   }
 
+  setTagAndRoute(tag) {
+    var self = this;
+    self.props.actions.setTag(tag);
+    self.props.routes.Discover();
+  }
+
+  renderMessageRow(rowData) {
+    var self = this;
+    if (rowData.type == 'thirst') {
+      return (<View style={styles.message}>
+        <Text><Text style={styles.active} onPress={self.props.actions.getSelectedUser.bind(self, rowData.from._id, self.props.auth.token)}>{rowData.from.name}</Text> is thirsty for u 2 post about <Text onPress={self.setTagAndRoute.bind(self, rowData.tag)} style={styles.active}>#{rowData.tag.name}</Text></Text>
+        </View>
+      );
+    } else {
+      return (
+        <Text>Message</Text>
+      );
+    }
+  }
+
   onScroll() {
     var self = this;
-    if (self.refs.listview.scrollProperties.offset + self.refs.listview.scrollProperties.visibleLength >= self.refs.listview.scrollProperties.contentLength) {
+    if (self.refs.feedlist.scrollProperties.offset + self.refs.feedlist.scrollProperties.visibleLength >= self.refs.feedlist.scrollProperties.contentLength) {
       self.loadMore();
     }
   }
@@ -87,6 +116,24 @@ class Read extends Component {
     }
   }
 
+  changeView(view) {
+    var self = this;
+    self.setState({view: view});
+
+    // switch(view) {
+    //   case 1:
+    //     self.props.actions.getPosts(0, null);
+    //     break;
+
+    //   case 2:
+    //     self.props.actions.getPostsByRank(0, null);
+    //     break;
+
+    //   default:
+    //     return;
+    // }
+  }
+
   render() {
     var self = this;
     var postsEl = null;
@@ -97,17 +144,29 @@ class Read extends Component {
     var tagsEl = null;
     var page = self.state.page;
     var taggedPosts = null;
+    var messages = null;
+    var messagesEl = null;
+
+    console.log(self.props, 'read props')
 
     if (self.props.posts.feed) {
+      postsEl = (<ListView ref="feedlist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.feedData} renderRow={self.renderFeedRow.bind(self)} />)
+    }
 
-      postsEl = (<ListView ref="listview" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} />)
+    if (self.props.messages.index) {
+      messagesEl = (<ListView ref="messageslist" renderScrollComponent={props => <ScrollView {...props} />} dataSource={self.state.messagesData} renderRow={self.renderMessageRow.bind(self)} />)
     }
 
 
     return (
       <View style={styles.fullContainer}>
-       {postsEl}
-       <View pointerEvents={'none'} style={styles.notificationContainer}>
+        <View style={[styles.row, styles.categoryBar]}>
+          <Text onPress={self.changeView.bind(self, 1)} style={[styles.font20, styles.category, self.state.view == 1 ? styles.active : null]}>Posts</Text>
+          <Text onPress={self.changeView.bind(self, 2)} style={[styles.font20, styles.category, self.state.view == 2 ? styles.active : null]}>Inbox</Text>
+        </View>
+       {self.state.view == 1 ? postsEl : null}
+       {self.state.view == 2 ? messagesEl : null}
+        <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
       </View>
@@ -120,13 +179,14 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     user: state.user,
-    router: state.routerReducer
+    router: state.routerReducer,
+    messages: state.messages
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...userActions}, dispatch)
+    actions: bindActionCreators({...messageActions, ...investActions, ...authActions, ...postActions, ...userActions, ...tagActions}, dispatch)
   }
 }
 
@@ -135,9 +195,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(Read)
 const localStyles = StyleSheet.create({
   readContainer: {
   },
+  message: {
+    padding: 10
+  },
   readHeader: {
     marginBottom: 10
-  }
+  },
+  categoryBar: {
+  width: fullWidth,
+  paddingTop: 20,
+  paddingBottom: 20
+},
 });
 
 var styles = {...localStyles, ...globalStyles};
