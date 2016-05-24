@@ -22,4 +22,6 @@ export const UPDATE_FEED = 'UPDATE_FEED';
 export const SET_DISCOVER_TAGS = 'SET_DISCOVER_TAGS';
 export const CLEAR_POSTS = 'CLEAR_POSTS';
 export const SET_COMMENTS = 'SET_COMMENTS';
+export const SET_MESSAGES = 'SET_MESSAGES';
+export const SET_TAG = 'SET_TAG';
 

@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null};
+const initialState = {tag: null,pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null};
 
 const updatePostElement = (array, post) => {
   console.log('update posts', array);
@@ -29,6 +29,12 @@ export default function post(state = initialState, action) {
     case 'UPDATE_POSTS': {
        return Object.assign({}, state, {
         'index': action.payload
+      })
+    }
+
+     case types.SET_TAG: {
+       return Object.assign({}, state, {
+        'tag': action.payload
       })
     }
 

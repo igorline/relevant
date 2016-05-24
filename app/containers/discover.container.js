@@ -33,7 +33,7 @@ class Discover extends Component {
       view: 1,
       dataSource: ds.cloneWithRows([]),
       enabled: true,
-      tag: null
+      // tag: null
     }
   }
 
@@ -41,7 +41,7 @@ class Discover extends Component {
     this.props.actions.userIndex();
     this.props.actions.clearPosts();
     this.props.actions.getDiscoverTags();
-    this.props.actions.getPosts(0, null);
+    this.props.actions.getPosts(0, this.props.posts.tag);
   }
 
   componentWillUpdate(next) {
@@ -54,7 +54,8 @@ class Discover extends Component {
 
   changeView(view) {
     var self = this;
-    self.setState({view: view, tag: null});
+    self.setState({view: view});
+    self.props.actions.setTag(null);
     self.props.actions.clearPosts();
 
     switch(view) {
@@ -73,10 +74,11 @@ class Discover extends Component {
 
   setTag(tag) {
     var self = this;
-    self.setState({tag: tag})
+    //self.setState({tag: tag})
+    self.props.actions.setTag(tag);
     self.props.actions.clearPosts();
-    if (self.state.view == 1) self.props.actions.getPosts(0, self.state.tag);
-    if (self.state.view == 2) self.props.actions.getPostsByRank(0, self.state.tag);
+    if (self.state.view == 1) self.props.actions.getPosts(0, tag);
+    if (self.state.view == 2) self.props.actions.getPostsByRank(0, tag);
   }
 
   renderRow(rowData) {
@@ -100,10 +102,10 @@ class Discover extends Component {
     if (self.state.enabled) {
       self.setState({enabled: false});
       if (self.state.view == 1) {
-        self.props.actions.getPosts(length, self.state.tag);
+        self.props.actions.getPosts(length, self.props.posts.tag);
       }
       if (self.state.view == 2) {
-        self.props.actions.getPostsByRank(length, self.state.tag);
+        self.props.actions.getPostsByRank(length, self.props.posts.tag);
       }
       setTimeout(function() {
         self.setState({enabled: true})
@@ -189,10 +191,6 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Discover)
 
 const localStyles = StyleSheet.create({
-category: {
-  flex: 1,
-  textAlign: 'center'
-},
 padding20: {
   padding: 20
 },

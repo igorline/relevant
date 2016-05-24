@@ -33,6 +33,13 @@ export function setDiscoverTags(data) {
     };
 }
 
+export function setTag(tag) {
+    return {
+        type: types.SET_TAG,
+        payload: tag
+    };
+}
+
 export function searchTags(tag) {
     return function(dispatch) {
     return fetch(process.env.API_SERVER+'/api/tag/search?name='+tag, {

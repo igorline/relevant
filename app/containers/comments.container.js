@@ -86,6 +86,7 @@ class Comments extends Component {
 
   scrollToBottom() {
     var self = this;
+    if (self.props.posts.comments.length < 7) return;
     var scrollDistance = self.state.scrollToBottomY - self.state.elHeight;
     self.state.scrollView.scrollTo({x: 0, y: scrollDistance, animated: true});
   }
@@ -115,7 +116,6 @@ class Comments extends Component {
 
     if (self.props.posts.comments) {
       comments = self.props.posts.comments;
-      // commentsEl = <ListView ref={(list) => { self.state.list = list; }}renderScrollComponent={props => <ScrollView {...props} />} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} onLayout={(e)=>{self.state.listHeight = e.nativeEvent.layout.height}} renderFooter={() => { return <View onLayout={(e)=> {self.state.footerY = e.nativeEvent.layout.y; }}/> }} />
       commentsEl = comments.map(function(comment) {
         return( <Comment styles={styles} {...self.props} comment={comment} />);
       })
@@ -123,7 +123,7 @@ class Comments extends Component {
 
     return (
       <View style={[{height: self.state.visibleHeight}]}>
-        <ScrollView ref={(scrollView) => { self.state.scrollView = scrollView; }} onContentSizeChange={(height, width)=>{console.log(width, 'width');self.state.scrollToBottomY = width;}} onLayout={(e)=>{self.state.elHeight = e.nativeEvent.layout.height}}>
+        <ScrollView ref={(scrollView) => { self.state.scrollView = scrollView; }} onContentSizeChange={(height, width)=>{self.state.scrollToBottomY = width;}} onLayout={(e)=>{self.state.elHeight = e.nativeEvent.layout.height}}>
           {commentsEl}
           </ScrollView>
         <View style={styles.commentInputParent}>

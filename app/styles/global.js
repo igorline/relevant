@@ -27,11 +27,25 @@ const globalStyles = StyleSheet.create({
   textRight: {
     textAlign: 'right'
   },
+    tagRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+    tagX: {
+    height: 7.5,
+    width: 7.5,
+    marginRight: 3.5
+  },
+  category: {
+  flex: 1,
+  textAlign: 'center'
+},
    linkInput: {
     height: 50,
     width: fullWidth,
     padding: 10,
   },
+
   font40: {
     fontSize: 40
   },
@@ -91,6 +105,10 @@ const globalStyles = StyleSheet.create({
     marginLeft: 5,
     marginTop: 5,
     color: 'white'
+  },
+  tagStringContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   input: {
     borderColor: '#cccccc',

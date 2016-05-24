@@ -67,8 +67,6 @@ export function getPosts(skip, tag) {
   }
 }
 
-
-
 export function getPostsByRank(skip, tag) {
   var url = process.env.API_SERVER+'/api/post/rank?skip='+skip;
   if (tag) url = process.env.API_SERVER+'/api/post/rank?skip='+skip+'&tag='+tag._id;
@@ -97,17 +95,6 @@ export function setPosts(data) {
     return {
         type: types.SET_POSTS,
         payload: data
-    };
-}
-
-export function setPostsByRank(data) {
-    return {
-        type: types.SET_POSTS_BY_RANK,
-        payload: {
-          posts: data.posts,
-          pages: data.pages,
-          page: data.page
-        }
     };
 }
 
@@ -204,7 +191,7 @@ export function getActivePost(postId) {
 
 export function getComments(postId) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/comments?post='+postId, {
+    fetch(process.env.API_SERVER+'/api/comment?post='+postId, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
@@ -226,7 +213,7 @@ export function getComments(postId) {
 export function createComment(token, commentObj) {
   return function(dispatch) {
     console.log('sending comment')
-    fetch(process.env.API_SERVER+'/api/comments?access_token='+token, {
+    fetch(process.env.API_SERVER+'/api/comment?access_token='+token, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
