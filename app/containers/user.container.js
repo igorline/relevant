@@ -123,10 +123,10 @@ class User extends Component {
             return (<Post key={i} post={post} {...self.props} styles={styles} />)
           })
         } else {
-          postsEl = (<View><Text>0 Posts</Text></View>);
+          postsEl = (<View style={styles.padding10}><Text>0 Posts</Text></View>);
         }
       } else {
-        postsEl = (<View><Text>0 Posts</Text></View>);
+        postsEl = (<View style={styles.padding10}><Text>0 Posts</Text></View>);
       }
 
       return (

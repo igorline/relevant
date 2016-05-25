@@ -17,7 +17,6 @@ export function getFeed(token, skip, tag) {
       },
       method: 'GET',
     })
-    //.then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setFeed(responseJSON));
@@ -114,7 +113,7 @@ export function updatePost(post) {
 
 export function submitPost(post, token) {
   console.log(post, 'submitPost init');
-    return fetch(process.env.API_SERVER+'/api/post/create?access_token='+token, {
+    return fetch(process.env.API_SERVER+'/api/post?access_token='+token, {
         credentials: 'include',
         method: 'POST',
         headers: {
@@ -138,7 +137,7 @@ export function submitPost(post, token) {
 
 export function dispatchPost(post, token) {
    return function(dispatch) {
-    return fetch(process.env.API_SERVER+'/api/post/create?access_token='+token, {
+    return fetch(process.env.API_SERVER+'/api/post?access_token='+token, {
         credentials: 'include',
         method: 'POST',
         headers: {

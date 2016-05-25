@@ -33,13 +33,13 @@ class Discover extends Component {
       view: 1,
       dataSource: ds.cloneWithRows([]),
       enabled: true,
-      // tag: null
     }
   }
 
   componentDidMount() {
     this.props.actions.userIndex();
     this.props.actions.clearPosts();
+    this.props.actions.setComments(null);
     this.props.actions.getDiscoverTags();
     this.props.actions.getPosts(0, this.props.posts.tag);
   }

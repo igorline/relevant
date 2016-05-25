@@ -123,7 +123,7 @@ class Activity extends Component {
            personalActivityEl.push(
             <View style={styles.singleActivity}>
               <Text>
-                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser)}>
+                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
                   {singleActivity.byUser.name}
                 </Text>
                 &nbsp;invested {'$'+singleActivity.amount} in your post
@@ -140,7 +140,7 @@ class Activity extends Component {
                 <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser)}>
                   {singleActivity.byUser.name}
                 </Text>
-                &nbsp;just visited your profile
+                &nbsp;visited your profile
               </Text>
             </View>
           );
@@ -151,7 +151,7 @@ class Activity extends Component {
                 <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser)}>
                   {singleActivity.byUser.name}
                 </Text>
-                &nbsp;just commented your
+                &nbsp;commented on your post
                 <Text onPress={self.goToPost.bind(self, singleActivity)} style={styles.active}>&nbsp;{singleActivity.post.title}</Text>
               </Text>
             </View>

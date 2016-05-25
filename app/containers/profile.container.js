@@ -119,7 +119,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 const localStyles = StyleSheet.create({
   postsHeader: {
-    padding: 20
+    padding: 10
   },
   uploadAvatar: {
     height: 100,
@@ -132,13 +132,13 @@ const localStyles = StyleSheet.create({
     alignItems: 'flex-start',
     backgroundColor: 'white',
   },
-  column: {
-    flexDirection: 'column',
-    width: fullWidth,
-    paddingRight: 20,
-    paddingLeft: 20,
-    paddingBottom: 20,
-  },
+  // column: {
+  //   flexDirection: 'column',
+  //   width: fullWidth,
+  //   paddingRight: 20,
+  //   paddingLeft: 20,
+  //   paddingBottom: 20,
+  // },
   insideRow: {
     flex: 1,
   },
