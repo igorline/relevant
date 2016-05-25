@@ -121,7 +121,7 @@ class Thirst extends Component {
   render() {
     var self = this;
 
-    var autoTags = (<Text style={styles.padding10}>No suggested tags</Text>);
+    var autoTags = (<Text style={[]}>No suggested tags</Text>);
     if (self.state.autoTags.length) {
       autoTags = [];
       self.state.autoTags.forEach(function(tag, i) {
@@ -134,19 +134,19 @@ class Thirst extends Component {
     var tagEl = null;
 
      if (self.state.tag) {
-      tagEl = (<TouchableHighlight onPress={self.removeTag.bind(self)} style={styles.tagBox}><View style={styles.tagRow}><Image style={styles.tagX} source={require('../assets/images/x.png')} /><Text style={styles.white}>{self.state.tag.name}</Text></View></TouchableHighlight>)
+      tagEl = (<TouchableHighlight onPress={self.removeTag.bind(self)} style={styles.singleTagBox}><View style={styles.tagRow}><Image style={styles.tagX} source={require('../assets/images/x.png')} /><Text style={styles.white}>{self.state.tag.name}</Text></View></TouchableHighlight>)
     }
 
     return (
       <View style={[{height: self.state.visibleHeight}]}>
         <View style={{flex: 1}}>
           <View style={styles.chooseTagContainer}>
-          <TextInput style={[styles.thirstInput, styles.font15]} placeholder={'Enter the tag you want '+self.props.user.selectedUser.name+' to post about'} multiline={false} onChangeText={(tags) => this.searchTags(tags)} value={self.state.preTag} returnKeyType='done' />
-          {autoTags}
+          {!self.state.tag ? <View><TextInput style={[styles.thirstInput, styles.font15]} placeholder={'Enter the tag you want '+self.props.user.selectedUser.name+' to post about'} multiline={false} onChangeText={(tags) => this.searchTags(tags)} value={self.state.preTag} returnKeyType='done' />
+          {autoTags}</View> : null}
           <View style={styles.tagStringContainer}>{tagEl}</View>
           </View>
           <TouchableHighlight style={[styles.thirstSubmit]} onPress={self.sendThirst.bind(self)}>
-            <Text style={[styles.font15, styles.active]}>Submit</Text>
+            <Text style={[styles.font15, styles.active]}>Send</Text>
           </TouchableHighlight>
         </View>
         <View pointerEvents={'none'} style={styles.notificationContainer}>

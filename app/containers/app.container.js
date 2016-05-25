@@ -53,7 +53,7 @@ class Application extends Component {
           <Route name="ProfileOptions" component={ProfileOptions} type="replace" hideNavBar={false} title="Options" />
           <Route name="Activity" component={Activity} type="replace" hideNavBar={false} title="Activity" />
           <Route name="Comments" component={Comments} type="replace" hideNavBar={false} title="Comments" />
-          <Route name="Thirst" component={Thirst} type="replace" hideNavBar={false} title="Thirsty for more?" />
+          <Route name="Thirst" component={Thirst} type="replace" hideNavBar={false} title="Thirsty?" />
 
           {/*<Schema name="modal" sceneConfig={Animations.FlatFloatFromBottom} footer={Nav} navBar={Nav}/>*/}
           {/*<Schema name="default" sceneConfig={Animations.FlatFloatFromRight} footer={Footer} navBar={Nav}/>*/}

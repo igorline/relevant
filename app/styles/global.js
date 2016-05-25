@@ -106,6 +106,13 @@ const globalStyles = StyleSheet.create({
     marginTop: 5,
     color: 'white'
   },
+    singleTagBox: {
+    backgroundColor: 'lightgray',
+    padding: 5,
+    // marginLeft: 5,
+    // marginTop: 5,
+    color: 'white'
+  },
   tagStringContainer: {
     flexDirection: 'row',
     alignItems: 'center'
