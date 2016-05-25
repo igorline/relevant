@@ -37,7 +37,7 @@ function getActivity(userId) {
 
 export
 function createNotification(token, obj) {
-  return fetch(process.env.API_SERVER+'/api/notification/create?access_token='+token, {
+  return fetch(process.env.API_SERVER+'/api/notification?access_token='+token, {
     credentials: 'include',
     method: 'POST',
     headers: {

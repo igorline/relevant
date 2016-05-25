@@ -88,7 +88,7 @@ class ProfileComponent extends Component {
     }
 
     return (
-        <View style={styles.row}>
+        <View style={[styles.row, styles.fullWidthStyle, styles.padding10]}>
           <View>{userImageEl}</View>
           <View style={[styles.insideRow, styles.insidePadding]}>
            <View style={styles.onlineRow}><Text>{self.state.online ? 'Online' : 'Offline'}</Text><View style={self.state.online ? styles.onlineCirc : styles.offlineCirc}></View></View>

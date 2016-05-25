@@ -42,6 +42,7 @@ class Read extends Component {
   componentDidMount() {
     var self = this;
     this.props.actions.clearPosts();
+    this.props.actions.setComments(null);
     this.props.actions.getFeed(self.props.auth.token, 0, null);
     this.props.actions.getMessages(self.props.auth.user._id);
   }

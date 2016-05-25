@@ -63,7 +63,7 @@ const globalStyles = StyleSheet.create({
   tags: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 50,
+    // height: 40,
     flexWrap: 'nowrap',
     justifyContent: 'flex-start'
   },
@@ -158,14 +158,18 @@ const globalStyles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
+  },
+  fullWidthStyle: {
     width: fullWidth,
-    padding: 20
   },
   flexRow: {
     flexDirection: 'row',
   },
   button: {
     color: '#007aff'
+  },
+  padding10: {
+    padding: 10
   }
 });
 
