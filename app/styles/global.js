@@ -14,61 +14,76 @@ import React, {
 var fullWidth = Dimensions.get('window').width;
 var fullHeight = Dimensions.get('window').height;
 
-const globalStyles = StyleSheet.create({
-  font20: {
-    fontSize: 20
+const font = StyleSheet.create({
+  font10: {
+    fontSize: 10
   },
   font15: {
     fontSize: 15
   },
+  font20: {
+    fontSize: 20
+  },
+  font25: {
+    fontSize: 25
+  },
+  font40: {
+    fontSize: 40
+  },
+});
+
+const colors = StyleSheet.create({
+  green: {
+    color: 'green'
+  },
+  active: {
+    color: '#007aff'
+  },
+  white: {
+    color: 'white'
+  },
+  gray: {
+    color: 'gray'
+  }
+});
+
+const alignment = StyleSheet.create({
   textCenter: {
     textAlign: 'center'
   },
   textRight: {
     textAlign: 'right'
   },
-    tagRow: {
+  center: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+const layout = StyleSheet.create({
+  tagRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-    tagX: {
+  tagX: {
     height: 7.5,
     width: 7.5,
     marginRight: 3.5
   },
   category: {
-  flex: 1,
-  textAlign: 'center'
-},
-   linkInput: {
+    flex: 1,
+    textAlign: 'center'
+  },
+  linkInput: {
     height: 50,
     width: fullWidth,
     padding: 10,
   },
-
-  font40: {
-    fontSize: 40
-  },
-  font10: {
-    fontSize: 10
-  },
-  pagination: {
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    borderWidth: 1,
-    borderColor: 'red'
-  },
   tags: {
     flexDirection: 'row',
     alignItems: 'center',
-    // height: 40,
     flexWrap: 'nowrap',
     justifyContent: 'flex-start'
-  },
-  relevantSymbol: {
-    fontSize: 25
   },
   notificationContainer: {
     position: 'absolute',
@@ -109,8 +124,6 @@ const globalStyles = StyleSheet.create({
     singleTagBox: {
     backgroundColor: 'lightgray',
     padding: 5,
-    // marginLeft: 5,
-    // marginTop: 5,
     color: 'white'
   },
   tagStringContainer: {
@@ -131,10 +144,6 @@ const globalStyles = StyleSheet.create({
   margin: {
     margin: 10
   },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -147,18 +156,6 @@ const globalStyles = StyleSheet.create({
   contentContainer: {
     paddingVertical: 30,
     backgroundColor: 'white'
-  },
-  green: {
-    color: 'green'
-  },
-  font25: {
-    fontSize: 25
-  },
-  active: {
-    color: '#007aff'
-  },
-  white: {
-    color: 'white'
   },
   fullContainer: {
     flex: 1
@@ -180,6 +177,7 @@ const globalStyles = StyleSheet.create({
   }
 });
 
+const globalStyles = {...colors, ...font, ...alignment, ...layout};
 
 export {
   globalStyles,

@@ -59,7 +59,7 @@ class DiscoverUser extends Component {
             <Text>{user.name}</Text>
           </View>
           <View stlye={styles.rightDiscoverUser}>
-            <Text>&#1071;<Text style={styles.active}>{user.relevance.toFixed(2)}</Text></Text>
+            <Text>📈<Text style={styles.active}>{user.relevance.toFixed(2)}</Text></Text>
           </View>
         </View>
       </TouchableHighlight>

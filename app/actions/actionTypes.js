@@ -24,4 +24,6 @@ export const CLEAR_POSTS = 'CLEAR_POSTS';
 export const SET_COMMENTS = 'SET_COMMENTS';
 export const SET_MESSAGES = 'SET_MESSAGES';
 export const SET_TAG = 'SET_TAG';
+export const SET_ACTIVITY = 'SET_ACTIVITY';
+export const SET_COUNT = 'SET_COUNT';
 

@@ -92,8 +92,8 @@ class ProfileComponent extends Component {
           <View>{userImageEl}</View>
           <View style={[styles.insideRow, styles.insidePadding]}>
            <View style={styles.onlineRow}><Text>{self.state.online ? 'Online' : 'Offline'}</Text><View style={self.state.online ? styles.onlineCirc : styles.offlineCirc}></View></View>
-            <Text>&#1071;<Text style={styles.active}>{relevance}</Text></Text>
-            <Text>$<Text style={styles.active}>{balance}</Text></Text>
+            <Text>📈<Text style={styles.active}>{relevance}</Text></Text>
+            <Text>💵<Text style={styles.active}>{balance}</Text></Text>
             <Text>Followers <Text style={styles.active}>{followers ? followers.length : 0}</Text></Text>
             <Text>Following <Text style={styles.active}>{following ? following.length : 0}</Text></Text>
           </View>

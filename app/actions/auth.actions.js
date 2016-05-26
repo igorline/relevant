@@ -142,6 +142,7 @@ function createUser(user, redirect) {
 
 export
 function getUser(token, redirect) {
+    console.log('getuser', token, redirect)
     return dispatch => {
         if(!token){
             //console.log('no token')

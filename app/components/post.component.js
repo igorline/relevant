@@ -197,7 +197,7 @@ class Post extends Component {
       user = this.props.auth.user;
       if (user.balance) balance = user.balance;
     }
-    var styles = {...localStyles, ...postStyles};
+    var styles = {...localStyles, ...globalStyles};
     var pickerArray = [];
     var investOptions = [];
     var tags = null;
@@ -252,13 +252,13 @@ class Post extends Component {
     }
 
     var expandedInvest = self.state.expandedInvest;
-    var investButtonString = "Inve$t";
-    if (expandedInvest) investButtonString = "$ubmit";
+    var investButtonString = "💰";
+    if (expandedInvest) investButtonString = "Submit";
     var previouslyInvested = false;
     var toggleBool = null;
 
     if (self.state.invested) {
-      investButtonString = "Uninve$t";
+      investButtonString = "❌💰";
       previouslyInvested = true;
       toggleBool = false;
       functionBool = true;
@@ -276,9 +276,10 @@ class Post extends Component {
 
     if (!expandedInvest) {
       if (post.user._id != self.props.auth.user._id) {
-        investButtonEl = (<View style={styles.testShimmer}><Shimmer speed={50}><Text style={[styles.investButton]} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Text></Shimmer></View>);
+        investButtonEl = (<View style={styles.testShimmer}><Text style={[styles.investButton]} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Text></View>);
       }
     }
+
 
     return (
         <View style={[styles.postContainer]}>
@@ -288,11 +289,11 @@ class Post extends Component {
               {postUserImageEl}
               <View style={styles.postInfo}>
                 <View style={[styles.infoLeft, styles.innerInfo]}>
-                <Text style={[styles.white, styles.font10]}>Posted by {self.props.post.user.name} &#8226; &#1071;<Text style={styles.active}>{self.props.post.user.relevance.toFixed(2)}</Text></Text>
+                <Text style={[styles.white, styles.font10]}>Posted by {self.props.post.user.name} &#8226; 📈<Text style={styles.active}>{self.props.post.user.relevance.toFixed(2)}</Text></Text>
                  {tags ? tagsEl : null}
                  </View>
                  <View style={[styles.infoRight, styles.innerInfo]}>
-                   {self.state.passed ? <View><Text style={[styles.font10, styles.white, styles.textRight]}>&#1071;<Text style={styles.active}>{relevance.toFixed(2)}</Text></Text><Text style={[styles.font10, styles.white, styles.textRight]}>$<Text style={styles.active}>{value.toFixed(2)}</Text></Text></View> : <View style={[styles.countdown]}><Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} /><Text style={[styles.font10, styles.white, styles.textRight]}>Results in {self.state.timeUntilString}</Text></View>}
+                   {self.state.passed ? <View><Text style={[styles.font10, styles.white, styles.textRight]}>📈<Text style={styles.active}>{relevance.toFixed(2)}</Text></Text><Text style={[styles.font10, styles.white, styles.textRight]}>💵<Text style={styles.active}>{value.toFixed(2)}</Text></Text></View> : <View style={[styles.countdown]}><Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} /><Text style={[styles.font10, styles.white, styles.textRight]}>Results in {self.state.timeUntilString}</Text></View>}
                   </View>
                 </View>
               </View>
@@ -303,17 +304,17 @@ class Post extends Component {
             <View style={styles.postSection}>
               <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
               {link ? <Text style={styles.font10}>from {self.extractDomain(link)}</Text> : null}
-              {body ? <View style={styles.postBody}><Text numberOfLines={expanded ? 999999 : 2}>{body}</Text></View> : null}
+              {body ? <View style={[styles.postBody, styles.font15]}><Text numberOfLines={expanded ? 999999 : 2}>{body}</Text></View> : null}
             </View>
           </TouchableHighlight>
           <View style={styles.postSection}>
-          {!expanded ? <Text style={styles.font10} onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
+          {!expanded ? <Text style={styles.font15} onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
             {expanded ?
               <View>
-                <Text style={styles.font10} onPress={self.toggleExpanded.bind(this, false)}>Read less</Text>
+                <Text style={styles.font15} onPress={self.toggleExpanded.bind(this, false)}>Read less</Text>
               </View>
             : null}
-            <Text style={styles.font10} onPress={self.openComments.bind(self)}>{commentString}</Text>
+            <Text style={[styles.font15, styles.commentPad]} onPress={self.openComments.bind(self)}>{commentString}</Text>
             <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
               <PickerIOS
                 selectedValue={self.state.investAmount}
@@ -335,6 +336,12 @@ class Post extends Component {
 export default Post;
 
 const localStyles = StyleSheet.create({
+  commentPad: {
+    paddingTop: 10,
+    paddingBottom: 5,
+    paddingRight: 0,
+    paddingLeft: 0
+  },
   opacZero: {
     opacity: 0
   },

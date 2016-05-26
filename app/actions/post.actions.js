@@ -168,7 +168,7 @@ export function postError() {
 
 export function getActivePost(postId) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post?_id='+postId, {
+    return fetch(process.env.API_SERVER+'/api/post?_id='+postId, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
@@ -180,10 +180,11 @@ export function getActivePost(postId) {
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setActivePost(responseJSON[0]));
-      //dispatch(Actions.SinglePost);
+      return true;
     })
     .catch((error) => {
       console.log(error, 'error');
+      return false;
     });
   }
 }
