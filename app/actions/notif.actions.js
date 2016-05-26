@@ -16,9 +16,25 @@ export function setNotif(active, text, bool) {
     };
 }
 
+export function setActivity(data) {
+    return {
+        type: types.SET_ACTIVITY,
+        payload: data
+    };
+}
+
+export function setCount(data) {
+    return {
+        type: types.SET_COUNT,
+        payload: data
+    };
+}
+
+
 export
 function getActivity(userId) {
-  return fetch(process.env.API_SERVER+'/api/notification?forUser='+userId, {
+   return function(dispatch) {
+  fetch(process.env.API_SERVER+'/api/notification?forUser='+userId, {
     credentials: 'include',
     method: 'GET',
     headers: {
@@ -28,11 +44,25 @@ function getActivity(userId) {
   })
   .then((response) => response.json())
   .then((responseJSON) => {
-    return {'status': true, 'data': responseJSON}
+    dispatch(setActivity(responseJSON));
+    dispatch(countUnread(responseJSON));
   })
   .catch((error) => {
-    return {'status': false, 'data': error};
+    console.log('error', error)
   });
+}
+}
+
+function countUnread(data) {
+  return function(dispatch) {
+  var num = 0;
+  data.forEach(function(activity) {
+    if (!activity.read) num += 1;
+  })
+  if (num > 0) {
+    dispatch(setCount(num));
+  }
+}
 }
 
 export

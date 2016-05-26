@@ -76,10 +76,10 @@ class Profile extends Component {
           return (<Post key={i} post={post} {...self.props} styles={styles} />);
         });
       } else {
-         postsEl = (<View><Text>0 Posts</Text></View>)
+         postsEl = (<View style={styles.padding10}><Text>No posts yet 😔</Text></View>)
        }
     } else {
-      postsEl = (<View><Text>0 Posts</Text></View>)
+      postsEl = (<View style={styles.padding10}><Text>No posts yet 😔</Text></View>)
     }
 
     return (
@@ -132,13 +132,6 @@ const localStyles = StyleSheet.create({
     alignItems: 'flex-start',
     backgroundColor: 'white',
   },
-  // column: {
-  //   flexDirection: 'column',
-  //   width: fullWidth,
-  //   paddingRight: 20,
-  //   paddingLeft: 20,
-  //   paddingBottom: 20,
-  // },
   insideRow: {
     flex: 1,
   },

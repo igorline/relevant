@@ -15,14 +15,34 @@ import * as authActions from '../actions/auth.actions';
 import { globalStyles } from '../styles/global';
 
 class Footer extends Component {
+  constructor (props, context) {
+    super(props, context)
+    this.state = {
+      count: null
+    }
+  }
+
   componentDidMount() {
   }
+
+  componentWillReceiveProps(next) {
+    var self = this;
+    // if (!self.props.notif.activity && next.notif.activity) {
+    //   self.countNotifications(next.notif.activity);
+    // }
+    // if (self.props.notif.activity != next.notif.activity) {
+    //   self.countNotifications(next.notif.activity);
+    // }
+  }
+
+
 
   render() {
     var self = this;
     var currentRoute = self.props.router.currentRoute;
     var authenticated = this.props.auth.isAuthenticated;
     var footerEl = null;
+
     if (authenticated) {
       footerEl = ( <View style={styles.footer}>
         <View style={styles.footerItem}>
@@ -37,8 +57,9 @@ class Footer extends Component {
         <View style={styles.footerItem}>
           <Button style={currentRoute == 'Profile' ? styles.active : styles.footerLink} onPress={self.props.routes.Profile}>Profile</Button>
         </View>
-        <View style={styles.footerItem}>
+        <View style={[styles.footerItem, styles.activityRow]}>
           <Button style={currentRoute == 'Activity' ? styles.active : styles.footerLink} onPress={self.props.routes.Activity}>Activity</Button>
+          {self.props.notif.count ? <Text style={styles.notifCount}>{self.props.notif.count}</Text> : null}
         </View>
       </View>);
     }
@@ -51,7 +72,8 @@ class Footer extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    router: state.routerReducer
+    router: state.routerReducer,
+    notif: state.notif
    }
 }
 
@@ -64,6 +86,14 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Footer)
 
 const localStyles = StyleSheet.create({
+  notifCount: {
+    color: 'red',
+    marginLeft: 5
+  },
+  activityRow: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   footer: {
     height: 60,
     flexDirection: 'row',

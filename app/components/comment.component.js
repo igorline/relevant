@@ -47,7 +47,7 @@ class Comment extends Component {
                 <Text style={styles.font10}>{createdTime} ago &#8226; </Text>
                 <Text style={styles.font10}>{comment.user.name}</Text>
               </View>
-              <Text style={styles.font10}>&#1071;<Text style={styles.active}>{comment.user.relevance.toFixed(0)}</Text></Text>
+              <Text style={styles.font10}>📈<Text style={styles.active}>{comment.user.relevance.toFixed(0)}</Text></Text>
             </View>
             <View style={styles.commentBody}>
               <Text>{comment.text}</Text>

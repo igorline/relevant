@@ -45,7 +45,7 @@ class Auth extends Component {
   }
 
   componentDidMount() {
-    this.props.actions.getUser();
+    this.props.actions.getUser(null, true);
     DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
     DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
   }

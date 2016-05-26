@@ -23,15 +23,16 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import * as investActions from '../actions/invest.actions';
 import * as notifActions from '../actions/notif.actions';
+import * as tagActions from '../actions/tag.actions';
 import Notification from '../components/notification.component';
 import DiscoverUser from '../components/discoverUser.component';
 import Shimmer from 'react-native-shimmer';
+var moment = require('moment');
 
 class Activity extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      personalActivity: null,
       view: 1,
       online: [],
       onlinePop: []
@@ -40,9 +41,6 @@ class Activity extends Component {
 
   componentDidMount() {
     var self = this;
-    notifActions.getActivity(this.props.auth.user._id).then(function(data) {
-      self.setState({personalActivity: data.data});
-    });
     self.populateUsers(self.props.online);
   }
 
@@ -58,6 +56,12 @@ class Activity extends Component {
   componentWillReceiveProps(next) {
     var self = this;
     if(next.online != self.props.online) self.populateUsers(next.online);
+  }
+
+  setTagAndRoute(tag) {
+    var self = this;
+    self.props.actions.setTag(tag);
+    self.props.routes.Discover();
   }
 
   populateUsers(users) {
@@ -96,8 +100,9 @@ class Activity extends Component {
 
   goToPost(activity) {
     var self = this;
-    self.props.actions.getActivePost(activity.post._id);
-    self.props.routes.SinglePost();
+    self.props.actions.getActivePost(activity.post._id).then(function() {
+      self.props.routes.SinglePost();
+    })
   }
 
 
@@ -107,7 +112,6 @@ class Activity extends Component {
     var personalActivityEl = null;
     var generalActivityEl = null;
     var onlineEl = null;
-    console.log('activity self ', self.state)
 
     if (self.state.onlinePop.length) {
       onlineEl = self.state.onlinePop.map(function(user, i) {
@@ -115,10 +119,12 @@ class Activity extends Component {
       });
     }
 
-    if (self.state.personalActivity) {
-      personalActivity = self.state.personalActivity;
+    if (self.props.notif.activity) {
+      personalActivity = self.props.notif.activity;
       personalActivityEl = [];
       personalActivity.forEach(function(singleActivity) {
+        var activityTime = moment(singleActivity.createdAt);
+        var fromNow = activityTime.fromNow();
         if (singleActivity.type == 'investment') {
            personalActivityEl.push(
             <View style={styles.singleActivity}>
@@ -131,37 +137,51 @@ class Activity extends Component {
                   &nbsp;{singleActivity.post.title}
                 </Text>
               </Text>
+              <Text style={styles.gray}>{fromNow}</Text>
             </View>
           );
          } else if (singleActivity.type == 'profile') {
           personalActivityEl.push(
             <View style={styles.singleActivity}>
               <Text>
-                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser)}>
+                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
                   {singleActivity.byUser.name}
                 </Text>
                 &nbsp;visited your profile
               </Text>
+              <Text style={styles.gray}>{fromNow}</Text>
             </View>
           );
          } else if (singleActivity.type == 'comment') {
           personalActivityEl.push(
             <View style={styles.singleActivity}>
-              <Text>
-                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser)}>
+              <View>
+                <Text><Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
                   {singleActivity.byUser.name}
+                </Text>&nbsp;commented on your post</Text>
+                <Text onPress={self.goToPost.bind(self, singleActivity)} numberOfLines={1} style={[styles.active]}>{singleActivity.post.title}</Text>
+              </View>
+              <Text style={styles.gray}>{fromNow}</Text>
+            </View>
+          );
+        } else if (singleActivity.type == 'thirst') {
+          personalActivityEl.push(
+            <View style={styles.singleActivity}>
+              <View>
+                <Text><Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>&nbsp;is thirsty 4 u to post about
                 </Text>
-                &nbsp;commented on your post
-                <Text onPress={self.goToPost.bind(self, singleActivity)} style={styles.active}>&nbsp;{singleActivity.post.title}</Text>
-              </Text>
+                <Text style={[styles.active]} onPress={self.setTagAndRoute.bind(self, singleActivity.tag)}>#{singleActivity.tag.name}</Text>
+              </View>
+              <Text style={styles.gray}>{fromNow}</Text>
             </View>
           );
          } else {
             personalActivityEl.push(
               <View style={styles.singleActivity}>
-                <Text style={styles.singleActivity}>
-                Generic notification from {singleActivity.byUser.name}
+                <Text>
+                Notification from {singleActivity.byUser.name}
                 </Text>
+                <Text style={styles.gray}>{fromNow}</Text>
               </View>
             );
          }
@@ -194,13 +214,14 @@ function mapStateToProps(state) {
     posts: state.posts,
     user: state.user,
     router: state.routerReducer,
-    online: state.online
+    online: state.online,
+    notif: state.notif
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...userActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...userActions, ...tagActions}, dispatch)
   }
 }
 
@@ -211,7 +232,9 @@ singleActivity: {
   padding: 10,
   borderBottomWidth: 1,
   borderBottomColor: 'black',
-  width: fullWidth
+  width: fullWidth,
+  justifyContent: 'space-between',
+  flexDirection: 'row'
 },
 activityHeader: {
   flexDirection: 'row',

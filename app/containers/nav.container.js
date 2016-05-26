@@ -17,6 +17,7 @@ import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as onlineActions from '../actions/online.actions';
+import * as notifActions from '../actions/notif.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class Nav extends Component {
@@ -35,8 +36,8 @@ class Nav extends Component {
   componentWillReceiveProps(next) {
     var self = this;
     if (!self.props.auth.user && next.auth.user) {
-      console.log('auth to socket')
-      self.props.actions.userToSocket(next.auth.user)
+      self.props.actions.userToSocket(next.auth.user);
+      self.props.actions.getActivity(next.auth.user._id);
     }
   }
 
@@ -49,10 +50,10 @@ class Nav extends Component {
     var self = this;
     if (currentAppState == 'active' && self.props.auth.user) {
         console.log('send user to socket', self.props.auth.user.name);
-        self.props.actions.userToSocket(self.props.auth.user)
+        self.props.actions.userToSocket(self.props.auth.user);
+        self.props.actions.getActivity(self.props.auth.user._id);
     }
   }
-
 
   render() {
     var self = this;
@@ -74,7 +75,7 @@ class Nav extends Component {
 
     if (self.props.auth.user) {
       statsEl = (<View style={styles.stats}>
-          <Text style={styles.statsTxt}>&#1071;<Text style={styles.active}>{relevance}</Text>  $<Text style={styles.active}>{balance}</Text></Text>
+          <Text style={styles.statsTxt}>📈<Text style={styles.active}>{relevance}</Text>  💵<Text style={styles.active}>{balance}</Text></Text>
         </View>
       )
     }
@@ -107,7 +108,7 @@ class Nav extends Component {
           <Text style={[styles.navLink, styles.maxWidth]} numberOfLines={1}>{title}</Text>
         </View>
          {route == 'Profile' ? <View style={styles.gear}><TouchableHighlight onPress={self.props.routes.ProfileOptions} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View> : null}
-         {statsEl}
+         {route != 'SinglePost' ? statsEl : null}
       </View>);
     } else {
       StatusBarIOS.setStyle('default');
@@ -127,13 +128,14 @@ function mapStateToProps(state) {
     posts: state.posts,
     users: state.user,
     router: state.routerReducer,
-    online: state.online
+    online: state.online,
+    notif: state.notif
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions }, dispatch)
+    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions, ...notifActions }, dispatch)
   }
 }
 
