@@ -236,7 +236,7 @@ export function createComment(token, commentObj) {
 
 export function invest(token, amount, post, investingUser){
   return dispatch => {
-    return fetch( apiServer + 'invest/create?access_token='+token, {
+    return fetch( apiServer + 'invest?access_token='+token, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -263,7 +263,7 @@ export function invest(token, amount, post, investingUser){
 
 export function createSubscription(token, post) {
   return dispatch => {
-    fetch( apiServer + 'subscription/create?access_token='+token, {
+    fetch( apiServer + 'subscription?access_token='+token, {
       credentials: 'include',
       method: 'POST',
       headers: {

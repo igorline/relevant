@@ -128,16 +128,20 @@ class Activity extends Component {
         if (singleActivity.type == 'investment') {
            personalActivityEl.push(
             <View style={styles.singleActivity}>
-              <Text>
-                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
-                  {singleActivity.byUser.name}
+              <View style={styles.activityLeft}>
+                <Text>
+                  <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
+                    {singleActivity.byUser.name}
+                  </Text>
+                  &nbsp;invested {'$'+singleActivity.amount} in your post
                 </Text>
-                &nbsp;invested {'$'+singleActivity.amount} in your post
-                <Text onPress={self.goToPost.bind(self, singleActivity)} style={styles.active}>
-                  &nbsp;{singleActivity.post.title}
+                <Text numberOfLines={1} onPress={self.goToPost.bind(self, singleActivity)} style={styles.active}>
+                  {singleActivity.post.title}
                 </Text>
-              </Text>
-              <Text style={styles.gray}>{fromNow}</Text>
+              </View>
+              <View style={styles.activityRight}>
+                <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
+              </View>
             </View>
           );
          } else if (singleActivity.type == 'profile') {
@@ -155,24 +159,31 @@ class Activity extends Component {
          } else if (singleActivity.type == 'comment') {
           personalActivityEl.push(
             <View style={styles.singleActivity}>
-              <View>
-                <Text><Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
-                  {singleActivity.byUser.name}
-                </Text>&nbsp;commented on your post</Text>
+              <View style={styles.activityLeft}>
+                <Text>
+                  <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
+                    {singleActivity.byUser.name}
+                  </Text>
+                  &nbsp;commented on your post
+                </Text>
                 <Text onPress={self.goToPost.bind(self, singleActivity)} numberOfLines={1} style={[styles.active]}>{singleActivity.post.title}</Text>
               </View>
-              <Text style={styles.gray}>{fromNow}</Text>
+              <View style={styles.activityRight}>
+                <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
+              </View>
             </View>
           );
         } else if (singleActivity.type == 'thirst') {
           personalActivityEl.push(
             <View style={styles.singleActivity}>
-              <View>
+              <View style={styles.activityLeft}>
                 <Text><Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>&nbsp;is thirsty 4 u to post about
                 </Text>
                 <Text style={[styles.active]} onPress={self.setTagAndRoute.bind(self, singleActivity.tag)}>#{singleActivity.tag.name}</Text>
               </View>
-              <Text style={styles.gray}>{fromNow}</Text>
+              <View style={styles.activityRight}>
+              <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
+              </View>
             </View>
           );
          } else {
@@ -228,13 +239,21 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Activity)
 
 const localStyles = StyleSheet.create({
+activityRight: {
+  flex: 0.25,
+},
+activityLeft: {
+  flex: 0.75,
+},
 singleActivity: {
   padding: 10,
   borderBottomWidth: 1,
   borderBottomColor: 'black',
   width: fullWidth,
   justifyContent: 'space-between',
-  flexDirection: 'row'
+  flexDirection: 'row',
+  alignItems: 'center',
+  flex: 1,
 },
 activityHeader: {
   flexDirection: 'row',
