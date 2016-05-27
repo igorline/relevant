@@ -42,6 +42,7 @@ class Activity extends Component {
   componentDidMount() {
     var self = this;
     self.populateUsers(self.props.online);
+    self.props.actions.markRead(self.props.auth.user._id);
   }
 
   setSelected(id) {
@@ -232,7 +233,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...userActions, ...tagActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...userActions, ...tagActions, ...notifActions}, dispatch)
   }
 }
 

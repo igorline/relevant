@@ -23,11 +23,11 @@ export function destroyInvestment(token, amount, post, investingUser){
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      return {message: responseJSON, true};
+      return true;
     })
     .catch((error) => {
       console.log(error);
-      return {message: error, false}
+      return false;
     });
     }
   }

@@ -3,6 +3,18 @@ import * as types from '../actions/actionTypes';
 const initialState = {bool: false, text: null, active: false, activity: null, count: null};
 const REPLACE = 'REPLACE';
 
+const countUnread = (notifications) => {
+    var num = 0;
+    notifications.forEach(function(activity) {
+      if (!activity.read) num += 1;
+    })
+    if (num > 0) {
+      return num;
+    } else {
+      return null;
+    }
+}
+
 export default function auth(state = initialState, action) {
   switch (action.type) {
 
@@ -16,13 +28,8 @@ export default function auth(state = initialState, action) {
 
     case 'SET_ACTIVITY': {
       return Object.assign({}, state, {
-        'activity': action.payload
-      })
-    }
-
-    case 'SET_COUNT': {
-      return Object.assign({}, state, {
-        'count': action.payload
+        'activity': action.payload,
+        'count': countUnread(action.payload)
       })
     }
 

@@ -251,6 +251,7 @@ export function invest(token, amount, post, investingUser){
     })
     .then((response) => response.json())
     .then((responseJSON) => {
+      console.log('response', responseJSON)
       dispatch({type: 'server/notification', payload: {user: post.user._id, message: investingUser.name+' just invested in your post'}});
       return true;
     })

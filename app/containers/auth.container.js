@@ -70,60 +70,54 @@ class Auth extends Component {
       }
     }
 
-    if(isAuthenticated){
+    if (isAuthenticated){
       auth = (
         <View style={styles.alignAuth}>
           <Text style={styles.font20}>{user ? user.name : null}</Text>
+          <Text>{message}</Text>
         </View>
       );
     }
-    else if (currentRoute == 'LogIn') {
+
+   if (currentRoute == 'LogIn') {
       auth = (
         <View style={styles.alignAuth}>
+        <Text style={[styles.textCenter, styles.font20]}>
+            Stay Relevant {'\n'} Log in
+          </Text>
           <Login { ...this.props } styles={styles} />
+           <Button onPress={self.props.routes.Auth} >Back</Button>
         </View>
       );
-      links = (
-        <View style={styles.alignAuth}>
-          <Button onPress={self.props.routes.SignUp} >Sign Up</Button>
-        </View>
-      );
-      tagline = 'Stay Relevant \n Log in'
-    } else if (currentRoute == 'SignUp') {
+    }
+
+    if (currentRoute == 'SignUp') {
       auth = (<View style={styles.alignAuth}>
+        <Text style={[styles.textCenter, styles.font20]}>
+            Get Relevant {'\n'} Sign up
+          </Text>
         <SignUp {...this.props} styles={styles} />
+        <Button onPress={self.props.routes.Auth} >Back</Button>
       </View>);
-      tagline = 'Get Relevant \n Sign up';
-      links = (
+    }
+
+    if (currentRoute == 'Auth') {
+      auth = (
         <View style={styles.alignAuth}>
-          <Button onPress={self.props.routes.LogIn} >Log In</Button>
-        </View>
-      );
-    } else {
-      tagline = 'Relevant';
-      links = (
-        <View style={styles.alignAuth}>
+          <Text style={[styles.textCenter, styles.font20]}>Relevant</Text>
+          <Text>{message}</Text>
           <Button onPress={self.props.routes.LogIn} >Log In</Button>
           <Button onPress={self.props.routes.SignUp} >Sign Up</Button>
         </View>
-        );
+      )
     }
 
     return (
-      <View style={{height: isAuthenticated ? self.state.visibleHeight - 120 : self.state.visibleHeight}}>
-        <ScrollView contentContainerStyle={styles.authScroll}>
-          <Text style={[styles.textCenter, styles.font20]}>
-            {tagline}
-          </Text>
-          <Text>
-            {currentRoute == 'Auth' ? message : null}
-          </Text>
-          {auth}
-          {links}
-          <View pointerEvents={'none'} style={styles.notificationContainer}>
-            <Notification />
-          </View>
-        </ScrollView>
+      <View style={[{height: isAuthenticated ? self.state.visibleHeight - 120 : self.state.visibleHeight}]}>
+        {auth}
+        <View pointerEvents={'none'} style={styles.notificationContainer}>
+          <Notification />
+        </View>
       </View>
     );
   }
@@ -136,7 +130,9 @@ const localStyles = StyleSheet.create({
     justifyContent: 'center'
   },
   alignAuth: {
-    alignItems: 'center'
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
   }
 });
 

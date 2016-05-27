@@ -149,7 +149,7 @@ class ProfileOptions extends Component {
         {changeNameEl}
         {userImageEl}
         <Button onPress={self.chooseImage.bind(self)}>Update profile picture</Button>
-        <Button onPress={self.props.routes.Import}>Find users from contacts</Button>
+        {/*<Button onPress={self.props.routes.Import}>Find users from contacts</Button>*/}
         <Button onPress={self.logoutRedirect.bind(self)}>Logout</Button>
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />

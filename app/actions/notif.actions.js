@@ -33,36 +33,44 @@ export function setCount(data) {
 
 export
 function getActivity(userId) {
-   return function(dispatch) {
-  fetch(process.env.API_SERVER+'/api/notification?forUser='+userId, {
-    credentials: 'include',
-    method: 'GET',
-    headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-    },
-  })
-  .then((response) => response.json())
-  .then((responseJSON) => {
-    dispatch(setActivity(responseJSON));
-    dispatch(countUnread(responseJSON));
-  })
-  .catch((error) => {
-    console.log('error', error)
-  });
-}
-}
-
-function countUnread(data) {
   return function(dispatch) {
-  var num = 0;
-  data.forEach(function(activity) {
-    if (!activity.read) num += 1;
-  })
-  if (num > 0) {
-    dispatch(setCount(num));
+    fetch(process.env.API_SERVER+'/api/notification?forUser='+userId, {
+      credentials: 'include',
+      method: 'GET',
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+      },
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      dispatch(setActivity(responseJSON));
+    })
+    .catch((error) => {
+      console.log('error', error)
+    });
   }
 }
+
+export
+function markRead(userId) {
+  return function(dispatch) {
+    fetch(process.env.API_SERVER+'/api/notification?forUser='+userId, {
+      credentials: 'include',
+      method: 'PUT',
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+      },
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      dispatch(getActivity(userId));
+    })
+    .catch((error) => {
+      console.log('error', error)
+    });
+  }
 }
 
 export

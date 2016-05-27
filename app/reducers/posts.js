@@ -3,17 +3,18 @@ import * as types from '../actions/actionTypes';
 const initialState = {tag: null,pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null};
 
 const updatePostElement = (array, post) => {
-  console.log('update posts', array);
   if (!array) return;
   var index = array.findIndex(function(el) {
     return el._id == post._id;
   });
-  if (!index) return array.slice(0);
-  return [
+
+  if (index < 0) return array.slice(0);
+  var newArr = [
     ...array.slice(0, index),
     post,
     ...array.slice(index + 1)
   ];
+  return newArr;
 }
 
 export default function post(state = initialState, action) {

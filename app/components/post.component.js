@@ -54,7 +54,7 @@ class Post extends Component {
 
   checkInvestments(investments) {
     var self = this;
-    console.log('check', investments)
+    console.log('checking!!!!!!!!', investments)
     var invested = false;
     if (investments) {
       if (investments.length > 0) {
@@ -94,7 +94,9 @@ class Post extends Component {
   }
 
   componentWillUpdate(nextProps) {
+    var self = this;
     if (this.props.post.investments != nextProps.post.investments) {
+      console.log('dif')
       this.checkInvestments(nextProps.post.investments);
     }
   }
@@ -146,15 +148,11 @@ class Post extends Component {
     if (functionBool) {
       if (!self.state.invested) {
         console.log('create investment');
-        this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function(){
-          self.checkInvestments(self.props.post.investments);
-        })
+        this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user)
         this.props.actions.createSubscription(this.props.auth.token, self.props.post);
       } else {
         console.log('destroy investment')
-        this.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function(){
-           self.checkInvestments(self.props.post.investments);
-        })
+        this.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user)
       }
 
     }
