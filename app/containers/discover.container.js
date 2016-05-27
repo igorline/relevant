@@ -44,7 +44,7 @@ class Discover extends Component {
     this.props.actions.getPosts(0, this.props.posts.tag);
   }
 
-  componentWillUpdate(next) {
+  componentWillReceiveProps(next) {
     var self = this;
     if (next.posts.index != self.props.posts.index) {
       var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -74,7 +74,6 @@ class Discover extends Component {
 
   setTag(tag) {
     var self = this;
-    //self.setState({tag: tag})
     self.props.actions.setTag(tag);
     self.props.actions.clearPosts();
     if (self.state.view == 1) self.props.actions.getPosts(0, tag);
@@ -159,12 +158,8 @@ class Discover extends Component {
           <Text onPress={self.changeView.bind(self, 2)} style={[styles.font20, styles.category, view == 2? styles.active : null]}>Top</Text>
           <Text onPress={self.changeView.bind(self, 3)} style={[styles.font20, styles.category, view == 3? styles.active : null]}>People</Text>
         </View>
-        {/*<View style={styles.fullContainer}>*/}
-          {/*<View>*/}
-            {view != 3 ? postsEl : null}
-            {view == 3 ? usersEl : null}
-          {/*</View>*/}
-      {/*</View>*/}
+        {view != 3 ? postsEl : null}
+        {view == 3 ? usersEl : null}
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
