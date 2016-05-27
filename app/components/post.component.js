@@ -54,6 +54,7 @@ class Post extends Component {
 
   checkInvestments(investments) {
     var self = this;
+    console.log('check', investments)
     var invested = false;
     if (investments) {
       if (investments.length > 0) {
@@ -93,7 +94,6 @@ class Post extends Component {
   }
 
   componentWillUpdate(nextProps) {
-
     if (this.props.post.investments != nextProps.post.investments) {
       this.checkInvestments(nextProps.post.investments);
     }
