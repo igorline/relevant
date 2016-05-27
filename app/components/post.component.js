@@ -29,6 +29,7 @@ var moment = require('moment');
 var PickerItemIOS = PickerIOS.Item;
 import Shimmer from 'react-native-shimmer';
 var Progress = require('react-native-progress');
+import Share from 'react-native-share';
 
 class Post extends Component {
   constructor (props) {
@@ -47,6 +48,16 @@ class Post extends Component {
     }
   }
 
+  onShare() {
+    Share.open({
+      share_text: "Hola mundo",
+      share_URL: "http://google.cl",
+      title: "Share Link"
+    },(e) => {
+      console.log(e);
+    });
+  }
+
   componentDidMount() {
     this.checkTime(this);
     this.checkInvestments(this.props.post.investments);
@@ -54,7 +65,6 @@ class Post extends Component {
 
   checkInvestments(investments) {
     var self = this;
-    console.log('checking!!!!!!!!', investments)
     var invested = false;
     if (investments) {
       if (investments.length > 0) {
@@ -313,6 +323,7 @@ class Post extends Component {
               </View>
             : null}
             <Text style={[styles.font15, styles.commentPad]} onPress={self.openComments.bind(self)}>{commentString}</Text>
+            {/*<Text style={[styles.font15, styles.commentPad]} onPress={self.onShare.bind(self)}>Share</Text>*/}
             <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
               <PickerIOS
                 selectedValue={self.state.investAmount}

@@ -41,7 +41,8 @@ class Thirst extends Component {
        tag: null,
        autoTags: [],
        preTag: null,
-       tag: null
+       tag: null,
+       text: null
     }
   }
 
@@ -70,17 +71,19 @@ class Thirst extends Component {
 
   sendThirst() {
     var self = this;
-    if (!self.state.tag) {
-      self.props.actions.setNotif(true, 'Add tag', false);
+    if (!self.state.text) {
+      self.props.actions.setNotif(true, 'Add text', false);
       return;
     }
     var messageObj = {
       to: self.props.user.selectedUser._id,
       from: self.props.auth.user._id,
       type: 'thirst',
-      tag: self.state.tag._id
+      text: self.state.text,
+      tag: null
     }
     self.props.actions.createMessage(self.props.auth.token, messageObj).then(function(data) {
+      console.log(data, 'thirty data')
       if (data.status) {
         self.props.actions.setNotif(true, 'Message sent', true);
         self.setState({tag: null})
@@ -140,11 +143,12 @@ class Thirst extends Component {
     return (
       <View style={[{height: self.state.visibleHeight}]}>
         <View style={{flex: 1}}>
-          <View style={styles.chooseTagContainer}>
+          {/*<View style={styles.chooseTagContainer}>
           {!self.state.tag ? <View><TextInput style={[styles.thirstInput, styles.font15]} placeholder={'Enter the tag you want '+self.props.user.selectedUser.name+' to post about'} multiline={false} onChangeText={(tags) => this.searchTags(tags)} value={self.state.preTag} returnKeyType='done' />
           {autoTags}</View> : null}
           <View style={styles.tagStringContainer}>{tagEl}</View>
-          </View>
+          </View>*/}
+          <TextInput style={[styles.thirstInput, styles.font15]} placeholder={'Enter your message for '+self.props.user.selectedUser.name} multiline={true} onChangeText={(text) => this.setState({text})} value={self.state.text} returnKeyType='done' />
           <TouchableHighlight style={[styles.thirstSubmit]} onPress={self.sendThirst.bind(self)}>
             <Text style={[styles.font15, styles.active]}>Send</Text>
           </TouchableHighlight>
@@ -186,8 +190,11 @@ const localStyles = StyleSheet.create({
     padding: 10,
   },
    thirstInput: {
-    height: 50,
+    flex: 0.9,
     width: fullWidth,
+    // borderWidth: 1,
+    // borderColor: 'red',
+    padding: 10
   },
   thirstSubmit: {
     flex: 0.1,

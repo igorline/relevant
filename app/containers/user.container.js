@@ -133,7 +133,7 @@ class User extends Component {
         <View style={styles.fullContainer}>
         <ScrollView style={styles.fullContainer}>
           <ProfileComponent {...self.props} user={self.props.users.selectedUser} styles={styles} />
-          <Text style={styles.thirstyIcon} onPress={self.props.routes.Thirst} >👅💦</Text>
+          <Text style={styles.thirstyIcon} onPress={self.props.routes.Thirst} >Thirsty 👅💦</Text>
           <View>
             <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
             {postsEl}

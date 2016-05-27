@@ -8,6 +8,8 @@ const countUnread = (notifications) => {
     notifications.forEach(function(activity) {
       if (!activity.read) num += 1;
     })
+    console.log(notifications, 'new notifs')
+    console.log(num, 'setting num')
     if (num > 0) {
       return num;
     } else {

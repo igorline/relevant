@@ -6,7 +6,8 @@ import React, {
   Text,
   View,
   Image,
-  TextInput
+  TextInput,
+  TouchableHighlight
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -27,15 +28,7 @@ class Footer extends Component {
 
   componentWillReceiveProps(next) {
     var self = this;
-    // if (!self.props.notif.activity && next.notif.activity) {
-    //   self.countNotifications(next.notif.activity);
-    // }
-    // if (self.props.notif.activity != next.notif.activity) {
-    //   self.countNotifications(next.notif.activity);
-    // }
   }
-
-
 
   render() {
     var self = this;
@@ -45,22 +38,39 @@ class Footer extends Component {
 
     if (authenticated) {
       footerEl = ( <View style={styles.footer}>
-        <View style={styles.footerItem}>
-          <Button style={currentRoute == 'Read' ? styles.active : styles.footerLink} onPress={self.props.routes.Read} >Read</Button>
-        </View>
-        <View style={styles.footerItem}>
-          <Button style={currentRoute == 'Discover' ? styles.active : styles.footerLink} onPress={self.props.routes.Discover}>Discover</Button>
-        </View>
-        <View style={styles.footerItem}>
-          <Button style={currentRoute == 'CreatePost' ? styles.active : styles.footerLink} onPress={self.props.routes.CreatePost}>Post</Button>
-        </View>
-        <View style={styles.footerItem}>
-          <Button style={currentRoute == 'Profile' ? styles.active : styles.footerLink} onPress={self.props.routes.Profile}>Profile</Button>
-        </View>
-        <View style={[styles.footerItem, styles.activityRow]}>
-          <Button style={currentRoute == 'Activity' ? styles.active : styles.footerLink} onPress={self.props.routes.Activity}>Activity</Button>
-          {self.props.notif.count ? <Text style={styles.notifCount}>{self.props.notif.count}</Text> : null}
-        </View>
+        <TouchableHighlight style={[styles.footerItem]} onPress={self.props.routes.Read}>
+          <View style={styles.footerItemView}>
+            <Text style={styles.textCenter}> 📩 👀</Text>
+            <Text style={[currentRoute == 'Read' ? styles.active : styles.white, styles.footerLink]}>Read</Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight style={[styles.footerItem]} onPress={self.props.routes.Discover}>
+          <View style={styles.footerItemView}>
+            <Text style={styles.textCenter}>🔮</Text>
+            <Text style={[currentRoute == 'Discover' ? styles.active : styles.white, styles.footerLink]} >Discover</Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight style={[styles.footerItem]} onPress={self.props.routes.CreatePost}>
+          <View style={styles.footerItemView}>
+            <Text style={styles.textCenter}>📝</Text>
+            <Text style={[currentRoute == 'CreatePost' ? styles.active : styles.white, styles.footerLink]} >Post</Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight style={[styles.footerItem]} onPress={self.props.routes.Profile}>
+          <View style={styles.footerItemView}>
+            <Text style={styles.textCenter}>👤</Text>
+            <Text style={[currentRoute == 'Profile' ? styles.active : styles.white, styles.footerLink]}>Profile</Text>
+          </View>
+        </TouchableHighlight>
+          <TouchableHighlight style={[styles.footerItem]} onPress={self.props.routes.Activity}>
+            <View style={styles.footerItemView}>
+              <Text style={styles.textCenter}>⚡</Text>
+              <View>
+                <Text style={[currentRoute == 'Activity' ? styles.active : styles.white,  styles.footerLink]}>Activity</Text>
+              </View>
+              {self.props.notif.count ? <View style={styles.notifCount}><Text style={styles.notifText}>{self.props.notif.count}</Text></View> : null}
+            </View>
+          </TouchableHighlight>
       </View>);
     }
     return (
@@ -86,9 +96,23 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Footer)
 
 const localStyles = StyleSheet.create({
+  footerItemView: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   notifCount: {
-    color: 'red',
-    marginLeft: 5
+    position: 'absolute',
+    top: -20,
+    backgroundColor: 'red',
+    right: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 2.5,
+    height: 20,
+    width: 20
+  },
+  notifText: {
+    color: 'white'
   },
   activityRow: {
     flexDirection: 'row',
@@ -104,7 +128,7 @@ const localStyles = StyleSheet.create({
     flex: 1
   },
   footerLink: {
-    color: 'white'
+    fontSize: 10
   },
 });
 
