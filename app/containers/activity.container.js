@@ -178,9 +178,7 @@ class Activity extends Component {
           personalActivityEl.push(
             <View style={styles.singleActivity}>
               <View style={styles.activityLeft}>
-                <Text><Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>&nbsp;is thirsty 4 u to post about
-                </Text>
-                <Text style={[styles.active]} onPress={self.setTagAndRoute.bind(self, singleActivity.tag)}>#{singleActivity.tag.name}</Text>
+                <Text><Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>&nbsp;is thirsty 4 u 👅💦</Text>
               </View>
               <View style={styles.activityRight}>
               <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
@@ -241,10 +239,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(Activity)
 
 const localStyles = StyleSheet.create({
 activityRight: {
-  flex: 0.25,
+  flex: 0.30,
 },
 activityLeft: {
-  flex: 0.75,
+  flex: 0.70,
 },
 singleActivity: {
   padding: 10,

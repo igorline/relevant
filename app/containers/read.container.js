@@ -9,7 +9,8 @@ import React, {
   TextInput,
   ScrollView,
   Linking,
-  ListView
+  ListView,
+  TouchableHighlight
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -87,7 +88,8 @@ class Read extends Component {
     var self = this;
     if (rowData.type == 'thirst') {
       return (<View style={styles.message}>
-        <Text><Text style={styles.active} onPress={self.props.actions.getSelectedUser.bind(self, rowData.from._id, self.props.auth.token)}>{rowData.from.name}</Text> is thirsty for u 2 post about <Text onPress={self.setTagAndRoute.bind(self, rowData.tag)} style={styles.active}>#{rowData.tag.name}</Text></Text>
+        <Text><Text style={styles.active} onPress={self.props.actions.getSelectedUser.bind(self, rowData.from._id, self.props.auth.token)}>👅💦 {rowData.from.name}</Text> is thirsty 4 u:</Text>
+        <Text>{rowData.text}</Text>
         </View>
       );
     } else {
@@ -147,6 +149,7 @@ class Read extends Component {
     var taggedPosts = null;
     var messages = null;
     var messagesEl = null;
+    var messagesCount = null;
 
     console.log(self.props, 'read props')
 
@@ -155,15 +158,25 @@ class Read extends Component {
     }
 
     if (self.props.messages.index) {
-      messagesEl = (<ListView ref="messageslist" renderScrollComponent={props => <ScrollView {...props} />} dataSource={self.state.messagesData} renderRow={self.renderMessageRow.bind(self)} />)
+      messagesEl = (<ListView ref="messageslist" renderScrollComponent={props => <ScrollView {...props} />} dataSource={self.state.messagesData} renderRow={self.renderMessageRow.bind(self)} />);
+      messagesCount = (<View style={styles.messagesCount}><Text style={styles.white}>{self.props.messages.index.length}</Text></View>)
     }
 
 
     return (
       <View style={styles.fullContainer}>
         <View style={[styles.row, styles.categoryBar]}>
-          <Text onPress={self.changeView.bind(self, 1)} style={[styles.font20, styles.category, self.state.view == 1 ? styles.active : null]}>Posts</Text>
-          <Text onPress={self.changeView.bind(self, 2)} style={[styles.font20, styles.category, self.state.view == 2 ? styles.active : null]}>Inbox</Text>
+          <TouchableHighlight style={styles.category}  onPress={self.changeView.bind(self, 1)}>
+            <View style={styles.categoryView}>
+              <Text style={[styles.font20,  self.state.view == 1 ? styles.active : null]}>Posts</Text>
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight style={styles.category} onPress={self.changeView.bind(self, 2)}>
+            <View style={styles.categoryView}>
+              <Text style={[styles.font20, self.state.view == 2 ? styles.active : null]}>Inbox</Text>
+              {messagesCount}
+            </View>
+          </TouchableHighlight>
         </View>
        {self.state.view == 1 ? postsEl : null}
        {self.state.view == 2 ? messagesEl : null}
@@ -194,10 +207,25 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Read)
 
 const localStyles = StyleSheet.create({
-  readContainer: {
+  categoryView: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  messagesCount: {
+    position: 'absolute',
+    backgroundColor: 'red',
+    marginLeft: 5,
+    height: 20,
+    width: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   message: {
-    padding: 10
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'black'
   },
   readHeader: {
     marginBottom: 10

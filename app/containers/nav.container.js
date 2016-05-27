@@ -69,8 +69,8 @@ class Nav extends Component {
       user = self.props.auth.user;
       if (user.relevance) relevance = user.relevance;
       if (user.balance) balance = user.balance;
-      if (balance > 0) balance = balance.toFixed(2);
-      if (relevance > 0) relevance = relevance.toFixed(2);
+      if (balance > 0) balance = balance.toFixed(0);
+      if (relevance > 0) relevance = relevance.toFixed(0);
     }
 
     if (self.props.auth.user) {
