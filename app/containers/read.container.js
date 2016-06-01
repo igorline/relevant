@@ -121,20 +121,8 @@ class Read extends Component {
 
   changeView(view) {
     var self = this;
+    if (view == 2) self.props.actions.markMessagesRead(self.props.auth.token, self.props.auth.user._id);
     self.setState({view: view});
-
-    // switch(view) {
-    //   case 1:
-    //     self.props.actions.getPosts(0, null);
-    //     break;
-
-    //   case 2:
-    //     self.props.actions.getPostsByRank(0, null);
-    //     break;
-
-    //   default:
-    //     return;
-    // }
   }
 
   render() {
@@ -151,27 +139,28 @@ class Read extends Component {
     var messagesEl = null;
     var messagesCount = null;
 
-    console.log(self.props, 'read props')
-
     if (self.props.posts.feed) {
       postsEl = (<ListView ref="feedlist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.feedData} renderRow={self.renderFeedRow.bind(self)} />)
     }
 
     if (self.props.messages.index) {
       messagesEl = (<ListView ref="messageslist" renderScrollComponent={props => <ScrollView {...props} />} dataSource={self.state.messagesData} renderRow={self.renderMessageRow.bind(self)} />);
-      messagesCount = (<View style={styles.messagesCount}><Text style={styles.white}>{self.props.messages.index.length}</Text></View>)
+    }
+
+    if (self.props.messages.count) {
+       messagesCount = (<View style={styles.messagesCount}><Text style={styles.white}>{self.props.messages.count}</Text></View>)
     }
 
 
     return (
       <View style={styles.fullContainer}>
         <View style={[styles.row, styles.categoryBar]}>
-          <TouchableHighlight style={styles.category}  onPress={self.changeView.bind(self, 1)}>
+          <TouchableHighlight style={styles.category} underlayColor={'transparent'} onPress={self.changeView.bind(self, 1)}>
             <View style={styles.categoryView}>
               <Text style={[styles.font20,  self.state.view == 1 ? styles.active : null]}>Posts</Text>
             </View>
           </TouchableHighlight>
-          <TouchableHighlight style={styles.category} onPress={self.changeView.bind(self, 2)}>
+          <TouchableHighlight style={styles.category} underlayColor={'transparent'} onPress={self.changeView.bind(self, 2)}>
             <View style={styles.categoryView}>
               <Text style={[styles.font20, self.state.view == 2 ? styles.active : null]}>Inbox</Text>
               {messagesCount}

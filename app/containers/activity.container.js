@@ -42,7 +42,7 @@ class Activity extends Component {
   componentDidMount() {
     var self = this;
     self.populateUsers(self.props.online);
-    self.props.actions.markRead(self.props.auth.user._id);
+    self.props.actions.markRead(self.props.auth.token, self.props.auth.user._id);
   }
 
   setSelected(id) {

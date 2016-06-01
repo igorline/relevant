@@ -23,8 +23,6 @@ import * as postActions from '../actions/post.actions';
 import * as notifActions from '../actions/notif.actions';
 import { bindActionCreators } from 'redux';
 import { globalStyles } from '../styles/global';
-// import '../utils/socketConfig';
-// import io from 'socket.io-client/socket.io';
 import Notification from '../components/notification.component';
 
 class Auth extends Component {

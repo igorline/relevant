@@ -59,7 +59,7 @@ class CreatePost extends Component {
 
   componentDidMount() {
     var self = this;
-      DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
+    DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
     DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
     this.props.actions.getParentTags().then(function(response) {
       if (response.status) {

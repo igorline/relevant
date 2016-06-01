@@ -137,7 +137,7 @@ class Thirst extends Component {
     var tagEl = null;
 
      if (self.state.tag) {
-      tagEl = (<TouchableHighlight onPress={self.removeTag.bind(self)} style={styles.singleTagBox}><View style={styles.tagRow}><Image style={styles.tagX} source={require('../assets/images/x.png')} /><Text style={styles.white}>{self.state.tag.name}</Text></View></TouchableHighlight>)
+      tagEl = (<TouchableHighlight underlayColor={'transparent'} onPress={self.removeTag.bind(self)} style={styles.singleTagBox}><View style={styles.tagRow}><Image style={styles.tagX} source={require('../assets/images/x.png')} /><Text style={styles.white}>{self.state.tag.name}</Text></View></TouchableHighlight>)
     }
 
     return (
@@ -149,7 +149,7 @@ class Thirst extends Component {
           <View style={styles.tagStringContainer}>{tagEl}</View>
           </View>*/}
           <TextInput style={[styles.thirstInput, styles.font15]} placeholder={'Enter your message for '+self.props.user.selectedUser.name} multiline={true} onChangeText={(text) => this.setState({text})} value={self.state.text} returnKeyType='done' />
-          <TouchableHighlight style={[styles.thirstSubmit]} onPress={self.sendThirst.bind(self)}>
+          <TouchableHighlight underlayColor={'transparent'} style={[styles.thirstSubmit]} onPress={self.sendThirst.bind(self)}>
             <Text style={[styles.font15, styles.active]}>Send</Text>
           </TouchableHighlight>
         </View>

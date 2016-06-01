@@ -12,6 +12,28 @@ export function setMessages(messages) {
 }
 
 export
+function markMessagesRead(token, userId) {
+  return function(dispatch) {
+    console.log('mark messages read')
+    fetch(process.env.API_SERVER+'/api/message?access_token='+token+'&to='+userId, {
+      credentials: 'include',
+      method: 'PUT',
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+      },
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      dispatch(getMessages(userId));
+    })
+    .catch((error) => {
+      console.log('error', error)
+    });
+  }
+}
+
+export
 function getMessages(userId) {
    return function(dispatch) {
     fetch(process.env.API_SERVER+'/api/message?to='+userId, {

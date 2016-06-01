@@ -53,9 +53,10 @@ function getActivity(userId) {
 }
 
 export
-function markRead(userId) {
+function markRead(token, userId) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/notification?forUser='+userId, {
+    console.log('mark read')
+    fetch(process.env.API_SERVER+'/api/notification?access_token='+token+'&forUser='+userId, {
       credentials: 'include',
       method: 'PUT',
       headers: {
