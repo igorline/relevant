@@ -52,7 +52,7 @@ class DiscoverUser extends Component {
 
 
     return (
-      <TouchableHighlight onPress={self.setSelected.bind(self, user._id)}>
+      <TouchableHighlight underlayColor={'transparent'} onPress={self.setSelected.bind(self, user._id)}>
         <View style={[styles.discoverUser]}>
           <View style={[styles.leftDiscoverUser]}>
             {imageEl}

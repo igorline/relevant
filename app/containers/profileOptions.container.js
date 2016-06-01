@@ -36,21 +36,21 @@ class ProfileOptions extends Component {
   }
 
 
-    chooseImage() {
-      var self = this;
-      console.log(self, 'chooseImage')
-      self.pickImage(function(err, data){
-        if(data){
-          utils.s3.toS3Advanced(data, self.props.auth.token).then(function(results){
-            if (results.success) {
-              self.props.actions.setPicture(results.url, self.props.auth.user, self.props.auth.token);
-            } else {
-              console.log('err');
-            }
-          })
-        }
-      });
-    }
+  chooseImage() {
+    var self = this;
+    console.log(self, 'chooseImage')
+    self.pickImage(function(err, data){
+      if(data){
+        utils.s3.toS3Advanced(data, self.props.auth.token).then(function(results){
+          if (results.success) {
+            self.props.actions.setPicture(results.url, self.props.auth.user, self.props.auth.token);
+          } else {
+            console.log('err');
+          }
+        })
+      }
+    });
+  }
 
 
     pickImage(callback){
