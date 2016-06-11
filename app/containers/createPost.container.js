@@ -157,7 +157,6 @@ class CreatePost extends Component {
     var self = this;
     if (self.state.postTags.indexOf(tag) < 0) {
       self.state.postTags.push(tag);
-      //self.props.actions.setNotif(true, 'Added tag '+tag.name, true);
       self.setState({stage: 1, preTag: null, tagStage: 1, autoTags: []});
     } else {
       self.props.actions.setNotif(true, 'Cannot duplicate tag', false)
@@ -274,7 +273,6 @@ class CreatePost extends Component {
 
   chooseImage() {
     var self = this;
-    console.log('chooseImage')
     self.pickImage(function(err, data){
       if(data){
         utils.s3.toS3Advanced(data, self.props.auth.token).then(function(results){
@@ -375,10 +373,12 @@ class CreatePost extends Component {
           {self.state.stage == 2 && self.state.tagStage == 1 && self.state.preTag ? <View style={[styles.padding10]}><Text onPress={self.createTag.bind(self)}>Create tag: {self.state.preTag}</Text></View> : null}
 
           {self.state.stage == 2 && self.state.tagStage == 2 ? <View style={styles.center}><Text style={[styles.font20, styles.padding10]}>Select a parent tag</Text>{parentTagsEl}</View> : null}
-           {self.state.stage == 1 && self.state.postTags.length ? <Button style={styles.nextButton} onPress={self.post.bind(self)}>Submit</Button> : null}
 
-          {self.state.stage == 1 ? <Button style={styles.nextButton} onPress={self.next.bind(self)}>Add tags</Button> : null}
-          {self.state.stage == 2  ? <Button style={styles.nextButton} onPress={self.prev.bind(self)}>Cancel</Button> : null}
+
+
+          {self.state.stage == 1 ? <View style={styles.buttonParent}><TouchableHighlight style={[styles.genericButton]} onPress={self.next.bind(self)}><Text style={[styles.white]}>Add tags</Text></TouchableHighlight></View>: null}
+          {self.state.stage == 2  ? <View style={styles.buttonParentCenter}><TouchableHighlight style={styles.genericButton} onPress={self.prev.bind(self)}><Text style={styles.white}>Cancel</Text></TouchableHighlight></View> : null}
+           {self.state.stage == 1 && self.state.postTags.length ? <View style={styles.buttonParentCenter}><TouchableHighlight style={styles.genericButton} onPress={self.post.bind(self)}><Text style={styles.white}>Submit</Text></TouchableHighlight></View> : null}
         </ScrollView>
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />

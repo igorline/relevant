@@ -8,7 +8,8 @@ import React, {
     Image,
     TextInput,
     Dimensions,
-    ScrollView
+    ScrollView,
+    TouchableHighlight
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var FileUpload = require('NativeModules').FileUpload;
@@ -133,7 +134,10 @@ class User extends Component {
         <View style={styles.fullContainer}>
         <ScrollView style={styles.fullContainer}>
           <ProfileComponent {...self.props} user={self.props.users.selectedUser} styles={styles} />
-          <Text style={styles.thirstyIcon} onPress={self.props.routes.Thirst} >Thirsty 👅💦</Text>
+
+          <TouchableHighlight style={styles.thirstyIcon}>
+            <Text style={styles.white} onPress={self.props.routes.Thirst} >Thirsty 👅💦</Text>
+          </TouchableHighlight>
           <View>
             <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
             {postsEl}
@@ -173,7 +177,13 @@ const localStyles = StyleSheet.create({
   thirstyIcon: {
     marginLeft: 10,
     marginTop: 10,
-    marginBottom: 10
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: 'black',
+    borderRadius: 5,
+    width: 108,
+    justifyContent: 'center',
+    color: 'white'
   },
   uploadAvatar: {
     height: 100,

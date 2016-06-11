@@ -50,7 +50,6 @@ class DiscoverUser extends Component {
       imageEl = (<Image style={styles.discoverAvatar} source={{uri: image}} />)
     }
 
-
     return (
       <TouchableHighlight underlayColor={'transparent'} onPress={self.setSelected.bind(self, user._id)}>
         <View style={[styles.discoverUser]}>

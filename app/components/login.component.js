@@ -6,7 +6,8 @@ import React, {
   Text,
   View,
   TextInput,
-  Animated
+  Animated,
+  TouchableHighlight
 } from 'react-native';
 var Button = require('react-native-button');
 import {reduxForm} from 'redux-form';
@@ -23,7 +24,6 @@ class Login extends Component {
   }
 
   componentDidMount() {
-
   }
 
   componentDidUpdate() {
@@ -32,7 +32,6 @@ class Login extends Component {
   login() {
     var self = this;
     this.props.actions.loginUser({email: self.state.email, password: self.state.password}).then(function(results) {
-      console.log(results, 'results')
       if (results) {
         if (!results.status) {
           self.props.actions.setNotif(true, results.message, false)
@@ -60,7 +59,7 @@ class Login extends Component {
         </View>
 
         <View style={styles.margin}>
-          <Button onPress={self.login.bind(this)} style={styles.button}>Submit</Button>
+          <TouchableHighlight onPress={self.login.bind(this)} style={styles.genericButton}><Text style={styles.white}>Submit</Text></TouchableHighlight>
         </View>
 
       </View>

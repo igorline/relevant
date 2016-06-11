@@ -115,15 +115,17 @@ const layout = StyleSheet.create({
     alignItems: 'center'
   },
   tagBox: {
-    backgroundColor: 'lightgray',
-    padding: 5,
+    backgroundColor: 'black',
+    padding: 10,
     marginLeft: 5,
     marginTop: 5,
+    // borderRadius: 10,
     color: 'white'
   },
-    singleTagBox: {
-    backgroundColor: 'lightgray',
-    padding: 5,
+  singleTagBox: {
+    backgroundColor: 'black',
+    padding: 10,
+    // borderRadius: 10,
     color: 'white'
   },
   tagStringContainer: {
@@ -169,8 +171,22 @@ const layout = StyleSheet.create({
   flexRow: {
     flexDirection: 'row',
   },
+  buttonParent: {
+    flexDirection: 'row',
+    padding: 10
+  },
+  buttonParentCenter: {
+    flexDirection: 'row',
+    padding: 10,
+    justifyContent: 'center'
+  },
   button: {
     color: '#007aff'
+  },
+  genericButton: {
+    padding: 10,
+    backgroundColor: 'black',
+    borderRadius: 5
   },
   padding10: {
     padding: 10
