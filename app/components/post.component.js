@@ -106,7 +106,6 @@ class Post extends Component {
   componentWillUpdate(nextProps) {
     var self = this;
     if (this.props.post.investments != nextProps.post.investments) {
-      console.log('dif')
       this.checkInvestments(nextProps.post.investments);
     }
   }
@@ -260,14 +259,12 @@ class Post extends Component {
     }
 
     var expandedInvest = self.state.expandedInvest;
-    var investButtonString = "💰";
+    var investButtonString = "Invest 💰";
     if (expandedInvest) investButtonString = "Submit";
-    var previouslyInvested = false;
     var toggleBool = null;
 
     if (self.state.invested) {
-      investButtonString = "❌💰";
-      previouslyInvested = true;
+      investButtonString = "Uninvest ❌💰";
       toggleBool = false;
       functionBool = true;
     } else {
@@ -284,10 +281,9 @@ class Post extends Component {
 
     if (!expandedInvest) {
       if (post.user._id != self.props.auth.user._id) {
-        investButtonEl = (<View style={styles.testShimmer}><Text style={[styles.investButton]} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Text></View>);
+        investButtonEl = (<TouchableHighlight underlayColor={'transparent'} onPress={self.invest.bind(self, toggleBool, functionBool)} style={styles.investButton}><Text style={styles.white}>{investButtonString}</Text></TouchableHighlight>);
       }
     }
-
 
     return (
         <View style={[styles.postContainer]}>
@@ -332,8 +328,8 @@ class Post extends Component {
               </PickerIOS>
             </Animated.View>
             <View style={expandedInvest ? styles.buttonContainerExpanded : styles.buttonContainer}>
-              {expandedInvest ? <Button onPress={self.toggleInvest.bind(self)}>Cancel</Button> : null}
-              {expandedInvest ? <Button style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}>{investButtonString}</Button> : null}
+              {expandedInvest ? <TouchableHighlight style={styles.investButton} onPress={self.toggleInvest.bind(self)}><Text style={styles.white}>Cancel</Text></TouchableHighlight> : null}
+              {expandedInvest ? <TouchableHighlight underlayColor={'transparent'} style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}><Text style={styles.white}>{investButtonString}</Text></TouchableHighlight> : null}
             {investButtonEl}
             </View>
           </View>
@@ -405,14 +401,13 @@ const localStyles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   investButton: {
-    textAlign: 'left',
-    paddingTop: 10,
-    paddingLeft: 0,
-    paddingRight: 0,
-    paddingBottom: 10,
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: 'rgba(0,122,255,1)'
+    padding: 10,
+    marginRight: 5,
+    marginTop: 5,
+    borderRadius: 5,
+    marginBottom: 5,
+    backgroundColor: 'black',
+
   },
   userImage: {
     height: 30,

@@ -35,11 +35,11 @@ class ProfileComponent extends Component {
 
   componentDidMount() {
     var self = this;
-    subscriptionActions.getSubscriptionData('follower', this.props.user._id).then(function(data) {
-     self.setState({following: data.data});
+    subscriptionActions.getSubscriptionData('follower', this.props.user._id).then(function(response) {
+     self.setState({following: response.data});
    })
-   subscriptionActions.getSubscriptionData('following', this.props.user._id).then(function(data) {
-    self.setState({followers: data.data});
+   subscriptionActions.getSubscriptionData('following', this.props.user._id).then(function(response) {
+    self.setState({followers: response.data});
    });
    self.checkOnline(self.props.online);
   }
@@ -72,7 +72,7 @@ class ProfileComponent extends Component {
     var balance = null;
     var userImageEl = null;
     var following = null;
-    if (self.props.user.followers) followers = self.state.followers;
+    if (self.state.followers) followers = self.state.followers;
     if (self.state.following) following = self.state.following;
 
     if (this.props.user) {

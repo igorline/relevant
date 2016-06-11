@@ -11,7 +11,8 @@ import React, {
   AppState,
   Dimensions,
   ScrollView,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  TouchableHighlight
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -84,7 +85,7 @@ class Auth extends Component {
             Stay Relevant {'\n'} Log in
           </Text>
           <Login { ...this.props } styles={styles} />
-           <Button onPress={self.props.routes.Auth} >Back</Button>
+           <TouchableHighlight onPress={self.props.routes.Auth} style={styles.genericButton}><Text style={styles.white}>Back</Text></TouchableHighlight>
         </View>
       );
     }
@@ -95,7 +96,7 @@ class Auth extends Component {
             Get Relevant {'\n'} Sign up
           </Text>
         <SignUp {...this.props} styles={styles} />
-        <Button onPress={self.props.routes.Auth} >Back</Button>
+        <TouchableHighlight style={styles.genericButton} onPress={self.props.routes.Auth}><Text style={styles.white}>Back</Text></TouchableHighlight>
       </View>);
     }
 
@@ -104,8 +105,8 @@ class Auth extends Component {
         <View style={styles.alignAuth}>
           <Text style={[styles.textCenter, styles.font20]}>Relevant</Text>
           <Text>{message}</Text>
-          <Button onPress={self.props.routes.LogIn} >Log In</Button>
-          <Button onPress={self.props.routes.SignUp} >Sign Up</Button>
+          <TouchableHighlight style={styles.genericButton} onPress={self.props.routes.LogIn}><Text style={styles.white}>Log In</Text></TouchableHighlight>
+          <TouchableHighlight style={[styles.genericButton, styles.marginTop]} onPress={self.props.routes.SignUp}><Text style={styles.white}>Sign Up</Text></TouchableHighlight>
         </View>
       )
     }

@@ -124,6 +124,7 @@ class Activity extends Component {
       personalActivity = self.props.notif.activity;
       personalActivityEl = [];
       personalActivity.forEach(function(singleActivity) {
+        if (!singleActivity.byUser) return;
         var activityTime = moment(singleActivity.createdAt);
         var fromNow = activityTime.fromNow();
         if (singleActivity.type == 'investment') {

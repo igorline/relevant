@@ -7,7 +7,8 @@ import React, {
   View,
   Image,
   TextInput,
-  Dimensions
+  Dimensions,
+  TouchableHighlight
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
@@ -125,10 +126,10 @@ class ProfileOptions extends Component {
     if(isAuthenticated){
       if (self.state.editing) {
         changeNameEl = (<View style={styles.center}><TextInput style={styles.input} placeholder={user.name} onChangeText={(newName) => this.setState({newName})} value={this.state.newName} onSubmitEditing={self.changeName.bind(self)} returnKeyType='done' />
-        <Button onPress={self.changeName.bind(self)} style={styles.selfCenter}>Submit</Button></View>);
+        <TouchableHighlight onPress={self.changeName.bind(self)} style={[styles.genericButton, styles.margin]}><Text style={styles.white}>Submit</Text></TouchableHighlight></View>);
       } else {
         changeNameEl = (<View style={styles.center}><Text style={styles.font20}>{name}</Text>
-        <Button onPress={self.startEditing.bind(self)}>Edit</Button></View>);
+        <TouchableHighlight style={[styles.genericButton, styles.margin]} onPress={self.startEditing.bind(self)}><Text style={styles.white}>Edit</Text></TouchableHighlight></View>);
       }
     }
 
@@ -148,9 +149,9 @@ class ProfileOptions extends Component {
       <View style={styles.container}>
         {changeNameEl}
         {userImageEl}
-        <Button onPress={self.chooseImage.bind(self)}>Update profile picture</Button>
+        <TouchableHighlight style={[styles.genericButton, styles.marginTop]} onPress={self.chooseImage.bind(self)}><Text style={styles.white}>Update profile picture</Text></TouchableHighlight>
         {/*<Button onPress={self.props.routes.Import}>Find users from contacts</Button>*/}
-        <Button onPress={self.logoutRedirect.bind(self)}>Logout</Button>
+        <TouchableHighlight style={[styles.genericButton, styles.marginTop]} onPress={self.logoutRedirect.bind(self)}><Text style={styles.white}>Logout</Text></TouchableHighlight>
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
@@ -179,7 +180,7 @@ const localStyles = StyleSheet.create({
 uploadAvatar: {
   height: 200,
   width: 200
-}
+},
 });
 
 var styles = {...localStyles, ...globalStyles};

@@ -37,11 +37,12 @@ class Discover extends Component {
   }
 
   componentDidMount() {
-    this.props.actions.userIndex();
-    this.props.actions.clearPosts();
-    this.props.actions.setComments(null);
-    this.props.actions.getDiscoverTags();
-    this.props.actions.getPosts(0, this.props.posts.tag);
+    var self = this;
+    if (!self.props.auth.userIndex) this.props.actions.userIndex();
+    // this.props.actions.clearPosts();
+    if (self.props.posts.comments) this.props.actions.setComments(null);
+    if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
+    if (self.props.posts.index.length == 0) this.props.actions.getPosts(0, this.props.posts.tag);
   }
 
   componentWillReceiveProps(next) {

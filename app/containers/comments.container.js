@@ -71,7 +71,6 @@ class Comments extends Component {
 
   componentDidUpdate(prev) {
     var self = this;
-    console.log(prev, 'prev')
     if (!prev) return;
     if (prev.posts.comments && prev.posts.comments != self.props.posts.comments) {
       setTimeout(function() {

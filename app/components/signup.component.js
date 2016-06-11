@@ -5,7 +5,8 @@ import React, {
   StyleSheet,
   Text,
   View,
-  TextInput
+  TextInput,
+  TouchableHighlight
 } from 'react-native';
 var Button = require('react-native-button');
 
@@ -122,7 +123,7 @@ class SignUp extends Component {
         </View>
 
         <View style={styles.margin}>
-          <Button onPress={self.validate.bind(self)} style={styles.button}>Submit</Button>
+          <TouchableHighlight style={styles.genericButton} onPress={self.validate.bind(self)}><Text style={styles.white}>Submit</Text></TouchableHighlight>
         </View>
 
       </View>
