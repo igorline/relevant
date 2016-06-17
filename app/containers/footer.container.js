@@ -36,6 +36,7 @@ class Footer extends Component {
     var authenticated = this.props.auth.isAuthenticated;
     var footerEl = null;
 
+
     if (authenticated) {
       footerEl = ( <View style={styles.footer}>
         <TouchableHighlight style={[styles.footerItem]} onPress={self.props.routes.Read}>

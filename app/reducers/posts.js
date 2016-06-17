@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {tag: null,pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null};
+const initialState = {tag: null,pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null, parentTags: null};
 
 const updatePostElement = (array, post) => {
   if (!array) return;
@@ -38,6 +38,13 @@ export default function post(state = initialState, action) {
         'tag': action.payload
       })
     }
+
+    case types.SET_PARENT_TAGS: {
+       return Object.assign({}, state, {
+        'parentTags': action.payload
+      })
+    }
+
 
     case 'CLEAR_POSTS': {
        return Object.assign({}, state, {

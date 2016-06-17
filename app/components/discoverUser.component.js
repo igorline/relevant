@@ -34,7 +34,7 @@ class DiscoverUser extends Component {
     if (id == self.props.auth.user._id) {
       self.props.routes.Profile();
     } else {
-      self.props.actions.getSelectedUser(id, self.props.auth.token);
+      self.props.actions.getSelectedUser(id);
     }
   }
 

@@ -134,11 +134,20 @@ export function getParentTags() {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      return {'status': true, 'data': responseJSON}
+     dispatch(setParentTags(responseJSON));
     })
     .catch((error) => {
       console.log(error, 'parents error');
-      return {'status': false, 'data': error};
     });
   }
 }
+
+export function setParentTags(data) {
+    return {
+        type: types.SET_PARENT_TAGS,
+        payload: data
+    };
+}
+
+
+
