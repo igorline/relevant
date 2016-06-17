@@ -26,4 +26,5 @@ export const SET_MESSAGES = 'SET_MESSAGES';
 export const SET_TAG = 'SET_TAG';
 export const SET_ACTIVITY = 'SET_ACTIVITY';
 export const SET_COUNT = 'SET_COUNT';
+export const SET_PARENT_TAGS = 'SET_PARENT_TAGS';
 

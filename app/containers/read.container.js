@@ -88,7 +88,7 @@ class Read extends Component {
     var self = this;
     if (rowData.type == 'thirst') {
       return (<View style={styles.message}>
-        <Text><Text style={styles.active} onPress={self.props.actions.getSelectedUser.bind(self, rowData.from._id, self.props.auth.token)}>👅💦 {rowData.from.name}</Text> is thirsty 4 u:</Text>
+        <Text><Text style={styles.active} onPress={self.props.actions.getSelectedUser.bind(self, rowData.from._id)}>👅💦 {rowData.from.name}</Text> is thirsty 4 u:</Text>
         <Text>{rowData.text}</Text>
         </View>
       );

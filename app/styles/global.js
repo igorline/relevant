@@ -119,13 +119,11 @@ const layout = StyleSheet.create({
     padding: 10,
     marginLeft: 5,
     marginTop: 5,
-    // borderRadius: 10,
     color: 'white'
   },
   singleTagBox: {
     backgroundColor: 'black',
     padding: 10,
-    // borderRadius: 10,
     color: 'white'
   },
   tagStringContainer: {

@@ -38,7 +38,6 @@ class Discover extends Component {
 
   componentDidMount() {
     var self = this;
-    if (!self.props.auth.userIndex) this.props.actions.userIndex();
     // this.props.actions.clearPosts();
     if (self.props.posts.comments) this.props.actions.setComments(null);
     if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
@@ -66,6 +65,10 @@ class Discover extends Component {
 
       case 2:
         self.props.actions.getPostsByRank(0, null);
+        break;
+
+      case 3:
+        if (!self.props.auth.userIndex) this.props.actions.userIndex();
         break;
 
       default:
@@ -140,6 +143,7 @@ class Discover extends Component {
     var userIndex = null;
     if (this.props.auth.userIndex) {
       userIndex = this.props.auth.userIndex;
+      console.log(userIndex, 'userIndex')
       usersEl = userIndex.map(function(user, i) {
         if (user.name != 'Admin') {
           return (

@@ -3,6 +3,7 @@ import { toS3Advanced } from './s3';
 var cheerio = require('cheerio-without-node-native');
 
 export function generate(link, body, tags, token) {
+  console.log(link, 'link')
  return fetch(link, {
       method: 'GET',
   })

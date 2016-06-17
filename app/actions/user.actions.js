@@ -4,9 +4,9 @@ var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = req
 import * as utils from '../utils';
 
 export
-function getSelectedUser(userId, token) {
+function getSelectedUser(userId) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/user/'+userId+'?access_token='+token, {
+    fetch(process.env.API_SERVER+'/api/user/'+userId, {
         credentials: 'include',
         method: 'GET',
         headers: {

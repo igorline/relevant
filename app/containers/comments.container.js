@@ -95,6 +95,7 @@ class Comments extends Component {
       user: self.props.auth.user._id
     }
     self.props.actions.createComment(self.props.auth.token, commentObj);
+    self.setState({comment: null})
   }
 
   renderRow(rowData) {
