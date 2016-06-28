@@ -38,10 +38,15 @@ class Discover extends Component {
 
   componentDidMount() {
     var self = this;
-    // this.props.actions.clearPosts();
     if (self.props.posts.comments) this.props.actions.setComments(null);
     if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
-    if (self.props.posts.index.length == 0) this.props.actions.getPosts(0, this.props.posts.tag);
+    if (self.props.posts.tag && self.props.posts.index) {
+      self.props.actions.clearPosts();
+    }
+    if (self.props.posts.index.length == 0 || self.props.posts.tag) {
+      self.props.actions.getPosts(0, self.props.posts.tag);
+    }
+
   }
 
   componentWillReceiveProps(next) {
@@ -143,7 +148,6 @@ class Discover extends Component {
     var userIndex = null;
     if (this.props.auth.userIndex) {
       userIndex = this.props.auth.userIndex;
-      console.log(userIndex, 'userIndex')
       usersEl = userIndex.map(function(user, i) {
         if (user.name != 'Admin') {
           return (

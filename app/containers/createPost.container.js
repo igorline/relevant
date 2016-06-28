@@ -77,16 +77,19 @@ class CreatePost extends Component {
     var link = self.state.postLink;
     var body = self.state.postBody;
     var title = self.state.postTitle;
-    var tags = self.state.postTags;
+    var tags = [];
     if (!self.state.postLink && self.state.type == 'url') {
        self.props.actions.setNotif(true, 'Add url', false);
        return;
     }
 
-    if (!self.ValidURL() && self.state.type == 'url') {
-      self.props.actions.setNotif(true, 'not a valid url', false);
-      return;
+    if (self.state.type == 'url') {
+      if (!self.ValidURL()) {
+        self.props.actions.setNotif(true, 'not a valid url', false);
+        return;
+      }
     }
+
 
     if (self.state.type != 'url' && !self.state.postTitle) {
       self.props.actions.setNotif(true, 'Add title', false);
@@ -119,6 +122,19 @@ class CreatePost extends Component {
       self.props.actions.setNotif(true, 'Add tags', false);
       return;
     }
+
+    var bodyTags = self.state.postBody.match(/#\S+/g);
+    var finalBodyTags = [];
+
+    bodyTags.forEach(function(tag) {
+      tag = tag.replace('#', '');
+      finalBodyTags.push(tag);
+    })
+
+    var noSpaces = self.state.postTags.replace(/\s*,\s*/g, ',');
+    var tagsArray = noSpaces.split(',');
+    tags = finalBodyTags.concat(tagsArray);
+    console.log(tags, 'final tags')
 
     if (self.state.type == 'url') {
       utils.post.generate(self.state.postLink, body, tags, self.props.auth.token).then(function(results){
@@ -154,7 +170,10 @@ class CreatePost extends Component {
         };
       }
 
+      console.log('here')
+
       self.props.actions.dispatchPost(postBody, self.props.auth.token).then(function(results) {
+        console.log(results, 'results')
          if (!results) {
            self.props.actions.setNotif(true, 'Post error please try again', false)
         } else {
