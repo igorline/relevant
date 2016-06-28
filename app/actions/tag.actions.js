@@ -33,6 +33,13 @@ export function setDiscoverTags(data) {
     };
 }
 
+export function goToTag(tag) {
+  return function(dispatch) {
+    dispatch(setTag(tag));
+    dispatch(Actions.Discover);
+  }
+}
+
 export function setTag(tag) {
     return {
         type: types.SET_TAG,

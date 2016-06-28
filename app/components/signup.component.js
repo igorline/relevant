@@ -11,13 +11,12 @@ import React, {
 var Button = require('react-native-button');
 
 class SignUp extends Component {
-
-  constructor (props, context) {
-    super(props, context)
+  constructor(props, context) {
+    super(props, context);
     this.state = {
-      "message": ''
-    }
-  }
+      'message': ''
+    };
+  };
 
   componentDidMount() {
 

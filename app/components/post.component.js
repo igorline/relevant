@@ -285,6 +285,40 @@ class Post extends Component {
       }
     }
 
+
+  var bodyEl = null;
+
+    if (body) {
+      var bodyObj = {};
+      var textArr = body.replace(/#\S+/g, function(a){return "`"+a+"`"}).split(/`/);
+      textArr.forEach(function(section, i) {
+        bodyObj[i] = {};
+        bodyObj[i].text = section;
+        if (section.indexOf('#') > -1) {
+          bodyObj[i].hashtag = true;
+
+        } else {
+          bodyObj[i].hashtag = false;
+        }
+      })
+
+
+      bodyEl = Object.keys(bodyObj).map(function(key) {
+        var text = bodyObj[key].text;
+        if (bodyObj[key].hashtag) {
+          var tagObj = null;
+          self.props.post.tags.forEach(function(tag) {
+            if (tag.name == text.substr(1, text.length)) {
+              tagObj = tag;
+            }
+          })
+          return (<Text onPress={tagObj ? self.props.actions.goToTag.bind(null, tagObj) : null} style={styles.active}>{bodyObj[key].text}</Text>)
+        } else {
+          return (<Text>{bodyObj[key].text}</Text>);
+        }
+      });
+    }
+
     return (
         <View style={[styles.postContainer]}>
         <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(null, link) : null}>
@@ -308,7 +342,7 @@ class Post extends Component {
             <View style={styles.postSection}>
               <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
               {link ? <Text style={styles.font10}>from {self.extractDomain(link)}</Text> : null}
-              {body ? <View style={[styles.postBody, styles.font15]}><Text numberOfLines={expanded ? 999999 : 2}>{body}</Text></View> : null}
+              {body ? <View style={[styles.postBody, styles.font15]}><Text numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text></View> : null}
             </View>
           </TouchableHighlight>
           <View style={styles.postSection}>

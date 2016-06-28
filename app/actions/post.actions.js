@@ -137,6 +137,7 @@ export function submitPost(post, token) {
 
 export function dispatchPost(post, token) {
    return function(dispatch) {
+    console.log('wtf')
     return fetch(process.env.API_SERVER+'/api/post?access_token='+token, {
         credentials: 'include',
         method: 'POST',

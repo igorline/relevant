@@ -17,6 +17,7 @@ import { connect } from 'react-redux';
 var Button = require('react-native-button');
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
+import * as tagActions from '../actions/tag.actions';
 import { bindActionCreators } from 'redux';
 import * as investActions from '../actions/invest.actions';
 import * as notifActions from '../actions/notif.actions';
@@ -164,7 +165,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...investActions, ...authActions, ...postActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...tagActions}, dispatch)
   }
 }
 
