@@ -62,7 +62,6 @@ class Profile extends Component {
         var posts = null;
 
         posts = self.props.auth.user.posts;
-        // console.log(posts);
 
         posts.sort(function(a, b) {
           var aDate = new Date(a.createdAt);

@@ -55,7 +55,6 @@ export function generate(link, body, tags, token) {
 
   if (image) {
     return toS3Advanced(image).then(function(results){
-      console.log(results, 's3 results')
       if (results.success) {
         var postBody = {
           link: link,

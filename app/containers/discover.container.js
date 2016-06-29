@@ -43,10 +43,7 @@ class Discover extends Component {
     if (self.props.posts.tag && self.props.posts.index) {
       self.props.actions.clearPosts();
     }
-    if (self.props.posts.index.length == 0 || self.props.posts.tag) {
-      self.props.actions.getPosts(0, self.props.posts.tag);
-    }
-
+    self.props.actions.getPosts(0, self.props.posts.tag);
   }
 
   componentWillReceiveProps(next) {

@@ -2,6 +2,7 @@ import * as types from './actionTypes';
 require('../publicenv');
 var { Actions } = require('react-native-redux-router');
 import * as utils from '../utils';
+import * as authActions from './auth.actions';
 
 var apiServer = process.env.API_SERVER+'/api/'
 
@@ -27,6 +28,28 @@ export function getFeed(token, skip, tag) {
   }
 }
 
+export function deletePost(token, id) {
+  var url = process.env.API_SERVER+'/api/post/'+id+'?access_token='+token;
+  return function(dispatch) {
+    fetch(url, {
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'DELETE',
+    })
+    .then((response) => {
+      dispatch(getPosts());
+      dispatch(authActions.getUser(token, false))
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+    });
+  }
+}
+
+
 export
 function setFeed(feed) {
     return {
@@ -43,6 +66,7 @@ function clearPosts() {
 }
 
 export function getPosts(skip, tag) {
+  if (!skip) skip = 0;
   var url = process.env.API_SERVER+'/api/post?skip='+skip;
   if (tag) url = process.env.API_SERVER+'/api/post?skip='+skip+'&tag='+tag._id;
   return function(dispatch) {
@@ -57,7 +81,6 @@ export function getPosts(skip, tag) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      //console.log('get posts response', responseJSON);
       dispatch(setPosts(responseJSON));
     })
     .catch((error) => {
@@ -81,7 +104,6 @@ export function getPostsByRank(skip, tag) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      //console.log('get posts response', responseJSON);
       dispatch(setPosts(responseJSON));
     })
     .catch((error) => {
@@ -190,6 +212,27 @@ export function getActivePost(postId) {
   }
 }
 
+export function deleteComment(token, id, postId) {
+  return function(dispatch) {
+    fetch(process.env.API_SERVER+'/api/comment/'+id+'?access_token='+token, {
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'DELETE',
+    })
+    .then(utils.fetchError.handleErrors)
+    .then((response) => {
+      dispatch(getComments(postId));
+      dispatch(authActions.getUser(token, false))
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+    });
+  }
+}
+
 export function getComments(postId) {
   return function(dispatch) {
     fetch(process.env.API_SERVER+'/api/comment?post='+postId, {
@@ -213,7 +256,6 @@ export function getComments(postId) {
 
 export function createComment(token, commentObj) {
   return function(dispatch) {
-    console.log('sending comment')
     fetch(process.env.API_SERVER+'/api/comment?access_token='+token, {
       credentials: 'include',
       headers: {
@@ -226,8 +268,8 @@ export function createComment(token, commentObj) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      // dispatch(setComments(responseJSON));
       console.log(responseJSON, 'created comment');
+     dispatch(authActions.getUser(token, false))
     })
     .catch((error) => {
       console.log(error, 'error');
