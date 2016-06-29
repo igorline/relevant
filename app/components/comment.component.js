@@ -23,9 +23,15 @@ class Comment extends Component {
   }
 
   componentDidMount() {
+    var self = this;
   }
 
   componentDidUpdate() {
+  }
+
+  deleteComment() {
+    var self = this;
+    self.props.actions.deleteComment(self.props.auth.token, self.props.comment._id, self.props.comment.post);
   }
 
   render() {
@@ -52,6 +58,7 @@ class Comment extends Component {
             <View style={styles.commentBody}>
               <Text>{comment.text}</Text>
             </View>
+            {self.props.auth.user._id == comment.user._id ? <Text onPress={self.deleteComment.bind(self)} style={styles.deletePadding}>❌</Text> : null}
           </View>
         </View>
       </View>
@@ -63,13 +70,10 @@ export default Comment
 
 const localStyles = StyleSheet.create({
   commentBody: {
-    // paddingTop: 10
   },
   commentHeaderTextContainer: {
     height: 50,
-    justifyContent: 'center',
-    // borderWidth: 1,
-    // borderColor: 'blue'
+    justifyContent: 'center'
   },
   commentContainer: {
     padding: 10,
@@ -82,6 +86,10 @@ const localStyles = StyleSheet.create({
     borderRadius: 25,
     marginRight: 10,
   },
+  deletePadding: {
+    paddingTop: 10,
+    paddingBottom: 10
+  }
 });
 
 

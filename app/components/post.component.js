@@ -49,9 +49,10 @@ class Post extends Component {
   }
 
   onShare() {
+    var self = this;
     Share.open({
-      share_text: "Hola mundo",
-      share_URL: "http://google.cl",
+      share_text: self.props.post.title,
+      share_URL: self.props.post.link ? self.props.post.link : 'http://relevant-community.herokuapp.com/',
       title: "Share Link"
     },(e) => {
       console.log(e);
@@ -173,6 +174,12 @@ class Post extends Component {
     var self = this;
     self.props.actions.setActivePost(self.props.post._id);
     self.props.routes.Comments();
+  }
+
+  deletePost() {
+    var self = this;
+    self.props.actions.deletePost(self.props.auth.token, self.props.post._id);
+    console.log('delete')
   }
 
 
@@ -353,7 +360,8 @@ class Post extends Component {
               </View>
             : null}
             <Text style={[styles.font15, styles.commentPad]} onPress={self.openComments.bind(self)}>{commentString}</Text>
-            {/*<Text style={[styles.font15, styles.commentPad]} onPress={self.onShare.bind(self)}>Share</Text>*/}
+            <Text style={[styles.font15, styles.commentPad]} onPress={self.onShare.bind(self)}>Share</Text>
+            {self.props.post.user._id == self.props.auth.user._id ? <Text style={[styles.font15, styles.commentPad]} onPress={self.deletePost.bind(self)}>Delete</Text> : null}
             <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
               <PickerIOS
                 selectedValue={self.state.investAmount}
