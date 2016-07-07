@@ -25,6 +25,7 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import * as investActions from '../actions/invest.actions';
 import Notification from '../components/notification.component';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 class Read extends Component {
   constructor (props, context) {
@@ -34,7 +35,7 @@ class Read extends Component {
     this.state = {
       tag: null,
       enabled: true,
-      feedData: fd.cloneWithRows([]),
+      feedData: null,
       messagesData: md.cloneWithRows([]),
       view: 1
     }
@@ -42,17 +43,21 @@ class Read extends Component {
 
   componentDidMount() {
     var self = this;
-    this.props.actions.clearPosts();
-    this.props.actions.setComments(null);
+    if (self.props.posts.feed && self.props.posts.tag) this.props.actions.clearPosts();
+    if (self.props.posts.comments) this.props.actions.setComments(null);
+    if (self.props.posts.feed.length > 0) {
+      var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      self.setState({feedData: fd.cloneWithRows(self.props.posts.feed)});
+    }
     this.props.actions.getFeed(self.props.auth.token, 0, null);
-    this.props.actions.getMessages(self.props.auth.user._id);
+    //this.props.actions.getMessages(self.props.auth.user._id);
   }
 
   componentDidUpdate() {
     var self = this;
   }
 
-  componentWillUpdate(next) {
+  componentWillReceiveProps(next) {
     var self = this;
     if (next.posts.feed != self.props.posts.feed) {
       var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -121,7 +126,9 @@ class Read extends Component {
 
   changeView(view) {
     var self = this;
-    if (view == 2) self.props.actions.markMessagesRead(self.props.auth.token, self.props.auth.user._id);
+    if (view == 2) {
+      self.props.actions.getMessages(self.props.auth.user._id);
+    }
     self.setState({view: view});
   }
 
@@ -139,7 +146,7 @@ class Read extends Component {
     var messagesEl = null;
     var messagesCount = null;
 
-    if (self.props.posts.feed) {
+    if (self.state.feedData) {
       postsEl = (<ListView ref="feedlist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.feedData} renderRow={self.renderFeedRow.bind(self)} />)
     }
 
@@ -147,10 +154,9 @@ class Read extends Component {
       messagesEl = (<ListView ref="messageslist" renderScrollComponent={props => <ScrollView {...props} />} dataSource={self.state.messagesData} renderRow={self.renderMessageRow.bind(self)} />);
     }
 
-    if (self.props.messages.count) {
-       messagesCount = (<View style={styles.messagesCount}><Text style={styles.white}>{self.props.messages.count}</Text></View>)
+    if (self.props.auth.user.messages) {
+       messagesCount = (<View style={styles.messagesCount}><Text style={styles.white}>{self.props.auth.user.messages}</Text></View>)
     }
-
 
     return (
       <View style={styles.fullContainer}>
@@ -167,6 +173,7 @@ class Read extends Component {
             </View>
           </TouchableHighlight>
         </View>
+        <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.feedData} />
        {self.state.view == 1 ? postsEl : null}
        {self.state.view == 2 ? messagesEl : null}
         <View pointerEvents={'none'} style={styles.notificationContainer}>

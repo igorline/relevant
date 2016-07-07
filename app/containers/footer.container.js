@@ -19,7 +19,6 @@ class Footer extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      count: null
     }
   }
 
@@ -27,7 +26,6 @@ class Footer extends Component {
   }
 
   componentWillReceiveProps(next) {
-    var self = this;
   }
 
   render() {
@@ -36,34 +34,33 @@ class Footer extends Component {
     var authenticated = this.props.auth.isAuthenticated;
     var footerEl = null;
 
-
     if (authenticated) {
       footerEl = ( <View style={styles.footer}>
-        <TouchableHighlight style={[styles.footerItem]} onPress={self.props.routes.Read}>
+        <TouchableHighlight style={[styles.footerItem]} onPress={currentRoute != 'Read' ? self.props.routes.Read : null}>
           <View style={styles.footerItemView}>
             <Text style={styles.textCenter}> 📩 👀</Text>
             <Text style={[currentRoute == 'Read' ? styles.active : styles.white, styles.footerLink]}>Read</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight style={[styles.footerItem]} onPress={self.props.routes.Discover}>
+        <TouchableHighlight style={[styles.footerItem]} onPress={currentRoute != 'Discover' ? self.props.routes.Discover : null}>
           <View style={styles.footerItemView}>
             <Text style={styles.textCenter}>🔮</Text>
             <Text style={[currentRoute == 'Discover' ? styles.active : styles.white, styles.footerLink]} >Discover</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight style={[styles.footerItem]} onPress={self.props.routes.CreatePost}>
+        <TouchableHighlight style={[styles.footerItem]} onPress={currentRoute != 'CreatePost' ? self.props.routes.CreatePost : null}>
           <View style={styles.footerItemView}>
             <Text style={styles.textCenter}>📝</Text>
             <Text style={[currentRoute == 'CreatePost' ? styles.active : styles.white, styles.footerLink]} >Post</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight style={[styles.footerItem]} onPress={self.props.routes.Profile}>
+        <TouchableHighlight style={[styles.footerItem]} onPress={currentRoute != 'Profile' ? self.props.routes.Profile : null}>
           <View style={styles.footerItemView}>
             <Text style={styles.textCenter}>👤</Text>
             <Text style={[currentRoute == 'Profile' ? styles.active : styles.white, styles.footerLink]}>Profile</Text>
           </View>
         </TouchableHighlight>
-          <TouchableHighlight style={[styles.footerItem]} onPress={self.props.routes.Activity}>
+          <TouchableHighlight style={[styles.footerItem]} onPress={currentRoute != 'Activity' ? self.props.routes.Activity : null}>
             <View style={styles.footerItemView}>
               <Text style={styles.textCenter}>⚡</Text>
               <View>

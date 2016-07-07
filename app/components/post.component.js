@@ -178,7 +178,7 @@ class Post extends Component {
 
   deletePost() {
     var self = this;
-    self.props.actions.deletePost(self.props.auth.token, self.props.post._id);
+    self.props.actions.deletePost(self.props.auth.token, self.props.post);
     console.log('delete')
   }
 

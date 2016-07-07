@@ -28,8 +28,8 @@ export function getFeed(token, skip, tag) {
   }
 }
 
-export function deletePost(token, id) {
-  var url = process.env.API_SERVER+'/api/post/'+id+'?access_token='+token;
+export function deletePost(token, post) {
+  var url = process.env.API_SERVER+'/api/post/'+post._id+'?access_token='+token;
   return function(dispatch) {
     fetch(url, {
       credentials: 'include',
@@ -40,7 +40,8 @@ export function deletePost(token, id) {
       method: 'DELETE',
     })
     .then((response) => {
-      dispatch(getPosts());
+      console.log(response, 'delete response')
+      dispatch(removePostFromIndex(post));
       dispatch(authActions.getUser(token, false))
     })
     .catch((error) => {
@@ -129,6 +130,13 @@ export function setRecentPosts(posts) {
 export function updatePost(post) {
   return {
     type: types.UPDATE_POST,
+    payload: post
+  }
+}
+
+export function removePostFromIndex(post) {
+  return {
+    type: types.REMOVE_POST,
     payload: post
   }
 }

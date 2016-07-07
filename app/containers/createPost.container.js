@@ -126,10 +126,12 @@ class CreatePost extends Component {
     var bodyTags = self.state.postBody.match(/#\S+/g);
     var finalBodyTags = [];
 
-    bodyTags.forEach(function(tag) {
-      tag = tag.replace('#', '');
-      finalBodyTags.push(tag);
-    })
+    if (bodyTags) {
+      bodyTags.forEach(function(tag) {
+        tag = tag.replace('#', '');
+        finalBodyTags.push(tag);
+      })
+    }
 
     var noSpaces = self.state.postTags.replace(/\s*,\s*/g, ',');
     var tagsArray = noSpaces.split(',');

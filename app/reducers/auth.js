@@ -1,6 +1,5 @@
 import * as types from '../actions/actionTypes';
 import { push } from 'react-router-redux';
-var CookieManager = require('react-native-cookies');
 
 const initialState = {
   token: null,
