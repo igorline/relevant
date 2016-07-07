@@ -8,7 +8,9 @@ import React, {
   Image,
   TextInput,
   Dimensions,
-  ScrollView
+  PushNotificationIOS,
+  ScrollView,
+  AlertIOS
 } from 'react-native';
 
 var FileUpload = require('NativeModules').FileUpload;
@@ -39,8 +41,79 @@ class Profile extends Component {
 
   componentDidMount() {
     var self = this;
+    // PushNotificationIOS.abandonPermissions();
+    // PushNotificationIOS.checkPermissions((permissions) => {
+    //   console.log(permissions, 'permissions')
+    // });
 
   }
+
+  componentWillMount() {
+    //PushNotificationIOS.addEventListener('register', function(token){
+    //  console.log('hello', token)
+    //});
+    //PushNotificationIOS.requestPermissions();
+     // Add listener for push notifications
+
+    // PushNotificationIOS.addEventListener('notification', this._onNotification);
+    // // Add listener for local notifications
+    // PushNotificationIOS.addEventListener('localNotification', this._onLocalNotification);
+    // PushNotificationIOS.addEventListener('register', function(token){
+    //   console.log(token, 'token')
+    // });
+  }
+
+  componentWillUnmount() {
+    // // Remove listener for push notifications
+    // PushNotificationIOS.removeEventListener('notification', this._onNotification);
+    // // Remove listener for local notifications
+    // PushNotificationIOS.removeEventListener('localNotification', this._onLocalNotification);
+    //PushNotificationIOS.abandonPermissions();
+  }
+
+  //  _sendNotification() {
+  //   require('RCTDeviceEventEmitter').emit('remoteNotificationReceived', {
+  //     aps: {
+  //       alert: 'Sample notification',
+  //       badge: '+1',
+  //       sound: 'default',
+  //       category: 'REACT_NATIVE'
+  //     },
+  //   });
+  // }
+
+  // _sendLocalNotification() {
+  //   require('RCTDeviceEventEmitter').emit('localNotificationReceived', {
+  //     aps: {
+  //       alert: 'Sample local notification',
+  //       badge: '+1',
+  //       sound: 'default',
+  //       category: 'REACT_NATIVE'
+  //     },
+  //   });
+  // }
+
+  // _onNotification(notification) {
+  //   AlertIOS.alert(
+  //     'Push Notification Received',
+  //     'Alert message: ' + notification.getMessage(),
+  //     [{
+  //       text: 'Dismiss',
+  //       onPress: null,
+  //     }]
+  //   );
+  // }
+
+  // _onLocalNotification(notification){
+  //   AlertIOS.alert(
+  //     'Local Notification Received',
+  //     'Alert message: ' + notification.getMessage(),
+  //     [{
+  //       text: 'Dismiss',
+  //       onPress: null,
+  //     }]
+  //   );
+  // }
 
   componentDidUpdate() {
   }
@@ -55,7 +128,6 @@ class Profile extends Component {
     var balance = 0;
     var userImageEl = null;
     var postsEl = null;
-
 
     if (self.props.auth.user.posts) {
       if (self.props.auth.user.posts.length > 0) {
@@ -85,6 +157,8 @@ class Profile extends Component {
     return (
       <View style={styles.fullContainer}>
       <ScrollView style={styles.fullContainer}>
+        {/*<Text style={styles.padding10} onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(42)}>42</Text>
+        <Text style={styles.padding10}  onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(0)}>Clear</Text>*/}
       <ProfileComponent {...self.props} user={self.props.auth.user} styles={styles} />
         <View>
           <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>

@@ -3,8 +3,10 @@ import { push } from 'react-router-redux';
 import thunk from 'redux-thunk';
 var Contacts = require('react-native-contacts');
 require('../publicenv');
-var CookieManager = require('react-native-cookies');
-import {AsyncStorage} from 'react-native';
+import {
+    AsyncStorage,
+    PushNotificationIOS
+} from 'react-native';
 var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
 import * as utils from '../utils';
 
@@ -86,7 +88,6 @@ function loginUser(user, redirect) {
             },
             body: JSON.stringify(user)
         })
-        //.then(utils.fetchError.handleErrors)
         .then((response) => response.json())
         .then((responseJSON) => {
             console.log(responseJSON, 'login response')
@@ -107,6 +108,54 @@ function loginUser(user, redirect) {
             dispatch(loginUserFailure('Server error'));
              return {status: false, message: 'Server error'};
         });
+    }
+}
+
+export
+function userOnline(user, token) {
+    return dispatch => {
+        console.log(user, 'online user')
+        // return fetch(process.env.API_SERVER+'/notification/online/'+user._id+'?access_token='+token, {
+        //     credentials: 'include',
+        //     method: 'POST',
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json'
+        //     },
+        // })
+        // .then((response) => response.json())
+        // .then((responseJSON) => {
+        //     console.log(responseJSON, 'login response')
+
+        // })
+        // .catch(error => {
+        //     console.log(error, 'error');
+        // });
+    }
+}
+
+
+export
+function storeDevice(userData, authToken) {
+    return dispatch => {
+        PushNotificationIOS.addEventListener('register', function(token){
+            console.log('hello', token)
+            fetch(process.env.API_SERVER+'/api/notification/device?access_token='+authToken+'&deviceToken='+token, {
+                credentials: 'include',
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then((responseJSON) => {
+                console.log('saved device token')
+            })
+            .catch(error => {
+                console.log(error, 'error');
+            });
+        });
+        PushNotificationIOS.requestPermissions();
     }
 }
 
@@ -145,10 +194,8 @@ function getUser(token, redirect) {
     console.log('getuser', token, redirect)
     return dispatch => {
         if(!token){
-            //console.log('no token')
             AsyncStorage.getItem('token')
                 .then(token => {
-                    //console.log("GOT TOKEN", token);
                     if (token) {
                         return fetchUser(token);
                     } else {
@@ -170,11 +217,11 @@ function getUser(token, redirect) {
             })
             .then(utils.fetchError.handleErrors)
             .then((response) => response.json())
-            //.then(utils.fetchError.handleErrors)
             .then((responseJSON) => {
                 dispatch(loginUserSuccess(token));
                 dispatch(setUser(responseJSON));
-                // dispatch({type:'server/storeUser', payload: responseJSON});
+                dispatch(userOnline(responseJSON, token));
+                dispatch(deviceToken(responseJSON, token))
                 if (redirect) dispatch(Actions.Profile);
             })
             .catch(error => {
@@ -285,3 +332,49 @@ export function setPicture(url, user, token) {
       });
     }
 }
+
+export function addDeviceToken(user, authToken) {
+    return function(dispatch) {
+        fetch(process.env.API_SERVER+'/api/user?access_token='+authToken, {
+            credentials: 'include',
+            method: 'PUT',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+        .then((response) => {
+            console.log('added token');
+        })
+        .catch((error) => {
+            console.log(error, 'error');
+        });
+    }
+}
+
+export function deviceToken(user, authToken) {
+    return function(dispatch) {
+        var newUser = user;
+        PushNotificationIOS.addEventListener('register', function(deviceToken){
+            if (user.deviceTokens) {
+                if (user.deviceTokens.indexOf(deviceToken) < 0) {
+                    newUser.deviceTokens.push(deviceToken);
+                    dispatch(addDeviceToken(newUser, authToken));
+                }
+            } else {
+                newUser.deviceTokens = [deviceToken];
+                dispatch(addDeviceToken(newUser, authToken));
+            }
+        });
+        PushNotificationIOS.requestPermissions();
+    }
+}
+
+
+
+
+
+
+
+

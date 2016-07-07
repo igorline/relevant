@@ -24,6 +24,7 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import DiscoverUser from '../components/discoverUser.component';
 import Notification from '../components/notification.component';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 class Discover extends Component {
   constructor (props, context) {
@@ -31,7 +32,7 @@ class Discover extends Component {
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       view: 1,
-      dataSource: ds.cloneWithRows([]),
+      dataSource: null,
       enabled: true,
     }
   }
@@ -40,8 +41,10 @@ class Discover extends Component {
     var self = this;
     if (self.props.posts.comments) this.props.actions.setComments(null);
     if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
-    if (self.props.posts.tag && self.props.posts.index) {
-      self.props.actions.clearPosts();
+    if (self.props.posts.tag && self.props.posts.index) self.props.actions.clearPosts();
+    if (self.props.posts.index.length > 0) {
+      var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
     }
     self.props.actions.getPosts(0, self.props.posts.tag);
   }
@@ -140,7 +143,10 @@ class Discover extends Component {
       }
     }
 
-    postsEl = (<ListView ref="listview" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} />)
+    if (self.state.dataSource) {
+      postsEl = (<ListView ref="listview" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} />)
+    }
+
 
     var userIndex = null;
     if (this.props.auth.userIndex) {
@@ -164,6 +170,7 @@ class Discover extends Component {
           <Text onPress={self.changeView.bind(self, 2)} style={[styles.font20, styles.category, view == 2? styles.active : null]}>Top</Text>
           <Text onPress={self.changeView.bind(self, 3)} style={[styles.font20, styles.category, view == 3? styles.active : null]}>People</Text>
         </View>
+        <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.dataSource} />
         {view != 3 ? postsEl : null}
         {view == 3 ? usersEl : null}
         <View pointerEvents={'none'} style={styles.notificationContainer}>

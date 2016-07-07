@@ -17,6 +17,22 @@ const updatePostElement = (array, post) => {
   return newArr;
 }
 
+const removePostElement = (array, post) => {
+  if (!array) return;
+  var index = array.findIndex(function(el) {
+    return el._id == post._id;
+  });
+  if (index < 0) {
+    console.log('post not present')
+    return array;
+  } else {
+    console.log('removing post');
+    array.splice(index, 1);
+    return array;
+  }
+
+}
+
 export default function post(state = initialState, action) {
   switch (action.type) {
 
@@ -96,6 +112,11 @@ export default function post(state = initialState, action) {
       })
     }
 
+    case types.REMOVE_POST: {
+      return Object.assign({}, state, {
+        'index':  removePostElement(state.index, action.payload)
+      })
+    }
 
     default:
       return state
