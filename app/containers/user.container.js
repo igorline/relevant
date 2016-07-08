@@ -54,7 +54,7 @@ class User extends Component {
         message: self.props.auth.user.name+' just visited your profile'
       }
 
-      notifActions.createNotification(self.props.auth.token, notifObj)
+      self.props.dispatch(notifActions.createNotification(self.props.auth.token, notifObj));
 
       subscriptionActions.getSubscriptionData('follower', self.props.users.selectedUser._id).then(function(data) {
         self.setState({following: data.data});

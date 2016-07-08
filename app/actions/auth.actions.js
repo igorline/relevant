@@ -1,6 +1,7 @@
 import * as types from './actionTypes';
 import { push } from 'react-router-redux';
 import thunk from 'redux-thunk';
+import * as notifActions from './notif.actions';
 var Contacts = require('react-native-contacts');
 require('../publicenv');
 import {
@@ -115,22 +116,21 @@ export
 function userOnline(user, token) {
     return dispatch => {
         console.log(user, 'online user')
-        // return fetch(process.env.API_SERVER+'/notification/online/'+user._id+'?access_token='+token, {
-        //     credentials: 'include',
-        //     method: 'POST',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json'
-        //     },
-        // })
-        // .then((response) => response.json())
-        // .then((responseJSON) => {
-        //     console.log(responseJSON, 'login response')
-
-        // })
-        // .catch(error => {
-        //     console.log(error, 'error');
-        // });
+        return fetch(process.env.API_SERVER+'/notification/online/'+user._id+'?access_token='+token, {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        })
+        .then((response) => response.json())
+        .then((responseJSON) => {
+            // console.log(responseJSON, 'login response')
+        })
+        .catch(error => {
+            console.log(error, 'error');
+        });
     }
 }
 
@@ -220,7 +220,13 @@ function getUser(token, redirect) {
             .then((responseJSON) => {
                 dispatch(loginUserSuccess(token));
                 dispatch(setUser(responseJSON));
-                dispatch(userOnline(responseJSON, token));
+                dispatch(notifActions.createNotification(token, {
+                    notification: {
+                        type: 'online',
+                        personal: false,
+                        byUser: responseJSON._id
+                    }
+                }));
                 dispatch(deviceToken(responseJSON, token))
                 if (redirect) dispatch(Actions.Profile);
             })
