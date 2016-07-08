@@ -6,7 +6,7 @@ const REPLACE = 'REPLACE';
 const countUnread = (notifications) => {
     var num = 0;
     notifications.forEach(function(activity) {
-      if (!activity.read) num += 1;
+      if (!activity.read && activity.personal) num += 1;
     })
     if (num > 0) {
       return num;

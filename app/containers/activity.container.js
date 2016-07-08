@@ -110,6 +110,7 @@ class Activity extends Component {
   render() {
     var self = this;
     var personalActivity = null;
+    var generalActivity = null;
     var personalActivityEl = null;
     var generalActivityEl = null;
     var onlineEl = null;
@@ -123,8 +124,9 @@ class Activity extends Component {
     if (self.props.notif.activity) {
       personalActivity = self.props.notif.activity;
       personalActivityEl = [];
+
       personalActivity.forEach(function(singleActivity) {
-        if (!singleActivity.byUser) return;
+        if (!singleActivity.byUser || !singleActivity.personal) return;
         var activityTime = moment(singleActivity.createdAt);
         var fromNow = activityTime.fromNow();
         if (singleActivity.type == 'investment') {
@@ -197,7 +199,35 @@ class Activity extends Component {
             );
          }
       })
+
+      generalActivity = self.props.notif.activity;
+      generalActivityEl = [];
+      generalActivity.forEach(function(singleActivity) {
+        if (singleActivity.personal) return;
+        var activityTime = moment(singleActivity.createdAt);
+        var fromNow = activityTime.fromNow();
+        if (singleActivity.type == 'online') {
+          if (singleActivity.byUser._id == self.props.auth.user._id) return;
+           generalActivityEl.push(
+            <View style={styles.singleActivity}>
+              <View style={styles.activityLeft}>
+                <Text>
+                  <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
+                    {singleActivity.byUser.name}
+                  </Text>
+                  &nbsp;went online
+                </Text>
+              </View>
+              <View style={styles.activityRight}>
+                <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
+              </View>
+            </View>
+          );
+         }
+      })
     }
+
+    console.log(self)
 
     return (
       <View style={styles.fullContainer}>
@@ -240,10 +270,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(Activity)
 
 const localStyles = StyleSheet.create({
 activityRight: {
-  flex: 0.30,
+  flex: 0.40,
 },
 activityLeft: {
-  flex: 0.70,
+  flex: 0.60,
 },
 singleActivity: {
   padding: 10,
