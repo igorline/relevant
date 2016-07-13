@@ -16,7 +16,6 @@ export function getDiscoverTags() {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      //console.log('get posts response', responseJSON);
       dispatch(setDiscoverTags(responseJSON));
     })
     .catch((error) => {
@@ -49,7 +48,7 @@ export function setTag(tag) {
 
 export function searchTags(tag) {
     return function(dispatch) {
-    return fetch(process.env.API_SERVER+'/api/tag/search?name='+tag, {
+    return fetch(process.env.API_SERVER+'/api/tag/search/'+tag, {
       credentials: 'include',
       method: 'GET',
       headers: {
@@ -66,47 +65,6 @@ export function searchTags(tag) {
     });
   }
 }
-
-export function searchSpecific(tag) {
-    return function(dispatch) {
-    return fetch(process.env.API_SERVER+'/api/tag/specific?name='+tag, {
-      credentials: 'include',
-      method: 'GET',
-      headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-      },
-    })
-    .then((response) => response.json())
-    .then((responseJSON) => {
-      return {'status': true, 'data': responseJSON}
-    })
-    .catch((error) => {
-      return {'status': false, 'data': error};
-    });
-  }
-}
-
-
-// export function createParentTag(token) {
-//     return function(dispatch) {
-//       return fetch(process.env.API_SERVER+'/api/tagparent/create?access_token='+token, {
-//         credentials: 'include',
-//         method: 'post',
-//         headers: {
-//           'Accept': 'application/json',
-//           'Content-Type': 'application/json'
-//         }
-//       })
-//       .then((response) => response.json())
-//       .then((responseJSON) => {
-//         return {status: true, data: responseJSON}
-//       })
-//       .catch((error) => {
-//         return {status: false, data: error};
-//       });
-//     }
-// }
 
 export function createTag(token, tagObj) {
     return function(dispatch) {

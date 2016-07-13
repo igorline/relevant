@@ -66,33 +66,32 @@ function clearPosts() {
     };
 }
 
-export function getPosts(skip, tag) {
+export function getPosts(skip, tags, sort) {
+  console.log(skip, tags, sort);
+  var tagsString = '';
   if (!skip) skip = 0;
-  var url = process.env.API_SERVER+'/api/post?skip='+skip;
-  if (tag) url = process.env.API_SERVER+'/api/post?skip='+skip+'&tag='+tag._id;
-  return function(dispatch) {
-    fetch(url, {
-        credentials: 'include',
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-      }
-    })
-    .then(utils.fetchError.handleErrors)
-    .then((response) => response.json())
-    .then((responseJSON) => {
-      dispatch(setPosts(responseJSON));
-    })
-    .catch((error) => {
-        console.log(error, 'error');
-    });
-  }
-}
+  if (!sort) sort = null;
+  var url = process.env.API_SERVER+'/api/post?skip='+skip+'&sort='+sort;
 
-export function getPostsByRank(skip, tag) {
-  var url = process.env.API_SERVER+'/api/post/rank?skip='+skip;
-  if (tag) url = process.env.API_SERVER+'/api/post/rank?skip='+skip+'&tag='+tag._id;
+  if (tags) {
+    if (tags.length) {
+      tags.forEach(function(tag, i) {
+        console.log(tag._id)
+        if (tag._id) {
+          if (i == tags.length - 1) {
+            tagsString+=tag._id;
+          } else {
+            var alter = tag._id;
+            tagsString+=alter+=',';
+          }
+        }
+      })
+    } else {
+      tagsString = tags._id;
+    }
+    url = process.env.API_SERVER+'/api/post?skip='+skip+'&tag='+tagsString+'&sort='+sort;
+  }
+
   return function(dispatch) {
     fetch(url, {
         credentials: 'include',
@@ -167,7 +166,6 @@ export function submitPost(post, token) {
 
 export function dispatchPost(post, token) {
    return function(dispatch) {
-    console.log('wtf')
     return fetch(process.env.API_SERVER+'/api/post?access_token='+token, {
         credentials: 'include',
         method: 'POST',
@@ -186,6 +184,7 @@ export function dispatchPost(post, token) {
       }
     })
     .catch((error) => {
+      console.log(error, 'create post error')
       return false;
     });
    }
@@ -216,6 +215,27 @@ export function getActivePost(postId) {
     .catch((error) => {
       console.log(error, 'error');
       return false;
+    });
+  }
+}
+
+export function irrelevant(token, postId) {
+  return function(dispatch) {
+    fetch(process.env.API_SERVER+'/api/post/irrelevant/'+postId+'?access_token='+token, {
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'PUT',
+    })
+    .then(utils.fetchError.handleErrors)
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      console.log(responseJSON, 'irrelevant response')
+    })
+    .catch((error) => {
+      console.log(error, 'error');
     });
   }
 }
@@ -281,34 +301,6 @@ export function createComment(token, commentObj) {
     })
     .catch((error) => {
       console.log(error, 'error');
-    });
-  }
-}
-
-export function invest(token, amount, post, investingUser){
-  return dispatch => {
-    return fetch( apiServer + 'invest?access_token='+token, {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        investor: investingUser._id,
-        amount: amount,
-        post: post
-      })
-    })
-    .then((response) => response.json())
-    .then((responseJSON) => {
-      console.log('response', responseJSON)
-      dispatch({type: 'server/notification', payload: {user: post.user._id, message: investingUser.name+' just invested in your post'}});
-      return true;
-    })
-    .catch((error) => {
-      console.log(error);
-      return false;
     });
   }
 }

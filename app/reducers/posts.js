@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {tag: null,pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null, parentTags: null};
+const initialState = {tag: null, pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null, parentTags: null};
 
 const updatePostElement = (array, post) => {
   if (!array) return;
@@ -30,20 +30,39 @@ const removePostElement = (array, post) => {
     array.splice(index, 1);
     return array;
   }
+}
 
+const addPosts = (arr, newArr) => {
+  if (!arr.length) return newArr;
+  finalArr = newArr.filter( function( el ) {
+    return arr.indexOf( el ) < 0;
+  });
+  var xx = arr.concat(finalArr)
+  return xx;
+}
+
+const addNew = (old, newPostObj) => {
+  var newArr = [newPostObj];
+  return newArr.concat(old);
 }
 
 export default function post(state = initialState, action) {
   switch (action.type) {
 
     case types.SET_POSTS: {
-      var newArr = state.index.concat(action.payload);
+      console.log(action.payload, 'SET_POSTS payload')
       return Object.assign({}, state, {
-          'index': newArr
+          'index': addPosts(state.index, action.payload)
       })
     }
 
-    case 'UPDATE_POSTS': {
+    case types.ADD_POST: {
+       return Object.assign({}, state, {
+          'index': addNew(state.index, action.payload)
+      })
+    }
+
+    case types.UPDATE_POSTS: {
        return Object.assign({}, state, {
         'index': action.payload
       })
@@ -62,7 +81,7 @@ export default function post(state = initialState, action) {
     }
 
 
-    case 'CLEAR_POSTS': {
+    case types.CLEAR_POSTS: {
        return Object.assign({}, state, {
         'index': [],
         'feed': []
@@ -96,6 +115,12 @@ export default function post(state = initialState, action) {
     case types.SET_COMMENTS: {
       return Object.assign({}, state, {
         'comments': action.payload
+      })
+    }
+
+    case types.ADD_POST_TO_FEED :{
+      return Object.assign({}, state, {
+        'feed': addNew(state.index, action.payload)
       })
     }
 

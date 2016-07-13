@@ -28,4 +28,6 @@ export const SET_ACTIVITY = 'SET_ACTIVITY';
 export const SET_COUNT = 'SET_COUNT';
 export const REMOVE_POST = 'REMOVE_POST';
 export const SET_PARENT_TAGS = 'SET_PARENT_TAGS';
+export const UPDATE_POSTS = 'UPDATE_POSTS';
+export const ADD_POST = 'ADD_POST';
 

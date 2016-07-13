@@ -30,7 +30,6 @@ import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
 import Notification from '../components/notification.component';
 import ProfileComponent from '../components/profile.component';
-import Shimmer from 'react-native-shimmer';
 
 class Profile extends Component {
   constructor (props, context) {

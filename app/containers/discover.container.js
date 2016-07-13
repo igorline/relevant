@@ -20,6 +20,7 @@ import * as userActions from '../actions/user.actions';
 import * as postActions from '../actions/post.actions';
 import * as tagActions from '../actions/tag.actions';
 import * as investActions from '../actions/invest.actions';
+import * as notifActions from '../actions/notif.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import DiscoverUser from '../components/discoverUser.component';
@@ -29,11 +30,12 @@ import Spinner from 'react-native-loading-spinner-overlay';
 class Discover extends Component {
   constructor (props, context) {
     super(props, context)
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       view: 1,
       dataSource: null,
       enabled: true,
+      tagSearchTerm: null,
+      disableLayout: false
     }
   }
 
@@ -46,7 +48,7 @@ class Discover extends Component {
       var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
     }
-    self.props.actions.getPosts(0, self.props.posts.tag);
+    if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null);
   }
 
   componentWillReceiveProps(next) {
@@ -57,19 +59,26 @@ class Discover extends Component {
     }
   }
 
+  clearTag() {
+    var self = this;
+    self.props.actions.setTag(null);
+    self.changeView(self.state.view);
+  }
+
   changeView(view) {
     var self = this;
-    self.setState({view: view});
-    self.props.actions.setTag(null);
     self.props.actions.clearPosts();
+    self.setState({view: view});
 
     switch(view) {
       case 1:
-        self.props.actions.getPosts(0, null);
+        self.setState({dataSource: null})
+        self.props.actions.getPosts(0, self.props.posts.tag, null);
         break;
 
       case 2:
-        self.props.actions.getPostsByRank(0, null);
+        self.setState({dataSource: null})
+        self.props.actions.getPosts(0, self.props.posts.tag, 'rank');
         break;
 
       case 3:
@@ -85,35 +94,95 @@ class Discover extends Component {
     var self = this;
     self.props.actions.setTag(tag);
     self.props.actions.clearPosts();
-    if (self.state.view == 1) self.props.actions.getPosts(0, tag);
-    if (self.state.view == 2) self.props.actions.getPostsByRank(0, tag);
+    self.setState({dataSource: null});
+    switch(self.state.view) {
+      case 1:
+        self.props.actions.getPosts(0, tag, null);
+        break;
+
+      case 2:
+        self.props.actions.getPosts(0, tag, 'rank');
+        break;
+
+      default:
+        return;
+    }
+  }
+
+  search() {
+    var self = this;
+    var length = self.props.posts.index.length;
+    self.props.actions.searchTags(self.state.tagSearchTerm).then(function(foundTags) {
+      if (!foundTags.status) {
+        self.props.actions.setNotif(true, 'Search error', false)
+      } else {
+        if (foundTags.length) {
+          self.props.actions.setTag(foundTags.data);
+          self.props.actions.clearPosts();
+          switch(self.state.view) {
+            case 1:
+              self.props.actions.getPosts(0, foundTags.data, null);
+              break;
+
+            case 2:
+              self.props.actions.getPosts(0, foundTags.data, 'rank');
+              break;
+
+            default:
+              return;
+          }
+        } else {
+          self.setState({noResults: true});
+          self.props.actions.setNotif(true, 'No results', false)
+        }
+      }
+    })
+    self.setState({tagSearchTerm: null})
   }
 
   renderRow(rowData) {
     var self = this;
-      return (
-        <Post post={rowData} {...self.props} styles={styles} />
-      );
+    return (
+      <Post post={rowData} {...self.props} styles={styles} />
+    );
   }
 
-  onScroll() {
+  onScroll(e) {
     var self = this;
+    if (!self.state.disableLayout) self.setState({disableLayout: true})
     if (self.refs.listview.scrollProperties.offset + self.refs.listview.scrollProperties.visibleLength >= self.refs.listview.scrollProperties.contentLength) {
       self.loadMore();
+    }
+    if ((self.state.height - self.refs.listview.scrollProperties.offset) < self.state.height) {
+      var newHeight = self.state.height - self.refs.listview.scrollProperties.offset;
+      if (newHeight > 0){
+        self.setState({transformHeight: newHeight})
+      } else {
+        self.setState({transformHeight: 0})
+      }
+    }
+    if (self.refs.listview.scrollProperties.offset <= 0) {
+      self.setState({transformHeight: self.state.height})
     }
   }
 
   loadMore() {
     var self = this;
     var length = self.props.posts.index.length;
-     console.log('load more, skip: ', length);
+     console.log('load more, skip: ', length, self.props.posts.tag);
     if (self.state.enabled) {
       self.setState({enabled: false});
-      if (self.state.view == 1) {
-        self.props.actions.getPosts(length, self.props.posts.tag);
-      }
-      if (self.state.view == 2) {
-        self.props.actions.getPostsByRank(length, self.props.posts.tag);
+      switch(self.state.view) {
+        case 1:
+           self.props.actions.getPosts(length, self.props.posts.tag, null);
+          break;
+
+        case 2:
+           self.props.actions.getPosts(length, self.props.posts.tag, 'rank');
+          break;
+
+        default:
+          return;
       }
       setTimeout(function() {
         self.setState({enabled: true})
@@ -162,8 +231,17 @@ class Discover extends Component {
 
     return (
       <View style={styles.fullContainer}>
-        <View>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView>
+        <View style={[{height: self.state.transformHeight}, styles.transformContainer]}  onLayout={(event) => {
+          var {x, y, width, height} = event.nativeEvent.layout;
+          if (!self.state.disableLayout) self.setState({height: height})
+        }}>
+          <Text style={{padding: 5}} onPress={self.clearTag.bind(self)}>Reset</Text>
+          <View style={styles.searchParent}>
+            <TextInput onSubmitEditing={self.search.bind(self)} style={[styles.searchInput, styles.font15]} placeholder={'Search'} multiline={false} onChangeText={(term) => this.setState({tagSearchTerm: term})} value={self.state.tagSearchTerm} returnKeyType='done' />
+          </View>
+          <View>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView>
+          </View>
         </View>
         <View style={[styles.row, styles.discoverBar]}>
           <Text onPress={self.changeView.bind(self, 1)} style={[styles.font20, styles.category, view == 1? styles.active : null]}>New</Text>
@@ -186,13 +264,14 @@ function mapStateToProps(state) {
     auth: state.auth,
     router: state.routerReducer,
     users: state.user,
-    posts: state.posts
+    posts: state.posts,
+    notif: state.notif
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...investActions, ...authActions, ...userActions, ...postActions, ...tagActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...userActions, ...postActions, ...tagActions, ...notifActions}, dispatch)
   }
 }
 
@@ -201,6 +280,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(Discover)
 const localStyles = StyleSheet.create({
 padding20: {
   padding: 20
+},
+transformContainer: {
+  overflow: 'hidden'
 },
 listStyle: {
   height: 100,
@@ -214,6 +296,19 @@ listScroll: {
   height: 100,
   borderWidth: 1,
   borderColor: 'red'
+},
+searchParent: {
+  display: 'flex',
+  width: fullWidth,
+  height: 30,
+},
+searchInput: {
+  display: 'flex',
+  flex: 1,
+  paddingTop: 2,
+  paddingBottom: 2,
+  paddingLeft: 5,
+  paddingRight: 5
 }
 });
 

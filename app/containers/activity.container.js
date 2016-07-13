@@ -26,7 +26,6 @@ import * as notifActions from '../actions/notif.actions';
 import * as tagActions from '../actions/tag.actions';
 import Notification from '../components/notification.component';
 import DiscoverUser from '../components/discoverUser.component';
-import Shimmer from 'react-native-shimmer';
 var moment = require('moment');
 
 class Activity extends Component {
