@@ -29,7 +29,6 @@ import * as notifActions from '../actions/notif.actions';
 import Notification from '../components/notification.component';
 import Comment from '../components/comment.component';
 import DiscoverUser from '../components/discoverUser.component';
-import Shimmer from 'react-native-shimmer';
 
 class Comments extends Component {
   constructor (props, context) {

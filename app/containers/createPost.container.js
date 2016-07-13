@@ -136,7 +136,6 @@ class CreatePost extends Component {
     var noSpaces = self.state.postTags.replace(/\s*,\s*/g, ',');
     var tagsArray = noSpaces.split(',');
     tags = finalBodyTags.concat(tagsArray);
-    console.log(tags, 'final tags')
 
     if (self.state.type == 'url') {
       utils.post.generate(self.state.postLink, body, tags, self.props.auth.token).then(function(results){
@@ -144,6 +143,7 @@ class CreatePost extends Component {
            self.props.actions.setNotif(true, 'Post error please try again', false)
         } else {
           self.props.actions.setNotif(true, 'Posted', true)
+          self.props.routes.Discover();
         }
       });
     }
@@ -172,14 +172,12 @@ class CreatePost extends Component {
         };
       }
 
-      console.log('here')
-
       self.props.actions.dispatchPost(postBody, self.props.auth.token).then(function(results) {
-        console.log(results, 'results')
          if (!results) {
-           self.props.actions.setNotif(true, 'Post error please try again', false)
+           self.props.actions.setNotif(true, 'Post error please try again', false);
         } else {
-          self.props.actions.setNotif(true, 'Posted', true)
+          self.props.actions.setNotif(true, 'Posted', true);
+          self.props.routes.Discover();
         }
       })
     }
@@ -191,28 +189,6 @@ class CreatePost extends Component {
   componentDidUpdate() {
     var self = this;
   }
-
-  // searchTags(tag) {
-  //   var self = this;
-  //   self.setState({preTag: tag});
-  //   if (!tag.length) {
-  //     self.setState({autoTags: []});
-  //     return;
-  //   }
-  //   self.props.actions.searchTags(tag).then(function(tags) {
-  //     self.setState({autoTags: tags.data});
-  //   })
-  // }
-
-  // addTagToPost(tag) {
-  //   var self = this;
-  //   if (self.state.postTags.indexOf(tag) < 0) {
-  //     self.state.postTags.push(tag);
-  //     self.setState({stage: 1, preTag: null, tagStage: 1, autoTags: []});
-  //   } else {
-  //     self.props.actions.setNotif(true, 'Cannot duplicate tag', false)
-  //   }
-  // }
 
   isOdd(num) {
     return num % 2;
@@ -229,41 +205,6 @@ class CreatePost extends Component {
     }
   }
 
-
-  // createTag() {
-  //   var self = this;
-  //   this.props.actions.searchSpecific(this.state.preTag).then(function(results) {
-  //     if (results.status) {
-  //       if (results.data.length) {
-  //         self.addTagToPost(results.data[0]);
-  //       } else {
-  //         self.setState({tagStage: 2});
-  //       }
-  //     } else {
-  //       self.props.actions.setNotif(true, 'Server error', false)
-  //     }
-  //   })
-  // }
-
-  // addParent(parent) {
-  //   var self = this;
-
-  //   var newTagObj = {
-  //     name: self.state.preTag,
-  //     parents: [parent._id]
-  //   }
-
-  //   this.props.actions.createTag(self.props.auth.token, newTagObj).then(function(response) {
-  //     if (response.status) {
-  //       self.state.postTags.push(response.data);
-  //       self.props.actions.setNotif(true, 'Created and added tag', true);
-  //       self.setState({stage: 1, preTag: null, tagStage: 1, autoTags: []});
-  //     } else {
-  //       self.props.actions.setNotif(true, 'Error creating tag', false)
-  //     }
-  //   })
-  // }
-
   removeTag(tag) {
     var self = this;
     var index = self.state.postTags.indexOf(tag);
@@ -276,18 +217,6 @@ class CreatePost extends Component {
     self.setState({postImage: null});
     console.log('remove image', self.state)
   }
-
-
-  // next() {
-  //   var self = this;
-
-  //   self.setState({stage: self.state.stage+1});
-  // }
-
-  // prev() {
-  //   var self = this;
-  //   self.setState({stage: self.state.stage-1});
-  // }
 
   chooseImage() {
     var self = this;
@@ -354,30 +283,6 @@ class CreatePost extends Component {
       })
     }
 
-
-    // if (self.state.parentTagsIndex.length) {
-    //   parentTagsEl = [];
-    //   self.state.parentTagsIndex.forEach(function(parentTag, i) {
-    //     parentTagsEl.push(<TouchableHighlight onPress={self.addParent.bind(self, parentTag)} key={i+'i'} style={styles.list}><Text key={i}>{parentTag.name}</Text></TouchableHighlight>);
-    //   })
-    // }
-
-    // var autoTags = (<Text style={styles.padding10}>No suggested tags</Text>);
-    // if (self.state.autoTags.length) {
-    //   autoTags = [];
-    //   self.state.autoTags.forEach(function(tag, i) {
-    //     autoTags.push(<TouchableHighlight key={i} onPress={self.addTagToPost.bind(self, tag)} style={[styles.list]}><Text  key={i+
-    //       'x'}>Add tag: {tag.name}</Text></TouchableHighlight>)
-    //   });
-    // }
-
-    // if (self.state.postTags) {
-    //   tagsString = [];
-    //   self.state.postTags.forEach(function(tag, i) {
-    //     tagsString.push(<TouchableHighlight onPress={self.removeTag.bind(self, tag)} style={styles.tagBox}><View style={styles.tagRow}><Image style={styles.tagX} source={require('../assets/images/x.png')} /><Text style={styles.white} key={i}>{tag.name}</Text></View></TouchableHighlight>);
-    //   })
-    // }
-
     typeEl = (<View style={[styles.row, styles.typeBar]}>
         <Text onPress={self.switchType.bind(self, 'url')} style={[styles.type, styles.font20, self.state.type == 'url' ? styles.active : null]}>Url</Text>
         <Text onPress={self.switchType.bind(self, 'text')} style={[styles.type, styles.font20, self.state.type == 'text' ? styles.active : null]}>Text</Text>
@@ -394,7 +299,7 @@ class CreatePost extends Component {
           <Image source={{uri: self.state.postImage}} style={styles.previewImage} />
           <Text style={[styles.active, styles.font20]} onPress={self.removeImage.bind(self)}>Remove image</Text>
           </View> : null}
-           {self.state.stage == 1 && self.state.type != 'url' ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Title here...' multiline={true} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} returnKeyType='done' /> : null}
+           {self.state.stage == 1 && self.state.type != 'url' ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Title here...' multiline={false} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} returnKeyType='done' /> : null}
           {self.state.stage == 1 ? <TextInput style={[styles.bodyInput, styles.font20]} placeholder='Body here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /> : null}
 
           <View style={styles.buttonParentCenter}><TouchableHighlight onPress={self.categoryButton.bind(self)} style={styles.genericButton}><Text style={styles.white}>{self.state.openCategory ? 'Done' :  'Choose Category'}</Text></TouchableHighlight></View>
@@ -409,22 +314,6 @@ class CreatePost extends Component {
 
           <TextInput style={[styles.linkInput, styles.font20]} placeholder='Enter tags... ex. webgl, slowstyle, xxx' multiline={false} onChangeText={(postTags) => this.setState({postTags})} value={this.state.postTags} returnKeyType='done' />
 
-
-          {/*self.state.stage == 1 ? <View style={[styles.tagStringContainer, styles.padding10]}><Text style={styles.font20}>Tags: </Text>{tagsString}</View> : null}
-          {self.state.stage == 2 && self.state.tagStage == 1 && self.state.postTags.length ? <View style={styles.tagStringContainer}>{tagsString}</View> : null*/}
-
-          {/*self.state.stage == 2 && self.state.tagStage == 1 ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Enter tags...' multiline={false} onChangeText={(postTags) => this.searchTags(postTags)} value={self.state.preTag} returnKeyType='done' /> : null*/}
-
-          {/*self.state.stage == 2 && self.state.tagStage == 1 ? <View>{autoTags}</View> : null*/}
-
-          {/*self.state.stage == 2 && self.state.tagStage == 1 && self.state.preTag ? <View style={[styles.padding10]}><Text onPress={self.createTag.bind(self)}>Create tag: {self.state.preTag}</Text></View> : null*/}
-
-          {/*self.state.stage == 2 && self.state.tagStage == 2 ? <View style={styles.center}><Text style={[styles.font20, styles.padding10]}>Select a parent tag</Text>{parentTagsEl}</View> : null*/}
-
-
-
-          {/*self.state.stage == 1 ? <View style={styles.buttonParent}><TouchableHighlight style={[styles.genericButton]} onPress={self.next.bind(self)}><Text style={[styles.white]}>Add tags</Text></TouchableHighlight></View>: null*/}
-          {/*self.state.stage == 2  ? <View style={styles.buttonParentCenter}><TouchableHighlight style={styles.genericButton} onPress={self.prev.bind(self)}><Text style={styles.white}>Cancel</Text></TouchableHighlight></View> : null*/}
            <View style={styles.buttonParentCenter}><TouchableHighlight style={styles.genericButton} onPress={self.post.bind(self)}><Text style={styles.white}>Submit</Text></TouchableHighlight></View>
         </ScrollView>
         <View pointerEvents={'none'} style={styles.notificationContainer}>

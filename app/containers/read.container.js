@@ -49,8 +49,9 @@ class Read extends Component {
       var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({feedData: fd.cloneWithRows(self.props.posts.feed)});
     }
-    this.props.actions.getFeed(self.props.auth.token, 0, null);
-    //this.props.actions.getMessages(self.props.auth.user._id);
+    if (self.props.posts.feed.length == 0) {
+      this.props.actions.getFeed(self.props.auth.token, 0, null);
+    }
   }
 
   componentDidUpdate() {

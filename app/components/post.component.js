@@ -27,7 +27,6 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var postStyles = null;
 var moment = require('moment');
 var PickerItemIOS = PickerIOS.Item;
-import Shimmer from 'react-native-shimmer';
 var Progress = require('react-native-progress');
 import Share from 'react-native-share';
 
@@ -45,6 +44,7 @@ class Post extends Component {
       timeUntilString: null,
       timePassedPercent: null,
       invested: false,
+      investAni: [],
     }
   }
 
@@ -62,6 +62,46 @@ class Post extends Component {
   componentDidMount() {
     this.checkTime(this);
     this.checkInvestments(this.props.post.investments);
+  }
+
+  testAni() {
+    var self = this;
+    var styles = {...localStyles, ...globalStyles};
+    for (var i = 0; i < 21; i++) {
+      var values = {};
+      values.x = new Animated.Value(0);
+      values.y = new Animated.Value(0);
+      values.scale = new Animated.Value(0);
+      values.x.setValue(0);
+      values.y.setValue(0);
+      values.scale.setValue(1);
+      self.state.investAni.push(<Animated.Text style={[styles.aniMoney, {transform: [{translateX: values.x}, {scale: values.scale}, {translateY: values.y}]}]}>💵</Animated.Text>);
+      Animated.timing(
+        values.x,
+        {
+          toValue: self.state.postWidth - 65,
+          delay: i*100,
+          duration: 500
+        }
+      ).start();
+      Animated.timing(
+        values.y,
+        {
+          toValue: (self.state.postHeight * -1) + 46,
+          delay: i*100,
+          duration: 500
+        }
+      ).start();
+      Animated.timing(
+        values.scale,
+        {
+          toValue: 1,
+          delay: i*100,
+          duration: 500
+        }
+      ).start();
+    }
+    self.setState({})
   }
 
   checkInvestments(investments) {
@@ -158,13 +198,21 @@ class Post extends Component {
     if (functionBool) {
       if (!self.state.invested) {
         console.log('create investment');
-        this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user)
+
+        for (var i = 0; i < 21; i++) {
+          self.state.investAni.push(<Text style={styles.aniMoney}>💵</Text>);
+        }
+
+        this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
+           if (self.props.router.currentRoute == 'User') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
+        })
         this.props.actions.createSubscription(this.props.auth.token, self.props.post);
       } else {
         console.log('destroy investment')
-        this.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user)
+        this.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
+           if (self.props.router.currentRoute == 'User') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
+        })
       }
-
     }
     if (toggle) this.toggleInvest(this);
     self.setState({investAmount: 50});
@@ -180,6 +228,12 @@ class Post extends Component {
     var self = this;
     self.props.actions.deletePost(self.props.auth.token, self.props.post);
     console.log('delete')
+  }
+
+  irrelevant() {
+    var self = this;
+    console.log('irrelevant')
+    self.props.actions.irrelevant(self.props.auth.token, self.props.post._id);
   }
 
 
@@ -201,7 +255,6 @@ class Post extends Component {
     var balance = null;
     var createdAt = null;
     var relevance = 0;
-    var postStyles = this.props.styles;
     var user = null;
     var comments = null;
     var value = 0;
@@ -216,6 +269,7 @@ class Post extends Component {
     var investOptions = [];
     var tags = null;
     var tagsEl = null;
+    var lastPost = false;
 
     if (this.props.post) {
       post = this.props.post;
@@ -235,6 +289,13 @@ class Post extends Component {
         postUser = post.user;
         if (postUser.image) postUserImage = postUser.image;
         if (postUser.name) postUserName = postUser.name;
+      }
+      if (post.lastPost) {
+        if (post.lastPost.length) {
+          post.lastPost.forEach(function(lastUser) {
+            if (lastUser == self.props.auth.user._id) lastPost = true;
+          })
+        }
       }
     }
 
@@ -327,7 +388,10 @@ class Post extends Component {
     }
 
     return (
-        <View style={[styles.postContainer]}>
+        <View style={[styles.postContainer]} onLayout={(event) => {
+          var {x, y, width, height} = event.nativeEvent.layout;
+          self.setState({postHeight: height, postWidth: width})
+        }}>
         <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(null, link) : null}>
           <View>
             <View style={styles.postHeader}>
@@ -347,6 +411,7 @@ class Post extends Component {
         </TouchableHighlight>
           <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(null, link) : null}>
             <View style={styles.postSection}>
+              {lastPost ? <Text style={styles.lastPost}>Last subscribed post❗️</Text> : null}
               <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
               {link ? <Text style={styles.font10}>from {self.extractDomain(link)}</Text> : null}
               {body ? <View style={[styles.postBody, styles.font15]}><Text numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text></View> : null}
@@ -362,6 +427,9 @@ class Post extends Component {
             <Text style={[styles.font15, styles.commentPad]} onPress={self.openComments.bind(self)}>{commentString}</Text>
             <Text style={[styles.font15, styles.commentPad]} onPress={self.onShare.bind(self)}>Share</Text>
             {self.props.post.user._id == self.props.auth.user._id ? <Text style={[styles.font15, styles.commentPad]} onPress={self.deletePost.bind(self)}>Delete</Text> : null}
+            {self.props.post.user._id != self.props.auth.user._id ? <Text style={[styles.font15, styles.commentPad]} onPress={self.irrelevant.bind(self)}>Irrelevant</Text> : null}
+            <Text style={[styles.font15, styles.commentPad]} onPress={self.testAni.bind(self)}>testAni</Text>
+
             <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
               <PickerIOS
                 selectedValue={self.state.investAmount}
@@ -375,6 +443,7 @@ class Post extends Component {
             {investButtonEl}
             </View>
           </View>
+          {self.state.investAni}
         </View>
     );
   }
@@ -465,6 +534,11 @@ const localStyles = StyleSheet.create({
   link: {
     flex: 1,
   },
+  aniMoney: {
+    position: 'absolute',
+    bottom: 0,
+    left: 10
+  },
   countdown: {
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -483,6 +557,9 @@ const localStyles = StyleSheet.create({
   },
   progressCirc: {
     marginRight: 5
+  },
+  lastPost: {
+
   }
 });
 

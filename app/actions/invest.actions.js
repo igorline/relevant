@@ -3,7 +3,35 @@ require('../publicenv');
 var { Actions } = require('react-native-redux-router');
 import * as utils from '../utils';
 
+var apiServer = process.env.API_SERVER+'/api/'
 
+export function invest(token, amount, post, investingUser){
+  return dispatch => {
+    return fetch( apiServer + 'invest?access_token='+token, {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        investor: investingUser._id,
+        amount: amount,
+        post: post
+      })
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      console.log('response', responseJSON)
+      dispatch({type: 'server/notification', payload: {user: post.user._id, message: investingUser.name+' just invested in your post'}});
+      return true;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false;
+    });
+  }
+}
 
 export function destroyInvestment(token, amount, post, investingUser){
   return dispatch => {

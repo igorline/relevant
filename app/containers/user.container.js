@@ -21,6 +21,7 @@ import * as tagActions from '../actions/tag.actions';
 import { bindActionCreators } from 'redux';
 import * as investActions from '../actions/invest.actions';
 import * as notifActions from '../actions/notif.actions';
+import * as userActions from '../actions/user.actions';
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
 import * as utils from '../utils';
@@ -165,7 +166,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...tagActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...tagActions, ...userActions}, dispatch)
   }
 }
 

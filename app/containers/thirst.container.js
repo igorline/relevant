@@ -31,7 +31,6 @@ import * as messageActions from '../actions/message.actions';
 import Notification from '../components/notification.component';
 import Comment from '../components/comment.component';
 import DiscoverUser from '../components/discoverUser.component';
-import Shimmer from 'react-native-shimmer';
 
 class Thirst extends Component {
   constructor (props, context) {
@@ -94,19 +93,6 @@ class Thirst extends Component {
     })
   }
 
-
-  searchTags(tag) {
-    var self = this;
-    self.setState({preTag: tag});
-    if (!tag.length) {
-      self.setState({autoTags: []});
-      return;
-    }
-    self.props.actions.searchTags(tag).then(function(tags) {
-      self.setState({autoTags: tags.data});
-    })
-  }
-
   addTagToMessage(tag) {
     var self = this;
     if (!self.state.tag) {
@@ -123,31 +109,11 @@ class Thirst extends Component {
 
   render() {
     var self = this;
-
-    var autoTags = (<Text style={[]}>No suggested tags</Text>);
-    if (self.state.autoTags.length) {
-      autoTags = [];
-      self.state.autoTags.forEach(function(tag, i) {
-        autoTags.push(<TouchableHighlight key={i} onPress={self.addTagToMessage.bind(self, tag)} style={[styles.list]}>
-          <Text key={i+'x'}>Add tag: {tag.name}</Text>
-        </TouchableHighlight>)
-      });
-    }
-
     var tagEl = null;
-
-     if (self.state.tag) {
-      tagEl = (<TouchableHighlight underlayColor={'transparent'} onPress={self.removeTag.bind(self)} style={styles.singleTagBox}><View style={styles.tagRow}><Image style={styles.tagX} source={require('../assets/images/x.png')} /><Text style={styles.white}>{self.state.tag.name}</Text></View></TouchableHighlight>)
-    }
 
     return (
       <View style={[{height: self.state.visibleHeight}]}>
         <View style={{flex: 1}}>
-          {/*<View style={styles.chooseTagContainer}>
-          {!self.state.tag ? <View><TextInput style={[styles.thirstInput, styles.font15]} placeholder={'Enter the tag you want '+self.props.user.selectedUser.name+' to post about'} multiline={false} onChangeText={(tags) => this.searchTags(tags)} value={self.state.preTag} returnKeyType='done' />
-          {autoTags}</View> : null}
-          <View style={styles.tagStringContainer}>{tagEl}</View>
-          </View>*/}
           <TextInput style={[styles.thirstInput, styles.font15]} placeholder={'Enter your message for '+self.props.user.selectedUser.name} multiline={true} onChangeText={(text) => this.setState({text})} value={self.state.text} returnKeyType='done' />
           <TouchableHighlight underlayColor={'transparent'} style={[styles.thirstSubmit]} onPress={self.sendThirst.bind(self)}>
             <Text style={[styles.font15, styles.active]}>Send</Text>
