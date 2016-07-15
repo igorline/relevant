@@ -10,6 +10,8 @@ import React, {
   ScrollView,
   Picker,
   ListView,
+  Animated,
+  Easing,
   RecyclerViewBackedScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -19,6 +21,7 @@ import * as authActions from '../actions/auth.actions';
 import * as userActions from '../actions/user.actions';
 import * as postActions from '../actions/post.actions';
 import * as tagActions from '../actions/tag.actions';
+import * as animationActions from '../actions/animation.actions';
 import * as investActions from '../actions/invest.actions';
 import * as notifActions from '../actions/notif.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
@@ -26,6 +29,7 @@ import Post from '../components/post.component';
 import DiscoverUser from '../components/discoverUser.component';
 import Notification from '../components/notification.component';
 import Spinner from 'react-native-loading-spinner-overlay';
+var animations = require("../animation");
 
 class Discover extends Component {
   constructor (props, context) {
@@ -35,7 +39,11 @@ class Discover extends Component {
       dataSource: null,
       enabled: true,
       tagSearchTerm: null,
-      disableLayout: false
+      disableLayout: false,
+      lastOffset: 0,
+      transformHeight: null,
+      height: null,
+      investAni: [],
     }
   }
 
@@ -49,6 +57,7 @@ class Discover extends Component {
       self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
     }
     if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null);
+    if (self.props.posts.tag) self.props.actions.getPosts(0, self.props.posts.tag, null);
   }
 
   componentWillReceiveProps(next) {
@@ -57,6 +66,17 @@ class Discover extends Component {
       var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({dataSource: ds.cloneWithRows(next.posts.index)});
     }
+    if (self.props.animation != next.animation) {
+      if (next.animation.bool) {
+        if (next.animation.type == 'invest') {
+          animations.investAni(self);
+        }
+      }
+    }
+  }
+
+  componentDidUpdate(next) {
+    var self = this;
   }
 
   clearTag() {
@@ -113,10 +133,11 @@ class Discover extends Component {
     var self = this;
     var length = self.props.posts.index.length;
     self.props.actions.searchTags(self.state.tagSearchTerm).then(function(foundTags) {
+      console.log(foundTags, 'foundTags')
       if (!foundTags.status) {
         self.props.actions.setNotif(true, 'Search error', false)
       } else {
-        if (foundTags.length) {
+        if (foundTags.data.length) {
           self.props.actions.setTag(foundTags.data);
           self.props.actions.clearPosts();
           switch(self.state.view) {
@@ -153,17 +174,25 @@ class Discover extends Component {
     if (self.refs.listview.scrollProperties.offset + self.refs.listview.scrollProperties.visibleLength >= self.refs.listview.scrollProperties.contentLength) {
       self.loadMore();
     }
-    if ((self.state.height - self.refs.listview.scrollProperties.offset) < self.state.height) {
-      var newHeight = self.state.height - self.refs.listview.scrollProperties.offset;
-      if (newHeight > 0){
-        self.setState({transformHeight: newHeight})
-      } else {
-        self.setState({transformHeight: 0})
-      }
+    if (self.refs.listview.scrollProperties.offset < 0) return;
+    if (self.refs.listview.scrollProperties.offset > self.state.lastOffset && self.refs.listview.scrollProperties.offset > 20) {
+      Animated.timing(
+        self.state.transformHeight,
+        {
+          toValue: 0,
+          duration: 200
+        }
+      ).start();
+    } else {
+      Animated.timing(
+        self.state.transformHeight,
+        {
+          toValue: self.state.height,
+          duration: 200
+        }
+      ).start();
     }
-    if (self.refs.listview.scrollProperties.offset <= 0) {
-      self.setState({transformHeight: self.state.height})
-    }
+     self.setState({lastOffset: self.refs.listview.scrollProperties.offset});
   }
 
   loadMore() {
@@ -231,9 +260,11 @@ class Discover extends Component {
 
     return (
       <View style={styles.fullContainer}>
-        <View style={[{height: self.state.transformHeight}, styles.transformContainer]}  onLayout={(event) => {
+        <Animated.View style={[{height: self.state.transformHeight}, styles.transformContainer]}  onLayout={(event) => {
           var {x, y, width, height} = event.nativeEvent.layout;
-          if (!self.state.disableLayout) self.setState({height: height})
+          if (!self.state.disableLayout && self.props.posts.discoverTags) {
+              self.setState({height: height, transformHeight: new Animated.Value(height)})
+          }
         }}>
           <Text style={{padding: 5}} onPress={self.clearTag.bind(self)}>Reset</Text>
           <View style={styles.searchParent}>
@@ -242,18 +273,22 @@ class Discover extends Component {
           <View>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView>
           </View>
-        </View>
+          </Animated.View>
         <View style={[styles.row, styles.discoverBar]}>
           <Text onPress={self.changeView.bind(self, 1)} style={[styles.font20, styles.category, view == 1? styles.active : null]}>New</Text>
           <Text onPress={self.changeView.bind(self, 2)} style={[styles.font20, styles.category, view == 2? styles.active : null]}>Top</Text>
           <Text onPress={self.changeView.bind(self, 3)} style={[styles.font20, styles.category, view == 3? styles.active : null]}>People</Text>
         </View>
+
         <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.dataSource} />
+
         {view != 3 ? postsEl : null}
         {view == 3 ? usersEl : null}
+
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
+        {self.state.investAni}
       </View>
     );
   }
@@ -265,13 +300,14 @@ function mapStateToProps(state) {
     router: state.routerReducer,
     users: state.user,
     posts: state.posts,
-    notif: state.notif
+    notif: state.notif,
+    animation: state.animation
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...investActions, ...authActions, ...userActions, ...postActions, ...tagActions, ...notifActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...userActions, ...postActions, ...tagActions, ...notifActions, ...animationActions}, dispatch)
   }
 }
 
@@ -282,7 +318,10 @@ padding20: {
   padding: 20
 },
 transformContainer: {
-  overflow: 'hidden'
+  overflow: 'hidden',
+  // position: 'absolute',
+  // top: 0,
+  // left: 0
 },
 listStyle: {
   height: 100,
@@ -298,9 +337,12 @@ listScroll: {
   borderColor: 'red'
 },
 searchParent: {
-  display: 'flex',
+  // display: 'flex',
   width: fullWidth,
   height: 30,
+},
+scrollPadding: {
+  marginTop: 300
 },
 searchInput: {
   display: 'flex',

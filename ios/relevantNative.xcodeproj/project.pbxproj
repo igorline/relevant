@@ -43,6 +43,7 @@
 		2A79AA261D34579900F93D3E /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A79AA181D3456D800F93D3E /* libReactNativeShareExtension.a */; };
 		2A79AA271D34579900F93D3E /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD0F0D11CA0A33B0039C7DB /* libRNImagePicker.a */; };
 		2A79AA281D34579900F93D3E /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AC699DB1CF8C78A00A0764A /* libRNShare.a */; };
+		2A8E50C51D370029005AFC3D /* libRNOverlay.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A8E50C31D370012005AFC3D /* libRNOverlay.a */; };
 		2AC699DC1CF8C79800A0764A /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AC699DB1CF8C78A00A0764A /* libRNShare.a */; };
 		2AD0F0CB1CA099370039C7DB /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD0F0C11CA099280039C7DB /* libRCTContacts.a */; };
 		2AD0F0D21CA0A3430039C7DB /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AD0F0D11CA0A33B0039C7DB /* libRNImagePicker.a */; };
@@ -139,6 +140,13 @@
 			remoteGlobalIDString = 41B5DE301D0B505800949BD5;
 			remoteInfo = ReactNativeShareExtension;
 		};
+		2A8E50C21D370012005AFC3D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A8E50AF1D370011005AFC3D /* RNOverlay.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNOverlay;
+		};
 		2AC699DA1CF8C78A00A0764A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2AC699D61CF8C78A00A0764A /* RNShare.xcodeproj */;
@@ -223,6 +231,7 @@
 		2A79AA0A1D3452A100F93D3E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2A79AA111D34566C00F93D3E /* Relevant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Relevant.m; sourceTree = "<group>"; };
 		2A79AA131D3456D800F93D3E /* ReactNativeShareExtension.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeShareExtension.xcodeproj; path = "../node_modules/react-native-share-extension/ios/ReactNativeShareExtension.xcodeproj"; sourceTree = "<group>"; };
+		2A8E50AF1D370011005AFC3D /* RNOverlay.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNOverlay.xcodeproj; path = "../node_modules/react-native-overlay/RNOverlay.xcodeproj"; sourceTree = "<group>"; };
 		2AC699D61CF8C78A00A0764A /* RNShare.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNShare.xcodeproj; path = "../node_modules/react-native-share/ios/RNShare.xcodeproj"; sourceTree = "<group>"; };
 		2AD0F0B91CA099280039C7DB /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
 		2AD0F0CC1CA0A33A0039C7DB /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
@@ -276,6 +285,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A8E50C51D370029005AFC3D /* libRNOverlay.a in Frameworks */,
 				2A79AA191D34579900F93D3E /* libART.a in Frameworks */,
 				2A79AA1A1D34579900F93D3E /* libRCTActionSheet.a in Frameworks */,
 				2A79AA1B1D34579900F93D3E /* libRCTContacts.a in Frameworks */,
@@ -420,6 +430,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		2A8E50B01D370011005AFC3D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2A8E50C31D370012005AFC3D /* libRNOverlay.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		2AC699D71CF8C78A00A0764A /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -463,6 +481,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				2A8E50AF1D370011005AFC3D /* RNOverlay.xcodeproj */,
 				2A79AA131D3456D800F93D3E /* ReactNativeShareExtension.xcodeproj */,
 				2A59991F1D26F45E00EC8534 /* RCTPushNotification.xcodeproj */,
 				2AC699D61CF8C78A00A0764A /* RNShare.xcodeproj */,
@@ -679,6 +698,10 @@
 					ProjectRef = 2AD0F0CC1CA0A33A0039C7DB /* RNImagePicker.xcodeproj */;
 				},
 				{
+					ProductGroup = 2A8E50B01D370011005AFC3D /* Products */;
+					ProjectRef = 2A8E50AF1D370011005AFC3D /* RNOverlay.xcodeproj */;
+				},
+				{
 					ProductGroup = 2AC699D71CF8C78A00A0764A /* Products */;
 					ProjectRef = 2AC699D61CF8C78A00A0764A /* RNShare.xcodeproj */;
 				},
@@ -761,6 +784,13 @@
 			fileType = archive.ar;
 			path = libReactNativeShareExtension.a;
 			remoteRef = 2A79AA171D3456D800F93D3E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2A8E50C31D370012005AFC3D /* libRNOverlay.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNOverlay.a;
+			remoteRef = 2A8E50C21D370012005AFC3D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		2AC699DB1CF8C78A00A0764A /* libRNShare.a */ = {

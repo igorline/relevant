@@ -30,4 +30,7 @@ export const REMOVE_POST = 'REMOVE_POST';
 export const SET_PARENT_TAGS = 'SET_PARENT_TAGS';
 export const UPDATE_POSTS = 'UPDATE_POSTS';
 export const ADD_POST = 'ADD_POST';
+export const SET_ANIMATION = 'SET_ANIMATION';
+export const CLEAR_ANIMATION = 'CLEAR_ANIMATION';
+export const ADD_COMMENT = 'ADD_COMMENT';
 

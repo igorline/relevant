@@ -252,7 +252,7 @@ export function deleteComment(token, id, postId) {
     })
     .then(utils.fetchError.handleErrors)
     .then((response) => {
-      dispatch(getComments(postId));
+      // dispatch(getComments(postId));
       dispatch(authActions.getUser(token, false))
     })
     .catch((error) => {

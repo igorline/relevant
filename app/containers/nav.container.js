@@ -9,7 +9,9 @@ import React, {
   TextInput,
   StatusBarIOS,
   TouchableHighlight,
-  AppState
+  AppState,
+  Animated,
+  Easing
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -18,6 +20,7 @@ import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as onlineActions from '../actions/online.actions';
 import * as notifActions from '../actions/notif.actions';
+import * as animationActions from '../actions/animation.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class Nav extends Component {
@@ -25,8 +28,14 @@ class Nav extends Component {
     super(props, context)
     this.state = {
       currentAppState: AppState.currentState,
+      investAni: [],
     }
   }
+
+  componentWillUpdate(next) {
+    var self = this;
+  }
+
 
   componentDidMount() {
     var self = this;
@@ -49,7 +58,6 @@ class Nav extends Component {
   handleAppStateChange(currentAppState) {
     var self = this;
     if (currentAppState == 'active' && self.props.auth.user) {
-        console.log('send user to socket', self.props.auth.user.name);
         self.props.actions.userToSocket(self.props.auth.user);
         self.props.actions.getActivity(self.props.auth.user._id);
     }
@@ -109,6 +117,7 @@ class Nav extends Component {
         </View>
          {route == 'Profile' ? <View style={styles.gear}><TouchableHighlight onPress={self.props.routes.ProfileOptions} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View> : null}
          {route != 'SinglePost' ? statsEl : null}
+
       </View>);
     } else {
       StatusBarIOS.setStyle('default');
@@ -129,13 +138,14 @@ function mapStateToProps(state) {
     users: state.user,
     router: state.routerReducer,
     online: state.online,
-    notif: state.notif
+    notif: state.notif,
+    animation: state.animation
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions, ...notifActions }, dispatch)
+    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions}, dispatch)
   }
 }
 

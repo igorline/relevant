@@ -6,13 +6,20 @@ const REPLACE = 'REPLACE';
 const countUnread = (notifications) => {
     var num = 0;
     notifications.forEach(function(activity) {
-      if (!activity.read && activity.personal) num += 1;
+      if (activity) {
+        if (!activity.read && activity.personal) num += 1;
+      }
     })
     if (num > 0) {
       return num;
     } else {
       return null;
     }
+}
+
+const addNew = (old, newObj) => {
+  var newArr = [newObj];
+  return newArr.concat(old);
 }
 
 export default function auth(state = initialState, action) {
@@ -30,6 +37,13 @@ export default function auth(state = initialState, action) {
       return Object.assign({}, state, {
         'activity': action.payload,
         'count': countUnread(action.payload)
+      })
+    }
+
+    case 'ADD_ACTIVITY': {
+      return Object.assign({}, state, {
+        'activity': addNew(state.activity, action.payload),
+        'count': countUnread(addNew(state.activity, action.payload))
       })
     }
 

@@ -34,6 +34,7 @@ export function setDiscoverTags(data) {
 
 export function goToTag(tag) {
   return function(dispatch) {
+    console.log('go to', tag)
     dispatch(setTag(tag));
     dispatch(Actions.Discover);
   }
