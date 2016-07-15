@@ -19,6 +19,7 @@ import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as userActions from '../actions/user.actions';
 import * as tagActions from '../actions/tag.actions';
+import * as animationActions from '../actions/animation.actions';
 import * as messageActions from '../actions/message.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
@@ -26,6 +27,7 @@ import Post from '../components/post.component';
 import * as investActions from '../actions/invest.actions';
 import Notification from '../components/notification.component';
 import Spinner from 'react-native-loading-spinner-overlay';
+var animations = require("../animation");
 
 class Read extends Component {
   constructor (props, context) {
@@ -37,7 +39,8 @@ class Read extends Component {
       enabled: true,
       feedData: null,
       messagesData: md.cloneWithRows([]),
-      view: 1
+      view: 1,
+      investAni: [],
     }
   }
 
@@ -67,6 +70,13 @@ class Read extends Component {
     if (next.messages.index != self.props.messages.index) {
       var md = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({messagesData: md.cloneWithRows(next.messages.index)});
+    }
+    if (self.props.animation != next.animation) {
+      if (next.animation.bool) {
+        if (next.animation.type == 'invest') {
+          animations.investAni(self);
+        }
+      }
     }
   }
 
@@ -180,6 +190,7 @@ class Read extends Component {
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
+        {self.state.investAni}
       </View>
     );
   }
@@ -191,13 +202,14 @@ function mapStateToProps(state) {
     posts: state.posts,
     user: state.user,
     router: state.routerReducer,
-    messages: state.messages
+    messages: state.messages,
+    animation: state.animation
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...messageActions, ...investActions, ...authActions, ...postActions, ...userActions, ...tagActions}, dispatch)
+    actions: bindActionCreators({...messageActions, ...investActions, ...authActions, ...postActions, ...userActions, ...tagActions, ...animationActions}, dispatch)
   }
 }
 

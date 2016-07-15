@@ -24,99 +24,31 @@ var ImagePickerManager = require('NativeModules').ImagePickerManager;
 require('../publicenv');
 import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
+import * as animationActions from '../actions/animation.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
 import Notification from '../components/notification.component';
 import ProfileComponent from '../components/profile.component';
+var animations = require("../animation");
 
 class Profile extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      investAni: [],
     }
   }
 
-  componentDidMount() {
+  componentWillReceiveProps(next) {
     var self = this;
-    // PushNotificationIOS.abandonPermissions();
-    // PushNotificationIOS.checkPermissions((permissions) => {
-    //   console.log(permissions, 'permissions')
-    // });
-
+    if (self.props.animation != next.animation) {
+      if (next.animation.bool) {
+        if (next.animation.type == 'invest') animations.investAni(self);
+      }
+    }
   }
-
-  componentWillMount() {
-    //PushNotificationIOS.addEventListener('register', function(token){
-    //  console.log('hello', token)
-    //});
-    //PushNotificationIOS.requestPermissions();
-     // Add listener for push notifications
-
-    // PushNotificationIOS.addEventListener('notification', this._onNotification);
-    // // Add listener for local notifications
-    // PushNotificationIOS.addEventListener('localNotification', this._onLocalNotification);
-    // PushNotificationIOS.addEventListener('register', function(token){
-    //   console.log(token, 'token')
-    // });
-  }
-
-  componentWillUnmount() {
-    // // Remove listener for push notifications
-    // PushNotificationIOS.removeEventListener('notification', this._onNotification);
-    // // Remove listener for local notifications
-    // PushNotificationIOS.removeEventListener('localNotification', this._onLocalNotification);
-    //PushNotificationIOS.abandonPermissions();
-  }
-
-  //  _sendNotification() {
-  //   require('RCTDeviceEventEmitter').emit('remoteNotificationReceived', {
-  //     aps: {
-  //       alert: 'Sample notification',
-  //       badge: '+1',
-  //       sound: 'default',
-  //       category: 'REACT_NATIVE'
-  //     },
-  //   });
-  // }
-
-  // _sendLocalNotification() {
-  //   require('RCTDeviceEventEmitter').emit('localNotificationReceived', {
-  //     aps: {
-  //       alert: 'Sample local notification',
-  //       badge: '+1',
-  //       sound: 'default',
-  //       category: 'REACT_NATIVE'
-  //     },
-  //   });
-  // }
-
-  // _onNotification(notification) {
-  //   AlertIOS.alert(
-  //     'Push Notification Received',
-  //     'Alert message: ' + notification.getMessage(),
-  //     [{
-  //       text: 'Dismiss',
-  //       onPress: null,
-  //     }]
-  //   );
-  // }
-
-  // _onLocalNotification(notification){
-  //   AlertIOS.alert(
-  //     'Local Notification Received',
-  //     'Alert message: ' + notification.getMessage(),
-  //     [{
-  //       text: 'Dismiss',
-  //       onPress: null,
-  //     }]
-  //   );
-  // }
-
-  componentDidUpdate() {
-  }
-
 
   render() {
     var self = this;
@@ -156,8 +88,6 @@ class Profile extends Component {
     return (
       <View style={styles.fullContainer}>
       <ScrollView style={styles.fullContainer}>
-        {/*<Text style={styles.padding10} onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(42)}>42</Text>
-        <Text style={styles.padding10}  onPress={() => PushNotificationIOS.setApplicationIconBadgeNumber(0)}>Clear</Text>*/}
       <ProfileComponent {...self.props} user={self.props.auth.user} styles={styles} />
         <View>
           <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
@@ -167,6 +97,7 @@ class Profile extends Component {
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
+        {self.state.investAni}
       </View>
     );
   }
@@ -178,13 +109,14 @@ function mapStateToProps(state) {
     posts: state.posts,
     router: state.routerReducer,
     socket: state.socket,
-    online: state.online
+    online: state.online,
+    animation: state.animation
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...tagActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...tagActions, ...animationActions}, dispatch)
   }
 }
 

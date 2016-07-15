@@ -12,6 +12,7 @@ import React, {
   Picker,
   PickerIOS,
   Animated,
+  Easing,
   LayoutAnimation,
   ScrollView
 } from 'react-native';
@@ -20,6 +21,7 @@ var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
+import * as animationActions from '../actions/animation.actions';
 import * as userActions from '../actions/user.actions';
 import * as investActions from '../actions/invest.actions';
 require('../publicenv');
@@ -44,7 +46,6 @@ class Post extends Component {
       timeUntilString: null,
       timePassedPercent: null,
       invested: false,
-      investAni: [],
     }
   }
 
@@ -66,42 +67,7 @@ class Post extends Component {
 
   testAni() {
     var self = this;
-    var styles = {...localStyles, ...globalStyles};
-    for (var i = 0; i < 21; i++) {
-      var values = {};
-      values.x = new Animated.Value(0);
-      values.y = new Animated.Value(0);
-      values.scale = new Animated.Value(0);
-      values.x.setValue(0);
-      values.y.setValue(0);
-      values.scale.setValue(1);
-      self.state.investAni.push(<Animated.Text style={[styles.aniMoney, {transform: [{translateX: values.x}, {scale: values.scale}, {translateY: values.y}]}]}>💵</Animated.Text>);
-      Animated.timing(
-        values.x,
-        {
-          toValue: self.state.postWidth - 65,
-          delay: i*100,
-          duration: 500
-        }
-      ).start();
-      Animated.timing(
-        values.y,
-        {
-          toValue: (self.state.postHeight * -1) + 46,
-          delay: i*100,
-          duration: 500
-        }
-      ).start();
-      Animated.timing(
-        values.scale,
-        {
-          toValue: 1,
-          delay: i*100,
-          duration: 500
-        }
-      ).start();
-    }
-    self.setState({})
+    self.props.actions.triggerAnimation('invest');
   }
 
   checkInvestments(investments) {
@@ -178,7 +144,8 @@ class Post extends Component {
         self.state.aniHeight,
         {
           toValue: 200,
-          duration: 500
+          duration: 500,
+          easing: Easing.linear
         }
       ).start();
     } else {
@@ -186,7 +153,8 @@ class Post extends Component {
         self.state.aniHeight,
         {
           toValue: 0,
-          duration: 500
+          duration: 500,
+          easing: Easing.linear
         }
       ).start();
     }
@@ -198,11 +166,6 @@ class Post extends Component {
     if (functionBool) {
       if (!self.state.invested) {
         console.log('create investment');
-
-        for (var i = 0; i < 21; i++) {
-          self.state.investAni.push(<Text style={styles.aniMoney}>💵</Text>);
-        }
-
         this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
            if (self.props.router.currentRoute == 'User') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
         })
@@ -240,20 +203,8 @@ class Post extends Component {
   render() {
     var self = this;
     var pickerStatus = self.state.pickerStatus;
-    var post = null;
-    var title = null;
-    var description = null;
-    var image = null;
+    var post, title, description, image, link, imageEl, postUserImage, postUserImageEl, postUser, postUserName, body, balance, createdAt, user, comments, functionBool, tags, tagsEl = null;
     var commentString = 'Add comment';
-    var link = null;
-    var imageEl = null;
-    var postUserImage = null;
-    var postUserImageEl = null;
-    var postUser = null;
-    var postUserName = null;
-    var body = null;
-    var balance = null;
-    var createdAt = null;
     var relevance = 0;
     var user = null;
     var comments = null;
@@ -267,8 +218,6 @@ class Post extends Component {
     var styles = {...localStyles, ...globalStyles};
     var pickerArray = [];
     var investOptions = [];
-    var tags = null;
-    var tagsEl = null;
     var lastPost = false;
 
     if (this.props.post) {
@@ -409,42 +358,40 @@ class Post extends Component {
             {imageEl}
           </View>
         </TouchableHighlight>
-          <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(null, link) : null}>
-            <View style={styles.postSection}>
-              {lastPost ? <Text style={styles.lastPost}>Last subscribed post❗️</Text> : null}
-              <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
-              {link ? <Text style={styles.font10}>from {self.extractDomain(link)}</Text> : null}
-              {body ? <View style={[styles.postBody, styles.font15]}><Text numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text></View> : null}
-            </View>
-          </TouchableHighlight>
+        <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(null, link) : null}>
           <View style={styles.postSection}>
-          {!expanded ? <Text style={styles.font15} onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
-            {expanded ?
-              <View>
-                <Text style={styles.font15} onPress={self.toggleExpanded.bind(this, false)}>Read less</Text>
-              </View>
-            : null}
-            <Text style={[styles.font15, styles.commentPad]} onPress={self.openComments.bind(self)}>{commentString}</Text>
-            <Text style={[styles.font15, styles.commentPad]} onPress={self.onShare.bind(self)}>Share</Text>
-            {self.props.post.user._id == self.props.auth.user._id ? <Text style={[styles.font15, styles.commentPad]} onPress={self.deletePost.bind(self)}>Delete</Text> : null}
-            {self.props.post.user._id != self.props.auth.user._id ? <Text style={[styles.font15, styles.commentPad]} onPress={self.irrelevant.bind(self)}>Irrelevant</Text> : null}
-            <Text style={[styles.font15, styles.commentPad]} onPress={self.testAni.bind(self)}>testAni</Text>
-
-            <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
-              <PickerIOS
-                selectedValue={self.state.investAmount}
-                onValueChange={(investAmount) => this.setState({investAmount: investAmount})}>
-                {pickerArray}
-              </PickerIOS>
-            </Animated.View>
-            <View style={expandedInvest ? styles.buttonContainerExpanded : styles.buttonContainer}>
-              {expandedInvest ? <TouchableHighlight style={styles.investButton} onPress={self.toggleInvest.bind(self)}><Text style={styles.white}>Cancel</Text></TouchableHighlight> : null}
-              {expandedInvest ? <TouchableHighlight underlayColor={'transparent'} style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}><Text style={styles.white}>{investButtonString}</Text></TouchableHighlight> : null}
-            {investButtonEl}
-            </View>
+            {lastPost ? <Text style={styles.lastPost}>Last subscribed post❗️</Text> : null}
+            <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
+            {link ? <Text style={styles.font10}>from {self.extractDomain(link)}</Text> : null}
+            {body ? <View style={[styles.postBody, styles.font15]}><Text numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text></View> : null}
           </View>
-          {self.state.investAni}
+        </TouchableHighlight>
+        <View style={styles.postSection}>
+        {!expanded ? <Text style={styles.font15} onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
+          {expanded ?
+            <View>
+              <Text style={styles.font15} onPress={self.toggleExpanded.bind(this, false)}>Read less</Text>
+            </View>
+          : null}
+          <Text style={[styles.font15, styles.commentPad]} onPress={self.openComments.bind(self)}>{commentString}</Text>
+          <Text style={[styles.font15, styles.commentPad]} onPress={self.onShare.bind(self)}>Share</Text>
+          {self.props.post.user._id == self.props.auth.user._id ? <Text style={[styles.font15, styles.commentPad]} onPress={self.deletePost.bind(self)}>Delete</Text> : null}
+          {self.props.post.user._id != self.props.auth.user._id ? <Text style={[styles.font15, styles.commentPad]} onPress={self.irrelevant.bind(self)}>Irrelevant</Text> : null}
+          <Text style={[styles.font15, styles.commentPad]} onPress={self.testAni.bind(self)}>testAni</Text>
+          <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
+            <PickerIOS
+              selectedValue={self.state.investAmount}
+              onValueChange={(investAmount) => this.setState({investAmount: investAmount})}>
+              {pickerArray}
+            </PickerIOS>
+          </Animated.View>
+          <View style={expandedInvest ? styles.buttonContainerExpanded : styles.buttonContainer}>
+            {expandedInvest ? <TouchableHighlight style={styles.investButton} onPress={self.toggleInvest.bind(self)}><Text style={styles.white}>Cancel</Text></TouchableHighlight> : null}
+            {expandedInvest ? <TouchableHighlight underlayColor={'transparent'} style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}><Text style={styles.white}>{investButtonString}</Text></TouchableHighlight> : null}
+            {investButtonEl}
+          </View>
         </View>
+      </View>
     );
   }
 }
@@ -533,11 +480,6 @@ const localStyles = StyleSheet.create({
   },
   link: {
     flex: 1,
-  },
-  aniMoney: {
-    position: 'absolute',
-    bottom: 0,
-    left: 10
   },
   countdown: {
     justifyContent: 'flex-end',

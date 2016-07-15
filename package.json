@@ -23,6 +23,7 @@
     "react-native-loading-spinner-overlay": "^0.1.1",
     "react-native-modal-picker": "0.0.13",
     "react-native-navbar": "^1.4.2",
+    "react-native-overlay": "^0.4.2",
     "react-native-progress": "^2.2.2",
     "react-native-redux-router": "^1.0.6",
     "react-native-share": "^1.0.10",

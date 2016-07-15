@@ -17,32 +17,32 @@ const updatePostElement = (array, post) => {
   return newArr;
 }
 
-const removePostElement = (array, post) => {
+const removeItem = (array, item) => {
   if (!array) return;
   var index = array.findIndex(function(el) {
-    return el._id == post._id;
+    return el._id == item._id;
   });
   if (index < 0) {
-    console.log('post not present')
+    console.log('item not present')
     return array;
   } else {
-    console.log('removing post');
+    console.log('removing item');
     array.splice(index, 1);
     return array;
   }
 }
 
-const addPosts = (arr, newArr) => {
+const addItems = (arr, newArr) => {
   if (!arr.length) return newArr;
-  finalArr = newArr.filter( function( el ) {
+  var removeDuplicates = newArr.filter( function( el ) {
     return arr.indexOf( el ) < 0;
   });
-  var xx = arr.concat(finalArr)
-  return xx;
+  var finalArr = arr.concat(removeDuplicates)
+  return finalArr;
 }
 
-const addNew = (old, newPostObj) => {
-  var newArr = [newPostObj];
+const addItem = (old, newObj) => {
+  var newArr = [newObj];
   return newArr.concat(old);
 }
 
@@ -52,13 +52,13 @@ export default function post(state = initialState, action) {
     case types.SET_POSTS: {
       console.log(action.payload, 'SET_POSTS payload')
       return Object.assign({}, state, {
-          'index': addPosts(state.index, action.payload)
+          'index': addItems(state.index, action.payload)
       })
     }
 
     case types.ADD_POST: {
        return Object.assign({}, state, {
-          'index': addNew(state.index, action.payload)
+          'index': addItem(state.index, action.payload)
       })
     }
 
@@ -118,16 +118,27 @@ export default function post(state = initialState, action) {
       })
     }
 
+    case types.ADD_COMMENT: {
+      return Object.assign({}, state, {
+        'comments': addItem(state.comments, action.payload)
+      })
+    }
+
+    case 'REMOVE_COMMENT': {
+      return Object.assign({}, state, {
+        'comments': removeItem(state.comments, action.payload)
+      })
+    }
+
     case types.ADD_POST_TO_FEED :{
       return Object.assign({}, state, {
-        'feed': addNew(state.index, action.payload)
+        'feed': addItem(state.index, action.payload)
       })
     }
 
     case types.SET_FEED: {
-      var newArr = state.feed.concat(action.payload);
       return Object.assign({}, state, {
-        'feed': newArr
+        'feed': addItems(state.feed, action.payload)
       })
     }
 
@@ -139,7 +150,7 @@ export default function post(state = initialState, action) {
 
     case types.REMOVE_POST: {
       return Object.assign({}, state, {
-        'index':  removePostElement(state.index, action.payload)
+        'index':  removeItem(state.index, action.payload)
       })
     }
 

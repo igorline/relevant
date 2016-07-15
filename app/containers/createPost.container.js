@@ -90,7 +90,6 @@ class CreatePost extends Component {
       }
     }
 
-
     if (self.state.type != 'url' && !self.state.postTitle) {
       self.props.actions.setNotif(true, 'Add title', false);
       return;
@@ -124,18 +123,26 @@ class CreatePost extends Component {
     }
 
     var bodyTags = self.state.postBody.match(/#\S+/g);
-    var finalBodyTags = [];
+    var bodyMentions = self.state.postBody.match(/@\S+/g);
+    var finalTags = [];
+    var finalMentions = [];
 
     if (bodyTags) {
       bodyTags.forEach(function(tag) {
         tag = tag.replace('#', '');
-        finalBodyTags.push(tag);
+        finalTags.push(tag);
+      })
+    }
+    if (bodyMentions) {
+      bodyMentions.forEach(function(name) {
+        name = name.replace('@', '');
+        finalMentions.push(name);
       })
     }
 
     var noSpaces = self.state.postTags.replace(/\s*,\s*/g, ',');
     var tagsArray = noSpaces.split(',');
-    tags = finalBodyTags.concat(tagsArray);
+    tags = finalTags.concat(tagsArray);
 
     if (self.state.type == 'url') {
       utils.post.generate(self.state.postLink, body, tags, self.props.auth.token).then(function(results){
@@ -158,6 +165,7 @@ class CreatePost extends Component {
           title: title,
           description: null,
           image: null,
+          mentions: finalMentions
         };
       }
 
@@ -169,6 +177,7 @@ class CreatePost extends Component {
           title: title,
           description: null,
           image: self.state.postImage,
+          mentions: finalMentions
         };
       }
 

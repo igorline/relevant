@@ -226,8 +226,6 @@ class Activity extends Component {
       })
     }
 
-    console.log(self)
-
     return (
       <View style={styles.fullContainer}>
       <ScrollView>
