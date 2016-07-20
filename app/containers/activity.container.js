@@ -45,6 +45,10 @@ class Activity extends Component {
     var self = this;
     self.populateUsers(self.props.online);
     self.props.actions.markRead(self.props.auth.token, self.props.auth.user._id);
+    if (self.props.notif.personal && self.props.notif.general) {
+      var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      self.setState({dataSource: ds.cloneWithRows(self.props.notif.personal)});
+    }
   }
 
   componentWillReceiveProps(next) {

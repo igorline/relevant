@@ -23,6 +23,12 @@ export function setActivity(data) {
     };
 }
 
+export function clearCount() {
+    return {
+        type: 'CLEAR_COUNT'
+    };
+}
+
 export function setGeneralActivity(data) {
     return {
         type: types.SET_GENERAL_ACTIVITY,
@@ -95,7 +101,7 @@ function markRead(token, userId) {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(getActivity(userId));
+      dispatch(clearCount());
     })
     .catch((error) => {
       console.log('error', error)
