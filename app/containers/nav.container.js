@@ -46,7 +46,8 @@ class Nav extends Component {
     var self = this;
     if (!self.props.auth.user && next.auth.user) {
       self.props.actions.userToSocket(next.auth.user);
-      self.props.actions.getActivity(next.auth.user._id);
+      self.props.actions.getActivity(next.auth.user._id, 0);
+      self.props.actions.getGeneralActivity(next.auth.user._id, 0);
     }
   }
 
@@ -59,7 +60,8 @@ class Nav extends Component {
     var self = this;
     if (currentAppState == 'active' && self.props.auth.user) {
         self.props.actions.userToSocket(self.props.auth.user);
-        self.props.actions.getActivity(self.props.auth.user._id);
+        self.props.actions.getActivity(self.props.auth.user._id, 0);
+        self.props.actions.getGeneralActivity(self.props.auth.user._id, 0);
     }
   }
 

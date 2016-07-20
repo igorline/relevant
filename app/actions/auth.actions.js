@@ -220,7 +220,6 @@ function getUser(token, redirect) {
             .then((responseJSON) => {
                 dispatch(loginUserSuccess(token));
                 dispatch(setUser(responseJSON));
-                console.log(responseJSON, 'get user responseJSON')
                 dispatch(notifActions.createNotification(token, {
                     notification: {
                         type: 'online',

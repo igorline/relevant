@@ -75,10 +75,6 @@ class Discover extends Component {
     }
   }
 
-  componentDidUpdate(next) {
-    var self = this;
-  }
-
   clearTag() {
     var self = this;
     self.props.actions.setTag(null);

@@ -124,7 +124,7 @@ export default function post(state = initialState, action) {
       })
     }
 
-    case 'REMOVE_COMMENT': {
+    case types.REMOVE_COMMENT: {
       return Object.assign({}, state, {
         'comments': removeItem(state.comments, action.payload)
       })
