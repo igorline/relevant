@@ -118,7 +118,7 @@ class Nav extends Component {
           <Text style={[styles.navLink, styles.maxWidth]} numberOfLines={1}>{title}</Text>
         </View>
          {route == 'Profile' ? <View style={styles.gear}><TouchableHighlight onPress={self.props.routes.ProfileOptions} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View> : null}
-         {route != 'SinglePost' ? statsEl : null}
+         {statsEl}
 
       </View>);
     } else {

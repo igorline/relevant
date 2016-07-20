@@ -19,7 +19,6 @@ import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as userActions from '../actions/user.actions';
-require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import * as investActions from '../actions/invest.actions';
@@ -28,7 +27,7 @@ import * as tagActions from '../actions/tag.actions';
 import Notification from '../components/notification.component';
 import SingleActivity from '../components/activity.component';
 import DiscoverUser from '../components/discoverUser.component';
-var moment = require('moment');
+import Spinner from 'react-native-loading-spinner-overlay';
 
 class Activity extends Component {
   constructor (props, context) {
@@ -113,12 +112,10 @@ class Activity extends Component {
       self.setState({enabled: false});
       switch(self.state.view) {
         case 1:
-        console.log(self.props.auth.user._id, self.props.notif.personal.length, 'personal')
            self.props.actions.getActivity(self.props.auth.user._id, self.props.notif.personal.length);
           break;
 
         case 2:
-        console.log(self.props.auth.user._id, self.props.notif.general.length, 'general')
            self.props.actions.getGeneralActivity(self.props.auth.user._id, self.props.notif.general.length);
           break;
 
@@ -139,8 +136,6 @@ class Activity extends Component {
     var personalActivityEl = null;
     var generalActivityEl = null;
     var onlineEl = null;
-
-    console.log(self.props.notif)
 
     if (self.state.dataSource) {
       activityEl = (<ListView ref="listview" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} />)
@@ -163,6 +158,7 @@ class Activity extends Component {
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
+        <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.dataSource} />
       </View>
     );
   }

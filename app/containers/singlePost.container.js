@@ -23,15 +23,29 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import DiscoverUser from '../components/discoverUser.component';
 import Notification from '../components/notification.component';
+import * as animationActions from '../actions/animation.actions';
+var animations = require("../animation");
 
 class SinglePost extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      investAni: [],
     }
   }
 
   componentDidMount() {
+  }
+
+  componentWillReceiveProps(next) {
+    var self = this;
+    if (self.props.animation != next.animation) {
+      if (next.animation.bool) {
+        if (next.animation.type == 'invest') {
+          animations.investAni(self);
+        }
+      }
+    }
   }
 
   render() {
@@ -57,6 +71,7 @@ class SinglePost extends Component {
             <Notification />
           </View>
         </ScrollView>
+         {self.state.investAni}
       </View>
     );
   }
@@ -67,13 +82,14 @@ function mapStateToProps(state) {
     auth: state.auth,
     router: state.routerReducer,
     users: state.user,
-    posts: state.posts
+    posts: state.posts,
+    animation: state.animation
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...investActions, ...authActions, ...userActions, ...postActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...userActions, ...postActions, ...animationActions}, dispatch)
   }
 }
 
