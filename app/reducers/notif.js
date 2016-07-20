@@ -10,6 +10,7 @@ const countUnread = (notifications) => {
         if (!activity.read && activity.personal) num += 1;
       }
     })
+    console.log('counting, returning ', num)
     if (num > 0) {
       return num;
     } else {
@@ -46,6 +47,12 @@ export default function auth(state = initialState, action) {
       return Object.assign({}, state, {
         'personal': addItems(state.personal, action.payload),
         'count': countUnread(addItems(state.personal, action.payload))
+      })
+    }
+
+    case 'CLEAR_COUNT': {
+      return Object.assign({}, state, {
+        'count': null
       })
     }
 
