@@ -23,6 +23,13 @@ export function setActivity(data) {
     };
 }
 
+export function setGeneralActivity(data) {
+    return {
+        type: types.SET_GENERAL_ACTIVITY,
+        payload: data
+    };
+}
+
 export function setCount(data) {
     return {
         type: types.SET_COUNT,
@@ -32,9 +39,10 @@ export function setCount(data) {
 
 
 export
-function getActivity(userId) {
+function getActivity(userId, skip) {
+  if (!skip) skip = 0;
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/notification?forUser='+userId, {
+    fetch(process.env.API_SERVER+'/api/notification?userId='+userId+'&skip='+skip, {
       credentials: 'include',
       method: 'GET',
       headers: {
@@ -45,6 +53,27 @@ function getActivity(userId) {
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setActivity(responseJSON));
+    })
+    .catch((error) => {
+      console.log('error', error)
+    });
+  }
+}
+
+export
+function getGeneralActivity(userId, skip) {
+  return function(dispatch) {
+    fetch(process.env.API_SERVER+'/api/notification/general?skip='+skip+'&avoidUser='+userId, {
+      credentials: 'include',
+      method: 'GET',
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+      },
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      dispatch(setGeneralActivity(responseJSON));
     })
     .catch((error) => {
       console.log('error', error)

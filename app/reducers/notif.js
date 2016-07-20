@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {bool: false, text: null, active: false, activity: null, count: null};
+const initialState = {bool: false, text: null, active: false, personal: [], count: null, general: []};
 const REPLACE = 'REPLACE';
 
 const countUnread = (notifications) => {
@@ -22,6 +22,15 @@ const addNew = (old, newObj) => {
   return newArr.concat(old);
 }
 
+const addItems = (arr, newArr) => {
+  if (!arr.length) return newArr;
+  var removeDuplicates = newArr.filter( function( el ) {
+    return arr.indexOf( el ) < 0;
+  });
+  var finalArr = arr.concat(removeDuplicates)
+  return finalArr;
+}
+
 export default function auth(state = initialState, action) {
   switch (action.type) {
 
@@ -35,15 +44,35 @@ export default function auth(state = initialState, action) {
 
     case 'SET_ACTIVITY': {
       return Object.assign({}, state, {
-        'activity': action.payload,
-        'count': countUnread(action.payload)
+        'personal': addItems(state.personal, action.payload),
+        'count': countUnread(addItems(state.personal, action.payload))
       })
     }
 
     case 'ADD_ACTIVITY': {
+      var obj = null;
+      if (action.payload.personal) {
+        obj = {
+          'personal': addNew(state.personal, action.payload),
+          'count': countUnread(addNew(state.personal, action.payload))
+        }
+      } else {
+        obj = {
+          'general': addNew(state.general, action.payload)
+        }
+      }
+      return Object.assign({}, state, obj)
+    }
+
+    case 'SET_GENERAL_ACTIVITY': {
       return Object.assign({}, state, {
-        'activity': addNew(state.activity, action.payload),
-        'count': countUnread(addNew(state.activity, action.payload))
+        'general': addItems(state.general, action.payload),
+      })
+    }
+
+    case 'ADD_GENERAL_ACTIVITY': {
+      return Object.assign({}, state, {
+        'general': addNew(state.general, action.payload)
       })
     }
 

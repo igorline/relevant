@@ -43,7 +43,7 @@ class Profile extends Component {
 
   componentWillReceiveProps(next) {
     var self = this;
-    if (self.props.animation != next.animation) {
+    if (self.props.animation != next.animation && next.animation) {
       if (next.animation.bool) {
         if (next.animation.type == 'invest') animations.investAni(self);
       }

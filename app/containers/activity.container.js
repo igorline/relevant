@@ -8,6 +8,7 @@ import React, {
   Image,
   TextInput,
   ScrollView,
+  ListView,
   Linking,
   TouchableHighlight,
   LayoutAnimation
@@ -25,6 +26,7 @@ import * as investActions from '../actions/invest.actions';
 import * as notifActions from '../actions/notif.actions';
 import * as tagActions from '../actions/tag.actions';
 import Notification from '../components/notification.component';
+import SingleActivity from '../components/activity.component';
 import DiscoverUser from '../components/discoverUser.component';
 var moment = require('moment');
 
@@ -34,7 +36,9 @@ class Activity extends Component {
     this.state = {
       view: 1,
       online: [],
-      onlinePop: []
+      onlinePop: [],
+      dataSource: null,
+      enabled: true
     }
   }
 
@@ -44,24 +48,30 @@ class Activity extends Component {
     self.props.actions.markRead(self.props.auth.token, self.props.auth.user._id);
   }
 
-  setSelected(id) {
-    var self = this;
-    if (id == self.props.auth.user._id) {
-      self.props.routes.Profile();
-    } else {
-      self.props.actions.getSelectedUser(id);
-    }
-  }
-
   componentWillReceiveProps(next) {
     var self = this;
     if(next.online != self.props.online) self.populateUsers(next.online);
   }
 
-  setTagAndRoute(tag) {
+  componentWillUpdate(next, nextState) {
     var self = this;
-    self.props.actions.setTag(tag);
-    self.props.routes.Discover();
+    if (next.notif.personal && next.notif.general && next.notif.general != self.props.notif.general || next.notif.personal != self.props.notif.personal || self.state.view != nextState.view) {
+      if (nextState.view == 1) {
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        self.setState({dataSource: ds.cloneWithRows(next.notif.personal)});
+      }
+      if (nextState.view == 2) {
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        self.setState({dataSource: ds.cloneWithRows(next.notif.general)});
+      }
+    }
+  }
+
+  renderRow(rowData) {
+    var self = this;
+    return (
+      <SingleActivity singleActivity={rowData} {...self.props} styles={styles} />
+    );
   }
 
   populateUsers(users) {
@@ -84,35 +94,57 @@ class Activity extends Component {
     }
   }
 
-  setSelected(id) {
-    var self = this;
-    if (id == self.props.auth.user._id) {
-      self.props.routes.Profile();
-    } else {
-      self.props.actions.getSelectedUser(id);
-    }
-  }
-
   changeView(num) {
     var self = this;
     self.setState({view: num});
   }
 
-  goToPost(activity) {
+  onScroll(e) {
     var self = this;
-    self.props.actions.getActivePost(activity.post._id).then(function() {
-      self.props.routes.SinglePost();
-    })
+    if (self.refs.listview.scrollProperties.offset + self.refs.listview.scrollProperties.visibleLength >= self.refs.listview.scrollProperties.contentLength) {
+      self.loadMore();
+    }
   }
 
+  loadMore() {
+    var self = this;
+     console.log('load more');
+    if (self.state.enabled) {
+      self.setState({enabled: false});
+      switch(self.state.view) {
+        case 1:
+        console.log(self.props.auth.user._id, self.props.notif.personal.length, 'personal')
+           self.props.actions.getActivity(self.props.auth.user._id, self.props.notif.personal.length);
+          break;
+
+        case 2:
+        console.log(self.props.auth.user._id, self.props.notif.general.length, 'general')
+           self.props.actions.getGeneralActivity(self.props.auth.user._id, self.props.notif.general.length);
+          break;
+
+        default:
+          return;
+      }
+      setTimeout(function() {
+        self.setState({enabled: true})
+      }, 1000);
+    }
+  }
 
   render() {
     var self = this;
+    var activityEl = null;
     var personalActivity = null;
     var generalActivity = null;
     var personalActivityEl = null;
     var generalActivityEl = null;
     var onlineEl = null;
+
+    console.log(self.props.notif)
+
+    if (self.state.dataSource) {
+      activityEl = (<ListView ref="listview" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} />)
+    }
 
     if (self.state.onlinePop.length) {
       onlineEl = self.state.onlinePop.map(function(user, i) {
@@ -120,124 +152,14 @@ class Activity extends Component {
       });
     }
 
-    if (self.props.notif.activity) {
-      personalActivity = self.props.notif.activity;
-      personalActivityEl = [];
-
-      personalActivity.forEach(function(singleActivity) {
-        if (!singleActivity.byUser || !singleActivity.personal) return;
-        var activityTime = moment(singleActivity.createdAt);
-        var fromNow = activityTime.fromNow();
-        if (singleActivity.type == 'investment') {
-           personalActivityEl.push(
-            <View style={styles.singleActivity}>
-              <View style={styles.activityLeft}>
-                <Text>
-                  <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
-                    {singleActivity.byUser.name}
-                  </Text>
-                  &nbsp;invested {'$'+singleActivity.amount} in your post
-                </Text>
-                <Text numberOfLines={1} onPress={self.goToPost.bind(self, singleActivity)} style={styles.active}>
-                  {singleActivity.post.title}
-                </Text>
-              </View>
-              <View style={styles.activityRight}>
-                <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
-              </View>
-            </View>
-          );
-         } else if (singleActivity.type == 'profile') {
-          personalActivityEl.push(
-            <View style={styles.singleActivity}>
-              <Text>
-                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
-                  {singleActivity.byUser.name}
-                </Text>
-                &nbsp;visited your profile
-              </Text>
-              <Text style={styles.gray}>{fromNow}</Text>
-            </View>
-          );
-         } else if (singleActivity.type == 'comment') {
-          personalActivityEl.push(
-            <View style={styles.singleActivity}>
-              <View style={styles.activityLeft}>
-                <Text>
-                  <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
-                    {singleActivity.byUser.name}
-                  </Text>
-                  &nbsp;commented on your post
-                </Text>
-                <Text onPress={self.goToPost.bind(self, singleActivity)} numberOfLines={1} style={[styles.active]}>{singleActivity.post.title}</Text>
-              </View>
-              <View style={styles.activityRight}>
-                <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
-              </View>
-            </View>
-          );
-        } else if (singleActivity.type == 'thirst') {
-          personalActivityEl.push(
-            <View style={styles.singleActivity}>
-              <View style={styles.activityLeft}>
-                <Text><Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>&nbsp;is thirsty 4 u 👅💦</Text>
-              </View>
-              <View style={styles.activityRight}>
-              <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
-              </View>
-            </View>
-          );
-         } else {
-            personalActivityEl.push(
-              <View style={styles.singleActivity}>
-                <Text>
-                Notification from {singleActivity.byUser.name}
-                </Text>
-                <Text style={styles.gray}>{fromNow}</Text>
-              </View>
-            );
-         }
-      })
-
-      generalActivity = self.props.notif.activity;
-      generalActivityEl = [];
-      generalActivity.forEach(function(singleActivity) {
-        if (singleActivity.personal) return;
-        var activityTime = moment(singleActivity.createdAt);
-        var fromNow = activityTime.fromNow();
-        if (singleActivity.type == 'online') {
-          if (singleActivity.byUser._id == self.props.auth.user._id) return;
-           generalActivityEl.push(
-            <View style={styles.singleActivity}>
-              <View style={styles.activityLeft}>
-                <Text>
-                  <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
-                    {singleActivity.byUser.name}
-                  </Text>
-                  &nbsp;went online
-                </Text>
-              </View>
-              <View style={styles.activityRight}>
-                <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
-              </View>
-            </View>
-          );
-         }
-      })
-    }
-
     return (
       <View style={styles.fullContainer}>
-      <ScrollView>
-      <View style={styles.activityHeader}>
-        <Text onPress={self.changeView.bind(self, 1)} style={[self.state.view == 1 ? styles.active : null, styles.font20]}>Personal</Text>
-        <Text onPress={self.changeView.bind(self, 2)} style={[self.state.view == 2 ? styles.active : null, styles.font20]}>General</Text>
-        <Text onPress={self.changeView.bind(self, 3)} style={[self.state.view == 3 ? styles.active : null, styles.font20]}>Online</Text>
-      </View>
-      {self.state.view == 1 ? personalActivityEl : null }
-      {self.state.view == 2 ? generalActivityEl : null }
-      {self.state.view == 3 ? onlineEl : null }
-      </ScrollView>
+        <View style={styles.activityHeader}>
+          <Text onPress={self.changeView.bind(self, 1)} style={[self.state.view == 1 ? styles.active : null, styles.font20]}>Personal</Text>
+          <Text onPress={self.changeView.bind(self, 2)} style={[self.state.view == 2 ? styles.active : null, styles.font20]}>General</Text>
+          <Text onPress={self.changeView.bind(self, 3)} style={[self.state.view == 3 ? styles.active : null, styles.font20]}>Online</Text>
+        </View>
+        {self.state.view < 3 ? activityEl : onlineEl }
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>

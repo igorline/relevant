@@ -199,6 +199,16 @@ class Post extends Component {
     self.props.actions.irrelevant(self.props.auth.token, self.props.post._id);
   }
 
+  setSelected(user) {
+    var self = this;
+    if (user._id == self.props.auth.user._id) {
+      console.log('going to profile')
+      self.props.routes.Profile();
+    } else {
+      console.log('setting selected user')
+      self.props.actions.getSelectedUser(user._id);
+    }
+  }
 
   render() {
     var self = this;
@@ -307,18 +317,21 @@ class Post extends Component {
 
     if (body) {
       var bodyObj = {};
-      var textArr = body.replace(/#\S+/g, function(a){return "`"+a+"`"}).split(/`/);
+      var textArr = body.replace((/[@#]\S+/g), function(a){return "`"+a+"`"}).split(/`/);
       textArr.forEach(function(section, i) {
         bodyObj[i] = {};
         bodyObj[i].text = section;
         if (section.indexOf('#') > -1) {
           bodyObj[i].hashtag = true;
-
+          bodyObj[i].mention = false;
+        } else if (section.indexOf('@') > -1) {
+          bodyObj[i].mention = true;
+          bodyObj[i].hashtag = false;
         } else {
           bodyObj[i].hashtag = false;
+          bodyObj[i].mention = false;
         }
       })
-
 
       bodyEl = Object.keys(bodyObj).map(function(key) {
         var text = bodyObj[key].text;
@@ -330,6 +343,18 @@ class Post extends Component {
             }
           })
           return (<Text onPress={tagObj ? self.props.actions.goToTag.bind(null, tagObj) : null} style={styles.active}>{bodyObj[key].text}</Text>)
+        } else if (bodyObj[key].mention) {
+          var mentionObj = null;
+          if (self.props.post.mentions) {
+            if (self.props.post.mentions.length) {
+              self.props.post.mentions.forEach(function(user) {
+                if (user.name.toLowerCase() == text.substr(1, text.length).toLowerCase()) {
+                  mentionObj = user;
+                }
+              })
+            }
+          }
+          return (<Text onPress={mentionObj ? self.setSelected.bind(self, mentionObj) : null} style={mentionObj ? styles.active : null}>{bodyObj[key].text}</Text>)
         } else {
           return (<Text>{bodyObj[key].text}</Text>);
         }
