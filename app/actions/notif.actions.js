@@ -23,6 +23,13 @@ export function setActivity(data) {
     };
 }
 
+export function resetActivity(data) {
+    return {
+        type: 'RESET_ACTIVITY',
+        payload: data
+    };
+}
+
 export function clearCount() {
     return {
         type: 'CLEAR_COUNT'
@@ -45,7 +52,7 @@ export function setCount(data) {
 
 
 export
-function getActivity(userId, skip) {
+function getActivity(userId, skip, reset) {
   if (!skip) skip = 0;
   return function(dispatch) {
     fetch(process.env.API_SERVER+'/api/notification?userId='+userId+'&skip='+skip, {
@@ -58,7 +65,11 @@ function getActivity(userId, skip) {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setActivity(responseJSON));
+      if (!reset) {
+        dispatch(setActivity(responseJSON));
+      } else {
+        dispatch(resetActivity(responseJSON));
+      }
     })
     .catch((error) => {
       console.log('error', error)
@@ -102,6 +113,7 @@ function markRead(token, userId) {
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(clearCount());
+      dispatch(getActivity(userId, 0, true));
     })
     .catch((error) => {
       console.log('error', error)

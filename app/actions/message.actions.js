@@ -36,7 +36,6 @@ export function setMessages(messages) {
 export
 function getMessages(userId) {
    return function(dispatch) {
-    console.log('wtf', userId)
     fetch(process.env.API_SERVER+'/api/message?to='+userId, {
       credentials: 'include',
       method: 'GET',
