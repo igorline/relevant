@@ -46,14 +46,17 @@ class Read extends Component {
 
   componentDidMount() {
     var self = this;
+    self.props.actions.getMessages(self.props.auth.user._id);
     if (self.props.posts.feed && self.props.posts.tag) this.props.actions.clearPosts();
     if (self.props.posts.comments) this.props.actions.setComments(null);
-    if (self.props.posts.feed.length > 0) {
-      var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      self.setState({feedData: fd.cloneWithRows(self.props.posts.feed)});
-    }
-    if (self.props.posts.feed.length == 0) {
-      this.props.actions.getFeed(self.props.auth.token, 0, null);
+    if (self.props.posts.feed) {
+      if (self.props.posts.feed.length > 0) {
+        var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        self.setState({feedData: fd.cloneWithRows(self.props.posts.feed)});
+      }
+      if (self.props.posts.feed.length == 0) {
+        this.props.actions.getFeed(self.props.auth.token, 0, null);
+      }
     }
   }
 
@@ -138,7 +141,7 @@ class Read extends Component {
   changeView(view) {
     var self = this;
     if (view == 2) {
-      self.props.actions.getMessages(self.props.auth.user._id);
+      //self.props.actions.getMessages(self.props.auth.user._id);
     }
     self.setState({view: view});
   }
@@ -156,34 +159,53 @@ class Read extends Component {
     var messages = null;
     var messagesEl = null;
     var messagesCount = null;
+    var recentMessages = [];
+    var thirstyHeader = null;
+    console.log(self.props, 'read props')
 
     if (self.state.feedData) {
-      postsEl = (<ListView ref="feedlist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.feedData} renderRow={self.renderFeedRow.bind(self)} />)
+      if (self.state.feedData.length > 0) {
+        postsEl = (<ListView ref="feedlist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.feedData} renderRow={self.renderFeedRow.bind(self)} />)
+      } else {
+        postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>Nothing in yr feed bruh</Text></View>)
+      }
     }
 
-    if (self.props.messages.index) {
+    if (self.props.messages.index.length > 0) {
       messagesEl = (<ListView ref="messageslist" renderScrollComponent={props => <ScrollView {...props} />} dataSource={self.state.messagesData} renderRow={self.renderMessageRow.bind(self)} />);
+      for (var x = 0; x < 4; x++) {
+        recentMessages.push(<Text style={styles.recentName}>{x < 3 ? self.props.messages.index[x].from.name+', ' : self.props.messages.index[x].from.name}</Text>);
+      }
+    } else {
+      messagesEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'red'}}><Text>Nothing in yr feed bruh</Text></View>)
     }
 
     if (self.props.auth.user.messages) {
-       messagesCount = (<View style={styles.messagesCount}><Text style={styles.white}>{self.props.auth.user.messages}</Text></View>)
+       messagesCount = (<Text style={[styles.white, styles.messagesCount]}>{self.props.auth.user.messages+' New'}</Text>)
+    }
+
+    if (self.state.view == 1) {
+      thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={self.changeView.bind(self, 2)}>
+            <View style={[styles.thirstyHeader]}>
+              <View style={{paddingRight: 5}}>
+                <Text>👅💦</Text>
+              </View>
+              <View>
+                <Text style={{fontWeight: '500'}}>Thirsty responses</Text>
+                <View style={styles.recentNames}>
+                  {recentMessages}
+                </View>
+              </View>
+              <View style={{justifyContent: 'flex-end',flex: 1}}>
+                {messagesCount}
+              </View>
+            </View>
+          </TouchableHighlight>);
     }
 
     return (
       <View style={styles.fullContainer}>
-        <View style={[styles.row, styles.categoryBar]}>
-          <TouchableHighlight style={styles.category} underlayColor={'transparent'} onPress={self.changeView.bind(self, 1)}>
-            <View style={styles.categoryView}>
-              <Text style={[styles.font20,  self.state.view == 1 ? styles.active : null]}>Posts</Text>
-            </View>
-          </TouchableHighlight>
-          <TouchableHighlight style={styles.category} underlayColor={'transparent'} onPress={self.changeView.bind(self, 2)}>
-            <View style={styles.categoryView}>
-              <Text style={[styles.font20, self.state.view == 2 ? styles.active : null]}>Inbox</Text>
-              {messagesCount}
-            </View>
-          </TouchableHighlight>
-        </View>
+        {thirstyHeader}
         <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.feedData} />
        {self.state.view == 1 ? postsEl : null}
        {self.state.view == 2 ? messagesEl : null}
@@ -216,17 +238,20 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Read)
 
 const localStyles = StyleSheet.create({
-  categoryView: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    alignItems: 'center'
+  thirstyHeader: {
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
+    padding: 10,
+    flexDirection: 'row'
   },
   messagesCount: {
-    position: 'absolute',
+    // position: 'absolute',
     backgroundColor: 'red',
-    marginLeft: 5,
-    height: 20,
-    width: 20,
+    // marginLeft: 5,
+    // height: 20,
+    // width: 20,
+    padding: 5,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center'
@@ -236,14 +261,15 @@ const localStyles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'black'
   },
+  recentNames: {
+    flexDirection: 'row',
+  },
+  recentName: {
+    color: 'gray'
+  },
   readHeader: {
     marginBottom: 10
   },
-  categoryBar: {
-  width: fullWidth,
-  paddingTop: 20,
-  paddingBottom: 20
-},
 });
 
 var styles = {...localStyles, ...globalStyles};
