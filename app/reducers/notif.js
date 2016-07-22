@@ -53,7 +53,7 @@ export default function auth(state = initialState, action) {
     case 'RESET_ACTIVITY': {
       return Object.assign({}, state, {
         'personal': action.payload,
-        'count': countUnread(addItems(action.payload))
+        'count': countUnread(action.payload)
       })
     }
 

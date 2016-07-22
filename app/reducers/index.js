@@ -6,6 +6,7 @@ import notif from './notif';
 import online from './online';
 import messages from './messages';
 import animation from './animation';
+import view from './view';
 var {Router, routerReducer, Route, Container, Animations, Schema} = require('react-native-redux-router');
 
 export {
@@ -17,6 +18,7 @@ export {
   notif,
   online,
   messages,
-  animation
+  animation,
+  view
 };
 

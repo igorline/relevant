@@ -50,7 +50,6 @@ export default function post(state = initialState, action) {
   switch (action.type) {
 
     case types.SET_POSTS: {
-      console.log(action.payload, 'SET_POSTS payload')
       return Object.assign({}, state, {
           'index': addItems(state.index, action.payload)
       })
