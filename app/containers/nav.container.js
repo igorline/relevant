@@ -20,6 +20,7 @@ import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as onlineActions from '../actions/online.actions';
 import * as notifActions from '../actions/notif.actions';
+import * as viewActions from '../actions/view.actions';
 import * as animationActions from '../actions/animation.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
@@ -63,6 +64,11 @@ class Nav extends Component {
         self.props.actions.getActivity(self.props.auth.user._id, 0);
         self.props.actions.getGeneralActivity(self.props.auth.user._id, 0);
     }
+  }
+
+  changeView(route, view) {
+    var self = this;
+    self.props.actions.setView(route, view);
   }
 
   render() {
@@ -118,6 +124,7 @@ class Nav extends Component {
           <Text style={[styles.navLink, styles.maxWidth]} numberOfLines={1}>{title}</Text>
         </View>
          {route == 'Profile' ? <View style={styles.gear}><TouchableHighlight onPress={self.props.routes.ProfileOptions} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View> : null}
+         {route == 'Read' && self.props.view.read == 2 ? <TouchableHighlight onPress={self.changeView.bind(self, 'read', 1)} style={styles.back}><Text style={styles.backText}>{'<'}</Text></TouchableHighlight> : null}
          {statsEl}
 
       </View>);
@@ -141,19 +148,33 @@ function mapStateToProps(state) {
     router: state.routerReducer,
     online: state.online,
     notif: state.notif,
-    animation: state.animation
+    animation: state.animation,
+    view: state.view
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions}, dispatch)
+    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions, ...viewActions}, dispatch)
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Nav)
 
 const localStyles = StyleSheet.create({
+  back: {
+    position: 'absolute',
+    top: 0,
+    left: 5,
+    height: 60,
+    padding: 12,
+    flex: 1,
+    justifyContent: 'flex-end'
+  },
+  backText: {
+    color: 'white',
+    fontSize: 20
+  },
   gear: {
     position: 'absolute',
     top: 0,
@@ -188,12 +209,14 @@ const localStyles = StyleSheet.create({
   },
   navItem: {
     flex: 1,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
     flexWrap: 'nowrap'
   },
   navLink: {
     color: 'white',
+    backgroundColor: 'transparent',
     fontSize: 20,
     textAlign: 'center',
   },

@@ -25,6 +25,7 @@ require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import * as investActions from '../actions/invest.actions';
+import * as viewActions from '../actions/view.actions';
 import Notification from '../components/notification.component';
 import Spinner from 'react-native-loading-spinner-overlay';
 var animations = require("../animation");
@@ -39,7 +40,6 @@ class Read extends Component {
       enabled: true,
       feedData: null,
       messagesData: md.cloneWithRows([]),
-      view: 1,
       investAni: [],
     }
   }
@@ -140,10 +140,7 @@ class Read extends Component {
 
   changeView(view) {
     var self = this;
-    if (view == 2) {
-      //self.props.actions.getMessages(self.props.auth.user._id);
-    }
-    self.setState({view: view});
+    self.props.actions.setView('read', view);
   }
 
   render() {
@@ -161,7 +158,6 @@ class Read extends Component {
     var messagesCount = null;
     var recentMessages = [];
     var thirstyHeader = null;
-    console.log(self.props, 'read props')
 
     if (self.state.feedData) {
       if (self.state.feedData.length > 0) {
@@ -184,7 +180,7 @@ class Read extends Component {
        messagesCount = (<Text style={[styles.white, styles.messagesCount]}>{self.props.auth.user.messages+' New'}</Text>)
     }
 
-    if (self.state.view == 1) {
+    if (self.props.view.read == 1) {
       thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={self.changeView.bind(self, 2)}>
             <View style={[styles.thirstyHeader]}>
               <View style={{paddingRight: 5}}>
@@ -207,8 +203,8 @@ class Read extends Component {
       <View style={styles.fullContainer}>
         {thirstyHeader}
         <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.feedData} />
-       {self.state.view == 1 ? postsEl : null}
-       {self.state.view == 2 ? messagesEl : null}
+       {self.props.view.read == 1 ? postsEl : null}
+       {self.props.view.read == 2 ? messagesEl : null}
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
@@ -225,13 +221,14 @@ function mapStateToProps(state) {
     user: state.user,
     router: state.routerReducer,
     messages: state.messages,
-    animation: state.animation
+    animation: state.animation,
+    view: state.view
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...messageActions, ...investActions, ...authActions, ...postActions, ...userActions, ...tagActions, ...animationActions}, dispatch)
+    actions: bindActionCreators({...messageActions, ...investActions, ...authActions, ...postActions, ...userActions, ...tagActions, ...animationActions, ...viewActions}, dispatch)
   }
 }
 

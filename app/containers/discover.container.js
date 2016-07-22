@@ -21,6 +21,7 @@ import * as authActions from '../actions/auth.actions';
 import * as userActions from '../actions/user.actions';
 import * as postActions from '../actions/post.actions';
 import * as tagActions from '../actions/tag.actions';
+import * as viewActions from '../actions/view.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as investActions from '../actions/invest.actions';
 import * as notifActions from '../actions/notif.actions';
@@ -49,6 +50,7 @@ class Discover extends Component {
 
   componentDidMount() {
     var self = this;
+    console.log(self)
     if (self.props.posts.comments) this.props.actions.setComments(null);
     if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
     if (self.props.posts.tag && self.props.posts.index) self.props.actions.clearPosts();
@@ -78,13 +80,13 @@ class Discover extends Component {
   clearTag() {
     var self = this;
     self.props.actions.setTag(null);
-    self.changeView(self.state.view);
+    self.changeView(self.props.view.discover);
   }
 
   changeView(view) {
     var self = this;
     self.props.actions.clearPosts();
-    self.setState({view: view});
+    self.props.actions.setView('discover', view);
 
     switch(view) {
       case 1:
@@ -111,7 +113,7 @@ class Discover extends Component {
     self.props.actions.setTag(tag);
     self.props.actions.clearPosts();
     self.setState({dataSource: null});
-    switch(self.state.view) {
+    switch(self.props.view.discover) {
       case 1:
         self.props.actions.getPosts(0, tag, null);
         break;
@@ -197,7 +199,7 @@ class Discover extends Component {
      console.log('load more, skip: ', length, self.props.posts.tag);
     if (self.state.enabled) {
       self.setState({enabled: false});
-      switch(self.state.view) {
+      switch(self.props.view.discover) {
         case 1:
            self.props.actions.getPosts(length, self.props.posts.tag, null);
           break;
@@ -218,7 +220,7 @@ class Discover extends Component {
   render() {
     var self = this;
     var usersEl = null;
-    var view = self.state.view;
+    var view = self.props.view.discover;
     var postsEl = null;
     var posts = null;
     var paginationEl = null;
@@ -297,13 +299,14 @@ function mapStateToProps(state) {
     users: state.user,
     posts: state.posts,
     notif: state.notif,
-    animation: state.animation
+    animation: state.animation,
+    view: state.view
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...investActions, ...authActions, ...userActions, ...postActions, ...tagActions, ...notifActions, ...animationActions}, dispatch)
+    actions: bindActionCreators({...investActions, ...authActions, ...userActions, ...postActions, ...tagActions, ...notifActions, ...animationActions, ...viewActions}, dispatch)
   }
 }
 
