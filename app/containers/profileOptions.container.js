@@ -79,7 +79,7 @@ class ProfileOptions extends Component {
     self.props.actions.removeDeviceToken(self.props.auth);
     self.props.dispatch({type:'server/logout', payload: self.props.auth.user});
     self.props.actions.logoutAction(self.props.auth.user, self.props.auth.token);
-    // self.props.routes.Auth();
+    self.props.routes.Auth();
   }
 
   changeName() {
