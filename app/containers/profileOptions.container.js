@@ -33,10 +33,6 @@ class ProfileOptions extends Component {
     }
   }
 
-  componentDidMount() {
-  }
-
-
   chooseImage() {
     var self = this;
     console.log(self, 'chooseImage')
@@ -44,7 +40,9 @@ class ProfileOptions extends Component {
       if(data){
         utils.s3.toS3Advanced(data, self.props.auth.token).then(function(results){
           if (results.success) {
-            self.props.actions.setPicture(results.url, self.props.auth.user, self.props.auth.token);
+            var newUser = self.props.auth.user;
+            newUser.image = results.url;
+            self.props.actions.updateUser(newUser, self.props.auth.token);
           } else {
             console.log('err');
           }
@@ -78,16 +76,17 @@ class ProfileOptions extends Component {
 
   logoutRedirect() {
     var self = this;
+    self.props.actions.removeDeviceToken(self.props.auth);
     self.props.dispatch({type:'server/logout', payload: self.props.auth.user});
-    self.props.actions.logout();
-    self.props.routes.Auth();
+    self.props.actions.logoutAction(self.props.auth.user, self.props.auth.token);
+    // self.props.routes.Auth();
   }
 
   changeName() {
     var self = this;
     var newUser = self.props.auth.user;
     newUser.name = self.state.newName;
-    self.props.actions.changeName(self.state.newName, newUser, self.props.auth.token);
+    self.props.actions.updateUser(newUser, self.props.auth.token);
     self.setState({newName: '', editing: false});
   }
 
