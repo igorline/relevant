@@ -386,11 +386,6 @@ const localStyles = StyleSheet.create({
     textAlign: 'center',
     padding: 10
   },
-  tagX: {
-    height: 7.5,
-    width: 7.5,
-    marginRight: 3.5
-  },
   postInput: {
     height: 50,
     padding: 10,

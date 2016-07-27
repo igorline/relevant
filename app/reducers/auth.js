@@ -7,12 +7,13 @@ const initialState = {
   isAuthenticating: false,
   statusText: null,
   user: null,
-  userIndex: null
+  userIndex: null,
+  deviceToken: null
 };
 
 
 export default function auth(state = initialState, action) {
-  console.log(action.type, 'auth action type')
+  console.log(action.type, 'action type')
   switch (action.type) {
 
     case types.LOGIN_USER_REQUEST:
@@ -42,6 +43,7 @@ export default function auth(state = initialState, action) {
       return Object.assign({}, state, {
         'isAuthenticated': false,
         'token': null,
+        'deviceToken': null,
         'user': null,
         'statusText': 'You have been successfully logged out.'
       })
@@ -52,6 +54,11 @@ export default function auth(state = initialState, action) {
         'isAuthenticating': false,
         'isAuthenticated': action.payload ? true : false,
         'user': action.payload
+      })
+
+    case 'SET_DEVICE_TOKEN':
+      return Object.assign({}, state, {
+        'deviceToken': action.payload
       })
 
     case types.SET_USER_INDEX:

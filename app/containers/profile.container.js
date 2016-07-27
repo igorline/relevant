@@ -66,15 +66,6 @@ class Profile extends Component {
 
         posts = self.props.auth.user.posts;
 
-        posts.sort(function(a, b) {
-          var aDate = new Date(a.createdAt);
-          var bDate = new Date(b.createdAt);
-          var aTime = aDate.getTime();
-          var bTime = bDate.getTime();
-
-          return bTime - aTime;
-        });
-
         postsEl = posts.map(function(post, i) {
           return (<Post key={i} post={post} {...self.props} styles={styles} />);
         });
@@ -90,7 +81,7 @@ class Profile extends Component {
       <ScrollView style={styles.fullContainer}>
       <ProfileComponent {...self.props} user={self.props.auth.user} styles={styles} />
         <View>
-          <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
+          {/*<Text style={[styles.font20, styles.postsHeader]}>Posts</Text>*/}
           {postsEl}
         </View>
       </ScrollView>

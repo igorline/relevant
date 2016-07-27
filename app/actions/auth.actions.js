@@ -61,19 +61,19 @@ function loginUserRequest() {
 }
 
 export
-function logout() {
+function logoutAction(user, token) {
     AsyncStorage.removeItem('token');
-    return {
-        type: types.LOGOUT_USER
+    return (dispatch) => {
+        dispatch(logout());
+        // dispatch(deviceToken(user, token));
     }
 }
 
 export
-function logoutAndRedirect() {
-    // return (dispatch, state) => {
-    //   dispatch(logout());
-    //   dispatch(push('/login'));
-    // }
+function logout() {
+    return {
+        type: types.LOGOUT_USER
+    }
 }
 
 export
@@ -131,31 +131,6 @@ function userOnline(user, token) {
         .catch(error => {
             console.log(error, 'error');
         });
-    }
-}
-
-
-export
-function storeDevice(userData, authToken) {
-    return dispatch => {
-        PushNotificationIOS.addEventListener('register', function(token){
-            console.log('hello', token)
-            fetch(process.env.API_SERVER+'/api/notification/device?access_token='+authToken+'&deviceToken='+token, {
-                credentials: 'include',
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then((responseJSON) => {
-                console.log('saved device token')
-            })
-            .catch(error => {
-                console.log(error, 'error');
-            });
-        });
-        PushNotificationIOS.requestPermissions();
     }
 }
 
@@ -227,7 +202,7 @@ function getUser(token, redirect) {
                         byUser: responseJSON._id
                     }
                 }));
-                dispatch(deviceToken(responseJSON, token))
+                dispatch(addDeviceToken(responseJSON, token))
                 if (redirect) dispatch(Actions.Profile);
             })
             .catch(error => {
@@ -296,50 +271,14 @@ function setContacts(contacts) {
 }
 
 export
-function changeName(name, user, token) {
-    return function(dispatch) {
-      fetch(process.env.API_SERVER+'/api/user?access_token='+token, {
-        credentials: 'include',
-        method: 'PUT',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(user)
-      })
-      //.then(utils.fetchError.handleErrors)
-      .then((response) => {
-        dispatch(getUser(token, null));
-      })
-      .catch((error) => {
-        console.log(error, 'error');
-      });
-    }
+function setDeviceToken(token) {
+    return {
+        type: 'SET_DEVICE_TOKEN',
+        payload: token
+    };
 }
 
-export function setPicture(url, user, token) {
-    return function(dispatch) {
-      var newUser = user;
-      newUser.image = url;
-      fetch(process.env.API_SERVER+'/api/user?access_token='+token, {
-          credentials: 'include',
-          method: 'PUT',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(newUser)
-      })
-      .then((response) => {
-        dispatch(getUser(token, null));
-      })
-      .catch((error) => {
-          console.log(error, 'error');
-      });
-    }
-}
-
-export function addDeviceToken(user, authToken) {
+export function updateUser(user, authToken) {
     return function(dispatch) {
         fetch(process.env.API_SERVER+'/api/user?access_token='+authToken, {
             credentials: 'include',
@@ -351,7 +290,7 @@ export function addDeviceToken(user, authToken) {
             body: JSON.stringify(user)
         })
         .then((response) => {
-            console.log('added token');
+            console.log('updated user');
         })
         .catch((error) => {
             console.log(error, 'error');
@@ -359,21 +298,46 @@ export function addDeviceToken(user, authToken) {
     }
 }
 
-export function deviceToken(user, authToken) {
+export function addDeviceToken(user, authToken) {
     return function(dispatch) {
-        var newUser = user;
         PushNotificationIOS.addEventListener('register', function(deviceToken){
+            console.log('PushNotificationIOS registration');
+            dispatch(setDeviceToken(deviceToken))
+            var newUser = user;
             if (user.deviceTokens) {
                 if (user.deviceTokens.indexOf(deviceToken) < 0) {
-                    newUser.deviceTokens.push(deviceToken);
-                    dispatch(addDeviceToken(newUser, authToken));
+                      newUser.deviceTokens.push(deviceToken);
+                      console.log('adding token', deviceToken)
+                      dispatch(updateUser(newUser, authToken));
+                } else {
+                    console.log('token already present');
                 }
             } else {
                 newUser.deviceTokens = [deviceToken];
-                dispatch(addDeviceToken(newUser, authToken));
+                console.log('adding token', deviceToken)
+                dispatch(updateUser(newUser,  authToken));
             }
         });
         PushNotificationIOS.requestPermissions();
+    }
+}
+
+export function removeDeviceToken(auth) {
+    return function(dispatch) {
+        var user = auth.user;
+        if (user.deviceTokens) {
+            if (user.deviceTokens.indexOf(auth.deviceToken) > -1) {
+                console.log('removing device', auth.deviceToken);
+                var index = user.deviceTokens.indexOf(auth.deviceToken);
+                console.log(user.deviceTokens, 'pre splice')
+                user.deviceTokens.splice(index, 1);
+                console.log(user.deviceTokens, 'post splice');
+                dispatch(updateUser(user, auth.token));
+            } else {
+                console.log('devicetoken not present');
+            }
+        }
+        PushNotificationIOS.abandonPermissions();
     }
 }
 

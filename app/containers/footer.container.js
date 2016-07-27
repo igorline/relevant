@@ -36,31 +36,31 @@ class Footer extends Component {
 
     if (authenticated) {
       footerEl = ( <View style={styles.footer}>
-        <TouchableHighlight style={[styles.footerItem]} onPress={currentRoute != 'Read' ? self.props.routes.Read : null}>
+        <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Read' ? self.props.routes.Read : null}>
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter, currentRoute == 'Read' ? styles.activeIcon : null]}> 📩 👀</Text>
             {/*<Text style={[currentRoute == 'Read' ? styles.active : styles.white, styles.footerLink]}>Read</Text>*/}
           </View>
         </TouchableHighlight>
-        <TouchableHighlight style={[styles.footerItem]} onPress={currentRoute != 'Discover' ? self.props.routes.Discover : null}>
+        <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Discover' ? self.props.routes.Discover : null}>
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter, currentRoute == 'Discover' ? styles.activeIcon : null]}>🔮</Text>
             {/*<Text style={[currentRoute == 'Discover' ? styles.active : styles.white, styles.footerLink]} >Discover</Text>*/}
           </View>
         </TouchableHighlight>
-        <TouchableHighlight style={[styles.footerItem]} onPress={currentRoute != 'CreatePost' ? self.props.routes.CreatePost : null}>
+        <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'CreatePost' ? self.props.routes.CreatePost : null}>
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter, currentRoute == 'CreatePost' ? styles.activeIcon : null]}>📝</Text>
             {/*<Text style={[currentRoute == 'CreatePost' ? styles.active : styles.white, styles.footerLink]} >Post</Text>*/}
           </View>
         </TouchableHighlight>
-        <TouchableHighlight style={[styles.footerItem]} onPress={currentRoute != 'Profile' ? self.props.routes.Profile : null}>
+        <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Profile' ? self.props.routes.Profile : null}>
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter, currentRoute == 'Profile' ? styles.activeIcon : null]}>👤</Text>
             {/*<Text style={[currentRoute == 'Profile' ? styles.active : styles.white, styles.footerLink]}>Profile</Text>*/}
           </View>
         </TouchableHighlight>
-          <TouchableHighlight style={[styles.footerItem]} onPress={currentRoute != 'Activity' ? self.props.routes.Activity : null}>
+          <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Activity' ? self.props.routes.Activity : null}>
             <View style={styles.footerItemView}>
               <Text style={[styles.icon, styles.textCenter, currentRoute == 'Activity' ? styles.activeIcon : null]}>⚡</Text>
               <View>
@@ -126,7 +126,10 @@ const localStyles = StyleSheet.create({
     height: 60,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'black'
+    backgroundColor: 'white',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.25)',
+    borderTopStyle: 'solid'
   },
   footerItem: {
     flex: 1

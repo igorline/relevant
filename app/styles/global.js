@@ -44,6 +44,9 @@ const colors = StyleSheet.create({
   },
   gray: {
     color: 'gray'
+  },
+  darkGray: {
+    color: '#555659'
   }
 });
 
@@ -64,11 +67,6 @@ const layout = StyleSheet.create({
   tagRow: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  tagX: {
-    height: 7.5,
-    width: 7.5,
-    marginRight: 3.5
   },
   category: {
     flex: 1,
@@ -115,11 +113,11 @@ const layout = StyleSheet.create({
     alignItems: 'center'
   },
   tagBox: {
-    backgroundColor: 'black',
+    backgroundColor: '#E5E3E4',
     padding: 10,
     marginLeft: 5,
     marginTop: 5,
-    color: 'white'
+    color: '#808080'
   },
   singleTagBox: {
     backgroundColor: 'black',

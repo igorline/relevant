@@ -287,7 +287,6 @@ class Post extends Component {
 
     var expandedInvest = self.state.expandedInvest;
     var investButtonString = "Invest 💰";
-    if (expandedInvest) investButtonString = "Submit";
     var toggleBool = null;
 
     if (self.state.invested) {
@@ -306,9 +305,9 @@ class Post extends Component {
 
     var investButtonEl = null;
 
-    if (!expandedInvest) {
-      if (post.user._id != self.props.auth.user._id) {
-        investButtonEl = (<TouchableHighlight underlayColor={'transparent'} onPress={self.invest.bind(self, toggleBool, functionBool)} style={styles.investButton}><Text style={styles.white}>{investButtonString}</Text></TouchableHighlight>);
+    if (post.user._id != self.props.auth.user._id) {
+      if (!self.state.invested) {
+        investButtonEl = (<Text style={[styles.font10, styles.postButton]} onPress={self.toggleInvest.bind(self)}>Invest 💰</Text>);
       }
     }
 
@@ -362,7 +361,7 @@ class Post extends Component {
     }
 
     return (
-        <View style={[styles.postContainer]} onLayout={(event) => {
+      <View style={[styles.postContainer]} onLayout={(event) => {
           var {x, y, width, height} = event.nativeEvent.layout;
           self.setState({postHeight: height, postWidth: width})
         }}>
@@ -372,50 +371,61 @@ class Post extends Component {
               {postUserImageEl}
               <View style={styles.postInfo}>
                 <View style={[styles.infoLeft, styles.innerInfo]}>
-                <Text style={[styles.white, styles.font10]}>Posted by {self.props.post.user.name} &#8226; 📈<Text style={styles.active}>{self.props.post.user.relevance.toFixed(2)}</Text></Text>
-                 {tags ? tagsEl : null}
-                 </View>
-                 <View style={[styles.infoRight, styles.innerInfo]}>
-                   {self.state.passed ? <View><Text style={[styles.font10, styles.white, styles.textRight]}>📈<Text style={styles.active}>{relevance.toFixed(2)}</Text></Text><Text style={[styles.font10, styles.white, styles.textRight]}>💵<Text style={styles.active}>{value.toFixed(2)}</Text></Text></View> : <View style={[styles.countdown]}><Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} /><Text style={[styles.font10, styles.white, styles.textRight]}>Results in {self.state.timeUntilString}</Text></View>}
-                  </View>
+                  <Text style={[styles.font15, styles.darkGray]}>{self.props.post.user.name}</Text>
+                  {/*tags ? tagsEl : null*/}
+                </View>
+                <View style={[styles.infoRight, styles.innerInfo]}>
+                  {self.state.passed ? <View><Text style={[styles.font10, styles.textRight]}>📈<Text style={styles.active}>{relevance.toFixed(2)}</Text></Text><Text style={[styles.font10, styles.textRight]}>💵<Text style={styles.active}>{value.toFixed(2)}</Text></Text></View> : <View style={[styles.countdown]}><Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} /><Text style={[styles.font10, styles.textRight, styles.darkGray]}>Results in {self.state.timeUntilString}</Text></View>}
                 </View>
               </View>
+            </View>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight>
+          <View>
+          {body ? <View style={[styles.postBody, styles.font15]}><Text style={styles.darkGray} numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text></View> : null}
+          </View>
+        </TouchableHighlight>
+
+        <View style={styles.postButtons}>
+          {!expanded ? <Text style={[styles.font10, styles.postButton]} onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
+          {expanded ?
+              <Text style={[styles.font10, styles.postButton]} onPress={self.toggleExpanded.bind(this, false)}>Read less</Text>
+          : null}
+          <Text style={[styles.font10, styles.postButton]} onPress={self.openComments.bind(self)}>{commentString}</Text>
+          <Text style={[styles.font10, styles.postButton]} onPress={self.onShare.bind(self)}>Share</Text>
+          {self.props.post.user._id == self.props.auth.user._id ? <Text style={[styles.font10, styles.postButton]} onPress={self.deletePost.bind(self)}>Delete</Text> : null}
+          {self.props.post.user._id != self.props.auth.user._id ? <Text style={[styles.font10, styles.postButton]} onPress={self.irrelevant.bind(self)}>Irrelevant</Text> : null}
+          <Text style={[styles.font10, styles.postButton]} onPress={self.testAni.bind(self)}>testAni</Text>
+          {investButtonEl}
+        </View>
+
+        <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
+          <PickerIOS
+            selectedValue={self.state.investAmount}
+            onValueChange={(investAmount) => this.setState({investAmount: investAmount})}>
+            {pickerArray}
+          </PickerIOS>
+        </Animated.View>
+
+        <View style={expandedInvest ? styles.buttonContainerExpanded : styles.buttonContainer}>
+          {expandedInvest ? <TouchableHighlight style={styles.investButton} onPress={self.toggleInvest.bind(self)}><Text style={styles.white}>Cancel</Text></TouchableHighlight> : null}
+          {expandedInvest ? <TouchableHighlight underlayColor={'transparent'} style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}><Text style={styles.white}>Submit</Text></TouchableHighlight> : null}
+          {/*investButtonEl*/}
+        </View>
+
+        <TouchableHighlight>
+          <View>
             {imageEl}
           </View>
         </TouchableHighlight>
         <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(null, link) : null}>
           <View style={styles.postSection}>
-            {lastPost ? <Text style={styles.lastPost}>Last subscribed post❗️</Text> : null}
-            <Text style={styles.font20}>{title ? title : 'Untitled'}</Text>
-            {link ? <Text style={styles.font10}>from {self.extractDomain(link)}</Text> : null}
-            {body ? <View style={[styles.postBody, styles.font15]}><Text numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text></View> : null}
+            {lastPost ? <Text style={[styles.lastPost, styles.darkGray]}>Last subscribed post❗️</Text> : null}
+            <Text style={[styles.font20, styles.darkGray]}>{title ? title : 'Untitled'}</Text>
+            {link ? <Text style={[styles.font10, styles.darkGray]}>from {self.extractDomain(link)}</Text> : null}
           </View>
         </TouchableHighlight>
-        <View style={styles.postSection}>
-        {!expanded ? <Text style={styles.font15} onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
-          {expanded ?
-            <View>
-              <Text style={styles.font15} onPress={self.toggleExpanded.bind(this, false)}>Read less</Text>
-            </View>
-          : null}
-          <Text style={[styles.font15, styles.commentPad]} onPress={self.openComments.bind(self)}>{commentString}</Text>
-          <Text style={[styles.font15, styles.commentPad]} onPress={self.onShare.bind(self)}>Share</Text>
-          {self.props.post.user._id == self.props.auth.user._id ? <Text style={[styles.font15, styles.commentPad]} onPress={self.deletePost.bind(self)}>Delete</Text> : null}
-          {self.props.post.user._id != self.props.auth.user._id ? <Text style={[styles.font15, styles.commentPad]} onPress={self.irrelevant.bind(self)}>Irrelevant</Text> : null}
-          <Text style={[styles.font15, styles.commentPad]} onPress={self.testAni.bind(self)}>testAni</Text>
-          <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
-            <PickerIOS
-              selectedValue={self.state.investAmount}
-              onValueChange={(investAmount) => this.setState({investAmount: investAmount})}>
-              {pickerArray}
-            </PickerIOS>
-          </Animated.View>
-          <View style={expandedInvest ? styles.buttonContainerExpanded : styles.buttonContainer}>
-            {expandedInvest ? <TouchableHighlight style={styles.investButton} onPress={self.toggleInvest.bind(self)}><Text style={styles.white}>Cancel</Text></TouchableHighlight> : null}
-            {expandedInvest ? <TouchableHighlight underlayColor={'transparent'} style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}><Text style={styles.white}>{investButtonString}</Text></TouchableHighlight> : null}
-            {investButtonEl}
-          </View>
-        </View>
       </View>
     );
   }
@@ -424,6 +434,22 @@ class Post extends Component {
 export default Post;
 
 const localStyles = StyleSheet.create({
+  postButtons: {
+    flexDirection: 'row',
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 10,
+    paddingTop: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap'
+  },
+  postButton: {
+    backgroundColor: '#F0F0F0',
+    padding: 10,
+    color: '#808080',
+    borderRadius: 2
+  },
   commentPad: {
     paddingTop: 10,
     paddingBottom: 5,
@@ -457,6 +483,9 @@ const localStyles = StyleSheet.create({
   },
   postBody: {
     paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 15,
+    paddingRight: 15
   },
   postImage: {
     height: 200,
@@ -490,17 +519,15 @@ const localStyles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 5,
     backgroundColor: 'black',
-
   },
   userImage: {
-    height: 30,
-    width: 30,
-    borderRadius: 15
+    height: 25,
+    width: 25,
+    borderRadius: 12.5
   },
   postHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,1)',
     padding: 10
   },
   link: {
@@ -526,10 +553,8 @@ const localStyles = StyleSheet.create({
     marginRight: 5
   },
   lastPost: {
-
   }
 });
-
 
 
 

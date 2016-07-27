@@ -11,7 +11,8 @@ import React, {
   TouchableHighlight,
   AppState,
   Animated,
-  Easing
+  Easing,
+  PushNotificationIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -33,14 +34,33 @@ class Nav extends Component {
     }
   }
 
-  componentWillUpdate(next) {
-    var self = this;
-  }
-
-
   componentDidMount() {
     var self = this;
+    StatusBarIOS.setStyle('default');
     AppState.addEventListener('change', this.handleAppStateChange.bind(self));
+  }
+
+  componentDidReceiveProps(prev) {
+    // if (prev.auth.isAuthenticated && !self.props.auth.isAuthenticated) {
+    //       var user = prev.auth.user;
+    //       var newUser = prev.auth.user;
+    //       console.log('removing device');
+    //         if (user.deviceTokens) {
+    //             if (user.deviceTokens.indexOf(deviceToken) > -1) {
+    //                 console.log('removing device', deviceToken);
+    //                 var index = user.deviceTokens.indexOf(deviceToken);
+    //                 var spliced = user.deviceTokens.splice(index, 1);
+    //                 console.log(newUser.deviceTokens, 'pre splice')
+    //                 newUser.deviceTokens = spliced;
+    //                 console.log(newUser.deviceTokens, 'post splice');
+    //                 self.props.actions.updateUser(newUser, prev.auth.token);
+    //             } else {
+    //               console.log('user doesnt have token selected for removal');
+    //             }
+    //         } else {
+    //           console.log('no user tokens to remove');
+    //         }
+    //     }
   }
 
   componentWillReceiveProps(next) {
@@ -50,6 +70,14 @@ class Nav extends Component {
       self.props.actions.getActivity(next.auth.user._id, 0);
       self.props.actions.getGeneralActivity(next.auth.user._id, 0);
     }
+
+    // if (self.props.auth.isAuthenticated != next.auth.isAuthenticated) {
+    //   console.log('componentWillReceiveProps', self.props.auth.isAuthenticated, next.auth.isAuthenticated)
+    //   if (next.auth.isAuthenticated) {
+    //     console.log(next.auth.user)
+    //     self.props.actions.addDeviceToken(next.auth.user, next.auth.token)
+    //   }
+    // }
   }
 
   componentWillUnmount() {
@@ -118,7 +146,7 @@ class Nav extends Component {
     }
 
     if (authenticated) {
-      StatusBarIOS.setStyle('light-content');
+      //StatusBarIOS.setStyle('light-content');
       navEl = (<View style={styles.nav}>
         <View style={[styles.navItem]}>
           <Text style={[styles.navLink, styles.maxWidth]} numberOfLines={1}>{title}</Text>
@@ -129,7 +157,7 @@ class Nav extends Component {
 
       </View>);
     } else {
-      StatusBarIOS.setStyle('default');
+      //StatusBarIOS.setStyle('default');
     }
 
     return (
@@ -172,7 +200,7 @@ const localStyles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   backText: {
-    color: 'white',
+    color: 'black',
     fontSize: 20
   },
   gear: {
@@ -193,7 +221,10 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     padding: 12,
-    backgroundColor: 'black'
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.25)',
+    borderBottomStyle: 'solid'
   },
   stats: {
     position: 'absolute',
@@ -205,7 +236,7 @@ const localStyles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   statsTxt: {
-    color: 'white'
+    color: 'black'
   },
   navItem: {
     flex: 1,
@@ -215,7 +246,7 @@ const localStyles = StyleSheet.create({
     flexWrap: 'nowrap'
   },
   navLink: {
-    color: 'white',
+    color: 'black',
     backgroundColor: 'transparent',
     fontSize: 20,
     textAlign: 'center',
