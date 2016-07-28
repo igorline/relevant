@@ -63,7 +63,7 @@ class SingleActivity extends Component {
          activityEl = (
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
-              <Text>
+              <Text style={styles.darkGray}>
                 <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
                   {singleActivity.byUser.name}
                 </Text>
@@ -81,7 +81,7 @@ class SingleActivity extends Component {
        } else if (singleActivity.type == 'profile') {
         activityEl = (
           <View style={styles.singleActivity}>
-            <Text>
+            <Text style={styles.darkGray}>
               <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
                 {singleActivity.byUser.name}
               </Text>
@@ -94,7 +94,7 @@ class SingleActivity extends Component {
         activityEl = (
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
-              <Text>
+              <Text style={styles.darkGray}>
                 <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
                   {singleActivity.byUser.name}
                 </Text>
@@ -111,7 +111,9 @@ class SingleActivity extends Component {
         activityEl = (
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
-              <Text><Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>&nbsp;is thirsty 4 u 👅💦</Text>
+              <Text style={styles.darkGray}>
+                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>
+              &nbsp;is thirsty 4 u 👅💦</Text>
             </View>
             <View style={styles.activityRight}>
             <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
@@ -122,7 +124,10 @@ class SingleActivity extends Component {
         activityEl = (
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
-              <Text><Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text> mentioned you in a post</Text>
+              <Text style={styles.darkGray}>
+                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>
+                mentioned you in a post
+              </Text>
               <Text onPress={self.goToPost.bind(self, singleActivity)} numberOfLines={1} style={[styles.active]}>{' '+singleActivity.post.title}</Text>
             </View>
             <View style={styles.activityRight}>
@@ -133,8 +138,8 @@ class SingleActivity extends Component {
        } else {
           activityEl = (
             <View style={styles.singleActivity}>
-              <Text>
-              Notification from {singleActivity.byUser.name}
+              <Text style={styles.darkGray}>
+                Notification from {singleActivity.byUser.name}
               </Text>
               <Text style={styles.gray}>{fromNow}</Text>
             </View>
@@ -149,7 +154,7 @@ class SingleActivity extends Component {
       activityEl = (
         <View style={styles.singleActivity}>
           <View style={styles.activityLeft}>
-            <Text>
+            <Text style={styles.darkGray}>
               <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
                 {singleActivity.byUser.name}
               </Text>

@@ -33,42 +33,41 @@ class Footer extends Component {
     var currentRoute = self.props.router.currentRoute;
     var authenticated = this.props.auth.isAuthenticated;
     var footerEl = null;
+    var imageEl = (<Text style={[styles.icon, styles.textCenter, currentRoute == 'Profile' ? styles.activeIcon : null]}>👤</Text>);
+    if (self.props.auth.user) {
+      if (self.props.auth.user.image) {
+        imageEl = (<Image source={{uri: self.props.auth.user.image}}  style={[styles.footerImg, currentRoute == 'Profile' ? styles.activeIcon : null]} />)
+      }
+    }
 
     if (authenticated) {
       footerEl = ( <View style={styles.footer}>
         <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Read' ? self.props.routes.Read : null}>
           <View style={styles.footerItemView}>
-            <Text style={[styles.icon, styles.textCenter, currentRoute == 'Read' ? styles.activeIcon : null]}> 📩 👀</Text>
-            {/*<Text style={[currentRoute == 'Read' ? styles.active : styles.white, styles.footerLink]}>Read</Text>*/}
+            <Text style={[styles.icon, styles.textCenter, currentRoute == 'Read' ? styles.activeIcon : null]}> 📩 </Text>
           </View>
         </TouchableHighlight>
         <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Discover' ? self.props.routes.Discover : null}>
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter, currentRoute == 'Discover' ? styles.activeIcon : null]}>🔮</Text>
-            {/*<Text style={[currentRoute == 'Discover' ? styles.active : styles.white, styles.footerLink]} >Discover</Text>*/}
           </View>
         </TouchableHighlight>
         <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'CreatePost' ? self.props.routes.CreatePost : null}>
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter, currentRoute == 'CreatePost' ? styles.activeIcon : null]}>📝</Text>
-            {/*<Text style={[currentRoute == 'CreatePost' ? styles.active : styles.white, styles.footerLink]} >Post</Text>*/}
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Activity' ? self.props.routes.Activity : null}>
+          <View style={styles.footerItemView}>
+            <Text style={[styles.icon, styles.textCenter, currentRoute == 'Activity' ? styles.activeIcon : null]}>⚡</Text>
+            {self.props.notif.count ? <View style={styles.notifCount}><Text style={styles.notifText}>{self.props.notif.count}</Text></View> : null}
           </View>
         </TouchableHighlight>
         <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Profile' ? self.props.routes.Profile : null}>
           <View style={styles.footerItemView}>
-            <Text style={[styles.icon, styles.textCenter, currentRoute == 'Profile' ? styles.activeIcon : null]}>👤</Text>
-            {/*<Text style={[currentRoute == 'Profile' ? styles.active : styles.white, styles.footerLink]}>Profile</Text>*/}
+            {imageEl}
           </View>
         </TouchableHighlight>
-          <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Activity' ? self.props.routes.Activity : null}>
-            <View style={styles.footerItemView}>
-              <Text style={[styles.icon, styles.textCenter, currentRoute == 'Activity' ? styles.activeIcon : null]}>⚡</Text>
-              <View>
-                {/*<Text style={[currentRoute == 'Activity' ? styles.active : styles.white,  styles.footerLink]}>Activity</Text>*/}
-              </View>
-              {self.props.notif.count ? <View style={styles.notifCount}><Text style={styles.notifText}>{self.props.notif.count}</Text></View> : null}
-            </View>
-          </TouchableHighlight>
       </View>);
     }
     return (
@@ -94,6 +93,11 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(Footer)
 
 const localStyles = StyleSheet.create({
+  footerImg: {
+    height: 25,
+    width: 25,
+    borderRadius: 12.5
+  },
   icon: {
     fontSize: 25
   },

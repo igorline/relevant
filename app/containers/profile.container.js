@@ -59,29 +59,32 @@ class Profile extends Component {
     var balance = 0;
     var userImageEl = null;
     var postsEl = null;
+    var profileEl = null;
 
-    if (self.props.auth.user.posts) {
-      if (self.props.auth.user.posts.length > 0) {
-        var posts = null;
+    if (self.props.auth.user) {
+      profileEl = (<ProfileComponent {...self.props} user={self.props.auth.user} styles={styles} />);
+      if (self.props.auth.user.posts) {
+        if (self.props.auth.user.posts.length > 0) {
+          var posts = null;
 
-        posts = self.props.auth.user.posts;
+          posts = self.props.auth.user.posts;
 
-        postsEl = posts.map(function(post, i) {
-          return (<Post key={i} post={post} {...self.props} styles={styles} />);
-        });
+          postsEl = posts.map(function(post, i) {
+            return (<Post key={i} post={post} {...self.props} styles={styles} />);
+          });
+        } else {
+           postsEl = (<View style={styles.padding10}><Text>No posts yet 😔</Text></View>)
+         }
       } else {
-         postsEl = (<View style={styles.padding10}><Text>No posts yet 😔</Text></View>)
-       }
-    } else {
-      postsEl = (<View style={styles.padding10}><Text>No posts yet 😔</Text></View>)
+        postsEl = (<View style={styles.padding10}><Text>No posts yet 😔</Text></View>)
+      }
     }
 
     return (
       <View style={styles.fullContainer}>
       <ScrollView style={styles.fullContainer}>
-      <ProfileComponent {...self.props} user={self.props.auth.user} styles={styles} />
+        {profileEl}
         <View>
-          {/*<Text style={[styles.font20, styles.postsHeader]}>Posts</Text>*/}
           {postsEl}
         </View>
       </ScrollView>

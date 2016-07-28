@@ -41,19 +41,19 @@ class Application extends Component {
       <View style={{position:'absolute',left:0,right:0,top:0,bottom:0,backgroundColor:'white'}}/>
         <Router>
           <Route name="Auth" component={Auth} hideNavBar={false} hideFooter={false} type="replace" initial={true} title="Home" />
-          <Route name="SignUp" component={Auth} hideNavBar={false} hideFooter={false} type="replace" title="Sign up" />
-          <Route name="LogIn" component={Auth} type="replace" hideNavBar={false} hideFooter={false}  title="Log in" />
-          <Route name="Import" component={Import} type="replace" hideNavBar={false} title="Import" />
-          <Route name="Profile" component={Profile} type="replace" hideNavBar={false} title="Profile" />
-          <Route name="Read" component={Read} type="replace" hideNavBar={false} title="Read" />
-          <Route name="CreatePost" component={CreatePost} type="replace" hideNavBar={false} title="CreatePost" />
-          <Route name="Discover" component={Discover} type="replace" hideNavBar={false} title="Discover" />
-          <Route name="SinglePost" component={SinglePost} type="replace" hideNavBar={false} title="Single Post" />
-          <Route name="User" component={User} type="replace" hideNavBar={false} title="User" />
-          <Route name="ProfileOptions" component={ProfileOptions} type="replace" hideNavBar={false} title="Options" />
-          <Route name="Activity" component={Activity} type="replace" hideNavBar={false} title="Activity" />
-          <Route name="Comments" component={Comments} type="replace" hideNavBar={false} title="Comments" />
-          <Route name="Thirst" component={Thirst} type="replace" hideNavBar={false} title="Thirsty?" />
+          <Route name="SignUp" component={Auth} hideNavBar={false} hideFooter={false}  title="Sign up" />
+          <Route name="LogIn" component={Auth} hideNavBar={false} hideFooter={false}  title="Log in" />
+          <Route name="Import" component={Import} hideNavBar={false} title="Import" />
+          <Route name="Profile" type="replace" component={Profile} hideNavBar={false} title="Profile" />
+          <Route name="Read" type="replace" component={Read} hideNavBar={false} title="Read" />
+          <Route name="CreatePost" type="replace" component={CreatePost} hideNavBar={false} title="CreatePost" />
+          <Route name="Discover" type="replace" component={Discover} hideNavBar={false} title="Discover" />
+          <Route name="SinglePost" type="replace" component={SinglePost} hideNavBar={false} title="Single Post" />
+          <Route name="User" type="replace" component={User} hideNavBar={false} title="User" />
+          <Route name="ProfileOptions" component={ProfileOptions} hideNavBar={false} title="Options" />
+          <Route name="Activity" type="replace" component={Activity} hideNavBar={false} title="Activity" />
+          <Route name="Comments" component={Comments} hideNavBar={false} title="Comments" />
+          <Route name="Thirst" component={Thirst} hideNavBar={false} title="Thirsty?" />
 
           {/*<Schema name="modal" sceneConfig={Animations.FlatFloatFromBottom} footer={Nav} navBar={Nav}/>*/}
           {/*<Schema name="default" sceneConfig={Animations.FlatFloatFromRight} footer={Footer} navBar={Nav}/>*/}

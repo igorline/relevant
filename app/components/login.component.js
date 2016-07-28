@@ -51,15 +51,15 @@ class Login extends Component {
       <View style={styles.center}>
 
         <View style={styles.marginTop}>
-          <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="email" onChangeText={(email) => this.setState({"email": email})} value={this.state.email} style={styles.input} />
+          <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="email" onChangeText={(email) => this.setState({"email": email})} value={this.state.email} style={styles.authInput} />
         </View>
 
         <View style={styles.marginTop}>
-          <TextInput autoCapitalize='none' secureTextEntry={true} keyboardType='default' clearTextOnFocus={false} placeholder="password" onChangeText={(password) => this.setState({"password": password})} value={this.state.password} style={styles.input} />
+          <TextInput autoCapitalize='none' secureTextEntry={true} keyboardType='default' clearTextOnFocus={false} placeholder="password" onChangeText={(password) => this.setState({"password": password})} value={this.state.password} style={styles.authInput} />
         </View>
 
         <View style={styles.margin}>
-          <TouchableHighlight onPress={self.login.bind(this)} style={styles.genericButton}><Text style={styles.white}>Submit</Text></TouchableHighlight>
+          <TouchableHighlight onPress={self.login.bind(this)} style={[styles.whiteButton]}><Text style={styles.buttonText}>Submit</Text></TouchableHighlight>
         </View>
 
       </View>

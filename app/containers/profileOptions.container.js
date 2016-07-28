@@ -128,7 +128,7 @@ class ProfileOptions extends Component {
         <TouchableHighlight onPress={self.changeName.bind(self)} style={[styles.genericButton, styles.margin]}><Text style={styles.white}>Submit</Text></TouchableHighlight></View>);
       } else {
         changeNameEl = (<View style={styles.center}><Text style={styles.font20}>{name}</Text>
-        <TouchableHighlight style={[styles.genericButton, styles.margin]} onPress={self.startEditing.bind(self)}><Text style={styles.white}>Edit</Text></TouchableHighlight></View>);
+        <TouchableHighlight style={[styles.genericButton, styles.margin]} onPress={self.startEditing.bind(self)}><Text style={styles.buttonText}>Edit</Text></TouchableHighlight></View>);
       }
     }
 
@@ -148,9 +148,9 @@ class ProfileOptions extends Component {
       <View style={styles.container}>
         {changeNameEl}
         {userImageEl}
-        <TouchableHighlight style={[styles.genericButton, styles.marginTop]} onPress={self.chooseImage.bind(self)}><Text style={styles.white}>Update profile picture</Text></TouchableHighlight>
+        <TouchableHighlight style={[styles.genericButton, styles.marginTop]} onPress={self.chooseImage.bind(self)}><Text style={styles.buttonText}>Update profile picture</Text></TouchableHighlight>
         {/*<Button onPress={self.props.routes.Import}>Find users from contacts</Button>*/}
-        <TouchableHighlight style={[styles.genericButton, styles.marginTop]} onPress={self.logoutRedirect.bind(self)}><Text style={styles.white}>Logout</Text></TouchableHighlight>
+        <TouchableHighlight style={[styles.genericButton, styles.marginTop]} onPress={self.logoutRedirect.bind(self)}><Text style={styles.buttonText}>Logout</Text></TouchableHighlight>
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>

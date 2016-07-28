@@ -55,7 +55,7 @@ class DiscoverUser extends Component {
         <View style={[styles.discoverUser]}>
           <View style={[styles.leftDiscoverUser]}>
             {imageEl}
-            <Text>{user.name}</Text>
+            <Text style={styles.darkGray}>{user.name}</Text>
           </View>
           <View stlye={styles.rightDiscoverUser}>
             <Text>📈<Text style={styles.active}>{user.relevance ? user.relevance.toFixed(2) : null}</Text></Text>

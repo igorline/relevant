@@ -18,13 +18,6 @@ class SignUp extends Component {
     };
   };
 
-  componentDidMount() {
-
-  }
-
-  componentDidUpdate() {
-  }
-
   checkPass(user) {
     var self = this;
     if (self.state.password) {
@@ -102,27 +95,27 @@ class SignUp extends Component {
       <Text style={styles.instructions}>{message}</Text>
 
       <View style={styles.marginTop}>
-          <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="name" onChangeText={(name) => this.setState({"name": name})} value={this.state.name}  style={styles.input} />
+          <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="name" onChangeText={(name) => this.setState({"name": name})} value={this.state.name}  style={styles.authInput} />
         </View>
 
         <View style={styles.marginTop}>
-          <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="email" onChangeText={(email) => this.setState({"email": email})} value={this.state.email}  style={styles.input} />
+          <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="email" onChangeText={(email) => this.setState({"email": email})} value={this.state.email}  style={styles.authInput} />
         </View>
 
         <View style={styles.marginTop}>
-          <TextInput autoCapitalize='none' keyboardType='phone-pad' clearTextOnFocus={false} placeholder="phone number" onChangeText={(phone) => this.setState({"phone": phone})} value={this.state.phone}  style={styles.input} />
+          <TextInput autoCapitalize='none' keyboardType='phone-pad' clearTextOnFocus={false} placeholder="phone number" onChangeText={(phone) => this.setState({"phone": phone})} value={this.state.phone}  style={styles.authInput} />
         </View>
 
         <View style={styles.marginTop}>
-          <TextInput autoCapitalize='none' secureTextEntry={true} keyboardType='default' clearTextOnFocus={false} placeholder="password" onChangeText={(password) => this.setState({"password": password})} value={this.state.password}  style={styles.input} />
+          <TextInput autoCapitalize='none' secureTextEntry={true} keyboardType='default' clearTextOnFocus={false} placeholder="password" onChangeText={(password) => this.setState({"password": password})} value={this.state.password}  style={styles.authInput} />
         </View>
 
          <View style={styles.marginTop}>
-          <TextInput autoCapitalize='none' secureTextEntry={true} keyboardType='default' clearTextOnFocus={false} placeholder="confirm password" onChangeText={(cPassword) => this.setState({"cPassword": cPassword})} value={this.state.cPassword}  style={styles.input} />
+          <TextInput autoCapitalize='none' secureTextEntry={true} keyboardType='default' clearTextOnFocus={false} placeholder="confirm password" onChangeText={(cPassword) => this.setState({"cPassword": cPassword})} value={this.state.cPassword}  style={styles.authInput} />
         </View>
 
         <View style={styles.margin}>
-          <TouchableHighlight style={styles.genericButton} onPress={self.validate.bind(self)}><Text style={styles.white}>Submit</Text></TouchableHighlight>
+          <TouchableHighlight style={[styles.whiteButton]} onPress={self.validate.bind(self)}><Text style={styles.buttonText}>Submit</Text></TouchableHighlight>
         </View>
 
       </View>

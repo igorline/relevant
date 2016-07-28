@@ -288,32 +288,42 @@ class CreatePost extends Component {
     if (self.props.posts.parentTags) {
       parentTags = self.props.posts.parentTags;
       parentTags.forEach(function(tag, i) {
-        pickerArray.push(<PickerItemIOS key={i} label={tag.name} value={JSON.stringify(tag)} />);
+        pickerArray.push(<PickerItemIOS key={i} label={tag.name} style={styles.font15} value={JSON.stringify(tag)} />);
       })
     }
 
     typeEl = (<View style={[styles.row, styles.typeBar]}>
-        <Text onPress={self.switchType.bind(self, 'url')} style={[styles.type, styles.font20, self.state.type == 'url' ? styles.active : null]}>Url</Text>
-        <Text onPress={self.switchType.bind(self, 'text')} style={[styles.type, styles.font20, self.state.type == 'text' ? styles.active : null]}>Text</Text>
-        <Text onPress={self.switchType.bind(self, 'image')} style={[styles.type, styles.font20, self.state.type == 'image' ? styles.active : null]}>Image</Text>
+        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, self.state.type == 'url' ? styles.activeBorder : null]} onPress={self.switchType.bind(self, 'url')}>
+          <Text style={[styles.type, styles.darkGray, styles.font15, self.state.type == 'url' ? styles.active : null]}>Url</Text>
+        </TouchableHighlight>
+        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, self.state.type == 'text' ? styles.activeBorder : null]} onPress={self.switchType.bind(self, 'text')}>
+          <Text style={[styles.type, styles.darkGray, styles.font15, self.state.type == 'text' ? styles.active : null]}>Text</Text>
+        </TouchableHighlight>
+        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, self.state.type == 'image' ? styles.activeBorder : null]} onPress={self.switchType.bind(self, 'image')}>
+          <Text style={[styles.type, styles.darkGray, styles.font15, self.state.type == 'image' ? styles.active : null]}>Image</Text>
+        </TouchableHighlight>
       </View>)
 
     return (
       <View style={[{height: self.state.visibleHeight}]}>
         <ScrollView>
           {typeEl}
-          {self.state.stage == 1 && self.state.type == 'url' ? <TextInput numberOfLines={1} style={[styles.font20, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.postLink} returnKeyType='done' /> : null}
-          {self.state.stage == 1 && self.state.type == 'image' && !self.state.postImage ? <Text onPress={self.chooseImage.bind(self)} style={[styles.padding10, styles.font20, styles.active, styles.lightweight]}>Upload an image</Text> : null}
+          {self.state.stage == 1 && self.state.type == 'url' ? <TextInput numberOfLines={1} style={[styles.font15, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.postLink} returnKeyType='done' /> : null}
+          {self.state.stage == 1 && self.state.type == 'image' && !self.state.postImage ? <View style={{flexDirection: 'row', paddingLeft: 10}}><TouchableHighlight style={styles.genericButton} onPress={self.chooseImage.bind(self)}><Text style={styles.buttonText}>Upload an image</Text></TouchableHighlight></View> : null}
           {self.state.stage == 1 && self.state.type == 'image' && self.state.postImage ? <View style={styles.previewImageContainer}>
           <Image source={{uri: self.state.postImage}} style={styles.previewImage} />
-          <Text style={[styles.active, styles.font20]} onPress={self.removeImage.bind(self)}>Remove image</Text>
+          <TouchableHighlight style={styles.genericButton} onPress={self.removeImage.bind(self)}><Text style={styles.buttonText}>Remove image</Text></TouchableHighlight>
           </View> : null}
-           {self.state.stage == 1 && self.state.type != 'url' ? <TextInput style={[styles.linkInput, styles.font20]} placeholder='Title here...' multiline={false} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} returnKeyType='done' /> : null}
-          {self.state.stage == 1 ? <TextInput style={[styles.bodyInput, styles.font20]} placeholder='Body here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /> : null}
 
-          <View style={styles.buttonParentCenter}><TouchableHighlight onPress={self.categoryButton.bind(self)} style={styles.genericButton}><Text style={styles.white}>{self.state.openCategory ? 'Done' :  'Choose Category'}</Text></TouchableHighlight></View>
 
-          {self.state.catObj ? <Text style={[styles.font20, styles.textCenter]}>{self.state.catObj.name}</Text> :  null}
+
+
+           {self.state.stage == 1 && self.state.type != 'url' ? <TextInput style={[styles.linkInput, styles.font15]} placeholder='Title here...' multiline={false} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} returnKeyType='done' /> : null}
+          {self.state.stage == 1 ? <TextInput style={[styles.bodyInput, styles.font15]} placeholder='Body here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /> : null}
+
+          <View style={styles.buttonParentCenter}><TouchableHighlight onPress={self.categoryButton.bind(self)} style={styles.genericButton}><Text style={styles.buttonText}>{self.state.openCategory ? 'Done' :  'Choose Category'}</Text></TouchableHighlight></View>
+
+          {self.state.catObj ? <Text style={[styles.font15, styles.textCenter]}>{self.state.catObj.name}</Text> :  null}
 
           {self.state.openCategory ? <PickerIOS
             selectedValue={self.state.postCategory ? self.state.postCategory : null}
@@ -321,9 +331,9 @@ class CreatePost extends Component {
             {pickerArray}
           </PickerIOS> : null}
 
-          <TextInput style={[styles.linkInput, styles.font20]} placeholder='Enter tags... ex. webgl, slowstyle, xxx' multiline={false} onChangeText={(postTags) => this.setState({postTags})} value={this.state.postTags} returnKeyType='done' />
+          <TextInput style={[styles.linkInput, styles.font15]} placeholder='Enter tags... ex. webgl, slowstyle, xxx' multiline={false} onChangeText={(postTags) => this.setState({postTags})} value={this.state.postTags} returnKeyType='done' />
 
-           <View style={styles.buttonParentCenter}><TouchableHighlight style={styles.genericButton} onPress={self.post.bind(self)}><Text style={styles.white}>Submit</Text></TouchableHighlight></View>
+           <View style={styles.buttonParentCenter}><TouchableHighlight style={styles.genericButton} onPress={self.post.bind(self)}><Text style={styles.buttonText}>Submit</Text></TouchableHighlight></View>
         </ScrollView>
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
@@ -354,10 +364,6 @@ const localStyles = StyleSheet.create({
   tagStringContainer: {
     flexDirection: 'row',
     alignItems: 'center'
-  },
-  type: {
-    flex: 1,
-    textAlign: 'center'
   },
   padding10: {
     padding: 10
@@ -401,11 +407,6 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  typeBar: {
-    width: fullWidth,
-    paddingTop: 20,
-    paddingBottom: 20
-},
   createPostContainer: {
     flex: 1,
     flexDirection: 'column',
