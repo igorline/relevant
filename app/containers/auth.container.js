@@ -72,8 +72,8 @@ class Auth extends Component {
     if (isAuthenticated){
       auth = (
         <View style={styles.alignAuth}>
-          <Text style={styles.font20}>{user ? user.name : null}</Text>
-          <Text>{message}</Text>
+          <Text style={[styles.font20, styles.darkGray]}>{user ? user.name : null}</Text>
+          <Text style={styles.darkGray}>{message}</Text>
         </View>
       );
     }
@@ -81,38 +81,38 @@ class Auth extends Component {
    if (currentRoute == 'LogIn') {
       auth = (
         <View style={styles.alignAuth}>
-        <Text style={[styles.textCenter, styles.font20]}>
+        <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>
             Stay Relevant {'\n'} Log in
           </Text>
           <Login { ...this.props } styles={styles} />
-           <TouchableHighlight onPress={self.props.routes.Auth} style={styles.genericButton}><Text style={styles.white}>Back</Text></TouchableHighlight>
+           <TouchableHighlight onPress={self.props.routes.Auth} style={[styles.whiteButton]}><Text style={styles.buttonText}>Back</Text></TouchableHighlight>
         </View>
       );
     }
 
     if (currentRoute == 'SignUp') {
       auth = (<View style={styles.alignAuth}>
-        <Text style={[styles.textCenter, styles.font20]}>
+        <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>
             Get Relevant {'\n'} Sign up
           </Text>
         <SignUp {...this.props} styles={styles} />
-        <TouchableHighlight style={styles.genericButton} onPress={self.props.routes.Auth}><Text style={styles.white}>Back</Text></TouchableHighlight>
+        <TouchableHighlight style={[styles.whiteButton]} onPress={self.props.routes.Auth}><Text style={styles.buttonText}>Back</Text></TouchableHighlight>
       </View>);
     }
 
     if (currentRoute == 'Auth') {
       auth = (
         <View style={styles.alignAuth}>
-          <Text style={[styles.textCenter, styles.font20]}>Relevant</Text>
-          <Text>{message}</Text>
-          <TouchableHighlight style={styles.genericButton} onPress={self.props.routes.LogIn}><Text style={styles.white}>Log In</Text></TouchableHighlight>
-          <TouchableHighlight style={[styles.genericButton, styles.marginTop]} onPress={self.props.routes.SignUp}><Text style={styles.white}>Sign Up</Text></TouchableHighlight>
+          <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>Relevant</Text>
+          <Text style={styles.darkGray}>{message}</Text>
+          <TouchableHighlight style={[styles.whiteButton]} onPress={self.props.routes.LogIn}><Text style={styles.buttonText}>Log In</Text></TouchableHighlight>
+          <TouchableHighlight style={[styles.whiteButton, styles.marginTop]} onPress={self.props.routes.SignUp}><Text style={styles.buttonText}>Sign Up</Text></TouchableHighlight>
         </View>
       )
     }
 
     return (
-      <View style={[{height: isAuthenticated ? self.state.visibleHeight - 120 : self.state.visibleHeight}]}>
+      <View style={[{height: isAuthenticated ? self.state.visibleHeight - 120 : self.state.visibleHeight, backgroundColor: '#F0F0F0'}]}>
         {auth}
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />

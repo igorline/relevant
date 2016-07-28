@@ -22,6 +22,7 @@ import * as postActions from '../actions/post.actions';
 import * as onlineActions from '../actions/online.actions';
 import * as notifActions from '../actions/notif.actions';
 import * as viewActions from '../actions/view.actions';
+import * as messageActions from '../actions/message.actions';
 import * as animationActions from '../actions/animation.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
@@ -40,44 +41,14 @@ class Nav extends Component {
     AppState.addEventListener('change', this.handleAppStateChange.bind(self));
   }
 
-  componentDidReceiveProps(prev) {
-    // if (prev.auth.isAuthenticated && !self.props.auth.isAuthenticated) {
-    //       var user = prev.auth.user;
-    //       var newUser = prev.auth.user;
-    //       console.log('removing device');
-    //         if (user.deviceTokens) {
-    //             if (user.deviceTokens.indexOf(deviceToken) > -1) {
-    //                 console.log('removing device', deviceToken);
-    //                 var index = user.deviceTokens.indexOf(deviceToken);
-    //                 var spliced = user.deviceTokens.splice(index, 1);
-    //                 console.log(newUser.deviceTokens, 'pre splice')
-    //                 newUser.deviceTokens = spliced;
-    //                 console.log(newUser.deviceTokens, 'post splice');
-    //                 self.props.actions.updateUser(newUser, prev.auth.token);
-    //             } else {
-    //               console.log('user doesnt have token selected for removal');
-    //             }
-    //         } else {
-    //           console.log('no user tokens to remove');
-    //         }
-    //     }
-  }
-
   componentWillReceiveProps(next) {
     var self = this;
     if (!self.props.auth.user && next.auth.user) {
       self.props.actions.userToSocket(next.auth.user);
       self.props.actions.getActivity(next.auth.user._id, 0);
       self.props.actions.getGeneralActivity(next.auth.user._id, 0);
+      self.props.actions.getMessages(next.auth.user._id);
     }
-
-    // if (self.props.auth.isAuthenticated != next.auth.isAuthenticated) {
-    //   console.log('componentWillReceiveProps', self.props.auth.isAuthenticated, next.auth.isAuthenticated)
-    //   if (next.auth.isAuthenticated) {
-    //     console.log(next.auth.user)
-    //     self.props.actions.addDeviceToken(next.auth.user, next.auth.token)
-    //   }
-    // }
   }
 
   componentWillUnmount() {
@@ -101,6 +72,7 @@ class Nav extends Component {
 
   render() {
     var self = this;
+    var Actions = this.props.routes;
     var authenticated = this.props.auth.isAuthenticated;
     var navEl = null;
     var title = '';
@@ -146,18 +118,19 @@ class Nav extends Component {
     }
 
     if (authenticated) {
-      //StatusBarIOS.setStyle('light-content');
       navEl = (<View style={styles.nav}>
         <View style={[styles.navItem]}>
-          <Text style={[styles.navLink, styles.maxWidth]} numberOfLines={1}>{title}</Text>
+          <Text style={[styles.navLink, styles.maxWidth, styles.darkGray]} numberOfLines={1}>{title}</Text>
         </View>
-         {route == 'Profile' ? <View style={styles.gear}><TouchableHighlight onPress={self.props.routes.ProfileOptions} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View> : null}
-         {route == 'Read' && self.props.view.read == 2 ? <TouchableHighlight onPress={self.changeView.bind(self, 'read', 1)} style={styles.back}><Text style={styles.backText}>{'<'}</Text></TouchableHighlight> : null}
+         {route == 'Profile' ? <View style={styles.gear}><TouchableHighlight underlayColor={'transparent'}  onPress={self.props.routes.ProfileOptions} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View> : null}
+
+         {route == 'Read' && self.props.view.read == 2 ? <TouchableHighlight underlayColor={'transparent'}  onPress={self.changeView.bind(self, 'read', 1)} style={styles.back}><View style={styles.backInner}><Image style={styles.backImg} source={require('../assets/images/back.png')} /><Text style={styles.backText}>Back</Text></View></TouchableHighlight> : null}
          {statsEl}
 
+         {route == 'Comments' || route == 'ProfileOptions' ? <TouchableHighlight underlayColor={'transparent'}  onPress={Actions.pop} style={styles.back}><View style={styles.backInner}><Image style={styles.backImg} source={require('../assets/images/back.png')} /><Text style={styles.backText}>Back</Text></View></TouchableHighlight> : null}
+
+         {statsEl}
       </View>);
-    } else {
-      //StatusBarIOS.setStyle('default');
     }
 
     return (
@@ -177,13 +150,14 @@ function mapStateToProps(state) {
     online: state.online,
     notif: state.notif,
     animation: state.animation,
-    view: state.view
+    view: state.view,
+    messages: state.messages
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions, ...viewActions}, dispatch)
+    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions, ...viewActions, ...messageActions}, dispatch)
   }
 }
 
@@ -199,9 +173,19 @@ const localStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end'
   },
+  backInner: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  backImg: {
+    height: 10,
+    width: 7,
+    backgroundColor: 'transparent',
+    marginRight: 4
+  },
   backText: {
-    color: 'black',
-    fontSize: 20
+    color: '#aaaaaa',
+    fontSize: 12
   },
   gear: {
     position: 'absolute',
@@ -213,8 +197,8 @@ const localStyles = StyleSheet.create({
     padding: 12
   },
   gearImg: {
-    height: 25,
-    width: 25
+    height: 20,
+    width: 20
   },
   nav: {
     height: 60,
@@ -236,7 +220,8 @@ const localStyles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   statsTxt: {
-    color: 'black'
+    color: 'black',
+    fontSize: 10
   },
   navItem: {
     flex: 1,
@@ -246,9 +231,8 @@ const localStyles = StyleSheet.create({
     flexWrap: 'nowrap'
   },
   navLink: {
-    color: 'black',
     backgroundColor: 'transparent',
-    fontSize: 20,
+    fontSize: 15,
     textAlign: 'center',
   },
   maxWidth: {

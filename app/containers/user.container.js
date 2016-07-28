@@ -145,7 +145,6 @@ class User extends Component {
             <Text style={styles.white} onPress={self.props.routes.Thirst} >Thirsty 👅💦</Text>
           </TouchableHighlight>
           <View>
-            <Text style={[styles.font20, styles.postsHeader]}>Posts</Text>
             {postsEl}
           </View>
         </ScrollView>

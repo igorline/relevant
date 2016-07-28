@@ -71,9 +71,9 @@ function getActivity(userId, skip, reset) {
         dispatch(resetActivity(responseJSON));
       }
     })
-    .catch((error) => {
-      console.log('error', error)
-    });
+    // .catch((error) => {
+    //   console.log('error', error)
+    // });
   }
 }
 
@@ -92,9 +92,9 @@ function getGeneralActivity(userId, skip) {
     .then((responseJSON) => {
       dispatch(setGeneralActivity(responseJSON));
     })
-    .catch((error) => {
-      console.log('error', error)
-    });
+    // .catch((error) => {
+    //   console.log('error', error)
+    // });
   }
 }
 
@@ -115,9 +115,9 @@ function markRead(token, userId) {
       dispatch(clearCount());
       dispatch(getActivity(userId, 0, true));
     })
-    .catch((error) => {
-      console.log('error', error)
-    });
+    // .catch((error) => {
+    //   console.log('error', error)
+    // });
   }
 }
 
@@ -137,9 +137,9 @@ function createNotification(token, obj) {
     .then((responseJSON) => {
       console.log('created notif')
     })
-    .catch((error) => {
-      console.log(error, 'error creating notif')
-    });
+    // .catch((error) => {
+    //   console.log(error, 'error creating notif')
+    // });
   }
 }
 

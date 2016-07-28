@@ -14,7 +14,9 @@ import React, {
   Animated,
   Easing,
   LayoutAnimation,
-  ScrollView
+  ScrollView,
+  DatePickerIOS,
+  ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -31,6 +33,7 @@ var moment = require('moment');
 var PickerItemIOS = PickerIOS.Item;
 var Progress = require('react-native-progress');
 import Share from 'react-native-share';
+var CustomActionSheet = require('react-native-custom-action-sheet');
 
 class Post extends Component {
   constructor (props) {
@@ -46,6 +49,16 @@ class Post extends Component {
       timeUntilString: null,
       timePassedPercent: null,
       invested: false,
+      textInputValue: null,
+      clicked: 'none',
+      buttons: [
+        'share',
+        'test animation',
+        'delete',
+        'cancel'
+      ],
+      destructiveIndex: 2,
+      cancelIndex: 3,
     }
   }
 
@@ -106,8 +119,9 @@ class Post extends Component {
       Linking.openURL(url)
   }
 
-  toggleExpanded(bool) {
-    this.setState({expanded: bool});
+  toggleExpanded() {
+    var self = this
+    self.setState({expanded: self.state.expanded = !self.state.expanded});
   }
 
   componentWillUpdate(nextProps) {
@@ -134,6 +148,30 @@ class Post extends Component {
     return noPrefix;
   }
 
+  showActionSheet() {
+    var self = this;
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: self.state.buttons,
+      cancelButtonIndex: self.state.cancelIndex,
+      destructiveButtonIndex: self.state.destructiveIndex,
+    },
+    (buttonIndex) => {
+      switch(buttonIndex) {
+          case 0:
+              self.onShare();
+              break;
+          case 1:
+              self.testAni();
+              break;
+          case 2:
+              self.deletePost();
+              break;
+          default:
+              return;
+      }
+    });
+  }
+
   toggleInvest() {
     var self = this;
     var expandedInvest = self.state.expandedInvest;
@@ -144,8 +182,7 @@ class Post extends Component {
         self.state.aniHeight,
         {
           toValue: 200,
-          duration: 500,
-          easing: Easing.linear
+          duration: 300
         }
       ).start();
     } else {
@@ -153,8 +190,7 @@ class Post extends Component {
         self.state.aniHeight,
         {
           toValue: 0,
-          duration: 500,
-          easing: Easing.linear
+          duration: 300
         }
       ).start();
     }
@@ -197,6 +233,12 @@ class Post extends Component {
     var self = this;
     console.log('irrelevant')
     self.props.actions.irrelevant(self.props.auth.token, self.props.post._id);
+  }
+
+  toggleOptions() {
+    var self = this;
+    console.log('toggleOptions')
+    self.setState({showOptions: self.state.showOptions = !self.state.showOptions});
   }
 
   setSelected(user) {
@@ -307,7 +349,7 @@ class Post extends Component {
 
     if (post.user._id != self.props.auth.user._id) {
       if (!self.state.invested) {
-        investButtonEl = (<Text style={[styles.font10, styles.postButton]} onPress={self.toggleInvest.bind(self)}>Invest 💰</Text>);
+        investButtonEl = (<TouchableHighlight underlayColor={'transparent'}  style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]} onPress={self.toggleInvest.bind(self)}><View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View></TouchableHighlight>);
       }
     }
 
@@ -365,6 +407,7 @@ class Post extends Component {
           var {x, y, width, height} = event.nativeEvent.layout;
           self.setState({postHeight: height, postWidth: width})
         }}>
+
         <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(null, link) : null}>
           <View>
             <View style={styles.postHeader}>
@@ -372,7 +415,6 @@ class Post extends Component {
               <View style={styles.postInfo}>
                 <View style={[styles.infoLeft, styles.innerInfo]}>
                   <Text style={[styles.font15, styles.darkGray]}>{self.props.post.user.name}</Text>
-                  {/*tags ? tagsEl : null*/}
                 </View>
                 <View style={[styles.infoRight, styles.innerInfo]}>
                   {self.state.passed ? <View><Text style={[styles.font10, styles.textRight]}>📈<Text style={styles.active}>{relevance.toFixed(2)}</Text></Text><Text style={[styles.font10, styles.textRight]}>💵<Text style={styles.active}>{value.toFixed(2)}</Text></Text></View> : <View style={[styles.countdown]}><Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} /><Text style={[styles.font10, styles.textRight, styles.darkGray]}>Results in {self.state.timeUntilString}</Text></View>}
@@ -381,6 +423,7 @@ class Post extends Component {
             </View>
           </View>
         </TouchableHighlight>
+
         <TouchableHighlight>
           <View>
           {body ? <View style={[styles.postBody, styles.font15]}><Text style={styles.darkGray} numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text></View> : null}
@@ -388,16 +431,10 @@ class Post extends Component {
         </TouchableHighlight>
 
         <View style={styles.postButtons}>
-          {!expanded ? <Text style={[styles.font10, styles.postButton]} onPress={self.toggleExpanded.bind(this, true)}>Read more</Text> : null}
-          {expanded ?
-              <Text style={[styles.font10, styles.postButton]} onPress={self.toggleExpanded.bind(this, false)}>Read less</Text>
-          : null}
-          <Text style={[styles.font10, styles.postButton]} onPress={self.openComments.bind(self)}>{commentString}</Text>
-          <Text style={[styles.font10, styles.postButton]} onPress={self.onShare.bind(self)}>Share</Text>
-          {self.props.post.user._id == self.props.auth.user._id ? <Text style={[styles.font10, styles.postButton]} onPress={self.deletePost.bind(self)}>Delete</Text> : null}
-          {self.props.post.user._id != self.props.auth.user._id ? <Text style={[styles.font10, styles.postButton]} onPress={self.irrelevant.bind(self)}>Irrelevant</Text> : null}
-          <Text style={[styles.font10, styles.postButton]} onPress={self.testAni.bind(self)}>testAni</Text>
           {investButtonEl}
+          <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={self.toggleExpanded.bind(self)}><Text style={[styles.font10, styles.postButtonText]}>{expanded ? 'Read less' : 'Read more'}</Text></TouchableHighlight>
+          <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={self.openComments.bind(self)}><Text style={[{marginRight: 5}, styles.font10, styles.postButtonText]}>{commentString}</Text></TouchableHighlight>
+          <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={self.showActionSheet.bind(self)}><Text style={[styles.font10, styles.postButtonText]}>...</Text></TouchableHighlight>
         </View>
 
         <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
@@ -409,9 +446,10 @@ class Post extends Component {
         </Animated.View>
 
         <View style={expandedInvest ? styles.buttonContainerExpanded : styles.buttonContainer}>
-          {expandedInvest ? <TouchableHighlight style={styles.investButton} onPress={self.toggleInvest.bind(self)}><Text style={styles.white}>Cancel</Text></TouchableHighlight> : null}
-          {expandedInvest ? <TouchableHighlight underlayColor={'transparent'} style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}><Text style={styles.white}>Submit</Text></TouchableHighlight> : null}
-          {/*investButtonEl*/}
+          <View>
+            {expandedInvest ? <TouchableHighlight style={styles.investButton} onPress={self.toggleInvest.bind(self)}><Text style={styles.white}>Cancel</Text></TouchableHighlight> : null}
+            {expandedInvest ? <TouchableHighlight underlayColor={'transparent'} style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}><Text style={styles.white}>Submit</Text></TouchableHighlight> : null}
+          </View>
         </View>
 
         <TouchableHighlight>
@@ -419,6 +457,7 @@ class Post extends Component {
             {imageEl}
           </View>
         </TouchableHighlight>
+
         <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(null, link) : null}>
           <View style={styles.postSection}>
             {lastPost ? <Text style={[styles.lastPost, styles.darkGray]}>Last subscribed post❗️</Text> : null}
@@ -426,6 +465,12 @@ class Post extends Component {
             {link ? <Text style={[styles.font10, styles.darkGray]}>from {self.extractDomain(link)}</Text> : null}
           </View>
         </TouchableHighlight>
+
+        {/*<CustomActionSheet pointerEvents={'none'} modalVisible={self.state.showOptions} onCancel={self.toggleOptions.bind(self)}>
+          <View style={[]} pointerEvents={'none'}>
+          </View>
+        </CustomActionSheet>*/}
+
       </View>
     );
   }
@@ -445,10 +490,13 @@ const localStyles = StyleSheet.create({
     flexWrap: 'wrap'
   },
   postButton: {
-    backgroundColor: '#F0F0F0',
+    backgroundColor: 'white',
     padding: 10,
-    color: '#808080',
-    borderRadius: 2
+    flex: 1,
+    height: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   commentPad: {
     paddingTop: 10,
@@ -462,12 +510,17 @@ const localStyles = StyleSheet.create({
   expandedInvest: {
     height: 200,
   },
+  postButtonText: {
+    color: '#808080'
+  },
   hiddenInvest: {
     height: 0,
     overflow: 'hidden'
   },
   postContainer: {
-    marginBottom: 25,
+    paddingBottom: 25,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#F0F0F0'
   },
   tagsRow: {
     flexDirection: 'row',
@@ -528,7 +581,10 @@ const localStyles = StyleSheet.create({
   postHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10
+    paddingTop: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 10
   },
   link: {
     flex: 1,

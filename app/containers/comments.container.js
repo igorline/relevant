@@ -123,7 +123,7 @@ class Comments extends Component {
           {commentsEl}
           </ScrollView>
         <View style={styles.commentInputParent}>
-          <TextInput style={[styles.commentInput, styles.font20]} placeholder='Enter comment...' multiline={false} onChangeText={(comment) => this.setState({"comment": comment})} value={self.state.comment} returnKeyType='done' />
+          <TextInput style={[styles.commentInput, styles.font15]} placeholder='Enter comment...' multiline={false} onChangeText={(comment) => this.setState({"comment": comment})} value={self.state.comment} returnKeyType='done' />
           <TouchableHighlight style={styles.commentSubmit} onPress={self.createComment.bind(self)}>
             <Text style={[styles.font15, styles.active]}>Submit</Text>
           </TouchableHighlight>

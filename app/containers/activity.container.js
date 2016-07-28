@@ -140,6 +140,7 @@ class Activity extends Component {
     var personalActivityEl = null;
     var generalActivityEl = null;
     var onlineEl = null;
+    var typeEl = null;
 
     if (self.state.dataSource) {
       activityEl = (<ListView ref="listview" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} />)
@@ -151,13 +152,22 @@ class Activity extends Component {
       });
     }
 
+      typeEl = (<View style={[styles.row, styles.typeBar]}>
+        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, self.state.view == 1 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 1)}>
+          <Text style={[styles.type, styles.darkGray, styles.font15, self.state.view == 1 ? styles.active : null]}>Personal</Text>
+        </TouchableHighlight>
+        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, self.state.view == 2 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 2)}>
+          <Text style={[styles.type, styles.darkGray, styles.font15, self.state.view == 2 ? styles.active : null]}>General</Text>
+        </TouchableHighlight>
+        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, self.state.view == 3 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 3)}>
+          <Text style={[styles.type, styles.darkGray, styles.font15, self.state.view == 3 ? styles.active : null]}>Online</Text>
+        </TouchableHighlight>
+      </View>)
+
+
     return (
       <View style={styles.fullContainer}>
-        <View style={styles.activityHeader}>
-          <Text onPress={self.changeView.bind(self, 1)} style={[self.state.view == 1 ? styles.active : null, styles.font20]}>Personal</Text>
-          <Text onPress={self.changeView.bind(self, 2)} style={[self.state.view == 2 ? styles.active : null, styles.font20]}>General</Text>
-          <Text onPress={self.changeView.bind(self, 3)} style={[self.state.view == 3 ? styles.active : null, styles.font20]}>Online</Text>
-        </View>
+        {typeEl}
         {self.state.view < 3 ? activityEl : onlineEl }
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
@@ -196,19 +206,13 @@ activityLeft: {
 },
 singleActivity: {
   padding: 10,
-  borderBottomWidth: 1,
-  borderBottomColor: 'black',
+  borderBottomWidth: StyleSheet.hairlineWidth,
+  borderBottomColor: '#F0F0F0',
   width: fullWidth,
   justifyContent: 'space-between',
   flexDirection: 'row',
   alignItems: 'center',
   flex: 1,
-},
-activityHeader: {
-  flexDirection: 'row',
-  padding: 10,
-  justifyContent: 'space-around',
-  alignItems: 'center'
 },
 onlineUser: {
   justifyContent: 'space-between',

@@ -12,6 +12,7 @@ import React, {
   ListView,
   Animated,
   Easing,
+  TouchableHighlight,
   RecyclerViewBackedScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -256,6 +257,27 @@ class Discover extends Component {
       });
     }
 
+    var typeEl = null;
+
+           {/*<View style={[styles.row, styles.discoverBar]}>
+          <Text onPress={self.changeView.bind(self, 1)} style={[styles.darkGray, styles.font15, styles.category, view == 1? styles.active : null]}>New</Text>
+          <Text onPress={self.changeView.bind(self, 2)} style={[styles.darkGray, styles.font15, styles.category, view == 2? styles.active : null]}>Top</Text>
+          <Text onPress={self.changeView.bind(self, 3)} style={[styles.darkGray, styles.font15, styles.category, view == 3? styles.active : null]}>People</Text>
+        </View>*/}
+
+
+    typeEl = (<View style={[styles.row, {width: fullWidth}]}>
+      <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 1 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 1)}>
+        <Text style={[styles.type, styles.darkGray, styles.font15, view == 1 ? styles.active : null]}>New</Text>
+      </TouchableHighlight>
+      <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 2 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 2)}>
+        <Text style={[styles.type, styles.darkGray, styles.font15, view == 2 ? styles.active : null]}>Top</Text>
+      </TouchableHighlight>
+      <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 3 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 3)}>
+        <Text style={[styles.type, styles.darkGray, styles.font15, view == 3 ? styles.active : null]}>People</Text>
+      </TouchableHighlight>
+    </View>)
+
     return (
       <View style={styles.fullContainer}>
         <Animated.View style={[{height: self.state.transformHeight}, styles.transformContainer]}  onLayout={(event) => {
@@ -272,11 +294,7 @@ class Discover extends Component {
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView>
           </View>
           </Animated.View>
-        <View style={[styles.row, styles.discoverBar]}>
-          <Text onPress={self.changeView.bind(self, 1)} style={[styles.font20, styles.category, view == 1? styles.active : null]}>New</Text>
-          <Text onPress={self.changeView.bind(self, 2)} style={[styles.font20, styles.category, view == 2? styles.active : null]}>Top</Text>
-          <Text onPress={self.changeView.bind(self, 3)} style={[styles.font20, styles.category, view == 3? styles.active : null]}>People</Text>
-        </View>
+          {typeEl}
 
         <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.dataSource} />
 
@@ -318,17 +336,9 @@ padding20: {
 },
 transformContainer: {
   overflow: 'hidden',
-  // position: 'absolute',
-  // top: 0,
-  // left: 0
 },
 listStyle: {
   height: 100,
-},
-discoverBar: {
-  width: fullWidth,
-  paddingTop: 20,
-  paddingBottom: 20
 },
 listScroll: {
   height: 100,
@@ -336,7 +346,6 @@ listScroll: {
   borderColor: 'red'
 },
 searchParent: {
-  // display: 'flex',
   width: fullWidth,
   height: 30,
 },

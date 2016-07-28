@@ -47,7 +47,7 @@ const colors = StyleSheet.create({
   },
   darkGray: {
     color: '#555659'
-  }
+  },
 });
 
 const alignment = StyleSheet.create({
@@ -64,6 +64,25 @@ const alignment = StyleSheet.create({
 });
 
 const layout = StyleSheet.create({
+  activeBorder: {
+    borderBottomWidth: 5,
+    borderBottomColor: '#007aff',
+    borderBottomStyle: 'solid',
+  },
+  typeParent: {
+    paddingTop: 15,
+    paddingBottom: 15,
+    flex: 1,
+    textAlign: 'center'
+  },
+  typeBar: {
+    width: fullWidth,
+    marginBottom: 10
+  },
+  type: {
+    flex: 1,
+    textAlign: 'center'
+  },
   tagRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -113,10 +132,11 @@ const layout = StyleSheet.create({
     alignItems: 'center'
   },
   tagBox: {
-    backgroundColor: '#E5E3E4',
+    backgroundColor: '#F0F0F0',
     padding: 10,
     marginLeft: 5,
     marginTop: 5,
+    fontSize: 10,
     color: '#808080'
   },
   singleTagBox: {
@@ -134,6 +154,14 @@ const layout = StyleSheet.create({
     borderWidth: 1,
     height: 30,
     width: 250,
+    alignSelf: 'center'
+  },
+  authInput: {
+    height: 35,
+    width: 300,
+    backgroundColor: 'white',
+    borderRadius: 4,
+    padding: 4,
     alignSelf: 'center'
   },
   marginTop: {
@@ -176,12 +204,17 @@ const layout = StyleSheet.create({
     padding: 10,
     justifyContent: 'center'
   },
-  button: {
-    color: '#007aff'
+  buttonText: {
+    color: '#808080'
   },
   genericButton: {
     padding: 10,
-    backgroundColor: 'black',
+    backgroundColor: '#F0F0F0',
+    borderRadius: 5
+  },
+  whiteButton: {
+    padding: 10,
+    backgroundColor: 'white',
     borderRadius: 5
   },
   padding10: {

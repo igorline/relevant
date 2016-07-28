@@ -173,7 +173,7 @@ class Read extends Component {
         recentMessages.push(<Text style={styles.recentName}>{x < 3 ? self.props.messages.index[x].from.name+', ' : self.props.messages.index[x].from.name}</Text>);
       }
     } else {
-      messagesEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'red'}}><Text>Nothing in yr feed bruh</Text></View>)
+      messagesEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'red'}}><Text style={styles.darkGray}>Nothing in yr feed bruh</Text></View>)
     }
 
     if (self.props.auth.user.messages) {
@@ -187,7 +187,7 @@ class Read extends Component {
                 <Text>👅💦</Text>
               </View>
               <View>
-                <Text style={{fontWeight: '500'}}>Thirsty responses</Text>
+                <Text style={[{fontWeight: '500'}, styles.darkGray]}>Thirsty responses</Text>
                 <View style={styles.recentNames}>
                   {recentMessages}
                 </View>
@@ -237,17 +237,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(Read)
 const localStyles = StyleSheet.create({
   thirstyHeader: {
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#F0F0F0',
     padding: 10,
     flexDirection: 'row'
   },
   messagesCount: {
-    // position: 'absolute',
     backgroundColor: 'red',
-    // marginLeft: 5,
-    // height: 20,
-    // width: 20,
     padding: 5,
     borderRadius: 5,
     alignItems: 'center',
@@ -255,8 +251,8 @@ const localStyles = StyleSheet.create({
   },
   message: {
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: 'black'
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#F0F0F0'
   },
   recentNames: {
     flexDirection: 'row',
