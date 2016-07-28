@@ -52,10 +52,10 @@ class Post extends Component {
       textInputValue: null,
       clicked: 'none',
       buttons: [
-        'share',
-        'test animation',
-        'delete',
-        'cancel'
+        'Share',
+        'Test animation',
+        'Delete',
+        'Cancel'
       ],
       destructiveIndex: 2,
       cancelIndex: 3,
