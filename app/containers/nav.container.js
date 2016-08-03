@@ -65,7 +65,7 @@ class Nav extends Component {
     }
   }
 
-  changeView(route, view) {
+  changeView(route, view, category) {
     var self = this;
     self.props.actions.setView(route, view);
   }
@@ -110,7 +110,11 @@ class Nav extends Component {
         break;
 
       case 'CreatePost':
-        title = 'Post';
+        if (!self.props.view.post.category) {
+          title = 'Post';
+        } else {
+          title = 'Categories';
+        }
         break;
 
       default:
@@ -128,6 +132,8 @@ class Nav extends Component {
          {statsEl}
 
          {route == 'Comments' || route == 'ProfileOptions' ? <TouchableHighlight underlayColor={'transparent'}  onPress={Actions.pop} style={styles.back}><View style={styles.backInner}><Image style={styles.backImg} source={require('../assets/images/back.png')} /><Text style={styles.backText}>Back</Text></View></TouchableHighlight> : null}
+
+         {route == 'CreatePost' && self.props.view.post.category ? <TouchableHighlight underlayColor={'transparent'}  onPress={self.changeView.bind(self, 'post', null, false)} style={styles.back}><View style={styles.backInner}><Image style={styles.backImg} source={require('../assets/images/back.png')} /><Text style={styles.backText}>Back</Text></View></TouchableHighlight> : null}
 
          {statsEl}
       </View>);

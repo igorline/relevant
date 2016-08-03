@@ -24,7 +24,7 @@ import Post from '../components/post.component';
 import DiscoverUser from '../components/discoverUser.component';
 import Notification from '../components/notification.component';
 import * as animationActions from '../actions/animation.actions';
-var animations = require("../animation");
+import InvestAnimation from '../components/investAnimation.component';
 
 class SinglePost extends Component {
   constructor (props, context) {
@@ -37,16 +37,6 @@ class SinglePost extends Component {
   componentDidMount() {
   }
 
-  componentWillReceiveProps(next) {
-    var self = this;
-    if (self.props.animation != next.animation) {
-      if (next.animation.bool) {
-        if (next.animation.type == 'invest') {
-          animations.investAni(self);
-        }
-      }
-    }
-  }
 
   render() {
     var self = this;
@@ -71,7 +61,7 @@ class SinglePost extends Component {
             <Notification />
           </View>
         </ScrollView>
-         {self.state.investAni}
+         <InvestAnimation {...self.props} />
       </View>
     );
   }

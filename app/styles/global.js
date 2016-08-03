@@ -136,7 +136,7 @@ const layout = StyleSheet.create({
     padding: 10,
     marginLeft: 5,
     marginTop: 5,
-    fontSize: 10,
+    fontSize: 15,
     color: '#808080'
   },
   singleTagBox: {

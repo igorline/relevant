@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {bool: false, type: null};
+const initialState = {bool: false, type: null, run: false};
 const REPLACE = 'REPLACE';
 
 
@@ -11,6 +11,7 @@ export default function auth(state = initialState, action) {
       return Object.assign({}, state, {
         'type': action.payload.type,
         'bool': true,
+        'run': true
       })
     }
 
@@ -18,6 +19,12 @@ export default function auth(state = initialState, action) {
       return Object.assign({}, state, {
         'type': null,
         'bool': false,
+      })
+    }
+
+    case 'STOP_ANIMATION': {
+      return Object.assign({}, state, {
+        'run': false
       })
     }
 

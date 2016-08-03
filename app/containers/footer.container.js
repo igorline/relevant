@@ -40,11 +40,13 @@ class Footer extends Component {
       }
     }
 
+
     if (authenticated) {
       footerEl = ( <View style={styles.footer}>
         <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Read' ? self.props.routes.Read : null}>
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter, currentRoute == 'Read' ? styles.activeIcon : null]}> 📩 </Text>
+             {self.props.messages.count ? <View style={styles.notifCount}><Text style={styles.notifText}>{self.props.messages.count}</Text></View> : null}
           </View>
         </TouchableHighlight>
         <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Discover' ? self.props.routes.Discover : null}>
@@ -80,7 +82,8 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     router: state.routerReducer,
-    notif: state.notif
+    notif: state.notif,
+    messages: state.messages,
    }
 }
 

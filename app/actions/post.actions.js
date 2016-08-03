@@ -67,7 +67,7 @@ function clearPosts() {
 }
 
 export function getPosts(skip, tags, sort) {
-  console.log(skip, tags, sort);
+  //console.log(skip, tags, sort);
   var tagsString = '';
   if (!skip) skip = 0;
   if (!sort) sort = null;
