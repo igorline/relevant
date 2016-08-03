@@ -28,25 +28,22 @@ import * as investActions from '../actions/invest.actions';
 import * as viewActions from '../actions/view.actions';
 import Notification from '../components/notification.component';
 import Spinner from 'react-native-loading-spinner-overlay';
-var animations = require("../animation");
+import InvestAnimation from '../components/investAnimation.component';
 
 class Read extends Component {
   constructor (props, context) {
     super(props, context)
-    var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    var md = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       tag: null,
       enabled: true,
       feedData: null,
-      messagesData: md.cloneWithRows([]),
+      messagesData: null,
       investAni: [],
     }
   }
 
   componentDidMount() {
     var self = this;
-    self.props.actions.getMessages(self.props.auth.user._id);
     if (self.props.posts.feed && self.props.posts.tag) this.props.actions.clearPosts();
     if (self.props.posts.comments) this.props.actions.setComments(null);
     if (self.props.posts.feed) {
@@ -56,6 +53,14 @@ class Read extends Component {
       }
       if (self.props.posts.feed.length == 0) {
         this.props.actions.getFeed(self.props.auth.token, 0, null);
+      }
+    }
+    if (self.props.messages) {
+      if (self.props.messages.index) {
+        if (self.props.messages.index.length) {
+          var md = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+          self.setState({messagesData: md.cloneWithRows(self.props.messages.index)});
+        }
       }
     }
   }
@@ -73,13 +78,6 @@ class Read extends Component {
     if (next.messages.index != self.props.messages.index) {
       var md = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({messagesData: md.cloneWithRows(next.messages.index)});
-    }
-    if (self.props.animation != next.animation) {
-      if (next.animation.bool) {
-        if (next.animation.type == 'invest') {
-          animations.investAni(self);
-        }
-      }
     }
   }
 
@@ -140,6 +138,7 @@ class Read extends Component {
 
   changeView(view) {
     var self = this;
+    if (view == 2) self.props.actions.setMessagesCount(0);
     self.props.actions.setView('read', view);
   }
 
@@ -176,8 +175,8 @@ class Read extends Component {
       messagesEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'red'}}><Text style={styles.darkGray}>Nothing in yr feed bruh</Text></View>)
     }
 
-    if (self.props.auth.user.messages) {
-       messagesCount = (<Text style={[styles.white, styles.messagesCount]}>{self.props.auth.user.messages+' New'}</Text>)
+    if (self.props.messages.count > 0) {
+       messagesCount = (<Text style={[styles.white, styles.messagesCount]}>{self.props.messages.count+' New'}</Text>)
     }
 
     if (self.props.view.read == 1) {
@@ -192,7 +191,7 @@ class Read extends Component {
                   {recentMessages}
                 </View>
               </View>
-              <View style={{justifyContent: 'flex-end',flex: 1}}>
+              <View style={{justifyContent: 'flex-end',flex: 1, flexDirection: 'row'}}>
                 {messagesCount}
               </View>
             </View>
@@ -208,7 +207,7 @@ class Read extends Component {
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
-        {self.state.investAni}
+        <InvestAnimation {...self.props} />
       </View>
     );
   }

@@ -15,21 +15,18 @@ import React, {
   TouchableWithoutFeedback,
   TouchableHighlight,
   DeviceEventEmitter,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import { connect } from 'react-redux';
-var Button = require('react-native-button');
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as notifActions from '../actions/notif.actions';
 import * as tagActions from '../actions/tag.actions';
-require('../publicenv');
-var PickerItemIOS = PickerIOS.Item;
+import * as viewActions from '../actions/view.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import * as utils from '../utils';
 import Notification from '../components/notification.component';
-var dismissKeyboard = require('react-native-dismiss-keyboard');
 var ImagePickerManager = require('NativeModules').ImagePickerManager;
 import { pickerOptions } from '../utils/pickerOptions';
 
@@ -44,6 +41,7 @@ class CreatePost extends Component {
       openCategory: false,
       type: 'url',
       stage: 1,
+      urlPreview: null,
       tagStage: 1,
       postImage: null,
       catObj: null,
@@ -69,7 +67,7 @@ class CreatePost extends Component {
 
   switchType(type) {
     var self = this;
-    self.setState({type: type});
+    self.props.actions.setView('post', type);
   }
 
   post() {
@@ -77,20 +75,22 @@ class CreatePost extends Component {
     var link = self.state.postLink;
     var body = self.state.postBody;
     var title = self.state.postTitle;
+    var category = self.state.postCategory ? self.state.postCategory._id : null;
+    var view = self.props.view.post.view;
     var tags = [];
-    if (!self.state.postLink && self.state.type == 'url') {
+    if (!self.state.postLink && view == 'url') {
        self.props.actions.setNotif(true, 'Add url', false);
        return;
     }
 
-    if (self.state.type == 'url') {
+    if (view == 'url') {
       if (!self.ValidURL()) {
         self.props.actions.setNotif(true, 'not a valid url', false);
         return;
       }
     }
 
-    if (self.state.type != 'url' && !self.state.postTitle) {
+    if (view != 'url' && !self.state.postTitle) {
       self.props.actions.setNotif(true, 'Add title', false);
       return;
     }
@@ -100,7 +100,7 @@ class CreatePost extends Component {
        return;
     }
 
-    if (self.state.type == 'image' && !self.state.postImage) {
+    if (view == 'image' && !self.state.postImage) {
        self.props.actions.setNotif(true, 'Add an image', false);
        return;
     }
@@ -144,7 +144,7 @@ class CreatePost extends Component {
     var tagsArray = noSpaces.split(',');
     tags = finalTags.concat(tagsArray);
 
-    if (self.state.type == 'url') {
+    if (view == 'url') {
       utils.post.generate(self.state.postLink, body, tags, self.props.auth.token).then(function(results){
         if (!results) {
            self.props.actions.setNotif(true, 'Post error please try again', false)
@@ -155,26 +155,28 @@ class CreatePost extends Component {
       });
     }
 
-    if (self.state.type != 'url') {
+    if (view != 'url') {
 
-      if (self.state.type == 'text') {
+      if (view == 'text') {
         var postBody = {
           link: null,
           body: body,
           tags: tags,
           title: title,
           description: null,
+          category: category,
           image: null,
           mentions: finalMentions
         };
       }
 
-      if (self.state.type == 'image') {
+      if (view == 'image') {
         var postBody = {
           link: null,
           body: body,
           tags: tags,
           title: title,
+          category: category,
           description: null,
           image: self.state.postImage,
           mentions: finalMentions
@@ -242,7 +244,6 @@ class CreatePost extends Component {
     });
   }
 
-
   pickImage(callback){
     var self = this;
     console.log(self, 'pickImage')
@@ -267,10 +268,31 @@ class CreatePost extends Component {
 
   categoryButton() {
     var self = this;
-    var newState = self.state.openCategory = !self.state.openCategory;
-    self.setState({openCategory: newState});
+    var newProp = self.props.view.post.category = !self.props.view.post.category;
+    self.props.actions.setView('post', null, newProp)
   }
 
+  setCatagory(tag) {
+    var self = this;
+    self.setState({postCategory: tag});
+    self.props.actions.setView('post', null, false);
+  }
+
+  createPreview() {
+    var self = this;
+    utils.post.generatePreview(self.state.postLink).then(function(results) {
+      if (results) {
+        self.setState({
+          urlPreview: {
+            image: results.image ? results.image : 'https://s3.amazonaws.com/relevant-images/missing.png',
+            title: results.title ? results.title : 'Untitled',
+            description: results.description
+          }
+        })
+      }
+        console.log(results, 'results')
+    })
+  }
 
   render() {
     var self = this;
@@ -280,61 +302,209 @@ class CreatePost extends Component {
     var postError = self.state.postError;
     var typeEl = null;
     var pickerArray = [];
+    var view = self.props.view.post.view;
     var parentTags = null;
+    var category = self.props.view.post.category;
+    var categoryEl = null;
     if (self.props.auth) {
       if (self.props.auth.user) user = self.props.auth.user;
     }
 
     if (self.props.posts.parentTags) {
       parentTags = self.props.posts.parentTags;
-      parentTags.forEach(function(tag, i) {
-        pickerArray.push(<PickerItemIOS key={i} label={tag.name} style={styles.font15} value={JSON.stringify(tag)} />);
+
+      categoryEl = parentTags.map(function(tag) {
+        switch (tag.name) {
+          case 'Anime':
+            tag.emoji = '👁';
+            break;
+
+          case 'Art':
+            tag.emoji = '🎨';
+            break;
+
+          case 'Beauty':
+            tag.emoji = '💅';
+            break;
+
+          case 'Books':
+            tag.emoji = '📚';
+            break;
+
+          case 'Celebrities':
+            tag.emoji = '👑';
+            break;
+
+          case 'Culture':
+            tag.emoji = '🗿';
+            break;
+
+          case 'Design':
+            tag.emoji = '📐';
+            break;
+
+          case 'Gaming':
+            tag.emoji = '🎮';
+            break;
+
+          case 'Food and Drink':
+            tag.emoji = '🍽';
+            break;
+
+          case 'Fashion':
+            tag.emoji = '🕶';
+            break;
+
+          case 'Film':
+            tag.emoji = '🎥';
+            break;
+
+          case 'LGBT':
+            tag.emoji = '🌈';
+            break;
+
+          case 'Health and Fitness':
+            tag.emoji = '💪';
+            break;
+
+          case 'Meta':
+            tag.emoji = '💭';
+            break;
+
+          case 'LOL':
+            tag.emoji = '😂';
+            break;
+
+          case 'Nature':
+            tag.emoji = '🌱';
+            break;
+
+          case 'News and Politics':
+            tag.emoji = '📰';
+            break;
+
+          case 'Music':
+            tag.emoji = '🎹';
+            break;
+
+          case 'Other':
+            tag.emoji = '🌀';
+            break;
+
+          case 'POC':
+            tag.emoji = '👩🏾';
+            break;
+
+          case 'Pictures':
+            tag.emoji = '🖼';
+            break;
+
+          case 'Programming':
+            tag.emoji = '🔢';
+            break;
+
+          case 'Relationships':
+            tag.emoji = '💞';
+            break;
+
+          case 'Sex':
+            tag.emoji = '👄';
+            break;
+
+          case 'Science':
+            tag.emoji = '🔬';
+            break;
+
+          case 'Selfie':
+            tag.emoji = '📸';
+            break;
+
+          case 'Sports':
+            tag.emoji = '🏈';
+            break;
+
+          case 'Technology':
+            tag.emoji = '💻';
+            break;
+
+          case 'Travel':
+            tag.emoji = '✈️';
+            break;
+
+          case 'Writing':
+            tag.emoji = '📝';
+            break;
+
+          case 'TV':
+            tag.emoji = '📺';
+            break;
+        }
+        return (<TouchableHighlight underlayColor={'transparent'} style={[styles.catagoryItem]} onPress={self.setCatagory.bind(self, tag)}>
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+              <Text>{tag.emoji}</Text>
+              <Text>{tag.name}</Text>
+            </View>
+          </TouchableHighlight>
+        );
       })
     }
 
+
     typeEl = (<View style={[styles.row, styles.typeBar]}>
-        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, self.state.type == 'url' ? styles.activeBorder : null]} onPress={self.switchType.bind(self, 'url')}>
-          <Text style={[styles.type, styles.darkGray, styles.font15, self.state.type == 'url' ? styles.active : null]}>Url</Text>
+        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 'url' ? styles.activeBorder : null]} onPress={self.switchType.bind(self, 'url')}>
+          <Text style={[styles.type, styles.darkGray, styles.font15, view == 'url' ? styles.active : null]}>Url</Text>
         </TouchableHighlight>
-        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, self.state.type == 'text' ? styles.activeBorder : null]} onPress={self.switchType.bind(self, 'text')}>
-          <Text style={[styles.type, styles.darkGray, styles.font15, self.state.type == 'text' ? styles.active : null]}>Text</Text>
+        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 'text' ? styles.activeBorder : null]} onPress={self.switchType.bind(self, 'text')}>
+          <Text style={[styles.type, styles.darkGray, styles.font15, view == 'text' ? styles.active : null]}>Text</Text>
         </TouchableHighlight>
-        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, self.state.type == 'image' ? styles.activeBorder : null]} onPress={self.switchType.bind(self, 'image')}>
-          <Text style={[styles.type, styles.darkGray, styles.font15, self.state.type == 'image' ? styles.active : null]}>Image</Text>
+        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 'image' ? styles.activeBorder : null]} onPress={self.switchType.bind(self, 'image')}>
+          <Text style={[styles.type, styles.darkGray, styles.font15, view == 'image' ? styles.active : null]}>Image</Text>
         </TouchableHighlight>
       </View>)
 
+  var scrollStyles = {};
+  if (category) {
+    scrollStyles = {
+      flex: 1
+    }
+  } else {
+    scrollStyles = {
+      height: fullHeight - 120
+    }
+  }
+
     return (
       <View style={[{height: self.state.visibleHeight}]}>
-        <ScrollView>
+        {category ? <ScrollView>
+          {categoryEl}
+        </ScrollView> : null}
+        {!category ? <ScrollView contentContainerStyle={[{flexDirection: 'column'}, scrollStyles]}>
           {typeEl}
-          {self.state.stage == 1 && self.state.type == 'url' ? <TextInput numberOfLines={1} style={[styles.font15, styles.linkInput]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink})} value={this.state.postLink} returnKeyType='done' /> : null}
-          {self.state.stage == 1 && self.state.type == 'image' && !self.state.postImage ? <View style={{flexDirection: 'row', paddingLeft: 10}}><TouchableHighlight style={styles.genericButton} onPress={self.chooseImage.bind(self)}><Text style={styles.buttonText}>Upload an image</Text></TouchableHighlight></View> : null}
-          {self.state.stage == 1 && self.state.type == 'image' && self.state.postImage ? <View style={styles.previewImageContainer}>
+          {view == 'url' ? <View style={{borderBottomColor: !self.state.urlPreview ? '#f0f0f0' : 'transparent', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1}}><TextInput numberOfLines={1} style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink, urlPreview: null})} onSubmitEditing={self.createPreview.bind(self)} value={this.state.postLink} returnKeyType='done' /></View> : null}
+
+          {view == 'image' && !self.state.postImage ? <TouchableHighlight style={{borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center', paddingLeft: 10}} underlayColor={'transparent'} onPress={self.chooseImage.bind(self)}><Text>Upload an image</Text></TouchableHighlight> : null}
+
+          {view == 'image' && self.state.postImage ? <View style={{flex: 0.1, borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flexDirection: 'row', paddingLeft: 10, alignItems: 'center'}}>
           <Image source={{uri: self.state.postImage}} style={styles.previewImage} />
-          <TouchableHighlight style={styles.genericButton} onPress={self.removeImage.bind(self)}><Text style={styles.buttonText}>Remove image</Text></TouchableHighlight>
+          <TouchableHighlight style={[]} onPress={self.removeImage.bind(self)}><Text>Remove image</Text></TouchableHighlight>
           </View> : null}
 
+          {view != 'url' ? <View style={{borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center'}}><TextInput style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Title here...' multiline={false} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} returnKeyType='done' /></View> : null}
 
+          {view == 'url' && self.state.urlPreview ? <View style={{flex: 0.2, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
+          <View style={{borderRadius: 4, borderColor: '#f0f0f0', borderStyle: 'solid', borderWidth: StyleSheet.hairlineWidth, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'stretch', flex: 1, overflow: 'hidden'}}>
+            {self.state.urlPreview.image ? <Image source={{uri: self.state.urlPreview.image}} style={{flex: 0.4, resizeMode: 'cover'}} /> : null }
+            <Text style={{flex: 0.6, padding: 5, color: '#808080'}}>{self.state.urlPreview.title}</Text>
+          </View></View> : null}
 
+          <View style={{borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: !self.state.urlPreview ? 0.6 : 0.4}}><TextInput style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Body here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /></View>
 
-           {self.state.stage == 1 && self.state.type != 'url' ? <TextInput style={[styles.linkInput, styles.font15]} placeholder='Title here...' multiline={false} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} returnKeyType='done' /> : null}
-          {self.state.stage == 1 ? <TextInput style={[styles.bodyInput, styles.font15]} placeholder='Body here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /> : null}
+         <TouchableHighlight style={{paddingLeft: 10, borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center'}} onPress={self.categoryButton.bind(self)}><Text style={[]}>{self.state.postCategory ? self.state.postCategory.emoji + ' ' + self.state.postCategory.name :  'Choose Category'}</Text></TouchableHighlight>
 
-          <View style={styles.buttonParentCenter}><TouchableHighlight onPress={self.categoryButton.bind(self)} style={styles.genericButton}><Text style={styles.buttonText}>{self.state.openCategory ? 'Done' :  'Choose Category'}</Text></TouchableHighlight></View>
+        <View style={{flex: 0.1, justifyContent: 'center'}}><TextInput style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Enter tags... ex. webgl, slowstyle, xxx' multiline={false} onChangeText={(postTags) => this.setState({postTags})} value={this.state.postTags} returnKeyType='done' /></View>
 
-          {self.state.catObj ? <Text style={[styles.font15, styles.textCenter]}>{self.state.catObj.name}</Text> :  null}
-
-          {self.state.openCategory ? <PickerIOS
-            selectedValue={self.state.postCategory ? self.state.postCategory : null}
-            onValueChange={(postCategory) => this.setState({postCategory: postCategory, catObj: JSON.parse(postCategory)})}>
-            {pickerArray}
-          </PickerIOS> : null}
-
-          <TextInput style={[styles.linkInput, styles.font15]} placeholder='Enter tags... ex. webgl, slowstyle, xxx' multiline={false} onChangeText={(postTags) => this.setState({postTags})} value={this.state.postTags} returnKeyType='done' />
-
-           <View style={styles.buttonParentCenter}><TouchableHighlight style={styles.genericButton} onPress={self.post.bind(self)}><Text style={styles.buttonText}>Submit</Text></TouchableHighlight></View>
-        </ScrollView>
+          <TouchableHighlight underlayColor={'transparent'} style={{backgroundColor: '#007aff', flex: 0.1, justifyContent: 'center'}} onPress={self.post.bind(self)}><Text style={{color: 'white', textAlign: 'center'}}>Submit</Text></TouchableHighlight>
+        </ScrollView> : null}
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
@@ -348,13 +518,14 @@ function mapStateToProps(state) {
     auth: state.auth,
     router: state.routerReducer,
     notif: state.notif,
-    posts: state.posts
+    posts: state.posts,
+    view: state.view
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...tagActions, ...authActions, ...postActions, ...notifActions}, dispatch)
+    actions: bindActionCreators({...tagActions, ...authActions, ...viewActions, ...postActions, ...notifActions}, dispatch)
   }
 }
 
@@ -365,16 +536,19 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
+  catagoryItem: {
+    padding: 10,
+    borderBottomColor: '#F0F0F0',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomStyle: 'solid',
+  },
   padding10: {
     padding: 10
   },
-  previewImageContainer: {
-    padding: 10
-  },
   previewImage: {
-    height: 100,
-    width: 100,
-    marginBottom: 10
+    height: 25,
+    width: 25,
+    marginRight: 10
   },
   list: {
     flex: 1,

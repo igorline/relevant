@@ -23,6 +23,12 @@ export function triggerAnimation(type) {
   }
 }
 
+export function stopAnimation() {
+    return {
+        type: 'STOP_ANIMATION',
+    };
+}
+
 export function clearAnimation() {
     return {
         type: types.CLEAR_ANIMATION,

@@ -31,7 +31,7 @@ import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
 import Notification from '../components/notification.component';
 import ProfileComponent from '../components/profile.component';
-var animations = require("../animation");
+import InvestAnimation from '../components/investAnimation.component';
 
 class Profile extends Component {
   constructor (props, context) {
@@ -43,11 +43,6 @@ class Profile extends Component {
 
   componentWillReceiveProps(next) {
     var self = this;
-    if (self.props.animation != next.animation && next.animation) {
-      if (next.animation.bool) {
-        if (next.animation.type == 'invest') animations.investAni(self);
-      }
-    }
   }
 
   render() {
@@ -91,7 +86,7 @@ class Profile extends Component {
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
-        {self.state.investAni}
+        <InvestAnimation {...self.props} />
       </View>
     );
   }

@@ -16,7 +16,8 @@ import React, {
   LayoutAnimation,
   ScrollView,
   DatePickerIOS,
-  ActionSheetIOS
+  ActionSheetIOS,
+  TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -50,10 +51,11 @@ class Post extends Component {
       timePassedPercent: null,
       invested: false,
       textInputValue: null,
-      clicked: 'none',
+      time: 0,
+      timeActive: false,
       buttons: [
         'Share',
-        'Test animation',
+        'Irrelevant',
         'Delete',
         'Cancel'
       ],
@@ -76,11 +78,6 @@ class Post extends Component {
   componentDidMount() {
     this.checkTime(this);
     this.checkInvestments(this.props.post.investments);
-  }
-
-  testAni() {
-    var self = this;
-    self.props.actions.triggerAnimation('invest');
   }
 
   checkInvestments(investments) {
@@ -161,7 +158,7 @@ class Post extends Component {
               self.onShare();
               break;
           case 1:
-              self.testAni();
+              self.irrelevant();
               break;
           case 2:
               self.deletePost();
@@ -196,25 +193,23 @@ class Post extends Component {
     }
   }
 
-  invest(toggle, functionBool) {
+  invest() {
     var self = this;
 
-    if (functionBool) {
-      if (!self.state.invested) {
-        console.log('create investment');
-        this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
-           if (self.props.router.currentRoute == 'User') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
-        })
-        this.props.actions.createSubscription(this.props.auth.token, self.props.post);
-      } else {
-        console.log('destroy investment')
-        this.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
-           if (self.props.router.currentRoute == 'User') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
-        })
-      }
-    }
-    if (toggle) this.toggleInvest(this);
+    console.log('investing', self.state.investAmount);
+    this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
+       if (self.props.router.currentRoute == 'User') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
+    })
+    this.props.actions.createSubscription(this.props.auth.token, self.props.post);
     self.setState({investAmount: 50});
+  }
+
+  uninvest() {
+    var self = this;
+    console.log('destroy investment')
+    self.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
+       if (self.props.router.currentRoute == 'User') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
+    })
   }
 
   openComments() {
@@ -250,6 +245,31 @@ class Post extends Component {
       console.log('setting selected user')
       self.props.actions.getSelectedUser(user._id);
     }
+  }
+
+  handlePressIn() {
+    var self = this;
+    self.setState({timeActive: true});
+    increaseTime();
+    self.props.actions.triggerAnimation('invest');
+
+    function increaseTime() {
+      if (self.state.timeActive) {
+        self.setState({time: self.state.time += 1});
+        console.log(self.state.time)
+        setTimeout(function() {
+          increaseTime();
+        }, 1000);
+      }
+    }
+  }
+
+  handlePressOut() {
+    var self = this;
+    self.setState({timeActive: false, investAmount: 50*self.state.time});
+    self.invest();
+    self.setState({time: 0});
+    self.props.actions.stopAnimation();
   }
 
   render() {
@@ -346,12 +366,24 @@ class Post extends Component {
     }
 
     var investButtonEl = null;
+    var uninvestButtonEl = null;
 
-    if (post.user._id != self.props.auth.user._id) {
-      if (!self.state.invested) {
-        investButtonEl = (<TouchableHighlight underlayColor={'transparent'}  style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]} onPress={self.toggleInvest.bind(self)}><View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View></TouchableHighlight>);
-      }
+    if (post.user._id != self.props.auth.user._id && !self.state.invested) {
+
+        investButtonEl = (<TouchableWithoutFeedback
+                onPressIn={this.handlePressIn.bind(self)}
+                onPressOut={this.handlePressOut.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View>
+            </TouchableWithoutFeedback>)
+
     }
+
+     if (post.user._id != self.props.auth.user._id && self.state.invested) {
+      uninvestButtonEl = (<TouchableWithoutFeedback
+                onPress={this.uninvest.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Uninvest</Text></View>
+            </TouchableWithoutFeedback>)
+     }
 
 
   var bodyEl = null;
@@ -432,6 +464,7 @@ class Post extends Component {
 
         <View style={styles.postButtons}>
           {investButtonEl}
+          {uninvestButtonEl}
           <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={self.toggleExpanded.bind(self)}><Text style={[styles.font10, styles.postButtonText]}>{expanded ? 'Read less' : 'Read more'}</Text></TouchableHighlight>
           <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={self.openComments.bind(self)}><Text style={[{marginRight: 5}, styles.font10, styles.postButtonText]}>{commentString}</Text></TouchableHighlight>
           <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={self.showActionSheet.bind(self)}><Text style={[styles.font10, styles.postButtonText]}>...</Text></TouchableHighlight>
@@ -465,11 +498,6 @@ class Post extends Component {
             {link ? <Text style={[styles.font10, styles.darkGray]}>from {self.extractDomain(link)}</Text> : null}
           </View>
         </TouchableHighlight>
-
-        {/*<CustomActionSheet pointerEvents={'none'} modalVisible={self.state.showOptions} onCancel={self.toggleOptions.bind(self)}>
-          <View style={[]} pointerEvents={'none'}>
-          </View>
-        </CustomActionSheet>*/}
 
       </View>
     );

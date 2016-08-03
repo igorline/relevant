@@ -11,6 +11,12 @@ export function setMessages(messages) {
     };
 }
 
+export function setMessagesCount(number) {
+    return {
+        type: 'SET_MESSAGES_COUNT',
+        payload: number
+    };
+}
 
 export
 function getMessages(userId) {

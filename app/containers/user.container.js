@@ -30,7 +30,7 @@ import Post from '../components/post.component';
 import * as subscriptionActions from '../actions/subscription.actions';
 import Notification from '../components/notification.component';
 import ProfileComponent from '../components/profile.component';
-var animations = require("../animation");
+import InvestAnimation from '../components/investAnimation.component';
 
 class User extends Component {
   constructor(props, context) {
@@ -71,13 +71,6 @@ class User extends Component {
   componentWillReceiveProps(next) {
     var self = this;
     self.checkOnline(next.online);
-    if (self.props.animation != next.animation) {
-      if (next.animation.bool) {
-        if (next.animation.type == 'invest') {
-          animations.investAni(self);
-        }
-      }
-    }
   }
 
   checkOnline(online) {
@@ -151,7 +144,7 @@ class User extends Component {
         <View pointerEvents={'none'} style={styles.notificationContainer}>
           <Notification />
         </View>
-        {self.state.investAni}
+        <InvestAnimation {...self.props} />
       </View>
     );
   }
