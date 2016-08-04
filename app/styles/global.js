@@ -64,10 +64,15 @@ const alignment = StyleSheet.create({
 });
 
 const layout = StyleSheet.create({
+  categoryItem: {
+    padding: 10,
+    borderBottomColor: '#F0F0F0',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    backgroundColor: 'white'
+  },
   activeBorder: {
     borderBottomWidth: 5,
     borderBottomColor: '#007aff',
-    borderBottomStyle: 'solid',
   },
   typeParent: {
     paddingTop: 15,

@@ -27,14 +27,12 @@ import * as postActions from '../actions/post.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as userActions from '../actions/user.actions';
 import * as investActions from '../actions/invest.actions';
-require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var postStyles = null;
 var moment = require('moment');
 var PickerItemIOS = PickerIOS.Item;
 var Progress = require('react-native-progress');
 import Share from 'react-native-share';
-var CustomActionSheet = require('react-native-custom-action-sheet');
 
 class Post extends Component {
   constructor (props) {
@@ -215,7 +213,7 @@ class Post extends Component {
   openComments() {
     var self = this;
     self.props.actions.setActivePost(self.props.post._id);
-    self.props.routes.Comments();
+    self.props.view.nav.push(10)
   }
 
   deletePost() {
@@ -458,7 +456,7 @@ class Post extends Component {
 
         <TouchableHighlight>
           <View>
-          {body ? <View style={[styles.postBody, styles.font15]}><Text style={styles.darkGray} numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text></View> : null}
+          {body ? <View style={[styles.postBody]}><Text style={styles.darkGray} numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text></View> : null}
           </View>
         </TouchableHighlight>
 

@@ -6,7 +6,7 @@ import * as utils from '../utils';
 export
 function getSelectedUser(userId) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/user/'+userId, {
+    return fetch(process.env.API_SERVER+'/api/user/'+userId, {
         credentials: 'include',
         method: 'GET',
         headers: {
@@ -18,10 +18,11 @@ function getSelectedUser(userId) {
     .then((response) => response.json())
     .then((responseJSON) => {
         dispatch(setSelectedUser(responseJSON));
-        dispatch(Actions.User);
+        return true;
     })
     .catch((error) => {
         console.log(error, 'error');
+        return false;
     });
   }
 }

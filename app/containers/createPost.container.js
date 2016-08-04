@@ -75,7 +75,7 @@ class CreatePost extends Component {
     var link = self.state.postLink;
     var body = self.state.postBody;
     var title = self.state.postTitle;
-    var category = self.state.postCategory ? self.state.postCategory._id : null;
+    var category = self.props.posts.createPostCategory ? self.props.posts.createPostCategory._id : null;
     var view = self.props.view.post.view;
     var tags = [];
     if (!self.state.postLink && view == 'url') {
@@ -111,7 +111,7 @@ class CreatePost extends Component {
       }
     }
 
-    if (!self.state.postCategory) {
+    if (!self.props.posts.createPostCategory) {
       self.props.actions.setNotif(true, 'Add category', false);
       return;
     }
@@ -150,7 +150,7 @@ class CreatePost extends Component {
            self.props.actions.setNotif(true, 'Post error please try again', false)
         } else {
           self.props.actions.setNotif(true, 'Posted', true)
-          self.props.routes.Discover();
+          self.props.view.nav.resetTo(8)
         }
       });
     }
@@ -188,7 +188,8 @@ class CreatePost extends Component {
            self.props.actions.setNotif(true, 'Post error please try again', false);
         } else {
           self.props.actions.setNotif(true, 'Posted', true);
-          self.props.routes.Discover();
+          self.props.actions.setPostCategory(null);
+          self.props.view.nav.resetTo(8);
         }
       })
     }
@@ -266,18 +267,6 @@ class CreatePost extends Component {
     });
   }
 
-  categoryButton() {
-    var self = this;
-    var newProp = self.props.view.post.category = !self.props.view.post.category;
-    self.props.actions.setView('post', null, newProp)
-  }
-
-  setCatagory(tag) {
-    var self = this;
-    self.setState({postCategory: tag});
-    self.props.actions.setView('post', null, false);
-  }
-
   createPreview() {
     var self = this;
     utils.post.generatePreview(self.state.postLink).then(function(results) {
@@ -294,6 +283,11 @@ class CreatePost extends Component {
     })
   }
 
+  goTo(view) {
+    var self = this;
+    self.props.view.nav.push(view);
+  }
+
   render() {
     var self = this;
     var user = null;
@@ -308,145 +302,6 @@ class CreatePost extends Component {
     var categoryEl = null;
     if (self.props.auth) {
       if (self.props.auth.user) user = self.props.auth.user;
-    }
-
-    if (self.props.posts.parentTags) {
-      parentTags = self.props.posts.parentTags;
-
-      categoryEl = parentTags.map(function(tag) {
-        switch (tag.name) {
-          case 'Anime':
-            tag.emoji = '👁';
-            break;
-
-          case 'Art':
-            tag.emoji = '🎨';
-            break;
-
-          case 'Beauty':
-            tag.emoji = '💅';
-            break;
-
-          case 'Books':
-            tag.emoji = '📚';
-            break;
-
-          case 'Celebrities':
-            tag.emoji = '👑';
-            break;
-
-          case 'Culture':
-            tag.emoji = '🗿';
-            break;
-
-          case 'Design':
-            tag.emoji = '📐';
-            break;
-
-          case 'Gaming':
-            tag.emoji = '🎮';
-            break;
-
-          case 'Food and Drink':
-            tag.emoji = '🍽';
-            break;
-
-          case 'Fashion':
-            tag.emoji = '🕶';
-            break;
-
-          case 'Film':
-            tag.emoji = '🎥';
-            break;
-
-          case 'LGBT':
-            tag.emoji = '🌈';
-            break;
-
-          case 'Health and Fitness':
-            tag.emoji = '💪';
-            break;
-
-          case 'Meta':
-            tag.emoji = '💭';
-            break;
-
-          case 'LOL':
-            tag.emoji = '😂';
-            break;
-
-          case 'Nature':
-            tag.emoji = '🌱';
-            break;
-
-          case 'News and Politics':
-            tag.emoji = '📰';
-            break;
-
-          case 'Music':
-            tag.emoji = '🎹';
-            break;
-
-          case 'Other':
-            tag.emoji = '🌀';
-            break;
-
-          case 'POC':
-            tag.emoji = '👩🏾';
-            break;
-
-          case 'Pictures':
-            tag.emoji = '🖼';
-            break;
-
-          case 'Programming':
-            tag.emoji = '🔢';
-            break;
-
-          case 'Relationships':
-            tag.emoji = '💞';
-            break;
-
-          case 'Sex':
-            tag.emoji = '👄';
-            break;
-
-          case 'Science':
-            tag.emoji = '🔬';
-            break;
-
-          case 'Selfie':
-            tag.emoji = '📸';
-            break;
-
-          case 'Sports':
-            tag.emoji = '🏈';
-            break;
-
-          case 'Technology':
-            tag.emoji = '💻';
-            break;
-
-          case 'Travel':
-            tag.emoji = '✈️';
-            break;
-
-          case 'Writing':
-            tag.emoji = '📝';
-            break;
-
-          case 'TV':
-            tag.emoji = '📺';
-            break;
-        }
-        return (<TouchableHighlight underlayColor={'transparent'} style={[styles.catagoryItem]} onPress={self.setCatagory.bind(self, tag)}>
-            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-              <Text>{tag.emoji}</Text>
-              <Text>{tag.name}</Text>
-            </View>
-          </TouchableHighlight>
-        );
-      })
     }
 
 
@@ -475,10 +330,7 @@ class CreatePost extends Component {
 
     return (
       <View style={[{height: self.state.visibleHeight}]}>
-        {category ? <ScrollView>
-          {categoryEl}
-        </ScrollView> : null}
-        {!category ? <ScrollView contentContainerStyle={[{flexDirection: 'column'}, scrollStyles]}>
+     <ScrollView contentContainerStyle={[{flexDirection: 'column'}, scrollStyles]}>
           {typeEl}
           {view == 'url' ? <View style={{borderBottomColor: !self.state.urlPreview ? '#f0f0f0' : 'transparent', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1}}><TextInput numberOfLines={1} style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink, urlPreview: null})} onSubmitEditing={self.createPreview.bind(self)} value={this.state.postLink} returnKeyType='done' /></View> : null}
 
@@ -499,48 +351,23 @@ class CreatePost extends Component {
 
           <View style={{borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: !self.state.urlPreview ? 0.6 : 0.4}}><TextInput style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Body here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /></View>
 
-         <TouchableHighlight style={{paddingLeft: 10, borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center'}} onPress={self.categoryButton.bind(self)}><Text style={[]}>{self.state.postCategory ? self.state.postCategory.emoji + ' ' + self.state.postCategory.name :  'Choose Category'}</Text></TouchableHighlight>
+         <TouchableHighlight style={{paddingLeft: 10, borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center'}} onPress={self.goTo.bind(self, 7)}><Text style={[]}>{self.props.posts.createPostCategory ? self.props.posts.createPostCategory.emoji + ' ' + self.props.posts.createPostCategory.name :  'Choose Category'}</Text></TouchableHighlight>
 
         <View style={{flex: 0.1, justifyContent: 'center'}}><TextInput style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Enter tags... ex. webgl, slowstyle, xxx' multiline={false} onChangeText={(postTags) => this.setState({postTags})} value={this.state.postTags} returnKeyType='done' /></View>
 
           <TouchableHighlight underlayColor={'transparent'} style={{backgroundColor: '#007aff', flex: 0.1, justifyContent: 'center'}} onPress={self.post.bind(self)}><Text style={{color: 'white', textAlign: 'center'}}>Submit</Text></TouchableHighlight>
-        </ScrollView> : null}
-        <View pointerEvents={'none'} style={styles.notificationContainer}>
-          <Notification />
-        </View>
+        </ScrollView>
       </View>
     );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    router: state.routerReducer,
-    notif: state.notif,
-    posts: state.posts,
-    view: state.view
-   }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({...tagActions, ...authActions, ...viewActions, ...postActions, ...notifActions}, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CreatePost)
+export default CreatePost
 
 const localStyles = StyleSheet.create({
   tagStringContainer: {
     flexDirection: 'row',
     alignItems: 'center'
-  },
-  catagoryItem: {
-    padding: 10,
-    borderBottomColor: '#F0F0F0',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomStyle: 'solid',
   },
   padding10: {
     padding: 10

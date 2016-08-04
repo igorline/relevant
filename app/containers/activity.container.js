@@ -169,33 +169,14 @@ class Activity extends Component {
       <View style={styles.fullContainer}>
         {typeEl}
         {self.state.view < 3 ? activityEl : onlineEl }
-        <View pointerEvents={'none'} style={styles.notificationContainer}>
-          <Notification />
-        </View>
+
         <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.dataSource} />
       </View>
     );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    posts: state.posts,
-    user: state.user,
-    router: state.routerReducer,
-    online: state.online,
-    notif: state.notif
-   }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...userActions, ...tagActions, ...notifActions}, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Activity)
+export default Activity
 
 const localStyles = StyleSheet.create({
 activityRight: {

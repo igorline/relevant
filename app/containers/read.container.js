@@ -37,8 +37,6 @@ class Read extends Component {
       tag: null,
       enabled: true,
       feedData: null,
-      messagesData: null,
-      investAni: [],
     }
   }
 
@@ -55,14 +53,7 @@ class Read extends Component {
         this.props.actions.getFeed(self.props.auth.token, 0, null);
       }
     }
-    if (self.props.messages) {
-      if (self.props.messages.index) {
-        if (self.props.messages.index.length) {
-          var md = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-          self.setState({messagesData: md.cloneWithRows(self.props.messages.index)});
-        }
-      }
-    }
+
   }
 
   componentDidUpdate() {
@@ -74,10 +65,6 @@ class Read extends Component {
     if (next.posts.feed != self.props.posts.feed) {
       var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({feedData: fd.cloneWithRows(next.posts.feed)});
-    }
-    if (next.messages.index != self.props.messages.index) {
-      var md = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      self.setState({messagesData: md.cloneWithRows(next.messages.index)});
     }
   }
 
@@ -99,21 +86,6 @@ class Read extends Component {
     var self = this;
     self.props.actions.setTag(tag);
     self.props.routes.Discover();
-  }
-
-  renderMessageRow(rowData) {
-    var self = this;
-    if (rowData.type == 'thirst') {
-      return (<View style={styles.message}>
-        <Text><Text style={styles.active} onPress={self.props.actions.getSelectedUser.bind(self, rowData.from._id)}>👅💦 {rowData.from.name}</Text> is thirsty 4 u:</Text>
-        <Text>{rowData.text}</Text>
-        </View>
-      );
-    } else {
-      return (
-        <Text>Message</Text>
-      );
-    }
   }
 
   onScroll() {
@@ -142,6 +114,10 @@ class Read extends Component {
     self.props.actions.setView('read', view);
   }
 
+  goTo() {
+    var self = this;
+  }
+
   render() {
     var self = this;
     var postsEl = null;
@@ -158,6 +134,12 @@ class Read extends Component {
     var recentMessages = [];
     var thirstyHeader = null;
 
+     if (self.props.messages.index.length > 0) {
+      for (var x = 0; x < 4; x++) {
+        recentMessages.push(<Text style={styles.recentName}>{x < 3 ? self.props.messages.index[x].from.name+', ' : self.props.messages.index[x].from.name}</Text>);
+      }
+    }
+
     if (self.state.feedData) {
       if (self.state.feedData.length > 0) {
         postsEl = (<ListView ref="feedlist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.feedData} renderRow={self.renderFeedRow.bind(self)} />)
@@ -166,72 +148,40 @@ class Read extends Component {
       }
     }
 
-    if (self.props.messages.index.length > 0) {
-      messagesEl = (<ListView ref="messageslist" renderScrollComponent={props => <ScrollView {...props} />} dataSource={self.state.messagesData} renderRow={self.renderMessageRow.bind(self)} />);
-      for (var x = 0; x < 4; x++) {
-        recentMessages.push(<Text style={styles.recentName}>{x < 3 ? self.props.messages.index[x].from.name+', ' : self.props.messages.index[x].from.name}</Text>);
-      }
-    } else {
-      messagesEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'red'}}><Text style={styles.darkGray}>Nothing in yr feed bruh</Text></View>)
-    }
-
     if (self.props.messages.count > 0) {
        messagesCount = (<Text style={[styles.white, styles.messagesCount]}>{self.props.messages.count+' New'}</Text>)
     }
 
     if (self.props.view.read == 1) {
-      thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={self.changeView.bind(self, 2)}>
-            <View style={[styles.thirstyHeader]}>
-              <View style={{paddingRight: 5}}>
-                <Text>👅💦</Text>
-              </View>
-              <View>
-                <Text style={[{fontWeight: '500'}, styles.darkGray]}>Thirsty responses</Text>
-                <View style={styles.recentNames}>
-                  {recentMessages}
-                </View>
-              </View>
-              <View style={{justifyContent: 'flex-end',flex: 1, flexDirection: 'row'}}>
-                {messagesCount}
-              </View>
+      thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={self.goTo.bind(self, )}>
+        <View style={[styles.thirstyHeader]}>
+          <View style={{paddingRight: 5}}>
+            <Text>👅💦</Text>
+          </View>
+          <View>
+            <Text style={[{fontWeight: '500'}, styles.darkGray]}>Thirsty responses</Text>
+            <View style={styles.recentNames}>
+              {recentMessages}
             </View>
-          </TouchableHighlight>);
+          </View>
+          <View style={{justifyContent: 'flex-end',flex: 1, flexDirection: 'row'}}>
+            {messagesCount}
+          </View>
+        </View>
+      </TouchableHighlight>);
     }
 
     return (
       <View style={styles.fullContainer}>
         {thirstyHeader}
         <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.feedData} />
-       {self.props.view.read == 1 ? postsEl : null}
-       {self.props.view.read == 2 ? messagesEl : null}
-        <View pointerEvents={'none'} style={styles.notificationContainer}>
-          <Notification />
-        </View>
-        <InvestAnimation {...self.props} />
+        {postsEl}
       </View>
     );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    posts: state.posts,
-    user: state.user,
-    router: state.routerReducer,
-    messages: state.messages,
-    animation: state.animation,
-    view: state.view
-   }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({...messageActions, ...investActions, ...authActions, ...postActions, ...userActions, ...tagActions, ...animationActions, ...viewActions}, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Read)
+export default Read
 
 const localStyles = StyleSheet.create({
   thirstyHeader: {

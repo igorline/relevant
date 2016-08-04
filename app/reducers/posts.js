@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {tag: null, pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null, parentTags: null};
+const initialState = {tag: null, pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null, parentTags: null, createPostCategory: null};
 
 const updatePostElement = (array, post) => {
   if (!array) return;
@@ -76,6 +76,12 @@ export default function post(state = initialState, action) {
     case types.SET_PARENT_TAGS: {
        return Object.assign({}, state, {
         'parentTags': action.payload
+      })
+    }
+
+    case 'SET_POST_CATEGORY': {
+       return Object.assign({}, state, {
+        'createPostCategory': action.payload
       })
     }
 

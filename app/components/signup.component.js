@@ -9,6 +9,7 @@ import React, {
   TouchableHighlight
 } from 'react-native';
 var Button = require('react-native-button');
+import { globalStyles } from '../styles/global';
 
 class SignUp extends Component {
   constructor(props, context) {
@@ -17,6 +18,11 @@ class SignUp extends Component {
       'message': ''
     };
   };
+
+  back() {
+    var self = this;
+    self.props.view.nav.pop(0);
+  }
 
   checkPass(user) {
     var self = this;
@@ -84,15 +90,13 @@ class SignUp extends Component {
     var self = this;
     const { createUser } = this.props.actions;
     var message = self.state.message;
-    var styles = this.props.styles;
+    var styles = globalStyles;
     this.props.auth.statusText ? message = this.props.auth.statusText : null;
 
-
-
     return (
-      <View style={styles.center}>
+      <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', backgroundColor: '#F0F0F0'}}>
 
-      <Text style={styles.instructions}>{message}</Text>
+      <Text>{message}</Text>
 
       <View style={styles.marginTop}>
           <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="name" onChangeText={(name) => this.setState({"name": name})} value={this.state.name}  style={styles.authInput} />
@@ -117,6 +121,8 @@ class SignUp extends Component {
         <View style={styles.margin}>
           <TouchableHighlight style={[styles.whiteButton]} onPress={self.validate.bind(self)}><Text style={styles.buttonText}>Submit</Text></TouchableHighlight>
         </View>
+
+        <TouchableHighlight style={[styles.whiteButton]}><Text style={styles.buttonText} onPress={self.back.bind(self)}>Back</Text></TouchableHighlight>
 
       </View>
     );

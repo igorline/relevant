@@ -12,7 +12,8 @@ import React, {
   AppState,
   Animated,
   Easing,
-  PushNotificationIOS
+  PushNotificationIOS,
+  ActionSheetIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -31,38 +32,51 @@ class Nav extends Component {
     super(props, context)
     this.state = {
       currentAppState: AppState.currentState,
-      investAni: [],
+      buttons: [
+        'Change display name',
+        'Add new photo',
+        'Logout',
+        'Cancel'
+      ],
+      destructiveIndex: 2,
+      cancelIndex: 3,
     }
   }
 
-  componentDidMount() {
+  logoutRedirect() {
     var self = this;
-    StatusBarIOS.setStyle('default');
-    AppState.addEventListener('change', this.handleAppStateChange.bind(self));
+    self.props.actions.removeDeviceToken(self.props.auth);
+    self.props.actions.logoutAction(self.props.auth.user, self.props.auth.token);
+    self.props.view.nav.replace(1);
   }
 
-  componentWillReceiveProps(next) {
+  showActionSheet() {
     var self = this;
-    if (!self.props.auth.user && next.auth.user) {
-      self.props.actions.userToSocket(next.auth.user);
-      self.props.actions.getActivity(next.auth.user._id, 0);
-      self.props.actions.getGeneralActivity(next.auth.user._id, 0);
-      self.props.actions.getMessages(next.auth.user._id);
-    }
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: self.state.buttons,
+      cancelButtonIndex: self.state.cancelIndex,
+      destructiveButtonIndex: self.state.destructiveIndex,
+    },
+    (buttonIndex) => {
+      switch(buttonIndex) {
+          case 0:
+              // self.onShare();
+              break;
+          case 1:
+              // self.irrelevant();
+              break;
+          case 2:
+              self.logoutRedirect();
+              break;
+          default:
+              return;
+      }
+    });
   }
 
-  componentWillUnmount() {
+  back() {
     var self = this;
-    AppState.removeEventListener('change', this.handleAppStateChange.bind(self));
-  }
-
-  handleAppStateChange(currentAppState) {
-    var self = this;
-    if (currentAppState == 'active' && self.props.auth.user) {
-        self.props.actions.userToSocket(self.props.auth.user);
-        self.props.actions.getActivity(self.props.auth.user._id, 0);
-        self.props.actions.getGeneralActivity(self.props.auth.user._id, 0);
-    }
+    self.props.view.nav.pop()
   }
 
   changeView(route, view, category) {
@@ -77,10 +91,17 @@ class Nav extends Component {
     var navEl = null;
     var title = '';
     var statsEl = null;
-    var route = self.props.route.name;
+    var route = null;
     var relevance = 0;
     var balance = 0;
     var user = null;
+    var routes = null;
+    if (self.props.view.route) {
+      route = self.props.view.route;
+    }
+    if (self.props.view.nav) {
+      routes = self.props.view.nav.getCurrentRoutes();
+    }
     if (self.props.auth.user) {
       user = self.props.auth.user;
       if (user.relevance) relevance = user.relevance;
@@ -97,45 +118,61 @@ class Nav extends Component {
     }
 
     switch(route) {
-      case 'Profile':
-        self.props.auth.user ? title = self.props.auth.user.name : title = self.props.title;
+      case 2:
+        title = 'Log In';
         break;
 
-      case 'SinglePost':
+      case 3:
+        title = 'Sign Up';
+        break;
+
+      case 4:
+        self.props.auth.user ? title = self.props.auth.user.name : 'User';
+        break;
+
+      case 5:
+        title = 'Activity';
+        break;
+
+      case 13:
         self.props.posts.activePost.title ? title = self.props.posts.activePost.title : title = 'Untitled Post';
         break;
 
-      case 'User':
-        self.props.users.selectedUser ? title = self.props.users.selectedUser.name : title = self.props.title;
+      case 11:
+        self.props.users.selectedUser ? title = self.props.users.selectedUser.name : title = '';
         break;
 
-      case 'CreatePost':
-        if (!self.props.view.post.category) {
+      case 6:
           title = 'Post';
-        } else {
+        break;
+
+      case 7:
           title = 'Categories';
-        }
+        break;
+
+      case 8:
+          title = 'Discover';
+        break;
+
+      case 9:
+          title = 'Read';
         break;
 
       default:
-        title = self.props.title;
+        title = '';
     }
+
+    if (self.props.view.name) title = self.props.view.name;
 
     if (authenticated) {
       navEl = (<View style={styles.nav}>
         <View style={[styles.navItem]}>
           <Text style={[styles.navLink, styles.maxWidth, styles.darkGray]} numberOfLines={1}>{title}</Text>
         </View>
-         {route == 'Profile' ? <View style={styles.gear}><TouchableHighlight underlayColor={'transparent'}  onPress={self.props.routes.ProfileOptions} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View> : null}
 
-         {route == 'Read' && self.props.view.read == 2 ? <TouchableHighlight underlayColor={'transparent'}  onPress={self.changeView.bind(self, 'read', 1)} style={styles.back}><View style={styles.backInner}><Image style={styles.backImg} source={require('../assets/images/back.png')} /><Text style={styles.backText}>Back</Text></View></TouchableHighlight> : null}
-         {statsEl}
+         {self.props.view.back ? <TouchableHighlight underlayColor={'transparent'}  onPress={self.back.bind(self)} style={styles.back}><View style={styles.backInner}><Image style={styles.backImg} source={require('../assets/images/back.png')} /><Text style={styles.backText}>Back</Text></View></TouchableHighlight> : null}
 
-         {route == 'Comments' || route == 'ProfileOptions' ? <TouchableHighlight underlayColor={'transparent'}  onPress={Actions.pop} style={styles.back}><View style={styles.backInner}><Image style={styles.backImg} source={require('../assets/images/back.png')} /><Text style={styles.backText}>Back</Text></View></TouchableHighlight> : null}
-
-         {route == 'CreatePost' && self.props.view.post.category ? <TouchableHighlight underlayColor={'transparent'}  onPress={self.changeView.bind(self, 'post', null, false)} style={styles.back}><View style={styles.backInner}><Image style={styles.backImg} source={require('../assets/images/back.png')} /><Text style={styles.backText}>Back</Text></View></TouchableHighlight> : null}
-
-         {statsEl}
+         {route != 4 ? statsEl : <View style={styles.gear}><TouchableHighlight underlayColor={'transparent'}  onPress={self.showActionSheet.bind(self)} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View>}
       </View>);
     }
 
@@ -147,27 +184,7 @@ class Nav extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    posts: state.posts,
-    users: state.user,
-    router: state.routerReducer,
-    online: state.online,
-    notif: state.notif,
-    animation: state.animation,
-    view: state.view,
-    messages: state.messages
-   }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions, ...viewActions, ...messageActions}, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Nav)
+export default Nav
 
 const localStyles = StyleSheet.create({
   back: {
@@ -196,7 +213,7 @@ const localStyles = StyleSheet.create({
   gear: {
     position: 'absolute',
     top: 0,
-    left: 0,
+    right: 0,
     height: 60,
     flex: 1,
     justifyContent: 'flex-end',
@@ -213,8 +230,7 @@ const localStyles = StyleSheet.create({
     padding: 12,
     backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.25)',
-    borderBottomStyle: 'solid'
+    borderBottomColor: 'rgba(0,0,0,0.25)'
   },
   stats: {
     position: 'absolute',

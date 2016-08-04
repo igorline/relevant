@@ -45,6 +45,7 @@ class User extends Component {
 
   componentDidMount() {
     var self = this;
+
     var notifObj = {
       notification: {
         post: null,
@@ -82,6 +83,11 @@ class User extends Component {
     }
   }
 
+  goTo(view) {
+    var self = this;
+    self.props.navigator.push(view);
+  }
+
   render() {
     var self = this;
     var user = null;
@@ -94,6 +100,8 @@ class User extends Component {
     var postsEl = null;
     var followers = null;
     var following = null;
+
+
     if (self.state.followers) followers = self.state.followers;
     if (self.state.following) following = self.state.following;
 
@@ -133,42 +141,20 @@ class User extends Component {
     return (
       <View style={styles.fullContainer}>
         <ScrollView style={styles.fullContainer}>
-          <ProfileComponent {...self.props} user={self.props.users.selectedUser} styles={styles} />
+           <ProfileComponent {...self.props} user={self.props.users.selectedUser} styles={styles} />
           <TouchableHighlight style={styles.thirstyIcon}>
-            <Text style={styles.white} onPress={self.props.routes.Thirst} >Thirsty 👅💦</Text>
+            <Text style={styles.white} onPress={self.goTo.bind(self, 11)} >Thirsty 👅💦</Text>
           </TouchableHighlight>
           <View>
             {postsEl}
           </View>
         </ScrollView>
-        <View pointerEvents={'none'} style={styles.notificationContainer}>
-          <Notification />
-        </View>
-        <InvestAnimation {...self.props} />
       </View>
     );
   }
 }
 
-
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    posts: state.posts,
-    users: state.user,
-    router: state.routerReducer,
-    online: state.online,
-    animation: state.animation
-   }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...tagActions, ...userActions, ...animationActions}, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(User)
+export default User
 
 const localStyles = StyleSheet.create({
   postsHeader: {

@@ -61,7 +61,6 @@ class Notification extends Component {
     var styles = {...localStyles, ...parentStyles};
     var message = this.props.notif.text;
     var bool = self.props.notif.bool;
-    //console.log(this.props, 'notification props')
 
     return (
       <Animated.View style={[styles.parent, bool ? styles.green : styles.red, {opacity: self.state.notifOpac}]}>
@@ -71,20 +70,7 @@ class Notification extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    notif: state.notif
-   }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({...notifActions }, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Notification)
-
+export default Notification
 
 const localStyles = StyleSheet.create({
 parent: {
@@ -92,7 +78,6 @@ parent: {
   padding: 10,
   justifyContent: 'center',
   alignItems: 'center',
-  // textAlign: 'center'
 },
 notifText: {
   color: 'white',
