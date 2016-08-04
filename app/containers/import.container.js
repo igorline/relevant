@@ -65,9 +65,6 @@ class Import extends Component {
         {contacts ? null : <Button onPress={getContacts}>Import contacts</Button>}
         {contactsEl}
         </View>
-        <View pointerEvents={'none'} style={styles.notificationContainer}>
-          <Notification />
-        </View>
       </ScrollView>
     );
   }

@@ -32,9 +32,13 @@ class DiscoverUser extends Component {
   setSelected(id) {
     var self = this;
     if (id == self.props.auth.user._id) {
-      self.props.routes.Profile();
+      self.props.view.nav.replace(4);
     } else {
-      self.props.actions.getSelectedUser(id);
+      self.props.actions.getSelectedUser(id).then(function(results) {
+        if (results) {
+          self.props.view.nav.replace(11);
+        }
+      })
     }
   }
 

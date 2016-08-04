@@ -13,3 +13,28 @@ export function setView(type, view, category) {
         }
     };
 }
+
+export function setNav(nav, route) {
+    return {
+        type: 'SET_NAV',
+        payload: {
+          nav: nav ? nav : null,
+          route: route ? route : null
+        }
+    };
+}
+
+export function setBack(bool) {
+    return {
+        type: 'SET_BACK',
+        payload: bool
+    };
+}
+
+export function setName(name) {
+    if (!name) name = null;
+    return {
+        type: 'SET_NAME',
+        payload: name
+    };
+}

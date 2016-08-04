@@ -112,39 +112,19 @@ class Thirst extends Component {
     var tagEl = null;
 
     return (
-      <View style={[{height: self.state.visibleHeight}]}>
+      <View style={[{height: self.state.visibleHeight, backgroundColor: 'white'}]}>
         <View style={{flex: 1}}>
           <TextInput style={[styles.thirstInput, styles.font15]} placeholder={'Enter your message for '+self.props.user.selectedUser.name} multiline={true} onChangeText={(text) => this.setState({text})} value={self.state.text} returnKeyType='done' />
           <TouchableHighlight underlayColor={'transparent'} style={[styles.thirstSubmit]} onPress={self.sendThirst.bind(self)}>
             <Text style={[styles.font15, styles.active]}>Send</Text>
           </TouchableHighlight>
         </View>
-        <View pointerEvents={'none'} style={styles.notificationContainer}>
-          <Notification />
-        </View>
       </View>
     );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    posts: state.posts,
-    user: state.user,
-    router: state.routerReducer,
-    online: state.online,
-    messages: state.messages
-   }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({...notifActions, ...messageActions, ...investActions, ...authActions, ...postActions, ...userActions, ...tagActions}, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Thirst)
+export default Thirst
 
 const localStyles = StyleSheet.create({
   commentInputParent: {

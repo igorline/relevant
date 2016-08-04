@@ -66,6 +66,14 @@ function clearPosts() {
     };
 }
 
+export
+function setPostCategory(tag) {
+    return {
+        type: 'SET_POST_CATEGORY',
+        payload: tag
+    };
+}
+
 export function getPosts(skip, tags, sort) {
   //console.log(skip, tags, sort);
   var tagsString = '';

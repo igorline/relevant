@@ -44,11 +44,19 @@ class Comments extends Component {
     }
   }
 
+  componentWillUnmount() {
+    var self = this;
+    self.props.actions.setBack(false);
+    self.props.actions.setName(null);
+  }
+
   componentDidMount() {
     var self = this;
     self.props.actions.getComments(self.props.posts.activePost);
     DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
     DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
+    self.props.actions.setBack(true);
+    self.props.actions.setName('Comments');
   }
 
   keyboardWillShow (e) {
@@ -118,7 +126,7 @@ class Comments extends Component {
     }
 
     return (
-      <View style={[{height: self.state.visibleHeight}]}>
+      <View style={[{height: self.state.visibleHeight, backgroundColor: 'white'}]}>
         <ScrollView ref={(scrollView) => { self.state.scrollView = scrollView; }} onContentSizeChange={(height, width)=>{self.state.scrollToBottomY = width;}} onLayout={(e)=>{self.state.elHeight = e.nativeEvent.layout.height}}>
           {commentsEl}
           </ScrollView>
@@ -128,31 +136,12 @@ class Comments extends Component {
             <Text style={[styles.font15, styles.active]}>Submit</Text>
           </TouchableHighlight>
         </View>
-        <View pointerEvents={'none'} style={styles.notificationContainer}>
-          <Notification />
-        </View>
       </View>
     );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    posts: state.posts,
-    user: state.user,
-    router: state.routerReducer,
-    online: state.online
-   }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({...investActions, ...authActions, ...postActions, ...userActions}, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Comments)
+export default Comments
 
 const localStyles = StyleSheet.create({
   commentInputParent: {

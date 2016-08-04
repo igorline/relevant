@@ -32,62 +32,68 @@ import Notification from '../components/notification.component';
 import ProfileComponent from '../components/profile.component';
 import InvestAnimation from '../components/investAnimation.component';
 
-class Profile extends Component {
+class Messages extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      investAni: [],
+      messagesData: null
+    }
+  }
+
+  componentDidMount() {
+    var self = this;
+    if (self.props.messages) {
+      if (self.props.messages.index) {
+        if (self.props.messages.index.length) {
+          var md = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+          self.setState({messagesData: md.cloneWithRows(self.props.messages.index)});
+        }
+      }
     }
   }
 
   componentWillReceiveProps(next) {
     var self = this;
+    if (next.messages.index != self.props.messages.index) {
+      var md = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      self.setState({messagesData: md.cloneWithRows(next.messages.index)});
+    }
+  }
+
+  renderMessageRow(rowData) {
+    var self = this;
+    if (rowData.type == 'thirst') {
+      return (<View style={styles.message}>
+        <Text><Text style={styles.active} onPress={self.props.actions.getSelectedUser.bind(self, rowData.from._id)}>👅💦 {rowData.from.name}</Text> is thirsty 4 u:</Text>
+        <Text>{rowData.text}</Text>
+        </View>
+      );
+    } else {
+      return (
+        <Text>Message</Text>
+      );
+    }
   }
 
   render() {
     var self = this;
-    var user = null;
-    var userImage = null;
-    var name = null;
-    var relevance = 0;
-    var balance = 0;
-    var userImageEl = null;
-    var postsEl = null;
-    var profileEl = null;
-
-    if (self.props.auth.user) {
-      profileEl = (<ProfileComponent {...self.props} user={self.props.auth.user} styles={styles} />);
-      if (self.props.auth.user.posts) {
-        if (self.props.auth.user.posts.length > 0) {
-          var posts = null;
-
-          posts = self.props.auth.user.posts;
-
-          postsEl = posts.map(function(post, i) {
-            return (<Post key={i} post={post} {...self.props} styles={styles} />);
-          });
-        } else {
-           postsEl = (<View style={styles.padding10}><Text>No posts yet 😔</Text></View>)
-         }
-      } else {
-        postsEl = (<View style={styles.padding10}><Text>No posts yet 😔</Text></View>)
-      }
+    var messagesEl = null;
+    if (self.props.messages.index.length > 0) {
+      messagesEl = (<ListView ref="messageslist" renderScrollComponent={props => <ScrollView {...props} />} dataSource={self.state.messagesData} renderRow={self.renderMessageRow.bind(self)} />);
+    } else {
+      messagesEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'red'}}><Text style={styles.darkGray}>Nothing in yr feed bruh</Text></View>)
     }
 
+
     return (
-      <View style={styles.fullContainer}>
-      <ScrollView style={styles.fullContainer}>
-        {profileEl}
-        <View>
-          {postsEl}
-        </View>
-      </ScrollView>
+      <View style={{flex: 1}}>
+        {messagesEl}
       </View>
     );
   }
 }
 
-export default Profile
+export default Messages
 
 
 const localStyles = StyleSheet.create({

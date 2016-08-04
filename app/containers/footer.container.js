@@ -28,9 +28,14 @@ class Footer extends Component {
   componentWillReceiveProps(next) {
   }
 
+  goTo(view) {
+    var self = this;
+    self.props.view.nav.resetTo(view)
+  }
+
   render() {
     var self = this;
-    var currentRoute = self.props.router.currentRoute;
+    var currentRoute = null;
     var authenticated = this.props.auth.isAuthenticated;
     var footerEl = null;
     var imageEl = (<Text style={[styles.icon, styles.textCenter, currentRoute == 'Profile' ? styles.activeIcon : null]}>👤</Text>);
@@ -43,29 +48,29 @@ class Footer extends Component {
 
     if (authenticated) {
       footerEl = ( <View style={styles.footer}>
-        <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Read' ? self.props.routes.Read : null}>
+        <TouchableHighlight onPress={self.goTo.bind(self, 9)} underlayColor={'transparent'} style={[styles.footerItem]} >
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter, currentRoute == 'Read' ? styles.activeIcon : null]}> 📩 </Text>
              {self.props.messages.count ? <View style={styles.notifCount}><Text style={styles.notifText}>{self.props.messages.count}</Text></View> : null}
           </View>
         </TouchableHighlight>
-        <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Discover' ? self.props.routes.Discover : null}>
+        <TouchableHighlight onPress={self.goTo.bind(self, 8)} underlayColor={'transparent'} style={[styles.footerItem]} >
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter, currentRoute == 'Discover' ? styles.activeIcon : null]}>🔮</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'CreatePost' ? self.props.routes.CreatePost : null}>
+        <TouchableHighlight onPress={self.goTo.bind(self, 6)} underlayColor={'transparent'} style={[styles.footerItem]} >
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter, currentRoute == 'CreatePost' ? styles.activeIcon : null]}>📝</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Activity' ? self.props.routes.Activity : null}>
+        <TouchableHighlight onPress={self.goTo.bind(self,5)} underlayColor={'transparent'} style={[styles.footerItem]} >
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter, currentRoute == 'Activity' ? styles.activeIcon : null]}>⚡</Text>
             {self.props.notif.count ? <View style={styles.notifCount}><Text style={styles.notifText}>{self.props.notif.count}</Text></View> : null}
           </View>
         </TouchableHighlight>
-        <TouchableHighlight underlayColor={'transparent'} style={[styles.footerItem]} onPress={currentRoute != 'Profile' ? self.props.routes.Profile : null}>
+        <TouchableHighlight onPress={self.goTo.bind(self, 4)} underlayColor={'transparent'} style={[styles.footerItem]} >
           <View style={styles.footerItemView}>
             {imageEl}
           </View>
@@ -78,22 +83,7 @@ class Footer extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    router: state.routerReducer,
-    notif: state.notif,
-    messages: state.messages,
-   }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(authActions, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Footer)
+export default Footer
 
 const localStyles = StyleSheet.create({
   footerImg: {
@@ -136,7 +126,6 @@ const localStyles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopWidth: 1,
     borderTopColor: 'rgba(0,0,0,0.25)',
-    borderTopStyle: 'solid'
   },
   footerItem: {
     flex: 1

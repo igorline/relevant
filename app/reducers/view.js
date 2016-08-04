@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {read: 1, discover: 1, post: {view: 'url', category: false}};
+const initialState = {read: 1, discover: 1, route: null, nav: null, post: {view: 'url', category: false}, back: false, name: null};
 const REPLACE = 'REPLACE';
 
 
@@ -33,6 +33,26 @@ export default function auth(state = initialState, action) {
           return
       }
     }
+
+    case 'SET_BACK':
+      return Object.assign({}, state, {
+            'back': action.payload,
+          })
+      break
+
+    case 'SET_NAV':
+          return Object.assign({}, state, {
+            'nav': action.payload.nav,
+            'route': action.payload.route,
+          })
+       break
+
+
+    case 'SET_NAME':
+          return Object.assign({}, state, {
+            'name': action.payload,
+          })
+       break
 
     default:
       return state

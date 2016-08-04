@@ -65,7 +65,7 @@ function logoutAction(user, token) {
     AsyncStorage.removeItem('token');
     return (dispatch) => {
         dispatch(logout());
-        // dispatch(deviceToken(user, token));
+        dispatch({type:'server/logout', payload: user});
     }
 }
 
@@ -76,10 +76,10 @@ function logout() {
     }
 }
 
-export
-function loginUser(user, redirect) {
-    return dispatch => {
-        dispatch(loginUserRequest());
+export function loginUser(user, redirect) {
+    return function(dispatch) {
+        //dispatch(loginUserRequest());
+        console.log(user, 'user')
         return fetch(process.env.API_SERVER+'/auth/local', {
             credentials: 'include',
             method: 'POST',
@@ -203,7 +203,6 @@ function getUser(token, redirect) {
                     }
                 }));
                 dispatch(addDeviceToken(responseJSON, token))
-                if (redirect) dispatch(Actions.Profile);
             })
             .catch(error => {
                 console.log(error, 'error');

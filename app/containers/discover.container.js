@@ -337,34 +337,13 @@ class Discover extends Component {
         {view != 3 ? postsEl : null}
         {view == 3 ? typeEl : null}
         {view == 3 ? usersEl : null}
-        <View pointerEvents={'none'} style={styles.notificationContainer}>
-          <Notification />
-        </View>
-        <InvestAnimation {...self.props} />
+
       </View>
     );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    router: state.routerReducer,
-    users: state.user,
-    posts: state.posts,
-    notif: state.notif,
-    animation: state.animation,
-    view: state.view
-   }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({...investActions, ...authActions, ...userActions, ...postActions, ...tagActions, ...notifActions, ...animationActions, ...viewActions}, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Discover)
+export default Discover
 
 const localStyles = StyleSheet.create({
 padding20: {
@@ -372,11 +351,6 @@ padding20: {
 },
 transformContainer: {
   overflow: 'hidden',
-  // borderWidth: 1,
-  // borderColor: 'red',
-  // borderStyle: 'solid',
-  // height: 50,
-  // width: 100
 },
 listStyle: {
   height: 100,
@@ -390,13 +364,11 @@ searchParent: {
   width: fullWidth,
   backgroundColor: '#F0F0F0',
   overflow: 'hidden',
-  // padding: 5
 },
 scrollPadding: {
   marginTop: 300
 },
 searchInput: {
-  display: 'flex',
   flex: 1,
   paddingTop: 5,
   textAlign: 'center',

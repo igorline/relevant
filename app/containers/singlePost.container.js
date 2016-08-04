@@ -34,9 +34,18 @@ class SinglePost extends Component {
     }
   }
 
-  componentDidMount() {
+  componentWillUnmount() {
+    var self = this;
+    self.props.actions.setBack(false);
+    self.props.actions.setName();
   }
 
+  componentDidMount() {
+    var self = this;
+    var title = self.props.posts.activePost.title ? self.props.posts.activePost.title : title = 'Untitled Post';
+    self.props.actions.setName(title);
+    self.props.actions.setBack(true);
+  }
 
   render() {
     var self = this;
@@ -52,38 +61,19 @@ class SinglePost extends Component {
     if (post.image) image = post.image;
 
     return (
-      <View style={styles.fullContainer}>
+      <View style={[styles.fullContainer, {backgroundColor: 'white'}]}>
         <ScrollView style={styles.fullContainer}>
           <View>
             <Post post={post} {...self.props} styles={styles} />
           </View>
-          <View pointerEvents={'none'} style={styles.notificationContainer}>
-            <Notification />
-          </View>
         </ScrollView>
-         <InvestAnimation {...self.props} />
       </View>
     );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    router: state.routerReducer,
-    users: state.user,
-    posts: state.posts,
-    animation: state.animation
-   }
-}
+export default SinglePost
 
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({...investActions, ...authActions, ...userActions, ...postActions, ...animationActions}, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SinglePost)
 
 const localStyles = StyleSheet.create({
 singlePostContainer: {

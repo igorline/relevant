@@ -49,7 +49,25 @@ class Auth extends Component {
     DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
   }
 
+  login() {
+    var self = this;
+    self.props.view.nav.push(2)
+  }
+
+  signup() {
+    var self = this;
+    self.props.view.nav.push(3)
+  }
+
+  componentDidUpdate(prev) {
+    var self = this;
+    // if (!prev.auth.user && self.props.auth.user) {
+    //   self.props.view.nav.replace(3)
+    // }
+  }
+
   render() {
+
     var self = this;
     var auth;
     var message = '';
@@ -100,23 +118,15 @@ class Auth extends Component {
       </View>);
     }
 
-    if (currentRoute == 'Auth') {
-      auth = (
+    return (
+      <View style={[{height: isAuthenticated ? self.state.visibleHeight - 120 : self.state.visibleHeight, backgroundColor: '#F0F0F0'}]}>
         <View style={styles.alignAuth}>
           <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>Relevant</Text>
           <Text style={styles.darkGray}>{message}</Text>
-          <TouchableHighlight style={[styles.whiteButton]} onPress={self.props.routes.LogIn}><Text style={styles.buttonText}>Log In</Text></TouchableHighlight>
-          <TouchableHighlight style={[styles.whiteButton, styles.marginTop]} onPress={self.props.routes.SignUp}><Text style={styles.buttonText}>Sign Up</Text></TouchableHighlight>
+          <TouchableHighlight style={[styles.whiteButton]}><Text style={styles.buttonText} onPress={self.login.bind(self)}>Log In</Text></TouchableHighlight>
+          <TouchableHighlight onPress={self.signup.bind(self)} style={[styles.whiteButton, styles.marginTop]}><Text style={styles.buttonText}>Sign Up</Text></TouchableHighlight>
         </View>
-      )
-    }
 
-    return (
-      <View style={[{height: isAuthenticated ? self.state.visibleHeight - 120 : self.state.visibleHeight, backgroundColor: '#F0F0F0'}]}>
-        {auth}
-        <View pointerEvents={'none'} style={styles.notificationContainer}>
-          <Notification />
-        </View>
       </View>
     );
   }
@@ -137,22 +147,24 @@ const localStyles = StyleSheet.create({
 
 var styles = {...localStyles, ...globalStyles};
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    posts: state.posts,
-    users: state.user,
-    router: state.routerReducer,
-    notif: state.notif,
-    socket: state.socket
-   }
-}
+export default Auth;
 
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({...authActions, ...postActions, ...notifActions }, dispatch)
-  }
-}
+// function mapStateToProps(state) {
+//   return {
+//     auth: state.auth,
+//     posts: state.posts,
+//     users: state.user,
+//     router: state.routerReducer,
+//     notif: state.notif,
+//     socket: state.socket
+//    }
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Auth)
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     actions: bindActionCreators({...authActions, ...postActions, ...notifActions }, dispatch)
+//   }
+// }
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Auth)
 
