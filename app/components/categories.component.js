@@ -30,14 +30,10 @@ class Categories extends Component {
 
   componentDidMount() {
     var self = this;
-    self.props.actions.setBack(true);
-    self.props.actions.setName('Categories');
   }
 
   componentWillUnmount() {
     var self = this;
-    self.props.actions.setBack(false);
-    self.props.actions.setName(null);
   }
 
   setCategory(tag) {
@@ -190,7 +186,7 @@ class Categories extends Component {
       })
     }
 
-return (<ScrollView contentContainerStyle={{flex: 1}}>
+return (<ScrollView contentContainerStyle={[]}>
           {categoryEl}
         </ScrollView>
     );

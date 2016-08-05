@@ -10,6 +10,7 @@ import React, {
   Dimensions,
   PushNotificationIOS,
   ScrollView,
+  ListView,
   AlertIOS
 } from 'react-native';
 
@@ -35,8 +36,9 @@ import InvestAnimation from '../components/investAnimation.component';
 class Messages extends Component {
   constructor (props, context) {
     super(props, context)
+    var md = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      messagesData: null
+      messagesData: md
     }
   }
 
@@ -45,8 +47,8 @@ class Messages extends Component {
     if (self.props.messages) {
       if (self.props.messages.index) {
         if (self.props.messages.index.length) {
-          var md = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-          self.setState({messagesData: md.cloneWithRows(self.props.messages.index)});
+
+          self.setState({messagesData: self.state.messagesData.cloneWithRows(self.props.messages.index)});
         }
       }
     }
@@ -55,16 +57,21 @@ class Messages extends Component {
   componentWillReceiveProps(next) {
     var self = this;
     if (next.messages.index != self.props.messages.index) {
-      var md = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      self.setState({messagesData: md.cloneWithRows(next.messages.index)});
+      self.setState({messagesData: self.state.messagesData.cloneWithRows(next.messages.index)});
     }
+  }
+
+  goToUser(id) {
+    var self = this;
+    self.props.actions.getSelectedUser(id);
+    self.props.view.nav.resetTo(11);
   }
 
   renderMessageRow(rowData) {
     var self = this;
     if (rowData.type == 'thirst') {
       return (<View style={styles.message}>
-        <Text><Text style={styles.active} onPress={self.props.actions.getSelectedUser.bind(self, rowData.from._id)}>👅💦 {rowData.from.name}</Text> is thirsty 4 u:</Text>
+        <Text><Text style={styles.active} onPress={self.goToUser.bind(self, rowData.from._id)}>👅💦 {rowData.from.name}</Text> is thirsty 4 u:</Text>
         <Text>{rowData.text}</Text>
         </View>
       );
@@ -86,7 +93,7 @@ class Messages extends Component {
 
 
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: 'white'}}>
         {messagesEl}
       </View>
     );

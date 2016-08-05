@@ -36,7 +36,7 @@ class Comments extends Component {
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       comment: null,
-      visibleHeight: Dimensions.get('window').height - 120,
+      visibleHeight: Dimensions.get('window').height - 60,
       elHeight: null,
       scrollView: ScrollView,
       scrollToBottomY: null,
@@ -46,8 +46,6 @@ class Comments extends Component {
 
   componentWillUnmount() {
     var self = this;
-    self.props.actions.setBack(false);
-    self.props.actions.setName(null);
   }
 
   componentDidMount() {
@@ -55,17 +53,15 @@ class Comments extends Component {
     self.props.actions.getComments(self.props.posts.activePost);
     DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
     DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
-    self.props.actions.setBack(true);
-    self.props.actions.setName('Comments');
   }
 
   keyboardWillShow (e) {
-    let newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 120
+    let newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 60
     this.setState({visibleHeight: newSize})
   }
 
   keyboardWillHide (e) {
-    this.setState({visibleHeight: Dimensions.get('window').height - 120})
+    this.setState({visibleHeight: Dimensions.get('window').height - 60})
   }
 
   componentWillUpdate(next) {

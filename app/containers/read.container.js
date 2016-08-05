@@ -114,8 +114,9 @@ class Read extends Component {
     self.props.actions.setView('read', view);
   }
 
-  goTo() {
+  goTo(view) {
     var self = this;
+    self.props.view.nav.push(view);
   }
 
   render() {
@@ -153,7 +154,7 @@ class Read extends Component {
     }
 
     if (self.props.view.read == 1) {
-      thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={self.goTo.bind(self, )}>
+      thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={self.goTo.bind(self, 14)}>
         <View style={[styles.thirstyHeader]}>
           <View style={{paddingRight: 5}}>
             <Text>👅💦</Text>

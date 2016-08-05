@@ -45,17 +45,17 @@ class CreatePost extends Component {
       tagStage: 1,
       postImage: null,
       catObj: null,
-      visibleHeight: Dimensions.get('window').height - 120
+      visibleHeight: Dimensions.get('window').height - 60
     }
   }
 
   keyboardWillShow (e) {
-    let newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 120
+    let newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 60
     this.setState({visibleHeight: newSize})
   }
 
   keyboardWillHide (e) {
-    this.setState({visibleHeight: Dimensions.get('window').height - 120})
+    this.setState({visibleHeight: Dimensions.get('window').height - 60})
   }
 
   componentDidMount() {
@@ -351,7 +351,7 @@ class CreatePost extends Component {
 
           <View style={{borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: !self.state.urlPreview ? 0.6 : 0.4}}><TextInput style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Body here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /></View>
 
-         <TouchableHighlight style={{paddingLeft: 10, borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center'}} onPress={self.goTo.bind(self, 7)}><Text style={[]}>{self.props.posts.createPostCategory ? self.props.posts.createPostCategory.emoji + ' ' + self.props.posts.createPostCategory.name :  'Choose Category'}</Text></TouchableHighlight>
+         <TouchableHighlight style={{paddingLeft: 10, borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center'}} underlayColor={'transparent'} onPress={self.goTo.bind(self, 7)}><Text style={[]}>{self.props.posts.createPostCategory ? self.props.posts.createPostCategory.emoji + ' ' + self.props.posts.createPostCategory.name :  'Choose Category'}</Text></TouchableHighlight>
 
         <View style={{flex: 0.1, justifyContent: 'center'}}><TextInput style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Enter tags... ex. webgl, slowstyle, xxx' multiline={false} onChangeText={(postTags) => this.setState({postTags})} value={this.state.postTags} returnKeyType='done' /></View>
 

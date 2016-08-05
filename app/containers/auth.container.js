@@ -119,7 +119,7 @@ class Auth extends Component {
     }
 
     return (
-      <View style={[{height: isAuthenticated ? self.state.visibleHeight - 120 : self.state.visibleHeight, backgroundColor: '#F0F0F0'}]}>
+      <View style={[{height: isAuthenticated ? self.state.visibleHeight - 60 : self.state.visibleHeight, backgroundColor: '#F0F0F0'}]}>
         <View style={styles.alignAuth}>
           <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>Relevant</Text>
           <Text style={styles.darkGray}>{message}</Text>
@@ -148,23 +148,4 @@ const localStyles = StyleSheet.create({
 var styles = {...localStyles, ...globalStyles};
 
 export default Auth;
-
-// function mapStateToProps(state) {
-//   return {
-//     auth: state.auth,
-//     posts: state.posts,
-//     users: state.user,
-//     router: state.routerReducer,
-//     notif: state.notif,
-//     socket: state.socket
-//    }
-// }
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     actions: bindActionCreators({...authActions, ...postActions, ...notifActions }, dispatch)
-//   }
-// }
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Auth)
 
