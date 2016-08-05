@@ -40,12 +40,12 @@ class User extends Component {
         following: null,
         online: false,
         investAni: [],
+        init: false
       }
   }
 
-  componentDidMount() {
+  actions() {
     var self = this;
-
     var notifObj = {
       notification: {
         post: null,
@@ -67,11 +67,18 @@ class User extends Component {
       self.setState({followers: data.data});
     })
     self.checkOnline(self.props.online);
+    self.setState({init: true});
   }
 
-  componentWillReceiveProps(next) {
+  componentDidMount() {
     var self = this;
-    self.checkOnline(next.online);
+    if (self.props.users.selectedUser) self.actions();
+  }
+
+  componentDidUpdate(prev) {
+    var self = this;
+    if (self.props.users.selectedUser != prev.users.selectedUser && !self.state.init) self.actions();
+    if (self.state.init) self.checkOnline(self.props.online);
   }
 
   checkOnline(online) {
@@ -100,7 +107,10 @@ class User extends Component {
     var postsEl = null;
     var followers = null;
     var following = null;
+    var posts = null;
+    var profileEl = null;
 
+    console.log(self, 'user render')
 
     if (self.state.followers) followers = self.state.followers;
     if (self.state.following) following = self.state.following;
@@ -111,21 +121,21 @@ class User extends Component {
         if (user.image) userImage = user.image;
         if (user.relevance) relevance = user.relevance;
         if (user.balance) balance = user.balance;
+        if (user.posts) posts = user.posts;
+        profileEl = (<ProfileComponent {...self.props} user={user} styles={styles} />)
     }
 
     if (userImage) {
       userImageEl = (<Image source={{uri: userImage}} style={styles.uploadAvatar} /> );
     }
 
+    if (posts) {
+      if (posts.length > 0) {
 
-    if (self.props.users.selectedUser.posts) {
-      if (self.props.users.selectedUser.posts.length > 0) {
-        var posts = null;
-
-        if (self.props.users.selectedUser.posts.length > 10) {
-          posts = self.props.users.selectedUser.posts.slice(0, 10);
+        if (posts.length > 10) {
+          posts = posts.slice(0, 10);
         } else {
-          posts = self.props.users.selectedUser.posts;
+          posts = posts;
         }
 
         postsEl = posts.map(function(post, i) {
@@ -141,7 +151,7 @@ class User extends Component {
     return (
       <View style={styles.fullContainer}>
         <ScrollView style={styles.fullContainer}>
-           <ProfileComponent {...self.props} user={self.props.users.selectedUser} styles={styles} />
+           {profileEl}
           <TouchableHighlight style={styles.thirstyIcon}>
             <Text style={styles.white} onPress={self.goTo.bind(self, 11)} >Thirsty 👅💦</Text>
           </TouchableHighlight>

@@ -36,7 +36,7 @@ class Thirst extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-       visibleHeight: Dimensions.get('window').height - 120,
+       visibleHeight: Dimensions.get('window').height - 60,
        tag: null,
        autoTags: [],
        preTag: null,
@@ -52,12 +52,12 @@ class Thirst extends Component {
   }
 
   keyboardWillShow (e) {
-    let newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 120
+    let newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 60
     this.setState({visibleHeight: newSize})
   }
 
   keyboardWillHide (e) {
-    this.setState({visibleHeight: Dimensions.get('window').height - 120})
+    this.setState({visibleHeight: Dimensions.get('window').height - 60})
   }
 
   componentWillUpdate(next) {
