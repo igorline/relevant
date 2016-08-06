@@ -199,11 +199,6 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  message: {
-    padding: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#F0F0F0'
-  },
   recentNames: {
     flexDirection: 'row',
   },

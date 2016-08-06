@@ -61,9 +61,6 @@ class Auth extends Component {
 
   componentDidUpdate(prev) {
     var self = this;
-    // if (!prev.auth.user && self.props.auth.user) {
-    //   self.props.view.nav.replace(3)
-    // }
   }
 
   render() {
@@ -80,43 +77,6 @@ class Auth extends Component {
     this.props.auth.statusText ? message = this.props.auth.statusText : null;
     var tagline = '';
     var links = null;
-    var userImage = null;
-    if (user) {
-      if (this.props.auth.user.image) {
-        userImage = this.props.auth.user.image;
-      }
-    }
-
-    if (isAuthenticated){
-      auth = (
-        <View style={styles.alignAuth}>
-          <Text style={[styles.font20, styles.darkGray]}>{user ? user.name : null}</Text>
-          <Text style={styles.darkGray}>{message}</Text>
-        </View>
-      );
-    }
-
-   if (currentRoute == 'LogIn') {
-      auth = (
-        <View style={styles.alignAuth}>
-        <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>
-            Stay Relevant {'\n'} Log in
-          </Text>
-          <Login { ...this.props } styles={styles} />
-           <TouchableHighlight onPress={self.props.routes.Auth} style={[styles.whiteButton]}><Text style={styles.buttonText}>Back</Text></TouchableHighlight>
-        </View>
-      );
-    }
-
-    if (currentRoute == 'SignUp') {
-      auth = (<View style={styles.alignAuth}>
-        <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>
-            Get Relevant {'\n'} Sign up
-          </Text>
-        <SignUp {...this.props} styles={styles} />
-        <TouchableHighlight style={[styles.whiteButton]} onPress={self.props.routes.Auth}><Text style={styles.buttonText}>Back</Text></TouchableHighlight>
-      </View>);
-    }
 
     return (
       <View style={[{height: isAuthenticated ? self.state.visibleHeight - 60 : self.state.visibleHeight, backgroundColor: '#F0F0F0'}]}>
@@ -126,7 +86,6 @@ class Auth extends Component {
           <TouchableHighlight style={[styles.whiteButton]}><Text style={styles.buttonText} onPress={self.login.bind(self)}>Log In</Text></TouchableHighlight>
           <TouchableHighlight onPress={self.signup.bind(self)} style={[styles.whiteButton, styles.marginTop]}><Text style={styles.buttonText}>Sign Up</Text></TouchableHighlight>
         </View>
-
       </View>
     );
   }
