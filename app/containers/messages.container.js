@@ -130,6 +130,11 @@ const localStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+    message: {
+    padding: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#F0F0F0'
+  },
   wrap: {
     flexDirection: 'row',
     flexWrap: 'nowrap'

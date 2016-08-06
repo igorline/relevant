@@ -7,7 +7,9 @@ import React, {
   View,
   TextInput,
   Animated,
-  TouchableHighlight
+  TouchableHighlight,
+  Dimensions,
+  DeviceEventEmitter
 } from 'react-native';
 var Button = require('react-native-button');
 import {reduxForm} from 'redux-form';
@@ -15,25 +17,33 @@ import Notification from './notification.component';
 import { globalStyles } from '../styles/global';
 
 class Login extends Component {
-
   constructor (props, context) {
     super(props, context)
     this.state = {
       bool: false,
       notifText: null,
       email: null,
-      password: null
+      password: null,
+      visibleHeight: Dimensions.get('window').height
     }
   }
 
   componentDidMount() {
+    DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
+    DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
   }
 
-   componentDidUpdate(prev) {
+ keyboardWillShow (e) {
+    let newSize = (Dimensions.get('window').height - e.endCoordinates.height)
+    this.setState({visibleHeight: newSize})
+  }
+
+  keyboardWillHide (e) {
+    this.setState({visibleHeight: Dimensions.get('window').height})
+  }
+
+  componentDidUpdate(prev) {
     var self = this;
-    if (!prev.auth.user && self.props.auth.user) {
-      //self.props.view.nav.replace(4)
-    }
   }
 
   login() {
@@ -56,10 +66,10 @@ class Login extends Component {
     this.props.auth.statusText ? message = this.props.auth.statusText : null;
 
     return (
-      <View style={{flex: 1, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center', backgroundColor: '#F0F0F0'}}>
-<Text style={[styles.textCenter, styles.font20, styles.darkGray]}>
+      <View style={[{height: self.state.visibleHeight, backgroundColor: '#F0F0F0', alignItems: 'center', justifyContent: 'center'}]}>
+        <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>
             Stay Relevant {'\n'} Log in
-          </Text>
+        </Text>
         <View style={styles.marginTop}>
           <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="email" onChangeText={(email) => this.setState({"email": email})} value={this.state.email} style={styles.authInput} />
         </View>
@@ -73,7 +83,6 @@ class Login extends Component {
         </View>
 
          <TouchableHighlight style={[styles.whiteButton]}><Text style={styles.buttonText} onPress={self.back.bind(self)}>Back</Text></TouchableHighlight>
-
       </View>
     );
   }
