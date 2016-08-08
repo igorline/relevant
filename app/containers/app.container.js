@@ -45,6 +45,7 @@ import * as onlineActions from '../actions/online.actions';
 import * as notifActions from '../actions/notif.actions';
 import * as viewActions from '../actions/view.actions';
 import * as messageActions from '../actions/message.actions';
+import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
 
 class Application extends Component {
@@ -342,7 +343,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions, ...viewActions, ...messageActions, ...tagActions, ...userActions}, dispatch)
+    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions, ...viewActions, ...messageActions, ...tagActions, ...userActions, ...investActions}, dispatch)
   }
 }
 

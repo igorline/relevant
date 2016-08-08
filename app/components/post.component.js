@@ -193,7 +193,6 @@ class Post extends Component {
 
   invest() {
     var self = this;
-
     console.log('investing', self.state.investAmount);
     this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
        if (self.props.router.currentRoute == 'User') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)

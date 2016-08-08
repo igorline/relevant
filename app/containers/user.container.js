@@ -110,8 +110,6 @@ class User extends Component {
     var posts = null;
     var profileEl = null;
 
-    console.log(self, 'user render')
-
     if (self.state.followers) followers = self.state.followers;
     if (self.state.following) following = self.state.following;
 
