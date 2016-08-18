@@ -36,7 +36,7 @@ class Comments extends Component {
     var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       comment: null,
-      visibleHeight: Dimensions.get('window').height - 60,
+      visibleHeight: Dimensions.get('window').height - 120,
       elHeight: null,
       scrollView: ScrollView,
       scrollToBottomY: null,
@@ -61,7 +61,7 @@ class Comments extends Component {
   }
 
   keyboardWillHide (e) {
-    this.setState({visibleHeight: Dimensions.get('window').height - 60})
+    this.setState({visibleHeight: Dimensions.get('window').height - 120})
   }
 
   componentWillUpdate(next) {
@@ -123,12 +123,12 @@ class Comments extends Component {
 
     return (
       <View style={[{height: self.state.visibleHeight, backgroundColor: 'white'}]}>
-        <ScrollView ref={(scrollView) => { self.state.scrollView = scrollView; }} onContentSizeChange={(height, width)=>{self.state.scrollToBottomY = width;}} onLayout={(e)=>{self.state.elHeight = e.nativeEvent.layout.height}}>
+       <ScrollView ref={(scrollView) => { self.state.scrollView = scrollView; }} onContentSizeChange={(height, width)=>{self.state.scrollToBottomY = width;}} onLayout={(e)=>{self.state.elHeight = e.nativeEvent.layout.height}}>
           {commentsEl}
-          </ScrollView>
-        <View style={styles.commentInputParent}>
+        </ScrollView>
+        <View style={[styles.commentInputParent]}>
           <TextInput style={[styles.commentInput, styles.font15]} placeholder='Enter comment...' multiline={false} onChangeText={(comment) => this.setState({"comment": comment})} value={self.state.comment} returnKeyType='done' />
-          <TouchableHighlight underlayColor={'transparent'} style={styles.commentSubmit} onPress={self.createComment.bind(self)}>
+          <TouchableHighlight underlayColor={'transparent'} style={[styles.commentSubmit]} onPress={self.createComment.bind(self)}>
             <Text style={[styles.font15, styles.active]}>Submit</Text>
           </TouchableHighlight>
         </View>

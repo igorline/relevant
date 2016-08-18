@@ -13,7 +13,8 @@ import React, {
   LayoutAnimation,
   DeviceEventEmitter,
   Dimensions,
-  ListView
+  ListView,
+  AlertIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -36,7 +37,7 @@ class Thirst extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-       visibleHeight: Dimensions.get('window').height - 60,
+       visibleHeight: Dimensions.get('window').height - 120,
        tag: null,
        autoTags: [],
        preTag: null,
@@ -57,7 +58,7 @@ class Thirst extends Component {
   }
 
   keyboardWillHide (e) {
-    this.setState({visibleHeight: Dimensions.get('window').height - 60})
+    this.setState({visibleHeight: Dimensions.get('window').height - 120})
   }
 
   componentWillUpdate(next) {
@@ -71,24 +72,26 @@ class Thirst extends Component {
   sendThirst() {
     var self = this;
     if (!self.state.text) {
-      self.props.actions.setNotif(true, 'Add text', false);
+      AlertIOS.alert("Add text");
       return;
     }
     var messageObj = {
-      to: self.props.user.selectedUser._id,
+      to: self.props.users.selectedUser._id,
       from: self.props.auth.user._id,
       type: 'thirst',
       text: self.state.text,
       tag: null
     }
+
     self.props.actions.createMessage(self.props.auth.token, messageObj).then(function(data) {
       console.log(data, 'thirty data')
       if (data.status) {
-        self.props.actions.setNotif(true, 'Message sent', true);
-        self.setState({tag: null})
+        AlertIOS.alert("Message sent");
+        self.setState({tag: null, text: null})
       } else {
-        self.props.actions.setNotif(true, 'Try again', false);
-        self.setState({tag: null})
+        //self.props.actions.setNotif(true, 'Try again', false);
+        AlertIOS.alert("Try again");
+        self.setState({tag: null, text: null})
       }
     })
   }
@@ -98,7 +101,7 @@ class Thirst extends Component {
     if (!self.state.tag) {
       self.setState({preTag: null, tag: tag, autoTags: []});
     } else {
-      self.props.actions.setNotif(true, 'Cannot add multiple tags', false)
+      AlertIOS.alert("Cannot add multiple tags");
     }
   }
 
@@ -109,12 +112,18 @@ class Thirst extends Component {
 
   render() {
     var self = this;
+    var user = null;
+    var name = null;
+    if (self.props.users) {
+      if (self.props.users.selectedUser) user = self.props.users.selectedUser;
+      if (user) name = user.name;
+    }
     var tagEl = null;
 
     return (
       <View style={[{height: self.state.visibleHeight, backgroundColor: 'white'}]}>
         <View style={{flex: 1}}>
-          <TextInput style={[styles.thirstInput, styles.font15]} placeholder={'Enter your message for '+self.props.user.selectedUser.name} multiline={true} onChangeText={(text) => this.setState({text})} value={self.state.text} returnKeyType='done' />
+          <TextInput style={[styles.thirstInput, styles.font15]} placeholder={'Enter your message for '+name} multiline={true} onChangeText={(text) => this.setState({text})} value={self.state.text} returnKeyType='done' />
           <TouchableHighlight underlayColor={'transparent'} style={[styles.thirstSubmit]} onPress={self.sendThirst.bind(self)}>
             <Text style={[styles.font15, styles.active]}>Send</Text>
           </TouchableHighlight>

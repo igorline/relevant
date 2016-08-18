@@ -8,6 +8,7 @@ import React, {
   TextInput,
   Animated,
   TouchableHighlight,
+  AlertIOS,
   Dimensions,
   DeviceEventEmitter
 } from 'react-native';
@@ -33,6 +34,18 @@ class Login extends Component {
     DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
   }
 
+  componentWillUnmount() {
+    var self = this;
+    self.props.actions.setAuthStatusText();
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    var self = this;
+    if (nextProps.auth.statusText && !self.props.auth.statusText) {
+       AlertIOS.alert(nextProps.auth.statusText);
+    }
+  }
+
  keyboardWillShow (e) {
     let newSize = (Dimensions.get('window').height - e.endCoordinates.height)
     this.setState({visibleHeight: newSize})
@@ -40,10 +53,6 @@ class Login extends Component {
 
   keyboardWillHide (e) {
     this.setState({visibleHeight: Dimensions.get('window').height})
-  }
-
-  componentDidUpdate(prev) {
-    var self = this;
   }
 
   login() {

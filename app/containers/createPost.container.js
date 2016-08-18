@@ -8,8 +8,9 @@ import React, {
   Image,
   TextInput,
   LayoutAnimation,
-   Picker,
+  Picker,
   PickerIOS,
+  AlertIOS,
   Animated,
   ScrollView,
   TouchableWithoutFeedback,
@@ -62,7 +63,12 @@ class CreatePost extends Component {
     var self = this;
     DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
     DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
-    this.props.actions.getParentTags();
+    self.props.actions.getParentTags();
+  }
+
+  componentWillUnmount() {
+    var self = this;
+    self.props.actions.setPostCategory();
   }
 
   switchType(type) {
@@ -79,29 +85,29 @@ class CreatePost extends Component {
     var view = self.props.view.post.view;
     var tags = [];
     if (!self.state.postLink && view == 'url') {
-       self.props.actions.setNotif(true, 'Add url', false);
+        AlertIOS.alert("Add URL");
        return;
     }
 
     if (view == 'url') {
       if (!self.ValidURL()) {
-        self.props.actions.setNotif(true, 'not a valid url', false);
+         AlertIOS.alert("not a valid url");
         return;
       }
     }
 
     if (view != 'url' && !self.state.postTitle) {
-      self.props.actions.setNotif(true, 'Add title', false);
+       AlertIOS.alert("Add title");
       return;
     }
 
     if (!self.state.postBody) {
-       self.props.actions.setNotif(true, 'Add body', false);
+        AlertIOS.alert("Add body");
        return;
     }
 
     if (view == 'image' && !self.state.postImage) {
-       self.props.actions.setNotif(true, 'Add an image', false);
+        AlertIOS.alert("Add an image");
        return;
     }
 
@@ -112,13 +118,13 @@ class CreatePost extends Component {
     }
 
     if (!self.props.posts.createPostCategory) {
-      self.props.actions.setNotif(true, 'Add category', false);
+       AlertIOS.alert("Add category");
       return;
     }
 
 
     if (!self.state.postTags) {
-      self.props.actions.setNotif(true, 'Add tags', false);
+       AlertIOS.alert("Add tags");
       return;
     }
 
@@ -147,9 +153,9 @@ class CreatePost extends Component {
     if (view == 'url') {
       utils.post.generate(self.state.postLink, body, tags, self.props.auth.token).then(function(results){
         if (!results) {
-           self.props.actions.setNotif(true, 'Post error please try again', false)
+            AlertIOS.alert("Post error please try again");
         } else {
-          self.props.actions.setNotif(true, 'Posted', true)
+           AlertIOS.alert("Posted");
           self.props.view.nav.resetTo(8)
         }
       });
@@ -185,9 +191,9 @@ class CreatePost extends Component {
 
       self.props.actions.dispatchPost(postBody, self.props.auth.token).then(function(results) {
          if (!results) {
-           self.props.actions.setNotif(true, 'Post error please try again', false);
+            AlertIOS.alert("Post error please try again");
         } else {
-          self.props.actions.setNotif(true, 'Posted', true);
+           AlertIOS.alert("Posted");
           self.props.actions.setPostCategory(null);
           self.props.view.nav.resetTo(8);
         }

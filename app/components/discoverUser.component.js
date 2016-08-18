@@ -36,7 +36,7 @@ class DiscoverUser extends Component {
     } else {
       self.props.actions.getSelectedUser(id).then(function(results) {
         if (results) {
-          self.props.view.nav.replace(11);
+          self.props.view.nav.resetTo(11);
         }
       })
     }

@@ -12,6 +12,7 @@ import React, {
   Navigator,
   TouchableHighlight,
   ActionSheetIOS,
+  AlertIOS,
   Image
 } from 'react-native';
 import { bindActionCreators } from 'redux';
@@ -45,8 +46,12 @@ import * as onlineActions from '../actions/online.actions';
 import * as notifActions from '../actions/notif.actions';
 import * as viewActions from '../actions/view.actions';
 import * as messageActions from '../actions/message.actions';
+import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
+var ImagePickerManager = require('NativeModules').ImagePickerManager;
+import * as utils from '../utils';
+import { pickerOptions } from '../utils/pickerOptions';
 
 class Application extends Component {
   constructor (props, context) {
@@ -54,6 +59,7 @@ class Application extends Component {
     this.state = {
       nav: null,
       route: null,
+      newName: null,
       buttons: [
         'Change display name',
         'Add new photo',
@@ -71,7 +77,7 @@ class Application extends Component {
     AppState.addEventListener('change', this.handleAppStateChange.bind(self));
   }
 
-  componentWillReceiveProps(next) {
+  componentWillReceiveProps(next, nextState) {
     var self = this;
     if (!self.props.auth.user && next.auth.user) {
       self.props.actions.userToSocket(next.auth.user);
@@ -79,6 +85,17 @@ class Application extends Component {
       self.props.actions.getGeneralActivity(next.auth.user._id, 0);
       self.props.actions.getMessages(next.auth.user._id);
       self.props.view.nav.replace(4)
+    }
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    var self = this;
+    if (!self.state.newName && nextState.newName) {
+      var user = self.props.auth.user;
+      user.name = nextState.newName;
+      self.props.actions.updateUser(user, self.props.auth.token).then(function(results) {
+        if (results) self.props.actions.getUser(self.props.auth.token, false);
+      })
     }
   }
 
@@ -103,6 +120,65 @@ class Application extends Component {
     self.props.view.nav.replace(1);
   }
 
+  changePhoto() {
+    var self = this;
+    console.log('change photo');
+  }
+
+  changeName() {
+    var self = this;
+    console.log('change name');
+    AlertIOS.prompt(
+      'Enter new name',
+      self.props.auth.user.name,
+      [
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'OK', onPress: newname => self.setState({newName: newname})},
+      ],
+    );
+  }
+
+  chooseImage() {
+    var self = this;
+    self.pickImage(function(err, data){
+      if(data){
+        utils.s3.toS3Advanced(data, self.props.auth.token).then(function(results){
+          if (results.success) {
+            var newUser = self.props.auth.user;
+            newUser.image = results.url;
+            self.props.actions.updateUser(newUser, self.props.auth.token).then(function(results) {
+              if (results) self.props.actions.getUser(self.props.auth.token, false);
+            })
+          } else {
+            console.log('err');
+          }
+        })
+      }
+    });
+  }
+
+
+    pickImage(callback){
+      var self = this;
+        ImagePickerManager.showImagePicker(pickerOptions, (response) => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+          callback("cancelled");
+        }
+        else if (response.error) {
+          console.log('ImagePickerManager Error: ', response.error);
+          callback("error");
+        }
+        else if (response.customButton) {
+          console.log('User tapped custom button: ', response.customButton);
+          callback("error");
+        }
+        else {
+          callback(null, response.uri);
+        }
+      });
+    }
+
 
   showActionSheet() {
     var self = this;
@@ -114,10 +190,10 @@ class Application extends Component {
     (buttonIndex) => {
       switch(buttonIndex) {
           case 0:
-              // self.onShare();
+              self.changeName();
               break;
           case 1:
-              // self.irrelevant();
+              self.chooseImage();
               break;
           case 2:
               self.logoutRedirect();
@@ -184,7 +260,7 @@ class Application extends Component {
 
   left(route, navigator, index, navState) {
     var self = this;
-    if (route == 14 || route == 13 || route == 10 || route == 7 || route == 2 || route == 3 ) {
+    if (route == 14 || route == 13 || route == 10 || route == 7 || route == 2 || route == 3 || route == 12 ) {
       return (<TouchableHighlight underlayColor={'transparent'} style={{flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10}} onPress={self.back.bind(self, navigator)}><Text>Back</Text></TouchableHighlight>);
     } else {
       return null;
@@ -252,6 +328,10 @@ class Application extends Component {
 
       case 11:
         self.props.users.selectedUser ? title = self.props.users.selectedUser.name : title = '';
+        break;
+
+      case 12:
+          title = 'Thirsty message';
         break;
 
       case 6:
@@ -343,7 +423,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions, ...viewActions, ...messageActions, ...tagActions, ...userActions, ...investActions}, dispatch)
+    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions, ...viewActions, ...messageActions, ...tagActions, ...userActions, ...investActions, ...subscriptionActions}, dispatch)
   }
 }
 
@@ -375,9 +455,6 @@ const localStyles = StyleSheet.create({
     fontSize: 12
   },
   gear: {
-    // position: 'absolute',
-    // top: 0,
-    // right: 0,
     height: 60,
     flex: 1,
     justifyContent: 'flex-end',

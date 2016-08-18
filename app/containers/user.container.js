@@ -44,50 +44,9 @@ class User extends Component {
       }
   }
 
-  actions() {
-    var self = this;
-    var notifObj = {
-      notification: {
-        post: null,
-        forUser: self.props.users.selectedUser._id,
-        byUser: self.props.auth.user._id,
-        amount: null,
-        type: 'profile',
-        personal: true
-      },
-      message: self.props.auth.user.name+' just visited your profile'
-    }
-
-    self.props.dispatch(notifActions.createNotification(self.props.auth.token, notifObj));
-
-    subscriptionActions.getSubscriptionData('follower', self.props.users.selectedUser._id).then(function(data) {
-      self.setState({following: data.data});
-    })
-    subscriptionActions.getSubscriptionData('following', self.props.users.selectedUser._id).then(function(data) {
-      self.setState({followers: data.data});
-    })
-    self.checkOnline(self.props.online);
-    self.setState({init: true});
-  }
 
   componentDidMount() {
     var self = this;
-    if (self.props.users.selectedUser) self.actions();
-  }
-
-  componentDidUpdate(prev) {
-    var self = this;
-    if (self.props.users.selectedUser != prev.users.selectedUser && !self.state.init) self.actions();
-    if (self.state.init) self.checkOnline(self.props.online);
-  }
-
-  checkOnline(online) {
-    var self = this;
-    for (var index in online) {
-      if (index == self.props.users.selectedUser._id) {
-        self.setState({online: true});
-      }
-    }
   }
 
   goTo(view) {
@@ -110,15 +69,8 @@ class User extends Component {
     var posts = null;
     var profileEl = null;
 
-    if (self.state.followers) followers = self.state.followers;
-    if (self.state.following) following = self.state.following;
-
     if (this.props.users.selectedUser) {
         user = this.props.users.selectedUser;
-        if (user.name) name = user.name;
-        if (user.image) userImage = user.image;
-        if (user.relevance) relevance = user.relevance;
-        if (user.balance) balance = user.balance;
         if (user.posts) posts = user.posts;
         profileEl = (<ProfileComponent {...self.props} user={user} styles={styles} />)
     }
@@ -151,7 +103,7 @@ class User extends Component {
         <ScrollView style={styles.fullContainer}>
            {profileEl}
           <TouchableHighlight style={styles.thirstyIcon}>
-            <Text style={styles.white} onPress={self.goTo.bind(self, 11)} >Thirsty 👅💦</Text>
+            <Text style={styles.white} onPress={self.goTo.bind(self, 12)} >Thirsty 👅💦</Text>
           </TouchableHighlight>
           <View>
             {postsEl}
@@ -162,7 +114,7 @@ class User extends Component {
   }
 }
 
-export default User
+export default connect()(User);
 
 const localStyles = StyleSheet.create({
   postsHeader: {

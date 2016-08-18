@@ -44,10 +44,10 @@ class Messages extends Component {
 
   componentDidMount() {
     var self = this;
+    self.props.actions.getMessages(self.props.auth.user._id);
     if (self.props.messages) {
       if (self.props.messages.index) {
         if (self.props.messages.index.length) {
-
           self.setState({messagesData: self.state.messagesData.cloneWithRows(self.props.messages.index)});
         }
       }
@@ -63,12 +63,16 @@ class Messages extends Component {
 
   goToUser(id) {
     var self = this;
-    self.props.actions.getSelectedUser(id);
-    self.props.view.nav.resetTo(11);
+    self.props.actions.getSelectedUser(id).then(function(results) {
+      if (results) {
+        self.props.view.nav.resetTo(11);
+      }
+    })
   }
 
   renderMessageRow(rowData) {
     var self = this;
+    if (!rowData) return;
     if (rowData.type == 'thirst') {
       return (<View style={styles.message}>
         <Text><Text style={styles.active} onPress={self.goToUser.bind(self, rowData.from._id)}>👅💦 {rowData.from.name}</Text> is thirsty 4 u:</Text>
@@ -100,7 +104,7 @@ class Messages extends Component {
   }
 }
 
-export default Messages
+export default Messages;
 
 
 const localStyles = StyleSheet.create({

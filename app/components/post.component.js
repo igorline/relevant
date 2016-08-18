@@ -195,7 +195,7 @@ class Post extends Component {
     var self = this;
     console.log('investing', self.state.investAmount);
     this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
-       if (self.props.router.currentRoute == 'User') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
+       if (self.props.view.route == 11) self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
     })
     this.props.actions.createSubscription(this.props.auth.token, self.props.post);
     self.setState({investAmount: 50});
@@ -205,7 +205,7 @@ class Post extends Component {
     var self = this;
     console.log('destroy investment')
     self.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
-       if (self.props.router.currentRoute == 'User') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
+       if (self.props.view.route == 11) self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
     })
   }
 
@@ -237,10 +237,14 @@ class Post extends Component {
     var self = this;
     if (user._id == self.props.auth.user._id) {
       console.log('going to profile')
-      self.props.routes.Profile();
+      self.props.view.nav.resetTo(4)
     } else {
       console.log('setting selected user')
-      self.props.actions.getSelectedUser(user._id);
+      self.props.actions.getSelectedUser(user._id).then(function(results) {
+        if (results) {
+          self.props.view.nav.resetTo(11);
+        }
+      })
     }
   }
 
