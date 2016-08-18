@@ -7,6 +7,8 @@ import React, {
   View,
   Image,
   TextInput,
+  Animated,
+  Easing,
   TouchableHighlight
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -19,13 +21,13 @@ class Footer extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      moveHeart: new Animated.Value(0),
+      opacity: new Animated.Value(0)
     }
   }
 
   componentDidMount() {
-  }
-
-  componentWillReceiveProps(next) {
+    var self = this;
   }
 
   goTo(view) {
@@ -33,44 +35,70 @@ class Footer extends Component {
     self.props.view.nav.resetTo(view)
   }
 
+  runAnimation() {
+    var self = this;
+    self.state.opacity.setValue(1);
+    Animated.timing(self.state.moveHeart, {
+      toValue: -50,
+      delay: 0,
+      duration: 500,
+      easing: Easing.linear
+    }).start();
+    Animated.timing(self.state.opacity, {
+      toValue: 0,
+      delay: 0,
+      duration: 500,
+      easing: Easing.linear
+    }).start();
+    self.setState({});
+    setTimeout(function() {
+      self.state.moveHeart.setValue(0);
+    }, 1000);
+  }
+
+  componentWillReceiveProps(nextProps, nextState) {
+    var self = this;
+    if (self.props.notif.count != nextProps.notif.count) {
+      self.runAnimation();
+    }
+  }
+
   render() {
     var self = this;
-    var currentRoute = null;
+    var route = self.props.view.route;
     var authenticated = this.props.auth.isAuthenticated;
     var footerEl = null;
-    var imageEl = (<Text style={[styles.icon, styles.textCenter, currentRoute == 'Profile' ? styles.activeIcon : null]}>👤</Text>);
+    var imageEl = (<Text style={[styles.icon, styles.textCenter]}>👤</Text>);
     if (self.props.auth.user) {
-      if (self.props.auth.user.image) {
-        imageEl = (<Image source={{uri: self.props.auth.user.image}}  style={[styles.footerImg, currentRoute == 'Profile' ? styles.activeIcon : null]} />)
-      }
+      if (self.props.auth.user.image) imageEl = (<Image source={{uri: self.props.auth.user.image}}  style={[styles.footerImg]} />)
     }
-
 
     if (authenticated) {
       footerEl = ( <View style={styles.footer}>
-        <TouchableHighlight onPress={self.goTo.bind(self, 9)} underlayColor={'transparent'} style={[styles.footerItem]} >
+        <TouchableHighlight onPress={self.goTo.bind(self, 9)} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 9 ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
-            <Text style={[styles.icon, styles.textCenter, currentRoute == 'Read' ? styles.activeIcon : null]}> 📩 </Text>
+            <Text style={[styles.icon, styles.textCenter]}> 📩 </Text>
              {self.props.messages.count ? <View style={styles.notifCount}><Text style={styles.notifText}>{self.props.messages.count}</Text></View> : null}
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={self.goTo.bind(self, 8)} underlayColor={'transparent'} style={[styles.footerItem]} >
+        <TouchableHighlight onPress={self.goTo.bind(self, 8)} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 8 ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
-            <Text style={[styles.icon, styles.textCenter, currentRoute == 'Discover' ? styles.activeIcon : null]}>🔮</Text>
+            <Text style={[styles.icon, styles.textCenter]}>🔮</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={self.goTo.bind(self, 6)} underlayColor={'transparent'} style={[styles.footerItem]} >
+        <TouchableHighlight onPress={self.goTo.bind(self, 6)} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 6 ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
-            <Text style={[styles.icon, styles.textCenter, currentRoute == 'CreatePost' ? styles.activeIcon : null]}>📝</Text>
+            <Text style={[styles.icon, styles.textCenter]}>📝</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={self.goTo.bind(self,5)} underlayColor={'transparent'} style={[styles.footerItem]} >
+        <TouchableHighlight onPress={self.goTo.bind(self,5)} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 5 ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
-            <Text style={[styles.icon, styles.textCenter, currentRoute == 'Activity' ? styles.activeIcon : null]}>⚡</Text>
+            <Text style={[styles.icon, styles.textCenter]}>⚡</Text>
             {self.props.notif.count ? <View style={styles.notifCount}><Text style={styles.notifText}>{self.props.notif.count}</Text></View> : null}
+            {true ? <Animated.View pointerEvents={'none'} style={[styles.notifAnimation, {transform: [{translateY: self.state.moveHeart}], opacity: self.state.opacity}]}><Text style={[{fontSize: 30, color: 'red'}]}>❤️</Text></Animated.View> :  null}
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={self.goTo.bind(self, 4)} underlayColor={'transparent'} style={[styles.footerItem]} >
+        <TouchableHighlight onPress={self.goTo.bind(self, 4)} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 4 ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
             {imageEl}
           </View>
@@ -99,7 +127,7 @@ const localStyles = StyleSheet.create({
   },
   footerItemView: {
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   notifCount: {
     position: 'absolute',
@@ -112,6 +140,15 @@ const localStyles = StyleSheet.create({
     height: 20,
     width: 20
   },
+  notifAnimation: {
+    position: 'absolute',
+    top: -12,
+    // right: 10,
+    // backgroundColor: 'yellow',
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   notifText: {
     color: 'white'
   },
@@ -122,13 +159,17 @@ const localStyles = StyleSheet.create({
   footer: {
     height: 60,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'stretch',
     backgroundColor: 'white',
     borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.25)',
+    borderTopColor: '#f0f0f0',
   },
   footerItem: {
-    flex: 1
+    flex: 1,
+    borderBottomWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center'
+    // borderBottomColor: 'transparent'
   },
   footerLink: {
     fontSize: 10

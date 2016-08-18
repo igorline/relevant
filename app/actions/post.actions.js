@@ -20,6 +20,7 @@ export function getFeed(token, skip, tag) {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
+      console.log(responseJSON, 'setting feed')
       dispatch(setFeed(responseJSON));
     })
     .catch((error) => {
@@ -68,9 +69,10 @@ function clearPosts() {
 
 export
 function setPostCategory(tag) {
+    var set = tag ? tag : null;
     return {
         type: 'SET_POST_CATEGORY',
-        payload: tag
+        payload: set
     };
 }
 

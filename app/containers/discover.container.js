@@ -48,7 +48,8 @@ class Discover extends Component {
       investAni: [],
       searchHeight: new Animated.Value(0),
       searchPadding: new Animated.Value(0),
-      disableSearchAni: false
+      disableSearchAni: false,
+      setScroll: true
     }
   }
 
@@ -170,23 +171,6 @@ class Discover extends Component {
     if (self.refs.listview.scrollProperties.offset + self.refs.listview.scrollProperties.visibleLength >= self.refs.listview.scrollProperties.contentLength) {
       self.loadMore();
     }
-    if (self.refs.listview.scrollProperties.offset < 0) {
-      if (!self.state.disableSearchAni)  {
-        self.showSearch();
-        self.setState({disableSearchAni: true});
-        setTimeout(function() {
-          self.setState({disableSearchAni: false});
-        }, 1000);
-      }
-    } else {
-      if (!self.state.disableSearchAni && self.state.searchHeight._value == 35)  {
-        self.hideSearch();
-        self.setState({disableSearchAni: true});
-        setTimeout(function() {
-          self.setState({disableSearchAni: false});
-        }, 1000);
-      }
-    }
   }
 
   loadMore() {
@@ -252,25 +236,27 @@ class Discover extends Component {
     renderHeader() {
       var self = this;
       var tags = null;
-       var view = self.props.view.discover;
+      var view = self.props.view.discover;
       var tagsEl = null;
-    if (self.props.posts.discoverTags) {
-      tags = self.props.posts.discoverTags;
-      if (tags.length > 0) {
-        tagsEl = tags.map(function(data, i) {
-          return (
-            <Text style={styles.tagBox} onPress={self.setTag.bind(self, data)} key={i}>{data.name}</Text>
-            )
-        })
+      var id = null;
+      if (self.props.posts.tag) id = self.props.posts.tag._id;
+      if (self.props.posts.discoverTags) {
+        tags = self.props.posts.discoverTags;
+        if (tags.length > 0) {
+          tagsEl = tags.map(function(data, i) {
+            return (
+              <Text style={[styles.tagBox, {backgroundColor: data._id == id ? '#007aff' : '#F0F0F0', color: data._id == id ? 'white' : '#808080'}]} onPress={data._id == id ? self.clearTag.bind(self) : self.setTag.bind(self, data)} key={i}>{data.name}</Text>
+              )
+          })
+        }
       }
-    }
 
       var el = (
           <View style={[styles.transformContainer]}>
             {/*<Text style={{padding: 5}} onPress={self.clearTag.bind(self)}>Reset</Text>*/}
-            <Animated.View style={[styles.searchParent, {height: self.state.searchHeight, padding: self.state.searchPadding}]}>
+            <View style={[styles.searchParent]}>
               <TextInput onSubmitEditing={self.search.bind(self)} style={[styles.searchInput, styles.font15]} placeholder={'Search'} multiline={false} onChangeText={(term) => this.setState({tagSearchTerm: term})} value={self.state.tagSearchTerm} returnKeyType='done' />
-            </Animated.View>
+            </View>
              <View>
               <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView>
             </View>
@@ -291,6 +277,7 @@ class Discover extends Component {
 
   render() {
     var self = this;
+    var _scrollView: ScrollView;
     var usersEl = null;
     var view = self.props.view.discover;
     var postsEl = null;
@@ -315,9 +302,8 @@ class Discover extends Component {
 
 
     if (self.state.dataSource) {
-      postsEl = (<ListView ref="listview" dataSource={self.state.dataSource} renderHeader={self.renderHeader.bind(self)} renderRow={self.renderRow.bind(self)} renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} />)
+      postsEl = (<ListView ref="listview" dataSource={self.state.dataSource} renderHeader={self.renderHeader.bind(self)} renderRow={self.renderRow.bind(self)} contentOffset={{x: 0, y: 35}} renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} />)
     }
-
     var userIndex = null;
     if (this.props.auth.userIndex) {
       userIndex = this.props.auth.userIndex;
@@ -364,6 +350,7 @@ searchParent: {
   width: fullWidth,
   backgroundColor: '#F0F0F0',
   overflow: 'hidden',
+  padding: 5
 },
 scrollPadding: {
   marginTop: 300
@@ -371,6 +358,7 @@ scrollPadding: {
 searchInput: {
   flex: 1,
   paddingTop: 5,
+  height: 25,
   textAlign: 'center',
   paddingBottom: 5,
   paddingLeft: 5,

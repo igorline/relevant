@@ -73,16 +73,13 @@ class Auth extends Component {
     const { logout } = this.props.actions;
     const { actions } = this.props;
     const { currentRoute } = this.props.router;
-    var message = '';
-    this.props.auth.statusText ? message = this.props.auth.statusText : null;
     var tagline = '';
     var links = null;
 
     return (
       <View style={[{height: isAuthenticated ? self.state.visibleHeight - 60 : self.state.visibleHeight, backgroundColor: '#F0F0F0'}]}>
         <View style={styles.alignAuth}>
-          <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>Relevant</Text>
-          <Text style={styles.darkGray}>{message}</Text>
+          <Text style={[styles.textCenter, styles.font20, styles.darkGray, {marginBottom: 10}]}>Relevant</Text>
           <TouchableHighlight style={[styles.whiteButton]}><Text style={styles.buttonText} onPress={self.login.bind(self)}>Log In</Text></TouchableHighlight>
           <TouchableHighlight onPress={self.signup.bind(self)} style={[styles.whiteButton, styles.marginTop]}><Text style={styles.buttonText}>Sign Up</Text></TouchableHighlight>
         </View>

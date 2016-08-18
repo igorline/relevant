@@ -81,8 +81,7 @@ const layout = StyleSheet.create({
     textAlign: 'center'
   },
   typeBar: {
-    width: fullWidth,
-    marginBottom: 10
+    width: fullWidth
   },
   type: {
     flex: 1,

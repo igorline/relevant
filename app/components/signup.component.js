@@ -8,7 +8,8 @@ import React, {
   TextInput,
   TouchableHighlight,
   DeviceEventEmitter,
-  Dimensions
+  Dimensions,
+  AlertIOS
 } from 'react-native';
 var Button = require('react-native-button');
 import { globalStyles } from '../styles/global';
@@ -47,10 +48,10 @@ class SignUp extends Component {
       if (self.state.password == self.state.cPassword) {
         createUser(user);
       } else {;
-        self.setState({message: "passwords don't match"});
+        AlertIOS.alert("passwords don't match");
       }
     } else {
-      self.setState({message: 'no password'});
+      AlertIOS.alert('no password');
     }
   }
 
@@ -65,20 +66,20 @@ class SignUp extends Component {
 
     if (self.state.name) {
       if (self.state.name.length > 15) {
-        self.setState({message: 'name must be less than 15 characters'});
+         AlertIOS.alert('name must be less than 15 characters');
         return;
       }
     } else {
-      self.setState({message: 'name required'});
+      AlertIOS.alert('name required');
       return;
     }
 
     if (!self.state.email) {
-      self.setState({message: 'email required'});
+      AlertIOS.alert('email required');
       return;
     } else {
       if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(self.state.email)) {
-        self.setState({message: 'invalid email address'});
+        AlertIOS.alert('invalid email address');
         return;
       }
     }
@@ -92,16 +93,24 @@ class SignUp extends Component {
 
     if (self.state.password) {
       if (self.state.password != self.state.cPassword) {
-        self.setState({message: "passwords don't match"});
+        AlertIOS.alert("Passwords don't match");
         return;
       }
     } else {
-      self.setState({message: 'password required'});
+       AlertIOS.alert('Password required');
       return;
     }
 
     self.props.actions.createUser(user);
   }
+
+  componentWillUpdate(nextProps, nextState) {
+    var self = this;
+    if (nextProps.auth.statusText && !self.props.auth.statusText) {
+       AlertIOS.alert(nextProps.auth.statusText);
+    }
+  }
+
 
   render() {
     var self = this;
@@ -115,7 +124,6 @@ class SignUp extends Component {
          <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>
             Get Relevant {'\n'} Sign up
           </Text>
-        <Text>{message}</Text>
 
         <View style={styles.marginTop}>
           <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="name" onChangeText={(name) => this.setState({"name": name})} value={this.state.name}  style={styles.authInput} />

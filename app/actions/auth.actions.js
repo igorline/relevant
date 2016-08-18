@@ -2,7 +2,7 @@ import * as types from './actionTypes';
 import { push } from 'react-router-redux';
 import thunk from 'redux-thunk';
 import * as notifActions from './notif.actions';
-var Contacts = require('react-native-contacts');
+// var Contacts = require('react-native-contacts');
 require('../publicenv');
 import {
     AsyncStorage,
@@ -24,6 +24,16 @@ function setUserIndex(userIndex) {
     return {
         type: types.SET_USER_INDEX,
         payload: userIndex
+    };
+}
+
+
+export
+function setAuthStatusText(text) {
+    var set = text ? text : null;
+    return {
+        type: 'SET_AUTH_STATUS_TEXT',
+        payload: set
     };
 }
 
@@ -49,6 +59,9 @@ function loginUserFailure(error) {
                         statusText: error
                     }
                 })
+                setTimeout(function() {
+                    dispatch(setAuthStatusText());
+                }, 500);
             })
     };
 }
@@ -138,7 +151,7 @@ function userOnline(user, token) {
 export
 function createUser(user, redirect) {
     return function(dispatch) {
-        fetch(process.env.API_SERVER+'/api/user', {
+        return fetch(process.env.API_SERVER+'/api/user', {
             credentials: 'include',
             method: 'POST',
             headers: {
@@ -232,42 +245,42 @@ function userIndex() {
     }
 }
 
-export
-function getContacts() {
-    return function(dispatch) {
-        console.log('trigger get contacts')
-        Contacts.getAll((err, contacts) => {
-            if (err && err.type === 'permissionDenied') {
-                console.log(err, 'err')
-            } else {
-                dispatch(setContacts(contacts));
-            }
-        });
-    }
-}
+// export
+// function getContacts() {
+//     return function(dispatch) {
+//         console.log('trigger get contacts')
+//         Contacts.getAll((err, contacts) => {
+//             if (err && err.type === 'permissionDenied') {
+//                 console.log(err, 'err')
+//             } else {
+//                 dispatch(setContacts(contacts));
+//             }
+//         });
+//     }
+// }
 
-export
-function sortNumbers(contacts) {
-    return function(dispatch) {
-        var list = [];
-        for (var i = 0; i < contacts.length; i++) {
-            for (var x = 0; x < contacts[i].phoneNumbers.length; x++) {
-                var altNum = contacts[i].phoneNumbers[x].number.replace(/\D/g, '');
-                var num = Number(altNum);
-                list.push(num);
-                if (i == contacts.length - 1 && x == contacts[i].phoneNumbers.length - 1) dispatch(setContacts(list));
-            };
-        };
-    }
-}
+// export
+// function sortNumbers(contacts) {
+//     return function(dispatch) {
+//         var list = [];
+//         for (var i = 0; i < contacts.length; i++) {
+//             for (var x = 0; x < contacts[i].phoneNumbers.length; x++) {
+//                 var altNum = contacts[i].phoneNumbers[x].number.replace(/\D/g, '');
+//                 var num = Number(altNum);
+//                 list.push(num);
+//                 if (i == contacts.length - 1 && x == contacts[i].phoneNumbers.length - 1) dispatch(setContacts(list));
+//             };
+//         };
+//     }
+// }
 
-export
-function setContacts(contacts) {
-    return {
-        type: types.SET_CONTACTS,
-        payload: contacts
-    };
-}
+// export
+// function setContacts(contacts) {
+//     return {
+//         type: types.SET_CONTACTS,
+//         payload: contacts
+//     };
+// }
 
 export
 function setDeviceToken(token) {
@@ -279,7 +292,7 @@ function setDeviceToken(token) {
 
 export function updateUser(user, authToken) {
     return function(dispatch) {
-        fetch(process.env.API_SERVER+'/api/user?access_token='+authToken, {
+       return fetch(process.env.API_SERVER+'/api/user?access_token='+authToken, {
             credentials: 'include',
             method: 'PUT',
             headers: {
@@ -290,9 +303,11 @@ export function updateUser(user, authToken) {
         })
         .then((response) => {
             console.log('updated user');
+            return true;
         })
         .catch((error) => {
             console.log(error, 'error');
+            return false;
         });
     }
 }

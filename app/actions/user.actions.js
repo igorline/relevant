@@ -20,10 +20,10 @@ function getSelectedUser(userId) {
         dispatch(setSelectedUser(responseJSON));
         return true;
     })
-    .catch((error) => {
-        console.log(error, 'error');
-        return false;
-    });
+    // .catch((error) => {
+    //     console.log(error, 'error');
+    //     return false;
+    // });
   }
 }
 
@@ -42,10 +42,10 @@ function getOnlineUser(userId, token) {
     .then((responseJSON) => {
       return {status: true, data: responseJSON};
     })
-    .catch((error) => {
-        console.log(error, 'error');
-        return {status: false, data: error};
-    });
+    // .catch((error) => {
+    //     console.log(error, 'error');
+    //     return {status: false, data: error};
+    // });
   }
 }
 
@@ -65,9 +65,9 @@ function getPostUser(userId, token) {
     .then((responseJSON) => {
         return responseJSON;
     })
-    .catch((error) => {
-        console.log(error, 'error');
-    });
+    // .catch((error) => {
+    //     console.log(error, 'error');
+    // });
   }
 }
 

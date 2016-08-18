@@ -49,20 +49,25 @@ class Read extends Component {
         var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         self.setState({feedData: fd.cloneWithRows(self.props.posts.feed)});
       }
-      if (self.props.posts.feed.length == 0) {
-        this.props.actions.getFeed(self.props.auth.token, 0, null);
-      }
     }
-
+    if (self.props.posts.feed.length == 0) {
+      this.props.actions.getFeed(self.props.auth.token, 0, null);
+    }
   }
 
-  componentDidUpdate() {
-    var self = this;
+  componentWillUpdate(next) {
+    // var self = this;
+    // if (next.posts.feed != self.props.posts.feed) {
+    //   console.log('updating feed', next.posts.feed)
+    //   var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    //   self.setState({feedData: fd.cloneWithRows(next.posts.feed)});
+    // }
   }
 
   componentWillReceiveProps(next) {
     var self = this;
     if (next.posts.feed != self.props.posts.feed) {
+      console.log('updating feed', next.posts.feed)
       var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({feedData: fd.cloneWithRows(next.posts.feed)});
     }
@@ -142,11 +147,9 @@ class Read extends Component {
     }
 
     if (self.state.feedData) {
-      if (self.state.feedData.length > 0) {
         postsEl = (<ListView ref="feedlist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.feedData} renderRow={self.renderFeedRow.bind(self)} />)
-      } else {
-        postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>Nothing in yr feed bruh</Text></View>)
-      }
+    } else {
+      postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>Nothing in yr feed bruh</Text></View>)
     }
 
     if (self.props.messages.count > 0) {

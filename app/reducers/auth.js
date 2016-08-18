@@ -36,7 +36,12 @@ export default function auth(state = initialState, action) {
         'isAuthenticated': false,
         'token': null,
         'user': null,
-        'statusText': `Authentication Error: ${action.payload.status} ${action.payload.statusText}`
+        'statusText': action.payload.statusText
+      })
+
+    case 'SET_AUTH_STATUS_TEXT':
+      return Object.assign({}, state, {
+        'statusText': action.payload
       })
 
     case types.LOGOUT_USER:
