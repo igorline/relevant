@@ -36,15 +36,11 @@ class SinglePost extends Component {
 
   componentWillUnmount() {
     var self = this;
-    self.props.actions.setBack(false);
-    self.props.actions.setName();
+    self.props.actions.setActivePost();
   }
 
   componentDidMount() {
     var self = this;
-    var title = self.props.posts.activePost.title ? self.props.posts.activePost.title : title = 'Untitled Post';
-    self.props.actions.setName(title);
-    self.props.actions.setBack(true);
   }
 
   render() {

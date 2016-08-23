@@ -30,24 +30,24 @@ class SingleActivity extends Component {
   goToPost(activity) {
     var self = this;
     self.props.actions.getActivePost(activity.post._id).then(function() {
-      self.props.view.nav.push(13);
+      self.props.view.nav.push('singlePost');
     })
   }
 
   setTagAndRoute(tag) {
     var self = this;
     self.props.actions.setTag(tag);
-    self.props.view.nav.resetTo(8);
+    self.props.view.nav.resetTo('discover');
   }
 
   setSelected(id) {
     var self = this;
     if (id == self.props.auth.user._id) {
-      self.props.view.nav.resetTo(4);
+      self.props.view.nav.resetTo('profile');
     } else {
       self.props.actions.getSelectedUser(id).then(function(results) {
         if (results) {
-          self.props.view.nav.replace(11);
+          self.props.view.nav.resetTo('user');
         }
       })
     }
@@ -60,7 +60,7 @@ class SingleActivity extends Component {
     var styles = self.props.styles;
 
     if (singleActivity.personal) {
-      if (!singleActivity.byUser || !singleActivity.personal) return;
+      if (!singleActivity.personal) return;
       var activityTime = moment(singleActivity.createdAt);
       var fromNow = activityTime.fromNow();
       if (singleActivity.type == 'investment') {
@@ -139,11 +139,26 @@ class SingleActivity extends Component {
             </View>
           </View>
         );
+       } else if (singleActivity.type == 'partialEarning') {
+          activityEl = (
+            <View style={styles.singleActivity}>
+              <View style={styles.activityLeft}>
+                <Text style={styles.darkGray}>
+                  Earned ${singleActivity.amount.toFixed(0)} from post
+                </Text>
+                <Text onPress={self.goToPost.bind(self, singleActivity)} style={[styles.active]}>{singleActivity.post.title}
+                </Text>
+              </View>
+              <View style={styles.activityRight}>
+                <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
+              </View>
+            </View>
+          );
        } else {
           activityEl = (
             <View style={styles.singleActivity}>
               <Text style={styles.darkGray}>
-                Notification from {singleActivity.byUser.name}
+                Generic notification
               </Text>
               <Text style={styles.gray}>{fromNow}</Text>
             </View>

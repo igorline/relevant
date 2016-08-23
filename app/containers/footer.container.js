@@ -22,7 +22,8 @@ class Footer extends Component {
     super(props, context)
     this.state = {
       moveHeart: new Animated.Value(0),
-      opacity: new Animated.Value(0)
+      opacity: new Animated.Value(0),
+      hearts: []
     }
   }
 
@@ -35,31 +36,75 @@ class Footer extends Component {
     self.props.view.nav.resetTo(view)
   }
 
-  runAnimation() {
+  runAnimation(count) {
+    if (count < 1) return;
     var self = this;
-    self.state.opacity.setValue(1);
-    Animated.timing(self.state.moveHeart, {
-      toValue: -50,
-      delay: 0,
-      duration: 500,
-      easing: Easing.linear
-    }).start();
-    Animated.timing(self.state.opacity, {
-      toValue: 0,
-      delay: 0,
-      duration: 500,
-      easing: Easing.linear
-    }).start();
+    var opacity = new Animated.Value(1);
+    var yVal = new Animated.Value(0);
+    var xVal = new Animated.Value(0);
+    var scale = new Animated.Value(1);
+    // var rotation = new Animated.Value(0);
+
+    var newArr = self.state.hearts.push(<Animated.View pointerEvents={'none'} style={[styles.notifAnimation, {transform: [{translateY: yVal}, {translateX: xVal}, {scale: scale}], opacity: opacity}]}><Text style={[{fontSize: 30, color: 'red'}]}>❤️</Text></Animated.View>);
+
+    Animated.parallel([
+      Animated.timing(yVal, {
+        toValue: -100,
+        delay: 0,
+        duration: 500,
+        easing: Easing.linear
+      }),
+      Animated.timing(opacity, {
+        toValue: 0,
+        delay: 0,
+        duration: 500,
+        easing: Easing.linear
+      }),
+      Animated.timing(scale, {
+        toValue: 1.5,
+        delay: 0,
+        duration: 500,
+        easing: Easing.linear
+      }),
+    ]).start();
+
+    Animated.sequence([
+      Animated.timing(xVal, {
+        toValue: 5,
+        duration: 250,
+        easing: Easing.linear
+      }),
+      Animated.timing(xVal, {
+        toValue: -5,
+        duration: 250,
+        easing: Easing.linear
+      })
+    ]).start();
+
+    // Animated.sequence([
+    //   Animated.timing(rotation, {
+    //     toValue: 5,
+    //     duration: 250,
+    //     easing: Easing.linear
+    //   }),
+    //   Animated.timing(rotation, {
+    //     toValue: -5,
+    //     duration: 250,
+    //     easing: Easing.linear
+    //   })
+    // ]).start();
+
     self.setState({});
+
     setTimeout(function() {
-      self.state.moveHeart.setValue(0);
-    }, 1000);
+      self.setState({hearts: []});
+    }, 2000);
   }
 
   componentWillReceiveProps(nextProps, nextState) {
     var self = this;
     if (self.props.notif.count != nextProps.notif.count) {
-      self.runAnimation();
+      self.runAnimation(nextProps.notif.count);
     }
   }
 
@@ -75,30 +120,30 @@ class Footer extends Component {
 
     if (authenticated) {
       footerEl = ( <View style={styles.footer}>
-        <TouchableHighlight onPress={self.goTo.bind(self, 9)} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 9 ? '#007aff' : 'transparent' }]} >
+        <TouchableHighlight onPress={self.goTo.bind(self, 'read')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 'read' ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter]}> 📩 </Text>
              {self.props.messages.count ? <View style={styles.notifCount}><Text style={styles.notifText}>{self.props.messages.count}</Text></View> : null}
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={self.goTo.bind(self, 8)} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 8 ? '#007aff' : 'transparent' }]} >
+        <TouchableHighlight onPress={self.goTo.bind(self, 'discover')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 'discover' ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter]}>🔮</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={self.goTo.bind(self, 6)} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 6 ? '#007aff' : 'transparent' }]} >
+        <TouchableHighlight onPress={self.goTo.bind(self, 'createPost')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 'createPost' ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter]}>📝</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={self.goTo.bind(self,5)} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 5 ? '#007aff' : 'transparent' }]} >
+        <TouchableHighlight onPress={self.goTo.bind(self,'activity')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 'activity' ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter]}>⚡</Text>
             {self.props.notif.count ? <View style={styles.notifCount}><Text style={styles.notifText}>{self.props.notif.count}</Text></View> : null}
-            {true ? <Animated.View pointerEvents={'none'} style={[styles.notifAnimation, {transform: [{translateY: self.state.moveHeart}], opacity: self.state.opacity}]}><Text style={[{fontSize: 30, color: 'red'}]}>❤️</Text></Animated.View> :  null}
+            {self.state.hearts}
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={self.goTo.bind(self, 4)} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 4 ? '#007aff' : 'transparent' }]} >
+        <TouchableHighlight onPress={self.goTo.bind(self, 'profile')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 'profile' ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
             {imageEl}
           </View>

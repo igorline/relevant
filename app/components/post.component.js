@@ -152,17 +152,17 @@ class Post extends Component {
     },
     (buttonIndex) => {
       switch(buttonIndex) {
-          case 0:
-              self.onShare();
-              break;
-          case 1:
-              self.irrelevant();
-              break;
-          case 2:
-              self.deletePost();
-              break;
-          default:
-              return;
+        case 0:
+            self.onShare();
+            break;
+        case 1:
+            self.irrelevant();
+            break;
+        case 2:
+            self.deletePost();
+            break;
+        default:
+            return;
       }
     });
   }
@@ -195,7 +195,7 @@ class Post extends Component {
     var self = this;
     console.log('investing', self.state.investAmount);
     this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
-       if (self.props.view.route == 11) self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
+       if (self.props.view.route == 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
     })
     this.props.actions.createSubscription(this.props.auth.token, self.props.post);
     self.setState({investAmount: 50});
@@ -205,14 +205,14 @@ class Post extends Component {
     var self = this;
     console.log('destroy investment')
     self.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
-       if (self.props.view.route == 11) self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
+       if (self.props.view.route == 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
     })
   }
 
   openComments() {
     var self = this;
     self.props.actions.setActivePost(self.props.post._id);
-    self.props.view.nav.push(10)
+    self.props.view.nav.push('comments')
   }
 
   deletePost() {
@@ -237,12 +237,12 @@ class Post extends Component {
     var self = this;
     if (user._id == self.props.auth.user._id) {
       console.log('going to profile')
-      self.props.view.nav.resetTo(4)
+      self.props.view.nav.resetTo('profile')
     } else {
       console.log('setting selected user')
       self.props.actions.getSelectedUser(user._id).then(function(results) {
         if (results) {
-          self.props.view.nav.resetTo(11);
+          self.props.view.nav.resetTo('user');
         }
       })
     }
@@ -341,7 +341,7 @@ class Post extends Component {
     if (balance >= 10000) pickerArray.push(<PickerItemIOS key={5} label='10000' value={10000} />);
 
     if (postUserImage) {
-      postUserImageEl = (<Image source={{uri: postUserImage}} style={styles.userImage} />);
+      postUserImageEl = (<TouchableWithoutFeedback onPress={self.setSelected.bind(self, self.props.post.user)}><Image source={{uri: postUserImage}} style={styles.userImage} /></TouchableWithoutFeedback>);
     }
 
     if (image) {
@@ -349,23 +349,7 @@ class Post extends Component {
     }
 
     var expandedInvest = self.state.expandedInvest;
-    var investButtonString = "Invest 💰";
     var toggleBool = null;
-
-    if (self.state.invested) {
-      investButtonString = "Uninvest ❌💰";
-      toggleBool = false;
-      functionBool = true;
-    } else {
-      if (expandedInvest) {
-        toggleBool = true;
-        functionBool = true;
-      } else {
-        toggleBool = true;
-        functionBool = false;
-      }
-    }
-
     var investButtonEl = null;
     var uninvestButtonEl = null;
 
@@ -446,9 +430,9 @@ class Post extends Component {
             <View style={styles.postHeader}>
               {postUserImageEl}
               <View style={styles.postInfo}>
-                <View style={[styles.infoLeft, styles.innerInfo]}>
+                <TouchableWithoutFeedback onPress={self.setSelected.bind(self, self.props.post.user)} style={[styles.infoLeft, styles.innerInfo]}>
                   <Text style={[styles.font15, styles.darkGray]}>{self.props.post.user.name}</Text>
-                </View>
+                </TouchableWithoutFeedback>
                 <View style={[styles.infoRight, styles.innerInfo]}>
                   {self.state.passed ? <View><Text style={[styles.font10, styles.textRight]}>📈<Text style={styles.active}>{relevance.toFixed(2)}</Text></Text><Text style={[styles.font10, styles.textRight]}>💵<Text style={styles.active}>{value.toFixed(2)}</Text></Text></View> : <View style={[styles.countdown]}><Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} /><Text style={[styles.font10, styles.textRight, styles.darkGray]}>Results in {self.state.timeUntilString}</Text></View>}
                 </View>

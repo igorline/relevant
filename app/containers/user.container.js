@@ -44,9 +44,23 @@ class User extends Component {
       }
   }
 
-
   componentDidMount() {
     var self = this;
+    var user = self.props.users.selectedUser;
+    if (user) {
+      var notifObj = {
+        forUser: user._id,
+        byUser: self.props.auth.user._id,
+        personal: true,
+        type: 'profile'
+      }
+      self.props.actions.createNotification(self.props.auth.token, notifObj);
+    }
+  }
+
+  componentWillUnmount() {
+    var self = this;
+    self.props.actions.setSelectedUser();
   }
 
   goTo(view) {
@@ -103,7 +117,7 @@ class User extends Component {
         <ScrollView style={styles.fullContainer}>
            {profileEl}
           <TouchableHighlight style={styles.thirstyIcon}>
-            <Text style={styles.white} onPress={self.goTo.bind(self, 12)} >Thirsty 👅💦</Text>
+            <Text style={styles.white} onPress={self.goTo.bind(self, 'thirst')} >Thirsty 👅💦</Text>
           </TouchableHighlight>
           <View>
             {postsEl}

@@ -67,12 +67,12 @@ export default function auth(state = initialState, action) {
       var obj = null;
       if (action.payload.personal) {
         obj = {
-          'personal': addNew(state.personal, action.payload),
-          'count': countUnread(addNew(state.personal, action.payload))
+          'personal': addItems(state.personal, [action.payload]),
+          'count': countUnread(addItems(state.personal, [action.payload]))
         }
       } else {
         obj = {
-          'general': addNew(state.general, action.payload)
+          'general': addItems(state.general, [action.payload])
         }
       }
       return Object.assign({}, state, obj)
@@ -86,7 +86,7 @@ export default function auth(state = initialState, action) {
 
     case 'ADD_GENERAL_ACTIVITY': {
       return Object.assign({}, state, {
-        'general': addNew(state.general, action.payload)
+        'general': addItems(state.general, [action.payload]),
       })
     }
 

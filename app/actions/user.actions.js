@@ -73,8 +73,9 @@ function getPostUser(userId, token) {
 
 export
 function setSelectedUser(user) {
+    var set = user ? user : null;
     return {
         type: types.SET_SELECTED_USER,
-        payload: user
+        payload: set
     };
 }

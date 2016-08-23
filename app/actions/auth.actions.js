@@ -209,11 +209,9 @@ function getUser(token, redirect) {
                 dispatch(loginUserSuccess(token));
                 dispatch(setUser(responseJSON));
                 dispatch(notifActions.createNotification(token, {
-                    notification: {
-                        type: 'online',
-                        personal: false,
-                        byUser: responseJSON._id
-                    }
+                    type: 'online',
+                    personal: false,
+                    byUser: responseJSON._id
                 }));
                 dispatch(addDeviceToken(responseJSON, token))
             })
