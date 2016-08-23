@@ -90,7 +90,7 @@ class Read extends Component {
   setTagAndRoute(tag) {
     var self = this;
     self.props.actions.setTag(tag);
-    self.props.routes.Discover();
+    self.props.view.nav.resetTo('discover');
   }
 
   onScroll() {
@@ -141,39 +141,39 @@ class Read extends Component {
     var thirstyHeader = null;
 
      if (self.props.messages.index.length > 0) {
+      messages = self.props.messages.index;
       for (var x = 0; x < 4; x++) {
         recentMessages.push(<Text style={styles.recentName}>{x < 3 ? self.props.messages.index[x].from.name+', ' : self.props.messages.index[x].from.name}</Text>);
       }
     }
 
-    if (self.state.feedData) {
-        postsEl = (<ListView ref="feedlist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.feedData} renderRow={self.renderFeedRow.bind(self)} />)
+    if (self.props.posts.feed.length && self.state.feedData) {
+      postsEl = (<ListView ref="feedlist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.feedData} renderRow={self.renderFeedRow.bind(self)} />)
     } else {
-      postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>Nothing in yr feed bruh</Text></View>)
+      postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={[{fontWeight: '500'}, styles.darkGray]}>Nothing in yr feed bruh</Text></View>)
     }
 
     if (self.props.messages.count > 0) {
        messagesCount = (<Text style={[styles.white, styles.messagesCount]}>{self.props.messages.count+' New'}</Text>)
     }
 
-    if (self.props.view.read == 1) {
-      thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={self.goTo.bind(self, 14)}>
-        <View style={[styles.thirstyHeader]}>
-          <View style={{paddingRight: 5}}>
-            <Text>👅💦</Text>
-          </View>
-          <View>
-            <Text style={[{fontWeight: '500'}, styles.darkGray]}>Thirsty responses</Text>
-            <View style={styles.recentNames}>
-              {recentMessages}
-            </View>
-          </View>
-          <View style={{justifyContent: 'flex-end',flex: 1, flexDirection: 'row'}}>
-            {messagesCount}
+    thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={messages ? self.goTo.bind(self, 'messages') : null}>
+      <View style={[styles.thirstyHeader]}>
+        <View style={{paddingRight: 5}}>
+          <Text>👅💦</Text>
+        </View>
+        <View>
+          <Text style={[{fontWeight: '500'}, styles.darkGray]}>{messages ? 'Thirsty messages' : 'No messages'}</Text>
+          <View style={styles.recentNames}>
+            {recentMessages}
           </View>
         </View>
-      </TouchableHighlight>);
-    }
+        <View style={{justifyContent: 'flex-end',flex: 1, flexDirection: 'row'}}>
+          {messagesCount}
+        </View>
+      </View>
+    </TouchableHighlight>);
+
 
     return (
       <View style={styles.fullContainer}>

@@ -63,11 +63,15 @@ class Messages extends Component {
 
   goToUser(id) {
     var self = this;
-    self.props.actions.getSelectedUser(id).then(function(results) {
-      if (results) {
-        self.props.view.nav.resetTo(11);
-      }
-    })
+    if (id == self.props.auth.user._id) {
+      self.props.view.nav.resetTo('profile');
+    } else {
+      self.props.actions.getSelectedUser(id).then(function(results) {
+        if (results) {
+          self.props.view.nav.resetTo('user');
+        }
+      })
+    }
   }
 
   renderMessageRow(rowData) {
@@ -92,7 +96,7 @@ class Messages extends Component {
     if (self.props.messages.index.length > 0) {
       messagesEl = (<ListView ref="messageslist" renderScrollComponent={props => <ScrollView {...props} />} dataSource={self.state.messagesData} renderRow={self.renderMessageRow.bind(self)} />);
     } else {
-      messagesEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'red'}}><Text style={styles.darkGray}>Nothing in yr feed bruh</Text></View>)
+      messagesEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={[{fontWeight: '500'}, styles.darkGray]}>No messages bruh</Text></View>)
     }
 
 

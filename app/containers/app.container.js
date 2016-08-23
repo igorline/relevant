@@ -84,7 +84,7 @@ class Application extends Component {
       self.props.actions.getActivity(next.auth.user._id, 0);
       self.props.actions.getGeneralActivity(next.auth.user._id, 0);
       self.props.actions.getMessages(next.auth.user._id);
-      self.props.view.nav.replace(4)
+      self.props.view.nav.replace('profile')
     }
   }
 
@@ -208,59 +208,53 @@ class Application extends Component {
     var self = this;
     if (self.props.view.nav != nav || self.props.view.route != route) self.props.actions.setNav(nav, route);
     switch(route) {
-      case 0:
-        return <Auth { ...self.props } navigator={nav} />;
-        break
-      case 1:
-        return <Auth { ...self.props } navigator={nav} />;
-        break
-      case 2:
+      case 'login':
         return <Login { ...self.props } navigator={nav} />;
         break
-      case 3:
+      case 'signup':
         return <Signup { ...self.props } navigator={nav} />;
         break
-      case 4:
+      case 'profile':
         return <Profile { ...self.props } navigator={nav} />;
         break
-      case 5:
+      case 'activity':
         return <Activity { ...self.props } navigator={nav} />;
         break
-      case 6:
+      case 'createPost':
         return <CreatePost { ...self.props } navigator={nav} />;
         break
-      case 7:
+      case 'categories':
         return <Categories { ...self.props } navigator={nav} />;
         break
-      case 8:
+      case 'discover':
         return <Discover { ...self.props } navigator={nav} />;
         break
-      case 9:
+      case 'read':
         return <Read { ...self.props } navigator={nav} />;
         break
-      case 10:
+      case 'comments':
         return <Comments { ...self.props } navigator={nav} />;
         break
-      case 11:
+      case 'user':
         return <User { ...self.props } navigator={nav} />;
         break
-      case 12:
+      case 'thirst':
         return <Thirst { ...self.props } navigator={nav} />;
         break
-      case 13:
+      case 'singlePost':
         return <SinglePost { ...self.props } navigator={nav} />;
         break
-      case 14:
+      case 'messages':
         return <Messages { ...self.props } navigator={nav} />;
         break
       default:
-        return <Auth { ...self.props } navigator={nav} />;
-    }
+        return <Auth { ...self.props } navigator={nav} />;;
+      }
   }
 
   left(route, navigator, index, navState) {
     var self = this;
-    if (route == 14 || route == 13 || route == 10 || route == 7 || route == 2 || route == 3 || route == 12 ) {
+    if (route == 'messages' || route == 'singlePost' || route == 'comments' || route == 'categories' || route == 'login' || route == 'signup' || route == 'thirst' ) {
       return (<TouchableHighlight underlayColor={'transparent'} style={{flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10}} onPress={self.back.bind(self, navigator)}><Text>Back</Text></TouchableHighlight>);
     } else {
       return null;
@@ -284,7 +278,7 @@ class Application extends Component {
       statsEl = (<View><Text style={styles.statsTxt}>📈<Text style={styles.active}>{relevance}</Text>  💵<Text style={styles.active}>{balance}</Text></Text></View>
       )
     }
-    if (route != 4) {
+    if (route != 'profile') {
       return (<View style={{flex: 1, justifyContent: 'center', padding: 10}}>{statsEl}</View>);
     } else {
       return (<View style={styles.gear}><TouchableHighlight underlayColor={'transparent'}  onPress={self.showActionSheet.bind(self)} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View>);
@@ -306,48 +300,52 @@ class Application extends Component {
     var self = this;
     var title = '';
     switch(route) {
-      case 2:
+      case 'login':
         title = 'Log In';
         break;
 
-      case 3:
+      case 'signup':
         title = 'Sign Up';
         break;
 
-      case 4:
+      case 'profile':
         self.props.auth.user ? title = self.props.auth.user.name : 'User';
         break;
 
-      case 5:
+      case 'activity':
         title = 'Activity';
         break;
 
-      case 13:
-        self.props.posts.activePost.title ? title = self.props.posts.activePost.title : title = 'Untitled Post';
-        break;
-
-      case 11:
-        self.props.users.selectedUser ? title = self.props.users.selectedUser.name : title = '';
-        break;
-
-      case 12:
-          title = 'Thirsty message';
-        break;
-
-      case 6:
+      case 'createPost':
           title = 'Post';
         break;
 
-      case 7:
+      case 'categories':
           title = 'Categories';
         break;
 
-      case 8:
+      case 'discover':
           title = 'Discover';
         break;
 
-      case 9:
+      case 'read':
           title = 'Read';
+        break;
+
+      case 'user':
+        self.props.users.selectedUser ? title = self.props.users.selectedUser.name : title = '';
+        break;
+
+      case 'messages':
+          title = 'Thirsty message';
+        break;
+
+      case 'singlePost':
+        self.props.posts.activePost.title ? title = self.props.posts.activePost.title : title = 'Untitled Post';
+        break;
+
+      case 'messages':
+          title = 'Messages';
         break;
 
       default:
@@ -362,9 +360,8 @@ class Application extends Component {
       return (
         <View style={{flex: 1}}>
           <Navigator
-            renderScene={(route, navigator) =>
-              self.routeFunction(route, navigator)
-            }
+            renderScene={self.routeFunction.bind(self)}
+            initialRoute={'auth'}
             style={{flex: 1, paddingTop: 64}}
             navigationBar={
               <Navigator.NavigationBar

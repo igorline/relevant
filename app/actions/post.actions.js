@@ -338,9 +338,10 @@ export function createSubscription(token, post) {
 }
 
 export function setActivePost(post) {
+  var set = post ? post : null;
     return {
         type: types.SET_ACTIVE_POST,
-        payload: post
+        payload: set
     };
 }
 
