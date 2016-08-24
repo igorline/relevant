@@ -59,8 +59,7 @@ class SingleActivity extends Component {
     var activityEl = null;
     var styles = self.props.styles;
 
-    if (singleActivity.personal) {
-      if (!singleActivity.personal) return;
+    if (singleActivity.personal && singleActivity.byUser) {
       var activityTime = moment(singleActivity.createdAt);
       var fromNow = activityTime.fromNow();
       if (singleActivity.type == 'investment') {
@@ -130,16 +129,19 @@ class SingleActivity extends Component {
             <View style={styles.activityLeft}>
               <Text style={styles.darkGray}>
                 <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>
-                mentioned you in a post
+                &nbsp;mentioned you in a post
               </Text>
-              <Text onPress={self.goToPost.bind(self, singleActivity)} numberOfLines={1} style={[styles.active]}>{' '+singleActivity.post.title}</Text>
+              <Text onPress={self.goToPost.bind(self, singleActivity)} numberOfLines={1} style={[styles.active]}>{singleActivity.post.title}</Text>
             </View>
             <View style={styles.activityRight}>
             <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
             </View>
           </View>
         );
-       } else if (singleActivity.type == 'partialEarning') {
+       }
+    } else if (singleActivity.personal && !singleActivity.byUser) {
+      console.log(singleActivity, 'activity')
+      if (singleActivity.type == 'partialEarning') {
           activityEl = (
             <View style={styles.singleActivity}>
               <View style={styles.activityLeft}>
@@ -166,25 +168,29 @@ class SingleActivity extends Component {
        }
     }
 
-  if (!singleActivity.personal  && singleActivity.byUser._id != self.props.auth.user._id) {
-    var activityTime = moment(singleActivity.createdAt);
-    var fromNow = activityTime.fromNow();
-    if (singleActivity.type == 'online') {
-      activityEl = (
-        <View style={styles.singleActivity}>
-          <View style={styles.activityLeft}>
-            <Text style={styles.darkGray}>
-              <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
-                {singleActivity.byUser.name}
-              </Text>
-              &nbsp;went online
-            </Text>
-          </View>
-          <View style={styles.activityRight}>
-            <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
-          </View>
-        </View>
-      );
+  if (!singleActivity.personal) {
+    if (singleActivity.byUser) {
+      if (singleActivity.byUser._id != self.props.auth.user._id) {
+        var activityTime = moment(singleActivity.createdAt);
+        var fromNow = activityTime.fromNow();
+        if (singleActivity.type == 'online') {
+          activityEl = (
+            <View style={styles.singleActivity}>
+              <View style={styles.activityLeft}>
+                <Text style={styles.darkGray}>
+                  <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
+                    {singleActivity.byUser.name}
+                  </Text>
+                  &nbsp;went online
+                </Text>
+              </View>
+              <View style={styles.activityRight}>
+                <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
+              </View>
+            </View>
+          );
+        }
+      }
     }
   }
 

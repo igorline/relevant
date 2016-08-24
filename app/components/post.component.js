@@ -275,6 +275,7 @@ class Post extends Component {
 
   render() {
     var self = this;
+    if (self.props.post._id == '57bde5db8d03844f22ef92ae') console.log(self.props.post, 'post')
     var pickerStatus = self.state.pickerStatus;
     var post, title, description, image, link, imageEl, postUserImage, postUserImageEl, postUser, postUserName, body, balance, createdAt, user, comments, functionBool, tags, tagsEl = null;
     var commentString = 'Add comment';
@@ -406,6 +407,7 @@ class Post extends Component {
           if (self.props.post.mentions) {
             if (self.props.post.mentions.length) {
               self.props.post.mentions.forEach(function(user) {
+                console.log(user.name, text.substr(1, text.length), 'compare')
                 if (user.name.toLowerCase() == text.substr(1, text.length).toLowerCase()) {
                   mentionObj = user;
                 }
