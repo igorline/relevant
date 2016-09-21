@@ -118,7 +118,7 @@ class CreatePost extends Component {
     }
 
     if (!self.props.posts.createPostCategory) {
-       AlertIOS.alert("Add category");
+      AlertIOS.alert("Add category");
       return;
     }
 
