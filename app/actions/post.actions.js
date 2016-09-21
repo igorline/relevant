@@ -60,6 +60,15 @@ function setFeed(feed) {
     };
 }
 
+
+export
+function updateFeed(feeditem) {
+    return {
+        type: types.UPDATE_FEED,
+        payload: feeditem
+    };
+}
+
 export
 function clearPosts() {
     return {
@@ -248,6 +257,53 @@ export function irrelevant(token, postId) {
       console.log(error, 'error');
     });
   }
+}
+
+export function updateComment(comment, authToken) {
+    return function(dispatch) {
+       return fetch(process.env.API_SERVER+'/api/comment?access_token='+authToken, {
+            credentials: 'include',
+            method: 'PUT',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(comment)
+        })
+        .then((response) => {
+            console.log('updated comment');
+            return true;
+        })
+        .catch((error) => {
+            console.log(error, 'error');
+            return false;
+        });
+    }
+}
+
+export function editPost(post, authToken) {
+    return function(dispatch) {
+       return fetch(process.env.API_SERVER+'/api/post?access_token='+authToken, {
+            credentials: 'include',
+            method: 'PUT',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(post)
+        })
+        .then((response) => response.json())
+        .then((responseJSON) => {
+          dispatch(updatePost(responseJSON));
+          dispatch(updateFeed(responseJSON));
+          dispatch(authActions.getUser(post.user._id))
+          return true;
+        })
+        .catch((error) => {
+            console.log(error, 'error');
+            return false;
+        });
+    }
 }
 
 export function deleteComment(token, id, postId) {

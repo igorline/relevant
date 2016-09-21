@@ -97,6 +97,9 @@ class Application extends Component {
         if (results) self.props.actions.getUser(self.props.auth.token, false);
       })
     }
+    if (self.props.posts.tag != nextProps.posts.tag && nextProps.posts.tag) {
+      self.props.view.nav.replace('discover');
+    }
   }
 
   componentWillUnmount() {
