@@ -371,27 +371,6 @@ export function createComment(token, commentObj) {
   }
 }
 
-export function createSubscription(token, post) {
-  return dispatch => {
-    fetch( apiServer + 'subscription?access_token='+token, {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        following: post.user._id
-      })
-    })
-    .then((response) => response.json())
-    .then((responseJSON) => {
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-}
 
 export function setActivePost(post) {
   var set = post ? post : null;
