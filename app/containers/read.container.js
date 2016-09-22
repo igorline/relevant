@@ -42,6 +42,7 @@ class Read extends Component {
 
   componentDidMount() {
     var self = this;
+    console.log(self.props.posts.feed)
     if (self.props.posts.feed && self.props.posts.tag) this.props.actions.clearPosts();
     if (self.props.posts.comments) this.props.actions.setComments(null);
     if (self.props.posts.feed) {

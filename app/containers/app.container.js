@@ -76,6 +76,7 @@ class Application extends Component {
     var self = this;
     StatusBarIOS.setStyle('default');
     AppState.addEventListener('change', this.handleAppStateChange.bind(self));
+    self.props.actions.getAllStats();
   }
 
   componentWillReceiveProps(next, nextState) {

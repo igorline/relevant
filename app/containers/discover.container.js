@@ -55,7 +55,10 @@ class Discover extends Component {
 
   componentDidMount() {
     var self = this;
-    console.log(self.props)
+    //console.log(self.props)
+
+
+    
     if (self.props.posts.comments) this.props.actions.setComments(null);
     if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
     if (self.props.posts.tag && self.props.posts.index) self.props.actions.clearPosts();
@@ -64,6 +67,9 @@ class Discover extends Component {
       self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
     }
     if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null);
+
+
+
     //if (self.props.posts.tag) self.props.actions.getPosts(0, self.props.posts.tag, null);
   }
 
@@ -136,7 +142,7 @@ class Discover extends Component {
     self.props.actions.searchTags(self.state.tagSearchTerm).then(function(foundTags) {
       console.log(foundTags, 'foundTags')
       if (!foundTags.status) {
-        self.props.actions.setNotif(true, 'Search error', false)
+        AlertIOS.alert("Search error");
       } else {
         if (foundTags.data.length) {
           self.props.actions.setTag(foundTags.data);
@@ -155,7 +161,7 @@ class Discover extends Component {
           }
         } else {
           self.setState({noResults: true});
-          self.props.actions.setNotif(true, 'No results', false)
+          AlertIOS.alert("No results");
         }
       }
     })

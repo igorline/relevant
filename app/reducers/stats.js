@@ -6,8 +6,14 @@ export default function post(state = initialState, action) {
   switch (action.type) {
 
     case 'ADD_STATS': {
-      console.log(action.payload);
-      state[action.payload.user] = action.payload.data;
+      //console.log(action.payload);
+      // state[action.payload.user] = action.payload.data;
+      return state;
+    }
+
+    case 'SET_STATS': {
+      state = action.payload;
+      console.log(action.payload, 'SET_STATS');
       return state;
     }
 
