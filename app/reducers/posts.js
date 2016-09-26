@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {tag: null, pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null, parentTags: null, createPostCategory: null, userPosts: null};
+const initialState = {tag: null, pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null, parentTags: null, createPostCategory: null, userPosts: []};
 
 const updatePostElement = (array, post) => {
   if (!array) return;
@@ -56,11 +56,15 @@ export default function post(state = initialState, action) {
     }
 
     case 'SET_USER_POSTS': {
-      console.log(action.payload, 'user posts payload')
-      // return Object.assign({}, state, {
-      //     'user': addItems(state.index, action.payload)
-      // })
-      return;
+      return Object.assign({}, state, {
+          'userPosts': addItems(state.userPosts, action.payload)
+      })
+    }
+
+    case 'CLEAR_USER_POSTS': {
+      return Object.assign({}, state, {
+          'userPosts': []
+      })
     }
 
     case types.ADD_POST: {

@@ -7,6 +7,7 @@ import React, {
   View,
   Image,
   TextInput,
+  ListView,
   Dimensions,
   PushNotificationIOS,
   ScrollView,
@@ -36,7 +37,8 @@ class Profile extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      investAni: [],
+      postsData: null,
+      enabled: true
     }
   }
 
@@ -45,8 +47,46 @@ class Profile extends Component {
     self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
   }
 
+  componentWillUnmount() {
+    var self = this;
+    self.props.actions.clearUserPosts();
+  }
+
   componentWillReceiveProps(next) {
     var self = this;
+    if (next.posts.userPosts != self.props.posts.userPosts) {
+      console.log('updating userPosts', next.posts.userPosts)
+      var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      self.setState({postsData: fd.cloneWithRows(next.posts.userPosts)});
+    }
+  }
+
+
+  renderFeedRow(rowData) {
+    var self = this;
+      return (
+        <Post post={rowData} {...self.props} styles={styles} />
+      );
+  }
+
+  onScroll() {
+    var self = this;
+    if (self.refs.postslist.scrollProperties.offset + self.refs.postslist.scrollProperties.visibleLength >= self.refs.postslist.scrollProperties.contentLength) {
+      self.loadMore();
+    }
+  }
+
+  loadMore() {
+    var self = this;
+    var length = self.props.posts.userPosts.length;
+     console.log('load more, skip: ', length);
+    if (self.state.enabled) {
+      self.setState({enabled: false});
+        self.props.actions.getUserPosts(length, 5, self.props.auth.user._id);
+      setTimeout(function() {
+        self.setState({enabled: true})
+      }, 1000);
+    }
   }
 
   render() {
@@ -62,31 +102,22 @@ class Profile extends Component {
 
     if (self.props.auth.user) {
       profileEl = (<ProfileComponent {...self.props} user={self.props.auth.user} styles={styles} />);
-      if (self.props.auth.user.posts) {
-        if (self.props.auth.user.posts.length > 0) {
-          var posts = null;
 
-          posts = self.props.auth.user.posts;
-
-          postsEl = posts.map(function(post, i) {
-            return (<Post key={i} post={post} {...self.props} styles={styles} />);
-          });
-        } else {
-           postsEl = (<View style={styles.padding10}><Text>No posts yet 😔</Text></View>)
-         }
+      if (self.props.posts.userPosts.length && self.state.postsData) {
+        postsEl = (<ListView ref="postslist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.postsData} renderRow={self.renderFeedRow.bind(self)} />)
       } else {
-        postsEl = (<View style={styles.padding10}><Text>No posts yet 😔</Text></View>)
+        postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={[{fontWeight: '500'}, styles.darkGray]}>No posts to display</Text></View>)
       }
     }
 
     return (
       <View style={styles.fullContainer}>
-      <ScrollView style={styles.fullContainer}>
+      {/*<ScrollView style={styles.fullContainer}>*/}
         {profileEl}
-        <View>
+    
           {postsEl}
-        </View>
-      </ScrollView>
+    
+      {/*</ScrollView>*/}
       </View>
     );
   }
