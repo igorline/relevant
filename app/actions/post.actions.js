@@ -62,6 +62,14 @@ function setFeed(feed) {
 
 
 export
+function clearUserPosts() {
+    return {
+        type: 'CLEAR_USER_POSTS'
+    };
+}
+
+
+export
 function updateFeed(feeditem) {
     return {
         type: types.UPDATE_FEED,
@@ -146,7 +154,7 @@ export function getUserPosts(skip, limit, userId) {
   var tagsString = '';
   if (!skip) skip = 0;
   if (!limit) limit = 5;
-  // if (!sort) sort = null;
+
   var url = process.env.API_SERVER+'/api/post/user/'+userId+'?skip='+skip+'&limit='+limit;
   
   return function(dispatch) {
