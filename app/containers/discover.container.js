@@ -58,7 +58,7 @@ class Discover extends Component {
     //console.log(self.props)
 
 
-    
+
     if (self.props.posts.comments) this.props.actions.setComments(null);
     if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
     if (self.props.posts.tag && self.props.posts.index) self.props.actions.clearPosts();
@@ -66,11 +66,7 @@ class Discover extends Component {
       var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
     }
-    if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null);
-
-
-
-    //if (self.props.posts.tag) self.props.actions.getPosts(0, self.props.posts.tag, null);
+    if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
   }
 
   componentWillReceiveProps(next) {
@@ -100,12 +96,12 @@ class Discover extends Component {
     switch(view) {
       case 1:
         self.setState({dataSource: null})
-        self.props.actions.getPosts(0, self.props.posts.tag, null);
+        self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
         break;
 
       case 2:
         self.setState({dataSource: null})
-        self.props.actions.getPosts(0, self.props.posts.tag, 'rank');
+        self.props.actions.getPosts(0, self.props.posts.tag, 'rank', 5);
         break;
 
       case 3:
@@ -124,11 +120,11 @@ class Discover extends Component {
     self.setState({dataSource: null});
     switch(self.props.view.discover) {
       case 1:
-        self.props.actions.getPosts(0, tag, null);
+        self.props.actions.getPosts(0, tag, null, 5);
         break;
 
       case 2:
-        self.props.actions.getPosts(0, tag, 'rank');
+        self.props.actions.getPosts(0, tag, 'rank', 5);
         break;
 
       default:
@@ -149,11 +145,11 @@ class Discover extends Component {
           self.props.actions.clearPosts();
           switch(self.props.view.discover) {
             case 1:
-              self.props.actions.getPosts(0, foundTags.data, null);
+              self.props.actions.getPosts(0, foundTags.data, null, 5);
               break;
 
             case 2:
-              self.props.actions.getPosts(0, foundTags.data, 'rank');
+              self.props.actions.getPosts(0, foundTags.data, 'rank', 5);
               break;
 
             default:
@@ -191,11 +187,11 @@ class Discover extends Component {
       self.setState({enabled: false});
       switch(self.props.view.discover) {
         case 1:
-           self.props.actions.getPosts(length, self.props.posts.tag, null);
+           self.props.actions.getPosts(length, self.props.posts.tag, null, 5);
           break;
 
         case 2:
-           self.props.actions.getPosts(length, self.props.posts.tag, 'rank');
+           self.props.actions.getPosts(length, self.props.posts.tag, 'rank', 5);
           break;
 
         default:

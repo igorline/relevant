@@ -42,7 +42,7 @@ class Profile extends Component {
 
   componentWillMount() {
     var self = this;
-    //self.props.actions.getStats(self.props.auth.user._id);
+    self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
   }
 
   componentWillReceiveProps(next) {

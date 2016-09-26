@@ -85,12 +85,15 @@ function setPostCategory(tag) {
     };
 }
 
-export function getPosts(skip, tags, sort) {
+export function getPosts(skip, tags, sort, limit) {
   //console.log(skip, tags, sort);
   var tagsString = '';
   if (!skip) skip = 0;
+  if (!limit) limit = 5;
   if (!sort) sort = null;
-  var url = process.env.API_SERVER+'/api/post?skip='+skip+'&sort='+sort;
+
+    var url = process.env.API_SERVER+'/api/post?skip='+skip+'&sort='+sort+'&limit='+limit;
+
 
   if (tags) {
     if (tags.length) {
@@ -134,6 +137,42 @@ export function getPosts(skip, tags, sort) {
 export function setPosts(data) {
     return {
         type: types.SET_POSTS,
+        payload: data
+    };
+}
+
+export function getUserPosts(skip, limit, userId) {
+  console.log('get user posts', userId)
+  var tagsString = '';
+  if (!skip) skip = 0;
+  if (!limit) limit = 5;
+  // if (!sort) sort = null;
+  var url = process.env.API_SERVER+'/api/post/user/'+userId+'?skip='+skip+'&limit='+limit;
+  
+  return function(dispatch) {
+    fetch(url, {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+      }
+    })
+    .then(utils.fetchError.handleErrors)
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      console.log(responseJSON, 'user posts response')
+      dispatch(setUserPosts(responseJSON));
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+    });
+  }
+}
+
+export function setUserPosts(data) {
+    return {
+        type: 'SET_USER_POSTS',
         payload: data
     };
 }
