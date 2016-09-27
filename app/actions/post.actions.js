@@ -29,6 +29,13 @@ export function getFeed(token, skip, tag) {
   }
 }
 
+export function clearUserPosts(user) {
+  return {
+    type: 'CLEAR_USER_POSTS',
+    payload: user
+  };
+}
+
 export function deletePost(token, post) {
   var url = process.env.API_SERVER+'/api/post/'+post._id+'?access_token='+token;
   return function(dispatch) {
@@ -43,7 +50,8 @@ export function deletePost(token, post) {
     .then((response) => {
       console.log(response, 'delete response')
       dispatch(removePostFromIndex(post));
-      dispatch(authActions.getUser(token, false))
+      dispatch(clearUserPosts(post.user._id));
+      dispatch(getUserPosts(0, 5, post.user._id));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -57,14 +65,6 @@ function setFeed(feed) {
     return {
         type: types.SET_FEED,
         payload: feed
-    };
-}
-
-
-export
-function clearUserPosts() {
-    return {
-        type: 'CLEAR_USER_POSTS'
     };
 }
 
@@ -170,7 +170,7 @@ export function getUserPosts(skip, limit, userId) {
     .then((response) => response.json())
     .then((responseJSON) => {
       console.log(responseJSON, 'user posts response')
-      dispatch(setUserPosts(responseJSON));
+      dispatch(setUserPosts(userId, responseJSON));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -178,10 +178,13 @@ export function getUserPosts(skip, limit, userId) {
   }
 }
 
-export function setUserPosts(data) {
+export function setUserPosts(userId, posts) {
     return {
         type: 'SET_USER_POSTS',
-        payload: data
+        payload: {
+          user: userId,
+          posts: posts
+        }
     };
 }
 

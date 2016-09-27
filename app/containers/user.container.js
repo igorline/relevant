@@ -53,24 +53,41 @@ class User extends Component {
         type: 'profile'
       }
       self.props.actions.createNotification(self.props.auth.token, notifObj);
-
-      // if (self.props.posts.userPosts.length > 0) {
-      //   var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      //   self.setState({postsData: fd.cloneWithRows(self.props.posts.userPosts)}); 
-      // } else {
+      var posts = null;
+      if (self.props.posts.userPosts) {
+        if (self.props.posts.userPosts[self.props.users.selectedUser._id]) {
+          if (self.props.posts.userPosts[self.props.users.selectedUser._id].length) {
+            var posts = self.props.posts.userPosts[self.props.users.selectedUser._id];
+            var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+            self.setState({postsData: fd.cloneWithRows(posts)});
+          } 
+        }
+      }
+      console.log(self)
+      if (!posts) {
+        console.log('getting posts')
         self.props.actions.getUserPosts(0, 5, self.props.users.selectedUser._id);
-      // }
-
+      }
     }
   }
 
   componentWillReceiveProps(next) {
     var self = this;
-    if (next.posts.userPosts != self.props.posts.userPosts) {
-      console.log('updating userPosts', next.posts.userPosts)
+    // if (next.posts.userPosts != self.props.posts.userPosts) {
+    //   console.log('updating userPosts', next.posts.userPosts)
+    //   var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    //   self.setState({postsData: fd.cloneWithRows(next.posts.userPosts)});
+    // }
+
+
+    var newPosts = next.posts.userPosts[self.props.users.selectedUser._id];
+    var oldPosts = self.props.posts.userPosts[self.props.users.selectedUser._id];
+
+    if (newPosts != oldPosts) {
       var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      self.setState({postsData: fd.cloneWithRows(next.posts.userPosts)});
+      self.setState({postsData: fd.cloneWithRows(newPosts)});
     }
+
   }
 
 
@@ -105,7 +122,7 @@ class User extends Component {
   componentWillUnmount() {
     var self = this;
     self.props.actions.setSelectedUser();
-    self.props.actions.clearUserPosts();
+    // self.props.actions.clearUserPosts();
   }
 
   goTo(view) {
@@ -133,7 +150,7 @@ class User extends Component {
         if (user.posts) posts = user.posts;
         profileEl = (<ProfileComponent {...self.props} user={user} styles={styles} />);
 
-      if (self.props.posts.userPosts.length && self.state.postsData) {
+      if (self.state.postsData) {
         postsEl = (<ListView ref="postslist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.postsData} renderRow={self.renderFeedRow.bind(self)} />)
       } else {
         postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={[{fontWeight: '500'}, styles.darkGray]}>No posts to display</Text></View>)

@@ -55,10 +55,6 @@ class Discover extends Component {
 
   componentDidMount() {
     var self = this;
-    //console.log(self.props)
-
-
-
     if (self.props.posts.comments) this.props.actions.setComments(null);
     if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
     if (self.props.posts.tag && self.props.posts.index) self.props.actions.clearPosts();
