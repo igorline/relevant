@@ -10,13 +10,7 @@ import React, {
   TouchableHighlight,
   LinkingIOS
 } from 'react-native';
-import { connect } from 'react-redux';
 var Button = require('react-native-button');
-import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/auth.actions';
-import * as postActions from '../actions/post.actions';
-import * as userActions from '../actions/user.actions';
-require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class DiscoverUser extends Component {
@@ -49,16 +43,24 @@ class DiscoverUser extends Component {
     var styles = {...localStyles, ...parentStyles};
     var image = null;
     var imageEl = null;
-    var percent = null;
+    var percent = 0;
+    var percentEl = null;
     if (self.props.stats) {
       if (self.props.stats[user._id]) {
         var val = self.props.stats[user._id].value;
         var relevance = user.relevance || 0;
         if (relevance > 0) {
-        console.log(val, relevance, typeof val, typeof relevance)
+          //console.log(val, relevance, typeof val, typeof relevance)
           var change = val / relevance;
           percent = Math.round((1 - change)*100);
-          console.log(percent)
+          // console.log(percent)
+          if (percent == 0) {
+            percentEl = (<Text style={[{textAlign: 'right'}, styles.active]}>no change</Text>);
+          } else if (percent > 0) {
+            percentEl = (<Text style={{color: '#009933', fontWeight: '600', textAlign: 'right'}}>⬆️{percent}%</Text>);
+          } else if (percent < 0) {
+            percentEl = (<Text style={{color: 'red', fontWeight: '600', textAlign: 'right'}}>⬇️{percent}%</Text>);
+          }
         }
       }
     }
@@ -75,9 +77,9 @@ class DiscoverUser extends Component {
             <Text style={styles.darkGray}>{user.name}</Text>
           </View>
           <View style={styles.rightDiscoverUser}>
-            {percent ? <View>
-              <Text style={{color: '#009933', fontWeight: '600', textAlign: 'right'}}>⬆️{percent}%</Text>
-            </View> : null}
+            <View>
+              {percentEl}
+            </View>
             <View>
               <Text>📈<Text style={styles.active}>{user.relevance ? user.relevance.toFixed(2) : null}</Text></Text>
             </View>

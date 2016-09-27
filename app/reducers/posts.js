@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {tag: null, pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null, parentTags: null, createPostCategory: null, userPosts: []};
+const initialState = {tag: null, pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null, parentTags: null, createPostCategory: null, userPosts: {}};
 
 const updatePostElement = (array, post) => {
   if (!array) return;
@@ -43,7 +43,12 @@ const addItems = (arr, newArr) => {
 
 const addItem = (old, newObj) => {
   var newArr = [newObj];
-  return newArr.concat(old);
+  console.log('add item', newObj);
+  if (old.indexOf(newObj) < 0) {
+    return newArr.concat(old);
+  } else {
+    return old;
+  }
 }
 
 export default function post(state = initialState, action) {
@@ -56,15 +61,18 @@ export default function post(state = initialState, action) {
     }
 
     case 'SET_USER_POSTS': {
-      return Object.assign({}, state, {
-          'userPosts': addItems(state.userPosts, action.payload)
-      })
-    }
+      var arr = [];
+      var user = action.payload.user;
+      if (state.userPosts[user]) arr = state.userPosts[user];
 
-    case 'CLEAR_USER_POSTS': {
-      return Object.assign({}, state, {
-          'userPosts': []
-      })
+      var newObj = {
+        userPosts: {
+          ...state.userPosts,
+          [user]: addItems(arr, action.payload.posts)
+        }
+      };
+
+      return Object.assign({}, state, newObj)
     }
 
     case types.ADD_POST: {
@@ -153,6 +161,24 @@ export default function post(state = initialState, action) {
       })
     }
 
+    case 'CLEAR_USER_POSTS' :{
+      var arr = [];
+      var user = action.payload;
+      console.log(user, 'user')
+      if (state.userPosts[user]) arr = state.userPosts[user];
+      var clone = state;
+      delete clone.userPosts[user];
+      console.log(clone, 'clone')
+
+      var newObj = {
+        userPosts: {
+          ...clone.userPosts
+        }
+      };
+
+      return Object.assign({}, state, newObj)
+    }
+
     case types.SET_FEED: {
       return Object.assign({}, state, {
         'feed': addItems(state.feed, action.payload)
@@ -166,8 +192,9 @@ export default function post(state = initialState, action) {
     }
 
     case types.REMOVE_POST: {
+      var newArr = removeItem(state.index, action.payload);
       return Object.assign({}, state, {
-        'index':  removeItem(state.index, action.payload)
+        'index': newArr
       })
     }
 

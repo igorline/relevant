@@ -44,20 +44,32 @@ class Profile extends Component {
 
   componentWillMount() {
     var self = this;
-    self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
+    var posts = null;
+    if (self.props.posts.userPosts) {
+      if (self.props.posts.userPosts[self.props.auth.user._id]) {
+        if (self.props.posts.userPosts[self.props.auth.user._id].length) {
+          var posts = self.props.posts.userPosts[self.props.auth.user._id];
+          var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+          self.setState({postsData: fd.cloneWithRows(posts)});
+        } 
+      }
+    }
+    if (!posts) self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
   }
 
   componentWillUnmount() {
     var self = this;
-    self.props.actions.clearUserPosts();
   }
 
-  componentWillReceiveProps(next) {
+  componentWillUpdate(next) {
     var self = this;
-    if (next.posts.userPosts != self.props.posts.userPosts) {
-      console.log('updating userPosts', next.posts.userPosts)
+
+    var newPosts = next.posts.userPosts[self.props.auth.user._id];
+    var oldPosts = self.props.posts.userPosts[self.props.auth.user._id];
+
+    if (newPosts != oldPosts) {
       var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      self.setState({postsData: fd.cloneWithRows(next.posts.userPosts)});
+      self.setState({postsData: fd.cloneWithRows(newPosts)});
     }
   }
 
@@ -78,7 +90,7 @@ class Profile extends Component {
 
   loadMore() {
     var self = this;
-    var length = self.props.posts.userPosts.length;
+    var length = self.props.posts.userPosts[self.props.auth.user._id].length;
      console.log('load more, skip: ', length);
     if (self.state.enabled) {
       self.setState({enabled: false});
@@ -103,7 +115,7 @@ class Profile extends Component {
     if (self.props.auth.user) {
       profileEl = (<ProfileComponent {...self.props} user={self.props.auth.user} styles={styles} />);
 
-      if (self.props.posts.userPosts.length && self.state.postsData) {
+      if (self.state.postsData) {
         postsEl = (<ListView ref="postslist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.postsData} renderRow={self.renderFeedRow.bind(self)} />)
       } else {
         postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={[{fontWeight: '500'}, styles.darkGray]}>No posts to display</Text></View>)
@@ -112,12 +124,8 @@ class Profile extends Component {
 
     return (
       <View style={styles.fullContainer}>
-      {/*<ScrollView style={styles.fullContainer}>*/}
         {profileEl}
-    
-          {postsEl}
-    
-      {/*</ScrollView>*/}
+        {postsEl}
       </View>
     );
   }

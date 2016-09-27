@@ -13,7 +13,6 @@ export default function post(state = initialState, action) {
 
     case 'SET_STATS': {
       state = action.payload;
-      console.log(action.payload, 'SET_STATS');
       return state;
     }
 
