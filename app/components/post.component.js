@@ -407,7 +407,7 @@ class Post extends Component {
           if (self.props.post.mentions) {
             if (self.props.post.mentions.length) {
               self.props.post.mentions.forEach(function(user) {
-                console.log(user.name, text.substr(1, text.length), 'compare')
+                // console.log(user.name, text.substr(1, text.length), 'compare')
                 if (user.name.toLowerCase() == text.substr(1, text.length).toLowerCase()) {
                   mentionObj = user;
                 }
