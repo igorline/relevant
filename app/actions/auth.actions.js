@@ -179,7 +179,7 @@ function createUser(user, redirect) {
 
 export
 function getUser(token, redirect) {
-    console.log('getuser', token, redirect)
+    //console.log('getuser', token, redirect)
     return dispatch => {
         if(!token){
             AsyncStorage.getItem('token')

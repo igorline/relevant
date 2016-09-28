@@ -152,7 +152,6 @@ export function setPosts(data) {
 
 
 export function getUserPosts(skip, limit, userId) {
-  console.log('get user posts', userId)
   var tagsString = '';
   if (!skip) skip = 0;
   if (!limit) limit = 5;
@@ -171,7 +170,6 @@ export function getUserPosts(skip, limit, userId) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON, 'user posts response')
       dispatch(setUserPosts(userId, responseJSON));
     })
     .catch((error) => {
@@ -212,7 +210,7 @@ export function removePostFromIndex(post) {
 }
 
 export function submitPost(post, token) {
-  console.log(post, 'submitPost init');
+  //console.log(post, 'submitPost init');
     return fetch(process.env.API_SERVER+'/api/post?access_token='+token, {
         credentials: 'include',
         method: 'POST',
@@ -223,7 +221,7 @@ export function submitPost(post, token) {
       body: JSON.stringify(post)
     })
     .then((response) => {
-      console.log(response, 'submitPost response');
+      //console.log(response, 'submitPost response');
       if (response.status == 200) {
         return true;
       } else {

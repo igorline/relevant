@@ -13,32 +13,19 @@ import React, {
     TouchableHighlight
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-var FileUpload = require('NativeModules').FileUpload;
-import { connect } from 'react-redux';
-var Button = require('react-native-button');
-import * as authActions from '../actions/auth.actions';
-import * as postActions from '../actions/post.actions';
-import * as tagActions from '../actions/tag.actions';
 import { bindActionCreators } from 'redux';
-import * as investActions from '../actions/invest.actions';
-import * as notifActions from '../actions/notif.actions';
-import * as userActions from '../actions/user.actions';
-import * as animationActions from '../actions/animation.actions';
-var ImagePickerManager = require('NativeModules').ImagePickerManager;
-require('../publicenv');
 import * as utils from '../utils';
 import Post from '../components/post.component';
-import * as subscriptionActions from '../actions/subscription.actions';
-import Notification from '../components/notification.component';
 import ProfileComponent from '../components/profile.component';
-import InvestAnimation from '../components/investAnimation.component';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 class User extends Component {
   constructor(props, context) {
       super(props, context)
       this.state = {
         postsData: null,
-        enabled: true
+        enabled: true,
+        received: false
       }
   }
 
@@ -59,13 +46,13 @@ class User extends Component {
           if (self.props.posts.userPosts[self.props.users.selectedUser._id].length) {
             var posts = self.props.posts.userPosts[self.props.users.selectedUser._id];
             var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            self.setState({postsData: fd.cloneWithRows(posts)});
+            self.setState({postsData: fd.cloneWithRows(posts), received: true});
           } 
         }
       }
-      console.log(self)
+      
       if (!posts) {
-        console.log('getting posts')
+        //console.log('getting posts')
         self.props.actions.getUserPosts(0, 5, self.props.users.selectedUser._id);
       }
     }
@@ -73,21 +60,13 @@ class User extends Component {
 
   componentWillReceiveProps(next) {
     var self = this;
-    // if (next.posts.userPosts != self.props.posts.userPosts) {
-    //   console.log('updating userPosts', next.posts.userPosts)
-    //   var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    //   self.setState({postsData: fd.cloneWithRows(next.posts.userPosts)});
-    // }
-
-
     var newPosts = next.posts.userPosts[self.props.users.selectedUser._id];
     var oldPosts = self.props.posts.userPosts[self.props.users.selectedUser._id];
 
     if (newPosts != oldPosts) {
       var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      self.setState({postsData: fd.cloneWithRows(newPosts)});
+      self.setState({postsData: fd.cloneWithRows(newPosts), received: true});
     }
-
   }
 
 
@@ -150,22 +129,23 @@ class User extends Component {
         if (user.posts) posts = user.posts;
         profileEl = (<ProfileComponent {...self.props} user={user} styles={styles} />);
 
-      if (self.state.postsData) {
+      if (self.state.postsData && self.state.received) {
         postsEl = (<ListView ref="postslist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.postsData} renderRow={self.renderFeedRow.bind(self)} />)
-      } else {
+      }
+
+      if (!self.state.postsData && self.state.received) {
         postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={[{fontWeight: '500'}, styles.darkGray]}>No posts to display</Text></View>)
       }
     }
 
     return (
       <View style={styles.fullContainer}>
-           {profileEl}
-          <TouchableHighlight style={styles.thirstyIcon}>
-            <Text style={styles.white} onPress={self.goTo.bind(self, 'thirst')} >Thirsty 👅💦</Text>
-          </TouchableHighlight>
-
-            {postsEl}
-
+        <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.received} />
+        {profileEl}
+        <TouchableHighlight style={styles.thirstyIcon}>
+          <Text style={styles.white} onPress={self.goTo.bind(self, 'thirst')} >Thirsty 👅💦</Text>
+        </TouchableHighlight>
+        {postsEl}
       </View>
     );
   }

@@ -21,6 +21,11 @@ class DiscoverUser extends Component {
   }
 
   componentDidMount() {
+    var self = this;
+    self.props.actions.getStats(self.props.user._id);
+  }
+
+  componentWillUpdate(next) {
   }
 
   setSelected(id) {
@@ -29,9 +34,7 @@ class DiscoverUser extends Component {
       self.props.view.nav.replace('profile');
     } else {
       self.props.actions.getSelectedUser(id).then(function(results) {
-        if (results) {
-          self.props.view.nav.resetTo('user');
-        }
+        if (results) self.props.view.nav.resetTo('user');
       })
     }
   }
@@ -45,22 +48,20 @@ class DiscoverUser extends Component {
     var imageEl = null;
     var percent = 0;
     var percentEl = null;
+    var oldRel = null;
+    var relevance = user.relevance || 0;
     if (self.props.stats) {
       if (self.props.stats[user._id]) {
-        var val = self.props.stats[user._id].value;
-        var relevance = user.relevance || 0;
-        if (relevance > 0) {
-          //console.log(val, relevance, typeof val, typeof relevance)
-          var change = val / relevance;
-          percent = Math.round((1 - change)*100);
-          // console.log(percent)
-          if (percent == 0) {
-            percentEl = (<Text style={[{textAlign: 'right'}, styles.active]}>no change</Text>);
-          } else if (percent > 0) {
-            percentEl = (<Text style={{color: '#009933', fontWeight: '600', textAlign: 'right'}}>⬆️{percent}%</Text>);
-          } else if (percent < 0) {
-            percentEl = (<Text style={{color: 'red', fontWeight: '600', textAlign: 'right'}}>⬇️{percent}%</Text>);
-          }
+        var oldRel = self.props.stats[user._id].startAmount;
+        var change = oldRel / relevance;
+        percent = Math.round((1 - change) * 100);
+
+        if (percent == 0) {
+          percentEl = (<Text style={[{textAlign: 'right'}, styles.active]}>no change</Text>);
+        } else if (percent > 0) {
+          percentEl = (<Text style={[{textAlign: 'right'}, styles.active]}>⬆️{percent}%</Text>);
+        } else if (percent < 0) {
+          percentEl = (<Text style={{color: 'red', textAlign: 'right'}}>⬇️{percent}%</Text>);
         }
       }
     }

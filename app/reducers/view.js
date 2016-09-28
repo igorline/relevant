@@ -34,23 +34,10 @@ export default function auth(state = initialState, action) {
       }
     }
 
-    case 'SET_BACK':
-      return Object.assign({}, state, {
-            'back': action.payload,
-          })
-      break
-
     case 'SET_NAV':
           return Object.assign({}, state, {
             'nav': action.payload.nav,
             'route': action.payload.route,
-          })
-       break
-
-
-    case 'SET_NAME':
-          return Object.assign({}, state, {
-            'name': action.payload,
           })
        break
 

@@ -155,8 +155,11 @@ class CreatePost extends Component {
         if (!results) {
             AlertIOS.alert("Post error please try again");
         } else {
-           AlertIOS.alert("Posted");
-          self.props.view.nav.resetTo('discover')
+          AlertIOS.alert("Posted");
+          self.props.actions.setPostCategory(null);
+          self.props.view.nav.resetTo('discover');
+          self.props.actions.clearUserPosts(self.props.auth.user._id);
+          self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
         }
       });
     }
@@ -193,7 +196,7 @@ class CreatePost extends Component {
          if (!results) {
             AlertIOS.alert("Post error please try again");
         } else {
-           AlertIOS.alert("Posted");
+          AlertIOS.alert("Posted");
           self.props.actions.setPostCategory(null);
           self.props.view.nav.resetTo('discover');
           self.props.actions.clearUserPosts(self.props.auth.user._id);
@@ -327,9 +330,9 @@ class CreatePost extends Component {
 
     return (
       <View style={[{height: self.state.visibleHeight}]}>
-     <ScrollView contentContainerStyle={{flexDirection: 'column', height: fullHeight - 120}}>
+        <ScrollView keyboardShouldPersistTaps={true} contentContainerStyle={{flexDirection: 'column', height: fullHeight - 120}}>
           {typeEl}
-          {view == 'url' ? <View style={{borderBottomColor: !self.state.urlPreview ? '#f0f0f0' : 'transparent', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1}}><TextInput numberOfLines={1} style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink, urlPreview: null})} onSubmitEditing={self.createPreview.bind(self)} value={this.state.postLink} returnKeyType='done' /></View> : null}
+          {view == 'url' ? <View style={{borderBottomColor: !self.state.urlPreview ? '#f0f0f0' : 'transparent', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1}}><TextInput numberOfLines={1} style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink, urlPreview: null})} onBlur={self.createPreview.bind(self)} onSubmitEditing={self.createPreview.bind(self)} value={this.state.postLink} returnKeyType='done' /></View> : null}
 
           {view == 'image' && !self.state.postImage ? <TouchableHighlight style={{borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center', paddingLeft: 10}} underlayColor={'transparent'} onPress={self.chooseImage.bind(self)}><Text>Upload an image</Text></TouchableHighlight> : null}
 

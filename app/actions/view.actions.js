@@ -23,18 +23,3 @@ export function setNav(nav, route) {
         }
     };
 }
-
-export function setBack(bool) {
-    return {
-        type: 'SET_BACK',
-        payload: bool
-    };
-}
-
-export function setName(name) {
-    if (!name) name = null;
-    return {
-        type: 'SET_NAME',
-        payload: name
-    };
-}

@@ -184,7 +184,7 @@ class Discover extends Component {
   loadMore() {
     var self = this;
     var length = self.props.posts.index.length;
-     console.log('load more, skip: ', length, self.props.posts.tag);
+    //console.log('load more, skip: ', length, self.props.posts.tag);
     if (self.state.enabled) {
       self.setState({enabled: false});
       switch(self.props.view.discover) {
@@ -313,6 +313,8 @@ class Discover extends Component {
       postsEl = (<ListView ref="listview" removeClippedSubviews="true" pageSize="1" initialListSize="1" dataSource={self.state.dataSource} renderHeader={self.renderHeader.bind(self)} renderRow={self.renderRow.bind(self)} contentOffset={{x: 0, y: 35}} renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} />)
     }
     var userIndex = null;
+    var usersParent = null;
+
     if (this.props.auth.userIndex) {
       userIndex = this.props.auth.userIndex;
       usersEl = userIndex.map(function(user, i) {
@@ -322,6 +324,7 @@ class Discover extends Component {
           );
         }
       });
+      usersParent = (<ScrollView>{usersEl}</ScrollView>)
     }
 
 
@@ -330,8 +333,7 @@ class Discover extends Component {
         <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.dataSource} />
         {view != 3 ? postsEl : null}
         {view == 3 ? typeEl : null}
-        {view == 3 ? usersEl : null}
-
+        {view == 3 ? usersParent : null}
       </View>
     );
   }

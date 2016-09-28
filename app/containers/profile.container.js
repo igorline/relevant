@@ -13,44 +13,34 @@ import React, {
   ScrollView,
   AlertIOS
 } from 'react-native';
-
-var FileUpload = require('NativeModules').FileUpload;
 import { connect } from 'react-redux';
-var Button = require('react-native-button');
-import * as authActions from '../actions/auth.actions';
-import * as postActions from '../actions/post.actions';
-import * as tagActions from '../actions/tag.actions';
 import { bindActionCreators } from 'redux';
-var ImagePickerManager = require('NativeModules').ImagePickerManager;
 import * as utils from '../utils';
-import { pickerOptions } from '../utils/pickerOptions';
-import * as animationActions from '../actions/animation.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
-import * as subscriptionActions from '../actions/subscription.actions';
-import * as investActions from '../actions/invest.actions';
-import Notification from '../components/notification.component';
 import ProfileComponent from '../components/profile.component';
-import InvestAnimation from '../components/investAnimation.component';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 class Profile extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       postsData: null,
-      enabled: true
+      enabled: true,
+      received: false
     }
   }
 
   componentWillMount() {
     var self = this;
     var posts = null;
+    
     if (self.props.posts.userPosts) {
       if (self.props.posts.userPosts[self.props.auth.user._id]) {
         if (self.props.posts.userPosts[self.props.auth.user._id].length) {
           var posts = self.props.posts.userPosts[self.props.auth.user._id];
           var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-          self.setState({postsData: fd.cloneWithRows(posts)});
+          self.setState({postsData: fd.cloneWithRows(posts), received: true});
         } 
       }
     }
@@ -69,7 +59,7 @@ class Profile extends Component {
 
     if (newPosts != oldPosts) {
       var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      self.setState({postsData: fd.cloneWithRows(newPosts)});
+      self.setState({postsData: fd.cloneWithRows(newPosts), received: true});
     }
   }
 
@@ -115,15 +105,17 @@ class Profile extends Component {
     if (self.props.auth.user) {
       profileEl = (<ProfileComponent {...self.props} user={self.props.auth.user} styles={styles} />);
 
-      if (self.state.postsData) {
+      if (self.state.postsData && self.state.received) {
         postsEl = (<ListView ref="postslist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.postsData} renderRow={self.renderFeedRow.bind(self)} />)
-      } else {
+      }
+      if (!self.state.postsData && self.state.received) {
         postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={[{fontWeight: '500'}, styles.darkGray]}>No posts to display</Text></View>)
       }
     }
 
     return (
       <View style={styles.fullContainer}>
+      <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.received} />
         {profileEl}
         {postsEl}
       </View>

@@ -76,12 +76,11 @@ class Application extends Component {
     var self = this;
     StatusBarIOS.setStyle('default');
     AppState.addEventListener('change', this.handleAppStateChange.bind(self));
-    self.props.actions.getAllStats();
+    //self.props.actions.getAllStats();
   }
 
   componentWillReceiveProps(next, nextState) {
     var self = this;
-    console.log(next)
     if (!self.props.auth.user && next.auth.user) {
       self.props.actions.userToSocket(next.auth.user);
       self.props.actions.getActivity(next.auth.user._id, 0);
