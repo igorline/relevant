@@ -9,6 +9,7 @@ import React, {
     TextInput,
     Dimensions,
     ScrollView,
+    ListView,
     TouchableHighlight
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
@@ -36,11 +37,8 @@ class User extends Component {
   constructor(props, context) {
       super(props, context)
       this.state = {
-        followers: null,
-        following: null,
-        online: false,
-        investAni: [],
-        init: false
+        postsData: null,
+        enabled: true
       }
   }
 
@@ -55,12 +53,76 @@ class User extends Component {
         type: 'profile'
       }
       self.props.actions.createNotification(self.props.auth.token, notifObj);
+      var posts = null;
+      if (self.props.posts.userPosts) {
+        if (self.props.posts.userPosts[self.props.users.selectedUser._id]) {
+          if (self.props.posts.userPosts[self.props.users.selectedUser._id].length) {
+            var posts = self.props.posts.userPosts[self.props.users.selectedUser._id];
+            var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+            self.setState({postsData: fd.cloneWithRows(posts)});
+          } 
+        }
+      }
+      console.log(self)
+      if (!posts) {
+        console.log('getting posts')
+        self.props.actions.getUserPosts(0, 5, self.props.users.selectedUser._id);
+      }
     }
   }
+
+  componentWillReceiveProps(next) {
+    var self = this;
+    // if (next.posts.userPosts != self.props.posts.userPosts) {
+    //   console.log('updating userPosts', next.posts.userPosts)
+    //   var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    //   self.setState({postsData: fd.cloneWithRows(next.posts.userPosts)});
+    // }
+
+
+    var newPosts = next.posts.userPosts[self.props.users.selectedUser._id];
+    var oldPosts = self.props.posts.userPosts[self.props.users.selectedUser._id];
+
+    if (newPosts != oldPosts) {
+      var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      self.setState({postsData: fd.cloneWithRows(newPosts)});
+    }
+
+  }
+
+
+  renderFeedRow(rowData) {
+    var self = this;
+      return (
+        <Post post={rowData} {...self.props} styles={styles} />
+      );
+  }
+
+  onScroll() {
+    var self = this;
+    if (self.refs.postslist.scrollProperties.offset + self.refs.postslist.scrollProperties.visibleLength >= self.refs.postslist.scrollProperties.contentLength) {
+      self.loadMore();
+    }
+  }
+
+  loadMore() {
+    var self = this;
+    var length = self.props.posts.userPosts.length;
+     console.log('load more, skip: ', length);
+    if (self.state.enabled) {
+      self.setState({enabled: false});
+        self.props.actions.getUserPosts(length, 5, self.props.users.selectedUser._id);
+      setTimeout(function() {
+        self.setState({enabled: true})
+      }, 1000);
+    }
+  }
+
 
   componentWillUnmount() {
     var self = this;
     self.props.actions.setSelectedUser();
+    // self.props.actions.clearUserPosts();
   }
 
   goTo(view) {
@@ -86,49 +148,30 @@ class User extends Component {
     if (this.props.users.selectedUser) {
         user = this.props.users.selectedUser;
         if (user.posts) posts = user.posts;
-        profileEl = (<ProfileComponent {...self.props} user={user} styles={styles} />)
-    }
+        profileEl = (<ProfileComponent {...self.props} user={user} styles={styles} />);
 
-    if (userImage) {
-      userImageEl = (<Image source={{uri: userImage}} style={styles.uploadAvatar} /> );
-    }
-
-    if (posts) {
-      if (posts.length > 0) {
-
-        if (posts.length > 10) {
-          posts = posts.slice(0, 10);
-        } else {
-          posts = posts;
-        }
-
-        postsEl = posts.map(function(post, i) {
-          return (<Post key={i} post={post} {...self.props} styles={styles} />)
-        })
+      if (self.state.postsData) {
+        postsEl = (<ListView ref="postslist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.postsData} renderRow={self.renderFeedRow.bind(self)} />)
       } else {
-        postsEl = (<View style={[styles.padding10]}><Text>0 Posts</Text></View>);
+        postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={[{fontWeight: '500'}, styles.darkGray]}>No posts to display</Text></View>)
       }
-    } else {
-      postsEl = (<View style={styles.padding10}><Text>0 Posts</Text></View>);
     }
 
     return (
       <View style={styles.fullContainer}>
-        <ScrollView style={styles.fullContainer}>
            {profileEl}
           <TouchableHighlight style={styles.thirstyIcon}>
             <Text style={styles.white} onPress={self.goTo.bind(self, 'thirst')} >Thirsty 👅💦</Text>
           </TouchableHighlight>
-          <View>
+
             {postsEl}
-          </View>
-        </ScrollView>
+
       </View>
     );
   }
 }
 
-export default connect()(User);
+export default User;
 
 const localStyles = StyleSheet.create({
   postsHeader: {
@@ -141,7 +184,7 @@ const localStyles = StyleSheet.create({
     padding: 10,
     backgroundColor: 'black',
     borderRadius: 5,
-    width: 108,
+    width: 120,
     justifyContent: 'center',
     color: 'white'
   },

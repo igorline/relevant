@@ -7,6 +7,7 @@ import online from './online';
 import messages from './messages';
 import animation from './animation';
 import view from './view';
+import stats from './stats';
 var {Router, routerReducer, Route, Container, Animations, Schema} = require('react-native-redux-router');
 
 export {
@@ -19,6 +20,7 @@ export {
   online,
   messages,
   animation,
-  view
+  view,
+  stats
 };
 

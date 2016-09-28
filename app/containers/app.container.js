@@ -42,6 +42,7 @@ import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as tagActions from '../actions/tag.actions';
 import * as userActions from '../actions/user.actions';
+import * as statsActions from '../actions/stats.actions';
 import * as onlineActions from '../actions/online.actions';
 import * as notifActions from '../actions/notif.actions';
 import * as viewActions from '../actions/view.actions';
@@ -75,10 +76,12 @@ class Application extends Component {
     var self = this;
     StatusBarIOS.setStyle('default');
     AppState.addEventListener('change', this.handleAppStateChange.bind(self));
+    self.props.actions.getAllStats();
   }
 
   componentWillReceiveProps(next, nextState) {
     var self = this;
+    console.log(next)
     if (!self.props.auth.user && next.auth.user) {
       self.props.actions.userToSocket(next.auth.user);
       self.props.actions.getActivity(next.auth.user._id, 0);
@@ -96,6 +99,9 @@ class Application extends Component {
       self.props.actions.updateUser(user, self.props.auth.token).then(function(results) {
         if (results) self.props.actions.getUser(self.props.auth.token, false);
       })
+    }
+    if (self.props.posts.tag != nextProps.posts.tag && nextProps.posts.tag) {
+      self.props.view.nav.replace('discover');
     }
   }
 
@@ -414,13 +420,14 @@ function mapStateToProps(state) {
     notif: state.notif,
     animation: state.animation,
     view: state.view,
-    messages: state.messages
+    messages: state.messages,
+    stats: state.stats
    }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions, ...viewActions, ...messageActions, ...tagActions, ...userActions, ...investActions, ...subscriptionActions}, dispatch)
+    actions: bindActionCreators({...statsActions, ...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions, ...viewActions, ...messageActions, ...tagActions, ...userActions, ...investActions, ...subscriptionActions}, dispatch)
   }
 }
 

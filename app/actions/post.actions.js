@@ -22,13 +22,20 @@ export function getFeed(token, skip, tag) {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON, 'setting feed')
+      console.log(responseJSON, 'setting feed');
       dispatch(setFeed(responseJSON));
     })
     .catch((error) => {
       console.log(error, 'error');
     });
   }
+}
+
+export function clearUserPosts(user) {
+  return {
+    type: 'CLEAR_USER_POSTS',
+    payload: user
+  };
 }
 
 export function deletePost(token, post) {
@@ -45,7 +52,8 @@ export function deletePost(token, post) {
     .then((response) => {
       console.log(response, 'delete response')
       dispatch(removePostFromIndex(post));
-      dispatch(authActions.getUser(token, false))
+      dispatch(clearUserPosts(post.user._id));
+      dispatch(getUserPosts(0, 5, post.user._id));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -59,6 +67,15 @@ function setFeed(feed) {
     return {
         type: types.SET_FEED,
         payload: feed
+    };
+}
+
+
+export
+function updateFeed(feeditem) {
+    return {
+        type: types.UPDATE_FEED,
+        payload: feeditem
     };
 }
 
@@ -78,11 +95,13 @@ function setPostCategory(tag) {
     };
 }
 
-export function getPosts(skip, tags, sort) {
+export function getPosts(skip, tags, sort, limit) {
   //console.log(skip, tags, sort);
   var tagsString = '';
   if (!skip) skip = 0;
+  if (!limit) limit = 5;
   if (!sort) sort = null;
+
   var url = process.env.API_SERVER+'/api/post?skip='+skip+'&sort='+sort+'&limit='+limit;
 
   if (tags) {
@@ -128,6 +147,53 @@ export function setPosts(data) {
     return {
         type: types.SET_POSTS,
         payload: data
+    };
+}
+
+
+export function getUserPosts(skip, limit, userId) {
+  console.log('get user posts', userId)
+  var tagsString = '';
+  if (!skip) skip = 0;
+  if (!limit) limit = 5;
+
+  var url = process.env.API_SERVER+'/api/post/user/'+userId+'?skip='+skip+'&limit='+limit;
+
+  return function(dispatch) {
+    fetch(url, {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+      }
+    })
+    .then(utils.fetchError.handleErrors)
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      console.log(responseJSON, 'user posts response')
+      dispatch(setUserPosts(userId, responseJSON));
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+    });
+  }
+}
+
+export function setUserPosts(userId, posts) {
+    return {
+        type: 'SET_USER_POSTS',
+        payload: {
+          user: userId,
+          posts: posts
+        }
+    };
+}
+
+export function setRecentPosts(posts) {
+    return {
+        type: types.SET_RECENT_POSTS,
+        payload: posts
     };
 }
 
@@ -245,6 +311,53 @@ export function irrelevant(token, postId) {
   }
 }
 
+export function updateComment(comment, authToken) {
+    return function(dispatch) {
+       return fetch(process.env.API_SERVER+'/api/comment?access_token='+authToken, {
+            credentials: 'include',
+            method: 'PUT',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(comment)
+        })
+        .then((response) => {
+            console.log('updated comment');
+            return true;
+        })
+        .catch((error) => {
+            console.log(error, 'error');
+            return false;
+        });
+    }
+}
+
+export function editPost(post, authToken) {
+    return function(dispatch) {
+       return fetch(process.env.API_SERVER+'/api/post?access_token='+authToken, {
+            credentials: 'include',
+            method: 'PUT',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(post)
+        })
+        .then((response) => response.json())
+        .then((responseJSON) => {
+          dispatch(updatePost(responseJSON));
+          dispatch(updateFeed(responseJSON));
+          dispatch(authActions.getUser(post.user._id))
+          return true;
+        })
+        .catch((error) => {
+            console.log(error, 'error');
+            return false;
+        });
+    }
+}
+
 export function deleteComment(token, id, postId) {
   return function(dispatch) {
     fetch(process.env.API_SERVER+'/api/comment/'+id+'?access_token='+token, {
@@ -310,27 +423,6 @@ export function createComment(token, commentObj) {
   }
 }
 
-export function createSubscription(token, post) {
-  return dispatch => {
-    fetch( apiServer + 'subscription?access_token='+token, {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        following: post.user._id
-      })
-    })
-    .then((response) => response.json())
-    .then((responseJSON) => {
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  }
-}
 
 export function setActivePost(post) {
   var set = post ? post : null;

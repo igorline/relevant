@@ -16,6 +16,7 @@ import React, {
   LayoutAnimation,
   ScrollView,
   DatePickerIOS,
+  AlertIOS,
   ActionSheetIOS,
   TouchableWithoutFeedback
 } from 'react-native';
@@ -50,32 +51,65 @@ class Post extends Component {
       invested: false,
       textInputValue: null,
       time: 0,
+      toggleInfo: false,
       timeActive: false,
+      editedBody: null,
+      editedTitle: null,
+      editing: false,
+      myPost: false,
+      bodyHeight: 0,
+      titleHeight: 0,
       buttons: [
         'Share',
         'Irrelevant',
-        'Delete',
         'Cancel'
       ],
-      destructiveIndex: 2,
-      cancelIndex: 3,
+      cancelIndex: 2,
     }
   }
 
   onShare() {
     var self = this;
     Share.open({
-      share_text: self.props.post.title,
-      share_URL: self.props.post.link ? self.props.post.link : 'http://relevant-community.herokuapp.com/',
-      title: "Share Link"
+      title: 'Relevant',
+      url: self.props.post.link ? self.props.post.link : 'http://relevant-community.herokuapp.com/',
+      subject: "Share Link",
+      message: self.props.post.title ? 'Relevant post: ' + self.props.post.title : 'Relevant post:'
     },(e) => {
       console.log(e);
     });
   }
 
   componentDidMount() {
+    var self = this;
     this.checkTime(this);
     this.checkInvestments(this.props.post.investments);
+    if (self.props.post) {
+      self.setState({
+        editedBody: self.props.post.body,
+        editedTitle: self.props.post.title
+      })
+      if (self.props.post.user._id == self.props.auth.user._id) {
+        self.setState({
+          myPost: true,
+          buttons: [
+            'Share',
+            'Edit',
+            'Delete',
+            'Cancel'
+          ],
+          destructiveIndex: 2,
+          cancelIndex: 3,
+        });
+      }
+    }
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    var self = this;
+    if (this.props.post.investments != nextProps.post.investments) {
+      this.checkInvestments(nextProps.post.investments);
+    }
   }
 
   checkInvestments(investments) {
@@ -111,19 +145,12 @@ class Post extends Component {
   }
 
   openLink(url) {
-      Linking.openURL(url)
+    Linking.openURL(url)
   }
 
   toggleExpanded() {
     var self = this
     self.setState({expanded: self.state.expanded = !self.state.expanded});
-  }
-
-  componentWillUpdate(nextProps) {
-    var self = this;
-    if (this.props.post.investments != nextProps.post.investments) {
-      this.checkInvestments(nextProps.post.investments);
-    }
   }
 
   extractDomain(url) {
@@ -143,28 +170,107 @@ class Post extends Component {
     return noPrefix;
   }
 
+
   showActionSheet() {
     var self = this;
-    ActionSheetIOS.showActionSheetWithOptions({
-      options: self.state.buttons,
-      cancelButtonIndex: self.state.cancelIndex,
-      destructiveButtonIndex: self.state.destructiveIndex,
-    },
-    (buttonIndex) => {
-      switch(buttonIndex) {
-        case 0:
+    if (self.state.myPost) {
+      ActionSheetIOS.showActionSheetWithOptions({
+        options: self.state.buttons,
+        cancelButtonIndex: self.state.cancelIndex,
+        destructiveButtonIndex: self.state.destructiveIndex,
+      },
+      (buttonIndex) => {
+        switch(buttonIndex) {
+          case 0:
             self.onShare();
             break;
-        case 1:
-            self.irrelevant();
+          case 1:
+            self.toggleEditing();
             break;
-        case 2:
+          case 2:
             self.deletePost();
             break;
-        default:
+          default:
             return;
+        }
+      });
+    } else {
+      ActionSheetIOS.showActionSheetWithOptions({
+        options: self.state.buttons,
+        cancelButtonIndex: self.state.cancelIndex,
+        destructiveButtonIndex: self.state.destructiveIndex,
+      },
+      (buttonIndex) => {
+        switch(buttonIndex) {
+          case 0:
+            self.onShare();
+            break;
+          case 1:
+            self.irrelevant();
+            break;
+          default:
+            return;
+        }
+      });
+    }
+  }
+
+  toggleEditing() {
+    var self = this;
+    self.setState({editing: !self.state.editing})
+  }
+
+  saveEdit() {
+    var self = this;
+    var title = self.state.editedTitle;
+    var body = self.state.editedBody;
+    var bodyTags = body.match(/#\S+/g);
+    var bodyMentions = body.match(/@\S+/g);
+    var tags = [];
+    var mentions = [];
+    var preTags = [];
+    if (self.props.post.tags) {
+      self.props.post.tags.forEach(function(tag, i) {
+        preTags.push(tag.name);
+      })
+    }
+
+    if (bodyTags) {
+      bodyTags.forEach(function(tag) {
+        tag = tag.replace('#', '');
+        tags.push(tag);
+      })
+    }
+    if (bodyMentions) {
+      bodyMentions.forEach(function(name) {
+        name = name.replace('@', '');
+        mentions.push(name);
+      })
+    }
+
+    var finalTags = tags.concat(preTags);
+
+    var postBody = {
+      user: self.props.auth.user._id,
+      _id: self.props.post._id,
+      body: body,
+      tags: finalTags,
+      title: title,
+      mentions: mentions
+    };
+
+    //Update post action here
+
+    self.props.actions.editPost(postBody, self.props.auth.token).then(function(results) {
+      console.log(results, 'edit results')
+       if (!results) {
+          AlertIOS.alert("Update error please try again");
+      } else {
+         AlertIOS.alert("Updated");
+         self.setState({editing: false});
       }
-    });
+    })
+
   }
 
   toggleInvest() {
@@ -273,9 +379,14 @@ class Post extends Component {
     self.props.actions.stopAnimation();
   }
 
+  toggleInfo() {
+    var self = this;
+    var newVar = !self.state.toggleInfo;
+    self.setState({toggleInfo: newVar});
+  }
+
   render() {
     var self = this;
-    if (self.props.post._id == '57bde5db8d03844f22ef92ae') console.log(self.props.post, 'post')
     var pickerStatus = self.state.pickerStatus;
     var post, title, description, image, link, imageEl, postUserImage, postUserImageEl, postUser, postUserName, body, balance, createdAt, user, comments, functionBool, tags, tagsEl = null;
     var commentString = 'Add comment';
@@ -283,6 +394,7 @@ class Post extends Component {
     var user = null;
     var comments = null;
     var value = 0;
+    var bodyEl = null;
     var functionBool = false;
     var expanded = this.state.expanded;
     if (this.props.auth.user) {
@@ -293,6 +405,12 @@ class Post extends Component {
     var pickerArray = [];
     var investOptions = [];
     var lastPost = false;
+    var expandedInvest = self.state.expandedInvest;
+    var toggleBool = null;
+    var investButtonEl = null;
+    var uninvestButtonEl = null;
+    var bodyEditingEl = null;
+    var titleEditingEl = null;
 
     if (this.props.post) {
       post = this.props.post;
@@ -322,6 +440,23 @@ class Post extends Component {
       }
     }
 
+    if (self.state.editing) {
+      bodyEditingEl = (
+        <TextInput 
+          multiline={true}
+          autoGrow={true}
+          style={[styles.darkGray, styles.editingInput, {height: Math.max(35, self.state.bodyHeight)}]} 
+          onChange={(event) => {
+            this.setState({
+              editedBody: event.nativeEvent.text,
+              bodyHeight: event.nativeEvent.contentSize.height,
+            });
+          }}
+          value={this.state.editedBody}
+        />
+      );
+    }
+
     if (comments) {
       if (comments.length == 1) commentString = '1 Comment';
       if (comments.length > 1) commentString = comments.length+' Comments';
@@ -349,33 +484,27 @@ class Post extends Component {
       imageEl = (<Image resizeMode={'cover'} source={{uri: image}} style={styles.postImage} />);
     }
 
-    var expandedInvest = self.state.expandedInvest;
-    var toggleBool = null;
-    var investButtonEl = null;
-    var uninvestButtonEl = null;
-
     if (post.user._id != self.props.auth.user._id && !self.state.invested) {
-
-        investButtonEl = (<TouchableWithoutFeedback
-                onPressIn={this.handlePressIn.bind(self)}
-                onPressOut={this.handlePressOut.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
-                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View>
-            </TouchableWithoutFeedback>)
-
+      investButtonEl = (<TouchableWithoutFeedback
+          onPressIn={this.handlePressIn.bind(self)}
+          onPressOut={this.handlePressOut.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
+          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View>
+        </TouchableWithoutFeedback>
+      )
     }
 
-     if (post.user._id != self.props.auth.user._id && self.state.invested) {
-      uninvestButtonEl = (<TouchableWithoutFeedback
-                onPress={this.uninvest.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
-                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Uninvest</Text></View>
-            </TouchableWithoutFeedback>)
-     }
-
-
-  var bodyEl = null;
+    if (post.user._id != self.props.auth.user._id && self.state.invested) {
+      uninvestButtonEl = (
+        <TouchableWithoutFeedback
+          onPress={this.uninvest.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
+          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Uninvest</Text></View>
+        </TouchableWithoutFeedback>
+      )
+    }
 
     if (body) {
       var bodyObj = {};
+
       var textArr = body.replace((/[@#]\S+/g), function(a){return "`"+a+"`"}).split(/`/);
       textArr.forEach(function(section, i) {
         bodyObj[i] = {};
@@ -407,9 +536,10 @@ class Post extends Component {
           if (self.props.post.mentions) {
             if (self.props.post.mentions.length) {
               self.props.post.mentions.forEach(function(user) {
-                // console.log(user.name, text.substr(1, text.length), 'compare')
-                if (user.name.toLowerCase() == text.substr(1, text.length).toLowerCase()) {
-                  mentionObj = user;
+                if (user.name) {
+                  if (user.name.toLowerCase() == text.substr(1, text.length).toLowerCase()) {
+                    mentionObj = user;
+                  }
                 }
               })
             }
@@ -419,6 +549,36 @@ class Post extends Component {
           return (<Text>{bodyObj[key].text}</Text>);
         }
       });
+    }
+    var titleEl = null;
+    if (!self.state.editing) {
+      titleEl = (<Text style={[styles.font20, styles.darkGray]}>{title ? title : 'Untitled'}</Text>)
+    } else {
+      titleEl = (<TextInput
+          multiline={true}
+          autoGrow={true}
+          style={[styles.darkGray, styles.editingInput, {height: Math.max(35, self.state.titleHeight)}]} 
+          onChange={(event) => {
+            this.setState({
+              editedTitle: event.nativeEvent.text,
+              titleHeight: event.nativeEvent.contentSize.height,
+            });
+          }}
+          value={this.state.editedTitle}
+        />
+      )
+    }
+
+    var postInfo = null;
+
+    if (self.state.passed) {
+      if (self.state.toggleInfo) {
+        postInfo = (<View><Text style={[styles.font10, styles.textRight]}>💵 <Text style={styles.active}>{value.toFixed(2)}</Text></Text></View>);
+      } else {
+        postInfo = (<View><Text style={[styles.font10, styles.textRight]}>📈 <Text style={styles.active}>{relevance.toFixed(2)}</Text></Text></View>);
+      }
+    } else {
+      postInfo = (<View style={[styles.countdown]}><Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} /><Text style={[styles.font10, styles.textRight, styles.darkGray]}>Results in {self.state.timeUntilString}</Text></View>);
     }
 
     return (
@@ -435,9 +595,9 @@ class Post extends Component {
                 <TouchableWithoutFeedback onPress={self.setSelected.bind(self, self.props.post.user)} style={[styles.infoLeft, styles.innerInfo]}>
                   <Text style={[styles.font15, styles.darkGray]}>{self.props.post.user.name}</Text>
                 </TouchableWithoutFeedback>
-                <View style={[styles.infoRight, styles.innerInfo]}>
-                  {self.state.passed ? <View><Text style={[styles.font10, styles.textRight]}>📈<Text style={styles.active}>{relevance.toFixed(2)}</Text></Text><Text style={[styles.font10, styles.textRight]}>💵<Text style={styles.active}>{value.toFixed(2)}</Text></Text></View> : <View style={[styles.countdown]}><Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} /><Text style={[styles.font10, styles.textRight, styles.darkGray]}>Results in {self.state.timeUntilString}</Text></View>}
-                </View>
+                <TouchableHighlight underlayColor={'transparent'} onPress={self.toggleInfo.bind(self)} style={[styles.infoRight, styles.innerInfo]}>
+                  {postInfo}
+                </TouchableHighlight>
               </View>
             </View>
           </View>
@@ -445,9 +605,21 @@ class Post extends Component {
 
         <TouchableHighlight>
           <View>
-          {body ? <View style={[styles.postBody]}><Text style={styles.darkGray} numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text></View> : null}
+            <View style={[styles.postBody]}>
+              {body && !self.state.editing ? <Text style={styles.darkGray} numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text> : null}
+              {body && self.state.editing ? bodyEditingEl : null}
+            </View>
           </View>
         </TouchableHighlight>
+
+        {self.state.editing ? <View style={styles.postButtons}>
+          <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={self.saveEdit.bind(self)}>
+            <Text style={[styles.font10, styles.postButtonText]}>Save changes</Text>
+          </TouchableHighlight>
+          <TouchableHighlight underlayColor={'transparent'} onPress={self.toggleEditing.bind(self)} style={styles.postButton}>
+            <Text style={[styles.font10, styles.postButtonText]}>Cancel</Text>
+          </TouchableHighlight>
+        </View> : null}
 
         <View style={styles.postButtons}>
           {investButtonEl}
@@ -481,7 +653,7 @@ class Post extends Component {
         <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(null, link) : null}>
           <View style={styles.postSection}>
             {lastPost ? <Text style={[styles.lastPost, styles.darkGray]}>Last subscribed post❗️</Text> : null}
-            <Text style={[styles.font20, styles.darkGray]}>{title ? title : 'Untitled'}</Text>
+            {titleEl}
             {link ? <Text style={[styles.font10, styles.darkGray]}>from {self.extractDomain(link)}</Text> : null}
           </View>
         </TouchableHighlight>
@@ -494,25 +666,6 @@ class Post extends Component {
 export default Post;
 
 const localStyles = StyleSheet.create({
-  postButtons: {
-    flexDirection: 'row',
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingBottom: 10,
-    paddingTop: 10,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap'
-  },
-  postButton: {
-    backgroundColor: 'white',
-    padding: 10,
-    flex: 1,
-    height: 30,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
   commentPad: {
     paddingTop: 10,
     paddingBottom: 5,
@@ -524,9 +677,6 @@ const localStyles = StyleSheet.create({
   },
   expandedInvest: {
     height: 200,
-  },
-  postButtonText: {
-    color: '#808080'
   },
   hiddenInvest: {
     height: 0,
@@ -623,8 +773,6 @@ const localStyles = StyleSheet.create({
   progressCirc: {
     marginRight: 5
   },
-  lastPost: {
-  }
 });
 
 

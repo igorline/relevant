@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {read: 1, discover: 1, route: null, nav: null, post: {view: 'url', category: false}, back: false, name: null};
+const initialState = {read: 1, discover: 1, route: null, nav: null, post: {view: 'url'}, back: false, name: null};
 const REPLACE = 'REPLACE';
 
 

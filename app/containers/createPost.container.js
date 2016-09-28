@@ -118,7 +118,7 @@ class CreatePost extends Component {
     }
 
     if (!self.props.posts.createPostCategory) {
-       AlertIOS.alert("Add category");
+      AlertIOS.alert("Add category");
       return;
     }
 
@@ -196,6 +196,8 @@ class CreatePost extends Component {
            AlertIOS.alert("Posted");
           self.props.actions.setPostCategory(null);
           self.props.view.nav.resetTo('discover');
+          self.props.actions.clearUserPosts(self.props.auth.user._id);
+          self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
         }
       })
     }
@@ -304,7 +306,6 @@ class CreatePost extends Component {
     var pickerArray = [];
     var view = self.props.view.post.view;
     var parentTags = null;
-    var category = self.props.view.post.category;
     var categoryEl = null;
     if (self.props.auth) {
       if (self.props.auth.user) user = self.props.auth.user;
@@ -323,20 +324,10 @@ class CreatePost extends Component {
         </TouchableHighlight>
       </View>)
 
-  var scrollStyles = {};
-  if (category) {
-    scrollStyles = {
-      flex: 1
-    }
-  } else {
-    scrollStyles = {
-      height: fullHeight - 120
-    }
-  }
 
     return (
       <View style={[{height: self.state.visibleHeight}]}>
-     <ScrollView contentContainerStyle={[{flexDirection: 'column'}, scrollStyles]}>
+     <ScrollView contentContainerStyle={{flexDirection: 'column', height: fullHeight - 120}}>
           {typeEl}
           {view == 'url' ? <View style={{borderBottomColor: !self.state.urlPreview ? '#f0f0f0' : 'transparent', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1}}><TextInput numberOfLines={1} style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink, urlPreview: null})} onSubmitEditing={self.createPreview.bind(self)} value={this.state.postLink} returnKeyType='done' /></View> : null}
 
