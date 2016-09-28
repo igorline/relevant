@@ -1,6 +1,18 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {tag: null, pages: null, page: null, comments: null, postError: null, activePost: null, index: [], feed: [], discoverTags: null, parentTags: null, createPostCategory: null};
+const initialState = {
+  tag: null,
+  pages: null,
+  page: null,
+  comments: null,
+  postError: null,
+  activePost: null,
+  index: [],
+  feed: [],
+  discoverTags: null,
+  parentTags: null,
+  createPostCategory: null
+};
 
 const updatePostElement = (array, post) => {
   if (!array) return;
@@ -50,8 +62,9 @@ export default function post(state = initialState, action) {
   switch (action.type) {
 
     case types.SET_POSTS: {
+      var key = action.payload.type;
       return Object.assign({}, state, {
-          'index': addItems(state.index, action.payload)
+          index: addItems(state.index, action.payload)
       })
     }
 
@@ -64,6 +77,18 @@ export default function post(state = initialState, action) {
     case types.UPDATE_POSTS: {
        return Object.assign({}, state, {
         'index': action.payload
+      })
+    }
+
+    case types.UPDATE_POST: {
+      return Object.assign({}, state, {
+        'index':  updatePostElement(state.index, action.payload)
+      })
+    }
+
+    case types.REMOVE_POST: {
+      return Object.assign({}, state, {
+        'index':  removeItem(state.index, action.payload)
       })
     }
 
@@ -84,7 +109,6 @@ export default function post(state = initialState, action) {
         'createPostCategory': action.payload
       })
     }
-
 
     case types.CLEAR_POSTS: {
        return Object.assign({}, state, {
@@ -111,12 +135,6 @@ export default function post(state = initialState, action) {
       })
     }
 
-    case types.UPDATE_FEED: {
-      return Object.assign({}, state, {
-        'feed': updatePostElement(state.feed, action.payload)
-      })
-    }
-
     case types.SET_COMMENTS: {
       return Object.assign({}, state, {
         'comments': action.payload
@@ -135,6 +153,12 @@ export default function post(state = initialState, action) {
       })
     }
 
+    case types.UPDATE_FEED: {
+      return Object.assign({}, state, {
+        'feed': updatePostElement(state.feed, action.payload)
+      })
+    }
+
     case types.ADD_POST_TO_FEED :{
       return Object.assign({}, state, {
         'feed': addItem(state.index, action.payload)
@@ -144,18 +168,6 @@ export default function post(state = initialState, action) {
     case types.SET_FEED: {
       return Object.assign({}, state, {
         'feed': addItems(state.feed, action.payload)
-      })
-    }
-
-    case types.UPDATE_POST: {
-      return Object.assign({}, state, {
-        'index':  updatePostElement(state.index, action.payload)
-      })
-    }
-
-    case types.REMOVE_POST: {
-      return Object.assign({}, state, {
-        'index':  removeItem(state.index, action.payload)
       })
     }
 

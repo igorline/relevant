@@ -13,7 +13,8 @@ import React, {
   Animated,
   Easing,
   TouchableHighlight,
-  RecyclerViewBackedScrollView
+  RecyclerViewBackedScrollView,
+  InteractionManager
 } from 'react-native';
 import { connect } from 'react-redux';
 var Button = require('react-native-button');
@@ -54,24 +55,33 @@ class Discover extends Component {
   }
 
   componentDidMount() {
-    var self = this;
-    if (self.props.posts.comments) this.props.actions.setComments(null);
-    if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
-    if (self.props.posts.tag && self.props.posts.index) self.props.actions.clearPosts();
-    if (self.props.posts.index.length > 0) {
-      var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
-    }
-    if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null);
-    if (self.props.posts.tag) self.props.actions.getPosts(0, self.props.posts.tag, null);
+
+    InteractionManager.runAfterInteractions(() => {
+      //This switches the view before starting to render stuff
+      setTimeout(() => {
+        var self = this;
+        if (self.props.posts.comments) this.props.actions.setComments(null);
+        if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
+        if (self.props.posts.tag && self.props.posts.index) self.props.actions.clearPosts();
+        if (self.props.posts.index.length > 0) {
+          var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+          self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
+        }
+        if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null);
+        if (self.props.posts.tag) self.props.actions.getPosts(0, self.props.posts.tag, null);
+      }, 1)
+    });
+
   }
 
   componentWillReceiveProps(next) {
-    var self = this;
-    if (next.posts.index != self.props.posts.index) {
-      var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      self.setState({dataSource: ds.cloneWithRows(next.posts.index)});
-    }
+
+      var self = this;
+      if (next.posts.index != self.props.posts.index) {
+        console.log("RENDERING LIST")
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        self.setState({dataSource: ds.cloneWithRows(next.posts.index)});
+      }
   }
 
   clearTag() {
@@ -302,7 +312,7 @@ class Discover extends Component {
 
 
     if (self.state.dataSource) {
-      postsEl = (<ListView ref="listview" dataSource={self.state.dataSource} renderHeader={self.renderHeader.bind(self)} renderRow={self.renderRow.bind(self)} contentOffset={{x: 0, y: 35}} renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} />)
+      postsEl = (<ListView ref="listview" removeClippedSubviews="true" pageSize="1" initialListSize="1" dataSource={self.state.dataSource} renderHeader={self.renderHeader.bind(self)} renderRow={self.renderRow.bind(self)} contentOffset={{x: 0, y: 35}} renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} />)
     }
     var userIndex = null;
     if (this.props.auth.userIndex) {

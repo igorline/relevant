@@ -5,10 +5,12 @@ import * as utils from '../utils';
 import * as authActions from './auth.actions';
 
 var apiServer = process.env.API_SERVER+'/api/'
+//load 5 posts at a time
+const limit = 500;
 
 export function getFeed(token, skip, tag) {
-  var url = process.env.API_SERVER+'/api/feed?access_token='+token+'&skip='+skip;
-  if (tag) url = process.env.API_SERVER+'/api/feed?access_token='+token+'&skip='+skip+'&tag='+tag._id;
+  var url = process.env.API_SERVER+'/api/feed?access_token='+token+'&skip='+skip+'&limit='+limit;
+  if (tag) url = process.env.API_SERVER+'/api/feed?access_token='+token+'&skip='+skip+'&tag='+tag._id+'&limit='+limit;
   return function(dispatch) {
     fetch(url, {
       credentials: 'include',
@@ -81,7 +83,7 @@ export function getPosts(skip, tags, sort) {
   var tagsString = '';
   if (!skip) skip = 0;
   if (!sort) sort = null;
-  var url = process.env.API_SERVER+'/api/post?skip='+skip+'&sort='+sort;
+  var url = process.env.API_SERVER+'/api/post?skip='+skip+'&sort='+sort+'&limit='+limit;
 
   if (tags) {
     if (tags.length) {
@@ -99,7 +101,7 @@ export function getPosts(skip, tags, sort) {
     } else {
       tagsString = tags._id;
     }
-    url = process.env.API_SERVER+'/api/post?skip='+skip+'&tag='+tagsString+'&sort='+sort;
+    url = process.env.API_SERVER+'/api/post?skip='+skip+'&tag='+tagsString+'&sort='+sort+'&limit='+limit;
   }
 
   return function(dispatch) {
@@ -114,7 +116,7 @@ export function getPosts(skip, tags, sort) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setPosts(responseJSON));
+      dispatch(setPosts(responseJSON, ));
     })
     .catch((error) => {
         console.log(error, 'error');
@@ -126,13 +128,6 @@ export function setPosts(data) {
     return {
         type: types.SET_POSTS,
         payload: data
-    };
-}
-
-export function setRecentPosts(posts) {
-    return {
-        type: types.SET_RECENT_POSTS,
-        payload: posts
     };
 }
 
@@ -351,9 +346,3 @@ export function setComments(comments) {
         payload: comments
     };
 }
-
-
-
-
-
-
