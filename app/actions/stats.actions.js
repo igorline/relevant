@@ -49,7 +49,6 @@ export function parseStats(data) {
 export function getStats(id) {
   var present = new Date();
   var past = new Date(present - 1000 * 60 * 60 * 1);
- 
   var url = process.env.API_SERVER+'/api/statistics/change/'+id+'?startTime='+past+'&endTime='+present;
   return function(dispatch) {
     fetch(url, {

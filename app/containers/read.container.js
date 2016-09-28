@@ -42,7 +42,6 @@ class Read extends Component {
 
   componentDidMount() {
     var self = this;
-    console.log(self.props.posts.feed)
     if (self.props.posts.feed && self.props.posts.tag) this.props.actions.clearPosts();
     if (self.props.posts.comments) this.props.actions.setComments(null);
     if (self.props.posts.feed) {
@@ -56,19 +55,9 @@ class Read extends Component {
     }
   }
 
-  componentWillUpdate(next) {
-    // var self = this;
-    // if (next.posts.feed != self.props.posts.feed) {
-    //   console.log('updating feed', next.posts.feed)
-    //   var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    //   self.setState({feedData: fd.cloneWithRows(next.posts.feed)});
-    // }
-  }
-
   componentWillReceiveProps(next) {
     var self = this;
     if (next.posts.feed != self.props.posts.feed) {
-      console.log('updating feed', next.posts.feed)
       var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({feedData: fd.cloneWithRows(next.posts.feed)});
     }

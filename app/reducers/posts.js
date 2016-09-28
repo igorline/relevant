@@ -1,4 +1,5 @@
 import * as types from '../actions/actionTypes';
+import view from './view';
 
 const initialState = {
   tag: null,
@@ -70,7 +71,7 @@ export default function post(state = initialState, action) {
     case types.SET_POSTS: {
       var key = action.payload.type;
       return Object.assign({}, state, {
-          index: addItems(state.index, action.payload)
+        index: addItems(state.index, action.payload)
       })
     }
 
@@ -90,13 +91,15 @@ export default function post(state = initialState, action) {
     }
 
     case types.ADD_POST: {
-       return Object.assign({}, state, {
-          'index': addItem(state.index, action.payload)
+      console.log(view, 'add post current view')
+      return Object.assign({}, state, {
+          // 'queued': addItem(state.index, action.payload)
+        'queued': action.payload
       })
     }
 
     case types.UPDATE_POSTS: {
-       return Object.assign({}, state, {
+      return Object.assign({}, state, {
         'index': action.payload
       })
     }
@@ -174,7 +177,6 @@ export default function post(state = initialState, action) {
       })
     }
 
-
     case types.ADD_POST_TO_FEED :{
       return Object.assign({}, state, {
         'feed': addItem(state.index, action.payload)
@@ -194,17 +196,12 @@ export default function post(state = initialState, action) {
     }
 
     case 'CLEAR_USER_POSTS' :{
-      var arr = [];
       var user = action.payload;
-      console.log(user, 'user')
-      if (state.userPosts[user]) arr = state.userPosts[user];
-      var clone = state;
-      delete clone.userPosts[user];
-      console.log(clone, 'clone')
+      delete state.userPosts[user];
 
       var newObj = {
         userPosts: {
-          ...clone.userPosts
+          ...state.userPosts
         }
       };
 

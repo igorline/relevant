@@ -13,7 +13,7 @@ const initialState = {
 
 
 export default function auth(state = initialState, action) {
-  console.log(action.type, 'action type')
+  //console.log(action.type, 'action type')
   switch (action.type) {
 
     case types.LOGIN_USER_REQUEST:
@@ -54,7 +54,6 @@ export default function auth(state = initialState, action) {
       })
 
     case types.SET_USER:
-      console.log(action, 'set user action');
       return Object.assign({}, state, {
         'isAuthenticating': false,
         'isAuthenticated': action.payload ? true : false,

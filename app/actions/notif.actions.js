@@ -101,7 +101,7 @@ function getGeneralActivity(userId, skip) {
 export
 function markRead(token, userId) {
   return function(dispatch) {
-    console.log('mark read')
+    //console.log('mark read')
     fetch(process.env.API_SERVER+'/api/notification?access_token='+token+'&forUser='+userId, {
       credentials: 'include',
       method: 'PUT',
@@ -135,7 +135,7 @@ function createNotification(token, obj) {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log('created notif')
+      //console.log('created notif')
     })
     // .catch((error) => {
     //   console.log(error, 'error creating notif')

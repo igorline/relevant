@@ -10,7 +10,6 @@ const countUnread = (notifications) => {
         if (!activity.read && activity.personal) num += 1;
       }
     })
-    console.log('counting, returning ', num)
     if (num > 0) {
       return num;
     } else {
