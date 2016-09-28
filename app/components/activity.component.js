@@ -140,7 +140,6 @@ class SingleActivity extends Component {
         );
        }
     } else if (singleActivity.personal && !singleActivity.byUser) {
-      console.log(singleActivity, 'activity')
       if (singleActivity.type == 'partialEarning') {
           activityEl = (
             <View style={styles.singleActivity}>

@@ -36,13 +36,13 @@ export function goToTag(tag) {
   return function(dispatch) {
     console.log('go to', tag)
     dispatch(setTag(tag));
-    dispatch(Actions.Discover);
+    // dispatch(Actions.Discover);
   }
 }
 
 export function setTag(tag) {
     return {
-        type: types.SET_TAG,
+        type: 'SET_TAG',
         payload: tag
     };
 }

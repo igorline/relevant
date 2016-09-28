@@ -9,6 +9,7 @@ import React, {
   Animated,
   Image,
   ActionSheetIOS,
+  AlertIOS,
   TouchableHighlight
 } from 'react-native';
 var Button = require('react-native-button');
@@ -18,17 +19,47 @@ var moment = require('moment');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class Comment extends Component {
-
   constructor (props, context) {
     super(props, context)
     this.state = {
         buttons: [
+        'Edit',
         'Delete',
         'Cancel'
       ],
-      destructiveIndex: 0,
-      cancelIndex: 1,
+      destructiveIndex: 1,
+      cancelIndex: 2,
+      editedText: null,
+      editing: false,
+      height: 0
     }
+  }
+
+  editComment() {
+    var self = this;
+    self.setState({editing: !self.state.editing})
+  }
+
+  saveEdit() {
+    var self = this;
+    if (self.state.editedText != self.props.comment.text) {
+      var comment = self.props.comment;
+      comment.text = self.state.editedText;
+      self.props.actions.updateComment(comment, self.props.auth.token).then(function(results) {
+        if (results) {
+          self.setState({editing: !self.state.editing});
+          AlertIOS.alert("Comment updated");
+        } else {
+          AlertIOS.alert("Try again");
+        }
+      })
+    }
+  }
+
+
+  componentDidMount() {
+    var self = this;
+    self.setState({editedText: self.props.comment.text})
   }
 
   showActionSheet() {
@@ -40,11 +71,14 @@ class Comment extends Component {
     },
     (buttonIndex) => {
       switch(buttonIndex) {
-          case 0:
-              self.deleteComment();
-              break;
-          default:
-              return;
+        case 0:
+          self.editComment();
+          break;
+        case 1:
+          self.deleteComment();
+          break;
+        default:
+          return;
       }
     });
   }
@@ -62,6 +96,34 @@ class Comment extends Component {
     var timeNow = moment();
     var dif = timeNow.diff(postTime);
     var createdTime = moment.duration(dif).humanize();
+    var bodyEl = null;
+
+    if (self.state.editing) {
+      bodyEl = (<View style={{flex: 1}}>
+        <TextInput 
+          multiline={true}
+          autoGrow={true}
+          style={[styles.darkGray, styles.editingInput, {height: Math.max(35, self.state.height)}]} 
+          onChange={(event) => {
+            this.setState({
+              editedText: event.nativeEvent.text,
+              height: event.nativeEvent.contentSize.height,
+            });
+          }}
+          value={this.state.editedText}
+        />
+        <View style={styles.postButtons}>
+          <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={self.saveEdit.bind(self)}>
+            <Text style={[styles.font10, styles.postButtonText]}>Save changes</Text>
+          </TouchableHighlight>
+          <TouchableHighlight underlayColor={'transparent'} onPress={self.editComment.bind(self)} style={styles.postButton}>
+            <Text style={[styles.font10, styles.postButtonText]}>Cancel</Text>
+          </TouchableHighlight>
+        </View>
+      </View>);
+    } else {
+      bodyEl = (<Text style={styles.darkGray}>{self.state.editedText}</Text>);
+    }
 
     return (
       <View style={[styles.commentContainer]}>
@@ -73,10 +135,10 @@ class Comment extends Component {
                 <Text style={{fontSize: 12, color: '#aaaaaa'}}>{comment.user.name}</Text>
             </View>
             <View style={styles.commentBody}>
-              <Text style={styles.darkGray}>{comment.text}</Text>
+              {bodyEl}
             </View>
             {self.props.auth.user._id == comment.user._id ? <View style={{marginTop: 10, flex: 1, justifyContent: 'flex-end', flexDirection: 'row'}}>
-              <TouchableHighlight underlayColor={'transparent'}  onPress={self.showActionSheet.bind(self)} style={[]}>
+              <TouchableHighlight underlayColor={'transparent'} onPress={self.showActionSheet.bind(self)} style={[]}>
                 <Text style={[{fontSize: 20, color: '#808080'}]}>...</Text>
               </TouchableHighlight>
             </View> : null}
@@ -90,8 +152,6 @@ class Comment extends Component {
 export default Comment
 
 const localStyles = StyleSheet.create({
-  commentBody: {
-  },
   commentHeaderTextContainer: {
     height: 50
   },

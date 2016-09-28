@@ -51,11 +51,10 @@ class Discover extends Component {
       searchPadding: new Animated.Value(0),
       disableSearchAni: false,
       setScroll: true
-    }
+    };
   }
 
   componentDidMount() {
-
     InteractionManager.runAfterInteractions(() => {
       //This switches the view before starting to render stuff
       setTimeout(() => {
@@ -67,21 +66,20 @@ class Discover extends Component {
           var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
           self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
         }
-        if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null);
-        if (self.props.posts.tag) self.props.actions.getPosts(0, self.props.posts.tag, null);
+        if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
       }, 1)
     });
-
   }
 
   componentWillReceiveProps(next) {
-
-      var self = this;
-      if (next.posts.index != self.props.posts.index) {
-        console.log("RENDERING LIST")
-        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        self.setState({dataSource: ds.cloneWithRows(next.posts.index)});
-      }
+    var self = this;
+    if (next.posts.index != self.props.posts.index) {
+      var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      self.setState({dataSource: ds.cloneWithRows(next.posts.index)});
+    }
+    if (self.props.posts.tag != next.posts.tag && next.posts.tag) {
+      self.setTag(next.posts.tag);
+    }
   }
 
   clearTag() {
@@ -100,12 +98,12 @@ class Discover extends Component {
     switch(view) {
       case 1:
         self.setState({dataSource: null})
-        self.props.actions.getPosts(0, self.props.posts.tag, null);
+        self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
         break;
 
       case 2:
         self.setState({dataSource: null})
-        self.props.actions.getPosts(0, self.props.posts.tag, 'rank');
+        self.props.actions.getPosts(0, self.props.posts.tag, 'rank', 5);
         break;
 
       case 3:
@@ -124,11 +122,11 @@ class Discover extends Component {
     self.setState({dataSource: null});
     switch(self.props.view.discover) {
       case 1:
-        self.props.actions.getPosts(0, tag, null);
+        self.props.actions.getPosts(0, tag, null, 5);
         break;
 
       case 2:
-        self.props.actions.getPosts(0, tag, 'rank');
+        self.props.actions.getPosts(0, tag, 'rank', 5);
         break;
 
       default:
@@ -142,18 +140,18 @@ class Discover extends Component {
     self.props.actions.searchTags(self.state.tagSearchTerm).then(function(foundTags) {
       console.log(foundTags, 'foundTags')
       if (!foundTags.status) {
-        self.props.actions.setNotif(true, 'Search error', false)
+        AlertIOS.alert("Search error");
       } else {
         if (foundTags.data.length) {
           self.props.actions.setTag(foundTags.data);
           self.props.actions.clearPosts();
           switch(self.props.view.discover) {
             case 1:
-              self.props.actions.getPosts(0, foundTags.data, null);
+              self.props.actions.getPosts(0, foundTags.data, null, 5);
               break;
 
             case 2:
-              self.props.actions.getPosts(0, foundTags.data, 'rank');
+              self.props.actions.getPosts(0, foundTags.data, 'rank', 5);
               break;
 
             default:
@@ -161,7 +159,7 @@ class Discover extends Component {
           }
         } else {
           self.setState({noResults: true});
-          self.props.actions.setNotif(true, 'No results', false)
+          AlertIOS.alert("No results");
         }
       }
     })
@@ -191,11 +189,11 @@ class Discover extends Component {
       self.setState({enabled: false});
       switch(self.props.view.discover) {
         case 1:
-           self.props.actions.getPosts(length, self.props.posts.tag, null);
+           self.props.actions.getPosts(length, self.props.posts.tag, null, 5);
           break;
 
         case 2:
-           self.props.actions.getPosts(length, self.props.posts.tag, 'rank');
+           self.props.actions.getPosts(length, self.props.posts.tag, 'rank', 5);
           break;
 
         default:
