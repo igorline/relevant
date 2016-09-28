@@ -6,7 +6,7 @@ import * as authActions from './auth.actions';
 
 var apiServer = process.env.API_SERVER+'/api/'
 //load 5 posts at a time
-const limit = 500;
+const limit = 5;
 
 export function getFeed(token, skip, tag) {
   var url = process.env.API_SERVER+'/api/feed?access_token='+token+'&skip='+skip+'&limit='+limit;
