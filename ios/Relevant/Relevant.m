@@ -2,29 +2,29 @@
 //  Relevant.m
 //  relevantNative
 //
-//  Created by jaygoss on 7/11/16.
+//  Created by smil k on 9/28/16.
 //  Copyright © 2016 Facebook. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import "ReactNativeShareExtension.h"
 #import "RCTRootView.h"
+#import "RCTBundleURLProvider.h"
 
-@interface Relevant : ReactNativeShareExtension
+@interface MyShareEx : ReactNativeShareExtension
 @end
 
-@implementation Relevant
+@implementation MyShareEx
 
 RCT_EXPORT_MODULE();
 
 - (UIView*) shareView {
-  //this is the name of registered component that ShareExtension loads.
-  NSString *myShareComponentName = @"relevantNative";
+  NSURL *jsCodeLocation;
   
-  NSURL *jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
+  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
   
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-                                                      moduleName:myShareComponentName
+                                                      moduleName:@"MyShareEx"
                                                initialProperties:nil
                                                    launchOptions:nil];
   rootView.backgroundColor = nil;

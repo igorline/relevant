@@ -1,13 +1,13 @@
 'use strict';
-import React, {
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
   TextInput
 } from 'react-native';
-var Button = require('react-native-button');
+import Button from 'react-native-button';
 
 class Contact extends Component {
   constructor (props, context) {
