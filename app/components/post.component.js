@@ -319,7 +319,7 @@ class Post extends Component {
   openComments() {
     var self = this;
     self.props.actions.setActivePost(self.props.post._id);
-    self.props.navigator.push('comments')
+    self.props.navigator.push({name: 'comments'})
   }
 
   deletePost() {

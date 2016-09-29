@@ -9,7 +9,8 @@ import {
   TouchableHighlight,
   DeviceEventEmitter,
   Dimensions,
-  AlertIOS
+  AlertIOS,
+  Keyboard
 } from 'react-native';
 import Button from 'react-native-button';
 import { globalStyles } from '../styles/global';
@@ -24,8 +25,13 @@ class SignUp extends Component {
   };
 
   componentDidMount() {
-    DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
-    DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
+    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
+    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
+  }
+
+  componentWillUnmount() {
+    this.showListener.remove();
+    this.hideListener.remove();
   }
 
   keyboardWillShow (e) {
@@ -149,7 +155,7 @@ class SignUp extends Component {
           <TouchableHighlight style={[styles.whiteButton]} onPress={self.validate.bind(self)}><Text style={styles.buttonText}>Submit</Text></TouchableHighlight>
         </View>
 
-        <TouchableHighlight style={[styles.whiteButton]}><Text style={styles.buttonText} onPress={self.back.bind(self)}>Back</Text></TouchableHighlight>
+        <TouchableHighlight style={[styles.whiteButton]} onPress={self.back.bind(self)}><Text style={styles.buttonText} >Back</Text></TouchableHighlight>
 
       </View>
     );
