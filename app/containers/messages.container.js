@@ -1,7 +1,8 @@
 'use strict';
-import React, {
+
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
@@ -16,7 +17,7 @@ import React, {
 
 var FileUpload = require('NativeModules').FileUpload;
 import { connect } from 'react-redux';
-var Button = require('react-native-button');
+import Button from 'react-native-button';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as tagActions from '../actions/tag.actions';
@@ -64,11 +65,11 @@ class Messages extends Component {
   goToUser(id) {
     var self = this;
     if (id == self.props.auth.user._id) {
-      self.props.view.nav.resetTo('profile');
+      self.props.navigator.resetTo('profile');
     } else {
       self.props.actions.getSelectedUser(id).then(function(results) {
         if (results) {
-          self.props.view.nav.resetTo('user');
+          self.props.navigator.resetTo('user');
         }
       })
     }

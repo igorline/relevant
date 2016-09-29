@@ -1,7 +1,8 @@
 'use strict';
-import React, {
+
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
@@ -16,7 +17,7 @@ import React, {
 } from 'react-native';
 
 import { connect } from 'react-redux';
-var Button = require('react-native-button');
+import Button from 'react-native-button';
 import Login from '../components/login.component';
 import SignUp from '../components/signup.component';
 import * as authActions from '../actions/auth.actions';
@@ -44,6 +45,7 @@ class Auth extends Component {
   }
 
   componentDidMount() {
+    var self = this;
     this.props.actions.getUser(null, true);
     DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
     DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
@@ -51,12 +53,12 @@ class Auth extends Component {
 
   login() {
     var self = this;
-    self.props.view.nav.push('login')
+    self.props.navigator.push({name: 'login'})
   }
 
   signup() {
     var self = this;
-    self.props.view.nav.push('signup')
+    self.props.navigator.push({name: 'signup'})
   }
 
   componentDidUpdate(prev) {
@@ -64,7 +66,6 @@ class Auth extends Component {
   }
 
   render() {
-
     var self = this;
     var auth;
     var message = '';

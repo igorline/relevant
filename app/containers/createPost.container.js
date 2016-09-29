@@ -1,7 +1,8 @@
 'use strict';
-import React, {
+
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
@@ -82,7 +83,7 @@ class CreatePost extends Component {
     var body = self.state.postBody;
     var title = self.state.postTitle;
     var category = self.props.posts.createPostCategory ? self.props.posts.createPostCategory._id : null;
-    var view = self.props.view.post.view;
+    var view = self.props.view.post;
     var tags = [];
     if (!self.state.postLink && view == 'url') {
         AlertIOS.alert("Add URL");
@@ -157,9 +158,9 @@ class CreatePost extends Component {
         } else {
           AlertIOS.alert("Posted");
           self.props.actions.setPostCategory(null);
-          self.props.view.nav.resetTo('discover');
           self.props.actions.clearUserPosts(self.props.auth.user._id);
           self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
+          self.props.navigator.resetTo({name: 'discover'})
         }
       });
     }
@@ -198,7 +199,7 @@ class CreatePost extends Component {
         } else {
           AlertIOS.alert("Posted");
           self.props.actions.setPostCategory(null);
-          self.props.view.nav.resetTo('discover');
+          self.props.navigator.resetTo({name: 'discover'});
           self.props.actions.clearUserPosts(self.props.auth.user._id);
           self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
         }
@@ -296,7 +297,7 @@ class CreatePost extends Component {
 
   goTo(view) {
     var self = this;
-    self.props.view.nav.push(view);
+    self.props.navigator.push(view);
   }
 
   render() {
@@ -307,7 +308,7 @@ class CreatePost extends Component {
     var postError = self.state.postError;
     var typeEl = null;
     var pickerArray = [];
-    var view = self.props.view.post.view;
+    var view = self.props.view.post;
     var parentTags = null;
     var categoryEl = null;
     if (self.props.auth) {
@@ -332,26 +333,26 @@ class CreatePost extends Component {
       <View style={[{height: self.state.visibleHeight}]}>
         <ScrollView keyboardShouldPersistTaps={true} contentContainerStyle={{flexDirection: 'column', height: fullHeight - 120}}>
           {typeEl}
-          {view == 'url' ? <View style={{borderBottomColor: !self.state.urlPreview ? '#f0f0f0' : 'transparent', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1}}><TextInput numberOfLines={1} style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink, urlPreview: null})} onBlur={self.createPreview.bind(self)} onSubmitEditing={self.createPreview.bind(self)} value={this.state.postLink} returnKeyType='done' /></View> : null}
+          {view == 'url' ? <View style={{borderBottomColor: !self.state.urlPreview ? '#f0f0f0' : 'transparent', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1}}><TextInput numberOfLines={1} style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink, urlPreview: null})} onSubmitEditing={self.createPreview.bind(self)} value={this.state.postLink} returnKeyType='done' /></View> : null}
 
-          {view == 'image' && !self.state.postImage ? <TouchableHighlight style={{borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center', paddingLeft: 10}} underlayColor={'transparent'} onPress={self.chooseImage.bind(self)}><Text>Upload an image</Text></TouchableHighlight> : null}
+          {view == 'image' && !self.state.postImage ? <TouchableHighlight style={{borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center', paddingLeft: 10}} underlayColor={'transparent'} onPress={self.chooseImage.bind(self)}><Text>Upload an image</Text></TouchableHighlight> : null}
 
-          {view == 'image' && self.state.postImage ? <View style={{flex: 0.1, borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flexDirection: 'row', paddingLeft: 10, alignItems: 'center'}}>
+          {view == 'image' && self.state.postImage ? <View style={{flex: 0.1, borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth, flexDirection: 'row', paddingLeft: 10, alignItems: 'center'}}>
           <Image source={{uri: self.state.postImage}} style={styles.previewImage} />
           <TouchableHighlight style={[]} onPress={self.removeImage.bind(self)}><Text>Remove image</Text></TouchableHighlight>
           </View> : null}
 
-          {view != 'url' ? <View style={{borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center'}}><TextInput style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Title here...' multiline={false} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} returnKeyType='done' /></View> : null}
+          {view != 'url' ? <View style={{borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center'}}><TextInput style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Title here...' multiline={false} onChangeText={(postTitle) => this.setState({postTitle})} value={this.state.postTitle} returnKeyType='done' /></View> : null}
 
-          {view == 'url' && self.state.urlPreview ? <View style={{flex: 0.2, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
+          {view == 'url' && self.state.urlPreview ? <View style={{flex: 0.2, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#f0f0f0', paddingLeft: 10, paddingRight: 10, paddingBottom: 10}}>
           <View style={{borderRadius: 4, borderColor: '#f0f0f0', borderStyle: 'solid', borderWidth: StyleSheet.hairlineWidth, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'stretch', flex: 1, overflow: 'hidden'}}>
             {self.state.urlPreview.image ? <Image source={{uri: self.state.urlPreview.image}} style={{flex: 0.4, resizeMode: 'cover'}} /> : null }
             <Text style={{flex: 0.6, padding: 5, color: '#808080'}}>{self.state.urlPreview.title}</Text>
           </View></View> : null}
 
-          <View style={{borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: !self.state.urlPreview ? 0.6 : 0.4}}><TextInput style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Body here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /></View>
+          <View style={{borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth, flex: !self.state.urlPreview ? 0.6 : 0.4}}><TextInput style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Body here...' multiline={true} onChangeText={(postBody) => this.setState({postBody})} value={this.state.postBody} returnKeyType='done' /></View>
 
-         <TouchableHighlight style={{paddingLeft: 10, borderBottomColor: '#f0f0f0', borderBottomStyle: 'solid', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center'}} underlayColor={'transparent'} onPress={self.goTo.bind(self, 'categories')}><Text style={[]}>{self.props.posts.createPostCategory ? self.props.posts.createPostCategory.emoji + ' ' + self.props.posts.createPostCategory.name :  'Choose Category'}</Text></TouchableHighlight>
+         <TouchableHighlight style={{paddingLeft: 10, borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center'}} underlayColor={'transparent'} onPress={self.goTo.bind(self, 'categories')}><Text style={[]}>{self.props.posts.createPostCategory ? self.props.posts.createPostCategory.emoji + ' ' + self.props.posts.createPostCategory.name :  'Choose Category'}</Text></TouchableHighlight>
 
         <View style={{flex: 0.1, justifyContent: 'center'}}><TextInput style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Enter tags... ex. webgl, slowstyle, xxx' multiline={false} onChangeText={(postTags) => this.setState({postTags})} value={this.state.postTags} returnKeyType='done' /></View>
 

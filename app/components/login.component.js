@@ -1,7 +1,8 @@
 'use strict';
-import React, {
+
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
@@ -12,7 +13,7 @@ import React, {
   Dimensions,
   DeviceEventEmitter
 } from 'react-native';
-var Button = require('react-native-button');
+import Button from 'react-native-button';
 import {reduxForm} from 'redux-form';
 import Notification from './notification.component';
 import { globalStyles } from '../styles/global';
@@ -30,6 +31,8 @@ class Login extends Component {
   }
 
   componentDidMount() {
+    var self = this;
+    console.log(self)
     DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
     DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
   }
@@ -64,7 +67,7 @@ class Login extends Component {
 
   back() {
     var self = this;
-    self.props.view.nav.pop(0);
+    self.props.navigator.pop(0);
   }
 
   render() {

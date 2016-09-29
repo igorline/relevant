@@ -1,7 +1,7 @@
 'use strict';
-import React, {
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
@@ -11,7 +11,7 @@ import React, {
   LinkingIOS
 } from 'react-native';
 import { connect } from 'react-redux';
-var Button = require('react-native-button');
+import Button from 'react-native-button';
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
@@ -30,24 +30,24 @@ class SingleActivity extends Component {
   goToPost(activity) {
     var self = this;
     self.props.actions.getActivePost(activity.post._id).then(function() {
-      self.props.view.nav.push('singlePost');
+      self.props.navigator.push({name: 'singlePost'});
     })
   }
 
   setTagAndRoute(tag) {
     var self = this;
     self.props.actions.setTag(tag);
-    self.props.view.nav.resetTo('discover');
+    self.props.navigator.resetTo({name: 'discover'});
   }
 
   setSelected(id) {
     var self = this;
     if (id == self.props.auth.user._id) {
-      self.props.view.nav.resetTo('profile');
+      self.props.navigator.resetTo({name: 'profile'});
     } else {
       self.props.actions.getSelectedUser(id).then(function(results) {
         if (results) {
-          self.props.view.nav.resetTo('user');
+          self.props.navigator.resetTo({name: 'user'});
         }
       })
     }
