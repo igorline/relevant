@@ -104,8 +104,7 @@ const layout = StyleSheet.create({
   typeParent: {
     paddingTop: 15,
     paddingBottom: 15,
-    flex: 1,
-    textAlign: 'center'
+    flex: 1
   },
   typeBar: {
     width: fullWidth

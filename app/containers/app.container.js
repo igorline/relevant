@@ -68,9 +68,7 @@ class Application extends Component {
       destructiveIndex: 2,
       cancelIndex: 3,
       routes: [
-        {name: 'auth'},
-        {name: 'login'},
-        {name: 'signup'}
+        {name: 'auth'}
       ]
     }
   }

@@ -14,6 +14,7 @@ import {
   AlertIOS,
   Animated,
   ScrollView,
+  Keyboard,
   TouchableWithoutFeedback,
   TouchableHighlight,
   DeviceEventEmitter,
@@ -62,14 +63,16 @@ class CreatePost extends Component {
 
   componentDidMount() {
     var self = this;
-    DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
-    DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
+    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
+    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
     self.props.actions.getParentTags();
   }
 
   componentWillUnmount() {
     var self = this;
     self.props.actions.setPostCategory();
+    this.showListener.remove();
+    this.hideListener.remove();
   }
 
   switchType(type) {

@@ -13,7 +13,8 @@ import {
   Dimensions,
   ScrollView,
   DeviceEventEmitter,
-  TouchableHighlight
+  TouchableHighlight,
+  Keyboard
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -47,8 +48,13 @@ class Auth extends Component {
   componentDidMount() {
     var self = this;
     this.props.actions.getUser(null, true);
-    DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
-    DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
+    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
+    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
+  }
+
+  componentWillUnmount() {
+    this.showListener.remove();
+    this.hideListener.remove();
   }
 
   login() {
@@ -81,7 +87,7 @@ class Auth extends Component {
       <View style={[{height: isAuthenticated ? self.state.visibleHeight - 60 : self.state.visibleHeight, backgroundColor: '#F0F0F0'}]}>
         <View style={styles.alignAuth}>
           <Text style={[styles.textCenter, styles.font20, styles.darkGray, {marginBottom: 10}]}>Relevant</Text>
-          <TouchableHighlight style={[styles.whiteButton]}><Text style={styles.buttonText} onPress={self.login.bind(self)}>Log In</Text></TouchableHighlight>
+          <TouchableHighlight style={[styles.whiteButton]} onPress={self.login.bind(self)}><Text style={styles.buttonText}>Log In</Text></TouchableHighlight>
           <TouchableHighlight onPress={self.signup.bind(self)} style={[styles.whiteButton, styles.marginTop]}><Text style={styles.buttonText}>Sign Up</Text></TouchableHighlight>
         </View>
       </View>

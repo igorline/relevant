@@ -67,6 +67,7 @@ class Profile extends Component {
 
   renderFeedRow(rowData) {
     var self = this;
+    var key = new Date();
       return (
         <Post post={rowData} {...self.props} styles={styles} />
       );
