@@ -32,7 +32,6 @@ class Login extends Component {
 
   componentDidMount() {
     var self = this;
-    console.log(self)
     DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
     DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
   }
