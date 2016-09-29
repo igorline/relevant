@@ -1,7 +1,7 @@
 'use strict';
-import React, {
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
@@ -11,7 +11,7 @@ import React, {
   Dimensions,
   AlertIOS
 } from 'react-native';
-var Button = require('react-native-button');
+import Button from 'react-native-button';
 import { globalStyles } from '../styles/global';
 
 class SignUp extends Component {

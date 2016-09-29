@@ -1,8 +1,8 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
@@ -19,7 +19,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 var {Router, routerReducer, Route, Container, Animations, Schema} = require('react-native-redux-router');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-var Button = require('react-native-button');
+import Button from 'react-native-button';
 import Auth from './auth.container';
 import Import from './import.container';
 import Profile from './profile.container';

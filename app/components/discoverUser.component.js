@@ -1,7 +1,7 @@
 'use strict';
-import React, {
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
@@ -10,7 +10,7 @@ import React, {
   TouchableHighlight,
   LinkingIOS
 } from 'react-native';
-var Button = require('react-native-button');
+import Button from 'react-native-button';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class DiscoverUser extends Component {

@@ -1,7 +1,8 @@
 'use strict';
-import React, {
+
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
@@ -21,7 +22,7 @@ import React, {
   TouchableWithoutFeedback
 } from 'react-native';
 import { connect } from 'react-redux';
-var Button = require('react-native-button');
+import Button from 'react-native-button';
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
@@ -32,7 +33,7 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var postStyles = null;
 var moment = require('moment');
 var PickerItemIOS = PickerIOS.Item;
-var Progress = require('react-native-progress');
+import * as Progress from 'react-native-progress';
 import Share from 'react-native-share';
 
 class Post extends Component {

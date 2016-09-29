@@ -1,7 +1,8 @@
 'use strict';
-import React, {
+
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
@@ -10,7 +11,7 @@ import React, {
 } from 'react-native';
 
 import { connect } from 'react-redux';
-var Button = require('react-native-button');
+import Button from 'react-native-button';
 import Contact from '../components/contact.component';
 import * as authActions from '../actions/auth.actions';
 import { bindActionCreators } from 'redux';
