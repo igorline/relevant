@@ -1,7 +1,8 @@
 'use strict';
-import React, {
+
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
@@ -17,7 +18,7 @@ import React, {
   InteractionManager
 } from 'react-native';
 import { connect } from 'react-redux';
-var Button = require('react-native-button');
+import Button from 'react-native-button';
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as userActions from '../actions/user.actions';
@@ -310,7 +311,7 @@ class Discover extends Component {
 
 
     if (self.state.dataSource) {
-      postsEl = (<ListView ref="listview" removeClippedSubviews="true" pageSize="1" initialListSize="1" dataSource={self.state.dataSource} renderHeader={self.renderHeader.bind(self)} renderRow={self.renderRow.bind(self)} contentOffset={{x: 0, y: 35}} renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} />)
+      postsEl = (<ListView ref="listview" removeClippedSubviews={true} pageSize={1} initialListSize={1} dataSource={self.state.dataSource} renderHeader={self.renderHeader.bind(self)} renderRow={self.renderRow.bind(self)} contentOffset={{x: 0, y: 35}} renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} />)
     }
     var userIndex = null;
     var usersParent = null;

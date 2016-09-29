@@ -1,8 +1,8 @@
 'use strict';
 
-import React, {
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
@@ -19,7 +19,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 var {Router, routerReducer, Route, Container, Animations, Schema} = require('react-native-redux-router');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-var Button = require('react-native-button');
+import Button from 'react-native-button';
 import Auth from './auth.container';
 import Import from './import.container';
 import Profile from './profile.container';
@@ -58,8 +58,6 @@ class Application extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      nav: null,
-      route: null,
       newName: null,
       buttons: [
         'Change display name',
@@ -69,14 +67,17 @@ class Application extends Component {
       ],
       destructiveIndex: 2,
       cancelIndex: 3,
+      routes: [
+        {name: 'auth'},
+        {name: 'login'},
+        {name: 'signup'}
+      ]
     }
   }
 
   componentDidMount() {
     var self = this;
-    StatusBarIOS.setStyle('default');
     AppState.addEventListener('change', this.handleAppStateChange.bind(self));
-    //self.props.actions.getAllStats();
   }
 
   componentWillReceiveProps(next, nextState) {
@@ -86,7 +87,7 @@ class Application extends Component {
       self.props.actions.getActivity(next.auth.user._id, 0);
       self.props.actions.getGeneralActivity(next.auth.user._id, 0);
       self.props.actions.getMessages(next.auth.user._id);
-      self.props.view.nav.replace('profile')
+      if (self.refs.navigator) self.refs.navigator.replace({name: 'profile'});
     }
   }
 
@@ -100,7 +101,7 @@ class Application extends Component {
       })
     }
     if (self.props.posts.tag != nextProps.posts.tag && nextProps.posts.tag) {
-      self.props.view.nav.replace('discover');
+      self.refs.navigator.replace({name: 'discover'});
     }
   }
 
@@ -112,9 +113,9 @@ class Application extends Component {
   handleAppStateChange(currentAppState) {
     var self = this;
     if (currentAppState == 'active' && self.props.auth.user) {
-        self.props.actions.userToSocket(self.props.auth.user);
-        self.props.actions.getActivity(self.props.auth.user._id, 0);
-        self.props.actions.getGeneralActivity(self.props.auth.user._id, 0);
+      self.props.actions.userToSocket(self.props.auth.user);
+      self.props.actions.getActivity(self.props.auth.user._id, 0);
+      self.props.actions.getGeneralActivity(self.props.auth.user._id, 0);
     }
   }
 
@@ -122,7 +123,7 @@ class Application extends Component {
     var self = this;
     self.props.actions.removeDeviceToken(self.props.auth);
     self.props.actions.logoutAction(self.props.auth.user, self.props.auth.token);
-    self.props.view.nav.replace(1);
+    self.refs.navigator.replace({name: 'login'});
   }
 
   changePhoto() {
@@ -163,26 +164,26 @@ class Application extends Component {
   }
 
 
-    pickImage(callback){
-      var self = this;
-        ImagePickerManager.showImagePicker(pickerOptions, (response) => {
-        if (response.didCancel) {
-          console.log('User cancelled image picker');
-          callback("cancelled");
-        }
-        else if (response.error) {
-          console.log('ImagePickerManager Error: ', response.error);
-          callback("error");
-        }
-        else if (response.customButton) {
-          console.log('User tapped custom button: ', response.customButton);
-          callback("error");
-        }
-        else {
-          callback(null, response.uri);
-        }
-      });
-    }
+  pickImage(callback){
+    var self = this;
+      ImagePickerManager.showImagePicker(pickerOptions, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+        callback("cancelled");
+      }
+      else if (response.error) {
+        console.log('ImagePickerManager Error: ', response.error);
+        callback("error");
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+        callback("error");
+      }
+      else {
+        callback(null, response.uri);
+      }
+    });
+  }
 
 
   showActionSheet() {
@@ -211,49 +212,48 @@ class Application extends Component {
 
   routeFunction(route, nav) {
     var self = this;
-    if (self.props.view.nav != nav || self.props.view.route != route) self.props.actions.setNav(nav, route);
-    switch(route) {
+    switch(route.name) {
       case 'login':
-        return <Login { ...self.props } navigator={nav} />;
+        return <Login { ...self.props } navigator={nav} route={route} />;
         break
       case 'signup':
-        return <Signup { ...self.props } navigator={nav} />;
+        return <Signup { ...self.props } navigator={nav} route={route} />;
         break
       case 'profile':
-        return <Profile { ...self.props } navigator={nav} />;
+        return <Profile { ...self.props } navigator={nav} route={route} />;
         break
       case 'activity':
-        return <Activity { ...self.props } navigator={nav} />;
+        return <Activity { ...self.props } navigator={nav} route={route} />;
         break
       case 'createPost':
-        return <CreatePost { ...self.props } navigator={nav} />;
+        return <CreatePost { ...self.props } navigator={nav} route={route} />;
         break
       case 'categories':
-        return <Categories { ...self.props } navigator={nav} />;
+        return <Categories { ...self.props } navigator={nav} route={route} />;
         break
       case 'discover':
-        return <Discover { ...self.props } navigator={nav} />;
+        return <Discover { ...self.props } navigator={nav} route={route} />;
         break
       case 'read':
-        return <Read { ...self.props } navigator={nav} />;
+        return <Read { ...self.props } navigator={nav} route={route} />;
         break
       case 'comments':
-        return <Comments { ...self.props } navigator={nav} />;
+        return <Comments { ...self.props } navigator={nav} route={route} />;
         break
       case 'user':
-        return <User { ...self.props } navigator={nav} />;
+        return <User { ...self.props } navigator={nav} route={route} />;
         break
       case 'thirst':
-        return <Thirst { ...self.props } navigator={nav} />;
+        return <Thirst { ...self.props } navigator={nav} route={route} />;
         break
       case 'singlePost':
-        return <SinglePost { ...self.props } navigator={nav} />;
+        return <SinglePost { ...self.props } navigator={nav} route={route} />;
         break
       case 'messages':
-        return <Messages { ...self.props } navigator={nav} />;
+        return <Messages { ...self.props } navigator={nav} route={route} />;
         break
       default:
-        return <Auth { ...self.props } navigator={nav} />;;
+        return <Auth { ...self.props } navigator={nav} route={route} />;;
       }
   }
 
@@ -283,7 +283,7 @@ class Application extends Component {
       statsEl = (<View><Text style={styles.statsTxt}>📈<Text style={styles.active}>{relevance}</Text>  💵<Text style={styles.active}>{balance}</Text></Text></View>
       )
     }
-    if (route != 'profile') {
+    if (route.name != 'profile') {
       return (<View style={{flex: 1, justifyContent: 'center', padding: 10}}>{statsEl}</View>);
     } else {
       return (<View style={styles.gear}><TouchableHighlight underlayColor={'transparent'}  onPress={self.showActionSheet.bind(self)} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View>);
@@ -304,7 +304,7 @@ class Application extends Component {
   getTitle(route) {
     var self = this;
     var title = '';
-    switch(route) {
+    switch(route.name) {
       case 'login':
         title = 'Log In';
         break;
@@ -359,15 +359,26 @@ class Application extends Component {
     return title;
   }
 
+  getNavigator() {
+    var self = this;
+    console.log(self, 'getNavigator self')
+    return self.refs.navigator;
+  }
+
   render() {
     var self = this;
+
     if (self.props.auth.user) {
       return (
-        <View style={{flex: 1}}>
+        <View style={{flex: 1}} >
           <Navigator
-            renderScene={self.routeFunction.bind(self)}
-            initialRoute={'auth'}
+            renderScene={(route, navigator) =>
+              self.routeFunction(route, navigator)
+            }
+            initialRouteStack={self.state.routes}
+            initialRoute={self.state.routes[0]}
             style={{flex: 1, paddingTop: 64}}
+            ref="navigator"
             navigationBar={
               <Navigator.NavigationBar
                 routeMapper={{
@@ -382,7 +393,7 @@ class Application extends Component {
               />
             }
           />
-          <Footer {...self.props} navigator={self.state.nav} route={self.state.route} />
+         <Footer {...self.props} navigator={self.getNavigator()} />
           <View pointerEvents={'none'} style={globalStyles.notificationContainer}>
             <Notification {...self.props} />
           </View>
@@ -393,12 +404,15 @@ class Application extends Component {
       return (
         <View style={{flex: 1}}>
           <Navigator
+            initialRoute={self.state.routes[0]}
+            initialRouteStack={self.state.routes}
             renderScene={(route, navigator) =>
               self.routeFunction(route, navigator)
             }
             style={{flex: 1, paddingTop: 0}}
+            ref="navigator"
           />
-          <Footer {...self.props} navigator={self.state.nav} route={self.state.route} />
+          <Footer {...self.props} navigatorX={self.getNavigator.bind(self)} />
           <View pointerEvents={'none'} style={globalStyles.notificationContainer}>
             <Notification {...self.props} />
           </View>
@@ -458,10 +472,10 @@ const localStyles = StyleSheet.create({
     fontSize: 12
   },
   gear: {
-    height: 60,
+    height: 45,
     flex: 1,
-    justifyContent: 'flex-end',
-    padding: 12
+    justifyContent: 'center',
+    padding: 12,
   },
   gearImg: {
     height: 20,
