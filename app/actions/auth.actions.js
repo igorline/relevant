@@ -213,7 +213,7 @@ function getUser(token, redirect) {
                     personal: false,
                     byUser: responseJSON._id
                 }));
-                dispatch(addDeviceToken(responseJSON, token))
+                //dispatch(addDeviceToken(responseJSON, token))
             })
             .catch(error => {
                 console.log(error, 'error');

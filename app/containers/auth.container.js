@@ -53,12 +53,12 @@ class Auth extends Component {
 
   login() {
     var self = this;
-    self.props.navigator.push('login')
+    self.props.navigator.push({name: 'login'})
   }
 
   signup() {
     var self = this;
-    self.props.navigator.push('signup')
+    self.props.navigator.push({name: 'signup'})
   }
 
   componentDidUpdate(prev) {

@@ -34,7 +34,7 @@ class Footer extends Component {
 
   goTo(view) {
     var self = this;
-    self.props.navigator.resetTo(view)
+    self.props.navigator.resetTo({name: view});
   }
 
   runAnimation(count) {
@@ -97,9 +97,14 @@ class Footer extends Component {
 
   render() {
     var self = this;
-    console.log(self, 'footer')
     var route = null;
-    var authenticated = this.props.auth.isAuthenticated;
+    var nav = null;
+    if (self.props.navigator) {
+      nav = self.props.navigator;
+      var routes = nav.getCurrentRoutes();
+      route = routes[0].name;
+    }
+    var authenticated = self.props.auth.user;
     var footerEl = null;
     var imageEl = (<Text style={[styles.icon, styles.textCenter]}>👤</Text>);
     if (self.props.auth.user) {
