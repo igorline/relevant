@@ -34,7 +34,7 @@ class Footer extends Component {
 
   goTo(view) {
     var self = this;
-    self.props.view.nav.resetTo(view)
+    self.props.navigator.resetTo(view)
   }
 
   runAnimation(count) {
@@ -44,7 +44,6 @@ class Footer extends Component {
     var yVal = new Animated.Value(0);
     var xVal = new Animated.Value(0);
     var scale = new Animated.Value(1);
-    // var rotation = new Animated.Value(0);
 
     var newArr = self.state.hearts.push(<Animated.View pointerEvents={'none'} style={[styles.notifAnimation, {transform: [{translateY: yVal}, {translateX: xVal}, {scale: scale}], opacity: opacity}]}><Text style={[{fontSize: 30, color: 'red'}]}>❤️</Text></Animated.View>);
 
@@ -82,19 +81,6 @@ class Footer extends Component {
       })
     ]).start();
 
-    // Animated.sequence([
-    //   Animated.timing(rotation, {
-    //     toValue: 5,
-    //     duration: 250,
-    //     easing: Easing.linear
-    //   }),
-    //   Animated.timing(rotation, {
-    //     toValue: -5,
-    //     duration: 250,
-    //     easing: Easing.linear
-    //   })
-    // ]).start();
-
     self.setState({});
 
     setTimeout(function() {
@@ -111,7 +97,8 @@ class Footer extends Component {
 
   render() {
     var self = this;
-    var route = self.props.view.route;
+    console.log(self, 'footer')
+    var route = null;
     var authenticated = this.props.auth.isAuthenticated;
     var footerEl = null;
     var imageEl = (<Text style={[styles.icon, styles.textCenter]}>👤</Text>);

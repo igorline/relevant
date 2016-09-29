@@ -30,24 +30,24 @@ class SingleActivity extends Component {
   goToPost(activity) {
     var self = this;
     self.props.actions.getActivePost(activity.post._id).then(function() {
-      self.props.view.nav.push('singlePost');
+      self.props.navigator.push('singlePost');
     })
   }
 
   setTagAndRoute(tag) {
     var self = this;
     self.props.actions.setTag(tag);
-    self.props.view.nav.resetTo('discover');
+    self.props.navigator.resetTo('discover');
   }
 
   setSelected(id) {
     var self = this;
     if (id == self.props.auth.user._id) {
-      self.props.view.nav.resetTo('profile');
+      self.props.navigator.resetTo('profile');
     } else {
       self.props.actions.getSelectedUser(id).then(function(results) {
         if (results) {
-          self.props.view.nav.resetTo('user');
+          self.props.navigator.resetTo('user');
         }
       })
     }

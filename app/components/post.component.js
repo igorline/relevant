@@ -302,7 +302,7 @@ class Post extends Component {
     var self = this;
     console.log('investing', self.state.investAmount);
     this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
-       if (self.props.view.route == 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
+       if (self.props.route == 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
     })
     this.props.actions.createSubscription(this.props.auth.token, self.props.post);
     self.setState({investAmount: 50});
@@ -312,14 +312,14 @@ class Post extends Component {
     var self = this;
     console.log('destroy investment')
     self.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
-       if (self.props.view.route == 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
+       if (self.props.route == 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
     })
   }
 
   openComments() {
     var self = this;
     self.props.actions.setActivePost(self.props.post._id);
-    self.props.view.nav.push('comments')
+    self.props.navigator.push('comments')
   }
 
   deletePost() {
@@ -344,12 +344,12 @@ class Post extends Component {
     var self = this;
     if (user._id == self.props.auth.user._id) {
       console.log('going to profile')
-      self.props.view.nav.resetTo('profile')
+      self.props.navigator.resetTo('profile')
     } else {
       console.log('setting selected user')
       self.props.actions.getSelectedUser(user._id).then(function(results) {
         if (results) {
-          self.props.view.nav.resetTo('user');
+          self.props.navigator.resetTo('user');
         }
       })
     }
@@ -522,7 +522,7 @@ class Post extends Component {
         }
       })
 
-      bodyEl = Object.keys(bodyObj).map(function(key) {
+      bodyEl = Object.keys(bodyObj).map(function(key, i) {
         var text = bodyObj[key].text;
         if (bodyObj[key].hashtag) {
           var tagObj = null;
@@ -531,7 +531,7 @@ class Post extends Component {
               tagObj = tag;
             }
           })
-          return (<Text onPress={tagObj ? self.props.actions.goToTag.bind(null, tagObj) : null} style={styles.active}>{bodyObj[key].text}</Text>)
+          return (<Text key={i} onPress={tagObj ? self.props.actions.goToTag.bind(null, tagObj) : null} style={styles.active}>{bodyObj[key].text}</Text>)
         } else if (bodyObj[key].mention) {
           var mentionObj = null;
           if (self.props.post.mentions) {
@@ -545,9 +545,9 @@ class Post extends Component {
               })
             }
           }
-          return (<Text onPress={mentionObj ? self.setSelected.bind(self, mentionObj) : null} style={mentionObj ? styles.active : null}>{bodyObj[key].text}</Text>)
+          return (<Text key={i} onPress={mentionObj ? self.setSelected.bind(self, mentionObj) : null} style={mentionObj ? styles.active : null}>{bodyObj[key].text}</Text>)
         } else {
-          return (<Text>{bodyObj[key].text}</Text>);
+          return (<Text key={i}>{bodyObj[key].text}</Text>);
         }
       });
     }
@@ -594,7 +594,7 @@ class Post extends Component {
               {postUserImageEl}
               <View style={styles.postInfo}>
                 <TouchableWithoutFeedback onPress={self.setSelected.bind(self, self.props.post.user)} style={[styles.infoLeft, styles.innerInfo]}>
-                  <Text style={[styles.font15, styles.darkGray]}>{self.props.post.user.name}</Text>
+                  <View><Text style={[styles.font15, styles.darkGray]}>{self.props.post.user.name}</Text></View>
                 </TouchableWithoutFeedback>
                 <TouchableHighlight underlayColor={'transparent'} onPress={self.toggleInfo.bind(self)} style={[styles.infoRight, styles.innerInfo]}>
                   {postInfo}

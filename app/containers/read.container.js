@@ -92,7 +92,7 @@ class Read extends Component {
   setTagAndRoute(tag) {
     var self = this;
     self.props.actions.setTag(tag);
-    self.props.view.nav.resetTo('discover');
+    self.props.navigator.resetTo('discover');
   }
 
   onScroll() {
@@ -123,7 +123,7 @@ class Read extends Component {
 
   goTo(view) {
     var self = this;
-    self.props.view.nav.push(view);
+    self.props.navigator.push(view);
   }
 
   render() {

@@ -54,7 +54,7 @@ class InvestAnimation extends Component {
           opacity: new Animated.Value(1)
         };
 
-        self.state.investAni.push(<Animated.Text style={[styles.aniMoney, {transform: [{translateX: values.x}, {scale: values.scale}, {translateY: values.y}], opacity: values.opacity}]}>💵</Animated.Text>);
+        self.state.investAni.push(<Animated.Text progress={0} style={[styles.aniMoney, {transform: [{translateX: values.x}, {scale: values.scale}, {translateY: values.y}], opacity: values.opacity}]}>💵</Animated.Text>);
 
         Animated.timing(values.x, {
           toValue: -(fullWidth/2),

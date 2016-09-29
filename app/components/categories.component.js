@@ -39,7 +39,7 @@ class Categories extends Component {
   setCategory(tag) {
     var self = this;
     self.props.actions.setPostCategory(tag);
-    self.props.view.nav.pop();
+    self.props.navigator.pop();
   }
 
   render() {

@@ -39,7 +39,7 @@ class SignUp extends Component {
 
   back() {
     var self = this;
-    self.props.view.nav.pop(0);
+    self.props.navigator.pop(0);
   }
 
   checkPass(user) {
