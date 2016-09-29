@@ -361,7 +361,6 @@ class Application extends Component {
 
   getNavigator() {
     var self = this;
-    console.log(self, 'getNavigator self')
     return self.refs.navigator;
   }
 
@@ -412,7 +411,7 @@ class Application extends Component {
             style={{flex: 1, paddingTop: 0}}
             ref="navigator"
           />
-          <Footer {...self.props} navigatorX={self.getNavigator.bind(self)} />
+          <Footer {...self.props} navigator={self.getNavigator()} />
           <View pointerEvents={'none'} style={globalStyles.notificationContainer}>
             <Notification {...self.props} />
           </View>
