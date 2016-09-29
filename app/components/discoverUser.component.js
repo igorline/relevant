@@ -26,11 +26,11 @@ class DiscoverUser extends Component {
   setSelected(id) {
     var self = this;
     if (id == self.props.auth.user._id) {
-      self.props.view.nav.replace('profile');
+      self.props.navigator.replace('profile');
     } else {
       self.props.actions.getSelectedUser(id).then(function(results) {
         if (results) {
-          self.props.view.nav.resetTo('user');
+          self.props.navigator.resetTo('user');
         }
       })
     }

@@ -45,6 +45,7 @@ class Auth extends Component {
   }
 
   componentDidMount() {
+    var self = this;
     this.props.actions.getUser(null, true);
     DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
     DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
@@ -52,12 +53,12 @@ class Auth extends Component {
 
   login() {
     var self = this;
-    self.props.view.nav.push('login')
+    self.props.navigator.push('login')
   }
 
   signup() {
     var self = this;
-    self.props.view.nav.push('signup')
+    self.props.navigator.push('signup')
   }
 
   componentDidUpdate(prev) {
@@ -65,7 +66,6 @@ class Auth extends Component {
   }
 
   render() {
-
     var self = this;
     var auth;
     var message = '';

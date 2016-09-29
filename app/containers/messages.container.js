@@ -65,11 +65,11 @@ class Messages extends Component {
   goToUser(id) {
     var self = this;
     if (id == self.props.auth.user._id) {
-      self.props.view.nav.resetTo('profile');
+      self.props.navigator.resetTo('profile');
     } else {
       self.props.actions.getSelectedUser(id).then(function(results) {
         if (results) {
-          self.props.view.nav.resetTo('user');
+          self.props.navigator.resetTo('user');
         }
       })
     }

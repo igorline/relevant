@@ -31,6 +31,8 @@ class Login extends Component {
   }
 
   componentDidMount() {
+    var self = this;
+    console.log(self)
     DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
     DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
   }
@@ -65,7 +67,7 @@ class Login extends Component {
 
   back() {
     var self = this;
-    self.props.view.nav.pop(0);
+    self.props.navigator.pop(0);
   }
 
   render() {
