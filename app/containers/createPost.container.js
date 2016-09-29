@@ -83,7 +83,7 @@ class CreatePost extends Component {
     var body = self.state.postBody;
     var title = self.state.postTitle;
     var category = self.props.posts.createPostCategory ? self.props.posts.createPostCategory._id : null;
-    var view = self.props.view.post.view;
+    var view = self.props.view.post;
     var tags = [];
     if (!self.state.postLink && view == 'url') {
         AlertIOS.alert("Add URL");
@@ -157,7 +157,7 @@ class CreatePost extends Component {
             AlertIOS.alert("Post error please try again");
         } else {
            AlertIOS.alert("Posted");
-          self.props.navigator.resetTo('discover')
+          self.props.navigator.resetTo({name: 'discover'})
         }
       });
     }
@@ -196,7 +196,7 @@ class CreatePost extends Component {
         } else {
            AlertIOS.alert("Posted");
           self.props.actions.setPostCategory(null);
-          self.props.navigator.resetTo('discover');
+          self.props.navigator.resetTo({name: 'discover'});
           self.props.actions.clearUserPosts(self.props.auth.user._id);
           self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
         }
@@ -305,7 +305,7 @@ class CreatePost extends Component {
     var postError = self.state.postError;
     var typeEl = null;
     var pickerArray = [];
-    var view = self.props.view.post.view;
+    var view = self.props.view.post;
     var parentTags = null;
     var categoryEl = null;
     if (self.props.auth) {

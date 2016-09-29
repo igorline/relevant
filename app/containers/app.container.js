@@ -67,6 +67,11 @@ class Application extends Component {
       ],
       destructiveIndex: 2,
       cancelIndex: 3,
+      routes: [
+        {name: 'auth'},
+        {name: 'login'},
+        {name: 'signup'}
+      ]
     }
   }
 
@@ -78,12 +83,13 @@ class Application extends Component {
 
   componentWillReceiveProps(next, nextState) {
     var self = this;
+    console.log(self.refs)
     if (!self.props.auth.user && next.auth.user) {
       self.props.actions.userToSocket(next.auth.user);
       self.props.actions.getActivity(next.auth.user._id, 0);
       self.props.actions.getGeneralActivity(next.auth.user._id, 0);
       self.props.actions.getMessages(next.auth.user._id);
-      self.refs.navigator.replace('profile')
+      if (self.refs.navigator) self.refs.navigator.replace({name: 'profile'});
     }
   }
 
@@ -97,7 +103,7 @@ class Application extends Component {
       })
     }
     if (self.props.posts.tag != nextProps.posts.tag && nextProps.posts.tag) {
-      self.refs.navigator.replace('discover');
+      self.refs.navigator.replace({name: 'discover'});
     }
   }
 
@@ -115,12 +121,11 @@ class Application extends Component {
     }
   }
 
-  logoutRedirect(navigator) {
+  logoutRedirect() {
     var self = this;
-    console.log(navigator, 'logout function nav')
     self.props.actions.removeDeviceToken(self.props.auth);
     self.props.actions.logoutAction(self.props.auth.user, self.props.auth.token);
-    navigator.replace(1);
+    self.refs.navigator.replace({name: 'login'});
   }
 
   changePhoto() {
@@ -161,29 +166,29 @@ class Application extends Component {
   }
 
 
-    pickImage(callback){
-      var self = this;
-        ImagePickerManager.showImagePicker(pickerOptions, (response) => {
-        if (response.didCancel) {
-          console.log('User cancelled image picker');
-          callback("cancelled");
-        }
-        else if (response.error) {
-          console.log('ImagePickerManager Error: ', response.error);
-          callback("error");
-        }
-        else if (response.customButton) {
-          console.log('User tapped custom button: ', response.customButton);
-          callback("error");
-        }
-        else {
-          callback(null, response.uri);
-        }
-      });
-    }
+  pickImage(callback){
+    var self = this;
+      ImagePickerManager.showImagePicker(pickerOptions, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+        callback("cancelled");
+      }
+      else if (response.error) {
+        console.log('ImagePickerManager Error: ', response.error);
+        callback("error");
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+        callback("error");
+      }
+      else {
+        callback(null, response.uri);
+      }
+    });
+  }
 
 
-  showActionSheet(navigator) {
+  showActionSheet() {
     var self = this;
     ActionSheetIOS.showActionSheetWithOptions({
       options: self.state.buttons,
@@ -199,7 +204,7 @@ class Application extends Component {
               self.chooseImage();
               break;
           case 2:
-              self.logoutRedirect(navigator);
+              self.logoutRedirect();
               break;
           default:
               return;
@@ -209,7 +214,7 @@ class Application extends Component {
 
   routeFunction(route, nav) {
     var self = this;
-    switch(route) {
+    switch(route.name) {
       case 'login':
         return <Login { ...self.props } navigator={nav} route={route} />;
         break
@@ -280,10 +285,10 @@ class Application extends Component {
       statsEl = (<View><Text style={styles.statsTxt}>📈<Text style={styles.active}>{relevance}</Text>  💵<Text style={styles.active}>{balance}</Text></Text></View>
       )
     }
-    if (route != 'profile') {
+    if (route.name != 'profile') {
       return (<View style={{flex: 1, justifyContent: 'center', padding: 10}}>{statsEl}</View>);
     } else {
-      return (<View style={styles.gear}><TouchableHighlight underlayColor={'transparent'}  onPress={self.showActionSheet.bind(self, navigator)} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View>);
+      return (<View style={styles.gear}><TouchableHighlight underlayColor={'transparent'}  onPress={self.showActionSheet.bind(self)} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View>);
     }
   }
 
@@ -301,7 +306,7 @@ class Application extends Component {
   getTitle(route) {
     var self = this;
     var title = '';
-    switch(route) {
+    switch(route.name) {
       case 'login':
         title = 'Log In';
         break;
@@ -364,13 +369,18 @@ class Application extends Component {
 
   render() {
     var self = this;
+
     if (self.props.auth.user) {
       return (
         <View style={{flex: 1}} >
           <Navigator
-            renderScene={self.routeFunction.bind(self)}
-            initialRoute={'auth'}
+            renderScene={(route, navigator) =>
+              self.routeFunction(route, navigator)
+            }
+            initialRouteStack={self.state.routes}
+            initialRoute={self.state.routes[0]}
             style={{flex: 1, paddingTop: 64}}
+            ref="navigator"
             navigationBar={
               <Navigator.NavigationBar
                 routeMapper={{
@@ -382,11 +392,10 @@ class Application extends Component {
                     { return self.title(route, navigator, index, navState) },
                 }}
                 style={{backgroundColor: 'white', borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth }}
-                ref="navigator"
               />
             }
           />
-          <Footer {...self.props}  navigator={self.getNavigator()} />
+         <Footer {...self.props} navigator={self.getNavigator()} />
           <View pointerEvents={'none'} style={globalStyles.notificationContainer}>
             <Notification {...self.props} />
           </View>
@@ -397,13 +406,15 @@ class Application extends Component {
       return (
         <View style={{flex: 1}}>
           <Navigator
+            initialRoute={self.state.routes[0]}
+            initialRouteStack={self.state.routes}
             renderScene={(route, navigator) =>
               self.routeFunction(route, navigator)
             }
             style={{flex: 1, paddingTop: 0}}
             ref="navigator"
           />
-          <Footer {...self.props} navigator={self.getNavigator()} />
+          <Footer {...self.props} navigatorX={self.getNavigator.bind(self)} />
           <View pointerEvents={'none'} style={globalStyles.notificationContainer}>
             <Notification {...self.props} />
           </View>
@@ -463,10 +474,10 @@ const localStyles = StyleSheet.create({
     fontSize: 12
   },
   gear: {
-    height: 60,
+    height: 45,
     flex: 1,
-    justifyContent: 'flex-end',
-    padding: 12
+    justifyContent: 'center',
+    padding: 12,
   },
   gearImg: {
     height: 20,

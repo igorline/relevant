@@ -344,12 +344,12 @@ class Post extends Component {
     var self = this;
     if (user._id == self.props.auth.user._id) {
       console.log('going to profile')
-      self.props.navigator.resetTo('profile')
+      self.props.navigator.resetTo({name: 'profile'})
     } else {
       console.log('setting selected user')
       self.props.actions.getSelectedUser(user._id).then(function(results) {
         if (results) {
-          self.props.navigator.resetTo('user');
+          self.props.navigator.resetTo({name: 'user'});
         }
       })
     }
