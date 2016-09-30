@@ -257,7 +257,7 @@ class Application extends Component {
 
   left(route, navigator, index, navState) {
     var self = this;
-    if (route == 'messages' || route == 'singlePost' || route == 'comments' || route == 'categories' || route == 'login' || route == 'signup' || route == 'thirst' ) {
+    if (route.name == 'messages' || route.name == 'singlePost' || route.name == 'comments' || route.name == 'categories' || route.name == 'login' || route.name == 'signup' || route.name == 'thirst' ) {
       return (<TouchableHighlight underlayColor={'transparent'} style={{flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10}} onPress={self.back.bind(self, navigator)}><Text>Back</Text></TouchableHighlight>);
     } else {
       return null;
