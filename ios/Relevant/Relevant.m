@@ -8,13 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import "ReactNativeShareExtension.h"
-#import "RCTRootView.h"
 #import "RCTBundleURLProvider.h"
+#import "RCTRootView.h"
 
-@interface MyShareEx : ReactNativeShareExtension
+@interface Relevant : ReactNativeShareExtension
 @end
 
-@implementation MyShareEx
+@implementation Relevant
 
 RCT_EXPORT_MODULE();
 
@@ -24,7 +24,7 @@ RCT_EXPORT_MODULE();
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
   
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-                                                      moduleName:@"MyShareEx"
+                                                      moduleName:@"Relevant"
                                                initialProperties:nil
                                                    launchOptions:nil];
   rootView.backgroundColor = nil;
