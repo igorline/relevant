@@ -19,7 +19,6 @@ let store = applyMiddleware(thunk, socketIoMiddleware)(createStore)(reducer);
 
 
 export default class AppContainer extends Component {
-
   render() {
     return (
       <Provider store={store}>

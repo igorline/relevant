@@ -178,7 +178,7 @@ function createUser(user, redirect) {
 }
 
 export
-function getUser(token, redirect) {
+function getUser(token, redirect, callback) {
     //console.log('getuser', token, redirect)
     return dispatch => {
         if(!token){
@@ -213,6 +213,7 @@ function getUser(token, redirect) {
                     personal: false,
                     byUser: responseJSON._id
                 }));
+                if(callback) callback(responseJSON);
                 //dispatch(addDeviceToken(responseJSON, token))
             })
             .catch(error => {
