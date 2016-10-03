@@ -143,7 +143,7 @@ class User extends Component {
         <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.received} />
         {profileEl}
         <TouchableHighlight style={styles.thirstyIcon}>
-          <Text style={styles.white} onPress={self.goTo.bind(self, 'thirst')} >Thirsty 👅💦</Text>
+          <Text style={styles.white} onPress={self.goTo.bind(self, {name: 'thirst'})} >Thirsty 👅💦</Text>
         </TouchableHighlight>
         {postsEl}
       </View>
