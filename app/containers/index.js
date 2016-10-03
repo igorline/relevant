@@ -17,6 +17,8 @@ let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
 const reducer = combineReducers(reducers);
 let store = applyMiddleware(thunk, socketIoMiddleware)(createStore)(reducer);
 
+console.ignoredYellowBox = ['ActivityIndicatorIOS', 'Warning: Failed'];
+
 export default class AppContainer extends Component {
   render() {
     return (
