@@ -1,7 +1,8 @@
 'use strict';
 
 import React, { AppRegistry } from 'react-native';
-import Share from './share.ios'
+import App from './app/containers';
+import Share from './app/containers/index.share';
 
 AppRegistry.registerComponent('relevantNative', () => App);
 AppRegistry.registerComponent('Relevant', () => Share)
