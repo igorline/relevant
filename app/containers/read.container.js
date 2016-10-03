@@ -148,7 +148,7 @@ class Read extends Component {
        messagesCount = (<Text style={[styles.white, styles.messagesCount]}>{self.props.messages.count+' New'}</Text>)
     }
 
-    thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={messages ? self.goTo.bind(self, 'messages') : null}>
+    thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={messages ? self.goTo.bind(self, {name: 'messages'}) : null}>
       <View style={[styles.thirstyHeader]}>
         <View style={{paddingRight: 5}}>
           <Text>👅💦</Text>

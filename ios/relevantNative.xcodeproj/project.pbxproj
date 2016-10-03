@@ -1073,6 +1073,7 @@
 				FB88BE8C1D9ED742002D0069 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
