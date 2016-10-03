@@ -41,6 +41,9 @@
 		FB88BEAD1D9ED8F6002D0069 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		FB88BEAE1D9ED8F6002D0069 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		FB88BEAF1D9ED8F6002D0069 /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB88BEA21D9ED842002D0069 /* libReactNativeShareExtension.a */; };
+		FB983E391DA1E21900DAF00D /* libRCTUserDefaults.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB983E341DA1E1E400DAF00D /* libRCTUserDefaults.a */; };
+		FB983E3A1DA1E21900DAF00D /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB88BEA21D9ED842002D0069 /* libReactNativeShareExtension.a */; };
+		FB983E3D1DA2044900DAF00D /* libRCTUserDefaults.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB983E341DA1E1E400DAF00D /* libRCTUserDefaults.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -149,6 +152,13 @@
 			remoteGlobalIDString = 41B5DE301D0B505800949BD5;
 			remoteInfo = ReactNativeShareExtension;
 		};
+		FB983E331DA1E1E400DAF00D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FB983E261DA1E1E400DAF00D /* RCTUserDefaults.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RCTUserDefaults;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -194,6 +204,9 @@
 		FB88BE871D9ED742002D0069 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FB88BE9B1D9ED7C6002D0069 /* Relevant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Relevant.m; sourceTree = "<group>"; };
 		FB88BE9D1D9ED842002D0069 /* ReactNativeShareExtension.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeShareExtension.xcodeproj; path = "../node_modules/react-native-share-extension/ios/ReactNativeShareExtension.xcodeproj"; sourceTree = "<group>"; };
+		FB983E261DA1E1E400DAF00D /* RCTUserDefaults.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTUserDefaults.xcodeproj; path = "../node_modules/react-native-user-defaults/RCTUserDefaults.xcodeproj"; sourceTree = "<group>"; };
+		FB983E3B1DA1E2A400DAF00D /* relevantNative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = relevantNative.entitlements; path = relevantNative/relevantNative.entitlements; sourceTree = "<group>"; };
+		FB983E3C1DA1E45200DAF00D /* Relevant.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Relevant.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,6 +222,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB983E391DA1E21900DAF00D /* libRCTUserDefaults.a in Frameworks */,
+				FB983E3A1DA1E21900DAF00D /* libReactNativeShareExtension.a in Frameworks */,
 				2A9422641D9D82B7000671FA /* libART.a in Frameworks */,
 				2A94225D1D9D80F3000671FA /* libRCTPushNotification.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -228,6 +243,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB983E3D1DA2044900DAF00D /* libRCTUserDefaults.a in Frameworks */,
 				FB88BEA31D9ED8F6002D0069 /* libART.a in Frameworks */,
 				FB88BEA41D9ED8F6002D0069 /* libRCTActionSheet.a in Frameworks */,
 				FB88BEA51D9ED8F6002D0069 /* libRCTGeolocation.a in Frameworks */,
@@ -323,6 +339,7 @@
 		13B07FAE1A68108700A75B9A /* relevantNative */ = {
 			isa = PBXGroup;
 			children = (
+				FB983E3B1DA1E2A400DAF00D /* relevantNative.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -369,6 +386,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				FB983E261DA1E1E400DAF00D /* RCTUserDefaults.xcodeproj */,
 				FB88BE9D1D9ED842002D0069 /* ReactNativeShareExtension.xcodeproj */,
 				2A94225E1D9D827D000671FA /* ART.xcodeproj */,
 				2A9422571D9D80DB000671FA /* RCTPushNotification.xcodeproj */,
@@ -420,6 +438,7 @@
 		FB88BE801D9ED742002D0069 /* Relevant */ = {
 			isa = PBXGroup;
 			children = (
+				FB983E3C1DA1E45200DAF00D /* Relevant.entitlements */,
 				FB88BE9B1D9ED7C6002D0069 /* Relevant.m */,
 				FB88BE841D9ED742002D0069 /* MainInterface.storyboard */,
 				FB88BE871D9ED742002D0069 /* Info.plist */,
@@ -431,6 +450,14 @@
 			isa = PBXGroup;
 			children = (
 				FB88BEA21D9ED842002D0069 /* libReactNativeShareExtension.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FB983E271DA1E1E400DAF00D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FB983E341DA1E1E400DAF00D /* libRCTUserDefaults.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -508,12 +535,26 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = CBMCA9EA8P;
+						DevelopmentTeam = D836GTA864;
+						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 0;
+							};
+						};
 					};
 					FB88BE7E1D9ED742002D0069 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = CBMCA9EA8P;
+						DevelopmentTeam = D836GTA864;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -564,6 +605,10 @@
 				{
 					ProductGroup = 832341B11AAA6A8300B99B32 /* Products */;
 					ProjectRef = 832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */;
+				},
+				{
+					ProductGroup = FB983E271DA1E1E400DAF00D /* Products */;
+					ProjectRef = FB983E261DA1E1E400DAF00D /* RCTUserDefaults.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302E01ABCB9EE00DB3ED1 /* Products */;
@@ -681,6 +726,13 @@
 			fileType = archive.ar;
 			path = libReactNativeShareExtension.a;
 			remoteRef = FB88BEA11D9ED842002D0069 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FB983E341DA1E1E400DAF00D /* libRCTUserDefaults.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTUserDefaults.a;
+			remoteRef = FB983E331DA1E1E400DAF00D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -839,10 +891,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = relevantNative/relevantNative.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = CBMCA9EA8P;
+				DEVELOPMENT_TEAM = D836GTA864;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -855,8 +909,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant;
 				PRODUCT_NAME = relevantNative;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -865,9 +921,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = relevantNative/relevantNative.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CBMCA9EA8P;
+				DEVELOPMENT_TEAM = D836GTA864;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -880,8 +938,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant;
 				PRODUCT_NAME = relevantNative;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -985,9 +1045,11 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_ENTITLEMENTS = Relevant/Relevant.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = CBMCA9EA8P;
+				DEVELOPMENT_TEAM = D836GTA864;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -1001,7 +1063,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.relevantNative.Relevant;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.Relevant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -1013,10 +1075,12 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_ENTITLEMENTS = Relevant/Relevant.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = CBMCA9EA8P;
+				DEVELOPMENT_TEAM = D836GTA864;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -1030,7 +1094,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.relevantNative.Relevant;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.Relevant.Relevant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
