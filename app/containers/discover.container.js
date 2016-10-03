@@ -93,7 +93,6 @@ class Discover extends Component {
     var self = this;
     if (view < 3) self.props.actions.clearPosts();
     self.props.actions.setView('discover', view);
-    var height = self.props.view.discover;
     if (!self.state.disableLayout) self.setState({disableLayout: true})
 
     switch(view) {

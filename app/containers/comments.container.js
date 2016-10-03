@@ -14,6 +14,7 @@ import {
   LayoutAnimation,
   DeviceEventEmitter,
   Dimensions,
+  Keyboard,
   ListView
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -46,14 +47,15 @@ class Comments extends Component {
   }
 
   componentWillUnmount() {
-    var self = this;
+    this.showListener.remove();
+    this.hideListener.remove();
   }
 
   componentDidMount() {
     var self = this;
     self.props.actions.getComments(self.props.posts.activePost);
-    DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
-    DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
+    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
+    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
   }
 
   keyboardWillShow (e) {
