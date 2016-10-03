@@ -2,10 +2,14 @@ import * as types from './actionTypes';
 import { push } from 'react-router-redux';
 import thunk from 'redux-thunk';
 import * as notifActions from './notif.actions';
+import userDefaults from 'react-native-user-defaults';
+
+const APP_GROUP_ID = 'group.com.4real.relevant';
 // var Contacts = require('react-native-contacts');
+
+
 require('../publicenv');
 import {
-    AsyncStorage,
     PushNotificationIOS
 } from 'react-native';
 var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
@@ -50,7 +54,8 @@ function loginUserSuccess(token) {
 export
 function loginUserFailure(error) {
     return dispatch => {
-        AsyncStorage.removeItem('token')
+
+        userDefaults.remove('token', APP_GROUP_ID)
             .then(() => {
                 dispatch({
                     type: types.LOGIN_USER_FAILURE,
@@ -75,10 +80,13 @@ function loginUserRequest() {
 
 export
 function logoutAction(user, token) {
-    AsyncStorage.removeItem('token');
+
     return (dispatch) => {
-        dispatch(logout());
-        dispatch({type:'server/logout', payload: user});
+       userDefaults.remove('token', APP_GROUP_ID)
+           .then(data => {
+                dispatch(logout());
+                dispatch({type:'server/logout', payload: user});
+            })
     }
 }
 
@@ -106,12 +114,14 @@ export function loginUser(user, redirect) {
         .then((responseJSON) => {
             console.log(responseJSON, 'login response')
             if (responseJSON.token) {
-                AsyncStorage.setItem('token', responseJSON.token)
+
+                userDefaults.set('token', responseJSON.token, APP_GROUP_ID)
                     .then( ()  => {
                         dispatch(loginUserSuccess(responseJSON.token));
                         dispatch(getUser(responseJSON.token, true));
                         return {status: true};
                     })
+
             } else {
                 dispatch(loginUserFailure(responseJSON.message));
                 return {status: false, message: responseJSON.message};
@@ -178,11 +188,12 @@ function createUser(user, redirect) {
 }
 
 export
-function getUser(token, redirect) {
+function getUser(token, redirect, callback) {
     //console.log('getuser', token, redirect)
     return dispatch => {
         if(!token){
-            AsyncStorage.getItem('token')
+
+            userDefaults.get('token', APP_GROUP_ID)
                 .then(token => {
                     if (token) {
                         return fetchUser(token);
@@ -193,6 +204,7 @@ function getUser(token, redirect) {
                 .catch(err => {
                     if(err) return dispatch(setUser());
                 })
+
         } else fetchUser(token);
 
         function fetchUser(token) {
@@ -213,6 +225,7 @@ function getUser(token, redirect) {
                     personal: false,
                     byUser: responseJSON._id
                 }));
+                if(callback) callback(responseJSON);
                 dispatch(addDeviceToken(responseJSON, token))
             })
             .catch(error => {
