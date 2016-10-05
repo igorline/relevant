@@ -52,10 +52,13 @@ class SinglePost extends Component {
     var description = null;
     var image = null;
     var link = null;
-    if (post.link) link = post.link;
-    if (post.title) title = post.title;
-    if (post.description) description = post.description;
-    if (post.image) image = post.image;
+    if (post){
+      if (post.link) link = post.link;
+      if (post.title) title = post.title;
+      if (post.description) description = post.description;
+      if (post.image) image = post.image;
+    }
+
 
     return (
       <View style={[styles.fullContainer, {backgroundColor: 'white'}]}>
