@@ -67,7 +67,8 @@ class Discover extends Component {
           var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
           self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
         }
-        if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
+        // if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
+        self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
       }, 500)
     });
   }
@@ -80,6 +81,9 @@ class Discover extends Component {
     }
     if (self.props.posts.tag != next.posts.tag && next.posts.tag) {
       self.setTag(next.posts.tag);
+    }
+    if (self.props.posts.newPostsAvailable != next.posts.newPostsAvailable) {
+      if (next.posts.newPostsAvailable) console.log('newPostsAvailable');
     }
   }
 
@@ -262,7 +266,7 @@ class Discover extends Component {
       }
 
       var el = (
-          <View style={[styles.transformContainer]}>
+          <View style={[styles.transformContainer], {backgroundColor: 'white'}}>
             {/*<Text style={{padding: 5}} onPress={self.clearTag.bind(self)}>Reset</Text>*/}
             <View style={[styles.searchParent]}>
               <TextInput onSubmitEditing={self.search.bind(self)} style={[styles.searchInput, styles.font15]} placeholder={'Search'} multiline={false} onChangeText={(term) => this.setState({tagSearchTerm: term})} value={self.state.tagSearchTerm} returnKeyType='done' />
@@ -331,7 +335,7 @@ class Discover extends Component {
 
 
     return (
-      <View style={styles.fullContainer}>
+      <View style={[styles.fullContainer, {backgroundColor: 'white'}]}>
         <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.dataSource} />
         {view != 3 ? postsEl : null}
         {view == 3 ? typeEl : null}

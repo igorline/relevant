@@ -333,7 +333,7 @@ class CreatePost extends Component {
 
 
     return (
-      <View style={[{height: self.state.visibleHeight}]}>
+      <View style={[{height: self.state.visibleHeight, backgroundColor: 'white'}]}>
         <ScrollView keyboardShouldPersistTaps={true} contentContainerStyle={{flexDirection: 'column', height: fullHeight - 120}}>
           {typeEl}
           {view == 'url' ? <View style={{borderBottomColor: !self.state.urlPreview ? '#f0f0f0' : 'transparent', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1}}><TextInput numberOfLines={1} style={[styles.font15, {flex: 1, padding: 10}]} placeholder='Enter URL here...' multiline={false} onChangeText={(postLink) => this.setState({postLink, urlPreview: null})} onSubmitEditing={self.createPreview.bind(self)} value={this.state.postLink} returnKeyType='done' /></View> : null}
