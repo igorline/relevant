@@ -83,9 +83,9 @@ class Post extends Component {
 
   componentDidMount() {
     var self = this;
-    this.checkTime(this);
-    this.checkInvestments(this.props.post.investments);
     if (self.props.post) {
+      this.checkTime(this);
+      this.checkInvestments(this.props.post.investments);
       self.setState({
         editedBody: self.props.post.body,
         editedTitle: self.props.post.title
@@ -108,8 +108,10 @@ class Post extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     var self = this;
-    if (this.props.post.investments != nextProps.post.investments) {
-      this.checkInvestments(nextProps.post.investments);
+    if (this.props.post) {
+      if (this.props.post.investments != nextProps.post.investments) {
+        this.checkInvestments(nextProps.post.investments);
+      }
     }
   }
 
@@ -132,17 +134,19 @@ class Post extends Component {
 
   checkTime() {
     var self = this;
-    var postTime = moment(self.props.post.createdAt);
-    var fromNow = postTime.fromNow();
-    var timeNow = moment();
-    var dif = timeNow.diff(postTime);
-    var threshold = 21600000;
-    if (dif >= threshold) {
-      self.setState({passed: true});
-    } else {
-      self.setState({timeUntilString: moment.duration(threshold - dif).humanize(), timePassedPercent: dif/threshold})
+    if (self.props.post) {
+      var postTime = moment(self.props.post.createdAt);
+      var fromNow = postTime.fromNow();
+      var timeNow = moment();
+      var dif = timeNow.diff(postTime);
+      var threshold = 21600000;
+      if (dif >= threshold) {
+        self.setState({passed: true});
+      } else {
+        self.setState({timeUntilString: moment.duration(threshold - dif).humanize(), timePassedPercent: dif/threshold})
+      }
+      self.setState({posted: fromNow});
     }
-    self.setState({posted: fromNow});
   }
 
   openLink(url) {
@@ -402,6 +406,7 @@ class Post extends Component {
       user = this.props.auth.user;
       if (user.balance) balance = user.balance;
     }
+    var name = null;
     var styles = {...localStyles, ...globalStyles};
     var pickerArray = [];
     var investOptions = [];
@@ -485,22 +490,24 @@ class Post extends Component {
       imageEl = (<Image resizeMode={'cover'} source={{uri: image}} style={styles.postImage} />);
     }
 
-    if (post.user._id != self.props.auth.user._id && !self.state.invested) {
-      investButtonEl = (<TouchableWithoutFeedback
-          onPressIn={this.handlePressIn.bind(self)}
-          onPressOut={this.handlePressOut.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
-          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View>
-        </TouchableWithoutFeedback>
-      )
-    }
+    if (post) {
+      if (post.user._id != self.props.auth.user._id && !self.state.invested) {
+        investButtonEl = (<TouchableWithoutFeedback
+            onPressIn={this.handlePressIn.bind(self)}
+            onPressOut={this.handlePressOut.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View>
+          </TouchableWithoutFeedback>
+        )
+      }
 
-    if (post.user._id != self.props.auth.user._id && self.state.invested) {
-      uninvestButtonEl = (
-        <TouchableWithoutFeedback
-          onPress={this.uninvest.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
-          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Uninvest</Text></View>
-        </TouchableWithoutFeedback>
-      )
+      if (post.user._id != self.props.auth.user._id && self.state.invested) {
+        uninvestButtonEl = (
+          <TouchableWithoutFeedback
+            onPress={this.uninvest.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Uninvest</Text></View>
+          </TouchableWithoutFeedback>
+        )
+      }
     }
 
     if (body) {
@@ -593,8 +600,8 @@ class Post extends Component {
             <View style={styles.postHeader}>
               {postUserImageEl}
               <View style={styles.postInfo}>
-                <TouchableWithoutFeedback onPress={self.setSelected.bind(self, self.props.post.user)} style={[styles.infoLeft, styles.innerInfo]}>
-                  <View><Text style={[styles.font15, styles.darkGray]}>{self.props.post.user.name}</Text></View>
+                <TouchableWithoutFeedback onPress={self.setSelected.bind(self, user)} style={[styles.infoLeft, styles.innerInfo]}>
+                  <View><Text style={[styles.font15, styles.darkGray]}>{name}</Text></View>
                 </TouchableWithoutFeedback>
                 <TouchableHighlight underlayColor={'transparent'} onPress={self.toggleInfo.bind(self)} style={[styles.infoRight, styles.innerInfo]}>
                   {postInfo}

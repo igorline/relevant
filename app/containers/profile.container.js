@@ -36,7 +36,7 @@ class Profile extends Component {
     var self = this;
     var posts = null;
     
-    if (self.props.posts.userPosts) {
+    if (self.props.posts.userPosts && self.props.auth.user) {
       if (self.props.posts.userPosts[self.props.auth.user._id]) {
         if (self.props.posts.userPosts[self.props.auth.user._id].length) {
           var posts = self.props.posts.userPosts[self.props.auth.user._id];
@@ -45,7 +45,7 @@ class Profile extends Component {
         } 
       }
     }
-    if (!posts) self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
+    if (!posts && self.props.auth.user) self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
   }
 
   componentWillUnmount() {
@@ -54,16 +54,16 @@ class Profile extends Component {
 
   componentWillUpdate(next) {
     var self = this;
+    if (self.props.auth.user) {
+      var newPosts = next.posts.userPosts[self.props.auth.user._id];
+      var oldPosts = self.props.posts.userPosts[self.props.auth.user._id];
 
-    var newPosts = next.posts.userPosts[self.props.auth.user._id];
-    var oldPosts = self.props.posts.userPosts[self.props.auth.user._id];
-
-    if (newPosts != oldPosts) {
-      var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      self.setState({postsData: fd.cloneWithRows(newPosts), received: true});
+      if (newPosts != oldPosts) {
+        var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        self.setState({postsData: fd.cloneWithRows(newPosts), received: true});
+      }
     }
   }
-
 
   renderFeedRow(rowData) {
     var self = this;

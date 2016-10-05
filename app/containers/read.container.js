@@ -42,9 +42,7 @@ class Read extends Component {
           self.setState({feedData: fd.cloneWithRows(self.props.posts.feed)});
         }
       }
-      // if (self.props.posts.feed.length == 0) {
-        this.props.actions.getFeed(self.props.auth.token, 0, null);
-      // }
+      if (self.props.auth.token) this.props.actions.getFeed(self.props.auth.token, 0, null);
     })
   }
 

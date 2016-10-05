@@ -45,7 +45,7 @@ class Messages extends Component {
 
   componentDidMount() {
     var self = this;
-    self.props.actions.getMessages(self.props.auth.user._id);
+    if(self.props.auth.user) self.props.actions.getMessages(self.props.auth.user._id);
     if (self.props.messages) {
       if (self.props.messages.index) {
         if (self.props.messages.index.length) {
