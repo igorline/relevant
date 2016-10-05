@@ -13,7 +13,10 @@ const initialState = {
   discoverTags: null,
   parentTags: null,
   createPostCategory: null,
-  userPosts: {}
+  userPosts: {},
+  newFeedAvailable: false,
+  newPostsAvailable: false,
+  queued: []
 };
 
 const updatePostElement = (array, post) => {
@@ -69,9 +72,16 @@ export default function post(state = initialState, action) {
   switch (action.type) {
 
     case types.SET_POSTS: {
-      var key = action.payload.type;
       return Object.assign({}, state, {
-        index: addItems(state.index, action.payload)
+        index: addItems(state.index, action.payload),
+        loading: false,
+        'newPostsAvailable': false
+      })
+    }
+
+    case types.GET_POSTS: {
+      return Object.assign({}, state, {
+        loading: true,
       })
     }
 
@@ -116,8 +126,14 @@ export default function post(state = initialState, action) {
       })
     }
 
-     case types.SET_TAG: {
-       return Object.assign({}, state, {
+    case 'SET_NEW_POSTS_STATUS': {
+      return Object.assign({}, state, {
+        'newPostsAvailable':  action.payload
+      })
+    }
+
+    case types.SET_TAG: {
+      return Object.assign({}, state, {
         'tag': action.payload
       })
     }
@@ -174,6 +190,13 @@ export default function post(state = initialState, action) {
     case types.REMOVE_COMMENT: {
       return Object.assign({}, state, {
         'comments': removeItem(state.comments, action.payload)
+      })
+    }
+
+    case 'SET_NEW_FEED_STATUS': {
+      console.log('SET_NEW_FEED_STATUS');
+      return Object.assign({}, state, {
+        'newFeedAvailable':  action.payload
       })
     }
 

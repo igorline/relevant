@@ -139,7 +139,7 @@ class User extends Component {
     }
 
     return (
-      <View style={styles.fullContainer}>
+      <View style={[styles.fullContainer, {backgroundColor: 'white'}]}>
         <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.received} />
         {profileEl}
         <TouchableHighlight style={styles.thirstyIcon}>

@@ -45,47 +45,46 @@ class Footer extends Component {
 
   goTo(view) {
     var self = this;
-    self.props.navigator.resetTo({name: view});
+    self.props.navigator.push({name: view});
     this.route = view;
     this.setState({});
   }
 
-  runAnimation(count) {
-    if (count < 1) return;
+  runAnimation(i) {
     var self = this;
     var opacity = new Animated.Value(1);
     var yVal = new Animated.Value(0);
     var xVal = new Animated.Value(0);
     var scale = new Animated.Value(1);
+    var index = 0;
 
     var newArr = self.state.hearts.push(
       <Animated.View
         pointerEvents={'none'}
+        key = {i}
         style={[styles.notifAnimation,
           {transform: [{translateY: yVal},
           {translateX: xVal},
           {scale: scale}], opacity: opacity}]}>
-
           <Text style = {[{fontSize: 30, color: 'red'}]}>❤️</Text>
-
         </Animated.View>);
 
     Animated.parallel([
       Animated.timing(yVal, {
-        toValue: -100,
-        delay: 0,
-        duration: 500,
-        easing: Easing.linear
+        toValue: -300,
+        delay: 100 * i,
+        duration: 600,
+        easing: Easing.quad
       }),
       Animated.timing(opacity, {
         toValue: 0,
-        delay: 0,
+        delay: 100 * i,
         duration: 500,
         easing: Easing.linear
       }),
       Animated.timing(scale, {
         toValue: 1.5,
-        delay: 0,
+        delay: 100 * i,
         duration: 500,
         easing: Easing.linear
       }),
@@ -93,13 +92,15 @@ class Footer extends Component {
 
     Animated.sequence([
       Animated.timing(xVal, {
-        toValue: 5,
+        toValue: 5 * Math.random(),
         duration: 250,
+        delay: 100 * i,
         easing: Easing.linear
       }),
       Animated.timing(xVal, {
-        toValue: -5,
+        toValue: -5 * Math.random(),
         duration: 250,
+        delay: 100 * i,
         easing: Easing.linear
       })
     ]).start();
@@ -108,13 +109,16 @@ class Footer extends Component {
 
     setTimeout(function() {
       self.setState({hearts: []});
-    }, 2000);
+    }, 5000);
   }
 
   componentWillReceiveProps(nextProps, nextState) {
     var self = this;
-    if (self.props.notif.count != nextProps.notif.count) {
-      self.runAnimation(nextProps.notif.count);
+    if (nextProps.notif.count && self.props.notif.count < nextProps.notif.count) {
+      var newNotifications = nextProps.notif.count - self.props.notif.count;
+      for (var i = 0; i < newNotifications * 2; i++) {
+        self.runAnimation(i);
+      }
     }
   }
 
@@ -129,7 +133,6 @@ class Footer extends Component {
       // if (length > 0) length --;
       // route = routes[length].name;
     }
-    console.log(route, 'footer rendering route')
     var authenticated = self.props.auth.user;
     var footerEl = null;
     var imageEl = (<Text style={[styles.icon, styles.textCenter]}>👤</Text>);
