@@ -101,9 +101,12 @@ class Footer extends Component {
     var nav = null;
     if (self.props.navigator) {
       nav = self.props.navigator;
-      var routes = nav.getCurrentRoutes();
-      route = routes[0].name;
+      var routes = nav.state.routeStack;
+      var length = nav.state.routeStack.length;
+      if (length > 0) length --;
+      route = routes[length].name;
     }
+    //console.log(route, 'footer rendering route')
     var authenticated = self.props.auth.user;
     var footerEl = null;
     var imageEl = (<Text style={[styles.icon, styles.textCenter]}>👤</Text>);

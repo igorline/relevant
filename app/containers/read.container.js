@@ -13,23 +13,11 @@ import {
   ListView,
   TouchableHighlight
 } from 'react-native';
-import { connect } from 'react-redux';
-import Button from 'react-native-button';
 import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/auth.actions';
-import * as postActions from '../actions/post.actions';
-import * as userActions from '../actions/user.actions';
-import * as tagActions from '../actions/tag.actions';
-import * as animationActions from '../actions/animation.actions';
-import * as messageActions from '../actions/message.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
-import * as investActions from '../actions/invest.actions';
-import * as viewActions from '../actions/view.actions';
-import Notification from '../components/notification.component';
 import Spinner from 'react-native-loading-spinner-overlay';
-import InvestAnimation from '../components/investAnimation.component';
 
 class Read extends Component {
   constructor (props, context) {
@@ -99,7 +87,7 @@ class Read extends Component {
       self.setState({enabled: false});
         self.props.actions.getFeed(self.props.auth.token, length, self.state.tag);
       setTimeout(function() {
-        self.setState({enabled: true})
+        if (self._mounted) self.setState({enabled: true})
       }, 1000);
     }
   }
@@ -138,9 +126,10 @@ class Read extends Component {
       }
     }
 
-    if (self.props.posts.feed.length && self.state.feedData) {
+    if (self.state.feedData) {
       postsEl = (<ListView ref="feedlist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.feedData} renderRow={self.renderFeedRow.bind(self)} />)
-    } else {
+    }
+    if (self.state.feedData && self.state.feedData.length == 0) {
       postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={[{fontWeight: '500'}, styles.darkGray]}>Nothing in yr feed bruh</Text></View>)
     }
 

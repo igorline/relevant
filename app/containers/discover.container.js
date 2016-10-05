@@ -68,7 +68,7 @@ class Discover extends Component {
           self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
         }
         if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
-      }, 1)
+      }, 500)
     });
   }
 
@@ -199,9 +199,11 @@ class Discover extends Component {
         default:
           return;
       }
-      setTimeout(function() {
-        self.setState({enabled: true})
-      }, 1000);
+      if (self._mounted) {
+        setTimeout(function() {
+          self.setState({enabled: true})
+        }, 1000);
+      }
     }
   }
 
