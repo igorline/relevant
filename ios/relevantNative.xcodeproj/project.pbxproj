@@ -206,7 +206,6 @@
 		FB88BE9B1D9ED7C6002D0069 /* Relevant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Relevant.m; sourceTree = "<group>"; };
 		FB88BE9D1D9ED842002D0069 /* ReactNativeShareExtension.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeShareExtension.xcodeproj; path = "../node_modules/react-native-share-extension/ios/ReactNativeShareExtension.xcodeproj"; sourceTree = "<group>"; };
 		FB983E261DA1E1E400DAF00D /* RCTUserDefaults.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTUserDefaults.xcodeproj; path = "../node_modules/react-native-user-defaults/RCTUserDefaults.xcodeproj"; sourceTree = "<group>"; };
-		FB983E3B1DA1E2A400DAF00D /* relevantNative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = relevantNative.entitlements; path = relevantNative/relevantNative.entitlements; sourceTree = "<group>"; };
 		FB983E3C1DA1E45200DAF00D /* Relevant.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Relevant.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -533,24 +532,11 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = D836GTA864;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-<<<<<<< HEAD
-						DevelopmentTeam = CBMCA9EA8P;
-						SystemCapabilities = {
-							com.apple.Push = {
-=======
 						DevelopmentTeam = D836GTA864;
-						ProvisioningStyle = Automatic;
-						SystemCapabilities = {
-							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
-							};
-							com.apple.Keychain = {
-								enabled = 0;
-							};
-						};
 					};
 					FB88BE7E1D9ED742002D0069 = {
 						CreatedOnToolsVersion = 8.0;
@@ -558,7 +544,6 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
->>>>>>> 751f0b2661b4eabb6958353dd6e51c7fec4d0c18
 								enabled = 1;
 							};
 						};
@@ -867,6 +852,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = D836GTA864;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -885,6 +871,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = D836GTA864;
 				INFOPLIST_FILE = relevantNativeTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

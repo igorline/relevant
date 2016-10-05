@@ -83,6 +83,7 @@ class Activity extends Component {
     var i = 0;
     var populated = [];
     for (var index in users) {
+      if (!self._mounted) return;
       i += 1;
       self.props.actions.getOnlineUser(index, self.props.auth.token).then(function(response) {
         if (response.status) {
