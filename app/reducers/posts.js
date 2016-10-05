@@ -13,7 +13,9 @@ const initialState = {
   discoverTags: null,
   parentTags: null,
   createPostCategory: null,
-  userPosts: {}
+  userPosts: {},
+  newFeedAvailable: false,
+  newPostsAvailable: false
 };
 
 const updatePostElement = (array, post) => {
@@ -113,6 +115,18 @@ export default function post(state = initialState, action) {
     case types.REMOVE_POST: {
       return Object.assign({}, state, {
         'index':  removeItem(state.index, action.payload)
+      })
+    }
+
+    case 'SET_NEW_POSTS_STATUS': {
+      return Object.assign({}, state, {
+        'newPostsAvailable':  action.payload
+      })
+    }
+
+    case 'SET_NEW_FEED_STATUS': {
+      return Object.assign({}, state, {
+        'newFeedAvailable':  action.payload
       })
     }
 

@@ -39,9 +39,9 @@ class Read extends Component {
         self.setState({feedData: fd.cloneWithRows(self.props.posts.feed)});
       }
     }
-    if (self.props.posts.feed.length == 0) {
+    // if (self.props.posts.feed.length == 0) {
       this.props.actions.getFeed(self.props.auth.token, 0, null);
-    }
+    // }
   }
 
   componentWillReceiveProps(next) {
@@ -49,6 +49,9 @@ class Read extends Component {
     if (next.posts.feed != self.props.posts.feed) {
       var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({feedData: fd.cloneWithRows(next.posts.feed)});
+    }
+    if (self.props.posts.newFeedAvailable != next.posts.newFeedAvailable) {
+      if (next.posts.newFeedAvailable) console.log('newFeedAvailable');
     }
   }
 
@@ -155,7 +158,7 @@ class Read extends Component {
     </TouchableHighlight>);
 
     return (
-      <View style={styles.fullContainer}>
+      <View style={[styles.fullContainer, {backgroundColor: 'white'}]}>
         {thirstyHeader}
         <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.feedData} />
         {postsEl}

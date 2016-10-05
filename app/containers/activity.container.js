@@ -168,7 +168,7 @@ class Activity extends Component {
 
 
     return (
-      <View style={styles.fullContainer}>
+      <View style={[styles.fullContainer, {backgroundColor: 'white'}]}>
         {typeEl}
         {self.state.view < 3 ? activityEl : onlineEl }
 
