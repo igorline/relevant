@@ -142,6 +142,14 @@ class Application extends Component {
     );
   }
 
+  configureTransition(route, routeStack) {
+    if (route.name == 'categories' || route.name == 'comments' || route.name == 'login' || route.name == 'signup' || route.name == 'messages' || route.name == 'thirst') {
+      return Navigator.SceneConfigs.PushFromRight
+    } else {
+      return Navigator.SceneConfigs.FadeAndroid
+    }
+  }
+
   chooseImage() {
     var self = this;
     self.pickImage(function(err, data){
@@ -375,16 +383,20 @@ class Application extends Component {
             initialRouteStack={self.state.routes}
             initialRoute={self.state.routes[0]}
             style={{flex: 1, paddingTop: 64}}
+            configureScene={(route, routeStack) =>
+              self.configureTransition(route, routeStack)
+            }
             ref="navigator"
             navigationBar={
               <Navigator.NavigationBar
                 routeMapper={{
                   LeftButton: (route, navigator, index, navState) =>
-                    { return self.left(route, navigator, index, navState) },
+                    {  return self.left(route, navigator, index, navState) },
                   RightButton: (route, navigator, index, navState) =>
                     { return self.right(route, navigator, index, navState) },
                   Title: (route, navigator, index, navState) =>
-                    { return self.title(route, navigator, index, navState) },
+                    { navState.gestures = null
+                      return self.title(route, navigator, index, navState) },
                 }}
                 style={{backgroundColor: 'white', borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth }}
               />
@@ -405,6 +417,9 @@ class Application extends Component {
             initialRouteStack={self.state.routes}
             renderScene={(route, navigator) =>
               self.routeFunction(route, navigator)
+            }
+            configureScene={(route, routeStack) =>
+              self.configureTransition(route, routeStack)
             }
             style={{flex: 1, paddingTop: 0}}
             ref="navigator"

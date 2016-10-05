@@ -53,7 +53,7 @@ class Comments extends Component {
 
   componentDidMount() {
     var self = this;
-    self.props.actions.getComments(self.props.posts.activePost);
+    if (self.props.posts.activePost) self.props.actions.getComments(self.props.posts.activePost);
     this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
     this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
   }
