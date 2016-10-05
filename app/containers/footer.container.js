@@ -32,9 +32,22 @@ class Footer extends Component {
     var self = this;
   }
 
+  componentWillUpdate(newProps) {
+    var nav = null;
+    if (newProps.navigator) {
+      nav = newProps.navigator;
+      var routes = nav.state.routeStack;
+      var length = nav.state.routeStack.length;
+      if (length > 0) length --;
+      this.route = routes[length].name;
+    }
+  }
+
   goTo(view) {
     var self = this;
     self.props.navigator.resetTo({name: view});
+    this.route = view;
+    this.setState({});
   }
 
   runAnimation(count) {
@@ -45,7 +58,17 @@ class Footer extends Component {
     var xVal = new Animated.Value(0);
     var scale = new Animated.Value(1);
 
-    var newArr = self.state.hearts.push(<Animated.View pointerEvents={'none'} style={[styles.notifAnimation, {transform: [{translateY: yVal}, {translateX: xVal}, {scale: scale}], opacity: opacity}]}><Text style={[{fontSize: 30, color: 'red'}]}>❤️</Text></Animated.View>);
+    var newArr = self.state.hearts.push(
+      <Animated.View
+        pointerEvents={'none'}
+        style={[styles.notifAnimation,
+          {transform: [{translateY: yVal},
+          {translateX: xVal},
+          {scale: scale}], opacity: opacity}]}>
+
+          <Text style = {[{fontSize: 30, color: 'red'}]}>❤️</Text>
+
+        </Animated.View>);
 
     Animated.parallel([
       Animated.timing(yVal, {
@@ -101,12 +124,12 @@ class Footer extends Component {
     var nav = null;
     if (self.props.navigator) {
       nav = self.props.navigator;
-      var routes = nav.state.routeStack;
-      var length = nav.state.routeStack.length;
-      if (length > 0) length --;
-      route = routes[length].name;
+      // var routes = nav.state.routeStack;
+      // var length = nav.state.routeStack.length;
+      // if (length > 0) length --;
+      // route = routes[length].name;
     }
-    //console.log(route, 'footer rendering route')
+    console.log(route, 'footer rendering route')
     var authenticated = self.props.auth.user;
     var footerEl = null;
     var imageEl = (<Text style={[styles.icon, styles.textCenter]}>👤</Text>);
@@ -116,33 +139,39 @@ class Footer extends Component {
 
     if (authenticated) {
       footerEl = ( <View style={styles.footer}>
-        <TouchableHighlight onPress={self.goTo.bind(self, 'read')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 'read' ? '#007aff' : 'transparent' }]} >
+        <TouchableHighlight onPress={self.goTo.bind(self, 'read')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: this.route == 'read' ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter]}> 📩 </Text>
              {self.props.messages.count ? <View style={styles.notifCount}><Text style={styles.notifText}>{self.props.messages.count}</Text></View> : null}
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={self.goTo.bind(self, 'discover')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 'discover' ? '#007aff' : 'transparent' }]} >
+        <TouchableHighlight onPress={self.goTo.bind(self, 'discover')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: this.route == 'discover' ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter]}>🔮</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={self.goTo.bind(self, 'createPost')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 'createPost' ? '#007aff' : 'transparent' }]} >
+        <TouchableHighlight onPress={self.goTo.bind(self, 'createPost')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: this.route == 'createPost' ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter]}>📝</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={self.goTo.bind(self,'activity')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 'activity' ? '#007aff' : 'transparent' }]} >
+        <TouchableHighlight onPress={self.goTo.bind(self,'activity')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: this.route == 'activity' ? '#007aff' : 'transparent' }]} >
           <View style={styles.footerItemView}>
             <Text style={[styles.icon, styles.textCenter]}>⚡</Text>
             {self.props.notif.count ? <View style={styles.notifCount}><Text style={styles.notifText}>{self.props.notif.count}</Text></View> : null}
             {self.state.hearts}
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={self.goTo.bind(self, 'profile')} underlayColor={'transparent'} style={[styles.footerItem, {borderBottomColor: route == 'profile' ? '#007aff' : 'transparent' }]} >
+
+        <TouchableHighlight
+          onPress={self.goTo.bind(self, 'profile')}
+          underlayColor={'transparent'}
+          style={[styles.footerItem, {borderBottomColor: this.route == 'profile' ? '#007aff' : 'transparent' }]} >
+
           <View style={styles.footerItemView}>
             {imageEl}
           </View>
+
         </TouchableHighlight>
       </View>);
     }

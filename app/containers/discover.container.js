@@ -56,9 +56,9 @@ class Discover extends Component {
   }
 
   componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
+    // InteractionManager.runAfterInteractions(() => {
       //This switches the view before starting to render stuff
-      setTimeout(() => {
+      // setTimeout(() => {
         var self = this;
         if (self.props.posts.comments) this.props.actions.setComments(null);
         if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
@@ -68,8 +68,8 @@ class Discover extends Component {
           self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
         }
         if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
-      }, 500)
-    });
+      // }, 1)
+    // });
   }
 
   componentWillReceiveProps(next) {
