@@ -56,7 +56,7 @@ class ShareContainer extends Component {
       name = this.props.auth.user.name
     return (
         <Modal backdrop={false}
-               style={{ backgroundColor: 'transparent' }} position="center" isOpen={this.state.isOpen} onClosed={this.onClose}>
+               style={{ backgroundColor: 'white' }} position="center" isOpen={this.state.isOpen} onClosed={this.onClose}>
             <View style={{ alignItems: 'center', justifyContent:'center', flex: 1 }}>
               <View style={{ borderColor: 'green', borderWidth: 1, backgroundColor: 'white', height: 200, width: 300 }}>
                 <TouchableOpacity onPress={this.closing}>
