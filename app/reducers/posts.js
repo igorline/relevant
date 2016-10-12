@@ -16,7 +16,8 @@ const initialState = {
   userPosts: {},
   newFeedAvailable: false,
   newPostsAvailable: false,
-  queued: []
+  queued: [],
+  user: []
 };
 
 const updatePostElement = (array, post) => {
@@ -72,10 +73,12 @@ export default function post(state = initialState, action) {
   switch (action.type) {
 
     case types.SET_POSTS: {
+      var type = action.payload.type;
       return Object.assign({}, state, {
-        index: addItems(state.index, action.payload),
+        [type]: addItems(state[type], action.payload.data),
         loading: false,
-        'newPostsAvailable': false
+        'newPostsAvailable': false,
+        'newFeedAvailable': false
       })
     }
 
@@ -84,6 +87,25 @@ export default function post(state = initialState, action) {
         loading: true,
       })
     }
+
+    case types.UPDATE_POST: {
+      return Object.assign({}, state, {
+        index: updatePostElement(state.index, action.payload),
+        feed: updatePostElement(state.feed, action.payload)
+        user: updatePostElement(state.feed, action.payload)
+        //TODO refactor user
+        // index:  updatePostElement(state.index, action.payload.data)
+      })
+    }
+
+    case types.REMOVE_POST: {
+      return Object.assign({}, state, {
+        'index':  removeItem(state.index, action.payload),
+        'feed':  removeItem(state.feed, action.payload),
+        'user': removeItem(state.feed, action.payload)
+      })
+    }
+
 
     case 'SET_USER_POSTS': {
       var arr = [];
@@ -98,32 +120,6 @@ export default function post(state = initialState, action) {
       };
 
       return Object.assign({}, state, newObj)
-    }
-
-    case types.ADD_POST: {
-      console.log(view, 'add post current view')
-      return Object.assign({}, state, {
-          // 'queued': addItem(state.index, action.payload)
-        'queued': action.payload
-      })
-    }
-
-    case types.UPDATE_POSTS: {
-      return Object.assign({}, state, {
-        'index': action.payload
-      })
-    }
-
-    case types.UPDATE_POST: {
-      return Object.assign({}, state, {
-        'index':  updatePostElement(state.index, action.payload)
-      })
-    }
-
-    case types.REMOVE_POST: {
-      return Object.assign({}, state, {
-        'index':  removeItem(state.index, action.payload)
-      })
     }
 
     case 'SET_NEW_POSTS_STATUS': {
@@ -197,24 +193,6 @@ export default function post(state = initialState, action) {
       console.log('SET_NEW_FEED_STATUS');
       return Object.assign({}, state, {
         'newFeedAvailable':  action.payload
-      })
-    }
-
-    case types.ADD_POST_TO_FEED :{
-      return Object.assign({}, state, {
-        'feed': addItem(state.index, action.payload)
-      })
-    }
-
-    case types.UPDATE_FEED: {
-      return Object.assign({}, state, {
-        'feed': updatePostElement(state.feed, action.payload)
-      })
-    }
-
-    case types.SET_FEED: {
-      return Object.assign({}, state, {
-        'feed': addItems(state.feed, action.payload)
       })
     }
 
