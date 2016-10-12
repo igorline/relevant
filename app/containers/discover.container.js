@@ -60,7 +60,7 @@ class Discover extends Component {
       var self = this;
       if (self.props.posts.comments) this.props.actions.setComments(null);
       if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
-      if (self.props.posts.tag && self.props.posts.index) self.props.actions.clearPosts();
+      if (self.props.posts.tag && self.props.posts.index) self.props.actions.clearPosts('index');
       if (self.props.posts.index.length > 0) {
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
@@ -99,7 +99,7 @@ class Discover extends Component {
 
   changeView(view) {
     var self = this;
-    if (view < 3) self.props.actions.clearPosts();
+    if (view < 3) self.props.actions.clearPosts('index');
     self.props.actions.setView('discover', view);
     if (!self.state.disableLayout) self.setState({disableLayout: true})
 
@@ -126,7 +126,7 @@ class Discover extends Component {
   setTag(tag) {
     var self = this;
     self.props.actions.setTag(tag);
-    self.props.actions.clearPosts();
+    self.props.actions.clearPosts('index');
     self.setState({dataSource: null});
     switch(self.props.view.discover) {
       case 1:
@@ -152,7 +152,7 @@ class Discover extends Component {
       } else {
         if (foundTags.data.length) {
           self.props.actions.setTag(foundTags.data);
-          self.props.actions.clearPosts();
+          self.props.actions.clearPosts('index');
           switch(self.props.view.discover) {
             case 1:
               self.props.actions.getPosts(0, foundTags.data, null, 5);
@@ -193,7 +193,7 @@ class Discover extends Component {
       if(self.props.posts.newPostsAvailable == true) {
         self.loading = true;
         console.log("LOADING NEW")
-        self.props.actions.clearPosts();
+        self.props.actions.clearPosts('index');
         self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
       }
     }

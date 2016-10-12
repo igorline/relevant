@@ -54,7 +54,7 @@ class User extends Component {
       }
       if (!posts) {
         //console.log('getting posts')
-        self.props.actions.clearUserPosts();
+        self.props.actions.clearUserPosts('user');
         self.props.actions.getUserPosts(0, 5, self.props.users.selectedUser._id);
       }
     }

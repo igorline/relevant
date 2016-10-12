@@ -149,9 +149,9 @@ export default function post(state = initialState, action) {
     }
 
     case types.CLEAR_POSTS: {
-       return Object.assign({}, state, {
-        'index': [],
-        'feed': []
+      var type = action.payload.type;
+      return Object.assign({}, state, {
+        [type]: [],
       })
     }
 

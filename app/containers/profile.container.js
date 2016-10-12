@@ -46,7 +46,7 @@ class Profile extends Component {
       // }
     }
     if (!posts && self.props.auth.user) {
-      self.props.actions.clearUserPosts();
+      self.props.actions.clearUserPosts('user');
       self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
     }
   }
