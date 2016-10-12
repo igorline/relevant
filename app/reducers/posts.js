@@ -16,6 +16,7 @@ const initialState = {
   userPosts: {},
   newFeedAvailable: false,
   newPostsAvailable: false,
+  currentUser: null,
   queued: [],
   user: []
 };
@@ -76,6 +77,7 @@ export default function post(state = initialState, action) {
       var type = action.payload.type;
       return Object.assign({}, state, {
         [type]: addItems(state[type], action.payload.data),
+        currentUser: action.payload.userId ? action.payload.userId : state.currentUser,
         loading: false,
         'newPostsAvailable': false,
         'newFeedAvailable': false
@@ -91,7 +93,7 @@ export default function post(state = initialState, action) {
     case types.UPDATE_POST: {
       return Object.assign({}, state, {
         index: updatePostElement(state.index, action.payload),
-        feed: updatePostElement(state.feed, action.payload)
+        feed: updatePostElement(state.feed, action.payload),
         user: updatePostElement(state.feed, action.payload)
         //TODO refactor user
         // index:  updatePostElement(state.index, action.payload.data)
@@ -196,17 +198,10 @@ export default function post(state = initialState, action) {
       })
     }
 
-    case 'CLEAR_USER_POSTS' :{
-      var user = action.payload;
-      delete state.userPosts[user];
-
-      var newObj = {
-        userPosts: {
-          ...state.userPosts
-        }
-      };
-
-      return Object.assign({}, state, newObj)
+    case 'CLEAR_USER_POSTS': {
+      return Object.assign({}, state, {
+        'user': [],
+      })
     }
 
     default:

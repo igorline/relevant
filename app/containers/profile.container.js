@@ -36,16 +36,19 @@ class Profile extends Component {
     var self = this;
     var posts = null;
     
-    if (self.props.posts.userPosts && self.props.auth.user) {
-      if (self.props.posts.userPosts[self.props.auth.user._id]) {
-        if (self.props.posts.userPosts[self.props.auth.user._id].length) {
-          var posts = self.props.posts.userPosts[self.props.auth.user._id];
+    if (self.props.posts.user.length && self.props.auth.user && self.props.auth.user == self.props.posts.currentUser) {
+      // if (self.props.posts.userPosts[self.props.auth.user._id]) {
+        // if (self.props.posts.userPosts[self.props.auth.user._id].length) {
+          var posts = self.props.posts.user;
           var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
           self.setState({postsData: fd.cloneWithRows(posts), received: true});
-        } 
-      }
+        // } 
+      // }
     }
-    if (!posts && self.props.auth.user) self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
+    if (!posts && self.props.auth.user) {
+      self.props.actions.clearUserPosts();
+      self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
+    }
   }
 
   componentWillUnmount() {
@@ -54,9 +57,11 @@ class Profile extends Component {
 
   componentWillUpdate(next) {
     var self = this;
+
+    if (next.posts.currentUser != next.auth.user._id) return;
     if (self.props.auth.user) {
-      var newPosts = next.posts.userPosts[self.props.auth.user._id];
-      var oldPosts = self.props.posts.userPosts[self.props.auth.user._id];
+      var newPosts = next.posts.user;
+      var oldPosts = self.props.posts.user;
 
       if (newPosts != oldPosts) {
         var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -82,7 +87,7 @@ class Profile extends Component {
 
   loadMore() {
     var self = this;
-    var length = self.props.posts.userPosts[self.props.auth.user._id].length;
+    var length = self.props.posts.user.length;
      console.log('load more, skip: ', length);
     if (self.state.enabled) {
       self.setState({enabled: false});

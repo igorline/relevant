@@ -32,6 +32,7 @@ class User extends Component {
   componentDidMount() {
     var self = this;
     var user = self.props.users.selectedUser;
+    console.log("SETTING USER")
     if (user) {
       var notifObj = {
         forUser: user._id,
@@ -40,19 +41,20 @@ class User extends Component {
         type: 'profile'
       }
       self.props.actions.createNotification(self.props.auth.token, notifObj);
+      var userId = self.props.users.selectedUser._id;
       var posts = null;
-      if (self.props.posts.userPosts) {
-        if (self.props.posts.userPosts[self.props.users.selectedUser._id]) {
-          if (self.props.posts.userPosts[self.props.users.selectedUser._id].length) {
-            var posts = self.props.posts.userPosts[self.props.users.selectedUser._id];
-            var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-            self.setState({postsData: fd.cloneWithRows(posts), received: true});
-          } 
-        }
+      if (self.props.posts.user.length && userId == self.props.posts.currentUser) {
+        // if (self.props.posts.userPosts.length) {
+          // if (self.props.posts.userPosts[self.props.users.selectedUser._id].length) {
+        var posts = self.props.posts.user;
+        var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        self.setState({postsData: fd.cloneWithRows(posts), received: true});
+          // } 
+        // }
       }
-      
       if (!posts) {
         //console.log('getting posts')
+        self.props.actions.clearUserPosts();
         self.props.actions.getUserPosts(0, 5, self.props.users.selectedUser._id);
       }
     }
@@ -60,8 +62,13 @@ class User extends Component {
 
   componentWillReceiveProps(next) {
     var self = this;
-    var newPosts = next.posts.userPosts[self.props.users.selectedUser._id];
-    var oldPosts = self.props.posts.userPosts[self.props.users.selectedUser._id];
+    var newPosts = next.posts.user;
+    var oldPosts = self.props.posts.user;
+
+    // if (!next.users.selectedUser || next.posts.currentUser != next.users.selectedUser._id) {
+      // self.props.actions.clearUserPosts();
+      // return;
+    // }
 
     if (newPosts != oldPosts) {
       var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -86,7 +93,7 @@ class User extends Component {
 
   loadMore() {
     var self = this;
-    var length = self.props.posts.userPosts.length;
+    var length = self.props.posts.user.length;
      console.log('load more, skip: ', length);
     if (self.state.enabled) {
       self.setState({enabled: false});

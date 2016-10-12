@@ -167,7 +167,7 @@ export function getUserPosts(skip, limit, userId) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setUserPosts(userId, responseJSON));
+      dispatch(setUserPosts(responseJSON, 'user', userId));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -175,12 +175,13 @@ export function getUserPosts(skip, limit, userId) {
   }
 }
 
-export function setUserPosts(userId, posts) {
+export function setUserPosts(posts, user, userId) {
     return {
-        type: 'SET_USER_POSTS',
+        type: 'SET_POSTS',
         payload: {
-          user: userId,
-          posts: posts
+          userId: userId,
+          data: posts,
+          type: user
         }
     };
 }
