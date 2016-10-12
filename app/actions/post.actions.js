@@ -62,8 +62,7 @@ export function deletePost(token, post) {
 }
 
 
-export
-function setFeed(feed) {
+export function setFeed(feed) {
     return {
         type: types.SET_FEED,
         payload: feed
@@ -71,28 +70,32 @@ function setFeed(feed) {
 }
 
 
-export
-function updateFeed(feeditem) {
+export function updateFeed(feeditem) {
     return {
         type: types.UPDATE_FEED,
         payload: feeditem
     };
 }
 
-export
-function clearPosts() {
+export function clearPosts() {
     return {
         type: types.CLEAR_POSTS
     };
 }
 
-export
-function setPostCategory(tag) {
+export function setPostCategory(tag) {
     var set = tag ? tag : null;
     return {
         type: 'SET_POST_CATEGORY',
         payload: set
     };
+}
+
+export function getPostsAction() {
+  return {
+      type: 'GET_POSTS',
+      payload: null
+  };
 }
 
 export function getPosts(skip, tags, sort, limit) {
@@ -101,6 +104,9 @@ export function getPosts(skip, tags, sort, limit) {
   if (!skip) skip = 0;
   if (!limit) limit = 5;
   if (!sort) sort = null;
+
+  //change for
+  var type = 'index';
 
   var url = process.env.API_SERVER+'/api/post?skip='+skip+'&sort='+sort+'&limit='+limit;
 
@@ -124,6 +130,10 @@ export function getPosts(skip, tags, sort, limit) {
   }
 
   return function(dispatch) {
+
+    //sets 'loading' state to true
+    dispatch(getPostsAction());
+
     fetch(url, {
         credentials: 'include',
         method: 'GET',
@@ -135,7 +145,7 @@ export function getPosts(skip, tags, sort, limit) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setPosts(responseJSON, ));
+      dispatch(setPosts(responseJSON, 'index'));
     })
     .catch((error) => {
         console.log(error, 'error');

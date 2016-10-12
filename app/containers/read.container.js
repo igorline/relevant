@@ -11,7 +11,8 @@ import {
   ScrollView,
   Linking,
   ListView,
-  TouchableHighlight
+  TouchableHighlight,
+  InteractionManager
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 require('../publicenv');
@@ -30,16 +31,19 @@ class Read extends Component {
   }
 
   componentDidMount() {
-    var self = this;
-    if (self.props.posts.feed && self.props.posts.tag) this.props.actions.clearPosts();
-    if (self.props.posts.comments) this.props.actions.setComments(null);
-    if (self.props.posts.feed) {
-      if (self.props.posts.feed.length > 0) {
-        var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        self.setState({feedData: fd.cloneWithRows(self.props.posts.feed)});
+
+    InteractionManager.runAfterInteractions(() => {
+      var self = this;
+      if (self.props.posts.feed && self.props.posts.tag) this.props.actions.clearPosts();
+      if (self.props.posts.comments) this.props.actions.setComments(null);
+      if (self.props.posts.feed) {
+        if (self.props.posts.feed.length > 0) {
+          var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+          self.setState({feedData: fd.cloneWithRows(self.props.posts.feed)});
+        }
       }
-    }
       if (self.props.auth.token) this.props.actions.getFeed(self.props.auth.token, 0, null);
+    })
   }
 
   componentWillReceiveProps(next) {

@@ -64,6 +64,27 @@ const alignment = StyleSheet.create({
 });
 
 const layout = StyleSheet.create({
+    activityRight: {
+      flex: 0.40,
+    },
+    activityLeft: {
+      flex: 0.60,
+    },
+    singleActivity: {
+      padding: 10,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: '#F0F0F0',
+      width: fullWidth,
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    onlineUser: {
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      padding: 10
+    },
     editingInput: {
       backgroundColor: 'transparent',
       flex: 1,
