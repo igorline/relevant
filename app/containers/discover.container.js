@@ -324,7 +324,19 @@ class Discover extends Component {
 
 
     if (self.state.dataSource) {
-      postsEl = (<ListView ref="listview" enableEmptySections={true} removeClippedSubviews={true} pageSize={1} initialListSize={1} dataSource={self.state.dataSource} renderHeader={self.renderHeader.bind(self)} renderRow={self.renderRow.bind(self)} contentOffset={{x: 0, y: 35}} renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} />)
+      postsEl = (
+        <ListView ref="listview"
+          enableEmptySections={true}
+          removeClippedSubviews={true}
+          pageSize={1}
+          initialListSize={1}
+          dataSource={self.state.dataSource}
+          renderHeader={self.renderHeader.bind(self)}
+          renderRow={self.renderRow.bind(self)}
+          contentOffset={{x: 0, y: 35}}
+          renderScrollComponent={
+            props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)
+          } />)
     }
     var userIndex = null;
     var usersParent = null;

@@ -1,6 +1,6 @@
 import * as types from './actionTypes';
 require('../publicenv');
-var { Actions } = require('react-native-redux-router');
+// var { Actions } = require('react-native-redux-router');
 import * as utils from '../utils';
 import * as authActions from './auth.actions';
 
@@ -23,7 +23,7 @@ export function getFeed(token, skip, tag) {
     .then((response) => response.json())
     .then((responseJSON) => {
       console.log(responseJSON, 'setting feed');
-      dispatch(setFeed(responseJSON));
+      dispatch(setPosts(responseJSON, 'feed'));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -61,22 +61,6 @@ export function deletePost(token, post) {
   }
 }
 
-
-export function setFeed(feed) {
-    return {
-        type: types.SET_FEED,
-        payload: feed
-    };
-}
-
-
-export function updateFeed(feeditem) {
-    return {
-        type: types.UPDATE_FEED,
-        payload: feeditem
-    };
-}
-
 export function clearPosts() {
     return {
         type: types.CLEAR_POSTS
@@ -105,7 +89,7 @@ export function getPosts(skip, tags, sort, limit) {
   if (!limit) limit = 5;
   if (!sort) sort = null;
 
-  //change for
+  //change this if we want to store top and new in separate places
   var type = 'index';
 
   var url = process.env.API_SERVER+'/api/post?skip='+skip+'&sort='+sort+'&limit='+limit;
@@ -145,7 +129,7 @@ export function getPosts(skip, tags, sort, limit) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setPosts(responseJSON, 'index'));
+      dispatch(setPosts(responseJSON, type));
     })
     .catch((error) => {
         console.log(error, 'error');
@@ -153,10 +137,13 @@ export function getPosts(skip, tags, sort, limit) {
   }
 }
 
-export function setPosts(data) {
+export function setPosts(data, type) {
     return {
         type: types.SET_POSTS,
-        payload: data
+        payload: {
+          data: data,
+          type: type
+        }
     };
 }
 
@@ -355,7 +342,7 @@ export function editPost(post, authToken) {
         .then((response) => response.json())
         .then((responseJSON) => {
           dispatch(updatePost(responseJSON));
-          dispatch(updateFeed(responseJSON));
+          // dispatch(updatePost(responseJSON));
           dispatch(authActions.getUser(post.user._id))
           return true;
         })
