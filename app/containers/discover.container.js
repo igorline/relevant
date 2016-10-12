@@ -20,19 +20,9 @@ import {
 import { connect } from 'react-redux';
 import Button from 'react-native-button';
 import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/auth.actions';
-import * as userActions from '../actions/user.actions';
-import * as postActions from '../actions/post.actions';
-import * as tagActions from '../actions/tag.actions';
-import * as viewActions from '../actions/view.actions';
-import * as animationActions from '../actions/animation.actions';
-import * as investActions from '../actions/invest.actions';
-import * as notifActions from '../actions/notif.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import DiscoverUser from '../components/discoverUser.component';
-import Notification from '../components/notification.component';
-import InvestAnimation from '../components/investAnimation.component';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 class Discover extends Component {
@@ -57,27 +47,31 @@ class Discover extends Component {
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
-      //This switches the view before starting to render stuff
-      setTimeout(() => {
-        var self = this;
-        if (self.props.posts.comments) this.props.actions.setComments(null);
-        if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
-        if (self.props.posts.tag && self.props.posts.index) self.props.actions.clearPosts();
-        if (self.props.posts.index.length > 0) {
-          var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-          self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
-        }
-        // if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
-        self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
-      }, 500)
+      var self = this;
+      if (self.props.posts.comments) this.props.actions.setComments(null);
+      if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
+      if (self.props.posts.tag && self.props.posts.index) self.props.actions.clearPosts();
+      if (self.props.posts.index.length > 0) {
+        var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
+      }
+      if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
     });
+
   }
 
-  componentWillReceiveProps(next) {
+  componentWillUpdate(next) {
     var self = this;
     if (next.posts.index != self.props.posts.index) {
       var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({dataSource: ds.cloneWithRows(next.posts.index)});
+      // if(next.posts.index.length > 0) {
+      //   console.log("STOP LOADING")
+      //   console.log(next.posts.index)
+      //   console.log(self.props.posts.index)
+      //   this.loading = false;
+      //   // console.log(next.posts)
+      // }
     }
     if (self.props.posts.tag != next.posts.tag && next.posts.tag) {
       self.setTag(next.posts.tag);
@@ -179,7 +173,20 @@ class Discover extends Component {
 
   onScroll(e) {
     var self = this;
+
+    //check whether we are in the process of requesting new posts
+    // console.log("LOADING, ", this.props.posts.loading)
+    if (this.props.posts.loading) return;
+
     if (self.props.view.discover == 3) return;
+    if (self.refs.listview.scrollProperties.offset < -100) {
+      if(self.props.posts.newPostsAvailable == true) {
+        self.loading = true;
+        console.log("LOADING NEW")
+        self.props.actions.clearPosts();
+        self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
+      }
+    }
     if (self.refs.listview.scrollProperties.offset + self.refs.listview.scrollProperties.visibleLength >= self.refs.listview.scrollProperties.contentLength) {
       self.loadMore();
     }
@@ -188,26 +195,17 @@ class Discover extends Component {
   loadMore() {
     var self = this;
     var length = self.props.posts.index.length;
-    //console.log('load more, skip: ', length, self.props.posts.tag);
-    if (self.state.enabled) {
-      self.setState({enabled: false});
-      switch(self.props.view.discover) {
-        case 1:
-           self.props.actions.getPosts(length, self.props.posts.tag, null, 5);
-          break;
+    switch(self.props.view.discover) {
+      case 1:
+         self.props.actions.getPosts(length, self.props.posts.tag, null, 5);
+        break;
 
-        case 2:
-           self.props.actions.getPosts(length, self.props.posts.tag, 'rank', 5);
-          break;
+      case 2:
+         self.props.actions.getPosts(length, self.props.posts.tag, 'rank', 5);
+        break;
 
-        default:
-          return;
-      }
-      if (self._mounted) {
-        setTimeout(function() {
-          self.setState({enabled: true})
-        }, 1000);
-      }
+      default:
+        return;
     }
   }
 
@@ -316,7 +314,7 @@ class Discover extends Component {
 
 
     if (self.state.dataSource) {
-      postsEl = (<ListView ref="listview" removeClippedSubviews={true} pageSize={1} initialListSize={1} dataSource={self.state.dataSource} renderHeader={self.renderHeader.bind(self)} renderRow={self.renderRow.bind(self)} contentOffset={{x: 0, y: 35}} renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} />)
+      postsEl = (<ListView ref="listview" enableEmptySections={true} removeClippedSubviews={true} pageSize={1} initialListSize={1} dataSource={self.state.dataSource} renderHeader={self.renderHeader.bind(self)} renderRow={self.renderRow.bind(self)} contentOffset={{x: 0, y: 35}} renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} />)
     }
     var userIndex = null;
     var usersParent = null;

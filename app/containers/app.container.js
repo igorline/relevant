@@ -143,7 +143,8 @@ class Application extends Component {
   }
 
   configureTransition(route, routeStack) {
-    if (route.name == 'categories' || route.name == 'comments' || route.name == 'login' || route.name == 'signup' || route.name == 'messages' || route.name == 'thirst') {
+    //console.log(Navigator.NavigationBar, 'navigator')
+    if (route.name == 'categories' || route.name == 'comments' || route.name == 'login' || route.name == 'signup' || route.name == 'messages' || route.name == 'thirst' || route.name == 'user') {
       return Navigator.SceneConfigs.PushFromRight
     } else {
       return Navigator.SceneConfigs.FadeAndroid
@@ -265,7 +266,7 @@ class Application extends Component {
 
   left(route, navigator, index, navState) {
     var self = this;
-    if (route.name == 'messages' || route.name == 'singlePost' || route.name == 'comments' || route.name == 'categories' || route.name == 'login' || route.name == 'signup' || route.name == 'thirst' ) {
+    if (route.name == 'messages' || route.name == 'singlePost' || route.name == 'comments' || route.name == 'categories' || route.name == 'login' || route.name == 'signup' || route.name == 'thirst' || route.name == 'user') {
       return (<TouchableHighlight underlayColor={'transparent'} style={{flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10}} onPress={self.back.bind(self, navigator)}><Text>Back</Text></TouchableHighlight>);
     } else {
       return null;
@@ -299,7 +300,7 @@ class Application extends Component {
   title(route, navigator, index, navState) {
     var self = this;
     var title = self.getTitle(route);
-    return (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text>{title}</Text></View>);
+    return (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text numberOfLines={1} ellipsizeMode={'tail'} style={{width: fullWidth-225, textAlign: 'center'}}>{title}</Text></View>);
   }
 
   back(nav) {
@@ -395,8 +396,7 @@ class Application extends Component {
                   RightButton: (route, navigator, index, navState) =>
                     { return self.right(route, navigator, index, navState) },
                   Title: (route, navigator, index, navState) =>
-                    { navState.gestures = null
-                      return self.title(route, navigator, index, navState) },
+                    { return self.title(route, navigator, index, navState) },
                 }}
                 style={{backgroundColor: 'white', borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth }}
               />
@@ -446,7 +446,8 @@ function mapStateToProps(state) {
     animation: state.animation,
     view: state.view,
     messages: state.messages,
-    stats: state.stats
+    stats: state.stats,
+    investments: state.investments
    }
 }
 

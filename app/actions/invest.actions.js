@@ -33,6 +33,37 @@ export function invest(token, amount, post, investingUser){
   }
 }
 
+export function getInvestments(token, userId, skip, limit){
+  return dispatch => {
+    return fetch( apiServer + 'invest/'+userId+'?skip='+skip+'&limit='+limit+'&access_token='+token, {
+      credentials: 'include',
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      //console.log('response', responseJSON);
+      dispatch(setInvestments(userId, responseJSON));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
+}
+
+export function setInvestments(userId, data) {
+    return {
+        type: 'SET_INVESTMENTS',
+        payload: {
+          user: userId,
+          investments: data
+        }
+    };
+}
+
 export function destroyInvestment(token, amount, post, investingUser){
   return dispatch => {
     return fetch( process.env.API_SERVER + '/api/invest/destroy?access_token='+token, {

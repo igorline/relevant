@@ -49,8 +49,7 @@ class Categories extends Component {
     var styles = globalStyles;
     if (self.props.posts.parentTags) {
       parentTags = self.props.posts.parentTags;
-
-      categoryEl = parentTags.map(function(tag) {
+      categoryEl = parentTags.map(function(tag, i) {
         switch (tag.name) {
           case 'Anime':
             tag.emoji = '👁';
@@ -176,7 +175,7 @@ class Categories extends Component {
             tag.emoji = '📺';
             break;
         }
-        return (<TouchableHighlight  onPress={self.setCategory.bind(self, tag)} underlayColor={'transparent'} style={[styles.categoryItem]} >
+        return (<TouchableHighlight key={i} onPress={self.setCategory.bind(self, tag)} underlayColor={'transparent'} style={[styles.categoryItem]} >
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
               <Text>{tag.emoji}</Text>
               <Text>{tag.name}</Text>
@@ -186,7 +185,7 @@ class Categories extends Component {
       })
     }
 
-return (<ScrollView contentContainerStyle={[]}>
+return (<ScrollView>
           {categoryEl}
         </ScrollView>
     );

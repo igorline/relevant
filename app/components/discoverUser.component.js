@@ -31,11 +31,30 @@ class DiscoverUser extends Component {
   setSelected(id) {
     var self = this;
     if (id == self.props.auth.user._id) {
-      self.props.navigator.replace({name: 'profile'});
+      self.props.navigator.push({name: 'profile'});
     } else {
       self.props.actions.getSelectedUser(id).then(function(results) {
-        if (results) self.props.navigator.resetTo({name: 'user'});
+        if (results) self.props.navigator.push({name: 'user'});
       })
+    }
+  }
+
+  renderHeader() {
+    var self = this;
+    var tags = null;
+    var view = self.props.view.discover;
+    var tagsEl = null;
+    var id = null;
+    if (self.props.posts.tag) id = self.props.posts.tag._id;
+    if (self.props.posts.discoverTags) {
+      tags = self.props.posts.discoverTags;
+      if (tags.length > 0) {
+        tagsEl = tags.map(function(data, i) {
+          return (
+            <Text style={[styles.tagBox, {backgroundColor: data._id == id ? '#007aff' : '#F0F0F0', color: data._id == id ? 'white' : '#808080'}]} onPress={data._id == id ? self.clearTag.bind(self) : self.setTag.bind(self, data)} key={i}>{data.name}</Text>
+            )
+        })
+      }
     }
   }
 

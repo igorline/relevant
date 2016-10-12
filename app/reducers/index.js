@@ -8,6 +8,7 @@ import messages from './messages';
 import animation from './animation';
 import view from './view';
 import stats from './stats';
+import investments from './investments';
 var {Router, routerReducer, Route, Container, Animations, Schema} = require('react-native-redux-router');
 
 export {
@@ -21,5 +22,6 @@ export {
   messages,
   animation,
   view,
+  investments,
   stats
 };
