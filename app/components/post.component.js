@@ -586,7 +586,12 @@ class Post extends Component {
         postInfo = (<View><Text style={[styles.font10, styles.textRight]}>📈 <Text style={styles.active}>{relevance.toFixed(2)}</Text></Text></View>);
       }
     } else {
-      postInfo = (<View style={[styles.countdown]}><Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} /><Text style={[styles.font10, styles.textRight, styles.darkGray]}>Results in {self.state.timeUntilString}</Text></View>);
+      postInfo = (
+        <View style={[styles.countdown]}>
+          <Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} />
+          <Text style={[styles.font10, styles.textRight, styles.darkGray]}>Results in {self.state.timeUntilString}
+          </Text>
+        </View>);
     }
 
     return (

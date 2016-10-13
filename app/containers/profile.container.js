@@ -35,18 +35,16 @@ class Profile extends Component {
   componentWillMount() {
     var self = this;
     var posts = null;
-    
-    if (self.props.posts.user.length && self.props.auth.user && self.props.auth.user == self.props.posts.currentUser) {
-      // if (self.props.posts.userPosts[self.props.auth.user._id]) {
-        // if (self.props.posts.userPosts[self.props.auth.user._id].length) {
+
+    if (self.props.posts.user.length &&
+        self.props.auth.user &&
+        self.props.auth.user == self.props.posts.currentUser) {
           var posts = self.props.posts.user;
           var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
           self.setState({postsData: fd.cloneWithRows(posts), received: true});
-        // } 
-      // }
     }
     if (!posts && self.props.auth.user) {
-      self.props.actions.clearUserPosts('user');
+      self.props.actions.clearPosts('user');
       self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
     }
   }
@@ -58,7 +56,9 @@ class Profile extends Component {
   componentWillUpdate(next) {
     var self = this;
 
+    if (!next.auth.user) return;
     if (next.posts.currentUser != next.auth.user._id) return;
+
     if (self.props.auth.user) {
       var newPosts = next.posts.user;
       var oldPosts = self.props.posts.user;
@@ -113,7 +113,14 @@ class Profile extends Component {
       profileEl = (<ProfileComponent {...self.props} user={self.props.auth.user} styles={styles} />);
 
       if (self.state.postsData && self.state.received) {
-        postsEl = (<ListView ref="postslist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.postsData} renderRow={self.renderFeedRow.bind(self)} />)
+        postsEl = (
+          <ListView
+            ref="postslist"
+            enableEmptySections={true}
+            renderScrollComponent={props => <ScrollView {...props} />}
+            onScroll={self.onScroll.bind(self)}
+            dataSource={self.state.postsData}
+            renderRow={self.renderFeedRow.bind(self)} />)
       }
       if (!self.state.postsData && self.state.received) {
         postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={[{fontWeight: '500'}, styles.darkGray]}>No posts to display</Text></View>)
