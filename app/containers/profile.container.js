@@ -38,17 +38,23 @@ class Profile extends Component {
   componentWillMount() {
     var self = this;
     var posts = null;
+
     var investments = null;
-    
-    if (self.props.posts.userPosts && self.props.auth.user) {
-      if (self.props.posts.userPosts[self.props.auth.user._id]) {
-        if (self.props.posts.userPosts[self.props.auth.user._id].length) {
-          posts = self.props.posts.userPosts[self.props.auth.user._id];
-          var pd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-          self.setState({postsData: pd.cloneWithRows(posts), received: true});
-        } 
-      }
+
+    if (self.props.posts.user.length &&
+        self.props.auth.user &&
+        self.props.auth.user == self.props.posts.currentUser) {
+
+      var posts = self.props.posts.user;
+      var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+      self.setState({postsData: fd.cloneWithRows(posts), received: true});
     }
+
+    if (!posts && self.props.auth.user) {
+      self.props.actions.clearPosts('user');
+      self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
+    }
+
 
     if (self.props.investments && self.props.auth.user) {
       if (self.props.investments[self.props.auth.user._id]) {
@@ -60,8 +66,8 @@ class Profile extends Component {
       }
     }
 
-    if (!posts && self.props.auth.user) self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
     if (!investments && self.props.auth.user) self.props.actions.getInvestments(self.props.auth.token, self.props.auth.user._id, 0,10);
+
   }
 
   componentWillUnmount() {
@@ -70,9 +76,13 @@ class Profile extends Component {
 
   componentWillUpdate(next) {
     var self = this;
+
+    if (!next.auth.user) return;
+    if (next.posts.currentUser != next.auth.user._id) return;
+
     if (self.props.auth.user) {
-      var newPosts = next.posts.userPosts[self.props.auth.user._id];
-      var oldPosts = self.props.posts.userPosts[self.props.auth.user._id];
+      var newPosts = next.posts.user;
+      var oldPosts = self.props.posts.user;
 
       var newInvestments = next.investments[self.props.auth.user._id];
       var oldInvestments = self.props.investments[self.props.auth.user._id];
@@ -109,11 +119,11 @@ class Profile extends Component {
     var self = this;
     var length = 0;
     if (self.props.view.profile == 1) {
-      length = self.props.posts.userPosts[self.props.auth.user._id].length;
+      length = self.props.posts.user.length;
     } else {
       length = self.props.investments[self.props.auth.user._id].length;
     }
-     console.log('load more, skip: ', length);
+    console.log('load more, skip: ', length);
     if (self.state.enabled) {
       self.setState({enabled: false});
 
@@ -122,7 +132,6 @@ class Profile extends Component {
       } else {
         self.props.actions.getInvestments(self.props.auth.token, self.props.auth.user._id, length,10);
       }
-        
       setTimeout(function() {
         self.setState({enabled: true})
       }, 1000);
@@ -189,7 +198,19 @@ class Profile extends Component {
       profileEl = (<ProfileComponent {...self.props} user={self.props.auth.user} styles={styles} />);
 
       if (self.state.postsData && self.state.received) {
-        postsEl = (<ListView ref="postslist"  stickyHeaderIndices={[1]} renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} renderSectionHeader={self.sectionHeader.bind(self)} dataSource={view == 1 ? self.state.postsData : self.state.investmentsData} renderSeparator={self.renderSeparator.bind(self)} renderHeader={self.renderHeader.bind(self)} renderRow={self.renderFeedRow.bind(self)} />)
+        postsEl = (
+          <ListView
+            ref="postslist"
+            enableEmptySections={true}
+            stickyHeaderIndices={[1]}
+            renderScrollComponent={props => <ScrollView {...props} />}
+            onScroll={self.onScroll.bind(self)}
+            renderSectionHeader={self.sectionHeader.bind(self)}
+            dataSource={view == 1 ? self.state.postsData : self.state.investmentsData}
+            renderSeparator={self.renderSeparator.bind(self)}
+            renderHeader={self.renderHeader.bind(self)}
+            renderRow={self.renderFeedRow.bind(self)}
+          />)
       }
       if (!self.state.postsData && self.state.received) {
         postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={[{fontWeight: '500'}, styles.darkGray]}>No posts to display</Text></View>)
