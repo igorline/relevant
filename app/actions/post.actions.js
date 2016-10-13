@@ -1,6 +1,6 @@
 import * as types from './actionTypes';
 require('../publicenv');
-var { Actions } = require('react-native-redux-router');
+// var { Actions } = require('react-native-redux-router');
 import * as utils from '../utils';
 import * as authActions from './auth.actions';
 
@@ -23,19 +23,12 @@ export function getFeed(token, skip, tag) {
     .then((response) => response.json())
     .then((responseJSON) => {
       console.log(responseJSON, 'setting feed');
-      dispatch(setFeed(responseJSON));
+      dispatch(setPosts(responseJSON, 'feed'));
     })
     .catch((error) => {
       console.log(error, 'error');
     });
   }
-}
-
-export function clearUserPosts(user) {
-  return {
-    type: 'CLEAR_USER_POSTS',
-    payload: user
-  };
 }
 
 export function deletePost(token, post) {
@@ -52,8 +45,6 @@ export function deletePost(token, post) {
     .then((response) => {
       console.log(response, 'delete response')
       dispatch(removePostFromIndex(post));
-      dispatch(clearUserPosts(post.user._id));
-      dispatch(getUserPosts(0, 5, post.user._id));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -61,25 +52,21 @@ export function deletePost(token, post) {
   }
 }
 
-
-export function setFeed(feed) {
+export function clearPosts(type) {
     return {
-        type: types.SET_FEED,
-        payload: feed
+        type: types.CLEAR_POSTS,
+        payload: {
+          type: type
+        }
     };
 }
 
-
-export function updateFeed(feeditem) {
+export function refreshPosts(type) {
     return {
-        type: types.UPDATE_FEED,
-        payload: feeditem
-    };
-}
-
-export function clearPosts() {
-    return {
-        type: types.CLEAR_POSTS
+        type: types.REFRESH_POSTS,
+        payload: {
+          type: type
+        }
     };
 }
 
@@ -105,7 +92,7 @@ export function getPosts(skip, tags, sort, limit) {
   if (!limit) limit = 5;
   if (!sort) sort = null;
 
-  //change for
+  //change this if we want to store top and new in separate places
   var type = 'index';
 
   var url = process.env.API_SERVER+'/api/post?skip='+skip+'&sort='+sort+'&limit='+limit;
@@ -145,7 +132,7 @@ export function getPosts(skip, tags, sort, limit) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setPosts(responseJSON, 'index'));
+      dispatch(setPosts(responseJSON, type));
     })
     .catch((error) => {
         console.log(error, 'error');
@@ -153,10 +140,13 @@ export function getPosts(skip, tags, sort, limit) {
   }
 }
 
-export function setPosts(data) {
+export function setPosts(data, type) {
     return {
         type: types.SET_POSTS,
-        payload: data
+        payload: {
+          data: data,
+          type: type
+        }
     };
 }
 
@@ -180,7 +170,7 @@ export function getUserPosts(skip, limit, userId) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setUserPosts(userId, responseJSON));
+      dispatch(setUserPosts(responseJSON, 'user', userId));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -188,12 +178,13 @@ export function getUserPosts(skip, limit, userId) {
   }
 }
 
-export function setUserPosts(userId, posts) {
+export function setUserPosts(posts, user, userId) {
     return {
-        type: 'SET_USER_POSTS',
+        type: 'SET_POSTS',
         payload: {
-          user: userId,
-          posts: posts
+          userId: userId,
+          data: posts,
+          type: user
         }
     };
 }
@@ -355,7 +346,7 @@ export function editPost(post, authToken) {
         .then((response) => response.json())
         .then((responseJSON) => {
           dispatch(updatePost(responseJSON));
-          dispatch(updateFeed(responseJSON));
+          // dispatch(updatePost(responseJSON));
           dispatch(authActions.getUser(post.user._id))
           return true;
         })

@@ -16,7 +16,13 @@ const initialState = {
   userPosts: {},
   newFeedAvailable: false,
   newPostsAvailable: false,
-  queued: []
+  currentUser: null,
+  queued: [],
+  user: [],
+  newPosts: {
+    index: [],
+    feed: [],
+  }
 };
 
 const updatePostElement = (array, post) => {
@@ -58,6 +64,15 @@ const addItems = (arr, newArr) => {
   return finalArr;
 }
 
+const prependItems = (arr, newArr) => {
+  if (!arr.length) return newArr;
+  var removeDuplicates = newArr.filter( function( el ) {
+    return arr.indexOf( el ) < 0;
+  });
+  var finalArr = removeDuplicates.concat(arr)
+  return finalArr;
+}
+
 const addItem = (old, newObj) => {
   var newArr = [newObj];
   console.log('add item', newObj);
@@ -72,16 +87,43 @@ export default function post(state = initialState, action) {
   switch (action.type) {
 
     case types.SET_POSTS: {
+      var type = action.payload.type;
       return Object.assign({}, state, {
-        index: addItems(state.index, action.payload),
+        [type]: addItems(state[type], action.payload.data),
+        currentUser: action.payload.userId ? action.payload.userId : state.currentUser,
         loading: false,
-        'newPostsAvailable': false
+        'newPostsAvailable': false,
+        'newFeedAvailable': false
       })
     }
 
     case types.GET_POSTS: {
       return Object.assign({}, state, {
         loading: true,
+      })
+    }
+
+    case types.UPDATE_POST: {
+      return Object.assign({}, state, {
+        index: updatePostElement(state.index, action.payload),
+        feed: updatePostElement(state.feed, action.payload),
+        user: updatePostElement(state.feed, action.payload)
+      })
+    }
+
+    case types.REMOVE_POST: {
+      console.log("REMOVING POST")
+      return Object.assign({}, state, {
+        'index':  removeItem(state.index, action.payload),
+        'feed':  removeItem(state.feed, action.payload),
+        'user': removeItem(state.feed, action.payload)
+      })
+    }
+
+    case types.CLEAR_POSTS: {
+      var type = action.payload.type;
+      return Object.assign({}, state, {
+        [type]: [],
       })
     }
 
@@ -100,29 +142,24 @@ export default function post(state = initialState, action) {
       return Object.assign({}, state, newObj)
     }
 
-    case types.ADD_POST: {
-      console.log(view, 'add post current view')
+    case 'ADD_POST': {
+      var type = action.payload.type;
       return Object.assign({}, state, {
-          // 'queued': addItem(state.index, action.payload)
-        'queued': action.payload
+        newPosts: {
+          ...state.newPosts,
+          [type]: prependItems(state.newPosts[type], [action.payload.data])
+        }
       })
     }
 
-    case types.UPDATE_POSTS: {
+    case 'REFRESH_POSTS': {
+      var type = action.payload.type;
       return Object.assign({}, state, {
-        'index': action.payload
-      })
-    }
-
-    case types.UPDATE_POST: {
-      return Object.assign({}, state, {
-        'index':  updatePostElement(state.index, action.payload)
-      })
-    }
-
-    case types.REMOVE_POST: {
-      return Object.assign({}, state, {
-        'index':  removeItem(state.index, action.payload)
+        [type]:  prependItems(state[type], state.newPosts[type]),
+        newPosts: {
+          ...state.newPosts,
+          [type]: []
+        }
       })
     }
 
@@ -147,13 +184,6 @@ export default function post(state = initialState, action) {
     case 'SET_POST_CATEGORY': {
        return Object.assign({}, state, {
         'createPostCategory': action.payload
-      })
-    }
-
-    case types.CLEAR_POSTS: {
-       return Object.assign({}, state, {
-        'index': [],
-        'feed': []
       })
     }
 
@@ -200,35 +230,10 @@ export default function post(state = initialState, action) {
       })
     }
 
-    case types.ADD_POST_TO_FEED :{
+    case 'CLEAR_USER_POSTS': {
       return Object.assign({}, state, {
-        'feed': addItem(state.index, action.payload)
+        'user': [],
       })
-    }
-
-    case types.UPDATE_FEED: {
-      return Object.assign({}, state, {
-        'feed': updatePostElement(state.feed, action.payload)
-      })
-    }
-
-    case types.SET_FEED: {
-      return Object.assign({}, state, {
-        'feed': addItems(state.feed, action.payload)
-      })
-    }
-
-    case 'CLEAR_USER_POSTS' :{
-      var user = action.payload;
-      delete state.userPosts[user];
-
-      var newObj = {
-        userPosts: {
-          ...state.userPosts
-        }
-      };
-
-      return Object.assign({}, state, newObj)
     }
 
     default:
