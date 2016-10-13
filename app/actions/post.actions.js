@@ -31,13 +31,6 @@ export function getFeed(token, skip, tag) {
   }
 }
 
-export function clearUserPosts(user) {
-  return {
-    type: 'CLEAR_USER_POSTS',
-    payload: user
-  };
-}
-
 export function deletePost(token, post) {
   var url = process.env.API_SERVER+'/api/post/'+post._id+'?access_token='+token;
   return function(dispatch) {
@@ -52,8 +45,6 @@ export function deletePost(token, post) {
     .then((response) => {
       console.log(response, 'delete response')
       dispatch(removePostFromIndex(post));
-      dispatch(clearUserPosts(post.user._id));
-      dispatch(getUserPosts(0, 5, post.user._id));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -61,9 +52,21 @@ export function deletePost(token, post) {
   }
 }
 
-export function clearPosts() {
+export function clearPosts(type) {
     return {
-        type: types.CLEAR_POSTS
+        type: types.CLEAR_POSTS,
+        payload: {
+          type: type
+        }
+    };
+}
+
+export function refreshPosts(type) {
+    return {
+        type: types.REFRESH_POSTS,
+        payload: {
+          type: type
+        }
     };
 }
 

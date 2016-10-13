@@ -190,15 +190,27 @@ class Discover extends Component {
 
     if (self.props.view.discover == 3) return;
     if (self.refs.listview.scrollProperties.offset < -100) {
-      if(self.props.posts.newPostsAvailable == true) {
-        self.loading = true;
-        console.log("LOADING NEW")
-        self.props.actions.clearPosts('index');
-        self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
-      }
+      self.reload();
     }
-    if (self.refs.listview.scrollProperties.offset + self.refs.listview.scrollProperties.visibleLength >= self.refs.listview.scrollProperties.contentLength) {
+    if (self.refs.listview.scrollProperties.offset + self.refs.listview.scrollProperties.visibleLength > self.refs.listview.scrollProperties.contentLength + 5) {
       self.loadMore();
+    }
+  }
+
+  reload() {
+    var self = this;
+    self.loading = true;
+    self.props.actions.clearPosts('index');
+    self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
+    switch(self.props.view.discover) {
+      case 1:
+         self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
+        break;
+      case 2:
+         self.props.actions.getPosts(0, self.props.posts.tag, 'rank', 5);
+        break;
+      default:
+        return;
     }
   }
 
@@ -329,7 +341,7 @@ class Discover extends Component {
           enableEmptySections={true}
           removeClippedSubviews={true}
           pageSize={1}
-          initialListSize={1}
+          initialListSize={2}
           dataSource={self.state.dataSource}
           renderHeader={self.renderHeader.bind(self)}
           renderRow={self.renderRow.bind(self)}

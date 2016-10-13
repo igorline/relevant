@@ -18,7 +18,11 @@ const initialState = {
   newPostsAvailable: false,
   currentUser: null,
   queued: [],
-  user: []
+  user: [],
+  newPosts: {
+    index: [],
+    feed: [],
+  }
 };
 
 const updatePostElement = (array, post) => {
@@ -60,6 +64,15 @@ const addItems = (arr, newArr) => {
   return finalArr;
 }
 
+const prependItems = (arr, newArr) => {
+  if (!arr.length) return newArr;
+  var removeDuplicates = newArr.filter( function( el ) {
+    return arr.indexOf( el ) < 0;
+  });
+  var finalArr = removeDuplicates.concat(arr)
+  return finalArr;
+}
+
 const addItem = (old, newObj) => {
   var newArr = [newObj];
   console.log('add item', newObj);
@@ -95,12 +108,11 @@ export default function post(state = initialState, action) {
         index: updatePostElement(state.index, action.payload),
         feed: updatePostElement(state.feed, action.payload),
         user: updatePostElement(state.feed, action.payload)
-        //TODO refactor user
-        // index:  updatePostElement(state.index, action.payload.data)
       })
     }
 
     case types.REMOVE_POST: {
+      console.log("REMOVING POST")
       return Object.assign({}, state, {
         'index':  removeItem(state.index, action.payload),
         'feed':  removeItem(state.feed, action.payload),
@@ -108,6 +120,12 @@ export default function post(state = initialState, action) {
       })
     }
 
+    case types.CLEAR_POSTS: {
+      var type = action.payload.type;
+      return Object.assign({}, state, {
+        [type]: [],
+      })
+    }
 
     case 'SET_USER_POSTS': {
       var arr = [];
@@ -122,6 +140,27 @@ export default function post(state = initialState, action) {
       };
 
       return Object.assign({}, state, newObj)
+    }
+
+    case 'ADD_POST': {
+      var type = action.payload.type;
+      return Object.assign({}, state, {
+        newPosts: {
+          ...state.newPosts,
+          [type]: prependItems(state.newPosts[type], [action.payload.data])
+        }
+      })
+    }
+
+    case 'REFRESH_POSTS': {
+      var type = action.payload.type;
+      return Object.assign({}, state, {
+        [type]:  prependItems(state[type], state.newPosts[type]),
+        newPosts: {
+          ...state.newPosts,
+          [type]: []
+        }
+      })
     }
 
     case 'SET_NEW_POSTS_STATUS': {
@@ -145,13 +184,6 @@ export default function post(state = initialState, action) {
     case 'SET_POST_CATEGORY': {
        return Object.assign({}, state, {
         'createPostCategory': action.payload
-      })
-    }
-
-    case types.CLEAR_POSTS: {
-      var type = action.payload.type;
-      return Object.assign({}, state, {
-        [type]: [],
       })
     }
 
