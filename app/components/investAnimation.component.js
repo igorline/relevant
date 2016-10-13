@@ -42,11 +42,13 @@ class InvestAnimation extends Component {
   }
 
   investAni() {
-    var styles = {...globalStyles};
+    var styles = {...globalStyles, ...localStyles};
     var self = this;
-
+    
     if (self.props.animation.run) {
       for (var i = 0; i < 1; i++) {
+        var d = new Date();
+        var n = d.getTime();
         var values = {
           x: new Animated.Value(0),
           y: new Animated.Value(0),
@@ -54,7 +56,7 @@ class InvestAnimation extends Component {
           opacity: new Animated.Value(1)
         };
 
-        self.state.investAni.push(<Animated.Text style={[styles.aniMoney, {transform: [{translateX: values.x}, {scale: values.scale}, {translateY: values.y}], opacity: values.opacity}]}>💵</Animated.Text>);
+        self.state.investAni.push(<Animated.Text key={n} style={[styles.aniMoney, {transform: [{translateX: values.x}, {scale: values.scale}, {translateY: values.y}], opacity: values.opacity}]}>💵</Animated.Text>);
 
         Animated.timing(values.x, {
           toValue: -(fullWidth/2),
@@ -84,7 +86,7 @@ class InvestAnimation extends Component {
           easing: Easing.linear
         }).start();
 
-        self.setState({})
+        self.setState({});
       }
 
       setTimeout(function() {
@@ -97,9 +99,9 @@ class InvestAnimation extends Component {
     var self = this;
 
     return (
-        <View style={{position: 'absolute', top: 0, right: 0}}>
-          {self.state.investAni}
-        </View>
+      <View style={{position: 'absolute', top: 0, right: 0, borderWidth: 1, borderColor: 'red', height: 20, width: 20}}>
+        {self.state.investAni}
+      </View>
     );
   }
 }
@@ -107,6 +109,12 @@ class InvestAnimation extends Component {
 export default InvestAnimation;
 
 const localStyles = StyleSheet.create({
+  aniMoney: {
+    position: 'absolute',
+    top: -35,
+    right: 10,
+    backgroundColor: 'transparent'
+  },
 });
 
 
