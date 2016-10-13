@@ -37,7 +37,8 @@ const colors = StyleSheet.create({
     color: 'green'
   },
   active: {
-    color: '#007aff'
+    // color: '#007aff'
+    color: '#3E3EFF'
   },
   white: {
     color: 'white'
@@ -151,7 +152,8 @@ const layout = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'nowrap',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    height: 50
   },
   notificationContainer: {
     position: 'absolute',
