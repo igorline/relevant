@@ -34,7 +34,7 @@ class Read extends Component {
 
     InteractionManager.runAfterInteractions(() => {
       var self = this;
-      if (self.props.posts.feed && self.props.posts.tag) this.props.actions.clearPosts();
+      if (self.props.posts.feed && self.props.posts.tag) this.props.actions.clearPosts('feed');
       if (self.props.posts.comments) this.props.actions.setComments(null);
       if (self.props.posts.feed) {
         if (self.props.posts.feed.length > 0) {
@@ -60,7 +60,7 @@ class Read extends Component {
   setTag(tag) {
     var self = this;
     self.setState({tag: tag});
-    self.props.actions.clearPosts();
+    self.props.actions.clearPosts('feed');
     self.props.actions.getFeed(self.props.auth.token, 0, self.state.tag);
   }
 
