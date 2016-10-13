@@ -41,13 +41,18 @@ class Discover extends Component {
       searchHeight: new Animated.Value(0),
       searchPadding: new Animated.Value(0),
       disableSearchAni: false,
-      setScroll: true
+      setScroll: true,
+      transY: new Animated.Value(0),
+      headerHeight: 0,
+      layout: false,
+      showHeader: true
     };
   }
 
   componentDidMount() {
     InteractionManager.runAfterInteractions(() => {
       var self = this;
+      this.offset = 0;
       if (self.props.posts.comments) this.props.actions.setComments(null);
       if (!self.props.posts.discoverTags) this.props.actions.getDiscoverTags();
       if (self.props.posts.tag && self.props.posts.index) self.props.actions.clearPosts();
@@ -171,13 +176,34 @@ class Discover extends Component {
     );
   }
 
+  hideHeader() {
+    var self = this;
+    var moveHeader = self.state.headerHeight * -1;
+    self.setState({showHeader: false})
+    Animated.timing(          // Uses easing functions
+       this.state.transY,    // The value to drive
+       {toValue: moveHeader}            // Configuration
+     ).start();  
+  }
+
+  showHeader() {
+    var self = this;
+    self.setState({showHeader: true})
+    Animated.timing(          // Uses easing functions
+       this.state.transY,    // The value to drive
+       {toValue: 0}            // Configuration
+     ).start();  
+  }
+
   onScroll(e) {
     var self = this;
-
-    //check whether we are in the process of requesting new posts
-    // console.log("LOADING, ", this.props.posts.loading)
+    var currentOffset = self.refs.listview.scrollProperties.offset;
+    var down = true
+    if (currentOffset != this.offset) down = currentOffset > this.offset ? true : false;
+    if (currentOffset > self.state.headerHeight && self.state.showHeader) self.hideHeader();
+    if (!down && !self.state.showHeader) self.showHeader();
+    this.offset = currentOffset;
     if (this.props.posts.loading) return;
-
     if (self.props.view.discover == 3) return;
     if (self.refs.listview.scrollProperties.offset < -100) {
       if(self.props.posts.newPostsAvailable == true) {
@@ -257,8 +283,10 @@ class Discover extends Component {
         if (tags.length > 0) {
           tagsEl = tags.map(function(data, i) {
             return (
-              <Text style={[styles.tagBox, {backgroundColor: data._id == id ? '#007aff' : '#F0F0F0', color: data._id == id ? 'white' : '#808080'}]} onPress={data._id == id ? self.clearTag.bind(self) : self.setTag.bind(self, data)} key={i}>{data.name}</Text>
-              )
+              <Text style={[styles.tagBox, {backgroundColor: data._id == id ? '#007aff' : '#F0F0F0', color: data._id == id ? 'white' : '#808080'}]} onPress={data._id == id ? self.clearTag.bind(self) : self.setTag.bind(self, data)} key={i}>
+                {data.name}
+              </Text>
+            )
           })
         }
       }
@@ -299,7 +327,44 @@ class Discover extends Component {
     var tagsEl = null;
     var tags = null;
     var typeEl = null;
+    var id = null;
+    var headerEl = null;
+    //console.log(self.state.transY)
 
+    if (self.props.posts.tag) id = self.props.posts.tag._id;
+      if (self.props.posts.discoverTags) {
+        tags = self.props.posts.discoverTags;
+        if (tags.length > 0) {
+          tagsEl = tags.map(function(data, i) {
+            return (
+              <Text style={[styles.tagBox, {backgroundColor: data._id == id ? '#007aff' : '#F0F0F0', color: data._id == id ? 'white' : '#808080'}]} onPress={data._id == id ? self.clearTag.bind(self) : self.setTag.bind(self, data)} key={i}>{data.name}</Text>
+              )
+          })
+        }
+      }
+
+      headerEl = (
+          <Animated.View style={[styles.transformContainer], {position:'absolute', top: 0, backgroundColor: 'white', transform: [{translateY: self.state.transY}]}} onLayout={(event) => {var {x, y, width, height} = event.nativeEvent.layout; if (!self.state.layout) { self.setState({headerHeight: height, layout: true})} }}>
+            {/*<Text style={{padding: 5}} onPress={self.clearTag.bind(self)}>Reset</Text>*/}
+            <View style={[styles.searchParent]}>
+              <TextInput onSubmitEditing={self.search.bind(self)} style={[styles.searchInput, styles.font15]} placeholder={'Search'} multiline={false} onChangeText={(term) => this.setState({tagSearchTerm: term})} value={self.state.tagSearchTerm} returnKeyType='done' />
+            </View>
+             <View>
+              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView>
+            </View>
+             <View style={[styles.row, {width: fullWidth}]}>
+            <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 1 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 1)}>
+              <Text style={[styles.type, styles.darkGray, styles.font15, view == 1 ? styles.active : null]}>New</Text>
+            </TouchableHighlight>
+            <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 2 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 2)}>
+              <Text style={[styles.type, styles.darkGray, styles.font15, view == 2 ? styles.active : null]}>Top</Text>
+            </TouchableHighlight>
+            <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 3 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 3)}>
+              <Text style={[styles.type, styles.darkGray, styles.font15, view == 3 ? styles.active : null]}>People</Text>
+            </TouchableHighlight>
+          </View>
+          </Animated.View>);
+    
     typeEl = (<View style={[styles.row, {width: fullWidth}]}>
             <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 1 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 1)}>
               <Text style={[styles.type, styles.darkGray, styles.font15, view == 1 ? styles.active : null]}>New</Text>
@@ -310,34 +375,30 @@ class Discover extends Component {
             <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 3 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 3)}>
               <Text style={[styles.type, styles.darkGray, styles.font15, view == 3 ? styles.active : null]}>People</Text>
             </TouchableHighlight>
-          </View>)
+          </View>);
 
 
     if (self.state.dataSource) {
-      postsEl = (<ListView ref="listview" enableEmptySections={true} removeClippedSubviews={true} pageSize={1} initialListSize={1} dataSource={self.state.dataSource} renderHeader={self.renderHeader.bind(self)} renderRow={self.renderRow.bind(self)} contentOffset={{x: 0, y: 35}} renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} />)
+      postsEl = (<ListView ref="listview" enableEmptySections={true} removeClippedSubviews={true} pageSize={1} initialListSize={1} scrollEventThrottle={16} onScroll={self.onScroll.bind(self)} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} contentContainerStyle={{position: 'absolute', top: self.state.headerHeight}} renderScrollComponent={props => <ScrollView {...props} />}  />)
     }
+
     var userIndex = null;
     var usersParent = null;
 
     if (this.props.auth.userIndex) {
       userIndex = this.props.auth.userIndex;
       usersEl = userIndex.map(function(user, i) {
-        if (user.name != 'Admin') {
-          return (
-            <DiscoverUser key={i} {...self.props} user={user} styles={styles} />
-          );
-        }
+        if (user.name != 'Admin') return (<DiscoverUser key={i} {...self.props} user={user} styles={styles} />);
       });
       usersParent = (<ScrollView>{usersEl}</ScrollView>)
     }
-
 
     return (
       <View style={[styles.fullContainer, {backgroundColor: 'white'}]}>
         <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.dataSource} />
         {view != 3 ? postsEl : null}
-        {view == 3 ? typeEl : null}
         {view == 3 ? usersParent : null}
+        {headerEl}
       </View>
     );
   }
