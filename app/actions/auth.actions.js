@@ -8,7 +8,7 @@ require('../publicenv');
 import {
     PushNotificationIOS
 } from 'react-native';
-var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
+// var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
 import * as utils from '../utils';
 
 export

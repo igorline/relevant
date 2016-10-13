@@ -1,6 +1,6 @@
 import * as types from './actionTypes';
 require('../publicenv');
-var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
+// var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
 import * as utils from '../utils';
 var apiServer = process.env.API_SERVER+'/api/'
 
