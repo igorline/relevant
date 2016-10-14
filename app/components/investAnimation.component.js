@@ -41,14 +41,21 @@ class InvestAnimation extends Component {
     }
   }
 
+  componentWillUnmount() {
+    var self = this;
+    self.setState({investAni: []})
+  }
+
   investAni() {
     var styles = {...globalStyles, ...localStyles};
     var self = this;
-    
+
     if (self.props.animation.run) {
-      for (var i = 0; i < 1; i++) {
+      for (var i = 0; i < 50; i++) {
+
         var d = new Date();
-        var n = d.getTime();
+var n = d.getTime();
+
         var values = {
           x: new Animated.Value(0),
           y: new Animated.Value(0),
@@ -85,13 +92,8 @@ class InvestAnimation extends Component {
           duration: 500,
           easing: Easing.linear
         }).start();
-
-        self.setState({});
       }
-
-      setTimeout(function() {
-        self.investAni();
-      }, 50);
+      self.setState({});
     }
   }
 
