@@ -491,7 +491,7 @@ class Post extends Component {
     }
 
     if (post) {
-      if (post.user._id != self.props.auth.user._id && !self.state.invested) {
+      if (post.user._id != self.props.auth.user._id) {
         investButtonEl = (<TouchableWithoutFeedback
             onPressIn={this.handlePressIn.bind(self)}
             onPressOut={this.handlePressOut.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
@@ -500,14 +500,14 @@ class Post extends Component {
         )
       }
 
-      if (post.user._id != self.props.auth.user._id && self.state.invested) {
-        uninvestButtonEl = (
-          <TouchableWithoutFeedback
-            onPress={this.uninvest.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
-            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Uninvest</Text></View>
-          </TouchableWithoutFeedback>
-        )
-      }
+      // if (post.user._id != self.props.auth.user._id && self.state.invested) {
+      //   uninvestButtonEl = (
+      //     <TouchableWithoutFeedback
+      //       onPress={this.uninvest.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
+      //       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Uninvest</Text></View>
+      //     </TouchableWithoutFeedback>
+      //   )
+      // }
     }
 
     if (body) {
@@ -636,7 +636,6 @@ class Post extends Component {
 
         <View style={styles.postButtons}>
           {investButtonEl}
-          {uninvestButtonEl}
           <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={self.toggleExpanded.bind(self)}><Text style={[styles.font10, styles.postButtonText]}>{expanded ? 'Read less' : 'Read more'}</Text></TouchableHighlight>
           <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={self.openComments.bind(self)}><Text style={[{marginRight: 5}, styles.font10, styles.postButtonText]}>{commentString}</Text></TouchableHighlight>
           <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={self.showActionSheet.bind(self)}><Text style={[styles.font10, styles.postButtonText]}>...</Text></TouchableHighlight>

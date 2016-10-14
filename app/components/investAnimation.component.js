@@ -44,7 +44,6 @@ class InvestAnimation extends Component {
   investAni() {
     var styles = {...globalStyles};
     var self = this;
-
     if (self.props.animation.run) {
       for (var i = 0; i < 1; i++) {
         var values = {
