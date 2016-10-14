@@ -51,7 +51,7 @@ const removeItem = (array, item) => {
   } else {
     console.log('removing item');
     array.splice(index, 1);
-    return array;
+    return array.slice();
   }
 }
 
@@ -79,7 +79,7 @@ const addItem = (old, newObj) => {
   if (old.indexOf(newObj) < 0) {
     return newArr.concat(old);
   } else {
-    return old;
+    return old.slice();
   }
 }
 
@@ -112,11 +112,10 @@ export default function post(state = initialState, action) {
     }
 
     case types.REMOVE_POST: {
-      console.log("REMOVING POST")
       return Object.assign({}, state, {
         'index':  removeItem(state.index, action.payload),
         'feed':  removeItem(state.feed, action.payload),
-        'user': removeItem(state.feed, action.payload)
+        'user': removeItem(state.user, action.payload)
       })
     }
 

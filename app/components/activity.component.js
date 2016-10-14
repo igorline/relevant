@@ -62,6 +62,8 @@ class SingleActivity extends Component {
     if (singleActivity.personal && singleActivity.byUser) {
       var activityTime = moment(singleActivity.createdAt);
       var fromNow = activityTime.fromNow();
+      var postTitle = singleActivity.post ? singleActivity.post.title : 'missing title';
+      if (!singleActivity.post) console.log("WEIRD ", singleActivity);
       if (singleActivity.type == 'investment') {
          activityEl = (
           <View style={styles.singleActivity}>
@@ -72,7 +74,7 @@ class SingleActivity extends Component {
                 </Text>
                 &nbsp;invested {'$'+singleActivity.amount} in your post
                 <Text numberOfLines={1} onPress={self.goToPost.bind(self, singleActivity)} style={styles.active}>
-                {' ' + singleActivity.post.title}
+                {' ' + postTitle}
                 </Text>
               </Text>
             </View>
@@ -140,6 +142,7 @@ class SingleActivity extends Component {
         );
        }
     } else if (singleActivity.personal && !singleActivity.byUser) {
+      var postTitle = singleActivity.post ? singleActivity.post.title : '';
       if (singleActivity.type == 'partialEarning') {
           activityEl = (
             <View style={styles.singleActivity}>
@@ -147,7 +150,7 @@ class SingleActivity extends Component {
                 <Text style={styles.darkGray}>
                   Earned ${singleActivity.amount.toFixed(0)} from post
                 </Text>
-                <Text onPress={self.goToPost.bind(self, singleActivity)} style={[styles.active]}>{singleActivity.post.title}
+                <Text onPress={self.goToPost.bind(self, singleActivity)} style={[styles.active]}>{postTitle}
                 </Text>
               </View>
               <View style={styles.activityRight}>
