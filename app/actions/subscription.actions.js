@@ -24,6 +24,7 @@ function getSubscriptionData(type, userId) {
 }
 
 export function createSubscription(token, post) {
+  console.log("GETTING SUBSCRIPTION")
   return dispatch => {
     fetch( apiServer + 'subscription?access_token='+token, {
       credentials: 'include',
@@ -36,6 +37,7 @@ export function createSubscription(token, post) {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
+      console.log("SUBSCRIPTION UPDATED ")
     })
     .catch((error) => {
       console.log(error);

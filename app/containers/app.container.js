@@ -84,6 +84,8 @@ class Application extends Component {
       self.props.actions.getActivity(next.auth.user._id, 0);
       self.props.actions.getGeneralActivity(next.auth.user._id, 0);
       self.props.actions.getMessages(next.auth.user._id);
+      self.props.actions.setSelectedUser(next.auth.user._id);
+      self.props.actions.setSelectedUserData(next.auth.user);
       if (self.refs.navigator) self.refs.navigator.replace({name: 'profile'});
     }
   }
@@ -218,6 +220,7 @@ class Application extends Component {
 
   routeFunction(route, nav) {
     var self = this;
+    //if (route.name != 'profile' && self.props.users.selectedUserId) self.props.actions.clearSelectedUser();
     switch(route.name) {
       case 'login':
         return <Login { ...self.props } navigator={nav} route={route} />;

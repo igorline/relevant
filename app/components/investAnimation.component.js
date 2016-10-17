@@ -44,7 +44,6 @@ class InvestAnimation extends Component {
   componentWillUnmount() {
     var self = this;
     self.clearEls();
-    //self.setState({investAni: []})
   }
 
   clearEls() {

@@ -72,10 +72,10 @@ class Messages extends Component {
     }
 
     if (set == self.props.auth.user._id) {
-      self.props.actions.clearSelectedUser();
+      //self.props.actions.clearSelectedUser();
       self.props.navigator.push({name: 'profile'});
     } else {
-      self.props.actions.clearSelectedUser();
+      //self.props.actions.clearSelectedUser();
       self.props.actions.setSelectedUser(set);
       self.props.navigator.push({name: 'profile'});
     }
