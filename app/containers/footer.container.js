@@ -45,6 +45,7 @@ class Footer extends Component {
 
   goTo(view) {
     var self = this;
+    if (view == 'profile') self.props.actions.clearSelectedUser();
     self.props.navigator.push({name: view});
     this.route = view;
     this.setState({});
@@ -128,11 +129,8 @@ class Footer extends Component {
     var nav = null;
     if (self.props.navigator) {
       nav = self.props.navigator;
-      // var routes = nav.state.routeStack;
-      // var length = nav.state.routeStack.length;
-      // if (length > 0) length --;
-      // route = routes[length].name;
     }
+
     var authenticated = self.props.auth.user;
     var footerEl = null;
     var imageEl = (<Text style={[styles.icon, styles.textCenter]}>👤</Text>);
@@ -169,7 +167,7 @@ class Footer extends Component {
         <TouchableHighlight
           onPress={self.goTo.bind(self, 'profile')}
           underlayColor={'transparent'}
-          style={[styles.footerItem, {borderBottomColor: this.route == 'profile' ? '#007aff' : 'transparent' }]} >
+          style={[styles.footerItem, {borderBottomColor: this.route == 'profile' && !self.props.users.selectedUserId ? '#007aff' : 'transparent' }]} >
 
           <View style={styles.footerItemView}>
             {imageEl}

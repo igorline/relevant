@@ -35,13 +35,19 @@ class ProfileComponent extends Component {
 
   componentDidMount() {
     var self = this;
-    self.props.actions.getStats(self.props.user._id);
-    subscriptionActions.getSubscriptionData('follower', this.props.user._id).then(function(response) {
-      self.setState({following: response.data});
-    })
-    subscriptionActions.getSubscriptionData('following', this.props.user._id).then(function(response) {
-      self.setState({followers: response.data});
-    });
+    if (self.props.user) {
+      if (self.props.user._id) {
+        self.props.actions.getStats(self.props.user._id);
+
+        subscriptionActions.getSubscriptionData('follower', this.props.user._id).then(function(response) {
+          self.setState({following: response.data});
+        })
+        subscriptionActions.getSubscriptionData('following', this.props.user._id).then(function(response) {
+          self.setState({followers: response.data});
+        });
+      }
+    }
+
     self.checkOnline(self.props.online);
   }
 
@@ -53,6 +59,7 @@ class ProfileComponent extends Component {
 
   checkOnline(online) {
     var self = this;
+    if (!self.props.user._id) return;
     for (var index in online) {
       if (index == self.props.user._id) {
         self.setState({online: true});

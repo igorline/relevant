@@ -32,7 +32,6 @@ import Footer from './footer.container';
 import CreatePost from './createPost.container';
 import Discover from './discover.container';
 import SinglePost from './singlePost.container';
-import User from './user.container';
 import Activity from './activity.container';
 import Comments from './comments.container';
 import Messages from './messages.container';
@@ -247,9 +246,6 @@ class Application extends Component {
       case 'comments':
         return <Comments { ...self.props } navigator={nav} route={route} />;
         break
-      case 'user':
-        return <User { ...self.props } navigator={nav} route={route} />;
-        break
       case 'thirst':
         return <Thirst { ...self.props } navigator={nav} route={route} />;
         break
@@ -266,7 +262,7 @@ class Application extends Component {
 
   left(route, navigator, index, navState) {
     var self = this;
-    if (route.name == 'messages' || route.name == 'singlePost' || route.name == 'comments' || route.name == 'categories' || route.name == 'login' || route.name == 'signup' || route.name == 'thirst' || route.name == 'user') {
+    if (route.name == 'messages' || route.name == 'singlePost' || route.name == 'comments' || route.name == 'categories' || route.name == 'login' || route.name == 'signup' || route.name == 'thirst') {
       return (<TouchableHighlight underlayColor={'transparent'} style={{flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10}} onPress={self.back.bind(self, navigator)}><Text>Back</Text></TouchableHighlight>);
     } else {
       return null;
@@ -292,7 +288,7 @@ class Application extends Component {
     }
     if (route.name != 'profile') {
       return (<View style={{flex: 1, justifyContent: 'center', padding: 10}}>{statsEl}</View>);
-    } else {
+    } else if (route.name == 'profile' && !self.props.users.selectedUserId) {
       return (<View style={styles.gear}><TouchableHighlight underlayColor={'transparent'}  onPress={self.showActionSheet.bind(self)} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View>);
     }
   }
@@ -321,7 +317,13 @@ class Application extends Component {
         break;
 
       case 'profile':
-        self.props.auth.user ? title = self.props.auth.user.name : 'User';
+        if (self.props.users.selectedUserData) {
+          title = self.props.users.selectedUserData.name;
+        } else if (self.props.auth.user) {
+          title = self.props.auth.user.name
+        } else {
+          title = 'User';
+        }
         break;
 
       case 'activity':

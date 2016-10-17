@@ -31,9 +31,9 @@ class Read extends Component {
   }
 
   componentDidMount() {
-
     InteractionManager.runAfterInteractions(() => {
       var self = this;
+      //self.props.actions.triggerAnimation('invest');
       if (self.props.posts.feed && self.props.posts.tag) this.props.actions.clearPosts('feed');
       if (self.props.posts.comments) this.props.actions.setComments(null);
       if (self.props.posts.feed) {
@@ -51,6 +51,7 @@ class Read extends Component {
     if (next.posts.feed != self.props.posts.feed) {
       var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({feedData: fd.cloneWithRows(next.posts.feed)});
+      console.log(next.posts.feed);
     }
     if (self.props.posts.newFeedAvailable != next.posts.newFeedAvailable) {
       if (next.posts.newFeedAvailable) console.log('newFeedAvailable');
@@ -124,17 +125,27 @@ class Read extends Component {
     var recentMessages = [];
     var thirstyHeader = null;
 
-     if (self.props.messages.index.length > 0) {
+    if (self.props.messages.index.length > 0) {
       messages = self.props.messages.index;
       for (var x = 0; x < 4; x++) {
         recentMessages.push(<Text key={x} style={styles.recentName}>{x < 3 ? self.props.messages.index[x].from.name+', ' : self.props.messages.index[x].from.name}</Text>);
       }
     }
 
-    if (self.state.feedData) {
-      postsEl = (<ListView ref="feedlist" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.feedData} renderRow={self.renderFeedRow.bind(self)} />)
+    //console.log(self.state.feedData);
+
+    if (self.state.feedData && self.props.posts.feed.length) {
+      postsEl = (<ListView 
+        ref="feedlist" 
+        renderScrollComponent={props => <ScrollView {...props} />} 
+        onScroll={self.onScroll.bind(self)} 
+        dataSource={self.state.feedData}
+        enableEmptySections={true}
+        renderRow={self.renderFeedRow.bind(self)} 
+      />)
     }
-    if (self.state.feedData && self.state.feedData.length == 0) {
+
+    if (self.state.feedData && self.props.posts.feed.length == 0) {
       postsEl = (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={[{fontWeight: '500'}, styles.darkGray]}>Nothing in yr feed bruh</Text></View>)
     }
 

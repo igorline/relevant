@@ -33,9 +33,8 @@ class DiscoverUser extends Component {
     if (id == self.props.auth.user._id) {
       self.props.navigator.push({name: 'profile'});
     } else {
-      self.props.actions.getSelectedUser(id).then(function(results) {
-        if (results) self.props.navigator.push({name: 'user'});
-      })
+      self.props.actions.setSelectedUser(id);
+      self.props.navigator.push({name: 'profile'});
     }
   }
 
