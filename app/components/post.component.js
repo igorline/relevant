@@ -344,44 +344,29 @@ class Post extends Component {
     self.setState({showOptions: self.state.showOptions = !self.state.showOptions});
   }
 
-  setSelected(user) {
+  setSelected(id) {
     var self = this;
-    if (user._id == self.props.auth.user._id) {
-      console.log('going to profile')
-      self.props.navigator.push({name: 'profile'})
+    if (typeof id == 'object') {
+      var set = id._id;
     } else {
-      console.log('setting selected user')
-      self.props.actions.getSelectedUser(user._id).then(function(results) {
-        if (results) {
-          self.props.navigator.push({name: 'user'});
-        }
-      })
+      var set = id;
+    }
+
+    if (set == self.props.auth.user._id) {
+      self.props.actions.clearSelectedUser();
+      self.props.navigator.push({name: 'profile'});
+    } else {
+      self.props.actions.clearSelectedUser();
+      self.props.actions.setSelectedUser(set);
+      self.props.navigator.push({name: 'profile'});
     }
   }
 
   handlePressIn() {
     var self = this;
-    self.setState({timeActive: true});
-    increaseTime();
     self.props.actions.triggerAnimation('invest');
-
-    function increaseTime() {
-      if (self.state.timeActive) {
-        self.setState({time: self.state.time += 1});
-        console.log(self.state.time)
-        setTimeout(function() {
-          increaseTime();
-        }, 1000);
-      }
-    }
-  }
-
-  handlePressOut() {
-    var self = this;
-    self.setState({timeActive: false, investAmount: 50*self.state.time});
+    self.setState({investAmount: 50});
     self.invest();
-    self.setState({time: 0});
-    self.props.actions.stopAnimation();
   }
 
   toggleInfo() {
@@ -483,7 +468,7 @@ class Post extends Component {
     if (balance >= 10000) pickerArray.push(<PickerItemIOS key={5} label='10000' value={10000} />);
 
     if (postUserImage) {
-      postUserImageEl = (<TouchableWithoutFeedback onPress={self.setSelected.bind(self, self.props.post.user)}><Image source={{uri: postUserImage}} style={styles.userImage} /></TouchableWithoutFeedback>);
+      postUserImageEl = (<TouchableWithoutFeedback onPress={self.setSelected.bind(self, self.props.post.user._id)}><Image source={{uri: postUserImage}} style={styles.userImage} /></TouchableWithoutFeedback>);
     }
 
     if (image) {
@@ -494,7 +479,7 @@ class Post extends Component {
       if (post.user._id != self.props.auth.user._id && !self.state.invested) {
         investButtonEl = (<TouchableWithoutFeedback
             onPressIn={this.handlePressIn.bind(self)}
-            onPressOut={this.handlePressOut.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
+            style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View>
           </TouchableWithoutFeedback>
         )
@@ -605,7 +590,7 @@ class Post extends Component {
             <View style={styles.postHeader}>
               {postUserImageEl}
               <View style={styles.postInfo}>
-                <TouchableWithoutFeedback onPress={self.setSelected.bind(self, user)} style={[styles.infoLeft, styles.innerInfo]}>
+                <TouchableWithoutFeedback onPress={self.setSelected.bind(self, user._id)} style={[styles.infoLeft, styles.innerInfo]}>
                   <View><Text style={[styles.font15, styles.darkGray]}>{name}</Text></View>
                 </TouchableWithoutFeedback>
                 <TouchableHighlight underlayColor={'transparent'} onPress={self.toggleInfo.bind(self)} style={[styles.infoRight, styles.innerInfo]}>

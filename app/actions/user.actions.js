@@ -17,7 +17,7 @@ function getSelectedUser(userId) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-        dispatch(setSelectedUser(responseJSON));
+        dispatch(setSelectedUserData(responseJSON));
         return true;
     })
     // .catch((error) => {
@@ -77,5 +77,21 @@ function setSelectedUser(user) {
     return {
         type: types.SET_SELECTED_USER,
         payload: set
+    };
+}
+
+export
+function clearSelectedUser() {
+    return {
+        type: 'CLEAR_SELECTED_USER',
+    };
+}
+
+export
+function setSelectedUserData(data) {
+    //var set = user ? user : null;
+    return {
+        type: 'SET_SELECTED_USER_DATA',
+        payload: data
     };
 }

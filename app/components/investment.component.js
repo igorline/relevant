@@ -11,6 +11,7 @@ import {
   LinkingIOS
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+var moment = require('moment');
 
 class Investment extends Component {
   constructor (props, context) {
@@ -41,8 +42,7 @@ class Investment extends Component {
         if (results) {
           self.props.navigator.push({name: 'user'});
         }
-      })
-
+      });
     }
   }
 
@@ -52,9 +52,13 @@ class Investment extends Component {
     var investmentEl = null;
     var styles = self.props.styles;
     var postId = null;
-    //console.log(self)
+    var time = null;
+
+    //console.log(self.props.investment)
     if (self.props.investment.post) {
       if (self.props.investment.post._id) postId = self.props.investment.post._id;
+      var activityTime = moment(self.props.investment.createdAt);
+      time = activityTime.fromNow();
     }
     if (investment) {
       investmentEl = (<View style={styles.singleActivity}>
@@ -66,7 +70,7 @@ class Investment extends Component {
           </Text>
         </View>
         <View style={styles.activityRight}>
-          <Text style={[styles.gray, styles.textRight]}>time</Text>
+          <Text style={[styles.gray, styles.textRight]}>{time}</Text>
         </View>
       </View>)
     }

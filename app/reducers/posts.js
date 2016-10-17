@@ -27,6 +27,7 @@ const initialState = {
 
 const updatePostElement = (array, post) => {
   if (!array) return;
+
   var index = array.findIndex(function(el) {
     return el._id == post._id;
   });
@@ -36,7 +37,7 @@ const updatePostElement = (array, post) => {
     ...array.slice(0, index),
     post,
     ...array.slice(index + 1)
-  ];
+  ]
   return newArr;
 }
 
@@ -51,7 +52,7 @@ const removeItem = (array, item) => {
   } else {
     console.log('removing item');
     array.splice(index, 1);
-    return array;
+    return array.slice();
   }
 }
 
@@ -112,7 +113,6 @@ export default function post(state = initialState, action) {
     }
 
     case types.REMOVE_POST: {
-      console.log("REMOVING POST")
       return Object.assign({}, state, {
         'index':  removeItem(state.index, action.payload),
         'feed':  removeItem(state.feed, action.payload),
@@ -138,7 +138,6 @@ export default function post(state = initialState, action) {
           [user]: addItems(arr, action.payload.posts)
         }
       };
-
       return Object.assign({}, state, newObj)
     }
 

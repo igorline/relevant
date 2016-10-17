@@ -62,7 +62,6 @@ class Discover extends Component {
       }
       if (self.props.posts.index.length == 0) self.props.actions.getPosts(0, self.props.posts.tag, null, 5);
     });
-
   }
 
   componentWillUpdate(next) {
@@ -70,13 +69,6 @@ class Discover extends Component {
     if (next.posts.index != self.props.posts.index) {
       var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
       self.setState({dataSource: ds.cloneWithRows(next.posts.index)});
-      // if(next.posts.index.length > 0) {
-      //   console.log("STOP LOADING")
-      //   console.log(next.posts.index)
-      //   console.log(self.props.posts.index)
-      //   this.loading = false;
-      //   // console.log(next.posts)
-      // }
     }
     if (self.props.posts.tag != next.posts.tag && next.posts.tag) {
       self.setTag(next.posts.tag);
@@ -96,7 +88,6 @@ class Discover extends Component {
     var self = this;
     if (view < 3) self.props.actions.clearPosts('index');
     self.props.actions.setView('discover', view);
-    if (!self.state.disableLayout) self.setState({disableLayout: true})
 
     switch(view) {
       case 1:
@@ -139,7 +130,7 @@ class Discover extends Component {
 
   search() {
     var self = this;
-    var length = self.props.posts.index.length;
+    var length = self.d.posts.index.length;
     self.props.actions.searchTags(self.state.tagSearchTerm).then(function(foundTags) {
       console.log(foundTags, 'foundTags')
       if (!foundTags.status) {
@@ -283,50 +274,6 @@ class Discover extends Component {
     ).start();
   }
 
-    renderHeader() {
-      var self = this;
-      var tags = null;
-      var view = self.props.view.discover;
-      var tagsEl = null;
-      var id = null;
-      if (self.props.posts.tag) id = self.props.posts.tag._id;
-      if (self.props.posts.discoverTags) {
-        tags = self.props.posts.discoverTags;
-        if (tags.length > 0) {
-          tagsEl = tags.map(function(data, i) {
-            return (
-              <Text style={[styles.tagBox, {backgroundColor: data._id == id ? '#007aff' : '#F0F0F0', color: data._id == id ? 'white' : '#808080'}]} onPress={data._id == id ? self.clearTag.bind(self) : self.setTag.bind(self, data)} key={i}>
-                {data.name}
-              </Text>
-            )
-          })
-        }
-      }
-
-      var el = (
-          <View style={[styles.transformContainer], {backgroundColor: 'white'}}>
-            {/*<Text style={{padding: 5}} onPress={self.clearTag.bind(self)}>Reset</Text>*/}
-            <View style={[styles.searchParent]}>
-              <TextInput onSubmitEditing={self.search.bind(self)} style={[styles.searchInput, styles.font15]} placeholder={'Search'} multiline={false} onChangeText={(term) => this.setState({tagSearchTerm: term})} value={self.state.tagSearchTerm} returnKeyType='done' />
-            </View>
-             <View>
-              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView>
-            </View>
-             <View style={[styles.row, {width: fullWidth}]}>
-            <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 1 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 1)}>
-              <Text style={[styles.type, styles.darkGray, styles.font15, view == 1 ? styles.active : null]}>New</Text>
-            </TouchableHighlight>
-            <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 2 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 2)}>
-              <Text style={[styles.type, styles.darkGray, styles.font15, view == 2 ? styles.active : null]}>Top</Text>
-            </TouchableHighlight>
-            <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 3 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 3)}>
-              <Text style={[styles.type, styles.darkGray, styles.font15, view == 3 ? styles.active : null]}>People</Text>
-            </TouchableHighlight>
-          </View>
-          </View>);
-      return el;
-    }
-
   render() {
     var self = this;
     var _scrollView: ScrollView;
@@ -357,14 +304,13 @@ class Discover extends Component {
 
       headerEl = (
           <Animated.View style={[styles.transformContainer], {position:'absolute', top: 0, backgroundColor: 'white', transform: [{translateY: self.state.transY}]}} onLayout={(event) => {var {x, y, width, height} = event.nativeEvent.layout; if (!self.state.layout) { self.setState({headerHeight: height, layout: true})} }}>
-            {/*<Text style={{padding: 5}} onPress={self.clearTag.bind(self)}>Reset</Text>*/}
             <View style={[styles.searchParent]}>
               <TextInput onSubmitEditing={self.search.bind(self)} style={[styles.searchInput, styles.font15]} placeholder={'Search'} multiline={false} onChangeText={(term) => this.setState({tagSearchTerm: term})} value={self.state.tagSearchTerm} returnKeyType='done' />
             </View>
              <View>
               <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} automaticallyAdjustContentInsets={false} contentContainerStyle={styles.tags}>{tagsEl}</ScrollView>
             </View>
-             <View style={[styles.row, {width: fullWidth}]}>
+            <View style={[styles.row, {width: fullWidth}]}>
             <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 1 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 1)}>
               <Text style={[styles.type, styles.darkGray, styles.font15, view == 1 ? styles.active : null]}>New</Text>
             </TouchableHighlight>
@@ -376,20 +322,7 @@ class Discover extends Component {
             </TouchableHighlight>
           </View>
           </Animated.View>);
-    
-    typeEl = (<View style={[styles.row, {width: fullWidth}]}>
-            <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 1 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 1)}>
-              <Text style={[styles.type, styles.darkGray, styles.font15, view == 1 ? styles.active : null]}>New</Text>
-            </TouchableHighlight>
-            <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 2 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 2)}>
-              <Text style={[styles.type, styles.darkGray, styles.font15, view == 2 ? styles.active : null]}>Top</Text>
-            </TouchableHighlight>
-            <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 3 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 3)}>
-              <Text style={[styles.type, styles.darkGray, styles.font15, view == 3 ? styles.active : null]}>People</Text>
-            </TouchableHighlight>
-          </View>);
-
-
+  
     if (self.state.dataSource) {
       postsEl = (
         <ListView ref="listview"
