@@ -38,64 +38,85 @@ class Profile extends Component {
   componentWillMount() {
     var self = this;
     var posts = null;
-    var user = null;
-    if (self.props.users.selectedUserId) {
-      user = self.props.users.selectedUserId;
-      self.props.actions.getSelectedUser(user);
-    } else {
-      user = self.props.auth.user._id;
-    }
-
+    var userId = null;
+    var userData = null;
     var investments = null;
+    var currentUser = null;
+    var postsUser = null;
+    var investmentsUser = null;
+    var selectedUserData = null;
 
-    if (self.props.posts.user.length &&
-        user &&
-        user == self.props.posts.currentUser) {
-
-      var posts = self.props.posts.user;
-      var fd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      self.setState({postsData: fd.cloneWithRows(posts), received: true});
+    if (self.props.users.selectedUserId) userId = self.props.users.selectedUserId;
+    if (self.props.users.currentUser) currentUser = self.props.users.currentUser;
+    if (self.props.users.selectedUserData) selectedUserData = self.props.users.selectedUserData;
+    if (self.props.investments.index) {
+      if (self.props.investments.index.length) investments = self.props.investments.index; 
     }
-
-    if (!posts && user) {
-      self.props.actions.clearPosts('user');
-      self.props.actions.getUserPosts(0, 5, user);
-    }
-
-    if (self.props.investments && user) {
-      if (self.props.investments[user]) {
-        if (self.props.investments[user].length) {
-          investments = self.props.investments[user];
-          var ld = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-          self.setState({investmentsData: ld.cloneWithRows(investments)});
-        }
+    if (self.props.investments.user) investmentsUser = self.props.investments.user;
+    if (self.props.posts.user) {
+      if (self.props.posts.user.length) {
+        posts = self.props.posts.user;
       }
     }
-    if (!investments && user) self.props.actions.getInvestments(self.props.auth.token, user, 0,10);
+    if (self.props.posts.currentUser) postsUser = self.props.posts.currentUser;
+
+    if (userId) {
+      if (userId != currentUser) {
+        self.props.actions.getSelectedUser(userId);
+      }
+      if (userId == currentUser && userData) {
+        userData = self.props.users.selectedUserData;
+      }
+    }
+
+    if (postsUser && userId) {
+      if (postsUser == userId && posts) {
+          var pd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+          self.setState({postsData: pd.cloneWithRows(posts), received: true});
+      } else {
+        self.props.actions.clearPosts('user');
+        self.props.actions.getUserPosts(0, 5, userId);
+      }
+    } else if (userId) {
+      self.props.actions.clearPosts('user');
+      self.props.actions.getUserPosts(0, 5, userId);
+    }
+
+    if (investmentsUser) {
+      if (investmentsUser == userId && investments) {
+          var ld = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+          self.setState({investmentsData: ld.cloneWithRows(investments), received: true});
+      } else {
+         self.props.actions.getInvestments(self.props.auth.token, userId, 0,10);
+      }
+    } else {
+       self.props.actions.getInvestments(self.props.auth.token, userId, 0,10);
+    }
   }
 
   componentWillUnmount() {
     var self = this;
-    self.props.actions.clearSelectedUser();
   }
 
-  componentWillUpdate(next) {
+  componentWillUpdate(next, nextState) {
     var self = this;
-    var user = null;
-    if (self.props.users.selectedUserId) {
-      user = self.props.users.selectedUserId;
-    } else {
-      user = self.props.auth.user._id;
+    var posts = self.props.posts.user;
+    var userId = null;
+    if (next.users.selectedUserId) userId = next.users.selectedUserId;
+
+    if (self.props.users.selectedUserId != userId && userId) {
+       self.props.actions.getUserPosts(0, 5, userId);
     }
 
-    if (!user) return;
-    if (next.posts.currentUser != user) return;
-    if (user) {
+    if (!userId) return;
+    if (!next.investments.index) self.props.actions.getInvestments(self.props.auth.token, userId, 0,10);
+
+    if (userId) {
       var newPosts = next.posts.user;
       var oldPosts = self.props.posts.user;
 
-      var newInvestments = next.investments[user];
-      var oldInvestments = self.props.investments[user];
+      var newInvestments = next.investments.index;
+      var oldInvestments = self.props.investments.index;
 
       if (newPosts != oldPosts) {
         var pd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -128,26 +149,20 @@ class Profile extends Component {
     var self = this;
     var length = 0;
     var user = null;
-    if (self.props.users.selectedUserId) {
-      user = self.props.users.selectedUserId;
-    } else {
-      user = self.props.auth.user._id;
-    }
-
+    if (self.props.users.selectedUserId) user = self.props.users.selectedUserId;
     if (self.props.view.profile == 1) {
       length = self.props.posts.user.length;
     } else {
-      length = self.props.investments[user].length;
+      length = self.props.investments.length;
     }
 
-    console.log('load more, skip: ', length);
     if (self.state.enabled) {
       self.setState({enabled: false});
 
       if (self.props.view.profile == 1) {
         self.props.actions.getUserPosts(length, 5, user);
       } else {
-        self.props.actions.getInvestments(self.props.auth.token, user, length,10);
+        self.props.actions.getInvestments(self.props.auth.token, user, length, 10);
       }
       setTimeout(function() {
         self.setState({enabled: true})
@@ -166,13 +181,11 @@ class Profile extends Component {
     var header = [];
     var userId = null;
     var userData = null;
+
     if (self.props.users.selectedUserId) {
       userId = self.props.users.selectedUserId;
-      if(self.props.users.selectedUserData) userData = self.props.users.selectedUserData;
-    } else {
-      userId = self.props.auth.user._id;
-      userData = self.props.auth.user;
-    }
+      if (self.props.users.selectedUserData) userData = self.props.users.selectedUserData;
+    } 
     if (userId && userData) {
       header.push(<ProfileComponent key={'header'+0} {...self.props} user={userData} styles={styles} />);
       header.push(<View style={[styles.row, {width: fullWidth, backgroundColor: 'white'}]} key={'header'+1}>
@@ -205,18 +218,16 @@ class Profile extends Component {
         if (self.props.posts.user.length) checkLength = true;
       }
     }
+
     if (self.props.users.selectedUserId) {
       userId = self.props.users.selectedUserId;
-      if(self.props.users.selectedUserData) userData = self.props.users.selectedUserData;
-    } else {
-      userId = self.props.auth.user._id;
-      userData = self.props.auth.user;
-    }
+      if (self.props.users.selectedUserData) userData = self.props.users.selectedUserData;
+    } 
 
     if (userId && userData) {
       profileEl = (<ProfileComponent {...self.props} user={userData} styles={styles} />);
 
-      if (self.state.postsData && self.state.received ) {
+      if (self.state.postsData && self.state.received) {
         postsEl = (
           <ListView
             ref="postslist"

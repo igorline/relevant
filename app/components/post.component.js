@@ -305,10 +305,12 @@ class Post extends Component {
   invest() {
     var self = this;
     console.log('investing', self.state.investAmount);
-    this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
-       if (self.props.route == 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
+    this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user)
+    .then(function() {
+       if (self.props.route == 'user')
+        self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
     })
-    this.props.actions.createSubscription(this.props.auth.token, self.props.post);
+    // this.props.actions.createSubscription(this.props.auth.token, self.props.post);
     self.setState({investAmount: 50});
   }
 
@@ -352,14 +354,14 @@ class Post extends Component {
       var set = id;
     }
 
-    if (set == self.props.auth.user._id) {
-      self.props.actions.clearSelectedUser();
-      self.props.navigator.push({name: 'profile'});
-    } else {
-      self.props.actions.clearSelectedUser();
+    // if (set == self.props.auth.user._id) {
+    //   //self.props.actions.clearSelectedUser();
+    //   self.props.navigator.push({name: 'profile'});
+    // } else {
+      //self.props.actions.clearSelectedUser();
       self.props.actions.setSelectedUser(set);
       self.props.navigator.push({name: 'profile'});
-    }
+    // }
   }
 
   handlePressIn() {
@@ -405,7 +407,9 @@ class Post extends Component {
 
     if (this.props.post) {
       post = this.props.post;
-      if (post.image) image = post.image;
+      if (post.image) {
+        image = post.image.match('http') ? post.image : 'https:' + post.image;
+      }
       if (post.description) description = post.description;
       if (post.title) title = post.title;
       if (post.relevance) relevance = post.relevance;
@@ -476,7 +480,7 @@ class Post extends Component {
     }
 
     if (post) {
-      if (post.user._id != self.props.auth.user._id && !self.state.invested) {
+      if (post.user._id != self.props.auth.user._id) {
         investButtonEl = (<TouchableWithoutFeedback
             onPressIn={this.handlePressIn.bind(self)}
             style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
@@ -485,14 +489,14 @@ class Post extends Component {
         )
       }
 
-      if (post.user._id != self.props.auth.user._id && self.state.invested) {
-        uninvestButtonEl = (
-          <TouchableWithoutFeedback
-            onPress={this.uninvest.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
-            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Uninvest</Text></View>
-          </TouchableWithoutFeedback>
-        )
-      }
+      // if (post.user._id != self.props.auth.user._id && self.state.invested) {
+      //   uninvestButtonEl = (
+      //     <TouchableWithoutFeedback
+      //       onPress={this.uninvest.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
+      //       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Uninvest</Text></View>
+      //     </TouchableWithoutFeedback>
+      //   )
+      // }
     }
 
     if (body) {
@@ -621,7 +625,6 @@ class Post extends Component {
 
         <View style={styles.postButtons}>
           {investButtonEl}
-          {uninvestButtonEl}
           <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={self.toggleExpanded.bind(self)}><Text style={[styles.font10, styles.postButtonText]}>{expanded ? 'Read less' : 'Read more'}</Text></TouchableHighlight>
           <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={self.openComments.bind(self)}><Text style={[{marginRight: 5}, styles.font10, styles.postButtonText]}>{commentString}</Text></TouchableHighlight>
           <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={self.showActionSheet.bind(self)}><Text style={[styles.font10, styles.postButtonText]}>...</Text></TouchableHighlight>

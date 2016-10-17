@@ -35,15 +35,20 @@ class Investment extends Component {
 
   setSelected(id) {
     var self = this;
-    if (id == self.props.auth.user._id) {
-      if (self.props.route.name != 'profile') self.props.navigator.push({name: 'profile'});
+    if (typeof id == 'object') {
+      var set = id._id;
     } else {
-      self.props.actions.getSelectedUser(id).then(function(results) {
-        if (results) {
-          self.props.navigator.push({name: 'user'});
-        }
-      });
+      var set = id;
     }
+
+    // if (set == self.props.auth.user._id) {
+    //   //self.props.actions.clearSelectedUser();
+    //   self.props.navigator.push({name: 'profile'});
+    // } else {
+    //   self.props.actions.clearSelectedUser();
+      self.props.actions.setSelectedUser(set);
+      self.props.navigator.push({name: 'profile'});
+    // }
   }
 
   render() {

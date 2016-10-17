@@ -13,7 +13,6 @@ const initialState = {
   discoverTags: null,
   parentTags: null,
   createPostCategory: null,
-  userPosts: {},
   newFeedAvailable: false,
   newPostsAvailable: false,
   currentUser: null,
@@ -80,7 +79,7 @@ const addItem = (old, newObj) => {
   if (old.indexOf(newObj) < 0) {
     return newArr.concat(old);
   } else {
-    return old;
+    return old.slice();
   }
 }
 
@@ -116,7 +115,7 @@ export default function post(state = initialState, action) {
       return Object.assign({}, state, {
         'index':  removeItem(state.index, action.payload),
         'feed':  removeItem(state.feed, action.payload),
-        'user': removeItem(state.feed, action.payload)
+        'user': removeItem(state.user, action.payload)
       })
     }
 
@@ -125,20 +124,6 @@ export default function post(state = initialState, action) {
       return Object.assign({}, state, {
         [type]: [],
       })
-    }
-
-    case 'SET_USER_POSTS': {
-      var arr = [];
-      var user = action.payload.user;
-      if (state.userPosts[user]) arr = state.userPosts[user];
-
-      var newObj = {
-        userPosts: {
-          ...state.userPosts,
-          [user]: addItems(arr, action.payload.posts)
-        }
-      };
-      return Object.assign({}, state, newObj)
     }
 
     case 'ADD_POST': {

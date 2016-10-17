@@ -57,8 +57,8 @@ export function setInvestments(userId, data) {
     return {
         type: 'SET_INVESTMENTS',
         payload: {
-          user: userId,
-          investments: data
+          data: data,
+          user: userId
         }
     };
 }

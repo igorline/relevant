@@ -33,6 +33,7 @@ class Footer extends Component {
   }
 
   componentWillUpdate(newProps) {
+    var self = this;
     var nav = null;
     if (newProps.navigator) {
       nav = newProps.navigator;
@@ -40,12 +41,28 @@ class Footer extends Component {
       var length = nav.state.routeStack.length;
       if (length > 0) length --;
       this.route = routes[length].name;
+      //console.log(this.route)
+      //if (this.route != 'profile' && self.props.users.selectedUserId) self.props.actions.clearSelectedUser();
+    }
+  }
+
+  componentWillReceiveProps(newProps) {
+    var nav = null;
+    if (newProps.navigator) {
+      nav = newProps.navigator;
+      var routes = nav.state.routeStack;
+      var length = nav.state.routeStack.length;
+      if (length > 0) length --;
+      var route = routes[length].name; 
     }
   }
 
   goTo(view) {
     var self = this;
-    if (view == 'profile') self.props.actions.clearSelectedUser();
+    if (view == 'profile') {
+      self.props.actions.setSelectedUser(self.props.auth.user._id);
+      self.props.actions.setSelectedUserData(self.props.auth.user);
+    }
     self.props.navigator.push({name: view});
     this.route = view;
     this.setState({});
@@ -167,7 +184,7 @@ class Footer extends Component {
         <TouchableHighlight
           onPress={self.goTo.bind(self, 'profile')}
           underlayColor={'transparent'}
-          style={[styles.footerItem, {borderBottomColor: this.route == 'profile' && !self.props.users.selectedUserId ? '#007aff' : 'transparent' }]} >
+          style={[styles.footerItem, {borderBottomColor: this.route == 'profile' && self.props.users.selectedUserId == self.props.auth.user._id ? '#007aff' : 'transparent' }]} >
 
           <View style={styles.footerItemView}>
             {imageEl}
