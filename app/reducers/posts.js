@@ -10,7 +10,7 @@ const initialState = {
   activePost: null,
   index: [],
   feed: [],
-  discoverTags: null,
+  discoverTags: [],
   parentTags: null,
   createPostCategory: null,
   userPosts: {},
@@ -169,9 +169,11 @@ export default function post(state = initialState, action) {
     }
 
     case types.SET_TAG: {
-      return Object.assign({}, state, {
-        'tag': action.payload
-      })
+      console.log("Setting tag")
+      return {
+        ...state,
+        'tag': JSON.parse(JSON.stringify(action.payload)),
+      }
     }
 
     case types.SET_PARENT_TAGS: {
