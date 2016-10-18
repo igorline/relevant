@@ -6,6 +6,7 @@ import * as utils from '../utils';
 export
 function getSelectedUser(userId) {
   return function(dispatch) {
+    console.log('get', userId);
     return fetch(process.env.API_SERVER+'/api/user/'+userId, {
         credentials: 'include',
         method: 'GET',
@@ -17,13 +18,9 @@ function getSelectedUser(userId) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-        dispatch(setSelectedUser(responseJSON));
+        dispatch(setSelectedUserData(responseJSON));
         return true;
     })
-    // .catch((error) => {
-    //     console.log(error, 'error');
-    //     return false;
-    // });
   }
 }
 
@@ -77,5 +74,21 @@ function setSelectedUser(user) {
     return {
         type: types.SET_SELECTED_USER,
         payload: set
+    };
+}
+
+export
+function clearSelectedUser() {
+    return {
+        type: 'CLEAR_SELECTED_USER',
+    };
+}
+
+export
+function setSelectedUserData(data) {
+    //var set = user ? user : null;
+    return {
+        type: 'SET_SELECTED_USER_DATA',
+        payload: data
     };
 }

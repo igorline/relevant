@@ -272,13 +272,7 @@ const layout = StyleSheet.create({
   },
   padding10: {
     padding: 10
-  },
-  aniMoney: {
-    position: 'absolute',
-    top: -35,
-    right: 10,
-    backgroundColor: 'transparent'
-  },
+  }
 });
 
 const globalStyles = {...colors, ...font, ...alignment, ...layout};

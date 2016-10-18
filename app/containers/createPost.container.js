@@ -161,7 +161,7 @@ class CreatePost extends Component {
         } else {
           AlertIOS.alert("Posted");
           self.props.actions.setPostCategory(null);
-          self.props.actions.clearUserPosts(self.props.auth.user._id);
+          self.props.actions.clearPosts('user');
           self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
           self.props.navigator.resetTo({name: 'discover'})
         }

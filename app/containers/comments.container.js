@@ -119,8 +119,8 @@ class Comments extends Component {
 
     if (self.props.posts.comments) {
       comments = self.props.posts.comments;
-      commentsEl = comments.map(function(comment) {
-        return( <Comment styles={styles} {...self.props} comment={comment} />);
+      commentsEl = comments.map(function(comment, i) {
+        return( <Comment key={i} styles={styles} {...self.props} comment={comment} />);
       })
     }
 

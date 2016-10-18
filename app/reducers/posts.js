@@ -13,7 +13,6 @@ const initialState = {
   discoverTags: [],
   parentTags: null,
   createPostCategory: null,
-  userPosts: {},
   newFeedAvailable: false,
   newPostsAvailable: false,
   currentUser: null,
@@ -27,6 +26,7 @@ const initialState = {
 
 const updatePostElement = (array, post) => {
   if (!array) return;
+
   var index = array.findIndex(function(el) {
     return el._id == post._id;
   });
@@ -36,7 +36,7 @@ const updatePostElement = (array, post) => {
     ...array.slice(0, index),
     post,
     ...array.slice(index + 1)
-  ];
+  ]
   return newArr;
 }
 
@@ -124,21 +124,6 @@ export default function post(state = initialState, action) {
       return Object.assign({}, state, {
         [type]: [],
       })
-    }
-
-    case 'SET_USER_POSTS': {
-      var arr = [];
-      var user = action.payload.user;
-      if (state.userPosts[user]) arr = state.userPosts[user];
-
-      var newObj = {
-        userPosts: {
-          ...state.userPosts,
-          [user]: addItems(arr, action.payload.posts)
-        }
-      };
-
-      return Object.assign({}, state, newObj)
     }
 
     case 'ADD_POST': {
