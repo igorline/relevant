@@ -4,6 +4,7 @@ import {
   View,
   ScrollView,
   ListView,
+  RefreshControl,
   // InteractionManager,
 } from 'react-native';
 
@@ -39,6 +40,7 @@ class Discover extends Component {
     this.onScroll = this.onScroll.bind(this);
     this.renderRow = this.renderRow.bind(this);
     this.setPostTop = this.setPostTop.bind(this);
+    this.reload = this.reload.bind(this);
   }
 
   componentDidMount() {
@@ -92,34 +94,26 @@ class Discover extends Component {
 
   onScroll() {
     const currentOffset = this.listview.scrollProperties.offset;
-    let down = null;
-    if (currentOffset !== this.offset) {
-      down = currentOffset > this.offset;
-    }
-    if (currentOffset < 50) {
-      down = false;
-    }
-    if (down === true && this.state.showHeader) {
-      this.setState({ showHeader: false });
-    }
-    if (down === false && !this.state.showHeader) {
-      this.setState({ showHeader: true });
-    }
+    const visibleLegth = this.listview.scrollProperties.visibleLength;
+    const contentLength = this.listview.scrollProperties.contentLength;
+
+    let showHeader = null;
+    if (currentOffset !== this.offset) showHeader = currentOffset < this.offset;
+    if (currentOffset < 50) showHeader = true;
+    if (showHeader != null) this.setState({ showHeader });
     this.offset = currentOffset;
 
     if (this.props.view.discover === 3) return;
 
-    if (currentOffset < -100) {
-      this.reload();
-    }
-    if (currentOffset > 100
-      && currentOffset + this.listview.scrollProperties.visibleLength >
-        this.listview.scrollProperties.contentLength + 5) {
+    // if (currentOffset < -100) this.reload();
+
+    if (currentOffset > 100 && currentOffset + visibleLegth > contentLength + 5) {
       this.loadMore();
     }
   }
 
   setPostTop(height) {
+    console.log('Setting height', height);
     this.setState({
       headerHeight: height,
     });
@@ -180,11 +174,22 @@ class Discover extends Component {
           onScroll={this.onScroll}
           dataSource={this.dataSource}
           renderRow={this.renderRow}
+          contentInset={{ top: this.state.headerHeight }}
+          contentOffset={{ y: -this.state.headerHeight }}
           contentContainerStyle={{
             position: 'absolute',
-            top: this.state.headerHeight,
           }}
-          renderScrollComponent={props => <ScrollView {...props} />}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.props.posts.loading}
+              onRefresh={this.reload}
+              tintColor="#000000"
+              title="Loading..."
+              titleColor="#000000"
+              colors={['#000000', '#000000', '#000000']}
+              progressBackgroundColor="#ffffff"
+            />
+          }
         />
       );
     }
@@ -233,10 +238,10 @@ class Discover extends Component {
 }
 
 Discover.propTypes = {
-  view: React.PropTypes.Object,
-  posts: React.PropTypes.Object,
-  actions: React.PropTypes.Object,
-  auth: React.PropTypes.Auth,
+  view: React.PropTypes.object,
+  posts: React.PropTypes.object,
+  actions: React.PropTypes.object,
+  auth: React.PropTypes.object,
 };
 
 const localStyles = StyleSheet.create({
