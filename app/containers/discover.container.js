@@ -47,13 +47,14 @@ class Discover extends Component {
         var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         self.setState({dataSource: ds.cloneWithRows(self.props.posts.index)});
       }
+
       if (self.props.posts.index.length == 0) this.loadMore();
 
       this.tag = null;
       if (this.props.posts.tag) this.tag = {...this.props.posts.tag}
 
     // });
-
+      if (self.props.posts.index.length == 0) this.loadMore();
   }
 
   componentWillReceiveProps(next) {
@@ -157,7 +158,6 @@ class Discover extends Component {
     var view = self.props.view.discover;
     var postsEl = null;
     var posts = null;
-
 
     if (self.state.dataSource) {
       postsEl = (

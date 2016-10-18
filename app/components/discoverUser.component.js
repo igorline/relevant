@@ -30,13 +30,14 @@ class DiscoverUser extends Component {
 
   setSelected(id) {
     var self = this;
-    if (id == self.props.auth.user._id) {
+    // if (id == self.props.auth.user._id) {
+    //   // self.props.actions.clearSelectedUser();
+    //   self.props.navigator.push({name: 'profile'});
+    // } else {
+    //   // self.props.actions.clearSelectedUser();
+      self.props.actions.setSelectedUser(id);
       self.props.navigator.push({name: 'profile'});
-    } else {
-      self.props.actions.getSelectedUser(id).then(function(results) {
-        if (results) self.props.navigator.push({name: 'user'});
-      })
-    }
+    // }
   }
 
   renderHeader() {

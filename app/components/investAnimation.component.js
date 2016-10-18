@@ -18,15 +18,15 @@ import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as userActions from '../actions/user.actions';
-require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-var moment = require('moment');
+import Dollar from './dollar.component';
 
 class InvestAnimation extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      investAni: []
+      investAni: [],
+      num: 0
     }
   }
 
@@ -41,64 +41,36 @@ class InvestAnimation extends Component {
     }
   }
 
-  investAni() {
-    var styles = {...globalStyles};
+  componentWillUnmount() {
     var self = this;
-    if (self.props.animation.run) {
-      for (var i = 0; i < 1; i++) {
-        var values = {
-          x: new Animated.Value(0),
-          y: new Animated.Value(0),
-          scale: new Animated.Value(1.5),
-          opacity: new Animated.Value(1)
-        };
+    self.clearEls();
+  }
 
-        self.state.investAni.push(<Animated.Text style={[styles.aniMoney, {transform: [{translateX: values.x}, {scale: values.scale}, {translateY: values.y}], opacity: values.opacity}]}>💵</Animated.Text>);
+  clearEls() {
+    var self = this;
+    console.log('clearEls');
+    if (self.state.num > 0) self.setState({num: 0, investAni: []});
+  }
 
-        Animated.timing(values.x, {
-          toValue: -(fullWidth/2),
-          delay: i*100,
-          duration: 500,
-          easing: Easing.linear
-        }).start();
-
-        Animated.timing(values.y, {
-          toValue: fullHeight*0.1,
-          delay: i*100,
-          duration: 500,
-          easing: Easing.linear
-        }).start();
-
-        Animated.timing(values.opacity, {
-          toValue: 0,
-          delay: i*100,
-          duration: 500,
-          easing: Easing.linear
-        }).start();
-
-        Animated.timing(values.scale, {
-          toValue: 5,
-          delay: i*100,
-          duration: 500,
-          easing: Easing.linear
-        }).start();
-
-        self.setState({})
-      }
-
-      setTimeout(function() {
-        self.investAni();
-      }, 50);
+  investAni() {
+    var styles = {...globalStyles, ...localStyles};
+    var self = this;
+    if (self.state.num < 25) {
+      var newArr = self.state.investAni;
+      newArr.push(<Dollar key={self.state.num} />);
+      var newNum = self.state.num += 1;
+      self.setState({num: newNum, investAni: newArr});
     }
+    setTimeout(function() { self.investAni() }, 100);
   }
 
   render() {
     var self = this;
 
     return (
-        <View style={{position: 'absolute', top: 0, right: 0}}>
-          {self.state.investAni}
-        </View>
+      <View style={{position: 'absolute', top: 0, right: 0, height: 20, width: 20}}>
+        {self.state.investAni}
+      </View>
     );
   }
 }
@@ -106,6 +78,12 @@ class InvestAnimation extends Component {
 export default InvestAnimation;
 
 const localStyles = StyleSheet.create({
+  aniMoney: {
+    position: 'absolute',
+    top: -35,
+    right: 10,
+    backgroundColor: 'transparent'
+  },
 });
 
 
