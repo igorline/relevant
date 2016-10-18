@@ -47,6 +47,11 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-react-native": "^1.5.6",
     "babel-register": "^6.7.2",
+    "eslint": "^3.8.1",
+    "eslint-config-airbnb": "^12.0.0",
+    "eslint-plugin-import": "^2.0.1",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.4.1",
     "isomorphic-fetch": "^2.2.1",
     "mockery": "^2.0.0",
     "nock": "^8.0.0",
@@ -65,5 +70,21 @@
       "react-native-mock/mock",
       "./tests/_setup"
     ]
-  }
+  },
+  "description": "Xcode 7.0 or higher is required. It can be installed from the App Store.",
+  "main": ".eslintrc.js",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/balasan/relevant-native.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/balasan/relevant-native/issues"
+  },
+  "homepage": "https://github.com/balasan/relevant-native#readme"
 }

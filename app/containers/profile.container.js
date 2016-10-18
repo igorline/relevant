@@ -24,33 +24,66 @@ import ProfileComponent from '../components/profile.component';
 import Investment from '../components/investment.component';
 import Spinner from 'react-native-loading-spinner-overlay';
 
+const localStyles = StyleSheet.create({
+  postsHeader: {
+    padding: 10,
+  },
+  uploadAvatar: {
+    height: 100,
+    width: 100,
+    resizeMode: 'cover',
+  },
+  profileContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    backgroundColor: 'white',
+  },
+  insideRow: {
+    flex: 1,
+  },
+  insidePadding: {
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  pictureWidth: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  wrap: {
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+  },
+});
+
+const styles = { ...localStyles, ...globalStyles };
+
 class Profile extends Component {
-  constructor (props, context) {
-    super(props, context)
+  constructor(props, context) {
+    super(props, context);
     this.state = {
       postsData: null,
       investmentsData: null,
       enabled: true,
-      received: false
-    }
+      received: false,
+    };
   }
 
   componentWillMount() {
-    var self = this;
-    var posts = null;
-    var userId = null;
-    var userData = null;
-    var investments = null;
-    var currentUser = null;
-    var postsUser = null;
-    var investmentsUser = null;
-    var selectedUserData = null;
+    const self = this;
+    let posts = null;
+    let userId = null;
+    let userData = null;
+    let investments = null;
+    let currentUser = null;
+    let postsUser = null;
+    let investmentsUser = null;
 
     if (self.props.users.selectedUserId) userId = self.props.users.selectedUserId;
     if (self.props.users.currentUser) currentUser = self.props.users.currentUser;
-    if (self.props.users.selectedUserData) selectedUserData = self.props.users.selectedUserData;
     if (self.props.investments.index) {
-      if (self.props.investments.index.length) investments = self.props.investments.index; 
+      if (self.props.investments.index.length) investments = self.props.investments.index;
     }
     if (self.props.investments.user) investmentsUser = self.props.investments.user;
     if (self.props.posts.user) {
@@ -61,18 +94,15 @@ class Profile extends Component {
     if (self.props.posts.currentUser) postsUser = self.props.posts.currentUser;
 
     if (userId) {
-      if (userId != currentUser) {
+      if (userId !== currentUser) {
         self.props.actions.getSelectedUser(userId);
-      }
-      if (userId == currentUser && userData) {
-        userData = self.props.users.selectedUserData;
       }
     }
 
     if (postsUser && userId) {
-      if (postsUser == userId && posts) {
-          var pd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-          self.setState({postsData: pd.cloneWithRows(posts), received: true});
+      if (postsUser === userId && posts) {
+        const pd = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+        self.setState({ postsData: pd.cloneWithRows(posts), received: true });
       } else {
         self.props.actions.clearPosts('user');
         self.props.actions.getUserPosts(0, 5, userId);
@@ -82,118 +112,106 @@ class Profile extends Component {
       self.props.actions.getUserPosts(0, 5, userId);
     }
 
-    if (investmentsUser) {
-      if (investmentsUser == userId && investments) {
-          var ld = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-          self.setState({investmentsData: ld.cloneWithRows(investments), received: true});
+    if (investmentsUser && userId) {
+      if (investmentsUser === userId && investments) {
+        const ld = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+        self.setState({ investmentsData: ld.cloneWithRows(investments), received: true });
       } else {
-         self.props.actions.getInvestments(self.props.auth.token, userId, 0,10);
+        self.props.actions.getInvestments(self.props.auth.token, userId, 0, 10);
       }
     } else {
-       self.props.actions.getInvestments(self.props.auth.token, userId, 0,10);
+      self.props.actions.getInvestments(self.props.auth.token, userId, 0, 10);
     }
   }
 
-  componentWillUnmount() {
-    var self = this;
-  }
-
-  componentWillUpdate(next, nextState) {
-    var self = this;
-    var posts = self.props.posts.user;
-    var userId = null;
+  componentWillUpdate(next) {
+    const self = this;
+    let userId = null;
     if (next.users.selectedUserId) userId = next.users.selectedUserId;
-
-    if (self.props.users.selectedUserId != userId && userId) {
-       self.props.actions.getUserPosts(0, 5, userId);
-    }
-
     if (!userId) return;
-    if (!next.investments.index) self.props.actions.getInvestments(self.props.auth.token, userId, 0,10);
+    if (self.props.users.selectedUserId !== userId) self.props.actions.getUserPosts(0, 5, userId);
+    if (!next.investments.index) self.props.actions.getInvestments(self.props.auth.token, userId, 0, 10);
+    const newPosts = next.posts.user;
+    const oldPosts = self.props.posts.user;
+    const newInvestments = next.investments.index;
+    const oldInvestments = self.props.investments.index;
 
-    if (userId) {
-      var newPosts = next.posts.user;
-      var oldPosts = self.props.posts.user;
+    if (newPosts !== oldPosts) {
+      const pd = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      self.setState({ postsData: pd.cloneWithRows(newPosts), received: true });
+    }
 
-      var newInvestments = next.investments.index;
-      var oldInvestments = self.props.investments.index;
-
-      if (newPosts != oldPosts) {
-        var pd = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        self.setState({postsData: pd.cloneWithRows(newPosts), received: true});
-      }
-      if (newInvestments != oldInvestments) {
-        var id = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        self.setState({investmentsData: id.cloneWithRows(newInvestments)});
-      }
+    if (newInvestments !== oldInvestments) {
+      const id = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      self.setState({ investmentsData: id.cloneWithRows(newInvestments) });
     }
   }
 
-  renderFeedRow(rowData, sectionID, rowID, highlightRow) {
-    var self = this;
-    if (self.props.view.profile == 1) {
-      return (<Post key={rowID} post={rowData} {...self.props} styles={styles} />);
-    } else {
-      return (<Investment key={rowID} investment={rowData} {...self.props} styles={styles} />);
-    }
-  }
 
   onScroll() {
-    var self = this;
+    const self = this;
     if (self.refs.postslist.scrollProperties.offset + self.refs.postslist.scrollProperties.visibleLength >= self.refs.postslist.scrollProperties.contentLength) {
       self.loadMore();
     }
   }
 
   loadMore() {
-    var self = this;
-    var length = 0;
-    var user = null;
+    const self = this;
+    let length = 0;
+    let user = null;
     if (self.props.users.selectedUserId) user = self.props.users.selectedUserId;
-    if (self.props.view.profile == 1) {
+    if (self.props.view.profile === 1) {
       length = self.props.posts.user.length;
     } else {
       length = self.props.investments.length;
     }
 
     if (self.state.enabled) {
-      self.setState({enabled: false});
+      self.setState({ enabled: false });
 
-      if (self.props.view.profile == 1) {
+      if (self.props.view.profile === 1) {
         self.props.actions.getUserPosts(length, 5, user);
       } else {
         self.props.actions.getInvestments(self.props.auth.token, user, length, 10);
       }
-      setTimeout(function() {
-        self.setState({enabled: true})
+      setTimeout(() => {
+        self.setState({ enabled: true });
       }, 1000);
     }
   }
 
   changeView(view) {
-    var self = this;
-    self.props.actions.setView('profile', view);
+    this.props.actions.setView('profile', view);
+  }
+
+  renderFeedRow(rowData, sectionID, rowID) {
+    const self = this;
+    if (self.props.view.profile === 1) {
+      return (<Post key={rowID} post={rowData} {...self.props} styles={styles} />);
+    } else {
+      return (<Investment key={rowID} investment={rowData} {...self.props} styles={styles} />);
+    }
   }
 
   renderHeader() {
-    var self = this;
-    var view = self.props.view.profile;
-    var header = [];
-    var userId = null;
-    var userData = null;
+    const self = this;
+    let view = self.props.view.profile;
+    let header = [];
+    let userId = null;
+    let userData = null;
 
     if (self.props.users.selectedUserId) {
       userId = self.props.users.selectedUserId;
       if (self.props.users.selectedUserData) userData = self.props.users.selectedUserData;
-    } 
+    }
     if (userId && userData) {
-      header.push(<ProfileComponent key={'header'+0} {...self.props} user={userData} styles={styles} />);
-      header.push(<View style={[styles.row, {width: fullWidth, backgroundColor: 'white'}]} key={'header'+1}>
-        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 1 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 1)}>
-          <Text style={[styles.type, styles.darkGray, styles.font15, view == 1 ? styles.active : null]}>Posts</Text>
+      header.push(<ProfileComponent key={'header0'} {...self.props} user={userData} styles={styles} />);
+      header.push(<View style={[styles.row, { width: fullWidth, backgroundColor: 'white' }]} key={'header1'}>
+        <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, view === 1 ? styles.activeBorder : null]} onPress={()=> this.changeView(1)}>
+          <Text style={[styles.type, styles.darkGray, styles.font15, view === 1 ? styles.active : null]}>Posts</Text>
         </TouchableHighlight>
-        <TouchableHighlight  underlayColor={'transparent'} style={[styles.typeParent, view == 2 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 2)}>
-          <Text style={[styles.type, styles.darkGray, styles.font15, view == 2 ? styles.active : null]}>Investments</Text>
+        <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, view === 2 ? styles.activeBorder : null]} onPress={()=> this.changeView(2)}>
+          <Text style={[styles.type, styles.darkGray, styles.font15, view === 2 ? styles.active : null]}>Investments</Text>
         </TouchableHighlight>
       </View>);
     }
@@ -252,40 +270,4 @@ class Profile extends Component {
 }
 
 export default Profile
-
-
-const localStyles = StyleSheet.create({
-  postsHeader: {
-    padding: 10
-  },
-  uploadAvatar: {
-    height: 100,
-    width: 100,
-    resizeMode: 'cover'
-  },
-  profileContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    backgroundColor: 'white',
-  },
-  insideRow: {
-    flex: 1,
-  },
-  insidePadding: {
-    paddingLeft: 10,
-    paddingRight: 10
-  },
-  pictureWidth: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  wrap: {
-    flexDirection: 'row',
-    flexWrap: 'nowrap'
-  },
-});
-
-var styles = {...localStyles, ...globalStyles};
 
