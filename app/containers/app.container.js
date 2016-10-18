@@ -241,7 +241,7 @@ class Application extends Component {
         return <Categories { ...self.props } navigator={nav} route={route} />;
         break
       case 'discover':
-        return <Discover { ...self.props } navigator={nav} route={route} />;
+        return <Discover navigator={nav} route={route} />;
         break
       case 'read':
         return <Read { ...self.props } navigator={nav} route={route} />;

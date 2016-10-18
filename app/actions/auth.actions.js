@@ -227,10 +227,9 @@ function getUser(token, redirect, callback) {
     }
 }
 
-export
-function userIndex() {
-    return dispatch => {
-        new Promise(function(resolve, reject) {
+export function userIndex() {
+    return (dispatch) => {
+        new Promise((resolve, reject) => {
             return fetch(process.env.API_SERVER+'/api/user', {
                     credentials: 'include',
                     method: 'GET'
@@ -243,8 +242,8 @@ function userIndex() {
                 .catch((error) => {
                     console.log(error, 'error');
                 });
-        })
-    }
+        });
+    };
 }
 
 // export
