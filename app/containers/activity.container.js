@@ -145,7 +145,14 @@ class Activity extends Component {
     var typeEl = null;
 
     if (self.state.dataSource) {
-      activityEl = (<ListView ref="listview" renderScrollComponent={props => <ScrollView {...props} />} onScroll={self.onScroll.bind(self)} dataSource={self.state.dataSource} renderRow={self.renderRow.bind(self)} />)
+      activityEl = (
+        <ListView
+          ref="listview"
+          renderScrollComponent={props => <ScrollView {...props} />}
+          onScroll={self.onScroll.bind(self)}
+          dataSource={self.state.dataSource}
+          renderRow={self.renderRow.bind(self)}
+        />)
     }
 
     if (self.state.onlinePop.length) {
@@ -185,21 +192,4 @@ const localStyles = StyleSheet.create({
 });
 
 var styles = {...localStyles, ...globalStyles};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
