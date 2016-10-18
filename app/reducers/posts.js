@@ -157,7 +157,7 @@ export default function post(state = initialState, action) {
       console.log("Setting tag")
       return {
         ...state,
-        'tag': JSON.parse(JSON.stringify(action.payload)),
+        'tag': action.payload,
       }
     }
 

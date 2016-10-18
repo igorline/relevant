@@ -19,8 +19,6 @@ export default class DiscoverHeader extends Component {
     this.state = {
       searchTerm: null,
       transY: new Animated.Value(0),
-      headerHeight: 0,
-      layout: false,
     };
     this.search = this.search.bind(this);
   }
@@ -37,7 +35,7 @@ export default class DiscoverHeader extends Component {
   }
 
   hideHeader() {
-    const moveHeader = this.state.headerHeight * -1;
+    const moveHeader = this.headerHeight * -1;
     this.setState({ showHeader: false });
     Animated.timing(          // Uses easing functions
        this.state.transY,    // The value to drive
@@ -55,6 +53,7 @@ export default class DiscoverHeader extends Component {
 
   changeView(view) {
     this.props.actions.setView('discover', view);
+    this.layout = false;
   }
 
   search() {
@@ -107,11 +106,13 @@ export default class DiscoverHeader extends Component {
           'white',
           transform: [{ translateY: this.state.transY }],
         }]}
+        ref={(c) => { this.header = c; }}
         onLayout={
           (event) => {
             const { height } = event.nativeEvent.layout;
-            if (!this.state.layout) {
-              this.setState({ headerHeight: height, layout: true });
+            if (!this.layout) {
+              this.headerHeight = height;
+              this.layout = true;
               this.props.setPostTop(height);
             }
           }
