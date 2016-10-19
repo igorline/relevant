@@ -19,10 +19,9 @@ export default class DiscoverHeader extends Component {
     this.state = {
       searchTerm: null,
       transY: new Animated.Value(0),
-      headerHeight: 0,
-      layout: false,
     };
     this.search = this.search.bind(this);
+    this.headerHeight = 134;
   }
 
   componentDidMount() {
@@ -37,7 +36,7 @@ export default class DiscoverHeader extends Component {
   }
 
   hideHeader() {
-    const moveHeader = this.state.headerHeight * -1;
+    const moveHeader = this.headerHeight * -1;
     this.setState({ showHeader: false });
     Animated.timing(          // Uses easing functions
        this.state.transY,    // The value to drive
@@ -54,6 +53,7 @@ export default class DiscoverHeader extends Component {
   }
 
   changeView(view) {
+    this.layout = false;
     this.props.actions.setView('discover', view);
   }
 
@@ -107,12 +107,14 @@ export default class DiscoverHeader extends Component {
           'white',
           transform: [{ translateY: this.state.transY }],
         }]}
+        ref={(c) => { this.header = c; }}
         onLayout={
           (event) => {
             const { height } = event.nativeEvent.layout;
-            if (!this.state.layout) {
-              this.setState({ headerHeight: height, layout: true });
-              this.props.setPostTop(height);
+            if (!this.layout) {
+              this.headerHeight = height;
+              this.props.setPostTop(this.headerHeight);
+              this.layout = true;
             }
           }
         }
@@ -168,11 +170,11 @@ export default class DiscoverHeader extends Component {
 }
 
 DiscoverHeader.propTypes = {
-  view: React.PropTypes.Number,
-  posts: React.PropTypes.Object,
-  actions: React.PropTypes.Object,
-  showHeader: React.PropTypes.Boolean,
-  setPostTop: React.PropTypes.Function,
+  view: React.PropTypes.number,
+  posts: React.PropTypes.object,
+  actions: React.PropTypes.object,
+  showHeader: React.PropTypes.bool,
+  setPostTop: React.PropTypes.func,
 };
 
 const localStyles = StyleSheet.create({
