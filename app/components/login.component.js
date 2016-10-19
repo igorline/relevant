@@ -64,7 +64,8 @@ class Login extends Component {
 
   back() {
     const self = this;
-    self.props.navigator.pop(0);
+    console.log('back');
+    self.props.navigator.push({name: 'auth'});
   }
 
   render() {

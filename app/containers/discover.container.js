@@ -72,11 +72,9 @@ class Discover extends Component {
     }
 
     if (this.props.posts[this.type].length === 0) this.reload();
-
+    this.props.actions.userIndex();
     this.tag = null;
     if (this.props.posts.tag) this.tag = { ...this.props.posts.tag };
-
-    // });
   }
 
   componentWillReceiveProps(next) {
