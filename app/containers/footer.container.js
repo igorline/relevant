@@ -45,13 +45,19 @@ class Footer extends Component {
 
     const currentRoutes = this.props.navigator.getCurrentRoutes();
 
-    let i = Object.keys(currentRoutes).find((key) => {
+    let i;
+    Object.keys(currentRoutes).forEach((key) => {
       let v = currentRoutes[key];
-      return v.name === view;
+      if (v.name === view) i = v.scene ? v.scene : key;
     });
 
-    if (i !== undefined) this.props.navigator.jumpTo(currentRoutes[i]);
-    else this.props.navigator.push({ name: view });
+    console.log(currentRoutes);
+
+    if (i !== undefined && currentRoutes[i]) this.props.navigator.jumpTo(currentRoutes[i]);
+    else this.props.navigator.push({
+      name: view,
+      id: Object.keys(currentRoutes).length
+    });
 
     this.route = view;
     this.setState({});

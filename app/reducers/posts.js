@@ -27,33 +27,23 @@ const initialState = {
 
 const updatePostElement = (array, post) => {
   if (!array) return;
+  let index = array.findIndex(el => el._id === post._id);
 
-  var index = array.findIndex(function(el) {
-    return el._id == post._id;
-  });
-
-  if (index < 0) return array.slice(0);
-  var newArr = [
+  if (index < 0) return array;
+  let newArr = [
     ...array.slice(0, index),
     post,
     ...array.slice(index + 1)
-  ]
+  ];
   return newArr;
-}
+};
 
 const removeItem = (array, item) => {
-  if (!array) return;
-  let index = array.findIndex((el) => {
-    return el._id == item._id;
-  });
-  if (index < 0) {
-    console.log('item not present');
-    return array;
-  } else {
-    console.log('removing item');
-    array.splice(index, 1);
-    return array.slice();
-  }
+  let index = array.findIndex(el => el._id === item._id);
+  return [
+    ...array.slice(0, index),
+    ...array.slice(index + 1)
+  ];
 };
 
 const addItems = (arr, newArr) => {
@@ -61,7 +51,7 @@ const addItems = (arr, newArr) => {
   const removeDuplicates = newArr.filter((el) => {
     return arr.indexOf( el ) < 0;
   });
-  var finalArr = arr.concat(removeDuplicates)
+  let finalArr = arr.concat(removeDuplicates);
   return finalArr;
 };
 
@@ -89,7 +79,7 @@ export default function post(state = initialState, action) {
 
     case types.SET_POSTS: {
       const type = action.payload.type;
-      console.log('reducer type ', type)
+      console.log('reducer type ', type);
       return Object.assign({}, state, {
         [type]: addItems(state[type], action.payload.data),
         currentUser: action.payload.userId ? action.payload.userId : state.currentUser,
@@ -205,23 +195,23 @@ export default function post(state = initialState, action) {
       });
     }
 
-    case types.SET_COMMENTS: {
-      return Object.assign({}, state, {
-        comments: action.payload,
-      });
-    }
+    // case types.SET_COMMENTS: {
+    //   return Object.assign({}, state, {
+    //     comments: action.payload,
+    //   });
+    // }
 
-    case types.ADD_COMMENT: {
-      return Object.assign({}, state, {
-        comments: addItem(state.comments, action.payload),
-      });
-    }
+    // case types.ADD_COMMENT: {
+    //   return Object.assign({}, state, {
+    //     comments: addItem(state.comments, action.payload),
+    //   });
+    // }
 
-    case types.REMOVE_COMMENT: {
-      return Object.assign({}, state, {
-        comments: removeItem(state.comments, action.payload),
-      });
-    }
+    // case types.REMOVE_COMMENT: {
+    //   return Object.assign({}, state, {
+    //     comments: removeItem(state.comments, action.payload),
+    //   });
+    // }
 
     case 'SET_NEW_FEED_STATUS': {
       console.log('SET_NEW_FEED_STATUS');

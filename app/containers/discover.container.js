@@ -5,7 +5,6 @@ import {
   ScrollView,
   ListView,
   RefreshControl,
-  // InteractionManager,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -54,29 +53,26 @@ class Discover extends Component {
   }
 
   componentDidMount() {
-    // InteractionManager.runAfterInteractions(() => {
     this.offset = 0;
     this.view = this.props.view.discover;
     this.type = TYPE_LOOKUP[this.view];
-    let ds;
+    // let ds;
 
-    if (this.props.posts.comments) this.props.actions.setComments(null);
+    // if (this.props.posts.comments) this.props.actions.setComments(null);
 
-    if (this.props.posts.tag && this.props.posts[this.type]) {
-      this.props.actions.clearPosts(this.type);
-    }
+    // if (this.props.posts.tag && this.props.posts[this.type]) {
+    //   this.props.actions.clearPosts(this.type);
+    // }
 
-    if (this.props.posts[this.type].length > 0) {
-      ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      this.dataSource = ds.cloneWithRows(this.props.posts[this.type]);
-    }
+    // if (this.props.posts[this.type].length > 0) {
+    //   ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    //   this.dataSource = ds.cloneWithRows(this.props.posts[this.type]);
+    // }
 
-    if (this.props.posts[this.type].length === 0) this.reload();
+    this.reload();
 
     this.tag = null;
     if (this.props.posts.tag) this.tag = { ...this.props.posts.tag };
-
-    // });
   }
 
   componentWillReceiveProps(next) {

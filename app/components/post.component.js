@@ -290,9 +290,15 @@ class Post extends Component {
   }
 
   openComments() {
-    var self = this;
-    self.props.actions.setActivePost(self.props.post._id);
-    self.props.navigator.push({name: 'comments'})
+    this.props.actions.setActivePost(this.props.post._id);
+    console.log("ROUTE ", this.props.route);
+    this.parentScene = this.props.route;
+    let routeId = this.parentScene.id + 1;
+    this.parentScene.scene = routeId;
+    this.props.navigator.push({
+      name: 'comments',
+      parent: this.parentScene
+    });
   }
 
   deletePost() {
