@@ -26,6 +26,11 @@ import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
 
 let styles;
+const POST_PAGE_SIZE = 5;
+const TYPE_LOOKUP = {
+  1: 'new',
+  2: 'top',
+};
 
 class Discover extends Component {
   constructor(props, context) {
@@ -33,37 +38,44 @@ class Discover extends Component {
     this.state = {
       lastOffset: 0,
       height: null,
-      headerHeight: 0,
+      headerHeight: 138,
       layout: false,
       showHeader: true,
+      reload: false,
     };
     this.onScroll = this.onScroll.bind(this);
     this.renderRow = this.renderRow.bind(this);
     this.setPostTop = this.setPostTop.bind(this);
     this.reload = this.reload.bind(this);
+    this.loadMore = this.loadMore.bind(this);
+    this.currentScroll = {
+      new: 0,
+      top: 0,
+    };
   }
 
   componentDidMount() {
     // InteractionManager.runAfterInteractions(() => {
     this.offset = 0;
     this.view = this.props.view.discover;
+    this.type = TYPE_LOOKUP[this.view];
     let ds;
 
     if (this.props.posts.comments) this.props.actions.setComments(null);
 
-    if (this.props.posts.tag && this.props.posts.index) this.props.actions.clearPosts('index');
-
-    if (this.props.posts.index.length > 0) {
-      ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      this.dataSource = ds.cloneWithRows(this.props.posts.index);
+    if (this.props.posts.tag && this.props.posts[this.type]) {
+      this.props.actions.clearPosts(this.type);
     }
 
-    if (this.props.posts.index.length === 0) this.loadMore();
+    if (this.props.posts[this.type].length > 0) {
+      ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      this.dataSource = ds.cloneWithRows(this.props.posts[this.type]);
+    }
+
+    if (this.props.posts[this.type].length === 0) this.reload();
 
     this.tag = null;
     if (this.props.posts.tag) this.tag = { ...this.props.posts.tag };
-
-    if (this.props.posts.index.length === 0) this.loadMore();
 
     // });
   }
@@ -71,9 +83,10 @@ class Discover extends Component {
   componentWillReceiveProps(next) {
     let ds;
 
-    if (next.posts.index !== this.props.posts.index) {
+    if (next.posts[this.type] !== this.props.posts[this.type]) {
       ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      this.dataSource = ds.cloneWithRows(next.posts.index);
+      this.dataSource = ds.cloneWithRows(next.posts[this.type]);
+      this.setState({ reload: false });
     }
 
     if (this.tag !== next.posts.tag) {
@@ -83,7 +96,23 @@ class Discover extends Component {
 
     if (this.props.view.discover !== next.view.discover) {
       this.view = next.view.discover;
-      if (this.view < 3) this.reload();
+      this.type = TYPE_LOOKUP[this.view];
+      this.dataSource = null;
+      ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      this.dataSource = ds.cloneWithRows(next.posts[this.type]);
+      if (this.view < 3) {
+        // option 1 - reload and scroll to top
+        console.log('getting props!')
+        setTimeout(() => this.reload(), 0);
+        this.listview.scrollTo({ y: -this.state.headerHeight, animated: false });
+
+        // option 2 - scrolls to last place but and doesn't reload if there is data
+        // if (!next.posts[this.type].length) this.reload();
+        // else {
+        //   this.offset = this.currentScroll[this.type];
+        //   this.listview.scrollTo({ y: this.currentScroll[this.type], animated: false });
+        // }
+      }
       else if (!this.props.auth.userIndex) this.props.actions.userIndex();
     }
 
@@ -94,22 +123,16 @@ class Discover extends Component {
 
   onScroll() {
     const currentOffset = this.listview.scrollProperties.offset;
-    const visibleLegth = this.listview.scrollProperties.visibleLength;
-    const contentLength = this.listview.scrollProperties.contentLength;
 
     let showHeader = null;
     if (currentOffset !== this.offset) showHeader = currentOffset < this.offset;
     if (currentOffset < 50) showHeader = true;
-    if (showHeader != null) this.setState({ showHeader });
+    if (showHeader != null && showHeader !== this.state.showHeader) {
+      this.setState({ showHeader });
+    }
     this.offset = currentOffset;
 
-    if (this.props.view.discover === 3) return;
-
-    // if (currentOffset < -100) this.reload();
-
-    if (currentOffset > 100 && currentOffset + visibleLegth > contentLength + 5) {
-      this.loadMore();
-    }
+    this.currentScroll[this.type] = currentOffset;
   }
 
   setPostTop(height) {
@@ -120,30 +143,30 @@ class Discover extends Component {
   }
 
   reload(tag) {
+    this.setState({ reload: true });
     console.log('REALOAD');
-    this.props.actions.clearPosts('index');
     this.loadPosts(0, tag);
   }
 
   loadMore() {
     console.log('LOAD MORE');
-    const length = this.props.posts.index.length;
+    const length = this.props.posts[this.type].length;
+    if (length < POST_PAGE_SIZE) return;
     this.loadPosts(length);
   }
 
   loadPosts(length, _tag) {
     if (this.props.posts.loading) return;
+    console.log('loading posts');
 
     const tag = typeof _tag !== 'undefined' ? _tag : this.props.posts.tag;
     switch (this.view) {
       case 1:
-        this.props.actions.getPosts(length, tag, null, 5);
+        this.props.actions.getPosts(length, tag, null, POST_PAGE_SIZE);
         break;
-
       case 2:
-        this.props.actions.getPosts(length, tag, 'rank', 5);
+        this.props.actions.getPosts(length, tag, 'rank', POST_PAGE_SIZE);
         break;
-
       default:
         return;
     }
@@ -169,16 +192,20 @@ class Discover extends Component {
           enableEmptySections
           removeClippedSubviews
           pageSize={1}
-          initialListSize={3}
+          initialListSize={2}
           scrollEventThrottle={16}
           onScroll={this.onScroll}
           dataSource={this.dataSource}
           renderRow={this.renderRow}
+          automaticallyAdjustContentInsets={false}
           contentInset={{ top: this.state.headerHeight }}
           contentOffset={{ y: -this.state.headerHeight }}
           contentContainerStyle={{
             position: 'absolute',
+            top: 0,
           }}
+          onEndReached={this.loadMore}
+          onEndReachedThreshold={100}
           refreshControl={
             <RefreshControl
               refreshing={this.props.posts.loading}

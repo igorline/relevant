@@ -63,7 +63,9 @@ class Footer extends Component {
       self.props.actions.setSelectedUser(self.props.auth.user._id);
       self.props.actions.setSelectedUserData(self.props.auth.user);
     }
-    self.props.navigator.push({name: view});
+    // self.props.navigator.push({name: view});
+    // self.props.navigator.replace({ name: view });
+    self.props.navigator.resetTo({name: view});
     this.route = view;
     this.setState({});
   }

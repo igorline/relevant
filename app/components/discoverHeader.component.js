@@ -21,6 +21,7 @@ export default class DiscoverHeader extends Component {
       transY: new Animated.Value(0),
     };
     this.search = this.search.bind(this);
+    this.headerHeight = 134;
   }
 
   componentDidMount() {
@@ -52,8 +53,8 @@ export default class DiscoverHeader extends Component {
   }
 
   changeView(view) {
-    this.props.actions.setView('discover', view);
     this.layout = false;
+    this.props.actions.setView('discover', view);
   }
 
   search() {
@@ -112,8 +113,8 @@ export default class DiscoverHeader extends Component {
             const { height } = event.nativeEvent.layout;
             if (!this.layout) {
               this.headerHeight = height;
+              this.props.setPostTop(this.headerHeight);
               this.layout = true;
-              this.props.setPostTop(height);
             }
           }
         }
@@ -169,11 +170,11 @@ export default class DiscoverHeader extends Component {
 }
 
 DiscoverHeader.propTypes = {
-  view: React.PropTypes.Number,
-  posts: React.PropTypes.Object,
-  actions: React.PropTypes.Object,
-  showHeader: React.PropTypes.Boolean,
-  setPostTop: React.PropTypes.Function,
+  view: React.PropTypes.number,
+  posts: React.PropTypes.object,
+  actions: React.PropTypes.object,
+  showHeader: React.PropTypes.bool,
+  setPostTop: React.PropTypes.func,
 };
 
 const localStyles = StyleSheet.create({
