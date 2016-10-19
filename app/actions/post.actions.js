@@ -44,7 +44,7 @@ export function deletePost(token, post) {
     })
     .then((response) => {
       console.log(response, 'delete response')
-      dispatch(removePostFromIndex(post));
+      dispatch(removePost(post));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -53,49 +53,49 @@ export function deletePost(token, post) {
 }
 
 export function clearPosts(type) {
-    return {
-        type: types.CLEAR_POSTS,
-        payload: {
-          type: type
-        }
-    };
+  return {
+    type: types.CLEAR_POSTS,
+    payload: {
+      type: type,
+    }
+  };
 }
 
-export function refreshPosts(type) {
-    return {
-        type: types.REFRESH_POSTS,
-        payload: {
-          type: type
-        }
-    };
-}
+// export function refreshPosts(type) {
+//     return {
+//         type: types.REFRESH_POSTS,
+//         payload: {
+//           type: type
+//         }
+//     };
+// }
 
 export function setPostCategory(tag) {
-    var set = tag ? tag : null;
-    return {
-        type: 'SET_POST_CATEGORY',
-        payload: set
-    };
+  const set = tag ? tag : null;
+  return {
+    type: 'SET_POST_CATEGORY',
+    payload: set,
+  };
 }
 
 export function getPostsAction() {
   return {
-      type: 'GET_POSTS',
-      payload: null
+    type: 'GET_POSTS',
+    payload: null,
   };
 }
 
 export function getPosts(skip, tags, sort, limit) {
-  //console.log(skip, tags, sort);
-  var tagsString = '';
+  // console.log(skip, tags, sort);
+  let tagsString = '';
   if (!skip) skip = 0;
   if (!limit) limit = 5;
   if (!sort) sort = null;
 
-  //change this if we want to store top and new in separate places
-  var type = 'index';
+  // change this if we want to store top and new in separate places
+  const type = sort ? 'top' : 'new';
 
-  var url = process.env.API_SERVER+'/api/post?skip='+skip+'&sort='+sort+'&limit='+limit;
+  let url = process.env.API_SERVER + '/api/post?skip=' + skip + '&sort=' + sort + '&limit=' + limit;
 
   if (tags) {
     if (tags.length) {
@@ -132,12 +132,23 @@ export function getPosts(skip, tags, sort, limit) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setPosts(responseJSON, type));
+      if (skip === 0) dispatch(refreshPosts(responseJSON, type));
+      else dispatch(setPosts(responseJSON, type));
     })
     .catch((error) => {
         console.log(error, 'error');
     });
   }
+}
+
+export function refreshPosts(data, type) {
+    return {
+        type: types.REFRESH_POSTS,
+        payload: {
+          data: data,
+          type: type
+        }
+    };
 }
 
 export function setPosts(data, type) {
@@ -203,7 +214,7 @@ export function updatePost(post) {
   }
 }
 
-export function removePostFromIndex(post) {
+export function removePost(post) {
   return {
     type: types.REMOVE_POST,
     payload: post
@@ -346,7 +357,6 @@ export function editPost(post, authToken) {
         .then((response) => response.json())
         .then((responseJSON) => {
           dispatch(updatePost(responseJSON));
-          // dispatch(updatePost(responseJSON));
           dispatch(authActions.getUser(post.user._id))
           return true;
         })
