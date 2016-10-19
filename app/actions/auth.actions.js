@@ -8,7 +8,6 @@ require('../publicenv');
 import {
     PushNotificationIOS
 } from 'react-native';
-// var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
 import * as utils from '../utils';
 
 export
@@ -74,14 +73,14 @@ function loginUserRequest() {
 
 export
 function logoutAction(user, token) {
-
     return (dispatch) => {
-       userDefaults.remove('token', APP_GROUP_ID)
-           .then(data => {
-                dispatch(logout());
-                dispatch({type:'server/logout', payload: user});
-            })
-    }
+        userDefaults.remove('token', APP_GROUP_ID)
+        .then(data => {
+            console.log(data, 'remove data')
+            dispatch(logout());
+            dispatch({ type:'server/logout', payload: user });
+        });
+    };
 }
 
 export
@@ -182,13 +181,16 @@ function createUser(user, redirect) {
 
 export
 function getUser(token, redirect, callback) {
+    console.log('getUser', token)
     return dispatch => {
         if (!token) {
             userDefaults.get('token', APP_GROUP_ID)
                 .then(token => {
                     if (token) {
+                        console.log('userDefaults found token', token)
                         return fetchUser(token);
                     } else {
+                        console.log('userDefaults didnt find token')
                         return;
                     }
                 })
@@ -199,6 +201,7 @@ function getUser(token, redirect, callback) {
         } else fetchUser(token);
 
         function fetchUser(token) {
+            console.log('fetch user w token', token)
             fetch(process.env.API_SERVER+'/api/user/me', {
                 credentials: 'include',
                 method: 'GET',

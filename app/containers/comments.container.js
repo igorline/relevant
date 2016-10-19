@@ -62,7 +62,6 @@ class Comments extends Component {
   componentWillUnmount() {
     this.showListener.remove();
     this.hideListener.remove();
-    console.log("unmounting")
   }
 
   keyboardWillHide() {
@@ -73,6 +72,7 @@ class Comments extends Component {
     let newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 60;
     this.setState({ visibleHeight: newSize });
   }
+
 
   scrollToBottom() {
     if (this.props.comments.comments.length < 7) return;
@@ -96,7 +96,6 @@ class Comments extends Component {
       <Comment styles={styles} {...this.props} comment={rowData} />
     );
   }
-
 
   render() {
     let comments = [];

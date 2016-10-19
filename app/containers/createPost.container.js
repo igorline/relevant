@@ -22,7 +22,8 @@ import * as tagActions from '../actions/tag.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import * as utils from '../utils';
 
-const ImagePickerManager = require('NativeModules').ImagePickerManager;
+var Platform = require('react-native').Platform;
+var ImagePicker = require('react-native-image-picker');
 
 const localStyles = StyleSheet.create({
   tagStringContainer: {
@@ -258,7 +259,7 @@ class CreatePost extends Component {
           AlertIOS.alert('Posted');
           self.props.actions.setPostCategory(null);
           self.props.navigator.resetTo({ name: 'discover' });
-          self.props.actions.clearUserPosts(self.props.auth.user._id);
+          self.props.actions.clearPosts('user');
           self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
         }
       });
@@ -313,7 +314,7 @@ class CreatePost extends Component {
   pickImage(callback) {
     const self = this;
     console.log(self, 'pickImage');
-    ImagePickerManager.showImagePicker(pickerOptions, (response) => {
+    ImagePicker.showImagePicker(pickerOptions, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
         callback('cancelled');
@@ -340,8 +341,9 @@ class CreatePost extends Component {
             description: results.description,
           },
         });
+      } else {
+        AlertIOS.alert("Error parsing URL");
       }
-      console.log(results, 'results');
     });
   }
 
