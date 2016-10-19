@@ -157,7 +157,6 @@ export function getUserPosts(skip, limit, userId) {
   if (!limit) limit = 5;
 
   var url = process.env.API_SERVER+'/api/post/user/'+userId+'?skip='+skip+'&limit='+limit;
-  console.log('useruserposts')
   return function(dispatch) {
     fetch(url, {
         credentials: 'include',

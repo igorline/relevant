@@ -1,28 +1,31 @@
-'use strict';
-
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
-  Image,
-  TextInput,
   ListView,
-  Dimensions,
-  PushNotificationIOS,
   TouchableHighlight,
   ScrollView,
-  AlertIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as utils from '../utils';
+import Spinner from 'react-native-loading-spinner-overlay';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import ProfileComponent from '../components/profile.component';
 import Investment from '../components/investment.component';
-import Spinner from 'react-native-loading-spinner-overlay';
+import * as authActions from '../actions/auth.actions';
+import * as postActions from '../actions/post.actions';
+import * as tagActions from '../actions/tag.actions';
+import * as userActions from '../actions/user.actions';
+import * as statsActions from '../actions/stats.actions';
+import * as onlineActions from '../actions/online.actions';
+import * as notifActions from '../actions/notif.actions';
+import * as viewActions from '../actions/view.actions';
+import * as messageActions from '../actions/message.actions';
+import * as subscriptionActions from '../actions/subscription.actions';
+import * as investActions from '../actions/invest.actions';
+import * as animationActions from '../actions/animation.actions';
 
 const localStyles = StyleSheet.create({
   postsHeader: {
@@ -62,6 +65,9 @@ const styles = { ...localStyles, ...globalStyles };
 class Profile extends Component {
   constructor(props, context) {
     super(props, context);
+    this.renderHeader = this.renderHeader.bind(this);
+    this.renderFeedRow = this.renderFeedRow.bind(this);
+    this.onScroll = this.onScroll.bind(this);
     this.state = {
       postsData: null,
       investmentsData: null,
@@ -74,7 +80,6 @@ class Profile extends Component {
     const self = this;
     let posts = null;
     let userId = null;
-    let userData = null;
     let investments = null;
     let currentUser = null;
     let postsUser = null;
@@ -150,7 +155,7 @@ class Profile extends Component {
 
   onScroll() {
     const self = this;
-    if (self.refs.postslist.scrollProperties.offset + self.refs.postslist.scrollProperties.visibleLength >= self.refs.postslist.scrollProperties.contentLength) {
+    if (self.listview.scrollProperties.offset + self.listview.scrollProperties.visibleLength >= self.listview.scrollProperties.contentLength) {
       self.loadMore();
     }
   }
@@ -195,8 +200,8 @@ class Profile extends Component {
 
   renderHeader() {
     const self = this;
-    let view = self.props.view.profile;
-    let header = [];
+    const view = self.props.view.profile;
+    const header = [];
     let userId = null;
     let userData = null;
 
@@ -220,27 +225,16 @@ class Profile extends Component {
 
   render() {
     var self = this;
-    var userImage = null;
     var view = self.props.view.profile;
-    var name = null;
-    var relevance = 0;
-    var balance = 0;
-    var userImageEl = null;
-    var postsEl = null;
-    var profileEl = null;
     var userId = null;
     var userData = null;
-    var checkLength = false;
-    if (self.props.posts) {
-      if (self.props.posts.user) {
-        if (self.props.posts.user.length) checkLength = true;
-      }
-    }
+    var profileEl = null;
+    var postsEl = null;
 
     if (self.props.users.selectedUserId) {
       userId = self.props.users.selectedUserId;
       if (self.props.users.selectedUserData) userData = self.props.users.selectedUserData;
-    } 
+    }
 
     if (userId && userData) {
       profileEl = (<ProfileComponent {...self.props} user={userData} styles={styles} />);
@@ -248,26 +242,61 @@ class Profile extends Component {
       if (self.state.postsData && self.state.received) {
         postsEl = (
           <ListView
-            ref="postslist"
+            ref={(c) => { this.listview = c; }}
             enableEmptySections={true}
             stickyHeaderIndices={[1]}
             renderScrollComponent={props => <ScrollView {...props} />}
-            onScroll={self.onScroll.bind(self)}
-            dataSource={view == 1 ? self.state.postsData : self.state.investmentsData}
-            renderHeader={self.renderHeader.bind(self)}
-            renderRow={self.renderFeedRow.bind(self)}
-          />)
+            onScroll={self.onScroll}
+            dataSource={view === 1 ? self.state.postsData : self.state.investmentsData}
+            renderHeader={self.renderHeader}
+            renderRow={self.renderFeedRow}
+          />);
       }
     }
 
     return (
-      <View style={[styles.fullContainer, {backgroundColor: 'white'}]}>
-      <Spinner color='rgba(0,0,0,1)' overlayColor='rgba(0,0,0,0)' visible={!self.state.received} />
+      <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
+        <Spinner color={'rgba(0,0,0,1)'} overlayColor={'rgba(0,0,0,0)'} visible={!self.state.received} />
         {postsEl}
       </View>
     );
   }
 }
 
-export default Profile
+Profile.propTypes = {
+  actions: React.PropTypes.Object,
+};
 
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    posts: state.posts,
+    users: state.user,
+    online: state.online,
+    view: state.view,
+    stats: state.stats,
+    investments: state.investments,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({
+      ...statsActions,
+      ...authActions,
+      ...postActions,
+      ...onlineActions,
+      ...notifActions,
+      ...animationActions,
+      ...viewActions,
+      ...messageActions,
+      ...tagActions,
+      ...userActions,
+      ...investActions,
+      ...subscriptionActions,
+    }, dispatch),
+  };
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

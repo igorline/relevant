@@ -3,11 +3,13 @@ import { toS3Advanced } from './s3';
 var cheerio = require('cheerio-without-node-native');
 
 export function generatePreview(link) {
+  console.log(link, 'link')
  return fetch(link, {
       method: 'GET',
   })
   .then((response) => {
-  var $ = cheerio.load(response._bodyText);
+  console.log(response, 'response')
+  var $ = cheerio.load(response._bodyBlob);
   var data = {
     'og:type':null,
     'og:title':null,

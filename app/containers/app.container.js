@@ -54,22 +54,23 @@ import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
 
 class Application extends Component {
-  constructor (props, context) {
-    super(props, context)
+  constructor(props, context) {
+    super(props, context);
+    this.back = this.back.bind(this);
     this.state = {
       newName: null,
       buttons: [
         'Change display name',
         'Add new photo',
         'Logout',
-        'Cancel'
+        'Cancel',
       ],
       destructiveIndex: 2,
       cancelIndex: 3,
       routes: [
-        {name: 'auth'}
-      ]
-    }
+        { name: 'auth' },
+      ],
+    };
   }
 
   componentDidMount() {
@@ -77,7 +78,7 @@ class Application extends Component {
     AppState.addEventListener('change', this.handleAppStateChange.bind(self));
   }
 
-  componentWillReceiveProps(next, nextState) {
+  componentWillReceiveProps(next) {
     var self = this;
     if (!self.props.auth.user && next.auth.user) {
       self.props.actions.userToSocket(next.auth.user);
@@ -93,11 +94,11 @@ class Application extends Component {
   componentWillUpdate(nextProps, nextState) {
     var self = this;
     if (!self.state.newName && nextState.newName) {
-      var user = self.props.auth.user;
+      let user = self.props.auth.user;
       user.name = nextState.newName;
-      self.props.actions.updateUser(user, self.props.auth.token).then(function(results) {
+      self.props.actions.updateUser(user, self.props.auth.token).then((results) => {
         if (results) self.props.actions.getUser(self.props.auth.token, false);
-      })
+      });
     }
     if (self.props.posts.tag != nextProps.posts.tag && nextProps.posts.tag) {
       self.refs.navigator.replace({name: 'discover'});
@@ -105,47 +106,37 @@ class Application extends Component {
   }
 
   componentWillUnmount() {
-    var self = this;
+    const self = this;
     AppState.removeEventListener('change', this.handleAppStateChange.bind(self));
   }
 
-  handleAppStateChange(currentAppState) {
-    var self = this;
-    if (currentAppState == 'active' && self.props.auth.user) {
-      self.props.actions.userToSocket(self.props.auth.user);
-      self.props.actions.getActivity(self.props.auth.user._id, 0);
-      self.props.actions.getGeneralActivity(self.props.auth.user._id, 0);
-    }
-  }
-
   logoutRedirect() {
-    var self = this;
+    const self = this;
     self.props.actions.removeDeviceToken(self.props.auth);
     self.props.actions.logoutAction(self.props.auth.user, self.props.auth.token);
     self.refs.navigator.replace({name: 'login'});
   }
 
   changePhoto() {
-    var self = this;
+    const self = this;
     console.log('change photo');
   }
 
   changeName() {
-    var self = this;
+    const self = this;
     console.log('change name');
     AlertIOS.prompt(
       'Enter new name',
       self.props.auth.user.name,
       [
-        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-        {text: 'OK', onPress: newname => self.setState({newName: newname})},
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+        { text: 'OK', onPress: newname => self.setState({ newName: newname }) },
       ],
     );
   }
 
   configureTransition(route, routeStack) {
-    //console.log(Navigator.NavigationBar, 'navigator')
-    if (route.name == 'categories' || route.name == 'comments' || route.name == 'login' || route.name == 'signup' || route.name == 'messages' || route.name == 'thirst' || route.name == 'user') {
+    if (route.name === 'categories' || route.name === 'comments' || route.name === 'login' || route.name === 'signup' || route.name === 'messages' || route.name === 'thirst' || route.name === 'user' || route.name == 'singlePost') {
       return Navigator.SceneConfigs.PushFromRight
     } else {
       return Navigator.SceneConfigs.FadeAndroid
@@ -195,78 +186,77 @@ class Application extends Component {
 
 
   showActionSheet() {
-    var self = this;
+    const self = this;
     ActionSheetIOS.showActionSheetWithOptions({
       options: self.state.buttons,
       cancelButtonIndex: self.state.cancelIndex,
       destructiveButtonIndex: self.state.destructiveIndex,
     },
     (buttonIndex) => {
-      switch(buttonIndex) {
-          case 0:
-              self.changeName();
-              break;
-          case 1:
-              self.chooseImage();
-              break;
-          case 2:
-              self.logoutRedirect();
-              break;
-          default:
-              return;
+      switch (buttonIndex) {
+        case 0:
+          self.changeName();
+          break;
+        case 1:
+          self.chooseImage();
+          break;
+        case 2:
+          self.logoutRedirect();
+          break;
+        default:
+          return;
       }
     });
   }
 
   routeFunction(route, nav) {
-    var self = this;
-    //if (route.name != 'profile' && self.props.users.selectedUserId) self.props.actions.clearSelectedUser();
-    switch(route.name) {
+    const self = this;
+    switch (route.name) {
       case 'login':
-        return <Login { ...self.props } navigator={nav} route={route} />;
-        break
+        return <Login navigator={nav} route={route} />;
+
       case 'signup':
-        return <Signup { ...self.props } navigator={nav} route={route} />;
-        break
+        return <Signup navigator={nav} route={route} />;
+
       case 'profile':
-        return <Profile { ...self.props } navigator={nav} route={route} />;
-        break
+        return <Profile navigator={nav} route={route} />;
+
       case 'activity':
-        return <Activity { ...self.props } navigator={nav} route={route} />;
-        break
+        return <Activity navigator={nav} route={route} />;
+
       case 'createPost':
-        return <CreatePost { ...self.props } navigator={nav} route={route} />;
-        break
+        return <CreatePost navigator={nav} route={route} />;
+
       case 'categories':
-        return <Categories { ...self.props } navigator={nav} route={route} />;
-        break
+        return <Categories {...self.props} navigator={nav} route={route} />;
+
       case 'discover':
-        return <Discover { ...self.props } navigator={nav} route={route} />;
-        break
+        return <Discover navigator={nav} route={route} />;
+
       case 'read':
-        return <Read { ...self.props } navigator={nav} route={route} />;
-        break
+        return <Read {...self.props} navigator={nav} route={route} />;
+
       case 'comments':
-        return <Comments { ...self.props } navigator={nav} route={route} />;
-        break
+        return <Comments {...self.props} navigator={nav} route={route} />;
+
       case 'thirst':
-        return <Thirst { ...self.props } navigator={nav} route={route} />;
-        break
+        return <Thirst {...self.props} navigator={nav} route={route} />;
+
       case 'singlePost':
-        return <SinglePost { ...self.props } navigator={nav} route={route} />;
-        break
+        return <SinglePost {...self.props} navigator={nav} route={route} />;
+
       case 'messages':
-        return <Messages { ...self.props } navigator={nav} route={route} />;
-        break
+        return <Messages {...self.props} navigator={nav} route={route} />;
+
       default:
-        return <Auth { ...self.props } navigator={nav} route={route} />;;
-      }
+        return <Auth {...self.props} navigator={nav} route={route} />;
+    }
   }
 
-  left(route, navigator, index, navState) {
+  left(route, navigator) {
     var self = this;
-    if (route.name == 'messages' || route.name == 'singlePost' || route.name == 'comments' || route.name == 'categories' || route.name == 'login' || route.name == 'signup' || route.name == 'thirst') {
-      return (<TouchableHighlight underlayColor={'transparent'} style={{flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10}} onPress={self.back.bind(self, navigator)}><Text>Back</Text></TouchableHighlight>);
+    if (route.name === 'messages' || route.name === 'singlePost' || route.name === 'comments' || route.name === 'categories' || route.name === 'login' || route.name === 'signup' || route.name === 'thirst') {
+      return (<TouchableHighlight underlayColor={'transparent'} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10 }} onPress={self.back}><Text>Back</Text></TouchableHighlight>);
     } else {
       return null;
     }
@@ -289,9 +279,9 @@ class Application extends Component {
       statsEl = (<View><Text style={styles.statsTxt}>📈<Text style={styles.active}>{relevance}</Text>  💵<Text style={styles.active}>{balance}</Text></Text></View>
       )
     }
-    if (route.name != 'profile') {
+    if (route.name !== 'profile') {
       return (<View style={{flex: 1, justifyContent: 'center', padding: 10}}>{statsEl}</View>);
-    } else if (route.name == 'profile' && !self.props.users.selectedUserId) {
+    } else if (route.name == 'profile' && self.props.users.selectedUserId === self.props.auth.user._id) {
       return (<View style={styles.gear}><TouchableHighlight underlayColor={'transparent'}  onPress={self.showActionSheet.bind(self)} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View>);
     }
   }
@@ -302,9 +292,9 @@ class Application extends Component {
     return (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text numberOfLines={1} ellipsizeMode={'tail'} style={{width: fullWidth-225, textAlign: 'center'}}>{title}</Text></View>);
   }
 
-  back(nav) {
+  back() {
     var self = this;
-    nav.pop();
+    self.refs.navigator.pop();
   }
 
   getTitle(route) {
@@ -376,12 +366,21 @@ class Application extends Component {
     return self.refs.navigator;
   }
 
+  handleAppStateChange(currentAppState) {
+    const self = this;
+    if (currentAppState === 'active' && self.props.auth.user) {
+      self.props.actions.userToSocket(self.props.auth.user);
+      self.props.actions.getActivity(self.props.auth.user._id, 0);
+      self.props.actions.getGeneralActivity(self.props.auth.user._id, 0);
+    }
+  }
+
   render() {
-    var self = this;
+    const self = this;
 
     if (self.props.auth.user) {
       return (
-        <View style={{flex: 1}} >
+        <View style={{ flex: 1 }} >
           <Navigator
             renderScene={(route, navigator) =>
               self.routeFunction(route, navigator)
@@ -397,7 +396,7 @@ class Application extends Component {
               <Navigator.NavigationBar
                 routeMapper={{
                   LeftButton: (route, navigator, index, navState) =>
-                    {  return self.left(route, navigator, index, navState) },
+                    { return self.left(route, navigator, index, navState) },
                   RightButton: (route, navigator, index, navState) =>
                     { return self.right(route, navigator, index, navState) },
                   Title: (route, navigator, index, navState) =>
@@ -416,7 +415,7 @@ class Application extends Component {
       );
     } else {
       return (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <Navigator
             initialRoute={self.state.routes[0]}
             initialRouteStack={self.state.routes}
@@ -426,7 +425,7 @@ class Application extends Component {
             configureScene={(route, routeStack) =>
               self.configureTransition(route, routeStack)
             }
-            style={{flex: 1, paddingTop: 0}}
+            style={{ flex: 1, paddingTop: 0 }}
             ref="navigator"
           />
           <Footer {...self.props} navigator={self.getNavigator()} />
@@ -463,7 +462,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Application)
+export default connect(mapStateToProps, mapDispatchToProps)(Application);
 
 const localStyles = StyleSheet.create({
   back: {
