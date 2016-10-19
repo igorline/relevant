@@ -85,7 +85,6 @@ class Comments extends Component {
     }
   }
 
-
   scrollToBottom() {
     var self = this;
     if (self.props.posts.comments.length < 7) return;
@@ -110,7 +109,6 @@ class Comments extends Component {
         <Comment styles={styles} {...self.props} comment={rowData} />
       );
   }
-
 
   render() {
     var self = this;

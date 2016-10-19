@@ -1,55 +1,45 @@
 'use strict';
 import React, { Component } from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
   Text,
   View,
-  Image,
-  TextInput,
   TouchableHighlight,
-  LinkingIOS,
   ScrollView
 } from 'react-native';
 import { connect } from 'react-redux';
-import Button from 'react-native-button';
 import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/auth.actions';
-import * as postActions from '../actions/post.actions';
-import * as notifActions from '../actions/notif.actions';
 import * as tagActions from '../actions/tag.actions';
-import * as viewActions from '../actions/view.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class Categories extends Component {
-  constructor (props, context) {
-    super(props, context)
+  constructor(props, context) {
+    super(props, context);
     this.state = {
-    }
+    };
   }
 
   componentDidMount() {
-    var self = this;
+    const self = this;
   }
 
   componentWillUnmount() {
-    var self = this;
+    const self = this;
   }
 
   setCategory(tag) {
-    var self = this;
+    const self = this;
     self.props.actions.setPostCategory(tag);
     self.props.navigator.pop();
   }
 
   render() {
-    var self = this;
-    var parentTags = null;
-    var categoryEl = null;
-    var styles = globalStyles;
+    const self = this;
+    let parentTags = null;
+    let categoryEl = null;
+    let styles = globalStyles;
     if (self.props.posts.parentTags) {
       parentTags = self.props.posts.parentTags;
-      categoryEl = parentTags.map(function(tag, i) {
+      categoryEl = parentTags.map((tag, i) => {
         switch (tag.name) {
           case 'Anime':
             tag.emoji = '👁';
@@ -174,32 +164,39 @@ class Categories extends Component {
           case 'TV':
             tag.emoji = '📺';
             break;
+
+          default:
+            break;
         }
-        return (<TouchableHighlight key={i} onPress={self.setCategory.bind(self, tag)} underlayColor={'transparent'} style={[styles.categoryItem]} >
-            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+
+        return (<TouchableHighlight key={i} onPress={() => self.setCategory(tag)} underlayColor={'transparent'} style={[styles.categoryItem]} >
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
               <Text>{tag.emoji}</Text>
               <Text>{tag.name}</Text>
             </View>
           </TouchableHighlight>
-        )
-      })
+        );
+      });
     }
 
-return (<ScrollView>
-          {categoryEl}
-        </ScrollView>
+    return (<ScrollView>
+      {categoryEl}
+      </ScrollView>
     );
   }
 }
 
-export default Categories;
+function mapStateToProps(state) {
+  return {
+    posts: state.posts,
+    view: state.view,
+  };
+}
 
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({ ...postActions, ...tagActions }, dispatch)
+  };
+}
 
-const localStyles = StyleSheet.create({
-});
-
-
-
-
-
-
+export default connect(mapStateToProps, mapDispatchToProps)(Categories);
