@@ -79,7 +79,6 @@ class Auth extends Component {
     const { isAuthenticated, user } = this.props.auth;
     const { logout } = this.props.actions;
     const { actions } = this.props;
-    const { currentRoute } = this.props.router;
     var tagline = '';
     var links = null;
 

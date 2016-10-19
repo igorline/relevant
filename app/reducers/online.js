@@ -1,5 +1,3 @@
-import * as types from '../actions/actionTypes';
-
 export default function auth(state = null, action) {
   switch (action.type) {
 
@@ -8,6 +6,6 @@ export default function auth(state = null, action) {
     }
 
     default:
-      return state
+      return state;
   }
-};
+}

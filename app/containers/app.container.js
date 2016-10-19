@@ -71,6 +71,14 @@ class Application extends Component {
         { name: 'auth' },
       ],
     };
+
+    this.mainRoutes = [
+      { name: 'read', id: 0 },
+      { name: 'discover', id: 1 },
+      { name: 'createPost', id: 2 },
+      { name: 'activity', id: 3 },
+      { name: 'profile', id: 4 },
+    ];
   }
 
   componentDidMount() {
@@ -79,14 +87,17 @@ class Application extends Component {
   }
 
   componentWillReceiveProps(next) {
-    var self = this;
-    if (!self.props.auth.user && next.auth.user) {
-      self.props.actions.userToSocket(next.auth.user);
-      self.props.actions.getActivity(next.auth.user._id, 0);
-      self.props.actions.getGeneralActivity(next.auth.user._id, 0);
-      self.props.actions.getMessages(next.auth.user._id);
-      self.props.actions.setSelectedUser(next.auth.user._id);
-      self.props.actions.setSelectedUserData(next.auth.user);
+    if (!this.props.auth.user && next.auth.user) {
+      this.props.actions.userToSocket(next.auth.user);
+      this.props.actions.getActivity(next.auth.user._id, 0);
+      this.props.actions.getGeneralActivity(next.auth.user._id, 0);
+      this.props.actions.getMessages(next.auth.user._id);
+      this.props.actions.setSelectedUser(next.auth.user._id);
+      this.props.actions.setSelectedUserData(next.auth.user);
+
+      // this.refs.navigator.immediatelyResetRouteStack(this.mainRoutes);
+      // this.refs.navigator.jumpTo(this.mainRoutes[0]);
+
       if (self.refs.navigator) self.refs.navigator.replace({name: 'profile'});
     }
   }
@@ -136,10 +147,22 @@ class Application extends Component {
   }
 
   configureTransition(route, routeStack) {
-    if (route.name === 'categories' || route.name === 'comments' || route.name === 'login' || route.name === 'signup' || route.name === 'messages' || route.name === 'thirst' || route.name === 'user' || route.name == 'singlePost') {
-      return Navigator.SceneConfigs.PushFromRight
+    console.log(routeStack);
+    if (
+      route.name === 'categories'
+      || route.name === 'comments'
+      || route.name === 'login'
+      || route.name === 'signup'
+      || route.name === 'messages'
+      || route.name === 'thirst'
+      || route.name === 'user'
+      || route.name === 'singlePost')
+    {
+      return Navigator.SceneConfigs.PushFromRight;
     } else {
-      return Navigator.SceneConfigs.FadeAndroid
+      // return Navigator.SceneConfigs.FadeAndroid;
+      return Navigator.SceneConfigs.PushFromRight;
+
     }
   }
 
@@ -237,7 +260,7 @@ class Application extends Component {
         return <Read {...self.props} navigator={nav} route={route} />;
 
       case 'comments':
-        return <Comments {...self.props} navigator={nav} route={route} />;
+        return <Comments navigator={nav} route={route} />;
 
       case 'thirst':
         return <Thirst {...self.props} navigator={nav} route={route} />;
@@ -254,9 +277,28 @@ class Application extends Component {
   }
 
   left(route, navigator) {
-    var self = this;
-    if (route.name === 'messages' || route.name === 'singlePost' || route.name === 'comments' || route.name === 'categories' || route.name === 'login' || route.name === 'signup' || route.name === 'thirst') {
-      return (<TouchableHighlight underlayColor={'transparent'} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10 }} onPress={self.back}><Text>Back</Text></TouchableHighlight>);
+    if (
+      route.name === 'messages'
+      || route.name === 'singlePost'
+      || route.name === 'comments'
+      || route.name === 'categories'
+      || route.name === 'login'
+      || route.name === 'signup'
+      || route.name === 'thirst') {
+      return (
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 10
+          }}
+          onPress={() => this.back(route, navigator)}
+        >
+          <Text>Back</Text>
+        </TouchableHighlight>
+      );
     } else {
       return null;
     }
@@ -292,9 +334,9 @@ class Application extends Component {
     return (<View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text numberOfLines={1} ellipsizeMode={'tail'} style={{width: fullWidth-225, textAlign: 'center'}}>{title}</Text></View>);
   }
 
-  back() {
-    var self = this;
-    self.refs.navigator.pop();
+  back(route, navigator) {
+    if (route.parent) route.parent.scene = null;
+    navigator.pop();
   }
 
   getTitle(route) {

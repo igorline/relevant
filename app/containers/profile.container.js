@@ -212,7 +212,11 @@ class Profile extends Component {
     if (userId && userData) {
       header.push(<ProfileComponent key={'header0'} {...self.props} user={userData} styles={styles} />);
       header.push(<View style={[styles.row, { width: fullWidth, backgroundColor: 'white' }]} key={'header1'}>
-        <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, view === 1 ? styles.activeBorder : null]} onPress={()=> this.changeView(1)}>
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          style={[styles.typeParent, view === 1 ? styles.activeBorder : null]}
+          onPress={()=> this.changeView(1)}
+        >
           <Text style={[styles.type, styles.darkGray, styles.font15, view === 1 ? styles.active : null]}>Posts</Text>
         </TouchableHighlight>
         <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, view === 2 ? styles.activeBorder : null]} onPress={()=> this.changeView(2)}>
@@ -264,7 +268,7 @@ class Profile extends Component {
 }
 
 Profile.propTypes = {
-  actions: React.PropTypes.Object,
+  actions: React.PropTypes.object,
 };
 
 function mapStateToProps(state) {

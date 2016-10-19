@@ -9,10 +9,9 @@ import animation from './animation';
 import view from './view';
 import stats from './stats';
 import investments from './investments';
-var {Router, routerReducer, Route, Container, Animations, Schema} = require('react-native-redux-router');
+import comments from './comments';
 
 export {
-  routerReducer,
   auth,
   posts,
   user,
@@ -23,5 +22,6 @@ export {
   animation,
   view,
   investments,
-  stats
+  stats,
+  comments
 };
