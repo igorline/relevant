@@ -1,32 +1,33 @@
 'use strict';
 import React, { Component } from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
   Text,
   View,
   TextInput,
   TouchableHighlight,
-  DeviceEventEmitter,
   Dimensions,
   AlertIOS,
-  Keyboard
+  Keyboard,
 } from 'react-native';
-import Button from 'react-native-button';
 import { globalStyles } from '../styles/global';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as authActions from '../actions/auth.actions';
 
 class SignUp extends Component {
   constructor(props, context) {
     super(props, context);
+    this.back = this.back.bind(this);
+    this.validate = this.validate.bind(this);
     this.state = {
-      'message': '',
-      visibleHeight: Dimensions.get('window').height
+      message: '',
+      visibleHeight: Dimensions.get('window').height,
     };
-  };
+  }
 
   componentDidMount() {
-    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
-    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
+    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
+    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
   }
 
   componentWillUnmount() {
@@ -34,17 +35,17 @@ class SignUp extends Component {
     this.hideListener.remove();
   }
 
-  keyboardWillShow (e) {
-    let newSize = (Dimensions.get('window').height - e.endCoordinates.height)
-    this.setState({visibleHeight: newSize})
+  keyboardWillShow(e) {
+    const newSize = (Dimensions.get('window').height - e.endCoordinates.height);
+    this.setState({ visibleHeight: newSize });
   }
 
-  keyboardWillHide (e) {
-    this.setState({visibleHeight: Dimensions.get('window').height})
+  keyboardWillHide(e) {
+    this.setState({ visibleHeight: Dimensions.get('window').height });
   }
 
   back() {
-    var self = this;
+    const self = this;
     self.props.navigator.pop(0);
   }
 
@@ -117,7 +118,6 @@ class SignUp extends Component {
     }
   }
 
-
   render() {
     var self = this;
     const { createUser } = this.props.actions;
@@ -152,16 +152,33 @@ class SignUp extends Component {
         </View>
 
         <View style={styles.margin}>
-          <TouchableHighlight style={[styles.whiteButton]} onPress={self.validate.bind(self)}><Text style={styles.buttonText}>Submit</Text></TouchableHighlight>
+          <TouchableHighlight style={[styles.whiteButton]} onPress={self.validate}><Text style={styles.buttonText}>Submit</Text></TouchableHighlight>
         </View>
 
-        <TouchableHighlight style={[styles.whiteButton]} onPress={self.back.bind(self)}><Text style={styles.buttonText} >Back</Text></TouchableHighlight>
+        <TouchableHighlight style={[styles.whiteButton]} onPress={self.back}><Text style={styles.buttonText}>Back</Text></TouchableHighlight>
 
       </View>
     );
   }
 }
 
+SignUp.propTypes = {
+  actions: React.PropTypes.object,
+};
 
-export default SignUp
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({
+      ...authActions,
+    }, dispatch),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
 

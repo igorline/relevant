@@ -1,8 +1,5 @@
-'use strict';
-
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
@@ -10,31 +7,18 @@ import {
   TextInput,
   TouchableHighlight,
   Linking,
-  Picker,
   PickerIOS,
   Animated,
-  Easing,
-  LayoutAnimation,
-  ScrollView,
-  DatePickerIOS,
   AlertIOS,
   ActionSheetIOS,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from 'react-native';
-import { connect } from 'react-redux';
-import Button from 'react-native-button';
-import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/auth.actions';
-import * as postActions from '../actions/post.actions';
-import * as animationActions from '../actions/animation.actions';
-import * as userActions from '../actions/user.actions';
-import * as investActions from '../actions/invest.actions';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-var postStyles = null;
-var moment = require('moment');
-var PickerItemIOS = PickerIOS.Item;
 import * as Progress from 'react-native-progress';
 import Share from 'react-native-share';
+import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+
+var moment = require('moment');
+var PickerItemIOS = PickerIOS.Item;
 
 class Post extends Component {
   constructor (props) {
@@ -63,9 +47,43 @@ class Post extends Component {
       buttons: [
         'Share',
         'Irrelevant',
-        'Cancel'
+        'Cancel',
       ],
       cancelIndex: 2,
+    };
+  }
+
+  componentDidMount() {
+    var self = this;
+    if (self.props.post) {
+      this.checkTime(this);
+      this.checkInvestments(this.props.post.investments);
+      self.setState({
+        editedBody: self.props.post.body,
+        editedTitle: self.props.post.title
+      });
+      if (self.props.post.user._id === self.props.auth.user._id) {
+        self.setState({
+          myPost: true,
+          buttons: [
+            'Share',
+            'Edit',
+            'Delete',
+            'Cancel',
+          ],
+          destructiveIndex: 2,
+          cancelIndex: 3,
+        });
+      }
+    }
+  }
+
+  componentWillUpdate(nextProps) {
+    const self = this;
+    if (this.props.post) {
+      if (this.props.post.investments !== nextProps.post.investments) {
+        this.checkInvestments(nextProps.post.investments);
+      }
     }
   }
 
@@ -80,58 +98,7 @@ class Post extends Component {
       console.log(e);
     });
   }
-
-  componentDidMount() {
-    var self = this;
-    if (self.props.post) {
-      this.checkTime(this);
-      this.checkInvestments(this.props.post.investments);
-      self.setState({
-        editedBody: self.props.post.body,
-        editedTitle: self.props.post.title
-      })
-      if (self.props.post.user._id == self.props.auth.user._id) {
-        self.setState({
-          myPost: true,
-          buttons: [
-            'Share',
-            'Edit',
-            'Delete',
-            'Cancel'
-          ],
-          destructiveIndex: 2,
-          cancelIndex: 3,
-        });
-      }
-    }
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    var self = this;
-    if (this.props.post) {
-      if (this.props.post.investments != nextProps.post.investments) {
-        this.checkInvestments(nextProps.post.investments);
-      }
-    }
-  }
-
-  checkInvestments(investments) {
-    var self = this;
-    var invested = false;
-    if (investments) {
-      if (investments.length > 0) {
-        investments.forEach(function(investment, i) {
-          if (investment.investor == self.props.auth.user._id) invested = true;
-          if (i == investments.length - 1) {
-            self.setState({invested: invested});
-          }
-        })
-      } else {
-        self.setState({invested: false});
-      }
-    }
-  }
-
+  
   checkTime() {
     var self = this;
     if (self.props.post) {
@@ -353,15 +320,25 @@ class Post extends Component {
     } else {
       var set = id;
     }
+    self.props.actions.setSelectedUser(set);
+    self.props.navigator.push({name: 'profile'});
+  }
 
-    // if (set == self.props.auth.user._id) {
-    //   //self.props.actions.clearSelectedUser();
-    //   self.props.navigator.push({name: 'profile'});
-    // } else {
-      //self.props.actions.clearSelectedUser();
-      self.props.actions.setSelectedUser(set);
-      self.props.navigator.push({name: 'profile'});
-    // }
+  checkInvestments(investments) {
+    var self = this;
+    var invested = false;
+    if (investments) {
+      if (investments.length > 0) {
+        investments.forEach(function(investment, i) {
+          if (investment.investor == self.props.auth.user._id) invested = true;
+          if (i == investments.length - 1) {
+            self.setState({invested: invested});
+          }
+        })
+      } else {
+        self.setState({invested: false});
+      }
+    }
   }
 
   handlePressIn() {
@@ -671,22 +648,22 @@ const localStyles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 5,
     paddingRight: 0,
-    paddingLeft: 0
+    paddingLeft: 0,
   },
   opacZero: {
-    opacity: 0
+    opacity: 0,
   },
   expandedInvest: {
     height: 200,
   },
   hiddenInvest: {
     height: 0,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   postContainer: {
     paddingBottom: 25,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#F0F0F0'
+    borderBottomColor: '#F0F0F0',
   },
   tagsRow: {
     flexDirection: 'row',
@@ -694,17 +671,17 @@ const localStyles = StyleSheet.create({
     paddingBottom: 10,
     alignItems: 'center',
     flexWrap: 'wrap',
-    flex: 1
+    flex: 1,
   },
   postSection: {
     paddingTop: 10,
-    paddingLeft: 15
+    paddingLeft: 15,
   },
   postBody: {
     paddingTop: 10,
     paddingBottom: 10,
     paddingLeft: 15,
-    paddingRight: 15
+    paddingRight: 15,
   },
   postImage: {
     height: 200,
@@ -714,22 +691,22 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     justifyContent: 'flex-start',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   buttonContainerExpanded: {
     flexDirection: 'row',
     flex: 1,
     justifyContent: 'space-around',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   innerInfo: {
     flex: 1,
   },
   infoLeft: {
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   infoRight: {
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   investButton: {
     padding: 10,
@@ -742,7 +719,7 @@ const localStyles = StyleSheet.create({
   userImage: {
     height: 25,
     width: 25,
-    borderRadius: 12.5
+    borderRadius: 12.5,
   },
   postHeader: {
     flexDirection: 'row',
@@ -750,7 +727,7 @@ const localStyles = StyleSheet.create({
     paddingTop: 10,
     paddingLeft: 15,
     paddingRight: 15,
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   link: {
     flex: 1,
@@ -758,24 +735,23 @@ const localStyles = StyleSheet.create({
   countdown: {
     justifyContent: 'flex-end',
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   postInfo: {
     flex: 1,
     paddingLeft: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: "center"
+    justifyContent: 'center',
   },
   loading: {
     fontSize: 40,
-    fontWeight: '100'
+    fontWeight: '100',
   },
   progressCirc: {
-    marginRight: 5
+    marginRight: 5,
   },
 });
-
 
 
 

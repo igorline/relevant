@@ -31,7 +31,6 @@ class SinglePost extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      investAni: [],
     }
   }
 
@@ -74,12 +73,11 @@ class SinglePost extends Component {
 
 export default SinglePost
 
-
 const localStyles = StyleSheet.create({
-singlePostContainer: {
-  width: fullWidth,
-  flex: 1
-}
+  singlePostContainer: {
+    width: fullWidth,
+    flex: 1,
+  },
 });
 
 var styles = {...localStyles, ...globalStyles}

@@ -24,35 +24,28 @@ class SingleActivity extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-    }
+    };
   }
 
   goToPost(activity) {
-    var self = this;
-    self.props.actions.getActivePost(activity.post._id).then(function() {
-      self.props.navigator.push({name: 'singlePost'});
-    })
-  }
-
-  setTagAndRoute(tag) {
-    var self = this;
-    self.props.actions.setTag(tag);
-    self.props.navigator.resetTo({name: 'discover'});
+    const self = this;
+    self.props.actions.getActivePost(activity.post._id).then(() => {
+      self.props.navigator.push({ name: 'singlePost' });
+    });
   }
 
   setSelected(id) {
-    var self = this;
-    if (typeof id == 'object') {
-      var set = id._id;
+    const self = this;
+    let set = null;
+    if (typeof id === 'object') {
+      set = id._id;
     } else {
-      var set = id;
+      set = id;
     }
 
-    if (set == self.props.auth.user._id) {
-      //self.props.actions.clearSelectedUser();
+    if (set === self.props.auth.user._id) {
       self.props.navigator.push({name: 'profile'});
     } else {
-      //self.props.actions.clearSelectedUser();
       self.props.actions.setSelectedUser(set);
       self.props.navigator.push({name: 'profile'});
     }
@@ -68,17 +61,16 @@ class SingleActivity extends Component {
       var activityTime = moment(singleActivity.createdAt);
       var fromNow = activityTime.fromNow();
       var postTitle = singleActivity.post ? singleActivity.post.title : 'missing title';
-      if (!singleActivity.post) console.log("WEIRD ", singleActivity);
       if (singleActivity.type == 'investment') {
          activityEl = (
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
               <Text style={styles.darkGray}>
-                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
+                <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser._id)}>
                   {singleActivity.byUser.name}
                 </Text>
                 &nbsp;invested {'$'+singleActivity.amount} in your post
-                <Text numberOfLines={1} onPress={self.goToPost.bind(self, singleActivity)} style={styles.active}>
+                <Text numberOfLines={1} onPress={() => self.goToPost(singleActivity)} style={styles.active}>
                 {' ' + postTitle}
                 </Text>
               </Text>
@@ -92,7 +84,7 @@ class SingleActivity extends Component {
         activityEl = (
           <View style={styles.singleActivity}>
             <Text style={styles.darkGray}>
-              <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
+              <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser._id)}>
                 {singleActivity.byUser.name}
               </Text>
               &nbsp;visited your profile
@@ -105,12 +97,12 @@ class SingleActivity extends Component {
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
               <Text style={styles.darkGray}>
-                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
+                <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser._id)}>
                   {singleActivity.byUser.name}
                 </Text>
                 &nbsp;commented on your post
               </Text>
-              <Text onPress={self.goToPost.bind(self, singleActivity)} numberOfLines={1} style={[styles.active]}>{singleActivity.post.title}</Text>
+              <Text onPress={() => self.goToPost(singleActivity)} numberOfLines={1} style={[styles.active]}>{singleActivity.post.title}</Text>
             </View>
             <View style={styles.activityRight}>
               <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
@@ -122,7 +114,7 @@ class SingleActivity extends Component {
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
               <Text style={styles.darkGray}>
-                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>
+                <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>
               &nbsp;is thirsty 4 u 👅💦</Text>
             </View>
             <View style={styles.activityRight}>
@@ -135,10 +127,10 @@ class SingleActivity extends Component {
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
               <Text style={styles.darkGray}>
-                <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>
+                <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>
                 &nbsp;mentioned you in a post
               </Text>
-              <Text onPress={self.goToPost.bind(self, singleActivity)} numberOfLines={1} style={[styles.active]}>{singleActivity.post.title}</Text>
+              <Text onPress={() => self.goToPost(singleActivity)} numberOfLines={1} style={[styles.active]}>{singleActivity.post.title}</Text>
             </View>
             <View style={styles.activityRight}>
             <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
@@ -155,7 +147,7 @@ class SingleActivity extends Component {
                 <Text style={styles.darkGray}>
                   Earned ${singleActivity.amount.toFixed(0)} from post
                 </Text>
-                <Text onPress={self.goToPost.bind(self, singleActivity)} style={[styles.active]}>{postTitle}
+                <Text onPress={() => self.goToPost(singleActivity)} style={[styles.active]}>{postTitle}
                 </Text>
               </View>
               <View style={styles.activityRight}>
@@ -185,7 +177,7 @@ class SingleActivity extends Component {
             <View style={styles.singleActivity}>
               <View style={styles.activityLeft}>
                 <Text style={styles.darkGray}>
-                  <Text style={styles.active} onPress={self.setSelected.bind(self, singleActivity.byUser._id)}>
+                  <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser._id)}>
                     {singleActivity.byUser.name}
                   </Text>
                   &nbsp;went online

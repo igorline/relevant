@@ -11,13 +11,10 @@ import {
   LinkingIOS,
   Animated
 } from 'react-native';
-import { connect } from 'react-redux';
-import Button from 'react-native-button';
-import { bindActionCreators } from 'redux';
 import * as subscriptionActions from '../actions/subscription.actions';
-import * as notifActions from '../actions/notif.actions';
-require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 class ProfileComponent extends Component {
   constructor (props, context) {
@@ -27,10 +24,6 @@ class ProfileComponent extends Component {
       following: null,
       online: false
     }
-  }
-
-  componentDidUpdate() {
-    var self = this;
   }
 
   componentDidMount() {
@@ -47,13 +40,16 @@ class ProfileComponent extends Component {
         });
       }
     }
-
     self.checkOnline(self.props.online);
   }
 
   componentWillReceiveProps(next) {
     var self = this;
     self.checkOnline(next.online);
+  }
+
+  componentDidUpdate() {
+    var self = this;
   }
 
 
