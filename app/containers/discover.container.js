@@ -41,7 +41,6 @@ class Discover extends Component {
       headerHeight: 138,
       layout: false,
       showHeader: true,
-      reload: false,
     };
     this.onScroll = this.onScroll.bind(this);
     this.renderRow = this.renderRow.bind(this);
@@ -83,17 +82,21 @@ class Discover extends Component {
   componentWillReceiveProps(next) {
     let ds;
 
+
+    // update listview if needed
     if (next.posts[this.type] !== this.props.posts[this.type]) {
       ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.dataSource = ds.cloneWithRows(next.posts[this.type]);
-      this.setState({ reload: false });
     }
 
+    // update tag selection
     if (this.tag !== next.posts.tag) {
+      this.dataSource = null;
       this.reload(next.posts.tag);
       this.tag = next.posts.tag;
     }
 
+    // update view
     if (this.props.view.discover !== next.view.discover) {
       this.view = next.view.discover;
       this.type = TYPE_LOOKUP[this.view];
@@ -101,10 +104,11 @@ class Discover extends Component {
       ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.dataSource = ds.cloneWithRows(next.posts[this.type]);
       if (this.view < 3) {
+
         // option 1 - reload and scroll to top
-        console.log('getting props!')
-        setTimeout(() => this.reload(), 0);
+        setTimeout(() => this.reload(), 30);
         this.listview.scrollTo({ y: -this.state.headerHeight, animated: false });
+
 
         // option 2 - scrolls to last place but and doesn't reload if there is data
         // if (!next.posts[this.type].length) this.reload();
@@ -143,7 +147,6 @@ class Discover extends Component {
   }
 
   reload(tag) {
-    this.setState({ reload: true });
     console.log('REALOAD');
     this.loadPosts(0, tag);
   }
@@ -211,8 +214,6 @@ class Discover extends Component {
               refreshing={this.props.posts.loading}
               onRefresh={this.reload}
               tintColor="#000000"
-              title="Loading..."
-              titleColor="#000000"
               colors={['#000000', '#000000', '#000000']}
               progressBackgroundColor="#ffffff"
             />

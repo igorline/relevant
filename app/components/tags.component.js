@@ -60,8 +60,8 @@ export default class Tags extends Component {
 }
 
 Tags.propTypes = {
-  posts: React.PropTypes.Object,
-  actions: React.PropTypes.Object,
+  posts: React.PropTypes.object,
+  actions: React.PropTypes.object,
 };
 
 styles = { ...globalStyles };
