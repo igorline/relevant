@@ -241,7 +241,11 @@ class Profile extends Component {
         return (<View key={rowID}><Text>No posts babe</Text></View>);
       }
     } else {
-      return (<Investment key={rowID} investment={rowData} {...self.props} styles={styles} />);
+      if (!rowData.fakeInvestment) {
+        return (<Investment key={rowID} investment={rowData} {...self.props} styles={styles} />);
+      } else {
+        return (<View><Text>No investments bruh</Text></View>);
+      }
     }
   }
 
