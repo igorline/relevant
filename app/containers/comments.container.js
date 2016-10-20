@@ -54,7 +54,8 @@ class Comments extends Component {
 
   componentDidMount() {
     const self = this;
-    if (self.props.posts.activePost) self.props.actions.getComments(self.props.posts.activePost);
+    console.log(self)
+    if (self.props.posts.selectedPostId) self.props.actions.getComments(self.props.posts.selectedPostId);
     this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
     this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
   }
@@ -101,7 +102,7 @@ class Comments extends Component {
   createComment() {
     const self = this;
     let commentObj = {
-      post: self.props.posts.activePost,
+      post: self.props.posts.selectedPostId,
       text: self.state.comment,
       user: self.props.auth.user._id
     };

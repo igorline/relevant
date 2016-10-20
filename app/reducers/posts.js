@@ -6,7 +6,9 @@ const initialState = {
   page: null,
   comments: null,
   postError: null,
-  activePost: null,
+  currentPostId: null,
+  selectedPostData: null,
+  selectedPostId: null,
   index: [],
   feed: [],
   top: [],
@@ -199,9 +201,23 @@ export default function post(state = initialState, action) {
       });
     }
 
-    case types.SET_ACTIVE_POST: {
+    case 'SET_SELECTED_POST': {
       return Object.assign({}, state, {
-        activePost: action.payload,
+        selectedPostId: action.payload,
+      });
+    }
+
+    case 'SET_SELECTED_POST_DATA': {
+      return Object.assign({}, state, {
+        selectedPostData: action.payload,
+        currentPostId: action.payload._id
+      });
+    }
+
+    case 'CLEAR_SELECTED_POST': {
+      return Object.assign({}, state, {
+        selectedPostData: null,
+        selectedPostId: null
       });
     }
 

@@ -50,7 +50,7 @@ const localStyles = StyleSheet.create({
   },
 });
 
-var styles = {...localStyles, ...globalStyles};
+let styles = {...localStyles, ...globalStyles};
 
 class Read extends Component {
   constructor(props, context) {
@@ -151,7 +151,9 @@ class Read extends Component {
     if (self.props.messages.index.length > 0) {
       messages = self.props.messages.index;
       for (let x = 0; x < 4; x++) {
-        recentMessages.push(<Text key={x} style={styles.recentName}>{x < 3 ? self.props.messages.index[x].from.name+', ' : self.props.messages.index[x].from.name}</Text>);
+        recentMessages.push(<Text key={x} style={styles.recentName}>
+          {x < 3 ? self.props.messages.index[x].from.name + ', ' : self.props.messages.index[x].from.name}
+        </Text>);
       }
     }
 
