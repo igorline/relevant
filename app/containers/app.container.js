@@ -2,12 +2,9 @@
 
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
-  TextInput,
-  StatusBarIOS,
   AppState,
   Navigator,
   TouchableHighlight,
@@ -17,7 +14,6 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-var {Router, routerReducer, Route, Container, Animations, Schema} = require('react-native-redux-router');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Button from 'react-native-button';
 import Auth from './auth.container';
@@ -298,10 +294,10 @@ class Application extends Component {
         return <Read navigator={nav} route={route} />;
 
       case 'comments':
-        return <Comments {...self.props} navigator={nav} route={route} />;
+        return <Comments navigator={nav} route={route} />;
 
       case 'thirst':
-        return <Thirst {...self.props} navigator={nav} route={route} />;
+        return <Thirst navigator={nav} route={route} />;
 
       case 'singlePost':
         return <SinglePost {...self.props} navigator={nav} route={route} />;

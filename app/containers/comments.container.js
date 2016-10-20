@@ -2,143 +2,21 @@
 
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
-  Image,
   TextInput,
   ScrollView,
-  Linking,
   TouchableHighlight,
-  LayoutAnimation,
-  DeviceEventEmitter,
   Dimensions,
   Keyboard,
   ListView
 } from 'react-native';
 import { connect } from 'react-redux';
-import Button from 'react-native-button';
 import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/auth.actions';
-import * as postActions from '../actions/post.actions';
-import * as userActions from '../actions/user.actions';
-require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-import Post from '../components/post.component';
-import * as investActions from '../actions/invest.actions';
-import * as notifActions from '../actions/notif.actions';
-import Notification from '../components/notification.component';
 import Comment from '../components/comment.component';
-import DiscoverUser from '../components/discoverUser.component';
-
-class Comments extends Component {
-  constructor (props, context) {
-    super(props, context)
-    var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = {
-      comment: null,
-      visibleHeight: Dimensions.get('window').height - 120,
-      elHeight: null,
-      scrollView: ScrollView,
-      scrollToBottomY: null,
-      dataSource: ds.cloneWithRows([]),
-    }
-  }
-
-  componentWillUnmount() {
-    this.showListener.remove();
-    this.hideListener.remove();
-  }
-
-  componentDidMount() {
-    var self = this;
-    if (self.props.posts.activePost) self.props.actions.getComments(self.props.posts.activePost);
-    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
-    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
-  }
-
-  keyboardWillShow (e) {
-    let newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 60
-    this.setState({visibleHeight: newSize})
-  }
-
-  keyboardWillHide (e) {
-    this.setState({visibleHeight: Dimensions.get('window').height - 120})
-  }
-
-  componentWillUpdate(next) {
-    var self = this;
-    if (next.posts.comments != self.props.posts.comments) {
-      var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-      self.setState({dataSource: ds.cloneWithRows(next.posts.comments)});
-    }
-  }
-
-  componentDidUpdate(prev) {
-    var self = this;
-    if (!prev) return;
-    if (prev.posts.comments && prev.posts.comments != self.props.posts.comments) {
-      setTimeout(function() {
-        self.scrollToBottom();
-      }, 500);
-    }
-  }
-
-  scrollToBottom() {
-    var self = this;
-    if (self.props.posts.comments.length < 7) return;
-    var scrollDistance = self.state.scrollToBottomY - self.state.elHeight;
-    self.state.scrollView.scrollTo({x: 0, y: scrollDistance, animated: true});
-  }
-
-  createComment() {
-    var self = this;
-    var commentObj = {
-      post: self.props.posts.activePost,
-      text: self.state.comment,
-      user: self.props.auth.user._id
-    }
-    self.props.actions.createComment(self.props.auth.token, commentObj);
-    self.setState({comment: null})
-  }
-
-  renderRow(rowData) {
-    var self = this;
-      return (
-        <Comment styles={styles} {...self.props} comment={rowData} />
-      );
-  }
-
-  render() {
-    var self = this;
-    var comments = [];
-    var commentsEl = null;
-
-    if (self.props.posts.comments) {
-      comments = self.props.posts.comments;
-      commentsEl = comments.map(function(comment, i) {
-        return( <Comment key={i} styles={styles} {...self.props} comment={comment} />);
-      })
-    }
-
-    return (
-      <View style={[{height: self.state.visibleHeight, backgroundColor: 'white'}]}>
-       <ScrollView ref={(scrollView) => { self.state.scrollView = scrollView; }} onContentSizeChange={(height, width)=>{self.state.scrollToBottomY = width;}} onLayout={(e)=>{self.state.elHeight = e.nativeEvent.layout.height}}>
-          {commentsEl}
-        </ScrollView>
-        <View style={[styles.commentInputParent]}>
-          <TextInput style={[styles.commentInput, styles.font15]} placeholder='Enter comment...' multiline={false} onChangeText={(comment) => this.setState({"comment": comment})} value={self.state.comment} returnKeyType='done' />
-          <TouchableHighlight underlayColor={'transparent'} style={[styles.commentSubmit]} onPress={self.createComment.bind(self)}>
-            <Text style={[styles.font15, styles.active]}>Submit</Text>
-          </TouchableHighlight>
-        </View>
-      </View>
-    );
-  }
-}
-
-export default Comments
+import * as postActions from '../actions/post.actions';
 
 const localStyles = StyleSheet.create({
   commentInputParent: {
@@ -158,22 +36,140 @@ const localStyles = StyleSheet.create({
   }
 });
 
-var styles = {...localStyles, ...globalStyles};
+const styles = { ...localStyles, ...globalStyles };
 
+class Comments extends Component {
+  constructor(props, context) {
+    super(props, context);
+    let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    this.state = {
+      comment: null,
+      visibleHeight: Dimensions.get('window').height - 120,
+      elHeight: null,
+      scrollView: ScrollView,
+      scrollToBottomY: null,
+      dataSource: ds.cloneWithRows([]),
+    };
+  }
 
+  componentDidMount() {
+    const self = this;
+    if (self.props.posts.activePost) self.props.actions.getComments(self.props.posts.activePost);
+    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
+    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
+  }
 
+  componentWillUpdate(next) {
+    const self = this;
+    if (next.posts.comments !== self.props.posts.comments) {
+      let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      self.setState({ dataSource: ds.cloneWithRows(next.posts.comments) });
+    }
+  }
 
+  componentDidUpdate(prev) {
+    const self = this;
+    if (!prev) return;
+    if (prev.posts.comments && prev.posts.comments !== self.props.posts.comments) {
+      setTimeout(() => {
+        self.scrollToBottom();
+      }, 500);
+    }
+  }
 
+  componentWillUnmount() {
+    this.showListener.remove();
+    this.hideListener.remove();
+  }
 
+  keyboardWillHide(e) {
+    this.setState({ visibleHeight: Dimensions.get('window').height - 120 });
+  }
 
+  keyboardWillShow(e) {
+    let newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 60;
+    this.setState({ visibleHeight: newSize });
+  }
 
+  scrollToBottom() {
+    const self = this;
+    if (self.props.posts.comments.length < 7) return;
+    let scrollDistance = self.state.scrollToBottomY - self.state.elHeight;
+    self.state.scrollView.scrollTo({ x: 0, y: scrollDistance, animated: true });
+  }
 
+  createComment() {
+    const self = this;
+    let commentObj = {
+      post: self.props.posts.activePost,
+      text: self.state.comment,
+      user: self.props.auth.user._id
+    };
+    self.props.actions.createComment(self.props.auth.token, commentObj);
+    self.setState({ comment: null });
+  }
 
+  renderRow(rowData) {
+    const self = this;
+    return (
+      <Comment styles={styles} {...self.props} comment={rowData} />
+    );
+  }
 
+  render() {
+    const self = this;
+    let comments = [];
+    let commentsEl = null;
 
+    if (self.props.posts.comments) {
+      comments = self.props.posts.comments;
+      commentsEl = comments.map((comment, i) => {
+        return (<Comment key={i} styles={styles} {...self.props} comment={comment} />);
+      });
+    }
 
+    return (
+      <View style={[{ height: self.state.visibleHeight, backgroundColor: 'white' }]}>
+        <ScrollView
+          ref={(scrollView) => { self.state.scrollView = scrollView; }}
+          onContentSizeChange={(height, width) => { self.state.scrollToBottomY = width; }}
+          onLayout={(e) => { self.state.elHeight = e.nativeEvent.layout.height }}
+        >
+          {commentsEl}
+        </ScrollView>
+        <View style={[styles.commentInputParent]}>
+          <TextInput
+            style={[styles.commentInput, styles.font15]}
+            placeholder={'Enter comment...'}
+            multiline={false}
+            onChangeText={(comment) => this.setState({ comment })}
+            value={self.state.comment}
+            returnKeyType={'done'}
+          />
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            style={[styles.commentSubmit]}
+            onPress={() => self.createComment()}
+          >
+            <Text style={[styles.font15, styles.active]}>Submit</Text>
+          </TouchableHighlight>
+        </View>
+      </View>
+    );
+  }
+}
 
+function mapStateToProps(state) {
+  return {
+    posts: state.posts,
+    auth: state.auth,
+  };
+}
 
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({ ...postActions }, dispatch)
+  };
+}
 
-
-
+export default connect(mapStateToProps, mapDispatchToProps)(Comments);

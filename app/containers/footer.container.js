@@ -25,9 +25,6 @@ class Footer extends Component {
     };
   }
 
-  componentDidMount() {
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.notif.count && this.props.notif.count < nextProps.notif.count) {
       let newNotifications = nextProps.notif.count - this.props.notif.count;
@@ -40,7 +37,7 @@ class Footer extends Component {
   goTo(view) {
     if (view === 'profile') {
       this.props.actions.setSelectedUser(this.props.auth.user._id);
-      this.props.actions.setSelectedUserData(this.props.auth.user);
+      //this.props.actions.setSelectedUserData(this.props.auth.user);
     }
 
     const currentRoutes = this.props.navigator.getCurrentRoutes();
