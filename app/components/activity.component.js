@@ -44,6 +44,7 @@ class SingleActivity extends Component {
     }
 
     if (set === self.props.auth.user._id) {
+      self.props.actions.setSelectedUser(set);
       self.props.navigator.push({name: 'profile'});
     } else {
       self.props.actions.setSelectedUser(set);

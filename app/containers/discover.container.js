@@ -66,9 +66,11 @@ class Discover extends Component {
       this.props.actions.clearPosts(this.type);
     }
 
-    if (this.props.posts[this.type].length > 0) {
-      ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      this.dataSource = ds.cloneWithRows(this.props.posts[this.type]);
+    if (this.props.posts[this.type]) {
+      if (this.props.posts[this.type].length > 0) {
+        ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+        this.dataSource = ds.cloneWithRows(this.props.posts[this.type]);
+      }
     }
 
     if (this.props.posts[this.type].length === 0) this.reload();
@@ -79,7 +81,6 @@ class Discover extends Component {
 
   componentWillReceiveProps(next) {
     let ds;
-
 
     // update listview if needed
     if (next.posts[this.type] !== this.props.posts[this.type]) {
@@ -99,13 +100,14 @@ class Discover extends Component {
       this.view = next.view.discover;
       this.type = TYPE_LOOKUP[this.view];
       this.dataSource = null;
-      ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      this.dataSource = ds.cloneWithRows(next.posts[this.type]);
-      if (this.view < 3) {
 
+
+      if (this.view < 3) {
         // option 1 - reload and scroll to top
+        ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+        this.dataSource = ds.cloneWithRows(next.posts[this.type]);
         setTimeout(() => this.reload(), 30);
-        this.listview.scrollTo({ y: -this.state.headerHeight, animated: false });
+        if (this.listview) this.listview.scrollTo({ y: -this.state.headerHeight, animated: false });
 
 
         // option 2 - scrolls to last place but and doesn't reload if there is data
@@ -114,8 +116,9 @@ class Discover extends Component {
         //   this.offset = this.currentScroll[this.type];
         //   this.listview.scrollTo({ y: this.currentScroll[this.type], animated: false });
         // }
+      } else if (!this.props.auth.userIndex) {
+        this.props.actions.userIndex();
       }
-      else if (!this.props.auth.userIndex) this.props.actions.userIndex();
     }
 
     // if (self.props.posts.newPostsAvailable != next.posts.newPostsAvailable) {
@@ -247,7 +250,7 @@ class Discover extends Component {
         <Spinner
           color="rgba(0,0,0,1)"
           overlayColor="rgba(0,0,0,0)"
-          visible={!this.dataSource}
+          visible={!this.dataSource && this.props.view.discover !== 3}
         />
         {view !== 3 ? postsEl : null}
         {view === 3 ? usersParent : null}

@@ -72,12 +72,14 @@ class Profile extends Component {
       postsData: null,
       investmentsData: null,
       enabled: true,
-      received: false,
+      userId: null,
+      userData: null
     };
   }
 
   componentWillMount() {
     const self = this;
+    console.log('profile did mount');
     let posts = null;
     let userId = null;
     let investments = null;
@@ -101,13 +103,15 @@ class Profile extends Component {
     if (userId) {
       if (userId !== currentUser) {
         self.props.actions.getSelectedUser(userId);
+      } else if (self.state.users.selectedUserData) {
+        self.setState({ userId: userId, userData: self.state.users.selectedUserData });
       }
     }
 
     if (postsUser && userId) {
       if (postsUser === userId && posts) {
         const pd = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-        self.setState({ postsData: pd.cloneWithRows(posts), received: true });
+        self.setState({ postsData: pd.cloneWithRows(posts)});
       } else {
         self.props.actions.clearPosts('user');
         self.props.actions.getUserPosts(0, 5, userId);
@@ -120,7 +124,7 @@ class Profile extends Component {
     if (investmentsUser && userId) {
       if (investmentsUser === userId && investments) {
         const ld = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-        self.setState({ investmentsData: ld.cloneWithRows(investments), received: true });
+        self.setState({ investmentsData: ld.cloneWithRows(investments)});
       } else {
         self.props.actions.getInvestments(self.props.auth.token, userId, 0, 10);
       }
@@ -129,29 +133,68 @@ class Profile extends Component {
     }
   }
 
-  componentWillUpdate(next) {
+  componentWillReceiveProps(next) {
     const self = this;
     let userId = null;
     if (next.users.selectedUserId) userId = next.users.selectedUserId;
-    if (!userId) return;
-    if (self.props.users.selectedUserId !== userId) self.props.actions.getUserPosts(0, 5, userId);
-    if (!next.investments.index) self.props.actions.getInvestments(self.props.auth.token, userId, 0, 10);
-    const newPosts = next.posts.user;
-    const oldPosts = self.props.posts.user;
-    const newInvestments = next.investments.index;
-    const oldInvestments = self.props.investments.index;
 
-    if (newPosts !== oldPosts) {
-      const pd = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      self.setState({ postsData: pd.cloneWithRows(newPosts), received: true });
+    if (userId !== self.props.users.selectedUserId) {
+      self.setState({userData: null, userId: null});
+      if (self.state.postsData) {
+        self.setState({ postsData: null});
+      }
+      if (self.state.investmentsData) {
+        self.setState({ investmentsData: null });
+      }
+      if (userId !== next.users.currentUserId) {
+        self.props.actions.getSelectedUser(userId);
+      }
+      if (next.investments.user !== userId) {
+        self.props.actions.clearInvestments();
+        self.props.actions.getInvestments(self.props.auth.token, userId, 0, 10);
+      }
+      if (userId !== next.posts.currentUser) {
+        self.props.actions.clearPosts('user');
+        self.props.actions.getUserPosts(0, 5, userId);
+      }
     }
 
-    if (newInvestments !== oldInvestments) {
-      const id = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      self.setState({ investmentsData: id.cloneWithRows(newInvestments) });
+    if (userId === next.users.currentUserId) {
+      if (next.users.selectedUserData) {
+        if (!self.state.userData) {
+          self.setState({userId: userId, userData: next.users.selectedUserData});
+        }
+      }
+    }
+
+    let newPosts = next.posts.user;
+    let oldPosts = self.props.posts.user;
+
+    let newInvestments = next.investments.index;
+    let oldInvestments = self.props.investments.index;
+
+    if (newPosts !== oldPosts && newPosts) {
+      let altered = null;
+      if (!newPosts.length) {
+        altered = [{ fakePost: true }];
+      } else {
+        altered = newPosts;
+      }
+      let pd = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      self.setState({ postsData: pd.cloneWithRows(altered)});
+    }
+
+    if (newInvestments !== oldInvestments && newInvestments) {
+      let altered = null;
+      if (!newInvestments.length) {
+        altered = [{ fakeInvestment: true }];
+      } else {
+        altered = newInvestments;
+      }
+      let id = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      self.setState({ investmentsData: id.cloneWithRows(altered) });
     }
   }
-
 
   onScroll() {
     const self = this;
@@ -192,7 +235,11 @@ class Profile extends Component {
   renderFeedRow(rowData, sectionID, rowID) {
     const self = this;
     if (self.props.view.profile === 1) {
-      return (<Post key={rowID} post={rowData} {...self.props} styles={styles} />);
+      if (!rowData.fakePost) {
+        return (<Post key={rowID} post={rowData} {...self.props} styles={styles} />);
+      } else {
+        return (<View key={rowID}><Text>No posts babe</Text></View>);
+      }
     } else {
       return (<Investment key={rowID} investment={rowData} {...self.props} styles={styles} />);
     }
@@ -202,8 +249,8 @@ class Profile extends Component {
     const self = this;
     const view = self.props.view.profile;
     const header = [];
-    let userId = null;
-    let userData = null;
+    let userId = self.state.userId;
+    let userData = self.state.userData;
 
     if (self.props.users.selectedUserId) {
       userId = self.props.users.selectedUserId;
@@ -231,32 +278,27 @@ class Profile extends Component {
     var profileEl = null;
     var postsEl = null;
 
-    if (self.props.users.selectedUserId) {
-      userId = self.props.users.selectedUserId;
-      if (self.props.users.selectedUserData) userData = self.props.users.selectedUserData;
-    }
-
-    if (userId && userData) {
+    if (self.state.userId && self.state.userData) {
       profileEl = (<ProfileComponent {...self.props} user={userData} styles={styles} />);
 
-      if (self.state.postsData && self.state.received) {
+      if (self.state.postsData && self.state.investmentsData) {
         postsEl = (
           <ListView
             ref={(c) => { this.listview = c; }}
-            enableEmptySections={true}
+            enableEmptySections
             stickyHeaderIndices={[1]}
             renderScrollComponent={props => <ScrollView {...props} />}
             onScroll={self.onScroll}
             dataSource={view === 1 ? self.state.postsData : self.state.investmentsData}
             renderHeader={self.renderHeader}
             renderRow={self.renderFeedRow}
-          />);
+        />);
       }
     }
 
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
-        <Spinner color={'rgba(0,0,0,1)'} overlayColor={'rgba(0,0,0,0)'} visible={!self.state.received} />
+        <Spinner color={'rgba(0,0,0,1)'} overlayColor={'rgba(0,0,0,0)'} visible={!self.state.postsData || !self.state.investmentsData || !self.state.userData} />
         {postsEl}
       </View>
     );
