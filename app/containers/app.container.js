@@ -398,11 +398,23 @@ class Application extends Component {
         break;
 
       case 'user':
-        self.props.users.selectedUser ? title = self.props.users.selectedUser.name : title = '';
+        if (self.props.users.selectedUser) {
+          title = self.props.users.selectedUser.name;
+        } else {
+          title = '';
+        }
         break;
 
       case 'singlePost':
-        self.props.posts.activePost.title ? title = self.props.posts.activePost.title : title = 'Untitled Post';
+        if (self.props.posts.selectedPostData) {
+          if (self.props.posts.selectedPostData.title) {
+            title = self.props.posts.selectedPostData.title;
+          } else {
+            title = 'Untitled Post';
+          }
+        } else {
+          title = 'Untitled Post';
+        }
         break;
 
       case 'messages':
@@ -443,7 +455,6 @@ class Application extends Component {
 
   render() {
     const self = this;
-
     if (self.props.auth.user) {
       return (
         <View style={{ flex: 1 }} >
@@ -518,12 +529,25 @@ function mapStateToProps(state) {
     messages: state.messages,
     stats: state.stats,
     investments: state.investments
-   }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...statsActions, ...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions, ...viewActions, ...messageActions, ...tagActions, ...userActions, ...investActions, ...subscriptionActions}, dispatch)
+    actions: bindActionCreators({
+      ...statsActions,
+      ...authActions,
+      ...postActions,
+      ...onlineActions,
+      ...notifActions,
+      ...animationActions,
+      ...viewActions,
+      ...messageActions,
+      ...tagActions,
+      ...userActions,
+      ...investActions,
+      ...subscriptionActions,
+    }, dispatch)
   };
 }
 

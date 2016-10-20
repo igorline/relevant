@@ -290,38 +290,39 @@ class Post extends Component {
   }
 
   openComments() {
-    var self = this;
-    self.props.actions.setActivePost(self.props.post._id);
-    self.props.navigator.push({name: 'comments'})
+    const self = this;
+    self.props.actions.setSelectedPost(self.props.post._id);
+    self.props.navigator.push({ name: 'comments' });
   }
 
   deletePost() {
     var self = this;
     self.props.actions.deletePost(self.props.auth.token, self.props.post);
-    console.log('delete')
+    console.log('delete');
   }
 
   irrelevant() {
     var self = this;
-    console.log('irrelevant')
+    console.log('irrelevant');
     self.props.actions.irrelevant(self.props.auth.token, self.props.post._id);
   }
 
   toggleOptions() {
     var self = this;
-    console.log('toggleOptions')
+    console.log('toggleOptions');
     self.setState({showOptions: self.state.showOptions = !self.state.showOptions});
   }
 
   setSelected(id) {
-    var self = this;
-    if (typeof id == 'object') {
-      var set = id._id;
+    const self = this;
+    let set = null;
+    if (typeof id === 'object') {
+      set = id._id;
     } else {
-      var set = id;
+      set = id;
     }
     self.props.actions.setSelectedUser(set);
-    self.props.navigator.push({name: 'profile'});
+    self.props.navigator.push({ name: 'profile' });
   }
 
   checkInvestments(investments) {
@@ -329,14 +330,14 @@ class Post extends Component {
     var invested = false;
     if (investments) {
       if (investments.length > 0) {
-        investments.forEach(function(investment, i) {
+        investments.forEach((investment, i) => {
           if (investment.investor == self.props.auth.user._id) invested = true;
-          if (i == investments.length - 1) {
-            self.setState({invested: invested});
+          if (i === investments.length - 1) {
+            self.setState({ invested });
           }
-        })
+        });
       } else {
-        self.setState({invested: false});
+        self.setState({ invested: false });
       }
     }
   }

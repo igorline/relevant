@@ -109,7 +109,7 @@ export function getPosts(skip, tags, sort, limit) {
             tagsString+=alter+=',';
           }
         }
-      })
+      });
     } else {
       tagsString = tags._id;
     }
@@ -221,7 +221,6 @@ export function removePost(post) {
 }
 
 export function submitPost(post, token) {
-  //console.log(post, 'submitPost init');
     return fetch(process.env.API_SERVER+'/api/post?access_token='+token, {
         credentials: 'include',
         method: 'POST',
@@ -274,29 +273,6 @@ export function postError() {
   return {
     type: types.POST_ERROR,
   };
-}
-
-export function getActivePost(postId) {
-  return function(dispatch) {
-    return fetch(process.env.API_SERVER+'/api/post?_id='+postId, {
-      credentials: 'include',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'GET',
-    })
-    .then(utils.fetchError.handleErrors)
-    .then((response) => response.json())
-    .then((responseJSON) => {
-      dispatch(setActivePost(responseJSON[0]));
-      return true;
-    })
-    .catch((error) => {
-      console.log(error, 'error');
-      return false;
-    });
-  }
 }
 
 export function irrelevant(token, postId) {
@@ -431,13 +407,48 @@ export function createComment(token, commentObj) {
   }
 }
 
+export function getSelectedPost(postId) {
+  return function(dispatch) {
+    return fetch(process.env.API_SERVER+'/api/post/'+postId, {
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'GET',
+    })
+    .then(utils.fetchError.handleErrors)
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      dispatch(setSelectedPostData(responseJSON));
+      return true;
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+      return false;
+    });
+  };
+}
 
-export function setActivePost(post) {
-  var set = post ? post : null;
-    return {
-        type: types.SET_ACTIVE_POST,
-        payload: set
-    };
+
+export function setSelectedPost(id) {
+  return {
+    type: 'SET_SELECTED_POST',
+    payload: id
+  };
+}
+
+export function setSelectedPostData(post) {
+  return {
+    type: 'SET_SELECTED_POST_DATA',
+    payload: post
+  };
+}
+
+export function clearSelectedPost() {
+  return {
+    type: 'CLEAR_SELECTED_POST'
+  };
 }
 
 export function setComments(comments) {

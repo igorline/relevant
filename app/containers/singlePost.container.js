@@ -26,52 +26,7 @@ import DiscoverUser from '../components/discoverUser.component';
 import Notification from '../components/notification.component';
 import * as animationActions from '../actions/animation.actions';
 import InvestAnimation from '../components/investAnimation.component';
-
-class SinglePost extends Component {
-  constructor (props, context) {
-    super(props, context)
-    this.state = {
-    }
-  }
-
-  componentWillUnmount() {
-    var self = this;
-    self.props.actions.setActivePost();
-  }
-
-  componentDidMount() {
-    var self = this;
-  }
-
-  render() {
-    var self = this;
-    var post = null;
-    if (this.props.posts.activePost) post = this.props.posts.activePost;
-    var title = null;
-    var description = null;
-    var image = null;
-    var link = null;
-    if (post){
-      if (post.link) link = post.link;
-      if (post.title) title = post.title;
-      if (post.description) description = post.description;
-      if (post.image) image = post.image;
-    }
-
-
-    return (
-      <View style={[styles.fullContainer, {backgroundColor: 'white'}]}>
-        <ScrollView style={styles.fullContainer}>
-          <View>
-            <Post post={post} {...self.props} styles={styles} />
-          </View>
-        </ScrollView>
-      </View>
-    );
-  }
-}
-
-export default SinglePost
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const localStyles = StyleSheet.create({
   singlePostContainer: {
@@ -80,5 +35,79 @@ const localStyles = StyleSheet.create({
   },
 });
 
-var styles = {...localStyles, ...globalStyles}
+let styles = { ...localStyles, ...globalStyles };
+
+class SinglePost extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      postId: null,
+      postData: null
+    };
+  }
+
+  componentDidMount() {
+    const self = this;
+    console.log(self);
+    if (self.props.posts.selectedPostId) {
+      self.setState({ postId: self.props.posts.selectedPostId });
+      if (self.props.posts.currentPostId === self.props.posts.selectedPostId) {
+        if (self.props.posts.selectedPostData) {
+          self.setState({ postData: self.props.posts.selectedPostData });
+        }
+      } else {
+        self.props.actions.getSelectedPost(self.props.posts.selectedPostId);
+      }
+    }
+  }
+
+  componentWillReceiveProps(next) {
+    const self = this;
+
+    if (next.posts.selectedPostId !== self.props.posts.selectedPostId) {
+      self.setState({ postId: null, postData: null });
+      self.props.actions.clearSelectedPost();
+    }
+
+    if (next.posts.selectedPostId) {
+      if (!self.state.postId) self.setState({ postId: next.posts.selectedPostId });
+      if (next.posts.selectedPostId === next.posts.currentPostId) {
+        if (next.posts.selectedPostData) {
+          self.setState({ postData: next.posts.selectedPostData });
+        }
+      }
+    }
+  }
+
+  componentWillUnment
+
+  render() {
+    const self = this;
+    let post = null;
+    let el = null;
+    if (self.state.postData) {
+      post = self.state.postData;
+      el = (<ScrollView style={styles.fullContainer}>
+          <View>
+            <Post post={post} {...self.props} styles={styles} />
+          </View>
+      </ScrollView>);
+    }
+
+    return (
+      <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
+        {el}
+        <Spinner
+          color="rgba(0,0,0,1)"
+          overlayColor="rgba(0,0,0,0)"
+          visible={!this.state.postData}
+        />
+      </View>
+    );
+  }
+}
+
+export default SinglePost;
+
+
 
