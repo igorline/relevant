@@ -28,7 +28,7 @@ import Login from '../components/login.component';
 import Signup from '../components/signup.component';
 import Categories from '../components/categories.component';
 import Read from './read.container';
-import Footer from './footer.container';
+import Footer from './footer.containerNew';
 import CreatePost from './createPost.container';
 import Discover from './discover.container';
 import SinglePost from './singlePost.container';
@@ -49,6 +49,10 @@ import * as messageActions from '../actions/message.actions';
 import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
+
+import * as navigationActions from '../actions/navigation.actions';
+
+
 var Platform = require('react-native').Platform;
 var ImagePicker = require('react-native-image-picker');
 import * as utils from '../utils';
@@ -98,21 +102,8 @@ class Application extends Component {
       this.props.actions.setSelectedUser(next.auth.user._id);
       this.props.actions.setSelectedUserData(next.auth.user);
 
-      this.navigatorRef.immediatelyResetRouteStack(this.mainRoutes);
-
-      this.navigatorRef.findRouteByName = (view) => {
-        const currentRoutes = this.navigatorRef.getCurrentRoutes();
-        let i;
-        Object.keys(currentRoutes).forEach((key) => {
-          let v = currentRoutes[key];
-          if (v.name === view) i = key;
-        });
-        return {
-          index: i,
-          view: currentRoutes[i],
-          currentRoutes
-        };
-      };
+      this.props.actions.pop();
+      this.props.actions.changeTab(0);
     }
   }
 
@@ -124,9 +115,6 @@ class Application extends Component {
       self.props.actions.updateUser(user, self.props.auth.token).then((results) => {
         if (results) self.props.actions.getUser(self.props.auth.token, false);
       });
-    }
-    if (self.props.posts.tag !== nextProps.posts.tag && nextProps.posts.tag) {
-      self.navigatorRef.replace({ name: 'discover' });
     }
   }
 
@@ -146,25 +134,6 @@ class Application extends Component {
         { text: 'OK', onPress: newname => self.setState({ newName: newname }) },
       ],
     );
-  }
-
-  configureTransition(route, routeStack) {
-    if (
-      route.name === 'categories'
-      || route.name === 'comments'
-      || route.name === 'login'
-      || route.name === 'signup'
-      || route.name === 'messages'
-      || route.name === 'thirst'
-      || route.name === 'user'
-      || route.name === 'singlePost')
-    {
-      // return Navigator.SceneConfigs.PushFromRight;
-      return Navigator.SceneConfigs.FadeAndroid;
-    } else {
-      return Navigator.SceneConfigs.FadeAndroid;
-      // return Navigator.SceneConfigs.PushFromRight;
-    }
   }
 
   chooseImage() {
@@ -230,50 +199,7 @@ class Application extends Component {
     });
   }
 
-  routeFunction(route, nav) {
-    const self = this;
-    console.log("ROUTING FUNCTION ", route);
-    switch (route.name) {
-      case 'login':
-        return <Login navigator={nav} route={route} />;
 
-      case 'signup':
-        return <Signup navigator={nav} route={route} />;
-
-      case 'profile':
-        return <Profile navigator={nav} route={route} />;
-
-      case 'activity':
-        return <Activity navigator={nav} route={route} />;
-
-      case 'createPost':
-        return <CreatePost navigator={nav} route={route} />;
-
-      case 'categories':
-        return <Categories navigator={nav} route={route} />;
-
-      case 'discover':
-        return <Discover navigator={nav} route={route} />;
-
-      case 'read':
-        return <Read navigator={nav} route={route} />;
-
-      case 'comments':
-        return <Comments navigator={nav} route={route} />;
-
-      case 'thirst':
-        return <Thirst {...self.props} navigator={nav} route={route} />;
-
-      case 'singlePost':
-        return <SinglePost {...self.props} navigator={nav} route={route} />;
-
-      case 'messages':
-        return <Messages {...self.props} navigator={nav} route={route} />;
-
-      default:
-        return <Auth {...self.props} navigator={nav} route={route} />;
-    }
-  }
 
   left(route, navigator) {
     if (
@@ -431,58 +357,18 @@ class Application extends Component {
     if (self.props.auth.user) {
       return (
         <View style={{ flex: 1 }} >
-          <Navigator
-            renderScene={(route, navigator) =>
-              self.routeFunction(route, navigator)
-            }
-            initialRouteStack={self.state.routes}
-            initialRoute={self.state.routes[0]}
-            style={{ flex: 1, paddingTop: 64 }}
-            configureScene={(route, routeStack) =>
-              self.configureTransition(route, routeStack)
-            }
-            ref={(c) => { this.navigatorRef = c; }}
-            navigationBar={
-              <Navigator.NavigationBar
-                routeMapper={{
-                  LeftButton: (route, navigator, index, navState) =>
-                    { return self.left(route, navigator, index, navState) },
-                  RightButton: (route, navigator, index, navState) =>
-                    { return self.right(route, navigator, index, navState) },
-                  Title: (route, navigator, index, navState) =>
-                    { return self.title(route, navigator, index, navState) },
-                }}
-                style={{backgroundColor: 'white', borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth }}
-              />
-            }
-          />
-         <Footer {...self.props} navigator={self.getNavigator()} />
+          <Footer />
           <View pointerEvents={'none'} style={globalStyles.notificationContainer}>
             <Notification {...self.props} />
           </View>
           <InvestAnimation {...self.props} />
         </View>
       );
-    } else {
+    }
+    else {
       return (
         <View style={{ flex: 1 }}>
-          <Navigator
-            initialRoute={self.state.routes[0]}
-            initialRouteStack={self.state.routes}
-            renderScene={(route, navigator) =>
-              self.routeFunction(route, navigator)
-            }
-            configureScene={(route, routeStack) =>
-              self.configureTransition(route, routeStack)
-            }
-            style={{ flex: 1, paddingTop: 0 }}
-            ref={(c) => { this.navigatorRef = c; }}
-          />
-          <Footer {...self.props} navigator={self.getNavigator()} />
-          <View pointerEvents={'none'} style={globalStyles.notificationContainer}>
-            <Notification {...self.props} />
-          </View>
-          <InvestAnimation {...self.props} />
+          <Auth />
         </View>
       );
     }
@@ -507,7 +393,21 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...statsActions, ...authActions, ...postActions, ...onlineActions, ...notifActions, ...animationActions, ...viewActions, ...messageActions, ...tagActions, ...userActions, ...investActions, ...subscriptionActions}, dispatch)
+    actions: bindActionCreators({
+      ...statsActions,
+      ...authActions,
+      ...postActions,
+      ...onlineActions,
+      ...notifActions,
+      ...animationActions,
+      ...viewActions,
+      ...messageActions,
+      ...tagActions,
+      ...userActions,
+      ...investActions,
+      ...subscriptionActions,
+      ...navigationActions
+    }, dispatch)
   };
 }
 

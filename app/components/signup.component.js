@@ -45,8 +45,7 @@ class SignUp extends Component {
   }
 
   back() {
-    const self = this;
-    self.props.navigator.pop(0);
+    this.props.actions.pop(0);
   }
 
   checkPass(user) {
@@ -166,19 +165,21 @@ SignUp.propTypes = {
   actions: React.PropTypes.object,
 };
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-  };
-}
+export default SignUp;
 
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({
-      ...authActions,
-    }, dispatch),
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     auth: state.auth,
+//   };
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     actions: bindActionCreators({
+//       ...authActions,
+//     }, dispatch),
+//   };
+// }
+
+// export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
 

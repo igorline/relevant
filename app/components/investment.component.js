@@ -21,10 +21,14 @@ class Investment extends Component {
   }
 
   goToPost(id) {
-    var self = this;
-    self.props.actions.getActivePost(id).then(function() {
-      self.props.navigator.push({name: 'singlePost'});
-    })
+    this.props.actions.getActivePost(id)
+    .then(() => {
+      this.props.navigator.push({
+        key: 'singlePost',
+        title: 'Post',
+        back: true
+      });
+    });
   }
 
   setTagAndRoute(tag) {
@@ -33,22 +37,20 @@ class Investment extends Component {
     self.props.navigator.resetTo({name: 'discover'});
   }
 
-  setSelected(id) {
-    var self = this;
+  setSelected(user) {
+    let id = user._id;
     if (typeof id == 'object') {
       var set = id._id;
     } else {
       var set = id;
     }
 
-    // if (set == self.props.auth.user._id) {
-    //   //self.props.actions.clearSelectedUser();
-    //   self.props.navigator.push({name: 'profile'});
-    // } else {
-    //   self.props.actions.clearSelectedUser();
-      self.props.actions.setSelectedUser(set);
-      self.props.navigator.push({name: 'profile'});
-    // }
+    self.props.actions.setSelectedUser(set);
+    self.props.navigator.push({
+      key: 'profile',
+      name: user.name,
+      back: true,
+    });
   }
 
   render() {
@@ -68,7 +70,7 @@ class Investment extends Component {
     if (investment) {
       investmentEl = (<View style={styles.singleActivity}>
         <View style={styles.activityLeft}>
-          <Text style={styles.darkGray}>{investment.investor.name} invested {'$'+investment.amount} in <Text style={styles.active} onPress={self.setSelected.bind(self, investment.poster._id)}>{investment.poster.name+"'s"}</Text> post
+          <Text style={styles.darkGray}>{investment.investor.name} invested {'$'+investment.amount} in <Text style={styles.active} onPress={self.setSelected.bind(self, investment.poster)}>{investment.poster.name+"'s"}</Text> post
             <Text numberOfLines={1} onPress={postId ? self.goToPost.bind(self, investment.post._id) : null} style={styles.active}>
             {postId ? ' '+investment.post.title : null}
             </Text>

@@ -28,9 +28,13 @@ class SingleActivity extends Component {
   }
 
   goToPost(activity) {
-    const self = this;
-    self.props.actions.getActivePost(activity.post._id).then(() => {
-      self.props.navigator.push({ name: 'singlePost' });
+    this.props.actions.getActivePost(activity.post._id)
+    .then(() => {
+      this.props.navigator.push({
+        key: 'singlePost',
+        title: 'Post',
+        back: true,
+      });
     });
   }
 

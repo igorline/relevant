@@ -23,6 +23,13 @@ class Footer extends Component {
       opacity: new Animated.Value(0),
       hearts: []
     };
+    this.mainRoutes = [
+      { name: 'read', index: 0 },
+      { name: 'discover', index: 1 },
+      { name: 'createPost', index: 2 },
+      { name: 'activity', index: 3 },
+      { name: 'profile', index: 4 },
+    ];
   }
 
   componentDidMount() {
@@ -43,21 +50,42 @@ class Footer extends Component {
       this.props.actions.setSelectedUserData(this.props.auth.user);
     }
 
-    const currentRoutes = this.props.navigator.getCurrentRoutes();
+    let routeInfo = this.props.navigator.findRouteByName(view);
+    let i = routeInfo.index;
+    let currentRoutes = routeInfo.currentRoutes;
+    let route = routeInfo.view;
+    let child = currentRoutes[i].child;
 
-    let i;
-    Object.keys(currentRoutes).forEach((key) => {
-      let v = currentRoutes[key];
-      if (v.name === view) i = v.scene ? v.scene : key;
-    });
+    // let last = Object.keys(currentRoutes).length - 1;
+    // if (currentRoutes[last].parent) {
+    //   this.props.navigator.pop();
+    // }
 
-    console.log(currentRoutes);
 
-    if (i !== undefined && currentRoutes[i]) this.props.navigator.jumpTo(currentRoutes[i]);
-    else this.props.navigator.push({
-      name: view,
-      id: Object.keys(currentRoutes).length
-    });
+    function moveToFront(index) {
+      let last = Object.keys(currentRoutes).length - 1;
+      let thisRoute = currentRoutes[i];
+      for (let j = parseInt(index, 10); j < last; j++) {
+        currentRoutes[j] = currentRoutes[j + 1];
+      }
+      currentRoutes[last] = thisRoute;
+    }
+
+    while (route.child) {
+      moveToFront(i);
+      route = child;
+      child = child.child;
+    }
+
+    if (i !== undefined && currentRoutes[i]) {
+      moveToFront(i);
+      console.log('UPDATE ROUTES ', currentRoutes);
+      this.props.navigator.immediatelyResetRouteStack(currentRoutes);
+    }
+    // else this.props.navigator.push({
+    //   name: view,
+    //   id: Object.keys(currentRoutes).length
+    // });
 
     this.route = view;
     this.setState({});
