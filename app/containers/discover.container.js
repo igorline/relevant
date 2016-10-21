@@ -170,7 +170,7 @@ class Discover extends Component {
         this.props.actions.getPosts(length, tag, 'rank', POST_PAGE_SIZE);
         break;
       case 3:
-        this.props.actions.getUsers(length, 2, this.props.auth.user._id);
+        if (this.props.auth.user) this.props.actions.getUsers(length, 2, this.props.auth.user._id);
         break;
       default:
         return;
