@@ -15,11 +15,9 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-import Button from 'react-native-button';
 import Auth from './auth.container';
 import Import from './import.container';
 import Profile from './profile.container';
-import Notification from '../components/notification.component';
 import Login from '../components/login.component';
 import Signup from '../components/signup.component';
 import Categories from '../components/categories.component';
@@ -300,20 +298,32 @@ class Application extends Component {
         return <Thirst navigator={nav} route={route} />;
 
       case 'singlePost':
-        return <SinglePost {...self.props} navigator={nav} route={route} />;
+        return <SinglePost navigator={nav} route={route} />;
 
       case 'messages':
-        return <Messages {...self.props} navigator={nav} route={route} />;
+        return <Messages navigator={nav} route={route} />;
 
       default:
-        return <Auth {...self.props} navigator={nav} route={route} />;
+        return <Auth navigator={nav} route={route} />;
     }
   }
 
   left(route) {
     const self = this;
-    if (route.name === 'messages' || route.name === 'singlePost' || route.name === 'comments' || route.name === 'categories' || route.name === 'login' || route.name === 'signup' || route.name === 'thirst') {
-      return (<TouchableHighlight underlayColor={'transparent'} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10 }} onPress={self.back}><Text>Back</Text></TouchableHighlight>);
+    if (route.name === 'messages' ||
+      route.name === 'singlePost' ||
+      route.name === 'comments' ||
+      route.name === 'categories' ||
+      route.name === 'login' ||
+      route.name === 'signup' ||
+      route.name === 'thirst') {
+      return (<TouchableHighlight
+          underlayColor={'transparent'}
+          style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10 }}
+          onPress={self.back}
+      >
+          <Text>Back</Text>
+      </TouchableHighlight>);
     } else {
       return null;
     }
@@ -333,13 +343,22 @@ class Application extends Component {
       if (relevance > 0) relevance = relevance.toFixed(0);
     }
     if (self.props.auth.user) {
-      statsEl = (<View><Text style={styles.statsTxt}>📈<Text style={styles.active}>{relevance}</Text>  💵<Text style={styles.active}>{balance}</Text></Text></View>
+      statsEl = (<View>
+        <Text style={styles.statsTxt}>📈
+        <Text style={styles.active}>{relevance}</Text>
+        &nbsp;💵<Text style={styles.active}>{balance}</Text>
+        </Text>
+      </View>
       );
     }
     if (route.name !== 'profile') {
       return (<View style={{ flex: 1, justifyContent: 'center', padding: 10 }}>{statsEl}</View>);
     } else if (route.name === 'profile' && self.props.users.selectedUserId === self.props.auth.user._id) {
-      return (<View style={styles.gear}><TouchableHighlight underlayColor={'transparent'} onPress={() => self.showActionSheet()} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View>);
+      return (<View style={styles.gear}>
+        <TouchableHighlight underlayColor={'transparent'} onPress={() => self.showActionSheet()} >
+          <Image style={styles.gearImg} source={require('../assets/images/gear.png')} />
+        </TouchableHighlight>
+      </View>);
     }
     return null;
   }
@@ -347,7 +366,9 @@ class Application extends Component {
   title(route) {
     const self = this;
     let title = self.getTitle(route);
-    return (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text numberOfLines={1} ellipsizeMode={'tail'} style={{ width: (fullWidth - 225), textAlign: 'center' }}>{title}</Text></View>);
+    return (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Text numberOfLines={1} ellipsizeMode={'tail'} style={{ width: (fullWidth - 225), textAlign: 'center' }}>{title}</Text>
+    </View>);
   }
 
   back() {
@@ -483,11 +504,8 @@ class Application extends Component {
               />
             }
           />
-         <Footer {...self.props} navigator={self.getNavigator()} />
-          <View pointerEvents={'none'} style={globalStyles.notificationContainer}>
-            <Notification {...self.props} />
-          </View>
-          <InvestAnimation {...self.props} />
+          <Footer navigator={self.getNavigator()} />
+          <InvestAnimation />
         </View>
       );
     } else {
@@ -505,11 +523,8 @@ class Application extends Component {
             style={{ flex: 1, paddingTop: 0 }}
             ref={(c) => { this.navigatorRef = c; }}
           />
-          <Footer {...self.props} navigator={self.getNavigator()} />
-          <View pointerEvents={'none'} style={globalStyles.notificationContainer}>
-            <Notification {...self.props} />
-          </View>
-          <InvestAnimation {...self.props} />
+          <Footer navigator={self.getNavigator()} />
+          <InvestAnimation />
         </View>
       );
     }
@@ -519,34 +534,20 @@ class Application extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    posts: state.posts,
     users: state.user,
-    router: state.routerReducer,
-    online: state.online,
-    notif: state.notif,
-    animation: state.animation,
-    view: state.view,
-    messages: state.messages,
-    stats: state.stats,
-    investments: state.investments
+    posts: state.posts
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators({
-      ...statsActions,
       ...authActions,
+      ...userActions,
       ...postActions,
       ...onlineActions,
       ...notifActions,
-      ...animationActions,
-      ...viewActions,
       ...messageActions,
-      ...tagActions,
-      ...userActions,
-      ...investActions,
-      ...subscriptionActions,
     }, dispatch)
   };
 }

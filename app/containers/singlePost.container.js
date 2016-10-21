@@ -14,18 +14,15 @@ import {
   PickerIOS,
 } from 'react-native';
 import { connect } from 'react-redux';
-import Button from 'react-native-button';
 import { bindActionCreators } from 'redux';
 import * as authActions from '../actions/auth.actions';
 import * as userActions from '../actions/user.actions';
 import * as postActions from '../actions/post.actions';
+import * as statsActions from '../actions/stats.actions';
 import * as investActions from '../actions/invest.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
-import DiscoverUser from '../components/discoverUser.component';
-import Notification from '../components/notification.component';
 import * as animationActions from '../actions/animation.actions';
-import InvestAnimation from '../components/investAnimation.component';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 const localStyles = StyleSheet.create({
@@ -107,7 +104,25 @@ class SinglePost extends Component {
   }
 }
 
-export default SinglePost;
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    posts: state.posts,
+    stats: state.stats,
+    investments: state.investments,
+  };
+}
 
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({
+      ...statsActions,
+      ...authActions,
+      ...postActions,
+      ...animationActions,
+      ...investActions,
+    }, dispatch),
+  };
+}
 
-
+export default connect(mapStateToProps, mapDispatchToProps)(SinglePost);

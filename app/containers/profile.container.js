@@ -79,7 +79,6 @@ class Profile extends Component {
 
   componentWillMount() {
     const self = this;
-    console.log('profile did mount');
     let posts = null;
     let userId = null;
     let investments = null;
@@ -104,7 +103,7 @@ class Profile extends Component {
       if (userId !== currentUser) {
         self.props.actions.getSelectedUser(userId);
       } else if (self.state.users.selectedUserData) {
-        self.setState({ userId: userId, userData: self.state.users.selectedUserData });
+        self.setState({ userId, userData: self.state.users.selectedUserData });
       }
     }
 

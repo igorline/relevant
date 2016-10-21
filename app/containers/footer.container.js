@@ -10,8 +10,12 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/auth.actions';
 import { globalStyles } from '../styles/global';
+import * as authActions from '../actions/auth.actions';
+import * as messageActions from '../actions/message.actions';
+import * as animationActions from '../actions/animation.actions';
+import * as notifActions from '../actions/notif.actions';
+import * as userActions from '../actions/user.actions';
 
 let styles;
 
@@ -233,7 +237,29 @@ Footer.propTypes = {
   users: React.PropTypes.object
 };
 
-export default Footer;
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    notif: state.notif,
+    animation: state.animation,
+    messages: state.messages,
+    users: state.user,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({
+      ...authActions,
+      ...notifActions,
+      ...messageActions,
+      ...userActions,
+      ...animationActions,
+    }, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Footer);
 
 const localStyles = StyleSheet.create({
   footerImg: {
@@ -265,8 +291,6 @@ const localStyles = StyleSheet.create({
   notifAnimation: {
     position: 'absolute',
     top: -12,
-    // right: 10,
-    // backgroundColor: 'yellow',
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
@@ -291,7 +315,6 @@ const localStyles = StyleSheet.create({
     borderBottomWidth: 2,
     alignItems: 'center',
     justifyContent: 'center'
-    // borderBottomColor: 'transparent'
   },
   footerLink: {
     fontSize: 10

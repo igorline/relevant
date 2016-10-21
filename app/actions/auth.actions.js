@@ -230,24 +230,24 @@ function getUser(token, redirect, callback) {
     }
 }
 
-export function userIndex() {
-    return (dispatch) => {
-        new Promise((resolve, reject) => {
-            return fetch(process.env.API_SERVER+'/api/user', {
-                    credentials: 'include',
-                    method: 'GET'
-                })
-                .then(utils.fetchError.handleErrors)
-                .then((response) => response.json())
-                .then((responseJSON) => {
-                    dispatch(setUserIndex(responseJSON));
-                })
-                .catch((error) => {
-                    console.log(error, 'error');
-                });
-        });
-    };
-}
+// export function userIndex() {
+//     return (dispatch) => {
+//         new Promise((resolve, reject) => {
+//             return fetch(process.env.API_SERVER+'/api/user', {
+//                     credentials: 'include',
+//                     method: 'GET'
+//                 })
+//                 .then(utils.fetchError.handleErrors)
+//                 .then((response) => response.json())
+//                 .then((responseJSON) => {
+//                     dispatch(setUserIndex(responseJSON));
+//                 })
+//                 .catch((error) => {
+//                     console.log(error, 'error');
+//                 });
+//         });
+//     };
+// }
 
 // export
 // function getContacts() {

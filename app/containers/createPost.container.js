@@ -22,9 +22,7 @@ import * as tagActions from '../actions/tag.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import * as utils from '../utils';
 
-var Platform = require('react-native').Platform;
-var ImagePicker = require('react-native-image-picker');
-
+const ImagePicker = require('react-native-image-picker');
 const localStyles = StyleSheet.create({
   tagStringContainer: {
     flexDirection: 'row',
