@@ -13,7 +13,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { globalStyles, fullWidth } from '../styles/global';
 import Auth from './auth.container';
-import Notification from '../components/notification.component';
 import Footer from './footer.containerNew';
 import InvestAnimation from '../components/investAnimation.component';
 import * as authActions from '../actions/auth.actions';
@@ -200,9 +199,6 @@ class Application extends Component {
       return (
         <View style={{ flex: 1 }} >
           <Footer showActionSheet={this.showActionSheet} />
-          <View pointerEvents={'none'} style={globalStyles.notificationContainer}>
-            <Notification {...this.props} />
-          </View>
           <InvestAnimation {...this.props} />
         </View>
       );

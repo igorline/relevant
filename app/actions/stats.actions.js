@@ -3,8 +3,6 @@ require('../publicenv');
 import * as utils from '../utils';
 import * as authActions from './auth.actions';
 
-// http://localhost:3000/api/statistics/change/56fb0f9c5135da5c18752422?startTime=Wed Sep 21 2016 13:05:34 GMT-0400 (EDT)&endTime=Wed Sep 21 2016 14:05:34 GMT-0400 (EDT)
-
 
 export function getAllStats() {
   return function(dispatch) {
@@ -25,7 +23,7 @@ export function getAllStats() {
     .catch((error) => {
       console.log(error, 'error');
     });
-  }
+  };
 }
 
 export function parseStats(data) {
@@ -59,9 +57,16 @@ export function getStats(id) {
       },
       method: 'GET',
     })
-    .then((response) => response.json())
+    .then((response) => {
+      console.log(response, 'response');
+      if (!response.ok) {
+        throw 'no stats';
+        return;
+      }
+      return response.json();
+    })
     .then((responseJSON) => {
-      //console.log(responseJSON, 'stats response');
+      console.log(responseJSON, 'stats response')
       dispatch(addStats({user: id, data: responseJSON}));
     })
     .catch((error) => {

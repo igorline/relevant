@@ -10,8 +10,12 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/auth.actions';
 import { globalStyles } from '../styles/global';
+import * as authActions from '../actions/auth.actions';
+import * as messageActions from '../actions/message.actions';
+import * as animationActions from '../actions/animation.actions';
+import * as notifActions from '../actions/notif.actions';
+import * as userActions from '../actions/user.actions';
 
 let styles;
 
@@ -32,9 +36,6 @@ class Footer extends Component {
     ];
   }
 
-  componentDidMount() {
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.notif.count && this.props.notif.count < nextProps.notif.count) {
       let newNotifications = nextProps.notif.count - this.props.notif.count;
@@ -47,14 +48,17 @@ class Footer extends Component {
   goTo(view) {
     if (view === 'profile') {
       this.props.actions.setSelectedUser(this.props.auth.user._id);
-      this.props.actions.setSelectedUserData(this.props.auth.user);
     }
+<<<<<<< HEAD
 
     let routeInfo = this.props.navigator.findRouteByName(view);
     let i = routeInfo.index;
     let currentRoutes = routeInfo.currentRoutes;
     let route = routeInfo.view;
     let child = currentRoutes[i].child;
+=======
+    const currentRoutes = this.props.navigator.getCurrentRoutes();
+>>>>>>> b8aa4a6879e2906e8f37a9ccbb64712749c684a9
 
     // let last = Object.keys(currentRoutes).length - 1;
     // if (currentRoutes[last].parent) {
@@ -272,7 +276,29 @@ Footer.propTypes = {
   users: React.PropTypes.object
 };
 
-export default Footer;
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    notif: state.notif,
+    animation: state.animation,
+    messages: state.messages,
+    users: state.user,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({
+      ...authActions,
+      ...notifActions,
+      ...messageActions,
+      ...userActions,
+      ...animationActions,
+    }, dispatch)
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Footer);
 
 const localStyles = StyleSheet.create({
   footerImg: {
@@ -304,8 +330,6 @@ const localStyles = StyleSheet.create({
   notifAnimation: {
     position: 'absolute',
     top: -12,
-    // right: 10,
-    // backgroundColor: 'yellow',
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
@@ -330,7 +354,6 @@ const localStyles = StyleSheet.create({
     borderBottomWidth: 2,
     alignItems: 'center',
     justifyContent: 'center'
-    // borderBottomColor: 'transparent'
   },
   footerLink: {
     fontSize: 10

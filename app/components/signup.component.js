@@ -92,7 +92,7 @@ class SignUp extends Component {
 
 
     if (!self.state.phone) {
-      self.setState({message: 'phone number required'});
+      AlertIOS.alert('phone number required');
       return;
     }
 

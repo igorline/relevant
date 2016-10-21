@@ -68,6 +68,54 @@ function getPostUser(userId, token) {
   }
 }
 
+export function getUsers(skip, limit, id) {
+console.log('getUsers', skip, limit, id)
+  let tagsString = '';
+  if (!skip) skip = 0;
+  if (!limit) limit = 10;
+  let url = process.env.API_SERVER + '/api/user/list/' + id + '?skip=' + skip + '&limit=' + limit;
+  return function(dispatch) {
+    dispatch(getUsersLoading());
+    fetch(url, {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      dispatch(setUserList(responseJSON));
+    })
+    .catch((error) => {
+        console.log(error, 'error');
+    });
+  }
+}
+
+export
+function getUsersLoading() {
+    return {
+        type: 'GET_USER_LIST'
+    };
+}
+
+export
+function setUserList(users) {
+    return {
+        type: 'SET_USER_LIST',
+        payload: users
+    };
+}
+
+export
+function clearUserList() {
+    return {
+        type: 'CLEAR_USER_LIST'
+    };
+}
+
 export
 function setSelectedUser(user) {
     var set = user ? user : null;
@@ -86,7 +134,6 @@ function clearSelectedUser() {
 
 export
 function setSelectedUserData(data) {
-    //var set = user ? user : null;
     return {
         type: 'SET_SELECTED_USER_DATA',
         payload: data

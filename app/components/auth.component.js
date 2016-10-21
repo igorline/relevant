@@ -21,7 +21,6 @@ import * as postActions from '../actions/post.actions';
 import * as notifActions from '../actions/notif.actions';
 import { bindActionCreators } from 'redux';
 import { globalStyles } from '../styles/global';
-import Notification from '../components/notification.component';
 
 
 import * as userActions from '../actions/user.actions';

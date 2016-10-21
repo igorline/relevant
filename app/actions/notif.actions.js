@@ -1,20 +1,9 @@
 import * as types from './actionTypes';
 require('../publicenv');
-// var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
 import * as utils from '../utils';
 var apiServer = process.env.API_SERVER+'/api/'
 
 
-export function setNotif(active, text, bool) {
-    return {
-        type: types.SET_NOTIF,
-        payload: {
-          active: active,
-          text: text,
-          bool: bool
-        }
-    };
-}
 
 export function setActivity(data) {
     return {
@@ -50,7 +39,6 @@ export function setCount(data) {
     };
 }
 
-
 export
 function getActivity(userId, skip, reset) {
   if (!skip) skip = 0;
@@ -71,10 +59,7 @@ function getActivity(userId, skip, reset) {
         dispatch(resetActivity(responseJSON));
       }
     })
-    // .catch((error) => {
-    //   console.log('error', error)
-    // });
-  }
+  };
 }
 
 export
@@ -135,11 +120,8 @@ function createNotification(token, obj) {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      //console.log('created notif')
+      console.log('created notif')
     })
-    // .catch((error) => {
-    //   console.log(error, 'error creating notif')
-    // });
   }
 }
 
