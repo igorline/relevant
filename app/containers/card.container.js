@@ -3,10 +3,15 @@ import {
   StyleSheet,
   NavigationExperimental,
   TouchableHighlight,
-  Text
+  Text,
+  View,
+  Image
 } from 'react-native';
+
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import NavigationHeaderBackButton from 'NavigationHeaderBackButton';
-import Profile from './profile.container';
+
 import Categories from '../components/categories.component';
 import Read from './read.container';
 import CreatePost from './createPost.container';
@@ -16,8 +21,10 @@ import Activity from './activity.container';
 import Comments from './comments.container';
 import Messages from './messages.container';
 import Thirst from './thirst.container';
+import Profile from './profile.container';
 
-import { globalStyles, localStyles } from '../styles/global';
+import { globalStyles } from '../styles/global';
+import * as navigationActions from '../actions/navigation.actions';
 
 const {
   Header: NavigationHeader,
@@ -77,7 +84,6 @@ class CardContainer extends Component {
         return <Thirst />;
 
       case 'singlePost':
-        console.log('should render single post')
         return <SinglePost />;
 
       case 'messages':
@@ -86,18 +92,26 @@ class CardContainer extends Component {
       case 'categories':
         return <Categories />;
 
+      case 'profile':
+        return <Profile />;
+
       default:
         return this.getDefaultComponent();
+        // return <Read {...this.props} navigator={this.props.actions} />;
+
     }
   }
 
   renderTitle(props) {
     console.log("TITLE ", this.props);
     let key = props.scene.route.key;
-    let title = props.scene.route.title;
+    let title = props.scene.route ? props.scene.route.title : null;
 
     if (key === 'default') {
-      title = this.props.tabs.routes[this.props.tabs.index].title;
+      let r = this.props.tabs.routes.find(route => {
+        return this.default === route.key;
+      });
+      title = r.title;
     }
 
     return (
@@ -118,13 +132,59 @@ class CardContainer extends Component {
   }
 
   back() {
-    console.log('popping');
     this.props.actions.pop();
-    this.forceUpdate();
   }
 
   renderRight(props) {
-    return null;
+    let statsEl = null;
+    let relevance = 0;
+    let balance = 0;
+    let user = null;
+
+    let key = this.default;
+    console.log("RIGHT KEY ", key)
+    if (this.props.auth.user) {
+      user = this.props.auth.user;
+      if (user.relevance) relevance = user.relevance;
+      if (user.balance) balance = user.balance;
+      if (balance > 0) balance = balance.toFixed(0);
+      if (relevance > 0) relevance = relevance.toFixed(0);
+    }
+    if (this.props.auth.user) {
+      statsEl = (
+        <View>
+          <Text style={styles.statsTxt}>  📈
+            <Text style={styles.active}>{relevance}</Text>  💵
+            <Text style={styles.active}>
+              {balance}
+            </Text>
+          </Text>
+        </View>
+      );
+    }
+    if (key !== 'profile') {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', padding: 10 }}>
+          {statsEl}
+        </View>
+      );
+    } else if (key === 'profile' &&
+      this.props.users.selectedUserId === this.props.auth.user._id) {
+      return (
+        <View style={styles.gear}>
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            onPress={() => this.props.showActionSheet()}
+          >
+            <Image
+              style={styles.gearImg}
+              source={require('../assets/images/gear.png')}
+            />
+          </TouchableHighlight>
+        </View>
+      );
+    }
+    // return null;
   }
 
 
@@ -149,6 +209,7 @@ class CardContainer extends Component {
       <NavigationCardStack
         direction={'horizontal'}
         navigationState={this.props.navigation}
+        onNavigateBack={this.back}
         renderScene={this.renderScene}
         renderHeader={this.renderHeader}
       />
@@ -156,7 +217,46 @@ class CardContainer extends Component {
   }
 }
 
+const localStyles = StyleSheet.create({
+  statsTxt: {
+    color: 'black',
+    fontSize: 10
+  },
+  gearImg: {
+    height: 20,
+    width: 20
+  },
+  gear: {
+    height: 45,
+    flex: 1,
+    justifyContent: 'center',
+    padding: 12,
+  },
+});
+
 styles = { ...localStyles, ...globalStyles };
 
 
-export default CardContainer;
+function mapStateToProps(state) {
+  return {
+    tabs: state.tabs,
+    navigation: state.navigation,
+    auth: state.auth,
+    users: state.user
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(
+      {
+        push: route => navigationActions.push(route),
+        pop: () => navigationActions.pop(),
+
+      }, dispatch),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CardContainer);
+
+// export default CardContainer;

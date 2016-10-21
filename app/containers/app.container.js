@@ -207,22 +207,21 @@ class Application extends Component {
 
 
   showActionSheet() {
-    const self = this;
     ActionSheetIOS.showActionSheetWithOptions({
-      options: self.state.buttons,
-      cancelButtonIndex: self.state.cancelIndex,
-      destructiveButtonIndex: self.state.destructiveIndex,
+      options: this.state.buttons,
+      cancelButtonIndex: this.state.cancelIndex,
+      destructiveButtonIndex: this.state.destructiveIndex,
     },
     (buttonIndex) => {
       switch (buttonIndex) {
         case 0:
-          self.changeName();
+          this.changeName();
           break;
         case 1:
-          self.chooseImage();
+          this.chooseImage();
           break;
         case 2:
-          self.logoutRedirect();
+          this.logoutRedirect();
           break;
         default:
           return;

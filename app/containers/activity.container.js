@@ -90,9 +90,8 @@ class Activity extends Component {
   }
 
   renderRow(rowData) {
-    const self = this;
     return (
-      <SingleActivity singleActivity={rowData} {...self.props} styles={styles} />
+      <SingleActivity singleActivity={rowData} {...this.props} styles={styles} />
     );
   }
 

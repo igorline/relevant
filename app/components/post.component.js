@@ -284,7 +284,7 @@ class Post extends Component {
   uninvest() {
     var self = this;
     self.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
-       if (self.props.route == 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
+       if (self.props.route === 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
     });
   }
 
@@ -308,19 +308,17 @@ class Post extends Component {
 
   toggleOptions() {
     var self = this;
-    console.log('toggleOptions')
+    console.log('toggleOptions');
     self.setState({showOptions: self.state.showOptions = !self.state.showOptions});
   }
 
-  setSelected(id) {
-    var self = this;
-    if (typeof id == 'object') {
-      var set = id._id;
-    } else {
-      var set = id;
-    }
-    self.props.actions.setSelectedUser(set);
-    self.props.navigator.push({name: 'profile'});
+  setSelected(user) {
+    this.props.actions.setSelectedUser(user._id);
+    this.props.navigator.push({
+      key: 'profile',
+      title: user.name,
+      back: true
+    });
   }
 
   checkInvestments(investments) {
@@ -448,7 +446,7 @@ class Post extends Component {
     if (balance >= 10000) pickerArray.push(<PickerItemIOS key={5} label='10000' value={10000} />);
 
     if (postUserImage) {
-      postUserImageEl = (<TouchableWithoutFeedback onPress={self.setSelected.bind(self, self.props.post.user._id)}><Image source={{uri: postUserImage}} style={styles.userImage} /></TouchableWithoutFeedback>);
+      postUserImageEl = (<TouchableWithoutFeedback onPress={self.setSelected.bind(self, self.props.post.user)}><Image source={{uri: postUserImage}} style={styles.userImage} /></TouchableWithoutFeedback>);
     }
 
     if (image) {
@@ -570,7 +568,7 @@ class Post extends Component {
             <View style={styles.postHeader}>
               {postUserImageEl}
               <View style={styles.postInfo}>
-                <TouchableWithoutFeedback onPress={self.setSelected.bind(self, user._id)} style={[styles.infoLeft, styles.innerInfo]}>
+                <TouchableWithoutFeedback onPress={self.setSelected.bind(self, user)} style={[styles.infoLeft, styles.innerInfo]}>
                   <View><Text style={[styles.font15, styles.darkGray]}>{name}</Text></View>
                 </TouchableWithoutFeedback>
                 <TouchableHighlight underlayColor={'transparent'} onPress={self.toggleInfo.bind(self)} style={[styles.infoRight, styles.innerInfo]}>
