@@ -30,6 +30,7 @@ const POST_PAGE_SIZE = 5;
 const TYPE_LOOKUP = {
   1: 'new',
   2: 'top',
+  3: 'people',
 };
 
 class Discover extends Component {
@@ -50,6 +51,7 @@ class Discover extends Component {
     this.currentScroll = {
       new: 0,
       top: 0,
+      people: 0,
     };
   }
 
@@ -59,6 +61,8 @@ class Discover extends Component {
     this.view = this.props.view.discover;
     this.type = TYPE_LOOKUP[this.view];
     let ds;
+
+    this.props.actions.getUsers(0, 2, this.props.auth.user._id);
 
     if (this.props.posts.comments) this.props.actions.setComments(null);
 
@@ -72,24 +76,26 @@ class Discover extends Component {
         this.dataSource = ds.cloneWithRows(this.props.posts[this.type]);
       }
     }
-
     if (this.props.posts[this.type].length === 0) this.reload();
-    this.props.actions.userIndex();
     this.tag = null;
     if (this.props.posts.tag) this.tag = { ...this.props.posts.tag };
   }
 
   componentWillReceiveProps(next) {
     let ds;
-
     // update listview if needed
-    if (next.posts[this.type] !== this.props.posts[this.type]) {
+    if (next.posts[this.type] !== this.props.posts[this.type] && this.type !== 'people') {
       ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.dataSource = ds.cloneWithRows(next.posts[this.type]);
     }
 
+    if (next.users.list !== this.props.users.list && this.type === 'people') {
+      ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      this.dataSource = ds.cloneWithRows(next.users.list);
+    }
+
     // update tag selection
-    if (this.tag !== next.posts.tag) {
+    if (this.tag !== next.posts.tag && this.type !== 'people') {
       this.dataSource = null;
       this.reload(next.posts.tag);
       this.tag = next.posts.tag;
@@ -102,7 +108,7 @@ class Discover extends Component {
       this.dataSource = null;
 
 
-      if (this.view < 3) {
+      if (this.view !== 3) {
         // option 1 - reload and scroll to top
         ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
         this.dataSource = ds.cloneWithRows(next.posts[this.type]);
@@ -116,8 +122,9 @@ class Discover extends Component {
         //   this.offset = this.currentScroll[this.type];
         //   this.listview.scrollTo({ y: this.currentScroll[this.type], animated: false });
         // }
-      } else if (!this.props.auth.userIndex) {
-        this.props.actions.userIndex();
+      } else {
+        ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+        this.dataSource = ds.cloneWithRows(next.users.list);
       }
     }
 
@@ -149,20 +156,26 @@ class Discover extends Component {
 
   reload(tag) {
     console.log('REALOAD');
+    if (this.view == 3) this.props.actions.clearUserList();
     this.loadPosts(0, tag);
   }
 
   loadMore() {
     console.log('LOAD MORE');
-    const length = this.props.posts[this.type].length;
-    if (length < POST_PAGE_SIZE) return;
+    let length = 0;
+    if (this.type !== 'people') {
+      length = this.props.posts[this.type].length;
+      if (length < POST_PAGE_SIZE) return;
+    } else {
+      length = this.props.users.list.length;
+    }
     this.loadPosts(length);
   }
 
   loadPosts(length, _tag) {
     if (this.props.posts.loading) return;
+    if (this.props.users.loading) return;
     console.log('loading posts');
-
     const tag = typeof _tag !== 'undefined' ? _tag : this.props.posts.tag;
     switch (this.view) {
       case 1:
@@ -171,23 +184,26 @@ class Discover extends Component {
       case 2:
         this.props.actions.getPosts(length, tag, 'rank', POST_PAGE_SIZE);
         break;
+      case 3:
+        this.props.actions.getUsers(length, 2, this.props.auth.user._id);
+        break;
       default:
         return;
     }
   }
 
   renderRow(rowData) {
-    return (
-      <Post post={rowData} {...this.props} styles={styles} />
-    );
+    if (!rowData.role) {
+      return (<Post post={rowData} {...this.props} styles={styles} />);
+    } else {
+      return(<DiscoverUser user={rowData} {...this.props} styles={styles} />);
+    }
   }
 
   render() {
     let usersEl = null;
     const view = this.props.view.discover;
     let postsEl = null;
-    let userIndex = null;
-    let usersParent = null;
 
     if (this.dataSource) {
       postsEl = (
@@ -223,27 +239,27 @@ class Discover extends Component {
       );
     }
 
-    if (this.props.auth.userIndex) {
-      userIndex = this.props.auth.userIndex;
-      usersEl = userIndex.map((user, i) => {
-        let dicoverUser = null;
-        if (user.name !== 'Admin') {
-          dicoverUser = (
-            <DiscoverUser
-              key={i}
-              {...this.props}
-              user={user}
-              styles={styles}
-            />);
-        }
-        return dicoverUser;
-      });
-      usersParent = (
-        <ScrollView>
-          {usersEl}
-        </ScrollView>
-      );
-    }
+    // if (this.props.auth.userIndex) {
+    //   userIndex = this.props.auth.userIndex;
+    //   usersEl = userIndex.map((user, i) => {
+    //     let dicoverUser = null;
+    //     if (user.name !== 'Admin') {
+    //       dicoverUser = (
+    //         <DiscoverUser
+    //           key={i}
+    //           {...this.props}
+    //           user={user}
+    //           styles={styles}
+    //         />);
+    //     }
+    //     return dicoverUser;
+    //   });
+    //   usersParent = (
+    //     <ScrollView>
+    //       {usersEl}
+    //     </ScrollView>
+    //   );
+    // }
 
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
@@ -252,8 +268,8 @@ class Discover extends Component {
           overlayColor="rgba(0,0,0,0)"
           visible={!this.dataSource && this.props.view.discover !== 3}
         />
-        {view !== 3 ? postsEl : null}
-        {view === 3 ? usersParent : null}
+        {postsEl}
+        {/*view === 3 ? usersParent : null*/}
         <DiscoverHeader
           showHeader={this.state.showHeader}
           posts={this.props.posts}
@@ -300,6 +316,7 @@ function mapStateToProps(state) {
     animation: state.animation,
     view: state.view,
     stats: state.stats,
+    users: state.user,
   };
 }
 

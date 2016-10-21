@@ -7,7 +7,6 @@ const initialState = {
   isAuthenticating: false,
   statusText: null,
   user: null,
-  userIndex: null,
   deviceToken: null
 };
 
@@ -65,10 +64,10 @@ export default function auth(state = initialState, action) {
         'deviceToken': action.payload
       })
 
-    case types.SET_USER_INDEX:
-      return Object.assign({}, state, {
-        'userIndex': action.payload
-      })
+    // case types.SET_USER_INDEX:
+    //   return Object.assign({}, state, {
+    //     'userIndex': action.payload
+    //   })
 
     case types.SET_CONTACTS:
       return Object.assign({}, state, {

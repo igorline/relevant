@@ -117,12 +117,12 @@ class Post extends Component {
   }
 
   openLink(url) {
-    Linking.openURL(url)
+    Linking.openURL(url);
   }
 
   toggleExpanded() {
-    var self = this
-    self.setState({expanded: self.state.expanded = !self.state.expanded});
+    const self = this;
+    self.setState({ expanded: self.state.expanded = !self.state.expanded });
   }
 
   extractDomain(url) {
@@ -272,13 +272,8 @@ class Post extends Component {
   invest() {
     var self = this;
     console.log('investing', self.state.investAmount);
-    this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user)
-    .then(function() {
-       if (self.props.route == 'user')
-        self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
-    })
-    // this.props.actions.createSubscription(this.props.auth.token, self.props.post);
-    self.setState({investAmount: 50});
+    this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user);
+    self.setState({ investAmount: 50 });
   }
 
   uninvest() {

@@ -13,9 +13,6 @@ import {
   AlertIOS,
   TouchableHighlight
 } from 'react-native';
-import Button from 'react-native-button';
-import {reduxForm} from 'redux-form';
-import Notification from './notification.component';
 var moment = require('moment');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
