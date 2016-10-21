@@ -9,6 +9,9 @@ import {
     PushNotificationIOS
 } from 'react-native';
 import * as utils from '../utils';
+import {
+  AlertIOS
+} from 'react-native';
 
 export
 function setUser(user) {
@@ -46,20 +49,20 @@ function loginUserSuccess(token) {
 }
 
 export
-function loginUserFailure(error) {
+function loginUserFailure() {
     return dispatch => {
         userDefaults.remove('token', APP_GROUP_ID)
             .then(() => {
                 dispatch({
-                    type: types.LOGIN_USER_FAILURE,
-                    payload: {
-                        status: '',
-                        statusText: error
-                    }
+                    type: types.LOGIN_USER_FAILURE
+                    // payload: {
+                    //     status: '',
+                    //     statusText: error
+                    // }
                 })
-                setTimeout(function() {
-                    dispatch(setAuthStatusText());
-                }, 500);
+                // setTimeout(function() {
+                //     dispatch(setAuthStatusText());
+                // }, 500);
             })
     };
 }
@@ -92,7 +95,6 @@ function logout() {
 
 export function loginUser(user, redirect) {
     return function(dispatch) {
-        console.log(user, 'user')
         return fetch(process.env.API_SERVER+'/auth/local', {
             credentials: 'include',
             method: 'POST',
@@ -104,27 +106,22 @@ export function loginUser(user, redirect) {
         })
         .then((response) => response.json())
         .then((responseJSON) => {
-            console.log(responseJSON, 'login response')
+            console.log(responseJSON, 'login response');
             if (responseJSON.token) {
-
                 userDefaults.set('token', responseJSON.token, APP_GROUP_ID)
-                    .then( ()  => {
-                        dispatch(loginUserSuccess(responseJSON.token));
-                        dispatch(getUser(responseJSON.token, true));
-                        return {status: true};
-                    })
-
+                .then( ()  => {
+                    dispatch(loginUserSuccess(responseJSON.token));
+                    dispatch(getUser(responseJSON.token, true));
+                });
             } else {
+                AlertIOS.alert(responseJSON.message);
                 dispatch(loginUserFailure(responseJSON.message));
-                return {status: false, message: responseJSON.message};
             }
         })
         .catch(error => {
-            console.log(error, 'error');
-            dispatch(loginUserFailure('Server error'));
-             return {status: false, message: 'Server error'};
+            dispatch(loginUserFailure());
         });
-    }
+    };
 }
 
 export
@@ -162,19 +159,31 @@ function createUser(user, redirect) {
             },
             body: JSON.stringify(user)
         })
-        .then(utils.fetchError.handleErrors)
         .then((response) => response.json())
         .then((responseJSON) => {
+            console.log(responseJSON)
+
             if (responseJSON.token) {
                 dispatch(loginUserSuccess(responseJSON.token));
                 dispatch(getUser(responseJSON.token, true));
             } else {
-                dispatch(loginUserFailure(responseJSON.message));
+                dispatch(loginUserFailure());
+                if (responseJSON.errors) {
+                    if (responseJSON.errors) {
+                        let errors = responseJSON.errors;
+                        let message = '';
+                        Object.keys(errors).map(function(key, index) {
+                           if (errors[key].message) message += errors[key].message;
+                        });
+                        AlertIOS.alert(message);
+                    }
+                }
             }
         })
         .catch(error => {
+            AlertIOS.alert(error);
             console.log(error, 'error');
-            dispatch(loginUserFailure('Server error'));
+            dispatch(loginUserFailure());
         });
     }
 }

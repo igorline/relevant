@@ -160,8 +160,8 @@ class Profile extends Component {
 
     if (userId === next.users.currentUserId) {
       if (next.users.selectedUserData) {
-        if (!self.state.userData) {
-          self.setState({userId: userId, userData: next.users.selectedUserData});
+        if (!self.state.userData || self.state.userData !== next.users.selectedUserData) {
+          self.setState({ userId: userId, userData: next.users.selectedUserData });
         }
       }
     }
