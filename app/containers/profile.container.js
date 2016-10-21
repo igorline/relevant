@@ -109,8 +109,10 @@ class Profile extends Component {
 
     if (postsUser && userId) {
       if (postsUser === userId && posts) {
-        const pd = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-        self.setState({ postsData: pd.cloneWithRows(posts)});
+        if (posts.length) {
+          const pd = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+          self.setState({ postsData: pd.cloneWithRows(posts)});
+        }
       } else {
         self.props.actions.clearPosts('user');
         self.props.actions.getUserPosts(0, 5, userId);

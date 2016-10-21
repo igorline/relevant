@@ -109,6 +109,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     stats: state.stats,
+    users: state.user,
     investments: state.investments,
   };
 }
@@ -121,6 +122,7 @@ function mapDispatchToProps(dispatch) {
       ...postActions,
       ...animationActions,
       ...investActions,
+      ...userActions,
     }, dispatch),
   };
 }

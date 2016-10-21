@@ -145,6 +145,7 @@ class Activity extends Component {
       activityEl = (
         <ListView
           ref="listview"
+          enableEmptySections
           renderScrollComponent={props => <ScrollView {...props} />}
           onScroll={self.onScroll}
           dataSource={self.state.dataSource}
