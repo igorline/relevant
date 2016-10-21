@@ -57,9 +57,17 @@ class Login extends Component {
 
   login() {
     const self = this;
-    this.props.actions.loginUser({ email: self.state.email, password: self.state.password }).then((results) => {
-      console.log(results, 'results');
-    });
+    if (!self.state.email) {
+      AlertIOS.alert('must enter email');
+      return;
+    }
+
+    if (!self.state.password) {
+      AlertIOS.alert('must enter password');
+      return;
+    }
+
+    this.props.actions.loginUser({ email: self.state.email, password: self.state.password });
   }
 
   back() {

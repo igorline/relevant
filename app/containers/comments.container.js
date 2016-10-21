@@ -34,13 +34,11 @@ class Comments extends Component {
   }
 
   componentDidMount() {
-    if (this.props.comments.activePost) {
-      this.props.actions.getComments(this.props.comments.activePost);
-    }
+    const self = this;
+    console.log(self)
+    if (self.props.posts.selectedPostId) self.props.actions.getComments(self.props.posts.selectedPostId);
     this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
     this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
-    let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    this.dataSource = ds.cloneWithRows([]);
   }
 
   componentWillUpdate(next) {
@@ -82,14 +80,14 @@ class Comments extends Component {
   }
 
   createComment() {
+    const self = this;
     let commentObj = {
-      post: this.props.comments.activePost,
-      text: this.state.comment,
-      user: this.props.auth.user._id
+      post: self.props.posts.selectedPostId,
+      text: self.state.comment,
+      user: self.props.auth.user._id
     };
-    this.props.actions.createComment(this.props.auth.token, commentObj);
-    this.setState({ comment: null });
-    this.scrollToBottom();
+    self.props.actions.createComment(self.props.auth.token, commentObj);
+    self.setState({ comment: null });
   }
 
   renderRow(rowData) {

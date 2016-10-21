@@ -44,7 +44,6 @@ export function getInvestments(token, userId, skip, limit){
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      //console.log('response', responseJSON);
       dispatch(setInvestments(userId, responseJSON));
     })
     .catch((error) => {
@@ -62,6 +61,14 @@ export function setInvestments(userId, data) {
         }
     };
 }
+
+export
+function clearInvestments() {
+    return {
+        type: 'CLEAR_INVESTMENTS',
+    };
+}
+
 
 export function investNotification(post, investingUser) {
   return {

@@ -1,23 +1,32 @@
 'use strict';
 import React, { Component } from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
   Text,
   View,
-  Image,
-  TextInput,
-  TouchableHighlight,
-  LinkingIOS
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-var moment = require('moment');
+let moment = require('moment');
 
 class Investment extends Component {
   constructor (props, context) {
-    super(props, context)
+    super(props, context);
     this.state = {
-    }
+    };
+  }
+
+  setTagAndRoute(tag) {
+    const self = this;
+    self.props.actions.setTag(tag);
+    self.props.navigator.resetTo({ name: 'discover' });
+  }
+
+  setSelected(user) {
+    self.props.actions.setSelectedUser(user._id);
+    self.props.navigator.push({
+      key: 'profile',
+      name: user.name,
+      back: true,
+    });
   }
 
   goToPost(id) {
@@ -31,28 +40,6 @@ class Investment extends Component {
     });
   }
 
-  setTagAndRoute(tag) {
-    var self = this;
-    self.props.actions.setTag(tag);
-    self.props.navigator.resetTo({name: 'discover'});
-  }
-
-  setSelected(user) {
-    let id = user._id;
-    if (typeof id == 'object') {
-      var set = id._id;
-    } else {
-      var set = id;
-    }
-
-    self.props.actions.setSelectedUser(set);
-    self.props.navigator.push({
-      key: 'profile',
-      name: user.name,
-      back: true,
-    });
-  }
-
   render() {
     var self = this;
     var investment = self.props.investment;
@@ -60,8 +47,6 @@ class Investment extends Component {
     var styles = self.props.styles;
     var postId = null;
     var time = null;
-
-    //console.log(self.props.investment)
     if (self.props.investment.post) {
       if (self.props.investment.post._id) postId = self.props.investment.post._id;
       var activityTime = moment(self.props.investment.createdAt);

@@ -5,10 +5,9 @@ import {
 } from 'react-native';
 import { globalStyles } from '../styles/global';
 
-let styles;
+let styles = { ...globalStyles };
 
 export default class Tags extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.state = {};
@@ -63,5 +62,3 @@ Tags.propTypes = {
   posts: React.PropTypes.object,
   actions: React.PropTypes.object,
 };
-
-styles = { ...globalStyles };

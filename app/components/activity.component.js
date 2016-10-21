@@ -39,14 +39,6 @@ class SingleActivity extends Component {
   }
 
   setSelected(user) {
-    // let id = user._id;
-    // let set = null;
-    // if (typeof id === 'object') {
-    //   set = id._id;
-    // } else {
-    //   set = id;
-    // }
-
     if (user._id !== this.props.auth.user._id) {
       this.props.actions.setSelectedUser(user._id);
     }

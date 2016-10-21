@@ -158,17 +158,17 @@ class Activity extends Component {
       });
     }
 
-      typeEl = (<View style={[styles.row, styles.typeBar]}>
-        <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, self.state.view === 1 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 1)}>
-          <Text style={[styles.type, styles.darkGray, styles.font15, self.state.view === 1 ? styles.active : null]}>Personal</Text>
-        </TouchableHighlight>
-        <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, self.state.view === 2 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 2)}>
-          <Text style={[styles.type, styles.darkGray, styles.font15, self.state.view === 2 ? styles.active : null]}>General</Text>
-        </TouchableHighlight>
-        <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, self.state.view === 3 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 3)}>
-          <Text style={[styles.type, styles.darkGray, styles.font15, self.state.view === 3 ? styles.active : null]}>Online</Text>
-        </TouchableHighlight>
-      </View>);
+    typeEl = (<View style={[styles.row, styles.typeBar]}>
+      <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, self.state.view === 1 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 1)}>
+        <Text style={[styles.type, styles.darkGray, styles.font15, self.state.view === 1 ? styles.active : null]}>Personal</Text>
+      </TouchableHighlight>
+      <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, self.state.view === 2 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 2)}>
+        <Text style={[styles.type, styles.darkGray, styles.font15, self.state.view === 2 ? styles.active : null]}>General</Text>
+      </TouchableHighlight>
+      <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, self.state.view === 3 ? styles.activeBorder : null]} onPress={self.changeView.bind(self, 3)}>
+        <Text style={[styles.type, styles.darkGray, styles.font15, self.state.view === 3 ? styles.active : null]}>Online</Text>
+      </TouchableHighlight>
+    </View>);
 
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
