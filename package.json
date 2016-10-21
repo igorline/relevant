@@ -14,7 +14,7 @@
     "moment": "^2.13.0",
     "path": "^0.12.7",
     "react": "^15.3.2",
-    "react-native": "^0.34.1",
+    "react-native": "^0.35.0",
     "react-native-button": "^1.4.2",
     "react-native-contacts": "^0.2.3",
     "react-native-custom-action-sheet": "0.0.11",

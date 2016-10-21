@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
   TabBarIOS,
-  StyleSheet
+  StyleSheet,
+  View
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -14,29 +15,48 @@ import CardContainer from './card.container';
 let styles;
 
 class Tabs extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.props.showActionSheet = this.props.showActionSheet.bind(this);
+  }
 
   changeTab(i) {
     this.props.actions.changeTab(i);
   }
 
   renderTabContent(key) {
-    return <CardContainer {...this.props} defaultContainer={key} />;
+    return <CardContainer
+      defaultContainer={key}
+      showActionSheet={this.props.showActionSheet}
+    />;
   }
 
   render() {
-    const tabs = this.props.tabs.routes.map((tab, i) => (
-      <TabBarIOS.Item
-        key={tab.key}
-        title={tab.icon}
-        onPress={() => this.changeTab(i)}
-        selected={this.props.tabs.index === i}
-      >
-        {this.renderTabContent(tab.key)}
-      </TabBarIOS.Item>
-      )
-    );
+    const tabs = this.props.tabs.routes.map((tab, i) => {
+      let badge;
+      let icon = tab.icon;
+      if (tab.key === 'activity') badge = this.props.notif.count;
+      // if (tab.key === 'profile' && this.props.auth.user.image) {
+      //    icon = { uri: this.props.auth.user.image };
+      // }
+      return (
+        <TabBarIOS.Item
+          key={tab.key}
+          icon={icon}
+          title={tab.icon}
+          onPress={() => this.changeTab(i)}
+          selected={this.props.tabs.index === i}
+          badge={badge}
+        >
+          {this.renderTabContent(tab.key)}
+        </TabBarIOS.Item>
+      );
+    });
     return (
-      <TabBarIOS tintColor="red">
+      <TabBarIOS
+        tintColor="black"
+        translucent
+      >
         {tabs}
       </TabBarIOS>
     );
@@ -44,82 +64,18 @@ class Tabs extends Component {
 }
 
 const localStyles = StyleSheet.create({
-  back: {
-    position: 'absolute',
-    top: 0,
-    left: 5,
-    height: 60,
-    padding: 12,
-    flex: 1,
-    justifyContent: 'flex-end'
-  },
-  backInner: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  backImg: {
-    height: 10,
-    width: 7,
-    backgroundColor: 'transparent',
-    marginRight: 4
-  },
-  backText: {
-    color: '#aaaaaa',
-    fontSize: 12
-  },
-  gear: {
-    height: 45,
-    flex: 1,
-    justifyContent: 'center',
-    padding: 12,
-  },
-  gearImg: {
-    height: 20,
-    width: 20
-  },
-  nav: {
-    height: 60,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    padding: 12,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.25)'
-  },
-  stats: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    padding: 12,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'flex-end'
-  },
-  statsTxt: {
-    color: 'black',
-    fontSize: 10
-  },
-  navItem: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexWrap: 'nowrap'
-  },
-  navLink: {
-    backgroundColor: 'transparent',
-    fontSize: 15,
-    textAlign: 'center',
-  },
-});
+})
 
 styles = { ...localStyles, ...globalStyles };
 
+// export default Tabs;
 
 function mapStateToProps(state) {
   return {
     tabs: state.tabs,
-    navigation: state.navigation
+    auth: state.auth,
+    notif: state.notif,
+    // navigation: state.navigation
   };
 }
 

@@ -45,6 +45,7 @@ class Comments extends Component {
 
   componentWillUpdate(next) {
     if (next.comments.comments !== this.props.comments.comments) {
+      console.log("COMMENTS ARE HERE ", next.comments.comments )
       let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.dataSource = ds.cloneWithRows([]);
     }

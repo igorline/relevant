@@ -38,21 +38,24 @@ class SingleActivity extends Component {
     });
   }
 
-  setSelected(id) {
-    const self = this;
-    let set = null;
-    if (typeof id === 'object') {
-      set = id._id;
-    } else {
-      set = id;
+  setSelected(user) {
+    // let id = user._id;
+    // let set = null;
+    // if (typeof id === 'object') {
+    //   set = id._id;
+    // } else {
+    //   set = id;
+    // }
+
+    if (user._id !== this.props.auth.user._id) {
+      this.props.actions.setSelectedUser(user._id);
     }
 
-    if (set === self.props.auth.user._id) {
-      self.props.navigator.push({name: 'profile'});
-    } else {
-      self.props.actions.setSelectedUser(set);
-      self.props.navigator.push({name: 'profile'});
-    }
+    this.props.navigator.push({
+      key: 'profile',
+      title: user.name,
+      back: true,
+    });
   }
 
   render() {
@@ -70,7 +73,7 @@ class SingleActivity extends Component {
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
               <Text style={styles.darkGray}>
-                <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser._id)}>
+                <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser)}>
                   {singleActivity.byUser.name}
                 </Text>
                 &nbsp;invested {'$'+singleActivity.amount} in your post
@@ -88,7 +91,7 @@ class SingleActivity extends Component {
         activityEl = (
           <View style={styles.singleActivity}>
             <Text style={styles.darkGray}>
-              <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser._id)}>
+              <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser)}>
                 {singleActivity.byUser.name}
               </Text>
               &nbsp;visited your profile
@@ -101,7 +104,7 @@ class SingleActivity extends Component {
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
               <Text style={styles.darkGray}>
-                <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser._id)}>
+                <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser)}>
                   {singleActivity.byUser.name}
                 </Text>
                 &nbsp;commented on your post
@@ -118,7 +121,7 @@ class SingleActivity extends Component {
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
               <Text style={styles.darkGray}>
-                <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>
+                <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser)}>{singleActivity.byUser.name}</Text>
               &nbsp;is thirsty 4 u 👅💦</Text>
             </View>
             <View style={styles.activityRight}>
@@ -131,7 +134,7 @@ class SingleActivity extends Component {
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
               <Text style={styles.darkGray}>
-                <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser._id)}>{singleActivity.byUser.name}</Text>
+                <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser)}>{singleActivity.byUser.name}</Text>
                 &nbsp;mentioned you in a post
               </Text>
               <Text onPress={() => self.goToPost(singleActivity)} numberOfLines={1} style={[styles.active]}>{singleActivity.post.title}</Text>
@@ -181,7 +184,7 @@ class SingleActivity extends Component {
             <View style={styles.singleActivity}>
               <View style={styles.activityLeft}>
                 <Text style={styles.darkGray}>
-                  <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser._id)}>
+                  <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser)}>
                     {singleActivity.byUser.name}
                   </Text>
                   &nbsp;went online

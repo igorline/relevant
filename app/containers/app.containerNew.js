@@ -1,15 +1,9 @@
-'use strict';
-
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
-  TextInput,
-  StatusBarIOS,
   AppState,
-  Navigator,
   TouchableHighlight,
   ActionSheetIOS,
   AlertIOS,
@@ -17,25 +11,10 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-var {Router, routerReducer, Route, Container, Animations, Schema} = require('react-native-redux-router');
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-import Button from 'react-native-button';
+import { globalStyles, fullWidth } from '../styles/global';
 import Auth from './auth.container';
-import Import from './import.container';
-import Profile from './profile.container';
 import Notification from '../components/notification.component';
-import Login from '../components/login.component';
-import Signup from '../components/signup.component';
-import Categories from '../components/categories.component';
-import Read from './read.container';
 import Footer from './footer.containerNew';
-import CreatePost from './createPost.container';
-import Discover from './discover.container';
-import SinglePost from './singlePost.container';
-import Activity from './activity.container';
-import Comments from './comments.container';
-import Messages from './messages.container';
-import Thirst from './thirst.container';
 import InvestAnimation from '../components/investAnimation.component';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
@@ -49,21 +28,18 @@ import * as messageActions from '../actions/message.actions';
 import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
-
 import * as navigationActions from '../actions/navigation.actions';
-
-
-var Platform = require('react-native').Platform;
-var ImagePicker = require('react-native-image-picker');
 import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
 
 let styles;
 
+let ImagePicker = require('react-native-image-picker');
+
+
 class Application extends Component {
   constructor(props, context) {
     super(props, context);
-    this.back = this.back.bind(this);
     this.state = {
       newName: null,
       buttons: [
@@ -79,13 +55,7 @@ class Application extends Component {
       ],
     };
 
-    this.mainRoutes = [
-      { name: 'read', id: 0, mainView: true },
-      { name: 'discover', id: 1, mainView: true },
-      { name: 'createPost', id: 2, mainView: true },
-      { name: 'activity', id: 3, mainView: true },
-      { name: 'profile', id: 4, mainView: true },
-    ];
+    this.showActionSheet = this.showActionSheet.bind(this);
   }
 
   componentDidMount() {
@@ -123,6 +93,16 @@ class Application extends Component {
     AppState.removeEventListener('change', this.handleAppStateChange.bind(self));
   }
 
+  getTitle(route) {
+    let title = '';
+    switch (route.name) {
+      case 'singlePost':
+        this.props.posts.activePost.title ? title = this.props.posts.activePost.title : title = 'Untitled Post';
+        break;
+    }
+    return title;
+  }
+
   changeName() {
     const self = this;
     console.log('change name');
@@ -137,18 +117,18 @@ class Application extends Component {
   }
 
   chooseImage() {
-    var self = this;
+    let self = this;
     self.pickImage((err, data) => {
       if (data) {
         utils.s3.toS3Advanced(data, self.props.auth.token).then((results) => {
           if (results.success) {
             let newUser = self.props.auth.user;
             newUser.image = results.url;
-            self.props.actions.updateUser(newUser, self.props.auth.token).then((results) => {
-              if (results) self.props.actions.getUser(self.props.auth.token, false);
+            self.props.actions.updateUser(newUser, self.props.auth.token).then((res) => {
+              if (res) self.props.actions.getUser(self.props.auth.token, false);
             });
           } else {
-            console.log('err');
+            console.log(results);
           }
         });
       }
@@ -157,17 +137,16 @@ class Application extends Component {
 
 
   pickImage(callback) {
-    const self = this;
     ImagePicker.showImagePicker(pickerOptions, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
-        callback("cancelled");
+        callback('cancelled');
       } else if (response.error) {
         console.log('ImagePickerManager Error: ', response.error);
-        callback("error");
+        callback('error');
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
-        callback("error");
+        callback('error');
       } else {
         callback(null, response.uri);
       }
@@ -176,22 +155,21 @@ class Application extends Component {
 
 
   showActionSheet() {
-    const self = this;
     ActionSheetIOS.showActionSheetWithOptions({
-      options: self.state.buttons,
-      cancelButtonIndex: self.state.cancelIndex,
-      destructiveButtonIndex: self.state.destructiveIndex,
+      options: this.state.buttons,
+      cancelButtonIndex: this.state.cancelIndex,
+      destructiveButtonIndex: this.state.destructiveIndex,
     },
     (buttonIndex) => {
       switch (buttonIndex) {
         case 0:
-          self.changeName();
+          this.changeName();
           break;
         case 1:
-          self.chooseImage();
+          this.chooseImage();
           break;
         case 2:
-          self.logoutRedirect();
+          this.logoutRedirect();
           break;
         default:
           return;
@@ -199,149 +177,15 @@ class Application extends Component {
     });
   }
 
-
-
-  left(route, navigator) {
-    if (
-      route.name === 'messages'
-      || route.name === 'singlePost'
-      || route.name === 'comments'
-      || route.name === 'categories'
-      || route.name === 'login'
-      || route.name === 'signup'
-      || route.name === 'thirst') {
-      return (
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: 10
-          }}
-          onPress={() => this.back(route, navigator)}
-        >
-          <Text>Back</Text>
-        </TouchableHighlight>
-      );
-    } else {
-      return null;
-    }
-  }
-
-  right(route) {
-    const self = this;
-    let statsEl = null;
-    let relevance = 0;
-    let balance = 0;
-    let user = null;
-    if (self.props.auth.user) {
-      user = self.props.auth.user;
-      if (user.relevance) relevance = user.relevance;
-      if (user.balance) balance = user.balance;
-      if (balance > 0) balance = balance.toFixed(0);
-      if (relevance > 0) relevance = relevance.toFixed(0);
-    }
-    if (self.props.auth.user) {
-      statsEl = (<View><Text style={styles.statsTxt}>📈<Text style={styles.active}>{relevance}</Text>  💵<Text style={styles.active}>{balance}</Text></Text></View>
-      );
-    }
-    if (route.name !== 'profile') {
-      return (<View style={{ flex: 1, justifyContent: 'center', padding: 10 }}>{statsEl}</View>);
-    } else if (route.name === 'profile' && self.props.users.selectedUserId === self.props.auth.user._id) {
-      return (<View style={styles.gear}><TouchableHighlight underlayColor={'transparent'} onPress={() => self.showActionSheet()} ><Image style={styles.gearImg} source={require('../assets/images/gear.png')} /></TouchableHighlight></View>);
-    }
-    return null;
-  }
-
-  title(route) {
-    const self = this;
-    let title = self.getTitle(route);
-    return (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text numberOfLines={1} ellipsizeMode={'tail'} style={{ width: (fullWidth - 225), textAlign: 'center' }}>{title}</Text></View>);
-  }
-
-  back(route, navigator) {
-    if (route.parent) route.parent.child = null;
-    navigator.pop();
-  }
-
-  getTitle(route) {
-    const self = this;
-    let title = '';
-    switch (route.name) {
-      case 'login':
-        title = 'Log In';
-        break;
-
-      case 'signup':
-        title = 'Sign Up';
-        break;
-
-      case 'profile':
-        if (self.props.users.selectedUserData) {
-          title = self.props.users.selectedUserData.name;
-        } else if (self.props.auth.user) {
-          title = self.props.auth.user.name;
-        } else {
-          title = 'User';
-        }
-        break;
-
-      case 'activity':
-        title = 'Activity';
-        break;
-
-      case 'createPost':
-        title = 'Post';
-        break;
-
-      case 'categories':
-        title = 'Categories';
-        break;
-
-      case 'discover':
-        title = 'Discover';
-        break;
-
-      case 'read':
-        title = 'Read';
-        break;
-
-      case 'user':
-        self.props.users.selectedUser ? title = self.props.users.selectedUser.name : title = '';
-        break;
-
-      case 'singlePost':
-        self.props.posts.activePost.title ? title = self.props.posts.activePost.title : title = 'Untitled Post';
-        break;
-
-      case 'messages':
-        title = 'Messages';
-        break;
-
-      default:
-        title = '';
-    }
-    return title;
-  }
-
-  getNavigator() {
-    const self = this;
-    return self.navigatorRef;
-  }
-
-  changePhoto() {
-    const self = this;
-    console.log('change photo');
-  }
-
   logoutRedirect() {
-    const self = this;
-    self.props.actions.removeDeviceToken(self.props.auth);
-    self.props.actions.logoutAction(self.props.auth.user, self.props.auth.token);
-    self.navigatorRef.replace({ name: 'auth' });
+    this.props.actions.removeDeviceToken(this.props.auth);
+    this.props.actions.logoutAction(this.props.auth.user, this.props.auth.token);
+
+    // TODO
+    this.actions.replace({ name: 'auth' });
   }
 
+  // home button etc
   handleAppStateChange(currentAppState) {
     const self = this;
     if (currentAppState === 'active' && self.props.auth.user) {
@@ -352,16 +196,14 @@ class Application extends Component {
   }
 
   render() {
-    const self = this;
-
-    if (self.props.auth.user) {
+    if (this.props.auth.user) {
       return (
         <View style={{ flex: 1 }} >
-          <Footer />
+          <Footer showActionSheet={this.showActionSheet} />
           <View pointerEvents={'none'} style={globalStyles.notificationContainer}>
-            <Notification {...self.props} />
+            <Notification {...this.props} />
           </View>
-          <InvestAnimation {...self.props} />
+          <InvestAnimation {...this.props} />
         </View>
       );
     }
@@ -380,15 +222,14 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     users: state.user,
-    router: state.routerReducer,
     online: state.online,
     notif: state.notif,
     animation: state.animation,
     view: state.view,
     messages: state.messages,
     stats: state.stats,
-    investments: state.investments
-   }
+    investments: state.investments,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -435,16 +276,6 @@ const localStyles = StyleSheet.create({
     color: '#aaaaaa',
     fontSize: 12
   },
-  gear: {
-    height: 45,
-    flex: 1,
-    justifyContent: 'center',
-    padding: 12,
-  },
-  gearImg: {
-    height: 20,
-    width: 20
-  },
   nav: {
     height: 60,
     flexDirection: 'row',
@@ -462,10 +293,6 @@ const localStyles = StyleSheet.create({
     height: 60,
     alignItems: 'center',
     justifyContent: 'flex-end'
-  },
-  statsTxt: {
-    color: 'black',
-    fontSize: 10
   },
   navItem: {
     flex: 1,
