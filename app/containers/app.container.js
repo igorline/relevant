@@ -167,7 +167,10 @@ class Application extends Component {
       let user = self.props.auth.user;
       user.name = nextState.newName;
       self.props.actions.updateUser(user, self.props.auth.token).then((results) => {
-        if (results) self.props.actions.getUser(self.props.auth.token, false);
+        if (results) {
+          self.props.actions.getUser(self.props.auth.token, false);
+          self.props.actions.getSelectedUser(self.props.auth.user._id);
+        }
       });
     }
     if (self.props.posts.tag !== nextProps.posts.tag && nextProps.posts.tag) {
@@ -210,7 +213,10 @@ class Application extends Component {
             let newUser = self.props.auth.user;
             newUser.image = results.url;
             self.props.actions.updateUser(newUser, self.props.auth.token).then((results) => {
-              if (results) self.props.actions.getUser(self.props.auth.token, false);
+              if (results) {
+                self.props.actions.getUser(self.props.auth.token, false);
+                self.props.actions.getSelectedUser(self.props.auth.user._id);
+              }
             });
           } else {
             console.log('err');

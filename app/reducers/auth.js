@@ -35,7 +35,7 @@ export default function auth(state = initialState, action) {
         'isAuthenticated': false,
         'token': null,
         'user': null,
-        'statusText': action.payload.statusText
+        //'statusText': action.payload.statusText
       })
 
     case 'SET_AUTH_STATUS_TEXT':
