@@ -1,3 +1,4 @@
+import { combineReducers } from 'redux';
 import auth from './auth';
 import posts from './posts';
 import user from './user';
@@ -10,8 +11,10 @@ import view from './view';
 import stats from './stats';
 import investments from './investments';
 import comments from './comments';
+import tabs from './tabs';
+import navigation from './navigation';
 
-export {
+const rootReducer = combineReducers({
   auth,
   posts,
   user,
@@ -23,5 +26,10 @@ export {
   view,
   investments,
   stats,
-  comments
-};
+  comments,
+  tabs,
+  navigation
+});
+
+export default rootReducer;
+

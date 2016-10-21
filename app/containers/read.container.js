@@ -11,7 +11,7 @@ import {
 import { bindActionCreators } from 'redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { connect } from 'react-redux';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles } from '../styles/global';
 import Post from '../components/post.component';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
@@ -50,7 +50,7 @@ const localStyles = StyleSheet.create({
   },
 });
 
-var styles = {...localStyles, ...globalStyles};
+let styles = { ...localStyles, ...globalStyles };
 
 class Read extends Component {
   constructor(props, context) {
@@ -60,6 +60,7 @@ class Read extends Component {
       enabled: true,
       feedData: null,
     };
+    this.renderFeedRow = this.renderFeedRow.bind(this);
   }
 
   componentDidMount() {
@@ -134,9 +135,8 @@ class Read extends Component {
   }
 
   renderFeedRow(rowData) {
-    const self = this;
     return (
-      <Post post={rowData} {...self.props} styles={styles} />
+      <Post post={rowData} {...this.props} styles={styles} />
     );
   }
 
@@ -151,18 +151,26 @@ class Read extends Component {
     if (self.props.messages.index.length > 0) {
       messages = self.props.messages.index;
       for (let x = 0; x < 4; x++) {
-        recentMessages.push(<Text key={x} style={styles.recentName}>{x < 3 ? self.props.messages.index[x].from.name+', ' : self.props.messages.index[x].from.name}</Text>);
+        recentMessages.push(
+          <Text
+            key={x}
+            style={styles.recentName}
+          >
+            {x < 3 ? this.props.messages.index[x].from.name + ', ' : this.props.messages.index[x].from.name}
+          </Text>
+        );
       }
     }
 
     if (self.state.feedData && self.props.posts.feed.length) {
       postsEl = (<ListView
         ref={(c) => { this.listview = c; }}
+        enableEmptySections
         renderScrollComponent={props => <ScrollView {...props} />}
         onScroll={() => self.onScroll}
         dataSource={self.state.feedData}
         enableEmptySections
-        renderRow={() => self.renderFeedRow}
+        renderRow={this.renderFeedRow}
       />);
     }
 
@@ -171,7 +179,11 @@ class Read extends Component {
     }
 
     if (self.props.messages.count > 0) {
-      messagesCount = (<Text style={[styles.white, styles.messagesCount]}>{self.props.messages.count + ' New'}</Text>);
+      messagesCount = (
+        <Text style={[styles.white, styles.messagesCount]}>
+          {self.props.messages.count + ' New'}
+        </Text>
+      );
     }
 
     thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={messages ? () => self.goTo({ name: 'messages' }) : null}>

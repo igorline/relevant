@@ -63,9 +63,8 @@ class Login extends Component {
   }
 
   back() {
-    const self = this;
     console.log('back');
-    self.props.navigator.push({name: 'auth'});
+    this.props.actions.pop(0);
   }
 
   render() {
@@ -100,18 +99,20 @@ Login.propTypes = {
   actions: React.PropTypes.object,
 };
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-  };
-}
+export default Login;
 
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({
-      ...authActions,
-    }, dispatch),
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     auth: state.auth,
+//   };
+// }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     actions: bindActionCreators({
+//       ...authActions,
+//     }, dispatch),
+//   };
+// }
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Login);

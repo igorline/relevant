@@ -23,6 +23,7 @@ import * as tagActions from '../actions/tag.actions';
 import * as viewActions from '../actions/view.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
+import * as navigationActions from '../actions/navigation.actions';
 
 let styles;
 const POST_PAGE_SIZE = 5;
@@ -311,6 +312,7 @@ function mapDispatchToProps(dispatch) {
         ...userActions,
         ...statsActions,
         ...authActions,
+        ...navigationActions,
       }, dispatch),
   };
 }

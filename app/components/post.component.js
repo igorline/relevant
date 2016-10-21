@@ -283,28 +283,21 @@ class Post extends Component {
 
   uninvest() {
     var self = this;
-    console.log('destroy investment')
     self.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
        if (self.props.route == 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
-    })
+    });
   }
 
   openComments() {
-    this.props.actions.setActivePost(this.props.post._id);
-    console.log("ROUTE ", this.props.route);
-    this.parentScene = this.props.route;
-    let routeId = this.parentScene.id + 1;
-    this.parentScene.scene = routeId;
     this.props.navigator.push({
-      name: 'comments',
-      parent: this.parentScene
+      key: 'comment',
+      title: 'Comments',
+      back: true
     });
   }
 
   deletePost() {
-    var self = this;
-    self.props.actions.deletePost(self.props.auth.token, self.props.post);
-    console.log('delete')
+    this.props.actions.deletePost(self.props.auth.token, self.props.post);
   }
 
   irrelevant() {
