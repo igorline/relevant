@@ -543,16 +543,6 @@ class Post extends Component {
         </View>);
     }
 
-    var modalBackgroundStyle = {
-      backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
-    };
-    var innerContainerTransparentStyle = this.state.transparent
-      ? {backgroundColor: '#fff', padding: 20}
-      : null;
-    var activeButtonStyle = {
-      backgroundColor: '#ddd'
-    };
-
     return (
       <View style={[styles.postContainer]} onLayout={(event) => {
           var {x, y, width, height} = event.nativeEvent.layout;
@@ -622,25 +612,39 @@ class Post extends Component {
           </View>
         </TouchableHighlight>
 
-        {/*<Modal
+        <Modal
           animationType={'fade'}
           transparent={'true'}
           visible={this.state.modalVisible}
           onRequestClose={() => this.toggleModal()}
-          >
-          <View style={[styles.container, modalBackgroundStyle]}>
-            <View style={[styles.innerContainer, innerContainerTransparentStyle]}>
-              <Text>This modal was presented {this.state.animationType === 'none' ? 'without' : 'with'} animation.</Text>
-              <Text>It is currently displayed in {this.state.currentOrientation} mode.</Text>
-              <Button
-                onPress={() => this._setModalVisible.bind(this, false)}
-                style={styles.modalButton}>
-                Close
-              </Button>
+        >
+          <View style={[styles.container, { backgroundColor: 'rgba(0,0,0,0.1)' }]}>
+            <View style={[{ backgroundColor: 'white', padding: 20, borderRadius: 10 }]}>
+
+              <View style={{ flex: 1, justifyContent: 'space-between', padding: 20, flexDirection: 'row'}}>
+                <TouchableHighlight style={styles.investOption}>
+                  <Text>50</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.investOption}>
+                  <Text>100</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.investOption}>
+                  <Text>200</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.investOption}>
+                  <Text>500</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.investOption}>
+                  <Text>1000</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.investOption}>
+                  <Text>2000</Text>
+                </TouchableHighlight>
+              </View>
+              <Text onPress={() => self.toggleModal()}>Close</Text>
             </View>
           </View>
-        </Modal>*/}
-
+        </Modal>
       </View>
     );
   }
@@ -725,6 +729,12 @@ const localStyles = StyleSheet.create({
     height: 25,
     width: 25,
     borderRadius: 12.5,
+  },
+  investOption: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 5,
   },
   postHeader: {
     flexDirection: 'row',
