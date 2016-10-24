@@ -54,7 +54,7 @@ class CardContainer extends Component {
     switch (key) {
       case 'discover':
         return <Discover {...this.props} navigator={this.props.actions} />;
-      case 'profile':
+      case 'myProfile':
         return <Profile {...this.props} navigator={this.props.actions} />;
       case 'activity':
         return <Activity {...this.props} navigator={this.props.actions} />;
@@ -78,38 +78,25 @@ class CardContainer extends Component {
   renderScene(props) {
     let key = props.scene.route.key;
 
-    console.log("Current key ", key);
-
     switch (key) {
-
-      // case 'discover':
-      //   return <Discover {...this.props} navigator={this.props.actions} />;
-      // case 'profile':
-      //   return <Profile {...this.props} navigator={this.props.actions} />;
-      // case 'activity':
-      //   return <Activity {...this.props} navigator={this.props.actions} />;
-      // case 'createPost':
-      //   return <CreatePost {...this.props} navigator={this.props.actions} />;
-      // case 'read':
-      //   return <Read {...this.props} navigator={this.props.actions} />;
 
       case 'comment':
         return <Comments />;
 
       case 'thirst':
-        return <Thirst />;
+        return <Thirst navigator={this.props.actions} />;
 
       case 'singlePost':
-        return <SinglePost />;
+        return <SinglePost navigator={this.props.actions} />;
 
       case 'messages':
-        return <Messages />;
+        return <Messages navigator={this.props.actions} />;
 
       case 'categories':
-        return <Categories />;
+        return <Categories navigator={this.props.actions} />;
 
       case 'profile':
-        return <Profile />;
+        return <Profile navigator={this.props.actions}  />;
 
       case 'auth':
         return <Auth authType={key} />;
@@ -128,7 +115,6 @@ class CardContainer extends Component {
   }
 
   renderTitle(props) {
-    console.log("TITLE ", this.props);
     let key = props.scene.route.key;
     let title = props.scene.route ? props.scene.route.title : null;
 
@@ -137,6 +123,18 @@ class CardContainer extends Component {
         return this.default === route.key;
       });
       title = r.title;
+    }
+
+    if (key === 'profile') {
+      if (this.props.users.selectedUserData) {
+        if (this.props.users.selectedUserData.name) title = this.props.users.selectedUserData.name;
+      }
+    }
+
+    if (key == 'singlePost') {
+      if (this.props.posts.selectedPostData) {
+        if (this.props.posts.selectedPostData.title) title = this.props.posts.selectedPostData.title;
+      }
     }
 
     return (
@@ -167,7 +165,7 @@ class CardContainer extends Component {
     let user = null;
 
     let key = this.default;
-    console.log("RIGHT KEY ", key)
+    //console.log("RIGHT KEY ", key)
     if (this.props.auth.user) {
       user = this.props.auth.user;
       if (user.relevance) relevance = user.relevance;
@@ -286,5 +284,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardContainer);
-
-// export default CardContainer;

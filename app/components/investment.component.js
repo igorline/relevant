@@ -10,6 +10,7 @@ let moment = require('moment');
 class Investment extends Component {
   constructor (props, context) {
     super(props, context);
+    this.goToPost.bind(self);
     this.state = {
     };
   }
@@ -21,8 +22,8 @@ class Investment extends Component {
   }
 
   setSelected(user) {
-    self.props.actions.setSelectedUser(user._id);
-    self.props.navigator.push({
+    this.props.actions.setSelectedUser(user._id);
+    this.props.navigator.push({
       key: 'profile',
       name: user.name,
       back: true,
@@ -30,41 +31,41 @@ class Investment extends Component {
   }
 
   goToPost(id) {
-    this.props.actions.getActivePost(id)
-    .then(() => {
-      this.props.navigator.push({
-        key: 'singlePost',
-        title: 'Post',
-        back: true
-      });
+    console.log(this, id, 'goToPost')
+    this.props.actions.setSelectedPost(id);
+    this.props.navigator.push({
+      key: 'singlePost',
+      title: 'Post',
+      back: true
     });
   }
 
   render() {
-    var self = this;
-    var investment = self.props.investment;
-    var investmentEl = null;
-    var styles = self.props.styles;
-    var postId = null;
-    var time = null;
+    const self = this;
+    let investment = self.props.investment;
+    let investmentEl = null;
+    let styles = self.props.styles;
+    let postId = null;
+    let time = null;
+    let activityTime = null;
     if (self.props.investment.post) {
       if (self.props.investment.post._id) postId = self.props.investment.post._id;
-      var activityTime = moment(self.props.investment.createdAt);
+      activityTime = moment(self.props.investment.createdAt);
       time = activityTime.fromNow();
     }
     if (investment) {
       investmentEl = (<View style={styles.singleActivity}>
         <View style={styles.activityLeft}>
-          <Text style={styles.darkGray}>{investment.investor.name} invested {'$'+investment.amount} in <Text style={styles.active} onPress={self.setSelected.bind(self, investment.poster)}>{investment.poster.name+"'s"}</Text> post
-            <Text numberOfLines={1} onPress={postId ? self.goToPost.bind(self, investment.post._id) : null} style={styles.active}>
-            {postId ? ' '+investment.post.title : null}
+          <Text style={styles.darkGray}>{investment.investor.name} invested {'$' + investment.amount} in <Text style={styles.active} onPress={() => self.setSelected(investment.poster)}>{investment.poster.name + "'s"}</Text> post
+            <Text numberOfLines={1} onPress={postId ? () => self.goToPost(investment.post._id) : null} style={styles.active}>
+            {postId ? ' ' + investment.post.title : null}
             </Text>
           </Text>
         </View>
         <View style={styles.activityRight}>
           <Text style={[styles.gray, styles.textRight]}>{time}</Text>
         </View>
-      </View>)
+      </View>);
     }
 
   return (
@@ -76,9 +77,3 @@ class Investment extends Component {
 }
 
 export default Investment;
-
-
-
-
-
-

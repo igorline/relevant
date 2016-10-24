@@ -1,17 +1,15 @@
 import * as types from './actionTypes';
-import { push } from 'react-router-redux';
-import thunk from 'redux-thunk';
+import * as utils from '../utils';
 import * as notifActions from './notif.actions';
 import userDefaults from 'react-native-user-defaults';
+import {
+    PushNotificationIOS,
+    AlertIOS
+} from 'react-native';
+
 const APP_GROUP_ID = 'group.com.4real.relevant';
 require('../publicenv');
-import {
-    PushNotificationIOS
-} from 'react-native';
-import * as utils from '../utils';
-import {
-  AlertIOS
-} from 'react-native';
+
 
 export
 function setUser(user) {

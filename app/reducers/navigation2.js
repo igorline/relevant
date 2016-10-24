@@ -15,7 +15,7 @@ const initialState = {
       { key: 'discover', icon: '🔮', title: 'Discover' },
       { key: 'createPost', icon: '📝', title: 'Create Post' },
       { key: 'activity', icon: '⚡', title: 'Activity' },
-      { key: 'profile', icon: '👤', title: 'Profile' }
+      { key: 'myProfile', icon: '👤', title: 'Profile' }
     ],
   },
   auth: {
@@ -58,11 +58,11 @@ const initialState = {
       title: 'Activity'
     }],
   },
-  profile: {
+  myProfile: {
     index: 0,
-    key: 'profile',
+    key: 'myProfile',
     routes: [{
-      key: 'profile',
+      key: 'myProfile',
       title: 'Profile'
     }],
   },
