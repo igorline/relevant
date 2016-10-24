@@ -23,6 +23,7 @@ import * as messageActions from '../actions/message.actions';
 import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
+import * as navigationActions from '../actions/navigation.actions';
 
 const localStyles = StyleSheet.create({
   thirstyHeader: {
@@ -131,7 +132,12 @@ class Read extends Component {
 
   goTo(view) {
     const self = this;
-    self.props.navigator.push(view);
+    this.props.navigator.push({
+      key: view.name,
+      title: view.name,
+      back: true
+    });
+    //self.props.navigator.push(view);
   }
 
   renderFeedRow(rowData) {
@@ -186,22 +192,24 @@ class Read extends Component {
       );
     }
 
-    thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={messages ? () => self.goTo({ name: 'messages' }) : null}>
-      <View style={[styles.thirstyHeader]}>
-        <View style={{ paddingRight: 5 }}>
-          <Text>👅💦</Text>
-        </View>
-        <View>
-          <Text style={[{ fontWeight: '500' }, styles.darkGray]}>{messages ? 'Thirsty messages' : 'No messages'}</Text>
-          <View style={styles.recentNames}>
-            {recentMessages}
+    if (self.props.messages.index && self.state.feedData) {
+      thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={messages ? () => self.goTo({ name: 'messages' }) : null}>
+        <View style={[styles.thirstyHeader]}>
+          <View style={{ paddingRight: 5 }}>
+            <Text>👅💦</Text>
+          </View>
+          <View>
+            <Text style={[{ fontWeight: '500' }, styles.darkGray]}>{messages ? 'Thirsty messages' : 'No messages'}</Text>
+            <View style={styles.recentNames}>
+              {recentMessages}
+            </View>
+          </View>
+          <View style={{ justifyContent: 'flex-end', flex: 1, flexDirection: 'row' }}>
+            {messagesCount}
           </View>
         </View>
-        <View style={{ justifyContent: 'flex-end', flex: 1, flexDirection: 'row' }}>
-          {messagesCount}
-        </View>
-      </View>
-    </TouchableHighlight>);
+      </TouchableHighlight>);
+    }
 
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
@@ -227,7 +235,19 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({...statsActions, ...authActions, ...postActions, ...animationActions, ...viewActions, ...messageActions, ...tagActions, ...userActions, ...investActions, ...subscriptionActions}, dispatch)
+    actions: bindActionCreators({
+      ...navigationActions,
+      ...statsActions,
+      ...authActions,
+      ...postActions,
+      ...animationActions,
+      ...viewActions,
+      ...messageActions,
+      ...tagActions,
+      ...userActions,
+      ...investActions,
+      ...subscriptionActions,
+    }, dispatch)
   };
 }
 

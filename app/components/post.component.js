@@ -11,18 +11,19 @@ import {
   Animated,
   AlertIOS,
   ActionSheetIOS,
+  Modal,
   TouchableWithoutFeedback,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import Share from 'react-native-share';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
-var moment = require('moment');
-var PickerItemIOS = PickerIOS.Item;
+let moment = require('moment');
+let PickerItemIOS = PickerIOS.Item;
 
 class Post extends Component {
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       progress: 0,
       expanded: false,
@@ -44,6 +45,7 @@ class Post extends Component {
       myPost: false,
       bodyHeight: 0,
       titleHeight: 0,
+      modalVisible: false,
       buttons: [
         'Share',
         'Irrelevant',
@@ -118,11 +120,6 @@ class Post extends Component {
 
   openLink(url) {
     Linking.openURL(url);
-  }
-
-  toggleExpanded() {
-    const self = this;
-    self.setState({ expanded: self.state.expanded = !self.state.expanded });
   }
 
   extractDomain(url) {
@@ -242,48 +239,25 @@ class Post extends Component {
          self.setState({editing: false});
       }
     })
-
   }
 
-  toggleInvest() {
-    var self = this;
-    var expandedInvest = self.state.expandedInvest;
-    expandedInvest = !expandedInvest;
-    self.setState({'expandedInvest': expandedInvest});
-    if (expandedInvest) {
-      Animated.timing(
-        self.state.aniHeight,
-        {
-          toValue: 200,
-          duration: 300
-        }
-      ).start();
-    } else {
-      Animated.timing(
-        self.state.aniHeight,
-        {
-          toValue: 0,
-          duration: 300
-        }
-      ).start();
-    }
-  }
 
   invest() {
-    var self = this;
+    const self = this;
     console.log('investing', self.state.investAmount);
     this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user);
     self.setState({ investAmount: 50 });
   }
 
   uninvest() {
-    var self = this;
-    self.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(function() {
-       if (self.props.route === 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id)
+    const self = this;
+    self.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(() => {
+      if (self.props.route === 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id);
     });
   }
 
   openComments() {
+    this.props.actions.setSelectedPost(this.props.post._id);
     this.props.navigator.push({
       key: 'comment',
       title: 'Comments',
@@ -291,20 +265,28 @@ class Post extends Component {
     });
   }
 
+  goToPost(id) {
+    this.props.actions.setSelectedPost(id);
+    this.props.navigator.push({
+      key: 'singlePost',
+      back: true,
+    });
+  }
+
   deletePost() {
-    this.props.actions.deletePost(self.props.auth.token, self.props.post);
+    this.props.actions.deletePost(this.props.auth.token, this.props.post);
   }
 
   irrelevant() {
-    var self = this;
+    const self = this;
     console.log('irrelevant');
     self.props.actions.irrelevant(self.props.auth.token, self.props.post._id);
   }
 
   toggleOptions() {
-    var self = this;
+    const self = this;
     console.log('toggleOptions');
-    self.setState({showOptions: self.state.showOptions = !self.state.showOptions});
+    self.setState({ showOptions: self.state.showOptions = !self.state.showOptions });
   }
 
   setSelected(user) {
@@ -333,21 +315,30 @@ class Post extends Component {
     }
   }
 
-  handlePressIn() {
-    var self = this;
-    self.props.actions.triggerAnimation('invest');
-    self.setState({investAmount: 50});
-    self.invest();
+  toggleModal() {
+    const self = this;
+    console.log('toggleModal')
+    self.setState({modalVisible: !self.state.modalVisible});
+
+
+    // self.props.actions.triggerAnimation('invest');
+    // self.setState({investAmount: 50});
+    // self.invest();
+  }
+
+  toggleExpanded() {
+    const self = this;
+    self.setState({ expanded: self.state.expanded = !self.state.expanded });
   }
 
   toggleInfo() {
-    var self = this;
-    var newVar = !self.state.toggleInfo;
+    const self = this;
+    let newVar = !self.state.toggleInfo;
     self.setState({toggleInfo: newVar});
   }
 
   render() {
-    var self = this;
+    const self = this;
     var pickerStatus = self.state.pickerStatus;
     var post, title, description, image, link, imageEl, postUserImage, postUserImageEl, postUser, postUserName, body, balance, createdAt, user, comments, functionBool, tags, tagsEl = null;
     var commentString = 'Add comment';
@@ -451,7 +442,7 @@ class Post extends Component {
     if (post) {
       if (post.user._id != self.props.auth.user._id) {
         investButtonEl = (<TouchableWithoutFeedback
-            onPressIn={this.handlePressIn.bind(self)}
+            onPress={() => self.toggleModal()}
             style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View>
           </TouchableWithoutFeedback>
@@ -552,6 +543,16 @@ class Post extends Component {
         </View>);
     }
 
+    var modalBackgroundStyle = {
+      backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
+    };
+    var innerContainerTransparentStyle = this.state.transparent
+      ? {backgroundColor: '#fff', padding: 20}
+      : null;
+    var activeButtonStyle = {
+      backgroundColor: '#ddd'
+    };
+
     return (
       <View style={[styles.postContainer]} onLayout={(event) => {
           var {x, y, width, height} = event.nativeEvent.layout;
@@ -594,9 +595,9 @@ class Post extends Component {
 
         <View style={styles.postButtons}>
           {investButtonEl}
-          <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={self.toggleExpanded.bind(self)}><Text style={[styles.font10, styles.postButtonText]}>{expanded ? 'Read less' : 'Read more'}</Text></TouchableHighlight>
-          <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={self.openComments.bind(self)}><Text style={[{marginRight: 5}, styles.font10, styles.postButtonText]}>{commentString}</Text></TouchableHighlight>
-          <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={self.showActionSheet.bind(self)}><Text style={[styles.font10, styles.postButtonText]}>...</Text></TouchableHighlight>
+          <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={() => self.toggleExpanded()}><Text style={[styles.font10, styles.postButtonText]}>{expanded ? 'Read less' : 'Read more'}</Text></TouchableHighlight>
+          <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={() => self.openComments()}><Text style={[{marginRight: 5}, styles.font10, styles.postButtonText]}>{commentString}</Text></TouchableHighlight>
+          <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={() => self.showActionSheet()}><Text style={[styles.font10, styles.postButtonText]}>...</Text></TouchableHighlight>
         </View>
 
         <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
@@ -606,13 +607,6 @@ class Post extends Component {
             {pickerArray}
           </PickerIOS>
         </Animated.View>
-
-        <View style={expandedInvest ? styles.buttonContainerExpanded : styles.buttonContainer}>
-          <View>
-            {expandedInvest ? <TouchableHighlight style={styles.investButton} onPress={self.toggleInvest.bind(self)}><Text style={styles.white}>Cancel</Text></TouchableHighlight> : null}
-            {expandedInvest ? <TouchableHighlight underlayColor={'transparent'} style={styles.investButton} onPress={self.invest.bind(self, toggleBool, functionBool)}><Text style={styles.white}>Submit</Text></TouchableHighlight> : null}
-          </View>
-        </View>
 
         <TouchableHighlight>
           <View>
@@ -627,6 +621,25 @@ class Post extends Component {
             {link ? <Text style={[styles.font10, styles.darkGray]}>from {self.extractDomain(link)}</Text> : null}
           </View>
         </TouchableHighlight>
+
+        {/*<Modal
+          animationType={'fade'}
+          transparent={'true'}
+          visible={this.state.modalVisible}
+          onRequestClose={() => this.toggleModal()}
+          >
+          <View style={[styles.container, modalBackgroundStyle]}>
+            <View style={[styles.innerContainer, innerContainerTransparentStyle]}>
+              <Text>This modal was presented {this.state.animationType === 'none' ? 'without' : 'with'} animation.</Text>
+              <Text>It is currently displayed in {this.state.currentOrientation} mode.</Text>
+              <Button
+                onPress={() => this._setModalVisible.bind(this, false)}
+                style={styles.modalButton}>
+                Close
+              </Button>
+            </View>
+          </View>
+        </Modal>*/}
 
       </View>
     );

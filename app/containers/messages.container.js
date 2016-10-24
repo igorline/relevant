@@ -97,16 +97,16 @@ class Messages extends Component {
     }
 
     if (set === self.props.auth.user._id) {
-      self.props.navigator.push({name: 'profile'});
+      self.props.actions.setSelectedUser(set);
+      self.props.navigator.push({ key: 'profile', back: true });
     } else {
       self.props.actions.setSelectedUser(set);
-      self.props.navigator.push({name: 'profile'});
+      self.props.navigator.push({ key: 'profile', back: true });
     }
   }
 
   renderMessageRow(rowData) {
     var self = this;
-    console.log(rowData);
     if (rowData.type === 'thirst') {
       return (<View style={styles.message}>
         <Text>
@@ -169,6 +169,7 @@ function mapDispatchToProps(dispatch) {
       ...postActions,
       ...userActions,
       ...tagActions,
+
     }, dispatch),
   };
 }

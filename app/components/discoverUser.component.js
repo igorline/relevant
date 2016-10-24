@@ -30,8 +30,8 @@ class DiscoverUser extends Component {
 
   setSelected(id) {
     var self = this;
-      self.props.actions.setSelectedUser(id);
-      self.props.navigator.push({name: 'profile'});
+    self.props.actions.setSelectedUser(id);
+    self.props.navigator.push({key: 'profile', back: true});
   }
 
   renderHeader() {

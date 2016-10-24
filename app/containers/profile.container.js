@@ -168,7 +168,6 @@ class Profile extends Component {
 
     let newPosts = next.posts.user;
     let oldPosts = this.props.posts.user;
-
     let newInvestments = next.investments.index;
     let oldInvestments = this.props.investments.index;
 
@@ -196,7 +195,8 @@ class Profile extends Component {
   }
 
   onScroll() {
-    if (this.listview.scrollProperties.offset + this.listview.scrollProperties.visibleLength >= this.listview.scrollProperties.contentLength) {
+    if (this.listview.scrollProperties.offset + this.listview.scrollProperties.visibleLength >= 
+      this.listview.scrollProperties.contentLength) {
       this.loadMore();
     }
   }
@@ -325,6 +325,7 @@ function mapStateToProps(state) {
     view: state.view,
     stats: state.stats,
     investments: state.investments,
+    navigation: state.navigation
   };
 }
 
@@ -346,6 +347,5 @@ function mapDispatchToProps(dispatch) {
     }, dispatch),
   };
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);
