@@ -256,7 +256,7 @@ class CreatePost extends Component {
         } else {
           AlertIOS.alert('Posted');
           self.props.actions.setPostCategory(null);
-          self.props.navigator.resetTo({ name: 'discover' });
+          self.props.navigator.push({ key: 'discover', title: 'Discover', back: false });
           self.props.actions.clearPosts('user');
           self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
         }
@@ -391,7 +391,7 @@ class CreatePost extends Component {
 
           <View style={{ borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth, flex: !self.state.urlPreview ? 0.6 : 0.4 }}><TextInput style={[styles.font15, { flex: 1, padding: 10 }]} placeholder={'Body here...'} multiline onChangeText={(postBody) => this.setState({ postBody })} value={this.state.postBody} returnKeyType={'done'} /></View>
 
-          <TouchableHighlight style={{ paddingLeft: 10, borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center' }} underlayColor={'transparent'} onPress={() => self.goTo({ name: 'categories' })}><Text>{self.props.posts.createPostCategory ? self.props.posts.createPostCategory.emoji + ' ' + self.props.posts.createPostCategory.name :  'Choose Category'}</Text></TouchableHighlight>
+          <TouchableHighlight style={{ paddingLeft: 10, borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center' }} underlayColor={'transparent'} onPress={() => self.goTo({ key: 'categories', title: 'Categories', back: true })}><Text>{self.props.posts.createPostCategory ? self.props.posts.createPostCategory.emoji + ' ' + self.props.posts.createPostCategory.name :  'Choose Category'}</Text></TouchableHighlight>
 
           <View style={{ flex: 0.1, justifyContent: 'center' }}><TextInput style={[styles.font15, { flex: 1, padding: 10 }]} placeholder={'Enter tags... ex. webgl, slowstyle, xxx'} multiline={false} onChangeText={(postTags) => this.setState({ postTags })} value={this.state.postTags} returnKeyType={'done'} /></View>
 

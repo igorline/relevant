@@ -9,11 +9,14 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as tagActions from '../actions/tag.actions';
+import * as postActions from '../actions/post.actions';
+import * as navigationActions from '../actions/navigation.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class Categories extends Component {
   constructor(props, context) {
     super(props, context);
+    this.setCategory.bind(this);
     this.state = {
     };
   }
@@ -27,9 +30,8 @@ class Categories extends Component {
   }
 
   setCategory(tag) {
-    const self = this;
-    self.props.actions.setPostCategory(tag);
-    self.props.navigator.pop();
+    this.props.actions.setPostCategory(tag);
+    this.props.navigator.pop();
   }
 
   render() {
@@ -195,8 +197,13 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({ ...postActions, ...tagActions }, dispatch)
+    actions: bindActionCreators(
+      { ...postActions,
+        ...tagActions,
+        ...navigationActions,
+      }, dispatch),
   };
 }
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(Categories);

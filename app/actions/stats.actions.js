@@ -17,7 +17,7 @@ export function getAllStats() {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON, 'stats response');
+      //console.log(responseJSON, 'stats response');
       dispatch(parseStats(responseJSON));
     })
     .catch((error) => {
