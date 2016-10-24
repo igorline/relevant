@@ -325,6 +325,7 @@ function mapStateToProps(state) {
     view: state.view,
     stats: state.stats,
     investments: state.investments,
+    navigation: state.navigation
   };
 }
 
