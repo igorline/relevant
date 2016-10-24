@@ -28,21 +28,16 @@ class SingleActivity extends Component {
   }
 
   goToPost(activity) {
-    this.props.actions.getActivePost(activity.post._id)
-    .then(() => {
-      this.props.navigator.push({
-        key: 'singlePost',
-        title: 'Post',
-        back: true,
-      });
+    this.props.actions.setSelectedPost(activity.post._id);
+    this.props.navigator.push({
+      key: 'singlePost',
+      title: 'Post',
+      back: true,
     });
   }
 
   setSelected(user) {
-    if (user._id !== this.props.auth.user._id) {
-      this.props.actions.setSelectedUser(user._id);
-    }
-
+    this.props.actions.setSelectedUser(user._id);
     this.props.navigator.push({
       key: 'profile',
       title: user.name,

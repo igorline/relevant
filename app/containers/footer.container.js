@@ -47,18 +47,11 @@ class Footer extends Component {
 
   goTo(view) {
     if (view === 'profile') {
+      this.props.actions.clearSelectedUser();
       this.props.actions.setSelectedUser(this.props.auth.user._id);
     }
-<<<<<<< HEAD
 
-    let routeInfo = this.props.navigator.findRouteByName(view);
-    let i = routeInfo.index;
-    let currentRoutes = routeInfo.currentRoutes;
-    let route = routeInfo.view;
-    let child = currentRoutes[i].child;
-=======
     const currentRoutes = this.props.navigator.getCurrentRoutes();
->>>>>>> b8aa4a6879e2906e8f37a9ccbb64712749c684a9
 
     // let last = Object.keys(currentRoutes).length - 1;
     // if (currentRoutes[last].parent) {
