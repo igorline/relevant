@@ -16,6 +16,7 @@ import * as messageActions from '../actions/message.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as notifActions from '../actions/notif.actions';
 import * as userActions from '../actions/user.actions';
+import * as navigationActions from '../actions/navigation.actions';
 
 let styles;
 
@@ -27,72 +28,19 @@ class Footer extends Component {
       opacity: new Animated.Value(0),
       hearts: []
     };
-    this.mainRoutes = [
-      { name: 'read', index: 0 },
-      { name: 'discover', index: 1 },
-      { name: 'createPost', index: 2 },
-      { name: 'activity', index: 3 },
-      { name: 'profile', index: 4 },
-    ];
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.notif.count && this.props.notif.count < nextProps.notif.count) {
-      let newNotifications = nextProps.notif.count - this.props.notif.count;
-      for (let i = 0; i < newNotifications * 2; i++) {
-        this.runAnimation(i);
-      }
-    }
+    // if (nextProps.notif.count && this.props.notif.count < nextProps.notif.count) {
+    //   let newNotifications = nextProps.notif.count - this.props.notif.count;
+    //   for (let i = 0; i < newNotifications * 2; i++) {
+    //     this.runAnimation(i);
+    //   }
+    // }
   }
 
-  goTo(view) {
-    if (view === 'profile') {
-      this.props.actions.setSelectedUser(this.props.auth.user._id);
-    }
-<<<<<<< HEAD
-
-    let routeInfo = this.props.navigator.findRouteByName(view);
-    let i = routeInfo.index;
-    let currentRoutes = routeInfo.currentRoutes;
-    let route = routeInfo.view;
-    let child = currentRoutes[i].child;
-=======
-    const currentRoutes = this.props.navigator.getCurrentRoutes();
->>>>>>> b8aa4a6879e2906e8f37a9ccbb64712749c684a9
-
-    // let last = Object.keys(currentRoutes).length - 1;
-    // if (currentRoutes[last].parent) {
-    //   this.props.navigator.pop();
-    // }
-
-
-    function moveToFront(index) {
-      let last = Object.keys(currentRoutes).length - 1;
-      let thisRoute = currentRoutes[i];
-      for (let j = parseInt(index, 10); j < last; j++) {
-        currentRoutes[j] = currentRoutes[j + 1];
-      }
-      currentRoutes[last] = thisRoute;
-    }
-
-    while (route.child) {
-      moveToFront(i);
-      route = child;
-      child = child.child;
-    }
-
-    if (i !== undefined && currentRoutes[i]) {
-      moveToFront(i);
-      console.log('UPDATE ROUTES ', currentRoutes);
-      this.props.navigator.immediatelyResetRouteStack(currentRoutes);
-    }
-    // else this.props.navigator.push({
-    //   name: view,
-    //   id: Object.keys(currentRoutes).length
-    // });
-
-    this.route = view;
-    this.setState({});
+  goTo(key) {
+    this.props.actions.changeTab(key);
   }
 
   runAnimation(i) {
@@ -180,7 +128,7 @@ class Footer extends Component {
       }
     }
 
-    if (authenticated) {
+    // if (authenticated) {
       footerEl = (
         <View style={styles.footer}>
           <TouchableHighlight
@@ -260,7 +208,7 @@ class Footer extends Component {
           </TouchableHighlight>
         </View>
       );
-    }
+    // }
     return (
       <View>{footerEl}</View>
     );
@@ -294,6 +242,7 @@ function mapDispatchToProps(dispatch) {
       ...messageActions,
       ...userActions,
       ...animationActions,
+      ...navigationActions,
     }, dispatch)
   };
 }

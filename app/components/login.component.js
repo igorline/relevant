@@ -71,8 +71,7 @@ class Login extends Component {
   }
 
   back() {
-    console.log('back');
-    this.props.actions.pop(0);
+    this.props.actions.pop();
   }
 
   render() {

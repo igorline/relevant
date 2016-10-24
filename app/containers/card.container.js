@@ -22,6 +22,8 @@ import Comments from './comments.container';
 import Messages from './messages.container';
 import Thirst from './thirst.container';
 import Profile from './profile.container';
+// import Auth from '../components/auth.component';
+import Auth from './auth.container';
 
 import { globalStyles } from '../styles/global';
 import * as navigationActions from '../actions/navigation.actions';
@@ -60,6 +62,8 @@ class CardContainer extends Component {
         return <CreatePost {...this.props} navigator={this.props.actions} />;
       case 'read':
         return <Read {...this.props} navigator={this.props.actions} />;
+      case 'auth':
+        return <Auth {...this.props} navigator={this.props.actions} />;
       default:
         return null;
     }
@@ -74,9 +78,21 @@ class CardContainer extends Component {
   renderScene(props) {
     let key = props.scene.route.key;
 
-    console.log("Current props ", props);
+    console.log("Current key ", key);
 
     switch (key) {
+
+      // case 'discover':
+      //   return <Discover {...this.props} navigator={this.props.actions} />;
+      // case 'profile':
+      //   return <Profile {...this.props} navigator={this.props.actions} />;
+      // case 'activity':
+      //   return <Activity {...this.props} navigator={this.props.actions} />;
+      // case 'createPost':
+      //   return <CreatePost {...this.props} navigator={this.props.actions} />;
+      // case 'read':
+      //   return <Read {...this.props} navigator={this.props.actions} />;
+
       case 'comment':
         return <Comments />;
 
@@ -94,6 +110,15 @@ class CardContainer extends Component {
 
       case 'profile':
         return <Profile />;
+
+      case 'auth':
+        return <Auth authType={key} />;
+
+      case 'login':
+        return <Auth authType={key} />;
+
+      case 'signup':
+        return <Auth authType={key} />;
 
       default:
         return this.getDefaultComponent();
@@ -125,7 +150,7 @@ class CardContainer extends Component {
     let back = null;
     if (props.scene.route.back) {
       back = (
-        <NavigationHeaderBackButton onPress={this.back} />
+        <NavigationHeaderBackButton onPress={() => this.back()} />
       );
     }
     return back;
@@ -205,10 +230,15 @@ class CardContainer extends Component {
   }
 
   render() {
+    const { navigation } = this.props;
+    const scenes = navigation[this.default];
+
+    console.log('SCENES ', scenes);
+
     return (
       <NavigationCardStack
         direction={'horizontal'}
-        navigationState={this.props.navigation}
+        navigationState={scenes}
         onNavigateBack={this.back}
         renderScene={this.renderScene}
         renderHeader={this.renderHeader}
@@ -250,9 +280,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       {
-        push: route => navigationActions.push(route),
-        pop: () => navigationActions.pop(),
-
+        ...navigationActions,
       }, dispatch),
   };
 }
