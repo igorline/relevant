@@ -32,20 +32,21 @@ class Tabs extends Component {
   }
 
   render() {
-    const tabs = this.props.tabs.routes.map((tab, i) => {
+    const tabs = this.props.navigation.tabs.routes.map((tab, i) => {
       let badge;
       let icon = tab.icon;
       if (tab.key === 'activity') badge = this.props.notif.count;
       // if (tab.key === 'profile' && this.props.auth.user.image) {
       //    icon = { uri: this.props.auth.user.image };
       // }
+      if (tab.hide === false) return null;
       return (
         <TabBarIOS.Item
           key={tab.key}
           icon={icon}
           title={tab.icon}
           onPress={() => this.changeTab(i)}
-          selected={this.props.tabs.index === i}
+          selected={this.props.navigation.tabs.index === i}
           badge={badge}
         >
           {this.renderTabContent(tab.key)}
@@ -64,18 +65,15 @@ class Tabs extends Component {
 }
 
 const localStyles = StyleSheet.create({
-})
+});
 
 styles = { ...localStyles, ...globalStyles };
 
-// export default Tabs;
-
 function mapStateToProps(state) {
   return {
-    tabs: state.tabs,
     auth: state.auth,
     notif: state.notif,
-    // navigation: state.navigation
+    navigation: state.navigation
   };
 }
 
