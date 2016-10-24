@@ -12,7 +12,7 @@ import stats from './stats';
 import investments from './investments';
 import comments from './comments';
 import tabs from './tabs';
-import navigation from './navigation';
+import navigation from './navigation2';
 
 const rootReducer = combineReducers({
   auth,
