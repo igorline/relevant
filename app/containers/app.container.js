@@ -59,6 +59,7 @@ class Application extends Component {
 
   componentDidMount() {
     const self = this;
+    this.props.actions.getUser(null, true);
     AppState.addEventListener('change', this.handleAppStateChange.bind(self));
   }
 
@@ -70,18 +71,19 @@ class Application extends Component {
       this.props.actions.getMessages(next.auth.user._id);
       this.props.actions.getInvestments(next.auth.token, next.auth.user._id, 0, 10, true);
       this.props.actions.getUserPosts(0, 5, next.auth.user._id, true);
-      this.props.actions.pop();
+    };
+    if (!this.props.auth.token && next.auth.token) {
       this.props.actions.changeTab(0);
     }
   }
 
   componentWillUpdate(nextProps, nextState) {
-    const self = this;
-    if (!self.state.newName && nextState.newName) {
-      let user = self.props.auth.user;
+    if (!this.state.newName && nextState.newName) {
+      let user = this.props.auth.user;
       user.name = nextState.newName;
-      self.props.actions.updateUser(user, self.props.auth.token).then((results) => {
-        if (results) self.props.actions.getUser(self.props.auth.token, false);
+      this.props.actions.updateUser(user, this.props.auth.token)
+      .then((results) => {
+        if (results) this.props.actions.getUser(this.props.auth.token, false);
       });
     }
   }
@@ -89,16 +91,6 @@ class Application extends Component {
   componentWillUnmount() {
     const self = this;
     AppState.removeEventListener('change', this.handleAppStateChange.bind(self));
-  }
-
-  getTitle(route) {
-    let title = '';
-    switch (route.name) {
-      case 'singlePost':
-        this.props.posts.activePost.title ? title = this.props.posts.activePost.title : title = 'Untitled Post';
-        break;
-    }
-    return title;
   }
 
   changeName() {
@@ -180,7 +172,7 @@ class Application extends Component {
     this.props.actions.logoutAction(this.props.auth.user, this.props.auth.token);
 
     // TODO
-    this.actions.replace({ name: 'auth' });
+    // this.actions.replace({ name: 'auth' });
   }
 
   // home button etc
@@ -194,7 +186,7 @@ class Application extends Component {
   }
 
   render() {
-    if (this.props.auth.user) {
+    if (this.props.auth.token) {
       return (
         <View style={{ flex: 1 }} >
           <Footer showActionSheet={this.showActionSheet} />
