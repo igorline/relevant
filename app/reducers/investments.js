@@ -4,7 +4,7 @@ import { push } from 'react-router-redux';
 const addItems = (arr, newArr) => {
   if (!arr) arr = [];
   if (!arr.length) return newArr;
-  var removeDuplicates = newArr.filter( function( el ) {
+  var removeDuplicates = newArr.filter( (el) => {
     return arr.indexOf( el ) < 0;
   });
   var finalArr = arr.concat(removeDuplicates)
@@ -12,31 +12,26 @@ const addItems = (arr, newArr) => {
   return newArrX;
 }
 
-
 const initialState = { userInvestments: [], myInvestments: [] };
 
 export default function investments(state = initialState, action) {
   switch (action.type) {
 
-    case 'SET_MY_INVESTMENTS': {
+    case 'SET_INVESTMENTS': {
+      let type = action.payload.type;
       return Object.assign({}, state, {
-        'myInvestments': addItems(state.myInvestments, action.payload),
-      })
+        [type]: addItems(state[type], action.payload.data),
+      });
     }
 
-    case 'SET_USER_INVESTMENTS': {
+    case 'REFRESH_INVESTMENTS': {
+      let type = action.payload.type;
       return Object.assign({}, state, {
-        'userInvestments': addItems(state.userInvestments, action.payload),
-      })
-    }
-
-    case 'CLEAR_USER_INVESTMENTS': {
-      return Object.assign({}, state, {
-        'userInvestments': [],
+        [type]: action.payload.data,
       });
     }
 
     default:
-      return state
+      return state;
   }
 };
