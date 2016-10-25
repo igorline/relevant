@@ -602,10 +602,10 @@ class Post extends Component {
           <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={() => self.showActionSheet()}><Text style={[styles.font10, styles.postButtonText]}>...</Text></TouchableHighlight>
         </View>
 
-        <Animated.View style={{height: self.state.aniHeight, overflow: 'hidden'}}>
+        <Animated.View style={{ height: self.state.aniHeight, overflow: 'hidden' }}>
           <PickerIOS
             selectedValue={self.state.investAmount}
-            onValueChange={(investAmount) => this.setState({investAmount: investAmount})}>
+            onValueChange={(investAmount) => this.setState({ investAmount })}>
             {pickerArray}
           </PickerIOS>
         </Animated.View>
@@ -625,7 +625,7 @@ class Post extends Component {
         </TouchableHighlight>
         <Modal
           animationType={'fade'}
-          transparent={true}
+          transparent
           visible={this.state.modalVisible}
           onRequestClose={() => this.toggleModal()}
         >

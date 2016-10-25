@@ -68,9 +68,8 @@ class Application extends Component {
       this.props.actions.getActivity(next.auth.user._id, 0);
       this.props.actions.getGeneralActivity(next.auth.user._id, 0);
       this.props.actions.getMessages(next.auth.user._id);
-      this.props.actions.setSelectedUser(next.auth.user._id);
-      this.props.actions.setSelectedUserData(next.auth.user);
-
+      this.props.actions.getInvestments(next.auth.token, next.auth.user._id, 0, 10, true);
+      this.props.actions.getUserPosts(0, 5, next.auth.user._id, true);
       this.props.actions.pop();
       this.props.actions.changeTab(0);
     }
