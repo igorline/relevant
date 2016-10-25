@@ -71,10 +71,8 @@ class Application extends Component {
       this.props.actions.getMessages(next.auth.user._id);
       this.props.actions.setSelectedUser(next.auth.user._id);
       this.props.actions.setSelectedUserData(next.auth.user);
-
-    };
+    }
     if (!this.props.auth.token && next.auth.token) {
-      // this.props.actions.pop();
       this.props.actions.changeTab(0);
     }
   }
