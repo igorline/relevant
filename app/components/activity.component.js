@@ -1,39 +1,25 @@
-'use strict';
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
-  Image,
-  TextInput,
-  TouchableHighlight,
-  LinkingIOS
 } from 'react-native';
-import { connect } from 'react-redux';
-import Button from 'react-native-button';
-import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/auth.actions';
-import * as postActions from '../actions/post.actions';
-import * as userActions from '../actions/user.actions';
 require('../publicenv');
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 var moment = require('moment');
 
 class SingleActivity extends Component {
-  constructor (props, context) {
-    super(props, context)
-    this.state = {
-    };
+  constructor(props, context) {
+    super(props, context);
   }
 
-  goToPost(activity) {
-    this.props.actions.setSelectedPost(activity.post._id);
+  goToPost(post) {
+    this.props.actions.setSelectedPost(post._id);
     this.props.navigator.push({
       key: 'singlePost',
-      title: 'Post',
+      title: post.title,
       back: true,
-      id: activity.post._id
+      id: post._id
     });
   }
 
@@ -66,7 +52,7 @@ class SingleActivity extends Component {
                   {singleActivity.byUser.name}
                 </Text>
                 &nbsp;invested {'$'+singleActivity.amount} in your post
-                <Text numberOfLines={1} onPress={() => self.goToPost(singleActivity)} style={styles.active}>
+                <Text numberOfLines={1} onPress={() => self.goToPost(singleActivity.post)} style={styles.active}>
                 {' ' + postTitle}
                 </Text>
               </Text>
@@ -98,7 +84,7 @@ class SingleActivity extends Component {
                 </Text>
                 &nbsp;commented on your post
               </Text>
-              <Text onPress={() => self.goToPost(singleActivity)} numberOfLines={1} style={[styles.active]}>{singleActivity.post.title}</Text>
+              <Text onPress={() => self.goToPost(singleActivity.post)} numberOfLines={1} style={[styles.active]}>{singleActivity.post.title}</Text>
             </View>
             <View style={styles.activityRight}>
               <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
@@ -126,7 +112,7 @@ class SingleActivity extends Component {
                 <Text style={styles.active} onPress={() => self.setSelected(singleActivity.byUser)}>{singleActivity.byUser.name}</Text>
                 &nbsp;mentioned you in a post
               </Text>
-              <Text onPress={() => self.goToPost(singleActivity)} numberOfLines={1} style={[styles.active]}>{singleActivity.post.title}</Text>
+              <Text onPress={() => self.goToPost(singleActivity.post)} numberOfLines={1} style={[styles.active]}>{singleActivity.post.title}</Text>
             </View>
             <View style={styles.activityRight}>
             <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
@@ -143,7 +129,7 @@ class SingleActivity extends Component {
                 <Text style={styles.darkGray}>
                   Earned ${singleActivity.amount.toFixed(0)} from post
                 </Text>
-                <Text onPress={() => self.goToPost(singleActivity)} style={[styles.active]}>{postTitle}
+                <Text onPress={() => self.goToPost(singleActivity.post)} style={[styles.active]}>{postTitle}
                 </Text>
               </View>
               <View style={styles.activityRight}>
@@ -190,10 +176,10 @@ class SingleActivity extends Component {
   }
 
   return (
-      <View>
-        {activityEl}
-      </View>
-    );
+    <View>
+      {activityEl}
+    </View>
+  );
   }
 }
 
@@ -201,9 +187,4 @@ export default SingleActivity;
 
 const localStyles = StyleSheet.create({
 });
-
-
-
-
-
 

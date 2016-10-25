@@ -13,6 +13,7 @@ import investments from './investments';
 import comments from './comments';
 import tabs from './tabs';
 import navigation from './navigation';
+import tags from './tags';
 
 const rootReducer = combineReducers({
   auth,

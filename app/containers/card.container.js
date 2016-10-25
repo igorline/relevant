@@ -10,12 +10,12 @@ import {
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import NavigationHeaderBackButton from 'NavigationHeaderBackButton';
+import BackButton from 'NavigationHeaderBackButton';
 import Categories from '../components/categories.component';
 import Read from './read.container';
 import CreatePost from './createPost.container';
 import Discover from './discover.container';
-import SinglePost from './singlePost.container';
+import { SinglePost } from './singlePost.container';
 import Activity from './activity.container';
 import Comments from './comments.container';
 import Messages from './messages.container';
@@ -72,7 +72,7 @@ class CardContainer extends Component {
     let back = null;
     if (props.scene.route.back) {
       back = (
-        <NavigationHeaderBackButton onPress={this.back} />
+        <BackButton onPress={this.back} />
       );
     }
     return back;
@@ -87,25 +87,12 @@ class CardContainer extends Component {
         this.default === route.key
       );
       title = r.title;
-      if (r.key == 'myProfile') {
+      if (r.key === 'myProfile') {
         title = this.props.auth.user.name;
       } else {
         title = r.title;
       }
     }
-
-    if (key === 'profile') {
-      if (this.props.users.selectedUserData) {
-        if (this.props.users.selectedUserData.name) title = this.props.users.selectedUserData.name;
-      }
-    }
-
-    // if (key === 'singlePost') {
-    //   if (this.props.posts.selectedPostData) {
-    //     if (this.props.posts.selectedPostData.title)
-    //      title = this.props.posts.selectedPostData.title;
-    //   }
-    // }
 
     return (
       <NavigationHeader.Title>
@@ -174,8 +161,7 @@ class CardContainer extends Component {
           {statsEl}
         </View>
       );
-    } else if (key === 'myProfile' &&
-      this.props.users.selectedUserId === this.props.auth.user._id) {
+    } else {
       rightEl = (
         <View style={styles.gear}>
           <TouchableHighlight
@@ -264,5 +250,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardContainer);
-
-// export default CardContainer;

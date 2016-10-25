@@ -1,40 +1,28 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
-  Text,
   View,
   AppState,
-  TouchableHighlight,
   ActionSheetIOS,
   AlertIOS,
-  Image
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { globalStyles, fullWidth } from '../styles/global';
 import Auth from './auth.container';
 import Footer from './footer.container';
 import InvestAnimation from '../components/investAnimation.component';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
-import * as tagActions from '../actions/tag.actions';
 import * as userActions from '../actions/user.actions';
-import * as statsActions from '../actions/stats.actions';
 import * as onlineActions from '../actions/online.actions';
 import * as notifActions from '../actions/notif.actions';
 import * as viewActions from '../actions/view.actions';
 import * as messageActions from '../actions/message.actions';
-import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
-import * as animationActions from '../actions/animation.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
 
-let styles;
-
 let ImagePicker = require('react-native-image-picker');
-
 
 class Application extends Component {
   constructor(props, context) {
@@ -172,9 +160,6 @@ class Application extends Component {
   logoutRedirect() {
     this.props.actions.removeDeviceToken(this.props.auth);
     this.props.actions.logoutAction(this.props.auth.user, this.props.auth.token);
-
-    // TODO
-    // this.actions.replace({ name: 'auth' });
   }
 
   // home button etc
@@ -209,97 +194,23 @@ class Application extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    posts: state.posts,
-    users: state.user,
-    online: state.online,
-    notif: state.notif,
-    animation: state.animation,
-    view: state.view,
-    messages: state.messages,
-    stats: state.stats,
-    investments: state.investments,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators({
-      ...statsActions,
       ...authActions,
       ...postActions,
       ...onlineActions,
       ...notifActions,
-      ...animationActions,
       ...viewActions,
       ...messageActions,
-      ...tagActions,
       ...userActions,
       ...investActions,
-      ...subscriptionActions,
       ...navigationActions
     }, dispatch)
   };
 }
-
-const localStyles = StyleSheet.create({
-  back: {
-    position: 'absolute',
-    top: 0,
-    left: 5,
-    height: 60,
-    padding: 12,
-    flex: 1,
-    justifyContent: 'flex-end'
-  },
-  backInner: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  backImg: {
-    height: 10,
-    width: 7,
-    backgroundColor: 'transparent',
-    marginRight: 4
-  },
-  backText: {
-    color: '#aaaaaa',
-    fontSize: 12
-  },
-  nav: {
-    height: 60,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    padding: 12,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.25)'
-  },
-  stats: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    padding: 12,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'flex-end'
-  },
-  navItem: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexWrap: 'nowrap'
-  },
-  navLink: {
-    backgroundColor: 'transparent',
-    fontSize: 15,
-    textAlign: 'center',
-  },
-  maxWidth: {
-    width: (fullWidth / 1.25),
-  }
-});
-
-styles = { ...localStyles, ...globalStyles };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Application);
