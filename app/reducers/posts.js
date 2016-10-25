@@ -19,6 +19,8 @@ const initialState = {
   newFeedAvailable: false,
   newPostsAvailable: false,
   currentUser: null,
+  myPosts: [],
+  userPosts: [],
   queued: [],
   user: [],
   newPosts: {
@@ -102,7 +104,7 @@ export default function post(state = initialState, action) {
         top: updatePostElement(state.top, action.payload),
         new: updatePostElement(state.new, action.payload),
         feed: updatePostElement(state.feed, action.payload),
-        user: updatePostElement(state.feed, action.payload),
+        userPosts: updatePostElement(state.feed, action.payload),
       });
     }
 
@@ -111,9 +113,22 @@ export default function post(state = initialState, action) {
         top: removeItem(state.top, action.payload),
         new: removeItem(state.new, action.payload),
         feed: removeItem(state.feed, action.payload),
-        user: removeItem(state.user, action.payload),
+        userPosts: removeItem(state.user, action.payload),
       });
     }
+
+    case 'SET_MY_POSTS': {
+      return Object.assign({}, state, {
+        myPosts: addItems(state.myPosts, action.payload)
+      });
+    }
+
+    case 'SET_USER_POSTS': {
+      return Object.assign({}, state, {
+        userPosts: addItems(state.userPosts, action.payload)
+      });
+    }
+
 
     case types.CLEAR_POSTS: {
       const type = action.payload.type;
@@ -220,7 +235,7 @@ export default function post(state = initialState, action) {
 
     case 'CLEAR_USER_POSTS': {
       return Object.assign({}, state, {
-        user: [],
+        userPosts: [],
       });
     }
 

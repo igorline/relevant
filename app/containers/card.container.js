@@ -105,8 +105,11 @@ class CardContainer extends Component {
       let r = this.props.tabs.routes.find(route => {
         return this.default === route.key;
       });
-      console.log(r)
-      title = r.title;
+      if (r.key == 'myProfile') {
+        title = this.props.auth.user.name;
+      } else {
+        title = r.title;
+      }
     }
 
     if (key === 'profile') {

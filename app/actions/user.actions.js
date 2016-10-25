@@ -86,7 +86,8 @@ console.log('getUsers', skip, limit, id)
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setUserList(responseJSON));
+        console.log(responseJSON, 'get users')
+        dispatch(setUserList(responseJSON));
     })
     .catch((error) => {
         console.log(error, 'error');
