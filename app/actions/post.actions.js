@@ -1,39 +1,75 @@
 import * as types from './actionTypes';
-require('../publicenv');
-// var { Actions } = require('react-native-redux-router');
 import * as utils from '../utils';
 import * as authActions from './auth.actions';
 
-var apiServer = process.env.API_SERVER+'/api/'
-//load 5 posts at a time
+require('../publicenv');
+
+const apiServer = process.env.API_SERVER + '/api/';
+
+// load 5 posts at a time
 const limit = 5;
 
+
+export function refreshPosts(data, type) {
+  return {
+    type: types.REFRESH_POSTS,
+    payload: {
+      data,
+      type
+    }
+  };
+}
+
+export function setPosts(data, type) {
+  return {
+    type: types.SET_POSTS,
+    payload: {
+      data,
+      type
+    }
+  };
+}
+
 export function getFeed(token, skip, tag) {
-  var url = process.env.API_SERVER+'/api/feed?access_token='+token+'&skip='+skip+'&limit='+limit;
-  if (tag) url = process.env.API_SERVER+'/api/feed?access_token='+token+'&skip='+skip+'&tag='+tag._id+'&limit='+limit;
-  return function(dispatch) {
+  let url = `${apiServer}feed`
+    + `?access_token=${token}`
+    + `&skip=${skip}`
+    + `&limit=${limit}`;
+
+  if (tag) {
+    url = `${apiServer}feed`
+    + `?access_token=${token}`
+    + `&skip=${skip}`
+    + `&tag=${tag._id}`
+    + `&limit=${limit}`;
+  }
+
+  let type = 'feed';
+
+  return (dispatch) => {
     fetch(url, {
       credentials: 'include',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       method: 'GET',
     })
-    .then((response) => response.json())
+    .then(response => response.json())
     .then((responseJSON) => {
       console.log(responseJSON, 'setting feed');
-      dispatch(setPosts(responseJSON, 'feed'));
+      if (skip === 0) dispatch(refreshPosts(responseJSON, type));
+      else dispatch(setPosts(responseJSON, type));
     })
     .catch((error) => {
       console.log(error, 'error');
     });
-  }
+  };
 }
 
 export function deletePost(token, post) {
   var url = process.env.API_SERVER+'/api/post/'+post._id+'?access_token='+token;
-  return function(dispatch) {
+  return (dispatch) => {
     fetch(url, {
       credentials: 'include',
       headers: {
@@ -43,7 +79,7 @@ export function deletePost(token, post) {
       method: 'DELETE',
     })
     .then((response) => {
-      console.log(response, 'delete response')
+      console.log(response, 'delete response');
       dispatch(removePost(post));
     })
     .catch((error) => {
@@ -99,14 +135,14 @@ export function getPosts(skip, tags, sort, limit) {
 
   if (tags) {
     if (tags.length) {
-      tags.forEach(function(tag, i) {
-        console.log(tag._id)
+      tags.forEach((tag, i) => {
+        console.log(tag._id);
         if (tag._id) {
-          if (i == tags.length - 1) {
-            tagsString+=tag._id;
+          if (i === tags.length - 1) {
+            tagsString += tag._id;
           } else {
-            var alter = tag._id;
-            tagsString+=alter+=',';
+            let alter = tag._id;
+            tagsString += alter += ',';
           }
         }
       });
@@ -139,26 +175,6 @@ export function getPosts(skip, tags, sort, limit) {
         console.log(error, 'error');
     });
   }
-}
-
-export function refreshPosts(data, type) {
-    return {
-        type: types.REFRESH_POSTS,
-        payload: {
-          data: data,
-          type: type
-        }
-    };
-}
-
-export function setPosts(data, type) {
-    return {
-        type: types.SET_POSTS,
-        payload: {
-          data: data,
-          type: type
-        }
-    };
 }
 
 

@@ -84,7 +84,9 @@ console.log('getUsers', skip, limit, id)
             'Content-Type': 'application/json'
         }
     })
-    .then((response) => response.json())
+    .then((response) => {
+      return response.json();
+    })
     .then((responseJSON) => {
       dispatch(setUserList(responseJSON));
     })
