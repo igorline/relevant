@@ -211,24 +211,6 @@ export default function post(state = initialState, action) {
       });
     }
 
-    // case types.SET_COMMENTS: {
-    //   return Object.assign({}, state, {
-    //     comments: action.payload,
-    //   });
-    // }
-
-    // case types.ADD_COMMENT: {
-    //   return Object.assign({}, state, {
-    //     comments: addItem(state.comments, action.payload),
-    //   });
-    // }
-
-    // case types.REMOVE_COMMENT: {
-    //   return Object.assign({}, state, {
-    //     comments: removeItem(state.comments, action.payload),
-    //   });
-    // }
-
     case 'SET_NEW_FEED_STATUS': {
       console.log('SET_NEW_FEED_STATUS');
       return Object.assign({}, state, {

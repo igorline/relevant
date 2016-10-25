@@ -28,10 +28,14 @@ class DiscoverUser extends Component {
   componentWillUpdate(next) {
   }
 
-  setSelected(id) {
-    var self = this;
-    self.props.actions.setSelectedUser(id);
-    self.props.navigator.push({key: 'profile', back: true});
+  setSelected(user) {
+    this.props.actions.setSelectedUser(user._id);
+    this.props.navigator.push({
+      key: 'profile',
+      name: user.name,
+      back: true,
+      id: user._id,
+    });
   }
 
   renderHeader() {
@@ -85,7 +89,7 @@ class DiscoverUser extends Component {
     }
 
     return (
-      <TouchableHighlight underlayColor={'transparent'} onPress={self.setSelected.bind(self, user._id)}>
+      <TouchableHighlight underlayColor={'transparent'} onPress={self.setSelected.bind(self, user)}>
         <View style={[styles.discoverUser]}>
           <View style={[styles.leftDiscoverUser]}>
             {imageEl}
