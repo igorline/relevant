@@ -64,10 +64,54 @@ class CardContainer extends Component {
     }
   }
 
-  getView() {
-    let routes = this.props.navigation.routes;
-    let index = this.props.navigation.index;
-    return routes[index];
+  back() {
+    this.props.actions.pop();
+  }
+
+  renderLeft(props) {
+    let back = null;
+    if (props.scene.route.back) {
+      back = (
+        <NavigationHeaderBackButton onPress={this.back} />
+      );
+    }
+    return back;
+  }
+
+  renderTitle(props) {
+    let key = props.scene.route.key;
+    let title = props.scene.route ? props.scene.route.title : null;
+
+    if (key === 'default') {
+      let r = this.props.tabs.routes.find(route =>
+        this.default === route.key
+      );
+      title = r.title;
+      if (r.key == 'myProfile') {
+        title = this.props.auth.user.name;
+      } else {
+        title = r.title;
+      }
+    }
+
+    if (key === 'profile') {
+      if (this.props.users.selectedUserData) {
+        if (this.props.users.selectedUserData.name) title = this.props.users.selectedUserData.name;
+      }
+    }
+
+    // if (key === 'singlePost') {
+    //   if (this.props.posts.selectedPostData) {
+    //     if (this.props.posts.selectedPostData.title)
+    //      title = this.props.posts.selectedPostData.title;
+    //   }
+    // }
+
+    return (
+      <NavigationHeader.Title>
+        {title}
+      </NavigationHeader.Title>
+    );
   }
 
   renderScene(props) {
@@ -97,62 +141,14 @@ class CardContainer extends Component {
     }
   }
 
-  renderTitle(props) {
-    let key = props.scene.route.key;
-    let title = props.scene.route ? props.scene.route.title : null;
-
-    if (key === 'default') {
-      let r = this.props.tabs.routes.find(route => {
-        return this.default === route.key;
-      });
-      if (r.key == 'myProfile') {
-        title = this.props.auth.user.name;
-      } else {
-        title = r.title;
-      }
-    }
-
-    if (key === 'profile') {
-      if (this.props.users.selectedUserData) {
-        if (this.props.users.selectedUserData.name) title = this.props.users.selectedUserData.name;
-      }
-    }
-
-    if (key == 'singlePost') {
-      if (this.props.posts.selectedPostData) {
-        if (this.props.posts.selectedPostData.title) title = this.props.posts.selectedPostData.title;
-      }
-    }
-
-    return (
-      <NavigationHeader.Title>
-        {title}
-      </NavigationHeader.Title>
-    );
-  }
-
-  renderLeft(props) {
-    let back = null;
-    if (props.scene.route.back) {
-      back = (
-        <NavigationHeaderBackButton onPress={this.back} />
-      );
-    }
-    return back;
-  }
-
-  back() {
-    this.props.actions.pop();
-  }
-
-  renderRight(props) {
+  renderRight() {
     let statsEl = null;
     let relevance = 0;
     let balance = 0;
     let user = null;
+    let rightEl;
 
     let key = this.default;
-    //console.log("RIGHT KEY ", key)
     if (this.props.auth.user) {
       user = this.props.auth.user;
       if (user.relevance) relevance = user.relevance;
@@ -172,15 +168,15 @@ class CardContainer extends Component {
         </View>
       );
     }
-    if (key !== 'profile') {
-      return (
+    if (key !== 'myProfile') {
+      rightEl = (
         <View style={{ flex: 1, justifyContent: 'center', padding: 10 }}>
           {statsEl}
         </View>
       );
-    } else if (key === 'profile' &&
+    } else if (key === 'myProfile' &&
       this.props.users.selectedUserId === this.props.auth.user._id) {
-      return (
+      rightEl = (
         <View style={styles.gear}>
           <TouchableHighlight
             underlayColor={'transparent'}
@@ -194,7 +190,7 @@ class CardContainer extends Component {
         </View>
       );
     }
-    // return null;
+    return rightEl;
   }
 
 
