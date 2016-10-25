@@ -11,7 +11,6 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import NavigationHeaderBackButton from 'NavigationHeaderBackButton';
-
 import Categories from '../components/categories.component';
 import Read from './read.container';
 import CreatePost from './createPost.container';
@@ -22,8 +21,6 @@ import Comments from './comments.container';
 import Messages from './messages.container';
 import Thirst from './thirst.container';
 import Profile from './profile.container';
-// import Auth from '../components/auth.component';
-import Auth from './auth.container';
 
 import { globalStyles } from '../styles/global';
 import * as navigationActions from '../actions/navigation.actions';
@@ -54,7 +51,7 @@ class CardContainer extends Component {
     switch (key) {
       case 'discover':
         return <Discover {...this.props} navigator={this.props.actions} />;
-      case 'myProfile':
+      case 'profile':
         return <Profile {...this.props} navigator={this.props.actions} />;
       case 'activity':
         return <Activity {...this.props} navigator={this.props.actions} />;
@@ -62,8 +59,6 @@ class CardContainer extends Component {
         return <CreatePost {...this.props} navigator={this.props.actions} />;
       case 'read':
         return <Read {...this.props} navigator={this.props.actions} />;
-      case 'auth':
-        return <Auth {...this.props} navigator={this.props.actions} />;
       default:
         return null;
     }
@@ -78,8 +73,8 @@ class CardContainer extends Component {
   renderScene(props) {
     let key = props.scene.route.key;
 
-    switch (key) {
 
+    switch (key) {
       case 'comment':
         return <Comments />;
 
@@ -96,27 +91,18 @@ class CardContainer extends Component {
         return <Categories navigator={this.props.actions} />;
 
       case 'profile':
-        return <Profile navigator={this.props.actions}  />;
-
-      case 'auth':
-        return <Auth authType={key} />;
-
-      case 'login':
-        return <Auth authType={key} />;
-
-      case 'signup':
-        return <Auth authType={key} />;
+        return <Profile navigator={this.props.actions} />;
 
       default:
         return this.getDefaultComponent();
-        // return <Read {...this.props} navigator={this.props.actions} />;
-
     }
   }
 
   renderTitle(props) {
     let key = props.scene.route.key;
     let title = props.scene.route ? props.scene.route.title : null;
+
+    console.log(props)
 
     if (key === 'default') {
       let r = this.props.tabs.routes.find(route => {
@@ -148,7 +134,7 @@ class CardContainer extends Component {
     let back = null;
     if (props.scene.route.back) {
       back = (
-        <NavigationHeaderBackButton onPress={() => this.back()} />
+        <NavigationHeaderBackButton onPress={this.back} />
       );
     }
     return back;
@@ -228,15 +214,10 @@ class CardContainer extends Component {
   }
 
   render() {
-    const { navigation } = this.props;
-    const scenes = navigation[this.default];
-
-    console.log('SCENES ', scenes);
-
     return (
       <NavigationCardStack
         direction={'horizontal'}
-        navigationState={scenes}
+        navigationState={this.props.navigation}
         onNavigateBack={this.back}
         renderScene={this.renderScene}
         renderHeader={this.renderHeader}
@@ -278,9 +259,13 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       {
-        ...navigationActions,
+        push: route => navigationActions.push(route),
+        pop: () => navigationActions.pop(),
+
       }, dispatch),
   };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardContainer);
+
+// export default CardContainer;

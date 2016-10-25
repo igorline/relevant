@@ -53,15 +53,8 @@ function loginUserFailure() {
             .then(() => {
                 dispatch({
                     type: types.LOGIN_USER_FAILURE
-                    // payload: {
-                    //     status: '',
-                    //     statusText: error
-                    // }
-                })
-                // setTimeout(function() {
-                //     dispatch(setAuthStatusText());
-                // }, 500);
-            })
+                });
+            });
     };
 }
 
@@ -69,7 +62,7 @@ export
 function loginUserRequest() {
     return {
         type: types.LOGIN_USER_REQUEST
-    }
+    };
 }
 
 export

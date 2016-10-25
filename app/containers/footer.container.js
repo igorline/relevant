@@ -1,312 +1,87 @@
 import React, { Component } from 'react';
 import {
+  TabBarIOS,
   StyleSheet,
-  Text,
-  View,
-  Image,
-  Animated,
-  Easing,
-  TouchableHighlight,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { globalStyles } from '../styles/global';
-import * as authActions from '../actions/auth.actions';
-import * as messageActions from '../actions/message.actions';
-import * as animationActions from '../actions/animation.actions';
-import * as notifActions from '../actions/notif.actions';
-import * as userActions from '../actions/user.actions';
 import * as navigationActions from '../actions/navigation.actions';
+import { globalStyles } from '../styles/global';
+import CardContainer from './card.container';
+import * as userActions from '../actions/user.actions';
 
-let styles;
+const localStyles = StyleSheet.create({
+});
 
-class Footer extends Component {
+let styles = { ...localStyles, ...globalStyles };
+
+class Tabs extends Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {
-      moveHeart: new Animated.Value(0),
-      opacity: new Animated.Value(0),
-      hearts: []
-    };
+    this.props.showActionSheet = this.props.showActionSheet.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    // if (nextProps.notif.count && this.props.notif.count < nextProps.notif.count) {
-    //   let newNotifications = nextProps.notif.count - this.props.notif.count;
-    //   for (let i = 0; i < newNotifications * 2; i++) {
-    //     this.runAnimation(i);
-    //   }
-    // }
+  changeTab(i) {
+    //if (i === 4) this.props.actions.setSelectedUser(this.props.auth.user._id);
+    this.props.actions.changeTab(i);
   }
 
-  goTo(key) {
-    this.props.actions.changeTab(key);
+  renderTabContent(key) {
+    return (<CardContainer
+      defaultContainer={key}
+      showActionSheet={this.props.showActionSheet}
+    />);
   }
-
-  runAnimation(i) {
-    let opacity = new Animated.Value(1);
-    let yVal = new Animated.Value(0);
-    let xVal = new Animated.Value(0);
-    let scale = new Animated.Value(1);
-
-    this.state.hearts.push(
-      <Animated.View
-        pointerEvents={'none'}
-        key={i}
-        style={[styles.notifAnimation,
-          { transform: [
-            { translateY: yVal },
-            { translateX: xVal },
-            { scale }
-          ],
-          opacity
-        }]}
-      >
-        <Text style={[{ fontSize: 30, color: 'red' }]}>❤️</Text>
-      </Animated.View>);
-
-    Animated.parallel([
-      Animated.timing(yVal, {
-        toValue: -300,
-        delay: 100 * i,
-        duration: 600,
-        easing: Easing.quad
-      }),
-      Animated.timing(opacity, {
-        toValue: 0,
-        delay: 100 * i,
-        duration: 500,
-        easing: Easing.linear
-      }),
-      Animated.timing(scale, {
-        toValue: 1.5,
-        delay: 100 * i,
-        duration: 500,
-        easing: Easing.linear
-      }),
-    ]).start();
-
-    Animated.sequence([
-      Animated.timing(xVal, {
-        toValue: 5 * Math.random(),
-        duration: 250,
-        delay: 100 * i,
-        easing: Easing.linear
-      }),
-      Animated.timing(xVal, {
-        toValue: -5 * Math.random(),
-        duration: 250,
-        delay: 100 * i,
-        easing: Easing.linear
-      })
-    ]).start();
-
-    this.setState({});
-
-    setTimeout(() => {
-      this.setState({ hearts: [] });
-    }, 5000);
-  }
-
 
   render() {
-    let authenticated = this.props.auth.user;
-    let footerEl = null;
-    let imageEl = (
-      <Text style={[styles.icon, styles.textCenter]}>
-        👤
-      </Text>
-    );
-
-    if (this.props.auth.user) {
-      if (this.props.auth.user.image) {
-        imageEl = (
-          <Image
-            source={{ uri: this.props.auth.user.image }}
-            style={[styles.footerImg]}
-          />);
-      }
-    }
-
-    // if (authenticated) {
-      footerEl = (
-        <View style={styles.footer}>
-          <TouchableHighlight
-            onPress={() => this.goTo('read')}
-            underlayColor={'transparent'}
-            style={[
-              styles.footerItem,
-              { borderBottomColor: this.route === 'read' ? '#007aff' : 'transparent' }]}
-          >
-            <View style={styles.footerItemView}>
-              <Text style={[styles.icon, styles.textCenter]}> 📩 </Text>
-              { this.props.messages.count ?
-                <View style={styles.notifCount}>
-                  <Text style={styles.notifText}>
-                    {this.props.messages.count}
-                  </Text>
-                </View> :
-                null
-              }
-            </View>
-          </TouchableHighlight>
-          <TouchableHighlight
-            onPress={() => this.goTo('discover')}
-            underlayColor={'transparent'}
-            style={[
-              styles.footerItem,
-              { borderBottomColor: this.route === 'discover' ? '#007aff' : 'transparent' }]}
-          >
-            <View style={styles.footerItemView}>
-              <Text style={[styles.icon, styles.textCenter]}>🔮</Text>
-            </View>
-          </TouchableHighlight>
-          <TouchableHighlight
-            onPress={() => this.goTo('createPost')}
-            underlayColor={'transparent'}
-            style={[
-              styles.footerItem,
-              { borderBottomColor: this.route === 'createPost' ? '#007aff' : 'transparent' }]}
-          >
-            <View style={styles.footerItemView}>
-              <Text style={[styles.icon, styles.textCenter]}>📝</Text>
-            </View>
-          </TouchableHighlight>
-          <TouchableHighlight
-            onPress={() => this.goTo('activity')}
-            underlayColor={'transparent'}
-            style={[
-              styles.footerItem,
-              { borderBottomColor: this.route === 'activity' ? '#007aff' : 'transparent' }]}
-          >
-            <View style={styles.footerItemView}>
-              <Text style={[styles.icon, styles.textCenter]}>⚡</Text>
-              {this.props.notif.count ?
-                <View style={styles.notifCount}>
-                  <Text style={styles.notifText}>
-                    {this.props.notif.count}
-                  </Text>
-                </View> : null}
-              {this.state.hearts}
-            </View>
-          </TouchableHighlight>
-
-          <TouchableHighlight
-            onPress={() => this.goTo('profile')}
-            underlayColor={'transparent'}
-            style={[
-              styles.footerItem,
-              { borderBottomColor: this.route === 'profile' &&
-                this.props.users.selectedUserId === this.props.auth.user._id ?
-                '#007aff' : 'transparent' }]}
-          >
-
-            <View style={styles.footerItemView}>
-              {imageEl}
-            </View>
-
-          </TouchableHighlight>
-        </View>
+    const tabs = this.props.tabs.routes.map((tab, i) => {
+      let badge;
+      let icon = tab.icon;
+      if (tab.key === 'activity') badge = this.props.notif.count;
+      return (
+        <TabBarIOS.Item
+          key={tab.key}
+          icon={'💜'}
+          style={{fontSize: 20}}
+          title={tab.icon}
+          tintColor={'blue'}
+          onPress={() => this.changeTab(i)}
+          selected={this.props.tabs.index === i}
+          badge={badge}
+        >
+          {this.renderTabContent(tab.key)}
+        </TabBarIOS.Item>
       );
-    // }
+    });
     return (
-      <View>{footerEl}</View>
+      <TabBarIOS
+        translucent
+        style={{ fontSize: 20 }}
+        itemPositioning={'center'}
+      >
+        {tabs}
+      </TabBarIOS>
     );
   }
 }
 
-Footer.propTypes = {
-  auth: React.PropTypes.object,
-  actions: React.PropTypes.object,
-  navigator: React.PropTypes.object,
-  notif: React.PropTypes.object,
-  messages: React.PropTypes.object,
-  users: React.PropTypes.object
-};
-
 function mapStateToProps(state) {
   return {
+    tabs: state.tabs,
     auth: state.auth,
     notif: state.notif,
-    animation: state.animation,
-    messages: state.messages,
-    users: state.user,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...authActions,
-      ...notifActions,
-      ...messageActions,
-      ...userActions,
-      ...animationActions,
-      ...navigationActions,
-    }, dispatch)
+    actions: bindActionCreators(
+      {
+        ...navigationActions,
+        ...userActions,
+      }, dispatch),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Footer);
+export default connect(mapStateToProps, mapDispatchToProps)(Tabs);
 
-const localStyles = StyleSheet.create({
-  footerImg: {
-    height: 25,
-    width: 25,
-    borderRadius: 12.5
-  },
-  icon: {
-    fontSize: 25
-  },
-  activeIcon: {
-    transform: [{ scale: 1.2 }]
-  },
-  footerItemView: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notifCount: {
-    position: 'absolute',
-    top: -20,
-    backgroundColor: 'red',
-    right: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 2.5,
-    height: 20,
-    width: 20
-  },
-  notifAnimation: {
-    position: 'absolute',
-    top: -12,
-    height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notifText: {
-    color: 'white'
-  },
-  activityRow: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  footer: {
-    height: 60,
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    backgroundColor: 'white',
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-  },
-  footerItem: {
-    flex: 1,
-    borderBottomWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  footerLink: {
-    fontSize: 10
-  },
-});
-
-styles = { ...localStyles, ...globalStyles };

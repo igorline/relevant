@@ -23,7 +23,8 @@ class AuthContainer extends Component {
     this.renderScene = this.renderScene.bind(this);
   }
 
-  renderScene(key) {
+  renderScene(props) {
+    let key = props.scene.route.key;
 
     switch (key) {
       case 'auth':
@@ -41,8 +42,14 @@ class AuthContainer extends Component {
   }
 
   render() {
-    console.log("auth props ", this.props.authType);
-    return this.renderScene(this.props.authType);
+    return (
+      <NavigationCardStack
+        direction={'horizontal'}
+        navigationState={this.props.navigation}
+        renderScene={this.renderScene}
+        style={styles.main}
+      />
+    );
   }
 }
 

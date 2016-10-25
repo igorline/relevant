@@ -29,7 +29,6 @@ import * as tagActions from '../actions/tag.actions';
 import * as viewActions from '../actions/view.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
-import * as navigationActions from '../actions/navigation.actions';
 
 let styles;
 
@@ -65,17 +64,13 @@ class Auth extends Component {
   login() {
     this.props.actions.push({
       key: 'login',
-      title: 'Login',
-      back: true
-    });
+      title: 'Item details',
+      showBackButton: true
+    }, this.props.navigation.key);
   }
 
   signup() {
-    this.props.actions.push({
-      key: 'signup',
-      title: 'Signup',
-      back: true
-    });
+    this.props.actions.push({ key: 'signup' });
   }
 
   componentDidUpdate(prev) {
@@ -94,36 +89,11 @@ class Auth extends Component {
     var links = null;
 
     return (
-      <View style={[
-          { height: isAuthenticated ? self.state.visibleHeight - 60 : self.state.visibleHeight,
-            backgroundColor: '#F0F0F0' }]}
-          >
+      <View style={[{height: isAuthenticated ? self.state.visibleHeight - 60 : self.state.visibleHeight, backgroundColor: '#F0F0F0'}]}>
         <View style={styles.alignAuth}>
-          <Text
-            style={[
-              styles.textCenter,
-              styles.font20,
-              styles.darkGray,
-              { marginBottom: 10 }]}
-          >
-            Relevant
-          </Text>
-          <TouchableHighlight
-            style={[styles.whiteButton]}
-            onPress={self.login.bind(self)}
-          >
-            <Text style={styles.buttonText}>
-              Log In
-            </Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            onPress={self.signup.bind(self)}
-            style={[styles.whiteButton, styles.marginTop]}
-          >
-            <Text style={styles.buttonText}>
-              Sign Up
-            </Text>
-          </TouchableHighlight>
+          <Text style={[styles.textCenter, styles.font20, styles.darkGray, {marginBottom: 10}]}>Relevant</Text>
+          <TouchableHighlight style={[styles.whiteButton]} onPress={self.login.bind(self)}><Text style={styles.buttonText}>Log In</Text></TouchableHighlight>
+          <TouchableHighlight onPress={self.signup.bind(self)} style={[styles.whiteButton, styles.marginTop]}><Text style={styles.buttonText}>Sign Up</Text></TouchableHighlight>
         </View>
       </View>
     );
@@ -149,6 +119,7 @@ export default Auth;
 // function mapStateToProps(state) {
 //   return {
 //     auth: state.auth,
+//     navigation: state.navigation,
 //   };
 // }
 
@@ -157,7 +128,6 @@ export default Auth;
 //     actions: bindActionCreators(
 //       {
 //         ...authActions,
-//         ...navigationActions,
 //       }, dispatch),
 //   };
 // }

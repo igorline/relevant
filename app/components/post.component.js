@@ -388,16 +388,16 @@ class Post extends Component {
       }
       if (post.lastPost) {
         if (post.lastPost.length) {
-          post.lastPost.forEach(function(lastUser) {
-            if (lastUser == self.props.auth.user._id) lastPost = true;
-          })
+          post.lastPost.forEach((lastUser) => {
+            if (lastUser === self.props.auth.user._id) lastPost = true;
+          });
         }
       }
     }
 
     if (self.state.editing) {
       bodyEditingEl = (
-        <TextInput 
+        <TextInput
           multiline={true}
           autoGrow={true}
           style={[styles.darkGray, styles.editingInput, {height: Math.max(35, self.state.bodyHeight)}]} 
@@ -413,13 +413,13 @@ class Post extends Component {
     }
 
     if (comments) {
-      if (comments.length == 1) commentString = '1 Comment';
-      if (comments.length > 1) commentString = comments.length+' Comments';
+      if (comments.length === 1) commentString = '1 Comment';
+      if (comments.length > 1) commentString = comments.length + ' Comments';
     }
 
     if (tags) {
       tagsEl = [];
-      tags.forEach(function(tag, i) {
+      tags.forEach((tag, i) => {
         tagsEl.push(<Text style={[styles.white, styles.font10]} key={i}>#{tag.name}</Text>)
       })
     }
@@ -440,13 +440,13 @@ class Post extends Component {
     }
 
     if (post) {
-      if (post.user._id != self.props.auth.user._id) {
+      if (post.user._id !== self.props.auth.user._id) {
         investButtonEl = (<TouchableWithoutFeedback
-            onPress={() => self.toggleModal()}
-            style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
-            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View>
-          </TouchableWithoutFeedback>
-        )
+          onPress={() => self.toggleModal()}
+          style={[styles.postButton, { marginRight: 5, backgroundColor: '#F0F0F0' }]}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View>
+        </TouchableWithoutFeedback>);
       }
 
       // if (post.user._id != self.props.auth.user._id && self.state.invested) {
@@ -543,6 +543,16 @@ class Post extends Component {
         </View>);
     }
 
+    var modalBackgroundStyle = {
+      backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
+    };
+    var innerContainerTransparentStyle = this.state.transparent
+      ? {backgroundColor: '#fff', padding: 20}
+      : null;
+    var activeButtonStyle = {
+      backgroundColor: '#ddd'
+    };
+
     return (
       <View style={[styles.postContainer]} onLayout={(event) => {
           var {x, y, width, height} = event.nativeEvent.layout;
@@ -604,44 +614,42 @@ class Post extends Component {
           </View>
         </TouchableHighlight>
 
-        <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(null, link) : null}>
+        <TouchableHighlight underlayColor={'transparent'} onPress={link ? () => self.openLink(null, link) : null}>
           <View style={styles.postSection}>
             {lastPost ? <Text style={[styles.lastPost, styles.darkGray]}>Last subscribed post❗️</Text> : null}
             {titleEl}
             {link ? <Text style={[styles.font10, styles.darkGray]}>from {self.extractDomain(link)}</Text> : null}
           </View>
         </TouchableHighlight>
-
         <Modal
           animationType={'fade'}
           transparent={'true'}
           visible={this.state.modalVisible}
           onRequestClose={() => this.toggleModal()}
         >
-          <View style={[styles.container, { backgroundColor: 'rgba(0,0,0,0.1)' }]}>
-            <View style={[{ backgroundColor: 'white', padding: 20, borderRadius: 10 }]}>
-
-              <View style={{ flex: 1, justifyContent: 'space-between', padding: 20, flexDirection: 'row'}}>
-                <TouchableHighlight style={styles.investOption}>
-                  <Text>50</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption}>
-                  <Text>100</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption}>
-                  <Text>200</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption}>
-                  <Text>500</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption}>
-                  <Text>1000</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption}>
-                  <Text>2000</Text>
-                </TouchableHighlight>
-              </View>
-              <Text onPress={() => self.toggleModal()}>Close</Text>
+          <View style={{ flex: 1, padding: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.1)' }}>
+            <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 5, flexDirection: 'row'}}>
+              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
+                <Text>50</Text>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
+                <Text>100</Text>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
+                <Text>500</Text>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
+                <Text>1000</Text>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
+                <Text>2000</Text>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
+                <Text>5000</Text>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
+                <Text>10000</Text>
+              </TouchableHighlight>
             </View>
           </View>
         </Modal>
@@ -673,6 +681,13 @@ const localStyles = StyleSheet.create({
     paddingBottom: 25,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#F0F0F0',
+  },
+  investOption: {
+    margin: 5,
+    borderWidth: 1,
+    borderColor: 'black',
+    padding: 5,
+    borderRadius: 5
   },
   tagsRow: {
     flexDirection: 'row',
@@ -729,12 +744,6 @@ const localStyles = StyleSheet.create({
     height: 25,
     width: 25,
     borderRadius: 12.5,
-  },
-  investOption: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 5,
   },
   postHeader: {
     flexDirection: 'row',
