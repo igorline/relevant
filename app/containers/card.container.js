@@ -11,7 +11,6 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import NavigationHeaderBackButton from 'NavigationHeaderBackButton';
-
 import Categories from '../components/categories.component';
 import Read from './read.container';
 import CreatePost from './createPost.container';
@@ -88,6 +87,11 @@ class CardContainer extends Component {
         this.default === route.key
       );
       title = r.title;
+      if (r.key == 'myProfile') {
+        title = this.props.auth.user.name;
+      } else {
+        title = r.title;
+      }
     }
 
     if (key === 'profile') {
@@ -112,8 +116,6 @@ class CardContainer extends Component {
 
   renderScene(props) {
     let key = props.scene.route.key;
-
-    // console.log("Current props ", props);
 
     switch (key) {
       case 'comment':

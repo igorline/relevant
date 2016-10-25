@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import * as navigationActions from '../actions/navigation.actions';
 import { globalStyles } from '../styles/global';
 import CardContainer from './card.container';
-
+import * as userActions from '../actions/user.actions';
 
 const localStyles = StyleSheet.create({
 });
@@ -22,6 +22,7 @@ class Tabs extends Component {
   }
 
   changeTab(i) {
+    //if (i === 4) this.props.actions.setSelectedUser(this.props.auth.user._id);
     this.props.actions.changeTab(i);
   }
 
@@ -36,11 +37,7 @@ class Tabs extends Component {
     const tabs = this.props.tabs.routes.map((tab, i) => {
       let badge;
       let icon = tab.icon;
-      //console.log(this.props.tabs.index, i, 'match?');
       if (tab.key === 'activity') badge = this.props.notif.count;
-      // if (tab.key === 'profile' && this.props.auth.user.image) {
-      //    icon = { uri: this.props.auth.user.image };
-      // }
       return (
         <TabBarIOS.Item
           key={tab.key}
@@ -81,6 +78,7 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(
       {
         ...navigationActions,
+        ...userActions,
       }, dispatch),
   };
 }
