@@ -7,16 +7,13 @@ import {
   TouchableHighlight,
   ActionSheetIOS,
   AlertIOS,
-  Image,
-  NavigationExperimental
+  Image
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { globalStyles, fullWidth } from '../styles/global';
 import Auth from './auth.container';
-import Footer from './footer.containerNew';
-// import CardContainer from './card.container';
-
+import Footer from './footer.container';
 import InvestAnimation from '../components/investAnimation.component';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
@@ -33,8 +30,6 @@ import * as animationActions from '../actions/animation.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
-
-const { CardStack: NavigationCardStack } = NavigationExperimental;
 
 let styles;
 
@@ -60,17 +55,14 @@ class Application extends Component {
     };
 
     this.showActionSheet = this.showActionSheet.bind(this);
-    this.renderScene = this.renderScene.bind(this)
   }
 
   componentDidMount() {
     const self = this;
     AppState.addEventListener('change', this.handleAppStateChange.bind(self));
-    this.props.actions.changeTab(0);
   }
 
   componentWillReceiveProps(next) {
-
     if (!this.props.auth.user && next.auth.user) {
       this.props.actions.userToSocket(next.auth.user);
       this.props.actions.getActivity(next.auth.user._id, 0);
@@ -78,7 +70,9 @@ class Application extends Component {
       this.props.actions.getMessages(next.auth.user._id);
       this.props.actions.setSelectedUser(next.auth.user._id);
       this.props.actions.setSelectedUserData(next.auth.user);
-      this.props.actions.changeTab(1);
+
+      this.props.actions.pop();
+      this.props.actions.changeTab(0);
     }
   }
 
@@ -200,36 +194,22 @@ class Application extends Component {
     }
   }
 
-  renderScene(props) {
-    let key = props.scene.route.key;
-
-    if (this.props.auth.user) key = null;
-
-    switch (key) {
-      case 'auth':
-        return <Auth authType={key} />;
-      case 'login':
-        return <Auth authType={key} />;
-      case 'signup':
-        return <Auth authType={key} />;
-      default:
-        return <Footer showActionSheet={this.showActionSheet} />;
-    }
-  }
-
   render() {
-    let scene = this.props.navigation;
-    return (
-      <View style={{ flex: 1 }} >
-        <NavigationCardStack
-          key={'scene_' + scene.key}
-          direction={'horizontal'}
-          navigationState={scene}
-          renderScene={this.renderScene}
-        />
-        <InvestAnimation {...this.props} />
-      </View>
-    );
+    if (this.props.auth.user) {
+      return (
+        <View style={{ flex: 1 }} >
+          <Footer showActionSheet={this.showActionSheet} />
+          <InvestAnimation {...this.props} />
+        </View>
+      );
+    }
+    else {
+      return (
+        <View style={{ flex: 1 }}>
+          <Auth />
+        </View>
+      );
+    }
   }
 }
 
@@ -245,7 +225,6 @@ function mapStateToProps(state) {
     messages: state.messages,
     stats: state.stats,
     investments: state.investments,
-    navigation: state.navigation.auth,
   };
 }
 

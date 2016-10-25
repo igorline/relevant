@@ -7,16 +7,15 @@ export function push(route) {
   };
 }
 
-export function pop(tabKey) {
+export function pop() {
   return {
-    type: POP_ROUTE,
-    tabKey
+    type: POP_ROUTE
   };
 }
 
-export function changeTab(tabKey) {
+export function changeTab(index) {
   return {
     type: CHANGE_TAB,
-    tabKey
+    index
   };
 }

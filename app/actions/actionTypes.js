@@ -41,5 +41,5 @@ export const GET_POSTS = 'GET_POSTS';
 export const REFRESH_POSTS = 'REFRESH_POSTS';
 export const PUSH_ROUTE = 'PUSH_ROUTE';
 export const POP_ROUTE = 'POP_ROUTE';
-export const CHANGE_TAB = 'CHANGE_TAB';
+export const CHANGE_TAB = 'POP_ROUTE';
 

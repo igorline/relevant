@@ -172,8 +172,7 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     comments: state.comments,
-    posts: state.posts,
-    navigation: state.navigation
+    posts: state.posts
   };
 }
 

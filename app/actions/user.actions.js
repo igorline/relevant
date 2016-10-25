@@ -5,8 +5,8 @@ import * as utils from '../utils';
 
 export
 function getSelectedUser(userId) {
-  return function(dispatch) {
-    console.log('get', userId);
+  return (dispatch) => {
+    dispatch(setSelectedUser(userId));
     return fetch(process.env.API_SERVER+'/api/user/'+userId, {
         credentials: 'include',
         method: 'GET',
@@ -118,10 +118,9 @@ function clearUserList() {
 
 export
 function setSelectedUser(user) {
-    var set = user ? user : null;
     return {
-        type: types.SET_SELECTED_USER,
-        payload: set
+        type: 'SET_SELECTED_USER',
+        payload: user
     };
 }
 

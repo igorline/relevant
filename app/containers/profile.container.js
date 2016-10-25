@@ -5,11 +5,12 @@ import {
   View,
   ListView,
   TouchableHighlight,
+  ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { globalStyles, fullWidth } from '../styles/global';
+import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import ProfileComponent from '../components/profile.component';
 import Investment from '../components/investment.component';
@@ -56,6 +57,11 @@ const localStyles = StyleSheet.create({
   wrap: {
     flexDirection: 'row',
     flexWrap: 'nowrap',
+  },
+  centering: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
   },
 });
 
@@ -136,6 +142,10 @@ class Profile extends Component {
 
   componentWillReceiveProps(next) {
     let userId = null;
+
+    // console.log(next)
+    // if (next.defaultContainer && next.users.selectedUserId !== this.props.auth.user._id) next.actions.getSelectedUser(this.props.auth.user._id);
+
     if (next.users.selectedUserId) userId = next.users.selectedUserId;
 
     if (userId !== this.props.users.selectedUserId) {
@@ -278,7 +288,6 @@ class Profile extends Component {
     let userId = null;
     let userData = null;
     let postsEl = null;
-    let spinner = null;
 
     if (this.userId && this.userData) {
       profileEl = (<ProfileComponent {...this.props} user={userData} styles={styles} />);
@@ -297,16 +306,10 @@ class Profile extends Component {
       }
     }
 
-    if (!this.postsData) {
-      // spinner = (
-      //   <Spinner color={'rgba(0,0,0,1)'} overlayColor={'rgba(0,0,0,0)'} visible/>
-      // );
-    }
-
     return (
-      <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
-        {spinner}
+      <View style={{ backgroundColor: 'white', flex: 1 }}>
         {postsEl}
+        <Spinner color={'rgba(0,0,0,1)'} overlayColor={'rgba(0,0,0,0)'} visible={!this.postsData} />
       </View>
     );
   }
@@ -325,7 +328,6 @@ function mapStateToProps(state) {
     view: state.view,
     stats: state.stats,
     investments: state.investments,
-    navigation: state.navigation
   };
 }
 
