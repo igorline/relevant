@@ -32,7 +32,7 @@ export function invest(token, amount, post, investingUser){
   }
 }
 
-export function getInvestments(token, userId, skip, limit, myInvestments){
+export function getInvestments(token, userId, skip, limit, type){
   return dispatch => {
     return fetch( apiServer + 'invest/'+userId+'?skip='+skip+'&limit='+limit+'&access_token='+token, {
       credentials: 'include',
@@ -44,11 +44,8 @@ export function getInvestments(token, userId, skip, limit, myInvestments){
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      if (myInvestments) {
-        dispatch(setMyInvestments(responseJSON));
-      } else {
-        dispatch(setUserInvestments(responseJSON));
-      }
+      if (skip === 0) dispatch(refreshInvestments(responseJSON, type));
+      else dispatch(setInvestments(responseJSON, type));
     })
     .catch((error) => {
       console.log(error);
@@ -56,24 +53,23 @@ export function getInvestments(token, userId, skip, limit, myInvestments){
   }
 }
 
-export function setMyInvestments(data) {
+export function setInvestments(data, type) {
     return {
-        type: 'SET_MY_INVESTMENTS',
-        payload: data
+        type: 'SET_INVESTMENTS',
+        payload: {
+          data: data,
+          type: type
+        }
     };
 }
 
-export function setUserInvestments(data) {
+export function refreshInvestments(data, type) {
     return {
-        type: 'SET_USER_INVESTMENTS',
-        payload: data
-    };
-}
-
-export
-function clearUserInvestments() {
-    return {
-        type: 'CLEAR_USER_INVESTMENTS',
+        type: 'REFRESH_INVESTMENTS',
+        payload: {
+          data: data,
+          type: type
+        }
     };
 }
 

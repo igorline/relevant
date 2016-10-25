@@ -97,15 +97,6 @@ export function clearPosts(type) {
   };
 }
 
-// export function refreshPosts(type) {
-//     return {
-//         type: types.REFRESH_POSTS,
-//         payload: {
-//           type: type
-//         }
-//     };
-// }
-
 export function setPostCategory(tag) {
   const set = tag ? tag : null;
   return {
@@ -152,9 +143,7 @@ export function getPosts(skip, tags, sort, limit) {
     url = process.env.API_SERVER+'/api/post?skip='+skip+'&tag='+tagsString+'&sort='+sort+'&limit='+limit;
   }
 
-  return function(dispatch) {
-
-    //sets 'loading' state to true
+  return (dispatch) => {
     dispatch(getPostsAction());
 
     fetch(url, {
@@ -178,7 +167,7 @@ export function getPosts(skip, tags, sort, limit) {
 }
 
 
-export function getUserPosts(skip, limit, userId, myPosts) {
+export function getUserPosts(skip, limit, userId, type) {
   var tagsString = '';
   if (!skip) skip = 0;
   if (!limit) limit = 5;
@@ -196,11 +185,14 @@ export function getUserPosts(skip, limit, userId, myPosts) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      if (myPosts) {
-        dispatch(setMyPosts(responseJSON));
-      } else {
-        dispatch(setUserPosts(responseJSON));
-      }
+      // if (myPosts) {
+
+      //   dispatch(setMyPosts(responseJSON));
+      // } else {
+      //   dispatch(setUserPosts(responseJSON));
+      // }
+      if (skip === 0) dispatch(refreshPosts(responseJSON, type));
+      else dispatch(setPosts(responseJSON, type));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -226,6 +218,30 @@ export function setRecentPosts(posts) {
   return {
     type: types.SET_RECENT_POSTS,
     payload: posts
+  };
+}
+
+export function refreshMyPosts() {
+  return {
+    type: 'CLEAR_MY_POSTS',
+  };
+}
+
+export function refreshUserPosts() {
+  return {
+    type: 'CLEAR_USER_POSTS',
+  };
+}
+
+export function clearMyPosts() {
+  return {
+    type: 'CLEAR_MY_POSTS',
+  };
+}
+
+export function clearUserPosts() {
+  return {
+    type: 'CLEAR_USER_POSTS',
   };
 }
 
@@ -471,12 +487,6 @@ export function setSelectedPostData(post) {
 export function clearSelectedPost() {
   return {
     type: 'CLEAR_SELECTED_POST'
-  };
-}
-
-export function clearUserPosts() {
-  return {
-    type: 'CLEAR_USER_POSTS'
   };
 }
 

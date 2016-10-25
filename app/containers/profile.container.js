@@ -51,14 +51,12 @@ class Profile extends Component {
     if (this.props.scene) {
       this.myProfile = false;
       this.userId = this.props.scene.id;
-      this.loadUser();
     } else {
       this.myProfile = true;
       this.userId = this.props.auth.user._id;
       this.userData = this.props.auth.user;
-      this.createPosts(this.props.posts.myPosts);
-      this.createInvestments(this.props.investments.myInvestments);
     }
+    this.loadUser();
   }
 
   componentWillReceiveProps(next) {
@@ -123,11 +121,15 @@ class Profile extends Component {
   }
 
   loadUser() {
-    this.props.actions.clearUserPosts();
-    this.props.actions.clearUserInvestments();
-    this.props.actions.getInvestments(this.props.auth.token, this.userId, 0, 10, false);
-    this.props.actions.getSelectedUser(this.userId);
-    this.props.actions.getUserPosts(0, 5, this.userId, false);
+    if (this.myProfile) {
+      this.props.actions.getInvestments(this.props.auth.token, this.userId, 0, 10, 'myInvestments');
+      this.props.actions.getSelectedUser(this.userId);
+      this.props.actions.getUserPosts(0, 5, this.userId, 'myPosts');
+    } else {
+      this.props.actions.getInvestments(this.props.auth.token, this.userId, 0, 10, 'userInvestments');
+      this.props.actions.getSelectedUser(this.userId);
+      this.props.actions.getUserPosts(0, 5, this.userId, 'userPosts');
+    }
   }
 
   loadMore() {
@@ -136,15 +138,15 @@ class Profile extends Component {
 
     if (this.state.view === 1) {
       if (this.myProfile) {
-        this.props.actions.getUserPosts(this.props.posts.myPosts.length, 5, this.userId, true);
+        this.props.actions.getUserPosts(this.props.posts.myPosts.length, 5, this.userId, 'myPosts');
       } else {
-        this.props.actions.getUserPosts(this.props.posts.userPosts.length, 5, this.userId, false);
+        this.props.actions.getUserPosts(this.props.posts.userPosts.length, 5, this.userId, 'userPosts');
       }
     } else {
       if (this.myProfile) {
-        this.props.actions.getInvestments(this.props.auth.token, this.userId, this.props.investments.myInvestments.length, 10, true);
+        this.props.actions.getInvestments(this.props.auth.token, this.userId, this.props.investments.myInvestments.length, 10, 'myInvestments');
       } else {
-        this.props.actions.getInvestments(this.props.auth.token, this.userId, this.props.investments.userInvestments.length, 10, false);
+        this.props.actions.getInvestments(this.props.auth.token, this.userId, this.props.investments.userInvestments.length, 10, 'userInvestments');
       }
     }
 
@@ -238,7 +240,7 @@ class Profile extends Component {
     if (this.userId && this.userData) {
       profileEl = (<ProfileComponent {...this.props} user={this.userData} styles={styles} />);
 
-      if (this.postsData || this.investmentsData) {
+      if (this.postsData && this.investmentsData) {
         postsEl = (
           <ListView
             ref={(c) => { this.listview = c; }}
@@ -254,7 +256,7 @@ class Profile extends Component {
             refreshControl={
               <RefreshControl
                 refreshing={this.loading}
-                onRefresh={this.reload}
+                onRefresh={this.loadMore}
                 tintColor="#000000"
                 colors={['#000000', '#000000', '#000000']}
                 progressBackgroundColor="#ffffff"
