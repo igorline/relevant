@@ -143,8 +143,7 @@ class Profile extends Component {
   componentWillReceiveProps(next) {
     let userId = null;
 
-    // console.log(next)
-    // if (next.defaultContainer && next.users.selectedUserId !== this.props.auth.user._id) next.actions.getSelectedUser(this.props.auth.user._id);
+    if (next.defaultContainer && next.users.selectedUserId !== this.props.auth.user._id) next.actions.getSelectedUser(this.props.auth.user._id);
 
     if (next.users.selectedUserId) userId = next.users.selectedUserId;
 
@@ -273,7 +272,8 @@ class Profile extends Component {
           style={[styles.typeParent, view === 1 ? styles.activeBorder : null]}
           onPress={()=> this.changeView(1)}
         >
-          <Text style={[styles.type, styles.darkGray, styles.font15, view === 1 ? styles.active : null]}>Posts</Text>
+        <Text style={[styles.type, styles.darkGray, styles.font15, view === 1 ? styles.active : null]}>Posts</Text>
+
         </TouchableHighlight>
         <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, view === 2 ? styles.activeBorder : null]} onPress={()=> this.changeView(2)}>
           <Text style={[styles.type, styles.darkGray, styles.font15, view === 2 ? styles.active : null]}>Investments</Text>

@@ -73,7 +73,6 @@ class CardContainer extends Component {
   renderScene(props) {
     let key = props.scene.route.key;
 
-
     switch (key) {
       case 'comment':
         return <Comments />;
@@ -102,12 +101,11 @@ class CardContainer extends Component {
     let key = props.scene.route.key;
     let title = props.scene.route ? props.scene.route.title : null;
 
-    console.log(props)
-
     if (key === 'default') {
       let r = this.props.tabs.routes.find(route => {
         return this.default === route.key;
       });
+      console.log(r)
       title = r.title;
     }
 
