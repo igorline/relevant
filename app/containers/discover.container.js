@@ -140,7 +140,7 @@ class Discover extends Component {
 
   reload(tag) {
     console.log('REALOAD');
-    if (this.view == 3) this.props.actions.clearUserList();
+    if (this.view === 3) this.props.actions.clearUserList();
     this.loadPosts(0, tag);
   }
 
