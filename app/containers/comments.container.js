@@ -35,10 +35,11 @@ class Comments extends Component {
 
   componentDidMount() {
     const self = this;
-    console.log(self)
+    console.log(self);
     if (self.props.posts.selectedPostId) self.props.actions.getComments(self.props.posts.selectedPostId);
     this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
     this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
+    console.log("scene props", this.props.scene);
   }
 
   componentWillUpdate(next) {

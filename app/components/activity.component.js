@@ -33,6 +33,7 @@ class SingleActivity extends Component {
       key: 'singlePost',
       title: 'Post',
       back: true,
+      id: activity.post._id
     });
   }
 
@@ -42,6 +43,7 @@ class SingleActivity extends Component {
       key: 'profile',
       title: user.name,
       back: true,
+      id: user._id
     });
   }
 

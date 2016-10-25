@@ -57,7 +57,7 @@ class Comment extends Component {
 
   componentDidMount() {
     var self = this;
-    self.setState({editedText: self.props.comment.text})
+    self.setState({editedText: self.props.comment.text});
   }
 
   showActionSheet() {
