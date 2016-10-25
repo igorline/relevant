@@ -52,7 +52,7 @@ class CardContainer extends Component {
     switch (key) {
       case 'discover':
         return <Discover {...this.props} navigator={this.props.actions} />;
-      case 'profile':
+      case 'myProfile':
         return <Profile {...this.props} navigator={this.props.actions} />;
       case 'activity':
         return <Activity {...this.props} navigator={this.props.actions} />;

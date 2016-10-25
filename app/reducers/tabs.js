@@ -6,7 +6,7 @@ const tabs = [
   { key: 'discover', icon: '🔮', title: 'Discover' },
   { key: 'createPost', icon: '📝', title: 'Create Post' },
   { key: 'activity', icon: '⚡', title: 'Activity' },
-  { key: 'profile', icon: '👤', title: 'Profile' }
+  { key: 'myProfile', icon: '👤', title: 'Profile' }
 ];
 
 const initialState = {
