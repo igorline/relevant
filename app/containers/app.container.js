@@ -69,7 +69,7 @@ class Application extends Component {
       this.props.actions.getActivity(next.auth.user._id, 0);
       this.props.actions.getGeneralActivity(next.auth.user._id, 0);
       this.props.actions.getMessages(next.auth.user._id);
-    };
+    }
     if (!this.props.auth.token && next.auth.token) {
       this.props.actions.changeTab(0);
     }

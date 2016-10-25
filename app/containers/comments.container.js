@@ -8,10 +8,12 @@ import {
   TouchableHighlight,
   Dimensions,
   Keyboard,
-  ListView
+  ListView,
+  InteractionManager
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+// import Spinner from 'react-native-loading-spinner-overlay';
 import * as postActions from '../actions/post.actions';
 import { globalStyles } from '../styles/global';
 import Comment from '../components/comment.component';
@@ -34,20 +36,23 @@ class Comments extends Component {
   }
 
   componentDidMount() {
-    const self = this;
-    console.log(self);
-    if (self.props.posts.selectedPostId) self.props.actions.getComments(self.props.posts.selectedPostId);
-    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
-    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
-    console.log("scene props", this.props.scene);
+    this.props.actions.setComments([]);
+    InteractionManager.runAfterInteractions(() => {
+      if (this.props.posts.selectedPostId) {
+        this.props.actions.getComments(this.props.posts.selectedPostId);
+      }
+      this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
+      this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
+      console.log('scene props', this.props.scene);
+    })
   }
 
   componentWillUpdate(next) {
-    if (next.comments.comments !== this.props.comments.comments) {
-      console.log("COMMENTS ARE HERE ", next.comments.comments )
-      let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      this.dataSource = ds.cloneWithRows([]);
-    }
+    // if (next.comments.comments !== this.props.comments.comments) {
+    //   console.log('COMMENTS ARE HERE ', next.comments.comments);
+    //   let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    //   this.dataSource = ds.cloneWithRows([]);
+    // }
   }
 
   componentDidUpdate(prev) {
@@ -81,14 +86,13 @@ class Comments extends Component {
   }
 
   createComment() {
-    const self = this;
     let commentObj = {
-      post: self.props.posts.selectedPostId,
-      text: self.state.comment,
-      user: self.props.auth.user._id
+      post: this.props.posts.selectedPostId,
+      text: this.state.comment,
+      user: this.props.auth.user._id
     };
-    self.props.actions.createComment(self.props.auth.token, commentObj);
-    self.setState({ comment: null });
+    this.props.actions.createComment(this.props.auth.token, commentObj);
+    this.setState({ comment: null });
   }
 
   renderRow(rowData) {
