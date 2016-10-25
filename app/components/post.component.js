@@ -623,7 +623,7 @@ class Post extends Component {
         </TouchableHighlight>
         <Modal
           animationType={'fade'}
-          transparent={'true'}
+          transparent={true}
           visible={this.state.modalVisible}
           onRequestClose={() => this.toggleModal()}
         >
