@@ -195,6 +195,7 @@ function getUser(token, redirect, callback) {
                 .then(token => {
                     if (token) {
                         console.log('userDefaults found token', token)
+                        dispatch(loginUserSuccess(token));
                         return fetchUser(token);
                     } else {
                         console.log('userDefaults didnt find token')
@@ -219,7 +220,6 @@ function getUser(token, redirect, callback) {
             .then(utils.fetchError.handleErrors)
             .then((response) => response.json())
             .then((responseJSON) => {
-                dispatch(loginUserSuccess(token));
                 dispatch(setUser(responseJSON));
                 dispatch(notifActions.createNotification(token, {
                     type: 'online',

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  ScrollView,
   ListView,
   RefreshControl,
 } from 'react-native';
@@ -158,7 +157,6 @@ class Discover extends Component {
   }
 
   loadPosts(length, _tag) {
-    if (this.props.posts.loading) return;
     if (this.props.users.loading) return;
     console.log('loading posts');
     const tag = typeof _tag !== 'undefined' ? _tag : this.props.posts.tag;
@@ -186,8 +184,6 @@ class Discover extends Component {
   }
 
   render() {
-    let usersEl = null;
-    const view = this.props.view.discover;
     let postsEl = null;
 
     if (this.dataSource) {
@@ -224,28 +220,6 @@ class Discover extends Component {
       );
     }
 
-    // if (this.props.auth.userIndex) {
-    //   userIndex = this.props.auth.userIndex;
-    //   usersEl = userIndex.map((user, i) => {
-    //     let dicoverUser = null;
-    //     if (user.name !== 'Admin') {
-    //       dicoverUser = (
-    //         <DiscoverUser
-    //           key={i}
-    //           {...this.props}
-    //           user={user}
-    //           styles={styles}
-    //         />);
-    //     }
-    //     return dicoverUser;
-    //   });
-    //   usersParent = (
-    //     <ScrollView>
-    //       {usersEl}
-    //     </ScrollView>
-    //   );
-    // }
-
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         <Spinner
@@ -254,7 +228,6 @@ class Discover extends Component {
           visible={!this.dataSource && this.props.view.discover !== 3}
         />
         {postsEl}
-        {/*view === 3 ? usersParent : null*/}
         <DiscoverHeader
           showHeader={this.state.showHeader}
           posts={this.props.posts}
@@ -321,6 +294,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-
 export default connect(mapStateToProps, mapDispatchToProps)(Discover);
-
