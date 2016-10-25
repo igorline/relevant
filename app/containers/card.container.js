@@ -93,7 +93,7 @@ class CardContainer extends Component {
         return <Categories navigator={this.props.actions} />;
 
       case 'profile':
-        return <Profile navigator={this.props.actions} />;
+        return <Profile scene={props.scene.route} navigator={this.props.actions} />;
 
       default:
         return this.getDefaultComponent();
