@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import Application from './app.containerNew';
+import Application from './app.container';
 import configureStore from '../store/configureStore';
 
 
