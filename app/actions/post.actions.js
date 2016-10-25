@@ -178,7 +178,7 @@ export function getPosts(skip, tags, sort, limit) {
 }
 
 
-export function getUserPosts(skip, limit, userId) {
+export function getUserPosts(skip, limit, userId, myPosts) {
   var tagsString = '';
   if (!skip) skip = 0;
   if (!limit) limit = 5;
@@ -196,30 +196,37 @@ export function getUserPosts(skip, limit, userId) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setUserPosts(responseJSON, 'user', userId));
+      if (myPosts) {
+        dispatch(setMyPosts(responseJSON));
+      } else {
+        dispatch(setUserPosts(responseJSON));
+      }
     })
     .catch((error) => {
       console.log(error, 'error');
     });
-  }
+  };
 }
 
-export function setUserPosts(posts, user, userId) {
-    return {
-        type: 'SET_POSTS',
-        payload: {
-          userId: userId,
-          data: posts,
-          type: user
-        }
-    };
+export function setUserPosts(posts) {
+  return {
+    type: 'SET_USER_POSTS',
+    payload: posts
+  };
+}
+
+export function setMyPosts(posts) {
+  return {
+    type: 'SET_MY_POSTS',
+    payload: posts
+  };
 }
 
 export function setRecentPosts(posts) {
-    return {
-        type: types.SET_RECENT_POSTS,
-        payload: posts
-    };
+  return {
+    type: types.SET_RECENT_POSTS,
+    payload: posts
+  };
 }
 
 export function updatePost(post) {
@@ -464,6 +471,12 @@ export function setSelectedPostData(post) {
 export function clearSelectedPost() {
   return {
     type: 'CLEAR_SELECTED_POST'
+  };
+}
+
+export function clearUserPosts() {
+  return {
+    type: 'CLEAR_USER_POSTS'
   };
 }
 

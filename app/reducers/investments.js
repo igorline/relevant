@@ -13,23 +13,27 @@ const addItems = (arr, newArr) => {
 }
 
 
-const initialState = {index: null, user: null};
+const initialState = { userInvestments: [], myInvestments: [] };
 
 export default function investments(state = initialState, action) {
   switch (action.type) {
 
-    case 'SET_INVESTMENTS': {
+    case 'SET_MY_INVESTMENTS': {
       return Object.assign({}, state, {
-        'index': addItems(state.index, action.payload.data),
-        'user': action.payload.user
+        'myInvestments': addItems(state.myInvestments, action.payload),
       })
     }
 
-    case 'CLEAR_INVESTMENTS': {
+    case 'SET_USER_INVESTMENTS': {
       return Object.assign({}, state, {
-        'index': null,
-        'user': null
+        'userInvestments': addItems(state.userInvestments, action.payload),
       })
+    }
+
+    case 'CLEAR_USER_INVESTMENTS': {
+      return Object.assign({}, state, {
+        'userInvestments': [],
+      });
     }
 
     default:
