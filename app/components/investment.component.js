@@ -27,6 +27,7 @@ class Investment extends Component {
       key: 'profile',
       name: user.name,
       back: true,
+      id: user._id,
     });
   }
 
