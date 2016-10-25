@@ -261,7 +261,8 @@ class Post extends Component {
     this.props.navigator.push({
       key: 'comment',
       title: 'Comments',
-      back: true
+      back: true,
+      id: this.props.post._id
     });
   }
 
@@ -294,7 +295,8 @@ class Post extends Component {
     this.props.navigator.push({
       key: 'profile',
       title: user.name,
-      back: true
+      back: true,
+      id: user._id
     });
   }
 

@@ -83,6 +83,7 @@ class Profile extends Component {
   }
 
   componentWillMount() {
+
     let posts = null;
     let userId = null;
     let investments = null;

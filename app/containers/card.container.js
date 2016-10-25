@@ -75,7 +75,7 @@ class CardContainer extends Component {
 
     switch (key) {
       case 'comment':
-        return <Comments />;
+        return <Comments scene={props.scene.route} />;
 
       case 'thirst':
         return <Thirst navigator={this.props.actions} />;
@@ -90,7 +90,7 @@ class CardContainer extends Component {
         return <Categories navigator={this.props.actions} />;
 
       case 'profile':
-        return <Profile navigator={this.props.actions} />;
+        return <Profile scene={props.scene.route} navigator={this.props.actions} />;
 
       default:
         return this.getDefaultComponent();
