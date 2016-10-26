@@ -215,30 +215,6 @@ export function setRecentPosts(posts) {
   };
 }
 
-export function refreshMyPosts() {
-  return {
-    type: 'CLEAR_MY_POSTS',
-  };
-}
-
-export function refreshUserPosts() {
-  return {
-    type: 'CLEAR_USER_POSTS',
-  };
-}
-
-export function clearMyPosts() {
-  return {
-    type: 'CLEAR_MY_POSTS',
-  };
-}
-
-export function clearUserPosts() {
-  return {
-    type: 'CLEAR_USER_POSTS',
-  };
-}
-
 export function updatePost(post) {
   return {
     type: types.UPDATE_POST,
@@ -288,7 +264,7 @@ export function dispatchPost(post, token) {
       body: JSON.stringify(post)
     })
     .then((response) => {
-      console.log(response, 'submitPost response');
+      //console.log(response, 'submitPost response');
       if (response.status == 200) {
         return true;
       } else {

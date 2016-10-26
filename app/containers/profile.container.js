@@ -84,7 +84,6 @@ class Profile extends Component {
 
     if (oldUserData !== newUserData) {
       this.userData = newUserData;
-      this.setState({});
     }
 
     if (newPosts !== oldPosts && newPosts) {
@@ -111,13 +110,11 @@ class Profile extends Component {
   createInvestments(investments) {
     let id = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.investmentsData = id.cloneWithRows(investments);
-    this.setState({});
   }
 
   createPosts(posts) {
     let pd = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.postsData = pd.cloneWithRows(posts);
-    this.setState({});
   }
 
   loadUser() {
@@ -171,7 +168,7 @@ class Profile extends Component {
         />);
       } else {
         return (<View key={rowID}>
-          <Text>No posts babe</Text>
+          <Text>No posts bruh</Text>
         </View>);
       }
     } else {
@@ -233,37 +230,31 @@ class Profile extends Component {
 
   render() {
     let view = this.state.view;
-    let userData = null;
     let postsEl = null;
-    let profileEl = null;
 
-    if (this.userId && this.userData) {
-      profileEl = (<ProfileComponent {...this.props} user={this.userData} styles={styles} />);
-
-      if (this.postsData && this.investmentsData) {
-        postsEl = (
-          <ListView
-            ref={(c) => { this.listview = c; }}
-            enableEmptySections
-            stickyHeaderIndices={[1]}
-            automaticallyAdjustContentInsets={false}
-            dataSource={view === 1 ? this.postsData : this.investmentsData}
-            renderHeader={this.renderHeader}
-            scrollEventThrottle={16}
-            renderRow={this.renderFeedRow}
-            onEndReached={this.loadMore}
-            onEndReachedThreshold={100}
-            refreshControl={
-              <RefreshControl
-                refreshing={this.loading}
-                onRefresh={this.loadMore}
-                tintColor="#000000"
-                colors={['#000000', '#000000', '#000000']}
-                progressBackgroundColor="#ffffff"
-              />
-            }
-        />);
-      }
+    if (this.postsData && this.investmentsData && this.userId && this.userData) {
+      postsEl = (
+        <ListView
+          ref={(c) => { this.listview = c; }}
+          enableEmptySections
+          stickyHeaderIndices={[1]}
+          automaticallyAdjustContentInsets={false}
+          dataSource={view === 1 ? this.postsData : this.investmentsData}
+          renderHeader={this.renderHeader}
+          scrollEventThrottle={16}
+          renderRow={this.renderFeedRow}
+          onEndReached={this.loadMore}
+          onEndReachedThreshold={100}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.loading}
+              onRefresh={this.loadMore}
+              tintColor="#000000"
+              colors={['#000000', '#000000', '#000000']}
+              progressBackgroundColor="#ffffff"
+            />
+          }
+      />);
     }
 
     return (
@@ -272,7 +263,7 @@ class Profile extends Component {
         <Spinner
           color={'rgba(0,0,0,1)'}
           overlayColor={'rgba(0,0,0,0)'}
-          visible={!this.userData}
+          visible={!this.postsData || !this.investmentsData || !this.userId || !this.userData}
         />
       </View>
     );
