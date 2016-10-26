@@ -157,17 +157,6 @@ export default function post(state = initialState, action) {
       };
     }
 
-    // case 'REFRESH_POSTS': {
-    //   var type = action.payload.type;
-    //   return Object.assign({}, state, {
-    //     [type]:  prependItems(state[type], state.newPosts[type]),
-    //     newPosts: {
-    //       ...state.newPosts,
-    //       [type]: []
-    //     }
-    //   })
-    // }
-
     case 'SET_NEW_POSTS_STATUS': {
       return Object.assign({}, state, {
         newPostsAvailable: action.payload,
