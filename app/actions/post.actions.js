@@ -185,12 +185,6 @@ export function getUserPosts(skip, limit, userId, type) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      // if (myPosts) {
-
-      //   dispatch(setMyPosts(responseJSON));
-      // } else {
-      //   dispatch(setUserPosts(responseJSON));
-      // }
       if (skip === 0) dispatch(refreshPosts(responseJSON, type));
       else dispatch(setPosts(responseJSON, type));
     })
