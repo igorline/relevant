@@ -105,14 +105,10 @@ class CreatePost extends Component {
     };
   }
 
-  keyboardWillHide(e) {
-    this.setState({ visibleHeight: Dimensions.get('window').height - 60 });
-  }
-
   componentDidMount() {
     const self = this;
-    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
-    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
+    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
+    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
     self.props.actions.getParentTags();
   }
 
@@ -126,6 +122,10 @@ class CreatePost extends Component {
   keyboardWillShow(e) {
     const newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 60;
     this.setState({ visibleHeight: newSize });
+  }
+
+  keyboardWillHide(e) {
+    this.setState({ visibleHeight: Dimensions.get('window').height - 60 });
   }
 
   switchType(type) {
