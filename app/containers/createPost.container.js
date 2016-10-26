@@ -1,5 +1,3 @@
-'use strict';
-
 import React, { Component } from 'react';
 import {
   StyleSheet,
@@ -19,68 +17,13 @@ import { pickerOptions } from '../utils/pickerOptions';
 import * as viewActions from '../actions/view.actions';
 import * as postActions from '../actions/post.actions';
 import * as tagActions from '../actions/tag.actions';
+import * as navigationActions from '../actions/navigation.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import * as utils from '../utils';
 
 const ImagePicker = require('react-native-image-picker');
-const localStyles = StyleSheet.create({
-  tagStringContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  padding10: {
-    padding: 10,
-  },
-  previewImage: {
-    height: 25,
-    width: 25,
-    marginRight: 10,
-  },
-  list: {
-    flex: 1,
-    width: fullWidth,
-    padding: 10,
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: 'black',
-  },
-  postError: {
-    color: 'red',
-  },
-  nextButton: {
-    width: fullWidth,
-    textAlign: 'center',
-    padding: 10,
-  },
-  postInput: {
-    height: 50,
-    padding: 10,
-    width: fullWidth,
-    textAlign: 'center',
-  },
-  bodyInput: {
-    width: fullWidth,
-    height: fullHeight / 3,
-    padding: 10,
-  },
-  tagRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  createPostContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-  },
-  divider: {
-    height: 1,
-    width: fullWidth,
-    backgroundColor: '#c7c7c7',
-  },
-});
 
-const styles = { ...localStyles, ...globalStyles };
+let styles;
 
 class CreatePost extends Component {
   constructor(props, context) {
@@ -216,7 +159,7 @@ class CreatePost extends Component {
           self.props.actions.setPostCategory(null);
           self.props.actions.clearPosts('user');
           self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
-          self.props.navigator.resetTo({ name: 'discover' });
+          self.props.actions.changeTab(1);
         }
       });
     }
@@ -256,9 +199,9 @@ class CreatePost extends Component {
         } else {
           AlertIOS.alert('Posted');
           self.props.actions.setPostCategory(null);
-          self.props.navigator.push({ key: 'discover', title: 'Discover', back: false });
           self.props.actions.clearPosts('user');
           self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
+          self.props.actions.changeTab(1);
         }
       });
     }
@@ -311,7 +254,7 @@ class CreatePost extends Component {
 
   pickImage(callback) {
     const self = this;
-    console.log(self, 'pickImage');
+    //console.log(self, 'pickImage');
     ImagePicker.showImagePicker(pickerOptions, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -330,6 +273,9 @@ class CreatePost extends Component {
 
   createPreview() {
     const self = this;
+    if (!self.state.postLink) return;
+    if (!self.state.postLink.length) return;
+
     utils.post.generatePreview(self.state.postLink).then((results) => {
       if (results) {
         self.setState({
@@ -416,8 +362,68 @@ function mapDispatchToProps(dispatch) {
       ...postActions,
       ...viewActions,
       ...tagActions,
+      ...navigationActions,
     }, dispatch),
   };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreatePost);
+
+const localStyles = StyleSheet.create({
+  tagStringContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  padding10: {
+    padding: 10,
+  },
+  previewImage: {
+    height: 25,
+    width: 25,
+    marginRight: 10,
+  },
+  list: {
+    flex: 1,
+    width: fullWidth,
+    padding: 10,
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+  },
+  postError: {
+    color: 'red',
+  },
+  nextButton: {
+    width: fullWidth,
+    textAlign: 'center',
+    padding: 10,
+  },
+  postInput: {
+    height: 50,
+    padding: 10,
+    width: fullWidth,
+    textAlign: 'center',
+  },
+  bodyInput: {
+    width: fullWidth,
+    height: fullHeight / 3,
+    padding: 10,
+  },
+  tagRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  createPostContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+  },
+  divider: {
+    height: 1,
+    width: fullWidth,
+    backgroundColor: '#c7c7c7',
+  },
+});
+
+styles = { ...localStyles, ...globalStyles };
