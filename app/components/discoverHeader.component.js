@@ -54,6 +54,7 @@ export default class DiscoverHeader extends Component {
 
   changeView(view) {
     this.layout = false;
+    if (this.props.view === view) this.props.triggerReload();
     this.props.actions.setView('discover', view);
   }
 
