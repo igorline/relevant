@@ -123,6 +123,9 @@ class Read extends Component {
         <ListView
           ref={(c) => { this.listview = c; }}
           enableEmptySections
+          removeClippedSubviews
+          pageSize={1}
+          initialListSize={2}
           dataSource={this.feedData}
           renderRow={this.renderFeedRow}
           onEndReached={this.loadMore}

@@ -89,7 +89,7 @@ console.log('getUsers', skip, limit, id)
     })
     .then((responseJSON) => {
         console.log(responseJSON, 'get users')
-        dispatch(setUserList(responseJSON));
+        dispatch(setUserList(responseJSON, skip));
     })
     .catch((error) => {
         console.log(error, 'error');
@@ -104,12 +104,14 @@ function getUsersLoading() {
     };
 }
 
-export
-function setUserList(users) {
-    return {
-        type: 'SET_USER_LIST',
-        payload: users
-    };
+export function setUserList(users, index) {
+  return {
+    type: 'SET_USER_LIST',
+    payload: {
+      users,
+      index
+    }
+  };
 }
 
 export

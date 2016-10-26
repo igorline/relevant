@@ -14,7 +14,7 @@ const initialState = {
   top: [],
   new: [],
   discoverTags: [],
-  parentTags: null,
+  parentTags: [],
   createPostCategory: null,
   newFeedAvailable: false,
   newPostsAvailable: false,
@@ -83,9 +83,11 @@ export default function post(state = initialState, action) {
 
     case types.SET_POSTS: {
       const type = action.payload.type;
-      console.log('reducer type ', type);
       return Object.assign({}, state, {
-        [type]: addItems(state[type], action.payload.data),
+        [type]: [
+          ...state[type].slice(0, action.payload.index),
+          ...action.payload.data,
+        ],
         currentUser: action.payload.userId ? action.payload.userId : state.currentUser,
         loading: false,
         newPostsAvailable: false,
@@ -145,16 +147,6 @@ export default function post(state = initialState, action) {
           [type]: prependItems(state.newPosts[type], [action.payload.data]),
         },
       });
-    }
-
-    case types.REFRESH_POSTS: {
-      const type = action.payload.type;
-      console.log('Fresh posts', type);
-      return {
-        ...state,
-        [type]: action.payload.data,
-        loading: false,
-      };
     }
 
     // case 'REFRESH_POSTS': {

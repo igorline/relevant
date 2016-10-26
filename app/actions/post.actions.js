@@ -9,23 +9,13 @@ const apiServer = process.env.API_SERVER + '/api/';
 // load 5 posts at a time
 const limit = 5;
 
-
-export function refreshPosts(data, type) {
-  return {
-    type: types.REFRESH_POSTS,
-    payload: {
-      data,
-      type
-    }
-  };
-}
-
-export function setPosts(data, type) {
+export function setPosts(data, type, index) {
   return {
     type: types.SET_POSTS,
     payload: {
       data,
-      type
+      type,
+      index
     }
   };
 }
@@ -57,9 +47,7 @@ export function getFeed(token, skip, tag) {
     })
     .then(response => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON, 'setting feed');
-      if (skip === 0) dispatch(refreshPosts(responseJSON, type));
-      else dispatch(setPosts(responseJSON, type));
+      dispatch(setPosts(responseJSON, type, skip));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -157,8 +145,7 @@ export function getPosts(skip, tags, sort, limit) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      if (skip === 0) dispatch(refreshPosts(responseJSON, type));
-      else dispatch(setPosts(responseJSON, type));
+      dispatch(setPosts(responseJSON, type, skip));
     })
     .catch((error) => {
         console.log(error, 'error');
@@ -191,8 +178,8 @@ export function getUserPosts(skip, limit, userId, type) {
       // } else {
       //   dispatch(setUserPosts(responseJSON));
       // }
-      if (skip === 0) dispatch(refreshPosts(responseJSON, type));
-      else dispatch(setPosts(responseJSON, type));
+      // if (skip === 0) dispatch(refreshPosts(responseJSON, type));
+      dispatch(setPosts(responseJSON, type, skip));
     })
     .catch((error) => {
       console.log(error, 'error');
