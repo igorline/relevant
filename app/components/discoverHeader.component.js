@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { globalStyles, fullWidth } from '../styles/global';
 import Tags from './tags.component';
+import Tabs from './tabs.component';
 
 let styles;
 
@@ -22,6 +23,7 @@ export default class DiscoverHeader extends Component {
     };
     this.search = this.search.bind(this);
     this.headerHeight = 134;
+    this.changeView = this.changeView.bind(this);
   }
 
   componentDidMount() {
@@ -74,6 +76,12 @@ export default class DiscoverHeader extends Component {
   }
 
   render() {
+    let tabs = [
+      { id: 1, title: 'New' },
+      { id: 2, title: 'Top' },
+      { id: 3, title: 'People' }
+    ];
+
     let tags = (
       <View>
         <Tags actions={this.props.actions} posts={this.props.posts} />
@@ -122,49 +130,11 @@ export default class DiscoverHeader extends Component {
       >
         {search}
         {tags}
-        <View style={[styles.row, { width: fullWidth }]}>
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            style={[styles.typeParent, this.props.view === 1 ? styles.activeBorder : null]}
-            onPress={() => this.changeView(1)}
-          >
-            <Text
-              style={[
-                styles.type,
-                styles.darkGray,
-                styles.font15,
-                this.props.view === 1 ? styles.active : null,
-              ]}
-            >
-              New
-            </Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            style={[styles.typeParent, this.props.view === 2 ? styles.activeBorder : null]}
-            onPress={() => this.changeView(2)}
-          >
-            <Text
-              style={[styles.type, styles.darkGray, styles.font15,
-                this.props.view === 2 ? styles.active : null,
-              ]}
-            >
-              Top
-            </Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            style={[styles.typeParent, this.props.view === 3 ? styles.activeBorder : null]}
-            onPress={() => this.changeView(3)}
-          >
-            <Text
-              style={[styles.type, styles.darkGray, styles.font15,
-                this.props.view === 3 ? styles.active : null]}
-            >
-              People
-            </Text>
-          </TouchableHighlight>
-        </View>
+        <Tabs
+          tabs={tabs}
+          active={this.props.view}
+          handleChange={this.changeView}
+        />
       </Animated.View>
     );
   }
