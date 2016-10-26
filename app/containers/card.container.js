@@ -15,7 +15,7 @@ import Categories from '../components/categories.component';
 import Read from './read.container';
 import CreatePost from './createPost.container';
 import Discover from './discover.container';
-import { SinglePost } from './singlePost.container';
+import SinglePost from './singlePost.container';
 import Activity from './activity.container';
 import Comments from './comments.container';
 import Messages from './messages.container';

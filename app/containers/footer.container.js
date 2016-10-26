@@ -28,6 +28,7 @@ class Tabs extends Component {
 
   renderTabContent(key) {
     return (<CardContainer
+      style={{ flex: 1 }}
       defaultContainer={key}
       showActionSheet={this.props.showActionSheet}
     />);
@@ -41,8 +42,7 @@ class Tabs extends Component {
       return (
         <TabBarIOS.Item
           key={tab.key}
-          icon={'💜'}
-          style={{fontSize: 20}}
+          style={{ paddingBottom: 49 }}
           title={tab.icon}
           tintColor={'blue'}
           onPress={() => this.changeTab(i)}
@@ -56,8 +56,6 @@ class Tabs extends Component {
     return (
       <TabBarIOS
         translucent
-        style={{ fontSize: 20 }}
-        itemPositioning={'center'}
       >
         {tabs}
       </TabBarIOS>

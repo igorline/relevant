@@ -90,26 +90,24 @@ class Discover extends Component {
       this.view = next.view.discover;
       this.type = TYPE_LOOKUP[this.view];
       this.dataSource = null;
+      let data;
 
+      if (this.view !== 3) data = next.posts[this.type];
+      else data = next.users.list;
 
-      if (this.view !== 3) {
-        // option 1 - reload and scroll to top
-        ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-        this.dataSource = ds.cloneWithRows(next.posts[this.type]);
-        setTimeout(() => this.reload(), 30);
-        if (this.listview) this.listview.scrollTo({ y: -this.state.headerHeight, animated: false });
+      ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      this.dataSource = ds.cloneWithRows(data);
 
+      // option 1 - reload and scroll to top
+      setTimeout(() => this.reload(), 30);
+      if (this.listview) this.listview.scrollTo({ y: -this.state.headerHeight, animated: false });
 
-        // option 2 - scrolls to last place but and doesn't reload if there is data
-        // if (!next.posts[this.type].length) this.reload();
-        // else {
-        //   this.offset = this.currentScroll[this.type];
-        //   this.listview.scrollTo({ y: this.currentScroll[this.type], animated: false });
-        // }
-      } else {
-        ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-        this.dataSource = ds.cloneWithRows(next.users.list);
-      }
+      // option 2 - scrolls to last place but and doesn't reload if there is data
+      // if (!next.posts[this.type].length) this.reload();
+      // else {
+      //   this.offset = this.currentScroll[this.type];
+      //   this.listview.scrollTo({ y: this.currentScroll[this.type], animated: false });
+      // }
     }
 
     // if (self.props.posts.newPostsAvailable != next.posts.newPostsAvailable) {
@@ -140,7 +138,6 @@ class Discover extends Component {
 
   reload(tag) {
     console.log('REALOAD');
-    if (this.view === 3) this.props.actions.clearUserList();
     this.loadPosts(0, tag);
   }
 

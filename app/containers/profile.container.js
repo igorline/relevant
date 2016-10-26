@@ -84,7 +84,6 @@ class Profile extends Component {
 
     if (oldUserData !== newUserData) {
       this.userData = newUserData;
-      this.setState({});
     }
 
     if (newPosts !== oldPosts && newPosts) {
@@ -111,13 +110,11 @@ class Profile extends Component {
   createInvestments(investments) {
     let id = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.investmentsData = id.cloneWithRows(investments);
-    this.setState({});
   }
 
   createPosts(posts) {
     let pd = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.postsData = pd.cloneWithRows(posts);
-    this.setState({});
   }
 
   loadUser() {
@@ -245,6 +242,9 @@ class Profile extends Component {
           <ListView
             ref={(c) => { this.listview = c; }}
             enableEmptySections
+            removeClippedSubviews
+            pageSize={1}
+            initialListSize={2}
             stickyHeaderIndices={[1]}
             automaticallyAdjustContentInsets={false}
             dataSource={view === 1 ? this.postsData : this.investmentsData}
@@ -262,7 +262,7 @@ class Profile extends Component {
                 progressBackgroundColor="#ffffff"
               />
             }
-        />);
+          />);
       }
     }
 

@@ -15,7 +15,7 @@ export default class Tags extends Component {
 
   componentDidMount() {
     // if (!this.props.posts.discoverTags.length) this.props.actions.getDiscoverTags();
-    if (!this.props.posts.parentTags.length) this.props.actions.parentTags();
+    if (!this.props.posts.parentTags.length) this.props.actions.getParentTags();
 
   }
 
