@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
   Animated,
   TextInput,
-  TouchableHighlight,
   AlertIOS,
 } from 'react-native';
 import { globalStyles, fullWidth } from '../styles/global';
