@@ -8,7 +8,6 @@ import {
   TouchableHighlight,
   Dimensions,
   Keyboard,
-  ListView,
   InteractionManager
 } from 'react-native';
 import { connect } from 'react-redux';

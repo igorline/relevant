@@ -151,10 +151,10 @@ class SignUp extends Component {
         </View>
 
         <View style={styles.margin}>
-          <TouchableHighlight style={[styles.whiteButton]} onPress={self.validate}><Text style={styles.buttonText}>Submit</Text></TouchableHighlight>
+          <TouchableHighlight underlayColor={'transparent'} style={[styles.whiteButton]} onPress={self.validate}><Text style={styles.buttonText}>Submit</Text></TouchableHighlight>
         </View>
 
-        <TouchableHighlight style={[styles.whiteButton]} onPress={self.back}><Text style={styles.buttonText}>Back</Text></TouchableHighlight>
+        <TouchableHighlight underlayColor={'transparent'} style={[styles.whiteButton]} onPress={self.back}><Text style={styles.buttonText}>Back</Text></TouchableHighlight>
 
       </View>
     );

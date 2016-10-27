@@ -18,6 +18,7 @@ import * as viewActions from '../actions/view.actions';
 import * as postActions from '../actions/post.actions';
 import * as tagActions from '../actions/tag.actions';
 import * as navigationActions from '../actions/navigation.actions';
+import Tabs from '../components/tabs.component';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import * as utils from '../utils';
 
@@ -32,6 +33,7 @@ class CreatePost extends Component {
     this.chooseImage = this.chooseImage.bind(this);
     this.removeImage = this.removeImage.bind(this);
     this.post = this.post.bind(this);
+    this.switchType = this.switchType.bind(this);
     this.state = {
       postLink: null,
       postBody: null,
@@ -44,92 +46,88 @@ class CreatePost extends Component {
       tagStage: 1,
       postImage: null,
       catObj: null,
-      visibleHeight: Dimensions.get('window').height - 60,
+      keyboard: false,
     };
   }
 
-  keyboardWillHide(e) {
-    this.setState({ visibleHeight: Dimensions.get('window').height - 60 });
-  }
-
   componentDidMount() {
-    const self = this;
-    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
-    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
-    self.props.actions.getParentTags();
+    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
+    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
+    this.props.actions.getParentTags();
   }
 
   componentWillUnmount() {
-    const self = this;
-    self.props.actions.setPostCategory();
+    this.props.actions.setPostCategory();
     this.showListener.remove();
     this.hideListener.remove();
   }
 
   keyboardWillShow(e) {
-    const newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 60;
-    this.setState({ visibleHeight: newSize });
+    this.setState({ keyboard: true });
+  }
+
+  keyboardWillHide() {
+    this.setState({ keyboard: false });
   }
 
   switchType(type) {
-    const self = this;
-    self.props.actions.setView('post', type);
+    this.props.actions.setView('post', type);
   }
 
   post() {
-    const self = this;
-    const link = self.state.postLink;
-    const body = self.state.postBody;
-    const title = self.state.postTitle;
-    const category = self.props.posts.createPostCategory ? self.props.posts.createPostCategory._id : null;
-    const view = self.props.view.post;
+    const link = this.state.postLink;
+    const body = this.state.postBody;
+    const title = this.state.postTitle;
+    const category = this.props.posts.createPostCategory ?
+      this.props.posts.createPostCategory._id : null;
+    const view = this.props.view.post;
     let tags = [];
-    if (!self.state.postLink && view === 'url') {
-      AlertIOS.alert("Add URL");
+    if (!this.state.postLink && view === 'url') {
+      AlertIOS.alert('Add URL');
       return;
     }
 
     if (view === 'url') {
-      if (!self.validURL()) {
-        AlertIOS.alert("not a valid url");
+      if (!this.validURL()) {
+        AlertIOS.alert('not a valid url');
         return;
       }
     }
 
-    if (view !== 'url' && !self.state.postTitle) {
-      AlertIOS.alert("Add title");
+    if (view !== 'url' && !this.state.postTitle) {
+      AlertIOS.alert('Add title');
       return;
     }
 
-    if (!self.state.postBody) {
-      AlertIOS.alert("Add body");
+    if (!this.state.postBody) {
+      AlertIOS.alert('Add body');
       return;
     }
 
-    if (view === 'image' && !self.state.postImage) {
-      AlertIOS.alert("Add an image");
+    if (view === 'image' && !this.state.postImage) {
+      AlertIOS.alert('Add an image');
       return;
     }
 
     if (link) {
       if (link.indexOf('http://') === -1 && link.indexOf('https://') === -1) {
-        self.setState({postLink: 'http://'+link});
+        this.setState({ postLink: 'http://' + link });
       }
     }
 
-    if (!self.props.posts.createPostCategory) {
-      AlertIOS.alert("Add category");
+    if (!this.props.posts.createPostCategory) {
+      AlertIOS.alert('Add category');
       return;
     }
 
 
-    if (!self.state.postTags) {
-      AlertIOS.alert("Add tags");
+    if (!this.state.postTags) {
+      AlertIOS.alert('Add tags');
       return;
     }
 
-    const bodyTags = self.state.postBody.match(/#\S+/g);
-    const bodyMentions = self.state.postBody.match(/@\S+/g);
+    const bodyTags = this.state.postBody.match(/#\S+/g);
+    const bodyMentions = this.state.postBody.match(/@\S+/g);
     const finalTags = [];
     const finalMentions = [];
 
@@ -146,14 +144,15 @@ class CreatePost extends Component {
       });
     }
 
-    const noSpaces = self.state.postTags.replace(/\s*,\s*/g, ',');
+    const noSpaces = this.state.postTags.replace(/\s*,\s*/g, ',');
     const tagsArray = noSpaces.split(',');
     tags = finalTags.concat(tagsArray);
 
     if (view === 'url') {
-      utils.post.generate(self.state.postLink, body, tags, self.props.auth.token).then((results) => {
+      utils.post.generate(this.state.postLink, body, tags, this.props.auth.token)
+      .then((results) => {
         if (!results) {
-          AlertIOS.alert("Post error please try again");
+          AlertIOS.alert('Post error please try again');
         } else {
           AlertIOS.alert("Posted");
           self.props.actions.setPostCategory(null);
@@ -188,12 +187,12 @@ class CreatePost extends Component {
           title,
           category,
           description: null,
-          image: self.state.postImage,
+          image: this.state.postImage,
           mentions: finalMentions,
         };
       }
 
-      self.props.actions.dispatchPost(postBody, self.props.auth.token).then((results) => {
+      this.props.actions.dispatchPost(postBody, this.props.auth.token).then((results) => {
         if (!results) {
           AlertIOS.alert('Post error please try again');
         } else {
@@ -206,7 +205,7 @@ class CreatePost extends Component {
       });
     }
 
-    self.setState({ postImage: null, postTitle: null, postBody: null, postLink: null, stage: 1 });
+    this.setState({ postImage: null, postTitle: null, postBody: null, postLink: null, stage: 1 });
   }
 
   isOdd(num) {
@@ -217,7 +216,7 @@ class CreatePost extends Component {
     const str = this.state.postLink;
     const pattern = new RegExp(/^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i);
     if (!pattern.test(str)) {
-      console.log("not a valid url");
+      console.log('not a valid url');
       return false;
     } else {
       return true;
@@ -225,25 +224,22 @@ class CreatePost extends Component {
   }
 
   removeTag(tag) {
-    const self = this;
-    var index = self.state.postTags.indexOf(tag);
-    self.state.postTags.splice(index, 1);
-    self.setState({});
+    let index = this.state.postTags.indexOf(tag);
+    this.state.postTags.splice(index, 1);
+    this.setState({});
   }
 
   removeImage() {
-    const self = this;
-    self.setState({ postImage: null });
-    console.log('remove image', self.state);
+    this.setState({ postImage: null });
+    console.log('remove image', this.state);
   }
 
   chooseImage() {
-    const self = this;
-    self.pickImage((err, data) => {
+    this.pickImage((err, data) => {
       if (data) {
-        utils.s3.toS3Advanced(data, self.props.auth.token).then((results) => {
+        utils.s3.toS3Advanced(data, this.props.auth.token).then((results) => {
           if (results.success) {
-            self.setState({ postImage: results.url });
+            this.setState({ postImage: results.url });
           } else {
             console.log('err');
           }
@@ -253,18 +249,16 @@ class CreatePost extends Component {
   }
 
   pickImage(callback) {
-    const self = this;
-    //console.log(self, 'pickImage');
     ImagePicker.showImagePicker(pickerOptions, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
         callback('cancelled');
       } else if (response.error) {
         console.log('ImagePickerManager Error: ', response.error);
-        callback("error");
+        callback('error');
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
-        callback("error");
+        callback('error');
       } else {
         callback(null, response.uri);
       }
@@ -278,7 +272,7 @@ class CreatePost extends Component {
 
     utils.post.generatePreview(self.state.postLink).then((results) => {
       if (results) {
-        self.setState({
+        this.setState({
           urlPreview: {
             image: results.image ? results.image : 'https://s3.amazonaws.com/relevant-images/missing.png',
             title: results.title ? results.title : 'Untitled',
@@ -286,64 +280,219 @@ class CreatePost extends Component {
           },
         });
       } else {
-        AlertIOS.alert("Error parsing URL");
+        AlertIOS.alert('Error parsing URL');
       }
     });
   }
 
   goTo(view) {
-    const self = this;
-    self.props.navigator.push(view);
+    this.props.navigator.push(view);
   }
 
   render() {
-    const self = this;
-    let typeEl = null;
-    const view = self.props.view.post;
+    const view = this.props.view.post;
 
-    typeEl = (<View style={[styles.row, styles.typeBar]}>
-      <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, view === 'url' ? styles.activeBorder : null]} onPress={() => self.switchType('url')}>
-        <Text style={[styles.type, styles.darkGray, styles.font15, view === 'url' ? styles.active : null]}>Url</Text>
-      </TouchableHighlight>
-      <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, view === 'text' ? styles.activeBorder : null]} onPress={() => self.switchType('text')}>
-        <Text style={[styles.type, styles.darkGray, styles.font15, view === 'text' ? styles.active : null]}>Text</Text>
-      </TouchableHighlight>
-      <TouchableHighlight underlayColor={'transparent'} style={[styles.typeParent, view === 'image' ? styles.activeBorder : null]} onPress={() => self.switchType('image')}>
-        <Text style={[styles.type, styles.darkGray, styles.font15, view === 'image' ? styles.active : null]}>Image</Text>
-      </TouchableHighlight>
-    </View>);
+    let tabs = [
+      { id: 'url', title: 'Url' },
+      { id: 'text', title: 'Text' },
+      { id: 'image', title: 'Image' }
+    ];
+
+    let typeEl = (
+      <Tabs
+        tabs={tabs}
+        active={this.props.view.post}
+        handleChange={this.switchType}
+      />
+    );
 
     return (
-      <View style={[{ height: self.state.visibleHeight, backgroundColor: 'white' }]}>
-        <ScrollView keyboardShouldPersistTaps contentContainerStyle={{ flexDirection: 'column', height: fullHeight - 120 }}>
+        <ScrollView
+          keyboardShouldPersistTaps
+          contentInset={{top: 0, left: 0, bottom: this.state.keyboard ? 220 : 0, right: 0}}
+          automaticallyAdjustContentInsets={false}
+          keyboardDismissMode={'on-drag'}
+          contentContainerStyle={{
+            flexDirection: 'column',
+            backgroundColor: 'white',
+            flex: 1,
+          }}
+        >
           {typeEl}
-          {view === 'url' ? <View style={{ borderBottomColor: !self.state.urlPreview ? '#f0f0f0' : 'transparent', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1 }}><TextInput numberOfLines={1} style={[styles.font15, {flex: 1, padding: 10}]} placeholder={'Enter URL here...'} multiline={false} onChangeText={(postLink) => this.setState({ postLink, urlPreview: null })} onBlur={self.createPreview} onSubmitEditing={self.createPreview} value={this.state.postLink} returnKeyType={'done'} /></View> : null}
+          {view === 'url' ?
+            <View
+              style={{
+                borderBottomColor: !this.state.urlPreview ? '#f0f0f0' : 'transparent',
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                flex: 0.1 }}
+            >
+              <TextInput
+                numberOfLines={1}
+                style={[styles.font15, { flex: 1, padding: 10 }]}
+                placeholder={'Enter URL here...'}
+                multiline={false}
+                onChangeText={postLink => this.setState({ postLink, urlPreview: null })}
+                onBlur={this.createPreview}
+                onSubmitEditing={this.createPreview}
+                value={this.state.postLink}
+                returnKeyType={'next'}
+              />
+            </View> : null}
 
-          {view === 'image' && !self.state.postImage ? <TouchableHighlight style={{ borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center', paddingLeft: 10}} underlayColor={'transparent'} onPress={self.chooseImage}><Text>Upload an image</Text></TouchableHighlight> : null}
+          {view === 'image' && !this.state.postImage ?
+            <TouchableHighlight
+              style={{
+                borderBottomColor: '#f0f0f0',
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                flex: 0.1,
+                justifyContent: 'center',
+                paddingLeft: 10
+              }}
+              underlayColor={'transparent'}
+              onPress={this.chooseImage}
+            >
+              <Text>Upload an image</Text>
+            </TouchableHighlight> : null
+          }
 
-          {view === 'image' && self.state.postImage ? <View style={{ flex: 0.1, borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth, flexDirection: 'row', paddingLeft: 10, alignItems: 'center' }}>
-            <Image source={{ uri: self.state.postImage }} style={styles.previewImage} />
-            <TouchableHighlight style={[]} onPress={self.removeImage}><Text>Remove image</Text></TouchableHighlight>
-          </View> : null}
+          {view === 'image' && this.state.postImage ?
+            <View
+              style={{
+                flex: 0.1,
+                borderBottomColor: '#f0f0f0',
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                flexDirection: 'row',
+                paddingLeft: 10,
+                alignItems: 'center'
+              }}
+            >
+              <Image
+                source={{ uri: this.state.postImage }}
+                style={styles.previewImage}
+              />
+              <TouchableHighlight
+                style={[]}
+                onPress={this.removeImage}
+              >
+                <Text>Remove image</Text>
+              </TouchableHighlight>
+            </View> : null}
 
-          {view !== 'url' ? <View style={{ borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center' }}><TextInput style={[styles.font15, { flex: 1, padding: 10 }]} placeholder={'Title here...'} multiline={false} onChangeText={(postTitle) => this.setState({ postTitle })} value={this.state.postTitle} returnKeyType={'done'} /></View> : null}
+          {view !== 'url' ?
+            <View
+              style={{
+                borderBottomColor: '#f0f0f0',
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                flex: 0.1,
+                justifyContent: 'center'
+              }}
+            >
+              <TextInput
+                style={[styles.font15, { flex: 1, padding: 10 }]}
+                placeholder={'Title here...'}
+                multiline={false}
+                onChangeText={postTitle => this.setState({ postTitle })}
+                value={this.state.postTitle}
+                returnKeyType={'done'}
+              />
+            </View> : null}
 
-          {view === 'url' && self.state.urlPreview ? <View style={{ flex: 0.2, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#f0f0f0', paddingLeft: 10, paddingRight: 10, paddingBottom: 10 }}>
-            <View style={{ borderRadius: 4, borderColor: '#f0f0f0', borderStyle: 'solid', borderWidth: StyleSheet.hairlineWidth, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'stretch', flex: 1, overflow: 'hidden' }}>
-              {self.state.urlPreview.image ? <Image source={{ uri: self.state.urlPreview.image }} style={{ flex: 0.4, resizeMode: 'cover' }} /> : null }
-              <Text style={{ flex: 0.6, padding: 5, color: '#808080' }}>{self.state.urlPreview.title}</Text>
-            </View>
-          </View> : null}
+          {view === 'url' && this.state.urlPreview ?
+            <View
+              style={{
+                flex: 0.2,
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                borderBottomColor: '#f0f0f0',
+                paddingLeft: 10,
+                paddingRight: 10,
+                paddingBottom: 10
+              }}
+            >
+              <View
+                style={{
+                  borderRadius: 4,
+                  borderColor: '#f0f0f0',
+                  borderStyle: 'solid',
+                  borderWidth: StyleSheet.hairlineWidth,
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  alignItems: 'stretch',
+                  flex: 1,
+                  overflow: 'hidden'
+                }}
+              >
+                {this.state.urlPreview.image ?
+                  <Image
+                    source={{ uri: this.state.urlPreview.image }}
+                    style={{ flex: 0.4, resizeMode: 'cover' }}
+                  /> : null }
+                <Text style={{ flex: 0.6, padding: 5, color: '#808080' }}>
+                  {this.state.urlPreview.title}
+                </Text>
+              </View>
+            </View> : null}
 
-          <View style={{ borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth, flex: !self.state.urlPreview ? 0.6 : 0.4 }}><TextInput style={[styles.font15, { flex: 1, padding: 10 }]} placeholder={'Body here...'} multiline onChangeText={(postBody) => this.setState({ postBody })} value={this.state.postBody} returnKeyType={'done'} /></View>
+          <View
+            style={{
+              borderBottomColor: '#f0f0f0',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              flex: !this.state.urlPreview ? 0.6 : 0.4 }}
+          >
+            <TextInput
+              style={[
+                styles.font15,
+                { flex: 1, padding: 10 }]}
+              placeholder={'Body here...'}
+              multiline
+              onChangeText={postBody => this.setState({ postBody })}
+              value={this.state.postBody}
+              returnKeyType={'default'}
+            />
+          </View>
 
-          <TouchableHighlight style={{ paddingLeft: 10, borderBottomColor: '#f0f0f0', borderBottomWidth: StyleSheet.hairlineWidth, flex: 0.1, justifyContent: 'center' }} underlayColor={'transparent'} onPress={() => self.goTo({ key: 'categories', title: 'Categories', back: true })}><Text>{self.props.posts.createPostCategory ? self.props.posts.createPostCategory.emoji + ' ' + self.props.posts.createPostCategory.name :  'Choose Category'}</Text></TouchableHighlight>
+          <TouchableHighlight
+            style={{
+              paddingLeft: 10,
+              borderBottomColor: '#f0f0f0',
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              flex: 0.1,
+              justifyContent: 'center'
+            }}
+            underlayColor={'transparent'}
+            onPress={() => this.goTo({ key: 'categories', title: 'Categories', back: true })}
+          >
+            <Text>
+              {
+                this.props.posts.createPostCategory ?
+                `${this.props.posts.createPostCategory.emoji} ${this.props.posts.createPostCategory.name}` :
+                'Choose Category'
+              }
+            </Text>
+          </TouchableHighlight>
 
-          <View style={{ flex: 0.1, justifyContent: 'center' }}><TextInput style={[styles.font15, { flex: 1, padding: 10 }]} placeholder={'Enter tags... ex. webgl, slowstyle, xxx'} multiline={false} onChangeText={(postTags) => this.setState({ postTags })} value={this.state.postTags} returnKeyType={'done'} /></View>
+          <View
+            style={{ flex: 0.1, justifyContent: 'center' }}
+          >
+            <TextInput
+              style={[styles.font15, { flex: 1, padding: 10 }]}
+              placeholder={'Enter tags... ex. webgl, slowstyle, xxx'}
+              multiline={false}
+              onChangeText={postTags => this.setState({ postTags })}
+              value={this.state.postTags}
+              returnKeyType={'done'}
+            />
+          </View>
 
-          <TouchableHighlight underlayColor={'transparent'} style={{ backgroundColor: '#007aff', flex: 0.1, justifyContent: 'center' }} onPress={self.post}><Text style={{ color: 'white', textAlign: 'center' }}>Submit</Text></TouchableHighlight>
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            style={{ backgroundColor: '#007aff', flex: 0.1, justifyContent: 'center' }}
+            onPress={this.post}
+          >
+            <Text style={{ color: 'white', textAlign: 'center' }}>
+              Submit
+            </Text>
+          </TouchableHighlight>
         </ScrollView>
-      </View>
     );
   }
 }

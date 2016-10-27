@@ -2,11 +2,11 @@ import { CHANGE_TAB } from '../actions/actionTypes';
 
 
 const tabs = [
-  { key: 'read', icon: '📩', title: 'Read' },
-  { key: 'discover', icon: '🔮', title: 'Discover' },
-  { key: 'createPost', icon: '📝', title: 'Create Post' },
-  { key: 'activity', icon: '⚡', title: 'Activity' },
-  { key: 'myProfile', icon: '👤', title: 'Profile' }
+  { key: 'read', icon: '📩', title: 'Read', regIcon: require('../assets/images/read.png') },
+  { key: 'discover', icon: '🔮', title: 'Discover', regIcon: require('../assets/images/discover.png') },
+  { key: 'createPost', icon: '📝', title: 'Create Post', regIcon: require('../assets/images/createPost.png') },
+  { key: 'activity', icon: '⚡', title: 'Activity', regIcon: require('../assets/images/activity.png') },
+  { key: 'myProfile', icon: '👤', title: 'Profile', regIcon: require('../assets/images/profile.png') }
 ];
 
 const initialState = {
