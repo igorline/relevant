@@ -187,7 +187,7 @@ class CardContainer extends Component {
         style={{
           backgroundColor: 'white',
           borderBottomColor: '#f0f0f0',
-          borderBottomWidth: StyleSheet.hairlineWidth
+          borderBottomWidth: 1
         }}
         renderTitleComponent={this.renderTitle}
         renderLeftComponent={this.renderLeft}

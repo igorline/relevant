@@ -178,13 +178,6 @@ export function getUserPosts(skip, limit, userId, type) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      // if (myPosts) {
-
-      //   dispatch(setMyPosts(responseJSON));
-      // } else {
-      //   dispatch(setUserPosts(responseJSON));
-      // }
-      // if (skip === 0) dispatch(refreshPosts(responseJSON, type));
       dispatch(setPosts(responseJSON, type, skip));
     })
     .catch((error) => {
@@ -211,30 +204,6 @@ export function setRecentPosts(posts) {
   return {
     type: types.SET_RECENT_POSTS,
     payload: posts
-  };
-}
-
-export function refreshMyPosts() {
-  return {
-    type: 'CLEAR_MY_POSTS',
-  };
-}
-
-export function refreshUserPosts() {
-  return {
-    type: 'CLEAR_USER_POSTS',
-  };
-}
-
-export function clearMyPosts() {
-  return {
-    type: 'CLEAR_MY_POSTS',
-  };
-}
-
-export function clearUserPosts() {
-  return {
-    type: 'CLEAR_USER_POSTS',
   };
 }
 
@@ -287,7 +256,7 @@ export function dispatchPost(post, token) {
       body: JSON.stringify(post)
     })
     .then((response) => {
-      console.log(response, 'submitPost response');
+      //console.log(response, 'submitPost response');
       if (response.status == 200) {
         return true;
       } else {
@@ -431,7 +400,7 @@ export function createComment(token, commentObj) {
     .then((response) => response.json())
     .then((responseJSON) => {
       console.log(responseJSON, 'created comment');
-     dispatch(authActions.getUser(token, false))
+      dispatch(authActions.getUser(token, false))
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -461,7 +430,6 @@ export function getSelectedPost(postId) {
     });
   };
 }
-
 
 export function setSelectedPost(id) {
   return {
