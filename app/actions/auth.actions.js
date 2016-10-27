@@ -181,7 +181,7 @@ function createUser(user, redirect) {
 
 export
 function getUser(token, redirect, callback) {
-    console.log('getUser', token)
+    console.log('getUser', token);
     return dispatch => {
         if (!token) {
             userDefaults.get('token', APP_GROUP_ID)
@@ -219,11 +219,12 @@ function getUser(token, redirect, callback) {
                     personal: false,
                     byUser: responseJSON._id
                 }));
-                dispatch(addDeviceToken(responseJSON, token))
+                dispatch(addDeviceToken(responseJSON, token));
                 if(callback) callback(responseJSON);
             })
             .catch(error => {
-                console.log(error, 'error');
+                // console.log("auth error");
+                // console.log(error);
                 dispatch(loginUserFailure('Server error'));
             });
         }
