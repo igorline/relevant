@@ -21,6 +21,8 @@ export function setPosts(data, type, index) {
 }
 
 export function getFeed(token, skip, tag) {
+  if (!skip) skip = 0;
+
   let url = `${apiServer}feed`
     + `?access_token=${token}`
     + `&skip=${skip}`
@@ -45,11 +47,15 @@ export function getFeed(token, skip, tag) {
       },
       method: 'GET',
     })
-    .then(response => response.json())
+    .then(response => {
+      return response.json()
+    })
     .then((responseJSON) => {
+      console.log(responseJSON)
       dispatch(setPosts(responseJSON, type, skip));
     })
     .catch((error) => {
+      console.log("Feed error")
       console.log(error, 'error');
     });
   };

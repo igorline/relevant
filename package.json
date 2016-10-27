@@ -30,6 +30,7 @@
     "react-native-share": "^1.0.10",
     "react-native-share-extension": "^1.0.3",
     "react-native-share-menu": "^1.1.4",
+    "react-native-textinput-utils": "^0.3.0",
     "react-native-user-defaults": "^0.1.4",
     "react-redux": "^4.4.1",
     "react-router": "^2.0.1",
@@ -37,9 +38,9 @@
     "redux": "^3.3.1",
     "redux-form": "^4.2.2",
     "redux-logger": "^2.6.1",
-    "redux-socket.io": "^1.2.0",
+    "redux-socket.io": "=1.2.0",
     "redux-thunk": "^2.0.1",
-    "socket.io-client": "^1.4.5"
+    "socket.io-client": "~1.4.5"
   },
   "devDependencies": {
     "ava": "^0.16.0",
