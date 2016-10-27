@@ -29,6 +29,7 @@
 		8F3570BC5F7C49AFB8DAC1DB /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 896F0A9D02424FBF979AE5E1 /* libRNShare.a */; };
 		A8EB850D4EC745F2884E48A8 /* libRNOverlay.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D9C9A96E67470CBA6C6352 /* libRNOverlay.a */; };
 		B2B1E5D6542F4D8E985F8E90 /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E20E96A4BE64D4EB36FDE6A /* libRCTContacts.a */; };
+		FB7E1C141DC16D6400E4F1B5 /* libRCTKeyboardToolbar.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB7E1C0B1DC16D3400E4F1B5 /* libRCTKeyboardToolbar.a */; };
 		FB88BE861D9ED742002D0069 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FB88BE841D9ED742002D0069 /* MainInterface.storyboard */; };
 		FB88BE8A1D9ED742002D0069 /* Relevant.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = FB88BE7F1D9ED742002D0069 /* Relevant.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		FB88BE9C1D9ED7C6002D0069 /* Relevant.m in Sources */ = {isa = PBXBuildFile; fileRef = FB88BE9B1D9ED7C6002D0069 /* Relevant.m */; };
@@ -170,6 +171,13 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
+		FB7E1C0A1DC16D3400E4F1B5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FB7E1BFC1DC16D3300E4F1B5 /* RCTTextInputUtils.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EADF3C831BEE147600DCD186;
+			remoteInfo = RCTKeyboardToolbar;
+		};
 		FB88BE881D9ED742002D0069 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
@@ -240,6 +248,7 @@
 		896F0A9D02424FBF979AE5E1 /* libRNShare.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNShare.a; sourceTree = "<group>"; };
 		A1787E34623C4D149698AD8F /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
 		A1B38945545E49EC91F1979A /* RNOverlay.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNOverlay.xcodeproj; path = "../node_modules/react-native-overlay/RNOverlay.xcodeproj"; sourceTree = "<group>"; };
+		FB7E1BFC1DC16D3300E4F1B5 /* RCTTextInputUtils.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTTextInputUtils.xcodeproj; path = "../node_modules/react-native-textinput-utils/RCTTextInputUtils.xcodeproj"; sourceTree = "<group>"; };
 		FB88BE7F1D9ED742002D0069 /* Relevant.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Relevant.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB88BE851D9ED742002D0069 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		FB88BE871D9ED742002D0069 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -276,6 +285,7 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				FB7E1C141DC16D6400E4F1B5 /* libRCTKeyboardToolbar.a in Frameworks */,
 				B2B1E5D6542F4D8E985F8E90 /* libRCTContacts.a in Frameworks */,
 				22ED31BD968C4665B9DE83D5 /* libRNImagePicker.a in Frameworks */,
 				A8EB850D4EC745F2884E48A8 /* libRNOverlay.a in Frameworks */,
@@ -462,6 +472,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				FB7E1BFC1DC16D3300E4F1B5 /* RCTTextInputUtils.xcodeproj */,
 				FB983E261DA1E1E400DAF00D /* RCTUserDefaults.xcodeproj */,
 				FB88BE9D1D9ED842002D0069 /* ReactNativeShareExtension.xcodeproj */,
 				2A94225E1D9D827D000671FA /* ART.xcodeproj */,
@@ -511,6 +522,14 @@
 				13B07F961A680F5B00A75B9A /* relevantNative.app */,
 				00E356EE1AD99517003FC87E /* relevantNativeTests.xctest */,
 				FB88BE7F1D9ED742002D0069 /* Relevant.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FB7E1BFD1DC16D3300E4F1B5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FB7E1C0B1DC16D3400E4F1B5 /* libRCTKeyboardToolbar.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -683,6 +702,10 @@
 					ProjectRef = 832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */;
 				},
 				{
+					ProductGroup = FB7E1BFD1DC16D3300E4F1B5 /* Products */;
+					ProjectRef = FB7E1BFC1DC16D3300E4F1B5 /* RCTTextInputUtils.xcodeproj */;
+				},
+				{
 					ProductGroup = FB983E271DA1E1E400DAF00D /* Products */;
 					ProjectRef = FB983E261DA1E1E400DAF00D /* RCTUserDefaults.xcodeproj */;
 				},
@@ -835,6 +858,13 @@
 			fileType = archive.ar;
 			path = libRCTText.a;
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FB7E1C0B1DC16D3400E4F1B5 /* libRCTKeyboardToolbar.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTKeyboardToolbar.a;
+			remoteRef = FB7E1C0A1DC16D3400E4F1B5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		FB88BEA21D9ED842002D0069 /* libReactNativeShareExtension.a */ = {
