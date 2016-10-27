@@ -14,7 +14,7 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { pickerOptions } from '../utils/pickerOptions';
-// import RCTKeyboardToolbarTextInput from 'react-native-textinput-utils';
+import RCTKeyboardToolbarTextInput from 'react-native-textinput-utils';
 
 import * as viewActions from '../actions/view.actions';
 import * as postActions from '../actions/post.actions';
@@ -364,6 +364,7 @@ class CreatePost extends Component {
 
     return (
       <View style={[{ height: this.state.visibleHeight, backgroundColor: 'white' }]}>
+
         <ScrollView
           keyboardShouldPersistTaps
           contentContainerStyle={{
@@ -371,12 +372,6 @@ class CreatePost extends Component {
             height: fullHeight - 120
           }}
         >
-{/*        <RCTKeyboardToolbarTextInput
-          leftButtonText='Previous'
-          rightButtonText='Next'
-          onCancel={dismissKeyboard => dismissKeyboard()}
-          onDone={dismissKeyboard => dismissKeyboard()}
-        />*/}
           {typeEl}
           {view === 'url' ?
             <View
@@ -385,7 +380,11 @@ class CreatePost extends Component {
                 borderBottomWidth: StyleSheet.hairlineWidth,
                 flex: 0.1 }}
             >
-              <TextInput
+              <RCTKeyboardToolbarTextInput
+                leftButtonText="Previous"
+                rightButtonText="Next"
+                onCancel={() => this.createPreview()}
+                onDone={() => this.createPreview()}
                 numberOfLines={1}
                 style={[styles.font15, { flex: 1, padding: 10 }]}
                 placeholder={'Enter URL here...'}
@@ -446,7 +445,11 @@ class CreatePost extends Component {
                 justifyContent: 'center'
               }}
             >
-              <TextInput
+              <RCTKeyboardToolbarTextInput
+                leftButtonText="Previous"
+                rightButtonText="Next"
+                onCancel={() => this.createPreview()}
+                onDone={() => this.createPreview()}
                 style={[styles.font15, { flex: 1, padding: 10 }]}
                 placeholder={'Title here...'}
                 multiline={false}
@@ -497,7 +500,11 @@ class CreatePost extends Component {
               borderBottomWidth: StyleSheet.hairlineWidth,
               flex: !this.state.urlPreview ? 0.6 : 0.4 }}
           >
-            <TextInput
+            <RCTKeyboardToolbarTextInput
+              leftButtonText="Previous"
+              rightButtonText="Next"
+              onCancel={() => this.createPreview()}
+              onDone={() => this.createPreview()}
               style={[
                 styles.font15,
                 { flex: 1, padding: 10 }]}
