@@ -41,10 +41,12 @@ class Tabs extends Component {
       if (tab.key === 'activity') badge = this.props.notif.count;
       return (
         <TabBarIOS.Item
+          renderAsOriginal
           key={tab.key}
-          style={{ paddingBottom: 49 }}
-          title={tab.icon}
-          tintColor={'blue'}
+          icon={tab.regIcon}
+          title={tab.title}
+          tintColor={'#5C00FF'}
+          style={{paddingBottom: 48}}
           onPress={() => this.changeTab(i)}
           selected={this.props.tabs.index === i}
           badge={badge}

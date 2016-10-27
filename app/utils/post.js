@@ -6,12 +6,19 @@ const cheerio = require('cheerio-without-node-native');
 export function generatePreview(link) {
   console.log(link, 'generate preview link');
   return fetch(link, {
+    credentials: 'include',
     method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
   })
   .then((response) => {
+    //console.log(response, 'first response');
     return response.text();
   })
   .then((responseTxt) => {
+    //console.log(responseTxt, 'responseTxt')
     const $ = cheerio.load(responseTxt);
     let data = {
       'og:type': null,

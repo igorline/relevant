@@ -19,70 +19,14 @@ import RCTKeyboardToolbarTextInput from 'react-native-textinput-utils';
 import * as viewActions from '../actions/view.actions';
 import * as postActions from '../actions/post.actions';
 import * as tagActions from '../actions/tag.actions';
+import * as navigationActions from '../actions/navigation.actions';
 import Tabs from '../components/tabs.component';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import * as utils from '../utils';
 
 const ImagePicker = require('react-native-image-picker');
 
-const localStyles = StyleSheet.create({
-  tagStringContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  padding10: {
-    padding: 10,
-  },
-  previewImage: {
-    height: 25,
-    width: 25,
-    marginRight: 10,
-  },
-  list: {
-    flex: 1,
-    width: fullWidth,
-    padding: 10,
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: 'black',
-  },
-  postError: {
-    color: 'red',
-  },
-  nextButton: {
-    width: fullWidth,
-    textAlign: 'center',
-    padding: 10,
-  },
-  postInput: {
-    height: 50,
-    padding: 10,
-    width: fullWidth,
-    textAlign: 'center',
-  },
-  bodyInput: {
-    width: fullWidth,
-    height: fullHeight / 3,
-    padding: 10,
-  },
-  tagRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  createPostContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-  },
-  divider: {
-    height: 1,
-    width: fullWidth,
-    backgroundColor: '#c7c7c7',
-  },
-});
-
-const styles = { ...localStyles, ...globalStyles };
+let styles;
 
 class CreatePost extends Component {
   constructor(props, context) {
@@ -104,7 +48,7 @@ class CreatePost extends Component {
       tagStage: 1,
       postImage: null,
       catObj: null,
-      visibleHeight: Dimensions.get('window').height - 60,
+      keyboard: false,
     };
   }
 
@@ -121,12 +65,11 @@ class CreatePost extends Component {
   }
 
   keyboardWillShow(e) {
-    const newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 60;
-    this.setState({ visibleHeight: newSize });
+    this.setState({ keyboard: true });
   }
 
   keyboardWillHide() {
-    this.setState({ visibleHeight: Dimensions.get('window').height - 60 });
+    this.setState({ keyboard: false });
   }
 
   switchType(type) {
@@ -213,11 +156,11 @@ class CreatePost extends Component {
         if (!results) {
           AlertIOS.alert('Post error please try again');
         } else {
-          AlertIOS.alert('Posted');
-          this.props.actions.setPostCategory(null);
-          this.props.actions.clearPosts('user');
-          this.props.actions.getUserPosts(0, 5, this.props.auth.user._id);
-          this.props.navigator.resetTo({ name: 'discover' });
+          AlertIOS.alert("Posted");
+          self.props.actions.setPostCategory(null);
+          self.props.actions.clearPosts('user');
+          self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
+          self.props.actions.changeTab(1);
         }
       });
     }
@@ -256,10 +199,10 @@ class CreatePost extends Component {
           AlertIOS.alert('Post error please try again');
         } else {
           AlertIOS.alert('Posted');
-          this.props.actions.setPostCategory(null);
-          this.props.navigator.push({ key: 'discover', title: 'Discover', back: false });
-          this.props.actions.clearPosts('user');
-          this.props.actions.getUserPosts(0, 5, this.props.auth.user._id);
+          self.props.actions.setPostCategory(null);
+          self.props.actions.clearPosts('user');
+          self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
+          self.props.actions.changeTab(1);
         }
       });
     }
@@ -308,7 +251,6 @@ class CreatePost extends Component {
   }
 
   pickImage(callback) {
-    console.log(this, 'pickImage');
     ImagePicker.showImagePicker(pickerOptions, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -326,7 +268,11 @@ class CreatePost extends Component {
   }
 
   createPreview() {
-    utils.post.generatePreview(this.state.postLink).then((results) => {
+    const self = this;
+    if (!self.state.postLink) return;
+    if (!self.state.postLink.length) return;
+
+    utils.post.generatePreview(self.state.postLink).then((results) => {
       if (results) {
         this.setState({
           urlPreview: {
@@ -363,13 +309,15 @@ class CreatePost extends Component {
     );
 
     return (
-      <View style={[{ height: this.state.visibleHeight, backgroundColor: 'white' }]}>
-
         <ScrollView
           keyboardShouldPersistTaps
+          contentInset={{top: 0, left: 0, bottom: this.state.keyboard ? 220 : 0, right: 0}}
+          automaticallyAdjustContentInsets={false}
+          keyboardDismissMode={'on-drag'}
           contentContainerStyle={{
             flexDirection: 'column',
-            height: fullHeight - 120
+            backgroundColor: 'white',
+            flex: 1,
           }}
         >
           {typeEl}
@@ -559,7 +507,6 @@ class CreatePost extends Component {
             </Text>
           </TouchableHighlight>
         </ScrollView>
-      </View>
     );
   }
 }
@@ -578,8 +525,68 @@ function mapDispatchToProps(dispatch) {
       ...postActions,
       ...viewActions,
       ...tagActions,
+      ...navigationActions,
     }, dispatch),
   };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreatePost);
+
+const localStyles = StyleSheet.create({
+  tagStringContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  padding10: {
+    padding: 10,
+  },
+  previewImage: {
+    height: 25,
+    width: 25,
+    marginRight: 10,
+  },
+  list: {
+    flex: 1,
+    width: fullWidth,
+    padding: 10,
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+  },
+  postError: {
+    color: 'red',
+  },
+  nextButton: {
+    width: fullWidth,
+    textAlign: 'center',
+    padding: 10,
+  },
+  postInput: {
+    height: 50,
+    padding: 10,
+    width: fullWidth,
+    textAlign: 'center',
+  },
+  bodyInput: {
+    width: fullWidth,
+    height: fullHeight / 3,
+    padding: 10,
+  },
+  tagRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  createPostContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+  },
+  divider: {
+    height: 1,
+    width: fullWidth,
+    backgroundColor: '#c7c7c7',
+  },
+});
+
+styles = { ...localStyles, ...globalStyles };

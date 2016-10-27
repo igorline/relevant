@@ -561,7 +561,7 @@ class Post extends Component {
           self.setState({postHeight: height, postWidth: width})
         }}>
 
-        <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(null, link) : null}>
+        <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(link) : null}>
           <View>
             <View style={styles.postHeader}>
               {postUserImageEl}
@@ -616,7 +616,7 @@ class Post extends Component {
           </View>
         </TouchableHighlight>
 
-        <TouchableHighlight underlayColor={'transparent'} onPress={link ? () => self.openLink(null, link) : null}>
+        <TouchableHighlight underlayColor={'transparent'} onPress={link ? () => self.openLink(link) : null}>
           <View style={styles.postSection}>
             {lastPost ? <Text style={[styles.lastPost, styles.darkGray]}>Last subscribed post❗️</Text> : null}
             {titleEl}
