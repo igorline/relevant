@@ -43,9 +43,10 @@ class Tabs extends Component {
         <TabBarIOS.Item
           key={tab.key}
           icon={tab.regIcon}
+          renderAsOriginal
           title={tab.title}
           tintColor={'#5C00FF'}
-          style={{paddingBottom: 48}}
+          style={{ paddingBottom: 48 }}
           onPress={() => this.changeTab(i)}
           selected={this.props.tabs.index === i}
           badge={badge}
