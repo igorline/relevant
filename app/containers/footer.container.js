@@ -41,6 +41,7 @@ class Tabs extends Component {
       if (tab.key === 'activity') badge = this.props.notif.count;
       return (
         <TabBarIOS.Item
+          renderAsOriginal
           key={tab.key}
           icon={tab.regIcon}
           renderAsOriginal
