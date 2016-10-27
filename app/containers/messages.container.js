@@ -62,6 +62,7 @@ class Messages extends Component {
   constructor(props, context) {
     super(props, context);
     // this.renderMessageRow = this.renderMessageRow.bind(self)
+    this.goToUser = this.goToUser.bind(this);
     let md = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       messagesData: md
@@ -87,22 +88,14 @@ class Messages extends Component {
     }
   }
 
-  goToUser(id) {
-    const self = this;
-    let set = null;
-    if (typeof id === 'object') {
-      set = id._id;
-    } else {
-      set = id;
-    }
-
-    if (set === self.props.auth.user._id) {
-      self.props.actions.setSelectedUser(set);
-      self.props.navigator.push({ key: 'profile', back: true });
-    } else {
-      self.props.actions.setSelectedUser(set);
-      self.props.navigator.push({ key: 'profile', back: true });
-    }
+  goToUser(user) {
+    this.props.actions.setSelectedUser(user._id);
+    this.props.navigator.push({
+      key: 'profile',
+      name: user.name,
+      back: true,
+      id: user._id,
+    });
   }
 
   renderMessageRow(rowData) {
@@ -112,7 +105,7 @@ class Messages extends Component {
         <Text>
           <Text
             style={styles.active}
-            onPress={() => self.goToUser(rowData.from._id)}
+            onPress={() => self.goToUser(rowData.from)}
           >
             👅💦 {rowData.from.name}
           </Text>
