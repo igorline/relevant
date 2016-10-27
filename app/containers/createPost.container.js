@@ -14,6 +14,8 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { pickerOptions } from '../utils/pickerOptions';
+// import RCTKeyboardToolbarTextInput from 'react-native-textinput-utils';
+
 import * as viewActions from '../actions/view.actions';
 import * as postActions from '../actions/post.actions';
 import * as tagActions from '../actions/tag.actions';
@@ -369,6 +371,12 @@ class CreatePost extends Component {
             height: fullHeight - 120
           }}
         >
+{/*        <RCTKeyboardToolbarTextInput
+          leftButtonText='Previous'
+          rightButtonText='Next'
+          onCancel={dismissKeyboard => dismissKeyboard()}
+          onDone={dismissKeyboard => dismissKeyboard()}
+        />*/}
           {typeEl}
           {view === 'url' ?
             <View
