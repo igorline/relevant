@@ -133,6 +133,7 @@ class Discover extends Component {
     setTimeout(() => this.reload(), 100);
     // this.reload();
     if (this.listview) this.listview.scrollTo({ y: -this.state.headerHeight, animated: true });
+    this.setState({});
   }
 
   reload(tag) {
