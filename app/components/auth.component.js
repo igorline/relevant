@@ -76,6 +76,7 @@ class Auth extends Component {
           <TouchableHighlight
             style={[styles.whiteButton]}
             onPress={this.login}
+            underlayColor={'transparent'}
           >
             <Text style={styles.buttonText}>
               Log In
@@ -84,6 +85,7 @@ class Auth extends Component {
           <TouchableHighlight
             onPress={this.signup}
             style={[styles.whiteButton, styles.marginTop]}
+            underlayColor={'transparent'}
           >
             <Text style={styles.buttonText}>
               Sign Up

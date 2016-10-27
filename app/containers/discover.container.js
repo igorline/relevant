@@ -36,10 +36,7 @@ class Discover extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      lastOffset: 0,
-      height: null,
       headerHeight: 138,
-      layout: false,
       showHeader: true,
     };
     this.onScroll = this.onScroll.bind(this);
@@ -47,6 +44,7 @@ class Discover extends Component {
     this.setPostTop = this.setPostTop.bind(this);
     this.reload = this.reload.bind(this);
     this.loadMore = this.loadMore.bind(this);
+    this.triggerReload = this.triggerReload.bind(this);
     this.currentScroll = {
       new: 0,
       top: 0,
@@ -67,19 +65,25 @@ class Discover extends Component {
 
   componentWillReceiveProps(next) {
     let ds;
-    // update listview if needed
-    if (next.posts[this.type] !== this.props.posts[this.type] && this.type !== 'people') {
-      ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      this.dataSource = ds.cloneWithRows(next.posts[this.type]);
-    }
+    this.view = next.view.discover;
+    this.type = TYPE_LOOKUP[this.view];
 
-    if (next.users.list !== this.props.users.list && this.type === 'people') {
+    let oldData = this.props.posts[this.type];
+    if (this.type === 'people') oldData = this.props.users.list;
+
+    let newData = next.posts[this.type];
+    if (this.type === 'people') newData = next.users.list;
+
+    // update listview if needed
+    if (newData !== oldData) {
+      this.loading = false;
       ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      this.dataSource = ds.cloneWithRows(next.users.list);
+      this.dataSource = ds.cloneWithRows(newData);
     }
 
     // update tag selection
     if (this.tag !== next.posts.tag && this.type !== 'people') {
+      this.loading = false;
       this.dataSource = null;
       this.reload(next.posts.tag);
       this.tag = next.posts.tag;
@@ -87,28 +91,14 @@ class Discover extends Component {
 
     // update view
     if (this.props.view.discover !== next.view.discover) {
-      this.view = next.view.discover;
-      this.type = TYPE_LOOKUP[this.view];
-      this.dataSource = null;
+      this.loading = false;
+      ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      this.dataSource = ds.cloneWithRows(newData);
 
-
-      if (this.view !== 3) {
-        // option 1 - reload and scroll to top
-        ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-        this.dataSource = ds.cloneWithRows(next.posts[this.type]);
-        setTimeout(() => this.reload(), 30);
-        if (this.listview) this.listview.scrollTo({ y: -this.state.headerHeight, animated: false });
-
-
-        // option 2 - scrolls to last place but and doesn't reload if there is data
-        // if (!next.posts[this.type].length) this.reload();
-        // else {
-        //   this.offset = this.currentScroll[this.type];
-        //   this.listview.scrollTo({ y: this.currentScroll[this.type], animated: false });
-        // }
-      } else {
-        ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-        this.dataSource = ds.cloneWithRows(next.users.list);
+      if (!newData.length) this.reload();
+      else {
+        this.offset = this.currentScroll[this.type];
+        this.listview.scrollTo({ y: this.currentScroll[this.type], animated: false });
       }
     }
 
@@ -116,6 +106,7 @@ class Discover extends Component {
     //   if (next.posts.newPostsAvailable) console.log('newPostsAvailable');
     // }
   }
+
 
   onScroll() {
     const currentOffset = this.listview.scrollProperties.offset;
@@ -138,9 +129,14 @@ class Discover extends Component {
     });
   }
 
+  triggerReload() {
+    setTimeout(() => this.reload(), 100);
+    // this.reload();
+    if (this.listview) this.listview.scrollTo({ y: -this.state.headerHeight, animated: true });
+  }
+
   reload(tag) {
     console.log('REALOAD');
-    if (this.view == 3) this.props.actions.clearUserList();
     this.loadPosts(0, tag);
   }
 
@@ -157,7 +153,8 @@ class Discover extends Component {
   }
 
   loadPosts(length, _tag) {
-    if (this.props.users.loading) return;
+    if (this.loading) return;
+    this.loading = true;
     console.log('loading posts');
     const tag = typeof _tag !== 'undefined' ? _tag : this.props.posts.tag;
     switch (this.view) {
@@ -168,7 +165,7 @@ class Discover extends Component {
         this.props.actions.getPosts(length, tag, 'rank', POST_PAGE_SIZE);
         break;
       case 3:
-        if (this.props.auth.user) this.props.actions.getUsers(length, 2, this.props.auth.user._id);
+        if (this.props.auth.user) this.props.actions.getUsers(length, POST_PAGE_SIZE * 2, this.props.auth.user._id);
         break;
       default:
         return;
@@ -209,7 +206,7 @@ class Discover extends Component {
           onEndReachedThreshold={100}
           refreshControl={
             <RefreshControl
-              refreshing={this.props.posts.loading}
+              refreshing={this.loading}
               onRefresh={this.reload}
               tintColor="#000000"
               colors={['#000000', '#000000', '#000000']}
@@ -229,6 +226,7 @@ class Discover extends Component {
         />
         {postsEl}
         <DiscoverHeader
+          triggerReload={this.triggerReload}
           showHeader={this.state.showHeader}
           posts={this.props.posts}
           view={this.props.view.discover}

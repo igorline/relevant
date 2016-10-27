@@ -59,12 +59,13 @@ class Read extends Component {
 
   componentWillReceiveProps(next) {
     if (next.posts.feed !== this.props.posts.feed) {
+      this.loading = false;
       let fd = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.feedData = fd.cloneWithRows(next.posts.feed);
     }
-    if (this.props.posts.newFeedAvailable !== next.posts.newFeedAvailable) {
-      if (next.posts.newFeedAvailable) console.log('newFeedAvailable');
-    }
+    // if (this.props.posts.newFeedAvailable !== next.posts.newFeedAvailable) {
+    //   if (next.posts.newFeedAvailable) console.log('newFeedAvailable');
+    // }
   }
 
   reload() {
@@ -77,7 +78,8 @@ class Read extends Component {
   }
 
   loadPosts(length, _tag) {
-    if (this.props.posts.loading) return;
+    if (this.loading) return;
+    this.loading = true;
     console.log('load more, skip: ', length);
     const tag = typeof _tag !== 'undefined' ? _tag : this.props.posts.tag;
     this.props.actions.getFeed(this.props.auth.token, length, tag);
@@ -123,6 +125,9 @@ class Read extends Component {
         <ListView
           ref={(c) => { this.listview = c; }}
           enableEmptySections
+          removeClippedSubviews
+          pageSize={1}
+          initialListSize={2}
           dataSource={this.feedData}
           renderRow={this.renderFeedRow}
           onEndReached={this.loadMore}

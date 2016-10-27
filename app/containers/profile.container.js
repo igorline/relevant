@@ -237,6 +237,9 @@ class Profile extends Component {
         <ListView
           ref={(c) => { this.listview = c; }}
           enableEmptySections
+          removeClippedSubviews
+          pageSize={1}
+          initialListSize={2}
           stickyHeaderIndices={[1]}
           automaticallyAdjustContentInsets={false}
           dataSource={view === 1 ? this.postsData : this.investmentsData}
@@ -254,7 +257,7 @@ class Profile extends Component {
               progressBackgroundColor="#ffffff"
             />
           }
-      />);
+        />);
     }
 
     return (

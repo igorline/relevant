@@ -1,4 +1,3 @@
-'use strict';
 import React, { Component } from 'react';
 import {
   Text,
@@ -8,11 +7,9 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 let moment = require('moment');
 
 class Investment extends Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context);
-    this.goToPost.bind(self);
-    this.state = {
-    };
+    this.goToPost.bind(this);
   }
 
   setTagAndRoute(tag) {
@@ -31,12 +28,11 @@ class Investment extends Component {
     });
   }
 
-  goToPost(id) {
-    console.log(this, id, 'goToPost')
-    this.props.actions.setSelectedPost(id);
+  goToPost(post) {
+    this.props.actions.setSelectedPost(post._id);
     this.props.navigator.push({
       key: 'singlePost',
-      title: 'Post',
+      title: post.title,
       back: true
     });
   }
@@ -58,7 +54,7 @@ class Investment extends Component {
       investmentEl = (<View style={styles.singleActivity}>
         <View style={styles.activityLeft}>
           <Text style={styles.darkGray}>{investment.investor.name} invested {'$' + investment.amount} in <Text style={styles.active} onPress={() => self.setSelected(investment.poster)}>{investment.poster.name + "'s"}</Text> post
-            <Text numberOfLines={1} onPress={postId ? () => self.goToPost(investment.post._id) : null} style={styles.active}>
+            <Text numberOfLines={1} onPress={postId ? () => self.goToPost(investment.post) : null} style={styles.active}>
             {postId ? ' ' + investment.post.title : null}
             </Text>
           </Text>
@@ -70,10 +66,10 @@ class Investment extends Component {
     }
 
   return (
-      <View>
-        {investmentEl}
-      </View>
-    );
+    <View>
+      {investmentEl}
+    </View>
+  );
   }
 }
 

@@ -14,7 +14,9 @@ export default class Tags extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.posts.discoverTags.length) this.props.actions.getDiscoverTags();
+    // if (!this.props.posts.discoverTags.length) this.props.actions.getDiscoverTags();
+    if (!this.props.posts.parentTags.length) this.props.actions.getParentTags();
+
   }
 
   setTag(tag) {
@@ -31,7 +33,7 @@ export default class Tags extends Component {
     let id = null;
 
     if (this.props.posts.tag) id = this.props.posts.tag._id;
-    tags = this.props.posts.discoverTags;
+    tags = this.props.posts.parentTags;
     tagsEl = tags.map((data, i) => (
       <Text
         style={

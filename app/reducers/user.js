@@ -43,7 +43,10 @@ export default function auth(state = initialState, action) {
 
     case 'SET_USER_LIST': {
       return Object.assign({}, state, {
-        'list': addItems(state.list, action.payload),
+        list: [
+          ...state.list.slice(0, action.payload.index),
+          ...action.payload.users
+        ],
         'loading': false,
       });
     }
