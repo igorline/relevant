@@ -1,12 +1,10 @@
-import * as types from './actionTypes';
 require('../publicenv');
-import * as utils from '../utils';
 
-var apiServer = process.env.API_SERVER+'/api/'
+let apiServer = process.env.API_SERVER+'/api/';
 
-export function invest(token, amount, post, investingUser){
-  return dispatch => {
-    return fetch( apiServer + 'invest?access_token='+token, {
+export function invest(token, amount, post, investingUser) {
+  return (dispatch) => {
+    return fetch(apiServer + 'invest?access_token=' + token, {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -15,13 +13,13 @@ export function invest(token, amount, post, investingUser){
       },
       body: JSON.stringify({
         investor: investingUser._id,
-        amount: amount,
-        post: post
+        amount,
+        post
       })
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log('response', responseJSON)
+      console.log('response', responseJSON);
       dispatch(investNotification(post, investingUser));
       return true;
     })
@@ -29,12 +27,12 @@ export function invest(token, amount, post, investingUser){
       console.log(error);
       return false;
     });
-  }
+  };
 }
 
 export function getInvestments(token, userId, skip, limit, type){
-  return dispatch => {
-    return fetch( apiServer + 'invest/'+userId+'?skip='+skip+'&limit='+limit+'&access_token='+token, {
+  return (dispatch) => {
+    return fetch(apiServer + 'invest/'+userId+'?skip='+skip+'&limit='+limit+'&access_token='+token, {
       credentials: 'include',
       method: 'GET',
       headers: {
@@ -50,27 +48,27 @@ export function getInvestments(token, userId, skip, limit, type){
     .catch((error) => {
       console.log(error);
     });
-  }
+  };
 }
 
 export function setInvestments(data, type) {
-    return {
-        type: 'SET_INVESTMENTS',
-        payload: {
-          data: data,
-          type: type
-        }
-    };
+  return {
+    type: 'SET_INVESTMENTS',
+    payload: {
+      data,
+      type
+    }
+  };
 }
 
 export function refreshInvestments(data, type) {
-    return {
-        type: 'REFRESH_INVESTMENTS',
-        payload: {
-          data: data,
-          type: type
-        }
-    };
+  return {
+    type: 'REFRESH_INVESTMENTS',
+    payload: {
+      data,
+      type
+    }
+  };
 }
 
 
@@ -79,9 +77,9 @@ export function investNotification(post, investingUser) {
     type: 'server/notification',
     payload: {
       user: post.user._id,
-      message: investingUser.name+' just invested in your post'
+      message: investingUser.name + ' just invested in your post'
     }
-  }
+  };
 }
 
 export function destroyInvestment(token, amount, post, investingUser){
@@ -108,5 +106,5 @@ export function destroyInvestment(token, amount, post, investingUser){
       console.log(error);
       return false;
     });
-    }
-  }
+  };
+}

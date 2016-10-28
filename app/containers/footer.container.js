@@ -38,7 +38,7 @@ class Tabs extends Component {
     const tabs = this.props.tabs.routes.map((tab, i) => {
       let badge;
       let icon = tab.icon;
-      if (tab.key === 'activity') badge = this.props.notif.count;
+      if (tab.key === 'activity' && this.props.notif.count) badge = this.props.notif.count;
       return (
         <TabBarIOS.Item
           renderAsOriginal

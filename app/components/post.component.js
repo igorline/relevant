@@ -19,11 +19,17 @@ import Share from 'react-native-share';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 let moment = require('moment');
-let PickerItemIOS = PickerIOS.Item;
 
 class Post extends Component {
   constructor(props) {
     super(props);
+    //this.invest = this.invest.bind(this);
+    this.setAmount = this.setAmount.bind(this);
+    this.setSelected = this.setSelected.bind(this);
+    this.openLink = this.openLink.bind(this);
+    this.toggleInfo = this.toggleInfo.bind(this);
+    this.saveEdit = this.saveEdit.bind(this);
+    this.toggleEditing = this.toggleEditing.bind(this);
     this.state = {
       progress: 0,
       expanded: false,
@@ -56,7 +62,7 @@ class Post extends Component {
   }
 
   componentDidMount() {
-    var self = this;
+    const self = this;
     if (self.props.post) {
       this.checkTime(this);
       this.checkInvestments(this.props.post.investments);
@@ -81,7 +87,6 @@ class Post extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    const self = this;
     if (this.props.post) {
       if (this.props.post.investments !== nextProps.post.investments) {
         this.checkInvestments(nextProps.post.investments);
@@ -90,7 +95,7 @@ class Post extends Component {
   }
 
   onShare() {
-    var self = this;
+    const self = this;
     Share.open({
       title: 'Relevant',
       url: self.props.post.link ? self.props.post.link : 'http://relevant-community.herokuapp.com/',
@@ -100,30 +105,13 @@ class Post extends Component {
       console.log(e);
     });
   }
-  
-  checkTime() {
-    var self = this;
-    if (self.props.post) {
-      var postTime = moment(self.props.post.createdAt);
-      var fromNow = postTime.fromNow();
-      var timeNow = moment();
-      var dif = timeNow.diff(postTime);
-      var threshold = 21600000;
-      if (dif >= threshold) {
-        self.setState({passed: true});
-      } else {
-        self.setState({timeUntilString: moment.duration(threshold - dif).humanize(), timePassedPercent: dif/threshold})
-      }
-      self.setState({posted: fromNow});
-    }
-  }
 
   openLink(url) {
     Linking.openURL(url);
   }
 
   extractDomain(url) {
-    var domain;
+    let domain;
     if (url.indexOf("://") > -1) {
       domain = url.split('/')[2];
     } else {
@@ -131,17 +119,16 @@ class Post extends Component {
     }
     domain = domain.split(':')[0];
 
+    let noPrefix = domain;
+
     if (domain.indexOf('www.') > -1) {
-      var noPrefix = domain.replace("www.","");
-    } else {
-      var noPrefix = domain;
+      noPrefix = domain.replace("www.","");
     }
     return noPrefix;
   }
 
-
   showActionSheet() {
-    var self = this;
+    const self = this;
     if (self.state.myPost) {
       ActionSheetIOS.showActionSheetWithOptions({
         options: self.state.buttons,
@@ -149,7 +136,7 @@ class Post extends Component {
         destructiveButtonIndex: self.state.destructiveIndex,
       },
       (buttonIndex) => {
-        switch(buttonIndex) {
+        switch (buttonIndex) {
           case 0:
             self.onShare();
             break;
@@ -170,7 +157,7 @@ class Post extends Component {
         destructiveButtonIndex: self.state.destructiveIndex,
       },
       (buttonIndex) => {
-        switch(buttonIndex) {
+        switch (buttonIndex) {
           case 0:
             self.onShare();
             break;
@@ -185,76 +172,76 @@ class Post extends Component {
   }
 
   toggleEditing() {
-    var self = this;
-    self.setState({editing: !self.state.editing})
+    const self = this;
+    self.setState({ editing: !self.state.editing });
   }
 
   saveEdit() {
-    var self = this;
-    var title = self.state.editedTitle;
-    var body = self.state.editedBody;
-    var bodyTags = body.match(/#\S+/g);
-    var bodyMentions = body.match(/@\S+/g);
-    var tags = [];
-    var mentions = [];
-    var preTags = [];
+    const self = this;
+    let title = self.state.editedTitle;
+    let body = self.state.editedBody;
+    let bodyTags = body.match(/#\S+/g);
+    let bodyMentions = body.match(/@\S+/g);
+    let tags = [];
+    let mentions = [];
+    let preTags = [];
     if (self.props.post.tags) {
-      self.props.post.tags.forEach(function(tag, i) {
+      self.props.post.tags.forEach((tag, i) => {
         preTags.push(tag.name);
-      })
+      });
     }
 
     if (bodyTags) {
-      bodyTags.forEach(function(tag) {
-        tag = tag.replace('#', '');
-        tags.push(tag);
-      })
+      bodyTags.forEach((eachTag) => {
+        let tagReplace = eachTag.replace('#', '');
+        tags.push(tagReplace);
+      });
     }
     if (bodyMentions) {
-      bodyMentions.forEach(function(name) {
-        name = name.replace('@', '');
-        mentions.push(name);
-      })
+      bodyMentions.forEach((eachName) => {
+        let nameReplace = eachName.replace('@', '');
+        mentions.push(nameReplace);
+      });
     }
 
-    var finalTags = tags.concat(preTags);
-
-    var postBody = {
+    let finalTags = tags.concat(preTags);
+    let postBody = {
       user: self.props.auth.user._id,
       _id: self.props.post._id,
-      body: body,
+      body,
       tags: finalTags,
-      title: title,
-      mentions: mentions
+      title,
+      mentions,
     };
 
-    //Update post action here
+    // Update post action here
 
-    self.props.actions.editPost(postBody, self.props.auth.token).then(function(results) {
-      console.log(results, 'edit results')
-       if (!results) {
-          AlertIOS.alert("Update error please try again");
+    self.props.actions.editPost(postBody, self.props.auth.token).then((results) => {
+      console.log(results, 'edit results');
+      if (!results) {
+        AlertIOS.alert('Update error please try again');
       } else {
-         AlertIOS.alert("Updated");
-         self.setState({editing: false});
+        AlertIOS.alert('Updated');
+        self.setState({ editing: false });
       }
-    })
-  }
-
-
-  invest() {
-    const self = this;
-    console.log('investing', self.state.investAmount);
-    this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user);
-    self.setState({ investAmount: 50 });
-  }
-
-  uninvest() {
-    const self = this;
-    self.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user).then(() => {
-      if (self.props.route === 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id);
     });
   }
+
+
+  // invest() {
+  //   const self = this;
+  //   self.props.actions.triggerAnimation('invest');
+  //   this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user);
+  //   self.setState({ investAmount: 50 });
+  // }
+
+  // uninvest() {
+  //   const self = this;
+  //   self.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user)
+  //   .then(() => {
+  //     if (self.props.route === 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id);
+  //   });
+  // }
 
   openComments() {
     this.props.actions.setSelectedPost(this.props.post._id);
@@ -301,12 +288,12 @@ class Post extends Component {
   }
 
   checkInvestments(investments) {
-    var self = this;
-    var invested = false;
+    const self = this;
+    let invested = false;
     if (investments) {
       if (investments.length > 0) {
         investments.forEach((investment, i) => {
-          if (investment.investor == self.props.auth.user._id) invested = true;
+          if (investment.investor === self.props.auth.user._id) invested = true;
           if (i === investments.length - 1) {
             self.setState({ invested });
           }
@@ -319,13 +306,35 @@ class Post extends Component {
 
   toggleModal() {
     const self = this;
-    console.log('toggleModal')
-    self.setState({modalVisible: !self.state.modalVisible});
+    console.log('toggleModal');
+    self.setState({ modalVisible: !self.state.modalVisible });
+  }
 
+  setAmount(investAmount) {
+    console.log('investing', investAmount);
+    this.props.actions.triggerAnimation('invest');
+    this.props.actions.invest(this.props.auth.token, investAmount, this.props.post, this.props.auth.user);
+    this.setState({ modalVisible: false });
+  }
 
-    // self.props.actions.triggerAnimation('invest');
-    // self.setState({investAmount: 50});
-    // self.invest();
+  checkTime() {
+    const self = this;
+    if (self.props.post) {
+      let postTime = moment(self.props.post.createdAt);
+      let fromNow = postTime.fromNow();
+      let timeNow = moment();
+      let dif = timeNow.diff(postTime);
+      let threshold = 21600000;
+      if (dif >= threshold) {
+        self.setState({ passed: true });
+      } else {
+        self.setState({
+          timeUntilString: moment.duration(threshold - dif).humanize(),
+          timePassedPercent: dif / threshold,
+        });
+      }
+      self.setState({ posted: fromNow });
+    }
   }
 
   toggleExpanded() {
@@ -336,57 +345,50 @@ class Post extends Component {
   toggleInfo() {
     const self = this;
     let newVar = !self.state.toggleInfo;
-    self.setState({toggleInfo: newVar});
+    self.setState({ toggleInfo: newVar });
   }
 
   render() {
     const self = this;
-    var pickerStatus = self.state.pickerStatus;
-    var post, title, description, image, link, imageEl, postUserImage, postUserImageEl, postUser, postUserName, body, balance, createdAt, user, comments, functionBool, tags, tagsEl = null;
-    var commentString = 'Add comment';
-    var relevance = 0;
-    var user = null;
-    var comments = null;
-    var value = 0;
-    var bodyEl = null;
-    var functionBool = false;
-    var expanded = this.state.expanded;
-    if (this.props.auth.user) {
-      user = this.props.auth.user;
-      if (user.balance) balance = user.balance;
-    }
-    var name = null;
-    var styles = {...localStyles, ...globalStyles};
-    var pickerArray = [];
-    var investOptions = [];
-    var lastPost = false;
-    var expandedInvest = self.state.expandedInvest;
-    var toggleBool = null;
-    var investButtonEl = null;
-    var uninvestButtonEl = null;
-    var bodyEditingEl = null;
-    var titleEditingEl = null;
+    let post = null;
+    let title = null;
+    let image = null;
+    let link = null;
+    let imageEl = null;
+    let postUserImage = null;
+    let postUserImageEl = null;
+    let postUser = null;
+    let body = null;
+    let user = null;
+    let comments = null;
+    let tags = null;
+    let tagsEl = null;
+    let commentString = 'Add comment';
+    let relevance = 0;
+    let value = 0;
+    let bodyEl = null;
+    let expanded = this.state.expanded;
+    let name = null;
+    let styles = { ...localStyles, ...globalStyles };
+    let pickerArray = [];
+    let lastPost = false;
+    let investButtonEl = null;
+    let bodyEditingEl = null;
+    let titleEl = null;
 
     if (this.props.post) {
       post = this.props.post;
-      if (post.image) {
-        image = post.image.match('http') ? post.image : 'https:' + post.image;
-      }
-      if (post.description) description = post.description;
+      if (post.image) image = post.image.match('http') ? post.image : 'https:' + post.image;
       if (post.title) title = post.title;
       if (post.relevance) relevance = post.relevance;
       if (post.link) link = post.link;
       if (post.body) body = post.body;
       if (post.value) value = post.value;
       if (post.comments) comments = post.comments;
-      if (post.tags) {
-        if (post.tags.length) tags = post.tags;
-      }
-      if (post.createdAt) createdAt = post.createdAt;
+      if (post.tags) if (post.tags.length) tags = post.tags;
       if (post.user) {
         postUser = post.user;
         if (postUser.image) postUserImage = postUser.image;
-        if (postUser.name) postUserName = postUser.name;
       }
       if (post.lastPost) {
         if (post.lastPost.length) {
@@ -400,9 +402,9 @@ class Post extends Component {
     if (self.state.editing) {
       bodyEditingEl = (
         <TextInput
-          multiline={true}
-          autoGrow={true}
-          style={[styles.darkGray, styles.editingInput, {height: Math.max(35, self.state.bodyHeight)}]} 
+          multiline
+          autoGrow
+          style={[styles.darkGray, styles.editingInput, { height: Math.max(35, self.state.bodyHeight) }]}
           onChange={(event) => {
             this.setState({
               editedBody: event.nativeEvent.text,
@@ -422,23 +424,27 @@ class Post extends Component {
     if (tags) {
       tagsEl = [];
       tags.forEach((tag, i) => {
-        tagsEl.push(<Text style={[styles.white, styles.font10]} key={i}>#{tag.name}</Text>)
-      })
+        tagsEl.push(<Text style={[styles.white, styles.font10]} key={i}>#{tag.name}</Text>);
+      });
     }
 
-    if (balance >= 50) pickerArray.push(<PickerItemIOS key={0} label='50' value={50} />);
-    if (balance >= 100) pickerArray.push(<PickerItemIOS key={1} label='100' value={100} />);
-    if (balance >= 500) pickerArray.push(<PickerItemIOS key={2} label='500' value={500} />);
-    if (balance >= 1000) pickerArray.push(<PickerItemIOS key={3} label='1000' value={1000} />);
-    if (balance >= 5000) pickerArray.push(<PickerItemIOS key={4} label='5000' value={5000} />);
-    if (balance >= 10000) pickerArray.push(<PickerItemIOS key={5} label='10000' value={10000} />);
+    // if (balance >= 50) pickerArray.push(<PickerItemIOS key={0} label='50' value={50} />);
+    // if (balance >= 100) pickerArray.push(<PickerItemIOS key={1} label='100' value={100} />);
+    // if (balance >= 500) pickerArray.push(<PickerItemIOS key={2} label='500' value={500} />);
+    // if (balance >= 1000) pickerArray.push(<PickerItemIOS key={3} label='1000' value={1000} />);
+    // if (balance >= 5000) pickerArray.push(<PickerItemIOS key={4} label='5000' value={5000} />);
+    // if (balance >= 10000) pickerArray.push(<PickerItemIOS key={5} label='10000' value={10000} />);
 
     if (postUserImage) {
-      postUserImageEl = (<TouchableWithoutFeedback onPress={self.setSelected.bind(self, self.props.post.user)}><Image source={{uri: postUserImage}} style={styles.userImage} /></TouchableWithoutFeedback>);
+      postUserImageEl = (<TouchableWithoutFeedback
+        onPress={() => this.setSelected(self.props.post.user)}
+      >
+        <Image source={{ uri: postUserImage }} style={styles.userImage} />
+      </TouchableWithoutFeedback>);
     }
 
     if (image) {
-      imageEl = (<Image resizeMode={'cover'} source={{uri: image}} style={styles.postImage} />);
+      imageEl = (<Image resizeMode={'cover'} source={{ uri: image }} style={styles.postImage} />);
     }
 
     if (post) {
@@ -462,10 +468,10 @@ class Post extends Component {
     }
 
     if (body) {
-      var bodyObj = {};
+      let bodyObj = {};
 
-      var textArr = body.replace((/[@#]\S+/g), function(a){return "`"+a+"`"}).split(/`/);
-      textArr.forEach(function(section, i) {
+      let textArr = body.replace((/[@#]\S+/g), (a) => { return '`' + a + '`'; }).split(/`/);
+      textArr.forEach((section, i) => {
         bodyObj[i] = {};
         bodyObj[i].text = section;
         if (section.indexOf('#') > -1) {
@@ -478,98 +484,123 @@ class Post extends Component {
           bodyObj[i].hashtag = false;
           bodyObj[i].mention = false;
         }
-      })
+      });
 
-      bodyEl = Object.keys(bodyObj).map(function(key, i) {
-        var text = bodyObj[key].text;
+      bodyEl = Object.keys(bodyObj).map((key, i) => {
+        let text = bodyObj[key].text;
         if (bodyObj[key].hashtag) {
-          var tagObj = null;
-          self.props.post.tags.forEach(function(tag) {
-            if (tag.name == text.substr(1, text.length)) {
+          let tagObj = null;
+          self.props.post.tags.forEach((tag) => {
+            if (tag.name === text.substr(1, text.length)) {
               tagObj = tag;
             }
-          })
-          return (<Text key={i} onPress={tagObj ? self.props.actions.goToTag.bind(null, tagObj) : null} style={styles.active}>{bodyObj[key].text}</Text>)
+          });
+          return (<Text
+            key={i}
+            onPress={tagObj ? () => self.props.actions.goToTag(tagObj) : null}
+            style={styles.active}
+          >
+            {bodyObj[key].text}
+          </Text>);
         } else if (bodyObj[key].mention) {
-          var mentionObj = null;
+          let mentionObj = null;
           if (self.props.post.mentions) {
             if (self.props.post.mentions.length) {
-              self.props.post.mentions.forEach(function(user) {
-                if (user.name) {
-                  if (user.name.toLowerCase() == text.substr(1, text.length).toLowerCase()) {
-                    mentionObj = user;
+              self.props.post.mentions.forEach((eachUser) => {
+                if (eachUser.name) {
+                  if (eachUser.name.toLowerCase() === text.substr(1, text.length).toLowerCase()) {
+                    mentionObj = eachUser;
                   }
                 }
-              })
+              });
             }
           }
-          return (<Text key={i} onPress={mentionObj ? self.setSelected.bind(self, mentionObj) : null} style={mentionObj ? styles.active : null}>{bodyObj[key].text}</Text>)
+          return (<Text
+            key={i}
+            onPress={mentionObj ? () => self.setSelected(mentionObj) : null}
+            style={mentionObj ? styles.active : null}
+          >
+            {bodyObj[key].text}
+          </Text>);
         } else {
           return (<Text key={i}>{bodyObj[key].text}</Text>);
         }
       });
     }
-    var titleEl = null;
+ 
     if (!self.state.editing) {
-      titleEl = (<Text style={[styles.font20, styles.darkGray]}>{title ? title : 'Untitled'}</Text>)
+      titleEl = (<Text style={[styles.font20, styles.darkGray]}>{title ? title : 'Untitled'}</Text>);
     } else {
       titleEl = (<TextInput
-          multiline={true}
-          autoGrow={true}
-          style={[styles.darkGray, styles.editingInput, {height: Math.max(35, self.state.titleHeight)}]} 
-          onChange={(event) => {
-            this.setState({
-              editedTitle: event.nativeEvent.text,
-              titleHeight: event.nativeEvent.contentSize.height,
-            });
-          }}
-          value={this.state.editedTitle}
-        />
-      )
+        multiline
+        autoGrow
+        style={[styles.darkGray, styles.editingInput, { height: Math.max(35, self.state.titleHeight) }]}
+        onChange={(event) => {
+          this.setState({
+            editedTitle: event.nativeEvent.text,
+            titleHeight: event.nativeEvent.contentSize.height,
+          });
+        }}
+        value={this.state.editedTitle}
+      />);
     }
 
-    var postInfo = null;
+    let postInfo = null;
 
     if (self.state.passed) {
       if (self.state.toggleInfo) {
-        postInfo = (<View><Text style={[styles.font10, styles.textRight]}>💵 <Text style={styles.active}>{value.toFixed(2)}</Text></Text></View>);
+        postInfo = (<View>
+          <Text style={[styles.font10, styles.textRight]}>💵&nbsp;
+            <Text style={styles.active}>{value.toFixed(2)}</Text>
+          </Text>
+        </View>);
       } else {
-        postInfo = (<View><Text style={[styles.font10, styles.textRight]}>📈 <Text style={styles.active}>{relevance.toFixed(2)}</Text></Text></View>);
+        postInfo = (<View>
+          <Text style={[styles.font10, styles.textRight]}>📈&nbsp;
+            <Text style={styles.active}>{relevance.toFixed(2)}</Text>
+          </Text>
+        </View>);
       }
     } else {
       postInfo = (
         <View style={[styles.countdown]}>
-          <Progress.Pie style={styles.progressCirc} progress={self.state.timePassedPercent} size={15} />
-          <Text style={[styles.font10, styles.textRight, styles.darkGray]}>Results in {self.state.timeUntilString}
+          <Progress.Pie
+            style={styles.progressCirc}
+            progress={self.state.timePassedPercent}
+            size={15}
+          />
+          <Text
+            style={[styles.font10, styles.textRight, styles.darkGray]}
+          >
+            Results in {self.state.timeUntilString}
           </Text>
         </View>);
     }
 
-    var modalBackgroundStyle = {
-      backgroundColor: this.state.transparent ? 'rgba(0, 0, 0, 0.5)' : '#f5fcff',
-    };
-    var innerContainerTransparentStyle = this.state.transparent
-      ? {backgroundColor: '#fff', padding: 20}
-      : null;
-    var activeButtonStyle = {
-      backgroundColor: '#ddd'
-    };
-
     return (
-      <View style={[styles.postContainer]} onLayout={(event) => {
-          var {x, y, width, height} = event.nativeEvent.layout;
-          self.setState({postHeight: height, postWidth: width})
-        }}>
-
-        <TouchableHighlight underlayColor={'transparent'} onPress={link ? self.openLink.bind(link) : null}>
+      <View
+        style={[styles.postContainer]}
+        onLayout={(event) => {
+          let { x, y, width, height } = event.nativeEvent.layout;
+          self.setState({ postHeight: height, postWidth: width });
+        }}
+      >
+        <TouchableHighlight underlayColor={'transparent'} onPress={link ? () => self.openLink(link) : null}>
           <View>
             <View style={styles.postHeader}>
               {postUserImageEl}
               <View style={styles.postInfo}>
-                <TouchableWithoutFeedback onPress={self.setSelected.bind(self, user)} style={[styles.infoLeft, styles.innerInfo]}>
+                <TouchableWithoutFeedback
+                  onPress={() => self.setSelected(user)}
+                  style={[styles.infoLeft, styles.innerInfo]}
+                >
                   <View><Text style={[styles.font15, styles.darkGray]}>{name}</Text></View>
                 </TouchableWithoutFeedback>
-                <TouchableHighlight underlayColor={'transparent'} onPress={self.toggleInfo.bind(self)} style={[styles.infoRight, styles.innerInfo]}>
+                <TouchableHighlight
+                  underlayColor={'transparent'}
+                  onPress={() => self.toggleInfo()}
+                  style={[styles.infoRight, styles.innerInfo]}
+                >
                   {postInfo}
                 </TouchableHighlight>
               </View>
@@ -580,32 +611,39 @@ class Post extends Component {
         <TouchableHighlight>
           <View>
             <View style={[styles.postBody]}>
-              {body && !self.state.editing ? <Text style={styles.darkGray} numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text> : null}
+              {body && !self.state.editing ?
+                <Text style={styles.darkGray} numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text>
+              : null}
               {body && self.state.editing ? bodyEditingEl : null}
             </View>
           </View>
         </TouchableHighlight>
 
         {self.state.editing ? <View style={styles.postButtons}>
-          <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={self.saveEdit.bind(self)}>
+          <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={() => self.saveEdit()}>
             <Text style={[styles.font10, styles.postButtonText]}>Save changes</Text>
           </TouchableHighlight>
-          <TouchableHighlight underlayColor={'transparent'} onPress={self.toggleEditing.bind(self)} style={styles.postButton}>
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            onPress={() => self.toggleEditing()}
+            style={styles.postButton}
+          >
             <Text style={[styles.font10, styles.postButtonText]}>Cancel</Text>
           </TouchableHighlight>
         </View> : null}
 
         <View style={styles.postButtons}>
           {investButtonEl}
-          <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={() => self.toggleExpanded()}><Text style={[styles.font10, styles.postButtonText]}>{expanded ? 'Read less' : 'Read more'}</Text></TouchableHighlight>
-          <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, {marginRight: 5}]} onPress={() => self.openComments()}><Text style={[{marginRight: 5}, styles.font10, styles.postButtonText]}>{commentString}</Text></TouchableHighlight>
+          <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => self.toggleExpanded()}><Text style={[styles.font10, styles.postButtonText]}>{expanded ? 'Read less' : 'Read more'}</Text></TouchableHighlight>
+          <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => self.openComments()}><Text style={[{ marginRight: 5 }, styles.font10, styles.postButtonText]}>{commentString}</Text></TouchableHighlight>
           <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={() => self.showActionSheet()}><Text style={[styles.font10, styles.postButtonText]}>...</Text></TouchableHighlight>
         </View>
 
         <Animated.View style={{ height: self.state.aniHeight, overflow: 'hidden' }}>
           <PickerIOS
             selectedValue={self.state.investAmount}
-            onValueChange={(investAmount) => this.setState({ investAmount })}>
+            onValueChange={(investAmount) => this.setState({ investAmount })}
+          >
             {pickerArray}
           </PickerIOS>
         </Animated.View>
@@ -618,11 +656,16 @@ class Post extends Component {
 
         <TouchableHighlight underlayColor={'transparent'} onPress={link ? () => self.openLink(link) : null}>
           <View style={styles.postSection}>
-            {lastPost ? <Text style={[styles.lastPost, styles.darkGray]}>Last subscribed post❗️</Text> : null}
+            {lastPost ? <Text style={[styles.lastPost, styles.darkGray]}>
+              Last subscribed post❗️
+            </Text> : null}
             {titleEl}
-            {link ? <Text style={[styles.font10, styles.darkGray]}>from {self.extractDomain(link)}</Text> : null}
+            {link ?
+              <Text style={[styles.font10, styles.darkGray]}>from {self.extractDomain(link)}</Text>
+            : null}
           </View>
         </TouchableHighlight>
+
         <Modal
           animationType={'fade'}
           transparent
@@ -630,28 +673,45 @@ class Post extends Component {
           onRequestClose={() => this.toggleModal()}
         >
           <View style={{ flex: 1, padding: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.1)' }}>
-            <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 5, flexDirection: 'row'}}>
-              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
-                <Text>50</Text>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
-                <Text>100</Text>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
-                <Text>500</Text>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
-                <Text>1000</Text>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
-                <Text>2000</Text>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
-                <Text>5000</Text>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.toggleModal()}>
-                <Text>10000</Text>
-              </TouchableHighlight>
+            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 5 }}>
+              <View style={{ justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap', flex: 1, overflow: 'visible' }}>
+                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(50)}>
+                  <Text>50</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(100)}>
+                  <Text>100</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(500)}>
+                  <Text>500</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(1000)}>
+                  <Text>1000</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(2000)}>
+                  <Text>2000</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(5000)}>
+                  <Text>5000</Text>
+                </TouchableHighlight>
+                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(10000)}>
+                  <Text>10000</Text>
+                </TouchableHighlight>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                {/* <TouchableHighlight
+                  style={styles.investOption}
+                  underlayColor={'transparent'}
+                >
+                  <Text>Invest</Text>
+                </TouchableHighlight>*/}
+                <TouchableHighlight
+                  style={styles.investOption}
+                  underlayColor={'transparent'}
+                  onPress={() => this.toggleModal()}
+                >
+                  <Text>Cancel</Text>
+                </TouchableHighlight>
+              </View>
             </View>
           </View>
         </Modal>
@@ -689,7 +749,11 @@ const localStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     padding: 5,
-    borderRadius: 5
+    borderRadius: 5,
+    width: 75,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   tagsRow: {
     flexDirection: 'row',
@@ -778,7 +842,3 @@ const localStyles = StyleSheet.create({
     marginRight: 5,
   },
 });
-
-
-
-
