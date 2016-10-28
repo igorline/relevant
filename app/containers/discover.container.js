@@ -166,7 +166,7 @@ class Discover extends Component {
         this.props.actions.getPosts(length, tag, 'rank', POST_PAGE_SIZE);
         break;
       case 3:
-        if (this.props.auth.user) this.props.actions.getUsers(length, POST_PAGE_SIZE * 2, this.props.auth.user._id);
+        if (this.props.auth.user) this.props.actions.getUsers(length, POST_PAGE_SIZE * 2);
         break;
       default:
         return;
@@ -196,7 +196,7 @@ class Discover extends Component {
           onScroll={this.onScroll}
           dataSource={this.dataSource}
           renderRow={this.renderRow}
-          automaticallyAdjustContentInsets={false}
+          automaticallyAdjustContentInsets={true}
           contentInset={{ top: this.state.headerHeight }}
           contentOffset={{ y: -this.state.headerHeight }}
           contentContainerStyle={{

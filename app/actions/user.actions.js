@@ -68,12 +68,10 @@ function getPostUser(userId, token) {
   }
 }
 
-export function getUsers(skip, limit, id) {
-console.log('getUsers', skip, limit, id)
-  let tagsString = '';
+export function getUsers(skip, limit) {
   if (!skip) skip = 0;
   if (!limit) limit = 10;
-  let url = process.env.API_SERVER + '/api/user/list/' + id + '?skip=' + skip + '&limit=' + limit;
+  let url = process.env.API_SERVER + '/api/user/general/list' + '?skip=' + skip + '&limit=' + limit;
   return function(dispatch) {
     dispatch(getUsersLoading());
     fetch(url, {
