@@ -190,6 +190,7 @@ class Application extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
+    animation: state.animation,
   };
 }
 

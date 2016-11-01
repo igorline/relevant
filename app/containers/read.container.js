@@ -14,6 +14,8 @@ import { connect } from 'react-redux';
 import { globalStyles } from '../styles/global';
 import Post from '../components/post.component';
 import * as postActions from '../actions/post.actions';
+import * as animationActions from '../actions/animation.actions';
+import * as investActions from '../actions/invest.actions';
 
 const localStyles = StyleSheet.create({
   thirstyHeader: {
@@ -198,6 +200,8 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators({
       ...postActions,
+      ...animationActions,
+      ...investActions,
     }, dispatch)
   };
 }
