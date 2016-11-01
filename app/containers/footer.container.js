@@ -38,15 +38,16 @@ class Tabs extends Component {
     const tabs = this.props.tabs.routes.map((tab, i) => {
       let badge;
       let icon = tab.icon;
-      if (tab.key === 'activity') badge = this.props.notif.count;
+      if (tab.key === 'activity' && this.props.notif.count) badge = this.props.notif.count;
       return (
         <TabBarIOS.Item
           renderAsOriginal
           key={tab.key}
           icon={tab.regIcon}
+          renderAsOriginal
           title={tab.title}
           tintColor={'#5C00FF'}
-          style={{paddingBottom: 48}}
+          style={{ paddingBottom: 48 }}
           onPress={() => this.changeTab(i)}
           selected={this.props.tabs.index === i}
           badge={badge}

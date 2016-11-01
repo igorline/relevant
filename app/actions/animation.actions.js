@@ -1,36 +1,35 @@
 import * as types from './actionTypes';
-require('../publicenv');
-var { Actions } = require('react-native-redux-router');
-import * as utils from '../utils';
 
-var apiServer = process.env.API_SERVER+'/api/'
+require('../publicenv');
+
+let apiServer = process.env.API_SERVER + '/api/';
 
 export function setAnimation(type) {
-    return {
-        type: types.SET_ANIMATION,
-        payload: {
-          type: type
-        }
-    };
+  return {
+    type: types.SET_ANIMATION,
+    payload: {
+      type
+    }
+  };
 }
 
 export function triggerAnimation(type) {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(setAnimation(type));
-    setTimeout(function() {
+    setTimeout(() => {
       dispatch(clearAnimation());
     }, 500);
-  }
+  };
 }
 
 export function stopAnimation() {
-    return {
-        type: 'STOP_ANIMATION',
-    };
+  return {
+    type: 'STOP_ANIMATION',
+  };
 }
 
 export function clearAnimation() {
-    return {
-        type: types.CLEAR_ANIMATION,
-    };
+  return {
+    type: types.CLEAR_ANIMATION,
+  };
 }
