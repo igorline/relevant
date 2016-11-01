@@ -65,6 +65,7 @@ class CardContainer extends Component {
   }
 
   back() {
+    console.log("HIT BACK BUTTON ");
     this.props.actions.pop();
   }
 
@@ -242,9 +243,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       {
-        push: route => navigationActions.push(route),
-        pop: () => navigationActions.pop(),
-
+        ...navigationActions
       }, dispatch),
   };
 }
