@@ -8,6 +8,7 @@ export function push(route) {
 }
 
 export function pop() {
+  console.log('pop action!');
   return {
     type: POP_ROUTE
   };

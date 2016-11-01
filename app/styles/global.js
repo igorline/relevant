@@ -1,18 +1,10 @@
-// 'use strict';
-import React, {
-  AppRegistry,
-  Component,
+import {
   StyleSheet,
-  Text,
-  View,
-  TextInput,
-  Image,
   Dimensions
 } from 'react-native';
 
-
-var fullWidth = Dimensions.get('window').width;
-var fullHeight = Dimensions.get('window').height;
+const fullWidth = Dimensions.get('window').width;
+const fullHeight = Dimensions.get('window').height;
 
 const font = StyleSheet.create({
   font10: {
@@ -65,33 +57,33 @@ const alignment = StyleSheet.create({
 });
 
 const layout = StyleSheet.create({
-    activityRight: {
-      flex: 0.40,
-    },
-    activityLeft: {
-      flex: 0.60,
-    },
-    singleActivity: {
-      padding: 10,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: '#F0F0F0',
-      width: fullWidth,
-      justifyContent: 'space-between',
-      flexDirection: 'row',
-      alignItems: 'center',
-      flex: 1,
-    },
-    onlineUser: {
-      justifyContent: 'space-between',
-      flexDirection: 'row',
-      padding: 10
-    },
-    editingInput: {
-      backgroundColor: 'transparent',
-      flex: 1,
-      fontSize: 14,
-    },
-    postButtons: {
+  activityRight: {
+    flex: 0.40,
+  },
+  activityLeft: {
+    flex: 0.60,
+  },
+  singleActivity: {
+    padding: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#F0F0F0',
+    width: fullWidth,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  onlineUser: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    padding: 10
+  },
+  editingInput: {
+    backgroundColor: 'transparent',
+    flex: 1,
+    fontSize: 14,
+  },
+  postButtons: {
     flexDirection: 'row',
     paddingLeft: 15,
     paddingRight: 15,
@@ -110,7 +102,7 @@ const layout = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-    postButtonText: {
+  postButtonText: {
     color: '#808080'
   },
   categoryItem: {
@@ -170,7 +162,7 @@ const layout = StyleSheet.create({
     height: 7,
     borderRadius: 3.5,
     marginLeft: 5,
-     marginRight: 5
+    marginRight: 5
   },
   offlineCirc: {
     backgroundColor: 'red',
@@ -275,10 +267,10 @@ const layout = StyleSheet.create({
   }
 });
 
-const globalStyles = {...colors, ...font, ...alignment, ...layout};
+const globalStyles = { ...colors, ...font, ...alignment, ...layout };
 
 export {
   globalStyles,
   fullWidth,
   fullHeight
-}
+};
