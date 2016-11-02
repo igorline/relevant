@@ -9,13 +9,13 @@ import {
   RefreshControl
 } from 'react-native';
 import { bindActionCreators } from 'redux';
-import Spinner from 'react-native-loading-spinner-overlay';
 import { connect } from 'react-redux';
 import { globalStyles } from '../styles/global';
 import Post from '../components/post.component';
 import * as postActions from '../actions/post.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as investActions from '../actions/invest.actions';
+import CustomSpinner from '../components/CustomSpinner.component';
 
 const localStyles = StyleSheet.create({
   thirstyHeader: {
@@ -181,7 +181,7 @@ class Read extends Component {
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {thirstyHeader}
-        <Spinner color={'rgba(0,0,0,1)'} overlayColor={'rgba(0,0,0,0)'} visible={!this.feedData} />
+        <CustomSpinner visible={!this.feedData} />
         {postsEl}
       </View>
     );

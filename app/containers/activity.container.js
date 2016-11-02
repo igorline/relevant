@@ -22,6 +22,7 @@ import * as onlineActions from '../actions/online.actions';
 import * as statsActions from '../actions/stats.actions';
 import SingleActivity from '../components/activity.component';
 import DiscoverUser from '../components/discoverUser.component';
+import CustomSpinner from '../components/CustomSpinner.component';
 
 const localStyles = StyleSheet.create({});
 const styles = { ...localStyles, ...globalStyles };
@@ -174,7 +175,7 @@ class Activity extends Component {
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {typeEl}
         {self.state.view < 3 ? activityEl : onlineEl }
-        <Spinner color={'rgba(0,0,0,1)'} overlayColor={'rgba(0,0,0,0)'} visible={!self.state.dataSource} />
+        <CustomSpinner visible={!self.state.dataSource} />
       </View>
     );
   }
