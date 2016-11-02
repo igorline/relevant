@@ -181,7 +181,11 @@ class Read extends Component {
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {thirstyHeader}
-        <Spinner color={'rgba(0,0,0,1)'} overlayColor={'rgba(0,0,0,0)'} visible={!this.feedData} />
+        <Spinner
+          color={'rgba(0,0,0,1)'}
+          overlayColor={'rgba(0,0,0,0)'}
+          visible={!this.feedData}
+        />
         {postsEl}
       </View>
     );

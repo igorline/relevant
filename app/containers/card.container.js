@@ -65,7 +65,6 @@ class CardContainer extends Component {
   }
 
   back() {
-    console.log("HIT BACK BUTTON ");
     this.props.actions.pop();
   }
 
@@ -80,6 +79,7 @@ class CardContainer extends Component {
   }
 
   renderTitle(props) {
+
     let key = props.scene.route.key;
     let title = props.scene.route ? props.scene.route.title : null;
 
@@ -123,6 +123,15 @@ class CardContainer extends Component {
 
       case 'profile':
         return <Profile scene={props.scene.route} navigator={this.props.actions} />;
+
+      // case 'auth':
+      //   return <Auth authType={key} />;
+
+      // case 'login':
+      //   return <Auth authType={key} />;
+
+      // case 'signup':
+      //   return <Auth authType={key} />;
 
       default:
         return this.getDefaultComponent();
@@ -198,10 +207,13 @@ class CardContainer extends Component {
   }
 
   render() {
+    const { navigation } = this.props;
+    const scenes = navigation[this.default];
+
     return (
       <NavigationCardStack
         direction={'horizontal'}
-        navigationState={this.props.navigation}
+        navigationState={scenes}
         onNavigateBack={this.back}
         renderScene={this.renderScene}
         renderHeader={this.renderHeader}
