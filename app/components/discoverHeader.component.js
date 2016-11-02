@@ -29,6 +29,7 @@ export default class DiscoverHeader extends Component {
   }
 
   componentWillReceiveProps(next) {
+    //console.log(next.showHeader, 'next.showHeader');
     if (this.props.showHeader !== next.showHeader) {
       if (next.showHeader) this.showHeader();
       else this.hideHeader();

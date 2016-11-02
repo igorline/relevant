@@ -23,7 +23,7 @@ import * as investActions from '../actions/invest.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import * as animationActions from '../actions/animation.actions';
-import Spinner from 'react-native-loading-spinner-overlay';
+import CustomSpinner from '../components/CustomSpinner.component';
 
 const localStyles = StyleSheet.create({
   singlePostContainer: {
@@ -94,11 +94,7 @@ class SinglePost extends Component {
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {el}
-        <Spinner
-          color="rgba(0,0,0,1)"
-          overlayColor="rgba(0,0,0,0)"
-          visible={!this.state.postData}
-        />
+        <CustomSpinner visible={!this.state.postData} />
       </View>
     );
   }
