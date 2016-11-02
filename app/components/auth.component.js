@@ -45,13 +45,17 @@ class Auth extends Component {
   login() {
     this.props.actions.push({
       key: 'login',
-      title: 'Item details',
+      title: 'Login',
       showBackButton: true
-    }, this.props.navigation.key);
+    }, this.props.navigation.main);
   }
 
   signup() {
-    this.props.actions.push({ key: 'signup' });
+    this.props.actions.push({
+      key: 'signup',
+      title: 'Signup',
+      showBackButton: true
+    }, this.props.navigation.main);
   }
 
   render() {

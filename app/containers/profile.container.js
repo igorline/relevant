@@ -263,11 +263,11 @@ class Profile extends Component {
     return (
       <View style={{ backgroundColor: 'white', flex: 1 }}>
         {postsEl}
-        <Spinner
+{/*        <Spinner
           color={'rgba(0,0,0,1)'}
           overlayColor={'rgba(0,0,0,0)'}
           visible={!this.postsData || !this.investmentsData || !this.userId || !this.userData}
-        />
+        />*/}
       </View>
     );
   }

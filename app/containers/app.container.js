@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  NavigationExperimental,
   View,
   AppState,
   ActionSheetIOS,
@@ -8,6 +9,7 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Auth from './auth.container';
+import CreatePost from './createPost.container';
 import Footer from './footer.container';
 import InvestAnimation from '../components/investAnimation.component';
 import * as authActions from '../actions/auth.actions';
@@ -21,6 +23,12 @@ import * as investActions from '../actions/invest.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
+
+const {
+  Header: NavigationHeader,
+  CardStack: NavigationCardStack,
+} = NavigationExperimental;
+
 
 let ImagePicker = require('react-native-image-picker');
 
@@ -37,12 +45,10 @@ class Application extends Component {
       ],
       destructiveIndex: 2,
       cancelIndex: 3,
-      routes: [
-        { name: 'auth' },
-      ],
     };
 
     this.showActionSheet = this.showActionSheet.bind(this);
+    this.renderScene = this.renderScene.bind(this);
   }
 
   componentDidMount() {
@@ -59,7 +65,10 @@ class Application extends Component {
       this.props.actions.getMessages(next.auth.user._id);
     }
     if (!this.props.auth.token && next.auth.token) {
-      this.props.actions.changeTab(0);
+      this.props.actions.changeTab('read');
+      this.props.actions.push({
+        key: 'tabBars'
+      }, 'home');
     }
   }
 
@@ -156,6 +165,9 @@ class Application extends Component {
   logoutRedirect() {
     this.props.actions.removeDeviceToken(this.props.auth);
     this.props.actions.logoutAction(this.props.auth.user, this.props.auth.token);
+    this.props.actions.resetRoutes('home');
+    // this.props.actions.pop('home');
+
   }
 
   // home button etc
@@ -168,29 +180,52 @@ class Application extends Component {
     }
   }
 
-  render() {
-    if (this.props.auth.token) {
-      return (
-        <View style={{ flex: 1 }} >
-          <Footer showActionSheet={this.showActionSheet} />
-          <InvestAnimation {...this.props} />
-        </View>
-      );
-    }
-    else {
-      return (
-        <View style={{ flex: 1 }}>
-          <Auth />
-        </View>
-      );
+  renderScene(props) {
+    let key = props.scene.route.key;
+
+    // if (this.props.auth.token && key != 'createPost') {
+    //   key = null;
+    // }
+
+    switch (key) {
+      case 'auth':
+        return <Auth authType={key} />;
+      case 'login':
+        return <Auth authType={key} />;
+      case 'signup':
+        return <Auth authType={key} />;
+      // case 'createPost':
+      //   return <CreatePost {...this.props} navigator={this.props.actions} />;
+      case 'tabBars':
+        return <Footer showActionSheet={this.showActionSheet} />;
+
+      default:
+        return null;
     }
   }
+
+  render() {
+    let scene = this.props.navigation;
+    return (
+      <View style={{ flex: 1 }} >
+        <NavigationCardStack
+          key={'scene_' + scene.key}
+          direction={'horizontal'}
+          navigationState={scene}
+          renderScene={this.renderScene}
+        />
+        <InvestAnimation {...this.props} />
+      </View>
+    );
+  }
+
 }
 
 function mapStateToProps(state) {
   return {
     auth: state.auth,
     animation: state.animation,
+    navigation: state.navigation.home
   };
 }
 
