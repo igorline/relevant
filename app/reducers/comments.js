@@ -1,7 +1,7 @@
 import * as types from '../actions/actionTypes';
 
 const initialState = {
-  comments: [],
+  index: [],
   activePost: null
 };
 
@@ -17,21 +17,25 @@ export default function comments(state = initialState, action) {
   switch (action.type) {
     case types.SET_COMMENTS: {
       console.log("SET_COMMENTS");
+
       return Object.assign({}, state, {
-        comments: action.payload ? action.payload : [],
+        index: [
+          ...state['index'].slice(0, action.payload.index),
+          ...action.payload.data,
+        ],
       });
     }
 
     case types.ADD_COMMENT: {
       console.log("ADD_COMMENT");
       return Object.assign({}, state, {
-        comments: [...state.comments, action.payload],
+        index: [...state.index, action.payload],
       });
     }
 
     case types.REMOVE_COMMENT: {
       return Object.assign({}, state, {
-        comments: removeItem(state.comments, action.payload),
+        index: removeItem(state.index, action.payload),
       });
     }
 

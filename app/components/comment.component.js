@@ -123,20 +123,42 @@ class Comment extends Component {
       bodyEl = (<Text style={styles.darkGray}>{self.state.editedText}</Text>);
     }
 
+    let image = null;
+    let name = null;
+    let commentUserId = null;
+
+    //console.log(this, 'comment this')
+
+    if (comment.user) {
+      if (comment.user.image) image = comment.user.image;
+      if (comment.user.name) name = comment.user.name;
+      if (comment.user._id) commentUserId = comment.user._id;
+    }
+
+    let authId = null;
+    if (this.props.auth.user) {
+      if (this.props.auth.user._id) authId = this.props.auth.user._id;
+    }
+
+    let owner = false;
+    if (authId && commentUserId) {
+      if (authId === commentUserId) owner = true;
+    }
+
     return (
       <View style={[styles.commentContainer]}>
         <View style={[styles.flexRow]}>
-          <Image style={styles.commentAvatar} source={{uri: comment.user.image}} />
-          <View style={{flex: 1}}>
+          {image ? <Image style={styles.commentAvatar} source={{uri: image}} /> : null}
+          <View style={{ flex: 1 }}>
             <View style={styles.commentHeaderTextContainer}>
-                <Text style={{fontSize: 12, color: '#aaaaaa'}}>{createdTime} ago</Text>
-                <Text style={{fontSize: 12, color: '#aaaaaa'}}>{comment.user.name}</Text>
+                <Text style={{ fontSize: 12, color: '#aaaaaa' }}>{createdTime} ago</Text>
+                <Text style={{ fontSize: 12, color: '#aaaaaa' }}>{name}</Text>
             </View>
             <View style={styles.commentBody}>
               {bodyEl}
             </View>
-            {self.props.auth.user._id == comment.user._id ? <View style={{marginTop: 10, flex: 1, justifyContent: 'flex-end', flexDirection: 'row'}}>
-              <TouchableHighlight underlayColor={'transparent'} onPress={self.showActionSheet.bind(self)} style={[]}>
+            {owner ? <View style={{marginTop: 10, flex: 1, justifyContent: 'flex-end', flexDirection: 'row'}}>
+              <TouchableHighlight underlayColor={'transparent'} onPress={self.showActionSheet.bind(self)}>
                 <Text style={[{fontSize: 20, color: '#808080'}]}>...</Text>
               </TouchableHighlight>
             </View> : null}

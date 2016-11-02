@@ -23,8 +23,7 @@ let moment = require('moment');
 class Post extends Component {
   constructor(props) {
     super(props);
-    //this.invest = this.invest.bind(this);
-    this.setAmount = this.setAmount.bind(this);
+    this.invest = this.invest.bind(this);
     this.setSelected = this.setSelected.bind(this);
     this.openLink = this.openLink.bind(this);
     this.toggleInfo = this.toggleInfo.bind(this);
@@ -70,18 +69,20 @@ class Post extends Component {
         editedBody: self.props.post.body,
         editedTitle: self.props.post.title
       });
-      if (self.props.post.user._id === self.props.auth.user._id) {
-        self.setState({
-          myPost: true,
-          buttons: [
-            'Share',
-            'Edit',
-            'Delete',
-            'Cancel',
-          ],
-          destructiveIndex: 2,
-          cancelIndex: 3,
-        });
+      if (self.props.post.user && self.props.auth.user) {
+        if (self.props.post.user._id === self.props.auth.user._id) {
+          self.setState({
+            myPost: true,
+            buttons: [
+              'Share',
+              'Edit',
+              'Delete',
+              'Cancel',
+            ],
+            destructiveIndex: 2,
+            cancelIndex: 3,
+          });
+        }
       }
     }
   }
@@ -104,10 +105,6 @@ class Post extends Component {
     },(e) => {
       console.log(e);
     });
-  }
-
-  openLink(url) {
-    Linking.openURL(url);
   }
 
   extractDomain(url) {
@@ -227,22 +224,6 @@ class Post extends Component {
     });
   }
 
-
-  // invest() {
-  //   const self = this;
-  //   self.props.actions.triggerAnimation('invest');
-  //   this.props.actions.invest(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user);
-  //   self.setState({ investAmount: 50 });
-  // }
-
-  // uninvest() {
-  //   const self = this;
-  //   self.props.actions.destroyInvestment(this.props.auth.token, self.state.investAmount, self.props.post, self.props.auth.user)
-  //   .then(() => {
-  //     if (self.props.route === 'user') self.props.actions.getSelectedUser(self.props.users.selectedUser._id);
-  //   });
-  // }
-
   openComments() {
     this.props.actions.setSelectedPost(this.props.post._id);
     this.props.navigator.push({
@@ -310,11 +291,15 @@ class Post extends Component {
     self.setState({ modalVisible: !self.state.modalVisible });
   }
 
-  setAmount(investAmount) {
+  invest(investAmount) {
     console.log('investing', investAmount);
     this.props.actions.triggerAnimation('invest');
     this.props.actions.invest(this.props.auth.token, investAmount, this.props.post, this.props.auth.user);
     this.setState({ modalVisible: false });
+  }
+
+  openLink(url) {
+    Linking.openURL(url);
   }
 
   checkTime() {
@@ -447,8 +432,8 @@ class Post extends Component {
       imageEl = (<Image resizeMode={'cover'} source={{ uri: image }} style={styles.postImage} />);
     }
 
-    if (post) {
-      if (post.user._id !== self.props.auth.user._id) {
+    if (post && post.user) {
+      if (post.user._id !== this.props.auth.user._id) {
         investButtonEl = (<TouchableWithoutFeedback
           onPress={() => self.toggleModal()}
           style={[styles.postButton, { marginRight: 5, backgroundColor: '#F0F0F0' }]}
@@ -675,25 +660,25 @@ class Post extends Component {
           <View style={{ flex: 1, padding: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.1)' }}>
             <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 5 }}>
               <View style={{ justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap', flex: 1, overflow: 'visible' }}>
-                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(50)}>
+                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(50)}>
                   <Text>50</Text>
                 </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(100)}>
+                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(100)}>
                   <Text>100</Text>
                 </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(500)}>
+                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(500)}>
                   <Text>500</Text>
                 </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(1000)}>
+                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(1000)}>
                   <Text>1000</Text>
                 </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(2000)}>
+                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(2000)}>
                   <Text>2000</Text>
                 </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(5000)}>
+                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(5000)}>
                   <Text>5000</Text>
                 </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption} underlayColor={'transparent'} onPress={() => this.setAmount(10000)}>
+                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(10000)}>
                   <Text>10000</Text>
                 </TouchableHighlight>
               </View>

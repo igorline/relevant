@@ -8,12 +8,11 @@ import {
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
-import Spinner from 'react-native-loading-spinner-overlay';
 import { globalStyles } from '../styles/global';
 import Post from '../components/post.component';
 import DiscoverUser from '../components/discoverUser.component';
 import DiscoverHeader from '../components/discoverHeader.component';
+import CustomSpinner from '../components/CustomSpinner.component';
 import * as userActions from '../actions/user.actions';
 import * as statsActions from '../actions/stats.actions';
 import * as authActions from '../actions/auth.actions';
@@ -220,11 +219,7 @@ class Discover extends Component {
 
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
-        <Spinner
-          color="rgba(0,0,0,1)"
-          overlayColor="rgba(0,0,0,0)"
-          visible={!this.dataSource && this.props.view.discover !== 3}
-        />
+        <CustomSpinner visible={!this.dataSource && this.props.view.discover !== 3} />
         {postsEl}
         <DiscoverHeader
           triggerReload={this.triggerReload}
