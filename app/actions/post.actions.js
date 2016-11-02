@@ -148,7 +148,6 @@ export function getPosts(skip, tags, sort, limit) {
             'Content-Type': 'application/json'
       }
     })
-    .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setPosts(responseJSON, type, skip));
@@ -364,8 +363,10 @@ export function deleteComment(token, id, postId) {
   }
 }
 
-export function getComments(postId) {
+export function getComments(postId, skip) {
   return function(dispatch) {
+    let index = 0;
+    if (skip) index = skip;
     fetch(process.env.API_SERVER+'/api/comment?post='+postId, {
       credentials: 'include',
       headers: {
@@ -374,10 +375,9 @@ export function getComments(postId) {
       },
       method: 'GET',
     })
-    .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setComments(responseJSON));
+      dispatch(setComments(responseJSON, index));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -451,9 +451,26 @@ export function clearSelectedPost() {
   };
 }
 
-export function setComments(comments) {
+export function setComments(comments, index) {
+  let num = 0;
+  if (index) num = index;
     return {
         type: types.SET_COMMENTS,
-        payload: comments
+        payload: {
+          data: comments,
+          index: num
+        }
     };
 }
+
+
+
+
+
+
+
+
+
+
+
+
