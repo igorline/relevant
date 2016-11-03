@@ -1,21 +1,32 @@
-import { POP_ROUTE, PUSH_ROUTE, CHANGE_TAB } from './actionTypes';
+import { POP_ROUTE, PUSH_ROUTE, CHANGE_TAB, RESET_ROUTES } from './actionTypes';
 
-export function push(route) {
+export function push(route, key, animation = 'vertical') {
   return {
     type: PUSH_ROUTE,
-    route
+    route,
+    key,
+    animation
   };
 }
 
-export function pop() {
+export function pop(key) {
   return {
-    type: POP_ROUTE
+    type: POP_ROUTE,
+    key
   };
 }
 
-export function changeTab(index) {
+
+export function changeTab(key) {
   return {
     type: CHANGE_TAB,
-    index
+    key
+  };
+}
+
+export function resetRoutes(key) {
+  return {
+    type: RESET_ROUTES,
+    key
   };
 }

@@ -1,4 +1,3 @@
-'use strict';
 import React, { Component } from 'react';
 import {
   Text,
@@ -10,9 +9,6 @@ import {
   Keyboard,
 } from 'react-native';
 import { globalStyles } from '../styles/global';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/auth.actions';
 
 class SignUp extends Component {
   constructor(props, context) {
@@ -40,20 +36,20 @@ class SignUp extends Component {
     this.setState({ visibleHeight: newSize });
   }
 
-  keyboardWillHide(e) {
+  keyboardWillHide() {
     this.setState({ visibleHeight: Dimensions.get('window').height });
   }
 
   back() {
-    this.props.actions.pop(0);
+    this.props.actions.pop(this.props.navigation.main);
   }
 
+  // not used!
   checkPass(user) {
-    var self = this;
-    if (self.state.password) {
-      if (self.state.password == self.state.cPassword) {
-        createUser(user);
-      } else {;
+    if (this.state.password) {
+      if (this.state.password === this.state.cPassword) {
+        this.props.actions.createUser(user);
+      } else {
         AlertIOS.alert("passwords don't match");
       }
     } else {
@@ -62,16 +58,15 @@ class SignUp extends Component {
   }
 
   validate() {
-    var self = this;
     var user = {
-      name: self.state.name,
-      phone: self.state.phone,
-      email: self.state.email,
-      password: self.state.password
+      name: this.state.name,
+      phone: this.state.phone,
+      email: this.state.email,
+      password: this.state.password
     }
 
-    if (self.state.name) {
-      if (self.state.name.length > 15) {
+    if (this.state.name) {
+      if (this.state.name.length > 15) {
          AlertIOS.alert('name must be less than 15 characters');
         return;
       }
@@ -80,25 +75,23 @@ class SignUp extends Component {
       return;
     }
 
-    if (!self.state.email) {
+    if (!this.state.email) {
       AlertIOS.alert('email required');
       return;
-    } else {
-      if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(self.state.email)) {
-        AlertIOS.alert('invalid email address');
-        return;
-      }
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(this.state.email)) {
+      AlertIOS.alert('invalid email address');
+      return;
     }
 
 
-    if (!self.state.phone) {
+    if (!this.state.phone) {
       AlertIOS.alert('phone number required');
       return;
     }
 
 
-    if (self.state.password) {
-      if (self.state.password != self.state.cPassword) {
+    if (this.state.password) {
+      if (this.state.password != this.state.cPassword) {
         AlertIOS.alert("Passwords don't match");
         return;
       }
@@ -107,25 +100,23 @@ class SignUp extends Component {
       return;
     }
 
-    self.props.actions.createUser(user);
+    this.props.actions.createUser(user);
   }
 
   componentWillUpdate(nextProps, nextState) {
-    var self = this;
-    if (nextProps.auth.statusText && !self.props.auth.statusText) {
+    if (nextProps.auth.statusText && !this.props.auth.statusText) {
        AlertIOS.alert(nextProps.auth.statusText);
     }
   }
 
   render() {
-    var self = this;
     const { createUser } = this.props.actions;
-    var message = self.state.message;
+    var message = this.state.message;
     var styles = globalStyles;
     this.props.auth.statusText ? message = this.props.auth.statusText : null;
 
     return (
-      <View style={[{height: self.state.visibleHeight, backgroundColor: '#F0F0F0', alignItems: 'center', justifyContent: 'center'}]}>
+      <View style={[{height: this.state.visibleHeight, backgroundColor: '#F0F0F0', alignItems: 'center', justifyContent: 'center'}]}>
          <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>
             Get Relevant {'\n'} Sign up
           </Text>
@@ -151,10 +142,10 @@ class SignUp extends Component {
         </View>
 
         <View style={styles.margin}>
-          <TouchableHighlight underlayColor={'transparent'} style={[styles.whiteButton]} onPress={self.validate}><Text style={styles.buttonText}>Submit</Text></TouchableHighlight>
+          <TouchableHighlight underlayColor={'transparent'} style={[styles.whiteButton]} onPress={this.validate}><Text style={styles.buttonText}>Submit</Text></TouchableHighlight>
         </View>
 
-        <TouchableHighlight underlayColor={'transparent'} style={[styles.whiteButton]} onPress={self.back}><Text style={styles.buttonText}>Back</Text></TouchableHighlight>
+        <TouchableHighlight underlayColor={'transparent'} style={[styles.whiteButton]} onPress={this.back}><Text style={styles.buttonText}>Back</Text></TouchableHighlight>
 
       </View>
     );
@@ -166,20 +157,4 @@ SignUp.propTypes = {
 };
 
 export default SignUp;
-
-// function mapStateToProps(state) {
-//   return {
-//     auth: state.auth,
-//   };
-// }
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     actions: bindActionCreators({
-//       ...authActions,
-//     }, dispatch),
-//   };
-// }
-
-// export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
 

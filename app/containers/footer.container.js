@@ -21,9 +21,19 @@ class Tabs extends Component {
     this.props.showActionSheet = this.props.showActionSheet.bind(this);
   }
 
-  changeTab(i) {
-    //if (i === 4) this.props.actions.setSelectedUser(this.props.auth.user._id);
-    this.props.actions.changeTab(i);
+  changeTab(key) {
+
+    // This is if we want to make create post a separate scene
+    // if (key === 'createPost') {
+    //   this.props.actions.push({
+    //     key,
+    //     back: true,
+    //     title: 'Create Post'
+    //   }, 'home');
+    // } else
+
+    this.props.actions.resetRoutes();
+    this.props.actions.changeTab(key);
   }
 
   renderTabContent(key) {
@@ -35,10 +45,12 @@ class Tabs extends Component {
   }
 
   render() {
-    const tabs = this.props.tabs.routes.map((tab, i) => {
+    const tabs = this.props.navigation.tabs.routes.map((tab, i) => {
+    // const tabs = this.props.tabs.routes.map((tab, i) => {
       let badge;
       let icon = tab.icon;
       if (tab.key === 'activity' && this.props.notif.count) badge = this.props.notif.count;
+      if (tab.key === 'auth') return null;
       return (
         <TabBarIOS.Item
           renderAsOriginal
@@ -48,8 +60,8 @@ class Tabs extends Component {
           title={tab.title}
           tintColor={'#5C00FF'}
           style={{ paddingBottom: 48 }}
-          onPress={() => this.changeTab(i)}
-          selected={this.props.tabs.index === i}
+          onPress={() => this.changeTab(tab.key)}
+          selected={this.props.navigation.tabs.index === i}
           badge={badge}
         >
           {this.renderTabContent(tab.key)}
@@ -68,9 +80,9 @@ class Tabs extends Component {
 
 function mapStateToProps(state) {
   return {
-    tabs: state.tabs,
     auth: state.auth,
     notif: state.notif,
+    navigation: state.navigation
   };
 }
 
