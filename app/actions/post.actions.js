@@ -363,11 +363,12 @@ export function deleteComment(token, id, postId) {
   }
 }
 
-export function getComments(postId, skip) {
+export function getComments(postId, skip, limit) {
   return function(dispatch) {
-    let index = 0;
-    if (skip) index = skip;
-    fetch(process.env.API_SERVER+'/api/comment?post='+postId, {
+    if (!skip) skip = 0;
+    if (!limit) limit = 5;
+    
+    fetch(process.env.API_SERVER+'/api/comment?post='+postId+'&skip='+skip+'&limit='+limit, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
@@ -377,7 +378,7 @@ export function getComments(postId, skip) {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setComments(responseJSON, index));
+      dispatch(setComments(responseJSON, skip));
     })
     .catch((error) => {
       console.log(error, 'error');
