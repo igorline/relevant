@@ -207,7 +207,7 @@ class Profile extends Component {
         <TouchableHighlight
           underlayColor={'transparent'}
           style={[styles.typeParent, view === 1 ? styles.activeBorder : null]}
-          onPress={()=> this.changeView(1)}
+          onPress={() => this.changeView(1)}
         >
           <Text style={[styles.type, styles.darkGray, styles.font15, view === 1 ? styles.active : null]}>
             Posts
@@ -216,9 +216,16 @@ class Profile extends Component {
         <TouchableHighlight
           underlayColor={'transparent'}
           style={[styles.typeParent, view === 2 ? styles.activeBorder : null]}
-          onPress={()=> this.changeView(2)}
+          onPress={() => this.changeView(2)}
         >
-          <Text style={[styles.type, styles.darkGray, styles.font15, view === 2 ? styles.active : null]}>
+          <Text
+            style={[
+              styles.type,
+              styles.darkGray,
+              styles.font15,
+              view === 2 ? styles.active : null
+            ]}
+          >
             Investments
           </Text>
         </TouchableHighlight>
@@ -261,9 +268,22 @@ class Profile extends Component {
     }
 
     return (
-      <View style={{ position: 'relative', backgroundColor: 'white', flex: 1, flexGrow: 1, alignItems: 'stretch' }}>
+      <View
+        style={{
+          position: 'relative',
+          backgroundColor: 'white',
+          flex: 1,
+          flexGrow: 1,
+          alignItems: 'stretch' }}
+      >
         {postsEl}
-        <CustomSpinner visible={!this.postsData || !this.investmentsData || !this.userId || !this.userData} />
+        <CustomSpinner
+          visible={!this.postsData ||
+            !this.investmentsData ||
+            !this.userId ||
+            !this.userData
+          }
+        />
       </View>
     );
   }

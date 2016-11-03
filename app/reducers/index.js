@@ -11,9 +11,8 @@ import view from './view';
 import stats from './stats';
 import investments from './investments';
 import comments from './comments';
-import tabs from './tabs';
 import navigation from './navigation';
-import tags from './tags';
+// import tags from './tags';
 
 const rootReducer = combineReducers({
   auth,
@@ -28,7 +27,6 @@ const rootReducer = combineReducers({
   investments,
   stats,
   comments,
-  tabs,
   navigation
 });
 

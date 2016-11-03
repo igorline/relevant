@@ -1,4 +1,3 @@
-'use strict';
 import React, { Component } from 'react';
 import {
   Text,
@@ -11,7 +10,7 @@ import { bindActionCreators } from 'redux';
 import * as tagActions from '../actions/tag.actions';
 import * as postActions from '../actions/post.actions';
 import * as navigationActions from '../actions/navigation.actions';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles } from '../styles/global';
 
 class Categories extends Component {
   constructor(props, context) {
@@ -21,26 +20,17 @@ class Categories extends Component {
     };
   }
 
-  componentDidMount() {
-    const self = this;
-  }
-
-  componentWillUnmount() {
-    const self = this;
-  }
-
   setCategory(tag) {
     this.props.actions.setPostCategory(tag);
     this.props.navigator.pop();
   }
 
   render() {
-    const self = this;
     let parentTags = null;
     let categoryEl = null;
     let styles = globalStyles;
-    if (self.props.posts.parentTags) {
-      parentTags = self.props.posts.parentTags;
+    if (this.props.posts.parentTags) {
+      parentTags = this.props.posts.parentTags;
       categoryEl = parentTags.map((tag, i) => {
         switch (tag.name) {
           case 'Anime':
@@ -143,7 +133,7 @@ class Categories extends Component {
             tag.emoji = '🔬';
             break;
 
-          case 'Selfie':
+          case 'thisie':
             tag.emoji = '📸';
             break;
 
@@ -171,8 +161,19 @@ class Categories extends Component {
             break;
         }
 
-        return (<TouchableHighlight key={i} onPress={() => self.setCategory(tag)} underlayColor={'transparent'} style={[styles.categoryItem]} >
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+        return (
+          <TouchableHighlight
+            key={i}
+            onPress={() => this.setCategory(tag)}
+            underlayColor={'transparent'}
+            style={[styles.categoryItem]}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center' }}
+            >
               <Text>{tag.emoji}</Text>
               <Text>{tag.name}</Text>
             </View>
@@ -181,8 +182,9 @@ class Categories extends Component {
       });
     }
 
-    return (<ScrollView>
-      {categoryEl}
+    return (
+      <ScrollView>
+        {categoryEl}
       </ScrollView>
     );
   }

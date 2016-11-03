@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { pickerOptions } from '../utils/pickerOptions';
 import RCTKeyboardToolbarTextInput from 'react-native-textinput-utils';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import * as viewActions from '../actions/view.actions';
 import * as postActions from '../actions/post.actions';
@@ -23,6 +24,9 @@ import * as navigationActions from '../actions/navigation.actions';
 import Tabs from '../components/tabs.component';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import * as utils from '../utils';
+
+// import urlComponent from '../compoents/createPost/url';
+import UrlPreview from '../components/urlPreview.component';
 
 const ImagePicker = require('react-native-image-picker');
 
@@ -49,13 +53,31 @@ class CreatePost extends Component {
       postImage: null,
       catObj: null,
       keyboard: false,
+      currentStep: 0
     };
+    this.steps = [
+      { key: 'url', el: 'urlInput' },
+      { key: 'body', el: 'bodyInput' },
+      { key: 'cat' },
+      { key: 'tags', el: 'tagInput' },
+    ];
+    this.step = this.steps[this.state.currentStep];
   }
 
   componentDidMount() {
     this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
     this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
     this.props.actions.getParentTags();
+  }
+
+  componentWillReceiveProps(next) {
+    if (this.props.posts.createPostCategory !== next.posts.createPostCategory) {
+      if (next.posts.createPostCategory) {
+        this.nextStep();
+      } else {
+        this.prevStep();
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -74,6 +96,32 @@ class CreatePost extends Component {
 
   switchType(type) {
     this.props.actions.setView('post', type);
+  }
+
+  prevStep() {
+    this.changeStep(this.state.currentStep - 1);
+  }
+
+  nextStep() {
+    this.changeStep(this.state.currentStep + 1);
+  }
+
+  changeStep(currentStep) {
+    if (this.step.el) this[this.step.el].refs.input.blur();
+    if (currentStep < 0) {
+      return;
+    }
+    this.step = this.steps[currentStep];
+
+    if (this.step.el) this[this.step.el].refs.input.focus();
+    if (this.step.key === 'cat') {
+      this.goTo({
+        key: 'categories',
+        title: 'Categories',
+        back: true
+      });
+    }
+    this.setState({ currentStep });
   }
 
   post() {
@@ -156,7 +204,7 @@ class CreatePost extends Component {
         if (!results) {
           AlertIOS.alert('Post error please try again');
         } else {
-          AlertIOS.alert("Posted");
+          AlertIOS.alert('Posted');
           self.props.actions.setPostCategory(null);
           self.props.actions.clearPosts('user');
           self.props.actions.getUserPosts(0, 5, self.props.auth.user._id);
@@ -308,205 +356,197 @@ class CreatePost extends Component {
       />
     );
 
-    return (
-        <ScrollView
-          keyboardShouldPersistTaps
-          contentInset={{top: 0, left: 0, bottom: this.state.keyboard ? 220 : 0, right: 0}}
-          automaticallyAdjustContentInsets={false}
-          keyboardDismissMode={'on-drag'}
-          contentContainerStyle={{
-            flexDirection: 'column',
-            backgroundColor: 'white',
-            flex: 1,
-          }}
+    let urlInput = (
+      <View
+        style={{
+          borderBottomColor: !this.state.urlPreview ? '#f0f0f0' : 'transparent',
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          flex: 0.1 }}
+      >
+        <RCTKeyboardToolbarTextInput
+          ref={(c) => { this.urlInput = c; }}
+          autoFocus
+          leftButtonText="Cancel"
+          rightButtonText="Next"
+          onCancel={() => this.prevStep()}
+          onDone={() => this.nextStep()}
+          numberOfLines={1}
+          style={[
+            styles.font15,
+            styles.postInput,
+          ]}
+          placeholder={'Enter URL here...'}
+          multiline={false}
+          onChangeText={postLink => this.setState({ postLink, urlPreview: null })}
+          onBlur={this.createPreview}
+          onSubmitEditing={this.createPreview}
+          value={this.state.postLink}
+          returnKeyType={'next'}
+        />
+      </View>
+    );
+
+    let postImage = (
+      <TouchableHighlight
+        style={[styles.greyBottomBorder, {
+          flex: 0.1,
+          justifyContent: 'center',
+          paddingLeft: 10
+        }]}
+        underlayColor={'transparent'}
+        onPress={this.chooseImage}
+      >
+        <Text>Upload an image</Text>
+      </TouchableHighlight>
+    );
+
+    let imagePreview = (
+      <View
+        style={[styles.greyBottomBorder, {
+          flex: 0.1,
+          flexDirection: 'row',
+          paddingLeft: 10,
+          alignItems: 'center'
+        }]}
+      >
+        <Image
+          source={{ uri: this.state.postImage }}
+          style={styles.previewImage}
+        />
+        <TouchableHighlight
+          style={[]}
+          onPress={this.removeImage}
         >
-          {typeEl}
-          {view === 'url' ?
-            <View
-              style={{
-                borderBottomColor: !this.state.urlPreview ? '#f0f0f0' : 'transparent',
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                flex: 0.1 }}
-            >
-              <RCTKeyboardToolbarTextInput
-                leftButtonText="Previous"
-                rightButtonText="Next"
-                onCancel={() => this.createPreview()}
-                onDone={() => this.createPreview()}
-                numberOfLines={1}
-                style={[styles.font15, { flex: 1, padding: 10 }]}
-                placeholder={'Enter URL here...'}
-                multiline={false}
-                onChangeText={postLink => this.setState({ postLink, urlPreview: null })}
-                onBlur={this.createPreview}
-                onSubmitEditing={this.createPreview}
-                value={this.state.postLink}
-                returnKeyType={'next'}
-              />
-            </View> : null}
+          <Text>Remove image</Text>
+        </TouchableHighlight>
+      </View>
+    );
 
-          {view === 'image' && !this.state.postImage ?
-            <TouchableHighlight
-              style={{
-                borderBottomColor: '#f0f0f0',
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                flex: 0.1,
-                justifyContent: 'center',
-                paddingLeft: 10
-              }}
-              underlayColor={'transparent'}
-              onPress={this.chooseImage}
-            >
-              <Text>Upload an image</Text>
-            </TouchableHighlight> : null
+    let postTitle = (
+      <View
+        style={[styles.greyBottomBorder, {
+          flex: 0.1,
+          justifyContent: 'center'
+        }]}
+      >
+        <RCTKeyboardToolbarTextInput
+          leftButtonText="Previous"
+          rightButtonText="Next"
+          onCancel={() => this.prevStep()}
+          onDone={() => this.nextStep()}
+          style={[styles.font15, { flex: 1, padding: 10 }]}
+          placeholder={'Title here...'}
+          multiline={false}
+          onChangeText={postTitle => this.setState({ postTitle })}
+          value={this.state.postTitle}
+          returnKeyType={'done'}
+        />
+      </View>
+    );
+
+    let postBody = (
+      <View
+        style={[styles.greyBottomBorder, {
+          flex: !this.state.urlPreview ? 0.5 : 0.3 }
+        ]}
+      >
+        <RCTKeyboardToolbarTextInput
+          leftButtonText="Previous"
+          rightButtonText="Next"
+          ref={(c) => { this.bodyInput = c; }}
+          onCancel={() => this.prevStep()}
+          onDone={() => this.nextStep()}
+          style={[
+            styles.font15,
+            { flex: 1, padding: 10 }]}
+          placeholder={'Body here...'}
+          multiline
+          onChangeText={postBody => this.setState({ postBody })}
+          value={this.state.postBody}
+          returnKeyType={'default'}
+        />
+      </View>
+    );
+
+    let catButton = (
+      <TouchableHighlight
+        style={[styles.greyBottomBorder, {
+          paddingLeft: 10,
+          flex: 0.1,
+          justifyContent: 'center'
+        }]}
+        underlayColor={'transparent'}
+        onPress={() => this.goTo({ key: 'categories', title: 'Categories', back: true })}
+      >
+        <Text>
+          {
+            this.props.posts.createPostCategory ?
+            `${this.props.posts.createPostCategory.emoji} ${this.props.posts.createPostCategory.name}` :
+            'Choose Category'
           }
+        </Text>
+      </TouchableHighlight>
+    );
 
-          {view === 'image' && this.state.postImage ?
-            <View
-              style={{
-                flex: 0.1,
-                borderBottomColor: '#f0f0f0',
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                flexDirection: 'row',
-                paddingLeft: 10,
-                alignItems: 'center'
-              }}
-            >
-              <Image
-                source={{ uri: this.state.postImage }}
-                style={styles.previewImage}
-              />
-              <TouchableHighlight
-                style={[]}
-                onPress={this.removeImage}
-              >
-                <Text>Remove image</Text>
-              </TouchableHighlight>
-            </View> : null}
+    let tagsInput = (
+      <View
+        style={{ flex: 0.1, justifyContent: 'center' }}
+      >
+        <RCTKeyboardToolbarTextInput
+          leftButtonText="Previous"
+          rightButtonText="Post"
+          ref={(c) => { this.tagInput = c; }}
+          onCancel={() => this.prevStep()}
+          onDone={() => this.post()}
+          style={[styles.font15, { flex: 1, padding: 10 }]}
+          placeholder={'Enter tags... ex. webgl, slowstyle, xxx'}
+          multiline={false}
+          onChangeText={postTags => this.setState({ postTags })}
+          value={this.state.postTags}
+          returnKeyType={'done'}
+        />
+      </View>
+    );
 
-          {view !== 'url' ?
-            <View
-              style={{
-                borderBottomColor: '#f0f0f0',
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                flex: 0.1,
-                justifyContent: 'center'
-              }}
-            >
-              <RCTKeyboardToolbarTextInput
-                leftButtonText="Previous"
-                rightButtonText="Next"
-                onCancel={() => this.createPreview()}
-                onDone={() => this.createPreview()}
-                style={[styles.font15, { flex: 1, padding: 10 }]}
-                placeholder={'Title here...'}
-                multiline={false}
-                onChangeText={postTitle => this.setState({ postTitle })}
-                value={this.state.postTitle}
-                returnKeyType={'done'}
-              />
-            </View> : null}
+    return (
+      <KeyboardAwareScrollView
+        keyboardShouldPersistTaps
+        contentInset={{
+          bottom: this.state.keyboard ? 220 : 0,
+        }}
+        automaticallyAdjustContentInsets={false}
+        keyboardDismissMode={'on-drag'}
+        contentContainerStyle={{
+          flexDirection: 'column',
+          backgroundColor: 'white',
+          flex: 1,
+        }}
+      >
+        {/*typeEl*/}
+        {view === 'url' ? urlInput : null}
 
-          {view === 'url' && this.state.urlPreview ?
-            <View
-              style={{
-                flex: 0.2,
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                borderBottomColor: '#f0f0f0',
-                paddingLeft: 10,
-                paddingRight: 10,
-                paddingBottom: 10
-              }}
-            >
-              <View
-                style={{
-                  borderRadius: 4,
-                  borderColor: '#f0f0f0',
-                  borderStyle: 'solid',
-                  borderWidth: StyleSheet.hairlineWidth,
-                  flexDirection: 'row',
-                  justifyContent: 'flex-start',
-                  alignItems: 'stretch',
-                  flex: 1,
-                  overflow: 'hidden'
-                }}
-              >
-                {this.state.urlPreview.image ?
-                  <Image
-                    source={{ uri: this.state.urlPreview.image }}
-                    style={{ flex: 0.4, resizeMode: 'cover' }}
-                  /> : null }
-                <Text style={{ flex: 0.6, padding: 5, color: '#808080' }}>
-                  {this.state.urlPreview.title}
-                </Text>
-              </View>
-            </View> : null}
+        {view === 'image' && !this.state.postImage ? postImage : null}
+        {view === 'image' && this.state.postImage ? imagePreview : null}
+        {view !== 'url' ? postTitle : null}
 
-          <View
-            style={{
-              borderBottomColor: '#f0f0f0',
-              borderBottomWidth: StyleSheet.hairlineWidth,
-              flex: !this.state.urlPreview ? 0.6 : 0.4 }}
-          >
-            <RCTKeyboardToolbarTextInput
-              leftButtonText="Previous"
-              rightButtonText="Next"
-              onCancel={() => this.createPreview()}
-              onDone={() => this.createPreview()}
-              style={[
-                styles.font15,
-                { flex: 1, padding: 10 }]}
-              placeholder={'Body here...'}
-              multiline
-              onChangeText={postBody => this.setState({ postBody })}
-              value={this.state.postBody}
-              returnKeyType={'default'}
-            />
-          </View>
+        {view === 'url' ?
+          <UrlPreview urlPreview={this.state.urlPreview} /> : null
+        }
 
-          <TouchableHighlight
-            style={{
-              paddingLeft: 10,
-              borderBottomColor: '#f0f0f0',
-              borderBottomWidth: StyleSheet.hairlineWidth,
-              flex: 0.1,
-              justifyContent: 'center'
-            }}
-            underlayColor={'transparent'}
-            onPress={() => this.goTo({ key: 'categories', title: 'Categories', back: true })}
-          >
-            <Text>
-              {
-                this.props.posts.createPostCategory ?
-                `${this.props.posts.createPostCategory.emoji} ${this.props.posts.createPostCategory.name}` :
-                'Choose Category'
-              }
-            </Text>
-          </TouchableHighlight>
+        { postBody }
+        { catButton }
+        { tagsInput }
 
-          <View
-            style={{ flex: 0.1, justifyContent: 'center' }}
-          >
-            <TextInput
-              style={[styles.font15, { flex: 1, padding: 10 }]}
-              placeholder={'Enter tags... ex. webgl, slowstyle, xxx'}
-              multiline={false}
-              onChangeText={postTags => this.setState({ postTags })}
-              value={this.state.postTags}
-              returnKeyType={'done'}
-            />
-          </View>
-
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            style={{ backgroundColor: '#007aff', flex: 0.1, justifyContent: 'center' }}
-            onPress={this.post}
-          >
-            <Text style={{ color: 'white', textAlign: 'center' }}>
-              Submit
-            </Text>
-          </TouchableHighlight>
-        </ScrollView>
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          style={{ backgroundColor: '#007aff', flex: 0.1, justifyContent: 'center' }}
+          onPress={this.post}
+        >
+          <Text style={{ color: 'white', textAlign: 'center' }}>
+            Submit
+          </Text>
+        </TouchableHighlight>
+      </KeyboardAwareScrollView>
     );
   }
 }
@@ -565,7 +605,7 @@ const localStyles = StyleSheet.create({
     height: 50,
     padding: 10,
     width: fullWidth,
-    textAlign: 'center',
+    textAlign: 'left',
   },
   bodyInput: {
     width: fullWidth,
@@ -587,6 +627,11 @@ const localStyles = StyleSheet.create({
     width: fullWidth,
     backgroundColor: '#c7c7c7',
   },
+
+  greyBottomBorder: {
+    borderBottomColor: '#f0f0f0',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };

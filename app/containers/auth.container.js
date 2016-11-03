@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  NavigationExperimental
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -12,8 +11,6 @@ import * as navigationActions from '../actions/navigation.actions';
 
 import { globalStyles, localStyles } from '../styles/global';
 
-const { CardStack: NavigationCardStack } = NavigationExperimental;
-
 let styles;
 
 class AuthContainer extends Component {
@@ -23,9 +20,7 @@ class AuthContainer extends Component {
     this.renderScene = this.renderScene.bind(this);
   }
 
-  renderScene(props) {
-    let key = props.scene.route.key;
-
+  renderScene(key) {
     switch (key) {
       case 'auth':
         return <Auth {...this.props} />;
@@ -42,14 +37,7 @@ class AuthContainer extends Component {
   }
 
   render() {
-    return (
-      <NavigationCardStack
-        direction={'horizontal'}
-        navigationState={this.props.navigation}
-        renderScene={this.renderScene}
-        style={styles.main}
-      />
-    );
+    return this.renderScene(this.props.authType);
   }
 }
 
@@ -75,4 +63,3 @@ function mapDispatchToProps(dispatch) {
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthContainer);
-
