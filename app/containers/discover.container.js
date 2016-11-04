@@ -8,7 +8,6 @@ import {
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { globalStyles } from '../styles/global';
 import Post from '../components/post.component';
 import DiscoverUser from '../components/discoverUser.component';
 import DiscoverHeader from '../components/discoverHeader.component';
@@ -22,6 +21,7 @@ import * as viewActions from '../actions/view.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as navigationActions from '../actions/navigation.actions';
+import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 let styles;
 const POST_PAGE_SIZE = 5;
@@ -122,7 +122,6 @@ class Discover extends Component {
   }
 
   setPostTop(height) {
-    console.log('Setting height', height);
     this.setState({
       headerHeight: height,
     });
@@ -130,7 +129,6 @@ class Discover extends Component {
 
   triggerReload() {
     setTimeout(() => this.reload(), 100);
-    // this.reload();
     if (this.listview) this.listview.scrollTo({ y: -this.state.headerHeight, animated: true });
     this.setState({});
   }
@@ -176,7 +174,7 @@ class Discover extends Component {
     if (!rowData.role) {
       return (<Post post={rowData} {...this.props} styles={styles} />);
     } else {
-      return(<DiscoverUser user={rowData} {...this.props} styles={styles} />);
+      return (<DiscoverUser user={rowData} {...this.props} styles={styles} />);
     }
   }
 
@@ -201,6 +199,8 @@ class Discover extends Component {
           contentContainerStyle={{
             position: 'absolute',
             top: 0,
+            flex: 1,
+            width: fullWidth
           }}
           onEndReached={this.loadMore}
           onEndReachedThreshold={100}

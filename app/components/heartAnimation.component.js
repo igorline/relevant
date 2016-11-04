@@ -25,7 +25,6 @@ class heartAnimation extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.notif.count && this.props.notif.count < nextProps.notif.count) {
       let newNotifications = nextProps.notif.count - this.props.notif.count;
-      //this.setState({ num: newNotifications });
       this.num = newNotifications;
       this.heartAni();
     }
