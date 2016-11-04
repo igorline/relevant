@@ -60,7 +60,7 @@ const initialState = {
     key: 'read',
     routes: [{
       key: 'read',
-      title: 'read'
+      title: 'Read'
     }],
   },
   discover: {
