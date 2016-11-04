@@ -9,6 +9,7 @@ const apiServer = process.env.API_SERVER + '/api/';
 // load 5 posts at a time
 const limit = 5;
 
+
 export function setPosts(data, type, index) {
   return {
     type: types.SET_POSTS,
@@ -91,13 +92,7 @@ export function clearPosts(type) {
   };
 }
 
-export function setPostCategory(tag) {
-  const set = tag ? tag : null;
-  return {
-    type: 'SET_POST_CATEGORY',
-    payload: set,
-  };
-}
+
 
 export function getPostsAction() {
   return {
@@ -220,54 +215,31 @@ export function removePost(post) {
   }
 }
 
-export function submitPost(post, token) {
-    return fetch(process.env.API_SERVER+'/api/post?access_token='+token, {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(post)
-    })
-    .then((response) => {
-      //console.log(response, 'submitPost response');
-      if (response.status == 200) {
-        return true;
-      } else {
-        return false;
-      }
-    })
-    .catch((error) => {
-      return false;
-    });
-}
-
-export function dispatchPost(post, token) {
-   return function(dispatch) {
-    return fetch(process.env.API_SERVER+'/api/post?access_token='+token, {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(post)
-    })
-    .then((response) => {
-      //console.log(response, 'submitPost response');
-      if (response.status == 200) {
-        return true;
-      } else {
-        return false;
-      }
-    })
-    .catch((error) => {
-      console.log(error, 'create post error')
-      return false;
-    });
-   }
-}
+// export function dispatchPost(post, token) {
+//    return function(dispatch) {
+//     return fetch(process.env.API_SERVER+'/api/post?access_token='+token, {
+//         credentials: 'include',
+//         method: 'POST',
+//         headers: {
+//             'Accept': 'application/json',
+//             'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify(post)
+//     })
+//     .then((response) => {
+//       //console.log(response, 'submitPost response');
+//       if (response.status == 200) {
+//         return true;
+//       } else {
+//         return false;
+//       }
+//     })
+//     .catch((error) => {
+//       console.log(error, 'create post error')
+//       return false;
+//     });
+//    }
+// }
 
 export function postError() {
   return {
@@ -455,11 +427,11 @@ export function setComments(comments, index) {
   let num = 0;
   if (index) num = index;
     return {
-        type: types.SET_COMMENTS,
-        payload: {
-          data: comments,
-          index: num
-        }
+      type: types.SET_COMMENTS,
+      payload: {
+        data: comments,
+        index: num
+      }
     };
 }
 

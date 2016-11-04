@@ -12,6 +12,7 @@ import stats from './stats';
 import investments from './investments';
 import comments from './comments';
 import navigation from './navigation';
+import createPost from './createPost';
 // import tags from './tags';
 
 const rootReducer = combineReducers({
@@ -27,7 +28,8 @@ const rootReducer = combineReducers({
   investments,
   stats,
   comments,
-  navigation
+  navigation,
+  createPost
 });
 
 export default rootReducer;

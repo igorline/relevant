@@ -76,7 +76,7 @@ const initialState = {
     key: 'createPost',
     routes: [{
       key: 'createPost',
-      title: 'Create Post'
+      title: 'Create Post',
     }],
   },
   activity: {

@@ -169,11 +169,11 @@ export default function post(state = initialState, action) {
       });
     }
 
-    case 'SET_POST_CATEGORY': {
-      return Object.assign({}, state, {
-        createPostCategory: action.payload,
-      });
-    }
+    // case 'SET_POST_CATEGORY': {
+    //   return Object.assign({}, state, {
+    //     createPostCategory: action.payload,
+    //   });
+    // }
 
     case types.POST_ERROR: {
       return Object.assign({}, state, {
