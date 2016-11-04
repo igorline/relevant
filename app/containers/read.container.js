@@ -16,6 +16,7 @@ import * as postActions from '../actions/post.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as investActions from '../actions/invest.actions';
 import CustomSpinner from '../components/CustomSpinner.component';
+import * as userActions from '../actions/user.actions';
 
 const localStyles = StyleSheet.create({
   thirstyHeader: {
@@ -193,6 +194,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     messages: state.messages,
+    users: state.user,
   };
 }
 
@@ -202,6 +204,7 @@ function mapDispatchToProps(dispatch) {
       ...postActions,
       ...animationActions,
       ...investActions,
+      ...userActions,
     }, dispatch)
   };
 }
