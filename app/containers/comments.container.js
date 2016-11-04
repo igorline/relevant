@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-// import Spinner from 'react-native-loading-spinner-overlay';
 import * as postActions from '../actions/post.actions';
 import { globalStyles } from '../styles/global';
 import Comment from '../components/comment.component';
@@ -37,6 +36,7 @@ class Comments extends Component {
     this.elHeight = null;
     this.loading = false;
     this.reload = this.reload.bind(this);
+    this.loadMore = this.loadMore.bind(this);
     this.dataSource = null;
     this.createComment = this.createComment.bind(this);
   }
@@ -81,7 +81,6 @@ class Comments extends Component {
     this.setState({ visibleHeight: newSize });
   }
 
-
   scrollToBottom() {
     if (this.props.comments.comments.length < 7) return;
     let scrollDistance = this.state.scrollToBottomY - this.elHeight;
@@ -113,29 +112,26 @@ class Comments extends Component {
   }
 
   loadMore() {
-    console.log('loadmore');
+    let length = 0;
+    if (this.props.comments.index) {
+      if (this.props.comments.index.length) length = this.props.comments.index.length;
+    }
+    this.props.actions.getComments(this.props.posts.selectedPostId, length, 5);
   }
 
   render() {
     let commentsEl = null;
-    //console.log(this.dataSource, 'this.dataSource')
     if (this.dataSource) {
       commentsEl = (<ListView
         enableEmptySections
         removeClippedSubviews
         scrollEventThrottle={16}
-        //onScroll={this.onScroll}
         dataSource={this.dataSource}
         renderRow={this.renderRow}
-        automaticallyAdjustContentInsets={true}
-        //contentInset={{ top: this.state.headerHeight }}
-        //contentOffset={{ y: -this.state.headerHeight }}
-        //contentContainerStyle={{
-        //  position: 'absolute',
-        //  top: 0,
-        // }}
-        // onEndReached={this.loadMore}
-        onEndReachedThreshold={100}
+        automaticallyAdjustContentInsets
+        onEndReached={this.loadMore}
+        onEndReachedThreshold={500}
+        contentInset={{ bottom: 50 }}
         ref={(scrollView) => {
           this.state.scrollView = scrollView;
         }}
