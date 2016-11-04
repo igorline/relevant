@@ -8,7 +8,7 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as tagActions from '../actions/tag.actions';
-import * as postActions from '../actions/post.actions';
+import * as createPostActions from '../actions/createPost.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import { globalStyles } from '../styles/global';
 
@@ -20,9 +20,18 @@ class Categories extends Component {
     };
   }
 
+  componentWillMount() {
+    this.props.actions.getParentTags();
+  }
+
   setCategory(tag) {
     this.props.actions.setPostCategory(tag);
-    this.props.navigator.pop();
+    this.props.actions.push({
+      key: 'createPostFinish',
+      back: true,
+      title: 'Post',
+      next: 'Post'
+    }, 'home');
   }
 
   render() {
@@ -183,13 +192,14 @@ class Categories extends Component {
     }
 
     return (
-      <ScrollView>
+      <ScrollView >
         {categoryEl}
       </ScrollView>
     );
   }
 }
 
+// export default Categories;
 function mapStateToProps(state) {
   return {
     posts: state.posts,
@@ -200,7 +210,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
-      { ...postActions,
+      { ...createPostActions,
         ...tagActions,
         ...navigationActions,
       }, dispatch),

@@ -24,16 +24,17 @@ class Tabs extends Component {
   changeTab(key) {
 
     // This is if we want to make create post a separate scene
-    // if (key === 'createPost') {
-    //   this.props.actions.push({
-    //     key,
-    //     back: true,
-    //     title: 'Create Post'
-    //   }, 'home');
-    // } else
-
-    this.props.actions.resetRoutes();
-    this.props.actions.changeTab(key);
+    if (key === 'createPost') {
+      this.props.actions.push({
+        key,
+        back: true,
+        title: 'Create Post',
+        next: 'Next'
+      }, 'home');
+    } else {
+      this.props.actions.resetRoutes();
+      this.props.actions.changeTab(key);
+    }
   }
 
   renderTabContent(key) {
