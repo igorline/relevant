@@ -13,8 +13,6 @@ let socket = io(process.env.API_SERVER, {
   jsonp: false
 });
 
-console.ignoredYellowBox = ['ActivityIndicatorIOS', 'Warning: Failed'];
-
 export default function configureStore() {
   let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
 

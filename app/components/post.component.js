@@ -38,7 +38,7 @@ class Post extends Component {
       posted: null,
       passed: false,
       timeUntilString: null,
-      timePassedPercent: null,
+      timePassedPercent: 0,
       invested: false,
       textInputValue: null,
       time: 0,

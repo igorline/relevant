@@ -137,8 +137,8 @@ const layout = StyleSheet.create({
   },
   linkInput: {
     height: 50,
-    width: fullWidth,
-    padding: 10,
+    // width: fullWidth,
+    // padding: 10,
   },
   tags: {
     flexDirection: 'row',
@@ -264,7 +264,16 @@ const layout = StyleSheet.create({
   },
   padding10: {
     padding: 10
+  },
+  createPostInput: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#ffffff'
+  },
+  flex1: {
+    flex: 1
   }
+
 });
 
 const globalStyles = { ...colors, ...font, ...alignment, ...layout };
