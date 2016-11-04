@@ -45,15 +45,27 @@ class Investment extends Component {
     let postId = null;
     let time = null;
     let activityTime = null;
+    let investorName = null;
+    let posterName = null;
+
     if (self.props.investment.post) {
       if (self.props.investment.post._id) postId = self.props.investment.post._id;
       activityTime = moment(self.props.investment.createdAt);
       time = activityTime.fromNow();
     }
     if (investment) {
+      if (investment.investor) {
+        if (investment.investor.name) investorName = investment.investor.name;
+      }
+
+      if (investment.poster) {
+        if (investment.poster.name) posterName = investment.poster.name;
+      }
+
       investmentEl = (<View style={styles.singleActivity}>
         <View style={styles.activityLeft}>
-          <Text style={styles.darkGray}>{investment.investor.name} invested {'$' + investment.amount} in <Text style={styles.active} onPress={() => self.setSelected(investment.poster)}>{investment.poster.name + "'s"}</Text> post
+
+          <Text style={styles.darkGray}>{investorName} invested {'$' + investment.amount} in <Text style={styles.active} onPress={() => self.setSelected(investment.poster)}>{posterName + "'s"}</Text> post
             <Text numberOfLines={1} onPress={postId ? () => self.goToPost(investment.post) : null} style={styles.active}>
             {postId ? ' ' + investment.post.title : null}
             </Text>
