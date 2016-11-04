@@ -10,19 +10,21 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Dollar from './dollar.component';
 
 const localStyles = StyleSheet.create({
-  aniMoney: {
+  moneyContainer: {
     position: 'absolute',
-    top: -35,
-    right: 10,
-    backgroundColor: 'transparent'
-  },
+    top: -20,
+    right: 0,
+    height: 20,
+    width: 20,
+  }
 });
 
- const styles = { ...globalStyles, ...localStyles };
+const styles = { ...globalStyles, ...localStyles };
 
 class InvestAnimation extends Component {
   constructor(props, context) {
     super(props, context);
+    this.enabled = true;
     this.state = {
       investAni: [],
       num: 0
@@ -34,6 +36,7 @@ class InvestAnimation extends Component {
     if (self.props.animation !== prev.animation) {
       if (self.props.animation.bool && self.props.animation.run) {
         if (self.props.animation.type === 'invest') {
+          this.enabled = true;
           self.investAni();
         }
       }
@@ -47,26 +50,29 @@ class InvestAnimation extends Component {
 
   clearEls() {
     const self = this;
-    console.log('clearEls');
+    this.enabled = false;
     if (self.state.num > 0) self.setState({ num: 0, investAni: [] });
   }
 
   investAni() {
     const self = this;
+    if (!this.enabled) return;
     if (self.state.num < 25) {
       let newArr = self.state.investAni;
-      newArr.push(<Dollar key={self.state.num} />);
+      newArr.push(<Dollar key={self.state.num} specialKey={self.state.num} />);
       let newNum = self.state.num += 1;
       self.setState({ num: newNum, investAni: newArr });
+      setTimeout(() => { self.investAni(); }, 100);
+    } else {
+      setTimeout(() => { self.clearEls(); }, 1000);
     }
-    setTimeout(() => { self.investAni(); }, 100);
   }
 
   render() {
     const self = this;
 
     return (
-      <View style={{ position: 'absolute', top: 0, right: 0, height: 20, width: 20 }}>
+      <View style={styles.moneyContainer}>
         {self.state.investAni}
       </View>
     );

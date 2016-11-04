@@ -294,7 +294,7 @@ class Post extends Component {
   invest(investAmount) {
     console.log('investing', investAmount);
     this.props.actions.triggerAnimation('invest');
-    this.props.actions.invest(this.props.auth.token, investAmount, this.props.post, this.props.auth.user);
+    // this.props.actions.invest(this.props.auth.token, investAmount, this.props.post, this.props.auth.user);
     this.setState({ modalVisible: false });
   }
 

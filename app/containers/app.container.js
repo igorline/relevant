@@ -12,6 +12,7 @@ import Auth from './auth.container';
 import CreatePost from './createPost.container';
 import Footer from './footer.container';
 import InvestAnimation from '../components/investAnimation.component';
+import HeartAnimation from '../components/heartAnimation.component';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as userActions from '../actions/user.actions';
@@ -215,6 +216,7 @@ class Application extends Component {
           renderScene={this.renderScene}
         />
         <InvestAnimation {...this.props} />
+        <HeartAnimation {...this.props} />
       </View>
     );
   }
