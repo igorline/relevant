@@ -29,6 +29,7 @@ class Post extends Component {
     this.toggleInfo = this.toggleInfo.bind(this);
     this.saveEdit = this.saveEdit.bind(this);
     this.toggleEditing = this.toggleEditing.bind(this);
+    this.setTag = this.setTag.bind(this);
     this.state = {
       progress: 0,
       expanded: false,
@@ -107,9 +108,15 @@ class Post extends Component {
     });
   }
 
+  setTag(tag) {
+    console.log('settag', tag)
+    this.props.actions.setTag(tag);
+    this.props.actions.navigation.changeTab(1);
+  }
+
   extractDomain(url) {
     let domain;
-    if (url.indexOf("://") > -1) {
+    if (url.indexOf('://') > -1) {
       domain = url.split('/')[2];
     } else {
       domain = url.split('/')[0];
@@ -119,7 +126,7 @@ class Post extends Component {
     let noPrefix = domain;
 
     if (domain.indexOf('www.') > -1) {
-      noPrefix = domain.replace("www.","");
+      noPrefix = domain.replace('www.', '');
     }
     return noPrefix;
   }
@@ -292,9 +299,16 @@ class Post extends Component {
   }
 
   invest(investAmount) {
-    console.log('investing', investAmount);
-    this.props.actions.triggerAnimation('invest');
-    // this.props.actions.invest(this.props.auth.token, investAmount, this.props.post, this.props.auth.user);
+    const self = this;
+    this.props.actions.invest(this.props.auth.token, investAmount, this.props.post, this.props.auth.user)
+    .then((results) => {
+      console.log(results, 'results xx')
+      if (results) {
+        self.props.actions.triggerAnimation('invest');
+      } else {
+        console.log('failed');
+      }
+    });
     this.setState({ modalVisible: false });
   }
 
@@ -373,6 +387,7 @@ class Post extends Component {
       if (post.tags) if (post.tags.length) tags = post.tags;
       if (post.user) {
         postUser = post.user;
+        if (post.user.name) name = post.user.name;
         if (postUser.image) postUserImage = postUser.image;
       }
       if (post.lastPost) {
@@ -409,7 +424,7 @@ class Post extends Component {
     if (tags) {
       tagsEl = [];
       tags.forEach((tag, i) => {
-        tagsEl.push(<Text style={[styles.white, styles.font10]} key={i}>#{tag.name}</Text>);
+        tagsEl.push(<Text onPress={() => this.setTag(tag)} style={[styles.white, styles.font10]} key={i}>###{tag.name}</Text>);
       });
     }
 
@@ -476,13 +491,14 @@ class Post extends Component {
         if (bodyObj[key].hashtag) {
           let tagObj = null;
           self.props.post.tags.forEach((tag) => {
+            console.log(tag.name, text.substr(1, text.length));
             if (tag.name === text.substr(1, text.length)) {
               tagObj = tag;
             }
           });
           return (<Text
             key={i}
-            onPress={tagObj ? () => self.props.actions.goToTag(tagObj) : null}
+            onPress={tagObj ? () => self.setTag(tagObj) : null}
             style={styles.active}
           >
             {bodyObj[key].text}
