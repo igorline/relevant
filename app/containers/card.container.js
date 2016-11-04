@@ -11,9 +11,9 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import BackButton from 'NavigationHeaderBackButton';
-import Categories from '../components/categories.component';
+// import Categories from '../components/categories.component';
 import Read from './read.container';
-import CreatePost from './createPost.container';
+// import CreatePost from './createPost.containerNew';
 import Discover from './discover.container';
 import SinglePost from './singlePost.container';
 import Activity from './activity.container';
@@ -45,7 +45,7 @@ class CardContainer extends Component {
     this.back = this.back.bind(this);
   }
 
-  getDefaultComponent() {
+  getDefaultComponent(props) {
     let key = this.default;
 
     switch (key) {
@@ -55,8 +55,8 @@ class CardContainer extends Component {
         return <Profile {...this.props} navigator={this.props.actions} />;
       case 'activity':
         return <Activity {...this.props} navigator={this.props.actions} />;
-      case 'createPost':
-        return <CreatePost {...this.props} navigator={this.props.actions} />;
+      // case 'createPost':
+        // return <CreatePost {...this.props} navigator={this.props.actions} />;
       case 'read':
         return <Read {...this.props} navigator={this.props.actions} />;
       default:
@@ -118,8 +118,8 @@ class CardContainer extends Component {
       case 'messages':
         return <Messages navigator={this.props.actions} />;
 
-      case 'categories':
-        return <Categories navigator={this.props.actions} />;
+      // case 'categories':
+      //   return <Categories navigator={this.props.actions} />;
 
       case 'profile':
         return <Profile scene={props.scene.route} navigator={this.props.actions} />;
@@ -134,7 +134,7 @@ class CardContainer extends Component {
       //   return <Auth authType={key} />;
 
       default:
-        return this.getDefaultComponent();
+        return this.getDefaultComponent(props);
     }
   }
 

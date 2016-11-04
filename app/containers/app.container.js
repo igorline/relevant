@@ -26,7 +26,6 @@ import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
 
 const {
-  Header: NavigationHeader,
   CardStack: NavigationCardStack,
 } = NavigationExperimental;
 
@@ -114,7 +113,7 @@ class Application extends Component {
               if (res) self.props.actions.getUser(self.props.auth.token, false);
             });
           } else {
-            console.log(results);
+            console.log('image error ', results);
           }
         });
       }
@@ -125,13 +124,10 @@ class Application extends Component {
   pickImage(callback) {
     ImagePicker.showImagePicker(pickerOptions, (response) => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
         callback('cancelled');
       } else if (response.error) {
-        console.log('ImagePickerManager Error: ', response.error);
         callback('error');
       } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
         callback('error');
       } else {
         callback(null, response.uri);
@@ -168,7 +164,6 @@ class Application extends Component {
     this.props.actions.logoutAction(this.props.auth.user, this.props.auth.token);
     this.props.actions.resetRoutes('home');
     // this.props.actions.pop('home');
-
   }
 
   // home button etc
@@ -184,10 +179,6 @@ class Application extends Component {
   renderScene(props) {
     let key = props.scene.route.key;
 
-    // if (this.props.auth.token && key != 'createPost') {
-    //   key = null;
-    // }
-
     switch (key) {
       case 'auth':
         return <Auth authType={key} />;
@@ -195,8 +186,12 @@ class Application extends Component {
         return <Auth authType={key} />;
       case 'signup':
         return <Auth authType={key} />;
-      // case 'createPost':
-      //   return <CreatePost {...this.props} navigator={this.props.actions} />;
+      case 'createPost':
+        return <CreatePost step={'url'} navProps={props} navigator={this.props.actions} />;
+      case 'categories':
+        return <CreatePost step={'categories'} navProps={props} navigator={this.props.actions} />;
+      case 'createPostFinish':
+        return <CreatePost step={'post'} navProps={props} navigator={this.props.actions} />;
       case 'tabBars':
         return <Footer showActionSheet={this.showActionSheet} />;
 

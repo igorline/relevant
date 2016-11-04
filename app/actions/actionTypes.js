@@ -43,4 +43,7 @@ export const PUSH_ROUTE = 'PUSH_ROUTE';
 export const POP_ROUTE = 'POP_ROUTE';
 export const CHANGE_TAB = 'CHANGE_TAB';
 export const RESET_ROUTES = 'RESET_ROUTES';
+export const SET_CREATE_POST_STATE = 'SET_CREATE_POST_STATE';
+export const SET_POST_CATEGORY = 'SET_POST_CATEGORY';
+export const CLEAR_CREATE_POST = 'CLEAR_CREATE_POST';
 
