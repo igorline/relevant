@@ -3,6 +3,7 @@ import {
   StyleSheet,
   View,
   ScrollView,
+  InteractionManager
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -42,7 +43,9 @@ class SinglePost extends Component {
           this.setState({ postData: this.props.posts.selectedPostData });
         }
       } else {
-        this.props.actions.getSelectedPost(this.props.posts.selectedPostId);
+        InteractionManager.runAfterInteractions(() => {
+          this.props.actions.getSelectedPost(this.props.posts.selectedPostId);
+        })
       }
     }
   }

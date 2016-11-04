@@ -6,6 +6,7 @@ import {
   ListView,
   TouchableHighlight,
   RefreshControl,
+  InteractionManager
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -56,7 +57,9 @@ class Profile extends Component {
       this.userId = this.props.auth.user._id;
       this.userData = this.props.auth.user;
     }
-    this.loadUser();
+    InteractionManager.runAfterInteractions(() => {
+      this.loadUser();
+    });
   }
 
   componentWillReceiveProps(next) {
