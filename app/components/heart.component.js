@@ -30,6 +30,7 @@ class Heart extends Component {
   componentDidMount() {
     const self = this;
     const i = self.props.specialKey;
+    console.log(this, 'heart this')
 
     Animated.parallel([
       Animated.timing(self.state.yVal, {

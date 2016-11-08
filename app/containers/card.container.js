@@ -79,25 +79,26 @@ class CardContainer extends Component {
   }
 
   renderTitle(props) {
-
     let key = props.scene.route.key;
-    let title = props.scene.route ? props.scene.route.title : null;
+    let title = '';
+    if (props.scene.route) {
+      if (props.scene.route.title) title = props.scene.route.title;
+    }
 
-    if (key === 'default') {
-      let r = this.props.tabs.routes.find(route =>
-        this.default === route.key
-      );
-      title = r.title;
-      if (r.key === 'myProfile') {
-        title = this.props.auth.user.name;
-      } else {
-        title = r.title;
-      }
+    if (props.navigationState.key === 'myProfile') {
+      title = this.props.auth.user.name;
+    }
+
+    let clipped = title;
+
+    if (title.length > 20) {
+      clipped = title.substring(0, 18);
+      clipped += '...';
     }
 
     return (
       <NavigationHeader.Title>
-        {title}
+        <Text style={{ fontSize: 15 }}>{clipped}</Text>
       </NavigationHeader.Title>
     );
   }

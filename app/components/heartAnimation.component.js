@@ -22,6 +22,10 @@ class heartAnimation extends Component {
     };
   }
 
+  componentDidMount() {
+
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.notif.count && this.props.notif.count < nextProps.notif.count) {
       let newNotifications = nextProps.notif.count - this.props.notif.count;
@@ -51,7 +55,7 @@ class heartAnimation extends Component {
         newArr.push(<Heart key={length} specialKey={length} />);
         self.setState({ heartAni: newArr });
       } else {
-        setTimeout(() => { self.clearEls(); }, 1000);
+        setTimeout(() => { self.clearEls(); }, 10000);
       }
       setTimeout(() => { self.heartAni(); }, 100);
     }

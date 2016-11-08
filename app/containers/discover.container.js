@@ -63,6 +63,7 @@ class Discover extends Component {
   }
 
   componentWillReceiveProps(next) {
+    const self = this;
     let ds;
     this.view = next.view.discover;
     this.type = TYPE_LOOKUP[this.view];
@@ -75,9 +76,9 @@ class Discover extends Component {
 
     // update listview if needed
     if (newData !== oldData) {
-      this.loading = false;
       ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.dataSource = ds.cloneWithRows(newData);
+      this.loading = false;
     }
 
     // update tag selection
@@ -179,7 +180,11 @@ class Discover extends Component {
   }
 
   render() {
+    const self = this;
     let postsEl = null;
+    let offsetY = this.state.headerHeight;
+
+    if (this.view === 3) offsetY = 40;
 
     if (this.dataSource) {
       postsEl = (
@@ -193,9 +198,9 @@ class Discover extends Component {
           onScroll={this.onScroll}
           dataSource={this.dataSource}
           renderRow={this.renderRow}
-          automaticallyAdjustContentInsets={true}
-          contentInset={{ top: this.state.headerHeight }}
-          contentOffset={{ y: -this.state.headerHeight }}
+          automaticallyAdjustContentInsets
+          contentInset={{ top: offsetY }}
+          contentOffset={{ y: -offsetY }}
           contentContainerStyle={{
             position: 'absolute',
             top: 0,
@@ -203,7 +208,7 @@ class Discover extends Component {
             width: fullWidth
           }}
           onEndReached={this.loadMore}
-          onEndReachedThreshold={100}
+          onEndReachedThreshold={50}
           refreshControl={
             <RefreshControl
               refreshing={this.loading}

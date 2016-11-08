@@ -1,20 +1,14 @@
-'use strict';
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   Image,
-  TextInput,
-  TouchableHighlight,
-  LinkingIOS,
-  Animated
 } from 'react-native';
 import * as subscriptionActions from '../actions/subscription.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+
+let defaultImg = require('../assets/images/default_user.jpg');
 
 class ProfileComponent extends Component {
   constructor (props, context) {
@@ -23,7 +17,7 @@ class ProfileComponent extends Component {
       followers: null,
       following: null,
       online: false
-    }
+    };
   }
 
   componentDidMount() {
@@ -48,46 +42,49 @@ class ProfileComponent extends Component {
   }
 
   checkOnline(online) {
-    var self = this;
+    const self = this;
     if (!self.props.user._id) return;
-    for (var index in online) {
-      if (index == self.props.user._id) {
-        self.setState({online: true});
+    for (let index in online) {
+      if (index === self.props.user._id) {
+        self.setState({ online: true });
         return;
       }
     }
   }
 
   render() {
-    var self = this;
-    var parentStyles = this.props.styles;
-    var styles = {...localStyles, ...parentStyles};
-    var followers = null;
-    var user = null;
-    var name = null;
-    var userImage = null;
-    var relevance = null;
-    var balance = null;
-    var userImageEl = null;
-    var following = null;
-    var relevanceEl = null;
-    var change = 0;
-    var percent = 0;
-    var oldRel = null;
+    const self = this;
+    const parentStyles = this.props.styles;
+    const styles = { ...localStyles, ...parentStyles };
+    let followers = null;
+    let user = null;
+    let userImage = null;
+    let relevance = null;
+    let balance = null;
+    let userImageEl = null;
+    let following = null;
+    let relevanceEl = null;
+    let percent = 0;
+    let oldRel = null;
     if (self.state.followers) followers = self.state.followers;
     if (self.state.following) following = self.state.following;
 
     if (this.props.user) {
       user = this.props.user;
-      if (user.name) name = user.name;
       if (user.image) userImage = user.image;
       if (user.relevance) relevance = user.relevance.toFixed(2);
       if (user.balance) balance = user.balance.toFixed(2);
     }
 
-    if (userImage) userImageEl = (<Image source={{ uri: userImage }} style={styles.uploadAvatar} />);
+    if (userImage) {
+      userImageEl = (<Image source={{ uri: userImage }} style={styles.uploadAvatar} />);
+    } else {
+      userImageEl = (<Image source={defaultImg} style={styles.uploadAvatar} />);
+    }
     if (self.props.stats[self.props.user._id]) {
-      if (self.props.stats[self.props.user._id].startAmount) oldRel = self.props.stats[self.props.user._id].startAmount;
+      if (self.props.stats[self.props.user._id].startAmount) {
+        oldRel = self.props.stats[self.props.user._id].startAmount;
+      }
       if (relevance > 0) {
         let change = oldRel / relevance;
         percent = Math.round((1 - change) * 100);
@@ -95,13 +92,13 @@ class ProfileComponent extends Component {
     }
 
     if (percent == 0) {
-      relevanceEl = (<Text>📈<Text style={styles.active}>{relevance} no change</Text></Text>)
+      relevanceEl = (<Text>📈<Text style={styles.active}>{relevance} no change</Text></Text>);
     }
     if (percent > 0) {
-      relevanceEl = (<Text>📈<Text style={styles.active}>{relevance} ⬆️{percent}%</Text></Text>)
+      relevanceEl = (<Text>📈<Text style={styles.active}>{relevance} ⬆️{percent}%</Text></Text>);
     }
     if (percent < 0) {
-      relevanceEl = (<Text>📈<Text style={styles.active}>{relevance}</Text><Text style={{color: 'red'}}> ⬇️{percent}%</Text></Text>)
+      relevanceEl = (<Text>📈<Text style={styles.active}>{relevance}</Text><Text style={{ color: 'red' }}> ⬇️{percent}%</Text></Text>)
     }
 
 

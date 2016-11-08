@@ -37,6 +37,8 @@ class Profile extends Component {
     this.renderHeader = this.renderHeader.bind(this);
     this.renderFeedRow = this.renderFeedRow.bind(this);
     this.loadMore = this.loadMore.bind(this);
+    this.loadUser = this.loadUser.bind(this);
+    this.error = false;
     this.state = {
       view: 1,
     };
@@ -69,6 +71,9 @@ class Profile extends Component {
     let newUserData;
     let newInvestments;
     let oldInvestments;
+
+    if (next.error) this.error = true;
+
     if (this.myProfile) {
       newPosts = next.posts.myPosts;
       oldPosts = this.props.posts.myPosts;
@@ -241,6 +246,7 @@ class Profile extends Component {
   render() {
     let view = this.state.view;
     let postsEl = null;
+    let errorEl = null;
 
     if (this.postsData && this.investmentsData && this.userId && this.userData) {
       postsEl = (
@@ -261,13 +267,17 @@ class Profile extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.loading}
-              onRefresh={this.loadMore}
+              onRefresh={this.loadUser}
               tintColor="#000000"
               colors={['#000000', '#000000', '#000000']}
               progressBackgroundColor="#ffffff"
             />
           }
         />);
+    } else if (this.error) {
+      errorEl = (<TouchableHighlight style={{ justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }} underlayColor={'transparent'} onPress={this.loadUser}>
+        <Text style={{fontSize: 20}}>Reload</Text>
+      </TouchableHighlight>);
     }
 
     return (
@@ -280,11 +290,12 @@ class Profile extends Component {
           alignItems: 'stretch' }}
       >
         {postsEl}
+        {errorEl}
         <CustomSpinner
-          visible={!this.postsData ||
+          visible={(!this.postsData ||
             !this.investmentsData ||
             !this.userId ||
-            !this.userData
+            !this.userData) && !this.error
           }
         />
       </View>
@@ -302,6 +313,7 @@ function mapStateToProps(state) {
     posts: state.posts,
     users: state.user,
     online: state.online,
+    error: state.error,
     view: state.view,
     stats: state.stats,
     investments: state.investments,
