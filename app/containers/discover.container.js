@@ -76,20 +76,20 @@ class Discover extends Component {
     // update listview if needed
     if (newData !== oldData) {
       this.loading = false;
+      this.reloading = false;
       ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.dataSource = ds.cloneWithRows(newData);
     }
 
     // update tag selection
     if (this.props.tags.selectedTags !== next.tags.selectedTags && this.type !== 'people') {
-      this.loading = false;
       this.dataSource = null;
       this.reload(next.tags.selectedTags);
     }
 
     // update view
     if (this.props.view.discover !== next.view.discover) {
-      this.loading = false;
+
       ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.dataSource = ds.cloneWithRows(newData);
 
@@ -98,6 +98,10 @@ class Discover extends Component {
         this.offset = this.currentScroll[this.type];
         this.listview.scrollTo({ y: this.currentScroll[this.type], animated: false });
       }
+    }
+
+    if (this.props.refresh !== next.refresh) {
+      this.triggerReload();
     }
 
     // if (self.props.posts.newPostsAvailable != next.posts.newPostsAvailable) {
@@ -152,6 +156,7 @@ class Discover extends Component {
   loadPosts(length, _tags) {
     if (this.loading) return;
     this.loading = true;
+    if (length === 0) this.reloading = true;
     console.log('loading posts');
     const tags = typeof _tags !== 'undefined' ? _tags : this.props.tags.selectedTags;
     switch (this.view) {
@@ -192,7 +197,7 @@ class Discover extends Component {
           onScroll={this.onScroll}
           dataSource={this.dataSource}
           renderRow={this.renderRow}
-          automaticallyAdjustContentInsets={true}
+          automaticallyAdjustContentInsets={false}
           contentInset={{ top: this.state.headerHeight }}
           contentOffset={{ y: -this.state.headerHeight }}
           contentContainerStyle={{
@@ -205,7 +210,7 @@ class Discover extends Component {
           onEndReachedThreshold={100}
           refreshControl={
             <RefreshControl
-              refreshing={this.loading}
+              refreshing={this.reloading}
               onRefresh={this.reload}
               tintColor="#000000"
               colors={['#000000', '#000000', '#000000']}
@@ -270,6 +275,7 @@ function mapStateToProps(state) {
     stats: state.stats,
     users: state.user,
     tags: state.tags,
+    refresh: state.navigation.discover.refresh
   };
 }
 

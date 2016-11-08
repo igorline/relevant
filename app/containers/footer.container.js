@@ -22,6 +22,7 @@ class Tabs extends Component {
   }
 
   changeTab(key) {
+    let tab = this.props.navigation.tabs.routes[this.props.navigation.tabs.index];
 
     // This is if we want to make create post a separate scene
     if (key === 'createPost') {
@@ -32,6 +33,11 @@ class Tabs extends Component {
         next: 'Next'
       }, 'home');
     } else {
+      if (tab.key === key) {
+        if (this.props.navigation[key].routes.length === 1) {
+          this.props.actions.refreshTab(key);
+        }
+      }
       this.props.actions.resetRoutes();
       this.props.actions.changeTab(key);
     }

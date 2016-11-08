@@ -220,7 +220,6 @@ class Post extends Component {
     // Update post action here
 
     self.props.actions.editPost(postBody, self.props.auth.token).then((results) => {
-      console.log(results, 'edit results');
       if (!results) {
         AlertIOS.alert('Update error please try again');
       } else {
@@ -254,13 +253,11 @@ class Post extends Component {
 
   irrelevant() {
     const self = this;
-    console.log('irrelevant');
     self.props.actions.irrelevant(self.props.auth.token, self.props.post._id);
   }
 
   toggleOptions() {
     const self = this;
-    console.log('toggleOptions');
     self.setState({ showOptions: self.state.showOptions = !self.state.showOptions });
   }
 
@@ -293,7 +290,6 @@ class Post extends Component {
 
   toggleModal() {
     const self = this;
-    console.log('toggleModal');
     self.setState({ modalVisible: !self.state.modalVisible });
   }
 
@@ -490,7 +486,6 @@ class Post extends Component {
         if (bodyObj[key].hashtag) {
           let tagObj = null;
           self.props.post.tags.forEach((tag) => {
-            console.log(tag.name, text.substr(1, text.length));
             if (tag.name === text.substr(1, text.length)) {
               tagObj = tag;
             }
