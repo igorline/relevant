@@ -71,7 +71,6 @@ class Login extends Component {
   }
 
   back() {
-    console.log('back');
     this.props.actions.pop(this.props.navigation.main);
   }
 
@@ -79,16 +78,16 @@ class Login extends Component {
     const self = this;
     const styles = globalStyles;
     return (
-      <View style={[{ height: self.state.visibleHeight, backgroundColor: '#F0F0F0', alignItems: 'center', justifyContent: 'center' }]}>
+      <View style={[{ height: self.state.visibleHeight }, styles.fieldsContainer]}>
         <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>
           Stay Relevant {'\n'} Log in
         </Text>
         <View style={styles.marginTop}>
-          <TextInput autoCapitalize={'none'} keyboardType={'default'} clearTextOnFocus={false} placeholder="email" onChangeText={(email) => this.setState({ email })} value={this.state.email} style={styles.authInput} />
+          <TextInput autoCorrect={false} autoCapitalize={'none'} keyboardType={'email-address'} clearTextOnFocus={false} placeholder="email" onChangeText={email => this.setState({ email })} value={this.state.email} style={styles.authInput} />
         </View>
 
         <View style={styles.marginTop}>
-          <TextInput autoCapitalize={'none'} secureTextEntry={true} keyboardType='default' clearTextOnFocus={false} placeholder="password" onChangeText={(password) => this.setState({password})} value={this.state.password} style={styles.authInput} />
+          <TextInput autoCapitalize={'none'} autoCorrect={false} secureTextEntry keyboardType={'default'} clearTextOnFocus={false} placeholder="password" onChangeText={password => this.setState({ password })} value={this.state.password} style={styles.authInput} />
         </View>
 
         <View style={styles.margin}>

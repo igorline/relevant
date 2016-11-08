@@ -218,7 +218,6 @@ class Post extends Component {
     };
 
     // Update post action here
-
     self.props.actions.editPost(postBody, self.props.auth.token).then((results) => {
       if (!results) {
         AlertIOS.alert('Update error please try again');
@@ -262,6 +261,11 @@ class Post extends Component {
   }
 
   setSelected(user) {
+    if (!user) return;
+    if (this.props.scene) {
+      if (this.props.scene.key === 'profile'
+        && this.props.scene.id === user._id) return;
+    }
     this.props.actions.setSelectedUser(user._id);
     this.props.navigator.push({
       key: 'profile',
@@ -269,6 +273,23 @@ class Post extends Component {
       back: true,
       id: user._id
     });
+  }
+
+  extractDomain(url) {
+    let domain;
+    if (url.indexOf('://') > -1) {
+      domain = url.split('/')[2];
+    } else {
+      domain = url.split('/')[0];
+    }
+    domain = domain.split(':')[0];
+
+    let noPrefix = domain;
+
+    if (domain.indexOf('www.') > -1) {
+      noPrefix = domain.replace('www.', '');
+    }
+    return noPrefix;
   }
 
   checkInvestments(investments) {
@@ -369,6 +390,7 @@ class Post extends Component {
     let investButtonEl = null;
     let bodyEditingEl = null;
     let titleEl = null;
+    let postInfo = null;
 
     if (this.props.post) {
       post = this.props.post;
@@ -423,13 +445,6 @@ class Post extends Component {
       });
     }
 
-    // if (balance >= 50) pickerArray.push(<PickerItemIOS key={0} label='50' value={50} />);
-    // if (balance >= 100) pickerArray.push(<PickerItemIOS key={1} label='100' value={100} />);
-    // if (balance >= 500) pickerArray.push(<PickerItemIOS key={2} label='500' value={500} />);
-    // if (balance >= 1000) pickerArray.push(<PickerItemIOS key={3} label='1000' value={1000} />);
-    // if (balance >= 5000) pickerArray.push(<PickerItemIOS key={4} label='5000' value={5000} />);
-    // if (balance >= 10000) pickerArray.push(<PickerItemIOS key={5} label='10000' value={10000} />);
-
     if (postUserImage) {
       postUserImageEl = (<TouchableWithoutFeedback
         onPress={() => this.setSelected(self.props.post.user)}
@@ -442,7 +457,7 @@ class Post extends Component {
       imageEl = (<Image resizeMode={'cover'} source={{ uri: image }} style={styles.postImage} />);
     }
 
-    if (post && post.user) {
+    if (post && post.user && this.props.auth.user) {
       if (post.user._id !== this.props.auth.user._id) {
         investButtonEl = (<TouchableWithoutFeedback
           onPress={() => self.toggleModal()}
@@ -451,15 +466,6 @@ class Post extends Component {
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View>
         </TouchableWithoutFeedback>);
       }
-
-      // if (post.user._id != self.props.auth.user._id && self.state.invested) {
-      //   uninvestButtonEl = (
-      //     <TouchableWithoutFeedback
-      //       onPress={this.uninvest.bind(self)} style={[styles.postButton, {marginRight: 5, backgroundColor: '#F0F0F0'}]}>
-      //       <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}><Text style={[styles.font10, styles.postButtonText]}>Uninvest</Text></View>
-      //     </TouchableWithoutFeedback>
-      //   )
-      // }
     }
 
     if (body) {
@@ -540,8 +546,6 @@ class Post extends Component {
       />);
     }
 
-    let postInfo = null;
-
     if (self.state.passed) {
       if (self.state.toggleInfo) {
         postInfo = (<View>
@@ -586,7 +590,7 @@ class Post extends Component {
               {postUserImageEl}
               <View style={styles.postInfo}>
                 <TouchableWithoutFeedback
-                  onPress={() => self.setSelected(user)}
+                  onPress={() => self.setSelected(self.props.post.user)}
                   style={[styles.infoLeft, styles.innerInfo]}
                 >
                   <View><Text style={[styles.font15, styles.darkGray]}>{name}</Text></View>
@@ -637,7 +641,7 @@ class Post extends Component {
         <Animated.View style={{ height: self.state.aniHeight, overflow: 'hidden' }}>
           <PickerIOS
             selectedValue={self.state.investAmount}
-            onValueChange={(investAmount) => this.setState({ investAmount })}
+            onValueChange={investAmount => this.setState({ investAmount })}
           >
             {pickerArray}
           </PickerIOS>
@@ -669,42 +673,37 @@ class Post extends Component {
         >
           <View style={{ flex: 1, padding: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.1)' }}>
             <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 5 }}>
-              <View style={{ justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap', flex: 1, overflow: 'visible' }}>
+              <Text style={{ fontSize: 20, textAlign: 'center' }}>Invest</Text>
+              <View style={{ justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap', flex: 1, overflow: 'visible', marginTop: 10, marginBottom: 10 }}>
                 <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(50)}>
-                  <Text>50</Text>
+                  <Text style={styles.modalButtonText}>50</Text>
                 </TouchableHighlight>
                 <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(100)}>
-                  <Text>100</Text>
+                  <Text style={styles.modalButtonText}>100</Text>
                 </TouchableHighlight>
                 <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(500)}>
-                  <Text>500</Text>
+                  <Text style={styles.modalButtonText}>500</Text>
                 </TouchableHighlight>
                 <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(1000)}>
-                  <Text>1000</Text>
+                  <Text style={styles.modalButtonText}>1000</Text>
                 </TouchableHighlight>
                 <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(2000)}>
-                  <Text>2000</Text>
+                  <Text style={styles.modalButtonText}>2000</Text>
                 </TouchableHighlight>
                 <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(5000)}>
-                  <Text>5000</Text>
+                  <Text style={styles.modalButtonText}>5000</Text>
                 </TouchableHighlight>
                 <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(10000)}>
-                  <Text>10000</Text>
+                  <Text style={styles.modalButtonText}>10000</Text>
                 </TouchableHighlight>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                {/* <TouchableHighlight
-                  style={styles.investOption}
-                  underlayColor={'transparent'}
-                >
-                  <Text>Invest</Text>
-                </TouchableHighlight>*/}
                 <TouchableHighlight
                   style={styles.investOption}
-                  underlayColor={'transparent'}
+                  underlayColor={'black'}
                   onPress={() => this.toggleModal()}
                 >
-                  <Text>Cancel</Text>
+                  <Text style={styles.modalButtonText}>Cancel</Text>
                 </TouchableHighlight>
               </View>
             </View>
@@ -748,7 +747,8 @@ const localStyles = StyleSheet.create({
     width: 75,
     height: 35,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: 'black',
   },
   tagsRow: {
     flexDirection: 'row',

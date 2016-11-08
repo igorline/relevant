@@ -5,13 +5,15 @@ import {
   View,
   ListView,
   RefreshControl,
-  InteractionManager
+  InteractionManager,
+  TouchableHighlight
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { globalStyles } from '../styles/global';
 import Post from '../components/post.component';
 import ProfileComponent from '../components/profile.component';
+import ErrorComponent from '../components/error.component';
 import Investment from '../components/investment.component';
 import CustomSpinner from '../components/CustomSpinner.component';
 import * as authActions from '../actions/auth.actions';
@@ -21,6 +23,7 @@ import * as userActions from '../actions/user.actions';
 import * as statsActions from '../actions/stats.actions';
 import * as onlineActions from '../actions/online.actions';
 import * as notifActions from '../actions/notif.actions';
+import * as errorActions from '../actions/error.actions';
 import * as viewActions from '../actions/view.actions';
 import * as messageActions from '../actions/message.actions';
 import * as subscriptionActions from '../actions/subscription.actions';
@@ -37,6 +40,7 @@ class Profile extends Component {
     this.renderHeader = this.renderHeader.bind(this);
     this.renderFeedRow = this.renderFeedRow.bind(this);
     this.loadMore = this.loadMore.bind(this);
+    this.loadUser = this.loadUser.bind(this);
     this.changeView = this.changeView.bind(this);
     this.state = {
       view: 1,
@@ -70,6 +74,7 @@ class Profile extends Component {
     let newUserData;
     let newInvestments;
     let oldInvestments;
+
     if (this.myProfile) {
       newPosts = next.posts.myPosts;
       oldPosts = this.props.posts.myPosts;
@@ -207,6 +212,7 @@ class Profile extends Component {
       />);
 
       header.push(<Tabs
+        key={1}
         tabs={tabs}
         active={this.state.view}
         handleChange={this.changeView}
@@ -239,7 +245,7 @@ class Profile extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.loading}
-              onRefresh={this.loadMore}
+              onRefresh={this.loadUser}
               tintColor="#000000"
               colors={['#000000', '#000000', '#000000']}
               progressBackgroundColor="#ffffff"
@@ -258,12 +264,13 @@ class Profile extends Component {
           alignItems: 'stretch' }}
       >
         {postsEl}
+        <ErrorComponent reloadFunction={this.loadUser} />
         <CustomSpinner
           visible={
-            !this.postsData ||
+            (!this.postsData ||
             !this.investmentsData ||
             !this.userId ||
-            !this.userData
+            !this.userData) && !this.props.error
           }
         />
       </View>
@@ -281,6 +288,7 @@ function mapStateToProps(state) {
     posts: state.posts,
     users: state.user,
     online: state.online,
+    error: state.error,
     view: state.view,
     stats: state.stats,
     investments: state.investments,
@@ -295,6 +303,7 @@ function mapDispatchToProps(dispatch) {
       ...postActions,
       ...onlineActions,
       ...notifActions,
+      ...errorActions,
       ...animationActions,
       ...viewActions,
       ...messageActions,

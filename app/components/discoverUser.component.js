@@ -25,11 +25,12 @@ class DiscoverUser extends Component {
     // console.log(next)
   }
 
-  setSelected(user) {
+  setSelected() {
+    let user = this.props.user;
     this.props.actions.setSelectedUser(user._id);
     this.props.navigator.push({
       key: 'profile',
-      name: user.name,
+      title: user.name,
       back: true,
       id: user._id,
     });
@@ -44,6 +45,7 @@ class DiscoverUser extends Component {
     let imageEl = null;
     let percent = 0;
     let percentEl = null;
+    let relevanceEl = null;
     let oldRel = null;
     const relevance = user.relevance || 0;
     if (self.props.stats) {
@@ -61,13 +63,23 @@ class DiscoverUser extends Component {
         }
       }
     }
+
     if (user.image) {
       image = user.image;
       imageEl = (<Image style={styles.discoverAvatar} source={{ uri: image }} />);
+    } else {
+      image = require('../assets/images/default_user.jpg');
+      imageEl = (<Image style={styles.discoverAvatar} source={image} />);
+    }
+
+    if (user.relevance) {
+      relevanceEl = (<Text>📈<Text style={styles.active}>{user.relevance ? user.relevance.toFixed(2) : null}</Text></Text>);
+    } else {
+      relevanceEl = null;
     }
 
     return (
-      <TouchableHighlight style={{ flex: 1 }} underlayColor={'transparent'} onPress={() => self.setSelected(user)}>
+      <TouchableHighlight underlayColor={'transparent'} onPress={() => self.setSelected()}>
         <View style={[styles.discoverUser]}>
           <View style={[styles.leftDiscoverUser]}>
             {imageEl}
@@ -78,7 +90,7 @@ class DiscoverUser extends Component {
               {percentEl}
             </View>
             <View>
-              <Text>📈<Text style={styles.active}>{user.relevance ? user.relevance.toFixed(2) : null}</Text></Text>
+              {relevanceEl}
             </View>
           </View>
         </View>
@@ -104,7 +116,6 @@ const localStyles = StyleSheet.create({
     paddingRight: 20,
     paddingBottom: 10,
     paddingLeft: 20,
-    alignItems: 'stretch',
   },
   leftDiscoverUser: {
     alignItems: 'center',

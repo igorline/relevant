@@ -198,11 +198,12 @@ function getUser(token, redirect, callback) {
             fetch(process.env.API_SERVER+'/api/user/me', {
                 credentials: 'include',
                 method: 'GET',
+                timeout: 0,
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            .then(utils.fetchError.handleErrors)
+            //.then(utils.fetchError.handleErrors)
             .then((response) => response.json())
             .then((responseJSON) => {
                 dispatch(setUser(responseJSON));
@@ -215,7 +216,7 @@ function getUser(token, redirect, callback) {
                 if(callback) callback(responseJSON);
             })
             .catch(error => {
-                console.log(error);
+                console.log(error, 'auth error');
                 dispatch(loginUserFailure('Server error'));
             });
         }
