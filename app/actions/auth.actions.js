@@ -70,7 +70,6 @@ function logoutAction(user, token) {
     return (dispatch) => {
         userDefaults.remove('token', APP_GROUP_ID)
         .then(data => {
-            console.log(data, 'remove data')
             dispatch(logout());
             dispatch({ type:'server/logout', payload: user });
         });
@@ -97,7 +96,6 @@ export function loginUser(user, redirect) {
         })
         .then((response) => response.json())
         .then((responseJSON) => {
-            console.log(responseJSON, 'login response');
             if (responseJSON.token) {
                 userDefaults.set('token', responseJSON.token, APP_GROUP_ID)
                 .then( ()  => {
@@ -118,7 +116,6 @@ export function loginUser(user, redirect) {
 export
 function userOnline(user, token) {
     return dispatch => {
-        console.log(user, 'online user')
         return fetch(process.env.API_SERVER+'/notification/online/'+user._id+'?access_token='+token, {
             credentials: 'include',
             method: 'POST',
@@ -152,8 +149,6 @@ function createUser(user, redirect) {
         })
         .then((response) => response.json())
         .then((responseJSON) => {
-            console.log(responseJSON)
-
             if (responseJSON.token) {
                 dispatch(loginUserSuccess(responseJSON.token));
                 dispatch(getUser(responseJSON.token, true));
@@ -181,13 +176,11 @@ function createUser(user, redirect) {
 
 export
 function getUser(token, redirect, callback) {
-    console.log('getUser', token);
     return dispatch => {
         if (!token) {
             userDefaults.get('token', APP_GROUP_ID)
                 .then(token => {
                     if (token) {
-                        console.log('userDefaults found token', token)
                         dispatch(loginUserSuccess(token));
                         return fetchUser(token);
                     } else {
@@ -202,7 +195,6 @@ function getUser(token, redirect, callback) {
         } else fetchUser(token);
 
         function fetchUser(token) {
-            console.log('fetch user w token', token)
             fetch(process.env.API_SERVER+'/api/user/me', {
                 credentials: 'include',
                 method: 'GET',
@@ -223,69 +215,12 @@ function getUser(token, redirect, callback) {
                 if(callback) callback(responseJSON);
             })
             .catch(error => {
-                // console.log("auth error");
-                // console.log(error);
+                console.log(error);
                 dispatch(loginUserFailure('Server error'));
             });
         }
     }
 }
-
-// export function userIndex() {
-//     return (dispatch) => {
-//         new Promise((resolve, reject) => {
-//             return fetch(process.env.API_SERVER+'/api/user', {
-//                     credentials: 'include',
-//                     method: 'GET'
-//                 })
-//                 .then(utils.fetchError.handleErrors)
-//                 .then((response) => response.json())
-//                 .then((responseJSON) => {
-//                     dispatch(setUserIndex(responseJSON));
-//                 })
-//                 .catch((error) => {
-//                     console.log(error, 'error');
-//                 });
-//         });
-//     };
-// }
-
-// export
-// function getContacts() {
-//     return function(dispatch) {
-//         console.log('trigger get contacts')
-//         Contacts.getAll((err, contacts) => {
-//             if (err && err.type === 'permissionDenied') {
-//                 console.log(err, 'err')
-//             } else {
-//                 dispatch(setContacts(contacts));
-//             }
-//         });
-//     }
-// }
-
-// export
-// function sortNumbers(contacts) {
-//     return function(dispatch) {
-//         var list = [];
-//         for (var i = 0; i < contacts.length; i++) {
-//             for (var x = 0; x < contacts[i].phoneNumbers.length; x++) {
-//                 var altNum = contacts[i].phoneNumbers[x].number.replace(/\D/g, '');
-//                 var num = Number(altNum);
-//                 list.push(num);
-//                 if (i == contacts.length - 1 && x == contacts[i].phoneNumbers.length - 1) dispatch(setContacts(list));
-//             };
-//         };
-//     }
-// }
-
-// export
-// function setContacts(contacts) {
-//     return {
-//         type: types.SET_CONTACTS,
-//         payload: contacts
-//     };
-// }
 
 export
 function setDeviceToken(token) {
@@ -413,11 +348,4 @@ export function removeDeviceToken(auth) {
         // PushNotificationIOS.abandonPermissions();
     }
 }
-
-
-
-
-
-
-
 

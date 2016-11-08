@@ -97,7 +97,7 @@ class CardContainer extends Component {
 
     return (
       <NavigationHeader.Title>
-        {title}
+        <Text>{title}</Text>
       </NavigationHeader.Title>
     );
   }
