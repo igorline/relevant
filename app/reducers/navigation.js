@@ -52,6 +52,7 @@ const initialState = {
     key: 'home',
     routes: [{
       key: 'auth',
+      component: 'auth',
       title: 'Auth'
     }],
   },
@@ -60,6 +61,7 @@ const initialState = {
     key: 'read',
     routes: [{
       key: 'read',
+      component: 'read',
       title: 'Read'
     }],
   },
@@ -68,6 +70,7 @@ const initialState = {
     key: 'read',
     routes: [{
       key: 'discover',
+      component: 'discover',
       title: 'Discover'
     }],
   },
@@ -76,6 +79,7 @@ const initialState = {
     key: 'createPost',
     routes: [{
       key: 'createPost',
+      component: 'createPost',
       title: 'Create Post',
     }],
   },
@@ -84,6 +88,7 @@ const initialState = {
     key: 'activity',
     routes: [{
       key: 'activity',
+      component: 'activity',
       title: 'Activity'
     }],
   },
@@ -92,10 +97,19 @@ const initialState = {
     key: 'myProfile',
     routes: [{
       key: 'myProfile',
+      component: 'myProfile',
       title: 'Profile'
     }],
   },
 };
+
+function guid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    let r = Math.random() * 16 | 0;
+    let v = c === 'x' ? r : (r&0x3|0x8);
+    return v.toString(16);
+  });
+}
 
 function navigationState(state = initialState, action) {
   switch (action.type) {
@@ -107,7 +121,12 @@ function navigationState(state = initialState, action) {
         ...state[activeTabKey],
         animation: action.animation,
       };
-      const nextScenes = NavigationStateUtils.push(scenes, action.route);
+
+      let route = action.route;
+      route.component = action.route.key;
+      route.key = guid();
+
+      const nextScenes = NavigationStateUtils.push(scenes, route);
 
       if (scenes !== nextScenes) {
         return {

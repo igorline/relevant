@@ -4,13 +4,12 @@ import {
   Text,
   View,
   ListView,
-  TouchableHighlight,
   RefreshControl,
   InteractionManager
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles } from '../styles/global';
 import Post from '../components/post.component';
 import ProfileComponent from '../components/profile.component';
 import Investment from '../components/investment.component';
@@ -27,6 +26,7 @@ import * as messageActions from '../actions/message.actions';
 import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
+import Tabs from '../components/tabs.component';
 
 let styles;
 let localStyles;
@@ -37,6 +37,7 @@ class Profile extends Component {
     this.renderHeader = this.renderHeader.bind(this);
     this.renderFeedRow = this.renderFeedRow.bind(this);
     this.loadMore = this.loadMore.bind(this);
+    this.changeView = this.changeView.bind(this);
     this.state = {
       view: 1,
     };
@@ -191,11 +192,13 @@ class Profile extends Component {
   }
 
   renderHeader() {
-    const view = this.state.view;
     const header = [];
+    let tabs = [
+      { id: 1, title: 'Posts' },
+      { id: 2, title: 'Investments' }
+    ];
 
     if (this.userId && this.userData) {
-
       header.push(<ProfileComponent
         key={0}
         {...this.props}
@@ -203,36 +206,11 @@ class Profile extends Component {
         styles={styles}
       />);
 
-      header.push(<View
-        style={[styles.row, { width: fullWidth, backgroundColor: 'white' }]}
-        key={1}
-      >
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={[styles.typeParent, view === 1 ? styles.activeBorder : null]}
-          onPress={() => this.changeView(1)}
-        >
-          <Text style={[styles.type, styles.darkGray, styles.font15, view === 1 ? styles.active : null]}>
-            Posts
-          </Text>
-        </TouchableHighlight>
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={[styles.typeParent, view === 2 ? styles.activeBorder : null]}
-          onPress={() => this.changeView(2)}
-        >
-          <Text
-            style={[
-              styles.type,
-              styles.darkGray,
-              styles.font15,
-              view === 2 ? styles.active : null
-            ]}
-          >
-            Investments
-          </Text>
-        </TouchableHighlight>
-      </View>);
+      header.push(<Tabs
+        tabs={tabs}
+        active={this.state.view}
+        handleChange={this.changeView}
+      />);
     }
 
     return header;
@@ -281,7 +259,8 @@ class Profile extends Component {
       >
         {postsEl}
         <CustomSpinner
-          visible={!this.postsData ||
+          visible={
+            !this.postsData ||
             !this.investmentsData ||
             !this.userId ||
             !this.userData

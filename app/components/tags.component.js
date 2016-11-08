@@ -11,52 +11,79 @@ export default class Tags extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {};
+    this.toggleTag = this.toggleTag.bind(this);
   }
 
   componentDidMount() {
     // if (!this.props.posts.discoverTags.length) this.props.actions.getDiscoverTags();
-    if (!this.props.posts.parentTags.length) this.props.actions.getParentTags();
-
+    // if (!this.props.posts.parentTags.length) this.props.actions.getParentTags();
   }
 
-  setTag(tag) {
-    this.props.actions.setTag(tag);
+  // setTag(tag) {
+  //   this.props.actions.setTag(tag);
+  // }
+
+  // clearTag() {
+  //   this.props.actions.clearTag(null);
+  // }
+
+  toggleTag(tag) {
+    if (this.selectedLookup[tag._id]) {
+      this.props.actions.deselectTag(tag);
+    }
+    else this.props.actions.selectTag(tag);
   }
 
-  clearTag() {
-    this.props.actions.setTag(null);
+  renderTag(tag, selected) {
+    return (
+      <Text
+        style={
+          [styles.tagBox, {
+            backgroundColor: selected ? '#007aff' : '#F0F0F0',
+            color: selected ? 'white' : '#808080' }]}
+        onPress={() => this.toggleTag(tag)}
+        key={tag._id}
+      >
+        {tag.name}
+      </Text>
+    );
   }
 
   render() {
     let tagsEl = null;
-    let tags = null;
-    let id = null;
+    let el = null;
+    let selectedEl = null;
+    let tags = this.props.tags.tags;
+    let selectedTags = this.props.tags.selectedTags;
+    this.selectedLookup = {};
 
-    if (this.props.posts.tag) id = this.props.posts.tag._id;
-    tags = this.props.posts.parentTags;
-    tagsEl = tags.map((data, i) => (
-      <Text
-        style={
-          [styles.tagBox, {
-            backgroundColor: data._id === id ? '#007aff' : '#F0F0F0',
-            color: data._id === id ? 'white' : '#808080' }]}
-        onPress={data._id === id ? () => this.clearTag() : () => this.setTag(data)}
-        key={i}
-      >
-        {data.name}
-      </Text>
-    ));
+    selectedEl = selectedTags.map((tag) => {
+      this.selectedLookup[tag._id] = tag;
+      return this.renderTag(tag, true);
+    });
 
-    return (
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        automaticallyAdjustContentInsets={false}
-        contentContainerStyle={styles.tags}
-      >
-        {tagsEl}
-      </ScrollView>
-    );
+    tagsEl = tags.map((tag) => {
+      if (!this.selectedLookup[tag._id]) {
+        return this.renderTag(tag, false);
+      }
+    });
+
+    if (selectedTags.length + tags.length > 0) {
+      el = (
+        <ScrollView
+          horizontal
+          keyboardShouldPersistTaps
+          showsHorizontalScrollIndicator={false}
+          automaticallyAdjustContentInsets={false}
+          contentContainerStyle={styles.tags}
+        >
+          {selectedEl}
+          {tagsEl}
+        </ScrollView>
+      );
+    }
+
+    return el;
   }
 }
 
