@@ -7,6 +7,7 @@ import notif from './notif';
 import online from './online';
 import messages from './messages';
 import animation from './animation';
+import error from './error';
 import view from './view';
 import stats from './stats';
 import investments from './investments';
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   user,
   socket,
   notif,
+  error,
   online,
   messages,
   animation,

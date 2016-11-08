@@ -26,6 +26,12 @@ class SignUp extends Component {
     this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
   }
 
+  componentWillUpdate(nextProps) {
+    if (nextProps.auth.statusText && !this.props.auth.statusText) {
+      AlertIOS.alert(nextProps.auth.statusText);
+    }
+  }
+
   componentWillUnmount() {
     this.showListener.remove();
     this.hideListener.remove();
@@ -58,16 +64,16 @@ class SignUp extends Component {
   }
 
   validate() {
-    var user = {
+    const user = {
       name: this.state.name,
       phone: this.state.phone,
       email: this.state.email,
       password: this.state.password
-    }
+    };
 
     if (this.state.name) {
       if (this.state.name.length > 15) {
-         AlertIOS.alert('name must be less than 15 characters');
+        AlertIOS.alert('name must be less than 15 characters');
         return;
       }
     } else {
@@ -96,49 +102,40 @@ class SignUp extends Component {
         return;
       }
     } else {
-       AlertIOS.alert('Password required');
+      AlertIOS.alert('Password required');
       return;
     }
 
     this.props.actions.createUser(user);
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (nextProps.auth.statusText && !this.props.auth.statusText) {
-       AlertIOS.alert(nextProps.auth.statusText);
-    }
-  }
-
   render() {
-    const { createUser } = this.props.actions;
-    var message = this.state.message;
-    var styles = globalStyles;
-    this.props.auth.statusText ? message = this.props.auth.statusText : null;
+    const styles = { ...globalStyles };
 
     return (
-      <View style={[{height: this.state.visibleHeight, backgroundColor: '#F0F0F0', alignItems: 'center', justifyContent: 'center'}]}>
-         <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>
-            Get Relevant {'\n'} Sign up
-          </Text>
+      <View style={[styles.fieldsContainer, { height: this.state.visibleHeight }]}>
+        <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>
+          Get Relevant { '\n' } Sign up
+        </Text>
 
         <View style={styles.marginTop}>
-          <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="name" onChangeText={(name) => this.setState({"name": name})} value={this.state.name}  style={styles.authInput} />
+          <TextInput autoCapitalize={'none'} autoCorrect={false} keyboardType={'default'} clearTextOnFocus={false} placeholder="username" onChangeText={name => this.setState({ name })} value={this.state.name} style={styles.authInput} />
         </View>
 
         <View style={styles.marginTop}>
-          <TextInput autoCapitalize='none' keyboardType='default' clearTextOnFocus={false} placeholder="email" onChangeText={(email) => this.setState({"email": email})} value={this.state.email}  style={styles.authInput} />
+          <TextInput autoCapitalize={'none'} autoCorrect={false} keyboardType={'email-address'} clearTextOnFocus={false} placeholder="email" onChangeText={email => this.setState({ email })} value={this.state.email} style={styles.authInput} />
         </View>
 
         <View style={styles.marginTop}>
-          <TextInput autoCapitalize='none' keyboardType='phone-pad' clearTextOnFocus={false} placeholder="phone number" onChangeText={(phone) => this.setState({"phone": phone})} value={this.state.phone}  style={styles.authInput} />
+          <TextInput autoCapitalize={'none'} keyboardType={'phone-pad'} clearTextOnFocus={false} placeholder="phone number" onChangeText={phone => this.setState({ phone })} value={this.state.phone} style={styles.authInput} />
         </View>
 
         <View style={styles.marginTop}>
-          <TextInput autoCapitalize='none' secureTextEntry={true} keyboardType='default' clearTextOnFocus={false} placeholder="password" onChangeText={(password) => this.setState({"password": password})} value={this.state.password}  style={styles.authInput} />
+          <TextInput autoCapitalize={'none'} secureTextEntry keyboardType={'default'} clearTextOnFocus={false} placeholder="password" onChangeText={password => this.setState({ password })} value={this.state.password} style={styles.authInput} />
         </View>
 
-         <View style={styles.marginTop}>
-          <TextInput autoCapitalize='none' secureTextEntry={true} keyboardType='default' clearTextOnFocus={false} placeholder="confirm password" onChangeText={(cPassword) => this.setState({"cPassword": cPassword})} value={this.state.cPassword}  style={styles.authInput} />
+        <View style={styles.marginTop}>
+          <TextInput autoCapitalize={'none'} secureTextEntry keyboardType={'default'} clearTextOnFocus={false} placeholder="confirm password" onChangeText={cPassword => this.setState({ cPassword })} value={this.state.cPassword} style={styles.authInput} />
         </View>
 
         <View style={styles.margin}>

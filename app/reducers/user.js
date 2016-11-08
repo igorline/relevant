@@ -9,7 +9,7 @@ const addItems = (arr, newArr) => {
   return finalArr;
 };
 
-const initialState = { selectedUserId: null, selectedUserData: null, currentUserId: null, list: [], loading: false};
+const initialState = { error: false, selectedUserId: null, selectedUserData: null, currentUserId: null, list: [], loading: false};
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
