@@ -4,14 +4,14 @@ import {
 } from 'react-native';
 import * as errorActions from './error.actions';
 
-console.log(errorActions, 'errorActions')
-
 require('../publicenv');
 
 export
 function getSelectedUser(userId) {
   return (dispatch) => {
     dispatch(setSelectedUser(userId));
+    // test network error handling
+    // return fetch('10.66.77.88.1/api/user/' + userId,
     return fetch(process.env.API_SERVER + '/api/user/' + userId,
       {
         credentials: 'include',
@@ -25,6 +25,7 @@ function getSelectedUser(userId) {
       .then(response => response.json())
       .then((responseJSON) => {
         dispatch(setSelectedUserData(responseJSON));
+        dispatch(errorActions.setError(false));
         return true;
       })
       .catch((error) => {

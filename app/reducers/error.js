@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = {false};
+const initialState = { false };
 const REPLACE = 'REPLACE';
 
 
@@ -12,6 +12,6 @@ export default function auth(state = initialState, action) {
     }
 
     default:
-      return false
+      return state
   }
 };

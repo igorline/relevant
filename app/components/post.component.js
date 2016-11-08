@@ -101,18 +101,33 @@ class Post extends Component {
     Share.open({
       title: 'Relevant',
       url: self.props.post.link ? self.props.post.link : 'http://relevant-community.herokuapp.com/',
-      subject: "Share Link",
+      subject: 'Share Link',
       message: self.props.post.title ? 'Relevant post: ' + self.props.post.title : 'Relevant post:'
-    },(e) => {
+    }, (e) => {
       console.log(e);
     });
   }
 
   setTag(tag) {
-    console.log(this, 'set tag props')
-    console.log('settag', tag);
-    this.props.actions.setTag(tag);
-    this.props.actions.changeTab('discover');
+    this.props.actions.selectTag(tag);
+    this.props.navigator.changeTab('discover');
+  }
+
+  extractDomain(url) {
+    let domain;
+    if (url.indexOf('://') > -1) {
+      domain = url.split('/')[2];
+    } else {
+      domain = url.split('/')[0];
+    }
+    domain = domain.split(':')[0];
+
+    let noPrefix = domain;
+
+    if (domain.indexOf('www.') > -1) {
+      noPrefix = domain.replace('www.', '');
+    }
+    return noPrefix;
   }
 
   showActionSheet() {

@@ -14,7 +14,7 @@ import investments from './investments';
 import comments from './comments';
 import navigation from './navigation';
 import createPost from './createPost';
-// import tags from './tags';
+import tags from './tags';
 
 const rootReducer = combineReducers({
   auth,
@@ -31,7 +31,8 @@ const rootReducer = combineReducers({
   stats,
   comments,
   navigation,
-  createPost
+  createPost,
+  tags
 });
 
 export default rootReducer;

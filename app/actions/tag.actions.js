@@ -19,7 +19,7 @@ export function getDiscoverTags() {
       dispatch(setDiscoverTags(responseJSON));
     })
     .catch((error) => {
-        console.log(error, 'error');
+      console.log(error, 'error');
     });
   }
 }
@@ -40,29 +40,42 @@ export function goToTag(tag) {
   }
 }
 
-export function setTag(tag) {
+export function selectTag(tag) {
     return {
-        type: 'SET_TAG',
+        type: 'SELECT_TAG',
+        payload: tag
+    };
+}
+
+export function deselectTag(tag) {
+    return {
+        type: 'DESELECT_TAG',
         payload: tag
     };
 }
 
 export function searchTags(tag) {
-    return function(dispatch) {
-    return fetch(process.env.API_SERVER+'/api/tag/search/'+tag, {
+  return (dispatch) => {
+
+    if (!tag || tag === '') {
+      return dispatch(setDiscoverTags([]));
+    }
+
+    return fetch(process.env.API_SERVER + '/api/tag/search/' + tag, {
       credentials: 'include',
       method: 'GET',
       headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
     })
-    .then((response) => response.json())
+    .then(response => response.json())
     .then((responseJSON) => {
-      return {'status': true, 'data': responseJSON}
+      console.log('Search result ', responseJSON);
+      dispatch(setDiscoverTags(responseJSON));
     })
-    .catch((error) => {
-      return {'status': false, 'data': error};
+    .catch(error => {
+      console.log('Search error ', error);
     });
   }
 }
