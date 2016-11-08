@@ -29,6 +29,7 @@ export default class UrlComponent extends Component {
     if (!this.props.postTags.length) this.currentTags = this.props.bodyTags;
     if (this.currentTags) {
       this.currentTags = this.currentTags.toString().replace(/,/g, ', ');
+      this.updateTags(this.currentTags);
     }
   }
 

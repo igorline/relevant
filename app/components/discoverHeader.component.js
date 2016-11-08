@@ -4,7 +4,7 @@ import {
   View,
   Animated,
   TextInput,
-  AlertIOS,
+  Text,
 } from 'react-native';
 import { globalStyles, fullWidth } from '../styles/global';
 import Tags from './tags.component';
@@ -34,6 +34,9 @@ export default class DiscoverHeader extends Component {
       if (next.showHeader) this.showHeader();
       else this.hideHeader();
     }
+    if (this.props.tags.selectedTags !== next.tags.selectedTags) {
+      this.input.blur();
+    }
   }
 
   hideHeader() {
@@ -59,19 +62,17 @@ export default class DiscoverHeader extends Component {
     this.props.actions.setView('discover', view);
   }
 
-  search() {
-    this.props.actions.searchTags(this.state.tagSearchTerm)
-    // TODO should this be here?
-    .then((foundTags) => {
-      if (!foundTags.status) {
-        AlertIOS.alert('Search error');
-      } else if (foundTags.data.length) {
-        this.props.actions.setTag(foundTags.data[0]);
-      } else {
-        this.setState({ noResults: true });
-        AlertIOS.alert('No results');
-      }
-    });
+  search(term) {
+    if (term && term.length > 1) {
+      this.props.actions.searchTags(term);
+    }
+    else this.props.actions.searchTags(null);
+  }
+
+  close() {
+    this.search();
+    this.input.blur();
+    this.input.clear();
   }
 
   render() {
@@ -83,20 +84,31 @@ export default class DiscoverHeader extends Component {
 
     let tags = (
       <View>
-        <Tags actions={this.props.actions} posts={this.props.posts} />
+        <Tags actions={this.props.actions} tags={this.props.tags} />
       </View>
     );
 
     let search = (
       <View style={[styles.searchParent]}>
         <TextInput
+          ref={c => this.input = c}
           onSubmitEditing={this.search}
           style={[styles.searchInput, styles.font15]}
           placeholder={'Search'}
           multiline={false}
-          onChangeText={term => this.setState({ tagSearchTerm: term })}
-          value={this.state.tagSearchTerm} returnKeyType="done"
+          onChangeText={term => this.search(term)}
+          varlue={this.searchTerm}
+          returnKeyType="done"
+          clearTextOnFocus
         />
+        <View style={styles.closeParent}>
+          <Text
+            style={styles.close}
+            onPress={() => this.close()}
+          >
+            ✕
+          </Text>
+        </View>
       </View>
     );
 
@@ -119,11 +131,12 @@ export default class DiscoverHeader extends Component {
         onLayout={
           (event) => {
             const { height } = event.nativeEvent.layout;
-            if (!this.layout) {
-              this.headerHeight = height;
-              this.props.setPostTop(this.headerHeight);
-              this.layout = true;
-            }
+            // TODO make sure this is efficient
+            // if (!this.layout) {
+            this.headerHeight = height;
+            this.props.setPostTop(this.headerHeight);
+            this.layout = true;
+            // }
           }
         }
       >
@@ -168,6 +181,26 @@ const localStyles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 5,
   },
+  closeParent: {
+    position: 'absolute',
+    top: 9,
+    right: 10,
+    width: 18,
+    height: 18,
+    borderRadius: 10,
+    // borderColor: '#f0f0f0',
+    // borderWidth: StyleSheet.hairlineWidth,
+    backgroundColor: 'rgba(0,0,0,0)',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  close: {
+    color: 'grey',
+    fontSize: 12,
+    textAlign: 'center',
+    opacity: .8
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };

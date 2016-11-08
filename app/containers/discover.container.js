@@ -82,11 +82,10 @@ class Discover extends Component {
     }
 
     // update tag selection
-    if (this.tag !== next.posts.tag && this.type !== 'people') {
+    if (this.props.tags.selectedTags !== next.tags.selectedTags && this.type !== 'people') {
       this.loading = false;
       this.dataSource = null;
-      this.reload(next.posts.tag);
-      this.tag = next.posts.tag;
+      this.reload(next.tags.selectedTags);
     }
 
     // update view
@@ -134,9 +133,9 @@ class Discover extends Component {
     this.setState({});
   }
 
-  reload(tag) {
+  reload(tags) {
     console.log('REALOAD');
-    this.loadPosts(0, tag);
+    this.loadPosts(0, tags);
   }
 
   loadMore() {
@@ -151,17 +150,17 @@ class Discover extends Component {
     this.loadPosts(length);
   }
 
-  loadPosts(length, _tag) {
+  loadPosts(length, _tags) {
     if (this.loading) return;
     this.loading = true;
     console.log('loading posts');
-    const tag = typeof _tag !== 'undefined' ? _tag : this.props.posts.tag;
+    const tags = typeof _tags !== 'undefined' ? _tags : this.props.tags.selectedTags;
     switch (this.view) {
       case 1:
-        this.props.actions.getPosts(length, tag, null, POST_PAGE_SIZE);
+        this.props.actions.getPosts(length, tags, null, POST_PAGE_SIZE);
         break;
       case 2:
-        this.props.actions.getPosts(length, tag, 'rank', POST_PAGE_SIZE);
+        this.props.actions.getPosts(length, tags, 'rank', POST_PAGE_SIZE);
         break;
       case 3:
         if (this.props.auth.user) this.props.actions.getUsers(length, POST_PAGE_SIZE * 2);
@@ -229,6 +228,7 @@ class Discover extends Component {
         <DiscoverHeader
           triggerReload={this.triggerReload}
           showHeader={this.state.showHeader}
+          tags={this.props.tags}
           posts={this.props.posts}
           view={this.props.view.discover}
           setPostTop={this.setPostTop}
@@ -274,6 +274,7 @@ function mapStateToProps(state) {
     view: state.view,
     stats: state.stats,
     users: state.user,
+    tags: state.tags,
   };
 }
 

@@ -79,8 +79,8 @@ class CardContainer extends Component {
   }
 
   renderTitle(props) {
-    let key = props.scene.route.key;
-    let title = '';
+    let key = props.scene.route.component;
+    let title = props.scene.route ? props.scene.route.title : '';
     if (props.scene.route) {
       if (props.scene.route.title) title = props.scene.route.title;
     }
@@ -104,9 +104,9 @@ class CardContainer extends Component {
   }
 
   renderScene(props) {
-    let key = props.scene.route.key;
+    let component = props.scene.route.component;
 
-    switch (key) {
+    switch (component) {
       case 'comment':
         return <Comments scene={props.scene.route} />;
 

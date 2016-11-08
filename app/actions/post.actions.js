@@ -113,22 +113,19 @@ export function getPosts(skip, tags, sort, limit) {
 
   let url = process.env.API_SERVER + '/api/post?skip=' + skip + '&sort=' + sort + '&limit=' + limit;
 
-  if (tags) {
-    if (tags.length) {
-      tags.forEach((tag, i) => {
-        console.log(tag._id);
-        if (tag._id) {
-          if (i === tags.length - 1) {
-            tagsString += tag._id;
-          } else {
-            let alter = tag._id;
-            tagsString += alter += ',';
-          }
+  if (tags && tags.length) {
+    tags.forEach((tag, i) => {
+      console.log(tag._id);
+      if (tag._id) {
+        if (i === tags.length - 1) {
+          tagsString += tag._id;
+        } else {
+          let alter = tag._id;
+          tagsString += alter += ',';
         }
-      });
-    } else {
-      tagsString = tags._id;
-    }
+      }
+    });
+
     url = process.env.API_SERVER+'/api/post?skip='+skip+'&tag='+tagsString+'&sort='+sort+'&limit='+limit;
   }
 
