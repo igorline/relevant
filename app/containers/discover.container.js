@@ -8,7 +8,6 @@ import {
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { globalStyles } from '../styles/global';
 import Post from '../components/post.component';
 import DiscoverUser from '../components/discoverUser.component';
 import DiscoverHeader from '../components/discoverHeader.component';
@@ -22,6 +21,7 @@ import * as viewActions from '../actions/view.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as navigationActions from '../actions/navigation.actions';
+import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 let styles;
 const POST_PAGE_SIZE = 5;
@@ -81,11 +81,10 @@ class Discover extends Component {
     }
 
     // update tag selection
-    if (this.tag !== next.posts.tag && this.type !== 'people') {
+    if (this.props.tags.selectedTags !== next.tags.selectedTags && this.type !== 'people') {
       this.loading = false;
       this.dataSource = null;
-      this.reload(next.posts.tag);
-      this.tag = next.posts.tag;
+      this.reload(next.tags.selectedTags);
     }
 
     // update view
@@ -122,7 +121,6 @@ class Discover extends Component {
   }
 
   setPostTop(height) {
-    console.log('Setting height', height);
     this.setState({
       headerHeight: height,
     });
@@ -130,14 +128,13 @@ class Discover extends Component {
 
   triggerReload() {
     setTimeout(() => this.reload(), 100);
-    // this.reload();
     if (this.listview) this.listview.scrollTo({ y: -this.state.headerHeight, animated: true });
     this.setState({});
   }
 
-  reload(tag) {
+  reload(tags) {
     console.log('REALOAD');
-    this.loadPosts(0, tag);
+    this.loadPosts(0, tags);
   }
 
   loadMore() {
@@ -152,17 +149,17 @@ class Discover extends Component {
     this.loadPosts(length);
   }
 
-  loadPosts(length, _tag) {
+  loadPosts(length, _tags) {
     if (this.loading) return;
     this.loading = true;
     console.log('loading posts');
-    const tag = typeof _tag !== 'undefined' ? _tag : this.props.posts.tag;
+    const tags = typeof _tags !== 'undefined' ? _tags : this.props.tags.selectedTags;
     switch (this.view) {
       case 1:
-        this.props.actions.getPosts(length, tag, null, POST_PAGE_SIZE);
+        this.props.actions.getPosts(length, tags, null, POST_PAGE_SIZE);
         break;
       case 2:
-        this.props.actions.getPosts(length, tag, 'rank', POST_PAGE_SIZE);
+        this.props.actions.getPosts(length, tags, 'rank', POST_PAGE_SIZE);
         break;
       case 3:
         if (this.props.auth.user) this.props.actions.getUsers(length, POST_PAGE_SIZE * 2);
@@ -176,7 +173,7 @@ class Discover extends Component {
     if (!rowData.role) {
       return (<Post post={rowData} {...this.props} styles={styles} />);
     } else {
-      return(<DiscoverUser user={rowData} {...this.props} styles={styles} />);
+      return (<DiscoverUser user={rowData} {...this.props} styles={styles} />);
     }
   }
 
@@ -201,6 +198,8 @@ class Discover extends Component {
           contentContainerStyle={{
             position: 'absolute',
             top: 0,
+            flex: 1,
+            width: fullWidth
           }}
           onEndReached={this.loadMore}
           onEndReachedThreshold={100}
@@ -224,6 +223,7 @@ class Discover extends Component {
         <DiscoverHeader
           triggerReload={this.triggerReload}
           showHeader={this.state.showHeader}
+          tags={this.props.tags}
           posts={this.props.posts}
           view={this.props.view.discover}
           setPostTop={this.setPostTop}
@@ -269,6 +269,7 @@ function mapStateToProps(state) {
     view: state.view,
     stats: state.stats,
     users: state.user,
+    tags: state.tags,
   };
 }
 

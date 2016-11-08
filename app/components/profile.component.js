@@ -85,11 +85,11 @@ class ProfileComponent extends Component {
       if (user.balance) balance = user.balance.toFixed(2);
     }
 
-    if (userImage) userImageEl = (<Image source={{uri: userImage}} style={styles.uploadAvatar} />);
+    if (userImage) userImageEl = (<Image source={{ uri: userImage }} style={styles.uploadAvatar} />);
     if (self.props.stats[self.props.user._id]) {
       if (self.props.stats[self.props.user._id].startAmount) oldRel = self.props.stats[self.props.user._id].startAmount;
-      if (oldRel) {
-        var change = oldRel / relevance;
+      if (relevance > 0) {
+        let change = oldRel / relevance;
         percent = Math.round((1 - change) * 100);
       }
     }

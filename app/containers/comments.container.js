@@ -88,7 +88,7 @@ class Comments extends Component {
   }
 
   createComment() {
-    console.log('createComment')
+    console.log('createComment');
     let commentObj = {
       post: this.props.posts.selectedPostId,
       text: this.state.comment,

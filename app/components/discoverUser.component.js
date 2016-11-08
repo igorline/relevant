@@ -1,31 +1,28 @@
-'use strict';
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   Image,
-  TextInput,
   TouchableHighlight,
-  LinkingIOS
 } from 'react-native';
-import Button from 'react-native-button';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 class DiscoverUser extends Component {
   constructor (props, context) {
     super(props, context)
+    this.setSelected = this.setSelected.bind(this);
     this.state = {
     }
   }
 
   componentDidMount() {
-    var self = this;
-    self.props.actions.getStats(self.props.user._id);
+    const self = this;
+    if (!this.props.stats[this.props.user._id]) self.props.actions.getStats(self.props.user._id);
   }
 
-  componentWillUpdate(next) {
+  componentWillReceiveProps(next) {
+    // console.log(next)
   }
 
   setSelected(user) {
@@ -38,64 +35,45 @@ class DiscoverUser extends Component {
     });
   }
 
-  renderHeader() {
-    var self = this;
-    var tags = null;
-    var view = self.props.view.discover;
-    var tagsEl = null;
-    var id = null;
-    if (self.props.posts.tag) id = self.props.posts.tag._id;
-    if (self.props.posts.discoverTags) {
-      tags = self.props.posts.discoverTags;
-      if (tags.length > 0) {
-        tagsEl = tags.map(function(data, i) {
-          return (
-            <Text style={[styles.tagBox, {backgroundColor: data._id == id ? '#007aff' : '#F0F0F0', color: data._id == id ? 'white' : '#808080'}]} onPress={data._id == id ? self.clearTag.bind(self) : self.setTag.bind(self, data)} key={i}>{data.name}</Text>
-            )
-        })
-      }
-    }
-  }
-
   render() {
-    var self = this;
-    var parentStyles = this.props.styles;
-    var user = self.props.user;
-    var styles = {...localStyles, ...parentStyles};
-    var image = null;
-    var imageEl = null;
-    var percent = 0;
-    var percentEl = null;
-    var oldRel = null;
-    var relevance = user.relevance || 0;
+    const self = this;
+    const parentStyles = this.props.styles;
+    const user = self.props.user;
+    const styles = { ...localStyles, ...parentStyles };
+    let image = null;
+    let imageEl = null;
+    let percent = 0;
+    let percentEl = null;
+    let oldRel = null;
+    const relevance = user.relevance || 0;
     if (self.props.stats) {
       if (self.props.stats[user._id]) {
-        var oldRel = self.props.stats[user._id].startAmount;
-        var change = oldRel / relevance;
-        percent = Math.round((1 - change) * 100);
+        oldRel = self.props.stats[user._id].startAmount;
+        let change = oldRel / relevance;
+        if (relevance) percent = Math.round((1 - change) * 100);
 
-        if (percent == 0) {
-          percentEl = (<Text style={[{textAlign: 'right'}, styles.active]}>no change</Text>);
+        if (percent === 0) {
+          percentEl = (<Text style={[{ textAlign: 'right' }, styles.active]}>no change</Text>);
         } else if (percent > 0) {
-          percentEl = (<Text style={[{textAlign: 'right'}, styles.active]}>⬆️{percent}%</Text>);
+          percentEl = (<Text style={[{ textAlign: 'right' }, styles.active]}>⬆️{percent}%</Text>);
         } else if (percent < 0) {
-          percentEl = (<Text style={{color: 'red', textAlign: 'right'}}>⬇️{percent}%</Text>);
+          percentEl = (<Text style={{ color: 'red', textAlign: 'right' }}>⬇️{percent}%</Text>);
         }
       }
     }
     if (user.image) {
       image = user.image;
-      imageEl = (<Image style={styles.discoverAvatar} source={{uri: image}} />)
+      imageEl = (<Image style={styles.discoverAvatar} source={{ uri: image }} />);
     }
 
     return (
-      <TouchableHighlight underlayColor={'transparent'} onPress={self.setSelected.bind(self, user)}>
+      <TouchableHighlight style={{ flex: 1 }} underlayColor={'transparent'} onPress={() => self.setSelected(user)}>
         <View style={[styles.discoverUser]}>
           <View style={[styles.leftDiscoverUser]}>
             {imageEl}
             <Text style={styles.darkGray}>{user.name}</Text>
           </View>
-          <View style={styles.rightDiscoverUser}>
+          <View style={[styles.rightDiscoverUser]}>
             <View>
               {percentEl}
             </View>
@@ -120,12 +98,13 @@ const localStyles = StyleSheet.create({
     marginLeft: 0
   },
   discoverUser: {
+    flex: 1,
     flexDirection: 'row',
     paddingTop: 10,
     paddingRight: 20,
     paddingBottom: 10,
     paddingLeft: 20,
-    alignItems: 'center',
+    alignItems: 'stretch',
   },
   leftDiscoverUser: {
     alignItems: 'center',
@@ -139,9 +118,3 @@ const localStyles = StyleSheet.create({
     justifyContent: 'flex-end'
   }
 });
-
-
-
-
-
-

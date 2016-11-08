@@ -1,3 +1,7 @@
+import {
+    AlertIOS
+} from 'react-native';
+
 require('../publicenv');
 
 let apiServer = process.env.API_SERVER+'/api/';
@@ -17,14 +21,26 @@ export function invest(token, amount, post, investingUser) {
         post
       })
     })
-    .then((response) => response.json())
-    .then((responseJSON) => {
-      console.log('response', responseJSON);
-      dispatch(investNotification(post, investingUser));
-      return true;
+    .then((response) => {
+      console.log(response, 'response here');
+      if (response.ok) {
+        dispatch(investNotification(post, investingUser));
+        return true;
+      } else {
+        return response.text();
+      }
+    })
+    .then((data) => {
+      if (typeof data !== 'boolean') {
+        let errorString = data.replace(/['"]+/g, '');
+        AlertIOS.alert(errorString);
+        return false;
+      } else {
+        return true;
+      }
     })
     .catch((error) => {
-      console.log(error);
+      AlertIOS.alert(error);
       return false;
     });
   };

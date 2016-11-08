@@ -177,15 +177,15 @@ class Application extends Component {
   }
 
   renderScene(props) {
-    let key = props.scene.route.key;
+    let component = props.scene.route.component;
 
-    switch (key) {
+    switch (component) {
       case 'auth':
-        return <Auth authType={key} />;
+        return <Auth authType={component} />;
       case 'login':
-        return <Auth authType={key} />;
+        return <Auth authType={component} />;
       case 'signup':
-        return <Auth authType={key} />;
+        return <Auth authType={component} />;
       case 'createPost':
         return <CreatePost step={'url'} navProps={props} navigator={this.props.actions} />;
       case 'categories':

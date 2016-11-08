@@ -17,6 +17,8 @@ import * as animationActions from '../actions/animation.actions';
 import * as investActions from '../actions/invest.actions';
 import CustomSpinner from '../components/CustomSpinner.component';
 import * as userActions from '../actions/user.actions';
+import * as tagActions from '../actions/tag.actions';
+import * as navigationActions from '../actions/navigation.actions';
 
 const localStyles = StyleSheet.create({
   thirstyHeader: {
@@ -205,6 +207,8 @@ function mapDispatchToProps(dispatch) {
       ...animationActions,
       ...investActions,
       ...userActions,
+      ...tagActions,
+      ...navigationActions,
     }, dispatch)
   };
 }
