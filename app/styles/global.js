@@ -57,6 +57,15 @@ const alignment = StyleSheet.create({
 });
 
 const layout = StyleSheet.create({
+  modalButtonText: {
+    color: 'white',
+    backgroundColor: 'transparent'
+  },
+  fieldsContainer: {
+    backgroundColor: '#F0F0F0',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   activityRight: {
     flex: 0.40,
   },

@@ -75,10 +75,12 @@ class Discover extends Component {
 
     // update listview if needed
     if (newData !== oldData) {
-      this.loading = false;
-      this.reloading = false;
       ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.dataSource = ds.cloneWithRows(newData);
+
+      this.loading = false;
+      this.reloading = false;
+
     }
 
     // update tag selection
@@ -104,9 +106,6 @@ class Discover extends Component {
       this.triggerReload();
     }
 
-    // if (self.props.posts.newPostsAvailable != next.posts.newPostsAvailable) {
-    //   if (next.posts.newPostsAvailable) console.log('newPostsAvailable');
-    // }
   }
 
 
@@ -207,7 +206,7 @@ class Discover extends Component {
             width: fullWidth
           }}
           onEndReached={this.loadMore}
-          onEndReachedThreshold={100}
+          onEndReachedThreshold={50}
           refreshControl={
             <RefreshControl
               refreshing={this.reloading}
