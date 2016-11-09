@@ -1,6 +1,5 @@
 import * as types from './actionTypes';
 require('../publicenv');
-var {Router, routerReducer, Route, Container, Animations, Schema, Actions} = require('react-native-redux-router');
 import * as utils from '../utils';
 import {
   AlertIOS
