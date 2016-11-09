@@ -54,6 +54,16 @@ class Application extends Component {
   componentDidMount() {
     this.props.actions.getUser();
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
+
+    utils.token.get()
+    .then((token) => {
+      if (!token) {
+        this.props.actions.replaceRoute({
+          key: 'auth',
+          component: 'auth'
+        }, 0, 'home');
+      }
+    });
   }
 
   componentWillReceiveProps(next) {
@@ -65,9 +75,11 @@ class Application extends Component {
     }
     if (!this.props.auth.token && next.auth.token) {
       this.props.actions.changeTab('read');
-      this.props.actions.push({
-        key: 'tabBars'
-      }, 'home');
+      this.props.actions.replaceRoute({
+        key: 'tabBars',
+        component: 'tabBars'
+      }, 0, 'home');
+      this.props.actions.resetRoutes('home');
     }
   }
 
@@ -158,8 +170,11 @@ class Application extends Component {
   logoutRedirect() {
     this.props.actions.removeDeviceToken(this.props.auth);
     this.props.actions.logoutAction(this.props.auth.user, this.props.auth.token);
-    this.props.actions.resetRoutes('home');
-    // this.props.actions.pop('home');
+    this.props.actions.replaceRoute({
+      key: 'auth',
+      component: 'auth'
+    }, 0, 'home');
+    this.props.actions.changeTab('read');
   }
 
   // home button etc
