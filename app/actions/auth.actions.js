@@ -202,6 +202,7 @@ export function getUser(callback) {
       .catch((error) => {
         dispatch(errorActions.setError(true, error.message));
         dispatch(loginUserFailure('Server error'));
+        if (callback) callback({ok: false});
       });
     }
 
@@ -210,9 +211,8 @@ export function getUser(callback) {
       dispatch(loginUserSuccess(newToken));
       fetchUser(newToken);
     })
-    .catch(() => {
+    .catch((error) => {
       console.log('auth error ', error);
-
       dispatch(setUser());
     });
   };
