@@ -19,22 +19,12 @@ class Investment extends Component {
   }
 
   setSelected(user) {
-    this.props.actions.setSelectedUser(user._id);
-    this.props.navigator.push({
-      key: 'profile',
-      name: user.name,
-      back: true,
-      id: user._id,
-    });
+    this.props.navigator.goToProfile(user);
   }
 
   goToPost(post) {
-    this.props.actions.setSelectedPost(post._id);
-    this.props.navigator.push({
-      key: 'singlePost',
-      title: post.title,
-      back: true
-    });
+    // this.props.actions.setSelectedPost(post._id);
+    this.props.navigator.goToPost(post);
   }
 
   render() {

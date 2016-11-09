@@ -41,20 +41,31 @@ class Comments extends Component {
     this.createComment = this.createComment.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    this.id = this.props.scene.id;
+    this.comments = this.props.comments.commentsById[this.id];
+
     InteractionManager.runAfterInteractions(() => {
-      if (this.props.posts.selectedPostId) {
-        this.props.actions.getComments(this.props.posts.selectedPostId, 0);
+      if (!this.comments) {
+        this.props.actions.getComments(this.id, 0);
       }
-      this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
-      this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
-    })
+    });
+
+    if (this.comments) {
+      let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      this.dataSource = ds.cloneWithRows(this.comments);
+    }
+
+    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
+    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
   }
 
   componentWillReceiveProps(next) {
-    if (next.comments.index !== this.props.comments.index) {
+    if (next.comments.commentsById[this.id] !== this.props.comments.commentsById[this.id]) {
       let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      this.dataSource = ds.cloneWithRows(next.comments.index);
+      this.dataSource = ds.cloneWithRows(next.comments.commentsById[this.id]);
+      this.comments = next.comments.commentsById[this.id];
+      this.loading = false;
     }
   }
 
@@ -70,10 +81,11 @@ class Comments extends Component {
   componentWillUnmount() {
     this.showListener.remove();
     this.hideListener.remove();
+    this.props.actions.archiveComments(this.id);
   }
 
   keyboardWillHide() {
-    this.setState({ visibleHeight: Dimensions.get('window').height});
+    this.setState({ visibleHeight: Dimensions.get('window').height });
   }
 
   keyboardWillShow(e) {
@@ -88,9 +100,8 @@ class Comments extends Component {
   }
 
   createComment() {
-    console.log('createComment');
     let commentObj = {
-      post: this.props.posts.selectedPostId,
+      post: this.id,
       text: this.state.comment,
       user: this.props.auth.user._id
     };
@@ -99,24 +110,22 @@ class Comments extends Component {
   }
 
   renderRow(rowData) {
-    const self = this;
     return (
-      <Comment styles={styles} {...self.props} comment={rowData} />
+      <Comment {...this.props} comment={rowData} />
     );
   }
 
   reload() {
-    console.log('reload');
     this.loading = true;
-    this.props.actions.getComments(this.props.posts.selectedPostId, 0);
+    this.props.actions.getComments(this.id, 0);
   }
 
   loadMore() {
     let length = 0;
-    if (this.props.comments.index) {
-      if (this.props.comments.index.length) length = this.props.comments.index.length;
+    if (this.comments && this.comments.length) {
+      length = this.comments.length;
     }
-    this.props.actions.getComments(this.props.posts.selectedPostId, length, 5);
+    this.props.actions.getComments(this.id, length, 5);
   }
 
   render() {
@@ -124,8 +133,9 @@ class Comments extends Component {
     if (this.dataSource) {
       commentsEl = (<ListView
         enableEmptySections
-        removeClippedSubviews
+        removeClippedSubviews={false}
         scrollEventThrottle={16}
+        initialListSize={10}
         dataSource={this.dataSource}
         renderRow={this.renderRow}
         automaticallyAdjustContentInsets
@@ -140,7 +150,7 @@ class Comments extends Component {
         }}
         onLayout={(e) => {
           this.elHeight = e.nativeEvent.layout.height;
-        }}        
+        }}
         refreshControl={
           <RefreshControl
             refreshing={this.loading}
@@ -207,7 +217,6 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     comments: state.comments,
-    posts: state.posts
   };
 }
 

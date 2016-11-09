@@ -38,8 +38,8 @@ class Categories extends Component {
     let parentTags = null;
     let categoryEl = null;
     let styles = globalStyles;
-    if (this.props.posts.parentTags) {
-      parentTags = this.props.posts.parentTags;
+    if (this.props.tags) {
+      parentTags = this.props.tags;
       categoryEl = parentTags.map((tag, i) => {
         switch (tag.name) {
           case 'Anime':
@@ -202,7 +202,7 @@ class Categories extends Component {
 // export default Categories;
 function mapStateToProps(state) {
   return {
-    posts: state.posts,
+    tags: state.tags.parentTags,
     view: state.view,
   };
 }

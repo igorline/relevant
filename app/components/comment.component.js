@@ -1,26 +1,25 @@
-'use strict';
-
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
   TextInput,
-  Animated,
   Image,
   ActionSheetIOS,
   AlertIOS,
   TouchableHighlight
 } from 'react-native';
-var moment = require('moment');
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles } from '../styles/global';
+
+let moment = require('moment');
+
+let styles;
 
 class Comment extends Component {
-  constructor (props, context) {
-    super(props, context)
+  constructor(props, context) {
+    super(props, context);
     this.state = {
-        buttons: [
+      buttons: [
         'Edit',
         'Delete',
         'Cancel'
@@ -30,50 +29,47 @@ class Comment extends Component {
       editedText: null,
       editing: false,
       height: 0
-    }
+    };
+    this.showActionSheet = this.showActionSheet.bind(this);
+    this.editComment = this.editComment.bind(this);
+    this.saveEdit = this.saveEdit.bind(this);
+    this.editComment = this.editComment.bind(this);
   }
 
   editComment() {
-    var self = this;
-    self.setState({editing: !self.state.editing})
+    this.setState({ editedText: this.props.comment.text });
+    this.setState({ editing: !this.state.editing });
   }
 
   saveEdit() {
-    var self = this;
-    if (self.state.editedText != self.props.comment.text) {
-      var comment = self.props.comment;
-      comment.text = self.state.editedText;
-      self.props.actions.updateComment(comment, self.props.auth.token).then(function(results) {
+    if (this.state.editedText !== this.props.comment.text) {
+      let comment = this.props.comment;
+      comment.text = this.state.editedText;
+      this.props.actions.updateComment(comment, this.props.auth.token)
+      .then((results) => {
         if (results) {
-          self.setState({editing: !self.state.editing});
-          AlertIOS.alert("Comment updated");
+          this.setState({ editing: !this.state.editing });
+          AlertIOS.alert('Comment updated');
         } else {
-          AlertIOS.alert("Try again");
+          AlertIOS.alert('Try again');
         }
-      })
+      });
     }
   }
 
-
-  componentDidMount() {
-    var self = this;
-    self.setState({editedText: self.props.comment.text});
-  }
-
   showActionSheet() {
-    var self = this;
     ActionSheetIOS.showActionSheetWithOptions({
-      options: self.state.buttons,
-      cancelButtonIndex: self.state.cancelIndex,
-      destructiveButtonIndex: self.state.destructiveIndex,
+      options: this.state.buttons,
+      cancelButtonIndex: this.state.cancelIndex,
+      destructiveButtonIndex: this.state.destructiveIndex,
     },
     (buttonIndex) => {
       switch(buttonIndex) {
         case 0:
-          self.editComment();
+          this.editComment();
           break;
         case 1:
-          self.deleteComment();
+          this.deleteComment();
           break;
         default:
           return;
@@ -82,26 +78,30 @@ class Comment extends Component {
   }
 
   deleteComment() {
-    var self = this;
-    self.props.actions.deleteComment(self.props.auth.token, self.props.comment._id, self.props.comment.post);
+    this.props.actions.deleteComment(
+      this.props.auth.token,
+      this.props.comment._id,
+      this.props.comment.post
+    );
   }
 
   render() {
-    var self = this;
-    var comment = self.props.comment;
-    var styles = {...localStyles, ...self.props.styles};
-    var postTime = moment(comment.createdAt);
-    var timeNow = moment();
-    var dif = timeNow.diff(postTime);
-    var createdTime = moment.duration(dif).humanize();
-    var bodyEl = null;
+    let comment = this.props.comment;
+    let postTime = moment(comment.createdAt);
+    let timeNow = moment();
+    let dif = timeNow.diff(postTime);
+    let createdTime = moment.duration(dif).humanize();
+    let bodyEl = null;
 
-    if (self.state.editing) {
-      bodyEl = (<View style={{flex: 1}}>
-        <TextInput 
-          multiline={true}
-          autoGrow={true}
-          style={[styles.darkGray, styles.editingInput, {height: Math.max(35, self.state.height)}]} 
+    if (this.state.editing) {
+      bodyEl = (<View style={{ flex: 1 }}>
+        <TextInput
+          multiline
+          autoGrow
+          style={[
+            styles.darkGray,
+            styles.editingInput,
+            { height: Math.max(35, this.state.height) }]}
           onChange={(event) => {
             this.setState({
               editedText: event.nativeEvent.text,
@@ -111,23 +111,31 @@ class Comment extends Component {
           value={this.state.editedText}
         />
         <View style={styles.postButtons}>
-          <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={self.saveEdit.bind(self)}>
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            style={styles.postButton}
+            onPress={this.saveEdit}
+          >
             <Text style={[styles.font10, styles.postButtonText]}>Save changes</Text>
           </TouchableHighlight>
-          <TouchableHighlight underlayColor={'transparent'} onPress={self.editComment.bind(self)} style={styles.postButton}>
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            onPress={this.editComment}
+            style={styles.postButton}
+          >
             <Text style={[styles.font10, styles.postButtonText]}>Cancel</Text>
           </TouchableHighlight>
         </View>
       </View>);
     } else {
-      bodyEl = (<Text style={styles.darkGray}>{self.state.editedText}</Text>);
+      bodyEl = (<Text style={styles.darkGray}>{this.state.editedText}</Text>);
     }
 
     let image = null;
     let name = null;
     let commentUserId = null;
 
-    //console.log(this, 'comment this')
+    // console.log(this, 'comment this')
 
     if (comment.user) {
       if (comment.user.image) image = comment.user.image;
@@ -148,20 +156,38 @@ class Comment extends Component {
     return (
       <View style={[styles.commentContainer]}>
         <View style={[styles.flexRow]}>
-          {image ? <Image style={styles.commentAvatar} source={{uri: image}} /> : null}
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            onPress={() => this.props.navigator.goToProfile(comment.user)}
+          >
+            {image ?
+              <Image
+                style={styles.commentAvatar}
+                source={{ uri: image }}
+              />
+              : null
+            }
+          </TouchableHighlight>
           <View style={{ flex: 1 }}>
             <View style={styles.commentHeaderTextContainer}>
-                <Text style={{ fontSize: 12, color: '#aaaaaa' }}>{createdTime} ago</Text>
-                <Text style={{ fontSize: 12, color: '#aaaaaa' }}>{name}</Text>
+              <Text style={{ fontSize: 12, color: '#aaaaaa' }}>{createdTime} ago</Text>
+              <Text style={{ fontSize: 12, color: '#aaaaaa' }}>{name}</Text>
             </View>
             <View style={styles.commentBody}>
               {bodyEl}
             </View>
-            {owner ? <View style={{marginTop: 10, flex: 1, justifyContent: 'flex-end', flexDirection: 'row'}}>
-              <TouchableHighlight underlayColor={'transparent'} onPress={self.showActionSheet.bind(self)}>
-                <Text style={[{fontSize: 20, color: '#808080'}]}>...</Text>
-              </TouchableHighlight>
-            </View> : null}
+            {owner ?
+              <View
+                style={{ marginTop: 10, flex: 1, justifyContent: 'flex-end', flexDirection: 'row' }}
+              >
+                <TouchableHighlight
+                  underlayColor={'transparent'}
+                  onPress={this.showActionSheet}
+                >
+                  <Text style={[{ fontSize: 20, color: '#808080' }]}>...</Text>
+                </TouchableHighlight>
+              </View>
+            : null}
           </View>
         </View>
       </View>
@@ -169,7 +195,7 @@ class Comment extends Component {
   }
 }
 
-export default Comment
+export default Comment;
 
 const localStyles = StyleSheet.create({
   commentHeaderTextContainer: {
@@ -188,5 +214,5 @@ const localStyles = StyleSheet.create({
   },
 });
 
-
+styles = { ...localStyles, ...globalStyles };
 

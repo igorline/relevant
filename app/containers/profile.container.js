@@ -6,7 +6,6 @@ import {
   ListView,
   RefreshControl,
   InteractionManager,
-  TouchableHighlight
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -57,6 +56,7 @@ class Profile extends Component {
     if (this.props.scene) {
       this.myProfile = false;
       this.userId = this.props.scene.id;
+      this.userData = this.props.users.selectedUserData[this.userId];
     } else {
       this.myProfile = true;
       this.userId = this.props.auth.user._id;
@@ -75,20 +75,17 @@ class Profile extends Component {
     let newInvestments;
     let oldInvestments;
 
+    newPosts = next.posts.userPosts[this.userId];
+    oldPosts = this.props.posts.userPosts[this.userId];
+    newInvestments = next.investments.userInvestments[this.userId];
+    oldInvestments = this.props.investments.userInvestments[this.userId];
+
     if (this.myProfile) {
-      newPosts = next.posts.myPosts;
-      oldPosts = this.props.posts.myPosts;
       oldUserData = this.props.auth.user;
       newUserData = next.auth.user;
-      newInvestments = next.investments.myInvestments;
-      oldInvestments = this.props.investments.myInvestments;
     } else {
-      newPosts = next.posts.userPosts;
-      oldPosts = this.props.posts.userPosts;
-      oldUserData = this.props.users.selectedUserData;
-      newUserData = next.users.selectedUserData;
-      newInvestments = next.investments.userInvestments;
-      oldInvestments = this.props.investments.userInvestments;
+      oldUserData = this.props.users.selectedUserData[this.userId];
+      newUserData = next.users.selectedUserData[this.userId];
     }
 
     if (oldUserData !== newUserData) {
@@ -102,6 +99,7 @@ class Profile extends Component {
       } else {
         altered = newPosts;
       }
+      this.posts = newPosts;
       this.createPosts(altered);
     }
 
@@ -112,6 +110,7 @@ class Profile extends Component {
       } else {
         altered = newInvestments;
       }
+      this.investments = newInvestments;
       this.createInvestments(altered);
     }
   }
@@ -143,17 +142,16 @@ class Profile extends Component {
     if (!this.enabled) return;
 
     if (this.state.view === 1) {
-      if (this.myProfile) {
-        this.props.actions.getUserPosts(this.props.posts.myPosts.length, 5, this.userId, 'myPosts');
-      } else {
-        this.props.actions.getUserPosts(this.props.posts.userPosts.length, 5, this.userId, 'userPosts');
-      }
+      this.props.actions.getUserPosts(
+        this.posts.length,
+        5,
+        this.userId);
     } else {
-      if (this.myProfile) {
-        this.props.actions.getInvestments(this.props.auth.token, this.userId, this.props.investments.myInvestments.length, 10, 'myInvestments');
-      } else {
-        this.props.actions.getInvestments(this.props.auth.token, this.userId, this.props.investments.userInvestments.length, 10, 'userInvestments');
-      }
+      this.props.actions.getInvestments(
+        this.props.auth.token,
+        this.userId,
+        this.investments.length,
+        10);
     }
 
     this.enabled = false;
@@ -175,11 +173,10 @@ class Profile extends Component {
           {...this.props}
           styles={styles}
         />);
-      } else {
-        return (<View key={rowID}>
-          <Text>No posts bruh</Text>
-        </View>);
       }
+      return (<View key={rowID}>
+        <Text>No posts bruh</Text>
+      </View>);
     } else {
       if (!rowData.fakeInvestment) {
         return (<Investment
@@ -231,7 +228,7 @@ class Profile extends Component {
         <ListView
           ref={(c) => { this.listview = c; }}
           enableEmptySections
-          removeClippedSubviews
+          removeClippedSubviews={false}
           pageSize={1}
           initialListSize={2}
           stickyHeaderIndices={[1]}

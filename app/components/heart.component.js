@@ -1,20 +1,12 @@
-'use strict';
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
-  Text,
-  View,
-  Image,
-  TextInput,
-  TouchableHighlight,
-  LinkingIOS,
   Animated,
   Easing
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
-let localStyles;
+let styles;
 
 class Heart extends Component {
   constructor(props, context) {
@@ -28,24 +20,22 @@ class Heart extends Component {
   }
 
   componentDidMount() {
-    const self = this;
-    const i = self.props.specialKey;
-    console.log(this, 'heart this')
+    const i = this.props.specialKey;
 
     Animated.parallel([
-      Animated.timing(self.state.yVal, {
+      Animated.timing(this.state.yVal, {
         toValue: -300,
         delay: 100 * i,
         duration: 1000,
         easing: Easing.quad
       }),
-      Animated.timing(self.state.opacity, {
+      Animated.timing(this.state.opacity, {
         toValue: 0,
         delay: 100 * i,
         duration: 1000,
         easing: Easing.linear
       }),
-      Animated.timing(self.state.scale, {
+      Animated.timing(this.state.scale, {
         toValue: 1.5,
         delay: 100 * i,
         duration: 1000,
@@ -55,8 +45,6 @@ class Heart extends Component {
   }
 
   render() {
-    const self = this;
-    const styles = localStyles;
     const key = this.props.specialKey;
 
     return (
@@ -65,11 +53,11 @@ class Heart extends Component {
         key={key}
         style={[styles.aniHeart,
           { transform: [
-            { translateY: self.state.yVal },
-            { translateX: self.state.xVal },
-            { scale: self.state.scale }
+            { translateY: this.state.yVal },
+            { translateX: this.state.xVal },
+            { scale: this.state.scale }
           ],
-          opacity: self.state.opacity
+          opacity: this.state.opacity
         }]}
       >
         ❤️
@@ -80,7 +68,7 @@ class Heart extends Component {
 
 export default Heart;
 
-localStyles = StyleSheet.create({
+styles = StyleSheet.create({
   aniHeart: {
     position: 'absolute',
     bottom: 50,

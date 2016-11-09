@@ -42,3 +42,30 @@ export function resetRoutes(key) {
     key
   };
 }
+
+export function goToComments(post, key, animation) {
+  return push({
+    key: 'comment',
+    title: 'Comments',
+    back: true,
+    id: post._id
+  }, key, animation);
+}
+
+export function goToPost(post, key, animation) {
+  return push({
+    key: 'singlePost',
+    title: post.title,
+    back: true,
+    id: post._id
+  }, key, animation);
+}
+
+export function goToProfile(user, key, animation) {
+  return push({
+    key: 'profile',
+    title: user.name,
+    back: true,
+    id: user._id
+  }, key, animation);
+}

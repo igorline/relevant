@@ -9,7 +9,14 @@ const addItems = (arr, newArr) => {
   return finalArr;
 };
 
-const initialState = { error: false, selectedUserId: null, selectedUserData: null, currentUserId: null, list: [], loading: false};
+const initialState = {
+  error: false,
+  selectedUserId: null,
+  selectedUserData: {},
+  currentUserId: null,
+  list: [],
+  loading: false
+};
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
@@ -21,10 +28,13 @@ export default function auth(state = initialState, action) {
     }
 
     case 'SET_SELECTED_USER_DATA': {
-      return Object.assign({}, state, {
-        'selectedUserData': action.payload,
-        'currentUserId': action.payload._id
-      });
+      return {
+        ...state,
+        selectedUserData: {
+          ...state.selectedUserData,
+          [action.payload._id]: action.payload,
+        }
+      };
     }
 
     case 'CLEAR_SELECTED_USER': {

@@ -52,9 +52,8 @@ class Application extends Component {
   }
 
   componentDidMount() {
-    const self = this;
-    this.props.actions.getUser(null, true);
-    AppState.addEventListener('change', this.handleAppStateChange.bind(self));
+    this.props.actions.getUser();
+    AppState.addEventListener('change', this.handleAppStateChange.bind(this));
   }
 
   componentWillReceiveProps(next) {
@@ -78,39 +77,36 @@ class Application extends Component {
       user.name = nextState.newName;
       this.props.actions.updateUser(user, this.props.auth.token)
       .then((results) => {
-        if (results) this.props.actions.getUser(this.props.auth.token, false);
+        if (results) this.props.actions.getUser();
       });
     }
   }
 
   componentWillUnmount() {
-    const self = this;
-    AppState.removeEventListener('change', this.handleAppStateChange.bind(self));
+    AppState.removeEventListener('change', this.handleAppStateChange.bind(this));
   }
 
   changeName() {
-    const self = this;
     console.log('change name');
     AlertIOS.prompt(
       'Enter new name',
-      self.props.auth.user.name,
+      this.props.auth.user.name,
       [
         { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-        { text: 'OK', onPress: newname => self.setState({ newName: newname }) },
+        { text: 'OK', onPress: newname => this.setState({ newName: newname }) },
       ],
     );
   }
 
   chooseImage() {
-    let self = this;
-    self.pickImage((err, data) => {
+    this.pickImage((err, data) => {
       if (data) {
-        utils.s3.toS3Advanced(data, self.props.auth.token).then((results) => {
+        utils.s3.toS3Advanced(data, this.props.auth.token).then((results) => {
           if (results.success) {
-            let newUser = self.props.auth.user;
+            let newUser = this.props.auth.user;
             newUser.image = results.url;
-            self.props.actions.updateUser(newUser, self.props.auth.token).then((res) => {
-              if (res) self.props.actions.getUser(self.props.auth.token, false);
+            this.props.actions.updateUser(newUser, this.props.auth.token).then((res) => {
+              if (res) this.props.actions.getUser();
             });
           } else {
             console.log('image error ', results);
@@ -168,11 +164,10 @@ class Application extends Component {
 
   // home button etc
   handleAppStateChange(currentAppState) {
-    const self = this;
-    if (currentAppState === 'active' && self.props.auth.user) {
-      self.props.actions.userToSocket(self.props.auth.user);
-      self.props.actions.getActivity(self.props.auth.user._id, 0);
-      self.props.actions.getGeneralActivity(self.props.auth.user._id, 0);
+    if (currentAppState === 'active' && this.props.auth.user) {
+      this.props.actions.userToSocket(this.props.auth.user);
+      this.props.actions.getActivity(this.props.auth.user._id, 0);
+      this.props.actions.getGeneralActivity(this.props.auth.user._id, 0);
     }
   }
 
@@ -209,9 +204,10 @@ class Application extends Component {
           direction={'horizontal'}
           navigationState={scene}
           renderScene={this.renderScene}
+          enableGestures={false}
         />
         <InvestAnimation {...this.props} />
-        <HeartAnimation {...this.props} />
+        <HeartAnimation />
       </View>
     );
   }
