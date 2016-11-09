@@ -1,6 +1,7 @@
 import * as types from './actionTypes';
 import * as utils from '../utils';
 import * as authActions from './auth.actions';
+import * as errorActions from './error.actions';
 
 require('../publicenv');
 
@@ -8,7 +9,6 @@ const apiServer = process.env.API_SERVER + '/api/';
 
 // load 5 posts at a time
 const limit = 5;
-
 
 export function setPosts(data, type, index) {
   return {
@@ -23,6 +23,7 @@ export function setPosts(data, type, index) {
 
 export function getFeed(skip, tag) {
   if (!skip) skip = 0;
+  console.log(tag, 'tag')
 
   function getUrl(token) {
     let url = `${apiServer}feed`
@@ -31,6 +32,7 @@ export function getFeed(skip, tag) {
       + `&limit=${limit}`;
 
     if (tag) {
+      console.log(tag, 'tag here')
       url = `${apiServer}feed`
       + `?access_token=${token}`
       + `&skip=${skip}`
@@ -58,9 +60,11 @@ export function getFeed(skip, tag) {
     .then((responseJSON) => {
       console.log(responseJSON);
       dispatch(setPosts(responseJSON, type, skip));
+      dispatch(errorActions.setError(false));
     })
     .catch((error) => {
       console.log('Feed error ', error);
+      dispatch(errorActions.setError(true, error.message));
     });
   };
 }
@@ -145,9 +149,11 @@ export function getPosts(skip, tags, sort, limit) {
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(setPosts(responseJSON, type, skip));
+      dispatch(errorActions.setError(false));
     })
     .catch((error) => {
       console.log(error, 'error');
+      dispatch(errorActions.setError(true, error.message));
     });
   };
 }
@@ -172,9 +178,11 @@ export function getUserPosts(skip, limit, userId, type) {
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setUserPosts(responseJSON, userId, skip));
+      dispatch(errorActions.setError(false));
     })
     .catch((error) => {
       console.log(error, 'error');
+      dispatch(errorActions.setError(true, error.message));
     });
   };
 }
@@ -329,9 +337,11 @@ export function getComments(postId, skip, limit) {
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(setComments(postId, responseJSON, skip));
+      dispatch(errorActions.setError(false, error.message));
     })
     .catch((error) => {
       console.log(error, 'error');
+      dispatch(errorActions.setError(true, error.message));
     });
   }
 }
@@ -372,10 +382,12 @@ export function getSelectedPost(postId) {
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setSelectedPostData(responseJSON));
+      dispatch(errorActions.setError(false));
       return true;
     })
     .catch((error) => {
       console.log(error, 'error');
+      dispatch(errorActions.setError(true, error.message));
       return false;
     });
   };

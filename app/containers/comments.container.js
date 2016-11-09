@@ -164,7 +164,7 @@ class Comments extends Component {
     }
 
     return (
-      <View style={{ backgroundColor: 'white', flex: 1 }}>
+      <View style={{ backgroundColor: 'white', flex: 1, height: this.state.visibleHeight - 120 }}>
         {commentsEl}
         <View style={[styles.commentInputParent]}>
           <TextInput

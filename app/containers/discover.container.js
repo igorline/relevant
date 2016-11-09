@@ -22,6 +22,7 @@ import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import { globalStyles, fullWidth } from '../styles/global';
+import ErrorComponent from '../components/error.component';
 
 let styles;
 const POST_PAGE_SIZE = 5;
@@ -66,6 +67,8 @@ class Discover extends Component {
     let ds;
     this.view = next.view.discover;
     this.type = TYPE_LOOKUP[this.view];
+
+    if (next.error) this.loading = false;
 
     let oldData = this.props.posts[this.type];
     if (this.type === 'people') oldData = this.props.users.list;
@@ -153,7 +156,6 @@ class Discover extends Component {
     if (this.loading) return;
     this.loading = true;
     if (length === 0) this.reloading = true;
-    console.log('loading posts');
     const tags = typeof _tags !== 'undefined' ? _tags : this.props.tags.selectedTags;
     switch (this.view) {
       case 1:
@@ -179,8 +181,11 @@ class Discover extends Component {
 
   render() {
     let postsEl = null;
+    let headerEl = null;
+    let offsetY = this.state.headerHeight;
+    if (this.type === 'people') offsetY = 60;
 
-    if (this.dataSource) {
+    if (this.dataSource && !this.props.error) {
       postsEl = (
         <ListView
           ref={(c) => { this.listview = c; }}
@@ -193,8 +198,8 @@ class Discover extends Component {
           dataSource={this.dataSource}
           renderRow={this.renderRow}
           automaticallyAdjustContentInsets={false}
-          contentInset={{ top: this.state.headerHeight }}
-          contentOffset={{ y: -this.state.headerHeight }}
+          contentInset={{ top: offsetY }}
+          contentOffset={{ y: -offsetY }}
           contentContainerStyle={{
             position: 'absolute',
             top: 0,
@@ -216,19 +221,24 @@ class Discover extends Component {
       );
     }
 
+    if (!this.props.error) {
+      headerEl = (<DiscoverHeader
+        triggerReload={this.triggerReload}
+        showHeader={this.state.showHeader}
+        tags={this.props.tags}
+        posts={this.props.posts}
+        view={this.props.view.discover}
+        setPostTop={this.setPostTop}
+        actions={this.props.actions}
+      />);
+    }
+
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
-        <CustomSpinner visible={!this.dataSource && this.props.view.discover !== 3} />
         {postsEl}
-        <DiscoverHeader
-          triggerReload={this.triggerReload}
-          showHeader={this.state.showHeader}
-          tags={this.props.tags}
-          posts={this.props.posts}
-          view={this.props.view.discover}
-          setPostTop={this.setPostTop}
-          actions={this.props.actions}
-        />
+        {headerEl}
+        <CustomSpinner visible={!this.dataSource && this.props.view.discover !== 3 && !this.props.error} />
+        <ErrorComponent reloadFunction={this.reload} />
       </View>
     );
   }
@@ -270,6 +280,7 @@ function mapStateToProps(state) {
     stats: state.stats,
     users: state.user,
     tags: state.tags,
+    error: state.error,
     refresh: state.navigation.discover.refresh
   };
 }

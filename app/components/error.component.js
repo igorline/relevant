@@ -22,7 +22,7 @@ class ErrorComponent extends Component {
   }
 
   render() {
-    var self = this;
+    const self = this;
     let errorEl = null;
     let reloadFunction = null;
     if (this.props.reloadFunction) reloadFunction = this.props.reloadFunction;

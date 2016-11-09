@@ -6,6 +6,7 @@ import userDefaults from 'react-native-user-defaults';
 import * as types from './actionTypes';
 import * as notifActions from './notif.actions';
 import * as utils from '../utils';
+import * as errorActions from './error.actions';
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
 require('../publicenv');
@@ -46,12 +47,12 @@ export function loginUserSuccess(token) {
 
 export function loginUserFailure() {
   return (dispatch) => {
-    utils.token.remove.remove()
-    .then(() => {
+    // utils.token.remove()
+    // .then(() => {
       dispatch({
         type: types.LOGIN_USER_FAILURE
       });
-    });
+    // });
   };
 }
 
@@ -105,7 +106,11 @@ export function loginUser(user) {
         dispatch(loginUserFailure(responseJSON.message));
       }
     })
-    .catch(() => dispatch(loginUserFailure()));
+    .catch((error) => {
+      console.log(error, 'login error');
+      AlertIOS.alert(error.message);
+      dispatch(loginUserFailure());
+    });
   };
 }
 
@@ -147,6 +152,7 @@ function createUser(user, redirect) {
         .then((responseJSON) => {
             if (responseJSON.token) {
                 dispatch(loginUserSuccess(responseJSON.token));
+                dispatch(errorActions.setError(false));
                 dispatch(getUser());
             } else {
                 dispatch(loginUserFailure());
@@ -163,8 +169,7 @@ function createUser(user, redirect) {
             }
         })
         .catch(error => {
-            AlertIOS.alert(error);
-            console.log(error, 'error');
+            AlertIOS.alert(error.message);
             dispatch(loginUserFailure());
         });
     }
@@ -173,6 +178,7 @@ function createUser(user, redirect) {
 export function getUser(callback) {
   return (dispatch) => {
     function fetchUser(token) {
+      console.log('fetchUser', token);
       fetch(process.env.API_SERVER + '/api/user/me', {
         credentials: 'include',
         method: 'GET',
@@ -194,7 +200,7 @@ export function getUser(callback) {
         if (callback) callback(responseJSON);
       })
       .catch((error) => {
-        console.log('auth error ', error);
+        dispatch(errorActions.setError(true, error.message));
         dispatch(loginUserFailure('Server error'));
       });
     }
@@ -204,7 +210,11 @@ export function getUser(callback) {
       dispatch(loginUserSuccess(newToken));
       fetchUser(newToken);
     })
-    .catch(() => dispatch(setUser()));
+    .catch(() => {
+      console.log('auth error ', error);
+
+      dispatch(setUser());
+    });
   };
 }
 

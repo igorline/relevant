@@ -36,14 +36,6 @@ function clearUserList() {
   };
 }
 
-// export
-// function setSelectedUser(user) {
-//   return {
-//     type: 'SET_SELECTED_USER',
-//     payload: user
-//   };
-// }
-
 export
 function clearSelectedUser() {
   return {
@@ -65,7 +57,7 @@ function getSelectedUser(userId) {
   return (dispatch) => {
     // dispatch(setSelectedUser(userId));
     // test network error handling
-    // return fetch('10.66.77.88.1/api/user/' + userId,
+    // return fetch('10.255.255.1/api/user/' + userId,
     return fetch(process.env.API_SERVER + '/api/user/' + userId,
       {
         credentials: 'include',
