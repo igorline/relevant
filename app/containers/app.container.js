@@ -56,13 +56,11 @@ class Application extends Component {
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
 
     utils.token.get()
-    .then((token) => {
-      if (!token) {
-        this.props.actions.replaceRoute({
-          key: 'auth',
-          component: 'auth'
-        }, 0, 'home');
-      }
+    .catch(() => {
+      this.props.actions.replaceRoute({
+        key: 'auth',
+        component: 'auth'
+      }, 0, 'home');
     });
   }
 
