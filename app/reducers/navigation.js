@@ -4,7 +4,8 @@ import {
   POP_ROUTE,
   CHANGE_TAB,
   RESET_ROUTES,
-  REFRESH_ROUTE
+  REFRESH_ROUTE,
+  REPLACE_ROUTE
 } from '../actions/actionTypes';
 
 const {
@@ -57,9 +58,9 @@ const initialState = {
     index: 0,
     key: 'home',
     routes: [{
-      key: 'auth',
-      component: 'auth',
-      title: 'Auth'
+      key: 'home',
+      component: 'stallScreen',
+      title: 'Relevant'
     }],
   },
   read: {
@@ -150,7 +151,7 @@ function navigationState(state = initialState, action) {
     // pop from tab scene stack
     case POP_ROUTE: {
       let key = action.key || state.tabs.routes[state.tabs.index].key;
-      const scenes     = state[key];
+      const scenes = state[key];
       const nextScenes = NavigationStateUtils.pop(scenes);
 
       if (scenes !== nextScenes) {
@@ -159,8 +160,7 @@ function navigationState(state = initialState, action) {
           [key]: nextScenes,
         };
       }
-      else return state;
-      break;
+      return state;
     }
 
     case RESET_ROUTES: {
@@ -177,8 +177,6 @@ function navigationState(state = initialState, action) {
         ...state,
         [key]: nextScenes,
       };
-
-      break;
     }
 
     case REFRESH_ROUTE: {
@@ -190,8 +188,6 @@ function navigationState(state = initialState, action) {
           refresh: new Date()
         },
       };
-
-      break;
     }
 
     // navigate to a new tab stack
@@ -205,6 +201,19 @@ function navigationState(state = initialState, action) {
         };
       }
       return state;
+    }
+
+    case REPLACE_ROUTE: {
+      const key = action.payload.key || state.tabs.routes[state.tabs.index].key;
+      let newScene = NavigationStateUtils.replaceAtIndex(
+        state[key],
+        action.payload.index,
+        action.payload.route
+      );
+      return {
+        ...state,
+        [key]: newScene
+      };
     }
 
     // case ACTIONS.TOGGLE_MODAL: {

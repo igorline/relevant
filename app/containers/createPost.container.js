@@ -110,10 +110,7 @@ class CreatePostContainer extends Component {
           AlertIOS.alert('Success!');
           this.props.actions.clearCreatePost();
 
-          // TODO this is kinda ugly
-          this.props.navigator.pop('home');
-          this.props.navigator.pop('home');
-          this.props.navigator.pop('home');
+          this.props.navigator.resetRoutes('home');
 
           // this.props.actions.getUserPosts(0, 5, this.props.auth.user._id);
         }
