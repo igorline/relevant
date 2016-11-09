@@ -1,5 +1,11 @@
 import { NavigationExperimental } from 'react-native';
-import { PUSH_ROUTE, POP_ROUTE, CHANGE_TAB, RESET_ROUTES } from '../actions/actionTypes';
+import {
+  PUSH_ROUTE,
+  POP_ROUTE,
+  CHANGE_TAB,
+  RESET_ROUTES,
+  REFRESH_ROUTE
+} from '../actions/actionTypes';
 
 const {
  StateUtils: NavigationStateUtils
@@ -59,6 +65,7 @@ const initialState = {
   read: {
     index: 0,
     key: 'read',
+    refresh: {},
     routes: [{
       key: 'read',
       component: 'read',
@@ -68,6 +75,7 @@ const initialState = {
   discover: {
     index: 0,
     key: 'read',
+    refresh: {},
     routes: [{
       key: 'discover',
       component: 'discover',
@@ -86,6 +94,7 @@ const initialState = {
   activity: {
     index: 0,
     key: 'activity',
+    refresh: {},
     routes: [{
       key: 'activity',
       component: 'activity',
@@ -95,6 +104,7 @@ const initialState = {
   myProfile: {
     index: 0,
     key: 'myProfile',
+    refresh: {},
     routes: [{
       key: 'myProfile',
       component: 'myProfile',
@@ -166,6 +176,19 @@ function navigationState(state = initialState, action) {
       return {
         ...state,
         [key]: nextScenes,
+      };
+
+      break;
+    }
+
+    case REFRESH_ROUTE: {
+      const key = action.key || state.tabs.routes[state.tabs.index].key;
+      return {
+        ...state,
+        [key]: {
+          ...state[key],
+          refresh: new Date()
+        },
       };
 
       break;

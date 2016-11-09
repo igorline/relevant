@@ -27,53 +27,27 @@ const localStyles = StyleSheet.create({
 let styles = { ...localStyles, ...globalStyles };
 
 class SinglePost extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      postId: null,
-      postData: null
-    };
-  }
 
-  componentDidMount() {
-    if (this.props.posts.selectedPostId) {
-      this.setState({ postId: this.props.posts.selectedPostId });
-      if (this.props.posts.currentPostId === this.props.posts.selectedPostId) {
-        if (this.props.posts.selectedPostData) {
-          this.setState({ postData: this.props.posts.selectedPostData });
-        }
-      } else {
-        InteractionManager.runAfterInteractions(() => {
-          this.props.actions.getSelectedPost(this.props.posts.selectedPostId);
-        })
-      }
-    }
-  }
+  componentWillMount() {
+    this.postId = this.props.scene.id;
+    this.postData = this.props.posts.selectedPostData[this.postId];
 
-  componentWillReceiveProps(next) {
-    if (next.posts.selectedPostId !== this.props.posts.selectedPostId) {
-      this.setState({ postId: null, postData: null });
-      this.props.actions.clearSelectedPost();
-    }
-
-    if (next.posts.selectedPostId) {
-      if (!this.state.postId) this.setState({ postId: next.posts.selectedPostId });
-      if (next.posts.selectedPostId === next.posts.currentPostId) {
-        if (next.posts.selectedPostData) {
-          this.setState({ postData: next.posts.selectedPostData });
-        }
-      }
+    if (!this.postData) {
+      InteractionManager.runAfterInteractions(() => {
+        this.props.actions.getSelectedPost(this.postId);
+      });
     }
   }
 
   render() {
-    let post = null;
     let el = null;
-    if (this.state.postData) {
-      post = this.state.postData;
+
+    this.postData = this.props.posts.selectedPostData[this.postId];
+
+    if (this.postData) {
       el = (<ScrollView style={styles.fullContainer}>
         <View>
-          <Post post={post} {...this.props} styles={styles} />
+          <Post post={this.postData} {...this.props} styles={styles} />
         </View>
       </ScrollView>);
     }
@@ -81,7 +55,7 @@ class SinglePost extends Component {
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {el}
-        <CustomSpinner visible={!this.state.postData} />
+        <CustomSpinner visible={!this.postData} />
       </View>
     );
   }

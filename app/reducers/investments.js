@@ -10,26 +10,36 @@ const addItems = (arr, newArr) => {
   var finalArr = arr.concat(removeDuplicates)
   var newArrX = finalArr.slice();
   return newArrX;
-}
+};
 
-const initialState = { userInvestments: [], myInvestments: [] };
+const initialState = {
+  userInvestments: {},
+};
 
 export default function investments(state = initialState, action) {
   switch (action.type) {
 
     case 'SET_INVESTMENTS': {
-      let type = action.payload.type;
-      return Object.assign({}, state, {
-        [type]: addItems(state[type], action.payload.data),
-      });
+      let id = action.payload.userId;
+      let currentInvestments = state.userInvestments[id] || [];
+      return {
+        ...state,
+        userInvestments: {
+          ...state.userInvestments,
+          [id]: [
+            ...currentInvestments.slice(0, action.payload.index),
+            ...action.payload.investments
+          ]
+        }
+      };
     }
 
-    case 'REFRESH_INVESTMENTS': {
-      let type = action.payload.type;
-      return Object.assign({}, state, {
-        [type]: action.payload.data,
-      });
-    }
+    // case 'REFRESH_INVESTMENTS': {
+    //   let type = action.payload.type;
+    //   return Object.assign({}, state, {
+    //     [type]: action.payload.data,
+    //   });
+    // }
 
     default:
       return state;

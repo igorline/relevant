@@ -79,13 +79,9 @@ class CardContainer extends Component {
   }
 
   renderTitle(props) {
-    let key = props.scene.route.component;
     let title = props.scene.route ? props.scene.route.title : '';
-    if (props.scene.route) {
-      if (props.scene.route.title) title = props.scene.route.title;
-    }
 
-    if (props.navigationState.key === 'myProfile') {
+    if (title === 'Profile' && this.props.auth.user) {
       title = this.props.auth.user.name;
     }
 
@@ -108,13 +104,13 @@ class CardContainer extends Component {
 
     switch (component) {
       case 'comment':
-        return <Comments scene={props.scene.route} />;
+        return <Comments navigator={this.props.actions} scene={props.scene.route} />;
 
       case 'thirst':
         return <Thirst navigator={this.props.actions} />;
 
       case 'singlePost':
-        return <SinglePost navigator={this.props.actions} />;
+        return <SinglePost navigator={this.props.actions} scene={props.scene.route} />;
 
       case 'messages':
         return <Messages navigator={this.props.actions} />;
@@ -123,7 +119,7 @@ class CardContainer extends Component {
       //   return <Categories navigator={this.props.actions} />;
 
       case 'profile':
-        return <Profile scene={props.scene.route} navigator={this.props.actions} />;
+        return <Profile navigator={this.props.actions} scene={props.scene.route} />;
 
       // case 'auth':
       //   return <Auth authType={key} />;
@@ -218,6 +214,7 @@ class CardContainer extends Component {
         onNavigateBack={this.back}
         renderScene={this.renderScene}
         renderHeader={this.renderHeader}
+        enableGestures={false}
       />
     );
   }

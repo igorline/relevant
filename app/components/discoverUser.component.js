@@ -6,41 +6,28 @@ import {
   Image,
   TouchableHighlight,
 } from 'react-native';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles } from '../styles/global';
+
+let styles;
 
 class DiscoverUser extends Component {
-  constructor (props, context) {
-    super(props, context)
+  constructor(props, context) {
+    super(props, context);
     this.setSelected = this.setSelected.bind(this);
-    this.state = {
+  }
+
+  componentWillMount() {
+    if (!this.props.stats[this.props.user._id]) {
+      this.props.actions.getStats(this.props.user._id);
     }
   }
 
-  componentDidMount() {
-    const self = this;
-    if (!this.props.stats[this.props.user._id]) self.props.actions.getStats(self.props.user._id);
-  }
-
-  componentWillReceiveProps(next) {
-    // console.log(next)
-  }
-
   setSelected() {
-    let user = this.props.user;
-    this.props.actions.setSelectedUser(user._id);
-    this.props.navigator.push({
-      key: 'profile',
-      title: user.name,
-      back: true,
-      id: user._id,
-    });
+    this.props.navigator.goToProfile(this.props.user);
   }
 
   render() {
-    const self = this;
-    const parentStyles = this.props.styles;
-    const user = self.props.user;
-    const styles = { ...localStyles, ...parentStyles };
+    const user = this.props.user;
     let image = null;
     let imageEl = null;
     let percent = 0;
@@ -48,14 +35,14 @@ class DiscoverUser extends Component {
     let relevanceEl = null;
     let oldRel = null;
     const relevance = user.relevance || 0;
-    if (self.props.stats) {
-      if (self.props.stats[user._id]) {
-        oldRel = self.props.stats[user._id].startAmount;
-        let change = oldRel / relevance;
-        if (relevance) percent = Math.round((1 - change) * 100);
+    if (this.props.stats) {
+      if (this.props.stats[user._id]) {
+        oldRel = this.props.stats[user._id].startAmount;
+        let change = (relevance - oldRel) / oldRel;
+        if (relevance) percent = Math.round(change * 100);
 
         if (percent === 0) {
-          percentEl = (<Text style={[{ textAlign: 'right' }, styles.active]}>no change</Text>);
+          percentEl = (<Text style={[{ textAlign: 'right' }, styles.active]}>{percent}%</Text>);
         } else if (percent > 0) {
           percentEl = (<Text style={[{ textAlign: 'right' }, styles.active]}>⬆️{percent}%</Text>);
         } else if (percent < 0) {
@@ -73,13 +60,20 @@ class DiscoverUser extends Component {
     }
 
     if (user.relevance) {
-      relevanceEl = (<Text>📈<Text style={styles.active}>{user.relevance ? user.relevance.toFixed(2) : null}</Text></Text>);
+      relevanceEl = (
+        <Text>📈
+          <Text
+            style={styles.active}
+          >
+            {user.relevance ? user.relevance.toFixed(2) : null}
+          </Text>
+        </Text>);
     } else {
       relevanceEl = null;
     }
 
     return (
-      <TouchableHighlight underlayColor={'transparent'} onPress={() => self.setSelected()}>
+      <TouchableHighlight underlayColor={'transparent'} onPress={() => this.setSelected()}>
         <View style={[styles.discoverUser]}>
           <View style={[styles.leftDiscoverUser]}>
             {imageEl}
@@ -129,3 +123,6 @@ const localStyles = StyleSheet.create({
     justifyContent: 'flex-end'
   }
 });
+
+styles = { ...localStyles, ...globalStyles };
+

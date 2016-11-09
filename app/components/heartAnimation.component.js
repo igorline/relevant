@@ -6,7 +6,7 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as animationActions from '../actions/animation.actions';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles, fullWidth } from '../styles/global';
 import Heart from './heart.component';
 
 let styles;
@@ -18,7 +18,6 @@ class heartAnimation extends Component {
     this.num = 0;
     this.state = {
       heartAni: [],
-      num: 0
     };
   }
 
@@ -35,38 +34,29 @@ class heartAnimation extends Component {
   }
 
   componentWillUnmount() {
-    const self = this;
-    self.clearEls();
+    this.clearEls();
   }
 
   clearEls() {
-    const self = this;
     this.num = 0;
-    self.setState({ heartAni: [] });
+    this.setState({ heartAni: [] });
   }
 
   heartAni() {
-    const self = this;
-    let length = self.state.heartAni.length;
+    let length = this.state.heartAni.length;
 
-    if (self.num) {
-      if (length < self.num) {
-        let newArr = self.state.heartAni;
-        newArr.push(<Heart key={length} specialKey={length} />);
-        self.setState({ heartAni: newArr });
-      } else {
-        setTimeout(() => { self.clearEls(); }, 10000);
-      }
-      setTimeout(() => { self.heartAni(); }, 100);
-    }
+    if (length < this.num) {
+      let newArr = this.state.heartAni;
+      newArr.push(<Heart key={length} specialKey={length} />);
+      this.setState({ heartAni: newArr });
+      setTimeout(() => { this.heartAni(); }, 100);
+    } else setTimeout(() => { this.clearEls(); }, 10000);
   }
 
   render() {
-    const self = this;
-
     return (
       <View style={styles.heartsContainer}>
-        {self.state.heartAni}
+        {this.state.heartAni}
       </View>
     );
   }
