@@ -189,7 +189,7 @@ class Post extends Component {
     let mentions = [];
     let preTags = [];
     if (self.props.post.tags) {
-      self.props.post.tags.forEach((tag, i) => {
+      self.props.post.tags.forEach((tag) => {
         preTags.push(tag.name);
       });
     }
@@ -230,20 +230,7 @@ class Post extends Component {
 
   openComments() {
     this.props.actions.setSelectedPost(this.props.post._id);
-    this.props.navigator.push({
-      key: 'comment',
-      title: 'Comments',
-      back: true,
-      id: this.props.post._id
-    });
-  }
-
-  goToPost(id) {
-    this.props.actions.setSelectedPost(id);
-    this.props.navigator.push({
-      key: 'singlePost',
-      back: true,
-    });
+    this.props.navigator.goToComments(this.props.post);
   }
 
   deletePost() {
@@ -262,17 +249,8 @@ class Post extends Component {
 
   setSelected(user) {
     if (!user) return;
-    if (this.props.scene) {
-      if (this.props.scene.key === 'profile'
-        && this.props.scene.id === user._id) return;
-    }
-    this.props.actions.setSelectedUser(user._id);
-    this.props.navigator.push({
-      key: 'profile',
-      title: user.name,
-      back: true,
-      id: user._id
-    });
+    if (this.props.scene && this.props.scene.id === user._id) return;
+    this.props.navigator.goToProfile(user);
   }
 
   extractDomain(url) {
@@ -575,6 +553,8 @@ class Post extends Component {
           </Text>
         </View>);
     }
+
+    if (!this.props.auth.user) return null;
 
     return (
       <View

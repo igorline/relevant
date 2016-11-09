@@ -1,11 +1,11 @@
-import * as types from './actionTypes';
-import * as utils from '../utils';
-import * as notifActions from './notif.actions';
-import userDefaults from 'react-native-user-defaults';
 import {
-    PushNotificationIOS,
-    AlertIOS
+  PushNotificationIOS,
+  AlertIOS
 } from 'react-native';
+import userDefaults from 'react-native-user-defaults';
+import * as types from './actionTypes';
+import * as notifActions from './notif.actions';
+import * as utils from '../utils';
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
 require('../publicenv');
@@ -13,125 +13,121 @@ require('../publicenv');
 
 export
 function setUser(user) {
-    return {
-        type: types.SET_USER,
-        payload: user
-    };
+  return {
+    type: types.SET_USER,
+    payload: user
+  };
 }
 
 export
 function setUserIndex(userIndex) {
-    return {
-        type: types.SET_USER_INDEX,
-        payload: userIndex
-    };
+  return {
+    type: types.SET_USER_INDEX,
+    payload: userIndex
+  };
 }
 
-export
-function setAuthStatusText(text) {
-    var set = text ? text : null;
-    return {
-        type: 'SET_AUTH_STATUS_TEXT',
-        payload: set
-    };
+export function setAuthStatusText(text) {
+  let set = text ? text : null;
+  return {
+    type: 'SET_AUTH_STATUS_TEXT',
+    payload: set
+  };
 }
 
-export
-function loginUserSuccess(token) {
-    return  {
-        type: types.LOGIN_USER_SUCCESS,
-        payload: {
-            token: token
-        }
+export function loginUserSuccess(token) {
+  return {
+    type: types.LOGIN_USER_SUCCESS,
+    payload: {
+      token
     }
+  };
 }
 
-export
-function loginUserFailure() {
-    return dispatch => {
-        userDefaults.remove('token', APP_GROUP_ID)
-            .then(() => {
-                dispatch({
-                    type: types.LOGIN_USER_FAILURE
-                });
-            });
-    };
+export function loginUserFailure() {
+  return (dispatch) => {
+    utils.token.remove.remove()
+    .then(() => {
+      dispatch({
+        type: types.LOGIN_USER_FAILURE
+      });
+    });
+  };
 }
 
-export
-function loginUserRequest() {
-    return {
-        type: types.LOGIN_USER_REQUEST
-    };
+export function loginUserRequest() {
+  return {
+    type: types.LOGIN_USER_REQUEST
+  };
 }
 
-export
-function logoutAction(user, token) {
-    return (dispatch) => {
-        userDefaults.remove('token', APP_GROUP_ID)
-        .then(data => {
-            dispatch(logout());
-            dispatch({ type:'server/logout', payload: user });
+export function logout() {
+  return {
+    type: types.LOGOUT_USER
+  };
+}
+
+export function logoutAction(user) {
+  return (dispatch) => {
+    utils.token.remove()
+    .then(() => {
+      dispatch(logout());
+      // websoket message
+      dispatch({
+        type: 'server/logout',
+        payload: user
+      });
+    });
+  };
+}
+
+export function loginUser(user) {
+  return (dispatch) => {
+    return fetch(process.env.API_SERVER + '/auth/local', {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(user)
+    })
+    .then(response => response.json())
+    .then((responseJSON) => {
+      if (responseJSON.token) {
+        utils.token.set(responseJSON.token)
+        .then(() => {
+          dispatch(loginUserSuccess(responseJSON.token));
+          dispatch(getUser());
         });
-    };
-}
-
-export
-function logout() {
-    return {
-        type: types.LOGOUT_USER
-    }
-}
-
-export function loginUser(user, redirect) {
-    return function(dispatch) {
-        return fetch(process.env.API_SERVER+'/auth/local', {
-            credentials: 'include',
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(user)
-        })
-        .then((response) => response.json())
-        .then((responseJSON) => {
-            if (responseJSON.token) {
-                userDefaults.set('token', responseJSON.token, APP_GROUP_ID)
-                .then( ()  => {
-                    dispatch(loginUserSuccess(responseJSON.token));
-                    dispatch(getUser(responseJSON.token, true));
-                });
-            } else {
-                AlertIOS.alert(responseJSON.message);
-                dispatch(loginUserFailure(responseJSON.message));
-            }
-        })
-        .catch(error => {
-            dispatch(loginUserFailure());
-        });
-    };
+      } else {
+        AlertIOS.alert(responseJSON.message);
+        dispatch(loginUserFailure(responseJSON.message));
+      }
+    })
+    .catch(() => dispatch(loginUserFailure()));
+  };
 }
 
 export
 function userOnline(user, token) {
-    return dispatch => {
-        return fetch(process.env.API_SERVER+'/notification/online/'+user._id+'?access_token='+token, {
-            credentials: 'include',
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-        })
-        .then((response) => response.json())
-        .then((responseJSON) => {
-            // console.log(responseJSON, 'login response')
-        })
-        .catch(error => {
-            console.log(error, 'error');
-        });
-    }
+  return dispatch => {
+    return fetch(process.env.API_SERVER + '/notification/online/' + user._id + '?access_token=' + token, {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      // console.log(responseJSON, 'login response')
+    })
+    .catch(error => {
+      console.log(error, 'error');
+    });
+  }
 }
 
 
@@ -151,7 +147,7 @@ function createUser(user, redirect) {
         .then((responseJSON) => {
             if (responseJSON.token) {
                 dispatch(loginUserSuccess(responseJSON.token));
-                dispatch(getUser(responseJSON.token, true));
+                dispatch(getUser());
             } else {
                 dispatch(loginUserFailure());
                 if (responseJSON.errors) {
@@ -174,61 +170,50 @@ function createUser(user, redirect) {
     }
 }
 
-export
-function getUser(token, redirect, callback) {
-    return dispatch => {
-        if (!token) {
-            userDefaults.get('token', APP_GROUP_ID)
-                .then(token => {
-                    if (token) {
-                        dispatch(loginUserSuccess(token));
-                        return fetchUser(token);
-                    } else {
-                        console.log('userDefaults didnt find token')
-                        return;
-                    }
-                })
-                .catch(err => {
-                    if(err) return dispatch(setUser());
-                })
-
-        } else fetchUser(token);
-
-        function fetchUser(token) {
-            fetch(process.env.API_SERVER+'/api/user/me', {
-                credentials: 'include',
-                method: 'GET',
-                timeout: 0,
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-            //.then(utils.fetchError.handleErrors)
-            .then((response) => response.json())
-            .then((responseJSON) => {
-                dispatch(setUser(responseJSON));
-                dispatch(notifActions.createNotification(token, {
-                    type: 'online',
-                    personal: false,
-                    byUser: responseJSON._id
-                }));
-                dispatch(addDeviceToken(responseJSON, token));
-                if(callback) callback(responseJSON);
-            })
-            .catch(error => {
-                console.log(error, 'auth error');
-                dispatch(loginUserFailure('Server error'));
-            });
+export function getUser(callback) {
+  return (dispatch) => {
+    function fetchUser(token) {
+      fetch(process.env.API_SERVER + '/api/user/me', {
+        credentials: 'include',
+        method: 'GET',
+        timeout: 0,
+        headers: {
+          Authorization: `Bearer ${token}`
         }
+      })
+      // .then(utils.fetchError.handleErrors)
+      .then(response => response.json())
+      .then((responseJSON) => {
+        dispatch(setUser(responseJSON));
+        dispatch(notifActions.createNotification(token, {
+          type: 'online',
+          personal: false,
+          byUser: responseJSON._id
+        }));
+        dispatch(addDeviceToken(responseJSON, token));
+        if (callback) callback(responseJSON);
+      })
+      .catch((error) => {
+        console.log('auth error ', error);
+        dispatch(loginUserFailure('Server error'));
+      });
     }
+
+    utils.token.get()
+    .then((newToken) => {
+      dispatch(loginUserSuccess(newToken));
+      fetchUser(newToken);
+    })
+    .catch(() => dispatch(setUser()));
+  };
 }
 
 export
 function setDeviceToken(token) {
-    return {
-        type: 'SET_DEVICE_TOKEN',
-        payload: token
-    };
+  return {
+    type: 'SET_DEVICE_TOKEN',
+    payload: token
+  };
 }
 
 export function updateUser(user, authToken) {

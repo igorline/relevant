@@ -56,7 +56,7 @@ class Read extends Component {
     this.reload = this.reload.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       this.reload();
     });
@@ -64,17 +64,30 @@ class Read extends Component {
 
   componentWillReceiveProps(next) {
     if (next.posts.feed !== this.props.posts.feed) {
-      this.loading = false;
       let fd = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.feedData = fd.cloneWithRows(next.posts.feed);
+      this.loading = false;
+      this.refresh = false;
     }
+
+    if (this.props.refresh !== next.refresh) {
+      this.triggerReload();
+    }
+
     // if (this.props.posts.newFeedAvailable !== next.posts.newFeedAvailable) {
     //   if (next.posts.newFeedAvailable) console.log('newFeedAvailable');
     // }
   }
 
+  triggerReload() {
+    // setTimeout(() => this.reload(), 100);
+    if (this.listview) this.listview.scrollTo({ y: 0, animated: true });
+    this.setState({});
+  }
+
   reload() {
     this.loadPosts(0);
+    console.log('Refresh');
   }
 
   loadMore() {
@@ -85,9 +98,9 @@ class Read extends Component {
   loadPosts(length, _tag) {
     if (this.loading) return;
     this.loading = true;
-    console.log('load more, skip: ', length);
+    if (length === 0) this.refresh = true;
     const tag = typeof _tag !== 'undefined' ? _tag : this.props.posts.tag;
-    this.props.actions.getFeed(this.props.auth.token, length, tag);
+    this.props.actions.getFeed(length, tag);
   }
 
   goTo(view) {
@@ -130,16 +143,16 @@ class Read extends Component {
         <ListView
           ref={(c) => { this.listview = c; }}
           enableEmptySections
-          removeClippedSubviews
-          pageSize={1}
-          initialListSize={2}
+          removeClippedSubviews={false}
+          pageSize={3}
+          initialListSize={3}
           dataSource={this.feedData}
           renderRow={this.renderFeedRow}
           onEndReached={this.loadMore}
           onEndReachedThreshold={100}
           refreshControl={
             <RefreshControl
-              refreshing={this.props.posts.loading}
+              refreshing={this.refresh}
               onRefresh={this.reload}
               tintColor="#000000"
               colors={['#000000', '#000000', '#000000']}
@@ -163,7 +176,12 @@ class Read extends Component {
     }
 
     if (this.props.messages.index && this.feedData) {
-      thirstyHeader = (<TouchableHighlight underlayColor={'transparent'} onPress={messages ? () => this.goTo({ name: 'messages' }) : null}>
+      thirstyHeader = (
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          onPress={messages ? () => this.goTo({ name: 'messages' })
+          : null}
+        >
         <View style={[styles.thirstyHeader]}>
           <View style={{ paddingRight: 5 }}>
             <Text>👅💦</Text>
@@ -197,6 +215,7 @@ function mapStateToProps(state) {
     posts: state.posts,
     messages: state.messages,
     users: state.user,
+    refresh: state.navigation.read.refresh
   };
 }
 

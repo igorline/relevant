@@ -21,7 +21,7 @@ import * as viewActions from '../actions/view.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as navigationActions from '../actions/navigation.actions';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles, fullWidth } from '../styles/global';
 
 let styles;
 const POST_PAGE_SIZE = 5;
@@ -80,7 +80,6 @@ class Discover extends Component {
 
       this.loading = false;
       this.reloading = false;
-
     }
 
     // update tag selection
@@ -91,7 +90,6 @@ class Discover extends Component {
 
     // update view
     if (this.props.view.discover !== next.view.discover) {
-
       ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.dataSource = ds.cloneWithRows(newData);
 
@@ -105,7 +103,6 @@ class Discover extends Component {
     if (this.props.refresh !== next.refresh) {
       this.triggerReload();
     }
-
   }
 
 
@@ -130,7 +127,7 @@ class Discover extends Component {
   }
 
   triggerReload() {
-    setTimeout(() => this.reload(), 100);
+    // setTimeout(() => this.reload(), 100);
     if (this.listview) this.listview.scrollTo({ y: -this.state.headerHeight, animated: true });
     this.setState({});
   }
@@ -176,9 +173,8 @@ class Discover extends Component {
   renderRow(rowData) {
     if (!rowData.role) {
       return (<Post post={rowData} {...this.props} styles={styles} />);
-    } else {
-      return (<DiscoverUser user={rowData} {...this.props} styles={styles} />);
     }
+    return (<DiscoverUser user={rowData} {...this.props} styles={styles} />);
   }
 
   render() {

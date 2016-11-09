@@ -1,28 +1,15 @@
 import * as types from '../actions/actionTypes';
 
 const initialState = {
-  tag: null,
-  pages: null,
-  page: null,
-  comments: null,
   postError: null,
-  currentPostId: null,
-  selectedPostData: null,
-  selectedPostId: null,
+  selectedPostData: {},
   index: [],
   feed: [],
   top: [],
   new: [],
-  discoverTags: [],
-  parentTags: [],
-  createPostCategory: null,
   newFeedAvailable: false,
   newPostsAvailable: false,
-  currentUser: null,
-  myPosts: [],
-  userPosts: [],
-  queued: [],
-  user: [],
+  userPosts: {},
   newPosts: {
     index: [],
     feed: [],
@@ -106,7 +93,7 @@ export default function post(state = initialState, action) {
         top: updatePostElement(state.top, action.payload),
         new: updatePostElement(state.new, action.payload),
         feed: updatePostElement(state.feed, action.payload),
-        userPosts: updatePostElement(state.feed, action.payload),
+        // userPosts: updatePostElement(state.feed, action.payload),
       });
     }
 
@@ -115,20 +102,29 @@ export default function post(state = initialState, action) {
         top: removeItem(state.top, action.payload),
         new: removeItem(state.new, action.payload),
         feed: removeItem(state.feed, action.payload),
-        userPosts: removeItem(state.user, action.payload),
+        // userPosts: removeItem(state.user, action.payload),
       });
     }
 
-    case 'SET_MY_POSTS': {
-      return Object.assign({}, state, {
-        myPosts: addItems(state.myPosts, action.payload)
-      });
-    }
+    // case 'SET_MY_POSTS': {
+    //   return Object.assign({}, state, {
+    //     myPosts: addItems(state.myPosts, action.payload)
+    //   });
+    // }
 
     case 'SET_USER_POSTS': {
-      return Object.assign({}, state, {
-        userPosts: addItems(state.userPosts, action.payload)
-      });
+      let id = action.payload.id;
+      let currentPosts = state.userPosts[id] || [];
+      return {
+        ...state,
+        userPosts: {
+          ...state.userPosts,
+          [id]: [
+            ...currentPosts.slice(0, action.payload.index),
+            ...action.payload.posts
+          ]
+        }
+      };
     }
 
 
@@ -139,41 +135,21 @@ export default function post(state = initialState, action) {
       });
     }
 
-    case 'ADD_POST': {
-      const type = action.payload.type;
-      return Object.assign({}, state, {
-        newPosts: {
-          ...state.newPosts,
-          [type]: prependItems(state.newPosts[type], [action.payload.data]),
-        },
-      });
-    }
+    // case 'ADD_POST': {
+    //   const type = action.payload.type;
+    //   return Object.assign({}, state, {
+    //     newPosts: {
+    //       ...state.newPosts,
+    //       [type]: prependItems(state.newPosts[type], [action.payload.data]),
+    //     },
+    //   });
+    // }
 
     case 'SET_NEW_POSTS_STATUS': {
       return Object.assign({}, state, {
         newPostsAvailable: action.payload,
       });
     }
-
-    case types.SET_TAG: {
-      console.log('Setting tag');
-      return {
-        ...state,
-        tag: action.payload,
-      };
-    }
-
-    case types.SET_PARENT_TAGS: {
-      return Object.assign({}, state, {
-        parentTags: action.payload,
-      });
-    }
-
-    // case 'SET_POST_CATEGORY': {
-    //   return Object.assign({}, state, {
-    //     createPostCategory: action.payload,
-    //   });
-    // }
 
     case types.POST_ERROR: {
       return Object.assign({}, state, {
@@ -194,10 +170,14 @@ export default function post(state = initialState, action) {
     }
 
     case 'SET_SELECTED_POST_DATA': {
-      return Object.assign({}, state, {
-        selectedPostData: action.payload,
-        currentPostId: action.payload._id
-      });
+      let id = action.payload._id;
+      return {
+        ...state,
+        selectedPostData: {
+          ...state.selectedPostData,
+          [id]: action.payload
+        }
+      };
     }
 
     case 'CLEAR_SELECTED_POST': {
@@ -216,7 +196,7 @@ export default function post(state = initialState, action) {
 
     case 'CLEAR_USER_POSTS': {
       return Object.assign({}, state, {
-        userPosts: [],
+        userPosts: {},
       });
     }
 
