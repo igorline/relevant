@@ -223,7 +223,7 @@ class Profile extends Component {
     let view = this.state.view;
     let postsEl = null;
 
-    if (this.postsData && this.investmentsData && this.userId && this.userData) {
+    if (this.postsData && this.investmentsData && this.userId && this.userData && !this.props.error) {
       postsEl = (
         <ListView
           ref={(c) => { this.listview = c; }}
