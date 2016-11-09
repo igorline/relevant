@@ -5,16 +5,16 @@ const initialState = {
   garbage: []
 };
 
-const maxGarbage = 2;
+const maxGarbage = 10;
 
-const removeItem = (array, item) => {
-  let index = array.findIndex(el => el._id === item._id);
-  if (index < 0) return array;
-  return [
-    ...array.slice(0, index),
-    ...array.slice(index + 1)
-  ];
-};
+// const removeItem = (array, item) => {
+//   let index = array.findIndex(el => el._id === item._id);
+//   if (index < 0) return array;
+//   return [
+//     ...array.slice(0, index),
+//     ...array.slice(index + 1)
+//   ];
+// };
 
 export default function comments(state = initialState, action) {
   switch (action.type) {
@@ -33,42 +33,42 @@ export default function comments(state = initialState, action) {
       };
     }
 
-    case types.ARCHIVE_COMMENTS: {
-      console.log(action.payload);
-      let newGarbage = state.garbage.filter(i => i !== action.payload);
-      newGarbage.push(action.payload);
-      let removeId = newGarbage.slice(maxGarbage)[0];
-      newGarbage = newGarbage.slice(0, maxGarbage);
-      let commentsById = state.commentsById;
-      if (removeId) {
-        commentsById = {
-          ...state.commentsById,
-          [removeId]: null,
-        };
-      }
-      console.log('removing ', removeId);
-      console.log('new comment data ', commentsById);
-      console.log('new garbage ', newGarbage);
-      return {
-        ...state,
-        commentsById,
-        garbage: newGarbage
-      };
-    }
+    // TODO Garbage collection
+    // case types.ARCHIVE_COMMENTS: {
+    //   let newGarbage = state.garbage.filter(i => i !== action.payload);
+    //   newGarbage.unshift(action.payload);
+
+    //   let removeId = newGarbage.slice(maxGarbage)[0];
+    //   newGarbage = newGarbage.slice(0, maxGarbage);
+
+    //   let commentsById = state.commentsById;
+    //   if (removeId) {
+    //     commentsById = {
+    //       ...state.commentsById,
+    //       [removeId]: null,
+    //     };
+    //   }
+
+    //   return {
+    //     ...state,
+    //     commentsById,
+    //     garbage: newGarbage
+    //   };
+    // }
 
     // TODO rethink these
-    // case types.ADD_COMMENT: {
-    //   console.log("ADD_COMMENT");
-    //   return Object.assign({}, state, {
-    //     index: [...state.index, action.payload],
-    //   });
-    // }
+    case types.ADD_COMMENT: {
+      console.log("ADD_COMMENT");
+      return Object.assign({}, state, {
+        index: [...state.index, action.payload],
+      });
+    }
 
-    // case types.REMOVE_COMMENT: {
-    //   return Object.assign({}, state, {
-    //     index: removeItem(state.index, action.payload),
-    //   });
-    // }
+    case types.REMOVE_COMMENT: {
+      return Object.assign({}, state, {
+        index: removeItem(state.index, action.payload),
+      });
+    }
 
 
     default:
