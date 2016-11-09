@@ -90,11 +90,13 @@ class Read extends Component {
   }
 
   reload() {
-    console.log('Refresh', this);
+    const self = this;
+    console.log('refresh', this);
 
     if (this.props.error) {
-      this.props.actions.getUser(data => {
-        console.log(data, 'reload getUser response')
+      this.props.actions.getUser((data) => {
+        console.log(data, 'reload getUser response');
+        if (data) self.loadPosts(0);
       })
     } else {
       this.loadPosts(0);
