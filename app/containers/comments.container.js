@@ -65,7 +65,8 @@ class Comments extends Component {
       let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.dataSource = ds.cloneWithRows(next.comments.commentsById[this.id]);
       this.comments = next.comments.commentsById[this.id];
-      this.loading = false;
+      this.reloading = false;
+      this.loadmore = false;
     }
   }
 
@@ -81,7 +82,7 @@ class Comments extends Component {
   componentWillUnmount() {
     this.showListener.remove();
     this.hideListener.remove();
-    this.props.actions.archiveComments(this.id);
+    // this.props.actions.archiveComments(this.id);
   }
 
   keyboardWillHide() {
@@ -116,11 +117,15 @@ class Comments extends Component {
   }
 
   reload() {
-    this.loading = true;
-    this.props.actions.getComments(this.id, 0);
+    if (this.reloading) return;
+    this.reloading = true;
+    this.props.actions.getComments(this.id, 0, 5);
   }
 
   loadMore() {
+    if (this.loadmore) return;
+
+    this.loadmore = true;
     let length = 0;
     if (this.comments && this.comments.length) {
       length = this.comments.length;
@@ -140,7 +145,7 @@ class Comments extends Component {
         renderRow={this.renderRow}
         automaticallyAdjustContentInsets
         onEndReached={this.loadMore}
-        onEndReachedThreshold={500}
+        onEndReachedThreshold={100}
         contentInset={{ bottom: 50 }}
         ref={(scrollView) => {
           this.state.scrollView = scrollView;
@@ -153,7 +158,7 @@ class Comments extends Component {
         }}
         refreshControl={
           <RefreshControl
-            refreshing={this.loading}
+            refreshing={this.reloading}
             onRefresh={this.reload}
             tintColor="#000000"
             colors={['#000000', '#000000', '#000000']}

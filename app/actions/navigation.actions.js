@@ -3,7 +3,8 @@ import {
   PUSH_ROUTE,
   CHANGE_TAB,
   RESET_ROUTES,
-  REFRESH_ROUTE
+  REFRESH_ROUTE,
+  REPLACE_ROUTE
 } from './actionTypes';
 
 export function push(route, key, animation = 'vertical') {
@@ -40,6 +41,17 @@ export function resetRoutes(key) {
   return {
     type: RESET_ROUTES,
     key
+  };
+}
+
+export function replaceRoute(route, index, key) {
+  return {
+    type: REPLACE_ROUTE,
+    payload: {
+      key,
+      index,
+      route
+    }
   };
 }
 
