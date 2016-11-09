@@ -3,6 +3,7 @@ import * as types from '../actions/actionTypes';
 const initialState = {
   tags: [],
   selectedTags: [],
+  parentTags: [],
 };
 
 export default function tags(state = initialState, action) {
@@ -33,6 +34,13 @@ export default function tags(state = initialState, action) {
         ]
       };
     }
+
+    case types.SET_PARENT_TAGS: {
+      return Object.assign({}, state, {
+        parentTags: action.payload,
+      });
+    }
+
 
     default: return state;
   }

@@ -15,17 +15,7 @@ export default class Tags extends Component {
   }
 
   componentDidMount() {
-    // if (!this.props.posts.discoverTags.length) this.props.actions.getDiscoverTags();
-    // if (!this.props.posts.parentTags.length) this.props.actions.getParentTags();
   }
-
-  // setTag(tag) {
-  //   this.props.actions.setTag(tag);
-  // }
-
-  // clearTag() {
-  //   this.props.actions.clearTag(null);
-  // }
 
   toggleTag(tag) {
     if (this.selectedLookup[tag._id]) {

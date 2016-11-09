@@ -21,7 +21,7 @@ import * as viewActions from '../actions/view.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as navigationActions from '../actions/navigation.actions';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles, fullWidth } from '../styles/global';
 
 let styles;
 const POST_PAGE_SIZE = 5;
@@ -63,7 +63,6 @@ class Discover extends Component {
   }
 
   componentWillReceiveProps(next) {
-    const self = this;
     let ds;
     this.view = next.view.discover;
     this.type = TYPE_LOOKUP[this.view];
@@ -78,19 +77,19 @@ class Discover extends Component {
     if (newData !== oldData) {
       ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.dataSource = ds.cloneWithRows(newData);
+
       this.loading = false;
+      this.reloading = false;
     }
 
     // update tag selection
     if (this.props.tags.selectedTags !== next.tags.selectedTags && this.type !== 'people') {
-      this.loading = false;
       this.dataSource = null;
       this.reload(next.tags.selectedTags);
     }
 
     // update view
     if (this.props.view.discover !== next.view.discover) {
-      this.loading = false;
       ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.dataSource = ds.cloneWithRows(newData);
 
@@ -101,9 +100,9 @@ class Discover extends Component {
       }
     }
 
-    // if (self.props.posts.newPostsAvailable != next.posts.newPostsAvailable) {
-    //   if (next.posts.newPostsAvailable) console.log('newPostsAvailable');
-    // }
+    if (this.props.refresh !== next.refresh) {
+      this.triggerReload();
+    }
   }
 
 
@@ -128,7 +127,7 @@ class Discover extends Component {
   }
 
   triggerReload() {
-    setTimeout(() => this.reload(), 100);
+    // setTimeout(() => this.reload(), 100);
     if (this.listview) this.listview.scrollTo({ y: -this.state.headerHeight, animated: true });
     this.setState({});
   }
@@ -153,6 +152,7 @@ class Discover extends Component {
   loadPosts(length, _tags) {
     if (this.loading) return;
     this.loading = true;
+    if (length === 0) this.reloading = true;
     console.log('loading posts');
     const tags = typeof _tags !== 'undefined' ? _tags : this.props.tags.selectedTags;
     switch (this.view) {
@@ -173,17 +173,12 @@ class Discover extends Component {
   renderRow(rowData) {
     if (!rowData.role) {
       return (<Post post={rowData} {...this.props} styles={styles} />);
-    } else {
-      return (<DiscoverUser user={rowData} {...this.props} styles={styles} />);
     }
+    return (<DiscoverUser user={rowData} {...this.props} styles={styles} />);
   }
 
   render() {
-    const self = this;
     let postsEl = null;
-    let offsetY = this.state.headerHeight;
-
-    if (this.view === 3) offsetY = 40;
 
     if (this.dataSource) {
       postsEl = (
@@ -197,9 +192,9 @@ class Discover extends Component {
           onScroll={this.onScroll}
           dataSource={this.dataSource}
           renderRow={this.renderRow}
-          automaticallyAdjustContentInsets
-          contentInset={{ top: offsetY }}
-          contentOffset={{ y: -offsetY }}
+          automaticallyAdjustContentInsets={false}
+          contentInset={{ top: this.state.headerHeight }}
+          contentOffset={{ y: -this.state.headerHeight }}
           contentContainerStyle={{
             position: 'absolute',
             top: 0,
@@ -210,7 +205,7 @@ class Discover extends Component {
           onEndReachedThreshold={50}
           refreshControl={
             <RefreshControl
-              refreshing={this.loading}
+              refreshing={this.reloading}
               onRefresh={this.reload}
               tintColor="#000000"
               colors={['#000000', '#000000', '#000000']}
@@ -275,6 +270,7 @@ function mapStateToProps(state) {
     stats: state.stats,
     users: state.user,
     tags: state.tags,
+    refresh: state.navigation.discover.refresh
   };
 }
 

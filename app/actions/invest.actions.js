@@ -6,6 +6,17 @@ require('../publicenv');
 
 let apiServer = process.env.API_SERVER+'/api/';
 
+export function setInvestments(investments, userId, index) {
+  return {
+    type: 'SET_INVESTMENTS',
+    payload: {
+      investments,
+      userId,
+      index
+    }
+  };
+}
+
 export function invest(token, amount, post, investingUser) {
   return (dispatch) => {
     return fetch(apiServer + 'invest?access_token=' + token, {
@@ -58,35 +69,14 @@ export function getInvestments(token, userId, skip, limit, type){
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      if (skip === 0) dispatch(refreshInvestments(responseJSON, type));
-      else dispatch(setInvestments(responseJSON, type));
+      // dispatch(refreshInvestments(responseJSON, userId, skip));
+      dispatch(setInvestments(responseJSON, userId, skip));
     })
     .catch((error) => {
       console.log(error);
     });
   };
 }
-
-export function setInvestments(data, type) {
-  return {
-    type: 'SET_INVESTMENTS',
-    payload: {
-      data,
-      type
-    }
-  };
-}
-
-export function refreshInvestments(data, type) {
-  return {
-    type: 'REFRESH_INVESTMENTS',
-    payload: {
-      data,
-      type
-    }
-  };
-}
-
 
 export function investNotification(post, investingUser) {
   return {
