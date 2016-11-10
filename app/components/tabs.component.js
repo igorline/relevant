@@ -44,8 +44,14 @@ export default function (props) {
 }
 
 const localStyles = StyleSheet.create({
+  typeParent: {
+    paddingTop: 15,
+    paddingBottom: 15,
+    flex: 1
+  },
   tabsParent: {
     backgroundColor: 'white',
+    height: 50,
   },
   inactiveBorder: {
     borderBottomColor: 'lightgrey',

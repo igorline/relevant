@@ -124,11 +124,7 @@ const layout = StyleSheet.create({
     borderBottomWidth: 5,
     borderBottomColor: '#007aff',
   },
-  typeParent: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    flex: 1
-  },
+
   typeBar: {
     width: fullWidth
   },
