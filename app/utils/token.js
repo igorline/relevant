@@ -7,7 +7,6 @@ let token;
 export function get() {
   return new Promise((resolve, reject) => {
 
-    console.log(token);
     if (token) return resolve(token);
 
     return userDefaults.get('token', APP_GROUP_ID)
