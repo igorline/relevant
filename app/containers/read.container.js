@@ -90,20 +90,11 @@ class Read extends Component {
   }
 
   reload() {
-    const self = this;
-    console.log('refresh', this);
-
-    if (this.props.error) {
-      this.props.actions.getUser((data) => {
-        console.log(data, 'reload getUser response');
-        if (data) self.loadPosts(0);
-      })
-    } else {
-      this.loadPosts(0);
-    }
+    this.loadPosts(0);
   }
 
   loadMore() {
+    // if (this.props.error) return;
     const length = this.props.posts.feed.length;
     this.loadPosts(length);
   }
@@ -151,7 +142,7 @@ class Read extends Component {
       }
     }
 
-    if (this.feedData && this.props.posts.feed.length && !this.props.error) {
+    if (this.feedData && this.props.posts.feed.length && !this.props.error.read) {
       postsEl = (
         <ListView
           ref={(c) => { this.listview = c; }}
@@ -188,7 +179,7 @@ class Read extends Component {
       );
     }
 
-    if (this.props.messages.index && this.feedData && !this.props.error) {
+    if (this.props.messages.index && this.feedData && !this.props.error.read) {
       thirstyHeader = (
         <TouchableHighlight
           underlayColor={'transparent'}
@@ -216,8 +207,8 @@ class Read extends Component {
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {thirstyHeader}
         {postsEl}
-        <CustomSpinner visible={!this.feedData && !this.props.error} />
-        <ErrorComponent reloadFunction={this.reload} />
+        <CustomSpinner visible={!this.feedData && !this.props.error.read} />
+       <ErrorComponent parent={'read'} reloadFunction={this.reload} />
       </View>
     );
   }
@@ -231,6 +222,7 @@ function mapStateToProps(state) {
     users: state.user,
     refresh: state.navigation.read.refresh,
     error: state.error,
+    navigation: state.navigation.tabs
   };
 }
 

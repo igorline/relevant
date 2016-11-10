@@ -71,12 +71,12 @@ function getSelectedUser(userId) {
       .then(response => response.json())
       .then((responseJSON) => {
         dispatch(setSelectedUserData(responseJSON));
-        dispatch(errorActions.setError(false));
+        dispatch(errorActions.setError('profile', false));
         return true;
       })
       .catch((error) => {
         console.log(error, 'error');
-        dispatch(errorActions.setError(true, error.message));
+        dispatch(errorActions.setError('profile', true, error.message));
       });
   };
 }

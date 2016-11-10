@@ -17,8 +17,12 @@ class ErrorComponent extends Component {
     super(props, context);
   }
 
+  componentWillMount() {
+    this.parent = this.props.parent;
+  }
+
   componentWillUnmount() {
-    this.props.actions.setError(false);
+    this.props.actions.setError(this.parent, false);
   }
 
   render() {
@@ -27,14 +31,14 @@ class ErrorComponent extends Component {
     let reloadFunction = null;
     if (this.props.reloadFunction) reloadFunction = this.props.reloadFunction;
 
-    if (this.props.error) {
+    if (this.props.error[this.parent]) {
       errorEl = (<TouchableHighlight underlayColor={'transparent'} onPress={() => reloadFunction()}>
         <Text style={{ fontSize: 20 }}>Reload</Text>
       </TouchableHighlight>);
     }
 
     return (
-      <View pointerEvents={this.props.error ? 'auto' : 'none'} style={{ justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}>
+      <View pointerEvents={this.props.error[this.parent] ? 'auto' : 'none'} style={{ justifyContent: 'center', alignItems: 'center', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}>
         {errorEl}
       </View>
     );

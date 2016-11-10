@@ -61,7 +61,7 @@ class Activity extends Component {
     if ((next.notif.personal && next.notif.general && next.notif.general !== self.props.notif.general) || (next.notif.personal !== self.props.notif.personal) || (self.state.view !== nextState.view)) {
       if (nextState.view === 1) {
         const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-        self.setState({dataSource: ds.cloneWithRows(next.notif.personal) });
+        self.setState({ dataSource: ds.cloneWithRows(next.notif.personal) });
       }
       if (nextState.view === 2) {
         const xs = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });

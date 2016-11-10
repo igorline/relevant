@@ -47,6 +47,7 @@ class CardContainer extends Component {
 
   getDefaultComponent(props) {
     let key = this.default;
+    console.log(props, 'props here')
 
     switch (key) {
       case 'discover':
@@ -211,6 +212,7 @@ class CardContainer extends Component {
       <NavigationCardStack
         direction={'horizontal'}
         navigationState={scenes}
+        style={{backgroundColor: 'white'}}
         onNavigateBack={this.back}
         renderScene={this.renderScene}
         renderHeader={this.renderHeader}

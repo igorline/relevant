@@ -112,7 +112,6 @@ export function loginUser(user) {
     .catch((error) => {
       console.log(error, 'login error');
       AlertIOS.alert(error.message);
-      dispatch(loginUserFailure());
     });
   };
 }
@@ -155,10 +154,9 @@ function createUser(user, redirect) {
         .then((responseJSON) => {
             if (responseJSON.token) {
                 dispatch(loginUserSuccess(responseJSON.token));
-                dispatch(errorActions.setError(false));
                 dispatch(getUser());
             } else {
-                dispatch(loginUserFailure());
+                // dispatch(loginUserFailure());
                 if (responseJSON.errors) {
                     if (responseJSON.errors) {
                         let errors = responseJSON.errors;
@@ -173,7 +171,7 @@ function createUser(user, redirect) {
         })
         .catch(error => {
             AlertIOS.alert(error.message);
-            dispatch(loginUserFailure());
+            // dispatch(loginUserFailure());
         });
     }
 }
@@ -181,7 +179,7 @@ function createUser(user, redirect) {
 export function getUser(callback) {
   return (dispatch) => {
     function fetchUser(token) {
-      console.log('fetchUser', token);
+      //console.log('fetchUser', token);
       fetch(process.env.API_SERVER + '/api/user/me', {
         credentials: 'include',
         method: 'GET',
@@ -200,12 +198,13 @@ export function getUser(callback) {
           byUser: responseJSON._id
         }));
         dispatch(addDeviceToken(responseJSON, token));
+        dispatch(errorActions.setError('universal', false));
         if (callback) callback(responseJSON);
       })
       .catch((error) => {
-        dispatch(errorActions.setError(true, error.message));
+        dispatch(errorActions.setError('universal', true, error.message));
         dispatch(loginUserFailure('Server error'));
-        if (callback) callback({ok: false});
+        if (callback) callback({ ok: false });
       });
     }
 
@@ -216,7 +215,7 @@ export function getUser(callback) {
     })
     .catch((error) => {
       console.log('auth error ', error);
-      dispatch(setUser());
+      //dispatch(setUser());
     });
   };
 }
