@@ -62,6 +62,18 @@ const layout = StyleSheet.create({
     width: 100,
     marginBottom: 20
   },
+  investOption: {
+    margin: 5,
+    borderWidth: 1,
+    borderColor: 'black',
+    padding: 5,
+    borderRadius: 5,
+    width: 75,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
   modalButtonText: {
     color: 'white',
     backgroundColor: 'transparent'

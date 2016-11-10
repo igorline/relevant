@@ -16,17 +16,17 @@ import { globalStyles, fullWidth } from '../styles/global';
 import Post from '../components/post.component';
 import * as animationActions from '../actions/animation.actions';
 import CustomSpinner from '../components/CustomSpinner.component';
+import ErrorComponent from '../components/error.component';
 
-const localStyles = StyleSheet.create({
-  singlePostContainer: {
-    width: fullWidth,
-    flex: 1,
-  },
-});
-
-let styles = { ...localStyles, ...globalStyles };
+let styles;
 
 class SinglePost extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+    };
+    this.reload = this.reload.bind(this);
+  }
 
   componentWillMount() {
     this.postId = this.props.scene.id;
@@ -39,12 +39,16 @@ class SinglePost extends Component {
     }
   }
 
+  reload() {
+    this.props.actions.getSelectedPost(this.postId);
+  }
+
   render() {
     let el = null;
 
     this.postData = this.props.posts.selectedPostData[this.postId];
 
-    if (this.postData) {
+    if (this.postData && !this.props.error.singlepost) {
       el = (<ScrollView style={styles.fullContainer}>
         <View>
           <Post post={this.postData} {...this.props} styles={styles} />
@@ -55,19 +59,28 @@ class SinglePost extends Component {
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {el}
-        <CustomSpinner visible={!this.postData} />
+        <CustomSpinner visible={!this.postData && !this.props.error.singlepost} />
+        <ErrorComponent parent={'singlepost'} reloadFunction={this.reload} />
       </View>
     );
   }
 }
 
+
+const localStyles = StyleSheet.create({
+  singlePostContainer: {
+    width: fullWidth,
+    flex: 1,
+  },
+});
+
+styles = { ...localStyles, ...globalStyles };
+
 function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
-    // stats: state.stats,
-    // users: state.user,
-    // investments: state.investments,
+    error: state.error,
   };
 }
 

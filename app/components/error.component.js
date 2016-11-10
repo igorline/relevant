@@ -3,7 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  Image, 
+  Image,
   TouchableHighlight,
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
@@ -11,8 +11,6 @@ import * as errorActions from '../actions/error.actions';
 import CustomSpinner from './CustomSpinner.component';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
-require('../publicenv');
 
 let styles;
 
