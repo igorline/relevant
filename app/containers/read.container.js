@@ -15,10 +15,12 @@ import Post from '../components/post.component';
 import * as postActions from '../actions/post.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as investActions from '../actions/invest.actions';
+import * as authActions from '../actions/auth.actions';
 import CustomSpinner from '../components/CustomSpinner.component';
 import * as userActions from '../actions/user.actions';
 import * as tagActions from '../actions/tag.actions';
 import * as navigationActions from '../actions/navigation.actions';
+import ErrorComponent from '../components/error.component';
 
 const localStyles = StyleSheet.create({
   thirstyHeader: {
@@ -70,6 +72,8 @@ class Read extends Component {
       this.refresh = false;
     }
 
+    if (next.error) this.loading = false;
+
     if (this.props.refresh !== next.refresh) {
       this.triggerReload();
     }
@@ -87,10 +91,10 @@ class Read extends Component {
 
   reload() {
     this.loadPosts(0);
-    console.log('Refresh');
   }
 
   loadMore() {
+    // if (this.props.error) return;
     const length = this.props.posts.feed.length;
     this.loadPosts(length);
   }
@@ -138,7 +142,7 @@ class Read extends Component {
       }
     }
 
-    if (this.feedData && this.props.posts.feed.length) {
+    if (this.feedData && this.props.posts.feed.length && !this.props.error.read) {
       postsEl = (
         <ListView
           ref={(c) => { this.listview = c; }}
@@ -175,7 +179,7 @@ class Read extends Component {
       );
     }
 
-    if (this.props.messages.index && this.feedData) {
+    if (this.props.messages.index && this.feedData && !this.props.error.read) {
       thirstyHeader = (
         <TouchableHighlight
           underlayColor={'transparent'}
@@ -202,8 +206,9 @@ class Read extends Component {
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {thirstyHeader}
-        <CustomSpinner visible={!this.feedData} />
         {postsEl}
+        <CustomSpinner visible={!this.feedData && !this.props.error.read} />
+       <ErrorComponent parent={'read'} reloadFunction={this.reload} />
       </View>
     );
   }
@@ -215,7 +220,9 @@ function mapStateToProps(state) {
     posts: state.posts,
     messages: state.messages,
     users: state.user,
-    refresh: state.navigation.read.refresh
+    refresh: state.navigation.read.refresh,
+    error: state.error,
+    navigation: state.navigation.tabs
   };
 }
 
@@ -228,6 +235,7 @@ function mapDispatchToProps(dispatch) {
       ...userActions,
       ...tagActions,
       ...navigationActions,
+      ...authActions,
     }, dispatch)
   };
 }

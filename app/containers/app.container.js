@@ -5,14 +5,17 @@ import {
   AppState,
   ActionSheetIOS,
   AlertIOS,
+  Text
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Auth from './auth.container';
 import CreatePost from './createPost.container';
 import Footer from './footer.container';
+import ErrorContainer from './error.container';
 import InvestAnimation from '../components/investAnimation.component';
 import HeartAnimation from '../components/heartAnimation.component';
+import StallScreen from '../components/stallScreen.component';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as userActions from '../actions/user.actions';
@@ -28,7 +31,6 @@ import { pickerOptions } from '../utils/pickerOptions';
 const {
   CardStack: NavigationCardStack,
 } = NavigationExperimental;
-
 
 let ImagePicker = require('react-native-image-picker');
 
@@ -70,12 +72,18 @@ class Application extends Component {
       this.props.actions.getActivity(next.auth.user._id, 0);
       this.props.actions.getGeneralActivity(next.auth.user._id, 0);
       this.props.actions.getMessages(next.auth.user._id);
-    }
-    if (!this.props.auth.token && next.auth.token) {
       this.props.actions.changeTab('read');
       this.props.actions.replaceRoute({
         key: 'tabBars',
         component: 'tabBars'
+      }, 0, 'home');
+      this.props.actions.resetRoutes('home');
+    }
+
+    if (!this.props.error.universal && next.error.universal) {
+      this.props.actions.replaceRoute({
+        key: 'error',
+        component: 'error',
       }, 0, 'home');
       this.props.actions.resetRoutes('home');
     }
@@ -202,6 +210,11 @@ class Application extends Component {
         return <CreatePost step={'post'} navProps={props} navigator={this.props.actions} />;
       case 'tabBars':
         return <Footer showActionSheet={this.showActionSheet} />;
+      case 'error':
+        return <ErrorContainer showActionSheet={this.showActionSheet} />;
+
+      case 'stallScreen':
+        return <StallScreen />;
 
       default:
         return null;
@@ -211,13 +224,14 @@ class Application extends Component {
   render() {
     let scene = this.props.navigation;
     return (
-      <View style={{ flex: 1 }} >
+      <View style={{ flex: 1, backgroundColor: 'white' }} >
         <NavigationCardStack
           key={'scene_' + scene.key}
           direction={'horizontal'}
           navigationState={scene}
           renderScene={this.renderScene}
           enableGestures={false}
+          style={{backgroundColor: 'white'}}
         />
         <InvestAnimation {...this.props} />
         <HeartAnimation />
@@ -231,7 +245,8 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     animation: state.animation,
-    navigation: state.navigation.home
+    navigation: state.navigation.home,
+    error: state.error,
   };
 }
 

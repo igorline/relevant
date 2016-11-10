@@ -36,6 +36,13 @@ class Comment extends Component {
     this.editComment = this.editComment.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.comment.text) {
+      let text = this.props.comment.text;
+      this.setState({ editedText: text });
+    }
+  }
+
   editComment() {
     this.setState({ editedText: this.props.comment.text });
     this.setState({ editing: !this.state.editing });
