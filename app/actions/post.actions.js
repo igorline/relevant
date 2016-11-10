@@ -23,7 +23,7 @@ export function setPosts(data, type, index) {
 
 export function getFeed(skip, tag) {
   if (!skip) skip = 0;
-  console.log(tag, 'tag')
+  //console.log(tag, 'tag')
 
   function getUrl(token) {
     let url = `${apiServer}feed`
