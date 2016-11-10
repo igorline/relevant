@@ -18,6 +18,7 @@ import * as postActions from '../actions/post.actions';
 import { globalStyles } from '../styles/global';
 import Comment from '../components/comment.component';
 import CustomSpinner from '../components/CustomSpinner.component';
+import ErrorComponent from '../components/error.component';
 
 require('../publicenv');
 
@@ -117,7 +118,6 @@ class Comments extends Component {
   }
 
   reload() {
-    if (this.reloading) return;
     this.reloading = true;
     this.props.actions.getComments(this.id, 0, 5);
   }
@@ -188,7 +188,8 @@ class Comments extends Component {
             <Text style={[styles.font15, styles.active]}>Submit</Text>
           </TouchableHighlight>
         </View>
-        <CustomSpinner visible={!this.dataSource} />
+        <CustomSpinner visible={!this.dataSource && !this.props.error.comments} />
+        <ErrorComponent parent={'comments'} reloadFunction={this.reload} />
       </View>
     );
   }
@@ -222,6 +223,7 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     comments: state.comments,
+    error: state.error,
   };
 }
 

@@ -65,9 +65,9 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
-    stats: state.stats,
-    users: state.user,
-    investments: state.investments,
+    // stats: state.stats,
+    // users: state.user,
+    // investments: state.investments,
   };
 }
 

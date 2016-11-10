@@ -336,8 +336,8 @@ export function getComments(postId, skip, limit) {
     })
     .then(response => response.json())
     .then((responseJSON) => {
+      dispatch(errorActions.setError('comments', false));
       dispatch(setComments(postId, responseJSON, skip));
-      dispatch(errorActions.setError('comments', false, error.message));
     })
     .catch((error) => {
       console.log(error, 'error');
