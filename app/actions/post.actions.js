@@ -58,13 +58,13 @@ export function getFeed(skip, tag) {
     )
     .then(response => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON);
+      //console.log(responseJSON);
       dispatch(setPosts(responseJSON, type, skip));
-      dispatch(errorActions.setError(false));
+      dispatch(errorActions.setError('read', false));
     })
     .catch((error) => {
       console.log('Feed error ', error);
-      dispatch(errorActions.setError(true, error.message));
+      dispatch(errorActions.setError('read', true, error.message));
     });
   };
 }
@@ -149,11 +149,11 @@ export function getPosts(skip, tags, sort, limit) {
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(setPosts(responseJSON, type, skip));
-      dispatch(errorActions.setError(false));
+      dispatch(errorActions.setError('discover', false));
     })
     .catch((error) => {
       console.log(error, 'error');
-      dispatch(errorActions.setError(true, error.message));
+      dispatch(errorActions.setError('discover', true, error.message));
     });
   };
 }
@@ -178,11 +178,11 @@ export function getUserPosts(skip, limit, userId, type) {
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setUserPosts(responseJSON, userId, skip));
-      dispatch(errorActions.setError(false));
+      dispatch(errorActions.setError('profile', false));
     })
     .catch((error) => {
       console.log(error, 'error');
-      dispatch(errorActions.setError(true, error.message));
+      dispatch(errorActions.setError('profile', true, error.message));
     });
   };
 }
@@ -337,11 +337,11 @@ export function getComments(postId, skip, limit) {
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(setComments(postId, responseJSON, skip));
-      dispatch(errorActions.setError(false, error.message));
+      dispatch(errorActions.setError('comments', false, error.message));
     })
     .catch((error) => {
       console.log(error, 'error');
-      dispatch(errorActions.setError(true, error.message));
+      dispatch(errorActions.setError('comments', true, error.message));
     });
   }
 }
@@ -382,12 +382,12 @@ export function getSelectedPost(postId) {
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setSelectedPostData(responseJSON));
-      dispatch(errorActions.setError(false));
+      dispatch(errorActions.setError('singlepost', false));
       return true;
     })
     .catch((error) => {
       console.log(error, 'error');
-      dispatch(errorActions.setError(true, error.message));
+      dispatch(errorActions.setError('singlepost', true, error.message));
       return false;
     });
   };

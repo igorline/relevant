@@ -33,7 +33,7 @@ export default function auth(state = initialState, action) {
       return Object.assign({}, state, {
         'isAuthenticating': false,
         'isAuthenticated': false,
-        'token': null,
+        // 'token': null,
         'user': null,
         //'statusText': action.payload.statusText
       })

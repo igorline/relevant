@@ -223,7 +223,7 @@ class Profile extends Component {
     let view = this.state.view;
     let postsEl = null;
 
-    if (this.postsData && this.investmentsData && this.userId && this.userData && !this.props.error) {
+    if (this.postsData && this.investmentsData && this.userId && this.userData && !this.props.error.profile) {
       postsEl = (
         <ListView
           ref={(c) => { this.listview = c; }}
@@ -261,13 +261,13 @@ class Profile extends Component {
           alignItems: 'stretch' }}
       >
         {postsEl}
-        <ErrorComponent reloadFunction={this.loadUser} />
+        <ErrorComponent parent={'profile'} reloadFunction={this.loadUser} />
         <CustomSpinner
           visible={
             (!this.postsData ||
             !this.investmentsData ||
             !this.userId ||
-            !this.userData) && !this.props.error
+            !this.userData) && !this.props.error.profile
           }
         />
       </View>

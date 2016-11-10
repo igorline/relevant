@@ -56,9 +56,7 @@ class Discover extends Component {
     this.offset = 0;
     this.view = this.props.view.discover;
     this.type = TYPE_LOOKUP[this.view];
-
     this.reload();
-
     this.tag = null;
     if (this.props.posts.tag) this.tag = { ...this.props.posts.tag };
   }
@@ -68,7 +66,7 @@ class Discover extends Component {
     this.view = next.view.discover;
     this.type = TYPE_LOOKUP[this.view];
 
-    if (next.error) this.loading = false;
+    if (next.error.discover) this.loading = false;
 
     let oldData = this.props.posts[this.type];
     if (this.type === 'people') oldData = this.props.users.list;
@@ -130,7 +128,6 @@ class Discover extends Component {
   }
 
   triggerReload() {
-    // setTimeout(() => this.reload(), 100);
     if (this.listview) this.listview.scrollTo({ y: -this.state.headerHeight, animated: true });
     this.setState({});
   }
@@ -185,7 +182,7 @@ class Discover extends Component {
     let offsetY = this.state.headerHeight;
     if (this.type === 'people') offsetY = 60;
 
-    if (this.dataSource && !this.props.error) {
+    if (this.dataSource && !this.props.error.discover) {
       postsEl = (
         <ListView
           ref={(c) => { this.listview = c; }}
@@ -221,7 +218,7 @@ class Discover extends Component {
       );
     }
 
-    if (!this.props.error) {
+    if (!this.props.error.discover) {
       headerEl = (<DiscoverHeader
         triggerReload={this.triggerReload}
         showHeader={this.state.showHeader}
@@ -237,8 +234,8 @@ class Discover extends Component {
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {postsEl}
         {headerEl}
-        <CustomSpinner visible={!this.dataSource && this.props.view.discover !== 3 && !this.props.error} />
-        <ErrorComponent reloadFunction={this.reload} />
+        <CustomSpinner visible={!this.dataSource && this.props.view.discover !== 3 && !this.props.error.discover} />
+        <ErrorComponent parent={'discover'} reloadFunction={this.reload} />
       </View>
     );
   }
