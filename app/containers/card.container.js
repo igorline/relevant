@@ -85,7 +85,7 @@ class CardContainer extends Component {
 
     let clipped = title;
 
-    if (title.length > 20) {
+    if (title && title.length > 20) {
       clipped = title.substring(0, 18);
       clipped += '...';
     }

@@ -1,91 +1,94 @@
 import * as types from './actionTypes';
+
 require('../publicenv');
-import * as utils from '../utils';
-var apiServer = process.env.API_SERVER+'/api/'
+// const apiServer = process.env.API_SERVER + '/api/';
 
-
-
-export function setActivity(data) {
-    return {
-        type: types.SET_ACTIVITY,
-        payload: data
-    };
+export function setActivity(data, type, index) {
+  return {
+    type: types.SET_ACTIVITY,
+    payload: {
+      data,
+      type,
+      index
+    }
+  };
 }
 
 export function resetActivity(data) {
-    return {
-        type: 'RESET_ACTIVITY',
-        payload: data
-    };
+  return {
+    type: 'RESET_ACTIVITY',
+    payload: data
+  };
 }
 
 export function clearCount() {
-    return {
-        type: 'CLEAR_COUNT'
-    };
-}
-
-export function setGeneralActivity(data) {
-    return {
-        type: types.SET_GENERAL_ACTIVITY,
-        payload: data
-    };
+  return {
+    type: 'CLEAR_COUNT'
+  };
 }
 
 export function setCount(data) {
-    return {
-        type: types.SET_COUNT,
-        payload: data
-    };
+  return {
+    type: types.SET_COUNT,
+    payload: data
+  };
 }
 
 export
 function getActivity(userId, skip, reset) {
-  if (!skip) skip = 0;
-  return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/notification?userId='+userId+'&skip='+skip, {
+  let type = 'personal';
+  return (dispatch) => {
+    fetch(process.env.API_SERVER +
+    '/api/notification?userId=' + userId +
+    '&skip=' + skip, {
       credentials: 'include',
       method: 'GET',
       headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       },
     })
-    .then((response) => response.json())
+    .then(response => response.json())
     .then((responseJSON) => {
       if (!reset) {
-        dispatch(setActivity(responseJSON));
+        dispatch(setActivity(responseJSON, type, skip));
       } else {
         dispatch(resetActivity(responseJSON));
       }
     })
+    .catch((error) => {
+      console.log('error', error);
+    });
   };
 }
 
 export
 function getGeneralActivity(userId, skip) {
-  return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/notification/general?skip='+skip+'&avoidUser='+userId, {
+  let type = 'general';
+  return (dispatch) => {
+    fetch(process.env.API_SERVER +
+    '/api/notification/general?skip=' + skip +
+    '&avoidUser=' + userId, {
       credentials: 'include',
       method: 'GET',
       headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       },
     })
-    .then((response) => response.json())
+    .then(response => response.json())
     .then((responseJSON) => {
-      dispatch(setGeneralActivity(responseJSON));
+      dispatch(setActivity(responseJSON, type, skip));
     })
-    // .catch((error) => {
-    //   console.log('error', error)
-    // });
-  }
+    .catch((error) => {
+      console.log('error', error);
+    });
+  };
 }
 
 export
 function markRead(token, userId) {
-  return function(dispatch) {
+  return (dispatch) => {
     //console.log('mark read')
     fetch(process.env.API_SERVER+'/api/notification?access_token='+token+'&forUser='+userId, {
       credentials: 'include',

@@ -6,30 +6,33 @@ export const SHOW_LOADER = 'SHOW_LOADER';
 export const SET_USER = 'SET_USER';
 export const SET_CONTACTS = 'SET_CONTACTS';
 export const SET_USER_INDEX = 'SET_USER_INDEX';
-export const SET_POSTS = 'SET_POSTS';
-export const POST_ERROR = 'POST_ERROR';
-export const POST_SUCCESS = 'POST_SUCCESS';
+
 export const SET_ACTIVE_POST = 'SET_ACTIVE_POST';
-export const SET_SELECTED_USER = 'SET_SELECTED_USER';
 export const SET_RECENT_POSTS = 'SET_RECENT_POSTS';
-export const UPDATE_POST = 'UPDATE_POST';
 export const OPEN_INVEST = 'OPEN_INVEST';
 export const CLOSE_INVEST = 'CLOSE_INVEST';
 export const SET_NOTIF = 'SET_NOTIF';
 export const SET_FEED = 'SET_FEED';
 export const SET_POSTS_BY_RANK = 'SET_POSTS_BY_RANK';
 export const UPDATE_FEED = 'UPDATE_FEED';
-export const SET_DISCOVER_TAGS = 'SET_DISCOVER_TAGS';
+
 export const CLEAR_POSTS = 'CLEAR_POSTS';
-export const SET_MESSAGES = 'SET_MESSAGES';
-export const DESELECT_TAG = 'DESELECT_TAG';
-export const SELECT_TAG = 'SELECT_TAG';
-export const SET_ACTIVITY = 'SET_ACTIVITY';
-export const SET_COUNT = 'SET_COUNT';
-export const REMOVE_POST = 'REMOVE_POST';
-export const SET_PARENT_TAGS = 'SET_PARENT_TAGS';
 export const UPDATE_POSTS = 'UPDATE_POSTS';
 export const ADD_POST = 'ADD_POST';
+export const UPDATE_POST = 'UPDATE_POST';
+export const SET_POSTS = 'SET_POSTS';
+export const POST_ERROR = 'POST_ERROR';
+export const POST_SUCCESS = 'POST_SUCCESS';
+export const SET_MESSAGES = 'SET_MESSAGES';
+export const REMOVE_POST = 'REMOVE_POST';
+
+export const DESELECT_TAG = 'DESELECT_TAG';
+export const SELECT_TAG = 'SELECT_TAG';
+export const SET_PARENT_TAGS = 'SET_PARENT_TAGS';
+
+export const SET_ACTIVITY = 'SET_ACTIVITY';
+export const SET_COUNT = 'SET_COUNT';
+
 export const SET_ANIMATION = 'SET_ANIMATION';
 export const CLEAR_ANIMATION = 'CLEAR_ANIMATION';
 
