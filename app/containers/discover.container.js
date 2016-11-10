@@ -218,7 +218,7 @@ class Discover extends Component {
       );
     }
 
-    if (!this.props.error.discover) {
+    if (this.dataSource && !this.props.error.discover) {
       headerEl = (<DiscoverHeader
         triggerReload={this.triggerReload}
         showHeader={this.state.showHeader}

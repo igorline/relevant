@@ -47,7 +47,6 @@ class CardContainer extends Component {
 
   getDefaultComponent(props) {
     let key = this.default;
-    console.log(props, 'props here')
 
     switch (key) {
       case 'discover':
@@ -56,8 +55,6 @@ class CardContainer extends Component {
         return <Profile {...this.props} navigator={this.props.actions} />;
       case 'activity':
         return <Activity {...this.props} navigator={this.props.actions} />;
-      // case 'createPost':
-        // return <CreatePost {...this.props} navigator={this.props.actions} />;
       case 'read':
         return <Read {...this.props} navigator={this.props.actions} />;
       default:

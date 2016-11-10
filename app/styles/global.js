@@ -57,6 +57,11 @@ const alignment = StyleSheet.create({
 });
 
 const layout = StyleSheet.create({
+  reloadIcon: {
+    height: 100,
+    width: 100,
+    marginBottom: 20
+  },
   modalButtonText: {
     color: 'white',
     backgroundColor: 'transparent'
