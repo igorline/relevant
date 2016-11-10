@@ -37,14 +37,6 @@ function clearUserList() {
   };
 }
 
-// export
-// function setSelectedUser(user) {
-//   return {
-//     type: 'SET_SELECTED_USER',
-//     payload: user
-//   };
-// }
-
 export
 function clearSelectedUser() {
   return {
@@ -66,7 +58,7 @@ function getSelectedUser(userId) {
   return (dispatch) => {
     // dispatch(setSelectedUser(userId));
     // test network error handling
-    // return fetch('10.66.77.88.1/api/user/' + userId,
+    // return fetch('10.255.255.1/api/user/' + userId,
     return fetch(process.env.API_SERVER + '/api/user/' + userId,
       {
         credentials: 'include',
@@ -80,12 +72,12 @@ function getSelectedUser(userId) {
       .then(response => response.json())
       .then((responseJSON) => {
         dispatch(setSelectedUserData(responseJSON));
-        dispatch(errorActions.setError(false));
+        dispatch(errorActions.setError('profile', false));
         return true;
       })
       .catch((error) => {
         console.log(error, 'error');
-        dispatch(errorActions.setError(true, error.message));
+        dispatch(errorActions.setError('profile', true, error.message));
       });
   };
 }
