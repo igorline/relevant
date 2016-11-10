@@ -68,10 +68,12 @@ class Discover extends Component {
     this.type = TYPE_LOOKUP[this.view];
 
     let oldData = this.props.posts[this.type];
-    if (this.type === 'people') oldData = this.props.users.list;
-
     let newData = next.posts[this.type];
-    if (this.type === 'people') newData = next.users.list;
+
+    if (this.type === 'people') {
+      oldData = this.props.users.list;
+      newData = next.users.list;
+    }
 
     // update listview if needed
     if (newData !== oldData) {
@@ -134,6 +136,8 @@ class Discover extends Component {
 
   reload(tags) {
     console.log('REALOAD');
+    if (this.reloading) return;
+    this.reloading = true;
     this.loadPosts(0, tags);
   }
 
@@ -146,12 +150,12 @@ class Discover extends Component {
     } else {
       length = this.props.users.list.length;
     }
+    if (this.loading) return;
+    this.loading = true;
     this.loadPosts(length);
   }
 
   loadPosts(length, _tags) {
-    if (this.loading) return;
-    this.loading = true;
     if (length === 0) this.reloading = true;
     console.log('loading posts');
     const tags = typeof _tags !== 'undefined' ? _tags : this.props.tags.selectedTags;

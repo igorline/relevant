@@ -15,6 +15,7 @@ const initialState = {
   error: false,
   selectedUserData: {},
   list: [],
+  online: [],
   loading: false,
   garbage: []
 };
@@ -39,9 +40,10 @@ export default function auth(state = initialState, action) {
     }
 
     case 'SET_USER_LIST': {
+      let key = action.payload.filter || 'list';
       return Object.assign({}, state, {
-        list: [
-          ...state.list.slice(0, action.payload.index),
+        [key]: [
+          ...state[key].slice(0, action.payload.index),
           ...action.payload.users
         ],
         'loading': false,

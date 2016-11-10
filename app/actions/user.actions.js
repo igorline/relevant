@@ -19,12 +19,13 @@ function getUsersLoading() {
   };
 }
 
-export function setUserList(users, index) {
+export function setUserList(users, index, filter) {
   return {
     type: 'SET_USER_LIST',
     payload: {
       users,
-      index
+      index,
+      filter
     }
   };
 }
@@ -89,6 +90,26 @@ function getSelectedUser(userId) {
   };
 }
 
+// export
+// function getOnlineUsers(userArray, token) {
+//   return (dispatch) => {
+//     return fetch(
+//       process.env.API_SERVER +
+//       '/api/user/mulitiple' + userId +
+//       '?access_token=' + token,
+//       getOptions
+//     )
+//     .then((response) => response.json())
+//     .then((responseJSON) => {
+//       return { status: true, data: responseJSON };
+//     })
+//     .catch((error) => {
+//       console.log(error, 'error');
+//       return { status: false, data: error };
+//     });
+//   };
+// }
+
 export
 function getOnlineUser(userId, token) {
   return (dispatch) => {
@@ -129,20 +150,21 @@ function getPostUser(userId, token) {
   };
 }
 
-export function getUsers(skip, limit) {
+export function getUsers(skip, limit, filter) {
   if (!skip) skip = 0;
   if (!limit) limit = 10;
   let url = process.env.API_SERVER +
-    '/api/user/general/list'
-    + '?skip=' + skip +
-    '&limit=' + limit;
+    '/api/user/general/list' +
+    '?skip=' + skip +
+    '&limit=' + limit +
+    '&filter=' + filter;
   return (dispatch) => {
     dispatch(getUsersLoading());
     fetch(url, getOptions)
     .then(response => response.json())
     .then((responseJSON) => {
       // console.log(responseJSON, 'get users')
-      dispatch(setUserList(responseJSON, skip));
+      dispatch(setUserList(responseJSON, skip, filter));
     })
     .catch((error) => {
       console.log(error, 'error');
