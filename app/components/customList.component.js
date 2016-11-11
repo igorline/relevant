@@ -19,11 +19,17 @@ export default class ActivityView extends Component {
     this.loadMore = this.loadMore.bind(this);
     this.dataSource = null;
     this.lastReload = 0;
+    let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    this.tpmDataSource = ds.cloneWithRows([]);
   }
 
   componentWillMount() {
-    if (this.props.data.length) {
+    if (this.props.data && this.props.data.length) {
       this.updateData(this.props.data);
+      this.lastReload = new Date().getTime();
+    } else if (this.props.active) {
+      this.props.load(this.props.view, 0);
+      this.lastReload = new Date().getTime();
     }
   }
 
@@ -35,8 +41,7 @@ export default class ActivityView extends Component {
     }
 
     if (next.active && next.needsReload > this.lastReload) {
-      let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      this.dataSource = ds.cloneWithRows([]);
+      this.dataSource = null;
       this.props.load(this.props.view, 0);
       this.lastReload = new Date().getTime();
     }
@@ -65,19 +70,19 @@ export default class ActivityView extends Component {
   render() {
     let activityEl;
 
-    if (this.dataSource) {
+    // if (this.dataSource) {
       activityEl = (
         <ListView
           ref={(c) => { this.listview = c; }}
           enableEmptySections
           removeClippedSubviews={false}
-          pageSize={2}
+          pageSize={1}
           initialListSize={3}
           scrollEventThrottle={16}
           automaticallyAdjustContentInsets={false}
           stickyHeaderIndices={this.props.stickyHeaderIndices}
-          dataSource={this.dataSource}
-          renderRow={this.props.renderRow}
+          dataSource={this.dataSource || this.tpmDataSource}
+          renderRow={row => this.props.renderRow(row, this.props.view)}
           contentInset={{ top: this.props.YOffset || 0 }}
           contentOffset={{ y: -this.props.YOffset || 0 }}
           renderHeader={this.props.renderHeader}
@@ -101,7 +106,7 @@ export default class ActivityView extends Component {
           }
         />
       );
-    }
+    // }
 
     return (
       <View style={this.props.active ? { flex: 1 } : { flex: 0, height: 0 }}>
