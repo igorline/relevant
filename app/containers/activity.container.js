@@ -14,6 +14,7 @@ import SingleActivity from '../components/activity.component';
 import DiscoverUser from '../components/discoverUser.component';
 import Tabs from '../components/tabs.component';
 import ActivityView from '../components/activityList.component';
+import ErrorComponent from '../components/error.component';
 
 const localStyles = StyleSheet.create({});
 const styles = { ...localStyles, ...globalStyles };
@@ -58,6 +59,8 @@ class Activity extends Component {
   }
 
   load(view, length) {
+    if (!view) view = this.state.view;
+    if (!length) length = 0;
     switch (view) {
       case 0:
         this.props.actions.getActivity(this.props.auth.user._id, length);
@@ -97,35 +100,39 @@ class Activity extends Component {
 
   render() {
     let tabsEl = null;
+    let tabView = null;
 
-    let tabView = this.tabs.map((tab) => {
-      let tabData = this.getViewData(this.props, tab.id);
-      let active = this.state.view === tab.id;
-      return (
-        <ActivityView
-          ref={((c) => { this.tabs[tab.id].component = c; })}
-          key={tab.id}
-          data={tabData}
-          renderRow={this.renderRow}
-          load={this.load}
-          view={tab.id}
-          active={active}
+    if (!this.props.error.activity) {
+      tabView = this.tabs.map((tab) => {
+        let tabData = this.getViewData(this.props, tab.id);
+        let active = this.state.view === tab.id;
+        return (
+          <ActivityView
+            ref={((c) => { this.tabs[tab.id].component = c; })}
+            key={tab.id}
+            data={tabData}
+            renderRow={this.renderRow}
+            load={this.load}
+            view={tab.id}
+            active={active}
+          />
+        );
+      });
+
+      tabsEl = (
+        <Tabs
+          tabs={this.tabs}
+          active={this.state.view}
+          handleChange={this.changeView}
         />
       );
-    });
-
-    tabsEl = (
-      <Tabs
-        tabs={this.tabs}
-        active={this.state.view}
-        handleChange={this.changeView}
-      />
-    );
+    }
 
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {tabsEl}
         {tabView}
+        <ErrorComponent parent={'activity'} reloadFunction={this.load} />
       </View>
     );
   }
@@ -137,6 +144,7 @@ function mapStateToProps(state) {
     notif: state.notif,
     users: state.user,
     stats: state.stats,
+    error: state.error,
     refresh: state.navigation.activity.refresh
   };
 }

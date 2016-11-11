@@ -1,6 +1,5 @@
 import * as utils from '../utils';
 import * as errorActions from './error.actions';
-
 require('../publicenv');
 
 const getOptions = {
@@ -155,11 +154,12 @@ export function getUsers(skip, limit, filter) {
     fetch(url, getOptions)
     .then(response => response.json())
     .then((responseJSON) => {
-      // console.log(responseJSON, 'get users')
+      dispatch(errorActions.setError('activity', false));
       dispatch(setUserList(responseJSON, skip, filter));
     })
     .catch((error) => {
       console.log(error, 'error');
+       dispatch(errorActions.setError('activity', true, error.message));
     });
   };
 }
