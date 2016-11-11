@@ -22,7 +22,9 @@ export default class ActivityView extends Component {
   }
 
   componentWillMount() {
-    this.updateData(this.props.data);
+    if (this.props.data.length) {
+      this.updateData(this.props.data);
+    }
   }
 
   componentWillReceiveProps(next) {
@@ -41,6 +43,7 @@ export default class ActivityView extends Component {
   }
 
   updateData(data) {
+    if (!data.length) data = [{ fakePost: true }];
     let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.dataSource = ds.cloneWithRows(data);
   }
@@ -71,10 +74,13 @@ export default class ActivityView extends Component {
           pageSize={2}
           initialListSize={3}
           scrollEventThrottle={16}
+          automaticallyAdjustContentInsets={false}
+          stickyHeaderIndices={this.props.stickyHeaderIndices}
           dataSource={this.dataSource}
           renderRow={this.props.renderRow}
           contentInset={{ top: this.props.YOffset || 0 }}
           contentOffset={{ y: -this.props.YOffset || 0 }}
+          renderHeader={this.props.renderHeader}
           contentContainerStyle={{
             position: 'absolute',
             top: 0,
@@ -98,7 +104,7 @@ export default class ActivityView extends Component {
     }
 
     return (
-      <View style={this.props.active ? { flex: 1 } : { flex: 0 }}>
+      <View style={this.props.active ? { flex: 1 } : { flex: 0, height: 0 }}>
         {activityEl}
         <CustomSpinner visible={!this.dataSource && this.props.active} />
       </View>
