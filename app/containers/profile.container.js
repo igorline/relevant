@@ -57,14 +57,18 @@ class Profile extends Component {
       this.myProfile = false;
       this.userId = this.props.scene.id;
       this.userData = this.props.users.selectedUserData[this.userId];
+      InteractionManager.runAfterInteractions(() => {
+        if (!this.userData) this.loadUser();
+        this.loadContent = true;
+        this.setState({});
+      });
     } else {
       this.myProfile = true;
       this.userId = this.props.auth.user._id;
       this.userData = this.props.auth.user;
-    }
-    InteractionManager.runAfterInteractions(() => {
       this.loadUser();
-    });
+      this.loadContent = true;
+    }
   }
 
   componentWillReceiveProps(next) {
@@ -85,11 +89,7 @@ class Profile extends Component {
   }
 
   loadUser() {
-    if (this.myProfile) {
-      this.props.actions.getSelectedUser(this.userId);
-    } else {
-      this.props.actions.getSelectedUser(this.userId);
-    }
+    this.props.actions.getSelectedUser(this.userId);
   }
 
   load(view, length) {
@@ -115,22 +115,22 @@ class Profile extends Component {
     this.setState({ view });
   }
 
-  renderRow(rowData, sectionID, rowID) {
-    if (this.state.view === 0) {
+  renderRow(rowData, view) {
+    if (view === 0) {
       if (!rowData.fakePost) {
         return (<Post
-          key={rowID}
           post={rowData}
           {...this.props}
           styles={styles}
         />);
       }
-      return (<View key={rowID}>
-        <Text>No posts bruh</Text>
-      </View>);
+      return (
+        <View>
+          <Text>No posts bruh</Text>
+        </View>
+      );
     } else if (!rowData.fakePost) {
       return (<Investment
-        key={rowID}
         investment={rowData}
         {...this.props}
         styles={styles}
@@ -174,6 +174,7 @@ class Profile extends Component {
   }
 
   render() {
+
     let tabView = this.tabs.map((tab) => {
       let tabData = this.getViewData(this.props, tab.id) || [];
       let active = this.state.view === tab.id;
@@ -202,12 +203,12 @@ class Profile extends Component {
           flexGrow: 1,
           alignItems: 'stretch' }}
       >
-        {tabView}
+        {this.loadContent ? tabView : null}
         <ErrorComponent parent={'profile'} reloadFunction={this.loadUser} />
         <CustomSpinner
           visible={
             (!this.userId ||
-            !this.userData) &&
+            !this.userData || !this.loadContent) &&
             !this.props.error.profile
           }
         />
