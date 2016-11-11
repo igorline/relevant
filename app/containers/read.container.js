@@ -19,33 +19,7 @@ import * as navigationActions from '../actions/navigation.actions';
 import ErrorComponent from '../components/error.component';
 import CustomListView from '../components/customList.component';
 
-const localStyles = StyleSheet.create({
-  thirstyHeader: {
-    alignItems: 'center',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#F0F0F0',
-    padding: 10,
-    flexDirection: 'row'
-  },
-  messagesCount: {
-    backgroundColor: 'red',
-    padding: 5,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  recentNames: {
-    flexDirection: 'row',
-  },
-  recentName: {
-    color: 'gray'
-  },
-  readHeader: {
-    marginBottom: 10
-  },
-});
-
-let styles = { ...localStyles, ...globalStyles };
+let styles;
 
 class Read extends Component {
   constructor(props, context) {
@@ -191,6 +165,34 @@ class Read extends Component {
     );
   }
 }
+
+const localStyles = StyleSheet.create({
+  thirstyHeader: {
+    alignItems: 'center',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#F0F0F0',
+    padding: 10,
+    flexDirection: 'row'
+  },
+  messagesCount: {
+    backgroundColor: 'red',
+    padding: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  recentNames: {
+    flexDirection: 'row',
+  },
+  recentName: {
+    color: 'gray'
+  },
+  readHeader: {
+    marginBottom: 10
+  },
+});
+
+styles = { ...localStyles, ...globalStyles };
 
 function mapStateToProps(state) {
   return {

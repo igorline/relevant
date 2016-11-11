@@ -58,7 +58,7 @@ class Profile extends Component {
       this.userId = this.props.scene.id;
       this.userData = this.props.users.selectedUserData[this.userId];
       InteractionManager.runAfterInteractions(() => {
-        if (!this.userData) this.loadUser();
+        // if (!this.userData) this.loadUser();
         this.loadContent = true;
         this.setState({});
       });
@@ -96,6 +96,8 @@ class Profile extends Component {
     if (view === undefined) view === this.state.view;
     if (length === undefined) length = 0;
 
+    if (length === 0) this.loadUser();
+
     if (this.state.view === 0) {
       this.props.actions.getUserPosts(
         length,
@@ -118,32 +120,19 @@ class Profile extends Component {
   renderRow(rowData, view) {
     if (view === 0) {
       if (!rowData.fakePost) {
-        return (<Post
-          post={rowData}
-          {...this.props}
-          styles={styles}
-        />);
+        return (<Post post={rowData} {...this.props} />);
       }
       return (
-        <View>
-          <Text>No posts bruh</Text>
-        </View>
+        <View><Text>No posts bruh</Text></View>
       );
     } else if (!rowData.fakePost) {
-      return (<Investment
-        investment={rowData}
-        {...this.props}
-        styles={styles}
-      />);
+      return (<Investment investment={rowData} {...this.props} />);
     }
-    return (<View>
-      <Text>No investments bruh</Text>
-    </View>);
+    return (<View><Text>No investments bruh</Text></View>);
   }
 
   renderHeader() {
     const header = [];
-
     if (this.userId && this.userData) {
       header.push(<ProfileComponent
         key={0}
@@ -174,7 +163,6 @@ class Profile extends Component {
   }
 
   render() {
-
     let tabView = this.tabs.map((tab) => {
       let tabData = this.getViewData(this.props, tab.id) || [];
       let active = this.state.view === tab.id;
