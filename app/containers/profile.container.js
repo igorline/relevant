@@ -58,7 +58,6 @@ class Profile extends Component {
       this.userId = this.props.scene.id;
       this.userData = this.props.users.selectedUserData[this.userId];
       InteractionManager.runAfterInteractions(() => {
-        // if (!this.userData) this.loadUser();
         this.loadContent = true;
         this.setState({});
       });
@@ -66,7 +65,6 @@ class Profile extends Component {
       this.myProfile = true;
       this.userId = this.props.auth.user._id;
       this.userData = this.props.auth.user;
-      this.loadUser();
       this.loadContent = true;
     }
   }
@@ -177,7 +175,7 @@ class Profile extends Component {
           active={active}
           needsReload={this.needsReload}
           renderHeader={this.renderHeader}
-          stickyHeaderIndices={[1]}
+          stickyHeaderIndices={(this.userId && this.userData) ? [1] : []}
         />
       );
     });
