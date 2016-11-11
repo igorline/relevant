@@ -70,43 +70,41 @@ export default class ActivityView extends Component {
   render() {
     let activityEl;
 
-    // if (this.dataSource) {
-      activityEl = (
-        <ListView
-          ref={(c) => { this.listview = c; }}
-          enableEmptySections
-          removeClippedSubviews={false}
-          pageSize={1}
-          initialListSize={3}
-          scrollEventThrottle={16}
-          automaticallyAdjustContentInsets={false}
-          stickyHeaderIndices={this.props.stickyHeaderIndices}
-          dataSource={this.dataSource || this.tpmDataSource}
-          renderRow={row => this.props.renderRow(row, this.props.view)}
-          contentInset={{ top: this.props.YOffset || 0 }}
-          contentOffset={{ y: -this.props.YOffset || 0 }}
-          renderHeader={this.props.renderHeader}
-          contentContainerStyle={{
-            position: 'absolute',
-            top: 0,
-            flex: 1,
-            width: fullWidth
-          }}
-          onScroll={this.props.onScroll}
-          onEndReached={this.loadMore}
-          onEndReachedThreshold={100}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.reloading}
-              onRefresh={this.reload}
-              tintColor="#000000"
-              colors={['#000000', '#000000', '#000000']}
-              progressBackgroundColor="#ffffff"
-            />
-          }
-        />
-      );
-    // }
+    activityEl = (
+      <ListView
+        ref={(c) => { this.listview = c; }}
+        enableEmptySections
+        removeClippedSubviews={false}
+        pageSize={1}
+        initialListSize={3}
+        scrollEventThrottle={16}
+        automaticallyAdjustContentInsets={false}
+        stickyHeaderIndices={this.props.stickyHeaderIndices}
+        dataSource={this.dataSource || this.tpmDataSource}
+        renderRow={row => this.props.renderRow(row, this.props.view)}
+        contentInset={{ top: this.props.YOffset || 0 }}
+        contentOffset={{ y: -this.props.YOffset || 0 }}
+        renderHeader={this.props.renderHeader}
+        contentContainerStyle={{
+          position: 'absolute',
+          top: 0,
+          flex: 1,
+          width: fullWidth
+        }}
+        onScroll={this.props.onScroll}
+        onEndReached={this.loadMore}
+        onEndReachedThreshold={100}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.reloading}
+            onRefresh={this.reload}
+            tintColor="#000000"
+            colors={['#000000', '#000000', '#000000']}
+            progressBackgroundColor="#ffffff"
+          />
+        }
+      />
+    );
 
     return (
       <View style={this.props.active ? { flex: 1 } : { flex: 0, height: 0 }}>
