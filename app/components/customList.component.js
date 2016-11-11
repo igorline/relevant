@@ -17,11 +17,12 @@ export default class ActivityView extends Component {
     };
     this.reload = this.reload.bind(this);
     this.loadMore = this.loadMore.bind(this);
+    this.dataSource = null;
+    this.lastReload = 0;
   }
 
   componentWillMount() {
     this.updateData(this.props.data);
-    if (!this.props.data.length) this.loadMore();
   }
 
   componentWillReceiveProps(next) {
@@ -30,11 +31,14 @@ export default class ActivityView extends Component {
       this.setState({ reloading: false });
       this.setState({ loading: false });
     }
-  }
 
-  // scrollToTop() {
-  //   if (this.listview) this.listview.scrollTo({ y: 0, animated: true });
-  // }
+    if (next.active && next.needsReload > this.lastReload) {
+      let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      this.dataSource = ds.cloneWithRows([]);
+      this.props.load(this.props.view, 0);
+      this.lastReload = new Date().getTime();
+    }
+  }
 
   updateData(data) {
     let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
@@ -43,13 +47,15 @@ export default class ActivityView extends Component {
 
   reload() {
     if (this.state.loading || this.state.reloading) return;
-    this.setState({ reloading: false });
+    this.lastReload = (new Date()).getTime();
+    this.setState({ reloading: true });
     this.props.load(this.props.view, 0);
   }
 
   loadMore() {
+    if (!this.props.active) return;
     if (this.state.loading || this.state.reloading) return;
-    this.setState({ loading: false });
+    this.setState({ loading: true });
     this.props.load(this.props.view, this.props.data.length);
   }
 
@@ -62,17 +68,20 @@ export default class ActivityView extends Component {
           ref={(c) => { this.listview = c; }}
           enableEmptySections
           removeClippedSubviews={false}
-          pageSize={1}
-          initialListSize={1}
+          pageSize={2}
+          initialListSize={3}
           scrollEventThrottle={16}
           dataSource={this.dataSource}
           renderRow={this.props.renderRow}
+          contentInset={{ top: this.props.YOffset || 0 }}
+          contentOffset={{ y: -this.props.YOffset || 0 }}
           contentContainerStyle={{
             position: 'absolute',
             top: 0,
             flex: 1,
             width: fullWidth
           }}
+          onScroll={this.props.onScroll}
           onEndReached={this.loadMore}
           onEndReachedThreshold={100}
           refreshControl={
