@@ -42,7 +42,7 @@ class DiscoverUser extends Component {
         if (relevance) percent = Math.round(change * 100);
 
         if (percent === 0) {
-          percentEl = (<Text style={[{ textAlign: 'right' }, styles.active]}>no change</Text>);
+          percentEl = (<Text style={[{ textAlign: 'right' }, styles.active]}>0%</Text>);
         } else if (percent > 0) {
           percentEl = (<Text style={[{ textAlign: 'right' }, styles.active]}>⬆️{percent}%</Text>);
         } else if (percent < 0) {

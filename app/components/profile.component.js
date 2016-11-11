@@ -92,7 +92,7 @@ class ProfileComponent extends Component {
     }
 
     if (percent == 0) {
-      relevanceEl = (<Text>📈<Text style={styles.active}>{relevance} no change</Text></Text>);
+      relevanceEl = (<Text>📈<Text style={styles.active}>{relevance} 0%</Text></Text>);
     }
     if (percent > 0) {
       relevanceEl = (<Text>📈<Text style={styles.active}>{relevance} ⬆️{percent}%</Text></Text>);
