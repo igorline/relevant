@@ -1,5 +1,5 @@
 import * as types from './actionTypes';
-
+import * as errorActions from './error.actions';
 require('../publicenv');
 // const apiServer = process.env.API_SERVER + '/api/';
 
@@ -55,9 +55,11 @@ function getActivity(userId, skip, reset) {
       } else {
         dispatch(resetActivity(responseJSON));
       }
+      dispatch(errorActions.setError('activity', false));
     })
     .catch((error) => {
       console.log('error', error);
+       dispatch(errorActions.setError('activity', true, error.message));
     });
   };
 }
@@ -79,9 +81,11 @@ function getGeneralActivity(userId, skip) {
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(setActivity(responseJSON, type, skip));
+       dispatch(errorActions.setError('activity', false));
     })
     .catch((error) => {
       console.log('error', error);
+       dispatch(errorActions.setError('activity', true, error.message));
     });
   };
 }
