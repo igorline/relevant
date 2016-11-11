@@ -21,6 +21,7 @@ import * as userActions from '../actions/user.actions';
 import * as tagActions from '../actions/tag.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import ErrorComponent from '../components/error.component';
+import CustomListView from '../components/customList.component';
 
 const localStyles = StyleSheet.create({
   thirstyHeader: {
@@ -53,57 +54,36 @@ let styles = { ...localStyles, ...globalStyles };
 class Read extends Component {
   constructor(props, context) {
     super(props, context);
-    this.renderFeedRow = this.renderFeedRow.bind(this);
-    this.loadMore = this.loadMore.bind(this);
-    this.reload = this.reload.bind(this);
+    this.renderRow = this.renderRow.bind(this);
+    this.load = this.load.bind(this);
+    this.needsReload = new Date().getTime();
+
+    this.tabs = [
+      { id: 0, title: 'Feed', type: 'feed' },
+    ];
   }
 
   componentWillMount() {
-    InteractionManager.runAfterInteractions(() => {
-      this.reload();
-    });
   }
 
   componentWillReceiveProps(next) {
-    if (next.posts.feed !== this.props.posts.feed) {
-      let fd = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      this.feedData = fd.cloneWithRows(next.posts.feed);
-      this.loading = false;
-      this.refresh = false;
-    }
 
-    if (next.error) this.loading = false;
-
+    // if (next.error) this.loading = false;
     if (this.props.refresh !== next.refresh) {
-      this.triggerReload();
+      this.scrollToTop();
     }
-
     // if (this.props.posts.newFeedAvailable !== next.posts.newFeedAvailable) {
     //   if (next.posts.newFeedAvailable) console.log('newFeedAvailable');
     // }
   }
 
-  triggerReload() {
-    // setTimeout(() => this.reload(), 100);
-    if (this.listview) this.listview.scrollTo({ y: 0, animated: true });
-    this.setState({});
+  scrollToTop() {
+    let view = this.listview;
+    if (view) view.listview.scrollTo({ y: 0, animated: true });
   }
 
-  reload() {
-    this.loadPosts(0);
-  }
-
-  loadMore() {
-    // if (this.props.error) return;
-    const length = this.props.posts.feed.length;
-    this.loadPosts(length);
-  }
-
-  loadPosts(length, _tag) {
-    if (this.loading) return;
-    this.loading = true;
-    if (length === 0) this.refresh = true;
-    const tag = typeof _tag !== 'undefined' ? _tag : this.props.posts.tag;
+  load(view, length) {
+    const tag = this.props.posts.tag;
     this.props.actions.getFeed(length, tag);
   }
 
@@ -115,18 +95,18 @@ class Read extends Component {
     });
   }
 
-  renderFeedRow(rowData) {
+  renderRow(rowData) {
     return (
       <Post post={rowData} {...this.props} styles={styles} />
     );
   }
 
   render() {
-    let postsEl = null;
     let messagesCount = null;
     let recentMessages = [];
     let thirstyHeader = null;
     let messages = null;
+    let noPosts = null;
 
     if (this.props.messages.index.length > 0) {
       messages = this.props.messages.index;
@@ -142,33 +122,27 @@ class Read extends Component {
       }
     }
 
-    if (this.feedData && this.props.posts.feed.length && !this.props.error.read) {
-      postsEl = (
-        <ListView
+    let postsEl = this.tabs.map((tab) => {
+      let tabData = this.props.posts.feed;
+      let active = true;
+      return (
+        <CustomListView
           ref={(c) => { this.listview = c; }}
-          enableEmptySections
-          removeClippedSubviews={false}
-          pageSize={3}
-          initialListSize={3}
-          dataSource={this.feedData}
-          renderRow={this.renderFeedRow}
-          onEndReached={this.loadMore}
-          onEndReachedThreshold={100}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.refresh}
-              onRefresh={this.reload}
-              tintColor="#000000"
-              colors={['#000000', '#000000', '#000000']}
-              progressBackgroundColor="#ffffff"
-            />
-          }
+          key={tab.id}
+          data={tabData}
+          renderRow={this.renderRow}
+          load={this.load}
+          view={tab.id}
+          active={active}
+          needsReload={this.needsReload}
         />
       );
-    }
+    });
 
-    if (this.feedData && this.props.posts.feed.length === 0) {
-      postsEl = (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text style={[{ fontWeight: '500' }, styles.darkGray]}>Nothing in yr feed bruh</Text></View>);
+    if (this.props.posts.feed.length === 0
+      && this.listview
+      && this.listview.dataSource) {
+      noPosts = (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text style={[{ fontWeight: '500' }, styles.darkGray]}>Nothing in yr feed bruh</Text></View>);
     }
 
     if (this.props.messages.count > 0) {
@@ -206,8 +180,8 @@ class Read extends Component {
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {thirstyHeader}
+        {noPosts}
         {postsEl}
-        <CustomSpinner visible={!this.feedData && !this.props.error.read} />
        <ErrorComponent parent={'read'} reloadFunction={this.reload} />
       </View>
     );

@@ -13,7 +13,7 @@ import * as notifActions from '../actions/notif.actions';
 import SingleActivity from '../components/activity.component';
 import DiscoverUser from '../components/discoverUser.component';
 import Tabs from '../components/tabs.component';
-import ActivityView from '../components/activityList.component';
+import CustomListView from '../components/customList.component';
 
 const localStyles = StyleSheet.create({});
 const styles = { ...localStyles, ...globalStyles };
@@ -28,6 +28,8 @@ class Activity extends Component {
     this.changeView = this.changeView.bind(this);
     this.getViewData = this.getViewData.bind(this);
     this.load = this.load.bind(this);
+    this.needsReload = new Date().getTime();
+
     this.tabs = [
       { id: 0, title: 'Personal' },
       { id: 1, title: 'General' },
@@ -102,14 +104,15 @@ class Activity extends Component {
       let tabData = this.getViewData(this.props, tab.id);
       let active = this.state.view === tab.id;
       return (
-        <ActivityView
-          ref={((c) => { this.tabs[tab.id].component = c; })}
+        <CustomListView
+          ref={(c) => { this.tabs[tab.id].component = c; }}
           key={tab.id}
           data={tabData}
           renderRow={this.renderRow}
           load={this.load}
           view={tab.id}
           active={active}
+          needsReload={this.needsReload}
         />
       );
     });
@@ -147,7 +150,8 @@ function mapDispatchToProps(dispatch) {
       ...postActions,
       ...notifActions,
       ...statsActions,
-      ...userActions },
+      ...userActions
+    },
     dispatch),
   };
 }

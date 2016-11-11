@@ -21,7 +21,7 @@ export default class DiscoverHeader extends Component {
     };
     this.search = this.search.bind(this);
     this.headerHeight = 134;
-    this.changeView = this.changeView.bind(this);
+    // this.changeView = this.changeView.bind(this);
   }
 
   componentDidMount() {
@@ -56,11 +56,11 @@ export default class DiscoverHeader extends Component {
      ).start();
   }
 
-  changeView(view) {
-    this.layout = false;
-    if (this.props.view === view) this.props.triggerReload();
-    this.props.actions.setView('discover', view);
-  }
+  // changeView(view) {
+  //   this.layout = false;
+  //   if (this.props.view === view) this.props.triggerReload();
+  //   this.props.actions.setView('discover', view);
+  // }
 
   search(term) {
     if (term && term.length > 1) {
@@ -76,11 +76,6 @@ export default class DiscoverHeader extends Component {
   }
 
   render() {
-    let tabs = [
-      { id: 1, title: 'New' },
-      { id: 2, title: 'Top' },
-      { id: 3, title: 'People' }
-    ];
 
     let tags = (
       <View>
@@ -113,7 +108,7 @@ export default class DiscoverHeader extends Component {
     );
 
 
-    if (this.props.view === 3) {
+    if (this.props.view === 2) {
       tags = null;
       search = null;
     }
@@ -143,9 +138,9 @@ export default class DiscoverHeader extends Component {
         {search}
         {tags}
         <Tabs
-          tabs={tabs}
+          tabs={this.props.tabs}
           active={this.props.view}
-          handleChange={this.changeView}
+          handleChange={this.props.changeView}
         />
       </Animated.View>
     );
