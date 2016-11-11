@@ -3,6 +3,8 @@ import {
   StyleSheet,
   Text,
   View,
+  ListView,
+  RefreshControl,
   InteractionManager,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -27,7 +29,6 @@ import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
 import Tabs from '../components/tabs.component';
-import CustomListView from '../components/customList.component';
 
 let styles;
 let localStyles;
@@ -36,20 +37,19 @@ class Profile extends Component {
   constructor(props, context) {
     super(props, context);
     this.renderHeader = this.renderHeader.bind(this);
-    this.renderRow = this.renderRow.bind(this);
-    this.load = this.load.bind(this);
+    this.renderFeedRow = this.renderFeedRow.bind(this);
+    this.loadMore = this.loadMore.bind(this);
     this.loadUser = this.loadUser.bind(this);
     this.changeView = this.changeView.bind(this);
     this.state = {
-      view: 0,
+      view: 1,
     };
+    this.enabled = true;
     this.userData = null;
     this.userId = null;
-    this.needsReload = new Date().getTime();
-    this.tabs = [
-      { id: 0, title: 'Posts' },
-      { id: 1, title: 'Investments' },
-    ];
+    this.postsData = null;
+    this.investmentsData = null;
+    this.loading = false;
   }
 
   componentWillMount() {
@@ -68,55 +68,104 @@ class Profile extends Component {
   }
 
   componentWillReceiveProps(next) {
+    let newPosts;
+    let oldPosts;
+    let oldUserData;
+    let newUserData;
+    let newInvestments;
+    let oldInvestments;
+
+    newPosts = next.posts.userPosts[this.userId];
+    oldPosts = this.props.posts.userPosts[this.userId];
+    newInvestments = next.investments.userInvestments[this.userId];
+    oldInvestments = this.props.investments.userInvestments[this.userId];
+
     if (this.myProfile) {
-      this.userData = next.auth.user;
+      oldUserData = this.props.auth.user;
+      newUserData = next.auth.user;
     } else {
-      this.userData = next.users.selectedUserData[this.userId];
+      oldUserData = this.props.users.selectedUserData[this.userId];
+      newUserData = next.users.selectedUserData[this.userId];
     }
 
-    if (this.props.refresh !== next.refresh) {
-      this.scrollToTop();
+    if (oldUserData !== newUserData) {
+      this.userData = newUserData;
+    }
+
+    if (newPosts !== oldPosts && newPosts) {
+      let altered = null;
+      if (!newPosts.length) {
+        altered = [{ fakePost: true }];
+      } else {
+        altered = newPosts;
+      }
+      this.posts = newPosts;
+      this.createPosts(altered);
+    }
+
+    if (newInvestments !== oldInvestments && newInvestments) {
+      let altered = null;
+      if (!newInvestments.length) {
+        altered = [{ fakeInvestment: true }];
+      } else {
+        altered = newInvestments;
+      }
+      this.investments = newInvestments;
+      this.createInvestments(altered);
     }
   }
 
-  scrollToTop() {
-    let view = this.tabs[this.state.view].component.listview;
-    if (view) view.scrollTo({ y: 0, animated: true });
+  createInvestments(investments) {
+    let id = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    this.investmentsData = id.cloneWithRows(investments);
+  }
+
+  createPosts(posts) {
+    let pd = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    this.postsData = pd.cloneWithRows(posts);
   }
 
   loadUser() {
     if (this.myProfile) {
+      this.props.actions.getInvestments(this.props.auth.token, this.userId, 0, 10, 'myInvestments');
       this.props.actions.getSelectedUser(this.userId);
+      this.props.actions.getUserPosts(0, 5, this.userId, 'myPosts');
     } else {
+      this.props.actions.getInvestments(this.props.auth.token, this.userId, 0, 10, 'userInvestments');
       this.props.actions.getSelectedUser(this.userId);
+      this.props.actions.getUserPosts(0, 5, this.userId, 'userPosts');
     }
   }
 
-  load(view, length) {
-    if (view === undefined) view === this.state.view;
-    if (length === undefined) length = 0;
+  loadMore() {
+    const self = this;
+    if (!this.enabled) return;
 
-    if (this.state.view === 0) {
+    if (this.state.view === 1) {
       this.props.actions.getUserPosts(
-        length,
+        this.posts.length,
         5,
         this.userId);
     } else {
       this.props.actions.getInvestments(
         this.props.auth.token,
         this.userId,
-        length,
+        this.investments.length,
         10);
     }
+
+    this.enabled = false;
+    setTimeout(() => {
+      self.enabled = true;
+    }, 1000);
   }
 
   changeView(view) {
-    if (view === this.state.view) this.scrollToTop();
     this.setState({ view });
   }
 
-  renderRow(rowData, sectionID, rowID) {
-    if (this.state.view === 0) {
+  renderFeedRow(rowData, sectionID, rowID) {
+    if (this.state.view === 1) {
       if (!rowData.fakePost) {
         return (<Post
           key={rowID}
@@ -128,21 +177,28 @@ class Profile extends Component {
       return (<View key={rowID}>
         <Text>No posts bruh</Text>
       </View>);
-    } else if (!rowData.fakePost) {
-      return (<Investment
-        key={rowID}
-        investment={rowData}
-        {...this.props}
-        styles={styles}
-      />);
+    } else {
+      if (!rowData.fakeInvestment) {
+        return (<Investment
+          key={rowID}
+          investment={rowData}
+          {...this.props}
+          styles={styles}
+        />);
+      } else {
+        return (<View>
+          <Text>No investments bruh</Text>
+        </View>);
+      }
     }
-    return (<View>
-      <Text>No investments bruh</Text>
-    </View>);
   }
 
   renderHeader() {
     const header = [];
+    let tabs = [
+      { id: 1, title: 'Posts' },
+      { id: 2, title: 'Investments' }
+    ];
 
     if (this.userId && this.userData) {
       header.push(<ProfileComponent
@@ -154,44 +210,46 @@ class Profile extends Component {
 
       header.push(<Tabs
         key={1}
-        tabs={this.tabs}
+        tabs={tabs}
         active={this.state.view}
         handleChange={this.changeView}
       />);
     }
+
     return header;
   }
 
-  getViewData(props, view) {
-    switch (view) {
-      case 0:
-        return this.props.posts.userPosts[this.userId];
-      case 1:
-        return this.props.investments.userInvestments[this.userId];
-      default:
-        return null;
-    }
-  }
-
   render() {
-    let tabView = this.tabs.map((tab) => {
-      let tabData = this.getViewData(this.props, tab.id) || [];
-      let active = this.state.view === tab.id;
-      return (
-        <CustomListView
-          ref={(c) => { this.tabs[tab.id].component = c; }}
-          key={tab.id}
-          data={tabData}
-          renderRow={this.renderRow}
-          load={this.load}
-          view={tab.id}
-          active={active}
-          needsReload={this.needsReload}
-          renderHeader={this.renderHeader}
+    let view = this.state.view;
+    let postsEl = null;
+
+    if (this.postsData && this.investmentsData && this.userId && this.userData && !this.props.error.profile) {
+      postsEl = (
+        <ListView
+          ref={(c) => { this.listview = c; }}
+          enableEmptySections
+          removeClippedSubviews={false}
+          pageSize={1}
+          initialListSize={2}
           stickyHeaderIndices={[1]}
-        />
-      );
-    });
+          automaticallyAdjustContentInsets={false}
+          dataSource={view === 1 ? this.postsData : this.investmentsData}
+          renderHeader={this.renderHeader}
+          scrollEventThrottle={16}
+          renderRow={this.renderFeedRow}
+          onEndReached={this.loadMore}
+          onEndReachedThreshold={100}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.loading}
+              onRefresh={this.loadUser}
+              tintColor="#000000"
+              colors={['#000000', '#000000', '#000000']}
+              progressBackgroundColor="#ffffff"
+            />
+          }
+        />);
+    }
 
     return (
       <View
@@ -202,13 +260,14 @@ class Profile extends Component {
           flexGrow: 1,
           alignItems: 'stretch' }}
       >
-        {tabView}
+        {postsEl}
         <ErrorComponent parent={'profile'} reloadFunction={this.loadUser} />
         <CustomSpinner
           visible={
-            (!this.userId ||
-            !this.userData) &&
-            !this.props.error.profile
+            (!this.postsData ||
+            !this.investmentsData ||
+            !this.userId ||
+            !this.userData) && !this.props.error.profile
           }
         />
       </View>
@@ -230,7 +289,6 @@ function mapStateToProps(state) {
     view: state.view,
     stats: state.stats,
     investments: state.investments,
-    refresh: state.navigation.myProfile.refresh,
   };
 }
 
