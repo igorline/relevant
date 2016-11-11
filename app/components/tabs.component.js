@@ -18,20 +18,23 @@ export default function (props) {
         underlayColor={'white'}
         style={[
           styles.typeParent,
-          active ? styles.activeBorder : styles.inactiveBorder
+          { alignItems: 'stretch' }
         ]}
         onPress={() => props.handleChange(tab.id)}
       >
-        <Text
-          style={[
-            styles.type,
-            styles.darkGray,
-            styles.font15,
-            active ? styles.active : null,
-          ]}
-        >
-          {tab.title}
-        </Text>
+        <View style={{ position: 'relative', alignItems: 'stretch', flex: 1, justifyContent: 'center' }}>
+          <Text
+            style={[
+              styles.darkGray,
+              styles.font15,
+              active ? styles.active : null,
+              { textAlign: 'center' }
+            ]}
+          >
+            {tab.title}
+          </Text>
+          <View style={{ flex: 1, height: 5, backgroundColor: active ? '#3E3EFF' : 'transparent', position: 'absolute', bottom: 0, right: 0, left: 0 }}></View>
+        </View>
       </TouchableHighlight>
     );
   });
@@ -45,8 +48,8 @@ export default function (props) {
 
 const localStyles = StyleSheet.create({
   typeParent: {
-    paddingTop: 15,
-    paddingBottom: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1
   },
   tabsParent: {

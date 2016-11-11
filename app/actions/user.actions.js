@@ -159,7 +159,7 @@ export function getUsers(skip, limit, filter) {
     })
     .catch((error) => {
       console.log(error, 'error');
-       dispatch(errorActions.setError('activity', true, error.message));
+      dispatch(errorActions.setError('activity', true, error.message));
     });
   };
 }
