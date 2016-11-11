@@ -106,7 +106,7 @@ export default class ActivityView extends Component {
     );
 
     return (
-      <View style={this.props.active ? { flex: 1 } : { flex: 0, height: 0 }}>
+      <View style={{ flex: this.props.active ? 1 : 0, width: fullWidth }}>
         {activityEl}
         <CustomSpinner visible={!this.dataSource && this.props.active} />
       </View>

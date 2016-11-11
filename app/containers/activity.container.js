@@ -133,7 +133,7 @@ class Activity extends Component {
     }
 
     return (
-      <View style={[{ flex: 1, backgroundColor: 'white', borderWidth: 3, borderColor: 'red' }]}>
+      <View style={[{ flex: 1, backgroundColor: 'white' }]}>
         {tabsEl}
         {tabView}
         <ErrorComponent parent={'activity'} reloadFunction={this.load} />
