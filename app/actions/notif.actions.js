@@ -59,7 +59,7 @@ function getActivity(userId, skip, reset) {
     })
     .catch((error) => {
       console.log('error', error);
-       dispatch(errorActions.setError('activity', true, error.message));
+      dispatch(errorActions.setError('activity', true, error.message));
     });
   };
 }
@@ -81,11 +81,11 @@ function getGeneralActivity(userId, skip) {
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(setActivity(responseJSON, type, skip));
-       dispatch(errorActions.setError('activity', false));
+      dispatch(errorActions.setError('activity', false));
     })
     .catch((error) => {
       console.log('error', error);
-       dispatch(errorActions.setError('activity', true, error.message));
+      dispatch(errorActions.setError('activity', true, error.message));
     });
   };
 }
@@ -107,9 +107,9 @@ function markRead(token, userId) {
       dispatch(clearCount());
       dispatch(getActivity(userId, 0, true));
     })
-    // .catch((error) => {
-    //   console.log('error', error)
-    // });
+    .catch((error) => {
+      console.log('error', error)
+    });
   }
 }
 

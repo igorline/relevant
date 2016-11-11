@@ -29,7 +29,6 @@ const colors = StyleSheet.create({
     color: 'green'
   },
   active: {
-    // color: '#007aff'
     color: '#3E3EFF'
   },
   white: {
@@ -159,8 +158,6 @@ const layout = StyleSheet.create({
   },
   linkInput: {
     height: 50,
-    // width: fullWidth,
-    // padding: 10,
   },
   tags: {
     flexDirection: 'row',
