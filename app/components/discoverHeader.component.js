@@ -199,4 +199,3 @@ const localStyles = StyleSheet.create({
 });
 
 styles = { ...localStyles, ...globalStyles };
-

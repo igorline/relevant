@@ -8,6 +8,8 @@ import {
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
+let styles;
+
 class InvestModal extends Component {
   constructor(props, context) {
     super(props, context);
@@ -24,7 +26,7 @@ class InvestModal extends Component {
         console.log('investment failed');
       }
     });
-    this.prosp.actions.toggleFunction(false);
+    this.props.toggleFunction(false);
   }
 
   render() {
@@ -35,10 +37,10 @@ class InvestModal extends Component {
           visible={this.props.visible}
           onRequestClose={() => this.props.toggleFunction()}
         >
-          <View style={{ flex: 1, padding: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.1)' }}>
+          <View style={{ padding: 20, flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.1)' }}>
             <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 5 }}>
               <Text style={{ fontSize: 20, textAlign: 'center' }}>Invest</Text>
-              <View style={{ justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap', flex: 1, overflow: 'visible', marginTop: 10, marginBottom: 10 }}>
+              <View style={{ justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap', overflow: 'visible', marginTop: 10, marginBottom: 10 }}>
                 <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(50)}>
                   <Text style={styles.modalButtonText}>50</Text>
                 </TouchableHighlight>
@@ -80,6 +82,19 @@ class InvestModal extends Component {
 export default InvestModal;
 
 const localStyles = StyleSheet.create({
-
+  investOption: {
+    margin: 5,
+    borderWidth: 1,
+    borderColor: 'black',
+    padding: 5,
+    borderRadius: 5,
+    width: 75,
+    height: 35,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
 });
+
+styles = { ...localStyles, ...globalStyles };
 
