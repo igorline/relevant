@@ -4,7 +4,8 @@ import {
   CHANGE_TAB,
   RESET_ROUTES,
   REFRESH_ROUTE,
-  REPLACE_ROUTE
+  REPLACE_ROUTE,
+  RELOAD_ROUTE
 } from './actionTypes';
 
 export function push(route, key, animation = 'vertical') {
@@ -26,6 +27,13 @@ export function pop(key) {
 export function refreshTab(key) {
   return {
     type: REFRESH_ROUTE,
+    key
+  };
+}
+
+export function reloadTab(key) {
+  return {
+    type: RELOAD_ROUTE,
     key
   };
 }

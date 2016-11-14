@@ -33,6 +33,7 @@ export const SET_DISCOVER_TAGS = 'SET_DISCOVER_TAGS';
 
 export const SET_ACTIVITY = 'SET_ACTIVITY';
 export const SET_COUNT = 'SET_COUNT';
+export const ADD_UNREAD_ACTIVITIES = 'ADD_UNREAD_ACTIVITIES';
 
 export const SET_ANIMATION = 'SET_ANIMATION';
 export const CLEAR_ANIMATION = 'CLEAR_ANIMATION';
@@ -58,3 +59,4 @@ export const CHANGE_TAB = 'CHANGE_TAB';
 export const RESET_ROUTES = 'RESET_ROUTES';
 export const REFRESH_ROUTE = 'REFRESH_ROUTE';
 export const REPLACE_ROUTE = 'REPLACE_ROUTE';
+export const RELOAD_ROUTE = 'RELOAD_ROUTE';

@@ -1,7 +1,23 @@
 import * as types from './actionTypes';
 import * as errorActions from './error.actions';
+import { token as tokenUtil } from '../utils';
+
 require('../publicenv');
-// const apiServer = process.env.API_SERVER + '/api/';
+
+const apiServer = `${process.env.API_SERVER}/api/notification`;
+
+const reqOptions = (token) => {
+  return {
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    }
+  };
+};
+
+const tokenString = token => `?access_token=${token}`;
 
 export function setActivity(data, type, index) {
   return {
@@ -35,49 +51,16 @@ export function setCount(data) {
 }
 
 export
-function getActivity(userId, skip, reset) {
+function getActivity(skip) {
   let type = 'personal';
-  return (dispatch) => {
-    fetch(process.env.API_SERVER +
-    '/api/notification?userId=' + userId +
-    '&skip=' + skip, {
-      credentials: 'include',
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-    })
-    .then(response => response.json())
-    .then((responseJSON) => {
-      if (!reset) {
-        dispatch(setActivity(responseJSON, type, skip));
-      } else {
-        dispatch(resetActivity(responseJSON));
-      }
-      dispatch(errorActions.setError('activity', false));
-    })
-    .catch((error) => {
-      console.log('error', error);
-      dispatch(errorActions.setError('activity', true, error.message));
-    });
-  };
-}
-
-export
-function getGeneralActivity(userId, skip) {
-  let type = 'general';
-  return (dispatch) => {
-    fetch(process.env.API_SERVER +
-    '/api/notification/general?skip=' + skip +
-    '&avoidUser=' + userId, {
-      credentials: 'include',
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-    })
+  return dispatch =>
+    tokenUtil.get()
+    .then(token =>
+      fetch(`${apiServer}?skip=${skip}`, {
+        ...reqOptions(token),
+        method: 'GET',
+      })
+    )
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(setActivity(responseJSON, type, skip));
@@ -87,54 +70,74 @@ function getGeneralActivity(userId, skip) {
       console.log('error', error);
       dispatch(errorActions.setError('activity', true, error.message));
     });
-  };
 }
 
 export
-function markRead(token, userId) {
-  return (dispatch) => {
-    //console.log('mark read')
-    fetch(process.env.API_SERVER+'/api/notification?access_token='+token+'&forUser='+userId, {
-      credentials: 'include',
-      method: 'PUT',
-      headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-      },
-    })
-    .then((response) => response.json())
+function getGeneralActivity(userId, skip) {
+  let type = 'general';
+  return dispatch =>
+    tokenUtil.get()
+    .then(token =>
+      fetch(`${apiServer}/general?skip=${skip}`, {
+        ...reqOptions(token),
+        method: 'GET',
+      })
+    )
+    .then(response => response.json())
     .then((responseJSON) => {
-      dispatch(clearCount());
-      dispatch(getActivity(userId, 0, true));
+      dispatch(setActivity(responseJSON, type, skip));
+      dispatch(errorActions.setError('activity', false));
     })
     .catch((error) => {
-      console.log('error', error)
+      console.log('error', error);
+      dispatch(errorActions.setError('activity', true, error.message));
     });
-  }
 }
 
-export
-function createNotification(token, obj) {
-  return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/notification?access_token='+token, {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(obj)
+export function markRead() {
+  return dispatch =>
+    tokenUtil.get()
+    .then(token =>
+      fetch(`${apiServer}/markread`, {
+        ...reqOptions(token),
+        method: 'PUT',
+      })
+    )
+    .then((res) => {
+      console.log('updated mark read ', res)
+      dispatch(clearCount())
     })
-    .then((response) => response.json())
-    .then((responseJSON) => {
-      console.log('created notif')
-    })
-  }
+    // .then((responseJSON) => {
+      // console.log(responseJSON);
+    // })
+    .catch(error => console.log('error', error));
 }
 
+export function createNotification(obj) {
+  return () =>
+    tokenUtil.get()
+    .then(token =>
+      fetch(`${apiServer}`, {
+        ...reqOptions(token),
+        method: 'POST',
+        body: JSON.stringify(obj)
+      })
+    )
+    .then(() => console.log('created notif'))
+    .catch(err => console.log('create notification error ', err));
+}
 
-
-
-
-
+export function getNotificationCount() {
+  return dispatch =>
+    tokenUtil.get()
+    .then(token =>
+      fetch(`${apiServer}/unread`, {
+        ...reqOptions(token),
+        method: 'GET'
+      })
+    )
+    .then(response => response.json())
+    .then(responseJSON => dispatch(setCount(responseJSON.unread)))
+    .catch(err => console.log('Notification count error', err));
+}
 

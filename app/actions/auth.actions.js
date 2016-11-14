@@ -192,7 +192,7 @@ export function getUser(callback) {
       .then(response => response.json())
       .then((responseJSON) => {
         dispatch(setUser(responseJSON));
-        dispatch(notifActions.createNotification(token, {
+        dispatch(notifActions.createNotification({
           type: 'online',
           personal: false,
           byUser: responseJSON._id

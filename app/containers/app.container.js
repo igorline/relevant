@@ -69,8 +69,7 @@ class Application extends Component {
   componentWillReceiveProps(next) {
     if (!this.props.auth.user && next.auth.user) {
       this.props.actions.userToSocket(next.auth.user);
-      this.props.actions.getActivity(next.auth.user._id, 0);
-      this.props.actions.getGeneralActivity(next.auth.user._id, 0);
+      this.props.actions.getNotificationCount();
       this.props.actions.getMessages(next.auth.user._id);
       this.props.actions.changeTab('read');
       this.props.actions.replaceRoute({

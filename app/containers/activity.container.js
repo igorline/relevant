@@ -39,14 +39,21 @@ class Activity extends Component {
   }
 
   componentWillMount() {
-    if (this.props.auth.user) {
-      this.props.actions.markRead(this.props.auth.token, this.props.auth.user._id);
+    if (this.props.auth.user && this.props.notif.count) {
+      this.props.actions.markRead();
     }
   }
 
   componentWillReceiveProps(next) {
+    // let index = next.tabs.index;
+    // let route = next.tabs.routes[index];
+
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();
+    }
+    if (this.props.reload !== next.reload) {
+      this.props.actions.markRead();
+      this.needsReload = new Date().getTime();
     }
   }
 
@@ -66,10 +73,10 @@ class Activity extends Component {
 
     switch (view) {
       case 0:
-        this.props.actions.getActivity(this.props.auth.user._id, length);
+        this.props.actions.getActivity(length);
         break;
       case 1:
-        this.props.actions.getGeneralActivity(this.props.auth.user._id, length);
+        this.props.actions.getGeneralActivity(length);
         break;
       case 2:
         this.props.actions.getUsers(length, null, 'online');
@@ -149,7 +156,9 @@ function mapStateToProps(state) {
     users: state.user,
     stats: state.stats,
     error: state.error,
-    refresh: state.navigation.activity.refresh
+    refresh: state.navigation.activity.refresh,
+    reload: state.navigation.activity.reload,
+    tabs: state.navigation.tabs
   };
 }
 

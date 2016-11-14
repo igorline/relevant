@@ -38,6 +38,9 @@ class Tabs extends Component {
           this.props.actions.refreshTab(key);
         }
       }
+      if (key === 'activity' && this.props.notif.count) {
+        this.props.actions.reloadTab(key);
+      }
       this.props.actions.resetRoutes();
       this.props.actions.changeTab(key);
     }
