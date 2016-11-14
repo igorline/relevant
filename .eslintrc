@@ -13,5 +13,8 @@
         "comma-dangle": ["error", "only-multiline"],
         "prefer-const": "off",
         "no-plusplus": "off",
+    },
+    env: {
+        browser: true
     }
 }

@@ -5,7 +5,8 @@ import {
   CHANGE_TAB,
   RESET_ROUTES,
   REFRESH_ROUTE,
-  REPLACE_ROUTE
+  REPLACE_ROUTE,
+  RELOAD_ROUTE
 } from '../actions/actionTypes';
 
 const {
@@ -66,7 +67,8 @@ const initialState = {
   read: {
     index: 0,
     key: 'read',
-    refresh: {},
+    refresh: null,
+    reload: null,
     routes: [{
       key: 'read',
       component: 'read',
@@ -76,7 +78,8 @@ const initialState = {
   discover: {
     index: 0,
     key: 'read',
-    refresh: {},
+    refresh: null,
+    reload: null,
     routes: [{
       key: 'discover',
       component: 'discover',
@@ -86,6 +89,7 @@ const initialState = {
   createPost: {
     index: 0,
     key: 'createPost',
+    reload: null,
     routes: [{
       key: 'createPost',
       component: 'createPost',
@@ -95,7 +99,8 @@ const initialState = {
   activity: {
     index: 0,
     key: 'activity',
-    refresh: {},
+    refresh: null,
+    reload: null,
     routes: [{
       key: 'activity',
       component: 'activity',
@@ -105,7 +110,8 @@ const initialState = {
   myProfile: {
     index: 0,
     key: 'myProfile',
-    refresh: {},
+    refresh: null,
+    reload: null,
     routes: [{
       key: 'myProfile',
       component: 'myProfile',
@@ -186,6 +192,17 @@ function navigationState(state = initialState, action) {
         [key]: {
           ...state[key],
           refresh: new Date()
+        },
+      };
+    }
+
+    case RELOAD_ROUTE: {
+      const key = action.key || state.tabs.routes[state.tabs.index].key;
+      return {
+        ...state,
+        [key]: {
+          ...state[key],
+          reload: new Date()
         },
       };
     }
