@@ -91,7 +91,7 @@ class Discover extends Component {
   load(view, length) {
     if (!view) view = this.state.view;
     if (!length) length = 0;
-    
+
     const tags = this.props.tags.selectedTags;
     switch (view) {
       case 0:
@@ -129,39 +129,40 @@ class Discover extends Component {
   }
 
   render() {
-    let headerEl = null;
-    let tabView = null;
-    if (!this.props.error.discover) {
-      tabView = this.tabs.map((tab) => {
-        let tabData = this.getViewData(this.props, tab.id);
-        let active = this.state.view === tab.id;
-        return (
-          <CustomListView
-            ref={(c) => { this.tabs[tab.id].component = c; }}
-            key={tab.id}
-            data={tabData}
-            renderRow={this.renderRow}
-            load={this.load}
-            view={tab.id}
-            active={active}
-            YOffset={this.state.headerHeight}
-            onScroll={this.onScroll}
-            needsReload={this.needsReload}
-          />
-        );
-      });
+    let tabView = this.tabs.map((tab) => {
+      let tabData = this.getViewData(this.props, tab.id);
+      let active = this.state.view === tab.id;
+      return (
+        <CustomListView
+          ref={(c) => { this.tabs[tab.id].component = c; }}
+          key={tab.id}
+          data={tabData}
+          renderRow={this.renderRow}
+          load={this.load}
+          view={tab.id}
+          active={active}
+          YOffset={this.state.headerHeight}
+          onScroll={this.onScroll}
+          needsReload={this.needsReload}
+        />
+      );
+    });
 
-      headerEl = (<DiscoverHeader
-        triggerReload={this.scrollToTop}
-        showHeader={this.state.showHeader}
-        tags={this.props.tags}
-        posts={this.props.posts}
-        view={this.state.view}
-        setPostTop={this.setPostTop}
-        actions={this.props.actions}
-        changeView={this.changeView}
-        tabs={this.tabs}
-      />);
+    let headerEl = (<DiscoverHeader
+      triggerReload={this.scrollToTop}
+      showHeader={this.state.showHeader}
+      tags={this.props.tags}
+      posts={this.props.posts}
+      view={this.state.view}
+      setPostTop={this.setPostTop}
+      actions={this.props.actions}
+      changeView={this.changeView}
+      tabs={this.tabs}
+    />);
+
+    if (this.props.error.discover) {
+      headerEl = null;
+      tabView = null;
     }
 
     return (
