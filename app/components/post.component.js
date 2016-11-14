@@ -15,11 +15,9 @@ class Post extends Component {
   }
 
   componentDidMount() {
-    const self = this;
   }
 
   render() {
-    const self = this;
     let post = null;
     let body = null;
     let comments = null;
@@ -36,11 +34,11 @@ class Post extends Component {
     return (
       <View style={[styles.postContainer]}>
 
-        <PostInfo post={post} body={body} />
+        <PostInfo navigator={this.props.navigator} post={post} body={body} />
 
         <PostBody body={body} post={post} editing={false} />
 
-        <PostButtons {...this.props} comments={comments}  />
+        <PostButtons {...this.props} comments={comments} />
 
         <PostImage {...this.props} post={post} />
 

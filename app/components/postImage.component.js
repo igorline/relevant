@@ -4,9 +4,8 @@ import {
   Text,
   View,
   TouchableHighlight,
-  TouchableWithoutFeedback,
   Image,
-  Modal,
+  Linking
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
@@ -71,7 +70,7 @@ class PostImage extends Component {
     return (<TouchableHighlight style={styles.postImageContainer} underlayColor={'transparent'} onPress={link ? () => self.openLink(link) : null}>
       <View style={styles.innerPostImage}>
 
-      <Image style={[styles.postImage]} source={{uri: image}}/>
+      <Image style={[styles.postImage]} source={image ? { uri: image } : {}} />
         {lastPost ? <Text style={[styles.lastPost, styles.white]}>
           Last subscribed post❗️
         </Text> : null}
