@@ -44,7 +44,11 @@ class PostBody extends Component {
     const expanded = this.props.expanded;
     const toggleFunction = this.props.toggleFunction;
     let editing = this.props.editing;
-    let body = this.props.body;
+    let body = null;
+    let post = this.props.post;
+    if (post) {
+      if (post.body) body = post.body;
+    }
     let bodyEl = null;
     let bodyEditingEl = null;
 

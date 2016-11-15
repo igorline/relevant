@@ -54,10 +54,12 @@ class PostImage extends Component {
     let image = null;
     let link = null;
     let post = this.props.post;
+    let title = null;
     let lastPost = false;
     if (post) {
       if (post.image) image = post.image.match('http') ? post.image : 'https:' + post.image;
       if (post.link) link = post.link;
+      if (post.title) title = post.title;
       if (post.lastPost) {
         if (post.lastPost.length) {
           post.lastPost.forEach((lastUser) => {

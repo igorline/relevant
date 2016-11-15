@@ -206,9 +206,13 @@ class PostButtons extends Component {
     const self = this;
     let commentString = 'Add comment';
     let investButtonEl = null;
-    const comments = this.props.comments;
     const expanded = this.props.expanded;
     let post = this.props.post;
+    let investable = false;
+    let comments = null;
+    if (post) {
+      if (post.comments) comments = post.comments;
+    }
 
     if (post && post.user && this.props.auth.user) {
       if (post.user._id !== this.props.auth.user._id) {
@@ -235,7 +239,7 @@ class PostButtons extends Component {
       <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => self.toggleExpanded()}><Text style={[styles.font10, styles.postButtonText]}>{expanded ? 'Read less' : 'Read more'}</Text></TouchableHighlight>
       <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => self.openComments()}><Text style={[{ marginRight: 5 }, styles.font10, styles.postButtonText]}>{commentString}</Text></TouchableHighlight>
       <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={() => self.showActionSheet()}><Text style={[styles.font10, styles.postButtonText]}>...</Text></TouchableHighlight>
-      <InvestModal toggleFunction={this.toggleModal} visible={this.state.modalVisible} />
+      <InvestModal toggleFunction={this.toggleModal} post={this.props.post} visible={this.state.modalVisible} />
     </View>);
   }
 }

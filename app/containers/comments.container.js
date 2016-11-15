@@ -20,8 +20,6 @@ import Comment from '../components/comment.component';
 import CustomSpinner from '../components/CustomSpinner.component';
 import ErrorComponent from '../components/error.component';
 
-require('../publicenv');
-
 let styles;
 
 class Comments extends Component {
@@ -36,6 +34,7 @@ class Comments extends Component {
     this.renderRow = this.renderRow.bind(this);
     this.elHeight = null;
     this.loading = false;
+    this.reloading = false;
     this.reload = this.reload.bind(this);
     this.loadMore = this.loadMore.bind(this);
     this.dataSource = null;
@@ -169,7 +168,7 @@ class Comments extends Component {
     }
 
     return (
-      <View style={{ backgroundColor: 'white', flex: 1, height: this.state.visibleHeight - 120 }}>
+      <View style={[styles.commentsContainer, { height: this.state.visibleHeight - 114 }]}>
         {commentsEl}
         <View style={[styles.commentInputParent]}>
           <TextInput
@@ -196,22 +195,28 @@ class Comments extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  commentsContainer: {
+    backgroundColor: 'white',
+    position: 'relative'
+  },
   commentInputParent: {
     flexDirection: 'row',
     alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
     backgroundColor: 'white',
     bottom: 0,
     left: 0,
+    right: 0,
     position: 'absolute',
+    height: 50,
   },
   commentInput: {
-    height: 50,
     flex: 0.75,
     padding: 10,
   },
   commentSubmit: {
     flex: 0.25,
-    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
   }

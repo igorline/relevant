@@ -34,13 +34,13 @@ class Post extends Component {
     return (
       <View style={[styles.postContainer]}>
 
-        <PostInfo navigator={this.props.navigator} post={post} body={body} />
+        <PostInfo navigator={this.props.navigator} post={post} />
 
-        <PostBody body={body} post={post} editing={false} />
+        <PostBody post={post} editing={false} />
 
         <PostButtons {...this.props} comments={comments} />
 
-        <PostImage {...this.props} post={post} />
+        <PostImage post={post} />
 
       </View>
     );
