@@ -210,8 +210,6 @@ class PostButtons extends Component {
     const expanded = this.props.expanded;
     let post = this.props.post;
 
-
-
     if (post && post.user && this.props.auth.user) {
       if (post.user._id !== this.props.auth.user._id) {
         investable = true;
@@ -223,7 +221,7 @@ class PostButtons extends Component {
       if (comments.length > 1) commentString = comments.length + ' Comments';
     }
 
-    if (this.props.investable) {
+    if (investable) {
         investButtonEl = (<TouchableWithoutFeedback
           onPress={() => self.toggleModal()}
           style={[styles.postButton, { marginRight: 5, backgroundColor: '#F0F0F0' }]}
