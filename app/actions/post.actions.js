@@ -2,6 +2,10 @@ import * as types from './actionTypes';
 import * as utils from '../utils';
 import * as authActions from './auth.actions';
 import * as errorActions from './error.actions';
+import {
+  PushNotificationIOS,
+  AlertIOS
+} from 'react-native';
 
 require('../publicenv');
 
@@ -104,16 +108,6 @@ export function getPostsAction() {
   };
 }
 
-export function removeComment(postId, commentId) {
-  if (!postId || !commentId) return;
-  return {
-    type: 'REMOVE_COMMENT',
-    payload: {
-      postId,
-      commentId,
-    }
-  };
-}
 
 export function getPosts(skip, tags, sort, limit) {
   // console.log(skip, tags, sort);
@@ -282,15 +276,27 @@ export function updateComment(comment, authToken) {
             },
             body: JSON.stringify(comment)
         })
-        .then((response) => {
-            console.log('updated comment');
-            return true;
+        .then((response) => response.json())
+        .then((responseJSON) => {
+          dispatch(addUpdatedComment(responseJSON));
+          return true;
         })
         .catch((error) => {
-            console.log(error, 'error');
-            return false;
+          console.log(error, 'error');
+          AlertIOS.alert(error.message);
+          return false;
         });
     }
+}
+
+export function addUpdatedComment(updatedComment) {
+  return {
+    type: 'UPDATE_COMMENT',
+    payload: {
+      data: updatedComment,
+      postId: updatedComment.post,
+    }
+  };
 }
 
 export function editPost(post, authToken) {
@@ -319,7 +325,7 @@ export function editPost(post, authToken) {
 
 export function deleteComment(token, id, postId) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/comment/'+id+'?access_token='+token, {
+    fetch(process.env.API_SERVER + '/api/comment/' + id + '?access_token=' + token, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
@@ -327,14 +333,26 @@ export function deleteComment(token, id, postId) {
       },
       method: 'DELETE',
     })
-    .then(utils.fetchError.handleErrors)
     .then((response) => {
-      dispatch(authActions.getUser());
+      dispatch(removeCommentEl(postId, id));
     })
     .catch((error) => {
+      AlertIOS.alert(error.message);
       console.log(error, 'error');
     });
   }
+}
+
+
+export function removeCommentEl(postId, commentId) {
+  if (!postId || !commentId) return;
+  return {
+    type: 'REMOVE_COMMENT',
+    payload: {
+      postId,
+      commentId,
+    }
+  };
 }
 
 export function getComments(postId, skip, limit) {
@@ -376,9 +394,10 @@ export function createComment(token, commentObj) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(authActions.getUser());
+      dispatch(setComments(responseJSON.post, responseJSON));
     })
     .catch((error) => {
+      AlertIOS.alert(error.message);
       console.log(error, 'error');
     });
   }

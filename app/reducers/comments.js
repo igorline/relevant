@@ -75,6 +75,21 @@ export default function comments(state = initialState, action) {
     //   return state;
     // }
 
+
+    case 'ADD_COMMENT': {
+      let newComment = action.payload.newComment;
+      let postId = action.payload.postId;
+      let newArr = state.commentsById[postId].push(action.payload.newComment);
+
+      return  {
+        ...state,
+        commentsById: {
+          ...state.commentsById,
+          [postId]: newArr,
+        }
+      };
+    }
+
     case 'REMOVE_COMMENT': {
       let commentId = action.payload.commentId;
       let postId = action.payload.postId;

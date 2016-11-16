@@ -115,7 +115,7 @@ class Comments extends Component {
 
   renderRow(rowData, i) {
     return (
-      <Comment {...this.props} key={i} comment={rowData} />
+      <Comment {...this.props} key={i} parentId={this.id} comment={rowData} />
     );
   }
 
