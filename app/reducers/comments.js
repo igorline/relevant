@@ -7,14 +7,24 @@ const initialState = {
 
 const maxGarbage = 10;
 
-// const removeItem = (array, item) => {
-//   let index = array.findIndex(el => el._id === item._id);
-//   if (index < 0) return array;
-//   return [
-//     ...array.slice(0, index),
-//     ...array.slice(index + 1)
-//   ];
-// };
+const removeItem = (array, commentId) => {
+  if (!array || !commentId) return;
+  let index = array.findIndex(el => el._id === commentId);
+  if (index < 0) return array;
+  return [
+    ...array.slice(0, index),
+    ...array.slice(index + 1)
+  ];
+};
+
+const updateItem = (array, newComment) => {
+  if (!array || !newComment) return;
+  let index = array.findIndex(el => el._id === newComment._id);
+  if (index < 0) return array;
+  array[index] = newComment;
+  let newArr = array.slice();
+  return newArr;
+};
 
 export default function comments(state = initialState, action) {
   switch (action.type) {
@@ -57,17 +67,36 @@ export default function comments(state = initialState, action) {
     // }
 
     // TODO rethink these
-    case types.ADD_COMMENT: {
-      console.log("ADD_COMMENT");
-      return Object.assign({}, state, {
-        index: [...state.index, action.payload],
-      });
+    // case types.ADD_COMMENT: {
+    //   console.log("ADD_COMMENT");
+    //   // return Object.assign({}, state, {
+    //   //   index: [...state.index, action.payload],
+    //   // });
+    //   return state;
+    // }
+
+    case 'REMOVE_COMMENT': {
+      let commentId = action.payload.commentId;
+      let postId = action.payload.postId;
+      return  {
+        ...state,
+        commentsById: {
+          ...state.commentsById,
+          [postId]: removeItem(state.commentsById[postId], commentId),
+        }
+      };
     }
 
-    case types.REMOVE_COMMENT: {
-      return Object.assign({}, state, {
-        index: removeItem(state.index, action.payload),
-      });
+    case 'UPDATE_COMMENT': {
+      let newComment = action.payload.data;
+      let postId = action.payload.postId;
+      return  {
+        ...state,
+        commentsById: {
+          ...state.commentsById,
+          [postId]: updateItem(state.commentsById[postId], newComment),
+        }
+      };
     }
 
 

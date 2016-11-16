@@ -26,7 +26,7 @@ class Comments extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      comment: null,
+      comment: '',
       visibleHeight: Dimensions.get('window').height,
       scrollView: ScrollView,
       scrollToBottomY: null,
@@ -101,18 +101,21 @@ class Comments extends Component {
   }
 
   createComment() {
+    if (!this.state.comment.length) {
+      AlertIOS.alert('no comment');
+    }
     let commentObj = {
       post: this.id,
       text: this.state.comment,
       user: this.props.auth.user._id
     };
     this.props.actions.createComment(this.props.auth.token, commentObj);
-    this.setState({ comment: null });
+    this.setState({ comment: '' });
   }
 
-  renderRow(rowData) {
+  renderRow(rowData, i) {
     return (
-      <Comment {...this.props} comment={rowData} />
+      <Comment {...this.props} key={i} comment={rowData} />
     );
   }
 
@@ -171,6 +174,7 @@ class Comments extends Component {
       <View style={[styles.commentsContainer, { height: this.state.visibleHeight - 114 }]}>
         {commentsEl}
         <View style={[styles.commentInputParent]}>
+
           <TextInput
             style={[styles.commentInput, styles.font15]}
             placeholder="Enter comment..."
@@ -186,6 +190,7 @@ class Comments extends Component {
           >
             <Text style={[styles.font15, styles.active]}>Submit</Text>
           </TouchableHighlight>
+
         </View>
         <CustomSpinner visible={!this.dataSource && !this.props.error.comments} />
         <ErrorComponent parent={'comments'} reloadFunction={this.reload} />

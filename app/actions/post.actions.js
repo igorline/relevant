@@ -104,6 +104,17 @@ export function getPostsAction() {
   };
 }
 
+export function removeComment(postId, commentId) {
+  if (!postId || !commentId) return;
+  return {
+    type: 'REMOVE_COMMENT',
+    payload: {
+      postId,
+      commentId,
+    }
+  };
+}
+
 export function getPosts(skip, tags, sort, limit) {
   // console.log(skip, tags, sort);
   let tagsString = '';
@@ -312,8 +323,7 @@ export function deleteComment(token, id, postId) {
     })
     .then(utils.fetchError.handleErrors)
     .then((response) => {
-      // dispatch(getComments(postId));
-      dispatch(authActions.getUser())
+      dispatch(authActions.getUser());
     })
     .catch((error) => {
       console.log(error, 'error');
