@@ -75,6 +75,16 @@ class PostInfo extends Component {
     let postUserImage = null;
     let postUserImageEl = null;
     let postInfo = null;
+    let post = null;
+    let image = null;
+    let title = null;
+    let relevance = 0;
+    let link = null;
+    let body = null;
+    let tags = null;
+    let value = null;
+    let comments = null;
+
     if (this.props.post) {
       post = this.props.post;
       if (post.image) image = post.image.match('http') ? post.image : 'https:' + post.image;
@@ -90,7 +100,7 @@ class PostInfo extends Component {
         if (post.user.name) name = post.user.name;
         if (postUser.image) postUserImage = postUser.image;
       }
-    }
+    };
 
     // if (this.props.post.tags) {
     //   tagsEl = [];
@@ -99,7 +109,7 @@ class PostInfo extends Component {
     //   });
     // }
 
-      if (postUserImage) {
+    if (postUserImage) {
       postUserImageEl = (<TouchableWithoutFeedback
         onPress={() => this.setSelected(self.props.post.user)}
       >
@@ -193,13 +203,13 @@ const localStyles = StyleSheet.create({
   progressCirc: {
     marginRight: 5,
   },
-    infoLeft: {
+  infoLeft: {
     justifyContent: 'flex-start',
   },
   infoRight: {
     justifyContent: 'flex-end',
   },
-    innerInfo: {
+  innerInfo: {
     flex: 1,
   },
 });

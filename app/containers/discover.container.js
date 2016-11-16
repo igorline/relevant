@@ -28,13 +28,11 @@ const POST_PAGE_SIZE = 5;
 class Discover extends Component {
   constructor(props, context) {
     super(props, context);
-
     this.state = {
       headerHeight: 138,
       showHeader: true,
       view: 0,
     };
-
     this.onScroll = this.onScroll.bind(this);
     this.renderRow = this.renderRow.bind(this);
     this.setPostTop = this.setPostTop.bind(this);
@@ -42,7 +40,6 @@ class Discover extends Component {
     this.changeView = this.changeView.bind(this);
     this.offset = 0;
     this.needsReload = new Date().getTime();
-
     this.tabs = [
       { id: 0, title: 'New', type: 'new' },
       { id: 1, title: 'Top', type: 'top' },

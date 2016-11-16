@@ -6,8 +6,11 @@ import {
   TouchableHighlight,
   Modal,
 } from 'react-native';
+import * as investActions from '../actions/invest.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-
+import * as animationActions from '../actions/animation.actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 let styles;
 
 class InvestModal extends Component {
@@ -79,7 +82,23 @@ class InvestModal extends Component {
   }
 }
 
-export default InvestModal;
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(
+      {
+        ...investActions,
+        ...animationActions,
+      }, dispatch),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(InvestModal);
 
 const localStyles = StyleSheet.create({
   investOption: {

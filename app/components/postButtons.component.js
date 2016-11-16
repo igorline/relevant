@@ -206,11 +206,13 @@ class PostButtons extends Component {
     const self = this;
     let commentString = 'Add comment';
     let investButtonEl = null;
-    const comments = this.props.comments;
     const expanded = this.props.expanded;
     let post = this.props.post;
-
-
+    let investable = false;
+    let comments = null;
+    if (post) {
+      if (post.comments) comments = post.comments;
+    }
 
     if (post && post.user && this.props.auth.user) {
       if (post.user._id !== this.props.auth.user._id) {
@@ -223,7 +225,7 @@ class PostButtons extends Component {
       if (comments.length > 1) commentString = comments.length + ' Comments';
     }
 
-    if (this.props.investable) {
+    if (investable) {
         investButtonEl = (<TouchableWithoutFeedback
           onPress={() => self.toggleModal()}
           style={[styles.postButton, { marginRight: 5, backgroundColor: '#F0F0F0' }]}
@@ -237,7 +239,7 @@ class PostButtons extends Component {
       <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => self.toggleExpanded()}><Text style={[styles.font10, styles.postButtonText]}>{expanded ? 'Read less' : 'Read more'}</Text></TouchableHighlight>
       <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => self.openComments()}><Text style={[{ marginRight: 5 }, styles.font10, styles.postButtonText]}>{commentString}</Text></TouchableHighlight>
       <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={() => self.showActionSheet()}><Text style={[styles.font10, styles.postButtonText]}>...</Text></TouchableHighlight>
-      <InvestModal toggleFunction={this.toggleModal} visible={this.state.modalVisible} />
+      <InvestModal toggleFunction={this.toggleModal} post={this.props.post} visible={this.state.modalVisible} />
     </View>);
   }
 }
@@ -245,7 +247,28 @@ class PostButtons extends Component {
 export default PostButtons;
 
 const localStyles = StyleSheet.create({
-
+  postButtons: {
+    flexDirection: 'row',
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 10,
+    paddingTop: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap'
+  },
+  postButton: {
+    backgroundColor: 'white',
+    padding: 10,
+    flex: 1,
+    height: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  postButtonText: {
+    color: '#808080'
+  },
 });
 
 styles = { ...globalStyles, ...localStyles };
