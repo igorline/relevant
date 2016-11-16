@@ -57,8 +57,6 @@ class Comment extends Component {
         if (results) {
           this.setState({ editing: !this.state.editing });
           AlertIOS.alert('Comment updated');
-        } else {
-          AlertIOS.alert('Try again');
         }
       });
     }
