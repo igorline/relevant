@@ -20,15 +20,13 @@ import Comment from '../components/comment.component';
 import CustomSpinner from '../components/CustomSpinner.component';
 import ErrorComponent from '../components/error.component';
 
-require('../publicenv');
-
 let styles;
 
 class Comments extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      comment: null,
+      comment: '',
       visibleHeight: Dimensions.get('window').height,
       scrollView: ScrollView,
       scrollToBottomY: null,
@@ -36,6 +34,7 @@ class Comments extends Component {
     this.renderRow = this.renderRow.bind(this);
     this.elHeight = null;
     this.loading = false;
+    this.reloading = false;
     this.reload = this.reload.bind(this);
     this.loadMore = this.loadMore.bind(this);
     this.dataSource = null;
@@ -102,18 +101,21 @@ class Comments extends Component {
   }
 
   createComment() {
+    if (!this.state.comment.length) {
+      AlertIOS.alert('no comment');
+    }
     let commentObj = {
       post: this.id,
       text: this.state.comment,
       user: this.props.auth.user._id
     };
     this.props.actions.createComment(this.props.auth.token, commentObj);
-    this.setState({ comment: null });
+    this.setState({ comment: '' });
   }
 
-  renderRow(rowData) {
+  renderRow(rowData, i) {
     return (
-      <Comment {...this.props} comment={rowData} />
+      <Comment {...this.props} key={i} comment={rowData} />
     );
   }
 
@@ -169,9 +171,10 @@ class Comments extends Component {
     }
 
     return (
-      <View style={{ backgroundColor: 'white', flex: 1, height: this.state.visibleHeight - 120 }}>
+      <View style={[styles.commentsContainer, { height: this.state.visibleHeight - 114 }]}>
         {commentsEl}
         <View style={[styles.commentInputParent]}>
+
           <TextInput
             style={[styles.commentInput, styles.font15]}
             placeholder="Enter comment..."
@@ -187,6 +190,7 @@ class Comments extends Component {
           >
             <Text style={[styles.font15, styles.active]}>Submit</Text>
           </TouchableHighlight>
+
         </View>
         <CustomSpinner visible={!this.dataSource && !this.props.error.comments} />
         <ErrorComponent parent={'comments'} reloadFunction={this.reload} />
@@ -196,22 +200,28 @@ class Comments extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  commentsContainer: {
+    backgroundColor: 'white',
+    position: 'relative'
+  },
   commentInputParent: {
     flexDirection: 'row',
     alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
     backgroundColor: 'white',
     bottom: 0,
     left: 0,
+    right: 0,
     position: 'absolute',
+    height: 50,
   },
   commentInput: {
-    height: 50,
     flex: 0.75,
     padding: 10,
   },
   commentSubmit: {
     flex: 0.25,
-    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
   }

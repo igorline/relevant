@@ -30,10 +30,10 @@ class Comment extends Component {
       editing: false,
       height: 0
     };
+    this.deleteComment = this.deleteComment.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
     this.editComment = this.editComment.bind(this);
     this.saveEdit = this.saveEdit.bind(this);
-    this.editComment = this.editComment.bind(this);
   }
 
   componentDidMount() {
@@ -85,10 +85,11 @@ class Comment extends Component {
   }
 
   deleteComment() {
+    const self = this;
     this.props.actions.deleteComment(
-      this.props.auth.token,
-      this.props.comment._id,
-      this.props.comment.post
+      self.props.auth.token,
+      self.props.comment._id,
+      self.props.comment.post
     );
   }
 
@@ -108,7 +109,7 @@ class Comment extends Component {
           style={[
             styles.darkGray,
             styles.editingInput,
-            { height: Math.max(35, this.state.height) }]}
+            { height: Math.max(45, this.state.height) }]}
           onChange={(event) => {
             this.setState({
               editedText: event.nativeEvent.text,
@@ -117,20 +118,20 @@ class Comment extends Component {
           }}
           value={this.state.editedText}
         />
-        <View style={styles.postButtons}>
+        <View style={styles.editingCommentButtons}>
           <TouchableHighlight
             underlayColor={'transparent'}
-            style={styles.postButton}
+            style={styles.editingCommentButton}
             onPress={this.saveEdit}
           >
-            <Text style={[styles.font10, styles.postButtonText]}>Save changes</Text>
+            <Text style={[styles.font10, styles.editingCommentButtonText]}>Save changes</Text>
           </TouchableHighlight>
           <TouchableHighlight
             underlayColor={'transparent'}
             onPress={this.editComment}
-            style={styles.postButton}
+            style={styles.editingCommentButton}
           >
-            <Text style={[styles.font10, styles.postButtonText]}>Cancel</Text>
+            <Text style={[styles.font10, styles.editingCommentButtonText]}>Cancel</Text>
           </TouchableHighlight>
         </View>
       </View>);
@@ -141,8 +142,6 @@ class Comment extends Component {
     let image = null;
     let name = null;
     let commentUserId = null;
-
-    // console.log(this, 'comment this')
 
     if (comment.user) {
       if (comment.user.image) image = comment.user.image;
@@ -185,7 +184,7 @@ class Comment extends Component {
             </View>
             {owner ?
               <View
-                style={{ marginTop: 10, flex: 1, justifyContent: 'flex-end', flexDirection: 'row' }}
+                style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row' }}
               >
                 <TouchableHighlight
                   underlayColor={'transparent'}
@@ -205,6 +204,28 @@ class Comment extends Component {
 export default Comment;
 
 const localStyles = StyleSheet.create({
+  editingCommentButtons: {
+    flexDirection: 'row',
+    paddingTop: 10,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    flexWrap: 'wrap'
+  },
+  editingCommentButton: {
+    backgroundColor: 'white',
+    padding: 10,
+    marginLeft: 10,
+    height: 30,
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderRadius: 3,
+    borderColor: 'lightgray',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  editingCommentButtonText: {
+    color: '#808080'
+  },
   commentHeaderTextContainer: {
     height: 50
   },
@@ -218,6 +239,15 @@ const localStyles = StyleSheet.create({
     width: 25,
     borderRadius: 12.5,
     marginRight: 10,
+  },
+  editingInput: {
+    backgroundColor: 'transparent',
+    flex: 1,
+    fontSize: 14,
+    padding: 10,
+    borderRadius: 5,
+    borderColor: 'lightgray',
+    borderWidth: 1,
   },
 });
 
