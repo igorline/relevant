@@ -5,7 +5,6 @@ import {
   AppState,
   ActionSheetIOS,
   AlertIOS,
-  Text
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -48,7 +47,7 @@ class Application extends Component {
       destructiveIndex: 2,
       cancelIndex: 3,
     };
-
+    this.backgroundTime = 0;
     this.showActionSheet = this.showActionSheet.bind(this);
     this.renderScene = this.renderScene.bind(this);
   }
@@ -56,7 +55,6 @@ class Application extends Component {
   componentDidMount() {
     this.props.actions.getUser();
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
-
     utils.token.get()
     .catch(() => {
       this.props.actions.replaceRoute({
@@ -186,8 +184,18 @@ class Application extends Component {
   handleAppStateChange(currentAppState) {
     if (currentAppState === 'active' && this.props.auth.user) {
       this.props.actions.userToSocket(this.props.auth.user);
-      this.props.actions.getActivity(this.props.auth.user._id, 0);
-      this.props.actions.getGeneralActivity(this.props.auth.user._id, 0);
+      this.props.actions.getNotificationCount();
+
+      // refresh after 5 minutes of inactivity
+      let now = new Date().getTime();
+      if (this.backgroundTime + (5 * 60 * 60 * 1000) < now) {
+        // reload current tab
+        this.props.actions.reloadTab();
+        // reload all other tabs on focus
+        this.props.actions.reloadAllTabs();
+      }
+    } else if (currentAppState === 'background') {
+      this.backgroundTime = new Date().getTime();
     }
   }
 
@@ -225,12 +233,12 @@ class Application extends Component {
     return (
       <View style={{ flex: 1, backgroundColor: 'white' }} >
         <NavigationCardStack
-          key={'scene_' + scene.key}
+          key={`scene_${scene.key}`}
           direction={'horizontal'}
           navigationState={scene}
           renderScene={this.renderScene}
           enableGestures={false}
-          style={{backgroundColor: 'white'}}
+          style={{ backgroundColor: 'white' }}
         />
         <InvestAnimation {...this.props} />
         <HeartAnimation />

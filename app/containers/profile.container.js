@@ -75,9 +75,11 @@ class Profile extends Component {
     } else {
       this.userData = next.users.selectedUserData[this.userId];
     }
-
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();
+    }
+    if (this.props.reload !== next.reload) {
+      this.needsReload = new Date().getTime();
     }
   }
 
@@ -218,6 +220,7 @@ function mapStateToProps(state) {
     stats: state.stats,
     investments: state.investments,
     refresh: state.navigation.myProfile.refresh,
+    reload: state.navigation.myProfile.reload
   };
 }
 

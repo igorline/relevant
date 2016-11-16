@@ -10,7 +10,7 @@ export default class AppContainer extends Component {
   render() {
     return (
       <Provider store={store}>
-         <Application />
+        <Application />
       </Provider>
     );
   }

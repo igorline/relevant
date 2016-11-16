@@ -34,7 +34,7 @@ export function setDiscoverTags(data) {
 
 export function goToTag(tag) {
   return function(dispatch) {
-    console.log('go to', tag)
+    console.log('go to', tag);
     dispatch(setTag(tag));
     // dispatch(Actions.Discover);
   }
@@ -103,7 +103,7 @@ export function createTag(token, tagObj) {
 
 export function getParentTags() {
   return function(dispatch) {
-    return fetch(process.env.API_SERVER+'/api/tagparent', {
+    return fetch(process.env.API_SERVER+'/api/tag/categories', {
       credentials: 'include',
       method: 'GET',
       headers: {
