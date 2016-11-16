@@ -35,15 +35,13 @@ class DiscoverUser extends Component {
     let relevanceEl = null;
     let oldRel = null;
     const relevance = user.relevance || 0;
+    percentEl = (<Text style={[{ textAlign: 'right' }, styles.active]}>0%</Text>);
     if (this.props.stats) {
       if (this.props.stats[user._id]) {
         oldRel = this.props.stats[user._id].startAmount;
         let change = (relevance - oldRel) / oldRel;
         if (relevance) percent = Math.round(change * 100);
-
-        if (percent === 0) {
-          percentEl = (<Text style={[{ textAlign: 'right' }, styles.active]}>0%</Text>);
-        } else if (percent > 0) {
+        if (percent > 0) {
           percentEl = (<Text style={[{ textAlign: 'right' }, styles.active]}>⬆️{percent}%</Text>);
         } else if (percent < 0) {
           percentEl = (<Text style={{ color: 'red', textAlign: 'right' }}>⬇️{percent}%</Text>);

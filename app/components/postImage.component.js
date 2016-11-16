@@ -45,10 +45,6 @@ class PostImage extends Component {
     return noPrefix;
   }
 
-
-
-// <Image resizeMode={'cover'} source={{ uri: image }} style={styles.postImage} />
-
   render() {
     const self = this;
     let image = null;

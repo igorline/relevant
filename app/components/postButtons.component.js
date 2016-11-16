@@ -247,7 +247,28 @@ class PostButtons extends Component {
 export default PostButtons;
 
 const localStyles = StyleSheet.create({
-
+  postButtons: {
+    flexDirection: 'row',
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 10,
+    paddingTop: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap'
+  },
+  postButton: {
+    backgroundColor: 'white',
+    padding: 10,
+    flex: 1,
+    height: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  postButtonText: {
+    color: '#808080'
+  },
 });
 
 styles = { ...globalStyles, ...localStyles };
