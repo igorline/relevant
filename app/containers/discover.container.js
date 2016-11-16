@@ -61,6 +61,9 @@ class Discover extends Component {
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();
     }
+    if (this.props.reload !== next.reload) {
+      this.needsReload = new Date().getTime();
+    }
   }
 
   onScroll(event) {
@@ -205,7 +208,8 @@ function mapStateToProps(state) {
     users: state.user,
     tags: state.tags,
     error: state.error,
-    refresh: state.navigation.discover.refresh
+    refresh: state.navigation.discover.refresh,
+    reload: state.navigation.discover.reload,
   };
 }
 

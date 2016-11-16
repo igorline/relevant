@@ -45,9 +45,6 @@ class Activity extends Component {
   }
 
   componentWillReceiveProps(next) {
-    // let index = next.tabs.index;
-    // let route = next.tabs.routes[index];
-
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();
     }

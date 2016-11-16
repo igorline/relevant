@@ -25,6 +25,8 @@ export default class Tags extends Component {
   }
 
   renderTag(tag, selected) {
+    let name = `#${tag.name}`;
+    if (tag.category) name = tag.emoji + tag.categoryName;
     return (
       <Text
         style={
@@ -34,7 +36,7 @@ export default class Tags extends Component {
         onPress={() => this.toggleTag(tag)}
         key={tag._id}
       >
-        {tag.name}
+        {name}
       </Text>
     );
   }

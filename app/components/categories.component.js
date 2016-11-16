@@ -35,141 +35,10 @@ class Categories extends Component {
   }
 
   render() {
-    let parentTags = null;
     let categoryEl = null;
     let styles = globalStyles;
     if (this.props.tags) {
-      parentTags = this.props.tags;
-      categoryEl = parentTags.map((tag, i) => {
-        switch (tag.name) {
-          case 'Anime':
-            tag.emoji = '👁';
-            break;
-
-          case 'Art':
-            tag.emoji = '🎨';
-            break;
-
-          case 'Beauty':
-            tag.emoji = '💅';
-            break;
-
-          case 'Books':
-            tag.emoji = '📚';
-            break;
-
-          case 'Celebrities':
-            tag.emoji = '👑';
-            break;
-
-          case 'Culture':
-            tag.emoji = '🗿';
-            break;
-
-          case 'Design':
-            tag.emoji = '📐';
-            break;
-
-          case 'Gaming':
-            tag.emoji = '🎮';
-            break;
-
-          case 'Food and Drink':
-            tag.emoji = '🍽';
-            break;
-
-          case 'Fashion':
-            tag.emoji = '🕶';
-            break;
-
-          case 'Film':
-            tag.emoji = '🎥';
-            break;
-
-          case 'LGBT':
-            tag.emoji = '🌈';
-            break;
-
-          case 'Health and Fitness':
-            tag.emoji = '💪';
-            break;
-
-          case 'Meta':
-            tag.emoji = '💭';
-            break;
-
-          case 'LOL':
-            tag.emoji = '😂';
-            break;
-
-          case 'Nature':
-            tag.emoji = '🌱';
-            break;
-
-          case 'News and Politics':
-            tag.emoji = '📰';
-            break;
-
-          case 'Music':
-            tag.emoji = '🎹';
-            break;
-
-          case 'Other':
-            tag.emoji = '🌀';
-            break;
-
-          case 'POC':
-            tag.emoji = '👩🏾';
-            break;
-
-          case 'Pictures':
-            tag.emoji = '🖼';
-            break;
-
-          case 'Programming':
-            tag.emoji = '🔢';
-            break;
-
-          case 'Relationships':
-            tag.emoji = '💞';
-            break;
-
-          case 'Sex':
-            tag.emoji = '👄';
-            break;
-
-          case 'Science':
-            tag.emoji = '🔬';
-            break;
-
-          case 'thisie':
-            tag.emoji = '📸';
-            break;
-
-          case 'Sports':
-            tag.emoji = '🏈';
-            break;
-
-          case 'Technology':
-            tag.emoji = '💻';
-            break;
-
-          case 'Travel':
-            tag.emoji = '✈️';
-            break;
-
-          case 'Writing':
-            tag.emoji = '📝';
-            break;
-
-          case 'TV':
-            tag.emoji = '📺';
-            break;
-
-          default:
-            break;
-        }
-
+      categoryEl = this.props.tags.map((tag, i) => {
         return (
           <TouchableHighlight
             key={i}
@@ -184,7 +53,7 @@ class Categories extends Component {
                 justifyContent: 'center' }}
             >
               <Text>{tag.emoji}</Text>
-              <Text>{tag.name}</Text>
+              <Text>{tag.categoryName}</Text>
             </View>
           </TouchableHighlight>
         );

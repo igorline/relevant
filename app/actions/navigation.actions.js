@@ -5,7 +5,8 @@ import {
   RESET_ROUTES,
   REFRESH_ROUTE,
   REPLACE_ROUTE,
-  RELOAD_ROUTE
+  RELOAD_ROUTE,
+  RELOAD_ALL_TABS
 } from './actionTypes';
 
 export function push(route, key, animation = 'vertical') {
@@ -35,6 +36,12 @@ export function reloadTab(key) {
   return {
     type: RELOAD_ROUTE,
     key
+  };
+}
+
+export function reloadAllTabs() {
+  return {
+    type: RELOAD_ALL_TABS,
   };
 }
 

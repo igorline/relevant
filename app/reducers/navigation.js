@@ -6,7 +6,8 @@ import {
   RESET_ROUTES,
   REFRESH_ROUTE,
   REPLACE_ROUTE,
-  RELOAD_ROUTE
+  RELOAD_ROUTE,
+  RELOAD_ALL_TABS
 } from '../actions/actionTypes';
 
 const {
@@ -42,6 +43,7 @@ const profileIcon = {
 
 
 const initialState = {
+  reload: 0,
   main: 'home',
   tabs: {
     index: 0,
@@ -68,7 +70,7 @@ const initialState = {
     index: 0,
     key: 'read',
     refresh: null,
-    reload: null,
+    reload: 0,
     routes: [{
       key: 'read',
       component: 'read',
@@ -79,7 +81,7 @@ const initialState = {
     index: 0,
     key: 'read',
     refresh: null,
-    reload: null,
+    reload: 0,
     routes: [{
       key: 'discover',
       component: 'discover',
@@ -89,7 +91,7 @@ const initialState = {
   createPost: {
     index: 0,
     key: 'createPost',
-    reload: null,
+    reload: 0,
     routes: [{
       key: 'createPost',
       component: 'createPost',
@@ -100,7 +102,7 @@ const initialState = {
     index: 0,
     key: 'activity',
     refresh: null,
-    reload: null,
+    reload: 0,
     routes: [{
       key: 'activity',
       component: 'activity',
@@ -111,7 +113,7 @@ const initialState = {
     index: 0,
     key: 'myProfile',
     refresh: null,
-    reload: null,
+    reload: 0,
     routes: [{
       key: 'myProfile',
       component: 'myProfile',
@@ -151,7 +153,8 @@ function navigationState(state = initialState, action) {
           [activeTabKey]: nextScenes,
         };
       }
-      break;
+
+      return state;
     }
 
     // pop from tab scene stack
@@ -191,7 +194,7 @@ function navigationState(state = initialState, action) {
         ...state,
         [key]: {
           ...state[key],
-          refresh: new Date()
+          refresh: new Date().getTime()
         },
       };
     }
@@ -202,7 +205,7 @@ function navigationState(state = initialState, action) {
         ...state,
         [key]: {
           ...state[key],
-          reload: new Date()
+          reload: new Date().getTime()
         },
       };
     }
@@ -230,6 +233,13 @@ function navigationState(state = initialState, action) {
       return {
         ...state,
         [key]: newScene
+      };
+    }
+
+    case RELOAD_ALL_TABS: {
+      return {
+        ...state,
+        reload: new Date().getTime()
       };
     }
 

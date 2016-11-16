@@ -116,8 +116,13 @@ export function getPosts(skip, tags, sort, limit) {
 
   let url = process.env.API_SERVER + '/api/post?skip=' + skip + '&sort=' + sort + '&limit=' + limit;
 
+  let category = '';
   if (tags && tags.length) {
     tags.forEach((tag, i) => {
+      if (tag.category) {
+        category = tag._id;
+        return;
+      }
       if (tag._id) {
         if (i === tags.length - 1) {
           tagsString += tag._id;
@@ -132,7 +137,8 @@ export function getPosts(skip, tags, sort, limit) {
       'post?skip=' + skip +
       '&tag=' + tagsString
       + '&sort=' + sort
-      + '&limit=' + limit;
+      + '&limit=' + limit + 
+      '&category=' + category;
   }
 
   return (dispatch) => {

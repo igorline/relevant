@@ -13,12 +13,24 @@ const URL_REGEX =  new RegExp(/^((https|http|ftp):\/\/)?((([a-z\d]([a-z\d-]*[a-z
 
 export default class UrlComponent extends Component {
 
+  componentDidMount() {
+    if (this.props.postUrl) {
+      this.createPreview(this.props.postUrl);
+    }
+  }
+
+  componentWillReceiveProps(next) {
+    if (next.postUrl !== this.props.postUrl && next.postUrl) {
+      this.createPreview(next.postUrl);
+    }
+  }
+
   processInput(postBody) {
     if (!this.props.postUrl && postBody[postBody.length - 1] === ' ') {
       let words = postBody.split(' ');
       let postUrl = words.find(word => URL_REGEX.test(word.toLowerCase()));
       if (postUrl) {
-        this.createPreview(postUrl);
+        // this.createPreview(postUrl);
         this.props.actions.setCreaPostState({ postUrl });
       }
     }
@@ -63,8 +75,7 @@ export default class UrlComponent extends Component {
     input = (
       <View
         style={{
-          marginBottom: 300,
-          flex: 1 }}
+          height: 250 }}
       >
         <TextInput
           style={[styles.font15, styles.createPostInput, styles.flex1]}
@@ -99,5 +110,4 @@ const localStyles = StyleSheet.create({
 });
 
 styles = { ...localStyles, ...globalStyles };
-
 

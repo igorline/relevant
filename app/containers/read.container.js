@@ -34,9 +34,11 @@ class Read extends Component {
   }
 
   componentWillReceiveProps(next) {
-    // if (next.error) this.loading = false;
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();
+    }
+    if (this.props.reload !== next.reload) {
+      this.needsReload = new Date().getTime();
     }
   }
 
@@ -203,6 +205,7 @@ function mapStateToProps(state) {
     messages: state.messages,
     users: state.user,
     refresh: state.navigation.read.refresh,
+    reload: state.navigation.read.reload,
     error: state.error,
     navigation: state.navigation.tabs
   };
