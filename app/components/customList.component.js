@@ -73,7 +73,7 @@ export default class ActivityView extends Component {
       <ListView
         ref={(c) => { this.listview = c; }}
         enableEmptySections
-        removeClippedSubviews={false}
+        removeClippedSubviews={true}
         pageSize={1}
         initialListSize={10}
         scrollEventThrottle={16}
