@@ -46,6 +46,7 @@ class CreatePostContainer extends Component {
   }
 
   next() {
+    if (this.props.createPost.repost) return this.createRepost();
     if (this.props.step === 'url' && this.enableNext) {
       this.props.navigator.push({
         key: 'categories',
@@ -54,17 +55,45 @@ class CreatePostContainer extends Component {
       }, 'home');
     }
     if (this.props.step === 'post') {
-      this.createPost();
+      let repost = true;
+      this.createComment(repost);
     }
+  }
+
+  createRepost(repost) {
+    let props = this.props.createPost;
+    if (!props.postBody) {
+      return AlertIOS.alert('Please enter some text');
+    }
+    let commentObj = {
+      post: props.repost,
+      text: props.postBody,
+      repost: true
+    };
+    console.log(this.props.actions)
+    this.props.actions.createComment(this.props.auth.token, commentObj)
+    .then(comment => {
+      this.props.actions.clearCreatePost();
+      this.props.navigator.resetRoutes('home');
+      this.props.navigator.changeTab('discover');
+      this.props.navigator.reloadTab('discover');
+    })
   }
 
   createPost() {
     let props = this.props.createPost;
     this.image = null;
+    let postBody = props.postBody;
 
-    if (!props.postBody) {
-      AlertIOS.alert('Post has no body');
-      return;
+    if (!postBody) {
+      // TODO is this ok?
+      if (props.urlPreview) {
+        postBody = props.urlPreview.description;
+        this.props.actions.setCreaPostState({ postBody });
+      } else {
+        AlertIOS.alert('Post has no body');
+        return;
+      }
     }
 
     if (!props.postCategory) {
@@ -72,7 +101,7 @@ class CreatePostContainer extends Component {
       return;
     }
 
-    if (props.urlPreview && props.urlPreview.image) {
+    if (props.urlPreview && props.urlPreview.image && !props.nativeImage) {
       utils.s3.toS3Advanced(props.urlPreview.image)
       .then((results) => {
         if (results.success) {
@@ -84,7 +113,7 @@ class CreatePostContainer extends Component {
         }
       });
     } else {
-      this.image = props.postImage;
+      this.image = props.urlPreview.image ? props.urlPreview.image : props.postImage;
       this.uploadPost();
     }
   }
@@ -111,6 +140,8 @@ class CreatePostContainer extends Component {
           this.props.actions.clearCreatePost();
 
           this.props.navigator.resetRoutes('home');
+          this.props.navigator.goToTab('discover');
+          this.props.navigator.reloadTab('discover');
 
           // this.props.actions.getUserPosts(0, 5, this.props.auth.user._id);
         }
@@ -175,7 +206,6 @@ class CreatePostContainer extends Component {
         return <Categories {...this.props.createPost} actions={this.props.actions} />;
       case 'post':
         return <CreatePostComponent {...this.props.createPost} actions={this.props.actions} />;
-
       default:
         return null;
     }

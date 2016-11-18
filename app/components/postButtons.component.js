@@ -5,9 +5,7 @@ import {
   View,
   TouchableHighlight,
   TouchableWithoutFeedback,
-  AlertIOS,
   ActionSheetIOS,
-  Modal,
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import InvestModal from './investModal.component.js';
@@ -22,13 +20,41 @@ class PostButtons extends Component {
       editing: false,
       modalVisible: false,
       expanded: false,
+    };
+
+    this.linkMenu = {
       buttons: [
         'Share',
         'Irrelevant',
+        'Repost Commentary',
+        'Repost Link',
         'Cancel',
       ],
-      cancelIndex: 2,
+      cancelIndex: 4,
     };
+
+    this.menu = {
+      buttons: [
+        'Share',
+        'Irrelevant',
+        'Repost Commentary',
+        'Cancel',
+      ],
+      cancelIndex: 3,
+    };
+
+    this.ownerMenu = {
+      myPost: true,
+      buttons: [
+        'Share',
+        'Edit',
+        'Delete',
+        'Cancel',
+      ],
+      destructiveIndex: 2,
+      cancelIndex: 3,
+    };
+
     this.toggleModal = this.toggleModal.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
     this.openComments = this.openComments.bind(this);
@@ -36,20 +62,12 @@ class PostButtons extends Component {
   }
 
   componentDidMount() {
-    const self = this;
-    if (self.props.post.user && self.props.auth.user) {
-      if (self.props.post.user._id === self.props.auth.user._id) {
-        self.setState({
-          myPost: true,
-          buttons: [
-            'Share',
-            'Edit',
-            'Delete',
-            'Cancel',
-          ],
-          destructiveIndex: 2,
-          cancelIndex: 3,
-        });
+    if (this.props.post.user && this.props.auth.user) {
+      if (this.props.post.user === this.props.auth.user._id) {
+        this.menu = this.ownerMenu;
+        this.myPost = true;
+      } else if (this.props.post.link) {
+        this.menu = this.linkMenu;
       }
     }
   }
@@ -120,24 +138,24 @@ class PostButtons extends Component {
   //   return noPrefix;
   // }
 
+
   showActionSheet() {
-    const self = this;
-    if (self.state.myPost) {
+    if (this.myPost) {
       ActionSheetIOS.showActionSheetWithOptions({
-        options: self.state.buttons,
-        cancelButtonIndex: self.state.cancelIndex,
-        destructiveButtonIndex: self.state.destructiveIndex,
+        options: this.menu.buttons,
+        cancelButtonIndex: this.menu.cancelIndex,
+        destructiveButtonIndex: this.menu.destructiveIndex,
       },
       (buttonIndex) => {
         switch (buttonIndex) {
           case 0:
-            self.onShare();
+            this.onShare();
             break;
           case 1:
-            self.toggleEditing();
+            this.toggleEditing();
             break;
           case 2:
-            self.deletePost();
+            this.deletePost();
             break;
           default:
             return;
@@ -145,9 +163,9 @@ class PostButtons extends Component {
       });
     } else {
       ActionSheetIOS.showActionSheetWithOptions({
-        options: self.state.buttons,
-        cancelButtonIndex: self.state.cancelIndex,
-        destructiveButtonIndex: self.state.destructiveIndex,
+        options: this.menu.buttons,
+        cancelButtonIndex: this.menu.cancelIndex,
+        destructiveButtonIndex: this.menu.destructiveIndex,
       },
       (buttonIndex) => {
         switch (buttonIndex) {
@@ -156,6 +174,13 @@ class PostButtons extends Component {
             break;
           case 1:
             self.irrelevant();
+            break;
+          case 2:
+            this.repostCommentary();
+            break;
+          case 3:
+            if (this.props.post.link) this.repostUrl();
+            else return;
             break;
           default:
             return;
@@ -182,8 +207,47 @@ class PostButtons extends Component {
     });
   }
 
+  repostCommentary() {
+    this.props.actions.setCreaPostState({
+      postBody: '',
+      repost: this.props.post._id,
+      repostBody: this.props.post.body,
+      urlPreview: {
+        image: this.props.post.image,
+        title: this.props.post.title ? this.props.post.title : 'Untitled',
+        description: this.props.post.description,
+      }
+    });
+    this.props.actions.push({
+      key: 'createPost',
+      back: true,
+      title: 'Create Post',
+      next: 'Post'
+    }, 'home');
+  }
+
+  repostUrl() {
+    this.props.actions.setCreaPostState({
+      postBody: '',
+      nativeImage: true,
+      postUrl: this.props.post.link,
+      postImage: this.props.post.image,
+      urlPreview: {
+        image: this.props.post.image,
+        title: this.props.post.title ? this.props.post.title : 'Untitled',
+        description: this.props.post.description,
+      }
+    });
+    this.props.actions.push({
+      key: 'createPost',
+      back: true,
+      title: 'Create Post',
+      next: 'Next'
+    }, 'home');
+  }
+
   openComments() {
-    this.props.actions.setSelectedPost(this.props.post._id);
+    // this.props.actions.setSelectedPost(this.props.post._id);
     this.props.navigator.goToComments(this.props.post);
   }
 
@@ -215,7 +279,7 @@ class PostButtons extends Component {
     }
 
     if (post && post.user && this.props.auth.user) {
-      if (post.user._id !== this.props.auth.user._id) {
+      if (post.user !== this.props.auth.user._id) {
         investable = true;
       }
     }

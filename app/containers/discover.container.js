@@ -18,6 +18,7 @@ import * as viewActions from '../actions/view.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as navigationActions from '../actions/navigation.actions';
+import * as createPostActions from '../actions/createPost.actions';
 import { globalStyles } from '../styles/global';
 import ErrorComponent from '../components/error.component';
 import CustomListView from '../components/customList.component';
@@ -108,9 +109,9 @@ class Discover extends Component {
     }
   }
 
-  renderRow(rowData) {
-    if (!rowData.role) {
-      return (<Post post={rowData} {...this.props} styles={styles} />);
+  renderRow(rowData, view) {
+    if (view !== 2) {
+      return (<Post post={rowData.commentary} {...this.props} styles={styles} />);
     }
     return (<DiscoverUser user={rowData} {...this.props} styles={styles} />);
   }
@@ -222,6 +223,7 @@ function mapDispatchToProps(dispatch) {
         ...statsActions,
         ...authActions,
         ...navigationActions,
+        ...createPostActions,
       }, dispatch),
   };
 }
