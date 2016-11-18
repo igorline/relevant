@@ -188,7 +188,7 @@ class Application extends Component {
 
       // refresh after 5 minutes of inactivity
       let now = new Date().getTime();
-      if (this.backgroundTime + (5 * 60 * 60 * 1000) < now) {
+      if (this.backgroundTime + (5 * 60 * 1000) < now) {
         // reload current tab
         this.props.actions.reloadTab();
         // reload all other tabs on focus

@@ -9,6 +9,9 @@ const initialState = {
   bodyMentions: [],
   postTags: [],
   postImage: null,
+  nativeImage: false,
+  repost: null,
+  repostBody: null,
 };
 
 export default function createPost(state = initialState, action) {

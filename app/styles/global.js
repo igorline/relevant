@@ -264,8 +264,13 @@ const layout = StyleSheet.create({
   },
   flex1: {
     flex: 1
+  },
+  boxShadow: {
+    shadowColor: 'grey',
+    shadowOffset: { width: -1, height: 1 },
+    shadowRadius: 2,
+    shadowOpacity: 0.5,
   }
-
 });
 
 const globalStyles = { ...colors, ...font, ...alignment, ...layout };
