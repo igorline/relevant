@@ -109,6 +109,7 @@ export function getPostsAction() {
 }
 
 
+//this function queries the meta posts
 export function getPosts(skip, tags, sort, limit) {
   // console.log(skip, tags, sort);
   let tagsString = '';
@@ -119,7 +120,7 @@ export function getPosts(skip, tags, sort, limit) {
   // change this if we want to store top and new in separate places
   const type = sort ? 'top' : 'new';
 
-  let url = process.env.API_SERVER + '/api/post?skip=' + skip + '&sort=' + sort + '&limit=' + limit;
+  let url = process.env.API_SERVER + '/api/metaPost?skip=' + skip + '&sort=' + sort + '&limit=' + limit;
 
   let category = '';
   if (tags && tags.length) {
@@ -139,10 +140,10 @@ export function getPosts(skip, tags, sort, limit) {
     });
 
     url = apiServer +
-      'post?skip=' + skip +
+      'metaPost?skip=' + skip +
       '&tag=' + tagsString
       + '&sort=' + sort
-      + '&limit=' + limit + 
+      + '&limit=' + limit +
       '&category=' + category;
   }
 
@@ -382,7 +383,7 @@ export function getComments(postId, skip, limit) {
 
 export function createComment(token, commentObj) {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/comment?access_token='+token, {
+    return fetch(process.env.API_SERVER+'/api/comment?access_token='+token, {
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
@@ -392,13 +393,15 @@ export function createComment(token, commentObj) {
       body: JSON.stringify(commentObj)
     })
     .then(utils.fetchError.handleErrors)
-    .then((response) => response.json())
+    .then(response => response.json())
     .then((responseJSON) => {
       dispatch(setComments(responseJSON.post, responseJSON));
+      return true;
     })
     .catch((error) => {
       AlertIOS.alert(error.message);
       console.log(error, 'error');
+      return false;
     });
   }
 }

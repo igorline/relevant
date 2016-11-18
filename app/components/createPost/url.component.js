@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TextInput,
   View,
+  Text
 } from 'react-native';
 import { globalStyles, fullHeight } from '../../styles/global';
 import * as utils from '../../utils';
@@ -25,12 +26,12 @@ export default class UrlComponent extends Component {
     }
   }
 
-  processInput(postBody) {
-    if (!this.props.postUrl && postBody[postBody.length - 1] === ' ') {
+  processInput(postBody, doneTyping) {
+    if (doneTyping) postBody = this.props.postBody;
+    if (!this.props.postUrl && (postBody[postBody.length - 1] === ' ' || doneTyping)) {
       let words = postBody.split(' ');
       let postUrl = words.find(word => URL_REGEX.test(word.toLowerCase()));
       if (postUrl) {
-        // this.createPreview(postUrl);
         this.props.actions.setCreaPostState({ postUrl });
       }
     }
@@ -54,7 +55,7 @@ export default class UrlComponent extends Component {
     utils.post.generatePreview(postUrl.toLowerCase())
     .then((results) => {
       if (results) {
-        let newBody = this.props.postBody.replace(`${postUrl} `, '');
+        let newBody = this.props.postBody.replace(`${postUrl}`, '').trim();
         this.props.actions.setCreaPostState({
           postBody: newBody,
           urlPreview: {
@@ -71,18 +72,24 @@ export default class UrlComponent extends Component {
 
   render() {
     let input;
+    let repostBody;
+
+    if (this.props.repostBody) {
+      repostBody = (<Text>{this.props.repostBody}</Text>);
+    }
 
     input = (
       <View
         style={{
           height: 250 }}
       >
+        {repostBody}
         <TextInput
           style={[styles.font15, styles.createPostInput, styles.flex1]}
           placeholder={'Enter URL here, you can also enter text for a text post'}
           multiline
           onChangeText={postBody => this.processInput(postBody)}
-          onSubmitEditing={this.createPreview}
+          onBlur={() => this.processInput(null, true)}
           value={this.props.postBody}
           returnKeyType={'default'}
           autoFocus
