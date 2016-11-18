@@ -47,6 +47,7 @@ class CreatePostContainer extends Component {
 
   next() {
     if (this.props.createPost.repost) return this.createRepost();
+
     if (this.props.step === 'url' && this.enableNext) {
       this.props.navigator.push({
         key: 'categories',
@@ -54,9 +55,9 @@ class CreatePostContainer extends Component {
         title: 'Choose a Category',
       }, 'home');
     }
+
     if (this.props.step === 'post') {
-      let repost = true;
-      this.createComment(repost);
+      this.createPost();
     }
   }
 
@@ -140,7 +141,7 @@ class CreatePostContainer extends Component {
           this.props.actions.clearCreatePost();
 
           this.props.navigator.resetRoutes('home');
-          this.props.navigator.goToTab('discover');
+          this.props.navigator.changeTab('discover');
           this.props.navigator.reloadTab('discover');
 
           // this.props.actions.getUserPosts(0, 5, this.props.auth.user._id);
