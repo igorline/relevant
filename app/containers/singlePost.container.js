@@ -12,6 +12,7 @@ import * as userActions from '../actions/user.actions';
 import * as postActions from '../actions/post.actions';
 import * as statsActions from '../actions/stats.actions';
 import * as investActions from '../actions/invest.actions';
+import * as createPostActions from '../actions/createPost.actions';
 import { globalStyles, fullWidth } from '../styles/global';
 import Post from '../components/post.component';
 import * as animationActions from '../actions/animation.actions';
@@ -93,6 +94,7 @@ function mapDispatchToProps(dispatch) {
       ...animationActions,
       ...investActions,
       ...userActions,
+      ...createPostActions
     }, dispatch),
   };
 }
