@@ -284,9 +284,9 @@ class PostButtons extends Component {
       }
     }
 
-    if (comments) {
-      if (comments.length === 1) commentString = '1 Comment';
-      if (comments.length > 1) commentString = comments.length + ' Comments';
+    if (post && post.commentCount) {
+      if (post.commentCount === 1) commentString = '1 Comment';
+      else commentString = post.commentCount + ' Comments';
     }
 
     if (investable) {

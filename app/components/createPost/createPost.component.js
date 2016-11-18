@@ -129,7 +129,7 @@ export default class UrlComponent extends Component {
       <View style={{ flex: 1, paddingBottom: 300 }}>
         {tagsInput}
         {postImage}
-        {this.props.postImage ? imagePreview : null}
+        {this.props.postImage && !this.props.urlPreview ? imagePreview : null}
         {this.props.urlPreview ?
           <UrlPreview {...this.props} actions={this.props.actions} /> :
           null
