@@ -159,21 +159,26 @@ class Comment extends Component {
       if (authId === commentUserId) owner = true;
     }
 
+    let imageEl;
+
+    if (image) {
+      imageEl = (
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          onPress={() => this.props.navigator.goToProfile(comment.user)}
+        >
+          <Image
+            style={styles.commentAvatar}
+            source={{ uri: image }}
+          />
+        </TouchableHighlight>
+      );
+    }
+
     return (
       <View style={[styles.commentContainer]}>
         <View style={[styles.flexRow]}>
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            onPress={() => this.props.navigator.goToProfile(comment.user)}
-          >
-            {image ?
-              <Image
-                style={styles.commentAvatar}
-                source={{ uri: image }}
-              />
-              : null
-            }
-          </TouchableHighlight>
+          {imageEl}
           <View style={{ flex: 1 }}>
             <View style={styles.commentHeaderTextContainer}>
               <Text style={{ fontSize: 12, color: '#aaaaaa' }}>{createdTime} ago</Text>

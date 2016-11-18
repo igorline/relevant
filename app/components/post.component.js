@@ -10,6 +10,7 @@ import PostButtons from './postButtons.component';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostImage from './postImage.component';
+import Comment from './comment.component';
 
 let styles;
 
@@ -29,15 +30,14 @@ class Post extends Component {
       let comment;
       if (typeof p.comments[0] === 'object') {
         comment = (
-          <Text style={[styles.comment, styles.boxShadow]}>
-            {p.comments[0].text}
-          </Text>
+          <View style={[styles.comment, styles.boxShadow]}>
+            <Comment {...this.props} comment={p.comments[0]} />
+          </View>
         );
       }
       return (
-        <View>
+        <View key={p._id}>
           <View
-            key={p._id}
             style={[
               styles.commentary,
               length > 0 ? styles.boxShadow : null,
@@ -100,9 +100,9 @@ const localStyles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   comment: {
-    // height: 50,
-    marginLeft: 30,
-    padding: 10
+    marginLeft: 25,
+    marginRight: 4,
+    marginBottom: 10,
   },
   commentary: {
     // height: 200,
