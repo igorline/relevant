@@ -26,7 +26,7 @@ class PostInfo extends Component {
       time: 0,
       posted: null,
       toggleInfo: false,
-    }
+    };
   }
 
   componentDidMount() {
@@ -41,7 +41,10 @@ class PostInfo extends Component {
 
   setSelected(user) {
     if (!user) return;
-    this.props.navigator.goToProfile(user);
+    this.props.navigator.goToProfile({
+      name: this.props.post.userImbeded.name,
+      _id: this.props.post.user
+    });
   }
 
   checkTime() {
@@ -76,28 +79,18 @@ class PostInfo extends Component {
     let postUserImageEl = null;
     let postInfo = null;
     let post = null;
-    let image = null;
-    let title = null;
     let relevance = 0;
-    let link = null;
-    let body = null;
-    let tags = null;
     let value = null;
-    let comments = null;
+    let postUser;
+    let name;
 
     if (this.props.post) {
       post = this.props.post;
-      if (post.image) image = post.image.match('http') ? post.image : 'https:' + post.image;
-      if (post.title) title = post.title;
       if (post.relevance) relevance = post.relevance;
-      if (post.link) link = post.link;
-      if (post.body) body = post.body;
       if (post.value) value = post.value;
-      if (post.comments) comments = post.comments;
-      if (post.tags) if (post.tags.length) tags = post.tags;
       if (post.user) {
-        postUser = post.user;
-        if (post.user.name) name = post.user.name;
+        postUser = post.userImbeded || post.user;
+        if (postUser.name) name = postUser.name;
         if (postUser.image) postUserImage = postUser.image;
       }
     };

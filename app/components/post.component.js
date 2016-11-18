@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import {
+  ScrollView,
   StyleSheet,
   View,
+  Text,
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-import PostButtons from './postButtons.component.js';
-import PostBody from './postBody.component.js';
-import PostInfo from './postInfo.component.js';
-import PostImage from './postImage.component.js';
+import PostButtons from './postButtons.component';
+import PostBody from './postBody.component';
+import PostInfo from './postInfo.component';
+import PostImage from './postImage.component';
+
+let styles;
 
 class Post extends Component {
   constructor(props) {
@@ -17,16 +21,48 @@ class Post extends Component {
   componentDidMount() {
   }
 
+  renderCommentary() {
+    let posts = Array.isArray(this.props.post) ? this.props.post : [this.props.post];
+    let length = posts.length > 1;
+    posts = posts.filter(p => typeof p === 'object');
+    return posts.map(p => {
+      let comment;
+      if (typeof p.comments[0] === 'object') {
+        comment = (
+          <Text style={[styles.comment, styles.boxShadow]}>
+            {p.comments[0].text}
+          </Text>
+        );
+      }
+      return (
+        <View>
+          <View
+            key={p._id}
+            style={[
+              styles.commentary,
+              length > 0 ? styles.boxShadow : null,
+              { width: length ? fullWidth * 0.92 : fullWidth }
+            ]}
+          >
+            <PostInfo navigator={this.props.navigator} post={p} />
+            <PostBody post={p} editing={false} />
+            <PostButtons {...this.props} post={p} comments={p.comments || null} />
+          </View>
+          {comment}
+        </View>
+      );
+    });
+  }
+
   render() {
-    let post = null;
-    let body = null;
-    let comments = null;
-    let styles = { ...localStyles, ...globalStyles };
+    let post;
+    let comment;
 
     if (this.props.post) {
-      post = this.props.post;
-      if (post.body) body = post.body;
-      if (post.comments) comments = post.comments;
+      let posts = Array.isArray(this.props.post) ? this.props.post : [this.props.post];
+      posts = posts.filter(p => typeof p === 'object');
+      if (!posts.length) return null;
+      post = posts[0];
     }
 
     if (!this.props.auth.user) return null;
@@ -34,11 +70,18 @@ class Post extends Component {
     return (
       <View style={[styles.postContainer]}>
 
-        <PostInfo navigator={this.props.navigator} post={post} />
-
-        <PostBody post={post} editing={false} />
-
-        <PostButtons {...this.props} comments={comments} />
+        <ScrollView
+          horizontal
+          decelerationRate={'fast'}
+          showsHorizontalScrollIndicator={false}
+          automaticallyAdjustContentInsets={false}
+          contentContainerStyle={styles.postScroll}
+          snapToInterval={(fullWidth * 0.92) + 8}
+          snapToAlignment={'center'}
+          onScrollAnimationEnd={this.updateCurrent}
+        >
+          {this.renderCommentary()}
+        </ScrollView>
 
         <PostImage post={post} />
 
@@ -50,6 +93,24 @@ class Post extends Component {
 export default Post;
 
 const localStyles = StyleSheet.create({
+  postScroll: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    flexWrap: 'nowrap',
+    justifyContent: 'flex-start',
+  },
+  comment: {
+    // height: 50,
+    marginLeft: 30,
+    padding: 10
+  },
+  commentary: {
+    // height: 200,
+    marginRight: 4,
+    marginLeft: 4,
+    marginTop: 3,
+    marginBottom: 10
+  },
   postContainer: {
     paddingBottom: 25,
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -63,5 +124,7 @@ const localStyles = StyleSheet.create({
     flexWrap: 'wrap',
     flex: 1,
   },
-
 });
+
+styles = { ...localStyles, ...globalStyles };
+
