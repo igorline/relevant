@@ -269,7 +269,10 @@ const layout = StyleSheet.create({
     shadowColor: 'grey',
     shadowOffset: { width: -1, height: 1 },
     shadowRadius: 2,
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.1,
+    borderRadius: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'lightgrey'
   }
 });
 
