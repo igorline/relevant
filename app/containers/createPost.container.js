@@ -47,6 +47,7 @@ class CreatePostContainer extends Component {
 
   next() {
     if (this.props.createPost.repost) return this.createRepost();
+
     if (this.props.step === 'url' && this.enableNext) {
       this.props.navigator.push({
         key: 'categories',
@@ -54,9 +55,9 @@ class CreatePostContainer extends Component {
         title: 'Choose a Category',
       }, 'home');
     }
+
     if (this.props.step === 'post') {
-      let repost = true;
-      this.createComment(repost);
+      this.createPost();
     }
   }
 
@@ -108,12 +109,14 @@ class CreatePostContainer extends Component {
           this.image = results.url;
           this.uploadPost();
         } else {
-          this.image = props.urlPreview.image;
+          this.image = props.urlPreview ? props.urlPreview.image : null;
           this.uploadPost();
         }
       });
     } else {
-      this.image = props.urlPreview.image ? props.urlPreview.image : props.postImage;
+      this.image = props.urlPreview && props.urlPreview.image ?
+        props.urlPreview.image :
+        props.postImage;
       this.uploadPost();
     }
   }
@@ -138,12 +141,9 @@ class CreatePostContainer extends Component {
         } else {
           AlertIOS.alert('Success!');
           this.props.actions.clearCreatePost();
-
           this.props.navigator.resetRoutes('home');
-          this.props.navigator.goToTab('discover');
+          this.props.navigator.changeTab('discover');
           this.props.navigator.reloadTab('discover');
-
-          // this.props.actions.getUserPosts(0, 5, this.props.auth.user._id);
         }
       });
   }

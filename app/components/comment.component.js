@@ -141,10 +141,10 @@ class Comment extends Component {
     let name = null;
     let commentUserId = null;
 
-    if (comment.user) {
-      if (comment.user.image) image = comment.user.image;
-      if (comment.user.name) name = comment.user.name;
-      if (comment.user._id) commentUserId = comment.user._id;
+    if (comment.embeddedUser) {
+      if (comment.embeddedUser.image) image = comment.embeddedUser.image;
+      if (comment.embeddedUser.name) name = comment.embeddedUser.name;
+      if (comment.user) commentUserId = comment.user;
     }
 
     let authId = null;
@@ -163,7 +163,10 @@ class Comment extends Component {
       imageEl = (
         <TouchableHighlight
           underlayColor={'transparent'}
-          onPress={() => this.props.navigator.goToProfile(comment.user)}
+          onPress={() => this.props.navigator.goToProfile({
+            _id: comment.user,
+            name: comment.embeddedUser.name
+          })}
         >
           <Image
             style={styles.commentAvatar}

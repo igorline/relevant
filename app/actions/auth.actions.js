@@ -79,7 +79,7 @@ export function logoutAction(user) {
       // websoket message
       dispatch({
         type: 'server/logout',
-        payload: user
+        payload: user._id
       });
     });
   };
@@ -215,7 +215,6 @@ export function getUser(callback) {
     })
     .catch((error) => {
       console.log('auth error ', error);
-      //dispatch(setUser());
     });
   };
 }
