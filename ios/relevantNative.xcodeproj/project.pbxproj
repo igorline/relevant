@@ -23,6 +23,9 @@
 		22ED31BD968C4665B9DE83D5 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A1787E34623C4D149698AD8F /* libRNImagePicker.a */; };
 		2A94225D1D9D80F3000671FA /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A94225C1D9D80DB000671FA /* libRCTPushNotification.a */; };
 		2A9422641D9D82B7000671FA /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A9422631D9D827E000671FA /* libART.a */; };
+		2ADC9AD11DE3B86C003F81EF /* BebasNeue Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2ADC9ACF1DE3B86C003F81EF /* BebasNeue Regular.otf */; };
+		2ADC9AD21DE3B86C003F81EF /* BebasNeue Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2ADC9AD01DE3B86C003F81EF /* BebasNeue Bold.otf */; };
+		2ADC9AEF1DE3BAFD003F81EF /* Bebas Neue.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2ADC9AEE1DE3BAFD003F81EF /* Bebas Neue.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8F3570BC5F7C49AFB8DAC1DB /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 896F0A9D02424FBF979AE5E1 /* libRNShare.a */; };
 		A8EB850D4EC745F2884E48A8 /* libRNOverlay.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D9C9A96E67470CBA6C6352 /* libRNOverlay.a */; };
@@ -293,6 +296,9 @@
 		2A8277D21D9EE8D000CC62EA /* relevantNative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = relevantNative.entitlements; path = relevantNative/relevantNative.entitlements; sourceTree = "<group>"; };
 		2A9422571D9D80DB000671FA /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		2A94225E1D9D827D000671FA /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
+		2ADC9ACF1DE3B86C003F81EF /* BebasNeue Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "BebasNeue Regular.otf"; path = "../app/assets/fonts/BebasNeue Regular.otf"; sourceTree = "<group>"; };
+		2ADC9AD01DE3B86C003F81EF /* BebasNeue Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "BebasNeue Bold.otf"; path = "../app/assets/fonts/BebasNeue Bold.otf"; sourceTree = "<group>"; };
+		2ADC9AEE1DE3BAFD003F81EF /* Bebas Neue.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Bebas Neue.ttf"; path = "../app/assets/fonts/Bebas Neue.ttf"; sourceTree = "<group>"; };
 		2C3D6F7A65B74A13BDADB49F /* RNShare.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNShare.xcodeproj; path = "../node_modules/react-native-share/ios/RNShare.xcodeproj"; sourceTree = "<group>"; };
 		3E20E96A4BE64D4EB36FDE6A /* libRCTContacts.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTContacts.a; sourceTree = "<group>"; };
 		62D126FAA7684DCC9D1544DD /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
@@ -550,6 +556,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				2ADC9AEE1DE3BAFD003F81EF /* Bebas Neue.ttf */,
+				2ADC9ACF1DE3B86C003F81EF /* BebasNeue Regular.otf */,
+				2ADC9AD01DE3B86C003F81EF /* BebasNeue Bold.otf */,
 				13B07FAE1A68108700A75B9A /* relevantNative */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				FB88BE801D9ED742002D0069 /* Relevant */,
@@ -997,8 +1006,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2ADC9AD21DE3B86C003F81EF /* BebasNeue Bold.otf in Resources */,
+				2ADC9AEF1DE3BAFD003F81EF /* Bebas Neue.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				FB816A931DCD2B52003C4E63 /* Images.xcassets in Resources */,
+				2ADC9AD11DE3B86C003F81EF /* BebasNeue Regular.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
