@@ -12,48 +12,43 @@ let defaultImg = require('../assets/images/default_user.jpg');
 
 class ProfileComponent extends Component {
   constructor (props, context) {
-    super(props, context)
+    super(props, context);
     this.state = {
       followers: null,
       following: null,
-      online: false
     };
   }
 
   componentDidMount() {
-    const self = this;
-    if (self.props.user) {
-      if (self.props.user._id) {
-        self.props.actions.getStats(self.props.user._id);
+    if (this.props.user) {
+      if (this.props.user._id) {
+        this.props.actions.getStats(this.props.user._id);
         subscriptionActions.getSubscriptionData('follower', this.props.user._id).then((response) => {
-          self.setState({ following: response.data });
+          this.setState({ following: response.data });
         });
         subscriptionActions.getSubscriptionData('following', this.props.user._id).then((response) => {
-          self.setState({ followers: response.data });
+          this.setState({ followers: response.data });
         });
       }
     }
-    self.checkOnline(self.props.online);
+    // this.checkOnline(this.props.online);
   }
 
-  componentWillReceiveProps(next) {
-    const self = this;
-    self.checkOnline(next.online);
-  }
+  // componentWillReceiveProps(next) {
+  //   this.checkOnline(next.online);
+  // }
 
-  checkOnline(online) {
-    const self = this;
-    if (!self.props.user._id) return;
-    for (let index in online) {
-      if (index === self.props.user._id) {
-        self.setState({ online: true });
-        return;
-      }
-    }
-  }
+  // checkOnline(online) {
+  //   if (!this.props.user._id) return;
+  //   for (let index in online) {
+  //     if (index === this.props.user._id) {
+  //       this.setState({ online: true });
+  //       return;
+  //     }
+  //   }
+  // }
 
   render() {
-    const self = this;
     const parentStyles = this.props.styles;
     const styles = { ...localStyles, ...parentStyles };
     let followers = null;
@@ -66,8 +61,8 @@ class ProfileComponent extends Component {
     let relevanceEl = null;
     let percent = 0;
     let oldRel = null;
-    if (self.state.followers) followers = self.state.followers;
-    if (self.state.following) following = self.state.following;
+    if (this.state.followers) followers = this.state.followers;
+    if (this.state.following) following = this.state.following;
 
     if (this.props.user) {
       user = this.props.user;
@@ -81,9 +76,9 @@ class ProfileComponent extends Component {
     } else {
       userImageEl = (<Image source={defaultImg} style={styles.uploadAvatar} />);
     }
-    if (self.props.stats[self.props.user._id]) {
-      if (self.props.stats[self.props.user._id].startAmount) {
-        oldRel = self.props.stats[self.props.user._id].startAmount;
+    if (this.props.stats[this.props.user._id]) {
+      if (this.props.stats[this.props.user._id].startAmount) {
+        oldRel = this.props.stats[this.props.user._id].startAmount;
       }
       if (relevance > 0) {
         let change = oldRel / relevance;
@@ -91,28 +86,42 @@ class ProfileComponent extends Component {
       }
     }
 
-    if (percent == 0) {
+    if (percent === 0) {
       relevanceEl = (<Text>📈<Text style={styles.active}>{relevance} 0%</Text></Text>);
     }
     if (percent > 0) {
       relevanceEl = (<Text>📈<Text style={styles.active}>{relevance} ⬆️{percent}%</Text></Text>);
     }
     if (percent < 0) {
-      relevanceEl = (<Text>📈<Text style={styles.active}>{relevance}</Text><Text style={{ color: 'red' }}> ⬇️{percent}%</Text></Text>)
+      relevanceEl = (
+        <Text>📈<Text style={styles.active}>{relevance}</Text>
+          <Text style={{ color: 'red' }}> ⬇️{percent}%</Text>
+        </Text>
+      );
     }
 
 
     return (
-        <View style={[styles.row, styles.fullWidthStyle, styles.padding10]}>
-          <View>{userImageEl}</View>
-          <View style={[styles.insideRow, styles.insidePadding]}>
-           <View style={styles.onlineRow}><Text style={styles.darkGray}>{self.state.online ? 'Online' : 'Offline'}</Text><View style={self.state.online ? styles.onlineCirc : styles.offlineCirc}></View></View>
-            {relevanceEl}
-            <Text>💵<Text style={styles.active}>{balance}</Text></Text>
-            <Text style={styles.darkGray}>Followers <Text style={styles.active}>{followers ? followers.length : 0}</Text></Text>
-            <Text style={styles.darkGray}>Following <Text style={styles.active}>{following ? following.length : 0}</Text></Text>
+      <View style={[styles.row, styles.fullWidthStyle, styles.padding10]}>
+        <View>{userImageEl}</View>
+        <View style={[styles.insideRow, styles.insidePadding]}>
+          <View style={styles.onlineRow}>
+            <Text style={styles.darkGray}>
+              {user.online ? 'Online' : 'Offline'}
+            </Text>
+            <View style={user.online ? styles.onlineCirc : styles.offlineCirc} />
           </View>
+          {relevanceEl}
+          <Text>💵<Text style={styles.active}>{balance}</Text>
+          </Text>
+          <Text style={styles.darkGray}>
+            Followers <Text style={styles.active}>{followers ? followers.length : 0}</Text>
+          </Text>
+          <Text style={styles.darkGray}>
+            Following <Text style={styles.active}>{following ? following.length : 0}</Text>
+          </Text>
         </View>
+      </View>
     );
   }
 }
@@ -122,9 +131,4 @@ const localStyles = StyleSheet.create({
 });
 
 export default ProfileComponent;
-
-
-
-
-
 

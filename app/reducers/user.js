@@ -50,6 +50,17 @@ export default function auth(state = initialState, action) {
       });
     }
 
+    case types.UPDATE_USER:
+      return {
+        ...state,
+        selectedUserData: {
+          ...state.selectedUserData,
+          [action.payload._id]: {
+            ...state.selectedUserData[action.payload._id],
+            ...action.payload,
+          }
+        }
+      };
 
     case 'CLEAR_USER_LIST': {
       return Object.assign({}, state, {

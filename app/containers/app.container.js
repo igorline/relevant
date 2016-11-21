@@ -66,7 +66,7 @@ class Application extends Component {
 
   componentWillReceiveProps(next) {
     if (!this.props.auth.user && next.auth.user) {
-      this.props.actions.userToSocket(next.auth.user);
+      this.props.actions.userToSocket(next.auth.user._id);
       this.props.actions.getNotificationCount();
       this.props.actions.getMessages(next.auth.user._id);
       this.props.actions.changeTab('read');
@@ -183,7 +183,7 @@ class Application extends Component {
   // home button etc
   handleAppStateChange(currentAppState) {
     if (currentAppState === 'active' && this.props.auth.user) {
-      this.props.actions.userToSocket(this.props.auth.user);
+      this.props.actions.userToSocket(this.props.auth.user._id);
       this.props.actions.getNotificationCount();
 
       // refresh after 5 minutes of inactivity
