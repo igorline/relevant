@@ -31,7 +31,6 @@ export default function auth(state = initialState, action) {
       return Object.assign({}, state, {
         isAuthenticating: false,
         isAuthenticated: false,
-        // 'token': null,
         user: null,
         //'statusText': action.payload.statusText
       });
@@ -51,6 +50,7 @@ export default function auth(state = initialState, action) {
       });
 
     case types.UPDATE_USER:
+      if (!state.user || action.payload._id !== state.user._id) return state;
       return {
         ...state,
         user: {
