@@ -63,6 +63,7 @@ class Read extends Component {
   }
 
   renderRow(rowData) {
+    console.log(rowData, 'rowData here')
     if (rowData.fakePost){
       return (
         <View
@@ -70,8 +71,8 @@ class Read extends Component {
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
-            position: 'absolute',
-            top: -50,
+            // position: 'absolute',
+            // top: -50,
             width: fullWidth,
             height: fullHeight,
           }}>

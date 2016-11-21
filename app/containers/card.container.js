@@ -92,7 +92,7 @@ class CardContainer extends Component {
 
     return (
       <NavigationHeader.Title>
-        <Text style={{ fontSize: 15 }}>{clipped}</Text>
+        <Text style={{ fontSize: 20, fontFamily: 'Bebas Neue' }}>{clipped}</Text>
       </NavigationHeader.Title>
     );
   }
