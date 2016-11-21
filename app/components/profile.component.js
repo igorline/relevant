@@ -16,13 +16,13 @@ class ProfileComponent extends Component {
     this.state = {
       followers: null,
       following: null,
-      online: false
     };
   }
 
   componentDidMount() {
     const self = this;
     if (self.props.user) {
+      console.log(self.props.user, 'user')
       if (self.props.user._id) {
         self.props.actions.getStats(self.props.user._id);
         subscriptionActions.getSubscriptionData('follower', this.props.user._id).then((response) => {
@@ -33,23 +33,10 @@ class ProfileComponent extends Component {
         });
       }
     }
-    self.checkOnline(self.props.online);
   }
 
   componentWillReceiveProps(next) {
     const self = this;
-    self.checkOnline(next.online);
-  }
-
-  checkOnline(online) {
-    const self = this;
-    if (!self.props.user._id) return;
-    for (let index in online) {
-      if (index === self.props.user._id) {
-        self.setState({ online: true });
-        return;
-      }
-    }
   }
 
   render() {
@@ -66,11 +53,14 @@ class ProfileComponent extends Component {
     let relevanceEl = null;
     let percent = 0;
     let oldRel = null;
+    let online = false;
+    
     if (self.state.followers) followers = self.state.followers;
     if (self.state.following) following = self.state.following;
 
     if (this.props.user) {
       user = this.props.user;
+      if (user.online) online = true;
       if (user.image) userImage = user.image;
       if (user.relevance) relevance = user.relevance.toFixed(2);
       if (user.balance) balance = user.balance.toFixed(2);
@@ -106,7 +96,7 @@ class ProfileComponent extends Component {
         <View style={[styles.row, styles.fullWidthStyle, styles.padding10]}>
           <View>{userImageEl}</View>
           <View style={[styles.insideRow, styles.insidePadding]}>
-           <View style={styles.onlineRow}><Text style={styles.darkGray}>{self.state.online ? 'Online' : 'Offline'}</Text><View style={self.state.online ? styles.onlineCirc : styles.offlineCirc}></View></View>
+           <View style={styles.onlineRow}><Text style={styles.darkGray}>{online ? 'Online' : 'Offline'}</Text><View style={self.state.online ? styles.onlineCirc : styles.offlineCirc}></View></View>
             {relevanceEl}
             <Text>💵<Text style={styles.active}>{balance}</Text></Text>
             <Text style={styles.darkGray}>Followers <Text style={styles.active}>{followers ? followers.length : 0}</Text></Text>

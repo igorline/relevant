@@ -16,6 +16,7 @@ let styles;
 class PostButtons extends Component {
   constructor(props, context) {
     super(props, context);
+    this.onShare = this.onShare.bind(this);
     this.state = {
       editing: false,
       modalVisible: false,
@@ -292,7 +293,7 @@ class PostButtons extends Component {
     if (investable) {
         investButtonEl = (<TouchableWithoutFeedback
           onPress={() => self.toggleModal()}
-          style={[styles.postButton, { marginRight: 5, backgroundColor: '#F0F0F0' }]}
+          style={[styles.postButton, { marginRight: 5, backgroundColor: '#F0F0F0' }]}3
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View>
         </TouchableWithoutFeedback>);
