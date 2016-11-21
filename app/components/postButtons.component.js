@@ -293,7 +293,7 @@ class PostButtons extends Component {
     if (investable) {
         investButtonEl = (<TouchableWithoutFeedback
           onPress={() => self.toggleModal()}
-          style={[styles.postButton, { marginRight: 5, backgroundColor: '#F0F0F0' }]}3
+          style={[styles.postButton, { marginRight: 5, backgroundColor: '#F0F0F0' }]}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View>
         </TouchableWithoutFeedback>);

@@ -48,8 +48,8 @@ class ProfileComponent extends Component {
     let oldRel = null;
     let online = false;
     
-    if (self.state.followers) followers = self.state.followers;
-    if (self.state.following) following = self.state.following;
+    if (this.state.followers) followers = this.state.followers;
+    if (this.state.following) following = this.state.following;
 
 
     if (this.props.user) {
