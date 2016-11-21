@@ -16,15 +16,57 @@ const initialState = {
   },
 };
 
-const updatePostElement = (array, post) => {
+const updatePostElement = (array, _post) => {
   if (!array) return;
-  let index = array.findIndex(el => el._id === post._id);
+  let index = array.findIndex(el => el._id === _post._id);
 
   if (index < 0) return array;
+
+  let newPost = {
+    ...array[index],
+    ..._post
+  };
+
   let newArr = [
     ...array.slice(0, index),
-    post,
+    newPost,
     ...array.slice(index + 1)
+  ];
+  return newArr;
+};
+
+const updateCommentaryElement = (array, _post) => {
+  if (!array) return;
+
+  let postIndex;
+  let metaIndex;
+  let meta = array.find((metaPost, i) => {
+    metaIndex = i;
+    postIndex = metaPost.commentary.findIndex(el => el._id === _post._id);
+    return postIndex > -1;
+  });
+
+  if (!meta || metaIndex < 0) return array;
+
+
+  let newPost = {
+    ...meta.commentary[postIndex],
+    ..._post
+  };
+
+  let newMeta = {
+    ...meta,
+    commentary: [
+      ...meta.commentary.slice(0, postIndex),
+      newPost,
+      ...meta.commentary.slice(postIndex + 1)
+    ]
+  };
+
+  let newArr = [
+    ...array.slice(0, metaIndex),
+    newMeta,
+    ...array.slice(metaIndex + 1)
   ];
   return newArr;
 };
@@ -37,33 +79,44 @@ const removeItem = (array, item) => {
   ];
 };
 
-const addItems = (arr, newArr) => {
-  if (!arr.length) return newArr;
-  const removeDuplicates = newArr.filter((el) => {
-    return arr.indexOf( el ) < 0;
-  });
-  let finalArr = arr.concat(removeDuplicates);
-  return finalArr;
-};
+const removeCommentaryElement = (array, _post) => {
+  if (!array) return;
 
-const prependItems = (arr, newArr) => {
-  if (!arr.length) return newArr;
-  var removeDuplicates = newArr.filter( function( el ) {
-    return arr.indexOf( el ) < 0;
+  let postIndex;
+  let metaIndex;
+  let meta = array.find((metaPost, i) => {
+    metaIndex = i;
+    postIndex = metaPost.commentary.findIndex(el => el._id === _post._id);
+    return postIndex > -1;
   });
-  var finalArr = removeDuplicates.concat(arr)
-  return finalArr;
-}
 
-const addItem = (old, newObj) => {
-  var newArr = [newObj];
-  console.log('add item', newObj);
-  if (old.indexOf(newObj) < 0) {
-    return newArr.concat(old);
-  } else {
-    return old.slice();
+  if (!meta || metaIndex < 0) return array;
+
+  let newMeta = {
+    ...meta,
+    commentary: [
+      ...meta.commentary.slice(0, postIndex),
+      ...meta.commentary.slice(postIndex + 1)
+    ]
+  };
+
+  let newArr;
+  if (newMeta && newMeta.commentary.length === 0) {
+    newArr = [
+      ...array.slice(0, metaIndex),
+      ...array.slice(metaIndex + 1)
+    ];
+    return newArr;
   }
+
+  newArr = [
+    ...array.slice(0, metaIndex),
+    newMeta,
+    ...array.slice(metaIndex + 1)
+  ];
+  return newArr;
 };
+
 
 export default function post(state = initialState, action) {
   switch (action.type) {
@@ -90,8 +143,8 @@ export default function post(state = initialState, action) {
 
     case types.UPDATE_POST: {
       return Object.assign({}, state, {
-        top: updatePostElement(state.top, action.payload),
-        new: updatePostElement(state.new, action.payload),
+        top: updateCommentaryElement(state.top, action.payload),
+        new: updateCommentaryElement(state.new, action.payload),
         feed: updatePostElement(state.feed, action.payload),
         // userPosts: updatePostElement(state.feed, action.payload),
       });
@@ -99,8 +152,8 @@ export default function post(state = initialState, action) {
 
     case types.REMOVE_POST: {
       return Object.assign({}, state, {
-        top: removeItem(state.top, action.payload),
-        new: removeItem(state.new, action.payload),
+        top: removeCommentaryElement(state.top, action.payload),
+        new: removeCommentaryElement(state.new, action.payload),
         feed: removeItem(state.feed, action.payload),
         // userPosts: removeItem(state.user, action.payload),
       });

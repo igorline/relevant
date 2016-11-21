@@ -3,9 +3,12 @@ export const LOGIN_USER_FAILURE = 'LOGIN_USER_FAILURE';
 export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 export const LOGOUT_USER = 'LOGOUT_USER';
 export const SHOW_LOADER = 'SHOW_LOADER';
+
 export const SET_USER = 'SET_USER';
 export const SET_CONTACTS = 'SET_CONTACTS';
 export const SET_USER_INDEX = 'SET_USER_INDEX';
+export const UPDATE_USER = 'UPDATE_USER';
+
 
 export const SET_ACTIVE_POST = 'SET_ACTIVE_POST';
 export const SET_RECENT_POSTS = 'SET_RECENT_POSTS';

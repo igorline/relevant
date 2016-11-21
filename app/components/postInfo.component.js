@@ -42,7 +42,7 @@ class PostInfo extends Component {
   setSelected(user) {
     if (!user) return;
     this.props.navigator.goToProfile({
-      name: this.props.post.userImbeded.name,
+      name: this.props.post.embeddedUser.name,
       _id: this.props.post.user
     });
   }
@@ -89,7 +89,7 @@ class PostInfo extends Component {
       if (post.relevance) relevance = post.relevance;
       if (post.value) value = post.value;
       if (post.user) {
-        postUser = post.userImbeded || post.user;
+        postUser = post.embeddedUser || post.user;
         if (postUser.name) name = postUser.name;
         if (postUser.image) postUserImage = postUser.image;
       }
@@ -114,7 +114,7 @@ class PostInfo extends Component {
       if (self.state.toggleInfo) {
         postInfo = (<View>
           <Text style={[styles.font10, styles.textRight]}>💵&nbsp;
-            <Text style={styles.active}>{value.toFixed(2)}</Text>
+            <Text style={styles.active}>{value ? value.toFixed(2) : 0}</Text>
           </Text>
         </View>);
       } else {
