@@ -84,6 +84,7 @@ class Activity extends Component {
   }
 
   renderRow(rowData) {
+    //console.log(rowData.role, 'activity rowData here');
     if (!rowData.role) {
       return (
         <SingleActivity singleActivity={rowData} {...this.props} styles={styles} />

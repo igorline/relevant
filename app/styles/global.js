@@ -95,8 +95,9 @@ const layout = StyleSheet.create({
     width: fullWidth,
     justifyContent: 'space-between',
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'stretch',
     flex: 1,
+    overflow: 'visible',
   },
   onlineUser: {
     justifyContent: 'space-between',

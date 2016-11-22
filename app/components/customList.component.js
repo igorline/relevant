@@ -87,7 +87,6 @@ export default class ActivityView extends Component {
         contentContainerStyle={{
           position: 'absolute',
           top: 0,
-          bottom: 0, 
           flex: 1,
           width: fullWidth
         }}
