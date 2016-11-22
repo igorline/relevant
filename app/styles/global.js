@@ -42,6 +42,9 @@ const colors = StyleSheet.create({
   active: {
     color: '#4D4EFF',
   },
+  white: {
+    color: '#fff',
+  }
 });
 
 
