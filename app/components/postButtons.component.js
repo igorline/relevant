@@ -171,10 +171,10 @@ class PostButtons extends Component {
       (buttonIndex) => {
         switch (buttonIndex) {
           case 0:
-            self.onShare();
+            this.onShare();
             break;
           case 1:
-            self.irrelevant();
+            this.irrelevant();
             break;
           case 2:
             this.repostCommentary();

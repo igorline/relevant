@@ -76,7 +76,7 @@ class ProfileComponent extends Component {
     }
 
     if (percent === 0) {
-      relevanceEl = (<Text style={[styles.libre, {fontSize: 25}]}>📈Relevance<Text style={[styles.bebas]}>{relevance} <Text style={styles.active}>0%</Text></Text></Text>);
+      relevanceEl = (<Text style={[styles.libre, {fontSize: 23}]}>📈Relevance <Text style={[styles.bebas]}>{relevance} <Text style={styles.active}>0%</Text></Text></Text>);
     }
     if (percent > 0) {
       relevanceEl = (<Text>📈<Text style={[styles.libre]}>{relevance} ⬆️{percent}%</Text></Text>);
@@ -94,15 +94,18 @@ class ProfileComponent extends Component {
       <View style={[styles.row, styles.fullWidthStyle, styles.padding10]}>
         <View>{userImageEl}</View>
         <View style={[styles.insideRow, styles.insidePadding]}>
+          {relevanceEl}
+          <Text style={[styles.libre, { fontSize: 25 }]}>💵Worth <Text style={[styles.bebas, {fontSize: 23}]}>{balance}</Text>
+          </Text>
+
           <View style={styles.onlineRow}>
+            <View style={user.online ? styles.onlineCirc : styles.offlineCirc} />
             <Text style={styles.darkGray}>
               {user.online ? 'Online' : 'Offline'}
             </Text>
-            <View style={user.online ? styles.onlineCirc : styles.offlineCirc} />
           </View>
-          {relevanceEl}
-          <Text style={[styles.libre, { fontSize: 25 }]}>💵Worth<Text style={[styles.bebas, {fontWeight: '900'}]}>{balance}</Text>
-          </Text>
+
+  
           <Text style={styles.darkGray}>
             Followers <Text style={styles.active}>{followers ? followers.length : 0}</Text>
           </Text>
