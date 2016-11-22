@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {
   TabBarIOS,
   StyleSheet,
+  View,
+  Text,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -71,7 +73,7 @@ class Tabs extends Component {
           renderAsOriginal
           title={tab.title}
           tintColor={'#5C00FF'}
-          style={{ paddingBottom: 48 }}
+          style={[{paddingBottom: 48 }]}
           onPress={() => this.changeTab(tab.key)}
           selected={this.props.navigation.tabs.index === i}
           badge={badge}
