@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   ListView,
   RefreshControl,
-  View
+  View,
+  Text,
 } from 'react-native';
 import { globalStyles, fullWidth } from '../styles/global';
 import CustomSpinner from '../components/CustomSpinner.component';
@@ -13,7 +14,8 @@ export default class ActivityView extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      reloading: false
+      reloading: false,
+      none: false,
     };
     this.reload = this.reload.bind(this);
     this.loadMore = this.loadMore.bind(this);
@@ -36,8 +38,8 @@ export default class ActivityView extends Component {
   componentWillReceiveProps(next) {
     if (this.props.data !== next.data) {
       this.updateData(next.data);
-      this.setState({ reloading: false });
-      this.setState({ loading: false });
+      this.setState({ reloading: false, loading: false });
+      if (!next.data.length) this.setState({ none: true });
     }
 
     if (next.active && next.needsReload > this.lastReload) {
@@ -48,7 +50,7 @@ export default class ActivityView extends Component {
   }
 
   updateData(data) {
-    if (!data.length) data = [{ fakePost: true }];
+    // if (!data.length) data = [{ fakePost: true }];
     let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.dataSource = ds.cloneWithRows(data);
   }
@@ -69,6 +71,7 @@ export default class ActivityView extends Component {
 
   render() {
     let activityEl;
+
     activityEl = (
       <ListView
         ref={(c) => { this.listview = c; }}
@@ -104,6 +107,11 @@ export default class ActivityView extends Component {
         }
       />
     );
+
+    if (this.state.none) {
+      //activityEl = (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}><Text>No posts bro</Text></View>);
+    }
+
 
     return (
       <View style={{ flex: this.props.active ? 1 : 0, width: fullWidth }}>

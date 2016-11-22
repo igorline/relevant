@@ -63,26 +63,26 @@ class Read extends Component {
   }
 
   renderRow(rowData) {
-    if (rowData.fakePost) {
-      return (
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: fullWidth,
-            height: fullHeight,
-          }}>
-          <Text
-            style={[
-              { fontWeight: '500' },
-              styles.darkGray
-            ]}>
-            Nothing in yr feed bruh
-          </Text>
-        </View>
-      );
-    }
+    // if (rowData.fakePost) {
+    //   return (
+    //     <View
+    //       style={{
+    //         flex: 1,
+    //         alignItems: 'center',
+    //         justifyContent: 'center',
+    //         width: fullWidth,
+    //         height: fullHeight,
+    //       }}>
+    //       <Text
+    //         style={[
+    //           { fontWeight: '500' },
+    //           styles.darkGray
+    //         ]}>
+    //         Nothing in yr feed bruh
+    //       </Text>
+    //     </View>
+    //   );
+    // }
     return (
       <Post post={rowData} {...this.props} styles={styles} />
     );
@@ -133,6 +133,8 @@ class Read extends Component {
         </Text>
       );
     }
+
+
 
     if (this.props.messages.index && this.feedData && !this.props.error.read) {
       thirstyHeader = (
