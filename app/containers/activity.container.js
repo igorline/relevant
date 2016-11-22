@@ -33,8 +33,7 @@ class Activity extends Component {
 
     this.tabs = [
       { id: 0, title: 'Personal' },
-      { id: 1, title: 'General' },
-      { id: 2, title: 'Online' },
+      { id: 1, title: 'Online' }
     ];
   }
 
@@ -73,9 +72,6 @@ class Activity extends Component {
         this.props.actions.getActivity(length);
         break;
       case 1:
-        this.props.actions.getGeneralActivity(length);
-        break;
-      case 2:
         this.props.actions.getUsers(length, null, 'online');
         break;
       default:
@@ -98,8 +94,6 @@ class Activity extends Component {
       case 0:
         return props.notif.personal;
       case 1:
-        return props.notif.general;
-      case 2:
         return props.users.online;
       default:
         return null;
