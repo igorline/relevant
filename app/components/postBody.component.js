@@ -163,7 +163,6 @@ const localStyles = StyleSheet.create({
     paddingBottom: 10,
     paddingLeft: 15,
     paddingRight: 15,
-    height: 115,
   },
 });
 
