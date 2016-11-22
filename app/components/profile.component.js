@@ -56,8 +56,8 @@ class ProfileComponent extends Component {
       user = this.props.user;
       if (user.online) online = true;
       if (user.image) userImage = user.image;
-      if (user.relevance) relevance = user.relevance.toFixed(2);
-      if (user.balance) balance = user.balance.toFixed(2);
+      if (user.relevance) relevance = user.relevance.toFixed(1);
+      if (user.balance) balance = user.balance.toFixed(0);
     }
 
     if (userImage) {
@@ -76,10 +76,10 @@ class ProfileComponent extends Component {
     }
 
     if (percent === 0) {
-      relevanceEl = (<Text>📈<Text style={styles.active}>{relevance} 0%</Text></Text>);
+      relevanceEl = (<Text style={[styles.libre, {fontSize: 25}]}>📈Relevance<Text style={[styles.bebas]}>{relevance} <Text style={styles.active}>0%</Text></Text></Text>);
     }
     if (percent > 0) {
-      relevanceEl = (<Text>📈<Text style={styles.active}>{relevance} ⬆️{percent}%</Text></Text>);
+      relevanceEl = (<Text>📈<Text style={[styles.libre]}>{relevance} ⬆️{percent}%</Text></Text>);
     }
     if (percent < 0) {
       relevanceEl = (
@@ -101,7 +101,7 @@ class ProfileComponent extends Component {
             <View style={user.online ? styles.onlineCirc : styles.offlineCirc} />
           </View>
           {relevanceEl}
-          <Text>💵<Text style={styles.active}>{balance}</Text>
+          <Text style={[styles.libre, { fontSize: 25 }]}>💵Worth<Text style={[styles.bebas, {fontWeight: '900'}]}>{balance}</Text>
           </Text>
           <Text style={styles.darkGray}>
             Followers <Text style={styles.active}>{followers ? followers.length : 0}</Text>

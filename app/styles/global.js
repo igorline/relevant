@@ -8,39 +8,45 @@ const fullHeight = Dimensions.get('window').height;
 
 const font = StyleSheet.create({
   font10: {
-    fontSize: 10
+    fontSize: 10,
   },
   font15: {
-    fontSize: 15
+    fontSize: 15,
   },
   font20: {
-    fontSize: 20
+    fontSize: 20,
   },
   font25: {
-    fontSize: 25
+    fontSize: 25,
   },
   font40: {
-    fontSize: 40
+    fontSize: 40,
+  },
+  navTitle: {
+    fontSize: 20,
+    fontFamily: 'Bebas Neue',
+  },
+  navButton: {
+    fontSize: 10,
+    fontFamily: 'Bebas Neue',
+  },
+  bebas: {
+    fontFamily: 'Bebas Neue',
+  },
+  libre: {
+    fontFamily: 'Libre Caslon Display',
   },
 });
 
 const colors = StyleSheet.create({
-  green: {
-    color: 'green'
-  },
   active: {
-    color: '#3E3EFF'
+    color: '#4D4EFF',
   },
   white: {
-    color: 'white'
-  },
-  gray: {
-    color: 'gray'
-  },
-  darkGray: {
-    color: '#555659'
-  },
+    color: '#fff',
+  }
 });
+
 
 const alignment = StyleSheet.create({
   textCenter: {
