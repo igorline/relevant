@@ -4,8 +4,7 @@
 <dict>
 	<key>UIAppFonts</key>
 	<array>
-		<string>BebasNeue Bold.otf</string>
-		<string>BebasNeue Regular.otf</string>
+		<string>LibreCaslonDisplay-Regular.ttf</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
