@@ -63,16 +63,13 @@ class Read extends Component {
   }
 
   renderRow(rowData) {
-    console.log(rowData, 'rowData here')
-    if (rowData.fakePost){
+    if (rowData.fakePost) {
       return (
         <View
           style={{
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
-            // position: 'absolute',
-            // top: -50,
             width: fullWidth,
             height: fullHeight,
           }}>

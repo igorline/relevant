@@ -71,7 +71,7 @@ class DiscoverUser extends Component {
     }
 
     return (
-      <TouchableHighlight underlayColor={'transparent'} onPress={() => this.setSelected()}>
+      <TouchableHighlight style={{ flex: 1, paddingBottom: 5 }} underlayColor={'transparent'} onPress={() => this.setSelected()}>
         <View style={[styles.discoverUser]}>
           <View style={[styles.leftDiscoverUser]}>
             {imageEl}
