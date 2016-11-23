@@ -31,22 +31,7 @@ class ProfileComponent extends Component {
         });
       }
     }
-    // this.checkOnline(this.props.online);
   }
-
-  // componentWillReceiveProps(next) {
-  //   this.checkOnline(next.online);
-  // }
-
-  // checkOnline(online) {
-  //   if (!this.props.user._id) return;
-  //   for (let index in online) {
-  //     if (index === this.props.user._id) {
-  //       this.setState({ online: true });
-  //       return;
-  //     }
-  //   }
-  // }
 
   render() {
     const parentStyles = this.props.styles;
@@ -61,14 +46,18 @@ class ProfileComponent extends Component {
     let relevanceEl = null;
     let percent = 0;
     let oldRel = null;
+    let online = false;
+    
     if (this.state.followers) followers = this.state.followers;
     if (this.state.following) following = this.state.following;
 
+
     if (this.props.user) {
       user = this.props.user;
+      if (user.online) online = true;
       if (user.image) userImage = user.image;
-      if (user.relevance) relevance = user.relevance.toFixed(2);
-      if (user.balance) balance = user.balance.toFixed(2);
+      if (user.relevance) relevance = user.relevance.toFixed(1);
+      if (user.balance) balance = user.balance.toFixed(0);
     }
 
     if (userImage) {
@@ -87,10 +76,10 @@ class ProfileComponent extends Component {
     }
 
     if (percent === 0) {
-      relevanceEl = (<Text>📈<Text style={styles.active}>{relevance} 0%</Text></Text>);
+      relevanceEl = (<Text style={[styles.libre, {fontSize: 23}]}>📈Relevance <Text style={[styles.bebas]}>{relevance} <Text style={styles.active}>0%</Text></Text></Text>);
     }
     if (percent > 0) {
-      relevanceEl = (<Text>📈<Text style={styles.active}>{relevance} ⬆️{percent}%</Text></Text>);
+      relevanceEl = (<Text>📈<Text style={[styles.libre]}>{relevance} ⬆️{percent}%</Text></Text>);
     }
     if (percent < 0) {
       relevanceEl = (
@@ -105,15 +94,18 @@ class ProfileComponent extends Component {
       <View style={[styles.row, styles.fullWidthStyle, styles.padding10]}>
         <View>{userImageEl}</View>
         <View style={[styles.insideRow, styles.insidePadding]}>
+          {relevanceEl}
+          <Text style={[styles.libre, { fontSize: 25 }]}>💵Worth <Text style={[styles.bebas, {fontSize: 23}]}>{balance}</Text>
+          </Text>
+
           <View style={styles.onlineRow}>
+            <View style={user.online ? styles.onlineCirc : styles.offlineCirc} />
             <Text style={styles.darkGray}>
               {user.online ? 'Online' : 'Offline'}
             </Text>
-            <View style={user.online ? styles.onlineCirc : styles.offlineCirc} />
           </View>
-          {relevanceEl}
-          <Text>💵<Text style={styles.active}>{balance}</Text>
-          </Text>
+
+  
           <Text style={styles.darkGray}>
             Followers <Text style={styles.active}>{followers ? followers.length : 0}</Text>
           </Text>

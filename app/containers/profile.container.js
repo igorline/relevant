@@ -123,12 +123,12 @@ class Profile extends Component {
         return (<Post post={rowData} {...this.props} />);
       }
       return (
-        <View><Text>No posts bruh</Text></View>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}><Text style={{fontFamily: 'Bebas Neue'}}>No posts bruh</Text></View>
       );
     } else if (!rowData.fakePost) {
       return (<Investment investment={rowData} {...this.props} />);
     }
-    return (<View><Text>No investments bruh</Text></View>);
+    return (<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>No investments bruh</Text></View>);
   }
 
   renderHeader() {

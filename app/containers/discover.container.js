@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
+  Text,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -134,7 +135,6 @@ class Discover extends Component {
     let tabView = this.tabs.map((tab) => {
       let tabData = this.getViewData(this.props, tab.id);
       let active = this.state.view === tab.id;
-      //console.log(tabData, 'current tab data');
       return (
         <CustomListView
           ref={(c) => { this.tabs[tab.id].component = c; }}

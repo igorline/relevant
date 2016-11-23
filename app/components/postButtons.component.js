@@ -16,6 +16,7 @@ let styles;
 class PostButtons extends Component {
   constructor(props, context) {
     super(props, context);
+    this.onShare = this.onShare.bind(this);
     this.state = {
       editing: false,
       modalVisible: false,
@@ -170,10 +171,10 @@ class PostButtons extends Component {
       (buttonIndex) => {
         switch (buttonIndex) {
           case 0:
-            self.onShare();
+            this.onShare();
             break;
           case 1:
-            self.irrelevant();
+            this.irrelevant();
             break;
           case 2:
             this.repostCommentary();

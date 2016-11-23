@@ -28,6 +28,7 @@ class SingleActivity extends Component {
 
     if (singleActivity.personal && singleActivity.byUser) {
       let postTitle = singleActivity.post ? singleActivity.post.title : 'missing title';
+
       if (singleActivity.type === 'investment') {
         activityEl = (
           <View style={styles.singleActivity}>
@@ -47,7 +48,9 @@ class SingleActivity extends Component {
             </View>
           </View>
         );
-      } else if (singleActivity.type === 'profile') {
+      }
+
+      if (singleActivity.type === 'profile') {
         activityEl = (
           <View style={styles.singleActivity}>
             <Text style={styles.darkGray}>
@@ -59,7 +62,9 @@ class SingleActivity extends Component {
             <Text style={styles.gray}>{fromNow}</Text>
           </View>
         );
-      } else if (singleActivity.type === 'comment') {
+      }
+
+      if (singleActivity.type === 'comment') {
         activityEl = (
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
@@ -82,7 +87,9 @@ class SingleActivity extends Component {
             </View>
           </View>
         );
-      } else if (singleActivity.type === 'thirst') {
+      }
+
+      if (singleActivity.type === 'thirst') {
         activityEl = (
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
@@ -102,7 +109,9 @@ class SingleActivity extends Component {
             </View>
           </View>
         );
-      } else if (singleActivity.type === 'mention') {
+      }
+
+      if (singleActivity.type === 'mention') {
         activityEl = (
           <View style={styles.singleActivity}>
             <View style={styles.activityLeft}>
@@ -129,11 +138,13 @@ class SingleActivity extends Component {
           </View>
         );
       }
-    } else if (singleActivity.personal && !singleActivity.byUser) {
+    }
+
+    if (singleActivity.personal && !singleActivity.byUser) {
       let postTitle = singleActivity.post ? singleActivity.post.title : '';
       if (singleActivity.type === 'partialEarning') {
         activityEl = (
-          <View style={styles.singleActivity}>
+          <View style={[styles.singleActivity]}>
             <View style={styles.activityLeft}>
               <Text style={styles.darkGray}>
                 Earned ${singleActivity.amount.toFixed(0)} from post
@@ -150,7 +161,9 @@ class SingleActivity extends Component {
             </View>
           </View>
         );
-      } else {
+      }
+
+      if (!singleActivity.type) {
         activityEl = (
           <View style={styles.singleActivity}>
             <Text style={styles.darkGray}>
@@ -186,11 +199,7 @@ class SingleActivity extends Component {
     }
   }
 
-  return (
-    <View>
-      {activityEl}
-    </View>
-  );
+  return activityEl;
   }
 }
 

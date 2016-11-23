@@ -108,9 +108,18 @@ class Application extends Component {
       this.props.auth.user.name,
       [
         { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-        { text: 'OK', onPress: newname => this.setState({ newName: newname }) },
+        { text: 'OK', onPress: newName => this.setState({ newName }) },
       ],
     );
+  }
+
+  updateUserName(newName) {
+    this.setState({ newName })
+    let newUser = this.props.auth.user;
+    newUser.image = results.url;
+    this.props.actions.updateUser(newUser, this.props.auth.token).then((res) => {
+      if (res) this.props.actions.getUser();
+    });
   }
 
   chooseImage() {
