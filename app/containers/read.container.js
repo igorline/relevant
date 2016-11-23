@@ -63,7 +63,7 @@ class Read extends Component {
   }
 
   renderRow(rowData) {
-    if (rowData.fakePost){
+    if (rowData.fakePost) {
       return (
         <View
           style={{
@@ -74,12 +74,14 @@ class Read extends Component {
             top: -50,
             width: fullWidth,
             height: fullHeight,
-          }}>
+          }}
+        >
           <Text
             style={[
               { fontWeight: '500' },
               styles.darkGray
-            ]}>
+            ]}
+          >
             Nothing in yr feed bruh
           </Text>
         </View>
