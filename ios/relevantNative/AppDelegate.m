@@ -51,6 +51,17 @@
                                                       moduleName:@"relevantNative"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
+  
+  for (NSString* family in [UIFont familyNames])
+  {
+    NSLog(@"%@", family);
+    
+    for (NSString* name in [UIFont fontNamesForFamilyName: family])
+    {
+      NSLog(@"  %@", name);
+    }
+  }
+  
   rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];

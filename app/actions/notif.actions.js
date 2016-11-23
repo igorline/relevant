@@ -72,28 +72,6 @@ function getActivity(skip) {
     });
 }
 
-export
-function getGeneralActivity(userId, skip) {
-  let type = 'general';
-  return dispatch =>
-    tokenUtil.get()
-    .then(token =>
-      fetch(`${apiServer}/general?skip=${skip}`, {
-        ...reqOptions(token),
-        method: 'GET',
-      })
-    )
-    .then(response => response.json())
-    .then((responseJSON) => {
-      dispatch(setActivity(responseJSON, type, skip));
-      dispatch(errorActions.setError('activity', false));
-    })
-    .catch((error) => {
-      console.log('error', error);
-      dispatch(errorActions.setError('activity', true, error.message));
-    });
-}
-
 export function markRead() {
   return dispatch =>
     tokenUtil.get()

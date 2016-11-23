@@ -21,6 +21,7 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		22ED31BD968C4665B9DE83D5 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A1787E34623C4D149698AD8F /* libRNImagePicker.a */; };
+		2A13C5CB1DE4EAD100705F90 /* LibreCaslonDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A13C5CA1DE4EAD100705F90 /* LibreCaslonDisplay-Regular.ttf */; };
 		2A94225D1D9D80F3000671FA /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A94225C1D9D80DB000671FA /* libRCTPushNotification.a */; };
 		2A9422641D9D82B7000671FA /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A9422631D9D827E000671FA /* libART.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -290,6 +291,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = relevantNative/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = relevantNative/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
+		2A13C5CA1DE4EAD100705F90 /* LibreCaslonDisplay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "LibreCaslonDisplay-Regular.ttf"; path = "../app/assets/fonts/LibreCaslonDisplay-Regular.ttf"; sourceTree = "<group>"; };
 		2A8277D21D9EE8D000CC62EA /* relevantNative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = relevantNative.entitlements; path = relevantNative/relevantNative.entitlements; sourceTree = "<group>"; };
 		2A9422571D9D80DB000671FA /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		2A94225E1D9D827D000671FA /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
@@ -550,6 +552,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				2A13C5CA1DE4EAD100705F90 /* LibreCaslonDisplay-Regular.ttf */,
 				13B07FAE1A68108700A75B9A /* relevantNative */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				FB88BE801D9ED742002D0069 /* Relevant */,
@@ -999,6 +1002,7 @@
 			files = (
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				FB816A931DCD2B52003C4E63 /* Images.xcassets in Resources */,
+				2A13C5CB1DE4EAD100705F90 /* LibreCaslonDisplay-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
