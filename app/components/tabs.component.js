@@ -18,7 +18,8 @@ export default function (props) {
         underlayColor={'white'}
         style={[
           styles.typeParent,
-          { alignItems: 'stretch' }
+          { alignItems: 'stretch' },
+          active ? null : styles.inactiveBorder,
         ]}
         onPress={() => props.handleChange(tab.id)}
       >
