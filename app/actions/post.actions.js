@@ -140,7 +140,7 @@ export function getPosts(skip, tags, sort, limit) {
     });
 
     url = apiServer +
-      'metaPost?skip=' + skip +
+      'post?skip=' + skip +
       '&tag=' + tagsString
       + '&sort=' + sort
       + '&limit=' + limit +
