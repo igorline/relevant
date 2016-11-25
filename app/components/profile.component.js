@@ -104,7 +104,6 @@ class ProfileComponent extends Component {
               {user.online ? 'Online' : 'Offline'}
             </Text>
           </View>
-
   
           <Text style={styles.darkGray}>
             Followers <Text style={styles.active}>{followers ? followers.length : 0}</Text>
