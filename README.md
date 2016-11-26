@@ -26,7 +26,7 @@ Shake iPhone to open dev menu
 ###Tab bar
 In Xcode open /Libraries/React.xcodeproj/React/Views/RTCTabBarItem.m  
 on line 89 paste the following and rebuild the app
-```
+```objective-c
   /* set custom font for tabBarItem */
   [_barItem setTitleTextAttributes:@{
     NSFontAttributeName: [UIFont fontWithName:@"Bebas Neue" size:10.0f]
