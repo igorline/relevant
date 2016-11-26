@@ -22,6 +22,20 @@ Open ```ios/relevantNative.xcodeproj``` and hit run in Xcode
 
 Shake iPhone to open dev menu
 
+##Fonts
+###Tab bar
+In Xcode open /Libraries/React.xcodeproj/React/Views/RTCTabBarItem.m  
+on line 89 paste the following and rebuild the app
+```objective-c
+  /* set custom font for tabBarItem */
+  [_barItem setTitleTextAttributes:@{
+    NSFontAttributeName: [UIFont fontWithName:@"Bebas Neue" size:10.0f]
+  } forState:UIControlStateSelected];
+  [_barItem setTitleTextAttributes:@{
+    NSFontAttributeName: [UIFont fontWithName:@"Bebas Neue" size:10.0f]
+  } forState:UIControlStateNormal];
+```
+
 ##Debugging
 ###Chrome Developer Tools 
 To debug the JavaScript code in Chrome, select Debug in Chrome from the developer menu. This will open a new tab at http://localhost:8081/debugger-ui.
