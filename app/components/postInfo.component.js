@@ -17,6 +17,7 @@ class PostInfo extends Component {
   constructor(props, context) {
     super(props, context);
     this.setTag = this.setTag.bind(this);
+    this.abbreviateNumber = this.abbreviateNumber.bind(this);
     this.setSelected = this.setSelected.bind(this);
     this.state = {
       passed: false,
@@ -45,6 +46,20 @@ class PostInfo extends Component {
       name: this.props.post.embeddedUser.name,
       _id: this.props.post.user
     });
+  }
+
+  abbreviateNumber(num) {
+    let fixed = 0;
+    if (num === null) { return null; } // terminate early
+    if (num === 0) { return '0'; } // terminate early
+    if (typeof num !== 'number') num = Number(num);
+    fixed = (!fixed || fixed < 0) ? 0 : fixed; // number of decimal places to show
+    let b = (num).toPrecision(2).split('e'); // get power
+    let k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3); // floor at decimals, ceiling at trillions
+    let c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, k * 3) ).toFixed(1 + fixed); // divide by power
+    let d = c < 0 ? c : Math.abs(c); // enforce -0 is 0
+    let e = d + ['', 'K', 'M', 'B', 'T'][k]; // append power
+    return e;
   }
 
   checkTime() {
@@ -114,13 +129,13 @@ class PostInfo extends Component {
       if (self.state.toggleInfo) {
         postInfo = (<View>
           <Text style={[styles.font10, styles.textRight]}>💵&nbsp;
-            <Text style={styles.active}>{value ? value.toFixed(2) : 0}</Text>
+            {this.abbreviateNumber(value)}
           </Text>
         </View>);
       } else {
         postInfo = (<View>
-          <Text style={[styles.font10, styles.textRight]}>📈&nbsp;
-            <Text style={styles.active}>{relevance.toFixed(2)}</Text>
+          <Text style={[styles.font10, styles.textRight, styles.bebas, styles.halfLetterSpacing]}>📈&nbsp;
+            {this.abbreviateNumber(relevance)}
           </Text>
         </View>);
       }
@@ -133,7 +148,7 @@ class PostInfo extends Component {
             size={15}
           />
           <Text
-            style={[styles.font10, styles.textRight, styles.darkGray]}
+            style={[styles.font10, styles.textRight, styles.darkGray, styles.bebas]}
           >
             Results in {self.state.timeUntilString}
           </Text>
@@ -148,7 +163,7 @@ class PostInfo extends Component {
           style={[styles.infoLeft, styles.innerInfo]}
         >
           <View>
-            <Text style={[styles.font15, styles.darkGray]}>
+            <Text style={[styles.font15, styles.darkGray, styles.bebas]}>
               {name}
             </Text>
           </View>

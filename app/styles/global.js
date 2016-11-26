@@ -36,6 +36,9 @@ const font = StyleSheet.create({
   libre: {
     fontFamily: 'Libre Caslon Display',
   },
+  georgia: {
+    fontFamily: 'Georgia',
+  }
 });
 
 const colors = StyleSheet.create({
@@ -280,6 +283,19 @@ const layout = StyleSheet.create({
     borderRadius: 10,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'lightgrey'
+  },
+  uploadAvatar: {
+    height: 125,
+    width: 125,
+    borderRadius: 62.5,
+    resizeMode: 'cover',
+
+  },
+  halfLetterSpacing: {
+    letterSpacing: 0.5,
+  },
+  quarterLetterSpacing: {
+    letterSpacing: 0.25,
   }
 });
 

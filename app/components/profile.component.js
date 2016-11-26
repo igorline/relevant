@@ -13,6 +13,7 @@ let defaultImg = require('../assets/images/default_user.jpg');
 class ProfileComponent extends Component {
   constructor (props, context) {
     super(props, context);
+    this.abbreviateNumber = this.abbreviateNumber.bind(this);
     this.state = {
       followers: null,
       following: null,
@@ -31,6 +32,20 @@ class ProfileComponent extends Component {
         });
       }
     }
+  }
+
+  abbreviateNumber(num) {
+    let fixed = 0;
+    if (num === null) { return null; } // terminate early
+    if (num === 0) { return '0'; } // terminate early
+    if (typeof num !== 'number') num = Number(num);
+    fixed = (!fixed || fixed < 0) ? 0 : fixed; // number of decimal places to show
+    let b = (num).toPrecision(2).split('e'); // get power
+    let k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3); // floor at decimals, ceiling at trillions
+    let c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, k * 3) ).toFixed(1 + fixed); // divide by power
+    let d = c < 0 ? c : Math.abs(c); // enforce -0 is 0
+    let e = d + ['', 'K', 'M', 'B', 'T'][k]; // append power
+    return e;
   }
 
   render() {
@@ -76,40 +91,40 @@ class ProfileComponent extends Component {
     }
 
     if (percent === 0) {
-      relevanceEl = (<Text style={[styles.libre, {fontSize: 23}]}>📈Relevance <Text style={[styles.bebas]}>{relevance} <Text style={styles.active}>0%</Text></Text></Text>);
+      relevanceEl = (<Text style={[styles.libre, { fontSize: 23 }]}>📈 Relevance <Text style={[styles.bebas]}>{this.abbreviateNumber(relevance)} <Text style={styles.active}>0%</Text></Text></Text>);
     }
     if (percent > 0) {
-      relevanceEl = (<Text>📈<Text style={[styles.libre]}>{relevance} ⬆️{percent}%</Text></Text>);
+      relevanceEl = (<Text>📈<Text style={[styles.libre]}>{this.abbreviateNumber(relevance)} ▲{percent}%</Text></Text>);
     }
     if (percent < 0) {
       relevanceEl = (
-        <Text>📈<Text style={styles.active}>{relevance}</Text>
-          <Text style={{ color: 'red' }}> ⬇️{percent}%</Text>
+        <Text>📈<Text style={styles.active}>{this.abbreviateNumber(relevance)}</Text>
+          <Text style={{ color: 'red' }}> ▼{percent}%</Text>
         </Text>
       );
     }
 
 
     return (
-      <View style={[styles.row, styles.fullWidthStyle, styles.padding10]}>
-        <View>{userImageEl}</View>
-        <View style={[styles.insideRow, styles.insidePadding]}>
+      <View style={[{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 10 }]}>
+        <View style={{ paddingRight: 10, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: '#242425'}}>{userImageEl}</View>
+        <View style={[styles.insidePadding]}>
           {relevanceEl}
-          <Text style={[styles.libre, { fontSize: 25 }]}>💵Worth <Text style={[styles.bebas, {fontSize: 23}]}>{balance}</Text>
+          <Text style={[styles.libre, { fontSize: 25 }]}>💵 Worth <Text style={[styles.bebas, { fontSize: 23 }]}>{this.abbreviateNumber(balance)}</Text>
           </Text>
 
           <View style={styles.onlineRow}>
             <View style={user.online ? styles.onlineCirc : styles.offlineCirc} />
-            <Text style={styles.darkGray}>
+            <Text style={[styles.darkGray, styles.georgia]}>
               {user.online ? 'Online' : 'Offline'}
             </Text>
           </View>
   
-          <Text style={styles.darkGray}>
-            Followers <Text style={styles.active}>{followers ? followers.length : 0}</Text>
+          <Text style={[styles.darkGray, styles.georgia]}>
+            Followers <Text style={[styles.active, styles.bebas]}>{followers ? followers.length : 0}</Text>
           </Text>
-          <Text style={styles.darkGray}>
-            Following <Text style={styles.active}>{following ? following.length : 0}</Text>
+          <Text style={[styles.darkGray, styles.georgia]}>
+            Following <Text style={[styles.active, styles.bebas]}>{following ? following.length : 0}</Text>
           </Text>
         </View>
       </View>

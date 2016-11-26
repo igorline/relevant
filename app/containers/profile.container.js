@@ -250,11 +250,6 @@ localStyles = StyleSheet.create({
   postsHeader: {
     padding: 10,
   },
-  uploadAvatar: {
-    height: 100,
-    width: 100,
-    resizeMode: 'cover',
-  },
   profileContainer: {
     flex: 1,
     justifyContent: 'flex-start',
