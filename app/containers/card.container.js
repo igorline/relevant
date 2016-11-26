@@ -36,6 +36,7 @@ class CardContainer extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.abbreviateNumber = this.abbreviateNumber.bind(this);
     this.default = this.props.defaultContainer;
     this.renderScene = this.renderScene.bind(this);
     this.renderHeader = this.renderHeader.bind(this);
@@ -133,6 +134,20 @@ class CardContainer extends Component {
     }
   }
 
+  abbreviateNumber(num) {
+    let fixed = 0;
+    if (num === null) { return null; } // terminate early
+    if (num === 0) { return '0'; } // terminate early
+    if (typeof num !== 'number') num = Number(num);
+    fixed = (!fixed || fixed < 0) ? 0 : fixed; // number of decimal places to show
+    let b = (num).toPrecision(2).split('e'); // get power
+    let k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3); // floor at decimals, ceiling at trillions
+    let c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, k * 3) ).toFixed(1 + fixed); // divide by power
+    let d = c < 0 ? c : Math.abs(c); // enforce -0 is 0
+    let e = d + ['', 'K', 'M', 'B', 'T'][k]; // append power
+    return e;
+  }
+
   renderRight() {
     let statsEl = null;
     let relevance = 0;
@@ -145,15 +160,21 @@ class CardContainer extends Component {
       user = this.props.auth.user;
       if (user.relevance) relevance = user.relevance;
       if (user.balance) balance = user.balance;
-      if (balance > 0) balance = balance.toFixed(0);
-      if (relevance > 0) relevance = relevance.toFixed(0);
+      if (balance > 0) {
+        balance = this.abbreviateNumber(balance);
+      }
+      if (relevance > 0) {
+        relevance = this.abbreviateNumber(relevance);
+      }
     }
     if (this.props.auth.user) {
       statsEl = (
         <View>
           <Text style={styles.statsTxt}>  📈
-            <Text style={styles.active}>{relevance}</Text>  💵
-            <Text style={styles.active}>
+            <Text style={[styles.bebas, styles.quarterLetterSpacing, { fontSize: 13 }]}>
+              {relevance}
+            </Text>  💵
+            <Text style={[styles.bebas, styles.quarterLetterSpacing, { fontSize: 13 }]}>
               {balance}
             </Text>
           </Text>
@@ -191,8 +212,8 @@ class CardContainer extends Component {
         {...props}
         style={{
           backgroundColor: 'white',
-          borderBottomColor: '#f0f0f0',
-          borderBottomWidth: 1
+          borderBottomColor: '#242425',
+          borderBottomWidth: StyleSheet.hairlineWidth,
         }}
         renderTitleComponent={this.renderTitle}
         renderLeftComponent={this.renderLeft}
@@ -222,7 +243,7 @@ class CardContainer extends Component {
 const localStyles = StyleSheet.create({
   statsTxt: {
     color: 'black',
-    fontSize: 10
+    fontSize: 13
   },
   gearImg: {
     height: 20,

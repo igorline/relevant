@@ -27,6 +27,8 @@ export default function (props) {
           <Text
             style={[
               styles.darkGray,
+              styles.bebas,
+              styles.quarterLetterSpacing,
               styles.font15,
               active ? styles.active : null,
               { textAlign: 'center' }
@@ -58,7 +60,7 @@ const localStyles = StyleSheet.create({
     height: 50,
   },
   inactiveBorder: {
-    borderBottomColor: 'lightgrey',
+    borderBottomColor: '#242425',
     borderBottomWidth: StyleSheet.hairlineWidth,
   }
 });
