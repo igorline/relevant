@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import {
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
   View,
   TextInput,
-  ScrollView,
   TouchableHighlight,
   Dimensions,
-  Keyboard,
   InteractionManager,
   ListView,
   RefreshControl,
+  AlertIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as postActions from '../actions/post.actions';
-import { globalStyles } from '../styles/global';
+import { globalStyles, fullHeight } from '../styles/global';
 import Comment from '../components/comment.component';
 import CustomSpinner from '../components/CustomSpinner.component';
 import ErrorComponent from '../components/error.component';
@@ -28,8 +28,8 @@ class Comments extends Component {
     this.state = {
       comment: '',
       visibleHeight: Dimensions.get('window').height,
-      scrollView: ScrollView,
       scrollToBottomY: null,
+      inputHeight: 50,
     };
     this.renderRow = this.renderRow.bind(this);
     this.elHeight = null;
@@ -55,9 +55,6 @@ class Comments extends Component {
       let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.dataSource = ds.cloneWithRows(this.comments);
     }
-
-    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
-    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
   }
 
   componentWillReceiveProps(next) {
@@ -79,12 +76,6 @@ class Comments extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.showListener.remove();
-    this.hideListener.remove();
-    // this.props.actions.archiveComments(this.id);
-  }
-
   keyboardWillHide() {
     this.setState({ visibleHeight: Dimensions.get('window').height });
   }
@@ -97,26 +88,23 @@ class Comments extends Component {
   scrollToBottom() {
     if (this.props.comments.comments.length < 7) return;
     let scrollDistance = this.state.scrollToBottomY - this.elHeight;
-    this.state.scrollView.scrollTo({ x: 0, y: scrollDistance, animated: true });
+    this.scrollView.scrollTo({ x: 0, y: scrollDistance, animated: true });
+    this.setState({});
   }
 
   createComment() {
     if (!this.state.comment.length) {
       AlertIOS.alert('no comment');
     }
+    let comment = this.state.comment.replace(/^(?=\n)$|^\s*|\s*$|\n\n+/gm, '');
     let commentObj = {
       post: this.id,
-      text: this.state.comment,
+      text: comment,
       user: this.props.auth.user._id
     };
     this.props.actions.createComment(this.props.auth.token, commentObj);
     this.setState({ comment: '' });
-  }
-
-  renderRow(rowData, i) {
-    return (
-      <Comment {...this.props} key={i} parentId={this.id} comment={rowData} />
-    );
+    this.textInput.blur();
   }
 
   reload() {
@@ -135,6 +123,12 @@ class Comments extends Component {
     this.props.actions.getComments(this.id, length, 5);
   }
 
+  renderRow(rowData, i) {
+    return (
+      <Comment {...this.props} key={i} parentId={this.id} comment={rowData} />
+    );
+  }
+
   render() {
     let commentsEl = null;
     if (this.dataSource) {
@@ -145,15 +139,15 @@ class Comments extends Component {
         initialListSize={10}
         dataSource={this.dataSource}
         renderRow={this.renderRow}
-        automaticallyAdjustContentInsets
+        automaticallyAdjustContentInsets={false}
         onEndReached={this.loadMore}
         onEndReachedThreshold={100}
-        contentInset={{ bottom: 50 }}
+        contentInset={{ bottom: Math.min(100, this.state.inputHeight) }}
         ref={(scrollView) => {
-          this.state.scrollView = scrollView;
+          this.scrollView = scrollView;
         }}
-        onContentSizeChange={(height, width) => {
-          this.state.scrollToBottomY = width;
+        onContentSizeChange={(height) => {
+          this.state.scrollToBottomY = height;
         }}
         onLayout={(e) => {
           this.elHeight = e.nativeEvent.layout.height;
@@ -171,30 +165,50 @@ class Comments extends Component {
     }
 
     return (
-      <View style={[styles.commentsContainer, { height: this.state.visibleHeight - 114 }]}>
-        {commentsEl}
-        <View style={[styles.commentInputParent]}>
-
-          <TextInput
-            style={[styles.commentInput, styles.font15]}
-            placeholder="Enter comment..."
-            multiline={false}
-            onChangeText={comment => this.setState({ comment })}
-            value={this.state.comment}
-            returnKeyType="done"
-          />
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            style={[styles.commentSubmit]}
-            onPress={() => this.createComment()}
+      <KeyboardAvoidingView
+        behavior={'padding'}
+        style={{ height: fullHeight - 114 }}
+        keyboardVerticalOffset={64}
+      >
+        <View style={styles.commentsContainer}>
+          {commentsEl}
+          <View
+            style={[
+              styles.commentInputParent,
+              { height: Math.min(100, this.state.inputHeight) }
+            ]}
           >
-            <Text style={[styles.font15, styles.active]}>Submit</Text>
-          </TouchableHighlight>
 
+            <TextInput
+              ref={(c) => { this.textInput = c; }}
+              style={[
+                styles.commentInput,
+                styles.font15]}
+              placeholder="Enter comment..."
+              multiline
+              onChangeText={comment => this.setState({ comment })}
+              value={this.state.comment}
+              returnKeyType="default"
+              onContentSizeChange={(event) => {
+                let h = event.nativeEvent.contentSize.height;
+                this.setState({
+                  inputHeight: Math.max(50, h)
+                });
+              }}
+            />
+            <TouchableHighlight
+              underlayColor={'transparent'}
+              style={[styles.commentSubmit]}
+              onPress={() => this.createComment()}
+            >
+              <Text style={[styles.font15, styles.active]}>Submit</Text>
+            </TouchableHighlight>
+
+          </View>
+          <CustomSpinner visible={!this.dataSource && !this.props.error.comments} />
+          <ErrorComponent parent={'comments'} reloadFunction={this.reload} />
         </View>
-        <CustomSpinner visible={!this.dataSource && !this.props.error.comments} />
-        <ErrorComponent parent={'comments'} reloadFunction={this.reload} />
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -202,7 +216,8 @@ class Comments extends Component {
 const localStyles = StyleSheet.create({
   commentsContainer: {
     backgroundColor: 'white',
-    position: 'relative'
+    position: 'relative',
+    flex: 1,
   },
   commentInputParent: {
     flexDirection: 'row',
@@ -214,14 +229,15 @@ const localStyles = StyleSheet.create({
     left: 0,
     right: 0,
     position: 'absolute',
-    height: 50,
+    // height: 50,
   },
   commentInput: {
-    flex: 0.75,
+    flex: 1,
     padding: 10,
   },
   commentSubmit: {
-    flex: 0.25,
+    flex: 0,
+    width: 85,
     justifyContent: 'center',
     alignItems: 'center',
   }
