@@ -36,12 +36,14 @@ class Post extends Component {
         );
       }
       return (
-        <View key={p._id}>
+        <View
+          key={p._id}
+          style={{ width: length ? fullWidth * 0.92 : fullWidth }}
+        >
           <View
             style={[
               styles.commentary,
               length > 0 ? styles.boxShadow : null,
-              { width: length ? fullWidth * 0.92 : fullWidth }
             ]}
           >
             <PostInfo navigator={this.props.navigator} post={p} />
@@ -57,9 +59,10 @@ class Post extends Component {
   render() {
     let post;
     let comment;
+    let posts;
 
     if (this.props.post) {
-      let posts = Array.isArray(this.props.post) ? this.props.post : [this.props.post];
+      posts = Array.isArray(this.props.post) ? this.props.post : [this.props.post];
       posts = posts.filter(p => typeof p === 'object');
       if (!posts.length) return null;
       post = posts[0];
@@ -72,6 +75,7 @@ class Post extends Component {
 
         <ScrollView
           horizontal
+          scrollEnabled={posts.length > 1}
           decelerationRate={'fast'}
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
