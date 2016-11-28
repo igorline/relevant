@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+const UIManager = require('NativeModules').UIManager;
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -25,14 +26,20 @@ let styles;
 class Comments extends Component {
   constructor(props, context) {
     super(props, context);
+    const self = this;
     this.state = {
       comment: '',
       visibleHeight: Dimensions.get('window').height,
       scrollToBottomY: null,
       inputHeight: 50,
+      editing: false,
     };
+    this.scrollToComment = this.scrollToComment.bind(this);
+    this.toggleEditing = this.toggleEditing.bind(this);
     this.renderRow = this.renderRow.bind(this);
     this.elHeight = null;
+    this.commentRef = {};
+    this.scrollToComment = this.scrollToComment.bind(self);
     this.loading = false;
     this.reloading = false;
     this.reload = this.reload.bind(this);
@@ -107,6 +114,15 @@ class Comments extends Component {
     this.textInput.blur();
   }
 
+  toggleEditing(bool, num) {
+    if (bool) this.scrollToComment(num);
+    this.setState({ editing: bool });
+  }
+
+  scrollToComment(num) {
+    this.scrollView.scrollTo({x: 0, y: num, animated: true });
+  }
+
   reload() {
     this.reloading = true;
     this.props.actions.getComments(this.id, 0, 5);
@@ -124,16 +140,24 @@ class Comments extends Component {
   }
 
   renderRow(rowData, i) {
+    const self = this;
     return (
-      <Comment {...this.props} key={i} parentId={this.id} comment={rowData} />
+      <Comment {...this.props}
+        key={i}
+        parentEditing={this.toggleEditing}
+        parentId={this.id}
+        comment={rowData}
+      />
     );
   }
 
   render() {
     let commentsEl = null;
+    let inputEl = null;
     if (this.dataSource) {
       commentsEl = (<ListView
         enableEmptySections
+        keyboardShouldPersistTaps
         removeClippedSubviews={false}
         scrollEventThrottle={16}
         initialListSize={10}
@@ -164,6 +188,41 @@ class Comments extends Component {
       />);
     }
 
+    if (!this.state.editing) {
+      inputEl = (<View
+        style={[
+          styles.commentInputParent,
+          { height: Math.min(100, this.state.inputHeight) }
+        ]}
+      >
+        <TextInput
+          ref={(c) => { this.textInput = c; }}
+          style={[
+            styles.commentInput,
+            styles.font15
+          ]}
+          placeholder="Enter comment..."
+          multiline
+          onChangeText={comment => this.setState({ comment })}
+          value={this.state.comment}
+          returnKeyType="default"
+          onContentSizeChange={(event) => {
+            let h = event.nativeEvent.contentSize.height;
+            this.setState({
+              inputHeight: Math.max(50, h)
+            });
+          }}
+        />
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          style={[styles.commentSubmit]}
+          onPress={() => this.createComment()}
+        >
+          <Text style={[styles.font15, styles.active]}>Submit</Text>
+        </TouchableHighlight>
+      </View>);
+    }
+
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
@@ -172,39 +231,7 @@ class Comments extends Component {
       >
         <View style={styles.commentsContainer}>
           {commentsEl}
-          <View
-            style={[
-              styles.commentInputParent,
-              { height: Math.min(100, this.state.inputHeight) }
-            ]}
-          >
-
-            <TextInput
-              ref={(c) => { this.textInput = c; }}
-              style={[
-                styles.commentInput,
-                styles.font15]}
-              placeholder="Enter comment..."
-              multiline
-              onChangeText={comment => this.setState({ comment })}
-              value={this.state.comment}
-              returnKeyType="default"
-              onContentSizeChange={(event) => {
-                let h = event.nativeEvent.contentSize.height;
-                this.setState({
-                  inputHeight: Math.max(50, h)
-                });
-              }}
-            />
-            <TouchableHighlight
-              underlayColor={'transparent'}
-              style={[styles.commentSubmit]}
-              onPress={() => this.createComment()}
-            >
-              <Text style={[styles.font15, styles.active]}>Submit</Text>
-            </TouchableHighlight>
-
-          </View>
+          {inputEl}
           <CustomSpinner visible={!this.dataSource && !this.props.error.comments} />
           <ErrorComponent parent={'comments'} reloadFunction={this.reload} />
         </View>

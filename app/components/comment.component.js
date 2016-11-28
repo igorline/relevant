@@ -30,6 +30,7 @@ class Comment extends Component {
       editing: false,
       height: 0
     };
+    this.singleComment = null;
     this.deleteComment = this.deleteComment.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
     this.editComment = this.editComment.bind(this);
@@ -82,6 +83,17 @@ class Comment extends Component {
     });
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    const self = this;
+    if (nextState.editing !== this.state.editing) {
+      this.refs.singleComment.measure( (fx, fy, width, height, px, py) => {
+        let num = 0;
+        num = fy;
+        self.props.parentEditing(nextState.editing, num);
+      })   
+    }
+  }
+
   deleteComment() {
     const self = this;
     this.props.actions.deleteComment(
@@ -92,6 +104,7 @@ class Comment extends Component {
   }
 
   render() {
+    const self = this;
     let comment = this.props.comment;
     let postTime = moment(comment.createdAt);
     let timeNow = moment();
@@ -107,7 +120,8 @@ class Comment extends Component {
           style={[
             styles.darkGray,
             styles.editingInput,
-            { height: Math.max(45, this.state.height) }]}
+            { height: Math.max(45, this.state.height)
+          }]}
           onChange={(event) => {
             this.setState({
               editedText: event.nativeEvent.text,
@@ -144,7 +158,13 @@ class Comment extends Component {
     if (comment.embeddedUser) {
       if (comment.embeddedUser.image) image = comment.embeddedUser.image;
       if (comment.embeddedUser.name) name = comment.embeddedUser.name;
-      if (comment.user) commentUserId = comment.user;
+      if (comment.user) {
+        if (typeof comment.user === 'object') {
+          commentUserId = comment.user._id;
+        } else {
+          commentUserId = comment.user;
+        }
+      }
     }
 
     let authId = null;
@@ -177,7 +197,10 @@ class Comment extends Component {
     }
 
     return (
-      <View style={[styles.commentContainer]}>
+      <View
+        ref="singleComment" 
+        style={[styles.commentContainer]}
+      >
         <View style={[styles.flexRow]}>
           {imageEl}
           <View style={{ flex: 1 }}>

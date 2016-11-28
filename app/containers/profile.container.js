@@ -256,18 +256,6 @@ localStyles = StyleSheet.create({
     alignItems: 'flex-start',
     backgroundColor: 'white',
   },
-  insideRow: {
-    flex: 1,
-  },
-  insidePadding: {
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-  pictureWidth: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   wrap: {
     flexDirection: 'row',
     flexWrap: 'nowrap',
