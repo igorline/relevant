@@ -36,12 +36,14 @@ class Post extends Component {
         );
       }
       return (
-        <View key={p._id}>
+        <View
+          key={p._id}
+          style={{ width: length ? fullWidth * 0.92 : fullWidth }}
+        >
           <View
             style={[
               styles.commentary,
               length > 0 ? styles.boxShadow : null,
-              { width: length ? fullWidth * 0.92 : fullWidth }
             ]}
           >
             <PostInfo navigator={this.props.navigator} post={p} />
