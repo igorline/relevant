@@ -128,7 +128,7 @@ class PostInfo extends Component {
     if (self.state.passed) {
       if (self.state.toggleInfo) {
         postInfo = (<View>
-          <Text style={[styles.font10, styles.textRight]}>💵&nbsp;
+          <Text style={[styles.font10, styles.textRight, styles.bebas, styles.halfLetterSpacing]}>💵&nbsp;
             {this.abbreviateNumber(value)}
           </Text>
         </View>);
