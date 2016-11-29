@@ -34,7 +34,6 @@ class Comments extends Component {
       inputHeight: 50,
       editing: false,
     };
-    this.loadOlder = this.loadOlder.bind(this);
     this.renderHeader = this.renderHeader.bind(this);
     this.scrollToComment = this.scrollToComment.bind(this);
     this.toggleEditing = this.toggleEditing.bind(this);
@@ -152,21 +151,8 @@ class Comments extends Component {
 
   loadMore() {
     if (this.loadmore) return;
-    if (this.longFormat) return;
-    console.log(this, 'loadmore');
-
-    this.loadmore = true;
-    let length = 0;
-    if (this.comments && this.comments.length) {
-      length = this.comments.length;
-    }
-    this.props.actions.getComments(this.id, length, 5);
-  }
-
-  loadOlder() {
-    if (this.loadmore) return;
-    console.log('loadOlder');
-
+    // if (this.longFormat) return;
+    // console.log(this, 'loadmore');
     this.loadmore = true;
     let length = 0;
     if (this.comments && this.comments.length) length = this.comments.length;
@@ -193,10 +179,10 @@ class Comments extends Component {
         if (this.total > this.comments.length) {
           el = (<TouchableHighlight 
               underlayColor={'transparent'}
-              onPress={this.loadOlder}
+              onPress={this.loadMore}
               style={styles.loadMoreButton}
             >
-            <Text>load more...</Text>
+            <Text>load earlier...</Text>
           </TouchableHighlight>);
         }
       }
@@ -219,7 +205,7 @@ class Comments extends Component {
         dataSource={this.dataSource}
         renderRow={this.renderRow}
         automaticallyAdjustContentInsets={false}
-        onEndReached={this.loadMore}
+        onEndReached={!this.longFormat ? this.loadMore : null}
         onEndReachedThreshold={100}
         contentInset={{bottom: Math.min(100, this.state.inputHeight) }}
         ref={(scrollView) => {
