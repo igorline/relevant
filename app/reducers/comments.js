@@ -26,19 +26,51 @@ const updateItem = (array, newComment) => {
   return newArr;
 };
 
+const updateComments = (currentData, newData, index, total) => {
+  let arr = [];
+  if (!index) index = 0;
+
+  // console.log(currentData, 'currentData');
+  // console.log(newData, 'newData');
+  // console.log(total, 'total');
+
+  if (total <= 0) {
+    arr = [
+      ...currentData.slice(0, index),
+      ...newData,
+    ];
+  } else {
+    arr = [
+      ...newData,
+      ...currentData.slice(0, index),
+    ];
+  }
+
+  // console.log(arr, 'returning')
+
+  return arr;
+}
+
 export default function comments(state = initialState, action) {
   switch (action.type) {
     case types.SET_COMMENTS: {
+      console.log(action.payload, 'payload here')
+      let total = action.payload.total;
       let id = action.payload.postId;
-      let currentComments = state.commentsById[id] || [];
+      let currentComments = [];
+
+      if (state.commentsById[id]) {
+        if (state.commentsById[id].data) currentComments = state.commentsById[id].data;
+      }
+
       return {
         ...state,
         commentsById: {
           ...state.commentsById,
-          [id]: [
-            ...currentComments.slice(0, action.payload.index),
-            ...action.payload.data,
-          ],
+          [id]: {
+            data: updateComments(currentComments, action.payload.data, action.payload.index, action.payload.total),
+            total: action.payload.total
+          }
         }
       };
     }

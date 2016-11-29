@@ -34,6 +34,8 @@ class Comments extends Component {
       inputHeight: 50,
       editing: false,
     };
+    this.loadOlder = this.loadOlder.bind(this);
+    this.renderHeader = this.renderHeader.bind(this);
     this.scrollToComment = this.scrollToComment.bind(this);
     this.toggleEditing = this.toggleEditing.bind(this);
     this.renderRow = this.renderRow.bind(this);
@@ -44,18 +46,27 @@ class Comments extends Component {
     this.reloading = false;
     this.reload = this.reload.bind(this);
     this.loadMore = this.loadMore.bind(this);
+    this.longFormat = false;
+    this.total = 0;
     this.dataSource = null;
     this.createComment = this.createComment.bind(this);
   }
 
   componentWillMount() {
     this.id = this.props.scene.id;
-    this.comments = this.props.comments.commentsById[this.id];
+
+    if (this.props.comments.commentsById[this.id]) {
+      if (this.props.comments.commentsById[this.id].data) {
+        this.comments = this.props.comments.commentsById[this.id].data;
+      }
+      if (this.props.comments.commentsById[this.id].total) {
+        this.total = this.props.comments.commentsById[this.id].total;
+        if (this.total > 10) this.longFormat = true;
+      }
+    }
 
     InteractionManager.runAfterInteractions(() => {
-      if (!this.comments) {
-        this.props.actions.getComments(this.id, 0);
-      }
+      if (!this.comments) this.props.actions.getComments(this.id, 0);
     });
 
     if (this.comments) {
@@ -67,8 +78,19 @@ class Comments extends Component {
   componentWillReceiveProps(next) {
     if (next.comments.commentsById[this.id] !== this.props.comments.commentsById[this.id]) {
       let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      this.dataSource = ds.cloneWithRows(next.comments.commentsById[this.id]);
-      this.comments = next.comments.commentsById[this.id];
+
+      if (next.comments.commentsById[this.id]) {
+        if (next.comments.commentsById[this.id].data) {
+          this.dataSource = ds.cloneWithRows(next.comments.commentsById[this.id].data);
+          this.comments = next.comments.commentsById[this.id].data;
+        }
+
+        if (next.comments.commentsById[this.id].total) {
+          this.total = next.comments.commentsById[this.id].total;
+          if (this.total > 10) this.longFormat = true;
+        }
+      }
+
       this.reloading = false;
       this.loadmore = false;
     }
@@ -130,6 +152,8 @@ class Comments extends Component {
 
   loadMore() {
     if (this.loadmore) return;
+    if (this.longFormat) return;
+    console.log(this, 'loadmore');
 
     this.loadmore = true;
     let length = 0;
@@ -139,11 +163,21 @@ class Comments extends Component {
     this.props.actions.getComments(this.id, length, 5);
   }
 
+  loadOlder() {
+    if (this.loadmore) return;
+    console.log('loadOlder');
+
+    this.loadmore = true;
+    let length = 0;
+    if (this.comments && this.comments.length) length = this.comments.length;
+    this.props.actions.getComments(this.id, length, 5);
+  }
+
   renderRow(rowData, i) {
     const self = this;
     return (
       <Comment {...this.props}
-        key={i}
+        key={rowData._id}
         parentEditing={this.toggleEditing}
         parentId={this.id}
         comment={rowData}
@@ -151,9 +185,30 @@ class Comments extends Component {
     );
   }
 
+  renderHeader() {
+    let el = null;
+
+    if (this.longFormat) {
+      if (this.comments && this.total) {
+        if (this.total > this.comments.length) {
+          el = (<TouchableHighlight 
+              underlayColor={'transparent'}
+              onPress={this.loadOlder}
+              style={styles.loadMoreButton}
+            >
+            <Text>load more...</Text>
+          </TouchableHighlight>);
+        }
+      }
+    }
+    return el;
+  }
+
   render() {
     let commentsEl = null;
     let inputEl = null;
+    let loadMoreEl = null;
+
     if (this.dataSource) {
       commentsEl = (<ListView
         enableEmptySections
@@ -166,7 +221,7 @@ class Comments extends Component {
         automaticallyAdjustContentInsets={false}
         onEndReached={this.loadMore}
         onEndReachedThreshold={100}
-        contentInset={{ bottom: Math.min(100, this.state.inputHeight) }}
+        contentInset={{bottom: Math.min(100, this.state.inputHeight) }}
         ref={(scrollView) => {
           this.scrollView = scrollView;
         }}
@@ -176,6 +231,7 @@ class Comments extends Component {
         onLayout={(e) => {
           this.elHeight = e.nativeEvent.layout.height;
         }}
+        renderHeader={this.renderHeader}
         refreshControl={
           <RefreshControl
             refreshing={this.reloading}
@@ -232,6 +288,7 @@ class Comments extends Component {
         <View style={styles.commentsContainer}>
           {commentsEl}
           {inputEl}
+          {loadMoreEl}
           <CustomSpinner visible={!this.dataSource && !this.props.error.comments} />
           <ErrorComponent parent={'comments'} reloadFunction={this.reload} />
         </View>
@@ -267,6 +324,16 @@ const localStyles = StyleSheet.create({
     width: 85,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loadMoreButton: {
+    padding: 5, 
+    justifyContent: 'center',
+    alignItems: 'center',
+    // position: 'absolute',
+    // top: 0,
+    // left: 0,
+    // right: 0,
+    backgroundColor: 'white',
   }
 });
 
