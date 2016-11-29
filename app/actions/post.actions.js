@@ -372,7 +372,7 @@ export function getComments(postId, skip, limit) {
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(errorActions.setError('comments', false));
-      dispatch(setComments(postId, responseJSON, skip));
+      dispatch(setComments(postId, responseJSON.data, skip, responseJSON.total));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -458,8 +458,9 @@ export function archiveComments(postId) {
   };
 }
 
-export function setComments(postId, comments, index) {
+export function setComments(postId, comments, index, total) {
   let num = 0;
+  if (!total) total = 0;
   if (index) num = index;
   return {
     type: types.SET_COMMENTS,
@@ -467,6 +468,7 @@ export function setComments(postId, comments, index) {
       data: comments,
       index: num,
       postId,
+      total,
     }
   };
 }

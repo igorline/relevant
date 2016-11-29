@@ -107,8 +107,10 @@ class ProfileComponent extends Component {
 
     return (
       <View style={[{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 10 }]}>
-        <View style={{ paddingRight: 10, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: '#242425'}}>{userImageEl}</View>
-        <View style={[styles.insidePadding]}>
+        <View style={{ paddingRight: 10, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: '#242425'}}>
+          {userImageEl}
+        </View>
+        <View style={{paddingLeft: 10}}>
           {relevanceEl}
           <Text style={[styles.libre, { fontSize: 25 }]}>💵 Worth <Text style={[styles.bebas, { fontSize: 23 }]}>{this.abbreviateNumber(balance)}</Text>
           </Text>
