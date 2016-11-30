@@ -111,7 +111,7 @@ export default function comments(state = initialState, action) {
     case 'ADD_COMMENT': {
       let newComment = action.payload.newComment;
       let postId = action.payload.postId;
-      let newArr = state.commentsById[postId].push(action.payload.newComment);
+      let newArr = state.commentsById[postId].data.push(action.payload.newComment);
 
       return  {
         ...state,
@@ -129,7 +129,7 @@ export default function comments(state = initialState, action) {
         ...state,
         commentsById: {
           ...state.commentsById,
-          [postId]: removeItem(state.commentsById[postId], commentId),
+          [postId]: removeItem(state.commentsById[postId].data, commentId),
         }
       };
     }
@@ -141,7 +141,7 @@ export default function comments(state = initialState, action) {
         ...state,
         commentsById: {
           ...state.commentsById,
-          [postId]: updateItem(state.commentsById[postId], newComment),
+          [postId]: updateItem(state.commentsById[postId].data, newComment),
         }
       };
     }
