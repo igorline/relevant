@@ -23,6 +23,7 @@ import * as createPostActions from '../actions/createPost.actions';
 import { globalStyles } from '../styles/global';
 import ErrorComponent from '../components/error.component';
 import CustomListView from '../components/customList.component';
+import EmptyList from '../components/emptyList.component';
 
 let styles;
 const POST_PAGE_SIZE = 5;
@@ -132,10 +133,12 @@ class Discover extends Component {
   }
 
   render() {
-    let tabView = this.tabs.map((tab) => {
-      let tabData = this.getViewData(this.props, tab.id);
+    let top = [];
+    let bottom = [];
+    this.tabs.forEach((tab) => {
+      let tabData = this.getViewData(this.props, tab.id) || [];
       let active = this.state.view === tab.id;
-      return (
+      top.push(
         <CustomListView
           ref={(c) => { this.tabs[tab.id].component = c; }}
           key={tab.id}
@@ -149,6 +152,16 @@ class Discover extends Component {
           needsReload={this.needsReload}
         />
       );
+
+      if (!tabData.length && this.props.tags.selectedTags.length) {
+        bottom.push(<EmptyList
+          visible={active ? true : false}
+          emoji={'😔'}
+          type={'posts'}
+          key={tab.id}
+        />);
+      }
+
     });
 
     let headerEl = (<DiscoverHeader
@@ -165,12 +178,14 @@ class Discover extends Component {
 
     if (this.props.error.discover) {
       headerEl = null;
-      tabView = null;
+      top = [];
+      bottom = [];
     }
 
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
-        {tabView}
+        {top}
+        {bottom}
         {headerEl}
         <ErrorComponent parent={'discover'} reloadFunction={this.load} />
       </View>

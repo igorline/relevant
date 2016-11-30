@@ -180,9 +180,7 @@ class Profile extends Component {
         stickyHeaderIndices={(this.userId && this.userData) ? [1] : []}
       />);
 
-      console.log(!tabData)
-
-      if (!tabData) {
+      if (!tabData || !tabData.length) {
         bottom.push(<EmptyList
           key={tab.id}
           type={tab.title}
@@ -190,7 +188,6 @@ class Profile extends Component {
           visible={active ? true : false}
         />);
       }
-
     });
 
     return (
@@ -203,7 +200,7 @@ class Profile extends Component {
           alignItems: 'stretch' }}
       >
         {this.loadContent ? top : null}
-
+        {this.loadContent ? bottom : null}
         <ErrorComponent parent={'profile'} reloadFunction={this.loadUser} />
         <CustomSpinner
           visible={
