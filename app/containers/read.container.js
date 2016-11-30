@@ -18,6 +18,7 @@ import * as tagActions from '../actions/tag.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import ErrorComponent from '../components/error.component';
 import CustomListView from '../components/customList.component';
+import EmptyList from '../components/emptyList.component';
 
 let styles;
 
@@ -63,26 +64,27 @@ class Read extends Component {
   }
 
   renderRow(rowData) {
-    // if (rowData.fakePost) {
-    //   return (
-    //     <View
-    //       style={{
-    //         flex: 1,
-    //         alignItems: 'center',
-    //         justifyContent: 'center',
-    //         width: fullWidth,
-    //         height: fullHeight,
-    //       }}>
-    //       <Text
-    //         style={[
-    //           { fontWeight: '500' },
-    //           styles.darkGray
-    //         ]}>
-    //         Nothing in yr feed bruh
-    //       </Text>
-    //     </View>
-    //   );
-    // }
+    console.log(rowData, 'rowData')
+    if (rowData.fakePost) {
+      return (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: fullWidth,
+            height: fullHeight,
+          }}>
+          <Text
+            style={[
+              { fontWeight: '500' },
+              styles.darkGray
+            ]}>
+            Nothing in yr feed bruh
+          </Text>
+        </View>
+      );
+    }
     return (
       <Post post={rowData} {...this.props} styles={styles} />
     );
@@ -109,21 +111,25 @@ class Read extends Component {
       }
     }
 
-    let postsEl = this.tabs.map((tab) => {
+    let postsEl = this.tabs.map((tab, i) => {
       let tabData = this.props.posts.feed;
       let active = true;
-      return (
-        <CustomListView
-          ref={(c) => { this.listview = c; }}
-          key={tab.id}
-          data={tabData}
-          renderRow={this.renderRow}
-          load={this.load}
-          view={tab.id}
-          active={active}
-          needsReload={this.needsReload}
-        />
-      );
+      if (tabData.length) {
+        return (
+          <CustomListView
+            ref={(c) => { this.listview = c; }}
+            key={tab.id}
+            data={tabData}
+            renderRow={this.renderRow}
+            load={this.load}
+            view={tab.id}
+            active={active}
+            needsReload={this.needsReload}
+          />
+        );
+      } else {
+        return (<EmptyList key={tab.id} visible emoji={'😶'} type={'feed'} />);
+      }
     });
 
     if (this.props.messages.count > 0) {
@@ -133,8 +139,6 @@ class Read extends Component {
         </Text>
       );
     }
-
-
 
     if (this.props.messages.index && this.feedData && !this.props.error.read) {
       thirstyHeader = (

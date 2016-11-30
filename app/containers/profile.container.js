@@ -28,6 +28,7 @@ import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
 import Tabs from '../components/tabs.component';
 import CustomListView from '../components/customList.component';
+import EmptyList from '../components/emptyList.component';
 
 let styles;
 let localStyles;
@@ -119,16 +120,16 @@ class Profile extends Component {
 
   renderRow(rowData, view) {
     if (view === 0) {
-      if (!rowData.fakePost) {
-        return (<Post post={rowData} {...this.props} />);
-      }
-      return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}><Text style={{fontFamily: 'Bebas Neue'}}>No posts bruh</Text></View>
-      );
-    } else if (!rowData.fakePost) {
-      return (<Investment investment={rowData} {...this.props} />);
+      return (<View style={styles.emptyList}>
+        <Text style={[styles.libre, styles.quarterLetterSpacing, { fontSize: 20 }]}>No posts bruh 😔</Text>
+      </View>);
     }
-    return (<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>No investments bruh</Text></View>);
+
+    if (view === 1) {
+      return (<View style={styles.emptyList}>
+        <Text style={[styles.libre, styles.quarterLetterSpacing, { fontSize: 20 }]}>No investments bruh 😔</Text>
+      </View>);
+    }
   }
 
   renderHeader() {
@@ -163,24 +164,43 @@ class Profile extends Component {
   }
 
   render() {
+    let top = [];
+    let bottom = [];
+
     let tabView = this.tabs.map((tab) => {
       let tabData = this.getViewData(this.props, tab.id) || [];
       let active = this.state.view === tab.id;
-      return (
-        <CustomListView
-          ref={(c) => { this.tabs[tab.id].component = c; }}
+      top.push(<CustomListView
+        ref={(c) => { this.tabs[tab.id].component = c; }}
+        key={tab.id}
+        data={tabData}
+        renderRow={this.renderRow}
+        load={this.load}
+        view={tab.id}
+        active={active}
+        needsReload={this.needsReload}
+        renderHeader={this.renderHeader}
+        stickyHeaderIndices={(this.userId && this.userData) ? [1] : []}
+      />);
+      if (!tabData.length) {
+       bottom.push(<EmptyList
           key={tab.id}
-          data={tabData}
-          renderRow={this.renderRow}
-          load={this.load}
-          view={tab.id}
-          active={active}
-          needsReload={this.needsReload}
-          renderHeader={this.renderHeader}
-          stickyHeaderIndices={(this.userId && this.userData) ? [1] : []}
-        />
-      );
+          type={tab.title}
+          emoji={'😔'}
+          visible={active ? true : false}
+        />) 
+      }
     });
+
+    // let emptyList = this.tabs.map((tab) => {
+    //   let tabData = this.getViewData(this.props, tab.id) || [];
+    //   let active = this.state.view === tab.id;
+    //   if (!tabData.length) {
+    //     return (
+          
+    //     );
+    //   }
+    // });
 
     return (
       <View
@@ -191,7 +211,8 @@ class Profile extends Component {
           flexGrow: 1,
           alignItems: 'stretch' }}
       >
-        {this.loadContent ? tabView : null}
+        {this.loadContent ? top : null}
+        {this.loadContent ? bottom : null}
         <ErrorComponent parent={'profile'} reloadFunction={this.loadUser} />
         <CustomSpinner
           visible={

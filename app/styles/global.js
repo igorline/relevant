@@ -38,6 +38,12 @@ const font = StyleSheet.create({
   },
   georgia: {
     fontFamily: 'Georgia',
+  },
+  halfLetterSpacing: {
+    letterSpacing: 0.5,
+  },
+  quarterLetterSpacing: {
+    letterSpacing: 0.25,
   }
 });
 
@@ -123,7 +129,12 @@ const layout = StyleSheet.create({
     borderBottomWidth: 5,
     borderBottomColor: '#007aff',
   },
-
+  emptyList: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
   typeBar: {
     width: fullWidth
   },
@@ -291,12 +302,6 @@ const layout = StyleSheet.create({
     resizeMode: 'cover',
 
   },
-  halfLetterSpacing: {
-    letterSpacing: 0.5,
-  },
-  quarterLetterSpacing: {
-    letterSpacing: 0.25,
-  }
 });
 
 const globalStyles = { ...colors, ...font, ...alignment, ...layout };
