@@ -120,15 +120,11 @@ class Profile extends Component {
 
   renderRow(rowData, view) {
     if (view === 0) {
-      return (<View style={styles.emptyList}>
-        <Text style={[styles.libre, styles.quarterLetterSpacing, { fontSize: 20 }]}>No posts bruh 😔</Text>
-      </View>);
+      return (<Post post={rowData} {...this.props} />);
     }
 
     if (view === 1) {
-      return (<View style={styles.emptyList}>
-        <Text style={[styles.libre, styles.quarterLetterSpacing, { fontSize: 20 }]}>No investments bruh 😔</Text>
-      </View>);
+      return (<Investment investment={rowData} {...this.props} />);
     }
   }
 
@@ -167,9 +163,10 @@ class Profile extends Component {
     let top = [];
     let bottom = [];
 
-    let tabView = this.tabs.map((tab) => {
+    this.tabs.forEach((tab) => {
       let tabData = this.getViewData(this.props, tab.id) || [];
       let active = this.state.view === tab.id;
+
       top.push(<CustomListView
         ref={(c) => { this.tabs[tab.id].component = c; }}
         key={tab.id}
@@ -182,25 +179,19 @@ class Profile extends Component {
         renderHeader={this.renderHeader}
         stickyHeaderIndices={(this.userId && this.userData) ? [1] : []}
       />);
-      if (!tabData.length) {
-       bottom.push(<EmptyList
+
+      console.log(!tabData)
+
+      if (!tabData) {
+        bottom.push(<EmptyList
           key={tab.id}
           type={tab.title}
           emoji={'😔'}
           visible={active ? true : false}
-        />) 
+        />);
       }
-    });
 
-    // let emptyList = this.tabs.map((tab) => {
-    //   let tabData = this.getViewData(this.props, tab.id) || [];
-    //   let active = this.state.view === tab.id;
-    //   if (!tabData.length) {
-    //     return (
-          
-    //     );
-    //   }
-    // });
+    });
 
     return (
       <View
@@ -212,7 +203,7 @@ class Profile extends Component {
           alignItems: 'stretch' }}
       >
         {this.loadContent ? top : null}
-        {this.loadContent ? bottom : null}
+
         <ErrorComponent parent={'profile'} reloadFunction={this.loadUser} />
         <CustomSpinner
           visible={
