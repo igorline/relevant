@@ -76,7 +76,7 @@ export default class ActivityView extends Component {
       <ListView
         ref={(c) => { this.listview = c; }}
         enableEmptySections
-        removeClippedSubviews={true}
+        removeClippedSubviews={false}
         pageSize={1}
         initialListSize={10}
         scrollEventThrottle={16}
@@ -88,10 +88,9 @@ export default class ActivityView extends Component {
         contentOffset={{ y: -this.props.YOffset || 0 }}
         renderHeader={this.props.renderHeader}
         contentContainerStyle={{
+          flex: 1,
           position: 'absolute',
           top: 0,
-          flex: 1,
-          width: fullWidth
         }}
         onScroll={this.props.onScroll}
         onEndReached={this.loadMore}
@@ -107,11 +106,6 @@ export default class ActivityView extends Component {
         }
       />
     );
-
-    if (this.state.none) {
-      //activityEl = (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}><Text>No posts bro</Text></View>);
-    }
-
 
     return (
       <View style={{ flex: this.props.active ? 1 : 0, width: fullWidth }}>

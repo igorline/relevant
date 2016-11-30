@@ -90,7 +90,7 @@ class Comment extends Component {
         let num = 0;
         num = fy;
         self.props.parentEditing(nextState.editing, num);
-      })   
+      });
     }
   }
 
@@ -136,7 +136,7 @@ class Comment extends Component {
             style={styles.editingCommentButton}
             onPress={this.saveEdit}
           >
-            <Text style={[styles.font10, styles.editingCommentButtonText]}>Save changes</Text>
+          <Text style={[styles.font10, styles.editingCommentButtonText]}>Save changes</Text>
           </TouchableHighlight>
           <TouchableHighlight
             underlayColor={'transparent'}
@@ -147,6 +147,7 @@ class Comment extends Component {
           </TouchableHighlight>
         </View>
       </View>);
+
     } else {
       bodyEl = (<Text style={styles.darkGray}>{this.state.editedText}</Text>);
     }
