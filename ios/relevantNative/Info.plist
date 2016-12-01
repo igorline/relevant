@@ -33,6 +33,7 @@
 	<string>Upload photos for profile and posts</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>BebasNeue Regular.otf</string>
 		<string>LibreCaslonDisplay-Regular.ttf</string>
 		<string>Georgia.ttf</string>
 	</array>
