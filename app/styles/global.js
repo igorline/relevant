@@ -129,12 +129,6 @@ const layout = StyleSheet.create({
     borderBottomWidth: 5,
     borderBottomColor: '#007aff',
   },
-  emptyList: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
   typeBar: {
     width: fullWidth
   },

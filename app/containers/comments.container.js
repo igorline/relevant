@@ -207,7 +207,7 @@ class Comments extends Component {
         automaticallyAdjustContentInsets={false}
         onEndReached={!this.longFormat ? this.loadMore : null}
         onEndReachedThreshold={100}
-        contentInset={{bottom: Math.min(100, this.state.inputHeight) }}
+        contentInset={{ bottom: Math.min(100, this.state.inputHeight) }}
         ref={(scrollView) => {
           this.scrollView = scrollView;
         }}

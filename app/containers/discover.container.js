@@ -50,9 +50,6 @@ class Discover extends Component {
     ];
   }
 
-  componentWillMount() {
-  }
-
   componentWillReceiveProps(next) {
     let type = this.tabs[this.state.view].type;
     if (this.props.tags.selectedTags !== next.tags.selectedTags && type !== 'people') {

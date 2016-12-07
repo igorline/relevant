@@ -96,6 +96,8 @@ class Read extends Component {
     let thirstyHeader = null;
     let messages = null;
     let noPosts = null;
+    let top = [];
+    let bottom = [];
 
     if (this.props.messages.index.length > 0) {
       messages = this.props.messages.index;
@@ -111,24 +113,26 @@ class Read extends Component {
       }
     }
 
-    let postsEl = this.tabs.map((tab, i) => {
-      let tabData = this.props.posts.feed;
+    this.tabs.forEach((tab, i) => {
+      let tabData = this.props.posts.feed || [];
       let active = true;
-      if (tabData.length) {
-        return (
-          <CustomListView
-            ref={(c) => { this.listview = c; }}
-            key={tab.id}
-            data={tabData}
-            renderRow={this.renderRow}
-            load={this.load}
-            view={tab.id}
-            active={active}
-            needsReload={this.needsReload}
-          />
-        );
-      } else {
-        return (<EmptyList key={tab.id} visible emoji={'😶'} type={'feed'} />);
+
+      top.push(
+        <CustomListView
+          ref={(c) => { this.listview = c; }}
+          key={tab.id}
+          data={tabData}
+          renderRow={this.renderRow}
+          load={this.load}
+          view={tab.id}
+          type={'read'}
+          active={active}
+          needsReload={this.needsReload}
+        />
+      );
+
+      if (!tabData.length) {
+        bottom.push(<EmptyList key={tab.id} visible emoji={'😶'} type={'feed'} />);
       }
     });
 
@@ -167,7 +171,8 @@ class Read extends Component {
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {thirstyHeader}
-        {postsEl}
+        {top}
+        {bottom}
        <ErrorComponent parent={'read'} reloadFunction={this.load} />
       </View>
     );
