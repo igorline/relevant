@@ -10,9 +10,10 @@ import {
   TouchableHighlight
 } from 'react-native';
 import { globalStyles } from '../styles/global';
+import ErrorComponent from '../components/error.component';
+import CommentEditing from '../components/commentEditing.component';
 
 let moment = require('moment');
-
 let styles;
 
 class Comment extends Component {
@@ -45,22 +46,19 @@ class Comment extends Component {
   }
 
   editComment() {
+    console.log('editComment')
     this.setState({ editedText: this.props.comment.text });
     this.setState({ editing: !this.state.editing });
   }
 
   saveEdit() {
-    if (this.state.editedText !== this.props.comment.text) {
-      let comment = this.props.comment;
-      comment.text = this.state.editedText;
-      this.props.actions.updateComment(comment, this.props.auth.token)
-      .then((results) => {
-        if (results) {
-          this.setState({ editing: !this.state.editing });
-          AlertIOS.alert('Comment updated');
-        }
-      });
-    }
+    this.props.actions.updateComment(comment, this.props.auth.token)
+    .then((results) => {
+      if (results) {
+        this.setState({ editing: !this.state.editing });
+        AlertIOS.alert('Comment updated');
+      }
+    });
   }
 
   showActionSheet() {
@@ -113,43 +111,15 @@ class Comment extends Component {
     let bodyEl = null;
 
     if (this.state.editing) {
-      bodyEl = (<View style={{ flex: 1 }}>
-        <TextInput
-          multiline
-          autoGrow
-          style={[
-            styles.darkGray,
-            styles.editingInput,
-            { height: Math.max(45, this.state.height)
-          }]}
-          onChange={(event) => {
-            this.setState({
-              editedText: event.nativeEvent.text,
-              height: event.nativeEvent.contentSize.height,
-            });
-          }}
-          value={this.state.editedText}
-        />
-        <View style={styles.editingCommentButtons}>
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            style={styles.editingCommentButton}
-            onPress={this.saveEdit}
-          >
-          <Text style={[styles.font10, styles.editingCommentButtonText]}>Save changes</Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            onPress={this.editComment}
-            style={styles.editingCommentButton}
-          >
-            <Text style={[styles.font10, styles.editingCommentButtonText]}>Cancel</Text>
-          </TouchableHighlight>
-        </View>
-      </View>);
-
+      bodyEl = (<CommentEditing
+        comment={comment}
+        toggleFunction={this.editComment}
+        saveEditFuction={this.saveEdit}
+      />);
     } else {
-      bodyEl = (<Text style={styles.darkGray}>{this.state.editedText}</Text>);
+      bodyEl = (<Text style={styles.darkGray}>
+        {this.state.editedText}
+      </Text>);
     }
 
     let image = null;

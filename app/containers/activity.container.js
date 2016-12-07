@@ -15,6 +15,7 @@ import DiscoverUser from '../components/discoverUser.component';
 import Tabs from '../components/tabs.component';
 import ErrorComponent from '../components/error.component';
 import CustomListView from '../components/customList.component';
+import EmptyList from '../components/emptyList.component';
 
 const localStyles = StyleSheet.create({});
 const styles = { ...localStyles, ...globalStyles };
@@ -30,6 +31,7 @@ class Activity extends Component {
     this.getViewData = this.getViewData.bind(this);
     this.load = this.load.bind(this);
     this.needsReload = new Date().getTime();
+    this.scrollToTop = this.scrollToTop.bind(this);
 
     this.tabs = [
       { id: 0, title: 'Personal' },
@@ -54,7 +56,9 @@ class Activity extends Component {
   }
 
   scrollToTop() {
-    let view = this.tabs[this.state.view].component.listview;
+    if (this.tabs[this.state.view].component) {
+      let view = this.tabs[this.state.view].component.listview;
+    }
     if (view) view.scrollTo({ y: 0, animated: true });
   }
 
@@ -80,8 +84,7 @@ class Activity extends Component {
   }
 
   renderRow(rowData) {
-    //console.log(rowData.role, 'activity rowData here');
-    if (!rowData.role) {
+    if (this.state.view === 0) {
       return (
         <SingleActivity singleActivity={rowData} {...this.props} styles={styles} />
       );
@@ -102,39 +105,49 @@ class Activity extends Component {
 
   render() {
     let tabsEl = null;
-    let tabView = null;
-
-    if (!this.props.error.activity) {
-      tabView = this.tabs.map((tab) => {
-        let tabData = this.getViewData(this.props, tab.id);
-        let active = this.state.view === tab.id;
-        return (
-          <CustomListView
-            ref={(c) => { this.tabs[tab.id].component = c; }}
-            key={tab.id}
-            data={tabData}
-            renderRow={this.renderRow}
-            load={this.load}
-            view={tab.id}
-            active={active}
-            needsReload={this.needsReload}
-          />
-        );
-      });
-
-      tabsEl = (
-        <Tabs
-          tabs={this.tabs}
-          active={this.state.view}
-          handleChange={this.changeView}
+    let top = [];
+    let bottom = [];
+    this.tabs.forEach((tab) => {
+      let tabData = this.getViewData(this.props, tab.id) || [];
+      let active = this.state.view === tab.id;
+      
+      top.push(
+        <CustomListView
+          ref={(c) => { this.tabs[tab.id].component = c; }}
+          key={tab.id}
+          data={tabData}
+          renderRow={this.renderRow}
+          type={'activity'}
+          load={this.load}
+          view={tab.id}
+          active={active}
+          needsReload={this.needsReload}
         />
       );
-    }
+
+      if (!tabData.length) {
+        bottom.push(<EmptyList
+          visible={active}
+          emoji={'😔'}
+          type={'activity'}
+          key={tab.id}
+        />);
+      }
+    });
+
+    tabsEl = (
+      <Tabs
+        tabs={this.tabs}
+        active={this.state.view}
+        handleChange={this.changeView}
+      />
+    );
 
     return (
-      <View style={[{ flex: 1, backgroundColor: 'white' }]}>
+      <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {tabsEl}
-        {tabView}
+        {top}
+        {bottom}
         <ErrorComponent parent={'activity'} reloadFunction={this.load} />
       </View>
     );

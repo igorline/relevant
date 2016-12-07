@@ -3,15 +3,8 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
-  Image,
-  ActionSheetIOS,
-  AlertIOS,
-  TouchableHighlight
 } from 'react-native';
 import { globalStyles } from '../styles/global';
-
-let moment = require('moment');
 
 let styles;
 
@@ -39,8 +32,10 @@ class EmptyList extends Component {
 
   render() {
     return (
-      <View style={this.visible ? styles.emptyList : styles.hideEmptyList} pointerEvents={this.visible ? 'auto' : 'none'}>
-        <Text style={[styles.libre, {fontSize: 20}]}>Sorry bruh, no {this.type} {this.emoji}</Text>
+      <View style={[this.visible ? styles.emptyList : styles.hideEmptyList]} pointerEvents={this.visible ? 'auto' : 'none'}>
+        <Text style={[styles.libre, { fontSize: 20 }]}>
+          Sorry bruh, no {this.type} {this.emoji}
+        </Text>
       </View>
     );
   }
@@ -50,10 +45,21 @@ export default EmptyList;
 
 const localStyles = StyleSheet.create({
   hideEmptyList: {
-    flex: 0, 
+    flex: 0,
     opacity: 0,
     position: 'absolute',
-  }
+  },
+  emptyList: {
+    // position: 'absolute',
+    // top: 0,
+    // left: 0,
+    flex: 1,
+    // bottom: 0,
+    // right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
 });
 
 styles = { ...localStyles, ...globalStyles };

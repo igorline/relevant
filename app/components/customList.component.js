@@ -4,11 +4,12 @@ import {
   RefreshControl,
   View,
   Text,
+  StyleSheet
 } from 'react-native';
-import { globalStyles, fullWidth } from '../styles/global';
+import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import CustomSpinner from '../components/CustomSpinner.component';
 
-let styles = { ...globalStyles };
+let styles;
 
 export default class ActivityView extends Component {
   constructor(props, context) {
@@ -50,7 +51,6 @@ export default class ActivityView extends Component {
   }
 
   updateData(data) {
-    // if (!data.length) data = [{ fakePost: true }];
     let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.dataSource = ds.cloneWithRows(data);
   }
@@ -91,7 +91,7 @@ export default class ActivityView extends Component {
           flex: 1,
           position: 'absolute',
           top: 0,
-          width: fullWidth
+          width: fullWidth,
         }}
         onScroll={this.props.onScroll}
         onEndReached={this.loadMore}
@@ -108,11 +108,42 @@ export default class ActivityView extends Component {
       />
     );
 
+    let listStyle = [];
+
+    if (this.props.active) {
+      listStyle = [styles.commonList, styles.vis];
+    } else {
+      listStyle = [styles.commonList, styles.hiddenList];
+    }
+
+    if ((this.props.type === 'activity' && !this.props.data.length) || (this.props.type === 'read' && !this.props.data.length)) listStyle = [styles.commonList, styles.hiddenList];
+
     return (
-      <View style={{ flex: this.props.active ? 1 : 0, width: fullWidth }}>
+      <View style={listStyle}>
         {activityEl}
         <CustomSpinner visible={!this.dataSource && this.props.active} />
       </View>
     );
   }
 }
+
+const localStyles = StyleSheet.create({
+  vis: {
+    flex: 1,
+    width: fullWidth,
+  },
+  hiddenList: {
+    flex: 0,
+    height: 0,
+    width: 0,
+  },
+  commonList: {
+  }
+});
+
+styles = { ...localStyles, ...globalStyles };
+
+
+
+
+
