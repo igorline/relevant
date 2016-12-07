@@ -52,7 +52,7 @@ class CommentEditing extends Component {
         style={[
           styles.darkGray,
           styles.editingInput,
-          { height: Math.max(45, this.state.height)
+          { height: Math.max(75, this.state.height)
         }]}
         onChange={(event) => {
           this.setState({
