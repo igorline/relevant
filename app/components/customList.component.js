@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import CustomSpinner from '../components/CustomSpinner.component';
+import EmptyList from '../components/emptyList.component';
 
 let styles;
 
@@ -18,6 +19,7 @@ export default class ActivityView extends Component {
       reloading: false,
       none: false,
     };
+    this.height = fullHeight;
     this.reload = this.reload.bind(this);
     this.loadMore = this.loadMore.bind(this);
     this.dataSource = null;
@@ -66,13 +68,17 @@ export default class ActivityView extends Component {
     if (!this.props.active) return;
     if (this.state.loading || this.state.reloading) return;
     this.setState({ loading: true });
-    this.props.load(this.props.view, this.props.data.length);
+    let length = 0;
+    if (this.props.data) length = this.props.data.length;
+    this.props.load(this.props.view, length);
   }
 
   render() {
-    let activityEl;
+    let listEl = null;
+    let emptyEl = null;
+    let spinnerEl = null;
 
-    activityEl = (
+    listEl = (
       <ListView
         ref={(c) => { this.listview = c; }}
         enableEmptySections
@@ -116,12 +122,26 @@ export default class ActivityView extends Component {
       listStyle = [styles.commonList, styles.hiddenList];
     }
 
-    if ((this.props.type === 'activity' && !this.props.data.length) || (this.props.type === 'read' && !this.props.data.length)) listStyle = [styles.commonList, styles.hiddenList];
+    spinnerEl = (<CustomSpinner visible={!this.props.data.length && this.props.active} />);
+
+    let type = 'data';
+    if (this.props.type) type = this.props.type;
+
+    if ((this.props.loaded && !this.props.data.length) || this.props.loaded === 0) {
+      emptyEl = (<EmptyList
+        visible={true}
+        emoji={'😔'}
+        type={type}
+      />);
+      listEl = null;
+      spinnerEl = null;
+    }
 
     return (
       <View style={listStyle}>
-        {activityEl}
-        <CustomSpinner visible={!this.dataSource && this.props.active} />
+        {listEl}
+        {emptyEl}
+        {spinnerEl}
       </View>
     );
   }

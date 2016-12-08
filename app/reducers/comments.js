@@ -30,11 +30,6 @@ const updateComments = (currentData, newData, index, total) => {
   let arr = [];
   if (!index) index = 0;
 
-  console.log(currentData, 'currentData');
-  console.log(newData, 'newData');
-  console.log(index, 'index');
-  console.log(total, 'total');
-
   if (total <= 10) {
     arr = [
       ...currentData.slice(0, index),
