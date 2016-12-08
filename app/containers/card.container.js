@@ -11,9 +11,7 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import BackButton from 'NavigationHeaderBackButton';
-// import Categories from '../components/categories.component';
 import Read from './read.container';
-// import CreatePost from './createPost.containerNew';
 import Discover from './discover.container';
 import SinglePost from './singlePost.container';
 import Activity from './activity.container';
@@ -44,6 +42,7 @@ class CardContainer extends Component {
     this.renderLeft = this.renderLeft.bind(this);
     this.renderRight = this.renderRight.bind(this);
     this.back = this.back.bind(this);
+    this.thirsty = this.thirsty.bind(this);
   }
 
   getDefaultComponent(props) {
@@ -106,7 +105,7 @@ class CardContainer extends Component {
         return <Comments navigator={this.props.actions} scene={props.scene.route} />;
 
       case 'thirst':
-        return <Thirst navigator={this.props.actions} />;
+        return <Thirst navigator={this.props.actions} scene={props.scene.route} />;
 
       case 'singlePost':
         return <SinglePost navigator={this.props.actions} scene={props.scene.route} />;
@@ -148,7 +147,23 @@ class CardContainer extends Component {
     return e;
   }
 
-  renderRight() {
+  thirsty() {
+
+    // this.props.actions.push({
+    //   key: 'signup',
+    //   title: 'Signup',
+    //   showBackButton: true
+    // }, this.props.navigation.main);
+
+    console.log('thirsty');
+    // this.props.actions.push({
+    //     key: 'thirst',
+    //     showBackButton: true,
+    //     title: 'thirsty message',
+    //   }, 'home');
+  }
+
+  renderRight(props) {
     let statsEl = null;
     let relevance = 0;
     let balance = 0;
@@ -166,8 +181,7 @@ class CardContainer extends Component {
       if (relevance > 0) {
         relevance = this.abbreviateNumber(relevance);
       }
-    }
-    if (this.props.auth.user) {
+
       statsEl = (
         <View>
           <Text style={styles.statsTxt}>  📈
@@ -181,6 +195,7 @@ class CardContainer extends Component {
         </View>
       );
     }
+
     if (key !== 'myProfile') {
       rightEl = (
         <View style={{ flex: 1, justifyContent: 'center', padding: 10 }}>
@@ -198,6 +213,19 @@ class CardContainer extends Component {
               style={styles.gearImg}
               source={require('../assets/images/gear.png')}
             />
+          </TouchableHighlight>
+        </View>
+      );
+    }
+
+    if (props.scene.route.component === 'profile' && props.scene.route.id !== this.props.auth.user._id) {
+      rightEl = (
+        <View style={styles.gear}>
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            onPress={() => this.thirsty()}
+          >
+            <Text>thirsty</Text>
           </TouchableHighlight>
         </View>
       );
@@ -230,11 +258,11 @@ class CardContainer extends Component {
       <NavigationCardStack
         direction={'horizontal'}
         navigationState={scenes}
-        style={{backgroundColor: 'white'}}
+        style={{ backgroundColor: 'white' }}
         onNavigateBack={this.back}
         renderScene={this.renderScene}
         renderHeader={this.renderHeader}
-        enableGestures={false}
+        enableGestures={true}
       />
     );
   }

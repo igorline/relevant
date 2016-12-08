@@ -58,15 +58,10 @@ class Profile extends Component {
       this.myProfile = false;
       this.userId = this.props.scene.id;
       this.userData = this.props.users.selectedUserData[this.userId];
-      InteractionManager.runAfterInteractions(() => {
-        this.loadContent = true;
-        this.setState({});
-      });
     } else {
       this.myProfile = true;
       this.userId = this.props.auth.user._id;
       this.userData = this.props.auth.user;
-      this.loadContent = true;
     }
   }
 
@@ -151,64 +146,49 @@ class Profile extends Component {
   getViewData(props, view) {
     switch (view) {
       case 0:
-        return this.props.posts.userPosts[this.userId];
+        return {
+          data: this.props.posts.userPosts[this.userId],
+          loaded: this.props.posts.loaded.userPosts,
+        };
       case 1:
-        return this.props.investments.userInvestments[this.userId];
+        return {
+          data: this.props.investments.userInvestments[this.userId],
+          loaded: this.props.investments.loaded,
+        };
       default:
         return null;
     }
   }
 
   render() {
-    let top = [];
-    let bottom = [];
+    let listEl = [];
+    let headerEl = this.renderHeader();
 
     this.tabs.forEach((tab) => {
-      let tabData = this.getViewData(this.props, tab.id) || [];
+      let tabData = this.getViewData(this.props, tab.id);
       let active = this.state.view === tab.id;
+      let data = tabData.data || [];
+      let loaded = tabData.loaded || false;
 
-      top.push(<CustomListView
+      listEl.push(<CustomListView
         ref={(c) => { this.tabs[tab.id].component = c; }}
         key={tab.id}
-        data={tabData}
+        data={data}
+        loaded={loaded}
         renderRow={this.renderRow}
         load={this.load}
         view={tab.id}
+        type={tab.title}
         active={active}
         needsReload={this.needsReload}
-        renderHeader={this.renderHeader}
-        // stickyHeaderIndices={(this.userId && this.userData) ? [1] : []}
       />);
-
-      if (!tabData || !tabData.length) {
-        bottom.push(<EmptyList
-          key={tab.id}
-          type={tab.title}
-          emoji={'😔'}
-          visible={active ? true : false}
-        />);
-      }
     });
 
     return (
-      <View
-        style={{
-          position: 'relative',
-          backgroundColor: 'white',
-          flex: 1,
-          flexGrow: 1,
-          alignItems: 'stretch' }}
-      >
-        {this.loadContent ? top : null}
-        {this.loadContent ? bottom : null}
+      <View style={styles.profileContainer}>
+        {headerEl}
+        {listEl}
         <ErrorComponent parent={'profile'} reloadFunction={this.loadUser} />
-        <CustomSpinner
-          visible={
-            (!this.userId ||
-            !this.userData || !this.loadContent) &&
-            !this.props.error.profile
-          }
-        />
       </View>
     );
   }
@@ -260,10 +240,11 @@ localStyles = StyleSheet.create({
     padding: 10,
   },
   profileContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    position: 'relative',
     backgroundColor: 'white',
+    flex: 1,
+    flexGrow: 1,
+    alignItems: 'stretch'
   },
   wrap: {
     flexDirection: 'row',

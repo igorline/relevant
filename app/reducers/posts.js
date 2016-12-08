@@ -7,6 +7,13 @@ const initialState = {
   feed: [],
   top: [],
   new: [],
+  loading: true,
+  loaded: {
+    feed: false,
+    top: false,
+    new: false,
+    userPosts: false,
+  },
   newFeedAvailable: false,
   newPostsAvailable: false,
   userPosts: {},
@@ -132,6 +139,10 @@ export default function post(state = initialState, action) {
         loading: false,
         newPostsAvailable: false,
         newFeedAvailable: false,
+        loaded: {
+          ...state.loaded,
+          [type]: true,
+        }
       });
     }
 
@@ -176,6 +187,10 @@ export default function post(state = initialState, action) {
             ...currentPosts.slice(0, action.payload.index),
             ...action.payload.posts
           ]
+        },
+        count: {
+          ...state.count,
+          userPosts: true,
         }
       };
     }

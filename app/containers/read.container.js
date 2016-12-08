@@ -64,27 +64,6 @@ class Read extends Component {
   }
 
   renderRow(rowData) {
-    console.log(rowData, 'rowData')
-    if (rowData.fakePost) {
-      return (
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: fullWidth,
-            height: fullHeight,
-          }}>
-          <Text
-            style={[
-              { fontWeight: '500' },
-              styles.darkGray
-            ]}>
-            Nothing in yr feed bruh
-          </Text>
-        </View>
-      );
-    }
     return (
       <Post post={rowData} {...this.props} styles={styles} />
     );
@@ -96,8 +75,7 @@ class Read extends Component {
     let thirstyHeader = null;
     let messages = null;
     let noPosts = null;
-    let top = [];
-    let bottom = [];
+    let feedEl = [];
 
     if (this.props.messages.index.length > 0) {
       messages = this.props.messages.index;
@@ -113,27 +91,25 @@ class Read extends Component {
       }
     }
 
-    this.tabs.forEach((tab, i) => {
-      let tabData = this.props.posts.feed || [];
+    this.tabs.forEach((tab) => {
+      let tabData = this.props.posts.feed;
+      let loaded = this.props.posts.loaded.feed;
       let active = true;
 
-      top.push(
+      feedEl.push(
         <CustomListView
           ref={(c) => { this.listview = c; }}
           key={tab.id}
           data={tabData}
+          loaded={loaded}
           renderRow={this.renderRow}
           load={this.load}
           view={tab.id}
-          type={'read'}
+          type={'posts'}
           active={active}
           needsReload={this.needsReload}
         />
       );
-
-      if (!tabData.length) {
-        bottom.push(<EmptyList key={tab.id} visible emoji={'😶'} type={'feed'} />);
-      }
     });
 
     if (this.props.messages.count > 0) {
@@ -144,7 +120,7 @@ class Read extends Component {
       );
     }
 
-    if (this.props.messages.index && this.feedData && !this.props.error.read) {
+    if (this.props.messages.index && !this.props.error.read) {
       thirstyHeader = (
         <TouchableHighlight
           underlayColor={'transparent'}
@@ -165,14 +141,14 @@ class Read extends Component {
               {messagesCount}
             </View>
           </View>
-        </TouchableHighlight>);
+        </TouchableHighlight>
+      );
     }
 
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {thirstyHeader}
-        {top}
-        {bottom}
+        {feedEl}
        <ErrorComponent parent={'read'} reloadFunction={this.load} />
       </View>
     );
