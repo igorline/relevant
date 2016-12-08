@@ -58,8 +58,9 @@ class Post extends Component {
 
   render() {
     let post;
-    let comment;
     let posts;
+
+    if (!this.props.auth.user) return null;
 
     if (this.props.post) {
       posts = Array.isArray(this.props.post) ? this.props.post : [this.props.post];
@@ -67,8 +68,6 @@ class Post extends Component {
       if (!posts.length) return null;
       post = posts[0];
     }
-
-    if (!this.props.auth.user) return null;
 
     return (
       <View style={[styles.postContainer]}>
