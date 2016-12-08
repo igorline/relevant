@@ -90,18 +90,19 @@ class Comments extends Component {
         }
       }
 
-      this.reloading = false;
+      
       this.loadmore = false;
     }
+    this.reloading = false;
   }
 
   componentDidUpdate(prev) {
-    if (!prev) return;
-    if (prev.comments.comments && prev.comments.comments !== this.props.comments.comments) {
-      setTimeout(() => {
-        this.scrollToBottom();
-      }, 500);
-    }
+    // if (!prev) return;
+    // if (prev.comments.comments && prev.comments.comments !== this.props.comments.comments) {
+    //   setTimeout(() => {
+    //     this.scrollToBottom();
+    //   }, 500);
+    // }
   }
 
   keyboardWillHide() {
@@ -151,8 +152,6 @@ class Comments extends Component {
 
   loadMore() {
     if (this.loadmore) return;
-    // if (this.longFormat) return;
-    // console.log(this, 'loadmore');
     this.loadmore = true;
     let length = 0;
     if (this.comments && this.comments.length) length = this.comments.length;
@@ -199,7 +198,6 @@ class Comments extends Component {
     if (this.dataSource) {
       commentsEl = (<ListView
         enableEmptySections
-        keyboardShouldPersistTaps
         removeClippedSubviews={false}
         scrollEventThrottle={16}
         initialListSize={10}
