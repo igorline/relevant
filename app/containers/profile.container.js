@@ -163,6 +163,8 @@ class Profile extends Component {
     let top = [];
     let bottom = [];
 
+    if (!this.userData) return null;
+
     this.tabs.forEach((tab) => {
       let tabData = this.getViewData(this.props, tab.id) || [];
       let active = this.state.view === tab.id;

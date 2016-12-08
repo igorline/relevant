@@ -141,7 +141,7 @@ class Comments extends Component {
   }
 
   scrollToComment(num) {
-    this.scrollView.scrollTo({x: 0, y: num, animated: true });
+    this.scrollView.scrollTo({ x: 0, y: num, animated: true });
   }
 
   reload() {
@@ -160,9 +160,9 @@ class Comments extends Component {
   }
 
   renderRow(rowData, i) {
-    const self = this;
     return (
-      <Comment {...this.props}
+      <Comment
+        {...this.props}
         key={rowData._id}
         parentEditing={this.toggleEditing}
         parentId={this.id}
@@ -177,13 +177,14 @@ class Comments extends Component {
     if (this.longFormat) {
       if (this.comments && this.total) {
         if (this.total > this.comments.length) {
-          el = (<TouchableHighlight 
+          el = (
+            <TouchableHighlight
               underlayColor={'transparent'}
               onPress={this.loadMore}
               style={styles.loadMoreButton}
             >
-            <Text>load earlier...</Text>
-          </TouchableHighlight>);
+              <Text>load earlier...</Text>
+            </TouchableHighlight>);
         }
       }
     }
@@ -312,7 +313,7 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
   },
   loadMoreButton: {
-    padding: 5, 
+    padding: 5,
     justifyContent: 'center',
     alignItems: 'center',
     // position: 'absolute',
