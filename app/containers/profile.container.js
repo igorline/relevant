@@ -177,7 +177,7 @@ class Profile extends Component {
         active={active}
         needsReload={this.needsReload}
         renderHeader={this.renderHeader}
-        stickyHeaderIndices={(this.userId && this.userData) ? [1] : []}
+        // stickyHeaderIndices={(this.userId && this.userData) ? [1] : []}
       />);
 
       if (!tabData || !tabData.length) {
