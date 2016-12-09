@@ -81,10 +81,10 @@ class Auth extends Component {
 
         <TouchableHighlight
           onPress={this.signup}
-          style={styles.signUpButton}
+          style={styles.largeButton}
           underlayColor={'transparent'}
         >
-          <Text style={styles.signUpText}>
+          <Text style={styles.largeButtonText}>
             Sign Up Now
           </Text>
         </TouchableHighlight>
@@ -94,7 +94,7 @@ class Auth extends Component {
           onPress={this.login}
           underlayColor={'transparent'}
         >
-          <Text style={{ marginTop: 20, textAlign: 'center', fontFamily: 'Georgia', fontSize: 18 }}>
+          <Text style={styles.signInText}>
             Already have an account? <Text style={{ color: '#3E3EFF' }}>Sign In.</Text>
           </Text>
         </TouchableHighlight>
@@ -112,17 +112,11 @@ const localStyles = StyleSheet.create({
     alignItems: 'stretch',
     padding: 20
   },
-  signUpButton: {
-    height: 75,
-    borderWidth: 2,
-    borderColor: '#3E3EFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  signUpText: {
-    fontFamily: 'Bebas Neue',
-    color: '#3E3EFF',
-    fontSize: 30,
+  signInText: {
+    marginTop: 20,
+    textAlign: 'center',
+    fontFamily: 'Georgia',
+    fontSize: 18,
   }
 });
 
