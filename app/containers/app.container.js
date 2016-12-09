@@ -65,10 +65,7 @@ class Application extends Component {
   }
 
   componentWillReceiveProps(next) {
-    console.log(next.auth.user);
-    console.log(this.props.auth.user);
     if (!this.props.auth.user && next.auth.user) {
-      console.log('should redirect');
       this.props.actions.userToSocket(next.auth.user._id);
       this.props.actions.getNotificationCount();
       this.props.actions.getMessages(next.auth.user._id);

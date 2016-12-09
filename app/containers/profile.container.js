@@ -59,6 +59,7 @@ class Profile extends Component {
       this.userId = this.props.scene.id;
       this.userData = this.props.users.selectedUserData[this.userId];
       InteractionManager.runAfterInteractions(() => {
+        if (!this.userData) this.loadUser();
         this.loadContent = true;
         this.setState({});
       });
@@ -163,7 +164,9 @@ class Profile extends Component {
     let top = [];
     let bottom = [];
 
-    if (!this.userData) return null;
+    // if (!this.userData) return null;
+    let renderSticky = false;
+    if (this.userId && this.userData) renderSticky = true;
 
     this.tabs.forEach((tab) => {
       let tabData = this.getViewData(this.props, tab.id) || [];
@@ -179,7 +182,7 @@ class Profile extends Component {
         active={active}
         needsReload={this.needsReload}
         renderHeader={this.renderHeader}
-        stickyHeaderIndices={(this.userId && this.userData) ? [1] : []}
+        stickyHeaderIndices={[1]}
       />);
 
       if (!tabData || !tabData.length) {

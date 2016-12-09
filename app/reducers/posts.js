@@ -14,6 +14,7 @@ const initialState = {
     index: [],
     feed: [],
   },
+  posts: {}
 };
 
 const updatePostElement = (array, _post) => {
@@ -121,17 +122,32 @@ const removeCommentaryElement = (array, _post) => {
 export default function post(state = initialState, action) {
   switch (action.type) {
 
+    // case types.SET_POSTS: {
+    //   const type = action.payload.type;
+    //   return Object.assign({}, state, {
+    //     [type]: [
+    //       ...state[type].slice(0, action.payload.index),
+    //       ...action.payload.data,
+    //     ],
+    //     currentUser: action.payload.userId ? action.payload.userId : state.currentUser,
+    //     loading: false,
+    //     newPostsAvailable: false,
+    //     newFeedAvailable: false,
+    //   });
+    // }
+
     case types.SET_POSTS: {
       const type = action.payload.type;
       return Object.assign({}, state, {
         [type]: [
           ...state[type].slice(0, action.payload.index),
-          ...action.payload.data,
+          ...action.payload.data.result.posts,
         ],
-        currentUser: action.payload.userId ? action.payload.userId : state.currentUser,
-        loading: false,
-        newPostsAvailable: false,
-        newFeedAvailable: false,
+        posts: { ...state.posts, ...action.payload.data.entities.posts }
+        // currentUser: action.payload.userId ? action.payload.userId : state.currentUser,
+        // loading: false,
+        // newPostsAvailable: false,
+        // newFeedAvailable: false,
       });
     }
 

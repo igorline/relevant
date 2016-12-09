@@ -147,7 +147,7 @@ class Comments extends Component {
 
   reload() {
     this.reloading = true;
-    this.props.actions.getComments(this.id, 0, 5);
+    this.props.actions.getComments(this.id, 0, 10);
   }
 
   loadMore() {
@@ -155,7 +155,7 @@ class Comments extends Component {
     this.loadmore = true;
     let length = 0;
     if (this.comments && this.comments.length) length = this.comments.length;
-    this.props.actions.getComments(this.id, length, 5);
+    this.props.actions.getComments(this.id, length, 10);
   }
 
   renderRow(rowData, i) {

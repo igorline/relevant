@@ -2,6 +2,16 @@ import * as types from './actionTypes';
 import * as utils from '../utils';
 import * as authActions from './auth.actions';
 import * as errorActions from './error.actions';
+import { normalize, Schema, arrayOf } from 'normalizr';
+
+const postSchema = new Schema('posts', { idAttribute: '_id' });
+// const comment = new Schema('comments');
+
+// postMetaSchema.define({
+//   posts: arrayOf(post,
+// //   comments: arrayOf(comment)
+// });
+
 import {
   PushNotificationIOS,
   AlertIOS
@@ -18,7 +28,7 @@ export function setPosts(data, type, index) {
   return {
     type: types.SET_POSTS,
     payload: {
-      data,
+      data: normalize({ posts: data }, { posts: arrayOf(postSchema) }),
       type,
       index
     }

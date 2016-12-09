@@ -64,7 +64,7 @@ class Read extends Component {
   }
 
   renderRow(rowData) {
-    console.log(rowData, 'rowData')
+    // console.log(rowData, 'rowData')
     if (rowData.fakePost) {
       return (
         <View
