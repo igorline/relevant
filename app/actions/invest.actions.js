@@ -57,8 +57,15 @@ export function invest(token, amount, post, investingUser) {
   };
 }
 
+export function loadingInvestments() {
+  return {
+    type: 'LOADING_INVESTMENTS',
+  };
+}
+
 export function getInvestments(token, userId, skip, limit, type){
   return (dispatch) => {
+    dispatch(loadingInvestments());
     return fetch(apiServer + 'invest/'+userId+'?skip='+skip+'&limit='+limit+'&access_token='+token, {
       credentials: 'include',
       method: 'GET',

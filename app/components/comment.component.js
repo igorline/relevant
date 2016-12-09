@@ -10,7 +10,6 @@ import {
   TouchableHighlight
 } from 'react-native';
 import { globalStyles } from '../styles/global';
-import ErrorComponent from '../components/error.component';
 import CommentEditing from '../components/commentEditing.component';
 
 let moment = require('moment');
@@ -46,7 +45,7 @@ class Comment extends Component {
   }
 
   editComment() {
-    console.log('editComment')
+    // console.log('editComment');
     this.setState({ editedText: this.props.comment.text });
     this.setState({ editing: !this.state.editing });
   }
@@ -169,7 +168,7 @@ class Comment extends Component {
 
     return (
       <View
-        ref="singleComment" 
+        ref="singleComment"
         style={[styles.commentContainer]}
       >
         <View style={[styles.flexRow]}>

@@ -27,7 +27,6 @@ export function setPosts(data, type, index) {
 
 export function getFeed(skip, tag) {
   if (!skip) skip = 0;
-  //console.log(tag, 'tag')
 
   function getUrl(token) {
     let url = `${apiServer}feed`
@@ -170,14 +169,20 @@ export function getPosts(skip, tags, sort, limit) {
   };
 }
 
+export function loadingUserPosts() {
+  return {
+    type: 'LOADING_USER_POSTS',
+  };
+}
 
 export function getUserPosts(skip, limit, userId, type) {
   var tagsString = '';
   if (!skip) skip = 0;
   if (!limit) limit = 5;
-
-  var url = process.env.API_SERVER+'/api/post/user/'+userId+'?skip='+skip+'&limit='+limit;
+  
   return function(dispatch) {
+  dispatch(loadingUserPosts());
+  var url = process.env.API_SERVER+'/api/post/user/'+userId+'?skip='+skip+'&limit='+limit;
     fetch(url, {
         credentials: 'include',
         method: 'GET',

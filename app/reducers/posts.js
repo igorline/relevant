@@ -188,9 +188,20 @@ export default function post(state = initialState, action) {
             ...action.payload.posts
           ]
         },
-        count: {
-          ...state.count,
+        loaded: {
+          ...state.loaded,
           userPosts: true,
+        }
+      };
+    }
+
+
+    case 'LOADING_USER_POSTS': {
+      return {
+        ...state,
+        loaded: {
+          ...state.loaded,
+          userPosts: false,
         }
       };
     }
