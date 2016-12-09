@@ -13,18 +13,10 @@ class PostBody extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      // bodyHeight: 0,
-      // editedBody: null,
-      // editedTitle: null,
-    }
+    };
   }
 
   componentDidMount() {
-    const self = this;
-      //     this.setState({
-      //   editedBody: self.props.post.body,
-      //   editedTitle: self.props.post.title
-      // });
   }
 
   setTag(tag) {
@@ -38,7 +30,6 @@ class PostBody extends Component {
     this.props.navigator.goToProfile(user);
   }
 
-
   render() {
     const self = this;
     const expanded = this.props.expanded;
@@ -51,39 +42,6 @@ class PostBody extends Component {
     }
     let bodyEl = null;
     let bodyEditingEl = null;
-
-    // if (editing) {
-    //   bodyEditingEl = (
-    //     <TextInput
-    //       multiline
-    //       autoGrow
-    //       style={[styles.darkGray, styles.editingInput, { height: Math.max(35, self.state.bodyHeight) }]}
-    //       onChange={(event) => {
-    //         this.setState({
-    //           editedBody: event.nativeEvent.text,
-    //           bodyHeight: event.nativeEvent.contentSize.height,
-    //         });
-    //       }}
-    //       value={this.state.editedBody}
-    //     />
-    //   );
-
-    //   bodyEditingEl = (
-    //     <TextInput
-    //       multiline
-    //       autoGrow
-    //       style={[styles.darkGray, styles.editingInput, { height: Math.max(35, self.state.bodyHeight) }]}
-    //       onChange={(event) => {
-    //         this.setState({
-    //           editedBody: event.nativeEvent.text,
-    //           bodyHeight: event.nativeEvent.contentSize.height,
-    //         });
-    //       }}
-    //       value={this.state.editedBody}
-    //     />
-    //   );
-
-    // }
 
     if (body) {
       let bodyObj = {};

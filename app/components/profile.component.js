@@ -111,7 +111,7 @@ class ProfileComponent extends Component {
         <View style={{ paddingRight: 10, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: '#242425'}}>
           {userImageEl}
         </View>
-        <View style={{paddingLeft: 10}}>
+        <View style={{ paddingLeft: 10 }}>
           {relevanceEl}
           <Text style={[styles.libre, { fontSize: 25 }]}>💵 Worth <Text style={[styles.bebas, { fontSize: 23 }]}>{this.abbreviateNumber(balance)}</Text>
           </Text>

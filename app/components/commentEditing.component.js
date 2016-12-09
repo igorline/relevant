@@ -26,7 +26,7 @@ class CommentEditing extends Component {
   }
 
   componentDidMount() {
-    this.setState({text: this.props.comment.text})
+    this.setState({ text: this.props.comment.text });
   }
 
   saveEdit() {
@@ -66,13 +66,13 @@ class CommentEditing extends Component {
         <TouchableHighlight
           underlayColor={'transparent'}
           style={styles.editingCommentButton}
-          onPress={this.saveEdit}
+          onPress={() => { this.saveEdit(); }}
         >
-        <Text style={[styles.font10, styles.editingCommentButtonText]}>Save changes</Text>
+          <Text style={[styles.font10, styles.editingCommentButtonText]}>Save changes</Text>
         </TouchableHighlight>
         <TouchableHighlight
           underlayColor={'transparent'}
-          onPress={this.props.toggleFunction}
+          onPress={() => { this.props.toggleFunction(); console.log('triggered') }}
           style={styles.editingCommentButton}
         >
           <Text style={[styles.font10, styles.editingCommentButtonText]}>Cancel</Text>

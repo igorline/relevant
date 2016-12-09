@@ -126,6 +126,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-svg')
     compile project(':react-native-share-menu')
     compile project(':react-native-share-extension')
     compile project(':react-native-share')
