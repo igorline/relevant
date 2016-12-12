@@ -186,7 +186,7 @@ class Application extends Component {
       key: 'auth',
       component: 'auth'
     }, 0, 'home');
-    this.props.actions.changeTab('read');
+    // setTimeout(() => this.props.actions.changeTab('read'), 1000);
   }
 
   // home button etc

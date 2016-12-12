@@ -74,7 +74,6 @@ class Read extends Component {
     let recentMessages = [];
     let thirstyHeader = null;
     let messages = null;
-    let noPosts = null;
     let feedEl = [];
 
     if (this.props.messages.index.length > 0) {
@@ -149,7 +148,7 @@ class Read extends Component {
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {thirstyHeader}
         {feedEl}
-       <ErrorComponent parent={'read'} reloadFunction={this.load} />
+        <ErrorComponent parent={'read'} reloadFunction={this.load} />
       </View>
     );
   }

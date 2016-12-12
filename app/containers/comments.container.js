@@ -65,7 +65,7 @@ class Comments extends Component {
     }
 
     InteractionManager.runAfterInteractions(() => {
-      if (!this.comments) this.props.actions.getComments(this.id, 0);
+      if (!this.comments) this.loadMore();
     });
 
     if (this.comments) {
@@ -89,8 +89,6 @@ class Comments extends Component {
           if (this.total > 10) this.longFormat = true;
         }
       }
-
-      
       this.loadmore = false;
     }
     this.reloading = false;
@@ -142,12 +140,12 @@ class Comments extends Component {
   }
 
   scrollToComment(num) {
-    this.scrollView.scrollTo({x: 0, y: num, animated: true });
+    this.scrollView.scrollTo({ x: 0, y: num, animated: true });
   }
 
   reload() {
     this.reloading = true;
-    this.props.actions.getComments(this.id, 0, 5);
+    this.props.actions.getComments(this.id, 0, 10);
   }
 
   loadMore() {
@@ -155,13 +153,13 @@ class Comments extends Component {
     this.loadmore = true;
     let length = 0;
     if (this.comments && this.comments.length) length = this.comments.length;
-    this.props.actions.getComments(this.id, length, 5);
+    this.props.actions.getComments(this.id, length, 10);
   }
 
   renderRow(rowData, i) {
-    const self = this;
     return (
-      <Comment {...this.props}
+      <Comment
+        {...this.props}
         key={rowData._id}
         parentEditing={this.toggleEditing}
         parentId={this.id}
@@ -312,7 +310,7 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
   },
   loadMoreButton: {
-    padding: 5, 
+    padding: 5,
     justifyContent: 'center',
     alignItems: 'center',
     // position: 'absolute',

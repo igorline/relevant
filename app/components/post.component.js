@@ -25,19 +25,20 @@ class Post extends Component {
   renderCommentary() {
     let posts = Array.isArray(this.props.post) ? this.props.post : [this.props.post];
     let length = posts.length > 1;
-    posts = posts.filter(p => typeof p === 'object');
-    return posts.map(p => {
+    posts = posts.filter(postId => typeof postId === 'string');
+    return posts.map((postId) => {
+      let post = this.props.posts.posts[postId];
       let comment;
-      if (typeof p.comments[0] === 'object') {
+      if (typeof post.comments[0] === 'object') {
         comment = (
           <View style={[styles.comment, styles.boxShadow]}>
-            <Comment {...this.props} comment={p.comments[0]} />
+            <Comment {...this.props} comment={post.comments[0]} />
           </View>
         );
       }
       return (
         <View
-          key={p._id}
+          key={post._id}
           style={{ width: length ? fullWidth * 0.92 : fullWidth }}
         >
           <View
@@ -46,9 +47,9 @@ class Post extends Component {
               length > 0 ? styles.boxShadow : null,
             ]}
           >
-            <PostInfo navigator={this.props.navigator} post={p} />
-            <PostBody post={p} editing={false} />
-            <PostButtons {...this.props} post={p} comments={p.comments || null} />
+            <PostInfo navigator={this.props.navigator} post={post} />
+            <PostBody post={post} editing={false} />
+            <PostButtons {...this.props} post={post} comments={post.comments || null} />
           </View>
           {comment}
         </View>
@@ -58,17 +59,17 @@ class Post extends Component {
 
   render() {
     let post;
-    let comment;
     let posts;
+
+    if (!this.props.auth.user) return null;
 
     if (this.props.post) {
       posts = Array.isArray(this.props.post) ? this.props.post : [this.props.post];
-      posts = posts.filter(p => typeof p === 'object');
+      posts = posts.filter(p => typeof p === 'string');
       if (!posts.length) return null;
-      post = posts[0];
+      post = this.props.posts.posts[posts[0]];
+      if (!post) return null;
     }
-
-    if (!this.props.auth.user) return null;
 
     return (
       <View style={[styles.postContainer]}>

@@ -31,7 +31,7 @@ class SinglePost extends Component {
 
   componentWillMount() {
     this.postId = this.props.scene.id;
-    this.postData = this.props.posts.selectedPostData[this.postId];
+    this.postData = this.props.posts.posts[this.postId];
 
     if (!this.postData) {
       InteractionManager.runAfterInteractions(() => {
@@ -47,12 +47,12 @@ class SinglePost extends Component {
   render() {
     let el = null;
 
-    this.postData = this.props.posts.selectedPostData[this.postId];
+    this.postData = this.props.posts.posts[this.postId];
 
     if (this.postData && !this.props.error.singlepost) {
       el = (<ScrollView style={styles.fullContainer}>
         <View>
-          <Post post={this.postData} {...this.props} styles={styles} />
+          <Post post={this.postId} {...this.props} styles={styles} />
         </View>
       </ScrollView>);
     }

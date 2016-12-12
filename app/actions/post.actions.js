@@ -1,13 +1,23 @@
+import { normalize, Schema, arrayOf } from 'normalizr';
+import {
+  AlertIOS
+} from 'react-native';
+
 import * as types from './actionTypes';
 import * as utils from '../utils';
 import * as authActions from './auth.actions';
 import * as errorActions from './error.actions';
-import {
-  PushNotificationIOS,
-  AlertIOS
-} from 'react-native';
 
 require('../publicenv');
+
+const postSchema = new Schema('posts', { idAttribute: '_id' });
+
+const metaPostSchema = new Schema('metaPosts', { idAttribute: '_id' });
+
+metaPostSchema.define({
+  commentary: arrayOf(postSchema)
+});
+
 
 const apiServer = process.env.API_SERVER + '/api/';
 
@@ -61,8 +71,11 @@ export function getFeed(skip, tag) {
     )
     .then(response => response.json())
     .then((responseJSON) => {
-      //console.log(responseJSON);
-      dispatch(setPosts(responseJSON, type, skip));
+      let data = normalize(
+        { [type]: responseJSON },
+        { [type]: arrayOf(postSchema) }
+      );
+      dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('read', false));
     })
     .catch((error) => {
@@ -159,7 +172,12 @@ export function getPosts(skip, tags, sort, limit) {
     })
     .then(response => response.json())
     .then((responseJSON) => {
-      dispatch(setPosts(responseJSON, type, skip));
+      let data = normalize(
+        { [type]: responseJSON },
+        { [type]: arrayOf(metaPostSchema) }
+      );
+
+      dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('discover', false));
     })
     .catch((error) => {
@@ -194,7 +212,11 @@ export function getUserPosts(skip, limit, userId, type) {
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setUserPosts(responseJSON, userId, skip));
+      let data = normalize(
+        { [userId]: responseJSON },
+        { [userId]: arrayOf(postSchema) }
+      );
+      dispatch(setUserPosts(data, userId, skip));
       dispatch(errorActions.setError('profile', false));
     })
     .catch((error) => {
@@ -204,15 +226,15 @@ export function getUserPosts(skip, limit, userId, type) {
   };
 }
 
-export function setUserPosts(posts, id, index) {
+export function setUserPosts(data, id, index) {
   return {
     type: 'SET_USER_POSTS',
     payload: {
-      posts,
+      data,
       id,
       index
     }
-  }
+  };
 }
 
 export function setMyPosts(posts) {
