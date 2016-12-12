@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.horcrux.svg.RNSvgPackage;
 import com.meedan.ShareMenuPackage;
 import com.github.alinz.reactNativeShareExtension.SharePackage;
 import cl.json.RNSharePackage;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNSvgPackage(),
             new ShareMenuPackage(),
             new SharePackage(),
             new RNSharePackage(),

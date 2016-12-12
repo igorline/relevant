@@ -176,14 +176,13 @@ class Comments extends Component {
     if (this.longFormat) {
       if (this.comments && this.total) {
         if (this.total > this.comments.length) {
-          el = (
-            <TouchableHighlight
-              underlayColor={'transparent'}
-              onPress={this.loadMore}
-              style={styles.loadMoreButton}
-            >
-              <Text>load earlier...</Text>
-            </TouchableHighlight>);
+          el = (<TouchableHighlight
+            underlayColor={'transparent'}
+            onPress={this.loadMore}
+            style={styles.loadMoreButton}
+          >
+            <Text>load earlier...</Text>
+          </TouchableHighlight>);
         }
       }
     }
@@ -203,6 +202,8 @@ class Comments extends Component {
         initialListSize={10}
         dataSource={this.dataSource}
         renderRow={this.renderRow}
+        keyboardShouldPersistTaps
+        keyboardDismissMode={'on-drag'}
         automaticallyAdjustContentInsets={false}
         onEndReached={!this.longFormat ? this.loadMore : null}
         onEndReachedThreshold={100}

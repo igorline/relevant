@@ -6,12 +6,15 @@ import {
   TouchableHighlight,
   AlertIOS,
   Dimensions,
+  StyleSheet,
   Keyboard,
+  ScrollView,
+  KeyboardAvoidingView
 } from 'react-native';
-import { globalStyles } from '../styles/global';
-import * as authActions from '../actions/auth.actions';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { globalStyles, fullHeight, fullWidth } from '../styles/global';
+
+let localStyles;
+let styles;
 
 class Login extends Component {
   constructor(props, context) {
@@ -23,13 +26,13 @@ class Login extends Component {
       notifText: null,
       email: null,
       password: null,
-      visibleHeight: Dimensions.get('window').height,
+      // visibleHeight: Dimensions.get('window').height,
     };
   }
 
   componentDidMount() {
-    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
-    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
+    // this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
+    // this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
   }
 
   componentWillUpdate(nextProps) {
@@ -42,18 +45,18 @@ class Login extends Component {
   componentWillUnmount() {
     const self = this;
     self.props.actions.setAuthStatusText();
-    this.showListener.remove();
-    this.hideListener.remove();
+    // this.showListener.remove();
+    // this.hideListener.remove();
   }
 
-  keyboardWillShow(e) {
-    const newSize = (Dimensions.get('window').height - e.endCoordinates.height);
-    this.setState({ visibleHeight: newSize });
-  }
+  // keyboardWillShow(e) {
+  //   const newSize = (Dimensions.get('window').height - e.endCoordinates.height);
+  //   this.setState({ visibleHeight: newSize });
+  // }
 
-  keyboardWillHide(e) {
-    this.setState({ visibleHeight: Dimensions.get('window').height });
-  }
+  // keyboardWillHide(e) {
+  //   this.setState({ visibleHeight: Dimensions.get('window').height });
+  // }
 
   login() {
     const self = this;
@@ -76,28 +79,42 @@ class Login extends Component {
 
   render() {
     const self = this;
-    const styles = globalStyles;
+    styles = { ...localStyles, ...globalStyles };
+
     return (
-      <View style={[{ height: self.state.visibleHeight }, styles.fieldsContainer]}>
-        <Text style={[styles.textCenter, styles.font20, styles.darkGray]}>
-          Stay Relevant {'\n'} Log in
-        </Text>
-        <View style={styles.marginTop}>
-          <TextInput autoCorrect={false} autoCapitalize={'none'} keyboardType={'email-address'} clearTextOnFocus={false} placeholder="email" onChangeText={email => this.setState({ email })} value={this.state.email} style={styles.authInput} />
-        </View>
+      <KeyboardAvoidingView
+        behavior={'padding'}
+        style={{ height: fullHeight }}
+      >
+        <ScrollView
+          keyboardShouldPersistTaps
+          keyboardDismissMode={'interactive'}
+          scrollEnabled={false}
+          contentContainerStyle={styles.fieldsParent}
+        >
 
-        <View style={styles.marginTop}>
-          <TextInput autoCapitalize={'none'} autoCorrect={false} secureTextEntry keyboardType={'default'} clearTextOnFocus={false} placeholder="password" onChangeText={password => this.setState({ password })} value={this.state.password} style={styles.authInput} />
-        </View>
+          <View style={styles.fieldsInner}>
 
-        <View style={styles.margin}>
-          <TouchableHighlight onPress={self.login} style={[styles.whiteButton]}>
-            <Text style={styles.buttonText}>Submit</Text>
+            <View style={styles.fieldsInputParent}>
+              <TextInput autoCorrect={false} autoCapitalize={'none'} keyboardType={'email-address'} clearTextOnFocus={false} placeholder="email" onChangeText={email => this.setState({ email })} value={this.state.email} style={styles.fieldsInput} />
+            </View>
+
+            <View style={styles.fieldsInputParent}>
+              <TextInput autoCapitalize={'none'} autoCorrect={false} secureTextEntry keyboardType={'default'} clearTextOnFocus={false} placeholder="password" onChangeText={password => this.setState({ password })} value={this.state.password} style={styles.fieldsInput} />
+            </View>
+          </View>
+
+          <TouchableHighlight onPress={self.login} underlayColor={'transparent'} style={[styles.mediumButton]}>
+            <Text style={styles.mediumButtonText}>Submit</Text>
           </TouchableHighlight>
-        </View>
 
-        <TouchableHighlight onPress={self.back} style={[styles.whiteButton]}><Text style={styles.buttonText} >Back</Text></TouchableHighlight>
-      </View>
+
+          <TouchableHighlight onPress={self.back} underlayColor={'transparent'} style={[styles.mediumButton, { marginTop: 10 }]}>
+            <Text style={styles.mediumButtonText}>Back</Text>
+          </TouchableHighlight>
+
+        </ScrollView>
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -106,20 +123,8 @@ Login.propTypes = {
   actions: React.PropTypes.object,
 };
 
+localStyles = StyleSheet.create({
+});
+
+
 export default Login;
-
-// function mapStateToProps(state) {
-//   return {
-//     auth: state.auth,
-//   };
-// }
-
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     actions: bindActionCreators({
-//       ...authActions,
-//     }, dispatch),
-//   };
-// }
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Login);
