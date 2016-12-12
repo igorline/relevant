@@ -50,7 +50,7 @@ class Comment extends Component {
     this.setState({ editing: !this.state.editing });
   }
 
-  saveEdit() {
+  saveEdit(comment) {
     this.props.actions.updateComment(comment, this.props.auth.token)
     .then((results) => {
       if (results) {
@@ -113,7 +113,7 @@ class Comment extends Component {
       bodyEl = (<CommentEditing
         comment={comment}
         toggleFunction={this.editComment}
-        saveEditFuction={this.saveEdit}
+        saveEditFunction={this.saveEdit}
       />);
     } else {
       bodyEl = (<Text style={styles.darkGray}>

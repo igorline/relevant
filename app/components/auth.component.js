@@ -9,7 +9,6 @@ import {
   Image,
 } from 'react-native';
 
-import StrokeText from '../components/strokeText.component';
 import { globalStyles } from '../styles/global';
 
 let styles;
@@ -75,7 +74,7 @@ class Auth extends Component {
 
         <View style={{ flex: 1 }}>
           <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
-            <StrokeText text={'Relevant'} /> is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt <StrokeText text={'labore et'} /> dolore magna aliqua ad minim.
+            <Text style={[]}>Relevant</Text> is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt <Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
           </Text>
         </View>
 

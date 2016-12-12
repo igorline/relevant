@@ -36,6 +36,7 @@
 		<string>BebasNeue Regular.otf</string>
 		<string>LibreCaslonDisplay-Regular.ttf</string>
 		<string>Georgia.ttf</string>
+		<string>helvetica-outline.otf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
