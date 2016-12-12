@@ -45,16 +45,16 @@ class Comment extends Component {
   }
 
   editComment() {
-    // console.log('editComment');
     this.setState({ editedText: this.props.comment.text });
     this.setState({ editing: !this.state.editing });
   }
 
   saveEdit(comment) {
+    // this.setState({ editedText:  });
     this.props.actions.updateComment(comment, this.props.auth.token)
     .then((results) => {
       if (results) {
-        this.setState({ editing: !this.state.editing });
+        this.setState({ editing: !this.state.editing, editedText: comment.text });
         AlertIOS.alert('Comment updated');
       }
     });
