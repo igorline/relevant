@@ -168,11 +168,11 @@ export default function post(state = initialState, action) {
       });
     }
 
-    // case types.SET_DISCOVER_TAGS: {
-    //   return Object.assign({}, state, {
-    //     discoverTags: action.payload,
-    //   });
-    // }
+    case types.SET_DISCOVER_TAGS: {
+      return Object.assign({}, state, {
+        discoverTags: action.payload,
+      });
+    }
 
     case 'SET_SELECTED_POST': {
       return Object.assign({}, state, {
