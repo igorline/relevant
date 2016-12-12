@@ -65,7 +65,7 @@ class Comments extends Component {
     }
 
     InteractionManager.runAfterInteractions(() => {
-      if (!this.comments) this.props.actions.getComments(this.id, 0);
+      if (!this.comments) this.loadMore();
     });
 
     if (this.comments) {
@@ -89,8 +89,6 @@ class Comments extends Component {
           if (this.total > 10) this.longFormat = true;
         }
       }
-
-      
       this.loadmore = false;
     }
     this.reloading = false;
