@@ -39,6 +39,10 @@ const font = StyleSheet.create({
   georgia: {
     fontFamily: 'Georgia',
   },
+  strokeText: {
+    fontFamily: 'HelveticaNeueLTStd-BdOu',
+    lineHeight: 30,
+  },
   halfLetterSpacing: {
     letterSpacing: 0.5,
   },
