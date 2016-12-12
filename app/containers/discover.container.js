@@ -111,9 +111,15 @@ class Discover extends Component {
 
   renderRow(rowData, view) {
     if (view !== 2) {
-      let metaPost = this.props.posts.metaPosts[rowData];
-      let arrayOfPosts = metaPost.commentary;
-      return (<Post post={arrayOfPosts} {...this.props} styles={styles} />);
+      let posts = [];
+      if (!this.props.tags.selectedTags.length) {
+        let metaPost = this.props.posts.metaPosts[rowData];
+        posts = metaPost.commentary;
+      }
+      else {
+        posts = rowData;
+      }
+      return (<Post post={posts} {...this.props} styles={styles} />);
     }
     return (<DiscoverUser user={rowData} {...this.props} styles={styles} />);
   }
