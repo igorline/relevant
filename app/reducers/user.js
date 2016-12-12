@@ -16,6 +16,7 @@ const initialState = {
   selectedUserData: {},
   list: [],
   online: [],
+  loaded: false,
   loading: false,
   garbage: []
 };
@@ -46,7 +47,8 @@ export default function auth(state = initialState, action) {
           ...state[key].slice(0, action.payload.index),
           ...action.payload.users
         ],
-        'loading': false,
+        loading: false,
+        loaded: true,
       });
     }
 
@@ -64,7 +66,7 @@ export default function auth(state = initialState, action) {
 
     case 'CLEAR_USER_LIST': {
       return Object.assign({}, state, {
-        'list': [],
+        list: [],
       });
     }
 

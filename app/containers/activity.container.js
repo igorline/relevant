@@ -95,9 +95,9 @@ class Activity extends Component {
   getViewData(props, view) {
     switch (view) {
       case 0:
-        return props.notif.personal;
+        return { data: props.notif.personal, loaded: props.notif.loaded };
       case 1:
-        return props.users.online;
+        return { data: props.users.online, loaded: props.users.loaded };
       default:
         return null;
     }
@@ -105,17 +105,17 @@ class Activity extends Component {
 
   render() {
     let tabsEl = null;
-    let top = [];
-    let bottom = [];
+    let activityEl = [];
     this.tabs.forEach((tab) => {
       let tabData = this.getViewData(this.props, tab.id) || [];
       let active = this.state.view === tab.id;
       
-      top.push(
+      activityEl.push(
         <CustomListView
           ref={(c) => { this.tabs[tab.id].component = c; }}
           key={tab.id}
-          data={tabData}
+          data={tabData.data}
+          loaded={tabData.loaded}
           renderRow={this.renderRow}
           type={'activity'}
           load={this.load}
@@ -124,15 +124,6 @@ class Activity extends Component {
           needsReload={this.needsReload}
         />
       );
-
-      if (!tabData.length) {
-        bottom.push(<EmptyList
-          visible={active}
-          emoji={'😔'}
-          type={'activity'}
-          key={tab.id}
-        />);
-      }
     });
 
     tabsEl = (
@@ -146,8 +137,7 @@ class Activity extends Component {
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
         {tabsEl}
-        {top}
-        {bottom}
+        {activityEl}
         <ErrorComponent parent={'activity'} reloadFunction={this.load} />
       </View>
     );

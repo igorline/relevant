@@ -7,6 +7,13 @@ const initialState = {
   feed: [],
   top: [],
   new: [],
+  loading: true,
+  loaded: {
+    feed: false,
+    top: false,
+    new: false,
+    userPosts: false,
+  },
   newFeedAvailable: false,
   newPostsAvailable: false,
   userPosts: {},
@@ -14,63 +21,64 @@ const initialState = {
     index: [],
     feed: [],
   },
+  metaPosts: {},
   posts: {}
 };
 
-const updatePostElement = (array, _post) => {
-  if (!array) return;
-  let index = array.findIndex(el => el._id === _post._id);
+// const updatePostElement = (array, _post) => {
+//   if (!array) return;
+//   let index = array.findIndex(el => el._id === _post._id);
 
-  if (index < 0) return array;
+//   if (index < 0) return array;
 
-  let newPost = {
-    ...array[index],
-    ..._post
-  };
+//   let newPost = {
+//     ...array[index],
+//     ..._post
+//   };
 
-  let newArr = [
-    ...array.slice(0, index),
-    newPost,
-    ...array.slice(index + 1)
-  ];
-  return newArr;
-};
+//   let newArr = [
+//     ...array.slice(0, index),
+//     newPost,
+//     ...array.slice(index + 1)
+//   ];
+//   return newArr;
+// };
 
-const updateCommentaryElement = (array, _post) => {
-  if (!array) return;
+// const updateCommentaryElement = (array, _post) => {
+//   if (!array) return;
 
-  let postIndex;
-  let metaIndex;
-  let meta = array.find((metaPost, i) => {
-    metaIndex = i;
-    postIndex = metaPost.commentary.findIndex(el => el._id === _post._id);
-    return postIndex > -1;
-  });
+//   let postIndex;
+//   let metaIndex;
+//   let meta = array.find((metaPost, i) => {
+//     metaIndex = i;
+//     postIndex = metaPost.commentary.findIndex(el => el._id === _post._id);
+//     return postIndex > -1;
+//   });
 
-  if (!meta || metaIndex < 0) return array;
+//   if (!meta || metaIndex < 0) return array;
 
 
-  let newPost = {
-    ...meta.commentary[postIndex],
-    ..._post
-  };
+//   let newPost = {
+//     ...meta.commentary[postIndex],
+//     ..._post
+//   };
 
-  let newMeta = {
-    ...meta,
-    commentary: [
-      ...meta.commentary.slice(0, postIndex),
-      newPost,
-      ...meta.commentary.slice(postIndex + 1)
-    ]
-  };
+//   let newMeta = {
+//     ...meta,
+//     commentary: [
+//       ...meta.commentary.slice(0, postIndex),
+//       newPost,
+//       ...meta.commentary.slice(postIndex + 1)
+//     ]
+//   };
 
-  let newArr = [
-    ...array.slice(0, metaIndex),
-    newMeta,
-    ...array.slice(metaIndex + 1)
-  ];
-  return newArr;
-};
+//   let newArr = [
+//     ...array.slice(0, metaIndex),
+//     newMeta,
+//     ...array.slice(metaIndex + 1)
+//   ];
+//   return newArr;
+// };
 
 const removeItem = (array, item) => {
   let index = array.findIndex(el => el._id === item._id);
@@ -138,16 +146,14 @@ export default function post(state = initialState, action) {
 
     case types.SET_POSTS: {
       const type = action.payload.type;
+      console.log(action.payload.data);
       return Object.assign({}, state, {
         [type]: [
           ...state[type].slice(0, action.payload.index),
-          ...action.payload.data.result.posts,
+          ...action.payload.data.result[type],
         ],
+        metaPosts: { ...state.metaPosts, ...action.payload.data.entities.metaPosts},
         posts: { ...state.posts, ...action.payload.data.entities.posts }
-        // currentUser: action.payload.userId ? action.payload.userId : state.currentUser,
-        // loading: false,
-        // newPostsAvailable: false,
-        // newFeedAvailable: false,
       });
     }
 
@@ -158,21 +164,35 @@ export default function post(state = initialState, action) {
     }
 
     case types.UPDATE_POST: {
-      return Object.assign({}, state, {
-        top: updateCommentaryElement(state.top, action.payload),
-        new: updateCommentaryElement(state.new, action.payload),
-        feed: updatePostElement(state.feed, action.payload),
+      let id = action.payload._id;
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          [id]: {
+            ...state.posts[id],
+            ...action.payload
+          }
+        }
+        // top: updateCommentaryElement(state.top, action.payload),
+        // new: updateCommentaryElement(state.new, action.payload),
+        // feed: updatePostElement(state.feed, action.payload),
         // userPosts: updatePostElement(state.feed, action.payload),
-      });
+      };
     }
 
     case types.REMOVE_POST: {
-      return Object.assign({}, state, {
-        top: removeCommentaryElement(state.top, action.payload),
-        new: removeCommentaryElement(state.new, action.payload),
-        feed: removeItem(state.feed, action.payload),
+      let id = action.payload._id;
+      let newPosts = { ...state.posts };
+      delete newPosts[id];
+      return {
+        ...state,
+        posts: newPosts
+        // top: removeCommentaryElement(state.top, action.payload),
+        // new: removeCommentaryElement(state.new, action.payload),
+        // feed: removeItem(state.feed, action.payload),
         // userPosts: removeItem(state.user, action.payload),
-      });
+      };
     }
 
     // case 'SET_MY_POSTS': {
@@ -190,8 +210,13 @@ export default function post(state = initialState, action) {
           ...state.userPosts,
           [id]: [
             ...currentPosts.slice(0, action.payload.index),
-            ...action.payload.posts
+            ...action.payload.data.result[id]
           ]
+        },
+        posts: { ...state.posts, ...action.payload.data.entities.posts },
+        count: {
+          ...state.count,
+          userPosts: true,
         }
       };
     }

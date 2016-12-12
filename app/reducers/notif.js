@@ -2,7 +2,8 @@ import * as types from '../actions/actionTypes';
 
 const initialState = {
   personal: [],
-  count: null,
+  count: false,
+  loaded: false,
   general: []
 };
 
@@ -17,6 +18,7 @@ export default function auth(state = initialState, action) {
           ...state[type].slice(0, action.payload.index),
           ...action.payload.data
         ],
+        loaded: true
       };
     }
 

@@ -68,6 +68,7 @@ class Post extends Component {
       posts = posts.filter(p => typeof p === 'string');
       if (!posts.length) return null;
       post = this.props.posts.posts[posts[0]];
+      if (!post) return null;
     }
 
     return (
@@ -84,6 +85,7 @@ class Post extends Component {
           snapToAlignment={'center'}
           onScrollAnimationEnd={this.updateCurrent}
         >
+          {this.renderCommentary()}
         </ScrollView>
 
         <PostImage post={post} />

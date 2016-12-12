@@ -111,7 +111,9 @@ class Discover extends Component {
 
   renderRow(rowData, view) {
     if (view !== 2) {
-      return (<Post post={rowData.commentary || rowData} {...this.props} styles={styles} />);
+      let metaPost = this.props.posts.metaPosts[rowData];
+      let arrayOfPosts = metaPost.commentary;
+      return (<Post post={arrayOfPosts} {...this.props} styles={styles} />);
     }
     return (<DiscoverUser user={rowData} {...this.props} styles={styles} />);
   }
@@ -130,12 +132,11 @@ class Discover extends Component {
   }
 
   render() {
-    let top = [];
-    let bottom = [];
+    let dataEl = [];
     this.tabs.forEach((tab) => {
       let tabData = this.getViewData(this.props, tab.id) || [];
       let active = this.state.view === tab.id;
-      top.push(
+      dataEl.push(
         <CustomListView
           ref={(c) => { this.tabs[tab.id].component = c; }}
           key={tab.id}
@@ -149,16 +150,6 @@ class Discover extends Component {
           needsReload={this.needsReload}
         />
       );
-
-      if (!tabData.length && this.props.tags.selectedTags.length) {
-        bottom.push(<EmptyList
-          visible={active ? true : false}
-          emoji={'😔'}
-          type={'posts'}
-          key={tab.id}
-        />);
-      }
-
     });
 
     let headerEl = (<DiscoverHeader
@@ -175,14 +166,12 @@ class Discover extends Component {
 
     if (this.props.error.discover) {
       headerEl = null;
-      top = [];
-      bottom = [];
+      dataEl = [];
     }
 
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
-        {top}
-        {bottom}
+        {dataEl}
         {headerEl}
         <ErrorComponent parent={'discover'} reloadFunction={this.load} />
       </View>
