@@ -23,13 +23,10 @@ class SignUp extends Component {
     this.validate = this.validate.bind(this);
     this.state = {
       message: '',
-      // visibleHeight: Dimensions.get('window').height,
     };
   }
 
   componentDidMount() {
-    // this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
-    // this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
   }
 
   componentWillUpdate(nextProps) {
@@ -39,34 +36,10 @@ class SignUp extends Component {
   }
 
   componentWillUnmount() {
-    // this.showListener.remove();
-    // this.hideListener.remove();
   }
-
-  // keyboardWillShow(e) {
-  //   const newSize = (Dimensions.get('window').height - e.endCoordinates.height);
-  //   this.setState({ visibleHeight: newSize });
-  // }
-
-  // keyboardWillHide() {
-  //   this.setState({ visibleHeight: Dimensions.get('window').height });
-  // }
 
   back() {
     this.props.actions.pop(this.props.navigation.main);
-  }
-
-  // not used!
-  checkPass(user) {
-    if (this.state.password) {
-      if (this.state.password === this.state.cPassword) {
-        this.props.actions.createUser(user);
-      } else {
-        AlertIOS.alert("passwords don't match");
-      }
-    } else {
-      AlertIOS.alert('no password');
-    }
   }
 
   validate() {
@@ -101,9 +74,8 @@ class SignUp extends Component {
       return;
     }
 
-
     if (this.state.password) {
-      if (this.state.password != this.state.cPassword) {
+      if (this.state.password !== this.state.cPassword) {
         AlertIOS.alert("Passwords don't match");
         return;
       }
@@ -121,7 +93,7 @@ class SignUp extends Component {
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
-        style={{ height: fullHeight }}
+        style={{ height: fullHeight - 60 }}
       >
         <ScrollView
           keyboardShouldPersistTaps
@@ -154,12 +126,8 @@ class SignUp extends Component {
 
           </View>
 
-          <TouchableHighlight underlayColor={'transparent'} style={[styles.mediumButton]} onPress={this.validate}>
-            <Text style={styles.mediumButtonText}>Submit</Text>
-          </TouchableHighlight>
-
-          <TouchableHighlight underlayColor={'transparent'} style={[styles.mediumButton, { marginTop: 10 }]} onPress={this.back}>
-            <Text style={styles.mediumButtonText}>Back</Text>
+          <TouchableHighlight underlayColor={'transparent'} style={[styles.largeButton]} onPress={this.validate}>
+            <Text style={styles.largeButtonText}>create account</Text>
           </TouchableHighlight>
         </ScrollView>
       </KeyboardAvoidingView>

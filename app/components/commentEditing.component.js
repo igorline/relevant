@@ -27,7 +27,6 @@ class CommentEditing extends Component {
 
   componentDidMount() {
     this.setState({ text: this.props.comment.text });
-    // console.log(this, 'comment editing this');
   }
 
   saveEdit() {

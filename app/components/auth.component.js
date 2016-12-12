@@ -69,12 +69,15 @@ class Auth extends Component {
         ]}
       >
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Image source={require('../assets/images/logo.png')}  resizeMode={'contain'} style={{ width: 330, height: 100 }} />
+          <Image source={require('../assets/images/logo.png')} resizeMode={'contain'} style={{ width: 330, height: 100 }} />
+        </View>
+
+        <View style={styles.authDivider}>
         </View>
 
         <View style={{ flex: 1 }}>
           <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
-            <Text style={[]}>Relevant</Text> is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt <Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
+            <Text style={styles.strokeText}>Relevant</Text> is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt <Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
           </Text>
         </View>
 
@@ -103,6 +106,15 @@ class Auth extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  authDivider: {
+    height: 5,
+    marginTop: 20,
+    marginBottom: 30,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+    borderTopColor: 'black',
+  },
   authParent: {
     backgroundColor: 'white',
     flex: 1,
