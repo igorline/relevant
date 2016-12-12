@@ -92,10 +92,52 @@ const layout = StyleSheet.create({
     color: 'white',
     backgroundColor: 'transparent'
   },
-  fieldsContainer: {
-    backgroundColor: '#F0F0F0',
-    alignItems: 'center',
+  fieldsParent: {
+    backgroundColor: 'white',
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'stretch',
     justifyContent: 'center',
+    padding: 20,
+    paddingTop: 40,
+  },
+  fieldsInner: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+  },
+  fieldsInputParent: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'black'
+  },
+  fieldsInput: {
+    height: 50,
+    fontFamily: 'Georgia'
+  },
+  largeButton: {
+    height: 75,
+    borderWidth: 2,
+    borderColor: '#3E3EFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  largeButtonText: {
+    fontFamily: 'Bebas Neue',
+    color: '#3E3EFF',
+    fontSize: 30,
+  },
+  mediumButton: {
+    height: 50,
+    borderWidth: 2,
+    borderColor: '#3E3EFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mediumButtonText: {
+    fontFamily: 'Bebas Neue',
+    color: '#3E3EFF',
+    fontSize: 15,
   },
   activityRight: {
     flex: 0.40,

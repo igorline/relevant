@@ -6,8 +6,10 @@ import {
   Dimensions,
   TouchableHighlight,
   Keyboard,
+  Image,
 } from 'react-native';
 
+import StrokeText from '../components/strokeText.component';
 import { globalStyles } from '../styles/global';
 
 let styles;
@@ -64,53 +66,57 @@ class Auth extends Component {
     return (
       <View
         style={[
-        { height: isAuthenticated ? this.state.visibleHeight - 60 : this.state.visibleHeight,
-          backgroundColor: '#F0F0F0' }]}
+          { height: isAuthenticated ? this.state.visibleHeight - 60 : this.state.visibleHeight }, styles.authParent
+        ]}
       >
-        <View style={styles.alignAuth}>
-          <Text
-            style={[
-              styles.textCenter,
-              styles.font20,
-              styles.darkGray,
-              { marginBottom: 10 }]}
-          >
-            Relevant
-          </Text>
-          <TouchableHighlight
-            style={[styles.whiteButton]}
-            onPress={this.login}
-            underlayColor={'transparent'}
-          >
-            <Text style={styles.buttonText}>
-              Log In
-            </Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            onPress={this.signup}
-            style={[styles.whiteButton, styles.marginTop]}
-            underlayColor={'transparent'}
-          >
-            <Text style={styles.buttonText}>
-              Sign Up
-            </Text>
-          </TouchableHighlight>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Image source={require('../assets/images/logo.png')}  resizeMode={'contain'} style={{ width: 330, height: 100 }} />
         </View>
+
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
+            <StrokeText text={'Relevant'} /> is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt <StrokeText text={'labore et'} /> dolore magna aliqua ad minim.
+          </Text>
+        </View>
+
+        <TouchableHighlight
+          onPress={this.signup}
+          style={styles.largeButton}
+          underlayColor={'transparent'}
+        >
+          <Text style={styles.largeButtonText}>
+            Sign Up Now
+          </Text>
+        </TouchableHighlight>
+
+        <TouchableHighlight
+          style={{}}
+          onPress={this.login}
+          underlayColor={'transparent'}
+        >
+          <Text style={styles.signInText}>
+            Already have an account? <Text style={{ color: '#3E3EFF' }}>Sign In.</Text>
+          </Text>
+        </TouchableHighlight>
       </View>
     );
   }
 }
 
 const localStyles = StyleSheet.create({
-  authScroll: {
+  authParent: {
+    backgroundColor: 'white',
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  alignAuth: {
-    alignItems: 'center',
-    flex: 1,
+    flexDirection: 'column',
     justifyContent: 'center',
+    alignItems: 'stretch',
+    padding: 20
+  },
+  signInText: {
+    marginTop: 20,
+    textAlign: 'center',
+    fontFamily: 'Georgia',
+    fontSize: 18,
   }
 });
 
