@@ -30,11 +30,7 @@ const updateComments = (currentData, newData, index, total) => {
   let arr = [];
   if (!index) index = 0;
 
-  // console.log(currentData, 'currentData');
-  // console.log(newData, 'newData');
-  // console.log(total, 'total');
-
-  if (total <= 0) {
+  if (total <= 10) {
     arr = [
       ...currentData.slice(0, index),
       ...newData,
@@ -46,15 +42,13 @@ const updateComments = (currentData, newData, index, total) => {
     ];
   }
 
-  // console.log(arr, 'returning')
-
   return arr;
-}
+};
 
 export default function comments(state = initialState, action) {
   switch (action.type) {
     case types.SET_COMMENTS: {
-      console.log(action.payload, 'payload here')
+
       let total = action.payload.total;
       let id = action.payload.postId;
       let currentComments = [];
@@ -68,8 +62,8 @@ export default function comments(state = initialState, action) {
         commentsById: {
           ...state.commentsById,
           [id]: {
-            data: updateComments(currentComments, action.payload.data, action.payload.index, action.payload.total),
-            total: action.payload.total
+            data: updateComments(currentComments, action.payload.data, action.payload.index, total),
+            total
           }
         }
       };

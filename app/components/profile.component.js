@@ -9,6 +9,7 @@ import * as subscriptionActions from '../actions/subscription.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 let defaultImg = require('../assets/images/default_user.jpg');
+let localStyles;
 
 class ProfileComponent extends Component {
   constructor (props, context) {
@@ -34,17 +35,18 @@ class ProfileComponent extends Component {
     }
   }
 
+
   abbreviateNumber(num) {
     let fixed = 0;
-    if (num === null) { return null; } // terminate early
-    if (num === 0) { return '0'; } // terminate early
+    if (num === null) { return null; }; 
+    if (num === 0) { return '0'; }
     if (typeof num !== 'number') num = Number(num);
-    fixed = (!fixed || fixed < 0) ? 0 : fixed; // number of decimal places to show
-    let b = (num).toPrecision(2).split('e'); // get power
-    let k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3); // floor at decimals, ceiling at trillions
-    let c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, k * 3) ).toFixed(1 + fixed); // divide by power
-    let d = c < 0 ? c : Math.abs(c); // enforce -0 is 0
-    let e = d + ['', 'K', 'M', 'B', 'T'][k]; // append power
+    fixed = (!fixed || fixed < 0) ? 0 : fixed;
+    let b = (num).toPrecision(2).split('e');
+    let k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3);
+    let c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, k * 3) ).toFixed(1 + fixed);
+    let d = c < 0 ? c : Math.abs(c);
+    let e = d + ['', 'K', 'M', 'B', 'T'][k];
     return e;
   }
 
@@ -54,7 +56,7 @@ class ProfileComponent extends Component {
     let followers = null;
     let user = null;
     let userImage = null;
-    let relevance = null;
+    let relevance = 0;
     let balance = null;
     let userImageEl = null;
     let following = null;
@@ -65,7 +67,6 @@ class ProfileComponent extends Component {
     
     if (this.state.followers) followers = this.state.followers;
     if (this.state.following) following = this.state.following;
-
 
     if (this.props.user) {
       user = this.props.user;
@@ -134,7 +135,7 @@ class ProfileComponent extends Component {
   }
 }
 
-const localStyles = StyleSheet.create({
+localStyles = StyleSheet.create({
 
 });
 

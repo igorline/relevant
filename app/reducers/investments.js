@@ -14,6 +14,7 @@ const addItems = (arr, newArr) => {
 
 const initialState = {
   userInvestments: {},
+  loaded: false
 };
 
 export default function investments(state = initialState, action) {
@@ -30,7 +31,8 @@ export default function investments(state = initialState, action) {
             ...currentInvestments.slice(0, action.payload.index),
             ...action.payload.investments
           ]
-        }
+        },
+        loaded: true,
       };
     }
 
