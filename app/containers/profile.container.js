@@ -58,6 +58,13 @@ class Profile extends Component {
       this.myProfile = false;
       this.userId = this.props.scene.id;
       this.userData = this.props.users.selectedUserData[this.userId];
+
+      // InteractionManager.runAfterInteractions(() => {
+      //   if (!this.userData) this.loadUser();
+      //   this.loadContent = true;
+      //   this.setState({});
+      // });
+
     } else {
       this.myProfile = true;
       this.userId = this.props.auth.user._id;
@@ -163,6 +170,10 @@ class Profile extends Component {
   render() {
     let listEl = [];
     let headerEl = this.renderHeader();
+
+    // if (!this.userData) return null;
+    let renderSticky = false;
+    if (this.userId && this.userData) renderSticky = true;
 
     this.tabs.forEach((tab) => {
       let tabData = this.getViewData(this.props, tab.id);

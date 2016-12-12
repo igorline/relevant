@@ -29,10 +29,9 @@ function setUserIndex(userIndex) {
 }
 
 export function setAuthStatusText(text) {
-  let set = text ? text : null;
   return {
     type: 'SET_AUTH_STATUS_TEXT',
-    payload: set
+    payload: text || null
   };
 }
 
@@ -47,12 +46,9 @@ export function loginUserSuccess(token) {
 
 export function loginUserFailure() {
   return (dispatch) => {
-    // utils.token.remove()
-    // .then(() => {
-      dispatch({
-        type: types.LOGIN_USER_FAILURE
-      });
-    // });
+    dispatch({
+      type: types.LOGIN_USER_FAILURE
+    });
   };
 }
 
@@ -72,7 +68,6 @@ export function logoutAction(user) {
   return (dispatch) => {
     utils.token.remove()
     .then(() => {
-
       utils.token.get()
       .then(token => console.log('token should be gone ', token));
       dispatch(logout());
@@ -139,41 +134,39 @@ function userOnline(user, token) {
 
 
 export
-function createUser(user, redirect) {
-    return function(dispatch) {
-        return fetch(process.env.API_SERVER+'/api/user', {
-            credentials: 'include',
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(user)
-        })
-        .then((response) => response.json())
-        .then((responseJSON) => {
-            if (responseJSON.token) {
-                dispatch(loginUserSuccess(responseJSON.token));
-                dispatch(getUser());
-            } else {
-                // dispatch(loginUserFailure());
-                if (responseJSON.errors) {
-                    if (responseJSON.errors) {
-                        let errors = responseJSON.errors;
-                        let message = '';
-                        Object.keys(errors).map(function(key, index) {
-                           if (errors[key].message) message += errors[key].message;
-                        });
-                        AlertIOS.alert(message);
-                    }
-                }
-            }
-        })
-        .catch(error => {
-            AlertIOS.alert(error.message);
-            // dispatch(loginUserFailure());
+function createUser(user) {
+  return (dispatch) => {
+    return fetch(process.env.API_SERVER + '/api/user', {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(user)
+    })
+    .then(response => response.json())
+    .then((responseJSON) => {
+      if (responseJSON.token) {
+        utils.token.set(responseJSON.token)
+        .then(() => {
+          dispatch(loginUserSuccess(responseJSON.token));
+          dispatch(getUser());
         });
-    }
+      } else if (responseJSON.errors) {
+        let errors = responseJSON.errors;
+        let message = '';
+        Object.keys(errors).map((key, index) => {
+           if (errors[key].message) message += errors[key].message;
+        });
+        AlertIOS.alert(message);
+      }
+    })
+    .catch(error => {
+      AlertIOS.alert(error.message);
+      // dispatch(loginUserFailure());
+    });
+  };
 }
 
 export function getUser(callback) {

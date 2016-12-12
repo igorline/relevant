@@ -2,8 +2,6 @@ import * as types from '../actions/actionTypes';
 
 const initialState = {
   postError: null,
-  selectedPostData: {},
-  index: [],
   feed: [],
   top: [],
   new: [],
@@ -17,112 +15,57 @@ const initialState = {
   newFeedAvailable: false,
   newPostsAvailable: false,
   userPosts: {},
-  newPosts: {
-    index: [],
-    feed: [],
-  },
+  metaPosts: {},
+  posts: {}
 };
 
-const updatePostElement = (array, _post) => {
-  if (!array) return;
-  let index = array.findIndex(el => el._id === _post._id);
+// may need at some point to remove the ids from the array
 
-  if (index < 0) return array;
+// const removeItem = (array, item) => {
+//   let index = array.findIndex(el => el._id === item._id);
+//   return [
+//     ...array.slice(0, index),
+//     ...array.slice(index + 1)
+//   ];
+// };
 
-  let newPost = {
-    ...array[index],
-    ..._post
-  };
+// const removeCommentaryElement = (array, _post) => {
+//   if (!array) return;
 
-  let newArr = [
-    ...array.slice(0, index),
-    newPost,
-    ...array.slice(index + 1)
-  ];
-  return newArr;
-};
+//   let postIndex;
+//   let metaIndex;
+//   let meta = array.find((metaPost, i) => {
+//     metaIndex = i;
+//     postIndex = metaPost.commentary.findIndex(el => el._id === _post._id);
+//     return postIndex > -1;
+//   });
 
-const updateCommentaryElement = (array, _post) => {
-  if (!array) return;
+//   if (!meta || metaIndex < 0) return array;
 
-  let postIndex;
-  let metaIndex;
-  let meta = array.find((metaPost, i) => {
-    metaIndex = i;
-    postIndex = metaPost.commentary.findIndex(el => el._id === _post._id);
-    return postIndex > -1;
-  });
+//   let newMeta = {
+//     ...meta,
+//     commentary: [
+//       ...meta.commentary.slice(0, postIndex),
+//       ...meta.commentary.slice(postIndex + 1)
+//     ]
+//   };
 
-  if (!meta || metaIndex < 0) return array;
+//   let newArr;
+//   if (newMeta && newMeta.commentary.length === 0) {
+//     newArr = [
+//       ...array.slice(0, metaIndex),
+//       ...array.slice(metaIndex + 1)
+//     ];
+//     return newArr;
+//   }
 
-
-  let newPost = {
-    ...meta.commentary[postIndex],
-    ..._post
-  };
-
-  let newMeta = {
-    ...meta,
-    commentary: [
-      ...meta.commentary.slice(0, postIndex),
-      newPost,
-      ...meta.commentary.slice(postIndex + 1)
-    ]
-  };
-
-  let newArr = [
-    ...array.slice(0, metaIndex),
-    newMeta,
-    ...array.slice(metaIndex + 1)
-  ];
-  return newArr;
-};
-
-const removeItem = (array, item) => {
-  let index = array.findIndex(el => el._id === item._id);
-  return [
-    ...array.slice(0, index),
-    ...array.slice(index + 1)
-  ];
-};
-
-const removeCommentaryElement = (array, _post) => {
-  if (!array) return;
-
-  let postIndex;
-  let metaIndex;
-  let meta = array.find((metaPost, i) => {
-    metaIndex = i;
-    postIndex = metaPost.commentary.findIndex(el => el._id === _post._id);
-    return postIndex > -1;
-  });
-
-  if (!meta || metaIndex < 0) return array;
-
-  let newMeta = {
-    ...meta,
-    commentary: [
-      ...meta.commentary.slice(0, postIndex),
-      ...meta.commentary.slice(postIndex + 1)
-    ]
-  };
-
-  let newArr;
-  if (newMeta && newMeta.commentary.length === 0) {
-    newArr = [
-      ...array.slice(0, metaIndex),
-      ...array.slice(metaIndex + 1)
-    ];
-    return newArr;
-  }
-
-  newArr = [
-    ...array.slice(0, metaIndex),
-    newMeta,
-    ...array.slice(metaIndex + 1)
-  ];
-  return newArr;
-};
+//   newArr = [
+//     ...array.slice(0, metaIndex),
+//     newMeta,
+//     ...array.slice(metaIndex + 1)
+//   ];
+//   return newArr;
+// };
 
 
 export default function post(state = initialState, action) {
@@ -130,19 +73,14 @@ export default function post(state = initialState, action) {
 
     case types.SET_POSTS: {
       const type = action.payload.type;
+      console.log(action.payload.data);
       return Object.assign({}, state, {
         [type]: [
           ...state[type].slice(0, action.payload.index),
-          ...action.payload.data,
+          ...action.payload.data.result[type],
         ],
-        currentUser: action.payload.userId ? action.payload.userId : state.currentUser,
-        loading: false,
-        newPostsAvailable: false,
-        newFeedAvailable: false,
-        loaded: {
-          ...state.loaded,
-          [type]: true,
-        }
+        metaPosts: { ...state.metaPosts, ...action.payload.data.entities.metaPosts },
+        posts: { ...state.posts, ...action.payload.data.entities.posts }
       });
     }
 
@@ -153,28 +91,28 @@ export default function post(state = initialState, action) {
     }
 
     case types.UPDATE_POST: {
-      return Object.assign({}, state, {
-        top: updateCommentaryElement(state.top, action.payload),
-        new: updateCommentaryElement(state.new, action.payload),
-        feed: updatePostElement(state.feed, action.payload),
-        // userPosts: updatePostElement(state.feed, action.payload),
-      });
+      let id = action.payload._id;
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          [id]: {
+            ...state.posts[id],
+            ...action.payload
+          }
+        }
+      };
     }
 
     case types.REMOVE_POST: {
-      return Object.assign({}, state, {
-        top: removeCommentaryElement(state.top, action.payload),
-        new: removeCommentaryElement(state.new, action.payload),
-        feed: removeItem(state.feed, action.payload),
-        // userPosts: removeItem(state.user, action.payload),
-      });
+      let id = action.payload._id;
+      let newPosts = { ...state.posts };
+      delete newPosts[id];
+      return {
+        ...state,
+        posts: newPosts
+      };
     }
-
-    // case 'SET_MY_POSTS': {
-    //   return Object.assign({}, state, {
-    //     myPosts: addItems(state.myPosts, action.payload)
-    //   });
-    // }
 
     case 'SET_USER_POSTS': {
       let id = action.payload.id;
@@ -185,8 +123,12 @@ export default function post(state = initialState, action) {
           ...state.userPosts,
           [id]: [
             ...currentPosts.slice(0, action.payload.index),
-            ...action.payload.posts
+            ...action.payload.data.result[id]
           ]
+        },
+        posts: { ...state.posts, ...action.payload.data.entities.posts },
+        count: {
+          ...state.count,
         },
         loaded: {
           ...state.loaded,
@@ -214,16 +156,6 @@ export default function post(state = initialState, action) {
       });
     }
 
-    // case 'ADD_POST': {
-    //   const type = action.payload.type;
-    //   return Object.assign({}, state, {
-    //     newPosts: {
-    //       ...state.newPosts,
-    //       [type]: prependItems(state.newPosts[type], [action.payload.data]),
-    //     },
-    //   });
-    // }
-
     case 'SET_NEW_POSTS_STATUS': {
       return Object.assign({}, state, {
         newPostsAvailable: action.payload,
@@ -236,11 +168,11 @@ export default function post(state = initialState, action) {
       });
     }
 
-    case types.SET_DISCOVER_TAGS: {
-      return Object.assign({}, state, {
-        discoverTags: action.payload,
-      });
-    }
+    // case types.SET_DISCOVER_TAGS: {
+    //   return Object.assign({}, state, {
+    //     discoverTags: action.payload,
+    //   });
+    // }
 
     case 'SET_SELECTED_POST': {
       return Object.assign({}, state, {
@@ -252,8 +184,8 @@ export default function post(state = initialState, action) {
       let id = action.payload._id;
       return {
         ...state,
-        selectedPostData: {
-          ...state.selectedPostData,
+        posts: {
+          ...state.posts,
           [id]: action.payload
         }
       };
@@ -261,7 +193,7 @@ export default function post(state = initialState, action) {
 
     case 'CLEAR_SELECTED_POST': {
       return Object.assign({}, state, {
-        selectedPostData: null,
+        // selectedPostData: null,
         selectedPostId: null
       });
     }
