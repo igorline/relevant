@@ -213,11 +213,11 @@ class Application extends Component {
 
     switch (component) {
       case 'auth':
-        return <Auth authType={component} />;
+        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
       case 'login':
-        return <Auth authType={component} />;
+        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
       case 'signup':
-        return <Auth authType={component} />;
+        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
       case 'createPost':
         return <CreatePost step={'url'} navProps={props} navigator={this.props.actions} />;
       case 'categories':

@@ -103,7 +103,6 @@ const layout = StyleSheet.create({
     alignItems: 'stretch',
     justifyContent: 'center',
     padding: 20,
-    paddingTop: 40,
   },
   fieldsInner: {
     flex: 1,
@@ -120,7 +119,7 @@ const layout = StyleSheet.create({
     fontFamily: 'Georgia'
   },
   largeButton: {
-    height: 75,
+    height: 60,
     borderWidth: 2,
     borderColor: '#3E3EFF',
     justifyContent: 'center',

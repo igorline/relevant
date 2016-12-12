@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import {
+  View,
+  Text,
+  NavigationExperimental,
+  Image,
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -9,7 +13,11 @@ import SignUp from '../components/signup.component';
 import * as authActions from '../actions/auth.actions';
 import * as navigationActions from '../actions/navigation.actions';
 
-import { globalStyles, localStyles } from '../styles/global';
+import { globalStyles, localStyles, fullWidth } from '../styles/global';
+
+const {
+  Header: NavigationHeader,
+} = NavigationExperimental;
 
 let styles;
 
@@ -18,6 +26,8 @@ class AuthContainer extends Component {
   constructor(props, context) {
     super(props, context);
     this.renderScene = this.renderScene.bind(this);
+    this.renderHeader = this.renderHeader.bind(this);
+    this.back = this.back.bind(this);
   }
 
   renderScene(key) {
@@ -36,8 +46,53 @@ class AuthContainer extends Component {
     }
   }
 
+  renderTitle(props) {
+    let title = props.scene.route.title;
+    return (
+      <NavigationHeader.Title>
+        <Image source={require('../assets/images/logo.png')} resizeMode={'contain'} style={{ width: 150, height: 40 }} />
+      </NavigationHeader.Title>
+    );
+  }
+
+  back() {
+    this.props.actions.pop(this.props.navigation.main);
+  }
+
+  renderRight() {
+    return null;
+  }
+
+  renderHeader(props) {
+    console.log(props, 'header props');
+    let header = null;
+    if (props.scene.route) {
+      if (props.scene.route.component === 'login' || props.scene.route.component === 'signup') {
+        header = (
+          <NavigationHeader
+            {...props}
+            style={{
+              backgroundColor: 'white',
+              borderBottomColor: '#f0f0f0',
+              borderBottomWidth: 1
+            }}
+            renderTitleComponent={this.renderTitle}
+            onNavigateBack={this.back}
+            renderRightComponent={this.renderRight}
+          />
+        );
+      }
+    }
+    return header;
+  }
+
   render() {
-    return this.renderScene(this.props.authType);
+    return (
+      <View style={{ flex: 1 }}>
+        {this.renderHeader(this.props.navProps)}
+        {this.renderScene(this.props.authType)}
+      </View>
+    );
   }
 }
 

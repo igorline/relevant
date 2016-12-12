@@ -84,7 +84,7 @@ class Login extends Component {
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
-        style={{ height: fullHeight }}
+        style={{ height: fullHeight - 60 }}
       >
         <ScrollView
           keyboardShouldPersistTaps
@@ -104,13 +104,8 @@ class Login extends Component {
             </View>
           </View>
 
-          <TouchableHighlight onPress={self.login} underlayColor={'transparent'} style={[styles.mediumButton]}>
-            <Text style={styles.mediumButtonText}>Submit</Text>
-          </TouchableHighlight>
-
-
-          <TouchableHighlight onPress={self.back} underlayColor={'transparent'} style={[styles.mediumButton, { marginTop: 10 }]}>
-            <Text style={styles.mediumButtonText}>Back</Text>
+          <TouchableHighlight onPress={self.login} underlayColor={'transparent'} style={[styles.largeButton]}>
+            <Text style={styles.largeButtonText}>sign in</Text>
           </TouchableHighlight>
 
         </ScrollView>

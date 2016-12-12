@@ -43,6 +43,8 @@ class Profile extends Component {
     this.changeView = this.changeView.bind(this);
     this.state = {
       view: 0,
+      headerHeight: 300,
+      showHeader: true,
     };
     this.userData = null;
     this.userId = null;
@@ -131,21 +133,21 @@ class Profile extends Component {
   }
 
   renderHeader() {
-    const header = [];
+    let header = null;
     if (this.userId && this.userData) {
-      header.push(<ProfileComponent
-        key={0}
-        {...this.props}
-        user={this.userData}
-        styles={styles}
-      />);
-
-      header.push(<Tabs
-        key={1}
-        tabs={this.tabs}
-        active={this.state.view}
-        handleChange={this.changeView}
-      />);
+      header = (<View style={{ top: 0, position: 'absolute', backgroundColor: 'white' }}>
+        <ProfileComponent
+          {...this.props}
+          user={this.userData}
+          styles={styles}
+        />
+        <Tabs
+          key={1}
+          tabs={this.tabs}
+          active={this.state.view}
+          handleChange={this.changeView}
+        />
+      </View>);
     }
     return header;
   }
@@ -171,10 +173,6 @@ class Profile extends Component {
     let listEl = [];
     let headerEl = this.renderHeader();
 
-    // if (!this.userData) return null;
-    let renderSticky = false;
-    if (this.userId && this.userData) renderSticky = true;
-
     this.tabs.forEach((tab) => {
       let tabData = this.getViewData(this.props, tab.id);
       let active = this.state.view === tab.id;
@@ -189,6 +187,7 @@ class Profile extends Component {
         renderRow={this.renderRow}
         load={this.load}
         view={tab.id}
+        YOffset={this.state.headerHeight}
         type={tab.title}
         active={active}
         needsReload={this.needsReload}
@@ -197,8 +196,8 @@ class Profile extends Component {
 
     return (
       <View style={styles.profileContainer}>
-        {headerEl}
         {listEl}
+        {headerEl}
         <ErrorComponent parent={'profile'} reloadFunction={this.loadUser} />
       </View>
     );

@@ -156,7 +156,7 @@ class Comments extends Component {
     this.props.actions.getComments(this.id, length, 10);
   }
 
-  renderRow(rowData, i) {
+  renderRow(rowData) {
     return (
       <Comment
         {...this.props}
