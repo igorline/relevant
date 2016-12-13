@@ -16,9 +16,9 @@ class PostImage extends Component {
   constructor(props, context) {
     super(props, context);
     this.openLink = this.openLink.bind(this);
-    this.extractDomain = this.extractDomain.bind(this);
+    // this.extractDomain = this.extractDomain.bind(this);
     this.state = {
-    }
+    };
   }
 
   componentDidMount() {
@@ -28,29 +28,29 @@ class PostImage extends Component {
     Linking.openURL(url);
   }
 
-  extractDomain(url) {
-    let domain;
-    if (url) {
-      if (typeof url === 'string') {
-        if (url.indexOf('://') > -1) {
-          domain = url.split('/')[2];
-        } else {
-          domain = url.split('/')[0];
-        }
-        domain = domain.split(':')[0];
+  // extractDomain(url) {
+  //   let domain;
+  //   if (url) {
+  //     if (typeof url === 'string') {
+  //       if (url.indexOf('://') > -1) {
+  //         domain = url.split('/')[2];
+  //       } else {
+  //         domain = url.split('/')[0];
+  //       }
+  //       domain = domain.split(':')[0];
 
-        let noPrefix = domain;
+  //       let noPrefix = domain;
 
-        if (domain.indexOf('www.') > -1) {
-          noPrefix = domain.replace('www.', '');
-        }
-        return noPrefix;
-      }
-    } else {
-      console.log('no url');
-      return '';
-    }
-  }
+  //       if (domain.indexOf('www.') > -1) {
+  //         noPrefix = domain.replace('www.', '');
+  //       }
+  //       return noPrefix;
+  //     }
+  //   } else {
+  //     console.log('no url');
+  //     return '';
+  //   }
+  // }
 
   render() {
     const self = this;
