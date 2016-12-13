@@ -83,11 +83,11 @@ class PostInfo extends Component {
     }
   }
 
-  toggleInfo() {
-    const self = this;
-    let newVar = !self.state.toggleInfo;
-    self.setState({ toggleInfo: newVar });
-  }
+  // toggleInfo() {
+  //   const self = this;
+  //   let newVar = !self.state.toggleInfo;
+  //   self.setState({ toggleInfo: newVar });
+  // }
 
   render() {
     const self = this;
@@ -127,19 +127,14 @@ class PostInfo extends Component {
     }
 
     if (self.state.passed) {
-      if (self.state.toggleInfo) {
-        postInfo = (<View>
-          <Text style={[styles.font10, styles.textRight, styles.bebas, styles.halfLetterSpacing]}>💵&nbsp;
-            {this.abbreviateNumber(value)}
-          </Text>
-        </View>);
-      } else {
-        postInfo = (<View>
-          <Text style={[styles.font10, styles.textRight, styles.bebas, styles.halfLetterSpacing]}>📈&nbsp;
-            {this.abbreviateNumber(relevance)}
-          </Text>
-        </View>);
-      }
+      postInfo = (<View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+        <Text style={[styles.font10, styles.textRight, styles.bebas, styles.halfLetterSpacing, { marginRight: 5 }]}>💵&nbsp;
+          {this.abbreviateNumber(value)}
+        </Text>
+        <Text style={[styles.font10, styles.textRight, styles.bebas, styles.halfLetterSpacing]}>📈&nbsp;
+          {this.abbreviateNumber(relevance)}
+        </Text>
+      </View>);
     } else {
       postInfo = (
         <View style={[styles.countdown]}>
@@ -162,13 +157,11 @@ class PostInfo extends Component {
           user={{ image: postUserImage, name, _id: this.props.post.user }}
           setSelected={this.setSelected}
         />
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          onPress={() => self.toggleInfo()}
+        <View
           style={[styles.infoRight, styles.innerInfo]}
         >
           {postInfo}
-        </TouchableHighlight>
+        </View>
       </View>
     </View>);
   }
@@ -192,8 +185,6 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingTop: 10,
-    paddingLeft: 15,
-    paddingRight: 15,
     paddingBottom: 10,
   },
   progressCirc: {

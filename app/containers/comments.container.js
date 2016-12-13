@@ -33,6 +33,7 @@ class Comments extends Component {
       scrollToBottomY: null,
       inputHeight: 50,
       editing: false,
+      reloading: false,
     };
     this.renderHeader = this.renderHeader.bind(this);
     this.scrollToComment = this.scrollToComment.bind(this);
@@ -90,8 +91,8 @@ class Comments extends Component {
         }
       }
       this.loadmore = false;
+      this.setState({ reloading: false });
     }
-    this.reloading = false;
   }
 
   componentDidUpdate(prev) {
@@ -209,7 +210,7 @@ class Comments extends Component {
         renderHeader={this.renderHeader}
         refreshControl={
           <RefreshControl
-            refreshing={this.reloading}
+            refreshing={this.state.reloading}
             onRefresh={this.reload}
             tintColor="#000000"
             colors={['#000000', '#000000', '#000000']}
