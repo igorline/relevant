@@ -18,25 +18,33 @@ const initialState = {
   online: [],
   loaded: false,
   loading: false,
-  garbage: []
+  garbage: [],
+  search: [],
 };
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
+
+    case types.SET_USER_SEARCH : {
+      return {
+        ...state,
+        search: action.payload
+      };
+    }
 
     case 'SET_SELECTED_USER_DATA': {
       return {
         ...state,
         selectedUserData: {
           ...state.selectedUserData,
-          [action.payload._id]: action.payload,
+          [action.payload.name]: action.payload,
         }
       };
     }
 
     case 'GET_USER_LIST': {
       return Object.assign({}, state, {
-        'loading': true,
+        loading: true,
       });
     }
 
@@ -57,8 +65,8 @@ export default function auth(state = initialState, action) {
         ...state,
         selectedUserData: {
           ...state.selectedUserData,
-          [action.payload._id]: {
-            ...state.selectedUserData[action.payload._id],
+          [action.payload.name]: {
+            ...state.selectedUserData[action.payload.name],
             ...action.payload,
           }
         }
