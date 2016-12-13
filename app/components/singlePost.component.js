@@ -99,7 +99,7 @@ class SinglePostComponent extends Component {
         {imageEl}
         <PostInfo navigator={this.props.navigator} post={this.post} />
         <PostBody {...this.props} post={this.post} editing={false} />
-        {/*<PostButtons {...this.props} post={this.post} comments={this.comments} />*/}
+        {/* <PostButtons {...this.props} post={this.post} comments={this.comments} /> */}
       </View>);
     } else {
       return null;
