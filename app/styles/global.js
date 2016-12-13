@@ -318,8 +318,8 @@ const layout = StyleSheet.create({
     padding: 10
   },
   createPostInput: {
-    marginTop: 10,
-    padding: 10,
+    paddingTop: 12.5,
+    paddingBottom: 12.5,
     backgroundColor: '#ffffff'
   },
   flex1: {

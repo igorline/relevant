@@ -2,6 +2,7 @@ import * as types from '../actions/actionTypes';
 
 const initialState = {
   urlPreview: null,
+  domain: null,
   postBody: '',
   postUrl: null,
   postCategory: null,
