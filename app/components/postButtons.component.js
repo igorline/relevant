@@ -17,6 +17,7 @@ class PostButtons extends Component {
   constructor(props, context) {
     super(props, context);
     this.onShare = this.onShare.bind(this);
+    this.goToPost = this.goToPost.bind(this);
     this.state = {
       editing: false,
       modalVisible: false,
@@ -73,72 +74,10 @@ class PostButtons extends Component {
     }
   }
 
-  // saveEdit() {
-  //   const self = this;
-  //   let title = self.state.editedTitle;
-  //   let body = self.state.editedBody;
-  //   let bodyTags = body.match(/#\S+/g);
-  //   let bodyMentions = body.match(/@\S+/g);
-  //   let tags = [];
-  //   let mentions = [];
-  //   let preTags = [];
-  //   if (self.props.post.tags) {
-  //     self.props.post.tags.forEach((tag) => {
-  //       preTags.push(tag.name);
-  //     });
-  //   }
-
-  //   if (bodyTags) {
-  //     bodyTags.forEach((eachTag) => {
-  //       let tagReplace = eachTag.replace('#', '');
-  //       tags.push(tagReplace);
-  //     });
-  //   }
-  //   if (bodyMentions) {
-  //     bodyMentions.forEach((eachName) => {
-  //       let nameReplace = eachName.replace('@', '');
-  //       mentions.push(nameReplace);
-  //     });
-  //   }
-
-  //   let finalTags = tags.concat(preTags);
-  //   let postBody = {
-  //     user: self.props.auth.user._id,
-  //     _id: self.props.post._id,
-  //     body,
-  //     tags: finalTags,
-  //     title,
-  //     mentions,
-  //   };
-
-  //   // Update post action here
-  //   self.props.actions.editPost(postBody, self.props.auth.token).then((results) => {
-  //     if (!results) {
-  //       AlertIOS.alert('Update error please try again');
-  //     } else {
-  //       AlertIOS.alert('Updated');
-  //       self.setState({ editing: false });
-  //     }
-  //   });
-  // }
-
-  // extractDomain(url) {
-  //   let domain;
-  //   if (url.indexOf('://') > -1) {
-  //     domain = url.split('/')[2];
-  //   } else {
-  //     domain = url.split('/')[0];
-  //   }
-  //   domain = domain.split(':')[0];
-
-  //   let noPrefix = domain;
-
-  //   if (domain.indexOf('www.') > -1) {
-  //     noPrefix = domain.replace('www.', '');
-  //   }
-  //   return noPrefix;
-  // }
-
+  goToPost() {
+    console.log('go to post');
+    this.props.navigator.goToPost(this.props.post);
+  }
 
   showActionSheet() {
     if (this.myPost) {
@@ -266,7 +205,6 @@ class PostButtons extends Component {
     self.setState({ expanded: !self.state.expanded });
   }
 
-
   render() {
     const self = this;
     let commentString = 'Add comment';
@@ -301,9 +239,21 @@ class PostButtons extends Component {
 
     return (<View style={styles.postButtons}>
       {investButtonEl}
-      <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => self.toggleExpanded()}><Text style={[styles.font10, styles.postButtonText]}>{expanded ? 'Read less' : 'Read more'}</Text></TouchableHighlight>
-      <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => self.openComments()}><Text style={[{ marginRight: 5 }, styles.font10, styles.postButtonText]}>{commentString}</Text></TouchableHighlight>
-      <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={() => self.showActionSheet()}><Text style={[styles.font10, styles.postButtonText]}>...</Text></TouchableHighlight>
+      <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={this.goToPost}>
+        <Text style={[styles.font10, styles.postButtonText]}>
+         Read more
+        </Text>
+      </TouchableHighlight>
+      <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => self.openComments()}>
+        <Text style={[{ marginRight: 5 }, styles.font10, styles.postButtonText]}>
+          {commentString}
+        </Text>
+      </TouchableHighlight>
+      <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={() => self.showActionSheet()}>
+        <Text style={[styles.font10, styles.postButtonText]}>
+          ...
+        </Text>
+      </TouchableHighlight>
       <InvestModal toggleFunction={this.toggleModal} post={this.props.post} visible={this.state.modalVisible} />
     </View>);
   }
