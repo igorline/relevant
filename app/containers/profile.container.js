@@ -66,17 +66,19 @@ class Profile extends Component {
     if (this.props.scene) {
       this.myProfile = false;
       this.userId = this.props.scene.id;
-      this.userData = this.props.users.selectedUserData[this.userId];
+      this.userName = this.props.scene.title;
+      this.userData = this.props.users.selectedUserData[this.userName];
 
-      // InteractionManager.runAfterInteractions(() => {
-      //   if (!this.userData) this.loadUser();
-      //   this.loadContent = true;
-      //   this.setState({});
-      // });
+      InteractionManager.runAfterInteractions(() => {
+        if (!this.userData) this.loadUser();
+        this.loadContent = true;
+        // this.setState({});
+      });
 
     } else {
       this.myProfile = true;
       this.userId = this.props.auth.user._id;
+      this.userName = this.props.auth.userName;
       this.userData = this.props.auth.user;
     }
   }
@@ -85,7 +87,7 @@ class Profile extends Component {
     if (this.myProfile) {
       this.userData = next.auth.user;
     } else {
-      this.userData = next.users.selectedUserData[this.userId];
+      this.userData = next.users.selectedUserData[this.userName];
     }
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();
@@ -101,7 +103,7 @@ class Profile extends Component {
   }
 
   loadUser() {
-    this.props.actions.getSelectedUser(this.userId);
+    this.props.actions.getSelectedUser(this.userName);
   }
 
   load(view, length) {
@@ -114,11 +116,11 @@ class Profile extends Component {
       this.props.actions.getUserPosts(
         length,
         5,
-        this.userId);
+        this.userData._id);
     } else {
       this.props.actions.getInvestments(
         this.props.auth.token,
-        this.userId,
+        this.userData._id,
         length,
         10);
     }
@@ -168,12 +170,12 @@ class Profile extends Component {
     switch (view) {
       case 0:
         return {
-          data: this.props.posts.userPosts[this.userId],
+          data: this.props.posts.userPosts[this.userData._id],
           loaded: this.props.posts.loaded.userPosts,
         };
       case 1:
         return {
-          data: this.props.investments.userInvestments[this.userId],
+          data: this.props.investments.userInvestments[this.userData._id],
           loaded: this.props.investments.loaded,
         };
       default:
@@ -221,27 +223,29 @@ class Profile extends Component {
     let listEl = [];
     let headerEl = this.renderHeader();
 
-    this.tabs.forEach((tab) => {
-      let tabData = this.getViewData(this.props, tab.id);
-      let active = this.state.view === tab.id;
-      let data = tabData.data || [];
-      let loaded = tabData.loaded || false;
+    if (this.userData) {
+      this.tabs.forEach((tab) => {
+        let tabData = this.getViewData(this.props, tab.id);
+        let active = this.state.view === tab.id;
+        let data = tabData.data || [];
+        let loaded = tabData.loaded || false;
 
-      listEl.push(<CustomListView
-        ref={(c) => { this.tabs[tab.id].component = c; }}
-        key={tab.id}
-        data={data}
-        loaded={loaded}
-        renderRow={this.renderRow}
-        load={this.load}
-        onScroll={this.onScroll}
-        view={tab.id}
-        YOffset={this.state.offsetHeight}
-        type={tab.title}
-        active={active}
-        needsReload={this.needsReload}
-      />);
-    });
+        listEl.push(<CustomListView
+          ref={(c) => { this.tabs[tab.id].component = c; }}
+          key={tab.id}
+          data={data}
+          loaded={loaded}
+          renderRow={this.renderRow}
+          load={this.load}
+          onScroll={this.onScroll}
+          view={tab.id}
+          YOffset={this.state.offsetHeight}
+          type={tab.title}
+          active={active}
+          needsReload={this.needsReload}
+        />);
+      });
+    }
 
     return (
       <View style={styles.profileContainer}>

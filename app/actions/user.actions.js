@@ -51,14 +51,40 @@ function setSelectedUserData(data) {
   };
 }
 
+export
+function setUserSearch(data) {
+  return {
+    type: 'SET_USER_SEARCH',
+    payload: data
+  };
+}
+
+export function searchUser(userName) {
+  let limit = 50;
+  let url = process.env.API_SERVER +
+    '/api/user/search' +
+    '?limit=' + limit +
+    '&search=' + userName;
+  return (dispatch) => {
+    fetch(url, getOptions)
+    .then(response => response.json())
+    .then((responseJSON) => {
+      dispatch(setUserSearch(responseJSON));
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+      dispatch(errorActions.setError('activity', true, error.message));
+    });
+  };
+}
 
 export
-function getSelectedUser(userId) {
+function getSelectedUser(userName) {
   return (dispatch) => {
     // dispatch(setSelectedUser(userId));
     // test network error handling
     // return fetch('10.255.255.1/api/user/' + userId,
-    return fetch(process.env.API_SERVER + '/api/user/' + userId,
+    return fetch(process.env.API_SERVER + '/api/user/' + userName,
       {
         credentials: 'include',
         method: 'GET',

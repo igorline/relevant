@@ -3,12 +3,15 @@ import {
   StyleSheet,
   TextInput,
   View,
-  Text
+  Text,
+  KeyboardAvoidingView
 } from 'react-native';
-import { globalStyles, fullHeight } from '../../styles/global';
+import { globalStyles } from '../../styles/global';
 import * as utils from '../../utils';
 import UrlPreview from './urlPreview.component';
 import UserName from '../userNameSmall.component';
+import UserSearchComponent from './userSearch.component';
+
 
 let styles;
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
@@ -20,6 +23,7 @@ export default class UrlComponent extends Component {
     this.state = {
       inputHeight: 55,
     };
+    this.setMention = this.setMention.bind(this);
   }
 
   componentDidMount() {
@@ -34,35 +38,44 @@ export default class UrlComponent extends Component {
     }
   }
 
+  setMention(user) {
+    let bodyMentions = [...this.props.bodyMentions, user._id];
+    let postBody = this.props.postBody.replace(this.mention, '@' + user.name);
+    this.props.actions.setCreaPostState({ bodyMentions, postBody });
+    this.props.actions.setUserSearch([]);
+  }
+
   processInput(postBody, doneTyping) {
     if (doneTyping) postBody = this.props.postBody;
+    let lines = postBody.split('\n');
+    let words = [];
+    lines.forEach(line => words = words.concat(line.split(' ')));
+
     if (!this.props.postUrl) {
-      let lines = postBody.split('\n');
-      let words = [];
-      lines.forEach(line => words = words.concat(line.split(' ')));
       let postUrl = words.find(word => URL_REGEX.test(word.toLowerCase()));
       if (postUrl) {
         this.props.actions.setCreaPostState({ postUrl });
       }
     }
 
-    let bodyTags = postBody.match(/#\S+/g);
-    let bodyMentions = postBody.match(/@\S+/g);
+    let lastWord = words[words.length - 1];
+    if (lastWord.match(/@\S+/g) && lastWord.length > 1) {
+      this.mention = lastWord;
+      this.props.actions.searchUser(lastWord.replace('@', ''));
+    }
+    else this.props.actions.setUserSearch([]);
 
+    let bodyTags = postBody.match(/#\S+/g);
     if (bodyTags) {
       bodyTags = bodyTags.map(tag =>
         tag.replace('#', '').replace(/(,|\.)\s*$/, ''));
     }
-    if (bodyMentions) {
-      bodyMentions = bodyMentions.map(name =>
-        name.replace('@', '').replace(/(,|\.)\s*$/, ''));
-    }
 
-    if (this.props.urlPreview &&  this.props.postUrl && postBody.match(this.props.postUrl)) {
+    if (this.props.urlPreview && this.props.postUrl && postBody.match(this.props.postUrl)) {
       postBody = postBody.replace(`${this.props.postUrl}`, '').trim();
     }
 
-    this.props.actions.setCreaPostState({ postBody, bodyTags, bodyMentions });
+    this.props.actions.setCreaPostState({ postBody, bodyTags });
   }
 
   createPreview(postUrl) {
@@ -133,8 +146,15 @@ export default class UrlComponent extends Component {
       );
     }
 
+    let userSearch = null;
+
+    if (this.props.users.search && this.props.users.search.length) {
+      userSearch = <UserSearchComponent setSelected={this.setMention} users={this.props.users.search} />;
+    }
+
     input = (
-      <View
+      <KeyboardAvoidingView
+        behavior={'padding'}
         style={{
           flex: 1,
           paddingLeft: 15,
@@ -170,11 +190,12 @@ export default class UrlComponent extends Component {
             }}
           />
         </View>
-        {this.props.urlPreview ?
+        {userSearch}
+        {this.props.urlPreview && !this.props.users.search.length ?
           <UrlPreview {...this.props} actions={this.props.actions} /> :
           null
         }
-      </View>
+      </KeyboardAvoidingView>
     );
 
     return (
