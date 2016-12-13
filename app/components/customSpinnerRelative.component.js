@@ -11,7 +11,7 @@ let styles;
 
 export default function (props) {
   return (
-    <View pointerEvents={'none'} style={styles.spinnerContainer}>
+    <View pointerEvents={'none'} style={props.visible ? styles.spinnerContainerRelative : styles.hideSpinner}>
       <ActivityIndicator
         animating={props.visible}
         size="large"
@@ -21,16 +21,13 @@ export default function (props) {
 }
 
 const localStyles = StyleSheet.create({
-  spinnerContainer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    top: 0,
+  spinnerContainerRelative: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    flexGrow: 1
+  },
+  hideSpinner: {
+    position: 'absolute'
   }
 });
 
