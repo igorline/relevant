@@ -128,8 +128,9 @@ export default class ActivityView extends Component {
     if (this.props.type) type = this.props.type;
 
     if ((this.props.loaded && !this.props.data.length) || this.props.loaded === 0) {
-      emptyEl = (<EmptyList
-        visible={true}
+      emptyEl = this.props.children || (
+      <EmptyList
+        visible
         emoji={'😔'}
         type={type}
       />);
