@@ -64,7 +64,7 @@ class PostImage extends Component {
       if (post.image) image = post.image.match('http') ? post.image : 'https:' + post.image;
       if (post.link) {
         link = post.link;
-        linkEl = <Text style={[styles.font10, styles.white]}>from {self.extractDomain(link)}</Text>;
+        linkEl = <Text style={[styles.font10, styles.white]}>from {post.domain}</Text>;
       }
       if (post.title) {
         title = post.title;

@@ -84,7 +84,7 @@ class Login extends Component {
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
-        style={{ height: fullHeight - 60 }}
+        style={{ flex: 1 }}
       >
         <ScrollView
           keyboardShouldPersistTaps
@@ -96,16 +96,40 @@ class Login extends Component {
           <View style={styles.fieldsInner}>
 
             <View style={styles.fieldsInputParent}>
-              <TextInput autoCorrect={false} autoCapitalize={'none'} keyboardType={'email-address'} clearTextOnFocus={false} placeholder="email" onChangeText={email => this.setState({ email })} value={this.state.email} style={styles.fieldsInput} />
+              <TextInput
+                autoCorrect={false}
+                autoCapitalize={'none'}
+                keyboardType={'email-address'}
+                clearTextOnFocus={false}
+                placeholder="email"
+                onChangeText={email => this.setState({ email })}
+                value={this.state.email}
+                style={styles.fieldsInput}
+              />
             </View>
 
             <View style={styles.fieldsInputParent}>
-              <TextInput autoCapitalize={'none'} autoCorrect={false} secureTextEntry keyboardType={'default'} clearTextOnFocus={false} placeholder="password" onChangeText={password => this.setState({ password })} value={this.state.password} style={styles.fieldsInput} />
+              <TextInput
+                autoCapitalize={'none'}
+                autoCorrect={false}
+                secureTextEntry
+                keyboardType={'default'}
+                clearTextOnFocus={false}
+                placeholder="password"
+                onChangeText={password => this.setState({ password })}
+                value={this.state.password}
+                style={styles.fieldsInput}
+              />
             </View>
           </View>
 
-          <TouchableHighlight onPress={self.login} underlayColor={'transparent'} style={[styles.largeButton]}>
-            <Text style={styles.largeButtonText}>sign in</Text>
+          <TouchableHighlight
+            onPress={self.login}
+            underlayColor={'transparent'}
+            style={[styles.largeButton]}>
+            <Text style={styles.largeButtonText}>
+              sign in
+            </Text>
           </TouchableHighlight>
 
         </ScrollView>

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -115,8 +114,7 @@ class Discover extends Component {
       if (!this.props.tags.selectedTags.length) {
         let metaPost = this.props.posts.metaPosts[rowData];
         posts = metaPost.commentary;
-      }
-      else {
+      } else {
         posts = rowData;
       }
       return (<Post post={posts} {...this.props} styles={styles} />);
