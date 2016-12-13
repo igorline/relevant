@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import * as subscriptionActions from '../actions/subscription.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import EmptyList from '../components/emptyList.component';
 
 let defaultImg = require('../assets/images/default_user.jpg');
 let localStyles;
@@ -138,7 +139,7 @@ class ProfileComponent extends Component {
               {user.online ? 'Online' : 'Offline'}
             </Text>
           </View>
-  
+
           <Text style={[styles.darkGray, styles.georgia]}>
             Followers <Text style={[styles.active, styles.bebas]}>{followers ? followers.length : 0}</Text>
           </Text>
