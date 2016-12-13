@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import BackButton from 'NavigationHeaderBackButton';
 import * as authActions from '../actions/auth.actions';
 import * as createPostActions from '../actions/createPost.actions';
 import * as postActions from '../actions/post.actions';
@@ -39,6 +40,9 @@ class CreatePostContainer extends Component {
     this.renderTitle = this.renderTitle.bind(this);
     this.back = this.back.bind(this);
     this.uploadPost = this.uploadPost.bind(this);
+    this.createPost = this.createPost.bind(this);
+    this.renderLeft = this.renderLeft.bind(this);
+
   }
 
   back() {
@@ -71,14 +75,13 @@ class CreatePostContainer extends Component {
       text: props.postBody,
       repost: true
     };
-    console.log(this.props.actions)
     this.props.actions.createComment(this.props.auth.token, commentObj)
-    .then(comment => {
+    .then(() => {
       this.props.actions.clearCreatePost();
       this.props.navigator.resetRoutes('home');
       this.props.navigator.changeTab('discover');
       this.props.navigator.reloadTab('discover');
-    })
+    });
   }
 
   createPost() {
@@ -133,6 +136,7 @@ class CreatePostContainer extends Component {
       image: this.image,
       mentions: props.bodyMentions,
       investments: [],
+      domain: props.domain
     };
     this.props.actions.submitPost(postBody, this.props.auth.token)
       .then((results) => {
@@ -162,7 +166,10 @@ class CreatePostContainer extends Component {
           onPress={() => this.next(props)}
         >
           <Text
-            style={[styles.rightButtonText]}
+            style={[
+              styles.rightButtonText,
+              this.props.share ? { fontSize: 15 } : null
+            ]}
           >
             {props.scene.route.next}
           </Text>
@@ -172,11 +179,38 @@ class CreatePostContainer extends Component {
     return right;
   }
 
+  renderLeft(props) {
+    let cancel = (
+      <BackButton onPress={this.back} />
+    );
+    if (props.scene.route.back === 'Cancel') {
+      cancel = (
+        <TouchableHighlight
+          style={[styles.rightButton]}
+          underlayColor={'transparent'}
+          onPress={() => this.props.close()}
+        >
+          <Text
+            style={[
+              styles.leftButtonText,
+              this.props.share ? { fontSize: 15 } : null
+            ]}
+          >
+            Cancel
+          </Text>
+        </TouchableHighlight>
+      );
+    }
+    return cancel;
+  }
+
   renderTitle(props) {
     let title = props.scene.route.title;
     return (
       <NavigationHeader.Title>
-        <Text>{title}</Text>
+        <Text style={this.props.share ? { fontSize: 15 } : null}>
+          {title}
+        </Text>
       </NavigationHeader.Title>
     );
   }
@@ -185,14 +219,18 @@ class CreatePostContainer extends Component {
     let header = (
       <NavigationHeader
         {...props}
-        style={{
-          backgroundColor: 'white',
-          borderBottomColor: '#f0f0f0',
-          borderBottomWidth: 1
-        }}
+        style={[
+          this.props.share ? styles.shareHeader : null,
+          {
+            backgroundColor: 'white',
+            borderBottomColor: '#f0f0f0',
+            borderBottomWidth: 1
+          }
+        ]}
         renderTitleComponent={this.renderTitle}
         onNavigateBack={this.back}
         renderRightComponent={this.renderRight}
+        renderLeftComponent={this.renderLeft}
       />
     );
     return header;
@@ -201,9 +239,14 @@ class CreatePostContainer extends Component {
   renderScene() {
     switch (this.props.step) {
       case 'url':
-        return <UrlComponent {...this.props.createPost} actions={this.props.actions} />;
+        return (<UrlComponent
+          share
+          user={this.props.auth.user}
+          {...this.props.createPost}
+          actions={this.props.actions}
+        />);
       case 'categories':
-        return <Categories {...this.props.createPost} actions={this.props.actions} />;
+        return <Categories done={this.createPost} {...this.props.createPost} actions={this.props.actions} />;
       case 'post':
         return <CreatePostComponent {...this.props.createPost} actions={this.props.actions} />;
       default:
@@ -232,6 +275,16 @@ const localStyles = StyleSheet.create({
     textAlign: 'right',
     fontSize: 17,
   },
+  leftButtonText: {
+    color: 'rgb(0, 122, 255)',
+    textAlign: 'left',
+    fontSize: 17,
+  },
+  shareHeader: {
+    height: 60,
+    elevation: 2,
+    marginTop: -20,
+  }
 });
 
 

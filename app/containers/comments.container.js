@@ -313,10 +313,6 @@ const localStyles = StyleSheet.create({
     padding: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    // position: 'absolute',
-    // top: 0,
-    // left: 0,
-    // right: 0,
     backgroundColor: 'white',
   }
 });

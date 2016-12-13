@@ -32,7 +32,7 @@ class Tabs extends Component {
         key,
         back: true,
         title: 'Create Post',
-        next: 'Next'
+        next: 'Post'
       }, 'home');
     } else {
       if (tab.key === key) {

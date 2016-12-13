@@ -191,9 +191,8 @@ class PostButtons extends Component {
   }
 
   toggleModal(bool) {
-    const self = this;
-    if (!bool) bool = !self.state.modalVisible;
-    self.setState({ modalVisible: bool });
+    if (!bool) bool = !this.state.modalVisible;
+    this.setState({ modalVisible: bool });
   }
 
   onShare() {
@@ -257,8 +256,16 @@ class PostButtons extends Component {
   }
 
   irrelevant() {
-    const self = this;
-    self.props.actions.irrelevant(self.props.auth.token, self.props.post._id);
+    // self.props.actions.irrelevant(self.props.auth.token, self.props.post._id);
+    this.props.actions.invest(this.props.auth.token, -50, this.props.post, this.props.auth.user)
+    .then((results) => {
+      if (results) {
+        console.log('irrelevant!');
+        // this.props.actions.triggerAnimation('invest');
+      } else {
+        console.log('irrelevant failed');
+      }
+    });
   }
 
   toggleExpanded() {
@@ -295,16 +302,56 @@ class PostButtons extends Component {
           onPress={() => self.toggleModal()}
           style={[styles.postButton, { marginRight: 5, backgroundColor: '#F0F0F0' }]}
         >
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}><Text style={[styles.font10, styles.postButtonText]}>Invest</Text><Text style={styles.font10}>💰</Text></View>
+          <View style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          >
+            <Text style={[styles.font10, styles.postButtonText]}>
+              Invest
+            </Text>
+            <Text style={styles.font10}>💰</Text></View>
         </TouchableWithoutFeedback>);
     }
 
     return (<View style={styles.postButtons}>
       {investButtonEl}
-      <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => self.toggleExpanded()}><Text style={[styles.font10, styles.postButtonText]}>{expanded ? 'Read less' : 'Read more'}</Text></TouchableHighlight>
-      <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => self.openComments()}><Text style={[{ marginRight: 5 }, styles.font10, styles.postButtonText]}>{commentString}</Text></TouchableHighlight>
-      <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={() => self.showActionSheet()}><Text style={[styles.font10, styles.postButtonText]}>...</Text></TouchableHighlight>
-      <InvestModal toggleFunction={this.toggleModal} post={this.props.post} visible={this.state.modalVisible} />
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        style={[
+          styles.postButton,
+          { marginRight: 5 }
+        ]}
+        onPress={() => self.toggleExpanded()}
+      >
+        <Text style={[styles.font10, styles.postButtonText]}>
+          {expanded ? 'Read less' : 'Read more'}
+        </Text>
+      </TouchableHighlight>
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        style={[styles.postButton, { marginRight: 5 }]}
+        onPress={() => self.openComments()}
+      >
+        <Text style={[{ marginRight: 5 }, styles.font10, styles.postButtonText]}>
+          {commentString}
+        </Text>
+      </TouchableHighlight>
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        style={styles.postButton}
+        onPress={() => self.showActionSheet()}
+      >
+        <Text style={[styles.font10, styles.postButtonText]}>
+          ...
+        </Text>
+      </TouchableHighlight>
+      <InvestModal
+        toggleFunction={this.toggleModal}
+        post={this.props.post}
+        visible={this.state.modalVisible}
+      />
     </View>);
   }
 }

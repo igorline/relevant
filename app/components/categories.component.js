@@ -26,12 +26,13 @@ class Categories extends Component {
 
   setCategory(tag) {
     this.props.actions.setPostCategory(tag);
-    this.props.actions.push({
-      key: 'createPostFinish',
-      back: true,
-      title: 'Post',
-      next: 'Post'
-    }, 'home');
+    setTimeout(() => this.props.done(), 100);
+    // this.props.actions.push({
+    //   key: 'createPostFinish',
+    //   back: true,
+    //   title: 'Post',
+    //   next: 'Post'
+    // }, 'home');
   }
 
   render() {

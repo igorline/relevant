@@ -9,6 +9,8 @@ import {
   Modal,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
+import UserName from './userNameSmall.component';
+
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 let styles;
 let moment = require('moment');
@@ -40,8 +42,7 @@ class PostInfo extends Component {
     this.props.navigator.changeTab('discover');
   }
 
-  setSelected(user) {
-    if (!user) return;
+  setSelected() {
     this.props.navigator.goToProfile({
       name: this.props.post.embeddedUser.name,
       _id: this.props.post.user
@@ -119,7 +120,7 @@ class PostInfo extends Component {
 
     if (postUserImage) {
       postUserImageEl = (<TouchableWithoutFeedback
-        onPress={() => this.setSelected(self.props.post.user)}
+        onPress={() => this.setSelected(this.props.post.user)}
       >
         <Image source={{ uri: postUserImage }} style={styles.userImage} />
       </TouchableWithoutFeedback>);
@@ -156,18 +157,11 @@ class PostInfo extends Component {
     }
 
     return (<View style={styles.postHeader}>
-      {postUserImageEl}
       <View style={styles.postInfo}>
-        <TouchableWithoutFeedback
-          onPress={() => self.setSelected(self.props.post.user)}
-          style={[styles.infoLeft, styles.innerInfo]}
-        >
-          <View>
-            <Text style={[styles.font15, styles.darkGray, styles.bebas]}>
-              {name}
-            </Text>
-          </View>
-        </TouchableWithoutFeedback>
+        <UserName
+          user={{ image: postUserImage, name, _id: this.props.post.user }}
+          setSelected={this.setSelected}
+        />
         <TouchableHighlight
           underlayColor={'transparent'}
           onPress={() => self.toggleInfo()}
@@ -183,11 +177,6 @@ class PostInfo extends Component {
 export default PostInfo;
 
 const localStyles = StyleSheet.create({
-  userImage: {
-    height: 25,
-    width: 25,
-    borderRadius: 12.5,
-  },
   countdown: {
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -195,7 +184,6 @@ const localStyles = StyleSheet.create({
   },
   postInfo: {
     flex: 1,
-    paddingLeft: 5,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

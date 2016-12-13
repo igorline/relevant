@@ -15,7 +15,10 @@ import * as createPostActions from '../actions/createPost.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
-import CreatePost from './createShare.container';
+import CreatePost from './createPost.container';
+import Auth from './auth.container';
+import * as utils from '../utils';
+
 import { fullWidth, fullHeight } from '../styles/global';
 
 const {
@@ -39,13 +42,22 @@ class ShareContainer extends Component {
   }
 
   componentWillMount() {
-    this.props.actions.replaceRoute({
-      key: 'createPost',
-      component: 'createPost',
-      title: 'Share on Relevant',
-      next: 'Next',
-      back: 'Cancel',
-    }, 0, 'home');
+    utils.token.get()
+    .then(() => {
+      this.props.actions.replaceRoute({
+        key: 'createPost',
+        component: 'createPost',
+        title: 'Share on Relevant',
+        next: 'Post',
+        back: 'Cancel',
+      }, 0, 'home');
+    })
+    .catch(() => {
+      this.props.actions.replaceRoute({
+        key: 'auth',
+        component: 'login'
+      }, 0, 'home');
+    });
   }
 
   async componentDidMount() {
@@ -77,12 +89,18 @@ class ShareContainer extends Component {
     let component = props.scene.route.component;
 
     switch (component) {
+      case 'auth':
+        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
+      case 'login':
+        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
+      case 'signup':
+        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
       case 'createPost':
-        return <CreatePost close={this.closeModal} step={'url'} navProps={props} navigator={this.props.actions} />;
+        return <CreatePost share close={this.closeModal} step={'url'} navProps={props} navigator={this.props.actions} />;
       case 'categories':
-        return <CreatePost step={'categories'} navProps={props} navigator={this.props.actions} />;
+        return <CreatePost share step={'categories'} navProps={props} navigator={this.props.actions} />;
       case 'createPostFinish':
-        return <CreatePost close={this.closeModal} step={'post'} navProps={props} navigator={this.props.actions} />;
+        return <CreatePost share close={this.closeModal} step={'post'} navProps={props} navigator={this.props.actions} />;
       default:
         return null;
     }
@@ -108,13 +126,12 @@ class ShareContainer extends Component {
           }}
         >
           <View style={style.modalBody}>
-            <Text>{JSON.stringify(this.state.data)}</Text>
             <NavigationCardStack
               key={`scene_${scene.key}`}
               direction={'horizontal'}
               navigationState={scene}
               renderScene={this.renderScene}
-              enableGestures={false}
+              enableGestures={true}
             />
           </View>
         </View>
@@ -125,11 +142,9 @@ class ShareContainer extends Component {
 
 style = StyleSheet.create({
   modalBody: {
-    borderColor: 'lightgrey',
-    borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 10,
     backgroundColor: 'white',
-    height: fullHeight * 0.43,
+    height: fullHeight * 0.48,
     width: fullWidth * 0.9,
     marginTop: 65,
     padding: 0,

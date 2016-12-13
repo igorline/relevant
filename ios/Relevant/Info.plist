@@ -37,7 +37,7 @@
 			<key>NSExtensionActivationRule</key>
 			<dict>
 				<key>NSExtensionActivationDictionaryVersion</key>
-				<integer>2</integer>
+				<integer>1</integer>
 				<key>NSExtensionActivationSupportsImageWithMaxCount</key>
 				<integer>0</integer>
 				<key>NSExtensionActivationSupportsText</key>
@@ -52,6 +52,8 @@
 		<string>MainInterface</string>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.share-services</string>
+		<key>New item</key>
+		<string></string>
 	</dict>
 </dict>
 </plist>

@@ -20,11 +20,10 @@ class InvestModal extends Component {
   }
 
   invest(investAmount) {
-    const self = this;
     this.props.actions.invest(this.props.auth.token, investAmount, this.props.post, this.props.auth.user)
     .then((results) => {
       if (results) {
-        self.props.actions.triggerAnimation('invest');
+        this.props.actions.triggerAnimation('invest');
       } else {
         console.log('investment failed');
       }
@@ -35,49 +34,49 @@ class InvestModal extends Component {
   render() {
     return (
       <Modal
-          animationType={'fade'}
-          transparent
-          visible={this.props.visible}
-          onRequestClose={() => this.props.toggleFunction()}
-        >
-          <View style={{ padding: 20, flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.1)' }}>
-            <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 5 }}>
-              <Text style={{ fontSize: 20, textAlign: 'center' }}>Invest</Text>
-              <View style={{ justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap', overflow: 'visible', marginTop: 10, marginBottom: 10 }}>
-                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(50)}>
-                  <Text style={styles.modalButtonText}>50</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(100)}>
-                  <Text style={styles.modalButtonText}>100</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(500)}>
-                  <Text style={styles.modalButtonText}>500</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(1000)}>
-                  <Text style={styles.modalButtonText}>1000</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(2000)}>
-                  <Text style={styles.modalButtonText}>2000</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(5000)}>
-                  <Text style={styles.modalButtonText}>5000</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(10000)}>
-                  <Text style={styles.modalButtonText}>10000</Text>
-                </TouchableHighlight>
-              </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                <TouchableHighlight
-                  style={styles.investOption}
-                  underlayColor={'black'}
-                  onPress={() => this.props.toggleFunction()}
-                >
-                  <Text style={styles.modalButtonText}>Cancel</Text>
-                </TouchableHighlight>
-              </View>
+        animationType={'fade'}
+        transparent
+        visible={this.props.visible}
+        onRequestClose={() => this.props.toggleFunction()}
+      >
+        <View style={{ padding: 20, flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.1)' }}>
+          <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 5 }}>
+            <Text style={{ fontSize: 20, textAlign: 'center' }}>Invest</Text>
+            <View style={{ justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap', overflow: 'visible', marginTop: 10, marginBottom: 10 }}>
+              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(50)}>
+                <Text style={styles.modalButtonText}>50</Text>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(100)}>
+                <Text style={styles.modalButtonText}>100</Text>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(500)}>
+                <Text style={styles.modalButtonText}>500</Text>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(1000)}>
+                <Text style={styles.modalButtonText}>1000</Text>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(2000)}>
+                <Text style={styles.modalButtonText}>2000</Text>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(5000)}>
+                <Text style={styles.modalButtonText}>5000</Text>
+              </TouchableHighlight>
+              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(10000)}>
+                <Text style={styles.modalButtonText}>10000</Text>
+              </TouchableHighlight>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+              <TouchableHighlight
+                style={styles.investOption}
+                underlayColor={'black'}
+                onPress={() => this.props.toggleFunction()}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableHighlight>
             </View>
           </View>
-        </Modal>
+        </View>
+      </Modal>
     );
   }
 }
