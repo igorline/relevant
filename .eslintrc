@@ -13,6 +13,8 @@
         "comma-dangle": ["error", "only-multiline"],
         "prefer-const": "off",
         "no-plusplus": "off",
+        "no-param-reassign": 0,
+        "no-return-assign": 0
     },
     env: {
         browser: true

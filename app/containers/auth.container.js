@@ -49,8 +49,12 @@ class AuthContainer extends Component {
   renderTitle(props) {
     let title = props.scene.route.title;
     return (
-      <NavigationHeader.Title>
-        <Image source={require('../assets/images/logo.png')} resizeMode={'contain'} style={{ width: 150, height: 40 }} />
+      <NavigationHeader.Title style={{ bottom: -4, backgroundColor: 'transparent' }}>
+        <Image
+          source={require('../assets/images/logo.png')}
+          resizeMode={'contain'}
+          style={{ width: 200, height: 25 }}
+        />
       </NavigationHeader.Title>
     );
   }
@@ -71,11 +75,13 @@ class AuthContainer extends Component {
         header = (
           <NavigationHeader
             {...props}
-            style={{
-              backgroundColor: 'white',
-              borderBottomColor: '#f0f0f0',
-              borderBottomWidth: 1
-            }}
+            style={[
+              this.props.share ? styles.shareHeader : null,
+              {
+                backgroundColor: 'white',
+                borderBottomColor: '#f0f0f0',
+                borderBottomWidth: 1,
+              }]}
             renderTitleComponent={this.renderTitle}
             onNavigateBack={this.back}
             renderRightComponent={this.renderRight}

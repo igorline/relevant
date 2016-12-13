@@ -86,22 +86,22 @@ class PostBody extends Component {
             {bodyObj[key].text}
           </Text>);
         } else if (bodyObj[key].mention) {
-          let mentionObj = null;
-          if (self.props.post.mentions) {
-            if (self.props.post.mentions.length) {
-              self.props.post.mentions.forEach((eachUser) => {
-                if (eachUser.name) {
-                  if (eachUser.name.toLowerCase() === text.substr(1, text.length).toLowerCase()) {
-                    mentionObj = eachUser;
-                  }
-                }
-              });
-            }
-          }
+          // let mentionObj = null;
+          // if (self.props.post.mentions) {
+            // if (self.props.post.mentions.length) {
+              // self.props.post.mentions.forEach((eachUser) => {
+                // if (eachUser.name) {
+                  // if (eachUser.name.toLowerCase() === text.substr(1, text.length).toLowerCase()) {
+                    // mentionObj = eachUser;
+                  // }
+                // }
+              // });
+            // }
+          // }
           return (<Text
             key={i}
-            onPress={mentionObj ? () => self.setSelected(mentionObj) : null}
-            style={mentionObj ? styles.active : null}
+            onPress={() => this.setSelected(bodyObj[i].text)}
+            style={styles.active}
           >
             {bodyObj[key].text}
           </Text>);

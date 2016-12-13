@@ -89,10 +89,11 @@ export function goToPost(post, key, animation) {
 }
 
 export function goToProfile(user, key, animation) {
+  let name = user.name || user.replace('@', '');
   return push({
     key: 'profile',
-    title: user.name,
+    title: name,
     back: true,
-    id: user._id
+    id: name,
   }, key, animation);
 }

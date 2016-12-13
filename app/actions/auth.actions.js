@@ -68,8 +68,6 @@ export function logoutAction(user) {
   return (dispatch) => {
     utils.token.remove()
     .then(() => {
-      utils.token.get()
-      .then(token => console.log('token should be gone ', token));
       dispatch(logout());
       // websoket message
       dispatch({

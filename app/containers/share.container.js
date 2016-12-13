@@ -101,12 +101,8 @@ class ShareContainer extends Component {
     let component = props.scene.route.component;
 
     switch (component) {
-      case 'auth':
-        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
       case 'login':
-        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
-      case 'signup':
-        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
+        return <Auth share authType={component} navProps={props} navigator={this.props.actions} />;
       case 'createPost':
         return <CreatePost share close={this.closeModal} step={'url'} navProps={props} navigator={this.props.actions} />;
       case 'categories':
