@@ -14,6 +14,7 @@ import * as authActions from '../actions/auth.actions';
 import * as createPostActions from '../actions/createPost.actions';
 import * as postActions from '../actions/post.actions';
 import * as tagActions from '../actions/tag.actions';
+import * as userActions from '../actions/user.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import UrlComponent from '../components/createPost/url.component';
 import CreatePostComponent from '../components/createPost/createPost.component';
@@ -240,7 +241,8 @@ class CreatePostContainer extends Component {
     switch (this.props.step) {
       case 'url':
         return (<UrlComponent
-          share
+          share={this.props.share}
+          users={this.props.user}
           user={this.props.auth.user}
           {...this.props.createPost}
           actions={this.props.actions}
@@ -280,10 +282,6 @@ const localStyles = StyleSheet.create({
     color: 'rgb(0, 122, 255)',
     textAlign: 'left',
     fontSize: 17,
-  },
-  shareHeader: {
-    // height: 50,
-    marginTop: -20,
   }
 });
 
@@ -294,7 +292,8 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     navigation: state.navigation,
-    createPost: state.createPost
+    createPost: state.createPost,
+    user: state.user
   };
 }
 
@@ -306,7 +305,8 @@ function mapDispatchToProps(dispatch) {
         ...navigationActions,
         ...createPostActions,
         ...postActions,
-        ...tagActions
+        ...tagActions,
+        ...userActions,
       },
       dispatch),
   };

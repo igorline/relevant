@@ -26,6 +26,9 @@ const font = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Bebas Neue',
   },
+  shareHeader: {
+    marginTop: -20,
+  },
   navButton: {
     fontSize: 10,
     fontFamily: 'Bebas Neue',
@@ -119,7 +122,7 @@ const layout = StyleSheet.create({
     fontFamily: 'Georgia'
   },
   largeButton: {
-    height: 60,
+    height: 50,
     borderWidth: 2,
     borderColor: '#3E3EFF',
     justifyContent: 'center',
@@ -128,7 +131,7 @@ const layout = StyleSheet.create({
   largeButtonText: {
     fontFamily: 'Bebas Neue',
     color: '#3E3EFF',
-    fontSize: 30,
+    fontSize: 29,
   },
   mediumButton: {
     height: 50,

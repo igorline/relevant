@@ -14,7 +14,7 @@ export default function (props) {
 
   return (
     <TouchableWithoutFeedback
-      onPress={() => props.setSelected(props.user._id)}
+      onPress={() => props.setSelected(props.user)}
     >
       <View style={styles.postInfo}>
         <Image source={{ uri: props.user.image }} style={styles.userImage} />
