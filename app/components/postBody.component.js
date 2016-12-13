@@ -4,6 +4,7 @@ import {
   Text,
   View,
   TouchableHighlight,
+  TouchableWithoutFeedback,
   Modal,
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
@@ -12,6 +13,7 @@ let styles;
 class PostBody extends Component {
   constructor(props, context) {
     super(props, context);
+    this.goToPost = this.goToPost.bind(this);
     this.state = {
     };
   }
@@ -28,6 +30,11 @@ class PostBody extends Component {
     if (!user) return;
     if (this.props.scene && this.props.scene.id === user._id) return;
     this.props.navigator.goToProfile(user);
+  }
+  
+  goToPost() {
+    console.log('go to post');
+    this.props.navigator.goToPost(this.props.post);
   }
 
   render() {
@@ -104,12 +111,14 @@ class PostBody extends Component {
       });
     }
 
-    return (<View style={[styles.postBody]}>
-      {body && !editing ?
-        <Text style={styles.darkGray} numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text>
-      : null}
-      {body && editing ? bodyEditingEl : null}
-    </View>);
+    return (<TouchableWithoutFeedback onPress={this.goToPost}>
+      <View style={[styles.postBody]}>
+        {body && !editing ?
+          <Text style={styles.darkGray} numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text>
+        : null}
+        {body && editing ? bodyEditingEl : null}
+      </View>
+    </TouchableWithoutFeedback>);
   }
 }
 

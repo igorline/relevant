@@ -119,7 +119,7 @@ export default class UrlComponent extends Component {
 
     let userHeader = null;
 
-    if (this.props.user) {
+    if (this.props.user && !this.props.share) {
       userHeader = (
         <View style={styles.header}>
           <View style={styles.innerBorder}>

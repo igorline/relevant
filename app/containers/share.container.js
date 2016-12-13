@@ -75,6 +75,18 @@ class ShareContainer extends Component {
     this.props.actions.getUser(null, true);
   }
 
+  componentWillReceiveProps(next) {
+    if (!this.props.auth.token && next.auth.token) {
+      this.props.actions.replaceRoute({
+        key: 'createPost',
+        component: 'createPost',
+        title: 'Share on Relevant',
+        next: 'Post',
+        back: 'Cancel',
+      }, 0, 'home');
+    }
+  }
+
   onClose() {
     ShareExtension.close();
   }
@@ -145,7 +157,7 @@ style = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'white',
     height: fullHeight * 0.48,
-    width: fullWidth * 0.9,
+    width: fullWidth * 0.90,
     marginTop: 65,
     padding: 0,
     overflow: 'hidden'

@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Animated,
   InteractionManager,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -41,13 +42,19 @@ class Profile extends Component {
     this.load = this.load.bind(this);
     this.loadUser = this.loadUser.bind(this);
     this.changeView = this.changeView.bind(this);
+    this.onScroll = this.onScroll.bind(this);
+    this.offset = 0;
     this.state = {
       view: 0,
-      headerHeight: 300,
+      offsetHeight: 195,
+      headerHeight: 195,
       showHeader: true,
+      transY: new Animated.Value(0),
     };
     this.userData = null;
     this.userId = null;
+    this.showHeader  = this.showHeader.bind(this);
+    this.hideHeader = this.hideHeader.bind(this);
     this.needsReload = new Date().getTime();
     this.tabs = [
       { id: 0, title: 'Posts' },
@@ -120,22 +127,27 @@ class Profile extends Component {
   changeView(view) {
     if (view === this.state.view) this.scrollToTop();
     this.setState({ view });
+    this.showHeader();
   }
 
   renderRow(rowData, view) {
-    if (view === 0) {
-      return (<Post post={rowData} {...this.props} />);
-    }
-
-    if (view === 1) {
-      return (<Investment investment={rowData} {...this.props} />);
-    }
+    if (view === 0) return (<Post post={rowData} {...this.props} />);
+    if (view === 1) return (<Investment investment={rowData} {...this.props} />);
   }
 
   renderHeader() {
     let header = null;
     if (this.userId && this.userData) {
-      header = (<View style={{ top: 0, position: 'absolute', backgroundColor: 'white' }}>
+      header = (<Animated.View
+        style={{
+          position: 'absolute',
+          top: 0,
+          backgroundColor:
+          'white',
+          transform: [{ translateY: this.state.transY }],
+          overflow: 'hidden',
+        }}
+      >
         <ProfileComponent
           {...this.props}
           user={this.userData}
@@ -147,7 +159,7 @@ class Profile extends Component {
           active={this.state.view}
           handleChange={this.changeView}
         />
-      </View>);
+      </Animated.View>);
     }
     return header;
   }
@@ -169,6 +181,42 @@ class Profile extends Component {
     }
   }
 
+  onScroll(event) {
+    const currentOffset = event.nativeEvent.contentOffset.y;
+    let showHeader = null;
+    if (currentOffset !== this.offset) showHeader = currentOffset < this.offset;
+    if (currentOffset < 50) showHeader = true;
+    if (showHeader !== null && showHeader !== this.state.showHeader) {
+      if (showHeader) {
+        this.showHeader();
+      } else {
+        this.hideHeader();
+      }
+    }
+    this.offset = currentOffset;
+  }
+
+  showHeader() {
+    this.setState({ showHeader: true });
+    Animated.timing(
+      this.state.transY,
+      {
+        toValue: 0,
+      }
+     ).start();
+  }
+
+  hideHeader() {
+    const moveHeader = -145;
+    this.setState({ showHeader: false });
+    Animated.timing(
+       this.state.transY,
+      {
+        toValue: moveHeader,
+      }
+     ).start();
+  }
+
   render() {
     let listEl = [];
     let headerEl = this.renderHeader();
@@ -186,8 +234,9 @@ class Profile extends Component {
         loaded={loaded}
         renderRow={this.renderRow}
         load={this.load}
+        onScroll={this.onScroll}
         view={tab.id}
-        YOffset={this.state.headerHeight}
+        YOffset={this.state.offsetHeight}
         type={tab.title}
         active={active}
         needsReload={this.needsReload}
