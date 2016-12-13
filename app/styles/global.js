@@ -78,6 +78,33 @@ const alignment = StyleSheet.create({
 });
 
 const layout = StyleSheet.create({
+  commentInputParent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
+    backgroundColor: 'white',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    position: 'absolute',
+  },
+  commentInput: {
+    flex: 1,
+    padding: 10,
+  },
+  commentSubmit: {
+    flex: 0,
+    width: 85,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadMoreButton: {
+    padding: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
   reloadIcon: {
     height: 100,
     width: 100,

@@ -278,34 +278,6 @@ const localStyles = StyleSheet.create({
     position: 'relative',
     flex: 1,
   },
-  commentInputParent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
-    backgroundColor: 'white',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    position: 'absolute',
-    // height: 50,
-  },
-  commentInput: {
-    flex: 1,
-    padding: 10,
-  },
-  commentSubmit: {
-    flex: 0,
-    width: 85,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadMoreButton: {
-    padding: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  }
 });
 
 styles = { ...localStyles, ...globalStyles };
