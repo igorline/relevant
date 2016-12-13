@@ -48,7 +48,7 @@ class Post extends Component {
             ]}
           >
             <PostInfo navigator={this.props.navigator} post={post} />
-            <PostBody post={post} editing={false} />
+            <PostBody {...this.props} post={post} editing={false} />
             <PostButtons {...this.props} post={post} comments={post.comments || null} />
           </View>
           {comment}
@@ -60,6 +60,7 @@ class Post extends Component {
   render() {
     let post;
     let posts;
+    let imageEl = null;
 
     if (!this.props.auth.user) return null;
 
@@ -69,6 +70,7 @@ class Post extends Component {
       if (!posts.length) return null;
       post = this.props.posts.posts[posts[0]];
       if (!post) return null;
+      if (post.image) imageEl = <PostImage post={post} />;
     }
 
     return (
@@ -87,9 +89,8 @@ class Post extends Component {
         >
           {this.renderCommentary()}
         </ScrollView>
-
-        <PostImage post={post} />
-
+        
+        {imageEl}
       </View>
     );
   }

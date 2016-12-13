@@ -103,15 +103,6 @@ class Comments extends Component {
     // }
   }
 
-  keyboardWillHide() {
-    this.setState({ visibleHeight: Dimensions.get('window').height });
-  }
-
-  keyboardWillShow(e) {
-    let newSize = (Dimensions.get('window').height - e.endCoordinates.height);
-    this.setState({ visibleHeight: newSize });
-  }
-
   scrollToBottom() {
     if (this.props.comments.comments.length < 7) return;
     let scrollDistance = this.state.scrollToBottomY - this.elHeight;

@@ -92,19 +92,35 @@ class ProfileComponent extends Component {
     }
 
     if (percent === 0) {
-      relevanceEl = (<Text style={[styles.libre, { fontSize: 23 }]}>📈 Relevance <Text style={[styles.bebas]}>{this.abbreviateNumber(relevance)} <Text style={styles.active}>0%</Text></Text></Text>);
+      relevanceEl = (<Text style={[styles.libre, { fontSize: 23 }]}>
+        📈 Relevance
+        <Text style={[styles.bebas]}>
+          {this.abbreviateNumber(relevance)} 0%
+        </Text>
+      </Text>);
     }
     if (percent > 0) {
-      relevanceEl = (<Text>📈<Text style={[styles.libre]}>{this.abbreviateNumber(relevance)} ▲{percent}%</Text></Text>);
+      relevanceEl = (<Text style={[styles.libre, { fontSize: 23 }]}>
+        📈 Relevance
+        <Text style={{ fontFamily: 'Bebas Neue' }}>
+          &nbsp;{this.abbreviateNumber(relevance)}
+          <Text style={{ color: '#196950' }}>
+            ▲{percent}%
+          </Text>
+        </Text>
+      </Text>);
     }
     if (percent < 0) {
-      relevanceEl = (
-        <Text>📈<Text style={styles.active}>{this.abbreviateNumber(relevance)}</Text>
-          <Text style={{ color: 'red' }}> ▼{percent}%</Text>
+      relevanceEl = (<Text style={[styles.libre, { fontSize: 23 }]}>
+        📈 Relevance
+        <Text style={{ fontFamily: 'Bebas Neue' }}>
+          &nbsp;{this.abbreviateNumber(relevance)}
+          <Text style={{ color: 'red' }}>
+            ▼{percent}%
+          </Text>
         </Text>
-      );
+      </Text>);
     }
-
 
     return (
       <View style={[{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 10 }]}>

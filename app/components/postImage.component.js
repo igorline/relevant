@@ -30,19 +30,26 @@ class PostImage extends Component {
 
   extractDomain(url) {
     let domain;
-    if (url.indexOf('://') > -1) {
-      domain = url.split('/')[2];
+    if (url) {
+      if (typeof url === 'string') {
+        if (url.indexOf('://') > -1) {
+          domain = url.split('/')[2];
+        } else {
+          domain = url.split('/')[0];
+        }
+        domain = domain.split(':')[0];
+
+        let noPrefix = domain;
+
+        if (domain.indexOf('www.') > -1) {
+          noPrefix = domain.replace('www.', '');
+        }
+        return noPrefix;
+      }
     } else {
-      domain = url.split('/')[0];
+      console.log('no url');
+      return '';
     }
-    domain = domain.split(':')[0];
-
-    let noPrefix = domain;
-
-    if (domain.indexOf('www.') > -1) {
-      noPrefix = domain.replace('www.', '');
-    }
-    return noPrefix;
   }
 
   render() {
@@ -52,10 +59,21 @@ class PostImage extends Component {
     let post = this.props.post;
     let title = null;
     let lastPost = false;
+    let linkEl = null;
     if (post) {
       if (post.image) image = post.image.match('http') ? post.image : 'https:' + post.image;
-      if (post.link) link = post.link;
-      if (post.title) title = post.title;
+      if (post.link) {
+        link = post.link;
+        linkEl = <Text style={[styles.font10, styles.white]}>from {self.extractDomain(link)}</Text>;
+      }
+      if (post.title) {
+        title = post.title;
+        if (title.length > 50) {
+          let pre = title.substr(0, 50);
+          pre += '...';
+          title = pre;
+        }
+      }
       if (post.lastPost) {
         if (post.lastPost.length) {
           post.lastPost.forEach((lastUser) => {
@@ -65,24 +83,22 @@ class PostImage extends Component {
       }
     }
 
-    return (<TouchableHighlight style={styles.postImageContainer} underlayColor={'transparent'} onPress={link ? () => self.openLink(link) : null}>
-      <View style={styles.innerPostImage}>
-
-      <Image style={[styles.postImage]} source={image ? { uri: image } : {}} />
-        {lastPost ? <Text style={[styles.lastPost, styles.white]}>
-          Last subscribed post❗️
-        </Text> : null}
-
-        <View style={styles.imageInnerText}>
-          <Text style={[styles.font20, styles.white]}>
-            {title ? title : 'Untitled'}
-          </Text>
-          
-          {link ?
-            <Text style={[styles.font10, styles.white]}>from {self.extractDomain(link)}</Text>
-          : null}
+    return (<TouchableHighlight style={{ flex: 1 }} underlayColor={'transparent'} onPress={link ? () => self.openLink(link) : null}>
+      <View style={styles.postImageContainer}>
+        <View style={{ flex: 1 }}>
+          <Image style={[styles.postImage]} source={image ? { uri: image } : {}} />
         </View>
 
+        {/*lastPost ? <Text style={[styles.lastPost, styles.white]}>
+          Last subscribed post❗️
+        </Text> : null*/}
+
+        <View style={styles.textContainer}>
+          <Text style={[{ fontSize: 25 }, styles.white, styles.libre]}>
+            {title ? title : 'Untitled'}
+          </Text>
+          {linkEl}
+        </View>
       </View>
     </TouchableHighlight>);
   }
@@ -91,19 +107,28 @@ class PostImage extends Component {
 export default PostImage;
 
 const localStyles = StyleSheet.create({
-  innerPostImage: {
-    height: 200,
-  },
-  imageInnerText: {
+  textContainer: {
+    padding: 10,
     position: 'absolute',
-    padding: 25,
+    flex: 1,
+    top: 0,
+    right: 0,
     bottom: 0,
     left: 0,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   postImage: {
-    flex: 1
+    flex: 1,
+    resizeMode: 'cover',
   },
   postImageContainer: {
+    height: 150,
+    flex: 1,
+    alignItems: 'stretch',
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
 });
 

@@ -42,17 +42,17 @@ export default class DiscoverHeader extends Component {
   hideHeader() {
     const moveHeader = this.headerHeight * -1;
     this.setState({ showHeader: false });
-    Animated.timing(          // Uses easing functions
-       this.state.transY,    // The value to drive
-       { toValue: moveHeader }            // Configuration
+    Animated.timing(
+       this.state.transY,
+       { toValue: moveHeader }
      ).start();
   }
 
   showHeader() {
     this.setState({ showHeader: true });
-    Animated.timing(          // Uses easing functions
-       this.state.transY,    // The value to drive
-       { toValue: 0 }         // Configuration
+    Animated.timing(
+       this.state.transY,
+       { toValue: 0 }
      ).start();
   }
 
@@ -115,13 +115,14 @@ export default class DiscoverHeader extends Component {
 
     return (
       <Animated.View
-        style={[styles.transformContainer, {
+        style={{
           position: 'absolute',
           top: 0,
           backgroundColor:
           'white',
           transform: [{ translateY: this.state.transY }],
-        }]}
+          overflow: 'hidden',
+        }}
         ref={(c) => { this.header = c; }}
         onLayout={
           (event) => {
@@ -183,8 +184,6 @@ const localStyles = StyleSheet.create({
     width: 18,
     height: 18,
     borderRadius: 10,
-    // borderColor: '#f0f0f0',
-    // borderWidth: StyleSheet.hairlineWidth,
     backgroundColor: 'rgba(0,0,0,0)',
     flex: 1,
     justifyContent: 'center',
