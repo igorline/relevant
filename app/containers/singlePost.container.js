@@ -18,6 +18,7 @@ import Post from '../components/post.component';
 import * as animationActions from '../actions/animation.actions';
 import CustomSpinner from '../components/CustomSpinner.component';
 import ErrorComponent from '../components/error.component';
+import SingplePostComponent from '../components/singlePost.component';
 
 let styles;
 
@@ -52,13 +53,13 @@ class SinglePost extends Component {
     if (this.postData && !this.props.error.singlepost) {
       el = (<ScrollView style={styles.fullContainer}>
         <View>
-          <Post post={this.postId} {...this.props} styles={styles} />
+          <SingplePostComponent post={this.postId} {...this.props} styles={styles} />
         </View>
       </ScrollView>);
     }
 
     return (
-      <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
+      <View style={[{ backgroundColor: 'white', flex: 1 }]}>
         {el}
         <CustomSpinner visible={!this.postData && !this.props.error.singlepost} />
         <ErrorComponent parent={'singlepost'} reloadFunction={this.reload} />
@@ -82,6 +83,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     error: state.error,
+    comments: state.comments
   };
 }
 

@@ -168,7 +168,7 @@ class CreatePostContainer extends Component {
           <Text
             style={[
               styles.rightButtonText,
-              this.props.share ? { fontSize: 15 } : null
+              // this.props.share ? { fontSize: 15 } : null
             ]}
           >
             {props.scene.route.next}
@@ -193,7 +193,7 @@ class CreatePostContainer extends Component {
           <Text
             style={[
               styles.leftButtonText,
-              this.props.share ? { fontSize: 15 } : null
+              // this.props.share ? { fontSize: 15 } : null
             ]}
           >
             Cancel
@@ -207,8 +207,8 @@ class CreatePostContainer extends Component {
   renderTitle(props) {
     let title = props.scene.route.title;
     return (
-      <NavigationHeader.Title>
-        <Text style={this.props.share ? { fontSize: 15 } : null}>
+      <NavigationHeader.Title style={{ backgroundColor: 'transparent' }}>
+        <Text >
           {title}
         </Text>
       </NavigationHeader.Title>
@@ -268,7 +268,8 @@ const localStyles = StyleSheet.create({
   rightButton: {
     flex: 1,
     justifyContent: 'center',
-    padding: 10
+    padding: 10,
+    width: 90,
   },
   rightButtonText: {
     color: 'rgb(0, 122, 255)',
@@ -281,8 +282,7 @@ const localStyles = StyleSheet.create({
     fontSize: 17,
   },
   shareHeader: {
-    height: 60,
-    elevation: 2,
+    // height: 50,
     marginTop: -20,
   }
 });

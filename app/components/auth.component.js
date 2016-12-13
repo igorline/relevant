@@ -42,7 +42,6 @@ class Auth extends Component {
     this.setState({ visibleHeight: Dimensions.get('window').height });
   }
 
-
   login() {
     this.props.actions.push({
       key: 'login',
