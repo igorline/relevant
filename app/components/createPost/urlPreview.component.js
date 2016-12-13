@@ -48,7 +48,7 @@ export default class UrlPreviewComponent extends Component {
     if (this.props.urlPreview) {
       preview = (
         <TouchableHighlight
-          style={[styles.createPostInput, styles.flex1]}
+          style={[styles.createPostInput, styles.preview]}
           onPress={this.previewMenu}
         >
           <View style={[styles.innerPreview]}>
@@ -69,6 +69,9 @@ export default class UrlPreviewComponent extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  preview: {
+    height: 100,
+  },
   innerPreview: {
     borderRadius: 4,
     borderColor: '#f0f0f0',

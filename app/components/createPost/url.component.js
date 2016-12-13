@@ -8,11 +8,19 @@ import {
 import { globalStyles, fullHeight } from '../../styles/global';
 import * as utils from '../../utils';
 import UrlPreview from './urlPreview.component';
+import UserName from '../userNameSmall.component';
 
 let styles;
-const URL_REGEX =  new RegExp(/^((https|http|ftp):\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i);
+const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
 
 export default class UrlComponent extends Component {
+
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      inputHeight: 55,
+    };
+  }
 
   componentDidMount() {
     if (this.props.postUrl) {
@@ -28,8 +36,10 @@ export default class UrlComponent extends Component {
 
   processInput(postBody, doneTyping) {
     if (doneTyping) postBody = this.props.postBody;
-    if (!this.props.postUrl && (postBody[postBody.length - 1] === ' ' || doneTyping)) {
-      let words = postBody.split(' ');
+    if (!this.props.postUrl) {
+      let lines = postBody.split('\n');
+      let words = [];
+      lines.forEach(line => words = words.concat(line.split(' ')));
       let postUrl = words.find(word => URL_REGEX.test(word.toLowerCase()));
       if (postUrl) {
         this.props.actions.setCreaPostState({ postUrl });
@@ -48,6 +58,10 @@ export default class UrlComponent extends Component {
         name.replace('@', '').replace(/(,|\.)\s*$/, ''));
     }
 
+    if (this.props.urlPreview &&  this.props.postUrl && postBody.match(this.props.postUrl)) {
+      postBody = postBody.replace(`${this.props.postUrl}`, '').trim();
+    }
+
     this.props.actions.setCreaPostState({ postBody, bodyTags, bodyMentions });
   }
 
@@ -58,6 +72,7 @@ export default class UrlComponent extends Component {
         let newBody = this.props.postBody.replace(`${postUrl}`, '').trim();
         this.props.actions.setCreaPostState({
           postBody: newBody,
+          domain: this.extractDomain(postUrl),
           urlPreview: {
             image: results.image,
             title: results.title ? results.title : 'Untitled',
@@ -70,30 +85,91 @@ export default class UrlComponent extends Component {
     });
   }
 
+  extractDomain(url) {
+    let domain;
+    if (url.indexOf('://') > -1) {
+      domain = url.split('/')[2];
+    } else {
+      domain = url.split('/')[0];
+    }
+    domain = domain.split(':')[0];
+
+    let noPrefix = domain;
+
+    if (domain.indexOf('www.') > -1) {
+      noPrefix = domain.replace('www.', '');
+    }
+    return noPrefix;
+  }
+
   render() {
     let input;
     let repostBody;
+
+    let maxHeight = 170;
+    if (this.props.share) maxHeight = 170;
 
     if (this.props.repostBody) {
       repostBody = (<Text>{this.props.repostBody}</Text>);
     }
 
+    let urlPlaceholder = 'What’s relevant? Add a link to post commentary.';
+
+    if (this.props.postUrl) urlPlaceholder = 'Why is this relevant?';
+
+    let userHeader = null;
+
+    if (this.props.user) {
+      userHeader = (
+        <View style={styles.header}>
+          <View style={styles.innerBorder}>
+            <UserName
+              style={styles.innerBorder}
+              user={this.props.user}
+              setSelected={() => null}
+            />
+          </View>
+        </View>
+      );
+    }
+
     input = (
       <View
         style={{
-          height: 250 }}
+          flex: 1,
+          paddingLeft: 15,
+          paddingRight: 15,
+          backgroundColor: '#ffffff'
+        }}
       >
         {repostBody}
-        <TextInput
-          style={[styles.font15, styles.createPostInput, styles.flex1]}
-          placeholder={'Enter URL here, you can also enter text for a text post'}
-          multiline
-          onChangeText={postBody => this.processInput(postBody)}
-          onBlur={() => this.processInput(null, true)}
-          value={this.props.postBody}
-          returnKeyType={'default'}
-          autoFocus
-        />
+        {userHeader}
+
+        <View
+          style={[
+            styles.innerBorder,
+            this.props.share ? styles.noBorder : null,
+            { height: Math.min(maxHeight, this.state.inputHeight) }]
+          }
+        >
+          <TextInput
+            ref={(c) => { this.input = c; }}
+            style={[styles.font15, styles.createPostInput, styles.flex1]}
+            placeholder={urlPlaceholder}
+            multiline
+            onChangeText={postBody => this.processInput(postBody)}
+            onBlur={() => this.processInput(null, true)}
+            value={this.props.postBody}
+            returnKeyType={'default'}
+            autoFocus
+            onContentSizeChange={(event) => {
+              let h = event.nativeEvent.contentSize.height;
+              this.setState({
+                inputHeight: Math.max(55, h)
+              });
+            }}
+          />
+        </View>
         {this.props.urlPreview ?
           <UrlPreview {...this.props} actions={this.props.actions} /> :
           null
@@ -108,10 +184,19 @@ export default class UrlComponent extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  header: {
+    height: 55,
+  },
+  innerBorder: {
+    height: 55,
+    borderBottomWidth: 1,
+    borderBottomColor: 'grey'
+  },
+  noBorder: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
   inputBox: {
     flex: 1,
-    marginTop: 10,
-    padding: 10,
     backgroundColor: '#ffffff'
   }
 });

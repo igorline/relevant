@@ -132,12 +132,12 @@ class CreatePostContainer extends Component {
     if (props.scene.route.next) {
       right = (
         <TouchableHighlight
-          style={[styles.navButton, { opacity: this.enableNext ? 1 : 0.3 }]}
+          style={[{ opacity: this.enableNext ? 1 : 0.3 }]}
           underlayColor={'transparent'}
           onPress={() => this.next(props)}
         >
           <Text
-            style={[styles.rightButtonText]}
+            style={[styles.navButton, styles.rightButtonText]}
           >
             {props.scene.route.next}
           </Text>
@@ -154,12 +154,11 @@ class CreatePostContainer extends Component {
     if (props.scene.route.back === 'Cancel') {
       cancel = (
         <TouchableHighlight
-          style={styles.navButton}
           underlayColor={'transparent'}
           onPress={() => this.props.close()}
         >
           <Text
-            style={[styles.leftButtonText]}
+            style={[styles.navButton, styles.leftButtonText]}
           >
             Cancel
           </Text>
@@ -239,8 +238,7 @@ const localStyles = StyleSheet.create({
   },
   modalHeader: {
     height: 50,
-    elevation: 2,
-    marginTop: -15,
+    marginTop: -17,
   }
 });
 

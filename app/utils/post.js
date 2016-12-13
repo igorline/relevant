@@ -3,12 +3,7 @@ const cheerio = require('cheerio-without-node-native');
 export function generatePreview(link) {
   let responseUrl;
   return fetch(link, {
-    credentials: 'include',
     method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
   })
   .then((response) => {
     responseUrl = response.url;

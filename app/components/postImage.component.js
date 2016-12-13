@@ -79,7 +79,7 @@ class PostImage extends Component {
           </Text>
           
           {link ?
-            <Text style={[styles.font10, styles.white]}>from {self.extractDomain(link)}</Text>
+            <Text style={[styles.font10, styles.white]}>from {post.domain}</Text>
           : null}
         </View>
 
