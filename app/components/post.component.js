@@ -70,15 +70,18 @@ class Post extends Component {
       if (!posts.length) return null;
       post = this.props.posts.posts[posts[0]];
       if (!post) return null;
+      console.log(post.body, posts.length);
       if (post.image) imageEl = <PostImage post={post} />;
     }
+
 
     return (
       <View style={[styles.postContainer]}>
 
         <ScrollView
           horizontal
-          scrollEnabled={posts.length > 1}
+          // scrollEnabled={posts.length > 1}
+          scrollEnabled={true}
           decelerationRate={'fast'}
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
