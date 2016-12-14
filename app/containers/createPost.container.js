@@ -43,7 +43,6 @@ class CreatePostContainer extends Component {
     this.uploadPost = this.uploadPost.bind(this);
     this.createPost = this.createPost.bind(this);
     this.renderLeft = this.renderLeft.bind(this);
-
   }
 
   back() {
@@ -57,7 +56,7 @@ class CreatePostContainer extends Component {
       this.props.navigator.push({
         key: 'categories',
         back: true,
-        title: 'Choose a Category',
+        title: 'Post Category',
       }, 'home');
     }
 

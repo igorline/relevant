@@ -31,7 +31,7 @@ class Tabs extends Component {
       this.props.actions.push({
         key,
         back: true,
-        title: 'Create Post',
+        title: 'New Post',
         next: 'Post'
       }, 'home');
     } else {

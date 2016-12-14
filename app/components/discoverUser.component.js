@@ -7,6 +7,8 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import { globalStyles } from '../styles/global';
+import * as utils from '../utils';
+
 
 let styles;
 
@@ -51,17 +53,12 @@ class DiscoverUser extends Component {
     let oldRel = null;
     const relevance = user.relevance || 0;
     percentEl = (<Text style={[{ textAlign: 'right' }, styles.active, styles.bebas, styles.quarterLetterSpacing]}>0%</Text>);
-    if (this.props.stats) {
-      if (this.props.stats[user._id]) {
-        oldRel = this.props.stats[user._id].startAmount;
-        let change = (relevance - oldRel) / oldRel;
-        if (relevance) percent = Math.round(change * 100);
-        if (percent > 0) {
-          percentEl = (<Text style={[{ textAlign: 'right' }, styles.active, styles.bebas]}>▲{percent}%</Text>);
-        } else if (percent < 0) {
-          percentEl = (<Text style={[{ color: 'red', textAlign: 'right' }, styles.bebas]}> ▼{percent}%</Text>);
-        }
-      }
+
+    percent = utils.percent.percentChange(user);
+    if (percent > 0) {
+      percentEl = (<Text style={[{ textAlign: 'right' }, styles.active, styles.bebas]}>▲{percent}%</Text>);
+    } else if (percent < 0) {
+      percentEl = (<Text style={[{ color: 'red', textAlign: 'right' }, styles.bebas]}> ▼{percent}%</Text>);
     }
 
     if (user.image) {
