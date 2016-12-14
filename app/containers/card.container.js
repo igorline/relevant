@@ -90,6 +90,18 @@ class CardContainer extends Component {
       clipped += '...';
     }
 
+    if (title === 'Read') {
+      return (
+        <NavigationHeader.Title style={{ bottom: -4, backgroundColor: 'transparent' }}>
+          <Image
+            source={require('../assets/images/logo.png')}
+            resizeMode={'contain'}
+            style={{ width: 200, height: 25 }}
+          />
+        </NavigationHeader.Title>
+      );
+    }
+
     return (
       <NavigationHeader.Title>
         <Text style={styles.navTitle}>{clipped}</Text>
@@ -219,16 +231,17 @@ class CardContainer extends Component {
     }
 
     if (props.scene.route.component === 'profile' && props.scene.route.id !== this.props.auth.user._id) {
-      rightEl = (
-        <View style={styles.gear}>
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            onPress={() => this.thirsty()}
-          >
-            <Text>thirsty</Text>
-          </TouchableHighlight>
-        </View>
-      );
+      rightEl = null;
+      // rightEl = (
+      //   <View style={styles.gear}>
+      //     <TouchableHighlight
+      //       underlayColor={'transparent'}
+      //       onPress={() => this.thirsty()}
+      //     >
+      //       <Text>thirsty</Text>
+      //     </TouchableHighlight>
+      //   </View>
+      // );
     }
     return rightEl;
   }
