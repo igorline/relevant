@@ -243,7 +243,8 @@ class Profile extends Component {
           type={tab.title}
           active={active}
           needsReload={this.needsReload}
-        />);
+        />
+        );
       });
     }
 

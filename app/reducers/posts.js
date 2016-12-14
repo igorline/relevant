@@ -211,6 +211,10 @@ export default function post(state = initialState, action) {
       });
     }
 
+    case types.LOGOUT_USER: {
+      return { ...initialState };
+    }
+
     default:
       return state;
   }

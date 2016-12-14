@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,40 +8,19 @@ import { globalStyles } from '../styles/global';
 
 let styles;
 
-class EmptyList extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.type = '';
-    this.emoji = '😶';
-    this.visible = false;
-  }
+export default function(props) {
+  let type = props.type || '';
+  let emoji = props.emoji || '😶';
+  let visible = props.visible;
 
-  componentDidMount() {
-    if (this.props.type) this.type = this.props.type;
-    if (this.props.emoji) this.emoji = this.props.emoji;
-    if (!this.props.visible) this.visible = false;
-    if (this.props.visible) this.visible = true;
-  }
-
-  componentWillReceiveProps(next) {
-    if (next.type) this.type = next.type;
-    if (next.emoji) this.emoji = next.emoji;
-    if (!next.visible) this.visible = false;
-    if (next.visible) this.visible = true;
-  }
-
-  render() {
-    return (
-      <View style={[this.visible ? styles.emptyList : styles.hideEmptyList]} pointerEvents={this.visible ? 'auto' : 'none'}>
-        <Text style={[styles.libre, { fontSize: 20 }]}>
-          Sorry bruh, no {this.type} {this.emoji}
-        </Text>
-      </View>
-    );
-  }
+  return (
+    <View style={[visible ? styles.emptyList : styles.hideEmptyList]} pointerEvents={visible ? 'auto' : 'none'}>
+      <Text style={[styles.libre, { fontSize: 20 }]}>
+        Sorry bruh, no {type} {emoji}
+      </Text>
+    </View>
+  );
 }
-
-export default EmptyList;
 
 const localStyles = StyleSheet.create({
   hideEmptyList: {
@@ -50,12 +29,7 @@ const localStyles = StyleSheet.create({
     position: 'absolute',
   },
   emptyList: {
-    // position: 'absolute',
-    // top: 0,
-    // left: 0,
     flex: 1,
-    // bottom: 0,
-    // right: 0,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
