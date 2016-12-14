@@ -6,9 +6,9 @@ const initialState = {
   isAuthenticating: false,
   statusText: null,
   user: null,
-  deviceToken: null
+  deviceToken: null,
+  preUser: null,
 };
-
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
@@ -17,6 +17,11 @@ export default function auth(state = initialState, action) {
       return Object.assign({}, state, {
         isAuthenticating: true,
         statusText: null
+      });
+
+    case 'SET_PRE_USER':
+      return Object.assign({}, state, {
+        preUser: action.payload,
       });
 
     case types.LOGIN_USER_SUCCESS:
@@ -63,7 +68,8 @@ export default function auth(state = initialState, action) {
       return Object.assign({}, state, {
         isAuthenticating: false,
         isAuthenticated: action.payload ? true : false,
-        user: action.payload
+        user: action.payload,
+        preUser: null
       });
 
     case 'SET_DEVICE_TOKEN':

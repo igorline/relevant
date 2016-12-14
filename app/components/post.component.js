@@ -70,7 +70,6 @@ class Post extends Component {
       if (!posts.length) return null;
       post = this.props.posts.posts[posts[0]];
       if (!post) return null;
-      console.log(post.body, posts.length);
       if (post.image) imageEl = <PostImage post={post} />;
     }
 
@@ -80,8 +79,8 @@ class Post extends Component {
 
         <ScrollView
           horizontal
-          // scrollEnabled={posts.length > 1}
-          scrollEnabled={true}
+          scrollEnabled={posts.length > 1}
+          // scrollEnabled={true}
           decelerationRate={'fast'}
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
@@ -114,11 +113,12 @@ const localStyles = StyleSheet.create({
     marginBottom: 10,
   },
   commentary: {
-    // height: 200,
     marginRight: 4,
     marginLeft: 4,
     marginTop: 3,
-    marginBottom: 10
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   postContainer: {
     paddingBottom: 25,

@@ -28,6 +28,14 @@ function setUserIndex(userIndex) {
   };
 }
 
+export
+function setPreUser(preUser) {
+  return {
+    type: 'SET_PRE_USER',
+    payload: preUser
+  };
+}
+
 export function setAuthStatusText(text) {
   return {
     type: 'SET_AUTH_STATUS_TEXT',
@@ -128,6 +136,32 @@ function userOnline(user, token) {
       console.log(error, 'error');
     });
   }
+}
+
+export
+function checkUsername(username) {
+  return (dispatch) => {
+    return fetch(process.env.API_SERVER + '/api/user/check/' + username, {
+      credentials: 'include',
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+    .then(response => response.json())
+    .then((responseJSON) => {
+      if (responseJSON) {
+        AlertIOS.alert('Username already in use');
+        return false;
+      }
+      return true;
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+      AlertIOS.alert(error.message);
+    });
+  };
 }
 
 

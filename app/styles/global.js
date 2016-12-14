@@ -51,6 +51,12 @@ const font = StyleSheet.create({
   },
   quarterLetterSpacing: {
     letterSpacing: 0.25,
+  },
+  signInText: {
+    marginTop: 20,
+    textAlign: 'center',
+    fontFamily: 'Georgia',
+    fontSize: 18,
   }
 });
 

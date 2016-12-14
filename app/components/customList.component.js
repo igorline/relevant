@@ -98,7 +98,6 @@ export default class ActivityView extends Component {
           position: 'absolute',
           top: 0,
           width: fullWidth,
-          padding: 10,
         }}
         onScroll={this.props.onScroll}
         onEndReached={this.loadMore}
