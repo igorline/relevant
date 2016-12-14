@@ -50,7 +50,8 @@ class Discover extends Component {
   }
 
   componentWillReceiveProps(next) {
-    let type = this.tabs[this.state.view].type;
+    console.log(this.props.view.discover);
+    let type = this.tabs[this.props.view.discover].type;
     if (this.props.tags.selectedTags !== next.tags.selectedTags && type !== 'people') {
       this.needsReload = new Date().getTime();
     }
@@ -78,17 +79,18 @@ class Discover extends Component {
   }
 
   scrollToTop() {
-    let view = this.tabs[this.state.view].component.listview;
+    let view = this.tabs[this.props.view.discover].component.listview;
     if (view) view.scrollTo({ y: -this.state.headerHeight, animated: true });
   }
 
   changeView(view) {
-    if (view === this.state.view) this.scrollToTop();
-    this.setState({ view });
+    if (view === this.props.view.discover) this.scrollToTop();
+    // this.setState({ view });
+    this.props.actions.setView('discover', view);
   }
 
   load(view, length) {
-    if (!view) view = this.state.view;
+    if (!view) view = this.props.view.discover;
     if (!length) length = 0;
 
     const tags = this.props.tags.selectedTags;
@@ -139,7 +141,7 @@ class Discover extends Component {
     let dataEl = [];
     this.tabs.forEach((tab) => {
       let tabData = this.getViewData(this.props, tab.id) || [];
-      let active = this.state.view === tab.id;
+      let active = this.props.view.discover === tab.id;
       dataEl.push(
         <CustomListView
           ref={(c) => { this.tabs[tab.id].component = c; }}
@@ -161,7 +163,7 @@ class Discover extends Component {
       showHeader={this.state.showHeader}
       tags={this.props.tags}
       posts={this.props.posts}
-      view={this.state.view}
+      view={this.props.view.discover}
       setPostTop={this.setPostTop}
       actions={this.props.actions}
       changeView={this.changeView}

@@ -119,30 +119,30 @@ class Read extends Component {
       );
     }
 
-    if (this.props.messages.index && !this.props.error.read) {
-      thirstyHeader = (
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          onPress={messages ? () => this.goTo({ name: 'messages' })
-          : null}
-        >
-          <View style={[styles.thirstyHeader]}>
-            <View style={{ paddingRight: 5 }}>
-              <Text>👅💦</Text>
-            </View>
-            <View>
-              <Text style={[{ fontWeight: '500' }, styles.darkGray]}>{messages ? 'Thirsty messages' : 'No messages'}</Text>
-              <View style={styles.recentNames}>
-                {recentMessages}
-              </View>
-            </View>
-            <View style={{ justifyContent: 'flex-end', flex: 1, flexDirection: 'row' }}>
-              {messagesCount}
-            </View>
-          </View>
-        </TouchableHighlight>
-      );
-    }
+    // if (this.props.messages.index && !this.props.error.read) {
+    //   thirstyHeader = (
+    //     <TouchableHighlight
+    //       underlayColor={'transparent'}
+    //       onPress={messages ? () => this.goTo({ name: 'messages' })
+    //       : null}
+    //     >
+    //       <View style={[styles.thirstyHeader]}>
+    //         <View style={{ paddingRight: 5 }}>
+    //           <Text>👅💦</Text>
+    //         </View>
+    //         <View>
+    //           <Text style={[{ fontWeight: '500' }, styles.darkGray]}>{messages ? 'Thirsty messages' : 'No messages'}</Text>
+    //           <View style={styles.recentNames}>
+    //             {recentMessages}
+    //           </View>
+    //         </View>
+    //         <View style={{ justifyContent: 'flex-end', flex: 1, flexDirection: 'row' }}>
+    //           {messagesCount}
+    //         </View>
+    //       </View>
+    //     </TouchableHighlight>
+    //   );
+    // }
 
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
