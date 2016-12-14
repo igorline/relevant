@@ -3,11 +3,10 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableHighlight,
   TouchableWithoutFeedback,
-  Modal,
 } from 'react-native';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles } from '../styles/global';
+
 let styles;
 
 class PostBody extends Component {
@@ -31,7 +30,7 @@ class PostBody extends Component {
     if (this.props.scene && this.props.scene.id === user._id) return;
     this.props.navigator.goToProfile(user);
   }
-  
+
   goToPost() {
     console.log('go to post');
     this.props.navigator.goToPost(this.props.post);
@@ -40,7 +39,6 @@ class PostBody extends Component {
   render() {
     const self = this;
     const expanded = this.props.expanded;
-    const toggleFunction = this.props.toggleFunction;
     let editing = this.props.editing;
     let body = null;
     let post = this.props.post;
@@ -86,18 +84,6 @@ class PostBody extends Component {
             {bodyObj[key].text}
           </Text>);
         } else if (bodyObj[key].mention) {
-          // let mentionObj = null;
-          // if (self.props.post.mentions) {
-            // if (self.props.post.mentions.length) {
-              // self.props.post.mentions.forEach((eachUser) => {
-                // if (eachUser.name) {
-                  // if (eachUser.name.toLowerCase() === text.substr(1, text.length).toLowerCase()) {
-                    // mentionObj = eachUser;
-                  // }
-                // }
-              // });
-            // }
-          // }
           return (<Text
             key={i}
             onPress={() => this.setSelected(bodyObj[i].text)}
@@ -105,9 +91,8 @@ class PostBody extends Component {
           >
             {bodyObj[key].text}
           </Text>);
-        } else {
-          return (<Text key={i}>{bodyObj[key].text}</Text>);
         }
+        return (<Text key={i}>{bodyObj[key].text}</Text>);
       });
     }
 

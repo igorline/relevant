@@ -35,6 +35,10 @@ export default function createPost(state = initialState, action) {
       return { ...initialState };
     }
 
+    case types.LOGOUT_USER: {
+      return { ...initialState };
+    }
+
     default:
       return state;
   }
