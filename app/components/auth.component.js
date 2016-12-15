@@ -122,12 +122,6 @@ const localStyles = StyleSheet.create({
     alignItems: 'stretch',
     padding: 20
   },
-  signInText: {
-    marginTop: 20,
-    textAlign: 'center',
-    fontFamily: 'Georgia',
-    fontSize: 18,
-  }
 });
 
 styles = { ...localStyles, ...globalStyles };
