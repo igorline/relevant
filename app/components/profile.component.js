@@ -88,7 +88,7 @@ class ProfileComponent extends Component {
       relevanceEl = (<Text style={[styles.libre, { fontSize: 23 }]}>
         📈 Relevance
         <Text style={[styles.bebas]}>
-          {this.abbreviateNumber(relevance)} 0%
+          &nbsp;{this.abbreviateNumber(relevance)} 0%
         </Text>
       </Text>);
     }
@@ -117,6 +117,7 @@ class ProfileComponent extends Component {
 
     return (
       <View style={[{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 10 }]}>
+
         <View
           style={{
             paddingRight: 10,
@@ -130,10 +131,12 @@ class ProfileComponent extends Component {
 
         <View style={{ paddingLeft: 10 }}>
           {relevanceEl}
+
           <Text style={[styles.libre, { fontSize: 25 }]}>
             💵 Worth <Text style={[styles.bebas, { fontSize: 23 }]}>
               {this.abbreviateNumber(balance)}
             </Text>
+
           </Text>
 
           <View style={styles.onlineRow}>

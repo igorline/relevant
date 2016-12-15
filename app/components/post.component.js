@@ -73,12 +73,15 @@ class Post extends Component {
       if (post.image) imageEl = <PostImage post={post} />;
     }
 
+
     return (
       <View style={[styles.postContainer]}>
+        {imageEl}
 
         <ScrollView
           horizontal
           scrollEnabled={posts.length > 1}
+          // scrollEnabled={true}
           decelerationRate={'fast'}
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
@@ -89,8 +92,6 @@ class Post extends Component {
         >
           {this.renderCommentary()}
         </ScrollView>
-        
-        {imageEl}
       </View>
     );
   }
@@ -111,11 +112,12 @@ const localStyles = StyleSheet.create({
     marginBottom: 10,
   },
   commentary: {
-    // height: 200,
     marginRight: 4,
     marginLeft: 4,
     marginTop: 3,
-    marginBottom: 10
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   postContainer: {
     paddingBottom: 25,

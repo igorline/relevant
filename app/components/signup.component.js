@@ -21,21 +21,62 @@ class SignUp extends Component {
     super(props, context);
     this.back = this.back.bind(this);
     this.validate = this.validate.bind(this);
+    this.checkUsername = this.checkUsername.bind(this);
+    this.devSkip = this.devSkip.bind(this);
     this.state = {
       message: '',
+      name: null,
+      phone: null,
+      email: null,
+      password: null,
+      cPassword: null,
     };
   }
 
   componentDidMount() {
+    if (this.props.auth.preUser) {
+      this.setState({
+        name: this.props.auth.preUser.name || null,
+        phone: this.props.auth.preUser.phone || null,
+        email: this.props.auth.preUser.email || null,
+        password: this.props.auth.preUser.password || null
+      });
+    }
   }
 
-  componentWillUpdate(nextProps) {
+  componentWillReceiveProps(nextProps) {
+    // console.log(this, 'signup this')
     if (nextProps.auth.statusText && !this.props.auth.statusText) {
       AlertIOS.alert(nextProps.auth.statusText);
+    }
+    if (this.props.auth.preUser !== nextProps.auth.preUser) {
+      this.setState({
+        name: nextProps.auth.preUser.name || null,
+        phone: nextProps.auth.preUser.phone || null,
+        email: nextProps.auth.preUser.email || null,
+        password: nextProps.auth.preUser.password || null
+      });
     }
   }
 
   componentWillUnmount() {
+  }
+
+  checkUsername() {
+    console.log('check username');
+    if (this.state.name) {
+      let pattern = /^[a-zA-Z0-9-_]+$/;
+      let string = this.state.name;
+      let match = pattern.test(string);
+      if (match) {
+        console.log('query server');
+        this.props.actions.checkUsername(string).then(results => {
+          console.log('username good?', results);
+        });
+      } else {
+        AlertIOS.alert('username can only contain letters, numbers, dashes and underscores');
+      }
+    }
   }
 
   back() {
@@ -68,7 +109,6 @@ class SignUp extends Component {
       return;
     }
 
-
     if (!this.state.phone) {
       AlertIOS.alert('phone number required');
       return;
@@ -83,8 +123,30 @@ class SignUp extends Component {
       AlertIOS.alert('Password required');
       return;
     }
+    this.props.actions.setPreUser(user);
+    this.props.actions.push({
+      key: 'imageUpload',
+      title: 'image',
+      showBackButton: true
+    }, this.props.navigation.main);
+    // this.props.actions.createUser(user);
+  }
 
-    this.props.actions.createUser(user);
+  devSkip() {
+    this.setState({
+      name: 'test',
+      phone: '212',
+      email: 'test3@test.com',
+      password: 'test',
+      cPassword: 'test'
+    })
+
+    // this.props.actions.setPreUser(user);
+    // this.props.actions.push({
+    //   key: 'imageUpload',
+    //   title: 'image',
+    //   showBackButton: true
+    // }, this.props.navigation.main);
   }
 
   render() {
@@ -105,30 +167,85 @@ class SignUp extends Component {
           <View style={styles.fieldsInner}>
 
             <View style={styles.fieldsInputParent}>
-              <TextInput autoCapitalize={'none'} autoCorrect={false} keyboardType={'default'} clearTextOnFocus={false} placeholder="username" onChangeText={name => this.setState({ name })} value={this.state.name} style={styles.fieldsInput} />
+              <TextInput
+                autoCapitalize={'none'}
+                autoCorrect={false}
+                keyboardType={'default'}
+                clearTextOnFocus={false}
+                onBlur={() => this.checkUsername()}
+                placeholder="username"
+                onChangeText={name => this.setState({ name })}
+                value={this.state.name}
+                style={styles.fieldsInput}
+              />
             </View>
 
             <View style={styles.fieldsInputParent}>
-              <TextInput autoCapitalize={'none'} autoCorrect={false} keyboardType={'email-address'} clearTextOnFocus={false} placeholder="email" onChangeText={email => this.setState({ email })} value={this.state.email} style={styles.fieldsInput} />
+              <TextInput
+                autoCapitalize={'none'}
+                autoCorrect={false}
+                keyboardType={'email-address'}
+                clearTextOnFocus={false}
+                placeholder="email"
+                onChangeText={email => this.setState({ email })}
+                value={this.state.email}
+                style={styles.fieldsInput}
+              />
             </View>
 
             <View style={styles.fieldsInputParent}>
-              <TextInput autoCapitalize={'none'} keyboardType={'phone-pad'} clearTextOnFocus={false} placeholder="phone number" onChangeText={phone => this.setState({ phone })} value={this.state.phone} style={styles.fieldsInput} />
+              <TextInput
+                autoCapitalize={'none'}
+                keyboardType={'phone-pad'}
+                clearTextOnFocus={false}
+                placeholder="phone number"
+                onChangeText={phone => this.setState({ phone })}
+                value={this.state.phone} style={styles.fieldsInput}
+              />
             </View>
 
             <View style={styles.fieldsInputParent}>
-              <TextInput autoCapitalize={'none'} secureTextEntry keyboardType={'default'} clearTextOnFocus={false} placeholder="password" onChangeText={password => this.setState({ password })} value={this.state.password} style={styles.fieldsInput} />
+              <TextInput
+                autoCapitalize={'none'}
+                secureTextEntry
+                keyboardType={'default'}
+                clearTextOnFocus={false}
+                placeholder="password"
+                onChangeText={password => this.setState({ password })}
+                value={this.state.password}
+                style={styles.fieldsInput}
+              />
             </View>
 
             <View style={styles.fieldsInputParent}>
-              <TextInput autoCapitalize={'none'} secureTextEntry keyboardType={'default'} clearTextOnFocus={false} placeholder="confirm password" onChangeText={cPassword => this.setState({ cPassword })} value={this.state.cPassword} style={styles.fieldsInput} />
+              <TextInput
+                autoCapitalize={'none'}
+                secureTextEntry
+                keyboardType={'default'}
+                clearTextOnFocus={false}
+                placeholder="confirm password"
+                onChangeText={cPassword => this.setState({ cPassword })}
+                value={this.state.cPassword}
+                style={styles.fieldsInput}
+              />
             </View>
-
           </View>
 
-          <TouchableHighlight underlayColor={'transparent'} style={[styles.largeButton]} onPress={this.validate}>
-            <Text style={styles.largeButtonText}>create account</Text>
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            style={[styles.largeButton]}
+            onPress={this.validate}
+          >
+            <Text style={styles.largeButtonText}>next</Text>
           </TouchableHighlight>
+                <TouchableHighlight
+        onPress={this.devSkip}
+        underlayColor={'transparent'}
+      >
+        <Text style={styles.signInText}>
+          <Text style={{ color: '#3E3EFF' }}>devSkip</Text>
+        </Text>
+      </TouchableHighlight>
         </ScrollView>
       </KeyboardAvoidingView>
     );

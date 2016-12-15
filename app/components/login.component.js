@@ -24,44 +24,27 @@ class Login extends Component {
     this.state = {
       bool: false,
       notifText: null,
-      email: null,
+      username: null,
       password: null,
-      // visibleHeight: Dimensions.get('window').height,
     };
   }
 
   componentDidMount() {
-    // this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
-    // this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
   }
 
   componentWillUpdate(nextProps) {
-    const self = this;
-    if (nextProps.auth.statusText && !self.props.auth.statusText) {
+    if (nextProps.auth.statusText && !this.props.auth.statusText) {
       AlertIOS.alert(nextProps.auth.statusText);
     }
   }
 
   componentWillUnmount() {
-    const self = this;
-    self.props.actions.setAuthStatusText();
-    // this.showListener.remove();
-    // this.hideListener.remove();
+    this.props.actions.setAuthStatusText();
   }
-
-  // keyboardWillShow(e) {
-  //   const newSize = (Dimensions.get('window').height - e.endCoordinates.height);
-  //   this.setState({ visibleHeight: newSize });
-  // }
-
-  // keyboardWillHide(e) {
-  //   this.setState({ visibleHeight: Dimensions.get('window').height });
-  // }
-
   login() {
     const self = this;
-    if (!self.state.email) {
-      AlertIOS.alert('must enter email');
+    if (!self.state.username) {
+      AlertIOS.alert('must enter username');
       return;
     }
 
@@ -70,7 +53,7 @@ class Login extends Component {
       return;
     }
 
-    this.props.actions.loginUser({ email: self.state.email, password: self.state.password });
+    this.props.actions.loginUser({ name: self.state.username, password: self.state.password });
   }
 
   back() {
@@ -78,7 +61,6 @@ class Login extends Component {
   }
 
   render() {
-    const self = this;
     styles = { ...localStyles, ...globalStyles };
 
     return (
@@ -99,11 +81,11 @@ class Login extends Component {
               <TextInput
                 autoCorrect={false}
                 autoCapitalize={'none'}
-                keyboardType={'email-address'}
+                // keyboardType={'email-address'}
                 clearTextOnFocus={false}
-                placeholder="email"
-                onChangeText={email => this.setState({ email })}
-                value={this.state.email}
+                placeholder="username"
+                onChangeText={username => this.setState({ username })}
+                value={this.state.username}
                 style={styles.fieldsInput}
               />
             </View>
@@ -124,9 +106,10 @@ class Login extends Component {
           </View>
 
           <TouchableHighlight
-            onPress={self.login}
+            onPress={this.login}
             underlayColor={'transparent'}
-            style={[styles.largeButton]}>
+            style={[styles.largeButton]}
+          >
             <Text style={styles.largeButtonText}>
               sign in
             </Text>

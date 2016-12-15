@@ -68,7 +68,6 @@ class Application extends Component {
     if (!this.props.auth.user && next.auth.user) {
       this.props.actions.userToSocket(next.auth.user._id);
       this.props.actions.getNotificationCount();
-      this.props.actions.getMessages(next.auth.user._id);
       this.props.actions.changeTab('read');
       this.props.actions.replaceRoute({
         key: 'tabBars',
@@ -122,8 +121,8 @@ class Application extends Component {
     });
   }
 
-  chooseImage() {
-    this.pickImage((err, data) => {
+  initImage() {
+    this.chooseImage((err, data) => {
       if (data) {
         utils.s3.toS3Advanced(data, this.props.auth.token).then((results) => {
           if (results.success) {
@@ -141,7 +140,7 @@ class Application extends Component {
   }
 
 
-  pickImage(callback) {
+  chooseImage(callback) {
     ImagePicker.showImagePicker(pickerOptions, (response) => {
       if (response.didCancel) {
         callback('cancelled');
@@ -155,7 +154,6 @@ class Application extends Component {
     });
   }
 
-
   showActionSheet() {
     ActionSheetIOS.showActionSheetWithOptions({
       options: this.state.buttons,
@@ -168,7 +166,7 @@ class Application extends Component {
           this.changeName();
           break;
         case 1:
-          this.chooseImage();
+          this.initImage();
           break;
         case 2:
           this.logoutRedirect();
@@ -217,6 +215,8 @@ class Application extends Component {
       case 'login':
         return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
       case 'signup':
+        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
+      case 'imageUpload':
         return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
       case 'createPost':
         return <CreatePost step={'url'} navProps={props} navigator={this.props.actions} />;

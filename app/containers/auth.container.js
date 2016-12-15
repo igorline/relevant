@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import Auth from '../components/auth.component';
 import Login from '../components/login.component';
 import SignUp from '../components/signup.component';
+import ImageUpload from '../components/imageUpload.component';
 import * as authActions from '../actions/auth.actions';
 import * as navigationActions from '../actions/navigation.actions';
 
@@ -41,6 +42,9 @@ class AuthContainer extends Component {
       case 'signup':
         return <SignUp {...this.props} />;
 
+      case 'imageUpload':
+        return <ImageUpload {...this.props} />;
+
       default:
         return <Auth {...this.props} />;
     }
@@ -68,10 +72,9 @@ class AuthContainer extends Component {
   }
 
   renderHeader(props) {
-    console.log(props, 'header props');
     let header = null;
     if (props.scene.route) {
-      if (props.scene.route.component === 'login' || props.scene.route.component === 'signup') {
+      if (props.scene.route.component === 'login' || props.scene.route.component === 'signup' || props.scene.route.component === 'imageUpload') {
         header = (
           <NavigationHeader
             {...props}
@@ -94,7 +97,7 @@ class AuthContainer extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
         {this.renderHeader(this.props.navProps)}
         {this.renderScene(this.props.authType)}
       </View>
