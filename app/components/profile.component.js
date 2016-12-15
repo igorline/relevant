@@ -83,7 +83,6 @@ class ProfileComponent extends Component {
     }
 
     percent = utils.percent.percentChange(user);
-    // console.log(user);
 
     if (percent === 0) {
       relevanceEl = (<Text style={[styles.libre, { fontSize: 23 }]}>

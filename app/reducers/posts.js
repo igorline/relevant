@@ -73,7 +73,6 @@ export default function post(state = initialState, action) {
 
     case types.SET_POSTS: {
       const type = action.payload.type;
-      console.log(action.payload.data);
       return Object.assign({}, state, {
         [type]: [
           ...state[type].slice(0, action.payload.index),

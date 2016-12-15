@@ -341,7 +341,6 @@ export function editPost(post, authToken) {
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(updatePost(responseJSON));
-      dispatch(authActions.getUser());
       return true;
     })
     .catch((error) => {

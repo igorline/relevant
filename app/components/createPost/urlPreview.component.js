@@ -23,6 +23,7 @@ export default class UrlPreviewComponent extends Component {
   }
 
   previewMenu() {
+    if (this.props.edit || this.props.repost) return;
     ActionSheetIOS.showActionSheetWithOptions({
       options: ['Remove Url', 'Cancel'],
       cancelButtonIndex: 1,
@@ -48,6 +49,7 @@ export default class UrlPreviewComponent extends Component {
     if (this.props.urlPreview) {
       preview = (
         <TouchableHighlight
+          underlayColor={'transparent'}
           style={[styles.createPostInput, styles.preview]}
           onPress={this.previewMenu}
         >
