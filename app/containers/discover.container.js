@@ -50,7 +50,6 @@ class Discover extends Component {
   }
 
   componentWillReceiveProps(next) {
-    console.log(this.props.view.discover);
     let type = this.tabs[this.props.view.discover].type;
     if (this.props.tags.selectedTags !== next.tags.selectedTags && type !== 'people') {
       this.needsReload = new Date().getTime();

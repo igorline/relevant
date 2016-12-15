@@ -1,6 +1,6 @@
 export function percentChange(user) {
   let percent = 0;
-  if (user.relevanceRecord[1]) {
+  if (user.relevanceRecord && user.relevanceRecord[1]) {
     let last = user.relevanceRecord[1];
     let oldRel = last.relevance;
     percent = ((user.relevance - oldRel) * 100) / oldRel;

@@ -146,6 +146,28 @@ class PostButtons extends Component {
     });
   }
 
+  toggleEditing() {
+    this.props.actions.setCreaPostState({
+      postBody: this.props.post.body,
+      nativeImage: true,
+      postUrl: this.props.post.link,
+      postImage: this.props.post.image,
+      urlPreview: {
+        image: this.props.post.image,
+        title: this.props.post.title ? this.props.post.title : 'Untitled',
+        description: this.props.post.description,
+      },
+      edit: true,
+      editPost: this.props.post,
+    });
+    this.props.navigator.push({
+      key: 'createPost',
+      back: true,
+      title: 'Edit Post',
+      next: 'Update'
+    }, 'home');
+  }
+
   repostCommentary() {
     this.props.actions.setCreaPostState({
       postBody: '',

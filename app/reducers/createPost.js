@@ -13,6 +13,9 @@ const initialState = {
   nativeImage: false,
   repost: null,
   repostBody: null,
+  edit: false,
+  postId: null,
+  editPost: null,
 };
 
 export default function createPost(state = initialState, action) {

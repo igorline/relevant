@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import * as postActions from '../actions/post.actions';
+import * as createPostActions from '../actions/createPost.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as investActions from '../actions/invest.actions';
 import * as authActions from '../actions/auth.actions';
@@ -205,6 +206,7 @@ function mapDispatchToProps(dispatch) {
       ...tagActions,
       ...navigationActions,
       ...authActions,
+      ...createPostActions
     }, dispatch)
   };
 }

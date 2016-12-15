@@ -16,6 +16,7 @@ import Investment from '../components/investment.component';
 import CustomSpinner from '../components/CustomSpinner.component';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
+import * as createPostActions from '../actions/createPost.actions';
 import * as tagActions from '../actions/tag.actions';
 import * as userActions from '../actions/user.actions';
 import * as statsActions from '../actions/stats.actions';
@@ -293,6 +294,7 @@ function mapDispatchToProps(dispatch) {
       ...userActions,
       ...investActions,
       ...subscriptionActions,
+      ...createPostActions
     }, dispatch),
   };
 }

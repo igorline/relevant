@@ -50,7 +50,9 @@ class CreatePostContainer extends Component {
   }
 
   next() {
+
     if (this.props.createPost.repost) return this.createRepost();
+    if (this.props.createPost.edit) return this.editPost();
 
     if (this.props.step === 'url' && this.enableNext) {
       this.props.navigator.push({
@@ -65,7 +67,29 @@ class CreatePostContainer extends Component {
     }
   }
 
-  createRepost(repost) {
+  editPost() {
+    let props = this.props.createPost;
+    let postBody = {
+      ...props.editPost,
+      tags: props.postTags,
+      body: props.postBody,
+      mentions: props.bodyMentions,
+    };
+    this.props.actions.editPost(postBody, this.props.auth.token)
+      .then((results) => {
+        if (!results) {
+          AlertIOS.alert('Post error please try again');
+        } else {
+          AlertIOS.alert('Success!');
+          this.props.actions.clearCreatePost();
+          this.props.navigator.resetRoutes('home');
+          this.props.navigator.changeTab('discover');
+          this.props.navigator.reloadTab('discover');
+        }
+      });
+  }
+
+  createRepost() {
     let props = this.props.createPost;
     if (!props.postBody) {
       return AlertIOS.alert('Please enter some text');
