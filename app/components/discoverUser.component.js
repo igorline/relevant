@@ -117,9 +117,9 @@ const localStyles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     paddingTop: 10,
-    // paddingRight: 20,
+    paddingRight: 10,
     paddingBottom: 10,
-    // paddingLeft: 20,
+    paddingLeft: 10,
   },
   leftDiscoverUser: {
     alignItems: 'center',

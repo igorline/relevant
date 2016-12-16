@@ -127,6 +127,8 @@ export default class ActivityView extends Component {
     let type = 'data';
     if (this.props.type) type = this.props.type;
 
+    console.log(this.props.loaded, this.props.data.length)
+
     if ((this.props.loaded && !this.props.data.length) || this.props.loaded === 0) {
       emptyEl = this.props.children || (
       <EmptyList
