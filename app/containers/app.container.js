@@ -89,10 +89,7 @@ class Application extends Component {
     if (!this.state.newName && nextState.newName) {
       let user = this.props.auth.user;
       user.name = nextState.newName;
-      this.props.actions.updateUser(user, this.props.auth.token)
-      .then((results) => {
-        if (results) this.props.actions.getUser();
-      });
+      this.props.actions.updateUser(user, this.props.auth.token);
     }
   }
 
@@ -116,9 +113,7 @@ class Application extends Component {
     this.setState({ newName })
     let newUser = this.props.auth.user;
     newUser.image = results.url;
-    this.props.actions.updateUser(newUser, this.props.auth.token).then((res) => {
-      if (res) this.props.actions.getUser();
-    });
+    this.props.actions.updateUser(newUser, this.props.auth.token);
   }
 
   initImage() {
@@ -128,9 +123,7 @@ class Application extends Component {
           if (results.success) {
             let newUser = this.props.auth.user;
             newUser.image = results.url;
-            this.props.actions.updateUser(newUser, this.props.auth.token).then((res) => {
-              if (res) this.props.actions.getUser();
-            });
+            this.props.actions.updateUser(newUser, this.props.auth.token);
           } else {
             console.log('image error ', results);
           }
