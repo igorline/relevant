@@ -25,9 +25,11 @@ class ImageUpload extends Component {
     super(props, context);
     // this.back = this.back.bind(this);
     // this.validate = this.validate.bind(this);
+    this.renderButtons = this.renderButtons.bind(this);
     this.createUser = this.createUser.bind(this);
     this.initImage = this.initImage.bind(this);
     this.chooseImage = this.chooseImage.bind(this);
+    this.renderImage = this.renderImage.bind(this);
     this.state = {
       image: null,
     };
@@ -43,21 +45,16 @@ class ImageUpload extends Component {
   }
 
   initImage() {
+    const self = this;
     this.chooseImage((err, data) => {
       if (err) {
         console.log(err); 
         return;
       }
       if (data) {
-        console.log(data, 'data');
         utils.s3.toS3Advanced(data, this.props.auth.token).then((results) => {
           if (results.success) {
-            let newUser = { ...this.props.auth.preUser };
-            newUser.image = results.url;
-            this.createUser(newUser);
-            // this.props.actions.updateUser(newUser, this.props.auth.token).then((res) => {
-            //   if (res) this.props.actions.getUser();
-            // });
+            self.setState({ image: results.url });
           } else {
             console.log('image error ', results);
           }
@@ -81,9 +78,53 @@ class ImageUpload extends Component {
   }
 
   createUser(user) {
-    // if (!user) user = { ...this.props.auth.preUser };
-    // console.log('create user ', user);
-    this.props.actions.createUser(user);
+    let newUser = { ...this.props.auth.preUser };
+    newUser.image = this.state.image;
+    this.props.actions.createUser(newUser);
+  }
+
+  renderImage() {
+    console.log(this.state.image, 'state image')
+    if (this.state.image) {
+      return (<Image
+        style={{ width: 200, height: 200 }}
+        resizeMode={'cover'}
+        source={{ uri: this.state.image }}
+      />);
+    }
+    return (<Image
+      style={{ width: 200, height: 200 }}
+      resizeMode={'cover'}
+      source={require('../assets/images/camera.png')}
+    />);
+  }
+
+  renderButtons() {
+    if (this.state.image) {
+      return (<View>
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          style={[styles.largeButton]}
+          onPress={this.initImage}
+        >
+          <Text style={styles.largeButtonText}>Choose different image</Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          style={[styles.largeButton, { marginTop: 10 }]}
+          onPress={this.createUser}
+        >
+          <Text style={styles.largeButtonText}>Create user</Text>
+        </TouchableHighlight>
+      </View>);
+    }
+    return (<TouchableHighlight
+      underlayColor={'transparent'}
+      style={[styles.largeButton]}
+      onPress={this.initImage}
+    >
+      <Text style={styles.largeButtonText}>upload image</Text>
+    </TouchableHighlight>);
   }
 
   render() {
@@ -92,27 +133,9 @@ class ImageUpload extends Component {
     return (
     <View style={{ padding: 20, flex: 1 }}>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Image
-          style={{ width: 200, height: 200 }}
-          resizeMode={'cover'}
-          source={require('../assets/images/camera.png')}
-        />
+        {this.renderImage()}
       </View>
-
-      <TouchableHighlight
-        underlayColor={'transparent'}
-        style={[styles.largeButton]}
-        onPress={this.initImage}
-      >
-        <Text style={styles.largeButtonText}>upload image</Text>
-      </TouchableHighlight>
-
-      {/*<TouchableHighlight
-        underlayColor={'transparent'}
-        style={[styles.largeButton, { marginTop: 10 }]}
-      >
-        <Text style={styles.largeButtonText}>choose a photo</Text>
-      </TouchableHighlight>*/}
+      {this.renderButtons()}
 
       <TouchableHighlight
         onPress={() => this.createUser(this.props.auth.preUser)}
