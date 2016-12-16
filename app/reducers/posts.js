@@ -79,7 +79,11 @@ export default function post(state = initialState, action) {
           ...action.payload.data.result[type],
         ],
         metaPosts: { ...state.metaPosts, ...action.payload.data.entities.metaPosts },
-        posts: { ...state.posts, ...action.payload.data.entities.posts }
+        posts: { ...state.posts, ...action.payload.data.entities.posts },
+        loaded: {
+          ...state.loaded,
+          [type]: true
+        }
       });
     }
 
