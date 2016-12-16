@@ -50,17 +50,18 @@ class ImageUpload extends Component {
       }
       if (data) {
         console.log(data, 'data');
-        // utils.s3.toS3Advanced(data, this.props.auth.token).then((results) => {
-        //   if (results.success) {
-        //     let newUser = this.props.auth.user;
-        //     newUser.image = results.url;
-        //     this.props.actions.updateUser(newUser, this.props.auth.token).then((res) => {
-        //       if (res) this.props.actions.getUser();
-        //     });
-        //   } else {
-        //     console.log('image error ', results);
-        //   }
-        // });
+        utils.s3.toS3Advanced(data, this.props.auth.token).then((results) => {
+          if (results.success) {
+            let newUser = { ...this.props.auth.preUser };
+            newUser.image = results.url;
+            this.createUser(newUser);
+            // this.props.actions.updateUser(newUser, this.props.auth.token).then((res) => {
+            //   if (res) this.props.actions.getUser();
+            // });
+          } else {
+            console.log('image error ', results);
+          }
+        });
       }
     });
   }
@@ -79,17 +80,17 @@ class ImageUpload extends Component {
     });
   }
 
-  createUser() {
-    console.log('create user');
-    // this.props.actions.createUser(this.props.auth.preUser);
+  createUser(user) {
+    // if (!user) user = { ...this.props.auth.preUser };
+    // console.log('create user ', user);
+    this.props.actions.createUser(user);
   }
 
   render() {
     styles = { ...localStyles, ...globalStyles };
 
     return (
-     <View style={{ padding: 20, flex: 1 }}>
-      
+    <View style={{ padding: 20, flex: 1 }}>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Image
           style={{ width: 200, height: 200 }}
@@ -114,7 +115,7 @@ class ImageUpload extends Component {
       </TouchableHighlight>*/}
 
       <TouchableHighlight
-        onPress={this.createUser}
+        onPress={() => this.createUser(this.props.auth.preUser)}
         underlayColor={'transparent'}
       >
         <Text style={styles.signInText}>

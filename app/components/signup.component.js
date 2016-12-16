@@ -49,7 +49,7 @@ class SignUp extends Component {
     if (nextProps.auth.statusText && !this.props.auth.statusText) {
       AlertIOS.alert(nextProps.auth.statusText);
     }
-    if (this.props.auth.preUser !== nextProps.auth.preUser) {
+    if (nextProps.auth.preUser && this.props.auth.preUser !== nextProps.auth.preUser) {
       this.setState({
         name: nextProps.auth.preUser.name || null,
         phone: nextProps.auth.preUser.phone || null,
@@ -69,8 +69,14 @@ class SignUp extends Component {
       let string = this.state.name;
       let match = pattern.test(string);
       if (match) {
-        console.log('query server');
-        this.props.actions.checkUsername(string).then(results => {
+        this.props.actions.checkUsername(string)
+        .then(results => {
+          if (!results) {
+            this.usernameExists = true;
+            AlertIOS.alert('Username already in use');
+          } else {
+            this.usernameExists = false;
+          }
           console.log('username good?', results);
         });
       } else {
@@ -91,6 +97,11 @@ class SignUp extends Component {
       password: this.state.password
     };
 
+    if (this.usernameExists) {
+      AlertIOS.alert('username already exist');
+      return;
+    }
+
     if (this.state.name) {
       if (this.state.name.length > 15) {
         AlertIOS.alert('name must be less than 15 characters');
@@ -109,10 +120,10 @@ class SignUp extends Component {
       return;
     }
 
-    if (!this.state.phone) {
-      AlertIOS.alert('phone number required');
-      return;
-    }
+    // if (!this.state.phone) {
+    //   AlertIOS.alert('phone number required');
+    //   return;
+    // }
 
     if (this.state.password) {
       if (this.state.password !== this.state.cPassword) {
@@ -124,6 +135,7 @@ class SignUp extends Component {
       return;
     }
     this.props.actions.setPreUser(user);
+    console.log('saving pre user ', user);
     this.props.actions.push({
       key: 'imageUpload',
       title: 'image',
@@ -193,7 +205,7 @@ class SignUp extends Component {
               />
             </View>
 
-            <View style={styles.fieldsInputParent}>
+            {/*<View style={styles.fieldsInputParent}>
               <TextInput
                 autoCapitalize={'none'}
                 keyboardType={'phone-pad'}
@@ -202,7 +214,7 @@ class SignUp extends Component {
                 onChangeText={phone => this.setState({ phone })}
                 value={this.state.phone} style={styles.fieldsInput}
               />
-            </View>
+            </View>*/}
 
             <View style={styles.fieldsInputParent}>
               <TextInput

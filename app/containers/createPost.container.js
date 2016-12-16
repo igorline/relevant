@@ -136,8 +136,9 @@ class CreatePostContainer extends Component {
           this.image = results.url;
           this.uploadPost();
         } else {
-          this.image = props.urlPreview ? props.urlPreview.image : null;
-          this.uploadPost();
+          console.log(results)
+          // this.image = props.urlPreview ? props.urlPreview.image : null;
+          // this.uploadPost();
         }
       });
     } else {

@@ -28,7 +28,7 @@ function executeOnSignedUrl(uri) {
 function uploadToS3(uri, policy, signature, url, publicUrl, s3_object_name) {
   var body = new FormData();
   body.append("key", s3_object_name)
-  body.append("AWSAccessKeyId", "AKIAIN6YT3LQ4EMODDQA")
+  body.append("AWSAccessKeyId", "AKIAJUARIDOFR6VZSEYA")
   body.append('acl', 'public-read')
   body.append("success_action_status", "201")
   body.append('Content-Type', 'image/jpeg')
@@ -47,14 +47,14 @@ function uploadToS3(uri, policy, signature, url, publicUrl, s3_object_name) {
   })
   .then((response) => {
       if (response.status == 201) {
-        return {'success': true, 'url': publicUrl};
+        return { success: true, url: publicUrl };
       } else {
-        return {'success': false, 'url': publicUrl};
+        return { success: false, response };
       }
   })
   .catch((error) => {
-    console.log(error, 'error')
-     return {'success': false, 'url': null};
+    console.log(error, 'error');
+    return { 'success': false, 'url': null };
   });
 };
 

@@ -72,6 +72,14 @@ export default function auth(state = initialState, action) {
         preUser: null
       });
 
+    case types.UPDATE_AUTH_USER:
+      return {
+        user: {
+          ...state.user,
+          ...action.payload
+        }
+      };
+
     case 'SET_DEVICE_TOKEN':
       return Object.assign({}, state, {
         deviceToken: action.payload

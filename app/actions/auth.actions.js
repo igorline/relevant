@@ -11,6 +11,13 @@ import * as errorActions from './error.actions';
 const APP_GROUP_ID = 'group.com.4real.relevant';
 require('../publicenv');
 
+export
+function updateAuthUser(user) {
+  return {
+    type: types.UPDATE_AUTH_USER,
+    payload: user
+  };
+}
 
 export
 function setUser(user) {
@@ -152,7 +159,6 @@ function checkUsername(username) {
     .then(response => response.json())
     .then((responseJSON) => {
       if (responseJSON) {
-        AlertIOS.alert('Username already in use');
         return false;
       }
       return true;
@@ -167,6 +173,7 @@ function checkUsername(username) {
 
 export
 function createUser(user) {
+  console.log(user);
   return (dispatch) => {
     return fetch(process.env.API_SERVER + '/api/user', {
       credentials: 'include',
@@ -196,7 +203,6 @@ function createUser(user) {
     })
     .catch(error => {
       AlertIOS.alert(error.message);
-      // dispatch(loginUserFailure());
     });
   };
 }
@@ -230,6 +236,9 @@ export function getUser(callback) {
         dispatch(errorActions.setError('universal', true, error.message));
         dispatch(loginUserFailure('Server error'));
         if (callback) callback({ ok: false });
+        // need this in case user is logged in but there is an error getting account
+        dispatch(logoutAction());
+        console.log('get user error ', error);
       });
     }
 
@@ -253,30 +262,25 @@ function setDeviceToken(token) {
 }
 
 export function updateUser(user, authToken) {
-    return function(dispatch) {
-        var minified = user;
-        minified.posts = [];
-        user.posts.forEach(function(post, i) {
-            minified.posts.push(post._id);
-        })
-       return fetch(process.env.API_SERVER+'/api/user?access_token='+authToken, {
-            credentials: 'include',
-            method: 'PUT',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(minified)
-        })
-        .then((response) => {
-            console.log('updated user');
-            return true;
-        })
-        .catch((error) => {
-            console.log(error, 'error');
-            return false;
-        });
-    }
+  return (dispatch) => {
+    user.posts.map((post) => post._id);
+    return fetch(process.env.API_SERVER+'/api/user?access_token='+authToken, {
+      credentials: 'include',
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(user)
+    })
+    .then(response => response.json())
+    .then((responseJSON) => {
+      dispatch(updateAuthUser(responseJSON));
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+    });
+  };
 }
 
 export function addDeviceToken(user, authToken) {

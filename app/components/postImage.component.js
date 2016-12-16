@@ -61,6 +61,7 @@ class PostImage extends Component {
     let lastPost = false;
     let linkEl = null;
     if (post) {
+      // console.log(post.image);
       if (post.image) image = post.image.match('http') ? post.image : 'https:' + post.image;
       if (post.link) {
         link = post.link;
