@@ -54,7 +54,7 @@ class Profile extends Component {
     };
     this.userData = null;
     this.userId = null;
-    this.showHeader  = this.showHeader.bind(this);
+    this.showHeader = this.showHeader.bind(this);
     this.hideHeader = this.hideHeader.bind(this);
     this.needsReload = new Date().getTime();
     this.tabs = [
@@ -67,19 +67,17 @@ class Profile extends Component {
     if (this.props.scene) {
       this.myProfile = false;
       this.userId = this.props.scene.id;
-      this.userName = this.props.scene.title;
-      this.userData = this.props.users.selectedUserData[this.userName];
+      // this.userName = this.props.scene.title;
+      this.userData = this.props.users.selectedUserData[this.userId];
 
       InteractionManager.runAfterInteractions(() => {
         if (!this.userData) this.loadUser();
         this.loadContent = true;
         // this.setState({});
       });
-
     } else {
       this.myProfile = true;
       this.userId = this.props.auth.user._id;
-      this.userName = this.props.auth.userName;
       this.userData = this.props.auth.user;
     }
   }
@@ -88,7 +86,7 @@ class Profile extends Component {
     if (this.myProfile) {
       this.userData = next.auth.user;
     } else {
-      this.userData = next.users.selectedUserData[this.userName];
+      this.userData = next.users.selectedUserData[this.userId];
     }
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();
@@ -104,7 +102,7 @@ class Profile extends Component {
   }
 
   loadUser() {
-    this.props.actions.getSelectedUser(this.userName);
+    this.props.actions.getSelectedUser(this.userId);
   }
 
   load(view, length) {

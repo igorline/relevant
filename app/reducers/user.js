@@ -37,7 +37,7 @@ export default function auth(state = initialState, action) {
         ...state,
         selectedUserData: {
           ...state.selectedUserData,
-          [action.payload.name]: action.payload,
+          [action.payload._id]: action.payload,
         }
       };
     }
@@ -66,7 +66,7 @@ export default function auth(state = initialState, action) {
         selectedUserData: {
           ...state.selectedUserData,
           [action.payload._id]: {
-            ...state.selectedUserData[action.payload.name],
+            ...state.selectedUserData[action.payload._id],
             ...action.payload,
           }
         }
