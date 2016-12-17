@@ -45,7 +45,6 @@ class SignUp extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log(this, 'signup this')
     if (nextProps.auth.statusText && !this.props.auth.statusText) {
       AlertIOS.alert(nextProps.auth.statusText);
     }
@@ -62,11 +61,11 @@ class SignUp extends Component {
   componentWillUnmount() {
   }
 
-  checkUsername() {
-    console.log('check username');
-    if (this.state.name) {
+  checkUsername(name) {
+    let toCheck = name || this.state.name;
+    if (toCheck) {
       let pattern = /^[a-zA-Z0-9-_]+$/;
-      let string = this.state.name;
+      let string = toCheck;
       let match = pattern.test(string);
       if (match) {
         this.props.actions.checkUsername(string)
@@ -145,13 +144,15 @@ class SignUp extends Component {
   }
 
   devSkip() {
+    let randomNum = String(Math.floor(Math.random() * 1000));
+    let randomName = 'test' + randomNum;
+    let randomEmail = 'test' +  randomNum + '@test.com';
     this.setState({
-      name: 'test',
-      phone: '212',
-      email: 'test3@test.com',
+      name: randomName,
+      email: randomEmail,
       password: 'test',
       cPassword: 'test'
-    })
+    });
 
     // this.props.actions.setPreUser(user);
     // this.props.actions.push({
@@ -184,9 +185,9 @@ class SignUp extends Component {
                 autoCorrect={false}
                 keyboardType={'default'}
                 clearTextOnFocus={false}
-                onBlur={() => this.checkUsername()}
+                // onBlur={() => this.checkUsername()}
                 placeholder="username"
-                onChangeText={name => this.setState({ name })}
+                onChangeText={(name) => { this.setState({ name }); this.checkUsername(name) }}
                 value={this.state.name}
                 style={styles.fieldsInput}
               />
