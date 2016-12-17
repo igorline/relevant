@@ -21,6 +21,7 @@ class SinglePostComments extends Component {
     this.state = {
       inputHeight: 0,
       editing: false,
+      reloading: false,
     };
     this.post = null;
     this.id = null;
@@ -33,7 +34,6 @@ class SinglePostComments extends Component {
     this.total = null;
     this.renderHeader = this.renderHeader.bind(this);
     this.toggleEditing = this.toggleEditing.bind(this);
-    this.reloading = false;
     this.reload = this.reload.bind(this);
     this.scrollToComment = this.scrollToComment.bind(this);
   }
@@ -62,6 +62,7 @@ class SinglePostComments extends Component {
   }
 
   componentWillReceiveProps(next) {
+    console.log('new comments dif?', next.comments.commentsById[this.id] !== this.props.comments.commentsById[this.id]);
     if (next.comments.commentsById[this.id] !== this.props.comments.commentsById[this.id]) {
       let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
@@ -76,6 +77,7 @@ class SinglePostComments extends Component {
           if (this.total > 10) this.longFormat = true;
         }
       }
+      this.setState({ reloading: false });
     }
   }
 
@@ -115,7 +117,12 @@ class SinglePostComments extends Component {
 
   renderHeader() {
     let headerEl = [];
-    headerEl.push(<SinglePostComponent key={0} post={this.postId} {...this.props} styles={styles} />);
+    headerEl.push(<SinglePostComponent
+      key={0}
+      post={this.postId}
+      {...this.props}
+      styles={styles}
+    />);
 
     if (this.longFormat) {
       if (this.comments && this.total) {
@@ -162,7 +169,7 @@ class SinglePostComments extends Component {
         renderHeader={this.renderHeader}
         refreshControl={
           <RefreshControl
-            refreshing={this.reloading}
+            refreshing={this.state.reloading}
             onRefresh={this.reload}
             tintColor="#000000"
             colors={['#000000', '#000000', '#000000']}

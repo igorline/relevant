@@ -52,7 +52,7 @@ class SinglePost extends Component {
   }
 
   setEditing(bool) {
-    this.setState({ editing: bool })
+    this.setState({ editing: bool });
   }
 
   reload() {
@@ -93,10 +93,10 @@ class SinglePost extends Component {
           <Text style={[styles.font15, styles.active]}>Submit</Text>
         </TouchableHighlight>
       </View>);
-    } else {
-      return null;
     }
+    return null;
   }
+
 
   createComment() {
     if (!this.state.comment.length) {

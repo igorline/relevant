@@ -33,7 +33,6 @@ export function invest(token, amount, post, investingUser) {
       })
     })
     .then((response) => {
-      console.log(response, 'response here');
       if (response.ok) {
         dispatch(investNotification(post, investingUser));
         return true;
@@ -51,8 +50,8 @@ export function invest(token, amount, post, investingUser) {
       }
     })
     .catch((error) => {
-      AlertIOS.alert(error);
-      return false;
+      console.log(error, 'error here');
+      AlertIOS.alert(error.message);
     });
   };
 }
