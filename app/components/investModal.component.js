@@ -20,12 +20,15 @@ class InvestModal extends Component {
   }
 
   invest(investAmount) {
+    // console.log(investAmount, 'amount');
+    // console.log(this.props.post, 'post');
+    // console.log(this.props.auth.token, 'token');
+    // console.log(this.props.auth.user, 'user');
+
     this.props.actions.invest(this.props.auth.token, investAmount, this.props.post, this.props.auth.user)
     .then((results) => {
       if (results) {
         this.props.actions.triggerAnimation('invest');
-      } else {
-        console.log('investment failed');
       }
     });
     this.props.toggleFunction(false);

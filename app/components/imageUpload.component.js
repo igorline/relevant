@@ -131,21 +131,20 @@ class ImageUpload extends Component {
     styles = { ...localStyles, ...globalStyles };
 
     return (
-    <View style={{ padding: 20, flex: 1 }}>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        {this.renderImage()}
+      <View style={{ padding: 20, flex: 1 }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          {this.renderImage()}
+        </View>
+        {this.renderButtons()}
+        <TouchableHighlight
+          onPress={() => this.createUser(this.props.auth.preUser)}
+          underlayColor={'transparent'}
+        >
+          <Text style={styles.signInText}>
+            <Text style={{ color: '#3E3EFF' }}>Skip</Text> for now
+          </Text>
+        </TouchableHighlight>
       </View>
-      {this.renderButtons()}
-
-      <TouchableHighlight
-        onPress={() => this.createUser(this.props.auth.preUser)}
-        underlayColor={'transparent'}
-      >
-        <Text style={styles.signInText}>
-          <Text style={{ color: '#3E3EFF' }}>Skip</Text> for now
-        </Text>
-      </TouchableHighlight>
-     </View>
     );
   }
 }
