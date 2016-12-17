@@ -328,6 +328,7 @@ export function addUpdatedComment(updatedComment) {
 }
 
 export function editPost(post, authToken) {
+  let response;
   return function(dispatch) {
     return fetch(process.env.API_SERVER+'/api/post?access_token='+authToken, {
       credentials: 'include',
@@ -338,10 +339,17 @@ export function editPost(post, authToken) {
       },
       body: JSON.stringify(post)
     })
-    .then(response => response.json())
+    .then(_response => {
+      response = _response;
+      return response.json();
+    })
     .then((responseJSON) => {
-      dispatch(updatePost(responseJSON));
-      return true;
+      if (response.status === 200) {
+        dispatch(updatePost(responseJSON));
+        return true;
+      } else {
+        return false;
+      }
     })
     .catch((error) => {
       console.log(error, 'error');
