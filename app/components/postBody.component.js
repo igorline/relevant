@@ -21,7 +21,7 @@ class PostBody extends Component {
   }
 
   setTag(tag) {
-    this.props.actions.selectTag(tag);
+    this.props.actions.selectTag({ _id: tag.replace('#', '') });
     this.props.navigator.changeTab('discover');
   }
 
@@ -69,20 +69,16 @@ class PostBody extends Component {
 
       bodyEl = Object.keys(bodyObj).map((key, i) => {
         let text = bodyObj[key].text;
+
         if (bodyObj[key].hashtag) {
-          let tagObj = null;
-          self.props.post.tags.forEach((tag) => {
-            if (tag.name === text.substr(1, text.length)) {
-              tagObj = tag;
-            }
-          });
           return (<Text
             key={i}
-            onPress={tagObj ? () => self.setTag(tagObj) : null}
+            onPress={() => this.setTag(bodyObj[i].text)}
             style={styles.active}
           >
             {bodyObj[key].text}
           </Text>);
+
         } else if (bodyObj[key].mention) {
           return (<Text
             key={i}
