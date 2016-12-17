@@ -25,7 +25,7 @@ export default class Tags extends Component {
   }
 
   renderTag(tag, selected) {
-    let name = `#${tag.name}`;
+    let name = `#${tag._id}`;
     if (tag.category) name = tag.emoji + tag.categoryName;
     return (
       <Text

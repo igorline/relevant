@@ -71,7 +71,7 @@ class CreatePostContainer extends Component {
     let props = this.props.createPost;
     let postBody = {
       ...props.editPost,
-      tags: props.postTags,
+      tags: props.bodyTags,
       body: props.postBody,
       mentions: props.bodyMentions,
     };
@@ -136,7 +136,7 @@ class CreatePostContainer extends Component {
           this.image = results.url;
           this.uploadPost();
         } else {
-          console.log(results)
+          console.log(results);
           // this.image = props.urlPreview ? props.urlPreview.image : null;
           // this.uploadPost();
         }
@@ -153,7 +153,7 @@ class CreatePostContainer extends Component {
     let props = this.props.createPost;
     let postBody = {
       link: props.postUrl,
-      tags: props.postTags,
+      tags: props.bodyTags,
       body: props.postBody,
       title: props.urlPreview ? props.urlPreview.title : null,
       description: props.urlPreview ? props.urlPreview.description : null,
