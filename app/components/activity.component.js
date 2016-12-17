@@ -120,9 +120,15 @@ class SingleActivity extends Component {
                   style={styles.active}
                   onPress={() => this.setSelected(singleActivity.byUser)}
                 >
-                  {singleActivity.byUser.name}
+                  @{singleActivity.byUser.name}
                 </Text>
-                &nbsp;mentioned you in a post
+                &nbsp;mentioned you in a&nbsp;
+                <Text
+                  style={styles.active}
+                  onPress={() => this.goToPost(singleActivity.post)}
+                >
+                  post
+                </Text>
               </Text>
               <Text
                 onPress={() => this.goToPost(singleActivity.post)}

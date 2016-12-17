@@ -58,7 +58,7 @@ class Activity extends Component {
   scrollToTop() {
     if (this.tabs[this.state.view].component) {
       let view = this.tabs[this.state.view].component.listview;
-      view.scrollTo({ y: 0, animated: true });
+      if (view) view.scrollTo({ y: 0, animated: true });
     }
   }
 

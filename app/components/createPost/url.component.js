@@ -39,9 +39,9 @@ export default class UrlComponent extends Component {
   }
 
   setMention(user) {
-    let bodyMentions = [...this.props.bodyMentions, user._id];
+    // let bodyMentions = [...this.props.bodyMentions, user._id];
     let postBody = this.props.postBody.replace(this.mention, '@' + user.name);
-    this.props.actions.setCreaPostState({ bodyMentions, postBody });
+    this.props.actions.setCreaPostState({ postBody });
     this.props.actions.setUserSearch([]);
   }
 
@@ -65,17 +65,27 @@ export default class UrlComponent extends Component {
     }
     else this.props.actions.setUserSearch([]);
 
-    let bodyTags = postBody.match(/#\S+/g);
-    if (bodyTags) {
-      bodyTags = bodyTags.map(tag =>
-        tag.replace('#', '').replace(/(,|\.)\s*$/, ''));
-    }
+    let bodyTags = words.map((word) => {
+      if (word.match(/^#\S+/g)) {
+        return word.replace('#', '').replace(/(,|\.)\s*$/, '');
+      }
+      return null;
+    })
+    .filter(el => el !== null);
+
+    let bodyMentions = words.map((word) => {
+      if (word.match(/^@\S+/g)) {
+        return word.replace('@', '').replace(/(,|\.)\s*$/, '');
+      }
+      return null;
+    })
+    .filter(el => el !== null);
 
     if (this.props.urlPreview && this.props.postUrl && postBody.match(this.props.postUrl)) {
       postBody = postBody.replace(`${this.props.postUrl}`, '').trim();
     }
 
-    this.props.actions.setCreaPostState({ postBody, bodyTags });
+    this.props.actions.setCreaPostState({ postBody, bodyTags, bodyMentions });
   }
 
   createPreview(postUrl) {
