@@ -170,6 +170,10 @@ class Comments extends Component {
   render() {
     let commentsEl = null;
     let loadMoreEl = null;
+    let offset = 49;
+    if (this.props.users.search.length) {
+      offset = 149;
+    }
 
     if (this.dataSource) {
       commentsEl = (<ListView
@@ -184,7 +188,7 @@ class Comments extends Component {
         automaticallyAdjustContentInsets={false}
         onEndReached={!this.longFormat ? this.loadMore : null}
         onEndReachedThreshold={100}
-        contentInset={{ bottom: 49 }}
+        contentInset={{ bottom: offset }}
         ref={(scrollView) => {
           this.scrollView = scrollView;
         }}

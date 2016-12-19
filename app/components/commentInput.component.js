@@ -34,7 +34,7 @@ class CommentInput extends Component {
     let usersArr = null;
     if (this.props.users.search) {
       if (this.props.users.search.length) {
-        parentEl = (<View style={{ padding: 5, position: 'absolute', bottom: Math.min(100, this.state.inputHeight) , left: 0, right: 0, backgroundColor: 'white', borderTopWidth: 1, borderTopColor: '#F0F0F0' }}>
+        parentEl = (<View style={{position: 'absolute', bottom: Math.min(100, this.state.inputHeight), left: 0, right: 0, backgroundColor: 'white', borderTopWidth: 1, borderTopColor: '#F0F0F0' }}>
           <UserSearchComponent setSelected={this.setMention} users={this.props.users.search} />
         </View>)
       }
