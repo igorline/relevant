@@ -88,7 +88,7 @@ class SinglePostComments extends Component {
   }
 
   toggleEditing(bool, num) {
-    console.log('toggleEditing', this.props);
+    // console.log('toggleEditing', this.props);
     if (bool) this.scrollToComment(num);
     if (this.props.singlePostEditing) this.props.singlePostEditing(bool);
     this.setState({ editing: bool });
@@ -142,6 +142,11 @@ class SinglePostComments extends Component {
   }
 
   renderComments() {
+    let offset = 49;
+    if (this.props.users.search.length) {
+      offset = 149;
+    }
+
     if (this.comments) {
       return (<ListView
         enableEmptySections
@@ -154,7 +159,7 @@ class SinglePostComments extends Component {
         keyboardDismissMode={'on-drag'}
         automaticallyAdjustContentInsets={false}
         contentContainerStyle={{ paddingTop: 10, paddingRight: 10, paddingLeft: 10 }}
-        contentInset={{ bottom: 49 }}
+        contentInset={{ bottom: offset }}
         onEndReached={!this.longFormat ? this.loadMoreComments : null}
         onEndReachedThreshold={100}
         ref={(scrollView) => {
