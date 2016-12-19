@@ -15,11 +15,16 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import * as tagActions from '../actions/tag.actions';
 import * as postActions from '../actions/post.actions';
+import * as userActions from '../actions/user.actions';
 import { globalStyles, fullHeight } from '../styles/global';
 import Comment from '../components/comment.component';
 import CustomSpinner from '../components/CustomSpinner.component';
 import ErrorComponent from '../components/error.component';
+// import UserName from '../components/userNameSmall.component';
+// import UserSearchComponent from '../components/createPost/userSearch.component';
+import CommentInput from '../components/commentInput.component';
 
 let styles;
 
@@ -28,10 +33,9 @@ class Comments extends Component {
     super(props, context);
     const self = this;
     this.state = {
-      comment: '',
+      comment: null,
       visibleHeight: Dimensions.get('window').height,
       scrollToBottomY: null,
-      inputHeight: 50,
       editing: false,
       reloading: false,
     };
@@ -49,7 +53,6 @@ class Comments extends Component {
     this.longFormat = false;
     this.total = 0;
     this.dataSource = null;
-    this.createComment = this.createComment.bind(this);
   }
 
   componentWillMount() {
@@ -111,21 +114,6 @@ class Comments extends Component {
     this.setState({});
   }
 
-  createComment() {
-    if (!this.state.comment.length) {
-      AlertIOS.alert('no comment');
-    }
-    let comment = this.state.comment.replace(/^(?=\n)$|^\s*|\s*$|\n\n+/gm, '');
-    let commentObj = {
-      post: this.id,
-      text: comment,
-      user: this.props.auth.user._id
-    };
-    this.props.actions.createComment(this.props.auth.token, commentObj);
-    this.setState({ comment: '' });
-    this.textInput.blur();
-  }
-
   toggleEditing(bool, num) {
     if (bool) this.scrollToComment(num);
     this.setState({ editing: bool });
@@ -181,7 +169,6 @@ class Comments extends Component {
 
   render() {
     let commentsEl = null;
-    let inputEl = null;
     let loadMoreEl = null;
 
     if (this.dataSource) {
@@ -197,7 +184,7 @@ class Comments extends Component {
         automaticallyAdjustContentInsets={false}
         onEndReached={!this.longFormat ? this.loadMore : null}
         onEndReachedThreshold={100}
-        contentInset={{ bottom: Math.min(100, this.state.inputHeight) }}
+        contentInset={{ bottom: 49 }}
         ref={(scrollView) => {
           this.scrollView = scrollView;
         }}
@@ -220,41 +207,6 @@ class Comments extends Component {
       />);
     }
 
-    if (!this.state.editing) {
-      inputEl = (<View
-        style={[
-          styles.commentInputParent,
-          { height: Math.min(100, this.state.inputHeight) }
-        ]}
-      >
-        <TextInput
-          ref={(c) => { this.textInput = c; }}
-          style={[
-            styles.commentInput,
-            styles.font15
-          ]}
-          placeholder="Enter comment..."
-          multiline
-          onChangeText={comment => this.setState({ comment })}
-          value={this.state.comment}
-          returnKeyType="default"
-          onContentSizeChange={(event) => {
-            let h = event.nativeEvent.contentSize.height;
-            this.setState({
-              inputHeight: Math.max(50, h)
-            });
-          }}
-        />
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={[styles.commentSubmit]}
-          onPress={() => this.createComment()}
-        >
-          <Text style={[styles.font15, styles.active]}>Submit</Text>
-        </TouchableHighlight>
-      </View>);
-    }
-
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
@@ -263,7 +215,7 @@ class Comments extends Component {
       >
         <View style={styles.commentsContainer}>
           {commentsEl}
-          {inputEl}
+          <CommentInput postId={this.id} editing={this.state.editing} {...this.props} />
           {loadMoreEl}
           <CustomSpinner visible={!this.dataSource && !this.props.error.comments} />
           <ErrorComponent parent={'comments'} reloadFunction={this.reload} />
@@ -288,6 +240,8 @@ function mapStateToProps(state) {
     auth: state.auth,
     comments: state.comments,
     error: state.error,
+    users: state.user,
+    tags: state.tags,
   };
 }
 
@@ -296,6 +250,8 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(
       {
         ...postActions,
+        ...userActions,
+        ...tagActions,
       },
       dispatch),
   };

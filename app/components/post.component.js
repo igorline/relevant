@@ -61,6 +61,7 @@ class Post extends Component {
     let post;
     let posts;
     let imageEl = null;
+    let scrollEnabled;
 
     if (!this.props.auth.user) return null;
 
@@ -68,11 +69,11 @@ class Post extends Component {
       posts = Array.isArray(this.props.post) ? this.props.post : [this.props.post];
       posts = posts.filter(p => typeof p === 'string');
       if (!posts.length) return null;
+      scrollEnabled = posts.length > 1;
       post = this.props.posts.posts[posts[0]];
       if (!post) return null;
       if (post.image) imageEl = <PostImage post={post} />;
     }
-
 
     return (
       <View style={[styles.postContainer]}>
@@ -80,7 +81,7 @@ class Post extends Component {
 
         <ScrollView
           horizontal
-          scrollEnabled={posts.length > 1}
+          scrollEnabled={scrollEnabled}
           // scrollEnabled={true}
           decelerationRate={'fast'}
           showsHorizontalScrollIndicator={false}

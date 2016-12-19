@@ -30,7 +30,8 @@ export default class UserSearchComponent extends Component {
       <ListView
         automaticallyAdjustContentInsets={false}
         keyboardShouldPersistTaps
-        style={{ height: 100 }}
+        contentContainerStyle={{ backgroundColor: 'white' }}
+        // style={{ height: 100 }}
         dataSource={dataSource}
         renderRow={rowData => this.renderRow(rowData)}
       />
