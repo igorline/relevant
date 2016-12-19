@@ -15,15 +15,18 @@ import * as authActions from '../actions/auth.actions';
 import * as userActions from '../actions/user.actions';
 import * as postActions from '../actions/post.actions';
 import * as statsActions from '../actions/stats.actions';
+import * as tagActions from '../actions/tag.actions';
 import * as investActions from '../actions/invest.actions';
 import * as createPostActions from '../actions/createPost.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import Post from '../components/post.component';
 import * as animationActions from '../actions/animation.actions';
 import CustomSpinnerRelative from '../components/customSpinnerRelative.component';
+import * as navigationActions from '../actions/navigation.actions';
 import ErrorComponent from '../components/error.component';
 import SinglePostComponent from '../components/singlePost.component';
 import SinglePostComments from '../components/singlePostComments.component';
+import CommentInput from '../components/commentInput.component';
 
 let styles;
 
@@ -33,11 +36,10 @@ class SinglePost extends Component {
     this.state = {
       inputHeight: 0,
       editing: false,
+      comment: null,
     };
-    this.createComment = this.createComment.bind(this);
     this.setEditing = this.setEditing.bind(this);
     this.reload = this.reload.bind(this);
-    this.renderInput = this.renderInput.bind(this);
   }
 
   componentWillMount() {
@@ -59,60 +61,6 @@ class SinglePost extends Component {
     this.props.actions.getSelectedPost(this.postId);
   }
 
-  renderInput() {
-    if (!this.state.editing) {
-      return (<View
-        style={[
-          styles.commentInputParent,
-          { height: Math.min(100, this.state.inputHeight) }
-        ]}
-      >
-        <TextInput
-          ref={(c) => { this.textInput = c; }}
-          style={[
-            styles.commentInput,
-            styles.font15
-          ]}
-          placeholder="Enter comment..."
-          multiline
-          onChangeText={comment => this.setState({ comment })}
-          value={this.state.comment}
-          returnKeyType="default"
-          onContentSizeChange={(event) => {
-            let h = event.nativeEvent.contentSize.height;
-            this.setState({
-              inputHeight: Math.max(50, h)
-            });
-          }}
-        />
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={[styles.commentSubmit]}
-          onPress={() => this.createComment()}
-        >
-          <Text style={[styles.font15, styles.active]}>Submit</Text>
-        </TouchableHighlight>
-      </View>);
-    }
-    return null;
-  }
-
-
-  createComment() {
-    if (!this.state.comment.length) {
-      AlertIOS.alert('no comment');
-    }
-    let comment = this.state.comment.replace(/^(?=\n)$|^\s*|\s*$|\n\n+/gm, '');
-    let commentObj = {
-      post: this.postId,
-      text: comment,
-      user: this.props.auth.user._id
-    };
-    this.props.actions.createComment(this.props.auth.token, commentObj);
-    this.setState({ comment: '' });
-    this.textInput.blur();
-  }
-
   render() {
     let dataEl = null;
 
@@ -124,7 +72,6 @@ class SinglePost extends Component {
         post={this.postId}
         {...this.props}
         singlePostEditing={this.setEditing}
-        inputHeight={this.state.inputHeight}
         styles={styles}
       />);
     }
@@ -142,7 +89,7 @@ class SinglePost extends Component {
               !this.props.error.singlepost}
           />
           <ErrorComponent parent={'singlepost'} reloadFunction={this.reload} />
-          {this.renderInput()}
+          <CommentInput postId={this.postId} editing={this.state.editing} {...this.props}  />
         </View>
       </KeyboardAvoidingView>
     );
@@ -163,8 +110,11 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
+    user: state.user,
     error: state.error,
     comments: state.comments,
+    users: state.user,
+    tags: state.tags,
   };
 }
 
@@ -172,12 +122,14 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators({
       ...statsActions,
+      ...tagActions,
       ...authActions,
       ...postActions,
       ...animationActions,
       ...investActions,
       ...userActions,
       ...createPostActions,
+      ...navigationActions,
     }, dispatch),
   };
 }
