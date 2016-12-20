@@ -86,6 +86,7 @@ const localStyles = StyleSheet.create({
   repost: {
     paddingLeft: 10,
     paddingRight: 10,
+    marginTop: 10,
     // borderWidth: StyleSheet.hairlineWidth,
   },
   cLabel: {
@@ -93,11 +94,6 @@ const localStyles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 10,
     textAlign: 'center',
-  },
-  comment: {
-    marginLeft: 25,
-    marginRight: 4,
-    marginBottom: 10,
   },
   postInner: {
     paddingLeft: 15,

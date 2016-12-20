@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { globalStyles } from '../styles/global';
 import * as utils from '../utils';
-
+import Percent from '../components/percent.component';
 
 let styles;
 
@@ -52,14 +52,21 @@ class DiscoverUser extends Component {
     let relevanceEl = null;
     let oldRel = null;
     const relevance = user.relevance || 0;
-    percentEl = (<Text style={[{ textAlign: 'right' }, styles.active, styles.bebas, styles.quarterLetterSpacing]}>0%</Text>);
 
-    percent = utils.percent.percentChange(user);
-    if (percent > 0) {
-      percentEl = (<Text style={[{ textAlign: 'right' }, styles.active, styles.bebas]}>▲{percent}%</Text>);
-    } else if (percent < 0) {
-      percentEl = (<Text style={[{ color: 'red', textAlign: 'right' }, styles.bebas]}> ▼{percent}%</Text>);
-    }
+    // percentEl = (<Text style={[{ textAlign: 'right' }, styles.bebas, styles.quarterLetterSpacing]}>
+    //   0%
+    // </Text>);
+
+    // percent = utils.percent.percentChange(user);
+    // if (percent > 0) {
+    //   percentEl = (<Text style={[{ textAlign: 'right', color: '#196950' }, styles.bebas]}>
+    //     ▲{this.abbreviateNumber(percent)}%
+    //   </Text>);
+    // } else if (percent < 0) {
+    //   percentEl = (<Text style={[{ color: 'red', textAlign: 'right' }, styles.bebas]}>
+    //     ▼{this.abbreviateNumber(percent)}%
+    //   </Text>);
+    // }
 
     if (user.image) {
       image = user.image;
@@ -91,7 +98,7 @@ class DiscoverUser extends Component {
           </View>
           <View style={[styles.rightDiscoverUser]}>
             <View>
-              {percentEl}
+              <Percent user={user} />
             </View>
             <View>
               {relevanceEl}
@@ -130,7 +137,7 @@ const localStyles = StyleSheet.create({
   rightDiscoverUser: {
     flex: 1,
     alignItems: 'flex-end',
-    justifyContent: 'flex-end'
+    justifyContent: 'center'
   }
 });
 

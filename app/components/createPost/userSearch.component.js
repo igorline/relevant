@@ -13,13 +13,13 @@ export default class UserSearchComponent extends Component {
 
   renderRow(rowData) {
     return (
-      <View style={{ paddingTop: 4, paddingBottom: 4 }}>
+      <View style={{ padding: 5 }}>
         <UserName
           user={rowData}
           setSelected={this.props.setSelected}
         />
       </View>
-      );
+    );
   }
 
   render() {
@@ -30,7 +30,8 @@ export default class UserSearchComponent extends Component {
       <ListView
         automaticallyAdjustContentInsets={false}
         keyboardShouldPersistTaps
-        style={{ height: 100 }}
+        contentContainerStyle={{ backgroundColor: 'white' }}
+        style={{ maxHeight: 100 }}
         dataSource={dataSource}
         renderRow={rowData => this.renderRow(rowData)}
       />

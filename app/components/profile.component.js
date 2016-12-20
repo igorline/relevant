@@ -5,10 +5,10 @@ import {
   View,
   Image,
 } from 'react-native';
-import * as subscriptionActions from '../actions/subscription.actions';
 import * as utils from '../utils';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import EmptyList from '../components/emptyList.component';
+import Percent from '../components/percent.component';
 
 let defaultImg = require('../assets/images/default_user.jpg');
 let localStyles;
@@ -26,17 +26,15 @@ class ProfileComponent extends Component {
   componentDidMount() {
     if (this.props.user) {
       if (this.props.user._id) {
-        // this.props.actions.getStats(this.props.user._id);
-        subscriptionActions.getSubscriptionData('follower', this.props.user._id).then((response) => {
+        this.props.actions.getSubscriptionData('follower', this.props.user._id).then((response) => {
           this.setState({ following: response.data });
         });
-        subscriptionActions.getSubscriptionData('following', this.props.user._id).then((response) => {
+        this.props.actions.getSubscriptionData('following', this.props.user._id).then((response) => {
           this.setState({ followers: response.data });
         });
       }
     }
   }
-
 
   abbreviateNumber(num) {
     let fixed = 0;
@@ -63,7 +61,6 @@ class ProfileComponent extends Component {
     let userImageEl = null;
     let following = null;
     let relevanceEl = null;
-    let percent = 0;
 
     if (this.state.followers) followers = this.state.followers;
     if (this.state.following) following = this.state.following;
@@ -82,38 +79,13 @@ class ProfileComponent extends Component {
       userImageEl = (<Image source={defaultImg} style={styles.uploadAvatar} />);
     }
 
-    percent = utils.percent.percentChange(user);
-
-    if (percent === 0) {
-      relevanceEl = (<Text style={[styles.libre, { fontSize: 23 }]}>
-        📈 Relevance
-        <Text style={[styles.bebas]}>
-          &nbsp;{this.abbreviateNumber(relevance)} 0%
-        </Text>
-      </Text>);
-    }
-    if (percent > 0) {
-      relevanceEl = (<Text style={[styles.libre, { fontSize: 19 }]}>
-        📈 Relevance
-        <Text style={styles.bebas}>
-          &nbsp;{this.abbreviateNumber(relevance)}&nbsp;
-          <Text style={{ color: '#196950' }}>
-            ▲{this.abbreviateNumber(percent)}%
-          </Text>
-        </Text>
-      </Text>);
-    }
-    if (percent < 0) {
-      relevanceEl = (<Text style={[styles.libre, { fontSize: 19 }]}>
-        📈 Relevance
-        <Text style={styles.bebas}>
-          &nbsp;{this.abbreviateNumber(relevance)}&nbsp;
-          <Text style={{ color: 'red' }}>
-            ▼{this.abbreviateNumber(percent)}%
-          </Text>
-        </Text>
-      </Text>);
-    }
+    relevanceEl = (<Text style={[styles.libre, { fontSize: 19 }]}>
+      📈 Relevance
+      <Text style={styles.bebas}>
+        &nbsp;{this.abbreviateNumber(relevance)}
+        &nbsp;<Percent user={user} />
+      </Text>
+    </Text>);
 
     return (
       <View style={[{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 10 }]}>
