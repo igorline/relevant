@@ -275,7 +275,7 @@ class CardContainer extends Component {
         onNavigateBack={this.back}
         renderScene={this.renderScene}
         renderHeader={this.renderHeader}
-        enableGestures={true}
+        enableGestures
       />
     );
   }

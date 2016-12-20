@@ -240,7 +240,7 @@ class Application extends Component {
           direction={'horizontal'}
           navigationState={scene}
           renderScene={this.renderScene}
-          enableGestures={false}
+          enableGestures
           style={{ backgroundColor: 'white' }}
         />
         <InvestAnimation {...this.props} />

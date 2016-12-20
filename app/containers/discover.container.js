@@ -42,6 +42,7 @@ class Discover extends Component {
     this.changeView = this.changeView.bind(this);
     this.offset = 0;
     this.needsReload = new Date().getTime();
+    this.renderSeparator = this.renderSeparator.bind(this);
     this.tabs = [
       { id: 0, title: 'New', type: 'new' },
       { id: 1, title: 'Top', type: 'top' },
@@ -119,10 +120,15 @@ class Discover extends Component {
         posts = metaPost.commentary;
       } else {
         posts = rowData;
+        if (rowData === null) return;
       }
       return (<Post post={posts} {...this.props} styles={styles} />);
     }
     return (<DiscoverUser user={rowData} {...this.props} styles={styles} />);
+  }
+
+  renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
+    return <View key={rowID} style={styles.separator} />;
   }
 
   getViewData(props, view) {
@@ -156,6 +162,7 @@ class Discover extends Component {
           YOffset={this.state.headerHeight}
           onScroll={this.onScroll}
           needsReload={this.needsReload}
+          // renderSeparator={this.renderSeparator}
         />
       );
     });
@@ -178,7 +185,7 @@ class Discover extends Component {
     }
 
     return (
-      <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
+      <View style={[styles.fullContainer, { backgroundColor: 'hsl(0,0%,90%)' }]}>
         {dataEl}
         {headerEl}
         <ErrorComponent parent={'discover'} reloadFunction={this.load} />

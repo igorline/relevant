@@ -249,10 +249,10 @@ localStyles = StyleSheet.create({
   },
   profileContainer: {
     position: 'relative',
-    backgroundColor: 'white',
     flex: 1,
     flexGrow: 1,
-    alignItems: 'stretch'
+    alignItems: 'stretch',
+    backgroundColor: 'hsl(0,0%,90%)',
   },
   wrap: {
     flexDirection: 'row',

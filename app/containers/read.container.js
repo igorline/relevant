@@ -146,7 +146,7 @@ class Read extends Component {
     // }
 
     return (
-      <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
+      <View style={[styles.fullContainer]}>
         {thirstyHeader}
         {feedEl}
         <ErrorComponent parent={'read'} reloadFunction={this.load} />

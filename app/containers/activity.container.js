@@ -135,7 +135,7 @@ class Activity extends Component {
     );
 
     return (
-      <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
+      <View style={[styles.fullContainer]}>
         {tabsEl}
         {activityEl}
         <ErrorComponent parent={'activity'} reloadFunction={this.load} />
