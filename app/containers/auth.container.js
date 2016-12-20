@@ -7,10 +7,10 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Auth from '../components/auth.component';
-import Login from '../components/login.component';
-import SignUp from '../components/signup.component';
-import ImageUpload from '../components/imageUpload.component';
+import Auth from '../components/auth/auth.component';
+import Login from '../components/auth/login.component';
+import SignUp from '../components/auth/signup.component';
+import ImageUpload from '../components/auth/imageUpload.component';
 import * as authActions from '../actions/auth.actions';
 import * as navigationActions from '../actions/navigation.actions';
 

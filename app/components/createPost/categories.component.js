@@ -7,10 +7,10 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as tagActions from '../actions/tag.actions';
-import * as createPostActions from '../actions/createPost.actions';
-import * as navigationActions from '../actions/navigation.actions';
-import { globalStyles } from '../styles/global';
+import * as tagActions from '../../actions/tag.actions';
+import * as createPostActions from '../../actions/createPost.actions';
+import * as navigationActions from '../../actions/navigation.actions';
+import { globalStyles } from '../../styles/global';
 
 class Categories extends Component {
   constructor(props, context) {

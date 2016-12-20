@@ -11,10 +11,12 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from 'react-native';
-import { globalStyles, fullHeight, fullWidth } from '../styles/global';
+import { globalStyles, fullHeight, fullWidth } from '../../styles/global';
 
 let localStyles;
 let styles;
+
+const NAME_PATTERN = /^[a-zA-Z0-9-_]+$/;
 
 class SignUp extends Component {
   constructor(props, context) {
@@ -30,6 +32,7 @@ class SignUp extends Component {
       email: null,
       password: null,
       cPassword: null,
+      nameError: null,
     };
   }
 
@@ -62,27 +65,31 @@ class SignUp extends Component {
   }
 
   checkUsername(name) {
+    this.nameError = null;
     let toCheck = name || this.state.name;
     if (toCheck) {
-      let pattern = /^[a-zA-Z0-9-_]+$/;
       let string = toCheck;
-      let match = pattern.test(string);
+      let match = NAME_PATTERN.test(string);
       if (match) {
         this.props.actions.checkUsername(string)
-        .then(results => {
+        .then((results) => {
           if (!results) {
             this.usernameExists = true;
-            AlertIOS.alert('Username already in use');
-          } else {
-            this.usernameExists = false;
+            this.nameError = 'This username is already taken';
           }
-          console.log('username good?', results);
+          else this.usernameExists = false;
+          this.setState();
         });
       } else {
-        AlertIOS.alert('username can only contain letters, numbers, dashes and underscores');
+        // AlertIOS.alert('username can only contain letters, numbers, dashes and underscores');
+        this.nameError = 'username can only contain letters, numbers, dashes and underscores';
       }
     }
   }
+
+  // userError() {
+  //   if (this.usernameExists) AlertIOS.alert('Username already in use');
+  // }
 
   back() {
     this.props.actions.pop(this.props.navigation.main);
@@ -97,7 +104,12 @@ class SignUp extends Component {
     };
 
     if (this.usernameExists) {
-      AlertIOS.alert('username already exist');
+      AlertIOS.alert('Username already in use');
+      return;
+    }
+
+    if (!NAME_PATTERN.test(this.state.name)) {
+      AlertIOS.alert('username can only contain letters, numbers, dashes and underscores');
       return;
     }
 
@@ -185,14 +197,17 @@ class SignUp extends Component {
                 autoCorrect={false}
                 keyboardType={'default'}
                 clearTextOnFocus={false}
-                // onBlur={() => this.checkUsername()}
+                // onBlur={() => this.userError()}
                 placeholder="username"
                 onChangeText={(name) => { this.setState({ name }); this.checkUsername(name) }}
                 value={this.state.name}
                 style={styles.fieldsInput}
               />
             </View>
-
+            { this.nameError ?
+              <Text style={styles.error}>{this.nameError}</Text> :
+              null
+            }
             <View style={styles.fieldsInputParent}>
               <TextInput
                 autoCapitalize={'none'}
@@ -251,14 +266,14 @@ class SignUp extends Component {
           >
             <Text style={styles.largeButtonText}>next</Text>
           </TouchableHighlight>
-                <TouchableHighlight
-        onPress={this.devSkip}
-        underlayColor={'transparent'}
-      >
-        <Text style={styles.signInText}>
-          <Text style={{ color: '#3E3EFF' }}>devSkip</Text>
-        </Text>
-      </TouchableHighlight>
+          <TouchableHighlight
+            onPress={this.devSkip}
+            underlayColor={'transparent'}
+          >
+            <Text style={styles.signInText}>
+              <Text style={{ color: '#3E3EFF' }}>devSkip</Text>
+            </Text>
+          </TouchableHighlight>
         </ScrollView>
       </KeyboardAvoidingView>
     );
@@ -270,8 +285,13 @@ SignUp.propTypes = {
 };
 
 localStyles = StyleSheet.create({
+  error: {
+    color: 'red',
+    textAlign: 'center'
+  }
 });
 
+styles = { ...globalStyles, ...localStyles };
 
 export default SignUp;
 

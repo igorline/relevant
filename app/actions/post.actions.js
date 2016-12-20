@@ -80,7 +80,8 @@ export function getFeed(skip, tag) {
     })
     .catch((error) => {
       console.log('Feed error ', error);
-      dispatch(errorActions.setError('read', true, error.message));
+      if(!error.message.match("Get fail for key: token"))
+        dispatch(errorActions.setError('read', true, error.message));
     });
   };
 }

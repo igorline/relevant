@@ -8,12 +8,12 @@ import {
   RefreshControl,
   ListView
 } from 'react-native';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 import PostButtons from './postButtons.component';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostImage from './postImage.component';
-import Comment from './comment.component';
+import Comment from '../comment.component';
 
 let styles;
 

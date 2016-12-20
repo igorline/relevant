@@ -22,7 +22,6 @@
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		22ED31BD968C4665B9DE83D5 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A1787E34623C4D149698AD8F /* libRNImagePicker.a */; };
 		2A13C5CB1DE4EAD100705F90 /* LibreCaslonDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A13C5CA1DE4EAD100705F90 /* LibreCaslonDisplay-Regular.ttf */; };
-		2A2529571DF09D0200A7D903 /* BebasNeue Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2A2529561DF09D0200A7D903 /* BebasNeue Regular.otf */; };
 		2A43980C1DFF3B6200E7FC9B /* helvetica-outline.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2A43980B1DFF3B6200E7FC9B /* helvetica-outline.otf */; };
 		2A46C3471DEA396400DAFC70 /* Georgia.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A46C3461DEA396400DAFC70 /* Georgia.ttf */; };
 		2A94225D1D9D80F3000671FA /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A94225C1D9D80DB000671FA /* libRCTPushNotification.a */; };
@@ -52,6 +51,13 @@
 		FB983E391DA1E21900DAF00D /* libRCTUserDefaults.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB983E341DA1E1E400DAF00D /* libRCTUserDefaults.a */; };
 		FB983E3A1DA1E21900DAF00D /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB88BEA21D9ED842002D0069 /* libReactNativeShareExtension.a */; };
 		FB983E3D1DA2044900DAF00D /* libRCTUserDefaults.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB983E341DA1E1E400DAF00D /* libRCTUserDefaults.a */; };
+		FBD8EECC1E087A670074EE90 /* helvetica-outline.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2A43980B1DFF3B6200E7FC9B /* helvetica-outline.otf */; };
+		FBD8EECD1E087A6A0074EE90 /* Georgia.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A46C3461DEA396400DAFC70 /* Georgia.ttf */; };
+		FBD8EECE1E087A6C0074EE90 /* LibreCaslonDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A13C5CA1DE4EAD100705F90 /* LibreCaslonDisplay-Regular.ttf */; };
+		FBD8EED81E088B510074EE90 /* BebasNeuerelevantRegular-2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FBD8EED71E088B510074EE90 /* BebasNeuerelevantRegular-2.ttf */; };
+		FBD8EEDA1E088BF30074EE90 /* BebasNeueRelevant Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FBD8EED91E088BF30074EE90 /* BebasNeueRelevant Bold.ttf */; };
+		FBD8EEDB1E08EAFF0074EE90 /* BebasNeuerelevantRegular-2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FBD8EED71E088B510074EE90 /* BebasNeuerelevantRegular-2.ttf */; };
+		FBD8EEDC1E08EB020074EE90 /* BebasNeueRelevant Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FBD8EED91E088BF30074EE90 /* BebasNeueRelevant Bold.ttf */; };
 		FBDAAA7B1DFF89C800A4363B /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A9422631D9D827E000671FA /* libART.a */; };
 		FBDAAA7C1DFF89C800A4363B /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A2AAA741DB812D900AF4CC8 /* libRNImagePicker.a */; };
 		FBDAAA7D1DFF89C800A4363B /* libRNOverlay.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A2AAA771DB812D900AF4CC8 /* libRNOverlay.a */; };
@@ -307,7 +313,6 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = relevantNative/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		2A13C5CA1DE4EAD100705F90 /* LibreCaslonDisplay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "LibreCaslonDisplay-Regular.ttf"; path = "../app/assets/fonts/LibreCaslonDisplay-Regular.ttf"; sourceTree = "<group>"; };
-		2A2529561DF09D0200A7D903 /* BebasNeue Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "BebasNeue Regular.otf"; path = "../app/assets/fonts/BebasNeue Regular.otf"; sourceTree = "<group>"; };
 		2A43980B1DFF3B6200E7FC9B /* helvetica-outline.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "helvetica-outline.otf"; path = "../app/assets/fonts/helvetica-outline.otf"; sourceTree = "<group>"; };
 		2A46C3461DEA396400DAFC70 /* Georgia.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Georgia.ttf; path = ../app/assets/fonts/Georgia.ttf; sourceTree = "<group>"; };
 		2A8277D21D9EE8D000CC62EA /* relevantNative.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = relevantNative.entitlements; path = relevantNative/relevantNative.entitlements; sourceTree = "<group>"; };
@@ -331,6 +336,8 @@
 		FB88BE9D1D9ED842002D0069 /* ReactNativeShareExtension.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeShareExtension.xcodeproj; path = "../node_modules/react-native-share-extension/ios/ReactNativeShareExtension.xcodeproj"; sourceTree = "<group>"; };
 		FB983E261DA1E1E400DAF00D /* RCTUserDefaults.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTUserDefaults.xcodeproj; path = "../node_modules/react-native-user-defaults/RCTUserDefaults.xcodeproj"; sourceTree = "<group>"; };
 		FB983E3C1DA1E45200DAF00D /* Relevant.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Relevant.entitlements; sourceTree = "<group>"; };
+		FBD8EED71E088B510074EE90 /* BebasNeuerelevantRegular-2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "BebasNeuerelevantRegular-2.ttf"; path = "../app/assets/fonts/BebasNeuerelevantRegular-2.ttf"; sourceTree = "<group>"; };
+		FBD8EED91E088BF30074EE90 /* BebasNeueRelevant Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "BebasNeueRelevant Bold.ttf"; path = "../app/assets/fonts/BebasNeueRelevant Bold.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -586,8 +593,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				FBD8EED91E088BF30074EE90 /* BebasNeueRelevant Bold.ttf */,
+				FBD8EED71E088B510074EE90 /* BebasNeuerelevantRegular-2.ttf */,
 				2A43980B1DFF3B6200E7FC9B /* helvetica-outline.otf */,
-				2A2529561DF09D0200A7D903 /* BebasNeue Regular.otf */,
 				2A46C3461DEA396400DAFC70 /* Georgia.ttf */,
 				2A13C5CA1DE4EAD100705F90 /* LibreCaslonDisplay-Regular.ttf */,
 				13B07FAE1A68108700A75B9A /* relevantNative */,
@@ -1049,10 +1057,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
-				2A2529571DF09D0200A7D903 /* BebasNeue Regular.otf in Resources */,
 				2A43980C1DFF3B6200E7FC9B /* helvetica-outline.otf in Resources */,
 				2A46C3471DEA396400DAFC70 /* Georgia.ttf in Resources */,
 				FB816A931DCD2B52003C4E63 /* Images.xcassets in Resources */,
+				FBD8EED81E088B510074EE90 /* BebasNeuerelevantRegular-2.ttf in Resources */,
+				FBD8EEDA1E088BF30074EE90 /* BebasNeueRelevant Bold.ttf in Resources */,
 				2A13C5CB1DE4EAD100705F90 /* LibreCaslonDisplay-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1061,7 +1070,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBD8EEDB1E08EAFF0074EE90 /* BebasNeuerelevantRegular-2.ttf in Resources */,
 				FB88BE861D9ED742002D0069 /* MainInterface.storyboard in Resources */,
+				FBD8EEDC1E08EB020074EE90 /* BebasNeueRelevant Bold.ttf in Resources */,
+				FBD8EECC1E087A670074EE90 /* helvetica-outline.otf in Resources */,
+				FBD8EECE1E087A6C0074EE90 /* LibreCaslonDisplay-Regular.ttf in Resources */,
+				FBD8EECD1E087A6A0074EE90 /* Georgia.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

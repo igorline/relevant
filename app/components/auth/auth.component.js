@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 
-import { globalStyles } from '../styles/global';
+import { globalStyles } from '../../styles/global';
 
 let styles;
 
@@ -68,7 +68,7 @@ class Auth extends Component {
         ]}
       >
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Image source={require('../assets/images/logo.png')} resizeMode={'contain'} style={{ width: 330, height: 100 }} />
+          <Image source={require('../../assets/images/logo.png')} resizeMode={'contain'} style={{ width: 330, height: 100 }} />
         </View>
 
         <View style={styles.authDivider}>

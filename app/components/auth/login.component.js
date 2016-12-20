@@ -11,7 +11,7 @@ import {
   ScrollView,
   KeyboardAvoidingView
 } from 'react-native';
-import { globalStyles, fullHeight, fullWidth } from '../styles/global';
+import { globalStyles, fullHeight, fullWidth } from '../../styles/global';
 
 let localStyles;
 let styles;
@@ -32,11 +32,11 @@ class Login extends Component {
   componentDidMount() {
   }
 
-  componentWillUpdate(nextProps) {
-    if (nextProps.auth.statusText && !this.props.auth.statusText) {
-      AlertIOS.alert(nextProps.auth.statusText);
-    }
-  }
+  // componentWillUpdate(nextProps) {
+  //   if (nextProps.auth.statusText && !this.props.auth.statusText) {
+  //     AlertIOS.alert(nextProps.auth.statusText);
+  //   }
+  // }
 
   componentWillUnmount() {
     this.props.actions.setAuthStatusText();

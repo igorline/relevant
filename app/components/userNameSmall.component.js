@@ -18,7 +18,7 @@ export default function (props) {
     >
       <View style={styles.postInfo}>
         <Image source={{ uri: props.user.image }} style={styles.userImage} />
-        <Text style={[styles.font15, styles.darkGray, styles.bebas]}>
+        <Text style={[styles.font17, styles.darkGray, styles.bebas]}>
           {props.user.name}
         </Text>
       </View>

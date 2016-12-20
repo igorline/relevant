@@ -18,7 +18,7 @@ import * as userActions from '../actions/user.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import UrlComponent from '../components/createPost/url.component';
 import CreatePostComponent from '../components/createPost/createPost.component';
-import Categories from '../components/categories.component';
+import Categories from '../components/createPost/categories.component';
 import * as utils from '../utils';
 
 import { globalStyles } from '../styles/global';
@@ -47,6 +47,11 @@ class CreatePostContainer extends Component {
 
   back() {
     this.props.actions.pop('home');
+    if (this.props.step === 'url') {
+      if (this.props.createPost.repost || this.props.createPost.edit) {
+        this.props.actions.clearCreatePost();
+      }
+    }
   }
 
   next() {

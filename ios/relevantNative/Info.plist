@@ -33,8 +33,9 @@
 	<string>Upload photos for profile and posts</string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>BebasNeue Regular.otf</string>
 		<string>LibreCaslonDisplay-Regular.ttf</string>
+		<string>BebasNeuerelevantRegular-2.ttf</string>
+		<string>BebasNeueRelevant Bold.ttf</string>
 		<string>Georgia.ttf</string>
 		<string>helvetica-outline.otf</string>
 	</array>

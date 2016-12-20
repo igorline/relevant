@@ -208,6 +208,7 @@ function createUser(user) {
 }
 
 export function getUser(callback) {
+  console.log('trying to get user!')
   return (dispatch) => {
     function fetchUser(token) {
       //console.log('fetchUser', token);
@@ -248,7 +249,7 @@ export function getUser(callback) {
       fetchUser(newToken);
     })
     .catch((error) => {
-      console.log('auth error ', error);
+      console.log('no token');
     });
   };
 }
