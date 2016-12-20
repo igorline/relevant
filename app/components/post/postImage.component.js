@@ -62,7 +62,7 @@ class PostImage extends Component {
       <TouchableHighlight
         style={{ flex: 1 }}
         underlayColor={'transparent'}
-        onPress={link ? () => self.openLink(link) : null}
+        onPress={link ? () => this.openLink(link) : null}
       >
         <View style={styles.postImageContainer}>
           <View style={{ flex: 1 }}>
