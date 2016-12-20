@@ -30,7 +30,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    flexGrow: 1
+    flexGrow: 1,
   }
 });
 

@@ -13,8 +13,6 @@ import { globalStyles } from '../styles/global';
 import UserName from './userNameSmall.component';
 import UserSearchComponent from './createPost/userSearch.component';
 
-let moment = require('moment');
-
 let styles;
 
 class CommentInput extends Component {
@@ -112,7 +110,10 @@ class CommentInput extends Component {
           ]}
           placeholder="Enter comment..."
           multiline
-          onChangeText={comment => { this.processInput(comment, false); this.setState({ comment }); }}
+          onChangeText={(comment) => {
+            this.processInput(comment, false);
+            this.setState({ comment });
+          }}
           value={this.state.comment}
           returnKeyType="default"
           onContentSizeChange={(event) => {

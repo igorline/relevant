@@ -44,8 +44,6 @@ const font = StyleSheet.create({
   bebas: {
     fontFamily: 'BebasNeueRelevantRegular',
     fontWeight: 'normal',
-    // marginBottom: -3,
-    // lineHeight: 24,
     letterSpacing: 0.5,
   },
   libre: {
@@ -196,14 +194,20 @@ const layout = StyleSheet.create({
   },
   activityRight: {
     flex: 0.40,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
   },
   activityLeft: {
     flex: 0.60,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   singleActivity: {
     padding: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#F0F0F0',
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: '#F0F0F0',
     width: fullWidth,
     justifyContent: 'space-between',
     flexDirection: 'row',

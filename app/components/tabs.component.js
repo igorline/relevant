@@ -62,7 +62,6 @@ const localStyles = StyleSheet.create({
   inactiveBorder: {
     borderBottomColor: '#242425',
     borderBottomWidth: 1,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
   }
 });
 
