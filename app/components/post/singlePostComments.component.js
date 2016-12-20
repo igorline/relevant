@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 import Comment from '../comment.component';
-import SinglePostComponent from './singlePost.component';
+import SinglePostComponent from './post.component';
 
 let styles;
 
@@ -118,6 +118,7 @@ class SinglePostComments extends Component {
   renderHeader() {
     let headerEl = [];
     headerEl.push(<SinglePostComponent
+      singlePost
       key={0}
       post={this.postId}
       {...this.props}

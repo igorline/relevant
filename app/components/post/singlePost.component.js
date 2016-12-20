@@ -1,33 +1,25 @@
 import React, { Component } from 'react';
 import {
-  ScrollView,
   StyleSheet,
   View,
-  Text,
-  InteractionManager,
-  RefreshControl,
-  ListView
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 import PostButtons from './postButtons.component';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostImage from './postImage.component';
-import Comment from '../comment.component';
+// import Comment from '../comment.component';
 
 let styles;
 
 class SinglePostComponent extends Component {
   constructor(props) {
     super(props);
-    this.post = null;
-    this.id = null;
     this.renderPost = this.renderPost.bind(this);
   }
 
   componentWillMount() {
     this.id = this.props.post;
-
     if (this.props.posts.posts[this.props.post]) {
       this.post = this.props.posts.posts[this.props.post];
     }
@@ -47,6 +39,7 @@ class SinglePostComponent extends Component {
         {imageEl}
         <PostInfo navigator={this.props.navigator} post={this.post} />
         <PostBody expanded {...this.props} post={this.post} editing={false} />
+        <PostButtons {...this.props} post={this.post} comments={null} />
       </View>);
     }
     return null;
