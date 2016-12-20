@@ -19,6 +19,7 @@ class Post extends Component {
     let post;
     let posts;
     let imageEl = null;
+    let separator = <View style={styles.separator}/>;
 
     if (!this.props.auth.user) return null;
 
@@ -61,20 +62,22 @@ class Post extends Component {
     }
 
     return (
-      <View style={[styles.postContainer]}>
-        <View style={styles.postInner}>
-          {imageEl}
-          {repostEl}
-          <View style={postStyle}>
-            <PostInfo navigator={this.props.navigator} post={post} />
-            <PostBody {...this.props} post={post} editing={false} />
-            <PostButtons {...this.props} post={post} comments={post.comments || null} />
+      <View>
+        <View style={[styles.postContainer]}>
+          <View style={styles.postInner}>
+            {imageEl}
+            {repostEl}
+            <View style={postStyle}>
+              <PostInfo navigator={this.props.navigator} post={post} />
+              <PostBody {...this.props} post={post} editing={false} />
+              <PostButtons {...this.props} post={post} comments={post.comments || null} />
+            </View>
           </View>
+
+          {label}
+          {commentary}
         </View>
-
-        {label}
-        {commentary}
-
+        {!this.props.singlePost ? separator : null}
       </View>
     );
   }
@@ -102,14 +105,6 @@ const localStyles = StyleSheet.create({
   postContainer: {
     paddingBottom: 25,
     paddingTop: 15,
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#231f20',
-    borderTopColor: '#231f20',
-    marginBottom: 2,
-    marginTop: 2,
-
   },
   tagsRow: {
     flexDirection: 'row',

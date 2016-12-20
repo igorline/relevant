@@ -193,6 +193,7 @@ class Application extends Component {
         this.props.actions.reloadTab();
         // reload all other tabs on focus
         this.props.actions.reloadAllTabs();
+        this.props.actions.resetRoutes();
       }
     } else if (currentAppState === 'background') {
       this.backgroundTime = new Date().getTime();
@@ -239,7 +240,7 @@ class Application extends Component {
           direction={'horizontal'}
           navigationState={scene}
           renderScene={this.renderScene}
-          enableGestures={false}
+          enableGestures
           style={{ backgroundColor: 'white' }}
         />
         <InvestAnimation {...this.props} />

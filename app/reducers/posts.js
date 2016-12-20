@@ -76,7 +76,22 @@ export default function post(state = initialState, action) {
 
     case types.SET_POSTS: {
       const type = action.payload.type;
-      return Object.assign({}, state, {
+
+      // console.log(action.payload.data.result[type]);
+
+      // if (!action.payload.data.result[type].length) {
+      //   console.log('no more')
+      //   return {
+      //     ...state,
+      //     loaded: {
+      //       ...state.loaded,
+      //       [type]: true
+      //     }
+      //   };
+      // }
+
+      return {
+        ...state,
         [type]: [
           ...state[type].slice(0, action.payload.index),
           ...action.payload.data.result[type],
@@ -93,7 +108,7 @@ export default function post(state = initialState, action) {
           ...state.loaded,
           [type]: true
         }
-      });
+      };
     }
 
     case types.GET_POSTS: {

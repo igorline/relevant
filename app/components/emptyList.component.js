@@ -30,6 +30,7 @@ const localStyles = StyleSheet.create({
   },
   emptyList: {
     flex: 1.8,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },

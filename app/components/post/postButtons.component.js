@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   ActionSheetIOS,
 } from 'react-native';
-import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
+import { globalStyles, fullWidth, fullHeight, blue } from '../../styles/global';
 import InvestModal from './investModal.component.js';
 import Share from 'react-native-share';
 
@@ -61,6 +61,7 @@ class PostButtons extends Component {
     this.showActionSheet = this.showActionSheet.bind(this);
     this.openComments = this.openComments.bind(this);
     this.toggleExpanded = this.toggleExpanded.bind(this);
+    this.irrelevant = this.irrelevant.bind(this);
   }
 
   componentDidMount() {
@@ -135,12 +136,11 @@ class PostButtons extends Component {
   }
 
   onShare() {
-    const self = this;
     Share.open({
       title: 'Relevant',
-      url: self.props.post.link ? self.props.post.link : 'http://relevant-community.herokuapp.com/',
+      url: this.props.post.link ? this.props.post.link : 'http://relevant-community.herokuapp.com/',
       subject: 'Share Link',
-      message: self.props.post.title ? 'Relevant post: ' + self.props.post.title : 'Relevant post:'
+      message: this.props.post.title ? 'Relevant post: ' + this.props.post.title : 'Relevant post:'
     }, (e) => {
       console.log(e);
     });
@@ -217,7 +217,7 @@ class PostButtons extends Component {
   }
 
   irrelevant() {
-    // self.props.actions.irrelevant(self.props.auth.token, self.props.post._id);
+    // this.props.actions.irrelevant(this.props.auth.token, this.props.post._id);
     this.props.actions.invest(this.props.auth.token, -50, this.props.post, this.props.auth.user)
     .then((results) => {
       if (results) {
@@ -230,18 +230,16 @@ class PostButtons extends Component {
   }
 
   toggleExpanded() {
-    const self = this;
-    self.setState({ expanded: !self.state.expanded });
+    this.setState({ expanded: !this.state.expanded });
   }
 
   render() {
-    const self = this;
-    let commentString = 'Add comment';
     let investButtonEl = null;
     const expanded = this.props.expanded;
     let post = this.props.post;
     let investable = false;
-    let comments = null;
+    let irrelevantButton;
+
     if (post) {
       if (post.comments) comments = post.comments;
     }
@@ -258,43 +256,64 @@ class PostButtons extends Component {
     }
 
     if (investable) {
-        investButtonEl = (<TouchableWithoutFeedback
-          onPress={() => self.toggleModal()}
-          style={[styles.postButton, { marginRight: 5, backgroundColor: '#F0F0F0' }]}
+      investButtonEl = (<TouchableWithoutFeedback
+        onPress={() => this.toggleModal()}
+      >
+        <View style={styles.investButton}>
+
+          <Text style={[styles.font17, styles.bebasBold, styles.postButtonText]}>
+            💰Invest
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>);
+
+      irrelevantButton = (
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          style={styles.postButton}
+          onPress={this.irrelevant}
         >
-          <View style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          >
-            <Text style={[styles.font10, styles.postButtonText]}>
-              Invest
-            </Text>
-            <Text style={styles.font10}>💰</Text></View>
-        </TouchableWithoutFeedback>);
+          <Text style={[styles.font17, styles.strokeText, styles.postButtonText]}>
+           irrelevant
+          </Text>
+        </TouchableHighlight>
+      );
+    } else {
+      investButtonEl = <View style={[styles.investButton, { opacity: 0 }]} />;
+      irrelevantButton = <View style={[styles.postButton, { opacity: 0 }]} />;
     }
+
+     // <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={this.goToPost}>
+     //    <Text style={[styles.font10, styles.postButtonText]}>
+     //     Read more
+     //    </Text>
+     //  </TouchableHighlight>
+     //  <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => this.openComments()}>
+     //    <Text style={[{ marginRight: 5 }, styles.font10, styles.postButtonText]}>
+     //      {commentString}
+     //    </Text>
+     //  </TouchableHighlight>
 
     return (<View style={styles.postButtons}>
       {investButtonEl}
 
-      <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={this.goToPost}>
-        <Text style={[styles.font10, styles.postButtonText]}>
-         Read more
-        </Text>
-      </TouchableHighlight>
-      <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => self.openComments()}>
-        <Text style={[{ marginRight: 5 }, styles.font10, styles.postButtonText]}>
-          {commentString}
-        </Text>
-      </TouchableHighlight>
-      <TouchableHighlight underlayColor={'transparent'} style={styles.postButton} onPress={() => self.showActionSheet()}>
-        <Text style={[styles.font10, styles.postButtonText]}>
+      {irrelevantButton}
+
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        style={[styles.postButton, { flex: 0.1 }]}
+        onPress={() => this.showActionSheet()}
+      >
+        <Text style={[styles.font17, styles.strokeText, styles.postButtonText]}>
           ...
         </Text>
       </TouchableHighlight>
 
-      <InvestModal toggleFunction={this.toggleModal} post={this.props.post} visible={this.state.modalVisible} />
+      <InvestModal
+        toggleFunction={this.toggleModal}
+        post={this.props.post}
+        visible={this.state.modalVisible}
+      />
     </View>);
   }
 }
@@ -302,10 +321,26 @@ class PostButtons extends Component {
 export default PostButtons;
 
 const localStyles = StyleSheet.create({
+  investButton: {
+    borderWidth: 1,
+    backgroundColor: 'white',
+    borderColor: 'black',
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginRight: 10,
+    height: 30,
+    flex: 0.4,
+
+    shadowColor: '#4d4eff',
+    shadowOffset: { width: 2, height: 2 },
+    shadowRadius: 0,
+    shadowOpacity: 1,
+
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
   postButtons: {
     flexDirection: 'row',
-    paddingLeft: 15,
-    paddingRight: 15,
     paddingBottom: 10,
     paddingTop: 10,
     justifyContent: 'space-between',
@@ -313,16 +348,20 @@ const localStyles = StyleSheet.create({
     flexWrap: 'wrap'
   },
   postButton: {
-    backgroundColor: 'white',
-    padding: 10,
-    flex: 1,
+    // borderWidth: 1,
+    // borderColor: 'black',
+    flex: 0.4,
+    padding: 3,
+
+    paddingLeft: 10,
+    paddingRight: 10,
+
     height: 30,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center'
   },
   postButtonText: {
-    color: '#808080'
+    backgroundColor: 'transparent'
   },
 });
 

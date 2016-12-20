@@ -6,6 +6,9 @@ import {
 const fullWidth = Dimensions.get('window').width;
 const fullHeight = Dimensions.get('window').height;
 
+const darkGrey = '#231f20';
+const blue = '#4d4eff';
+
 const font = StyleSheet.create({
   font10: {
     fontSize: 10,
@@ -46,6 +49,13 @@ const font = StyleSheet.create({
     fontWeight: 'normal',
     letterSpacing: 0.5,
   },
+  bebasBold: {
+    fontFamily: 'BebasNeueRelevantRegular',
+    fontWeight: 'bold',
+    // marginBottom: -3,
+    // lineHeight: 24,
+    letterSpacing: 0.5,
+  },
   libre: {
     fontFamily: 'Libre Caslon Display',
   },
@@ -76,7 +86,7 @@ const font = StyleSheet.create({
 
 const colors = StyleSheet.create({
   active: {
-    color: '#4D4EFF',
+    color: blue,
   },
   white: {
     color: '#fff',
@@ -228,7 +238,7 @@ const layout = StyleSheet.create({
   },
   activeBorder: {
     borderBottomWidth: 5,
-    borderBottomColor: '#007aff',
+    borderBottomColor: blue,
   },
   typeBar: {
     width: fullWidth
@@ -265,7 +275,7 @@ const layout = StyleSheet.create({
     justifyContent: 'center'
   },
   onlineCirc: {
-    backgroundColor: '#009E1D',
+    backgroundColor: blue,
     width: 7,
     height: 7,
     borderRadius: 3.5,
@@ -338,7 +348,8 @@ const layout = StyleSheet.create({
     backgroundColor: 'white'
   },
   fullContainer: {
-    flex: 1
+    flex: 1,
+    backgroundColor: 'hsl(0,0%,90%)',
   },
   row: {
     flexDirection: 'row',
@@ -398,11 +409,24 @@ const layout = StyleSheet.create({
     resizeMode: 'cover',
   },
   darkGrey: {
-    color: '#231f20'
+    color: darkGrey
+  },
+  separator: {
+    height: 12,
+    backgroundColor: 'hsl(0,0%,90%)',
+
+    // shadowColor: 'black',
+    // shadowOffset: { width: 0, height: 0 },
+    // shadowRadius: 2,
+    // shadowOpacity: 0.1,
+    // borderTopWidth: StyleSheet.hairlineWidth,
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderTopColor: 'grey',
+    // borderBottomColor: 'grey',
   }
 });
 
-const globalStyles = { ...colors, ...font, ...alignment, ...layout };
+const globalStyles = { ...colors, ...font, ...alignment, ...layout, blue };
 
 export {
   globalStyles,

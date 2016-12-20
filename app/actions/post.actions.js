@@ -173,6 +173,7 @@ export function getPosts(skip, tags, sort, limit) {
     })
     .then(response => response.json())
     .then((responseJSON) => {
+      // console.log(responseJSON);
       let data = normalize(
         { [type]: responseJSON },
         { [type]: arrayOf(metaPostSchema) }
