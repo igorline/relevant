@@ -208,10 +208,9 @@ function createUser(user) {
 }
 
 export function getUser(callback) {
-  console.log('trying to get user!')
   return (dispatch) => {
     function fetchUser(token) {
-      //console.log('fetchUser', token);
+      // console.log('fetchUser', token);
       fetch(process.env.API_SERVER + '/api/user/me', {
         credentials: 'include',
         method: 'GET',
