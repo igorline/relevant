@@ -193,6 +193,7 @@ class Application extends Component {
         this.props.actions.reloadTab();
         // reload all other tabs on focus
         this.props.actions.reloadAllTabs();
+        this.props.actions.resetRoutes();
       }
     } else if (currentAppState === 'background') {
       this.backgroundTime = new Date().getTime();
