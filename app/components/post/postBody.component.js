@@ -36,7 +36,7 @@ class PostBody extends Component {
   }
 
   render() {
-    const expanded = this.props.expanded;
+    const expanded = this.props.singlePost;
     let body = null;
     let post = this.props.post;
     if (post) {
@@ -48,7 +48,7 @@ class PostBody extends Component {
       let bodyObj = {};
 
       let textArr = body
-      .replace((/[@#]\S+/g), a => '`' + a + '`')
+      .replace((/[,.!?\s+]/g), a => '`' + a + '`')
       .split(/`/);
       textArr.forEach((section, i) => {
         bodyObj[i] = {};
@@ -65,14 +65,21 @@ class PostBody extends Component {
         }
       });
 
+      // console.log(bodyObj);
+      let breakText;
+
       bodyEl = Object.keys(bodyObj).map((key, i) => {
+
+        let space = '';
+        if (breakText) space = ' ';
+
         if (bodyObj[key].hashtag) {
           return (<Text
             key={key}
             onPress={() => this.setTag(bodyObj[key].text)}
             style={styles.active}
           >
-            {bodyObj[key].text}
+            {bodyObj[key].text + space}
           </Text>);
         } else if (bodyObj[key].mention) {
           return (<Text
@@ -80,16 +87,29 @@ class PostBody extends Component {
             onPress={() => this.setSelected(bodyObj[key].text)}
             style={styles.active}
           >
-            {bodyObj[key].text}
+            {bodyObj[key].text + space}
           </Text>);
         }
-        return (<Text key={i}>{bodyObj[key].text}</Text>);
+        if (i < 57 || expanded) {
+          return (<Text key={i}>{bodyObj[key].text}</Text>);
+        }
+        else if (!breakText) {
+          breakText = i;
+          return <Text key={'break'}>... </Text>;
+        }
       });
+
+      if (breakText) {
+        bodyEl.push(<Text style={[styles.bebasBold, styles.active]}>● READ MORE</Text>);
+      }
     }
+
+
 
     let numberOfLines = 9999999999999;
     let postStyle = styles.bodyText;
-    if (!expanded) numberOfLines = 10;
+    // if (!expanded) numberOfLines = 10;
+
     if (this.props.short) {
       numberOfLines = 2;
       postStyle = styles.commentaryText;
