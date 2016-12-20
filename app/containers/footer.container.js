@@ -72,8 +72,8 @@ class Tabs extends Component {
           icon={tab.regIcon}
           renderAsOriginal
           title={tab.title}
-          tintColor={'#5C00FF'}
-          style={[{paddingBottom: 48 }]}
+          tintColor={'#4d4eff'}
+          style={[{ paddingBottom: 48 }]}
           onPress={() => this.changeTab(tab.key)}
           selected={this.props.navigation.tabs.index === i}
           badge={badge}
@@ -84,7 +84,10 @@ class Tabs extends Component {
     });
     return (
       <TabBarIOS
-        translucent
+        translucent={false}
+        style={{ backgroundColor: 'white' }}
+        // unselectedTintColor={'#231f20'}
+        tintColor={'#4d4eff'}
       >
         {tabs}
       </TabBarIOS>

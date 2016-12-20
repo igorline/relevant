@@ -93,10 +93,10 @@ class ProfileComponent extends Component {
       </Text>);
     }
     if (percent > 0) {
-      relevanceEl = (<Text style={[styles.libre, { fontSize: 23 }]}>
+      relevanceEl = (<Text style={[styles.libre, { fontSize: 19 }]}>
         📈 Relevance
-        <Text style={{ fontFamily: 'Bebas Neue' }}>
-          &nbsp;{this.abbreviateNumber(relevance)}
+        <Text style={styles.bebas}>
+          &nbsp;{this.abbreviateNumber(relevance)}&nbsp;
           <Text style={{ color: '#196950' }}>
             ▲{this.abbreviateNumber(percent)}%
           </Text>
@@ -104,10 +104,10 @@ class ProfileComponent extends Component {
       </Text>);
     }
     if (percent < 0) {
-      relevanceEl = (<Text style={[styles.libre, { fontSize: 23 }]}>
+      relevanceEl = (<Text style={[styles.libre, { fontSize: 19 }]}>
         📈 Relevance
-        <Text style={{ fontFamily: 'Bebas Neue' }}>
-          &nbsp;{this.abbreviateNumber(relevance)}
+        <Text style={styles.bebas}>
+          &nbsp;{this.abbreviateNumber(relevance)}&nbsp;
           <Text style={{ color: 'red' }}>
             ▼{this.abbreviateNumber(percent)}%
           </Text>
@@ -132,11 +132,18 @@ class ProfileComponent extends Component {
         <View style={{ paddingLeft: 10 }}>
           {relevanceEl}
 
-          <Text style={[styles.libre, { fontSize: 25 }]}>
-            💵 Worth <Text style={[styles.bebas, { fontSize: 23 }]}>
+          <Text style={[styles.libre, { fontSize: 19 }]}>
+            💵 Worth <Text style={[styles.bebas, { fontSize: 19 }]}>
               {this.abbreviateNumber(balance)}
             </Text>
 
+          </Text>
+
+          <Text style={[styles.darkGray, styles.georgia]}>
+            Followers <Text style={[styles.active, styles.bebas]}>{followers ? followers.length : 0}</Text>
+          </Text>
+          <Text style={[styles.darkGray, styles.georgia]}>
+            Following <Text style={[styles.active, styles.bebas]}>{following ? following.length : 0}</Text>
           </Text>
 
           <View style={styles.onlineRow}>
@@ -145,13 +152,6 @@ class ProfileComponent extends Component {
               {user.online ? 'Online' : 'Offline'}
             </Text>
           </View>
-
-          <Text style={[styles.darkGray, styles.georgia]}>
-            Followers <Text style={[styles.active, styles.bebas]}>{followers ? followers.length : 0}</Text>
-          </Text>
-          <Text style={[styles.darkGray, styles.georgia]}>
-            Following <Text style={[styles.active, styles.bebas]}>{following ? following.length : 0}</Text>
-          </Text>
         </View>
       </View>
     );

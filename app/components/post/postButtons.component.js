@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   ActionSheetIOS,
 } from 'react-native';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 import InvestModal from './investModal.component.js';
 import Share from 'react-native-share';
 

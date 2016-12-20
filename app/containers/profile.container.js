@@ -9,7 +9,7 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { globalStyles } from '../styles/global';
-import Post from '../components/post.component';
+import Post from '../components/post/post.component';
 import ProfileComponent from '../components/profile.component';
 import ErrorComponent from '../components/error.component';
 import Investment from '../components/investment.component';

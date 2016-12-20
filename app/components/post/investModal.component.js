@@ -6,9 +6,9 @@ import {
   TouchableHighlight,
   Modal,
 } from 'react-native';
-import * as investActions from '../actions/invest.actions';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-import * as animationActions from '../actions/animation.actions';
+import * as investActions from '../../actions/invest.actions';
+import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
+import * as animationActions from '../../actions/animation.actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 let styles;

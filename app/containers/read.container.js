@@ -8,7 +8,7 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-import Post from '../components/post.component';
+import Post from '../components/post/post.component';
 import * as postActions from '../actions/post.actions';
 import * as createPostActions from '../actions/createPost.actions';
 import * as animationActions from '../actions/animation.actions';

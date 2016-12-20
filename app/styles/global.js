@@ -10,8 +10,14 @@ const font = StyleSheet.create({
   font10: {
     fontSize: 10,
   },
+  font14: {
+    fontSize: 14,
+  },
   font15: {
     fontSize: 15,
+  },
+  font17: {
+    fontSize: 17,
   },
   font20: {
     fontSize: 20,
@@ -23,24 +29,34 @@ const font = StyleSheet.create({
     fontSize: 40,
   },
   navTitle: {
-    fontSize: 20,
-    fontFamily: 'Bebas Neue',
+    fontSize: 22.5,
+    fontFamily: 'BebasNeueRelevantRegular',
+    fontWeight: 'bold',
+    letterSpacing: 0.15
   },
   shareHeader: {
     marginTop: -20,
   },
   navButton: {
     fontSize: 10,
-    fontFamily: 'Bebas Neue',
+    fontFamily: 'BebasNeueRelevantRegular',
   },
   bebas: {
-    fontFamily: 'Bebas Neue',
+    fontFamily: 'BebasNeueRelevantRegular',
+    fontWeight: 'normal',
+    // marginBottom: -3,
+    // lineHeight: 24,
+    letterSpacing: 0.5,
   },
   libre: {
     fontFamily: 'Libre Caslon Display',
   },
   georgia: {
     fontFamily: 'Georgia',
+  },
+  tabFont: {
+    fontFamily: 'Helvetica',
+    fontWeight: 'bold'
   },
   strokeText: {
     fontFamily: 'HelveticaNeueLTStd-BdOu',
@@ -162,7 +178,7 @@ const layout = StyleSheet.create({
     alignItems: 'center',
   },
   largeButtonText: {
-    fontFamily: 'Bebas Neue',
+    fontFamily: 'BebasNeueRelevantRegular',
     color: '#3E3EFF',
     fontSize: 29,
   },
@@ -174,7 +190,7 @@ const layout = StyleSheet.create({
     alignItems: 'center',
   },
   mediumButtonText: {
-    fontFamily: 'Bebas Neue',
+    fontFamily: 'BebasNeueRelevantRegular',
     color: '#3E3EFF',
     fontSize: 15,
   },
@@ -261,6 +277,7 @@ const layout = StyleSheet.create({
     marginRight: 5
   },
   onlineRow: {
+    marginTop: 5,
     flexDirection: 'row',
     alignItems: 'center'
   },
@@ -366,7 +383,7 @@ const layout = StyleSheet.create({
     shadowOffset: { width: -1, height: 1 },
     shadowRadius: 2,
     shadowOpacity: 0.1,
-    borderRadius: 10,
+    // borderRadius: 10,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'lightgrey'
   },
@@ -375,8 +392,10 @@ const layout = StyleSheet.create({
     width: 125,
     borderRadius: 62.5,
     resizeMode: 'cover',
-
   },
+  darkGrey: {
+    color: '#231f20'
+  }
 });
 
 const globalStyles = { ...colors, ...font, ...alignment, ...layout };

@@ -12,9 +12,9 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import { globalStyles, fullHeight, fullWidth } from '../styles/global';
-import { pickerOptions } from '../utils/pickerOptions';
-import * as utils from '../utils';
+import { globalStyles, fullHeight, fullWidth } from '../../styles/global';
+import { pickerOptions } from '../../utils/pickerOptions';
+import * as utils from '../../utils';
 
 let localStyles;
 let styles;
@@ -95,7 +95,7 @@ class ImageUpload extends Component {
     return (<Image
       style={{ width: 200, height: 200 }}
       resizeMode={'cover'}
-      source={require('../assets/images/camera.png')}
+      source={require('../../assets/images/camera.png')}
     />);
   }
 

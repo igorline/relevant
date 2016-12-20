@@ -15,7 +15,10 @@ const initialState = {
   newFeedAvailable: false,
   newPostsAvailable: false,
   userPosts: {},
-  metaPosts: {},
+  metaPosts: {
+    new: {},
+    top: {},
+  },
   posts: {}
 };
 
@@ -78,7 +81,13 @@ export default function post(state = initialState, action) {
           ...state[type].slice(0, action.payload.index),
           ...action.payload.data.result[type],
         ],
-        metaPosts: { ...state.metaPosts, ...action.payload.data.entities.metaPosts },
+        metaPosts: {
+          ...state.metaPosts,
+          [type]: {
+            ...state.metaPosts[type],
+            ...action.payload.data.entities.metaPosts
+          },
+        },
         posts: { ...state.posts, ...action.payload.data.entities.posts },
         loaded: {
           ...state.loaded,

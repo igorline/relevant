@@ -6,7 +6,7 @@ import {
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Post from '../components/post.component';
+import Post from '../components/post/post.component';
 import DiscoverUser from '../components/discoverUser.component';
 import DiscoverHeader from '../components/discoverHeader.component';
 import * as userActions from '../actions/user.actions';
@@ -113,7 +113,9 @@ class Discover extends Component {
     if (view !== 2) {
       let posts = [];
       if (!this.props.tags.selectedTags.length) {
-        let metaPost = this.props.posts.metaPosts[rowData];
+        let type = this.tabs[view].type;
+        // console.log(this.props.posts.metaPosts);
+        let metaPost = this.props.posts.metaPosts[type][rowData];
         posts = metaPost.commentary;
       } else {
         posts = rowData;

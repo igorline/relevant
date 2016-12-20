@@ -3,15 +3,13 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableHighlight,
   TouchableWithoutFeedback,
   Image,
-  Modal,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
-import UserName from './userNameSmall.component';
+import UserName from '../userNameSmall.component';
 
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles } from '../../styles/global';
 let styles;
 let moment = require('moment');
 
@@ -92,7 +90,6 @@ class PostInfo extends Component {
   render() {
     const self = this;
     let postUserImage = null;
-    let postUserImageEl = null;
     let postInfo = null;
     let post = null;
     let relevance = 0;
@@ -109,30 +106,30 @@ class PostInfo extends Component {
         if (postUser.name) name = postUser.name;
         if (postUser.image) postUserImage = postUser.image;
       }
-    };
-
-    // if (this.props.post.tags) {
-    //   tagsEl = [];
-    //   tags.forEach((tag, i) => {
-    //     tagsEl.push(<Text onPress={() => this.setTag(tag)} style={[styles.white, styles.font10]} key={i}>###{tag.name}</Text>);
-    //   });
-    // }
-
-    if (postUserImage) {
-      postUserImageEl = (<TouchableWithoutFeedback
-        onPress={() => this.setSelected(this.props.post.user)}
-      >
-        <Image source={{ uri: postUserImage }} style={styles.userImage} />
-      </TouchableWithoutFeedback>);
     }
 
     if (self.state.passed) {
       postInfo = (<View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-        <Text style={[styles.font10, styles.textRight, styles.bebas, styles.halfLetterSpacing, { marginRight: 5 }]}>💵&nbsp;
-          {this.abbreviateNumber(value)}
+        <Text
+          style={[
+            styles.font17,
+            styles.textRight,
+            styles.bebas,
+            styles.halfLetterSpacing,
+            { marginRight: 5 }
+          ]}
+        >
+          💵 {this.abbreviateNumber(value)}
         </Text>
-        <Text style={[styles.font10, styles.textRight, styles.bebas, styles.halfLetterSpacing]}>📈&nbsp;
-          {this.abbreviateNumber(relevance)}
+        <Text
+          style={[
+            styles.font17,
+            styles.textRight,
+            styles.bebas,
+            styles.halfLetterSpacing
+          ]}
+        >
+          📈 {this.abbreviateNumber(relevance)}
         </Text>
       </View>);
     } else {
@@ -140,11 +137,12 @@ class PostInfo extends Component {
         <View style={[styles.countdown]}>
           <Progress.Pie
             style={styles.progressCirc}
+            color={'#4d4eff'}
             progress={self.state.timePassedPercent}
-            size={15}
+            size={17}
           />
           <Text
-            style={[styles.font10, styles.textRight, styles.darkGray, styles.bebas]}
+            style={[styles.font17, styles.textRight, styles.darkGray, styles.bebas]}
           >
             Results in {self.state.timeUntilString}
           </Text>
@@ -184,10 +182,11 @@ const localStyles = StyleSheet.create({
   postHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: 15,
+    paddingBottom: 0,
   },
   progressCirc: {
+    marginTop: -3,
     marginRight: 5,
   },
   infoLeft: {

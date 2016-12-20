@@ -18,12 +18,12 @@ import * as statsActions from '../actions/stats.actions';
 import * as investActions from '../actions/invest.actions';
 import * as createPostActions from '../actions/createPost.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-import Post from '../components/post.component';
+import Post from '../components/post/post.component';
 import * as animationActions from '../actions/animation.actions';
 import CustomSpinnerRelative from '../components/customSpinnerRelative.component';
 import ErrorComponent from '../components/error.component';
-import SinglePostComponent from '../components/singlePost.component';
-import SinglePostComments from '../components/singlePostComments.component';
+import SinglePostComponent from '../components/post/singlePost.component';
+import SinglePostComments from '../components/post/singlePostComments.component';
 
 let styles;
 

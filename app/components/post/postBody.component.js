@@ -5,7 +5,7 @@ import {
   View,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { globalStyles } from '../styles/global';
+import { globalStyles } from '../../styles/global';
 
 let styles;
 
@@ -32,26 +32,24 @@ class PostBody extends Component {
   }
 
   goToPost() {
-    console.log('go to post');
     this.props.navigator.goToPost(this.props.post);
   }
 
   render() {
-    const self = this;
     const expanded = this.props.expanded;
-    let editing = this.props.editing;
     let body = null;
     let post = this.props.post;
     if (post) {
       if (post.body) body = post.body;
     }
     let bodyEl = null;
-    let bodyEditingEl = null;
 
     if (body) {
       let bodyObj = {};
 
-      let textArr = body.replace((/[@#]\S+/g), (a) => { return '`' + a + '`'; }).split(/`/);
+      let textArr = body
+      .replace((/[@#]\S+/g), a => '`' + a + '`')
+      .split(/`/);
       textArr.forEach((section, i) => {
         bodyObj[i] = {};
         bodyObj[i].text = section;
@@ -68,8 +66,6 @@ class PostBody extends Component {
       });
 
       bodyEl = Object.keys(bodyObj).map((key, i) => {
-        let text = bodyObj[key].text;
-
         if (bodyObj[key].hashtag) {
           return (<Text
             key={i}
@@ -78,7 +74,6 @@ class PostBody extends Component {
           >
             {bodyObj[key].text}
           </Text>);
-
         } else if (bodyObj[key].mention) {
           return (<Text
             key={i}
@@ -92,12 +87,31 @@ class PostBody extends Component {
       });
     }
 
+    let numberOfLines = 9999999999999;
+    let postStyle = styles.bodyText;
+    if (!expanded) numberOfLines = 10;
+    if (this.props.short) {
+      numberOfLines = 2;
+      postStyle = styles.commentaryText;
+    }
+
+    if (body.length < 120 && !this.props.short) {
+      postStyle = styles.shortBodyText;
+    }
+
+    if (this.props.repost) {
+      numberOfLines = 4;
+      postStyle = styles.bodyText;
+    }
+
     return (<TouchableWithoutFeedback onPress={this.goToPost}>
       <View style={[styles.postBody]}>
-        {body && !editing ?
-          <Text style={styles.darkGray} numberOfLines={expanded ? 999999 : 2}>{bodyEl}</Text>
-        : null}
-        {body && editing ? bodyEditingEl : null}
+        <Text
+          style={[styles.darkGrey, postStyle]}
+          numberOfLines={numberOfLines}
+        >
+          {bodyEl}
+        </Text>
       </View>
     </TouchableWithoutFeedback>);
   }
@@ -109,9 +123,22 @@ const localStyles = StyleSheet.create({
   postBody: {
     paddingTop: 10,
     paddingBottom: 10,
-    paddingLeft: 15,
-    paddingRight: 15,
   },
+  bodyText: {
+    fontFamily: 'Georgia',
+    fontSize: 38 / 2,
+    lineHeight: 55 / 2,
+  },
+  commentaryText: {
+    fontFamily: 'Georgia',
+    fontSize: 32 / 2,
+    lineHeight: 40 / 2,
+  },
+  shortBodyText: {
+    fontFamily: 'Libre Caslon Display',
+    fontSize: 63 / 2,
+    lineHeight: 82 / 2,
+  }
 });
 
 styles = { ...globalStyles, ...localStyles };

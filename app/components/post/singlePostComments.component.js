@@ -9,8 +9,8 @@ import {
   ListView,
   TouchableHighlight,
 } from 'react-native';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-import Comment from './comment.component';
+import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
+import Comment from '../comment.component';
 import SinglePostComponent from './singlePost.component';
 
 let styles;
