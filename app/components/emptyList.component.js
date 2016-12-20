@@ -29,10 +29,9 @@ const localStyles = StyleSheet.create({
     position: 'absolute',
   },
   emptyList: {
-    flex: 1,
+    flex: 1.8,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
   },
 });
 

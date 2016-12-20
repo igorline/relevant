@@ -50,6 +50,7 @@ class Read extends Component {
   }
 
   load(view, length) {
+   // console.log('load', this);
     if (!view) view = 0;
     if (!length) length = 0;
     const tag = this.props.posts.tag;
@@ -147,7 +148,7 @@ class Read extends Component {
 
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'white' }]}>
-        {thirstyHeader}
+        {/* thirstyHeader */}
         {feedEl}
         <ErrorComponent parent={'read'} reloadFunction={this.load} />
       </View>
