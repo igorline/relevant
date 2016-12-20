@@ -46,7 +46,7 @@ class SinglePostComponent extends Component {
       return (<View style={{}}>
         {imageEl}
         <PostInfo navigator={this.props.navigator} post={this.post} />
-        <PostBody {...this.props} post={this.post} editing={false} />
+        <PostBody expanded {...this.props} post={this.post} editing={false} />
       </View>);
     }
     return null;

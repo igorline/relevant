@@ -62,7 +62,7 @@ class SinglePostComments extends Component {
   }
 
   componentWillReceiveProps(next) {
-    console.log('new comments dif?', next.comments.commentsById[this.id] !== this.props.comments.commentsById[this.id]);
+    // console.log('new comments dif?', next.comments.commentsById[this.id] !== this.props.comments.commentsById[this.id]);
     if (next.comments.commentsById[this.id] !== this.props.comments.commentsById[this.id]) {
       let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
@@ -88,7 +88,7 @@ class SinglePostComments extends Component {
   }
 
   toggleEditing(bool, num) {
-    console.log('toggleEditing', this.props);
+    // console.log('toggleEditing', this.props);
     if (bool) this.scrollToComment(num);
     if (this.props.singlePostEditing) this.props.singlePostEditing(bool);
     this.setState({ editing: bool });
@@ -142,6 +142,11 @@ class SinglePostComments extends Component {
   }
 
   renderComments() {
+    let offset = 49;
+    if (this.props.users.search.length) {
+      offset = 149;
+    }
+
     if (this.comments) {
       return (<ListView
         enableEmptySections
@@ -154,7 +159,7 @@ class SinglePostComments extends Component {
         keyboardDismissMode={'on-drag'}
         automaticallyAdjustContentInsets={false}
         contentContainerStyle={{ paddingTop: 10, paddingRight: 10, paddingLeft: 10 }}
-        contentInset={{ bottom: Math.min(100, this.props.inputHeight) }}
+        contentInset={{ bottom: offset }}
         onEndReached={!this.longFormat ? this.loadMoreComments : null}
         onEndReachedThreshold={100}
         ref={(scrollView) => {

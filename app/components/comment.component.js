@@ -99,14 +99,67 @@ class Comment extends Component {
     );
   }
 
+  setTag(tag) {
+    console.log('set tag', tag);
+    this.props.actions.selectTag({ _id: tag.replace('#', '') });
+    this.props.navigator.changeTab('discover');
+  }
+
+  setSelected(user) {
+    if (!user) return;
+    if (this.props.scene && this.props.scene.id === user._id) return;
+    this.props.navigator.goToProfile(user);
+  }
+
   render() {
     const self = this;
     let comment = this.props.comment;
+    let body = comment.text;
     let postTime = moment(comment.createdAt);
     let timeNow = moment();
     let dif = timeNow.diff(postTime);
     let createdTime = moment.duration(dif).humanize();
     let bodyEl = null;
+    let bodyObj = {};
+
+    let textArr = body.replace((/[@#]\S+/g), (a) => { return '`' + a + '`'; }).split(/`/);
+    textArr.forEach((section, i) => {
+      bodyObj[i] = {};
+      bodyObj[i].text = section;
+      if (section.indexOf('#') > -1) {
+        bodyObj[i].hashtag = true;
+        bodyObj[i].mention = false;
+      } else if (section.indexOf('@') > -1) {
+        bodyObj[i].mention = true;
+        bodyObj[i].hashtag = false;
+      } else {
+        bodyObj[i].hashtag = false;
+        bodyObj[i].mention = false;
+      }
+    });
+
+    bodyEl = Object.keys(bodyObj).map((key, i) => {
+      let text = bodyObj[key].text;
+
+      if (bodyObj[key].hashtag) {
+        return (<Text
+          key={key}
+          onPress={() => this.setTag(bodyObj[key].text)}
+          style={styles.active}
+        >
+          {bodyObj[key].text}
+        </Text>);
+      } else if (bodyObj[key].mention) {
+        return (<Text
+          key={key}
+          onPress={() => this.setSelected(bodyObj[key].text)}
+          style={styles.active}
+        >
+          {bodyObj[key].text}
+        </Text>);
+      }
+      return (<Text key={i}>{bodyObj[key].text}</Text>);
+    });
 
     if (this.state.editing) {
       bodyEl = (<CommentEditing
@@ -114,10 +167,6 @@ class Comment extends Component {
         toggleFunction={this.editComment}
         saveEditFunction={this.saveEdit}
       />);
-    } else {
-      bodyEl = (<Text style={styles.darkGray}>
-        {this.state.editedText}
-      </Text>);
     }
 
     let image = null;
@@ -177,8 +226,8 @@ class Comment extends Component {
               <Text style={{ fontSize: 12, color: '#aaaaaa' }}>{createdTime} ago</Text>
               <Text style={{ fontSize: 12, color: '#aaaaaa' }}>{name}</Text>
             </View>
-            <View style={styles.commentBody}>
-              {bodyEl}
+            <View>
+              <Text>{bodyEl}</Text>
             </View>
             {owner ?
               <View

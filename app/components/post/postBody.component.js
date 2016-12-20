@@ -68,16 +68,16 @@ class PostBody extends Component {
       bodyEl = Object.keys(bodyObj).map((key, i) => {
         if (bodyObj[key].hashtag) {
           return (<Text
-            key={i}
-            onPress={() => this.setTag(bodyObj[i].text)}
+            key={key}
+            onPress={() => this.setTag(bodyObj[key].text)}
             style={styles.active}
           >
             {bodyObj[key].text}
           </Text>);
         } else if (bodyObj[key].mention) {
           return (<Text
-            key={i}
-            onPress={() => this.setSelected(bodyObj[i].text)}
+            key={key}
+            onPress={() => this.setSelected(bodyObj[key].text)}
             style={styles.active}
           >
             {bodyObj[key].text}

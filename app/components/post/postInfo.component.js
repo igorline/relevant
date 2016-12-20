@@ -26,7 +26,6 @@ class PostInfo extends Component {
       timePassedPercent: 0,
       time: 0,
       posted: null,
-      toggleInfo: false,
     };
   }
 
@@ -80,12 +79,6 @@ class PostInfo extends Component {
       self.setState({ posted: fromNow });
     }
   }
-
-  // toggleInfo() {
-  //   const self = this;
-  //   let newVar = !self.state.toggleInfo;
-  //   self.setState({ toggleInfo: newVar });
-  // }
 
   render() {
     const self = this;

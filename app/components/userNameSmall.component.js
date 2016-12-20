@@ -17,7 +17,7 @@ export default function (props) {
       onPress={() => props.setSelected(props.user)}
     >
       <View style={styles.postInfo}>
-        <Image source={{ uri: props.user.image }} style={styles.userImage} />
+        {props.user.image ? <Image source={{ uri: props.user.image }} style={styles.userImage} /> : null}
         <Text style={[styles.font17, styles.darkGray, styles.bebas]}>
           {props.user.name}
         </Text>
