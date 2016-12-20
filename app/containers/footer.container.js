@@ -39,13 +39,14 @@ class Tabs extends Component {
         if (this.props.navigation[key].routes.length === 1) {
           this.props.actions.refreshTab(key);
         }
+        this.props.actions.resetRoutes();
       }
       if (key === 'activity' && this.props.notif.count) {
         this.props.actions.reloadTab(key);
       } else if (this.props.navigation.reload > this.props.navigation[key].reload) {
         this.props.actions.reloadTab(key);
       }
-      this.props.actions.resetRoutes();
+      // this.props.actions.resetRoutes();
       this.props.actions.changeTab(key);
     }
   }
