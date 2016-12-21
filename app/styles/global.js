@@ -224,6 +224,7 @@ const layout = StyleSheet.create({
     alignItems: 'stretch',
     flex: 1,
     overflow: 'visible',
+    backgroundColor: 'white'
   },
   onlineUser: {
     justifyContent: 'space-between',

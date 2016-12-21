@@ -12,12 +12,18 @@ let styles;
 
 export default function (props) {
 
+  let imageSource;
+  if (props.user.image) {
+    imageSource = { uri: props.user.image };
+  }
+  else imageSource = require('../assets/images/default_user.jpg');
+
   return (
     <TouchableWithoutFeedback
       onPress={() => props.setSelected(props.user)}
     >
       <View style={styles.postInfo}>
-        {props.user.image ? <Image source={{ uri: props.user.image }} style={styles.userImage} /> : null}
+        <Image source={imageSource} style={styles.userImage} />
         <Text style={[styles.font17, styles.darkGray, styles.bebas]}>
           {props.user.name}
         </Text>
@@ -38,6 +44,7 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    backgroundColor: 'white'
   },
 });
 

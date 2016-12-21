@@ -76,20 +76,20 @@ class DiscoverUser extends Component {
     if (user.relevance && user.balance) spacer = (<Text>&nbsp;•&nbsp;</Text>);
 
     return (
-      <TouchableHighlight style={{ flex: 1, paddingBottom: 5 }} underlayColor={'transparent'} onPress={() => this.setSelected()}>
+      <TouchableHighlight style={{ flex: 1 }} underlayColor={'transparent'} onPress={() => this.setSelected()}>
         <View style={[styles.discoverUser]}>
           <View style={[styles.leftDiscoverUser]}>
             {imageEl}
-            <Text style={[styles.darkGray, styles.bebas, styles.halfLetterSpacing ]}>{user.name}</Text>
+            <Text style={[styles.font17, styles.darkGray, styles.bebas]}>{user.name}</Text>
           </View>
           <View style={[styles.rightDiscoverUser]}>
-            <View>
+            <Text style={[styles.font17]}>
               <Percent user={user} />
-            </View>
+            </Text>
             {spacer}
-            <View style={{}}>
+            <Text style={[styles.font17]}>
               {relevanceEl}
-            </View>
+            </Text>
           </View>
         </View>
       </TouchableHighlight>
@@ -101,9 +101,9 @@ export default DiscoverUser;
 
 const localStyles = StyleSheet.create({
   discoverAvatar: {
-    height: 23,
-    width: 23,
-    borderRadius: 11.5,
+    height: 25,
+    width: 25,
+    borderRadius: 12.5,
     marginRight: 5,
     marginLeft: 0
   },
@@ -116,6 +116,8 @@ const localStyles = StyleSheet.create({
     paddingLeft: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#242425',
+    height: 78,
+    backgroundColor: 'white'
   },
   leftDiscoverUser: {
     alignItems: 'center',

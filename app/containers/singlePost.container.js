@@ -84,7 +84,13 @@ class SinglePost extends Component {
         style={{ height: fullHeight - 114 }}
         keyboardVerticalOffset={64}
       >
-        <View style={{ flex: 1, position: 'relative', backgroundColor: 'white' }}>
+        <View
+          style={{
+            flex: 1,
+            position: 'relative',
+            backgroundColor: 'white'
+          }}
+        >
           {dataEl}
           <CustomSpinnerRelative
             visible={(!this.postData || !this.commentsData) &&

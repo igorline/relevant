@@ -105,6 +105,7 @@ export default class ActivityView extends Component {
         renderFooter={() => <View />}
         refreshControl={
           <RefreshControl
+            style={{backgroundColor: 'hsl(0,0%,90%)'}}
             refreshing={this.state.reloading}
             onRefresh={this.reload}
             tintColor="#000000"
@@ -119,7 +120,7 @@ export default class ActivityView extends Component {
     if (this.props.active) listStyle = [styles.commonList, styles.vis];
 
     spinnerEl = (<CustomSpinner visible={!this.props.data.length && this.props.active} />);
-  
+
     let type = 'data';
     if (this.props.type) type = this.props.type;
 
