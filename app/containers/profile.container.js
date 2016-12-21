@@ -106,11 +106,11 @@ class Profile extends Component {
       this.props.actions.getUserPosts(
         length,
         5,
-        this.userData._id);
+        this.userId);
     } else {
       this.props.actions.getInvestments(
         this.props.auth.token,
-        this.userData._id,
+        this.userId,
         length,
         10);
     }
@@ -152,12 +152,12 @@ class Profile extends Component {
     switch (view) {
       case 0:
         return {
-          data: this.props.posts.userPosts[this.userData._id],
+          data: this.props.posts.userPosts[this.userId],
           loaded: this.props.posts.loaded.userPosts,
         };
       case 1:
         return {
-          data: this.props.investments.userInvestments[this.userData._id],
+          data: this.props.investments.userInvestments[this.userId],
           loaded: this.props.investments.loaded,
         };
       default:
@@ -166,9 +166,10 @@ class Profile extends Component {
   }
 
   render() {
-    let listEl = [];
+    let listEl = <CustomSpinner />;
 
     if (this.userData) {
+      listEl = [];
       this.tabs.forEach((tab) => {
         let tabData = this.getViewData(this.props, tab.id);
         let active = this.state.view === tab.id;
@@ -252,13 +253,9 @@ localStyles = StyleSheet.create({
   profileContainer: {
     position: 'relative',
     flex: 1,
-// <<<<<<< HEAD
-//     // flexGrow: 1,
-//     // alignItems: 'stretch'
-// =======
     flexGrow: 1,
     alignItems: 'stretch',
-    backgroundColor: 'hsl(0,0%,90%)',
+    backgroundColor: 'white',
   },
   wrap: {
     flexDirection: 'row',
