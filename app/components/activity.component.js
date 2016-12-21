@@ -74,8 +74,8 @@ export default function (props) {
 
   let abbreviateNumber = (num) => {
     let fixed = 0;
-    if (num === null) { return null; };
-    if (num === 0) { return '0'; };
+    if (num === null) { return null; }
+    if (num === 0) { return '0'; }
     if (typeof num !== 'number') num = Number(num);
     fixed = (!fixed || fixed < 0) ? 0 : fixed;
     let b = (num).toPrecision(2).split('e');
@@ -91,7 +91,7 @@ export default function (props) {
       let amountEl = null;
       if (singleActivity.post) {
         if (singleActivity.post.value) {
-          amountEl = (<Text style={styles.bebas}>
+          amountEl = (<Text style={[styles.bebas, { textAlign: 'left', flex: 0.6 }]}>
             💵{abbreviateNumber(singleActivity.post.value)}
           </Text>);
         }
@@ -99,7 +99,7 @@ export default function (props) {
 
       return (<View style={styles.activityRight}>
         {amountEl}
-        <Text style={[{ color: '#B0B3B6' }, styles.textRight]}>&nbsp;&nbsp;&nbsp;&nbsp;{fromNow}</Text>
+        <Text style={[{ fontSize: 11, color: '#B0B3B6', flex: 0.4, textAlign: 'right' }]}>{fromNow}</Text>
       </View>);
     }
     return null;
@@ -117,11 +117,13 @@ export default function (props) {
         return (
           <View style={styles.activityLeft}>
             {investmentImage}
-            <Text numberOfLines={2} style={[styles.darkGray, styles.georgia]}>
-              <Text style={{}} onPress={() => setSelected(singleActivity.byUser)}>
+            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
+              <Text onPress={() => setSelected(singleActivity.byUser)}>
                 {singleActivity.byUser.name}
               </Text>
-              &nbsp;invested {'$' + singleActivity.amount} in your post
+              <Text>
+                &nbsp;invested {'$' + singleActivity.amount} in your post
+              </Text>
               <Text
                 onPress={() => goToPost(singleActivity.post)}
                 style={{ fontStyle: 'italic' }}
@@ -142,13 +144,13 @@ export default function (props) {
         return (
           <View style={styles.activityLeft}>
             {earningImage}
-            <Text numberOfLines={2}>
-              <Text style={[styles.darkGray, styles.georgia]}>
+            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
+              <Text>
                 Earned ${singleActivity.amount.toFixed(0)} from post
               </Text>
               <Text
                 onPress={() => goToPost(singleActivity.post)}
-                style={[{ fontStyle: 'italic' }, styles.georgia]}
+                style={{ fontStyle: 'italic' }}
               >
                 &nbsp;{postTitle}
               </Text>
@@ -162,7 +164,7 @@ export default function (props) {
             <TouchableWithoutFeedback style={styles.activityImageParent} onPress={() => setSelected(singleActivity.byUser)}>
               <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
             </TouchableWithoutFeedback>
-            <Text numberOfLines={2} style={styles.georgia}>
+            <Text numberOfLines={2} style={[styles.georgia, { flex: 1 }]}>
               <Text style={[styles.darkGray]}>
                 <Text style={{}} onPress={() => setSelected(singleActivity.byUser)}>
                   {singleActivity.byUser.name}
@@ -187,7 +189,7 @@ export default function (props) {
             </TouchableWithoutFeedback>
             <Text numberOfLines={2} style={[styles.darkGray, styles.georgia]}>
               <Text
-                style={styles.active}
+                style={[styles.active, { flex: 1 }]}
                 onPress={() => setSelected(singleActivity.byUser)}
               >
                 {singleActivity.byUser.name}

@@ -154,9 +154,6 @@ export default function post(state = initialState, action) {
           ]
         },
         posts: { ...state.posts, ...action.payload.data.entities.posts },
-        count: {
-          ...state.count,
-        },
         loaded: {
           ...state.loaded,
           userPosts: true,

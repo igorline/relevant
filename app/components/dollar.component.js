@@ -20,7 +20,7 @@ class Dollar extends Component {
     this.state = {
       x: new Animated.Value(0),
       y: new Animated.Value(0),
-      scale: new Animated.Value(1.5),
+      scale: new Animated.Value(1),
       opacity: new Animated.Value(1)
     }
   }
@@ -51,7 +51,7 @@ class Dollar extends Component {
     }).start();
 
     Animated.timing(self.state.scale, {
-      toValue: 5,
+      toValue: 4,
       delay: i*100,
       duration: 500,
       easing: Easing.linear
