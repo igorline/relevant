@@ -9,83 +9,106 @@ let moment = require('moment');
 
 let styles = { ...globalStyles };
 
-class Investment extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.goToPost.bind(this);
-  }
+export default function (props) {
+  let investment = props.investment;
+  if (!investment) return null;
+  let investmentEl = null;
+  let postId = null;
+  let time = null;
+  let activityTime = null;
+  let investorName = null;
+  let posterName = null;
+  let postTitle = 'Untitled';
+  let post = null;
 
-  setTagAndRoute(tag) {
-    this.props.actions.setTag(tag);
-    this.props.navigator.resetTo({ name: 'discover' });
-  }
-
-  setSelected(user) {
-    this.props.navigator.goToProfile(user);
-  }
-
-  goToPost(post) {
-    this.props.navigator.goToPost(post);
-  }
-
-  render() {
-    let investment = this.props.investment;
-    let investmentEl = null;
-    let postId = null;
-    let time = null;
-    let activityTime = null;
-    let investorName = null;
-    let posterName = null;
-
-    if (this.props.investment.post) {
-      if (this.props.investment.post._id) postId = this.props.investment.post._id;
-      activityTime = moment(this.props.investment.createdAt);
-      time = activityTime.fromNow();
+  let timeSince = (date) => {
+    let seconds = Math.floor((new Date() - date) / 1000);
+    let interval = Math.floor(seconds / 31536000);
+    if (interval > 1) {
+        return interval + 'y';
     }
-    if (investment) {
-      if (investment.investor) {
-        if (investment.investor.name) investorName = investment.investor.name;
-      }
-
-      if (investment.poster) {
-        if (investment.poster.name) posterName = investment.poster.name;
-      }
-
-      investmentEl = (<View style={styles.singleActivity}>
-        <View style={styles.activityLeft}>
-
-          <Text
-            style={styles.darkGray}
-          >
-            {`${investorName} invested $${investment.amount} in `}
-            <Text
-              style={styles.active}
-              onPress={() => this.setSelected(investment.poster)}
-            >
-              {`${posterName}'s `}
-            </Text>
-            post
-            <Text
-              numberOfLines={1}
-              onPress={postId ? () => this.goToPost(investment.post) : null}
-              style={styles.active}
-            >
-              {postId ? ` ${investment.post.title}` : null}
-            </Text>
-          </Text>
-        </View>
-        <View style={styles.activityRight}>
-          <Text style={[styles.gray, styles.textRight]}>{time}</Text>
-        </View>
-      </View>);
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) {
+        return interval + 'mo';
     }
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) {
+        return interval + 'd';
+    }
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) {
+        return interval + 'hr';
+    }
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) {
+        return interval + 'm';
+    }
+    return Math.floor(seconds) + 's';
+  };
 
-    return (
-      <View>
-        {investmentEl}
-      </View>
-    );
+  let setTagAndRoute = (tag) => {
+    props.actions.setTag(tag);
+    props.navigator.resetTo({ name: 'discover' });
+  };
+
+  let setSelected = (user) => {
+    props.navigator.goToProfile(user);
+  };
+
+  let goToPost = (post) => {
+    props.navigator.goToPost(post);
+  };
+
+  if (props.investment.post) {
+    post = props.investment.post;
+    if (post.title) {
+      postTitle = post.title;
+    } else if (post.body) {
+      postTitle = post.body.substring(0, 20);
+    }
+    
+    if (post._id) postId = post._id;
   }
+
+  activityTime = moment(props.investment.createdAt);
+  time = timeSince(activityTime);
+
+  if (investment.investor) {
+    if (investment.investor.name) investorName = investment.investor.name;
+  }
+
+  if (investment.poster) {
+    if (investment.poster.name) posterName = investment.poster.name;
+  }
+
+  investmentEl = (<View style={[styles.singleActivity]}>
+    <View style={styles.activityLeft}>
+      <Text
+        style={[styles.darkGray, styles.georgia]}
+        numberOfLines={2}
+      >
+        {`${investorName} invested $${investment.amount} in `}
+        <Text
+          style={{}}
+          onPress={() => setSelected(investment.poster)}
+        >
+          {`${posterName}'s `}
+        </Text>
+        post
+        <Text
+          onPress={postId ? () => goToPost(investment.post) : null}
+          style={{ fontStyle: 'italic' }}
+        >
+          &nbsp;{postTitle}
+        </Text>
+      </Text>
+    </View>
+    <View style={[styles.activityRight]}>
+      <Text style={{ color: '#B0B3B6' }}>
+        {time}
+      </Text>
+    </View>
+  </View>);
+
+  return investmentEl;
 }
-
-export default Investment;

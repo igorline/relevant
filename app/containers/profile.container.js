@@ -122,6 +122,7 @@ class Profile extends Component {
   }
 
   renderRow(rowData, view) {
+    // console.log('renderRow profile', rowData)
     if (view === 0) return (<Post post={rowData} {...this.props} />);
     if (view === 1) return (<Investment investment={rowData} {...this.props} />);
   }
@@ -178,6 +179,7 @@ class Profile extends Component {
           ref={(c) => { this.tabs[tab.id].component = c; }}
           key={tab.id}
           data={data}
+          parent={'profile'}
           loaded={loaded}
           renderRow={this.renderRow}
           load={this.load}
@@ -250,6 +252,10 @@ localStyles = StyleSheet.create({
   profileContainer: {
     position: 'relative',
     flex: 1,
+// <<<<<<< HEAD
+//     // flexGrow: 1,
+//     // alignItems: 'stretch'
+// =======
     flexGrow: 1,
     alignItems: 'stretch',
     backgroundColor: 'hsl(0,0%,90%)',

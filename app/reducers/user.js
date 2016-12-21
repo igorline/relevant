@@ -48,6 +48,12 @@ export default function auth(state = initialState, action) {
       });
     }
 
+    case 'GET_USER_LOADING': {
+     return Object.assign({}, state, {
+        loaded: false,
+      });
+    }
+
     case 'SET_USER_LIST': {
       let key = action.payload.filter || 'list';
       return Object.assign({}, state, {
