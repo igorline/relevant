@@ -92,7 +92,7 @@ export function goToProfile(user, key, animation) {
   let handle = user._id || user.replace('@', '');
   return push({
     key: 'profile',
-    title: '@' + handle,
+    title: user.name || handle,
     back: true,
     id: handle,
   }, key, animation);

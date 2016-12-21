@@ -41,14 +41,15 @@ class PostImage extends Component {
         link = post.link;
         linkEl = <Text style={[styles.font10, styles.white]}>from {post.domain}</Text>;
       }
-      if (post.title) {
-        title = post.title;
-        if (title.length > 75) {
-          let pre = title.substr(0, 75);
-          pre += '...';
-          title = pre;
-        }
-      }
+      title = post.title;
+      // if (post.title) {
+      //   title = post.title;
+      //   if (title.length > 75) {
+      //     let pre = title.substr(0, 75);
+      //     pre += '...';
+      //     title = pre;
+      //   }
+      // }
       // if (post.lastPost) {
       //   if (post.lastPost.length) {
       //     post.lastPost.forEach((lastUser) => {
@@ -74,7 +75,7 @@ class PostImage extends Component {
           </Text> : null*/}
 
           <View style={styles.textContainer}>
-            <Text style={[{ fontSize: 26 }, styles.white, styles.libre]}>
+            <Text numberOfLines={3} style={[{ fontSize: 26 }, styles.white, styles.libre]}>
               {title ? title : 'Untitled'}
             </Text>
             {linkEl}
