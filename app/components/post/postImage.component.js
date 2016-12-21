@@ -43,8 +43,8 @@ class PostImage extends Component {
       }
       if (post.title) {
         title = post.title;
-        if (title.length > 100) {
-          let pre = title.substr(0, 100);
+        if (title.length > 75) {
+          let pre = title.substr(0, 75);
           pre += '...';
           title = pre;
         }
@@ -74,7 +74,7 @@ class PostImage extends Component {
           </Text> : null*/}
 
           <View style={styles.textContainer}>
-            <Text style={[{ fontSize: 25 }, styles.white, styles.libre]}>
+            <Text style={[{ fontSize: 26 }, styles.white, styles.libre]}>
               {title ? title : 'Untitled'}
             </Text>
             {linkEl}
@@ -99,7 +99,7 @@ const localStyles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,.3)'
+    backgroundColor: 'rgba(0,0,0,.4)'
   },
   postImage: {
     flex: 1,

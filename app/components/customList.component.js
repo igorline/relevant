@@ -62,6 +62,7 @@ export default class ActivityView extends Component {
     this.lastReload = (new Date()).getTime();
     this.setState({ reloading: true });
     this.props.load(this.props.view, 0);
+    if (this.props.onReload) this.props.onReload();
   }
 
   loadMore() {
