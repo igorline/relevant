@@ -51,22 +51,8 @@ class DiscoverUser extends Component {
     let percentEl = null;
     let relevanceEl = null;
     let oldRel = null;
+    let spacer = null;
     const relevance = user.relevance || 0;
-
-    // percentEl = (<Text style={[{ textAlign: 'right' }, styles.bebas, styles.quarterLetterSpacing]}>
-    //   0%
-    // </Text>);
-
-    // percent = utils.percent.percentChange(user);
-    // if (percent > 0) {
-    //   percentEl = (<Text style={[{ textAlign: 'right', color: '#196950' }, styles.bebas]}>
-    //     ▲{this.abbreviateNumber(percent)}%
-    //   </Text>);
-    // } else if (percent < 0) {
-    //   percentEl = (<Text style={[{ color: 'red', textAlign: 'right' }, styles.bebas]}>
-    //     ▼{this.abbreviateNumber(percent)}%
-    //   </Text>);
-    // }
 
     if (user.image) {
       image = user.image;
@@ -82,25 +68,26 @@ class DiscoverUser extends Component {
           <Text
             style={[styles.bebas, styles.quarterLetterSpacing]}
           >
-            {user.relevance ? this.abbreviateNumber(user.relevance) : null}
+            {this.abbreviateNumber(user.relevance)}
           </Text>
         </Text>);
-    } else {
-      relevanceEl = null;
     }
+
+    if (user.relevance && user.balance) spacer = (<Text>&nbsp;•&nbsp;</Text>);
 
     return (
       <TouchableHighlight style={{ flex: 1, paddingBottom: 5 }} underlayColor={'transparent'} onPress={() => this.setSelected()}>
         <View style={[styles.discoverUser]}>
           <View style={[styles.leftDiscoverUser]}>
             {imageEl}
-            <Text style={styles.darkGray}>{user.name}</Text>
+            <Text style={[styles.darkGray, styles.bebas, styles.halfLetterSpacing ]}>{user.name}</Text>
           </View>
           <View style={[styles.rightDiscoverUser]}>
             <View>
               <Percent user={user} />
             </View>
-            <View>
+            {spacer}
+            <View style={{}}>
               {relevanceEl}
             </View>
           </View>
@@ -114,10 +101,10 @@ export default DiscoverUser;
 
 const localStyles = StyleSheet.create({
   discoverAvatar: {
-    height: 50,
-    width: 50,
-    borderRadius: 25,
-    marginRight: 10,
+    height: 23,
+    width: 23,
+    borderRadius: 11.5,
+    marginRight: 5,
     marginLeft: 0
   },
   discoverUser: {
@@ -127,6 +114,8 @@ const localStyles = StyleSheet.create({
     paddingRight: 10,
     paddingBottom: 10,
     paddingLeft: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#242425',
   },
   leftDiscoverUser: {
     alignItems: 'center',
@@ -136,8 +125,9 @@ const localStyles = StyleSheet.create({
   },
   rightDiscoverUser: {
     flex: 1,
-    alignItems: 'flex-end',
-    justifyContent: 'center'
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
   }
 });
 

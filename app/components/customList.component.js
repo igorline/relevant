@@ -9,7 +9,7 @@ import {
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import CustomSpinner from '../components/CustomSpinner.component';
 import EmptyList from '../components/emptyList.component';
-
+import CustomSpinnerRelative from '../components/customSpinnerRelative.component';
 let styles;
 
 export default class ActivityView extends Component {
@@ -93,12 +93,10 @@ export default class ActivityView extends Component {
         contentInset={{ top: this.props.YOffset || 0 }}
         contentOffset={{ y: -this.props.YOffset || 0 }}
         renderHeader={this.props.renderHeader}
-        contentContainerStyle={{
-          flex: 1,
-          position: 'absolute',
-          top: 0,
+        style={{
+          flex: 0.5,
           width: fullWidth,
-          backgroundColor: 'white'
+          backgroundColor: 'white',
         }}
         onScroll={this.props.onScroll}
         onEndReached={this.loadMore}
@@ -117,27 +115,22 @@ export default class ActivityView extends Component {
       />
     );
 
-    let listStyle = [];
-
-    if (this.props.active) {
-      listStyle = [styles.commonList, styles.vis];
-    } else {
-      listStyle = [styles.commonList, styles.hiddenList];
-    }
+    let listStyle = [styles.commonList, styles.hiddenList];
+    if (this.props.active) listStyle = [styles.commonList, styles.vis];
 
     spinnerEl = (<CustomSpinner visible={!this.props.data.length && this.props.active} />);
-
+  
     let type = 'data';
     if (this.props.type) type = this.props.type;
 
-    if ((this.props.loaded && !this.props.data.length) || this.props.loaded === 0) {
+    if (this.props.loaded && !this.props.data.length) {
       emptyEl = this.props.children || (
       <EmptyList
         visible
         emoji={'😔'}
         type={type}
       />);
-      listEl = null;
+      if (this.props.parent !== 'profile') listEl = null;
       spinnerEl = null;
     }
 
@@ -155,11 +148,14 @@ const localStyles = StyleSheet.create({
   vis: {
     flex: 1,
     width: fullWidth,
+    flexDirection: 'column',
+    justifyContent: 'flex-start'
   },
   hiddenList: {
     flex: 0,
     height: 0,
     width: 0,
+    position: 'absolute'
   },
   commonList: {
   }

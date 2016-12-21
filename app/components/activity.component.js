@@ -3,214 +3,216 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableWithoutFeedback,
+  Image,
 } from 'react-native';
 
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 
 let moment = require('moment');
 
-class SingleActivity extends Component {
+const localStyles = StyleSheet.create({
+  activityImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 10,
+  },
+  activityImageParent: {
+  }
+});
+const styles = { ...localStyles, ...globalStyles };
 
-  setSelected(user) {
-    this.props.navigator.goToProfile(user);
+export default function (props) {
+  let singleActivity = props.singleActivity;
+  if (!singleActivity) return null;
+
+  let timeSince = (date) => {
+    var seconds = Math.floor((new Date() - date) / 1000);
+    var interval = Math.floor(seconds / 31536000);
+    if (interval > 1) {
+        return interval + 'y';
+    }
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) {
+        return interval + 'mo';
+    }
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) {
+        return interval + 'd';
+    }
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) {
+        return interval + 'hr';
+    }
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) {
+        return interval + 'm';
+    }
+    return Math.floor(seconds) + 's';
+  };
+
+  let activityTime = moment(singleActivity.createdAt);
+  let fromNow = timeSince(activityTime);
+  let postTitle = 'Untitled';
+
+  if (singleActivity.post) {
+    if (singleActivity.post.title) {
+      postTitle = singleActivity.post.title;
+    } else if (singleActivity.post.body) {
+      postTitle = singleActivity.post.body.substring(0, 20);
+    }
   }
 
-  goToPost(post) {
-    this.props.navigator.goToPost(post);
-  }
+  let setSelected = (user) => {
+    props.navigator.goToProfile(user);
+  };
 
-  render() {
-    let singleActivity = this.props.singleActivity;
-    let activityEl = null;
-    let styles = this.props.styles;
-    let activityTime = moment(singleActivity.createdAt);
-    let fromNow = activityTime.fromNow();
+  let goToPost = (post) => {
+    props.navigator.goToPost(post);
+  };
 
-    if (singleActivity.personal && singleActivity.byUser) {
-      let postTitle = singleActivity.post ? singleActivity.post.title : 'missing title';
+  let abbreviateNumber = (num) => {
+    let fixed = 0;
+    if (num === null) { return null; };
+    if (num === 0) { return '0'; };
+    if (typeof num !== 'number') num = Number(num);
+    fixed = (!fixed || fixed < 0) ? 0 : fixed;
+    let b = (num).toPrecision(2).split('e');
+    let k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3);
+    let c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, k * 3)).toFixed(1 + fixed);
+    let d = c < 0 ? c : Math.abs(c);
+    let e = d + ['', 'K', 'M', 'B', 'T'][k];
+    return e;
+  };
 
-      if (singleActivity.type === 'investment') {
-        activityEl = (
-          <View style={styles.singleActivity}>
-            <View style={styles.activityLeft}>
-              <Text style={styles.darkGray}>
-                <Text style={styles.active} onPress={() => this.setSelected(singleActivity.byUser)}>
-                  {singleActivity.byUser.name}
-                </Text>
-                &nbsp;invested {'$'+singleActivity.amount} in your post
-                <Text numberOfLines={1} onPress={() => this.goToPost(singleActivity.post)} style={styles.active}>
-                  {' ' + postTitle}
-                </Text>
-              </Text>
-            </View>
-            <View style={styles.activityRight}>
-              <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
-            </View>
-          </View>
-        );
+  let renderRight = () => {
+    if (singleActivity.type) {
+      let amountEl = null;
+      if (singleActivity.post) {
+        if (singleActivity.post.value) {
+          amountEl = (<Text style={styles.bebas}>
+            💵{abbreviateNumber(singleActivity.post.value)}
+          </Text>);
+        }
       }
 
-      if (singleActivity.type === 'profile') {
-        activityEl = (
-          <View style={styles.singleActivity}>
-            <Text style={styles.darkGray}>
-              <Text style={styles.active} onPress={() => this.setSelected(singleActivity.byUser)}>
+      return (<View style={styles.activityRight}>
+        {amountEl}
+        <Text style={[{ color: '#B0B3B6' }, styles.textRight]}>&nbsp;&nbsp;&nbsp;&nbsp;{fromNow}</Text>
+      </View>);
+    }
+    return null;
+  };
+
+  let renderLeft = () => {
+    switch (singleActivity.type) {
+      case 'investment':
+        let investmentImage = null;
+        if (singleActivity.byUser.image) {
+          investmentImage = (<TouchableWithoutFeedback style={styles.activityImageParent} onPress={() => setSelected(singleActivity.byUser)}>
+            <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image  }} />
+          </TouchableWithoutFeedback>);
+        }
+        return (
+          <View style={styles.activityLeft}>
+            {investmentImage}
+            <Text numberOfLines={2} style={[styles.darkGray, styles.georgia]}>
+              <Text style={{}} onPress={() => setSelected(singleActivity.byUser)}>
                 {singleActivity.byUser.name}
               </Text>
-              &nbsp;visited your profile
+              &nbsp;invested {'$' + singleActivity.amount} in your post
+              <Text
+                onPress={() => goToPost(singleActivity.post)}
+                style={{ fontStyle: 'italic' }}
+              >
+                &nbsp;{postTitle}
+              </Text>
             </Text>
-            <Text style={styles.gray}>{fromNow}</Text>
           </View>
         );
-      }
 
-      if (singleActivity.type === 'comment') {
-        activityEl = (
-          <View style={styles.singleActivity}>
-            <View style={styles.activityLeft}>
-              <Text style={styles.darkGray}>
-                <Text style={styles.active} onPress={() => this.setSelected(singleActivity.byUser)}>
+      case 'partialEarning':
+        let earningImage = null;
+        if (singleActivity.post.image) {
+          earningImage = (<TouchableWithoutFeedback style={styles.activityImageParent} onPress={() => goToPost(singleActivity.post)}>
+            <Image style={styles.activityImage} source={{ uri: singleActivity.post.image }} />
+          </TouchableWithoutFeedback>);
+        }
+        return (
+          <View style={styles.activityLeft}>
+            {earningImage}
+            <Text numberOfLines={2}>
+              <Text style={[styles.darkGray, styles.georgia]}>
+                Earned ${singleActivity.amount.toFixed(0)} from post
+              </Text>
+              <Text
+                onPress={() => goToPost(singleActivity.post)}
+                style={[{ fontStyle: 'italic' }, styles.georgia]}
+              >
+                &nbsp;{postTitle}
+              </Text>
+            </Text>
+          </View>
+        );
+
+      case 'comment':
+        return (
+          <View style={styles.activityLeft}>
+            <TouchableWithoutFeedback style={styles.activityImageParent} onPress={() => setSelected(singleActivity.byUser)}>
+              <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
+            </TouchableWithoutFeedback>
+            <Text numberOfLines={2} style={styles.georgia}>
+              <Text style={[styles.darkGray]}>
+                <Text style={{}} onPress={() => setSelected(singleActivity.byUser)}>
                   {singleActivity.byUser.name}
                 </Text>
                 &nbsp;commented on your post
               </Text>
               <Text
-                onPress={() => this.goToPost(singleActivity.post)}
-                numberOfLines={1}
-                style={[styles.active]}
+                onPress={() => goToPost(singleActivity.post)}
+                style={{ fontStyle: 'italic' }}
               >
-                {singleActivity.post.title}
+                &nbsp;{singleActivity.post.title}
               </Text>
-            </View>
-            <View style={styles.activityRight}>
-              <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
-            </View>
-          </View>
-        );
-      }
-
-      if (singleActivity.type === 'thirst') {
-        activityEl = (
-          <View style={styles.singleActivity}>
-            <View style={styles.activityLeft}>
-              <Text style={styles.darkGray}>
-                <Text
-                  style={styles.active}
-                  onPress={() => this.setSelected(singleActivity.byUser)}
-                >
-                  {singleActivity.byUser.name}
-                </Text>
-              &nbsp;is thirsty 4 u 👅💦</Text>
-            </View>
-            <View style={styles.activityRight}>
-              <Text style={[styles.gray, styles.textRight]}>
-                {fromNow}
-              </Text>
-            </View>
-          </View>
-        );
-      }
-
-      if (singleActivity.type === 'mention') {
-        activityEl = (
-          <View style={styles.singleActivity}>
-            <View style={styles.activityLeft}>
-              <Text style={styles.darkGray}>
-                <Text
-                  style={styles.active}
-                  onPress={() => this.setSelected(singleActivity.byUser)}
-                >
-                  @{singleActivity.byUser.name}
-                </Text>
-                &nbsp;mentioned you in a&nbsp;
-                <Text
-                  style={styles.active}
-                  onPress={() => this.goToPost(singleActivity.post)}
-                >
-                  post
-                </Text>
-              </Text>
-              <Text
-                onPress={() => this.goToPost(singleActivity.post)}
-                numberOfLines={1}
-                style={[styles.active]}
-              >
-                {singleActivity.post.title}
-              </Text>
-            </View>
-            <View style={styles.activityRight}>
-              <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
-            </View>
-          </View>
-        );
-      }
-    }
-
-    if (singleActivity.personal && !singleActivity.byUser) {
-      let postTitle = singleActivity.post ? singleActivity.post.title : '';
-      if (singleActivity.type === 'partialEarning') {
-        activityEl = (
-          <View style={[styles.singleActivity]}>
-            <View style={styles.activityLeft}>
-              <Text style={styles.darkGray}>
-                Earned ${singleActivity.amount.toFixed(0)} from post
-              </Text>
-              <Text
-                onPress={() => this.goToPost(singleActivity.post)}
-                style={[styles.active]}
-              >
-                {postTitle}
-              </Text>
-            </View>
-            <View style={styles.activityRight}>
-              <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
-            </View>
-          </View>
-        );
-      }
-
-      if (!singleActivity.type) {
-        activityEl = (
-          <View style={styles.singleActivity}>
-            <Text style={styles.darkGray}>
-              Generic notification
             </Text>
-            <Text style={styles.gray}>{fromNow}</Text>
           </View>
         );
-      }
-    }
 
-  if (!singleActivity.personal) {
-    if (singleActivity.byUser) {
-      if (singleActivity.byUser._id != this.props.auth.user._id) {
-        if (singleActivity.type == 'online') {
-          activityEl = (
-            <View style={styles.singleActivity}>
-              <View style={styles.activityLeft}>
-                <Text style={styles.darkGray}>
-                  <Text style={styles.active} onPress={() => this.setSelected(singleActivity.byUser)}>
-                    {singleActivity.byUser.name}
-                  </Text>
-                  &nbsp;went online
-                </Text>
-              </View>
-              <View style={styles.activityRight}>
-                <Text style={[styles.gray, styles.textRight]}>{fromNow}</Text>
-              </View>
-            </View>
-          );
-        }
-      }
-    }
-  }
+      case 'mention':
+        return (
+          <View style={styles.activityLeft}>
+            <TouchableWithoutFeedback style={styles.activityImageParent} onPress={() => setSelected(singleActivity.byUser)}>
+              <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
+            </TouchableWithoutFeedback>
+            <Text numberOfLines={2} style={[styles.darkGray, styles.georgia]}>
+              <Text
+                style={styles.active}
+                onPress={() => setSelected(singleActivity.byUser)}
+              >
+                @{singleActivity.byUser.name}
+              </Text>
+              &nbsp;mentioned you in the post&nbsp;
+            </Text>
+            <Text
+              onPress={() => goToPost(singleActivity.post)}
+              style={[{ fontStyle: 'italic' }]}
+            >
+              {singleActivity.post.title}
+            </Text>
+          </View>
+        );
 
-  return activityEl;
-  }
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <View style={[styles.singleActivity]}>
+      {renderLeft()}
+      {renderRight()}
+    </View>
+  );
 }
-
-export default SingleActivity;
-
-const localStyles = StyleSheet.create({
-});
 

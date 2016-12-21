@@ -18,6 +18,13 @@ function getUsersLoading() {
   };
 }
 
+export
+function getUserLoading() {
+  return {
+    type: 'GET_USER_LOADING'
+  };
+}
+
 export function setUserList(users, index, filter) {
   return {
     type: 'SET_USER_LIST',
@@ -84,6 +91,7 @@ function getSelectedUser(userName) {
     // dispatch(setSelectedUser(userId));
     // test network error handling
     // return fetch('10.255.255.1/api/user/' + userId,
+    dispatch(getUserLoading());
     return fetch(process.env.API_SERVER + '/api/user/' + userName,
       {
         credentials: 'include',

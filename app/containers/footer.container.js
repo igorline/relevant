@@ -86,7 +86,7 @@ class Tabs extends Component {
     return (
       <TabBarIOS
         translucent={false}
-        style={{ backgroundColor: 'white' }}
+        style={{ backgroundColor: 'white', borderTopColor: '#242425' }}
         // unselectedTintColor={'#231f20'}
         tintColor={'#4d4eff'}
       >
