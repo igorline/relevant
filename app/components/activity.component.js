@@ -18,7 +18,8 @@ const localStyles = StyleSheet.create({
     borderRadius: 15,
     marginRight: 10,
   },
-  activityImageParent: {
+  activityImagePlaceholder: {
+    height: 30, width: 30, marginRight: 10
   }
 });
 const styles = { ...localStyles, ...globalStyles };
@@ -108,9 +109,9 @@ export default function (props) {
   let renderLeft = () => {
     switch (singleActivity.type) {
       case 'investment':
-        let investmentImage = null;
+        let investmentImage = (<View style={styles.activityImagePlaceholder} />);
         if (singleActivity.byUser.image) {
-          investmentImage = (<TouchableWithoutFeedback style={styles.activityImageParent} onPress={() => setSelected(singleActivity.byUser)}>
+          investmentImage = (<TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
             <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image  }} />
           </TouchableWithoutFeedback>);
         }
@@ -135,9 +136,9 @@ export default function (props) {
         );
 
       case 'partialEarning':
-        let earningImage = null;
+        let earningImage = (<View style={styles.activityImagePlaceholder} />);
         if (singleActivity.post.image) {
-          earningImage = (<TouchableWithoutFeedback style={styles.activityImageParent} onPress={() => goToPost(singleActivity.post)}>
+          earningImage = (<TouchableWithoutFeedback onPress={() => goToPost(singleActivity.post)}>
             <Image style={styles.activityImage} source={{ uri: singleActivity.post.image }} />
           </TouchableWithoutFeedback>);
         }
@@ -161,14 +162,14 @@ export default function (props) {
       case 'comment':
         return (
           <View style={styles.activityLeft}>
-            <TouchableWithoutFeedback style={styles.activityImageParent} onPress={() => setSelected(singleActivity.byUser)}>
+            <TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
               <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
             </TouchableWithoutFeedback>
-            <Text numberOfLines={2} style={[styles.georgia, { flex: 1 }]}>
-              <Text style={[styles.darkGray]}>
-                <Text style={{}} onPress={() => setSelected(singleActivity.byUser)}>
-                  {singleActivity.byUser.name}
-                </Text>
+            <Text numberOfLines={2} style={[styles.georgia, styles.darkGray, { flex: 1 }]}>
+              <Text style={{}} onPress={() => setSelected(singleActivity.byUser)}>
+                {singleActivity.byUser.name}
+              </Text>
+              <Text>
                 &nbsp;commented on your post
               </Text>
               <Text
@@ -184,17 +185,19 @@ export default function (props) {
       case 'mention':
         return (
           <View style={styles.activityLeft}>
-            <TouchableWithoutFeedback style={styles.activityImageParent} onPress={() => setSelected(singleActivity.byUser)}>
+            <TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
               <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
             </TouchableWithoutFeedback>
-            <Text numberOfLines={2} style={[styles.darkGray, styles.georgia]}>
+            <Text numberOfLines={2} style={[styles.darkGray, styles.georgia, { flex: 1 }]}>
               <Text
                 style={[{ flex: 1 }]}
                 onPress={() => setSelected(singleActivity.byUser)}
               >
                 {singleActivity.byUser.name}
               </Text>
-              &nbsp;mentioned you in the post&nbsp;
+              <Text>
+                &nbsp;mentioned you in the post&nbsp;
+              </Text>
               <Text
                 onPress={() => goToPost(singleActivity.post)}
                 style={[{ fontStyle: 'italic' }, styles.georgia]}
