@@ -189,7 +189,7 @@ export default function (props) {
             </TouchableWithoutFeedback>
             <Text numberOfLines={2} style={[styles.darkGray, styles.georgia]}>
               <Text
-                style={[styles.active, { flex: 1 }]}
+                style={[{ flex: 1 }]}
                 onPress={() => setSelected(singleActivity.byUser)}
               >
                 {singleActivity.byUser.name}
