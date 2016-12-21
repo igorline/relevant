@@ -190,13 +190,39 @@ export default function (props) {
             </TouchableWithoutFeedback>
             <Text numberOfLines={2} style={[styles.darkGray, styles.georgia, { flex: 1 }]}>
               <Text
-                style={[styles.active, { flex: 1 }]}
+                style={{ flex: 1 }}
                 onPress={() => setSelected(singleActivity.byUser)}
               >
                 {singleActivity.byUser.name}
               </Text>
               <Text>
-                &nbsp;mentioned you in the post&nbsp;
+                &nbsp;mentioned you in the post
+              </Text>
+              <Text
+                onPress={() => goToPost(singleActivity.post)}
+                style={[{ fontStyle: 'italic' }, styles.georgia]}
+              >
+                &nbsp;{postTitle}
+              </Text>
+            </Text>
+          </View>
+        );
+
+      case 'commentMention':
+        return (
+          <View style={styles.activityLeft}>
+            <TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
+              <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
+            </TouchableWithoutFeedback>
+            <Text numberOfLines={2} style={[styles.darkGray, styles.georgia, { flex: 1 }]}>
+              <Text
+                style={{ flex: 1 }}
+                onPress={() => setSelected(singleActivity.byUser)}
+              >
+                {singleActivity.byUser.name}
+              </Text>
+              <Text>
+                &nbsp;mentioned you in a comment in the post
               </Text>
               <Text
                 onPress={() => goToPost(singleActivity.post)}
