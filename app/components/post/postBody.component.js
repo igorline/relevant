@@ -53,10 +53,10 @@ class PostBody extends Component {
       textArr.forEach((section, i) => {
         bodyObj[i] = {};
         bodyObj[i].text = section;
-        if (section.indexOf('#') > -1) {
+        if (section.match(/^#/)) {
           bodyObj[i].hashtag = true;
           bodyObj[i].mention = false;
-        } else if (section.indexOf('@') > -1) {
+        } else if (section.match(/^@/)) {
           bodyObj[i].mention = true;
           bodyObj[i].hashtag = false;
         } else {
@@ -65,11 +65,9 @@ class PostBody extends Component {
         }
       });
 
-      // console.log(bodyObj);
       let breakText;
 
       bodyEl = Object.keys(bodyObj).map((key, i) => {
-
         let space = '';
         if (breakText) space = ' ';
 
@@ -92,19 +90,16 @@ class PostBody extends Component {
         }
         if (i < 57 || expanded) {
           return (<Text key={i}>{bodyObj[key].text}</Text>);
-        }
-        else if (!breakText) {
+        } else if (!breakText) {
           breakText = i;
           return <Text key={'break'}>... </Text>;
         }
       });
 
       if (breakText) {
-        bodyEl.push(<Text style={[styles.bebasBold, styles.active]}>● READ MORE</Text>);
+        bodyEl.push(<Text key={'readmore'} style={[styles.bebasBold, styles.active]}>● READ MORE</Text>);
       }
     }
-
-
 
     let numberOfLines = 9999999999999;
     let postStyle = styles.bodyText;

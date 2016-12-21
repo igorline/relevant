@@ -59,7 +59,7 @@ export default class UrlComponent extends Component {
     }
 
     let lastWord = words[words.length - 1];
-    if (lastWord.match(/@\S+/g) && lastWord.length > 1) {
+    if (lastWord.match(/^@\S+/g) && lastWord.length > 1) {
       this.mention = lastWord;
       this.props.actions.searchUser(lastWord.replace('@', ''));
     }
@@ -67,7 +67,7 @@ export default class UrlComponent extends Component {
 
     let bodyTags = words.map((word) => {
       if (word.match(/^#\S+/g)) {
-        return word.replace('#', '').replace(/(,|\.)\s*$/, '');
+        return word.replace('#', '').replace(/(,|\.|!|\?)\s*$/, '');
       }
       return null;
     })
@@ -75,7 +75,7 @@ export default class UrlComponent extends Component {
 
     let bodyMentions = words.map((word) => {
       if (word.match(/^@\S+/g)) {
-        return word.replace('@', '').replace(/(,|\.)\s*$/, '');
+        return word.replace('@', '').replace(/(,|\.|!|\?)\s*$/, '');
       }
       return null;
     })

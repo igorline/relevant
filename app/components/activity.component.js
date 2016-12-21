@@ -190,15 +190,15 @@ export default function (props) {
                 style={styles.active}
                 onPress={() => setSelected(singleActivity.byUser)}
               >
-                @{singleActivity.byUser.name}
+                {singleActivity.byUser.name}
               </Text>
               &nbsp;mentioned you in the post&nbsp;
-            </Text>
-            <Text
-              onPress={() => goToPost(singleActivity.post)}
-              style={[{ fontStyle: 'italic' }]}
-            >
-              {singleActivity.post.title}
+              <Text
+                onPress={() => goToPost(singleActivity.post)}
+                style={[{ fontStyle: 'italic' }, styles.georgia]}
+              >
+                &nbsp;{postTitle}
+              </Text>
             </Text>
           </View>
         );

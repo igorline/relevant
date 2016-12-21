@@ -19,7 +19,7 @@ class Post extends Component {
     let post;
     let posts;
     let imageEl = null;
-    let separator = <View style={styles.separator}/>;
+    let separator = <View style={styles.separator} />;
 
     if (!this.props.auth.user) return null;
 
@@ -33,9 +33,11 @@ class Post extends Component {
       if (post.image) imageEl = <PostImage post={post} />;
     }
 
+    if (!post) return null;
+
     let label = null;
     let commentary = null;
-    if (posts.length > 1) {
+    if (posts && posts.length > 1) {
       label = <Text style={[styles.tabFont, styles.cLabel]}>🤔 Other's Commentary</Text>;
       commentary = <Commentary {...this.props} commentary={posts.slice(1, posts.length)} />;
     }
@@ -43,7 +45,7 @@ class Post extends Component {
     let repostEl = null;
     let postStyle = null;
 
-    if (post.comments && post.comments[0] && post.comments[0].repost) {
+    if (post && post.comments && post.comments[0] && post.comments[0].repost) {
       let repost = post.comments[0];
       postStyle = [styles.repost, styles.boxShadow];
       let repostObj = {
@@ -105,6 +107,7 @@ const localStyles = StyleSheet.create({
   postContainer: {
     paddingBottom: 25,
     paddingTop: 15,
+    backgroundColor: 'white',
   },
   tagsRow: {
     flexDirection: 'row',
