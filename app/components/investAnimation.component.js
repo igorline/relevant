@@ -13,7 +13,7 @@ const localStyles = StyleSheet.create({
   moneyContainer: {
     position: 'absolute',
     top: -20,
-    right: 0,
+    right: -20,
     height: 20,
     width: 20,
   }
@@ -62,7 +62,7 @@ class InvestAnimation extends Component {
       newArr.push(<Dollar key={self.state.num} specialKey={self.state.num} />);
       let newNum = self.state.num += 1;
       self.setState({ num: newNum, investAni: newArr });
-      setTimeout(() => { self.investAni(); }, 100);
+      setTimeout(() => { self.investAni(); }, 50);
     } else {
       setTimeout(() => { self.clearEls(); }, 1000);
     }

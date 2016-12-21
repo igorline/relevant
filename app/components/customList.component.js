@@ -79,6 +79,11 @@ export default class ActivityView extends Component {
     let emptyEl = null;
     let spinnerEl = null;
 
+    // if (this.props.parent !== 'profile')
+      spinnerEl = (<CustomSpinner visible={!this.props.data.length && this.props.active} />);
+    // else
+    //   spinnerEl = (<CustomSpinnerRelative visible={!this.props.data.length && this.props.active} />);
+
     listEl = (
       <ListView
         ref={(c) => { this.listview = c; }}
@@ -120,10 +125,10 @@ export default class ActivityView extends Component {
     let listStyle = [styles.commonList, styles.hiddenList];
     if (this.props.active) listStyle = [styles.commonList, styles.vis];
 
-    spinnerEl = (<CustomSpinner visible={!this.props.data.length && this.props.active} />);
-
     let type = 'data';
     if (this.props.type) type = this.props.type;
+
+    if (this.props.loaded) spinnerEl = null;
 
     if (this.props.loaded && !this.props.data.length) {
       emptyEl = this.props.children || (
@@ -133,7 +138,6 @@ export default class ActivityView extends Component {
         type={type}
       />);
       if (this.props.parent !== 'profile') listEl = null;
-      spinnerEl = null;
     }
 
     return (
