@@ -199,32 +199,33 @@ export function getUserPosts(skip, limit, userId, type) {
   var tagsString = '';
   if (!skip) skip = 0;
   if (!limit) limit = 5;
-  
-  return function(dispatch) {
-  dispatch(loadingUserPosts());
-  var url = process.env.API_SERVER+'/api/post/user/'+userId+'?skip='+skip+'&limit='+limit;
-    fetch(url, {
+  return (dispatch) => {
+    dispatch(loadingUserPosts());
+    const url = process.env.API_SERVER + '/api/post/user/' + userId + '?skip=' + skip + '&limit=' + limit;
+    setTimeout(() => {
+      fetch(url, {
         credentials: 'include',
         method: 'GET',
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-      }
-    })
-    .then(utils.fetchError.handleErrors)
-    .then((response) => response.json())
-    .then((responseJSON) => {
-      let data = normalize(
-        { [userId]: responseJSON },
-        { [userId]: arrayOf(postSchema) }
-      );
-      dispatch(setUserPosts(data, userId, skip));
-      dispatch(errorActions.setError('profile', false));
-    })
-    .catch((error) => {
-      console.log(error, 'error');
-      dispatch(errorActions.setError('profile', true, error.message));
-    });
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(utils.fetchError.handleErrors)
+      .then((response) => response.json())
+      .then((responseJSON) => {
+        let data = normalize(
+          { [userId]: responseJSON },
+          { [userId]: arrayOf(postSchema) }
+        );
+        dispatch(setUserPosts(data, userId, skip));
+        dispatch(errorActions.setError('profile', false));
+      })
+      .catch((error) => {
+        console.log(error, 'error');
+        dispatch(errorActions.setError('profile', true, error.message));
+      });
+    }, 100);
   };
 }
 
