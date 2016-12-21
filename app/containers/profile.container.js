@@ -69,16 +69,12 @@ class Profile extends Component {
     } else {
       this.myProfile = true;
       this.userId = this.props.auth.user._id;
-      this.userData = this.props.auth.user;
+      this.userData = this.props.users.selectedUserData[this.userId];
     }
   }
 
   componentWillReceiveProps(next) {
-    if (this.myProfile) {
-      this.userData = next.auth.user;
-    } else {
-      this.userData = next.users.selectedUserData[this.userId];
-    }
+    this.userData = next.users.selectedUserData[this.userId];
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();
     }
@@ -175,6 +171,8 @@ class Profile extends Component {
         let active = this.state.view === tab.id;
         let data = tabData.data || [];
         let loaded = tabData.loaded || false;
+        if (tab.id === 0) tab.title = 'Posts ' + this.userData.postCount;
+        if (tab.id === 1) tab.title = 'Investments ' + this.userData.investmentCount;
 
         listEl.push(<CustomListView
           ref={(c) => { this.tabs[tab.id].component = c; }}
@@ -190,6 +188,7 @@ class Profile extends Component {
           active={active}
           renderHeader={this.renderHeader}
           needsReload={this.needsReload}
+          onReload={this.loadUser}
         />
         );
       });

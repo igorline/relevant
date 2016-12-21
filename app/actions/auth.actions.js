@@ -28,6 +28,14 @@ function setUser(user) {
 }
 
 export
+function setSelectedUserData(data) {
+  return {
+    type: 'SET_SELECTED_USER_DATA',
+    payload: data
+  };
+}
+
+export
 function setUserIndex(userIndex) {
   return {
     type: types.SET_USER_INDEX,
@@ -223,6 +231,7 @@ export function getUser(callback) {
       .then(response => response.json())
       .then((responseJSON) => {
         dispatch(setUser(responseJSON));
+        dispatch(setSelectedUserData(responseJSON));
         dispatch(notifActions.createNotification({
           type: 'online',
           personal: false,

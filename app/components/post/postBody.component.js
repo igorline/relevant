@@ -88,7 +88,7 @@ class PostBody extends Component {
             {bodyObj[key].text + space}
           </Text>);
         }
-        if (i < 57 || expanded) {
+        if (i < 77 || expanded) {
           return (<Text key={i}>{bodyObj[key].text}</Text>);
         } else if (!breakText) {
           breakText = i;
@@ -110,7 +110,7 @@ class PostBody extends Component {
       postStyle = styles.commentaryText;
     }
 
-    if (body.length < 120 && !this.props.short) {
+    if (body.length < 70 && !this.props.short) {
       postStyle = styles.shortBodyText;
     }
 
