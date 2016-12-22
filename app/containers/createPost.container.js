@@ -188,7 +188,7 @@ class CreatePostContainer extends Component {
       this.enableNext = true;
     }
     let right = null;
-    if (props.scene.route.next) {
+    if (this.current === 'url') {
       right = (
         <TouchableHighlight
           style={[styles.rightButton, { opacity: this.enableNext ? 1 : 0.3 }]}
@@ -198,10 +198,26 @@ class CreatePostContainer extends Component {
           <Text
             style={[
               styles.rightButtonText,
-              // this.props.share ? { fontSize: 15 } : null
             ]}
           >
-            {props.scene.route.next}
+            {/* props.scene.route.next */}
+            Next
+          </Text>
+        </TouchableHighlight>
+      );
+    } else if (this.current === 'categories') {
+      right = (
+        <TouchableHighlight
+          style={[styles.rightButton, { opacity: this.props.createPost.postCategory ? 1 : 0.3 }]}
+          underlayColor={'transparent'}
+          onPress={() => this.createPost(props)}
+        >
+          <Text
+            style={[
+              styles.rightButtonText,
+            ]}
+          >
+            Post
           </Text>
         </TouchableHighlight>
       );
@@ -222,8 +238,7 @@ class CreatePostContainer extends Component {
         >
           <Text
             style={[
-              styles.leftButtonText,
-              // this.props.share ? { fontSize: 15 } : null
+              styles.leftButtonText
             ]}
           >
             Cancel
@@ -269,6 +284,7 @@ class CreatePostContainer extends Component {
   renderScene() {
     switch (this.props.step) {
       case 'url':
+        this.current = 'url';
         return (<UrlComponent
           share={this.props.share}
           users={this.props.user}
@@ -277,8 +293,10 @@ class CreatePostContainer extends Component {
           actions={this.props.actions}
         />);
       case 'categories':
+        this.current = 'categories';
         return <Categories done={this.createPost} {...this.props.createPost} actions={this.props.actions} />;
       case 'post':
+        this.current = 'post';
         return <CreatePostComponent {...this.props.createPost} actions={this.props.actions} />;
       default:
         return null;

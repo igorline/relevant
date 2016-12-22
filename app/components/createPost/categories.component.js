@@ -26,7 +26,7 @@ class Categories extends Component {
 
   setCategory(tag) {
     this.props.actions.setPostCategory(tag);
-    setTimeout(() => this.props.done(), 100);
+    // setTimeout(() => this.props.done(), 100);
     // this.props.actions.push({
     //   key: 'createPostFinish',
     //   back: true,
@@ -37,15 +37,22 @@ class Categories extends Component {
 
   render() {
     let categoryEl = null;
+    let selectedTag = this.props.postCategory;
     let styles = globalStyles;
     if (this.props.tags) {
       categoryEl = this.props.tags.map((tag, i) => {
+        let highlight = false;
+        if (selectedTag) {
+          if (selectedTag._id) {
+            if (tag._id === selectedTag._id) highlight = true;
+          }
+        }
         return (
           <TouchableHighlight
             key={i}
             onPress={() => this.setCategory(tag)}
             underlayColor={'transparent'}
-            style={[styles.categoryItem]}
+            style={[styles.categoryItem, { backgroundColor: highlight ? '#4d4eff' : 'white' }]}
           >
             <View
               style={{
