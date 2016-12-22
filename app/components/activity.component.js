@@ -188,6 +188,7 @@ export default function (props) {
           </View>
         );
 
+      case 'postMention':
       case 'mention':
         return (
           <View style={styles.activityLeft}>
