@@ -67,6 +67,3 @@ export const RELOAD_ROUTE = 'RELOAD_ROUTE';
 export const RELOAD_ALL_TABS = 'RELOAD_ALL_TABS';
 
 export const SET_VIEW = 'SET_VIEW';
-
-
-
