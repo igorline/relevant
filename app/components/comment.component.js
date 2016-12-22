@@ -30,6 +30,7 @@ class Comment extends Component {
       editing: false,
       height: 0
     };
+    this.timeSince = this.timeSince.bind(this);
     this.singleComment = null;
     this.deleteComment = this.deleteComment.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
@@ -42,11 +43,6 @@ class Comment extends Component {
       let text = this.props.comment.text;
       this.setState({ editedText: text });
     }
-  }
-
-  editComment() {
-    this.setState({ editedText: this.props.comment.text });
-    this.setState({ editing: !this.state.editing });
   }
 
   saveEdit(comment) {
@@ -82,7 +78,7 @@ class Comment extends Component {
   componentWillUpdate(nextProps, nextState) {
     const self = this;
     if (nextState.editing !== this.state.editing) {
-      this.refs.singleComment.measure( (fx, fy, width, height, px, py) => {
+      this.singleComment.measure( (fx, fy, width, height, px, py) => {
         let num = 0;
         num = fy;
         self.props.parentEditing(nextState.editing, num);
@@ -99,8 +95,32 @@ class Comment extends Component {
     );
   }
 
+  timeSince(date) {
+    let seconds = Math.floor((new Date() - date) / 1000);
+    let interval = Math.floor(seconds / 31536000);
+    if (interval >= 1) {
+        return interval + 'y';
+    }
+    interval = Math.floor(seconds / 2592000);
+    if (interval >= 1) {
+        return interval + 'mo';
+    }
+    interval = Math.floor(seconds / 86400);
+    if (interval >= 1) {
+        return interval + 'd';
+    }
+    interval = Math.floor(seconds / 3600);
+    if (interval >= 1) {
+        return interval + 'hr';
+    }
+    interval = Math.floor(seconds / 60);
+    if (interval >= 1) {
+        return interval + 'm';
+    }
+    return Math.floor(seconds) + 's';
+  }
+
   setTag(tag) {
-    console.log('set tag', tag);
     this.props.actions.selectTag({ _id: tag.replace('#', '') });
     this.props.navigator.changeTab('discover');
   }
@@ -111,17 +131,28 @@ class Comment extends Component {
     this.props.navigator.goToProfile(user);
   }
 
+  editComment() {
+    this.setState({ editedText: this.props.comment.text });
+    this.setState({ editing: !this.state.editing });
+  }
+
   render() {
-    const self = this;
     let comment = this.props.comment;
+    if (!comment) return null;
     let body = comment.text;
     let postTime = moment(comment.createdAt);
-    let timeNow = moment();
-    let dif = timeNow.diff(postTime);
-    let createdTime = moment.duration(dif).humanize();
+    let timestamp = this.timeSince(postTime);
     let bodyEl = null;
     let bodyObj = {};
-
+    let optionsEl = null;
+    let editingEl = null;
+    let authId = null;
+    let textEl = null;
+    let image = null;
+    let owner = false;
+    let name = null;
+    let imageEl = null;
+    let commentUserId = null;
     let textArr = body.replace((/[@#]\S+/g), (a) => { return '`' + a + '`'; }).split(/`/);
     textArr.forEach((section, i) => {
       bodyObj[i] = {};
@@ -138,40 +169,38 @@ class Comment extends Component {
       }
     });
 
-    bodyEl = Object.keys(bodyObj).map((key, i) => {
+    textEl = Object.keys(bodyObj).map((key, i) => {
       let text = bodyObj[key].text;
 
       if (bodyObj[key].hashtag) {
         return (<Text
           key={key}
-          onPress={() => this.setTag(bodyObj[key].text)}
+          onPress={() => this.setTag(text)}
           style={styles.active}
         >
-          {bodyObj[key].text}
+          {text}
         </Text>);
       } else if (bodyObj[key].mention) {
         return (<Text
           key={key}
-          onPress={() => this.setSelected(bodyObj[key].text)}
+          onPress={() => this.setSelected(text)}
           style={styles.active}
         >
-          {bodyObj[key].text}
+          {text}
         </Text>);
       }
-      return (<Text key={i}>{bodyObj[key].text}</Text>);
+      return (<Text key={i}>{text}</Text>);
     });
 
-    if (this.state.editing) {
-      bodyEl = (<CommentEditing
+    if (!this.state.editing) {
+      bodyEl = (<Text style={[styles.commentBodyText, styles.georgia]}>{textEl}</Text>);
+    } else {
+      editingEl = (<CommentEditing
         comment={comment}
         toggleFunction={this.editComment}
         saveEditFunction={this.saveEdit}
       />);
     }
-
-    let image = null;
-    let name = null;
-    let commentUserId = null;
 
     if (comment.embeddedUser) {
       if (comment.embeddedUser.image) image = comment.embeddedUser.image;
@@ -185,17 +214,13 @@ class Comment extends Component {
       }
     }
 
-    let authId = null;
     if (this.props.auth.user) {
       if (this.props.auth.user._id) authId = this.props.auth.user._id;
     }
 
-    let owner = false;
     if (authId && commentUserId) {
       if (authId === commentUserId) owner = true;
     }
-
-    let imageEl;
 
     if (image) {
       imageEl = (
@@ -214,35 +239,47 @@ class Comment extends Component {
       );
     }
 
+    if (owner) {
+      optionsEl = (<View
+        style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row' }}
+      >
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          onPress={this.showActionSheet}
+        >
+          <Text style={[{ fontSize: 20, color: '#808080' }]}>...</Text>
+        </TouchableHighlight>
+      </View>);
+    }
+
     return (
       <View
-        ref="singleComment"
+        ref={(c) => { this.singleComment = c; }}
         style={[styles.commentContainer]}
       >
-        <View style={[styles.flexRow]}>
-          {imageEl}
-          <View style={{ flex: 1 }}>
-            <View style={styles.commentHeaderTextContainer}>
-              <Text style={{ fontSize: 12, color: '#aaaaaa' }}>{createdTime} ago</Text>
-              <Text style={{ fontSize: 12, color: '#aaaaaa' }}>{name}</Text>
+        <View style={styles.commentHeader}>
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            onPress={() => this.props.navigator.goToProfile({
+              _id: comment.user,
+              name: comment.embeddedUser.name
+            })}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Image
+                style={styles.commentAvatar}
+                source={{ uri: image }}
+              />
+              <Text style={[styles.bebas, styles.halfLetterSpacing]}>{name}</Text>
             </View>
-            <View>
-              <Text>{bodyEl}</Text>
-            </View>
-            {owner ?
-              <View
-                style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row' }}
-              >
-                <TouchableHighlight
-                  underlayColor={'transparent'}
-                  onPress={this.showActionSheet}
-                >
-                  <Text style={[{ fontSize: 20, color: '#808080' }]}>...</Text>
-                </TouchableHighlight>
-              </View>
-            : null}
-          </View>
+          </TouchableHighlight>
+          <Text style={[{ fontSize: 12 }, styles.timestampGray]}>{timestamp}</Text>
         </View>
+        <View style={{ paddingLeft: 35, paddingRight: 10 }}>
+          {bodyEl}
+          {editingEl}
+        </View>
+        {optionsEl}
       </View>
     );
   }
@@ -251,35 +288,14 @@ class Comment extends Component {
 export default Comment;
 
 const localStyles = StyleSheet.create({
-  editingCommentButtons: {
+  commentHeader: {
     flexDirection: 'row',
-    paddingTop: 10,
-    justifyContent: 'flex-end',
     alignItems: 'center',
-    flexWrap: 'wrap'
-  },
-  editingCommentButton: {
-    backgroundColor: 'white',
-    padding: 10,
-    marginLeft: 10,
-    height: 30,
-    flexDirection: 'row',
-    borderWidth: 1,
-    borderRadius: 3,
-    borderColor: 'lightgray',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  editingCommentButtonText: {
-    color: '#808080'
-  },
-  commentHeaderTextContainer: {
-    height: 50
+    justifyContent: 'space-between',
+    paddingBottom: 10,
   },
   commentContainer: {
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0'
   },
   commentAvatar: {
     height: 25,
@@ -287,15 +303,9 @@ const localStyles = StyleSheet.create({
     borderRadius: 12.5,
     marginRight: 10,
   },
-  editingInput: {
-    backgroundColor: 'transparent',
-    flex: 1,
-    fontSize: 14,
-    padding: 10,
-    borderRadius: 5,
-    borderColor: 'lightgray',
-    borderWidth: 1,
-  },
+  commentBodyText: {
+    lineHeight: 20,
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };

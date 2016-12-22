@@ -90,6 +90,9 @@ const colors = StyleSheet.create({
   },
   white: {
     color: '#fff',
+  },
+  timestampGray: {
+    color: '#B0B3B6'
   }
 });
 
@@ -114,6 +117,7 @@ const layout = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#F0F0F0',
     backgroundColor: 'white',
+    paddingLeft: 5,
     bottom: 0,
     left: 0,
     right: 0,
@@ -398,7 +402,6 @@ const layout = StyleSheet.create({
     shadowOffset: { width: -1, height: 1 },
     shadowRadius: 2,
     shadowOpacity: 0.1,
-    // borderRadius: 10,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'lightgrey'
   },
@@ -414,15 +417,6 @@ const layout = StyleSheet.create({
   separator: {
     height: 12,
     backgroundColor: 'hsl(0,0%,90%)',
-
-    // shadowColor: 'black',
-    // shadowOffset: { width: 0, height: 0 },
-    // shadowRadius: 2,
-    // shadowOpacity: 0.1,
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: 'grey',
-    // borderBottomColor: 'grey',
   }
 });
 
