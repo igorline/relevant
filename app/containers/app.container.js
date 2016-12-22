@@ -172,12 +172,12 @@ class Application extends Component {
 
   logoutRedirect() {
     this.props.actions.removeDeviceToken(this.props.auth);
-    this.props.actions.logoutAction(this.props.auth.user, this.props.auth.token);
     this.props.actions.replaceRoute({
       key: 'auth',
       component: 'auth'
     }, 0, 'home');
-    // setTimeout(() => this.props.actions.changeTab('read'), 1000);
+    // this.props.actions.changeTab('read');
+    this.props.actions.logoutAction(this.props.auth.user, this.props.auth.token);
   }
 
   // home button etc

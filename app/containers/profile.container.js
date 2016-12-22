@@ -164,6 +164,9 @@ class Profile extends Component {
   render() {
     let listEl = <CustomSpinner />;
 
+    // solves logout bug
+    if (!this.props.auth.user) return null;
+
     if (this.userData) {
       listEl = [];
       this.tabs.forEach((tab) => {

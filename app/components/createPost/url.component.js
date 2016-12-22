@@ -40,7 +40,7 @@ export default class UrlComponent extends Component {
 
   setMention(user) {
     // let bodyMentions = [...this.props.bodyMentions, user._id];
-    let postBody = this.props.postBody.replace(this.mention, '@' + user.name);
+    let postBody = this.props.postBody.replace(this.mention, '@' + user._id);
     this.props.actions.setCreaPostState({ postBody });
     this.props.actions.setUserSearch([]);
   }
