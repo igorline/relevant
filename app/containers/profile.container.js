@@ -171,8 +171,14 @@ class Profile extends Component {
         let active = this.state.view === tab.id;
         let data = tabData.data || [];
         let loaded = tabData.loaded || false;
-        if (tab.id === 0) tab.title = 'Posts ' + this.userData.postCount;
-        if (tab.id === 1) tab.title = 'Investments ' + this.userData.investmentCount;
+        if (tab.id === 0) {
+          tab.title = 'Posts ' + this.userData.postCount;
+          tab.type = 'posts';
+        }
+        if (tab.id === 1) {
+          tab.title = 'Investments ' + this.userData.investmentCount;
+          tab.type = 'investments';
+        }
 
         listEl.push(<CustomListView
           ref={(c) => { this.tabs[tab.id].component = c; }}
@@ -184,7 +190,7 @@ class Profile extends Component {
           load={this.load}
           view={tab.id}
           stickyHeaderIndices={[1]}
-          type={tab.title}
+          type={tab.type}
           active={active}
           renderHeader={this.renderHeader}
           needsReload={this.needsReload}

@@ -74,6 +74,7 @@ export default function auth(state = initialState, action) {
 
     case types.UPDATE_AUTH_USER:
       return {
+        ...state,
         user: {
           ...state.user,
           ...action.payload
