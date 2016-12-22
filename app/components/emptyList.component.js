@@ -15,9 +15,10 @@ export default function(props) {
 
   return (
     <View style={[visible ? styles.emptyList : styles.hideEmptyList]} pointerEvents={visible ? 'auto' : 'none'}>
-      <Text style={[styles.libre, { fontSize: 20 }]}>
+      <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
         Sorry bruh, no {type} {emoji}
       </Text>
+      {props.children}
     </View>
   );
 }
@@ -30,6 +31,8 @@ const localStyles = StyleSheet.create({
   },
   emptyList: {
     flex: 1.8,
+    paddingLeft: 40,
+    paddingRight: 40,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',

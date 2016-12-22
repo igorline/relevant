@@ -68,10 +68,8 @@ export function loginUserSuccess(token) {
 }
 
 export function loginUserFailure() {
-  return (dispatch) => {
-    dispatch({
-      type: types.LOGIN_USER_FAILURE
-    });
+  return {
+    type: types.LOGIN_USER_FAILURE
   };
 }
 
@@ -92,6 +90,7 @@ export function logoutAction(user) {
     utils.token.remove()
     .then(() => {
       dispatch(logout());
+      dispatch(removeDeviceToken());
       // websoket message
       dispatch({
         type: 'server/logout',
@@ -145,7 +144,6 @@ function userOnline(user, token) {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      // console.log(responseJSON, 'login response')
     })
     .catch(error => {
       console.log(error, 'error');
@@ -270,7 +268,7 @@ function setDeviceToken(token) {
   };
 }
 
-export function updateUser(user, authToken) {
+export function updateUser(user, authToken, updateLocal) {
   return (dispatch) => {
     user.posts.map((post) => post._id);
     return fetch(process.env.API_SERVER+'/api/user?access_token='+authToken, {
@@ -284,7 +282,7 @@ export function updateUser(user, authToken) {
     })
     .then(response => response.json())
     .then((responseJSON) => {
-      dispatch(updateAuthUser(responseJSON));
+      if (updateLocal) dispatch(updateAuthUser(responseJSON));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -309,14 +307,14 @@ export function addDeviceToken(user, authToken) {
                             if (user.deviceTokens.indexOf(storedDeviceToken) < 0) {
                                   newUser.deviceTokens.push(storedDeviceToken);
                                   console.log('adding devicetoken to useroject here', storedDeviceToken)
-                                  dispatch(updateUser(newUser, authToken));
+                                  dispatch(updateUser(newUser, authToken, true));
                             } else {
                                 console.log('devicetoken already present in useroject');
                             }
                         } else {
                             newUser.deviceTokens = [storedDeviceToken];
-                            console.log('adding devicetoken to useroject', storedDeviceToken);
-                            dispatch(updateUser(newUser, authToken));
+                            console.log('adding devicetoken to user object', storedDeviceToken);
+                            dispatch(updateUser(newUser, authToken, true));
                         }
                     } else {
                         console.log('no userdefault devicetoken');
@@ -344,20 +342,21 @@ export function addDeviceToken(user, authToken) {
                 if (user.deviceTokens.indexOf(deviceToken) < 0) {
                       newUser.deviceTokens.push(deviceToken);
                       console.log('adding devicetoken to user object', deviceToken)
-                      dispatch(updateUser(newUser, authToken));
+                      dispatch(updateUser(newUser, authToken, true));
                 } else {
                     console.log('devicetoken already present in user object');
                 }
             } else {
                 newUser.deviceTokens = [deviceToken];
                 console.log('adding devicetoken to useroject', deviceToken)
-                dispatch(updateUser(newUser,  authToken));
+                dispatch(updateUser(newUser,  authToken, true));
             }
         });
     }
 }
 
 export function removeDeviceToken(auth) {
+    if (!auth) return;
     return function(dispatch) {
         var user = auth.user;
         if (user.deviceTokens) {
@@ -367,11 +366,13 @@ export function removeDeviceToken(auth) {
                 console.log(user.deviceTokens, 'pre splice')
                 user.deviceTokens.splice(index, 1);
                 console.log(user.deviceTokens, 'post splice');
-                dispatch(updateUser(user, auth.token));
+                console.log('upating user to', user);
+                dispatch(updateUser(user, auth.token, false));
             } else {
                 console.log('devicetoken not present');
             }
         }
+        console.log('no device tokens');
         // userDefaults.remove('devicetoken', APP_GROUP_ID)
         // .then(data => {
         //     console.log('removed devicetoken from userdefault')
