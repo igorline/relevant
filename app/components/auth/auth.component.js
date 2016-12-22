@@ -115,10 +115,15 @@ const localStyles = StyleSheet.create({
     borderTopColor: 'black',
   },
   logoContainer: {
-marginTop: 10, flex: 0.25, flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
+    marginTop: 10,
+    flex: 0.25,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   authLogo: {
-width: fullWidth * 0.8,  flex: 1 
+    width: fullWidth * 0.8,
+    flex: 1,
   },
   authParent: {
     backgroundColor: 'white',
