@@ -35,7 +35,10 @@ const font = StyleSheet.create({
     fontSize: 22.5,
     fontFamily: 'BebasNeueRelevantRegular',
     fontWeight: 'bold',
-    letterSpacing: 0.15
+    letterSpacing: 0.15,
+    paddingVertical: 10,
+    // flex: 1,
+    // justifyContent: 'center',
   },
   shareHeader: {
     marginTop: -20,

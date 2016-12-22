@@ -5,7 +5,9 @@ import {
   TouchableHighlight,
   Text,
   View,
-  Image
+  Image,
+  Animated,
+  Easing
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -26,7 +28,14 @@ import * as navigationActions from '../actions/navigation.actions';
 const {
   Header: NavigationHeader,
   CardStack: NavigationCardStack,
+  Card: NavigationCard,
+  Transitioner: NavigationTransitioner,
 } = NavigationExperimental;
+
+const {
+  PagerPanResponder: NavigationPagerPanResponder,
+  PagerStyleInterpolator: NavigationPagerStyleInterpolator,
+} = NavigationCard;
 
 let styles;
 
@@ -43,6 +52,10 @@ class CardContainer extends Component {
     this.renderRight = this.renderRight.bind(this);
     this.back = this.back.bind(this);
     this.thirsty = this.thirsty.bind(this);
+    this.configureTransition = this.configureTransition.bind(this);
+    this.renderCard = this.renderCard.bind(this);
+    this.getAnimatedStyle = this.getAnimatedStyle.bind(this);
+
   }
 
   getDefaultComponent(props) {
@@ -50,13 +63,13 @@ class CardContainer extends Component {
 
     switch (key) {
       case 'discover':
-        return <Discover {...this.props} navigator={this.props.actions} />;
+        return <Discover key={key} {...this.props} navigator={this.props.actions} />;
       case 'myProfile':
-        return <Profile {...this.props} navigator={this.props.actions} />;
+        return <Profile key={key} {...this.props} navigator={this.props.actions} />;
       case 'activity':
-        return <Activity {...this.props} navigator={this.props.actions} />;
+        return <Activity key={key} {...this.props} navigator={this.props.actions} />;
       case 'read':
-        return <Read {...this.props} navigator={this.props.actions} />;
+        return <Read key={key} {...this.props} navigator={this.props.actions} />;
       default:
         return null;
     }
@@ -67,13 +80,25 @@ class CardContainer extends Component {
   }
 
   renderLeft(props) {
-    let back = null;
-    if (props.scene.route.back) {
-      back = (
-        <BackButton onPress={this.back} />
-      );
-    }
-    return back;
+    if (!props.scene.route.back) return null;
+
+    // return <BackButton style={{ justifyContent: 'flex-start' }} onPress={this.back} />;
+
+    return (<TouchableHighlight
+      style={[{ paddingVertical: 15 }]}
+      underlayColor={'transparent'}
+      onPress={this.back}
+    >
+      <Text
+        style={[
+          {fontSize: 17},
+          styles.active,
+          // styles.leftButtonText,
+        ]}
+      >
+        ◀
+      </Text>
+    </TouchableHighlight>);
   }
 
   renderTitle(props) {
@@ -92,20 +117,20 @@ class CardContainer extends Component {
 
     if (title === 'Read') {
       return (
-        <NavigationHeader.Title style={{ bottom: -4, backgroundColor: 'transparent' }}>
+        <View style={{ paddingVertical: 10, backgroundColor: 'transparent' }}>
           <Image
             source={require('../assets/images/logo.png')}
             resizeMode={'contain'}
-            style={{ width: 200, height: 25 }}
+            style={{ width: 130, height: 25 }}
           />
-        </NavigationHeader.Title>
+        </View>
       );
     }
 
     return (
-      <NavigationHeader.Title>
+      <View>
         <Text style={styles.navTitle}>{clipped}</Text>
-      </NavigationHeader.Title>
+      </View>
     );
   }
 
@@ -125,20 +150,8 @@ class CardContainer extends Component {
       case 'messages':
         return <Messages navigator={this.props.actions} />;
 
-      // case 'categories':
-      //   return <Categories navigator={this.props.actions} />;
-
       case 'profile':
         return <Profile navigator={this.props.actions} scene={props.scene.route} />;
-
-      // case 'auth':
-      //   return <Auth authType={key} />;
-
-      // case 'login':
-      //   return <Auth authType={key} />;
-
-      // case 'signup':
-      //   return <Auth authType={key} />;
 
       default:
         return this.getDefaultComponent(props);
@@ -210,7 +223,7 @@ class CardContainer extends Component {
 
     if (key !== 'myProfile') {
       rightEl = (
-        <View style={{ flex: 1, justifyContent: 'center', padding: 10 }}>
+        <View style={{ flex: 1, justifyContent: 'center', paddingVertical: 15 }}>
           {statsEl}
         </View>
       );
@@ -249,17 +262,99 @@ class CardContainer extends Component {
 
   renderHeader(props) {
     return (
-      <NavigationHeader
-        {...props}
+
+      <View
         style={{
+          height: 49,
+          marginTop: 10,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
           backgroundColor: 'white',
           borderBottomColor: '#242425',
           borderBottomWidth: StyleSheet.hairlineWidth,
         }}
-        renderTitleComponent={this.renderTitle}
-        renderLeftComponent={this.renderLeft}
-        renderRightComponent={this.renderRight}
-      />
+      >
+        <View style={{ marginLeft: 15, justifyContent: 'flex-start', flex: .1 }}>
+          {this.renderLeft(props)}
+        </View>
+        <View style={{ justifyContent: 'center' }}>
+          {this.renderTitle(props)}
+        </View>
+        <View style={{ marginRight: 15, justifyContent: 'flex-end', flex: .1 }}>
+          {this.renderRight(props)}
+        </View>
+      </View>
+
+    );
+  }
+
+  configureTransition() {
+    const easing = Easing.inOut(Easing.ease);
+    return {
+      duration: 250,
+      easing,
+    };
+  }
+
+  getAnimatedStyle(props) {
+    const {
+      layout,
+      position,
+      scene,
+    } = props;
+
+    const {
+      index,
+    } = scene;
+
+    const inputRange = [index - 1, index, index + 1];
+    const width = layout.initWidth;
+    const translateX = position.interpolate({
+      inputRange,
+      outputRange: [width, 0, -50],
+    });
+
+    return {
+      transform: [
+        { translateX },
+      ],
+    };
+  }
+
+  renderCard(props) {
+    const scenes = props.scenes.map((scene) => {
+      const sceneProps = {
+        ...props,
+        scene,
+      };
+      const panHandlers = NavigationPagerPanResponder.forHorizontal({
+        ...sceneProps,
+        onNavigateBack: () => this.back(),
+        // onNavigateForward: () => navigate('forward'),
+      });
+      const style = [
+        styles.card,
+        this.getAnimatedStyle(sceneProps),
+        // NavigationPagerStyleInterpolator.forHorizontal(sceneProps),
+        { flex: 1 }
+      ];
+      return (
+        <Animated.View
+          key={scene.key}
+          style={style}
+          {...panHandlers}
+        >
+          {this.renderHeader(sceneProps, style)}
+          {this.renderScene(sceneProps)}
+        </Animated.View>
+      );
+    });
+
+    return (
+      <View style={{ flex: 1 }}>
+        {scenes}
+      </View>
     );
   }
 
@@ -267,15 +362,23 @@ class CardContainer extends Component {
     const { navigation } = this.props;
     const scenes = navigation[this.default];
 
+      // <NavigationCardStack
+      //   direction={'horizontal'}
+      //   navigationState={scenes}
+      //   style={{ backgroundColor: 'white' }}
+      //   onNavigateBack={this.back}
+      //   renderScene={this.renderScene}
+      //   renderHeader={this.renderHeader}
+      //   enableGestures
+      // />
+
+
     return (
-      <NavigationCardStack
-        direction={'horizontal'}
+
+      <NavigationTransitioner
         navigationState={scenes}
-        style={{ backgroundColor: 'white' }}
-        onNavigateBack={this.back}
-        renderScene={this.renderScene}
-        renderHeader={this.renderHeader}
-        enableGestures
+        render={(transitionProps) => this.renderCard(transitionProps)}
+        configureTransition={this.configureTransition}
       />
     );
   }
@@ -284,7 +387,8 @@ class CardContainer extends Component {
 const localStyles = StyleSheet.create({
   statsTxt: {
     color: 'black',
-    fontSize: 13
+    fontSize: 13,
+    textAlign: 'right',
   },
   gearImg: {
     height: 20,
@@ -292,9 +396,22 @@ const localStyles = StyleSheet.create({
   },
   gear: {
     height: 45,
-    flex: 1,
-    justifyContent: 'center',
+    // flex: .5,
+    // textAlign: 'right',
+    // justifyContent: 'flex-end',
     padding: 12,
+  },
+  card: {
+    bottom: 0,
+    flex: 1,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    top: 0,
   },
 });
 

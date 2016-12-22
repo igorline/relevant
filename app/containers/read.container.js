@@ -50,7 +50,6 @@ class Read extends Component {
   }
 
   load(view, length) {
-   // console.log('load', this);
     if (!view) view = 0;
     if (!length) length = 0;
     const tag = this.props.posts.tag;
@@ -107,8 +106,11 @@ class Read extends Component {
           load={this.load}
           view={tab.id}
           type={'posts'}
+          parent={'feed'}
           active={active}
           needsReload={this.needsReload}
+          navigation={this.props.navigation}
+          actions={this.props.actions}
         />
       );
     });

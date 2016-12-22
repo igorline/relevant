@@ -67,6 +67,7 @@ const initialState = {
     }],
   },
   read: {
+    layout: 'horizontal',
     index: 0,
     key: 'read',
     refresh: null,
