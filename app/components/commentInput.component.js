@@ -27,19 +27,6 @@ class CommentInput extends Component {
     }
   }
 
-  renderUserSuggestions() {
-    let parentEl = null;
-    let usersArr = null;
-    if (this.props.users.search) {
-      if (this.props.users.search.length) {
-        parentEl = (<View style={{position: 'absolute', bottom: Math.min(100, this.state.inputHeight), left: 0, right: 0, backgroundColor: 'white', borderTopWidth: 1, borderTopColor: '#F0F0F0' }}>
-          <UserSearchComponent setSelected={this.setMention} users={this.props.users.search} />
-        </View>)
-      }
-    }
-    return parentEl;
-  }
-
   setMention(user) {
     let comment = this.state.comment.replace(this.mention, '@' + user.name);
     this.setState({ comment });
@@ -92,9 +79,26 @@ class CommentInput extends Component {
     .filter(el => el !== null);
   }
 
+  renderUserSuggestions() {
+    let parentEl = null;
+    let usersArr = null;
+    if (this.props.users.search) {
+      if (this.props.users.search.length) {
+        parentEl = (<View style={{position: 'absolute', bottom: Math.min(100, this.state.inputHeight), left: 0, right: 0, backgroundColor: 'white', borderTopWidth: 1, borderTopColor: '#F0F0F0' }}>
+          <UserSearchComponent setSelected={this.setMention} users={this.props.users.search} />
+        </View>);
+      }
+    }
+    return parentEl;
+  }
 
   renderInput() {
     if (!this.props.editing) {
+      let inputImage = null;
+      if (this.props.auth.user.image) {
+        let imageUrl = this.props.auth.user.image;
+        inputImage = (<Image style={styles.inputImage} source={{ uri: imageUrl }} />);
+      }
       return (<View
         style={[
           styles.commentInputParent,
@@ -102,11 +106,15 @@ class CommentInput extends Component {
         ]}
       >
         {this.renderUserSuggestions()}
+        {inputImage}
         <TextInput
           ref={(c) => { this.textInput = c; }}
           style={[
             styles.commentInput,
-            styles.font15
+            styles.font15,
+            styles.georgia,
+            styles.quarterLetterSpacing,
+            { lineHeight: 20 }
           ]}
           placeholder="Enter comment..."
           multiline
@@ -135,18 +143,20 @@ class CommentInput extends Component {
     return null;
   }
 
-  componentDidMount() {
-  }
-
   render() {
-    return this.renderInput()
+    return this.renderInput();
   }
 }
 
 export default CommentInput;
 
 const localStyles = StyleSheet.create({
-
+  inputImage: {
+    height: 25,
+    width: 25,
+    borderRadius: 12.5,
+    marginLeft: 5,
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };
