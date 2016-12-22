@@ -47,6 +47,7 @@ class Application extends Component {
       destructiveIndex: 2,
       cancelIndex: 3,
     };
+    this.logoutRedirect = this.logoutRedirect.bind(this);
     this.backgroundTime = 0;
     this.showActionSheet = this.showActionSheet.bind(this);
     this.renderScene = this.renderScene.bind(this);
@@ -131,7 +132,6 @@ class Application extends Component {
       }
     });
   }
-
 
   chooseImage(callback) {
     ImagePicker.showImagePicker(pickerOptions, (response) => {

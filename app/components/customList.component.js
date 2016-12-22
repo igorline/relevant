@@ -77,12 +77,8 @@ export default class ActivityView extends Component {
   render() {
     let listEl = null;
     let emptyEl = null;
-    let spinnerEl = null;
-
-    // if (this.props.parent !== 'profile')
-      spinnerEl = (<CustomSpinner visible={!this.props.data.length && this.props.active} />);
-    // else
-    //   spinnerEl = (<CustomSpinnerRelative visible={!this.props.data.length && this.props.active} />);
+    let spinnerEl = (<CustomSpinner visible={!this.props.data.length && this.props.active} />);
+      
 
     listEl = (
       <ListView
@@ -111,7 +107,7 @@ export default class ActivityView extends Component {
         renderFooter={() => <View />}
         refreshControl={
           <RefreshControl
-            style={{backgroundColor: 'hsl(0,0%,90%)'}}
+            style={{ backgroundColor: 'white' }}
             refreshing={this.state.reloading}
             onRefresh={this.reload}
             tintColor="#000000"
@@ -131,12 +127,24 @@ export default class ActivityView extends Component {
     if (this.props.loaded) spinnerEl = null;
 
     if (this.props.loaded && !this.props.data.length) {
+      let linkEl = null;
+      if (this.props.parent === 'feed') {
+        linkEl = (<Text
+          style={[styles.georgia, styles.discoverLink, styles.quarterLetterSpacing]}
+          onPress={() => { this.props.actions.changeTab('discover'); }}
+        >
+          <Text style={styles.active}>Discover</Text>
+          &nbsp;the most relevant content & people
+        </Text>);
+      }
       emptyEl = this.props.children || (
       <EmptyList
         visible
         emoji={'😔'}
         type={type}
-      />);
+      >
+        {linkEl}
+      </EmptyList>);
       if (this.props.parent !== 'profile') listEl = null;
     }
 
@@ -164,6 +172,11 @@ const localStyles = StyleSheet.create({
     position: 'absolute'
   },
   commonList: {
+  },
+  discoverLink: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: 20
   }
 });
 

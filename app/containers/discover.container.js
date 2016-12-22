@@ -157,6 +157,7 @@ class Discover extends Component {
           renderRow={this.renderRow}
           load={this.load}
           type={tab.type}
+          parent={'discover'}
           view={tab.id}
           active={active}
           YOffset={this.state.headerHeight}

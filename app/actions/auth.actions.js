@@ -68,10 +68,8 @@ export function loginUserSuccess(token) {
 }
 
 export function loginUserFailure() {
-  return (dispatch) => {
-    dispatch({
-      type: types.LOGIN_USER_FAILURE
-    });
+  return {
+    type: types.LOGIN_USER_FAILURE
   };
 }
 
@@ -92,6 +90,7 @@ export function logoutAction(user) {
     utils.token.remove()
     .then(() => {
       dispatch(logout());
+      dispatch(removeDeviceToken());
       // websoket message
       dispatch({
         type: 'server/logout',
@@ -145,7 +144,6 @@ function userOnline(user, token) {
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      // console.log(responseJSON, 'login response')
     })
     .catch(error => {
       console.log(error, 'error');
@@ -270,7 +268,7 @@ function setDeviceToken(token) {
   };
 }
 
-export function updateUser(user, authToken) {
+export function updateUser(user, authToken, updateLocal) {
   return (dispatch) => {
     user.posts.map((post) => post._id);
     return fetch(process.env.API_SERVER+'/api/user?access_token='+authToken, {
@@ -284,7 +282,7 @@ export function updateUser(user, authToken) {
     })
     .then(response => response.json())
     .then((responseJSON) => {
-      dispatch(updateAuthUser(responseJSON));
+      if (updateLocal) dispatch(updateAuthUser(responseJSON));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -293,93 +291,97 @@ export function updateUser(user, authToken) {
 }
 
 export function addDeviceToken(user, authToken) {
-  return function(dispatch) {
+    return function(dispatch) {
 
-    PushNotificationIOS.checkPermissions(function(results) {
-      console.log(results, 'permissions ios');
-      if (!results.alert) {
-        PushNotificationIOS.requestPermissions();
-      } else {
-        userDefaults.get('deviceToken', APP_GROUP_ID)
-        .then((storedDeviceToken) => {
-          if (storedDeviceToken) {
-            dispatch(setDeviceToken(storedDeviceToken));
-            let newUser = user;
-            if (user.deviceTokens) {
-              if (user.deviceTokens.indexOf(storedDeviceToken) < 0) {
-                newUser.deviceTokens.push(storedDeviceToken);
-                console.log('adding devicetoken to user here', storedDeviceToken);
-                dispatch(updateUser(newUser, authToken));
-              } else {
-                console.log('devicetoken already present in useroject');
-              }
+        PushNotificationIOS.checkPermissions(function(results) {
+            console.log(results, 'permissions ios');
+            if (!results.alert) {
+                PushNotificationIOS.requestPermissions();
             } else {
-              newUser.deviceTokens = [storedDeviceToken];
-              console.log('adding devicetoken to useroject', storedDeviceToken);
-              dispatch(updateUser(newUser, authToken));
+                userDefaults.get('deviceToken', APP_GROUP_ID)
+                .then(storedDeviceToken => {
+                    if (storedDeviceToken) {
+                        dispatch(setDeviceToken(storedDeviceToken));
+                        var newUser = user;
+                        if (user.deviceTokens) {
+                            if (user.deviceTokens.indexOf(storedDeviceToken) < 0) {
+                                  newUser.deviceTokens.push(storedDeviceToken);
+                                  console.log('adding devicetoken to useroject here', storedDeviceToken)
+                                  dispatch(updateUser(newUser, authToken, true));
+                            } else {
+                                console.log('devicetoken already present in useroject');
+                            }
+                        } else {
+                            newUser.deviceTokens = [storedDeviceToken];
+                            console.log('adding devicetoken to user object', storedDeviceToken);
+                            dispatch(updateUser(newUser, authToken, true));
+                        }
+                    } else {
+                        console.log('no userdefault devicetoken');
+                    }
+                })
+                .catch(err => {
+                    if(err) console.log('get devicetoken error', err);
+                })
             }
-          } else {
-            console.log('no userdefault devicetoken');
-          }
         })
-        .catch((err) => {
-          console.log('get devicetoken error', err);
-        });
-      }
-    });
 
-    PushNotificationIOS.addEventListener('register', function(deviceToken) {
-      console.log('PushNotificationIOS registration');
-      dispatch(setDeviceToken(deviceToken));
-      userDefaults.set('deviceToken', deviceToken, APP_GROUP_ID)
-      .then(() => {
-        console.log('saved devicetoken to userDefaults');
-      })
-      .catch((err) => {
-        console.log('store devicetoken error', err);
-      });
-      let newUser = user;
-      if (user.deviceTokens) {
-        if (user.deviceTokens.indexOf(deviceToken) < 0) {
-          newUser.deviceTokens.push(deviceToken);
-          console.log('adding devicetoken to user object', deviceToken);
-          dispatch(updateUser(newUser, authToken));
-        } else {
-          console.log('devicetoken already present in user object');
-        }
-      } else {
-        newUser.deviceTokens = [deviceToken];
-        console.log('adding devicetoken to useroject', deviceToken);
-        dispatch(updateUser(newUser,  authToken));
-      }
-    });
-  };
+
+        PushNotificationIOS.addEventListener('register', function(deviceToken){
+            console.log('PushNotificationIOS registration');
+            dispatch(setDeviceToken(deviceToken));
+            userDefaults.set('deviceToken', deviceToken, APP_GROUP_ID)
+            .then( ()  => {
+                console.log('saved devicetoken to userDefaults');
+            })
+            .catch(err => {
+                if(err) console.log('store devicetoken error', err);
+            })
+            var newUser = user;
+            if (user.deviceTokens) {
+                if (user.deviceTokens.indexOf(deviceToken) < 0) {
+                      newUser.deviceTokens.push(deviceToken);
+                      console.log('adding devicetoken to user object', deviceToken)
+                      dispatch(updateUser(newUser, authToken, true));
+                } else {
+                    console.log('devicetoken already present in user object');
+                }
+            } else {
+                newUser.deviceTokens = [deviceToken];
+                console.log('adding devicetoken to useroject', deviceToken)
+                dispatch(updateUser(newUser,  authToken, true));
+            }
+        });
+    }
 }
 
 export function removeDeviceToken(auth) {
-  return function (dispatch) {
-    let user = auth.user;
-    if (user.deviceTokens) {
-      if (user.deviceTokens.indexOf(auth.deviceToken) > -1) {
-        console.log('removing devicetoken from user');
-        let index = user.deviceTokens.indexOf(auth.deviceToken);
-        console.log(user.deviceTokens, 'pre splice');
-        user.deviceTokens.splice(index, 1);
-        console.log(user.deviceTokens, 'post splice');
-        dispatch(updateUser(user, auth.token));
-      } else {
-        console.log('devicetoken not present');
-      }
+    if (!auth) return;
+    return function(dispatch) {
+        var user = auth.user;
+        if (user.deviceTokens) {
+            if (user.deviceTokens.indexOf(auth.deviceToken) > -1) {
+                console.log('removing devicetoken from useroject');
+                var index = user.deviceTokens.indexOf(auth.deviceToken);
+                console.log(user.deviceTokens, 'pre splice')
+                user.deviceTokens.splice(index, 1);
+                console.log(user.deviceTokens, 'post splice');
+                console.log('upating user to', user);
+                dispatch(updateUser(user, auth.token, false));
+            } else {
+                console.log('devicetoken not present');
+            }
+        }
+        console.log('no device tokens');
+        // userDefaults.remove('devicetoken', APP_GROUP_ID)
+        // .then(data => {
+        //     console.log('removed devicetoken from userdefault')
+        // })
+        // .catch(err => {
+        //     if(err) console.log('remove devicetoken error', err);
+        // })
+        // console.log('abandonPermissions');
+        // PushNotificationIOS.abandonPermissions();
     }
-    // userDefaults.remove('devicetoken', APP_GROUP_ID)
-    // .then(data => {
-    //     console.log('removed devicetoken from userdefault')
-    // })
-    // .catch(err => {
-    //     if(err) console.log('remove devicetoken error', err);
-    // })
-    // console.log('abandonPermissions');
-    // PushNotificationIOS.abandonPermissions();
-  };
 }
 
