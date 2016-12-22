@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 
-import { globalStyles } from '../../styles/global';
+import { globalStyles, fullWidth } from '../../styles/global';
 
 let styles;
 
@@ -67,8 +67,8 @@ class Auth extends Component {
           { height: isAuthenticated ? this.state.visibleHeight - 60 : this.state.visibleHeight }, styles.authParent
         ]}
       >
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Image source={require('../../assets/images/logo.png')} resizeMode={'contain'} style={{ width: 330, height: 100 }} />
+        <View style={styles.logoContainer}>
+          <Image source={require('../../assets/images/logo.png')} resizeMode={'contain'} style={styles.authLogo} />
         </View>
 
         <View style={styles.authDivider}>
@@ -113,6 +113,12 @@ const localStyles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'black',
     borderTopColor: 'black',
+  },
+  logoContainer: {
+marginTop: 10, flex: 0.25, flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
+  },
+  authLogo: {
+width: fullWidth * 0.8,  flex: 1 
   },
   authParent: {
     backgroundColor: 'white',

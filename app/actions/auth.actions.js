@@ -216,7 +216,6 @@ function createUser(user) {
 export function getUser(callback) {
   return (dispatch) => {
     function fetchUser(token) {
-      // console.log('fetchUser', token);
       fetch(process.env.API_SERVER + '/api/user/me', {
         credentials: 'include',
         method: 'GET',
@@ -372,7 +371,7 @@ export function removeDeviceToken(auth) {
                 console.log('devicetoken not present');
             }
         }
-        console.log('no device tokens');
+        // console.log('no device tokens');
         // userDefaults.remove('devicetoken', APP_GROUP_ID)
         // .then(data => {
         //     console.log('removed devicetoken from userdefault')
@@ -382,6 +381,6 @@ export function removeDeviceToken(auth) {
         // })
         // console.log('abandonPermissions');
         // PushNotificationIOS.abandonPermissions();
-    }
+    };
 }
 
