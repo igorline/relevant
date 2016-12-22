@@ -91,7 +91,6 @@ export default function auth(state = initialState, action) {
         contacts: action.payload
       });
 
-
     default:
       return state;
   }

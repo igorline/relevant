@@ -15,6 +15,7 @@ import {
 import { globalStyles, fullHeight, fullWidth } from '../../styles/global';
 import { pickerOptions } from '../../utils/pickerOptions';
 import * as utils from '../../utils';
+import CustomSpinnerRelative from '../customSpinnerRelative.component';
 
 let localStyles;
 let styles;
@@ -23,8 +24,6 @@ let ImagePicker = require('react-native-image-picker');
 class ImageUpload extends Component {
   constructor(props, context) {
     super(props, context);
-    // this.back = this.back.bind(this);
-    // this.validate = this.validate.bind(this);
     this.renderButtons = this.renderButtons.bind(this);
     this.createUser = this.createUser.bind(this);
     this.initImage = this.initImage.bind(this);
@@ -32,6 +31,7 @@ class ImageUpload extends Component {
     this.renderImage = this.renderImage.bind(this);
     this.state = {
       image: null,
+      uploading: false
     };
   }
 
@@ -52,9 +52,10 @@ class ImageUpload extends Component {
         return;
       }
       if (data) {
+        self.setState({ uploading: true });
         utils.s3.toS3Advanced(data, this.props.auth.token).then((results) => {
           if (results.success) {
-            self.setState({ image: results.url });
+            self.setState({ image: results.url, uploading: false });
           } else {
             console.log('image error ', results);
           }
@@ -84,19 +85,17 @@ class ImageUpload extends Component {
   }
 
   renderImage() {
-    console.log(this.state.image, 'state image')
-    if (this.state.image) {
+    let source = null;
+    if (!this.state.uploading) {
+      if (this.state.image) source = { uri: this.state.image };
+      else source = require('../../assets/images/camera.png');
       return (<Image
         style={{ width: 200, height: 200 }}
         resizeMode={'cover'}
-        source={{ uri: this.state.image }}
+        source={source}
       />);
     }
-    return (<Image
-      style={{ width: 200, height: 200 }}
-      resizeMode={'cover'}
-      source={require('../../assets/images/camera.png')}
-    />);
+    return null;
   }
 
   renderButtons() {
@@ -134,6 +133,7 @@ class ImageUpload extends Component {
       <View style={{ padding: 20, flex: 1 }}>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           {this.renderImage()}
+          <CustomSpinnerRelative visible={this.state.uploading} />
         </View>
         {this.renderButtons()}
         <TouchableHighlight
