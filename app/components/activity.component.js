@@ -90,13 +90,13 @@ export default function (props) {
   let renderRight = () => {
     if (singleActivity.type) {
       let amountEl = null;
-      if (singleActivity.post) {
-        if (singleActivity.post.value) {
-          amountEl = (<Text style={[styles.bebas, { textAlign: 'left', flex: 0.6 }]}>
-            💵{abbreviateNumber(singleActivity.post.value)}
-          </Text>);
-        }
-      }
+      // if (singleActivity.post) {
+      //   if (singleActivity.post.value) {
+      //     amountEl = (<Text style={[styles.bebas, { textAlign: 'left', flex: 0.6 }]}>
+      //       💵{abbreviateNumber(singleActivity.post.value)}
+      //     </Text>);
+      //   }
+      // }
 
       return (<View style={styles.activityRight}>
         {amountEl}
@@ -137,9 +137,15 @@ export default function (props) {
 
       case 'partialEarning':
         let earningImage = (<View style={styles.activityImagePlaceholder} />);
-        if (singleActivity.post.image) {
-          earningImage = (<TouchableWithoutFeedback onPress={() => goToPost(singleActivity.post)}>
-            <Image style={styles.activityImage} source={{ uri: singleActivity.post.image }} />
+        let byUser;
+        if (singleActivity.byUser) {
+          byUser = (
+            <Text style={{}} onPress={() => setSelected(singleActivity.byUser)}>
+              {singleActivity.byUser.name}
+            </Text>
+            );
+          earningImage = (<TouchableWithoutFeedback onPress={() => goToPost(singleActivity.byUser)}>
+            <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
           </TouchableWithoutFeedback>);
         }
         return (
@@ -147,7 +153,7 @@ export default function (props) {
             {earningImage}
             <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
               <Text>
-                Earned ${singleActivity.amount.toFixed(0)} from post
+                Earned ${singleActivity.amount.toFixed(0)} from {byUser}'s investment in post
               </Text>
               <Text
                 onPress={() => goToPost(singleActivity.post)}

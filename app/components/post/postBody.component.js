@@ -110,9 +110,9 @@ class PostBody extends Component {
       postStyle = styles.commentaryText;
     }
 
-    if (body.length < 70 && !this.props.short) {
-      postStyle = styles.shortBodyText;
-    }
+    // if (body.length < 70 && !this.props.short) {
+    //   postStyle = styles.shortBodyText;
+    // }
 
     if (this.props.repost) {
       numberOfLines = 4;
