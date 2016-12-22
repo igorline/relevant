@@ -203,14 +203,14 @@ const layout = StyleSheet.create({
     fontSize: 15,
   },
   activityRight: {
-    flex: 0.20,
+    flex: 0.15,
     alignItems: 'center',
     justifyContent: 'flex-end',
     flexDirection: 'row',
     paddingLeft: 10,
   },
   activityLeft: {
-    flex: 0.80,
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
