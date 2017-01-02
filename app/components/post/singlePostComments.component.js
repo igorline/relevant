@@ -127,7 +127,6 @@ class SinglePostComments extends Component {
       singlePost
       key={0}
       post={this.postId}
-      style={{padding: 0}}
       {...this.props}
     />);
 
@@ -165,7 +164,6 @@ class SinglePostComments extends Component {
         keyboardShouldPersistTaps
         keyboardDismissMode={'on-drag'}
         automaticallyAdjustContentInsets={false}
-        contentContainerStyle={{ paddingTop: 10 }}
         contentInset={{ bottom: offset }}
         onEndReached={!this.longFormat ? this.loadMoreComments : null}
         onEndReachedThreshold={100}

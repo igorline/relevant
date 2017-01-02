@@ -145,6 +145,7 @@ class PostInfo extends Component {
     return (<View style={styles.postHeader}>
       <View style={styles.postInfo}>
         <UserName
+          big={this.props.big}
           user={{ image: postUserImage, name, _id: this.props.post.user }}
           setSelected={this.setSelected}
         />

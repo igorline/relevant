@@ -136,8 +136,8 @@ export default PostBody;
 
 const localStyles = StyleSheet.create({
   postBody: {
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   bodyText: {
     fontFamily: 'Georgia',

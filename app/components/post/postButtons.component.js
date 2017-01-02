@@ -59,9 +59,8 @@ class PostButtons extends Component {
 
     this.toggleModal = this.toggleModal.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
-    this.openComments = this.openComments.bind(this);
-    this.toggleExpanded = this.toggleExpanded.bind(this);
     this.irrelevant = this.irrelevant.bind(this);
+    this.goToPost = this.goToPost.bind(this);
   }
 
   componentDidMount() {
@@ -75,10 +74,10 @@ class PostButtons extends Component {
     }
   }
 
-  goToPost() {
-    console.log('go to post');
-    this.props.navigator.goToPost(this.props.post);
-  }
+  // goToPost() {
+  //   console.log('go to post');
+  //   this.props.navigator.goToPost(this.props.post);
+  // }
 
   showActionSheet() {
     if (this.myPost) {
@@ -207,9 +206,12 @@ class PostButtons extends Component {
     }, 'home');
   }
 
-  openComments() {
-    // this.props.actions.setSelectedPost(this.props.post._id);
-    this.props.navigator.goToComments(this.props.post);
+  // openComments() {
+  //   // this.props.actions.setSelectedPost(this.props.post._id);
+  //   this.props.navigator.goToComments(this.props.post);
+  // }
+  goToPost() {
+    this.props.navigator.goToPost(this.props.post);
   }
 
   deletePost() {
@@ -229,20 +231,13 @@ class PostButtons extends Component {
     });
   }
 
-  toggleExpanded() {
-    this.setState({ expanded: !this.state.expanded });
-  }
-
   render() {
     let investButtonEl = null;
     const expanded = this.props.expanded;
     let post = this.props.post;
     let investable = false;
     let irrelevantButton;
-
-    if (post) {
-      if (post.comments) comments = post.comments;
-    }
+    let commentString = 'add comment';
 
     if (post && post.user && this.props.auth.user) {
       if (post.user !== this.props.auth.user._id) {
@@ -251,8 +246,8 @@ class PostButtons extends Component {
     }
 
     if (post && post.commentCount) {
-      if (post.commentCount === 1) commentString = '1 Comment';
-      else commentString = post.commentCount + ' Comments';
+      if (post.commentCount === 1) commentString = '1 comment';
+      else commentString = post.commentCount + ' comments';
     }
 
     if (investable) {
@@ -261,7 +256,7 @@ class PostButtons extends Component {
       >
         <View style={styles.investButton}>
 
-          <Text style={[styles.font17, styles.bebasBold, styles.postButtonText]}>
+          <Text style={[styles.font15, styles.bold, styles.postButtonText]}>
             💰Invest
           </Text>
         </View>
@@ -273,7 +268,7 @@ class PostButtons extends Component {
           style={styles.postButton}
           onPress={this.irrelevant}
         >
-          <Text style={[styles.font17, styles.strokeText, styles.postButtonText]}>
+          <Text style={[styles.font12, styles.greyText, styles.postButtonText]}>
            irrelevant
           </Text>
         </TouchableHighlight>
@@ -288,23 +283,29 @@ class PostButtons extends Component {
      //     Read more
      //    </Text>
      //  </TouchableHighlight>
-     //  <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={() => this.openComments()}>
-     //    <Text style={[{ marginRight: 5 }, styles.font10, styles.postButtonText]}>
-     //      {commentString}
-     //    </Text>
-     //  </TouchableHighlight>
+    let comments = (<TouchableHighlight
+      underlayColor={'transparent'}
+      style={[styles.postButton]}
+      onPress={() => this.goToPost()}
+    >
+      <Text style={[{ marginRight: 5 }, styles.greyText, styles.font12, styles.postButtonText]}>
+        {commentString}
+      </Text>
+    </TouchableHighlight>);
 
     return (<View style={styles.postButtons}>
       {investButtonEl}
 
       {irrelevantButton}
 
+      {comments}
+
       <TouchableHighlight
         underlayColor={'transparent'}
         style={[styles.postButton, { flex: 0.1 }]}
         onPress={() => this.showActionSheet()}
       >
-        <Text style={[styles.font17, styles.strokeText, styles.postButtonText]}>
+        <Text style={[styles.font12, styles.greyText, styles.postButtonText]}>
           ...
         </Text>
       </TouchableHighlight>
@@ -325,13 +326,14 @@ const localStyles = StyleSheet.create({
     borderWidth: 1,
     backgroundColor: 'white',
     borderColor: 'black',
-    paddingLeft: 20,
-    paddingRight: 20,
-    marginRight: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
+    // marginRight: 10,
     height: 30,
     flex: 0.4,
 
-    shadowColor: '#4d4eff',
+    shadowColor: 'black',
+    // shadowColor: '#4d4eff',
     shadowOffset: { width: 2, height: 2 },
     shadowRadius: 0,
     shadowOpacity: 1,
@@ -353,14 +355,15 @@ const localStyles = StyleSheet.create({
     flex: 0.4,
     padding: 3,
 
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingHorizontal: 5,
+    // paddingRight: 10,
 
     height: 30,
     flexDirection: 'row',
     justifyContent: 'center'
   },
   postButtonText: {
+    lineHeight: 28,
     backgroundColor: 'transparent'
   },
 });

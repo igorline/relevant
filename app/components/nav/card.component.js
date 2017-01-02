@@ -104,11 +104,14 @@ class Card extends Component {
 
       let renderHeader = props.header && scene.route.header !== false;
 
+      let headerHeight = renderHeader ? 59 : 0;
+      if (this.props.share) headerHeight = 43;
+
       const style = [
         styles.card,
         cardTransitionStyle,
         { flex: 1,
-          paddingTop: renderHeader ? 59 : 0
+          paddingTop: headerHeight
         },
       ];
 
@@ -132,6 +135,7 @@ class Card extends Component {
             {...this.props}
             {...sceneProps}
             style={headerStyle}
+            share={this.props.share}
             back={props.back}
             renderRight={props.renderRight}
           />);
