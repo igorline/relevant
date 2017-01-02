@@ -23,39 +23,22 @@ class Auth extends Component {
     this.login = this.login.bind(this);
   }
 
-  componentDidMount() {
-    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
-    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
-  }
-
-  componentWillUnmount() {
-    this.showListener.remove();
-    this.hideListener.remove();
-  }
-
-  keyboardWillShow(e) {
-    let newSize = (Dimensions.get('window').height - e.endCoordinates.height);
-    this.setState({ visibleHeight: newSize });
-  }
-
-  keyboardWillHide() {
-    this.setState({ visibleHeight: Dimensions.get('window').height });
-  }
-
   login() {
     this.props.actions.push({
       key: 'login',
       title: 'Login',
-      showBackButton: true
-    }, this.props.navigation.main);
+      showBackButton: true,
+      back: true
+    }, 'auth');
   }
 
   signup() {
     this.props.actions.push({
       key: 'signup',
       title: 'Signup',
-      showBackButton: true
-    }, this.props.navigation.main);
+      showBackButton: true,
+      back: true
+    }, 'auth');
   }
 
   render() {
@@ -63,16 +46,16 @@ class Auth extends Component {
 
     return (
       <View
-        style={[
-          { height: isAuthenticated ? this.state.visibleHeight - 60 : this.state.visibleHeight }, styles.authParent
+        style={[{
+          height: isAuthenticated ? this.state.visibleHeight - 60 : this.state.visibleHeight },
+          styles.authParent
         ]}
       >
         <View style={styles.logoContainer}>
           <Image source={require('../../assets/images/logo.png')} resizeMode={'contain'} style={styles.authLogo} />
         </View>
 
-        <View style={styles.authDivider}>
-        </View>
+        <View style={styles.authDivider} />
 
         <View style={{ flex: 1 }}>
           <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>

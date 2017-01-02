@@ -50,6 +50,12 @@ class Discover extends Component {
     ];
   }
 
+  shouldComponentUpdate(next) {
+    let tab = next.tabs.routes[next.tabs.index];
+    if (tab.key !== 'discover') return false;
+    return true;
+  }
+
   componentWillReceiveProps(next) {
     let type = this.tabs[this.props.view.discover].type;
     if (this.props.tags.selectedTags !== next.tags.selectedTags && type !== 'people') {
@@ -227,6 +233,7 @@ function mapStateToProps(state) {
     error: state.error,
     refresh: state.navigation.discover.refresh,
     reload: state.navigation.discover.reload,
+    tabs: state.navigation.tabs,
   };
 }
 

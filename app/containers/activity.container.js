@@ -55,6 +55,12 @@ class Activity extends Component {
     }
   }
 
+  shouldComponentUpdate(next) {
+    let tab = next.tabs.routes[next.tabs.index];
+    if (tab.key !== 'activity') return false;
+    return true;
+  }
+
   scrollToTop() {
     if (this.tabs[this.state.view].component) {
       let view = this.tabs[this.state.view].component.listview;

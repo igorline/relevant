@@ -5,11 +5,12 @@ import {
   AppState,
   ActionSheetIOS,
   AlertIOS,
+  Easing,
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Auth from './auth.container';
-import CreatePost from './createPost.container';
+import CreatePostContainer from './createPost.container';
 import Footer from './footer.container';
 import ErrorContainer from './error.container';
 import InvestAnimation from '../components/investAnimation.component';
@@ -26,10 +27,14 @@ import * as investActions from '../actions/invest.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
+import Card from './../components/nav/card.component';
+
+const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
 const {
-  CardStack: NavigationCardStack,
+  Transitioner: NavigationTransitioner,
 } = NavigationExperimental;
+
 
 let ImagePicker = require('react-native-image-picker');
 
@@ -51,6 +56,8 @@ class Application extends Component {
     this.backgroundTime = 0;
     this.showActionSheet = this.showActionSheet.bind(this);
     this.renderScene = this.renderScene.bind(this);
+    this.configureTransition = this.configureTransition.bind(this);
+    this.back = this.back.bind(this);
   }
 
   componentDidMount() {
@@ -60,7 +67,8 @@ class Application extends Component {
     .catch(() => {
       this.props.actions.replaceRoute({
         key: 'auth',
-        component: 'auth'
+        component: 'auth',
+        header: false
       }, 0, 'home');
     });
   }
@@ -70,11 +78,13 @@ class Application extends Component {
       this.props.actions.userToSocket(next.auth.user._id);
       this.props.actions.getNotificationCount();
       this.props.actions.changeTab('read');
+      this.props.actions.resetRoutes();
       this.props.actions.replaceRoute({
         key: 'tabBars',
-        component: 'tabBars'
+        component: 'tabBars',
+        header: false
       }, 0, 'home');
-      this.props.actions.resetRoutes('home');
+      // this.props.actions.resetRoutes('home');
     }
 
     if (!this.props.error.universal && next.error.universal) {
@@ -206,23 +216,14 @@ class Application extends Component {
     switch (component) {
       case 'auth':
         return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
-      case 'login':
-        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
-      case 'signup':
-        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
-      case 'imageUpload':
-        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
       case 'createPost':
-        return <CreatePost step={'url'} navProps={props} navigator={this.props.actions} />;
+        return (<CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />);
       case 'categories':
-        return <CreatePost step={'categories'} navProps={props} navigator={this.props.actions} />;
-      case 'createPostFinish':
-        return <CreatePost step={'post'} navProps={props} navigator={this.props.actions} />;
+        return (<CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />);
       case 'tabBars':
         return <Footer showActionSheet={this.showActionSheet} />;
       case 'error':
         return <ErrorContainer showActionSheet={this.showActionSheet} />;
-
       case 'stallScreen':
         return <StallScreen />;
 
@@ -231,17 +232,45 @@ class Application extends Component {
     }
   }
 
+  configureTransition() {
+    const easing = Easing.out(Easing.ease);
+    return {
+      duration: 350,
+      easing,
+      useNativeDriver: !!NativeAnimatedModule ? true : false
+    };
+  }
+
+  back() {
+    // if (this.cPost) {
+    //   if (this.cPost.urlComponent) this.cPost.urlComponent.input.blur();
+    // }
+    // console.log(this.cPost);
+    this.props.actions.pop('home');
+  }
+
   render() {
     let scene = this.props.navigation;
+
+    let key = scene.routes[scene.index].component;
+
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }} >
-        <NavigationCardStack
-          key={`scene_${scene.key}`}
-          direction={'horizontal'}
+      <View style={{ flex: 1, backgroundColor: 'black' }} >
+        <NavigationTransitioner
+          style={{ backgroundColor: 'black' }}
           navigationState={scene}
-          renderScene={this.renderScene}
-          enableGestures
-          style={{ backgroundColor: 'white' }}
+          configureTransition={this.configureTransition}
+          render={transitionProps => {
+            return transitionProps.scene.route.ownCard ? this.renderScene(transitionProps) :
+            (
+            <Card
+              {...transitionProps}
+              renderScene={this.renderScene}
+              back={this.back}
+              {...this.props}
+              header={false}
+            />)}
+          }
         />
         <InvestAnimation {...this.props} />
         <HeartAnimation />

@@ -69,7 +69,9 @@ class Categories extends Component {
     }
 
     return (
-      <ScrollView >
+      <ScrollView
+        canCancelContentTouches
+      >
         {categoryEl}
       </ScrollView>
     );

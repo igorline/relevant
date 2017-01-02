@@ -36,12 +36,31 @@ const font = StyleSheet.create({
     fontFamily: 'BebasNeueRelevantRegular',
     fontWeight: 'bold',
     letterSpacing: 0.15,
-    paddingVertical: 10,
-    // flex: 1,
-    // justifyContent: 'center',
+    paddingVertical: 14,
+    flex: 1,
   },
   shareHeader: {
     marginTop: -20,
+  },
+  headerInner: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  header: {
+    height: 59,
+    paddingTop: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderBottomColor: '#242425',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+
+    zIndex: 1000,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    left: 0
   },
   navButton: {
     fontSize: 10,

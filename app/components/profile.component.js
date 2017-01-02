@@ -4,6 +4,7 @@ import {
   Text,
   View,
   Image,
+  InteractionManager
 } from 'react-native';
 import * as utils from '../utils';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
@@ -26,12 +27,17 @@ class ProfileComponent extends Component {
   componentDidMount() {
     if (this.props.user) {
       if (this.props.user._id) {
-        this.props.actions.getSubscriptionData('follower', this.props.user._id).then((response) => {
-          this.setState({ following: response.data });
-        });
-        this.props.actions.getSubscriptionData('following', this.props.user._id).then((response) => {
-          this.setState({ followers: response.data });
-        });
+
+        // TODO move this to the server when we fetch user data
+        InteractionManager.runAfterInteractions(() => {
+          this.props.actions.getSubscriptionData('follower', this.props.user._id).then((response) => {
+            this.setState({ following: response.data });
+          });
+          this.props.actions.getSubscriptionData('following', this.props.user._id).then((response) => {
+            this.setState({ followers: response.data });
+          });
+        })
+
       }
     }
   }
