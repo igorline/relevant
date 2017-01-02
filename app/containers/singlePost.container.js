@@ -74,15 +74,14 @@ class SinglePost extends Component {
         post={this.postId}
         {...this.props}
         singlePostEditing={this.setEditing}
-        styles={styles}
       />);
     }
 
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
-        style={{ height: fullHeight - 114 }}
-        keyboardVerticalOffset={64}
+        style={{ flex: 1 }}
+        // keyboardVerticalOffset={64}
       >
         <View
           style={{

@@ -98,8 +98,8 @@ class CardContainer extends Component {
   }
 
   configureTransition() {
-    // const easing = Easing.out(Easing.ease);
-    const easing = Easing.bezier(0.0, 0, 0.58, 1);
+    const easing = Easing.out(Easing.ease);
+    // const easing = Easing.bezier(0.0, 0, 0.58, 1);
 
     return {
       duration: 200,

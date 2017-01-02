@@ -139,7 +139,6 @@ class ShareContainer extends Component {
               direction={'horizontal'}
               navigationState={scene}
               renderScene={this.renderScene}
-              enableGestures={true}
             />
           </View>
         </View>

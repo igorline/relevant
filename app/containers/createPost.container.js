@@ -55,14 +55,15 @@ class CreatePostContainer extends Component {
   }
 
   back() {
-
     if (this.urlComponent) this.urlComponent.input.blur();
 
     let scene = 'home';
     if (this.props.navigation.index > 0) scene = 'createPost';
 
     this.props.actions.pop(scene);
-    if (this.props.step === 'url') {
+
+    if (this.props.navigation.index === 0) {
+      if (this.props.close) this.props.close();
       if (this.props.createPost.repost || this.props.createPost.edit) {
         this.props.actions.clearCreatePost();
       }
@@ -75,7 +76,7 @@ class CreatePostContainer extends Component {
     if (this.props.createPost.repost) return this.createRepost();
     if (this.props.createPost.edit) return this.editPost();
 
-    if (this.props.step === 'url' && this.enableNext) {
+    if (this.props.navigation.index === 0 && this.enableNext) {
       this.props.navigator.push({
         key: 'categories',
         back: true,
@@ -123,6 +124,7 @@ class CreatePostContainer extends Component {
       this.props.navigator.resetRoutes('home');
       this.props.navigator.changeTab('discover');
       this.props.navigator.reloadTab('discover');
+      if (this.props.close) this.props.close();
     });
   }
 
@@ -187,6 +189,7 @@ class CreatePostContainer extends Component {
           AlertIOS.alert('Post error please try again');
         } else {
           AlertIOS.alert('Success!');
+          if (this.props.close) this.props.close();
           this.props.actions.clearCreatePost();
           this.props.navigator.resetRoutes('home');
           this.props.actions.resetRoutes('createPost');
@@ -280,6 +283,7 @@ class CreatePostContainer extends Component {
           {...this.props}
           next={this.next}
           renderRight={this.renderRight}
+          share={this.props.share}
           header
         />)}
     />);

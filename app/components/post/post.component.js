@@ -67,11 +67,11 @@ class Post extends Component {
       <View>
         <View style={[styles.postContainer]}>
           <View style={styles.postInner}>
-            {imageEl}
             {repostEl}
             <View style={postStyle}>
-              <PostInfo navigator={this.props.navigator} post={post} />
+              <PostInfo big navigator={this.props.navigator} post={post} />
               <PostBody {...this.props} post={post} editing={false} />
+              {imageEl}
               <PostButtons {...this.props} post={post} comments={post.comments || null} />
             </View>
           </View>
@@ -92,6 +92,8 @@ const localStyles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     marginTop: 10,
+    paddingBottom: 20,
+    paddingTop: 10,
     // borderWidth: StyleSheet.hairlineWidth,
   },
   cLabel: {
@@ -101,8 +103,8 @@ const localStyles = StyleSheet.create({
     textAlign: 'center',
   },
   postInner: {
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   postContainer: {
     paddingBottom: 25,

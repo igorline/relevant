@@ -145,9 +145,14 @@ class CardHeader extends Component {
 
 
   renderHeader(props, headerStyle) {
+    let style = [styles.header, headerStyle];
+    if (this.props.share) {
+      style = [styles.header, styles.shareHeader, headerStyle];
+    }
+
     return (
       <Animated.View
-        style={[headerStyle, styles.header]}
+        style={[headerStyle, style]}
       >
         {this.renderLeft(props)}
         {this.renderTitle(props)}
@@ -166,7 +171,7 @@ const localStyles = StyleSheet.create({
   titleComponent: {
     justifyContent: 'flex-end',
   },
-  leftButtonText: {
+  backArrow: {
     paddingTop: 4,
   },
   leftButton: {

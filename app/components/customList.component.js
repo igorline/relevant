@@ -103,11 +103,11 @@ export default class ActivityView extends Component {
         onScroll={this.props.onScroll}
         onEndReached={this.loadMore}
         onEndReachedThreshold={100}
-        renderSeparator={this.props.renderSeparator}
+        // renderSeparator={this.props.renderSeparator}
         renderFooter={() => <View />}
         refreshControl={
           <RefreshControl
-            style={{ backgroundColor: 'white' }}
+            style={{ backgroundColor: 'hsl(0,0%,93%)' }}
             refreshing={this.state.reloading}
             onRefresh={this.reload}
             tintColor="#000000"

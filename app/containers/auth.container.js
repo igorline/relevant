@@ -81,6 +81,7 @@ class AuthContainer extends Component {
           back={this.back}
           {...this.props}
           header
+          share={this.props.share}
         />)}
     />);
   }
