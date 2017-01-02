@@ -42,7 +42,8 @@ class SignUp extends Component {
         name: this.props.auth.preUser.name || null,
         phone: this.props.auth.preUser.phone || null,
         email: this.props.auth.preUser.email || null,
-        password: this.props.auth.preUser.password || null
+        password: this.props.auth.preUser.password || null,
+        cPassword: this.props.auth.preUser.password || null
       });
     }
   }
@@ -56,7 +57,8 @@ class SignUp extends Component {
         name: nextProps.auth.preUser.name || null,
         phone: nextProps.auth.preUser.phone || null,
         email: nextProps.auth.preUser.email || null,
-        password: nextProps.auth.preUser.password || null
+        password: nextProps.auth.preUser.password || null,
+        cPassword: nextProps.auth.preUser.password || null
       });
     }
   }
@@ -78,7 +80,7 @@ class SignUp extends Component {
             this.nameError = 'This username is already taken';
           }
           else this.usernameExists = false;
-          this.setState();
+          this.setState({});
         });
       } else {
         // AlertIOS.alert('username can only contain letters, numbers, dashes and underscores');
@@ -150,8 +152,9 @@ class SignUp extends Component {
     this.props.actions.push({
       key: 'imageUpload',
       title: 'image',
-      showBackButton: true
-    }, this.props.navigation.main);
+      component: 'image',
+      back: true
+    }, 'auth');
     // this.props.actions.createUser(user);
   }
 

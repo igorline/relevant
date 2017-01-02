@@ -49,7 +49,6 @@ const initialState = {
     index: 0,
     key: 'root',
     routes: [
-      // { key: 'auth', icon: '', title: 'Auth', hide: true },
       { key: 'read', icon: '📩', title: 'Read', regIcon: readIcon },
       { key: 'discover', icon: '🔮', title: 'Discover', regIcon: discoverIcon },
       { key: 'createPost', icon: '📝', title: 'Create Post', regIcon: createPostIcon },
@@ -64,6 +63,16 @@ const initialState = {
       key: 'home',
       component: 'stallScreen',
       title: 'Relevant'
+    }],
+  },
+  auth: {
+    index: 0,
+    key: 'auth',
+    routes: [{
+      key: 'auth',
+      component: 'auth',
+      title: null,
+      header: false,
     }],
   },
   read: {
@@ -96,7 +105,9 @@ const initialState = {
     routes: [{
       key: 'createPost',
       component: 'createPost',
-      title: 'Create Post',
+      title: 'New Post',
+      back: true,
+      left: 'Cancel'
     }],
   },
   activity: {

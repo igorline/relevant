@@ -144,7 +144,7 @@ export default class UrlComponent extends Component {
 
     if (this.props.user && !this.props.share) {
       userHeader = (
-        <View style={styles.header}>
+        <View style={styles.createPostUser}>
           <View style={styles.innerBorder}>
             <UserName
               style={styles.innerBorder}
@@ -192,6 +192,7 @@ export default class UrlComponent extends Component {
             value={this.props.postBody}
             returnKeyType={'default'}
             autoFocus
+            keyboardShouldPersistTaps={false}
             onContentSizeChange={(event) => {
               let h = event.nativeEvent.contentSize.height;
               this.setState({
@@ -215,7 +216,7 @@ export default class UrlComponent extends Component {
 }
 
 const localStyles = StyleSheet.create({
-  header: {
+  createPostUser: {
     height: 55,
   },
   innerBorder: {

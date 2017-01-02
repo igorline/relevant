@@ -54,22 +54,27 @@ class Profile extends Component {
       { id: 0, title: 'Posts' },
       { id: 1, title: 'Investments' },
     ];
+    this.loaded = false;
   }
 
   componentWillMount() {
     if (this.props.scene) {
-      this.myProfile = false;
       this.userId = this.props.scene.id;
       this.userData = this.props.users.selectedUserData[this.userId];
 
       InteractionManager.runAfterInteractions(() => {
         if (!this.userData) this.loadUser();
-        this.loadContent = true;
+        this.loaded = true;
+        this.setState({});
       });
     } else {
-      this.myProfile = true;
       this.userId = this.props.auth.user._id;
       this.userData = this.props.users.selectedUserData[this.userId];
+
+      InteractionManager.runAfterInteractions(() => {
+        this.loaded = true;
+        this.setState({});
+      });
     }
   }
 
@@ -83,6 +88,12 @@ class Profile extends Component {
     }
   }
 
+  shouldComponentUpdate(next) {
+    let tab = next.tabs.routes[next.tabs.index];
+    if (tab.key !== 'myProfile' && !this.props.scene) return false;
+    return true;
+  }
+
   scrollToTop() {
     let view = this.tabs[this.state.view].component.listview;
     if (view) view.scrollTo({ y: 0, animated: true });
@@ -93,10 +104,9 @@ class Profile extends Component {
   }
 
   load(view, length) {
+    if (!this.loaded) return;
     if (view === undefined) view === this.state.view;
     if (length === undefined) length = 0;
-
-    if (length === 0) this.loadUser();
 
     if (this.state.view === 0) {
       this.props.actions.getUserPosts(
@@ -173,7 +183,8 @@ class Profile extends Component {
         let tabData = this.getViewData(this.props, tab.id);
         let active = this.state.view === tab.id;
         let data = tabData.data || [];
-        let loaded = tabData.loaded || false;
+        if (!this.loaded) data = [];
+        let loaded = tabData.loaded && this.loaded;
         if (tab.id === 0) {
           tab.title = 'Posts ' + this.userData.postCount;
           tab.type = 'posts';
@@ -227,7 +238,8 @@ function mapStateToProps(state) {
     stats: state.stats,
     investments: state.investments,
     refresh: state.navigation.myProfile.refresh,
-    reload: state.navigation.myProfile.reload
+    reload: state.navigation.myProfile.reload,
+    tabs: state.navigation.tabs,
   };
 }
 
