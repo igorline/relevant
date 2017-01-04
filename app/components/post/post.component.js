@@ -47,7 +47,7 @@ class Post extends Component {
 
     if (this.props.showReposts && post && post.comments && post.comments[0]) {
       let repost = this.props.posts.comments[post.comments[0]];
-        if (repost && repost.repost) {
+      if (repost && repost.repost) {
         // let repost = post.comments[0];
         postStyle = [styles.repost, styles.boxShadow];
         let repostObj = {
