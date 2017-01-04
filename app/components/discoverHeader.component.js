@@ -19,7 +19,7 @@ export default class DiscoverHeader extends Component {
       searchTerm: null,
       transY: new Animated.Value(0),
     };
-    this.search = this.search.bind(this);
+    //this.search = this.search.bind(this);
     this.headerHeight = 134;
     // this.changeView = this.changeView.bind(this);
   }
@@ -62,18 +62,18 @@ export default class DiscoverHeader extends Component {
   //   this.props.actions.setView('discover', view);
   // }
 
-  search(term) {
-    if (term && term.length > 1) {
-      this.props.actions.searchTags(term);
-    }
-    else this.props.actions.searchTags(null);
-  }
+  // search(term) {
+  //   if (term && term.length > 1) {
+  //     this.props.actions.searchTags(term);
+  //   }
+  //   else this.props.actions.searchTags(null);
+  // }
 
-  close() {
-    this.search();
-    this.input.blur();
-    this.input.clear();
-  }
+  // close() {
+  //   this.search();
+  //   this.input.blur();
+  //   this.input.clear();
+  // }
 
   render() {
 
@@ -83,29 +83,29 @@ export default class DiscoverHeader extends Component {
       </View>
     );
 
-    let search = (
-      <View style={[styles.searchParent]}>
-        <TextInput
-          ref={c => this.input = c}
-          onSubmitEditing={this.search}
-          style={[styles.searchInput, styles.font15]}
-          placeholder={'Search'}
-          multiline={false}
-          onChangeText={term => this.search(term)}
-          varlue={this.searchTerm}
-          returnKeyType="done"
-          clearTextOnFocus
-        />
-        <View style={styles.closeParent}>
-          <Text
-            style={styles.close}
-            onPress={() => this.close()}
-          >
-            ✕
-          </Text>
-        </View>
-      </View>
-    );
+    // let search = (
+    //   <View style={[styles.searchParent]}>
+    //     <TextInput
+    //       ref={c => this.input = c}
+    //       onSubmitEditing={this.search}
+    //       style={[styles.searchInput, styles.font15]}
+    //       placeholder={'Search'}
+    //       multiline={false}
+    //       onChangeText={term => this.search(term)}
+    //       varlue={this.searchTerm}
+    //       returnKeyType="done"
+    //       clearTextOnFocus
+    //     />
+    //     <View style={styles.closeParent}>
+    //       <Text
+    //         style={styles.close}
+    //         onPress={() => this.close()}
+    //       >
+    //         ✕
+    //       </Text>
+    //     </View>
+    //   </View>
+    // );
 
 
     if (this.props.view === 2) {
@@ -136,7 +136,7 @@ export default class DiscoverHeader extends Component {
           }
         }
       >
-        {search}
+        {/* search */}
         {tags}
         <Tabs
           tabs={this.props.tabs}
@@ -166,35 +166,6 @@ const localStyles = StyleSheet.create({
     overflow: 'hidden',
     padding: 5,
   },
-  searchInput: {
-    flex: 1,
-    paddingTop: 5,
-    height: 25,
-    textAlign: 'center',
-    paddingBottom: 5,
-    paddingLeft: 5,
-    paddingRight: 5,
-    backgroundColor: 'white',
-    borderRadius: 5,
-  },
-  closeParent: {
-    position: 'absolute',
-    top: 9,
-    right: 10,
-    width: 18,
-    height: 18,
-    borderRadius: 10,
-    backgroundColor: 'rgba(0,0,0,0)',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  close: {
-    color: 'grey',
-    fontSize: 12,
-    textAlign: 'center',
-    opacity: .8
-  }
 });
 
 styles = { ...localStyles, ...globalStyles };

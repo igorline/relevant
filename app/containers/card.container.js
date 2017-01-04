@@ -68,21 +68,13 @@ class CardContainer extends Component {
   }
 
   renderLeft(props) {
-    let back = null;
-    if (props.scene.route.back) {
-      back = (
-        <BackButton onPress={this.back} />
-      );
-    }
-    return back;
+    let leftEl = null;
+    if (props.scene.route.back) leftEl = <BackButton onPress={this.back} />;
   }
 
   renderTitle(props) {
     let title = props.scene.route ? props.scene.route.title : '';
-
-    if (title === 'Profile' && this.props.auth.user) {
-      title = this.props.auth.user.name;
-    }
+    if (title === 'Profile' && this.props.auth.user) title = this.props.auth.user.name;
 
     let clipped = title;
 

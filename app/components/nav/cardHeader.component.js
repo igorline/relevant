@@ -6,6 +6,8 @@ import {
   View,
   Image,
   Animated,
+  TouchableWithoutFeedback,
+  TextInput,
 } from 'react-native';
 
 import { abbreviateNumber } from '../../utils';
@@ -17,37 +19,113 @@ class CardHeader extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.state = {
+      search: false
+    };
     this.renderHeader = this.renderHeader.bind(this);
     this.renderTitle = this.renderTitle.bind(this);
     this.renderLeft = this.renderLeft.bind(this);
     this.renderRight = this.renderRight.bind(this);
+    this.close = this.close.bind(this);
+    this.search = this.search.bind(this);
   }
 
+  search(term) {
+    // console.log(this, 'search this')
+    // if (term && term.length > 1) {
+    //   this.props.actions.searchTags(term);
+    // }
+    // else this.props.actions.searchTags(null);
+  }
+
+  close() {
+    this.search();
+    this.input.blur();
+    this.input.clear();
+  }
+
+
   renderLeft(props) {
-    if (!props.scene.route.back) return <View style={styles.leftButton} />;
+    console.log(props, 'left props');
+    let leftEl = <View style={styles.leftButton} />;
 
-    // return <BackButton style={{ justifyContent: 'flex-start' }} onPress={this.back} />;
+    if (props.scene.route.back) {
+      let backArrow = <Text style={{ padding: 10, marginLeft: -10 }}>◀</Text>;
 
-    let backArrow = <Text style={{ padding: 10, marginLeft: -10 }}>◀</Text>;
-
-    return (<TouchableHighlight
-      style={[styles.leftButton]}
-      underlayColor={'transparent'}
-      onPress={this.props.back}
-    >
-      <Text
-        style={[
-          { fontSize: 17 },
-          styles.active,
-          styles.leftButtonText,
-        ]}
+      return (<TouchableHighlight
+        style={[styles.leftButton]}
+        underlayColor={'transparent'}
+        onPress={this.props.back}
       >
-        {props.scene.route.left || backArrow}
-      </Text>
-    </TouchableHighlight>);
+        <Text
+          style={[
+            { fontSize: 17 },
+            styles.active,
+            styles.leftButtonText,
+          ]}
+        >
+          {props.scene.route.left || backArrow}
+        </Text>
+      </TouchableHighlight>);
+    }
+
+    if (props.scene.route.title === 'Discover') {
+      leftEl = (<View style={styles.leftButton} >
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          onPress={() => this.setState({ search: !this.state.search })}
+        >
+          <Image
+            resizeMode={'contain'}
+            source={require('../../assets/images/search.jpg')}
+            style={{ height: 20, width: 20 }}
+          />
+        </TouchableHighlight>
+      </View>);
+      if (this.state.search) {
+        leftEl = (<View style={{ flex: 1, flexDirection: 'row' }}>
+          <View style={{ marginLeft: 15, justifyContent: 'center', paddingVertical: 10 }}>
+            <TouchableHighlight
+              underlayColor={'transparent'}
+              onPress={() => this.setState({ search: !this.state.search })}
+            >
+              <Image
+                resizeMode={'contain'}
+                source={require('../../assets/images/search.jpg')}
+                style={{ height: 20, width: 20 }}
+              />
+            </TouchableHighlight>
+          </View>
+          <View style={{ flex: 1, paddingVertical: 10 }}>
+            <TextInput
+              ref={c => this.input = c}
+              onSubmitEditing={this.search}
+              style={[styles.searchInput, styles.font15]}
+              placeholder={'Search'}
+              multiline={false}
+              onChangeText={term => this.search(term)}
+              varlue={this.searchTerm}
+              returnKeyType="done"
+              clearTextOnFocus
+            />
+            <View style={styles.closeParent}>
+              <Text
+                style={styles.close}
+                onPress={() => this.close()}
+              >
+                ✕
+              </Text>
+            </View>
+          </View>
+        </View>);
+      }
+    }
+
+    return leftEl;
   }
 
   renderTitle(props) {
+    if (this.state.search) return null;
     let title = props.scene.route ? props.scene.route.title : '';
     let component = props.scene.route.component;
 
@@ -82,6 +160,7 @@ class CardHeader extends Component {
   }
 
   renderRight(props) {
+    if (this.state.search) return null;
     let statsEl = null;
     let relevance = 0;
     let balance = 0;
@@ -201,6 +280,28 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
+  searchInput: {
+    flex: 1,
+    textAlign: 'left',
+    paddingLeft: 10,
+  },
+  closeParent: {
+    position: 'absolute',
+    top: 12,
+    right: 10,
+    width: 20,
+    height: 20,
+    backgroundColor: 'rgba(0,0,0,0)',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  close: {
+    color: 'grey',
+    fontSize: 16,
+    textAlign: 'center',
+    opacity: .8
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };
