@@ -1,4 +1,4 @@
-import { normalize, Schema, arrayOf } from 'normalizr';
+import { normalize, schema } from 'normalizr';
 import {
   AlertIOS
 } from 'react-native';
@@ -10,13 +10,28 @@ import * as errorActions from './error.actions';
 
 require('../publicenv');
 
-const postSchema = new Schema('posts', { idAttribute: '_id' });
+const comment = new schema.Entity('comments', {}, { idAttribute: '_id' });
 
-const metaPostSchema = new Schema('metaPosts', { idAttribute: '_id' });
+const post = new schema.Entity('posts',
+  { comments: [comment] },
+  { idAttribute: '_id' }
+);
 
-metaPostSchema.define({
-  commentary: arrayOf(postSchema)
-});
+const repost = new schema.Entity('posts',
+  { comments: [comment], repost: { post: post } },
+  { idAttribute: '_id' }
+);
+
+const metaPost = new schema.Entity('metaPosts', { commentary: [post] }, { idAttribute: '_id' });
+
+
+// postSchema.define({
+//   comments: arrayOf(repostSchema)
+// });
+
+// metaPostSchema.define({
+//   commentary: arrayOf(postSchema)
+// });
 
 
 const apiServer = process.env.API_SERVER + '/api/';
@@ -71,10 +86,7 @@ export function getFeed(skip, tag) {
     )
     .then(response => response.json())
     .then((responseJSON) => {
-      let data = normalize(
-        { [type]: responseJSON },
-        { [type]: arrayOf(postSchema) }
-      );
+      let data = normalize({feed: responseJSON}, { feed: [repost] });
       dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('read', false));
     })
@@ -176,7 +188,7 @@ export function getPosts(skip, tags, sort, limit) {
       // console.log(responseJSON);
       let data = normalize(
         { [type]: responseJSON },
-        { [type]: arrayOf(metaPostSchema) }
+        { [type]: [metaPost] }
       );
 
       dispatch(setPosts(data, type, skip));
@@ -216,7 +228,7 @@ export function getUserPosts(skip, limit, userId, type) {
       .then((responseJSON) => {
         let data = normalize(
           { [userId]: responseJSON },
-          { [userId]: arrayOf(postSchema) }
+          { [userId]: [repost] }
         );
         dispatch(setUserPosts(data, userId, skip));
         dispatch(errorActions.setError('profile', false));

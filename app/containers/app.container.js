@@ -250,7 +250,7 @@ class Application extends Component {
   }
 
   render() {
-    let scene = this.props.navigation;
+    let scene = this.props.navigation.home;
 
     let key = scene.routes[scene.index].component;
 
@@ -284,7 +284,7 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     animation: state.animation,
-    navigation: state.navigation.home,
+    navigation: state.navigation,
     error: state.error,
   };
 }

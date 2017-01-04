@@ -24,11 +24,10 @@ const initialState = {
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
-
     case types.SET_USER_SEARCH : {
       return {
         ...state,
-        search: action.payload
+        search: action.payload.length ? action.payload : initialState.search
       };
     }
 

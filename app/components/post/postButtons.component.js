@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   ActionSheetIOS,
 } from 'react-native';
-import { globalStyles, fullWidth, fullHeight, blue } from '../../styles/global';
+import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 import InvestModal from './investModal.component.js';
 import Share from 'react-native-share';
 
@@ -73,11 +73,6 @@ class PostButtons extends Component {
       }
     }
   }
-
-  // goToPost() {
-  //   console.log('go to post');
-  //   this.props.navigator.goToPost(this.props.post);
-  // }
 
   showActionSheet() {
     if (this.myPost) {
@@ -170,8 +165,7 @@ class PostButtons extends Component {
   repostCommentary() {
     this.props.actions.setCreaPostState({
       postBody: '',
-      repost: this.props.post._id,
-      repostBody: this.props.post.body,
+      repost: this.props.post,
       urlPreview: {
         image: this.props.post.image,
         title: this.props.post.title ? this.props.post.title : 'Untitled',
@@ -182,7 +176,8 @@ class PostButtons extends Component {
       key: 'createPost',
       back: true,
       title: 'Create Post',
-      next: 'Post'
+      next: 'Post',
+      direction: 'vertical'
     }, 'home');
   }
 
@@ -202,7 +197,8 @@ class PostButtons extends Component {
       key: 'createPost',
       back: true,
       title: 'Create Post',
-      next: 'Next'
+      next: 'Next',
+      direction: 'vertical'
     }, 'home');
   }
 
@@ -211,6 +207,7 @@ class PostButtons extends Component {
   //   this.props.navigator.goToComments(this.props.post);
   // }
   goToPost() {
+    if (this.props.scene && this.props.scene.route.id === this.props.post._id) return;
     this.props.navigator.goToPost(this.props.post);
   }
 

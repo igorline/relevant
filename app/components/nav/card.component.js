@@ -67,7 +67,6 @@ class Card extends Component {
     // console.log('nav props', this.props);
 
     const scenes = props.scenes.map((scene, i) => {
-      if (index !== i && index !== i + 1 && index !== i - 1) return null;
       const sceneProps = {
         ...props,
         scene,
@@ -92,11 +91,15 @@ class Card extends Component {
 
       if (vertical) {
         cardTransitionStyle = NavigationCardStackStyleInterpolator.forVertical(sceneProps);
-        // panHandlers = NavigationCardStackPanResponder.forVertical({
-        //   ...sceneProps,
-        //   onNavigateBack: () => props.back(),
-        //   // onNavigateForward: () => navigate('forward'),
-        // });
+        panHandlers = NavigationCardStackPanResponder.forVertical({
+          ...sceneProps,
+          onNavigateBack: () => props.back(),
+          // onNavigateForward: () => navigate('forward'),
+        });
+
+        if (this.props.navigation) {
+          if (this.props.navigation.createPost.index > 0) panHandlers = null;
+        }
         panHandlers = {};
       }
 

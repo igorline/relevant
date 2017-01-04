@@ -19,7 +19,8 @@ const initialState = {
     new: {},
     top: {},
   },
-  posts: {}
+  posts: {},
+  comments: {},
 };
 
 // may need at some point to remove the ids from the array
@@ -77,7 +78,7 @@ export default function post(state = initialState, action) {
     case types.SET_POSTS: {
       const type = action.payload.type;
 
-      // console.log(action.payload.data.result[type]);
+      // console.log(action.payload.data);
 
       // if (!action.payload.data.result[type].length) {
       //   console.log('no more')
@@ -103,6 +104,7 @@ export default function post(state = initialState, action) {
             ...action.payload.data.entities.metaPosts
           },
         },
+        comments: { ...state.comments, ...action.payload.data.entities.comments },
         posts: { ...state.posts, ...action.payload.data.entities.posts },
         loaded: {
           ...state.loaded,

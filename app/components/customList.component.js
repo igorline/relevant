@@ -78,7 +78,6 @@ export default class ActivityView extends Component {
     let listEl = null;
     let emptyEl = null;
     let spinnerEl = (<CustomSpinner visible={!this.props.data.length && this.props.active} />);
-      
 
     listEl = (
       <ListView

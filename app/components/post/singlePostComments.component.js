@@ -60,11 +60,11 @@ class SinglePostComments extends Component {
     InteractionManager.runAfterInteractions(() => {
       if (!this.comments) this.loadMoreComments();
       this.loaded = true;
-      if(this.comments)
+      if (this.comments) {
         this.dataSource = ds.cloneWithRows(this.comments);
-      this.setState({});
+      }
+      this.forceUpdate();
     });
-
   }
 
   componentWillReceiveProps(next) {
@@ -123,9 +123,11 @@ class SinglePostComments extends Component {
 
   renderHeader() {
     let headerEl = [];
+
     headerEl.push(<SinglePostComponent
       singlePost
       key={0}
+      scene={this.props.scene}
       post={this.postId}
       {...this.props}
     />);

@@ -58,6 +58,17 @@ class Activity extends Component {
   shouldComponentUpdate(next) {
     let tab = next.tabs.routes[next.tabs.index];
     if (tab.key !== 'activity') return false;
+
+    // console.log('updating activity');
+    // for (let p in next) {
+    //   if (next[p] !== this.props[p]) {
+    //     console.log(p);
+    //     for (let pp in next[p]) {
+    //       if (next[p][pp] !== this.props[p][pp]) console.log('--> ',pp);
+    //     }
+    //   }
+    // }
+
     return true;
   }
 
@@ -103,7 +114,7 @@ class Activity extends Component {
       case 0:
         return { data: props.notif.personal, loaded: props.notif.loaded };
       case 1:
-        return { data: props.users.online, loaded: props.users.loaded };
+        return { data: props.online, loaded: props.loaded };
       default:
         return null;
     }
@@ -154,9 +165,11 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     notif: state.notif,
-    users: state.user,
+    // users: state.user,
+    loaded: state.user.loaded,
+    online: state.user.online,
     stats: state.stats,
-    error: state.error,
+    error: state.error.activity,
     refresh: state.navigation.activity.refresh,
     reload: state.navigation.activity.reload,
     tabs: state.navigation.tabs

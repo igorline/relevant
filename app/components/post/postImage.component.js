@@ -110,7 +110,7 @@ const localStyles = StyleSheet.create({
     // shadowOpacity: 0.9,
   },
   postImage: {
-    height: 180,
+    height: 175,
     // flex: 1,
     // resizeMode: 'cover',
   },
