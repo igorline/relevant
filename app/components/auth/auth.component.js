@@ -8,6 +8,7 @@ import {
   Keyboard,
   Image,
   ScrollView,
+  TouchableWithoutFeedback,
   ListView
 } from 'react-native';
 
@@ -18,13 +19,14 @@ let styles;
 class Auth extends Component {
   constructor(props, context) {
     super(props, context);
-    let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.slides = [1, 2, 3],
+    let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    this.slides = [1, 2, 3];
     this.state = {
       visibleHeight: Dimensions.get('window').height,
       xOffset: 0,
       dataSource: ds.cloneWithRows(this.slides),
     };
+    this.scrollToPage = this.scrollToPage.bind(this);
     this.signup = this.signup.bind(this);
     this.login = this.login.bind(this);
     this.renderIndicator = this.renderIndicator.bind(this);
@@ -51,16 +53,6 @@ class Auth extends Component {
     }, 'auth');
   }
 
-  renderRow(data, i) {
-    return (<View key={i} style={styles.authSlide}>
-        <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
-          <Text style={styles.strokeText}>Relevant</Text>
-          &nbsp;is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt
-          &nbsp;<Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
-        </Text>
-      </View>);
-  }
-
   renderIndicator() {
     let indicator = [];
     if (!this.slides) return indicator;
@@ -68,12 +60,14 @@ class Auth extends Component {
       this.slides.forEach((slide, i) => {
         let active = false;
         if (this.state.currentIndex) {
-          if (this.state.currentIndex[i]) active = true
+          if (this.state.currentIndex[i]) active = true;
         } else {
           if (i === 0) active = true;
         }
-        indicator.push(<View style={[styles.indicatorItem, {backgroundColor: active ? 'black' : 'white'}]} key={i} />);
-      })
+        indicator.push(<TouchableWithoutFeedback onPress={() => this.scrollToPage(i)} key={i} >
+          <View style={[styles.indicatorItem, { backgroundColor: active ? 'black' : 'white' }]} />
+        </TouchableWithoutFeedback>);
+      });
     }
     return indicator;
   }
@@ -82,6 +76,21 @@ class Auth extends Component {
     if (!event) return;
     if (!event.s1) return;
     this.setState({ currentIndex: event.s1 });
+  }
+
+  scrollToPage(index) {
+    let num = (index * (fullWidth - 40)) + (index * 20);
+    this.listview.scrollTo({ x: num, animated: true });
+  }
+
+  renderRow(data, i) {
+    return (<View key={i} style={styles.authSlide}>
+      <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
+        <Text style={styles.strokeText}>Relevant</Text>
+        &nbsp;is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt
+        &nbsp;<Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
+      </Text>
+    </View>);
   }
 
   render() {
