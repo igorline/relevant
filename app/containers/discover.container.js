@@ -63,6 +63,25 @@ class Discover extends Component {
     }
   }
 
+  shouldComponentUpdate(next) {
+    let tab = next.tabs.routes[next.tabs.index];
+    if (tab.key !== 'discover') return false;
+    if (next.nav.index > 0) return false;
+
+    // console.log(next);
+    // console.log('updating discover');
+    // for (let p in next) {
+    //   if (next[p] !== this.props[p]) {
+    //     console.log(p);
+    //     for (let pp in next[p]) {
+    //       if (next[p][pp] !== this.props[p][pp]) console.log('--> ', pp);
+    //     }
+    //   }
+    // }
+
+    return true;
+  }
+
   onScroll(event) {
     const currentOffset = event.nativeEvent.contentOffset.y;
     let showHeader = null;
@@ -111,18 +130,19 @@ class Discover extends Component {
 
 
   renderRow(rowData, view) {
+    let type = this.tabs[view].type;
     if (view !== 2) {
       let posts = [];
       if (!this.props.tags.selectedTags.length) {
-        let type = this.tabs[view].type;
-        // console.log(this.props.posts.metaPosts);
         let metaPost = this.props.posts.metaPosts[type][rowData];
         posts = metaPost.commentary;
       } else {
         posts = rowData;
         if (rowData === null) return;
       }
-      return (<Post post={posts} {...this.props} styles={styles} />);
+      let showReposts = false;
+      if (type === 'new') showReposts = true;
+      return (<Post showReposts={showReposts} post={posts} {...this.props} styles={styles} />);
     }
     return (<DiscoverUser user={rowData} {...this.props} styles={styles} />);
   }
@@ -138,7 +158,7 @@ class Discover extends Component {
       case 1:
         return props.posts.top;
       case 2:
-        return props.users.list;
+        return props.userList;
       default:
         return null;
     }
@@ -180,7 +200,7 @@ class Discover extends Component {
       tabs={this.tabs}
     />);
 
-    if (this.props.error.discover) {
+    if (this.props.error) {
       headerEl = null;
       dataEl = [];
     }
@@ -218,15 +238,16 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
-    router: state.routerReducer,
     animation: state.animation,
     view: state.view,
     stats: state.stats,
-    users: state.user,
+    userList: state.user.list,
     tags: state.tags,
-    error: state.error,
+    error: state.error.discover,
     refresh: state.navigation.discover.refresh,
     reload: state.navigation.discover.reload,
+    tabs: state.navigation.tabs,
+    nav: state.navigation.discover,
   };
 }
 

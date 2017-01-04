@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as navigationActions from '../actions/navigation.actions';
 import { globalStyles } from '../styles/global';
-import CardContainer from './card.container';
+import CardContainer from './card.containerCustom';
 import * as userActions from '../actions/user.actions';
 
 const localStyles = StyleSheet.create({
@@ -32,7 +32,9 @@ class Tabs extends Component {
         key,
         back: true,
         title: 'New Post',
-        next: 'Post'
+        next: 'Post',
+        direction: 'vertical',
+        // ownCard: true
       }, 'home');
     } else {
       if (tab.key === key) {

@@ -21,18 +21,23 @@ class PostBody extends Component {
   }
 
   setTag(tag) {
+    if (!this.props.actions) return;
     this.props.actions.selectTag({ _id: tag.replace('#', '') });
     this.props.navigator.changeTab('discover');
   }
 
   setSelected(user) {
+    if (!this.props.actions) return;
+    let userId = user._id || user.replace('@', '');
     if (!user) return;
-    if (this.props.scene && this.props.scene.id === user._id) return;
-    this.props.navigator.goToProfile(user);
+    if (this.props.scene && this.props.scene.id === userId) return;
+    this.props.actions.goToProfile(user);
   }
 
   goToPost() {
-    this.props.navigator.goToPost(this.props.post);
+    if (!this.props.actions) return;
+    if (this.props.scene && this.props.scene.id === this.props.post._id) return;
+    this.props.actions.goToPost(this.props.post);
   }
 
   render() {
@@ -136,8 +141,8 @@ export default PostBody;
 
 const localStyles = StyleSheet.create({
   postBody: {
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
   bodyText: {
     fontFamily: 'Georgia',

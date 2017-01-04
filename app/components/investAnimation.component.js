@@ -6,16 +6,16 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as animationActions from '../actions/animation.actions';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles } from '../styles/global';
 import Dollar from './dollar.component';
 
 const localStyles = StyleSheet.create({
   moneyContainer: {
     position: 'absolute',
-    top: -20,
-    right: -20,
-    height: 20,
-    width: 20,
+    top: 0,
+    right: 0,
+    height: 40,
+    width: 80,
   }
 });
 
@@ -32,48 +32,42 @@ class InvestAnimation extends Component {
   }
 
   componentDidUpdate(prev) {
-    const self = this;
-    if (self.props.animation !== prev.animation) {
-      if (self.props.animation.bool && self.props.animation.run) {
-        if (self.props.animation.type === 'invest') {
+    if (this.props.animation !== prev.animation) {
+      if (this.props.animation.bool && this.props.animation.run) {
+        if (this.props.animation.type === 'invest') {
           this.enabled = true;
-          self.investAni();
+          this.investAni();
         }
       }
     }
   }
 
   componentWillUnmount() {
-    const self = this;
-    self.clearEls();
+    this.clearEls();
   }
 
   clearEls() {
-    const self = this;
     this.enabled = false;
-    if (self.state.num > 0) self.setState({ num: 0, investAni: [] });
+    if (this.state.num > 0) this.setState({ num: 0, investAni: [] });
   }
 
   investAni() {
-    const self = this;
     if (!this.enabled) return;
-    if (self.state.num < 25) {
-      let newArr = self.state.investAni;
-      newArr.push(<Dollar key={self.state.num} specialKey={self.state.num} />);
-      let newNum = self.state.num += 1;
-      self.setState({ num: newNum, investAni: newArr });
-      setTimeout(() => { self.investAni(); }, 50);
+    if (this.state.num < 20) {
+      let newArr = this.state.investAni;
+      newArr.push(<Dollar key={this.state.num} specialKey={this.state.num} />);
+      let newNum = this.state.num += 1;
+      this.setState({ num: newNum, investAni: newArr });
+      setTimeout(() => { this.investAni(); }, 30);
     } else {
-      setTimeout(() => { self.clearEls(); }, 1000);
+      setTimeout(() => { this.clearEls(); }, 1000);
     }
   }
 
   render() {
-    const self = this;
-
     return (
       <View style={styles.moneyContainer}>
-        {self.state.investAni}
+        {this.state.investAni}
       </View>
     );
   }

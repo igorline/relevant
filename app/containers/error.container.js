@@ -21,7 +21,7 @@ class ErrorContainer extends Component {
     super(props, context);
     this.state = {
       loading: false,
-    }
+    };
     this.reload = this.reload.bind(this);
   }
 
@@ -30,12 +30,12 @@ class ErrorContainer extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (!this.props.error.universal && next.error.universal) this.setState({ loading: false })
+    if (!this.props.error.universal && next.error.universal) this.setState({ loading: false });
   }
 
   reload() {
     this.props.actions.setError('universal', false);
-    this.setState({ loading: true })
+    this.setState({ loading: true });
     this.props.actions.getUser();
   }
 
@@ -50,10 +50,18 @@ class ErrorContainer extends Component {
       </TouchableHighlight>);
     }
 
-    return (<View style={{flex: 1, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center'}}>
-      {reloadEl}
-      <CustomSpinner visible={this.state.loading} />
-    </View>)
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          alignItems: 'center',
+          justifyContent: 'center' }}
+      >
+        {reloadEl}
+        <CustomSpinner visible={this.state.loading} />
+      </View>
+    );
   }
 }
 
@@ -61,7 +69,6 @@ styles = { ...localStyles, ...globalStyles };
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth,
     error: state.error,
   };
 }

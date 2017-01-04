@@ -4,6 +4,7 @@ import {
   TextInput,
   View,
   Text,
+  ScrollView,
   KeyboardAvoidingView
 } from 'react-native';
 import { globalStyles } from '../../styles/global';
@@ -11,7 +12,8 @@ import * as utils from '../../utils';
 import UrlPreview from './urlPreview.component';
 import UserName from '../userNameSmall.component';
 import UserSearchComponent from './userSearch.component';
-
+import PostBody from './../post/postBody.component';
+import PostInfo from './../post/postInfo.component';
 
 let styles;
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
@@ -132,8 +134,12 @@ export default class UrlComponent extends Component {
     let maxHeight = 170;
     if (this.props.share) maxHeight = 170;
 
-    if (this.props.repostBody) {
-      repostBody = (<Text>{this.props.repostBody}</Text>);
+    if (this.props.repost) {
+      repostBody = (
+        <View>
+          <PostInfo post={this.props.repost} />
+          <PostBody post={this.props.repost} />
+        </View>);
     }
 
     let urlPlaceholder = 'What’s relevant? Add a link to post commentary.';
@@ -144,7 +150,7 @@ export default class UrlComponent extends Component {
 
     if (this.props.user && !this.props.share) {
       userHeader = (
-        <View style={styles.header}>
+        <View style={styles.createPostUser}>
           <View style={styles.innerBorder}>
             <UserName
               style={styles.innerBorder}
@@ -167,44 +173,50 @@ export default class UrlComponent extends Component {
         behavior={'padding'}
         style={{
           flex: 1,
-          paddingLeft: 15,
-          paddingRight: 15,
           backgroundColor: '#ffffff'
         }}
       >
-        {repostBody}
-        {userHeader}
-
-        <View
-          style={[
-            styles.innerBorder,
-            this.props.share ? styles.noBorder : null,
-            { height: Math.min(maxHeight, this.state.inputHeight) }]
-          }
+        <ScrollView
+          style={{
+            paddingHorizontal: 10,
+          }}
         >
-          <TextInput
-            ref={(c) => { this.input = c; }}
-            style={[styles.font15, styles.createPostInput, styles.flex1]}
-            placeholder={urlPlaceholder}
-            multiline
-            onChangeText={postBody => this.processInput(postBody)}
-            onBlur={() => this.processInput(null, true)}
-            value={this.props.postBody}
-            returnKeyType={'default'}
-            autoFocus
-            onContentSizeChange={(event) => {
-              let h = event.nativeEvent.contentSize.height;
-              this.setState({
-                inputHeight: Math.max(55, h)
-              });
-            }}
-          />
-        </View>
-        {userSearch}
-        {this.props.urlPreview && !this.props.users.search.length ?
-          <UrlPreview {...this.props} actions={this.props.actions} /> :
-          null
-        }
+          {userHeader}
+
+          <View
+            style={[
+              styles.innerBorder,
+              this.props.share ? styles.noBorder : null,
+              { height: Math.min(maxHeight, this.state.inputHeight) }]
+            }
+          >
+            <TextInput
+              ref={(c) => { this.input = c; }}
+              style={[styles.font15, styles.createPostInput, styles.flex1]}
+              placeholder={urlPlaceholder}
+              multiline
+              onChangeText={postBody => this.processInput(postBody)}
+              onBlur={() => this.processInput(null, true)}
+              value={this.props.postBody}
+              returnKeyType={'default'}
+              autoFocus
+              keyboardShouldPersistTaps={false}
+              onContentSizeChange={(event) => {
+                let h = event.nativeEvent.contentSize.height;
+                this.setState({
+                  inputHeight: Math.max(55, h)
+                });
+              }}
+            />
+          </View>
+          {userSearch}
+          {repostBody}
+
+          {this.props.urlPreview && !this.props.users.search.length ?
+            <UrlPreview {...this.props} actions={this.props.actions} /> :
+            null
+          }
+        </ScrollView>
       </KeyboardAvoidingView>
     );
 
@@ -215,7 +227,7 @@ export default class UrlComponent extends Component {
 }
 
 const localStyles = StyleSheet.create({
-  header: {
+  createPostUser: {
     height: 55,
   },
   innerBorder: {
