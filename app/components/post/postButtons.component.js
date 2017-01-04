@@ -201,13 +201,11 @@ class PostButtons extends Component {
       direction: 'vertical'
     }, 'home');
   }
-
-  // openComments() {
-  //   // this.props.actions.setSelectedPost(this.props.post._id);
-  //   this.props.navigator.goToComments(this.props.post);
-  // }
+  
   goToPost() {
-    if (this.props.scene && this.props.scene.route.id === this.props.post._id) return;
+    if (this.props.scene) {
+      if (this.props.scene.route.id === this.props.post._id) return;
+    }
     this.props.navigator.goToPost(this.props.post);
   }
 
