@@ -28,6 +28,7 @@ import * as messageActions from '../actions/message.actions';
 import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
+import * as navigationActions from '../actions/navigation.actions';
 import Tabs from '../components/tabs.component';
 import CustomListView from '../components/customList.component';
 import EmptyList from '../components/emptyList.component';
@@ -60,7 +61,7 @@ class Profile extends Component {
   componentWillMount() {
     if (this.props.scene) {
       this.userId = this.props.scene.id;
-      this.userData = this.props.users.selectedUserData[this.userId];
+      this.userData = this.props.users[this.userId];
 
       InteractionManager.runAfterInteractions(() => {
         if (!this.userData) this.loadUser();
@@ -69,7 +70,7 @@ class Profile extends Component {
       });
     } else {
       this.userId = this.props.auth.user._id;
-      this.userData = this.props.users.selectedUserData[this.userId];
+      this.userData = this.props.users[this.userId];
 
       InteractionManager.runAfterInteractions(() => {
         this.loaded = true;
@@ -79,7 +80,7 @@ class Profile extends Component {
   }
 
   componentWillReceiveProps(next) {
-    this.userData = next.users.selectedUserData[this.userId];
+    this.userData = next.users[this.userId];
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();
     }
@@ -90,7 +91,16 @@ class Profile extends Component {
 
   shouldComponentUpdate(next) {
     let tab = next.tabs.routes[next.tabs.index];
-    if (tab.key !== 'myProfile' && !this.props.scene) return false;
+    if (tab.key !== 'myProfile' && !next.scene) return false;
+    // console.log('updating profile');
+    // for (let p in next) {
+    //   if (next[p] !== this.props[p]) {
+    //     console.log(p);
+    //     for (let pp in next[p]) {
+    //       if (next[p][pp] !== this.props[p][pp]) console.log('--> ',pp);
+    //     }
+    //   }
+    // }
     return true;
   }
 
@@ -128,8 +138,9 @@ class Profile extends Component {
   }
 
   renderRow(rowData, view) {
-    // console.log('renderRow profile', rowData)
-    if (view === 0) return (<Post post={rowData} {...this.props} />);
+    let scene = this.props.scene || { route: { id: this.userId } };
+
+    if (view === 0) return (<Post post={rowData} {...this.props} scene={scene} />);
     if (view === 1) return (<Investment investment={rowData} {...this.props} />);
   }
 
@@ -231,9 +242,9 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
-    users: state.user,
+    users: state.user.selectedUserData,
     online: state.online,
-    error: state.error,
+    error: state.error.profile,
     view: state.view,
     stats: state.stats,
     investments: state.investments,
@@ -259,7 +270,8 @@ function mapDispatchToProps(dispatch) {
       ...userActions,
       ...investActions,
       ...subscriptionActions,
-      ...createPostActions
+      ...createPostActions,
+      ...navigationActions,
     }, dispatch),
   };
 }

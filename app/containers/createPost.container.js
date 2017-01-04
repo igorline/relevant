@@ -20,6 +20,7 @@ import CreatePostComponent from '../components/createPost/createPost.component';
 import Categories from '../components/createPost/categories.component';
 import * as utils from '../utils';
 import Card from '../components/nav/card.component';
+import CustomSpinner from '../components/CustomSpinner.component';
 
 import { globalStyles } from '../styles/global';
 
@@ -36,6 +37,10 @@ class CreatePostContainer extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.state = {
+      creatingPost: false
+    };
+
     this.renderScene = this.renderScene.bind(this);
     this.renderRight = this.renderRight.bind(this);
     this.back = this.back.bind(this);
@@ -51,7 +56,6 @@ class CreatePostContainer extends Component {
     if (next.navProps.scene.isActive === false) {
       if (this.urlComponent) this.urlComponent.input.blur();
     }
-
   }
 
   back() {
@@ -114,10 +118,12 @@ class CreatePostContainer extends Component {
       return AlertIOS.alert('Please enter some text');
     }
     let commentObj = {
-      post: props.repost,
+      post: props.repost._id,
       text: props.postBody,
       repost: true
     };
+
+    this.setState({ creatingPost: true });
     this.props.actions.createComment(this.props.auth.token, commentObj)
     .then(() => {
       this.props.actions.clearCreatePost();
@@ -125,6 +131,7 @@ class CreatePostContainer extends Component {
       this.props.navigator.changeTab('discover');
       this.props.navigator.reloadTab('discover');
       if (this.props.close) this.props.close();
+      this.setState({ creatingPost: false });
     });
   }
 
@@ -149,6 +156,7 @@ class CreatePostContainer extends Component {
       return;
     }
 
+    this.setState({ creatingPost: true });
     if (props.urlPreview && props.urlPreview.image && !props.nativeImage) {
       utils.s3.toS3Advanced(props.urlPreview.image)
       .then((results) => {
@@ -156,6 +164,8 @@ class CreatePostContainer extends Component {
           this.image = results.url;
           this.uploadPost();
         } else {
+          AlertIOS.alert('Post error please try again');
+          this.setState({ creatingPost: false });
           // console.log(results);
           // this.image = props.urlPreview ? props.urlPreview.image : null;
           // this.uploadPost();
@@ -187,8 +197,9 @@ class CreatePostContainer extends Component {
       .then((results) => {
         if (!results) {
           AlertIOS.alert('Post error please try again');
+          this.setState({ creatingPost: false });
         } else {
-          AlertIOS.alert('Success!');
+          // AlertIOS.alert('Success!');
           if (this.props.close) this.props.close();
           this.props.actions.clearCreatePost();
           this.props.navigator.resetRoutes('home');
@@ -234,6 +245,8 @@ class CreatePostContainer extends Component {
 
   renderScene(props) {
     let component = props.scene.route.component;
+
+    if (this.state.creatingPost) return <CustomSpinner />;
 
     switch (component) {
       case 'createPost':

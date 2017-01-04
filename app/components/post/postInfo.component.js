@@ -36,11 +36,13 @@ class PostInfo extends Component {
   setTag(tag) {
     if (!tag) return;
     this.props.actions.selectTag(tag);
-    this.props.navigator.changeTab('discover');
+    this.props.actions.changeTab('discover');
   }
 
   setSelected() {
-    this.props.navigator.goToProfile({
+    if (!this.props.actions) return;
+    if (this.props.scene && this.props.scene.id === this.props.post.user) return false;
+    this.props.actions.goToProfile({
       name: this.props.post.embeddedUser.name,
       _id: this.props.post.user
     });
@@ -61,27 +63,25 @@ class PostInfo extends Component {
   }
 
   checkTime() {
-    const self = this;
-    if (self.props.post) {
-      let postTime = moment(self.props.post.createdAt);
+    if (this.props.post) {
+      let postTime = moment(this.props.post.createdAt);
       let fromNow = postTime.fromNow();
       let timeNow = moment();
       let dif = timeNow.diff(postTime);
       let threshold = 21600000;
       if (dif >= threshold) {
-        self.setState({ passed: true });
+        this.setState({ passed: true });
       } else {
-        self.setState({
+        this.setState({
           timeUntilString: moment.duration(threshold - dif).humanize(),
           timePassedPercent: dif / threshold,
         });
       }
-      self.setState({ posted: fromNow });
+      this.setState({ posted: fromNow });
     }
   }
 
   render() {
-    const self = this;
     let postUserImage = null;
     let postInfo = null;
     let post = null;
@@ -101,7 +101,7 @@ class PostInfo extends Component {
       }
     }
 
-    if (self.state.passed) {
+    if (this.state.passed) {
       postInfo = (<View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
         <Text
           style={[
@@ -131,13 +131,13 @@ class PostInfo extends Component {
           <Progress.Pie
             style={styles.progressCirc}
             color={'#4d4eff'}
-            progress={self.state.timePassedPercent}
+            progress={this.state.timePassedPercent}
             size={17}
           />
           <Text
             style={[styles.font17, styles.textRight, styles.darkGray, styles.bebas]}
           >
-            Results in {self.state.timeUntilString}
+            Results in {this.state.timeUntilString}
           </Text>
         </View>);
     }
@@ -152,7 +152,7 @@ class PostInfo extends Component {
         <View
           style={[styles.infoRight, styles.innerInfo]}
         >
-          {postInfo}
+          {this.props.repost ? null : postInfo}
         </View>
       </View>
     </View>);

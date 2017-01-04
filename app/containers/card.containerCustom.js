@@ -41,13 +41,13 @@ class CardContainer extends Component {
 
     switch (key) {
       case 'discover':
-        return <Discover key={key} {...this.props} navigator={this.props.actions} />;
+        return <Discover key={key} navigator={this.props.actions} />;
       case 'myProfile':
-        return <Profile key={key} {...this.props} navigator={this.props.actions} />;
+        return <Profile key={key} navigator={this.props.actions} />;
       case 'activity':
-        return <Activity key={key} {...this.props} navigator={this.props.actions} />;
+        return <Activity key={key} navigator={this.props.actions} />;
       case 'read':
-        return <Read key={key} {...this.props} navigator={this.props.actions} />;
+        return <Read key={key} navigator={this.props.actions} />;
       default:
         return null;
     }
@@ -61,17 +61,17 @@ class CardContainer extends Component {
     let component = props.scene.route.component;
 
     switch (component) {
-      case 'comment':
-        return <Comments navigator={this.props.actions} scene={props.scene.route} />;
+      // case 'comment':
+      //   return <Comments navigator={this.props.actions} isTop={props.isTop} scene={props.scene.route} />;
 
-      case 'thirst':
-        return <Thirst navigator={this.props.actions} scene={props.scene.route} />;
+      // case 'thirst':
+      //   return <Thirst navigator={this.props.actions} scene={props.scene.route} />;
 
       case 'singlePost':
         return <SinglePost navigator={this.props.actions} scene={props.scene.route} />;
 
-      case 'messages':
-        return <Messages navigator={this.props.actions} />;
+      // case 'messages':
+      //   return <Messages navigator={this.props.actions} />;
 
       case 'profile':
         return <Profile navigator={this.props.actions} scene={props.scene.route} />;
@@ -122,6 +122,7 @@ class CardContainer extends Component {
             renderScene={this.renderScene}
             back={this.back}
             {...this.props}
+            globalNav={this.props.navigation}
             header
           />)}
       />
