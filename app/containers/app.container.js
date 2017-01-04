@@ -22,6 +22,7 @@ import * as userActions from '../actions/user.actions';
 import * as onlineActions from '../actions/online.actions';
 import * as notifActions from '../actions/notif.actions';
 import * as viewActions from '../actions/view.actions';
+import * as tagActions from '../actions/tag.actions';
 import * as messageActions from '../actions/message.actions';
 import * as investActions from '../actions/invest.actions';
 import * as navigationActions from '../actions/navigation.actions';
@@ -252,8 +253,8 @@ class Application extends Component {
 
   render() {
     let scene = this.props.navigation.home;
-
     let key = scene.routes[scene.index].component;
+    const self = this;
 
     return (
       <View style={{ flex: 1, backgroundColor: 'black' }} >
@@ -263,14 +264,13 @@ class Application extends Component {
           configureTransition={this.configureTransition}
           render={transitionProps => {
             return transitionProps.scene.route.ownCard ? this.renderScene(transitionProps) :
-            (
-            <Card
+            (<Card
               {...transitionProps}
               renderScene={this.renderScene}
               back={this.back}
               {...this.props}
               header={false}
-            />)}
+            />); }
           }
         />
         <InvestAnimation {...this.props} />
@@ -287,6 +287,7 @@ function mapStateToProps(state) {
     animation: state.animation,
     navigation: state.navigation,
     error: state.error,
+    tags: state.tags,
   };
 }
 
@@ -301,7 +302,8 @@ function mapDispatchToProps(dispatch) {
       ...messageActions,
       ...userActions,
       ...investActions,
-      ...navigationActions
+      ...navigationActions,
+      ...tagActions,
     }, dispatch)
   };
 }

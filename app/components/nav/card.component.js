@@ -63,8 +63,7 @@ class Card extends Component {
     let props = this.props;
     let headers = [];
     let index = props.scene.index;
-
-    // console.log('nav props', this.props);
+    let saveProps = this.props;
 
     const scenes = props.scenes.map((scene, i) => {
       const sceneProps = {
@@ -132,11 +131,14 @@ class Card extends Component {
       }
 
       if (props.header && scene.route.header !== false) {
+        console.log(this.props, 'props to header')
         headers.push(
           <CardHeader
             key={scene.key}
             {...this.props}
+            {...props}
             {...sceneProps}
+            {...saveProps}
             style={headerStyle}
             share={this.props.share}
             back={props.back}
