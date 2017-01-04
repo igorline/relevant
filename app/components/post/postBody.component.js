@@ -23,7 +23,8 @@ class PostBody extends Component {
   setTag(tag) {
     if (!this.props.actions) return;
     this.props.actions.selectTag({ _id: tag.replace('#', '') });
-    this.props.navigator.changeTab('discover');
+    this.props.actions.changeTab('discover');
+    this.props.actions.resetRoutes('discover');
   }
 
   setSelected(user) {
