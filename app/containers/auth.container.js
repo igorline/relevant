@@ -12,7 +12,6 @@ import ImageUpload from '../components/auth/imageUpload.component';
 import * as authActions from '../actions/auth.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import Card from '../components/nav/card.component';
-
 import { globalStyles, localStyles } from '../styles/global';
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
