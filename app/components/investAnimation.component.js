@@ -66,7 +66,7 @@ class InvestAnimation extends Component {
 
   render() {
     return (
-      <View style={styles.moneyContainer}>
+      <View pointerEvents={'none'} style={styles.moneyContainer}>
         {this.state.investAni}
       </View>
     );
