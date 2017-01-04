@@ -28,6 +28,8 @@ class CardHeader extends Component {
 
     // return <BackButton style={{ justifyContent: 'flex-start' }} onPress={this.back} />;
 
+    let backArrow = <Text style={{ padding: 10, marginLeft: -10 }}>◀</Text>;
+
     return (<TouchableHighlight
       style={[styles.leftButton]}
       underlayColor={'transparent'}
@@ -40,7 +42,7 @@ class CardHeader extends Component {
           styles.leftButtonText,
         ]}
       >
-        {props.scene.route.left || '◀'}
+        {props.scene.route.left || backArrow}
       </Text>
     </TouchableHighlight>);
   }
