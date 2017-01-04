@@ -1,6 +1,14 @@
 import * as types from '../actions/actionTypes';
 
-const initialState = { universal: false, discover: false, read: false, profile: false, activity: false, singlepost: false, comments: false };
+const initialState = {
+  universal: false,
+  discover: false,
+  read: false,
+  profile: false,
+  activity: false,
+  singlepost: false,
+  comments: false
+};
 
 export default function auth(state = initialState, action) {
   switch (action.type) {

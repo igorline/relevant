@@ -8,10 +8,15 @@ const fullHeight = Dimensions.get('window').height;
 
 const darkGrey = '#231f20';
 const blue = '#4d4eff';
+const lightGrey = '#aaaaaa';
+const greyText = '#999999';
 
 const font = StyleSheet.create({
   font10: {
     fontSize: 10,
+  },
+  font12: {
+    fontSize: 12,
   },
   font14: {
     fontSize: 14,
@@ -31,17 +36,40 @@ const font = StyleSheet.create({
   font40: {
     fontSize: 40,
   },
+  bold: {
+    fontWeight: 'bold',
+  },
   navTitle: {
     fontSize: 22.5,
     fontFamily: 'BebasNeueRelevantRegular',
     fontWeight: 'bold',
     letterSpacing: 0.15,
-    paddingVertical: 10,
-    // flex: 1,
-    // justifyContent: 'center',
+    paddingVertical: 14,
+    flex: 1,
+  },
+  headerInner: {
+    flex: 1,
+    alignItems: 'center',
   },
   shareHeader: {
-    marginTop: -20,
+    height: 45,
+    paddingTop: 0,
+  },
+  header: {
+    height: 59,
+    paddingTop: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderBottomColor: '#242425',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+
+    zIndex: 1000,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    left: 0
   },
   navButton: {
     fontSize: 10,
@@ -51,6 +79,11 @@ const font = StyleSheet.create({
     fontFamily: 'BebasNeueRelevantRegular',
     fontWeight: 'normal',
     letterSpacing: 0.5,
+    // flex: 1,
+    marginBottom: -2,
+    justifyContent: 'flex-end',
+    // alignItems: 'flex-end',
+
   },
   bebasBold: {
     fontFamily: 'BebasNeueRelevantRegular',
@@ -96,6 +129,9 @@ const colors = StyleSheet.create({
   },
   timestampGray: {
     color: '#B0B3B6'
+  },
+  greyText: {
+    color: greyText
   }
 });
 
@@ -118,13 +154,14 @@ const layout = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderTopWidth: 1,
-    borderTopColor: '#F0F0F0',
+    borderTopColor: 'lightgrey',
     backgroundColor: 'white',
     paddingLeft: 5,
     bottom: 0,
     left: 0,
     right: 0,
     position: 'absolute',
+    // paddingVertical: 5,
   },
   commentInput: {
     flex: 1,
@@ -401,12 +438,12 @@ const layout = StyleSheet.create({
     flex: 1
   },
   boxShadow: {
-    shadowColor: 'grey',
-    shadowOffset: { width: -1, height: 1 },
-    shadowRadius: 2,
-    shadowOpacity: 0.1,
+    shadowColor: 'black',
+    shadowOffset: { width: -0, height: .5 },
+    shadowRadius: 1,
+    shadowOpacity: .2,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'lightgrey'
+    borderColor: lightGrey
   },
   uploadAvatar: {
     height: 125,
@@ -419,7 +456,7 @@ const layout = StyleSheet.create({
   },
   separator: {
     height: 12,
-    backgroundColor: 'hsl(0,0%,90%)',
+    backgroundColor: 'hsl(0,0%,93%)',
   }
 });
 

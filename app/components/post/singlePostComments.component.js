@@ -36,6 +36,7 @@ class SinglePostComments extends Component {
     this.toggleEditing = this.toggleEditing.bind(this);
     this.reload = this.reload.bind(this);
     this.scrollToComment = this.scrollToComment.bind(this);
+    this.loaded = false;
   }
 
   componentWillMount() {
@@ -51,14 +52,19 @@ class SinglePostComments extends Component {
       }
     }
 
+    // if (this.comments) {
+      let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      this.dataSource = ds.cloneWithRows([]);
+    // }
+
     InteractionManager.runAfterInteractions(() => {
       if (!this.comments) this.loadMoreComments();
+      this.loaded = true;
+      if (this.comments) {
+        this.dataSource = ds.cloneWithRows(this.comments);
+      }
+      this.forceUpdate();
     });
-
-    if (this.comments) {
-      let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      this.dataSource = ds.cloneWithRows(this.comments);
-    }
   }
 
   componentWillReceiveProps(next) {
@@ -117,11 +123,12 @@ class SinglePostComments extends Component {
 
   renderHeader() {
     let headerEl = [];
+
     headerEl.push(<SinglePostComponent
       singlePost
       key={0}
+      scene={this.props.scene}
       post={this.postId}
-      style={{padding: 0}}
       {...this.props}
     />);
 
@@ -159,7 +166,6 @@ class SinglePostComments extends Component {
         keyboardShouldPersistTaps
         keyboardDismissMode={'on-drag'}
         automaticallyAdjustContentInsets={false}
-        contentContainerStyle={{ paddingTop: 10 }}
         contentInset={{ bottom: offset }}
         onEndReached={!this.longFormat ? this.loadMoreComments : null}
         onEndReachedThreshold={100}

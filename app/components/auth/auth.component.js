@@ -8,6 +8,7 @@ import {
   Keyboard,
   Image,
   ScrollView,
+  ListView
 } from 'react-native';
 
 import { globalStyles, fullWidth } from '../../styles/global';
@@ -17,77 +18,70 @@ let styles;
 class Auth extends Component {
   constructor(props, context) {
     super(props, context);
+    let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.slides = [1, 2, 3],
     this.state = {
-      visibleHeight: Dimensions.get('window').height
+      visibleHeight: Dimensions.get('window').height,
+      xOffset: 0,
+      dataSource: ds.cloneWithRows(this.slides),
     };
     this.signup = this.signup.bind(this);
     this.login = this.login.bind(this);
-    this.renderSlides = this.renderSlides.bind(this);
-  }
-
-  componentDidMount() {
-    this.showListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this));
-    this.hideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this));
-  }
-
-  componentWillUnmount() {
-    this.showListener.remove();
-    this.hideListener.remove();
-  }
-
-  keyboardWillShow(e) {
-    let newSize = (Dimensions.get('window').height - e.endCoordinates.height);
-    this.setState({ visibleHeight: newSize });
-  }
-
-  keyboardWillHide() {
-    this.setState({ visibleHeight: Dimensions.get('window').height });
+    this.renderIndicator = this.renderIndicator.bind(this);
+    this.listview = null;
+    this.changeRow = this.changeRow.bind(this);
+    this.renderRow = this.renderRow.bind(this);
   }
 
   login() {
     this.props.actions.push({
       key: 'login',
       title: 'Login',
-      showBackButton: true
-    }, this.props.navigation.main);
+      showBackButton: true,
+      back: true
+    }, 'auth');
   }
 
   signup() {
     this.props.actions.push({
       key: 'signup',
       title: 'Signup',
-      showBackButton: true
-    }, this.props.navigation.main);
+      showBackButton: true,
+      back: true
+    }, 'auth');
   }
 
-  renderSlides() {
-    let slides = [];
+  renderRow(data, i) {
+    return (<View key={i} style={styles.authSlide}>
+        <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
+          <Text style={styles.strokeText}>Relevant</Text>
+          &nbsp;is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt
+          &nbsp;<Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
+        </Text>
+      </View>);
+  }
 
-    slides.push(<View style={{ width: (fullWidth - 20), borderWidth: 1, borderColor: 'red' }}>
-      <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
-        <Text style={styles.strokeText}>Relevant</Text>
-        &nbsp;is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt
-        &nbsp;<Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
-      </Text>
-    </View>);
+  renderIndicator() {
+    let indicator = [];
+    if (!this.slides) return indicator;
+    if (this.slides.length) {
+      this.slides.forEach((slide, i) => {
+        let active = false;
+        if (this.state.currentIndex) {
+          if (this.state.currentIndex[i]) active = true
+        } else {
+          if (i === 0) active = true;
+        }
+        indicator.push(<View style={[styles.indicatorItem, {backgroundColor: active ? 'black' : 'white'}]} key={i} />);
+      })
+    }
+    return indicator;
+  }
 
-    slides.push(<View style={{ width: (fullWidth - 20), borderWidth: 1, borderColor: 'blue' }}>
-      <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
-        <Text style={styles.strokeText}>Relevant</Text>
-        &nbsp;is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt
-        &nbsp;<Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
-      </Text>
-    </View>);
-
-    slides.push(<View style={{ width: (fullWidth - 20), borderWidth: 1, borderColor: 'blue' }}>
-      <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
-        <Text style={styles.strokeText}>Relevant</Text>
-        &nbsp;is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt
-        &nbsp;<Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
-      </Text>
-    </View>);
-
-    return slides;
+  changeRow(event) {
+    if (!event) return;
+    if (!event.s1) return;
+    this.setState({ currentIndex: event.s1 });
   }
 
   render() {
@@ -95,10 +89,8 @@ class Auth extends Component {
 
     return (
       <View
-        style={[
-          {
-            height: isAuthenticated ? this.state.visibleHeight - 60 : this.state.visibleHeight
-          },
+        style={[{
+          height: isAuthenticated ? this.state.visibleHeight - 60 : this.state.visibleHeight },
           styles.authParent
         ]}
       >
@@ -108,18 +100,24 @@ class Auth extends Component {
 
         <View style={styles.authDivider} />
 
-        <ScrollView
+        <ListView
           horizontal
           scrollEnabled
+          ref={(c) => { this.listview = c; }}
           decelerationRate={'fast'}
-          showsHorizontalScrollIndicator={true}
+          showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
-          snapToInterval={(fullWidth * 0.92) + 8}
-          contentContainerStyle={{ flexDirection: 'row', borderWidth: 1, borderColor: 'orange', alignItems: 'flex-start', flexWrap: 'nowrap', justifyContent: 'flex-start' }}
-          snapToAlignment={'center'}
-        >
-          {this.renderSlides()}
-        </ScrollView>
+          snapToInterval={(fullWidth - 20)}
+          contentContainerStyle={styles.authSlidesParent}
+          onChangeVisibleRows={this.changeRow}
+          renderRow={this.renderRow}
+          dataSource={this.state.dataSource}
+          onScroll={this.checkScroll}
+        />
+
+        <View style={styles.indicatorParent}>
+          {this.renderIndicator()}
+        </View>
 
         <TouchableHighlight
           onPress={this.signup}
@@ -146,6 +144,31 @@ class Auth extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  authSlidesParent: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    flexWrap: 'nowrap',
+    justifyContent: 'flex-start'
+  },
+  authSlide: {
+    width: (fullWidth - 40),
+    marginRight: 20,
+  },
+  indicatorParent: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 40
+  },
+  indicatorItem: {
+    marginLeft: 5,
+    marginRight: 5,
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    borderColor: 'black',
+    borderWidth: 1,
+  },
   authDivider: {
     height: 5,
     marginTop: 20,

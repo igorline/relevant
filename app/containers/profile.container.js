@@ -28,6 +28,7 @@ import * as messageActions from '../actions/message.actions';
 import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
+import * as navigationActions from '../actions/navigation.actions';
 import Tabs from '../components/tabs.component';
 import CustomListView from '../components/customList.component';
 import EmptyList from '../components/emptyList.component';
@@ -54,33 +55,53 @@ class Profile extends Component {
       { id: 0, title: 'Posts' },
       { id: 1, title: 'Investments' },
     ];
+    this.loaded = false;
   }
 
   componentWillMount() {
     if (this.props.scene) {
-      this.myProfile = false;
       this.userId = this.props.scene.id;
-      this.userData = this.props.users.selectedUserData[this.userId];
+      this.userData = this.props.users[this.userId];
 
       InteractionManager.runAfterInteractions(() => {
         if (!this.userData) this.loadUser();
-        this.loadContent = true;
+        this.loaded = true;
+        this.setState({});
       });
     } else {
-      this.myProfile = true;
       this.userId = this.props.auth.user._id;
-      this.userData = this.props.users.selectedUserData[this.userId];
+      this.userData = this.props.users[this.userId];
+
+      InteractionManager.runAfterInteractions(() => {
+        this.loaded = true;
+        this.setState({});
+      });
     }
   }
 
   componentWillReceiveProps(next) {
-    this.userData = next.users.selectedUserData[this.userId];
+    this.userData = next.users[this.userId];
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();
     }
     if (this.props.reload !== next.reload) {
       this.needsReload = new Date().getTime();
     }
+  }
+
+  shouldComponentUpdate(next) {
+    let tab = next.tabs.routes[next.tabs.index];
+    if (tab.key !== 'myProfile' && !next.scene) return false;
+    // console.log('updating profile');
+    // for (let p in next) {
+    //   if (next[p] !== this.props[p]) {
+    //     console.log(p);
+    //     for (let pp in next[p]) {
+    //       if (next[p][pp] !== this.props[p][pp]) console.log('--> ',pp);
+    //     }
+    //   }
+    // }
+    return true;
   }
 
   scrollToTop() {
@@ -93,10 +114,9 @@ class Profile extends Component {
   }
 
   load(view, length) {
+    if (!this.loaded) return;
     if (view === undefined) view === this.state.view;
     if (length === undefined) length = 0;
-
-    if (length === 0) this.loadUser();
 
     if (this.state.view === 0) {
       this.props.actions.getUserPosts(
@@ -118,8 +138,9 @@ class Profile extends Component {
   }
 
   renderRow(rowData, view) {
-    // console.log('renderRow profile', rowData)
-    if (view === 0) return (<Post post={rowData} {...this.props} />);
+    let scene = this.props.scene || { route: { id: this.userId } };
+
+    if (view === 0) return (<Post post={rowData} {...this.props} scene={scene} />);
     if (view === 1) return (<Investment investment={rowData} {...this.props} />);
   }
 
@@ -173,7 +194,8 @@ class Profile extends Component {
         let tabData = this.getViewData(this.props, tab.id);
         let active = this.state.view === tab.id;
         let data = tabData.data || [];
-        let loaded = tabData.loaded || false;
+        if (!this.loaded) data = [];
+        let loaded = tabData.loaded && this.loaded;
         if (tab.id === 0) {
           tab.title = 'Posts ' + this.userData.postCount;
           tab.type = 'posts';
@@ -220,14 +242,15 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
-    users: state.user,
+    users: state.user.selectedUserData,
     online: state.online,
-    error: state.error,
+    error: state.error.profile,
     view: state.view,
     stats: state.stats,
     investments: state.investments,
     refresh: state.navigation.myProfile.refresh,
-    reload: state.navigation.myProfile.reload
+    reload: state.navigation.myProfile.reload,
+    tabs: state.navigation.tabs,
   };
 }
 
@@ -247,7 +270,8 @@ function mapDispatchToProps(dispatch) {
       ...userActions,
       ...investActions,
       ...subscriptionActions,
-      ...createPostActions
+      ...createPostActions,
+      ...navigationActions,
     }, dispatch),
   };
 }

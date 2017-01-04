@@ -44,6 +44,23 @@ class Read extends Component {
     }
   }
 
+  shouldComponentUpdate(next) {
+    let tab = next.tabs.routes[next.tabs.index];
+    if (tab.key !== 'read') return false;
+
+    // console.log('updating read');
+    // for (let p in next) {
+    //   if (next[p] !== this.props[p]) {
+    //     console.log(p);
+    //     for (let pp in next[p]) {
+    //       if (next[p][pp] !== this.props[p][pp]) console.log('--> ',pp);
+    //     }
+    //   }
+    // }
+
+    return true;
+  }
+
   scrollToTop() {
     let view = this.listview;
     if (view) view.listview.scrollTo({ y: 0, animated: true });
@@ -109,7 +126,6 @@ class Read extends Component {
           parent={'feed'}
           active={active}
           needsReload={this.needsReload}
-          navigation={this.props.navigation}
           actions={this.props.actions}
         />
       );
@@ -191,11 +207,10 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     messages: state.messages,
-    users: state.user,
     refresh: state.navigation.read.refresh,
     reload: state.navigation.read.reload,
-    error: state.error,
-    navigation: state.navigation.tabs
+    error: state.error.read,
+    tabs: state.navigation.tabs,
   };
 }
 

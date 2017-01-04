@@ -89,8 +89,8 @@ export function logoutAction(user) {
   return (dispatch) => {
     utils.token.remove()
     .then(() => {
+      // dispatch(removeDeviceToken());
       dispatch(logout());
-      dispatch(removeDeviceToken());
       // websoket message
       dispatch({
         type: 'server/logout',
@@ -356,13 +356,13 @@ export function addDeviceToken(user, authToken) {
 
 export function removeDeviceToken(auth) {
     if (!auth) return;
-    return function(dispatch) {
+    return (dispatch) => {
         var user = auth.user;
         if (user.deviceTokens) {
             if (user.deviceTokens.indexOf(auth.deviceToken) > -1) {
                 console.log('removing devicetoken from useroject');
                 var index = user.deviceTokens.indexOf(auth.deviceToken);
-                console.log(user.deviceTokens, 'pre splice')
+                console.log(user.deviceTokens, 'pre splice');
                 user.deviceTokens.splice(index, 1);
                 console.log(user.deviceTokens, 'post splice');
                 console.log('upating user to', user);

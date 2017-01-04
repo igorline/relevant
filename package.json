@@ -12,7 +12,7 @@
     "dotenv": "^2.0.0",
     "fs": "0.0.2",
     "moment": "^2.13.0",
-    "normalizr": "^2.3.0",
+    "normalizr": "^3.0.0",
     "path": "^0.12.7",
     "react": "15.3.1",
     "react-native": "^0.37.0",

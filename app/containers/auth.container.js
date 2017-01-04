@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
   NavigationExperimental,
-  Image,
+  Easing
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -13,11 +11,14 @@ import SignUp from '../components/auth/signup.component';
 import ImageUpload from '../components/auth/imageUpload.component';
 import * as authActions from '../actions/auth.actions';
 import * as navigationActions from '../actions/navigation.actions';
+import Card from '../components/nav/card.component';
 
-import { globalStyles, localStyles, fullWidth } from '../styles/global';
+import { globalStyles, localStyles } from '../styles/global';
+
+const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
 const {
-  Header: NavigationHeader,
+  Transitioner: NavigationTransitioner,
 } = NavigationExperimental;
 
 let styles;
@@ -27,12 +28,13 @@ class AuthContainer extends Component {
   constructor(props, context) {
     super(props, context);
     this.renderScene = this.renderScene.bind(this);
-    this.renderHeader = this.renderHeader.bind(this);
     this.back = this.back.bind(this);
   }
 
-  renderScene(key) {
-    switch (key) {
+  renderScene(props) {
+    let component = props.scene.route.component;
+
+    switch (component) {
       case 'auth':
         return <Auth {...this.props} />;
 
@@ -50,59 +52,40 @@ class AuthContainer extends Component {
     }
   }
 
-  renderTitle(props) {
-    let title = props.scene.route.title;
-    return (
-      <NavigationHeader.Title style={{ bottom: -4, backgroundColor: 'transparent' }}>
-        <Image
-          source={require('../assets/images/logo.png')}
-          resizeMode={'contain'}
-          style={{ width: 200, height: 25 }}
-        />
-      </NavigationHeader.Title>
-    );
-  }
-
   back() {
-    this.props.actions.pop(this.props.navigation.main);
+    let scene = 'home';
+    if (this.props.navigation.index > 0) scene = 'auth';
+    this.props.actions.pop(scene);
   }
 
-  renderRight() {
-    return null;
-  }
-
-  renderHeader(props) {
-    let header = null;
-    if (props.scene.route) {
-      if (props.scene.route.component === 'login' || props.scene.route.component === 'signup' || props.scene.route.component === 'imageUpload') {
-        header = (
-          <NavigationHeader
-            {...props}
-            style={[
-              this.props.share ? styles.shareHeader : null,
-              {
-                backgroundColor: 'white',
-                borderBottomColor: '#f0f0f0',
-                borderBottomWidth: 1,
-              }]}
-            renderTitleComponent={this.renderTitle}
-            onNavigateBack={this.back}
-            renderRightComponent={this.renderRight}
-          />
-        );
-      }
-    }
-    return header;
+  configureTransition() {
+    const easing = Easing.bezier(0.0, 0, 0.58, 1);
+    return {
+      duration: 200,
+      easing,
+      useNativeDriver: !!NativeAnimatedModule ? true : false
+    };
   }
 
   render() {
-    return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
-        {this.renderHeader(this.props.navProps)}
-        {this.renderScene(this.props.authType)}
-      </View>
-    );
+    let scene = this.props.navigation;
+
+    return (<NavigationTransitioner
+      style={{ backgroundColor: 'white' }}
+      navigationState={scene}
+      configureTransition={this.configureTransition}
+      render={transitionProps => (
+        <Card
+          {...transitionProps}
+          renderScene={this.renderScene}
+          back={this.back}
+          {...this.props}
+          header
+          share={this.props.share}
+        />)}
+    />);
   }
+
 }
 
 styles = { ...localStyles, ...globalStyles };
@@ -110,7 +93,7 @@ styles = { ...localStyles, ...globalStyles };
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    navigation: state.navigation,
+    navigation: state.navigation.auth,
   };
 }
 

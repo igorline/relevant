@@ -45,34 +45,68 @@ class Post extends Component {
     let repostEl = null;
     let postStyle = null;
 
-    if (post && post.comments && post.comments[0] && post.comments[0].repost) {
-      let repost = post.comments[0];
-      postStyle = [styles.repost, styles.boxShadow];
-      let repostObj = {
-        ...repost,
-        embeddedUser: repost.embeddedUser,
-        body: repost.text,
-        _id: post._id,
-      };
+    if (this.props.showReposts && post && post.comments && post.comments[0]) {
+      let repost = this.props.posts.comments[post.comments[0]];
+      if (repost && repost.repost) {
+        // let repost = post.comments[0];
+        postStyle = [styles.repost, styles.boxShadow];
+        let repostObj = {
+          ...repost,
+          embeddedUser: repost.embeddedUser,
+          body: repost.text,
+          _id: post._id,
+        };
 
+        repostEl = (
+          <View>
+            <PostInfo repost {...this.props} post={repostObj} />
+            <PostBody repost {...this.props} post={repostObj} />
+          </View>
+        );
+      }
+    }
+
+    if (post.repost) {
+      postStyle = [styles.repost, styles.boxShadow];
+      let repost = this.props.posts.posts[post.repost.post];
       repostEl = (
         <View>
-          <PostInfo navigator={this.props.navigator} post={repostObj} />
-          <PostBody repost {...this.props} post={repostObj} editing={false} />
+          <PostInfo repost {...this.props} post={post} />
+          <PostBody
+            repost
+            {...this.props}
+            post={{ _id: repost._id, body: post.repost.commentBody }}
+          />
         </View>
       );
+      post = repost;
     }
 
     return (
       <View>
         <View style={[styles.postContainer]}>
           <View style={styles.postInner}>
-            {imageEl}
             {repostEl}
             <View style={postStyle}>
-              <PostInfo navigator={this.props.navigator} post={post} />
-              <PostBody {...this.props} post={post} editing={false} />
-              <PostButtons {...this.props} post={post} comments={post.comments || null} />
+              <PostInfo
+                scene={this.props.scene}
+                big
+                {...this.props}
+                post={post}
+              />
+              <PostBody
+                scene={this.props.scene}
+                {...this.props}
+                post={post}
+                editing={false}
+              />
+              {imageEl}
+              <PostButtons
+                scene={this.props.scene}
+                {...this.props}
+                post={post}
+                comments={post.comments || null}
+              />
             </View>
           </View>
 
@@ -92,6 +126,8 @@ const localStyles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     marginTop: 10,
+    paddingBottom: 20,
+    paddingTop: 10,
     // borderWidth: StyleSheet.hairlineWidth,
   },
   cLabel: {
@@ -101,8 +137,8 @@ const localStyles = StyleSheet.create({
     textAlign: 'center',
   },
   postInner: {
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   postContainer: {
     paddingBottom: 25,

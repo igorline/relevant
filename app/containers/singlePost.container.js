@@ -18,11 +18,11 @@ import * as statsActions from '../actions/stats.actions';
 import * as tagActions from '../actions/tag.actions';
 import * as investActions from '../actions/invest.actions';
 import * as createPostActions from '../actions/createPost.actions';
+import * as navigationActions from '../actions/navigation.actions';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 // import Post from '../components/post/post.component';
 import * as animationActions from '../actions/animation.actions';
 import CustomSpinnerRelative from '../components/customSpinnerRelative.component';
-import * as navigationActions from '../actions/navigation.actions';
 import ErrorComponent from '../components/error.component';
 
 // import SinglePostComponent from '../components/post/singlePost.component';
@@ -55,6 +55,19 @@ class SinglePost extends Component {
     }
   }
 
+  shouldComponentUpdate(next) {
+    // console.log('updating single post');
+    // for (let p in next) {
+    //   if (next[p] !== this.props[p]) {
+    //     console.log(p);
+    //     for (let pp in next[p]) {
+    //       if (next[p][pp] !== this.props[p][pp]) console.log('--> ', pp);
+    //     }
+    //   }
+    // }
+    return true;
+  }
+
   setEditing(bool) {
     this.setState({ editing: bool });
   }
@@ -69,20 +82,20 @@ class SinglePost extends Component {
     this.postData = this.props.posts.posts[this.postId];
     this.commentsData = this.props.comments.commentsById[this.postId];
 
-    if (this.postData && !this.props.error.singlepost) {
+    if (this.postData && !this.props.error) {
       dataEl = (<SinglePostComments
         post={this.postId}
+        scene={this.props.scene}
         {...this.props}
         singlePostEditing={this.setEditing}
-        styles={styles}
       />);
     }
 
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
-        style={{ height: fullHeight - 114 }}
-        keyboardVerticalOffset={64}
+        style={{ flex: 1 }}
+        // keyboardVerticalOffset={64}
       >
         <View
           style={{
@@ -94,7 +107,7 @@ class SinglePost extends Component {
           {dataEl}
           <CustomSpinnerRelative
             visible={(!this.postData || !this.commentsData) &&
-              !this.props.error.singlepost}
+              !this.props.error}
           />
           <ErrorComponent parent={'singlepost'} reloadFunction={this.reload} />
           <CommentInput postId={this.postId} editing={this.state.editing} {...this.props}  />
@@ -119,7 +132,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     posts: state.posts,
     user: state.user,
-    error: state.error,
+    error: state.error.singlepost,
     comments: state.comments,
     users: state.user,
     tags: state.tags,

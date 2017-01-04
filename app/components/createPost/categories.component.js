@@ -60,8 +60,7 @@ class Categories extends Component {
                 alignItems: 'center',
                 justifyContent: 'center' }}
             >
-              <Text>{tag.emoji}</Text>
-              <Text>{tag.categoryName}</Text>
+              <Text>{tag.emoji}{tag.categoryName}</Text>
             </View>
           </TouchableHighlight>
         );
@@ -69,7 +68,9 @@ class Categories extends Component {
     }
 
     return (
-      <ScrollView >
+      <ScrollView
+        canCancelContentTouches
+      >
         {categoryEl}
       </ScrollView>
     );
