@@ -52,7 +52,6 @@ export default class Commentary extends Component {
 
 const localStyles = StyleSheet.create({
   postScroll: {
-    // height: 80,
     flexDirection: 'row',
     alignItems: 'flex-start',
     flexWrap: 'nowrap',
@@ -62,9 +61,6 @@ const localStyles = StyleSheet.create({
   },
   commentary: {
     flex: 1,
-    // borderWidth: StyleSheet.hairlineWidth,
-
-    // height: 40,
     marginRight: 5,
     marginLeft: 5,
     marginTop: 3,

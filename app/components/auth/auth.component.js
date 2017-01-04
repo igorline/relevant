@@ -7,6 +7,7 @@ import {
   TouchableHighlight,
   Keyboard,
   Image,
+  ScrollView,
 } from 'react-native';
 
 import { globalStyles, fullWidth } from '../../styles/global';
@@ -21,6 +22,7 @@ class Auth extends Component {
     };
     this.signup = this.signup.bind(this);
     this.login = this.login.bind(this);
+    this.renderSlides = this.renderSlides.bind(this);
   }
 
   componentDidMount() {
@@ -58,27 +60,66 @@ class Auth extends Component {
     }, this.props.navigation.main);
   }
 
+  renderSlides() {
+    let slides = [];
+
+    slides.push(<View style={{ width: (fullWidth - 20), borderWidth: 1, borderColor: 'red' }}>
+      <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
+        <Text style={styles.strokeText}>Relevant</Text>
+        &nbsp;is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt
+        &nbsp;<Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
+      </Text>
+    </View>);
+
+    slides.push(<View style={{ width: (fullWidth - 20), borderWidth: 1, borderColor: 'blue' }}>
+      <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
+        <Text style={styles.strokeText}>Relevant</Text>
+        &nbsp;is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt
+        &nbsp;<Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
+      </Text>
+    </View>);
+
+    slides.push(<View style={{ width: (fullWidth - 20), borderWidth: 1, borderColor: 'blue' }}>
+      <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
+        <Text style={styles.strokeText}>Relevant</Text>
+        &nbsp;is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt
+        &nbsp;<Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
+      </Text>
+    </View>);
+
+    return slides;
+  }
+
   render() {
     const { isAuthenticated } = this.props.auth;
 
     return (
       <View
         style={[
-          { height: isAuthenticated ? this.state.visibleHeight - 60 : this.state.visibleHeight }, styles.authParent
+          {
+            height: isAuthenticated ? this.state.visibleHeight - 60 : this.state.visibleHeight
+          },
+          styles.authParent
         ]}
       >
         <View style={styles.logoContainer}>
           <Image source={require('../../assets/images/logo.png')} resizeMode={'contain'} style={styles.authLogo} />
         </View>
 
-        <View style={styles.authDivider}>
-        </View>
+        <View style={styles.authDivider} />
 
-        <View style={{ flex: 1 }}>
-          <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
-            <Text style={styles.strokeText}>Relevant</Text> is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt <Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
-          </Text>
-        </View>
+        <ScrollView
+          horizontal
+          scrollEnabled
+          decelerationRate={'fast'}
+          showsHorizontalScrollIndicator={true}
+          automaticallyAdjustContentInsets={false}
+          snapToInterval={(fullWidth * 0.92) + 8}
+          contentContainerStyle={{ flexDirection: 'row', borderWidth: 1, borderColor: 'orange', alignItems: 'flex-start', flexWrap: 'nowrap', justifyContent: 'flex-start' }}
+          snapToAlignment={'center'}
+        >
+          {this.renderSlides()}
+        </ScrollView>
 
         <TouchableHighlight
           onPress={this.signup}
