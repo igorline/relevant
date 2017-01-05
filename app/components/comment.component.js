@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
   Image,
   ActionSheetIOS,
   AlertIOS,
@@ -11,8 +10,11 @@ import {
 } from 'react-native';
 import { globalStyles } from '../styles/global';
 import CommentEditing from '../components/commentEditing.component';
+import UserName from './userNameSmall.component';
+import { numbers } from '../utils';
 
 let moment = require('moment');
+
 let styles;
 
 class Comment extends Component {
@@ -30,7 +32,6 @@ class Comment extends Component {
       editing: false,
       height: 0
     };
-    this.timeSince = this.timeSince.bind(this);
     this.singleComment = null;
     this.deleteComment = this.deleteComment.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
@@ -43,6 +44,7 @@ class Comment extends Component {
       let text = this.props.comment.text;
       this.setState({ editedText: text });
     }
+    this.setSelected = this.setSelected.bind(this);
   }
 
   saveEdit(comment) {
@@ -78,7 +80,7 @@ class Comment extends Component {
   componentWillUpdate(nextProps, nextState) {
     const self = this;
     if (nextState.editing !== this.state.editing) {
-      this.singleComment.measure( (fx, fy, width, height, px, py) => {
+      this.singleComment.measure((fx, fy, width, height, px, py) => {
         let num = 0;
         num = fy;
         self.props.parentEditing(nextState.editing, num);
@@ -95,31 +97,6 @@ class Comment extends Component {
     );
   }
 
-  timeSince(date) {
-    let seconds = Math.floor((new Date() - date) / 1000);
-    let interval = Math.floor(seconds / 31536000);
-    if (interval >= 1) {
-        return interval + 'y';
-    }
-    interval = Math.floor(seconds / 2592000);
-    if (interval >= 1) {
-        return interval + 'mo';
-    }
-    interval = Math.floor(seconds / 86400);
-    if (interval >= 1) {
-        return interval + 'd';
-    }
-    interval = Math.floor(seconds / 3600);
-    if (interval >= 1) {
-        return interval + 'hr';
-    }
-    interval = Math.floor(seconds / 60);
-    if (interval >= 1) {
-        return interval + 'm';
-    }
-    return Math.floor(seconds) + 's';
-  }
-
   setTag(tag) {
     this.props.actions.selectTag({ _id: tag.replace('#', '') });
     this.props.navigator.changeTab('discover');
@@ -128,7 +105,7 @@ class Comment extends Component {
   setSelected(user) {
     if (!user) return;
     if (this.props.scene && this.props.scene.id === user._id) return;
-    this.props.navigator.goToProfile(user);
+    this.props.actions.goToProfile(user);
   }
 
   editComment() {
@@ -141,7 +118,7 @@ class Comment extends Component {
     if (!comment) return null;
     let body = comment.text;
     let postTime = moment(comment.createdAt);
-    let timestamp = this.timeSince(postTime);
+    let timestamp = numbers.timeSince(postTime);
     let bodyEl = null;
     let bodyObj = {};
     let optionsEl = null;
@@ -258,24 +235,14 @@ class Comment extends Component {
         style={[styles.commentContainer]}
       >
         <View style={styles.commentHeader}>
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            onPress={() => this.props.navigator.goToProfile({
-              _id: comment.user,
-              name: comment.embeddedUser.name
-            })}
-          >
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Image
-                style={styles.commentAvatar}
-                source={{ uri: image }}
-              />
-              <Text style={[styles.bebas, styles.halfLetterSpacing]}>{name}</Text>
-            </View>
-          </TouchableHighlight>
+          <UserName
+            size={'small'}
+            user={{ image: comment.embeddedUser.image, name: comment.embeddedUser.name, _id: comment.user }}
+            setSelected={this.setSelected}
+          />
           <Text style={[{ fontSize: 12 }, styles.timestampGray]}>{timestamp}</Text>
         </View>
-        <View style={{ paddingLeft: 35, paddingRight: 10 }}>
+        <View style={{ paddingLeft: 33, paddingRight: 10 }}>
           {bodyEl}
           {editingEl}
         </View>
@@ -295,7 +262,7 @@ const localStyles = StyleSheet.create({
     paddingBottom: 10,
   },
   commentContainer: {
-    padding: 10,
+    padding: 20,
   },
   commentAvatar: {
     height: 25,

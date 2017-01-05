@@ -131,7 +131,7 @@ class Card extends Component {
       }
 
       if (props.header && scene.route.header !== false) {
-        console.log(this.props, 'props to header')
+        console.log(this.props, 'props to header');
         headers.push(
           <CardHeader
             key={scene.key}

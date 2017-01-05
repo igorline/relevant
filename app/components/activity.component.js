@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,54 +7,18 @@ import {
   Image,
 } from 'react-native';
 
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { numbers } from '../utils';
+import { globalStyles } from '../styles/global';
 
 let moment = require('moment');
-
-const localStyles = StyleSheet.create({
-  activityImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    marginRight: 10,
-  },
-  activityImagePlaceholder: {
-    height: 30, width: 30, marginRight: 10
-  }
-});
-const styles = { ...localStyles, ...globalStyles };
+let styles;
 
 export default function (props) {
   let singleActivity = props.singleActivity;
   if (!singleActivity) return null;
 
-  let timeSince = (date) => {
-    var seconds = Math.floor((new Date() - date) / 1000);
-    var interval = Math.floor(seconds / 31536000);
-    if (interval >= 1) {
-        return interval + 'y';
-    }
-    interval = Math.floor(seconds / 2592000);
-    if (interval >= 1) {
-        return interval + 'mo';
-    }
-    interval = Math.floor(seconds / 86400);
-    if (interval >= 1) {
-        return interval + 'd';
-    }
-    interval = Math.floor(seconds / 3600);
-    if (interval >= 1) {
-        return interval + 'hr';
-    }
-    interval = Math.floor(seconds / 60);
-    if (interval >= 1) {
-        return interval + 'm';
-    }
-    return Math.floor(seconds) + 's';
-  };
-
   let activityTime = moment(singleActivity.createdAt);
-  let fromNow = timeSince(activityTime);
+  let fromNow = numbers.timeSince(activityTime);
   let postTitle = 'Untitled';
 
   if (singleActivity.post) {
@@ -64,6 +28,7 @@ export default function (props) {
       postTitle = singleActivity.post.body.substring(0, 20);
     }
   }
+  singleActivity.post.title = postTitle;
 
   let setSelected = (user) => {
     props.navigator.goToProfile(user);
@@ -73,31 +38,9 @@ export default function (props) {
     props.navigator.goToPost(post);
   };
 
-  let abbreviateNumber = (num) => {
-    let fixed = 0;
-    if (num === null) { return null; }
-    if (num === 0) { return '0'; }
-    if (typeof num !== 'number') num = Number(num);
-    fixed = (!fixed || fixed < 0) ? 0 : fixed;
-    let b = (num).toPrecision(2).split('e');
-    let k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3);
-    let c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, k * 3)).toFixed(1 + fixed);
-    let d = c < 0 ? c : Math.abs(c);
-    let e = d + ['', 'K', 'M', 'B', 'T'][k];
-    return e;
-  };
-
   let renderRight = () => {
     if (singleActivity.type) {
       let amountEl = null;
-      // if (singleActivity.post) {
-      //   if (singleActivity.post.value) {
-      //     amountEl = (<Text style={[styles.bebas, { textAlign: 'left', flex: 0.6 }]}>
-      //       💵{abbreviateNumber(singleActivity.post.value)}
-      //     </Text>);
-      //   }
-      // }
-
       return (<View style={styles.activityRight}>
         {amountEl}
         <Text style={[{ fontSize: 11, color: '#B0B3B6', flex: 0.4, textAlign: 'right' }]}>{fromNow}</Text>
@@ -106,143 +49,100 @@ export default function (props) {
     return null;
   };
 
-  let renderLeft = () => {
+  let renderName = (user) => {
+    return (<Text style={styles.link} onPress={() => setSelected(user)}>
+      {user.name}
+    </Text>);
+  };
+
+  let renderPost = (post) => {
+    return (<Text
+      onPress={() => goToPost(post)}
+      style={[styles.link, { fontStyle: 'italic' }]}
+    >
+      &nbsp;{post.title}
+    </Text>);
+  };
+
+  let renderImage = (user) => {
+    let image = (
+      <TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
+        <Image style={styles.activityImage} source={require('../assets/images/default_user.jpg')} />
+      </TouchableWithoutFeedback>);
+    if (user && user.image) {
+      image = (<TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
+        <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
+      </TouchableWithoutFeedback>);
+    }
+    return image;
+  };
+
+  let getText = () => {
     switch (singleActivity.type) {
       case 'investment':
-        let investmentImage = (<View style={styles.activityImagePlaceholder} />);
-        if (singleActivity.byUser.image) {
-          investmentImage = (<TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
-            <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image  }} />
-          </TouchableWithoutFeedback>);
-        }
         return (
-          <View style={styles.activityLeft}>
-            {investmentImage}
-            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
-              <Text onPress={() => setSelected(singleActivity.byUser)}>
-                {singleActivity.byUser.name}
-              </Text>
-              <Text>
-                &nbsp;invested {'$' + singleActivity.amount} in your post
-              </Text>
-              <Text
-                onPress={() => goToPost(singleActivity.post)}
-                style={{ fontStyle: 'italic' }}
-              >
-                &nbsp;{postTitle}
-              </Text>
-            </Text>
-          </View>
+          <Text>
+            &nbsp;invested ${singleActivity.amount.toFixed(0)} in your post
+          </Text>
         );
 
       case 'partialEarning':
-        let earningImage = (<View style={styles.activityImagePlaceholder} />);
-        let byUser;
-        if (singleActivity.byUser) {
-          byUser = (
-            <Text style={{}} onPress={() => setSelected(singleActivity.byUser)}>
-              {singleActivity.byUser.name}
-            </Text>
-            );
-          earningImage = (<TouchableWithoutFeedback onPress={() => goToPost(singleActivity.byUser)}>
-            <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
-          </TouchableWithoutFeedback>);
-        }
         return (
-          <View style={styles.activityLeft}>
-            {earningImage}
-            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
-              <Text>
-                Earned ${singleActivity.amount.toFixed(0)} from {byUser}'s investment in post
-              </Text>
-              <Text
-                onPress={() => goToPost(singleActivity.post)}
-                style={{ fontStyle: 'italic' }}
-              >
-                &nbsp;{postTitle}
-              </Text>
-            </Text>
-          </View>
+          <Text>
+            Earned ${singleActivity.amount.toFixed(0)} from {renderName(singleActivity.byUser)}'s investment in post
+          </Text>
         );
 
       case 'comment':
         return (
-          <View style={styles.activityLeft}>
-            <TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
-              <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
-            </TouchableWithoutFeedback>
-            <Text numberOfLines={2} style={[styles.georgia, styles.darkGray, { flex: 1 }]}>
-              <Text style={{}} onPress={() => setSelected(singleActivity.byUser)}>
-                {singleActivity.byUser.name}
-              </Text>
-              <Text>
-                &nbsp;commented on your post
-              </Text>
-              <Text
-                onPress={() => goToPost(singleActivity.post)}
-                style={{ fontStyle: 'italic' }}
-              >
-                &nbsp;{singleActivity.post.title}
-              </Text>
-            </Text>
-          </View>
+          <Text>
+            &nbsp;commented on your post
+          </Text>
         );
 
       case 'postMention':
       case 'mention':
         return (
-          <View style={styles.activityLeft}>
-            <TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
-              <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
-            </TouchableWithoutFeedback>
-            <Text numberOfLines={2} style={[styles.darkGray, styles.georgia, { flex: 1 }]}>
-              <Text
-                style={{ flex: 1 }}
-                onPress={() => setSelected(singleActivity.byUser)}
-              >
-                {singleActivity.byUser.name}
-              </Text>
-              <Text>
-                &nbsp;mentioned you in the post
-              </Text>
-              <Text
-                onPress={() => goToPost(singleActivity.post)}
-                style={[{ fontStyle: 'italic' }, styles.georgia]}
-              >
-                &nbsp;{postTitle}
-              </Text>
-            </Text>
-          </View>
+          <Text>
+            &nbsp;mentioned you in the post
+          </Text>
         );
 
       case 'commentMention':
         return (
-          <View style={styles.activityLeft}>
-            <TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
-              <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
-            </TouchableWithoutFeedback>
-            <Text numberOfLines={2} style={[styles.darkGray, styles.georgia, { flex: 1 }]}>
-              <Text
-                style={{ flex: 1 }}
-                onPress={() => setSelected(singleActivity.byUser)}
-              >
-                {singleActivity.byUser.name}
-              </Text>
-              <Text>
-                &nbsp;mentioned you in a comment in the post
-              </Text>
-              <Text
-                onPress={() => goToPost(singleActivity.post)}
-                style={[{ fontStyle: 'italic' }, styles.georgia]}
-              >
-                &nbsp;{postTitle}
-              </Text>
-            </Text>
-          </View>
+          <Text>
+            &nbsp;mentioned you in a comment in the post
+          </Text>
         );
 
       default:
         return null;
+    }
+  };
+
+  let renderLeft = () => {
+    switch (singleActivity.type) {
+      case 'partialEarning':
+        return (
+          <View style={styles.activityLeft}>
+            {renderImage(singleActivity.byUser)}
+            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
+              {getText(singleActivity)}
+              {renderPost(singleActivity.post)}
+            </Text>
+          </View>
+        );
+      default:
+        return (
+          <View style={styles.activityLeft}>
+            {renderImage(singleActivity.byUser)}
+            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
+              {renderName(singleActivity.byUser)}
+              {getText(singleActivity)}
+              {renderPost(singleActivity.post)}
+            </Text>
+          </View>
+        );
     }
   };
 
@@ -253,4 +153,24 @@ export default function (props) {
     </View>
   );
 }
+
+const localStyles = StyleSheet.create({
+  link: {
+    color: '#4d4eff',
+  },
+  activityImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 10,
+  },
+  activityImagePlaceholder: {
+    height: 30,
+    width: 30,
+    marginRight: 10,
+    backgroundColor: 'lightgrey',
+    borderRadius: 15,
+  }
+});
+styles = { ...localStyles, ...globalStyles };
 

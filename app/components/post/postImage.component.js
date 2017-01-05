@@ -120,7 +120,8 @@ const localStyles = StyleSheet.create({
     alignItems: 'stretch',
     flexDirection: 'column',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 25,
+    marginTop: 5,
     backgroundColor: 'white',
   },
 });
