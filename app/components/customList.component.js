@@ -99,6 +99,7 @@ export default class ActivityView extends Component {
           width: fullWidth,
           backgroundColor: 'white',
         }}
+        keyboardDismissMode={'on-drag'}
         onScroll={this.props.onScroll}
         onEndReached={this.loadMore}
         onEndReachedThreshold={100}
