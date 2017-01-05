@@ -8,7 +8,8 @@ import {
   Animated,
   TextInput,
 } from 'react-native';
-import { abbreviateNumber } from '../../utils';
+
+import { numbers } from '../../utils';
 import { globalStyles } from '../../styles/global';
 import Search from './search.component';
 let styles;
@@ -28,7 +29,7 @@ class CardHeader extends Component {
   toggleSearch() {
     this.setState({ search: !this.state.search });
   }
-
+  
   renderLeft(props) {
     let leftEl = <View style={styles.leftButton} />;
 
@@ -120,10 +121,10 @@ class CardHeader extends Component {
       if (user.relevance) relevance = user.relevance;
       if (user.balance) balance = user.balance;
       if (balance > 0) {
-        balance = abbreviateNumber(balance);
+        balance = numbers.abbreviateNumber(balance);
       }
       if (relevance > 0) {
-        relevance = abbreviateNumber(relevance);
+        relevance = numbers.abbreviateNumber(relevance);
       }
 
       statsEl = (

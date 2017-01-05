@@ -73,11 +73,14 @@ class PostBody extends Component {
 
       let breakText;
 
+      let tagsOnEnd = false;
+
       bodyEl = Object.keys(bodyObj).map((key, i) => {
         let space = '';
         if (breakText) space = ' ';
 
         if (bodyObj[key].hashtag) {
+          if (i >= 77) tagsOnEnd = true;
           return (<Text
             key={key}
             onPress={() => this.setTag(bodyObj[key].text)}
@@ -86,6 +89,7 @@ class PostBody extends Component {
             {bodyObj[key].text + space}
           </Text>);
         } else if (bodyObj[key].mention) {
+          if (i >= 77) tagsOnEnd = true;
           return (<Text
             key={key}
             onPress={() => this.setSelected(bodyObj[key].text)}
@@ -103,7 +107,7 @@ class PostBody extends Component {
       });
 
       if (breakText) {
-        bodyEl.push(<Text key={'readmore'} style={[styles.bebasBold, styles.active]}>● READ MORE</Text>);
+        bodyEl.push(<Text key={'readmore'} style={[styles.greyText]}>{tagsOnEnd ? '...' : ''}read more</Text>);
       }
     }
 
@@ -142,8 +146,8 @@ export default PostBody;
 
 const localStyles = StyleSheet.create({
   postBody: {
-    paddingTop: 20,
-    paddingBottom: 20,
+    paddingTop: 25,
+    paddingBottom: 25,
   },
   bodyText: {
     fontFamily: 'Georgia',
