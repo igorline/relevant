@@ -10,6 +10,7 @@ import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import CustomSpinner from '../components/CustomSpinner.component';
 import EmptyList from '../components/emptyList.component';
 import CustomSpinnerRelative from '../components/customSpinnerRelative.component';
+
 let styles;
 
 export default class ActivityView extends Component {
@@ -99,8 +100,8 @@ export default class ActivityView extends Component {
           width: fullWidth,
           backgroundColor: 'white'
         }}
-        // keyboardDismissMode={'on-drag'}
-        // keyboardShouldPersistTaps={true}
+        keyboardShouldPersistTaps={true}
+        keyboardDismissMode={'interactive'}
         onScroll={this.props.onScroll}
         onEndReached={this.loadMore}
         onEndReachedThreshold={100}
