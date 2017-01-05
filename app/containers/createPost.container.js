@@ -51,8 +51,6 @@ class CreatePostContainer extends Component {
   }
 
   componentWillReceiveProps(next) {
-    // console.log(this.props.home)
-    // console.log(next.navProps)
     if (next.navProps.scene.isActive === false) {
       if (this.urlComponent) this.urlComponent.input.blur();
     }
@@ -210,13 +208,13 @@ class CreatePostContainer extends Component {
       });
   }
 
-  renderRight(props) {
+  renderRight() {
     this.enableNext = false;
     if (this.props.createPost.postBody && this.props.createPost.postBody.length) {
       this.enableNext = true;
     }
 
-    let rightText = props.scene.route.next || 'Next';
+    let rightText = this.props.navProps.scene.route.next || 'Next';
     let enabled = this.enableNext;
     let rightAction = p => this.next(p);
     if (this.current !== 'url') {
@@ -229,7 +227,7 @@ class CreatePostContainer extends Component {
       <TouchableHighlight
         style={[styles.rightButton, { opacity: enabled ? 1 : 0.3 }]}
         underlayColor={'transparent'}
-        onPress={() => rightAction(props)}
+        onPress={() => rightAction(this.props)}
       >
         <Text
           style={[
@@ -243,8 +241,9 @@ class CreatePostContainer extends Component {
     );
   }
 
-  renderScene(props) {
-    let component = props.scene.route.component;
+  renderScene() {
+    let component = this.props.navProps.scene.route.component;
+    console.log(this)
 
     if (this.state.creatingPost) return <CustomSpinner />;
 

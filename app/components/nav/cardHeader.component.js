@@ -205,19 +205,22 @@ class CardHeader extends Component {
       );
     }
 
-    if (this.props.scene.route.component === 'profile' && this.props.scene.route.id !== this.props.auth.user._id) {
-      rightEl = null;
-      // rightEl = (
-      //   <View style={styles.gear}>
-      //     <TouchableHighlight
-      //       underlayColor={'transparent'}
-      //       onPress={() => this.thirsty()}
-      //     >
-      //       <Text>thirsty</Text>
-      //     </TouchableHighlight>
-      //   </View>
-      // );
+    if (this.props.scene) {
+      if (this.props.scene.route.component === 'profile' && this.props.scene.route.id !== this.props.auth.user._id) {
+        rightEl = null;
+        // rightEl = (
+        //   <View style={styles.gear}>
+        //     <TouchableHighlight
+        //       underlayColor={'transparent'}
+        //       onPress={() => this.thirsty()}
+        //     >
+        //       <Text>thirsty</Text>
+        //     </TouchableHighlight>
+        //   </View>
+        // );
+      }
     }
+
     return <View style={styles.rightButton}>{rightEl}</View>;
   }
 
