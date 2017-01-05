@@ -44,18 +44,19 @@ class heartAnimation extends Component {
 
   heartAni() {
     let length = this.state.heartAni.length;
+    let delay = 500 / this.num;
 
     if (length < this.num) {
       let newArr = this.state.heartAni;
-      newArr.push(<Heart key={length} specialKey={length} />);
+      newArr.push(<Heart delay={delay} key={length} specialKey={length} />);
       this.setState({ heartAni: newArr });
-      setTimeout(() => { this.heartAni(); }, 100);
-    } else setTimeout(() => { this.clearEls(); }, 10000);
+      setTimeout(() => { this.heartAni(); }, delay);
+    } else setTimeout(() => { this.clearEls(); }, 2000);
   }
 
   render() {
     return (
-      <View style={styles.heartsContainer}>
+      <View pointerEvents="none" style={styles.heartsContainer}>
         {this.state.heartAni}
       </View>
     );
@@ -81,9 +82,10 @@ const localStyles = StyleSheet.create({
   heartsContainer: {
     position: 'absolute',
     bottom: 0,
-    left: (fullWidth / 5) * 3.4,
+    left: (fullWidth / 5) * 3.5,
     height: 20,
-    width: 20,
+    width: 40,
+    zIndex: 1000
   },
 });
 
