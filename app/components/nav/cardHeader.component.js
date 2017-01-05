@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { abbreviateNumber } from '../../utils';
 import { globalStyles } from '../../styles/global';
-
+import Search from './search.component';
 let styles;
 
 class CardHeader extends Component {
@@ -22,21 +22,11 @@ class CardHeader extends Component {
     this.renderTitle = this.renderTitle.bind(this);
     this.renderLeft = this.renderLeft.bind(this);
     this.renderRight = this.renderRight.bind(this);
-    this.close = this.close.bind(this);
-    this.search = this.search.bind(this);
-    this.input = null;
-    this.searchTerm = '';
+    this.toggleSearch = this.toggleSearch.bind(this);
   }
 
-  search(term) {
-    if (term && term.length > 1) this.props.actions.searchTags(term);
-    else this.props.actions.searchTags(null);
-  }
-
-  close() {
-    this.search();
-    this.input.blur();
-    this.input.clear();
+  toggleSearch() {
+    this.setState({ search: !this.state.search });
   }
 
   renderLeft(props) {
@@ -63,10 +53,11 @@ class CardHeader extends Component {
     }
 
     if (this.props.scene.route.title === 'Discover') {
-      leftEl = (<View style={styles.leftButton} >
+      leftEl = [];
+      leftEl.push(<View key={0} style={[styles.leftButton, { flex: this.state.search ? 0.05 : 1 }]} >
         <TouchableHighlight
           underlayColor={'transparent'}
-          onPress={() => this.setState({ search: !this.state.search })}
+          onPress={() => this.toggleSearch() }
         >
           <Image
             resizeMode={'contain'}
@@ -75,45 +66,8 @@ class CardHeader extends Component {
           />
         </TouchableHighlight>
       </View>);
-      if (this.state.search) {
-        leftEl = (<View style={{ flex: 1, flexDirection: 'row' }}>
-          <View style={{ marginLeft: 15, justifyContent: 'center', paddingVertical: 10 }}>
-            <TouchableHighlight
-              underlayColor={'transparent'}
-              onPress={() => this.setState({ search: !this.state.search })}
-            >
-              <Image
-                resizeMode={'contain'}
-                source={require('../../assets/images/search.jpg')}
-                style={{ height: 20, width: 20 }}
-              />
-            </TouchableHighlight>
-          </View>
-          <View style={{ flex: 1, paddingVertical: 10 }}>
-            <TextInput
-              ref={(input) => { this.input = input; }}
-              onSubmitEditing={this.search}
-              style={[styles.searchInput, styles.font15]}
-              placeholder={'Search'}
-              multiline={false}
-              onChangeText={(term) => { this.search(term); this.searchTerm = term; }}
-              value={this.searchTerm}
-              returnKeyType="done"
-              clearTextOnFocus
-            />
-            <View style={styles.closeParent}>
-              <Text
-                style={styles.close}
-                onPress={() => this.close()}
-              >
-                ✕
-              </Text>
-            </View>
-          </View>
-        </View>);
-      }
+      if (this.state.search) leftEl.push(<Search key={1} toggleSearch={this.toggleSearch} {...this.props} />);
     }
-
     return leftEl;
   }
 
@@ -232,7 +186,6 @@ class CardHeader extends Component {
         {this.renderTitle(props)}
         {this.props.renderRight ? this.props.renderRight(props) : this.renderRight(props)}
       </Animated.View>
-
     );
   }
 

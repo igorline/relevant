@@ -19,9 +19,7 @@ export default class DiscoverHeader extends Component {
       searchTerm: null,
       transY: new Animated.Value(0),
     };
-    //this.search = this.search.bind(this);
     this.headerHeight = 134;
-    // this.changeView = this.changeView.bind(this);
   }
 
   componentDidMount() {
@@ -29,7 +27,6 @@ export default class DiscoverHeader extends Component {
   }
 
   componentWillReceiveProps(next) {
-    //console.log(next.showHeader, 'next.showHeader');
     if (this.props.showHeader !== next.showHeader) {
       if (next.showHeader) this.showHeader();
       else this.hideHeader();
@@ -56,25 +53,6 @@ export default class DiscoverHeader extends Component {
      ).start();
   }
 
-  // changeView(view) {
-  //   this.layout = false;
-  //   if (this.props.view === view) this.props.triggerReload();
-  //   this.props.actions.setView('discover', view);
-  // }
-
-  // search(term) {
-  //   if (term && term.length > 1) {
-  //     this.props.actions.searchTags(term);
-  //   }
-  //   else this.props.actions.searchTags(null);
-  // }
-
-  // close() {
-  //   this.search();
-  //   this.input.blur();
-  //   this.input.clear();
-  // }
-
   render() {
 
     let tags = (
@@ -82,31 +60,6 @@ export default class DiscoverHeader extends Component {
         <Tags actions={this.props.actions} tags={this.props.tags} />
       </View>
     );
-
-    // let search = (
-    //   <View style={[styles.searchParent]}>
-    //     <TextInput
-    //       ref={c => this.input = c}
-    //       onSubmitEditing={this.search}
-    //       style={[styles.searchInput, styles.font15]}
-    //       placeholder={'Search'}
-    //       multiline={false}
-    //       onChangeText={term => this.search(term)}
-    //       varlue={this.searchTerm}
-    //       returnKeyType="done"
-    //       clearTextOnFocus
-    //     />
-    //     <View style={styles.closeParent}>
-    //       <Text
-    //         style={styles.close}
-    //         onPress={() => this.close()}
-    //       >
-    //         ✕
-    //       </Text>
-    //     </View>
-    //   </View>
-    // );
-
 
     if (this.props.view === 2) {
       tags = null;
@@ -136,7 +89,6 @@ export default class DiscoverHeader extends Component {
           }
         }
       >
-        {/* search */}
         {tags}
         <Tabs
           tabs={this.props.tabs}

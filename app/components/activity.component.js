@@ -107,7 +107,6 @@ export default function (props) {
   };
 
   let renderLeft = () => {
-    console.log(singleActivity, 'singleActivity');
     switch (singleActivity.type) {
       case 'investment':
         let investmentImage = (<View style={styles.activityImagePlaceholder} />);
