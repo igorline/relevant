@@ -107,12 +107,13 @@ export default function (props) {
   };
 
   let renderLeft = () => {
+    console.log(singleActivity, 'singleActivity');
     switch (singleActivity.type) {
       case 'investment':
         let investmentImage = (<View style={styles.activityImagePlaceholder} />);
         if (singleActivity.byUser.image) {
           investmentImage = (<TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
-            <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image  }} />
+            <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
           </TouchableWithoutFeedback>);
         }
         return (
@@ -144,9 +145,12 @@ export default function (props) {
               {singleActivity.byUser.name}
             </Text>
             );
-          earningImage = (<TouchableWithoutFeedback onPress={() => goToPost(singleActivity.byUser)}>
-            <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
-          </TouchableWithoutFeedback>);
+
+          if (singleActivity.byUser.image) {
+            earningImage = (<TouchableWithoutFeedback onPress={() => goToPost(singleActivity.byUser)}>
+              <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
+            </TouchableWithoutFeedback>);
+          }
         }
         return (
           <View style={styles.activityLeft}>
@@ -166,11 +170,15 @@ export default function (props) {
         );
 
       case 'comment':
+        let commentImage = (<View style={styles.activityImagePlaceholder} />);
+        if (singleActivity.byUser.image) {
+          commentImage = (<TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
+            <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image  }} />
+          </TouchableWithoutFeedback>);
+        }
         return (
           <View style={styles.activityLeft}>
-            <TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
-              <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
-            </TouchableWithoutFeedback>
+            {commentImage}
             <Text numberOfLines={2} style={[styles.georgia, styles.darkGray, { flex: 1 }]}>
               <Text style={{}} onPress={() => setSelected(singleActivity.byUser)}>
                 {singleActivity.byUser.name}
