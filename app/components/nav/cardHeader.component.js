@@ -32,12 +32,14 @@ class CardHeader extends Component {
   search(term) {
     if (term && term.length > 1) this.props.actions.searchTags(term);
     else this.props.actions.searchTags(null);
+    this.forceUpdate();
   }
 
   close() {
     this.search();
     this.input.blur();
     this.input.clear();
+    this.setState({ search: false });
   }
 
   renderLeft(props) {
