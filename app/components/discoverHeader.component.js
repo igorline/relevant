@@ -34,9 +34,9 @@ export default class DiscoverHeader extends Component {
       if (next.showHeader) this.showHeader();
       else this.hideHeader();
     }
-    if (this.props.tags.selectedTags !== next.tags.selectedTags) {
-      this.input.blur();
-    }
+    // if (this.props.tags.selectedTags !== next.tags.selectedTags) {
+    //   this.input.blur();
+    // }
   }
 
   hideHeader() {

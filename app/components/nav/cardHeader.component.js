@@ -6,7 +6,6 @@ import {
   View,
   Image,
   Animated,
-  TouchableWithoutFeedback,
   TextInput,
 } from 'react-native';
 
@@ -16,26 +15,23 @@ import { globalStyles } from '../../styles/global';
 let styles;
 
 class CardHeader extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.state = {
       search: false
     };
-    this.renderHeader = this.renderHeader.bind(this);
     this.renderTitle = this.renderTitle.bind(this);
     this.renderLeft = this.renderLeft.bind(this);
     this.renderRight = this.renderRight.bind(this);
     this.close = this.close.bind(this);
     this.search = this.search.bind(this);
+    this.input = null;
+    this.searchTerm = '';
   }
 
   search(term) {
-    // console.log(this, 'search this')
-    // if (term && term.length > 1) {
-    //   this.props.actions.searchTags(term);
-    // }
-    // else this.props.actions.searchTags(null);
+    if (term && term.length > 1) this.props.actions.searchTags(term);
+    else this.props.actions.searchTags(null);
   }
 
   close() {
@@ -44,9 +40,7 @@ class CardHeader extends Component {
     this.input.clear();
   }
 
-
   renderLeft(props) {
-    console.log(props, 'left props');
     let leftEl = <View style={styles.leftButton} />;
 
     if (props.scene.route.back) {
@@ -64,12 +58,12 @@ class CardHeader extends Component {
             styles.leftButtonText,
           ]}
         >
-          {props.scene.route.left || backArrow}
+          {this.props.scene.route.left || backArrow}
         </Text>
       </TouchableHighlight>);
     }
 
-    if (props.scene.route.title === 'Discover') {
+    if (this.props.scene.route.title === 'Discover') {
       leftEl = (<View style={styles.leftButton} >
         <TouchableHighlight
           underlayColor={'transparent'}
@@ -98,13 +92,13 @@ class CardHeader extends Component {
           </View>
           <View style={{ flex: 1, paddingVertical: 10 }}>
             <TextInput
-              ref={c => this.input = c}
+              ref={(input) => { this.input = input; }}
               onSubmitEditing={this.search}
               style={[styles.searchInput, styles.font15]}
               placeholder={'Search'}
               multiline={false}
-              onChangeText={term => this.search(term)}
-              varlue={this.searchTerm}
+              onChangeText={(term) => { this.search(term); this.searchTerm = term; }}
+              value={this.searchTerm}
               returnKeyType="done"
               clearTextOnFocus
             />
@@ -221,11 +215,11 @@ class CardHeader extends Component {
       //   </View>
       // );
     }
+
     return <View style={styles.rightButton}>{rightEl}</View>;
   }
 
-
-  renderHeader(props, headerStyle) {
+ renderHeader(props, headerStyle) {
     let style = [styles.header, headerStyle];
     if (this.props.share) {
       style = [styles.header, styles.shareHeader, headerStyle];
@@ -307,3 +301,4 @@ const localStyles = StyleSheet.create({
 styles = { ...localStyles, ...globalStyles };
 
 export default CardHeader;
+
