@@ -39,10 +39,10 @@ class CardHeader extends Component {
     this.input.clear();
   }
 
-  renderLeft() {
+  renderLeft(props) {
     let leftEl = <View style={styles.leftButton} />;
 
-    if (this.props.scene.route.back) {
+    if (props.scene.route.back) {
       let backArrow = <Text style={{ padding: 10, marginLeft: -10 }}>◀</Text>;
 
       return (<TouchableHighlight
@@ -117,10 +117,10 @@ class CardHeader extends Component {
     return leftEl;
   }
 
-  renderTitle() {
+  renderTitle(props) {
     if (this.state.search) return null;
-    let title = this.props.scene.route ? this.props.scene.route.title : '';
-    let component = this.props.scene.route.component;
+    let title = props.scene.route ? props.scene.route.title : '';
+    let component = props.scene.route.component;
 
     if (title === 'Profile' && this.props.auth.user) {
       title = this.props.auth.user.name;
@@ -152,7 +152,7 @@ class CardHeader extends Component {
     );
   }
 
-  renderRight() {
+  renderRight(props) {
     if (this.state.search) return null;
     let statsEl = null;
     let relevance = 0;
@@ -201,20 +201,18 @@ class CardHeader extends Component {
       );
     }
 
-    if (this.props.scene) {
-      if (this.props.scene.route.component === 'profile' && this.props.scene.route.id !== this.props.auth.user._id) {
-        rightEl = null;
-        // rightEl = (
-        //   <View style={styles.gear}>
-        //     <TouchableHighlight
-        //       underlayColor={'transparent'}
-        //       onPress={() => this.thirsty()}
-        //     >
-        //       <Text>thirsty</Text>
-        //     </TouchableHighlight>
-        //   </View>
-        // );
-      }
+    if (props.scene.route.component === 'profile' && props.scene.route.id !== this.props.auth.user._id) {
+      rightEl = null;
+      // rightEl = (
+      //   <View style={styles.gear}>
+      //     <TouchableHighlight
+      //       underlayColor={'transparent'}
+      //       onPress={() => this.thirsty()}
+      //     >
+      //       <Text>thirsty</Text>
+      //     </TouchableHighlight>
+      //   </View>
+      // );
     }
 
     return <View style={styles.rightButton}>{rightEl}</View>;
