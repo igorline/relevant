@@ -8,10 +8,6 @@ import {
   Animated,
   TextInput,
 } from 'react-native';
-
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as tagActions from '../../actions/tag.actions';
 import { abbreviateNumber } from '../../utils';
 import { globalStyles } from '../../styles/global';
 
@@ -224,21 +220,26 @@ class CardHeader extends Component {
     return <View style={styles.rightButton}>{rightEl}</View>;
   }
 
-  render() {
-    let style = [styles.header, this.props.style];
+ renderHeader(props, headerStyle) {
+    let style = [styles.header, headerStyle];
     if (this.props.share) {
-      style = [styles.header, styles.shareHeader, this.props.style];
+      style = [styles.header, styles.shareHeader, headerStyle];
     }
 
     return (
       <Animated.View
-        style={[this.props.style, style]}
+        style={[headerStyle, style]}
       >
-        {this.renderLeft()}
-        {this.renderTitle()}
-        {this.props.renderRight ? this.props.renderRight() : this.renderRight()}
+        {this.renderLeft(props)}
+        {this.renderTitle(props)}
+        {this.props.renderRight ? this.props.renderRight(props) : this.renderRight(props)}
       </Animated.View>
+
     );
+  }
+
+  render() {
+    return this.renderHeader(this.props, this.props.style);
   }
 }
 
@@ -300,32 +301,5 @@ const localStyles = StyleSheet.create({
 
 styles = { ...localStyles, ...globalStyles };
 
-// export default CardHeader;
+export default CardHeader;
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    posts: state.posts,
-    animation: state.animation,
-    view: state.view,
-    stats: state.stats,
-    userList: state.user.list,
-    tags: state.tags,
-    error: state.error.discover,
-    refresh: state.navigation.discover.refresh,
-    reload: state.navigation.discover.reload,
-    tabs: state.navigation.tabs,
-    nav: state.navigation.discover,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(
-      {
-        ...tagActions,
-      }, dispatch),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CardHeader);
