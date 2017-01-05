@@ -82,7 +82,7 @@ class Auth extends Component {
   }
 
   scrollToPage(index) {
-    let num = (index * (fullWidth - 40)) + (index * 20);
+    let num = (index * (fullWidth));
     this.listview.scrollTo({ x: num, animated: true });
   }
 
