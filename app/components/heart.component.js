@@ -15,32 +15,55 @@ class Heart extends Component {
       opacity: new Animated.Value(1),
       yVal: new Animated.Value(0),
       xVal: new Animated.Value(0),
-      scale: new Animated.Value(1),
+      scale: new Animated.Value(0),
     };
   }
 
   componentDidMount() {
     const i = this.props.specialKey;
+    const { delay } = this.props;
 
     Animated.parallel([
       Animated.timing(this.state.yVal, {
-        toValue: -300,
-        delay: 100 * i,
+        toValue: -400,
+        delay: delay * i,
         duration: 1000,
         easing: Easing.quad
       }),
       Animated.timing(this.state.opacity, {
         toValue: 0,
-        delay: 100 * i,
+        delay: delay * i,
         duration: 1000,
-        easing: Easing.linear
+        easing: Easing.in(Easing.exp)
       }),
-      Animated.timing(this.state.scale, {
-        toValue: 1.5,
-        delay: 100 * i,
-        duration: 1000,
-        easing: Easing.linear
-      }),
+      Animated.sequence([
+        Animated.timing(this.state.xVal, {
+          toValue: (Math.random() - 0.5) * 20,
+          delay: delay * i,
+          duration: 500,
+          easing: Easing.ease
+        }),
+        Animated.timing(this.state.xVal, {
+          toValue: 0,
+          delay: 500,
+          duration: 500,
+          easing: Easing.ease
+        }),
+      ]),
+      Animated.sequence([
+        Animated.timing(this.state.scale, {
+          toValue: 0.5,
+          delay: delay * i,
+          duration: 100,
+          easing: Easing.in(Easing.exp)
+        }),
+        Animated.timing(this.state.scale, {
+          toValue: 1,
+          delay: 100,
+          duration: 300,
+          easing: Easing.in(Easing.exp)
+        }),
+      ]).start()
     ]).start();
   }
 
@@ -53,9 +76,9 @@ class Heart extends Component {
         key={key}
         style={[styles.aniHeart,
           { transform: [
+            { scale: this.state.scale },
             { translateY: this.state.yVal },
             { translateX: this.state.xVal },
-            { scale: this.state.scale }
           ],
           opacity: this.state.opacity
         }]}
@@ -71,7 +94,8 @@ export default Heart;
 styles = StyleSheet.create({
   aniHeart: {
     position: 'absolute',
-    bottom: 50,
+    fontSize: 12 * 2,
+    bottom: 40,
     backgroundColor: 'transparent'
   },
 });

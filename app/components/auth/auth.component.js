@@ -59,11 +59,15 @@ class Auth extends Component {
     if (this.slides.length) {
       this.slides.forEach((slide, i) => {
         let active = false;
+
+
         if (this.state.currentIndex) {
           if (this.state.currentIndex[i]) active = true;
+          if (this.state.visible && this.state.visible[i]) active = false;
         } else {
           if (i === 0) active = true;
         }
+
         indicator.push(<TouchableWithoutFeedback onPress={() => this.scrollToPage(i)} key={i} >
           <View style={[styles.indicatorItem, { backgroundColor: active ? 'black' : 'white' }]} />
         </TouchableWithoutFeedback>);
@@ -72,10 +76,11 @@ class Auth extends Component {
     return indicator;
   }
 
-  changeRow(event) {
-    if (!event) return;
-    if (!event.s1) return;
-    this.setState({ currentIndex: event.s1 });
+  changeRow(event, changed) {
+    if (event && event.s1) {
+      this.setState({ currentIndex: event.s1 });
+    }
+    if (changed && changed.s1) this.setState({ visible: changed.s1 });
   }
 
   scrollToPage(index) {
@@ -83,14 +88,30 @@ class Auth extends Component {
     this.listview.scrollTo({ x: num, animated: true });
   }
 
-  renderRow(data, i) {
-    return (<View key={i} style={styles.authSlide}>
-      <Text style={{ fontFamily: 'Georgia', fontSize: 26 }}>
-        <Text style={styles.strokeText}>Relevant</Text>
-        &nbsp;is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt
-        &nbsp;<Text style={styles.strokeText}>labore et</Text> dolore magna aliqua ad minim.
-      </Text>
-    </View>);
+  renderRow(data, section, i) {
+    // <View style={{ height: 24, width: 115 }}><Text style={[styles.strokeText, styles.adjust]}>Relevant</Text></View>&nbsp;
+
+    switch (i) {
+      case '0':
+        return (<View key={i} style={styles.authSlide}>
+          <Text style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
+            Find <Text style={[styles.strokeText, styles.adjust]}>information</Text> relevant to <Text style={[styles.strokeText, styles.adjust]}>you</Text>. No algorithms, no editors, just news.
+          </Text>
+        </View>);
+      case '1':
+        return (<View key={i} style={styles.authSlide}>
+          <Text style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
+            Post <Text style={[styles.strokeText, styles.adjust]}>instightful</Text> commentary and watch your <Text style={[styles.strokeText, styles.adjust]}>relevance</Text> rise.
+          </Text>
+        </View>);
+      case '2':
+        return (<View key={i} style={styles.authSlide}>
+          <Text style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
+            <Text style={[styles.strokeText, styles.adjust]}>Invest</Text> in relevant posts to curate <Text style={[styles.strokeText, styles.adjust]}>your</Text> feed and watch your <Text style={[styles.strokeText, styles.adjust]}></Text>money grow.
+          </Text>
+        </View>);
+      default: return <View key={i} style={styles.authSlide} />;
+    }
   }
 
   render() {
@@ -106,8 +127,9 @@ class Auth extends Component {
         <View style={styles.logoContainer}>
           <Image source={require('../../assets/images/logo.png')} resizeMode={'contain'} style={styles.authLogo} />
         </View>
-
-        <View style={styles.authDivider} />
+        <View style={styles.authPadding}>
+          <View style={styles.authDivider} />
+        </View>
 
         <ListView
           horizontal
@@ -116,7 +138,7 @@ class Auth extends Component {
           decelerationRate={'fast'}
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
-          snapToInterval={(fullWidth - 20)}
+          snapToInterval={(fullWidth)}
           contentContainerStyle={styles.authSlidesParent}
           onChangeVisibleRows={this.changeRow}
           renderRow={this.renderRow}
@@ -128,31 +150,44 @@ class Auth extends Component {
           {this.renderIndicator()}
         </View>
 
-        <TouchableHighlight
-          onPress={this.signup}
-          style={styles.largeButton}
-          underlayColor={'transparent'}
-        >
-          <Text style={styles.largeButtonText}>
-            Sign Up Now
-          </Text>
-        </TouchableHighlight>
+        <View style={styles.authPadding}>
+          <TouchableHighlight
+            onPress={this.signup}
+            style={styles.largeButton}
+            underlayColor={'transparent'}
+          >
+            <Text style={styles.largeButtonText}>
+              Sign Up Now
+            </Text>
+          </TouchableHighlight>
 
-        <TouchableHighlight
-          style={{}}
-          onPress={this.login}
-          underlayColor={'transparent'}
-        >
-          <Text style={styles.signInText}>
-            Already have an account? <Text style={{ color: '#3E3EFF' }}>Sign In.</Text>
-          </Text>
-        </TouchableHighlight>
+          <TouchableHighlight
+            style={{}}
+            onPress={this.login}
+            underlayColor={'transparent'}
+          >
+            <Text style={styles.signInText}>
+              Already have an account? <Text style={{ color: '#3E3EFF' }}>Sign In.</Text>
+            </Text>
+          </TouchableHighlight>
+        </View>
       </View>
     );
   }
 }
 
 const localStyles = StyleSheet.create({
+  adjust: {
+    fontSize: 26,
+    // paddingBottom: -10,
+    // marginTop: 10,
+    // height: 30,
+    // flex: 1,
+    // flexDirection: 'row',
+    // alignItems: 'center',
+    // backgroundColor: 'blue',
+    // textAlign: 'baseline'
+  },
   authSlidesParent: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -160,8 +195,9 @@ const localStyles = StyleSheet.create({
     justifyContent: 'flex-start'
   },
   authSlide: {
+    // paddingHorizontal: 10,
     width: (fullWidth - 40),
-    marginRight: 20,
+    marginHorizontal: 20,
   },
   indicatorParent: {
     flexDirection: 'row',
@@ -189,13 +225,13 @@ const localStyles = StyleSheet.create({
   },
   logoContainer: {
     marginTop: 10,
-    flex: 0.25,
+    height: 90,
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
   },
   authLogo: {
-    width: fullWidth * 0.8,
+    width: fullWidth - 40,
     flex: 1,
   },
   authParent: {
@@ -204,8 +240,11 @@ const localStyles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'stretch',
-    padding: 20
+    paddingVertical: 20
   },
+  authPadding: {
+    paddingHorizontal: 20,
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };
