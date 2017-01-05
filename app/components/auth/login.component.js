@@ -5,9 +5,7 @@ import {
   TextInput,
   TouchableHighlight,
   AlertIOS,
-  Dimensions,
   StyleSheet,
-  Keyboard,
   ScrollView,
   KeyboardAvoidingView
 } from 'react-native';
@@ -52,6 +50,8 @@ class Login extends Component {
       AlertIOS.alert('must enter password');
       return;
     }
+    this.userInput.blur();
+    this.passInput.blur();
 
     this.props.actions.loginUser({ name: self.state.username, password: self.state.password });
   }
@@ -79,6 +79,7 @@ class Login extends Component {
 
             <View style={styles.fieldsInputParent}>
               <TextInput
+                ref={c => this.userInput = c}
                 autoCorrect={false}
                 autoCapitalize={'none'}
                 // keyboardType={'email-address'}
@@ -92,6 +93,7 @@ class Login extends Component {
 
             <View style={styles.fieldsInputParent}>
               <TextInput
+                ref={c => this.passInput = c}
                 autoCapitalize={'none'}
                 autoCorrect={false}
                 secureTextEntry

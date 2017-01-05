@@ -80,12 +80,12 @@ class Application extends Component {
       this.props.actions.getNotificationCount();
       this.props.actions.changeTab('read');
       this.props.actions.resetRoutes();
+
       this.props.actions.replaceRoute({
         key: 'tabBars',
         component: 'tabBars',
         header: false
       }, 0, 'home');
-      // this.props.actions.resetRoutes('home');
     }
 
     if (!this.props.error.universal && next.error.universal) {

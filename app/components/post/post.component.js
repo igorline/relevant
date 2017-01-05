@@ -141,8 +141,8 @@ const localStyles = StyleSheet.create({
     paddingRight: 10,
   },
   postContainer: {
-    paddingBottom: 25,
-    paddingTop: 15,
+    paddingBottom: 30,
+    paddingTop: 20,
     backgroundColor: 'white',
   },
   tagsRow: {
