@@ -12,6 +12,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { globalStyles, fullHeight, fullWidth } from '../../styles/global';
+import dismissKeyboard from 'react-native-dismiss-keyboard';
 
 let localStyles;
 let styles;
@@ -149,6 +150,7 @@ class SignUp extends Component {
     }
     this.props.actions.setPreUser(user);
     console.log('saving pre user ', user);
+    dismissKeyboard();
     this.props.actions.push({
       key: 'imageUpload',
       title: 'image',
@@ -186,7 +188,7 @@ class SignUp extends Component {
         style={{ height: fullHeight - 60 }}
       >
         <ScrollView
-          keyboardShouldPersistTaps
+          keyboardShouldPersistTaps={true}
           keyboardDismissMode={'interactive'}
           scrollEnabled={false}
           contentContainerStyle={styles.fieldsParent}

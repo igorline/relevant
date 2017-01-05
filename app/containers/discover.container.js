@@ -24,6 +24,7 @@ import { globalStyles } from '../styles/global';
 import ErrorComponent from '../components/error.component';
 import CustomListView from '../components/customList.component';
 import EmptyList from '../components/emptyList.component';
+import dismissKeyboard from 'react-native-dismiss-keyboard';
 
 let styles;
 const POST_PAGE_SIZE = 5;
@@ -86,6 +87,7 @@ class Discover extends Component {
   onScroll(event) {
     const currentOffset = event.nativeEvent.contentOffset.y;
     let showHeader = null;
+    dismissKeyboard();
     if (currentOffset !== this.offset) showHeader = currentOffset < this.offset;
     if (currentOffset < 50) showHeader = true;
     if (showHeader != null && showHeader !== this.state.showHeader) {
