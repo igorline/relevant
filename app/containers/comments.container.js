@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
-const UIManager = require('NativeModules').UIManager;
 import {
   KeyboardAvoidingView,
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableHighlight,
   Dimensions,
   InteractionManager,
   ListView,
   RefreshControl,
-  AlertIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

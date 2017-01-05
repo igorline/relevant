@@ -66,7 +66,7 @@ export default function (props) {
     } else if (post.body) {
       postTitle = post.body.substring(0, 20);
     }
-    
+
     if (post._id) postId = post._id;
   }
 
@@ -89,7 +89,7 @@ export default function (props) {
       >
         {`${investorName} invested $${investment.amount} in `}
         <Text
-          style={{}}
+          style={styles.bold}
           onPress={() => setSelected(investment.poster)}
         >
           {`${posterName}'s `}
@@ -97,7 +97,7 @@ export default function (props) {
         post
         <Text
           onPress={postId ? () => goToPost(investment.post) : null}
-          style={{ fontStyle: 'italic' }}
+          style={[{ fontStyle: 'italic' }, styles.bold]}
         >
           &nbsp;{postTitle}
         </Text>
