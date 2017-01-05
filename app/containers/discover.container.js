@@ -31,7 +31,7 @@ class Discover extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      headerHeight: 138,
+      headerHeight: 50,
       showHeader: true,
       view: 0,
     };
@@ -104,7 +104,6 @@ class Discover extends Component {
 
   changeView(view) {
     if (view === this.props.view.discover) this.scrollToTop();
-    // this.setState({ view });
     this.props.actions.setView('discover', view);
   }
 
@@ -183,7 +182,6 @@ class Discover extends Component {
           YOffset={this.state.headerHeight}
           onScroll={this.onScroll}
           needsReload={this.needsReload}
-          // renderSeparator={this.renderSeparator}
         />
       );
     });
@@ -206,7 +204,7 @@ class Discover extends Component {
     }
 
     return (
-      <View style={[styles.fullContainer, { backgroundColor: 'hsl(0,0%,90%)' }]}>
+      <View style={{ backgroundColor: 'hsl(0,0%,90%)', flex: 1 }}>
         {dataEl}
         {headerEl}
         <ErrorComponent parent={'discover'} reloadFunction={this.load} />

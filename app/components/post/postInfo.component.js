@@ -8,8 +8,10 @@ import {
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import UserName from '../userNameSmall.component';
-
 import { globalStyles } from '../../styles/global';
+
+let ToolTip = require('react-native-tooltip');
+
 let styles;
 let moment = require('moment');
 
@@ -26,6 +28,7 @@ class PostInfo extends Component {
       timePassedPercent: 0,
       time: 0,
       posted: null,
+      input: null
     };
   }
 
@@ -126,7 +129,14 @@ class PostInfo extends Component {
         </Text>
       </View>);
     } else {
-      postInfo = (
+      postInfo = (<ToolTip
+        ref={(tooltip) => { this.tooltip = tooltip; }}
+        actions={[
+          { text: 'Post value revealed 6 hours after creation' }
+        ]}
+        underlayColor={'transparent'}
+        arrowDirection={'down'}
+      >
         <View style={[styles.countdown]}>
           <Progress.Pie
             style={styles.progressCirc}
@@ -137,9 +147,10 @@ class PostInfo extends Component {
           <Text
             style={[styles.font17, styles.textRight, styles.darkGray, styles.bebas]}
           >
-            Results in {this.state.timeUntilString}
+            {this.state.timeUntilString}
           </Text>
-        </View>);
+        </View>
+      </ToolTip>);
     }
 
     return (<View style={styles.postHeader}>

@@ -33,6 +33,7 @@
     "react-native-share-menu": "^1.1.4",
     "react-native-svg": "4.3.1",
     "react-native-textinput-utils": "^0.3.0",
+    "react-native-tooltip": "^4.1.0",
     "react-native-user-defaults": "^0.1.4",
     "react-redux": "^4.4.1",
     "react-router": "^2.0.1",
