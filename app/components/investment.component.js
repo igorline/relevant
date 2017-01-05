@@ -89,7 +89,7 @@ export default function (props) {
       >
         {`${investorName} invested $${investment.amount} in `}
         <Text
-          style={styles.bold}
+          style={styles.active}
           onPress={() => setSelected(investment.poster)}
         >
           {`${posterName}'s `}
@@ -97,7 +97,7 @@ export default function (props) {
         post
         <Text
           onPress={postId ? () => goToPost(investment.post) : null}
-          style={[{ fontStyle: 'italic' }, styles.bold]}
+          style={[{ fontStyle: 'italic' }, styles.active]}
         >
           &nbsp;{postTitle}
         </Text>

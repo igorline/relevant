@@ -262,7 +262,7 @@ const localStyles = StyleSheet.create({
     paddingBottom: 10,
   },
   commentContainer: {
-    padding: 20,
+    padding: 15,
   },
   commentAvatar: {
     height: 25,

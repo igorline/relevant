@@ -79,18 +79,6 @@ export default function post(state = initialState, action) {
       const type = action.payload.type;
 
       // console.log(action.payload.data);
-
-      // if (!action.payload.data.result[type].length) {
-      //   console.log('no more')
-      //   return {
-      //     ...state,
-      //     loaded: {
-      //       ...state.loaded,
-      //       [type]: true
-      //     }
-      //   };
-      // }
-
       return {
         ...state,
         [type]: [
