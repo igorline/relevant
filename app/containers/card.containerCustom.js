@@ -17,6 +17,7 @@ import Profile from './profile.container';
 
 import Card from './../components/nav/card.component';
 import * as navigationActions from '../actions/navigation.actions';
+import * as tagActions from '../actions/tag.actions';
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
@@ -134,7 +135,8 @@ function mapStateToProps(state) {
   return {
     navigation: state.navigation,
     auth: state.auth,
-    users: state.user
+    users: state.user,
+    tags: state.tags,
   };
 }
 
@@ -142,7 +144,8 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       {
-        ...navigationActions
+        ...navigationActions,
+        ...tagActions,
       }, dispatch),
   };
 }
