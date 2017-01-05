@@ -56,7 +56,7 @@ export function deselectTag(tag) {
 
 export function searchTags(tag) {
   return (dispatch) => {
-
+    console.log(tag, 'tag');
     if (!tag || tag === '') {
       return dispatch(setDiscoverTags([]));
     }
