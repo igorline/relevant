@@ -6,36 +6,35 @@ import {
   View,
   Image,
   Animated,
-  TouchableWithoutFeedback,
   TextInput,
 } from 'react-native';
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as tagActions from '../../actions/tag.actions';
 import { abbreviateNumber } from '../../utils';
 import { globalStyles } from '../../styles/global';
 
 let styles;
 
 class CardHeader extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.state = {
       search: false
     };
-    this.renderHeader = this.renderHeader.bind(this);
     this.renderTitle = this.renderTitle.bind(this);
     this.renderLeft = this.renderLeft.bind(this);
     this.renderRight = this.renderRight.bind(this);
     this.close = this.close.bind(this);
     this.search = this.search.bind(this);
+    this.input = null;
+    this.searchTerm = '';
   }
 
   search(term) {
-    // console.log(this, 'search this')
-    // if (term && term.length > 1) {
-    //   this.props.actions.searchTags(term);
-    // }
-    // else this.props.actions.searchTags(null);
+    if (term && term.length > 1) this.props.actions.searchTags(term);
+    else this.props.actions.searchTags(null);
   }
 
   close() {
@@ -44,12 +43,10 @@ class CardHeader extends Component {
     this.input.clear();
   }
 
-
-  renderLeft(props) {
-    console.log(props, 'left props');
+  renderLeft() {
     let leftEl = <View style={styles.leftButton} />;
 
-    if (props.scene.route.back) {
+    if (this.props.scene.route.back) {
       let backArrow = <Text style={{ padding: 10, marginLeft: -10 }}>◀</Text>;
 
       return (<TouchableHighlight
@@ -64,12 +61,12 @@ class CardHeader extends Component {
             styles.leftButtonText,
           ]}
         >
-          {props.scene.route.left || backArrow}
+          {this.props.scene.route.left || backArrow}
         </Text>
       </TouchableHighlight>);
     }
 
-    if (props.scene.route.title === 'Discover') {
+    if (this.props.scene.route.title === 'Discover') {
       leftEl = (<View style={styles.leftButton} >
         <TouchableHighlight
           underlayColor={'transparent'}
@@ -98,13 +95,13 @@ class CardHeader extends Component {
           </View>
           <View style={{ flex: 1, paddingVertical: 10 }}>
             <TextInput
-              ref={c => this.input = c}
+              ref={(input) => { this.input = input; }}
               onSubmitEditing={this.search}
               style={[styles.searchInput, styles.font15]}
               placeholder={'Search'}
               multiline={false}
-              onChangeText={term => this.search(term)}
-              varlue={this.searchTerm}
+              onChangeText={(term) => { this.search(term); this.searchTerm = term; }}
+              value={this.searchTerm}
               returnKeyType="done"
               clearTextOnFocus
             />
@@ -124,10 +121,10 @@ class CardHeader extends Component {
     return leftEl;
   }
 
-  renderTitle(props) {
+  renderTitle() {
     if (this.state.search) return null;
-    let title = props.scene.route ? props.scene.route.title : '';
-    let component = props.scene.route.component;
+    let title = this.props.scene.route ? this.props.scene.route.title : '';
+    let component = this.props.scene.route.component;
 
     if (title === 'Profile' && this.props.auth.user) {
       title = this.props.auth.user.name;
@@ -159,7 +156,7 @@ class CardHeader extends Component {
     );
   }
 
-  renderRight(props) {
+  renderRight() {
     if (this.state.search) return null;
     let statsEl = null;
     let relevance = 0;
@@ -208,7 +205,7 @@ class CardHeader extends Component {
       );
     }
 
-    if (props.scene.route.component === 'profile' && props.scene.route.id !== this.props.auth.user._id) {
+    if (this.props.scene.route.component === 'profile' && this.props.scene.route.id !== this.props.auth.user._id) {
       rightEl = null;
       // rightEl = (
       //   <View style={styles.gear}>
@@ -224,27 +221,21 @@ class CardHeader extends Component {
     return <View style={styles.rightButton}>{rightEl}</View>;
   }
 
-
-  renderHeader(props, headerStyle) {
-    let style = [styles.header, headerStyle];
+  render() {
+    let style = [styles.header, this.props.style];
     if (this.props.share) {
-      style = [styles.header, styles.shareHeader, headerStyle];
+      style = [styles.header, styles.shareHeader, this.props.style];
     }
 
     return (
       <Animated.View
-        style={[headerStyle, style]}
+        style={[this.props.style, style]}
       >
-        {this.renderLeft(props)}
-        {this.renderTitle(props)}
-        {this.props.renderRight ? this.props.renderRight(props) : this.renderRight(props)}
+        {this.renderLeft()}
+        {this.renderTitle()}
+        {this.props.renderRight ? this.props.renderRight() : this.renderRight()}
       </Animated.View>
-
     );
-  }
-
-  render() {
-    return this.renderHeader(this.props, this.props.style);
   }
 }
 
@@ -306,4 +297,32 @@ const localStyles = StyleSheet.create({
 
 styles = { ...localStyles, ...globalStyles };
 
-export default CardHeader;
+// export default CardHeader;
+
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    posts: state.posts,
+    animation: state.animation,
+    view: state.view,
+    stats: state.stats,
+    userList: state.user.list,
+    tags: state.tags,
+    error: state.error.discover,
+    refresh: state.navigation.discover.refresh,
+    reload: state.navigation.discover.reload,
+    tabs: state.navigation.tabs,
+    nav: state.navigation.discover,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(
+      {
+        ...tagActions,
+      }, dispatch),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CardHeader);

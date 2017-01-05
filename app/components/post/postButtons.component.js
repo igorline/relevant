@@ -204,7 +204,11 @@ class PostButtons extends Component {
   
   goToPost() {
     if (this.props.scene) {
-      if (this.props.scene.route.id === this.props.post._id) return;
+      if (this.props.scene.route) {
+        if (this.props.scene.route.id) {
+          if (this.props.scene.route.id === this.props.post._id) return;
+        }
+      }
     }
     this.props.navigator.goToPost(this.props.post);
   }
