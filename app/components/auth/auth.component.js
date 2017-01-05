@@ -5,9 +5,7 @@ import {
   View,
   Dimensions,
   TouchableHighlight,
-  Keyboard,
   Image,
-  ScrollView,
   TouchableWithoutFeedback,
   ListView
 } from 'react-native';
@@ -35,6 +33,10 @@ class Auth extends Component {
     this.renderRow = this.renderRow.bind(this);
   }
 
+  componentDidMount() {
+    setTimeout(() => this.setState({ changed: [false, false, false] }), 100);
+  }
+
   login() {
     this.props.actions.push({
       key: 'login',
@@ -60,13 +62,11 @@ class Auth extends Component {
       this.slides.forEach((slide, i) => {
         let active = false;
 
-
         if (this.state.currentIndex) {
           if (this.state.currentIndex[i]) active = true;
-          if (this.state.visible && this.state.visible[i]) active = false;
-        } else {
-          if (i === 0) active = true;
-        }
+          if (this.state.changed && this.state.changed[i]) active = false;
+          if (i === 0 && this.state.currentIndex[0] && !this.state.currentIndex[1]) active = true;
+        } else if (i === 0) active = true;
 
         indicator.push(<TouchableWithoutFeedback onPress={() => this.scrollToPage(i)} key={i} >
           <View style={[styles.indicatorItem, { backgroundColor: active ? 'black' : 'white' }]} />
@@ -77,10 +77,8 @@ class Auth extends Component {
   }
 
   changeRow(event, changed) {
-    if (event && event.s1) {
-      this.setState({ currentIndex: event.s1 });
-    }
-    if (changed && changed.s1) this.setState({ visible: changed.s1 });
+    if (event && event.s1) this.setState({ currentIndex: event.s1 });
+    if (changed && changed.s1) this.setState({ changed: changed.s1 });
   }
 
   scrollToPage(index) {

@@ -60,8 +60,8 @@ class Heart extends Component {
         Animated.timing(this.state.scale, {
           toValue: 1,
           delay: 100,
-          duration: 300,
-          easing: Easing.in(Easing.exp)
+          duration: 500,
+          easing: Easing.ease
         }),
       ]).start()
     ]).start();
