@@ -5,8 +5,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as animationActions from '../actions/animation.actions';
-import { globalStyles } from '../styles/global';
+import * as animationActions from '../../actions/animation.actions';
+import { globalStyles } from '../../styles/global';
 import Dollar from './dollar.component';
 
 const localStyles = StyleSheet.create({
@@ -31,14 +31,9 @@ class InvestAnimation extends Component {
     };
   }
 
-  componentDidUpdate(prev) {
-    if (this.props.animation !== prev.animation) {
-      if (this.props.animation.bool && this.props.animation.run) {
-        if (this.props.animation.type === 'invest') {
-          this.enabled = true;
-          this.investAni();
-        }
-      }
+  componentWillUpdate(next) {
+    if (this.props.animation.invest !== next.animation.invest) {
+      this.investAni();
     }
   }
 
@@ -47,12 +42,10 @@ class InvestAnimation extends Component {
   }
 
   clearEls() {
-    this.enabled = false;
     if (this.state.num > 0) this.setState({ num: 0, investAni: [] });
   }
 
   investAni() {
-    if (!this.enabled) return;
     if (this.state.num < 20) {
       let newArr = this.state.investAni;
       newArr.push(<Dollar key={this.state.num} specialKey={this.state.num} />);

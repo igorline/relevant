@@ -32,9 +32,10 @@ class Discover extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      headerHeight: 138,
+      headerHeight: 50,
       showHeader: true,
       view: 0,
+      offsetY: 0,
     };
     this.onScroll = this.onScroll.bind(this);
     this.renderRow = this.renderRow.bind(this);
@@ -49,6 +50,7 @@ class Discover extends Component {
       { id: 1, title: 'Top', type: 'top' },
       { id: 2, title: 'People', type: 'people' },
     ];
+    this.lastOffset = -50;
   }
 
   componentWillReceiveProps(next) {
@@ -84,14 +86,7 @@ class Discover extends Component {
   }
 
   onScroll(event) {
-    const currentOffset = event.nativeEvent.contentOffset.y;
-    let showHeader = null;
-    if (currentOffset !== this.offset) showHeader = currentOffset < this.offset;
-    if (currentOffset < 50) showHeader = true;
-    if (showHeader != null && showHeader !== this.state.showHeader) {
-      this.setState({ showHeader });
-    }
-    this.offset = currentOffset;
+    this.header.onScroll(event);
   }
 
   setPostTop(height) {
@@ -105,7 +100,6 @@ class Discover extends Component {
 
   changeView(view) {
     if (view === this.props.view.discover) this.scrollToTop();
-    // this.setState({ view });
     this.props.actions.setView('discover', view);
   }
 
@@ -184,13 +178,14 @@ class Discover extends Component {
           YOffset={this.state.headerHeight}
           onScroll={this.onScroll}
           needsReload={this.needsReload}
-          // renderSeparator={this.renderSeparator}
         />
       );
     });
 
     let headerEl = (<DiscoverHeader
+      ref={(c => this.header = c)}
       triggerReload={this.scrollToTop}
+      offsetY={this.state.offsetY}
       showHeader={this.state.showHeader}
       tags={this.props.tags}
       posts={this.props.posts}
@@ -207,7 +202,7 @@ class Discover extends Component {
     }
 
     return (
-      <View style={[styles.fullContainer, { backgroundColor: 'hsl(0,0%,90%)' }]}>
+      <View style={{ backgroundColor: 'hsl(0,0%,90%)', flex: 1 }}>
         {dataEl}
         {headerEl}
         <ErrorComponent parent={'discover'} reloadFunction={this.load} />
