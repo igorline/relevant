@@ -4,7 +4,7 @@ import {
   Animated,
   Easing
 } from 'react-native';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { fullWidth, fullHeight } from '../../styles/global';
 
 let styles;
 

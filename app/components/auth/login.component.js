@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView
 } from 'react-native';
 import { globalStyles, fullHeight, fullWidth } from '../../styles/global';
+import dismissKeyboard from 'react-native-dismiss-keyboard';
 
 let localStyles;
 let styles;
@@ -52,7 +53,7 @@ class Login extends Component {
     }
     this.userInput.blur();
     this.passInput.blur();
-
+    dismissKeyboard();
     this.props.actions.loginUser({ name: self.state.username, password: self.state.password });
   }
 

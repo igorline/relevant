@@ -8,8 +8,11 @@ import {
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import UserName from '../userNameSmall.component';
-
 import { globalStyles } from '../../styles/global';
+import { numbers } from '../../utils';
+
+let ToolTip = require('react-native-tooltip');
+
 let styles;
 let moment = require('moment');
 
@@ -17,7 +20,6 @@ class PostInfo extends Component {
   constructor(props, context) {
     super(props, context);
     this.setTag = this.setTag.bind(this);
-    this.abbreviateNumber = this.abbreviateNumber.bind(this);
     this.setSelected = this.setSelected.bind(this);
     this.state = {
       passed: false,
@@ -26,6 +28,7 @@ class PostInfo extends Component {
       timePassedPercent: 0,
       time: 0,
       posted: null,
+      input: null
     };
   }
 
@@ -46,20 +49,6 @@ class PostInfo extends Component {
       name: this.props.post.embeddedUser.name,
       _id: this.props.post.user
     });
-  }
-
-  abbreviateNumber(num) {
-    let fixed = 0;
-    if (num === null) { return null; };
-    if (num === 0) { return '0'; };
-    if (typeof num !== 'number') num = Number(num);
-    fixed = (!fixed || fixed < 0) ? 0 : fixed;
-    let b = (num).toPrecision(2).split('e');
-    let k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3);
-    let c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, k * 3)).toFixed(1 + fixed);
-    let d = c < 0 ? c : Math.abs(c);
-    let e = d + ['', 'K', 'M', 'B', 'T'][k];
-    return e;
   }
 
   checkTime() {
@@ -86,7 +75,7 @@ class PostInfo extends Component {
     let postInfo = null;
     let post = null;
     let relevance = 0;
-    let value = null;
+    let value = 0;
     let postUser;
     let name;
 
@@ -112,7 +101,7 @@ class PostInfo extends Component {
             { marginRight: 5 }
           ]}
         >
-          💵 {this.abbreviateNumber(value)}
+          💵 {numbers.abbreviateNumber(value)}
         </Text>
         <Text
           style={[
@@ -122,11 +111,18 @@ class PostInfo extends Component {
             styles.halfLetterSpacing
           ]}
         >
-          📈 {this.abbreviateNumber(relevance)}
+          📈 {numbers.abbreviateNumber(relevance)}
         </Text>
       </View>);
     } else {
-      postInfo = (
+      postInfo = (<ToolTip
+        ref={(tooltip) => { this.tooltip = tooltip; }}
+        actions={[
+          { text: 'Post value revealed 6 hours after creation' }
+        ]}
+        underlayColor={'transparent'}
+        arrowDirection={'down'}
+      >
         <View style={[styles.countdown]}>
           <Progress.Pie
             style={styles.progressCirc}
@@ -137,9 +133,10 @@ class PostInfo extends Component {
           <Text
             style={[styles.font17, styles.textRight, styles.darkGray, styles.bebas]}
           >
-            Results in {this.state.timeUntilString}
+            {this.state.timeUntilString}
           </Text>
-        </View>);
+        </View>
+      </ToolTip>);
     }
 
     return (<View style={styles.postHeader}>

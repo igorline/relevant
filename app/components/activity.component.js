@@ -27,8 +27,8 @@ export default function (props) {
     } else if (singleActivity.post.body) {
       postTitle = singleActivity.post.body.substring(0, 20);
     }
+    singleActivity.post.title = postTitle;
   }
-  singleActivity.post.title = postTitle;
 
   let setSelected = (user) => {
     props.navigator.goToProfile(user);
@@ -50,12 +50,14 @@ export default function (props) {
   };
 
   let renderName = (user) => {
+    if (!user) return null;
     return (<Text style={styles.link} onPress={() => setSelected(user)}>
       {user.name}
     </Text>);
   };
 
   let renderPost = (post) => {
+    if (!post) return null;
     return (<Text
       onPress={() => goToPost(post)}
       style={[styles.link, { fontStyle: 'italic' }]}
@@ -65,6 +67,7 @@ export default function (props) {
   };
 
   let renderImage = (user) => {
+    if (!user) return null;
     let image = (
       <TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
         <Image style={styles.activityImage} source={require('../assets/images/default_user.jpg')} />
