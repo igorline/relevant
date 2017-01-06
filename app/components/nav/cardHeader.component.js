@@ -29,7 +29,7 @@ class CardHeader extends Component {
   toggleSearch() {
     this.setState({ search: !this.state.search });
   }
-  
+
   renderLeft(props) {
     let leftEl = <View style={styles.leftButton} />;
 
@@ -58,7 +58,7 @@ class CardHeader extends Component {
       leftEl.push(<View key={0} style={[styles.leftButton, { flex: this.state.search ? 0.05 : 1 }]} >
         <TouchableHighlight
           underlayColor={'transparent'}
-          onPress={() => this.toggleSearch() }
+          onPress={() => this.toggleSearch()}
         >
           <Image
             resizeMode={'contain'}
