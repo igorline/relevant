@@ -4,7 +4,7 @@ import {
   Animated,
   Easing
 } from 'react-native';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { fullHeight } from '../../styles/global';
 
 let styles;
 
@@ -25,7 +25,7 @@ class Heart extends Component {
 
     Animated.parallel([
       Animated.timing(this.state.yVal, {
-        toValue: -400,
+        toValue: -fullHeight / 1.5,
         delay: delay * i,
         duration: 1000,
         easing: Easing.quad
@@ -38,17 +38,17 @@ class Heart extends Component {
       }),
       Animated.sequence([
         Animated.timing(this.state.xVal, {
-          toValue: (Math.random() - 0.5) * 20,
+          toValue: (Math.random() - 0.5) * 40,
           delay: delay * i,
-          duration: 500,
+          duration: 1000,
           easing: Easing.ease
         }),
-        Animated.timing(this.state.xVal, {
-          toValue: 0,
-          delay: 500,
-          duration: 500,
-          easing: Easing.ease
-        }),
+        // Animated.timing(this.state.xVal, {
+        //   toValue: (Math.random() - 0.5) * 20,
+        //   delay: 500,
+        //   duration: 500,
+        //   easing: Easing.in(Easing.quad)
+        // }),
       ]),
       Animated.sequence([
         Animated.timing(this.state.scale, {

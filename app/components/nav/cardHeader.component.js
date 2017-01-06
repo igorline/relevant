@@ -60,14 +60,18 @@ class CardHeader extends Component {
           underlayColor={'transparent'}
           onPress={() => this.toggleSearch()}
         >
-          <Image
-            resizeMode={'contain'}
-            source={require('../../assets/images/search.jpg')}
-            style={{ height: 20, width: 20 }}
-          />
+          <Text style={{ paddingBottom: 3 }}>🔎</Text>
         </TouchableHighlight>
       </View>);
-      if (this.state.search) leftEl.push(<Search key={1} toggleSearch={this.toggleSearch} {...this.props} />);
+      if (this.state.search) {
+        leftEl.push(
+          <Search
+            key={'search'}
+            toggleSearch={this.toggleSearch}
+            {...this.props}
+          />
+        );
+      }
     }
     return leftEl;
   }

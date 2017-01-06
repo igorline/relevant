@@ -27,6 +27,11 @@ export default class ActivityView extends Component {
     this.lastReload = 0;
     let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.tpmDataSource = ds.cloneWithRows([]);
+    this.showReload = false;
+  }
+
+  componentDidMount() {
+    this.showReload = true;
   }
 
   componentWillMount() {
@@ -42,7 +47,7 @@ export default class ActivityView extends Component {
   componentWillReceiveProps(next) {
     if (this.props.data !== next.data) {
       this.updateData(next.data);
-      this.setState({ reloading: false, loading: false });
+      setTimeout(() => this.setState({ reloading: false, loading: false }), 1000);
       if (!next.data.length) this.setState({ none: true });
     }
 
@@ -87,7 +92,7 @@ export default class ActivityView extends Component {
         removeClippedSubviews={false}
         pageSize={1}
         initialListSize={10}
-        scrollEventThrottle={16}
+        scrollEventThrottle={10}
         automaticallyAdjustContentInsets={false}
         stickyHeaderIndices={this.props.stickyHeaderIndices}
         dataSource={this.dataSource || this.tpmDataSource}
@@ -100,15 +105,14 @@ export default class ActivityView extends Component {
           width: fullWidth,
           backgroundColor: 'white'
         }}
-        keyboardShouldPersistTaps={true}
-        keyboardDismissMode={'interactive'}
+        keyboardDismissMode={'on-drag'}
         onScroll={this.props.onScroll}
         onEndReached={this.loadMore}
         onEndReachedThreshold={100}
         renderFooter={() => <View />}
         refreshControl={
           <RefreshControl
-            style={{ backgroundColor: 'hsl(0,0%,93%)' }}
+            style={[{ backgroundColor: 'hsl(238,20%,95%)' }, this.props.data.length ? null : styles.hideReload]}
             refreshing={this.state.reloading}
             onRefresh={this.reload}
             tintColor="#000000"
@@ -160,6 +164,9 @@ export default class ActivityView extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  hideReload: {
+    backgroundColor: 'white'
+  },
   vis: {
     flex: 1,
     width: fullWidth,

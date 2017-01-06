@@ -44,7 +44,7 @@ const font = StyleSheet.create({
     fontFamily: 'BebasNeueRelevantRegular',
     fontWeight: 'bold',
     letterSpacing: 0.15,
-    paddingVertical: 14,
+    paddingVertical: 13,
     flex: 1,
   },
   headerInner: {
@@ -57,7 +57,7 @@ const font = StyleSheet.create({
   },
   header: {
     height: 59,
-    paddingTop: 15,
+    paddingTop: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -441,7 +441,7 @@ const layout = StyleSheet.create({
     shadowColor: 'black',
     shadowOffset: { width: -0, height: .5 },
     shadowRadius: 1,
-    shadowOpacity: .2,
+    shadowOpacity: 0.2,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightGrey
   },
@@ -454,9 +454,18 @@ const layout = StyleSheet.create({
   darkGrey: {
     color: darkGrey
   },
+  // separator: {
+  //   height: 12,
+  //   backgroundColor: 'hsl(0,0%,93%)',
+  // }
   separator: {
     height: 12,
-    backgroundColor: 'hsl(0,0%,93%)',
+    // marginHorizontal: 20,
+    // marginVertical: 40,
+    // borderTopWidth: StyleSheet.hairlineWidth,
+    // borderColor: darkGrey,
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    backgroundColor: 'hsl(238,20%,95%)',
   }
 });
 
@@ -465,5 +474,6 @@ const globalStyles = { ...colors, ...font, ...alignment, ...layout, blue };
 export {
   globalStyles,
   fullWidth,
-  fullHeight
+  fullHeight,
+  blue,
 };

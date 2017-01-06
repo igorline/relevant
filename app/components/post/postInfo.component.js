@@ -9,6 +9,7 @@ import {
 import * as Progress from 'react-native-progress';
 import UserName from '../userNameSmall.component';
 import { globalStyles } from '../../styles/global';
+import { numbers } from '../../utils';
 
 let ToolTip = require('react-native-tooltip');
 
@@ -19,7 +20,6 @@ class PostInfo extends Component {
   constructor(props, context) {
     super(props, context);
     this.setTag = this.setTag.bind(this);
-    this.abbreviateNumber = this.abbreviateNumber.bind(this);
     this.setSelected = this.setSelected.bind(this);
     this.state = {
       passed: false,
@@ -51,20 +51,6 @@ class PostInfo extends Component {
     });
   }
 
-  abbreviateNumber(num) {
-    let fixed = 0;
-    if (num === null) { return null; };
-    if (num === 0) { return '0'; };
-    if (typeof num !== 'number') num = Number(num);
-    fixed = (!fixed || fixed < 0) ? 0 : fixed;
-    let b = (num).toPrecision(2).split('e');
-    let k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3);
-    let c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, k * 3)).toFixed(1 + fixed);
-    let d = c < 0 ? c : Math.abs(c);
-    let e = d + ['', 'K', 'M', 'B', 'T'][k];
-    return e;
-  }
-
   checkTime() {
     if (this.props.post) {
       let postTime = moment(this.props.post.createdAt);
@@ -89,7 +75,7 @@ class PostInfo extends Component {
     let postInfo = null;
     let post = null;
     let relevance = 0;
-    let value = null;
+    let value = 0;
     let postUser;
     let name;
 
@@ -115,7 +101,7 @@ class PostInfo extends Component {
             { marginRight: 5 }
           ]}
         >
-          💵 {this.abbreviateNumber(value)}
+          💵 {numbers.abbreviateNumber(value)}
         </Text>
         <Text
           style={[
@@ -125,7 +111,7 @@ class PostInfo extends Component {
             styles.halfLetterSpacing
           ]}
         >
-          📈 {this.abbreviateNumber(relevance)}
+          📈 {numbers.abbreviateNumber(relevance)}
         </Text>
       </View>);
     } else {

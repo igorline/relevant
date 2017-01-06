@@ -219,11 +219,11 @@ class PostButtons extends Component {
 
   irrelevant() {
     // this.props.actions.irrelevant(this.props.auth.token, this.props.post._id);
-    this.props.actions.invest(this.props.auth.token, -50, this.props.post, this.props.auth.user)
+    this.props.actions.invest(this.props.auth.token, -100, this.props.post, this.props.auth.user)
     .then((results) => {
       if (results) {
-        console.log('irrelevant!');
-        // this.props.actions.triggerAnimation('invest');
+        this.props.actions.triggerAnimation('invest');
+        this.props.actions.triggerAnimation('irrelevant');
       } else {
         console.log('irrelevant failed');
       }
