@@ -99,7 +99,7 @@ class Auth extends Component {
       case '1':
         return (<View key={i} style={styles.authSlide}>
           <Text style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
-            Post <Text style={[styles.strokeText, styles.adjust]}>instightful</Text> commentary and watch your <Text style={[styles.strokeText, styles.adjust]}>relevance</Text> rise.
+            Post <Text style={[styles.strokeText, styles.adjust]}>insightful</Text> commentary and watch your <Text style={[styles.strokeText, styles.adjust]}>relevance</Text> rise.
           </Text>
         </View>);
       case '2':
