@@ -13,8 +13,8 @@ import Auth from './auth.container';
 import CreatePostContainer from './createPost.container';
 import Footer from './footer.container';
 import ErrorContainer from './error.container';
-import InvestAnimation from '../components/investAnimation.component';
-import HeartAnimation from '../components/heartAnimation.component';
+import InvestAnimation from '../components/animations/investAnimation.component';
+import HeartAnimation from '../components/animations/heartAnimation.component';
 import StallScreen from '../components/stallScreen.component';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
@@ -29,6 +29,7 @@ import * as navigationActions from '../actions/navigation.actions';
 import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
 import Card from './../components/nav/card.component';
+import IrrelevantAnimation from '../components/animations/irrelevantAnimation.component';
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
@@ -275,6 +276,7 @@ class Application extends Component {
         />
         <InvestAnimation {...this.props} />
         <HeartAnimation />
+        <IrrelevantAnimation animation={this.props.animation.irrelevant} />
       </View>
     );
   }

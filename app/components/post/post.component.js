@@ -4,7 +4,7 @@ import {
   View,
   Text,
 } from 'react-native';
-import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
+import { globalStyles, blue } from '../../styles/global';
 import PostButtons from './postButtons.component';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
@@ -19,7 +19,12 @@ class Post extends Component {
     let post;
     let posts;
     let imageEl = null;
-    let separator = <View style={styles.separator} />;
+    let separator = <View style={[styles.separator]} />;
+
+    // let renderSeparator = () => {
+    //   let color = `hsl(${Math.round(Math.random() * 256)}, 30%, 95%)`;
+    //   return <View style={[styles.separator, { backgroundColor: color }]} />;
+    // }
 
     if (!this.props.auth.user) return null;
 
@@ -144,6 +149,15 @@ const localStyles = StyleSheet.create({
     paddingBottom: 30,
     paddingTop: 20,
     backgroundColor: 'white',
+
+    // borderTopColor: 'hsl(0,0%,95%)',
+    // borderTopWidth: 1,
+
+    // shadowColor: blue,
+    // shadowOffset: { width: 0, height: 0 },
+    // shadowRadius: 2,
+    // shadowOpacity: 0.3,
+    // zIndex: 1,
   },
   tagsRow: {
     flexDirection: 'row',

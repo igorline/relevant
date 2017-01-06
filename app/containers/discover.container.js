@@ -24,7 +24,6 @@ import { globalStyles } from '../styles/global';
 import ErrorComponent from '../components/error.component';
 import CustomListView from '../components/customList.component';
 import EmptyList from '../components/emptyList.component';
-import dismissKeyboard from 'react-native-dismiss-keyboard';
 
 let styles;
 const POST_PAGE_SIZE = 5;
@@ -36,6 +35,7 @@ class Discover extends Component {
       headerHeight: 50,
       showHeader: true,
       view: 0,
+      offsetY: 0,
     };
     this.onScroll = this.onScroll.bind(this);
     this.renderRow = this.renderRow.bind(this);
@@ -50,6 +50,7 @@ class Discover extends Component {
       { id: 1, title: 'Top', type: 'top' },
       { id: 2, title: 'People', type: 'people' },
     ];
+    this.lastOffset = -50;
   }
 
   componentWillReceiveProps(next) {
@@ -85,14 +86,7 @@ class Discover extends Component {
   }
 
   onScroll(event) {
-    const currentOffset = event.nativeEvent.contentOffset.y;
-    let showHeader = null;
-    if (currentOffset !== this.offset) showHeader = currentOffset < this.offset;
-    if (currentOffset < 50) showHeader = true;
-    if (showHeader != null && showHeader !== this.state.showHeader) {
-      this.setState({ showHeader });
-    }
-    this.offset = currentOffset;
+    this.header.onScroll(event);
   }
 
   setPostTop(height) {
@@ -189,7 +183,9 @@ class Discover extends Component {
     });
 
     let headerEl = (<DiscoverHeader
+      ref={(c => this.header = c)}
       triggerReload={this.scrollToTop}
+      offsetY={this.state.offsetY}
       showHeader={this.state.showHeader}
       tags={this.props.tags}
       posts={this.props.posts}

@@ -3,8 +3,7 @@ import {
   StyleSheet,
   View,
   Animated,
-  TextInput,
-  Text,
+  Easing,
 } from 'react-native';
 import { globalStyles, fullWidth } from '../styles/global';
 import Tags from './tags.component';
@@ -18,43 +17,81 @@ export default class DiscoverHeader extends Component {
     this.state = {
       searchTerm: null,
       transY: new Animated.Value(0),
+      offsetY: new Animated.Value(0),
     };
-    this.headerHeight = 134;
+    this.headerHeight = 50;
+    this.lastOffset = -50;
+    this.onScroll = this.onScroll.bind(this);
   }
 
-  componentDidMount() {
-    if (this.props.showHeader) this.showHeader();
-  }
+  // componentDidMount() {
+  //   // if (this.props.showHeader) this.showHeader();
+  // }
 
-  componentWillReceiveProps(next) {
-    if (this.props.showHeader !== next.showHeader) {
-      if (next.showHeader) this.showHeader();
-      else this.hideHeader();
+  // componentWillReceiveProps(next) {
+  //   // if (this.props.showHeader !== next.showHeader) {
+  //   //   if (next.showHeader) this.showHeader();
+  //   //   else this.hideHeader();
+  //   // }
+  //   // if (this.props.tags.selectedTags !== next.tags.selectedTags) {
+  //   //   this.input.blur();
+  //   // }
+  // }
+
+  onScroll(event) {
+    this.currentOffset = event.nativeEvent.contentOffset.y;
+    if (this.currentOffset <= -this.headerHeight) {
+      this.state.offsetY.setValue(0);
+      return;
     }
-    // if (this.props.tags.selectedTags !== next.tags.selectedTags) {
-    //   this.input.blur();
+    // if (this.currentOffset < -1) {
+    //   this.state.offsetY.setValue(0);
+    //   return;
     // }
+
+    let diff = this.lastOffset - this.currentOffset;
+
+    let top = Math.max(this.state.offsetY._value + diff, -this.headerHeight);
+    top = Math.min(top, 0);
+
+    this.state.offsetY.setValue(top);
+    this.lastOffset = this.currentOffset;
+
+    clearTimeout(this.scrollEnd);
+    this.scrollEnd = setTimeout(() => this.onScrollEnd(), 100);
+  }
+
+  onScrollEnd() {
+    if (this.state.offsetY._value > -this.headerHeight / 2) {
+      this.showHeader();
+    } else this.hideHeader();
   }
 
   hideHeader() {
     const moveHeader = this.headerHeight * -1;
-    this.setState({ showHeader: false });
     Animated.timing(
-       this.state.transY,
-       { toValue: moveHeader }
+      this.state.offsetY,
+      {
+        toValue: moveHeader,
+        duration: 200,
+        easing: Easing.quad
+      }
      ).start();
   }
 
   showHeader() {
-    this.setState({ showHeader: true });
+    // this.setState({ showHeader: true });
     Animated.timing(
-       this.state.transY,
-       { toValue: 0 }
+      this.state.offsetY,
+      {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.quad
+      }
      ).start();
   }
 
   render() {
-
     let tags = (
       <View>
         <Tags actions={this.props.actions} tags={this.props.tags} />
@@ -63,17 +100,17 @@ export default class DiscoverHeader extends Component {
 
     if (this.props.view === 2) {
       tags = null;
-      search = null;
     }
 
     return (
+
       <Animated.View
         style={{
           position: 'absolute',
           top: 0,
           backgroundColor:
           'white',
-          transform: [{ translateY: this.state.transY }],
+          transform: [{ translateY: this.state.offsetY }],
           overflow: 'hidden',
         }}
         ref={(c) => { this.header = c; }}
@@ -82,9 +119,11 @@ export default class DiscoverHeader extends Component {
             const { height } = event.nativeEvent.layout;
             // TODO make sure this is efficient
             // if (!this.layout) {
+            if (this.headerHeight === height) return;
             this.headerHeight = height;
             this.props.setPostTop(this.headerHeight);
             this.layout = true;
+            // this.onScroll(event);
             // }
           }
         }
@@ -100,13 +139,6 @@ export default class DiscoverHeader extends Component {
   }
 }
 
-DiscoverHeader.propTypes = {
-  view: React.PropTypes.number,
-  posts: React.PropTypes.object,
-  actions: React.PropTypes.object,
-  showHeader: React.PropTypes.bool,
-  setPostTop: React.PropTypes.func,
-};
 
 const localStyles = StyleSheet.create({
   transformContainer: {

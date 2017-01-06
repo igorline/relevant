@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  TouchableHighlight,
   Text,
   View,
-  Image,
-  Animated,
   TextInput,
 } from 'react-native';
-import { abbreviateNumber } from '../../utils';
 import { globalStyles } from '../../styles/global';
 
 let styles;
@@ -33,34 +29,36 @@ class Search extends Component {
 
   close() {
     this.search();
-    this.input.blur();
+    // this.input.blur();
     this.input.clear();
-    this.props.toggleSearch();
+    // this.props.toggleSearch();
   }
 
   renderSearch() {
     let searchEl = null;
     searchEl = (<View style={{ flex: 1, paddingVertical: 10 }}>
-        <TextInput
-          ref={(input) => { this.input = input; }}
-          onSubmitEditing={this.search}
-          style={[styles.searchInput, styles.font15]}
-          placeholder={'Search'}
-          autoFocus
-          multiline={false}
-          onChangeText={(term) => { this.search(term); this.searchTerm = term; }}
-          returnKeyType="done"
-          clearTextOnFocus
-        />
-        <View style={styles.closeParent}>
-          <Text
-            style={styles.close}
-            onPress={() => this.close()}
-          >
-            ✕
-          </Text>
-        </View>
-      </View>);
+      <TextInput
+        ref={(input) => { this.input = input; }}
+        onSubmitEditing={this.search}
+        style={[styles.searchInput, styles.font15]}
+        placeholder={'Search'}
+        autoFocus
+        onBlur={this.props.toggleSearch}
+        multiline={false}
+        onChangeText={term => this.search(term)}
+        returnKeyType="done"
+        clearTextOnFocus
+        // clearButtonMode="always"
+      />
+      <View style={styles.closeParent}>
+        <Text
+          style={styles.close}
+          onPress={() => this.close()}
+        >
+          ✕
+        </Text>
+      </View>
+    </View>);
 
     return searchEl;
   }
@@ -106,23 +104,26 @@ const localStyles = StyleSheet.create({
     flex: 1,
     textAlign: 'left',
     paddingLeft: 10,
+    marginTop: 2,
+    marginRight: 35,
   },
   closeParent: {
     position: 'absolute',
-    top: 12,
-    right: 10,
-    width: 20,
-    height: 20,
+    top: 3,
+    right: 5,
+    width: 35,
+    height: 35,
     backgroundColor: 'rgba(0,0,0,0)',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
   },
   close: {
+    padding: 5,
     color: 'grey',
     fontSize: 16,
     textAlign: 'center',
-    opacity: .8
+    opacity: 0.8
   }
 });
 

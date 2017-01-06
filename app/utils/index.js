@@ -3,7 +3,6 @@ import * as post from './post';
 import * as fetchError from './fetchError';
 import * as token from './token';
 import * as numbers from './numbers';
-// import { abbreviateNumber } from './percent';
 
 export {
   s3,
@@ -11,5 +10,4 @@ export {
   fetchError,
   token,
   numbers,
-  // abbreviateNumber
 };

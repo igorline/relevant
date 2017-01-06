@@ -5,8 +5,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as animationActions from '../actions/animation.actions';
-import { globalStyles, fullWidth } from '../styles/global';
+import * as animationActions from '../../actions/animation.actions';
+import { globalStyles, fullWidth } from '../../styles/global';
 import Heart from './heart.component';
 
 let styles;
@@ -19,10 +19,6 @@ class heartAnimation extends Component {
     this.state = {
       heartAni: [],
     };
-  }
-
-  componentDidMount() {
-
   }
 
   componentWillReceiveProps(nextProps) {
