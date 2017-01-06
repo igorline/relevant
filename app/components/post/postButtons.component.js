@@ -201,7 +201,7 @@ class PostButtons extends Component {
       direction: 'vertical'
     }, 'home');
   }
-  
+ 
   goToPost() {
     if (this.props.scene) {
       if (this.props.scene.route) {

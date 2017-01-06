@@ -87,7 +87,6 @@ class Discover extends Component {
   onScroll(event) {
     const currentOffset = event.nativeEvent.contentOffset.y;
     let showHeader = null;
-    dismissKeyboard();
     if (currentOffset !== this.offset) showHeader = currentOffset < this.offset;
     if (currentOffset < 50) showHeader = true;
     if (showHeader != null && showHeader !== this.state.showHeader) {
