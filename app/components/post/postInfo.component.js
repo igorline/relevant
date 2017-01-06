@@ -115,28 +115,32 @@ class PostInfo extends Component {
         </Text>
       </View>);
     } else {
-      postInfo = (<ToolTip
-        ref={(tooltip) => { this.tooltip = tooltip; }}
-        actions={[
-          { text: 'Post value revealed 6 hours after creation' }
-        ]}
-        underlayColor={'transparent'}
-        arrowDirection={'down'}
-      >
+      postInfo = (
         <View style={[styles.countdown]}>
-          <Progress.Pie
-            style={styles.progressCirc}
-            color={'#4d4eff'}
-            progress={this.state.timePassedPercent}
-            size={17}
-          />
-          <Text
-            style={[styles.font17, styles.textRight, styles.darkGray, styles.bebas]}
+          <ToolTip
+            ref={(tooltip) => { this.tooltip = tooltip; }}
+            actions={[
+              { text: 'Post value revealed 6 hours after creation' }
+            ]}
+            underlayColor={'transparent'}
+            arrowDirection={'down'}
           >
-            {this.state.timeUntilString}
-          </Text>
+            <View style={{ flexDirection: 'row' }}>
+              <Progress.Pie
+                style={styles.progressCirc}
+                color={'#4d4eff'}
+                progress={this.state.timePassedPercent}
+                size={17}
+              />
+              <Text
+                style={[styles.font17, styles.textRight, styles.darkGray, styles.bebas]}
+              >
+                {this.state.timeUntilString}
+              </Text>
+            </View>
+          </ToolTip>
         </View>
-      </ToolTip>);
+      );
     }
 
     return (<View style={styles.postHeader}>
