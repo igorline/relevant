@@ -21,7 +21,9 @@ class StallScreen extends Component {
 
   render() {
 
-    return (<View style={{ flex: 1, backgroundColor:'white', alignItems: 'center', justifyContent: 'center' }}><CustomSpinner visible={true} /></View>);
+    return (<View style={{ flex: 1, backgroundColor:'white', alignItems: 'center', justifyContent: 'center' }}>
+      <CustomSpinner visible={true} />
+    </View>);
   }
 }
 

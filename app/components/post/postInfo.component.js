@@ -91,7 +91,7 @@ class PostInfo extends Component {
     }
 
     if (this.state.passed) {
-      postInfo = (<View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
+      postInfo = (<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
         <Text
           style={[
             styles.font17,
@@ -181,7 +181,7 @@ const localStyles = StyleSheet.create({
     paddingBottom: 0,
   },
   progressCirc: {
-    marginTop: -3,
+    marginTop: -1,
     marginRight: 5,
   },
   infoLeft: {
