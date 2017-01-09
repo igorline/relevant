@@ -5,7 +5,8 @@ import {
   Text,
   TouchableHighlight,
   AlertIOS,
-  Easing
+  Easing,
+  InteractionManager
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -50,9 +51,13 @@ class CreatePostContainer extends Component {
     this.configureTransition = this.configureTransition.bind(this);
   }
 
+  componentDidMount() {
+    InteractionManager.runAfterInteractions(() => {
+      if (!this.props.tags.length) this.props.actions.getParentTags();
+    });
+  }
+
   componentWillReceiveProps(next) {
-    // console.log(this.props.home)
-    // console.log(next.navProps)
     if (next.navProps.scene.isActive === false) {
       if (this.urlComponent) this.urlComponent.input.blur();
     }
@@ -261,7 +266,7 @@ class CreatePostContainer extends Component {
         />);
       case 'categories':
         this.current = 'categories';
-        return <Categories done={this.createPost} {...this.props.createPost} actions={this.props.actions} />;
+        return <Categories done={this.createPost} {...this.props} />;
       case 'post':
         this.current = 'post';
         return <CreatePostComponent {...this.props.createPost} actions={this.props.actions} />;
@@ -324,7 +329,8 @@ function mapStateToProps(state) {
     navigation: state.navigation.createPost,
     home: state.navigation.home,
     createPost: state.createPost,
-    user: state.user
+    user: state.user,
+    tags: state.tags.parentTags,
   };
 }
 
