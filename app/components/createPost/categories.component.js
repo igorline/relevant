@@ -21,10 +21,11 @@ class Categories extends Component {
   }
 
   componentWillMount() {
-    this.props.actions.getParentTags();
+    // this.props.actions.getParentTags();
   }
 
   setCategory(tag) {
+    console.log()
     this.props.actions.setPostCategory(tag);
     // setTimeout(() => this.props.done(), 100);
     // this.props.actions.push({
@@ -37,7 +38,7 @@ class Categories extends Component {
 
   render() {
     let categoryEl = null;
-    let selectedTag = this.props.postCategory;
+    let selectedTag = this.props.createPost.postCategory;
     let styles = globalStyles;
     if (this.props.tags) {
       categoryEl = this.props.tags.map((tag, i) => {
@@ -77,23 +78,4 @@ class Categories extends Component {
   }
 }
 
-// export default Categories;
-function mapStateToProps(state) {
-  return {
-    tags: state.tags.parentTags,
-    view: state.view,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(
-      { ...createPostActions,
-        ...tagActions,
-        ...navigationActions,
-      }, dispatch),
-  };
-}
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(Categories);
+export default Categories;

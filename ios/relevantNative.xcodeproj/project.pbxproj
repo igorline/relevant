@@ -50,6 +50,7 @@
 		FB88BEAD1D9ED8F6002D0069 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		FB88BEAE1D9ED8F6002D0069 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		FB88BEAF1D9ED8F6002D0069 /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB88BEA21D9ED842002D0069 /* libReactNativeShareExtension.a */; };
+		FB8F03151E206C46006FBADB /* logo2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FB8F03141E206C46006FBADB /* logo2x.png */; };
 		FB983E391DA1E21900DAF00D /* libRCTUserDefaults.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB983E341DA1E1E400DAF00D /* libRCTUserDefaults.a */; };
 		FB983E3A1DA1E21900DAF00D /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB88BEA21D9ED842002D0069 /* libReactNativeShareExtension.a */; };
 		FB983E3D1DA2044900DAF00D /* libRCTUserDefaults.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB983E341DA1E1E400DAF00D /* libRCTUserDefaults.a */; };
@@ -353,6 +354,7 @@
 		FB88BE871D9ED742002D0069 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FB88BE9B1D9ED7C6002D0069 /* Relevant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Relevant.m; sourceTree = "<group>"; };
 		FB88BE9D1D9ED842002D0069 /* ReactNativeShareExtension.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeShareExtension.xcodeproj; path = "../node_modules/react-native-share-extension/ios/ReactNativeShareExtension.xcodeproj"; sourceTree = "<group>"; };
+		FB8F03141E206C46006FBADB /* logo2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo2x.png; path = ../app/assets/images/logo2x.png; sourceTree = "<group>"; };
 		FB983E261DA1E1E400DAF00D /* RCTUserDefaults.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTUserDefaults.xcodeproj; path = "../node_modules/react-native-user-defaults/RCTUserDefaults.xcodeproj"; sourceTree = "<group>"; };
 		FB983E3C1DA1E45200DAF00D /* Relevant.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Relevant.entitlements; sourceTree = "<group>"; };
 		FBD8EED71E088B510074EE90 /* BebasNeuerelevantRegular-2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "BebasNeuerelevantRegular-2.ttf"; path = "../app/assets/fonts/BebasNeuerelevantRegular-2.ttf"; sourceTree = "<group>"; };
@@ -623,6 +625,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				FB8F03141E206C46006FBADB /* logo2x.png */,
 				2A37D78D1E0C75B900C55DC5 /* launch_logo.jpg */,
 				FBD8EED91E088BF30074EE90 /* BebasNeueRelevant Bold.ttf */,
 				FBD8EED71E088B510074EE90 /* BebasNeuerelevantRegular-2.ttf */,
@@ -1105,6 +1108,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB8F03151E206C46006FBADB /* logo2x.png in Resources */,
 				2A37D78E1E0C75B900C55DC5 /* launch_logo.jpg in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				2A43980C1DFF3B6200E7FC9B /* helvetica-outline.otf in Resources */,
