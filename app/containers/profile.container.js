@@ -56,6 +56,7 @@ class Profile extends Component {
       { id: 1, title: 'Investments' },
     ];
     this.loaded = false;
+    this.onInteraction;
   }
 
   componentWillMount() {
@@ -63,7 +64,7 @@ class Profile extends Component {
       this.userId = this.props.scene.id;
       this.userData = this.props.users[this.userId];
 
-      InteractionManager.runAfterInteractions(() => {
+      this.onInteraction = InteractionManager.runAfterInteractions(() => {
         if (!this.userData) this.loadUser();
         this.loaded = true;
         this.setState({});
@@ -72,7 +73,7 @@ class Profile extends Component {
       this.userId = this.props.auth.user._id;
       this.userData = this.props.users[this.userId];
 
-      InteractionManager.runAfterInteractions(() => {
+      this.onInteraction = InteractionManager.runAfterInteractions(() => {
         this.loaded = true;
         this.setState({});
       });
@@ -102,6 +103,10 @@ class Profile extends Component {
     //   }
     // }
     return true;
+  }
+
+  componentWillUnmount() {
+    this.onInteraction.cancel();
   }
 
   scrollToTop() {

@@ -18,6 +18,9 @@ const font = StyleSheet.create({
   font12: {
     fontSize: 12,
   },
+  font13: {
+    fontSize: 13,
+  },
   font14: {
     fontSize: 14,
   },
@@ -62,7 +65,7 @@ const font = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    borderBottomColor: '#242425',
+    borderBottomColor: 'black',
     borderBottomWidth: StyleSheet.hairlineWidth,
 
     zIndex: 1000,
@@ -117,6 +120,12 @@ const font = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Georgia',
     fontSize: 18,
+  },
+  stats: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
   }
 });
 

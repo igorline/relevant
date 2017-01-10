@@ -271,17 +271,20 @@ class SignUp extends Component {
           >
             <Text style={styles.largeButtonText}>next</Text>
           </TouchableHighlight>
-          <TouchableHighlight
-            onPress={this.devSkip}
-            underlayColor={'transparent'}
-          >
-            <Text style={styles.signInText}>
-              <Text style={{ color: '#3E3EFF' }}>devSkip</Text>
-            </Text>
-          </TouchableHighlight>
+
         </ScrollView>
       </KeyboardAvoidingView>
     );
+
+          // <TouchableHighlight
+          //   onPress={this.devSkip}
+          //   underlayColor={'transparent'}
+          // >
+          //   <Text style={styles.signInText}>
+          //     <Text style={{ color: '#3E3EFF' }}>devSkip</Text>
+          //   </Text>
+          // </TouchableHighlight>
+
   }
 }
 

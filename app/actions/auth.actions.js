@@ -12,6 +12,13 @@ const APP_GROUP_ID = 'group.com.4real.relevant';
 require('../publicenv');
 
 export
+function sendPong() {
+  return {
+    type: 'server/pong',
+  };
+}
+
+export
 function updateAuthUser(user) {
   return {
     type: types.UPDATE_AUTH_USER,
@@ -91,7 +98,7 @@ export function logoutAction(user) {
     .then(() => {
       // dispatch(removeDeviceToken());
       dispatch(logout());
-      // websoket message
+      // websocket message
       dispatch({
         type: 'server/logout',
         payload: user._id
@@ -229,11 +236,6 @@ export function getUser(callback) {
       .then((responseJSON) => {
         dispatch(setUser(responseJSON));
         dispatch(setSelectedUserData(responseJSON));
-        dispatch(notifActions.createNotification({
-          type: 'online',
-          personal: false,
-          byUser: responseJSON._id
-        }));
         dispatch(addDeviceToken(responseJSON, token));
         dispatch(errorActions.setError('universal', false));
         if (callback) callback(responseJSON);

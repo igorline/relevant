@@ -33,12 +33,13 @@ export function invest(token, amount, post, investingUser) {
       })
     })
     .then((response) => {
-      if (response.ok) {
-        dispatch(investNotification(post, investingUser));
-        return true;
-      } else {
-        return response.text();
-      }
+      // if (response.ok) {
+        // dispatch(investNotification(post, investingUser));
+      //   return true;
+      // } else {
+      //   return response.text();
+      // }
+      return response.json();
     })
     .then((data) => {
       if (typeof data !== 'boolean') {
@@ -46,6 +47,8 @@ export function invest(token, amount, post, investingUser) {
         AlertIOS.alert(errorString);
         return false;
       } else {
+        // TODO what is this!?!?
+        // dispatch(investNotification(post, investingUser));
         return true;
       }
     })
@@ -73,7 +76,7 @@ export function getInvestments(token, userId, skip, limit, type){
         'Content-Type': 'application/json'
       }
     })
-    .then((response) => response.json())
+    .then(response => response.json())
     .then((responseJSON) => {
       // dispatch(refreshInvestments(responseJSON, userId, skip));
       dispatch(setInvestments(responseJSON, userId, skip));
@@ -84,15 +87,15 @@ export function getInvestments(token, userId, skip, limit, type){
   };
 }
 
-export function investNotification(post, investingUser) {
-  return {
-    type: 'server/notification',
-    payload: {
-      user: post.user._id,
-      message: investingUser.name + ' just invested in your post'
-    }
-  };
-}
+// export function investNotification(post, investingUser) {
+//   return {
+//     type: 'server/notification',
+//     payload: {
+//       user: post.user._id,
+//       message: investingUser.name + ' just invested in your post'
+//     }
+//   };
+// }
 
 export function destroyInvestment(token, amount, post, investingUser){
   return dispatch => {

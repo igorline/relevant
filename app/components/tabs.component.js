@@ -29,7 +29,7 @@ export default function (props) {
               styles.darkGray,
               styles.tabFont,
               styles.quarterLetterSpacing,
-              styles.font14,
+              styles.font15,
               active ? styles.active : null,
               { textAlign: 'center' }
             ]}
@@ -60,8 +60,8 @@ const localStyles = StyleSheet.create({
     height: 50,
   },
   inactiveBorder: {
-    borderBottomColor: '#242425',
-    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+    borderBottomWidth: StyleSheet.hairlineWidth,
   }
 });
 

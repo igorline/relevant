@@ -82,8 +82,8 @@ export function markRead() {
       })
     )
     .then((res) => {
-      console.log('updated mark read ', res)
-      dispatch(clearCount())
+      // console.log('updated mark read ', res);
+      dispatch(clearCount());
     })
     // .then((responseJSON) => {
       // console.log(responseJSON);

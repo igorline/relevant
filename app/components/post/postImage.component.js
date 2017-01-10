@@ -16,7 +16,6 @@ class PostImage extends Component {
   constructor(props, context) {
     super(props, context);
     this.openLink = this.openLink.bind(this);
-    // this.extractDomain = this.extractDomain.bind(this);
     this.state = {
     };
   }
@@ -76,7 +75,7 @@ class PostImage extends Component {
 
           <View style={[styles.textContainer]}>
             <View>
-              <Text numberOfLines={3} style={[{ fontSize: 16 }, styles.darkGrey, styles.georgia]}>
+              <Text numberOfLines={3} style={[{ fontSize: 16, marginBottom: 1 }, styles.darkGrey, styles.georgia]}>
                 {title ? title : 'Untitled'}
               </Text>
               {linkEl}
