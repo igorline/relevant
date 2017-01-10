@@ -1,7 +1,8 @@
 const initialState = {
   message: null,
   socketId: null,
-  clientData: null
+  clientData: null,
+  ping: {}
 };
 
 export default function reducer(state = initialState, action) {
@@ -22,6 +23,12 @@ export default function reducer(state = initialState, action) {
     case 'clientData': {
       return Object.assign({}, state, {
         'clientData': action.payload
+      });
+    }
+
+    case 'ping': {
+      return Object.assign({}, state, {
+        'ping': action.payload
       });
     }
 

@@ -3,13 +3,11 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableWithoutFeedback,
-  Image,
 } from 'react-native';
 import * as Progress from 'react-native-progress';
 import UserName from '../userNameSmall.component';
 import { globalStyles } from '../../styles/global';
-import { numbers } from '../../utils';
+import Stats from './stats.component';
 
 let ToolTip = require('react-native-tooltip');
 
@@ -74,15 +72,11 @@ class PostInfo extends Component {
     let postUserImage = null;
     let postInfo = null;
     let post = null;
-    let relevance = 0;
-    let value = 0;
     let postUser;
     let name;
 
     if (this.props.post) {
       post = this.props.post;
-      if (post.relevance) relevance = post.relevance;
-      if (post.value) value = post.value;
       if (post.user) {
         postUser = post.embeddedUser || post.user;
         if (postUser.name) name = postUser.name;
@@ -91,29 +85,7 @@ class PostInfo extends Component {
     }
 
     if (this.state.passed) {
-      postInfo = (<View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-        <Text
-          style={[
-            styles.font17,
-            styles.textRight,
-            styles.bebas,
-            styles.halfLetterSpacing,
-            { marginRight: 5 }
-          ]}
-        >
-          💵 {numbers.abbreviateNumber(value)}
-        </Text>
-        <Text
-          style={[
-            styles.font17,
-            styles.textRight,
-            styles.bebas,
-            styles.halfLetterSpacing
-          ]}
-        >
-          📈 {numbers.abbreviateNumber(relevance)}
-        </Text>
-      </View>);
+      postInfo = (<Stats type={'value'} entity={post} />);
     } else {
       postInfo = (
         <View style={[styles.countdown]}>

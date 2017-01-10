@@ -92,20 +92,20 @@ class Auth extends Component {
     switch (i) {
       case '0':
         return (<View key={i} style={styles.authSlide}>
-          <Text style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
-            Find <Text style={[styles.strokeText, styles.adjust]}>information</Text> relevant to <Text style={[styles.strokeText, styles.adjust]}>you</Text>. No algorithms, no editors, just news.
+          <Text allowFontScaling={false} style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
+            Find <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>information</Text> relevant to <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>you</Text>. No algorithms, no editors, just news.
           </Text>
         </View>);
       case '1':
         return (<View key={i} style={styles.authSlide}>
-          <Text style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
-            Post <Text style={[styles.strokeText, styles.adjust]}>insightful</Text> commentary and watch your <Text style={[styles.strokeText, styles.adjust]}>relevance</Text> rise.
+          <Text allowFontScaling={false} style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
+            Post <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>insightful</Text> commentary and watch your <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>relevance</Text> rise.
           </Text>
         </View>);
       case '2':
         return (<View key={i} style={styles.authSlide}>
-          <Text style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
-            <Text style={[styles.strokeText, styles.adjust]}>Invest</Text> in relevant posts to curate <Text style={[styles.strokeText, styles.adjust]}>your</Text> feed and watch your <Text style={[styles.strokeText, styles.adjust]}></Text>money grow.
+          <Text allowFontScaling={false} style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
+            <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>Invest</Text> in relevant posts to curate <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>your</Text> feed and watch your money grow.
           </Text>
         </View>);
       default: return <View key={i} style={styles.authSlide} />;
@@ -164,7 +164,7 @@ class Auth extends Component {
             onPress={this.login}
             underlayColor={'transparent'}
           >
-            <Text style={styles.signInText}>
+            <Text allowFontScaling={false} style={styles.signInText}>
               Already have an account? <Text style={{ color: '#3E3EFF' }}>Sign In.</Text>
             </Text>
           </TouchableHighlight>

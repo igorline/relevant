@@ -62,7 +62,7 @@ export default class DiscoverHeader extends Component {
   }
 
   onScrollEnd() {
-    if (this.state.offsetY._value > -this.headerHeight / 2) {
+    if (this.state.offsetY._value >= -this.headerHeight / 2) {
       this.showHeader();
     } else this.hideHeader();
   }

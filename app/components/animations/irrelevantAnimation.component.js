@@ -60,19 +60,19 @@ class IrrelevantAnimation extends Component {
   }
 }
 
-// function mapStateToProps(state) {
-//   return {
-//     animation: state.animation.thumbs,
-//   };
-// }
+function mapStateToProps(state) {
+  return {
+    animation: state.animation.irrelevant,
+  };
+}
 
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     actions: bindActionCreators({
-//       ...animationActions,
-//     }, dispatch)
-//   };
-// }
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators({
+      ...animationActions,
+    }, dispatch)
+  };
+}
 
 const localStyles = StyleSheet.create({
   heartsContainer: {
@@ -90,6 +90,6 @@ const localStyles = StyleSheet.create({
 
 styles = { ...globalStyles, ...localStyles };
 
-export default IrrelevantAnimation;
+// export default IrrelevantAnimation;
 
-// export default connect(mapStateToProps, mapDispatchToProps)(IrrelevantAnimation);
+export default connect(mapStateToProps, mapDispatchToProps)(IrrelevantAnimation);
