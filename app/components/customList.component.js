@@ -28,6 +28,7 @@ export default class ActivityView extends Component {
     let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.tpmDataSource = ds.cloneWithRows([]);
     this.showReload = false;
+    this.stateTimeout;
   }
 
   componentDidMount() {
@@ -47,8 +48,13 @@ export default class ActivityView extends Component {
   componentWillReceiveProps(next) {
     if (this.props.data !== next.data) {
       this.updateData(next.data);
-      setTimeout(() => this.setState({ reloading: false, loading: false }), 1000);
+      clearTimeout(this.stateTimeout);
+      this.stateTimeout = setTimeout(() =>
+        this.setState({ reloading: false, loading: false }), 1000);
       if (!next.data.length) this.setState({ none: true });
+    } else {
+      // need to update data either way for list to re-render
+      this.updateData(this.props.data);
     }
 
     if (next.active && next.needsReload > this.lastReload) {
@@ -56,6 +62,15 @@ export default class ActivityView extends Component {
       this.props.load(this.props.view, 0);
       this.lastReload = new Date().getTime();
     }
+  }
+
+  shouldComponentUpdate(next) {
+    if (!this.props.active && !next.active) return false;
+    return true;
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.stateTimeout);
   }
 
   updateData(data) {

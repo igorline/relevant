@@ -89,13 +89,15 @@ class Application extends Component {
       }, 0, 'home');
     }
 
-    if (!this.props.error.universal && next.error.universal) {
+    if (!this.props.error && next.error) {
       this.props.actions.replaceRoute({
         key: 'error',
         component: 'error',
       }, 0, 'home');
       this.props.actions.resetRoutes('home');
     }
+
+    // if(this.props.socket)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -253,7 +255,7 @@ class Application extends Component {
   }
 
   render() {
-    let scene = this.props.navigation.home;
+    let scene = this.props.navigation;
     let key = scene.routes[scene.index].component;
     const self = this;
 
@@ -274,9 +276,9 @@ class Application extends Component {
             />); }
           }
         />
-        <InvestAnimation {...this.props} />
+        <InvestAnimation />
         <HeartAnimation />
-        <IrrelevantAnimation animation={this.props.animation.irrelevant} />
+        <IrrelevantAnimation />
       </View>
     );
   }
@@ -286,10 +288,8 @@ class Application extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    animation: state.animation,
-    navigation: state.navigation,
-    error: state.error,
-    tags: state.tags,
+    navigation: state.navigation.home,
+    error: state.error.universal,
   };
 }
 

@@ -317,6 +317,7 @@ const localStyles = StyleSheet.create({
   rightButtonText: {
     textAlign: 'right',
     fontSize: 17,
+    fontFamily: 'Helvetica'
   }
 });
 

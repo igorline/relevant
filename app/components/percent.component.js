@@ -16,7 +16,7 @@ class Percent extends Component {
     let percent = numbers.percentChange(user);
     let percentComponent;
     if (percent === 0) {
-      percentComponent = (<Text style={{ position: 'absolute' }} />);
+      percentComponent = (<Text style={[{ textAlign: 'right', color: 'red' }, styles.bebas]}> ▼{numbers.abbreviateNumber(percent)}%</Text>);
     } else if (percent > 0) {
       percentComponent = (<Text style={[{ textAlign: 'right', color: '#196950' }, styles.bebas]}>
         ▲{numbers.abbreviateNumber(percent)}%

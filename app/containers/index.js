@@ -8,6 +8,7 @@ const store = configureStore();
 
 export default class AppContainer extends Component {
   render() {
+    console.log('render app');
     return (
       <Provider store={store}>
         <Application />
