@@ -32,25 +32,13 @@ export function invest(token, amount, post, investingUser) {
         post
       })
     })
-    .then((response) => {
-      // if (response.ok) {
-        // dispatch(investNotification(post, investingUser));
-      //   return true;
-      // } else {
-      //   return response.text();
-      // }
-      return response.json();
-    })
+    .then(response => response.json())
     .then((data) => {
       if (typeof data !== 'boolean') {
-        let errorString = data.replace(/['"]+/g, '');
-        AlertIOS.alert(errorString);
+        if (data.message) AlertIOS.alert(data.message);
         return false;
-      } else {
-        // TODO what is this!?!?
-        // dispatch(investNotification(post, investingUser));
-        return true;
       }
+      return true;
     })
     .catch((error) => {
       console.log(error, 'error here');
