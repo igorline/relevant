@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import ShareContainer from './share.container';
 
-import configureStore from '../store/configureStore';
+import configureStore from '../store/configureShareStore';
 
 const store = configureStore();
 export default class Share extends Component {

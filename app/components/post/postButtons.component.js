@@ -201,7 +201,7 @@ class PostButtons extends Component {
       direction: 'vertical'
     }, 'home');
   }
- 
+
   goToPost() {
     if (this.props.scene) {
       if (this.props.scene.route) {
@@ -218,7 +218,6 @@ class PostButtons extends Component {
   }
 
   irrelevant() {
-    // this.props.actions.irrelevant(this.props.auth.token, this.props.post._id);
     this.props.actions.invest(this.props.auth.token, -100, this.props.post, this.props.auth.user)
     .then((results) => {
       if (results) {
@@ -236,7 +235,7 @@ class PostButtons extends Component {
     let post = this.props.post;
     let investable = false;
     let irrelevantButton;
-    let commentString = 'add comment';
+    let commentString = 'comment';
 
     if (post && post.user && this.props.auth.user) {
       if (post.user !== this.props.auth.user._id) {
@@ -255,7 +254,9 @@ class PostButtons extends Component {
       >
         <View style={styles.investButton}>
 
-          <Text style={[styles.font15, styles.bold, styles.postButtonText]}>
+          <Text
+            allowFontScaling={false}
+            style={[styles.font15, styles.bold, styles.postButtonText]}>
             💰Invest
           </Text>
         </View>
@@ -267,7 +268,9 @@ class PostButtons extends Component {
           style={styles.postButton}
           onPress={this.irrelevant}
         >
-          <Text style={[styles.font12, styles.greyText, styles.postButtonText]}>
+          <Text
+            allowFontScaling={false}
+            style={[styles.font12, styles.greyText, styles.postButtonText]}>
            irrelevant
           </Text>
         </TouchableHighlight>
@@ -287,7 +290,9 @@ class PostButtons extends Component {
       style={[styles.postButton]}
       onPress={() => this.goToPost()}
     >
-      <Text style={[{ marginRight: 5 }, styles.greyText, styles.font12, styles.postButtonText]}>
+      <Text
+        allowFontScaling={false}
+        style={[{ marginRight: 5 }, styles.greyText, styles.font12, styles.postButtonText]}>
         {commentString}
       </Text>
     </TouchableHighlight>);
@@ -301,10 +306,10 @@ class PostButtons extends Component {
 
       <TouchableHighlight
         underlayColor={'transparent'}
-        style={[styles.postButton, { flex: 0.1 }]}
+        style={[styles.postButton]}
         onPress={() => this.showActionSheet()}
       >
-        <Text style={[styles.font12, styles.greyText, styles.postButtonText]}>
+        <Text allowFontScaling={false} style={[styles.font12, styles.greyText, styles.postButtonText]}>
           ...
         </Text>
       </TouchableHighlight>
@@ -325,18 +330,13 @@ const localStyles = StyleSheet.create({
     borderWidth: 1,
     backgroundColor: 'white',
     borderColor: 'black',
-    paddingLeft: 15,
-    paddingRight: 15,
-    // marginRight: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
     height: 30,
-    flex: 0.4,
-
     shadowColor: 'black',
-    // shadowColor: '#4d4eff',
     shadowOffset: { width: 2, height: 2 },
     shadowRadius: 0,
     shadowOpacity: 1,
-
     flexDirection: 'row',
     justifyContent: 'center'
   },
@@ -349,14 +349,8 @@ const localStyles = StyleSheet.create({
     flexWrap: 'wrap'
   },
   postButton: {
-    // borderWidth: 1,
-    // borderColor: 'black',
-    flex: 0.4,
     padding: 3,
-
-    paddingHorizontal: 5,
-    // paddingRight: 10,
-
+    paddingHorizontal: 10,
     height: 30,
     flexDirection: 'row',
     justifyContent: 'center'

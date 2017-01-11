@@ -70,7 +70,6 @@ class Discover extends Component {
     let tab = next.tabs.routes[next.tabs.index];
     if (tab.key !== 'discover') return false;
     if (next.nav.index > 0) return false;
-
     // console.log(next);
     // console.log('updating discover');
     // for (let p in next) {

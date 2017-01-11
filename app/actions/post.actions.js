@@ -5,7 +5,7 @@ import {
 
 import * as types from './actionTypes';
 import * as utils from '../utils';
-import * as authActions from './auth.actions';
+// import * as authActions from './auth.actions';
 import * as errorActions from './error.actions';
 
 require('../publicenv');
@@ -18,7 +18,7 @@ const post = new schema.Entity('posts',
 );
 
 const repost = new schema.Entity('posts',
-  { comments: [comment], repost: { post: post } },
+  { comments: [comment], repost: { post } },
   { idAttribute: '_id' }
 );
 

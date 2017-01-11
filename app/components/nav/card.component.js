@@ -95,9 +95,9 @@ class Card extends Component {
           // onNavigateForward: () => navigate('forward'),
         });
 
-        if (this.props.navigation) {
-          if (this.props.navigation.createPost.index > 0) panHandlers = null;
-        }
+        // if (this.props.navigation) {
+        //   if (this.props.navigation.createPost.index > 0) panHandlers = null;
+        // }
         panHandlers = {};
       }
 

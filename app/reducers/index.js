@@ -4,7 +4,6 @@ import posts from './posts';
 import user from './user';
 import socket from './socket';
 import notif from './notif';
-// import online from './online';
 import messages from './messages';
 import animation from './animation';
 import error from './error';
@@ -23,7 +22,6 @@ const rootReducer = combineReducers({
   socket,
   notif,
   error,
-  // online,
   messages,
   animation,
   view,

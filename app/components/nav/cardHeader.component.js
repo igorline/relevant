@@ -6,12 +6,11 @@ import {
   View,
   Image,
   Animated,
-  TextInput,
 } from 'react-native';
-
-import { numbers } from '../../utils';
-import { globalStyles } from '../../styles/global';
 import Search from './search.component';
+import { globalStyles } from '../../styles/global';
+import Stats from '../post/stats.component';
+
 let styles;
 
 class CardHeader extends Component {
@@ -55,7 +54,7 @@ class CardHeader extends Component {
 
     if (this.props.scene.route.title === 'Discover') {
       leftEl = [];
-      leftEl.push(<View key={0} style={[styles.leftButton, { flex: this.state.search ? 0.05 : 1 }]} >
+      leftEl.push(<View key={0} style={[styles.leftButton, { flex: this.state.search ? 0.06 : 1 }]} >
         <TouchableHighlight
           underlayColor={'transparent'}
           onPress={() => this.toggleSearch()}
@@ -114,33 +113,12 @@ class CardHeader extends Component {
   renderRight(props) {
     if (this.state.search) return null;
     let statsEl = null;
-    let relevance = 0;
-    let balance = 0;
-    let user = null;
     let rightEl;
 
     let key = this.props.defaultContainer;
-    if (this.props.auth.user) {
-      user = this.props.auth.user;
-      if (user.relevance) relevance = user.relevance;
-      if (user.balance) balance = user.balance;
-      if (balance > 0) {
-        balance = numbers.abbreviateNumber(balance);
-      }
-      if (relevance > 0) {
-        relevance = numbers.abbreviateNumber(relevance);
-      }
 
-      statsEl = (
-        <Text style={styles.statsTxt}>  📈
-          <Text style={[styles.bebas, styles.quarterLetterSpacing, { fontSize: 13 }]}>
-            {relevance}
-          </Text>  💵
-          <Text style={[styles.bebas, styles.quarterLetterSpacing, { fontSize: 13 }]}>
-            {balance}
-          </Text>
-        </Text>
-      );
+    if (this.props.auth.user) {
+      statsEl = <Stats type={'nav'} entity={this.props.auth.user} />;
     }
 
     if (key !== 'myProfile') {
@@ -212,15 +190,13 @@ const localStyles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 10,
   },
+  leftButtonText: {
+    fontFamily: 'Helvetica'
+  },
   rightButton: {
     flex: 1,
     marginRight: 15,
     paddingVertical: 10,
-  },
-  statsTxt: {
-    color: 'black',
-    fontSize: 13,
-    textAlign: 'right',
   },
   gearImg: {
     height: 20,
@@ -251,7 +227,7 @@ const localStyles = StyleSheet.create({
     color: 'grey',
     fontSize: 16,
     textAlign: 'center',
-    opacity: .8
+    opacity: 0.8
   }
 });
 
