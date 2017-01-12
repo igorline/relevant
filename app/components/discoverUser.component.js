@@ -30,7 +30,7 @@ class DiscoverUser extends Component {
       >
         <View style={[styles.discoverUser]}>
           <UserName
-            big={false}
+            big={true}
             user={{ image: user.image, name: user.name, _id: user._id }}
             setSelected={this.setSelected}
           />

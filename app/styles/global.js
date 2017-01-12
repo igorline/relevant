@@ -60,7 +60,7 @@ const font = StyleSheet.create({
   },
   header: {
     height: 59,
-    paddingTop: 16,
+    paddingTop: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -166,10 +166,10 @@ const layout = StyleSheet.create({
     borderTopColor: 'lightgrey',
     backgroundColor: 'white',
     paddingLeft: 5,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    position: 'absolute',
+    // bottom: 0,
+    // left: 0,
+    // right: 0,
+    // position: 'absolute',
     // paddingVertical: 5,
   },
   commentInput: {
@@ -348,9 +348,16 @@ const layout = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
+  emoji: {
+    marginTop: -3,
+  },
   tagBox: {
     backgroundColor: '#F0F0F0',
-    padding: 10,
+    paddingHorizontal: 10,
+    // padding: 20,
+    height: 45,
+    flexDirection: 'row',
+    alignItems: 'center',
     marginLeft: 5,
     marginTop: 5,
     fontSize: 15,
@@ -475,7 +482,13 @@ const layout = StyleSheet.create({
     // borderColor: darkGrey,
     // borderBottomWidth: StyleSheet.hairlineWidth,
     backgroundColor: 'hsl(238,20%,95%)',
-  }
+  },
+  dots: {
+    color: greyText,
+    fontSize: 20,
+    marginTop: -4,
+    letterSpacing: -0.5
+  },
 });
 
 const globalStyles = { ...colors, ...font, ...alignment, ...layout, blue };

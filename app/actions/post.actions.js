@@ -444,11 +444,11 @@ export function createComment(token, commentObj) {
     .then(utils.fetchError.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
-      dispatch(setComments(responseJSON.post, responseJSON));
+      dispatch(addComment(responseJSON.post, responseJSON));
       return true;
     })
     .catch((error) => {
-      AlertIOS.alert(error.message);
+      AlertIOS.alert(error);
       console.log(error, 'error');
       return false;
     });
@@ -504,6 +504,16 @@ export function archiveComments(postId) {
   return {
     type: types.ARCHIVE_COMMENTS,
     payload: postId
+  };
+}
+
+export function addComment(postId, newComment) {
+  return {
+    type: types.ADD_COMMENT,
+    payload: {
+      comment: newComment,
+      postId
+    }
   };
 }
 

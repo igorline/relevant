@@ -31,37 +31,55 @@ class CardHeader extends Component {
 
   renderLeft(props) {
     let leftEl = <View style={styles.leftButton} />;
-
+    let back;
     if (props.scene.route.back) {
-      let backArrow = <Text style={{ padding: 10, marginLeft: -10 }}>◀</Text>;
+      back = (
+        <View style={{ paddingHorizontal: 10, marginLeft: -10 }}>
+          <Image
+            resizeMode={'contain'}
+            style={{ width: 11, height: 19 }}
+            source={require('../../assets/images/backarrow.png')}
+          />
+        </View>
+      );
+
+      if (this.props.scene.route.left) {
+        back = (
+          <Text
+            style={[
+              { fontSize: 17 },
+              styles.active,
+              styles.leftButtonText,
+            ]}
+          >
+            {this.props.scene.route.left}
+          </Text>
+        );
+      }
 
       return (<TouchableHighlight
         style={[styles.leftButton]}
         underlayColor={'transparent'}
         onPress={this.props.back}
       >
-        <Text
-          style={[
-            { fontSize: 17 },
-            styles.active,
-            styles.leftButtonText,
-          ]}
-        >
-          {this.props.scene.route.left || backArrow}
-        </Text>
+        {back}
       </TouchableHighlight>);
     }
 
     if (this.props.scene.route.title === 'Discover') {
       leftEl = [];
-      leftEl.push(<View key={0} style={[styles.leftButton, { flex: this.state.search ? 0.06 : 1 }]} >
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          onPress={() => this.toggleSearch()}
+      leftEl.push(
+        <View
+          key={0}
+          style={[styles.leftButton, { flex: this.state.search ? 0.06 : 1 }]}
         >
-          <Text style={{ paddingBottom: 3 }}>🔎</Text>
-        </TouchableHighlight>
-      </View>);
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            onPress={() => this.toggleSearch()}
+          >
+            <Text style={{ paddingBottom: 3 }}>🔎</Text>
+          </TouchableHighlight>
+        </View>);
       if (this.state.search) {
         leftEl.push(
           <Search
@@ -130,15 +148,14 @@ class CardHeader extends Component {
           underlayColor={'transparent'}
           onPress={() => this.props.showActionSheet()}
         >
-          <Image
-            style={styles.gearImg}
-            source={require('../../assets/images/gear.png')}
-          />
+          <Text style={{ paddingBottom: 2, fontSize: 17 }}>⚙️</Text>
         </TouchableHighlight>
       );
     }
 
-    if (props.scene.route.component === 'profile' && props.scene.route.id !== this.props.auth.user._id) {
+    if (props.scene.route.component === 'profile' &&
+      this.props.auth.user &&
+      props.scene.route.id !== this.props.auth.user._id) {
       rightEl = null;
       // rightEl = (
       //   <View style={styles.gear}>
@@ -155,7 +172,7 @@ class CardHeader extends Component {
     return <View style={styles.rightButton}>{rightEl}</View>;
   }
 
- renderHeader(props, headerStyle) {
+  renderHeader(props, headerStyle) {
     let style = [styles.header, headerStyle];
     if (this.props.share) {
       style = [styles.header, styles.shareHeader, headerStyle];
@@ -206,6 +223,7 @@ const localStyles = StyleSheet.create({
   gear: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    alignItems: 'center'
   },
   searchInput: {
     flex: 1,

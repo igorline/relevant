@@ -3,7 +3,6 @@ import {
   StyleSheet,
   TextInput,
   View,
-  Text,
   ScrollView,
   KeyboardAvoidingView
 } from 'react-native';
@@ -41,10 +40,10 @@ export default class UrlComponent extends Component {
   }
 
   setMention(user) {
-    // let bodyMentions = [...this.props.bodyMentions, user._id];
     let postBody = this.props.postBody.replace(this.mention, '@' + user._id);
     this.props.actions.setCreaPostState({ postBody });
     this.props.actions.setUserSearch([]);
+    this.input.focus();
   }
 
   processInput(postBody, doneTyping) {
@@ -177,7 +176,10 @@ export default class UrlComponent extends Component {
         }}
       >
         <ScrollView
+          keyboardDismissMode={'on-drag'}
+          keyboardShouldPersistTaps
           style={{
+            flex: 1,
             paddingHorizontal: 10,
           }}
         >

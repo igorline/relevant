@@ -42,9 +42,9 @@ export default function (props) {
 
 const localStyles = StyleSheet.create({
   userImageBig: {
-    height: 42,
-    width: 42,
-    borderRadius: 21,
+    height: 44,
+    width: 44,
+    borderRadius: 22,
     marginRight: 7,
   },
   userImage: {

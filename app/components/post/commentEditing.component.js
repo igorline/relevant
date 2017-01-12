@@ -4,12 +4,9 @@ import {
   Text,
   View,
   TextInput,
-  Image,
-  ActionSheetIOS,
-  AlertIOS,
   TouchableHighlight
 } from 'react-native';
-import { globalStyles } from '../styles/global';
+import { globalStyles } from '../../styles/global';
 
 let moment = require('moment');
 

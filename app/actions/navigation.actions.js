@@ -79,13 +79,14 @@ export function goToComments(post, key, animation) {
   }, key, animation);
 }
 
-export function goToPost(post, key, animation) {
+export function goToPost(post, openComment) {
   return push({
     key: 'singlePost',
     title: post.title,
     back: true,
-    id: post._id
-  }, key, animation);
+    id: post._id,
+    openComment
+  });
 }
 
 export function goToProfile(user, key, animation) {
