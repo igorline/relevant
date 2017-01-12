@@ -43,10 +43,10 @@ class ProfileComponent extends Component {
     }
 
     relevanceEl = (<Text allowFontScaling={false} style={[styles.libre, { fontSize: 19 }]}>
-      📈 Relevance
+      📈 Relevance:
       <Text style={styles.bebas}>
-        &nbsp;{numbers.abbreviateNumber(relevance)}
-        &nbsp;<Percent user={user} />
+        &nbsp;{numbers.abbreviateNumber(relevance)}&nbsp;•
+        <Percent user={user} />
       </Text>
     </Text>);
 
@@ -57,10 +57,9 @@ class ProfileComponent extends Component {
           justifyContent: 'flex-start',
           alignItems: 'center',
           padding: 10,
-          backgroundColor: 'white'
+          backgroundColor: 'white',
         }]}
       >
-
         <View
           style={{
             paddingRight: 10,
@@ -76,17 +75,17 @@ class ProfileComponent extends Component {
           {relevanceEl}
 
           <Text allowFontScaling={false} style={[styles.libre, { fontSize: 19 }]}>
-            💵 Worth <Text style={[styles.bebas, { fontSize: 19 }]}>
+            💵 Worth: <Text style={[styles.bebas, { fontSize: 19 }]}>
               {numbers.abbreviateNumber(balance)}
             </Text>
 
           </Text>
 
           <Text style={[styles.darkGray, styles.georgia]}>
-            Followers <Text style={[styles.active, styles.bebas]}>{followers}</Text>
+            Followers: <Text style={[styles.active, styles.bebas]}>{followers}</Text>
           </Text>
           <Text style={[styles.darkGray, styles.georgia]}>
-            Following <Text style={[styles.active, styles.bebas]}>{following}</Text>
+            Following: <Text style={[styles.active, styles.bebas]}>{following}</Text>
           </Text>
 
           <View style={styles.onlineRow}>

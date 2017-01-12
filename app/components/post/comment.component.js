@@ -8,10 +8,10 @@ import {
   AlertIOS,
   TouchableHighlight
 } from 'react-native';
-import { globalStyles } from '../styles/global';
-import CommentEditing from '../components/commentEditing.component';
-import UserName from './userNameSmall.component';
-import { numbers } from '../utils';
+import { globalStyles } from '../../styles/global';
+import CommentEditing from './commentEditing.component';
+import UserName from '../userNameSmall.component';
+import { numbers } from '../../utils';
 
 let moment = require('moment');
 
@@ -224,7 +224,7 @@ class Comment extends Component {
           underlayColor={'transparent'}
           onPress={this.showActionSheet}
         >
-          <Text style={[{ fontSize: 20, color: '#808080' }]}>...</Text>
+          <Text style={styles.dots}>...</Text>
         </TouchableHighlight>
       </View>);
     }

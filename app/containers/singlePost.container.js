@@ -26,13 +26,12 @@ import CustomSpinnerRelative from '../components/customSpinnerRelative.component
 import ErrorComponent from '../components/error.component';
 
 // import SinglePostComponent from '../components/post/singlePost.component';
-import SinglePostComments from '../components/post/singlePostComments.component';
+import SinglePost from '../components/post/singlePost.component';
 
-import CommentInput from '../components/commentInput.component';
 
 let styles;
 
-class SinglePost extends Component {
+class SinglePostContainer extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -83,7 +82,7 @@ class SinglePost extends Component {
     this.commentsData = this.props.comments.commentsById[this.postId];
 
     if (this.postData && !this.props.error) {
-      dataEl = (<SinglePostComments
+      dataEl = (<SinglePost
         post={this.postId}
         scene={this.props.scene}
         {...this.props}
@@ -92,8 +91,8 @@ class SinglePost extends Component {
     }
 
     return (
-      <KeyboardAvoidingView
-        behavior={'padding'}
+      <View
+        // behavior={'padding'}
         style={{ flex: 1 }}
         // keyboardVerticalOffset={64}
       >
@@ -104,15 +103,14 @@ class SinglePost extends Component {
             backgroundColor: 'white'
           }}
         >
-          {dataEl}
           <CustomSpinnerRelative
             visible={(!this.postData || !this.commentsData) &&
               !this.props.error}
           />
+          {dataEl}
           <ErrorComponent parent={'singlepost'} reloadFunction={this.reload} />
-          <CommentInput postId={this.postId} editing={this.state.editing} {...this.props}  />
         </View>
-      </KeyboardAvoidingView>
+      </View>
     );
   }
 }
@@ -155,4 +153,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SinglePost);
+export default connect(mapStateToProps, mapDispatchToProps)(SinglePostContainer);

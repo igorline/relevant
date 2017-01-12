@@ -5,13 +5,11 @@ import {
   View,
   TextInput,
   Image,
-  ActionSheetIOS,
   AlertIOS,
   TouchableHighlight
 } from 'react-native';
-import { globalStyles } from '../styles/global';
-import UserName from './userNameSmall.component';
-import UserSearchComponent from './createPost/userSearch.component';
+import { globalStyles } from '../../styles/global';
+import UserSearchComponent from '../createPost/userSearch.component';
 
 let styles;
 
@@ -23,8 +21,7 @@ class CommentInput extends Component {
     this.setMention = this.setMention.bind(this);
     this.createComment = this.createComment.bind(this);
     this.processInput = this.processInput.bind(this);
-    this.state = {
-    }
+    this.state = {};
   }
 
   setMention(user) {
@@ -34,7 +31,7 @@ class CommentInput extends Component {
   }
 
   createComment() {
-    if (!this.state.comment.length) {
+    if (!this.state.comment || !this.state.comment.length) {
       AlertIOS.alert('no comment');
     }
     let comment = this.state.comment.replace(/^(?=\n)$|^\s*|\s*$|\n\n+/gm, '');
@@ -48,6 +45,7 @@ class CommentInput extends Component {
     this.props.actions.createComment(this.props.auth.token, commentObj);
     this.setState({ comment: '' });
     this.textInput.blur();
+    this.props.onFocus('new');
   }
 
   processInput(comment) {
@@ -81,12 +79,28 @@ class CommentInput extends Component {
 
   renderUserSuggestions() {
     let parentEl = null;
-    let usersArr = null;
     if (this.props.users.search) {
       if (this.props.users.search.length) {
-        parentEl = (<View style={{position: 'absolute', bottom: Math.min(100, this.state.inputHeight), left: 0, right: 0, backgroundColor: 'white', borderTopWidth: 1, borderTopColor: '#F0F0F0' }}>
-          <UserSearchComponent setSelected={this.setMention} users={this.props.users.search} />
-        </View>);
+        parentEl = (
+          <View
+            style={{
+              position: 'absolute',
+              bottom: Math.min(100, this.state.inputHeight),
+              left: 0,
+              right: 0,
+              // top: 0,
+              maxHeight: 301,
+              backgroundColor: 'white',
+              borderTopWidth: 1,
+              borderTopColor: '#F0F0F0' }}
+          >
+            <UserSearchComponent
+              style={{ paddingTop: 59 }}
+              setSelected={this.setMention}
+              users={this.props.users.search}
+            />
+          </View>
+        );
       }
     }
     return parentEl;
@@ -112,8 +126,6 @@ class CommentInput extends Component {
           style={[
             styles.commentInput,
             styles.font15,
-            styles.georgia,
-            styles.quarterLetterSpacing,
             { lineHeight: 20 }
           ]}
           placeholder="Enter comment..."
@@ -124,6 +136,7 @@ class CommentInput extends Component {
           }}
           value={this.state.comment}
           returnKeyType="default"
+          onFocus={this.props.onFocus}
           onContentSizeChange={(event) => {
             let h = event.nativeEvent.contentSize.height;
             this.setState({

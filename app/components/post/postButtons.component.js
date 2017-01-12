@@ -7,9 +7,11 @@ import {
   TouchableWithoutFeedback,
   ActionSheetIOS,
 } from 'react-native';
-import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
-import InvestModal from './investModal.component.js';
 import Share from 'react-native-share';
+
+import { globalStyles } from '../../styles/global';
+import InvestModal from './investModal.component';
+
 
 let styles;
 
@@ -74,6 +76,22 @@ class PostButtons extends Component {
     }
   }
 
+  onShare() {
+    Share.open({
+      title: 'Relevant',
+      url: this.props.post.link ? this.props.post.link : 'http://relevant-community.herokuapp.com/',
+      subject: 'Share Link',
+      message: this.props.post.title ? 'Relevant post: ' + this.props.post.title : 'Relevant post:'
+    }, (e) => {
+      console.log(e);
+    });
+  }
+
+  toggleModal(bool) {
+    if (!bool) bool = !this.state.modalVisible;
+    this.setState({ modalVisible: bool });
+  }
+
   showActionSheet() {
     if (this.myPost) {
       ActionSheetIOS.showActionSheetWithOptions({
@@ -122,22 +140,6 @@ class PostButtons extends Component {
         }
       });
     }
-  }
-
-  toggleModal(bool) {
-    if (!bool) bool = !this.state.modalVisible;
-    this.setState({ modalVisible: bool });
-  }
-
-  onShare() {
-    Share.open({
-      title: 'Relevant',
-      url: this.props.post.link ? this.props.post.link : 'http://relevant-community.herokuapp.com/',
-      subject: 'Share Link',
-      message: this.props.post.title ? 'Relevant post: ' + this.props.post.title : 'Relevant post:'
-    }, (e) => {
-      console.log(e);
-    });
   }
 
   toggleEditing() {
@@ -204,13 +206,11 @@ class PostButtons extends Component {
 
   goToPost() {
     if (this.props.scene) {
-      if (this.props.scene.route) {
-        if (this.props.scene.route.id) {
-          if (this.props.scene.route.id === this.props.post._id) return;
-        }
-      }
+      if (this.props.scene.id === this.props.post._id) return;
     }
-    this.props.navigator.goToPost(this.props.post);
+    let openComment = false;
+    if (!this.props.post.commentCount) openComment = true;
+    this.props.navigator.goToPost(this.props.post, openComment);
   }
 
   deletePost() {
@@ -231,7 +231,6 @@ class PostButtons extends Component {
 
   render() {
     let investButtonEl = null;
-    const expanded = this.props.expanded;
     let post = this.props.post;
     let investable = false;
     let irrelevantButton;
@@ -248,43 +247,45 @@ class PostButtons extends Component {
       else commentString = post.commentCount + ' comments';
     }
 
-    if (investable) {
-      investButtonEl = (<TouchableWithoutFeedback
-        onPress={() => this.toggleModal()}
-      >
-        <View style={styles.investButton}>
+    investButtonEl = (<TouchableWithoutFeedback
+      onPress={() => investable ? this.toggleModal() : null}
+    >
+      <View style={[styles.investButton, !investable ? { opacity: 0.3, shadowOpacity: 0 } : null]}>
 
-          <Text
-            allowFontScaling={false}
-            style={[styles.font15, styles.bold, styles.postButtonText]}>
-            💰Invest
-          </Text>
-        </View>
-      </TouchableWithoutFeedback>);
-
-      irrelevantButton = (
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={styles.postButton}
-          onPress={this.irrelevant}
+        <Text
+          allowFontScaling={false}
+          style={[styles.font15, styles.bold, styles.postButtonText]}
         >
-          <Text
-            allowFontScaling={false}
-            style={[styles.font12, styles.greyText, styles.postButtonText]}>
-           irrelevant
-          </Text>
-        </TouchableHighlight>
-      );
-    } else {
-      investButtonEl = <View style={[styles.investButton, { opacity: 0 }]} />;
-      irrelevantButton = <View style={[styles.postButton, { opacity: 0 }]} />;
-    }
+          💰Invest
+        </Text>
+      </View>
+    </TouchableWithoutFeedback>);
 
-     // <TouchableHighlight underlayColor={'transparent'} style={[styles.postButton, { marginRight: 5 }]} onPress={this.goToPost}>
-     //    <Text style={[styles.font10, styles.postButtonText]}>
-     //     Read more
-     //    </Text>
-     //  </TouchableHighlight>
+    irrelevantButton = (
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        style={styles.postButton}
+        onPress={investable ? this.irrelevant : this.onShare}
+      >
+        <Text
+          allowFontScaling={false}
+          style={[styles.font12, styles.greyText, styles.postButtonText]}
+        >
+          {investable ? 'irrelevant' : 'share'}
+        </Text>
+      </TouchableHighlight>
+    );
+
+
+    // <TouchableHighlight
+    //  underlayColor={'transparent'}
+    //  style={[styles.postButton, { marginRight: 5 }]}
+    //  onPress={this.goToPost}
+    // >
+    //    <Text style={[styles.font10, styles.postButtonText]}>
+    //     Read more
+    //    </Text>
+    //  </TouchableHighlight>
     let comments = (<TouchableHighlight
       underlayColor={'transparent'}
       style={[styles.postButton]}
@@ -292,24 +293,25 @@ class PostButtons extends Component {
     >
       <Text
         allowFontScaling={false}
-        style={[{ marginRight: 5 }, styles.greyText, styles.font12, styles.postButtonText]}>
+        style={[{ marginRight: 5 }, styles.greyText, styles.font12, styles.postButtonText]}
+      >
         {commentString}
       </Text>
     </TouchableHighlight>);
 
     return (<View style={styles.postButtons}>
       {investButtonEl}
-
       {irrelevantButton}
-
       {comments}
-
       <TouchableHighlight
         underlayColor={'transparent'}
         style={[styles.postButton]}
         onPress={() => this.showActionSheet()}
       >
-        <Text allowFontScaling={false} style={[styles.font12, styles.greyText, styles.postButtonText]}>
+        <Text
+          allowFontScaling={false}
+          style={[styles.greyText, styles.postButtonText, styles.dots]}
+        >
           ...
         </Text>
       </TouchableHighlight>

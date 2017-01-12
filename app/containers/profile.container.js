@@ -164,7 +164,8 @@ class Profile extends Component {
           tabs={this.tabs}
           active={this.state.view}
           handleChange={this.changeView}
-        />
+        />,
+        <View key={2} style={{ height: 10 }} />
       ]);
     }
     return header;

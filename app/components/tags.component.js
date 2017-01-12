@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {
   Text,
   ScrollView,
+  TouchableHighlight,
+  View
 } from 'react-native';
 import { globalStyles } from '../styles/global';
 
@@ -26,18 +28,20 @@ export default class Tags extends Component {
 
   renderTag(tag, selected) {
     let name = `#${tag._id}`;
-    if (tag.category) name = tag.emoji + tag.categoryName;
+    if (tag.category) name = tag.categoryName;
     return (
-      <Text
+      <TouchableHighlight
         style={
           [styles.tagBox, {
-            backgroundColor: selected ? '#007aff' : '#F0F0F0',
-            color: selected ? 'white' : '#808080' }]}
+            backgroundColor: selected ? '#4d4eff' : '#F0F0F0' }]}
         onPress={() => this.toggleTag(tag)}
         key={tag._id}
       >
-        {name}
-      </Text>
+        <View style={{flexDirection: 'row'}} >
+          <Text style={styles.emoji}>{tag.emoji}</Text>
+          <Text style={{color: selected ? 'white' : '#808080'}}>{name}</Text>
+        </View>
+      </TouchableHighlight>
     );
   }
 

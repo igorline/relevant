@@ -16,12 +16,12 @@ import * as tagActions from '../actions/tag.actions';
 import * as postActions from '../actions/post.actions';
 import * as userActions from '../actions/user.actions';
 import { globalStyles, fullHeight } from '../styles/global';
-import Comment from '../components/comment.component';
+import Comment from '../components/post/comment.component';
 import CustomSpinner from '../components/CustomSpinner.component';
 import ErrorComponent from '../components/error.component';
 // import UserName from '../components/userNameSmall.component';
 // import UserSearchComponent from '../components/createPost/userSearch.component';
-import CommentInput from '../components/commentInput.component';
+// import CommentInput from '../components/commentInput.component';
 
 let styles;
 

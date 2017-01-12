@@ -31,7 +31,7 @@ export default class UserSearchComponent extends Component {
         automaticallyAdjustContentInsets={false}
         keyboardShouldPersistTaps
         contentContainerStyle={{ backgroundColor: 'white' }}
-        style={{ maxHeight: 100 }}
+        style={[{ flex: 1 }]}
         dataSource={dataSource}
         renderRow={rowData => this.renderRow(rowData)}
       />

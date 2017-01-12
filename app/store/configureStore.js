@@ -17,10 +17,21 @@ socket.on('pingKeepAlive', () => {
   socket.emit('pingResponse');
 });
 
+
 export default function configureStore() {
   let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
 
   let store = applyMiddleware(thunk, socketIoMiddleware)(createStore)(rootReducer);
+
+  socket.on('connect', () => {
+    let s = store.getState();
+    if (s.auth && s.auth.user) {
+      socket.emit('action', {
+        type: 'server/storeUser',
+        payload: s.auth.user._id
+      });
+    }
+  });
 
   if (module.hot) {
     module.hot.accept(() => {

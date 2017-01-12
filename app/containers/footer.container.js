@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as navigationActions from '../actions/navigation.actions';
 import { globalStyles } from '../styles/global';
-import CardContainer from './card.containerCustom';
+import CardContainer from './tabView.container';
 import * as userActions from '../actions/user.actions';
 
 const localStyles = StyleSheet.create({
