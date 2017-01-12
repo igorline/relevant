@@ -204,7 +204,7 @@ class SignUp extends Component {
                 clearTextOnFocus={false}
                 // onBlur={() => this.userError()}
                 placeholder="username"
-                onChangeText={(name) => { this.setState({ name }); this.checkUsername(name) }}
+                onChangeText={(name) => { this.setState({ name }); this.checkUsername(name); }}
                 value={this.state.name}
                 style={styles.fieldsInput}
               />
