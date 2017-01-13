@@ -27,6 +27,7 @@ export default class ActivityView extends Component {
     let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.tpmDataSource = ds.cloneWithRows([]);
     this.showReload = false;
+    this.top = 59;
   }
 
   componentWillMount() {
@@ -85,6 +86,7 @@ export default class ActivityView extends Component {
   }
 
   loadMore() {
+    if(this.props.loaded && !this.props.data.length) return;
     if (!this.props.active) return;
     if (this.state.loading || this.state.reloading) return;
     this.setState({ loading: true });

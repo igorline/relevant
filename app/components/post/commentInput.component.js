@@ -8,7 +8,7 @@ import {
   AlertIOS,
   TouchableHighlight
 } from 'react-native';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, fullHeight } from '../../styles/global';
 import UserSearchComponent from '../createPost/userSearch.component';
 
 let styles;
@@ -22,6 +22,10 @@ class CommentInput extends Component {
     this.createComment = this.createComment.bind(this);
     this.processInput = this.processInput.bind(this);
     this.state = {};
+  }
+
+  componentWillUnmount() {
+    this.props.actions.setUserSearch([]);
   }
 
   setMention(user) {
@@ -89,7 +93,7 @@ class CommentInput extends Component {
               left: 0,
               right: 0,
               // top: 0,
-              maxHeight: 301,
+              maxHeight: this.top,
               backgroundColor: 'white',
               borderTopWidth: 1,
               borderTopColor: '#F0F0F0' }}
@@ -114,6 +118,9 @@ class CommentInput extends Component {
         inputImage = (<Image style={styles.inputImage} source={{ uri: imageUrl }} />);
       }
       return (<View
+        onLayout={(e) => {
+          this.top = e.nativeEvent.layout.y;
+        }}
         style={[
           styles.commentInputParent,
           { height: Math.min(100, this.state.inputHeight) }

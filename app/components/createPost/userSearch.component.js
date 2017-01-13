@@ -11,6 +11,7 @@ let styles;
 
 export default class UserSearchComponent extends Component {
 
+
   renderRow(rowData) {
     return (
       <View style={{ padding: 5 }}>
