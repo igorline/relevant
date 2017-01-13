@@ -126,6 +126,7 @@ const font = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
     flexDirection: 'row',
+    marginTop: -3,
   }
 });
 
@@ -360,7 +361,6 @@ const layout = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 5,
     marginTop: 5,
-    fontSize: 15,
     color: '#808080'
   },
   singleTagBox: {

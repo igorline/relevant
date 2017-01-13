@@ -22,8 +22,7 @@ export default class Tags extends Component {
   toggleTag(tag) {
     if (this.selectedLookup[tag._id]) {
       this.props.actions.deselectTag(tag);
-    }
-    else this.props.actions.selectTag(tag);
+    } else this.props.actions.selectTag(tag);
   }
 
   renderTag(tag, selected) {
@@ -37,9 +36,9 @@ export default class Tags extends Component {
         onPress={() => this.toggleTag(tag)}
         key={tag._id}
       >
-        <View style={{flexDirection: 'row'}} >
-          <Text style={styles.emoji}>{tag.emoji}</Text>
-          <Text style={{color: selected ? 'white' : '#808080'}}>{name}</Text>
+        <View style={{ flexDirection: 'row' }} >
+          <Text style={[styles.font15, styles.emoji]}>{tag.emoji}</Text>
+          <Text style={[styles.font15, { color: selected ? 'white' : '#808080' }]}>{name}</Text>
         </View>
       </TouchableHighlight>
     );

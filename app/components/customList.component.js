@@ -9,7 +9,6 @@ import {
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import CustomSpinner from '../components/CustomSpinner.component';
 import EmptyList from '../components/emptyList.component';
-import CustomSpinnerRelative from '../components/customSpinnerRelative.component';
 
 let styles;
 
@@ -28,11 +27,6 @@ export default class ActivityView extends Component {
     let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.tpmDataSource = ds.cloneWithRows([]);
     this.showReload = false;
-    this.stateTimeout;
-  }
-
-  componentDidMount() {
-    this.showReload = true;
   }
 
   componentWillMount() {
@@ -43,6 +37,10 @@ export default class ActivityView extends Component {
       this.props.load(this.props.view, 0);
       this.lastReload = new Date().getTime();
     }
+  }
+
+  componentDidMount() {
+    this.showReload = true;
   }
 
   componentWillReceiveProps(next) {
@@ -100,44 +98,6 @@ export default class ActivityView extends Component {
     let emptyEl = null;
     let spinnerEl = (<CustomSpinner visible={!this.props.data.length && this.props.active} />);
 
-    listEl = (
-      <ListView
-        ref={(c) => { this.listview = c; }}
-        enableEmptySections
-        removeClippedSubviews={false}
-        pageSize={1}
-        initialListSize={10}
-        scrollEventThrottle={10}
-        automaticallyAdjustContentInsets={false}
-        stickyHeaderIndices={this.props.stickyHeaderIndices}
-        dataSource={this.dataSource || this.tpmDataSource}
-        renderRow={row => this.props.renderRow(row, this.props.view)}
-        contentInset={{ top: this.props.YOffset || 0 }}
-        contentOffset={{ y: -this.props.YOffset || 0 }}
-        renderHeader={this.props.renderHeader}
-        style={{
-          flex: 0.5,
-          width: fullWidth,
-          backgroundColor: 'white'
-        }}
-        keyboardDismissMode={'on-drag'}
-        onScroll={this.props.onScroll}
-        onEndReached={this.loadMore}
-        onEndReachedThreshold={100}
-        renderFooter={() => <View />}
-        refreshControl={
-          <RefreshControl
-            style={[{ backgroundColor: 'hsl(238,20%,95%)' }, this.props.data.length ? null : styles.hideReload]}
-            refreshing={this.state.reloading}
-            onRefresh={this.reload}
-            tintColor="#000000"
-            colors={['#000000', '#000000', '#000000']}
-            progressBackgroundColor="#ffffff"
-          />
-        }
-      />
-    );
-
     let listStyle = [styles.commonList, styles.hiddenList];
     if (this.props.active) listStyle = [styles.commonList, styles.vis];
 
@@ -168,10 +128,50 @@ export default class ActivityView extends Component {
       if (this.props.parent !== 'profile') listEl = null;
     }
 
+    listEl = (
+      <ListView
+        ref={(c) => { this.listview = c; }}
+        enableEmptySections
+        removeClippedSubviews={false}
+        pageSize={1}
+        initialListSize={10}
+        scrollEventThrottle={10}
+        automaticallyAdjustContentInsets={false}
+        stickyHeaderIndices={this.props.stickyHeaderIndices}
+        dataSource={this.dataSource || this.tpmDataSource}
+        renderRow={row => this.props.renderRow(row, this.props.view)}
+        contentInset={{ top: this.props.YOffset || 0 }}
+        contentOffset={{ y: -this.props.YOffset || 0 }}
+        renderHeader={this.props.renderHeader}
+        style={{
+          flex: 0.5,
+          width: fullWidth,
+          backgroundColor: 'white',
+        }}
+        keyboardDismissMode={'on-drag'}
+        onScroll={this.props.onScroll}
+        onEndReached={this.loadMore}
+        onEndReachedThreshold={100}
+        renderFooter={() => emptyEl}
+        refreshControl={
+          <RefreshControl
+            style={[{ backgroundColor: 'hsl(238,20%,95%)' }, this.props.data.length ? null : styles.hideReload]}
+            refreshing={this.state.reloading}
+            onRefresh={this.reload}
+            tintColor="#000000"
+            colors={['#000000', '#000000', '#000000']}
+            progressBackgroundColor="#ffffff"
+          />
+        }
+      />
+    );
+
+
+
     return (
       <View style={listStyle}>
         {listEl}
-        {emptyEl}
+        
         {spinnerEl}
       </View>
     );
