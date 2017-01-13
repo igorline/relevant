@@ -4,11 +4,11 @@ import {
   Text,
   View,
 } from 'react-native';
-import { globalStyles } from '../styles/global';
+import { globalStyles, fullHeight } from '../styles/global';
 
 let styles;
 
-export default function(props) {
+export default function (props) {
   let type = props.type || '';
   let emoji = props.emoji || '😶';
   let visible = props.visible;
@@ -16,7 +16,7 @@ export default function(props) {
   return (
     <View style={[visible ? styles.emptyList : styles.hideEmptyList]} pointerEvents={visible ? 'auto' : 'none'}>
       <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
-        Sorry bruh, no {type} {emoji}
+        Sorry, no {type} {emoji}
       </Text>
       {props.children}
     </View>
@@ -31,6 +31,7 @@ const localStyles = StyleSheet.create({
   },
   emptyList: {
     flex: 1.8,
+    height: fullHeight - 59 * 2,
     paddingLeft: 40,
     paddingRight: 40,
     backgroundColor: 'white',

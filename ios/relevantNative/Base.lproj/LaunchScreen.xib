@@ -13,7 +13,7 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" semanticContentAttribute="spatial" misplaced="YES" image="launch_logo.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="83E-3a-Cjr">
+                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" semanticContentAttribute="spatial" misplaced="YES" image="default-launch.png" translatesAutoresizingMaskIntoConstraints="NO" id="83E-3a-Cjr">
                     <frame key="frameInset" minY="-142" width="480" height="770"/>
                     <accessibility key="accessibilityConfiguration">
                         <accessibilityTraits key="traits" notEnabled="YES"/>
@@ -35,6 +35,6 @@
         </view>
     </objects>
     <resources>
-        <image name="launch_logo.jpg" width="770" height="770"/>
+        <image name="default-launch.png" width="1242" height="2208"/>
     </resources>
 </document>
