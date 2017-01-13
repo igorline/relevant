@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,19 +8,40 @@ import { globalStyles, fullHeight } from '../styles/global';
 
 let styles;
 
-export default function (props) {
-  let type = props.type || '';
-  let emoji = props.emoji || '😶';
-  let visible = props.visible;
 
-  return (
-    <View style={[visible ? styles.emptyList : styles.hideEmptyList]} pointerEvents={visible ? 'auto' : 'none'}>
-      <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
-        Sorry, no {type} {emoji}
-      </Text>
-      {props.children}
-    </View>
-  );
+class EmptyList extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      top: 0,
+      ready: false
+    };
+  }
+
+  render() {
+    let type = this.props.type || '';
+    let emoji = this.props.emoji || '😶';
+    let visible = this.props.visible;
+
+    return (
+      <View
+        style={[
+          visible && this.state.ready ? styles.emptyList : styles.hideEmptyList,
+          { height: fullHeight - (59 * 2 + this.state.top) },
+        ]}
+        pointerEvents={visible ? 'auto' : 'none'}
+        onLayout={(e) => {
+          this.setState({ top: e.nativeEvent.layout.y });
+          this.setState({ ready: true });
+        }}
+      >
+        <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
+          Sorry, no {type} {emoji}
+        </Text>
+        {this.props.children}
+      </View>
+    );
+  }
 }
 
 const localStyles = StyleSheet.create({
@@ -31,7 +52,6 @@ const localStyles = StyleSheet.create({
   },
   emptyList: {
     flex: 1.8,
-    height: fullHeight - 59 * 2,
     paddingLeft: 40,
     paddingRight: 40,
     backgroundColor: 'white',
@@ -42,3 +62,4 @@ const localStyles = StyleSheet.create({
 
 styles = { ...localStyles, ...globalStyles };
 
+module.exports = EmptyList;

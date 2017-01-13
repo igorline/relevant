@@ -187,6 +187,12 @@ class Application extends Component {
   logoutRedirect() {
     this.props.actions.removeDeviceToken(this.props.auth);
     this.props.actions.resetRoutes('auth');
+    this.props.actions.resetRoutes('activity');
+    this.props.actions.resetRoutes('discover');
+    this.props.actions.resetRoutes('myProfile');
+    this.props.actions.resetRoutes('read');
+    this.props.actions.resetRoutes('createPost');
+
     this.props.actions.replaceRoute({
       key: 'auth',
       component: 'auth'

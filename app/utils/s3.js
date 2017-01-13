@@ -27,13 +27,13 @@ function executeOnSignedUrl(uri) {
 
 function uploadToS3(uri, policy, signature, url, publicUrl, s3_object_name) {
   var body = new FormData();
-  body.append("key", s3_object_name)
-  body.append("AWSAccessKeyId", "AKIAJUARIDOFR6VZSEYA")
-  body.append('acl', 'public-read')
-  body.append("success_action_status", "201")
-  body.append('Content-Type', 'image/jpeg')
-  body.append('policy', policy)
-  body.append('signature', signature)
+  body.append("key", s3_object_name);
+  body.append("AWSAccessKeyId", "AKIAJUARIDOFR6VZSEYA");
+  body.append('acl', 'public-read');
+  body.append("success_action_status", "201");
+  body.append('Content-Type', 'image/jpeg');
+  body.append('policy', policy);
+  body.append('signature', signature);
   body.append('file', {
       uri: uri,
       name: s3_object_name
@@ -41,7 +41,7 @@ function uploadToS3(uri, policy, signature, url, publicUrl, s3_object_name) {
   return fetch(url, {
       method: 'POST',
       headers: {
-          'Content-Type': 'multipart/FormData'
+        'Content-Type': 'multipart/FormData'
       },
       body: body
   })

@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  ScrollView,
   InteractionManager,
-  KeyboardAvoidingView,
-  TextInput,
-  TouchableHighlight,
-  Text,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -19,13 +14,10 @@ import * as tagActions from '../actions/tag.actions';
 import * as investActions from '../actions/invest.actions';
 import * as createPostActions from '../actions/createPost.actions';
 import * as navigationActions from '../actions/navigation.actions';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
-// import Post from '../components/post/post.component';
+import { globalStyles, fullWidth } from '../styles/global';
 import * as animationActions from '../actions/animation.actions';
 import CustomSpinnerRelative from '../components/customSpinnerRelative.component';
 import ErrorComponent from '../components/error.component';
-
-// import SinglePostComponent from '../components/post/singlePost.component';
 import SinglePost from '../components/post/singlePost.component';
 
 
@@ -54,7 +46,7 @@ class SinglePostContainer extends Component {
     }
   }
 
-  shouldComponentUpdate(next) {
+  // shouldComponentUpdate(next) {
     // console.log('updating single post');
     // for (let p in next) {
     //   if (next[p] !== this.props[p]) {
@@ -64,8 +56,8 @@ class SinglePostContainer extends Component {
     //     }
     //   }
     // }
-    return true;
-  }
+    // return true;
+  // }
 
   setEditing(bool) {
     this.setState({ editing: bool });
@@ -92,9 +84,7 @@ class SinglePostContainer extends Component {
 
     return (
       <View
-        // behavior={'padding'}
         style={{ flex: 1 }}
-        // keyboardVerticalOffset={64}
       >
         <View
           style={{
@@ -103,11 +93,11 @@ class SinglePostContainer extends Component {
             backgroundColor: 'white'
           }}
         >
+          {dataEl}
           <CustomSpinnerRelative
-            visible={(!this.postData || !this.commentsData) &&
+            visible={(!this.postData) &&
               !this.props.error}
           />
-          {dataEl}
           <ErrorComponent parent={'singlepost'} reloadFunction={this.reload} />
         </View>
       </View>
