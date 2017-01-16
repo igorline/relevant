@@ -35,7 +35,7 @@ class Post extends Component {
       if (!posts.length) return null;
       post = posts[0];
       if (!post) return null;
-      if (post.image) imageEl = <PostImage post={post} />;
+      if (post.link || post.image) imageEl = <PostImage post={post} />;
     }
 
     if (!post) return null;

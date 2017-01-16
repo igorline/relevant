@@ -35,6 +35,7 @@ class PostImage extends Component {
     let lastPost = false;
     let linkEl = null;
     if (post) {
+      // console.log(post)
       if (post.image) image = post.image.match('http') ? post.image : 'https:' + post.image;
       if (post.link) {
         link = post.link;
@@ -65,8 +66,8 @@ class PostImage extends Component {
         onPress={link ? () => this.openLink(link) : null}
       >
         <View style={[styles.postImageContainer, styles.boxShadow]}>
-          <View>
-            <Image style={[styles.postImage]} source={image ? { uri: image } : {}} />
+          <View style={{ flex: 1, overflow: 'hidden' }}>
+            <Image style={[styles.postImage]} source={image ? { uri: image } : require('../../assets/images/missing.png')} />
           </View>
 
           {/*lastPost ? <Text style={[styles.lastPost, styles.white]}>
@@ -110,8 +111,10 @@ const localStyles = StyleSheet.create({
   },
   postImage: {
     height: 175,
-    // flex: 1,
-    // resizeMode: 'cover',
+    flex: 1,
+    maxWidth: fullWidth - 20,
+    position: 'relative',
+    resizeMode: 'cover',
   },
   postImageContainer: {
     // height: 388 / 2,
