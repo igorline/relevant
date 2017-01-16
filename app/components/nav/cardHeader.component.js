@@ -153,7 +153,7 @@ class CardHeader extends Component {
           underlayColor={'transparent'}
           onPress={() => this.props.showActionSheet()}
         >
-          <Text style={{ paddingBottom: 6, fontSize: 17 }}>⚙️</Text>
+          <Text style={{ paddingBottom: 5, fontSize: 17 }}>⚙️</Text>
         </TouchableHighlight>
       );
     }
