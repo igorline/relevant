@@ -3,11 +3,10 @@ import {
   Text,
   View,
   StyleSheet,
-  TouchableHighlight,
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { globalStyles } from '../styles/global';
 import Post from '../components/post/post.component';
 import * as postActions from '../actions/post.actions';
 import * as createPostActions from '../actions/createPost.actions';
@@ -19,7 +18,6 @@ import * as tagActions from '../actions/tag.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import ErrorComponent from '../components/error.component';
 import CustomListView from '../components/customList.component';
-import EmptyList from '../components/emptyList.component';
 
 let styles;
 
@@ -127,7 +125,8 @@ class Read extends Component {
           active={active}
           needsReload={this.needsReload}
           actions={this.props.actions}
-        />
+        >
+        </CustomListView>
       );
     });
 

@@ -11,6 +11,7 @@ import { numbers } from '../utils';
 import { globalStyles } from '../styles/global';
 
 let moment = require('moment');
+
 let styles;
 
 export default function (props) {
@@ -96,6 +97,13 @@ export default function (props) {
           </Text>
         );
 
+      case 'basicIncome':
+        return (
+          <Text>
+            Recieved basic income of ${singleActivity.amount.toFixed(0)}
+          </Text>
+        );
+
       case 'comment':
         return (
           <Text>
@@ -135,6 +143,16 @@ export default function (props) {
             </Text>
           </View>
         );
+      case 'basicIncome':
+        return (
+          <View style={styles.activityLeft}>
+            <Text style={styles.incomeEmoji}>💸</Text>
+            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
+              {getText(singleActivity)}
+              {renderPost(singleActivity.post)}
+            </Text>
+          </View>
+        );
       default:
         return (
           <View style={styles.activityLeft}>
@@ -160,6 +178,13 @@ export default function (props) {
 const localStyles = StyleSheet.create({
   link: {
     color: '#4d4eff',
+  },
+  incomeEmoji: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 10,
+    textAlign: 'center'
   },
   activityImage: {
     width: 30,

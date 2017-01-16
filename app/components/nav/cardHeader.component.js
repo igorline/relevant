@@ -77,7 +77,7 @@ class CardHeader extends Component {
             underlayColor={'transparent'}
             onPress={() => this.toggleSearch()}
           >
-            <Text style={{ paddingBottom: 3 }}>🔎</Text>
+            <Text style={{ paddingBottom: 5 }}>🔎</Text>
           </TouchableHighlight>
         </View>);
       if (this.state.search) {
@@ -98,6 +98,11 @@ class CardHeader extends Component {
     let title = props.scene.route ? props.scene.route.title : '';
     let component = props.scene.route.component;
 
+    if (component === 'profile') {
+      if (this.props.users.selectedUserData[props.scene.route.id]) {
+        title = this.props.users.selectedUserData[props.scene.route.id].name;
+      }
+    }
     if (title === 'Profile' && this.props.auth.user) {
       title = this.props.auth.user.name;
     }
@@ -148,15 +153,15 @@ class CardHeader extends Component {
           underlayColor={'transparent'}
           onPress={() => this.props.showActionSheet()}
         >
-          <Text style={{ paddingBottom: 2, fontSize: 17 }}>⚙️</Text>
+          <Text style={{ paddingBottom: 6, fontSize: 17 }}>⚙️</Text>
         </TouchableHighlight>
       );
     }
 
-    if (props.scene.route.component === 'profile' &&
-      this.props.auth.user &&
-      props.scene.route.id !== this.props.auth.user._id) {
-      rightEl = null;
+    // if (props.scene.route.component === 'profile' &&
+    //   this.props.auth.user &&
+    //   props.scene.route.id !== this.props.auth.user._id) {
+    //   rightEl = null;
       // rightEl = (
       //   <View style={styles.gear}>
       //     <TouchableHighlight
@@ -167,7 +172,7 @@ class CardHeader extends Component {
       //     </TouchableHighlight>
       //   </View>
       // );
-    }
+    // }
 
     return <View style={styles.rightButton}>{rightEl}</View>;
   }

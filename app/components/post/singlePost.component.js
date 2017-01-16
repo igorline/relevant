@@ -9,7 +9,7 @@ import {
   TouchableHighlight,
   KeyboardAvoidingView
 } from 'react-native';
-import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
+import { globalStyles } from '../../styles/global';
 import Comment from './comment.component';
 import Post from './post.component';
 import CommentInput from './commentInput.component';

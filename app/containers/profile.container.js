@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
-  Animated,
   InteractionManager,
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -31,7 +29,6 @@ import * as animationActions from '../actions/animation.actions';
 import * as navigationActions from '../actions/navigation.actions';
 import Tabs from '../components/tabs.component';
 import CustomListView from '../components/customList.component';
-import EmptyList from '../components/emptyList.component';
 
 let styles;
 let localStyles;
@@ -56,7 +53,6 @@ class Profile extends Component {
       { id: 1, title: 'Investments' },
     ];
     this.loaded = false;
-    this.onInteraction;
   }
 
   componentWillMount() {
@@ -109,18 +105,13 @@ class Profile extends Component {
     this.onInteraction.cancel();
   }
 
-  scrollToTop() {
-    let view = this.tabs[this.state.view].component.listview;
-    if (view) view.scrollTo({ y: 0, animated: true });
-  }
-
   loadUser() {
     this.props.actions.getSelectedUser(this.userId);
   }
 
   load(view, length) {
     if (!this.loaded) return;
-    if (view === undefined) view === this.state.view;
+    if (view === undefined) view = this.state.view;
     if (length === undefined) length = 0;
 
     if (this.state.view === 0) {
@@ -137,16 +128,17 @@ class Profile extends Component {
     }
   }
 
-  changeView(view) {
-    if (view === this.state.view) this.scrollToTop();
-    this.setState({ view });
-  }
-
   renderRow(rowData, view) {
     let scene = this.props.scene || { route: { id: this.userId } };
 
     if (view === 0) return (<Post post={rowData} {...this.props} scene={scene} />);
     if (view === 1) return (<Investment investment={rowData} {...this.props} />);
+    return null;
+  }
+
+  scrollToTop() {
+    let view = this.tabs[this.state.view].component.listview;
+    if (view) view.scrollTo({ y: 0, animated: true });
   }
 
   renderHeader() {
@@ -186,6 +178,11 @@ class Profile extends Component {
       default:
         return null;
     }
+  }
+
+  changeView(view) {
+    if (view === this.state.view) this.scrollToTop();
+    this.setState({ view });
   }
 
   render() {
