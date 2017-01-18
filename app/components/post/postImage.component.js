@@ -7,10 +7,10 @@ import {
   Image,
   Linking
 } from 'react-native';
-import * as Progress from 'react-native-progress';
-import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
+
+import { globalStyles, fullWidth } from '../../styles/global';
+
 let styles;
-let moment = require('moment');
 
 class PostImage extends Component {
   constructor(props, context) {
@@ -32,9 +32,10 @@ class PostImage extends Component {
     let link = null;
     let post = this.props.post;
     let title = null;
-    let lastPost = false;
+    // let lastPost = false;
     let linkEl = null;
     if (post) {
+      // console.log(post)
       if (post.image) image = post.image.match('http') ? post.image : 'https:' + post.image;
       if (post.link) {
         link = post.link;
@@ -58,6 +59,13 @@ class PostImage extends Component {
       // }
     }
 
+    let imageEl;
+    if (image) {
+      imageEl = (<View style={{ flex: 1, overflow: 'hidden' }}>
+        <Image style={[styles.postImage]} source={image ? { uri: image } : require('../../assets/images/missing.png')} />
+      </View>);
+    }
+
     return (
       <TouchableHighlight
         style={{ flex: 1 }}
@@ -65,9 +73,7 @@ class PostImage extends Component {
         onPress={link ? () => this.openLink(link) : null}
       >
         <View style={[styles.postImageContainer, styles.boxShadow]}>
-          <View>
-            <Image style={[styles.postImage]} source={image ? { uri: image } : {}} />
-          </View>
+          {imageEl}
 
           {/*lastPost ? <Text style={[styles.lastPost, styles.white]}>
             Last subscribed post❗️
@@ -75,8 +81,11 @@ class PostImage extends Component {
 
           <View style={[styles.textContainer]}>
             <View>
-              <Text numberOfLines={3} style={[{ fontSize: 16, marginBottom: 1 }, styles.darkGrey, styles.georgia]}>
-                {title ? title : 'Untitled'}
+              <Text
+                numberOfLines={3}
+                style={[{ fontSize: 16, marginBottom: 1 }, styles.darkGrey, styles.georgia]}
+              >
+                {title || 'Untitled'}
               </Text>
               {linkEl}
             </View>
@@ -92,29 +101,20 @@ export default PostImage;
 const localStyles = StyleSheet.create({
   textContainer: {
     padding: 10,
-    // height: 100,
-    // position: 'absolute',
     flex: 1,
-    // top: 0,
-    // right: 0,
-    // bottom: 0,
-    // left: 0,
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'center',
     backgroundColor: 'white',
-    // shadowColor: 'red',
-    // shadowOffset: { width: -1, height: 1 },
-    // shadowRadius: 2,
-    // shadowOpacity: 0.9,
   },
   postImage: {
     height: 175,
-    // flex: 1,
-    // resizeMode: 'cover',
+    flex: 1,
+    maxWidth: fullWidth - 20,
+    position: 'relative',
+    resizeMode: 'cover',
   },
   postImageContainer: {
-    // height: 388 / 2,
     flex: 1,
     alignItems: 'stretch',
     flexDirection: 'column',

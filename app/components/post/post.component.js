@@ -15,6 +15,21 @@ let styles;
 
 class Post extends Component {
 
+  shouldComponentUpdate(next) {
+    // console.log(next);
+    // console.log('updating post');
+    // for (let p in next) {
+    //   if (next[p] !== this.props[p]) {
+    //     console.log(p);
+    //     for (let pp in next[p]) {
+    //       if (next[p][pp] !== this.props[p][pp]) console.log('--> ', pp);
+    //     }
+    //   }
+    // }
+
+    return true;
+  }
+
   render() {
     let post;
     let posts;
@@ -35,7 +50,7 @@ class Post extends Component {
       if (!posts.length) return null;
       post = posts[0];
       if (!post) return null;
-      if (post.image) imageEl = <PostImage post={post} />;
+      if (post.link || post.image) imageEl = <PostImage post={post} />;
     }
 
     if (!post) return null;
@@ -88,7 +103,7 @@ class Post extends Component {
     }
 
     return (
-      <View>
+      <View style={{ overflow:'hidden' }}>
         <View style={[styles.postContainer]}>
           <View style={styles.postInner}>
             {repostEl}
@@ -149,15 +164,6 @@ const localStyles = StyleSheet.create({
     paddingBottom: 30,
     paddingTop: 20,
     backgroundColor: 'white',
-
-    // borderTopColor: 'hsl(0,0%,95%)',
-    // borderTopWidth: 1,
-
-    // shadowColor: blue,
-    // shadowOffset: { width: 0, height: 0 },
-    // shadowRadius: 2,
-    // shadowOpacity: 0.3,
-    // zIndex: 1,
   },
   tagsRow: {
     flexDirection: 'row',

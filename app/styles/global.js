@@ -361,7 +361,7 @@ const layout = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 5,
     marginTop: 5,
-    color: '#808080'
+    // color: '#808080'
   },
   singleTagBox: {
     backgroundColor: 'black',

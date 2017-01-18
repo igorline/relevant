@@ -69,7 +69,7 @@ class Discover extends Component {
   shouldComponentUpdate(next) {
     let tab = next.tabs.routes[next.tabs.index];
     if (tab.key !== 'discover') return false;
-    if (next.nav.index > 0) return false;
+    // if (next.nav.index > 0) return false;
     // console.log(next);
     // console.log('updating discover');
     // for (let p in next) {
@@ -242,7 +242,7 @@ function mapStateToProps(state) {
     refresh: state.navigation.discover.refresh,
     reload: state.navigation.discover.reload,
     tabs: state.navigation.tabs,
-    nav: state.navigation.discover,
+    // nav: state.navigation.discover,
   };
 }
 

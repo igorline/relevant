@@ -55,8 +55,9 @@ export default class UrlPreviewComponent extends Component {
         >
           <View style={[styles.innerPreview]}>
             <Image
-              source={{ uri: previewImage }}
-              style={{ flex: 0.4, resizeMode: 'cover' }}
+              resizeMode={'cover'}
+              source={previewImage ? { uri: previewImage } : require('../../assets/images/missing.png')}
+              style={{ flex: 0.4, height: 75, resizeMode: 'cover' }}
             />
             <Text style={{ flex: 0.6, padding: 5, color: '#808080' }}>
               {this.props.urlPreview.title}

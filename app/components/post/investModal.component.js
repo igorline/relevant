@@ -5,6 +5,7 @@ import {
   View,
   TouchableHighlight,
   Modal,
+  Alert,
 } from 'react-native';
 import * as investActions from '../../actions/invest.actions';
 import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
@@ -29,6 +30,10 @@ class InvestModal extends Component {
     .then((results) => {
       if (results) {
         this.props.actions.triggerAnimation('invest');
+        setTimeout(() => {
+          let name = this.props.post.embeddedUser.name;
+          Alert.alert('You have subscribed to recieve ' + results.amount + ' posts from ' + name);
+        }, 1500);
       }
     });
     this.props.toggleFunction(false);

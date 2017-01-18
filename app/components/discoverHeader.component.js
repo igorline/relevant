@@ -22,11 +22,12 @@ export default class DiscoverHeader extends Component {
     this.headerHeight = 50;
     this.lastOffset = -50;
     this.onScroll = this.onScroll.bind(this);
+    this.currentOffset = -50;
   }
 
-  // componentDidMount() {
-  //   // if (this.props.showHeader) this.showHeader();
-  // }
+  componentDidMount() {
+    // if (this.props.showHeader) this.showHeader();
+  }
 
   // componentWillReceiveProps(next) {
   //   // if (this.props.showHeader !== next.showHeader) {
@@ -40,7 +41,7 @@ export default class DiscoverHeader extends Component {
 
   onScroll(event) {
     this.currentOffset = event.nativeEvent.contentOffset.y;
-    if (this.currentOffset <= -this.headerHeight) {
+    if (!event.nativeEvent.contentSize.height || this.currentOffset <= -this.headerHeight) {
       this.state.offsetY.setValue(0);
       return;
     }

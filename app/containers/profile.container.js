@@ -61,18 +61,18 @@ class Profile extends Component {
       this.userData = this.props.users[this.userId];
 
       this.onInteraction = InteractionManager.runAfterInteractions(() => {
-        if (!this.userData) this.loadUser();
+        if (!this.userData || !this.userData._id) this.loadUser();
         this.loaded = true;
+        this.load();
         this.setState({});
       });
     } else {
       this.userId = this.props.auth.user._id;
       this.userData = this.props.users[this.userId];
 
-      this.onInteraction = InteractionManager.runAfterInteractions(() => {
-        this.loaded = true;
-        this.setState({});
-      });
+      this.loaded = true;
+      this.setState({});
+      this.load();
     }
   }
 

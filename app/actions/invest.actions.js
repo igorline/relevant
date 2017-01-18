@@ -34,11 +34,11 @@ export function invest(token, amount, post, investingUser) {
     })
     .then(response => response.json())
     .then((data) => {
-      if (typeof data !== 'boolean') {
+      if (data && !data.success) {
         if (data.message) AlertIOS.alert(data.message);
         return false;
       }
-      return true;
+      return data;
     })
     .catch((error) => {
       console.log(error, 'error here');

@@ -36,7 +36,7 @@ export default function (props) {
           >
             {tab.title}
           </Text>
-          <View style={{ flex: 1, height: 5, backgroundColor: active ? '#3E3EFF' : 'transparent', position: 'absolute', bottom: 0, right: 0, left: 0 }}></View>
+          <View style={{ flex: 1, height: 5, backgroundColor: active ? '#3E3EFF' : 'transparent', position: 'absolute', bottom: 0, right: 0, left: 0 }} />
         </View>
       </TouchableHighlight>
     );
