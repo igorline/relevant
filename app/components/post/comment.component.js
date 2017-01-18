@@ -64,7 +64,7 @@ class Comment extends Component {
       destructiveButtonIndex: this.state.destructiveIndex,
     },
     (buttonIndex) => {
-      switch(buttonIndex) {
+      switch (buttonIndex) {
         case 0:
           this.editComment();
           break;

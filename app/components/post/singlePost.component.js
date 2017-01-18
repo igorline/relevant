@@ -58,8 +58,9 @@ class SinglePostComments extends Component {
     this.dataSource = ds.cloneWithRows([]);
 
     InteractionManager.runAfterInteractions(() => {
-      if (!this.comments) this.loadMoreComments();
+      // if (!this.comments) this.loadMoreComments();
       this.loaded = true;
+      this.reload();
       if (this.comments) {
         this.dataSource = ds.cloneWithRows(this.comments);
       }
@@ -138,6 +139,7 @@ class SinglePostComments extends Component {
   reload() {
     this.reloading = true;
     this.props.actions.getComments(this.id, 0, 10);
+    // this.props.actions.getSelectedPost(this.id);
   }
 
   renderHeader() {

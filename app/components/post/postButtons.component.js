@@ -6,6 +6,7 @@ import {
   TouchableHighlight,
   TouchableWithoutFeedback,
   ActionSheetIOS,
+  Alert
 } from 'react-native';
 import Share from 'react-native-share';
 
@@ -29,7 +30,6 @@ class PostButtons extends Component {
     this.linkMenu = {
       buttons: [
         'Share',
-        'Irrelevant',
         'Repost Commentary',
         'Repost Link',
         'Cancel',
@@ -40,7 +40,6 @@ class PostButtons extends Component {
     this.menu = {
       buttons: [
         'Share',
-        'Irrelevant',
         'Repost Commentary',
         'Cancel',
       ],
@@ -62,6 +61,7 @@ class PostButtons extends Component {
     this.toggleModal = this.toggleModal.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
     this.irrelevant = this.irrelevant.bind(this);
+    this.irrelevantPrompt = this.irrelevantPrompt.bind(this);
     this.goToPost = this.goToPost.bind(this);
   }
 
@@ -126,12 +126,9 @@ class PostButtons extends Component {
             this.onShare();
             break;
           case 1:
-            this.irrelevant();
-            break;
-          case 2:
             this.repostCommentary();
             break;
-          case 3:
+          case 2:
             if (this.props.post.link) this.repostUrl();
             else return;
             break;
@@ -217,6 +214,17 @@ class PostButtons extends Component {
     this.props.actions.deletePost(this.props.auth.token, this.props.post);
   }
 
+  irrelevantPrompt() {
+    Alert.alert(
+      'Irrelevant',
+      'Do you feel this post is irrelevant? Marking something irrelevant costs $100 and will reduce the author\'s relevance score',
+      [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+        { text: 'OK', onPress: () => this.irrelevant() },
+      ]
+    );
+  }
+
   irrelevant() {
     this.props.actions.invest(this.props.auth.token, -100, this.props.post, this.props.auth.user)
     .then((results) => {
@@ -265,7 +273,7 @@ class PostButtons extends Component {
       <TouchableHighlight
         underlayColor={'transparent'}
         style={styles.postButton}
-        onPress={investable ? this.irrelevant : this.onShare}
+        onPress={investable ? this.irrelevantPrompt : this.onShare}
       >
         <Text
           allowFontScaling={false}

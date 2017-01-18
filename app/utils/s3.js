@@ -17,8 +17,8 @@ function executeOnSignedUrl(uri) {
   })
   .then((response) => response.json())
   .then((responseJSON) => {
-      console.log(responseJSON, 'execute on signed url response');
-      return uploadToS3(uri, responseJSON.signature.s3Policy, responseJSON.signature.s3Signature, responseJSON.url, responseJSON.publicUrl, s3_object_name);
+    // console.log(responseJSON, 'execute on signed url response');
+    return uploadToS3(uri, responseJSON.signature.s3Policy, responseJSON.signature.s3Signature, responseJSON.url, responseJSON.publicUrl, s3_object_name);
   })
   .catch((error) => {
       console.log(error, 'error');

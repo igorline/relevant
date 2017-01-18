@@ -103,7 +103,7 @@ class CardContainer extends Component {
     // const easing = Easing.bezier(0.0, 0, 0.58, 1);
 
     return {
-      duration: 200,
+      duration: 220,
       easing,
       useNativeDriver: !!NativeAnimatedModule ? true : false
     };

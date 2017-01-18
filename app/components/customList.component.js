@@ -27,7 +27,6 @@ export default class ActivityView extends Component {
     let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.tpmDataSource = ds.cloneWithRows([]);
     this.showReload = false;
-    this.top = 59;
   }
 
   componentWillMount() {
@@ -86,7 +85,7 @@ export default class ActivityView extends Component {
   }
 
   loadMore() {
-    if(this.props.loaded && !this.props.data.length) return;
+    if (this.props.loaded && !this.props.data.length) return;
     if (!this.props.active) return;
     if (this.state.loading || this.state.reloading) return;
     this.setState({ loading: true });
@@ -134,7 +133,7 @@ export default class ActivityView extends Component {
       <ListView
         ref={(c) => { this.listview = c; }}
         enableEmptySections
-        removeClippedSubviews={false}
+        removeClippedSubviews={true}
         pageSize={1}
         initialListSize={10}
         scrollEventThrottle={10}

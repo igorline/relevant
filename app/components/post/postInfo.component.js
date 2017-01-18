@@ -31,7 +31,11 @@ class PostInfo extends Component {
   }
 
   componentDidMount() {
-    if (this.props.post) this.checkTime(this);
+    if (this.props.post) this.checkTime(this.props);
+  }
+
+  componentWillReceiveProps(next) {
+    this.checkTime(next);
   }
 
   setTag(tag) {
@@ -49,21 +53,22 @@ class PostInfo extends Component {
     });
   }
 
-  checkTime() {
-    if (this.props.post) {
-      let postTime = moment(this.props.post.createdAt);
+  checkTime(props) {
+    if (props.post) {
+      let postTime = moment(props.post.createdAt);
       let fromNow = postTime.fromNow();
       let timeNow = moment();
       let dif = timeNow.diff(postTime);
       let threshold = 21600000;
-      if (dif >= threshold) {
-        this.setState({ passed: true });
-      } else {
-        this.setState({
-          timeUntilString: moment.duration(threshold - dif).humanize(),
-          timePassedPercent: dif / threshold,
-        });
-      }
+      let passed = false;
+      if (dif >= threshold) passed = true;
+
+      this.setState({
+        passed,
+        timeUntilString: moment.duration(threshold - dif).humanize(),
+        timePassedPercent: dif / threshold,
+      });
+
       this.setState({ posted: fromNow });
     }
   }

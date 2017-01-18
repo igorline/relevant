@@ -22,9 +22,10 @@ export default class UrlComponent extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      inputHeight: 55,
+      inputHeight: 100,
     };
     this.setMention = this.setMention.bind(this);
+    this.previousPostLength = 0;
   }
 
   componentDidMount() {
@@ -47,12 +48,22 @@ export default class UrlComponent extends Component {
   }
 
   processInput(postBody, doneTyping) {
+    let length = postBody ? postBody.length : 0;
+
     if (doneTyping) postBody = this.props.postBody;
     let lines = postBody.split('\n');
     let words = [];
     lines.forEach(line => words = words.concat(line.split(' ')));
 
-    if (!this.props.postUrl) {
+    let shouldParseUrl = false;
+
+    if (length - this.previousPostLength > 1) shouldParseUrl = true;
+    if (postBody[postBody.length - 1] === ' ') shouldParseUrl = true;
+    if (postBody[postBody.length - 1] == '\n') shouldParseUrl = true;
+
+    this.previousPostLength = length;
+
+    if (!this.props.postUrl && shouldParseUrl) {
       let postUrl = words.find(word => URL_REGEX.test(word.toLowerCase()));
       if (postUrl) {
         this.props.actions.setCreaPostState({ postUrl });
@@ -97,6 +108,7 @@ export default class UrlComponent extends Component {
         this.props.actions.setCreaPostState({
           postBody: newBody,
           domain: this.extractDomain(postUrl),
+          postUrl: results.link,
           urlPreview: {
             image: results.image,
             title: results.title ? results.title : 'Untitled',
@@ -187,7 +199,7 @@ export default class UrlComponent extends Component {
 
           <View
             style={[
-              styles.innerBorder,
+              this.props.urlPreview ? styles.innerBorder : null,
               this.props.share ? styles.noBorder : null,
               { height: Math.min(maxHeight, this.state.inputHeight) }]
             }
@@ -206,7 +218,7 @@ export default class UrlComponent extends Component {
               onContentSizeChange={(event) => {
                 let h = event.nativeEvent.contentSize.height;
                 this.setState({
-                  inputHeight: Math.max(55, h)
+                  inputHeight: Math.max(100, h)
                 });
               }}
             />
