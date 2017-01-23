@@ -101,10 +101,11 @@ export default class UrlComponent extends Component {
   }
 
   createPreview(postUrl) {
-    utils.post.generatePreview(postUrl.toLowerCase())
+    utils.post.generatePreview(postUrl)
     .then((results) => {
       if (results) {
         let newBody = this.props.postBody.replace(`${postUrl}`, '').trim();
+        console.log(results, 'results');
         this.props.actions.setCreaPostState({
           postBody: newBody,
           domain: this.extractDomain(postUrl),
