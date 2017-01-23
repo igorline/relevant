@@ -7,6 +7,7 @@ import * as types from './actionTypes';
 import * as utils from '../utils';
 // import * as authActions from './auth.actions';
 import * as errorActions from './error.actions';
+import * as navigationActions from './navigation.actions';
 
 require('../publicenv');
 
@@ -98,12 +99,13 @@ export function getFeed(skip, tag) {
   };
 }
 
-export function deletePost(token, post) {
+export function deletePost(token, post, redirect) {
   let url = apiServer +
     'post/' + post._id +
     '?access_token=' + token;
 
   return (dispatch) => {
+    console.log('delete post redirect?', redirect);
     fetch(url, {
       credentials: 'include',
       headers: {
@@ -112,7 +114,10 @@ export function deletePost(token, post) {
       },
       method: 'DELETE',
     })
-    .then(() => dispatch(removePost(post)))
+    .then(() => {
+      dispatch(removePost(post));
+      if (redirect) dispatch(navigationActions.pop());
+    })
     .catch(error => console.log(error, 'error'));
   };
 }

@@ -211,7 +211,11 @@ class PostButtons extends Component {
   }
 
   deletePost() {
-    this.props.actions.deletePost(this.props.auth.token, this.props.post);
+    let redirect = false;
+    if (this.props.scene) {
+      if (this.props.scene.component === 'singlePost') redirect = true;
+    }
+    this.props.actions.deletePost(this.props.auth.token, this.props.post, redirect);
   }
 
   irrelevantPrompt() {
