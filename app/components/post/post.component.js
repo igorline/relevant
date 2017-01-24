@@ -50,7 +50,6 @@ class Post extends Component {
       if (!posts.length) return null;
       post = posts[0];
       if (!post) return null;
-      if (post.link || post.image) imageEl = <PostImage post={post} />;
     }
 
     if (!post) return null;
@@ -101,6 +100,9 @@ class Post extends Component {
       );
       post = repost;
     }
+
+    if (post.link || post.image) imageEl = <PostImage post={post} />;
+
 
     return (
       <View style={{ overflow:'hidden' }}>

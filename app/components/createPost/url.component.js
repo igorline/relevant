@@ -64,7 +64,7 @@ export default class UrlComponent extends Component {
     this.previousPostLength = length;
 
     if (!this.props.postUrl && shouldParseUrl) {
-      let postUrl = words.find(word => URL_REGEX.test(word.toLowerCase()));
+      let postUrl = words.find(word => URL_REGEX.test(word));
       if (postUrl) {
         this.props.actions.setCreaPostState({ postUrl });
       }
@@ -101,7 +101,7 @@ export default class UrlComponent extends Component {
   }
 
   createPreview(postUrl) {
-    utils.post.generatePreview(postUrl.toLowerCase())
+    utils.post.generatePreview(postUrl)
     .then((results) => {
       if (results) {
         let newBody = this.props.postBody.replace(`${postUrl}`, '').trim();

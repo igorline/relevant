@@ -32,7 +32,7 @@ class InvestModal extends Component {
         this.props.actions.triggerAnimation('invest');
         setTimeout(() => {
           let name = this.props.post.embeddedUser.name;
-          Alert.alert('You have subscribed to recieve ' + results.amount + ' posts from ' + name);
+          Alert.alert('You have subscribed to recieve ' + results.subscription.amount + ' posts from ' + name);
         }, 1500);
       }
     });

@@ -19,10 +19,11 @@ function extractDomain(url) {
 
 export function generatePreview(link) {
   let responseUrl;
-  return fetch(link, {
+  return fetch(link + '?_escaped_fragment_', {
     method: 'GET',
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+      'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'
+      // 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
     }
   })
   .then((response) => {
@@ -101,12 +102,13 @@ export function generatePreview(link) {
     if (!image || !description || !title) {
       console.log('url parse error');
       console.log(data);
+      console.log(responseTxt);
     }
 
     return obj;
   })
   .catch((error) => {
-    console.log(error, 'error');
+    console.log('preview error ', error);
     return false;
   });
 }

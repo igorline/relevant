@@ -66,9 +66,9 @@ class ShareContainer extends Component {
       this.setState({
         type: data.type,
         value: data.value,
-        data: data
+        data
       });
-      this.props.actions.setCreaPostState({ postUrl: data.value });
+      this.props.actions.setCreaPostState({ postUrl: data.url, postBody: data.selection });
     } catch (e) {
       console.log('share extension error', e);
     }
@@ -134,6 +134,7 @@ class ShareContainer extends Component {
           }}
         >
           <View style={style.modalBody}>
+            <Text>{JSON.stringify(this.state.data)}</Text>
             <NavigationCardStack
               key={`scene_${scene.key}`}
               direction={'horizontal'}
