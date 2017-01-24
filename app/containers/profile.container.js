@@ -102,7 +102,7 @@ class Profile extends Component {
   }
 
   componentWillUnmount() {
-    this.onInteraction.cancel();
+    if (this.onInteraction) this.onInteraction.cancel();
   }
 
   loadUser() {

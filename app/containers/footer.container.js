@@ -73,7 +73,6 @@ class Tabs extends Component {
           renderAsOriginal
           key={tab.key}
           icon={tab.regIcon}
-          renderAsOriginal
           title={tab.title}
           tintColor={'#4d4eff'}
           style={[{ paddingBottom: 48 }]}
