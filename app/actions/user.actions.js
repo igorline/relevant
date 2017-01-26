@@ -91,6 +91,7 @@ function getSelectedUser(userName) {
     // dispatch(setSelectedUser(userId));
     // test network error handling
     // return fetch('10.255.255.1/api/user/' + userId,
+    console.log('get selected user', userName);
     dispatch(getUserLoading());
     return fetch(process.env.API_SERVER + '/api/user/' + userName,
       {

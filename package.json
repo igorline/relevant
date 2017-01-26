@@ -43,7 +43,7 @@
     "redux-logger": "^2.6.1",
     "redux-socket.io": "=1.2.0",
     "redux-thunk": "^2.0.1",
-    "socket.io-client": "~1.4.5"
+    "socket.io-client": "~1.4.5",
   },
   "devDependencies": {
     "ava": "^0.16.0",

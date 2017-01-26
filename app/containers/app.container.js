@@ -96,15 +96,14 @@ class Application extends Component {
       }, 0, 'home');
       this.props.actions.resetRoutes('home');
     }
-
-    // if(this.props.socket)
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (!this.state.newName && nextState.newName) {
+    if (this.state.newName !== nextState.newName) {
       let user = this.props.auth.user;
       user.name = nextState.newName;
       this.props.actions.updateUser(user, this.props.auth.token);
+      setTimeout(() => this.props.actions.getSelectedUser(user), 250);
     }
   }
 
@@ -123,14 +122,7 @@ class Application extends Component {
       ],
     );
   }
-
-  updateUserName(newName) {
-    this.setState({ newName })
-    let newUser = this.props.auth.user;
-    newUser.image = results.url;
-    this.props.actions.updateUser(newUser, this.props.auth.token);
-  }
-
+  
   initImage() {
     this.chooseImage((err, data) => {
       if (data) {
@@ -139,6 +131,7 @@ class Application extends Component {
             let newUser = this.props.auth.user;
             newUser.image = results.url;
             this.props.actions.updateUser(newUser, this.props.auth.token);
+            setTimeout(() => this.props.actions.getSelectedUser(newUser._id), 250);
           } else {
             console.log('image error ', results);
           }

@@ -73,6 +73,9 @@ export default function auth(state = initialState, action) {
       });
 
     case types.UPDATE_AUTH_USER:
+      // console.log('update auth user', state.user, action.payload);
+      // console.log('old user', state.user);
+      // console.log('new user', action.payload);
       return {
         ...state,
         user: {
