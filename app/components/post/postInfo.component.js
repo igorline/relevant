@@ -8,6 +8,7 @@ import * as Progress from 'react-native-progress';
 import UserName from '../userNameSmall.component';
 import { globalStyles } from '../../styles/global';
 import Stats from './stats.component';
+// import Tooltip from '../tooltip.component';
 
 let ToolTip = require('react-native-tooltip');
 
@@ -99,8 +100,8 @@ class PostInfo extends Component {
             actions={[
               { text: 'Post value revealed 6 hours after creation' }
             ]}
-            underlayColor={'transparent'}
-            arrowDirection={'down'}
+            underlayColor='transparent'
+            arrowDirection='up'
           >
             <View style={{ flexDirection: 'row' }}>
               <Progress.Pie
@@ -148,12 +149,14 @@ const localStyles = StyleSheet.create({
   postInfo: {
     flex: 1,
     flexDirection: 'row',
+    overflow: 'visible',
     alignItems: 'center',
     justifyContent: 'center',
   },
   postHeader: {
     flexDirection: 'row',
     alignItems: 'center',
+    overflow: 'visible',
     paddingTop: 15,
     paddingBottom: 0,
   },
@@ -166,9 +169,11 @@ const localStyles = StyleSheet.create({
   },
   infoRight: {
     justifyContent: 'flex-end',
+    overflow: 'visible',
   },
   innerInfo: {
     flex: 1,
+    overflow: 'visible',
   },
 });
 
