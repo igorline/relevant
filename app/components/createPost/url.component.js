@@ -34,11 +34,11 @@ export default class UrlComponent extends Component {
     }
   }
 
-  // componentWillReceiveProps(next) {
-  //   if (next.postUrl !== this.props.postUrl && next.postUrl) {
-  //     this.createPreview(next.postUrl);
-  //   }
-  // }
+  componentWillReceiveProps(next) {
+    if (next.postUrl !== this.props.postUrl && next.postUrl) {
+      this.createPreview(next.postUrl);
+    }
+  }
 
   setMention(user) {
     let postBody = this.props.postBody.replace(this.mention, '@' + user._id);
@@ -66,7 +66,7 @@ export default class UrlComponent extends Component {
     if (!this.props.postUrl && shouldParseUrl) {
       let postUrl = words.find(word => URL_REGEX.test(word));
       if (postUrl) {
-        this.props.actions.setCreaPostState({ postUrl });
+        // this.props.actions.setCreaPostState({ postUrl });
         this.createPreview(postUrl);
       }
     }
