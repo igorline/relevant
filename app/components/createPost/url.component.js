@@ -34,11 +34,11 @@ export default class UrlComponent extends Component {
     }
   }
 
-  componentWillReceiveProps(next) {
-    if (next.postUrl !== this.props.postUrl && next.postUrl) {
-      this.createPreview(next.postUrl);
-    }
-  }
+  // componentWillReceiveProps(next) {
+  //   if (next.postUrl !== this.props.postUrl && next.postUrl) {
+  //     this.createPreview(next.postUrl);
+  //   }
+  // }
 
   setMention(user) {
     let postBody = this.props.postBody.replace(this.mention, '@' + user._id);
@@ -67,6 +67,7 @@ export default class UrlComponent extends Component {
       let postUrl = words.find(word => URL_REGEX.test(word));
       if (postUrl) {
         this.props.actions.setCreaPostState({ postUrl });
+        this.createPreview(postUrl);
       }
     }
 
@@ -101,6 +102,7 @@ export default class UrlComponent extends Component {
   }
 
   createPreview(postUrl) {
+    console.log('creating peview ', postUrl)
     utils.post.generatePreview(postUrl)
     .then((results) => {
       if (results) {
@@ -108,8 +110,8 @@ export default class UrlComponent extends Component {
         console.log(results, 'results');
         this.props.actions.setCreaPostState({
           postBody: newBody,
-          domain: this.extractDomain(postUrl),
-          postUrl: results.link,
+          domain: results.domain,
+          postUrl: results.url,
           urlPreview: {
             image: results.image,
             title: results.title ? results.title : 'Untitled',

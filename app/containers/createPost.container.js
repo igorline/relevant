@@ -198,6 +198,7 @@ class CreatePostContainer extends Component {
       investments: [],
       domain: props.domain
     };
+
     this.props.actions.submitPost(postBody, this.props.auth.token)
       .then((results) => {
         if (!results) {
