@@ -171,9 +171,6 @@ class CreatePostContainer extends Component {
         } else {
           AlertIOS.alert('Post error please try again');
           this.setState({ creatingPost: false });
-          // console.log(results);
-          // this.image = props.urlPreview ? props.urlPreview.image : null;
-          // this.uploadPost();
         }
       });
     } else {

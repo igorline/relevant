@@ -8,6 +8,7 @@ import {
   ActionSheetIOS,
 } from 'react-native';
 import { globalStyles } from '../../styles/global';
+import CustomSpinner from '../CustomSpinner.component';
 
 let styles;
 
@@ -41,12 +42,12 @@ export default class UrlPreviewComponent extends Component {
 
   render() {
     let preview = null;
-    let previewImage = this.props.urlPreview.image;
-    if (!previewImage || typeof previewImage !== 'string') {
-      previewImage = 'https://s3.amazonaws.com/relevant-images/missing.png';
-    }
 
     if (this.props.urlPreview) {
+      let previewImage = this.props.urlPreview.image;
+      if (!previewImage || typeof previewImage !== 'string') {
+        previewImage = 'https://s3.amazonaws.com/relevant-images/missing.png';
+      }
       preview = (
         <TouchableHighlight
           underlayColor={'transparent'}
@@ -65,6 +66,13 @@ export default class UrlPreviewComponent extends Component {
           </View>
         </TouchableHighlight>
       );
+    } else {
+      preview = (
+        <View style={[styles.createPostInput, styles.preview]}>
+          <View style={styles.innerPreview}>
+            <CustomSpinner size='small' visible />
+          </View>
+        </View>);
     }
 
     return preview;

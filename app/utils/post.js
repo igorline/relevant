@@ -60,7 +60,8 @@ function getYoutubeLink(link) {
       image,
       description,
       title,
-      link
+      domain: extractDomain(link),
+      url: link
     };
 
     return obj;
@@ -178,7 +179,7 @@ export function generatePreview(link) {
       console.log(data);
     }
 
-    console.log($('head').html());
+    // console.log($('head').html());
 
     return obj;
   })
