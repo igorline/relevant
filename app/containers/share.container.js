@@ -134,7 +134,6 @@ class ShareContainer extends Component {
           }}
         >
           <View style={style.modalBody}>
-            <Text>{JSON.stringify(this.state.data)}</Text>
             <NavigationCardStack
               key={`scene_${scene.key}`}
               direction={'horizontal'}

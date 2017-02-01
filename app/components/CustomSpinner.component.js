@@ -14,7 +14,7 @@ export default function (props) {
     <View pointerEvents={'none'} style={styles.spinnerContainer}>
       <ActivityIndicator
         animating={props.visible}
-        size="large"
+        size={props.size || 'large'}
       />
     </View>
   );

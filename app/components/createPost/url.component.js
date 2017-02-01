@@ -35,7 +35,7 @@ export default class UrlComponent extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (next.postUrl !== this.props.postUrl && next.postUrl) {
+    if (!this.props.postUrl && next.postUrl) {
       this.createPreview(next.postUrl);
     }
   }
@@ -66,8 +66,8 @@ export default class UrlComponent extends Component {
     if (!this.props.postUrl && shouldParseUrl) {
       let postUrl = words.find(word => URL_REGEX.test(word));
       if (postUrl) {
-        // this.props.actions.setCreaPostState({ postUrl });
-        this.createPreview(postUrl);
+        this.props.actions.setCreaPostState({ postUrl });
+        // this.createPreview(postUrl);
       }
     }
 
@@ -102,7 +102,7 @@ export default class UrlComponent extends Component {
   }
 
   createPreview(postUrl) {
-    console.log('creating peview ', postUrl)
+    console.log('creating peview ', postUrl);
     utils.post.generatePreview(postUrl)
     .then((results) => {
       if (results) {
@@ -229,10 +229,11 @@ export default class UrlComponent extends Component {
           {userSearch}
           {repostBody}
 
-          {this.props.urlPreview && !this.props.users.search.length ?
+          {this.props.postUrl && !this.props.users.search.length ?
             <UrlPreview {...this.props} actions={this.props.actions} /> :
             null
           }
+
         </ScrollView>
       </KeyboardAvoidingView>
     );
