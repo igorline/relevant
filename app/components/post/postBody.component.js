@@ -47,6 +47,8 @@ class PostBody extends Component {
     let post = this.props.post;
     if (post) {
       if (post.body) body = post.body;
+      // else return null;
+      else if (post.description) body = '\"' + post.description + '\"';
     }
     let bodyEl = null;
 
@@ -146,8 +148,8 @@ export default PostBody;
 
 const localStyles = StyleSheet.create({
   postBody: {
-    paddingTop: 25,
-    paddingBottom: 25,
+    marginTop: 25,
+    // marginBottom: 25,
   },
   bodyText: {
     fontFamily: 'Georgia',

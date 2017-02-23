@@ -6,6 +6,7 @@ export const SHOW_LOADER = 'SHOW_LOADER';
 
 export const SET_USER_SEARCH = 'SET_USER_SEARCH';
 export const SET_USER = 'SET_USER';
+export const SET_USERS = 'SET_USERS';
 export const SET_CONTACTS = 'SET_CONTACTS';
 export const SET_USER_INDEX = 'SET_USER_INDEX';
 export const UPDATE_USER = 'UPDATE_USER';
@@ -19,6 +20,7 @@ export const SET_NOTIF = 'SET_NOTIF';
 export const SET_FEED = 'SET_FEED';
 export const SET_POSTS_BY_RANK = 'SET_POSTS_BY_RANK';
 export const UPDATE_FEED = 'UPDATE_FEED';
+export const UPDATE_EARNINGS = 'UPDATE_EARNINGS';
 
 export const CLEAR_POSTS = 'CLEAR_POSTS';
 export const UPDATE_POSTS = 'UPDATE_POSTS';
@@ -29,6 +31,9 @@ export const POST_ERROR = 'POST_ERROR';
 export const POST_SUCCESS = 'POST_SUCCESS';
 export const SET_MESSAGES = 'SET_MESSAGES';
 export const REMOVE_POST = 'REMOVE_POST';
+export const SET_POSTS_SIMPLE = 'SET_POSTS_SIMPLE';
+export const UPDATE_POSTS_INVEST = 'UPDATE_POSTS_INVEST';
+export const UNDO_POSTS_INVEST = 'UNDO_POSTS_INVEST';
 
 export const DESELECT_TAG = 'DESELECT_TAG';
 export const SELECT_TAG = 'SELECT_TAG';
@@ -65,5 +70,6 @@ export const REFRESH_ROUTE = 'REFRESH_ROUTE';
 export const REPLACE_ROUTE = 'REPLACE_ROUTE';
 export const RELOAD_ROUTE = 'RELOAD_ROUTE';
 export const RELOAD_ALL_TABS = 'RELOAD_ALL_TABS';
+export const SHOW_TOOLTIP = 'SHOW_TOOLTIP';
 
 export const SET_VIEW = 'SET_VIEW';

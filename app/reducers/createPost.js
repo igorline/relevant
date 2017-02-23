@@ -8,7 +8,7 @@ const initialState = {
   postCategory: null,
   bodyTags: [],
   bodyMentions: [],
-  postTags: [],
+  articleTags: [],
   postImage: null,
   nativeImage: false,
   repost: null,

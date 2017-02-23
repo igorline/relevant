@@ -104,7 +104,7 @@ class CreatePostContainer extends Component {
     };
     this.props.actions.editPost(postBody, this.props.auth.token)
       .then((results) => {
-        if (!results) {
+        if (results.success) {
           AlertIOS.alert('Post error please try again');
         } else {
           AlertIOS.alert('Success!');
@@ -118,10 +118,14 @@ class CreatePostContainer extends Component {
   }
 
   createRepost() {
+    if (this.state.creatingPost) return;
+
     let props = this.props.createPost;
-    if (!props.postBody) {
-      return AlertIOS.alert('Please enter some text');
-    }
+
+    // if (!props.postBody) {
+      // return AlertIOS.alert('Please enter some text');
+    // }
+
     let commentObj = {
       post: props.repost._id,
       text: props.postBody,
@@ -131,30 +135,22 @@ class CreatePostContainer extends Component {
     this.setState({ creatingPost: true });
     this.props.actions.createComment(this.props.auth.token, commentObj)
     .then(() => {
+      console.log('created comment?');
       this.props.actions.clearCreatePost();
       this.props.navigator.resetRoutes('home');
       this.props.navigator.changeTab('discover');
       this.props.navigator.reloadTab('discover');
+      this.props.navigator.setView('discover', 1);
       if (this.props.close) this.props.close();
       this.setState({ creatingPost: false });
     });
   }
 
   createPost() {
+    if (this.state.creatingPost) return;
+
     let props = this.props.createPost;
     this.image = null;
-    let postBody = props.postBody;
-
-    if (!postBody) {
-      // TODO is this ok?
-      if (props.urlPreview) {
-        postBody = props.urlPreview.description;
-        this.props.actions.setCreaPostState({ postBody });
-      } else {
-        AlertIOS.alert('Post has no body');
-        return;
-      }
-    }
 
     if (!props.postCategory) {
       AlertIOS.alert('Please add category');
@@ -183,9 +179,10 @@ class CreatePostContainer extends Component {
 
   uploadPost() {
     let props = this.props.createPost;
+
     let postBody = {
       link: props.postUrl,
-      tags: props.bodyTags,
+      tags: [...props.bodyTags, ...props.articleTags],
       body: props.postBody,
       title: props.urlPreview ? props.urlPreview.title : null,
       description: props.urlPreview ? props.urlPreview.description : null,
@@ -202,13 +199,13 @@ class CreatePostContainer extends Component {
           AlertIOS.alert('Post error please try again');
           this.setState({ creatingPost: false });
         } else {
-          // AlertIOS.alert('Success!');
           if (this.props.close) this.props.close();
           this.props.actions.clearCreatePost();
           this.props.navigator.resetRoutes('home');
           this.props.actions.resetRoutes('createPost');
           this.props.navigator.changeTab('discover');
           this.props.navigator.reloadTab('discover');
+          this.props.navigator.setView('discover', 1);
         }
       });
   }
@@ -218,13 +215,15 @@ class CreatePostContainer extends Component {
     if (this.props.createPost.postBody && this.props.createPost.postBody.length) {
       this.enableNext = true;
     }
+    if (this.props.createPost.postUrl) this.enableNext = true;
+    if (this.state.creatingPost) this.enabledNext = false;
 
     let rightText = props.scene.route.next || 'Next';
     let enabled = this.enableNext;
     let rightAction = p => this.next(p);
     if (this.current !== 'url') {
       rightText = 'Post';
-      enabled = this.props.createPost.postCategory;
+      enabled = this.props.createPost.postCategory && !this.state.creatingPost;
       rightAction = p => this.createPost(p);
     }
 

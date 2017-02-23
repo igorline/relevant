@@ -42,37 +42,75 @@ export default class UrlPreviewComponent extends Component {
 
   render() {
     let preview = null;
+    let image;
+    let domain;
+    let addStyle = {};
+
+    let height = 80;
+    let imageFlex = 0.4;
+    let fontSize = 15;
+    let maxLines = 3;
+    if (this.props.size === 'small') {
+      height = 55;
+      imageFlex = 0.25;
+      fontSize = 12;
+    }
+
+    if (this.props.urlPreview && (this.props.urlPreview.image || this.props.size !== 'small')) {
+      let previewImage = this.props.urlPreview.image;
+      image = (<Image
+        resizeMode={'cover'}
+        source={previewImage ? { uri: previewImage } : require('../../assets/images/missing.png')}
+        style={{ flex: imageFlex, height: null, resizeMode: 'cover' }}
+      />);
+    } else {
+      height = null;
+      // addStyle = {
+      //   borderWidth: 0
+      // };
+    }
+
+    if (this.props.domain) {
+      maxLines = 2;
+      domain = (<Text style={{ color: '#808080', fontSize: fontSize - 2, paddingTop: 2 }}>
+        from: {this.props.domain}
+      </Text>);
+    }
 
     if (this.props.urlPreview) {
-      let previewImage = this.props.urlPreview.image;
-      if (!previewImage || typeof previewImage !== 'string') {
-        previewImage = 'https://s3.amazonaws.com/relevant-images/missing.png';
-      }
+
+      preview = (
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          style={[styles.createPostInput, { height }]}
+          onPress={this.props.onPress || this.previewMenu}
+        >
+          <View style={[styles.innerPreview]}>
+            {image}
+            <View style={{ flex: 0.6, padding: 5 }}>
+              <Text
+                numberOfLines={maxLines}
+                style={{ color: '#808080', fontSize }}
+              >
+                {this.props.urlPreview.title}
+              </Text>
+              {domain}
+            </View>
+          </View>
+        </TouchableHighlight>
+      );
+    } else {
       preview = (
         <TouchableHighlight
           underlayColor={'transparent'}
           style={[styles.createPostInput, styles.preview]}
           onPress={this.previewMenu}
         >
-          <View style={[styles.innerPreview]}>
-            <Image
-              resizeMode={'cover'}
-              source={previewImage ? { uri: previewImage } : require('../../assets/images/missing.png')}
-              style={{ flex: 0.4, height: 75, resizeMode: 'cover' }}
-            />
-            <Text style={{ flex: 0.6, padding: 5, color: '#808080' }}>
-              {this.props.urlPreview.title}
-            </Text>
+          <View style={styles.innerPreview}>
+            <CustomSpinner size={'small'} visible />
           </View>
         </TouchableHighlight>
       );
-    } else {
-      preview = (
-        <View style={[styles.createPostInput, styles.preview]}>
-          <View style={styles.innerPreview}>
-            <CustomSpinner size='small' visible />
-          </View>
-        </View>);
     }
 
     return preview;

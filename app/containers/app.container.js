@@ -21,7 +21,6 @@ import * as postActions from '../actions/post.actions';
 import * as userActions from '../actions/user.actions';
 import * as onlineActions from '../actions/online.actions';
 import * as notifActions from '../actions/notif.actions';
-import * as viewActions from '../actions/view.actions';
 import * as tagActions from '../actions/tag.actions';
 import * as messageActions from '../actions/message.actions';
 import * as investActions from '../actions/invest.actions';
@@ -30,6 +29,7 @@ import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
 import Card from './../components/nav/card.component';
 import IrrelevantAnimation from '../components/animations/irrelevantAnimation.component';
+import Tooltip from '../components/tooltip.component';
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
@@ -79,7 +79,10 @@ class Application extends Component {
     if (!this.props.auth.user && next.auth.user) {
       this.props.actions.userToSocket(next.auth.user._id);
       this.props.actions.getNotificationCount();
-      this.props.actions.changeTab('read');
+
+      if (next.auth.user.onboarding === 'coin') {
+        this.props.actions.changeTab('discover');
+      } else this.props.actions.changeTab('read');
       this.props.actions.resetRoutes();
 
       this.props.actions.replaceRoute({
@@ -98,31 +101,31 @@ class Application extends Component {
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.newName !== nextState.newName) {
-      let user = this.props.auth.user;
-      user.name = nextState.newName;
-      this.props.actions.updateUser(user, this.props.auth.token);
-      setTimeout(() => this.props.actions.getSelectedUser(user), 250);
-    }
-  }
-
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange.bind(this));
   }
 
   changeName() {
     console.log('change name');
+    let user = this.props.auth.user;
     AlertIOS.prompt(
       'Enter new name',
-      this.props.auth.user.name,
+      user.name,
       [
-        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-        { text: 'OK', onPress: newName => this.setState({ newName }) },
+        { text: 'Cancel',
+          style: 'cancel'
+        },
+        { text: 'OK',
+          onPress: (newName) => {
+            user.name = newName;
+            this.props.actions.updateUser(user, this.props.auth.token);
+            this.setState({ newName });
+          }
+        },
       ],
     );
   }
-  
+
   initImage() {
     this.chooseImage((err, data) => {
       if (data) {
@@ -246,17 +249,11 @@ class Application extends Component {
   }
 
   back() {
-    // if (this.cPost) {
-    //   if (this.cPost.urlComponent) this.cPost.urlComponent.input.blur();
-    // }
-    // console.log(this.cPost);
     this.props.actions.pop('home');
   }
 
   render() {
     let scene = this.props.navigation;
-    let key = scene.routes[scene.index].component;
-    const self = this;
 
     return (
       <View style={{ flex: 1, backgroundColor: 'black' }} >
@@ -272,9 +269,11 @@ class Application extends Component {
               back={this.back}
               {...this.props}
               header={false}
-            />); }
+            />);
           }
+        }
         />
+        <Tooltip />
         <InvestAnimation />
         <HeartAnimation />
         <IrrelevantAnimation />
@@ -299,7 +298,6 @@ function mapDispatchToProps(dispatch) {
       ...postActions,
       ...onlineActions,
       ...notifActions,
-      ...viewActions,
       ...messageActions,
       ...userActions,
       ...investActions,

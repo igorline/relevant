@@ -115,6 +115,26 @@ class Auth extends Component {
   render() {
     const { isAuthenticated } = this.props.auth;
 
+
+    // <ListView
+    //   horizontal
+    //   scrollEnabled
+    //   ref={(c) => { this.listview = c; }}
+    //   decelerationRate={'fast'}
+    //   showsHorizontalScrollIndicator={false}
+    //   automaticallyAdjustContentInsets={false}
+    //   snapToInterval={(fullWidth)}
+    //   contentContainerStyle={styles.authSlidesParent}
+    //   onChangeVisibleRows={this.changeRow}
+    //   renderRow={this.renderRow}
+    //   dataSource={this.state.dataSource}
+    //   onScroll={this.checkScroll}
+    // />
+
+    // <View style={styles.indicatorParent}>
+    //   {this.renderIndicator()}
+    // </View>
+
     return (
       <View
         style={[{
@@ -129,23 +149,12 @@ class Auth extends Component {
           <View style={styles.authDivider} />
         </View>
 
-        <ListView
-          horizontal
-          scrollEnabled
-          ref={(c) => { this.listview = c; }}
-          decelerationRate={'fast'}
-          showsHorizontalScrollIndicator={false}
-          automaticallyAdjustContentInsets={false}
-          snapToInterval={(fullWidth)}
-          contentContainerStyle={styles.authSlidesParent}
-          onChangeVisibleRows={this.changeRow}
-          renderRow={this.renderRow}
-          dataSource={this.state.dataSource}
-          onScroll={this.checkScroll}
-        />
-
-        <View style={styles.indicatorParent}>
-          {this.renderIndicator()}
+        <View style={{ flex: 1, paddingHorizontal: 20, alignItems: 'stretch' }}>
+          <Image
+            resizeMode={'contain'}
+            style={{ flex: 1, width: null, height: null }}
+            source={require('../../assets/images/intro.png')}
+          />
         </View>
 
         <View style={styles.authPadding}>
@@ -177,14 +186,6 @@ class Auth extends Component {
 const localStyles = StyleSheet.create({
   adjust: {
     fontSize: 26,
-    // paddingBottom: -10,
-    // marginTop: 10,
-    // height: 30,
-    // flex: 1,
-    // flexDirection: 'row',
-    // alignItems: 'center',
-    // backgroundColor: 'blue',
-    // textAlign: 'baseline'
   },
   authSlidesParent: {
     flexDirection: 'row',
@@ -193,7 +194,6 @@ const localStyles = StyleSheet.create({
     justifyContent: 'flex-start'
   },
   authSlide: {
-    // paddingHorizontal: 10,
     width: (fullWidth - 40),
     marginHorizontal: 20,
   },
@@ -215,7 +215,7 @@ const localStyles = StyleSheet.create({
   authDivider: {
     height: 5,
     marginTop: 20,
-    marginBottom: 30,
+    marginBottom: 0,
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderBottomColor: 'black',

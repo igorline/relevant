@@ -6,13 +6,14 @@ import {
   TouchableHighlight,
   TouchableWithoutFeedback,
   ActionSheetIOS,
-  Alert
+  Alert,
+  Image
 } from 'react-native';
 import Share from 'react-native-share';
 
-import { globalStyles } from '../../styles/global';
+import { globalStyles, fullWidth } from '../../styles/global';
 import InvestModal from './investModal.component';
-
+import { numbers } from '../../utils';
 
 let styles;
 
@@ -21,6 +22,7 @@ class PostButtons extends Component {
     super(props, context);
     this.onShare = this.onShare.bind(this);
     this.goToPost = this.goToPost.bind(this);
+    this.invest = this.invest.bind(this);
     this.state = {
       editing: false,
       modalVisible: false,
@@ -58,7 +60,7 @@ class PostButtons extends Component {
       cancelIndex: 3,
     };
 
-    this.toggleModal = this.toggleModal.bind(this);
+    // this.toggleModal = this.toggleModal.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
     this.irrelevant = this.irrelevant.bind(this);
     this.irrelevantPrompt = this.irrelevantPrompt.bind(this);
@@ -66,8 +68,8 @@ class PostButtons extends Component {
   }
 
   componentDidMount() {
-    if (this.props.post.user && this.props.auth.user) {
-      if (this.props.post.user === this.props.auth.user._id) {
+    if (this.props.post.user._id && this.props.auth.user._id) {
+      if (this.props.post.user._id === this.props.auth.user._id) {
         this.menu = this.ownerMenu;
         this.myPost = true;
       } else if (this.props.post.link) {
@@ -87,9 +89,56 @@ class PostButtons extends Component {
     });
   }
 
+  toggleTooltip() {
+    let your = 'upvote';
+    if (this.props.post.user._id === this.props.auth.user._id) {
+      your = 'post';
+    }
+    this.tooltipData = {
+      vertical: 'top',
+      horizontal: 'left',
+      horizontalOffset: 3,
+      name: 'earnings',
+      verticalOffset: 16,
+      text: 'This is how much\nrelevance you earned\nfrom your ' + your
+    };
+
+    this.tooltipParent.measureInWindow((x, y, w, h) => {
+      let parent = { x, y, w, h };
+      this.props.navigator.showTooltip({
+        ...this.tooltipData,
+        parent
+      });
+    });
+  }
+
   toggleModal(bool) {
     if (!bool) bool = !this.state.modalVisible;
     this.setState({ modalVisible: bool });
+  }
+
+  invest() {
+    let investAmount = 1;
+    // this.props.actions.triggerAnimation('invest');
+
+    this.props.actions.invest(
+      this.props.auth.token,
+      investAmount,
+      this.props.post,
+      this.props.auth.user
+    )
+    .then((results) => {
+      if (results) {
+        this.props.actions.triggerAnimation('invest');
+        if (!this.props.posts.feed.length) {
+          this.props.navigator.reloadTab('read');
+        }
+        setTimeout(() => {
+          let name = this.props.post.embeddedUser.name;
+          Alert.alert('You have subscribed to receive ' + results.subscription.amount + ' posts from ' + name);
+        }, 1500);
+      }
+    });
   }
 
   showActionSheet() {
@@ -221,7 +270,7 @@ class PostButtons extends Component {
   irrelevantPrompt() {
     Alert.alert(
       'Irrelevant',
-      'Do you feel this post is irrelevant? Marking something irrelevant costs $100 and will reduce the author\'s relevance score',
+      'Do you feel this post is irrelevant? Marking something irrelevant costs 1 coin and will reduce the author\'s relevance score',
       [
         { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
         { text: 'OK', onPress: () => this.irrelevant() },
@@ -230,7 +279,7 @@ class PostButtons extends Component {
   }
 
   irrelevant() {
-    this.props.actions.invest(this.props.auth.token, -100, this.props.post, this.props.auth.user)
+    this.props.actions.invest(this.props.auth.token, -1, this.props.post, this.props.auth.user)
     .then((results) => {
       if (results) {
         this.props.actions.triggerAnimation('invest');
@@ -247,11 +296,15 @@ class PostButtons extends Component {
     let investable = false;
     let irrelevantButton;
     let commentString = 'comment';
+    let earnings;
 
     if (post && post.user && this.props.auth.user) {
-      if (post.user !== this.props.auth.user._id) {
-        investable = true;
+      if (post.user._id !== this.props.auth.user._id) {
+        if (this.props.myInvestments.indexOf(post._id) === -1) {
+          investable = true;
+        }
       }
+      earnings = this.props.myEarnings[post._id];
     }
 
     if (post && post.commentCount) {
@@ -260,35 +313,70 @@ class PostButtons extends Component {
     }
 
     investButtonEl = (<TouchableWithoutFeedback
-      onPress={() => investable ? this.toggleModal() : null}
+      onPress={() => this.invest()}
     >
       <View style={[styles.investButton, !investable ? { opacity: 0.3, shadowOpacity: 0 } : null]}>
-
         <Text
           allowFontScaling={false}
           style={[styles.font15, styles.bold, styles.postButtonText]}
         >
-          💰Invest
+          <Image
+            style={styles.rup}
+            source={require('../../assets/images/rup.png')}
+          />
+          relevant
         </Text>
       </View>
     </TouchableWithoutFeedback>);
+
+    // if (!investable) {
+    //   let image = require('../../assets/images/up.png');
+    //   let amount = earnings ? earnings.amount : 0;
+    //   if (amount < 0) image = require('../../assets/images/down.png');
+    //   let userImage;
+    //   if (this.props.auth && this.props.auth.user.image) {
+    //     userImage = { uri: this.props.auth.user.image };
+    //   } else userImage = require('../../assets/images/default_user.jpg');
+    //   investButtonEl = (
+    //     <TouchableHighlight
+    //       underlayColor={'transparent'}
+    //       // style={styles.earnings}
+    //       ref={c => this.tooltipParent = c}
+    //       onPress={() => this.toggleTooltip()}
+    //     >
+    //       <View style={styles.earnings}>
+    //         <Image
+    //           source={userImage}
+    //           style={styles.investImage}
+    //         />
+    //         <Image
+    //           style={[styles.investArrow]}
+    //           source={image}
+    //         />
+    //         <Text style={[styles.bebas]}>
+    //           {numbers.abbreviateNumber(amount)}
+    //         </Text>
+    //       </View>
+    //     </TouchableHighlight>
+    //   );
+    // }
 
     irrelevantButton = (
       <TouchableHighlight
         underlayColor={'transparent'}
         style={styles.postButton}
-        onPress={investable ? this.irrelevantPrompt : this.onShare}
+        onPress={this.irrelevantPrompt}
       >
         <Text
           allowFontScaling={false}
           style={[styles.font12, styles.greyText, styles.postButtonText]}
         >
-          {investable ? 'irrelevant' : 'share'}
+          irrelevant
         </Text>
       </TouchableHighlight>
     );
 
-
+    // if (!investable) irrelevantButton = null;
     // <TouchableHighlight
     //  underlayColor={'transparent'}
     //  style={[styles.postButton, { marginRight: 5 }]}
@@ -311,28 +399,36 @@ class PostButtons extends Component {
       </Text>
     </TouchableHighlight>);
 
-    return (<View style={styles.postButtons}>
-      {investButtonEl}
-      {irrelevantButton}
-      {comments}
-      <TouchableHighlight
-        underlayColor={'transparent'}
-        style={[styles.postButton]}
-        onPress={() => this.showActionSheet()}
-      >
-        <Text
-          allowFontScaling={false}
-          style={[styles.greyText, styles.postButtonText, styles.dots]}
-        >
-          ...
-        </Text>
-      </TouchableHighlight>
+      // <View style={styles.postButtons}>
+      //   <Text>{earnings ? 'you earned: ' + earnings.amount : null}</Text>
+      //   <Text>{earnings ? 'post relevance: ' + post.relevance : null}</Text>
+      // </View>
 
-      <InvestModal
-        toggleFunction={this.toggleModal}
-        post={this.props.post}
-        visible={this.state.modalVisible}
-      />
+    return (<View style={styles.postButtonsContainer}>
+
+      <View style={styles.postButtons}>
+        {investButtonEl}
+        {irrelevantButton}
+        {comments}
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          style={[styles.postButton]}
+          onPress={() => this.showActionSheet()}
+        >
+          <Text
+            allowFontScaling={false}
+            style={[styles.greyText, styles.postButtonText, styles.dots]}
+          >
+            ...
+          </Text>
+        </TouchableHighlight>
+
+        <InvestModal
+          toggleFunction={this.toggleModal}
+          post={this.props.post}
+          visible={this.state.modalVisible}
+        />
+      </View>
     </View>);
   }
 }
@@ -340,12 +436,33 @@ class PostButtons extends Component {
 export default PostButtons;
 
 const localStyles = StyleSheet.create({
+  earnings: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: (fullWidth / 2) - 25
+  },
+  investImage: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    resizeMode: 'cover',
+    marginLeft: 5,
+    marginRight: 9
+  },
+  investArrow: {
+    position: 'absolute',
+    left: 22,
+    top: 3,
+    marginRight: 0,
+    width: 14,
+    height: 20,
+    resizeMode: 'contain',
+  },
   investButton: {
     borderWidth: 1,
     backgroundColor: 'white',
     borderColor: 'black',
-    paddingLeft: 20,
-    paddingRight: 20,
+    paddingHorizontal: 15,
     height: 30,
     shadowColor: 'black',
     shadowOffset: { width: 2, height: 2 },
@@ -356,15 +473,17 @@ const localStyles = StyleSheet.create({
   },
   postButtons: {
     flexDirection: 'row',
-    paddingBottom: 10,
-    paddingTop: 10,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexWrap: 'wrap'
   },
+  postButtonsContainer: {
+    paddingBottom: 10,
+    marginTop: 35,
+  },
   postButton: {
     padding: 3,
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     height: 30,
     flexDirection: 'row',
     justifyContent: 'center'

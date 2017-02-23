@@ -14,6 +14,7 @@ import comments from './comments';
 import navigation from './navigation';
 import createPost from './createPost';
 import tags from './tags';
+import tooltip from './tooltip';
 
 const rootReducer = combineReducers({
   auth,
@@ -30,7 +31,8 @@ const rootReducer = combineReducers({
   comments,
   navigation,
   createPost,
-  tags
+  tags,
+  tooltip
 });
 
 export default rootReducer;

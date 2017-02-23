@@ -4,6 +4,7 @@ import {
   View,
 } from 'react-native';
 import { globalStyles } from '../styles/global';
+import Post from './post/post.component';
 
 let moment = require('moment');
 
@@ -110,5 +111,5 @@ export default function (props) {
     </View>
   </View>);
 
-  return investmentEl;
+  return <Post post={investment.post} props={props} />;
 }

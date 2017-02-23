@@ -76,10 +76,11 @@ function getYoutubeLink(link) {
 export function generatePreview(link) {
   let responseUrl;
   let fbHeader = {
-    'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+    // 'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+    // 'Content-Type': 'application/x-www-form-urlencoded;charset=ISO-8859-15'
   };
 
-  if (!link.match('http://') && !link.match('https://')) {
+  if (!link.match(/http:\/\//i) && !link.match(/https:\/\//i)) {
     link = 'http://' + link;
   }
 
@@ -132,6 +133,7 @@ export function generatePreview(link) {
       'twitter:description': null,
       'twitter:site': null,
       'twitter:creator': null,
+      'news_keywords': null,
     };
     const meta = $('meta');
     const $title = $('title');
@@ -159,7 +161,8 @@ export function generatePreview(link) {
     let title = data.title || data['og:title'] || data['twitter:title'] || titleEl;
     let description = data.description || data['og:description'] || data['twitter:description'];
     let image = data['og:image'] || data['og:image:url'] || data['twitter:image'] || data['og:image:src'] || data.image;
-    let url = data['al:web:url'] || data['og:url'] || link;
+    let url = data['al:web:url'] || data['og:url'] || responseUrl;
+    let tags = data['news_keywords'];
     let domain = extractDomain(url);
 
     if (image && image.match(/^\/\//)) {
@@ -171,7 +174,8 @@ export function generatePreview(link) {
       description,
       title,
       url,
-      domain
+      domain,
+      tags
     };
 
     if (!image || !description || !title) {
@@ -179,7 +183,7 @@ export function generatePreview(link) {
       console.log(data);
     }
 
-    // console.log($('head').html());
+    console.log($('head').html());
 
     return obj;
   })

@@ -14,8 +14,10 @@ export default class Commentary extends Component {
 
   render() {
     let length = this.props.commentary.length;
-    let commentary = this.props.commentary.map(post =>
-      (
+    let commentary = this.props.commentary.map(post => {
+      post = { ...post };
+      if (this.props.users[post.user]) post.user = this.props.users[post.user];
+      return (
         <View
           key={post._id}
           style={{ width: length ? fullWidth * 0.92 : fullWidth }}
@@ -30,7 +32,7 @@ export default class Commentary extends Component {
             <PostBody short {...this.props} post={post} editing={false} />
           </View>
         </View>
-      )
+      )}
     );
 
     return (
@@ -67,6 +69,7 @@ const localStyles = StyleSheet.create({
     marginBottom: 10,
     paddingLeft: 15,
     paddingRight: 15,
+    paddingBottom: 25,
   },
 });
 

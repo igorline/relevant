@@ -184,7 +184,7 @@ class SinglePostComments extends Component {
         initialListSize={10}
         dataSource={this.dataSource}
         renderRow={this.renderRow}
-        keyboardShouldPersistTaps
+        keyboardShouldPersistTaps={'always'}
         keyboardDismissMode={'on-drag'}
         automaticallyAdjustContentInsets={false}
         // contentInset={{ bottom: offset }}

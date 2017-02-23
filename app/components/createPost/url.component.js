@@ -3,16 +3,17 @@ import {
   StyleSheet,
   TextInput,
   View,
-  ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Text
 } from 'react-native';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, fullHeight } from '../../styles/global';
 import * as utils from '../../utils';
 import UrlPreview from './urlPreview.component';
 import UserName from '../userNameSmall.component';
 import UserSearchComponent from './userSearch.component';
 import PostBody from './../post/postBody.component';
 import PostInfo from './../post/postInfo.component';
+// import Tags from '../tags.component';
 
 let styles;
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
@@ -26,6 +27,8 @@ export default class UrlComponent extends Component {
     };
     this.setMention = this.setMention.bind(this);
     this.previousPostLength = 0;
+    this.scrollHeight = 0;
+    this.contentHeight = 0;
   }
 
   componentDidMount() {
@@ -35,8 +38,9 @@ export default class UrlComponent extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (!this.props.postUrl && next.postUrl) {
+    if (this.props.postUrl !== next.postUrl && next.postUrl) {
       this.createPreview(next.postUrl);
+      // this.scrollView.scrollTo(this.contentHeight - this.scrollHeight);
     }
   }
 
@@ -75,8 +79,7 @@ export default class UrlComponent extends Component {
     if (lastWord.match(/^@\S+/g) && lastWord.length > 1) {
       this.mention = lastWord;
       this.props.actions.searchUser(lastWord.replace('@', ''));
-    }
-    else this.props.actions.setUserSearch([]);
+    } else this.props.actions.setUserSearch([]);
 
     let bodyTags = words.map((word) => {
       if (word.match(/^#\S+/g)) {
@@ -107,11 +110,18 @@ export default class UrlComponent extends Component {
     .then((results) => {
       if (results) {
         let newBody = this.props.postBody.replace(`${postUrl}`, '').trim();
-        console.log(results, 'results');
+        let tags = [];
+        if (results.tags) {
+          tags = results.tags.split(',');
+        }
+        tags = tags.map(tag => tag.trim().toLowerCase().replace(' ', ''));
+        // if (tags.length > 3) tags.length = 3;
+        console.log(results.title);
         this.props.actions.setCreaPostState({
           postBody: newBody,
           domain: results.domain,
           postUrl: results.url,
+          articleTags: tags,
           urlPreview: {
             image: results.image,
             title: results.title ? results.title : 'Untitled',
@@ -145,20 +155,25 @@ export default class UrlComponent extends Component {
     let input;
     let repostBody;
 
-    let maxHeight = 170;
-    if (this.props.share) maxHeight = 170;
+    // let maxHeight = this.contentHeight;
+    // if (this.props.share) maxHeight = 170;
 
     if (this.props.repost) {
       repostBody = (
-        <View>
+        <View style={{ marginBottom: 30 }}>
           <PostInfo post={this.props.repost} />
-          <PostBody post={this.props.repost} />
+          <PostBody short post={this.props.repost} />
         </View>);
     }
 
-    let urlPlaceholder = 'What’s relevant? Add a link to post commentary.';
+    let urlPlaceholder = 'Article URL.';
 
-    if (this.props.postUrl) urlPlaceholder = 'Why is this relevant?';
+    if (this.props.postUrl) {
+      urlPlaceholder = 'Add your own commentary.';
+      // if (this.props.urlPreview && this.props.urlPreview.description) {
+      //   urlPlaceholder += '\nor use article description... \n\n' +  this.props.urlPreview.description;
+      // }
+    }
 
     let userHeader = null;
 
@@ -179,8 +194,15 @@ export default class UrlComponent extends Component {
     let userSearch = null;
 
     if (this.props.users.search && this.props.users.search.length) {
-      userSearch = <UserSearchComponent setSelected={this.setMention} users={this.props.users.search} />;
+      userSearch = (<UserSearchComponent
+        setSelected={this.setMention}
+        users={this.props.users.search}
+      />);
     }
+
+    // let tagsObj = this.props.bodyTags.map(tag => { return { _id: tag } });
+    // let selectedObj = this.props.bodyTags.map(tag => { return { _id: tag } });
+    // let tags = <Tags tags={{ tags: tagsObj, selectedTags: selectedObj }} />;
 
     input = (
       <KeyboardAvoidingView
@@ -190,9 +212,16 @@ export default class UrlComponent extends Component {
           backgroundColor: '#ffffff'
         }}
       >
-        <ScrollView
-          keyboardDismissMode={'on-drag'}
-          keyboardShouldPersistTaps
+        <View
+          // keyboardDismissMode={'on-drag'}
+          keyboardShouldPersistTaps={'always'}
+          ref={c => this.scrollView = c}
+          onLayout={(e) => {
+            this.scrollHeight = e.nativeEvent.layout.height;
+          }}
+          onContentSizeChange={(contentWidth, contentHeight) => {
+            this.contentHeight = contentHeight;
+          }}
           style={{
             flex: 1,
             paddingHorizontal: 10,
@@ -204,7 +233,7 @@ export default class UrlComponent extends Component {
             style={[
               this.props.urlPreview ? styles.innerBorder : null,
               this.props.share ? styles.noBorder : null,
-              { height: Math.min(maxHeight, this.state.inputHeight) }]
+              { flex: 1 }]
             }
           >
             <TextInput
@@ -228,13 +257,12 @@ export default class UrlComponent extends Component {
           </View>
           {userSearch}
           {repostBody}
-
           {this.props.postUrl && !this.props.users.search.length ?
             <UrlPreview {...this.props} actions={this.props.actions} /> :
             null
           }
 
-        </ScrollView>
+        </View>
       </KeyboardAvoidingView>
     );
 

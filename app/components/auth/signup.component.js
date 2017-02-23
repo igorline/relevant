@@ -188,7 +188,7 @@ class SignUp extends Component {
         style={{ height: fullHeight - 60 }}
       >
         <ScrollView
-          keyboardShouldPersistTaps={true}
+          keyboardShouldPersistTaps={'always'}
           keyboardDismissMode={'interactive'}
           scrollEnabled={false}
           contentContainerStyle={styles.fieldsParent}

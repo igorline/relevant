@@ -4,12 +4,32 @@ import {
   Text,
   View,
   TouchableHighlight,
+  Animated
 } from 'react-native';
 import { globalStyles, fullWidth } from '../styles/global';
 
 let styles;
 
 export default function (props) {
+  let tabWidth = fullWidth / props.tabs.length;
+
+  const tabUnderlineStyle = {
+    position: 'absolute',
+    width: tabWidth,
+    height: 4,
+    backgroundColor: '#3E3EFF',
+    bottom: 0,
+  };
+
+  let left;
+  if (props.scrollValue) {
+    left = props.scrollValue.interpolate({
+      inputRange: [0, 1], outputRange: [0, tabWidth],
+    });
+  } else {
+    left = props.active * tabWidth;
+  }
+
   const tabs = props.tabs.map((tab) => {
     let active = props.active === tab.id;
     return (
@@ -19,7 +39,7 @@ export default function (props) {
         style={[
           styles.typeParent,
           { alignItems: 'stretch' },
-          active ? null : styles.inactiveBorder,
+          styles.inactiveBorder,
         ]}
         onPress={() => props.handleChange(tab.id)}
       >
@@ -36,7 +56,6 @@ export default function (props) {
           >
             {tab.title}
           </Text>
-          <View style={{ flex: 1, height: 5, backgroundColor: active ? '#3E3EFF' : 'transparent', position: 'absolute', bottom: 0, right: 0, left: 0 }} />
         </View>
       </TouchableHighlight>
     );
@@ -45,6 +64,7 @@ export default function (props) {
   return (
     <View style={[styles.row, styles.tabsParent, { width: fullWidth }]}>
       {tabs}
+      <Animated.View style={[tabUnderlineStyle, { left }]} />
     </View>
   );
 }

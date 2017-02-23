@@ -7,19 +7,24 @@ import {
   StyleSheet
 } from 'react-native';
 import { globalStyles } from '../styles/global';
+import Stats from './post/stats.component';
 
 let styles;
 
 export default function (props) {
 
   let imageSource;
-  if (props.user.image) {
+  if (props.user && props.user.image) {
     imageSource = { uri: props.user.image };
-  }
-  else imageSource = require('../assets/images/default_user.jpg');
+  } else imageSource = require('../assets/images/default_user.jpg');
 
   let imageStyle = styles.userImage;
   if (props.big) imageStyle = styles.userImageBig;
+
+  let stats;
+  if (props.user.relevance && props.relevance !== false) {
+    stats = <Stats size={'small'} entity={props.user} type={'value'} />;
+  }
 
   return (
     <TouchableWithoutFeedback
@@ -28,9 +33,14 @@ export default function (props) {
       <View style={styles.postInfo}>
         <Image source={imageSource} style={imageStyle} />
         <View>
-          <Text style={[styles.font17, styles.darkGray, styles.bebas]}>
-            {props.user.name}
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View>
+              <Text style={[styles.font17, styles.darkGray, styles.bebas]}>
+                {props.user.name}&nbsp;
+              </Text>
+            </View>
+            {stats}
+          </View>
           <Text style={[styles.font10, styles.greyText]}>
             {'@' + props.user._id}
           </Text>
@@ -46,12 +56,6 @@ const localStyles = StyleSheet.create({
     width: 44,
     borderRadius: 22,
     marginRight: 7,
-  },
-  userImage: {
-    height: 28,
-    width: 28,
-    borderRadius: 14,
-    marginRight: 5,
   },
   postInfo: {
     flex: 1,

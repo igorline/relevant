@@ -7,10 +7,10 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { globalStyles } from '../styles/global';
+// import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Post from '../components/post/post.component';
 import ProfileComponent from '../components/profile.component';
 import ErrorComponent from '../components/error.component';
-import Investment from '../components/investment.component';
 import CustomSpinner from '../components/CustomSpinner.component';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
@@ -21,9 +21,7 @@ import * as statsActions from '../actions/stats.actions';
 import * as onlineActions from '../actions/online.actions';
 import * as notifActions from '../actions/notif.actions';
 import * as errorActions from '../actions/error.actions';
-import * as viewActions from '../actions/view.actions';
 import * as messageActions from '../actions/message.actions';
-import * as subscriptionActions from '../actions/subscription.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as navigationActions from '../actions/navigation.actions';
@@ -61,24 +59,23 @@ class Profile extends Component {
       this.userData = this.props.users[this.userId];
 
       this.onInteraction = InteractionManager.runAfterInteractions(() => {
-        if (!this.userData || !this.userData._id) this.loadUser();
         this.loaded = true;
-        this.load();
+        this.loadUser();
         this.setState({});
       });
     } else {
+      this.loaded = true;
       this.userId = this.props.auth.user._id;
       this.userData = this.props.users[this.userId];
-
-      this.loaded = true;
+      console.log(this.userData);
       this.setState({});
-      this.load();
     }
   }
 
   componentWillReceiveProps(next) {
     this.userData = next.users[this.userId];
-    
+    // console.log(this.userData);
+
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();
     }
@@ -111,7 +108,7 @@ class Profile extends Component {
   }
 
   load(view, length) {
-    if (!this.loaded) return;
+    // if (!this.loaded) return;
     if (view === undefined) view = this.state.view;
     if (length === undefined) length = 0;
 
@@ -133,7 +130,10 @@ class Profile extends Component {
     let scene = this.props.scene || { route: { id: this.userId } };
 
     if (view === 0) return (<Post post={rowData} {...this.props} scene={scene} />);
-    if (view === 1) return (<Investment investment={rowData} {...this.props} />);
+    if (view === 1) {
+      let investment = this.props.investments.investments[rowData];
+      return (<Post post={investment.post} {...this.props} />);
+    }
     return null;
   }
 
@@ -192,7 +192,7 @@ class Profile extends Component {
     // solves logout bug
     if (!this.props.auth.user) return null;
 
-    if (this.userData) {
+    if (this.userData && this.loaded) {
       listEl = [];
       this.tabs.forEach((tab) => {
         let tabData = this.getViewData(this.props, tab.id);
@@ -205,7 +205,7 @@ class Profile extends Component {
           tab.type = 'posts';
         }
         if (tab.id === 1) {
-          tab.title = 'Investments ' + this.userData.investmentCount;
+          tab.title = 'Upvotes ' + this.userData.investmentCount;
           tab.type = 'investments';
         }
 
@@ -246,7 +246,7 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
-    users: state.user.selectedUserData,
+    users: state.user.users,
     online: state.online,
     error: state.error.profile,
     view: state.view,
@@ -268,12 +268,10 @@ function mapDispatchToProps(dispatch) {
       ...notifActions,
       ...errorActions,
       ...animationActions,
-      ...viewActions,
       ...messageActions,
       ...tagActions,
       ...userActions,
       ...investActions,
-      ...subscriptionActions,
       ...createPostActions,
       ...navigationActions,
     }, dispatch),
