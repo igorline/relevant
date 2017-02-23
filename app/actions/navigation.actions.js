@@ -6,8 +6,27 @@ import {
   REFRESH_ROUTE,
   REPLACE_ROUTE,
   RELOAD_ROUTE,
-  RELOAD_ALL_TABS
+  RELOAD_ALL_TABS,
+  SHOW_TOOLTIP,
+  SET_VIEW
 } from './actionTypes';
+
+export function setView(type, view) {
+  return {
+    type: SET_VIEW,
+    payload: {
+      view,
+      type
+    }
+  };
+}
+
+export function showTooltip(tooltip) {
+  return {
+    type: SHOW_TOOLTIP,
+    payload: tooltip
+  };
+}
 
 export function push(route, key, animation = 'vertical') {
   return {

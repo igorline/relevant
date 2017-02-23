@@ -42,11 +42,10 @@ export function submitPost(post, token) {
       // console.log(response, 'submitPost response');
       if (response.status === 200) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     })
     .catch(error => false);
-  }
+  };
 }
 

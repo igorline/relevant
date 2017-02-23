@@ -5,244 +5,61 @@ import {
 
 import * as types from './actionTypes';
 import * as utils from '../utils';
-// import * as authActions from './auth.actions';
 import * as errorActions from './error.actions';
 import * as navigationActions from './navigation.actions';
 
 require('../publicenv');
 
-const comment = new schema.Entity('comments', {}, { idAttribute: '_id' });
-
-const post = new schema.Entity('posts',
-  { comments: [comment] },
-  { idAttribute: '_id' }
-);
-
-const repost = new schema.Entity('posts',
-  { comments: [comment], repost: { post } },
-  { idAttribute: '_id' }
-);
-
-const metaPost = new schema.Entity('metaPosts', { commentary: [post] }, { idAttribute: '_id' });
-
-
-// postSchema.define({
-//   comments: arrayOf(repostSchema)
-// });
-
-// metaPostSchema.define({
-//   commentary: arrayOf(postSchema)
-// });
-
-
 const apiServer = process.env.API_SERVER + '/api/';
 
+const commentSchema = new schema.Entity('comments',
+  {},
+  { idAttribute: '_id' }
+);
+
+const userSchema = new schema.Entity('users',
+  {},
+  { idAttribute: '_id' }
+);
+
+const repostSchema = new schema.Entity('posts',
+  { comments: [commentSchema], user: userSchema },
+  { idAttribute: '_id' }
+);
+
+const postSchema = new schema.Entity('posts',
+  {
+    comments: [commentSchema],
+    repost: { post: repostSchema },
+    user: userSchema
+  },
+  { idAttribute: '_id' }
+);
+
+const metaPostSchema = new schema.Entity('metaPosts',
+  { commentary: [postSchema] },
+  { idAttribute: '_id' }
+);
+
+const reqOptions = (token) => {
+  return {
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    }
+  };
+};
+
+
 // load 5 posts at a time
-const limit = 5;
+const DEFAULT_LIMIT = 10;
 
-export function setPosts(data, type, index) {
+export function setUsers(users) {
   return {
-    type: types.SET_POSTS,
-    payload: {
-      data,
-      type,
-      index
-    }
-  };
-}
-
-export function getFeed(skip, tag) {
-  if (!skip) skip = 0;
-
-  function getUrl(token) {
-    let url = `${apiServer}feed`
-      + `?access_token=${token}`
-      + `&skip=${skip}`
-      + `&limit=${limit}`;
-
-    if (tag) {
-      console.log(tag, 'tag here')
-      url = `${apiServer}feed`
-      + `?access_token=${token}`
-      + `&skip=${skip}`
-      + `&tag=${tag._id}`
-      + `&limit=${limit}`;
-    }
-    return url;
-  }
-
-  let type = 'feed';
-
-  return (dispatch) => {
-    utils.token.get()
-    .then(token =>
-      fetch(getUrl(token), {
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        method: 'GET',
-      })
-    )
-    .then(response => response.json())
-    .then((responseJSON) => {
-      let data = normalize({feed: responseJSON}, { feed: [repost] });
-      dispatch(setPosts(data, type, skip));
-      dispatch(errorActions.setError('read', false));
-    })
-    .catch((error) => {
-      console.log('Feed error ', error);
-      if(!error.message.match("Get fail for key: token"))
-        dispatch(errorActions.setError('read', true, error.message));
-    });
-  };
-}
-
-export function deletePost(token, post, redirect) {
-  let url = apiServer +
-    'post/' + post._id +
-    '?access_token=' + token;
-
-  return (dispatch) => {
-    console.log('delete post redirect?', redirect);
-    fetch(url, {
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'DELETE',
-    })
-    .then(() => {
-      dispatch(removePost(post));
-      if (redirect) dispatch(navigationActions.pop());
-    })
-    .catch(error => console.log(error, 'error'));
-  };
-}
-
-export function clearPosts(type) {
-  return {
-    type: types.CLEAR_POSTS,
-    payload: {
-      type,
-    }
-  };
-}
-
-export function getPostsAction() {
-  return {
-    type: 'GET_POSTS',
-    payload: null,
-  };
-}
-
-
-//this function queries the meta posts
-export function getPosts(skip, tags, sort, limit) {
-  // console.log(skip, tags, sort);
-  let tagsString = '';
-  if (!skip) skip = 0;
-  if (!limit) limit = 5;
-  if (!sort) sort = null;
-
-  // change this if we want to store top and new in separate places
-  const type = sort ? 'top' : 'new';
-
-  let url = process.env.API_SERVER + '/api/metaPost?skip=' + skip + '&sort=' + sort + '&limit=' + limit;
-
-  let category = '';
-  if (tags && tags.length) {
-    tags.forEach((tag, i) => {
-      if (tag.category) {
-        category = tag._id;
-        return;
-      }
-      if (tag._id) {
-        if (i === tags.length - 1) {
-          tagsString += tag._id;
-        } else {
-          let alter = tag._id;
-          tagsString += alter += ',';
-        }
-      }
-    });
-
-    url = apiServer +
-      'post?skip=' + skip +
-      '&tag=' + tagsString
-      + '&sort=' + sort
-      + '&limit=' + limit +
-      '&category=' + category;
-  }
-
-  return (dispatch) => {
-    dispatch(getPostsAction());
-
-    fetch(url, {
-      credentials: 'include',
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then((responseJSON) => {
-      // console.log(responseJSON);
-      let data = normalize(
-        { [type]: responseJSON },
-        { [type]: [metaPost] }
-      );
-
-      dispatch(setPosts(data, type, skip));
-      dispatch(errorActions.setError('discover', false));
-    })
-    .catch((error) => {
-      console.log(error, 'error');
-      dispatch(errorActions.setError('discover', true, error.message));
-    });
-  };
-}
-
-export function loadingUserPosts() {
-  return {
-    type: 'LOADING_USER_POSTS',
-  };
-}
-
-export function getUserPosts(skip, limit, userId, type) {
-  var tagsString = '';
-  if (!skip) skip = 0;
-  if (!limit) limit = 5;
-  return (dispatch) => {
-    dispatch(loadingUserPosts());
-    const url = process.env.API_SERVER + '/api/post/user/' + userId + '?skip=' + skip + '&limit=' + limit;
-    setTimeout(() => {
-      fetch(url, {
-        credentials: 'include',
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(utils.fetchError.handleErrors)
-      .then((response) => response.json())
-      .then((responseJSON) => {
-        let data = normalize(
-          { [userId]: responseJSON },
-          { [userId]: [repost] }
-        );
-        dispatch(setUserPosts(data, userId, skip));
-        dispatch(errorActions.setError('profile', false));
-      })
-      .catch((error) => {
-        console.log(error, 'error');
-        dispatch(errorActions.setError('profile', true, error.message));
-      });
-    }, 100);
+    type: types.SET_USERS,
+    payload: users
   };
 }
 
@@ -292,49 +109,253 @@ export function postError() {
   };
 }
 
-export function irrelevant(token, postId) {
-  return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/post/irrelevant/'+postId+'?access_token='+token, {
+export function setPosts(data, type, index) {
+  return {
+    type: types.SET_POSTS,
+    payload: {
+      data,
+      type,
+      index
+    }
+  };
+}
+
+export function getFeed(skip, tag) {
+  if (!skip) skip = 0;
+  let type = 'feed';
+
+  function getUrl() {
+    let url = `${apiServer}feed?skip=${skip}&limit=${DEFAULT_LIMIT}`;
+    if (tag) {
+      url = `${apiServer}feed?skip=${skip}&tag=${tag._id}&limit=${DEFAULT_LIMIT}`;
+    }
+    return url;
+  }
+
+  return (dispatch) => {
+    utils.token.get()
+    .then(token =>
+      fetch(getUrl(), {
+        method: 'GET',
+        ...reqOptions(token)
+      })
+    )
+    .then(response => response.json())
+    .then((responseJSON) => {
+      let data = normalize(
+        { feed: responseJSON },
+        { feed: [postSchema] }
+      );
+      dispatch(setUsers(data.entities.users));
+      dispatch(setPosts(data, type, skip));
+      dispatch(errorActions.setError('read', false));
+    })
+    .catch((error) => {
+      console.log('Feed error ', error);
+      if (!error.message.match('Get fail for key: token')) {
+        dispatch(errorActions.setError('read', true, error.message));
+      }
+    });
+  };
+}
+
+export function deletePost(token, post, redirect) {
+  let url = apiServer +
+    'post/' + post._id +
+    '?access_token=' + token;
+
+  return (dispatch) => {
+    console.log('delete post redirect?', redirect);
+    fetch(url, {
       credentials: 'include',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      method: 'PUT',
+      method: 'DELETE',
+    })
+    .then(() => {
+      dispatch(removePost(post));
+      if (redirect) dispatch(navigationActions.pop());
+    })
+    .catch(error => console.log(error, 'error'));
+  };
+}
+
+export function clearPosts(type) {
+  return {
+    type: types.CLEAR_POSTS,
+    payload: {
+      type,
+    }
+  };
+}
+
+export function getPostsAction() {
+  return {
+    type: 'GET_POSTS',
+    payload: null,
+  };
+}
+
+
+export function setSelectedPost(id) {
+  return {
+    type: 'SET_SELECTED_POST',
+    payload: id
+  };
+}
+
+export function setSelectedPostData(post) {
+  return {
+    type: 'SET_SELECTED_POST_DATA',
+    payload: post
+  };
+}
+
+export function clearSelectedPost() {
+  return {
+    type: 'CLEAR_SELECTED_POST'
+  };
+}
+
+export function archiveComments(postId) {
+  return {
+    type: types.ARCHIVE_COMMENTS,
+    payload: postId
+  };
+}
+
+export function addComment(postId, newComment) {
+  return {
+    type: types.ADD_COMMENT,
+    payload: {
+      comment: newComment,
+      postId
+    }
+  };
+}
+
+export function setComments(postId, comments, index, total) {
+  let num = 0;
+  if (!total) total = 0;
+  if (index) num = index;
+  return {
+    type: types.SET_COMMENTS,
+    payload: {
+      data: comments,
+      index: num,
+      postId,
+      total,
+    }
+  };
+}
+
+// this function queries the meta posts
+export function getPosts(skip, tags, sort, limit) {
+  // console.log(skip, tags, sort);
+  let tagsString = '';
+  if (!skip) skip = 0;
+  if (!limit) limit = DEFAULT_LIMIT;
+  if (!sort) sort = null;
+
+  // change this if we want to store top and new in separate places
+  const type = sort ? 'top' : 'new';
+  let endpoint = 'metaPost';
+  let params = `?skip=${skip}&sort=${sort}&limit=${limit}`;
+
+  let category = '';
+  if (tags && tags.length) {
+    tags.forEach((tag, i) => {
+      if (tag.category) {
+        category = tag._id;
+        return;
+      }
+      if (tag._id) {
+        if (i === tags.length - 1) {
+          tagsString += tag._id;
+        } else {
+          tagsString += tag._id + ',';
+        }
+      }
+    });
+    endpoint = 'post';
+    params += `&tag=${tagsString}&category=${category}`;
+  }
+
+  let url = apiServer + endpoint + params;
+
+  return async (dispatch) => {
+    dispatch(getPostsAction());
+    let token;
+
+    try {
+      token = await utils.token.get();
+    } catch (err) { console.log('no token when getting postss'); }
+
+    fetch(url, {
+      method: 'GET',
+      ...reqOptions(token)
+    })
+    .then(response => response.json())
+    .then((responseJSON) => {
+      let dataType = metaPostSchema;
+      if (tags && tags.length) {
+        dataType = postSchema;
+      }
+      let data = normalize(
+        { [type]: responseJSON },
+        { [type]: [dataType] }
+      );
+      dispatch(setUsers(data.entities.users));
+      dispatch(setPosts(data, type, skip));
+      dispatch(errorActions.setError('discover', false));
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+      dispatch(errorActions.setError('discover', true, error.message));
+    });
+  };
+}
+
+export function loadingUserPosts() {
+  return {
+    type: 'LOADING_USER_POSTS',
+  };
+}
+
+export function getUserPosts(skip, limit, userId) {
+  if (!skip) skip = 0;
+  if (!limit) limit = 5;
+  return async (dispatch) => {
+    dispatch(loadingUserPosts());
+    let token;
+    const url = `${apiServer}post/user/${userId}?skip=${skip}&limit=${limit}`;
+
+    try {
+      token = await utils.token.get();
+    } catch (err) { console.log('no token'); }
+
+    fetch(url, {
+      method: 'GET',
+      ...reqOptions(token)
     })
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON, 'irrelevant response')
+      let data = normalize(
+        { [userId]: responseJSON },
+        { [userId]: [postSchema] }
+      );
+      dispatch(setUsers(data.entities.users));
+      dispatch(setUserPosts(data, userId, skip));
+      dispatch(errorActions.setError('profile', false));
     })
     .catch((error) => {
       console.log(error, 'error');
+      dispatch(errorActions.setError('profile', true, error.message));
     });
-  }
-}
-
-export function updateComment(comment, authToken) {
-    return function(dispatch) {
-       return fetch(process.env.API_SERVER+'/api/comment?access_token='+authToken, {
-            credentials: 'include',
-            method: 'PUT',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(comment)
-        })
-        .then((response) => response.json())
-        .then((responseJSON) => {
-          dispatch(addUpdatedComment(responseJSON));
-          return true;
-        })
-        .catch((error) => {
-          console.log(error, 'error');
-          AlertIOS.alert(error.message);
-          return false;
-        });
-    }
+  };
 }
 
 export function addUpdatedComment(updatedComment) {
@@ -347,29 +368,51 @@ export function addUpdatedComment(updatedComment) {
   };
 }
 
+export function updateComment(comment) {
+  return (dispatch) =>
+    utils.token.get()
+    .then(token =>
+      fetch(apiServer + 'comment', {
+        method: 'PUT',
+        body: JSON.stringify(comment),
+        ...reqOptions(token)
+      })
+    )
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      dispatch(addUpdatedComment(responseJSON));
+      return true;
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+      AlertIOS.alert(error.message);
+      return false;
+    });
+}
+
 export function editPost(post, authToken) {
   let response;
-  return function(dispatch) {
-    return fetch(process.env.API_SERVER+'/api/post?access_token='+authToken, {
+  return (dispatch) => {
+    return fetch(process.env.API_SERVER + '/api/post?access_token=' + authToken, {
       credentials: 'include',
       method: 'PUT',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(post)
     })
     .then(_response => {
       response = _response;
+      console.log(response);
       return response.json();
     })
     .then((responseJSON) => {
       if (response.status === 200) {
         dispatch(updatePost(responseJSON));
         return true;
-      } else {
-        return false;
       }
+      return false;
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -432,15 +475,15 @@ export function getComments(postId, skip, limit) {
       console.log(error, 'error');
       dispatch(errorActions.setError('comments', true, error.message));
     });
-  }
+  };
 }
 
 export function createComment(token, commentObj) {
   return function(dispatch) {
-    return fetch(process.env.API_SERVER+'/api/comment?access_token='+token, {
+    return fetch(process.env.API_SERVER + '/api/comment?access_token=' + token, {
       credentials: 'include',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       method: 'POST',
@@ -449,27 +492,27 @@ export function createComment(token, commentObj) {
     .then(utils.fetchError.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
+      console.log(responseJSON);
       dispatch(addComment(responseJSON.post, responseJSON));
       return true;
     })
     .catch((error) => {
-      AlertIOS.alert(error);
+      // AlertIOS.alert(error);
       console.log(error, 'error');
       return false;
     });
-  }
+  };
 }
 
 export function getSelectedPost(postId) {
   return function(dispatch) {
-    return fetch(process.env.API_SERVER+'/api/post/'+postId, {
-      credentials: 'include',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'GET',
-    })
+    utils.token.get()
+    .then(token =>
+      fetch(process.env.API_SERVER + '/api/post/' + postId, {
+        method: 'GET',
+        ...reqOptions(token)
+      })
+    )
     .then(utils.fetchError.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
@@ -484,56 +527,3 @@ export function getSelectedPost(postId) {
     });
   };
 }
-
-export function setSelectedPost(id) {
-  return {
-    type: 'SET_SELECTED_POST',
-    payload: id
-  };
-}
-
-export function setSelectedPostData(post) {
-  return {
-    type: 'SET_SELECTED_POST_DATA',
-    payload: post
-  };
-}
-
-export function clearSelectedPost() {
-  return {
-    type: 'CLEAR_SELECTED_POST'
-  };
-}
-
-export function archiveComments(postId) {
-  return {
-    type: types.ARCHIVE_COMMENTS,
-    payload: postId
-  };
-}
-
-export function addComment(postId, newComment) {
-  return {
-    type: types.ADD_COMMENT,
-    payload: {
-      comment: newComment,
-      postId
-    }
-  };
-}
-
-export function setComments(postId, comments, index, total) {
-  let num = 0;
-  if (!total) total = 0;
-  if (index) num = index;
-  return {
-    type: types.SET_COMMENTS,
-    payload: {
-      data: comments,
-      index: num,
-      postId,
-      total,
-    }
-  };
-}
-

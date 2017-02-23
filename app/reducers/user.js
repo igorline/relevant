@@ -13,7 +13,7 @@ const addItems = (arr, newArr) => {
 
 const initialState = {
   error: false,
-  selectedUserData: {},
+  users: {},
   list: [],
   online: [],
   loaded: false,
@@ -31,11 +31,26 @@ export default function auth(state = initialState, action) {
       };
     }
 
+    case types.SET_USERS: {
+      let users = {};
+      if (!action.payload) return state;
+      Object.keys(action.payload).forEach(id => {
+        users[id] = { ...state.users[id], ...action.payload[id] };
+      });
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          users
+        }
+      };
+    }
+
     case 'SET_SELECTED_USER_DATA': {
       return {
         ...state,
-        selectedUserData: {
-          ...state.selectedUserData,
+        users: {
+          ...state.users,
           [action.payload._id]: action.payload,
         }
       };
@@ -65,17 +80,18 @@ export default function auth(state = initialState, action) {
       });
     }
 
-    case types.UPDATE_USER:
+    case types.UPDATE_USER: {
       return {
         ...state,
-        selectedUserData: {
-          ...state.selectedUserData,
+        users: {
+          ...state.users,
           [action.payload._id]: {
-            ...state.selectedUserData[action.payload._id],
+            ...state.users[action.payload._id],
             ...action.payload,
           }
         }
       };
+    }
 
     case 'CLEAR_USER_LIST': {
       return Object.assign({}, state, {
@@ -90,4 +106,4 @@ export default function auth(state = initialState, action) {
     default:
       return state;
   }
-};
+}

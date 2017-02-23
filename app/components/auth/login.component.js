@@ -70,7 +70,7 @@ class Login extends Component {
         style={{ flex: 1 }}
       >
         <ScrollView
-          keyboardShouldPersistTaps
+          keyboardShouldPersistTaps={'always'}
           keyboardDismissMode={'interactive'}
           scrollEnabled={false}
           contentContainerStyle={styles.fieldsParent}

@@ -6,11 +6,11 @@ import * as utils from '../utils';
 export function getDiscoverTags() {
   return function(dispatch) {
     fetch(process.env.API_SERVER+'/api/tag?sort=count', {
-        credentials: 'include',
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+      credentials: 'include',
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       }
     })
     .then(utils.fetchError.handleErrors)
@@ -21,15 +21,15 @@ export function getDiscoverTags() {
     .catch((error) => {
       console.log(error, 'error');
     });
-  }
+  };
 }
 
 
 export function setDiscoverTags(data) {
-    return {
-        type: types.SET_DISCOVER_TAGS,
-        payload: data
-    };
+  return {
+    type: types.SET_DISCOVER_TAGS,
+    payload: data
+  };
 }
 
 export function goToTag(tag) {
@@ -37,21 +37,21 @@ export function goToTag(tag) {
     console.log('go to', tag);
     dispatch(setTag(tag));
     // dispatch(Actions.Discover);
-  }
+  };
 }
 
 export function selectTag(tag) {
-    return {
-        type: 'SELECT_TAG',
-        payload: tag
-    };
+  return {
+    type: 'SELECT_TAG',
+    payload: tag
+  };
 }
 
 export function deselectTag(tag) {
-    return {
-        type: 'DESELECT_TAG',
-        payload: tag
-    };
+  return {
+    type: 'DESELECT_TAG',
+    payload: tag
+  };
 }
 
 export function searchTags(tag) {

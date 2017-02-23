@@ -35,7 +35,7 @@ class Activity extends Component {
 
     this.tabs = [
       { id: 0, title: 'Personal' },
-      { id: 1, title: 'Online' }
+      // { id: 1, title: 'Online' }
     ];
   }
 
@@ -153,7 +153,6 @@ class Activity extends Component {
 
     return (
       <View style={[styles.fullContainer]}>
-        {tabsEl}
         {activityEl}
         <ErrorComponent parent={'activity'} reloadFunction={this.load} />
       </View>

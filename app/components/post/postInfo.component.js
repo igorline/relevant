@@ -47,10 +47,10 @@ class PostInfo extends Component {
 
   setSelected() {
     if (!this.props.actions) return;
-    if (this.props.scene && this.props.scene.id === this.props.post.user) return false;
+    if (this.props.scene && this.props.scene.id === this.props.post.user._id) return false;
     this.props.actions.goToProfile({
       name: this.props.post.embeddedUser.name,
-      _id: this.props.post.user
+      _id: this.props.post.user._id || this.props.post.user
     });
   }
 
@@ -61,8 +61,8 @@ class PostInfo extends Component {
       let timeNow = moment();
       let dif = timeNow.diff(postTime);
       let threshold = 21600000;
-      let passed = false;
-      if (dif >= threshold) passed = true;
+      let passed = true;
+      // if (dif >= threshold) passed = true;
 
       this.setState({
         passed,
@@ -91,7 +91,7 @@ class PostInfo extends Component {
     }
 
     if (this.state.passed) {
-      postInfo = (<Stats type={'value'} entity={post} />);
+      // postInfo = (<Stats type={'value'} entity={post} />);
     } else {
       postInfo = (
         <View style={[styles.countdown]}>
@@ -100,8 +100,8 @@ class PostInfo extends Component {
             actions={[
               { text: 'Post value revealed 6 hours after creation' }
             ]}
-            underlayColor='transparent'
-            arrowDirection='up'
+            underlayColor={'transparent'}
+            arrowDirection={'up'}
           >
             <View style={{ flexDirection: 'row' }}>
               <Progress.Pie
@@ -121,11 +121,19 @@ class PostInfo extends Component {
       );
     }
 
+    let user = post.user;
+    if (user && !user.name) {
+      user = {};
+      user._id = post.user;
+      user.image = post.embeddedUser.image;
+      user.name = post.embeddedUser.name;
+    }
+
     return (<View style={styles.postHeader}>
       <View style={styles.postInfo}>
         <UserName
           big={this.props.big}
-          user={{ image: postUserImage, name, _id: this.props.post.user }}
+          user={user}
           setSelected={this.setSelected}
         />
         <View

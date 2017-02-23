@@ -46,12 +46,12 @@ class InvestAnimation extends Component {
   }
 
   investAni() {
-    if (this.state.num < 20) {
+    if (this.state.num < 5) {
       let newArr = this.state.investAni;
       newArr.push(<Dollar key={this.state.num} specialKey={this.state.num} />);
       let newNum = this.state.num += 1;
       this.setState({ num: newNum, investAni: newArr });
-      setTimeout(() => { this.investAni(); }, 30);
+      setTimeout(() => { this.investAni(); }, 100 * Math.random());
     } else {
       setTimeout(() => { this.clearEls(); }, 1000);
     }

@@ -1,10 +1,43 @@
+import { normalize, schema } from 'normalizr';
 import {
     AlertIOS
 } from 'react-native';
+import * as type from './actionTypes';
 
 require('../publicenv');
 
-let apiServer = process.env.API_SERVER+'/api/';
+let apiServer = process.env.API_SERVER + '/api/';
+
+const postSchema = new schema.Entity('posts',
+  {},
+  { idAttribute: '_id' }
+);
+
+const investment = new schema.Entity('investments',
+  { post: postSchema },
+  { idAttribute: '_id' }
+);
+
+export function updatePostInvest(posts) {
+  return {
+    type: type.UPDATE_POSTS_INVEST,
+    payload: posts
+  };
+}
+
+export function undoPostInvest(post) {
+  return {
+    type: type.UNDO_POSTS_INVEST,
+    payload: post
+  };
+}
+
+export function setPosts(posts) {
+  return {
+    type: 'SET_POSTS_SIMPLE',
+    payload: posts
+  };
+}
 
 export function setInvestments(investments, userId, index) {
   return {
@@ -19,6 +52,7 @@ export function setInvestments(investments, userId, index) {
 
 export function invest(token, amount, post, investingUser) {
   return (dispatch) => {
+    dispatch(updatePostInvest([post._id]));
     return fetch(apiServer + 'invest?access_token=' + token, {
       credentials: 'include',
       method: 'POST',
@@ -35,12 +69,14 @@ export function invest(token, amount, post, investingUser) {
     .then(response => response.json())
     .then((data) => {
       if (data && !data.success) {
+        dispatch(undoPostInvest(post._id));
         if (data.message) AlertIOS.alert(data.message);
         return false;
       }
       return data;
     })
     .catch((error) => {
+      dispatch(undoPostInvest(post._id));
       console.log(error, 'error here');
       AlertIOS.alert(error.message);
     });
@@ -67,7 +103,14 @@ export function getInvestments(token, userId, skip, limit, type){
     .then(response => response.json())
     .then((responseJSON) => {
       // dispatch(refreshInvestments(responseJSON, userId, skip));
-      dispatch(setInvestments(responseJSON, userId, skip));
+
+      let data = normalize(
+        { investments: responseJSON },
+        { investments: [investment] }
+      );
+      dispatch(setPosts(data.entities.posts));
+      dispatch(setInvestments(data, userId, skip));
+
     })
     .catch((error) => {
       console.log(error);

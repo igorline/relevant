@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Animated,
-  Easing
+  Easing,
+  Image
 } from 'react-native';
-import { fullWidth, fullHeight } from '../../styles/global';
+import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 
 let styles;
 
 class Dollar extends Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context);
     this.state = {
       x: new Animated.Value(0),
@@ -23,17 +24,17 @@ class Dollar extends Component {
     let i = this.props.specialKey;
 
     Animated.timing(this.state.x, {
-      toValue: -(fullWidth / 2.6),
+      toValue: -(fullWidth / 2.0) + ((Math.random() - 0.5) * 100),
       delay: i * 30,
-      duration: 300,
-      easing: Easing.out(Easing.cubic)
+      duration: 500,
+      easing: Easing.out(Easing.ease)
     }).start();
 
     Animated.timing(this.state.y, {
       toValue: fullHeight * 0.6,
       delay: i * 30,
-      duration: 300,
-      easing: Easing.linear
+      duration: 500,
+      easing: Easing.in(Easing.ease)
     }).start();
 
     // Animated.timing(this.state.opacity, {
@@ -47,13 +48,13 @@ class Dollar extends Component {
       Animated.timing(this.state.scale, {
         toValue: 1,
         delay: i * 30,
-        duration: 200,
+        duration: 450,
         easing: Easing.out(Easing.exp)
       }),
       Animated.timing(this.state.scale, {
         toValue: 0,
         delay: 0,
-        duration: 100,
+        duration: 50,
         easing: Easing.in(Easing.quad)
       })
     ]).start();
@@ -73,10 +74,14 @@ class Dollar extends Component {
             { scale: this.state.scale },
 
           ],
-          opacity: this.state.opacity
-        }]}
+            opacity: this.state.opacity
+          }
+        ]}
       >
-        💵
+        <Image
+          style={[styles.coin, { width: 30, height: 30 }]}
+          source={require('../../assets/images/r.png')}
+        />
       </Animated.Text>
     );
   }
@@ -88,11 +93,11 @@ const localStyles = StyleSheet.create({
   aniMoney: {
     fontSize: 16 * 4,
     position: 'absolute',
-    top: 5,
-    right: 7,
+    top: 25,
+    right: 15,
     backgroundColor: 'transparent'
   },
 });
 
-styles = localStyles;
+styles = { ...localStyles, ...globalStyles };
 

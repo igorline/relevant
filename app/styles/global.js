@@ -78,15 +78,19 @@ const font = StyleSheet.create({
     fontSize: 10,
     fontFamily: 'BebasNeueRelevantRegular',
   },
+  bebasNoMargin: {
+    fontFamily: 'BebasNeueRelevantRegular',
+    fontWeight: 'normal',
+    letterSpacing: 0.5,
+  },
   bebas: {
     fontFamily: 'BebasNeueRelevantRegular',
     fontWeight: 'normal',
     letterSpacing: 0.5,
     // flex: 1,
     marginBottom: -2,
-    justifyContent: 'flex-end',
+    // justifyContent: 'flex-end',
     // alignItems: 'flex-end',
-
   },
   bebasBold: {
     fontFamily: 'BebasNeueRelevantRegular',
@@ -121,13 +125,6 @@ const font = StyleSheet.create({
     fontFamily: 'Georgia',
     fontSize: 18,
   },
-  stats: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    flexDirection: 'row',
-    marginTop: -3,
-  }
 });
 
 const colors = StyleSheet.create({
@@ -256,29 +253,6 @@ const layout = StyleSheet.create({
     color: '#3E3EFF',
     fontSize: 15,
   },
-  activityRight: {
-    flex: 0.15,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    flexDirection: 'row',
-    paddingLeft: 10,
-  },
-  activityLeft: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  singleActivity: {
-    padding: 10,
-    width: fullWidth,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    flex: 1,
-    overflow: 'visible',
-    backgroundColor: 'white'
-  },
   onlineUser: {
     justifyContent: 'space-between',
     flexDirection: 'row',
@@ -356,7 +330,7 @@ const layout = StyleSheet.create({
     backgroundColor: '#F0F0F0',
     paddingHorizontal: 10,
     // padding: 20,
-    height: 45,
+    height: 35,
     flexDirection: 'row',
     alignItems: 'center',
     marginLeft: 5,
@@ -446,8 +420,8 @@ const layout = StyleSheet.create({
     padding: 10
   },
   createPostInput: {
-    paddingTop: 12.5,
-    paddingBottom: 12.5,
+    marginTop: 12.5,
+    marginBottom: 12.5,
     backgroundColor: '#ffffff'
   },
   flex1: {
@@ -455,7 +429,7 @@ const layout = StyleSheet.create({
   },
   boxShadow: {
     shadowColor: 'black',
-    shadowOffset: { width: -0, height: .5 },
+    shadowOffset: { width: -0, height: 0.5 },
     shadowRadius: 1,
     shadowOpacity: 0.2,
     borderWidth: StyleSheet.hairlineWidth,
@@ -488,6 +462,48 @@ const layout = StyleSheet.create({
     fontSize: 20,
     marginTop: -4,
     letterSpacing: -0.5
+  },
+  r: {
+    height: 15,
+    width: 20,
+    resizeMode: 'contain',
+    marginRight: 2,
+    marginLeft: 1,
+    marginBottom: -3.4,
+  },
+  coin: {
+    height: 20,
+    width: 22,
+    resizeMode: 'contain',
+    marginRight: 2.5,
+    marginLeft: 1,
+    marginBottom: -8
+  },
+  rup: {
+    height: 19,
+    width: 30,
+    resizeMode: 'contain',
+    marginRight: 4,
+    marginLeft: 0,
+    marginBottom: 1
+  },
+  postCat: {
+    position: 'absolute',
+    bottom: 5,
+    left: 5,
+    backgroundColor: blue,
+    color: 'white',
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    paddingBottom: 3,
+    fontSize: 12,
+  },
+  userImage: {
+    height: 28,
+    width: 28,
+    borderRadius: 14,
+    marginRight: 5,
+    resizeMode: 'cover',
   },
 });
 

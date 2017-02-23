@@ -99,8 +99,8 @@ class CardHeader extends Component {
     let component = props.scene.route.component;
 
     if (component === 'profile') {
-      if (this.props.users.selectedUserData[props.scene.route.id]) {
-        title = this.props.users.selectedUserData[props.scene.route.id].name;
+      if (this.props.users.users[props.scene.route.id]) {
+        title = this.props.users.users[props.scene.route.id].name;
       }
     }
     if (title === 'Profile' && this.props.auth.user) {
@@ -208,7 +208,7 @@ const localStyles = StyleSheet.create({
   },
   leftButton: {
     flex: 1,
-    marginLeft: 15,
+    marginLeft: 10,
     justifyContent: 'center',
     paddingVertical: 10,
   },
@@ -217,7 +217,7 @@ const localStyles = StyleSheet.create({
   },
   rightButton: {
     flex: 1,
-    marginRight: 15,
+    marginRight: 10,
     paddingVertical: 10,
   },
   gearImg: {

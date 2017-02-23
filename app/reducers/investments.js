@@ -1,23 +1,47 @@
 import * as types from '../actions/actionTypes';
 
-// const addItems = (arr, newArr) => {
-//   if (!arr) arr = [];
-//   if (!arr.length) return newArr;
-//   let removeDuplicates = newArr.filter( (el) => {
-//     return arr.indexOf( el ) < 0;
-//   });
-//   let finalArr = arr.concat(removeDuplicates);
-//   let newArrX = finalArr.slice();
-//   return newArrX;
-// };
-
 const initialState = {
   userInvestments: {},
-  loaded: false
+  investments: {},
+  loaded: false,
+  myInvestments: [],
+  myEarnings: {}
 };
 
 export default function investments(state = initialState, action) {
   switch (action.type) {
+
+    case types.UNDO_POSTS_INVEST: {
+      let index = state.myInvestments.indexOf(action.payload);
+      return {
+        ...state,
+        myInvestments: [
+          ...state.myInvestments.slice(0, index),
+          ...state.myInvestments.slice(index + 1)
+        ]
+      };
+    }
+
+    case types.UPDATE_EARNINGS: {
+      let earnings = {};
+      action.payload.forEach(earning => {
+        earnings[earning.post] = earning;
+      });
+      return {
+        ...state,
+        myEarnings: {
+          ...state.myEarnings,
+          ...earnings
+        }
+      };
+    }
+
+    case types.UPDATE_POSTS_INVEST: {
+      return {
+        ...state,
+        myInvestments: [...state.myInvestments, ...action.payload]
+      };
+    }
 
     case 'SET_INVESTMENTS': {
       let id = action.payload.userId;
@@ -28,8 +52,12 @@ export default function investments(state = initialState, action) {
           ...state.userInvestments,
           [id]: [
             ...currentInvestments.slice(0, action.payload.index),
-            ...action.payload.investments
-          ]
+            ...action.payload.investments.result.investments
+          ],
+        },
+        investments: {
+          ...state.investments,
+          ...action.payload.investments.entities.investments
         },
         loaded: true,
       };
@@ -42,13 +70,6 @@ export default function investments(state = initialState, action) {
       };
     }
 
-    // case 'REFRESH_INVESTMENTS': {
-    //   let type = action.payload.type;
-    //   return Object.assign({}, state, {
-    //     [type]: action.payload.data,
-    //   });
-    // }
-
     case types.LOGOUT_USER: {
       return { ...initialState };
     }
@@ -56,4 +77,4 @@ export default function investments(state = initialState, action) {
     default:
       return state;
   }
-};
+}

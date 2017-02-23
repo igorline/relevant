@@ -109,6 +109,7 @@ export default class DiscoverHeader extends Component {
         style={{
           position: 'absolute',
           top: 0,
+          zIndex: 1000,
           backgroundColor:
           'white',
           transform: [{ translateY: this.state.offsetY }],
@@ -118,22 +119,19 @@ export default class DiscoverHeader extends Component {
         onLayout={
           (event) => {
             const { height } = event.nativeEvent.layout;
-            // TODO make sure this is efficient
-            // if (!this.layout) {
             if (this.headerHeight === height) return;
             this.headerHeight = height;
             this.props.setPostTop(this.headerHeight);
             this.layout = true;
-            // this.onScroll(event);
-            // }
           }
         }
       >
         {tags}
         <Tabs
-          tabs={this.props.tabs}
+          tabs={this.props.myTabs}
           active={this.props.view}
           handleChange={this.props.changeView}
+          scrollValue={this.props.scrollValue}
         />
       </Animated.View>
     );

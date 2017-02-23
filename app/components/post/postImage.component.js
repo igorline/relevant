@@ -39,7 +39,7 @@ class PostImage extends Component {
       if (post.image) image = post.image.match('http') ? post.image : 'https:' + post.image;
       if (post.link) {
         link = post.link;
-        linkEl = <Text style={[styles.font12, styles.greyText]}>from {post.domain}</Text>;
+        linkEl = <Text style={[styles.font12, styles.greyText]}>from {post.domain} ► {post.categoryEmoji}{post.categoryName}</Text>;
       }
       title = post.title;
       // if (post.title) {
@@ -63,8 +63,18 @@ class PostImage extends Component {
     if (image) {
       imageEl = (<View style={{ flex: 1, overflow: 'hidden' }}>
         <Image style={[styles.postImage]} source={image ? { uri: image } : require('../../assets/images/missing.png')} />
+
       </View>);
     }
+
+        // <Text style={styles.postCat}>
+        //   {post.categoryEmoji}{post.categoryName}
+        // </Text>
+
+    let description = null;
+    // if (post.body == '' || !post.body) {
+      // description = <Text style={[styles.font14, { paddingTop: 5 }]}>{post.description}</Text>;
+    // }
 
     return (
       <TouchableHighlight
@@ -74,7 +84,6 @@ class PostImage extends Component {
       >
         <View style={[styles.postImageContainer, styles.boxShadow]}>
           {imageEl}
-
           {/*lastPost ? <Text style={[styles.lastPost, styles.white]}>
             Last subscribed post❗️
           </Text> : null*/}
@@ -88,6 +97,7 @@ class PostImage extends Component {
                 {title || 'Untitled'}
               </Text>
               {linkEl}
+              {description}
             </View>
           </View>
         </View>
@@ -119,8 +129,7 @@ const localStyles = StyleSheet.create({
     alignItems: 'stretch',
     flexDirection: 'column',
     justifyContent: 'center',
-    marginBottom: 25,
-    marginTop: 5,
+    marginTop: 25,
     backgroundColor: 'white',
   },
 });

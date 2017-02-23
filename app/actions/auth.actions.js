@@ -6,9 +6,21 @@ import userDefaults from 'react-native-user-defaults';
 import * as types from './actionTypes';
 import * as utils from '../utils';
 import * as errorActions from './error.actions';
+import { token as tokenUtil } from '../utils';
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
 require('../publicenv');
+
+const reqOptions = (token) => {
+  return {
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    }
+  };
+};
 
 export
 function sendPong() {
@@ -103,6 +115,23 @@ export function logoutAction(user) {
         payload: user._id
       });
     });
+  };
+}
+
+export function setOnboardingStep(step) {
+  return (dispatch) => {
+    tokenUtil.get()
+    .then(token =>
+      fetch(process.env.API_SERVER + '/api/user/onboarding/' + step, {
+        credentials: 'include',
+        method: 'GET',
+        ...reqOptions(token)
+      })
+      .then(response => response.json())
+      .then((responseJSON) => {
+        dispatch(updateAuthUser(responseJSON));
+      })
+    );
   };
 }
 

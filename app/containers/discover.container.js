@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  ScrollView,
 } from 'react-native';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
+
 import Post from '../components/post/post.component';
 import DiscoverUser from '../components/discoverUser.component';
 import DiscoverHeader from '../components/discoverHeader.component';
@@ -15,7 +16,6 @@ import * as statsActions from '../actions/stats.actions';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import * as tagActions from '../actions/tag.actions';
-import * as viewActions from '../actions/view.actions';
 import * as investActions from '../actions/invest.actions';
 import * as animationActions from '../actions/animation.actions';
 import * as navigationActions from '../actions/navigation.actions';
@@ -23,7 +23,6 @@ import * as createPostActions from '../actions/createPost.actions';
 import { globalStyles } from '../styles/global';
 import ErrorComponent from '../components/error.component';
 import CustomListView from '../components/customList.component';
-import EmptyList from '../components/emptyList.component';
 
 let styles;
 const POST_PAGE_SIZE = 5;
@@ -34,7 +33,6 @@ class Discover extends Component {
     this.state = {
       headerHeight: 50,
       showHeader: true,
-      view: 0,
       offsetY: 0,
     };
     this.onScroll = this.onScroll.bind(this);
@@ -42,19 +40,20 @@ class Discover extends Component {
     this.setPostTop = this.setPostTop.bind(this);
     this.load = this.load.bind(this);
     this.changeView = this.changeView.bind(this);
+    this.setCurrentView = this.setCurrentView.bind(this);
     this.offset = 0;
     this.needsReload = new Date().getTime();
-    this.renderSeparator = this.renderSeparator.bind(this);
-    this.tabs = [
-      { id: 0, title: 'New', type: 'new' },
-      { id: 1, title: 'Top', type: 'top' },
+    this.myTabs = [
+      { id: 0, title: 'Trending', type: 'top' },
+      { id: 1, title: 'New', type: 'new' },
       { id: 2, title: 'People', type: 'people' },
     ];
     this.lastOffset = -50;
+    this.view = 0;
   }
 
   componentWillReceiveProps(next) {
-    let type = this.tabs[this.props.view.discover].type;
+    let type = this.myTabs[next.view.discover].type;
     if (this.props.tags.selectedTags !== next.tags.selectedTags && type !== 'people') {
       this.needsReload = new Date().getTime();
     }
@@ -63,6 +62,9 @@ class Discover extends Component {
     }
     if (this.props.reload !== next.reload) {
       this.needsReload = new Date().getTime();
+    }
+    if (next.view.discover !== this.view) {
+      this.tabView.goToPage(next.view.discover);
     }
   }
 
@@ -93,13 +95,23 @@ class Discover extends Component {
   }
 
   scrollToTop() {
-    let view = this.tabs[this.props.view.discover].component.listview;
+    let view = this.myTabs[this.props.view.discover].component.listview;
     if (view) view.scrollTo({ y: -this.state.headerHeight, animated: true });
   }
 
-  changeView(view) {
-    if (view === this.props.view.discover) this.scrollToTop();
+  setCurrentView(view) {
+    this.view = view;
     this.props.actions.setView('discover', view);
+  }
+
+  changeView(view) {
+    this.view = view;
+    if (view === this.props.view.discover) {
+      this.scrollToTop();
+    } else {
+      this.tabView.goToPage(view);
+      this.props.actions.setView('discover', view);
+    }
   }
 
   load(view, length) {
@@ -109,10 +121,10 @@ class Discover extends Component {
     const tags = this.props.tags.selectedTags;
     switch (view) {
       case 0:
-        this.props.actions.getPosts(length, tags, null, POST_PAGE_SIZE);
+        this.props.actions.getPosts(length, tags, 'rank', POST_PAGE_SIZE);
         break;
       case 1:
-        this.props.actions.getPosts(length, tags, 'rank', POST_PAGE_SIZE);
+        this.props.actions.getPosts(length, tags, null, POST_PAGE_SIZE);
         break;
       case 2:
         if (this.props.auth.user) this.props.actions.getUsers(length, POST_PAGE_SIZE * 2);
@@ -124,15 +136,16 @@ class Discover extends Component {
 
 
   renderRow(rowData, view) {
-    let type = this.tabs[view].type;
+    let type = this.myTabs[view].type;
     if (view !== 2) {
       let posts = [];
       if (!this.props.tags.selectedTags.length) {
         let metaPost = this.props.posts.metaPosts[type][rowData];
-        posts = metaPost.commentary;
+        if (metaPost) posts = metaPost.commentary;
+        else return null;
       } else {
         posts = rowData;
-        if (rowData === null) return;
+        if (rowData === null) return null;
       }
       let showReposts = false;
       if (type === 'new') showReposts = true;
@@ -141,16 +154,12 @@ class Discover extends Component {
     return (<DiscoverUser user={rowData} {...this.props} styles={styles} />);
   }
 
-  renderSeparator(sectionID, rowID, adjacentRowHighlighted) {
-    return <View key={rowID} style={styles.separator} />;
-  }
-
   getViewData(props, view) {
     switch (view) {
       case 0:
-        return props.posts.new;
-      case 1:
         return props.posts.top;
+      case 1:
+        return props.posts.new;
       case 2:
         return props.userList;
       default:
@@ -158,14 +167,32 @@ class Discover extends Component {
     }
   }
 
+  renderHeader() {
+    if (this.props.error) return null;
+    return (
+      <DiscoverHeader
+        ref={(c => this.header = c)}
+        triggerReload={this.scrollToTop}
+        offsetY={this.state.offsetY}
+        showHeader={this.state.showHeader}
+        tags={this.props.tags}
+        posts={this.props.posts}
+        view={this.props.view.discover}
+        setPostTop={this.setPostTop}
+        actions={this.props.actions}
+        changeView={this.changeView}
+        myTabs={this.myTabs}
+      />);
+  }
+
   render() {
     let dataEl = [];
-    this.tabs.forEach((tab) => {
+    this.myTabs.forEach((tab) => {
       let tabData = this.getViewData(this.props, tab.id) || [];
       let active = this.props.view.discover === tab.id;
       dataEl.push(
         <CustomListView
-          ref={(c) => { this.tabs[tab.id].component = c; }}
+          ref={(c) => { this.myTabs[tab.id].component = c; }}
           key={tab.id}
           data={tabData}
           renderRow={this.renderRow}
@@ -177,33 +204,29 @@ class Discover extends Component {
           YOffset={this.state.headerHeight}
           onScroll={this.onScroll}
           needsReload={this.needsReload}
+          scrollableTab
         />
       );
     });
 
-    let headerEl = (<DiscoverHeader
-      ref={(c => this.header = c)}
-      triggerReload={this.scrollToTop}
-      offsetY={this.state.offsetY}
-      showHeader={this.state.showHeader}
-      tags={this.props.tags}
-      posts={this.props.posts}
-      view={this.props.view.discover}
-      setPostTop={this.setPostTop}
-      actions={this.props.actions}
-      changeView={this.changeView}
-      tabs={this.tabs}
-    />);
-
     if (this.props.error) {
-      headerEl = null;
       dataEl = [];
     }
 
     return (
-      <View style={{ backgroundColor: 'hsl(0,0%,90%)', flex: 1 }}>
-        {dataEl}
-        {headerEl}
+      <View style={{ backgroundColor: 'hsl(0,0%,100%)', flex: 1 }}>
+        <ScrollableTabView
+          onChangeTab={(tab) => {
+            this.setCurrentView(tab.i);
+            this.header.showHeader();
+          }}
+          renderTabBar={() => this.renderHeader()}
+          // onScroll={() => this.header.showHeader()}
+          ref={tabView => this.tabView = tabView}
+        >
+          {dataEl}
+        </ScrollableTabView>
+
         <ErrorComponent parent={'discover'} reloadFunction={this.load} />
       </View>
     );
@@ -251,7 +274,6 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(
       { ...postActions,
         ...animationActions,
-        ...viewActions,
         ...tagActions,
         ...investActions,
         ...userActions,

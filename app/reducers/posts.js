@@ -75,6 +75,13 @@ const initialState = {
 export default function post(state = initialState, action) {
   switch (action.type) {
 
+    case types.SET_POSTS_SIMPLE: {
+      return {
+        ...state,
+        posts: { ...state.posts, ...action.payload },
+      };
+    }
+
     case types.SET_POSTS: {
       const type = action.payload.type;
 

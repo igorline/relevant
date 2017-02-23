@@ -8,9 +8,9 @@
  */
 
 #import "AppDelegate.h"
-#import "RCTPushNotificationManager.h"
-#import "RCTBundleURLProvider.h"
-#import "RCTRootView.h"
+#import <React/RCTPushNotificationManager.h>
+#import <React/RCTBundleURLProvider.h>
+#import <React/RCTRootView.h>
 
 @implementation AppDelegate
 

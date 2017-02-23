@@ -35,6 +35,7 @@ export default class ActivityView extends Component {
       this.lastReload = new Date().getTime();
     } else if (this.props.active) {
       this.props.load(this.props.view, 0);
+      this.setState({ loading: true });
       this.lastReload = new Date().getTime();
     }
   }
@@ -58,6 +59,7 @@ export default class ActivityView extends Component {
     if (next.active && next.needsReload > this.lastReload) {
       this.dataSource = null;
       this.props.load(this.props.view, 0);
+      this.setState({ loading: true });
       this.lastReload = new Date().getTime();
     }
   }
@@ -78,8 +80,8 @@ export default class ActivityView extends Component {
 
   reload() {
     if (this.state.loading || this.state.reloading) return;
-    this.lastReload = (new Date()).getTime();
     this.setState({ reloading: true });
+    this.lastReload = (new Date()).getTime();
     this.props.load(this.props.view, 0);
     if (this.props.onReload) this.props.onReload();
   }
@@ -100,7 +102,10 @@ export default class ActivityView extends Component {
     let spinnerEl = (<CustomSpinner visible={!this.props.data.length && this.props.active} />);
 
     let listStyle = [styles.commonList, styles.hiddenList];
-    if (this.props.active) listStyle = [styles.commonList, styles.vis];
+
+    if (this.props.active || this.props.scrollableTab) {
+      listStyle = [styles.commonList, styles.vis];
+    }
 
     let type = 'data';
     if (this.props.type) type = this.props.type;
@@ -133,7 +138,7 @@ export default class ActivityView extends Component {
       <ListView
         ref={(c) => { this.listview = c; }}
         enableEmptySections
-        removeClippedSubviews={true}
+        removeClippedSubviews
         pageSize={1}
         initialListSize={10}
         scrollEventThrottle={10}
@@ -167,12 +172,9 @@ export default class ActivityView extends Component {
       />
     );
 
-
-
     return (
       <View style={listStyle}>
         {listEl}
-        
         {spinnerEl}
       </View>
     );

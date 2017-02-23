@@ -48,7 +48,7 @@ class Comment extends Component {
   }
 
   saveEdit(comment) {
-    this.props.actions.updateComment(comment, this.props.auth.token)
+    this.props.actions.updateComment(comment)
     .then((results) => {
       if (results) {
         this.setState({ editing: !this.state.editing, editedText: comment.text });

@@ -3,7 +3,8 @@ import {
   Text,
   ScrollView,
   TouchableHighlight,
-  View
+  View,
+  PanResponder
 } from 'react-native';
 import { globalStyles } from '../styles/global';
 
@@ -16,10 +17,15 @@ export default class Tags extends Component {
     this.toggleTag = this.toggleTag.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    this._panResponder = PanResponder.create({
+      onPanResponderTerminationRequest: () => true,
+      onStartShouldSetPanResponderCapture: () => false,
+    });
   }
 
   toggleTag(tag) {
+    if (this.props.toggleTag) return this.props.toggleTag(tag);
     if (this.selectedLookup[tag._id]) {
       this.props.actions.deselectTag(tag);
     } else this.props.actions.selectTag(tag);
@@ -33,7 +39,7 @@ export default class Tags extends Component {
         style={
           [styles.tagBox, {
             backgroundColor: selected ? '#4d4eff' : '#F0F0F0' }]}
-        onPress={() => this.toggleTag(tag)}
+        onPress={() =>  this.toggleTag(tag)}
         key={tag._id}
       >
         <View style={{ flexDirection: 'row' }} >
@@ -66,8 +72,12 @@ export default class Tags extends Component {
     if (selectedTags.length + tags.length > 0) {
       el = (
         <ScrollView
+          forceSetResponder={false}
+          // onStartShouldSetResponder={evt => false}
+          // onMoveShouldSetResponder={evt => false}
           horizontal
-          keyboardShouldPersistTaps
+          scrollEnabled
+          keyboardShouldPersistTaps={'always'}
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
           contentContainerStyle={styles.tags}
@@ -82,7 +92,3 @@ export default class Tags extends Component {
   }
 }
 
-Tags.propTypes = {
-  posts: React.PropTypes.object,
-  actions: React.PropTypes.object,
-};

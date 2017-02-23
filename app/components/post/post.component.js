@@ -4,7 +4,8 @@ import {
   View,
   Text,
 } from 'react-native';
-import { globalStyles, blue } from '../../styles/global';
+import { connect } from 'react-redux';
+import { globalStyles } from '../../styles/global';
 import PostButtons from './postButtons.component';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
@@ -48,7 +49,7 @@ class Post extends Component {
       posts = posts.filter(p => typeof p === 'string');
       posts = posts.map(p => this.props.posts.posts[p]);
       if (!posts.length) return null;
-      post = posts[0];
+      post = { ...posts[0] };
       if (!post) return null;
     }
 
@@ -57,27 +58,27 @@ class Post extends Component {
     let label = null;
     let commentary = null;
     if (posts && posts.length > 1) {
-      label = <Text style={[styles.tabFont, styles.cLabel]}>🤔 Other's Commentary</Text>;
+      label = <Text style={[styles.tabFont, styles.cLabel]}>🤔 Other{'\''}s Commentary</Text>;
       commentary = <Commentary {...this.props} commentary={posts.slice(1, posts.length)} />;
     }
 
     let repostEl = null;
-    let postStyle = null;
+    let postStyle = {};
 
     if (this.props.showReposts && post && post.comments && post.comments[0]) {
       let repost = this.props.posts.comments[post.comments[0]];
       if (repost && repost.repost) {
-        // let repost = post.comments[0];
         postStyle = [styles.repost, styles.boxShadow];
         let repostObj = {
           ...repost,
+          user: this.props.users[repost.user] || repost.user,
           embeddedUser: repost.embeddedUser,
           body: repost.text,
           _id: post._id,
         };
 
         repostEl = (
-          <View>
+          <View style={{ paddingBottom: 25 }}>
             <PostInfo repost {...this.props} post={repostObj} />
             <PostBody repost {...this.props} post={repostObj} />
           </View>
@@ -88,8 +89,12 @@ class Post extends Component {
     if (post.repost) {
       postStyle = [styles.repost, styles.boxShadow];
       let repost = this.props.posts.posts[post.repost.post];
+      if (this.props.users[repost.user]) {
+        repost.user = this.props.users[repost.user];
+      }
+
       repostEl = (
-        <View>
+        <View style={{ marginBottom: 25 }}>
           <PostInfo repost {...this.props} post={post} />
           <PostBody
             repost
@@ -98,14 +103,14 @@ class Post extends Component {
           />
         </View>
       );
-      post = repost;
+      post = { ...repost };
     }
 
     if (post.link || post.image) imageEl = <PostImage post={post} />;
-
+    post.user = this.props.users[post.user] || post.user;
 
     return (
-      <View style={{ overflow:'hidden' }}>
+      <View style={{ overflow: 'hidden' }}>
         <View style={[styles.postContainer]}>
           <View style={styles.postInner}>
             {repostEl}
@@ -140,8 +145,6 @@ class Post extends Component {
     );
   }
 }
-
-export default Post;
 
 const localStyles = StyleSheet.create({
   repost: {
@@ -179,3 +182,15 @@ const localStyles = StyleSheet.create({
 
 styles = { ...localStyles, ...globalStyles };
 
+
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+    posts: state.posts,
+    myInvestments: state.investments.myInvestments,
+    myEarnings: state.investments.myEarnings,
+    users: state.user.users
+  };
+}
+
+export default connect(mapStateToProps, {})(Post);
