@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, fullWidth } from '../../styles/global';
 import Percent from '../percent.component';
 import { numbers } from '../../utils';
 import * as navigationActions from '../../actions/navigation.actions';
@@ -60,19 +60,22 @@ class Stats extends Component {
 
   render() {
     let { type, entity } = this.props;
+    let smallScreen = fullWidth <= 320 || false;
 
     let statsStyle = [{ fontSize: 17, lineHeight: 17 }, styles.bebas, styles.quarterLetterSpacing];
     let iconStyle = [];
+    let coinStyle = [];
 
-    if (this.props.size === 'small') {
-      statsStyle = [{ fontSize: 17, lineHeight: 17 }, styles.bebas, styles.quarterLetterSpacing];
-      // iconStyle = [{ width: 18, height: 15 }];
+    if (this.props.size === 'small' || (smallScreen && type === 'nav')) {
+      statsStyle = [{ fontSize: 15, lineHeight: 15 }, styles.bebas, styles.quarterLetterSpacing];
+      iconStyle = [{ width: 15, height: 14.5, marginBottom: -4 }];
+      coinStyle = [{ width: 18, height: 15, marginBottom: -6 }];
     }
 
     let value = (
       <Text onPress={() => this.toggleTooltip()}>
         <Image
-          style={[styles.coin, ...iconStyle]}
+          style={[styles.coin, ...coinStyle]}
           source={require('../../assets/images/relevantcoin.png')}
         />
         <Text>{numbers.abbreviateNumber(entity.value || entity.balance || 0)}</Text>

@@ -130,30 +130,38 @@ class ProfileComponent extends Component {
     }
 
     let balanceEl = (
-      <View style={styles.profileRow}>
-        <Text style={[styles.profileColumn, styles.profileBig, , styles.bebasNoMargin]}>
+      <View style={[styles.profileRowContainer]}>
+        <Text style={[styles.font14, { lineHeight: 15 }, styles.bebasNoMargin]}>
+          <Text style={[styles.font14, styles.darkGray, styles.georgia, styles.profileColumn]}>
+            Coins: 
+          </Text>
           <Image
-            style={[styles.coin, { width: 29, height: 29, marginRight: 3 }]}
+            style={[styles.coin, { width: 17, height: 12, marginBottom: -1 }]}
             source={require('../assets/images/relevantcoin.png')}
           />
-          {numbers.abbreviateNumber(balance)}
+          <Text style={styles.bebasBold}>
+            {numbers.abbreviateNumber(balance)}
+          </Text>
         </Text>
       </View>
     );
 
+    let small = fullWidth <= 320 || false;
+
     relevanceEl = (
-      <View style={styles.profileRow}>
+      <View style={[styles.profileRow, styles.profileRowContainer]}>
         <Text
           // onPress={() => this.toggleTooltip()}
-          style={[styles.profileColumn, styles.profileBig, styles.bebasNoMargin]}
+          style={[styles.profileBig, { lineHeight: 26 }, styles.bebasNoMargin, { flex : 1 }]}
         >
           <Image
-            style={[styles.r, { width: 25, height: 26 }]}
+            style={[styles.r, { width: 25, height: 23 }]}
             source={require('../assets/images/r.png')}
           />
           {numbers.abbreviateNumber(relevance)}
+          {' '}
         </Text>
-        <Text style={[styles.profileColumn, styles.profileBig]}>
+        <Text style={[styles.profileBig, { flex: 1 }]}>
           <Percent fontSize={26} user={user} />
         </Text>
       </View>
@@ -199,23 +207,27 @@ class ProfileComponent extends Component {
               flex: 1,
               flexDirection: 'column',
               justifyContent: 'flex-start',
-              paddingLeft: 10
+              paddingLeft: 10,
+              marginTop: -10
             }}
           >
             <View ref={(c) => this.tooltipParent = c}>
               {relevanceEl}
             </View>
-
-            <View style={styles.profileRow}>
-              <Text style={[styles.font12, styles.darkGray, styles.georgia, styles.profileColumn]}>
-                Subscribers: <Text style={[styles.bebasBold]}>{followers}</Text>
-              </Text>
-              <Text style={[styles.font12, styles.darkGray, styles.georgia, styles.profileColumn]}>
-                Subscribed to: <Text style={[styles.bebasBold]}>{following}</Text>
-              </Text>
+            <View style={[styles.profileRowContainer]}>
+              <View style={[styles.profileRow, fullWidth <= 320 ? { flexDirection: 'column' } : null]}>
+                <Text style={[styles.font12, styles.darkGray, styles.georgia, styles.profileColumn]}>
+                  Subscribers: <Text style={[styles.bebasBold]}>{followers}</Text>
+                </Text>
+                <Text style={[styles.font12, styles.darkGray, styles.georgia, styles.profileColumn]}>
+                  Subscribed to: <Text style={[styles.bebasBold]}>{following}</Text>
+                </Text>
+              </View>
             </View>
 
-            <View style={[styles.profileRow, styles.lastRow]}>
+            {/*balanceEl*/}
+
+            <View style={[styles.profileRowContainer, styles.lastRow]}>
               {bottomSection}
             </View>
 
@@ -241,13 +253,15 @@ let localStyles = StyleSheet.create({
     borderRadius: fullWidth / (3.2 * 2),
     resizeMode: 'cover',
   },
+  profileRowContainer: {
+    paddingVertical: 5,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'black',
+  },
   profileRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'black',
-    paddingVertical: 5,
   },
   lastRow: {
     borderBottomWidth: 0,
@@ -256,8 +270,9 @@ let localStyles = StyleSheet.create({
     flex: 1
   },
   profileBig: {
+    marginTop: 3,
     fontSize: 26,
-    lineHeight: 30,
+    lineHeight: 27,
   }
 });
 

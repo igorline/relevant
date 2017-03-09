@@ -478,9 +478,9 @@ const layout = StyleSheet.create({
   },
   rup: {
     height: 19,
-    width: 30,
+    width: 26,
     resizeMode: 'contain',
-    marginRight: 4,
+    marginRight: 1,
     marginLeft: 0,
     marginBottom: 1
   },

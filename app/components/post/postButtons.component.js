@@ -255,6 +255,7 @@ class PostButtons extends Component {
     let irrelevantButton;
     let commentString = 'comment';
     let earnings;
+    let smallScreen = fullWidth <= 320 || false;
 
     if (post && post.user && this.props.auth.user) {
       if (post.user._id !== this.props.auth.user._id) {
@@ -267,7 +268,9 @@ class PostButtons extends Component {
 
     if (post && post.commentCount) {
       if (post.commentCount === 1) commentString = '1 comment';
-      else commentString = post.commentCount + ' comments';
+      else {
+        commentString = post.commentCount + ' comments';
+      }
     }
 
     investButtonEl = (<TouchableWithoutFeedback
@@ -283,7 +286,7 @@ class PostButtons extends Component {
             style={styles.rup}
             source={require('../../assets/images/rup.png')}
           />
-          relevant
+          upvote
         </Text>
       </View>
     </TouchableWithoutFeedback>);
@@ -330,7 +333,7 @@ class PostButtons extends Component {
           allowFontScaling={false}
           style={[styles.font12, styles.greyText, styles.postButtonText, !investable ? { opacity: 0.6 } : null ]}
         >
-          irrelevant
+          downvote
         </Text>
       </TouchableHighlight>
     );
@@ -445,7 +448,7 @@ const localStyles = StyleSheet.create({
   },
   postButton: {
     padding: 3,
-    paddingHorizontal: 5,
+    paddingHorizontal: 2,
     height: 30,
     flexDirection: 'row',
     justifyContent: 'center'
