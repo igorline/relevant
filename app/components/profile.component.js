@@ -5,7 +5,7 @@ import {
   View,
   Image,
 } from 'react-native';
-import { globalStyles } from '../styles/global';
+import { globalStyles, fullWidth } from '../styles/global';
 import Percent from '../components/percent.component';
 import { numbers } from '../utils';
 
@@ -20,10 +20,19 @@ class ProfileComponent extends Component {
   }
 
   componentDidMount() {
-    if (this.props.auth.user &&
-      this.props.auth.user.onboarding === 'relevance') {
-      setTimeout(() => this.toggleTooltip(), 1000);
-    }
+    // if (this.props.auth.user &&
+    //   this.props.auth.user.onboarding === 'relevance') {
+    //   setTimeout(() => this.toggleTooltip(), 1000);
+    // }
+  }
+
+  goToTopic(tag) {
+    let name = tag.replace('#', '').trim();
+    let topic = {
+      _id: name,
+      categoryName: '#' + name
+    };
+    this.props.actions.goToTopic(topic);
   }
 
   setTag(tag) {
@@ -91,7 +100,7 @@ class ProfileComponent extends Component {
         topTags = user.topTags.map((tag, i) => (
           <Text key={tag._id}>
             <Text
-              onPress={() => this.setTag(tag.tag)}
+              onPress={() => this.goToTopic(tag.tag)}
               style={styles.active}
             >
                 #{tag.tag}
@@ -104,7 +113,7 @@ class ProfileComponent extends Component {
         topCat = (
           <Text>
             <Text
-              onPress={() => this.setCat(user.topCategory.category)}
+              onPress={() => this.goToTopic(user.topCategory.category)}
               style={styles.active}
             >
               {user.topCategory.category.replace('_category_tag', '')}
@@ -120,14 +129,26 @@ class ProfileComponent extends Component {
       userImageEl = (<Image source={defaultImg} style={styles.uploadAvatar} />);
     }
 
+    let balanceEl = (
+      <View style={styles.profileRow}>
+        <Text style={[styles.profileColumn, styles.profileBig, , styles.bebasNoMargin]}>
+          <Image
+            style={[styles.coin, { width: 29, height: 29, marginRight: 3 }]}
+            source={require('../assets/images/relevantcoin.png')}
+          />
+          {numbers.abbreviateNumber(balance)}
+        </Text>
+      </View>
+    );
+
     relevanceEl = (
       <View style={styles.profileRow}>
         <Text
-          onPress={() => this.toggleTooltip()}
+          // onPress={() => this.toggleTooltip()}
           style={[styles.profileColumn, styles.profileBig, styles.bebasNoMargin]}
         >
           <Image
-            style={[styles.r, { width: 27, height: 24 }]}
+            style={[styles.r, { width: 25, height: 26 }]}
             source={require('../assets/images/r.png')}
           />
           {numbers.abbreviateNumber(relevance)}
@@ -140,12 +161,12 @@ class ProfileComponent extends Component {
 
     let bottomSection;
 
-    if (topTags || topCat) {
+    if (topTags) {
       bottomSection = (
         <View style={{ padding: 0 }}>
           <Text style={[styles.font14, styles.darkGray, styles.georgia]}>
-            <Text>{topCat || user.topTags.length ? 'Expertise: ' : null}</Text>
-            {topCat}{topTags}
+            <Text>{user.topTags.length ? 'Expertise: ' : null}</Text>
+            {topTags}
           </Text>
         </View>
       );
@@ -214,6 +235,12 @@ class ProfileComponent extends Component {
             // </View>
 
 let localStyles = StyleSheet.create({
+  uploadAvatar: {
+    height: fullWidth / 3.2,
+    width: fullWidth / 3.2,
+    borderRadius: fullWidth / (3.2 * 2),
+    resizeMode: 'cover',
+  },
   profileRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',

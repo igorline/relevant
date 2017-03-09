@@ -2,6 +2,7 @@ import * as types from '../actions/actionTypes';
 
 const initialState = {
   postError: null,
+  feedUnread: null,
   feed: [],
   top: [],
   new: [],
@@ -19,66 +20,68 @@ const initialState = {
     new: {},
     top: {},
   },
+  topics: {
+    new: {},
+    top: {}
+  },
   posts: {},
   comments: {},
 };
 
-// may need at some point to remove the ids from the array
-
-// const removeItem = (array, item) => {
-//   let index = array.findIndex(el => el._id === item._id);
-//   return [
-//     ...array.slice(0, index),
-//     ...array.slice(index + 1)
-//   ];
-// };
-
-// const removeCommentaryElement = (array, _post) => {
-//   if (!array) return;
-
-//   let postIndex;
-//   let metaIndex;
-//   let meta = array.find((metaPost, i) => {
-//     metaIndex = i;
-//     postIndex = metaPost.commentary.findIndex(el => el._id === _post._id);
-//     return postIndex > -1;
-//   });
-
-//   if (!meta || metaIndex < 0) return array;
-
-//   let newMeta = {
-//     ...meta,
-//     commentary: [
-//       ...meta.commentary.slice(0, postIndex),
-//       ...meta.commentary.slice(postIndex + 1)
-//     ]
-//   };
-
-//   let newArr;
-//   if (newMeta && newMeta.commentary.length === 0) {
-//     newArr = [
-//       ...array.slice(0, metaIndex),
-//       ...array.slice(metaIndex + 1)
-//     ];
-//     return newArr;
-//   }
-
-//   newArr = [
-//     ...array.slice(0, metaIndex),
-//     newMeta,
-//     ...array.slice(metaIndex + 1)
-//   ];
-//   return newArr;
-// };
-
-
 export default function post(state = initialState, action) {
   switch (action.type) {
+
+    case types.INC_FEED_COUNT: {
+      return {
+        ...state,
+        feedUnread: state.feedUnread + 1,
+      };
+    }
+
+    case types.SET_FEED_COUNT: {
+      return {
+        ...state,
+        feedUnread: action.payload
+      };
+    }
 
     case types.SET_POSTS_SIMPLE: {
       return {
         ...state,
         posts: { ...state.posts, ...action.payload },
+      };
+    }
+
+    case types.SET_TOPIC_POSTS: {
+      const type = action.payload.type;
+      const topic = action.payload.topic;
+      const index = action.payload.index;
+      if (!state.topics[type][topic]) state.topics[type][topic] = [];
+      return {
+        ...state,
+        topics: {
+          ...state.topics,
+          [type]: {
+            ...state.topics[type],
+            [topic]: [
+              ...state.topics[type][topic].slice(0, index),
+              ...action.payload.data.result[type],
+            ]
+          }
+        },
+        metaPosts: {
+          ...state.metaPosts,
+          [type]: {
+            ...state.metaPosts[type],
+            ...action.payload.data.entities.metaPosts
+          },
+        },
+        comments: { ...state.comments, ...action.payload.data.entities.comments },
+        posts: { ...state.posts, ...action.payload.data.entities.posts },
+        loaded: {
+          ...state.loaded,
+          [type]: true
+        }
       };
     }
 
@@ -109,9 +112,13 @@ export default function post(state = initialState, action) {
     }
 
     case types.GET_POSTS: {
-      return Object.assign({}, state, {
-        loading: true,
-      });
+      return {
+        ...state,
+        loaded: {
+          ...state.loaded,
+          [action.payload]: false
+        }
+      };
     }
 
     case types.UPDATE_POST: {

@@ -64,6 +64,10 @@
 		FBDAAA7C1DFF89C800A4363B /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A2AAA741DB812D900AF4CC8 /* libRNImagePicker.a */; };
 		FBDAAA7E1DFF89C800A4363B /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A2AAA7A1DB812D900AF4CC8 /* libRNShare.a */; };
 		FBDAAA7F1DFF89C800A4363B /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A3863041DFB5E5B00BC57DF /* libRNSVG.a */; };
+		FBF8A93F1E6F3A50009404F2 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A93E1E6F3A50009404F2 /* CoreData.framework */; };
+		FBF8A9411E6F3A5A009404F2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A9401E6F3A5A009404F2 /* SystemConfiguration.framework */; };
+		FBF8A9431E6F3A62009404F2 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A9421E6F3A62009404F2 /* libz.tbd */; };
+		FBF8A9451E6F3A6E009404F2 /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A9441E6F3A6E009404F2 /* libsqlite3.0.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -390,6 +394,10 @@
 		FB9F3BB61E327FC100C92158 /* WebsiteProcessor.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = WebsiteProcessor.js; sourceTree = "<group>"; };
 		FBD8EED71E088B510074EE90 /* BebasNeuerelevantRegular-2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "BebasNeuerelevantRegular-2.ttf"; path = "../app/assets/fonts/BebasNeuerelevantRegular-2.ttf"; sourceTree = "<group>"; };
 		FBD8EED91E088BF30074EE90 /* BebasNeueRelevant Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "BebasNeueRelevant Bold.ttf"; path = "../app/assets/fonts/BebasNeueRelevant Bold.ttf"; sourceTree = "<group>"; };
+		FBF8A93E1E6F3A50009404F2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		FBF8A9401E6F3A5A009404F2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		FBF8A9421E6F3A62009404F2 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		FBF8A9441E6F3A6E009404F2 /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -405,6 +413,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBF8A9451E6F3A6E009404F2 /* libsqlite3.0.tbd in Frameworks */,
+				FBF8A9431E6F3A62009404F2 /* libz.tbd in Frameworks */,
+				FBF8A9411E6F3A5A009404F2 /* SystemConfiguration.framework in Frameworks */,
+				FBF8A93F1E6F3A50009404F2 /* CoreData.framework in Frameworks */,
 				FB983E391DA1E21900DAF00D /* libRCTUserDefaults.a in Frameworks */,
 				FB983E3A1DA1E21900DAF00D /* libReactNativeShareExtension.a in Frameworks */,
 				2A9422641D9D82B7000671FA /* libART.a in Frameworks */,
@@ -661,6 +673,7 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				FB88BE801D9ED742002D0069 /* Relevant */,
 				83CBBA001A601CBA00E9B192 /* Products */,
+				FBF8A93D1E6F3A50009404F2 /* Frameworks */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -710,6 +723,17 @@
 				FB983E341DA1E1E400DAF00D /* libRCTUserDefaults.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		FBF8A93D1E6F3A50009404F2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FBF8A9441E6F3A6E009404F2 /* libsqlite3.0.tbd */,
+				FBF8A9421E6F3A62009404F2 /* libz.tbd */,
+				FBF8A9401E6F3A5A009404F2 /* SystemConfiguration.framework */,
+				FBF8A93E1E6F3A50009404F2 /* CoreData.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

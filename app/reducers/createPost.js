@@ -9,6 +9,7 @@ const initialState = {
   bodyTags: [],
   bodyMentions: [],
   articleTags: [],
+  allTags: [],
   postImage: null,
   nativeImage: false,
   repost: null,

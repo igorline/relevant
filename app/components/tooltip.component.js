@@ -54,7 +54,7 @@ class Tooltip extends Component {
       }
 
       clearTimeout(this.timeout);
-      this.timeout = setTimeout(this.nextOnboarding, 8000);
+      // this.timeout = setTimeout(this.nextOnboarding, 8000);
     }
   }
 
@@ -211,7 +211,7 @@ let localStyles = StyleSheet.create({
     width: 10,
     height: 10,
     position: 'absolute',
-    transform: [{ rotate: '52deg' }, { skewX: '15deg' }],
+    transform: [{ rotate: '35deg' }, { skewY: '45deg' } ],
     backgroundColor: blue,
     shadowColor: 'black',
     shadowOffset: { width: -1, height: -1 },

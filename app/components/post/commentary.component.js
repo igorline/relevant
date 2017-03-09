@@ -3,6 +3,7 @@ import {
   StyleSheet,
   View,
   ScrollView,
+  PanResponder
 } from 'react-native';
 import { globalStyles, fullWidth } from '../../styles/global';
 import PostBody from './postBody.component';
@@ -11,6 +12,9 @@ import PostInfo from './postInfo.component';
 let styles;
 
 export default class Commentary extends Component {
+
+  componentWillMount() {
+  }
 
   render() {
     let length = this.props.commentary.length;
@@ -45,6 +49,19 @@ export default class Commentary extends Component {
         contentContainerStyle={styles.postScroll}
         snapToInterval={(fullWidth * 0.92) + 8}
         snapToAlignment={'center'}
+        scrollEventThrottle={1}
+        onScroll={() => {
+          this.props.actions.scrolling(true);
+          clearTimeout(this.scrollTimeout);
+          this.scrollTimeout = setTimeout(
+            () => this.props.actions.scrolling(false), 300);
+        }}
+        forceSetResponder={() => {
+          this.props.actions.scrolling(true);
+          clearTimeout(this.scrollTimeout);
+          this.scrollTimeout = setTimeout(
+            () => this.props.actions.scrolling(false), 300);
+        }}
         // onScrollAnimationEnd={this.updateCurrent}
       >
         {commentary}

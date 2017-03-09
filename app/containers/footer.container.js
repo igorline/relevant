@@ -1,26 +1,20 @@
 import React, { Component } from 'react';
 import {
   TabBarIOS,
-  StyleSheet,
   View,
-  Text,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as navigationActions from '../actions/navigation.actions';
-import { globalStyles } from '../styles/global';
 import CardContainer from './tabView.container';
 import * as userActions from '../actions/user.actions';
-
-const localStyles = StyleSheet.create({
-});
-
-let styles = { ...localStyles, ...globalStyles };
+import Footer from './footerCustom.container';
 
 class Tabs extends Component {
   constructor(props, context) {
     super(props, context);
     this.props.showActionSheet = this.props.showActionSheet.bind(this);
+    this.changeTab = this.changeTab.bind(this);
   }
 
   changeTab(key) {
@@ -45,12 +39,17 @@ class Tabs extends Component {
       }
       if (key === 'activity' && this.props.notif.count) {
         this.props.actions.reloadTab(key);
-      } else if (this.props.navigation.reload > this.props.navigation[key].reload) {
+      }
+      if (key === 'read' && this.props.feedUnread) {
+        this.props.actions.reloadTab(key);
+      }
+      if (this.props.navigation.reload > this.props.navigation[key].reload) {
         this.props.actions.reloadTab(key);
       }
       // this.props.actions.resetRoutes();
       this.props.actions.changeTab(key);
     }
+    this.props.actions.toggleTopics(false);
   }
 
   renderTabContent(key) {
@@ -67,6 +66,7 @@ class Tabs extends Component {
       let badge;
       let icon = tab.icon;
       if (tab.key === 'activity' && this.props.notif.count) badge = this.props.notif.count;
+      if (tab.key === 'read' && this.props.feedUnread) badge = this.props.feedUnread;
       if (tab.key === 'auth') return null;
       return (
         <TabBarIOS.Item
@@ -85,14 +85,17 @@ class Tabs extends Component {
       );
     });
     return (
-      <TabBarIOS
-        translucent={false}
-        style={{ backgroundColor: 'white', borderTopColor: '#242425' }}
-        // unselectedTintColor={'#231f20'}
-        tintColor={'#4d4eff'}
-      >
-        {tabs}
-      </TabBarIOS>
+      <View style={{ flex: 1 }}>
+        <TabBarIOS
+          translucent={false}
+          style={{ backgroundColor: 'white', borderTopColor: '#242425' }}
+          // unselectedTintColor={'#231f20'}
+          tintColor={'#4d4eff'}
+        >
+          {tabs}
+        </TabBarIOS>
+        <Footer {...this.props} changeTab={this.changeTab} />
+      </View>
     );
   }
 }
@@ -101,7 +104,8 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     notif: state.notif,
-    navigation: state.navigation
+    navigation: state.navigation,
+    feedUnread: state.posts.feedUnread
   };
 }
 

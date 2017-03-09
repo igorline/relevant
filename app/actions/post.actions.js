@@ -30,8 +30,8 @@ const repostSchema = new schema.Entity('posts',
 const postSchema = new schema.Entity('posts',
   {
     comments: [commentSchema],
+    user: userSchema,
     repost: { post: repostSchema },
-    user: userSchema
   },
   { idAttribute: '_id' }
 );
@@ -109,6 +109,18 @@ export function postError() {
   };
 }
 
+export function setTopic(data, type, index, topic) {
+  return {
+    type: types.SET_TOPIC_POSTS,
+    payload: {
+      topic: topic._id,
+      data,
+      type,
+      index
+    }
+  };
+}
+
 export function setPosts(data, type, index) {
   return {
     type: types.SET_POSTS,
@@ -133,6 +145,7 @@ export function getFeed(skip, tag) {
   }
 
   return (dispatch) => {
+    dispatch(getPostsAction(type));
     utils.token.get()
     .then(token =>
       fetch(getUrl(), {
@@ -165,7 +178,6 @@ export function deletePost(token, post, redirect) {
     '?access_token=' + token;
 
   return (dispatch) => {
-    console.log('delete post redirect?', redirect);
     fetch(url, {
       credentials: 'include',
       headers: {
@@ -191,10 +203,10 @@ export function clearPosts(type) {
   };
 }
 
-export function getPostsAction() {
+export function getPostsAction(type) {
   return {
     type: 'GET_POSTS',
-    payload: null,
+    payload: type,
   };
 }
 
@@ -263,14 +275,15 @@ export function getPosts(skip, tags, sort, limit) {
   const type = sort ? 'top' : 'new';
   let endpoint = 'metaPost';
   let params = `?skip=${skip}&sort=${sort}&limit=${limit}`;
+  let topic;
 
   let category = '';
   if (tags && tags.length) {
     tags.forEach((tag, i) => {
-      if (tag.category) {
-        category = tag._id;
-        return;
-      }
+      // if (tag.category) {
+      //   category = tag._id;
+      //   return;
+      // }
       if (tag._id) {
         if (i === tags.length - 1) {
           tagsString += tag._id;
@@ -279,14 +292,15 @@ export function getPosts(skip, tags, sort, limit) {
         }
       }
     });
-    endpoint = 'post';
-    params += `&tag=${tagsString}&category=${category}`;
+    // endpoint = 'post';
+    params += `&tag=${tagsString}`;
+    if (tags.length === 1) topic = tags[0];
   }
 
   let url = apiServer + endpoint + params;
 
   return async (dispatch) => {
-    dispatch(getPostsAction());
+    dispatch(getPostsAction(type));
     let token;
 
     try {
@@ -300,15 +314,17 @@ export function getPosts(skip, tags, sort, limit) {
     .then(response => response.json())
     .then((responseJSON) => {
       let dataType = metaPostSchema;
-      if (tags && tags.length) {
-        dataType = postSchema;
-      }
+      // if (tags && tags.length) {
+      //   dataType = postSchema;
+      // }
       let data = normalize(
         { [type]: responseJSON },
         { [type]: [dataType] }
       );
       dispatch(setUsers(data.entities.users));
-      dispatch(setPosts(data, type, skip));
+      if (topic) {
+        dispatch(setTopic(data, type, skip, topic));
+      } else dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('discover', false));
     })
     .catch((error) => {
@@ -526,4 +542,41 @@ export function getSelectedPost(postId) {
       return false;
     });
   };
+}
+
+export function setFeedCount(data) {
+  return {
+    type: types.SET_FEED_COUNT,
+    payload: data
+  };
+}
+
+
+export function markFeedRead() {
+  return dispatch =>
+    utils.token.get()
+    .then(token =>
+      fetch(`${apiServer}feed/markread`, {
+        ...reqOptions(token),
+        method: 'PUT',
+      })
+    )
+    .then((res) => {
+      dispatch(setFeedCount(null));
+    })
+    .catch(error => console.log('error', error));
+}
+
+export function getFeedCount() {
+  return dispatch =>
+    utils.token.get()
+    .then(token =>
+      fetch(`${apiServer}feed/unread`, {
+        ...reqOptions(token),
+        method: 'GET'
+      })
+    )
+    .then(response => response.json())
+    .then(responseJSON => dispatch(setFeedCount(responseJSON.unread)))
+    .catch(err => console.log('Notification count error', err));
 }

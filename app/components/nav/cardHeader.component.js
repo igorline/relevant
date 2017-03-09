@@ -66,30 +66,30 @@ class CardHeader extends Component {
       </TouchableHighlight>);
     }
 
-    if (this.props.scene.route.title === 'Discover') {
-      leftEl = [];
-      leftEl.push(
-        <View
-          key={0}
-          style={[styles.leftButton, { flex: this.state.search ? 0.06 : 1 }]}
-        >
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            onPress={() => this.toggleSearch()}
-          >
-            <Text style={{ paddingBottom: 5 }}>🔎</Text>
-          </TouchableHighlight>
-        </View>);
-      if (this.state.search) {
-        leftEl.push(
-          <Search
-            key={'search'}
-            toggleSearch={this.toggleSearch}
-            {...this.props}
-          />
-        );
-      }
-    }
+    // if (this.props.scene.route.title === 'Discover') {
+    //   leftEl = [];
+    //   leftEl.push(
+    //     <View
+    //       key={0}
+    //       style={[styles.leftButton, { flex: this.state.search ? 0.06 : 1 }]}
+    //     >
+    //       <TouchableHighlight
+    //         underlayColor={'transparent'}
+    //         onPress={() => this.toggleSearch()}
+    //       >
+    //         <Text style={{ paddingBottom: 5 }}>🔎</Text>
+    //       </TouchableHighlight>
+    //     </View>);
+    //   if (this.state.search) {
+    //     leftEl.push(
+    //       <Search
+    //         key={'search'}
+    //         toggleSearch={this.toggleSearch}
+    //         {...this.props}
+    //       />
+    //     );
+    //   }
+    // }
     return leftEl;
   }
 
@@ -97,12 +97,26 @@ class CardHeader extends Component {
     if (this.state.search) return null;
     let title = props.scene.route ? props.scene.route.title : '';
     let component = props.scene.route.component;
+    let key = props.scene.route.key;
+    let action;
+    let titleAction = () => null;
 
     if (component === 'profile') {
       if (this.props.users.users[props.scene.route.id]) {
         title = this.props.users.users[props.scene.route.id].name;
       }
     }
+
+    if (key === 'discover' || component === 'discover') {
+      titleAction = () => this.props.actions.toggleTopics();
+      action = (<Text style={[styles.arrow]}><Image
+        style={styles.arrow}
+        onPress={titleAction}
+        resizeMode={'contain'}
+        source={require('../../assets/images/downarrow.png')}
+      /></Text>);
+    }
+
     if (title === 'Profile' && this.props.auth.user) {
       title = this.props.auth.user.name;
     }
@@ -128,7 +142,10 @@ class CardHeader extends Component {
 
     return (
       <View style={[styles.titleComponent]}>
-        <Text style={styles.navTitle}>{clipped}</Text>
+        <Text onPress={titleAction} style={styles.navTitle}>
+          {clipped}
+        </Text>
+        {action}
       </View>
     );
   }
@@ -202,6 +219,17 @@ class CardHeader extends Component {
 const localStyles = StyleSheet.create({
   titleComponent: {
     justifyContent: 'flex-end',
+  },
+  arrow: {
+    alignSelf: 'center',
+    backgroundColor: 'transparent',
+    // position: 'absolute',
+    marginTop: -5,
+    bottom: -6,
+    left: 0,
+    right: 0,
+    width: 20,
+    height: 13,
   },
   backArrow: {
     paddingTop: 4,

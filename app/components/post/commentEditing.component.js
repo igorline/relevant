@@ -39,7 +39,6 @@ class CommentEditing extends Component {
   }
 
   render() {
-    const self = this;
     let comment = this.props.comment;
     let postTime = moment(comment.createdAt);
     let timeNow = moment();

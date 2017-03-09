@@ -34,8 +34,10 @@ class Post extends Component {
   render() {
     let post;
     let posts;
-    let imageEl = null;
+    let imageEl;
     let separator = <View style={[styles.separator]} />;
+    let commentaryEl;
+    let reposted;
 
     // let renderSeparator = () => {
     //   let color = `hsl(${Math.round(Math.random() * 256)}, 30%, 95%)`;
@@ -49,17 +51,24 @@ class Post extends Component {
       posts = posts.filter(p => typeof p === 'string');
       posts = posts.map(p => this.props.posts.posts[p]);
       if (!posts.length) return null;
+      posts = posts.filter(p => p);
       post = { ...posts[0] };
+      if (post.repost) reposted = post.repost.post;
       if (!post) return null;
     }
 
-    if (!post) return null;
+    if (!post || !post._id) {
+      return null;
+    }
+
+    let commentary = posts.filter(p => {
+      return (p._id !== reposted && p._id !== post._id && !p.repost);
+    });
 
     let label = null;
-    let commentary = null;
-    if (posts && posts.length > 1) {
+    if (commentary.length) {
       label = <Text style={[styles.tabFont, styles.cLabel]}>🤔 Other{'\''}s Commentary</Text>;
-      commentary = <Commentary {...this.props} commentary={posts.slice(1, posts.length)} />;
+      commentaryEl = <Commentary {...this.props} commentary={commentary} />;
     }
 
     let repostEl = null;
@@ -92,6 +101,7 @@ class Post extends Component {
       if (this.props.users[repost.user]) {
         repost.user = this.props.users[repost.user];
       }
+      post.user = this.props.users[post.user] || post.user;
 
       repostEl = (
         <View style={{ marginBottom: 25 }}>
@@ -138,7 +148,7 @@ class Post extends Component {
           </View>
 
           {label}
-          {commentary}
+          {commentaryEl}
         </View>
         {!this.props.singlePost ? separator : null}
       </View>

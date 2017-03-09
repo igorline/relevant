@@ -2,7 +2,7 @@ import * as types from '../actions/actionTypes';
 
 const initialState = {
   // read: 1,
-  discover: 0,
+  discover: {},
   // post: 'url',
   // profile: 1
 };
@@ -21,7 +21,9 @@ export default function auth(state = initialState, action) {
         case 'discover':
           return {
             ...state,
-            discover: action.payload.view,
+            discover: {
+              tab: action.payload.view
+            }
           };
 
         // case 'post':

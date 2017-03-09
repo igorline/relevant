@@ -35,11 +35,9 @@ function getYoutubeLink(link) {
     }
   })
   .then((response) => {
-    console.log(response, 'response');
     return response.json();
   })
   .then((responseJSON) => {
-    console.log(responseJSON, 'responseJSON');
     let image = null;
     let description = null;
     let title = null;
@@ -74,10 +72,11 @@ function getYoutubeLink(link) {
 
 
 export function generatePreview(link) {
+  console.log('fetching ', link);
   let responseUrl;
   let fbHeader = {
-    // 'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
-    // 'Content-Type': 'application/x-www-form-urlencoded;charset=ISO-8859-15'
+    'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+    'Content-Type': 'application/x-www-form-urlencoded;charset=ISO-8859-15'
   };
 
   if (!link.match(/http:\/\//i) && !link.match(/https:\/\//i)) {
@@ -182,8 +181,6 @@ export function generatePreview(link) {
       console.log('url parse error');
       console.log(data);
     }
-
-    console.log($('head').html());
 
     return obj;
   })

@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  View,
   Animated,
   Easing,
 } from 'react-native';
 import { globalStyles, fullWidth } from '../styles/global';
-import Tags from './tags.component';
 import Tabs from './tabs.component';
 
 let styles;
@@ -25,30 +23,12 @@ export default class DiscoverHeader extends Component {
     this.currentOffset = -50;
   }
 
-  componentDidMount() {
-    // if (this.props.showHeader) this.showHeader();
-  }
-
-  // componentWillReceiveProps(next) {
-  //   // if (this.props.showHeader !== next.showHeader) {
-  //   //   if (next.showHeader) this.showHeader();
-  //   //   else this.hideHeader();
-  //   // }
-  //   // if (this.props.tags.selectedTags !== next.tags.selectedTags) {
-  //   //   this.input.blur();
-  //   // }
-  // }
-
   onScroll(event) {
     this.currentOffset = event.nativeEvent.contentOffset.y;
     if (!event.nativeEvent.contentSize.height || this.currentOffset <= -this.headerHeight) {
       this.state.offsetY.setValue(0);
       return;
     }
-    // if (this.currentOffset < -1) {
-    //   this.state.offsetY.setValue(0);
-    //   return;
-    // }
 
     let diff = this.lastOffset - this.currentOffset;
 
@@ -81,7 +61,6 @@ export default class DiscoverHeader extends Component {
   }
 
   showHeader() {
-    // this.setState({ showHeader: true });
     Animated.timing(
       this.state.offsetY,
       {
@@ -93,18 +72,7 @@ export default class DiscoverHeader extends Component {
   }
 
   render() {
-    let tags = (
-      <View>
-        <Tags actions={this.props.actions} tags={this.props.tags} />
-      </View>
-    );
-
-    if (this.props.view === 2) {
-      tags = null;
-    }
-
     return (
-
       <Animated.View
         style={{
           position: 'absolute',
@@ -126,7 +94,6 @@ export default class DiscoverHeader extends Component {
           }
         }
       >
-        {tags}
         <Tabs
           tabs={this.props.myTabs}
           active={this.props.view}

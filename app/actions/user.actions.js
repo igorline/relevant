@@ -11,6 +11,14 @@ const getOptions = {
   }
 };
 
+
+const queryParams = (params) => {
+  return Object.keys(params)
+    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+    .join('&');
+};
+
+
 export
 function getUsersLoading() {
   return {
@@ -25,13 +33,13 @@ function getUserLoading() {
   };
 }
 
-export function setUserList(users, index, filter) {
+export function setUserList(users, index, topic) {
   return {
     type: 'SET_USER_LIST',
     payload: {
       users,
       index,
-      filter
+      topic
     }
   };
 }
@@ -172,21 +180,22 @@ function getPostUser(userId, token) {
   };
 }
 
-export function getUsers(skip, limit, filter) {
+export function getUsers(skip, limit, tags) {
   if (!skip) skip = 0;
   if (!limit) limit = 10;
+  let topic = null;
+  if (tags.length === 1) {
+    topic = tags[0]._id;
+  }
   let url = process.env.API_SERVER +
-    '/api/user/general/list' +
-    '?skip=' + skip +
-    '&limit=' + limit +
-    '&filter=' + filter;
+    '/api/user/general/list?' + queryParams({ skip, limit, topic });
   return (dispatch) => {
     dispatch(getUsersLoading());
     fetch(url, getOptions)
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(errorActions.setError('activity', false));
-      dispatch(setUserList(responseJSON, skip, filter));
+      dispatch(setUserList(responseJSON, skip, topic));
     })
     .catch((error) => {
       console.log(error, 'error');

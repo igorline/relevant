@@ -1,7 +1,7 @@
 export function percentChange(user) {
   let totalPercent = 0;
 
-  if (!user.relevanceRecord || !user.relevanceRecord.length) return 0;
+  if (!user || !user.relevanceRecord || !user.relevanceRecord.length) return 0;
 
   user.relevanceRecord.forEach((record, i) => {
     let percent = 0;

@@ -15,7 +15,7 @@ import UrlPreview from './urlPreview.component';
 
 let styles;
 
-export default class UrlComponent extends Component {
+export default class CreatePostComponent extends Component {
 
   constructor(props, context) {
     super(props, context);

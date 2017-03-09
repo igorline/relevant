@@ -73,6 +73,8 @@ class CardContainer extends Component {
 
       // case 'messages':
       //   return <Messages navigator={this.props.actions} />;
+      case 'discover':
+        return <Discover navigator={this.props.actions} scene={props.scene.route} />;
 
       case 'profile':
         return <Profile navigator={this.props.actions} scene={props.scene.route} />;

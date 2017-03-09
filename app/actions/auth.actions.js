@@ -107,13 +107,15 @@ export function logoutAction(user) {
   return (dispatch) => {
     utils.token.remove()
     .then(() => {
+      // websocket message
+      if (user && user._id) {
+        dispatch({
+          type: 'server/logout',
+          payload: user._id
+        });
+      }
       // dispatch(removeDeviceToken());
       dispatch(logout());
-      // websocket message
-      dispatch({
-        type: 'server/logout',
-        payload: user._id
-      });
     });
   };
 }
@@ -155,6 +157,7 @@ export function loginUser(user) {
           dispatch(getUser());
         });
       } else {
+        console.log(responseJSON);
         AlertIOS.alert(responseJSON.message);
         dispatch(loginUserFailure(responseJSON.message));
       }
@@ -214,7 +217,6 @@ function checkUsername(username) {
 
 export
 function createUser(user) {
-  console.log(user);
   return (dispatch) => {
     return fetch(process.env.API_SERVER + '/api/user', {
       credentials: 'include',
@@ -239,6 +241,7 @@ function createUser(user) {
         Object.keys(errors).map((key, index) => {
            if (errors[key].message) message += errors[key].message;
         });
+        console.log(message);
         AlertIOS.alert(message);
       }
     })
@@ -259,7 +262,7 @@ export function getUser(callback) {
           Authorization: `Bearer ${token}`
         }
       })
-      // .then(utils.fetchError.handleErrors)
+      .then(utils.fetchError.handleErrors)
       .then(response => response.json())
       .then((responseJSON) => {
         dispatch(setUser(responseJSON));
@@ -269,12 +272,14 @@ export function getUser(callback) {
         if (callback) callback(responseJSON);
       })
       .catch((error) => {
+        console.log('get user error ', error);
         dispatch(errorActions.setError('universal', true, error.message));
         dispatch(loginUserFailure('Server error'));
         if (callback) callback({ ok: false });
         // need this in case user is logged in but there is an error getting account
-        dispatch(logoutAction());
-        console.log('get user error ', error);
+        if (error.message !== 'Network request failed') {
+          dispatch(logoutAction());
+        }
       });
     }
 
@@ -299,7 +304,6 @@ function setDeviceToken(token) {
 
 export function updateUser(user, authToken, preventLocalUpdate) {
   return (dispatch) => {
-    user.posts.map((post) => post._id);
     return fetch(process.env.API_SERVER + '/api/user?access_token=' + authToken, {
       credentials: 'include',
       method: 'PUT',

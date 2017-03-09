@@ -21,7 +21,9 @@ class DiscoverUser extends Component {
   }
 
   render() {
-    const user = this.props.user;
+    let user = this.props.user;
+    let relevance = this.props.topic ? user[this.props.topic + '_relevance'] : user.relevance;
+    user = { ...user, relevance };
 
     return (
       <TouchableHighlight
@@ -35,7 +37,10 @@ class DiscoverUser extends Component {
             user={user}
             setSelected={this.setSelected}
           />
-          <Stats type={'percent'} entity={user} />
+          <Stats
+            type={'percent'}
+            entity={user}
+          />
         </View>
       </TouchableHighlight>
     );
