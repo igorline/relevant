@@ -10,7 +10,7 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Auth from './auth.container';
-import CreatePostContainer from './createPost.container';
+import CreatePostContainer from '../components/createPost/createPost.container';
 import Footer from './footer.container';
 import ErrorContainer from './error.container';
 import InvestAnimation from '../components/animations/investAnimation.component';
@@ -79,6 +79,7 @@ class Application extends Component {
     if (!this.props.auth.user && next.auth.user) {
       this.props.actions.userToSocket(next.auth.user._id);
       this.props.actions.getNotificationCount();
+      this.props.actions.getFeedCount();
 
       if (next.auth.user.onboarding === 'coin') {
         this.props.actions.changeTab('discover');
@@ -92,12 +93,20 @@ class Application extends Component {
       }, 0, 'home');
     }
 
-    if (!this.props.error && next.error) {
+    if (!this.props.error && next.error && next.auth.token) {
       this.props.actions.replaceRoute({
         key: 'error',
         component: 'error',
       }, 0, 'home');
       this.props.actions.resetRoutes('home');
+    }
+
+    if (this.props.auth.token && !next.auth.token) {
+      this.props.actions.replaceRoute({
+        key: 'auth',
+        component: 'auth',
+        header: false
+      }, 0, 'home');
     }
   }
 

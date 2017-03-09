@@ -17,8 +17,6 @@ const reqOptions = (token) => {
   };
 };
 
-const tokenString = token => `?access_token=${token}`;
-
 export function setActivity(data, type, index) {
   return {
     type: types.SET_ACTIVITY,

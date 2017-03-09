@@ -15,8 +15,8 @@ const initialState = {
   error: false,
   users: {},
   list: [],
+  listByTopic: {},
   online: [],
-  loaded: false,
   loading: false,
   garbage: [],
   search: [],
@@ -41,7 +41,7 @@ export default function auth(state = initialState, action) {
         ...state,
         users: {
           ...state.users,
-          users
+          ...users
         }
       };
     }
@@ -62,22 +62,20 @@ export default function auth(state = initialState, action) {
       });
     }
 
-    // case 'GET_USER_LOADING': {
-    //  return Object.assign({}, state, {
-    //     loaded: false,
-    //   });
-    // }
-
     case 'SET_USER_LIST': {
-      let key = action.payload.filter || 'list';
-      return Object.assign({}, state, {
-        [key]: [
-          ...state[key].slice(0, action.payload.index),
-          ...action.payload.users
-        ],
+      let topic = action.payload.topic || 'all';
+      let currentList = state.list[topic] || [];
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [topic]: [
+            ...currentList.slice(0, action.payload.index),
+            ...action.payload.users
+          ],
+        },
         loading: false,
-        loaded: true,
-      });
+      };
     }
 
     case types.UPDATE_USER: {

@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 import { numbers } from '../utils';
-import { globalStyles, fullWidth } from '../styles/global';
+import { globalStyles, fullWidth, green } from '../styles/global';
 import UrlPreview from './createPost/urlPreview.component';
 
 let moment = require('moment');
@@ -28,7 +28,8 @@ export default function (props) {
     if (singleActivity.post.title) {
       postTitle = singleActivity.post.title;
     } else if (singleActivity.post.body) {
-      postTitle = singleActivity.post.body.substring(0, 20);
+      postTitle = singleActivity.post.body.substring(0, 130);
+      if (singleActivity.post.body.length > 130) postTitle += '...';
     }
     singleActivity.post.title = postTitle;
   }
@@ -86,7 +87,7 @@ export default function (props) {
 
   let renderImage = (user) => {
     if (!user && singleActivity.byUsers) {
-      let image = <Image style={styles.activityImage} source={require('../assets/images/r.png')} />
+      let image = <Image style={styles.activityImage} source={require('../assets/images/r.png')} />;
       return image;
     } else if (!user) return null;
 
@@ -192,7 +193,7 @@ export default function (props) {
 
   let renderMiddle = () => {
     let icon = require('../assets/images/rup.png');
-    let color = { color: '#196950' };
+    let color = { color: green };
     if (singleActivity.amount < 0) {
       color = { color: 'red' };
       icon = require('../assets/images/rdown.png');
@@ -241,7 +242,10 @@ export default function (props) {
         return (
           <View style={{ flex: 1 }}>
             <View style={styles.activityLeft}>
-              {renderImage(singleActivity.byUser)}
+              {singleActivity.byUser ? renderImage(singleActivity.byUser) :
+                (<Text allowFontScaling={false} style={styles.incomeEmoji}>
+                  🤑
+                </Text>)}
               <Text style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
                 {getText(singleActivity)}
               </Text>
@@ -253,7 +257,7 @@ export default function (props) {
       case 'partialDownvote':
         return (
           <View style={styles.activityLeft}>
-            <Text allowFontScaling={false}  style={styles.incomeEmoji}>😔</Text>
+            <Text allowFontScaling={false} style={styles.incomeEmoji}>😡</Text>
             <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
               {getText(singleActivity)}
             </Text>
@@ -264,7 +268,7 @@ export default function (props) {
       case 'partialEarning':
         return (
           <View style={styles.activityLeft}>
-            {renderImage(singleActivity.byUser)}
+            <Text allowFontScaling={false} style={styles.incomeEmoji}>🤑</Text>
             <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
               {getText(singleActivity)}
             </Text>
@@ -274,10 +278,8 @@ export default function (props) {
       case 'basicIncome':
         return (
           <View style={styles.activityLeft}>
-            <Image
-              style={styles.activityImage}
-              source={require('../assets/images/r.png')}
-            />
+            <Text allowFontScaling={false} style={styles.incomeEmoji}>🤑</Text>
+
             <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
               {getText(singleActivity)}
             </Text>

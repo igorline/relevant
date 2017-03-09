@@ -36,13 +36,12 @@ class Stats extends Component {
       horizontalOffset: -5,
       name: 'coin',
       verticalOffset: 10,
-      text: 'We started you out with 10\nrelevance points. Use them\nto upvote something relevant.'
+      text: 'This is your relevance.\nThe more relevant you are\nthe more your upvotes count.'
     };
-    if (this.props.auth.user && this.props.auth.user.onboarding !== 'coin') {
-      this.tooltipData.text = 'This is your relevance,\nevery time you upvote\nsomethingyou loose 1 point';
-      if (this.props.auth.user.relevance < 10) {
-        this.tooltipData.text = 'Don\'t worry, you\nwill get more relevance\npoints tomorrow';
-      }
+    if (this.props.auth.user && this.props.auth.user.onboarding === 'relevance') {
+      this.tooltipData.text = 'Every upvoted will cost\nyou 1 relevance point';
+    } else if (this.props.auth.user && this.props.auth.user.relevance < 5) {
+      this.tooltipData.text = 'Don\'t worry, you\nwill get more relevance\npoints tomorrow';
     }
 
     clearTimeout(this.tooltipTimeout);
@@ -67,14 +66,14 @@ class Stats extends Component {
 
     if (this.props.size === 'small') {
       statsStyle = [{ fontSize: 17, lineHeight: 17 }, styles.bebas, styles.quarterLetterSpacing];
-      iconStyle = [{ width: 16, height: 15 }];
+      // iconStyle = [{ width: 18, height: 15 }];
     }
 
     let value = (
       <Text onPress={() => this.toggleTooltip()}>
         <Image
           style={[styles.coin, ...iconStyle]}
-          source={require('../../assets/images/r.png')}
+          source={require('../../assets/images/relevantcoin.png')}
         />
         <Text>{numbers.abbreviateNumber(entity.value || entity.balance || 0)}</Text>
       </Text>);

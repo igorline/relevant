@@ -6,8 +6,9 @@ import {
   Animated,
 } from 'react-native';
 
-import { globalStyles } from '../../styles/global';
+import { globalStyles, fullWidth } from '../../styles/global';
 import CardHeader from './cardHeader.component';
+import NavPanResponder from './navPanResponder';
 
 const {
   Card: NavigationCard,
@@ -73,8 +74,12 @@ class Card extends Component {
       let cardTransitionStyle = this.getAnimatedStyle(sceneProps);
       // let cardTransitionStyle = NavigationCardStackStyleInterpolator.forHorizontal(sceneProps);
 
-      let panHandlers = NavigationPagerPanResponder.forHorizontal({
+      let scrolling = this.props.navigation.scroll;
+      let panHandlers = NavPanResponder.forHorizontal({
+      // let panHandlers = NavigationPagerPanResponder.forHorizontal({
         ...sceneProps,
+        scrolling,
+        gestureResponseDistance: fullWidth,
         onNavigateBack: () => props.back(),
         // onNavigateForward: () => navigate('forward'),
       });

@@ -33,6 +33,7 @@ class InvestAnimation extends Component {
 
   componentWillUpdate(next) {
     if (this.props.animation.invest !== next.animation.invest) {
+      this.amount = next.animation.amount;
       this.investAni();
     }
   }
@@ -46,12 +47,12 @@ class InvestAnimation extends Component {
   }
 
   investAni() {
-    if (this.state.num < 5) {
+    if (this.state.num < 15) {
       let newArr = this.state.investAni;
-      newArr.push(<Dollar key={this.state.num} specialKey={this.state.num} />);
+      newArr.push(<Dollar amount={this.amount} key={this.state.num} specialKey={this.state.num} />);
       let newNum = this.state.num += 1;
       this.setState({ num: newNum, investAni: newArr });
-      setTimeout(() => { this.investAni(); }, 100 * Math.random());
+      setTimeout(() => { this.investAni(); }, 50 * Math.random());
     } else {
       setTimeout(() => { this.clearEls(); }, 1000);
     }

@@ -8,8 +8,57 @@ import {
   RELOAD_ROUTE,
   RELOAD_ALL_TABS,
   SHOW_TOOLTIP,
-  SET_VIEW
+  SET_VIEW,
+  TOGGLE_TOPICS,
+  SCROLL
 } from './actionTypes';
+
+
+export function push(route, key, animation = 'vertical') {
+  return {
+    type: PUSH_ROUTE,
+    route,
+    key,
+    animation
+  };
+}
+
+export function scrolling(scroll) {
+  return {
+    type: SCROLL,
+    payload: scroll
+  };
+}
+
+export function toggleTopics(showTopics) {
+  return {
+    type: TOGGLE_TOPICS,
+    payload: showTopics,
+  };
+}
+
+export function pop(key) {
+  return dispatch => {
+    dispatch(toggleTopics(false));
+    dispatch({
+      type: POP_ROUTE,
+      key
+    });
+  };
+}
+
+export function goToTopic(topic) {
+  return dispatch => {
+    dispatch(push({
+      key: 'discover',
+      title: topic.categoryName,
+      back: true,
+      id: topic._id,
+      topic,
+    }));
+    dispatch(toggleTopics(false));
+  };
+}
 
 export function setView(type, view) {
   return {
@@ -25,22 +74,6 @@ export function showTooltip(tooltip) {
   return {
     type: SHOW_TOOLTIP,
     payload: tooltip
-  };
-}
-
-export function push(route, key, animation = 'vertical') {
-  return {
-    type: PUSH_ROUTE,
-    route,
-    key,
-    animation
-  };
-}
-
-export function pop(key) {
-  return {
-    type: POP_ROUTE,
-    key
   };
 }
 
@@ -118,3 +151,4 @@ export function goToProfile(user, key, animation) {
     id: handle,
   }, key, animation);
 }
+

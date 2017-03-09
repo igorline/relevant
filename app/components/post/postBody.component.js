@@ -13,11 +13,18 @@ class PostBody extends Component {
   constructor(props, context) {
     super(props, context);
     this.goToPost = this.goToPost.bind(this);
-    this.state = {
-    };
+    this.goToTopic = this.goToTopic.bind(this);
   }
 
   componentDidMount() {
+  }
+
+  goToTopic(tag) {
+    let topic = {
+      _id: tag.replace('#', '').trim(),
+      categoryName: tag
+    };
+    this.props.actions.goToTopic(topic);
   }
 
   setTag(tag) {
@@ -43,104 +50,121 @@ class PostBody extends Component {
 
   render() {
     const expanded = this.props.singlePost;
-    let body = null;
+    let body = '';
     let post = this.props.post;
     if (post) {
-      if (post.body) body = post.body;
+      if (post.body) body = post.body.trim();
       // else return null;
-      else if (post.description) body = '\"' + post.description + '\"';
+      // else if (post.description) body = '\"' + post.description + '\"';
     }
     let bodyEl = null;
 
-    if (body) {
-      let bodyObj = {};
+    let bodyObj = [];
 
-      let textArr = body
-      .replace((/[,.!?\s+]/g), a => '`' + a + '`')
-      .split(/`/);
-      textArr.forEach((section, i) => {
-        bodyObj[i] = {};
-        bodyObj[i].text = section;
-        if (section.match(/^#/)) {
-          bodyObj[i].hashtag = true;
-          bodyObj[i].mention = false;
-        } else if (section.match(/^@/)) {
-          bodyObj[i].mention = true;
-          bodyObj[i].hashtag = false;
-        } else {
-          bodyObj[i].hashtag = false;
-          bodyObj[i].mention = false;
-        }
-      });
+    let extraTags = post.tags || [];
 
-      let breakText;
+    let textArr = body
+    .replace((/[,.!?\s+]/g), a => '`' + a + '`')
+    .split(/`/);
 
-      let tagsOnEnd = false;
-
-      bodyEl = Object.keys(bodyObj).map((key, i) => {
-        let space = '';
-        if (breakText) space = ' ';
-
-        if (bodyObj[key].hashtag) {
-          if (i >= 77) tagsOnEnd = true;
-          return (<Text
-            key={key}
-            onPress={() => this.setTag(bodyObj[key].text)}
-            style={styles.active}
-          >
-            {bodyObj[key].text + space}
-          </Text>);
-        } else if (bodyObj[key].mention) {
-          if (i >= 77) tagsOnEnd = true;
-          return (<Text
-            key={key}
-            onPress={() => this.setSelected(bodyObj[key].text)}
-            style={styles.active}
-          >
-            {bodyObj[key].text + space}
-          </Text>);
-        }
-        if (i < 77 || expanded) {
-          return (<Text key={i}>{bodyObj[key].text}</Text>);
-        } else if (!breakText) {
-          breakText = i;
-          return <Text key={'break'}>... </Text>;
-        }
-      });
-
-      if (breakText) {
-        bodyEl.push(<Text key={'readmore'} style={[styles.greyText]}>{tagsOnEnd ? '...' : ''}read more</Text>);
+    textArr.forEach((section) => {
+      let word = {};
+      word.text = section;
+      if (section.match(/^#/)) {
+        word.hashtag = true;
+        let ind = extraTags.indexOf(word.text.replace('#', '').trim());
+        if (ind > -1) extraTags.splice(ind, 1);
+      } else if (section.match(/^@/)) {
+        word.mention = true;
       }
+      bodyObj.push(word);
+    });
+
+    let breakText;
+
+    let tagsOnEnd = false;
+
+    let maxTextLength = 100;
+
+    // bodyObj.push({ text: ' ' });
+    // bodyObj.push({ hashtag: true, text: '' + post.categoryName });
+    extraTags.forEach(tag => {
+      bodyObj.push({ hashtag: true, text: ' #' + tag });
+    });
+
+    bodyEl = bodyObj.map((word, i) => {
+      let space = '';
+      if (breakText) space = ' ';
+
+      if (word.hashtag) {
+        if (i >= maxTextLength) tagsOnEnd = true;
+        return (<Text
+          key={i}
+          onPress={() => this.goToTopic(word.text)}
+          style={styles.active}
+        >
+          {word.text + space}
+        </Text>);
+      } else if (word.mention) {
+        if (i >= maxTextLength) tagsOnEnd = true;
+        return (<Text
+          key={i}
+          onPress={() => this.setSelected(word.text)}
+          style={styles.active}
+        >
+          {word.text + space}
+        </Text>);
+      }
+      if (i < maxTextLength || expanded) {
+        return (<Text key={i}>{word.text}</Text>);
+      } else if (!breakText) {
+        breakText = i;
+        return <Text key={'break'}>... </Text>;
+      }
+    });
+
+    if (breakText) {
+      bodyEl.push(<Text key={'readmore'} style={[styles.greyText]}>{tagsOnEnd ? '...' : ''}read more</Text>);
     }
 
     let numberOfLines = 9999999999999;
     let postStyle = styles.bodyText;
-    // if (!expanded) numberOfLines = 10;
 
     if (this.props.short) {
       numberOfLines = 2;
       postStyle = styles.commentaryText;
     }
 
-    // if (body.length < 70 && !this.props.short) {
-    //   postStyle = styles.shortBodyText;
-    // }
-
     if (this.props.repost) {
       numberOfLines = 4;
       postStyle = styles.bodyText;
     }
 
-    return (<TouchableWithoutFeedback onPress={this.goToPost}>
-      <View style={[styles.postBody]}>
-        <Text
-          style={[styles.darkGrey, postStyle]}
-          numberOfLines={numberOfLines}
-        >
-          {bodyEl}
-        </Text>
+    let upvotes;
+
+    if (post.upVotes && !this.props.short && !this.props.repost) {
+      let text = 'people think this is relevant';
+      if (post.upVotes === 1) text = 'person thinks this is relevant';
+      upvotes = (<Text style={[styles.font10, styles.greyText, { paddingTop: 5 }]}>
+        {post.upVotes} {text}
+      </Text>);
+    }
+
+    return (
+      <View>
+        <TouchableWithoutFeedback onPress={this.goToPost}>
+          <View style={[styles.postBody]}>
+            <Text
+              style={[styles.darkGrey, postStyle]}
+              numberOfLines={numberOfLines}
+            >
+              {bodyEl}
+            </Text>
+          </View>
+        </TouchableWithoutFeedback>
+        {upvotes}
       </View>
-    </TouchableWithoutFeedback>);
+    );
   }
 }
 

@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
+  ActionSheetIOS,
+  TouchableHighlight,
+  Text,
+  Image
 } from 'react-native';
-import * as Progress from 'react-native-progress';
+// import * as Progress from 'react-native-progress';
+import moment from 'moment';
 import UserName from '../userNameSmall.component';
 import { globalStyles } from '../../styles/global';
-import Stats from './stats.component';
-// import Tooltip from '../tooltip.component';
-
-let ToolTip = require('react-native-tooltip');
+import { numbers } from '../../utils';
 
 let styles;
-let moment = require('moment');
 
 class PostInfo extends Component {
   constructor(props, context) {
@@ -29,14 +29,65 @@ class PostInfo extends Component {
       posted: null,
       input: null
     };
+
+    this.ownerMenu = {
+      myPost: true,
+      buttons: [
+        'Edit',
+        'Delete',
+        'Cancel',
+      ],
+      destructiveIndex: 2,
+      cancelIndex: 3,
+    };
+
+    this.showActionSheet = this.showActionSheet.bind(this);
   }
 
   componentDidMount() {
     if (this.props.post) this.checkTime(this.props);
+
+    if (this.props.auth && this.props.post.user._id && this.props.auth.user._id) {
+      if (this.props.post.user._id === this.props.auth.user._id) {
+        this.menu = this.ownerMenu;
+        this.myPost = true;
+      }
+    }
   }
 
   componentWillReceiveProps(next) {
     this.checkTime(next);
+  }
+
+  deletePost() {
+    let redirect = false;
+    if (this.props.scene) {
+      if (this.props.scene.component === 'singlePost') redirect = true;
+    }
+    this.props.actions.deletePost(this.props.auth.token, this.props.post, redirect);
+  }
+
+  toggleEditing() {
+    this.props.actions.setCreaPostState({
+      postBody: this.props.post.body,
+      nativeImage: true,
+      postUrl: this.props.post.link,
+      postImage: this.props.post.image,
+      allTags: this.props.post.tags,
+      urlPreview: {
+        image: this.props.post.image,
+        title: this.props.post.title ? this.props.post.title : 'Untitled',
+        description: this.props.post.description,
+      },
+      edit: true,
+      editPost: this.props.post,
+    });
+    this.props.navigator.push({
+      key: 'createPost',
+      back: true,
+      title: 'Edit Post',
+      next: 'Update'
+    }, 'home');
   }
 
   setTag(tag) {
@@ -47,7 +98,7 @@ class PostInfo extends Component {
 
   setSelected() {
     if (!this.props.actions) return;
-    if (this.props.scene && this.props.scene.id === this.props.post.user._id) return false;
+    if (this.props.scene && this.props.scene.id === this.props.post.user._id) return;
     this.props.actions.goToProfile({
       name: this.props.post.embeddedUser.name,
       _id: this.props.post.user._id || this.props.post.user
@@ -74,52 +125,89 @@ class PostInfo extends Component {
     }
   }
 
+  showActionSheet() {
+    if (this.myPost) {
+      ActionSheetIOS.showActionSheetWithOptions({
+        options: this.menu.buttons,
+        cancelButtonIndex: this.menu.cancelIndex,
+        destructiveButtonIndex: this.menu.destructiveIndex,
+      },
+      (buttonIndex) => {
+        switch (buttonIndex) {
+          case 0:
+            this.toggleEditing();
+            break;
+          case 1:
+            this.deletePost();
+            break;
+          default:
+            return;
+        }
+      });
+    }
+  }
+
   render() {
-    let postUserImage = null;
-    let postInfo = null;
     let post = null;
-    let postUser;
-    let name;
+    let postActions;
 
-    if (this.props.post) {
-      post = this.props.post;
-      if (post.user) {
-        postUser = post.embeddedUser || post.user;
-        if (postUser.name) name = postUser.name;
-        if (postUser.image) postUserImage = postUser.image;
-      }
+    post = this.props.post;
+
+    let postTime = moment(post.createdAt);
+    postTime = ' • ' + numbers.timeSince(postTime) + ' ago';
+
+        // <Text
+        //   allowFontScaling={false}
+        //   style={[styles.greyText, styles.postButtonText, styles.dots]}
+        // >
+        //   ...
+        // </Text>
+
+    if (this.myPost) {
+      postActions = (<TouchableHighlight
+        underlayColor={'transparent'}
+        style={[styles.postButton, { paddingRight: 10 }]}
+        onPress={() => this.showActionSheet()}
+      >
+        <Image
+          resizeMode={'contain'}
+          style={[{ height: 15, width: 25, opacity: 0.6 }]}
+          source={require('../../assets/images/downarrow1.png')}
+        />
+      </TouchableHighlight>);
     }
 
-    if (this.state.passed) {
-      // postInfo = (<Stats type={'value'} entity={post} />);
-    } else {
-      postInfo = (
-        <View style={[styles.countdown]}>
-          <ToolTip
-            ref={(tooltip) => { this.tooltip = tooltip; }}
-            actions={[
-              { text: 'Post value revealed 6 hours after creation' }
-            ]}
-            underlayColor={'transparent'}
-            arrowDirection={'up'}
-          >
-            <View style={{ flexDirection: 'row' }}>
-              <Progress.Pie
-                style={styles.progressCirc}
-                color={'#4d4eff'}
-                progress={this.state.timePassedPercent}
-                size={17}
-              />
-              <Text
-                style={[styles.font17, styles.textRight, styles.darkGray, styles.bebas]}
-              >
-                {this.state.timeUntilString}
-              </Text>
-            </View>
-          </ToolTip>
-        </View>
-      );
-    }
+    // if (this.state.passed) {
+    //   postInfo = (<Stats type={'value'} entity={post} />);
+    // } else {
+    //   postInfo = (
+    //     <View style={[styles.countdown]}>
+    //       <ToolTip
+    //         ref={(tooltip) => { this.tooltip = tooltip; }}
+    //         actions={[
+    //           { text: 'Post value revealed 6 hours after creation' }
+    //         ]}
+    //         underlayColor={'transparent'}
+    //         arrowDirection={'up'}
+    //       >
+    //         <View style={{ flexDirection: 'row' }}>
+    //           <Progress.Pie
+    //             style={styles.progressCirc}
+    //             color={'#4d4eff'}
+    //             progress={this.state.timePassedPercent}
+    //             size={17}
+    //           />
+    //           <Text
+    //             style={[styles.font17, styles.textRight, styles.darkGray, styles.bebas]}
+    //           >
+    //             {this.state.timeUntilString}
+    //           </Text>
+    //         </View>
+    //       </ToolTip>
+    //     </View>
+    //   );
+    // }
+
 
     let user = post.user;
     if (user && !user.name) {
@@ -135,11 +223,12 @@ class PostInfo extends Component {
           big={this.props.big}
           user={user}
           setSelected={this.setSelected}
+          postTime={postTime}
         />
         <View
-          style={[styles.infoRight, styles.innerInfo]}
+          style={[styles.infoRight]}
         >
-          {this.props.repost ? null : postInfo}
+          {this.props.repost ? null : postActions}
         </View>
       </View>
     </View>);

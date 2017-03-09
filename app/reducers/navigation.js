@@ -7,7 +7,9 @@ import {
   REFRESH_ROUTE,
   REPLACE_ROUTE,
   RELOAD_ROUTE,
-  RELOAD_ALL_TABS
+  RELOAD_ALL_TABS,
+  TOGGLE_TOPICS,
+  SCROLL,
 } from '../actions/actionTypes';
 
 const {
@@ -43,15 +45,17 @@ const profileIcon = {
 
 
 const initialState = {
+  showTopics: false,
   reload: 0,
   main: 'home',
+  scroll: false,
   tabs: {
     index: 0,
     key: 'root',
     routes: [
-      { key: 'read', icon: '📩', title: 'Inbox', regIcon: readIcon },
+      { key: 'read', icon: '🗞', title: 'My Feed', regIcon: readIcon },
       { key: 'discover', icon: '🔮', title: 'Discover', regIcon: discoverIcon },
-      { key: 'createPost', icon: '📝', title: 'New Post', regIcon: createPostIcon },
+      { key: 'createPost', icon: '✍️', title: 'New Post', regIcon: createPostIcon },
       { key: 'activity', icon: '⚡', title: 'Activity', regIcon: activityIcon },
       { key: 'myProfile', icon: '👤', title: 'Profile', regIcon: profileIcon }
     ],
@@ -94,7 +98,7 @@ const initialState = {
     reload: 0,
     routes: [{
       key: 'discover',
-      component: 'discover',
+      component: 'mainDiscover',
       title: 'Discover'
     }],
   },
@@ -144,6 +148,21 @@ function guid() {
 
 function navigationState(state = initialState, action) {
   switch (action.type) {
+
+    case SCROLL: {
+      return {
+        ...state,
+        scroll: action.payload
+      };
+    }
+
+    case TOGGLE_TOPICS: {
+      return {
+        ...state,
+        showTopics: action.payload !== undefined ? action.payload : !state.showTopics
+      };
+    }
+
     // push to tab scene stack
     case PUSH_ROUTE: {
       const activeTabIndex = state.tabs.index;

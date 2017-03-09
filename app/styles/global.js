@@ -10,6 +10,8 @@ const darkGrey = '#231f20';
 const blue = '#4d4eff';
 const lightGrey = '#aaaaaa';
 const greyText = '#999999';
+// const green = '333ef33';
+const green = '#196950';
 
 const font = StyleSheet.create({
   font10: {
@@ -65,7 +67,7 @@ const font = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
-    borderBottomColor: 'black',
+    borderBottomColor: '#242425',
     borderBottomWidth: StyleSheet.hairlineWidth,
 
     zIndex: 1000,
@@ -291,7 +293,8 @@ const layout = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'nowrap',
     justifyContent: 'flex-start',
-    height: 50
+    // height: 50
+    backgroundColor: 'white',
   },
   notificationContainer: {
     position: 'absolute',
@@ -435,12 +438,6 @@ const layout = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: lightGrey
   },
-  uploadAvatar: {
-    height: 125,
-    width: 125,
-    borderRadius: 62.5,
-    resizeMode: 'cover',
-  },
   darkGrey: {
     color: darkGrey
   },
@@ -465,17 +462,17 @@ const layout = StyleSheet.create({
   },
   r: {
     height: 15,
+    width: 17,
+    resizeMode: 'contain',
+    marginRight: 1,
+    marginLeft: 0,
+    marginBottom: -3.5
+  },
+  coin: {
+    height: 19,
     width: 20,
     resizeMode: 'contain',
     marginRight: 2,
-    marginLeft: 1,
-    marginBottom: -3.4,
-  },
-  coin: {
-    height: 20,
-    width: 22,
-    resizeMode: 'contain',
-    marginRight: 2.5,
     marginLeft: 1,
     marginBottom: -8
   },
@@ -507,11 +504,12 @@ const layout = StyleSheet.create({
   },
 });
 
-const globalStyles = { ...colors, ...font, ...alignment, ...layout, blue };
+const globalStyles = { ...colors, ...font, ...alignment, ...layout };
 
 export {
   globalStyles,
   fullWidth,
   fullHeight,
   blue,
+  green,
 };

@@ -4,19 +4,19 @@ import {
   TextInput,
   View,
   KeyboardAvoidingView,
-  Text
+  Text,
+  TouchableHighlight
 } from 'react-native';
-import { globalStyles, fullHeight } from '../../styles/global';
+import { globalStyles, blue } from '../../styles/global';
 import * as utils from '../../utils';
 import UrlPreview from './urlPreview.component';
 import UserName from '../userNameSmall.component';
 import UserSearchComponent from './userSearch.component';
 import PostBody from './../post/postBody.component';
 import PostInfo from './../post/postInfo.component';
-// import Tags from '../tags.component';
 
 let styles;
-const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/);
 
 export default class UrlComponent extends Component {
 
@@ -40,7 +40,6 @@ export default class UrlComponent extends Component {
   componentWillReceiveProps(next) {
     if (this.props.postUrl !== next.postUrl && next.postUrl) {
       this.createPreview(next.postUrl);
-      // this.scrollView.scrollTo(this.contentHeight - this.scrollHeight);
     }
   }
 
@@ -61,17 +60,16 @@ export default class UrlComponent extends Component {
 
     let shouldParseUrl = false;
 
-    if (length - this.previousPostLength > 1) shouldParseUrl = true;
-    if (postBody[postBody.length - 1] === ' ') shouldParseUrl = true;
-    if (postBody[postBody.length - 1] == '\n') shouldParseUrl = true;
+    let prevLength = this.props.postBody.length || 0;
 
-    this.previousPostLength = length;
+    if (length - prevLength > 1) shouldParseUrl = true;
+    if (postBody[postBody.length - 1] == ' ') shouldParseUrl = true;
+    if (postBody[postBody.length - 1] == '\n') shouldParseUrl = true;
 
     if (!this.props.postUrl && shouldParseUrl) {
       let postUrl = words.find(word => URL_REGEX.test(word));
       if (postUrl) {
         this.props.actions.setCreaPostState({ postUrl });
-        // this.createPreview(postUrl);
       }
     }
 
@@ -105,7 +103,6 @@ export default class UrlComponent extends Component {
   }
 
   createPreview(postUrl) {
-    console.log('creating peview ', postUrl);
     utils.post.generatePreview(postUrl)
     .then((results) => {
       if (results) {
@@ -114,14 +111,18 @@ export default class UrlComponent extends Component {
         if (results.tags) {
           tags = results.tags.split(',');
         }
-        tags = tags.map(tag => tag.trim().toLowerCase().replace(' ', ''));
-        // if (tags.length > 3) tags.length = 3;
-        console.log(results.title);
+        tags = tags.map(tag => tag.trim().toLowerCase().replace(/\s/g, ''));
+        let pTags = [];
+        tags.forEach(tag => {
+          pTags = [...pTags, ...tag.split(';')];
+        });
+        pTags = pTags.map(tag => tag.trim().toLowerCase().replace(/\s/g, ''));
+
         this.props.actions.setCreaPostState({
           postBody: newBody,
           domain: results.domain,
           postUrl: results.url,
-          articleTags: tags,
+          articleTags: pTags,
           urlPreview: {
             image: results.image,
             title: results.title ? results.title : 'Untitled',
@@ -132,23 +133,6 @@ export default class UrlComponent extends Component {
         this.props.actions.setCreaPostState({ postUrl: null });
       }
     });
-  }
-
-  extractDomain(url) {
-    let domain;
-    if (url.indexOf('://') > -1) {
-      domain = url.split('/')[2];
-    } else {
-      domain = url.split('/')[0];
-    }
-    domain = domain.split(':')[0];
-
-    let noPrefix = domain;
-
-    if (domain.indexOf('www.') > -1) {
-      noPrefix = domain.replace('www.', '');
-    }
-    return noPrefix;
   }
 
   render() {
@@ -169,10 +153,7 @@ export default class UrlComponent extends Component {
     let urlPlaceholder = 'Article URL.';
 
     if (this.props.postUrl) {
-      urlPlaceholder = 'Add your own commentary.';
-      // if (this.props.urlPreview && this.props.urlPreview.description) {
-      //   urlPlaceholder += '\nor use article description... \n\n' +  this.props.urlPreview.description;
-      // }
+      urlPlaceholder = 'Add your own commentary';
     }
 
     let userHeader = null;
@@ -200,9 +181,20 @@ export default class UrlComponent extends Component {
       />);
     }
 
-    // let tagsObj = this.props.bodyTags.map(tag => { return { _id: tag } });
-    // let selectedObj = this.props.bodyTags.map(tag => { return { _id: tag } });
-    // let tags = <Tags tags={{ tags: tagsObj, selectedTags: selectedObj }} />;
+    let addP = null;
+
+    if (this.props.urlPreview && this.props.urlPreview.description && this.props.postBody === '') {
+      addP = (
+        <TouchableHighlight
+          style={styles.postButton}
+          onPress={() =>
+            this.props.actions.setCreaPostState({ postBody: '"' + this.props.urlPreview.description + '"' })
+          }
+        >
+          <Text style={[styles.font12, styles.active]}>Add text from link</Text>
+        </TouchableHighlight>
+      );
+    }
 
     input = (
       <KeyboardAvoidingView
@@ -213,7 +205,6 @@ export default class UrlComponent extends Component {
         }}
       >
         <View
-          // keyboardDismissMode={'on-drag'}
           keyboardShouldPersistTaps={'always'}
           ref={c => this.scrollView = c}
           onLayout={(e) => {
@@ -241,7 +232,7 @@ export default class UrlComponent extends Component {
               style={[styles.font15, styles.createPostInput, styles.flex1]}
               placeholder={urlPlaceholder}
               multiline
-              onChangeText={postBody => this.processInput(postBody)}
+              onChangeText={postBody => this.processInput(postBody, false)}
               onBlur={() => this.processInput(null, true)}
               value={this.props.postBody}
               returnKeyType={'default'}
@@ -254,14 +245,14 @@ export default class UrlComponent extends Component {
                 });
               }}
             />
+            {addP}
           </View>
           {userSearch}
           {repostBody}
           {this.props.postUrl && !this.props.users.search.length ?
-            <UrlPreview {...this.props} actions={this.props.actions} /> :
+            <UrlPreview size={'small'} {...this.props} actions={this.props.actions} /> :
             null
           }
-
         </View>
       </KeyboardAvoidingView>
     );
@@ -275,6 +266,16 @@ export default class UrlComponent extends Component {
 const localStyles = StyleSheet.create({
   createPostUser: {
     height: 55,
+  },
+  postButton: {
+    position: 'absolute',
+    bottom: 10,
+    right: 0,
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    borderColor: blue,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 3
   },
   innerBorder: {
     height: 55,

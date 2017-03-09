@@ -2,11 +2,12 @@ import * as types from './actionTypes';
 
 require('../publicenv');
 
-export function triggerAnimation(type) {
+export function triggerAnimation(type, amount) {
   return {
     type: types.SET_ANIMATION,
     payload: {
-      type
+      type,
+      amount: amount || 1
     }
   };
 }

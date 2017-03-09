@@ -34,6 +34,8 @@ export const REMOVE_POST = 'REMOVE_POST';
 export const SET_POSTS_SIMPLE = 'SET_POSTS_SIMPLE';
 export const UPDATE_POSTS_INVEST = 'UPDATE_POSTS_INVEST';
 export const UNDO_POSTS_INVEST = 'UNDO_POSTS_INVEST';
+export const INC_FEED_COUNT = 'INC_FEED_COUNT';
+export const SET_FEED_COUNT = 'SET_FEED_COUNT';
 
 export const DESELECT_TAG = 'DESELECT_TAG';
 export const SELECT_TAG = 'SELECT_TAG';
@@ -61,6 +63,7 @@ export const REFRESH_POSTS = 'REFRESH_POSTS';
 export const SET_CREATE_POST_STATE = 'SET_CREATE_POST_STATE';
 export const SET_POST_CATEGORY = 'SET_POST_CATEGORY';
 export const CLEAR_CREATE_POST = 'CLEAR_CREATE_POST';
+export const SET_TOPIC_POSTS = 'SET_TOPIC_POSTS';
 
 export const PUSH_ROUTE = 'PUSH_ROUTE';
 export const POP_ROUTE = 'POP_ROUTE';
@@ -71,5 +74,7 @@ export const REPLACE_ROUTE = 'REPLACE_ROUTE';
 export const RELOAD_ROUTE = 'RELOAD_ROUTE';
 export const RELOAD_ALL_TABS = 'RELOAD_ALL_TABS';
 export const SHOW_TOOLTIP = 'SHOW_TOOLTIP';
+export const TOGGLE_TOPICS = 'TOGGLE_TOPICS';
+export const SCROLL = 'SCROLL';
 
 export const SET_VIEW = 'SET_VIEW';

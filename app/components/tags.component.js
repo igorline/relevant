@@ -18,32 +18,29 @@ export default class Tags extends Component {
   }
 
   componentWillMount() {
-    this._panResponder = PanResponder.create({
-      onPanResponderTerminationRequest: () => true,
-      onStartShouldSetPanResponderCapture: () => false,
-    });
   }
 
   toggleTag(tag) {
     if (this.props.toggleTag) return this.props.toggleTag(tag);
-    if (this.selectedLookup[tag._id]) {
+    if (this.selectedLookup[tag._id || tag]) {
       this.props.actions.deselectTag(tag);
     } else this.props.actions.selectTag(tag);
   }
 
-  renderTag(tag, selected) {
-    let name = `#${tag._id}`;
-    if (tag.category) name = tag.categoryName;
+  renderTag(tag, i) {
+    let selected = this.selectedLookup[tag._id || tag] || false;
+    let name = `#${tag._id || tag}`;
+    // if (tag.category) name = tag.categoryName;
     return (
       <TouchableHighlight
-        style={
-          [styles.tagBox, {
-            backgroundColor: selected ? '#4d4eff' : '#F0F0F0' }]}
-        onPress={() =>  this.toggleTag(tag)}
-        key={tag._id}
+        style={[styles.tagBox, {
+          backgroundColor: selected ? '#4d4eff' : '#F0F0F0' }
+        ]}
+        onPress={() => this.toggleTag(tag)}
+        key={i}
       >
         <View style={{ flexDirection: 'row' }} >
-          <Text style={[styles.font15, styles.emoji]}>{tag.emoji}</Text>
+          {/*<Text style={[styles.font15, styles.emoji]}>{tag.emoji}</Text>*/}
           <Text style={[styles.font15, { color: selected ? 'white' : '#808080' }]}>{name}</Text>
         </View>
       </TouchableHighlight>
@@ -56,34 +53,39 @@ export default class Tags extends Component {
     let selectedEl = null;
     let tags = this.props.tags.tags;
     let selectedTags = this.props.tags.selectedTags;
+    let allTags;
     this.selectedLookup = {};
 
-    selectedEl = selectedTags.map((tag) => {
+    selectedEl = selectedTags.map((tag, i) => {
       this.selectedLookup[tag._id] = tag;
-      return this.renderTag(tag, true);
+      return this.renderTag(tag, i);
     });
 
-    tagsEl = tags.map((tag) => {
+    tagsEl = tags.map((tag, i) => {
       if (!this.selectedLookup[tag._id]) {
-        return this.renderTag(tag, false);
+        return this.renderTag(tag, i);
       }
     });
 
+    allTags = [...new Set([...selectedEl, tagsEl])];
+
+    if (this.props.noReorder) {
+      allTags = tags.map((tag, i) => this.renderTag(tag, i));
+    }
+
     if (selectedTags.length + tags.length > 0) {
+      let horizontal = true;
+      if (this.props.noScroll) horizontal = false;
       el = (
         <ScrollView
-          forceSetResponder={false}
-          // onStartShouldSetResponder={evt => false}
-          // onMoveShouldSetResponder={evt => false}
-          horizontal
+          horizontal={horizontal}
           scrollEnabled
           keyboardShouldPersistTaps={'always'}
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
-          contentContainerStyle={styles.tags}
+          contentContainerStyle={[styles.tags, this.props.noScroll ? { flexWrap: 'wrap' } : null]}
         >
-          {selectedEl}
-          {tagsEl}
+          {allTags}
         </ScrollView>
       );
     }

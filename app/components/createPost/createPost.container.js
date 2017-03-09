@@ -10,20 +10,19 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as authActions from '../actions/auth.actions';
-import * as createPostActions from '../actions/createPost.actions';
-import * as postActions from '../actions/post.actions';
-import * as tagActions from '../actions/tag.actions';
-import * as userActions from '../actions/user.actions';
-import * as navigationActions from '../actions/navigation.actions';
-import UrlComponent from '../components/createPost/url.component';
-import CreatePostComponent from '../components/createPost/createPost.component';
-import Categories from '../components/createPost/categories.component';
-import * as utils from '../utils';
-import Card from '../components/nav/card.component';
-import CustomSpinner from '../components/CustomSpinner.component';
+import * as authActions from '../../actions/auth.actions';
+import * as createPostActions from '../../actions/createPost.actions';
+import * as postActions from '../../actions/post.actions';
+import * as tagActions from '../../actions/tag.actions';
+import * as userActions from '../../actions/user.actions';
+import * as navigationActions from '../../actions/navigation.actions';
+import UrlComponent from './url.component';
+import Categories from './categories.component';
+import * as utils from '../../utils';
+import Card from '../nav/card.component';
+import CustomSpinner from '../CustomSpinner.component';
 
-import { globalStyles } from '../styles/global';
+import { globalStyles } from '../../styles/global';
 
 const {
   Transitioner: NavigationTransitioner,
@@ -73,13 +72,15 @@ class CreatePostContainer extends Component {
 
     if (this.props.navigation.index === 0) {
       if (this.props.close) this.props.close();
-      if (this.props.createPost.repost || this.props.createPost.edit) {
-        this.props.actions.clearCreatePost();
-      }
+      // if (this.props.createPost.repost || this.props.createPost.edit) {
+      this.props.actions.clearCreatePost();
+      // }
     }
   }
 
   next() {
+    if (this.props.createPost.postUrl && !this.props.createPost.urlPreview) return null;
+
     this.urlComponent.input.blur();
 
     if (this.props.createPost.repost) return this.createRepost();
@@ -92,13 +93,15 @@ class CreatePostContainer extends Component {
         title: 'Post Category',
       }, 'createPost');
     }
+    return null;
   }
 
   editPost() {
     let props = this.props.createPost;
+
     let postBody = {
       ...props.editPost,
-      tags: props.bodyTags,
+      tags: [...props.allTags, ...props.bodyTags],
       body: props.postBody,
       mentions: props.bodyMentions,
     };
@@ -110,9 +113,6 @@ class CreatePostContainer extends Component {
           AlertIOS.alert('Success!');
           this.props.actions.clearCreatePost();
           this.props.navigator.resetRoutes('home');
-          this.props.actions.resetRoutes('createPost');
-          this.props.navigator.changeTab('discover');
-          this.props.navigator.reloadTab('discover');
         }
       });
   }
@@ -121,10 +121,6 @@ class CreatePostContainer extends Component {
     if (this.state.creatingPost) return;
 
     let props = this.props.createPost;
-
-    // if (!props.postBody) {
-      // return AlertIOS.alert('Please enter some text');
-    // }
 
     let commentObj = {
       post: props.repost._id,
@@ -138,6 +134,7 @@ class CreatePostContainer extends Component {
       console.log('created comment?');
       this.props.actions.clearCreatePost();
       this.props.navigator.resetRoutes('home');
+      this.props.actions.resetRoutes('discover');
       this.props.navigator.changeTab('discover');
       this.props.navigator.reloadTab('discover');
       this.props.navigator.setView('discover', 1);
@@ -147,6 +144,9 @@ class CreatePostContainer extends Component {
   }
 
   createPost() {
+    // console.log(this.props.createPost.allTags.map(tag => tag._id));
+    // return;
+
     if (this.state.creatingPost) return;
 
     let props = this.props.createPost;
@@ -165,7 +165,7 @@ class CreatePostContainer extends Component {
           this.image = results.url;
           this.uploadPost();
         } else {
-          AlertIOS.alert('Post error please try again');
+          AlertIOS.alert('Error uploading image, please try again');
           this.setState({ creatingPost: false });
         }
       });
@@ -182,7 +182,7 @@ class CreatePostContainer extends Component {
 
     let postBody = {
       link: props.postUrl,
-      tags: [...props.bodyTags, ...props.articleTags],
+      tags: [...new Set(props.allTags.map(tag => tag._id))],
       body: props.postBody,
       title: props.urlPreview ? props.urlPreview.title : null,
       description: props.urlPreview ? props.urlPreview.description : null,
@@ -202,6 +202,7 @@ class CreatePostContainer extends Component {
           if (this.props.close) this.props.close();
           this.props.actions.clearCreatePost();
           this.props.navigator.resetRoutes('home');
+          this.props.actions.resetRoutes('discover');
           this.props.actions.resetRoutes('createPost');
           this.props.navigator.changeTab('discover');
           this.props.navigator.reloadTab('discover');
@@ -215,7 +216,12 @@ class CreatePostContainer extends Component {
     if (this.props.createPost.postBody && this.props.createPost.postBody.length) {
       this.enableNext = true;
     }
-    if (this.props.createPost.postUrl) this.enableNext = true;
+    if (this.props.createPost.postUrl && this.props.createPost.urlPreview) {
+      this.enableNext = true;
+    }
+    if (this.props.createPost.postUrl && !this.props.createPost.urlPreview) {
+      this.enableNext = true;
+    }
     if (this.state.creatingPost) this.enabledNext = false;
 
     let rightText = props.scene.route.next || 'Next';
@@ -264,9 +270,6 @@ class CreatePostContainer extends Component {
       case 'categories':
         this.current = 'categories';
         return <Categories done={this.createPost} {...this.props} />;
-      case 'post':
-        this.current = 'post';
-        return <CreatePostComponent {...this.props.createPost} actions={this.props.actions} />;
       default:
         return null;
     }

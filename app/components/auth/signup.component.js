@@ -50,9 +50,6 @@ class SignUp extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.auth.statusText && !this.props.auth.statusText) {
-      AlertIOS.alert(nextProps.auth.statusText);
-    }
     if (nextProps.auth.preUser && this.props.auth.preUser !== nextProps.auth.preUser) {
       this.setState({
         name: nextProps.auth.preUser.name || null,

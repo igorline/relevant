@@ -1,15 +1,26 @@
 import * as types from './actionTypes';
-require('../publicenv');
-var { Actions } = require('react-native-redux-router');
 import * as utils from '../utils';
+
+require('../publicenv');
+
+const reqOptions = (token) => {
+  return {
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    }
+  };
+};
 
 export function getDiscoverTags() {
   return function(dispatch) {
-    fetch(process.env.API_SERVER+'/api/tag?sort=count', {
+    fetch(process.env.API_SERVER + '/api/tag?sort=count', {
       credentials: 'include',
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
       }
     })
@@ -34,9 +45,7 @@ export function setDiscoverTags(data) {
 
 export function goToTag(tag) {
   return function(dispatch) {
-    console.log('go to', tag);
     dispatch(setTag(tag));
-    // dispatch(Actions.Discover);
   };
 }
 
@@ -56,11 +65,9 @@ export function deselectTag(tag) {
 
 export function searchTags(tag) {
   return (dispatch) => {
-    console.log(tag, 'tag');
     if (!tag || tag === '') {
       return dispatch(setDiscoverTags([]));
     }
-
     return fetch(process.env.API_SERVER + '/api/tag/search/' + tag, {
       credentials: 'include',
       method: 'GET',
@@ -71,62 +78,59 @@ export function searchTags(tag) {
     })
     .then(response => response.json())
     .then((responseJSON) => {
-      console.log('Search result ', responseJSON);
       dispatch(setDiscoverTags(responseJSON));
     })
     .catch(error => {
       console.log('Search error ', error);
     });
-  }
+  };
 }
 
 export function createTag(token, tagObj) {
-    return function(dispatch) {
-      return fetch(process.env.API_SERVER+'/api/tag?access_token='+token, {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(tagObj)
-      })
-      .then((response) => response.json())
-      .then((responseJSON) => {
-        return {status: true, data: responseJSON}
-      })
-      .catch((error) => {
-        return {status: false, data: error};
-      });
-    }
+  return function(dispatch) {
+    return fetch(process.env.API_SERVER+'/api/tag?access_token='+token, {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(tagObj)
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      return {status: true, data: responseJSON}
+    })
+    .catch((error) => {
+      return {status: false, data: error};
+    });
+  };
+}
+
+export function setParentTags(data) {
+  return {
+    type: types.SET_PARENT_TAGS,
+    payload: data
+  };
 }
 
 export function getParentTags() {
   return function(dispatch) {
-    return fetch(process.env.API_SERVER+'/api/tag/categories', {
+    return fetch(process.env.API_SERVER + '/api/tag/categories?active', {
       credentials: 'include',
       method: 'GET',
       headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
       }
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-     dispatch(setParentTags(responseJSON));
+      dispatch(setParentTags(responseJSON));
     })
     .catch((error) => {
       console.log(error, 'parents error');
     });
-  }
+  };
 }
-
-export function setParentTags(data) {
-    return {
-        type: types.SET_PARENT_TAGS,
-        payload: data
-    };
-}
-
-
 

@@ -105,6 +105,13 @@ export default function comments(state = initialState, action) {
     case 'ADD_COMMENT': {
       let newComment = action.payload.comment;
       let postId = action.payload.postId;
+      let postComments = state.commentsById[postId];
+      if (!state.commentsById[postId]) {
+        postComments = {
+          total: 0,
+          data: []
+        };
+      }
 
       let newState = {
         ...state,
@@ -112,10 +119,10 @@ export default function comments(state = initialState, action) {
           ...state.commentsById,
           [postId]: {
             data: [
-              ...state.commentsById[postId].data,
+              ...postComments.data,
               newComment
             ],
-            total: state.commentsById[postId].total + 1
+            total: postComments.total + 1
           }
         }
       };

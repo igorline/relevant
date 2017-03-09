@@ -13,6 +13,8 @@ let styles;
 
 export default function (props) {
 
+  if (!props.user) return null;
+
   let imageSource;
   if (props.user && props.user.image) {
     imageSource = { uri: props.user.image };
@@ -21,8 +23,10 @@ export default function (props) {
   let imageStyle = styles.userImage;
   if (props.big) imageStyle = styles.userImageBig;
 
+  // console.log('props ', props);
+
   let stats;
-  if (props.user.relevance && props.relevance !== false) {
+  if (props.user && props.user.relevance && props.relevance !== false) {
     stats = <Stats size={'small'} entity={props.user} type={'value'} />;
   }
 
@@ -42,7 +46,7 @@ export default function (props) {
             {stats}
           </View>
           <Text style={[styles.font10, styles.greyText]}>
-            {'@' + props.user._id}
+            {'@' + props.user._id} {props.postTime}
           </Text>
         </View>
       </View>

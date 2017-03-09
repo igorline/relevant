@@ -33,12 +33,21 @@ class Read extends Component {
     ];
   }
 
+  componentWillMount() {
+    if (this.props.auth.user && this.props.posts.feedUnread) {
+      this.props.actions.markFeedRead();
+    }
+  }
+
   componentWillReceiveProps(next) {
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();
     }
     if (this.props.reload !== next.reload) {
       this.needsReload = new Date().getTime();
+    }
+    if (this.props.auth.user && this.props.posts.feedUnread) {
+      this.props.actions.markFeedRead();
     }
   }
 

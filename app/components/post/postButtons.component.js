@@ -31,9 +31,9 @@ class PostButtons extends Component {
 
     this.linkMenu = {
       buttons: [
-        'Share',
+        'New Post',
         'Repost Commentary',
-        'Repost Link',
+        'Share',
         'Cancel',
       ],
       cancelIndex: 4,
@@ -41,8 +41,8 @@ class PostButtons extends Component {
 
     this.menu = {
       buttons: [
-        'Share',
         'Repost Commentary',
+        'Share',
         'Cancel',
       ],
       cancelIndex: 3,
@@ -68,14 +68,7 @@ class PostButtons extends Component {
   }
 
   componentDidMount() {
-    if (this.props.post.user._id && this.props.auth.user._id) {
-      if (this.props.post.user._id === this.props.auth.user._id) {
-        this.menu = this.ownerMenu;
-        this.myPost = true;
-      } else if (this.props.post.link) {
-        this.menu = this.linkMenu;
-      }
-    }
+    if (this.props.post.link) this.menu = this.linkMenu;
   }
 
   onShare() {
@@ -120,6 +113,7 @@ class PostButtons extends Component {
   invest() {
     let investAmount = 1;
     // this.props.actions.triggerAnimation('invest');
+    // return;
 
     this.props.actions.invest(
       this.props.auth.token,
@@ -142,72 +136,40 @@ class PostButtons extends Component {
   }
 
   showActionSheet() {
-    if (this.myPost) {
-      ActionSheetIOS.showActionSheetWithOptions({
-        options: this.menu.buttons,
-        cancelButtonIndex: this.menu.cancelIndex,
-        destructiveButtonIndex: this.menu.destructiveIndex,
-      },
-      (buttonIndex) => {
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: this.menu.buttons,
+      cancelButtonIndex: this.menu.cancelIndex,
+      destructiveButtonIndex: this.menu.destructiveIndex,
+    },
+    (buttonIndex) => {
+      if (this.props.post.link) {
         switch (buttonIndex) {
           case 0:
-            this.onShare();
-            break;
-          case 1:
-            this.toggleEditing();
-            break;
-          case 2:
-            this.deletePost();
-            break;
-          default:
-            return;
-        }
-      });
-    } else {
-      ActionSheetIOS.showActionSheetWithOptions({
-        options: this.menu.buttons,
-        cancelButtonIndex: this.menu.cancelIndex,
-        destructiveButtonIndex: this.menu.destructiveIndex,
-      },
-      (buttonIndex) => {
-        switch (buttonIndex) {
-          case 0:
-            this.onShare();
+            if (this.props.post.link) this.repostUrl();
+            else return;
             break;
           case 1:
             this.repostCommentary();
             break;
           case 2:
-            if (this.props.post.link) this.repostUrl();
-            else return;
+            this.onShare();
             break;
           default:
             return;
         }
-      });
-    }
-  }
-
-  toggleEditing() {
-    this.props.actions.setCreaPostState({
-      postBody: this.props.post.body,
-      nativeImage: true,
-      postUrl: this.props.post.link,
-      postImage: this.props.post.image,
-      urlPreview: {
-        image: this.props.post.image,
-        title: this.props.post.title ? this.props.post.title : 'Untitled',
-        description: this.props.post.description,
-      },
-      edit: true,
-      editPost: this.props.post,
+      } else {
+        switch (buttonIndex) {
+          case 0:
+            this.repostCommentary();
+            break;
+          case 1:
+            this.onShare();
+            break;
+          default:
+            return;
+        }
+      }
     });
-    this.props.navigator.push({
-      key: 'createPost',
-      back: true,
-      title: 'Edit Post',
-      next: 'Update'
-    }, 'home');
   }
 
   repostCommentary() {
@@ -259,14 +221,6 @@ class PostButtons extends Component {
     this.props.navigator.goToPost(this.props.post, openComment);
   }
 
-  deletePost() {
-    let redirect = false;
-    if (this.props.scene) {
-      if (this.props.scene.component === 'singlePost') redirect = true;
-    }
-    this.props.actions.deletePost(this.props.auth.token, this.props.post, redirect);
-  }
-
   irrelevantPrompt() {
     Alert.alert(
       'Irrelevant',
@@ -279,11 +233,15 @@ class PostButtons extends Component {
   }
 
   irrelevant() {
+    // this.props.actions.triggerAnimation('invest', -1);
+    // this.props.actions.triggerAnimation('irrelevant', -1);
+    // return;
+
     this.props.actions.invest(this.props.auth.token, -1, this.props.post, this.props.auth.user)
     .then((results) => {
       if (results) {
-        this.props.actions.triggerAnimation('invest');
-        this.props.actions.triggerAnimation('irrelevant');
+        this.props.actions.triggerAnimation('invest', -1);
+        this.props.actions.triggerAnimation('irrelevant', -1);
       } else {
         console.log('irrelevant failed');
       }
@@ -313,10 +271,11 @@ class PostButtons extends Component {
     }
 
     investButtonEl = (<TouchableWithoutFeedback
-      onPress={() => this.invest()}
+      onPress={() => investable ? this.invest() : null}
     >
       <View style={[styles.investButton, !investable ? { opacity: 0.3, shadowOpacity: 0 } : null]}>
         <Text
+          suppressHighlighting={false}
           allowFontScaling={false}
           style={[styles.font15, styles.bold, styles.postButtonText]}
         >
@@ -365,11 +324,11 @@ class PostButtons extends Component {
       <TouchableHighlight
         underlayColor={'transparent'}
         style={styles.postButton}
-        onPress={this.irrelevantPrompt}
+        onPress={() => investable ? this.irrelevantPrompt() : null}
       >
         <Text
           allowFontScaling={false}
-          style={[styles.font12, styles.greyText, styles.postButtonText]}
+          style={[styles.font12, styles.greyText, styles.postButtonText, !investable ? { opacity: 0.6 } : null ]}
         >
           irrelevant
         </Text>
@@ -409,7 +368,7 @@ class PostButtons extends Component {
       <View style={styles.postButtons}>
         {investButtonEl}
         {irrelevantButton}
-        {comments}
+
         <TouchableHighlight
           underlayColor={'transparent'}
           style={[styles.postButton]}
@@ -417,11 +376,14 @@ class PostButtons extends Component {
         >
           <Text
             allowFontScaling={false}
-            style={[styles.greyText, styles.postButtonText, styles.dots]}
+            style={[styles.font12, styles.greyText, styles.postButtonText]}
           >
-            ...
+            share
           </Text>
         </TouchableHighlight>
+
+        {comments}
+
 
         <InvestModal
           toggleFunction={this.toggleModal}
@@ -462,7 +424,7 @@ const localStyles = StyleSheet.create({
     borderWidth: 1,
     backgroundColor: 'white',
     borderColor: 'black',
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     height: 30,
     shadowColor: 'black',
     shadowOffset: { width: 2, height: 2 },

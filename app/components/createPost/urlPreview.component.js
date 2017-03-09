@@ -71,7 +71,7 @@ export default class UrlPreviewComponent extends Component {
     }
 
     if (this.props.domain) {
-      maxLines = 2;
+      if (this.props.size === 'small') maxLines = 2;
       domain = (<Text style={{ color: '#808080', fontSize: fontSize - 2, paddingTop: 2 }}>
         from: {this.props.domain}
       </Text>);
