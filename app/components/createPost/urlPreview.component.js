@@ -64,7 +64,7 @@ export default class UrlPreviewComponent extends Component {
         style={{ flex: imageFlex, height: null, resizeMode: 'cover' }}
       />);
     } else {
-      height = null;
+      // height = null;
       // addStyle = {
       //   borderWidth: 0
       // };
@@ -78,7 +78,6 @@ export default class UrlPreviewComponent extends Component {
     }
 
     if (this.props.urlPreview) {
-
       preview = (
         <TouchableHighlight
           underlayColor={'transparent'}
@@ -103,7 +102,7 @@ export default class UrlPreviewComponent extends Component {
       preview = (
         <TouchableHighlight
           underlayColor={'transparent'}
-          style={[styles.createPostInput, styles.preview]}
+          style={[styles.createPostInput, styles.preview, { height }]}
           onPress={this.previewMenu}
         >
           <View style={styles.innerPreview}>
@@ -123,7 +122,7 @@ const localStyles = StyleSheet.create({
   },
   innerPreview: {
     borderRadius: 4,
-    borderColor: '#f0f0f0',
+    borderColor: '#a0a0a0',
     borderStyle: 'solid',
     borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',

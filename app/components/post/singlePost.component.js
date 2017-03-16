@@ -90,7 +90,10 @@ class SinglePostComments extends Component {
           if (this.total > 10) this.longFormat = true;
         }
       }
-      this.setState({ reloading: false });
+
+      clearTimeout(this.stateTimeout);
+      this.stateTimeout = setTimeout(() =>
+        this.setState({ reloading: false }), 1000);
     }
   }
 
@@ -139,7 +142,7 @@ class SinglePostComments extends Component {
   reload() {
     this.reloading = true;
     this.props.actions.getComments(this.id, 0, 10);
-    // this.props.actions.getSelectedPost(this.id);
+    this.props.actions.getSelectedPost(this.id);
   }
 
   renderHeader() {
@@ -224,7 +227,7 @@ class SinglePostComments extends Component {
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
-        style={{ flex: 1, position: 'relative'}}
+        style={{ flex: 1, position: 'relative' }}
         keyboardVerticalOffset={59}
       >
         <View style={{ flex: 1 }}>

@@ -1,6 +1,7 @@
 import * as types from './actionTypes';
 import * as errorActions from './error.actions';
 import { token as tokenUtil } from '../utils';
+import * as authActions from './auth.actions';
 
 require('../publicenv');
 
@@ -113,7 +114,12 @@ export function getNotificationCount() {
       })
     )
     .then(response => response.json())
-    .then(responseJSON => dispatch(setCount(responseJSON.unread)))
+    .then(responseJSON => {
+      if (responseJSON.unread > 0) {
+        dispatch(authActions.getUser());
+      }
+      dispatch(setCount(responseJSON.unread));
+    })
     .catch(err => console.log('Notification count error', err));
 }
 

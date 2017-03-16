@@ -6,6 +6,8 @@ import {
   ActionSheetIOS,
   AlertIOS,
   Easing,
+  PushNotificationIOS,
+  Linking
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -73,6 +75,9 @@ class Application extends Component {
         header: false
       }, 0, 'home');
     });
+    PushNotificationIOS.setApplicationIconBadgeNumber(0);
+
+    Linking.addEventListener('url', this.handleOpenURL);
   }
 
   componentWillReceiveProps(next) {
@@ -81,7 +86,7 @@ class Application extends Component {
       this.props.actions.getNotificationCount();
       this.props.actions.getFeedCount();
 
-      if (next.auth.user.onboarding === 'coin') {
+      if (next.auth.user.onboarding === 0) {
         this.props.actions.changeTab('discover');
       } else this.props.actions.changeTab('read');
       this.props.actions.resetRoutes();
@@ -111,7 +116,21 @@ class Application extends Component {
   }
 
   componentWillUnmount() {
+    Linking.removeEventListener('url', this._handleOpenURL);
     AppState.removeEventListener('change', this.handleAppStateChange.bind(this));
+  }
+
+  handleOpenURL(event) {
+    let params = event.url.split('?')[1];
+    let paramsLookup = {};
+    if (params) {
+      params = params.split('&');
+      params.forEach(p => {
+        p = p.split('=');
+        paramsLookup[p[0]] = p[1];
+      });
+    }
+    console.log(paramsLookup);
   }
 
   changeName() {
@@ -211,6 +230,7 @@ class Application extends Component {
     if (currentAppState === 'active' && this.props.auth.user) {
       this.props.actions.userToSocket(this.props.auth.user._id);
       this.props.actions.getNotificationCount();
+      PushNotificationIOS.setApplicationIconBadgeNumber(0);
 
       // refresh after 5 minutes of inactivity
       let now = new Date().getTime();
@@ -220,6 +240,7 @@ class Application extends Component {
         // reload all other tabs on focus
         this.props.actions.reloadAllTabs();
         this.props.actions.resetRoutes();
+        // this.props.actions.getUser();
       }
     } else if (currentAppState === 'background') {
       this.backgroundTime = new Date().getTime();

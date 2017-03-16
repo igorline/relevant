@@ -27,6 +27,7 @@ class Read extends Component {
     this.renderRow = this.renderRow.bind(this);
     this.load = this.load.bind(this);
     this.needsReload = new Date().getTime();
+    this.renderHeader = this.renderHeader.bind(this);
 
     this.tabs = [
       { id: 0, title: 'Feed', type: 'feed' },
@@ -74,9 +75,13 @@ class Read extends Component {
   }
 
   load(view, length) {
+    const tag = this.props.posts.tag;
+
     if (!view) view = 0;
     if (!length) length = 0;
-    const tag = this.props.posts.tag;
+
+    if (length === 0) this.props.actions.getSubscriptions();
+
     this.props.actions.getFeed(length, tag);
   }
 
@@ -88,6 +93,19 @@ class Read extends Component {
     });
   }
 
+  renderHeader() {
+    let { total, totalUsers } = this.props.subscriptions;
+    if (!total) return null;
+
+    return (
+      <View style={styles.feedHeader}>
+        <Text style={[styles.font12, styles.greyText]}>
+          You are subscribed to {total} post{total > 1 ? 's' : ''} from {totalUsers} user{totalUsers > 1 ? 's' : ''}
+        </Text>
+      </View>
+    );
+  }
+
   renderRow(rowData) {
     return (
       <Post post={rowData} {...this.props} styles={styles} />
@@ -95,25 +113,51 @@ class Read extends Component {
   }
 
   render() {
-    let messagesCount = null;
-    let recentMessages = [];
-    let thirstyHeader = null;
-    let messages = null;
+    // let messagesCount = null;
+    // let recentMessages = [];
+    // let thirstyHeader = null;
+    // let messages = null;
     let feedEl = [];
+    let filler;
 
-    if (this.props.messages.index.length > 0) {
-      messages = this.props.messages.index;
-      for (let x = 0; x < 4; x++) {
-        recentMessages.push(
-          <Text
-            key={x}
-            style={styles.recentName}
-          >
-            {x < 3 ? `${this.props.messages.index[x].from.name} ` : `${this.props.messages.index[x].from.name}`}
+    // if (this.props.messages.index.length > 0) {
+    //   messages = this.props.messages.index;
+    //   for (let x = 0; x < 4; x++) {
+    //     recentMessages.push(
+    //       <Text
+    //         key={x}
+    //         style={styles.recentName}
+    //       >
+    //         {x < 3 ? `${this.props.messages.index[x].from.name} ` : `${this.props.messages.index[x].from.name}`}
+    //       </Text>
+    //     );
+    //   }
+    // }
+
+    if (!this.props.subscriptions.total) {
+      filler = (
+        <View>
+          <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
+            Upovote posts to subscribe to users
           </Text>
-        );
-      }
+          <Text
+            style={[styles.georgia, styles.discoverLink, styles.quarterLetterSpacing]}
+            onPress={() => { this.props.actions.changeTab('discover'); }}
+          >Click on 🔮<Text style={styles.active}> Discover</Text>
+            &nbsp;to find the most relevant content & people
+          </Text>
+        </View>
+      );
+    } else {
+      filler = (
+        <View>
+          <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
+            Check back in a little while for new content
+          </Text>
+        </View>
+      );
     }
+
 
     this.tabs.forEach((tab) => {
       let tabData = this.props.posts.feed;
@@ -127,6 +171,7 @@ class Read extends Component {
           data={tabData}
           loaded={loaded}
           renderRow={this.renderRow}
+          renderHeader={this.renderHeader}
           load={this.load}
           view={tab.id}
           type={'posts'}
@@ -135,6 +180,7 @@ class Read extends Component {
           needsReload={this.needsReload}
           actions={this.props.actions}
         >
+          {filler}
         </CustomListView>
       );
     });
@@ -183,6 +229,16 @@ class Read extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  feedHeader: {
+    padding: 10,
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'lightgrey',
+    // marginHorizontal: 30,
+    // borderBottomWidth: 8,
+    // borderBottomColor: 'lightgrey',
+  },
   thirstyHeader: {
     alignItems: 'center',
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -206,6 +262,11 @@ const localStyles = StyleSheet.create({
   readHeader: {
     marginBottom: 10
   },
+  discoverLink: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: 20
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };
@@ -219,6 +280,7 @@ function mapStateToProps(state) {
     reload: state.navigation.read.reload,
     error: state.error.read,
     tabs: state.navigation.tabs,
+    subscriptions: state.subscriptions,
   };
 }
 

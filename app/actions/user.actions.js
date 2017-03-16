@@ -1,5 +1,7 @@
 import * as utils from '../utils';
 import * as errorActions from './error.actions';
+import * as types from './actionTypes';
+
 require('../publicenv');
 
 const getOptions = {
@@ -10,7 +12,6 @@ const getOptions = {
     'Content-Type': 'application/json'
   }
 };
-
 
 const queryParams = (params) => {
   return Object.keys(params)
@@ -169,7 +170,7 @@ function getPostUser(userId, token) {
       '?access_token=' + token,
       getOptions
     )
-    .then(utils.fetchError.handleErrors)
+    .then(utils.fetchUtils.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       return responseJSON;

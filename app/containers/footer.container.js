@@ -13,7 +13,7 @@ import Footer from './footerCustom.container';
 class Tabs extends Component {
   constructor(props, context) {
     super(props, context);
-    this.props.showActionSheet = this.props.showActionSheet.bind(this);
+    // this.props.showActionSheet = this.props.showActionSheet.bind(this);
     this.changeTab = this.changeTab.bind(this);
   }
 

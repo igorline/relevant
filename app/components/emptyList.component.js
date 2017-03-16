@@ -22,12 +22,16 @@ class EmptyList extends Component {
     let type = this.props.type || '';
     let emoji = this.props.emoji || '😶';
     let visible = this.props.visible;
-
+    let content = this.props.children || (
+      <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
+        {this.props.text ? this.props.text : 'Sorry, no ' + type + emoji}
+      </Text>
+    );
     return (
       <View
         style={[
           visible && this.state.ready ? styles.emptyList : styles.hideEmptyList,
-          { height: fullHeight - (59 * 2 + this.state.top) },
+          { height: fullHeight - ((59 * 2) + this.state.top) },
         ]}
         pointerEvents={visible ? 'auto' : 'none'}
         onLayout={(e) => {
@@ -35,10 +39,7 @@ class EmptyList extends Component {
           this.setState({ ready: true });
         }}
       >
-        <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
-          Sorry, no {type} {emoji}
-        </Text>
-        {this.props.children}
+        {content}
       </View>
     );
   }

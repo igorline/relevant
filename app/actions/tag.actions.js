@@ -24,7 +24,7 @@ export function getDiscoverTags() {
         'Content-Type': 'application/json'
       }
     })
-    .then(utils.fetchError.handleErrors)
+    .then(utils.fetchUtils.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setDiscoverTags(responseJSON));

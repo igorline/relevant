@@ -189,7 +189,12 @@ class Discover extends Component {
       return (<Post showReposts={showReposts} post={posts} {...this.props} styles={styles} />);
     }
     let topic = this.topic ? this.topic._id : null;
-    return (<DiscoverUser topic={topic} user={rowData} {...this.props} styles={styles} />);
+    return (<DiscoverUser
+      relevance={this.topic || false}
+      topic={topic}
+      user={rowData}
+      {...this.props}
+    />);
   }
 
   getViewData(props, view) {

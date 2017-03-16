@@ -158,6 +158,8 @@ class CardHeader extends Component {
     let key = this.props.defaultContainer;
 
     if (this.props.auth.user) {
+      // let id = this.props.auth.user._id;
+      // let user = this.props.user.users[id];
       statsEl = <Stats type={'nav'} entity={this.props.auth.user} />;
     }
 

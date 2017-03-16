@@ -1,4 +1,8 @@
-import userDefaults from 'react-native-user-defaults';
+let userDefaults;
+
+if (process.env.WEB != true) {
+  userDefaults = require('react-native-user-defaults');
+}
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
 

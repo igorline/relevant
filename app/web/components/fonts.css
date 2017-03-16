@@ -1,0 +1,42 @@
+@font-face {
+    font-family: 'Futura Bold';
+    src: url('/fonts/FuturaStd-Bold.otf');
+}
+
+@font-face {
+    font-family: 'Futura Heavy';
+    src: url('/fonts/FuturaStd-Heavy.otf');
+}
+
+@font-face {
+    font-family: 'Futura Medium';
+    src: url('/fonts/FuturaStd-Medium.otf');
+}
+
+@font-face {
+    font-family: 'Avenir Next';
+    src: url('/fonts/AvenirNextLTPro-Regular.otf');
+}
+
+@font-face {
+    font-family: 'Avenir Next Bold';
+    src: url('/fonts/avenir-next-bold.ttf');
+}
+
+@font-face {
+    font-family: 'MyriadPro-Regular';
+    src: url('/fonts/MyriadPro-Regular.otf');
+}
+
+@font-face {
+    font-family: 'Rockwell Bold';
+    src: url('/fonts/rockwell-bold.ttf');
+}
+
+@font-face {
+    font-family: 'Minion Pro';
+    src: url('/fonts/MinionPro-Regular.otf');
+}
+
+
+

@@ -1,0 +1,11 @@
+{
+  "ext":".js .jade",
+  "watch": [
+    "webpack.config.js",
+    "server/*",
+    "views/*.jade",
+    "app.js",
+    "nodemon.json",
+    ".env"
+  ]
+}

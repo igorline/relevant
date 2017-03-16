@@ -111,6 +111,13 @@ export default class UrlComponent extends Component {
         if (results.tags) {
           tags = results.tags.split(',');
         }
+        let keywords = results.tags.split(',');
+        let pKeywords = [];
+        keywords.forEach(k => {
+          pKeywords = [...k.trim().split(';'), ...pKeywords];
+        });
+        pKeywords = pKeywords.map(tag => tag.trim());
+
         tags = tags.map(tag => tag.trim().toLowerCase().replace(/\s/g, ''));
         let pTags = [];
         tags.forEach(tag => {
@@ -123,6 +130,7 @@ export default class UrlComponent extends Component {
           domain: results.domain,
           postUrl: results.url,
           articleTags: pTags,
+          keywords: pKeywords,
           urlPreview: {
             image: results.image,
             title: results.title ? results.title : 'Untitled',

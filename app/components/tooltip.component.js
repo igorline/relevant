@@ -21,13 +21,12 @@ class Tooltip extends Component {
     this.state = {
       height: 0,
       scale: new Animated.Value(0),
-      opacity: new Animated.Value(0),
+      opacity: new Animated.Value(1),
+      x: new Animated.Value(0),
       width: 0,
     };
     this.offset = 15;
-    this.steps = [
-      'coin', 'relevance', 'end'
-    ];
+    this.steps = [0, 1, 2];
     this.nextOnboarding = this.nextOnboarding.bind(this);
   }
 
@@ -41,7 +40,13 @@ class Tooltip extends Component {
           toValue: 1,
           delay: 0,
           duration: 400,
-          easing: Easing.in(Easing.elastic(1.3))
+          easing: Easing.in(Easing.elastic(1.0))
+        }).start();
+        Animated.timing(this.state.x, {
+          toValue: 1,
+          delay: 0,
+          duration: 220,
+          easing: Easing.out(Easing.ease)
         }).start();
         Animated.timing(this.state.opacity, {
           toValue: 1,
@@ -50,10 +55,14 @@ class Tooltip extends Component {
           easing: Easing.out(Easing.cubic)
         }).start();
       } else {
-        this.setState({ scale: new Animated.Value(0.0), opacity: new Animated.Value(0) });
+        this.setState({
+          scale: new Animated.Value(0.0),
+          // opacity: new Animated.Value(0),
+          x: new Animated.Value(0),
+        });
       }
 
-      clearTimeout(this.timeout);
+      // clearTimeout(this.timeout);
       // this.timeout = setTimeout(this.nextOnboarding, 8000);
     }
   }
@@ -61,9 +70,9 @@ class Tooltip extends Component {
   nextOnboarding() {
     clearTimeout(this.timeout);
     this.props.actions.showTooltip(null);
-    // this.props.actions.setOnboardingStep('coin');
+    this.props.actions.setOnboardingStep(1);
     if (this.step >= 0) {
-      this.props.actions.setOnboardingStep(this.steps[this.step + 1]);
+      this.props.actions.setOnboardingStep(this.step + 1);
     }
   }
 
@@ -110,11 +119,20 @@ class Tooltip extends Component {
     }
 
     if (this.props.tooltip.horizontal === 'right') {
-      transform = [...transform,
-        { translateX: -this.state.width / 2 }];
+      let px = parent.w / 2 + parent.x;
+      // let offset = this.props.tooltip.horizontalOffset;
+      let x = this.state.x.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, -px],
+      });
+      transform = [
+
+        ...transform,
+        { translateX: -px },
+      ];
       style = {
         ...style,
-        left: parent.x + parent.w + this.props.tooltip.horizontalOffset - (this.state.width / 2),
+        left: 10 + px,
         transform
       };
       arrowStyle = [
@@ -143,7 +161,7 @@ class Tooltip extends Component {
       style = {
         ...style,
         width: this.props.tooltip.width,
-        left: parent.x + parent.w / 2 -this.state.width / 2 + this.props.tooltip.horizontalOffset,
+        left: parent.x + parent.w / 2 - this.state.width / 2 + this.props.tooltip.horizontalOffset,
         transform
       };
       arrowStyle = [
@@ -191,28 +209,33 @@ let localStyles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.0)'
+    backgroundColor: 'rgba(0,0,0,0.6)'
   },
   tooltip: {
     position: 'absolute',
-    backgroundColor: blue,
-    borderRadius: 5,
-    // padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 2,
+    padding: 10,
     shadowColor: 'black',
     shadowOffset: { width: 1, height: 1 },
     shadowRadius: 3,
     shadowOpacity: 0.8,
-    zIndex: 1000000
+    zIndex: 1000000,
+    width: fullWidth - 20,
   },
   tooltipText: {
-    color: 'white',
+    // color: 'white',
+    // fontFamily: 'Georgia',
+    fontSize: 15,
+    lineHeight: 20,
+
   },
   arrow: {
     width: 10,
     height: 10,
     position: 'absolute',
-    transform: [{ rotate: '35deg' }, { skewY: '45deg' } ],
-    backgroundColor: blue,
+    transform: [{ rotate: '35deg' }, { skewY: '45deg' }],
+    backgroundColor: 'white',
     shadowColor: 'black',
     shadowOffset: { width: -1, height: -1 },
     shadowRadius: 0,

@@ -58,26 +58,33 @@ export function abbreviateNumber(num) {
 export function timeSince(date) {
   let seconds = Math.floor((new Date() - date) / 1000);
   let interval = Math.floor(seconds / 31536000);
+  let s;
   if (interval >= 1) {
-    return interval + 'y';
+    s = interval > 1 ? 's' : '';
+    return interval + ' year' + s;
   }
   interval = Math.floor(seconds / 2592000);
   if (interval >= 1) {
-    return interval + 'mo';
+    s = interval > 1 ? 's' : '';
+    return interval + ' month' + s;
   }
   interval = Math.floor(seconds / 86400);
   if (interval >= 1) {
-    return interval + 'd';
+    s = interval > 1 ? 's' : '';
+    return interval + ' day' + s;
   }
   interval = Math.floor(seconds / 3600);
   if (interval >= 1) {
-    return interval + 'hr';
+    s = interval > 1 ? 's' : '';
+    return interval + ' hour' + s;
   }
   interval = Math.floor(seconds / 60);
   if (interval >= 1) {
-    return interval + 'm';
+    s = interval > 1 ? 's' : '';
+    return interval + ' minute' + s;
   }
-  return Math.floor(seconds) + 's';
+  s = interval > 1 ? 's' : '';
+  return Math.floor(seconds) + ' second' + s;
 }
 
 export function guid() {

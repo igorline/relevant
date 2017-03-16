@@ -11,10 +11,19 @@ import view from './view';
 import stats from './stats';
 import investments from './investments';
 import comments from './comments';
-import navigation from './navigation';
 import createPost from './createPost';
 import tags from './tags';
 import tooltip from './tooltip';
+import subscriptions from './subscriptions';
+
+let navigation = {};
+let routing = {};
+if (!process.env.WEB) {
+  console.log('web ', process.env.WEB);
+  navigation = require('./navigation').default;
+} else {
+  routing = require('react-router-redux').routerReducer;
+}
 
 const rootReducer = combineReducers({
   auth,
@@ -30,9 +39,11 @@ const rootReducer = combineReducers({
   stats,
   comments,
   navigation,
+  routing,
   createPost,
   tags,
-  tooltip
+  tooltip,
+  subscriptions
 });
 
 export default rootReducer;

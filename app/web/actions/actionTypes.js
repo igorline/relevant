@@ -1,0 +1,12 @@
+// export const DESELECT_TAG = 'DESELECT_TAG';
+// export const SELECT_TAG = 'SELECT_TAG';
+export const SET_PARENT_TAGS = 'SET_PARENT_TAGS';
+export const UPDATE_PARENT_TAG = 'UPDATE_PARENT_TAG';
+// export const SET_DISCOVER_TAGS = 'SET_DISCOVER_TAGS';
+
+export const LOGIN_USER_REQUEST = 'LOGIN_USER_REQUEST';
+export const LOGIN_USER_FAILURE = 'LOGIN_USER_FAILURE';
+export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
+export const LOGOUT_USER = 'LOGOUT_USER';
+export const SHOW_LOADER = 'SHOW_LOADER';
+export const SET_USER = 'SET_USER';

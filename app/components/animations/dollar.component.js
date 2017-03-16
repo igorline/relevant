@@ -25,7 +25,7 @@ class Dollar extends Component {
     let i = this.props.specialKey;
 
     Animated.timing(this.state.x, {
-      toValue: -(fullWidth / 2.3) + ((Math.random() - 0.5) * 50),
+      toValue: -(fullWidth / 2.5) + ((Math.random() - 0.5) * 70),
       delay: i * 30,
       duration: 500,
       easing: Easing.out(Easing.ease)
@@ -65,24 +65,24 @@ class Dollar extends Component {
     let specialKey = this.props.specialKey;
     let img;
 
-    let icon = require('../../assets/images/rup.png');
-    if (this.props.amount < 0) {
-      icon = require('../../assets/images/rdown.png');
-    }
+    let icon = require('../../assets/images/relevantcoin.png');
+    // if (this.props.amount < 0) {
+    //   icon = require('../../assets/images/rdown.png');
+    // }
 
-    if (Math.random() < 0.4 && this.props.amount >= 0) {
+    // if (Math.random() < 0.4 && this.props.amount >= 0) {
       img = (<Image
-        style={[styles.coin, { width: 30, height: 30 }]}
+        style={[styles.coin, { width: 25, height: 25 }]}
         source={icon}
       />);
-    } else if (this.props.amount >= 0) {
-      img = (<Text style={{ fontSize: 45 }}>✨</Text>);
-    } else {
-      img = (<Image
-        style={[styles.coin, { width: 30, height: 30 }]}
-        source={icon}
-      />);
-    }
+    // } else if (this.props.amount >= 0) {
+    //   img = (<Text style={{ fontSize: 45 }}>✨</Text>);
+    // } else {
+    //   img = (<Image
+    //     style={[styles.coin, { width: 30, height: 30 }]}
+    //     source={icon}
+    //   />);
+    // }
 
     return (
       <Animated.Text
@@ -112,7 +112,7 @@ const localStyles = StyleSheet.create({
     fontSize: 16 * 4,
     position: 'absolute',
     top: 25,
-    right: 15,
+    right: 45,
     backgroundColor: 'transparent'
   },
 });

@@ -27,8 +27,10 @@ export default function (props) {
 
   let stats;
   if (props.user && props.user.relevance && props.relevance !== false) {
-    stats = <Stats size={'small'} entity={props.user} type={'value'} />;
+    stats = <Stats entity={props.user} type={'relevance'} />;
   }
+  let handle;
+  if (props.user._id) handle = '@' + props.user._id;
 
   return (
     <TouchableWithoutFeedback
@@ -45,9 +47,9 @@ export default function (props) {
             </View>
             {stats}
           </View>
-          <Text style={[styles.font10, styles.greyText]}>
-            {'@' + props.user._id} {props.postTime}
-          </Text>
+          {handle ? (<Text style={[styles.font10, styles.greyText]}>
+            {handle} {props.postTime}
+          </Text>) : null }
         </View>
       </View>
     </TouchableWithoutFeedback>

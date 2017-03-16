@@ -64,13 +64,24 @@ export default function auth(state = initialState, action) {
         }
       };
 
+    case types.SET_SELECTED_USER_DATA: {
+      let updateUser;
+      if (state.user._id === action.payload._id) updateUser = true;
+      if (!updateUser) return state;
+      return {
+        ...state,
+        user: action.payload
+      };
+    }
+
     case types.SET_USER:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         isAuthenticating: false,
         isAuthenticated: action.payload ? true : false,
         user: action.payload,
         preUser: null
-      });
+      };
 
     case types.UPDATE_AUTH_USER:
       // console.log('update auth user', state.user, action.payload);
