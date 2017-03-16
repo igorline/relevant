@@ -1,13 +1,12 @@
 import * as types from './actionTypes';
-require('../publicenv');
 import * as utils from '../utils';
-import {
-  AlertIOS
-} from 'react-native';
 
+let Alert = utils.fetchUtils.Alert();
+
+require('../publicenv');
 
 export function setError(type, bool, message) {
-  if (message) AlertIOS.alert(message);
+  if (message) Alert.alert(message);
   return {
     type: 'SET_ERROR',
     payload: {

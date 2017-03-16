@@ -1,12 +1,17 @@
-import {
-  PushNotificationIOS,
-  AlertIOS
-} from 'react-native';
-import userDefaults from 'react-native-user-defaults';
 import * as types from './actionTypes';
 import * as utils from '../utils';
 import * as errorActions from './error.actions';
-import { token as tokenUtil } from '../utils';
+
+let AlertIOS = utils.fetchUtils.Alert();
+let rn = {};
+let PushNotificationIOS;
+let userDefaults;
+
+if (process.env.WEB != true) {
+  rn = require('react-native');
+  PushNotificationIOS = rn.PushNotificationIOS;
+  userDefaults = require('react-native-user-defaults');
+};
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
 require('../publicenv');
@@ -122,7 +127,7 @@ export function logoutAction(user) {
 
 export function setOnboardingStep(step) {
   return (dispatch) => {
-    tokenUtil.get()
+    utils.token.get()
     .then(token =>
       fetch(process.env.API_SERVER + '/api/user/onboarding/' + step, {
         credentials: 'include',
@@ -157,7 +162,6 @@ export function loginUser(user) {
           dispatch(getUser());
         });
       } else {
-        console.log(responseJSON);
         AlertIOS.alert(responseJSON.message);
         dispatch(loginUserFailure(responseJSON.message));
       }
@@ -262,7 +266,7 @@ export function getUser(callback) {
           Authorization: `Bearer ${token}`
         }
       })
-      .then(utils.fetchError.handleErrors)
+      .then(utils.fetchUtils.handleErrors)
       .then(response => response.json())
       .then((responseJSON) => {
         dispatch(setUser(responseJSON));

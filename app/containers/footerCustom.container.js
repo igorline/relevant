@@ -4,9 +4,8 @@ import {
   Text,
   View,
   Image,
-  Animated,
-  Easing,
   TouchableHighlight,
+  PushNotificationIOS
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -23,9 +22,14 @@ let styles;
 class Footer extends Component {
   constructor(props, context) {
     super(props, context);
+    this.totalBadge = 0;
   }
 
   renderBadge(count) {
+    if (typeof count === 'number') {
+      this.totalBadge += count;
+      PushNotificationIOS.setApplicationIconBadgeNumber(this.totalBadge);
+    }
     if (!count) return null;
     return (<View pointerEvents={'none'} style={styles.notifCount}>
       <Text style={styles.notifText}>
@@ -35,6 +39,7 @@ class Footer extends Component {
   }
 
   renderTab(tab) {
+    this.totalBadge = 0;
     let user = this.props.auth.user;
     let currentTab = this.props.navigation.tabs.routes[this.props.navigation.tabs.index];
     let badge;
@@ -56,7 +61,7 @@ class Footer extends Component {
             style={[styles.footerImg]}
           />);
       }
-      title = <Percent fontSize={10} user={user} />;
+      title = <Percent fontSize={11} user={user} />;
       activeText = true;
     }
 
@@ -77,7 +82,7 @@ class Footer extends Component {
             {title}
           </View>
         </TouchableHighlight>
-          {this.renderBadge(badge)}
+        {this.renderBadge(badge)}
       </View>
     );
   }
@@ -149,6 +154,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: 2,
   },
   footerItemInner: {
     height: 27,
@@ -156,13 +162,13 @@ const localStyles = StyleSheet.create({
   },
   footerImg: {
     resizeMode: 'cover',
-    height: 24,
-    width: 24,
-    borderRadius: 12,
-    marginTop: 2,
+    height: 25,
+    width: 25,
+    borderRadius: 12.5,
+    marginTop: -2,
   },
   icon: {
-    fontSize: 18
+    fontSize: 20
   },
   activeIcon: {
     // fontSize: 20
@@ -189,7 +195,7 @@ const localStyles = StyleSheet.create({
   },
   footerText: {
     paddingTop: 0,
-    fontSize: 10,
+    fontSize: 11,
     opacity: 0.7
   },
   footerTextActive: {

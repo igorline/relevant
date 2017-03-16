@@ -86,6 +86,7 @@ class ProfileComponent extends Component {
     let relevanceEl = null;
     let topTags;
     let topCat;
+    let online;
 
     if (this.props.user) {
       user = this.props.user;
@@ -131,8 +132,8 @@ class ProfileComponent extends Component {
 
     let balanceEl = (
       <View style={[styles.profileRowContainer]}>
-        <Text style={[styles.font14, { lineHeight: 15 }, styles.bebasNoMargin]}>
-          <Text style={[styles.font14, styles.darkGray, styles.georgia, styles.profileColumn]}>
+        <Text style={[styles.font14, { lineHeight: 15 }]}>
+          <Text style={[styles.font12, styles.darkGray, styles.profileColumn]}>
             Coins: 
           </Text>
           <Image
@@ -140,7 +141,7 @@ class ProfileComponent extends Component {
             source={require('../assets/images/relevantcoin.png')}
           />
           <Text style={styles.bebasBold}>
-            {numbers.abbreviateNumber(balance)}
+            {numbers.abbreviateNumber(balance) || 0}
           </Text>
         </Text>
       </View>
@@ -172,9 +173,11 @@ class ProfileComponent extends Component {
     if (topTags) {
       bottomSection = (
         <View style={{ padding: 0 }}>
-          <Text style={[styles.font14, styles.darkGray, styles.georgia]}>
+          <Text style={[styles.font12, styles.darkGray]}>
             <Text>{user.topTags.length ? 'Expertise: ' : null}</Text>
-            {topTags}
+            <Text style={[styles.font14, styles.georgia]}>
+              {topTags}
+            </Text>
           </Text>
         </View>
       );
@@ -216,16 +219,16 @@ class ProfileComponent extends Component {
             </View>
             <View style={[styles.profileRowContainer]}>
               <View style={[styles.profileRow, fullWidth <= 320 ? { flexDirection: 'column' } : null]}>
-                <Text style={[styles.font12, styles.darkGray, styles.georgia, styles.profileColumn]}>
-                  Subscribers: <Text style={[styles.bebasBold]}>{followers}</Text>
+                <Text style={[styles.font12, styles.darkGray, styles.profileColumn]}>
+                  Subscribers: <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(followers)}</Text>
                 </Text>
-                <Text style={[styles.font12, styles.darkGray, styles.georgia, styles.profileColumn]}>
-                  Subscribed to: <Text style={[styles.bebasBold]}>{following}</Text>
+                <Text style={[styles.font12, styles.darkGray, styles.profileColumn]}>
+                  Subscribed to: <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(following)}</Text>
                 </Text>
               </View>
             </View>
 
-            {/*balanceEl*/}
+            {balanceEl}
 
             <View style={[styles.profileRowContainer, styles.lastRow]}>
               {bottomSection}

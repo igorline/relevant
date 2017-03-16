@@ -17,13 +17,20 @@ class DiscoverUser extends Component {
   }
 
   setSelected() {
-    this.props.navigator.goToProfile(this.props.user);
+    this.props.actions.goToProfile(this.props.user);
   }
 
   render() {
     let user = this.props.user;
     let relevance = this.props.topic ? user[this.props.topic + '_relevance'] : user.relevance;
-    user = { ...user, relevance };
+
+    let statsUser = { ...user, relevance };
+    let stats = (<Stats
+      type={'percent'}
+      entity={statsUser}
+      renderLeft={this.props.topic + '  '}
+    />);
+    let right = this.props.renderRight ? this.props.renderRight() : stats;
 
     return (
       <TouchableHighlight
@@ -33,14 +40,11 @@ class DiscoverUser extends Component {
         <View style={[styles.discoverUser]}>
           <UserName
             big
-            relevance={false}
+            relevance={this.props.relevance}
             user={user}
             setSelected={this.setSelected}
           />
-          <Stats
-            type={'percent'}
-            entity={user}
-          />
+          {right}
         </View>
       </TouchableHighlight>
     );

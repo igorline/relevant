@@ -17,6 +17,7 @@ const initialState = {
   edit: false,
   postId: null,
   editPost: null,
+  keywords: [],
 };
 
 export default function createPost(state = initialState, action) {

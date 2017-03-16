@@ -5,11 +5,45 @@ const initialState = {
   investments: {},
   loaded: false,
   myInvestments: [],
-  myEarnings: {}
+  myEarnings: {},
+  posts: {},
+  loaded: {},
 };
 
 export default function investments(state = initialState, action) {
   switch (action.type) {
+
+    case types.LOADING_POST_INVESTMENTS: {
+      return {
+        ...state,
+        loaded: {
+          ...state.loaded,
+          [action.payload]: false,
+        }
+      };
+    }
+
+    case types.SET_POST_INVESTMENTS: {
+      let post = state.posts[action.payload.postId] || [];
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          [action.payload.postId]: [
+            ...post.slice(0, action.payload.index),
+            ...action.payload.data.result.investments,
+          ]
+        },
+        loaded: {
+          ...state.loaded,
+          [action.payload.postId]: true,
+        },
+        investments: {
+          ...state.investments,
+          ...action.payload.data.entities.investments
+        }
+      };
+    }
 
     case types.UNDO_POSTS_INVEST: {
       let index = state.myInvestments.indexOf(action.payload);

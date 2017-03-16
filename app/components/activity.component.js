@@ -45,21 +45,36 @@ export default function (props) {
   let renderRight = () => {
     if (singleActivity.type) {
       let amountEl = null;
-      return (<View style={styles.activityRight}>
+      return (<View style={styles.time}>
         {amountEl}
-        <Text style={[{ marginBottom: -2, fontSize: 11, color: '#B0B3B6', flex: 0.4, textAlign: 'right' }]}>{fromNow}</Text>
+        <Text style={[{ paddingHorizontal: 5, marginBottom: -6, fontSize: 11, color: '#B0B3B6', textAlign: 'center' }]}>{fromNow}</Text>
       </View>);
     }
     return null;
   };
 
   let renderName = (user) => {
+    // TODO depricated!
     if (!user && singleActivity.byUsers) {
       return <Text>{singleActivity.byUsers.length} users</Text>;
-    } else if (!user) return null;
+    }
+
+    if (!user && singleActivity.totalUsers) {
+      let s = '';
+      if (singleActivity.totalUsers > 1) s ='s';
+      return <Text>{singleActivity.totalUsers} user{s}</Text>;
+    }
+
+    if (user && singleActivity.totalUsers) {
+      let s = '';
+      if (singleActivity.totalUsers - 1 > 1) s ='s';
+      return <Text>{user.name} and {singleActivity.totalUsers - 1} other{s}</Text>;
+    }
+
     if (singleActivity.amount < 0) {
       return <Text>someone</Text>;
     }
+
     return (<Text style={styles.link} onPress={() => setSelected(user)}>
       {user.name}
     </Text>);
@@ -75,7 +90,7 @@ export default function (props) {
     // </Text>);
     let previewProps = { urlPreview: post, domain: post.domain };
     return (
-      <View style={{ marginLeft: 50, marginRight: 40, marginTop: -10 }}>
+      <View style={{ marginLeft: 50, marginRight: 10, marginTop: -10 }}>
         <UrlPreview
           onPress={() => goToPost(post)}
           size={'small'}
@@ -117,7 +132,7 @@ export default function (props) {
       case 'upvote':
         return (
           <Text>
-            {renderName(singleActivity.byUser)} upvoted your post ➩ your relevance increased by {amount}
+            {renderName(singleActivity.byUser)} upvoted your post ➩ you got a coin and your relevance increased by {amount}
           </Text>
         );
 
@@ -142,18 +157,17 @@ export default function (props) {
           </Text>
         );
 
-      // DEPRICATED
-      case 'partialEarning':
-        return (
-          <Text>
-            earned ${singleActivity.amount.toFixed(0)} from {renderName(singleActivity.byUser)}'s investment in post
-          </Text>
-        );
-
       case 'basicIncome':
         return (
           <Text>
-            your relevance is recovering! you got {amount} points because it was too low
+            You got {singleActivity.coin} extra coin{singleActivity.coin > 1 ? 's' : ''} so you can upvote more posts!
+          </Text>
+        );
+
+      case 'commentAlso':
+        return (
+          <Text>
+            &nbsp;also commented on a post
           </Text>
         );
 
@@ -192,42 +206,56 @@ export default function (props) {
   };
 
   let renderMiddle = () => {
+    let smallScreen = fullWidth <= 320 || false;
+    // smallScreen = true;
     let icon = require('../assets/images/rup.png');
     let color = { color: green };
+    let coin;
     if (singleActivity.amount < 0) {
       color = { color: 'red' };
       icon = require('../assets/images/rdown.png');
     }
+
+    if (singleActivity.coin) {
+      coin = (<Text allowFontScaling={false} style={[styles.bebas, color]}>
+        <Image
+          style={[styles.r, { height: 17, width: 22, marginBottom: 0, marginRight: 0 }]}
+          source={require('../assets/images/coinup.png')}
+        />
+        <Text style={{ lineHeight: 17, fontSize: 17 }}>
+          {Math.abs(numbers.abbreviateNumber(singleActivity.coin))}
+          { !smallScreen && singleActivity.amount ? <Text>{' • '}</Text> : null}
+        </Text>
+      </Text>);
+    }
+
     switch (singleActivity.type) {
       case 'upvote':
       case 'partialUpvote':
       case 'downvote':
       case 'partialDownvote':
         return (
-          <View style={[styles.activityMiddle]}>
+          <View style={[ smallScreen ? styles.activityMiddleSmall : styles.activityMiddle]}>
+            { coin }
+            {coin && smallScreen ?
+              <View style={styles.divide} /> : null
+            }
             <Text allowFontScaling={false} style={[styles.bebas, color]}>
               <Image
-                style={[styles.r, { height: 18, width: 28, marginBottom: 0, marginRight: 2 }]}
+                style={[styles.r, { height: 17, width: 19.5, marginBottom: 0, marginRight: 0 }]}
                 source={icon}
               />
               <Text style={{ lineHeight: 17, fontSize: 17 }}>
                 {Math.abs(numbers.abbreviateNumber(singleActivity.amount))}
               </Text>
             </Text>
+
           </View>
         );
       case 'basicIncome':
         return (
           <View style={[styles.activityMiddle]}>
-            <Text allowFontScaling={false} style={[styles.bebas, color]}>
-              <Image
-                style={[styles.r, { height: 18, width: 28, marginBottom: 0 }]}
-                source={require('../assets/images/rup.png')}
-              />
-              <Text style={{ lineHeight: 17, fontSize: 17 }}>
-                {singleActivity.amount}
-              </Text>
-            </Text>
+            {coin}
           </View>
         );
       default: return <View style={[styles.activityMiddle]} />;
@@ -240,7 +268,7 @@ export default function (props) {
       case 'upvote':
       case 'partialUpvote':
         return (
-          <View style={{ flex: 1 }}>
+          <View style={styles.activityLeft}>
             <View style={styles.activityLeft}>
               {singleActivity.byUser ? renderImage(singleActivity.byUser) :
                 (<Text allowFontScaling={false} style={styles.incomeEmoji}>
@@ -303,14 +331,27 @@ export default function (props) {
       <View style={[styles.singleActivity]}>
         {renderLeft()}
         {renderMiddle()}
-        {renderRight()}
       </View>
       {renderPost(singleActivity.post)}
+      <View style={styles.border}>
+        {renderRight()}
+      </View>
     </View>
   );
 }
 
 const localStyles = StyleSheet.create({
+  divide: {
+    width: 25,
+    margin: 2,
+  },
+  border: {
+    alignItems: 'center',
+    borderBottomColor: '#dddddd',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginHorizontal: 60,
+    marginBottom: 5,
+  },
   singleActivity: {
     padding: 10,
     width: fullWidth,
@@ -321,12 +362,20 @@ const localStyles = StyleSheet.create({
     overflow: 'visible',
     backgroundColor: 'white'
   },
+  activityMiddleSmall: {
+    flex: 0.16,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    marginLeft: 3,
+    marginBottom: -8,
+  },
   activityMiddle: {
     flex: 0.2,
     justifyContent: 'flex-end',
     alignItems: 'center',
     flexDirection: 'row',
     marginLeft: 5,
+    marginBottom: -8,
   },
   activityRight: {
     flex: 0.1,

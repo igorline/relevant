@@ -356,7 +356,7 @@ export function getUserPosts(skip, limit, userId) {
       method: 'GET',
       ...reqOptions(token)
     })
-    .then(utils.fetchError.handleErrors)
+    .then(utils.fetchUtils.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       let data = normalize(
@@ -505,7 +505,7 @@ export function createComment(token, commentObj) {
       method: 'POST',
       body: JSON.stringify(commentObj)
     })
-    .then(utils.fetchError.handleErrors)
+    .then(utils.fetchUtils.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       console.log(responseJSON);
@@ -529,7 +529,7 @@ export function getSelectedPost(postId) {
         ...reqOptions(token)
       })
     )
-    .then(utils.fetchError.handleErrors)
+    .then(utils.fetchUtils.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setSelectedPostData(responseJSON));
@@ -579,4 +579,25 @@ export function getFeedCount() {
     .then(response => response.json())
     .then(responseJSON => dispatch(setFeedCount(responseJSON.unread)))
     .catch(err => console.log('Notification count error', err));
+}
+
+export function setSubscriptions(data) {
+  return {
+    type: types.SET_SUBSCRIPTIONS,
+    payload: data,
+  };
+}
+
+export function getSubscriptions() {
+  return dispatch =>
+    utils.token.get()
+    .then(token =>
+      fetch(`${apiServer}subscription/user`, {
+        ...reqOptions(token),
+        method: 'GET'
+      })
+    )
+    .then(response => response.json())
+    .then(responseJSON => dispatch(setSubscriptions(responseJSON)))
+    .catch(err => console.log('Subscription error', err));
 }

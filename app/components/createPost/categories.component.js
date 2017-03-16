@@ -4,10 +4,14 @@ import {
   TextInput,
   KeyboardAvoidingView,
   AlertIOS,
+  Text,
+  StyleSheet,
 } from 'react-native';
 import { globalStyles } from '../../styles/global';
 import Tags from '../tags.component';
 import Topics from './topics.component';
+
+let styles;
 
 class Categories extends Component {
   constructor(props, context) {
@@ -93,7 +97,7 @@ class Categories extends Component {
       this.props.actions.setCreaPostState({ allTags: [...this.inputTags, ...this.selectedTags] });
     }
     let words = input.split(' ');
-    if (input[input.length - 1] !== ' ' && input[input.length - 1] !== ',') return null;
+    // if (input[input.length - 1] !== ' ' && input[input.length - 1] !== ',') return null;
     let tags = words.map((word) => {
       word = word.replace('#', '').replace(/(,|\.|!|\?)\s*$/, '').toLowerCase();
       if (word === '') return null;
@@ -101,7 +105,7 @@ class Categories extends Component {
     })
     .filter(el => el !== null);
     if (this.selectedTags.length + tags.length >= 7) {
-      return AlertIOS.alert('You can\'t selecte more than 7 tags');
+      return AlertIOS.alert('You can\'t selecte more than 7 topics');
     }
     this.inputTags = tags;
     this.props.actions.setCreaPostState({ allTags: [...this.inputTags, ...this.selectedTags] });
@@ -112,7 +116,7 @@ class Categories extends Component {
     let index = this.selectedTags.findIndex(t => t._id === tag);
     let indexInput = this.inputTags.findIndex(t => t._id === tag);
     if (tag.bodyTag) {
-      return AlertIOS.alert('text tag', 'You can remove this tag by going back and editing the body text');
+      return AlertIOS.alert('text tag', 'You can remove this topic by going back and editing the text');
     }
     if (index > -1) {
       this.selectedTags.splice(index, 1);
@@ -121,14 +125,15 @@ class Categories extends Component {
         return AlertIOS.alert('You can\'t selecte more than 7 tags');
       }
       this.selectedTags.push({ _id: tag });
-    } else {
-      this.setState({
-        input: this.state.input.replace(tag._id, '')
-        .trim()
-        .replace(/(^,)|(,$)/g, '')
-      });
-      setTimeout(() => this.processInput(this.state.input), 100);
     }
+    // else {
+      // this.setState({
+      //   input: this.state.input.replace(tag._id, '')
+      //   .trim()
+      //   .replace(/(^,)|(,$)/g, '')
+      // });
+      // setTimeout(() => this.processInput(this.state.input), 100);
+    // }
 
     this.props.actions.setCreaPostState({ allTags: [...this.inputTags, ...this.selectedTags] });
     this.forceUpdate();
@@ -139,12 +144,12 @@ class Categories extends Component {
     let categoryEl;
     let selectedTopic = this.selectedTopic;
 
-    let styles = globalStyles;
-
     let selectedTags = [...this.selectedTags, ...this.inputTags];
     let tags = [...this.inputTags, ...this.topicTags, ...this.tags];
 
     tags = [...new Set(tags.map(t => t._id))];
+
+    // <Text style={[styles.font10, styles.greyText, { padding: 10 }]}>Add these topics to your post</Text>
 
     let tagSelectionView = (
       <View >
@@ -157,10 +162,10 @@ class Categories extends Component {
           }
           onChangeText={input => this.processInput(input)}
           ref={(c) => { this.input = c; }}
-          style={[styles.font15, styles.categoryItem, { height: 50 }]}
+          style={[styles.font15, styles.topicInput]}
           value={this.state.input}
           multiline={false}
-          placeholder={'Post topics'}
+          placeholder={'Select additional topics or create your own'}
         />
         <Tags
           noReorder
@@ -195,4 +200,19 @@ class Categories extends Component {
   }
 }
 
+
+const localStyles = StyleSheet.create({
+  topicInput: {
+    height: 45,
+    padding: 10,
+  },
+  break: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'black',
+    marginHorizontal: 10,
+    marginBottom: 5,
+  }
+});
+
+styles = { ...localStyles, ...globalStyles };
 export default Categories;

@@ -4,7 +4,8 @@ import {
   RefreshControl,
   View,
   Text,
-  StyleSheet
+  StyleSheet,
+  Image
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import CustomSpinner from '../components/CustomSpinner.component';
@@ -113,23 +114,12 @@ export default class ActivityView extends Component {
     if (this.props.loaded) spinnerEl = null;
 
     if (this.props.loaded && !this.props.data.length) {
-      let linkEl = null;
-      if (this.props.parent === 'feed') {
-        linkEl = (<Text
-          style={[styles.georgia, styles.discoverLink, styles.quarterLetterSpacing]}
-          onPress={() => { this.props.actions.changeTab('discover'); }}
-        >
-          <Text style={styles.active}>Discover</Text>
-          &nbsp;the most relevant content & people
-        </Text>);
-      }
-      emptyEl = this.props.children || (
-      <EmptyList
+      emptyEl = (<EmptyList
         visible
         emoji={'😔'}
         type={type}
       >
-        {linkEl}
+        {this.props.children}
       </EmptyList>);
       if (this.props.parent !== 'profile') listEl = null;
     }
@@ -197,13 +187,6 @@ const localStyles = StyleSheet.create({
     width: 0,
     position: 'absolute'
   },
-  commonList: {
-  },
-  discoverLink: {
-    fontSize: 20,
-    textAlign: 'center',
-    marginTop: 20
-  }
 });
 
 styles = { ...localStyles, ...globalStyles };

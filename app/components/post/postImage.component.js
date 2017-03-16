@@ -78,7 +78,7 @@ class PostImage extends Component {
 
     return (
       <TouchableHighlight
-        style={{ flex: 1 }}
+        style={{ flex: 1, marginTop: 25 }}
         underlayColor={'transparent'}
         onPress={link ? () => this.openLink(link) : null}
       >
@@ -129,7 +129,6 @@ const localStyles = StyleSheet.create({
     alignItems: 'stretch',
     flexDirection: 'column',
     justifyContent: 'center',
-    marginTop: 25,
     backgroundColor: 'white',
   },
 });

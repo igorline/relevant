@@ -124,14 +124,25 @@ class PostButtons extends Component {
     .then((results) => {
       if (results) {
         this.props.actions.triggerAnimation('invest');
-        if (!this.props.posts.feed.length) {
-          this.props.navigator.reloadTab('read');
-        }
         setTimeout(() => {
+          this.props.navigator.reloadTab('read');
           let name = this.props.post.embeddedUser.name;
+          // let title = 'New subscripion!';
+          // if (results.subscription.amount > 3 ) {
+          //   title = 'Subscription increase';
+          // }
           Alert.alert('You have subscribed to receive ' + results.subscription.amount + ' posts from ' + name);
         }, 1500);
       }
+    })
+    .catch(err => {
+      let text1 = err.message;
+      let text2;
+      if (text1.match('coin')) {
+        text1 = 'Oops';
+        text2 = 'Looks like you ran out of coins, but don\'t worry, you\'ll get more tomorrow';
+      }
+      Alert.alert(text1, text2);
     });
   }
 

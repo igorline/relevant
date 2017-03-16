@@ -12,6 +12,7 @@ import { globalStyles } from '../../styles/global';
 import CommentEditing from './commentEditing.component';
 import UserName from '../userNameSmall.component';
 import { numbers } from '../../utils';
+import TextBody from './textBody.component';
 
 let moment = require('moment');
 
@@ -243,7 +244,11 @@ class Comment extends Component {
           <Text style={[{ fontSize: 12 }, styles.timestampGray]}>{timestamp}</Text>
         </View>
         <View style={{ paddingLeft: 33, paddingRight: 10 }}>
-          {bodyEl}
+          <TextBody
+            post={comment}
+            body={comment.text}
+            {...this.props}
+          />
           {editingEl}
         </View>
         {optionsEl}

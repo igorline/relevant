@@ -18,6 +18,7 @@ import Profile from './profile.container';
 import Card from './../components/nav/card.component';
 import * as navigationActions from '../actions/navigation.actions';
 import * as tagActions from '../actions/tag.actions';
+import PostPeople from '../components/post/people.container';
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
@@ -78,6 +79,9 @@ class CardContainer extends Component {
 
       case 'profile':
         return <Profile navigator={this.props.actions} scene={props.scene.route} />;
+
+      case 'people':
+        return <PostPeople scene={props.scene.route} />;
 
       default:
         return this.getDefaultComponent(props);

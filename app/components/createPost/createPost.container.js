@@ -190,7 +190,8 @@ class CreatePostContainer extends Component {
       image: this.image,
       mentions: props.bodyMentions,
       investments: [],
-      domain: props.domain
+      domain: props.domain,
+      keywords: props.keywords,
     };
 
     this.props.actions.submitPost(postBody, this.props.auth.token)
