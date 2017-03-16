@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "startWeb": "node server/index.js",
+    "startApp": "node node_modules/react-native/local-cli/cli.js start",
+    "start": "node server/index.js",
     "dev": "nodemon server/index.js",
     "build": "webpack --config ./webpack.production.config.js --progress --colors -p",
     "build-dev": "webpack --config ./webpack.config.js --progress --colors -p",
