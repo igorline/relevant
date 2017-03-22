@@ -67,6 +67,7 @@ export default class ActivityView extends Component {
 
   shouldComponentUpdate(next) {
     if (!this.props.active && !next.active) return false;
+    // console.log('render list ', this.props.view);
     return true;
   }
 
@@ -130,7 +131,7 @@ export default class ActivityView extends Component {
         enableEmptySections
         removeClippedSubviews
         pageSize={1}
-        initialListSize={10}
+        initialListSize={3}
         scrollEventThrottle={10}
         automaticallyAdjustContentInsets={false}
         stickyHeaderIndices={this.props.stickyHeaderIndices}

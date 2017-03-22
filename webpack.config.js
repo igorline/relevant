@@ -30,7 +30,8 @@ module.exports = {
         BROWSER: JSON.stringify(true),
         DEVTOOLS: JSON.stringify(true),  // <-------- DISABLE redux-devtools HERE
         NODE_ENV: JSON.stringify('development'),
-        WEB: JSON.stringify(true)
+        WEB: JSON.stringify('true'),
+        API_SERVER: JSON.stringify('')
       }
     })
   ],

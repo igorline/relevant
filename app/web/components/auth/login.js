@@ -18,12 +18,6 @@ class LoginForm extends Component {
     this.setState({ [field]: data });
   }
 
-  componentWillUpdate(newProps, newState) {
-    // if (newState !== this.state) {
-    //   this.validate(newState);
-    // }
-  }
-
   submit() {
     if (!this.state.username) {
       alert('username requied');
@@ -67,6 +61,9 @@ class LoginForm extends Component {
         or
         {' '}
         <Link to="/signup">Sign up</Link>
+        <a href="/auth/facebook">Log in with facebook</a>
+        {' '}
+        <a href="/auth/twitter">Log in with twitter</a>
       </div>
     );
   }

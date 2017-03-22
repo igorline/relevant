@@ -2,9 +2,9 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from '../reducers';
 
-// window.navigator.userAgent = 'react-native';
+window.navigator.userAgent = 'react-native';
 
-require('../publicenv');
+// require('../publicenv');
 
 export default function configureStore() {
 

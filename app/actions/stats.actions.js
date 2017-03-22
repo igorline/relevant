@@ -1,8 +1,9 @@
 import * as types from './actionTypes';
-require('../publicenv');
+// require('../publicenv');
 import * as utils from '../utils';
 import * as authActions from './auth.actions';
 
+utils.fetchUtils.env();
 
 export function getAllStats() {
   return (dispatch) => {

@@ -86,7 +86,6 @@ class ProfileComponent extends Component {
     let relevanceEl = null;
     let topTags;
     let topCat;
-    let online;
 
     if (this.props.user) {
       user = this.props.user;
@@ -137,10 +136,10 @@ class ProfileComponent extends Component {
             Coins: 
           </Text>
           <Image
-            style={[styles.coin, { width: 17, height: 12, marginBottom: -1 }]}
+            style={[styles.coin, { width: 17, height: 12, marginBottom: -4 }]}
             source={require('../assets/images/relevantcoin.png')}
           />
-          <Text style={styles.bebasBold}>
+          <Text style={[styles.font12, styles.bebasBold]}>
             {numbers.abbreviateNumber(balance) || 0}
           </Text>
         </Text>
@@ -153,7 +152,7 @@ class ProfileComponent extends Component {
       <View style={[styles.profileRow, styles.profileRowContainer]}>
         <Text
           // onPress={() => this.toggleTooltip()}
-          style={[styles.profileBig, { lineHeight: 26 }, styles.bebasNoMargin, { flex : 1 }]}
+          style={[styles.profileBig, styles.bebasNoMargin, { flex : 1 }]}
         >
           <Image
             style={[styles.r, { width: 25, height: 23 }]}
@@ -275,7 +274,7 @@ let localStyles = StyleSheet.create({
   profileBig: {
     marginTop: 3,
     fontSize: 26,
-    lineHeight: 27,
+    lineHeight: 26,
   }
 });
 

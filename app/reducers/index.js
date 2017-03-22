@@ -18,8 +18,7 @@ import subscriptions from './subscriptions';
 
 let navigation = {};
 let routing = {};
-if (!process.env.WEB) {
-  console.log('web ', process.env.WEB);
+if (process.env.WEB != 'true') {
   navigation = require('./navigation').default;
 } else {
   routing = require('react-router-redux').routerReducer;

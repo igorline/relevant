@@ -16,7 +16,7 @@ import * as navigationActions from '../actions/navigation.actions';
 import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import CreatePost from '../components/createPost/createPost.container';
-import Auth from './auth.container';
+import Auth from '../components/auth/auth.container';
 import * as utils from '../utils';
 
 import { fullWidth, fullHeight } from '../styles/global';

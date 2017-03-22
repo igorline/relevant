@@ -75,7 +75,7 @@ class TopicsAdmin extends Component {
           value={this.state.emoji}
           onChange={this.handleChange}
         />
-        <input type="Submit" value="Add new category" onClick={() => this.newTag()} />
+        <button onClick={() => this.newTag()} >Add new category</button>
         {tags.map(tag => {
           if (!tag.newId) tag.newId = tag._id;
           if (tag.main && typeof tag.main !== 'string') {
@@ -148,7 +148,7 @@ export default connect(
   state => {
     return {
       auth: state.auth,
-      tags: state.tag
+      tags: state.tags
     };
   },
   dispatch => {

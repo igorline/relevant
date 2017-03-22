@@ -46,6 +46,7 @@ export const DESELECT_TAG = 'DESELECT_TAG';
 export const SELECT_TAG = 'SELECT_TAG';
 export const SET_PARENT_TAGS = 'SET_PARENT_TAGS';
 export const SET_DISCOVER_TAGS = 'SET_DISCOVER_TAGS';
+export const UPDATE_PARENT_TAG = 'UPDATE_PARENT_TAG';
 
 export const SET_ACTIVITY = 'SET_ACTIVITY';
 export const SET_COUNT = 'SET_COUNT';

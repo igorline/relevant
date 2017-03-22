@@ -60,7 +60,7 @@ class PostImage extends Component {
     }
 
     let imageEl;
-    if (image) {
+    if (image && !image.match('.gif')) {
       imageEl = (<View style={{ flex: 1, overflow: 'hidden' }}>
         <Image style={[styles.postImage]} source={image ? { uri: image } : require('../../assets/images/missing.png')} />
 

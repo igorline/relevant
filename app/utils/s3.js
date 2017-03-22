@@ -1,4 +1,4 @@
-require('../publicenv');
+require('./fetchUtils').env();
 
 export
 function toS3Advanced(uri) {

@@ -502,6 +502,14 @@ const layout = StyleSheet.create({
     marginRight: 5,
     resizeMode: 'cover',
   },
+  close: {
+    position: 'absolute',
+    width: 10,
+    height: 10,
+    top: 7,
+    right: 5,
+    resizeMode: 'contain'
+  }
 });
 
 const globalStyles = { ...colors, ...font, ...alignment, ...layout };

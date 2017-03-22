@@ -5,7 +5,8 @@ import {
 import * as types from './actionTypes';
 import * as utils from '../utils';
 
-require('../publicenv');
+// require('../publicenv');
+utils.fetchUtils.env();
 
 let apiServer = process.env.API_SERVER + '/api/';
 

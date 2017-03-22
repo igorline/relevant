@@ -3,10 +3,10 @@ import thunk from 'redux-thunk';
 import createSocketIoMiddleware from 'redux-socket.io';
 import rootReducer from '../reducers';
 
-// window.navigator.userAgent = 'react-native';
+window.navigator.userAgent = 'react-native';
 const io = require('socket.io-client/socket.io');
 
-require('../publicenv');
+// require('../publicenv');
 
 let socket = io(process.env.API_SERVER, {
   transports: ['websocket'],

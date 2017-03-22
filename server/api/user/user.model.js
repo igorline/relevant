@@ -35,6 +35,10 @@ const UserSchema = new Schema({
   investmentCount: { type: Number, default: 0 },
   onboarding: { type: Number, default: 0 },
   lastFeedNotification: { type: Date, default: new Date(0) },
+  confirmed: { type: Boolean, default: false },
+  confirmCode: { tyep: String, select: false },
+  resetPasswordToken: { type: String, select: false },
+  resetPasswordExpires: { type: Date, select: false }
 });
 
 UserSchema.index({ name: 'text' });

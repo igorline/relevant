@@ -32,6 +32,7 @@ class PostPeople extends Component {
     this.postId = this.props.scene.id;
     this.onInteraction = InteractionManager.runAfterInteractions(() => {
       this.loading = false;
+      this.load();
       this.forceUpdate();
     });
   }

@@ -115,7 +115,6 @@ class Auth extends Component {
   render() {
     const { isAuthenticated } = this.props.auth;
 
-
     // <ListView
     //   horizontal
     //   scrollEnabled

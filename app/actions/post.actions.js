@@ -8,8 +8,7 @@ import * as utils from '../utils';
 import * as errorActions from './error.actions';
 import * as navigationActions from './navigation.actions';
 
-require('../publicenv');
-
+utils.fetchUtils.env();
 const apiServer = process.env.API_SERVER + '/api/';
 
 const commentSchema = new schema.Entity('comments',

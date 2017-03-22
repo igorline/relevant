@@ -1,7 +1,5 @@
 import * as types from './actionTypes';
 
-require('../publicenv');
-
 export function triggerAnimation(type, amount) {
   return {
     type: types.SET_ANIMATION,
@@ -11,10 +9,4 @@ export function triggerAnimation(type, amount) {
     }
   };
 }
-
-// export function triggerAnimation(type) {
-//   return (dispatch) => {
-//     dispatch(setAnimation(type));
-//   };
-// }
 

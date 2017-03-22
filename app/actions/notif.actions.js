@@ -1,10 +1,10 @@
 import * as types from './actionTypes';
 import * as errorActions from './error.actions';
-import { token as tokenUtil } from '../utils';
+import * as utils from '../utils';
 import * as authActions from './auth.actions';
 
-require('../publicenv');
-
+// require('../publicenv');
+utils.fetchUtils.env();
 const apiServer = `${process.env.API_SERVER}/api/notification`;
 
 const reqOptions = (token) => {
@@ -53,7 +53,7 @@ export
 function getActivity(skip) {
   let type = 'personal';
   return dispatch =>
-    tokenUtil.get()
+    utils.token.get()
     .then(token =>
       fetch(`${apiServer}?skip=${skip}`, {
         ...reqOptions(token),
@@ -73,7 +73,7 @@ function getActivity(skip) {
 
 export function markRead() {
   return dispatch =>
-    tokenUtil.get()
+    utils.token.get()
     .then(token =>
       fetch(`${apiServer}/markread`, {
         ...reqOptions(token),
@@ -92,7 +92,7 @@ export function markRead() {
 
 export function createNotification(obj) {
   return () =>
-    tokenUtil.get()
+    utils.token.get()
     .then(token =>
       fetch(`${apiServer}`, {
         ...reqOptions(token),
@@ -106,7 +106,7 @@ export function createNotification(obj) {
 
 export function getNotificationCount() {
   return dispatch =>
-    tokenUtil.get()
+    utils.token.get()
     .then(token =>
       fetch(`${apiServer}/unread`, {
         ...reqOptions(token),
