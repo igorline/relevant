@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Auth from './auth.container';
+import Auth from '../components/auth/auth.container';
 import CreatePostContainer from '../components/createPost/createPost.container';
 import Footer from './footer.container';
 import ErrorContainer from './error.container';

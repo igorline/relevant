@@ -102,9 +102,11 @@ class Discover extends Component {
   shouldComponentUpdate(next) {
     let tab = next.tabs.routes[next.tabs.index];
     if (tab.key !== 'discover' && !next.scene) return false;
-    // if (next.nav.index > 0) return false;
-    // console.log(next);
-    // console.log('updating discover');
+
+    let currentScene = this.props.nav.routes[this.props.nav.index];
+    if (this.props.scene && currentScene !== this.props.scene) return false;
+
+    // console.log('updating discover ', this.topic);
     // for (let p in next) {
     //   if (next[p] !== this.props[p]) {
     //     console.log(p);
@@ -113,7 +115,6 @@ class Discover extends Component {
     //     }
     //   }
     // }
-
     return true;
   }
 
@@ -332,7 +333,7 @@ class Discover extends Component {
           }}
           contentProps={{
             bounces: false,
-            forceSetResponder: () => {
+            forceSetResponder: (e) => {
               this.props.actions.scrolling(true);
               clearTimeout(this.scrollTimeout);
               this.scrollTimeout = setTimeout(
@@ -380,6 +381,7 @@ function mapStateToProps(state) {
     userList: state.user.list,
     tags: state.tags,
     error: state.error.discover,
+    nav: state.navigation.discover,
     refresh: state.navigation.discover.refresh,
     reload: state.navigation.discover.reload,
     tabs: state.navigation.tabs,

@@ -65,15 +65,16 @@ class PostBody extends Component {
 
     let upvotes;
 
-    if (post.upVotes && !this.props.short && !this.props.repost) {
+    if ((post.downVotes || post.upVotes) && !this.props.short && !this.props.repost) {
       let r = Math.round(post.relevance);
       upvotes = (
         <Text
           onPress={this.showInvestors}
-          style={[styles.font12, styles.greyText, { paddingTop: 5 }]}>
-          {post.upVotes} upvote{post.upVotes > 1 ? 's' : ''}
-          {post.downVotes ? ' • ' + post.downVotes + ' downvote' + (post.downVotes > 1 ? 's' : '') : ''}
-          {' • ' + r + ' relevant point' + (r > 1 ? 's' : '')}
+          style={[styles.font12, styles.greyText, { paddingTop: 5 }]}
+        >
+          {post.upVotes ? post.upVotes + ' upvote' + (post.upVotes > 1 ? 's' : '') + ' • ' : null}
+          {post.downVotes ? post.downVotes + ' downvote' + (post.downVotes > 1 ? 's' : '') + ' • ' : ''}
+          {r + ' relevant point' + (Math.abs(r) > 1 ? 's' : '')}
         </Text>
       );
     }

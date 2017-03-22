@@ -67,7 +67,6 @@ class Profile extends Component {
       this.loaded = true;
       this.userId = this.props.auth.user._id;
       this.userData = this.props.users[this.userId];
-      console.log(this.userData);
       this.setState({});
     }
   }

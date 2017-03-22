@@ -1,9 +1,11 @@
 import * as types from './actionTypes';
 import * as utils from '../utils';
 
-require('../publicenv');
+utils.fetchUtils.env();
 
-const reqOptions = (token) => {
+const reqOptions = async () => {
+  let token = await utils.token.get();
+  console.log('get token ', token);
   return {
     credentials: 'include',
     headers: {
@@ -14,8 +16,50 @@ const reqOptions = (token) => {
   };
 };
 
+export function setDiscoverTags(data) {
+  return {
+    type: types.SET_DISCOVER_TAGS,
+    payload: data
+  };
+}
+
+// export function goToTag(tag) {
+//   return (dispatch) => {
+//     dispatch(setTag(tag));
+//   };
+// }
+
+export function selectTag(tag) {
+  return {
+    type: 'SELECT_TAG',
+    payload: tag
+  };
+}
+
+export function deselectTag(tag) {
+  return {
+    type: 'DESELECT_TAG',
+    payload: tag
+  };
+}
+
+export function updateParentTag(tag) {
+  return {
+    type: types.UPDATE_PARENT_TAG,
+    payload: tag
+  };
+}
+
+
+export function setParentTags(data) {
+  return {
+    type: types.SET_PARENT_TAGS,
+    payload: data
+  };
+}
+
 export function getDiscoverTags() {
-  return function(dispatch) {
+  return dispatch => {
     fetch(process.env.API_SERVER + '/api/tag?sort=count', {
       credentials: 'include',
       method: 'GET',
@@ -35,34 +79,6 @@ export function getDiscoverTags() {
   };
 }
 
-
-export function setDiscoverTags(data) {
-  return {
-    type: types.SET_DISCOVER_TAGS,
-    payload: data
-  };
-}
-
-export function goToTag(tag) {
-  return function(dispatch) {
-    dispatch(setTag(tag));
-  };
-}
-
-export function selectTag(tag) {
-  return {
-    type: 'SELECT_TAG',
-    payload: tag
-  };
-}
-
-export function deselectTag(tag) {
-  return {
-    type: 'DESELECT_TAG',
-    payload: tag
-  };
-}
-
 export function searchTags(tag) {
   return (dispatch) => {
     if (!tag || tag === '') {
@@ -72,7 +88,7 @@ export function searchTags(tag) {
       credentials: 'include',
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
       },
     })
@@ -86,50 +102,48 @@ export function searchTags(tag) {
   };
 }
 
-export function createTag(token, tagObj) {
-  return function(dispatch) {
-    return fetch(process.env.API_SERVER+'/api/tag?access_token='+token, {
-      credentials: 'include',
+export function createTag(tag) {
+  return async dispatch =>
+    fetch(process.env.API_SERVER + '/api/tag', {
+      ...await reqOptions(),
       method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(tagObj)
+      body: JSON.stringify(tag)
     })
     .then((response) => response.json())
     .then((responseJSON) => {
-      return {status: true, data: responseJSON}
+      dispatch(setParentTags([responseJSON]));
     })
     .catch((error) => {
-      return {status: false, data: error};
+      console.log('error creating tag ', error);
+      return { status: false, data: error };
     });
-  };
 }
 
-export function setParentTags(data) {
-  return {
-    type: types.SET_PARENT_TAGS,
-    payload: data
-  };
+export function updateTag(tag) {
+  return async dispatch =>
+    fetch(process.env.API_SERVER + '/api/tag/categories', {
+      ...await reqOptions(),
+      method: 'PUT',
+      body: JSON.stringify(tag)
+    })
+    .then((response) => response.json())
+    .then((responseJSON) => {
+      dispatch(updateParentTag(responseJSON));
+    });
 }
 
 export function getParentTags() {
-  return function(dispatch) {
-    return fetch(process.env.API_SERVER + '/api/tag/categories?active', {
-      credentials: 'include',
+  return async (dispatch) => {
+    fetch(process.env.API_SERVER + '/api/tag/categories?active', {
       method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
+      ...await reqOptions()
     })
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setParentTags(responseJSON));
     })
     .catch((error) => {
-      console.log(error, 'parents error');
+      console.log('parents error', error);
     });
   };
 }

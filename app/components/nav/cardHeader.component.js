@@ -109,12 +109,16 @@ class CardHeader extends Component {
 
     if (key === 'discover' || component === 'discover') {
       titleAction = () => this.props.actions.toggleTopics();
-      action = (<Text style={[styles.arrow]}><Image
-        style={styles.arrow}
+      action = (<Text
+        style={[styles.arrow]}
         onPress={titleAction}
-        resizeMode={'contain'}
-        source={require('../../assets/images/downarrow.png')}
-      /></Text>);
+      >
+        <Image
+          style={styles.arrow}
+          resizeMode={'contain'}
+          source={require('../../assets/images/downarrow.png')}
+        />
+      </Text>);
     }
 
     if (title === 'Profile' && this.props.auth.user) {

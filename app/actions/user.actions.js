@@ -2,7 +2,7 @@ import * as utils from '../utils';
 import * as errorActions from './error.actions';
 import * as types from './actionTypes';
 
-require('../publicenv');
+utils.fetchUtils.env();
 
 const getOptions = {
   credentials: 'include',

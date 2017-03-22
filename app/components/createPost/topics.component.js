@@ -4,7 +4,8 @@ import {
   View,
   TouchableHighlight,
   InteractionManager,
-  ScrollView
+  ScrollView,
+  Image
 } from 'react-native';
 import { globalStyles } from '../../styles/global';
 
@@ -22,6 +23,12 @@ export default class Topics extends Component {
     let topics = this.props.topics.map((topic, i) => {
       let active = false;
       if (this.props.selectedTopic && topic._id === this.props.selectedTopic._id) active = true;
+      let x = (
+        <Image
+          style={styles.close}
+          source={require('../../assets/images/x.png')}
+        />
+      );
       return (
         <View
           key={i}
@@ -42,6 +49,7 @@ export default class Topics extends Component {
                 justifyContent: 'center' }}
             >
               <Text style={[active ? { color: 'white' } : null]} >{topic.emoji}{topic.categoryName}</Text>
+              {active ? x : null}
             </View>
           </TouchableHighlight>
           { active ? this.props.innerView : null }
@@ -51,7 +59,7 @@ export default class Topics extends Component {
 
     return (
       <ScrollView
-        centerContent
+        // centerContent={!this.props.selectedTopic}
         ref={c => this.scrollView = c}
         keyboardDismissMode={'interactive'}
         keyboardShouldPersistTaps={'always'}

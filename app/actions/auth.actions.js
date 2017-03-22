@@ -7,16 +7,23 @@ let rn = {};
 let PushNotificationIOS;
 let userDefaults;
 
-if (process.env.WEB != true) {
+utils.fetchUtils.env();
+
+if (process.env.WEB != 'true') {
   rn = require('react-native');
   PushNotificationIOS = rn.PushNotificationIOS;
-  userDefaults = require('react-native-user-defaults');
-};
+  userDefaults = require('react-native-user-defaults').default;
+}
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
-require('../publicenv');
 
-const reqOptions = (token) => {
+const reqOptions = async () => {
+  let token;
+  try {
+    token = await utils.token.get();
+  } catch (err) {
+    console.log('no token');
+  }
   return {
     credentials: 'include',
     headers: {
@@ -119,26 +126,22 @@ export function logoutAction(user) {
           payload: user._id
         });
       }
-      // dispatch(removeDeviceToken());
       dispatch(logout());
     });
   };
 }
 
 export function setOnboardingStep(step) {
-  return (dispatch) => {
-    utils.token.get()
-    .then(token =>
-      fetch(process.env.API_SERVER + '/api/user/onboarding/' + step, {
-        credentials: 'include',
-        method: 'GET',
-        ...reqOptions(token)
-      })
-      .then(response => response.json())
-      .then((responseJSON) => {
-        dispatch(updateAuthUser(responseJSON));
-      })
-    );
+  return async dispatch => {
+    fetch(process.env.API_SERVER + '/api/user/onboarding/' + step, {
+      credentials: 'include',
+      method: 'GET',
+      ...await reqOptions()
+    })
+    .then(response => response.json())
+    .then((responseJSON) => {
+      dispatch(updateAuthUser(responseJSON));
+    });
   };
 }
 
@@ -190,7 +193,7 @@ function userOnline(user, token) {
     .catch(error => {
       console.log(error, 'error');
     });
-  }
+  };
 }
 
 export
@@ -271,7 +274,9 @@ export function getUser(callback) {
       .then((responseJSON) => {
         dispatch(setUser(responseJSON));
         dispatch(setSelectedUserData(responseJSON));
-        dispatch(addDeviceToken(responseJSON, token));
+        if (process.env.WEB != 'true') {
+          dispatch(addDeviceToken(responseJSON, token));
+        }
         dispatch(errorActions.setError('universal', false));
         if (callback) callback(responseJSON);
       })
@@ -395,8 +400,8 @@ export function addDeviceToken(user, authToken) {
 }
 
 export function removeDeviceToken(auth) {
-  if (!auth) return;
-  return (dispatch) => {
+  if (!auth) return null;
+  return dispatch => {
     let user = auth.user;
     if (user.deviceTokens) {
       let index = user.deviceTokens.indexOf(auth.deviceToken);
@@ -410,16 +415,62 @@ export function removeDeviceToken(auth) {
         console.log('devicetoken not present');
       }
     }
-    // console.log('no device tokens');
-    // userDefaults.remove('devicetoken', APP_GROUP_ID)
-    // .then(data => {
-    //     console.log('removed devicetoken from userdefault')
-    // })
-    // .catch(err => {
-    //     if(err) console.log('remove devicetoken error', err);
-    // })
-    // console.log('abandonPermissions');
-    // PushNotificationIOS.abandonPermissions();
   };
 }
 
+export function sendConfirmation() {
+  return async dispatch =>
+    fetch(process.env.API_SERVER + '/api/user/sendConfirmation', {
+      method: 'GET',
+      ...await reqOptions()
+    })
+    .then(utils.fetchUtils.handleErrors)
+    .then(response => response.json())
+    .then((responseJSON) => {
+      return true;
+    })
+    .catch(err => {
+      AlertIOS.alert('Error sending email, please try again');
+      console.log(err);
+      return false;
+    });
+}
+
+export function forgotPassword(user) {
+  return async dispatch =>
+    fetch(process.env.API_SERVER + '/api/user/forgot', {
+      method: 'PUT',
+      ...await reqOptions(),
+      body: JSON.stringify({ user })
+    })
+    .then(utils.fetchUtils.handleErrors)
+    .then(response => response.json())
+    .then((responseJSON) => {
+      return responseJSON;
+    })
+    .catch(err => {
+      AlertIOS.alert(err.message);
+      console.log(err);
+      return false;
+    });
+}
+
+export function resetPassword(password, token) {
+  return async dispatch =>
+    fetch(process.env.API_SERVER + '/api/user/resetPassword', {
+      method: 'PUT',
+      ...await reqOptions(),
+      body: JSON.stringify({ password, token })
+    })
+    .then(utils.fetchUtils.handleErrors)
+    .then(response => response.json())
+    .then((responseJSON) => {
+      AlertIOS.alert('Your password has been updated!');
+      return true;
+    })
+    .catch(err => {
+      AlertIOS.alert(err.message);
+      console.log(err);
+      return false;
+    });
+}

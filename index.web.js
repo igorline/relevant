@@ -23,6 +23,7 @@ const store = configureStore(initialState, browserHistory);
 const history = syncHistoryWithStore(browserHistory, store);
 
 clientDebug('rehydrating app');
+if (localStorage) localStorage.debug = '';
 
 render(
   <Provider store={store}>

@@ -85,13 +85,13 @@ export default class UrlPreviewComponent extends Component {
           onPress={this.props.onPress || this.previewMenu}
         >
           <View style={[styles.innerPreview]}>
-            {image}
-            <View style={{ flex: 0.6, padding: 5 }}>
+            {image ||  <View style={{ width: 5 }} />}
+            <View style={{ flex: 0.6, padding: 5, justifyContent: 'center' }}>
               <Text
                 numberOfLines={maxLines}
                 style={{ color: '#808080', fontSize }}
               >
-                {this.props.urlPreview.title}
+                {this.props.urlPreview.title.trim()}
               </Text>
               {domain}
             </View>

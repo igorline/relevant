@@ -57,7 +57,7 @@ class SignupForm extends Component {
       this.validate(newState);
     }
   }
-3
+
   submit() {
     if (!this.state.email) {
       alert('email required');
@@ -138,6 +138,9 @@ class SignupForm extends Component {
         or
         {' '}
         <Link to="/login">Log in</Link>
+        <a href="/auth/facebook">Log in with facebook</a>
+        {' '}
+        <a href="/auth/twitter">Log in with twitter</a>
       </div>
     );
   }

@@ -27,7 +27,6 @@ class Post extends Component {
     //     }
     //   }
     // }
-
     return true;
   }
 

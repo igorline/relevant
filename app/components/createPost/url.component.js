@@ -111,7 +111,7 @@ export default class UrlComponent extends Component {
         if (results.tags) {
           tags = results.tags.split(',');
         }
-        let keywords = results.tags.split(',');
+        let keywords = [...tags];
         let pKeywords = [];
         keywords.forEach(k => {
           pKeywords = [...k.trim().split(';'), ...pKeywords];

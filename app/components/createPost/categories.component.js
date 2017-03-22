@@ -39,7 +39,8 @@ class Categories extends Component {
 
       this.tags = props.articleTags.map((tag, i) => {
         let tagObj = { _id: tag };
-        if (i < 3) this.bodyTags.push(tagObj);
+        // this codes pre-selects first three tags
+        // if (i < 3) this.bodyTags.push(tagObj);
         return tagObj;
       });
       if (props.postCategory) this.setTopicTags(props.postCategory, true);
@@ -155,11 +156,11 @@ class Categories extends Component {
       <View >
         <TextInput
           autoCapitalize={'none'}
-          onFocus={() => this.topicsEl.tagsView.measure((fx, fy) => {
-            this.num = fy;
-            this.topicsEl.scrollView.scrollTo({ x: 0, y: this.num - 60, animated: true });
-          })
-          }
+          // onFocus={() => this.topicsEl.tagsView.measure((fx, fy) => {
+          //   this.num = fy;
+          //   this.topicsEl.scrollView.scrollTo({ x: 0, y: this.num - 60, animated: true });
+          // })
+          // }
           onChangeText={input => this.processInput(input)}
           ref={(c) => { this.input = c; }}
           style={[styles.font15, styles.topicInput]}
@@ -179,7 +180,7 @@ class Categories extends Component {
     if (this.props.tags) {
       categoryEl = (<Topics
         ref={c => this.topicsEl = c}
-        topics={this.props.tags}
+        topics={!selectedTopic ? this.props.tags : [selectedTopic]}
         selectedTopic={selectedTopic}
         innerView={tagSelectionView}
         action={this.setTopic}

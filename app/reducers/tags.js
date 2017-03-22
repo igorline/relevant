@@ -35,10 +35,26 @@ export default function tags(state = initialState, action) {
       };
     }
 
+    case types.UPDATE_PARENT_TAG: {
+      let index = state.parentTags.findIndex(tag => tag._id === action.payload._id);
+      return {
+        ...state,
+        parentTags: [
+          ...state.parentTags.slice(0, index),
+          action.payload,
+          ...state.parentTags.slice(index + 1)
+        ]
+      };
+    }
+
     case types.SET_PARENT_TAGS: {
-      return Object.assign({}, state, {
-        parentTags: action.payload,
-      });
+      return {
+        ...state,
+        parentTags: [
+          ...action.payload,
+          ...state.parentTags,
+        ]
+      };
     }
 
     case types.LOGOUT_USER: {

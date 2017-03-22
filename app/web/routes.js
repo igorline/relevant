@@ -3,7 +3,7 @@ import { push } from 'react-router-redux';
 import { UserAuthWrapper } from 'redux-auth-wrapper';
 import App from './components/app';
 import Home from './components/main/main.container';
-import Login from './components/auth/auth.container';
+import Auth from './components/auth/auth.container';
 // import ProfileContainer from './components/profile/profile.container';
 // import MessageContainer from './components/message/message.container';
 // import Posts from './components/post/post.container';
@@ -19,8 +19,6 @@ const userIsAuthenticated = UserAuthWrapper({
   wrapperDisplayName: 'UserIsAuthenticated' // a nice name for this auth check
 });
 
-// const connect = (fn) => (nextState, replaceState) => fn(store, nextState, replaceState);
-
 let routes = (store) => {
   const connect = (fn) => (nextState, replaceState) => fn(store, nextState, replaceState);
   return {
@@ -28,8 +26,8 @@ let routes = (store) => {
     component: App,
     indexRoute: { component: Home },
     childRoutes: [
-      { path: 'login', component: Login },
-      { path: 'signup', component: Login },
+      { path: 'login', component: Auth },
+      { path: 'signup', component: Auth },
       { path: 'home', component: Home },
       { path: 'topics', component: userIsAuthenticated(TopicsAdmin), onEnter: connect(userIsAuthenticated.onEnter) },
       // { path: 'profile', component: userIsAuthenticated(ProfileContainer), onEnter: connect(userIsAuthenticated.onEnter) },
@@ -39,6 +37,9 @@ let routes = (store) => {
       // { path: 'post/:id', component: Posts },
       // { path: 'discover', component: DiscoverContainer },
       // { path: 'discover/tag/:tag', component: DiscoverContainer },
+      { path: 'resetPassword/:token', component: Auth },
+      { path: 'confirm/:user/:code', component: Auth },
+      { path: 'forgot', component: Auth },
       { path: '*', component: NotFound }
     ]
   };

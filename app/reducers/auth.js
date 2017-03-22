@@ -8,6 +8,7 @@ const initialState = {
   user: null,
   deviceToken: null,
   preUser: null,
+  confirmed: true,
 };
 
 export default function auth(state = initialState, action) {
@@ -80,7 +81,7 @@ export default function auth(state = initialState, action) {
         isAuthenticating: false,
         isAuthenticated: action.payload ? true : false,
         user: action.payload,
-        preUser: null
+        preUser: null,
       };
 
     case types.UPDATE_AUTH_USER:

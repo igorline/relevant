@@ -1,0 +1,11 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "K529HW4PB8.org.reactjs.native.Relevant",
+                "paths": [ "*" ]
+            },
+        ]
+    }
+}

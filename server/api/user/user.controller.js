@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+import uuidV1 from 'uuid/v1';
+import crypto from 'crypto-promise';
 
 import User from './user.model';
 import Comment from '../comment/comment.model';
@@ -7,18 +9,119 @@ import config from '../../config/config';
 // import Treasury from '../treasury/treasury.model';
 // import Earnings from '../earnings/earnings.model';
 import Relevance from '../relevance/relevance.model';
+import mail from '../../mail';
+
+// mail.test();
 
 User.findOneAndUpdate({ _id: 'slava' }, { role: 'admin' }).exec();
 
 let validationError = (res, err) => {
   console.log(err);
-  return res.json(422, err);
+  return res.status(422).json(err);
 };
 
 function handleError(res, err) {
   console.log(err);
-  return res.send(500, err);
+  return res.status(500).json({ message: err.message });
 }
+
+async function sendConfirmation(user) {
+  let status;
+  try {
+    let url = `${process.env.API_SERVER}/confirm/${user._id}/${user.confirmCode}`;
+    let data = {
+      from: 'Relevant <noreply@mail.relevant.community>',
+      to: user.email,
+      subject: 'Email Confirmation',
+      html: `Navigate to this link to confirm your email address:
+      <br />
+      <br />
+      <a href="${url}" target="_blank">${url}</a>`
+    };
+    status = await mail.send(data);
+  } catch (err) {
+    throw err;
+  }
+  return status;
+}
+
+async function sendResetEmail(user) {
+  let status;
+  try {
+    let url = `${process.env.API_SERVER}/resetPassword/${user.resetPasswordToken}`;
+    let data = {
+      from: 'Relevant <noreply@mail.relevant.community>',
+      to: user.email,
+      subject: 'Reset Password',
+      html: `You are receiving this because you (or someone else) have requested the reset of the password for your account.<br />
+      Please click on the following link, or paste this into your browser to complete the process:<br/><br/>
+      ${url}<br/><br/>
+      If you did not request this, please ignore this email and your password will remain unchanged.`
+    };
+    status = await mail.send(data);
+  } catch (err) {
+    throw err;
+  }
+  return status;
+}
+
+exports.forgot = async (req, res) => {
+  let string = req.body.user;
+  let user;
+  let email;
+  try {
+    let query;
+    email = /^.+@.+\..+$/.test(string);
+    query = email ? { email: string } : { _id: string };
+    user = await User.findOne(query);
+    let rand = await crypto.randomBytes(32);
+    let token = rand.toString('hex');
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000;
+    user = await user.save();
+    await sendResetEmail(user);
+  } catch (err) {
+    let error = new Error('Couldn\'t find user with this name');
+    if (email) {
+      error = new Error('No user with this email exists');
+    }
+    handleError(res, error);
+  }
+  res.status(200).json({ email: user.email });
+};
+
+exports.confirm = async (req, res, next) => {
+  let user;
+  try {
+    let confirmCode = req.params.code;
+    let _id = req.params.user;
+    user = await User.findOne({ _id, confirmCode }, '+confirmCode +confirmed');
+    if (user) {
+      user.confirmed = true;
+      user = await user.save();
+    } else {
+      req.unconfirmed = true;
+    }
+  } catch (err) {
+    console.log('error confirmig code ', err);
+    next();
+  }
+  next();
+};
+
+exports.sendConfirmationCode = async (req, res) => {
+  let status;
+  try {
+    let user = req.user;
+    user.confirmCode = uuidV1();
+    user = await user.save();
+    status = await sendConfirmation(user);
+  } catch (err) {
+    return handleError(res, err);
+  }
+  console.log('status ', status);
+  res.status(200).json(status);
+};
 
 exports.onboarding = (req, res) => {
   let user = req.user._id;
@@ -29,10 +132,52 @@ exports.onboarding = (req, res) => {
     { projection: 'onboarding', new: true }
   )
   .then(newUser => {
-    console.log(newUser);
     res.status(200).json(newUser);
   })
   .catch(err => handleError(res, err));
+};
+
+/**
+ * Reset password
+ */
+exports.resetPassword = async (req, res) => {
+  try {
+    let token = req.body.token;
+    let user = await User.findOne({ resetPasswordToken: token });
+    if (!user) throw new Error('No user found');
+    let password = req.body.password;
+    if (user.resetPasswordExpires > Date.now()) {
+      throw new Error('Password reset time has expired');
+    }
+    user.password = password;
+    user = await user.save();
+    console.log('updated password');
+  } catch (err) {
+    handleError(res, err);
+  }
+  return res.status(200).json({ success: true });
+};
+
+
+/**
+ * Change a users password
+ */
+exports.changePassword = (req, res) => {
+  let userId = req.user._id;
+  let oldPass = String(req.body.oldPassword);
+  let newPass = String(req.body.newPassword);
+
+  User.findById(userId, (err, user) => {
+    if (user.authenticate(oldPass)) {
+      user.password = newPass;
+      user.save(saveErr => {
+        if (saveErr) return validationError(res, saveErr);
+        return res.sendStatus(200);
+      });
+    } else {
+      res.send(403);
+    }
+  });
 };
 
 exports.search = (req, res) => {
@@ -219,27 +364,6 @@ exports.destroy = (req, res) => {
   User.findByIdAndRemove(req.params.id, (err) => {
     if (err) return res.send(500, err);
     return res.sendStatus(204);
-  });
-};
-
-/**
- * Change a users password
- */
-exports.changePassword = (req, res) => {
-  let userId = req.user._id;
-  let oldPass = String(req.body.oldPassword);
-  let newPass = String(req.body.newPassword);
-
-  User.findById(userId, (err, user) => {
-    if (user.authenticate(oldPass)) {
-      user.password = newPass;
-      user.save(saveErr => {
-        if (saveErr) return validationError(res, saveErr);
-        return res.sendStatus(200);
-      });
-    } else {
-      res.send(403);
-    }
   });
 };
 

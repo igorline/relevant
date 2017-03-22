@@ -1,7 +1,16 @@
 import * as tokenUtil from './token';
 
+
+export function env() {
+  if (process.env.WEB != 'true') {
+    require('../publicenv');
+    return process.env;
+  }
+  return process.env;
+}
+
 export function Alert() {
-  if (process.env.WEB != true) {
+  if (process.env.WEB != 'true') {
     return require('react-native').AlertIOS;
   } else if (process.env.BROWSER) {
     return window;
@@ -27,11 +36,19 @@ export async function reqOptions() {
   };
 }
 
-export function handleErrors(response) {
+export async function handleErrors(response) {
   if (!response.ok) {
     console.log('error response', response);
-    throw Error(response.statusText);
-    return false;
+    let error = response.statusText;
+    try {
+      let json = await response.json();
+      if (json) {
+        error = json.message;
+        throw Error(error);
+      }
+    } catch (err) {
+      throw Error(error);
+    }
   }
   return response;
 }

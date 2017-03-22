@@ -11,20 +11,18 @@ import {
 } from 'react-native';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles } from '../../styles/global';
+import CustomSpinner from '../CustomSpinner.component';
 
-let localStyles;
 let styles;
 
-class Login extends Component {
+class Forgot extends Component {
   constructor(props, context) {
     super(props, context);
     this.back = this.back.bind(this);
-    this.login = this.login.bind(this);
+    this.forgotPassword = this.forgotPassword.bind(this);
     this.state = {
-      bool: false,
-      notifText: null,
       username: null,
-      password: null,
+      sendingEmail: false
     };
   }
 
@@ -32,20 +30,28 @@ class Login extends Component {
     this.props.actions.setAuthStatusText();
   }
 
-  login() {
-    if (!this.state.username) {
-      AlertIOS.alert('must enter username');
-      return;
-    }
+  async forgotPassword() {
+    try {
+      if (!this.state.username) {
+        AlertIOS.alert('must enter a username or password');
+        return;
+      }
 
-    if (!this.state.password) {
-      AlertIOS.alert('must enter password');
-      return;
+      this.userInput.blur();
+      dismissKeyboard();
+
+      this.setState({ sendingEmail: true });
+
+      let res = await this.props.actions.forgotPassword(this.state.username);
+      if (res && res.email) {
+        this.props.actions.pop('auth');
+        this.setState({ sendingEmail: false });
+        AlertIOS.alert('Success', `We have set an email to ${res.email}
+      with a link to reset your password.`);
+      }
+    } catch (err) {
+      console.log(err);
     }
-    this.userInput.blur();
-    this.passInput.blur();
-    dismissKeyboard();
-    this.props.actions.loginUser({ name: this.state.username, password: this.state.password });
   }
 
   back() {
@@ -53,8 +59,10 @@ class Login extends Component {
   }
 
   render() {
-    styles = { ...localStyles, ...globalStyles };
-
+    let spinner;
+    if (this.state.sendingEmail) {
+      spinner = <CustomSpinner />;
+    }
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
@@ -66,7 +74,6 @@ class Login extends Component {
           scrollEnabled={false}
           contentContainerStyle={styles.fieldsParent}
         >
-
           <View style={styles.fieldsInner}>
 
             <View style={styles.fieldsInputParent}>
@@ -76,50 +83,25 @@ class Login extends Component {
                 autoCapitalize={'none'}
                 // keyboardType={'email-address'}
                 clearTextOnFocus={false}
-                placeholder="username"
+                placeholder="username or email"
                 onChangeText={username => this.setState({ username })}
                 value={this.state.username}
                 style={styles.fieldsInput}
               />
             </View>
-
-            <View style={styles.fieldsInputParent}>
-              <TextInput
-                ref={c => this.passInput = c}
-                autoCapitalize={'none'}
-                autoCorrect={false}
-                secureTextEntry
-                keyboardType={'default'}
-                clearTextOnFocus={false}
-                placeholder="password"
-                onChangeText={password => this.setState({ password })}
-                value={this.state.password}
-                style={styles.fieldsInput}
-              />
-            </View>
-            <Text
-              onPress={() => this.props.actions.push({
-                key: 'forgot',
-                title: 'Forgot Pass',
-                back: true
-              }, 'auth')
-              }
-              style={[styles.active, styles.forgot]}
-            >
-              reset password
-            </Text>
-
           </View>
 
           <TouchableHighlight
-            onPress={this.login}
+            onPress={this.forgotPassword}
             underlayColor={'transparent'}
             style={[styles.largeButton]}
           >
             <Text style={styles.largeButtonText}>
-              sign in
+              Send Password Reset Link
             </Text>
           </TouchableHighlight>
+
+          {spinner}
 
         </ScrollView>
       </KeyboardAvoidingView>
@@ -127,16 +109,13 @@ class Login extends Component {
   }
 }
 
-Login.propTypes = {
+Forgot.propTypes = {
   actions: React.PropTypes.object,
 };
 
-localStyles = StyleSheet.create({
-  forgot: {
-    textAlign: 'center',
-    marginTop: 5
-  }
+let localStyles = StyleSheet.create({
 });
+styles = { ...localStyles, ...globalStyles };
 
 
-export default Login;
+export default Forgot;

@@ -217,14 +217,15 @@ export default function (props) {
     }
 
     if (singleActivity.coin) {
-      coin = (<Text allowFontScaling={false} style={[styles.bebas, color]}>
+      coin = (<Text allowFontScaling={false} style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
         <Image
-          style={[styles.r, { height: 17, width: 22, marginBottom: 0, marginRight: 0 }]}
+          style={[styles.r, { height: 15, width: 22, marginRight: 0 }]}
           source={require('../assets/images/coinup.png')}
         />
         <Text style={{ lineHeight: 17, fontSize: 17 }}>
           {Math.abs(numbers.abbreviateNumber(singleActivity.coin))}
-          { !smallScreen && singleActivity.amount ? <Text>{' • '}</Text> : null}
+          { !smallScreen && singleActivity.amount ?
+            <Text style={styles.darkGrey}>{'•'}</Text> : null}
         </Text>
       </Text>);
     }
@@ -240,9 +241,9 @@ export default function (props) {
             {coin && smallScreen ?
               <View style={styles.divide} /> : null
             }
-            <Text allowFontScaling={false} style={[styles.bebas, color]}>
+            <Text allowFontScaling={false} style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
               <Image
-                style={[styles.r, { height: 17, width: 19.5, marginBottom: 0, marginRight: 0 }]}
+                style={[styles.r, { height: 16, width: 20, marginRight: 0 }]}
                 source={icon}
               />
               <Text style={{ lineHeight: 17, fontSize: 17 }}>
@@ -367,7 +368,7 @@ const localStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-end',
     marginLeft: 3,
-    marginBottom: -8,
+    // marginBottom: -8,
   },
   activityMiddle: {
     flex: 0.2,
@@ -375,7 +376,7 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     marginLeft: 5,
-    marginBottom: -8,
+    // marginBottom: -8,
   },
   activityRight: {
     flex: 0.1,

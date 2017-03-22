@@ -1,13 +1,13 @@
 import handleRender from './render';
 import { currentUser } from './auth/auth.service';
+import userController from './api/user/user.controller';
 
 let express = require('express');
 
-let router = express.Router();
+// let router = express.Router();
 
-module.exports = function(app) {
-
-  //API
+module.exports = (app) => {
+  // API
   app.use('/api/user', require('./api/user'));
   app.use('/api/s3', require('./api/s3'));
   app.use('/auth', require('./auth'));
@@ -26,6 +26,8 @@ module.exports = function(app) {
   app.use('/api/earnings', require('./api/earnings'));
   app.use('/api/relevance', require('./api/relevance'));
   app.use('/api/treasury', require('./api/treasury'));
+
+  app.get('/confirm/:user/:code', userController.confirm);
 
   app.get('/*', currentUser(), handleRender);
 };

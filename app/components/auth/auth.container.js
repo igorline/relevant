@@ -5,14 +5,15 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Auth from '../components/auth/auth.component';
-import Login from '../components/auth/login.component';
-import SignUp from '../components/auth/signup.component';
-import ImageUpload from '../components/auth/imageUpload.component';
-import * as authActions from '../actions/auth.actions';
-import * as navigationActions from '../actions/navigation.actions';
-import Card from '../components/nav/card.component';
-import { globalStyles, localStyles } from '../styles/global';
+import Auth from './auth.component';
+import Login from './login.component';
+import SignUp from './signup.component';
+import ImageUpload from './imageUpload.component';
+import Forgot from './forgot.component';
+import * as authActions from '../../actions/auth.actions';
+import * as navigationActions from '../../actions/navigation.actions';
+import Card from '../nav/card.component';
+import { globalStyles, localStyles } from '../../styles/global';
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
@@ -45,6 +46,9 @@ class AuthContainer extends Component {
 
       case 'imageUpload':
         return <ImageUpload {...this.props} />;
+
+      case 'forgot':
+        return <Forgot {...this.props} />;
 
       default:
         return <Auth {...this.props} />;

@@ -1,0 +1,321 @@
+
+
+.phone {
+    position: absolute;
+    bottom: 0;
+    right: -7%;
+    z-index: 0;
+    width: 43%;
+    /*max-width: 25vw;*/
+    /*max-height: 80vh;*/
+}
+
+
+.loginBar {
+    height: 27px;
+    display: flex;
+    padding: 10px;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.loginBar a, .loginBar p {
+    font-family: Helvetica;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+.loginBar p {
+    color: #242425;
+    margin-right: 5px;
+}
+
+.loginText {
+  font-family: 'Helvetica Outline';
+  font-size: 44px;
+  color: #242425;
+  margin: 40px 0 10px 0;
+}
+
+.splashContainer {
+    background-color: #EDEDED;
+    min-height: 100vh;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.splashContent {
+    width: 80vw;
+    max-width: 1000px;
+    margin: auto;
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.splashContent .divider {
+    width: 100%;
+    align-self: center;
+    height: 8px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+.splashContent section {
+    display: flex;
+    z-index: 1;
+}
+
+.splashContent section:first-of-type {
+    flex: 0.4;
+    align-items: center;
+    align-self: center;
+}
+
+.splashContent section.header img {
+    object-fit: contain;
+}
+
+.splashContent section.body {
+    flex: 0.2;
+    width: 70%;
+    /*padding: 0 10vw;*/
+}
+
+.splashContent section.body p {
+    font-size: 42px;
+    margin: 42px 0 0 0;
+}
+
+.splashContent section.copyright {
+    flex: 0.3;
+    align-items: flex-end;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0 0vw 40px 0vw;
+}
+
+.splashContent section.form {
+    flex: 0.1;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0 0vw;
+}
+
+.splashContent section.invitation {
+    flex: 0.1;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0 0vw;
+}
+
+.splashContent section.invitation p {
+    font-family: Helvetica;
+    font-size: 18px;
+    font-weight: bold;
+    width: 300px;
+    line-height: 22px;
+    margin: 0;
+}
+
+
+.marqueeParent {
+    white-space: nowrap;
+    width: 100vw;
+    overflow: hidden;
+}
+
+.marqueeParent article {
+    padding: 5px;
+}
+
+.marqueeParent article section {
+    overflow: visible;
+    display: inline-block;
+}
+
+.marqueeParent article section div {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 40px 0 0; 
+}
+
+.marqueeParent article section div p {
+    display: inline-block;
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin: 4px 0 0 0;
+}
+
+.marqueeParent article section div p:first-of-type {
+    margin: 4px 10px 0 0;
+}
+
+.marqueeParent article section div p:nth-of-type(2) {
+    margin: 0 5px 0 0;
+    font-size: 12px;
+}
+
+.download {
+    border: 1px solid black;
+    display: inline-block;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px 12px 10px 8px;
+    margin: 0 0 0 10px;
+}
+
+.download span {
+    font-size: 16px;
+    margin: 6px 0 0 6px;
+    letter-spacing: 1px;
+}
+
+.download img {
+    height: 20px;
+}
+
+.r {
+    height: 22px;
+}
+
+.copyrightParent {
+    margin: 0 0 5px 5px;
+}
+
+.copyrightParent p {
+    margin: 0;
+    font-family: Helvetica;
+    font-size: 9px;
+    font-weight: bold;
+}
+
+.copyrightParent a {
+    text-decoration: underline;
+}
+
+@media only screen
+  and (min-device-width: 375px)
+  and (max-device-width: 736px) {
+
+    .splashContainer {
+        min-height: 0vh;
+        flex-grow: 1;
+    }
+
+    .splashContent .divider {
+        height: 4px;
+    }
+
+    .splashContent section.header {
+        flex: 0.1;
+    }
+
+    .splashContent section.header img {
+        width: 35vw;
+    }
+
+    .splashContent section.body {
+        flex: 0.3;
+    }
+
+    .splashContent  section.invitation {
+        flex: 0.1;
+    }
+
+    .splashContent section.invitation p {
+        font-size: 12px;
+        width: 150px;
+        line-height: 14px;
+    }
+
+        .splashContent  section.form {
+        flex: 0.1;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .splashContent section.copyright {
+        flex: 0.1;
+        padding: 0 10vw 10px 10vw;
+    }
+
+    .splashContent section.body p {
+        font-size: 21px;
+        margin: 21px 0 0 0;
+    }
+
+    .marqueeParent article {
+        padding: 5px;
+    }
+
+    .phone {
+        max-width: 75vw;
+    }
+
+    .marqueeParent article section div {
+        margin: 0 20px 0 0; 
+    }
+
+    .marqueeParent article section div p {
+        font-size: 11px;
+        letter-spacing: 0.5px;
+        margin: 2px 0 0 0;
+    }
+
+    .loginBar {
+        height: 37px;
+        padding: 5px;
+    }
+
+    .loginBar a, .loginBar p {
+        font-size: 11px;
+    }
+
+    .marqueeParent article section div p:first-of-type {
+        margin: 2px 5px 0 0;
+    }
+
+    .marqueeParent article section div p:nth-of-type(2) {
+        margin: 0 2.5px 0 0;
+        font-size: 6px;
+    }
+
+    .shadowButton {
+        display: flex;
+        width: 85px;
+        height: 20px;
+        z-index: 1;
+    }
+
+
+    .download {
+        padding: 5px 6px 5px 4px;
+        margin: 0 0 0 5px;
+    }
+
+    .download span {
+        margin: 3px 0 0 3px;
+        letter-spacing: 1px;
+    }
+
+    .download img {
+        height: 10px;
+    }
+
+    .r {
+        height: 22px;
+    }
+
+}

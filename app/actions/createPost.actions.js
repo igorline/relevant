@@ -1,7 +1,7 @@
 import * as types from './actionTypes';
+import * as utils from '../utils';
 
-require('../publicenv');
-
+utils.fetchUtils.env();
 const apiServer = process.env.API_SERVER + '/api/';
 
 export function setCreaPostState(state) {

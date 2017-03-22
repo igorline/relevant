@@ -1,10 +1,16 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as actionCreators from '../../../actions/auth.actions';
+import * as authActions from '../../../actions/auth.actions';
 import * as socketActions from '../../actions/socket';
-import LoginForm from "./login";
-import SignupForm from "./signup";
+import * as routerActions from 'react-router-redux';
+import LoginForm from './login';
+import SignupForm from './signup';
+import ConfirmEmail from './confirmEmail.component';
+import Forgot from './forgot.component';
+import ResetPassword from './resetPassword.component';
+
+let styles;
 
 export class Login extends Component {
 
@@ -20,13 +26,19 @@ export class Login extends Component {
     };
   }
 
+  componentWillReceiveProps(next) {
+    let redirectTo = this.props.location.query.redirect;
+    if (!this.props.auth.user && next.auth.user && redirectTo) {
+      this.props.actions.push(redirectTo);
+    }
+  }
+
   login(data) {
     let user = {
       name: data.username,
       password: data.password
     };
-    this.state.redirectTo = this.props.location.query.redirect || '/login';
-    this.props.actions.loginUser(user, this.state.redirectTo);
+    this.props.actions.loginUser(user);
   }
 
   signup(data) {
@@ -39,7 +51,7 @@ export class Login extends Component {
   }
 
   logout() {
-    this.props.actions.logout();
+    this.props.actions.logoutAction();
   }
 
   sendMessage() {
@@ -47,45 +59,56 @@ export class Login extends Component {
   }
 
   render() {
-    const { isAuthenticated, user, route } = this.props;
+    const { isAuthenticated, user, route, statusText } = this.props;
     let auth;
+    let confirm;
 
-    if (isAuthenticated) {
+    if (route.path === 'confirm/:user/:code') {
+      confirm = true;
+      auth = <ConfirmEmail {...this.props} />;
+    } else if (route.path === 'forgot') {
+      auth = <Forgot {...this.props} />;
+    } else if (isAuthenticated) {
       auth = <button onClick={() => this.logout()}>logout</button>;
     } else if (route.path === 'login') {
       auth = <LoginForm parentFunction={this.login} />;
     } else if (route.path === 'signup') {
       auth = <SignupForm parentFunction={this.signup} />;
+    } else if (route.path === 'resetPassword/:token') {
+      auth = <ResetPassword {...this.props} />;
     }
 
     return (
-      <div className="authContainer">
-        {this.props.user ? <div className="userInfo"> Logged in as {this.props.user.name}</div> : ''}
+      <div className="authContainer" style={styles.authContainer}>
+        {user && !confirm ? <div className="userInfo"> Logged in as {user.name}</div> : ''}
         {auth}
-        {this.props.statusText ? <div className="alert alert-info">{this.props.statusText}</div> : ''}
-        <br/>
-        <a href="/auth/facebook">Log in with facebook</a>
-        {' '}
-        <a href="/auth/twitter">Log in with twitter</a>
-        <button onClick={() => this.sendMessage()}>Send Message</button>
-        <div>{this.props.message}</div>
+        {statusText ? <div className="alert alert-info">{statusText}</div> : ''}
       </div>
     );
   }
 }
 
-// reactMixin(Login.prototype, LinkedStateMixin);
+styles = {
+  authContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginTop: '100px',
+    fontSize: '20px'
+  }
+};
 
 const mapStateToProps = (state) => ({
   isAuthenticating: state.auth.isAuthenticating,
   isAuthenticated: state.auth.isAuthenticated,
   statusText: state.auth.statusText,
   user: state.auth.user,
-  message: state.socket.message
+  message: state.socket.message,
+  auth: state.auth
 });
 
 const mapDispatchToProps = (dispatch) => ( Object.assign({}, { dispatch }, {
-  actions: bindActionCreators(Object.assign({}, actionCreators, socketActions), dispatch)
+  actions: bindActionCreators(Object.assign({}, authActions, socketActions, routerActions), dispatch)
 }));
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

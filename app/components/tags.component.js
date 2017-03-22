@@ -4,7 +4,7 @@ import {
   ScrollView,
   TouchableHighlight,
   View,
-  PanResponder
+  Image
 } from 'react-native';
 import { globalStyles } from '../styles/global';
 

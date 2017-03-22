@@ -17,10 +17,11 @@ prodConfig.entry = ['./index.web.js'];
 prodConfig.plugins = [
   new ExtractTextPlugin("styles.css"),
   new webpack.DefinePlugin({
-    "process.env":{
+    'process.env': {
       BROWSER: JSON.stringify(true),
       NODE_ENV: JSON.stringify('production'),
-      WEB: JSON.stringify(true)
+      WEB: JSON.stringify('true'),
+      API_SERVER: JSON.stringify('')
     }
   })
 ]
