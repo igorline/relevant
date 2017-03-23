@@ -7,8 +7,8 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>applinks:www.relevant.community</string>
-		<string>localhost:300</string>
-		<string>webcredentials:example.com</string>
+		<string>applinks:localhost:300</string>
+		<string>applinks:relevant.community</string>
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>

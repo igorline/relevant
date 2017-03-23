@@ -1,0 +1,134 @@
+import React, { Component } from 'react';
+import {
+  Text,
+  View,
+  TextInput,
+  TouchableHighlight,
+  AlertIOS,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+} from 'react-native';
+import { globalStyles, fullHeight } from '../../styles/global';
+import dismissKeyboard from 'react-native-dismiss-keyboard';
+
+let localStyles;
+let styles;
+
+class ResetPassword extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.back = this.back.bind(this);
+    this.validate = this.validate.bind(this);
+    this.state = {
+      message: '',
+      password: null,
+      cPassword: null,
+    };
+  }
+
+  componentDidMount() {
+    this.token = this.props.scene.route.token;
+  }
+
+  back() {
+    this.props.actions.pop(this.props.navigation.main);
+  }
+
+  validate() {
+    if (this.state.password) {
+      if (this.state.password !== this.state.cPassword) {
+        AlertIOS.alert("Passwords don't match");
+        return;
+      }
+    } else {
+      AlertIOS.alert('Password required');
+      return;
+    }
+    dismissKeyboard();
+    this.props.actions.resetPassword(this.state.password, this.token)
+    .then(success => {
+      if (success) {
+        this.props.actions.replaceRoute({
+          key: 'login',
+          component: 'login',
+          title: 'Login',
+          showBackButton: true,
+          back: true
+        }, 1, 'auth');
+      }
+    });
+  }
+
+  render() {
+    styles = { ...localStyles, ...globalStyles };
+
+    return (
+      <KeyboardAvoidingView
+        behavior={'padding'}
+        style={{ height: fullHeight - 60 }}
+      >
+        <ScrollView
+          keyboardShouldPersistTaps={'always'}
+          keyboardDismissMode={'interactive'}
+          scrollEnabled={false}
+          contentContainerStyle={styles.fieldsParent}
+        >
+
+          <View style={styles.fieldsInner}>
+            <View style={styles.fieldsInputParent}>
+              <TextInput
+                autoCapitalize={'none'}
+                secureTextEntry
+                keyboardType={'default'}
+                clearTextOnFocus={false}
+                placeholder="new password"
+                onChangeText={password => this.setState({ password })}
+                value={this.state.password}
+                style={styles.fieldsInput}
+              />
+            </View>
+
+            <View style={styles.fieldsInputParent}>
+              <TextInput
+                autoCapitalize={'none'}
+                secureTextEntry
+                keyboardType={'default'}
+                clearTextOnFocus={false}
+                placeholder="confirm password"
+                onChangeText={cPassword => this.setState({ cPassword })}
+                value={this.state.cPassword}
+                style={styles.fieldsInput}
+              />
+            </View>
+          </View>
+
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            style={[styles.largeButton]}
+            onPress={this.validate}
+          >
+            <Text style={styles.largeButtonText}>next</Text>
+          </TouchableHighlight>
+
+        </ScrollView>
+      </KeyboardAvoidingView>
+    );
+  }
+}
+
+ResetPassword.propTypes = {
+  actions: React.PropTypes.object,
+};
+
+localStyles = StyleSheet.create({
+  error: {
+    color: 'red',
+    textAlign: 'center'
+  }
+});
+
+styles = { ...globalStyles, ...localStyles };
+
+export default ResetPassword;
+

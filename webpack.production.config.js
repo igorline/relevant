@@ -1,12 +1,10 @@
+let ExtractTextPlugin = require('extract-text-webpack-plugin');
+let webpack = require('webpack');
+let devConfig = require('./webpack.config');
 
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var webpack = require('webpack');
+let prodConfig = {};
 
-var devConfig = require('./webpack.config');
-
-var prodConfig = {};
-
-Object.keys(devConfig).forEach(function(key) {
+Object.keys(devConfig).forEach((key) => {
   prodConfig[key] = devConfig[key];
 });
 
@@ -15,7 +13,7 @@ delete prodConfig.devtool;
 prodConfig.entry = ['./index.web.js'];
 
 prodConfig.plugins = [
-  new ExtractTextPlugin("styles.css"),
+  new ExtractTextPlugin('styles.css'),
   new webpack.DefinePlugin({
     'process.env': {
       BROWSER: JSON.stringify(true),
@@ -24,12 +22,12 @@ prodConfig.plugins = [
       API_SERVER: JSON.stringify('')
     }
   })
-]
+];
 
 prodConfig.module.loaders = [
   {
     test: /\.css$|\.scss$/,
-    loader: ExtractTextPlugin.extract('style-loader','css-loader!postcss-loader')
+    loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader')
   },
   {
     test: /\.js$/,
