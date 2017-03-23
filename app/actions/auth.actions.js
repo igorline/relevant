@@ -465,7 +465,28 @@ export function resetPassword(password, token) {
     .then(utils.fetchUtils.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
-      AlertIOS.alert('Your password has been updated!');
+      AlertIOS.alert('Your password has been updated! Try loggin in.');
+      return true;
+    })
+    .catch(err => {
+      AlertIOS.alert(err.message);
+      console.log(err);
+      return false;
+    });
+}
+
+export function confirmEmail(user, code) {
+  return async dispatch =>
+    fetch(process.env.API_SERVER + '/api/user/confirm', {
+      method: 'PUT',
+      ...await reqOptions(),
+      body: JSON.stringify({ user, code })
+    })
+    .then(utils.fetchUtils.handleErrors)
+    .then(response => response.json())
+    .then((responseJSON) => {
+      AlertIOS.alert('Your email has been confirmed');
+      dispatch(updateAuthUser(responseJSON));
       return true;
     })
     .catch(err => {

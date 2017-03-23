@@ -6,7 +6,7 @@ const auth = require('../../auth/auth.service');
 const router = express.Router();
 
 router.get('/', controller.index);
-// router.get('/confirm/:user/:code', controller.confirm);
+router.put('/confirm', controller.confirm);
 router.get('/sendConfirmation', auth.isAuthenticated(), controller.sendConfirmationCode);
 router.put('/forgot', controller.forgot);
 router.put('/resetPassword', controller.resetPassword);

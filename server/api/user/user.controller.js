@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import uuidV1 from 'uuid/v1';
 import crypto from 'crypto-promise';
 
 import User from './user.model';
@@ -25,15 +24,17 @@ function handleError(res, err) {
   return res.status(500).json({ message: err.message });
 }
 
-async function sendConfirmation(user) {
+async function sendConfirmation(user, newUser) {
   let status;
+  let text = '';
+  if (newUser) text = 'Welcome to relevant! ';
   try {
     let url = `${process.env.API_SERVER}/confirm/${user._id}/${user.confirmCode}`;
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
       subject: 'Email Confirmation',
-      html: `Navigate to this link to confirm your email address:
+      html: `${text}Click on this link to confirm your email address:
       <br />
       <br />
       <a href="${url}" target="_blank">${url}</a>`
@@ -87,33 +88,39 @@ exports.forgot = async (req, res) => {
     }
     handleError(res, error);
   }
-  res.status(200).json({ email: user.email });
+  res.status(200).json({ email: user.email, username: user._id });
 };
 
 exports.confirm = async (req, res, next) => {
   let user;
+  let middleware = false;
+  if (req.params.user) middleware = true;
   try {
-    let confirmCode = req.params.code;
-    let _id = req.params.user;
-    user = await User.findOne({ _id, confirmCode }, '+confirmCode +confirmed');
+    let confirmCode = req.params.code || req.body.code;
+    let _id = req.params.user || req.body.user;
+    if (!_id || !confirmCode) throw new Error('Missing user id or confirmation token');
+    user = await User.findOne({ _id, confirmCode }, 'confirmCode confirmed');
     if (user) {
       user.confirmed = true;
       user = await user.save();
     } else {
       req.unconfirmed = true;
     }
+    if (!user) throw new Error('Wrong confirmation code');
   } catch (err) {
     console.log('error confirmig code ', err);
-    next();
+    return middleware ? next() : handleError(res, err);
   }
-  next();
+  return middleware ? next() : res.status(200).json(user);
 };
 
 exports.sendConfirmationCode = async (req, res) => {
   let status;
   try {
     let user = req.user;
-    user.confirmCode = uuidV1();
+    let rand = await crypto.randomBytes(32);
+    let token = rand.toString('hex');
+    user.confirmCode = token;
     user = await user.save();
     status = await sendConfirmation(user);
   } catch (err) {
@@ -143,6 +150,7 @@ exports.onboarding = (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     let token = req.body.token;
+    if (!token) throw new Error('token missing');
     let user = await User.findOne({ resetPasswordToken: token });
     if (!user) throw new Error('No user found');
     let password = req.body.password;
@@ -151,7 +159,6 @@ exports.resetPassword = async (req, res) => {
     }
     user.password = password;
     user = await user.save();
-    console.log('updated password');
   } catch (err) {
     handleError(res, err);
   }
@@ -263,8 +270,11 @@ exports.list = async (req, res) => {
 /**
  * Creates a new user
  */
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   let startingAmount = 3;
+
+  let rand = await crypto.randomBytes(32);
+  let token = rand.toString('hex');
 
   let userObj = {
     _id: req.body.name,
@@ -277,6 +287,7 @@ exports.create = (req, res) => {
     role: 'user',
     relevance: 0,
     balance: startingAmount,
+    confirmCode: token
   };
 
   let newUser = new User(userObj);
@@ -303,6 +314,7 @@ exports.create = (req, res) => {
       config.secrets.session,
       { expiresInMinutes: 60 * 5 }
     );
+    sendConfirmation(newUser, true);
     res.status(200).json({ token });
   };
 

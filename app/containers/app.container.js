@@ -125,6 +125,7 @@ class Application extends Component {
     let params = event.url.split('?')[1];
     let part1 = event.url.split('/')[3];
     let part2 = event.url.split('/')[4];
+    let part3 = event.url.split('/')[5];
     let paramsLookup = {};
     if (params) {
       params = params.split('&');
@@ -145,7 +146,10 @@ class Application extends Component {
         component: 'resetPassword',
         title: 'Reset Password',
         back: true,
+        token: part2
       }, 'auth');
+    } else if (part1 === 'confirm' && part2 && part3) {
+      this.props.actions.confirmEmail(part2, part3);
     }
     console.log(paramsLookup);
   }

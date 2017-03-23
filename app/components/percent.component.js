@@ -53,7 +53,7 @@ class Percent extends Component {
       );
     } else if (percent <= 0) {
       percentComponent = (
-        <Text style={[{ fontSize, color: 'red', textAlign: 'right', lineHeight: 20 }, styles.bebas]}>
+        <Text style={[{ fontSize, color: 'red', textAlign: 'right' }, styles.bebas]}>
           <View style={{ height: arrowSize, width: arrowSize }}>
             <Text style={{ fontSize: arrowSize, color: 'red' }}>▼</Text>
           </View>

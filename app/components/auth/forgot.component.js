@@ -47,7 +47,7 @@ class Forgot extends Component {
         this.props.actions.pop('auth');
         this.setState({ sendingEmail: false });
         AlertIOS.alert('Success', `We have set an email to ${res.email}
-      with a link to reset your password.`);
+      with a link to reset the password for ${res.username}.`);
       }
     } catch (err) {
       console.log(err);
