@@ -10,6 +10,7 @@ import Login from './login.component';
 import SignUp from './signup.component';
 import ImageUpload from './imageUpload.component';
 import Forgot from './forgot.component';
+import ResetPassword from './resetPassword.component';
 import * as authActions from '../../actions/auth.actions';
 import * as navigationActions from '../../actions/navigation.actions';
 import Card from '../nav/card.component';
@@ -49,6 +50,9 @@ class AuthContainer extends Component {
 
       case 'forgot':
         return <Forgot {...this.props} />;
+
+      case 'resetPassword':
+        return <ResetPassword {...this.props} scene={props.scene} />;
 
       default:
         return <Auth {...this.props} />;

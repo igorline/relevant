@@ -62,6 +62,7 @@ class Application extends Component {
     this.renderScene = this.renderScene.bind(this);
     this.configureTransition = this.configureTransition.bind(this);
     this.back = this.back.bind(this);
+    this.handleOpenURL = this.handleOpenURL.bind(this);
   }
 
   componentDidMount() {
@@ -116,12 +117,14 @@ class Application extends Component {
   }
 
   componentWillUnmount() {
-    Linking.removeEventListener('url', this._handleOpenURL);
+    Linking.removeEventListener('url', this.handleOpenURL);
     AppState.removeEventListener('change', this.handleAppStateChange.bind(this));
   }
 
   handleOpenURL(event) {
     let params = event.url.split('?')[1];
+    let part1 = event.url.split('/')[3];
+    let part2 = event.url.split('/')[4];
     let paramsLookup = {};
     if (params) {
       params = params.split('&');
@@ -129,6 +132,20 @@ class Application extends Component {
         p = p.split('=');
         paramsLookup[p[0]] = p[1];
       });
+    }
+    if (part1 === 'resetPassword' && part2) {
+      this.props.actions.replaceRoute({
+        key: 'auth',
+        component: 'auth',
+        header: false
+      }, 0, 'home');
+      this.props.actions.resetRoutes('auth');
+      this.props.actions.push({
+        key: 'resetPassword',
+        component: 'resetPassword',
+        title: 'Reset Password',
+        back: true,
+      }, 'auth');
     }
     console.log(paramsLookup);
   }
