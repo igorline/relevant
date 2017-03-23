@@ -4,9 +4,15 @@ import userController from './api/user/user.controller';
 
 let express = require('express');
 
-// let router = express.Router();
+function requireHTTPS(req, res, next) {
+  if (!req.secure && process.env.NODE_ENV === 'production') {
+    return res.redirect('https://' + req.get('host') + req.url);
+  }
+  return next();
+}
 
 module.exports = (app) => {
+  app.use(requireHTTPS);
   // API
   app.use('/api/user', require('./api/user'));
   app.use('/api/s3', require('./api/s3'));

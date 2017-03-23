@@ -5,7 +5,7 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from '../../reducers';
 
-let socket = io('http://localhost:3000');
+let socket = io(process.env.API_SERVER);
 
 export default function configureStore (initialState = {}, history) {
   // Compose final middleware and use devtools in debug environment
