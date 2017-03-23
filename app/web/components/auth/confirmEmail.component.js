@@ -13,10 +13,13 @@ export default class EmailConfirm extends Component {
   }
 
   sendConfirmation() {
-    this.sending = true;
+    this.setState({ sending: true });
     this.props.actions.sendConfirmation()
-    .then(() => {
+    .then((success) => {
       this.setState({ sending: false });
+      if (success) {
+        window.alert('Confirmation email sent');
+      }
     });
   }
 

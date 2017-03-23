@@ -36,7 +36,7 @@ const UserSchema = new Schema({
   onboarding: { type: Number, default: 0 },
   lastFeedNotification: { type: Date, default: new Date(0) },
   confirmed: { type: Boolean, default: false },
-  confirmCode: { tyep: String, select: false },
+  confirmCode: { type: String, select: false },
   resetPasswordToken: { type: String, select: false },
   resetPasswordExpires: { type: Date, select: false }
 });

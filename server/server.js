@@ -1,7 +1,4 @@
 /* eslint-disable no-console, no-use-before-define */
-if (process.env.NODE_ENV === 'production') {
-  require('newrelic');
-}
 import Express from 'express';
 import morgan from 'morgan';
 import socketServer from './socket';
