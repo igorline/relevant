@@ -5,7 +5,7 @@ import userController from './api/user/user.controller';
 let express = require('express');
 
 function requireHTTPS(req, res, next) {
-  if (!req.secure && process.env.NODE_ENV === 'production') {
+  if (req.headers['x-forwarded-proto'] !== 'https' && process.env.NODE_ENV === 'production') {
     return res.redirect('https://' + req.get('host') + req.url);
   }
   return next();
