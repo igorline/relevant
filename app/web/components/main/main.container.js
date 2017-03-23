@@ -74,7 +74,7 @@ export class Main extends Component {
             <p className="libre">
               <span className="outline">
                 Relevant
-              </span> is sit amet, consectetur adipiscing elit, eiusmod tempor incididunt <span className="outline">labore et</span> dolore magna aliqua ad minim.
+              </span> is a social news-reader which makes it easy to find <span className="outline">experts</span> in a particular topic and read their commentary on current events.
               {/* <a href="http://www.apple.com" className="download">
                 <img src="/img/apple.png" />
                 <span className="bebasRegular">download</span>
