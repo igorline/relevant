@@ -22,6 +22,7 @@ export class Main extends Component {
     this.login = this.login.bind(this);
     this.state = {
       modal: false,
+      email: ''
     };
   }
 
@@ -33,7 +34,8 @@ export class Main extends Component {
   }
 
   submit() {
-    console.log('submit', this.email);
+    this.props.actions.signupForMailingList(this.state.email);
+    this.setState({ email: '' });
   }
 
   close() {
@@ -72,64 +74,67 @@ export class Main extends Component {
             // />
 
   render() {
+    let login = (
+      <div className="loginBar">
+        <p>beta tester?</p>
+        <a style={{ cursor: 'pointer' }} onClick={() => this.setState({ modal: !this.state.modal })}>
+          login to post
+        </a>
+      </div>
+    );
     return (
       <div className="splashContainer">
 
         <Marquee {...this.props} />
 
-        <div className="loginBar">
-          <p>beta tester?</p>
-          <a style={{ cursor: 'pointer' }} onClick={() => this.setState({ modal: !this.state.modal })}>
-            login to post
-          </a>
-        </div>
+        {/*login*/}
 
         <div className="splashContent">
           <img src="/img/phone.png" alt="phone" className="phone" />
-          <section className="header">
-            <img src="/img/logo.svg" alt="logo" />
-          </section>
-          <div className="divider" />
+          <main>
+            <section className="header">
+              <img src="/img/logo.svg" alt="logo" />
+            </section>
+            <div className="divider" />
 
-          <section className="body">
-            <p className="libre">
-              <span className="outline">
-                Relevant
-              </span> is a community of thought leaders who care about <span className="outline">the truth</span>.
-              Do you have something to contribute?
-              {/* <a href="http://www.apple.com" className="download">
-                <img src="/img/apple.png" />
-                <span className="bebasRegular">download</span>
-              </a> */}
-            </p>
-          </section>
+            <section className="body">
+              <p className="libre">
+                <span className="outline">
+                  Relevant
+                </span> is a community of thought leaders who care about <span className="outline">the truth</span>.
+                Do you have something to contribute?
+                {/* <a href="http://www.apple.com" className="download">
+                  <img src="/img/apple.png" />
+                  <span className="bebasRegular">download</span>
+                </a> */}
+              </p>
+            </section>
 
-          <section className="invitation">
-            <p>
-              Sign up for your <br />invitation to Relevant.
-            </p>
-          </section>
+            <section className="invitation">
+              <div>
+                <p>
+                  Sign up for your <br />invitation to Relevant.
+                </p>
+                <input
+                  className="blueInput"
+                  value={this.state.email}
+                  onChange={(email) => {
+                    this.setState({ email: email.target.value });
+                  }}
+                  type="text"
+                  name="email"
+                  placeholder="Your email"
+                />
+                <ShadowButton
+                  color={'#3E3EFF'}
+                  onClick={this.submit}
+                >
+                  Submit
+                </ShadowButton>
+              </div>
+            </section>
 
-          <section className="form">
-            <input
-              className="blueInput"
-              value={this.email}
-              onChange={(email) => {
-                this.email = email.target.value;
-                // this.handleChange('email', email.target.value);
-              }}
-              type="text"
-              name="email"
-              placeholder="Your email"
-            />
-            <ShadowButton
-              color={'#3E3EFF'}
-              onClick={this.submit}
-            >
-              Submit
-            </ShadowButton>
-          </section>
-
+          </main>
           <section className="copyright">
             <div className="rParent">
               <img src="/img/r.svg" alt="relevant" className="r" />

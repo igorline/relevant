@@ -1,6 +1,7 @@
 import React, {
   Component,
 } from 'react';
+import { data } from './marquee.data';
 
 export default class Marquee extends Component {
   constructor(props, context) {
@@ -14,11 +15,7 @@ export default class Marquee extends Component {
       1: 0,
       2: 0,
     };
-    this.marqueeData = [
-      [{ name: 'berniesanders', change: -55 }, { name: 'megynkelly', change: 110 }, { name: 'demnagvasalia', change: 66 }, { name: 'troyesivan', change: 50 }, { name: 'lilymcmenamy', change: 10 }, { name: 'berniesanders', change: -55 }, { name: 'megynkelly', change: 110 }, { name: 'demnagvasalia', change: 66 }, { name: 'troyesivan', change: 50 }, { name: 'lilymcmenamy', change: 10 }],
-      [{ name: '21savage', change: -44 }, { name: 'lilyrosedepp', change: 99 }, { name: 'pamanderson', change: 88 }, { name: 'chelseahandler', change: 20 }, { name: 'nicolerichie', change: -10 }, { name: '21savage', change: -44 }, { name: 'lilyrosedepp', change: 99 }, { name: 'pamanderson', change: 88 }, { name: 'chelseahandler', change: 20 }, { name: 'nicolerichie', change: -10 }],
-     [{ name: 'blacchyna', change: -7.2 }, { name: 'virgilabloh', change: 99 }, { name: 'khloekardashian', change: 6 }, { name: 'riccardotisci', change: -110 }, { name: 'alanachampion', change: 200 }, { name: 'blacchyna', change: -7.2 }, { name: 'virgilabloh', change: 99 }, { name: 'khloekardashian', change: 6 }, { name: 'riccardotisci', change: -110 }, { name: 'alanachampion', change: 200 }],
-    ];
+    this.marqueeData = data;
     this.dataBlock = {};
     this.innerEls = {};
     this.widths = [];
