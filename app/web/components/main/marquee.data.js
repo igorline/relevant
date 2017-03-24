@@ -2,12 +2,12 @@ exports.data = [[
 { name: 'berniesanders', change: -55 },
 { name: 'megynkelly', change: 110 },
 { name: 'demnagvasalia', change: 66 },
-{ name: 'troyesivan', change: 50 },
 { name: 'Roxannegay', change: 10 },
 { name: 'Marina abramovich', change: -55 },
 { name: 'megynkelly', change: 110 },
-{ name: 'Elon Musk', change: 66 },
-{ name: 'troyesivan', change: 50 },
+{ name: 'andreessen horowitz', change: 10 },
+{ name: 'ElonMusk', change: 66 },
+{ name: 'vitalik buterin', change: 50 },
 { name: 'Camille paglia', change: 10 }
 ],
 [
@@ -21,7 +21,6 @@ exports.data = [[
 { name: 'lilyrosedepp', change: 99 },
 { name: 'Rachel maddow', change: 88 },
 { name: 'chelseahandler', change: 20 },
-{ name: 'nicolerichie', change: -10 }
 ],
 [
 { name: 'EdwardSnowden', change: -7.2 },
@@ -29,11 +28,10 @@ exports.data = [[
 { name: 'Daniel Kaluuya', change: 99 },
 { name: 'Maria charapova', change: 6 },
 { name: 'Kanye west', change: -110 },
-{ name: 'alanachampion', change: 200 },
+{ name: 'Gwyneth paltrow', change: 200 },
 { name: 'Mikecernovich', change: -7.2 },
 { name: 'Terry Gross', change: 99 },
 { name: 'khloekardashian', change: 6 },
-{ name: 'Dan savage', change: -110 },
-{ name: 'alanachampion', change: 200 }
+{ name: 'parishilton', change: -10 }
 ],
 ];
