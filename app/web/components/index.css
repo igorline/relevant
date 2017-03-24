@@ -143,28 +143,36 @@ button.shadowButton {
 }
 
 @media only screen
-  and (min-device-width: 375px)
   and (max-device-width: 736px) {
 
-    body, #app, main {
-        height: 100%;
-    }
+  body, #app, main {
+    height: 100%;
+  }
 
-    main {
-        height: 100%;
-        display: flex;
-    }
+  main {
+    height: 100%;
+    display: flex;
+  }
 
-    .parent {
-        height: 100%;
-    }
+  .parent {
+    height: 100%;
+  }
+
+  .blueInput {
+    width: 150px;
+    height: 20px;
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    border-radius: 0;
+  }
+
+  button.shadowButton {
+    display: flex;
+    font-size: 14px;
+    width: 85px;
+    height: 30px;
+    z-index: 1;
+  }
 
 
-    .blueInput {
-        width: 150px;
-        height: 20px;
-        margin: 0 0 10px 0;
-        font-size: 12px;
-        border-radius: 0;
-    }
 }
