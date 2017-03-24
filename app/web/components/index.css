@@ -51,6 +51,11 @@ button.shadowButton {
   cursor: pointer;
 
   &:hover {
+    /*box-shadow: 4px 4px 0px 0px !important;*/
+    /*transform: translateX(1px) translateY(1px);*/
+  }
+
+  &:active, .active {
     box-shadow: 0px 0px 0px 0px black !important;
     transform: translateX(5px) translateY(5px);
   }
