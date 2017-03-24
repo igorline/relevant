@@ -33,8 +33,8 @@ export default class Marquee extends Component {
     elapsed /= 10;
     this.x = [
       this.x[0] -= 0.5 * elapsed,
-      this.x[1] -= 1 * elapsed,
-      this.x[2] -= 0.7 * elapsed,
+      this.x[1] -= .8 * elapsed,
+      this.x[2] -= 0.65 * elapsed,
     ];
     this.x = this.x.map((x, i) => {
       let w = document.getElementsByClassName('m' + i)[0].offsetWidth / 2;

@@ -90,12 +90,14 @@ export class Main extends Component {
         {/*login*/}
 
         <div className="splashContent">
-          <img src="/img/phone.png" alt="phone" className="phone" />
-          <main>
-            <section className="header">
-              <img src="/img/logo.svg" alt="logo" />
-            </section>
-            <div className="divider" />
+
+          <section className="header">
+            <img src="/img/logo.svg" alt="logo" />
+          </section>
+          <div className="divider" />
+
+          <mainSection>
+            <img src="/img/phone.png" alt="phone" className="phone" />
 
             <section className="body">
               <p className="libre">
@@ -134,7 +136,7 @@ export class Main extends Component {
               </div>
             </section>
 
-          </main>
+          </mainSection>
           <section className="copyright">
             <div className="rParent">
               <img src="/img/r.svg" alt="relevant" className="r" />

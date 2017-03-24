@@ -1,6 +1,7 @@
 .phone {
   position: absolute;
-  bottom: 0;
+  top: 60%;
+  transform: translateY(-50%);
   right: -7%;
   z-index: 0;
   width: 43%;
@@ -52,10 +53,12 @@
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
-  main {
-    flex: .8;
+  mainSection {
     display: flex;
-    justify-content: flex-start;
+    position: relative;
+    flex: .5;
+    display: flex;
+    justify-content: center;
     align-items: flex-start;
     flex-direction: column;
   }
@@ -79,6 +82,8 @@
   align-items: center;
   align-self: center;
   height: 140px;
+  display: flex;
+  flex: .25;
   margin-top: 0;
 }
 
@@ -94,12 +99,12 @@
   font-size: 42px;
   margin: 22px 0 0 0;
   .outline{
-      line-height: 40px;
+    line-height: 40px;
   }
 }
 
 .splashContent section.copyright {
-  flex: 0.3;
+  flex: 0.2;
   align-items: flex-end;
   justify-content: flex-start;
   width: 100%;
@@ -117,7 +122,6 @@
 }
 
 .splashContent section.invitation {
-  /*flex: 0.1;*/
   align-items: center;
   justify-content: flex-start;
   width: 100%;
@@ -213,47 +217,56 @@
 }
 
 @media only screen
-  and (min-device-width: 375px)
   and (max-device-width: 736px) {
 
   .splashContainer {
     min-height: 0vh;
     flex-grow: 1;
+    overflow: hidden;
+  }
+
+  .splashContent {
+    width: 90vw;
   }
 
   .splashContent .divider {
     height: 4px;
   }
 
-  .splashContent section.header {
-    flex: 0.1;
-  }
-
   .splashContent section.header img {
-    width: 35vw;
+    width: 60vw;
   }
 
   .splashContent section.invitation p {
-    font-size: 12px;
-    width: 150px;
-    line-height: 14px;
+    font-size: 14px;
   }
 
   .splashContent  section.form {
-    flex: 0.1;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
   }
 
   .splashContent section.copyright {
-    flex: 0.1;
-    padding: 0 10vw 10px 10vw;
+    margin: auto;
+    padding: 0 5vw 10px 5vw;
+  }
+
+  .splashContent mainSection {
+    flex: .9;
+  }
+
+  .splashContent section.body {
+    width: 75%;
   }
 
   .splashContent section.body p {
-    font-size: 21px;
-    margin: 21px 0 0 0;
+    font-size: 23px;
+    margin: 0px 0 0 0;
+    line-height: 30px;
+    .outline{
+      line-height: 30px;
+    }
   }
 
   .marqueeParent article {
@@ -261,7 +274,12 @@
   }
 
   .phone {
+    top: auto;
+    bottom: 0;
+    transform: translateY(0%);
+    width: 80%;
     max-width: 75vw;
+    right: -25%;
   }
 
   .marqueeParent article section div {
@@ -269,7 +287,7 @@
   }
 
   .marqueeParent article section div p {
-    font-size: 11px;
+    font-size: 14px;
     letter-spacing: 0.5px;
     margin: 2px 0 0 0;
   }
@@ -280,7 +298,7 @@
   }
 
   .loginBar a, .loginBar p {
-    font-size: 11px;
+    font-size: 14px;
   }
 
   .marqueeParent article section div p:first-of-type {
@@ -290,13 +308,6 @@
   .marqueeParent article section div p:nth-of-type(2) {
     margin: 0 2.5px 0 0;
     font-size: 6px;
-  }
-
-  .shadowButton {
-    display: flex;
-    width: 85px;
-    height: 20px;
-    z-index: 1;
   }
 
 
