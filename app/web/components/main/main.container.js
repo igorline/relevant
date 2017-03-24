@@ -50,6 +50,27 @@ export class Main extends Component {
     this.setState({ modal: !this.state.modal });
   }
 
+            // <input
+            //   className="blueInput"
+            //   value={this.name}
+            //   onChange={(name) => {
+            //     this.name = name.target.value;
+            //   }}
+            //   type="text"
+            //   name="name"
+            //   placeholder="Your name"
+            // />
+            // <input
+            //   className="blueInput"
+            //   value={this.topics}
+            //   onChange={(topics) => {
+            //     this.topics = topics.target.value;
+            //   }}
+            //   type="text"
+            //   name="topics"
+            //   placeholder="Topics you know most about"
+            // />
+
   render() {
     return (
       <div className="splashContainer">
@@ -74,7 +95,8 @@ export class Main extends Component {
             <p className="libre">
               <span className="outline">
                 Relevant
-              </span> is a social news-reader which makes it easy to find <span className="outline">experts</span> in a particular topic and read their commentary on current events.
+              </span> is a community of thought leaders who care about <span className="outline">the truth</span>.
+              Do you have something to contribute?
               {/* <a href="http://www.apple.com" className="download">
                 <img src="/img/apple.png" />
                 <span className="bebasRegular">download</span>

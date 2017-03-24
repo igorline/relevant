@@ -29,6 +29,7 @@ async function sendConfirmation(user, newUser) {
   let text = '';
   if (newUser) text = 'Welcome to relevant! ';
   try {
+    console.log('sending email', user.email);
     let url = `${process.env.API_SERVER}/confirm/${user._id}/${user.confirmCode}`;
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
@@ -41,6 +42,7 @@ async function sendConfirmation(user, newUser) {
     };
     status = await mail.send(data);
   } catch (err) {
+    console.log('mail error ', err);
     throw err;
   }
   return status;
@@ -272,25 +274,42 @@ exports.list = async (req, res) => {
  */
 exports.create = async (req, res) => {
   let startingAmount = 3;
+  let token;
 
-  let rand = await crypto.randomBytes(32);
-  let token = rand.toString('hex');
+  try {
+    let rand = await crypto.randomBytes(32);
+    let confirmCode = rand.toString('hex');
 
-  let userObj = {
-    _id: req.body.name,
-    name: req.body.name,
-    phone: req.body.phone,
-    email: req.body.email,
-    password: req.body.password,
-    image: req.body.image,
-    provider: 'local',
-    role: 'user',
-    relevance: 0,
-    balance: startingAmount,
-    confirmCode: token
-  };
+    let userObj = {
+      _id: req.body.name,
+      name: req.body.name,
+      phone: req.body.phone,
+      email: req.body.email,
+      password: req.body.password,
+      image: req.body.image,
+      provider: 'local',
+      role: 'user',
+      relevance: 0,
+      balance: startingAmount,
+      confirmCode
+    };
 
-  let newUser = new User(userObj);
+    let newUser = new User(userObj);
+    newUser = await newUser.save();
+
+    token = jwt.sign(
+      { _id: newUser._id },
+      config.secrets.session,
+      { expiresInMinutes: 60 * 5 }
+    );
+
+    sendConfirmation(newUser, true);
+
+  } catch (err) {
+    return handleError(res, err);
+  }
+
+  return res.status(200).json({ token });
 
   // let earningsObj = {
   //   user: newUser._id,
@@ -307,27 +326,6 @@ exports.create = async (req, res) => {
   //     { $inc: { balance: -startingAmount, out: startingAmount } },
   //     { new: true, upsert: true }
   //   ).exec();
-
-  let sendResponse = () => {
-    let token = jwt.sign(
-      { _id: newUser._id },
-      config.secrets.session,
-      { expiresInMinutes: 60 * 5 }
-    );
-    sendConfirmation(newUser, true);
-    res.status(200).json({ token });
-  };
-
-  newUser.save()
-    .then(user => newUser = user)
-    // .then(saveEarnings)
-    // .then(updateTreasury)
-    .then(sendResponse)
-    .catch((err) => {
-      console.log(err);
-      handleError(res, err);
-    });
-
     // let dbNotificationObj = {
     //   post: null,
     //   forUser: null,
@@ -338,7 +336,6 @@ exports.create = async (req, res) => {
     //   read: false,
     //   tag: null
     // };
-
 };
 
 /**
