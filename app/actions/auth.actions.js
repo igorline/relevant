@@ -234,6 +234,7 @@ function createUser(user) {
       },
       body: JSON.stringify(user)
     })
+    .then(utils.fetchUtils.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       if (responseJSON.token) {
