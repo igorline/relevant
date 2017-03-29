@@ -13,6 +13,9 @@ import apnData from '../../pushNotifications';
 
 const PostEvents = new EventEmitter();
 
+const extractor = require('unfluff');
+
+request.defaults({ maxRedirects: 20, jar: true });
 // uniqueInvestments()
 // function uniqueInvestments() {
 //   Post.find({})
@@ -57,6 +60,22 @@ function extractDomain(url) {
   }
   return noPrefix;
 }
+
+exports.flag = async (req, res) => {
+  let post;
+  try {
+    let userId = req.user._id;
+    let postId = req.body.postId;
+    post = await Post.findOneAndUpdate(
+      { _id: postId },
+      { flagged: true, $addToSet: { flaggedBy: userId } },
+      { new: true }
+    );
+  } catch (err) {
+    handleError(res)(err);
+  }
+  res.status(200).json(post);
+};
 
 exports.index = async (req, res) => {
   let id;
@@ -176,6 +195,7 @@ exports.preview = (req, res) => {
 
   function processReturn(error, response, body) {
     if (!error && response.statusCode === 200) {
+      console.log('parse url ', previewUrl);
       const $ = cheerio.load(body);
 
       let redirect = $("meta[http-equiv='refresh']")[0];
@@ -184,19 +204,28 @@ exports.preview = (req, res) => {
       if (redirect && redirect.attribs && redirect.attribs.content) {
         redirectUrl = redirect.attribs.content.split('URL=')[1];
       }
-      if (redirectUrl) return request(redirectUrl, processReturn);
+      if (redirectUrl) {
+        return request({
+          url: redirectUrl,
+          headers: previewUrl.match('apple.news') ? {} : fbHeader
+        }, processReturn);
+      }
+
 
       let canonical = $("link[rel='canonical']")[0];
       if (canonical && canonical.attribs) canonical = canonical.attribs;
       else canonical = null;
 
-      if (canonical && extractDomain(canonical.href) !== extractDomain(previewUrl)) {
+      if (canonical && canonical.href && extractDomain(canonical.href) !== extractDomain(previewUrl)) {
         previewUrl = canonical.href;
         return request({
           url: canonical.href,
           headers: previewUrl.match('apple.news') ? {} : fbHeader
         }, processReturn);
       }
+
+      // let unfluff = extractor(body);
+      // console.log(unfluff);
 
       let data = {
         title: null,
@@ -215,6 +244,8 @@ exports.preview = (req, res) => {
         'twitter:description': null,
         'twitter:site': null,
         'twitter:creator': null,
+        'news_keywords': null,
+        'keywords': null,
       };
       const meta = $('meta');
       const $title = $('title');
@@ -246,7 +277,8 @@ exports.preview = (req, res) => {
       title = data['og:title'] || data['twitter:title'] || data.title;
       description = data.description || data['og:description'] || data['twitter:description'];
       image = data['og:image'] || data['og:image:url'] || data['twitter:image'] || data['twitter:image:src'] || data.image;
-      let url = data['al:web:url'] || data['og:url'] || response.request.uri || previewUrl;
+      let url = previewUrl || data['al:web:url'] || data['og:url'] || response.request.uri;
+      let tags = data['news_keywords'] + data['keywords'];
       let domain = extractDomain(url);
 
       const obj = {
@@ -254,7 +286,8 @@ exports.preview = (req, res) => {
         description,
         title,
         url,
-        domain
+        domain,
+        tags
       };
 
       if (!image || !description || !title) {
@@ -275,6 +308,8 @@ exports.preview = (req, res) => {
 
   return request({
     url: previewUrl,
+    maxRedirects: 20,
+    jar: true,
     headers: previewUrl.match('apple.news') ? {} : fbHeader
   }, processReturn);
 

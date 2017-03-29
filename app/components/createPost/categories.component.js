@@ -83,6 +83,12 @@ class Categories extends Component {
     } else {
       this.selectedTopic = topic;
       this.props.actions.setPostCategory(topic);
+
+      setTimeout(() =>
+        this.topicsEl.tagsView.measure((fx, fy) => {
+          this.num = fy;
+          this.topicsEl.scrollView.scrollTo({ x: 0, y: this.num - 60, animated: true });
+        }), 30);
     }
 
     this.setTopicTags(this.selectedTopic, true);
@@ -149,6 +155,10 @@ class Categories extends Component {
     let tags = [...this.inputTags, ...this.topicTags, ...this.tags];
 
     tags = [...new Set(tags.map(t => t._id))];
+    // hide current category
+    if (selectedTopic) {
+      tags = tags.filter(tag => tag !== selectedTopic._id);
+    }
 
     // <Text style={[styles.font10, styles.greyText, { padding: 10 }]}>Add these topics to your post</Text>
 
@@ -156,11 +166,11 @@ class Categories extends Component {
       <View >
         <TextInput
           autoCapitalize={'none'}
-          // onFocus={() => this.topicsEl.tagsView.measure((fx, fy) => {
-          //   this.num = fy;
-          //   this.topicsEl.scrollView.scrollTo({ x: 0, y: this.num - 60, animated: true });
-          // })
-          // }
+          onFocus={() => this.topicsEl.tagsView.measure((fx, fy) => {
+            this.num = fy;
+            this.topicsEl.scrollView.scrollTo({ x: 0, y: this.num - 60, animated: true });
+          })
+          }
           onChangeText={input => this.processInput(input)}
           ref={(c) => { this.input = c; }}
           style={[styles.font15, styles.topicInput]}
@@ -168,19 +178,21 @@ class Categories extends Component {
           multiline={false}
           placeholder={'Select additional topics or create your own'}
         />
+        <View style={styles.break} />
         <Tags
           noReorder
           noScroll
           toggleTag={this.toggleTag}
           tags={{ tags, selectedTags }}
         />
+        <View style={styles.break} />
       </View>
     );
 
     if (this.props.tags) {
       categoryEl = (<Topics
         ref={c => this.topicsEl = c}
-        topics={!selectedTopic ? this.props.tags : [selectedTopic]}
+        topics={this.props.tags}
         selectedTopic={selectedTopic}
         innerView={tagSelectionView}
         action={this.setTopic}
@@ -206,12 +218,15 @@ const localStyles = StyleSheet.create({
   topicInput: {
     height: 45,
     padding: 10,
+    backgroundColor: 'white',
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: 'black',
   },
   break: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'black',
-    marginHorizontal: 10,
-    marginBottom: 5,
+    borderBottomColor: '#F0F0F0',
+    // marginHorizontal: 10,
+    // marginBottom: 1,
   }
 });
 

@@ -14,7 +14,7 @@ export default function (props) {
       onClick={() => props.onClick()}
       style={{ borderColor: color, backgroundColor, boxShadow, ...props.style }}
     >
-      <span style={{ color }}>{props.children}</span>
+      <inner style={{ color }}>{props.children}</inner>
     </button>
   );
 }

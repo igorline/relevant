@@ -103,7 +103,7 @@ export default class UrlComponent extends Component {
   }
 
   createPreview(postUrl) {
-    utils.post.generatePreview(postUrl)
+    utils.post.generatePreviewServer(postUrl)
     .then((results) => {
       if (results) {
         let newBody = this.props.postBody.replace(`${postUrl}`, '').trim();

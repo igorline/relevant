@@ -11,6 +11,9 @@
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
 
+@import Firebase;
+
+
 @interface Relevant : ReactNativeShareExtension
 @end
 
@@ -28,6 +31,8 @@ RCT_EXPORT_MODULE();
                                                initialProperties:nil
                                                    launchOptions:nil];
   rootView.backgroundColor = nil;
+  [FIRApp configure];
+
   return rootView;
 }
 

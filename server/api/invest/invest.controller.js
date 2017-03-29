@@ -183,7 +183,7 @@ exports.create = async (req, res) => {
   }
 
   async function updateInvestment() {
-    let createdInvestment = await Invest.findOneAndUpdate(
+    await Invest.findOneAndUpdate(
       {
         investor: user._id,
         post: post._id
@@ -201,11 +201,9 @@ exports.create = async (req, res) => {
         upsert: true,
       }
     );
-    if (!post.investments) post.investments = [];
-    if (!investmentExists) {
-      console.log('pushing ivestment id ', createdInvestment._id, ' to post', post._id);
-      post.investments.push(createdInvestment._id);
-    } else {
+
+    if (investmentExists) {
+      // TODO if also commented, increase investment?
       investmentExists.amount = amount;
     }
 
@@ -290,17 +288,17 @@ exports.create = async (req, res) => {
       'relevance balance name relevanceRecord deviceTokens badge'
     );
 
-    if (relevanceToAdd !== 0) {
-      author = author.updateRelevanceRecord();
-      Relevance.updateUserRelevance(post.user, post, relevanceToAdd);
-    }
-
     let diff = user.relevance - author.relevance;
     let adjust = 1;
     if (diff > 0) adjust = Math.pow(diff, 1 / 3) + 1;
     if (irrelevant) adjust *= -1;
     adjust = Math.round(adjust);
     author.relevance += adjust;
+
+    if (adjust !== 0) {
+      author = author.updateRelevanceRecord();
+      Relevance.updateUserRelevance(post.user, post, adjust);
+    }
 
     let coin;
     if (COIN && amount > 0) {

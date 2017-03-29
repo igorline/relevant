@@ -600,3 +600,21 @@ export function getSubscriptions() {
     .then(responseJSON => dispatch(setSubscriptions(responseJSON)))
     .catch(err => console.log('Subscription error', err));
 }
+
+export function flag(post) {
+  return dispatch =>
+    utils.token.get()
+    .then(token =>
+      fetch(`${apiServer}post/flag`, {
+        ...reqOptions(token),
+        method: 'PUT',
+        body: JSON.stringify({ postId: post._id })
+      })
+    )
+    .then(response => response.json())
+    .then(responseJSON => {
+      AlertIOS.alert('Thank you', 'Flagged posts will be reviewed by the administrators');
+      dispatch(updatePost(responseJSON));
+    })
+    .catch(err => console.log('Subscription error', err));
+}

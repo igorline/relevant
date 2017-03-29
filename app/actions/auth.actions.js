@@ -197,9 +197,9 @@ function userOnline(user, token) {
 }
 
 export
-function checkUsername(username) {
+function checkUser(string, type) {
   return (dispatch) => {
-    return fetch(process.env.API_SERVER + '/api/user/check/' + username, {
+    return fetch(`${process.env.API_SERVER}/api/user/check/user/?${type}=${string}`, {
       credentials: 'include',
       method: 'GET',
       headers: {
@@ -223,7 +223,7 @@ function checkUsername(username) {
 
 
 export
-function createUser(user) {
+function createUser(user, invite) {
   return (dispatch) => {
     return fetch(process.env.API_SERVER + '/api/user', {
       credentials: 'include',
@@ -232,7 +232,7 @@ function createUser(user) {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(user)
+      body: JSON.stringify({ user, invite })
     })
     .then(utils.fetchUtils.handleErrors)
     .then(response => response.json())
@@ -507,7 +507,7 @@ export function signupForMailingList(email) {
     .then(utils.fetchUtils.handleErrors)
     // .then(response => response.json())
     .then(() => {
-      AlertIOS.alert('Your email has been to the waitlist');
+      AlertIOS.alert('Your email has been added to the waitlist');
       return true;
     })
     .catch(err => {

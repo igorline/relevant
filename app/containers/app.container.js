@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import Analytics from 'react-native-firebase-analytics';
+
 import Auth from '../components/auth/auth.container';
 import CreatePostContainer from '../components/createPost/createPost.container';
 import Footer from './footer.container';
@@ -19,6 +21,7 @@ import InvestAnimation from '../components/animations/investAnimation.component'
 import HeartAnimation from '../components/animations/heartAnimation.component';
 import StallScreen from '../components/stallScreen.component';
 import * as authActions from '../actions/auth.actions';
+import * as adminActions from '../actions/admin.actions';
 import * as postActions from '../actions/post.actions';
 import * as userActions from '../actions/user.actions';
 import * as onlineActions from '../actions/online.actions';
@@ -135,6 +138,7 @@ class Application extends Component {
       });
     }
     if (part1 === 'resetPassword' && part2) {
+      // Handle reset password link
       this.props.actions.replaceRoute({
         key: 'auth',
         component: 'auth',
@@ -149,9 +153,30 @@ class Application extends Component {
         token: part2
       }, 'auth');
     } else if (part1 === 'confirm' && part2 && part3) {
+      // Handle confirm email link
       this.props.actions.confirmEmail(part2, part3);
+    } else if (part1 === 'invite' && part2) {
+      // Handle invite link
+      this.props.actions.replaceRoute({
+        key: 'auth',
+        component: 'auth',
+        header: false
+      }, 0, 'home');
+      this.props.actions.resetRoutes('auth');
+
+      this.props.actions.checkInviteCode(part2)
+      .then(invite => {
+        if (!invite) return;
+        this.props.actions.push({
+          key: 'signup',
+          component: 'signup',
+          title: 'Signup',
+          back: true,
+          code: part2,
+          email: invite.email
+        }, 'auth');
+      });
     }
-    console.log(paramsLookup);
   }
 
   changeName() {
@@ -354,6 +379,7 @@ function mapDispatchToProps(dispatch) {
       ...investActions,
       ...navigationActions,
       ...tagActions,
+      ...adminActions
     }, dispatch)
   };
 }

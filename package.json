@@ -66,6 +66,7 @@
     "react-native-custom-action-sheet": "0.0.11",
     "react-native-dismiss-keyboard": "0.0.3",
     "react-native-file-upload": "^1.0.4",
+    "react-native-firebase-analytics": "^3.0.0",
     "react-native-google-analytics-bridge": "^5.0.1",
     "react-native-image-picker": "^0.24.1",
     "react-native-keyboard-aware-scrollview": "^1.1.5",
@@ -97,7 +98,9 @@
     "serve-favicon": "^2.3.0",
     "socket.io": "^1.7.3",
     "socket.io-client": "~1.4.5",
+    "unfluff": "^1.1.0",
     "uuid": "^3.0.1",
+    "voucher-code-generator": "^1.1.1",
     "webpack": "^1.11.0",
     "whatwg-fetch": "^2.0.1"
   },

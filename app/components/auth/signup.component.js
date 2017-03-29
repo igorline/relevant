@@ -4,15 +4,13 @@ import {
   View,
   TextInput,
   TouchableHighlight,
-  Dimensions,
   AlertIOS,
   StyleSheet,
-  Keyboard,
   KeyboardAvoidingView,
   ScrollView,
 } from 'react-native';
-import { globalStyles, fullHeight, fullWidth } from '../../styles/global';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
+import { globalStyles, fullHeight } from '../../styles/global';
 
 let localStyles;
 let styles;
@@ -24,7 +22,7 @@ class SignUp extends Component {
     super(props, context);
     this.back = this.back.bind(this);
     this.validate = this.validate.bind(this);
-    this.checkUsername = this.checkUsername.bind(this);
+    this.checkUser = this.checkUser.bind(this);
     this.devSkip = this.devSkip.bind(this);
     this.state = {
       message: '',
@@ -34,10 +32,11 @@ class SignUp extends Component {
       password: null,
       cPassword: null,
       nameError: null,
+      emailError: null,
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     if (this.props.auth.preUser) {
       this.setState({
         name: this.props.auth.preUser.name || null,
@@ -45,6 +44,12 @@ class SignUp extends Component {
         email: this.props.auth.preUser.email || null,
         password: this.props.auth.preUser.password || null,
         cPassword: this.props.auth.preUser.password || null
+      });
+    }
+    if (this.props.scene && this.props.scene.email) {
+      this.setState({
+        email: this.props.scene.email,
+        code: this.props.scene.code
       });
     }
   }
@@ -61,27 +66,36 @@ class SignUp extends Component {
     }
   }
 
-  componentWillUnmount() {
+  checkEmail() {
+    let string = this.state.email;
+    let valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(string);
+    if (!valid) return this.setState({ emailError: 'invalid email' });
+
+    this.props.actions.checkUser(string, 'email')
+    .then((results) => {
+      if (!results) {
+        this.setState({ emailError: 'This email has already been used' });
+      }
+    });
+    return null;
   }
 
-  checkUsername(name) {
+  checkUser(name) {
     this.nameError = null;
     let toCheck = name || this.state.name;
     if (toCheck) {
       let string = toCheck;
       let match = NAME_PATTERN.test(string);
       if (match) {
-        this.props.actions.checkUsername(string)
+        this.props.actions.checkUser(string, 'name')
         .then((results) => {
           if (!results) {
             this.usernameExists = true;
             this.nameError = 'This username is already taken';
-          }
-          else this.usernameExists = false;
+          } else this.usernameExists = false;
           this.setState({});
         });
       } else {
-        // AlertIOS.alert('username can only contain letters, numbers, dashes and underscores');
         this.nameError = 'username can only contain letters, numbers, dashes and underscores';
       }
     }
@@ -104,31 +118,27 @@ class SignUp extends Component {
     };
 
     if (this.usernameExists) {
-      AlertIOS.alert('Username already in use');
-      return;
+      return AlertIOS.alert('Username already in use');
     }
 
     if (!NAME_PATTERN.test(this.state.name)) {
-      AlertIOS.alert('username can only contain letters, numbers, dashes and underscores');
-      return;
+      return AlertIOS.alert('username can only contain letters, numbers, dashes and underscores');
     }
 
     if (this.state.name) {
       if (this.state.name.length > 15) {
-        AlertIOS.alert('name must be less than 15 characters');
-        return;
+        return AlertIOS.alert('name must be less than 15 characters');
       }
     } else {
-      AlertIOS.alert('name required');
-      return;
+      return AlertIOS.alert('name required');
     }
 
     if (!this.state.email) {
-      AlertIOS.alert('email required');
-      return;
+      return AlertIOS.alert('email required');
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(this.state.email)) {
-      AlertIOS.alert('invalid email address');
-      return;
+      return AlertIOS.alert('invalid email address');
+    } else if (this.state.emailError) {
+      return AlertIOS.alert(this.state.emailError);
     }
 
     // if (!this.state.phone) {
@@ -138,12 +148,10 @@ class SignUp extends Component {
 
     if (this.state.password) {
       if (this.state.password !== this.state.cPassword) {
-        AlertIOS.alert("Passwords don't match");
-        return;
+        return AlertIOS.alert("Passwords don't match");
       }
     } else {
-      AlertIOS.alert('Password required');
-      return;
+      return AlertIOS.alert('Password required');
     }
     this.props.actions.setPreUser(user);
     console.log('saving pre user ', user);
@@ -154,7 +162,8 @@ class SignUp extends Component {
       component: 'image',
       back: true
     }, 'auth');
-    // this.props.actions.createUser(user);
+
+    return null;
   }
 
   devSkip() {
@@ -201,7 +210,10 @@ class SignUp extends Component {
                 clearTextOnFocus={false}
                 // onBlur={() => this.userError()}
                 placeholder="username"
-                onChangeText={(name) => { this.setState({ name }); this.checkUsername(name); }}
+                onChangeText={(name) => {
+                  this.setState({ name: name.trim() });
+                  this.checkUser(name.trim());
+                }}
                 value={this.state.name}
                 style={styles.fieldsInput}
               />
@@ -217,11 +229,16 @@ class SignUp extends Component {
                 keyboardType={'email-address'}
                 clearTextOnFocus={false}
                 placeholder="email"
-                onChangeText={email => this.setState({ email })}
+                onBlur={() => this.checkEmail()}
+                onChangeText={email => this.setState({ email: email.trim(), emailError: null })}
                 value={this.state.email}
                 style={styles.fieldsInput}
               />
             </View>
+            { this.state.emailError ?
+              <Text style={styles.error}>{this.state.emailError}</Text> :
+              null
+            }
 
             {/*<View style={styles.fieldsInputParent}>
               <TextInput
@@ -272,7 +289,6 @@ class SignUp extends Component {
         </ScrollView>
       </KeyboardAvoidingView>
     );
-
           // <TouchableHighlight
           //   onPress={this.devSkip}
           //   underlayColor={'transparent'}
@@ -281,7 +297,6 @@ class SignUp extends Component {
           //     <Text style={{ color: '#3E3EFF' }}>devSkip</Text>
           //   </Text>
           // </TouchableHighlight>
-
   }
 }
 

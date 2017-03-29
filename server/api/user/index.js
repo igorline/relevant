@@ -18,7 +18,7 @@ router.get('/:id', auth.currentUser(), controller.show);
 router.post('/', controller.create);
 router.put('/', auth.isAuthenticated(), controller.update);
 router.get('/general/list', controller.list);
-router.get('/check/:name', controller.checkUsername);
+router.get('/check/user', controller.checkUser);
 router.get('/onboarding/:step', auth.isAuthenticated(), controller.onboarding);
 
 module.exports = router;

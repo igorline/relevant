@@ -15,6 +15,7 @@ import createPost from './createPost';
 import tags from './tags';
 import tooltip from './tooltip';
 import subscriptions from './subscriptions';
+import admin from './admin';
 
 let navigation = {};
 let routing = {};
@@ -42,7 +43,8 @@ const rootReducer = combineReducers({
   createPost,
   tags,
   tooltip,
-  subscriptions
+  subscriptions,
+  admin
 });
 
 export default rootReducer;

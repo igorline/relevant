@@ -33,6 +33,7 @@ module.exports = (app) => {
   app.use('/api/relevance', require('./api/relevance'));
   app.use('/api/treasury', require('./api/treasury'));
   app.use('/api/list', require('./api/emailList'));
+  app.use('/api/invites', require('./api/invites'));
 
   app.get('/confirm/:user/:code', userController.confirm);
 
