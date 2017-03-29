@@ -35,20 +35,11 @@ class ImageUpload extends Component {
     };
   }
 
-  componentDidMount() {
-  }
-
-  componentWillReceiveProps(nextProps) {
-  }
-
-  componentWillUnmount() {
-  }
-
   initImage() {
     const self = this;
     this.chooseImage((err, data) => {
       if (err) {
-        console.log(err); 
+        console.log(err);
         return;
       }
       if (data) {
@@ -81,7 +72,7 @@ class ImageUpload extends Component {
   createUser(user) {
     let newUser = { ...this.props.auth.preUser };
     newUser.image = this.state.image;
-    this.props.actions.createUser(newUser);
+    this.props.actions.createUser(newUser, this.props.admin.currentInvite);
   }
 
   renderImage() {

@@ -7,7 +7,8 @@ import {
   TouchableHighlight,
   Image,
   TouchableWithoutFeedback,
-  ListView
+  ListView,
+  AlertIOS
 } from 'react-native';
 
 import { globalStyles, fullWidth } from '../../styles/global';
@@ -47,12 +48,41 @@ class Auth extends Component {
   }
 
   signup() {
-    this.props.actions.push({
-      key: 'signup',
-      title: 'Signup',
-      showBackButton: true,
-      back: true
-    }, 'auth');
+    if (this.props.admin.currentInvite) {
+      return this.props.actions.push({
+        key: 'signup',
+        title: 'Signup',
+        showBackButton: true,
+        back: true,
+        code: this.props.admin.currentInvite.code,
+        email: this.props.admin.currentInvite.email
+      }, 'auth');
+    }
+    AlertIOS.prompt(
+      'Enter invitiation code',
+      'Relevant is in closed bata and requires and invitation code',
+      [
+        { text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel'
+        },
+        { text: 'OK',
+          onPress: code => {
+            let action = this.props.actions.checkInviteCode(code);
+            action.then(invite => {
+              if (invite) {
+                this.props.actions.push({
+                  key: 'signup',
+                  title: 'Signup',
+                  showBackButton: true,
+                  back: true,
+                  email: invite.email,
+                  code: invite.code
+                }, 'auth');
+              }
+            });
+          } }
+      ]);
   }
 
   renderIndicator() {

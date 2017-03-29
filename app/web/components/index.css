@@ -1,6 +1,6 @@
 * {
   box-sizing: border-box;
-  user-select: none;
+  /*user-select: none;*/
 }
 
 
@@ -22,7 +22,14 @@ a {
   color: black;
 }
 
-
+button {
+  height: 25px;
+  margin: 0 5px;
+  outline: none;
+}
+button.alert {
+  box-shadow: 0 0 0 1px red;
+}
 
 button:focus, input[type="button"]:focus {
   outline: none;

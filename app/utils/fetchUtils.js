@@ -24,7 +24,7 @@ export async function reqOptions() {
   try {
     token = await tokenUtil.get();
   } catch (err) {
-    throw err;
+    console.log('no token');
   }
   return {
     credentials: 'include',

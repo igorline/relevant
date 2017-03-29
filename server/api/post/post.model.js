@@ -4,7 +4,6 @@ import MetaPost from '../metaPost/metaPost.model';
 import User from '../user/user.model';
 import Notification from '../notification/notification.model';
 import Invest from '../invest/invest.model';
-import Earnings from '../earnings/earnings.model';
 
 let apnData = require('../../pushNotifications');
 let mongoose = require('mongoose');
@@ -33,9 +32,11 @@ let PostSchema = new Schema({
     name: String,
     image: String,
   },
+  flagged: { type: Boolean, default: false },
+  flaggedBy: [{ type: String, ref: 'User' }],
   mentions: [{ type: String, ref: 'User' }],
-  investments: [{ type: Schema.Types.ObjectId, ref: 'Invest' }],
-  comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
+  // investments: [{ type: Schema.Types.ObjectId, ref: 'Invest' }],
+  // comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
   rank: { type: Number, default: 0 },
   lastPost: [{ type: String, ref: 'User' }],
   categoryName: String,
@@ -61,32 +62,31 @@ PostSchema.index({ createdAt: 1, tags: 1 });
 PostSchema.index({ rank: 1, tags: 1 });
 // PostSchema.index({ title: 'text', body: 'text' });
 
-PostSchema.pre('save', function (next) {
-  let sign = 1;
-  if (this.rankRelevance < 0) {
-    sign = -1;
-  }
-  if (!this.rankRelevance) this.rankRelevance = 0;
-  let rank = Math.abs(this.rankRelevance);
-  let newRank = (this.postDate.getTime() / TENTH_LIFE) + (sign * Math.log10(rank + 1));
+PostSchema.pre('save', async function (next) {
+  try {
+    let sign = 1;
+    if (this.rankRelevance < 0) {
+      sign = -1;
+    }
+    if (!this.rankRelevance) this.rankRelevance = 0;
+    let rank = Math.abs(this.rankRelevance);
+    let newRank = (this.postDate.getTime() / TENTH_LIFE) + (sign * Math.log10(rank + 1));
 
-  this.rank = Math.round(newRank * 1000) / 1000;
-  this.commentCount = this.comments ? this.comments.length : 0;
+    this.rank = Math.round(newRank * 1000) / 1000;
 
-  MetaPost.findOne({ _id: this.metaPost })
-  .then((meta) => {
+    this.commentCount = await this.model('Comment').count({ post: this._id });
+
+    let meta = MetaPost.findOne({ _id: this.metaPost });
     if (!meta) return next();
     if (meta.rank < this.rank) {
       meta.rank = this.rank;
-      meta.save((err) => {
-        if (err) console.log(err);
-        next();
-      });
-    } else {
-      next();
+      await meta.save();
     }
-  })
-  .catch(next);
+  } catch (err) {
+    console.log(err);
+    return next();
+  }
+  return next();
 });
 
 
@@ -198,7 +198,7 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
   return meta;
 };
 
-PostSchema.statics.sendOutInvestInfo = async function(postIds, userId) {
+PostSchema.statics.sendOutInvestInfo = async function (postIds, userId) {
   try {
     let investments = await Invest.find(
       { investor: userId, post: { $in: postIds } }
@@ -221,7 +221,6 @@ PostSchema.statics.sendOutInvestInfo = async function(postIds, userId) {
     //   payload: earnings
     // };
     // this.events.emit('postEvent', earningsEvent);
-
   } catch (err) {
     console.log(err);
   }

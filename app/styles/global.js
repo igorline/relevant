@@ -293,7 +293,6 @@ const layout = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'nowrap',
     justifyContent: 'flex-start',
-    // height: 50
     backgroundColor: 'white',
   },
   notificationContainer: {
@@ -336,8 +335,8 @@ const layout = StyleSheet.create({
     height: 35,
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 5,
-    marginTop: 5,
+    marginLeft: 2.5,
+    marginVertical: 2.5,
     // color: '#808080'
   },
   singleTagBox: {

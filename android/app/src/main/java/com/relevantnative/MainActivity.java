@@ -1,6 +1,8 @@
 package com.relevantnative;
 
 import com.facebook.react.ReactActivity;
+import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
+import com.evollu.react.fa.FIRAnalyticsPackage;
 
 public class MainActivity extends ReactActivity {
 

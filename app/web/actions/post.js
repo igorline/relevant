@@ -1,7 +1,6 @@
 export const SET_SELECTED_POST = 'SET_SELECTED_POST';
 
 import { push } from 'react-router-redux';
-import * as utils from '../utils';
 
 var request = require('superagent');
 

@@ -17,9 +17,6 @@ export default class Tags extends Component {
     this.toggleTag = this.toggleTag.bind(this);
   }
 
-  componentWillMount() {
-  }
-
   toggleTag(tag) {
     if (this.props.toggleTag) return this.props.toggleTag(tag);
     if (this.selectedLookup[tag._id || tag]) {

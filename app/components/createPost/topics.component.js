@@ -11,7 +11,7 @@ import { globalStyles } from '../../styles/global';
 
 let styles;
 
-export default class Topics extends Component {
+export default class topics extends Component {
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
@@ -22,7 +22,10 @@ export default class Topics extends Component {
   render() {
     let topics = this.props.topics.map((topic, i) => {
       let active = false;
-      if (this.props.selectedTopic && topic._id === this.props.selectedTopic._id) active = true;
+      if (this.props.selectedTopic &&
+        topic._id === this.props.selectedTopic._id) {
+        active = true;
+      }
       let x = (
         <Image
           style={styles.close}
@@ -49,7 +52,7 @@ export default class Topics extends Component {
                 justifyContent: 'center' }}
             >
               <Text style={[active ? { color: 'white' } : null]} >{topic.emoji}{topic.categoryName}</Text>
-              {active ? x : null}
+              {/*active ? x : null*/}
             </View>
           </TouchableHighlight>
           { active ? this.props.innerView : null }

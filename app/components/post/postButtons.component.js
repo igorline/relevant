@@ -23,6 +23,7 @@ class PostButtons extends Component {
     this.onShare = this.onShare.bind(this);
     this.goToPost = this.goToPost.bind(this);
     this.invest = this.invest.bind(this);
+    this.flag = this.flag.bind(this);
     this.state = {
       editing: false,
       modalVisible: false,
@@ -232,13 +233,18 @@ class PostButtons extends Component {
     this.props.navigator.goToPost(this.props.post, openComment);
   }
 
+  flag() {
+    this.props.actions.flag(this.props.post);
+  }
+
   irrelevantPrompt() {
     Alert.alert(
-      'Irrelevant',
-      'Do you feel this post is irrelevant? Marking something irrelevant costs 1 coin and will reduce the author\'s relevance score',
+      'Downvote poor quality content to reduce the post\'s relevant score',
+      'If you see innapropriate content you can notify the admins by pressing "Innapropriate".',
       [
         { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-        { text: 'OK', onPress: () => this.irrelevant() },
+        { text: 'Downvote', onPress: () => this.irrelevant() },
+        { text: '🚫Innapropriate', onPress: () => this.flag() },
       ]
     );
   }

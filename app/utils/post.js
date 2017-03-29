@@ -1,3 +1,7 @@
+import * as fetchUtils from './fetchUtils';
+
+fetchUtils.env();
+
 const cheerio = require('cheerio-without-node-native');
 
 function extractDomain(url) {
@@ -134,6 +138,7 @@ export function generatePreview(link) {
       'twitter:site': null,
       'twitter:creator': null,
       'news_keywords': null,
+      'keywords': null,
     };
     const meta = $('meta');
     const $title = $('title');
@@ -190,3 +195,23 @@ export function generatePreview(link) {
     return false;
   });
 }
+
+export function generatePreviewServer(link) {
+  let responseUrl;
+  return fetch(process.env.API_SERVER + '/api/post/preview/generate?url=' + link, {
+    method: 'GET',
+  })
+  .then((response) => {
+    console.log(response, 'response');
+    return response.json();
+  })
+  .then((responseJSON) => {
+    console.log(responseJSON, 'responseJSON');
+    return responseJSON;
+  })
+  .catch((error) => {
+    console.log(error, 'error');
+    return false;
+  });
+}
+

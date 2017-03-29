@@ -9,6 +9,7 @@ import config from '../../config/config';
 // import Earnings from '../earnings/earnings.model';
 import Relevance from '../relevance/relevance.model';
 import mail from '../../mail';
+import Invite from '../invites/invite.model';
 
 // mail.test();
 
@@ -223,15 +224,26 @@ exports.index = (req, res) => {
   .catch(err => handleError(res, err));
 };
 
-exports.checkUsername = (req, res) => {
-  let name = req.params.name;
-  let formatted = '^' + name + '$';
+exports.checkUser = (req, res) => {
+  let name = req.query.name;
+  let email = req.query.email;
+  let query = {};
+  let type;
 
-  User.findOne({
-    _id: { $regex: formatted, $options: 'i' },
-  }, '_id')
+  if (name) {
+    type = 'user';
+    let formatted = '^' + name + '$';
+    query = { ...query, _id: { $regex: formatted, $options: 'i' } };
+  }
+  if (email) {
+    type = 'email';
+    query = { email };
+  }
+
+  User.findOne(query, '_id')
   .then((user) => {
-    res.status(200).json(user);
+    if (user) res.status(200).json({ type });
+    else res.status(200).json(null);
   })
   .catch(err => handleError(res, err));
 };
@@ -279,32 +291,42 @@ exports.create = async (req, res) => {
   try {
     let rand = await crypto.randomBytes(32);
     let confirmCode = rand.toString('hex');
+    let user = req.body.user;
+    let invite = req.body.invite;
+    invite = await Invite.findOne({ _id: invite._id, redeemed: false });
+    if (!invite) throw new Error('No invitation code found');
+
+    let confirmed = invite.email === user.email;
 
     let userObj = {
-      _id: req.body.name,
-      name: req.body.name,
-      phone: req.body.phone,
-      email: req.body.email,
-      password: req.body.password,
-      image: req.body.image,
+      _id: user.name,
+      name: user.name,
+      phone: user.phone,
+      email: user.email,
+      password: user.password,
+      image: user.image,
       provider: 'local',
       role: 'user',
       relevance: 0,
       balance: startingAmount,
+      confirmed,
       confirmCode
     };
 
-    let newUser = new User(userObj);
-    newUser = await newUser.save();
+    user = new User(userObj);
+    user = await user.save();
+
+    invite.status = 'registered';
+    invite.redeemed = true;
+    invite = await invite.save();
 
     token = jwt.sign(
-      { _id: newUser._id },
+      { _id: user._id },
       config.secrets.session,
-      { expiresInMinutes: 60 * 5 }
+      { expiresIn: 60 * 5 * 60 }
     );
 
-    sendConfirmation(newUser, true);
-
+    if (!confirmed) sendConfirmation(user, true);
   } catch (err) {
     return handleError(res, err);
   }

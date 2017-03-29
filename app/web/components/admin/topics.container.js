@@ -145,13 +145,11 @@ styles = {
 
 
 export default connect(
-  state => {
-    return {
-      auth: state.auth,
-      tags: state.tags
-    };
-  },
-  dispatch => {
-    return { actions: bindActionCreators(tagActions, dispatch) };
-  }
+  state => ({
+    auth: state.auth,
+    tags: state.tags
+  }),
+  dispatch => ({
+    actions: bindActionCreators(tagActions, dispatch)
+  })
 )(TopicsAdmin);

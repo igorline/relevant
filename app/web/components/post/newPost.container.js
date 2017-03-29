@@ -3,8 +3,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as userActions from '../../actions/user';
 import * as postActions from '../../actions/newPost';
-import * as tagActions from '../../actions/tag';
-import * as utils from '../../utils';
+import * as tagActions from '../../../actions/tag';
+import * as utils from '../../../utils';
 
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
 

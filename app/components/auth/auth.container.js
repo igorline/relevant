@@ -11,6 +11,7 @@ import SignUp from './signup.component';
 import ImageUpload from './imageUpload.component';
 import Forgot from './forgot.component';
 import ResetPassword from './resetPassword.component';
+import * as adminActions from '../../actions/admin.actions';
 import * as authActions from '../../actions/auth.actions';
 import * as navigationActions from '../../actions/navigation.actions';
 import Card from '../nav/card.component';
@@ -43,7 +44,7 @@ class AuthContainer extends Component {
         return <Login {...this.props} />;
 
       case 'signup':
-        return <SignUp {...this.props} />;
+        return <SignUp {...this.props} scene={props.scene.route} />;
 
       case 'imageUpload':
         return <ImageUpload {...this.props} />;
@@ -101,6 +102,7 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     navigation: state.navigation.auth,
+    admin: state.admin
   };
 }
 
@@ -109,7 +111,8 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(
       {
         ...authActions,
-        ...navigationActions
+        ...navigationActions,
+        ...adminActions
       },
       dispatch),
   };
