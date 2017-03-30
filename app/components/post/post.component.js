@@ -9,10 +9,11 @@ import { globalStyles } from '../../styles/global';
 import PostButtons from './postButtons.component';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
-import PostImage from './postImage.component';
+import PostImage from './postImage.component1';
 import Commentary from './commentary.component';
 
 let styles;
+const LAYOUT = 1;
 
 class Post extends Component {
 
@@ -61,62 +62,87 @@ class Post extends Component {
     }
 
     let commentary = posts.filter(p => {
+      if (LAYOUT === 1) return p._id !== reposted;
       return (p._id !== reposted && p._id !== post._id && !p.repost);
     });
 
     let label = null;
     if (commentary.length) {
-      label = <Text style={[styles.tabFont, styles.cLabel]}>🤔 Other{'\''}s Commentary</Text>;
+      label = <Text style={[styles.tabFont, styles.cLabel]}>🤔 {LAYOUT !== 1 ? 'Other\'s ' : null}Commentary</Text>;
       commentaryEl = <Commentary {...this.props} commentary={commentary} />;
     }
 
     let repostEl = null;
     let postStyle = {};
 
-    if (this.props.showReposts && post && post.comments && post.comments[0]) {
-      let repost = this.props.posts.comments[post.comments[0]];
-      if (repost && repost.repost) {
-        postStyle = [styles.repost, styles.boxShadow];
-        let repostObj = {
-          ...repost,
-          user: this.props.users[repost.user] || repost.user,
-          embeddedUser: repost.embeddedUser,
-          body: repost.text,
-          _id: post._id,
-        };
+    // if (this.props.showReposts && post && post.comments && post.comments[0]) {
+    //   let repost = this.props.posts.comments[post.comments[0]];
+    //   if (repost && repost.repost) {
+    //     postStyle = [styles.repost, styles.boxShadow];
+    //     let repostObj = {
+    //       ...repost,
+    //       user: this.props.users[repost.user] || repost.user,
+    //       embeddedUser: repost.embeddedUser,
+    //       body: repost.text,
+    //       _id: post._id,
+    //     };
 
-        repostEl = (
-          <View style={{ paddingBottom: 25 }}>
-            <PostInfo repost {...this.props} post={repostObj} />
-            <PostBody repost {...this.props} post={repostObj} />
-          </View>
-        );
-      }
-    }
+    //     repostEl = (
+    //       <View style={{ paddingBottom: 25 }}>
+    //         <PostInfo repost {...this.props} post={repostObj} />
+    //         <PostBody repost {...this.props} post={repostObj} />
+    //       </View>
+    //     );
+    //   }
+    // }
 
     if (post.repost) {
-      postStyle = [styles.repost, styles.boxShadow];
+      // postStyle = [styles.repost, styles.boxShadow];
       let repost = this.props.posts.posts[post.repost.post];
       if (this.props.users[repost.user]) {
         repost.user = this.props.users[repost.user];
       }
       post.user = this.props.users[post.user] || post.user;
 
-      repostEl = (
-        <View style={{ marginBottom: 25 }}>
-          <PostInfo repost {...this.props} post={post} />
-          <PostBody
-            repost
-            {...this.props}
-            post={{ _id: repost._id, body: post.repost.commentBody }}
-          />
-        </View>
-      );
+      // repostEl = (
+      //   <View style={{ marginBottom: 25 }}>
+      //     <PostInfo repost {...this.props} post={post} />
+      //     <PostBody
+      //       repost
+      //       {...this.props}
+      //       post={{ _id: repost._id, body: post.repost.commentBody }}
+      //     />
+      //   </View>
+      // );
       post = { ...repost };
     }
 
     if (post.link || post.image) imageEl = <PostImage post={post} />;
     post.user = this.props.users[post.user] || post.user;
+
+    let FBLayout = (
+      <View>
+        <PostInfo
+          scene={this.props.scene}
+          big
+          {...this.props}
+          post={post}
+        />
+        <PostBody
+          scene={this.props.scene}
+          {...this.props}
+          post={post}
+          editing={false}
+        />
+        {imageEl}
+        <PostButtons
+          scene={this.props.scene}
+          {...this.props}
+          post={post}
+          comments={post.comments || null}
+        />
+      </View>
+    );
 
     return (
       <View style={{ overflow: 'hidden' }}>
@@ -124,29 +150,11 @@ class Post extends Component {
           <View style={styles.postInner}>
             {repostEl}
             <View style={postStyle}>
-              <PostInfo
-                scene={this.props.scene}
-                big
-                {...this.props}
-                post={post}
-              />
-              <PostBody
-                scene={this.props.scene}
-                {...this.props}
-                post={post}
-                editing={false}
-              />
-              {imageEl}
-              <PostButtons
-                scene={this.props.scene}
-                {...this.props}
-                post={post}
-                comments={post.comments || null}
-              />
+              {LAYOUT === 1 ? imageEl : FBLayout}
             </View>
           </View>
 
-          {label}
+          {LAYOUT !== 1 ? label : null}
           {commentaryEl}
         </View>
         {!this.props.singlePost ? separator : null}
@@ -170,11 +178,20 @@ const localStyles = StyleSheet.create({
     paddingBottom: 10,
     textAlign: 'center',
   },
-  postInner: {
+  postInner: LAYOUT === 1 ? {
+    // paddingLeft: 10,
+    // paddingRight: 10,
+  } :
+  {
     paddingLeft: 10,
     paddingRight: 10,
   },
-  postContainer: {
+  postContainer: LAYOUT === 1 ? {
+    // paddingBottom: 30,
+    // paddingTop: 20,
+    backgroundColor: 'white',
+  } :
+  {
     paddingBottom: 30,
     paddingTop: 20,
     backgroundColor: 'white',
@@ -186,6 +203,15 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     flex: 1,
+  },
+  separator: {
+    height: 6,
+    // borderColor: 'black',
+    // borderTopWidth: StyleSheet.hairlineWidth,
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    backgroundColor: 'hsl(238,20%,15%)',
+    // backgroundColor: 'hsl(238,100%,50%)',
+    // backgroundColor: 'hsl(238,20%,25%)',
   },
 });
 

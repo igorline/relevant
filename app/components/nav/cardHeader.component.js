@@ -101,7 +101,7 @@ class CardHeader extends Component {
     let action;
     let titleAction = () => null;
 
-    title = title.trim();
+    title = title ? title.trim() : '';
 
     if (component === 'profile') {
       if (this.props.users.users[props.scene.route.id]) {

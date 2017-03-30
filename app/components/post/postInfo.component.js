@@ -217,7 +217,7 @@ class PostInfo extends Component {
       user.name = post.embeddedUser.name;
     }
 
-    return (<View style={styles.postHeader}>
+    let info = (<View style={styles.postHeader}>
       <View style={styles.postInfo}>
         <UserName
           big={this.props.big}
@@ -231,7 +231,31 @@ class PostInfo extends Component {
           {this.props.repost ? null : postActions}
         </View>
       </View>
-    </View>);
+    </View>
+    );
+
+    if (this.props.repost) {
+      info = (
+        <View style={styles.repost}>
+          <View style={styles.postInfo}>
+            <UserName
+              repost
+              big={this.props.big}
+              user={user}
+              setSelected={this.setSelected}
+              postTime={postTime}
+            />
+            <View
+              style={[styles.infoRight]}
+            >
+              {this.props.repost ? null : postActions}
+            </View>
+          </View>
+        </View>
+      );
+    }
+
+    return info;
   }
 }
 
@@ -249,6 +273,13 @@ const localStyles = StyleSheet.create({
     overflow: 'visible',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  repost: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    overflow: 'visible',
+    paddingTop: 5,
+    paddingBottom: 0,
   },
   postHeader: {
     flexDirection: 'row',

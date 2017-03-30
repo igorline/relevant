@@ -206,7 +206,7 @@ export function generatePreviewServer(link) {
     return response.json();
   })
   .then((responseJSON) => {
-    console.log(responseJSON, 'responseJSON');
+    // console.log(responseJSON, 'responseJSON');
     return responseJSON;
   })
   .catch((error) => {

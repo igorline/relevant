@@ -440,19 +440,11 @@ const layout = StyleSheet.create({
   darkGrey: {
     color: darkGrey
   },
+
   // separator: {
   //   height: 12,
-  //   backgroundColor: 'hsl(0,0%,93%)',
-  // }
-  separator: {
-    height: 12,
-    // marginHorizontal: 20,
-    // marginVertical: 40,
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderColor: darkGrey,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    backgroundColor: 'hsl(238,20%,95%)',
-  },
+  //   backgroundColor: 'hsl(238,20%,95%)',
+  // },
   dots: {
     color: greyText,
     fontSize: 20,

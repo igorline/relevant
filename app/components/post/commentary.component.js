@@ -8,8 +8,11 @@ import {
 import { globalStyles, fullWidth } from '../../styles/global';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
+import PostButtons from './postButtons.component';
 
 let styles;
+
+const LAYOUT = 1;
 
 export default class Commentary extends Component {
 
@@ -17,24 +20,69 @@ export default class Commentary extends Component {
   }
 
   render() {
-    let length = this.props.commentary.length;
-    let commentary = this.props.commentary.map(post => {
+    let length = this.props.commentary.length - 1;
+
+    let commentary = this.props.commentary.map((post, i) => {
+      let repostEl;
+      let postStyle;
+
       post = { ...post };
       if (this.props.users[post.user]) post.user = this.props.users[post.user];
+      let separator = i < this.props.commentary.length - 1 || false;
+
+      if (post.repost) {
+        postStyle = [styles.repost];
+        let repost = this.props.posts.posts[post.repost.post];
+        if (this.props.users[repost.user]) {
+          repost.user = this.props.users[repost.user];
+        }
+        post.user = this.props.users[post.user] || post.user;
+        repostEl = (
+          <View style={{ marginBottom: 0 }}>
+            <PostInfo repost {...this.props} post={post} />
+            <PostBody
+              repost
+              {...this.props}
+              post={{ _id: repost._id, body: post.repost.commentBody }}
+            />
+          </View>
+        );
+        post = { ...repost };
+      }
+
+
       return (
         <View
-          key={post._id}
-          style={{ width: length ? fullWidth * 0.92 : fullWidth }}
+          key={post._id + i}
+          style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: length ? fullWidth - 10 - 20: fullWidth - 20 }}
         >
           <View
             style={[
               styles.commentary,
-              styles.boxShadow,
+              length ? styles.multi : null,
+              // separator ? styles.rightBorder : null,
+              // length ? styles.boxShadow : null,
             ]}
           >
-            <PostInfo navigator={this.props.navigator} post={post} />
-            <PostBody short {...this.props} post={post} editing={false} />
+            {repostEl}
+            <View style={[{ flex: 1 }, postStyle]}>
+              <PostInfo {...this.props} post={post} />
+              <PostBody
+                short {...this.props}
+                post={post}
+                editing={false}
+              />
+              { LAYOUT === 1 ? <PostButtons
+                scene={this.props.scene}
+                {...this.props}
+                post={post}
+                comments={post.comments || null}
+              /> : null}
+            </View>
           </View>
+          { separator ?
+          <View style={styles.vSeparator} ><View style={{ flex: 1 }} /></View> :
+          null}
         </View>
       )}
     );
@@ -46,8 +94,10 @@ export default class Commentary extends Component {
         decelerationRate={'fast'}
         showsHorizontalScrollIndicator={false}
         automaticallyAdjustContentInsets={false}
-        contentContainerStyle={styles.postScroll}
-        snapToInterval={(fullWidth * 0.92) + 8}
+        contentInset={{ left: length ? 15 : 10, right: length ? 15 : 10 }}
+        contentOffset={{ x: length ? -15 : -10 }}
+        contentContainerStyle={[styles.postScroll]}
+        snapToInterval={(fullWidth - 20 - 10)}
         snapToAlignment={'center'}
         scrollEventThrottle={1}
         onScroll={() => {
@@ -57,6 +107,7 @@ export default class Commentary extends Component {
             () => this.props.actions.scrolling(false), 300);
         }}
         forceSetResponder={() => {
+          if (!length) return;
           this.props.actions.scrolling(true);
           clearTimeout(this.scrollTimeout);
           this.scrollTimeout = setTimeout(
@@ -75,19 +126,43 @@ const localStyles = StyleSheet.create({
     alignItems: 'flex-start',
     flexWrap: 'nowrap',
     justifyContent: 'flex-start',
-    marginLeft: 10,
-    paddingRight: 10
+    marginLeft: 0,
+    marginRight: 0
   },
   commentary: {
-    flex: 1,
-    marginRight: 5,
-    marginLeft: 5,
-    marginTop: 3,
+    flexGrow: 1,
+    marginTop: 10,
     marginBottom: 10,
-    paddingLeft: 15,
-    paddingRight: 15,
-    paddingBottom: 25,
+    backgroundColor: 'white',
+    flexDirection: 'column',
   },
+  vSeparator: {
+    width: 0,
+    flexDirection: 'column',
+    marginVertical: 60,
+    borderRightColor: 'black',
+    borderRightWidth: StyleSheet.hairlineWidth,
+  },
+  rightBorder: {
+    // borderRightColor: 'black',
+    // borderRightWidth: StyleSheet.hairlineWidth,
+  },
+  repost: {
+    borderLeftColor: 'black',
+    borderLeftWidth: StyleSheet.hairlineWidth,
+    paddingLeft: 10,
+  },
+  multi: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 10,
+    // marginRight: 2.5,
+    // marginLeft: 2.5,
+    // borderLeftColor: 'black',
+    // borderLeftWidth: StyleSheet.hairlineWidth,
+    // borderRightColor: 'black',
+    // borderRightWidth: StyleSheet.hairlineWidth,
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };
