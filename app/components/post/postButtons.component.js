@@ -383,8 +383,8 @@ class PostButtons extends Component {
       //   <Text>{earnings ? 'post relevance: ' + post.relevance : null}</Text>
       // </View>
 
-    return (<View style={styles.postButtonsContainer}>
 
+    return (<View style={styles.postButtonsContainer}>
       <View style={styles.postButtons}>
         {investButtonEl}
         {irrelevantButton}
@@ -461,7 +461,7 @@ const localStyles = StyleSheet.create({
   },
   postButtonsContainer: {
     paddingBottom: 10,
-    marginTop: 35,
+    marginTop: 5,
   },
   postButton: {
     padding: 3,

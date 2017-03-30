@@ -244,8 +244,8 @@ exports.preview = (req, res) => {
         'twitter:description': null,
         'twitter:site': null,
         'twitter:creator': null,
-        'news_keywords': null,
-        'keywords': null,
+        news_keywords: null,
+        keywords: null,
       };
       const meta = $('meta');
       const $title = $('title');
@@ -278,7 +278,7 @@ exports.preview = (req, res) => {
       description = data.description || data['og:description'] || data['twitter:description'];
       image = data['og:image'] || data['og:image:url'] || data['twitter:image'] || data['twitter:image:src'] || data.image;
       let url = previewUrl || data['al:web:url'] || data['og:url'] || response.request.uri;
-      let tags = data['news_keywords'] + data['keywords'];
+      let tags = data.news_keywords + ',' + data.keywords;
       let domain = extractDomain(url);
 
       const obj = {

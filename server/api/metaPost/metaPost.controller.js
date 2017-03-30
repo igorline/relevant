@@ -59,6 +59,7 @@ exports.index = async (req, res) => {
     // TODO - limit the commenatry and paginate / inf scroll it on backend
     .populate({
       path: 'commentary',
+      match: { repost: { $exists: false } },
       options: { sort: commentarySort },
       populate: [
         {

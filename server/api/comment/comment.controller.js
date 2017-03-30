@@ -153,7 +153,7 @@ exports.create = async (req, res) => {
       let repostObj = {
         user: user._id,
         metaPost: post.metaPost,
-        postTime: new Date(),
+        postDate: new Date(),
         relevance: 0,
         rankRelevance: 0,
         embeddedUser: {

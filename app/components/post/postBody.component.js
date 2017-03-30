@@ -53,24 +53,23 @@ class PostBody extends Component {
 
     if (this.props.short) {
       // numberOfLines = 2;
-      maxTextLength = 30;
+      maxTextLength = 60;
       postStyle = styles.commentaryText;
     }
 
     if (this.props.repost) {
-      numberOfLines = 4;
+      numberOfLines = 2;
       maxTextLength = 60;
-      postStyle = styles.bodyText;
+      postStyle = styles.repostText;
     }
 
     let upvotes;
-
-    if ((post.downVotes || post.upVotes) && !this.props.short && !this.props.repost) {
+    if ((post.downVotes || post.upVotes) && !this.props.repost) {
       let r = Math.round(post.relevance);
       upvotes = (
         <Text
           onPress={this.showInvestors}
-          style={[styles.font12, styles.greyText, { paddingTop: 5 }]}
+          style={[styles.font12, styles.greyText, { paddingTop: 15, paddingBottom: 10 }]}
         >
           {post.upVotes ? post.upVotes + ' upvote' + (post.upVotes > 1 ? 's' : '') + ' • ' : null}
           {post.downVotes ? post.downVotes + ' downvote' + (post.downVotes > 1 ? 's' : '') + ' • ' : ''}
@@ -80,11 +79,15 @@ class PostBody extends Component {
     }
 
     return (
-      <View>
-        <TouchableWithoutFeedback onPress={this.goToPost}>
+      <View style={{ flex: 1 }}>
+        <TouchableWithoutFeedback
+          style={{ flex: 1 }}
+          onPress={this.goToPost}
+        >
           <View style={[styles.postBody]}>
             <Text style={[styles.darkGrey, postStyle]}>
               <TextBody
+                style={postStyle}
                 numberOfLines={numberOfLines}
                 maxTextLength={maxTextLength}
                 post={post}
@@ -94,7 +97,7 @@ class PostBody extends Component {
             </Text>
           </View>
         </TouchableWithoutFeedback>
-        {upvotes}
+        {upvotes || <Text style={{ paddingTop: 10 }} />}
       </View>
     );
   }
@@ -104,8 +107,10 @@ export default PostBody;
 
 const localStyles = StyleSheet.create({
   postBody: {
-    marginTop: 25,
+    marginTop: 20,
     // marginBottom: 25,
+    flex: 1,
+    justifyContent: 'center'
   },
   bodyText: {
     fontFamily: 'Georgia',
@@ -115,7 +120,13 @@ const localStyles = StyleSheet.create({
   commentaryText: {
     fontFamily: 'Georgia',
     fontSize: 32 / 2,
-    lineHeight: 40 / 2,
+    lineHeight: 48 / 2,
+  },
+  repostText: {
+    fontFamily: 'Georgia',
+    fontSize: 28 / 2,
+    lineHeight: 30 / 2,
+    marginTop: -5,
   },
   shortBodyText: {
     fontFamily: 'Libre Caslon Display',

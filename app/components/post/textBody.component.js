@@ -46,7 +46,7 @@ class TextBody extends Component {
 
   render() {
     const expanded = this.props.singlePost;
-    let maxTextLength = this.props.maxTextLength || Math.pow(10,1000);
+    let maxTextLength = this.props.maxTextLength || Math.pow(10, 1000);
     let body = this.props.body || '';
     let post = this.props.post;
     let bodyEl = null;
@@ -128,7 +128,7 @@ class TextBody extends Component {
     }
 
     return (
-      <Text>
+      <Text style={this.props.style}>
         {bodyEl}
       </Text>
     );
