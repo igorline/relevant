@@ -23,6 +23,7 @@ export default function (props) {
   let activityTime = moment(singleActivity.createdAt);
   let fromNow = numbers.timeSince(activityTime);
   let postTitle = 'Untitled';
+  let tooltipParent = {};
 
   if (singleActivity.post) {
     if (singleActivity.post.title) {
@@ -33,6 +34,20 @@ export default function (props) {
     }
     singleActivity.post.title = postTitle;
   }
+
+  let toggleTooltip = (name, type) => {
+    if (!tooltipParent[name]) return;
+    tooltipParent[name].measureInWindow((x, y, w, h) => {
+      let parent = { x, y, w, h };
+      if (x + y + w + h === 0) return;
+      props.navigator.setTooltipData({
+        name,
+        parent,
+        type
+      });
+      props.navigator.showTooltip(name);
+    });
+  };
 
   let setSelected = (user) => {
     props.navigator.goToProfile(user);
@@ -217,17 +232,23 @@ export default function (props) {
     }
 
     if (singleActivity.coin) {
-      coin = (<Text allowFontScaling={false} style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
-        <Image
-          style={[styles.r, { height: 15, width: 22, marginRight: 0 }]}
-          source={require('../assets/images/coinup.png')}
-        />
-        <Text style={{ lineHeight: 17, fontSize: 17 }}>
-          {Math.abs(numbers.abbreviateNumber(singleActivity.coin))}
-          { !smallScreen && singleActivity.amount ?
-            <Text style={styles.darkGrey}>{'•'}</Text> : null}
+      coin = (
+        <Text
+          onPress={() => toggleTooltip('activity')}
+          allowFontScaling={false}
+          style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}
+        >
+          <Image
+            style={[styles.r, { height: 15, width: 22, marginRight: 0 }]}
+            source={require('../assets/images/coinup.png')}
+          />
+          <Text style={{ lineHeight: 17, fontSize: 17 }}>
+            {Math.abs(numbers.abbreviateNumber(singleActivity.coin))}
+            { !smallScreen && singleActivity.amount ?
+              <Text style={styles.darkGrey}>{'•'}</Text> : null}
+          </Text>
         </Text>
-      </Text>);
+      );
     }
 
     switch (singleActivity.type) {
@@ -236,12 +257,19 @@ export default function (props) {
       case 'downvote':
       case 'partialDownvote':
         return (
-          <View style={[ smallScreen ? styles.activityMiddleSmall : styles.activityMiddle]}>
+          <View
+            style={[smallScreen ? styles.activityMiddleSmall : styles.activityMiddle]}
+            ref={(c) => tooltipParent.activity = c}
+          >
             { coin }
             {coin && smallScreen ?
               <View style={styles.divide} /> : null
             }
-            <Text allowFontScaling={false} style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
+            <Text
+              onPress={() => toggleTooltip('activity', singleActivity.type)}
+              allowFontScaling={false}
+              style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}
+            >
               <Image
                 style={[styles.r, { height: 16, width: 20, marginRight: 0 }]}
                 source={icon}

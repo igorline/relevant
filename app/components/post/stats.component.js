@@ -14,64 +14,42 @@ import * as navigationActions from '../../actions/navigation.actions';
 
 let styles;
 
+
 class Stats extends Component {
   constructor(props, context) {
     super(props, context);
+    this.initTooltips = this.initTooltips.bind(this);
     this.toggleTooltip = this.toggleTooltip.bind(this);
+    this.tooltipParent = {};
   }
 
   componentDidMount() {
-    if (this.props.auth.user &&
-      this.props.auth.user.onboarding === 0 &&
-      this.props.type === 'nav') {
-      this.tooltipTimeout = setTimeout(() => this.toggleTooltip(), 1000);
+    if (this.props.type === 'nav' && this.props.discover) {
+      this.tooltipParent.topics = this.props.parent.title;
+      setTimeout(() => this.initTooltips(), 1000);
     }
   }
 
-  toggleTooltip() {
-    if (this.props.type !== 'nav') return;
-    let tooltipContent = (<Text>
-      This is your relevance:{' '}
-      <Text style={[styles.bebas]}>
-        <Image
-          style={[styles.r, { marginBottom: -2 }]}
-          source={require('../../assets/images/r.png')}
-        />
-        {numbers.abbreviateNumber(this.props.entity.relevance)}
-      </Text>
-      {'\n\n'}
-      As your relevance grows, you will become more influential and your upvotes will have more value
-      {'\n\n'}
-      To get started, upvote a post
-      {'\n\n\n'}
-      <Image
-        resizeMode={'contain'}
-        style={{ width: 100, height: 60, marginTop: 0 }}
-        source={require('../../assets/images/upvote.jpg')}
-      />
-    </Text>);
-
-    this.tooltipData = {
-      vertical: 'bottom',
-      horizontal: 'right',
-      horizontalOffset: -5,
-      name: 'coin',
-      verticalOffset: 10,
-      text: tooltipContent,
-    };
-
-    clearTimeout(this.tooltipTimeout);
-    if (this.tooltipParent) {
-      this.tooltipParent.measureInWindow((x, y, w, h) => {
-        let parent = { x, y, w, h };
-        this.props.actions.showTooltip({
-          ...this.tooltipData,
-          parent
-        });
+  initTooltips() {
+    ['relevance', 'coin', 'topics', 'earnings'].forEach(name => {
+      this.props.actions.setTooltipData({
+        name,
+        toggle: () => this.toggleTooltip(name)
       });
-    } else {
-      this.tooltipTimeout = setTimeout(() => this.toggleTooltip(), 1000);
-    }
+    });
+  }
+
+  toggleTooltip(name) {
+    if (!this.tooltipParent[name]) return;
+    this.tooltipParent[name].measureInWindow((x, y, w, h) => {
+      let parent = { x, y, w, h };
+      if (x + y + w + h === 0) return;
+      this.props.actions.setTooltipData({
+        name,
+        parent
+      });
+      this.props.actions.showTooltip(name);
+    });
   }
 
   render() {
@@ -94,7 +72,7 @@ class Stats extends Component {
     }
 
     let value = (
-      <Text onPress={() => this.toggleTooltip()}>
+      <Text onPress={() => this.toggleTooltip('coin')}>
         <Image
           style={[styles.coin, ...coinStyle]}
           source={require('../../assets/images/relevantcoin.png')}
@@ -105,7 +83,7 @@ class Stats extends Component {
     let percent = <Percent fontSize={17} user={entity} />;
 
     let relevance = (
-      <Text onPress={() => this.toggleTooltip()}>
+      <Text onPress={() => this.toggleTooltip('relevance')}>
         <Image
           style={[styles.r, ...iconStyle]}
           source={require('../../assets/images/r.png')}
@@ -136,6 +114,7 @@ class Stats extends Component {
         style={[styles.stats, this.props.style]}
       >
         <View
+          ref={(c) => this.tooltipParent.coin = c}
           style={styles.statInner}
         >
           <Text style={statsStyle}>
@@ -145,7 +124,7 @@ class Stats extends Component {
 
         </View>
         <View
-          ref={(c) => this.tooltipParent = c}
+          ref={(c) => this.tooltipParent.relevance = c}
           style={styles.statInner}
         >
           <Text style={statsStyle}>
@@ -181,6 +160,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(
-  (state) => { return { auth: state.auth }; },
+  (state) => ({
+    auth: state.auth,
+  }),
   mapDispatchToProps
 )(Stats);
