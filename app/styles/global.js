@@ -113,7 +113,7 @@ const font = StyleSheet.create({
   },
   strokeText: {
     fontFamily: 'HelveticaNeueLTStd-BdOu',
-    lineHeight: 30,
+    // lineHeight: 30,
   },
   halfLetterSpacing: {
     letterSpacing: 0.5,
