@@ -9,11 +9,14 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { globalStyles, blue, fullHeight, fullWidth } from '../styles/global';
-import * as authActions from '../actions/auth.actions';
-import * as navigationActions from '../actions/navigation.actions';
+import { globalStyles, blue, fullHeight, fullWidth } from '../../styles/global';
+import * as authActions from '../../actions/auth.actions';
+import * as navigationActions from '../../actions/navigation.actions';
+import * as helper from './tooltip.helper';
 
 let styles;
+const TOOLTIP_MARGIN = 10;
+const TOOLTIP_WIDTH = fullWidth - 2 * TOOLTIP_MARGIN;
 
 class Tooltip extends Component {
   constructor(props, context) {
@@ -26,27 +29,43 @@ class Tooltip extends Component {
       width: 0,
     };
     this.offset = 15;
-    this.steps = [0, 1, 2];
     this.nextOnboarding = this.nextOnboarding.bind(this);
   }
 
-  componentWillReceiveProps(next) {
-    if (!this.props.auth.user) return;
-    this.step = this.steps.indexOf(this.props.auth.user.onboarding);
+  componentDidMount() {
+  }
 
-    if (next.tooltip !== this.props.tooltip) {
-      if (next.tooltip.name) {
+  componentWillReceiveProps(next) {
+    if (!this.props.auth.user && next.auth.user) {
+      this.initTooltipData(next);
+    }
+
+    if (!this.props.auth.user) return;
+    this.step = this.props.auth.user.onboarding;
+
+
+    let id = next.tooltip.current;
+    let tooltip = next.tooltip.onboarding[id];
+    let nextT = next.tooltip.data[tooltip];
+    // console.log(tooltip);
+    // console.log(nextT);
+    if (nextT && nextT.toggle && tooltip !== next.tooltip.showing.name) {
+      console.log('trigger ', tooltip);
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => nextT.toggle(), 300);
+    }
+
+
+    if (next.tooltip.showing.name !== this.props.tooltip.showing.name) {
+      let tooltip = next.tooltip.showing;
+
+      if (tooltip && tooltip.name) {
         Animated.timing(this.state.scale, {
           toValue: 1,
           delay: 0,
           duration: 400,
           easing: Easing.in(Easing.elastic(1.0))
-        }).start();
-        Animated.timing(this.state.x, {
-          toValue: 1,
-          delay: 0,
-          duration: 220,
-          easing: Easing.out(Easing.ease)
+          // easing: Easing.in(Easing.cubic)
         }).start();
         Animated.timing(this.state.opacity, {
           toValue: 1,
@@ -61,41 +80,50 @@ class Tooltip extends Component {
           x: new Animated.Value(0),
         });
       }
-
-      // clearTimeout(this.timeout);
-      // this.timeout = setTimeout(this.nextOnboarding, 8000);
     }
   }
 
+  initTooltipData(props) {
+    helper.tooltips.forEach(tooltip => {
+      this.props.actions.setTooltipData(helper.data[tooltip]);
+    });
+
+    setTimeout(() => {
+      this.props.actions.setCurrentTooltip(this.props.auth.user.onboarding);
+    }, 2000);
+  }
+
   nextOnboarding() {
-    clearTimeout(this.timeout);
+    let current = this.props.tooltip.showing.name;
+
+    let index = this.props.tooltip.onboarding.findIndex(t => t === current);
     this.props.actions.showTooltip(null);
-    this.props.actions.setOnboardingStep(1);
-    if (this.step >= 0) {
+    // if (this.step >= 3) {
+    //   this.props.actions.setOnboardingStep(0);
+    // }
+    if (index === this.step) {
       this.props.actions.setOnboardingStep(this.step + 1);
     }
   }
 
   render() {
     if (!this.props.auth.user) return null;
-    if (!this.props.tooltip.name) return null;
+    let tooltip = this.props.tooltip.showing;
+    if (!tooltip || !tooltip.name) return null;
+    if (!tooltip.parent) return null;
     let style = { opacity: this.state.opacity };
     let arrowStyle = [];
     let transform = [{ scale: this.state.scale }];
 
-    let parent = this.props.tooltip.parent;
-    // console.log('onboarding ', this.props.auth.user.onboarding);
-    // if (this.props.tooltip.name !== this.props.auth.user.onboarding) {
-    //   return null;
-    // }
+    let parent = tooltip.parent;
 
-    if (this.props.tooltip.vertical === 'bottom') {
+    if (tooltip.vertical === 'bottom') {
       transform = [...transform,
         { translateY: this.state.height / 2 }
       ];
       style = {
         ...style,
-        top: parent.y + parent.h + this.props.tooltip.verticalOffset - this.state.height / 2,
+        top: parent.y + parent.h + tooltip.verticalOffset - this.state.height / 2,
         transform
       };
       arrowStyle = [
@@ -104,11 +132,11 @@ class Tooltip extends Component {
       ];
     }
 
-    if (this.props.tooltip.vertical === 'top') {
+    if (tooltip.vertical === 'top') {
       transform = [...transform];
       style = {
         ...style,
-        top: parent.y - this.state.height - this.props.tooltip.verticalOffset,
+        top: parent.y - this.state.height - tooltip.verticalOffset,
         transform
       };
       arrowStyle = [
@@ -118,35 +146,37 @@ class Tooltip extends Component {
       ];
     }
 
-    if (this.props.tooltip.horizontal === 'right') {
-      let px = parent.w / 2 + parent.x;
-      // let offset = this.props.tooltip.horizontalOffset;
-      let x = this.state.x.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, -px],
-      });
-      transform = [
+    if (tooltip.horizontal === 'right') {
+      let offset = tooltip.horizontalOffset;
+      let px = parent.w / 2 + parent.x + offset * 2;
+      let o = fullWidth - px - TOOLTIP_MARGIN;
 
+      let x = this.state.scale.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, - TOOLTIP_WIDTH + TOOLTIP_WIDTH / 2 + o + TOOLTIP_MARGIN],
+      });
+
+      transform = [
+        { translateX: x },
         ...transform,
-        { translateX: -px },
       ];
       style = {
         ...style,
-        left: 10 + px,
-        transform
+        left: px - TOOLTIP_WIDTH / 2 - TOOLTIP_MARGIN,
+        transform,
       };
       arrowStyle = [
         ...arrowStyle,
-        { right: 8 },
+        { right: fullWidth - px - TOOLTIP_MARGIN - 6 },
       ];
     }
 
-    if (this.props.tooltip.horizontal === 'left') {
+    if (tooltip.horizontal === 'left') {
       // transform = [...transform,
         // { translateX: -this.state.width / 2 }];
       style = {
         ...style,
-        left: parent.x + this.props.tooltip.horizontalOffset,
+        left: parent.x + tooltip.horizontalOffset,
         transform
       };
       arrowStyle = [
@@ -155,13 +185,13 @@ class Tooltip extends Component {
       ];
     }
 
-    if (this.props.tooltip.horizontal === 'center') {
+    if (tooltip.horizontal === 'center') {
       // transform = [...transform,
         // { translateX: -this.state.width / 2 }];
       style = {
         ...style,
-        width: this.props.tooltip.width,
-        left: parent.x + parent.w / 2 - this.state.width / 2 + this.props.tooltip.horizontalOffset,
+        width: tooltip.width,
+        left: parent.x + parent.w / 2 - this.state.width / 2 + tooltip.horizontalOffset,
         transform
       };
       arrowStyle = [
@@ -173,7 +203,7 @@ class Tooltip extends Component {
 
     return (
       <TouchableHighlight
-        underlayColor={'transparent'}
+        underlayColor={'hsla(240,70%,50%,0.4)'}
         style={styles.overlay}
         onPress={this.nextOnboarding}
       >
@@ -190,9 +220,11 @@ class Tooltip extends Component {
             style={{ padding: 10 }}
             onPress={this.nextOnboarding}
           >
-            <Text style={styles.tooltipText}>
-              {this.props.tooltip.text}
-            </Text>
+            {helper.text[tooltip.name]({
+              ...this.props,
+              style: styles.tooltipText,
+              ...tooltip
+            })}
           </TouchableHighlight>
         </Animated.View>
       </TouchableHighlight>
@@ -209,26 +241,29 @@ let localStyles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.6)'
+    backgroundColor: 'hsla(240,70%,50%,0.4)',
+    // backgroundColor: 'hsla(240,70%,0%,0.4)'
   },
   tooltip: {
     position: 'absolute',
     backgroundColor: 'white',
-    borderRadius: 2,
+    // backgroundColor: 'hsla(240,100%,80%,1)',
+    borderRadius: 5,
     padding: 10,
+    paddingVertical: 15,
     shadowColor: 'black',
     shadowOffset: { width: 1, height: 1 },
     shadowRadius: 3,
     shadowOpacity: 0.8,
     zIndex: 1000000,
-    width: fullWidth - 20,
+    width: TOOLTIP_WIDTH,
+
   },
   tooltipText: {
-    // color: 'white',
-    // fontFamily: 'Georgia',
+    // fontFamily: 'Helvetica',
+    fontWeight: '100',
     fontSize: 15,
     lineHeight: 20,
-
   },
   arrow: {
     width: 10,
@@ -251,7 +286,8 @@ styles = { ...localStyles, ...globalStyles };
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    tooltip: state.tooltip
+    tooltip: state.tooltip,
+    nav: state.navigation
   };
 }
 

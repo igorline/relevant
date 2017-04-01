@@ -131,9 +131,17 @@ export function logoutAction(user) {
   };
 }
 
+export function setCurrentTooltip(step) {
+  return {
+    type: types.SET_ONBOARDING_STEP,
+    payload: step
+  };
+}
+
 export function setOnboardingStep(step) {
   return async dispatch => {
-    fetch(process.env.API_SERVER + '/api/user/onboarding/' + step, {
+    dispatch(setCurrentTooltip(step));
+    return fetch(process.env.API_SERVER + '/api/user/onboarding/' + step, {
       credentials: 'include',
       method: 'GET',
       ...await reqOptions()
@@ -141,6 +149,11 @@ export function setOnboardingStep(step) {
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(updateAuthUser(responseJSON));
+      return true;
+    })
+    .catch(err => {
+      console.log(err);
+      return false;
     });
   };
 }
