@@ -216,7 +216,7 @@ class Post extends Component {
             autoHeight
             style={{ flex: 1 }}
             // source={{ uri: post.link }}
-            source={{ html: html + postHtml.split(/\s+/, 130).join(' ') + '...' }}
+            source={{ html: post.shortText }}
             // source={{ html: html + post.html + '' }}
             // source={{
             //   uri: `${process.env.API_SERVER}/api/post/readable?uri=${post.link}`,
