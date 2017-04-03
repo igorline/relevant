@@ -5,6 +5,7 @@
  * @prop autoHeight: true|false
  * @prop defaultHeight: 100
  * @prop width: device Width
+ * @prop maxHeight: null
  * @prop ...props
  *
  * @author Elton Jain
@@ -61,8 +62,12 @@ export default class MyWebView extends Component {
   }
 
   _onMessage(e) {
+    let heith;
+    if (this.props.maxHeight) {
+      height = Math.min(parseInt(e.nativeEvent.data), this.props.maxHeight);
+    } else height = parseInt(e.nativeEvent.data);
     this.setState({
-      webViewHeight: parseInt(e.nativeEvent.data)
+      webViewHeight: height
     });
   }
 

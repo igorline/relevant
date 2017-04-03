@@ -3,6 +3,8 @@ import {
   StyleSheet,
   View,
   Text,
+  TouchableHighlight,
+  Linking
 } from 'react-native';
 import { connect } from 'react-redux';
 import { globalStyles } from '../../styles/global';
@@ -11,7 +13,7 @@ import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostImage from './postImage.component';
 import Commentary from './commentary.component';
-import WebViewAuto from './WebViewAuto1';
+import Excerpt from './excerpt.component';
 
 let styles;
 
@@ -116,19 +118,22 @@ class Post extends Component {
       post = { ...repost };
     }
 
-    if (post.link || post.image) imageEl = <PostImage
-      actions={this.props.actions}
-      post={post}
-    />;
-    post.user = this.props.users[post.user] || post.user;
-
-    let excerpt;
-    if (this.props.singlePost) {
-      excerpt = (<WebViewAuto
-        autoHeight
-        source={{ html: post.shortText }}
+    if (post.link || post.image) {
+      imageEl = (<PostImage
+        actions={this.props.actions}
+        post={post}
       />);
     }
+    post.user = this.props.users[post.user] || post.user;
+
+    let article;
+    if (post.shortText && this.props.singlePost) {
+      article = (
+        <Excerpt
+          post={post} actions={this.props.actions}
+        />);
+    }
+
 
     return (
       <View style={{ overflow: 'hidden' }}>
@@ -160,7 +165,7 @@ class Post extends Component {
 
           {label}
           {commentaryEl}
-          {excerpt}
+          {article}
         </View>
         {!this.props.singlePost ? separator : null}
       </View>
