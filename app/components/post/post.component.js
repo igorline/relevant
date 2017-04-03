@@ -11,6 +11,7 @@ import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostImage from './postImage.component';
 import Commentary from './commentary.component';
+import WebViewAuto from './WebViewAuto1';
 
 let styles;
 
@@ -121,6 +122,14 @@ class Post extends Component {
     />;
     post.user = this.props.users[post.user] || post.user;
 
+    let excerpt;
+    if (this.props.singlePost) {
+      excerpt = (<WebViewAuto
+        autoHeight
+        source={{ html: post.shortText }}
+      />);
+    }
+
     return (
       <View style={{ overflow: 'hidden' }}>
         <View style={[styles.postContainer]}>
@@ -151,6 +160,7 @@ class Post extends Component {
 
           {label}
           {commentaryEl}
+          {excerpt}
         </View>
         {!this.props.singlePost ? separator : null}
       </View>

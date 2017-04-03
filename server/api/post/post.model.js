@@ -20,6 +20,19 @@ let PostSchema = new Schema({
   link: String,
   tags: [{ type: String, ref: 'Tag' }],
   body: String,
+  domain: String,
+
+  shortText: { type: String },
+  longText: { type: String },
+  articleDate: Date,
+  articleAuthor: [String],
+  copyright: String,
+  links: [{
+    text: String,
+    href: String,
+  }],
+  publisher: String,
+
   repost: {
     post: { type: String, ref: 'Post' },
     comment: { type: Schema.Types.ObjectId, ref: 'Comment' },
@@ -47,7 +60,6 @@ let PostSchema = new Schema({
   relevanceNeg: { type: Number, default: 0 },
   rankRelevance: { type: Number, default: 0 },
   commentCount: { type: Number, default: 0 },
-  domain: String,
   upVotes: { type: Number, default: 0 },
   downVotes: { type: Number, default: 0 },
   keywords: [String]
@@ -180,14 +192,17 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
         rank: this.rank,
         newCommentary: this._id,
         topCommentary: this._id,
+        latestPost: this.postDate,
+        commentaryCount: 1,
+        tags: this.tags,
+        categories: [this.category],
+
+        // may not need to do this if meta is pre-populated
+        domain: [this.domain],
         commentary: [this._id],
         title: this.title,
         description: this.description,
         image: this.image,
-        latestPost: this.postDate,
-        commentaryCount: 1,
-        tags: this.tags,
-        categories: [this.category]
       };
       let metaPost = new MetaPost(meta);
       meta = await metaPost.save();
