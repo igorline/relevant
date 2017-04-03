@@ -157,7 +157,7 @@ class Profile extends Component {
           active={this.state.view}
           handleChange={this.changeView}
         />,
-        <View key={2} style={{ height: 10 }} />
+        <View key={2} style={{ height: 0 }} />
       ]);
     }
     return header;

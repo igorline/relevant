@@ -3,19 +3,32 @@ import {
   StyleSheet,
   View,
   Text,
+  Linking,
+  TouchableHighlight,
+  WebView,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, fullHeight } from '../../styles/global';
 import PostButtons from './postButtons.component';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostImage from './postImage.component1';
 import Commentary from './commentary.component';
-
+import TextBody from './textBody.component';
+import HTMLView from 'react-native-htmlview';
+import WebViewAuto from './WebViewAuto1';
+// console.log(HTMLView)
 let styles;
 const LAYOUT = 1;
 
 class Post extends Component {
+
+  componentWillMount() {
+    if (this.props.singlePost && this.props.post) {
+      let post = this.props.posts.posts[this.props.post];
+      this.props.actions.getPostHtml(post);
+    }
+  }
 
   shouldComponentUpdate(next) {
     // console.log(next);
@@ -117,7 +130,19 @@ class Post extends Component {
       post = { ...repost };
     }
 
-    if (post.link || post.image) imageEl = <PostImage post={post} />;
+    if (post.link || post.image) {
+      // if (!this.props.metaPost) {
+      //   if (typeof post.metaPost === 'string') {
+      //     post.metaPost = this.props.posts.metaPosts[post.metaPost];
+      //   }
+      // }
+      imageEl = (<PostImage
+        // metaPost={this.props.metaPost || post.metaPost}
+        singlePost={this.props.singlePost}
+        actions={this.props.actions}
+        post={post}
+      />);
+    }
     post.user = this.props.users[post.user] || post.user;
 
     let FBLayout = (
@@ -144,6 +169,78 @@ class Post extends Component {
       </View>
     );
 
+          // <TextBody
+          //   maxTextLength={140}
+          //   style={styles.excerpt}
+          //   body={post.shortText || post.description }
+          // />
+
+    let article;
+    let html = `
+      <style>
+        body {
+          font-family: Georgia,
+          font-size: 18px;
+          padding: 0;
+          margin: 0;
+        }
+        figure {
+          margin: 0;
+        }
+        figcaption {
+          font-size: 12px;
+          margin: 10px 20px 0 20px;
+        }
+        p, h1, h2, h3, h4 {
+          padding: 0 10px;
+        }
+        img {
+          // display: none;
+          width: 100% !important;
+        }</style>
+      `;
+    if (this.props.singlePost && post.link) {
+      let postHtml = post.html || '';
+      article = (
+        <View>
+          <WebViewAuto
+            onShouldStartLoadWithRequest={navState => {
+              if (navState.url !== 'about:blank') {
+                Linking.openURL(navState.url);
+                return false;
+              }
+              return true;
+            }}
+            startInLoadingState
+            // injectedJavaScript={"window.postMessage = String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage');"}
+            autoHeight
+            style={{ flex: 1 }}
+            // source={{ uri: post.link }}
+            source={{ html: html + postHtml.split(/\s+/, 130).join(' ') + '...' }}
+            // source={{ html: html + post.html + '' }}
+            // source={{
+            //   uri: `${process.env.API_SERVER}/api/post/readable?uri=${post.link}`,
+            // }}
+            // stylesheet={styles.excerpt}
+          />
+          <TouchableHighlight
+            style={styles.largeButton}
+            onPress={() => Linking.openURL(post.link)}
+          >
+            <Text style={styles.largeButtonText}>
+              Read Full Article
+            </Text>
+          </TouchableHighlight>
+        </View>
+      );
+    }
+
+    let description = (
+      <Text style={styles.desc}>
+        {post.description}
+      </Text>
+    );
+
     return (
       <View style={{ overflow: 'hidden' }}>
         <View style={[styles.postContainer]}>
@@ -153,7 +250,7 @@ class Post extends Component {
               {LAYOUT === 1 ? imageEl : FBLayout}
             </View>
           </View>
-
+          {article}
           {LAYOUT !== 1 ? label : null}
           {commentaryEl}
         </View>
@@ -164,6 +261,17 @@ class Post extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  desc: {
+    padding: 10,
+    fontSize: 12,
+  },
+  excerpt: {
+    padding: 10,
+    marginTop: 10,
+    fontFamily: 'Georgia',
+    fontSize: 38 / 2,
+    lineHeight: 55 / 2,
+  },
   repost: {
     paddingLeft: 10,
     paddingRight: 10,

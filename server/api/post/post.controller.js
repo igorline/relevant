@@ -1,6 +1,8 @@
 import request from 'request';
 import cheerio from 'cheerio';
 import { EventEmitter } from 'events';
+import jsdom from 'jsdom';
+import Readability from 'readability';
 
 import MetaPost from '../metaPost/metaPost.model';
 
@@ -14,6 +16,7 @@ import apnData from '../../pushNotifications';
 const PostEvents = new EventEmitter();
 
 const extractor = require('unfluff');
+const reader = require('node-readability');
 
 request.defaults({ maxRedirects: 20, jar: true });
 // uniqueInvestments()
@@ -207,6 +210,8 @@ exports.preview = (req, res) => {
       if (redirectUrl) {
         return request({
           url: redirectUrl,
+          maxRedirects: 20,
+          jar: true,
           headers: previewUrl.match('apple.news') ? {} : fbHeader
         }, processReturn);
       }
@@ -220,12 +225,31 @@ exports.preview = (req, res) => {
         previewUrl = canonical.href;
         return request({
           url: canonical.href,
+          maxRedirects: 20,
+          jar: true,
           headers: previewUrl.match('apple.news') ? {} : fbHeader
         }, processReturn);
       }
 
       // let unfluff = extractor(body);
       // console.log(unfluff);
+      // read(body, (err, article) => {
+      //   console.log(article.content);
+      // });
+
+      console.log()
+      request({
+        url: 'https://mercury.postlight.com/parser?url=' + previewUrl,
+        jar: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.READER_API
+        }
+      }, (err, resp, bd) => {
+        console.log(bd);
+        console.log(bd.date_published);
+        console.log(bd.excerpt);
+      });
 
       let data = {
         title: null,
@@ -348,6 +372,68 @@ exports.preview = (req, res) => {
 
   // response.pipe(proxy_request);
 };
+
+// exports.readable = (req, res) => {
+//   let uri = req.query.uri;
+
+//   request({
+//     url: uri,
+//     // maxRedirects: 20,
+//     jar: true,
+//     // headers: previewUrl.match('apple.news') ? {} : fbHeader
+//   }, (err, resp, body) => {
+//     reader(body, (err, article) => {
+//       if (err) console.log(err);
+//       console.log(article.getTitle());
+//       return res.send(article.getContent());
+//     });
+//   });
+// };
+
+exports.readable = (req, res) => {
+  let uri = req.query.uri;
+
+  request({
+    url: uri,
+    // maxRedirects: 20,
+    jar: true,
+    // headers: previewUrl.match('apple.news') ? {} : fbHeader
+  }, (err, resp, body) => {
+
+    let doc = jsdom.jsdom(body, {
+      features: {
+        FetchExternalResources: false,
+        ProcessExternalResources: false
+      }
+    });
+    // let doc = new JSDOMParser().parse(body);
+    let article = new Readability(uri, doc).parse();
+    // console.log(article.textContent);
+    Array.prototype.slice.call(article.article.getElementsByTagName('figure'))
+    .forEach(item => item.remove());
+    let short = trimToLength(article.article, 140);
+    return res.send(short.innerHTML);
+    // return res.send(article.content);
+    // return res.send(article.p1.innerHTML);
+  });
+};
+
+function trimToLength(doc, length) {
+  let totalLength = 0;
+  Array.prototype.slice.call(doc.getElementsByTagName('*'))
+  .forEach(el => {
+    if (totalLength > length) return el.remove();
+    let elChildNode = el.childNodes;
+    elChildNode.forEach(child => {
+      if (child.nodeType === 3) {
+        let text = child.textContent;
+        let l = text.split(/\s+/).length;
+        if (l > 4) totalLength += l;
+      }
+    });
+  });
+  return doc;
+}
 
 exports.findByID = async (req, res) => {
   let id;

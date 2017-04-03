@@ -10,7 +10,8 @@ import {
   SHOW_TOOLTIP,
   SET_VIEW,
   TOGGLE_TOPICS,
-  SCROLL
+  SCROLL,
+  SET_TOOLTIP_DATA
 } from './actionTypes';
 
 
@@ -70,10 +71,17 @@ export function setView(type, view) {
   };
 }
 
-export function showTooltip(tooltip) {
+export function setTooltipData(data) {
+  return {
+    type: SET_TOOLTIP_DATA,
+    payload: data
+  };
+}
+
+export function showTooltip(name) {
   return {
     type: SHOW_TOOLTIP,
-    payload: tooltip
+    payload: name
   };
 }
 
