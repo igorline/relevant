@@ -198,6 +198,8 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
         categories: [this.category],
 
         // may not need to do this if meta is pre-populated
+        articleAuthor: this.articleAuthor,
+        shortText: this.shortText,
         domain: [this.domain],
         commentary: [this._id],
         title: this.title,

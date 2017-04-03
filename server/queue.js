@@ -174,9 +174,9 @@ async function populateMeta() {
           // });
           // if (!resonse) throw new Error('problem getting url');
           let url = meta.url;
-          if (!url.match('http://') && !url.match('https://')) {
-            url = 'http://';
-          }
+          // if (!url.match('http://') && !url.match('https://')) {
+          //   url = 'http://';
+          // }
           let article = await proxyHelpers.getReadable(url);
           let short = proxyHelpers.trimToLength(article.article, 140);
           meta.shortText = short.innerHTML;

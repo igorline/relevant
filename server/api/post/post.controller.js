@@ -153,14 +153,7 @@ exports.userPosts = async (req, res) => {
   return null;
 };
 
-// exports.recent = (req, res) => {
-//   Post.find().sort({ field: 'asc', _id: -1 })
-//   .limit(20)
-//   .exec((err, posts) => {
-//     if (err) return res.send(500, err);
-//     return res.status(200).json(posts);
-//   });
-// };
+
 
 exports.preview = (req, res) => {
   let previewUrl = req.query.url;
@@ -326,6 +319,8 @@ exports.create = (req, res) => {
     categoryEmoji,
     relevance: 0,
     rankRelevance: 0,
+    articleAuthor: req.body.articleAuthor,
+    shortText: req.body.shortText,
     // value: 0,
     user: req.user._id,
     investments: [],

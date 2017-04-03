@@ -65,7 +65,7 @@ exports.trimToLength = (doc, length) => {
 };
 
 exports.generatePreview = (body, uri) => {
-  console.log('parse url ', uri);
+  console.log('Generate Preview ', uri);
 
   const $ = cheerio.load(body);
 
@@ -149,13 +149,24 @@ exports.generatePreview = (body, uri) => {
   let tags = data.news_keywords + ',' + data.keywords;
   let domain = exports.extractDomain(url);
 
+  let doc = jsdom.jsdom(body, {
+    features: {
+      FetchExternalResources: false,
+      ProcessExternalResources: false
+    }
+  });
+  let article = new Readability(uri, doc).parse();
+  let short = exports.trimToLength(article.article, 140).innerHTML;
+
   const obj = {
     image,
     description,
     title,
     url,
     domain,
-    tags
+    tags,
+    shortText: short,
+    articleAuthor: article.byline
   };
 
   if (!image || !description || !title) {
