@@ -18,8 +18,8 @@ export default function Excerpt(props) {
   let html = `
     <style>
       body {
-        font-family: Georgia,
-        font-size: 18px;
+        font-family: '-apple-system','HelveticaNeue';
+        font-size: 14px;
         padding: 0;
         margin: 0;
       }

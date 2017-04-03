@@ -192,6 +192,8 @@ class CreatePostContainer extends Component {
       investments: [],
       domain: props.domain,
       keywords: props.keywords,
+      articleAuthor: props.articleAuthor,
+      shortText: props.shortText,
     };
 
     this.props.actions.submitPost(postBody, this.props.auth.token)

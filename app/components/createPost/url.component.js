@@ -131,6 +131,8 @@ export default class UrlComponent extends Component {
           postUrl: results.url,
           articleTags: pTags,
           keywords: pKeywords,
+          articleAuthor: results.articleAuthor,
+          shortText: results.shortText,
           urlPreview: {
             image: results.image,
             title: results.title ? results.title : 'Untitled',
