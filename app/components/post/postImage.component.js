@@ -24,7 +24,17 @@ class PostImage extends Component {
   }
 
   openLink(url) {
-    Linking.openURL(url);
+    // Linking.openURL(url);
+    this.props.actions.push({
+      key: 'articleView',
+      component: 'articleView',
+      back: true,
+      uri: url,
+      // title: 'New Post',
+      // next: 'Post',
+      // direction: 'vertical',
+      // ownCard: true
+    }, 'home');
   }
 
   render() {

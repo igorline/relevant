@@ -115,10 +115,7 @@ class Post extends Component {
       post = { ...repost };
     }
 
-    if (post.link || post.image) imageEl = <PostImage
-      actions={this.props.actions}
-      post={post}
-    />;
+    if (post.link || post.image) imageEl = <PostImage post={post} />;
     post.user = this.props.users[post.user] || post.user;
 
     return (

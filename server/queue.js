@@ -1,15 +1,36 @@
+import request from 'request-promise-any';
 import queue from 'queue';
 import User from './api/user/user.model';
 import Stats from './api/statistics/statistics.model';
 import Earnings from './api/earnings/earnings.model';
 import apnData from './pushNotifications';
 import Notification from './api/notification/notification.model';
+import Meta from './api/metaPost/metaPost.model';
+
+const extractor = require('unfluff');
 // import Treasury from './api/treasury/treasury.model';
 
 // const MINUMUM_BALANCE = 5;
 // const DAILY_INCOME = 5;
 
 // let COIN = true;
+
+function extractDomain(url) {
+  let domain;
+  if (url.indexOf('://') > -1) {
+    domain = url.split('/')[2];
+  } else {
+    domain = url.split('/')[0];
+  }
+  domain = domain.split(':')[0];
+
+  let noPrefix = domain;
+
+  if (domain.indexOf('www.') > -1) {
+    noPrefix = domain.replace('www.', '');
+  }
+  return noPrefix;
+}
 
 let q = queue({
   concurrency: 20,
@@ -134,6 +155,89 @@ async function basicIncome() {
 }
 
 
+async function populateMeta() {
+  let fbHeader = {
+    'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+  };
+  try {
+    let all = await Meta.find({ url: { $ne: null } });
+    all.forEach(meta => {
+      console.log(meta.url);
+      q.push(async cb => {
+        try {
+          let resonse = await request({
+            url: meta.url,
+            maxRedirects: 20,
+            jar: true,
+            headers: meta.url.match('apple.news') ? {} : fbHeader
+          });
+          if (!resonse) throw new Error('problem getting url');
+
+          meta.domain = extractDomain(meta.url);
+          let unfluff = extractor(resonse);
+
+          meta.shortText = unfluff.text.split(/\s+/, 300).join(' ');
+          meta.articleAuthor = unfluff.author;
+          if (unfluff.date) {
+            let date = Date.parse(unfluff.date);
+            if (!date) date = Date.parse(unfluff.date.replace(/-500$/, ''));
+            if (date) meta.articleDate = date;
+            if (!date) console.log('couldn\'t convert date ', unfluff.date)
+          }
+          meta.publisher = unfluff.publisher;
+          meta.links = unfluff.links;
+          meta = await meta.save();
+
+        } catch (err) {
+          console.log(err.message);
+        }
+        cb();
+      });
+    });
+  } catch (err) {
+    console.log('populate error ', err);
+  }
+
+  q.start((queErr, results) => {
+    if (queErr) return console.log(queErr);
+    return console.log('all finished populating meta: ');
+  });
+}
+
+async function populatePosts() {
+  try {
+    let all = await Meta.find({ url: { $ne: null } }).populate('commentary');
+    all.forEach(meta => {
+      // console.log(meta.url);
+      let posts = meta.commentary;
+      posts.forEach(post => {
+        q.push(async cb => {
+          try {
+            post.shortText = meta.shortText;
+            post.articleAuthor = meta.articleAuthor;
+            post.articleDate = meta.articleDate;
+            post.publisher = meta.publisher;
+            post.links = meta.links;
+            post = await post.save();
+            console.log(post.shortText);
+          } catch (err) {
+            console.log(err.message);
+          }
+          cb();
+        });
+      });
+    });
+  } catch (err) {
+    console.log('populate error ', err);
+  }
+
+  q.start((queErr, results) => {
+    if (queErr) return console.log(queErr);
+    return console.log('all finished populating posts: ');
+  });
+}
+
+
   // User.find({ relevance: { $lt: 10 } }, 'balance name deviceTokens relevance relevanceRecord')
   // .then((users) => {
   //   console.log('basic users ', users);
@@ -201,6 +305,8 @@ async function basicIncome() {
 
 
 // basicIncome();
+// populateMeta();
+// populatePosts();
 
 function startBasicIncomeUpdate() {
   setInterval(basicIncome, 24 * 60 * 60 * 1000);

@@ -20,6 +20,7 @@ import ErrorContainer from './error.container';
 import InvestAnimation from '../components/animations/investAnimation.component';
 import HeartAnimation from '../components/animations/heartAnimation.component';
 import StallScreen from '../components/stallScreen.component';
+import ArticleView from '../components/post/articleView.container';
 import * as authActions from '../actions/auth.actions';
 import * as adminActions from '../actions/admin.actions';
 import * as postActions from '../actions/post.actions';
@@ -303,6 +304,10 @@ class Application extends Component {
         return (<CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />);
       case 'categories':
         return (<CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />);
+
+      case 'articleView':
+        return (<ArticleView scene={props.scene.route} navigator={this.props.actions} />);
+
       case 'tabBars':
         return <Footer showActionSheet={this.showActionSheet} />;
       case 'error':
