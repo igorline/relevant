@@ -28,7 +28,9 @@ class Read extends Component {
     this.load = this.load.bind(this);
     this.needsReload = new Date().getTime();
     this.renderHeader = this.renderHeader.bind(this);
-
+    this.tooltipParent = {};
+    this.toggleTooltip = this.toggleTooltip.bind(this);
+    this.initTooltips = this.initTooltips.bind(this);
     this.tabs = [
       { id: 0, title: 'Feed', type: 'feed' },
     ];
@@ -69,6 +71,30 @@ class Read extends Component {
     return true;
   }
 
+  initTooltips() {
+    ['subscriptions'].forEach(name => {
+      this.props.actions.setTooltipData({
+        name,
+        toggle: () => this.toggleTooltip(name)
+      });
+    });
+  }
+
+  toggleTooltip(name) {
+    if (!this.tooltipParent[name]) return;
+    this.tooltipParent[name].measureInWindow((x, y, w, h) => {
+      let parent = { x, y, w, h };
+      // console.log(parent);
+      if (x + y + w + h === 0) return;
+      this.props.actions.setTooltipData({
+        name,
+        parent
+      });
+      this.props.actions.showTooltip(name);
+    });
+  }
+
+
   scrollToTop() {
     let view = this.listview;
     if (view) view.listview.scrollTo({ y: 0, animated: true });
@@ -96,10 +122,17 @@ class Read extends Component {
   renderHeader() {
     let { total, totalUsers } = this.props.subscriptions;
     if (!total) return null;
+    setTimeout(this.initTooltips, 1000);
 
     return (
-      <View style={styles.feedHeader}>
-        <Text style={[styles.font12, styles.greyText]}>
+      <View
+        style={styles.feedHeader}
+        ref={c => this.tooltipParent.subscriptions = c}
+      >
+        <Text
+          onPress={() => this.toggleTooltip('subscriptions')}
+          style={[styles.font12, styles.greyText]}
+        >
           You are subscribed to {total} post{total > 1 ? 's' : ''} from {totalUsers} user{totalUsers > 1 ? 's' : ''}
         </Text>
       </View>

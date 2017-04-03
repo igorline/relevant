@@ -97,6 +97,10 @@ export default function post(state = initialState, action) {
         ],
         metaPosts: {
           ...state.metaPosts,
+          // all: {
+          //   ...state.metaPosts.all,
+          //   ...action.payload.data.entities.metaPosts
+          // },
           [type]: {
             ...state.metaPosts[type],
             ...action.payload.data.entities.metaPosts

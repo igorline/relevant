@@ -19,7 +19,7 @@ class Auth extends Component {
   constructor(props, context) {
     super(props, context);
     let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    this.slides = [1, 2, 3];
+    this.slides = [1];
     this.state = {
       visibleHeight: Dimensions.get('window').height,
       xOffset: 0,
@@ -122,8 +122,8 @@ class Auth extends Component {
     switch (i) {
       case '0':
         return (<View key={i} style={styles.authSlide}>
-          <Text allowFontScaling={false} style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
-            Find <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>information</Text> relevant to <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>you</Text>. No algorithms, no editors, just news.
+          <Text allowFontScaling={false} style={{ fontFamily: 'Georgia', fontSize: 36, lineHeight: 46 }}>
+            <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>Relevant</Text> is a community of thought leaders who care about <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>the truth</Text>.
           </Text>
         </View>);
       case '1':
@@ -145,24 +145,37 @@ class Auth extends Component {
   render() {
     const { isAuthenticated } = this.props.auth;
 
-    // <ListView
-    //   horizontal
-    //   scrollEnabled
-    //   ref={(c) => { this.listview = c; }}
-    //   decelerationRate={'fast'}
-    //   showsHorizontalScrollIndicator={false}
-    //   automaticallyAdjustContentInsets={false}
-    //   snapToInterval={(fullWidth)}
-    //   contentContainerStyle={styles.authSlidesParent}
-    //   onChangeVisibleRows={this.changeRow}
-    //   renderRow={this.renderRow}
-    //   dataSource={this.state.dataSource}
-    //   onScroll={this.checkScroll}
-    // />
+    // let intro = (
+    //   <View style={{ flex: 1, justifyContent: 'center' }}>
+    //     <ListView
+    //       horizontal
+    //       scrollEnabled
+    //       ref={(c) => { this.listview = c; }}
+    //       decelerationRate={'fast'}
+    //       showsHorizontalScrollIndicator={false}
+    //       automaticallyAdjustContentInsets={false}
+    //       snapToInterval={(fullWidth)}
+    //       contentContainerStyle={styles.authSlidesParent}
+    //       onChangeVisibleRows={this.changeRow}
+    //       renderRow={this.renderRow}
+    //       dataSource={this.state.dataSource}
+    //       onScroll={this.checkScroll}
+    //     />
+    //     <View style={styles.indicatorParent}>
+    //       {this.renderIndicator()}
+    //     </View>
+    //   </View>
+    // );
 
-    // <View style={styles.indicatorParent}>
-    //   {this.renderIndicator()}
-    // </View>
+    let intro = (
+      <View style={{ flex: 1, paddingHorizontal: 20, alignItems: 'stretch' }}>
+        <Image
+          resizeMode={'contain'}
+          style={{ flex: 1, width: null, height: null }}
+          source={require('../../assets/images/intro2.jpg')}
+        />
+      </View>
+    )
 
     return (
       <View
@@ -178,13 +191,7 @@ class Auth extends Component {
           <View style={styles.authDivider} />
         </View>
 
-        <View style={{ flex: 1, paddingHorizontal: 20, alignItems: 'stretch' }}>
-          <Image
-            resizeMode={'contain'}
-            style={{ flex: 1, width: null, height: null }}
-            source={require('../../assets/images/intro.png')}
-          />
-        </View>
+        {intro}
 
         <View style={styles.authPadding}>
           <TouchableHighlight
@@ -214,11 +221,12 @@ class Auth extends Component {
 
 const localStyles = StyleSheet.create({
   adjust: {
-    fontSize: 26,
+    fontSize: 38,
+    lineHeight: 30,
   },
   authSlidesParent: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     flexWrap: 'nowrap',
     justifyContent: 'flex-start'
   },

@@ -26,17 +26,24 @@ const repostSchema = new schema.Entity('posts',
   { idAttribute: '_id' }
 );
 
+let metaPostSchema;
+
 const postSchema = new schema.Entity('posts',
   {
     comments: [commentSchema],
     user: userSchema,
     repost: { post: repostSchema },
+    metaPost: metaPostSchema
   },
   { idAttribute: '_id' }
 );
 
-const metaPostSchema = new schema.Entity('metaPosts',
-  { commentary: [postSchema] },
+metaPostSchema = new schema.Entity('metaPosts',
+  {
+    commentary: [postSchema],
+    // new: [postSchema],
+    // top: [postSchema],
+  },
   { idAttribute: '_id' }
 );
 
@@ -316,6 +323,12 @@ export function getPosts(skip, tags, sort, limit) {
       // if (tags && tags.length) {
       //   dataType = postSchema;
       // }
+      // let metaPosts = responseJSON.map(meta => {
+      //   meta.posts = {};
+      //   meta[type] = meta.commentary;
+      //   return meta;
+      // });
+      // console.log(metaPosts)
       let data = normalize(
         { [type]: responseJSON },
         { [type]: [dataType] }
@@ -531,7 +544,7 @@ export function getSelectedPost(postId) {
     .then(utils.fetchUtils.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(setSelectedPostData(responseJSON));
+      dispatch(updatePost(responseJSON));
       dispatch(errorActions.setError('singlepost', false));
       return true;
     })
@@ -618,3 +631,39 @@ export function flag(post) {
     })
     .catch(err => console.log('Subscription error', err));
 }
+
+export function getPostHtml(post) {
+  return dispatch =>
+    // fetch(post.link, {
+    fetch(`${apiServer}post/readable?uri=${post.link}`, {
+      headers: {
+        // 'Content-Type': 'application/json',
+        // 'x-api-key': process.env.READER_API
+      },
+      method: 'GET'
+    })
+    .then(response => response.text())
+    .then(html => {
+      console.log(html);
+      dispatch(updatePost({ ...post, html }));
+    })
+    .catch(err => console.log('Subscription error', err));
+}
+
+// export function getPostHtml(post) {
+//   return dispatch =>
+//     // fetch(post.link, {
+//     fetch('https://mercury.postlight.com/parser?url=' + post.link, {
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'x-api-key': process.env.READER_API
+//       },
+//       method: 'GET'
+//     })
+//     .then(response => response.json())
+//     .then(responseJSON => {
+//       console.log(responseJSON);
+//       dispatch(updatePost({ ...post, html: responseJSON.content }));
+//     })
+//     .catch(err => console.log('Subscription error', err));
+// }

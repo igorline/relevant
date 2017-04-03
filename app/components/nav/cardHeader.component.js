@@ -101,7 +101,7 @@ class CardHeader extends Component {
     let action;
     let titleAction = () => null;
 
-    title = title ? title.trim() : '';
+    title = title ? title.trim() : null;
 
     if (component === 'profile') {
       if (this.props.users.users[props.scene.route.id]) {
@@ -147,7 +147,10 @@ class CardHeader extends Component {
     }
 
     return (
-      <View style={[styles.titleComponent]}>
+      <View
+        ref={c => this.title = c}
+        style={[styles.titleComponent]}
+      >
         <Text onPress={titleAction} style={styles.navTitle}>
           {clipped}
         </Text>
@@ -166,7 +169,16 @@ class CardHeader extends Component {
     if (this.props.auth.user) {
       // let id = this.props.auth.user._id;
       // let user = this.props.user.users[id];
-      statsEl = <Stats type={'nav'} entity={this.props.auth.user} />;
+      let component = props.scene.route.component;
+
+      statsEl = (
+        <Stats
+          type={'nav'}
+          discover={component === 'mainDiscover'}
+          parent={this}
+          entity={this.props.auth.user}
+        />
+      );
     }
 
     if (key !== 'myProfile') {

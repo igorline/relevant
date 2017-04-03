@@ -34,7 +34,7 @@ import * as utils from '../utils';
 import { pickerOptions } from '../utils/pickerOptions';
 import Card from './../components/nav/card.component';
 import IrrelevantAnimation from '../components/animations/irrelevantAnimation.component';
-import Tooltip from '../components/tooltip.component';
+import Tooltip from '../components/tooltip/tooltip.component';
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 

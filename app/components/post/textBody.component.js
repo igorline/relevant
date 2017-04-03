@@ -48,7 +48,7 @@ class TextBody extends Component {
     const expanded = this.props.singlePost;
     let maxTextLength = this.props.maxTextLength || Math.pow(10, 1000);
     let body = this.props.body || '';
-    let post = this.props.post;
+    let post = this.props.post || {};
     let bodyEl = null;
 
     let bodyObj = [];

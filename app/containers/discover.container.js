@@ -177,17 +177,13 @@ class Discover extends Component {
     let type = this.myTabs[view].type;
     if (view !== 2) {
       let posts = [];
-      // if (!this.filter.length) {
       let metaPost = this.props.posts.metaPosts[type][rowData];
       if (metaPost) posts = metaPost.commentary;
       else return null;
-      // } else {
-      //   posts = rowData;
-      //   if (rowData === null) return null;
-      // }
+
       let showReposts = false;
       if (type === 'new') showReposts = true;
-      return (<Post showReposts={showReposts} post={posts} {...this.props} styles={styles} />);
+      return (<Post metaPost={metaPost} showReposts={showReposts} post={posts} {...this.props} styles={styles} />);
     }
     let topic = this.topic ? this.topic._id : null;
     return (<DiscoverUser
