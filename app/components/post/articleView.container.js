@@ -18,7 +18,21 @@ class ArticleView extends Component {
   constructor(props, context) {
     super(props, context);
     // this.showInvestors = this.showInvestors.bind(this);
-    // this.goToPost = this.goToPost.bind(this);
+    this.back = this.back.bind(this);
+    this.state = {
+      backButtonEnabled: false,
+      forwardButtonEnabled: false,
+      url: '',
+      status: '',
+      loading: false,
+    };
+  }
+
+  back() {
+    if (this.state.backButtonEnabled) {
+      return () => this.webview.goBack();
+    }
+    return () => this.props.actions.pop('home');
   }
 
   renderBack() {
@@ -35,7 +49,7 @@ class ArticleView extends Component {
       <TouchableHighlight
         style={[styles.leftButton]}
         underlayColor={'transparent'}
-        onPress={() => this.props.actions.pop('home')}
+        onPress={this.back()}
       >
         {back}
       </TouchableHighlight>
@@ -58,15 +72,26 @@ class ArticleView extends Component {
         <WebView
           // startInLoadingState
           ref={(ref) => { this.webview = ref; }}
-          onNavigationStateChange={(event) => {
-
-            if (event.url !== uri) {
-              this.webview.stopLoading();
-              Linking.openURL(event.url);
-              return false;
-            }
-            return true;
+          onNavigationStateChange={(navState) => {
+            this.setState({
+              backButtonEnabled: navState.canGoBack,
+              forwardButtonEnabled: navState.canGoForward,
+              url: navState.url,
+              status: navState.title,
+              loading: navState.loading,
+              // scalesPageToFit: true
+            });
           }}
+          // onNavigationStateChange={(event) => {
+          //   console.log(event)
+          //   if (!event.navigationType || event.navigationType === 'other') return true;
+          //   if (event.url !== uri) {
+          //     this.webview.stopLoading();
+          //     Linking.openURL(event.url);
+          //     return false;
+          //   }
+          //   return true;
+          // }}
           style={{ flex: 1 }}
           source={{ uri }}
         />
