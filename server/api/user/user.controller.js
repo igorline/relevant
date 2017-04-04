@@ -12,7 +12,9 @@ import mail from '../../mail';
 import Invite from '../invites/invite.model';
 
 // mail.test();
+
 // User.findOneAndUpdate({ _id: 'slava' }, { role: 'admin' }).exec();
+
 // User.findOne({ email: 'byslava@gmail.com' }, (err, user) => {
 //   if (user) user.remove();
 // });

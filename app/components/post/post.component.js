@@ -44,9 +44,10 @@ class Post extends Component {
     let post;
     let posts;
     let imageEl;
-    let separator = (<LinearGradient
+    let separator = (
+      <LinearGradient
         colors={[
-          'hsla(240, 0%, 70%, 1)',
+          'hsla(240, 0%, 60%, 1)',
           'hsla(240, 20%, 96%, 1)',
           'hsla(240, 20%, 100%, 1)'
         ]} style={[styles.separator]}

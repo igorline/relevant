@@ -8,7 +8,7 @@ Object.keys(devConfig).forEach((key) => {
   prodConfig[key] = devConfig[key];
 });
 
-delete prodConfig.devtool;
+// delete prodConfig.devtool;
 
 prodConfig.entry = ['./index.web.js'];
 
