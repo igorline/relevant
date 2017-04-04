@@ -3,9 +3,6 @@ import {
   StyleSheet,
   View,
   Text,
-  Linking,
-  TouchableHighlight,
-  WebView,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { globalStyles, fullHeight } from '../../styles/global';
@@ -14,20 +11,19 @@ import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostImage from './postImage.component1';
 import Commentary from './commentary.component';
-import TextBody from './textBody.component';
-import HTMLView from 'react-native-htmlview';
-import WebViewAuto from './WebViewAuto1';
-// console.log(HTMLView)
+import Excerpt from './excerpt.component';
+import LinearGradient from 'react-native-linear-gradient';
+
 let styles;
 const LAYOUT = 1;
 
 class Post extends Component {
 
   componentWillMount() {
-    if (this.props.singlePost && this.props.post) {
-      let post = this.props.posts.posts[this.props.post];
-      this.props.actions.getPostHtml(post);
-    }
+    // if (this.props.singlePost && this.props.post) {
+    //   let post = this.props.posts.posts[this.props.post];
+    //   this.props.actions.getPostHtml(post);
+    // }
   }
 
   shouldComponentUpdate(next) {
@@ -48,7 +44,13 @@ class Post extends Component {
     let post;
     let posts;
     let imageEl;
-    let separator = <View style={[styles.separator]} />;
+    let separator = (<LinearGradient
+        colors={[
+          'hsla(240, 0%, 70%, 1)',
+          'hsla(240, 20%, 96%, 1)',
+          'hsla(240, 20%, 100%, 1)'
+        ]} style={[styles.separator]}
+      />);
     let commentaryEl;
     let reposted;
 
@@ -169,77 +171,19 @@ class Post extends Component {
       </View>
     );
 
-          // <TextBody
-          //   maxTextLength={140}
-          //   style={styles.excerpt}
-          //   body={post.shortText || post.description }
-          // />
+    // <TextBody
+    //   maxTextLength={140}
+    //   style={styles.excerpt}
+    //   body={post.shortText || post.description }
+    // />
 
     let article;
-    let html = `
-      <style>
-        body {
-          font-family: Georgia,
-          font-size: 18px;
-          padding: 0;
-          margin: 0;
-        }
-        figure {
-          margin: 0;
-        }
-        figcaption {
-          font-size: 12px;
-          margin: 10px 20px 0 20px;
-        }
-        p, h1, h2, h3, h4 {
-          padding: 0 10px;
-        }
-        img {
-          // display: none;
-          width: 100% !important;
-        }</style>
-      `;
-    if (this.props.singlePost && post.link) {
-      let postHtml = post.html || '';
-      article = (
-        <View>
-          <WebViewAuto
-            onShouldStartLoadWithRequest={navState => {
-              if (navState.url !== 'about:blank') {
-                Linking.openURL(navState.url);
-                return false;
-              }
-              return true;
-            }}
-            startInLoadingState
-            // injectedJavaScript={"window.postMessage = String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage');"}
-            autoHeight
-            style={{ flex: 1 }}
-            // source={{ uri: post.link }}
-            source={{ html: post.shortText }}
-            // source={{ html: html + post.html + '' }}
-            // source={{
-            //   uri: `${process.env.API_SERVER}/api/post/readable?uri=${post.link}`,
-            // }}
-            // stylesheet={styles.excerpt}
-          />
-          <TouchableHighlight
-            style={styles.largeButton}
-            onPress={() => Linking.openURL(post.link)}
-          >
-            <Text style={styles.largeButtonText}>
-              Read Full Article
-            </Text>
-          </TouchableHighlight>
-        </View>
-      );
-    }
-
-    let description = (
-      <Text style={styles.desc}>
-        {post.description}
-      </Text>
-    );
+    // if (post.shortText && this.props.singlePost) {
+    //   article = (
+    //     <Excerpt
+    //       post={post} actions={this.props.actions}
+    //     />);
+    // }
 
     return (
       <View style={{ overflow: 'hidden' }}>
@@ -291,12 +235,12 @@ const localStyles = StyleSheet.create({
     // paddingRight: 10,
   } :
   {
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 6,
+    paddingRight: 160,
   },
   postContainer: LAYOUT === 1 ? {
-    // paddingBottom: 30,
-    // paddingTop: 20,
+    paddingBottom: 20,
+    // paddingTop: 12,
     backgroundColor: 'white',
   } :
   {
@@ -313,12 +257,14 @@ const localStyles = StyleSheet.create({
     flex: 1,
   },
   separator: {
-    height: 6,
-    // borderColor: 'black',
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    backgroundColor: 'hsl(238,20%,15%)',
-    // backgroundColor: 'hsl(238,100%,50%)',
+    height: 12,
+    borderColor: 'lightgrey',
+    // borderBottomWidth: 1,
+
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    // backgroundColor: 'hsl(238,20%,15%)',
+    // backgroundColor: 'hsl(238,20%,90%)',
     // backgroundColor: 'hsl(238,20%,25%)',
   },
 });

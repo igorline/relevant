@@ -461,7 +461,7 @@ const localStyles = StyleSheet.create({
   },
   postButtonsContainer: {
     paddingBottom: 10,
-    marginTop: 5,
+    marginTop: 10,
   },
   postButton: {
     padding: 3,

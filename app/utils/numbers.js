@@ -57,8 +57,6 @@ export function abbreviateNumber(num) {
 
 export function timeSince(date) {
   let d = new Date(date);
-  console.log(d.toString());
-  console.log(Date.now().toString());
   let seconds = Math.floor((new Date() - d) / 1000);
   let interval = Math.floor(seconds / 31536000);
   let s;

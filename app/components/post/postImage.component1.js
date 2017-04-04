@@ -31,13 +31,21 @@ class PostImage extends Component {
   }
 
   openLink(url) {
-    Linking.openURL(url);
+    // Linking.openURL(url);
+    this.props.actions.push({
+      key: 'articleView',
+      component: 'articleView',
+      back: true,
+      uri: url,
+    }, 'home');
   }
 
   render() {
     let image = null;
     let link = null;
     let post = this.props.metaPost || this.props.post;
+    let single = false // this.props.singlePost;
+    let smallerImg = this.props.singlePost;
     let title = null;
     // let lastPost = false;
     let linkEl = null;
@@ -46,11 +54,8 @@ class PostImage extends Component {
     let authorEl;
 
     if (post) {
-      // console.log(post)
       if (post.articleDate) {
-        console.log(post.articleDate);
         time = numbers.timeSince(Date.parse(post.articleDate));
-        console.log(time);
       }
       if (post.articleAuthor && post.articleAuthor.length) {
         author = post.articleAuthor.filter(a => !a.match('http')).join(', ');
@@ -60,11 +65,11 @@ class PostImage extends Component {
             style={[
               styles.font12,
               styles.articleTitle,
-              this.props.singlePost ? styles.darkGrey : null,
+              single ? styles.darkGrey : null,
               // styles.darkGrey
             ]}
           >
-            {author ? 'By ' + author : ''}
+            {author ? author : ''}
           </Text>
         );
       }
@@ -79,7 +84,7 @@ class PostImage extends Component {
               style={[
                 styles.font12,
                 styles.articleTitle,
-                this.props.singlePost ? styles.darkGrey : null,
+                single ? styles.darkGrey : null,
                 // styles.darkGrey
               ]}
             >
@@ -132,9 +137,9 @@ class PostImage extends Component {
           <Text
             numberOfLines={4}
             style={[
-              { fontSize: 17, marginBottom: 5, fontWeight: 'bold' },
+              { fontSize: 19, marginBottom: 5, fontWeight: 'bold' },
               styles.articleTitle,
-              this.props.singlePost ? styles.darkGrey : null,
+              single ? styles.darkGrey : null,
               styles.georgia]}
           >
             {title || 'Untitled'}
@@ -143,31 +148,61 @@ class PostImage extends Component {
           { /*description*/ }
         </View>
       </View>
-    )
+    );
 
     let imageEl;
+    let gradient = (
+      <LinearGradient
+        colors={[
+          'hsla(240, 70%, 50%, 0)',
+          'hsla(240, 70%, 30%, .4)',
+          'hsla(240, 70%, 30%, 1)'
+        ]}
+        style={[styles.linearGradient,
+          smallerImg ? { height: 180 } : null
+        ]}
+      >
+        {single ? null : titleEl}
+      </LinearGradient>
+    );
+    let img;
     if (image && !image.match('.gif')) {
-      imageEl = (
-      <View style={{ flex: 1, overflow: 'hidden' }}>
-        <Image style={[styles.postImage]} source={image ? { uri: image } : require('../../assets/images/missing.png')} />
-        <LinearGradient colors={['hsla(240, 70%, 50%, 0)', 'hsla(240, 70%, 30%, .4)', 'hsla(240, 70%, 30%, 1)']} style={styles.linearGradient} >
-          {this.props.singlePost ? null : titleEl}
-        </LinearGradient>
-      </View>);
+      img = (
+        <Image
+          style={[styles.postImage,
+            smallerImg ? { height: 180 } : null
+          ]}
+          source={image ? { uri: image } : require('../../assets/images/missing.png')}
+        />
+      );
     }
+
+    if (post.link || image) {
+      imageEl = (
+        <View
+          style={[
+            styles.imageCont,
+            smallerImg ? { height: 180 } : null]}
+          >
+          {img}
+          {!single ? gradient : null}
+        </View>
+      );
+    }
+
 
     return (
       <TouchableHighlight
         style={{ flex: 1, marginTop: 0 }}
         underlayColor={'transparent'}
         // onPress={link ? () => this.openLink(link) : null}
-        onPress={() => this.goToPost()}
+        onPress={() => this.openLink(post.link)}
       >
         <View style={[styles.postImageContainer]}>
           {/*linkEl*/}
           {imageEl}
 
-          {this.props.singlePost ? titleEl : null}
+          {single ? titleEl : null}
 
           {/*lastPost ? <Text style={[styles.lastPost, styles.white]}>
             Last subscribed post❗️
@@ -200,14 +235,19 @@ const localStyles = StyleSheet.create({
     color: 'white',
   },
   postImage: {
-    height: 250,
+    height: 240,
     flex: 1,
     maxWidth: fullWidth,
     position: 'relative',
     resizeMode: 'cover',
   },
+  imageCont: {
+    height: 240,
+    flex: 1,
+    overflow: 'hidden'
+  },
   linearGradient: {
-    height: 250,
+    height: 240,
     width: fullWidth,
     position: 'absolute',
     top: 0,
@@ -215,6 +255,7 @@ const localStyles = StyleSheet.create({
     // justifyContent: 'flex-end'
   },
   postImageContainer: {
+    marginBottom: 10,
     flex: 1,
     alignItems: 'stretch',
     flexDirection: 'column',

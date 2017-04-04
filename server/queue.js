@@ -6,6 +6,7 @@ import Earnings from './api/earnings/earnings.model';
 import apnData from './pushNotifications';
 import Notification from './api/notification/notification.model';
 import Meta from './api/metaPost/metaPost.model';
+import * as proxyHelpers from './api/post/html';
 
 const extractor = require('unfluff');
 // import Treasury from './api/treasury/treasury.model';
@@ -156,36 +157,49 @@ async function basicIncome() {
 
 
 async function populateMeta() {
-  let fbHeader = {
-    'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
-  };
+  // let fbHeader = {
+  //   'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+  // };
   try {
     let all = await Meta.find({ url: { $ne: null } });
     all.forEach(meta => {
-      console.log(meta.url);
       q.push(async cb => {
         try {
-          let resonse = await request({
-            url: meta.url,
-            maxRedirects: 20,
-            jar: true,
-            headers: meta.url.match('apple.news') ? {} : fbHeader
-          });
-          if (!resonse) throw new Error('problem getting url');
+          // let resonse = await request({
+          //   url: meta.url,
+          //   maxRedirects: 20,
+          //   jar: true,
+          //   // headers: meta.url.match('apple.news') ? {} : fbHeader
+          // });
+          // if (!resonse) throw new Error('problem getting url');
+          // if (!url.match('http://') && !url.match('https://')) {
+          //   url = 'http://';
+          // }
 
-          meta.domain = extractDomain(meta.url);
-          let unfluff = extractor(resonse);
+          let url = meta.url;
 
-          meta.shortText = unfluff.text.split(/\s+/, 300).join(' ');
-          meta.articleAuthor = unfluff.author;
-          if (unfluff.date) {
-            let date = Date.parse(unfluff.date);
-            if (!date) date = Date.parse(unfluff.date.replace(/-500$/, ''));
-            if (date) meta.articleDate = date;
-            if (!date) console.log('couldn\'t convert date ', unfluff.date)
-          }
-          meta.publisher = unfluff.publisher;
-          meta.links = unfluff.links;
+          // console.log('url: ', url);
+          let article = await proxyHelpers.getReadable(url);
+          let short = proxyHelpers.trimToLength(article.article, 140);
+          meta.shortText = short.innerHTML;
+          meta.articleAuthor = article.byline;
+          console.log('author ', meta.shortText.length);
+          // meta.url = url;
+
+          // meta.domain = extractDomain(meta.url);
+          // let unfluff = extractor(resonse);
+
+          // meta.shortText = unfluff.text.split(/\s+/, 300).join(' ');
+          // meta.articleAuthor = unfluff.author;
+          // if (unfluff.date) {
+          //   let date = Date.parse(unfluff.date);
+          //   if (!date) date = Date.parse(unfluff.date.replace(/-500$/, ''));
+          //   if (date) meta.articleDate = date;
+          //   if (!date) console.log('couldn\'t convert date ', unfluff.date)
+          // }
+          // meta.publisher = unfluff.publisher;
+          // meta.links = unfluff.links;
+          // console.log(short);
           meta = await meta.save();
 
         } catch (err) {
@@ -215,11 +229,11 @@ async function populatePosts() {
           try {
             post.shortText = meta.shortText;
             post.articleAuthor = meta.articleAuthor;
-            post.articleDate = meta.articleDate;
-            post.publisher = meta.publisher;
-            post.links = meta.links;
+            // post.articleDate = meta.articleDate;
+            // post.publisher = meta.publisher;
+            // post.links = meta.links;
             post = await post.save();
-            console.log(post.shortText);
+            // console.log(post.shortText);
           } catch (err) {
             console.log(err.message);
           }
