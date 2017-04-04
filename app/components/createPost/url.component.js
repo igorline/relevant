@@ -131,6 +131,8 @@ export default class UrlComponent extends Component {
           postUrl: results.url,
           articleTags: pTags,
           keywords: pKeywords,
+          articleAuthor: results.articleAuthor,
+          shortText: results.shortText,
           urlPreview: {
             image: results.image,
             title: results.title ? results.title : 'Untitled',
@@ -240,6 +242,7 @@ export default class UrlComponent extends Component {
               style={[styles.font15, styles.createPostInput, styles.flex1]}
               placeholder={urlPlaceholder}
               multiline
+              clearButtonMode={'while-editing'}
               onChangeText={postBody => this.processInput(postBody, false)}
               onBlur={() => this.processInput(null, true)}
               value={this.props.postBody}

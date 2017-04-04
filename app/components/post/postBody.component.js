@@ -39,9 +39,10 @@ class PostBody extends Component {
 
   render() {
     let post = this.props.post;
-    let body = '';
+    let body;
     if (post) {
       if (post.body) body = post.body.trim();
+      if (body === '') body = null;
       // else return null;
       // else if (post.description) body = '\"' + post.description + '\"';
     }
@@ -78,8 +79,9 @@ class PostBody extends Component {
       );
     }
 
-    return (
-      <View style={{ flex: 1 }}>
+    let textBody;
+    if (body) {
+      textBody = (
         <TouchableWithoutFeedback
           style={{ flex: 1 }}
           onPress={this.goToPost}
@@ -97,6 +99,12 @@ class PostBody extends Component {
             </Text>
           </View>
         </TouchableWithoutFeedback>
+      )
+    }
+
+    return (
+      <View style={{ flex: 1 }}>
+        {textBody}
         {upvotes || <Text style={{ paddingTop: 10 }} />}
       </View>
     );
@@ -119,14 +127,17 @@ const localStyles = StyleSheet.create({
   },
   commentaryText: {
     fontFamily: 'Georgia',
-    fontSize: 32 / 2,
-    lineHeight: 48 / 2,
+    fontSize: 35 / 2,
+    lineHeight: 52 / 2,
+    // fontSize: 32 / 2,
+    // lineHeight: 48 / 2,
   },
   repostText: {
     fontFamily: 'Georgia',
-    fontSize: 28 / 2,
-    lineHeight: 30 / 2,
+    fontSize: 32 / 2,
+    lineHeight: 48 / 2,
     marginTop: -5,
+    marginBottom: -5
   },
   shortBodyText: {
     fontFamily: 'Libre Caslon Display',

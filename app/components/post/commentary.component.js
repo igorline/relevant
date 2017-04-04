@@ -66,7 +66,12 @@ export default class Commentary extends Component {
           >
             {repostEl}
             <View style={[{ flex: 1 }, postStyle]}>
-              <PostInfo {...this.props} post={post} />
+              <PostInfo
+                big
+                // big={this.props.singlePost}
+                {...this.props}
+                post={post}
+              />
               <PostBody
                 short {...this.props}
                 post={post}
