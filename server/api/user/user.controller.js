@@ -12,8 +12,10 @@ import mail from '../../mail';
 import Invite from '../invites/invite.model';
 
 // mail.test();
-
-User.findOneAndUpdate({ _id: 'slava' }, { role: 'admin' }).exec();
+// User.findOneAndUpdate({ _id: 'slava' }, { role: 'admin' }).exec();
+// User.findOne({ email: 'byslava@gmail.com' }, (err, user) => {
+//   if (user) user.remove();
+// });
 
 let validationError = (res, err) => {
   console.log(err);
@@ -39,7 +41,10 @@ async function sendConfirmation(user, newUser) {
       html: `${text}Click on this link to confirm your email address:
       <br />
       <br />
-      <a href="${url}" target="_blank">${url}</a>`
+      <a href="${url}" target="_blank">${url}</a>
+      <br />
+      <br />
+      Once you confirm your email we will send you additional invite codes to invite your friends!`
     };
     status = await mail.send(data);
   } catch (err) {
@@ -102,8 +107,9 @@ exports.confirm = async (req, res, next) => {
     let confirmCode = req.params.code || req.body.code;
     let _id = req.params.user || req.body.user;
     if (!_id || !confirmCode) throw new Error('Missing user id or confirmation token');
-    user = await User.findOne({ _id, confirmCode }, 'confirmCode confirmed');
-    if (user) {
+    user = await User.findOne({ _id, confirmCode }, 'confirmCode confirmed email');
+    if (user && !user.confirmed) {
+      Invite.generateCodes(user);
       user.confirmed = true;
       user = await user.save();
     } else {
@@ -327,6 +333,7 @@ exports.create = async (req, res) => {
     );
 
     if (!confirmed) sendConfirmation(user, true);
+    else Invite.generateCodes(user);
   } catch (err) {
     return handleError(res, err);
   }

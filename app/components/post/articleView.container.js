@@ -5,7 +5,13 @@ import {
   View,
   Image,
   TouchableHighlight,
-  Linking
+  Linking,
+  ScrollView,
+  ActivityIndicator,
+  StatusBar,
+  InteractionManager,
+  ActionSheetIOS,
+  AlertIOS
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -22,10 +28,20 @@ class ArticleView extends Component {
     this.state = {
       backButtonEnabled: false,
       forwardButtonEnabled: false,
-      url: '',
+      url: null,
       status: '',
-      loading: false,
+      loading: true,
     };
+  }
+
+  componentWillMount() {
+    this.onInteraction = InteractionManager.runAfterInteractions(() => {
+      this.setState({ url: this.props.scene.uri });
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.onInteraction) this.onInteraction.cancel();
   }
 
   back() {
@@ -33,6 +49,27 @@ class ArticleView extends Component {
       return () => this.webview.goBack();
     }
     return () => this.props.actions.pop('home');
+  }
+
+  showShareActionSheet() {
+    ActionSheetIOS.showShareActionSheetWithOptions({
+      url: this.state.url,
+      // message: 'message to go with the shared url',
+      // subject: 'a subject to go in the email heading',
+      // excludedActivityTypes: [
+      //   'com.apple.UIKit.activity.PostToTwitter'
+      // ]
+    },
+    (error) => AlertIOS.alert(error),
+    (completed, method) => {
+      // var text;
+      // if (completed) {
+      //   text = `Shared via ${method}`;
+      // } else {
+      //   text = 'You didn\'t share';
+      // }
+      // // this.setState({ text });
+    });
   }
 
   renderBack() {
@@ -56,10 +93,29 @@ class ArticleView extends Component {
     );
   }
 
+  renderShare() {
+    return (
+      <TouchableHighlight
+        style={[styles.leftButton]}
+        underlayColor={'transparent'}
+        onPress={() => this.showShareActionSheet()}
+      >
+        <View style={{ paddingHorizontal: 10, marginLeft: 0 }}>
+          <Image
+            resizeMode={'contain'}
+            style={{ width: 22, height: 22 }}
+            source={require('../../assets/images/shareOut.png')}
+          />
+        </View>
+      </TouchableHighlight>
+    );
+  }
+
   renderFooter() {
     return (
       <View style={styles.webMenu}>
         {this.renderBack()}
+        {this.renderShare()}
       </View>
     );
   }
@@ -67,34 +123,52 @@ class ArticleView extends Component {
   render () {
     // console.log(this.props.scene)
     let uri = this.props.scene.uri;
+    let activity;
+
+    if (this.state.loading) {
+      activity = (
+        <View
+          pointerEvents={'none'}
+          style={{ zIndex: 10, position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
+        >
+          <ActivityIndicator
+            style={{ position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
+            animating={this.state.loading}
+            size={'small'}
+          />
+        </View>);
+    }
+
+    let webView = <View style={{ flex: 1 }} />;
+
+    if (this.state.url) {
+      webView = (<WebView
+        ref={(ref) => { this.webview = ref; }}
+        scalesPageToFit
+        onNavigationStateChange={(navState) => {
+          this.setState({
+            backButtonEnabled: navState.canGoBack,
+            forwardButtonEnabled: navState.canGoForward,
+            url: navState.url,
+            status: navState.title,
+          });
+        }}
+        onLoadStart={() => this.setState({ loading: true })}
+        onLoadEnd={() => this.setState({ loading: false })}
+        style={{ flex: 1, backgroundColor: 'transparent', marginTop: 0 }}
+        source={{ uri: this.state.url }}
+      />);
+    }
+
     return (
-      <View style={{ flex: 1 }}>
-        <WebView
-          // startInLoadingState
-          ref={(ref) => { this.webview = ref; }}
-          onNavigationStateChange={(navState) => {
-            this.setState({
-              backButtonEnabled: navState.canGoBack,
-              forwardButtonEnabled: navState.canGoForward,
-              url: navState.url,
-              status: navState.title,
-              loading: navState.loading,
-              // scalesPageToFit: true
-            });
-          }}
-          // onNavigationStateChange={(event) => {
-          //   console.log(event)
-          //   if (!event.navigationType || event.navigationType === 'other') return true;
-          //   if (event.url !== uri) {
-          //     this.webview.stopLoading();
-          //     Linking.openURL(event.url);
-          //     return false;
-          //   }
-          //   return true;
-          // }}
-          style={{ flex: 1 }}
-          source={{ uri }}
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
+        <StatusBar
+          hidden={true}
+          networkActivityIndicatorVisible
+          // backgroundColor={'white'}
         />
+        {activity}
+        {webView}
         {this.renderFooter()}
       </View>
     );
@@ -106,16 +180,19 @@ const localStyles = StyleSheet.create({
     height: 40,
     flexDirection: 'row',
     alignItems: 'stretch',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     backgroundColor: 'white',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'black',
   },
   leftButton: {
-    flex: 1,
-    marginLeft: 10,
+    // borderColor: 'red',
+    // borderWidth: 1,
+    flex: 0,
+    width: 50,
+    alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
+    // paddingVertical: 10,
   },
 });
 

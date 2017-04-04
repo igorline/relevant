@@ -19,6 +19,7 @@ class Tabs extends Component {
 
   changeTab(key) {
     let tab = this.props.navigation.tabs.routes[this.props.navigation.tabs.index];
+    this.props.actions.toggleTopics(false);
 
     // This is if we want to make create post a separate scene
     if (key === 'createPost') {
@@ -35,8 +36,21 @@ class Tabs extends Component {
         if (this.props.navigation[key].routes.length === 1) {
           this.props.actions.refreshTab(key);
         }
-        this.props.actions.resetRoutes();
+
+        if (key === 'discover') {
+          let index = this.props.navigation[key].index;
+          let route = this.props.navigation[key].routes[index];
+          if (route.component === 'discover') {
+            this.props.actions.refreshTab(key);
+          } else {
+            this.props.actions.resetRoutes();
+          }
+        } else {
+          this.props.actions.resetRoutes();
+        }
       }
+
+
       if (key === 'activity' && this.props.notif.count) {
         this.props.actions.reloadTab(key);
       }
@@ -46,10 +60,9 @@ class Tabs extends Component {
       if (this.props.navigation.reload > this.props.navigation[key].reload) {
         this.props.actions.reloadTab(key);
       }
-      // this.props.actions.resetRoutes();
+
       this.props.actions.changeTab(key);
     }
-    this.props.actions.toggleTopics(false);
   }
 
   renderTabContent(key) {

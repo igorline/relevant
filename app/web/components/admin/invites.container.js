@@ -58,6 +58,7 @@ class Invites extends Component {
     let invite = this.props.admin.invites[inviteId];
     if (!invite) return null;
     return (<div key={inviteId} className={'adminRow'}>
+      <span>{invite.invitedBy}</span>
       <span>{invite.name}</span>
       <span>{invite.email}</span>
       <span>{invite.code}</span>
@@ -65,7 +66,7 @@ class Invites extends Component {
       <button
         onClick={() => this.sendEmail(invite)}
       >
-        Send Email
+        Resend Email
       </button>
       <button
         className={'alert'}
@@ -113,6 +114,7 @@ class Invites extends Component {
         <h2>Manage Invites</h2>
         {createInvite}
         <div key={'inviteId'} className={'titleRow'}>
+          <span>Invited by</span>
           <span>Name</span>
           <span>Email</span>
           <span>Invite Code</span>

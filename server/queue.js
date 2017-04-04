@@ -108,9 +108,9 @@ async function basicIncome() {
           if (teir === 2) balanceIncrease = 10;
           if (teir === 3) balanceIncrease = 30;
 
-          let balance = Math.min(user.balance + balanceIncrease, balanceIncrease);
-          balanceIncrease = balance - user.balance;
-          user.balance = balance;
+          // let balance = Math.min(user.balance + balanceIncrease, balanceIncrease);
+          // balanceIncrease = balance - user.balance;
+          user.balance += balanceIncrease;
 
           let earning = {
             user: user._id,

@@ -74,12 +74,15 @@ class Card extends Component {
       let cardTransitionStyle = this.getAnimatedStyle(sceneProps);
       // let cardTransitionStyle = NavigationCardStackStyleInterpolator.forHorizontal(sceneProps);
 
+      let panDistance = sceneProps.scene.route.gestureResponseDistance || fullWidth;
+      // if (scrolling) panDistance = 50;
+
       let scrolling = this.props.navigation.scroll;
       let panHandlers = NavPanResponder.forHorizontal({
       // let panHandlers = NavigationPagerPanResponder.forHorizontal({
         ...sceneProps,
         scrolling,
-        gestureResponseDistance: fullWidth,
+        gestureResponseDistance: panDistance,
         onNavigateBack: () => props.back(),
         // onNavigateForward: () => navigate('forward'),
       });

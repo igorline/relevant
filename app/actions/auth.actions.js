@@ -34,6 +34,13 @@ const reqOptions = async () => {
   };
 };
 
+export function updateInvite(invite) {
+  return {
+    type: types.UPDATE_INVITE,
+    payload: invite
+  };
+}
+
 export
 function sendPong() {
   return {
@@ -267,6 +274,9 @@ function createUser(user, invite) {
       }
     })
     .catch(error => {
+      if (error.message.match('invitation code')) {
+        dispatch(updateInvite(null));
+      }
       AlertIOS.alert(error.message);
     });
   };
