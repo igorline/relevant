@@ -153,7 +153,7 @@ exports.generatePreview = (body, uri) => {
   description = data.description || data['og:description'] || data['twitter:description'];
   image = data['og:image'] || data['og:image:url'] || data['twitter:image'] || data['twitter:image:src'] || data.image;
   let url = uri || data['al:web:url'] || data['og:url'];
-  let tags = data.news_keywords + ',' + data.keywords;
+  let tags = data.news_keywords || data.keywords;
   let domain = exports.extractDomain(url);
 
   let doc = jsdom.jsdom(body, {

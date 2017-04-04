@@ -33,6 +33,12 @@ export default function admin(state = initialState, action) {
     }
 
     case types.UPDATE_INVITE: {
+      if (action.payload === null) {
+        return {
+          ...state,
+          currentInvite: null
+        };
+      }
       return {
         ...state,
         currentInvite: action.payload,

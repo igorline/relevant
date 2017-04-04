@@ -32,6 +32,7 @@ exports.create = async (req, res) => {
     })[0];
     invite = new Invite({ ...req.body, code });
     invite = await invite.save();
+    exports.sendEmailFunc(invite);
   } catch (err) {
     handleError(res)(err);
   }
@@ -39,13 +40,28 @@ exports.create = async (req, res) => {
 };
 
 exports.sendEmail = async (req, res) => {
-  let status;
   let invite;
   try {
     let _id = req.body.inviteId;
+    invite = await exports.sendEmailFunc(_id);
+  } catch (err) {
+    throw err;
+    handleError(res)(err);
+  }
+  res.status(200).json(invite);
+};
+
+exports.sendEmailFunc = async function(_invite) {
+  let status;
+  let invite = _invite;
+  try {
     // let appStoreUrl = 'http://itunes.com/apps/relevant';
     let appStoreUrl = 'https://beta.itunes.apple.com/v1/invite/4a6e102029cb485b9e443ad17a65de3fce01cad9aaa948adaf95840ed2a32c6945eaf11b?ct=slavabalasan299393905&advp=10000&platform=ios';
-    invite = await Invite.findById(_id);
+
+    if (invite && !invite._id) {
+      invite = await Invite.findById(invite);
+    }
+
     if (!invite || !invite.code) throw new Error('no invite or code');
     let url = `${process.env.API_SERVER}/invite/${invite.code}`;
     let data = {
@@ -53,6 +69,9 @@ exports.sendEmail = async (req, res) => {
       to: invite.email,
       subject: 'Invitation to join Relevant',
       html: `You are invited to join Relevant as a beta tester!
+      <br />
+      <br />
+      invitation code: <b>${invite.code}</b>
       <br />
       <br />
       <b>Step 1</b>: Download the app from the app store (iOS only for now):
@@ -65,15 +84,15 @@ exports.sendEmail = async (req, res) => {
       <a href="${url}" target="_blank">${url}</a>
       <br />
       <br />
-      You can also manually enter your invitation code after you launch the app: <b>${invite.code}</b>`
+      You can also manually enter your invitation code after you launch the app.`
     };
     status = await mail.send(data);
     invite.status = 'email sent';
     invite = await invite.save();
   } catch (err) {
-    handleError(res)(err);
+    throw err;
   }
-  res.status(200).json(invite);
+  return invite;
 };
 
 exports.checkInviteCode = async (req, res) => {

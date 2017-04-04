@@ -257,7 +257,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
   },
   separator: {
-    height: 12,
+    height: 16,
     borderColor: 'lightgrey',
     // borderBottomWidth: 1,
 

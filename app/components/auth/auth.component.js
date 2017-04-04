@@ -172,7 +172,7 @@ class Auth extends Component {
         <Image
           resizeMode={'contain'}
           style={{ flex: 1, width: null, height: null }}
-          source={require('../../assets/images/intro2.jpg')}
+          source={require('../../assets/images/intro3.jpg')}
         />
       </View>
     )

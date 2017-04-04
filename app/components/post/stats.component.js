@@ -40,6 +40,7 @@ class Stats extends Component {
   }
 
   toggleTooltip(name) {
+    if (this.props.type !== 'nav') return;
     if (!this.tooltipParent[name]) return;
     this.tooltipParent[name].measureInWindow((x, y, w, h) => {
       let parent = { x, y, w, h };

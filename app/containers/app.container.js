@@ -54,11 +54,12 @@ class Application extends Component {
       buttons: [
         'Change display name',
         'Add new photo',
+        'FAQ',
         'Logout',
         'Cancel',
       ],
-      destructiveIndex: 2,
-      cancelIndex: 3,
+      destructiveIndex: 3,
+      cancelIndex: 4,
     };
     this.logoutRedirect = this.logoutRedirect.bind(this);
     this.backgroundTime = 0;
@@ -247,6 +248,15 @@ class Application extends Component {
           this.initImage();
           break;
         case 2:
+          this.props.actions.push({
+            key: 'articleView',
+            component: 'articleView',
+            back: true,
+            uri: 'https://relevant.community/faq',
+            gestureResponseDistance: 120
+          }, 'home');
+          break;
+        case 3:
           this.logoutRedirect();
           break;
         default:

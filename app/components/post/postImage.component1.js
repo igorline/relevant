@@ -37,6 +37,7 @@ class PostImage extends Component {
       component: 'articleView',
       back: true,
       uri: url,
+      gestureResponseDistance: 120
     }, 'home');
   }
 
@@ -45,7 +46,7 @@ class PostImage extends Component {
     let link = null;
     let post = this.props.metaPost || this.props.post;
     let single = false // this.props.singlePost;
-    let smallerImg = this.props.singlePost;
+    let smallerImg; // = this.props.singlePost;
     let title = null;
     // let lastPost = false;
     let linkEl = null;
@@ -137,12 +138,12 @@ class PostImage extends Component {
           <Text
             numberOfLines={4}
             style={[
-              { fontSize: 19, marginBottom: 5, fontWeight: 'bold' },
+              { fontSize: 19, letterSpacing: 0.7, marginBottom: 5, fontWeight: 'bold' },
               styles.articleTitle,
               single ? styles.darkGrey : null,
               styles.georgia]}
           >
-            {title || 'Untitled'}
+            {title.trim() || 'Untitled'}
           </Text>
           { linkEl }
           { /*description*/ }
@@ -156,7 +157,7 @@ class PostImage extends Component {
         colors={[
           'hsla(240, 70%, 50%, 0)',
           'hsla(240, 70%, 30%, .4)',
-          'hsla(240, 70%, 30%, 1)'
+          'hsla(240, 70%, 10%, 1)'
         ]}
         style={[styles.linearGradient,
           smallerImg ? { height: 180 } : null
@@ -255,7 +256,7 @@ const localStyles = StyleSheet.create({
     // justifyContent: 'flex-end'
   },
   postImageContainer: {
-    marginBottom: 10,
+    marginBottom: 0,
     flex: 1,
     alignItems: 'stretch',
     flexDirection: 'column',
