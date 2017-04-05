@@ -162,9 +162,14 @@ exports.preview = (req, res) => {
     previewUrl = 'http://' + previewUrl;
   }
 
-  let fbHeader = {
-    'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
-  };
+  function getHeader(uri) {
+    let fbHeader = {
+      'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+    };
+    let noFb = uri.match('apple.news') || uri.match('flip.it');
+    if (noFb) return {};
+    return fbHeader;
+  }
 
   function processReturn(error, response, body) {
     if (error || response.statusCode !== 200) {
@@ -172,14 +177,19 @@ exports.preview = (req, res) => {
       return res.status(500).json(error);
     }
 
-    let processed = proxyHelpers.generatePreview(body, previewUrl);
+    let uri = response.request.uri.href;
+    console.log(uri);
+
+    let processed = proxyHelpers.generatePreview(body, uri);
 
     if (processed.redirect && processed.uri) {
+      console.log('redirect ', processed.uri);
+      uri = processed.uri;
       return request({
-        url: processed.uri,
+        url: uri,
         maxRedirects: 20,
         jar: true,
-        headers: previewUrl.match('apple.news') ? {} : fbHeader
+        headers: getHeader(uri)
       }, processReturn);
     }
     return res.status(200).json(processed.result);
@@ -189,7 +199,7 @@ exports.preview = (req, res) => {
     url: previewUrl,
     maxRedirects: 20,
     jar: true,
-    headers: previewUrl.match('apple.news') ? {} : fbHeader
+    headers: getHeader(previewUrl)
   }, processReturn);
 };
 
