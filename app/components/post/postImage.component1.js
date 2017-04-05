@@ -156,7 +156,7 @@ class PostImage extends Component {
       <LinearGradient
         colors={[
           'hsla(240, 70%, 50%, 0)',
-          'hsla(240, 70%, 30%, .4)',
+          'hsla(240, 70%, 30%, .5)',
           'hsla(240, 70%, 10%, 1)'
         ]}
         style={[styles.linearGradient,

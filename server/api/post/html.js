@@ -163,9 +163,11 @@ exports.generatePreview = (body, uri) => {
     }
   });
   let article = new Readability(uri, doc).parse();
-  let short = exports.trimToLength(article.article, 140).innerHTML;
-
-  console.log('author ', article.byline);
+  let short;
+  if (article) {
+    short = exports.trimToLength(article.article, 140).innerHTML;
+  }
+  // console.log('author ', article.byline);
 
   const obj = {
     image,
@@ -184,7 +186,7 @@ exports.generatePreview = (body, uri) => {
     console.log(uri);
   }
 
-  console.log(obj);
+  // console.log(obj);
 
   return {
     redirect: false,
