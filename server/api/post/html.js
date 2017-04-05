@@ -155,7 +155,7 @@ exports.generatePreview = (body, uri) => {
   title = data['og:title'] || data['twitter:title'] || data.title;
   description = data.description || data['og:description'] || data['twitter:description'];
   image = data['og:image'] || data['og:image:url'] || data['twitter:image'] || data['twitter:image:src'] || data.image;
-  let url = uri || data['al:web:url'] || data['og:url'];
+  let url = data['al:web:url'] || data['og:url'] || uri;
   let tags = data.news_keywords || data.keywords;
   let domain = exports.extractDomain(url);
 
