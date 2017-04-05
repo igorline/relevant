@@ -82,7 +82,8 @@ exports.generatePreview = (body, uri) => {
   if (redirect && redirect.attribs && redirect.attribs.content) {
     redirectUrl = redirect.attribs.content.split('URL=')[1];
   }
-  if (redirectUrl) {
+  if (redirectUrl &&
+    exports.extractDomain(redirectUrl) !== exports.extractDomain(uri)) {
     return {
       redirect: true,
       uri: redirectUrl
@@ -98,9 +99,11 @@ exports.generatePreview = (body, uri) => {
     exports.extractDomain(canonical.href) !== exports.extractDomain(uri)) {
     return {
       redirect: true,
-      uri
+      uri: canonical.href
     };
   }
+
+  // console.log(body);
 
   let data = {
     title: null,
@@ -166,6 +169,8 @@ exports.generatePreview = (body, uri) => {
   let short;
   if (article) {
     short = exports.trimToLength(article.article, 140).innerHTML;
+  } else {
+    console.log('couldn\'t parse url ', uri);
   }
   // console.log('author ', article.byline);
 
@@ -177,7 +182,7 @@ exports.generatePreview = (body, uri) => {
     domain,
     tags,
     shortText: short,
-    articleAuthor: article.byline
+    articleAuthor: article ? article.byline : null
   };
 
   if (!image || !description || !title) {

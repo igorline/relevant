@@ -38,9 +38,11 @@ export default class UrlComponent extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (this.props.postUrl !== next.postUrl && next.postUrl) {
-      this.createPreview(next.postUrl);
-    }
+    // if (this.props.postUrl !== next.postUrl && next.postUrl) {
+    //   console.log(this.props.postUrl);
+    //   console.log(next.postUrl);
+    //   this.createPreview(next.postUrl);
+    // }
   }
 
   setMention(user) {
@@ -69,7 +71,8 @@ export default class UrlComponent extends Component {
     if (!this.props.postUrl && shouldParseUrl) {
       let postUrl = words.find(word => URL_REGEX.test(word));
       if (postUrl) {
-        this.props.actions.setCreaPostState({ postUrl });
+        // this.props.actions.setCreaPostState({ postUrl });
+        this.createPreview(postUrl);
       }
     }
 
