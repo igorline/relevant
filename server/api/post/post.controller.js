@@ -166,7 +166,7 @@ exports.preview = (req, res) => {
     let fbHeader = {
       'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
     };
-    let noFb = uri.match('apple.news') || uri.match('flip.it');
+    let noFb = uri.match('apple.news');
     if (noFb) return {};
     return fbHeader;
   }

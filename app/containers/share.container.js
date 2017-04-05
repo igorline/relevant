@@ -68,7 +68,11 @@ class ShareContainer extends Component {
         value: data.value,
         data
       });
-      this.props.actions.setCreaPostState({ postUrl: data.url, postBody: data.selection });
+      this.props.actions.setCreaPostState({
+        postUrl: data.url,
+        postBody: data.selection,
+        createPreview: {}
+      });
     } catch (e) {
       console.log('share extension error', e);
     }

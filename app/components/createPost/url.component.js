@@ -38,11 +38,11 @@ export default class UrlComponent extends Component {
   }
 
   componentWillReceiveProps(next) {
-    // if (this.props.postUrl !== next.postUrl && next.postUrl) {
-    //   console.log(this.props.postUrl);
-    //   console.log(next.postUrl);
-    //   this.createPreview(next.postUrl);
-    // }
+    if (this.props.createPreview !== next.createPreview && next.postUrl) {
+      // console.log(this.props.postUrl);
+      // console.log(next.postUrl);
+      this.createPreview(next.postUrl);
+    }
   }
 
   setMention(user) {
