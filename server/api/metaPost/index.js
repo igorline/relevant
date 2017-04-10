@@ -6,6 +6,8 @@ let controller = require('./metaPost.controller');
 let router = express.Router();
 
 router.get('/', Auth.authMiddleware(), controller.index);
+router.get('/flagged', Auth.hasRole('admin'), controller.flagged);
+
 // router.get('/:id', controller.getMetaPost);
 
 

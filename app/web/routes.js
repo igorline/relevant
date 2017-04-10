@@ -14,6 +14,8 @@ import TopicsAdmin from './components/admin/topics.container';
 import Invites from './components/admin/invites.container';
 import Invite from './components/admin/invite.component';
 import Faq from './components/admin/faq.component';
+import AdminHeader from './components/admin/header.component';
+import Flagged from './components/admin/flagged.component';
 
 // Redirects to /login by default
 const userIsAuthenticated = UserAuthWrapper({
@@ -43,6 +45,13 @@ let routes = (store) => {
       { path: 'login', component: Auth },
       { path: 'signup', component: Auth },
       { path: 'home', component: Home },
+      { path: 'admin',
+        component: userIsAuthenticated(userIsAdmin(AdminHeader)), onEnter: connect(userIsAuthenticated.onEnter),
+        childRoutes: [
+          { path: 'flagged', component: Flagged },
+
+        ]
+      },
       { path: 'admin/topics', component: userIsAuthenticated(userIsAdmin(TopicsAdmin)), onEnter: connect(userIsAuthenticated.onEnter) },
       { path: 'admin/invites', component: userIsAuthenticated(userIsAdmin(Invites)), onEnter: connect(userIsAuthenticated.onEnter) },
       { path: 'invite/:code', component: Invite },

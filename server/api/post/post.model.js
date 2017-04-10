@@ -46,7 +46,7 @@ let PostSchema = new Schema({
     image: String,
   },
   flagged: { type: Boolean, default: false },
-  flaggedBy: [{ type: String, ref: 'User' }],
+  flaggedBy: [{ type: String, ref: 'User', select: false }],
   mentions: [{ type: String, ref: 'User' }],
   // investments: [{ type: Schema.Types.ObjectId, ref: 'Invest' }],
   // comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],

@@ -6,6 +6,7 @@ const initialState = {
   feed: [],
   top: [],
   new: [],
+  flagged: [],
   loading: true,
   loaded: {
     feed: false,
@@ -19,6 +20,7 @@ const initialState = {
   metaPosts: {
     new: {},
     top: {},
+    flagged: {},
   },
   topics: {
     new: {},

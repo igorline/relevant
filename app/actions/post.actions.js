@@ -1,12 +1,10 @@
 import { normalize, schema } from 'normalizr';
-import {
-  AlertIOS
-} from 'react-native';
-
 import * as types from './actionTypes';
 import * as utils from '../utils';
 import * as errorActions from './error.actions';
 import * as navigationActions from './navigation.actions';
+
+const AlertIOS = utils.fetchUtils.Alert();
 
 utils.fetchUtils.env();
 const apiServer = process.env.API_SERVER + '/api/';
@@ -179,17 +177,10 @@ export function getFeed(skip, tag) {
 }
 
 export function deletePost(token, post, redirect) {
-  let url = apiServer +
-    'post/' + post._id +
-    '?access_token=' + token;
-
-  return (dispatch) => {
+  let url = apiServer + 'post/' + post._id;
+  return async dispatch =>
     fetch(url, {
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
+      ...await utils.fetchUtils.reqOptions(),
       method: 'DELETE',
     })
     .then(() => {
@@ -197,7 +188,6 @@ export function deletePost(token, post, redirect) {
       if (redirect) dispatch(navigationActions.pop());
     })
     .catch(error => console.log(error, 'error'));
-  };
 }
 
 export function clearPosts(type) {
@@ -283,21 +273,8 @@ export function getPosts(skip, tags, sort, limit) {
   let params = `?skip=${skip}&sort=${sort}&limit=${limit}`;
   let topic;
 
-  let category = '';
   if (tags && tags.length) {
-    tags.forEach((tag, i) => {
-      // if (tag.category) {
-      //   category = tag._id;
-      //   return;
-      // }
-      if (tag._id) {
-        if (i === tags.length - 1) {
-          tagsString += tag._id;
-        } else {
-          tagsString += tag._id + ',';
-        }
-      }
-    });
+    tagsString = tags.map(tag => tag._id || tag).join(', ');
     // endpoint = 'post';
     params += `&tag=${tagsString}`;
     if (tags.length === 1) topic = tags[0];
@@ -320,15 +297,6 @@ export function getPosts(skip, tags, sort, limit) {
     .then(response => response.json())
     .then((responseJSON) => {
       let dataType = metaPostSchema;
-      // if (tags && tags.length) {
-      //   dataType = postSchema;
-      // }
-      // let metaPosts = responseJSON.map(meta => {
-      //   meta.posts = {};
-      //   meta[type] = meta.commentary;
-      //   return meta;
-      // });
-      // console.log(metaPosts)
       let data = normalize(
         { [type]: responseJSON },
         { [type]: [dataType] }
@@ -449,27 +417,6 @@ export function editPost(post, authToken) {
   };
 }
 
-export function deleteComment(token, id, postId) {
-  return function(dispatch) {
-    fetch(process.env.API_SERVER + '/api/comment/' + id + '?access_token=' + token, {
-      credentials: 'include',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'DELETE',
-    })
-    .then((response) => {
-      dispatch(removeCommentEl(postId, id));
-    })
-    .catch((error) => {
-      AlertIOS.alert(error.message);
-      console.log(error, 'error');
-    });
-  }
-}
-
-
 export function removeCommentEl(postId, commentId) {
   if (!postId || !commentId) return;
   return {
@@ -481,6 +428,26 @@ export function removeCommentEl(postId, commentId) {
   };
 }
 
+export function deleteComment(token, id, postId) {
+  return dispatch =>
+    fetch(process.env.API_SERVER + '/api/comment/' + id + '?access_token=' + token, {
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'DELETE',
+    })
+    .then((response) => {
+      dispatch(removeCommentEl(postId, id));
+    })
+    .catch((error) => {
+      AlertIOS.alert(error.message);
+      console.log(error, 'error');
+    });
+}
+
+
 export function getComments(postId, skip, limit) {
   return function(dispatch) {
     if (!skip) skip = 0;
@@ -489,7 +456,7 @@ export function getComments(postId, skip, limit) {
     fetch(process.env.API_SERVER+'/api/comment?post='+postId+'&skip='+skip+'&limit='+limit, {
       credentials: 'include',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       method: 'GET',
@@ -667,3 +634,37 @@ export function getPostHtml(post) {
 //     })
 //     .catch(err => console.log('Subscription error', err));
 // }
+
+export function getFlaggedPosts(skip) {
+  if (!skip) skip = 0;
+  let type = 'flagged';
+
+  function getUrl() {
+    let url = `${apiServer}metaPost/flagged?skip=${skip}&limit=${DEFAULT_LIMIT}`;
+    return url;
+  }
+
+  return async dispatch => {
+    // dispatch(getPostsAction(type));
+    fetch(getUrl(), {
+      method: 'GET',
+      ...await utils.fetchUtils.reqOptions()
+    })
+    .then(response => response.json())
+    .then((responseJSON) => {
+      let dataType = metaPostSchema;
+      let data = normalize(
+        { [type]: responseJSON },
+        { [type]: [dataType] }
+      );
+      dispatch(setPosts(data, type, skip));
+      // dispatch(errorActions.setError(type, false));
+    })
+    .catch((error) => {
+      console.log('Feed error ', error);
+      if (!error.message.match('Get fail for key: token')) {
+        // dispatch(errorActions.setError(type, true, error.message));
+      }
+    });
+  };
+}

@@ -1,51 +1,51 @@
-import React, { Component, PropTypes } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import * as InvestActions from '../../actions/invest'
+import React, { Component, PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as InvestActions from '../../../actions/invest.actions';
 
 class Invest extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       investment: 50,
       showError: false,
-    }
+    };
   }
 
   decreaseInvestment() {
-    var investment = this.state.investment
+    var investment = this.state.investment;
     switch (investment) {
       case 50:
         break;
       case 100:
-        this.setState({investment: 50});
+        this.setState({ investment: 50 });
         break;
       case 500:
-        this.setState({investment: 100});
+        this.setState({ investment: 100 });
         break;
       case 1000:
-        this.setState({investment: 500});
+        this.setState({ investment: 500 });
         break;
       case 5000:
-        this.setState({investment: 1000});
+        this.setState({ investment: 1000 });
         break;
     }
   }
 
   increaseInvestment() {
-    var investment = this.state.investment
+    var investment = this.state.investment;
     switch (investment) {
       case 50:
-        this.setState({investment: 100});
+        this.setState({ investment: 100 });
         break;
       case 100:
-        this.setState({investment: 500});
+        this.setState({ investment: 500 });
         break;
       case 500:
-        this.setState({investment: 1000});
+        this.setState({ investment: 1000 });
         break;
       case 1000:
-        this.setState({investment: 5000});
+        this.setState({ investment: 5000 });
         break;
       case 5000:
         break;

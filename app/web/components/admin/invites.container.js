@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as adminActions from '../../../actions/admin.actions';
 import ShadowButton from '../common/ShadowButton';
+import AdminHeader from './header.component';
 
 if (process.env.BROWSER === true) {
   require('./admin.css');
@@ -111,6 +112,7 @@ class Invites extends Component {
 
     return (
       <div className="adminContainer">
+        <AdminHeader />
         <h2>Manage Invites</h2>
         {createInvite}
         <div key={'inviteId'} className={'titleRow'}>
