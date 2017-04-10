@@ -19,9 +19,9 @@ class Flagged extends Component {
   render() {
     let { flagged, metaPosts, posts } = this.props;
     let flaggedPosts = [];
-    console.log(this.props.all);
     flagged.forEach(m => {
       let meta = metaPosts[m];
+      if (!meta) return;
       meta.commentary.forEach(p => flaggedPosts.push(p));
     });
     flaggedPosts = flaggedPosts.map(p => posts[p]);
@@ -50,6 +50,4 @@ export default connect(
     actions: bindActionCreators(postActions, dispatch)
   })
 )(Flagged);
-
-
 
