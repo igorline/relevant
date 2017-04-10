@@ -56,6 +56,7 @@ export function goToTopic(topic) {
       back: true,
       id: topic._id,
       topic,
+      gestureResponseDistance: 100,
     }));
     dispatch(toggleTopics(false));
   };

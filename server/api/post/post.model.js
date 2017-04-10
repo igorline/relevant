@@ -88,7 +88,7 @@ PostSchema.pre('save', async function (next) {
 
     this.commentCount = await this.model('Comment').count({ post: this._id });
 
-    let meta = MetaPost.findOne({ _id: this.metaPost });
+    let meta = await MetaPost.findOne({ _id: this.metaPost });
     if (!meta) return next();
     if (meta.rank < this.rank) {
       meta.rank = this.rank;

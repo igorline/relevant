@@ -68,6 +68,7 @@ class Discover extends Component {
       this.needsReload = new Date().getTime();
 
       this.onInteraction = InteractionManager.runAfterInteractions(() => {
+        console.log('loaded');
         this.loaded = true;
         this.setState({});
       });
@@ -109,8 +110,13 @@ class Discover extends Component {
     if (tab.key !== 'discover' && !next.scene) return false;
 
     let currentScene = this.props.nav.routes[this.props.nav.index];
-    if (this.props.scene && currentScene !== this.props.scene) return false;
+    // console.log(this.props.nav.routes);
 
+    // console.log('this scene ', next.scene);
+    // console.log('current', currentScene);
+    if (this.props.scene && currentScene !== next.scene) return false;
+
+    // console.log('should update')
     // console.log('updating discover ', this.topic);
     // for (let p in next) {
     //   if (next[p] !== this.props[p]) {
@@ -120,6 +126,7 @@ class Discover extends Component {
     //     }
     //   }
     // }
+    // console.log('render discover ', this.props.scene);
     return true;
   }
 

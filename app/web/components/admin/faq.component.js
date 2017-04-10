@@ -31,16 +31,18 @@ styles = {
     margin: 'auto',
   },
   p: {
-    marginLeft: '40px',
+    marginLeft: '10px',
   },
   bigImg: {
     width: '300px',
     display: 'block',
     margin: '10px 0',
+    maxWidth: '100%',
   },
   smallImg: {
     verticalAlign: 'middle',
     width: '30px',
     hegiht: 'auto',
+    maxWidth: '100%',
   }
-}
+};
