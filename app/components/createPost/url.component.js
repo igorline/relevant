@@ -157,9 +157,9 @@ export default class UrlComponent extends Component {
 
     if (this.props.repost) {
       repostBody = (
-        <View style={{ marginBottom: 30 }}>
+        <View style={{ flex: 1 }}>
           <PostInfo post={this.props.repost} />
-          <PostBody short post={this.props.repost} />
+          <PostBody preview post={this.props.repost} />
         </View>);
     }
 
@@ -168,10 +168,13 @@ export default class UrlComponent extends Component {
     if (this.props.postUrl) {
       urlPlaceholder = 'Add your own commentary';
     }
+    if (this.props.repost) {
+      urlPlaceholder = 'Add a comment';
+    }
 
     let userHeader = null;
 
-    if (this.props.user && !this.props.share) {
+    if (this.props.user && !this.props.share && !this.props.repost) {
       userHeader = (
         <View style={styles.createPostUser}>
           <View style={styles.innerBorder}>
@@ -196,7 +199,7 @@ export default class UrlComponent extends Component {
 
     let addP = null;
 
-    if (this.props.urlPreview && this.props.urlPreview.description && this.props.postBody === '') {
+    if (this.props.urlPreview && this.props.urlPreview.description && this.props.postBody === '' && !this.props.repost) {
       addP = (
         <TouchableHighlight
           style={styles.postButton}

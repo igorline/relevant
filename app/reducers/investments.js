@@ -3,11 +3,11 @@ import * as types from '../actions/actionTypes';
 const initialState = {
   userInvestments: {},
   investments: {},
-  loaded: false,
   myInvestments: [],
   myEarnings: {},
   posts: {},
   loaded: {},
+  loadedProfileInv: false,
 };
 
 export default function investments(state = initialState, action) {
@@ -93,14 +93,14 @@ export default function investments(state = initialState, action) {
           ...state.investments,
           ...action.payload.investments.entities.investments
         },
-        loaded: true,
+        loadedProfileInv: true,
       };
     }
 
     case 'LOADING_INVESTMENTS': {
       return {
         ...state,
-        loaded: false,
+        loadedProfileInv: false,
       };
     }
 

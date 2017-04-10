@@ -5,7 +5,11 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from '../../reducers';
 
-let socket = io(process.env.API_SERVER);
+let server = process.env.API_SERVER;
+if (process.env.NODE_ENV === 'development') {
+  server = 'http://localhost:3000';
+}
+let socket = io(server);
 
 export default function configureStore (initialState = {}, history) {
   // Compose final middleware and use devtools in debug environment
@@ -18,6 +22,8 @@ export default function configureStore (initialState = {}, history) {
   }
   // Create final store and subscribe router in debug env ie. for devtools
   const store = middleware(createStore)(rootReducer, initialState);
+
+  console.log('hot ', module.hot);
 
   if (module.hot) {
     module.hot.accept('../../reducers', () => {

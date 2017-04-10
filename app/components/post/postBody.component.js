@@ -45,6 +45,9 @@ class PostBody extends Component {
       if (body === '') body = null;
       // else return null;
       // else if (post.description) body = '\"' + post.description + '\"';
+      // if (this.props.preview)
+        // console.log(body)
+
     }
 
     let maxTextLength = 100;
@@ -64,8 +67,14 @@ class PostBody extends Component {
       postStyle = styles.repostText;
     }
 
-    let upvotes;
-    if ((post.downVotes || post.upVotes) && !this.props.repost) {
+    if (this.props.preview) {
+      numberOfLines = 2;
+      maxTextLength = 20;
+      postStyle = styles.previewText;
+    }
+
+    let upvotes = <Text style={{ paddingTop: 10 }}/>;
+    if ((post.downVotes || post.upVotes) && !this.props.repost && !this.props.preview) {
       let r = Math.round(post.relevance);
       upvotes = (
         <Text
@@ -99,13 +108,13 @@ class PostBody extends Component {
             </Text>
           </View>
         </TouchableWithoutFeedback>
-      )
+      );
     }
 
     return (
       <View style={{ flex: 1 }}>
         {textBody}
-        {upvotes || <Text style={{ paddingTop: 10 }} />}
+        {!this.props.preview ? upvotes : null}
       </View>
     );
   }
@@ -138,6 +147,12 @@ const localStyles = StyleSheet.create({
     lineHeight: 48 / 2,
     marginTop: -5,
     marginBottom: -5
+  },
+  previewText: {
+    fontFamily: 'Georgia',
+    fontSize: 30 / 2,
+    lineHeight: 40 / 2,
+    marginTop: -10,
   },
   shortBodyText: {
     fontFamily: 'Libre Caslon Display',

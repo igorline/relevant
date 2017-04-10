@@ -1,10 +1,8 @@
 import 'babel-polyfill';
-import React from 'react';
-import { render } from 'react-dom';
-import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
-import { syncHistoryWithStore } from 'react-router-redux';
-// import createHistory from 'history/lib/createBrowserHistory';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import debug from 'debug';
 import configureStore from './app/web/store/configureStore';
 
@@ -20,16 +18,16 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 let initialState = window.__INITIAL_STATE__ || undefined;
+
 const store = configureStore(initialState, browserHistory);
-const history = syncHistoryWithStore(browserHistory, store);
 
 clientDebug('rehydrating app');
 if (localStorage) localStorage.debug = '';
 
-render(
+ReactDOM.render(
   <Provider store={store}>
     <div className="parent">
-      <Router routes={routes(store)} history={history} />
+      <Router routes={routes(store)} history={browserHistory} />
     </div>
   </Provider>,
   rootElement

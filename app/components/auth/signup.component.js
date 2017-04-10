@@ -278,6 +278,18 @@ class SignUp extends Component {
             </View>
           </View>
 
+          <Text style={[styles.font12, { textAlign: 'center', paddingBottom: 15 }]}>
+            By clicking Next, you agree to our{' '}
+            <Text
+              style={styles.active}
+              onPress={() =>
+                this.props.actions.goToUrl('https://relevant.community/eula.html')
+              }
+            >
+              Terms of Use
+            </Text>
+          </Text>
+
           <TouchableHighlight
             underlayColor={'transparent'}
             style={[styles.largeButton]}
