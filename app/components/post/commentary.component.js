@@ -116,7 +116,7 @@ export default class Commentary extends Component {
           this.props.actions.scrolling(true);
           clearTimeout(this.scrollTimeout);
           this.scrollTimeout = setTimeout(
-            () => this.props.actions.scrolling(false), 300);
+            () => this.props.actions.scrolling(false), 80);
         }}
         // onScrollAnimationEnd={this.updateCurrent}
       >

@@ -127,6 +127,7 @@ class PostButtons extends Component {
         this.props.actions.triggerAnimation('invest');
         setTimeout(() => {
           this.props.navigator.reloadTab('read');
+          this.props.navigator.reloadTab('myProfile');
           let name = this.props.post.embeddedUser.name;
           // let title = 'New subscripion!';
           // if (results.subscription.amount > 3 ) {
@@ -197,7 +198,7 @@ class PostButtons extends Component {
     this.props.actions.push({
       key: 'createPost',
       back: true,
-      title: 'Create Post',
+      title: 'Repost',
       next: 'Post',
       direction: 'vertical'
     }, 'home');

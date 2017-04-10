@@ -131,7 +131,7 @@ class Read extends Component {
       >
         <Text
           onPress={() => this.toggleTooltip('subscriptions')}
-          style={[styles.font12, styles.greyText]}
+          style={[styles.font12, styles.darkGrey]}
         >
           You are subscribed to {total} post{total > 1 ? 's' : ''} from {totalUsers} user{totalUsers > 1 ? 's' : ''}
         </Text>
@@ -167,11 +167,14 @@ class Read extends Component {
     //   }
     // }
 
-    if (!this.props.subscriptions.total) {
+    let more = '';
+    if (this.props.subscriptions.total) {
+      more = 'more ';
+    }
       filler = (
         <View>
           <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
-            Upovote posts to subscribe to users
+            Upovote posts to subscribe to {more}users
           </Text>
           <Text
             style={[styles.georgia, styles.discoverLink, styles.quarterLetterSpacing]}
@@ -181,15 +184,19 @@ class Read extends Component {
           </Text>
         </View>
       );
-    } else {
-      filler = (
-        <View>
-          <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
-            Check back in a little while for new content
-          </Text>
-        </View>
-      );
-    }
+    // } else {
+    //   let { total, totalUsers } = this.props.subscriptions;
+    //   filler = (
+    //     <View>
+    //       <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
+    //         You are subscribed to {total} post{total > 1 ? 's' : ''} from {totalUsers} user{totalUsers > 1 ? 's' : ''}
+    //       </Text>
+    //       <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
+    //         Check back in a little while for new content
+    //       </Text>
+    //     </View>
+    //   );
+    // }
 
 
     this.tabs.forEach((tab) => {

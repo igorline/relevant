@@ -31,14 +31,7 @@ class PostImage extends Component {
   }
 
   openLink(url) {
-    // Linking.openURL(url);
-    this.props.actions.push({
-      key: 'articleView',
-      component: 'articleView',
-      back: true,
-      uri: url,
-      gestureResponseDistance: 120
-    }, 'home');
+    this.props.actions.goToUrl(url);
   }
 
   render() {
@@ -96,7 +89,7 @@ class PostImage extends Component {
           </View>
         );
       }
-      title = post.title;
+      title = post.title ? post.title.trim() : '';
       // if (post.title) {
       //   title = post.title;
       //   if (title.length > 75) {
@@ -138,12 +131,12 @@ class PostImage extends Component {
           <Text
             numberOfLines={4}
             style={[
-              { fontSize: 19, letterSpacing: 0.7, marginBottom: 5, fontWeight: 'bold' },
+              { fontSize: 19, letterSpacing: 0.4, marginBottom: 5, fontWeight: 'bold' },
               styles.articleTitle,
               single ? styles.darkGrey : null,
               styles.georgia]}
           >
-            {title.trim() || 'Untitled'}
+            {title || 'Untitled'}
           </Text>
           { linkEl }
           { /*description*/ }
@@ -155,9 +148,17 @@ class PostImage extends Component {
     let gradient = (
       <LinearGradient
         colors={[
-          'hsla(240, 70%, 50%, 0)',
-          'hsla(240, 70%, 30%, .5)',
-          'hsla(240, 70%, 10%, 1)'
+          'hsla(240, 70%, 30%, .01)',
+          'hsla(240, 70%, 20%, .05)',
+          'hsla(240, 70%, 10%, .2)',
+          'hsla(240, 70%, 10%, .7)',
+          'hsla(240, 70%, 10%, .6)'
+
+          // 'hsla(240, 70%, 30%, 0)',
+          // 'hsla(240, 70%, 30%, 0.1)',
+          // 'hsla(240, 70%, 20%, .4)',
+          // 'hsla(240, 70%, 10%, .8)',
+          // 'hsla(240, 70%, 20%, .7)'
         ]}
         style={[styles.linearGradient,
           smallerImg ? { height: 180 } : null
@@ -224,7 +225,7 @@ const localStyles = StyleSheet.create({
   },
   textContainer: {
     padding: 10,
-    paddingVertical: 20,
+    paddingVertical: 15,
     flex: 1,
     flexDirection: 'column',
     // alignItems: 'flex-start',
@@ -232,6 +233,7 @@ const localStyles = StyleSheet.create({
     // backgroundColor: 'white',
   },
   articleTitle: {
+    // backgroundColor: blue,
     backgroundColor: 'transparent',
     color: 'white',
   },
@@ -249,9 +251,10 @@ const localStyles = StyleSheet.create({
   },
   linearGradient: {
     height: 240,
+    // paddingTop: 30,
     width: fullWidth,
     position: 'absolute',
-    top: 0,
+    bottom: 0,
     // alignItems: 'flex-end',
     // justifyContent: 'flex-end'
   },

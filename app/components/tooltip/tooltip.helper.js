@@ -59,7 +59,7 @@ exports.text.coin = function (props) {
         {numbers.abbreviateNumber(props.auth.user.balance)}
       </Text>
       {'\n\n'}
-      You can use them to upvote content. Don't worry if you run out, we'll give you some more tomorrow.
+      You can use them to upvote posts. If you run out, don\t worry, you will get more tomorrow.
     </Text>
   );
 };
@@ -93,7 +93,7 @@ exports.text.subscriptions = function (props) {
   if (!props.auth.user) return null;
   return (
     <Text style={[props.style, { textAlign: 'center' }]}>
-      Whenever you upvote a post, you subscribe to 3 future posts from the author.
+      Whenever you upvote a post, you subscribe to the next 3 posts from the author.
     </Text>
   );
 };
@@ -108,9 +108,9 @@ exports.data.activity = {
 
 exports.text.activity = function (props) {
   if (!props.auth.user) return null;
-  let text = 'You earn relevance and coins when others upvote your posts. You get more relevance from users more that are relevant than you.'
+  let text = 'When others upvote your posts you earn relevance and coins. You get more relevance from users that are more relevant than you.';
   if (props.type && props.type.match('partial')) {
-    text = 'You also earn relevance when someone upvotes a post after you.\n\n\Tip: for best results find new posts no one upvoted yet.';
+    text = 'You can also earn relevance from upvoting a post early.\n\n\Tip: for best results find new posts no one upvoted yet.';
   }
   return (
     <Text style={[props.style]}>

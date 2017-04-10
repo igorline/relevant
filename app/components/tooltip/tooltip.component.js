@@ -50,7 +50,7 @@ class Tooltip extends Component {
     // console.log(tooltip);
     // console.log(nextT);
     if (nextT && nextT.toggle && tooltip !== next.tooltip.showing.name) {
-      console.log('trigger ', tooltip);
+      // console.log('trigger ', tooltip);
       clearTimeout(this.timeout);
       this.timeout = setTimeout(() => nextT.toggle(), 300);
     }

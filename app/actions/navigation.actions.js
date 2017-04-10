@@ -131,6 +131,16 @@ export function replaceRoute(route, index, key) {
   };
 }
 
+export function goToUrl(url) {
+  return push({
+    key: 'articleView',
+    component: 'articleView',
+    back: true,
+    uri: url,
+    gestureResponseDistance: 120
+  }, 'home');
+}
+
 export function goToComments(post, key, animation) {
   return push({
     key: 'comment',

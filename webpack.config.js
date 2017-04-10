@@ -12,7 +12,7 @@ module.exports = {
   devtool: 'inline-source-map',
   entry: [
     'webpack-hot-middleware/client?reload=true',
-    './index.web.js',
+    './index.webNew.js',
     'whatwg-fetch',
   ],
   output: {

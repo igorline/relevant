@@ -13,6 +13,7 @@ import NotFound from './components/404';
 import TopicsAdmin from './components/admin/topics.container';
 import Invites from './components/admin/invites.container';
 import Invite from './components/admin/invite.component';
+import Faq from './components/admin/faq.component';
 
 // Redirects to /login by default
 const userIsAuthenticated = UserAuthWrapper({
@@ -31,12 +32,14 @@ const userIsAdmin = UserAuthWrapper({
 });
 
 let routes = (store) => {
+  // console.log('router store', store)
   const connect = (fn) => (nextState, replaceState) => fn(store, nextState, replaceState);
   return {
     path: '/',
     component: App,
     indexRoute: { component: Home },
     childRoutes: [
+      { path: 'faq', component: Faq },
       { path: 'login', component: Auth },
       { path: 'signup', component: Auth },
       { path: 'home', component: Home },

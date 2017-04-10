@@ -38,7 +38,9 @@ const UserSchema = new Schema({
   confirmed: { type: Boolean, default: false },
   confirmCode: { type: String, select: false },
   resetPasswordToken: { type: String, select: false },
-  resetPasswordExpires: { type: Date, select: false }
+  resetPasswordExpires: { type: Date, select: false },
+  following: Number,
+  followers: Number,
 });
 
 UserSchema.index({ name: 'text' });
@@ -186,15 +188,15 @@ UserSchema.methods = {
 
   // get following and followers
   getSubscriptions: function() {
-    let user = this.toObject();
+    // let user = this.toObject();
     return this.model('Subscription').count({ follower: this._id })
     .then((following) => {
-      user.following = following;
+      this.following = following;
       return this.model('Subscription').count({ following: this._id });
     })
     .then((followers) => {
-      user.followers = followers;
-      return user;
+      this.followers = followers;
+      return this;
     })
     .catch(err => {
       console.log(err);

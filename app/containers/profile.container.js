@@ -73,13 +73,14 @@ class Profile extends Component {
 
   componentWillReceiveProps(next) {
     this.userData = next.users[this.userId];
-    // console.log(this.userData);
+    console.log(this.userData);
 
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();
     }
     if (this.props.reload !== next.reload) {
       this.needsReload = new Date().getTime();
+      // this.loadUser();
     }
   }
 
@@ -173,7 +174,7 @@ class Profile extends Component {
       case 1:
         return {
           data: this.props.investments.userInvestments[this.userId],
-          loaded: this.props.investments.loaded,
+          loaded: this.props.investments.loadedProfileInv,
         };
       default:
         return null;

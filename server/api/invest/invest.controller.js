@@ -334,8 +334,8 @@ exports.create = async (req, res) => {
     }
 
     author = await author.save();
-    author.updateClient(user);
 
+    author.updateClient(user);
     console.log('updated author');
 
     return author;
@@ -438,9 +438,12 @@ exports.create = async (req, res) => {
 
     // updates user investments
     user.investmentCount = await Invest.count({ investor: user._id, amount: { $gt: 0 } });
-    user = await user.save();
-    user.updateClient();
 
+    // update subscriptions
+    user = await user.getSubscriptions();
+    user = await user.save();
+
+    user.updateClient();
 
     post.updateClient();
 
