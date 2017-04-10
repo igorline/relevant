@@ -73,7 +73,6 @@ class Profile extends Component {
 
   componentWillReceiveProps(next) {
     this.userData = next.users[this.userId];
-    console.log(this.userData);
 
     if (this.props.refresh !== next.refresh) {
       this.scrollToTop();

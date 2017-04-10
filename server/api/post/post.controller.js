@@ -25,7 +25,7 @@ request.defaults({ maxRedirects: 20, jar: true });
 //   });
 // }
 // async function updateAllRank() {
-//   await MetaPost.update({}, { rank: 0 }, { multi: true });
+//   // await MetaPost.update({}, { rank: 0 }, { multi: true });
 //   let posts = await Post.find();
 //   posts.forEach(post => {
 //     post.save();

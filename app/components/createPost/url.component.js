@@ -7,7 +7,7 @@ import {
   Text,
   TouchableHighlight
 } from 'react-native';
-import { globalStyles, blue } from '../../styles/global';
+import { globalStyles, blue, fullWidth } from '../../styles/global';
 import * as utils from '../../utils';
 import UrlPreview from './urlPreview.component';
 import UserName from '../userNameSmall.component';
@@ -157,7 +157,7 @@ export default class UrlComponent extends Component {
 
     if (this.props.repost) {
       repostBody = (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 0, height: 120, width: fullWidth - 20 }}>
           <PostInfo post={this.props.repost} />
           <PostBody preview post={this.props.repost} />
         </View>);

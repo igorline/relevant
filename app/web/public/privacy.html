@@ -20,7 +20,7 @@
   <meta property="fb:app_id" content="190131204371223">
 <!--   <link rel="image_src" href="https://www.iubenda.com/images/site/fb-image.png"> -->
 
-  <meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 <!--   <link href="/assets/privacy_policy-68e108a4d920ec894c9623041ac2b44b.css" media="screen" rel="stylesheet" type="text/css"> -->
 
@@ -40,35 +40,25 @@ body {
 .expand-click {
   border: 1px solid grey;
   display: inline-block;
-  padding: 5px 15px;
-  /*border-radius: 4px;*/
+  padding: 5px 10px;
+  vertical-align: middle;
 }
 .expand-click::after{
   content: '▼';
-  padding-left: 10px;
-  font-size: 12px;
+  padding-left: 5px;
+  font-size: 10px;
 }
 
 .expanded .expand-click::after{
   content: '▲';
-  padding-left: 10px;
-  font-size: 12px;
+  padding-left: 5px;
+  font-size: 10px;
 }
 
+ul {
+  padding-left: 20px;
+}
 
-#iubenda_policy #wbars{
-  height:529px;
-}
-#iubenda_policy .iub_container > .iub_footer {
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-  border-top: 1px solid #DDD;
-}
-#iubenda_policy.iubenda_vip_policy.iubenda_fixed_policy
-.iub_container {
-  max-width: none; padding-top: 0;
-}
 </style>
 </head>
 <body>
@@ -171,7 +161,7 @@ body {
 
            <li>
             <div class="box_primary box_10 expand collapsed">
-               <h3 class="expand-click w_icon_24 policyicon_purpose_377227">Access to third party services' accounts</h3>
+               <h4 class="expand-click w_icon_24 policyicon_purpose_377227">Access to third party services' accounts</h4>
                <div class="expand-content" style="display: none;">
 
                    <p>This type of services allows this Application to access Data from your account on a third party service and perform actions with it.<br>
@@ -209,7 +199,7 @@ These services are not activated automatically, but require explicit authorizati
         
            <li>
             <div class="box_primary box_10 expand collapsed">
-               <h3 class="expand-click w_icon_24 policyicon_purpose_377228">Managing contacts and sending messages</h3>
+               <h4 class="expand-click w_icon_24 policyicon_purpose_377228">Managing contacts and sending messages</h4>
                <div class="expand-content" style="display: none;">
 
                    <p>This type of services makes it possible to manage a database of email contacts, phone contacts or any other contact information to communicate with the User.<br>

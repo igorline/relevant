@@ -15,8 +15,12 @@ html, body {
 }
 
 container {
-  padding: 40px;
+  padding: 20px;
   display: block;
+  background: white;
+  ul {
+    padding-left: 20px;
+  }
 }
 
 #app {

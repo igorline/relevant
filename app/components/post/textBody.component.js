@@ -35,6 +35,7 @@ class TextBody extends Component {
       _id: tag.replace('#', '').trim(),
       categoryName: tag
     };
+    this.props.actions.changeTab('discover');
     this.props.actions.goToTopic(topic);
   }
 
