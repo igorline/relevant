@@ -51,6 +51,11 @@ exports.flag = async (req, res) => {
       { flagged: true, $addToSet: { flaggedBy: userId } },
       { new: true }
     );
+    await MetaPost.findOneAndUpdate(
+      { _id: post.metaPost },
+      { flagged: true, $addToSet: { flaggedBy: userId } },
+      { new: true }
+    );
   } catch (err) {
     handleError(res)(err);
   }
@@ -443,8 +448,13 @@ exports.create = (req, res) => {
 };
 
 exports.delete = (req, res) => {
+  let userId = req.user._id;
   let id = req.params.id;
-  let query = { _id: id };
+  let query = { _id: id, user: userId };
+
+  if (req.user.role === 'admin') {
+    query = { _id: id };
+  }
 
   Post.findOne(query)
   .then((foundPost) => {

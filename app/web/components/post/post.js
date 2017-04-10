@@ -1,70 +1,102 @@
-import React, { Component, PropTypes } from 'react'
-import { bindActionCreators } from 'redux'
-import * as PostActions from '../../actions/post'
-import Invest from '../invest/invest'
-import Tags from '../tag/tag.container'
-import Comments from '../comment/comment.container'
+import React, { Component, PropTypes } from 'react';
+import Invest from '../invest/invest';
+// import Tags from '../tag/tag.container';
+
+let styles;
 
 class Post extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       showInvestForm: false
-    }
+    };
+    this.onClick = this.onClick.bind(this);
+    this.deletePost = this.deletePost.bind(this);
   }
 
-  onClick(e){
+  onClick(e) {
     e.preventDefault();
-    this.setState({showInvestForm: !this.state.showInvestForm})
+    this.setState({ showInvestForm: !this.state.showInvestForm });
   }
 
   deletePost() {
-    this.props.deletePost(this.props.auth.token, this.props.post.selectedPost._id)
+    this.props.actions.deletePost(this.props.auth.token, this.props.post);
   }
 
   render() {
-    var post = this.props.post.selectedPost
+    let post = this.props.post;
+    let titleEl;
+    let buttonEL;
+    let deleteEl;
 
-    if (post) {
-      if (post == 'notFound') {
-        return (
-          <div>
-            <h1>Post not found</h1>
-          </div>
-        )
-      }
-
-      // Otherwise we found post
-      return (
-        <div>
-          <h1><a href={post.link}>{post.title}</a>
-              &nbsp;
-              (Relevance: {Math.round(post.relevance * 100) / 100} Value: {post.value})
-              by <a href={'/profile/' + post.user._id}>{post.user.name}</a> 
-              &nbsp;
-              &nbsp;
-              {post.user._id === this.props.auth.user._id && <a onClick={this.deletePost.bind(this)} href='#'>[delete]</a>} 
-          </h1>
-          <img src={post.image} width="15%"></img>
-          <p>{post.body}</p>
-          <br/>
-          <a onClick={this.onClick.bind(this)} href='#'style={{fontSize: 1.5 + 'em'}}>💰 Invest</a>
-          {this.state.showInvestForm && <Invest { ...this.props} />}
-          <br/>
-          <br/>
-          <br/>
-          <Tags { ...this.props } />
-          <Comments { ...this.props } />
-       </div>
-      )
-
-    } else {
-      // Still loading response
-      return (
-        null
-      )
+    if (post === 'notFound') {
+      return (<div><h1>Post not found</h1></div>);
     }
+    if (!post) return null;
+
+    if (post.user._id === this.props.auth.user._id ||
+      this.props.auth.user.role === 'admin') {
+      deleteEl = (
+        <button
+          style={{ ...styles.postButtons, float: 'right' }}
+          onClick={this.deletePost}
+        >
+          Delete
+        </button>
+      );
+    }
+
+    titleEl = (
+      <h3>
+        <a href={post.link}>{post.title}</a>
+        <br />
+        by <a href={'/profile/' + post.user}>{post.embeddedUser.name}</a>
+        &nbsp;
+        &nbsp;
+      </h3>
+    );
+
+    buttonEL = (
+      <div style={styles.postButtons}>
+        <button
+          onClick={this.onClick}
+          style={styles.investButton}
+        >
+          💰 Invest
+        </button>
+        {this.state.showInvestForm && <Invest {...this.props} />}
+        {deleteEl}
+      </div>
+    );
+
+    // let tagsEl = <Tags {...this.props} />;
+
+    return (
+      <div style={styles.postBox}>
+        <img alt={post.title} src={post.image} width="100%" />
+        {titleEl}
+        <p>{post.body}</p>
+        <div>Relevance: {Math.round(post.relevance * 100) / 100} Value: {post.value}</div>
+        {buttonEL}
+      </div>
+    );
   }
 }
 
-export default Post
+styles = {
+  investButton: {
+    fontSize: '16px',
+    lineHeight: '20px',
+  },
+  postBox: {
+    margin: 'auto',
+    padding: '10px',
+    maxWidth: '400px',
+    border: '1px solid grey',
+  },
+  postButtons: {
+    margin: '20px 10px'
+  }
+};
+
+export default Post;

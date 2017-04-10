@@ -3,7 +3,8 @@ import * as types from './actionTypes';
 import * as utils from '../utils';
 
 let AlertIOS = utils.fetchUtils.Alert();
-const API = process.env.API_SERVER + '/api/invites/';
+const API = process.env.API_SERVER + '/api';
+const DEFAULT_LIMIT = 20;
 
 const inviteSchema = new schema.Entity('invites',
   {},
@@ -33,7 +34,7 @@ export function destroyInvite(invite) {
 
 export function getInvites() {
   return async (dispatch) => {
-    fetch(API, {
+    fetch(API + '/invites', {
       method: 'GET',
       ...await utils.fetchUtils.reqOptions()
     })
@@ -54,7 +55,7 @@ export function getInvites() {
 
 export function createInvite(invite) {
   return async (dispatch) => {
-    fetch(API, {
+    fetch(API + '/invites', {
       method: 'POST',
       ...await utils.fetchUtils.reqOptions(),
       body: JSON.stringify(invite)
@@ -72,7 +73,7 @@ export function createInvite(invite) {
 
 export function sendInvitationEmail(id) {
   return async (dispatch) =>
-    fetch(API + 'email', {
+    fetch(API + '/invites/email', {
       method: 'POST',
       ...await utils.fetchUtils.reqOptions(),
       body: JSON.stringify({ inviteId: id })
@@ -90,7 +91,7 @@ export function sendInvitationEmail(id) {
 
 export function checkInviteCode(code) {
   return async dispatch =>
-    fetch(API, {
+    fetch(API + '/invites', {
       method: 'PUT',
       ...await utils.fetchUtils.reqOptions(),
       body: JSON.stringify({ code })
@@ -110,7 +111,7 @@ export function checkInviteCode(code) {
 
 export function destroy(invite) {
   return async dispatch =>
-    fetch(API + invite._id, {
+    fetch(API + '/invites/' + invite._id, {
       method: 'DELETE',
       ...await utils.fetchUtils.reqOptions(),
     })

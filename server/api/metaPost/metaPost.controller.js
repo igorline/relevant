@@ -90,3 +90,25 @@ exports.index = async (req, res) => {
   }
 };
 
+exports.flagged = async (req, res) => {
+  let meta;
+  try {
+    meta = await MetaPost.find({ flagged: true })
+    .sort({ latestPost: -1 })
+    .populate({
+      path: 'commentary',
+      // match: { repost: { $exists: false } },
+      options: { sort: { postDate: -1 } },
+      populate: [
+        {
+          path: 'user',
+          select: 'relevance name image'
+        }
+      ]
+    });
+  } catch (err) {
+    handleError(res, err);
+  }
+  res.status(200).json(meta);
+};
+

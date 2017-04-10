@@ -101,7 +101,8 @@ exports.categories = (req, res) => {
   if (active !== undefined) query = { category: true, active: true };
 
   Tag.find(query)
-  .sort('_id')
+  // .sort('_id')
+  .sort({ count: -1 })
   .then(categories => res.status(200).json(categories))
   .catch(err => handleError(res)(err));
 };

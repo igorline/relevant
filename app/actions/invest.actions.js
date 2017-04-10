@@ -1,12 +1,10 @@
 import { normalize, schema } from 'normalizr';
-import {
-    AlertIOS
-} from 'react-native';
 import * as types from './actionTypes';
 import * as utils from '../utils';
 
 // require('../publicenv');
 utils.fetchUtils.env();
+const AlertIOS = utils.fetchUtils.Alert();
 
 let apiServer = process.env.API_SERVER + '/api/';
 

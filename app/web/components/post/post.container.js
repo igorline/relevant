@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Post from './post';
 import * as PostActions from '../../../actions/post.actions';
+import Comments from '../comment/commment.container';
 
 class Posts extends Component {
   constructor(props) {
@@ -14,7 +15,12 @@ class Posts extends Component {
   }
 
   render () {
-    return <Post {...this.props} />;
+    return (
+      <div>
+        <Post {...this.props} />
+        <Comments {...this.props} />
+      </div>
+    );
   }
 }
 

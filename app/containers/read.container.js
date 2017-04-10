@@ -174,7 +174,7 @@ class Read extends Component {
       filler = (
         <View>
           <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
-            Upovote posts to subscribe to {more}users
+            Upvote posts to subscribe to {more}users
           </Text>
           <Text
             style={[styles.georgia, styles.discoverLink, styles.quarterLetterSpacing]}

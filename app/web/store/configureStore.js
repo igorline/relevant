@@ -23,8 +23,6 @@ export default function configureStore (initialState = {}, history) {
   // Create final store and subscribe router in debug env ie. for devtools
   const store = middleware(createStore)(rootReducer, initialState);
 
-  console.log('hot ', module.hot);
-
   if (module.hot) {
     module.hot.accept('../../reducers', () => {
       const nextRootReducer = require('../../reducers');

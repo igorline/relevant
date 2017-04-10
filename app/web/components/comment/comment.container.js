@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import NewCommentForm from './newCommentForm';
 import Comment from './comment';
-import * as CommentActions from '../../actions/comment'
+import * as postActions from '../../../actions/post.actions';
 
 class Comments extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   componentWillMount() {
@@ -32,7 +32,7 @@ class Comments extends Component {
             {comments.map(function(comment){
               return (
                 <div>
-                <Comment data={comment} />
+                  <Comment data={comment} />
                 </div>
               );
             })}
@@ -56,5 +56,5 @@ export default connect(
     }
   },
   dispatch => {
-    return Object.assign({}, { dispatch },  bindActionCreators(CommentActions, dispatch))
+    return Object.assign({}, { dispatch },  bindActionCreators(postActions, dispatch))
 })(Comments)

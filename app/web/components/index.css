@@ -6,7 +6,6 @@
 
 html, body {
   width: 100%;
-  background: #EDEDED;
   margin: 0;
   padding: 0;
   color: black;
@@ -28,7 +27,13 @@ container {
 }
 
 a {
-  color: black;
+  /*color: black;*/
+  color: #3E3EFF;
+}
+
+.link {
+  /*color: #3E3EFF;*/
+  padding: 0 5px;
 }
 
 button {
