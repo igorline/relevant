@@ -9,6 +9,7 @@ import Subscriptiton from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import Tag from '../tag/tag.model';
 import apnData from '../../pushNotifications';
+import mail from '../../mail';
 
 const PostEvents = new EventEmitter();
 
@@ -41,6 +42,30 @@ function handleError(res, statusCode) {
   };
 }
 
+async function sendFlagEmail() {
+  let status;
+  try {
+    let url = `${process.env.API_SERVER}/admin/flagged`;
+    let data = {
+      from: 'Relevant <noreply@mail.relevant.community>',
+      to: 'contact@4real.io',
+      subject: 'Innaproprate Content',
+      html: `Someone has flagged a post for innapropriate content
+      <br />
+      <br />
+      You can manage flagged content here:&nbsp;
+      <a href="${url}" target="_blank">${url}</a>
+      <br />
+      <br />`
+    };
+    status = await mail.send(data);
+  } catch (err) {
+    console.log('mail error ', err);
+    throw err;
+  }
+  return status;
+}
+
 exports.flag = async (req, res) => {
   let post;
   try {
@@ -48,14 +73,15 @@ exports.flag = async (req, res) => {
     let postId = req.body.postId;
     post = await Post.findOneAndUpdate(
       { _id: postId },
-      { flagged: true, $addToSet: { flaggedBy: userId } },
+      { flagged: true, $addToSet: { flaggedBy: userId }, flaggedTime: Date.now() },
       { new: true }
     );
     await MetaPost.findOneAndUpdate(
       { _id: post.metaPost },
-      { flagged: true, $addToSet: { flaggedBy: userId } },
+      { flagged: true, $addToSet: { flaggedBy: userId }, flaggedTime: Date.now() },
       { new: true }
     );
+    await sendFlagEmail();
   } catch (err) {
     handleError(res)(err);
   }
@@ -111,13 +137,22 @@ exports.index = async (req, res) => {
 
 exports.userPosts = async (req, res) => {
   let id;
-  if (req.user) id = req.user._id;
+  let blocked = [];
+  if (req.user) {
+    let user = req.user;
+    blocked = [...user.blocked, ...user.blockedBy];
+    id = req.user._id;
+  }
   let limit = parseInt(req.query.limit, 10);
   let skip = parseInt(req.query.skip, 10);
   let userId = req.params.id || null;
   let sortQuery = { _id: -1 };
   let query = { user: userId };
   let posts;
+
+  if (blocked.find(u => u === userId)) {
+    return res.status(200).json({});
+  }
 
   try {
     posts = await Post.find(query)
@@ -227,18 +262,24 @@ exports.findByID = async (req, res) => {
   let post;
 
   try {
-    post = await Post.findOne({ _id: req.params.id })
+    let blocked = [];
+    if (req.user) {
+      let user = req.user;
+      blocked = [...user.blocked, ...user.blockedBy];
+    }
+
+    post = await Post.findOne({ _id: req.params.id, user: { $nin: blocked } })
     .populate({
       path: 'user',
       select: 'name image relevance',
     });
-    res.status(200).json(post);
   } catch (err) {
     return res.send(500, err);
   }
 
+  res.status(200).json(post);
   // TODO worker thread
-  if (id) {
+  if (id && post) {
     Post.sendOutInvestInfo([post._id], id);
   }
   return null;
@@ -410,6 +451,7 @@ exports.create = (req, res) => {
 
         let feed = new Feed({
           userId: subscription.follower,
+          from: newPost.user,
           post: newPost._id,
           tags: newPost.tags,
           createdAt: new Date()
@@ -443,7 +485,7 @@ exports.create = (req, res) => {
     return;
   })
   // this happens async
-  .then(() => Post.sendOutMentions(mentions, newPost, author, 'post'))
+  .then(() => Post.sendOutMentions(mentions, newPost, author))
   .catch(handleError(res));
 };
 

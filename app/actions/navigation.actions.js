@@ -171,3 +171,11 @@ export function goToProfile(user, key, animation) {
   }, key, animation);
 }
 
+export function viewBlocked() {
+  return push({
+    key: 'blocked',
+    title: 'Blocked Users',
+    back: true,
+  });
+}
+

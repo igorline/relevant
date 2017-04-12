@@ -30,9 +30,7 @@ class PostPeople extends Component {
 
   componentWillMount() {
     this.postId = this.props.scene.id;
-    console.log('loading people');
     this.onInteraction = InteractionManager.runAfterInteractions(() => {
-      console.log('loading people');
       this.loading = false;
       this.load();
       this.forceUpdate();

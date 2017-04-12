@@ -97,15 +97,11 @@ export function loadingInvestments() {
 
 
 export function getInvestments(token, userId, skip, limit, type){
-  return (dispatch) => {
+  return async dispatch => {
     dispatch(loadingInvestments());
-    return fetch(apiServer + 'invest/' + userId + '?skip=' + skip + '&limit=' + limit + '&access_token=' + token, {
-      credentials: 'include',
+    return fetch(apiServer + 'invest/' + userId + '?skip=' + skip + '&limit=' + limit, {
       method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
+      ...await utils.fetchUtils.reqOptions()
     })
     .then(response => response.json())
     .then((responseJSON) => {

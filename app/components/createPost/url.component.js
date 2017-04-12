@@ -254,7 +254,7 @@ export default class UrlComponent extends Component {
               value={this.props.postBody}
               returnKeyType={'default'}
               autoFocus
-              keyboardShouldPersistTaps={false}
+              keyboardShouldPersistTaps={'never'}
               onContentSizeChange={(event) => {
                 let h = event.nativeEvent.contentSize.height;
                 this.setState({

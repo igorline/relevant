@@ -5,11 +5,11 @@ import {
   View,
   Image,
 } from 'react-native';
-import { globalStyles, fullWidth } from '../styles/global';
-import Percent from '../components/percent.component';
-import { numbers } from '../utils';
+import { globalStyles, fullWidth } from '../../styles/global';
+import Percent from '../../components/percent.component';
+import { numbers } from '../../utils';
 
-let defaultImg = require('../assets/images/default_user.jpg');
+let defaultImg = require('../../assets/images/default_user.jpg');
 let styles;
 
 class ProfileComponent extends Component {
@@ -137,7 +137,7 @@ class ProfileComponent extends Component {
           </Text>
           <Image
             style={[styles.coin, { width: 17, height: 12, marginBottom: -4 }]}
-            source={require('../assets/images/relevantcoin.png')}
+            source={require('../../assets/images/relevantcoin.png')}
           />
           <Text style={[styles.font12, styles.bebasBold]}>
             {numbers.abbreviateNumber(balance) || 0}
@@ -156,7 +156,7 @@ class ProfileComponent extends Component {
         >
           <Image
             style={[styles.r, { width: 25, height: 23 }]}
-            source={require('../assets/images/r.png')}
+            source={require('../../assets/images/r.png')}
           />
           {numbers.abbreviateNumber(relevance)}
           {' '}
@@ -219,10 +219,10 @@ class ProfileComponent extends Component {
             <View style={[styles.profileRowContainer]}>
               <View style={[styles.profileRow, fullWidth <= 320 ? { flexDirection: 'column' } : null]}>
                 <Text style={[styles.font12, styles.darkGray, styles.profileColumn]}>
-                  Subscribers: <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(followers)}</Text>
+                  Subscribers: <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(followers || 0)}</Text>
                 </Text>
                 <Text style={[styles.font12, styles.darkGray, styles.profileColumn]}>
-                  Subscribed to: <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(following)}</Text>
+                  Subscribed to: <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(following || 0)}</Text>
                 </Text>
               </View>
             </View>

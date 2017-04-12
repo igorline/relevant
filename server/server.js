@@ -1,7 +1,6 @@
 /* eslint-disable no-console, no-use-before-define */
 import Express from 'express';
 import morgan from 'morgan';
-import socketServer from './socket';
 import queue from './queue';
 
 let bodyParser = require('body-parser');
@@ -75,6 +74,8 @@ let port = process.env.PORT || 3000;
 console.log('WEB CONCURRENCY ', process.env.WEB_CONCURRENCY);
 
 let server;
+let socketServer = require('./socket').default;
+
 if (process.env.NODE_ENV !== 'test') {
   server = app.listen(port, (error) => {
     if (error) {

@@ -50,6 +50,7 @@ class TextBody extends Component {
     let maxTextLength = this.props.maxTextLength || Math.pow(10, 1000);
     let body = this.props.body || '';
     let post = this.props.post || {};
+
     let bodyEl = null;
 
     let bodyObj = [];
@@ -69,7 +70,10 @@ class TextBody extends Component {
         let ind = extraTags.indexOf(word.text.replace('#', '').trim());
         if (ind > -1) extraTags.splice(ind, 1);
       } else if (section.match(/^@/)) {
-        word.type = 'mention';
+        let m = section.replace('@', '');
+        if (post.mentions && post.mentions.find(mention => mention === m)) {
+          word.type = 'mention';
+        }
       } else if (utils.post.URL_REGEX.test(section)) {
         word.type = 'url';
       }

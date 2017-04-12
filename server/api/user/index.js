@@ -6,19 +6,26 @@ const auth = require('../../auth/auth.service');
 const router = express.Router();
 
 router.get('/', controller.index);
-router.put('/confirm', controller.confirm);
 router.get('/sendConfirmation', auth.isAuthenticated(), controller.sendConfirmationCode);
+router.get('/search', auth.blocked(), controller.search);
+router.get('/me', auth.isAuthenticated(), controller.show);
+router.get('/blocked', auth.isAuthenticated(), controller.blocked);
+router.get('/user/:id', auth.blocked(), controller.show);
+router.get('/general/list', auth.blocked(), controller.list);
+router.get('/check/user', controller.checkUser);
+router.get('/onboarding/:step', auth.isAuthenticated(), controller.onboarding);
+
+router.post('/', controller.create);
+
+router.put('/confirm', controller.confirm);
 router.put('/forgot', controller.forgot);
 router.put('/resetPassword', controller.resetPassword);
 router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
-router.get('/search', controller.search);
-router.delete('/:id', auth.hasRole('admin'), controller.destroy);
-router.get('/me', auth.isAuthenticated(), controller.show);
-router.get('/:id', auth.currentUser(), controller.show);
-router.post('/', controller.create);
 router.put('/', auth.isAuthenticated(), controller.update);
-router.get('/general/list', controller.list);
-router.get('/check/user', controller.checkUser);
-router.get('/onboarding/:step', auth.isAuthenticated(), controller.onboarding);
+router.put('/block', auth.isAuthenticated(), controller.block);
+router.put('/unblock', auth.isAuthenticated(), controller.unblock);
+
+router.delete('/:id', auth.hasRole('admin'), controller.destroy);
+
 
 module.exports = router;

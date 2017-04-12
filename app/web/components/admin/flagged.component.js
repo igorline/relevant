@@ -27,7 +27,14 @@ class Flagged extends Component {
     flaggedPosts = flaggedPosts.map(p => posts[p]);
     flaggedPosts = flaggedPosts.filter(p => p);
 
-    let postsEl = flaggedPosts.map(p => <Post key={p._id} {...this.props} post={p} />);
+    let postsEl = flaggedPosts.map(p => (
+      <Post
+        key={p._id}
+        {...this.props}
+        flagged={p.flagged}
+        post={p}
+      />)
+    );
 
     return (
       <div style={{}}>

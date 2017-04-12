@@ -6,7 +6,7 @@ let router = express.Router();
 
 router.post('/', auth.isAuthenticated(), controller.create);
 router.delete('/destroy', auth.isAuthenticated(), controller.destroy);
-router.get('/:userId', auth.authMiddleware(), controller.show);
+router.get('/:userId', auth.blocked(), controller.show);
 router.get('/post/:postId', auth.authMiddleware(), controller.postInvestments);
 
 module.exports = router;

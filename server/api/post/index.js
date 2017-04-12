@@ -9,8 +9,8 @@ router.put('/', auth.isAuthenticated(), controller.update);
 router.put('/flag', auth.isAuthenticated(), controller.flag);
 router.get('/', auth.authMiddleware(), controller.index);
 router.get('/readable', controller.readable);
-router.get('/:id', auth.authMiddleware(), controller.findByID);
-router.get('/user/:id', auth.authMiddleware(), controller.userPosts);
+router.get('/:id', auth.blocked(), controller.findByID);
+router.get('/user/:id', auth.blocked(), controller.userPosts);
 router.get('/preview/generate', controller.preview);
 
 router.delete('/:id', auth.isAuthenticated(), controller.delete);

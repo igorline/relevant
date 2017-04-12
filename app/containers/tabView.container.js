@@ -13,11 +13,14 @@ import Activity from './activity.container';
 import Comments from './comments.container';
 import Messages from './messages.container';
 import Thirst from './thirst.container';
-import Profile from './profile.container';
+import Profile from '../components/profile/profile.container';
+import Blocked from '../components/profile/blocked.container';
 
 import Card from './../components/nav/card.component';
 import * as navigationActions from '../actions/navigation.actions';
 import * as tagActions from '../actions/tag.actions';
+import * as userActions from '../actions/user.actions';
+
 import PostPeople from '../components/post/people.container';
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
@@ -82,6 +85,9 @@ class CardContainer extends Component {
 
       case 'people':
         return <PostPeople scene={props.scene.route} />;
+
+      case 'blocked':
+        return <Blocked scene={props.scene.route} />;
 
       default:
         return this.getDefaultComponent(props);
@@ -150,6 +156,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       {
+        ...userActions,
         ...navigationActions,
         ...tagActions,
       }, dispatch),

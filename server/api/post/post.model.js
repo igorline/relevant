@@ -45,8 +45,11 @@ let PostSchema = new Schema({
     name: String,
     image: String,
   },
+
   flagged: { type: Boolean, default: false },
   flaggedBy: [{ type: String, ref: 'User', select: false }],
+  flaggedTime: Date,
+
   mentions: [{ type: String, ref: 'User' }],
   // investments: [{ type: Schema.Types.ObjectId, ref: 'Invest' }],
   // comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
@@ -62,7 +65,7 @@ let PostSchema = new Schema({
   commentCount: { type: Number, default: 0 },
   upVotes: { type: Number, default: 0 },
   downVotes: { type: Number, default: 0 },
-  keywords: [String]
+  keywords: [String],
 }, {
   timestamps: true,
 });
@@ -102,58 +105,70 @@ PostSchema.pre('save', async function (next) {
 });
 
 
-PostSchema.pre('remove', function (next) {
-  const self = this;
-  this.model('Notification').remove({ post: this._id }, next);
+PostSchema.pre('remove', async function (next) {
+  try {
+    let repost = this.repost || false;
+    console.log('removing repost', repost);
+    let note = this.model('Notification').remove({ post: this._id });
+    // keep these but update with 'removed post flag?'
+    // this.model('Invest').remove({ post: this._id }, next);
+    // this.model('Earnings').remove({ post: this._id }, next);
 
-  // keep these but update with 'removed post flag?'
-  // this.model('Invest').remove({ post: this._id }, next);
-  // this.model('Earnings').remove({ post: this._id }, next);
-
-  this.model('Feed').remove({ post: this._id }, next);
-  this.model('Comment').remove({ post: this._id }, next);
-  this.model('MetaPost').findOneAndUpdate(
-    { _id: this.metaPost },
-    { $pull: { commentary: this._id }, $inc: { commentaryCount: -1 } },
-    { multi: true, new: true }, (err, metaPost) => {
-      if (metaPost && metaPost.commentaryCount <= 0) metaPost.remove(next);
-      else next();
-    }
-  );
-  this.model('User').update(
-      { _id: this.user },
-      { $inc: { postCount: -1 } },
-      { multi: true },
-      next
-  );
-  this.tags.forEach((tag) => {
-    console.log(tag, 'tag');
-    self.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
-      console.log('foundTag ', foundTag.name);
-      if (foundTag.count > 1) {
-        foundTag.count--;
-        console.log('chainging tag count for ', foundTag.name);
-        foundTag.save((err) => {
-          if (err) console.log('saving tag error');
-        });
-      } else {
-        console.log('removing tag ', foundTag.name);
-        foundTag.remove();
+    let feed = this.model('Feed').remove({ post: this._id });
+    let comment = this.model('Comment').remove({ post: this._id });
+    let meta = this.model('MetaPost').findOneAndUpdate(
+      { _id: this.metaPost },
+      { $pull: { commentary: this._id }, $inc: { commentaryCount: -1 } },
+      { multi: true, new: true }, (err, metaPost) => {
+        if (metaPost && metaPost.commentaryCount <= 0) {
+          metaPost.remove();
+        }
       }
-      next();
+    );
+
+    let post = this.model('Post').find({ 'repost.post' : this._id }).remove();
+
+    let user = this.model('User').update(
+        { _id: this.user },
+        { $inc: { postCount: -1 } },
+        { multi: true },
+        next
+    );
+    this.tags.forEach((tag) => {
+      console.log(tag, 'tag');
+      this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
+        if (!foundTag) return next();
+        console.log('foundTag ', foundTag.name);
+        if (foundTag.count > 1) {
+          foundTag.count--;
+          console.log('chainging tag count for ', foundTag.name);
+          foundTag.save((err) => {
+            if (err) console.log('saving tag error');
+          });
+        } else {
+          console.log('removing tag ', foundTag.name);
+          foundTag.remove();
+        }
+      });
     });
-  });
+
+    let promises = [note, feed, comment, meta, post, user];
+    let finished = await Promise.all(promises);
+    // console.log(finished);
+  } catch (err) {
+    console.log('error deleting post references ', err);
+  }
+  next();
 });
 
 PostSchema.statics.events = PostSchemaEvents;
 
 PostSchema.methods.updateClient = function (user) {
-  let postObj = this.toObject();
-  delete postObj.user;
+  if (this.user._id) this.user = this.user._id;
   let postNote = {
     _id: user ? user._id : null,
     type: 'UPDATE_POST',
-    payload: postObj,
+    payload: this,
   };
   this.model('Post').events.emit('postEvent', postNote);
 };
@@ -243,51 +258,76 @@ PostSchema.statics.sendOutInvestInfo = async function (postIds, userId) {
   }
 };
 
-PostSchema.statics.sendOutMentions = function(mentions, post, mUser, type) {
-  return mentions.map((mention) => {
-    let query = { _id: mention };
-    if (mention === 'everyone') {
-      query = {};
-      if (mUser._id !== 'slava' && mUser._id !== 'balasan') return null;
-    }
+PostSchema.statics.sendOutMentions = async function(mentions, post, mUser, comment) {
+  let textParent = comment || post;
+  try {
+    let propmises = mentions.map(async mention => {
+      try {
+        let blocked;
+        let type = comment ? 'comment' : 'post';
 
-    User.find(query, 'deviceTokens')
-    .then((users) => {
-      users.forEach(user => {
-        let alert = (mUser.name || mUser) + ' mentioned you in a ' + type;
-        if (mention === 'everyone') alert = post.body;
-        let payload = { 'Mention from': post.embeddedUser.name };
-        apnData.sendNotification(user, alert, payload);
-      });
+        mUser = await User.findOne({ _id: mUser._id }, 'blockedBy blocked name');
+        blocked = mUser.blockedBy.find(u => u === mention) || mUser.blocked.find(u => u === mention);
+        if (blocked) {
+          console.log('user blocked, removing mention ', blocked);
+          textParent.mentions = textParent.mentions.filter(m => m !== blocked);
+        }
+
+        let query = { _id: mention };
+        if (mention === 'everyone') {
+          query = {};
+          if (mUser._id !== 'slava' && mUser._id !== 'balasan') return null;
+        }
+
+        User.find(query, 'deviceTokens')
+        .then((users) => {
+          users.forEach(user => {
+            let alert = (mUser.name || mUser) + ' mentioned you in a ' + type;
+            if (mention === 'everyone') alert = post.body;
+            let payload = { 'Mention from': post.embeddedUser.name };
+            apnData.sendNotification(user, alert, payload);
+          });
+        });
+
+        if (mention === 'everyone') return null;
+
+        let dbNotificationObj = {
+          post: post._id,
+          forUser: mention,
+          byUser: mUser._id || mUser,
+          amount: null,
+          type: type + 'Mention',
+          personal: true,
+          read: false
+        };
+
+        let newDbNotification = new Notification(dbNotificationObj);
+        let note = await newDbNotification.save();
+
+        let newNotifObj = {
+          _id: mention,
+          type: 'ADD_ACTIVITY',
+          payload: note
+        };
+
+        console.log('send out push notification');
+
+        this.events.emit('postEvent', newNotifObj);
+      } catch (err) {
+        console.log('mentions error ', err);
+      }
     });
 
-    if (mention === 'everyone') return null;
+    await Promise.all(propmises);
 
-    let dbNotificationObj = {
-      post: post._id,
-      forUser: mention,
-      byUser: mUser._id || mUser,
-      amount: null,
-      type: type + 'Mention',
-      personal: true,
-      read: false
-    };
+    textParent = await textParent.save();
+    console.log('after mention check ', textParent.mentions);
+    textParent.updateClient();
+  } catch (err) {
+    console.log('erro updating post after sending mentions');
+  }
 
-    let newDbNotification = new Notification(dbNotificationObj);
-    return newDbNotification.save((err, notif) => {
-      if (err) return console.log(err);
-      let newNotifObj = {
-        _id: mention,
-        type: 'ADD_ACTIVITY',
-        payload: notif
-      };
-
-      console.log('send out push notification');
-
-      this.events.emit('postEvent', newNotifObj);
-      return notif;
-    });
-  });
+  return textParent;
 };
 
 module.exports = mongoose.model('Post', PostSchema);

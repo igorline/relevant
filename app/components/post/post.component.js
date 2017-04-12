@@ -62,19 +62,21 @@ class Post extends Component {
 
     if (!this.props.auth.user) return null;
 
+    let blocked = <View style={{ height: StyleSheet.hairlineWidth }} />;
+
     if (this.props.post) {
       posts = Array.isArray(this.props.post) ? this.props.post : [this.props.post];
       posts = posts.filter(p => typeof p === 'string');
       posts = posts.map(p => this.props.posts.posts[p]);
-      if (!posts.length) return null;
+      if (!posts.length) return blocked;
       posts = posts.filter(p => p);
       post = { ...posts[0] };
       if (post.repost) reposted = post.repost.post;
-      if (!post) return null;
+      if (!post) return blocked;
     }
 
     if (!post || !post._id) {
-      return null;
+      return blocked;
     }
 
     let commentary = posts.filter(p => {

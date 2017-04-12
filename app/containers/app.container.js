@@ -51,15 +51,6 @@ class Application extends Component {
     super(props, context);
     this.state = {
       newName: null,
-      buttons: [
-        'Change display name',
-        'Add new photo',
-        'FAQ',
-        'Logout',
-        'Cancel',
-      ],
-      destructiveIndex: 3,
-      cancelIndex: 4,
     };
     this.logoutRedirect = this.logoutRedirect.bind(this);
     this.backgroundTime = 0;
@@ -235,9 +226,16 @@ class Application extends Component {
 
   showActionSheet() {
     ActionSheetIOS.showActionSheetWithOptions({
-      options: this.state.buttons,
-      cancelButtonIndex: this.state.cancelIndex,
-      destructiveButtonIndex: this.state.destructiveIndex,
+      options: [
+        'Change display name',
+        'Add new photo',
+        'Blocked Users',
+        'FAQ',
+        'Logout',
+        'Cancel',
+      ],
+      cancelButtonIndex: 5,
+      destructiveButtonIndex: 4,
     },
     (buttonIndex) => {
       switch (buttonIndex) {
@@ -248,15 +246,12 @@ class Application extends Component {
           this.initImage();
           break;
         case 2:
-          this.props.actions.push({
-            key: 'articleView',
-            component: 'articleView',
-            back: true,
-            uri: 'https://relevant.community/faq',
-            gestureResponseDistance: 120
-          }, 'home');
+          this.props.actions.viewBlocked();
           break;
         case 3:
+          this.props.actions.goToUrl('https://relevant.community/faq');
+          break;
+        case 4:
           this.logoutRedirect();
           break;
         default:
@@ -394,7 +389,7 @@ function mapDispatchToProps(dispatch) {
       ...investActions,
       ...navigationActions,
       ...tagActions,
-      ...adminActions
+      ...adminActions,
     }, dispatch)
   };
 }
