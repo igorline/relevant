@@ -6,6 +6,7 @@ import {
   View,
   Image,
   Animated,
+  ActionSheetIOS
 } from 'react-native';
 import Search from './search.component';
 import { globalStyles } from '../../styles/global';
@@ -23,6 +24,25 @@ class CardHeader extends Component {
     this.renderLeft = this.renderLeft.bind(this);
     this.renderRight = this.renderRight.bind(this);
     this.toggleSearch = this.toggleSearch.bind(this);
+    this.showActionSheet = this.showActionSheet.bind(this);
+  }
+
+  showActionSheet(id) {
+    ActionSheetIOS.showActionSheetWithOptions({
+      options: ['Block User', 'Cancel'],
+      cancelButtonIndex: 1,
+      destructiveIndex: 0,
+    },
+    (buttonIndex) => {
+      switch (buttonIndex) {
+        case 0:
+          console.log(this.props.actions)
+          this.props.actions.updateBlock(id);
+          break;
+        default:
+          return;
+      }
+    });
   }
 
   toggleSearch() {
@@ -98,20 +118,38 @@ class CardHeader extends Component {
     let title = props.scene.route ? props.scene.route.title : '';
     let component = props.scene.route.component;
     let key = props.scene.route.key;
-    let action;
+    let bottomArrow;
+    let rightArrow;
     let titleAction = () => null;
+    let id;
 
     title = title ? title.trim() : null;
 
     if (component === 'profile') {
       if (this.props.users.users[props.scene.route.id]) {
         title = this.props.users.users[props.scene.route.id].name;
+        id = this.props.users.users[props.scene.route.id]._id;
+      }
+
+      if (this.props.auth.user && id !== this.props.auth.user._id) {
+        titleAction = () => this.showActionSheet(id);
+
+        bottomArrow = (<Text
+          style={[styles.arrow]}
+          onPress={titleAction}
+        >
+          <Image
+            style={styles.arrow}
+            resizeMode={'contain'}
+            source={require('../../assets/images/downarrow.png')}
+          />
+        </Text>);
       }
     }
 
     if (key === 'discover' || component === 'discover') {
       titleAction = () => this.props.actions.toggleTopics();
-      action = (<Text
+      bottomArrow = (<Text
         style={[styles.arrow]}
         onPress={titleAction}
       >
@@ -153,8 +191,9 @@ class CardHeader extends Component {
       >
         <Text onPress={titleAction} style={styles.navTitle}>
           {clipped}
+          {rightArrow}
         </Text>
-        {action}
+        {bottomArrow}
       </View>
     );
   }

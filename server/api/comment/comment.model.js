@@ -1,3 +1,4 @@
+import { EventEmitter } from 'events';
 let mongoose = require('mongoose');
 
 let Schema = mongoose.Schema;
@@ -19,6 +20,7 @@ let CommentSchema = new Schema({
 
 CommentSchema.index({ userId: 1, createdAt: -1, tags: 1 });
 
+CommentSchema.statics.events = new EventEmitter();
 
 CommentSchema.pre('remove', function (next) {
   this.model('Notification').remove({ comment: this._id }, next);
@@ -29,5 +31,15 @@ CommentSchema.pre('remove', function (next) {
   //   next
   // );
 });
+
+CommentSchema.methods.updateClient = function (user) {
+  if (this.user._id) this.user = this.user._id;
+  let commentNote = {
+    _id: user ? user._id : null,
+    type: 'UPDATE_COMMENT',
+    payload: { data: this },
+  };
+  this.model('Comment').events.emit('commentEvent', commentNote);
+};
 
 module.exports = mongoose.model('Comment', CommentSchema);

@@ -29,7 +29,12 @@ function handleError(res, err) {
 
 exports.index = async (req, res) => {
   let userId;
-  if (req.user) userId = req.user._id;
+  let blocked = [];
+  if (req.user) {
+    userId = req.user._id;
+    blocked = [...req.user.blocked, ...req.user.blockedBy];
+  }
+
   let limit = parseInt(req.query.limit, 10) || 5;
   let skip = parseInt(req.query.skip, 10) || 0;
   let tags = req.query.tag || null;
@@ -59,7 +64,7 @@ exports.index = async (req, res) => {
     // TODO - limit the commenatry and paginate / inf scroll it on backend
     .populate({
       path: 'commentary',
-      match: { repost: { $exists: false } },
+      match: { repost: { $exists: false }, user: { $nin: blocked } },
       options: { sort: commentarySort },
       populate: [
         {
@@ -94,7 +99,7 @@ exports.flagged = async (req, res) => {
   let meta;
   try {
     meta = await MetaPost.find({ flagged: true })
-    .sort({ latestPost: -1 })
+    .sort({ flaggedTime: -1 })
     .populate({
       path: 'commentary',
       // match: { repost: { $exists: false } },

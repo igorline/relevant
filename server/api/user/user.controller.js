@@ -10,7 +10,8 @@ import config from '../../config/config';
 import Relevance from '../relevance/relevance.model';
 import mail from '../../mail';
 import Invite from '../invites/invite.model';
-
+import Subscription from '../subscription/subscription.model';
+import Feed from '../feed/feed.model';
 // mail.test();
 
 // User.findOneAndUpdate({ _id: 'slava' }, { role: 'admin' }).exec();
@@ -199,10 +200,24 @@ exports.changePassword = (req, res) => {
 };
 
 exports.search = (req, res) => {
+  let blocked = [];
+  if (req.user) {
+    let user = req.user;
+    blocked = [...user.blocked, ...user.blockedBy];
+  }
+
   const search = req.query.search;
   const limit = req.query.limit;
   const name = new RegExp(search, 'i');
-  let query = { $or: [{ name }, { _id: name }] };
+  let query = {
+    $and: [
+      { $or: [
+        { name },
+        { _id: name }
+      ] },
+      { _id: { $nin: blocked } }
+    ]
+  };
   User.find(query, 'name image')
   .sort({ _id: 1 })
   .limit(parseInt(limit, 10))
@@ -262,9 +277,15 @@ exports.list = async (req, res) => {
   let topic = req.query.topic || null;
   let users;
 
+  let blocked = [];
+  if (req.user) {
+    let user = req.user;
+    blocked = [...user.blocked, ...user.blockedBy];
+  }
+
   try {
     if (topic && topic !== 'null') {
-      let query = { tag: topic };
+      let query = { tag: topic, user: { $nin: blocked } };
       let rel = await Relevance.find(query)
       .limit(limit)
       .skip(skip)
@@ -276,7 +297,7 @@ exports.list = async (req, res) => {
         return r.user;
       });
     } else {
-      users = await User.find()
+      users = await User.find({ _id: { $nin: blocked } })
       .limit(limit)
       .skip(skip)
       .sort({ relevance: -1 });
@@ -377,6 +398,16 @@ exports.show = async function (req, res) {
   if (!userId) userId = req.user._id;
 
   try {
+    // don't show blocked user;
+    let blocked = [];
+    if (req.user) {
+      let user = req.user;
+      blocked = [...user.blocked || [], ...user.blockedBy || []];
+      if (blocked.find(u => u === userId)) {
+        return res.status(200).json({});
+      }
+    }
+
     let user = await User.findOne({ _id: userId });
     user = await user.getSubscriptions();
 
@@ -387,7 +418,7 @@ exports.show = async function (req, res) {
     // let category = await Relevance.find({ user: userId, category: { $ne: null } })
     // .sort('-relevance')
     // .limit(1);
-
+    user = user.toObject();
     user.topTags = relevance || [];
     // user.topCategory = category[0];
     res.json(user);
@@ -470,6 +501,68 @@ exports.me = (req, res, next) => {
       res.status(200).json(_user);
     });
   });
+};
+
+
+exports.block = async (req, res) => {
+  let user = req.user;
+  let block = req.body.block;
+
+  try {
+    if (user._id === block) throw new Error('You can\'t block yourself!');
+
+    let userPromise = User.findOneAndUpdate(
+      { _id: user._id },
+      { $addToSet: { blocked: block } },
+      { new: true }
+    );
+    let blockPromise = User.findOneAndUpdate(
+      { _id: block },
+      { $addToSet: { blockedBy: user._id } },
+      { new: true }
+    );
+
+    // clear any existing subscriptions
+    let sub1 = Subscription.remove({ following: user._id, follower: block });
+    let sub2 = Subscription.remove({ following: block, follower: user._id });
+    let feed1 = Feed.remove({ userId: user._id, from: block });
+    let feed2 = Feed.remove({ userId: block, from: user._id });
+
+    let results = await Promise.all([userPromise, blockPromise, sub1, sub2, feed1, feed2]);
+    user = results[0];
+  } catch (err) {
+    handleError(res, err);
+  }
+  res.status(200).json(user);
+};
+
+exports.unblock = async (req, res) => {
+  let user = req.user;
+  let block = req.body.block;
+  try {
+    user = await User.findOneAndUpdate(
+      { _id: user._id },
+      { $pull: { blocked: block } },
+      { new: true }
+    );
+    block = await User.findOneAndUpdate(
+      { _id: block },
+      { $pull: { blockedBy: user._id } },
+    );
+  } catch (err) {
+    handleError(res, err);
+  }
+  res.status(200).json(user);
+};
+
+exports.blocked = async (req, res) => {
+  let user = req.user;
+  try {
+    user = await User.findOne({ _id: user._id }).populate('blocked');
+  } catch (err) {
+    handleError(res, err);
+  }
+  res.status(200).json(user);
 };
 
 /**

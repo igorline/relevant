@@ -5,6 +5,7 @@ let Schema = mongoose.Schema;
 
 let FeedSchema = new Schema({
   userId: { type: String, ref: 'User' },
+  from: { type: String, ref: 'User' },
   post: { type: Schema.Types.ObjectId, ref: 'Post' },
   metaPost: { type: Schema.Types.ObjectId, ref: 'metaPost' },
   tags: [{ type: String, ref: 'Tag' }],

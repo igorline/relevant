@@ -10,6 +10,7 @@ import Post from '../api/post/post.model';
 import Earnings from '../api/earnings/earnings.model';
 import Invest from '../api/invest/invest.model';
 import Notification from '../api/notification/notification.model';
+import Comment from '../api/comment/comment.model';
 
 // TODO store list of clients in Mongo;
 let clients = {};
@@ -25,6 +26,7 @@ let events = {
   investEvents: Invest.events,
   notificationEvent: Notification.events,
   userEvent: User.events,
+  commentEvent: Comment.events,
 };
 
 function removeClient(socket, currentUser) {

@@ -64,7 +64,7 @@ class PostInfo extends Component {
     if (this.props.scene) {
       if (this.props.scene.component === 'singlePost') redirect = true;
     }
-    this.props.actions.deletePost(this.props.auth.token, this.props.post, redirect);
+    this.props.actions.deletePost(this.props.post, redirect);
   }
 
   toggleEditing() {

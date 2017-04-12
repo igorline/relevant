@@ -259,14 +259,19 @@ exports.create = async (req, res) => {
       name: user.name,
       image: user.image
     };
-    comment = await comment.save();
 
     post = await Post.findOne({ _id: post });
+
+    // comment = await comment.save();
+
+    // this will also save the new comment
+    comment = await Post.sendOutMentions(mentions, post, user, comment);
 
     // TODO increment post comment count here?
     // post.commentCount++;
 
     // TODO increase the post's relevance **but only if its user's first comment!
+    // this auto-updates comment count
     post = await post.save();
     post.updateClient();
 
@@ -286,7 +291,6 @@ exports.create = async (req, res) => {
 
     otherCommentors.forEach(sendOutComments);
 
-    Post.sendOutMentions(mentions, post, user, 'comment');
   } catch (error) {
     console.log(error);
     res.status(500).send(error);

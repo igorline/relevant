@@ -245,9 +245,9 @@ class Comment extends Component {
         </View>
         <View style={{ paddingLeft: 33, paddingRight: 10 }}>
           <TextBody
+            {...this.props}
             post={comment}
             body={comment.text}
-            {...this.props}
           />
           {editingEl}
         </View>

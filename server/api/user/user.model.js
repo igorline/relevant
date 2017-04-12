@@ -41,6 +41,12 @@ const UserSchema = new Schema({
   resetPasswordExpires: { type: Date, select: false },
   following: Number,
   followers: Number,
+
+  blocked: [{ type: String, ref: 'User' }],
+  blockedBy: {
+    type: [{ type: String, ref: 'User' }],
+    select: false
+  }
 });
 
 UserSchema.index({ name: 'text' });

@@ -28,8 +28,11 @@ let MetaPostSchema = new Schema({
   commentary: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
   commentaryCount: { type: Number, default: 0 },
   latestPost: { type: Date, index: true },
+
   flagged: { type: Boolean, default: false },
   flaggedBy: [{ type: String, ref: 'User', select: false }],
+  flaggedTime: Date,
+
 }, {
   timestamps: true,
 });

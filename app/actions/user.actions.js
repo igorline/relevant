@@ -13,12 +13,20 @@ const getOptions = {
   }
 };
 
+const AlertIOS = utils.fetchUtils.Alert();
+
 const queryParams = (params) => {
   return Object.keys(params)
     .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
     .join('&');
 };
 
+export function updateUser(user) {
+  return {
+    type: types.UPDATE_USER,
+    payload: user
+  };
+}
 
 export
 function getUsersLoading() {
@@ -81,8 +89,11 @@ export function searchUser(userName) {
     '/api/user/search' +
     '?limit=' + limit +
     '&search=' + userName;
-  return (dispatch) => {
-    fetch(url, getOptions)
+  return async dispatch =>
+    fetch(url, {
+      method: 'GET',
+      ...await utils.fetchUtils.reqOptions()
+    })
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(setUserSearch(responseJSON));
@@ -91,33 +102,26 @@ export function searchUser(userName) {
       console.log(error, 'error');
       dispatch(errorActions.setError('activity', true, error.message));
     });
-  };
 }
 
 export
 function getSelectedUser(userName) {
-  return (dispatch) => {
+  return async dispatch => {
     dispatch(getUserLoading());
-    return fetch(process.env.API_SERVER + '/api/user/' + userName,
-      {
-        credentials: 'include',
-        method: 'GET',
-        timeout: 0.00001,
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => response.json())
-      .then((responseJSON) => {
-        dispatch(setSelectedUserData(responseJSON));
-        dispatch(errorActions.setError('profile', false));
-        return true;
-      })
-      .catch((error) => {
-        console.log(error, 'error');
-        dispatch(errorActions.setError('profile', true, error.message));
-      });
+    return fetch(process.env.API_SERVER + '/api/user/user/' + userName, {
+      method: 'GET',
+      ...await utils.fetchUtils.reqOptions()
+    })
+    .then(response => response.json())
+    .then((responseJSON) => {
+      dispatch(setSelectedUserData(responseJSON));
+      dispatch(errorActions.setError('profile', false));
+      return true;
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+      dispatch(errorActions.setError('profile', true, error.message));
+    });
   };
 }
 
@@ -142,13 +146,14 @@ function getSelectedUser(userName) {
 // }
 
 export
-function getOnlineUser(userId, token) {
-  return (dispatch) => {
+function getOnlineUser(userId) {
+  return async dispatch => {
     return fetch(
       process.env.API_SERVER +
-      '/api/user/' +userId +
-      '?access_token=' + token,
-      getOptions
+      '/api/user/user/' + userId, {
+        method: 'GET',
+        ...await utils.fetchUtils.reqOptions()
+      }
     )
     .then((response) => response.json())
     .then((responseJSON) => {
@@ -166,7 +171,7 @@ function getPostUser(userId, token) {
   return (dispatch) => {
     return fetch(
       process.env.API_SERVER +
-      '/api/user/' + userId +
+      '/api/user/user/' + userId +
       '?access_token=' + token,
       getOptions
     )
@@ -190,9 +195,12 @@ export function getUsers(skip, limit, tags) {
   }
   let url = process.env.API_SERVER +
     '/api/user/general/list?' + queryParams({ skip, limit, topic });
-  return (dispatch) => {
+  return async dispatch => {
     dispatch(getUsersLoading());
-    fetch(url, getOptions)
+    fetch(url, {
+      method: 'GET',
+      ...await utils.fetchUtils.reqOptions()
+    })
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(errorActions.setError('activity', false));
@@ -203,4 +211,48 @@ export function getUsers(skip, limit, tags) {
       dispatch(errorActions.setError('activity', true, error.message));
     });
   };
+}
+
+export function updateBlock(block, unblock) {
+  let url = process.env.API_SERVER + '/api/user/block';
+  if (unblock) {
+    url = process.env.API_SERVER + '/api/user/unblock';
+  }
+  return async dispatch =>
+    fetch(url, {
+      method: 'PUT',
+      body: JSON.stringify({
+        block
+      }),
+      ...await utils.fetchUtils.reqOptions()
+    })
+    .then(utils.fetchUtils.handleErrors)
+    .then(response => response.json())
+    .then((responseJSON) => {
+      let action = 'blocked';
+      if (unblock) action = 'unblocked';
+      AlertIOS.alert('user ' + block + ' has been ' + action);
+      // console.log('block result ', responseJSON);
+      dispatch(updateUser(responseJSON));
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+    });
+}
+
+export function getBlocked() {
+  return async dispatch =>
+    fetch(process.env.API_SERVER + '/api/user/blocked', {
+      method: 'GET',
+      ...await utils.fetchUtils.reqOptions()
+    })
+    .then(utils.fetchUtils.handleErrors)
+    .then(response => response.json())
+    .then((responseJSON) => {
+      console.log('block result ', responseJSON);
+      dispatch(updateUser(responseJSON));
+    })
+    .catch((error) => {
+      console.log(error, 'error');
+    });
 }

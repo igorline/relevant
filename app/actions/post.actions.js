@@ -176,7 +176,7 @@ export function getFeed(skip, tag) {
   };
 }
 
-export function deletePost(token, post, redirect) {
+export function deletePost(post, redirect) {
   let url = apiServer + 'post/' + post._id;
   return async dispatch =>
     fetch(url, {
@@ -511,7 +511,12 @@ export function getSelectedPost(postId) {
     .then(utils.fetchUtils.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
-      dispatch(updatePost(responseJSON));
+      if (!responseJSON) {
+        dispatch(removePost(postId));
+        // dispatch(updatePost({ _id: postId }));
+      } else {
+        dispatch(updatePost(responseJSON));
+      }
       dispatch(errorActions.setError('singlepost', false));
       return true;
     })

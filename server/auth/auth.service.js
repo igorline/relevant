@@ -6,6 +6,25 @@ import User from '../api/user/user.model';
 
 let validateJwt = expressJwt({ secret: config.secrets.session, ignoreExpiration: true });
 
+function blocked(req, res) {
+  return compose()
+  .use((req, res, next) => {
+    let token = req.cookies.token;
+    if (token) {
+      req.headers.authorization = 'Bearer ' + token;
+    }
+    validateJwt(req, res, (err, decoded) => {
+      if (err || !req.user) return next();
+      User.findById(req.user._id, 'blocked blockedBy', (err, user) => {
+        if (err) return next();
+        if (!user) return next();
+        req.user = user;
+        return next();
+      });
+    });
+  });
+}
+
 function currentUser(req, res) {
   return compose()
   .use((req, res, next) => {
@@ -111,4 +130,5 @@ exports.signToken = signToken;
 exports.setTokenCookie = setTokenCookie;
 exports.authMiddleware = authMiddleware;
 exports.currentUser = currentUser;
+exports.blocked = blocked;
 

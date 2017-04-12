@@ -91,13 +91,24 @@ exports.postInvestments = async (req, res) => {
 
 exports.show = async (req, res) => {
   let id;
-  if (req.user) id = req.user._id;
+
+  let blocked = [];
+  if (req.user) {
+    let user = req.user;
+    blocked = [...user.blocked, ...user.blockedBy];
+    id = req.user._id;
+  }
+
   let limit = parseInt(req.query.limit, 10);
   let skip = parseInt(req.query.skip, 10);
   let userId = req.params.userId || null;
   let sortQuery = { updatedAt: -1 };
   let query = { investor: userId, amount: { $gt: 0 } };
   let investments;
+
+  if (blocked.find(u => u === userId)) {
+    return res.status(200).json({});
+  }
 
   try {
     investments = await Invest.find(query)

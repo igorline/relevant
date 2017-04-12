@@ -20,7 +20,7 @@ class Post extends Component {
   }
 
   deletePost() {
-    this.props.actions.deletePost(this.props.auth.token, this.props.post);
+    this.props.actions.deletePost(this.props.post);
   }
 
   render() {
@@ -72,9 +72,10 @@ class Post extends Component {
     // let tagsEl = <Tags {...this.props} />;
 
     return (
-      <div style={styles.postBox}>
+      <div style={{ ...styles.postBox, borderColor: this.props.flagged ? 'red' : 'grey' }}>
         <img alt={post.title} src={post.image} width="100%" />
         {titleEl}
+        <span>{this.props.flagged}</span>
         <p>{post.body}</p>
         <div>Relevance: {Math.round(post.relevance * 100) / 100} Value: {post.value}</div>
         {buttonEL}

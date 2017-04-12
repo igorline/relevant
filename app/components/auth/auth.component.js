@@ -60,7 +60,7 @@ class Auth extends Component {
     }
     AlertIOS.prompt(
       'Enter invitiation code',
-      'Relevant is in closed bata and requires and invitation code',
+      'Relevant is an invitation-only community',
       [
         { text: 'Cancel',
           onPress: () => console.log('Cancel Pressed'),
