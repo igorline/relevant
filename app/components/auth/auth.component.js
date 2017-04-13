@@ -123,13 +123,18 @@ class Auth extends Component {
       case '0':
         return (<View key={i} style={styles.authSlide}>
           <Text allowFontScaling={false} style={{ fontFamily: 'Georgia', fontSize: 36, lineHeight: 46 }}>
-            <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>Relevant</Text> is a community of thought leaders who care about <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>the truth</Text>.
+            <Text allowFontScaling={false} style={[styles.strokeText, styles.relevant]}>Relevant</Text> is a social news reader that emphasizes quality over quantity.
           </Text>
         </View>);
       case '1':
         return (<View key={i} style={styles.authSlide}>
           <Text allowFontScaling={false} style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
-            Post <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>insightful</Text> commentary and watch your <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>relevance</Text> rise.
+            Post <Text
+              allowFontScaling={false}
+              style={[styles.strokeText, styles.adjust]}
+            >
+            insightful
+            </Text> commentary and watch your <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>relevance</Text> rise.
           </Text>
         </View>);
       case '2':
@@ -223,6 +228,10 @@ const localStyles = StyleSheet.create({
   adjust: {
     fontSize: 38,
     lineHeight: 30,
+  },
+  relevant: {
+    height: 30,
+    width: 70,
   },
   authSlidesParent: {
     flexDirection: 'row',

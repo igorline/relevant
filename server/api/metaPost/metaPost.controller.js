@@ -43,7 +43,7 @@ exports.index = async (req, res) => {
   if (category === '') category = null;
   let query = null;
   let tagsArr = null;
-  let sortQuery = { _id: -1 };
+  let sortQuery;
   let commentarySort = { postDate: -1 };
   let posts;
 

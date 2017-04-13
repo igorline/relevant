@@ -56,7 +56,7 @@ exports.sendEmailFunc = async function(_invite) {
   let invite = _invite;
   try {
     // let appStoreUrl = 'http://itunes.com/apps/relevant';
-    let appStoreUrl = 'https://beta.itunes.apple.com/v1/invite/4a6e102029cb485b9e443ad17a65de3fce01cad9aaa948adaf95840ed2a32c6945eaf11b?ct=slavabalasan299393905&advp=10000&platform=ios';
+    let appStoreUrl = 'https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051';
 
     if (invite && !invite._id) {
       invite = await Invite.findById(invite);
@@ -68,20 +68,16 @@ exports.sendEmailFunc = async function(_invite) {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: invite.email,
       subject: 'Invitation to join Relevant',
-      html: `You are invited to join Relevant as a beta tester!
+      html: `You are invited to join Relevant!
       <br />
       <br />
       invitation code: <b>${invite.code}</b>
       <br />
       <br />
-      <b>Step 1</b>: Download the app from the app store (iOS only for now):
-      <br />
-      <a href="${appStoreUrl}" target="_blank">${appStoreUrl}</a>
+      <b>Step 1</b>: <a href="${appStoreUrl}" target="_blank">Download</a> Relevant from the app store (iOS only for now)
       <br />
       <br />
-      <b>Step 2</b>: Open this link from your phone to redeem invitation code:
-      <br />
-      <a href="${url}" target="_blank">${url}</a>
+      <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation code
       <br />
       <br />
       You can also manually enter your invitation code after you launch the app.`

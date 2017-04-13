@@ -314,7 +314,7 @@ exports.list = async (req, res) => {
  * Creates a new user
  */
 exports.create = async (req, res) => {
-  let startingAmount = 3;
+  let startingAmount = 10;
   let token;
 
   try {

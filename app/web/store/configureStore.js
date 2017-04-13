@@ -1,6 +1,6 @@
 import { routerMiddleware } from 'react-router-redux';
 import createSocketIoMiddleware from 'redux-socket.io';
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from '../../reducers';
@@ -9,13 +9,27 @@ let server = process.env.API_SERVER;
 if (process.env.NODE_ENV === 'development') {
   server = 'http://localhost:3000';
 }
-let socket = io(server);
+let socket;
+let io;
+if (process.env.BROWSER) {
+  console.log('This is a browser, initialising socket io');
+  io = require('socket.io-client');
+  socket = io(server);
+}
 
 export default function configureStore (initialState = {}, history) {
   // Compose final middleware and use devtools in debug environment
-  let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
-  let middleware = applyMiddleware(
-    thunk, routerMiddleware(history), socketIoMiddleware);
+  // let socketIoMiddleware = str => next => action => next(action);
+  let middleware;
+
+  if (process.env.BROWSER) {
+    // only use the socket middleware on client and not on server
+    let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
+    middleware = applyMiddleware(thunk, routerMiddleware(history), socketIoMiddleware);
+  } else {
+    middleware = applyMiddleware(thunk, routerMiddleware(history));
+  }
+
   if (process.env.BROWSER && process.env.DEVTOOLS) {
     const devTools = typeof window === 'object' && typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f
     middleware = compose(middleware, devTools);

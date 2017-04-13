@@ -359,7 +359,6 @@ export function addUpdatedComment(updatedComment) {
     type: 'UPDATE_COMMENT',
     payload: {
       data: updatedComment,
-      postId: updatedComment.post,
     }
   };
 }
