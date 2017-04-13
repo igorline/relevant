@@ -22,8 +22,8 @@ export default function admin(state = initialState, action) {
       return {
         ...state,
         inviteList: [
+          ...action.payload.result.invites,
           ...state.inviteList,
-          ...action.payload.result.invites
         ],
         invites: {
           ...state.invites,
@@ -43,7 +43,7 @@ export default function admin(state = initialState, action) {
         ...state,
         currentInvite: action.payload,
         inviteList: [
-          ...new Set([...state.inviteList, action.payload._id])
+          ...new Set([action.payload._id, ...state.inviteList])
         ],
         invites: {
           ...state.invites,
