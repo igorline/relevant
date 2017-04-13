@@ -71,9 +71,9 @@ let PostSchema = new Schema({
 });
 
 PostSchema.index({ rank: 1 });
-PostSchema.index({ createdAt: 1 });
-PostSchema.index({ createdAt: 1, user: 1 });
-PostSchema.index({ createdAt: 1, tags: 1 });
+PostSchema.index({ postDate: 1 });
+PostSchema.index({ _id: 1, user: 1 });
+PostSchema.index({ postDate: 1, tags: 1 });
 PostSchema.index({ rank: 1, tags: 1 });
 // PostSchema.index({ title: 'text', body: 'text' });
 
@@ -126,7 +126,7 @@ PostSchema.pre('remove', async function (next) {
       }
     );
 
-    let post = this.model('Post').find({ 'repost.post' : this._id }).remove();
+    let post = this.model('Post').remove({ 'repost.post': this._id });
 
     let user = this.model('User').update(
         { _id: this.user },

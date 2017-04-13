@@ -39,8 +39,9 @@ let MetaPostSchema = new Schema({
 
 MetaPostSchema.index({ url: 1 });
 MetaPostSchema.index({ rank: 1 });
-MetaPostSchema.index({ createdAt: 1 });
-MetaPostSchema.index({ createdAt: 1, tags: 1 });
+MetaPostSchema.index({ latestPost: 1 });
+MetaPostSchema.index({ latestPost: 1 });
+MetaPostSchema.index({ latestPost: 1, tags: 1 });
 MetaPostSchema.index({ rank: 1, tags: 1 });
 
 module.exports = mongoose.model('MetaPost', MetaPostSchema);

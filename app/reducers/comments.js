@@ -147,13 +147,14 @@ export default function comments(state = initialState, action) {
     case 'UPDATE_COMMENT': {
       let newComment = action.payload.data;
       let postId = action.payload.data.post._id || action.payload.data.post;
+      let existingComment = state.commentsById[postId] || {};
 
       return {
         ...state,
         commentsById: {
           ...state.commentsById,
           [postId]: {
-            data: updateItem(state.commentsById[postId].data, newComment),
+            data: updateItem(existingComment.data, newComment),
           }
         }
       };

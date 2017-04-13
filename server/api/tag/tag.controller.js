@@ -23,6 +23,7 @@ exports.update = async (req, res) => {
       if (sameIdTag) {
         updatedTag.count = sameIdTag.count;
         updatedTag.parents = sameIdTag.parents;
+        updatedTag = Math.max(sameIdTag.count, updatedTag.count);
         console.log('remove ', sameIdTag);
         sameIdTag = await sameIdTag.remove();
       }
@@ -44,7 +45,6 @@ exports.update = async (req, res) => {
 
     console.log('new tag ', tag);
 
-
     Post.update(
       { category: oldId },
       { $set: { category: newId } },
@@ -53,7 +53,7 @@ exports.update = async (req, res) => {
 
     Tag.update(
       { parents: oldId },
-      { $set: { 'parents.$': newId } },
+      { $addToSet: { 'parents.$': newId }, $pull: { 'parents.$': oldId } },
       { multi: true }
     ).exec();
 
@@ -69,6 +69,7 @@ exports.update = async (req, res) => {
       { multi: true }
     ).exec();
 
+    Relevance.mergeDuplicates();
   } catch (err) { return handleError(res)(err); }
   return res.status(200).json(tag);
 };
