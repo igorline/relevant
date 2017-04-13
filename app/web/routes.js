@@ -28,7 +28,7 @@ const userIsAdmin = UserAuthWrapper({
   authSelector: state => state.auth.user,
   wrapperDisplayName: 'UserIsAdmin',
   redirectAction: push,
-  // failureRedirectPath: '/',
+  // failureRedirectPath: '/login',
   // allowRedirectBack: false,
   predicate: user => user.role === 'admin'
 });

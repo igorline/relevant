@@ -102,7 +102,7 @@ class Invites extends Component {
           color={'#3E3EFF'}
           onClick={this.createInvite}
         >
-          Create Invite Code
+          {this.state.email ? 'And Invite Email' : 'Create Invite Code'}
         </ShadowButton>
       </div>
     );
