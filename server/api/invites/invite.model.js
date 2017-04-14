@@ -20,8 +20,7 @@ async function sendInviteCodes(user, codes) {
   let status;
   let codesString = '<b>' + codes.join('<br />') + '</b>';
   try {
-    // let appStoreUrl = 'http://itunes.com/apps/relevant';
-    // let appStoreUrl = 'https://beta.itunes.apple.com/v1/invite/4a6e102029cb485b9e443ad17a65de3fce01cad9aaa948adaf95840ed2a32c6945eaf11b?ct=slavabalasan299393905&advp=10000&platform=ios';
+    let appStoreUrl = 'https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051';
     // let url = `${process.env.API_SERVER}/invite/${invite.code}`;
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
@@ -31,7 +30,16 @@ async function sendInviteCodes(user, codes) {
       <br />
       <br />
       ${codesString}
-      <br />`
+      <br />
+      <br />
+      <a href="${appStoreUrl}" target="_blank"/>Appstore download link</a> (iOS only)
+      <br />
+      <br />
+      Relevant is a social news reader that promotes reliable information and rewards expertise.
+      Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score.
+      This system is designed to penalise clickbait and fake news while promoting useful and reliable information.
+      <br />
+      `
     };
     status = await mail.send(data);
   } catch (err) {
