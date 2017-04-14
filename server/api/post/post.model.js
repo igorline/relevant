@@ -126,7 +126,7 @@ PostSchema.pre('remove', async function (next) {
       }
     );
 
-    let post = this.model('Post').remove({ 'repost.post': this._id });
+    // let post = this.model('Post').remove({ 'repost.post': this._id });
 
     let user = this.model('User').update(
         { _id: this.user },
@@ -152,7 +152,7 @@ PostSchema.pre('remove', async function (next) {
       });
     });
 
-    let promises = [note, feed, comment, meta, post, user];
+    let promises = [note, feed, comment, meta, user];
     let finished = await Promise.all(promises);
     // console.log(finished);
   } catch (err) {

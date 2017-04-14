@@ -237,6 +237,7 @@ class Comment extends Component {
       >
         <View style={styles.commentHeader}>
           <UserName
+            repost={comment.repost}
             size={'small'}
             user={{ image: comment.embeddedUser.image, name: comment.embeddedUser.name, _id: comment.user }}
             setSelected={this.setSelected}

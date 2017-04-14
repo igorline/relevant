@@ -126,7 +126,7 @@ class Activity extends Component {
     this.tabs.forEach((tab) => {
       let tabData = this.getViewData(this.props, tab.id) || [];
       let active = this.state.view === tab.id;
-      
+
       activityEl.push(
         <CustomListView
           ref={(c) => { this.tabs[tab.id].component = c; }}

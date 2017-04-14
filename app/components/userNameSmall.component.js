@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   Image,
   View,
@@ -6,13 +6,14 @@ import {
   TouchableWithoutFeedback,
   StyleSheet
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles } from '../styles/global';
 import Stats from './post/stats.component';
 
 let styles;
 
-export default function (props) {
-
+export default function UserName(props) {
+  let repostIcon;
   if (!props.user) return null;
 
   let imageSource;
@@ -32,12 +33,23 @@ export default function (props) {
   let handle;
   if (props.user._id) handle = '@' + props.user._id;
 
+  if (props.repost) {
+    repostIcon = (
+      <Image
+        resizeMode={'contain'}
+        source={require('../assets/images/reposted.png')}
+        style={{ width: 14, height: 13, marginRight: 3, marginBottom: 12 }}
+      />
+    );
+  }
+
   return (
     <TouchableWithoutFeedback
       onPress={() => props.setSelected(props.user)}
     >
       <View style={styles.postInfo}>
         <Image source={imageSource} style={imageStyle} />
+        {repostIcon}
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View>
@@ -55,6 +67,15 @@ export default function (props) {
     </TouchableWithoutFeedback>
   );
 }
+
+UserName.propTypes = {
+  user: PropTypes.object,
+  big: PropTypes.bool,
+  relevance: PropTypes.bool,
+  repost: PropTypes.bool,
+  postTime: PropTypes.string,
+  setSelected: PropTypes.func,
+};
 
 const localStyles = StyleSheet.create({
   userImageBig: {

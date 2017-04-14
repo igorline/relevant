@@ -47,7 +47,7 @@ class PostInfo extends Component {
   componentDidMount() {
     if (this.props.post) this.checkTime(this.props);
 
-    if (this.props.auth && this.props.post.user._id && this.props.auth.user._id) {
+    if (this.props.auth && this.props.post.user && this.props.post.user._id && this.props.auth.user._id) {
       if (this.props.post.user._id === this.props.auth.user._id) {
         this.menu = this.ownerMenu;
         this.myPost = true;

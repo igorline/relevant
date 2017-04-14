@@ -117,7 +117,8 @@ class Post extends Component {
     if (post.repost) {
       // postStyle = [styles.repost, styles.boxShadow];
       let repost = this.props.posts.posts[post.repost.post];
-      if (this.props.users[repost.user]) {
+      if (!repost) repost = { body: '[deleted]' };
+      if (repost.user && this.props.users[repost.user]) {
         repost.user = this.props.users[repost.user];
       }
       post.user = this.props.users[post.user] || post.user;

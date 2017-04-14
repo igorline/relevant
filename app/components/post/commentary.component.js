@@ -27,13 +27,14 @@ export default class Commentary extends Component {
       let postStyle;
 
       post = { ...post };
-      if (this.props.users[post.user]) post.user = this.props.users[post.user];
+      if (post.user && this.props.users[post.user]) post.user = this.props.users[post.user];
       let separator = i < this.props.commentary.length - 1 || false;
 
       if (post.repost) {
         postStyle = [styles.repost];
         let repost = this.props.posts.posts[post.repost.post];
-        if (this.props.users[repost.user]) {
+        if (!repost) repost = { body: '[deleted]'}
+        if (repost.user && this.props.users[repost.user]) {
           repost.user = this.props.users[repost.user];
         }
         post.user = this.props.users[post.user] || post.user;

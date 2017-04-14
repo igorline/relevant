@@ -130,6 +130,9 @@ class Application extends Component {
         paramsLookup[p[0]] = p[1];
       });
     }
+    if (part1 === 'faq') {
+      this.props.actions.goToUrl('https://relevant.community/faq');
+    }
     if (part1 === 'resetPassword' && part2) {
       // Handle reset password link
       this.props.actions.replaceRoute({
