@@ -22,7 +22,7 @@ class PostBody extends Component {
   }
 
   goToPost() {
-    if (!this.props.actions) return;
+    if (!this.props.actions || !this.props.post || !this.props.post._id) return;
     if (this.props.scene && this.props.scene.id === this.props.post._id) return;
     this.props.actions.goToPost(this.props.post);
   }

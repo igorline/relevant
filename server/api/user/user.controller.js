@@ -12,14 +12,11 @@ import mail from '../../mail';
 import Invite from '../invites/invite.model';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
-// mail.test();
 
 // User.findOneAndUpdate({ _id: 'slava' }, { role: 'admin' }).exec();
-
 // User.findOneAndUpdate({ _id: 'Analisa' }, { role: 'admin' }).exec();
 // User.findOneAndUpdate({ _id: 'jay' }, { role: 'admin' }).exec();
 // User.findOneAndUpdate({ _id: 'phillip' }, { role: 'admin' }).exec();
-
 
 // User.findOne({ email: 'byslava@gmail.com' }, (err, user) => {
 //   if (user) user.remove();

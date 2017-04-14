@@ -64,11 +64,21 @@ exports.sendEmailFunc = async function(_invite) {
 
     if (!invite || !invite.code) throw new Error('no invite or code');
     let url = `${process.env.API_SERVER}/invite/${invite.code}`;
+    let name = invite.name;
+    let hi = '';
+    if (name) hi = `Hi ${name}<br /><br />`;
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: invite.email,
       subject: 'Invitation to join Relevant',
-      html: `You are invited to join Relevant!
+      html: `
+      <div style="text-align: middle"><img width="280px" src="https://relevant.community/img/logo.svg" /></div>
+      ${hi}You are invited to join Relevant!
+      <br />
+      <br />
+      Relevant is a social news reader that promotes reliable information and rewards expertise.
+      Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score.
+      This system is designed to penalise clickbait and fake news while promoting useful and reliable information.
       <br />
       <br />
       invitation code: <b>${invite.code}</b>
