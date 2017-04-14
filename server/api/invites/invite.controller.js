@@ -72,7 +72,6 @@ exports.sendEmailFunc = async function(_invite) {
       to: invite.email,
       subject: 'Invitation to join Relevant',
       html: `
-      <div style="text-align: middle"><img width="280px" src="https://relevant.community/img/logo.svg" /></div>
       ${hi}You are invited to join Relevant!
       <br />
       <br />
@@ -90,7 +89,10 @@ exports.sendEmailFunc = async function(_invite) {
       <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation code
       <br />
       <br />
-      You can also manually enter your invitation code after you launch the app.`
+      You can also manually enter your invitation code after you launch the app.
+      `
+      // <div style="text-align: center"><img width="140px" src="https://relevant.community/img/logo.png" /></div>
+
     };
     status = await mail.send(data);
     invite.status = 'email sent';
