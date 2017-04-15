@@ -128,7 +128,8 @@ exports.show = async (req, res) => {
     handleError(res, err);
   }
 
-  let postIds = investments.map(inv => inv.post._id);
+  let postIds = investments.map(inv => inv.post ? inv.post._id : null);
+  postIds = postIds.filter(postId => postId);
   Post.sendOutInvestInfo(postIds, id);
 };
 
