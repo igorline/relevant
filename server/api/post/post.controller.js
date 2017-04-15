@@ -213,7 +213,7 @@ exports.preview = (req, res) => {
 
   function processReturn(error, response, body) {
     if (error || response.statusCode !== 200) {
-      console.log('preview error ', error);
+      console.log('preview error ', error || response.body);
       return res.status(500).json(error);
     }
 
@@ -229,6 +229,7 @@ exports.preview = (req, res) => {
         url: uri,
         maxRedirects: 20,
         jar: true,
+        gzip: true,
         headers: getHeader(uri)
       }, processReturn);
     }
@@ -239,6 +240,7 @@ exports.preview = (req, res) => {
     url: previewUrl,
     maxRedirects: 20,
     jar: true,
+    gzip: true,
     headers: getHeader(previewUrl)
   }, processReturn);
 };
