@@ -29,6 +29,7 @@ container {
 a {
   /*color: black;*/
   color: #3E3EFF;
+  cursor: pointer;
 }
 
 .link {
@@ -40,13 +41,16 @@ button {
   height: 25px;
   margin: 0 5px;
   outline: none;
+  cursor: pointer;
 }
+
 button.alert {
   box-shadow: 0 0 0 1px red;
 }
 
 button:focus, input[type="button"]:focus {
   outline: none;
+  cursor: pointer;
 }
 
 a {
