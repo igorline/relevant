@@ -10,7 +10,7 @@ Object.keys(devConfig).forEach((key) => {
 
 delete prodConfig.devtool;
 
-prodConfig.entry = ['./index.web.js'];
+prodConfig.entry = ['./index.web.js', 'whatwg-fetch'];
 
 prodConfig.plugins = [
   new ExtractTextPlugin('styles.css'),
