@@ -20,6 +20,7 @@ class Invites extends Component {
     this.state = {
       email: '',
       name: '',
+      number: 1,
     };
   }
 
@@ -46,9 +47,11 @@ class Invites extends Component {
   createInvite() {
     let invite = {
       email: this.state.email,
-      name: this.state.name
+      name: this.state.name,
+      number: this.state.number
     };
     this.props.actions.createInvite(invite);
+    this.setState({ name: '', email: '', number: 1 });
   }
 
   handleChange(event) {
@@ -64,6 +67,7 @@ class Invites extends Component {
       <span>{invite.email}</span>
       <span>{invite.code}</span>
       <span>{invite.status}</span>
+      <span style={{ width: '40px' }}>{invite.number}</span>
       <button
         onClick={() => this.sendEmail(invite)}
       >
@@ -97,6 +101,15 @@ class Invites extends Component {
           value={this.state.name}
           onChange={this.handleChange}
         />
+        <input
+          className={'blueInput'}
+          style={{ width: '40px', textAlign: 'right' }}
+          type={'text'}
+          name={'number'}
+          placeholder={'number of invites'}
+          value={this.state.number}
+          onChange={this.handleChange}
+        />
         <ShadowButton
           backgroundColor={'white'}
           color={'#3E3EFF'}
@@ -121,6 +134,7 @@ class Invites extends Component {
           <span>Email</span>
           <span>Invite Code</span>
           <span>Status</span>
+          <span style={{ width: '40px' }}>Number</span>
           <span style={{ maxWidth: 130 }} />
         </div>
         {invites}

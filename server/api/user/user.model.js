@@ -132,13 +132,15 @@ UserSchema
   .pre('save', async function (next) {
     try {
       this.postCount = await this.model('Post').count({ user: this._id });
-
       if (!this.isNew) return next();
 
       if (!validatePresenceOf(this.hashedPassword) && authTypes.indexOf(this.provider) === -1) {
         next(new Error('Invalid password'));
       } else next();
-    } catch (err) { next(err); }
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
     return null;
   });
 

@@ -87,7 +87,7 @@ exports.forgot = async (req, res) => {
     let query;
     email = /^.+@.+\..+$/.test(string);
     query = email ? { email: string } : { _id: string };
-    user = await User.findOne(query);
+    user = await User.findOne(query, 'resetPasswordToken resetPasswordExpires email');
     let rand = await crypto.randomBytes(32);
     let token = rand.toString('hex');
     user.resetPasswordToken = token;
@@ -95,7 +95,7 @@ exports.forgot = async (req, res) => {
     user = await user.save();
     await sendResetEmail(user);
   } catch (err) {
-    let error = new Error('Couldn\'t find user with this name');
+    let error = new Error('Couldn\'t find user with this name ', err);
     if (email) {
       error = new Error('No user with this email exists');
     }
@@ -348,7 +348,10 @@ exports.create = async (req, res) => {
     user = await user.save();
 
     invite.status = 'registered';
-    invite.redeemed = true;
+    invite.number -= 1;
+    if (invite.number === 0) {
+      invite.redeemed = true;
+    }
     invite = await invite.save();
 
     token = jwt.sign(
