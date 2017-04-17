@@ -63,6 +63,13 @@ app.use(session({
   })
 }));
 
+function requireHTTPS(req, res, next) {
+  if (req.headers['x-forwarded-proto'] !== 'https' && process.env.NODE_ENV === 'production') {
+    return res.redirect('https://' + req.get('host') + req.url);
+  }
+  return next();
+}
+app.use(requireHTTPS);
 
 // public folder
 app.use(Express.static(__dirname + '/../app/web/public'));
