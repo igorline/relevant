@@ -9,6 +9,7 @@ let InviteSchema = new Schema({
   name: { type: String },
   code: { type: String, index: true },
   redeemed: { type: Boolean, default: false },
+  number: { type: Number, default: 1 },
   status: { type: String },
   invitedBy: { type: String, ref: 'User' }
 }, {
