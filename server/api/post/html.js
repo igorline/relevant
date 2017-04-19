@@ -182,7 +182,7 @@ exports.generatePreview = (body, uri) => {
     domain,
     tags,
     shortText: short,
-    articleAuthor: article ? [article.byline] : null
+    // articleAuthor: article ? [article.byline] : null
   };
 
   if (!image || !description || !title) {

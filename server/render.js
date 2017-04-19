@@ -23,6 +23,12 @@ function renderFullPage(html, initialState) {
       <head>
         <title></title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+        <title>Relevant: A Social News Reader</title>
+        <meta property="og:title" content="Relevant: A Social News Reader" />
+        <meta property="og:url" content="http://relevant.community" />
+        <meta property="og:image" content="http://relevant.community/img/fbImg.jpg" />
+
         ${styles}
       </head>
       <body>

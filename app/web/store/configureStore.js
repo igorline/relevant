@@ -15,6 +15,10 @@ if (process.env.BROWSER) {
   console.log('This is a browser, initialising socket io');
   io = require('socket.io-client');
   socket = io(server);
+
+  socket.on('pingKeepAlive', () => {
+    socket.emit('pingResponse');
+  });
 }
 
 export default function configureStore (initialState = {}, history) {

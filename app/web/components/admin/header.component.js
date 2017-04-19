@@ -5,12 +5,15 @@ let styles;
 
 function AdminHeader(props) {
   return (
-    <container style={{ alignSelf: 'flex-start' }}>
-      <Link className={'link'} to="/admin">Admin</Link>
-      <Link className={'link'} to="/admin/topics">Topics</Link>
-      <Link className={'link'} to="/admin/invites">Invites</Link>
-      <Link className={'link'} to="/admin/flagged">Flagged</Link>
-      {props.children}
+    <container className="main">
+      <container style={{ alignSelf: 'flex-start' }}>
+        <Link className={'link'} to="/admin">Admin</Link>
+        <Link className={'link'} to="/admin/topics">Topics</Link>
+        <Link className={'link'} to="/admin/invites">Invites</Link>
+        <Link className={'link'} to="/admin/waitlist">Waitlist</Link>
+        <Link className={'link'} to="/admin/flagged">Flagged</Link>
+        {props.children}
+      </container>
     </container>
   );
 }
