@@ -519,23 +519,3 @@ export function confirmEmail(user, code) {
       return false;
     });
 }
-
-export function signupForMailingList(email) {
-  return async dispatch =>
-    fetch(process.env.API_SERVER + '/api/list/', {
-      method: 'POST',
-      ...await reqOptions(),
-      body: JSON.stringify({ email })
-    })
-    .then(utils.fetchUtils.handleErrors)
-    // .then(response => response.json())
-    .then(() => {
-      AlertIOS.alert('Your email has been added to the waitlist');
-      return true;
-    })
-    .catch(err => {
-      AlertIOS.alert(err.message);
-      console.log(err);
-      return false;
-    });
-}

@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import ShadowButton from '../common/ShadowButton';
 import Modal from '../common/modal';
-import * as actionCreators from '../../../actions/auth.actions';
+import * as actionCreators from '../../../actions/admin.actions';
 import * as socketActions from '../../actions/socket';
 import Marquee from './marquee';
 
@@ -22,7 +22,8 @@ export class Main extends Component {
     this.login = this.login.bind(this);
     this.state = {
       modal: false,
-      email: ''
+      email: '',
+      name: ''
     };
   }
 
@@ -34,8 +35,12 @@ export class Main extends Component {
   }
 
   submit() {
-    this.props.actions.signupForMailingList(this.state.email);
-    this.setState({ email: '' });
+    let { name, email } = this.state;
+    this.props.actions.signupForMailingList({
+      name,
+      email
+    });
+    this.setState({ email: '', name: '' });
   }
 
   close() {
@@ -52,26 +57,8 @@ export class Main extends Component {
     this.setState({ modal: !this.state.modal });
   }
 
-            // <input
-            //   className="blueInput"
-            //   value={this.name}
-            //   onChange={(name) => {
-            //     this.name = name.target.value;
-            //   }}
-            //   type="text"
-            //   name="name"
-            //   placeholder="Your name"
-            // />
-            // <input
-            //   className="blueInput"
-            //   value={this.topics}
-            //   onChange={(topics) => {
-            //     this.topics = topics.target.value;
-            //   }}
-            //   type="text"
-            //   name="topics"
-            //   placeholder="Topics you know most about"
-            // />
+
+
 
   render() {
     let login = (
@@ -82,6 +69,21 @@ export class Main extends Component {
         </a>
       </div>
     );
+
+                  // <br />
+
+                  // <input
+                  //   className="blueInput"
+                  //   value={this.topics}
+                  //   onChange={(topics) => {
+                  //     this.topics = topics.target.value;
+                  //   }}
+                  //   type="text"
+                  //   name="topics"
+                  //   placeholder="Topics of expertise, ex: music, tech"
+                  // />
+
+
     return (
       <div className="splashContainer">
 
@@ -103,7 +105,7 @@ export class Main extends Component {
               <p className="libre">
                 <span className="outline">
                   Relevant
-                </span> is a community of thought leaders who care about <span className="outline">the truth</span>.
+                </span> is a community of thought leaders who care about <span className="outline">truth</span>.
                 Do you have something to contribute?
                 {/* <a href="http://www.apple.com" className="download">
                   <img src="/img/apple.png" />
@@ -117,16 +119,35 @@ export class Main extends Component {
                 <p>
                   Sign up for your <br />invitation to Relevant.
                 </p>
-                <input
-                  className="blueInput"
-                  value={this.state.email}
-                  onChange={(email) => {
-                    this.setState({ email: email.target.value });
-                  }}
-                  type="text"
-                  name="email"
-                  placeholder="Your email"
-                />
+
+                <div style={{ display: 'inline-block' }}>
+                  <input
+                    className="blueInput"
+                    value={this.state.name}
+                    onChange={(e) => {
+                      this.setState({ name: e.target.value });
+                    }}
+                    type="text"
+                    name="name"
+                    placeholder="Your name"
+                  />
+
+                  <br />
+
+                  <input
+                    className="blueInput"
+                    value={this.state.email}
+                    onChange={(e) => {
+                      this.setState({ email: e.target.value });
+                    }}
+                    type="text"
+                    name="email"
+                    placeholder="Your email"
+                  />
+
+
+                </div>
+
                 <ShadowButton
                   color={'#3E3EFF'}
                   onClick={this.submit}

@@ -3,6 +3,8 @@ import * as types from '../actions/actionTypes';
 const initialState = {
   inviteList: [],
   invites: {},
+  waitList: [],
+  wait: {},
   currentInvite: null,
 };
 
@@ -15,6 +17,20 @@ export default function admin(state = initialState, action) {
       return {
         ...state,
         invites
+      };
+    }
+
+    case types.SET_WAITLIST: {
+      return {
+        ...state,
+        waitList: [
+          ...action.payload.result.wait,
+          ...state.waitList,
+        ],
+        wait: {
+          ...state.wait,
+          ...action.payload.entities.wait
+        }
       };
     }
 

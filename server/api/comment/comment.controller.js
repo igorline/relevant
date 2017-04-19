@@ -239,8 +239,8 @@ exports.create = async (req, res) => {
         };
         CommentEvents.emit('comment', newNotifsObj);
 
-        let action = `${!ownPost ? 'also' : ''} commented on ${ownPost ? 'your' : 'a'} post`;
-        if (comment.repost && ownPost) action = 'reposted your post';
+        let action = `${!ownPost ? 'also ' : ' '} commented on ${ownPost ? 'your' : 'a'} post`;
+        if (comment.repost && ownPost) action = ' reposted your post';
 
         let alert = user.name + action;
         let payload = { commentFrom: req.user.name };

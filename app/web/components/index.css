@@ -11,6 +11,7 @@ html, body {
   color: black;
   font-family: sans-serif;
   height: 100%;
+  background-color: #EDEDED;
 }
 
 container {
@@ -19,6 +20,12 @@ container {
   background: white;
   ul {
     padding-left: 20px;
+  }
+  &.main {
+    padding: 0;
+    margin: 0;
+    background: 'white';
+    display: 'block';
   }
 }
 

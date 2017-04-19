@@ -24,7 +24,7 @@ exports.addWaitlist = async (req, res) => {
   try {
     let email = req.body.email;
     if (!email) throw new Error('no email');
-    await List.findOneAndUpdate({ email }, { email }, { upsert: true }).exec();
+    await List.findOneAndUpdate({ email }, req.body, { upsert: true }).exec();
   } catch (err) {
     handleError(res)(err);
   }

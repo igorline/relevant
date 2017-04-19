@@ -13,6 +13,22 @@ import mail from '../../mail';
 
 const PostEvents = new EventEmitter();
 
+// async function filterPosts() {
+//   try {
+//     let posts = await Post.find({ articleAuthor: { $in: [null] } });
+//     posts.forEach(post => {
+//       if (post.articleAuthor) {
+//         post.articleAuthor = post.articleAuthor.filter(a => a);
+//         console.log(post.articleAuthor)
+//         post.save();
+//       }
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// filterPosts();
+
 request.defaults({ maxRedirects: 20, jar: true });
 // uniqueInvestments()
 // function uniqueInvestments() {
