@@ -38,7 +38,7 @@ function renderFullPage(html, initialState) {
         <meta property="og:url" content="https://relevant.community" />
         <meta property="og:image" content="https://relevant.community/img/fbfimg.jpg" />
 
-        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@flickr" />
         <meta name="twitter:title" content="Relevant: A Social News Reader" />
         <meta name="twitter:description" content="
