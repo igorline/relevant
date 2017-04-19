@@ -105,8 +105,8 @@ export class Main extends Component {
               <p className="libre">
                 <span className="outline">
                   Relevant
-                </span> is a community of thought leaders who care about <span className="outline">truth</span>.
-                Do you have something to contribute?
+                </span> is a community of thought leaders fighting against <span className="outline">algorithmic oppression</span>.
+                {'\n'}Do you have something to contribute?
                 {/* <a href="http://www.apple.com" className="download">
                   <img src="/img/apple.png" />
                   <span className="bebasRegular">download</span>

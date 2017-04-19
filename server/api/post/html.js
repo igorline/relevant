@@ -103,6 +103,20 @@ exports.generatePreview = (body, uri) => {
     };
   }
 
+  if (uri.match('apple.news')) {
+    try {
+      let articleUrl = body.match(/redirectToUrl\("(.*)"/)[0].replace(/redirectToUrl\(|"/g, '');
+      if (articleUrl) {
+        return {
+          redirect: true,
+          uri: articleUrl
+        };
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   // console.log(body);
 
   let data = {
@@ -182,17 +196,19 @@ exports.generatePreview = (body, uri) => {
     domain,
     tags,
     shortText: short,
-    // articleAuthor: article ? [article.byline] : null
+    articleAuthor: article && article.byline ? [article.byline] : null
   };
 
   if (!image || !description || !title) {
     console.log('url parse error');
     console.log(data);
     console.log(uri);
-    console.log(body);
+    console.log($('head').html());
   }
 
   // console.log(obj);
+  // console.log($('head').html());
+  // console.log(body);
 
   return {
     redirect: false,

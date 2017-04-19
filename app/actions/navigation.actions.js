@@ -48,8 +48,16 @@ export function pop(key) {
   };
 }
 
+export function changeTab(key) {
+  return {
+    type: CHANGE_TAB,
+    key
+  };
+}
+
 export function goToTopic(topic) {
   return dispatch => {
+    dispatch(changeTab('discover'));
     dispatch(push({
       key: 'discover',
       title: topic.categoryName,
@@ -106,12 +114,6 @@ export function reloadAllTabs() {
   };
 }
 
-export function changeTab(key) {
-  return {
-    type: CHANGE_TAB,
-    key
-  };
-}
 
 
 export function resetRoutes(key) {

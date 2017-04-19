@@ -52,7 +52,8 @@ class PostImage extends Component {
         time = numbers.timeSince(Date.parse(post.articleDate));
       }
       if (post.articleAuthor && post.articleAuthor.length) {
-        author = post.articleAuthor.filter(a => !a.match('http')).join(', ');
+        // test this
+        author = post.articleAuthor.filter(a => a ? !a.match('http') : false).join(', ');
         authorEl = (
           <Text
             numberOfLines={1}

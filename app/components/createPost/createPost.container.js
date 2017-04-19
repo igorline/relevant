@@ -79,7 +79,23 @@ class CreatePostContainer extends Component {
   }
 
   next() {
-    if (this.props.createPost.postUrl && !this.props.createPost.urlPreview) return null;
+    if (!this.skipUrl && this.props.createPost.postUrl && !this.props.createPost.urlPreview) {
+      AlertIOS.alert(
+        'Url is still loading, please give it a few more seconds',
+        null,
+        [
+          { text: 'Continue Anyway',
+            onPress: () => {
+              this.skipUrl = true;
+              return this.next(true);
+            }
+          },
+          { text: 'Wait', onPress: () => null },
+        ]
+      );
+      return null;
+    }
+    this.skipUrl = false;
 
     this.urlComponent.input.blur();
 
