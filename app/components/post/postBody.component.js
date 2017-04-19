@@ -47,7 +47,6 @@ class PostBody extends Component {
       // else if (post.description) body = '\"' + post.description + '\"';
       // if (this.props.preview)
         // console.log(body)
-
     }
 
     let maxTextLength = 100;
@@ -89,7 +88,7 @@ class PostBody extends Component {
     }
 
     let textBody;
-    if (body) {
+    // if (body) {
       textBody = (
         <TouchableWithoutFeedback
           style={{ flex: 1 }}
@@ -109,7 +108,7 @@ class PostBody extends Component {
           </View>
         </TouchableWithoutFeedback>
       );
-    }
+    // }
 
     return (
       <View style={{ flex: 1 }}>

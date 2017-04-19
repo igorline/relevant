@@ -121,8 +121,6 @@ class ArticleView extends Component {
   }
 
   render () {
-    // console.log(this.props.scene)
-    let uri = this.props.scene.uri;
     let activity;
 
     if (this.state.loading) {
@@ -146,10 +144,12 @@ class ArticleView extends Component {
         ref={(ref) => { this.webview = ref; }}
         scalesPageToFit
         onNavigationStateChange={(navState) => {
+          if (navState.navigationType === 'other' &&
+            navState.url.split('?')[0].split('#')[0] === this.state.url) return;
           this.setState({
             backButtonEnabled: navState.canGoBack,
             forwardButtonEnabled: navState.canGoForward,
-            url: navState.url,
+            url: navState.url.split('?')[0],
             status: navState.title,
           });
         }}

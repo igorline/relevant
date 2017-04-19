@@ -69,9 +69,19 @@ export default class UrlComponent extends Component {
     if (postBody[postBody.length - 1] == '\n') shouldParseUrl = true;
 
     if (!this.props.postUrl && shouldParseUrl) {
-      let postUrl = words.find(word => URL_REGEX.test(word));
+      let postUrl;
+      let possibleUrls = words.filter(word => URL_REGEX.test(word));
+      postUrl = possibleUrls[0];
+      possibleUrls.forEach(u => {
+        if (!u) return null;
+        if ((u.match('http://') || u.match('https://')) && !postUrl.match('http')) {
+          return postUrl = u;
+        }
+        if (u.length > postUrl.length) postUrl = u;
+        return null;
+      });
       if (postUrl) {
-        // this.props.actions.setCreaPostState({ postUrl });
+        this.props.actions.setCreaPostState({ postUrl });
         this.createPreview(postUrl);
       }
     }
