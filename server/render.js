@@ -32,7 +32,7 @@ function renderFullPage(html, initialState) {
         />
         <meta property="og:description"
           content="
-            Relevant is a social news reader that promotes reliable information and rewards expertise. Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score. This system is designed to penalise clickbait and fake news while promoting useful and reliable information."
+            Relevant promotes reliable information and rewards expertise. Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score. This system is designed to penalise clickbait and fake news while promoting useful and reliable information."
         />
         <meta property="og:title" content="Relevant: A Social News Reader" />
         <meta property="og:url" content="https://relevant.community" />
@@ -42,7 +42,7 @@ function renderFullPage(html, initialState) {
         <meta name="twitter:site" content="@flickr" />
         <meta name="twitter:title" content="Relevant: A Social News Reader" />
         <meta name="twitter:description" content="
-            Relevant is a social news reader that promotes reliable information and rewards expertise. Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score. This system is designed to penalise clickbait and fake news while promoting useful and reliable information." />
+            Relevant promotes reliable information and rewards expertise. Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score. This system is designed to penalise clickbait and fake news while promoting useful and reliable information." />
         <meta name="twitter:image" content="https://relevant.community/img/fbfimg.jpg" />
 
         ${styles}
