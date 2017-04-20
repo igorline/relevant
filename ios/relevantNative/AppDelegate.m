@@ -91,8 +91,15 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-
+  
   [FIRApp configure];
+  
+//  #ifdef DEBUG
+//    NSLog(@"DEBUG!!!");
+//  #else
+//    NSLog(@"PRODUCTION");
+//  #endif
+  
   return YES;
 }
 
