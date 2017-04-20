@@ -167,6 +167,7 @@ exports.resetPassword = async (req, res) => {
     if (!token) throw new Error('token missing');
     let user = await User.findOne({ resetPasswordToken: token });
     if (!user) throw new Error('No user found');
+    if (!user.onboarding) user.onboarding = 0;
     let password = req.body.password;
     if (user.resetPasswordExpires > Date.now()) {
       throw new Error('Password reset time has expired');
