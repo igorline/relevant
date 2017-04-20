@@ -66,13 +66,13 @@ exports.sendEmailFunc = async function(_invite) {
     let url = `${process.env.API_SERVER}/invite/${invite.code}`;
     let name = invite.name;
     let hi = '';
-    if (name) hi = `Hi ${name}<br /><br />`;
+    if (name) hi = `${name}!<br /><br />`;
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: invite.email,
       subject: 'Invitation to join Relevant',
       html: `
-      ${hi}You are invited to join Relevant!
+      ${hi}You must be WOKE, because you are invited to join Relevant
       <br />
       <br />
       Relevant is a social news reader that promotes reliable information and rewards expertise.
@@ -80,16 +80,16 @@ exports.sendEmailFunc = async function(_invite) {
       This system is designed to penalise clickbait and fake news while promoting useful and reliable information.
       <br />
       <br />
-      invitation code: <b>${invite.code}</b>
+      your invitation code: <b>${invite.code}</b>
       <br />
       <br />
       <b>Step 1</b>: <a href="${appStoreUrl}" target="_blank">Download</a> Relevant from the app store (iOS only for now)
       <br />
       <br />
-      <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation code
+      <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation (or manually enter the code when prompted)
       <br />
       <br />
-      You can also manually enter your invitation code after you launch the app.
+      If you have questions, or encounter any problems, or wish to send feedback please get in touch via this email: contact@4real.io
       `
       // <div style="text-align: center"><img width="140px" src="https://relevant.community/img/logo.png" /></div>
 
