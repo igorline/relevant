@@ -3,12 +3,13 @@ import {
   StyleSheet,
   View,
   ScrollView,
-  PanResponder
+  ListView,
 } from 'react-native';
 import { globalStyles, fullWidth } from '../../styles/global';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostButtons from './postButtons.component';
+import Pills from '../common/pills.component';
 
 let styles;
 
@@ -17,6 +18,18 @@ const LAYOUT = 1;
 export default class Commentary extends Component {
 
   componentWillMount() {
+    this.state = {
+      currentIndex: null,
+      changed: null,
+    };
+    this.changeRow = this.changeRow.bind(this);
+  }
+
+
+  changeRow(event, changed) {
+    if (event && event.s1) this.setState({ currentIndex: event.s1 });
+    if (changed && changed.s1) this.setState({ changed: changed.s1 });
+    console.log(this.state);
   }
 
   render() {
@@ -33,7 +46,7 @@ export default class Commentary extends Component {
       if (post.repost) {
         postStyle = [styles.repost];
         let repost = this.props.posts.posts[post.repost.post];
-        if (!repost) repost = { body: '[deleted]'}
+        if (!repost) repost = { body: '[deleted]' }
         if (repost.user && this.props.users[repost.user]) {
           repost.user = this.props.users[repost.user];
         }
@@ -93,37 +106,48 @@ export default class Commentary extends Component {
       )}
     );
 
+
     return (
-      <ScrollView
-        horizontal
-        scrollEnabled={commentary.length > 1}
-        decelerationRate={'fast'}
-        showsHorizontalScrollIndicator={false}
-        automaticallyAdjustContentInsets={false}
-        contentInset={{ left: length ? 15 : 10, right: length ? 15 : 10 }}
-        contentOffset={{ x: length ? -15 : -10 }}
-        contentContainerStyle={[styles.postScroll]}
-        snapToInterval={(fullWidth - 20 - 10)}
-        snapToAlignment={'center'}
-        scrollEventThrottle={1}
-        onScroll={() => {
-          this.props.actions.scrolling(true);
-          clearTimeout(this.scrollTimeout);
-          this.scrollTimeout = setTimeout(
-            () => this.props.actions.scrolling(false), 300);
-        }}
-        forceSetResponder={() => {
-          if (!length) return;
-          this.props.actions.scrolling(true);
-          clearTimeout(this.scrollTimeout);
-          this.scrollTimeout = setTimeout(
-            () => this.props.actions.scrolling(false), 80);
-        }}
-        // onScrollAnimationEnd={this.updateCurrent}
-      >
-        {commentary}
-      </ScrollView>);
+      <View>
+        <ScrollView
+          horizontal
+          scrollEnabled={commentary.length > 1}
+          decelerationRate={'fast'}
+          showsHorizontalScrollIndicator={false}
+          automaticallyAdjustContentInsets={false}
+          contentInset={{ left: length ? 15 : 10, right: length ? 15 : 10 }}
+          contentOffset={{ x: length ? -15 : -10 }}
+          contentContainerStyle={[styles.postScroll]}
+          snapToInterval={(fullWidth - 20 - 10)}
+          snapToAlignment={'center'}
+          scrollEventThrottle={1}
+          onScroll={() => {
+            this.props.actions.scrolling(true);
+            clearTimeout(this.scrollTimeout);
+            this.scrollTimeout = setTimeout(
+              () => this.props.actions.scrolling(false), 300);
+          }}
+          onChangeVisibleRows={this.changeRow}
+          forceSetResponder={() => {
+            if (!length) return;
+            this.props.actions.scrolling(true);
+            clearTimeout(this.scrollTimeout);
+            this.scrollTimeout = setTimeout(
+              () => this.props.actions.scrolling(false), 80);
+          }}
+          // onScrollAnimationEnd={this.updateCurrent}
+        >
+          {commentary}
+        </ScrollView>
+
+      </View>);
   }
+
+        // <Pills
+        //   changed={this.state.changed}
+        //   currentIndex={this.state.currentIndex}
+        //   slides={commentary.map((c, i) => i + 1)}
+        // />
 }
 
 const localStyles = StyleSheet.create({
