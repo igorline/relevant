@@ -1,19 +1,15 @@
 require('./fetchUtils').env();
 
-export
-function toS3Advanced(uri) {
-  return executeOnSignedUrl(uri);
-}
 
 function executeOnSignedUrl(uri) {
   console.log(uri, 'uri');
-  var extension = uri.substr(uri.length - 4);
-  var s3_sign_put_url = process.env.API_SERVER+'/api/s3/sign';
-  var s3_object_name = Math.random().toString(36).substr(2, 9) + "_" + extension;
+  let extension = uri.substr(uri.length - 4);
+  let s3_sign_put_url = process.env.API_SERVER + '/api/s3/sign';
+  let s3_object_name = Math.random().toString(36).substr(2, 9) + '_' + extension;
 
   return fetch(s3_sign_put_url + '?s3_object_type=' + 'multipart/FormData' + '&s3_object_name=' + s3_object_name, {
-      credentials: 'include',
-      method: 'GET',
+    credentials: 'include',
+    method: 'GET',
   })
   .then((response) => response.json())
   .then((responseJSON) => {
@@ -26,35 +22,37 @@ function executeOnSignedUrl(uri) {
 };
 
 function uploadToS3(uri, policy, signature, url, publicUrl, s3_object_name) {
-  var body = new FormData();
-  body.append("key", s3_object_name);
-  body.append("AWSAccessKeyId", "AKIAJUARIDOFR6VZSEYA");
+  let body = new FormData();
+  body.append('key', s3_object_name);
+  body.append('AWSAccessKeyId', 'AKIAJUARIDOFR6VZSEYA');
   body.append('acl', 'public-read');
-  body.append("success_action_status", "201");
+  body.append('success_action_status', '201');
   body.append('Content-Type', 'image/jpeg');
   body.append('policy', policy);
   body.append('signature', signature);
   body.append('file', {
-      uri: uri,
-      name: s3_object_name
-  })
+    uri,
+    name: s3_object_name
+  });
   return fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'multipart/FormData'
-      },
-      body: body
+    method: 'POST',
+    headers: {
+      'Content-Type': 'multipart/FormData'
+    },
+    body
   })
   .then((response) => {
-      if (response.status == 201) {
-        return { success: true, url: publicUrl };
-      } else {
-        return { success: false, response };
-      }
+    if (response.status === 201) {
+      return { success: true, url: publicUrl };
+    }
+    return { success: false, response };
   })
   .catch((error) => {
     console.log(error, 'error');
-    return { 'success': false, 'url': null };
+    return { success: false, url: null };
   });
-};
+}
 
+export function toS3Advanced(uri) {
+  return executeOnSignedUrl(uri);
+}

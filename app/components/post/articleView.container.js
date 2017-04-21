@@ -37,6 +37,7 @@ class ArticleView extends Component {
   componentWillMount() {
     this.onInteraction = InteractionManager.runAfterInteractions(() => {
       this.setState({ url: this.props.scene.uri });
+      console.log(this.props.scene.uri)
     });
   }
 
@@ -146,10 +147,11 @@ class ArticleView extends Component {
         onNavigationStateChange={(navState) => {
           if (navState.navigationType === 'other' &&
             navState.url.split('?')[0].split('#')[0] === this.state.url) return;
+
           this.setState({
             backButtonEnabled: navState.canGoBack,
             forwardButtonEnabled: navState.canGoForward,
-            url: navState.url.split('?')[0],
+            url: navState.url,
             status: navState.title,
           });
         }}

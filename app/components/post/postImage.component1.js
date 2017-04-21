@@ -68,7 +68,7 @@ class PostImage extends Component {
           </Text>
         );
       }
-      if (post.image) image = post.image.match('http') ? post.image : 'https:' + post.image;
+      if (post.image && !post.image.match('gif')) image = post.image.match('http') ? post.image : 'https:' + post.image;
       if (post.link || post.url) {
         link = post.link || post.url;
         linkEl = (
@@ -146,21 +146,33 @@ class PostImage extends Component {
     );
 
     let imageEl;
+
+    let imgColors = [
+      'hsla(240, 70%, 30%, .01)',
+      'hsla(240, 70%, 20%, .05)',
+      'hsla(240, 70%, 10%, .2)',
+      'hsla(240, 70%, 10%, .7)',
+      'hsla(240, 70%, 10%, .6)'
+    ];
+
+    let color = post.body ? post.body.length : post.title.length;
+    color = color + 200 || 200;
+    // color = 200;
+    let colors = [
+      // 'hsla(' + (color - 40) + ', 70%, 50%, 1)',
+      'hsla(' + parseInt(color - 30) + ', 100%, 50%, 1)',
+      'hsla(' + parseInt(color) + ',      100%, 50%, 1)',
+      'hsla(' + parseInt(color + 30) + ', 100%, 50%, 1)',
+      // 'hsla(' + (color) + 40 + ', 100%, 50%, 1)'
+    ];
+    let start = { x: 0.8, y: 0.0 };
+    let end = { x: 0.2, y: 1.0 };
+
     let gradient = (
       <LinearGradient
-        colors={[
-          'hsla(240, 70%, 30%, .01)',
-          'hsla(240, 70%, 20%, .05)',
-          'hsla(240, 70%, 10%, .2)',
-          'hsla(240, 70%, 10%, .7)',
-          'hsla(240, 70%, 10%, .6)'
-
-          // 'hsla(240, 70%, 30%, 0)',
-          // 'hsla(240, 70%, 30%, 0.1)',
-          // 'hsla(240, 70%, 20%, .4)',
-          // 'hsla(240, 70%, 10%, .8)',
-          // 'hsla(240, 70%, 20%, .7)'
-        ]}
+        start={image ? { x: 0.5, y: 0.0 } : start}
+        end={image ? { x: 0.5, y: 1.0 } : end}
+        colors={image ? imgColors : colors}
         style={[styles.linearGradient,
           smallerImg ? { height: 180 } : null
         ]}
@@ -169,12 +181,15 @@ class PostImage extends Component {
       </LinearGradient>
     );
     let img;
-    if (image && !image.match('.gif')) {
+    if (image) {
       img = (
         <Image
           style={[styles.postImage,
             smallerImg ? { height: 180 } : null
           ]}
+          // onLoad={(e) => {
+          //   console.log('onLoad ', e);
+          // }}
           source={image ? { uri: image } : require('../../assets/images/missing.png')}
         />
       );
