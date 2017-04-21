@@ -268,9 +268,9 @@
   .splashContent section.body p {
     font-size: 23px;
     margin: 0px 0 0 0;
-    line-height: 30px;
+    line-height: 32px;
     .outline{
-      line-height: 30px;
+      line-height: 22px;
     }
   }
 
@@ -343,7 +343,7 @@
     margin: 0px 0 0 0;
     line-height: 32px;
     .outline{
-      line-height: 26px;
+      line-height: 22px;
     }
   }
   .splashContent section.body {

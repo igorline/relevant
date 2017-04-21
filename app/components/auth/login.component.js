@@ -77,7 +77,7 @@ class Login extends Component {
                 // keyboardType={'email-address'}
                 clearTextOnFocus={false}
                 placeholder="username"
-                onChangeText={username => this.setState({ username })}
+                onChangeText={username => this.setState({ username: username.trim() })}
                 value={this.state.username}
                 style={styles.fieldsInput}
               />
@@ -92,7 +92,7 @@ class Login extends Component {
                 keyboardType={'default'}
                 clearTextOnFocus={false}
                 placeholder="password"
-                onChangeText={password => this.setState({ password })}
+                onChangeText={password => this.setState({ password: password.trim() })}
                 value={this.state.password}
                 style={styles.fieldsInput}
               />
