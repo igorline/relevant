@@ -21,7 +21,7 @@ const queryParams = (params) => {
     .join('&');
 };
 
-export function updateUser(user) {
+export function updateLocalUser(user) {
   return {
     type: types.UPDATE_USER,
     payload: user
@@ -233,7 +233,7 @@ export function updateBlock(block, unblock) {
       if (unblock) action = 'unblocked';
       AlertIOS.alert('user ' + block + ' has been ' + action);
       // console.log('block result ', responseJSON);
-      dispatch(updateUser(responseJSON));
+      dispatch(updateLocalUser(responseJSON));
     })
     .catch((error) => {
       console.log(error, 'error');
@@ -250,7 +250,7 @@ export function getBlocked() {
     .then(response => response.json())
     .then((responseJSON) => {
       console.log('block result ', responseJSON);
-      dispatch(updateUser(responseJSON));
+      dispatch(updateLocalUser(responseJSON));
     })
     .catch((error) => {
       console.log(error, 'error');

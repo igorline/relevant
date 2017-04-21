@@ -177,19 +177,6 @@ button.shadowButton {
 @media only screen
   and (max-device-width: 736px) {
 
-  body, #app, main {
-    height: 100%;
-  }
-
-  main {
-    height: 100%;
-    display: flex;
-  }
-
-  .parent {
-    height: 100%;
-  }
-
   .blueInput {
     width: 150px;
     height: 20px;
@@ -205,6 +192,5 @@ button.shadowButton {
     height: 30px;
     z-index: 1;
   }
-
-
 }
+

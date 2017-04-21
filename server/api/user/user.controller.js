@@ -317,7 +317,7 @@ exports.list = async (req, res) => {
  * Creates a new user
  */
 exports.create = async (req, res) => {
-  let startingAmount = 10;
+  let startingAmount = 5;
   let token;
 
   try {
@@ -451,7 +451,7 @@ exports.update = (req, res) => {
   let reqUser = JSON.stringify(req.body._id);
 
   if (authUser !== reqUser && role !== 'admin') return res.send(403);
-
+  console.log('updating user', req.body )
   User.findById(req.body._id, '-salt -hashedPassword')
   .then((user) => {
     user.name = req.body.name;
@@ -464,6 +464,7 @@ exports.update = (req, res) => {
     return user.save();
   })
   .then((user) => {
+    console.log(user);
     savedUser = user;
 
     let newUser = {
