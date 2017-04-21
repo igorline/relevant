@@ -88,7 +88,7 @@ exports.sendEmailFunc = async function(_invite) {
       <br />
       <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation (or manually enter the code when prompted)
       <br />
-      <br />
+      <br />Don't be afraid to downvote shitty articles!
       If you have questions, or encounter any problems, or wish to send feedback please get in touch via this email: contact@4real.io
       `
       // <div style="text-align: center"><img width="140px" src="https://relevant.community/img/logo.png" /></div>

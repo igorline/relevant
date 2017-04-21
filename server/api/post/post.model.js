@@ -324,7 +324,7 @@ PostSchema.statics.sendOutMentions = async function(mentions, post, mUser, comme
     console.log('after mention check ', textParent.mentions);
     textParent.updateClient();
   } catch (err) {
-    console.log('erro updating post after sending mentions');
+    console.log('error updating post after sending mentions ', err);
   }
 
   return textParent;

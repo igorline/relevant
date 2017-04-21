@@ -56,7 +56,7 @@
   mainSection {
     display: flex;
     position: relative;
-    flex: .5;
+    flex-grow: .5;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -85,6 +85,8 @@
   display: flex;
   flex: .25;
   margin-top: 0;
+  min-height: 90px;
+  height: 100px;
 }
 
 .splashContent section.header img {
@@ -92,7 +94,7 @@
 }
 
 .splashContent section.body {
-  width: 70%;
+  width: 75%;
 }
 
 .splashContent section.body p {
@@ -221,9 +223,11 @@
   and (max-device-width: 736px) {
 
   .splashContainer {
-    min-height: 0vh;
+    /*min-height: 0vh;*/
     flex-grow: 1;
-    overflow: hidden;
+    width: 100vw;
+    position: relative;
+    overflow-x: hidden;
   }
 
   .splashContent {
@@ -254,7 +258,7 @@
   }
 
   .splashContent mainSection {
-    flex: .9;
+    flex-grow: .9;
   }
 
   .splashContent section.body {
@@ -277,11 +281,11 @@
   .phone {
     top: auto;
     bottom: 0;
-    transform: translateY(0%);
+    transform: translateY(0%) translateX(25%);;
     width: 80%;
     max-width: 75vw;
-    right: -25%;
-  }
+/*    right: -25%;
+*/  }
 
   .marqueeParent article section div {
     margin: 0 20px 0 0;
@@ -328,5 +332,21 @@
 
   .r {
     height: 22px;
+  }
+}
+
+
+@media only screen
+  and (max-device-width: 320px) {
+  .splashContent section.body p {
+    font-size: 19px;
+    margin: 0px 0 0 0;
+    line-height: 32px;
+    .outline{
+      line-height: 26px;
+    }
+  }
+  .splashContent section.body {
+    width: 80%;
   }
 }

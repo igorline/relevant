@@ -60,6 +60,9 @@ class CreatePostContainer extends Component {
     if (next.navProps.scene.isActive === false) {
       if (this.urlComponent) this.urlComponent.input.blur();
     }
+    if (this.props.createPost.edit && this.props.createPost.postUrl !== next.createPost.postUrl) {
+      this.newUrl = true;
+    }
   }
 
   back() {
@@ -100,7 +103,9 @@ class CreatePostContainer extends Component {
     this.urlComponent.input.blur();
 
     if (this.props.createPost.repost) return this.createRepost();
-    if (this.props.createPost.edit) return this.editPost();
+    if (this.props.createPost.edit && !this.newUrl) {
+      return this.editPost();
+    }
 
     if (this.props.navigation.index === 0 && this.enableNext) {
       this.props.navigator.push({
@@ -114,12 +119,20 @@ class CreatePostContainer extends Component {
 
   editPost() {
     let props = this.props.createPost;
-
     let postBody = {
       ...props.editPost,
-      tags: [...props.allTags, ...props.bodyTags],
+      tags: [...new Set(props.allTags.map(tag => tag._id))],
       body: props.postBody,
       mentions: props.bodyMentions,
+      // link: props.postUrl,
+      // title: props.urlPreview ? props.urlPreview.title.trim() : null,
+      // description: props.urlPreview ? props.urlPreview.description : null,
+      // category: props.postCategory,
+      // image: this.image,
+      // domain: props.domain,
+      // keywords: props.keywords,
+      // articleAuthor: props.articleAuthor,
+      // shortText: props.shortText,
     };
     this.props.actions.editPost(postBody, this.props.auth.token)
       .then((results) => {
@@ -212,6 +225,21 @@ class CreatePostContainer extends Component {
       shortText: props.shortText,
     };
 
+    if (props.edit) {
+      postBody = { ...props.editPost, ...postBody };
+      return this.props.actions.editPost(postBody, this.props.auth.token)
+        .then((results) => {
+          if (results.success) {
+            AlertIOS.alert('Post error please try again');
+          } else {
+            AlertIOS.alert('Success!');
+            this.props.actions.clearCreatePost();
+            this.props.actions.resetRoutes('createPost');
+            this.props.navigator.resetRoutes('home');
+          }
+        });
+    }
+
     this.props.actions.submitPost(postBody, this.props.auth.token)
       .then((results) => {
         if (!results) {
@@ -249,7 +277,10 @@ class CreatePostContainer extends Component {
     if (this.current !== 'url') {
       rightText = 'Post';
       enabled = this.props.createPost.postCategory && !this.state.creatingPost;
-      rightAction = p => this.createPost(p);
+      rightAction = () => {
+        // if (this.props.createPost.edit) return this.editPost();
+        return this.createPost();
+      };
     }
 
     return (

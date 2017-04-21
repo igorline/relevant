@@ -13,7 +13,7 @@ function handleError(res, statusCode) {
 exports.index = async (req, res) => {
   let list;
   try {
-    list = await List.find({});
+    list = await List.find({ status: { $ne: 'invited' } });
   } catch (err) {
     handleError(res)(err);
   }

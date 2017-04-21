@@ -112,7 +112,7 @@ class Categories extends Component {
     })
     .filter(el => el !== null);
     if (this.selectedTags.length + tags.length >= 7) {
-      return AlertIOS.alert('You can\'t selecte more than 7 topics');
+      return AlertIOS.alert('👋 too many topics!');
     }
     this.inputTags = tags;
     this.props.actions.setCreaPostState({ allTags: [...this.inputTags, ...this.selectedTags] });
@@ -129,7 +129,7 @@ class Categories extends Component {
       this.selectedTags.splice(index, 1);
     } else if (indexInput === -1) {
       if (this.selectedTags.length + this.inputTags.length >= 7) {
-        return AlertIOS.alert('You can\'t selecte more than 7 tags');
+        return AlertIOS.alert('👋 too many topics!');
       }
       this.selectedTags.push({ _id: tag });
     }

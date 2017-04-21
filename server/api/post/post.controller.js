@@ -305,7 +305,9 @@ exports.findByID = async (req, res) => {
 
 exports.update = async (req, res) => {
   console.log('init update');
-  let tags = req.body.tags.map(
+  console.log(req.body)
+  let tags = req.body.tags.filter(tag => tag);
+  tags = tags.map(
     tag => tag.replace('_category_tag', '').trim()
   );
   let mentions = req.body.mentions;
@@ -313,7 +315,6 @@ exports.update = async (req, res) => {
   let newTags;
   let category = req.body.category;
   let newPost;
-
   try {
     newPost = await Post.findOne({ _id: req.body._id });
     let prevMentions = [...newPost.mentions];
@@ -324,11 +325,26 @@ exports.update = async (req, res) => {
     newPost.mentions = mentions;
     newPost.body = req.body.body;
     newPost.title = req.body.title;
+    if (newPost.link !== req.body.link) {
+      newPost.link = req.body.link;
+      newPost.title = req.body.title || null;
+      newPost.description = req.body.description || null;
+      newPost.image = req.body.image || null;
+      newPost.articleAuthor = req.body.articleAuthor;
+      newPost.shortText = req.body.shortText;
+
+      let meta = await MetaPost.findOne({ _id: newPost.metaPost });
+      if (meta.commentary.length === 1) {
+        newPost.metaPost = undefined;
+        await meta.remove();
+      } else {
+        await meta.update({ $pull: { commentayr: newPost._id } });
+      }
+    }
     newPost = await newPost.save();
   } catch (err) {
     return handleError(res)(err);
   }
-  console.log(newPost);
   res.status(200).json(newPost);
 
   try {
@@ -348,8 +364,7 @@ exports.update = async (req, res) => {
     let pMentions = Post.sendOutMentions(
       newMentions,
       newPost,
-      { _id: newPost.user, name: newPost.embeddedUser.name },
-      'post'
+      { _id: newPost.user, name: newPost.embeddedUser.name }
     );
 
     return await Promise.all([...pTags, ...pMentions]);
@@ -385,16 +400,19 @@ exports.create = (req, res) => {
     body: req.body.body ? req.body.body : null,
     tags,
     tagsText: tags,
+
     title: req.body.title ? req.body.title : null,
     description: req.body.description ? req.body.description : null,
     image: req.body.image ? req.body.image : null,
+    articleAuthor: req.body.articleAuthor,
+    shortText: req.body.shortText,
+
     category,
     categoryName,
     categoryEmoji,
     relevance: 0,
     rankRelevance: 0,
-    articleAuthor: req.body.articleAuthor,
-    shortText: req.body.shortText,
+
     // value: 0,
     user: req.user._id,
     investments: [],
