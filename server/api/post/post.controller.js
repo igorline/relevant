@@ -252,6 +252,14 @@ exports.preview = (req, res) => {
     return res.status(200).json(processed.result);
   }
 
+  if (previewUrl.match('.pdf')) {
+    return res.status(200).json({
+      url: previewUrl,
+      title: previewUrl.substring(previewUrl.lastIndexOf('/') + 1),
+      domain: proxyHelpers.extractDomain(previewUrl)
+    });
+  }
+
   return request({
     url: previewUrl,
     maxRedirects: 20,

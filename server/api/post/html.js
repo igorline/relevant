@@ -179,6 +179,7 @@ exports.generatePreview = (body, uri) => {
       ProcessExternalResources: false
     }
   });
+
   let article = new Readability(uri, doc).parse();
   let short;
   if (article) {
@@ -187,6 +188,18 @@ exports.generatePreview = (body, uri) => {
     console.log('couldn\'t parse url ', uri);
   }
   // console.log('author ', article.byline);
+  if (!image && article && article.content) {
+    image = article.content.match(/(http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/);
+    image = image ? image[0] : null;
+    console.log('found image ', image);
+  } else if (!image) {
+    image = $('img').eq(0).attr('src');
+    console.log('found alt image', image);
+  }
+
+  if (!title && url.match('.pdf')) {
+    title = url.substring(url.lastIndexOf('/') + 1);
+  }
 
   const obj = {
     image,
