@@ -8,7 +8,7 @@ import {
   Image,
   TouchableWithoutFeedback,
   ListView,
-  AlertIOS
+  AlertIOS,
 } from 'react-native';
 
 import { globalStyles, fullWidth } from '../../styles/global';
