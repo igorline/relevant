@@ -81,6 +81,9 @@ exports.generatePreview = (body, uri) => {
 
   if (redirect && redirect.attribs && redirect.attribs.content) {
     redirectUrl = redirect.attribs.content.split('URL=')[1];
+    if (uri.match('twitter.com') && redirectUrl.match('mobile.twitter.com')) {
+      redirectUrl = uri;
+    }
   }
   if (redirectUrl &&
     exports.extractDomain(redirectUrl) !== exports.extractDomain(uri)) {
