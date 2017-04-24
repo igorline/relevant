@@ -91,12 +91,22 @@ PostSchema.pre('save', async function (next) {
 
     this.commentCount = await this.model('Comment').count({ post: this._id });
 
-    let meta = await MetaPost.findOne({ _id: this.metaPost });
-    if (!meta) return next();
-    if (meta.rank < this.rank) {
-      meta.rank = this.rank;
-      await meta.save();
-    }
+    // let meta = await MetaPost.findOne({ _id: this.metaPost })
+    // .populate({
+    //   path: 'commentary',
+    //   match: { rank: { $gt: this.rank } },
+    //   options: { sort: { rank: 1 }, limit: 1 },
+    // });
+    // if (!meta) return next();
+    // let highestRank = meta.commentary ? meta.commentary[0].rank : 0;
+    // console.log('highest rank', highestRank);
+    // // if there exists a post with higher rank - don't update
+    // // if thepost with higher is the post we are trying to update, update rank
+    // if (!highestRank || meta.commentary[0]._id.toString() === this._id.toString()) {
+    //   meta.rank = this.rank;
+    //   console.log('new rank', meta.rank);
+    //   await meta.save();
+    // }
   } catch (err) {
     console.log(err);
     return next();

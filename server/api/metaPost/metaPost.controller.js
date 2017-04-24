@@ -8,6 +8,24 @@ function handleError(res, err) {
   return res.status(500).send(err);
 }
 
+// async function updateMetaPostRank() {
+//   try {
+//     let metas = await MetaPost.find({});
+//     metas.forEach(async meta => {
+//       try {
+//         meta = await MetaPost.updateRank(meta._id);
+//         console.log('new rank ', meta.rank);
+//       } catch (err) {
+//         console.log(err);
+//       }
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+
+// updateMetaPostRank();
+
 // async function populateMeta() {
 //   let metas = await MetaPost.find().populate('commentary');
 //   metas.forEach(meta => {

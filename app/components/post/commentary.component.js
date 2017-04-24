@@ -4,6 +4,7 @@ import {
   View,
   ScrollView,
   ListView,
+  Text,
 } from 'react-native';
 import { globalStyles, fullWidth } from '../../styles/global';
 import PostBody from './postBody.component';
@@ -29,7 +30,6 @@ export default class Commentary extends Component {
   changeRow(event, changed) {
     if (event && event.s1) this.setState({ currentIndex: event.s1 });
     if (changed && changed.s1) this.setState({ changed: changed.s1 });
-    console.log(this.state);
   }
 
   render() {
@@ -46,7 +46,7 @@ export default class Commentary extends Component {
       if (post.repost) {
         postStyle = [styles.repost];
         let repost = this.props.posts.posts[post.repost.post];
-        if (!repost) repost = { body: '[deleted]' }
+        if (!repost) repost = { body: '[deleted]' };
         if (repost.user && this.props.users[repost.user]) {
           repost.user = this.props.users[repost.user];
         }
@@ -99,6 +99,7 @@ export default class Commentary extends Component {
               /> : null}
             </View>
           </View>
+          <Text>{post.rank}</Text>
           { separator ?
           <View style={styles.vSeparator} ><View style={{ flex: 1 }} /></View> :
           null}
