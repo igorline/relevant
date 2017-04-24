@@ -44,4 +44,28 @@ MetaPostSchema.index({ latestPost: 1 });
 MetaPostSchema.index({ latestPost: 1, tags: 1 });
 MetaPostSchema.index({ rank: 1, tags: 1 });
 
+MetaPostSchema.statics.updateRank = async function (_id) {
+  let meta;
+  try {
+    meta = await this.findOne({ _id })
+    .populate({
+      path: 'commentary',
+      options: { sort: { rank: -1 }, limit: 1 },
+    });
+    if (!meta) throw new Error('no meta post found');
+    let highestRank = meta.commentary && meta.commentary.length ? meta.commentary[0].rank : 0;
+    if (!meta.commentary || !meta.commentary.length) {
+      console.log(meta);
+    }
+    meta.rank = highestRank;
+    meta = await meta.save();
+    console.log('updated meta rank ', meta.rank);
+  } catch (err) {
+    console.log('error updating meta rank ', err);
+  }
+  return meta;
+};
+
+
 module.exports = mongoose.model('MetaPost', MetaPostSchema);
+

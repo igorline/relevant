@@ -313,7 +313,6 @@ exports.findByID = async (req, res) => {
 
 exports.update = async (req, res) => {
   console.log('init update');
-  console.log(req.body)
   let tags = req.body.tags.filter(tag => tag);
   tags = tags.map(
     tag => tag.replace('_category_tag', '').trim()
@@ -349,6 +348,9 @@ exports.update = async (req, res) => {
         await meta.update({ $pull: { commentayr: newPost._id } });
       }
     }
+    let metaPost = await newPost.upsertMetaPost(newPost.metaPost);
+    newPost.metaPost = metaPost._id;
+
     newPost = await newPost.save();
   } catch (err) {
     return handleError(res)(err);
@@ -366,8 +368,6 @@ exports.update = async (req, res) => {
         { upsert: true }
       ).exec()
     );
-
-    newPost.upsertMetaPost(newPost.metaPost);
 
     let pMentions = Post.sendOutMentions(
       newMentions,

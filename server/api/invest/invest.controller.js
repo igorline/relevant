@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import apnData from '../../pushNotifications';
-import Earnings from '../earnings/earnings.model';
+import MetaPost from '../metaPost/metaPost.model';
 
 let Post = require('../post/post.model');
 let User = require('../user/user.model');
@@ -8,7 +8,7 @@ let Subscription = require('../subscription/subscription.model');
 let Notification = require('../notification/notification.model');
 let Invest = require('./invest.model');
 let Relevance = require('../relevance/relevance.model');
-let Feed = require('../feed/feed.model');
+// let Feed = require('../feed/feed.model');
 
 let InvestEvents = new EventEmitter();
 
@@ -231,7 +231,6 @@ exports.create = async (req, res) => {
       else post.upVotes++;
     }
     post.value += amount;
-    post = await post.save();
   }
 
   async function investCheck() {
@@ -417,7 +416,7 @@ exports.create = async (req, res) => {
 
   try {
     // ------ post ------
-    post = await Post.findOne({ _id: post._id }, '-comments')
+    post = await Post.findOne({ _id: post._id }, '-comments');
     // .populate('investments').exec();
 
 
@@ -447,6 +446,10 @@ exports.create = async (req, res) => {
     // ------ update investment records ------
     await updateInvestment();
 
+    post = await post.save();
+
+    // async update meta post rank
+    MetaPost.updateRank(post.metaPost);
 
     // updates user investments
     user.investmentCount = await Invest.count({ investor: user._id, amount: { $gt: 0 } });
