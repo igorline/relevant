@@ -93,7 +93,7 @@ exports.sendEmailFunc = async function(_invite) {
       <br />
       If you have questions, encounter any problems, or wish to send feedback please get in touch via this email: contact@4real.io
       <br />
-      <div style="margin-top: 30px"><img width="100%" src="https://relevant.community/img/fbfimg.jpg" /></div>
+      <div style="margin-top: 30px"><a href="${appStoreUrl}"><img width="100%" src="https://relevant.community/img/fbfimg.jpg" /></a></div>
       `
     };
     status = await mail.send(data);
