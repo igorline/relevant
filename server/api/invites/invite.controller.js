@@ -66,7 +66,7 @@ exports.sendEmailFunc = async function(_invite) {
     let url = `${process.env.API_SERVER}/invite/${invite.code}`;
     let name = invite.name;
     let hi = '';
-    if (name) hi = `${name}!<br /><br />`;
+    if (name) hi = `<span style="text-transform: capitalize;">${name}!</span><br /><br />`;
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: invite.email,
@@ -75,12 +75,8 @@ exports.sendEmailFunc = async function(_invite) {
       ${hi}You must be WOKE, because you are invited to join Relevant
       <br />
       <br />
-      Relevant is a social news reader that promotes reliable information and rewards expertise.
-      Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score.
-      This system is designed to penalise clickbait and fake news while promoting useful and reliable information.
-      <br />
-      <br />
-      your invitation code: <b>${invite.code}</b>
+
+      Your invitation code: <b>${invite.code}</b>
       <br />
       <br />
       <b>Step 1</b>: <a href="${appStoreUrl}" target="_blank">Download</a> Relevant from the app store (iOS only for now)
@@ -88,11 +84,17 @@ exports.sendEmailFunc = async function(_invite) {
       <br />
       <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation (or manually enter the code when prompted)
       <br />
-      <br />Don't be afraid to downvote shitty articles!
-      If you have questions, or encounter any problems, or wish to send feedback please get in touch via this email: contact@4real.io
+      <p style="font-style: italic">Relevant is a social news reader that promotes reliable information and rewards expertise.
+      Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score.
+      This system is designed to penalise clickbait and fake news while promoting useful and reliable information.
+      </p>
+      <b>Don't be afraid to downvote poor quality posts and upvote good ones - this is what makes Relevant work.</b>
+      <br />
+      <br />
+      If you have questions, encounter any problems, or wish to send feedback please get in touch via this email: contact@4real.io
+      <br />
+      <div style="margin-top: 30px"><img width="100%" src="https://relevant.community/img/fbfimg.jpg" /></div>
       `
-      // <div style="text-align: center"><img width="140px" src="https://relevant.community/img/logo.png" /></div>
-
     };
     status = await mail.send(data);
     invite.status = 'email sent';
