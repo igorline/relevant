@@ -477,6 +477,10 @@ exports.create = (req, res) => {
   .then(() => newPost.save())
   .then((savedPost) => {
     console.log('saved post ', savedPost._id);
+
+    // update meta post rank
+    MetaPost.updateRank(savedPost.metaPost);
+
     return Subscriptiton.find({
       following: newPost.user,
       // category: newPostObj.category
