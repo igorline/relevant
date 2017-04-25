@@ -37,6 +37,8 @@
 		E348C8AEB8B24979AE0B607D /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E0991F2715D473780511B85 /* libRNSVG.a */; };
 		FB04E0C01E28548800DD436D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FB04E0BE1E28548800DD436D /* LaunchScreen.xib */; };
 		FB04E0C21E2856B500DD436D /* default-launch.png in Resources */ = {isa = PBXBuildFile; fileRef = FB04E0C11E2856B500DD436D /* default-launch.png */; };
+		FB0D88071EAEC6B000DEE4B8 /* Images.xcassets in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		FB0D88081EAEC8DE00DEE4B8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		FB2BD5FF1E8B0A8100DBC2BA /* libRCTGoogleAnalyticsBridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB2BD5111E8AFA3200DBC2BA /* libRCTGoogleAnalyticsBridge.a */; };
 		FB2BD6251E8B0ADA00DBC2BA /* libRNFIRAnalytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB2BD52E1E8AFA3200DBC2BA /* libRNFIRAnalytics.a */; };
 		FB2BD6261E8B0C4C00DBC2BA /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A93E1E6F3A50009404F2 /* CoreData.framework */; };
@@ -1384,6 +1386,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB0D88081EAEC8DE00DEE4B8 /* Images.xcassets in Resources */,
 				FB9F3BB71E327FC100C92158 /* WebsiteProcessor.js in Resources */,
 				FBD8EEDB1E08EAFF0074EE90 /* BebasNeuerelevantRegular-2.ttf in Resources */,
 				FB88BE861D9ED742002D0069 /* MainInterface.storyboard in Resources */,
@@ -1567,6 +1570,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB0D88071EAEC6B000DEE4B8 /* Images.xcassets in Sources */,
 				FB88BE9C1D9ED7C6002D0069 /* Relevant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

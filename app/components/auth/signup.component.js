@@ -48,7 +48,7 @@ class SignUp extends Component {
     }
     if (this.props.scene && this.props.scene.email) {
       this.setState({
-        email: this.props.scene.email,
+        email: this.props.scene.email.trim(),
         code: this.props.scene.code
       });
     }

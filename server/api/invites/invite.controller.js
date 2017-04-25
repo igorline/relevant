@@ -30,6 +30,7 @@ exports.create = async (req, res) => {
       count: 1,
       charset: voucherCodes.charset('alphabetic')
     })[0];
+    if (req.body.email) req.body.email = req.body.email.trim();
     invite = new Invite({ ...req.body, code });
     invite = await invite.save();
     exports.sendEmailFunc(invite);
@@ -117,6 +118,7 @@ exports.checkInviteCode = async (req, res) => {
   } catch (err) {
     handleError(res)(err);
   }
+  if (invite.email) invite.email = invite.email.trim();
   res.status(200).json(invite);
 };
 

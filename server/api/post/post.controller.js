@@ -214,15 +214,15 @@ exports.userPosts = async (req, res) => {
 exports.preview = (req, res) => {
   let previewUrl = req.query.url;
 
-  if (!previewUrl.match('http://') && !previewUrl.match('https://')) {
+  if (!previewUrl.match(/http:\/\//i) && !previewUrl.match(/https:\/\//i)) {
     previewUrl = 'http://' + previewUrl;
   }
 
   function getHeader(uri) {
     let fbHeader = {
-      'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+      'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php) Facebot',
     };
-    let noFb = uri.match('apple.news');
+    let noFb = uri.match('apple.news'); // || uri.match('flip.it');
     if (noFb) return {};
     return fbHeader;
   }
