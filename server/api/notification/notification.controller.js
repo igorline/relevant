@@ -42,9 +42,19 @@ exports.show = (req, res) => {
   let userId = req.user._id;
   let skip = parseInt(req.query.skip, 10) || 0;
   let limit = 20;
+
   if (userId) {
-    query = { forUser: userId };
+    query = { $or: [
+      { forUser: userId },
+      { forUser: 'everyone' },
+    ]
+    };
   }
+
+  if (req.user.createdAt) {
+    query = { ...query, createdAt: { $gt: new Date(req.user.createdAt) } };
+  }
+
   Notification.find(query)
   .limit(limit)
   .skip(skip)

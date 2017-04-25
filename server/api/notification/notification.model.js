@@ -25,6 +25,7 @@ NotificationSchema.statics.events = new EventEmitter();
 
 NotificationSchema.index({ forUser: 1 });
 NotificationSchema.index({ forUser: 1, _id: 1 });
+NotificationSchema.index({ forUser: 1, _id: 1, createdAt: 1 });
 
 NotificationSchema.statics.createNotification = async function createNotification(
   notificationObject

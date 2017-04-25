@@ -51,6 +51,7 @@ class SignUp extends Component {
         email: this.props.scene.email.trim(),
         code: this.props.scene.code
       });
+      setTimeout(() => this.checkEmail(), 100);
     }
   }
 

@@ -299,7 +299,7 @@ PostSchema.statics.sendOutMentions = async function(mentions, post, mUser, comme
           });
         });
 
-        if (mention === 'everyone') return null;
+        // if (mention === 'everyone') return null;
 
         let dbNotificationObj = {
           post: post._id,
@@ -315,7 +315,7 @@ PostSchema.statics.sendOutMentions = async function(mentions, post, mUser, comme
         let note = await newDbNotification.save();
 
         let newNotifObj = {
-          _id: mention,
+          _id: mention === 'everyone' ? null : mention,
           type: 'ADD_ACTIVITY',
           payload: note
         };
