@@ -47,6 +47,8 @@ const UserSchema = new Schema({
     type: [{ type: String, ref: 'User' }],
     select: false
   }
+}, {
+  timestamps: true,
 });
 
 UserSchema.index({ name: 'text' });

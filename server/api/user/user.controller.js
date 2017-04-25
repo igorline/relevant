@@ -256,6 +256,10 @@ exports.checkUser = (req, res) => {
   let query = {};
   let type;
 
+  if (name === 'everyone') {
+    return handleError(res, new Error('username taken'));
+  }
+
   if (name) {
     type = 'user';
     let formatted = '^' + name + '$';
@@ -329,6 +333,8 @@ exports.create = async (req, res) => {
     if (!invite) throw new Error('No invitation code found');
 
     let confirmed = invite.email === user.email;
+
+    if (user.name === 'everyone') throw new Error('username taken');
 
     let userObj = {
       _id: user.name,
