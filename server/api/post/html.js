@@ -74,6 +74,7 @@ exports.trimToLength = (doc, length) => {
 exports.generatePreview = (body, uri) => {
   console.log('Generate Preview ', uri);
 
+  body = body.replace('<!--', '').replace('-->', '');
   const $ = cheerio.load(body);
 
   let redirect = $("meta[http-equiv='refresh']")[0];
@@ -81,7 +82,8 @@ exports.generatePreview = (body, uri) => {
 
   if (redirect && redirect.attribs && redirect.attribs.content) {
     redirectUrl = redirect.attribs.content.split('URL=')[1];
-    if (uri.match('twitter.com') && redirectUrl.match('mobile.twitter.com')) {
+    if (redirectUrl) redirectUrl = redirectUrl.replace(/\'/g, '');
+    if (redirectUrl && uri.match('twitter.com') && redirectUrl.match('mobile.twitter.com')) {
       redirectUrl = uri;
     }
   }
@@ -223,7 +225,7 @@ exports.generatePreview = (body, uri) => {
   }
 
   // console.log(obj);
-  // console.log($('head').html());
+  console.log($('head').html());
   // console.log(body);
 
   return {
