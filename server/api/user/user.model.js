@@ -216,6 +216,17 @@ UserSchema.methods = {
 
 };
 
+UserSchema.methods.updatePostCount = async function () {
+  try {
+    this.postCount = await this.model('Post').count({ user: this._id });
+    await this.save();
+    await this.updateClient();
+  } catch (err) {
+    console.log('failed to update post count ', err);
+  }
+  return this;
+};
+
 UserSchema.methods.updateClient = function (actor) {
   let userData = {
     _id: this._id,

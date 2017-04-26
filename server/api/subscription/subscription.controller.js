@@ -9,7 +9,7 @@ exports.index = async (req, res) => {
   let subscriptions;
   try {
     let user = req.user._id;
-    subscriptions = await Subscription.find({ follower: user });
+    subscriptions = await Subscription.find({ follower: user, amount: { $ne: 0 } });
   } catch (err) {
     handleError(res, err);
   }

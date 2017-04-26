@@ -102,7 +102,7 @@ exports.show = async (req, res) => {
   let limit = parseInt(req.query.limit, 10);
   let skip = parseInt(req.query.skip, 10);
   let userId = req.params.userId || null;
-  let sortQuery = { updatedAt: -1 };
+  let sortQuery = { createdAt: -1 };
   let query = { investor: userId, amount: { $gt: 0 } };
   let investments;
 
@@ -279,7 +279,7 @@ exports.create = async (req, res) => {
       });
 
       if (subscription) {
-        subscription.amount += 5;
+        subscription.amount += 3;
         if (subscription.amount > 15) subscription.amount = 15;
       } else {
         subscription = new Subscription({

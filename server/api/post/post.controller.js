@@ -467,19 +467,19 @@ exports.create = (req, res) => {
   })
   .then((user) => {
     author = user;
-    user.postCount++;
     newPost.embeddedUser = {
       name: user.name,
       image: user.image
     };
-    return user.save();
+    return newPost.save();
   })
-  .then(() => newPost.save())
   .then((savedPost) => {
     console.log('saved post ', savedPost._id);
 
-    // update meta post rank
+    // update meta post rank async
     MetaPost.updateRank(savedPost.metaPost);
+    // update user post count async
+    author.updatePostCount();
 
     return Subscriptiton.find({
       following: newPost.user,
@@ -490,40 +490,58 @@ exports.create = (req, res) => {
 
   .then((subscribers) => {
     let promises = [];
-    subscribers.forEach((subscription) => {
-      if (subscription.amount < 1) {
-        promises.push(subscription.remove());
-      } else {
-        subscription.amount -= 1;
-        promises.push(subscription.save());
+    subscribers.forEach(async subscription => {
+      try {
+        let updateFeed;
 
-        let feed = new Feed({
-          userId: subscription.follower,
-          from: newPost.user,
-          post: newPost._id,
-          tags: newPost.tags,
-          createdAt: new Date()
-        });
-        promises.push(
-          feed.save()
-          .then(() => {
-            let now = new Date();
-            let follower = subscription.follower;
-            if (now - (24 * 60 * 60 * 1000) > follower.lastFeedNotification) {
-              let alert = 'There is a new post from ' + author.name + ' in your feed!';
-              let payload = { 'New post from': author.name };
-              apnData.sendNotification(follower, alert, payload);
-              follower.lastFeedNotification = now;
-              follower.save();
-            }
-          })
-        );
+        /**
+         * In case subscription has expired, but user hasn't seen the articles
+         * remove oldest unread in feed and push new one
+         */
+        console.log(subscription);
+        if (subscription.amount < 1) {
+          // check unread here
+          console.log('expired');
+          updateFeed = await Feed.processExpired(subscription.follower._id);
+        }
+        if (!updateFeed && subscription.amount < 1) {
+          promises.push(subscription.remove());
+        } else {
+          subscription.amount -= 1;
+          subscription.amount = Math.max(subscription.amount, 0);
+          promises.push(subscription.save());
 
-        let newFeedPost = {
-          _id: subscription.follower,
-          type: 'INC_FEED_COUNT',
-        };
-        PostEvents.emit('post', newFeedPost);
+          let feed = new Feed({
+            userId: subscription.follower,
+            from: newPost.user,
+            post: newPost._id,
+            tags: newPost.tags,
+            createdAt: new Date()
+          });
+
+          promises.push(
+            feed.save()
+            .then(() => {
+              let now = new Date();
+              let follower = subscription.follower;
+              if (now - (24 * 60 * 60 * 1000) > follower.lastFeedNotification) {
+                let alert = 'There is a new post from ' + author.name + ' in your feed!';
+                let payload = { 'New post from': author.name };
+                apnData.sendNotification(follower, alert, payload);
+                follower.lastFeedNotification = now;
+                follower.save();
+              }
+            })
+          );
+
+          let newFeedPost = {
+            _id: subscription.follower,
+            type: 'INC_FEED_COUNT',
+          };
+          PostEvents.emit('post', newFeedPost);
+        }
+      } catch (err) {
+        console.log('error updating subscription ', err);
       }
     });
     return Promise.all(promises);
@@ -560,9 +578,10 @@ exports.delete = (req, res) => {
           };
           console.log('REMOVING ', foundPost.title);
           PostEvents.emit('post', newPostEvent);
-          res.json(200, 'removed');
+          req.user.updatePostCount();
+          res.status(200).json('removed');
         } else {
-          res.json(404, 'deletion error');
+          res.status(404).json('deletion error');
         }
       });
     }

@@ -90,23 +90,6 @@ PostSchema.pre('save', async function (next) {
     this.rank = Math.round(newRank * 1000) / 1000;
 
     this.commentCount = await this.model('Comment').count({ post: this._id });
-
-    // let meta = await MetaPost.findOne({ _id: this.metaPost })
-    // .populate({
-    //   path: 'commentary',
-    //   match: { rank: { $gt: this.rank } },
-    //   options: { sort: { rank: 1 }, limit: 1 },
-    // });
-    // if (!meta) return next();
-    // let highestRank = meta.commentary ? meta.commentary[0].rank : 0;
-    // console.log('highest rank', highestRank);
-    // // if there exists a post with higher rank - don't update
-    // // if thepost with higher is the post we are trying to update, update rank
-    // if (!highestRank || meta.commentary[0]._id.toString() === this._id.toString()) {
-    //   meta.rank = this.rank;
-    //   console.log('new rank', meta.rank);
-    //   await meta.save();
-    // }
   } catch (err) {
     console.log(err);
     return next();
@@ -137,13 +120,13 @@ PostSchema.pre('remove', async function (next) {
     );
 
     // let post = this.model('Post').remove({ 'repost.post': this._id });
+    // let user = this.model('User').update(
+    //     { _id: this.user },
+    //     { $inc: { postCount: -1 } },
+    //     { multi: true },
+    //     next
+    // );
 
-    let user = this.model('User').update(
-        { _id: this.user },
-        { $inc: { postCount: -1 } },
-        { multi: true },
-        next
-    );
     this.tags.forEach((tag) => {
       console.log(tag, 'tag');
       this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
@@ -162,7 +145,7 @@ PostSchema.pre('remove', async function (next) {
       });
     });
 
-    let promises = [note, feed, comment, meta, user];
+    let promises = [note, feed, comment, meta];
     let finished = await Promise.all(promises);
     // console.log(finished);
   } catch (err) {
