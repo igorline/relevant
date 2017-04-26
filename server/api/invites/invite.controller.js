@@ -76,7 +76,6 @@ exports.sendEmailFunc = async function(_invite) {
       ${hi}You must be WOKE, because you are invited to join Relevant
       <br />
       <br />
-
       Your invitation code: <b>${invite.code}</b>
       <br />
       <br />
@@ -85,10 +84,13 @@ exports.sendEmailFunc = async function(_invite) {
       <br />
       <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation (or manually enter the code when prompted)
       <br />
-      <p style="font-style: italic">Relevant is a social news reader that promotes reliable information and rewards expertise.
+      <br />
+      <span style="font-style: italic">Relevant is a social news reader that promotes reliable information and rewards expertise.
       Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score.
       This system is designed to penalise clickbait and fake news while promoting useful and reliable information.
-      </p>
+      </span>
+      <br />
+      <br />
       <b>Don't be afraid to downvote poor quality posts and upvote good ones - this is what makes Relevant work.</b>
       <br />
       <br />

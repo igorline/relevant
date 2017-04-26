@@ -102,11 +102,12 @@ export default class Commentary extends Component {
           { separator ?
           <View style={styles.vSeparator}><View style={{ flex: 1 }} /></View> :
           null}
-          <View><Text>{post.rank}</Text></View>
         </View>
       )}
     );
 
+    // for testing rank
+    // <View><Text>{post.rank}</Text></View>
 
     return (
       <View>
