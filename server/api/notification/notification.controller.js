@@ -51,9 +51,10 @@ exports.show = (req, res) => {
     };
   }
 
-  if (req.user.createdAt) {
-    query = { ...query, createdAt: { $gt: new Date(req.user.createdAt) } };
-  }
+  // Uncomment to hide previous @everyone notifications - these maybe usefull onboarding?
+  // if (req.user.createdAt) {
+  //   query = { ...query, createdAt: { $gt: new Date(req.user.createdAt) } };
+  // }
 
   Notification.find(query)
   .limit(limit)

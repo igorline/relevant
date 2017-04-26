@@ -199,12 +199,15 @@ class Profile extends Component {
         let data = tabData.data || [];
         if (!this.loaded) data = [];
         let loaded = tabData.loaded && this.loaded;
+        let postCount = this.userData.postCount !== undefined ? this.userData.postCount : '';
+        let Upvotes = this.userData.investmentCount !== undefined ? this.userData.investmentCount : '';
+
         if (tab.id === 0) {
-          tab.title = 'Posts ' + this.userData.postCount;
+          tab.title = 'Posts ' + postCount;
           tab.type = 'posts';
         }
         if (tab.id === 1) {
-          tab.title = 'Upvotes ' + this.userData.investmentCount;
+          tab.title = 'Upvotes ' + Upvotes;
           tab.type = 'investments';
         }
 

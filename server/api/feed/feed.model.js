@@ -18,4 +18,23 @@ let FeedSchema = new Schema({
 FeedSchema.index({ userId: 1, createdAt: 1 });
 FeedSchema.index({ userId: 1, createdAt: 1, tags: 1 });
 
+FeedSchema.statics.processExpired = async function (user) {
+  let updateFeed;
+  try {
+    console.log('processing expired');
+    console.log(user);
+    let oldestUnread = await this.findOne({ userId: user, read: false })
+    .sort({ createdAt: 1 })
+    .limit(1);
+    console.log(oldestUnread);
+    if (oldestUnread) {
+      oldestUnread.remove();
+      updateFeed = true;
+    } else updateFeed = false;
+  } catch (err) {
+    console.log(err);
+  }
+  return updateFeed;
+};
+
 module.exports = mongoose.model('Feed', FeedSchema);
