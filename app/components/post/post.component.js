@@ -189,6 +189,9 @@ class Post extends Component {
     //     />);
     // }
 
+    // for testing rank
+    // <Text>{this.props.metaPost ? this.props.metaPost.rank : null}</Text>
+
     return (
       <View style={{ overflow: 'hidden' }}>
         <View style={[styles.postContainer]}>
@@ -202,7 +205,6 @@ class Post extends Component {
           {LAYOUT !== 1 ? label : null}
           {commentaryEl}
         </View>
-        <Text>{this.props.metaPost ? this.props.metaPost.rank : null}</Text>
         {!this.props.singlePost ? separator : null}
       </View>
     );
