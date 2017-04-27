@@ -362,7 +362,7 @@ exports.create = async (req, res) => {
     existingInvestments.forEach(async investment => {
       try {
         let existingInvestor = await User.findOne({ _id: investment.investor }, 'relevance');
-        let ratio = 0.1;
+        let ratio = 0.5 / existingInvestments.length;
 
         let relevanceEarning = 0;
         let earnings;
@@ -377,6 +377,7 @@ exports.create = async (req, res) => {
 
           relevanceEarning *= ratio;
 
+          if (relevanceEarning < 0.05) return null;
           earnings = await Invest.updateUserInvestment(user, existingInvestor, post, relevanceEarning, amount);
         }
 

@@ -156,14 +156,12 @@ class PostImage extends Component {
     ];
 
     let color = post.body ? post.body.length : post.title.length;
-    color = color + 200 || 200;
-    // color = 200;
+    color = color % 220 + 200 || 200;
+    color = Math.max(100, color);
     let colors = [
-      // 'hsla(' + (color - 40) + ', 70%, 50%, 1)',
       'hsla(' + parseInt(color - 30) + ', 100%, 50%, 1)',
       'hsla(' + parseInt(color) + ',      100%, 50%, 1)',
       'hsla(' + parseInt(color + 30) + ', 100%, 50%, 1)',
-      // 'hsla(' + (color) + 40 + ', 100%, 50%, 1)'
     ];
     let start = { x: 0.8, y: 0.0 };
     let end = { x: 0.2, y: 1.0 };
