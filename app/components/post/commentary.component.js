@@ -4,6 +4,7 @@ import {
   View,
   ScrollView,
   ListView,
+  Image,
   Text,
 } from 'react-native';
 import { globalStyles, fullWidth } from '../../styles/global';
@@ -26,10 +27,15 @@ export default class Commentary extends Component {
     this.changeRow = this.changeRow.bind(this);
   }
 
-
   changeRow(event, changed) {
     if (event && event.s1) this.setState({ currentIndex: event.s1 });
     if (changed && changed.s1) this.setState({ changed: changed.s1 });
+  }
+
+  goToPost() {
+    if (!this.props.actions || !this.props.post || !this.props.post._id) return;
+    if (this.props.scene && this.props.scene.id === this.props.post._id) return;
+    this.props.actions.goToPost(this.props.post);
   }
 
   render() {
@@ -64,25 +70,53 @@ export default class Commentary extends Component {
         post = { ...repost };
       }
 
+      let repostedBy;
+      if (post.reposted && post.reposted.length && this.props.metaPost) {
+        let and = '';
+        if (post.reposted.length > 2) {
+          and = ' and ' + (post.reposted.length - 1) + ' others';
+        }
+        if (post.reposted.length === 2) {
+          and = ' and @' + post.reposted[1].user;
+        }
+        repostedBy = (
+          <View style={styles.reposted}>
+            <Text
+              onPress={() => this.props.actions.goToPost(post)}
+              style={[styles.font12, styles.darkGrey, { lineHeight: 14 }]}
+            >
+              <Image
+                resizeMode={'contain'}
+                source={require('../../assets/images/reposted.png')}
+                style={{ width: 12, height: 8, marginBottom: -1 }}
+              />
+              {' '}reposted by @{post.reposted[0].user + and}
+            </Text>
+          </View>
+        );
+      }
 
       return (
         <View
           key={post._id + i}
-          style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: length ? fullWidth - 10 - 20: fullWidth - 20 }}
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            width: length ? fullWidth - 10 - 20 : fullWidth - 20
+          }}
         >
           <View
             style={[
               styles.commentary,
               length ? styles.multi : null,
-              // separator ? styles.rightBorder : null,
-              // length ? styles.boxShadow : null,
             ]}
           >
             {repostEl}
+            {repostedBy}
             <View style={[{ flex: 1 }, postStyle]}>
               <PostInfo
                 big
-                // big={this.props.singlePost}
                 {...this.props}
                 post={post}
               />
@@ -100,11 +134,12 @@ export default class Commentary extends Component {
             </View>
           </View>
           { separator ?
-          <View style={styles.vSeparator}><View style={{ flex: 1 }} /></View> :
-          null}
+            <View style={styles.vSeparator}><View style={{ flex: 1 }} /></View> :
+            null
+          }
         </View>
-      )}
-    );
+      );
+    });
 
     // for testing rank
     // <View><Text>{post.rank}</Text></View>
@@ -153,6 +188,9 @@ export default class Commentary extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  reposted: {
+    backgroundColor: 'white',
+  },
   postScroll: {
     flexDirection: 'row',
     alignItems: 'flex-start',

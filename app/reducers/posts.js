@@ -30,6 +30,22 @@ const initialState = {
   comments: {},
 };
 
+function mergePosts(posts, state) {
+  let mPosts = {};
+  if (!posts) return mPosts;
+  Object.keys(posts).forEach(id => {
+    // need to do this so reposted = null doesen't over-write existing value
+    let reposted = posts[id].reposted;
+    if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
+    mPosts[id] = {
+      ...state.posts[id],
+      ...posts[id],
+      reposted
+    };
+  });
+  return mPosts;
+}
+
 export default function post(state = initialState, action) {
   switch (action.type) {
 
@@ -48,9 +64,10 @@ export default function post(state = initialState, action) {
     }
 
     case types.SET_POSTS_SIMPLE: {
+      let posts = mergePosts(action.payload, state);
       return {
         ...state,
-        posts: { ...state.posts, ...action.payload },
+        posts: { ...state.posts, ...posts },
       };
     }
 
@@ -58,6 +75,7 @@ export default function post(state = initialState, action) {
       const type = action.payload.type;
       const topic = action.payload.topic;
       const index = action.payload.index;
+      let posts = mergePosts(action.payload.data.entities.posts, state);
       if (!state.topics[type][topic]) state.topics[type][topic] = [];
       return {
         ...state,
@@ -79,7 +97,7 @@ export default function post(state = initialState, action) {
           },
         },
         comments: { ...state.comments, ...action.payload.data.entities.comments },
-        posts: { ...state.posts, ...action.payload.data.entities.posts },
+        posts: { ...state.posts, ...posts },
         loaded: {
           ...state.loaded,
           [type]: true
@@ -89,8 +107,7 @@ export default function post(state = initialState, action) {
 
     case types.SET_POSTS: {
       const type = action.payload.type;
-
-      // console.log(action.payload.data);
+      let posts = mergePosts(action.payload.data.entities.posts, state);
       return {
         ...state,
         [type]: [
@@ -109,7 +126,7 @@ export default function post(state = initialState, action) {
           },
         },
         comments: { ...state.comments, ...action.payload.data.entities.comments },
-        posts: { ...state.posts, ...action.payload.data.entities.posts },
+        posts: { ...state.posts, ...posts },
         loaded: {
           ...state.loaded,
           [type]: true
@@ -129,13 +146,17 @@ export default function post(state = initialState, action) {
 
     case types.UPDATE_POST: {
       let id = action.payload._id;
+      // need to do this so reposted = null doesen't over-write existing value
+      let reposted = action.payload.reposted;
+      if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
       return {
         ...state,
         posts: {
           ...state.posts,
           [id]: {
             ...state.posts[id],
-            ...action.payload
+            ...action.payload,
+            reposted
           }
         }
       };
@@ -154,6 +175,7 @@ export default function post(state = initialState, action) {
     case 'SET_USER_POSTS': {
       let id = action.payload.id;
       let currentPosts = state.userPosts[id] || [];
+      let posts = mergePosts(action.payload.data.entities.posts, state);
       return {
         ...state,
         userPosts: {
@@ -163,7 +185,7 @@ export default function post(state = initialState, action) {
             ...action.payload.data.result[id]
           ]
         },
-        posts: { ...state.posts, ...action.payload.data.entities.posts },
+        posts: { ...state.posts, ...posts },
         loaded: {
           ...state.loaded,
           userPosts: true,
@@ -216,11 +238,17 @@ export default function post(state = initialState, action) {
 
     case 'SET_SELECTED_POST_DATA': {
       let id = action.payload._id;
+      let reposted = action.payload.reposted;
+      if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
       return {
         ...state,
         posts: {
           ...state.posts,
-          [id]: action.payload
+          [id]: {
+            ...state.posts[id],
+            ...action.payload,
+            reposted
+          }
         }
       };
     }

@@ -4,18 +4,14 @@ import {
   View,
   Text,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import { globalStyles, fullHeight } from '../../styles/global';
-import PostButtons from './postButtons.component';
-import PostBody from './postBody.component';
-import PostInfo from './postInfo.component';
 import PostImage from './postImage.component1';
 import Commentary from './commentary.component';
-import Excerpt from './excerpt.component';
-import LinearGradient from 'react-native-linear-gradient';
+// import Excerpt from './excerpt.component';
 
 let styles;
-const LAYOUT = 1;
 
 class Post extends Component {
 
@@ -55,11 +51,6 @@ class Post extends Component {
     let commentaryEl;
     let reposted;
 
-    // let renderSeparator = () => {
-    //   let color = `hsl(${Math.round(Math.random() * 256)}, 30%, 95%)`;
-    //   return <View style={[styles.separator, { backgroundColor: color }]} />;
-    // }
-
     if (!this.props.auth.user) return null;
 
     let blocked = <View style={{ height: StyleSheet.hairlineWidth }} />;
@@ -79,69 +70,29 @@ class Post extends Component {
       return blocked;
     }
 
+    // if we have a repost, don't render the original post
     let commentary = posts.filter(p => {
-      if (LAYOUT === 1) return p._id !== reposted;
-      return (p._id !== reposted && p._id !== post._id && !p.repost);
+      return p._id !== reposted;
     });
 
-    let label = null;
     if (commentary.length) {
-      label = <Text style={[styles.tabFont, styles.cLabel]}>🤔 {LAYOUT !== 1 ? 'Other\'s ' : null}Commentary</Text>;
       commentaryEl = <Commentary {...this.props} commentary={commentary} />;
     }
 
     let repostEl = null;
     let postStyle = {};
 
-    // if (this.props.showReposts && post && post.comments && post.comments[0]) {
-    //   let repost = this.props.posts.comments[post.comments[0]];
-    //   if (repost && repost.repost) {
-    //     postStyle = [styles.repost, styles.boxShadow];
-    //     let repostObj = {
-    //       ...repost,
-    //       user: this.props.users[repost.user] || repost.user,
-    //       embeddedUser: repost.embeddedUser,
-    //       body: repost.text,
-    //       _id: post._id,
-    //     };
-
-    //     repostEl = (
-    //       <View style={{ paddingBottom: 25 }}>
-    //         <PostInfo repost {...this.props} post={repostObj} />
-    //         <PostBody repost {...this.props} post={repostObj} />
-    //       </View>
-    //     );
-    //   }
-    // }
-
     if (post.repost) {
-      // postStyle = [styles.repost, styles.boxShadow];
       let repost = this.props.posts.posts[post.repost.post];
       if (!repost) repost = { body: '[deleted]' };
       if (repost.user && this.props.users[repost.user]) {
         repost.user = this.props.users[repost.user];
       }
       post.user = this.props.users[post.user] || post.user;
-
-      // repostEl = (
-      //   <View style={{ marginBottom: 25 }}>
-      //     <PostInfo repost {...this.props} post={post} />
-      //     <PostBody
-      //       repost
-      //       {...this.props}
-      //       post={{ _id: repost._id, body: post.repost.commentBody }}
-      //     />
-      //   </View>
-      // );
       post = { ...repost };
     }
 
     if (post.link || post.image) {
-      // if (!this.props.metaPost) {
-      //   if (typeof post.metaPost === 'string') {
-      //     post.metaPost = this.props.posts.metaPosts[post.metaPost];
-      //   }
-      // }
       imageEl = (<PostImage
         // metaPost={this.props.metaPost || post.metaPost}
         singlePost={this.props.singlePost}
@@ -150,36 +101,6 @@ class Post extends Component {
       />);
     }
     post.user = this.props.users[post.user] || post.user;
-
-    let FBLayout = (
-      <View>
-        <PostInfo
-          scene={this.props.scene}
-          big
-          {...this.props}
-          post={post}
-        />
-        <PostBody
-          scene={this.props.scene}
-          {...this.props}
-          post={post}
-          editing={false}
-        />
-        {imageEl}
-        <PostButtons
-          scene={this.props.scene}
-          {...this.props}
-          post={post}
-          comments={post.comments || null}
-        />
-      </View>
-    );
-
-    // <TextBody
-    //   maxTextLength={140}
-    //   style={styles.excerpt}
-    //   body={post.shortText || post.description }
-    // />
 
     let article;
     // if (post.shortText && this.props.singlePost) {
@@ -198,11 +119,10 @@ class Post extends Component {
           <View style={styles.postInner}>
             {repostEl}
             <View style={postStyle}>
-              {LAYOUT === 1 ? imageEl : FBLayout}
+              {imageEl}
             </View>
           </View>
           {article}
-          {LAYOUT !== 1 ? label : null}
           {commentaryEl}
         </View>
         {!this.props.singlePost ? separator : null}
@@ -229,7 +149,6 @@ const localStyles = StyleSheet.create({
     marginTop: 10,
     paddingBottom: 20,
     paddingTop: 10,
-    // borderWidth: StyleSheet.hairlineWidth,
   },
   cLabel: {
     fontSize: 14,
@@ -237,22 +156,10 @@ const localStyles = StyleSheet.create({
     paddingBottom: 10,
     textAlign: 'center',
   },
-  postInner: LAYOUT === 1 ? {
-    // paddingLeft: 10,
-    // paddingRight: 10,
-  } :
-  {
-    paddingLeft: 6,
-    paddingRight: 160,
+  postInner: {
   },
-  postContainer: LAYOUT === 1 ? {
+  postContainer: {
     paddingBottom: 20,
-    // paddingTop: 12,
-    backgroundColor: 'white',
-  } :
-  {
-    paddingBottom: 30,
-    paddingTop: 20,
     backgroundColor: 'white',
   },
   tagsRow: {
@@ -266,13 +173,8 @@ const localStyles = StyleSheet.create({
   separator: {
     height: 16,
     borderColor: 'lightgrey',
-    // borderBottomWidth: 1,
-
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderTopWidth: StyleSheet.hairlineWidth,
-    // backgroundColor: 'hsl(238,20%,15%)',
-    // backgroundColor: 'hsl(238,20%,90%)',
-    // backgroundColor: 'hsl(238,20%,25%)',
   },
 });
 

@@ -76,13 +76,13 @@ export default function (props) {
 
     if (!user && singleActivity.totalUsers) {
       let s = '';
-      if (singleActivity.totalUsers > 1) s ='s';
+      if (singleActivity.totalUsers > 1) s = 's';
       return <Text>{singleActivity.totalUsers} user{s}</Text>;
     }
 
-    if (user && singleActivity.totalUsers) {
+    if (user && singleActivity.totalUsers - 1) {
       let s = '';
-      if (singleActivity.totalUsers - 1 > 1) s ='s';
+      if (singleActivity.totalUsers - 1 > 1) s = 's';
       return <Text>{user.name} and {singleActivity.totalUsers - 1} other{s}</Text>;
     }
 

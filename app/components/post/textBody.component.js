@@ -143,10 +143,6 @@ class TextBody extends Component {
 export default TextBody;
 
 const localStyles = StyleSheet.create({
-  postBody: {
-    marginTop: 25,
-    // marginBottom: 25,
-  },
   bodyText: {
     fontFamily: 'Georgia',
     fontSize: 38 / 2,

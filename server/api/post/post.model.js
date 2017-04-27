@@ -68,6 +68,13 @@ let PostSchema = new Schema({
   keywords: [String],
 }, {
   timestamps: true,
+  toJSON: { virtuals: true }
+});
+
+PostSchema.virtual('reposted', {
+  ref: 'Post',
+  localField: '_id',
+  foreignField: 'repost.post'
 });
 
 PostSchema.index({ rank: 1 });

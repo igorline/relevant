@@ -81,12 +81,18 @@ exports.index = async (req, res) => {
     // TODO - limit the commenatry and paginate / inf scroll it on backend
     .populate({
       path: 'commentary',
+      // match: { user: { $nin: blocked } },
       match: { repost: { $exists: false }, user: { $nin: blocked } },
       options: { sort: commentarySort },
       populate: [
         {
           path: 'user',
           select: 'relevance name image'
+        },
+        {
+          path: 'reposted',
+          select: 'user embeddedUser',
+          options: { sort: { _id: -1 } },
         }
       ]
     })
