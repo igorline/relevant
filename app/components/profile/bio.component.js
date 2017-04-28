@@ -28,11 +28,16 @@ class Bio extends Component {
   async updateBio() {
     try {
       let user = this.props.user;
-      user.bio = this.state.bio;
-      let success = await this.props.actions.updateUser(user);
+      let bio = this.state.bio;
+      let success = await this.props.actions.updateUser({ ...user, bio });
       if (success) {
         this.setState({ editing: false });
         this.textInput.blur();
+      } else {
+        // setTimeout(() => {
+        //   this.textInput.focus();
+        //   this.setState({ editing: true });
+        // }, 100);
       }
     } catch (err) {
       console.log(err);
@@ -63,6 +68,7 @@ class Bio extends Component {
           keyboardType={'default'}
           clearTextOnFocus={false}
           placeholder="Your credentials"
+          blurOnSubmit={false}
           style={[
             styles.commentInput,
             styles.font15,
@@ -98,7 +104,10 @@ class Bio extends Component {
       editButton = (
         <Text
           onPress={() => {
-            this.setState({ editing: true, bio: user.bio || '' });
+            this.setState({
+              editing: true,
+              bio: this.state.bio === '' ? user.bio : this.state.bio
+            });
             this.textInput.focus();
           }}
           style={styles.active}
