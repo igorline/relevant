@@ -165,12 +165,6 @@ const layout = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'lightgrey',
     backgroundColor: 'white',
-    // paddingLeft: 5,
-    // bottom: 0,
-    // left: 0,
-    // right: 0,
-    // position: 'absolute',
-    // paddingVertical: 5,
   },
   commentInput: {
     flex: 1,
