@@ -32,12 +32,14 @@ export default class UrlComponent extends Component {
     this.scrollHeight = 0;
     this.contentHeight = 0;
     this.toggleTooltip = this.toggleTooltip.bind(this);
+    this.initTooltips = this.initTooltips.bind(this);
   }
 
   componentDidMount() {
     if (this.props.postUrl) {
       this.createPreview(this.props.postUrl);
     }
+    setTimeout(() => this.initTooltips('shareTip'), 1000);
   }
 
   componentWillReceiveProps(next) {
@@ -46,6 +48,13 @@ export default class UrlComponent extends Component {
       // console.log(next.postUrl);
       this.createPreview(next.postUrl);
     }
+  }
+
+  initTooltips(name) {
+    this.props.actions.setTooltipData({
+      name,
+      toggle: () => this.toggleTooltip(this[name], name)
+    });
   }
 
   toggleTooltip(parentEl, name) {
@@ -252,7 +261,7 @@ export default class UrlComponent extends Component {
           <Text
             style={[styles.font12, styles.active, { textAlign: 'center' }]}
           >
-            How to share from Chrome, Safari & other apps
+            How to post from Chrome, Safari & other apps
           </Text>
         </TouchableHighlight>
       );
@@ -366,14 +375,16 @@ const localStyles = StyleSheet.create({
     height: 55,
   },
   postButtonShare: {
-    alignSelf: 'center',
+    // alignSelf: 'center',
     // width: 200,
+    left: 0,
+    right: 0,
     bottom: 10,
     alignItems: 'center',
     paddingVertical: 5,
     paddingHorizontal: 5,
-    borderColor: blue,
-    borderWidth: StyleSheet.hairlineWidth,
+    // borderColor: blue,
+    // borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 3
   },
   postButton: {
@@ -382,8 +393,8 @@ const localStyles = StyleSheet.create({
     right: 0,
     paddingVertical: 5,
     paddingHorizontal: 5,
-    borderColor: blue,
-    borderWidth: StyleSheet.hairlineWidth,
+    // borderColor: blue,
+    // borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 3
   },
   innerBorder: {

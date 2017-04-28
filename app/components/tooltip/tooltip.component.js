@@ -134,10 +134,12 @@ class Tooltip extends Component {
     }
 
     if (tooltip.vertical === 'top') {
-      transform = [...transform];
+      transform = [...transform,
+        { translateY: - this.state.height / 2 }
+      ];
       style = {
         ...style,
-        top: parent.y - this.state.height - tooltip.verticalOffset,
+        top: parent.y - this.state.height / 2 - tooltip.verticalOffset,
         transform
       };
       arrowStyle = [
