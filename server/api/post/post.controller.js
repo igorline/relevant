@@ -327,8 +327,8 @@ exports.update = async (req, res) => {
     let prevMentions = [...newPost.mentions];
     let prevTags = [...newPost.tags];
     newMentions = mentions.filter(m => prevMentions.indexOf(m) < 0);
-    newTags = tags.filter(t => prevTags.indexOf(t) < 0);
-    newPost.tags = tags;
+    // TODO enable editing tags when editing post
+    newPost.tags = [...new Set([...tags, ...prevTags])];
     newPost.mentions = mentions;
     newPost.body = req.body.body;
     newPost.title = req.body.title;
