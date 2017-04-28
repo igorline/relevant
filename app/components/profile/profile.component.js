@@ -8,6 +8,7 @@ import {
 import { globalStyles, fullWidth } from '../../styles/global';
 import Percent from '../../components/percent.component';
 import { numbers } from '../../utils';
+import Bio from './bio.component';
 
 let defaultImg = require('../../assets/images/default_user.jpg');
 let styles;
@@ -232,10 +233,10 @@ class ProfileComponent extends Component {
             <View style={[styles.profileRowContainer, styles.lastRow]}>
               {bottomSection}
             </View>
-
           </View>
-        </View>
 
+        </View>
+        <Bio user={user} actions={this.props.actions} />
       </View>
     );
   }
