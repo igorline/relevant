@@ -146,7 +146,7 @@ exports.text.shareTip = function (props) {
     <View style={styles.videoTip}>
       <View style={{ flex: 0.5 }}>
         <View style={styles.ol}>
-          <Text style={styles.textP}>How to enable share extension:</Text>
+          <Text style={[styles.textP, { fontWeight: 'bold' }]}>Enable posting from Chrome, Safari and other apps:</Text>
         </View>
         <View style={styles.ol}>
           <Text style={styles.textP}>1 </Text>
