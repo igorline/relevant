@@ -8,22 +8,21 @@ import {
   TouchableHighlight
 } from 'react-native';
 import { globalStyles, fullWidth } from '../../styles/global';
+import TextBody from '../post/textBody.component';
 
 let styles;
 
 class Bio extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.state = {
       bio: '',
-      editing: true
+      editing: false
     };
     this.updateBio = this.updateBio.bind(this);
   }
 
-  componentDidMount() {
-
+  componentWillMount() {
   }
 
   async updateBio() {
@@ -31,8 +30,10 @@ class Bio extends Component {
       let user = this.props.user;
       user.bio = this.state.bio;
       let success = await this.props.actions.updateUser(user);
-      console.log(success);
-      if (success) this.setState({ editing: false });
+      if (success) {
+        this.setState({ editing: false });
+        this.textInput.blur();
+      }
     } catch (err) {
       console.log(err);
     }
@@ -40,6 +41,9 @@ class Bio extends Component {
 
   render() {
     let { user } = this.props;
+    let editButton;
+    let header;
+
     let bioEdit = (
       <View
         style={[
@@ -47,7 +51,9 @@ class Bio extends Component {
           {
             height: Math.min(100, this.state.inputHeight),
             borderTopWidth: 0,
-          }
+            flex: this.state.editing ? 1 : 0,
+          },
+          this.state.editing ? {} : { width: 0, height: 0 }
         ]}
       >
         <TextInput
@@ -60,11 +66,15 @@ class Bio extends Component {
           style={[
             styles.commentInput,
             styles.font15,
-            { lineHeight: 20 }
+            { lineHeight: 20 },
+            styles.bioInput,
           ]}
           multiline
           onChangeText={(bio) => {
             this.setState({ bio });
+          }}
+          onBlur={() => {
+            this.setState({ editing: false });
           }}
           onContentSizeChange={(event) => {
             let h = event.nativeEvent.contentSize.height;
@@ -84,16 +94,53 @@ class Bio extends Component {
       </View>
     );
 
+    if (this.props.myProfile && !this.state.editing) {
+      editButton = (
+        <Text
+          onPress={() => {
+            this.setState({ editing: true, bio: user.bio || '' });
+            this.textInput.focus();
+          }}
+          style={styles.active}
+        >
+          Edit
+        </Text>
+      );
+    }
+
+    if (user.bio && user.bio !== '') {
+      header = (
+        <Text style={[styles.font12, styles.darkGray, { marginBottom: 5 }]}>
+          Credentials:{' '}
+        </Text>
+      );
+    }
+
     let bio = (
-      <View>
-        <Text>{user.bio}</Text>
-      </View>
+      <TextBody
+        actions={this.props.actions}
+        style={{ fontFamily: 'Georgia' }}
+      >
+        {user.bio}
+      </TextBody>
     );
 
+    if (this.state.editing) {
+      bio = null;
+      header = null;
+    } else {
+      // bioEdit = null;
+    }
+
     return (
-      <View>
-        <Text style={[styles.font12, styles.darkGray, { paddingLeft: 10 }]}>Credentials:</Text>
-        {this.state.editing ? bioEdit : bio}
+      <View style={styles.bio}>
+        <Text style={{ flex: this.state.editing ? 0 : 1 }}>
+          {/*header*/}
+          {bio}
+          {' '}
+        </Text>
+        {editButton}
+        {bioEdit}
       </View>
     );
   }
@@ -101,7 +148,23 @@ class Bio extends Component {
 
 
 let localStyles = StyleSheet.create({
+  bio: {
+    marginHorizontal: 10,
+    paddingVertical: 10,
+    flexDirection: 'row',
+    // borderTopWidth: StyleSheet.hairlineWidth,
 
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: 'grey',
+  },
+  bioInput: {
+    paddingHorizontal: 0,
+    // padding: 0,
+    // margin: 0,
+    fontSize: 14,
+    // borderWidth: StyleSheet.hairlineWidth,
+    // borderColor: 'grey',
+  }
 });
 
 styles = { ...globalStyles, ...localStyles };

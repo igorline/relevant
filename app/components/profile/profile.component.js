@@ -236,7 +236,7 @@ class ProfileComponent extends Component {
           </View>
 
         </View>
-        <Bio user={user} actions={this.props.actions} />
+        <Bio user={user} actions={this.props.actions} myProfile={this.props.myProfile}/>
       </View>
     );
   }

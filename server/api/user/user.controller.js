@@ -481,7 +481,7 @@ exports.update = async (req, res) => {
       user.role = req.body.role;
     }
 
-    user = user.save();
+    user = await user.save();
     user.updateClient();
 
     if (updateName || updateImage) {
