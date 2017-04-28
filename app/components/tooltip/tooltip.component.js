@@ -56,6 +56,7 @@ class Tooltip extends Component {
     }
 
 
+
     if (next.tooltip.showing.name !== this.props.tooltip.showing.name) {
       let tooltip = next.tooltip.showing;
 
@@ -133,10 +134,12 @@ class Tooltip extends Component {
     }
 
     if (tooltip.vertical === 'top') {
-      transform = [...transform];
+      transform = [...transform,
+        { translateY: - this.state.height / 2 }
+      ];
       style = {
         ...style,
-        top: parent.y - this.state.height - tooltip.verticalOffset,
+        top: parent.y - this.state.height / 2 - tooltip.verticalOffset,
         transform
       };
       arrowStyle = [
@@ -217,7 +220,7 @@ class Tooltip extends Component {
           <View style={[styles.arrow, ...arrowStyle]} />
           <TouchableHighlight
             underlayColor={'transparent'}
-            style={{ padding: 10 }}
+            style={{ padding: 0 }}
             onPress={this.nextOnboarding}
           >
             {helper.text[tooltip.name]({
@@ -249,8 +252,8 @@ let localStyles = StyleSheet.create({
     backgroundColor: 'white',
     // backgroundColor: 'hsla(240,100%,80%,1)',
     borderRadius: 5,
-    padding: 10,
-    paddingVertical: 15,
+    padding: 15,
+    paddingVertical: 20,
     shadowColor: 'black',
     shadowOffset: { width: 1, height: 1 },
     shadowRadius: 3,

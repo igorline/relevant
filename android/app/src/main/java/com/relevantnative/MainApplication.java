@@ -4,6 +4,8 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.brentvatne.react.ReactVideoPackage;
+import com.BV.LinearGradient.LinearGradientPackage;
 import com.horcrux.svg.RNSvgPackage;
 import com.meedan.ShareMenuPackage;
 import com.github.alinz.reactNativeShareExtension.SharePackage;
@@ -31,6 +33,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactVideoPackage(),
+            new LinearGradientPackage(),
             new RNSvgPackage(),
             new ShareMenuPackage(),
             new SharePackage(),
