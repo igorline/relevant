@@ -47,7 +47,7 @@ class TextBody extends Component {
   render() {
     const expanded = this.props.singlePost;
     let maxTextLength = this.props.maxTextLength || Math.pow(10, 1000);
-    let body = this.props.body || '';
+    let body = this.props.body || this.props.children || '';
     let post = this.props.post || {};
 
     let bodyEl = null;
@@ -112,7 +112,13 @@ class TextBody extends Component {
       } else if (word.type === 'url') {
         return (<Text
           key={i}
-          onPress={() => Linking.openURL(word.text)}
+          onPress={() => {
+            let link = word.text;
+            if (!link.match(/http:\/\//i) && !link.match(/https:\/\//i)) {
+              word.text = 'http://' + word.text;
+            }
+            return Linking.openURL(word.text);
+          }}
           style={styles.active}
         >
           {word.text + space}

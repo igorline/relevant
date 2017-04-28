@@ -42,7 +42,7 @@ const UserSchema = new Schema({
   following: Number,
   followers: Number,
 
-  bio: String,
+  bio: { type: String, default: ''},
 
   blocked: [{ type: String, ref: 'User' }],
   blockedBy: {
