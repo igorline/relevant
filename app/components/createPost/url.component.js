@@ -15,6 +15,8 @@ import UserSearchComponent from './userSearch.component';
 import PostBody from './../post/postBody.component';
 import PostInfo from './../post/postInfo.component';
 
+var Video = require('react-native-video').default;
+
 let styles;
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/);
 
@@ -29,6 +31,7 @@ export default class UrlComponent extends Component {
     this.previousPostLength = 0;
     this.scrollHeight = 0;
     this.contentHeight = 0;
+    this.toggleTooltip = this.toggleTooltip.bind(this);
   }
 
   componentDidMount() {
@@ -43,6 +46,19 @@ export default class UrlComponent extends Component {
       // console.log(next.postUrl);
       this.createPreview(next.postUrl);
     }
+  }
+
+  toggleTooltip(parentEl, name) {
+    if (!parentEl) return;
+    parentEl.measureInWindow((x, y, w, h) => {
+      let parent = { x, y, w, h };
+      if (x + y + w + h === 0) return;
+      this.props.actions.setTooltipData({
+        name,
+        parent
+      });
+      this.props.actions.showTooltip(name);
+    });
   }
 
   setMention(user) {
@@ -212,6 +228,7 @@ export default class UrlComponent extends Component {
     if (this.props.urlPreview && this.props.urlPreview.description && this.props.postBody === '' && !this.props.repost) {
       addP = (
         <TouchableHighlight
+          underlayColor={'transparent'}
           style={styles.postButton}
           onPress={() =>
             this.props.actions.setCreaPostState({ postBody: '"' + this.props.urlPreview.description + '"' })
@@ -221,6 +238,46 @@ export default class UrlComponent extends Component {
         </TouchableHighlight>
       );
     }
+
+    let width = 170;
+    let tipCTA;
+    if (!this.props.urlPreview && this.props.postBody === '' && !this.props.share) {
+      tipCTA = (
+        <TouchableHighlight
+          ref={c => this.shareTip = c}
+          underlayColor={'transparent'}
+          style={[styles.postButtonShare]}
+          onPress={() => this.toggleTooltip(this.shareTip, 'shareTip')}
+        >
+          <Text
+            style={[styles.font12, styles.active, { textAlign: 'center' }]}
+          >
+            How to share from Chrome, Safari & other apps
+          </Text>
+        </TouchableHighlight>
+      );
+    }
+
+    let tip = (
+      <View style={styles.videoTip}>
+        <View style={{ flex: 0.5, paddingRight: 10 }}>
+          <Text style={styles.textP}>1. Tap on share icon</Text>
+          <Text style={styles.textP}>2. Tap on 'More'</Text>
+          <Text style={styles.textP}>3. Find and toggle Relevant app</Text>
+          <Text style={styles.textP}>4. Rearrange Relevant icon to a convenient place</Text>
+        </View>
+        <View
+          style={{ width, height: width, overflow: 'hidden' }}
+        >
+          <Video
+            resizeMode={'contain'}
+            source={require('../../assets/images/shareTip.mp4')}
+            style={{ width, height: width * 16 / 9, bottom: 0, position: 'absolute' }}
+            repeat
+          />
+        </View>
+      </View>
+    );
 
     input = (
       <KeyboardAvoidingView
@@ -273,9 +330,11 @@ export default class UrlComponent extends Component {
               }}
             />
             {addP}
+            {tipCTA}
           </View>
           {userSearch}
           {repostBody}
+          {this.state.tip ? null : null}
           {this.props.postUrl && !this.props.users.search.length ?
             <UrlPreview size={'small'} {...this.props} actions={this.props.actions} /> :
             null
@@ -291,8 +350,31 @@ export default class UrlComponent extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  textP: {
+    flex: 0,
+    marginBottom: 10,
+  },
+  videoTip: {
+    borderColor: 'lightgrey',
+    borderWidth: StyleSheet.hairlineWidth,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+    padding: 10
+  },
   createPostUser: {
     height: 55,
+  },
+  postButtonShare: {
+    alignSelf: 'center',
+    // width: 200,
+    bottom: 10,
+    alignItems: 'center',
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    borderColor: blue,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 3
   },
   postButton: {
     position: 'absolute',

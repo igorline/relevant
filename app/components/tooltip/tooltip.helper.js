@@ -2,15 +2,26 @@ import React from 'react';
 import {
   Text,
   Image,
+  View,
+  StyleSheet
 } from 'react-native';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, fullWidth } from '../../styles/global';
 import { numbers } from '../../utils';
 
-let styles = { ...globalStyles };
+let styles;
 
 exports.data = {};
 exports.text = {};
-exports.tooltips = ['relevance', 'coin', 'topics', 'subscriptions', 'activity'];
+
+// list of tooltips to initalize on app load
+exports.tooltips = [
+  'relevance',
+  'coin',
+  'topics',
+  'subscriptions',
+  'activity',
+  'shareTip',
+];
 
 exports.data.relevance = {
   name: 'relevance',
@@ -118,3 +129,75 @@ exports.text.activity = function (props) {
     </Text>
   );
 };
+
+exports.data.shareTip = {
+  name: 'shareTip',
+  vertical: 'top',
+  horizontal: 'right',
+  horizontalOffset: 0,
+  verticalOffset: 10,
+};
+
+exports.text.shareTip = function (props) {
+  let width = (fullWidth - 20) / 2;
+  const Video = require('react-native-video').default;
+
+  return (
+    <View style={styles.videoTip}>
+      <View style={{ flex: 0.5 }}>
+        <View style={styles.ol}>
+          <Text style={styles.textP}>How to enable share extension:</Text>
+        </View>
+        <View style={styles.ol}>
+          <Text style={styles.textP}>1 </Text>
+          <Text style={styles.textP}>Tap on share icon</Text>
+        </View>
+
+        <View style={styles.ol}>
+          <Text style={styles.textP}>2 </Text>
+          <Text style={styles.textP}>Tap on 'More'</Text>
+        </View>
+
+        <View style={styles.ol}>
+          <Text style={styles.textP}>3 </Text>
+          <Text style={styles.textP}>Find and toggle Relevant app</Text>
+        </View>
+
+        <View style={styles.ol}>
+          <Text style={styles.textP}>4 </Text>
+          <Text style={styles.textP}>Rearrange Relevant icon as you like</Text>
+        </View>
+      </View>
+      <View
+        style={{ width, height: width + 40, overflow: 'hidden' }}
+      >
+        <Video
+          resizeMode={'contain'}
+          source={require('../../assets/images/shareTip.mp4')}
+          style={{ width, height: width * 16 / 9, bottom: 0, position: 'absolute' }}
+          repeat
+        />
+      </View>
+    </View>
+  );
+};
+
+const localStyles = StyleSheet.create({
+  ol: {
+    flexDirection: 'row',
+    paddingRight: 15,
+    // alignItems: 'center'
+  },
+  textP: {
+    fontSize: 12,
+    flex: 0,
+    marginBottom: 10,
+  },
+  videoTip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});
+
+styles = { ...globalStyles, ...localStyles };
+
