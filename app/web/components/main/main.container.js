@@ -47,6 +47,10 @@ export class Main extends Component {
       email
     });
     this.setState({ email: '', name: '' });
+
+    window.fbq('track', 'waitlist', {
+      name,
+    });
   }
 
   close() {
