@@ -358,6 +358,8 @@ exports.update = async (req, res) => {
   res.status(200).json(newPost);
 
   try {
+    newTags = newTags || [];
+    newMentions = newMentions || [];
     let pTags = newTags.map(tag =>
       Tag.update(
         { _id: tag },
@@ -498,7 +500,7 @@ exports.create = (req, res) => {
          * In case subscription has expired, but user hasn't seen the articles
          * remove oldest unread in feed and push new one
          */
-        console.log(subscription);
+        // console.log(subscription);
         if (subscription.amount < 1) {
           // check unread here
           console.log('expired');

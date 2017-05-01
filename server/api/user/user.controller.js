@@ -555,7 +555,7 @@ exports.block = async (req, res) => {
     let results = await Promise.all([userPromise, blockPromise, sub1, sub2, feed1, feed2]);
     user = results[0];
   } catch (err) {
-    handleError(res, err);
+    return handleError(res, err);
   }
   res.status(200).json(user);
 };
