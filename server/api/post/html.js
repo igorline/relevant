@@ -225,7 +225,7 @@ exports.generatePreview = (body, uri) => {
   }
 
   // console.log(obj);
-  console.log($('head').html());
+  // console.log($('head').html());
   // console.log(body);
 
   return {
