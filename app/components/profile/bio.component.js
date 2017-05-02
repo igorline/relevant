@@ -3,12 +3,11 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
-  TextInput,
-  TouchableHighlight
 } from 'react-native';
-import { globalStyles, fullWidth } from '../../styles/global';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { globalStyles, blue } from '../../styles/global';
 import TextBody from '../post/textBody.component';
+import CommentEditing from '../post/commentEditing.component';
 
 let styles;
 
@@ -16,7 +15,6 @@ class Bio extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      bio: '',
       editing: false
     };
     this.updateBio = this.updateBio.bind(this);
@@ -25,19 +23,19 @@ class Bio extends Component {
   componentWillMount() {
   }
 
-  async updateBio() {
+  componentDidMount() {
+    if (this.props.myProfile && !this.props.user.bio) {
+      this.setState({ editing: true });
+    }
+  }
+
+  async updateBio(text) {
     try {
       let user = this.props.user;
-      let bio = this.state.bio;
+      let bio = text;
       let success = await this.props.actions.updateUser({ ...user, bio });
       if (success) {
         this.setState({ editing: false });
-        this.textInput.blur();
-      } else {
-        // setTimeout(() => {
-        //   this.textInput.focus();
-        //   this.setState({ editing: true });
-        // }, 100);
       }
     } catch (err) {
       console.log(err);
@@ -49,56 +47,12 @@ class Bio extends Component {
     let editButton;
     let header;
 
-    let bioEdit = (
-      <View
-        style={[
-          styles.commentInputParent,
-          {
-            height: Math.min(100, this.state.inputHeight),
-            borderTopWidth: 0,
-            flex: this.state.editing ? 1 : 0,
-          },
-          this.state.editing ? {} : { width: 0, height: 0 }
-        ]}
-      >
-        <TextInput
-          // autoCapitalize
-          // autoCorrect
-          ref={(c) => { this.textInput = c; }}
-          keyboardType={'default'}
-          clearTextOnFocus={false}
-          placeholder="Your credentials"
-          blurOnSubmit={false}
-          style={[
-            styles.commentInput,
-            styles.font15,
-            { lineHeight: 20 },
-            styles.bioInput,
-          ]}
-          multiline
-          onChangeText={(bio) => {
-            this.setState({ bio });
-          }}
-          onBlur={() => {
-            this.setState({ editing: false });
-          }}
-          onContentSizeChange={(event) => {
-            let h = event.nativeEvent.contentSize.height;
-            this.setState({
-              inputHeight: Math.max(50, h)
-            });
-          }}
-          value={this.state.bio}
-        />
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={[styles.commentSubmit]}
-          onPress={() => this.updateBio()}
-        >
-          <Text style={[styles.font15, styles.active]}>Submit</Text>
-        </TouchableHighlight>
-      </View>
-    );
+    let bioEdit = (<CommentEditing
+      text={user.bio}
+      placeholder={'Add your credentials - what are the topics you know most about and why'}
+      toggleFunction={() => this.setState({ editing: false })}
+      saveEditFunction={this.updateBio}
+    />);
 
     if (this.props.myProfile && !this.state.editing) {
       editButton = (
@@ -108,11 +62,10 @@ class Bio extends Component {
               editing: true,
               bio: this.state.bio === '' ? user.bio : this.state.bio
             });
-            this.textInput.focus();
           }}
-          style={styles.active}
+          style={{ marginLeft: 10 }}
         >
-          Edit
+          <Icon name="ios-create-outline" size={20} color={blue} />
         </Text>
       );
     }
@@ -120,36 +73,49 @@ class Bio extends Component {
     if (user.bio && user.bio !== '') {
       header = (
         <Text style={[styles.font12, styles.darkGray, { marginBottom: 5 }]}>
-          Credentials:{' '}
+          Credentials:{'\n'}
         </Text>
       );
     }
 
-    let bio = (
-      <TextBody
-        actions={this.props.actions}
-        style={{ fontFamily: 'Georgia' }}
+    let CTA = (
+      <Text
+        style={[styles.active, { flex: 1, fontSize: 12 }]}
+        onPress={() => this.setState({ editing: true })}
       >
-        {user.bio}
-      </TextBody>
+        Add your credentials to build your relevance!
+      </Text>
     );
+
+    let bio = (
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TextBody
+          actions={this.props.actions}
+          style={{ fontFamily: 'Georgia', flex: 1 }}
+        >
+          {user.bio}
+        </TextBody>
+        {editButton}
+      </View>
+    );
+
+    if (this.props.myProfile && (!user.bio || user.bio.trim() === '')) {
+      bio = (
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {CTA}
+          {editButton}
+        </View>
+      );
+    }
 
     if (this.state.editing) {
       bio = null;
       header = null;
-    } else {
-      // bioEdit = null;
     }
 
     return (
-      <View style={styles.bio}>
-        <Text style={{ flex: this.state.editing ? 0 : 1 }}>
-          {/*header*/}
-          {bio}
-          {' '}
-        </Text>
-        {editButton}
-        {bioEdit}
+      <View style={[(user && user.bio) || this.props.myProfile ? styles.bio : null]}>
+        {this.state.editing ? bioEdit : bio }
       </View>
     );
   }
@@ -161,19 +127,9 @@ let localStyles = StyleSheet.create({
     marginHorizontal: 10,
     paddingVertical: 10,
     flexDirection: 'row',
-    // borderTopWidth: StyleSheet.hairlineWidth,
-
-    // borderBottomWidth: StyleSheet.hairlineWidth,
+    alignItems: 'center',
     borderColor: 'grey',
   },
-  bioInput: {
-    paddingHorizontal: 0,
-    // padding: 0,
-    // margin: 0,
-    fontSize: 14,
-    // borderWidth: StyleSheet.hairlineWidth,
-    // borderColor: 'grey',
-  }
 });
 
 styles = { ...globalStyles, ...localStyles };

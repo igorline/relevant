@@ -474,7 +474,7 @@ exports.update = async (req, res) => {
       updateImage = true;
       user.image = req.body.image;
     }
-    user.bio = req.body.bio ? req.body.bio : user.bio;
+    user.bio = typeof req.body.bio === 'string' ? req.body.bio : user.bio;
     user.deviceTokens = req.body.deviceTokens;
 
     if (role === 'admin') {

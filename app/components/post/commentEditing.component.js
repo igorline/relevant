@@ -6,9 +6,7 @@ import {
   TextInput,
   TouchableHighlight
 } from 'react-native';
-import { globalStyles } from '../../styles/global';
-
-let moment = require('moment');
+import { globalStyles, blue } from '../../styles/global';
 
 let styles;
 
@@ -19,41 +17,28 @@ class CommentEditing extends Component {
       height: 0
     };
     this.singleComment = null;
-    this.saveEdit = this.saveEdit.bind(this);
+  }
+
+  componentWillMount() {
+    this.setState({ text: this.props.text });
   }
 
   componentDidMount() {
-    this.setState({ text: this.props.comment.text });
-  }
-
-  saveEdit() {
-    if (this.state.text !== this.props.comment.text) {
-      let comment = this.props.comment || null;
-      if (comment) {
-        comment.text = this.state.text;
-        this.props.saveEditFunction(comment);
-      }
-    } else {
-      this.props.toggleFunction();
-    }
+    this.textInput.focus();
   }
 
   render() {
-    let comment = this.props.comment;
-    let postTime = moment(comment.createdAt);
-    let timeNow = moment();
-    let dif = timeNow.diff(postTime);
-    let createdTime = moment.duration(dif).humanize();
-
     return (<View style={{ flex: 1 }}>
       <TextInput
         multiline
         autoGrow
+        placeholder={this.props.placeholder}
+        ref={c => this.textInput = c}
         style={[
           styles.darkGray,
           styles.editingInput,
-          { height: Math.max(75, this.state.height)
-        }]}
+          { height: Math.max(50, this.state.height) }
+        ]}
         onChange={(event) => {
           this.setState({
             text: event.nativeEvent.text,
@@ -63,19 +48,21 @@ class CommentEditing extends Component {
         value={this.state.text}
       />
       <View style={styles.editingCommentButtons}>
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={styles.editingCommentButton}
-          onPress={this.saveEdit}
-        >
-          <Text style={[styles.font10, styles.editingCommentButtonText]}>Save changes</Text>
-        </TouchableHighlight>
+
         <TouchableHighlight
           underlayColor={'transparent'}
           onPress={() => { this.props.toggleFunction(); }}
           style={styles.editingCommentButton}
         >
           <Text style={[styles.font10, styles.editingCommentButtonText]}>Cancel</Text>
+        </TouchableHighlight>
+
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          style={styles.editingCommentButton}
+          onPress={() => this.props.saveEditFunction(this.state.text)}
+        >
+          <Text style={[styles.font10, styles.editingCommentButtonText]}>Save changes</Text>
         </TouchableHighlight>
       </View>
     </View>);
@@ -98,21 +85,21 @@ const localStyles = StyleSheet.create({
     marginLeft: 10,
     height: 30,
     flexDirection: 'row',
-    borderWidth: 1,
-    borderRadius: 3,
-    borderColor: 'lightgray',
+    borderWidth: StyleSheet.hairlineWidth,
+    // borderRadius: 3,
+    borderColor: blue,
     alignItems: 'center',
     justifyContent: 'center'
   },
   editingCommentButtonText: {
-    color: '#808080'
+    color: blue
   },
   commentHeaderTextContainer: {
     height: 50
   },
   commentContainer: {
     padding: 10,
-    borderBottomWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#F0F0F0'
   },
   commentAvatar: {
@@ -125,10 +112,13 @@ const localStyles = StyleSheet.create({
     backgroundColor: 'transparent',
     flex: 1,
     fontSize: 14,
-    padding: 10,
-    borderRadius: 5,
-    borderColor: 'lightgray',
-    borderWidth: 1,
+    // paddingVertical: 10,
+    // borderRadius: 5,
+    borderColor: 'lightgrey',
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderWidth: StyleSheet.hairlineWidth,
+    // padding: 10,
+
   },
 });
 
