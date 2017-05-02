@@ -48,7 +48,12 @@ class Comment extends Component {
     this.setSelected = this.setSelected.bind(this);
   }
 
-  saveEdit(comment) {
+  saveEdit(text) {
+    let comment = this.props.comment;
+    if (comment.text === text) {
+      return this.editComment();
+    }
+    comment.text = text;
     this.props.actions.updateComment(comment)
     .then((results) => {
       if (results) {
@@ -120,7 +125,6 @@ class Comment extends Component {
     let body = comment.text;
     let postTime = moment(comment.createdAt);
     let timestamp = numbers.timeSince(postTime);
-    let bodyEl = null;
     let bodyObj = {};
     let optionsEl = null;
     let editingEl = null;
@@ -128,9 +132,9 @@ class Comment extends Component {
     let textEl = null;
     let image = null;
     let owner = false;
-    let name = null;
-    let imageEl = null;
     let commentUserId = null;
+    let textBody;
+
     let textArr = body.replace((/[@#]\S+/g), (a) => { return '`' + a + '`'; }).split(/`/);
     textArr.forEach((section, i) => {
       bodyObj[i] = {};
@@ -174,7 +178,7 @@ class Comment extends Component {
       bodyEl = (<Text style={[styles.commentBodyText, styles.georgia]}>{textEl}</Text>);
     } else {
       editingEl = (<CommentEditing
-        comment={comment}
+        text={comment.text}
         toggleFunction={this.editComment}
         saveEditFunction={this.saveEdit}
       />);
@@ -230,6 +234,14 @@ class Comment extends Component {
       </View>);
     }
 
+    textBody = (
+      <TextBody
+        {...this.props}
+        post={comment}
+        body={comment.text}
+      />
+    );
+
     return (
       <View
         ref={(c) => { this.singleComment = c; }}
@@ -245,12 +257,7 @@ class Comment extends Component {
           <Text style={[{ fontSize: 12 }, styles.timestampGray]}>{timestamp}</Text>
         </View>
         <View style={{ paddingLeft: 33, paddingRight: 10 }}>
-          <TextBody
-            {...this.props}
-            post={comment}
-            body={comment.text}
-          />
-          {editingEl}
+          {this.state.editing ? editingEl : textBody}
         </View>
         {optionsEl}
       </View>
