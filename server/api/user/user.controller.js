@@ -450,54 +450,65 @@ exports.destroy = (req, res) => {
   });
 };
 
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
   let role = req.user.role;
   let savedUser = null;
   let authUser = JSON.stringify(req.user._id);
   let reqUser = JSON.stringify(req.body._id);
+  let updateImage = false;
+  let updateName = false;
+  let user;
 
-  if (authUser !== reqUser && role !== 'admin') return res.send(403);
-  console.log('updating user', req.body )
-  User.findById(req.body._id, '-salt -hashedPassword')
-  .then((user) => {
-    user.name = req.body.name;
-    user.image = req.body.image;
+  try {
+    if (authUser !== reqUser && role !== 'admin') {
+      throw new Error('Not authorized to edit this user');
+    }
+    user = await User.findOne({ _id: req.body._id }, '-salt -hashedPassword');
+    if (!user) throw new Error('user not found');
 
+    if (user.name !== req.body.name) {
+      updateName = true;
+      user.name = req.body.name;
+    }
+    if (user.image !== req.body.image) {
+      updateImage = true;
+      user.image = req.body.image;
+    }
+    user.bio = req.body.bio ? req.body.bio : user.bio;
     user.deviceTokens = req.body.deviceTokens;
+
     if (role === 'admin') {
       user.role = req.body.role;
     }
-    return user.save();
-  })
-  .then((user) => {
-    console.log(user);
-    savedUser = user;
 
-    let newUser = {
-      name: user.name,
-      image: user.image
-    };
+    user = await user.save();
+    user.updateClient();
 
-    // Do this on a separate thread?
-    Post.update(
-      { user: user._id },
-      { embeddedUser: newUser },
-      { multi: true }
-    )
-    .then(() =>
-      Comment.update(
+    if (updateName || updateImage) {
+      console.log('updating posts and comments');
+      let newUser = {
+        name: user.name,
+        image: user.image
+      };
+
+      // Do this on a separate thread?
+      await Post.update(
         { user: user._id },
         { embeddedUser: newUser },
         { multi: true }
-      )
-    )
-    .catch(err => console.log(err));
-  })
-  .then(() => {
-    res.status(200).json(savedUser);
-  })
-  .catch(err => console.log(err));
-  return null;
+      );
+
+      await Comment.update(
+        { user: user._id },
+        { embeddedUser: newUser },
+        { multi: true }
+      );
+    }
+  } catch (err) {
+    return handleError(res, err);
+  }
+
+  return res.status(200).json(savedUser);
 };
 
 /**
@@ -544,7 +555,7 @@ exports.block = async (req, res) => {
     let results = await Promise.all([userPromise, blockPromise, sub1, sub2, feed1, feed2]);
     user = results[0];
   } catch (err) {
-    handleError(res, err);
+    return handleError(res, err);
   }
   res.status(200).json(user);
 };

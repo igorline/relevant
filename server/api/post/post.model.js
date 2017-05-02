@@ -138,10 +138,10 @@ PostSchema.pre('remove', async function (next) {
       console.log(tag, 'tag');
       this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
         if (!foundTag) return next();
-        console.log('foundTag ', foundTag.name);
+        console.log('foundTag ', foundTag._id);
         if (foundTag.count > 1) {
           foundTag.count--;
-          console.log('chainging tag count for ', foundTag.name);
+          console.log('changing tag count for ', foundTag._id);
           foundTag.save((err) => {
             if (err) console.log('saving tag error');
           });
