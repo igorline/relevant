@@ -7,7 +7,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { globalStyles, blue } from '../../styles/global';
 import TextBody from '../post/textBody.component';
-import CommentEditing from '../post/commentEditing.component';
+import TextEdit from '../common/textEdit.component';
 
 let styles;
 
@@ -47,7 +47,7 @@ class Bio extends Component {
     let editButton;
     let header;
 
-    let bioEdit = (<CommentEditing
+    let bioEdit = (<TextEdit
       text={user.bio}
       placeholder={'Add your credentials - what are the topics you know most about and why'}
       toggleFunction={() => this.setState({ editing: false })}

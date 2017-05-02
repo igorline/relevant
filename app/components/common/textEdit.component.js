@@ -6,17 +6,17 @@ import {
   TextInput,
   TouchableHighlight
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles, blue } from '../../styles/global';
 
 let styles;
 
-class CommentEditing extends Component {
+class TextEdit extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
       height: 0
     };
-    this.singleComment = null;
   }
 
   componentWillMount() {
@@ -39,12 +39,17 @@ class CommentEditing extends Component {
           styles.editingInput,
           { height: Math.max(50, this.state.height) }
         ]}
-        onChange={(event) => {
+        onChange={event =>
           this.setState({
             text: event.nativeEvent.text,
             height: event.nativeEvent.contentSize.height,
-          });
-        }}
+          })
+        }
+        onContentSizeChange={event =>
+          this.setState({
+            height: event.nativeEvent.contentSize.height,
+          })
+        }
         value={this.state.text}
       />
       <View style={styles.editingCommentButtons}>
@@ -69,7 +74,6 @@ class CommentEditing extends Component {
   }
 }
 
-export default CommentEditing;
 
 const localStyles = StyleSheet.create({
   editingCommentButtons: {
@@ -86,7 +90,6 @@ const localStyles = StyleSheet.create({
     height: 30,
     flexDirection: 'row',
     borderWidth: StyleSheet.hairlineWidth,
-    // borderRadius: 3,
     borderColor: blue,
     alignItems: 'center',
     justifyContent: 'center'
@@ -112,15 +115,18 @@ const localStyles = StyleSheet.create({
     backgroundColor: 'transparent',
     flex: 1,
     fontSize: 14,
-    // paddingVertical: 10,
-    // borderRadius: 5,
     borderColor: 'lightgrey',
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderWidth: StyleSheet.hairlineWidth,
-    // padding: 10,
-
   },
 });
 
+TextEdit.propTypes = {
+  text: PropTypes.string,
+  placeholder: PropTypes.string,
+  toggleFunction: PropTypes.func,
+  saveEditFunction: PropTypes.func,
+};
+
 styles = { ...localStyles, ...globalStyles };
+
+export default TextEdit;
 
