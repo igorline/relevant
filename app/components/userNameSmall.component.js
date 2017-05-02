@@ -59,9 +59,10 @@ export default function UserName(props) {
             </View>
             {stats}
           </View>
-          {handle ? (<Text style={[styles.font10, styles.greyText]}>
-            {handle} {props.postTime}
-          </Text>) : null }
+          {handle ? (
+            <Text style={[styles.font10, styles.greyText]}>
+              {handle} {props.postTime}
+            </Text>) : null }
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -82,7 +83,7 @@ const localStyles = StyleSheet.create({
     height: 44,
     width: 44,
     borderRadius: 22,
-    marginRight: 7,
+    marginRight: 6,
   },
   postInfo: {
     flex: 1,

@@ -138,7 +138,11 @@ class TextBody extends Component {
     }
 
     return (
-      <Text style={this.props.style}>
+      <Text
+        numberOfLines={this.props.numberOfLines}
+        ellipsizeMode={'tail'}
+        style={this.props.style}
+      >
         {bodyEl}
       </Text>
     );

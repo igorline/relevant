@@ -9,7 +9,7 @@ import {
   TouchableHighlight
 } from 'react-native';
 import { globalStyles } from '../../styles/global';
-import CommentEditing from './commentEditing.component';
+import TextEdit from '../common/textEdit.component';
 import UserName from '../userNameSmall.component';
 import { numbers } from '../../utils';
 import TextBody from './textBody.component';
@@ -177,7 +177,7 @@ class Comment extends Component {
     if (!this.state.editing) {
       bodyEl = (<Text style={[styles.commentBodyText, styles.georgia]}>{textEl}</Text>);
     } else {
-      editingEl = (<CommentEditing
+      editingEl = (<TextEdit
         text={comment.text}
         toggleFunction={this.editComment}
         saveEditFunction={this.saveEdit}

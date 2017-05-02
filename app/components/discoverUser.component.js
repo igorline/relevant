@@ -3,10 +3,12 @@ import {
   StyleSheet,
   View,
   TouchableHighlight,
+  Text
 } from 'react-native';
 import { globalStyles } from '../styles/global';
 import Stats from '../components/post/stats.component';
 import UserName from './userNameSmall.component';
+import TextBody from './post/textBody.component';
 
 let styles;
 
@@ -24,6 +26,7 @@ class DiscoverUser extends Component {
   render() {
     let user = this.props.user;
     let relevance = this.props.topic ? user[this.props.topic + '_relevance'] : user.relevance;
+    let bioEl;
 
     let statsUser = { ...user, relevance };
     let stats = (<Stats
@@ -33,19 +36,34 @@ class DiscoverUser extends Component {
     />);
     let right = this.props.renderRight ? this.props.renderRight() : stats;
 
+    bioEl = (
+      <View style={styles.bioContainer}>
+        <TextBody
+          style={styles.discoverBio}
+          numberOfLines={2}
+        >
+          {this.props.user.bio}
+        </TextBody>
+      </View>
+    );
+
     return (
       <TouchableHighlight
         underlayColor={'transparent'}
         onPress={() => this.setSelected()}
       >
-        <View style={[styles.discoverUser]}>
-          <UserName
-            big
-            relevance={this.props.relevance}
-            user={user}
-            setSelected={this.setSelected}
-          />
-          {right}
+        <View style={styles.discoverUserContainer}>
+          <View style={[styles.discoverUser]}>
+            <UserName
+              bio
+              big
+              relevance={this.props.relevance}
+              user={user}
+              setSelected={this.setSelected}
+            />
+            {right}
+          </View>
+          {this.props.user.bio ? bioEl : null}
         </View>
       </TouchableHighlight>
     );
@@ -55,17 +73,27 @@ class DiscoverUser extends Component {
 export default DiscoverUser;
 
 const localStyles = StyleSheet.create({
+  bioContainer: {
+    // borderTopWidth: StyleSheet.hairlineWidth,
+    // borderTopColor: 'grey',
+    marginLeft: 50,
+  },
+  discoverBio: {
+    // marginTop: 5,
+    fontFamily: 'Georgia',
+    fontSize: 14,
+    backgroundColor: 'white'
+  },
   discoverUser: {
     flex: 1,
     flexDirection: 'row',
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    paddingLeft: 10,
+    backgroundColor: 'white'
+  },
+  discoverUserContainer: {
+    paddingVertical: 20,
+    paddingHorizontal: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#242425',
-    height: 78,
-    backgroundColor: 'white'
   }
 });
 
