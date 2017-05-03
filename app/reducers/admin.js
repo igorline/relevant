@@ -6,6 +6,9 @@ const initialState = {
   waitList: [],
   wait: {},
   currentInvite: null,
+  noMore: {
+    invites: false
+  }
 };
 
 export default function admin(state = initialState, action) {
@@ -38,8 +41,8 @@ export default function admin(state = initialState, action) {
       return {
         ...state,
         inviteList: [
-          ...action.payload.result.invites,
           ...state.inviteList,
+          ...action.payload.result.invites,
         ],
         invites: {
           ...state.invites,

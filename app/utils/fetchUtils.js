@@ -1,5 +1,14 @@
 import * as tokenUtil from './token';
 
+const queryParams = (params) => {
+  let paramString = Object.keys(params)
+    .filter(p => params[p])
+    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+    .join('&');
+  if (paramString && paramString.length) return '?' + paramString;
+  return '';
+};
+
 
 export function env() {
   if (process.env.WEB != 'true') {
@@ -18,6 +27,34 @@ export function Alert() {
   return { alert: (a, b) => console.log(a, ' ', b) };
 }
 
+/**
+ * [superFetch description]
+ * @param  {[type]} options
+ * params - Object of url query params
+ * endpoint - api endpoint
+ * uri - optional - custom url
+ * method - REST method
+ * body: body
+ */
+export async function superFetch(options) {
+  let params = queryParams(options.params);
+  let uri = options.uri || process.env.API_SERVER + '/api/' + options.endpoint;
+  let path = options.path || '';
+  try {
+    let response = await fetch(uri + path + params, {
+      method: options.method,
+      ...await exports.reqOptions(),
+      body: options.body
+    });
+    response = await exports.handleErrors(response);
+    let responseJSON = await response.json();
+
+    return responseJSON;
+  } catch (error) {
+    console.log('fetch error', uri, error);
+    throw error;
+  }
+}
 
 export async function reqOptions() {
   let token;
