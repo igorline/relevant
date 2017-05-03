@@ -44,24 +44,24 @@ export function destroyInvite(invite) {
   };
 }
 
-export function getInvites() {
-  return async (dispatch) => {
-    fetch(API + '/invites', {
-      method: 'GET',
-      ...await utils.fetchUtils.reqOptions()
-    })
-    .then(utils.fetchUtils.handleErrors)
-    .then((response) => response.json())
-    .then((responseJSON) => {
+export function getInvites(skip, limit) {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.fetchUtils.superFetch({
+        method: 'GET',
+        params: { skip, limit },
+        endpoint: 'invites',
+        path: '',
+      });
       let data = normalize(
         { invites: responseJSON },
         { invites: [inviteSchema] }
       );
       dispatch(setInvites(data));
-    })
-    .catch((error) => {
-      console.log('invites error', error);
-    });
+      return true;
+    } catch (error) {
+      return false;
+    }
   };
 }
 

@@ -14,8 +14,13 @@ function handleError(res, statusCode) {
 
 exports.index = async (req, res) => {
   let invites;
+  let limit = parseInt(req.query.limit, 10) || null;
+  let skip = parseInt(req.query.skip, 10) || null;
   try {
-    invites = await Invite.find({}).sort({ createdAt: -1 });
+    invites = await Invite.find({})
+    .sort({ _id: -1 })
+    .skip(skip)
+    .limit(limit);
   } catch (err) {
     handleError(res)(err);
   }

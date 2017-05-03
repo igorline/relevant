@@ -4,10 +4,13 @@ import { connect } from 'react-redux';
 import * as adminActions from '../../../actions/admin.actions';
 import ShadowButton from '../common/ShadowButton';
 import AdminHeader from './header.component';
+import InfScroll from '../common/infScroll.component';
 
 if (process.env.BROWSER === true) {
   require('./admin.css');
 }
+
+const PAGE_SIZE = 40;
 
 let styles;
 
@@ -17,15 +20,25 @@ class Invites extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.createInvite = this.createInvite.bind(this);
     this.sendEmail = this.sendEmail.bind(this);
+    this.load = this.load.bind(this);
+    this.hasMore = true;
     this.state = {
       email: '',
       name: '',
       number: 1,
+      filter: null,
     };
   }
 
   componentDidMount() {
-    this.props.actions.getInvites();
+  }
+
+  load(page) {
+    let l = this.props.admin.inviteList.length;
+    this.hasMore = (page - 1) * PAGE_SIZE <= l;
+    if (this.hasMore) {
+      this.props.actions.getInvites(l, PAGE_SIZE);
+    }
   }
 
   sendEmail(invite) {
@@ -61,6 +74,12 @@ class Invites extends Component {
   renderInvite(inviteId) {
     let invite = this.props.admin.invites[inviteId];
     if (!invite) return null;
+    if (this.state.filter === 'original' && !invite.email) return null;
+    if (this.state.filter === 'registered' && invite.status !== 'registered') return null;
+    if (this.state.filter === 'notregistered' && (invite.status === 'registered' || !invite.email)) return null;
+
+    console.log(new Date(invite.createdAt));
+
     return (<div key={inviteId} className={'adminRow'}>
       <span>{invite.invitedBy}</span>
       <span>{invite.name}</span>
@@ -128,6 +147,14 @@ class Invites extends Component {
         <AdminHeader />
         <h2>Manage Invites</h2>
         {createInvite}
+
+        <div className={'filter'}>
+          <span onClick={() => this.setState({ filter: null })}>all</span>
+          <span onClick={() => this.setState({ filter: 'original' })}>original</span>
+          <span onClick={() => this.setState({ filter: 'registered' })}>registered</span>
+          <span onClick={() => this.setState({ filter: 'notregistered' })}>notregistered</span>
+        </div>
+
         <div key={'inviteId'} className={'titleRow'}>
           <span>Invited by</span>
           <span>Name</span>
@@ -137,7 +164,15 @@ class Invites extends Component {
           <span style={{ width: '40px' }}>Number</span>
           <span style={{ maxWidth: 130 }} />
         </div>
-        {invites}
+
+        <InfScroll
+          className={'adminContainer'}
+          data={this.props.admin.inviteList}
+          loadMore={this.load}
+          hasMore={this.hasMore}
+        >
+          {invites}
+        </InfScroll>
       </div>
     );
   }
