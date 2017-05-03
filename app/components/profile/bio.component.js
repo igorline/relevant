@@ -20,9 +20,6 @@ class Bio extends Component {
     this.updateBio = this.updateBio.bind(this);
   }
 
-  componentWillMount() {
-  }
-
   componentDidMount() {
     if (this.props.myProfile && !this.props.user.bio) {
       this.setState({ editing: true });
@@ -30,14 +27,25 @@ class Bio extends Component {
   }
 
   async updateBio(text) {
+    let user = this.props.user;
+    let bio = text;
+    let oldBio = user.bio;
     try {
-      let user = this.props.user;
-      let bio = text;
+      user.bio = bio;
+      this.setState({ editing: false });
       let success = await this.props.actions.updateUser({ ...user, bio });
       if (success) {
-        this.setState({ editing: false });
+        this.bio = null;
+        // this.setState({ editing: false });
+      } else {
+        this.bio = bio;
+        user.bio = oldBio;
+        this.setState({ editing: true });
       }
     } catch (err) {
+      this.bio = bio;
+      user.bio = oldBio;
+      this.setState({ editing: true });
       console.log(err);
     }
   }
@@ -45,24 +53,26 @@ class Bio extends Component {
   render() {
     let { user } = this.props;
     let editButton;
-    let header;
 
     let bioEdit = (<TextEdit
-      text={user.bio}
+      style={styles.bioText}
+      text={this.bio || user.bio}
       placeholder={'Add your credentials - what are the topics you know most about and why'}
-      toggleFunction={() => this.setState({ editing: false })}
+      toggleFunction={() => {
+        this.bio = null;
+        this.setState({ editing: false });
+      }}
       saveEditFunction={this.updateBio}
     />);
 
     if (this.props.myProfile && !this.state.editing) {
       editButton = (
         <Text
-          onPress={() => {
+          onPress={() =>
             this.setState({
               editing: true,
-              bio: this.state.bio === '' ? user.bio : this.state.bio
-            });
-          }}
+            })
+          }
           style={{ marginLeft: 10 }}
         >
           <Icon name="ios-create-outline" size={20} color={blue} />
@@ -70,13 +80,13 @@ class Bio extends Component {
       );
     }
 
-    if (user.bio && user.bio !== '') {
-      header = (
-        <Text style={[styles.font12, styles.darkGray, { marginBottom: 5 }]}>
-          Credentials:{'\n'}
-        </Text>
-      );
-    }
+    // if (user.bio && user.bio !== '') {
+    //   header = (
+    //     <Text style={[styles.font12, styles.darkGray, { marginBottom: 5 }]}>
+    //       Credentials:{'\n'}
+    //     </Text>
+    //   );
+    // }
 
     let CTA = (
       <Text
@@ -91,7 +101,7 @@ class Bio extends Component {
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <TextBody
           actions={this.props.actions}
-          style={{ fontFamily: 'Georgia', flex: 1 }}
+          style={[styles.bioText, { fontFamily: 'Georgia', flex: 1 }]}
         >
           {user.bio}
         </TextBody>
@@ -108,11 +118,6 @@ class Bio extends Component {
       );
     }
 
-    if (this.state.editing) {
-      bio = null;
-      header = null;
-    }
-
     return (
       <View style={[(user && user.bio) || this.props.myProfile ? styles.bio : null]}>
         {this.state.editing ? bioEdit : bio }
@@ -123,6 +128,10 @@ class Bio extends Component {
 
 
 let localStyles = StyleSheet.create({
+  bioText: {
+    fontSize: 30 / 2,
+    lineHeight: 42 / 2,
+  },
   bio: {
     marginHorizontal: 10,
     paddingVertical: 10,

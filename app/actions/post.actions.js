@@ -486,12 +486,10 @@ export function createComment(token, commentObj) {
     .then(utils.fetchUtils.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
-      console.log(responseJSON);
       dispatch(addComment(responseJSON.post, responseJSON));
       return true;
     })
     .catch((error) => {
-      // AlertIOS.alert(error);
       console.log(error, 'error');
       return false;
     });

@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, blue } from '../../styles/global';
+import TextBody from '../post/textBody.component';
 
 let styles;
 
@@ -35,9 +36,8 @@ class TextEdit extends Component {
         placeholder={this.props.placeholder}
         ref={c => this.textInput = c}
         style={[
-          styles.darkGray,
-          styles.editingInput,
-          { height: Math.max(50, this.state.height) }
+          { height: Math.max(50, this.state.height) },
+          this.props.style
         ]}
         onChange={event =>
           this.setState({
@@ -50,8 +50,9 @@ class TextEdit extends Component {
             height: event.nativeEvent.contentSize.height,
           })
         }
-        value={this.state.text}
-      />
+      >
+        <TextBody showAllMentions>{this.state.text}</TextBody>
+      </TextInput>
       <View style={styles.editingCommentButtons}>
 
         <TouchableHighlight
@@ -97,26 +98,6 @@ const localStyles = StyleSheet.create({
   editingCommentButtonText: {
     color: blue
   },
-  commentHeaderTextContainer: {
-    height: 50
-  },
-  commentContainer: {
-    padding: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#F0F0F0'
-  },
-  commentAvatar: {
-    height: 25,
-    width: 25,
-    borderRadius: 12.5,
-    marginRight: 10,
-  },
-  editingInput: {
-    backgroundColor: 'transparent',
-    flex: 1,
-    fontSize: 14,
-    borderColor: 'lightgrey',
-  },
 });
 
 TextEdit.propTypes = {
@@ -124,6 +105,7 @@ TextEdit.propTypes = {
   placeholder: PropTypes.string,
   toggleFunction: PropTypes.func,
   saveEditFunction: PropTypes.func,
+  style: PropTypes.object,
 };
 
 styles = { ...localStyles, ...globalStyles };

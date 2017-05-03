@@ -14,6 +14,7 @@ import UserName from '../userNameSmall.component';
 import UserSearchComponent from './userSearch.component';
 import PostBody from './../post/postBody.component';
 import PostInfo from './../post/postInfo.component';
+import TextBody from './../post/textBody.component';
 
 var Video = require('react-native-video').default;
 
@@ -327,7 +328,7 @@ export default class UrlComponent extends Component {
               clearButtonMode={'while-editing'}
               onChangeText={postBody => this.processInput(postBody, false)}
               onBlur={() => this.processInput(null, true)}
-              value={this.props.postBody}
+              // value={this.props.postBody}
               returnKeyType={'default'}
               autoFocus
               keyboardShouldPersistTaps={'never'}
@@ -337,7 +338,11 @@ export default class UrlComponent extends Component {
                   inputHeight: Math.max(100, h)
                 });
               }}
-            />
+            >
+              <TextBody showAllMentions>
+                {this.props.postBody}
+              </TextBody>
+            </TextInput>
             {addP}
             {tipCTA}
           </View>
