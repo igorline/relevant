@@ -6,9 +6,7 @@ const initialState = {
   waitList: [],
   wait: {},
   currentInvite: null,
-  noMore: {
-    invites: false
-  }
+  downvotes: [],
 };
 
 export default function admin(state = initialState, action) {
@@ -71,6 +69,16 @@ export default function admin(state = initialState, action) {
             ...action.payload
           }
         }
+      };
+    }
+
+    case types.SET_DOWNVOTES: {
+      return {
+        ...state,
+        downvotes: [
+          ...state.downvotes,
+          ...action.payload,
+        ],
       };
     }
 

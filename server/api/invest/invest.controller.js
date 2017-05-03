@@ -89,6 +89,22 @@ exports.postInvestments = async (req, res) => {
   return res.status(200).json(investments);
 };
 
+exports.downvotes = async (req, res) => {
+  let limit = parseInt(req.query.limit, 10) || null;
+  let skip = parseInt(req.query.skip, 10) || null;
+  let downvotes;
+  try {
+    downvotes = await Invest.find({ amount: -1 })
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .populate('post');
+  } catch (err) {
+    return handleError(res, err);
+  }
+  return res.status(200).json(downvotes);
+};
+
 exports.show = async (req, res) => {
   let id;
 
