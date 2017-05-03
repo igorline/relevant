@@ -200,6 +200,7 @@ class Discover extends Component {
     }
     let topic = this.topic ? this.topic._id : null;
     return (<DiscoverUser
+      bio
       relevance={this.topic || false}
       topic={topic}
       user={rowData}

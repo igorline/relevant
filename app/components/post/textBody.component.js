@@ -49,6 +49,9 @@ class TextBody extends Component {
     let maxTextLength = this.props.maxTextLength || Math.pow(10, 1000);
     let body = this.props.body || this.props.children || '';
     let post = this.props.post || {};
+    let showAllMentions = this.props.showAllMentions;
+
+    // console.log(mentions)
 
     let bodyEl = null;
 
@@ -73,6 +76,7 @@ class TextBody extends Component {
         if (post.mentions && post.mentions.find(mention => mention === m)) {
           word.type = 'mention';
         }
+        if (showAllMentions) word.type = 'mention';
       } else if (utils.post.URL_REGEX.test(section)) {
         word.type = 'url';
       }
@@ -153,21 +157,6 @@ class TextBody extends Component {
 export default TextBody;
 
 const localStyles = StyleSheet.create({
-  bodyText: {
-    fontFamily: 'Georgia',
-    fontSize: 38 / 2,
-    lineHeight: 55 / 2,
-  },
-  commentaryText: {
-    fontFamily: 'Georgia',
-    fontSize: 32 / 2,
-    lineHeight: 40 / 2,
-  },
-  shortBodyText: {
-    fontFamily: 'Libre Caslon Display',
-    fontSize: 63 / 2,
-    lineHeight: 82 / 2,
-  }
 });
 
 styles = { ...globalStyles, ...localStyles };

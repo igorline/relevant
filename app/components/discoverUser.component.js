@@ -40,7 +40,7 @@ class DiscoverUser extends Component {
       <View style={styles.bioContainer}>
         <TextBody
           style={styles.discoverBio}
-          numberOfLines={2}
+          numberOfLines={3}
         >
           {this.props.user.bio}
         </TextBody>
@@ -63,7 +63,7 @@ class DiscoverUser extends Component {
             />
             {right}
           </View>
-          {this.props.user.bio ? bioEl : null}
+          {this.props.user.bio && this.props.bio ? bioEl : null}
         </View>
       </TouchableHighlight>
     );
@@ -74,26 +74,25 @@ export default DiscoverUser;
 
 const localStyles = StyleSheet.create({
   bioContainer: {
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: 'grey',
-    marginLeft: 50,
+    // marginLeft: 50,
   },
   discoverBio: {
-    // marginTop: 5,
     fontFamily: 'Georgia',
-    fontSize: 14,
-    backgroundColor: 'white'
+    fontSize: 32 / 2,
+    lineHeight: 48 / 2,
+    paddingTop: 15,
+    paddingBottom: 5,
   },
   discoverUser: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: 'white'
   },
   discoverUserContainer: {
     paddingVertical: 20,
     paddingHorizontal: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#242425',
+    backgroundColor: 'white'
   }
 });
 

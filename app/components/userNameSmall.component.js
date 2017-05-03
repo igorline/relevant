@@ -83,7 +83,7 @@ const localStyles = StyleSheet.create({
     height: 44,
     width: 44,
     borderRadius: 22,
-    marginRight: 6,
+    marginRight: 7,
   },
   postInfo: {
     flex: 1,
