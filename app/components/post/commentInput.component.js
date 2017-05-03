@@ -60,7 +60,6 @@ class CommentInput extends Component {
     // let words = [];
     // lines.forEach(line => words = words.concat(line.split(' ')));
 
-    // console.log(comment)
     let words = utils.text.getWords(comment);
 
     let lastWord = words[words.length - 1];
@@ -84,7 +83,6 @@ class CommentInput extends Component {
               bottom: Math.min(100, this.state.inputHeight),
               left: 0,
               right: 0,
-              // top: 0,
               maxHeight: this.top,
               backgroundColor: 'white',
               borderTopWidth: 1,

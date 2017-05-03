@@ -51,8 +51,6 @@ class TextBody extends Component {
     let post = this.props.post || {};
     let showAllMentions = this.props.showAllMentions;
 
-    // console.log(mentions)
-
     let bodyEl = null;
 
     let bodyObj = [];
