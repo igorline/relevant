@@ -17,6 +17,7 @@ import Faq from './components/admin/faq.component';
 import AdminHeader from './components/admin/header.component';
 import Flagged from './components/admin/flagged.component';
 import Waitlist from './components/admin/waitlist.component';
+import Downvotes from './components/admin/downvotes.container';
 
 // Redirects to /login by default
 const userIsAuthenticated = UserAuthWrapper({
@@ -51,7 +52,7 @@ let routes = (store) => {
         childRoutes: [
           { path: 'flagged', component: Flagged },
           { path: 'waitlist', component: Waitlist },
-
+          { path: 'downvotes', component: Downvotes },
         ]
       },
       { path: 'admin/topics', component: userIsAuthenticated(userIsAdmin(TopicsAdmin)), onEnter: connect(userIsAuthenticated.onEnter) },

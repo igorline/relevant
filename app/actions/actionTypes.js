@@ -91,3 +91,4 @@ export const SET_INVITES = 'SET_INVITES';
 export const UPDATE_INVITE = 'UPDATE_INVITE';
 export const DESTROY_INVITE = 'DESTROY_INVITE';
 export const SET_WAITLIST = 'SET_WAITLIST';
+export const SET_DOWNVOTES = 'SET_DOWNVOTES';

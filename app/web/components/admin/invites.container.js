@@ -78,8 +78,6 @@ class Invites extends Component {
     if (this.state.filter === 'registered' && invite.status !== 'registered') return null;
     if (this.state.filter === 'notregistered' && (invite.status === 'registered' || !invite.email)) return null;
 
-    console.log(new Date(invite.createdAt));
-
     return (<div key={inviteId} className={'adminRow'}>
       <span>{invite.invitedBy}</span>
       <span>{invite.name}</span>
