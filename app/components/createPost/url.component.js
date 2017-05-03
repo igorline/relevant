@@ -82,9 +82,11 @@ export default class UrlComponent extends Component {
     let length = postBody ? postBody.length : 0;
 
     if (doneTyping) postBody = this.props.postBody;
-    let lines = postBody.split('\n');
-    let words = [];
-    lines.forEach(line => words = words.concat(line.split(' ')));
+    // let lines = postBody.split('\n');
+    // let words = [];
+    // lines.forEach(line => words = words.concat(line.split(' ')));
+
+    let words = utils.text.getWords(postBody);
 
     let shouldParseUrl = false;
 
@@ -98,6 +100,8 @@ export default class UrlComponent extends Component {
       let postUrl;
       let possibleUrls = words.filter(word => URL_REGEX.test(word));
       postUrl = possibleUrls[0];
+
+      // pick the 'best' url (ex: when copying and pasting website domain)
       possibleUrls.forEach(u => {
         if (!u) return null;
         if ((u.match('http://') || u.match('https://')) && !postUrl.match('http')) {
@@ -118,21 +122,9 @@ export default class UrlComponent extends Component {
       this.props.actions.searchUser(lastWord.replace('@', ''));
     } else this.props.actions.setUserSearch([]);
 
-    let bodyTags = words.map((word) => {
-      if (word.match(/^#\S+/g)) {
-        return word.replace('#', '').replace(/(,|\.|!|\?)\s*$/, '');
-      }
-      return null;
-    })
-    .filter(el => el !== null);
+    let bodyTags = utils.text.getTags(words);
 
-    let bodyMentions = words.map((word) => {
-      if (word.match(/^@\S+/g)) {
-        return word.replace('@', '').replace(/(,|\.|!|\?)\s*$/, '');
-      }
-      return null;
-    })
-    .filter(el => el !== null);
+    let bodyMentions = utils.text.getMentions(words);
 
     if (this.props.urlPreview && this.props.postUrl && postBody.match(this.props.postUrl)) {
       postBody = postBody.replace(`${this.props.postUrl}`, '').trim();
