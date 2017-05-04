@@ -46,6 +46,7 @@ export default function UserName(props) {
   return (
     <TouchableWithoutFeedback
       onPress={() => props.setSelected(props.user)}
+      // style={{ flex: 1 }}
     >
       <View style={styles.postInfo}>
         <Image source={imageSource} style={imageStyle} />
