@@ -47,7 +47,7 @@ class InvestAnimation extends Component {
   }
 
   investAni() {
-    if (this.state.num < 5) {
+    if (this.state.num < 10) {
       let newArr = this.state.investAni;
       newArr.push(<Dollar amount={this.amount} key={this.state.num} specialKey={this.state.num} />);
       let newNum = this.state.num += 1;
