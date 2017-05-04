@@ -166,6 +166,7 @@ class Categories extends Component {
       <View >
         <TextInput
           autoCapitalize={'none'}
+          autoCorrect={false}
           onFocus={() => this.topicsEl.tagsView.measure((fx, fy) => {
             this.num = fy;
             this.topicsEl.scrollView.scrollTo({ x: 0, y: this.num - 60, animated: true });
