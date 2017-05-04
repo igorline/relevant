@@ -78,7 +78,7 @@ exports.postInvestments = async (req, res) => {
 
     investments = investments.map(inv => {
       inv = inv.toObject();
-      if (inv.amount < 1) inv.investor = { name: 'Someone' };
+      if (inv.amount < 0) inv.investor = { name: 'Someone' };
       return inv;
     });
 
@@ -94,7 +94,7 @@ exports.downvotes = async (req, res) => {
   let skip = parseInt(req.query.skip, 10) || null;
   let downvotes;
   try {
-    downvotes = await Invest.find({ amount: -1 })
+    downvotes = await Invest.find({ amount: { $lt: 0 } })
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit)
@@ -251,7 +251,10 @@ exports.create = async (req, res) => {
 
   async function investCheck() {
     let type = 'upvote';
-    if (amount < 1) type = 'downvote';
+    if (amount < 0) {
+      type = 'downvote';
+      amount = -3;
+    }
 
     if (user._id === post.user) {
       throw new InvestException('You can not ' + type + 'your own post');
@@ -274,7 +277,7 @@ exports.create = async (req, res) => {
       console.log('user already invested in post');
       relevanceToAdd = 0;
       let string = 'relevant';
-      if (investment.amount < 1) string = 'irrelevant';
+      if (investment.amount < 0) string = 'irrelevant';
       throw new InvestException('You have already marked this post as ' + string);
     }
     // else if (investment) {
@@ -388,8 +391,9 @@ exports.create = async (req, res) => {
           relevanceEarning = 1;
           if (diff > 0) relevanceEarning = Math.pow(diff, 1 / 3) + 1;
 
-          let sign = investment.amount / Math.abs(investment.amount);
-          relevanceEarning *= amount * sign;
+          let previousSign = investment.amount / Math.abs(investment.amount);
+          let thisSign = amount / Math.abs(amount);
+          relevanceEarning *= thisSign * previousSign;
 
           relevanceEarning *= ratio;
 
