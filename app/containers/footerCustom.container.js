@@ -28,8 +28,9 @@ class Footer extends Component {
   renderBadge(count) {
     if (typeof count === 'number') {
       this.totalBadge += count;
-      PushNotificationIOS.setApplicationIconBadgeNumber(this.totalBadge);
     }
+    PushNotificationIOS.setApplicationIconBadgeNumber(this.totalBadge);
+
     if (!count) return null;
     return (<View pointerEvents={'none'} style={styles.notifCount}>
       <Text style={styles.notifText}>
@@ -39,7 +40,6 @@ class Footer extends Component {
   }
 
   renderTab(tab) {
-    this.totalBadge = 0;
     let user = this.props.auth.user;
     let currentTab = this.props.navigation.tabs.routes[this.props.navigation.tabs.index];
     let badge;
@@ -88,6 +88,7 @@ class Footer extends Component {
   }
 
   render() {
+    this.totalBadge = 0;
     let tabs = [...this.props.navigation.tabs.routes];
     let footerEl = null;
 
