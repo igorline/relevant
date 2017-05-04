@@ -26,6 +26,7 @@ class Invites extends Component {
       name: '',
       number: 1,
       filter: null,
+      invitedBy: '',
     };
   }
 
@@ -60,7 +61,8 @@ class Invites extends Component {
     let invite = {
       email: this.state.email,
       name: this.state.name,
-      number: this.state.number
+      number: this.state.number,
+      invitedByString: this.state.invitedBy
     };
     this.props.actions.createInvite(invite);
     this.setState({ name: '', email: '', number: 1 });
@@ -104,6 +106,14 @@ class Invites extends Component {
         <input
           className={'blueInput'}
           type={'text'}
+          name={'invitedBy'}
+          placeholder={'invited by'}
+          value={this.state.invitedBy}
+          onChange={this.handleChange}
+        />
+        <input
+          className={'blueInput'}
+          type={'email'}
           name={'email'}
           placeholder={'user email'}
           value={this.state.email}
