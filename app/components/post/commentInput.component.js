@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { globalStyles, fullHeight } from '../../styles/global';
 import UserSearchComponent from '../createPost/userSearch.component';
+import * as utils from '../../utils';
+import TextBody from './textBody.component';
 
 let styles;
 
@@ -47,38 +49,27 @@ class CommentInput extends Component {
       user: this.props.auth.user._id
     };
     this.props.actions.createComment(this.props.auth.token, commentObj);
+    this.props.actions.setUserSearch([]);
     this.setState({ comment: '' });
     this.textInput.blur();
     this.props.onFocus('new');
   }
 
   processInput(comment) {
-    let lines = comment.split('\n');
-    let words = [];
-    lines.forEach(line => words = words.concat(line.split(' ')));
+    // let lines = comment.split('\n');
+    // let words = [];
+    // lines.forEach(line => words = words.concat(line.split(' ')));
+
+    let words = utils.text.getWords(comment);
 
     let lastWord = words[words.length - 1];
     if (lastWord.match(/@\S+/g) && lastWord.length > 1) {
       this.mention = lastWord;
       this.props.actions.searchUser(lastWord.replace('@', ''));
-    }
-    else this.props.actions.setUserSearch([]);
+    } else this.props.actions.setUserSearch([]);
 
-    this.commentTags = words.map((word) => {
-      if (word.match(/^#\S+/g)) {
-        return word.replace('#', '').replace(/(,|\.)\s*$/, '');
-      }
-      return null;
-    })
-    .filter(el => el !== null);
-
-    this.commentMentions = words.map((word) => {
-      if (word.match(/^@\S+/g)) {
-        return word.replace('@', '').replace(/(,|\.)\s*$/, '');
-      }
-      return null;
-    })
-    .filter(el => el !== null);
+    this.commentTags = utils.text.getTags(words);
+    this.commentMentions = utils.text.getMentions(words);
   }
 
   renderUserSuggestions() {
@@ -92,7 +83,6 @@ class CommentInput extends Component {
               bottom: Math.min(100, this.state.inputHeight),
               left: 0,
               right: 0,
-              // top: 0,
               maxHeight: this.top,
               backgroundColor: 'white',
               borderTopWidth: 1,
@@ -141,7 +131,7 @@ class CommentInput extends Component {
             this.processInput(comment, false);
             this.setState({ comment });
           }}
-          value={this.state.comment}
+          // value={this.state.comment}
           returnKeyType="default"
           onFocus={this.props.onFocus}
           onContentSizeChange={(event) => {
@@ -150,7 +140,9 @@ class CommentInput extends Component {
               inputHeight: Math.max(50, h)
             });
           }}
-        />
+        >
+          <TextBody showAllMentions>{this.state.comment}</TextBody>
+        </TextInput>
         <TouchableHighlight
           underlayColor={'transparent'}
           style={[styles.commentSubmit]}

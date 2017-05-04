@@ -67,6 +67,7 @@ class Profile extends Component {
       this.loaded = true;
       this.userId = this.props.auth.user._id;
       this.userData = this.props.users[this.userId];
+      this.myProfile = true;
       this.setState({});
     }
   }
@@ -148,6 +149,7 @@ class Profile extends Component {
         <ProfileComponent
           key={0}
           {...this.props}
+          myProfile={this.myProfile}
           user={this.userData}
           styles={styles}
         />,

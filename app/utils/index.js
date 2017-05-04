@@ -3,6 +3,7 @@ import * as post from './post';
 import * as fetchUtils from './fetchUtils';
 import * as token from './token';
 import * as numbers from './numbers';
+import * as text from './text';
 
 export {
   s3,
@@ -10,4 +11,5 @@ export {
   fetchUtils,
   token,
   numbers,
+  text
 };

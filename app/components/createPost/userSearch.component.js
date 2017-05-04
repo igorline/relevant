@@ -30,7 +30,7 @@ export default class UserSearchComponent extends Component {
     return (
       <ListView
         automaticallyAdjustContentInsets={false}
-        keyboardShouldPersistTaps
+        keyboardShouldPersistTaps={'always'}
         contentContainerStyle={{ backgroundColor: 'white' }}
         style={[{ flex: 1 }]}
         dataSource={dataSource}

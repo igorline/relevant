@@ -9,7 +9,7 @@ import {
   TouchableHighlight
 } from 'react-native';
 import { globalStyles } from '../../styles/global';
-import CommentEditing from './commentEditing.component';
+import TextEdit from '../common/textEdit.component';
 import UserName from '../userNameSmall.component';
 import { numbers } from '../../utils';
 import TextBody from './textBody.component';
@@ -48,7 +48,12 @@ class Comment extends Component {
     this.setSelected = this.setSelected.bind(this);
   }
 
-  saveEdit(comment) {
+  saveEdit(text) {
+    let comment = this.props.comment;
+    if (comment.text === text) {
+      return this.editComment();
+    }
+    comment.text = text;
     this.props.actions.updateComment(comment)
     .then((results) => {
       if (results) {
@@ -116,105 +121,34 @@ class Comment extends Component {
 
   render() {
     let comment = this.props.comment;
+    let user = this.props.auth.user;
+
     if (!comment) return null;
-    let body = comment.text;
     let postTime = moment(comment.createdAt);
     let timestamp = numbers.timeSince(postTime);
-    let bodyEl = null;
-    let bodyObj = {};
     let optionsEl = null;
     let editingEl = null;
-    let authId = null;
-    let textEl = null;
-    let image = null;
     let owner = false;
-    let name = null;
-    let imageEl = null;
     let commentUserId = null;
-    let textArr = body.replace((/[@#]\S+/g), (a) => { return '`' + a + '`'; }).split(/`/);
-    textArr.forEach((section, i) => {
-      bodyObj[i] = {};
-      bodyObj[i].text = section;
-      if (section.indexOf('#') > -1) {
-        bodyObj[i].hashtag = true;
-        bodyObj[i].mention = false;
-      } else if (section.indexOf('@') > -1) {
-        bodyObj[i].mention = true;
-        bodyObj[i].hashtag = false;
-      } else {
-        bodyObj[i].hashtag = false;
-        bodyObj[i].mention = false;
-      }
-    });
+    let textBody;
 
-    textEl = Object.keys(bodyObj).map((key, i) => {
-      let text = bodyObj[key].text;
-
-      if (bodyObj[key].hashtag) {
-        return (<Text
-          key={key}
-          onPress={() => this.setTag(text)}
-          style={styles.active}
-        >
-          {text}
-        </Text>);
-      } else if (bodyObj[key].mention) {
-        return (<Text
-          key={key}
-          onPress={() => this.setSelected(text)}
-          style={styles.active}
-        >
-          {text}
-        </Text>);
-      }
-      return (<Text key={i}>{text}</Text>);
-    });
-
-    if (!this.state.editing) {
-      bodyEl = (<Text style={[styles.commentBodyText, styles.georgia]}>{textEl}</Text>);
-    } else {
-      editingEl = (<CommentEditing
-        comment={comment}
+    if (this.state.editing) {
+      editingEl = (<TextEdit
+        style={[styles.darkGray, styles.editingInput]}
+        text={comment.text}
         toggleFunction={this.editComment}
         saveEditFunction={this.saveEdit}
       />);
     }
 
-    if (comment.embeddedUser) {
-      if (comment.embeddedUser.image) image = comment.embeddedUser.image;
-      if (comment.embeddedUser.name) name = comment.embeddedUser.name;
-      if (comment.user) {
-        if (typeof comment.user === 'object') {
-          commentUserId = comment.user._id;
-        } else {
-          commentUserId = comment.user;
-        }
-      }
+    if (comment.user && typeof comment.user === 'object') {
+      commentUserId = comment.user._id;
+    } else {
+      commentUserId = comment.user;
     }
 
-    if (this.props.auth.user) {
-      if (this.props.auth.user._id) authId = this.props.auth.user._id;
-    }
-
-    if (authId && commentUserId) {
-      if (authId === commentUserId) owner = true;
-    }
-
-    if (image) {
-      imageEl = (
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          onPress={() => this.props.navigator.goToProfile({
-            _id: comment.user,
-            name: comment.embeddedUser.name
-          })}
-        >
-          <Image
-            style={styles.commentAvatar}
-            source={{ uri: image }}
-          />
-        </TouchableHighlight>
-      );
+    if (user && user._id && user._id === commentUserId) {
+      owner = true;
     }
 
     if (owner) {
@@ -230,6 +164,14 @@ class Comment extends Component {
       </View>);
     }
 
+    textBody = (
+      <TextBody
+        {...this.props}
+        post={comment}
+        body={comment.text}
+      />
+    );
+
     return (
       <View
         ref={(c) => { this.singleComment = c; }}
@@ -239,18 +181,17 @@ class Comment extends Component {
           <UserName
             repost={comment.repost}
             size={'small'}
-            user={{ image: comment.embeddedUser.image, name: comment.embeddedUser.name, _id: comment.user }}
+            user={{
+              image: comment.embeddedUser.image,
+              name: comment.embeddedUser.name,
+              _id: comment.user
+            }}
             setSelected={this.setSelected}
           />
           <Text style={[{ fontSize: 12 }, styles.timestampGray]}>{timestamp}</Text>
         </View>
         <View style={{ paddingLeft: 33, paddingRight: 10 }}>
-          <TextBody
-            {...this.props}
-            post={comment}
-            body={comment.text}
-          />
-          {editingEl}
+          {this.state.editing ? editingEl : textBody}
         </View>
         {optionsEl}
       </View>

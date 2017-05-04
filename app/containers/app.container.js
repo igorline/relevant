@@ -188,7 +188,7 @@ class Application extends Component {
         { text: 'OK',
           onPress: (newName) => {
             user.name = newName;
-            this.props.actions.updateUser(user, this.props.auth.token);
+            this.props.actions.updateUser(user);
             this.setState({ newName });
           }
         },
@@ -203,7 +203,7 @@ class Application extends Component {
           if (results.success) {
             let newUser = this.props.auth.user;
             newUser.image = results.url;
-            this.props.actions.updateUser(newUser, this.props.auth.token);
+            this.props.actions.updateUser(newUser);
             setTimeout(() => this.props.actions.getSelectedUser(newUser._id), 250);
           } else {
             console.log('image error ', results);

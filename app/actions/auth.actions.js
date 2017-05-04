@@ -335,25 +335,24 @@ function setDeviceToken(token) {
   };
 }
 
-export function updateUser(user, authToken, preventLocalUpdate) {
-  return (dispatch) => {
-    return fetch(process.env.API_SERVER + '/api/user?access_token=' + authToken, {
-      credentials: 'include',
+export function updateUser(user, preventLocalUpdate) {
+  return async dispatch =>
+    fetch(process.env.API_SERVER + '/api/user', {
       method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
+      ...await reqOptions(),
       body: JSON.stringify(user)
     })
+    .then(utils.fetchUtils.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       if (!preventLocalUpdate) dispatch(updateAuthUser(responseJSON));
+      return true;
     })
-    .catch((error) => {
-      console.log(error, 'error');
+    .catch((err) => {
+      console.log(err, 'error');
+      AlertIOS.alert(err.message);
+      return false;
     });
-  };
 }
 
 export function addDeviceToken(user, authToken) {
@@ -373,7 +372,7 @@ export function addDeviceToken(user, authToken) {
               if (user.deviceTokens.indexOf(storedDeviceToken) < 0) {
                 newUser.deviceTokens.push(storedDeviceToken);
                 console.log('adding devicetoken to user here', storedDeviceToken);
-                dispatch(updateUser(newUser, authToken));
+                dispatch(updateUser(newUser));
               } else {
                 console.log(user.deviceTokens);
                 console.log('devicetoken already present in user');
@@ -381,7 +380,7 @@ export function addDeviceToken(user, authToken) {
             } else {
               newUser.deviceTokens = [storedDeviceToken];
               console.log('adding devicetoken to user object', storedDeviceToken);
-              dispatch(updateUser(newUser, authToken));
+              dispatch(updateUser(newUser));
             }
           } else {
             console.log('no userdefault devicetoken');
@@ -409,7 +408,7 @@ export function addDeviceToken(user, authToken) {
         if (user.deviceTokens.indexOf(deviceToken) < 0) {
           newUser.deviceTokens.push(deviceToken);
           console.log('adding devicetoken to user object', deviceToken);
-          dispatch(updateUser(newUser, authToken));
+          dispatch(updateUser(newUser));
         } else {
           console.log(user.deviceTokens);
           console.log('devicetoken already present in user object');
@@ -417,7 +416,7 @@ export function addDeviceToken(user, authToken) {
       } else {
         newUser.deviceTokens = [deviceToken];
         console.log('adding devicetoken to useroject', deviceToken);
-        dispatch(updateUser(newUser, authToken));
+        dispatch(updateUser(newUser));
       }
     });
   };
@@ -434,7 +433,7 @@ export function removeDeviceToken(auth) {
         user.deviceTokens.splice(index, 1);
         console.log(user.deviceTokens, 'post splice');
         console.log('upating user to', user);
-        dispatch(updateUser(user, auth.token, true));
+        dispatch(updateUser(user, true));
       } else {
         console.log('devicetoken not present');
       }

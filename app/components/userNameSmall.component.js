@@ -59,9 +59,10 @@ export default function UserName(props) {
             </View>
             {stats}
           </View>
-          {handle ? (<Text style={[styles.font10, styles.greyText]}>
-            {handle} {props.postTime}
-          </Text>) : null }
+          {handle ? (
+            <Text style={[styles.font10, styles.greyText]}>
+              {handle} {props.postTime}
+            </Text>) : null }
         </View>
       </View>
     </TouchableWithoutFeedback>

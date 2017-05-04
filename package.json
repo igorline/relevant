@@ -90,6 +90,7 @@
     "react-native-textinput-utils": "^0.3.0",
     "react-native-tooltip": "^5.0.0",
     "react-native-user-defaults": "^0.1.4",
+    "react-native-vector-icons": "^4.0.1",
     "react-native-video": "^1.0.0",
     "react-redux": "^4.4.1",
     "react-router": "^3.0.4",
