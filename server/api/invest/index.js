@@ -6,6 +6,7 @@ let router = express.Router();
 
 router.post('/', auth.isAuthenticated(), controller.create);
 router.delete('/destroy', auth.isAuthenticated(), controller.destroy);
+router.get('/downvotes', auth.hasRole('admin'), controller.downvotes);
 router.get('/:userId', auth.blocked(), controller.show);
 router.get('/post/:postId', auth.authMiddleware(), controller.postInvestments);
 

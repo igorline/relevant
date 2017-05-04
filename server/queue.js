@@ -104,9 +104,9 @@ async function basicIncome() {
       q.push(async cb => {
         try {
           let balanceIncrease;
-          if (teir === 1) balanceIncrease = 5;
+          if (teir === 1) balanceIncrease = 6;
           if (teir === 2) balanceIncrease = 10;
-          if (teir === 3) balanceIncrease = 30;
+          if (teir === 3) balanceIncrease = 20;
 
           // let balance = Math.min(user.balance + balanceIncrease, balanceIncrease);
           // balanceIncrease = balance - user.balance;

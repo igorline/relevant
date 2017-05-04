@@ -76,7 +76,7 @@ exports.sendEmailFunc = async function(_invite) {
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: invite.email,
-      subject: 'Invitation to join Relevant',
+      subject: 'Your Relevant Invitation',
       html: `
       ${hi}You must be WOKE, because you are invited to join Relevant
       <br />
