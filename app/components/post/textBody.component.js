@@ -47,8 +47,9 @@ class TextBody extends Component {
   render() {
     const expanded = this.props.singlePost;
     let maxTextLength = this.props.maxTextLength || Math.pow(10, 1000);
-    let body = this.props.body || '';
+    let body = this.props.body || this.props.children || '';
     let post = this.props.post || {};
+    let showAllMentions = this.props.showAllMentions;
 
     let bodyEl = null;
 
@@ -73,6 +74,7 @@ class TextBody extends Component {
         if (post.mentions && post.mentions.find(mention => mention === m)) {
           word.type = 'mention';
         }
+        if (showAllMentions) word.type = 'mention';
       } else if (utils.post.URL_REGEX.test(section)) {
         word.type = 'url';
       }
@@ -112,7 +114,13 @@ class TextBody extends Component {
       } else if (word.type === 'url') {
         return (<Text
           key={i}
-          onPress={() => Linking.openURL(word.text)}
+          onPress={() => {
+            let link = word.text;
+            if (!link.match(/http:\/\//i) && !link.match(/https:\/\//i)) {
+              word.text = 'http://' + word.text;
+            }
+            return Linking.openURL(word.text);
+          }}
           style={styles.active}
         >
           {word.text + space}
@@ -132,7 +140,11 @@ class TextBody extends Component {
     }
 
     return (
-      <Text style={this.props.style}>
+      <Text
+        numberOfLines={this.props.numberOfLines}
+        ellipsizeMode={'tail'}
+        style={this.props.style}
+      >
         {bodyEl}
       </Text>
     );
@@ -143,21 +155,6 @@ class TextBody extends Component {
 export default TextBody;
 
 const localStyles = StyleSheet.create({
-  bodyText: {
-    fontFamily: 'Georgia',
-    fontSize: 38 / 2,
-    lineHeight: 55 / 2,
-  },
-  commentaryText: {
-    fontFamily: 'Georgia',
-    fontSize: 32 / 2,
-    lineHeight: 40 / 2,
-  },
-  shortBodyText: {
-    fontFamily: 'Libre Caslon Display',
-    fontSize: 63 / 2,
-    lineHeight: 82 / 2,
-  }
 });
 
 styles = { ...globalStyles, ...localStyles };
