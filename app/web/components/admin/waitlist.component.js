@@ -3,7 +3,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as adminActions from '../../../actions/admin.actions';
 import ShadowButton from '../common/ShadowButton';
-import AdminHeader from './header.component';
 
 if (process.env.BROWSER === true) {
   require('./admin.css');
@@ -65,7 +64,6 @@ class Waitlist extends Component {
 
     return (
       <div className="adminContainer">
-        <AdminHeader />
         <h2>Waitlist</h2>
         <div key={'inviteId'} className={'titleRow'}>
           <span>Name</span>
