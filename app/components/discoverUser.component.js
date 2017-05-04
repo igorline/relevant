@@ -78,9 +78,9 @@ const localStyles = StyleSheet.create({
   },
   discoverBio: {
     fontFamily: 'Georgia',
-    fontSize: 32 / 2,
-    lineHeight: 48 / 2,
-    paddingTop: 10,
+    fontSize: 30 / 2,
+    lineHeight: 40 / 2,
+    paddingTop: 5,
     paddingBottom: 5,
     // textAlign: 'right'
   },
