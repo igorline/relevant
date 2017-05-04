@@ -26,7 +26,7 @@ export default class UrlComponent extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      inputHeight: 100,
+      inputHeight: 200,
     };
     this.setMention = this.setMention.bind(this);
     this.previousPostLength = 0;
@@ -260,27 +260,6 @@ export default class UrlComponent extends Component {
       );
     }
 
-    let tip = (
-      <View style={styles.videoTip}>
-        <View style={{ flex: 0.5, paddingRight: 10 }}>
-          <Text style={styles.textP}>1. Tap on share icon</Text>
-          <Text style={styles.textP}>2. Tap on 'More'</Text>
-          <Text style={styles.textP}>3. Find and toggle Relevant app</Text>
-          <Text style={styles.textP}>4. Rearrange Relevant icon to a convenient place</Text>
-        </View>
-        <View
-          style={{ width, height: width, overflow: 'hidden' }}
-        >
-          <Video
-            resizeMode={'contain'}
-            source={require('../../assets/images/shareTip.mp4')}
-            style={{ width, height: width * 16 / 9, bottom: 0, position: 'absolute' }}
-            repeat
-          />
-        </View>
-      </View>
-    );
-
     input = (
       <KeyboardAvoidingView
         behavior={'padding'}
@@ -314,24 +293,29 @@ export default class UrlComponent extends Component {
           >
             <TextInput
               ref={(c) => { this.input = c; }}
-              style={[styles.font15, styles.createPostInput, styles.flex1]}
+              style={[
+                styles.font15,
+                styles.createPostInput,
+                // hack to fix not-resizing element when text changes programatically
+                { flex: this.props.postBody.length > 10 ? 1 : 0 }]}
+
               placeholder={urlPlaceholder}
               multiline
               clearButtonMode={'while-editing'}
               onChangeText={postBody => this.processInput(postBody, false)}
               onBlur={() => this.processInput(null, true)}
-              // value={this.props.postBody}
               returnKeyType={'default'}
               autoFocus
               keyboardShouldPersistTaps={'never'}
               onContentSizeChange={(event) => {
+                console.log('size changed');
                 let h = event.nativeEvent.contentSize.height;
                 this.setState({
                   inputHeight: Math.max(100, h)
                 });
               }}
             >
-              <TextBody showAllMentions>
+              <TextBody style={{ flex: 1, width: 400 }} showAllMentions>
                 {this.props.postBody}
               </TextBody>
             </TextInput>
@@ -372,6 +356,8 @@ const localStyles = StyleSheet.create({
     height: 55,
   },
   postButtonShare: {
+
+    position: 'absolute',
     // alignSelf: 'center',
     // width: 200,
     left: 0,
