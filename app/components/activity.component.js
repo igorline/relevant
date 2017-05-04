@@ -83,7 +83,15 @@ export default function (props) {
     if (user && singleActivity.totalUsers - 1) {
       let s = '';
       if (singleActivity.totalUsers - 1 > 1) s = 's';
-      return <Text>{user.name} and {singleActivity.totalUsers - 1} other{s}</Text>;
+      return (<Text>
+        <Text
+          style={styles.link}
+          onPress={() => setSelected(user)}
+        >
+          {user.name}{' '}
+        </Text>
+        and {singleActivity.totalUsers - 1} other{s}
+      </Text>);
     }
 
     // if (singleActivity.amount < 0) {
