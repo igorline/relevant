@@ -73,12 +73,16 @@ exports.sendEmailFunc = async function(_invite) {
     let name = invite.name;
     let hi = '';
     if (name) hi = `<span style="text-transform: capitalize;">${name}!</span><br /><br />`;
+    let intro = 'You must be WOKE, because you are invited to join Relevant';
+    if (invite.invitedByString && invite.invitedByString !== '') {
+      intro = `${invite.invitedByString} invited you to join Relevant`;
+    }
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: invite.email,
       subject: 'Your Relevant Invitation',
       html: `
-      ${hi}You must be WOKE, because you are invited to join Relevant
+      ${hi}${intro}
       <br />
       <br />
       Your invitation code: <b>${invite.code}</b>

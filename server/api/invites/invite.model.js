@@ -11,7 +11,8 @@ let InviteSchema = new Schema({
   redeemed: { type: Boolean, default: false },
   number: { type: Number, default: 1 },
   status: { type: String },
-  invitedBy: { type: String, ref: 'User' }
+  invitedBy: { type: String, ref: 'User' },
+  invitedByString: { type: String }
 }, {
   timestamps: true
 });
