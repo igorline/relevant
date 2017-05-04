@@ -64,14 +64,23 @@ class SinglePostComments extends Component {
       if (this.comments) {
         this.dataSource = ds.cloneWithRows(this.comments);
       }
+
+      setTimeout(() => {
+        if (this.props.scene.openComment) {
+          this.input.textInput.focus();
+        }
+        return;
+      }, 30);
+
+
       this.forceUpdate();
     });
   }
 
   componentDidMount() {
-    if (this.props.scene.openComment) {
-      this.input.textInput.focus();
-    }
+    // if (this.props.scene.openComment) {
+    //   this.input.textInput.focus();
+    // }
   }
 
   componentWillReceiveProps(next) {
