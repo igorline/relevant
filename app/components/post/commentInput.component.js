@@ -56,10 +56,6 @@ class CommentInput extends Component {
   }
 
   processInput(comment) {
-    // let lines = comment.split('\n');
-    // let words = [];
-    // lines.forEach(line => words = words.concat(line.split(' ')));
-
     let words = utils.text.getWords(comment);
 
     let lastWord = words[words.length - 1];
@@ -131,7 +127,6 @@ class CommentInput extends Component {
             this.processInput(comment, false);
             this.setState({ comment });
           }}
-          // value={this.state.comment}
           returnKeyType="default"
           onFocus={this.props.onFocus}
           onContentSizeChange={(event) => {
