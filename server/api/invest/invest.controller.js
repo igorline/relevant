@@ -76,11 +76,11 @@ exports.postInvestments = async (req, res) => {
       select: 'relevance name image'
     });
 
-    investments = investments.map(inv => {
-      inv = inv.toObject();
-      if (inv.amount < 1) inv.investor = { name: 'Someone' };
-      return inv;
-    });
+    // investments = investments.map(inv => {
+    //   inv = inv.toObject();
+    //   if (inv.amount < 1) inv.investor = { name: 'Someone' };
+    //   return inv;
+    // });
 
     // investments = investments.filter(inv => inv.investor ? inv.author != inv.investor._id : true);
   } catch (err) {
