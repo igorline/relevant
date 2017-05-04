@@ -41,6 +41,7 @@ class Downvotes extends Component {
 
     return (
       <div>
+        <h2>Downvotes</h2>
         <InfScroll
           className={'adminContainer'}
           loadMore={this.load}

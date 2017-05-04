@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as tagActions from '../../../actions/tag.actions';
-import AdminHeader from './header.component';
 
 // import styled from 'styled-components';
 
@@ -62,7 +61,6 @@ class TopicsAdmin extends Component {
 
     return (
       <div style={styles.topicsContainerStyle}>
-        <AdminHeader />
         <input
           type={'text'}
           name={'topic'}
