@@ -20,7 +20,8 @@ export function getTags(words) {
 }
 
 export function getWords(text) {
-  return text.replace((/(\.\s+)|(\.$)/g), a => '`' + a + '`')
-  .replace((/[,!?\s+]/g), a => '`' + a + '`')
+  return text
+  // .replace((/(\.\s+)|(\.$)/g), a => '`' + a + '`')
+  .replace((/[,.!?](?!\b)|[\s+]/g), a => '`' + a + '`')
   .split(/`/);
 }
