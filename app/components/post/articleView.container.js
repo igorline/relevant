@@ -29,6 +29,7 @@ class ArticleView extends Component {
       backButtonEnabled: false,
       forwardButtonEnabled: false,
       url: null,
+      initalUrl: null,
       status: '',
       loading: true,
     };
@@ -36,8 +37,10 @@ class ArticleView extends Component {
 
   componentWillMount() {
     this.onInteraction = InteractionManager.runAfterInteractions(() => {
-      this.setState({ url: this.props.scene.uri });
-      console.log(this.props.scene.uri)
+      this.setState({
+        initalUrl: this.props.scene.uri,
+        url: this.props.scene.uri,
+      });
     });
   }
 
@@ -55,21 +58,10 @@ class ArticleView extends Component {
   showShareActionSheet() {
     ActionSheetIOS.showShareActionSheetWithOptions({
       url: this.state.url,
-      // message: 'message to go with the shared url',
-      // subject: 'a subject to go in the email heading',
-      // excludedActivityTypes: [
-      //   'com.apple.UIKit.activity.PostToTwitter'
-      // ]
     },
     (error) => AlertIOS.alert(error),
     (completed, method) => {
-      // var text;
-      // if (completed) {
-      //   text = `Shared via ${method}`;
-      // } else {
-      //   text = 'You didn\'t share';
-      // }
-      // // this.setState({ text });
+
     });
   }
 
@@ -140,14 +132,11 @@ class ArticleView extends Component {
 
     let webView = <View style={{ flex: 1 }} />;
 
-    if (this.state.url) {
+    if (this.state.initalUrl) {
       webView = (<WebView
         ref={(ref) => { this.webview = ref; }}
         scalesPageToFit
         onNavigationStateChange={(navState) => {
-          if (navState.navigationType === 'other' &&
-            navState.url.split('?')[0].split('#')[0] === this.state.url) return;
-
           this.setState({
             backButtonEnabled: navState.canGoBack,
             forwardButtonEnabled: navState.canGoForward,
@@ -158,7 +147,7 @@ class ArticleView extends Component {
         onLoadStart={() => this.setState({ loading: true })}
         onLoadEnd={() => this.setState({ loading: false })}
         style={{ flex: 1, backgroundColor: 'transparent', marginTop: 0 }}
-        source={{ uri: this.state.url }}
+        source={{ uri: this.state.initalUrl }}
       />);
     }
 

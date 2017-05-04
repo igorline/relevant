@@ -74,14 +74,15 @@ export default DiscoverUser;
 
 const localStyles = StyleSheet.create({
   bioContainer: {
-    // marginLeft: 50,
+    marginLeft: 51,
   },
   discoverBio: {
     fontFamily: 'Georgia',
     fontSize: 32 / 2,
     lineHeight: 48 / 2,
-    paddingTop: 15,
+    paddingTop: 10,
     paddingBottom: 5,
+    // textAlign: 'right'
   },
   discoverUser: {
     flex: 1,
