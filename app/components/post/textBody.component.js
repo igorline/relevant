@@ -57,10 +57,7 @@ class TextBody extends Component {
 
     let extraTags = post.tags || [];
 
-    let textArr = body
-    .replace((/(\.\s+)|(\.$)/g), a => '`' + a + '`')
-    .replace((/[,!?\s+]/g), a => '`' + a + '`')
-    .split(/`/);
+    let textArr = utils.text.getWords(body);
 
     textArr.forEach((section) => {
       let word = {};
