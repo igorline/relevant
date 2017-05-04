@@ -179,6 +179,30 @@ export function signupForMailingList(user) {
     });
 }
 
+export function setDownvotes(data) {
+  return {
+    type: types.SET_DOWNVOTES,
+    payload: data,
+  };
+}
+
+export function getDownvotes(skip, limit) {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.fetchUtils.superFetch({
+        method: 'GET',
+        params: { skip, limit },
+        endpoint: 'invest',
+        path: '/downvotes',
+      });
+      dispatch(setDownvotes(responseJSON));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+}
+
 // export function updateWaitlist(user) {
 //   return async dispatch =>
 //   fetch(API + '/list/' + user._id, {
