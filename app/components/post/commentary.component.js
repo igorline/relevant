@@ -12,6 +12,7 @@ import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostButtons from './postButtons.component';
 import Pills from '../common/pills.component';
+import Tags from '../tags.component';
 
 let styles;
 
@@ -125,12 +126,12 @@ export default class Commentary extends Component {
                 post={post}
                 editing={false}
               />
-              { LAYOUT === 1 ? <PostButtons
+              <PostButtons
                 scene={this.props.scene}
                 {...this.props}
                 post={post}
                 comments={post.comments || null}
-              /> : null}
+              />
             </View>
           </View>
           { separator ?
