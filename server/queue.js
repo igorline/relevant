@@ -85,7 +85,7 @@ function updateUserStats() {
 
 async function basicIncome() {
   let tier1 = await User.find({
-    balance: { $lt: 5 },
+    balance: { $lt: 6 },
     relevance: { $lt: 10 }
   }, 'balance name deviceTokens relevance relevanceRecord');
 
@@ -95,7 +95,7 @@ async function basicIncome() {
   }, 'balance name deviceTokens relevance relevanceRecord');
 
   let tier3 = await User.find({
-    balance: { $lt: 30 },
+    balance: { $lt: 20 },
     relevance: { $gte: 50 }
   }, 'balance name deviceTokens relevance relevanceRecord');
 
@@ -104,7 +104,7 @@ async function basicIncome() {
       q.push(async cb => {
         try {
           let balanceIncrease;
-          if (teir === 1) balanceIncrease = 6;
+          if (teir === 1) balanceIncrease = 5;
           if (teir === 2) balanceIncrease = 10;
           if (teir === 3) balanceIncrease = 20;
 
