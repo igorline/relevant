@@ -10,8 +10,9 @@ import {
   Image
 } from 'react-native';
 import Share from 'react-native-share';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import { globalStyles, fullWidth } from '../../styles/global';
+import { globalStyles, fullWidth, blue } from '../../styles/global';
 import InvestModal from './investModal.component';
 import { numbers } from '../../utils';
 
@@ -271,6 +272,7 @@ class PostButtons extends Component {
     let post = this.props.post;
     let investable = false;
     let irrelevantButton;
+    // let commentIcon = <Icon name="ios-chatbubbles" size={18} color={styles.greyText} />;
     let commentString = 'comment';
     let earnings;
     let smallScreen = fullWidth <= 320 || false;
@@ -287,21 +289,30 @@ class PostButtons extends Component {
     if (post && post.commentCount) {
       if (post.commentCount === 1) commentString = '1 comment';
       else {
-        commentString = post.commentCount + ' comments';
+        commentString = <Text>{post.commentCount} {'comments'}</Text>;
       }
     }
 
     investButtonEl = (<TouchableWithoutFeedback
       onPress={() => investable ? this.invest() : null}
     >
-      <View style={[styles.investButton, !investable ? { opacity: 0.3, shadowOpacity: 0 } : null]}>
+      <View style={[
+        styles.investButton,
+        !investable ? { opacity: 0.3, shadowOpacity: 0 } : null,
+        smallScreen ? styles.invSmall : null]}
+      >
         <Text
           suppressHighlighting={false}
           allowFontScaling={false}
-          style={[styles.font15, styles.bold, styles.postButtonText]}
+          style={[
+            styles.font15,
+            styles.bold,
+            styles.postButtonText,
+            smallScreen ? styles.postButtonTextSmall : null,
+          ]}
         >
           <Image
-            style={styles.rup}
+            style={[styles.rup, smallScreen ? styles.smallerR : null]}
             source={require('../../assets/images/rup.png')}
           />
           upvote
@@ -424,6 +435,11 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     width: (fullWidth / 2) - 25
   },
+  smallerR: {
+    width: 20,
+    height: 18,
+    marginRight: 0
+  },
   investImage: {
     width: 24,
     height: 24,
@@ -454,6 +470,10 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center'
   },
+  invSmall: {
+    paddingHorizontal: 5,
+    height: 28,
+  },
   postButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -475,6 +495,10 @@ const localStyles = StyleSheet.create({
     lineHeight: 28,
     backgroundColor: 'transparent'
   },
+  postButtonTextSmall: {
+    fontSize: 13,
+    lineHeight: 26,
+  }
 });
 
 styles = { ...globalStyles, ...localStyles };
