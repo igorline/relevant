@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import {
-  NavigationExperimental,
   View,
   AppState,
   ActionSheetIOS,
   AlertIOS,
   Easing,
   PushNotificationIOS,
-  Linking
+  Linking,
+  Animated
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Analytics from 'react-native-firebase-analytics';
+import * as NavigationExperimental from 'react-navigation';
 
 import Auth from '../components/auth/auth.container';
 import CreatePostContainer from '../components/createPost/createPost.container';
@@ -331,7 +332,8 @@ class Application extends Component {
   configureTransition() {
     const easing = Easing.out(Easing.ease);
     return {
-      duration: 350,
+      duration: 320,
+      timing: Animated.timing,
       easing,
       useNativeDriver: !!NativeAnimatedModule ? true : false
     };
@@ -348,16 +350,17 @@ class Application extends Component {
       <View style={{ flex: 1, backgroundColor: 'black' }} >
         <NavigationTransitioner
           style={{ backgroundColor: 'black' }}
-          navigationState={scene}
+          navigation={{ state: scene }}
           configureTransition={this.configureTransition}
           render={transitionProps => {
             return transitionProps.scene.route.ownCard ? this.renderScene(transitionProps) :
             (<Card
-              {...transitionProps}
               renderScene={this.renderScene}
               back={this.back}
               {...this.props}
               header={false}
+              scroll={this.props.navigation.sroll}
+              {...transitionProps}
             />);
           }
         }

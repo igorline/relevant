@@ -1,10 +1,9 @@
 import {
   StyleSheet,
   View,
-  NavigationExperimental,
   Text
 } from 'react-native';
-
+import * as NavigationExperimental from 'react-navigation';
 import React, { Component } from 'react';
 import Modal from 'react-native-modalbox';
 import { bindActionCreators } from 'redux';

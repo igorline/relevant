@@ -105,7 +105,7 @@ TextEdit.propTypes = {
   placeholder: PropTypes.string,
   toggleFunction: PropTypes.func,
   saveEditFunction: PropTypes.func,
-  style: PropTypes.object,
+  style: PropTypes.array,
 };
 
 styles = { ...localStyles, ...globalStyles };

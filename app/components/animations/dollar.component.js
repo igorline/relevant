@@ -28,14 +28,16 @@ class Dollar extends Component {
       toValue: -(fullWidth / 2.5) + ((Math.random() - 0.5) * 70),
       delay: i * 30,
       duration: 500,
-      easing: Easing.out(Easing.ease)
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
     }).start();
 
     Animated.timing(this.state.y, {
       toValue: fullHeight * 0.6,
       delay: i * 30,
       duration: 500,
-      easing: Easing.in(Easing.ease)
+      easing: Easing.in(Easing.ease),
+      useNativeDriver: true,
     }).start();
 
     // Animated.timing(this.state.opacity, {
@@ -50,13 +52,15 @@ class Dollar extends Component {
         toValue: 1,
         delay: i * 30,
         duration: 450,
-        easing: Easing.out(Easing.exp)
+        easing: Easing.out(Easing.exp),
+        useNativeDriver: true,
       }),
       Animated.timing(this.state.scale, {
         toValue: 0,
         delay: 0,
         duration: 50,
-        easing: Easing.in(Easing.quad)
+        easing: Easing.in(Easing.quad),
+        useNativeDriver: true,
       })
     ]).start();
   }

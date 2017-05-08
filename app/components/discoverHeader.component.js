@@ -55,7 +55,8 @@ export default class DiscoverHeader extends Component {
       {
         toValue: moveHeader,
         duration: 200,
-        easing: Easing.quad
+        easing: Easing.quad,
+        useNativeDriver: true,
       }
      ).start();
   }
@@ -66,7 +67,8 @@ export default class DiscoverHeader extends Component {
       {
         toValue: 0,
         duration: 200,
-        easing: Easing.quad
+        easing: Easing.quad,
+        useNativeDriver: true,
       }
      ).start();
   }

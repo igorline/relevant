@@ -90,7 +90,7 @@ class Messages extends Component {
 
   goToUser(user) {
     this.props.actions.setSelectedUser(user._id);
-    this.props.navigator.push({
+    this.props.actions.push({
       key: 'profile',
       name: user.name,
       back: true,

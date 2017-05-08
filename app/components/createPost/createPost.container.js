@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  NavigationExperimental,
   Text,
   TouchableHighlight,
   AlertIOS,
@@ -10,6 +9,7 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import * as NavigationExperimental from 'react-navigation';
 import * as authActions from '../../actions/auth.actions';
 import * as createPostActions from '../../actions/createPost.actions';
 import * as postActions from '../../actions/post.actions';
@@ -341,18 +341,18 @@ class CreatePostContainer extends Component {
 
     return (<NavigationTransitioner
       style={{ backgroundColor: 'white' }}
-      navigationState={scene}
+      navigation={{ state: scene }}
       configureTransition={this.configureTransition}
       render={transitionProps => (
         <Card
-          {...transitionProps}
           renderScene={this.renderScene}
           back={this.back}
-          {...this.props}
+          scroll={this.props.navigation.scroll}
           next={this.next}
           renderRight={this.renderRight}
           share={this.props.share}
           header
+          {...transitionProps}
         />)}
     />);
   }

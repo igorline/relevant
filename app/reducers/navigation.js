@@ -1,4 +1,4 @@
-import { NavigationExperimental } from 'react-native';
+import * as NavigationExperimental from 'react-navigation';
 import {
   PUSH_ROUTE,
   POP_ROUTE,
