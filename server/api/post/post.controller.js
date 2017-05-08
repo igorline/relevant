@@ -11,7 +11,12 @@ import Tag from '../tag/tag.model';
 import apnData from '../../pushNotifications';
 import mail from '../../mail';
 
-const rootCas = require('ssl-root-cas/latest').create();
+// const rootCas = require('ssl-root-cas/latest').inject();
+// rootCas
+  // .addFile(__dirname + '/usr/lib/ssl/certs/ca-certificates.crt')
+  // .addFile(__dirname + '/ssl/02-cheap-ssl-intermediary-b.pem')
+  // ;
+// require('https').globalAgent.options.ca = rootCas;
 
 const PostEvents = new EventEmitter();
 
@@ -249,7 +254,7 @@ exports.preview = (req, res) => {
         jar: true,
         gzip: true,
         headers: getHeader(uri),
-        ca: rootCas
+        rejectUnauthorized: false,
       }, processReturn);
     }
     return res.status(200).json(processed.result);
@@ -269,7 +274,7 @@ exports.preview = (req, res) => {
     jar: true,
     gzip: true,
     headers: getHeader(previewUrl),
-    ca: rootCas
+    rejectUnauthorized: false,
   }, processReturn);
 };
 
