@@ -11,6 +11,8 @@ import Tag from '../tag/tag.model';
 import apnData from '../../pushNotifications';
 import mail from '../../mail';
 
+const rootCas = require('ssl-root-cas/latest').create();
+
 const PostEvents = new EventEmitter();
 
 // async function filterPosts() {
@@ -246,7 +248,8 @@ exports.preview = (req, res) => {
         maxRedirects: 20,
         jar: true,
         gzip: true,
-        headers: getHeader(uri)
+        headers: getHeader(uri),
+        ca: rootCas
       }, processReturn);
     }
     return res.status(200).json(processed.result);
@@ -265,7 +268,8 @@ exports.preview = (req, res) => {
     maxRedirects: 20,
     jar: true,
     gzip: true,
-    headers: getHeader(previewUrl)
+    headers: getHeader(previewUrl),
+    ca: rootCas
   }, processReturn);
 };
 
