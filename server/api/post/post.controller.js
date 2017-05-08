@@ -246,7 +246,8 @@ exports.preview = (req, res) => {
         maxRedirects: 20,
         jar: true,
         gzip: true,
-        headers: getHeader(uri)
+        headers: getHeader(uri),
+        rejectUnauthorized: false,
       }, processReturn);
     }
     return res.status(200).json(processed.result);
@@ -265,7 +266,8 @@ exports.preview = (req, res) => {
     maxRedirects: 20,
     jar: true,
     gzip: true,
-    headers: getHeader(previewUrl)
+    headers: getHeader(previewUrl),
+    rejectUnauthorized: false,
   }, processReturn);
 };
 
