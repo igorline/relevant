@@ -21,7 +21,10 @@ socket.on('pingKeepAlive', () => {
 export default function configureStore() {
   let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
 
-  let store = applyMiddleware(thunk, socketIoMiddleware)(createStore)(rootReducer);
+  let store = applyMiddleware(thunk, socketIoMiddleware)(createStore)(
+    rootReducer,
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  );
 
   socket.on('connect', () => {
     let s = store.getState();

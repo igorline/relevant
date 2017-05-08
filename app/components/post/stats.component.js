@@ -74,10 +74,13 @@ class Stats extends Component {
 
     let value = (
       <Text onPress={() => this.toggleTooltip('coin')}>
-        <Image
-          style={[styles.coin, ...coinStyle]}
-          source={require('../../assets/images/relevantcoin.png')}
-        />
+        <View style={[styles.coin, ...coinStyle]}>
+          <Image
+            resizeMode={'contain'}
+            style={[styles.coin, ...coinStyle]}
+            source={require('../../assets/images/relevantcoin.png')}
+          />
+        </View>
         <Text>{numbers.abbreviateNumber(entity.value || entity.balance || 0)}</Text>
       </Text>);
 
@@ -85,10 +88,13 @@ class Stats extends Component {
 
     let relevance = (
       <Text onPress={() => this.toggleTooltip('relevance')}>
-        <Image
-          style={[styles.r, ...iconStyle]}
-          source={require('../../assets/images/r.png')}
-        />
+        <View style={[styles.r, ...coinStyle]}>
+          <Image
+            resizeMode={'contain'}
+            style={[styles.r, ...iconStyle]}
+            source={require('../../assets/images/r.png')}
+          />
+        </View>
         {numbers.abbreviateNumber(entity.relevance)}
       </Text>
     );

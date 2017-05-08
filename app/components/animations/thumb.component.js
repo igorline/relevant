@@ -25,13 +25,15 @@ class Heart extends Component {
         toValue: 0,
         delay: 500,
         duration: 300,
-        easing: Easing.in(Easing.ease)
+        easing: Easing.in(Easing.ease),
+        useNativeDriver: true,
       }),
       Animated.timing(this.state.scale, {
         toValue: 1,
         delay: 0,
         duration: 500,
-        easing: Easing.elastic(2)
+        easing: Easing.elastic(2),
+        useNativeDriver: true,
       }).start()
     ]).start();
 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {
-  NavigationExperimental,
   Easing
 } from 'react-native';
+import * as NavigationExperimental from 'react-navigation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Auth from './auth.component';
@@ -80,16 +80,17 @@ class AuthContainer extends Component {
 
     return (<NavigationTransitioner
       style={{ backgroundColor: 'white' }}
-      navigationState={scene}
+      navigation={{ state: scene }}
       configureTransition={this.configureTransition}
       render={transitionProps => (
         <Card
-          {...transitionProps}
           renderScene={this.renderScene}
           back={this.back}
           {...this.props}
+          scroll={this.props.navigation.scroll}
           header
           share={this.props.share}
+          {...transitionProps}
         />)}
     />);
   }

@@ -14,7 +14,6 @@ import {
   SET_TOOLTIP_DATA
 } from './actionTypes';
 
-
 export function push(route, key, animation = 'vertical') {
   return {
     type: PUSH_ROUTE,
@@ -64,7 +63,7 @@ export function goToTopic(topic) {
       back: true,
       id: topic._id,
       topic,
-      gestureResponseDistance: 100,
+      gestureResponseDistance: 150,
     }));
     dispatch(toggleTopics(false));
   };

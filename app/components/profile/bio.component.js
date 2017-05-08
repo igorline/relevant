@@ -55,7 +55,7 @@ class Bio extends Component {
     let editButton;
 
     let bioEdit = (<TextEdit
-      style={styles.bioText}
+      style={[styles.bioText]}
       text={this.bio || user.bio}
       placeholder={'Add your credentials - what are the topics you know most about and why'}
       toggleFunction={() => {

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {
-  NavigationExperimental,
-  Easing
+  Easing,
+  Animated
 } from 'react-native';
-
+import * as NavigationExperimental from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Read from './read.container';
@@ -115,9 +115,11 @@ class CardContainer extends Component {
     // const easing = Easing.bezier(0.0, 0, 0.58, 1);
 
     return {
+      timing: Animated.timing,
       duration: 220,
       easing,
-      useNativeDriver: !!NativeAnimatedModule ? true : false
+      useNativeDriver: !!NativeAnimatedModule ? true : false,
+      speed: 40,
     };
   }
 
@@ -127,15 +129,16 @@ class CardContainer extends Component {
     return (
       <NavigationTransitioner
         style={{ zIndex: 2 }}
-        navigationState={navigation[this.default]}
+        navigation={{ state: navigation[this.default] }}
         configureTransition={this.configureTransition}
         render={transitionProps => (
           <Card
-            {...transitionProps}
             renderScene={this.renderScene}
             back={this.back}
             {...this.props}
+            scroll={this.props.navigation.scroll}
             globalNav={this.props.navigation}
+            {...transitionProps}
             header
           />)}
       />

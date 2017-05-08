@@ -120,13 +120,13 @@ class NavPanResponder {
 
     if (props.scrolling) return false;
 
-    if (props.navigationState.index !== props.scene.index) {
+    if (props.navigation.state.index !== props.scene.index) {
       return false;
     }
 
     const layout = props.layout;
     const isVertical = this._isVertical;
-    const index = props.navigationState.index;
+    const index = props.navigation.state.index;
     const currentDragDistance = gesture[isVertical ? 'dy' : 'dx'];
     const currentDragPosition = gesture[isVertical ? 'moveY' : 'moveX'];
     const maxDragDistance = isVertical ?
@@ -173,7 +173,7 @@ class NavPanResponder {
     const layout = props.layout;
     const isVertical = this._isVertical;
     const axis = isVertical ? 'dy' : 'dx';
-    const index = props.navigationState.index;
+    const index = props.navigation.state.index;
     const distance = isVertical ?
       layout.height.__getValue() :
       layout.width.__getValue();
@@ -200,7 +200,7 @@ class NavPanResponder {
     const props = this._props;
     const isVertical = this._isVertical;
     const axis = isVertical ? 'dy' : 'dx';
-    const index = props.navigationState.index;
+    const index = props.navigation.state.index;
     const distance = I18nManager.isRTL && axis === 'dx' ?
       -gesture[axis] :
       gesture[axis];
@@ -231,7 +231,7 @@ class NavPanResponder {
     Animated.timing(
       props.position,
       {
-        toValue: props.navigationState.index,
+        toValue: props.navigation.state.index,
         duration: ANIMATION_DURATION,
         useNativeDriver: props.position.__isNative,
       }

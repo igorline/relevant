@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
-  NavigationExperimental,
   View,
   Animated,
 } from 'react-native';
-
+import * as NavigationExperimental from 'react-navigation';
+import CardStackStyleInterpolator from 'react-navigation/lib/views/CardStackStyleInterpolator';
 import { globalStyles, fullWidth } from '../../styles/global';
 import CardHeader from './cardHeader.component';
 import NavPanResponder from './navPanResponder';
@@ -14,12 +14,15 @@ const {
   Card: NavigationCard,
 } = NavigationExperimental;
 
-const {
-  PagerPanResponder: NavigationPagerPanResponder,
-  CardStackPanResponder: NavigationCardStackPanResponder,
+// const {
+  // PagerPanResponder: NavigationPagerPanResponder,
+  // CardStackPanResponder: NavigationCardStackPanResponder,
   // PagerStyleInterpolator: NavigationPagerStyleInterpolator,
-  CardStackStyleInterpolator: NavigationCardStackStyleInterpolator
-} = NavigationCard;
+//   CardStackStyleInterpolator: NavigationCardStackStyleInterpolator
+// } = NavigationCard;
+
+// console.log(NavigationCard)
+// console.log(NavigationExperimental)
 
 let styles;
 
@@ -51,12 +54,24 @@ class Card extends Component {
       outputRange: [-0.0, 1, -0.0],
     });
 
+    const opacityCard = position.interpolate({
+      inputRange: ([
+        index - 1,
+        index - 0.99,
+        index,
+        index + 0.99,
+        index + 1,
+      ]),
+      outputRange: ([0, 1, 1, 0.3, 0]),
+    });
+
     if (type === 'header') return { opacity };
 
     return {
       transform: [
         { translateX },
       ],
+      opacity: opacityCard
     };
   }
 
@@ -76,7 +91,7 @@ class Card extends Component {
 
       let panDistance = sceneProps.scene.route.gestureResponseDistance || fullWidth;
 
-      let scrolling = this.props.navigation.scroll;
+      let scrolling = this.props.scroll;
       // if (scrolling) panDistance = 50;
 
       let panHandlers = NavPanResponder.forHorizontal({
@@ -97,9 +112,13 @@ class Card extends Component {
       if (topScene && topScene.route.direction === 'vertical') vertical = true;
 
       if (vertical) {
-        cardTransitionStyle = NavigationCardStackStyleInterpolator.forVertical(sceneProps);
-        panHandlers = NavigationCardStackPanResponder.forVertical({
+        cardTransitionStyle = CardStackStyleInterpolator.forVertical(sceneProps);
+
+        // panHandlers = NavPanResponder.forVertical({
+        panHandlers = NavPanResponder.forVertical({
           ...sceneProps,
+          scrolling,
+          gestureResponseDistance: fullWidth,
           onNavigateBack: () => props.back(),
           // onNavigateForward: () => navigate('forward'),
         });
@@ -121,7 +140,7 @@ class Card extends Component {
         styles.card,
         cardTransitionStyle,
         { flex: 1,
-          paddingTop: headerHeight
+          paddingTop: headerHeight,
         },
       ];
 
@@ -133,7 +152,7 @@ class Card extends Component {
       }
 
       if (vertical) {
-        headerStyle = NavigationCardStackStyleInterpolator.forVertical(sceneProps);
+        headerStyle = CardStackStyleInterpolator.forVertical(sceneProps);
       }
 
       if (props.header && scene.route.header !== false) {

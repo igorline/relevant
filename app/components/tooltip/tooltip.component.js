@@ -65,14 +65,16 @@ class Tooltip extends Component {
           toValue: 1,
           delay: 0,
           duration: 400,
-          easing: Easing.in(Easing.elastic(1.0))
+          easing: Easing.in(Easing.elastic(1.0)),
+          useNativeDriver: true,
           // easing: Easing.in(Easing.cubic)
         }).start();
         Animated.timing(this.state.opacity, {
           toValue: 1,
           delay: 0,
           duration: 400,
-          easing: Easing.out(Easing.cubic)
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
         }).start();
       } else {
         this.setState({

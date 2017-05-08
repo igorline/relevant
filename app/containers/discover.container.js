@@ -110,13 +110,17 @@ class Discover extends Component {
     if (tab.key !== 'discover' && !next.scene) return false;
 
     let currentScene = this.props.nav.routes[this.props.nav.index];
-    // console.log(this.props.nav.routes);
+    // let nextScene = this.props.nav.routes[this.props.nav.index];
 
-    // console.log('this scene ', next.scene);
-    // console.log('current', currentScene);
-    if (this.props.scene && currentScene !== next.scene) return false;
+    // handle base discover view
+    if (!this.props.scene && this.props.nav.index > 0) {
+      return false;
+    }
 
-    // console.log('should update')
+    if (this.props.scene && currentScene !== next.scene) {
+      return false;
+    }
+
     // console.log('updating discover ', this.topic);
     // for (let p in next) {
     //   if (next[p] !== this.props[p]) {
@@ -333,6 +337,7 @@ class Discover extends Component {
       </View>);
     }
 
+    // by default ScrollabeTabView is using common/ScrollView for scroll view
     return (
       <View style={{ backgroundColor: 'hsl(0,0%,100%)', flex: 1 }}>
         {topics}
