@@ -158,10 +158,10 @@ class ProfileComponent extends Component {
           // onPress={() => this.toggleTooltip()}
           style={[styles.profileBig, styles.bebasNoMargin, { flex: 1 }]}
         >
-          <View style={[styles.r, { width: 25, height: 23, right: 3 }]}>
+          <View style={[styles.r, { width: 25, height: 23, right: 3, top: 2.5 }]}>
             <Image
               resizeMode={'contain'}
-              style={[styles.r, { width: 25, height: 23, right: 3 }]}
+              style={[styles.r, { width: 25, height: 23, right: 3, top: 2.5 }]}
               source={require('../../assets/images/r.png')}
             />
           </View>

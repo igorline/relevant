@@ -73,7 +73,10 @@ export default function UserName(props) {
 UserName.propTypes = {
   user: PropTypes.object,
   big: PropTypes.bool,
-  relevance: PropTypes.bool,
+  relevance: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.bool,
+  ]),
   repost: PropTypes.bool,
   postTime: PropTypes.string,
   setSelected: PropTypes.func,
