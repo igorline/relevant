@@ -94,9 +94,9 @@ export default function (props) {
       </Text>);
     }
 
-    if (singleActivity.amount < 0) {
-      return <Text>someone</Text>;
-    }
+    // if (singleActivity.amount < 0) {
+    //   return <Text>someone</Text>;
+    // }
 
     return (<Text style={styles.link} onPress={() => setSelected(user)}>
       {user.name}
@@ -170,7 +170,7 @@ export default function (props) {
       case 'downvote':
         return (
           <Text>
-            somone downvoted your post ➩ your relevance decreased by {amount}
+            {renderName(singleActivity.byUser)} downvoted your post ➩ your relevance decreased by {amount}
           </Text>
         );
 
@@ -322,6 +322,8 @@ export default function (props) {
 
       case 'upvote':
       case 'partialUpvote':
+      case 'downvote':
+      case 'partialDownvote':
         return (
           <View style={styles.activityLeft}>
             <View style={styles.activityLeft}>
@@ -336,16 +338,16 @@ export default function (props) {
           </View>
         );
 
-      case 'downvote':
-      case 'partialDownvote':
-        return (
-          <View style={styles.activityLeft}>
-            <Text allowFontScaling={false} style={styles.incomeEmoji}>😡</Text>
-            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
-              {getText(singleActivity)}
-            </Text>
-          </View>
-        );
+      // case 'downvote':
+      // case 'partialDownvote':
+      //   return (
+      //     <View style={styles.activityLeft}>
+      //       <Text allowFontScaling={false} style={styles.incomeEmoji}>😡</Text>
+      //       <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
+      //         {getText(singleActivity)}
+      //       </Text>
+      //     </View>
+      //   );
 
       // DEPRICATED
       case 'partialEarning':
