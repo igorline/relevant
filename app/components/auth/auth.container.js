@@ -16,6 +16,7 @@ import * as authActions from '../../actions/auth.actions';
 import * as navigationActions from '../../actions/navigation.actions';
 import Card from '../nav/card.component';
 import { globalStyles, localStyles } from '../../styles/global';
+import { transitionConfig } from '../../utils';
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
@@ -66,22 +67,13 @@ class AuthContainer extends Component {
     this.props.actions.pop(scene);
   }
 
-  configureTransition() {
-    const easing = Easing.bezier(0.0, 0, 0.58, 1);
-    return {
-      duration: 220,
-      easing,
-      useNativeDriver: !!NativeAnimatedModule ? true : false
-    };
-  }
-
   render() {
     let scene = this.props.navigation;
 
     return (<NavigationTransitioner
       style={{ backgroundColor: 'white' }}
       navigation={{ state: scene }}
-      configureTransition={this.configureTransition}
+      configureTransition={transitionConfig}
       render={transitionProps => (
         <Card
           renderScene={this.renderScene}

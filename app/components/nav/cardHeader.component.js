@@ -6,7 +6,8 @@ import {
   View,
   Image,
   Animated,
-  ActionSheetIOS
+  ActionSheetIOS,
+  StatusBar
 } from 'react-native';
 import Search from './search.component';
 import { globalStyles } from '../../styles/global';
@@ -284,11 +285,11 @@ const localStyles = StyleSheet.create({
     backgroundColor: 'transparent',
     // position: 'absolute',
     marginTop: -5,
-    bottom: -6,
+    bottom: -10,
     left: 0,
     right: 0,
-    width: 20,
-    height: 13,
+    width: 22,
+    height: 15,
   },
   backArrow: {
     paddingTop: 4,

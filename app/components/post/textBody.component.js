@@ -68,6 +68,9 @@ class TextBody extends Component {
         if (ind > -1) extraTags.splice(ind, 1);
       } else if (section.match(/^@/)) {
         let m = section.replace('@', '');
+        if (word.text.match('kevin')) {
+          console.log(post.mentions);
+        }
         if (post.mentions && post.mentions.find(mention => mention === m)) {
           word.type = 'mention';
         }

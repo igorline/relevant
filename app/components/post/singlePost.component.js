@@ -112,15 +112,14 @@ class SinglePostComments extends Component {
     this.props.actions.getComments(this.id, length, 10);
   }
 
-  toggleEditing(bool, num) {
-    // console.log('toggleEditing', this.props);
-    if (bool) this.scrollToComment(num);
-    if (this.props.singlePostEditing) this.props.singlePostEditing(bool);
-    this.setState({ editing: bool });
+  toggleEditing(editing, num, animated) {
+    if (editing && num !== null) this.scrollToComment(num, animated);
+    // if (this.props.singlePostEditing) this.props.singlePostEditing(bool);
+    this.setState({ editing });
   }
 
-  scrollToComment(num) {
-    this.scrollView.scrollTo({ x: 0, y: num, animated: true });
+  scrollToComment(num, animated) {
+    this.scrollView.scrollTo({ x: 0, y: num, animated });
   }
 
   shouldScrollToBottom(type) {

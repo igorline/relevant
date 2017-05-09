@@ -26,12 +26,12 @@ const POSITION_THRESHOLD = 1 / 3;
 /**
  * The threshold (in pixels) to start the gesture action.
  */
-const RESPOND_THRESHOLD = 15;
+const RESPOND_THRESHOLD = 10;
 
 /**
  * The threshold (in pixels) to finish the gesture action.
  */
-const DISTANCE_THRESHOLD = 100;
+const DISTANCE_THRESHOLD = 30;
 
 /**
  * Primitive gesture directions.

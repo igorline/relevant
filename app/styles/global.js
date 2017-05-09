@@ -62,7 +62,7 @@ const font = StyleSheet.create({
   },
   header: {
     height: 59,
-    paddingTop: 15,
+    paddingTop: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -169,6 +169,7 @@ const layout = StyleSheet.create({
   commentInput: {
     flex: 1,
     padding: 10,
+    paddingVertical: 15
   },
   commentSubmit: {
     flex: 0,
@@ -449,24 +450,24 @@ const layout = StyleSheet.create({
     height: 15,
     width: 16,
     top: 2,
-    right: 2,
-    // paddingRight: 2,
+    right: 1.5,
     paddingLeft: 1,
-    // resizeMode: 'contain',
     marginRight: 2,
     marginLeft: 0,
     marginBottom: -3.5
   },
   coin: {
     position: 'absolute',
-    top: 2,
-    right: 3,
-    height: 16,
-    width: 16,
-    // resizeMode: 'contain',
-    marginRight: 2,
-    marginLeft: 1,
-    marginBottom: -8
+    top: 3,
+    right: 1,
+    height: 17,
+    width: 17,
+    paddingLeft: 3,
+    paddingRight: 2,
+    // marginRight: 2,
+    // marginLeft: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   rup: {
     height: 19,
@@ -512,4 +513,5 @@ export {
   fullHeight,
   blue,
   green,
+  greyText
 };

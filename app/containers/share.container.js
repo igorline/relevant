@@ -1,7 +1,8 @@
 import {
   StyleSheet,
   View,
-  Text
+  Text,
+  KeyboardAvoidingView
 } from 'react-native';
 import * as NavigationExperimental from 'react-navigation';
 import React, { Component } from 'react';
@@ -17,11 +18,12 @@ import * as postActions from '../actions/post.actions';
 import CreatePost from '../components/createPost/createPost.container';
 import Auth from '../components/auth/auth.container';
 import * as utils from '../utils';
+import Card from './../components/nav/card.component';
 
 import { fullWidth, fullHeight } from '../styles/global';
 
 const {
-  CardStack: NavigationCardStack,
+  Transitioner: NavigationTransitioner,
 } = NavigationExperimental;
 
 let style;
@@ -130,21 +132,35 @@ class ShareContainer extends Component {
         isOpen={this.state.isOpen}
         onClosed={this.onClose}
       >
-
-        <View
+        <KeyboardAvoidingView
+          behavior={'padding'}
           style={{
             alignItems: 'center',
+            flex: 1,
+            maxHeight: fullHeight * 0.9,
           }}
         >
           <View style={style.modalBody}>
-            <NavigationCardStack
-              key={`scene_${scene.key}`}
-              direction={'horizontal'}
-              navigationState={scene}
-              renderScene={this.renderScene}
+            <NavigationTransitioner
+              style={{ backgroundColor: 'white', paddingBottom: 0 }}
+              navigation={{ state: scene }}
+              configureTransition={utils.transitionConfig}
+              render={transitionProps => {
+                return transitionProps.scene.route.ownCard ? this.renderScene(transitionProps) :
+                (<Card
+                  style={{ backgroundColor: 'white', paddingBottom: 0 }}
+                  renderScene={this.renderScene}
+                  // back={this.back}
+                  {...this.props}
+                  header={false}
+                  // scroll={this.props.navigation.sroll}
+                  {...transitionProps}
+                />);
+              }
+            }
             />
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     );
   }
@@ -154,11 +170,14 @@ style = StyleSheet.create({
   modalBody: {
     borderRadius: 10,
     backgroundColor: 'white',
-    height: fullHeight * 0.48,
-    width: fullWidth * 0.90,
+    flexGrow: 1,
+    width: fullWidth * 0.95,
     marginTop: 65,
+    marginBottom: 20,
     padding: 0,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    paddingBottom: 0,
+    // maxHeight: fullHeight * 0.9,
   }
 });
 

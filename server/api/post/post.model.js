@@ -266,7 +266,7 @@ PostSchema.statics.sendOutMentions = async function(mentions, post, mUser, comme
         let blocked;
         let type = comment ? 'comment' : 'post';
 
-        mUser = await User.findOne({ _id: mUser._id }, 'blockedBy blocked name');
+        mUser = await User.findOne({ _id: mUser._id || mUser }, 'blockedBy blocked name');
         blocked = mUser.blockedBy.find(u => u === mention) || mUser.blocked.find(u => u === mention);
         if (blocked) {
           console.log('user blocked, removing mention ', blocked);
@@ -283,8 +283,8 @@ PostSchema.statics.sendOutMentions = async function(mentions, post, mUser, comme
         .then((users) => {
           users.forEach(user => {
             let alert = (mUser.name || mUser) + ' mentioned you in a ' + type;
-            if (mention === 'everyone') alert = post.body;
-            let payload = { 'Mention from': post.embeddedUser.name };
+            if (mention === 'everyone' && post.body) alert = post.body;
+            let payload = { 'Mention from': textParent.embeddedUser.name };
             apnData.sendNotification(user, alert, payload);
           });
         });

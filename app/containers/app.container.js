@@ -7,7 +7,8 @@ import {
   Easing,
   PushNotificationIOS,
   Linking,
-  Animated
+  Animated,
+  KeyboardAvoidingView
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -290,14 +291,17 @@ class Application extends Component {
 
       // refresh after 5 minutes of inactivity
       let now = new Date().getTime();
-      if (this.backgroundTime + (5 * 60 * 1000) < now) {
+      if (this.backgroundTime + (10 * 60 * 1000) < now) {
         // reload current tab
-        this.props.actions.reloadTab();
         // reload all other tabs on focus
         this.props.actions.reloadAllTabs();
-        this.props.actions.resetRoutes();
+        this.props.actions.reloadTab();
         // this.props.actions.getUser();
       }
+      // if (this.backgroundTime + (40 * 60 * 1000) < now) {
+      //   this.props.actions.resetRoutes();
+      // }
+
     } else if (currentAppState === 'background') {
       this.backgroundTime = new Date().getTime();
     }
@@ -310,7 +314,17 @@ class Application extends Component {
       case 'auth':
         return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
       case 'createPost':
-        return (<CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />);
+        return (
+          <KeyboardAvoidingView
+            behavior={'padding'}
+            style={{
+              flex: 1,
+              backgroundColor: '#ffffff'
+            }}
+          >
+            <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
+          </KeyboardAvoidingView>
+        );
       case 'categories':
         return (<CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />);
 
@@ -330,12 +344,9 @@ class Application extends Component {
   }
 
   configureTransition() {
-    const easing = Easing.out(Easing.ease);
     return {
-      duration: 320,
-      timing: Animated.timing,
-      easing,
-      useNativeDriver: !!NativeAnimatedModule ? true : false
+      useNativeDriver: !!NativeAnimatedModule ? true : false,
+      speed: 20,
     };
   }
 
@@ -355,6 +366,7 @@ class Application extends Component {
           render={transitionProps => {
             return transitionProps.scene.route.ownCard ? this.renderScene(transitionProps) :
             (<Card
+              style={{ backgroundColor: 'black' }}
               renderScene={this.renderScene}
               back={this.back}
               {...this.props}

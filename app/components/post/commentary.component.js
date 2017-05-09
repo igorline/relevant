@@ -86,11 +86,13 @@ export default class Commentary extends Component {
               onPress={() => this.props.actions.goToPost(post)}
               style={[styles.font12, styles.darkGrey, { lineHeight: 14 }]}
             >
-              <Image
-                resizeMode={'contain'}
-                source={require('../../assets/images/reposted.png')}
-                style={{ width: 12, height: 8, marginBottom: -1 }}
-              />
+              <View style={{ width: 10, height: 8, marginBottom: -2 }}>
+                <Image
+                  resizeMode={'contain'}
+                  source={require('../../assets/images/reposted.png')}
+                  style={{ width: 10, height: 9, marginBottom: -1 }}
+                />
+              </View>
               {' '}reposted by @{post.reposted[0].user + and}
             </Text>
           </View>
