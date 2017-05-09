@@ -63,12 +63,12 @@ class Stats extends Component {
 
     if (this.props.size === 'small' || (smallScreen && type === 'nav')) {
       statsStyle = [{ fontSize: 15, lineHeight: 15 }, styles.bebas, styles.quarterLetterSpacing];
-      iconStyle = [{ width: 15, height: 14.5, marginBottom: -4 }];
-      coinStyle = [{ width: 18, height: 15, marginBottom: -6 }];
+      iconStyle = [{ width: 15, height: 14.5 }];
+      coinStyle = [{ width: 18, height: 15 }];
     }
     if (this.props.size === 'tiny') {
       statsStyle = [{ fontSize: 13, lineHeight: 13 }, styles.bebas, styles.quarterLetterSpacing];
-      iconStyle = [{ width: 13, height: 13, marginBottom: -4 }];
+      iconStyle = [{ width: 13, height: 13 }];
       // coinStyle = [{ width: 18, height: 15, marginBottom: -6 }];
     }
 
@@ -88,7 +88,7 @@ class Stats extends Component {
 
     let relevance = (
       <Text onPress={() => this.toggleTooltip('relevance')}>
-        <View style={[styles.r, ...coinStyle]}>
+        <View style={[styles.r, ...iconStyle]}>
           <Image
             resizeMode={'contain'}
             style={[styles.r, ...iconStyle]}
