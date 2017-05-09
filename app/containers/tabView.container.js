@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   Easing,
-  Animated
 } from 'react-native';
 import * as NavigationExperimental from 'react-navigation';
 import { connect } from 'react-redux';
@@ -10,12 +9,11 @@ import Read from './read.container';
 import Discover from './discover.container';
 import SinglePost from './singlePost.container';
 import Activity from './activity.container';
-import Comments from './comments.container';
 import Messages from './messages.container';
 import Thirst from './thirst.container';
 import Profile from '../components/profile/profile.container';
 import Blocked from '../components/profile/blocked.container';
-
+import { transitionConfig } from '../utils';
 import Card from './../components/nav/card.component';
 import * as navigationActions from '../actions/navigation.actions';
 import * as tagActions from '../actions/tag.actions';
@@ -111,26 +109,25 @@ class CardContainer extends Component {
   }
 
   configureTransition() {
-    const easing = Easing.out(Easing.ease);
-    // const easing = Easing.bezier(0.0, 0, 0.58, 1);
+    // const easing = Easing.out(Easing.cubic);
+    const easing = Easing.bezier(0.0, 0, 0.58, 1);
 
     return {
-      timing: Animated.timing,
+      // timing: Animated.timing,
       duration: 220,
       easing,
       useNativeDriver: !!NativeAnimatedModule ? true : false,
-      speed: 40,
+      speed: 25,
     };
   }
 
   render() {
     const { navigation } = this.props;
-
     return (
       <NavigationTransitioner
         style={{ zIndex: 2 }}
         navigation={{ state: navigation[this.default] }}
-        configureTransition={this.configureTransition}
+        configureTransition={transitionConfig}
         render={transitionProps => (
           <Card
             renderScene={this.renderScene}

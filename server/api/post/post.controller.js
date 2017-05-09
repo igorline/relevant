@@ -512,7 +512,6 @@ exports.create = (req, res) => {
         // console.log(subscription);
         if (subscription.amount < 1) {
           // check unread here
-          console.log('expired');
           updateFeed = await Feed.processExpired(subscription.follower._id);
         }
         if (!updateFeed && subscription.amount < 1) {

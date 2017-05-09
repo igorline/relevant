@@ -125,7 +125,15 @@ export default function (props) {
 
   let renderImage = (user) => {
     if (!user && singleActivity.byUsers) {
-      let image = <Image style={styles.activityImage} source={require('../assets/images/r.png')} />;
+      let image = (
+        <View style={styles.activityImage}>
+          <Image
+            resizeMode={'contain'}
+            style={styles.activityImage}
+            source={require('../assets/images/r.png')}
+          />
+        </View>
+        );
       return image;
     } else if (!user) return null;
 
@@ -246,10 +254,15 @@ export default function (props) {
           allowFontScaling={false}
           style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}
         >
-          <Image
+          <View
             style={[styles.r, { height: 15, width: 22, marginRight: 0 }]}
-            source={require('../assets/images/coinup.png')}
-          />
+          >
+            <Image
+              resizeMode={'contain'}
+              style={[styles.r, { height: 15, width: 22, marginRight: 0 }]}
+              source={require('../assets/images/coinup.png')}
+            />
+          </View>
           <Text style={{ lineHeight: 17, fontSize: 17 }}>
             {Math.abs(numbers.abbreviateNumber(singleActivity.coin))}
             { !smallScreen && singleActivity.amount ?
@@ -278,10 +291,15 @@ export default function (props) {
               allowFontScaling={false}
               style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}
             >
-              <Image
+              <View
                 style={[styles.r, { height: 16, width: 20, marginRight: 0 }]}
-                source={icon}
-              />
+              >
+                <Image
+                  resizeMode={'contain'}
+                  style={[styles.r, { height: 16, width: 20, marginRight: 0 }]}
+                  source={icon}
+                />
+              </View>
               <Text style={{ lineHeight: 17, fontSize: 17 }}>
                 {Math.abs(numbers.abbreviateNumber(singleActivity.amount))}
               </Text>

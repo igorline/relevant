@@ -8,7 +8,7 @@ import {
   AlertIOS,
   TouchableHighlight
 } from 'react-native';
-import { globalStyles, fullHeight } from '../../styles/global';
+import { globalStyles, fullHeight, greyText } from '../../styles/global';
 import UserSearchComponent from '../createPost/userSearch.component';
 import * as utils from '../../utils';
 import TextBody from './textBody.component';
@@ -49,10 +49,10 @@ class CommentInput extends Component {
       user: this.props.auth.user._id
     };
     this.props.actions.createComment(this.props.auth.token, commentObj);
-    this.props.actions.setUserSearch([]);
     this.setState({ comment: '' });
     this.textInput.blur();
     this.props.onFocus('new');
+    this.props.actions.setUserSearch([]);
   }
 
   processInput(comment) {
@@ -76,7 +76,7 @@ class CommentInput extends Component {
           <View
             style={{
               position: 'absolute',
-              bottom: Math.min(100, this.state.inputHeight),
+              bottom: Math.min(120, this.state.inputHeight),
               left: 0,
               right: 0,
               maxHeight: this.top,
@@ -109,7 +109,6 @@ class CommentInput extends Component {
         }}
         style={[
           styles.commentInputParent,
-          { height: Math.min(100, this.state.inputHeight) }
         ]}
       >
         {this.renderUserSuggestions()}
@@ -119,9 +118,16 @@ class CommentInput extends Component {
           style={[
             styles.commentInput,
             styles.font15,
-            { lineHeight: 20 }
+            {
+              lineHeight: 20,
+              paddingTop: 15,
+              maxHeight: 120,
+              minHeight: 50,
+              height: 'auto',
+            }
           ]}
           placeholder="Enter comment..."
+          placeholderTextColor={greyText}
           multiline
           onChangeText={(comment) => {
             this.processInput(comment, false);
@@ -136,7 +142,7 @@ class CommentInput extends Component {
             });
           }}
         >
-          <TextBody showAllMentions>{this.state.comment}</TextBody>
+          <TextBody style={{ flex: 1 }} showAllMentions>{this.state.comment}</TextBody>
         </TextInput>
         <TouchableHighlight
           underlayColor={'transparent'}

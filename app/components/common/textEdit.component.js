@@ -7,7 +7,7 @@ import {
   TouchableHighlight
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles, blue } from '../../styles/global';
+import { globalStyles, blue, greyText } from '../../styles/global';
 import TextBody from '../post/textBody.component';
 
 let styles;
@@ -34,22 +34,20 @@ class TextEdit extends Component {
         multiline
         autoGrow
         placeholder={this.props.placeholder}
+        placeholderTextColor={greyText}
         ref={c => this.textInput = c}
         style={[
-          { height: Math.max(50, this.state.height) },
+          { height: 'auto', maxHeight: 120, minHeight: 50 },
           this.props.style
         ]}
+        onFocus={this.props.onFocus}
+        onBlur={this.props.onBlur}
         onChange={event =>
           this.setState({
             text: event.nativeEvent.text,
-            height: event.nativeEvent.contentSize.height,
           })
         }
-        onContentSizeChange={event =>
-          this.setState({
-            height: event.nativeEvent.contentSize.height,
-          })
-        }
+        onContentSizeChange={this.props.onContentSizeChange}
       >
         <TextBody showAllMentions>{this.state.text}</TextBody>
       </TextInput>
@@ -79,7 +77,7 @@ class TextEdit extends Component {
 const localStyles = StyleSheet.create({
   editingCommentButtons: {
     flexDirection: 'row',
-    paddingTop: 10,
+    paddingTop: 20,
     justifyContent: 'flex-end',
     alignItems: 'center',
     flexWrap: 'wrap'

@@ -7,7 +7,7 @@ import {
   Text,
   TouchableHighlight
 } from 'react-native';
-import { globalStyles, blue, fullWidth } from '../../styles/global';
+import { globalStyles, blue, fullWidth, greyText } from '../../styles/global';
 import * as utils from '../../utils';
 import UrlPreview from './urlPreview.component';
 import UserName from '../userNameSmall.component';
@@ -25,13 +25,8 @@ export default class UrlComponent extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.state = {
-      inputHeight: 200,
-    };
     this.setMention = this.setMention.bind(this);
     this.previousPostLength = 0;
-    this.scrollHeight = 0;
-    this.contentHeight = 0;
     this.toggleTooltip = this.toggleTooltip.bind(this);
     this.initTooltips = this.initTooltips.bind(this);
   }
@@ -45,8 +40,6 @@ export default class UrlComponent extends Component {
 
   componentWillReceiveProps(next) {
     if (this.props.createPreview !== next.createPreview && next.postUrl) {
-      // console.log(this.props.postUrl);
-      // console.log(next.postUrl);
       this.createPreview(next.postUrl);
     }
   }
@@ -82,10 +75,6 @@ export default class UrlComponent extends Component {
     let length = postBody ? postBody.length : 0;
 
     if (doneTyping) postBody = this.props.postBody;
-    // let lines = postBody.split('\n');
-    // let words = [];
-    // lines.forEach(line => words = words.concat(line.split(' ')));
-
     let words = utils.text.getWords(postBody);
 
     let shouldParseUrl = false;
@@ -180,9 +169,6 @@ export default class UrlComponent extends Component {
     let input;
     let repostBody;
 
-    // let maxHeight = this.contentHeight;
-    // if (this.props.share) maxHeight = 170;
-
     if (this.props.repost) {
       repostBody = (
         <View style={{ flex: 0, height: 120, width: fullWidth - 20 }}>
@@ -241,7 +227,6 @@ export default class UrlComponent extends Component {
       );
     }
 
-    let width = 170;
     let tipCTA;
     if (!this.props.urlPreview && this.props.postBody === '' && !this.props.share) {
       tipCTA = (
@@ -261,22 +246,9 @@ export default class UrlComponent extends Component {
     }
 
     input = (
-      <KeyboardAvoidingView
-        behavior={'padding'}
-        style={{
-          flex: 1,
-          backgroundColor: '#ffffff'
-        }}
-      >
         <View
           keyboardShouldPersistTaps={'always'}
           ref={c => this.scrollView = c}
-          onLayout={(e) => {
-            this.scrollHeight = e.nativeEvent.layout.height;
-          }}
-          onContentSizeChange={(contentWidth, contentHeight) => {
-            this.contentHeight = contentHeight;
-          }}
           style={{
             flex: 1,
             paddingHorizontal: 10,
@@ -296,10 +268,11 @@ export default class UrlComponent extends Component {
               style={[
                 styles.font15,
                 styles.createPostInput,
-                // hack to fix not-resizing element when text changes programatically
-                { flex: this.props.postBody.length > 10 ? 1 : 0 }]}
+                { flex: 1 }
+              ]}
 
               placeholder={urlPlaceholder}
+              placeholderTextColor={greyText}
               multiline
               clearButtonMode={'while-editing'}
               onChangeText={postBody => this.processInput(postBody, false)}
@@ -307,13 +280,12 @@ export default class UrlComponent extends Component {
               returnKeyType={'default'}
               autoFocus
               keyboardShouldPersistTaps={'never'}
-              onContentSizeChange={(event) => {
-                console.log('size changed');
-                let h = event.nativeEvent.contentSize.height;
-                this.setState({
-                  inputHeight: Math.max(100, h)
-                });
-              }}
+              // onContentSizeChange={(event) => {
+              //   let h = event.nativeEvent.contentSize.height;
+              //   this.setState({
+              //     inputHeight: Math.max(100, h)
+              //   });
+              // }}
             >
               <TextBody style={{ flex: 1, width: 400 }} showAllMentions>
                 {this.props.postBody}
@@ -324,13 +296,11 @@ export default class UrlComponent extends Component {
           </View>
           {userSearch}
           {repostBody}
-          {this.state.tip ? null : null}
           {this.props.postUrl && !this.props.users.search.length ?
             <UrlPreview size={'small'} {...this.props} actions={this.props.actions} /> :
             null
           }
         </View>
-      </KeyboardAvoidingView>
     );
 
     return (

@@ -80,14 +80,6 @@ class Bio extends Component {
       );
     }
 
-    // if (user.bio && user.bio !== '') {
-    //   header = (
-    //     <Text style={[styles.font12, styles.darkGray, { marginBottom: 5 }]}>
-    //       Credentials:{'\n'}
-    //     </Text>
-    //   );
-    // }
-
     let CTA = (
       <Text
         style={[styles.active, { flex: 1, fontSize: 12 }]}
@@ -131,6 +123,7 @@ let localStyles = StyleSheet.create({
   bioText: {
     fontSize: 30 / 2,
     lineHeight: 42 / 2,
+    paddingTop: 5,
   },
   bio: {
     marginHorizontal: 10,

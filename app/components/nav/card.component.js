@@ -31,6 +31,7 @@ class Card extends Component {
   constructor(props, context) {
     super(props, context);
     this.getAnimatedStyle = this.getAnimatedStyle.bind(this);
+    this.getAnimatedStyleVertical = this.getAnimatedStyleVertical.bind(this);
   }
 
   getAnimatedStyle(props, type) {
@@ -50,8 +51,14 @@ class Card extends Component {
     });
 
     const opacity = position.interpolate({
-      inputRange: [index - 1, index, index + 1],
-      outputRange: [-0.0, 1, -0.0],
+      inputRange: [
+        index - 1,
+        index - 0.99,
+        index,
+        index + 0.99,
+        index + 1,
+      ],
+      outputRange: [0, 0.0, 1, 0.8, 0],
     });
 
     const opacityCard = position.interpolate({
@@ -62,7 +69,7 @@ class Card extends Component {
         index + 0.99,
         index + 1,
       ]),
-      outputRange: ([0, 1, 1, 0.3, 0]),
+      outputRange: ([0, 1, 1, 0.6, 0]),
     });
 
     if (type === 'header') return { opacity };
@@ -72,6 +79,52 @@ class Card extends Component {
         { translateX },
       ],
       opacity: opacityCard
+    };
+  }
+
+  getAnimatedStyleVertical(props) {
+    const {
+      layout,
+      position,
+      scene,
+    } = props;
+
+    const { index } = scene;
+
+    const inputRange = [index - 1, index, index + 1];
+    const height = layout.initHeight;
+
+    const translateX = 0;
+    const translateY = position.interpolate({
+      inputRange,
+      outputRange: ([height, 0, 0]),
+    });
+
+    const opacity = position.interpolate({
+      inputRange: ([
+        index - 1,
+        index - 0.99,
+        index,
+        index + 0.99,
+        index + 1,
+      ]),
+      outputRange: ([0, 1, 1, 0.6, 0]),
+    });
+
+    const scale = position.interpolate({
+      inputRange: ([
+        index - 1,
+        index,
+        index + 1,
+      ]),
+      outputRange: ([1, 1, 0.97]),
+    });
+
+    return {
+      transform: [
+        { translateX }, { translateY }, { scale }
+      ],
+      opacity
     };
   }
 
@@ -112,8 +165,8 @@ class Card extends Component {
       if (topScene && topScene.route.direction === 'vertical') vertical = true;
 
       if (vertical) {
-        cardTransitionStyle = CardStackStyleInterpolator.forVertical(sceneProps);
-
+        // cardTransitionStyle = CardStackStyleInterpolator.forVertical(sceneProps);
+        cardTransitionStyle = this.getAnimatedStyleVertical(sceneProps);
         // panHandlers = NavPanResponder.forVertical({
         panHandlers = NavPanResponder.forVertical({
           ...sceneProps,
@@ -152,7 +205,8 @@ class Card extends Component {
       }
 
       if (vertical) {
-        headerStyle = CardStackStyleInterpolator.forVertical(sceneProps);
+        headerStyle = this.getAnimatedStyleVertical(sceneProps);
+        // headerStyle = CardStackStyleInterpolator.forVertical(sceneProps);
       }
 
       if (props.header && scene.route.header !== false) {
@@ -162,7 +216,7 @@ class Card extends Component {
             {...this.props}
             {...props}
             {...sceneProps}
-            style={headerStyle}
+            style={[headerStyle]}
             share={this.props.share}
             back={props.back}
             renderRight={props.renderRight}
@@ -181,7 +235,7 @@ class Card extends Component {
     });
 
     return (
-      <View style={{ flex: 1 }}>
+      <View style={[{ flex: 1, backgroundColor: 'black' }, this.props.style]}>
         {headers}
         {scenes}
       </View>
@@ -201,6 +255,7 @@ const localStyles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 4,
     top: 0,
+    backgroundColor: 'white',
   },
   headerBg: {
     top: 0,

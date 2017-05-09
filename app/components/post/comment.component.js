@@ -11,7 +11,7 @@ import {
 import { globalStyles } from '../../styles/global';
 import TextEdit from '../common/textEdit.component';
 import UserName from '../userNameSmall.component';
-import { numbers } from '../../utils';
+import { numbers, text as textUtil } from '../../utils';
 import TextBody from './textBody.component';
 
 let moment = require('moment');
@@ -38,6 +38,7 @@ class Comment extends Component {
     this.showActionSheet = this.showActionSheet.bind(this);
     this.editComment = this.editComment.bind(this);
     this.saveEdit = this.saveEdit.bind(this);
+    this.scrollToComment = this.scrollToComment.bind(this);
   }
 
   componentDidMount() {
@@ -53,7 +54,10 @@ class Comment extends Component {
     if (comment.text === text) {
       return this.editComment();
     }
+    let words = textUtil.getWords(text);
+    let mentions = textUtil.getMentions(words);
     comment.text = text;
+    comment.mentions = mentions;
     this.props.actions.updateComment(comment)
     .then((results) => {
       if (results) {
@@ -84,14 +88,17 @@ class Comment extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    const self = this;
     if (nextState.editing !== this.state.editing) {
-      this.singleComment.measure((fx, fy, width, height, px, py) => {
-        let num = 0;
-        num = fy;
-        self.props.parentEditing(nextState.editing, num);
-      });
+      this.props.parentEditing(nextState.editing);
+      // if (nextState.editing) this.scrollToComment(true);
     }
+  }
+
+  scrollToComment(animated) {
+    this.singleComment.measure((fx, fy, width, height, px, py) => {
+      let num = fy;
+      this.props.parentEditing(true, num, animated);
+    });
   }
 
   deleteComment() {
@@ -138,6 +145,14 @@ class Comment extends Component {
         text={comment.text}
         toggleFunction={this.editComment}
         saveEditFunction={this.saveEdit}
+        onFocus={() => this.scrollToComment(true)}
+        onContentSizeChange={(e) => {
+          let h = e.nativeEvent.contentSize.height;
+          if (h !== this.height) {
+            this.height = h;
+            this.scrollToComment(true);
+          }
+        }}
       />);
     }
 
@@ -167,6 +182,7 @@ class Comment extends Component {
     textBody = (
       <TextBody
         {...this.props}
+        style={styles.commentBodyText}
         post={comment}
         body={comment.text}
       />
@@ -218,7 +234,11 @@ const localStyles = StyleSheet.create({
     marginRight: 10,
   },
   commentBodyText: {
-    lineHeight: 20,
+    // lineHeight: 20,
+    fontFamily: 'Georgia',
+    fontSize: 30 / 2,
+    lineHeight: 42 / 2,
+    paddingTop: 5,
   }
 });
 

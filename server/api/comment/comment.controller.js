@@ -97,11 +97,27 @@ exports.delete = async (req, res) => {
 
 exports.update = (req, res) => {
   const comment = req.body;
+  const user = req.user;
+
+  let mentions = req.body.mentions;
+  let newMentions;
+
   Comment.findOne({ _id: comment._id })
   .then((foundComment) => {
     let newComment = foundComment;
+    if (newComment.user !== user._id) throw new Error('Can\'t edit other\'s comments');
     newComment.text = req.body.text;
-    return foundComment.save();
+    newMentions = mentions.filter(m => foundComment.mentions.indexOf(m) < 0);
+    newComment.mentions = mentions;
+    console.log('mentions ', mentions);
+    newMentions = newMentions || [];
+    if (newMentions.length) {
+      let post = {
+        _id: newComment.post
+      };
+      return Post.sendOutMentions(mentions, post, newComment.user, newComment);
+    }
+    return newComment.save();
   })
   .then(() =>
     Comment.findOne({ _id: comment._id })

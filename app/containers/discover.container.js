@@ -55,7 +55,7 @@ class Discover extends Component {
     this.lastOffset = -50;
     this.loaded = true;
     this.mainDiscover = true;
-    this.scrollOffset = -50;
+    this.scrollOffset = [-50, -50, -50];
   }
 
   componentWillMount() {
@@ -91,7 +91,7 @@ class Discover extends Component {
       this.needsReload = new Date().getTime();
     }
     if (this.props.refresh !== next.refresh) {
-      if (this.scrollOffset === -50) {
+      if (this.scrollOffset[this.state.view] === -50) {
         this.setState({ view: 0 });
       } else {
         this.scrollToTop();
@@ -144,8 +144,8 @@ class Discover extends Component {
     if (this.onInteraction) this.onInteraction.cancel();
   }
 
-  onScroll(event) {
-    this.scrollOffset = event.nativeEvent.contentOffset.y;
+  onScroll(event, key) {
+    this.scrollOffset[key] = event.nativeEvent.contentOffset.y;
     this.header.onScroll(event);
   }
 

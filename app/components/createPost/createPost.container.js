@@ -142,6 +142,7 @@ class CreatePostContainer extends Component {
           AlertIOS.alert('Success!');
           this.props.actions.clearCreatePost();
           this.props.navigator.resetRoutes('home');
+          this.props.actions.setUserSearch([]);
         }
       });
   }
@@ -167,6 +168,7 @@ class CreatePostContainer extends Component {
       this.props.navigator.changeTab('discover');
       this.props.navigator.reloadTab('discover');
       this.props.navigator.setView('discover', 1);
+      this.props.actions.setUserSearch([]);
       if (this.props.close) this.props.close();
       this.setState({ creatingPost: false });
     });
@@ -342,9 +344,10 @@ class CreatePostContainer extends Component {
     return (<NavigationTransitioner
       style={{ backgroundColor: 'white' }}
       navigation={{ state: scene }}
-      configureTransition={this.configureTransition}
+      configureTransition={utils.transitionConfig}
       render={transitionProps => (
         <Card
+          style={{ backgroundColor: 'white' }}
           renderScene={this.renderScene}
           back={this.back}
           scroll={this.props.navigation.scroll}

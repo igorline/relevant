@@ -147,7 +147,11 @@ export default class ActivityView extends Component {
         }}
         keyboardShouldPersistTaps={'always'}
         keyboardDismissMode={'on-drag'}
-        onScroll={this.props.onScroll}
+        onScroll={(e) => {
+          if (this.props.onScroll) {
+            this.props.onScroll(e, this.props.view || 0);
+          }
+        }}
         onEndReached={this.loadMore}
         onEndReachedThreshold={100}
         renderFooter={() => emptyEl}

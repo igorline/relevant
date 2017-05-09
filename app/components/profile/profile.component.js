@@ -136,10 +136,13 @@ class ProfileComponent extends Component {
           <Text style={[styles.font12, styles.darkGray, styles.profileColumn]}>
             Coins: 
           </Text>
-          <Image
-            style={[styles.coin, { width: 17, height: 12, marginBottom: -4 }]}
-            source={require('../../assets/images/relevantcoin.png')}
-          />
+          <View style={[styles.coin, { width: 17, height: 13, right: 0 }]}>
+            <Image
+              resizeMode={'contain'}
+              style={[styles.coin, { width: 17, height: 13, right: 0 }]}
+              source={require('../../assets/images/relevantcoin.png')}
+            />
+          </View>
           <Text style={[styles.font12, styles.bebasBold]}>
             {numbers.abbreviateNumber(balance) || 0}
           </Text>
@@ -153,12 +156,15 @@ class ProfileComponent extends Component {
       <View style={[styles.profileRow, styles.profileRowContainer]}>
         <Text
           // onPress={() => this.toggleTooltip()}
-          style={[styles.profileBig, styles.bebasNoMargin, { flex : 1 }]}
+          style={[styles.profileBig, styles.bebasNoMargin, { flex: 1 }]}
         >
-          <Image
-            style={[styles.r, { width: 25, height: 23 }]}
-            source={require('../../assets/images/r.png')}
-          />
+          <View style={[styles.r, { width: 25, height: 23, right: 3 }]}>
+            <Image
+              resizeMode={'contain'}
+              style={[styles.r, { width: 25, height: 23, right: 3 }]}
+              source={require('../../assets/images/r.png')}
+            />
+          </View>
           {numbers.abbreviateNumber(relevance)}
           {' '}
         </Text>
