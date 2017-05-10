@@ -8,7 +8,7 @@
     "dev": "nodemon server/index.js",
     "build": "webpack --config ./webpack.production.config.js --progress --colors -p",
     "build-dev": "webpack --config ./webpack.config.js --progress --colors -p",
-    "test": "ava --watch",
+    "test": "ava --watch"
   },
   "dependencies": {
     "apn": "^1.7.6",
