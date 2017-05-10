@@ -79,7 +79,7 @@ exports.delete = async (req, res) => {
 
     let post = await Post.findOneAndUpdate(
       { _id: foundComment.post },
-      { $pull: { comments: foundComment._id }, $inc: { commentCount: -1 } },
+      { $inc: { commentCount: -1 } },
       { new: true }
     ).exec();
 
@@ -131,7 +131,7 @@ exports.update = (req, res) => {
     let message = 'error';
     console.log(error, 'update error');
     if (error.message) message = error.message;
-    res.json(500, message);
+    return res.json(500, message);
   });
 };
 
