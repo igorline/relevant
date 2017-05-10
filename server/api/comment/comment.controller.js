@@ -87,12 +87,13 @@ exports.delete = async (req, res) => {
 
     post.updateClient();
   } catch (error) {
+    console.log(error);
     let message = 'error';
     if (error.message) message = error.message;
-    res.json(500, message);
+    return res.json(500, message);
   }
 
-  res.json(200, true);
+  return res.json(200, true);
 };
 
 exports.update = (req, res) => {
@@ -309,7 +310,7 @@ exports.create = async (req, res) => {
 
   } catch (error) {
     console.log(error);
-    res.status(500).send(error);
+    return res.status(500).send(error);
   }
 
   res.status(200).json(comment);
