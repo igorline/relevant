@@ -9,7 +9,6 @@
     "build": "webpack --config ./webpack.production.config.js --progress --colors -p",
     "build-dev": "webpack --config ./webpack.config.js --progress --colors -p",
     "test": "ava --watch",
-    "postinstall": "rndebugger-open"
   },
   "dependencies": {
     "apn": "^1.7.6",
