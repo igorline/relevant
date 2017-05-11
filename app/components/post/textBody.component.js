@@ -44,9 +44,17 @@ class TextBody extends Component {
     this.props.actions.goToPost(this.props.post);
   }
 
+  shouldComponentUpdate(next) {
+    if (this.props.body !== next.body ||
+      this.props.children !== next.children) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
     const expanded = this.props.singlePost;
-    let maxTextLength = this.props.maxTextLength || Math.pow(10, 1000);
+    let maxTextLength = this.props.maxTextLength || Math.pow(10, 10);
     let body = this.props.body || this.props.children || '';
     let post = this.props.post || {};
     let showAllMentions = this.props.showAllMentions;
@@ -68,16 +76,13 @@ class TextBody extends Component {
         if (ind > -1) extraTags.splice(ind, 1);
       } else if (section.match(/^@/)) {
         let m = section.replace('@', '');
-        if (word.text.match('kevin')) {
-          console.log(post.mentions);
-        }
         if (post.mentions && post.mentions.find(mention => mention === m)) {
           word.type = 'mention';
         }
         if (showAllMentions) word.type = 'mention';
       } else if (utils.post.URL_REGEX.test(section)) {
         word.type = 'url';
-      }
+      } else word.type = 'text';
       bodyObj.push(word);
     });
 
@@ -89,7 +94,24 @@ class TextBody extends Component {
       bodyObj.push({ type: 'hashtag', text: ' #' + tag });
     });
 
-    bodyEl = bodyObj.map((word, i) => {
+    let reduced = [];
+    let currentText = '';
+    bodyObj.forEach((word, i) => {
+      if (word.type === 'text' && i <= maxTextLength) {
+        currentText += word.text;
+      } else {
+        if (currentText.length) {
+          reduced.push({ type: 'text', text: currentText });
+        }
+        reduced.push(word);
+        currentText = '';
+      }
+    });
+    if (currentText.length) {
+      reduced.push({ type: 'text', text: currentText });
+    }
+
+    bodyEl = reduced.map((word, i) => {
       let space = '';
       if (breakText) space = ' ';
 
@@ -138,6 +160,8 @@ class TextBody extends Component {
     if (breakText) {
       bodyEl.push(<Text key={'readmore'} style={[styles.greyText]}>{tagsOnEnd ? '...' : ''}read more</Text>);
     }
+
+    // console.log('rendering', reduced)
 
     return (
       <Text

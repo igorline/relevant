@@ -2,7 +2,7 @@
 export function getMentions(words) {
   return words.map((word) => {
     if (word.match(/^@\S+/g)) {
-      return word.replace('@', '').replace(/(,|\.)\s*$/, '');
+      return word.replace('@', '');
     }
     return null;
   })
@@ -12,7 +12,7 @@ export function getMentions(words) {
 export function getTags(words) {
   return words.map((word) => {
     if (word.match(/^#\S+/g)) {
-      return word.replace('#', '').replace(/(,|\.)\s*$/, '');
+      return word.replace('#', '');
     }
     return null;
   })
@@ -20,8 +20,9 @@ export function getTags(words) {
 }
 
 export function getWords(text) {
-  return text
+  let res = text
   // .replace((/(\.\s+)|(\.$)/g), a => '`' + a + '`')
   .replace((/[,.!?](?!\b)|[\s+]/g), a => '`' + a + '`')
   .split(/`/);
+  return res;
 }

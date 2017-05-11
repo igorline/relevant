@@ -38,9 +38,11 @@ class CommentInput extends Component {
 
   createComment() {
     if (!this.state.comment || !this.state.comment.length) {
-      AlertIOS.alert('no comment');
+      return AlertIOS.alert('no comment');
     }
-    let comment = this.state.comment.replace(/^(?=\n)$|^\s*|\s*$|\n\n+/gm, '');
+    // let comment = this.state.comment.replace(/^(?=\n)$|^\s*|\s*$|\n\n+/gm, '');
+
+    let comment = this.state.comment.trim();
     let commentObj = {
       post: this.props.postId,
       text: comment,
@@ -48,11 +50,19 @@ class CommentInput extends Component {
       mentions: this.commentMentions,
       user: this.props.auth.user._id
     };
-    this.props.actions.createComment(this.props.auth.token, commentObj);
+
     this.setState({ comment: '' });
     this.textInput.blur();
     this.props.onFocus('new');
     this.props.actions.setUserSearch([]);
+
+    this.props.actions.createComment(this.props.auth.token, commentObj)
+    .then(success => {
+      if (!success) {
+        this.setState({ comment });
+        this.textInput.focus();
+      }
+    })
   }
 
   processInput(comment) {

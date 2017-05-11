@@ -56,13 +56,18 @@ class Comment extends Component {
     }
     let words = textUtil.getWords(text);
     let mentions = textUtil.getMentions(words);
+    let originalText = comment.text;
     comment.text = text;
     comment.mentions = mentions;
+    this.setState({ editing: false, editedText: text });
     this.props.actions.updateComment(comment)
     .then((results) => {
       if (results) {
-        this.setState({ editing: !this.state.editing, editedText: comment.text });
+        this.setState({ editing: false, editedText: null });
         AlertIOS.alert('Comment updated');
+      } else {
+        comment.text = originalText;
+        this.setState({ editing: true, editedText: text });
       }
     });
   }
@@ -90,7 +95,6 @@ class Comment extends Component {
   componentWillUpdate(nextProps, nextState) {
     if (nextState.editing !== this.state.editing) {
       this.props.parentEditing(nextState.editing);
-      // if (nextState.editing) this.scrollToComment(true);
     }
   }
 
@@ -142,7 +146,7 @@ class Comment extends Component {
     if (this.state.editing) {
       editingEl = (<TextEdit
         style={[styles.darkGray, styles.editingInput]}
-        text={comment.text}
+        text={this.state.editedText || comment.text}
         toggleFunction={this.editComment}
         saveEditFunction={this.saveEdit}
         onFocus={() => this.scrollToComment(true)}

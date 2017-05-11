@@ -7,6 +7,8 @@ let fbHeader = {
   'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
 };
 
+const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%_\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+~#?&//=]*)/);
+
 
 exports.extractDomain = (url) => {
   let domain;
@@ -98,6 +100,13 @@ exports.generatePreview = (body, uri) => {
   let canonical = $("link[rel='canonical']")[0];
   if (canonical && canonical.attribs) canonical = canonical.attribs;
   else canonical = null;
+
+  if (canonical && canonical.href) {
+    console.log('check if valid canonical url');
+    if (!URL_REGEX.test(canonical.href)) {
+      canonical.href = exports.extractDomain(uri) + canonical.href;
+    }
+  }
 
   if (canonical &&
     canonical.href &&

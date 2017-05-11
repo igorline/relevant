@@ -29,28 +29,31 @@ class TextEdit extends Component {
   }
 
   render() {
+    console.log('render text');
     return (<View style={{ flex: 1 }}>
       <TextInput
         multiline
-        autoGrow
+        // autoGrow
         placeholder={this.props.placeholder}
         placeholderTextColor={greyText}
         ref={c => this.textInput = c}
         style={[
-          { height: 'auto', maxHeight: 120, minHeight: 50 },
+          // { height: 'auto', maxHeight: 120, minHeight: 50 },
           this.props.style
         ]}
         onFocus={this.props.onFocus}
         onBlur={this.props.onBlur}
-        onChange={event =>
-          this.setState({
-            text: event.nativeEvent.text,
-          })
-        }
+        onChange={(evt) => this.setState({ text: evt.nativeEvent.text })}
+        // onChangeText={text => {
+        //   this.text = text;
+        //   clearTimeout(this.textTimeout);
+        //   this.textTimeout = setTimeout(() => this.setState({ text: this.text }), 300);
+        // }}
         onContentSizeChange={this.props.onContentSizeChange}
       >
         <TextBody showAllMentions>{this.state.text}</TextBody>
       </TextInput>
+
       <View style={styles.editingCommentButtons}>
 
         <TouchableHighlight
