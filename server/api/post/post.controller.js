@@ -57,6 +57,19 @@ request.defaults({ maxRedirects: 20, jar: true });
 // }
 // updateAllRank();
 
+// async function fixTitles() {
+//   let posts = await Post.find({ title: null, image: { $ne: null } });
+//   posts.forEach(post => {
+//     console.log(post.title);
+//     console.log(post.image);
+//     post.title='';
+//     post.save();
+//   });
+//   // Post.update({ title: null }, { title: '' }, { multi: true });
+// }
+
+// fixTitles();
+
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return (err) => {
@@ -420,7 +433,7 @@ exports.create = (req, res) => {
     tags,
     tagsText: tags,
 
-    title: req.body.title ? req.body.title : null,
+    title: req.body.title ? req.body.title : '',
     description: req.body.description ? req.body.description : null,
     image: req.body.image ? req.body.image : null,
     articleAuthor: req.body.articleAuthor,

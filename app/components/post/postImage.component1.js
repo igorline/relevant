@@ -155,7 +155,8 @@ class PostImage extends Component {
       'hsla(240, 70%, 10%, .6)'
     ];
 
-    let color = post.body ? post.body.length : post.title.length;
+    let titleLength = post.title ? post.title.length : 0;
+    let color = post.body ? post.body.length : titleLength;
     color = color % 220 + 200 || 200;
     color = Math.max(100, color);
     let colors = [

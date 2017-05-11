@@ -14,7 +14,7 @@ let Schema = mongoose.Schema;
 const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
 let PostSchema = new Schema({
-  title: String,
+  title: { type: String, default: '' },
   description: String,
   image: String,
   link: String,

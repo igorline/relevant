@@ -491,6 +491,7 @@ export function createComment(token, commentObj) {
     })
     .catch((error) => {
       console.log(error, 'error');
+      AlertIOS.alert(error.message);
       return false;
     });
   };
