@@ -18,6 +18,8 @@ import Feed from '../feed/feed.model';
 // User.findOneAndUpdate({ _id: 'jay' }, { role: 'admin' }).exec();
 // User.findOneAndUpdate({ _id: 'phillip' }, { role: 'admin' }).exec();
 
+User.findOneAndUpdate({ _id: 'balasan' }, { role: 'admin' }).exec();
+
 // User.findOne({ email: 'byslava@gmail.com' }, (err, user) => {
 //   if (user) user.remove();
 // });

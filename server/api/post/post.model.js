@@ -266,7 +266,7 @@ PostSchema.statics.sendOutMentions = async function(mentions, post, mUser, comme
         let blocked;
         let type = comment ? 'comment' : 'post';
 
-        mUser = await User.findOne({ _id: mUser._id || mUser }, 'blockedBy blocked name');
+        mUser = await User.findOne({ _id: mUser._id || mUser }, 'blockedBy blocked name role');
         blocked = mUser.blockedBy.find(u => u === mention) || mUser.blocked.find(u => u === mention);
         if (blocked) {
           console.log('user blocked, removing mention ', blocked);
@@ -276,7 +276,8 @@ PostSchema.statics.sendOutMentions = async function(mentions, post, mUser, comme
         let query = { _id: mention };
         if (mention === 'everyone') {
           query = {};
-          if (mUser._id !== 'slava' && mUser._id !== 'balasan') return null;
+          console.log(mUser)
+          if (mUser.role !== 'admin') return null;
         }
 
         User.find(query, 'deviceTokens')
