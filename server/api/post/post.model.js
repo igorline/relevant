@@ -276,7 +276,6 @@ PostSchema.statics.sendOutMentions = async function(mentions, post, mUser, comme
         let query = { _id: mention };
         if (mention === 'everyone') {
           query = {};
-          console.log(mUser)
           if (mUser.role !== 'admin') return null;
         }
 

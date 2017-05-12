@@ -29,14 +29,14 @@ class Heart extends Component {
         delay: delay * i,
         duration: 1000,
         easing: Easing.quad,
-        useNativeDriver: true,
+        // useNativeDriver: true,
       }),
       Animated.timing(this.state.opacity, {
         toValue: 0,
         delay: delay * i,
         duration: 1000,
         easing: Easing.in(Easing.exp),
-        useNativeDriver: true,
+        // useNativeDriver: true,
       }),
       Animated.sequence([
         Animated.timing(this.state.xVal, {
@@ -44,7 +44,7 @@ class Heart extends Component {
           delay: delay * i,
           duration: 1000,
           easing: Easing.ease,
-          useNativeDriver: true,
+          // useNativeDriver: true,
         }),
         // Animated.timing(this.state.xVal, {
         //   toValue: (Math.random() - 0.5) * 20,
@@ -59,14 +59,14 @@ class Heart extends Component {
           delay: delay * i,
           duration: 100,
           easing: Easing.in(Easing.exp),
-          useNativeDriver: true,
+          // useNativeDriver: true,
         }),
         Animated.timing(this.state.scale, {
           toValue: 1,
           delay: 100,
           duration: 500,
           easing: Easing.ease,
-          useNativeDriver: true,
+          // useNativeDriver: true,
         }),
       ]).start()
     ]).start();

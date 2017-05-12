@@ -40,7 +40,6 @@ class CommentInput extends Component {
     if (!this.state.comment || !this.state.comment.length) {
       return AlertIOS.alert('no comment');
     }
-    // let comment = this.state.comment.replace(/^(?=\n)$|^\s*|\s*$|\n\n+/gm, '');
 
     let comment = this.state.comment.trim();
     let commentObj = {
@@ -51,7 +50,7 @@ class CommentInput extends Component {
       user: this.props.auth.user._id
     };
 
-    this.setState({ comment: '' });
+    this.setState({ comment: '', inputHeight: 50 });
     this.textInput.blur();
     this.props.onFocus('new');
     this.props.actions.setUserSearch([]);
@@ -59,10 +58,10 @@ class CommentInput extends Component {
     this.props.actions.createComment(this.props.auth.token, commentObj)
     .then(success => {
       if (!success) {
-        this.setState({ comment });
+        this.setState({ comment, inputHeight: 50 });
         this.textInput.focus();
       }
-    })
+    });
   }
 
   processInput(comment) {
@@ -119,6 +118,7 @@ class CommentInput extends Component {
         }}
         style={[
           styles.commentInputParent,
+          { height: Math.min(this.state.inputHeight, 120) }
         ]}
       >
         {this.renderUserSuggestions()}
@@ -129,11 +129,12 @@ class CommentInput extends Component {
             styles.commentInput,
             styles.font15,
             {
+              // flex: 1,
               lineHeight: 20,
-              paddingTop: 15,
+              paddingTop: 10,
+              height: 'auto',
               maxHeight: 120,
               minHeight: 50,
-              height: 'auto',
             }
           ]}
           placeholder="Enter comment..."

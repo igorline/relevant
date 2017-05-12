@@ -29,7 +29,7 @@ class Dollar extends Component {
       delay: i * 30,
       duration: 500,
       easing: Easing.out(Easing.ease),
-      useNativeDriver: true,
+      // useNativeDriver: true,
     }).start();
 
     Animated.timing(this.state.y, {
@@ -37,7 +37,7 @@ class Dollar extends Component {
       delay: i * 30,
       duration: 500,
       easing: Easing.in(Easing.ease),
-      useNativeDriver: true,
+      // useNativeDriver: true,
     }).start();
 
     // Animated.timing(this.state.opacity, {
@@ -53,14 +53,14 @@ class Dollar extends Component {
         delay: i * 30,
         duration: 450,
         easing: Easing.out(Easing.exp),
-        useNativeDriver: true,
+        // useNativeDriver: true,
       }),
       Animated.timing(this.state.scale, {
         toValue: 0,
         delay: 0,
         duration: 50,
         easing: Easing.in(Easing.quad),
-        useNativeDriver: true,
+        // useNativeDriver: true,
       })
     ]).start();
   }

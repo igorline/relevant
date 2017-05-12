@@ -37,10 +37,13 @@ exports.text.relevance = function (props) {
     <Text style={props.style}>
       This is your relevance:{' '}
       <Text style={[styles.bebas]}>
-        <Image
-          style={[styles.r, { marginBottom: -2 }]}
-          source={require('../../assets/images/r.png')}
-        />
+        <View style={[styles.r, { width: 15, height: 15, top: 1 }]}>
+          <Image
+            resizeMode={'contain'}
+            style={[styles.r, { width: 15, height: 15, top: 1 }]}
+            source={require('../../assets/images/r.png')}
+          />
+        </View>
         {numbers.abbreviateNumber(props.auth.user.relevance)}
       </Text>
       {'\n\n'}
@@ -63,14 +66,17 @@ exports.text.coin = function (props) {
     <Text style={props.style}>
       These are your coins:{' '}
       <Text style={[styles.bebas]}>
-        <Image
-          style={[styles.r, { marginBottom: -2 }]}
-          source={require('../../assets/images/relevantcoin.png')}
-        />
+        <View style={[styles.r, { width: 15, height: 15, top: 1 }]}>
+          <Image
+            resizeMode={'contain'}
+            style={[styles.r, { width: 15, height: 15, top: 1 }]}
+            source={require('../../assets/images/relevantcoin.png')}
+          />
+        </View>
         {numbers.abbreviateNumber(props.auth.user.balance)}
       </Text>
       {'\n\n'}
-      You can use them to upvote posts. If you run out, don\t worry, you will get more tomorrow.
+      You can use them to upvote posts. If you run out, don't worry, you will get more tomorrow.
     </Text>
   );
 };
@@ -104,7 +110,7 @@ exports.text.subscriptions = function (props) {
   if (!props.auth.user) return null;
   return (
     <Text style={[props.style, { textAlign: 'center' }]}>
-      Whenever you upvote a post, you subscribe to the next 3 posts from the author.
+      When you upvote a post, you subscribe to the next 3 posts from the author.
     </Text>
   );
 };

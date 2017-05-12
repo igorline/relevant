@@ -268,7 +268,7 @@ export default class UrlComponent extends Component {
               style={[
                 styles.font15,
                 styles.createPostInput,
-                { flex: 1 }
+                this.props.postBody && this.props.postBody.length ? { flex: 1 } : { flex: 0 }
               ]}
 
               placeholder={urlPlaceholder}
