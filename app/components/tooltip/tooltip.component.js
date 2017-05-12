@@ -24,7 +24,7 @@ class Tooltip extends Component {
     this.state = {
       height: 0,
       scale: new Animated.Value(0),
-      opacity: new Animated.Value(1),
+      opacity: new Animated.Value(0),
       x: new Animated.Value(0),
       width: 0,
     };
@@ -61,19 +61,25 @@ class Tooltip extends Component {
       let tooltip = next.tooltip.showing;
 
       if (tooltip && tooltip.name) {
-        Animated.timing(this.state.scale, {
+        Animated.spring(this.state.scale, {
           toValue: 1,
           delay: 0,
-          duration: 400,
-          easing: Easing.in(Easing.elastic(1.0)),
+          // duration: 200,
+          // easing: Easing.in(Easing.elastic(1.0)),
           useNativeDriver: true,
+          velocity: 25,
+          // tension: 100,
+          friction: 10
           // easing: Easing.in(Easing.cubic)
         }).start();
-        Animated.timing(this.state.opacity, {
+        Animated.spring(this.state.opacity, {
           toValue: 1,
           delay: 0,
-          duration: 400,
-          easing: Easing.out(Easing.cubic),
+          // duration: 200,
+          // easing: Easing.out(Easing.cubic),
+          velocity: 25,
+          // tension: 50,
+          friction: 10,
           useNativeDriver: true,
         }).start();
       } else {
@@ -213,6 +219,13 @@ class Tooltip extends Component {
         onPress={this.nextOnboarding}
       >
         <Animated.View
+          style={{
+            flex: 1,
+            backgroundColor: 'hsla(240,70%,50%,0.4)',
+            opacity: this.state.opacity
+          }}
+        >
+        <Animated.View
           style={[styles.tooltip, style]}
           onLayout={(e) => {
             let { width, height } = e.nativeEvent.layout;
@@ -232,6 +245,7 @@ class Tooltip extends Component {
             })}
           </TouchableHighlight>
         </Animated.View>
+        </Animated.View>
       </TouchableHighlight>
     );
   }
@@ -246,14 +260,14 @@ let localStyles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'hsla(240,70%,50%,0.4)',
+    // backgroundColor: 'hsla(240,70%,50%,0.4)',
     // backgroundColor: 'hsla(240,70%,0%,0.4)'
   },
   tooltip: {
     position: 'absolute',
     backgroundColor: 'white',
     // backgroundColor: 'hsla(240,100%,80%,1)',
-    borderRadius: 5,
+    // borderRadius: 5,
     padding: 15,
     paddingVertical: 20,
     shadowColor: 'black',

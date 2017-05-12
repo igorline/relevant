@@ -71,14 +71,13 @@ class CreatePostContainer extends Component {
     let scene = 'home';
     if (this.props.navigation.index > 0) scene = 'createPost';
 
-    this.props.actions.pop(scene);
-
     if (this.props.navigation.index === 0) {
       if (this.props.close) this.props.close();
       // if (this.props.createPost.repost || this.props.createPost.edit) {
       this.props.actions.clearCreatePost();
       // }
     }
+    this.props.actions.pop(scene);
   }
 
   next() {

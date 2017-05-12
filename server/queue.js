@@ -51,6 +51,10 @@ q.on('timeout', (next, job) => {
 function updateUserStats() {
   User.find({}, { _id: 1, relevance: 1 })
   .exec((err, res) => {
+    if (err || !res) {
+      console.log('db error', err);
+      return;
+    }
     res.forEach((user) => {
       q.push((cb) => {
         let date = new Date();

@@ -87,7 +87,10 @@ class Application extends Component {
 
       if (next.auth.user.onboarding === 0) {
         this.props.actions.changeTab('discover');
-      } else this.props.actions.changeTab('read');
+      } else {
+        // Original defaults to read
+        this.props.actions.changeTab('discover');
+      }
       this.props.actions.resetRoutes();
 
       this.props.actions.replaceRoute({

@@ -29,7 +29,6 @@ class TextEdit extends Component {
   }
 
   render() {
-    console.log('render text');
     return (<View style={{ flex: 1 }}>
       <TextInput
         multiline
@@ -38,7 +37,7 @@ class TextEdit extends Component {
         placeholderTextColor={greyText}
         ref={c => this.textInput = c}
         style={[
-          // { height: 'auto', maxHeight: 120, minHeight: 50 },
+          { height: 'auto', maxHeight: 120, minHeight: 50 },
           this.props.style
         ]}
         onFocus={this.props.onFocus}
