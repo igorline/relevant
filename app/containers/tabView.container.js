@@ -41,7 +41,6 @@ class CardContainer extends Component {
 
   getDefaultComponent(props) {
     let key = this.default;
-
     switch (key) {
       case 'discover':
         return <Discover key={key} navigator={this.props.actions} />;
@@ -125,7 +124,10 @@ class CardContainer extends Component {
     const { navigation } = this.props;
     return (
       <NavigationTransitioner
-        style={{ zIndex: 2 }}
+        // style={{ zIndex: 0 }}
+        // style={[
+          // { zIndex: 2 },
+        // ]}
         navigation={{ state: navigation[this.default] }}
         configureTransition={transitionConfig}
         render={transitionProps => (
