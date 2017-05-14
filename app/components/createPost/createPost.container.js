@@ -7,6 +7,7 @@ import {
   Easing,
   InteractionManager
 } from 'react-native';
+import Analytics from 'react-native-firebase-analytics';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as NavigationExperimental from 'react-navigation';
@@ -255,6 +256,9 @@ class CreatePostContainer extends Component {
           this.props.navigator.changeTab('discover');
           this.props.navigator.reloadTab('discover');
           this.props.navigator.setView('discover', 1);
+          Analytics.logEvent('newPost', {
+            viaShare: this.props.share
+          });
         }
       });
   }

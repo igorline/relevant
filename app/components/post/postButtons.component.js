@@ -9,6 +9,7 @@ import {
   Alert,
   Image
 } from 'react-native';
+import Analytics from 'react-native-firebase-analytics';
 import Share from 'react-native-share';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -135,6 +136,7 @@ class PostButtons extends Component {
           //   title = 'Subscription increase';
           // }
           Alert.alert('You have subscribed to receive ' + results.subscription.amount + ' posts from ' + name);
+          Analytics.logEvent('upvote');
         }, 1500);
       }
     })

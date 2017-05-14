@@ -48,7 +48,6 @@ const initialState = {
   showTopics: false,
   reload: 0,
   main: 'home',
-  currentView: 'home',
   scroll: false,
   tabs: {
     index: 0,
@@ -171,7 +170,6 @@ function navigationState(state = initialState, action) {
       const scenes = {
         ...state[activeTabKey],
         animation: action.animation,
-        currentView: activeTabKey,
       };
 
       let route = action.route;
@@ -184,7 +182,6 @@ function navigationState(state = initialState, action) {
         return {
           ...state,
           [activeTabKey]: nextScenes,
-          currentView: activeTabKey,
         };
       }
 
@@ -201,7 +198,6 @@ function navigationState(state = initialState, action) {
         return {
           ...state,
           [key]: nextScenes,
-          currentView: key,
         };
       }
       return state;
@@ -220,7 +216,6 @@ function navigationState(state = initialState, action) {
       return {
         ...state,
         [key]: nextScenes,
-        currentView: key,
       };
     }
 
@@ -250,14 +245,13 @@ function navigationState(state = initialState, action) {
     case CHANGE_TAB: {
       const nextTabs = NavigationStateUtils.jumpTo(state.tabs, action.key);
 
-      // if (nextTabs !== state.tabs) {
-      return {
-        ...state,
-        tabs: nextTabs,
-        currentView: action.key,
-      };
-      // }
-      // return state;
+      if (nextTabs !== state.tabs) {
+        return {
+          ...state,
+          tabs: nextTabs,
+        };
+      }
+      return state;
     }
 
     case REPLACE_ROUTE: {
@@ -269,8 +263,7 @@ function navigationState(state = initialState, action) {
       );
       return {
         ...state,
-        [key]: newScene,
-        currentView: key,
+        [key]: newScene
       };
     }
 

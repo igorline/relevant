@@ -13,6 +13,7 @@ import {
   ActionSheetIOS,
   AlertIOS
 } from 'react-native';
+import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { globalStyles } from '../../styles/global';
@@ -42,10 +43,12 @@ class ArticleView extends Component {
         url: this.props.scene.uri,
       });
     });
+    Orientation.unlockAllOrientations();
   }
 
   componentWillUnmount() {
     if (this.onInteraction) this.onInteraction.cancel();
+    Orientation.lockToPortrait();
   }
 
   back() {

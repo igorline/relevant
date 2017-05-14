@@ -114,7 +114,6 @@ export function reloadAllTabs() {
 }
 
 
-
 export function resetRoutes(key) {
   return {
     type: RESET_ROUTES,
