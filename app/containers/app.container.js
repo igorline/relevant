@@ -10,6 +10,7 @@ import {
   Animated,
   KeyboardAvoidingView
 } from 'react-native';
+import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Analytics from 'react-native-firebase-analytics';
@@ -77,6 +78,7 @@ class Application extends Component {
     PushNotificationIOS.setApplicationIconBadgeNumber(0);
 
     Linking.addEventListener('url', this.handleOpenURL);
+    Orientation.lockToPortrait();
   }
 
   componentWillReceiveProps(next) {
@@ -94,8 +96,8 @@ class Application extends Component {
       this.props.actions.resetRoutes();
 
       this.props.actions.replaceRoute({
-        key: 'tabBars',
-        component: 'tabBars',
+        key: 'tabs',
+        component: 'tabs',
         header: false
       }, 0, 'home');
     }
@@ -334,7 +336,7 @@ class Application extends Component {
       case 'articleView':
         return (<ArticleView scene={props.scene.route} navigator={this.props.actions} />);
 
-      case 'tabBars':
+      case 'tabs':
         return <Footer showActionSheet={this.showActionSheet} />;
       case 'error':
         return <ErrorContainer showActionSheet={this.showActionSheet} />;

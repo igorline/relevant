@@ -1,6 +1,7 @@
 package com.relevantnative;
 
 import com.facebook.react.ReactActivity;
+import com.github.yamill.orientation.OrientationPackage;
 import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.evollu.react.fa.FIRAnalyticsPackage;
 

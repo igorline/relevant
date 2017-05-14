@@ -2,6 +2,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import createSocketIoMiddleware from 'redux-socket.io';
 import rootReducer from '../reducers';
+import screenTracking from './screenTracking';
 
 window.navigator.userAgent = 'react-native';
 const io = require('socket.io-client/socket.io');
@@ -21,7 +22,7 @@ socket.on('pingKeepAlive', () => {
 export default function configureStore() {
   let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
 
-  let store = applyMiddleware(thunk, socketIoMiddleware)(createStore)(
+  let store = applyMiddleware(screenTracking, thunk, socketIoMiddleware)(createStore)(
     rootReducer,
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   );

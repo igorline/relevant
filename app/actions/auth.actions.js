@@ -1,3 +1,4 @@
+import Analytics from 'react-native-firebase-analytics';
 import * as types from './actionTypes';
 import * as utils from '../utils';
 import * as errorActions from './error.actions';
@@ -297,6 +298,11 @@ export function getUser(callback) {
       .then(response => response.json())
       .then((responseJSON) => {
         dispatch(setUser(responseJSON));
+
+        Analytics.setUserProperty('relevance', Math.round(responseJSON.relevance).toString());
+        Analytics.setUserProperty('posts', responseJSON.postCount.toString());
+        Analytics.setUserProperty('upvotes', responseJSON.investmentCount.toString());
+
         dispatch(setSelectedUserData(responseJSON));
         if (process.env.WEB != 'true') {
           dispatch(addDeviceToken(responseJSON, token));
