@@ -9,12 +9,14 @@ import * as navigationActions from '../actions/navigation.actions';
 import CardContainer from './tabView.container';
 import * as userActions from '../actions/user.actions';
 import Footer from './footerCustom.container';
+import { fullHeight } from '../styles/global';
 
 class Tabs extends Component {
   constructor(props, context) {
     super(props, context);
     this.props.showActionSheet = this.props.showActionSheet.bind(this);
     this.changeTab = this.changeTab.bind(this);
+    this.tabs = {};
   }
 
   changeTab(key) {
@@ -50,7 +52,6 @@ class Tabs extends Component {
         }
       }
 
-
       if (key === 'activity' && this.props.notif.count) {
         this.props.actions.reloadTab(key);
       }
@@ -63,14 +64,44 @@ class Tabs extends Component {
 
       this.props.actions.changeTab(key);
     }
+    this.forceUpdate();
+  }
+
+  initNavView(key) {
+    let Card = require('./tabView.container').default;
+    let tabView = (<Card
+      style={{ flex: 1 }}
+      defaultContainer={key}
+      key={key}
+      showActionSheet={this.props.showActionSheet}
+    />);
+    this.tabs[key] = { key, view: tabView };
+    return tabView;
   }
 
   renderTabContent(key) {
-    return (<CardContainer
-      style={{ flex: 1 }}
-      defaultContainer={key}
-      showActionSheet={this.props.showActionSheet}
-    />);
+    if (!this.tabs[key]) this.initNavView(key);
+    return Object.keys(this.tabs).map(k => {
+      let tab = this.tabs[k];
+      let active = tab.key === key;
+      return (
+        <View
+          key={tab.key}
+          style={[
+            { overflow: 'hidden', top: 0, left: 0 },
+            active ? { flex: 1 } : { height: 0 }
+          ]}
+        >
+          {tab.view}
+        </View>
+      );
+    });
+
+    // return (<CardContainer
+    //   style={{ flex: 1 }}
+    //   defaultContainer={key}
+    //   showActionSheet={this.props.showActionSheet}
+    // />);
   }
 
   render() {
@@ -97,16 +128,24 @@ class Tabs extends Component {
         </TabBarIOS.Item>
       );
     });
+
+        // <TabBarIOS
+        //   translucent={false}
+        //   style={{ backgroundColor: 'white', borderTopColor: '#242425' }}
+        //   // unselectedTintColor={'#231f20'}
+        //   tintColor={'#4d4eff'}
+        // >
+        //   {tabs}
+        // </TabBarIOS>
+
+    let tab = this.props.navigation.tabs.routes[this.props.navigation.tabs.index];
+    console.log(tab.key);
+
     return (
       <View style={{ flex: 1 }}>
-        <TabBarIOS
-          translucent={false}
-          style={{ backgroundColor: 'white', borderTopColor: '#242425' }}
-          // unselectedTintColor={'#231f20'}
-          tintColor={'#4d4eff'}
-        >
-          {tabs}
-        </TabBarIOS>
+        <View style={{ height: fullHeight - 50 }}>
+          {tab ? this.renderTabContent(tab.key) : null}
+        </View>
         <Footer {...this.props} changeTab={this.changeTab} />
       </View>
     );
