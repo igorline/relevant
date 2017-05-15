@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import {
-  TabBarIOS,
   View,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as navigationActions from '../actions/navigation.actions';
+import * as navigationActions from '../../actions/navigation.actions';
 import CardContainer from './tabView.container';
-import * as userActions from '../actions/user.actions';
-import Footer from './footerCustom.container';
-import { fullHeight } from '../styles/global';
+import * as userActions from '../../actions/user.actions';
+import Footer from './footer.component';
 
 class Tabs extends Component {
   constructor(props, context) {
@@ -17,10 +15,6 @@ class Tabs extends Component {
     this.props.showActionSheet = this.props.showActionSheet.bind(this);
     this.changeTab = this.changeTab.bind(this);
     this.tabs = {};
-  }
-
-  componentDidMount() {
-    this.initNavView('createPost');
   }
 
   changeTab(key) {
@@ -68,7 +62,6 @@ class Tabs extends Component {
 
       this.props.actions.changeTab(key);
     }
-    this.forceUpdate();
   }
 
   initNavView(key) {
@@ -86,7 +79,7 @@ class Tabs extends Component {
     if (!this.tabs[key]) this.initNavView(key);
     return Object.keys(this.tabs).map(k => {
       let tab = this.tabs[k];
-      let active = tab.key == key;
+      let active = tab.key === key;
       return (
         <View
           key={tab.key}
@@ -94,54 +87,19 @@ class Tabs extends Component {
             active ? { flex: 1, marginBottom: 50 } : { flex: 0 }
           ]}
         >
-          {tab.view}
+          <CardContainer
+            defaultContainer={tab.key}
+            active={active}
+            key={tab.key}
+            showActionSheet={this.props.showActionSheet}
+          />
         </View>
       );
     });
-
-    // return (<CardContainer
-    //   style={{ flex: 1 }}
-    //   defaultContainer={key}
-    //   showActionSheet={this.props.showActionSheet}
-    // />);
   }
 
   render() {
-    const tabs = this.props.navigation.tabs.routes.map((tab, i) => {
-    // const tabs = this.props.tabs.routes.map((tab, i) => {
-      let badge;
-      let icon = tab.icon;
-      if (tab.key === 'activity' && this.props.notif.count) badge = this.props.notif.count;
-      if (tab.key === 'read' && this.props.feedUnread) badge = this.props.feedUnread;
-      if (tab.key === 'auth') return null;
-      return (
-        <TabBarIOS.Item
-          renderAsOriginal
-          key={tab.key}
-          icon={tab.regIcon}
-          title={tab.title}
-          tintColor={'#4d4eff'}
-          style={[{ paddingBottom: 48 }]}
-          onPress={() => this.changeTab(tab.key)}
-          selected={this.props.navigation.tabs.index === i}
-          badge={badge}
-        >
-          {this.renderTabContent(tab.key)}
-        </TabBarIOS.Item>
-      );
-    });
-
-        // <TabBarIOS
-        //   translucent={false}
-        //   style={{ backgroundColor: 'white', borderTopColor: '#242425' }}
-        //   // unselectedTintColor={'#231f20'}
-        //   tintColor={'#4d4eff'}
-        // >
-        //   {tabs}
-        // </TabBarIOS>
-
     let tab = this.props.navigation.tabs.routes[this.props.navigation.tabs.index];
-    console.log(tab.key);
 
     return (
       <View style={{ flex: 1 }}>

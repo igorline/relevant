@@ -87,7 +87,7 @@
     "react-native-share-extension": "https://github.com/balasan/react-native-share-extension/tarball/master",
     "react-native-share-menu": "^1.1.4",
     "react-native-svg": "4.5.0",
-    "react-native-tab-view": "0.0.56",
+    "react-native-tab-view": "0.0.65",
     "react-native-textinput-utils": "^0.3.0",
     "react-native-tooltip": "^5.0.0",
     "react-native-user-defaults": "^0.1.4",
