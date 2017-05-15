@@ -18,7 +18,7 @@ import * as NavigationExperimental from 'react-navigation';
 
 import Auth from '../components/auth/auth.container';
 import CreatePostContainer from '../components/createPost/createPost.container';
-import Footer from './footer.container';
+import Footer from '../components/nav/footer.container';
 import ErrorContainer from './error.container';
 import InvestAnimation from '../components/animations/investAnimation.component';
 import HeartAnimation from '../components/animations/heartAnimation.component';
