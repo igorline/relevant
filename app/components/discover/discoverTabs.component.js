@@ -1,24 +1,24 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   Text,
   InteractionManager
 } from 'react-native';
 import { TabViewAnimated, TabBar, SceneMap } from 'react-native-tab-view';
-import Feed from '../../containers/read.container';
+import Feed from './feed.container';
 import Discover from './discover.container';
 import DiscoverHeader from './discoverHeader.component';
 import { globalStyles, blue, fullWidth } from '../../styles/global';
 
 let styles;
 
-export default class DiscoverTabs extends Component {
+export default class DiscoverTabs extends PureComponent {
   constructor(props, context) {
     super(props, context);
     this.state = {
       index: 0,
       routes: [
-        { key: 'feed', title: 'My Feed' },
+        { key: 'feed', title: 'Subscriptions' },
         { key: 'new', title: 'New' },
         { key: 'trending', title: 'Trending' },
       ],
@@ -61,6 +61,13 @@ export default class DiscoverTabs extends Component {
 
   componentWillReceiveProps(next) {
 
+    // if (this.props.refresh !== next.refresh) {
+    //   if (this.scrollOffset === -50) {
+    //     this.setState({ index: 0 });
+    //   } else {
+    //     this.scrollToTop();
+    //   }
+    // }
     // handle prop discover switch
     // if (next.view.discover !== this.props.view.discover) {
     //   this.setState({ view: next.view.discover.tab });
@@ -81,10 +88,13 @@ export default class DiscoverTabs extends Component {
   }
 
   renderScene({ route }) {
+    let index = this.state.index;
+    let currentRoute = this.state.routes[index];
     switch (route.key) {
       case 'feed':
         return (
           <Feed
+            active={currentRoute.key === route.key}
             onScroll={this.onScroll}
             offsetY={this.state.headerHeight}
           />
@@ -92,6 +102,7 @@ export default class DiscoverTabs extends Component {
       case 'new':
         return (
           <Discover
+            active={currentRoute.key === route.key}
             type={'new'}
             key={'new'}
             onScroll={this.onScroll}
@@ -101,6 +112,7 @@ export default class DiscoverTabs extends Component {
       case 'trending':
         return (
           <Discover
+            active={currentRoute.key === route.key}
             type={'top'}
             key={'top'}
             onScroll={this.onScroll}
@@ -112,19 +124,6 @@ export default class DiscoverTabs extends Component {
     }
   };
 
-  // this.renderScene() {
-  //   return SceneMap({
-  //     feed: () => (
-  //         <Feed onScroll={this.onScroll} offsetY={this.state.headerHeight} />
-  //     ),
-  //     new: Feed,
-  //     // trending: () => SecondRoute,
-  // });
-
-  // renderHeader(props) {
-  //   return (<TabBar {...props} />);
-  // }
-
   renderHeader(props) {
     if (this.props.error) return null;
     let index = props.navigationState.index;
@@ -132,16 +131,7 @@ export default class DiscoverTabs extends Component {
     return (
       <DiscoverHeader
         ref={(c => this.header = c)}
-        // triggerReload={this.scrollToTop}
-        // offsetY={this.state.offsetY}
-        // showHeader={this.state.showHeader}
-        // tags={this.props.tags}
-        // posts={this.props.posts}
-        // view={this.state.view}
         setPostTop={this.setPostTop}
-        // actions={this.props.actions}
-        // changeView={this.changeView}
-        // myTabs={this.myTabs}
       >
         <TabBar
           getLabelText={({ route }) => route.title ? route.title : null}
@@ -149,10 +139,7 @@ export default class DiscoverTabs extends Component {
             let active = currentRoute.key === route.key;
             return (<Text
               style={[
-                styles.darkGray,
                 styles.tabFont,
-                styles.quarterLetterSpacing,
-                styles.font15,
                 active ? styles.active : null,
                 { textAlign: 'center' }
               ]}
@@ -167,6 +154,7 @@ export default class DiscoverTabs extends Component {
             borderBottomColor: 'black',
             borderBottomWidth: StyleSheet.hairlineWidth
           }}
+          pressOpacity={1}
           labelStyle={[styles.tabStyle]}
           indicatorStyle={{ backgroundColor: blue, height: 4 }}
           {...props}

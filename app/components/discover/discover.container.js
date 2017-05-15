@@ -59,7 +59,7 @@ class Discover extends Component {
       this.filter = next.tags.selectedTags;
       this.needsReload = new Date().getTime();
     }
-    if (this.props.refresh !== next.refresh) {
+    if (this.props.refresh !== next.refresh && this.props.active) {
       if (this.scrollOffset === -50) {
         // this.setState({ view: 0 });
       } else {
@@ -74,13 +74,15 @@ class Discover extends Component {
   // onScroll()
 
   shouldComponentUpdate(next) {
-    let tab = next.tabs.routes[next.tabs.index];
-    if (tab.key !== 'read') return false;
+    if (!next.active) return false;
+    // let tab = next.tabs.routes[next.tabs.index];
+    // if (tab.key !== 'read') return false;
     return true;
   }
 
   scrollToTop() {
     let view = this.listview;
+    console.log(view)
     if (view) view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
   }
 
@@ -167,7 +169,7 @@ class Discover extends Component {
       let active = true;
       dataEl = (
         <CustomListView
-          ref={c => this.listView = c}
+          ref={c => this.listview = c}
           key={this.state.view}
           data={tabData.data || []}
           loaded={tabData.loaded}

@@ -88,10 +88,10 @@ class Application extends Component {
       this.props.actions.getFeedCount();
 
       if (next.auth.user.onboarding === 0) {
-        this.props.actions.changeTab('discover');
+        this.props.actions.changeTab('read');
       } else {
         // Original defaults to read
-        this.props.actions.changeTab('discover');
+        this.props.actions.changeTab('read');
       }
       this.props.actions.resetRoutes();
 

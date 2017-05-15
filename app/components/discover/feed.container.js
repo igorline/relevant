@@ -43,7 +43,7 @@ class Read extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (this.props.refresh !== next.refresh) {
+    if (this.props.refresh !== next.refresh && this.props.active) {
       this.scrollToTop();
     }
     if (this.props.reload !== next.reload) {
@@ -55,8 +55,10 @@ class Read extends Component {
   }
 
   shouldComponentUpdate(next) {
-    let tab = next.tabs.routes[next.tabs.index];
-    if (tab.key !== 'read') return false;
+    if (!next.active) return false;
+
+    // let tab = next.tabs.routes[next.tabs.index];
+    // if (tab.key !== 'read') return false;
 
     // console.log('updating read');
     // for (let p in next) {
