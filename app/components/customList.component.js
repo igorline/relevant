@@ -19,6 +19,7 @@ export default class ActivityView extends Component {
     this.state = {
       reloading: false,
       none: false,
+      page: 0,
     };
     this.height = fullHeight;
     this.reload = this.reload.bind(this);
@@ -27,7 +28,6 @@ export default class ActivityView extends Component {
     this.lastReload = 0;
     let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.tpmDataSource = ds.cloneWithRows([]);
-    this.showReload = false;
   }
 
   componentWillMount() {
@@ -42,7 +42,6 @@ export default class ActivityView extends Component {
   }
 
   componentDidMount() {
-    this.showReload = true;
   }
 
   componentWillReceiveProps(next) {
@@ -67,7 +66,6 @@ export default class ActivityView extends Component {
 
   shouldComponentUpdate(next) {
     if (!this.props.active && !next.active) return false;
-    // console.log('render list ', this.props.view);
     return true;
   }
 

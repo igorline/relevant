@@ -7,19 +7,13 @@ import {
   TouchableHighlight,
   PushNotificationIOS
 } from 'react-native';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { globalStyles, fullWidth, blue } from '../styles/global';
-import * as authActions from '../actions/auth.actions';
-import * as messageActions from '../actions/message.actions';
-import * as animationActions from '../actions/animation.actions';
-import * as notifActions from '../actions/notif.actions';
-import * as userActions from '../actions/user.actions';
-import Percent from '../components/percent.component';
+import PropTypes from 'prop-types';
+import { globalStyles, fullWidth, blue } from '../../styles/global';
+import Percent from '../percent.component';
 
 let styles;
 
-class Footer extends Component {
+export default class Footer extends Component {
   constructor(props, context) {
     super(props, context);
     this.totalBadge = 0;
@@ -101,37 +95,12 @@ class Footer extends Component {
 }
 
 Footer.propTypes = {
-  auth: React.PropTypes.object,
-  actions: React.PropTypes.object,
-  navigator: React.PropTypes.object,
-  notif: React.PropTypes.object,
-  messages: React.PropTypes.object,
-  users: React.PropTypes.object
+  changeTab: PropTypes.func,
+  auth: PropTypes.object,
+  navigation: PropTypes.object,
+  notif: PropTypes.object,
+  feedUnread: PropTypes.number,
 };
-
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    notif: state.notif,
-    animation: state.animation,
-    messages: state.messages,
-    users: state.user,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({
-      ...authActions,
-      ...notifActions,
-      ...messageActions,
-      ...userActions,
-      ...animationActions,
-    }, dispatch)
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Footer);
 
 const localStyles = StyleSheet.create({
   footer: {

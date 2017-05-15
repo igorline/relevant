@@ -6,18 +6,18 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { globalStyles } from '../styles/global';
-import Post from '../components/post/post.component';
-import * as postActions from '../actions/post.actions';
-import * as createPostActions from '../actions/createPost.actions';
-import * as animationActions from '../actions/animation.actions';
-import * as investActions from '../actions/invest.actions';
-import * as authActions from '../actions/auth.actions';
-import * as userActions from '../actions/user.actions';
-import * as tagActions from '../actions/tag.actions';
-import * as navigationActions from '../actions/navigation.actions';
-import ErrorComponent from '../components/error.component';
-import CustomListView from '../components/customList.component';
+import { globalStyles } from '../../styles/global';
+import Post from '../post/post.component';
+import * as postActions from '../../actions/post.actions';
+import * as createPostActions from '../../actions/createPost.actions';
+import * as animationActions from '../../actions/animation.actions';
+import * as investActions from '../../actions/invest.actions';
+import * as authActions from '../../actions/auth.actions';
+import * as userActions from '../../actions/user.actions';
+import * as tagActions from '../../actions/tag.actions';
+import * as navigationActions from '../../actions/navigation.actions';
+import ErrorComponent from '../error.component';
+import CustomListView from '../customList.component';
 
 let styles;
 
@@ -94,7 +94,6 @@ class Read extends Component {
     });
   }
 
-
   scrollToTop() {
     let view = this.listview;
     if (view) view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
@@ -102,21 +101,11 @@ class Read extends Component {
 
   load(view, length) {
     const tag = this.props.posts.tag;
-
-    if (!view) view = 0;
     if (!length) length = 0;
 
     if (length === 0) this.props.actions.getSubscriptions();
 
     this.props.actions.getFeed(length, tag);
-  }
-
-  goTo(view) {
-    this.props.actions.push({
-      key: view.name,
-      title: view.name,
-      back: true
-    });
   }
 
   renderHeader() {
@@ -146,58 +135,26 @@ class Read extends Component {
   }
 
   render() {
-    // let messagesCount = null;
-    // let recentMessages = [];
-    // let thirstyHeader = null;
-    // let messages = null;
     let feedEl = [];
     let filler;
-
-    // if (this.props.messages.index.length > 0) {
-    //   messages = this.props.messages.index;
-    //   for (let x = 0; x < 4; x++) {
-    //     recentMessages.push(
-    //       <Text
-    //         key={x}
-    //         style={styles.recentName}
-    //       >
-    //         {x < 3 ? `${this.props.messages.index[x].from.name} ` : `${this.props.messages.index[x].from.name}`}
-    //       </Text>
-    //     );
-    //   }
-    // }
-
     let more = '';
     if (this.props.subscriptions.total) {
       more = 'more ';
     }
-      filler = (
-        <View>
-          <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
-            Upvote posts to subscribe to {more}users
-          </Text>
-          <Text
-            style={[styles.georgia, styles.discoverLink, styles.quarterLetterSpacing]}
-            onPress={() => { this.props.actions.changeTab('discover'); }}
-          >Click on 🔮<Text style={styles.active}> Discover</Text>
-            &nbsp;to find the most relevant content & people
-          </Text>
-        </View>
-      );
-    // } else {
-    //   let { total, totalUsers } = this.props.subscriptions;
-    //   filler = (
-    //     <View>
-    //       <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
-    //         You are subscribed to {total} post{total > 1 ? 's' : ''} from {totalUsers} user{totalUsers > 1 ? 's' : ''}
-    //       </Text>
-    //       <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
-    //         Check back in a little while for new content
-    //       </Text>
-    //     </View>
-    //   );
-    // }
 
+    filler = (
+      <View>
+        <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
+          Upvote posts to subscribe to {more}users
+        </Text>
+        <Text
+          style={[styles.georgia, styles.discoverLink, styles.quarterLetterSpacing]}
+          onPress={() => { this.props.actions.changeTab('discover'); }}
+        >Click on 🔮<Text style={styles.active}> Discover</Text>
+          &nbsp;to find the most relevant content & people
+        </Text>
+      </View>
+    );
 
     this.tabs.forEach((tab) => {
       let tabData = this.props.posts.feed;
@@ -227,42 +184,8 @@ class Read extends Component {
       );
     });
 
-    if (this.props.messages.count > 0) {
-      messagesCount = (
-        <Text style={[styles.white, styles.messagesCount]}>
-          {this.props.messages.count + ' New'}
-        </Text>
-      );
-    }
-
-    // if (this.props.messages.index && !this.props.error.read) {
-    //   thirstyHeader = (
-    //     <TouchableHighlight
-    //       underlayColor={'transparent'}
-    //       onPress={messages ? () => this.goTo({ name: 'messages' })
-    //       : null}
-    //     >
-    //       <View style={[styles.thirstyHeader]}>
-    //         <View style={{ paddingRight: 5 }}>
-    //           <Text>👅💦</Text>
-    //         </View>
-    //         <View>
-    //           <Text style={[{ fontWeight: '500' }, styles.darkGray]}>{messages ? 'Thirsty messages' : 'No messages'}</Text>
-    //           <View style={styles.recentNames}>
-    //             {recentMessages}
-    //           </View>
-    //         </View>
-    //         <View style={{ justifyContent: 'flex-end', flex: 1, flexDirection: 'row' }}>
-    //           {messagesCount}
-    //         </View>
-    //       </View>
-    //     </TouchableHighlight>
-    //   );
-    // }
-
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'hsl(0,0%,90%)' }]}>
-        {/* thirstyHeader */}
         {feedEl}
         <ErrorComponent parent={'read'} reloadFunction={this.load} />
       </View>
@@ -277,9 +200,6 @@ const localStyles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'lightgrey',
-    // marginHorizontal: 30,
-    // borderBottomWidth: 8,
-    // borderBottomColor: 'lightgrey',
   },
   thirstyHeader: {
     alignItems: 'center',

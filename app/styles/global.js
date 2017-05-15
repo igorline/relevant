@@ -111,6 +111,13 @@ const font = StyleSheet.create({
     fontFamily: 'Helvetica',
     fontWeight: 'bold'
   },
+  tabStyle: {
+    fontFamily: 'Helvetica',
+    fontWeight: 'bold',
+    fontSize: 15,
+    letterSpacing: 0.25,
+    color: darkGrey,
+  },
   strokeText: {
     fontFamily: 'HelveticaNeueLTStd-BdOu',
     // lineHeight: 30,
