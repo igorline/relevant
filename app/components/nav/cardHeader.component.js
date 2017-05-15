@@ -264,6 +264,9 @@ class CardHeader extends Component {
       <Animated.View
         style={[headerStyle, style]}
       >
+        <StatusBar
+          hidden={false}
+        />
         {this.renderLeft(props)}
         {this.renderTitle(props)}
         {this.props.renderRight ? this.props.renderRight(props) : this.renderRight(props)}
