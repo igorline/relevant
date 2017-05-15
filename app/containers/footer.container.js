@@ -19,6 +19,10 @@ class Tabs extends Component {
     this.tabs = {};
   }
 
+  componentDidMount() {
+    this.initNavView('createPost');
+  }
+
   changeTab(key) {
     let tab = this.props.navigation.tabs.routes[this.props.navigation.tabs.index];
     this.props.actions.toggleTopics(false);
@@ -68,8 +72,7 @@ class Tabs extends Component {
   }
 
   initNavView(key) {
-    let Card = require('./tabView.container').default;
-    let tabView = (<Card
+    let tabView = (<CardContainer
       style={{ flex: 1 }}
       defaultContainer={key}
       key={key}
@@ -83,13 +86,12 @@ class Tabs extends Component {
     if (!this.tabs[key]) this.initNavView(key);
     return Object.keys(this.tabs).map(k => {
       let tab = this.tabs[k];
-      let active = tab.key === key;
+      let active = tab.key == key;
       return (
         <View
           key={tab.key}
           style={[
-            { overflow: 'hidden', top: 0, left: 0 },
-            active ? { flex: 1 } : { height: 0 }
+            active ? { flex: 1, marginBottom: 50 } : { flex: 0 }
           ]}
         >
           {tab.view}
@@ -143,9 +145,7 @@ class Tabs extends Component {
 
     return (
       <View style={{ flex: 1 }}>
-        <View style={{ height: fullHeight - 50 }}>
-          {tab ? this.renderTabContent(tab.key) : null}
-        </View>
+        {tab ? this.renderTabContent(tab.key) : null}
         <Footer {...this.props} changeTab={this.changeTab} />
       </View>
     );
