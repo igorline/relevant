@@ -5,8 +5,8 @@ import {
 import * as NavigationExperimental from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Read from '../discover/discoverTabs.component';
-import Discover from '../../containers/discover.container';
+import Discover from '../discover/discoverTabs2.component';
+import Read from '../../containers/read.container';
 import SinglePost from '../../containers/singlePost.container';
 import Activity from '../../containers/activity.container';
 // import Messages from './messages.container';
@@ -44,7 +44,7 @@ class CardContainer extends Component {
     let key = this.default;
     switch (key) {
       case 'discover':
-        return <Discover key={key} navigator={this.props.actions} />;
+        return <Discover key={key} actions={this.props.actions} />;
       case 'myProfile':
         return <Profile key={key} navigator={this.props.actions} />;
       case 'activity':
@@ -76,7 +76,7 @@ class CardContainer extends Component {
       // case 'messages':
       //   return <Messages navigator={this.props.actions} />;
       case 'discover':
-        return <Discover navigator={this.props.actions} scene={props.scene.route} />;
+        return <Discover actions={this.props.actions} scene={props.scene.route} />;
 
       case 'profile':
         return <Profile navigator={this.props.actions} scene={props.scene.route} />;

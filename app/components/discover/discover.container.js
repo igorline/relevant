@@ -82,7 +82,6 @@ class Discover extends Component {
 
   scrollToTop() {
     let view = this.listview;
-    console.log(view)
     if (view) view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
   }
 
@@ -255,9 +254,8 @@ function mapStateToProps(state) {
     userList: state.user.list,
     tags: state.tags,
     error: state.error.discover,
-    nav: state.navigation.discover,
-    refresh: state.navigation.read.refresh,
-    reload: state.navigation.read.reload,
+    refresh: state.navigation.discover.refresh,
+    reload: state.navigation.discover.reload,
     tabs: state.navigation.tabs,
     topics: state.navigation.showTopics
   };

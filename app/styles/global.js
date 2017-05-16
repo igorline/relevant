@@ -114,7 +114,7 @@ const font = StyleSheet.create({
   tabStyle: {
     fontFamily: 'Helvetica',
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 17,
     letterSpacing: 0.25,
     color: darkGrey,
   },
