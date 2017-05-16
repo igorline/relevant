@@ -92,7 +92,16 @@ class PostBody extends Component {
       textBody = (
         <TouchableWithoutFeedback
           style={{ flex: 1 }}
-          onPress={this.goToPost}
+          onPressIn={e =>{
+            this.touchable1x = e.nativeEvent.pageX;
+          }}
+          onPress={(e) => {
+            let x = e.nativeEvent.pageX;
+            if (Math.abs(this.touchable1x - x) > 5) {
+              return;
+            }
+            this.goToPost();
+          }}
         >
           <View style={[styles.postBody]}>
             <Text style={[styles.darkGrey, postStyle]}>
