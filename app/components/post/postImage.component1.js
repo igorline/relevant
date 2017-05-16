@@ -213,7 +213,17 @@ class PostImage extends Component {
         style={{ flex: 1, marginTop: 0 }}
         underlayColor={'transparent'}
         // onPress={link ? () => this.openLink(link) : null}
-        onPress={() => this.openLink(post.link)}
+        onPressIn={e =>{
+          this.touchable1x = e.nativeEvent.pageX;
+        }}
+        onPress={(e) => {
+          let x = e.nativeEvent.pageX;
+          if (Math.abs(this.touchable1x - x) > 5) {
+            return;
+          }
+          this.openLink(post.link);
+        }}
+        pressRetentionOffset={{ top: 100, left: 100, right: 100, bottom: 100 }}
       >
         <View style={[styles.postImageContainer]}>
           {/*linkEl*/}
