@@ -4,11 +4,12 @@ import {
   Text,
   InteractionManager
 } from 'react-native';
-import { TabViewAnimated, TabBar } from 'react-native-tab-view';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
+import DefaultTabBar from './discoverTabBar.component';
 import Feed from './feed.container';
 import Discover from './discover.container';
 import DiscoverHeader from './discoverHeader.component';
-import { globalStyles, blue, fullWidth } from '../../styles/global';
+import { globalStyles, blue } from '../../styles/global';
 
 let styles;
 
@@ -16,7 +17,7 @@ export default class DiscoverTabs extends PureComponent {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      index: 0,
+      index: 1,
       routes: [
         { key: 'feed', title: 'Subscriptions' },
         { key: 'new', title: 'New' },
@@ -30,6 +31,7 @@ export default class DiscoverTabs extends PureComponent {
     this.onScroll = this.onScroll.bind(this);
     this.renderScene = this.renderScene.bind(this);
     this.scrollOffset = {};
+    this.initialTab = 1;
   }
 
   componentWillMount() {
@@ -42,12 +44,11 @@ export default class DiscoverTabs extends PureComponent {
       this.needsReload = new Date().getTime();
 
       this.onInteraction = InteractionManager.runAfterInteractions(() => {
-        console.log('loaded');
         this.loaded = true;
         this.setState({});
       });
     } else {
-      this.setState({ index: 1 });
+      // this.setState({ index: 1 });
       // this.filter = this.props.tags.selectedTags;
     }
   }
@@ -82,16 +83,18 @@ export default class DiscoverTabs extends PureComponent {
     this.setState({ index });
   }
 
-  renderScene({ route }) {
+  renderScene(route) {
     let index = this.state.index;
     let currentRoute = this.state.routes[index];
     switch (route.key) {
       case 'feed':
         return (
           <Feed
+            key={'feed'}
             active={currentRoute.key === route.key}
             onScroll={this.onScroll}
             offsetY={this.state.headerHeight}
+            tabLabel={route.title}
           />
         );
       case 'new':
@@ -102,6 +105,7 @@ export default class DiscoverTabs extends PureComponent {
             key={'new'}
             onScroll={this.onScroll}
             offsetY={this.state.headerHeight}
+            tabLabel={route.title}
           />
         );
       case 'trending':
@@ -112,6 +116,7 @@ export default class DiscoverTabs extends PureComponent {
             key={'top'}
             onScroll={this.onScroll}
             offsetY={this.state.headerHeight}
+            tabLabel={route.title}
           />
         );
       default:
@@ -120,38 +125,19 @@ export default class DiscoverTabs extends PureComponent {
   };
 
   renderHeader(props) {
-    if (this.props.error) return null;
-    let index = props.navigationState.index;
-    let currentRoute = props.navigationState.routes[index];
     return (
       <DiscoverHeader
         ref={(c => this.header = c)}
         setPostTop={this.setPostTop}
       >
-        <TabBar
-          getLabelText={({ route }) => route.title ? route.title : null}
-          renderLabel={({ route }) => {
-            let active = currentRoute.key === route.key;
-            return (<Text
-              style={[
-                styles.tabFont,
-                active ? styles.active : null,
-                { textAlign: 'center' }
-              ]}
-            >
-              {route.title}
-            </Text>);
-          }
-          }
-          style={{ backgroundColor: 'white' }}
-          tabStyle={{
+        <DefaultTabBar
+          tabStyle={{ paddingBottom: 0 }}
+          style={{
             height: 50,
-            borderBottomColor: 'black',
-            borderBottomWidth: StyleSheet.hairlineWidth
+            paddingBottom: 0,
+            borderBottomWidth: StyleSheet.hairlineWidth,
+            borderColor: 'black'
           }}
-          pressOpacity={1}
-          labelStyle={[styles.tabStyle]}
-          indicatorStyle={{ backgroundColor: blue, height: 4 }}
           {...props}
         />
       </DiscoverHeader>
@@ -159,14 +145,32 @@ export default class DiscoverTabs extends PureComponent {
   }
 
   render() {
+    let tabs = this.state.routes.map(route => this.renderScene(route));
+
     return (
-      <TabViewAnimated
-        style={[styles.container]}
-        navigationState={this.state}
-        renderScene={this.renderScene}
-        renderHeader={this.renderHeader}
-        onRequestChangeTab={this.handleChangeTab}
-      />
+      <ScrollableTabView
+        tabBarTextStyle={[styles.tabFont]}
+        tabBarActiveTextColor={blue}
+        initialPage={this.initialTab}
+        tabBarUnderlineStyle={{ backgroundColor: blue }}
+        onChangeTab={(tab) => {
+          this.setState({ index: tab.i });
+          this.header.showHeader();
+        }}
+        contentProps={{
+          bounces: false,
+          forceSetResponder: (e) => {
+            this.props.actions.scrolling(true);
+            clearTimeout(this.scrollTimeout);
+            this.scrollTimeout = setTimeout(
+              () => this.props.actions.scrolling(false), 80);
+          }
+        }}
+        renderTabBar={(props) => this.renderHeader(props)}
+        ref={tabView => this.tabView = tabView}
+      >
+        {tabs}
+      </ScrollableTabView>
     );
   }
 }

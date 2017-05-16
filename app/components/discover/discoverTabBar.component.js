@@ -32,8 +32,8 @@ const DefaultTabBar = React.createClass({
     };
   },
 
-  renderTabOption(name, page) {
-  },
+  // renderTabOption(name, page) {
+  // },
 
   renderTab(name, page, isTabActive, onPressHandler, textColor) {
     const { activeTextColor, inactiveTextColor, textStyle } = this.props;
@@ -75,7 +75,6 @@ const DefaultTabBar = React.createClass({
     return (
       <View style={[styles.tabs, { backgroundColor: this.props.backgroundColor }, this.props.style]}>
         {this.props.tabs.map((name, page) => {
-
           let inputRange = [0, 1, 2];
           let outputRange = inputRange.map(i => i === page ? 1 : 0);
 
@@ -91,7 +90,7 @@ const DefaultTabBar = React.createClass({
           const renderTab = this.props.renderTab || this.renderTab;
           return renderTab(name, page, isTabActive, this.props.goToPage, textColor);
         })}
-        <Animated.View style={[tabUnderlineStyle, { left }, this.props.underlineStyle]} />
+        <Animated.View style={[tabUnderlineStyle, { transform: [{ translateX: left }] }, this.props.underlineStyle]} />
       </View>
     );
   },

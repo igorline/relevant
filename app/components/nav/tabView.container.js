@@ -5,8 +5,9 @@ import {
 import * as NavigationExperimental from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Discover from '../discover/discoverTabs2.component';
+import Discover from '../discover/discoverTabs.component';
 import Read from '../../containers/read.container';
+
 import SinglePost from '../../containers/singlePost.container';
 import Activity from '../../containers/activity.container';
 // import Messages from './messages.container';
