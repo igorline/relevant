@@ -54,8 +54,8 @@ const initialState = {
     index: 0,
     key: 'root',
     routes: [
-      { key: 'read', icon: '🗞', title: 'My Feed', regIcon: readIcon },
-      { key: 'discover', icon: '🔮', title: 'Discover', regIcon: discoverIcon },
+      { key: 'discover', icon: '🗞', title: 'Home', regIcon: discoverIcon },
+      { key: 'read', icon: '🗞', title: 'Stats', regIcon: readIcon },
       { key: 'createPost', icon: '✍️', title: 'New Post', regIcon: createPostIcon },
       { key: 'activity', icon: '⚡', title: 'Activity', regIcon: activityIcon },
       { key: 'myProfile', icon: '👤', title: 'Profile', regIcon: profileIcon }
