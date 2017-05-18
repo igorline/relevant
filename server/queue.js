@@ -161,7 +161,7 @@ async function getUserRank() {
   });
 }
 
-getUserRank();
+// getUserRank();
 
 async function basicIncome() {
   let tier1 = await User.find({
