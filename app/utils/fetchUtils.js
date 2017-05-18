@@ -1,6 +1,7 @@
 import * as tokenUtil from './token';
 
 const queryParams = (params) => {
+  if (!params) return '';
   let paramString = Object.keys(params)
     .filter(p => params[p])
     .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))

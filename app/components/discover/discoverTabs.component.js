@@ -2,18 +2,22 @@ import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   Text,
-  InteractionManager
+  InteractionManager,
+  View
 } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import DefaultTabBar from './discoverTabBar.component';
 import Feed from './feed.container';
 import Discover from './discover.container';
 import DiscoverHeader from './discoverHeader.component';
-import { globalStyles, blue } from '../../styles/global';
+import { globalStyles, fullWidth, fullHeight, blue } from '../../styles/global';
+import Topics from '../createPost/topics.component';
 
 let styles;
 
-export default class DiscoverTabs extends PureComponent {
+class DiscoverTabs extends PureComponent {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -32,6 +36,13 @@ export default class DiscoverTabs extends PureComponent {
     this.renderScene = this.renderScene.bind(this);
     this.scrollOffset = {};
     this.initialTab = 1;
+    if (this.props.scene) {
+      this.state.routes = [
+        { key: 'new', title: 'New' },
+        { key: 'trending', title: 'Trending' },
+        { key: 'people', title: 'People' },
+      ];
+    }
   }
 
   componentWillMount() {
@@ -63,10 +74,11 @@ export default class DiscoverTabs extends PureComponent {
   }
 
   componentWillReceiveProps(next) {
-    // handle prop discover switch
-    // if (next.view.discover !== this.props.view.discover) {
-    //   this.setState({ view: next.view.discover.tab });
-    // }
+    if (next.view.discover !== this.props.view.discover &&
+      next.view.discover.tab !== this.state.index
+    ) {
+      this.tabView.goToPage(next.view.discover.tab);
+    }
   }
 
   onScroll(event, key) {
@@ -81,11 +93,14 @@ export default class DiscoverTabs extends PureComponent {
   handleChangeTab(index) {
     this.header.showHeader();
     this.setState({ index });
+    this.props.actions.setView('discover', index);
   }
 
   renderScene(route) {
     let index = this.state.index;
     let currentRoute = this.state.routes[index];
+
+    // default view;
     switch (route.key) {
       case 'feed':
         return (
@@ -103,6 +118,7 @@ export default class DiscoverTabs extends PureComponent {
             active={currentRoute.key === route.key}
             type={'new'}
             key={'new'}
+            scene={this.props.scene}
             onScroll={this.onScroll}
             offsetY={this.state.headerHeight}
             tabLabel={route.title}
@@ -114,6 +130,19 @@ export default class DiscoverTabs extends PureComponent {
             active={currentRoute.key === route.key}
             type={'top'}
             key={'top'}
+            scene={this.props.scene}
+            onScroll={this.onScroll}
+            offsetY={this.state.headerHeight}
+            tabLabel={route.title}
+          />
+        );
+      case 'people':
+        return (
+          <Discover
+            active={currentRoute.key === route.key}
+            type={'people'}
+            key={'people'}
+            scene={this.props.scene}
             onScroll={this.onScroll}
             offsetY={this.state.headerHeight}
             tabLabel={route.title}
@@ -147,30 +176,54 @@ export default class DiscoverTabs extends PureComponent {
   render() {
     let tabs = this.state.routes.map(route => this.renderScene(route));
 
-    return (
-      <ScrollableTabView
-        tabBarTextStyle={[styles.tabFont]}
-        tabBarActiveTextColor={blue}
-        initialPage={this.initialTab}
-        tabBarUnderlineStyle={{ backgroundColor: blue }}
-        onChangeTab={(tab) => {
-          this.setState({ index: tab.i });
-          this.header.showHeader();
+    let topics;
+    if (this.props.topics) {
+      topics = (<View
+        style={{
+          position: 'absolute',
+          backgroundColor: 'white',
+          width: fullWidth,
+          height: fullHeight - 108,
+          zIndex: 10000,
         }}
-        contentProps={{
-          bounces: false,
-          forceSetResponder: (e) => {
-            this.props.actions.scrolling(true);
-            clearTimeout(this.scrollTimeout);
-            this.scrollTimeout = setTimeout(
-              () => this.props.actions.scrolling(false), 80);
-          }
-        }}
-        renderTabBar={(props) => this.renderHeader(props)}
-        ref={tabView => this.tabView = tabView}
       >
-        {tabs}
-      </ScrollableTabView>
+        <Topics
+          topics={this.props.tags.parentTags}
+          action={(topic) => {
+            this.props.actions.goToTopic(topic);
+          }}
+          actions={this.props.actions}
+        />
+      </View>);
+    }
+
+    return (
+      <View style={{ flex: 1 }}>
+        {topics}
+        <ScrollableTabView
+          ref={tabView => this.tabView = tabView}
+          tabBarTextStyle={[styles.tabFont]}
+          tabBarActiveTextColor={blue}
+          initialPage={this.initialTab}
+          tabBarUnderlineStyle={{ backgroundColor: blue }}
+          onChangeTab={(tab) => {
+            this.setState({ index: tab.i });
+            this.header.showHeader();
+          }}
+          contentProps={{
+            bounces: false,
+            forceSetResponder: (e) => {
+              this.props.actions.scrolling(true);
+              clearTimeout(this.scrollTimeout);
+              this.scrollTimeout = setTimeout(
+                () => this.props.actions.scrolling(false), 80);
+            }
+          }}
+          renderTabBar={(props) => this.renderHeader(props)}
+        >
+          {tabs}
+        </ScrollableTabView>
+      </View>
     );
   }
 }
@@ -183,3 +236,29 @@ let localStyles = StyleSheet.create({
 
 styles = { ...globalStyles, ...localStyles };
 
+function mapStateToProps(state) {
+  return {
+    tags: state.tags,
+    view: state.view,
+    // tabs: state.navigation.tabs,
+    topics: state.navigation.showTopics
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    // actions: bindActionCreators(
+    //   { ...postActions,
+    //     ...animationActions,
+    //     ...tagActions,
+    //     ...investActions,
+    //     ...userActions,
+    //     ...statsActions,
+    //     ...authActions,
+    //     ...navigationActions,
+    //     ...createPostActions,
+    //   }, dispatch),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DiscoverTabs);

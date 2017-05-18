@@ -101,7 +101,7 @@ class PostButtons extends Component {
 
     this.tooltipParent.measureInWindow((x, y, w, h) => {
       let parent = { x, y, w, h };
-      this.props.navigator.showTooltip({
+      this.props.actions.showTooltip({
         ...this.tooltipData,
         parent
       });
@@ -128,7 +128,7 @@ class PostButtons extends Component {
       if (results) {
         this.props.actions.triggerAnimation('invest');
         setTimeout(() => {
-          this.props.navigator.reloadTab('read');
+          this.props.actions.reloadTab('read');
           // this.props.navigator.reloadTab('myProfile');
           let name = this.props.post.embeddedUser.name;
           // let title = 'New subscripion!';
@@ -234,7 +234,7 @@ class PostButtons extends Component {
     }
     let openComment = false;
     if (!this.props.post.commentCount) openComment = true;
-    this.props.navigator.goToPost(this.props.post, openComment);
+    this.props.actions.goToPost(this.props.post, openComment);
   }
 
   flag() {

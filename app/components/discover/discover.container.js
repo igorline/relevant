@@ -7,7 +7,6 @@ import {
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import ScrollableTabView from 'react-native-scrollable-tab-view';
 import CustomSpinner from '../CustomSpinner.component';
 import Post from '../post/post.component';
 import DiscoverUser from '../discoverUser.component';
@@ -23,8 +22,6 @@ import * as createPostActions from '../../actions/createPost.actions';
 import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 import ErrorComponent from '../../components/error.component';
 import CustomListView from '../../components/customList.component';
-import Tags from '../tags.component';
-import Topics from '../createPost/topics.component';
 
 let styles;
 const POST_PAGE_SIZE = 15;
@@ -47,11 +44,16 @@ class Discover extends Component {
       { id: 2, title: 'People', type: 'people' },
     ];
     this.loaded = true;
-    this.mainDiscover = true;
     this.type = this.props.type;
     this.state.view = this.myTabs.find(tab => tab.type === this.type).id;
   }
 
+  componentWillMount() {
+    if (this.props.scene) {
+      this.topic = this.props.scene.topic;
+      this.filter= this.topic ? [this.topic] : [];
+    }
+  }
 
   componentWillReceiveProps(next) {
     let type = this.myTabs[this.state.view].type;
@@ -191,33 +193,8 @@ class Discover extends Component {
 
     if (!this.loaded) dataEl = <CustomSpinner />;
 
-
-    let topics;
-    if (this.props.topics) {
-      topics = (<View
-        style={{
-          position: 'absolute',
-          backgroundColor: 'white',
-          width: fullWidth,
-          height: fullHeight - 108,
-          zIndex: 10000,
-        }}
-      >
-        <Topics
-          topics={this.props.tags.parentTags}
-          action={(topic) => {
-            this.setCurrentView(0);
-            this.props.actions.goToTopic(topic);
-          }}
-          actions={this.props.actions}
-        />
-      </View>);
-    }
-
-    // by default ScrollabeTabView is using common/ScrollView for scroll view
     return (
       <View style={{ backgroundColor: 'hsl(0,0%,100%)', flex: 1 }}>
-        {topics}
         {dataEl}
         <ErrorComponent parent={'discover'} reloadFunction={this.load} />
       </View>

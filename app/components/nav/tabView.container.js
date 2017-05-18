@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   Easing,
 } from 'react-native';
@@ -6,7 +6,9 @@ import * as NavigationExperimental from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Discover from '../discover/discoverTabs.component';
-import Read from '../../containers/read.container';
+import DiscoverComponent from '../discover/discover.container';
+
+import Stats from '../stats/stats.container';
 
 import SinglePost from '../../containers/singlePost.container';
 import Activity from '../../containers/activity.container';
@@ -27,7 +29,7 @@ const {
 } = NavigationExperimental;
 
 
-class CardContainer extends Component {
+class CardContainer extends PureComponent {
 
   constructor(props, context) {
     super(props, context);
@@ -50,8 +52,8 @@ class CardContainer extends Component {
         return <Profile key={key} navigator={this.props.actions} />;
       case 'activity':
         return <Activity key={key} navigator={this.props.actions} />;
-      case 'read':
-        return <Read key={key} />;
+      case 'stats':
+        return <Stats key={key} />;
       default:
         return null;
     }
@@ -77,13 +79,24 @@ class CardContainer extends Component {
       // case 'messages':
       //   return <Messages navigator={this.props.actions} />;
       case 'discover':
-        return <Discover actions={this.props.actions} scene={props.scene.route} />;
+        return <Discover key={props.scene.route.key} actions={this.props.actions} scene={props.scene.route} />;
 
       case 'profile':
         return <Profile navigator={this.props.actions} scene={props.scene.route} />;
 
       case 'people':
         return <PostPeople scene={props.scene.route} />;
+
+      case 'peopleView':
+        return (<DiscoverComponent
+          active
+          type={'people'}
+          key={'people'}
+          scene={props.scene.route}
+          // onScroll={this.onScroll}
+          // offsetY={this.state.headerHeight}
+          // tabLabel={props.scene.route.title}
+        />);
 
       case 'blocked':
         return <Blocked scene={props.scene.route} />;

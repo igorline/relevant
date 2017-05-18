@@ -12,6 +12,7 @@ var StaticsticsSchema = new Schema({
   last_sample: Number,
   current_sample: Number,
   hours: {
+    0: Number,
     1: Number,
     2: Number,
     3: Number,

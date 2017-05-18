@@ -9,10 +9,18 @@ const initialState = {
   deviceToken: null,
   preUser: null,
   confirmed: true,
+  stats: null,
 };
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
+
+    case types.SET_STATS: {
+      return {
+        ...state,
+        stats: action.payload
+      };
+    }
 
     case types.LOGIN_USER_REQUEST:
       return Object.assign({}, state, {
