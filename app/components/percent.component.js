@@ -29,7 +29,7 @@ class Percent extends Component {
       this.percent = newPercent;
       this.forceUpdate();
     }
-    this.animationTimer = setTimeout(() => this.animate(), 100);
+    this.animationTimer = setTimeout(() => this.animate(), 300);
   }
 
   render() {

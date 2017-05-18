@@ -7,7 +7,8 @@ import {
   Image,
   Animated,
   ActionSheetIOS,
-  StatusBar
+  StatusBar,
+  TouchableOpacity
 } from 'react-native';
 import Search from './search.component';
 import { globalStyles } from '../../styles/global';
@@ -37,7 +38,7 @@ class CardHeader extends Component {
     (buttonIndex) => {
       switch (buttonIndex) {
         case 0:
-          console.log(this.props.actions)
+          console.log(this.props.actions);
           this.props.actions.updateBlock(id);
           break;
         default:
@@ -148,7 +149,7 @@ class CardHeader extends Component {
       }
     }
 
-    if (key === 'discover' || component === 'discover') {
+    if (key === 'discover' || key === 'mainDiscover' || component === 'discover') {
       titleAction = () => this.props.actions.toggleTopics();
       bottomArrow = (<Text
         style={[styles.arrow]}
@@ -160,6 +161,27 @@ class CardHeader extends Component {
           source={require('../../assets/images/downarrow.png')}
         />
       </Text>);
+      if (key === 'mainDiscover') {
+        return (
+          <TouchableOpacity
+            style={{
+              alignItems: 'center',
+              backgroundColor: 'transparent',
+              paddingVertical: 6,
+            }}
+            onPress={titleAction}
+          >
+            <View style={{ marginBottom: -9 }}>
+              <Image
+                source={require('../../assets/images/logo.png')}
+                resizeMode={'contain'}
+                style={{ width: 120, height: 22, marginBottom: 1 }}
+              />
+              {bottomArrow}
+            </View>
+          </TouchableOpacity>
+        );
+      }
     }
 
     if (title === 'Profile' && this.props.auth.user) {
@@ -192,7 +214,6 @@ class CardHeader extends Component {
       >
         <Text onPress={titleAction} style={styles.navTitle}>
           {clipped}
-          {rightArrow}
         </Text>
         {bottomArrow}
       </View>

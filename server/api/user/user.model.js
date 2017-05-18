@@ -42,13 +42,20 @@ const UserSchema = new Schema({
   following: Number,
   followers: Number,
 
-  bio: { type: String, default: ''},
+  bio: { type: String, default: '' },
 
   blocked: [{ type: String, ref: 'User' }],
   blockedBy: {
     type: [{ type: String, ref: 'User' }],
     select: false
-  }
+  },
+
+  level: Number,
+  rank: Number,
+  percentRank: Number,
+  topTopics: [{ type: String, ref: 'Tag' }],
+  totalUsers: Number,
+
 }, {
   timestamps: true,
 });

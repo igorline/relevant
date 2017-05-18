@@ -132,6 +132,16 @@ export function replaceRoute(route, index, key) {
   };
 }
 
+export function goToPeople(topic) {
+  return push({
+    key: 'peopleView',
+    component: 'peopleView',
+    title: topic,
+    back: true,
+    topic: topic ? { _id: topic.toLowerCase() } : null,
+  });
+}
+
 export function goToUrl(url) {
   return push({
     key: 'articleView',

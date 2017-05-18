@@ -6,6 +6,7 @@ import Earnings from './api/earnings/earnings.model';
 import apnData from './pushNotifications';
 import Notification from './api/notification/notification.model';
 import Meta from './api/metaPost/metaPost.model';
+import Relevance from './api/relevance/relevance.model';
 import * as proxyHelpers from './api/post/html';
 
 const extractor = require('unfluff');
@@ -34,7 +35,7 @@ function extractDomain(url) {
 }
 
 let q = queue({
-  concurrency: 20,
+  concurrency: 1,
 });
 
 q.on('timeout', (next, job) => {
@@ -86,6 +87,81 @@ function updateUserStats() {
 }
 
 // setTimeout(basicIncome, 10000);
+async function getUserRank() {
+  try {
+    let totalUsers = await User.count({ relevance: { $gt: 0 } });
+    let grandTotal = await User.count({});
+    let topUser = await User.findOne({}).sort('-relevance').limit(1);
+    let topR = topUser.relevance;
+    let users = await User.find({});
+    users.forEach(user => {
+      q.push(async cb => {
+        try {
+          let rank = await User.find({ relevance: { $lt: user.relevance, $gt: 0 } }).count();
+          // let tied = await User.find({ relevance: user.relevance }).count();
+
+          let percentRank = Math.round(((rank) * 100) / (totalUsers));
+          let level = Math.round(1000 * user.relevance / topR) / 10;
+
+          user.percentRank = percentRank;
+          user.rank = totalUsers - rank;
+          user.level = level;
+          user.totalUsers = totalUsers;
+
+          let topicRelevance = await Relevance.find({ user: user._id, tag: { $ne: null } })
+          .sort('-relevance')
+          .limit(5);
+
+          user.topTopics = topicRelevance.map(tR => tR.tag);
+
+          let topicPromises = topicRelevance.map(async tR => {
+            let topTopicUser = await Relevance.findOne({ tag: tR.tag })
+            .sort('-relevance')
+            .limit(1);
+            let topTopicR = topTopicUser.relevance;
+
+            let totalTopicUsers = await Relevance.find({ tag: tR.tag }).count();
+            let topicRank = await Relevance.find({ tag: tR.tag, relevance: { $lt: tR.relevance } }).count();
+            let topicPercentRank = Math.round((topicRank * 100) / (totalTopicUsers));
+            let level = Math.round(1000 * (tR.relevance / topTopicR)) / 10;
+            // console.log(level)
+            // console.log(user._id, ' ', tR.tag);
+            // console.log('percent ', topicPercentRank);
+            // console.log('rank ', (totalTopicUsers - topicRank));
+            // console.log('level ', level);
+            tR.percentRank = topicPercentRank;
+            tR.level = level;
+            tR.rank = (totalTopicUsers - topicRank);
+            tR.totalUsers = totalTopicUsers;
+            await tR.save();
+          });
+
+          if (!user.onboarding) {
+            user.onboarding = 0;
+          }
+          await Promise.all(topicPromises);
+
+          await user.save();
+          // console.log(user._id, ' ', percentRank);
+          // console.log(user._id, ' ', user.rank);
+          // console.log(user._id, ' ', level);
+        } catch (err) {
+          console.log(err);
+        }
+        cb();
+      });
+    });
+  } catch (err) {
+    console.log(err);
+  }
+
+  q.start((queErr, results) => {
+    if (queErr) return console.log(queErr);
+    return console.log('finished computing rank');
+  });
+}
+
+getUserRank();
 
 async function basicIncome() {
   let tier1 = await User.find({
@@ -255,73 +331,6 @@ async function populatePosts() {
   });
 }
 
-
-  // User.find({ relevance: { $lt: 10 } }, 'balance name deviceTokens relevance relevanceRecord')
-  // .then((users) => {
-  //   console.log('basic users ', users);
-  //   users.forEach(user => {
-  //     q.push(cb => {
-
-  //       let income = 5;
-  //       let level = 1;
-  //       if (user.relevance > 10) {
-  //         income = 10;
-  //         level = 2;
-  //       }
-  //       if (user.relevance > 100) {
-  //         income = 15;
-  //         level = 3;
-  //       }
-  //       if (user.relevance > 1000) {
-  //         income = 20;
-  //         level = 4;
-  //       }
-  //       if (user.relevance > 10000) {
-  //         income = 25;
-  //         level = 5;
-  //       }
-  //
-  //       user = user.updateRelevanceRecord();
-  //       let amount = 5;
-  //       if (user.relevance > 5) amount = 10 - user.relevance;
-
-  //       user.relevance += amount;
-
-  //       let updateEarnings =
-  //         Earnings.updateUserBalance(null, user, null, amount, 'treasury');
-
-  //       // Basic income notification
-  //       // .then(result => {
-  //       //   let updatedUser = result[0];
-  //       //   console.log('updated user ', updatedUser);
-  //       let alert = 'Your relevance is recovering! You got 5 extra points, use them wisely.';
-  //       let payload = {};
-  //       try {
-  //         apnData.sendNotification(updatedUser, alert, payload);
-  //       } catch (err) { console.log('Push notification error'); }
-  //       // });x
-  //       //
-
-
-  //       // user.relevance = user.relevance * 0.995;
-  //       // let relevanceDecay;
-  //       // if (user.relevance !== 0) {
-  //       //   relevanceDecay = user.save();
-  //       // }
-
-  //       Promise.all([updateEarnings])
-  //       .then(() => cb());
-  //     });
-  //   });
-
-//     q.start((queErr, results) => {
-//       if (queErr) return console.log(queErr);
-//       return console.log('all finished basic income: ');
-//     });
-//   });
-// }
-
-
 // basicIncome();
 // populateMeta();
 // populatePosts();
@@ -332,6 +341,7 @@ function startBasicIncomeUpdate() {
 }
 
 function startStatsUpdate() {
+  // taking too long - should move to diff thread?
   setInterval(updateUserStats, 60 * 60 * 1000);
   updateUserStats();
 }

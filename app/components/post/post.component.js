@@ -170,12 +170,6 @@ const localStyles = StyleSheet.create({
     flexWrap: 'wrap',
     flex: 1,
   },
-  separator: {
-    height: 16,
-    borderColor: 'lightgrey',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
 });
 
 styles = { ...localStyles, ...globalStyles };

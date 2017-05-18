@@ -294,14 +294,15 @@ exports.preview = (req, res) => {
 
 exports.readable = async (req, res) => {
   let short;
+  let article;
   try {
     let uri = req.query.uri;
-    let article = await proxyHelpers.getReadable(uri);
+    article = await proxyHelpers.getReadable(uri);
     short = proxyHelpers.trimToLength(article.article, 140);
   } catch (err) {
     return handleError(res)(err);
   }
-  return res.send(short.innerHTML);
+  return res.send(article.content);
 };
 
 exports.findByID = async (req, res) => {

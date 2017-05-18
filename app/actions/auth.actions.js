@@ -1,4 +1,3 @@
-import Analytics from 'react-native-firebase-analytics';
 import * as types from './actionTypes';
 import * as utils from '../utils';
 import * as errorActions from './error.actions';
@@ -9,9 +8,12 @@ let PushNotificationIOS;
 let userDefaults;
 
 utils.fetchUtils.env();
+let Analytics;
 
 if (process.env.WEB != 'true') {
   rn = require('react-native');
+
+  Analytics = require('react-native-firebase-analytics');
   PushNotificationIOS = rn.PushNotificationIOS;
   userDefaults = require('react-native-user-defaults').default;
 }
@@ -299,9 +301,11 @@ export function getUser(callback) {
       .then((responseJSON) => {
         dispatch(setUser(responseJSON));
 
-        Analytics.setUserProperty('relevance', Math.round(responseJSON.relevance).toString());
-        Analytics.setUserProperty('posts', responseJSON.postCount.toString());
-        Analytics.setUserProperty('upvotes', responseJSON.investmentCount.toString());
+        if (Analytics) {
+          Analytics.setUserProperty('relevance', Math.round(responseJSON.relevance).toString());
+          Analytics.setUserProperty('posts', responseJSON.postCount.toString());
+          Analytics.setUserProperty('upvotes', responseJSON.investmentCount.toString());
+        }
 
         dispatch(setSelectedUserData(responseJSON));
         if (process.env.WEB != 'true') {
@@ -523,4 +527,28 @@ export function confirmEmail(user, code) {
       console.log(err);
       return false;
     });
+}
+
+export function setStats(stats) {
+  return {
+    type: types.SET_STATS,
+    payload: stats
+  };
+}
+
+export function getStats(user) {
+  return async dispatch => {
+    try {
+      let stats = await utils.fetchUtils.superFetch({
+        method: 'GET',
+        endpoint: 'relevance',
+        path: `/user/${user._id}/stats`,
+      });
+      dispatch(setStats(stats));
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
 }

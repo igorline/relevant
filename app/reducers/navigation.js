@@ -54,8 +54,9 @@ const initialState = {
     index: 0,
     key: 'root',
     routes: [
-      { key: 'discover', icon: '🗞', title: 'Home', regIcon: discoverIcon },
-      { key: 'read', icon: '🗞', title: 'Stats', regIcon: readIcon },
+      //🎯🏵🏆🏅🔮🌀🍥
+      { key: 'discover', icon: '🗞', title: 'Read', regIcon: discoverIcon },
+      { key: 'stats', icon: '🎯', title: 'Stats', regIcon: readIcon },
       { key: 'createPost', icon: '✍️', title: 'New Post', regIcon: createPostIcon },
       { key: 'activity', icon: '⚡', title: 'Activity', regIcon: activityIcon },
       { key: 'myProfile', icon: '👤', title: 'Profile', regIcon: profileIcon }
@@ -92,13 +93,25 @@ const initialState = {
       title: 'Read'
     }],
   },
-  discover: {
+  stats: {
+    layout: 'horizontal',
     index: 0,
-    key: 'discover',
+    key: 'stats',
     refresh: null,
     reload: 0,
     routes: [{
-      key: 'discover',
+      key: 'stats',
+      component: 'stats',
+      title: 'Your Stats'
+    }],
+  },
+  discover: {
+    index: 0,
+    key: 'mainDiscover',
+    refresh: null,
+    reload: 0,
+    routes: [{
+      key: 'mainDiscover',
       component: 'mainDiscover',
       title: 'Discover'
     }],

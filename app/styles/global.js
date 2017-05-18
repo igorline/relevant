@@ -443,10 +443,12 @@ const layout = StyleSheet.create({
     color: darkGrey
   },
 
-  // separator: {
-  //   height: 12,
-  //   backgroundColor: 'hsl(238,20%,95%)',
-  // },
+  separator: {
+    height: 16,
+    borderColor: 'lightgrey',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
   dots: {
     color: greyText,
     fontSize: 20,

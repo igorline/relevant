@@ -57,7 +57,11 @@ class Stats extends Component {
     let { type, entity } = this.props;
     let smallScreen = fullWidth <= 320 || false;
 
-    let statsStyle = [{ fontSize: 17, lineHeight: 17 }, styles.bebas, styles.quarterLetterSpacing];
+    let statsStyle = [
+      { fontSize: 17, lineHeight: 17 },
+      styles.bebas,
+      styles.quarterLetterSpacing,
+    ];
     let iconStyle = [];
     let coinStyle = [];
 
@@ -73,7 +77,7 @@ class Stats extends Component {
     }
 
     let value = (
-      <Text onPress={() => this.toggleTooltip('coin')}>
+      <Text style={this.props.textStyle} onPress={() => this.toggleTooltip('coin')}>
         <View style={[styles.coin, ...coinStyle]}>
           <Image
             resizeMode={'contain'}
@@ -87,7 +91,7 @@ class Stats extends Component {
     let percent = <Percent fontSize={17} user={entity} />;
 
     let relevance = (
-      <Text onPress={() => this.toggleTooltip('relevance')}>
+      <Text style={this.props.textStyle} onPress={() => this.toggleTooltip('relevance')}>
         <View style={[styles.r, ...iconStyle]}>
           <Image
             resizeMode={'contain'}
