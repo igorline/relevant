@@ -36,7 +36,7 @@ const PostEvents = new EventEmitter();
 // }
 // filterPosts();
 
-request.defaults({ maxRedirects: 20, jar: true });
+request.defaults({ maxRedirects: 22, jar: true });
 // uniqueInvestments()
 // function uniqueInvestments() {
 //   Post.find({})
@@ -263,7 +263,7 @@ exports.preview = (req, res) => {
       uri = processed.uri;
       return request({
         url: uri,
-        maxRedirects: 20,
+        maxRedirects: 22,
         jar: true,
         gzip: true,
         headers: getHeader(uri),
@@ -283,7 +283,7 @@ exports.preview = (req, res) => {
 
   return request({
     url: previewUrl,
-    maxRedirects: 20,
+    maxRedirects: 22,
     jar: true,
     gzip: true,
     headers: getHeader(previewUrl),
@@ -559,7 +559,7 @@ exports.create = (req, res) => {
           );
 
           let newFeedPost = {
-            _id: subscription.follower,
+            _id: subscription.follower._id,
             type: 'INC_FEED_COUNT',
           };
           PostEvents.emit('post', newFeedPost);

@@ -50,9 +50,10 @@ export default function post(state = initialState, action) {
   switch (action.type) {
 
     case types.INC_FEED_COUNT: {
+      let unread = state.feedUnread || 0;
       return {
         ...state,
-        feedUnread: state.feedUnread + 1,
+        feedUnread: unread + 1,
       };
     }
 

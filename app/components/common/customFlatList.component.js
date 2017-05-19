@@ -3,9 +3,8 @@ import {
   ListView,
   RefreshControl,
   View,
-  Text,
   StyleSheet,
-  Image
+  FlatList
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import CustomSpinner from '../components/CustomSpinner.component';
@@ -57,14 +56,10 @@ export default class ActivityView extends Component {
     }
 
     if (next.active && next.needsReload > this.lastReload) {
-      // this.listview.scrollTo({ y: 0 });
-      this.setState({ reloading: true });
-      // setTimeout(() => {
-        // this.dataSource = null;
-        this.props.load(this.props.view, 0);
-        this.setState({ loading: true });
-        this.lastReload = new Date().getTime();
-      // }, 300);
+      this.dataSource = null;
+      this.props.load(this.props.view, 0);
+      this.setState({ loading: true });
+      this.lastReload = new Date().getTime();
     }
   }
 
@@ -128,7 +123,7 @@ export default class ActivityView extends Component {
     }
 
     listEl = (
-      <ListView
+      <FlatList
         ref={(c) => { this.listview = c; }}
         enableEmptySections
         removeClippedSubviews
@@ -159,7 +154,6 @@ export default class ActivityView extends Component {
         renderFooter={() => emptyEl}
         refreshControl={
           <RefreshControl
-            key={this.props.needsReload}
             style={[{ backgroundColor: 'hsl(238,20%,95%)' }, this.props.data.length ? null : styles.hideReload]}
             refreshing={this.state.reloading}
             onRefresh={this.reload}

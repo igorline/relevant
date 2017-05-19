@@ -16,6 +16,7 @@ import { globalStyles, fullWidth, fullHeight, blue } from '../../styles/global';
 import Topics from '../createPost/topics.component';
 
 let styles;
+const SUB_TITLE = 'Subscriptions';
 
 class DiscoverTabs extends PureComponent {
   constructor(props, context) {
@@ -23,7 +24,7 @@ class DiscoverTabs extends PureComponent {
     this.state = {
       index: 1,
       routes: [
-        { key: 'feed', title: 'Subscriptions' },
+        { key: 'feed', title: SUB_TITLE },
         { key: 'new', title: 'New' },
         { key: 'trending', title: 'Trending' },
       ],
@@ -34,6 +35,7 @@ class DiscoverTabs extends PureComponent {
     this.setPostTop = this.setPostTop.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.renderScene = this.renderScene.bind(this);
+    this.renderBadge = this.renderBadge.bind(this);
     this.scrollOffset = {};
     this.initialTab = 1;
     if (this.props.scene) {
@@ -99,7 +101,8 @@ class DiscoverTabs extends PureComponent {
   renderScene(route) {
     let index = this.state.index;
     let currentRoute = this.state.routes[index];
-
+    console.log('current route ', currentRoute.key);
+    console.log(route.key, ' ',  currentRoute.key === route.key);
     // default view;
     switch (route.key) {
       case 'feed':
@@ -153,6 +156,31 @@ class DiscoverTabs extends PureComponent {
     }
   };
 
+  renderBadge(title) {
+    if (title !== SUB_TITLE) return null;
+    let count = this.props.feedUnread;
+    if (typeof count === 'number') {
+      this.totalBadge += count;
+    }
+    if (!count) return null;
+    return (
+      <Text
+        style={{
+          backgroundColor: 'transparent',
+          fontSize: 14,
+          fontWeight: 'bold',
+          position: 'absolute',
+          color: 'red',
+          // color: blue,
+          top: -1,
+          right: -10 }}
+      >
+        {'•'}
+        {/*count*/}
+      </Text>
+    );
+  }
+
   renderHeader(props) {
     return (
       <DiscoverHeader
@@ -167,6 +195,7 @@ class DiscoverTabs extends PureComponent {
             borderBottomWidth: StyleSheet.hairlineWidth,
             borderColor: 'black'
           }}
+          renderBadge={this.renderBadge}
           {...props}
         />
       </DiscoverHeader>
@@ -241,7 +270,8 @@ function mapStateToProps(state) {
     tags: state.tags,
     view: state.view,
     // tabs: state.navigation.tabs,
-    topics: state.navigation.showTopics
+    topics: state.navigation.showTopics,
+    feedUnread: state.posts.feedUnread
   };
 }
 

@@ -40,7 +40,7 @@ export default class Footer extends Component {
     let active = tab.key === currentTab.key;
     let activeText;
     if (tab.key === 'activity' && this.props.notif.count) badge = this.props.notif.count;
-    if (tab.key === 'read' && this.props.feedUnread) badge = this.props.feedUnread;
+    if (tab.key === 'discover' && this.props.feedUnread) badge = this.props.feedUnread;
     let icon = (<Text style={[styles.icon, styles.textCenter]}>{tab.icon}</Text>);
     let title = (
       <Text style={[styles.footerText, active || activeText ? styles.footerTextActive : null]}>
@@ -141,23 +141,6 @@ const localStyles = StyleSheet.create({
     fontSize: 20
   },
   activeIcon: {
-    // fontSize: 20
-    // transform: [{ scale: 1.2 }]
-  },
-  notifCount: {
-    position: 'absolute',
-    top: -3,
-    backgroundColor: 'red',
-    right: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 2.5,
-    paddingVertical: 2,
-    paddingHorizontal: 4
-  },
-  notifText: {
-    fontSize: 12,
-    color: 'white'
   },
   activityRow: {
     flexDirection: 'row',

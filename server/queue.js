@@ -163,7 +163,7 @@ async function getUserRank() {
 
 // getUserRank();
 
-async function basicIncome() {
+async function basicIncome(done) {
   let tier1 = await User.find({
     balance: { $lt: 6 },
     relevance: { $lt: 10 }
@@ -231,6 +231,7 @@ async function basicIncome() {
 
   q.start((queErr, results) => {
     if (queErr) return console.log(queErr);
+    if (done) done()
     return console.log('all finished basic income: ');
   });
 }
@@ -353,8 +354,10 @@ if (process.env.NODE_ENV === 'production') {
   let minutesTillHour = 60 - (new Date()).getMinutes();
   setTimeout(() => startStatsUpdate(), minutesTillHour * 60 * 1000);
 
-  let hoursTillNoon = 12 - (new Date()).getHours();
+  let hoursTillNoon = 14 - (new Date()).getHours();
   if (hoursTillNoon < 0) hoursTillNoon += 24;
-  setTimeout(() => startBasicIncomeUpdate(), hoursTillNoon * 60 * 60 * 1000);
+  setTimeout(() => {
+    startBasicIncomeUpdate(() => getUserRank());
+  }, hoursTillNoon * 60 * 60 * 1000);
 }
 

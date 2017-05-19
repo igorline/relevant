@@ -4,6 +4,7 @@ import {
   Text,
   InteractionManager,
   View,
+  RefreshControl,
   FlatList
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -20,6 +21,7 @@ class StatsContainer extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
+      refreshing: false
     };
     this.renderItem = this.renderItem.bind(this);
     this.renderHeader = this.renderHeader.bind(this);
@@ -27,6 +29,12 @@ class StatsContainer extends Component {
 
   componentWillMount() {
     this.props.actions.getStats(this.props.auth.user);
+  }
+
+  componentWillUpdate(next) {
+    if (next.auth.stats !== this.props.auth.stats) {
+      this.setState({ refreshing: false });
+    }
   }
 
   renderHeader() {
@@ -84,6 +92,16 @@ class StatsContainer extends Component {
         data={stats}
         ListHeaderComponent={this.renderHeader}
         renderItem={this.renderItem}
+        refreshControl={
+          <RefreshControl
+            style={[{ backgroundColor: 'hsl(238,20%,95%)' }]}
+            refreshing={this.state.refreshing}
+            onRefresh={() => {
+              this.setState({ refreshing: true });
+              this.props.actions.getStats(this.props.auth.user);
+            }}
+          />
+        }
       />
     );
   }

@@ -167,7 +167,7 @@ class Discover extends Component {
 
     if (this.loaded) {
       let tabData = this.getViewData(this.props, this.state.view) || [];
-      let active = true;
+      console.log(this.type, ' ', this.props.active);
       dataEl = (
         <CustomListView
           ref={c => this.listview = c}
@@ -179,7 +179,7 @@ class Discover extends Component {
           type={'posts'}
           parent={'discover'}
           view={this.state.view}
-          active={active}
+          active={this.props.active}
           YOffset={this.props.offsetY}
           onScroll={this.props.onScroll}
           needsReload={this.needsReload}

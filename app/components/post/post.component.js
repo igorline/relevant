@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   View,
@@ -13,7 +13,7 @@ import Commentary from './commentary.component';
 
 let styles;
 
-class Post extends Component {
+class Post extends PureComponent {
 
   componentWillMount() {
     // if (this.props.singlePost && this.props.post) {
