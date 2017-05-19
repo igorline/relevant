@@ -8,6 +8,7 @@ import {
   FlatList
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { globalStyles, blue } from '../../styles/global';
@@ -41,8 +42,16 @@ class StatsContainer extends Component {
   }
 
   renderHeader() {
+    let nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
+    console.log(this.props.auth.nextUpdate)
     return (
       <View>
+        <View style={styles.nextUpdate}><Text
+          onPress={() => this.toggleTooltip('subscriptions')}
+          style={[styles.font12, styles.darkGrey]}
+        >
+          {nextUpdate} until next update
+        </Text></View>
         <StatCategory
           index={0}
           stats={this.props.auth.user}
@@ -121,6 +130,13 @@ let localStyles = StyleSheet.create({
     textAlign: 'center',
     padding: 15,
     color: 'white'
+  },
+  nextUpdate: {
+    padding: 10,
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'lightgrey',
   }
 });
 

@@ -336,9 +336,34 @@ async function populatePosts() {
 // populateMeta();
 // populatePosts();
 
+function getNextUpdateTime() {
+  let now = new Date();
+  let h = now.getHours();
+  let nextUpdate = new Date();
+  const computeHour = 14;
+
+  if (h < computeHour) {
+    nextUpdate.setHours(14, 0, 0, 0);
+  }
+  nextUpdate.setDate(now.getDate() + 1);
+  nextUpdate.setHours(14, 0, 0, 0);
+  let timeToUpdate = nextUpdate.getTime() - now.getTime();
+  console.log('now ', now);
+  console.log('next update ', nextUpdate);
+
+  global.nextUpdate = nextUpdate;
+  return timeToUpdate;
+}
+
+getNextUpdateTime();
+
 function startBasicIncomeUpdate() {
-  setInterval(basicIncome, 24 * 60 * 60 * 1000);
+  // setInterval(basicIncome, 24 * 60 * 60 * 1000);
+
   basicIncome();
+  setTimeout(() => {
+    startBasicIncomeUpdate(() => getUserRank());
+  }, getNextUpdateTime());
 }
 
 function startStatsUpdate() {
@@ -347,24 +372,8 @@ function startStatsUpdate() {
   updateUserStats();
 }
 
-// if (process.env.NODE_ENV === 'production') {
-  updateUserStats()
-  const computeHour = 14;
-
-  let now = new Date();
-  let h = now.getHours();
-  let nextUpdate = new Date();
-
-  if (h < computeHour) {
-    nextUpdate.setUTCHours(14, 0, 0, 0);
-  }
-  nextUpdate.setDate(now.getDate() + 1);
-  console.log(nextUpdate)
-  nextUpdate.setUTCHours(14, 0, 0, 0);
-  let timeToUpdate = nextUpdate.getTime() - now.getTime();
-  console.log('now ', now);
-  console.log('next update ', nextUpdate);
-  console.log(timeToUpdate);
+if (process.env.NODE_ENV === 'production') {
+  updateUserStats();
 
   // start interval on the hour
   let minutesTillHour = 60 - (new Date()).getMinutes();
@@ -372,6 +381,6 @@ function startStatsUpdate() {
 
   setTimeout(() => {
     startBasicIncomeUpdate(() => getUserRank());
-  }, timeToUpdate);
-// }
+  }, getNextUpdateTime());
+}
 
