@@ -49,9 +49,12 @@ const DefaultTabBar = React.createClass({
       onPress={() => onPressHandler(page)}
     >
       <View style={[styles.tab, this.props.tabStyle]}>
-        <Animated.Text style={[{ color: textColor, fontWeight }, textStyle]}>
-          {name}
-        </Animated.Text>
+        <View>
+          <Animated.Text style={[{ color: textColor, fontWeight }, textStyle]}>
+            {name}
+          </Animated.Text>
+          {this.props.renderBadge(name)}
+        </View>
       </View>
     </TouchableOpacity>);
   },

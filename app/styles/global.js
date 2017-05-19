@@ -511,7 +511,22 @@ const layout = StyleSheet.create({
     top: 7,
     right: 5,
     resizeMode: 'contain'
-  }
+  },
+  notifCount: {
+    position: 'absolute',
+    top: -3,
+    backgroundColor: 'red',
+    right: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 2.5,
+    paddingVertical: 2,
+    paddingHorizontal: 4
+  },
+  notifText: {
+    fontSize: 12,
+    color: 'white'
+  },
 });
 
 const globalStyles = { ...colors, ...font, ...alignment, ...layout };

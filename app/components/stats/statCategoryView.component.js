@@ -17,7 +17,7 @@ export default class StatCategory extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      loaded: false
+      loaded: false,
     };
   }
 

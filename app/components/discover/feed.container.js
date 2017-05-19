@@ -37,9 +37,9 @@ class Read extends Component {
   }
 
   componentWillMount() {
-    if (this.props.auth.user && this.props.posts.feedUnread) {
-      this.props.actions.markFeedRead();
-    }
+    // if (this.props.auth.user && this.props.posts.feedUnread) {
+    //   this.props.actions.markFeedRead();
+    // }
   }
 
   componentWillReceiveProps(next) {
@@ -49,12 +49,20 @@ class Read extends Component {
     if (this.props.reload !== next.reload) {
       this.needsReload = new Date().getTime();
     }
-    if (this.props.auth.user && this.props.posts.feedUnread) {
-      this.props.actions.markFeedRead();
+
+    if (next.posts.feedUnread &&
+      next.active && !this.props.active) {
+      this.needsReload = new Date().getTime();
     }
+    // if (this.props.auth.user &&
+    //     next.posts.feedUnread &&
+    //     next.active) {
+    //   this.props.actions.markFeedRead();
+    // }
   }
 
   shouldComponentUpdate(next) {
+    console.log('feed active?', next.active);
     if (!next.active) return false;
 
     // let tab = next.tabs.routes[next.tabs.index];
@@ -108,6 +116,9 @@ class Read extends Component {
     if (length === 0) this.props.actions.getSubscriptions();
 
     this.props.actions.getFeed(length, tag);
+    if (this.props.posts.feedUnread) {
+      this.props.actions.markFeedRead();
+    }
   }
 
   renderHeader() {
@@ -161,7 +172,6 @@ class Read extends Component {
     this.tabs.forEach((tab) => {
       let tabData = this.props.posts.feed;
       let loaded = this.props.posts.loaded.feed;
-      let active = true;
 
       feedEl.push(
         <CustomListView
@@ -175,7 +185,7 @@ class Read extends Component {
           view={tab.id}
           type={'posts'}
           parent={'feed'}
-          active={active}
+          active={this.props.active}
           YOffset={this.props.offsetY}
           onScroll={this.props.onScroll}
           needsReload={this.needsReload}
