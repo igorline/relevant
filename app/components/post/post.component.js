@@ -16,10 +16,6 @@ let styles;
 class Post extends PureComponent {
 
   componentWillMount() {
-    // if (this.props.singlePost && this.props.post) {
-    //   let post = this.props.posts.posts[this.props.post];
-    //   this.props.actions.getPostHtml(post);
-    // }
   }
 
   shouldComponentUpdate(next) {

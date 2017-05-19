@@ -35,6 +35,9 @@ class StatsContainer extends Component {
     if (next.auth.stats !== this.props.auth.stats) {
       this.setState({ refreshing: false });
     }
+    if (this.props.refresh !== next.refresh) {
+      this.list.scrollToOffset({ y: 0 });
+    }
   }
 
   renderHeader() {
@@ -87,6 +90,7 @@ class StatsContainer extends Component {
     let stats = this.props.auth.stats || [];
     return (
       <FlatList
+        ref={c => this.list = c}
         style={{ flex: 1 }}
         keyExtractor={(item, index) => index}
         data={stats}
@@ -126,6 +130,7 @@ function mapStateToProps(state) {
   return {
     tags: state.tags,
     auth: state.auth,
+    refresh: state.navigation.stats.refresh,
   };
 }
 

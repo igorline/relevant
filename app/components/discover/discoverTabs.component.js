@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -18,7 +18,7 @@ import Topics from '../createPost/topics.component';
 let styles;
 const SUB_TITLE = 'Subscriptions';
 
-class DiscoverTabs extends PureComponent {
+class DiscoverTabs extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -101,9 +101,6 @@ class DiscoverTabs extends PureComponent {
   renderScene(route) {
     let index = this.state.index;
     let currentRoute = this.state.routes[index];
-    console.log('current route ', currentRoute.key);
-    console.log(route.key, ' ',  currentRoute.key === route.key);
-    // default view;
     switch (route.key) {
       case 'feed':
         return (
@@ -239,6 +236,7 @@ class DiscoverTabs extends PureComponent {
             this.setState({ index: tab.i });
             this.header.showHeader();
           }}
+          prerenderingSiblingsNumber={Infinity}
           contentProps={{
             bounces: false,
             forceSetResponder: (e) => {
