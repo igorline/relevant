@@ -10,6 +10,7 @@ const initialState = {
   preUser: null,
   confirmed: true,
   stats: null,
+  nextUpdate: 0,
 };
 
 export default function auth(state = initialState, action) {
@@ -18,7 +19,8 @@ export default function auth(state = initialState, action) {
     case types.SET_STATS: {
       return {
         ...state,
-        stats: action.payload
+        stats: action.payload.stats,
+        nextUpdate: action.payload.nextUpdate
       };
     }
 

@@ -27,6 +27,6 @@ exports.stats = async (req, res) => {
   } catch (err) {
     handleError(err);
   }
-  res.status(200).json(stats);
+  res.status(200).json({ stats, nextUpdate: global.nextUpdate });
 };
 
