@@ -62,7 +62,6 @@ class Read extends Component {
   }
 
   shouldComponentUpdate(next) {
-    console.log('feed active?', next.active);
     if (!next.active) return false;
 
     // let tab = next.tabs.routes[next.tabs.index];
@@ -197,7 +196,7 @@ class Read extends Component {
     });
 
     return (
-      <View style={[styles.fullContainer, { backgroundColor: 'hsl(0,0%,90%)' }]}>
+      <View style={[styles.fullContainer, { backgroundColor: 'hsl(0,0%,100%)' }]}>
         {feedEl}
         <ErrorComponent parent={'read'} reloadFunction={this.load} />
       </View>

@@ -167,7 +167,6 @@ class Discover extends Component {
 
     if (this.loaded) {
       let tabData = this.getViewData(this.props, this.state.view) || [];
-      console.log(this.type, ' ', this.props.active);
       dataEl = (
         <CustomListView
           ref={c => this.listview = c}

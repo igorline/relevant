@@ -49,7 +49,8 @@ export default class ActivityView extends Component {
       this.updateData(next.data);
       clearTimeout(this.stateTimeout);
       this.stateTimeout = setTimeout(() =>
-        this.setState({ reloading: false, loading: false }), 1000);
+        this.setState({ reloading: false, loading: false })
+        , 100);
       if (!next.data.length) this.setState({ none: true });
     } else {
       // need to update data either way for list to re-render
@@ -57,14 +58,9 @@ export default class ActivityView extends Component {
     }
 
     if (next.active && next.needsReload > this.lastReload) {
-      // this.listview.scrollTo({ y: 0 });
-      this.setState({ reloading: true });
-      // setTimeout(() => {
-        // this.dataSource = null;
-        this.props.load(this.props.view, 0);
-        this.setState({ loading: true });
-        this.lastReload = new Date().getTime();
-      // }, 300);
+      this.setState({ loading: true });
+      this.props.load(this.props.view, 0);
+      this.lastReload = new Date().getTime();
     }
   }
 
@@ -161,7 +157,7 @@ export default class ActivityView extends Component {
           <RefreshControl
             key={this.props.needsReload}
             style={[{ backgroundColor: 'hsl(238,20%,95%)' }, this.props.data.length ? null : styles.hideReload]}
-            refreshing={this.state.reloading}
+            refreshing={this.state.reloading && this.props.loaded}
             onRefresh={this.reload}
             tintColor="#000000"
             colors={['#000000', '#000000', '#000000']}

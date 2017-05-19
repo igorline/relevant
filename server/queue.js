@@ -347,17 +347,31 @@ function startStatsUpdate() {
   updateUserStats();
 }
 
-if (process.env.NODE_ENV === 'production') {
-  updateUserStats();
+// if (process.env.NODE_ENV === 'production') {
+  updateUserStats()
+  const computeHour = 14;
+
+  let now = new Date();
+  let h = now.getHours();
+  let nextUpdate = new Date();
+
+  if (h < computeHour) {
+    nextUpdate.setUTCHours(14, 0, 0, 0);
+  }
+  nextUpdate.setDate(now.getDate() + 1);
+  console.log(nextUpdate)
+  nextUpdate.setUTCHours(14, 0, 0, 0);
+  let timeToUpdate = nextUpdate.getTime() - now.getTime();
+  console.log('now ', now);
+  console.log('next update ', nextUpdate);
+  console.log(timeToUpdate);
 
   // start interval on the hour
   let minutesTillHour = 60 - (new Date()).getMinutes();
   setTimeout(() => startStatsUpdate(), minutesTillHour * 60 * 1000);
 
-  let hoursTillNoon = 14 - (new Date()).getHours();
-  if (hoursTillNoon < 0) hoursTillNoon += 24;
   setTimeout(() => {
     startBasicIncomeUpdate(() => getUserRank());
-  }, hoursTillNoon * 60 * 60 * 1000);
-}
+  }, timeToUpdate);
+// }
 
