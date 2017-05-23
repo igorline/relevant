@@ -49,7 +49,7 @@ exports.text.relevance = function (props) {
       {'\n\n'}
       You earn relevance when others upvote your posts
       {'\n\n'}
-      As your relevance grows, you will become more influential and your upvotes will have more impact
+      The more relevant you are, the more authority you have when upvoting or downvoting
     </Text>
   );
 };

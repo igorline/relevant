@@ -48,6 +48,7 @@ export async function superFetch(options) {
       body: options.body
     });
     response = await exports.handleErrors(response);
+    console.log('no error')
     let responseJSON = await response.json();
 
     return responseJSON;
@@ -76,7 +77,6 @@ export async function reqOptions() {
 
 export async function handleErrors(response) {
   if (!response.ok) {
-    console.log('error response', response);
     let error = response.statusText;
     try {
       let json = await response.json();
