@@ -115,8 +115,9 @@ export default class ActivityView extends Component {
     if (this.props.loaded && !this.props.data.length) {
       emptyEl = (<EmptyList
         visible
-        emoji={'😔'}
+        emoji={'😶'}
         type={type}
+        YOffset={this.props.YOffset }
       >
         {this.props.children}
       </EmptyList>);
@@ -155,9 +156,9 @@ export default class ActivityView extends Component {
         renderFooter={() => emptyEl}
         refreshControl={
           <RefreshControl
-            key={this.props.needsReload}
+            // key={this.props.needsReload}
             style={[{ backgroundColor: 'hsl(238,20%,95%)' }, this.props.data.length ? null : styles.hideReload]}
-            refreshing={this.state.reloading && this.props.loaded}
+            refreshing={this.state.reloading}
             onRefresh={this.reload}
             tintColor="#000000"
             colors={['#000000', '#000000', '#000000']}

@@ -22,7 +22,7 @@ class Bio extends Component {
 
   componentDidMount() {
     if (this.props.myProfile && !this.props.user.bio) {
-      this.setState({ editing: true });
+      // this.setState({ editing: true });
     }
   }
 

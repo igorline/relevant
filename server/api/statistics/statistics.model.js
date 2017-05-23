@@ -4,13 +4,13 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var StaticsticsSchema = new Schema({
+  date: { type: Date, index: true },
   startTime: { type: Date, index: true },
   endTime: { type: Date, index: true },
   user: { type: String, ref: 'User' },
-  num_samples: Number,
-  total_samples: Number,
-  last_sample: Number,
-  current_sample: Number,
+  relevance: Number,
+  totalSamples: Number,
+  aggregateRelevance: Number,
   hours: {
     0: Number,
     1: Number,

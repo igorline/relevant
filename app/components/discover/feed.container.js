@@ -50,6 +50,10 @@ class Read extends Component {
       this.needsReload = new Date().getTime();
     }
 
+    if (this.props.reloadFeed !== next.reloadFeed) {
+      this.props.actions.getSubscriptions();
+    }
+
     if (next.posts.feedUnread &&
       next.active && !this.props.active) {
       this.needsReload = new Date().getTime();
@@ -150,20 +154,25 @@ class Read extends Component {
     let feedEl = [];
     let filler;
     let more = '';
-    if (this.props.subscriptions.total) {
+    let { total, totalUsers } = this.props.subscriptions;
+    if (total) {
       more = 'more ';
     }
 
     filler = (
       <View>
-        <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
-          Upvote posts to subscribe to {more}users
+        <Text
+          style={[styles.georgia, styles.emptyText, styles.quarterLetterSpacing]}
+        >
+          {!total ?
+            'You have not subscribed to anyone yet' :
+            'You subscribed to ' + totalUsers + ' user' + (totalUsers > 1 ? 's' : '') + ' and will see their next posts here!'}
         </Text>
         <Text
-          style={[styles.georgia, styles.discoverLink, styles.quarterLetterSpacing]}
-          onPress={() => { this.props.actions.changeTab('discover'); }}
-        >Click on 🔮<Text style={styles.active}> Discover</Text>
-          &nbsp;to find the most relevant content & people
+          onPress={() => { this.props.actions.setView('discover', 1); }}
+          style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}
+        >
+          {!total ? '😎\nUpvote posts to subscribe to users' : '😛\nUpvote posts to subscribe to more'}
         </Text>
       </View>
     );
@@ -235,11 +244,7 @@ const localStyles = StyleSheet.create({
   readHeader: {
     marginBottom: 10
   },
-  discoverLink: {
-    fontSize: 20,
-    textAlign: 'center',
-    marginTop: 20
-  }
+
 });
 
 styles = { ...localStyles, ...globalStyles };
@@ -251,6 +256,7 @@ function mapStateToProps(state) {
     messages: state.messages,
     refresh: state.navigation.discover.refresh,
     reload: state.navigation.discover.reload,
+    reloadFeed: state.navigation.read.reload,
     error: state.error.read,
     tabs: state.navigation.tabs,
     subscriptions: state.subscriptions,

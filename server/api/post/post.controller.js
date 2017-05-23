@@ -548,13 +548,13 @@ exports.create = (req, res) => {
             .then(() => {
               let now = new Date();
               let follower = subscription.follower;
-              if (now - (24 * 60 * 60 * 1000) > follower.lastFeedNotification) {
-                let alert = 'There is a new post from ' + author.name + ' in your feed!';
-                let payload = { 'New post from': author.name };
-                apnData.sendNotification(follower, alert, payload);
-                follower.lastFeedNotification = now;
-                follower.save();
-              }
+              // if (now - (24 * 60 * 60 * 1000) > follower.lastFeedNotification) {
+              let alert = 'There is a new post from ' + author.name + ' in your subscriptions!';
+              let payload = { 'New post from': author.name };
+              apnData.sendNotification(follower, alert, payload);
+              follower.lastFeedNotification = now;
+              follower.save();
+              // }
             })
           );
 

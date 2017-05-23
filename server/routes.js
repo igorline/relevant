@@ -27,6 +27,7 @@ module.exports = (app) => {
   app.use('/api/treasury', require('./api/treasury'));
   app.use('/api/list', require('./api/emailList'));
   app.use('/api/invites', require('./api/invites'));
+  app.use('/api/relevanceStats', require('./api/relevanceStats'));
 
   app.get('/confirm/:user/:code', userController.confirm);
 

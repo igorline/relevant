@@ -24,14 +24,14 @@ class EmptyList extends Component {
     let visible = this.props.visible;
     let content = this.props.children || (
       <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
-        {this.props.text ? this.props.text : 'Sorry, no ' + type + emoji}
+        {this.props.text ? this.props.text : 'Sorry, no ' + type + ' ' + emoji}
       </Text>
     );
     return (
       <View
         style={[
           visible && this.state.ready ? styles.emptyList : styles.hideEmptyList,
-          { height: fullHeight - ((59 * 2) + this.state.top) },
+          { height: fullHeight - ((59 * 2) + this.state.top + (this.props.YOffset || 0)) },
         ]}
         pointerEvents={visible ? 'auto' : 'none'}
         onLayout={(e) => {
@@ -50,14 +50,6 @@ const localStyles = StyleSheet.create({
     flex: 0,
     opacity: 0,
     position: 'absolute',
-  },
-  emptyList: {
-    flex: 1.8,
-    paddingLeft: 40,
-    paddingRight: 40,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 

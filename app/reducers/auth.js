@@ -10,7 +10,9 @@ const initialState = {
   preUser: null,
   confirmed: true,
   stats: null,
-  nextUpdate: 0,
+  nextUpdate: new Date(),
+  chart: [],
+  relChart: []
 };
 
 export default function auth(state = initialState, action) {
@@ -19,8 +21,10 @@ export default function auth(state = initialState, action) {
     case types.SET_STATS: {
       return {
         ...state,
-        stats: action.payload.stats,
-        nextUpdate: action.payload.nextUpdate
+        stats: action.payload.stats || state.stats,
+        nextUpdate: action.payload.nextUpdate || state.nextUpdate,
+        chart: action.payload.chart || state.chart,
+        relChart: action.payload.relChart || state.relChart,
       };
     }
 

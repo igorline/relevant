@@ -161,13 +161,12 @@ class CreatePostContainer extends Component {
     this.setState({ creatingPost: true });
     this.props.actions.createComment(this.props.auth.token, commentObj)
     .then(() => {
-      console.log('created comment?');
       this.props.actions.clearCreatePost();
-      this.props.navigator.resetRoutes('home');
+      this.props.actions.resetRoutes('home');
       this.props.actions.resetRoutes('discover');
-      this.props.navigator.changeTab('discover');
-      this.props.navigator.reloadTab('discover');
-      this.props.navigator.setView('discover', 1);
+      this.props.actions.changeTab('discover');
+      this.props.actions.reloadTab('discover');
+      this.props.actions.setView('discover', 1);
       this.props.actions.setUserSearch([]);
       if (this.props.close) this.props.close();
       this.setState({ creatingPost: false });
