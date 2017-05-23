@@ -34,6 +34,9 @@ export default class StatCategory extends Component {
     let rank;
     let title;
     let button;
+
+    if (typeof stats.level !== 'number') return null;
+
     if (stats.tag) {
       title = stats.tag.charAt(0).toUpperCase() + stats.tag.slice(1);
       button = (
@@ -93,7 +96,7 @@ export default class StatCategory extends Component {
 
             <View style={[styles.statRow]}>
               <Stats
-                textStyle={{ fontWeight: 'bold' }}
+                textStyle={{ fontWeight: 'bold', fontSize: 16 }}
                 style={{ alignSelf: 'center', marginVertical: 2 }}
                 type={'relevance'}
                 entity={stats}
@@ -102,7 +105,7 @@ export default class StatCategory extends Component {
               {/*<Text style={[styles.rowText, styles.numberText]}>
                         {numbers.abbreviateNumber(Math.round(stats.relevance))}
                       </Text>*/}
-              <Text style={[styles.rowText]}>Relevance</Text>
+              {/*<Text style={[styles.rowText]}>Relevance</Text>*/}
             </View>
 
           </View>
@@ -110,8 +113,13 @@ export default class StatCategory extends Component {
           <View style={styles.col}>
 
             <View style={styles.statRow}>
-              <Text style={[styles.rowText]}>
-                Next Goal:{'\n'}Level {level + 1}
+              <Text style={[styles.rowText, { marginBottom: 5 }]}>
+                Next Goal:
+              </Text>
+              <Text style={[styles.rowText]}>Level:{' '}
+                <Text style={[styles.rowText, styles.numberText]}>
+                  {level + 1}
+                </Text>
               </Text>
               <Progress.Circle
                 style={{ marginVertical: 10 }}
@@ -120,9 +128,13 @@ export default class StatCategory extends Component {
                 showsText
                 progress={this.state.loaded ? untilNext : 0}
               />
-              <Text style={[styles.rowText]}>
-                Relevance {relGoal}
-              </Text>
+              <Stats
+                textStyle={{ fontWeight: 'bold', fontSize: 16 }}
+                style={{ alignSelf: 'center', marginVertical: 2 }}
+                type={'relevance'}
+                entity={{ relevance: relGoal }}
+                renderLeft={title ? title + '  ' : null}
+              />
             </View>
           </View>
 
@@ -154,14 +166,14 @@ let localStyles = StyleSheet.create({
     fontFamily: 'BebasNeueRelevantRegular',
     fontWeight: 'bold',
     letterSpacing: 0.5,
-    fontSize: 17,
-
+    fontSize: 16,
   },
   rowText: {
     fontSize: 14,
     paddingRight: 5,
     paddingVertical: 1,
     textAlign: 'center',
+    lineHeight: 17,
   },
   container: {
     flex: 1,

@@ -60,20 +60,25 @@ function updateUserStats() {
       q.push((cb) => {
         let date = new Date();
         let hour = date.getHours();
-        let day = date.setHours(0, 0, 0, 0);
+        let day = date.setUTCHours(0, 0, 0, 0);
         let endTime = day + (24 * 60 * 60 * 1000);
         let query = {
           user: user._id,
-          startTime: day,
+          date: day,
           endTime
         };
         let set = {};
         set['hours.' + hour] = user.relevance || 0;
         let update = {
-          $set: set
+          $set: set,
+          $inc: { aggregateRelevance: user.relevance, totalSamples: 1 }
         };
-        Stats.update(query, update, { upsert: true })
-        .exec((statsError) => {
+        Stats.findOneAndUpdate(query, update, {
+          new: true,
+          upsert: true,
+          setDefaultsOnInsert: true
+        })
+        .exec((statsError, stat) => {
           if (!statsError) cb();
           else throw statsError;
         });
@@ -365,6 +370,8 @@ function startBasicIncomeUpdate() {
     startBasicIncomeUpdate(() => getUserRank());
   }, getNextUpdateTime());
 }
+
+  updateUserStats();
 
 function startStatsUpdate() {
   // taking too long - should move to diff thread?

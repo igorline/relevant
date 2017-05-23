@@ -10,7 +10,7 @@ const initialState = {
   next: null,
   data: {},
   showing: {},
-  onboarding: ['relevance', 'coin', 'topics', 'subscriptions', 'shareTip'],
+  onboarding: ['relevance', 'coin', 'subscriptions', 'shareTip'],
   current: null
 };
 

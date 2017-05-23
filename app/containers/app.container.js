@@ -292,6 +292,7 @@ class Application extends Component {
     if (currentAppState === 'active' && this.props.auth.user) {
       this.props.actions.userToSocket(this.props.auth.user._id);
       this.props.actions.getNotificationCount();
+      this.props.actions.getFeedCount();
       PushNotificationIOS.setApplicationIconBadgeNumber(0);
 
       // refresh after 5 minutes of inactivity
@@ -316,21 +317,23 @@ class Application extends Component {
   renderScene(props) {
     let component = props.scene.route.component;
 
+    let createPost = (
+      <KeyboardAvoidingView
+        behavior={'padding'}
+        style={{
+          flex: 1,
+          backgroundColor: '#ffffff'
+        }}
+      >
+        <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
+      </KeyboardAvoidingView>
+    );
+
     switch (component) {
       case 'auth':
         return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
       case 'createPost':
-        return (
-          <KeyboardAvoidingView
-            behavior={'padding'}
-            style={{
-              flex: 1,
-              backgroundColor: '#ffffff'
-            }}
-          >
-            <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
-          </KeyboardAvoidingView>
-        );
+        return createPost;
       case 'categories':
         return (<CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />);
 

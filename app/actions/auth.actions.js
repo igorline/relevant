@@ -536,6 +536,25 @@ export function setStats(stats) {
   };
 }
 
+
+export function getChart(start, end) {
+  return async dispatch => {
+    try {
+      let chart = await utils.fetchUtils.superFetch({
+        method: 'GET',
+        endpoint: 'relevanceStats',
+        path: `/user`,
+        params: { start, end }
+      });
+      dispatch(setStats({ chart }));
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+}
+
 export function getStats(user) {
   return async dispatch => {
     try {
@@ -545,6 +564,24 @@ export function getStats(user) {
         path: `/user/${user._id}/stats`,
       });
       dispatch(setStats(stats));
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+}
+
+export function getRelChart(start, end) {
+  return async dispatch => {
+    try {
+      let relChart = await utils.fetchUtils.superFetch({
+        method: 'GET',
+        endpoint: 'statistics',
+        path: `/user`,
+        params: { start, end }
+      });
+      dispatch(setStats({ relChart }));
       return true;
     } catch (error) {
       console.log(error);

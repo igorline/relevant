@@ -387,7 +387,7 @@ const layout = StyleSheet.create({
   },
   fullContainer: {
     flex: 1,
-    backgroundColor: 'hsl(0,0%,90%)',
+    // backgroundColor: 'hsl(0,0%,90%)',
   },
   row: {
     flexDirection: 'row',
@@ -527,6 +527,20 @@ const layout = StyleSheet.create({
     fontSize: 12,
     color: 'white'
   },
+  emptyText: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+    lineHeight: 28,
+  },
+  emptyList: {
+    flex: 1,
+    paddingHorizontal: 40,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 const globalStyles = { ...colors, ...font, ...alignment, ...layout };
@@ -537,5 +551,6 @@ export {
   fullHeight,
   blue,
   green,
-  greyText
+  greyText,
+  darkGrey
 };
