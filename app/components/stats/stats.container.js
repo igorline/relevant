@@ -8,7 +8,6 @@ import {
   FlatList
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/EvilIcons';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -18,6 +17,8 @@ import * as authActions from '../../actions/auth.actions';
 import StatCategory from './statCategoryView.component';
 import Chart from './chart.component';
 import CustomSpinner from '../CustomSpinner.component';
+import ErrorComponent from '../error.component';
+import EmptyList from '../emptyList.component';
 
 let styles;
 
@@ -41,6 +42,10 @@ class StatsContainer extends Component {
     if (next.auth.stats !== this.props.auth.stats) {
       this.setState({ refreshing: false });
       this.setState({ loading: false });
+    }
+    if (next.error && this.props.error) {
+      this.setState({ refreshing: false });
+    //   this.setState({ loading: false });
     }
     if (this.props.refresh !== next.refresh && this.list) {
       this.list.scrollToOffset({ y: 0 });
@@ -160,13 +165,35 @@ class StatsContainer extends Component {
   render() {
     let stats = this.props.auth.stats || [];
     let user = this.props.auth.user;
+    let filler;
 
     if (this.state.loading) {
       return (<CustomSpinner visible />);
     }
 
+    if (this.props.error) {
+      return (<ErrorComponent parent={'stats'} reloadFunction={this.load} />);
+    }
+
+    if (!this.props.auth.user.level) {
+      let nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
+      filler = (<EmptyList visible style={styles.emptyList}>
+        <Text
+          style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}
+        >
+          You will see your stats here soon
+        </Text>
+        <Text
+          style={[styles.georgia, styles.emptyText, styles.quarterLetterSpacing]}
+        >
+          {nextUpdate} until next update
+        </Text>
+      </EmptyList>
+      );
+    }
+
     if (user.relevance < 5) {
-      return (<View style={styles.emptyList}>
+      filler = (<EmptyList visible style={styles.emptyList}>
         <Text
           style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}
         >
@@ -174,28 +201,10 @@ class StatsContainer extends Component {
         </Text>
         <Text
           style={[styles.georgia, styles.emptyText, styles.quarterLetterSpacing]}
-          // style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}
         >
-          Tip: 🤓 You can earn relevance by being one of the first to upvote a quality post.
+          Tip: 🤓 You can earn relevance by being one of the first to upvote a quality post
         </Text>
-      </View>);
-    }
-
-    if (!this.props.auth.user.level) {
-      let nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
-      return (<View style={styles.emptyList}>
-        <Text
-          style={[styles.georgia, styles.emptyText, styles.quarterLetterSpacing]}
-        >
-          You will start seeing your stats here soon.
-        </Text>
-        <Text
-          style={[styles.georgia, styles.emptyText, styles.quarterLetterSpacing]}
-        >
-          {nextUpdate} until next update
-        </Text>
-      </View>
-      );
+      </EmptyList>);
     }
 
     return (
@@ -204,8 +213,8 @@ class StatsContainer extends Component {
         style={{ flex: 1 }}
         keyExtractor={(item, index) => index}
         data={stats}
-        ListHeaderComponent={this.renderHeader}
-        renderItem={this.renderItem}
+        ListHeaderComponent={() => !filler ? this.renderHeader() : filler}
+        renderItem={(item) => !filler ? this.renderItem(item) : null}
         refreshControl={
           <RefreshControl
             style={[{ backgroundColor: 'hsl(238,20%,95%)' }]}
@@ -257,6 +266,7 @@ function mapStateToProps(state) {
     tags: state.tags,
     auth: state.auth,
     refresh: state.navigation.stats.refresh,
+    error: state.error.stats
   };
 }
 

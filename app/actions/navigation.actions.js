@@ -56,7 +56,7 @@ export function changeTab(key) {
 
 export function goToTopic(topic) {
   return dispatch => {
-    dispatch(changeTab('discover'));
+    // dispatch(changeTab('discover'));
     dispatch(push({
       key: 'discover',
       title: topic.categoryName,

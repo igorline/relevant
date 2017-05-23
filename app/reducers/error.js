@@ -7,7 +7,8 @@ const initialState = {
   profile: false,
   activity: false,
   singlepost: false,
-  comments: false
+  comments: false,
+  stats: false,
 };
 
 export default function auth(state = initialState, action) {

@@ -153,7 +153,6 @@ class Read extends Component {
   render() {
     let feedEl = [];
     let filler;
-    let more = '';
     let { total, totalUsers } = this.props.subscriptions;
     if (total) {
       more = 'more ';
@@ -166,13 +165,13 @@ class Read extends Component {
         >
           {!total ?
             'You have not subscribed to anyone yet' :
-            'You subscribed to ' + totalUsers + ' user' + (totalUsers > 1 ? 's' : '') + ' and will see their next posts here!'}
+            'You have subscribed to ' + totalUsers + ' user' + (totalUsers > 1 ? 's' : '') + ' — find their future posts here!'}
         </Text>
         <Text
           onPress={() => { this.props.actions.setView('discover', 1); }}
           style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}
         >
-          {!total ? '😎\nUpvote posts to subscribe to users' : '😛\nUpvote posts to subscribe to more'}
+          {!total ? '😎\nUpvote posts to subscribe to users' : '😛\nKeep upvoting to subscribe to more users'}
         </Text>
       </View>
     );

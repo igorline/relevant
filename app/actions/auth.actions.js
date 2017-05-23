@@ -302,9 +302,17 @@ export function getUser(callback) {
         dispatch(setUser(responseJSON));
 
         if (Analytics) {
-          Analytics.setUserProperty('relevance', Math.round(responseJSON.relevance).toString());
-          Analytics.setUserProperty('posts', responseJSON.postCount.toString());
-          Analytics.setUserProperty('upvotes', responseJSON.investmentCount.toString());
+          let r = responseJSON.relevance;
+          let p = responseJSON.postCount;
+          let i = responseJSON.investmentCount;
+
+          r = r === 0 ? '0' : (r < 25 ? '25' : (r < 200 ? '200' : 'manu'));
+          p = p === 0 ? '0' : (p < 10 ? '10' : (p < 30 ? '30' : 'many'));
+          i = i === 0 ? '0' : (i < 25 ? '75' : (i < 200 ? '200' : 'many'));
+
+          Analytics.setUserProperty('relevance', r);
+          Analytics.setUserProperty('posts', p);
+          Analytics.setUserProperty('upvotes', i);
         }
 
         dispatch(setSelectedUserData(responseJSON));
@@ -547,9 +555,11 @@ export function getChart(start, end) {
         params: { start, end }
       });
       dispatch(setStats({ chart }));
+      dispatch(errorActions.setError('stats', false));
       return true;
     } catch (error) {
       console.log(error);
+      dispatch(errorActions.setError('stats', true, error.message));
       return false;
     }
   };
@@ -564,9 +574,11 @@ export function getStats(user) {
         path: `/user/${user._id}/stats`,
       });
       dispatch(setStats(stats));
+      dispatch(errorActions.setError('stats', false));
       return true;
     } catch (error) {
       console.log(error);
+      dispatch(errorActions.setError('stats', true, error.message));
       return false;
     }
   };
@@ -582,9 +594,11 @@ export function getRelChart(start, end) {
         params: { start, end }
       });
       dispatch(setStats({ relChart }));
+      dispatch(errorActions.setError('stats', false));
       return true;
     } catch (error) {
       console.log(error);
+      dispatch(errorActions.setError('stats', true, error.message));
       return false;
     }
   };

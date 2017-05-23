@@ -117,7 +117,7 @@ export default class ActivityView extends Component {
         visible
         emoji={'😶'}
         type={type}
-        YOffset={this.props.YOffset }
+        YOffset={this.props.YOffset}
       >
         {this.props.children}
       </EmptyList>);

@@ -134,7 +134,7 @@ class Discover extends Component {
         if (this.topic) {
           return {
             data: props.posts.topics.top[this.topic._id],
-            loaded: props.posts.loaded.top,
+            loaded: props.posts.loaded.topics[this.topic._id] ? props.posts.loaded.topics[this.topic._id].top : false,
           };
         }
         return {
@@ -145,7 +145,7 @@ class Discover extends Component {
         if (this.topic) {
           return {
             data: props.posts.topics.new[this.topic._id],
-            loaded: props.posts.loaded.new
+            loaded: props.posts.loaded.topics[this.topic._id] ? props.posts.loaded.topics[this.topic._id].new : false
           };
         }
         return {
