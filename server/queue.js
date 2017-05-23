@@ -350,10 +350,12 @@ function getNextUpdateTime() {
   const computeHour = 14;
 
   if (h < computeHour) {
-    nextUpdate.setHours(14, 0, 0, 0);
+    nextUpdate.setUTCHours(14, 0, 0, 0);
+  } else {
+    nextUpdate.setDate(now.getDate() + 1);
+    nextUpdate.setUTCHours(14, 0, 0, 0);
   }
-  nextUpdate.setDate(now.getDate() + 1);
-  nextUpdate.setHours(14, 0, 0, 0);
+
   let timeToUpdate = nextUpdate.getTime() - now.getTime();
   console.log('now ', now);
   console.log('next update ', nextUpdate);
