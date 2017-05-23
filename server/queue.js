@@ -342,8 +342,10 @@ async function populatePosts() {
 // populatePosts();
 
 function getNextUpdateTime() {
+  console.log('get next time');
   let now = new Date();
-  let h = now.getHours();
+  let h = now.getUTCHours();
+  console.log(h);
   let nextUpdate = new Date();
   const computeHour = 14;
 
