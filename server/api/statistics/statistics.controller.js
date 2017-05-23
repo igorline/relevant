@@ -31,7 +31,7 @@ async function getDailyRelevance() {
     console.log(err);
   }
 }
-getDailyRelevance();
+// getDailyRelevance();
 
 exports.index = (req, res) => {
   let time = req.query.time;
