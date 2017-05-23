@@ -371,8 +371,6 @@ function startBasicIncomeUpdate() {
   }, getNextUpdateTime());
 }
 
-  updateUserStats();
-
 function startStatsUpdate() {
   // taking too long - should move to diff thread?
   setInterval(updateUserStats, 60 * 60 * 1000);

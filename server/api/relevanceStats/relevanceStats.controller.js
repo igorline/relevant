@@ -54,6 +54,6 @@ exports.user = async (req, res) => {
   } catch (err) {
     handleError(res, err);
   }
-  console.log(stats)
+  // console.log(stats)
   res.status(200).json(stats);
 };
