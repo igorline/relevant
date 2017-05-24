@@ -100,7 +100,7 @@ exports.index = async (req, res) => {
       'o:tag': [req.body.campaign],
       from: 'Relevant <noreply@mail.relevant.community>',
       to: req.body.email,
-      subject: 'Test subject',
+      subject: req.body.subject,
       html
     };
     status = await mail.send(data);
