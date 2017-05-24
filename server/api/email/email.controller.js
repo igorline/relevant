@@ -1,11 +1,41 @@
 import mail from '../../mail';
 import Email from './email.model';
-// import Invites from '../invtes/invites.model';
+import Invite from '../invites/invite.model';
 
 const mailgun = require('mailgun-js')({
   apiKey: process.env.MAILGUN_API_KEY,
   domain: process.env.MAILGUN_DOMAIN
 });
+
+async function generateList(type) {
+  try {
+    let query = { status: type };
+    if (type === 'notregistered') {
+      let now = new Date();
+      now.setDate(now.getDate() - 5);
+      query = { status: 'email sent', createdAt: { $lt: now } };
+    }
+    let users = await Invite.find(query);
+    let list = mailgun.lists(type + '@mail.relevant.community');
+    users.forEach(user => {
+      let u = {
+        subscribed: true,
+        address: user.email,
+        name: user.name,
+        vars: { code: user.code },
+      };
+      list.members().create(u, function (err, data) {
+        if (err) console.log(err);
+        else console.log(data);
+      });
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+// generateList('registered');
+
 
 // let list = mailgun.lists('test@mail.relevant.community');
 // let slava = {
