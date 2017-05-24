@@ -203,6 +203,55 @@ export function getDownvotes(skip, limit) {
   };
 }
 
+export function sendEmail(email) {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.fetchUtils.superFetch({
+        method: 'PUT',
+        endpoint: 'email',
+        path: '/',
+        body: JSON.stringify(email)
+      });
+      AlertIOS.alert('Email has been sent');
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+}
+
+export function saveEmail(email) {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.fetchUtils.superFetch({
+        method: 'PUT',
+        endpoint: 'email',
+        path: '/save',
+        body: JSON.stringify(email)
+      });
+      AlertIOS.alert('Email has been saved');
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+}
+
+export function loadEmail() {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.fetchUtils.superFetch({
+        method: 'GET',
+        endpoint: 'email',
+        path: '/load',
+      });
+      return responseJSON;
+    } catch (error) {
+      return false;
+    }
+  };
+}
+
 // export function updateWaitlist(user) {
 //   return async dispatch =>
 //   fetch(API + '/list/' + user._id, {

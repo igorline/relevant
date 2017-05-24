@@ -1,0 +1,95 @@
+import mail from '../../mail';
+import Email from './email.model';
+
+const mailgun = require('mailgun-js')({
+  apiKey: process.env.MAILGUN_API_KEY,
+  domain: process.env.MAILGUN_DOMAIN
+});
+
+// let list = mailgun.lists('test@mail.relevant.community');
+// let slava = {
+//   subscribed: true,
+//   address: 'byslava@gmail.com',
+//   name: 'Slava',
+// };
+// let analisa = {
+//   subscribed: true,
+//   address: 'analisa@4real.io',
+//   name: 'Analisa',
+// };
+// list.members().create(analisa, function (err, data) {
+//   // `data` is the member details
+//   console.log(data);
+// });
+// list.members().list(function (err, members) {
+//   // `members` is the list of members
+//   console.log(members);
+// });
+
+// list.members('byslava@gmail.com').delete(function (err, body) {
+//   console.log(body);
+// });
+
+
+function handleError(res, err) {
+  console.log(err);
+  return res.status(500).send(err);
+}
+
+exports.validate = function (req, res, next) {
+  let body = req.body;
+
+  if (!mailgun.validateWebhook(body.timestamp, body.token, body.signature)) {
+    console.error('Request came, but not from Mailgun');
+    res.send({ error: { message: 'Invalid signature. Are you even Mailgun?' } });
+    return;
+  }
+
+  next();
+};
+
+exports.index = async (req, res) => {
+  let status;
+  try {
+    let email = req.body.email;
+    let html = req.body.html;
+    if (!email) throw new Error('no email');
+    if (!html) throw new Error('no html');
+
+    let data = {
+      'o:tag': [req.body.campaign],
+      from: 'Relevant <noreply@mail.relevant.community>',
+      to: req.body.email,
+      subject: 'Test subject',
+      html
+    };
+    status = await mail.send(data);
+  } catch (err) {
+    handleError(res, err);
+  }
+  return res.status(200).json(status);
+};
+
+exports.save = async (req, res) => {
+  try {
+    await Email.find({}).remove();
+    let draft = new Email(req.body);
+    await draft.save();
+  } catch (err) {
+    handleError(res, err);
+  }
+  return res.sendStatus(200);
+};
+
+exports.load = async (req, res) => {
+  let email;
+  try {
+    email = await Email.findOne({});
+    console.log(email);
+  } catch (err) {
+    handleError(res, err);
+  }
+  return res.status(200).json(email);
+};
+
+

@@ -5,16 +5,17 @@ let styles;
 
 function AdminHeader(props) {
   return (
-    <container className="main">
-      <container style={{ alignSelf: 'flex-start' }}>
+    <container>
+      <div style={{ alignSelf: 'flex-start', margin: 20 }}>
         <Link className={'link'} to="/admin">Admin</Link>
         <Link className={'link'} to="/admin/topics">Topics</Link>
         <Link className={'link'} to="/admin/invites">Invites</Link>
         <Link className={'link'} to="/admin/waitlist">Waitlist</Link>
         <Link className={'link'} to="/admin/flagged">Flagged</Link>
         <Link className={'link'} to="/admin/downvotes">Downvotes</Link>
-        {props.children}
-      </container>
+        <Link className={'link'} to="/admin/email">Email</Link>
+      </div>
+      {props.children}
     </container>
   );
 }
