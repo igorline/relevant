@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import ContentEditable from 'react-contenteditable';
-
 import { convertToHTML } from 'draft-convert';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -15,6 +14,37 @@ import ShadowButton from '../common/ShadowButton';
 if (process.env.BROWSER === true) {
   require('react-draft-wysiwyg/dist/react-draft-wysiwyg.css');
 }
+
+// let settings = {
+//   styleToHTML: (style) => {
+//     if (style === 'BOLD') {
+//       return <span style={{color: 'blue'}} />;
+//     }
+//   },
+//   blockToHTML: (block) => {
+//     console.log(block)
+//     if (block.type === 'unstyled') {
+//       return <p style={{ marginBottom: 10 }} />;
+//     }
+//     if (block.type === 'LI') {
+//       return <li style={{ marginBottom: 10 }} />;
+//     }
+//   },
+//   entityToHTML: (entity, originalText) => {
+//     if (entity.type === 'IMAGE') {
+//       return `<img src="${entity.data.src}" style="display: block;float:${entity.data.alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/>`;
+//     }
+//     return originalText;
+//   }
+// };
+
+const customEntityTransform = (entity, text) => {
+  switch (entity.type) {
+    case 'IMAGE':
+      return `<img src="${entity.data.src}" style="margin:auto;display:block;float:${entity.data.alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/>`;
+    default: break;
+  }
+};
 
 class Email extends Component {
   constructor(props) {
@@ -40,7 +70,7 @@ class Email extends Component {
 
   saveEmail() {
     let { email, subject, campaign } = this.state;
-    let html = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
+    let html = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()), null, null, customEntityTransform);
     this.props.actions.saveEmail({
       email,
       subject,
@@ -53,7 +83,6 @@ class Email extends Component {
     this.props.actions.loadEmail()
     .then(email => {
       this.setState(email);
-      console.log(email.html);
       let blocksFromHTML = htmlToDraft(email.html);
       let contentState = ContentState.createFromBlockArray(blocksFromHTML);
       let editorState = EditorState.createWithContent(contentState);
@@ -64,7 +93,7 @@ class Email extends Component {
 
   submit() {
     let { email, subject, campaign } = this.state;
-    let html = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
+    let html = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()), null, null, customEntityTransform);
     this.props.actions.sendEmail({ email, subject, campaign, html });
     this.saveEmail();
   }
@@ -87,7 +116,8 @@ class Email extends Component {
   }
 
   onEditorStateChange(editorState) {
-    let html = draftToHtml(convertToRaw(editorState.getCurrentContent()));
+    let html = draftToHtml(convertToRaw(editorState.getCurrentContent()), null, null, customEntityTransform);
+    // let html = convertToHTML(settings)(editorState.getCurrentContent())
     this.setState({
       editorState,
       html
