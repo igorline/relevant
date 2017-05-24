@@ -1,5 +1,6 @@
 import mail from '../../mail';
 import Email from './email.model';
+// import Invites from '../invtes/invites.model';
 
 const mailgun = require('mailgun-js')({
   apiKey: process.env.MAILGUN_API_KEY,
@@ -8,19 +9,28 @@ const mailgun = require('mailgun-js')({
 
 // let list = mailgun.lists('test@mail.relevant.community');
 // let slava = {
-//   subscribed: true,
+//   subscribed: 'true',
 //   address: 'byslava@gmail.com',
 //   name: 'Slava',
+//   vars: { code: 'xyDFz' },
 // };
 // let analisa = {
-//   subscribed: true,
+//   subscribed: 'true',
 //   address: 'analisa@4real.io',
 //   name: 'Analisa',
+//   vars: { code: 'fsdflkj' },
 // };
-// list.members().create(analisa, function (err, data) {
+// list.members('byslava@gmail.com').update(slava, function (err, data) {
 //   // `data` is the member details
 //   console.log(data);
+//   console.log(err);
 // });
+// list.members('analisa@4real.io').update(analisa, function (err, data) {
+//   // `data` is the member details
+//   console.log(data);
+//   console.log(err);
+// });
+
 // list.members().list(function (err, members) {
 //   // `members` is the list of members
 //   console.log(members);
