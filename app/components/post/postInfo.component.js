@@ -82,7 +82,7 @@ class PostInfo extends Component {
       edit: true,
       editPost: this.props.post,
     });
-    this.props.navigator.push({
+    this.props.actions.push({
       key: 'createPost',
       back: true,
       title: 'Edit Post',
