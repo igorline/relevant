@@ -17,12 +17,21 @@ import Feed from '../feed/feed.model';
 // User.findOneAndUpdate({ _id: 'Analisa' }, { role: 'admin' }).exec();
 // User.findOneAndUpdate({ _id: 'jay' }, { role: 'admin' }).exec();
 // User.findOneAndUpdate({ _id: 'phillip' }, { role: 'admin' }).exec();
-
-User.findOneAndUpdate({ _id: 'balasan' }, { role: 'admin' }).exec();
-
+// User.findOneAndUpdate({ _id: 'balasan' }, { role: 'admin' }).exec();
 // User.findOne({ email: 'byslava@gmail.com' }, (err, user) => {
 //   if (user) user.remove();
 // });
+
+// async function fixUsers() {
+//   let users = await User.find({});
+//   users.forEach(user => {
+//     if (user.onboarding === undefined || user.relevance === undefined) {
+//       console.log(user);
+//     }
+//   });
+// }
+// fixUsers();
+
 
 let validationError = (res, err) => {
   console.log(err);
