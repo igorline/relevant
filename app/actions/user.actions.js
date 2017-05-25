@@ -70,7 +70,7 @@ function clearSelectedUser() {
 export
 function setSelectedUserData(data) {
   return {
-    type: 'SET_SELECTED_USER_DATA',
+    type: types.SET_SELECTED_USER_DATA,
     payload: data
   };
 }

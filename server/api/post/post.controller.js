@@ -36,7 +36,7 @@ function getBestPosts() {
     });
   });
 }
-getBestPosts();
+// getBestPosts();
 
 const PostEvents = new EventEmitter();
 

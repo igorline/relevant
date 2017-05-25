@@ -7,7 +7,7 @@ import {
 import { Bar, SmoothLine, StockLine } from 'react-native-pathjs-charts';
 import moment from 'moment';
 import chartOptions from './chartOptions';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, blue } from '../../styles/global';
 
 let styles;
 
@@ -104,6 +104,7 @@ export default class Chart extends Component {
       ...chartOptions,
       min: min || 0,
       max: max || 1,
+      // color: blue,
       axisY: {
         ...chartOptions.axisY,
         tickCount,

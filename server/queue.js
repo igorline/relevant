@@ -8,8 +8,10 @@ import Notification from './api/notification/notification.model';
 import Meta from './api/metaPost/metaPost.model';
 import Relevance from './api/relevance/relevance.model';
 import * as proxyHelpers from './api/post/html';
+import RelevanceStats from './api/relevanceStats/relevanceStats.model';
 
 const extractor = require('unfluff');
+const DECAY = 0.99621947473649;
 // import Treasury from './api/treasury/treasury.model';
 
 // const MINUMUM_BALANCE = 5;
@@ -169,6 +171,8 @@ async function getUserRank() {
 // getUserRank();
 
 async function basicIncome(done) {
+  let all = await User.find({});
+
   let tier1 = await User.find({
     balance: { $lt: 6 },
     relevance: { $lt: 10 }
@@ -183,6 +187,8 @@ async function basicIncome(done) {
     balance: { $lt: 20 },
     relevance: { $gte: 50 }
   }, 'balance name deviceTokens relevance relevanceRecord');
+
+  let topicRelevance = await Relevance.find({});
 
   function updateUsers(teir) {
     return (user) => {
@@ -230,13 +236,50 @@ async function basicIncome(done) {
     };
   }
 
+  function updateUserRelevance() {
+    return (user) => {
+      q.push(async cb => {
+        try {
+          let r = user.relevance * DECAY;
+          let diff = r - user.relevance;
+          user.relevance += diff;
+          user.updateRelevanceRecord();
+          RelevanceStats.updateUserStats(user, diff);
+          user.save();
+        } catch (err) {
+          console.log('error updating basic income ', err);
+        }
+        cb();
+      });
+    };
+  }
+
+  function updateTopicRelevance() {
+    return (topic) => {
+      q.push(async cb => {
+        try {
+          let r = topic.relevance * DECAY;
+          let diff = r - topic.relevance;
+          topic.relevance += diff;
+          topic.save();
+          console.log(topic);
+        } catch (err) {
+          console.log('error updating basic income ', err);
+        }
+        cb();
+      });
+    };
+  }
+
   tier1.forEach(updateUsers(1));
   tier2.forEach(updateUsers(2));
   tier3.forEach(updateUsers(3));
+  all.forEach(updateUserRelevance());
+  topicRelevance.forEach(updateTopicRelevance());
 
   q.start((queErr, results) => {
     if (queErr) return console.log(queErr);
-    if (done) done()
+    if (done) done();
     return console.log('all finished basic income: ');
   });
 }
