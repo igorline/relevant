@@ -262,7 +262,6 @@ async function basicIncome(done) {
           let diff = r - topic.relevance;
           topic.relevance += diff;
           topic.save();
-          console.log(topic);
         } catch (err) {
           console.log('error updating basic income ', err);
         }
