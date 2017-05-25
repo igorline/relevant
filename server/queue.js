@@ -146,6 +146,7 @@ async function getUserRank() {
           if (!user.onboarding) {
             user.onboarding = 0;
           }
+
           await Promise.all(topicPromises);
 
           await user.save();
@@ -237,6 +238,7 @@ async function basicIncome(done) {
   }
 
   function updateUserRelevance() {
+    console.log('updating user relevance');
     return (user) => {
       q.push(async cb => {
         try {
@@ -245,7 +247,7 @@ async function basicIncome(done) {
           user.relevance += diff;
           user.updateRelevanceRecord();
           RelevanceStats.updateUserStats(user, diff);
-          user.save();
+          await user.save();
         } catch (err) {
           console.log('error updating basic income ', err);
         }
@@ -255,13 +257,14 @@ async function basicIncome(done) {
   }
 
   function updateTopicRelevance() {
+    console.log('updating topic relevance');
     return (topic) => {
       q.push(async cb => {
         try {
           let r = topic.relevance * DECAY;
           let diff = r - topic.relevance;
           topic.relevance += diff;
-          topic.save();
+          await topic.save();
         } catch (err) {
           console.log('error updating basic income ', err);
         }
@@ -281,7 +284,13 @@ async function basicIncome(done) {
     if (done) done();
     return console.log('all finished basic income: ');
   });
+
+  q.on('timeout', function(next, job) {
+    console.log(next);
+  });
 }
+
+// basicIncome();
 
 
 async function populateMeta() {
@@ -379,7 +388,6 @@ async function populatePosts() {
   });
 }
 
-// basicIncome();
 // populateMeta();
 // populatePosts();
 
