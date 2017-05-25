@@ -80,9 +80,7 @@ export default function auth(state = initialState, action) {
       };
 
     case types.SET_SELECTED_USER_DATA: {
-      let updateUser;
-      if (state.user._id === action.payload._id) updateUser = true;
-      if (!updateUser) return state;
+      if (!state.user || state.user._id !== action.payload._id) return state;
       return {
         ...state,
         user: action.payload
