@@ -90,6 +90,7 @@ exports.generatePreview = (body, uri) => {
     }
   }
   if (redirectUrl &&
+    exports.extractDomain(redirectUrl) !== ''  &&
     exports.extractDomain(redirectUrl) !== exports.extractDomain(uri)) {
     return {
       redirect: true,
@@ -230,7 +231,7 @@ exports.generatePreview = (body, uri) => {
     console.log('url parse error');
     console.log(data);
     console.log(uri);
-    console.log($('head').html());
+    // console.log($('head').html());
   }
 
   // console.log(obj);

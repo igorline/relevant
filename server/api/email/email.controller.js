@@ -1,6 +1,7 @@
 import mail from '../../mail';
 import Email from './email.model';
 import Invite from '../invites/invite.model';
+import User from '../user/user.model';
 
 const mailgun = require('mailgun-js')({
   apiKey: process.env.MAILGUN_API_KEY,
@@ -9,21 +10,32 @@ const mailgun = require('mailgun-js')({
 
 async function generateList(type) {
   try {
-    let query = { status: type };
+    let query;
+    let users;
     if (type === 'notregistered') {
       let now = new Date();
       now.setDate(now.getDate() - 5);
       query = { status: 'email sent', createdAt: { $lt: now } };
+      users = await Invite.find(query);
+    } else if (type === 'registered') {
+      let now = new Date();
+      now.setDate(now.getDate() - 5);
+      query = { createdAt: { $lt: now } };
+      users = await User.find(query);
     }
-    let users = await Invite.find(query);
     let list = mailgun.lists(type + '@mail.relevant.community');
     users.forEach(user => {
+      let vars = {};
+      if (type === 'notregistered') {
+        vars = { code: user.code };
+      }
       let u = {
         subscribed: true,
         address: user.email,
-        name: user.name,
-        vars: { code: user.code },
+        name: type === 'notregistered' ? user.name : '@' + user._id,
+        vars
       };
+      // console.log(u);
       list.members().create(u, function (err, data) {
         if (err) console.log(err);
         else console.log(data);
@@ -35,7 +47,6 @@ async function generateList(type) {
 }
 
 // generateList('registered');
-
 
 // let list = mailgun.lists('test@mail.relevant.community');
 // let slava = {
