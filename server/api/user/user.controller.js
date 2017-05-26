@@ -22,15 +22,19 @@ import Feed from '../feed/feed.model';
 //   if (user) user.remove();
 // });
 
-async function fixUsers() {
-  let users = await User.find({});
-  users.forEach(user => {
-    if (typeof user.onboarding !== 'number') {
-      console.log(user);
-    }
-  });
-}
-fixUsers();
+
+// async function notifications() {
+//   try {
+//     let users = await User.find({ 'deviceTokens.0': { $exists: true } });
+//     console.log('not enabled ', users.length)
+//     users.forEach(user => {
+//       console.log(user._id);
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// notifications();
 
 
 let validationError = (res, err) => {
