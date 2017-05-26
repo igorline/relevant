@@ -143,7 +143,7 @@ async function getUserRank() {
             await tR.save();
           });
 
-          if (!user.onboarding) {
+          if (!user.onboarding || typeof user.onboarding !== 'number') {
             user.onboarding = 0;
           }
 
@@ -249,7 +249,7 @@ async function basicIncome(done) {
           RelevanceStats.updateUserStats(user, diff);
           await user.save();
         } catch (err) {
-          console.log('error updating basic income ', err);
+          console.log('error updating user relevance income ', err);
         }
         cb();
       });
@@ -266,7 +266,7 @@ async function basicIncome(done) {
           topic.relevance += diff;
           await topic.save();
         } catch (err) {
-          console.log('error updating basic income ', err);
+          console.log('error updating topic relevance income ', err);
         }
         cb();
       });

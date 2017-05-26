@@ -22,15 +22,15 @@ import Feed from '../feed/feed.model';
 //   if (user) user.remove();
 // });
 
-// async function fixUsers() {
-//   let users = await User.find({});
-//   users.forEach(user => {
-//     if (user.onboarding === undefined || user.relevance === undefined) {
-//       console.log(user);
-//     }
-//   });
-// }
-// fixUsers();
+async function fixUsers() {
+  let users = await User.find({});
+  users.forEach(user => {
+    if (typeof user.onboarding !== 'number') {
+      console.log(user);
+    }
+  });
+}
+fixUsers();
 
 
 let validationError = (res, err) => {
@@ -158,6 +158,10 @@ exports.sendConfirmationCode = async (req, res) => {
 exports.onboarding = (req, res) => {
   let user = req.user._id;
   let step = req.params.step;
+  if (typeof step !== 'number') {
+    console.log('old version ', user);
+    step = 0;
+  }
   User.findOneAndUpdate(
     { _id: user },
     { onboarding: step },
