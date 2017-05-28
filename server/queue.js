@@ -231,6 +231,7 @@ async function basicIncome(done) {
         } catch (err) {
           console.log('error updating basic income ', err);
           console.log(user);
+          cb();
         }
         // call queue callback
         cb();
@@ -252,6 +253,7 @@ async function basicIncome(done) {
         } catch (err) {
           console.log('error updating user relevance income ', err);
           console.log(user);
+          cb();
         }
         cb();
       });
@@ -270,6 +272,7 @@ async function basicIncome(done) {
         } catch (err) {
           console.log('error updating topic relevance income ', err);
           console.log(topic);
+          cb();
         }
         cb();
       });
