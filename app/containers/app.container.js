@@ -9,6 +9,7 @@ import {
   Linking,
   Animated,
   KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
@@ -75,10 +76,12 @@ class Application extends Component {
         header: false
       }, 0, 'home');
     });
-    PushNotificationIOS.setApplicationIconBadgeNumber(0);
+    if (Platform.OS === 'ios') {
+      PushNotificationIOS.setApplicationIconBadgeNumber(0);
+      Orientation.lockToPortrait();
+    }
 
     Linking.addEventListener('url', this.handleOpenURL);
-    Orientation.lockToPortrait();
   }
 
   componentWillReceiveProps(next) {

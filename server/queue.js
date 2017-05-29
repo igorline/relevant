@@ -249,6 +249,7 @@ async function basicIncome(done) {
           user.relevance += diff;
           user.updateRelevanceRecord();
           RelevanceStats.updateUserStats(user, diff);
+
           await user.save();
         } catch (err) {
           console.log('error updating user relevance income ', err);

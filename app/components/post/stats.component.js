@@ -4,6 +4,7 @@ import {
   Text,
   Image,
   StyleSheet,
+  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -77,30 +78,43 @@ class Stats extends Component {
     }
 
     let value = (
-      <Text style={this.props.textStyle} onPress={() => this.toggleTooltip('coin')}>
-        <View style={[styles.coin, ...coinStyle]}>
+      <TouchableOpacity
+        onPress={() => this.toggleTooltip('coin')}
+        style={{ flexDirection: 'row', flexWrap: 'wrap' }}
+      >
+        {/*<Text style={this.props.textStyle} onPress={() => this.toggleTooltip('coin')}>*/}
+        {/*<View style={[styles.coin, ...coinStyle]}>*/}
           <Image
             resizeMode={'contain'}
             style={[styles.coin, ...coinStyle]}
             source={require('../../assets/images/relevantcoin.png')}
           />
-        </View>
-        <Text>{numbers.abbreviateNumber(entity.value || entity.balance || 0)}</Text>
-      </Text>);
+        {/*</View>*/}
+        <Text style={this.props.textStyle}>
+          {numbers.abbreviateNumber(entity.value || entity.balance || 0)}
+        </Text>
+      </TouchableOpacity>);
 
     let percent = <Percent fontSize={17} user={entity} />;
 
     let relevance = (
-      <Text style={this.props.textStyle} onPress={() => this.toggleTooltip('relevance')}>
-        <View style={[styles.r, ...iconStyle]}>
+      <TouchableOpacity
+        onPress={() => this.toggleTooltip('relevance')}
+        style={{ flexDirection: 'row', flexWrap: 'wrap' }}
+      >
+
+        {/*<Text style={this.props.textStyle} onPress={() => this.toggleTooltip('relevance')}>*/}
+        {/*<View style={[styles.r, ...iconStyle]}>*/}
           <Image
             resizeMode={'contain'}
             style={[styles.r, ...iconStyle]}
             source={require('../../assets/images/r.png')}
           />
-        </View>
-        {numbers.abbreviateNumber(entity.relevance)}
-      </Text>
+        {/*</View>*/}
+        <Text style={this.props.textStyle}>
+          {numbers.abbreviateNumber(entity.relevance)}
+        </Text>
+      </TouchableOpacity>
     );
 
     let getLeft = () => {
@@ -119,6 +133,7 @@ class Stats extends Component {
       return null;
     };
 
+    let br = <Text> • </Text>
 
     return (
       <View
@@ -128,19 +143,19 @@ class Stats extends Component {
           ref={(c) => this.tooltipParent.coin = c}
           style={styles.statInner}
         >
-          <Text style={statsStyle}>
+          {/*<Text style={statsStyle}>*/}
             {getLeft()}
-            {getLeft() && !this.props.renderLeft ? ' • ' : null}
-          </Text>
-
+            {getLeft() && !this.props.renderLeft ? br : null}
+          {/*</Text>*/}
         </View>
+
         <View
           ref={(c) => this.tooltipParent.relevance = c}
           style={styles.statInner}
         >
-          <Text style={statsStyle}>
+          {/*<Text style={statsStyle}>*/}
             {getRight()}
-          </Text>
+          {/*</Text>*/}
         </View>
       </View>
     );

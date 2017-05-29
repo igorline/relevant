@@ -9,13 +9,16 @@ let userDefaults;
 
 utils.fetchUtils.env();
 let Analytics;
+let Platform;
 
 if (process.env.WEB != 'true') {
   rn = require('react-native');
 
   Analytics = require('react-native-firebase-analytics');
   PushNotificationIOS = rn.PushNotificationIOS;
-  userDefaults = require('react-native-user-defaults').default;
+  // userDefaults = require('react-native-user-defaults').default;
+  userDefaults = require('react-native-swiss-knife').default;
+  Platform = require('react-native').Platform;
 }
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
@@ -317,7 +320,9 @@ export function getUser(callback) {
 
         dispatch(setSelectedUserData(responseJSON));
         if (process.env.WEB != 'true') {
-          dispatch(addDeviceToken(responseJSON, token));
+          if (Platform.OS === 'ios') {
+            dispatch(addDeviceToken(responseJSON, token));
+          }
         }
         dispatch(errorActions.setError('universal', false));
         if (callback) callback(responseJSON);
