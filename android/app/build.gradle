@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: 'com.google.gms.google-services' // <- Add this line
 
 import com.android.build.OutputFile
 
@@ -126,6 +127,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-swiss-knife')
     compile project(':react-native-orientation')
     compile project(':react-native-vector-icons')
     compile project(':react-native-video')

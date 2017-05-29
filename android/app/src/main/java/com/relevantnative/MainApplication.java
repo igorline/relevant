@@ -9,7 +9,7 @@ import com.brentvatne.react.ReactVideoPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.horcrux.svg.RNSvgPackage;
 import com.meedan.ShareMenuPackage;
-import com.github.alinz.reactNativeShareExtension.SharePackage;
+import com.alinz.parkerdan.shareextension.SharePackage;
 import cl.json.RNSharePackage;
 import com.imagepicker.ImagePickerPackage;
 import com.rt2zz.reactnativecontacts.ReactNativeContacts;
@@ -18,6 +18,8 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.evollu.react.fa.FIRAnalyticsPackage;
+import com.github.alinz.rnsk.RNSKPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +44,9 @@ public class MainApplication extends Application implements ReactApplication {
             new SharePackage(),
             new RNSharePackage(),
             new ImagePickerPackage(),
-            new ReactNativeContacts()
+            new FIRAnalyticsPackage(),
+            new ReactNativeContacts(),
+            new RNSKPackage()
       );
     }
   };

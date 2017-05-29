@@ -36,17 +36,21 @@ import Feed from '../feed/feed.model';
 // }
 // notifications();
 
-let oldUsers = ['praiseshadows', 'ruthgruca', 'willard', 'b', 'n', 'quasimado', 'zainabzmz'];
-
+// let oldUsers = ['praiseshadows', 'ruthgruca', 'willard', 'b', 'n', 'quasimado', 'zainabzmz'];
 // async function old() {
 //   try {
-//     let users = await User.find({ _id: { $in: oldUsers }});
+//     // await User.update({ _id: { $in: oldUsers } }, { onboarding: 0 }, { multi: true });
+//     let users = await User.find({ _id: { $in: oldUsers } });
 //     users.forEach(async user => {
-//       console.log(user._id);
-//       console.log(user.onboarding);
-//       user.onboarding = 0;
-//       await user.save();
-//       console.log(user.onboarding);
+//       try {
+//         console.log(user._id);
+//         console.log(user.onboarding);
+//         // user.onboarding = 0;
+//         await user.save();
+//         console.log(user.onboarding);
+//       } catch (err) {
+//         console.log(err);
+//       }
 //     });
 //   } catch (err) {
 //     console.log(err);
@@ -132,7 +136,7 @@ exports.forgot = async (req, res) => {
     if (email) {
       error = new Error('No user with this email exists');
     }
-    handleError(res, error);
+    return handleError(res, error);
   }
   res.status(200).json({ email: user.email, username: user._id });
 };

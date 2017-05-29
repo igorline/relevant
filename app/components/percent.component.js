@@ -45,18 +45,18 @@ class Percent extends Component {
     if (percent > 0) {
       percentComponent = (
         <Text style={[{ fontSize, textAlign: 'right', color: green }, styles.bebas]}>
-          <View style={{ height: arrowSize, width: arrowSize }}>
+          {/*<View style={{ height: arrowSize, width: arrowSize }}>*/}
             <Text style={{ fontSize, color: green }}>▲</Text>
-          </View>
+          {/*</View>*/}
           {numbers.abbreviateNumber(percent)}%
         </Text>
       );
     } else if (percent <= 0) {
       percentComponent = (
         <Text style={[{ fontSize, color: 'red', textAlign: 'right' }, styles.bebas]}>
-          <View style={{ height: arrowSize, width: arrowSize }}>
+          {/*<View style={{ height: arrowSize, width: arrowSize }}>*/}
             <Text style={{ fontSize: arrowSize, color: 'red' }}>▼</Text>
-          </View>
+          {/*</View>*/}
           {numbers.abbreviateNumber(percent)}%
         </Text>
       );

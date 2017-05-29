@@ -5,7 +5,8 @@ import {
   View,
   Image,
   TouchableHighlight,
-  PushNotificationIOS
+  PushNotificationIOS,
+  Platform
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, fullWidth, blue } from '../../styles/global';
@@ -23,7 +24,9 @@ export default class Footer extends Component {
     if (typeof count === 'number') {
       this.totalBadge += count;
     }
-    PushNotificationIOS.setApplicationIconBadgeNumber(this.totalBadge);
+    if (Platform.OS === 'ios') {
+      PushNotificationIOS.setApplicationIconBadgeNumber(this.totalBadge);
+    }
 
     if (!count) return null;
     return (<View pointerEvents={'none'} style={styles.notifCount}>

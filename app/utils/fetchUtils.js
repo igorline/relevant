@@ -21,7 +21,11 @@ export function env() {
 
 export function Alert() {
   if (process.env.WEB != 'true') {
-    return require('react-native').AlertIOS;
+    let Platform = require('react-native').Platform;
+    if (Platform.OS === 'ios') {
+      return require('react-native').AlertIOS;
+    }
+    return require('react-native').Alert;
   } else if (process.env.BROWSER) {
     return window;
   }
