@@ -44,21 +44,21 @@ class Percent extends Component {
 
     if (percent > 0) {
       percentComponent = (
-        <Text style={[{ fontSize, textAlign: 'right', color: green }, styles.bebas]}>
-          {/*<View style={{ height: arrowSize, width: arrowSize }}>*/}
-            <Text style={{ fontSize, color: green }}>▲</Text>
-          {/*</View>*/}
-          {numbers.abbreviateNumber(percent)}%
-        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end'}}>
+          <Text style={{ fontSize, color: green, marginBottom: -2 }}>▲</Text>
+          <Text style={[{ fontSize, textAlign: 'right', color: green }, styles.bebas]}>
+            {numbers.abbreviateNumber(percent)}%
+          </Text>
+        </View>
       );
     } else if (percent <= 0) {
       percentComponent = (
-        <Text style={[{ fontSize, color: 'red', textAlign: 'right' }, styles.bebas]}>
-          {/*<View style={{ height: arrowSize, width: arrowSize }}>*/}
-            <Text style={{ fontSize: arrowSize, color: 'red' }}>▼</Text>
-          {/*</View>*/}
-          {numbers.abbreviateNumber(percent)}%
-        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end'}}>
+          <Text style={{ fontSize: arrowSize, color: 'red', marginBottom: -2 }}>▼</Text>
+          <Text style={[{ fontSize, color: 'red', textAlign: 'right' }, styles.bebas]}>
+            {numbers.abbreviateNumber(percent)}%
+          </Text>
+        </View>
       );
     }
 

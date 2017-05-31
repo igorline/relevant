@@ -5,7 +5,8 @@ import {
   View,
   Text,
   StyleSheet,
-  Image
+  Image,
+  Platform
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import CustomSpinner from '../components/CustomSpinner.component';
@@ -139,6 +140,9 @@ export default class ActivityView extends Component {
         contentInset={{ top: this.props.YOffset || 0 }}
         contentOffset={{ y: -this.props.YOffset || 0 }}
         renderHeader={this.props.renderHeader}
+        contentContainerStyle={
+          { paddingTop: Platform.OS === 'android' ? this.props.YOffset : 0 }
+        }
         style={{
           flex: 0.5,
           width: fullWidth,

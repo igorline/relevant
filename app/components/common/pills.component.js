@@ -5,6 +5,7 @@ import {
   View
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { blue } from '../../styles/global';
 
 let styles;
 
@@ -15,14 +16,10 @@ export default function Pills(props) {
     props.slides.forEach((slide, i) => {
       let active = false;
 
-      if (props.currentIndex) {
-        if (props.currentIndex[i]) active = true;
-        if (props.changed && props.changed[i]) active = false;
-        if (i === 0 && props.currentIndex[0] && !props.currentIndex[1]) active = true;
-      } else if (i === 0) active = true;
+      if (props.currentIndex === i) active = true;
 
       indicator.push(<TouchableWithoutFeedback onPress={() => props.scrollToPage(i)} key={i} >
-        <View style={[styles.indicatorItem, { backgroundColor: active ? 'black' : 'white' }]} />
+        <View style={[styles.indicatorItem, { backgroundColor: active ? blue : 'lightgrey' }]} />
       </TouchableWithoutFeedback>);
     });
   }
@@ -36,20 +33,21 @@ styles = StyleSheet.create({
     justifyContent: 'center'
   },
   indicatorItem: {
-    marginLeft: 5,
-    marginRight: 5,
-    height: 10,
-    width: 10,
+    marginLeft: 3,
+    marginRight: 3,
+    height: 5,
+    width: 5,
     borderRadius: 5,
-    borderColor: 'black',
-    borderWidth: 1,
+    // borderColor: 'black',
+    // borderWidth: 1,
+    // backgroundColor: 'grey'
   },
 });
 
 
 Pills.propTypes = {
   slides: PropTypes.array,
-  changed: PropTypes.array,
-  currentIndex: PropTypes.array,
-  scrollToPage: PropTypes.func
+  // changed: PropTypes.array,
+  currentIndex: PropTypes.number,
+  // scrollToPage: PropTypes.func
 };

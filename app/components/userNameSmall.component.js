@@ -52,10 +52,10 @@ export default function UserName(props) {
         <Image source={imageSource} style={imageStyle} />
         {repostIcon}
         <View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-end', marginBottom: 2 }}>
             <View>
               <Text style={[styles.font17, styles.darkGray, styles.bebas]}>
-                {props.user.name}&nbsp;
+                {props.user.name}{' '}
               </Text>
             </View>
             {stats}

@@ -17,7 +17,7 @@ if (process.env.WEB != 'true') {
   Analytics = require('react-native-firebase-analytics');
   PushNotificationIOS = rn.PushNotificationIOS;
   // userDefaults = require('react-native-user-defaults').default;
-  userDefaults = require('react-native-swiss-knife').default;
+  userDefaults = require('react-native-swiss-knife').RNSKBucket;
   Platform = require('react-native').Platform;
 }
 

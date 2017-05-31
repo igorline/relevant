@@ -1,6 +1,7 @@
 import {
   StyleSheet,
-  Dimensions
+  Dimensions,
+  Platform
 } from 'react-native';
 
 const fullWidth = Dimensions.get('window').width;
@@ -12,6 +13,10 @@ const lightGrey = '#aaaaaa';
 const greyText = '#999999';
 // const green = '333ef33';
 const green = '#196950';
+
+const IphoneHeader = 59;
+const AndroidHeader = 44;
+const headerHeight = Platform.OS === 'ios' ? IphoneHeader : AndroidHeader;
 
 const font = StyleSheet.create({
   font10: {
@@ -49,8 +54,12 @@ const font = StyleSheet.create({
     fontFamily: 'BebasNeueRelevantRegular',
     fontWeight: 'bold',
     letterSpacing: 0.15,
-    paddingVertical: 13,
-    flex: 1,
+    marginTop: 3,
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    // alignSelf: 'center',
+    // paddingVertical: 13,
+    // flex: 1,
   },
   headerInner: {
     flex: 1,
@@ -61,8 +70,8 @@ const font = StyleSheet.create({
     paddingTop: 0,
   },
   header: {
-    height: 59,
-    paddingTop: 16,
+    height: Platform.OS === 'ios' ? 59 : 44,
+    paddingTop: Platform.OS === 'ios' ? 16 : 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -456,35 +465,20 @@ const layout = StyleSheet.create({
     letterSpacing: -0.5
   },
   r: {
-    height: 15,
+    height: 16,
     width: 16,
-    top: 2,
-    right: 1.5,
-    paddingLeft: 1,
-    marginRight: 2,
-    marginLeft: 0,
-    marginBottom: -3.5
+    marginRight: .5,
+    marginLeft: 1,
   },
   coin: {
-    position: 'absolute',
-    top: 3,
-    right: 1,
     height: 17,
-    width: 17,
-    paddingLeft: 3,
-    paddingRight: 2,
-    // marginRight: 2,
-    // marginLeft: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    width: 16,
+    marginRight: 1,
   },
   rup: {
     height: 19,
     width: 26,
     resizeMode: 'contain',
-    marginRight: 1,
-    marginLeft: 0,
-    marginBottom: 1
   },
   postCat: {
     position: 'absolute',
@@ -552,5 +546,6 @@ export {
   blue,
   green,
   greyText,
-  darkGrey
+  darkGrey,
+  headerHeight
 };
