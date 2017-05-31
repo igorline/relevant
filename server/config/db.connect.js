@@ -29,7 +29,7 @@ db.on('reconnected', function() {
 });
 db.on('disconnected', function() {
   console.log('MongoDB disconnected!');
-  mongoose.connect(process.env.MONGO_URI, db_config);
+  // mongoose.connect(process.env.MONGO_URI, db_config);
 });
 mongoose.connect(process.env.MONGO_URI, db_config);
 
