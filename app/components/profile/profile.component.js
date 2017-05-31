@@ -104,7 +104,7 @@ class ProfileComponent extends Component {
               onPress={() => this.goToTopic(tag.tag)}
               style={styles.active}
             >
-                #{tag.tag}
+              #{tag.tag}
             </Text>{i !== user.topTags.length - 1  ? ', ' : ''}
           </Text>
           )
@@ -132,21 +132,19 @@ class ProfileComponent extends Component {
 
     let balanceEl = (
       <View style={[styles.profileRowContainer]}>
-        <Text style={[styles.font14, { lineHeight: 15 }]}>
-          <Text style={[styles.font12, styles.darkGray, styles.profileColumn]}>
-            Coins: 
+        <View style={styles.textRow}>
+          <Text style={[styles.font12, styles.darkGray]}>
+            Coins:{' '}
           </Text>
-          <View style={[styles.coin, { width: 17, height: 13, right: 0 }]}>
-            <Image
-              resizeMode={'contain'}
-              style={[styles.coin, { width: 17, height: 13, right: 0 }]}
-              source={require('../../assets/images/relevantcoin.png')}
-            />
-          </View>
+          <Image
+            resizeMode={'contain'}
+            style={[styles.coin, { width: 14, height: 14 }]}
+            source={require('../../assets/images/relevantcoin.png')}
+          />
           <Text style={[styles.font12, styles.bebasBold]}>
             {numbers.abbreviateNumber(balance) || 0}
           </Text>
-        </Text>
+        </View>
       </View>
     );
 
@@ -154,23 +152,24 @@ class ProfileComponent extends Component {
 
     relevanceEl = (
       <View style={[styles.profileRow, styles.profileRowContainer]}>
-        <Text
-          // onPress={() => this.toggleTooltip()}
-          style={[styles.profileBig, styles.bebasNoMargin, { flex: 1 }]}
-        >
-          <View style={[styles.r, { width: 25, height: 23, right: 3, top: 2.5 }]}>
-            <Image
-              resizeMode={'contain'}
-              style={[styles.r, { width: 25, height: 23, right: 3, top: 2.5 }]}
-              source={require('../../assets/images/r.png')}
-            />
-          </View>
-          {numbers.abbreviateNumber(relevance)}
-          {' '}
-        </Text>
-        <Text style={[styles.profileBig, { flex: 1 }]}>
+        <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-end',  alignSelf: 'flex-end'  }}>
+          <Image
+            resizeMode={'contain'}
+            style={[styles.r, { width: 25, height: 25 }]}
+            source={require('../../assets/images/r.png')}
+          />
+          <Text
+            // onPress={() => this.toggleTooltip()}
+            style={[styles.profileBig, styles.bebas]}
+          >
+            {numbers.abbreviateNumber(relevance)}
+            {' '}
+          </Text>
+        </View>
+
+        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-start' }}>
           <Percent fontSize={26} user={user} />
-        </Text>
+        </View>
       </View>
     );
 
@@ -270,7 +269,7 @@ let localStyles = StyleSheet.create({
   profileRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'flex-end',
   },
   lastRow: {
     borderBottomWidth: 0,
@@ -282,6 +281,12 @@ let localStyles = StyleSheet.create({
     marginTop: 3,
     fontSize: 26,
     lineHeight: 26,
+  },
+  textRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
   }
 });
 

@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Animated,
   Easing,
+  Platform
 } from 'react-native';
 import { globalStyles, fullWidth } from '../../styles/global';
 import Tabs from '../tabs.component';
@@ -25,7 +26,8 @@ export default class DiscoverHeader extends Component {
 
   onScroll(event) {
     this.currentOffset = event.nativeEvent.contentOffset.y;
-    if (!event.nativeEvent.contentSize.height || this.currentOffset <= -this.headerHeight) {
+    let threshold = Platform.OS === 'android' ? 0 : -this.headerHeight;
+    if (!event.nativeEvent.contentSize.height || this.currentOffset <= threshold) {
       this.state.offsetY.setValue(0);
       return;
     }

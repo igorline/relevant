@@ -8,7 +8,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import { globalStyles, fullHeight } from '../../styles/global';
 import PostImage from './postImage.component1';
-import Commentary from './commentary.component';
+import Commentary from './commentary.componentAndroid';
 // import Excerpt from './excerpt.component';
 
 let styles;

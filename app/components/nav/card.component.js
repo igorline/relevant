@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import * as NavigationExperimental from 'react-navigation';
 import CardStackStyleInterpolator from 'react-navigation/lib/views/CardStackStyleInterpolator';
-import { globalStyles, fullWidth } from '../../styles/global';
+import { globalStyles, fullWidth, headerHeight } from '../../styles/global';
 import CardHeader from './cardHeader.component';
 import NavPanResponder from './navPanResponder';
 
@@ -186,14 +186,14 @@ class Card extends Component {
 
       let renderHeader = props.header && scene.route.header !== false;
 
-      let headerHeight = renderHeader ? 59 : 0;
-      if (this.props.share) headerHeight = 43;
+      let paddingTop = renderHeader ? headerHeight : 0;
+      if (this.props.share) paddingTop = 44;
 
       const style = [
         styles.card,
         cardTransitionStyle,
         { flex: 1,
-          paddingTop: headerHeight,
+          paddingTop,
         },
       ];
 

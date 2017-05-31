@@ -62,7 +62,9 @@ class DiscoverUser extends Component {
               user={user}
               setSelected={this.setSelected}
             />
-            {right}
+            <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }}>
+              {right}
+            </View>
           </View>
           {this.props.user.bio && this.props.bio ? bioEl : null}
         </View>

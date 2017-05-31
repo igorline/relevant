@@ -136,8 +136,8 @@ class CardHeader extends Component {
       if (this.props.auth.user && id !== this.props.auth.user._id) {
         titleAction = () => this.showActionSheet(id);
 
-        bottomArrow = (<Text
-          style={[styles.arrow]}
+        bottomArrow = (<View
+          style={{ marginBottom: -10 }}
           onPress={titleAction}
         >
           <Image
@@ -145,13 +145,13 @@ class CardHeader extends Component {
             resizeMode={'contain'}
             source={require('../../assets/images/downarrow.png')}
           />
-        </Text>);
+        </View>);
       }
     }
 
     if (key === 'discover' || key === 'mainDiscover' || component === 'discover') {
       titleAction = () => this.props.actions.toggleTopics();
-      bottomArrow = (<Text
+      bottomArrow = (<View
         style={[styles.arrow]}
         onPress={titleAction}
       >
@@ -160,7 +160,8 @@ class CardHeader extends Component {
           resizeMode={'contain'}
           source={require('../../assets/images/downarrow.png')}
         />
-      </Text>);
+      </View>);
+
       if (key === 'mainDiscover') {
         return (
           <TouchableOpacity
@@ -171,11 +172,11 @@ class CardHeader extends Component {
             }}
             onPress={titleAction}
           >
-            <View style={{ marginBottom: -9 }}>
+            <View style={{ marginBottom: -10 }}>
               <Image
                 source={require('../../assets/images/logo.png')}
                 resizeMode={'contain'}
-                style={{ width: 120, height: 22, marginBottom: 1 }}
+                style={{ width: 120, height: 20, marginBottom: 4 }}
               />
               {bottomArrow}
             </View>
@@ -299,14 +300,15 @@ class CardHeader extends Component {
 
 const localStyles = StyleSheet.create({
   titleComponent: {
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   arrow: {
     alignSelf: 'center',
     backgroundColor: 'transparent',
     // position: 'absolute',
-    marginTop: -5,
-    bottom: -10,
+    marginTop: -6,
+    bottom: -3,
     left: 0,
     right: 0,
     width: 22,

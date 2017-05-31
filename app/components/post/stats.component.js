@@ -68,50 +68,46 @@ class Stats extends Component {
 
     if (this.props.size === 'small' || (smallScreen && type === 'nav')) {
       statsStyle = [{ fontSize: 15, lineHeight: 15 }, styles.bebas, styles.quarterLetterSpacing];
-      iconStyle = [{ width: 15, height: 14.5 }];
-      coinStyle = [{ width: 18, height: 15 }];
+      iconStyle = [{ width: 15, height: 15 }];
+      coinStyle = [{ width: 15, height: 15 }];
     }
     if (this.props.size === 'tiny') {
       statsStyle = [{ fontSize: 13, lineHeight: 13 }, styles.bebas, styles.quarterLetterSpacing];
-      iconStyle = [{ width: 13, height: 13 }];
+      iconStyle = [{ width: 14, height: 14 }];
       // coinStyle = [{ width: 18, height: 15, marginBottom: -6 }];
     }
 
     let value = (
       <TouchableOpacity
+        ref={(c) => this.tooltipParent.coin = c}
         onPress={() => this.toggleTooltip('coin')}
-        style={{ flexDirection: 'row', flexWrap: 'wrap' }}
+        style={styles.statInner}
       >
-        {/*<Text style={this.props.textStyle} onPress={() => this.toggleTooltip('coin')}>*/}
-        {/*<View style={[styles.coin, ...coinStyle]}>*/}
-          <Image
-            resizeMode={'contain'}
-            style={[styles.coin, ...coinStyle]}
-            source={require('../../assets/images/relevantcoin.png')}
-          />
-        {/*</View>*/}
-        <Text style={this.props.textStyle}>
+        <Image
+          resizeMode={'contain'}
+          style={[styles.coin, ...coinStyle]}
+          source={require('../../assets/images/relevantcoin.png')}
+        />
+        <Text style={[this.props.textStyle, statsStyle]}>
           {numbers.abbreviateNumber(entity.value || entity.balance || 0)}
         </Text>
-      </TouchableOpacity>);
+      </TouchableOpacity>
+    );
 
-    let percent = <Percent fontSize={17} user={entity} />;
+    let percent = <View style={styles.statInner}><Percent fontSize={17} user={entity} /></View>;
 
     let relevance = (
       <TouchableOpacity
+        ref={(c) => this.tooltipParent.relevance = c}
         onPress={() => this.toggleTooltip('relevance')}
-        style={{ flexDirection: 'row', flexWrap: 'wrap' }}
+        style={styles.statInner}
       >
-
-        {/*<Text style={this.props.textStyle} onPress={() => this.toggleTooltip('relevance')}>*/}
-        {/*<View style={[styles.r, ...iconStyle]}>*/}
-          <Image
-            resizeMode={'contain'}
-            style={[styles.r, ...iconStyle]}
-            source={require('../../assets/images/r.png')}
-          />
-        {/*</View>*/}
-        <Text style={this.props.textStyle}>
+        <Image
+          resizeMode={'contain'}
+          style={[styles.r, ...iconStyle]}
+          source={require('../../assets/images/r.png')}
+        />
+        <Text style={[this.props.textStyle, statsStyle]}>
           {numbers.abbreviateNumber(entity.relevance)}
         </Text>
       </TouchableOpacity>
@@ -133,30 +129,15 @@ class Stats extends Component {
       return null;
     };
 
-    let br = <Text> • </Text>
+    let br = <View style={styles.statInner}><Text style={statsStyle}> • </Text></View>;
 
     return (
       <View
         style={[styles.stats, this.props.style]}
       >
-        <View
-          ref={(c) => this.tooltipParent.coin = c}
-          style={styles.statInner}
-        >
-          {/*<Text style={statsStyle}>*/}
-            {getLeft()}
-            {getLeft() && !this.props.renderLeft ? br : null}
-          {/*</Text>*/}
-        </View>
-
-        <View
-          ref={(c) => this.tooltipParent.relevance = c}
-          style={styles.statInner}
-        >
-          {/*<Text style={statsStyle}>*/}
-            {getRight()}
-          {/*</Text>*/}
-        </View>
+        {getLeft()}
+        {getLeft() && !this.props.renderLeft ? br : null}
+        {getRight()}
       </View>
     );
   }
@@ -164,14 +145,14 @@ class Stats extends Component {
 
 let localStyles = StyleSheet.create({
   stats: {
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'flex-end',
     flexDirection: 'row',
   },
   statInner: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'flex-end',
-    justifyContent: 'flex-start',
   }
 });
 
