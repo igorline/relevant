@@ -58,7 +58,7 @@ class Card extends Component {
         index + 0.99,
         index + 1,
       ],
-      outputRange: [0, 0.0, 1, 0.8, 0],
+      outputRange: [0, 0.1, 1, 0.8, 0],
     });
 
     const opacityCard = position.interpolate({
@@ -209,8 +209,11 @@ class Card extends Component {
         // headerStyle = CardStackStyleInterpolator.forVertical(sceneProps);
       }
 
+      let header;
       if (props.header && scene.route.header !== false) {
+
         headers.push(
+        // headers = (
           <CardHeader
             key={scene.key}
             {...this.props}
@@ -230,14 +233,16 @@ class Card extends Component {
           {...panHandlers}
         >
           {props.renderScene(sceneProps)}
+
+          {/*header*/}
         </Animated.View>
       );
     });
 
     return (
       <View style={[{ flex: 1, backgroundColor: 'black' }, this.props.style]}>
-        {headers}
         {scenes}
+        {headers}
       </View>
     );
   }

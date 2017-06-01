@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import * as Progress from 'react-native-progress';
-import { globalStyles, blue, fullWidth } from '../../styles/global';
+import { globalStyles, blue, fullWidth, darkGrey } from '../../styles/global';
 import Stats from '../post/stats.component';
 import { numbers } from '../../utils';
 
@@ -157,6 +157,7 @@ let localStyles = StyleSheet.create({
     backgroundColor: 'transparent',
     fontFamily: 'System',
     paddingVertical: 20,
+    color: darkGrey,
   },
   defaultText: {
     fontFamily: 'System',
@@ -174,6 +175,7 @@ let localStyles = StyleSheet.create({
     paddingVertical: 1,
     textAlign: 'center',
     lineHeight: 17,
+    color: darkGrey,
   },
   container: {
     flex: 1,

@@ -55,11 +55,7 @@ const font = StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 0.15,
     marginTop: 3,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // alignSelf: 'center',
-    // paddingVertical: 13,
-    // flex: 1,
+    color: darkGrey
   },
   headerInner: {
     flex: 1,
@@ -79,7 +75,7 @@ const font = StyleSheet.create({
     borderBottomColor: '#242425',
     borderBottomWidth: StyleSheet.hairlineWidth,
 
-    zIndex: 1000,
+    // zIndex: 1000,
     position: 'absolute',
     top: 0,
     right: 0,
@@ -106,6 +102,7 @@ const font = StyleSheet.create({
   bebasBold: {
     fontFamily: 'BebasNeueRelevantRegular',
     fontWeight: 'bold',
+    color: darkGrey,
     // marginBottom: -3,
     // lineHeight: 24,
     letterSpacing: 0.5,
@@ -435,7 +432,7 @@ const layout = StyleSheet.create({
   createPostInput: {
     marginTop: 12.5,
     marginBottom: 12.5,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   flex1: {
     flex: 1
@@ -535,6 +532,12 @@ const layout = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  textRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
+  }
 });
 
 const globalStyles = { ...colors, ...font, ...alignment, ...layout };

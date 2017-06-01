@@ -58,7 +58,7 @@ export default class Footer extends Component {
             style={[styles.footerImg]}
           />);
       }
-      title = <Percent fontSize={11} user={user} />;
+      title = <View><Percent fontSize={11} user={user} /></View>;
       activeText = true;
     }
 
@@ -138,7 +138,7 @@ const localStyles = StyleSheet.create({
     height: 25,
     width: 25,
     borderRadius: 12.5,
-    marginTop: -2,
+    // marginTop: -2,
   },
   icon: {
     fontSize: 20

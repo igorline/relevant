@@ -72,6 +72,7 @@ class Login extends Component {
             <View style={styles.fieldsInputParent}>
               <TextInput
                 ref={c => this.userInput = c}
+                underlineColorAndroid={'transparent'}
                 autoCorrect={false}
                 autoCapitalize={'none'}
                 // keyboardType={'email-address'}
@@ -86,6 +87,7 @@ class Login extends Component {
             <View style={styles.fieldsInputParent}>
               <TextInput
                 ref={c => this.passInput = c}
+                underlineColorAndroid={'transparent'}
                 autoCapitalize={'none'}
                 autoCorrect={false}
                 secureTextEntry

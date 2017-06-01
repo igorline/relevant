@@ -88,7 +88,7 @@ class Stats extends Component {
           style={[styles.coin, ...coinStyle]}
           source={require('../../assets/images/relevantcoin.png')}
         />
-        <Text style={[this.props.textStyle, statsStyle]}>
+        <Text style={[this.props.textStyle, statsStyle, styles.darkGrey]}>
           {numbers.abbreviateNumber(entity.value || entity.balance || 0)}
         </Text>
       </TouchableOpacity>
@@ -107,7 +107,7 @@ class Stats extends Component {
           style={[styles.r, ...iconStyle]}
           source={require('../../assets/images/r.png')}
         />
-        <Text style={[this.props.textStyle, statsStyle]}>
+        <Text style={[this.props.textStyle, statsStyle, styles.darkGrey]}>
           {numbers.abbreviateNumber(entity.relevance)}
         </Text>
       </TouchableOpacity>

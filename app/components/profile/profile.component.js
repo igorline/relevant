@@ -5,7 +5,7 @@ import {
   View,
   Image,
 } from 'react-native';
-import { globalStyles, fullWidth } from '../../styles/global';
+import { globalStyles, fullWidth, darkGrey } from '../../styles/global';
 import Percent from '../../components/percent.component';
 import { numbers } from '../../utils';
 import Bio from './bio.component';
@@ -75,8 +75,6 @@ class ProfileComponent extends Component {
   }
 
   render() {
-    const parentStyles = this.props.styles;
-    const styles = { ...localStyles, ...parentStyles };
     let followers = 0;
     let user = null;
     let userImage = null;
@@ -105,7 +103,7 @@ class ProfileComponent extends Component {
               style={styles.active}
             >
               #{tag.tag}
-            </Text>{i !== user.topTags.length - 1  ? ', ' : ''}
+            </Text>{i !== user.topTags.length - 1 ? ', ' : ''}
           </Text>
           )
         );
@@ -133,7 +131,7 @@ class ProfileComponent extends Component {
     let balanceEl = (
       <View style={[styles.profileRowContainer]}>
         <View style={styles.textRow}>
-          <Text style={[styles.font12, styles.darkGray]}>
+          <Text style={[styles.font12, styles.darkGrey]}>
             Coins:{' '}
           </Text>
           <Image
@@ -152,7 +150,15 @@ class ProfileComponent extends Component {
 
     relevanceEl = (
       <View style={[styles.profileRow, styles.profileRowContainer]}>
-        <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-end',  alignSelf: 'flex-end'  }}>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            alignItems: 'flex-end',
+            alignSelf: 'flex-end'
+          }}
+        >
           <Image
             resizeMode={'contain'}
             style={[styles.r, { width: 25, height: 25 }]}
@@ -160,7 +166,7 @@ class ProfileComponent extends Component {
           />
           <Text
             // onPress={() => this.toggleTooltip()}
-            style={[styles.profileBig, styles.bebas]}
+            style={[styles.profileBig, styles.bebas, { color: darkGrey }]}
           >
             {numbers.abbreviateNumber(relevance)}
             {' '}
@@ -178,7 +184,7 @@ class ProfileComponent extends Component {
     if (topTags) {
       bottomSection = (
         <View style={{ padding: 0 }}>
-          <Text style={[styles.font12, styles.darkGray]}>
+          <Text style={[styles.font12, styles.darkGrey]}>
             <Text>{user.topTags.length ? 'Expertise: ' : null}</Text>
             <Text style={[styles.font14, styles.georgia]}>
               {topTags}
@@ -224,10 +230,10 @@ class ProfileComponent extends Component {
             </View>
             <View style={[styles.profileRowContainer]}>
               <View style={[styles.profileRow, fullWidth <= 320 ? { flexDirection: 'column' } : null]}>
-                <Text style={[styles.font12, styles.darkGray, styles.profileColumn]}>
+                <Text style={[styles.font12, styles.darkGrey, styles.profileColumn]}>
                   Subscribers: <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(followers || 0)}</Text>
                 </Text>
-                <Text style={[styles.font12, styles.darkGray, styles.profileColumn]}>
+                <Text style={[styles.font12, styles.darkGrey, styles.profileColumn]}>
                   Subscribed to: <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(following || 0)}</Text>
                 </Text>
               </View>
@@ -248,7 +254,7 @@ class ProfileComponent extends Component {
 }
 
             // <View style={styles.onlineRow}>
-            //   <Text style={[styles.darkGray, styles.georgia]}>
+            //   <Text style={[styles.darkGrey, styles.georgia]}>
             //     {user.online ? 'Online' : 'Offline'}
             //   </Text>
             //   <View style={user.online ? styles.onlineCirc : styles.offlineCirc} />
@@ -285,6 +291,7 @@ let localStyles = StyleSheet.create({
   textRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    flex: 1,
     alignItems: 'flex-end',
     justifyContent: 'flex-start',
   }

@@ -205,6 +205,7 @@ class SignUp extends Component {
 
             <View style={styles.fieldsInputParent}>
               <TextInput
+                underlineColorAndroid={'transparent'}
                 autoCapitalize={'none'}
                 autoCorrect={false}
                 keyboardType={'default'}
@@ -225,6 +226,7 @@ class SignUp extends Component {
             }
             <View style={styles.fieldsInputParent}>
               <TextInput
+                underlineColorAndroid={'transparent'}
                 autoCapitalize={'none'}
                 autoCorrect={false}
                 keyboardType={'email-address'}
@@ -254,6 +256,7 @@ class SignUp extends Component {
 
             <View style={styles.fieldsInputParent}>
               <TextInput
+                underlineColorAndroid={'transparent'}
                 autoCapitalize={'none'}
                 secureTextEntry
                 keyboardType={'default'}
@@ -267,6 +270,7 @@ class SignUp extends Component {
 
             <View style={styles.fieldsInputParent}>
               <TextInput
+                underlineColorAndroid={'transparent'}
                 autoCapitalize={'none'}
                 secureTextEntry
                 keyboardType={'default'}

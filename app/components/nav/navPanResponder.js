@@ -275,8 +275,9 @@ class NavPanResponder {
   // }
 
   onPanResponderTerminate(): void {
+    const index = this._props.navigation.state.index;
     this._isResponding = false;
-    this._reset();
+    this._reset(index, 0);
   }
 
   _reset(resetToIndex: number, velocity: number): void {
@@ -298,7 +299,6 @@ class NavPanResponder {
     // set temporary index for gesture handler to respect until the action is
     // dispatched at the end of the transition.
     this._immediateIndex = toValue;
-
     // props.onNavigateBack()
 
     Animated.spring(position, {
