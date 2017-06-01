@@ -202,14 +202,14 @@ class Categories extends Component {
     }
 
     return (
-      <KeyboardAvoidingView
+      <View
         style={{ flex: 1 }}
         behavior={'padding'}
       >
         <View style={{ flex: 1 }}>
           {categoryEl}
         </View>
-      </KeyboardAvoidingView>
+      </View>
     );
   }
 }
