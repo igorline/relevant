@@ -37,6 +37,7 @@ class ArticleView extends Component {
   }
 
   componentWillMount() {
+    console.log(this.props.scene.uri);
     this.onInteraction = InteractionManager.runAfterInteractions(() => {
       this.setState({
         initalUrl: this.props.scene.uri,

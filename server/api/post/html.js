@@ -184,9 +184,15 @@ exports.generatePreview = (body, uri) => {
   title = data['og:title'] || data['twitter:title'] || data.title;
   description = data.description || data['og:description'] || data['twitter:description'];
   image = data['og:image'] || data['og:image:url'] || data['twitter:image'] || data['twitter:image:src'] || data.image;
-  let url = data['al:web:url'] || data['og:url'] || uri;
+  // why prioritise og tags? flipboard?
+  let url = uri;
+  // let url = data['al:web:url'] || data['og:url'] || uri;
   let tags = data.news_keywords || data.keywords;
   let domain = exports.extractDomain(url);
+  // patch for massive bug?
+  // if (domain.match('massivesci.com')) {
+  //   url = uri;
+  // }
 
   let doc = jsdom.jsdom(body, {
     features: {
