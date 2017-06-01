@@ -40,7 +40,7 @@ class DiscoverUser extends Component {
       <View style={styles.bioContainer}>
         <TextBody
           actions={this.props.actions}
-          style={styles.discoverBio}
+          style={[styles.discoverBio, styles.darkGrey]}
           numberOfLines={3}
         >
           {this.props.user.bio}

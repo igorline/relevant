@@ -54,7 +54,7 @@ export default function UserName(props) {
         <View>
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-end', marginBottom: 2 }}>
             <View>
-              <Text style={[styles.font17, styles.darkGray, styles.bebas]}>
+              <Text style={[styles.font17, styles.darkGrey, styles.bebas]}>
                 {props.user.name}{' '}
               </Text>
             </View>

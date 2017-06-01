@@ -33,6 +33,7 @@ class TextEdit extends Component {
       <TextInput
         multiline
         // autoGrow
+        underlineColorAndroid={'transparent'}
         placeholder={this.props.placeholder}
         placeholderTextColor={greyText}
         ref={c => this.textInput = c}

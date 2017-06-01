@@ -11,7 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { globalStyles, blue } from '../../styles/global';
+import { globalStyles, blue, darkGrey } from '../../styles/global';
 import * as navigationActions from '../../actions/navigation.actions';
 import * as authActions from '../../actions/auth.actions';
 import StatCategory from './statCategoryView.component';
@@ -241,6 +241,7 @@ let localStyles = StyleSheet.create({
     fontFamily: 'System',
     paddingVertical: 20,
     alignSelf: 'center',
+    color: darkGrey
   },
 
   label: {

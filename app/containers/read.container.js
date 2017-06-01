@@ -247,7 +247,7 @@ class Read extends Component {
     //           <Text>👅💦</Text>
     //         </View>
     //         <View>
-    //           <Text style={[{ fontWeight: '500' }, styles.darkGray]}>{messages ? 'Thirsty messages' : 'No messages'}</Text>
+    //           <Text style={[{ fontWeight: '500' }, styles.darkGrey]}>{messages ? 'Thirsty messages' : 'No messages'}</Text>
     //           <View style={styles.recentNames}>
     //             {recentMessages}
     //           </View>

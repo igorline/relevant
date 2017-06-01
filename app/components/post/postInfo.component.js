@@ -198,7 +198,7 @@ class PostInfo extends Component {
     //             size={17}
     //           />
     //           <Text
-    //             style={[styles.font17, styles.textRight, styles.darkGray, styles.bebas]}
+    //             style={[styles.font17, styles.textRight, styles.darkGrey, styles.bebas]}
     //           >
     //             {this.state.timeUntilString}
     //           </Text>

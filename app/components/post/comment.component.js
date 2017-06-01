@@ -145,7 +145,7 @@ class Comment extends Component {
 
     if (this.state.editing) {
       editingEl = (<TextEdit
-        style={[styles.darkGray, styles.editingInput]}
+        style={[styles.darkGrey, styles.editingInput]}
         text={this.state.editedText || comment.text}
         toggleFunction={this.editComment}
         saveEditFunction={this.saveEdit}

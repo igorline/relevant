@@ -52,7 +52,7 @@ class ArticleView extends Component {
   }
 
   back() {
-    if (this.state.backButtonEnabled) {
+    if (this.backButtonEnabled) {
       return () => this.webview.goBack();
     }
     return () => this.props.actions.pop('home');
@@ -60,7 +60,7 @@ class ArticleView extends Component {
 
   showShareActionSheet() {
     ActionSheetIOS.showShareActionSheetWithOptions({
-      url: this.state.url,
+      url: this.url,
     },
     (error) => AlertIOS.alert(error),
     (completed, method) => {
@@ -118,6 +118,7 @@ class ArticleView extends Component {
 
   render () {
     let activity;
+    console.log('rendering webview')
 
     if (this.state.loading) {
       activity = (
@@ -140,12 +141,15 @@ class ArticleView extends Component {
         ref={(ref) => { this.webview = ref; }}
         scalesPageToFit
         onNavigationStateChange={(navState) => {
-          this.setState({
-            backButtonEnabled: navState.canGoBack,
-            forwardButtonEnabled: navState.canGoForward,
-            url: navState.url,
-            status: navState.title,
-          });
+          console.log('nav state change ', navState);
+          this.url = navState.url;
+          this.backButtonEnabled = navState.canGoBack;
+          // this.setState({
+          //   backButtonEnabled: navState.canGoBack,
+          //   forwardButtonEnabled: navState.canGoForward,
+          //   url: navState.url,
+          //   status: navState.title,
+          // });
         }}
         onLoadStart={() => this.setState({ loading: true })}
         onLoadEnd={() => this.setState({ loading: false })}
@@ -155,7 +159,7 @@ class ArticleView extends Component {
     }
 
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <View style={{ flex: 1, backgroundColor: 'white', paddingTop: 0}}>
         <StatusBar
           hidden={true}
           networkActivityIndicatorVisible

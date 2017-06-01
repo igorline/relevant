@@ -252,6 +252,7 @@ export default class UrlComponent extends Component {
           style={{
             flex: 1,
             paddingHorizontal: 10,
+            // backgroundColor: 'green',
           }}
         >
           {userHeader}
@@ -268,9 +269,9 @@ export default class UrlComponent extends Component {
               style={[
                 styles.font15,
                 styles.createPostInput,
-                this.props.postBody && this.props.postBody.length ? { flex: 1 } : { flex: 0 }
+                this.props.postBody && this.props.postBody.length ? { flex: 1 } : { flex: 0 },
               ]}
-
+              underlineColorAndroid={'transparent'}
               placeholder={urlPlaceholder}
               placeholderTextColor={greyText}
               multiline
@@ -280,6 +281,8 @@ export default class UrlComponent extends Component {
               returnKeyType={'default'}
               autoFocus
               keyboardShouldPersistTaps={'never'}
+              disableFullscreenUI
+              textAlignVertical={'top'}
               // onContentSizeChange={(event) => {
               //   let h = event.nativeEvent.contentSize.height;
               //   this.setState({
@@ -287,7 +290,7 @@ export default class UrlComponent extends Component {
               //   });
               // }}
             >
-              <TextBody style={{ flex: 1, width: 400 }} showAllMentions>
+              <TextBody showAllMentions>
                 {this.props.postBody}
               </TextBody>
             </TextInput>

@@ -296,7 +296,10 @@ class Application extends Component {
       this.props.actions.userToSocket(this.props.auth.user._id);
       this.props.actions.getNotificationCount();
       this.props.actions.getFeedCount();
-      PushNotificationIOS.setApplicationIconBadgeNumber(0);
+
+      if (Platform.OS === 'ios') {
+        PushNotificationIOS.setApplicationIconBadgeNumber(0);
+      }
 
       // refresh after 5 minutes of inactivity
       let now = new Date().getTime();
@@ -306,12 +309,10 @@ class Application extends Component {
         // reload all other tabs on focus
         this.props.actions.reloadAllTabs();
         this.props.actions.reloadTab();
-        // this.props.actions.getUser();
       }
       // if (this.backgroundTime + (40 * 60 * 1000) < now) {
       //   this.props.actions.resetRoutes();
       // }
-
     } else if (currentAppState === 'background') {
       this.backgroundTime = new Date().getTime();
     }
@@ -319,18 +320,33 @@ class Application extends Component {
 
   renderScene(props) {
     let component = props.scene.route.component;
+    let createPost;
 
-    let createPost = (
-      <KeyboardAvoidingView
-        behavior={'padding'}
-        style={{
-          flex: 1,
-          backgroundColor: '#ffffff'
-        }}
-      >
-        <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
-      </KeyboardAvoidingView>
-    );
+    if (Platform.OS === 'ios') {
+      createPost = (
+        <KeyboardAvoidingView
+          behavior={'padding'}
+          style={{
+            flex: 1,
+            // backgroundColor: 'red'
+          }}
+        >
+          <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
+        </KeyboardAvoidingView>
+      );
+    } else {
+      createPost = (
+        <View
+          behavior={'padding'}
+          style={{
+            flex: 1,
+            // backgroundColor: 'red'
+          }}
+        >
+          <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
+        </View>
+      );
+    }
 
     switch (component) {
       case 'auth':

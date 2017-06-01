@@ -125,6 +125,7 @@ class CommentInput extends Component {
         {inputImage}
         <TextInput
           ref={(c) => { this.textInput = c; }}
+          underlineColorAndroid={'transparent'}
           style={[
             styles.commentInput,
             styles.font15,

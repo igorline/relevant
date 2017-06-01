@@ -11,7 +11,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import Search from './search.component';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, fullWidth } from '../../styles/global';
 import Stats from '../post/stats.component';
 
 let styles;
@@ -115,14 +115,27 @@ class CardHeader extends Component {
     return leftEl;
   }
 
+  renderBottomArrow() {
+    if (!this.titleAction) return null;
+    return (
+      <TouchableOpacity
+        style={{ position: 'absolute', bottom: -1, left: fullWidth / 2 - 11 }}
+        onPress={this.titleAction}
+      >
+        <Image
+          style={styles.arrow}
+          resizeMode={'contain'}
+          source={require('../../assets/images/downarrow.png')}
+        />
+      </TouchableOpacity>
+    );
+  }
+
   renderTitle(props) {
     if (this.state.search) return null;
     let title = props.scene.route ? props.scene.route.title : '';
     let component = props.scene.route.component;
     let key = props.scene.route.key;
-    let bottomArrow;
-    let rightArrow;
-    let titleAction = () => null;
     let id;
 
     title = title ? title.trim() : null;
@@ -134,51 +147,27 @@ class CardHeader extends Component {
       }
 
       if (this.props.auth.user && id !== this.props.auth.user._id) {
-        titleAction = () => this.showActionSheet(id);
-
-        bottomArrow = (<View
-          style={{ marginBottom: -10 }}
-          onPress={titleAction}
-        >
-          <Image
-            style={styles.arrow}
-            resizeMode={'contain'}
-            source={require('../../assets/images/downarrow.png')}
-          />
-        </View>);
+        this.titleAction = () => this.showActionSheet(id);
       }
     }
 
     if (key === 'discover' || key === 'mainDiscover' || component === 'discover') {
-      titleAction = () => this.props.actions.toggleTopics();
-      bottomArrow = (<View
-        style={[styles.arrow]}
-        onPress={titleAction}
-      >
-        <Image
-          style={styles.arrow}
-          resizeMode={'contain'}
-          source={require('../../assets/images/downarrow.png')}
-        />
-      </View>);
+      this.titleAction = () => this.props.actions.toggleTopics();
 
       if (key === 'mainDiscover') {
         return (
           <TouchableOpacity
             style={{
               alignItems: 'center',
-              backgroundColor: 'transparent',
-              paddingVertical: 6,
             }}
-            onPress={titleAction}
+            onPress={this.titleAction}
           >
-            <View style={{ marginBottom: -10 }}>
+            <View style={{ marginBottom: 0 }}>
               <Image
                 source={require('../../assets/images/logo.png')}
                 resizeMode={'contain'}
-                style={{ width: 120, height: 20, marginBottom: 4 }}
+                style={{ width: 120, height: 20, marginBottom: 0 }}
               />
-              {bottomArrow}
             </View>
           </TouchableOpacity>
         );
@@ -213,10 +202,9 @@ class CardHeader extends Component {
         ref={c => this.title = c}
         style={[styles.titleComponent]}
       >
-        <Text onPress={titleAction} style={styles.navTitle}>
+        <Text onPress={this.titleAction ? this.titleAction : () => null} style={styles.navTitle}>
           {clipped}
         </Text>
-        {bottomArrow}
       </View>
     );
   }
@@ -289,6 +277,7 @@ class CardHeader extends Component {
         {this.renderLeft(props)}
         {this.renderTitle(props)}
         {this.props.renderRight ? this.props.renderRight(props) : this.renderRight(props)}
+        {this.renderBottomArrow()}
       </Animated.View>
     );
   }
@@ -306,11 +295,6 @@ const localStyles = StyleSheet.create({
   arrow: {
     alignSelf: 'center',
     backgroundColor: 'transparent',
-    // position: 'absolute',
-    marginTop: -6,
-    bottom: -3,
-    left: 0,
-    right: 0,
     width: 22,
     height: 15,
   },
