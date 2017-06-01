@@ -18,6 +18,28 @@ import mail from '../../mail';
   // ;
 // require('https').globalAgent.options.ca = rootCas;
 
+// async function fixMassivesci() {
+//   try {
+//     let posts = await Post.find({ $or: [{ link: { $regex: /massivesci.com/ } }, { body: { $regex: /massivesci.com/ } }] })
+//     .populate('metaPost');
+//     posts.forEach(post => {
+//       console.log(post.link);
+//       if (post.link === null) {
+//         post.link = 'https://massivesci.com/articles/meet-the-chemist-who-engineered-the-first-effective-treatment-of-leprosy/';
+//       }
+//       else {
+//         post.link = post.link.replace('.com//', '.com/');
+//       }
+//       post.metaPost.url = post.link;
+//       console.log('new post link ', post.link);
+//       console.log('new meta link ', post.metaPost.url);
+//       post.save();
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// fixMassivesci();
 
 function getBestPosts() {
   let now = new Date();
