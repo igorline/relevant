@@ -94,11 +94,14 @@ export default class Chart extends Component {
       }
       current.setDate(current.getDate() + 1);
     }
+    max = Math.ceil(max);
+    min = Math.floor(min);
+
     let tickCount = Math.min(min < 0 ? (max - min) + 1 : max + 1, 6);
-    if (max && min === max) {
-      min = 0;
-      max += 1;
-    }
+    if (max - min < 1) tickCount = 6;
+
+    if (typeof max !== 'number' || Math.abs(max) < 1) max = 1;
+    if (typeof min !== 'number' || Math.abs(min) < 1) min = -1;
 
     this.chartOptions = {
       ...chartOptions,
@@ -108,10 +111,10 @@ export default class Chart extends Component {
       axisY: {
         ...chartOptions.axisY,
         tickCount,
-        labelFunction: val => Math.round(val),
+        labelFunction: val => (max - min) > 1 ? Math.round(val) : val,
         scale: 10,
-        min: min ? null : 0,
-        max: max ? null : 1,
+        min,
+        max,
       },
       axisX: {
         ...chartOptions.axisX,

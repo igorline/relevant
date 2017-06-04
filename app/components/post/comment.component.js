@@ -6,8 +6,10 @@ import {
   Image,
   ActionSheetIOS,
   AlertIOS,
-  TouchableHighlight
+  TouchableHighlight,
+  Platform
 } from 'react-native';
+import RNBottomSheet from 'react-native-bottom-sheet';
 import { globalStyles } from '../../styles/global';
 import TextEdit from '../common/textEdit.component';
 import UserName from '../userNameSmall.component';
@@ -16,6 +18,12 @@ import TextBody from './textBody.component';
 
 let moment = require('moment');
 
+let ActionSheet = ActionSheetIOS;
+
+if (Platform.OS === 'android') {
+  ActionSheet = RNBottomSheet;
+  ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
+}
 let styles;
 
 class Comment extends Component {
@@ -73,7 +81,7 @@ class Comment extends Component {
   }
 
   showActionSheet() {
-    ActionSheetIOS.showActionSheetWithOptions({
+    ActionSheet.showActionSheetWithOptions({
       options: this.state.buttons,
       cancelButtonIndex: this.state.cancelIndex,
       destructiveButtonIndex: this.state.destructiveIndex,

@@ -61,12 +61,14 @@ class StatsContainer extends Component {
     this.start.setUTCHours(0, 0, 0, 0);
     this.relStart.setUTCHours(0, 0, 0, 0);
 
-    this.start.setDate(this.start.getDate() - 7);
     this.relStart.setDate(this.start.getDate() - 28);
+    this.start.setDate(this.start.getDate() - 14);
+
 
     this.props.actions.getChart(this.start, this.end);
 
-    this.props.actions.getRelChart(this.relStart, this.end);
+    this.props.actions.getRelChart(this.start, this.end);
+    // this.props.actions.getRelChart(this.relStart, this.end);
 
     this.props.actions.getStats(this.props.auth.user);
   }

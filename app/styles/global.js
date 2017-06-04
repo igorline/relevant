@@ -218,12 +218,11 @@ const layout = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   fieldsParent: {
-    backgroundColor: 'white',
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
     justifyContent: 'center',
-    padding: 20,
+    margin: 20,
   },
   fieldsInner: {
     flex: 1,
@@ -473,8 +472,8 @@ const layout = StyleSheet.create({
     marginRight: 1,
   },
   rup: {
-    height: 19,
-    width: 26,
+    height: 20,
+    width: 24,
     resizeMode: 'contain',
   },
   postCat: {

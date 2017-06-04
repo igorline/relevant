@@ -127,6 +127,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-bottom-sheet')
     compile project(':react-native-swiss-knife')
     compile project(':react-native-orientation')
     compile project(':react-native-vector-icons')

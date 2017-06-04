@@ -7,7 +7,8 @@ import {
   AlertIOS,
   StyleSheet,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles } from '../../styles/global';
@@ -28,6 +29,10 @@ class Login extends Component {
     };
   }
 
+  componentDidMount() {
+    this.userInput.focus();
+  }
+
   componentWillUnmount() {
     this.props.actions.setAuthStatusText();
   }
@@ -42,8 +47,6 @@ class Login extends Component {
       AlertIOS.alert('must enter password');
       return;
     }
-    this.userInput.blur();
-    this.passInput.blur();
     dismissKeyboard();
     this.props.actions.loginUser({ name: this.state.username, password: this.state.password });
   }
@@ -59,6 +62,7 @@ class Login extends Component {
       <KeyboardAvoidingView
         behavior={'padding'}
         style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0 }
       >
         <ScrollView
           keyboardShouldPersistTaps={'always'}
@@ -100,12 +104,13 @@ class Login extends Component {
               />
             </View>
             <Text
-              onPress={() => this.props.actions.push({
-                key: 'forgot',
-                title: 'Forgot Pass',
-                back: true
-              }, 'auth')
-              }
+              onPress={() => {
+                this.props.actions.push({
+                  key: 'forgot',
+                  title: 'Forgot Pass',
+                  back: true
+                }, 'auth');
+              }}
               style={[styles.active, styles.forgot]}
             >
               reset password

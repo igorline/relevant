@@ -11,7 +11,8 @@ import {
   StatusBar,
   InteractionManager,
   ActionSheetIOS,
-  AlertIOS
+  AlertIOS,
+  Platform
 } from 'react-native';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
@@ -44,12 +45,16 @@ class ArticleView extends Component {
         url: this.props.scene.uri,
       });
     });
-    Orientation.unlockAllOrientations();
+    if (Platform.OS === 'ios') {
+      Orientation.unlockAllOrientations();
+    }
   }
 
   componentWillUnmount() {
     if (this.onInteraction) this.onInteraction.cancel();
-    Orientation.lockToPortrait();
+    if (Platform.OS === 'ios') {
+      Orientation.lockToPortrait();
+    }
   }
 
   back() {
@@ -119,13 +124,12 @@ class ArticleView extends Component {
 
   render () {
     let activity;
-    console.log('rendering webview')
 
     if (this.state.loading) {
       activity = (
         <View
           pointerEvents={'none'}
-          style={{ zIndex: 10, position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
+          style={{ position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
         >
           <ActivityIndicator
             style={{ position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
@@ -142,7 +146,7 @@ class ArticleView extends Component {
         ref={(ref) => { this.webview = ref; }}
         scalesPageToFit
         onNavigationStateChange={(navState) => {
-          console.log('nav state change ', navState);
+          // console.log('nav state change ', navState);
           this.url = navState.url;
           this.backButtonEnabled = navState.canGoBack;
           // this.setState({
@@ -183,6 +187,7 @@ const localStyles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'black',
+    zIndex: 1
   },
   leftButton: {
     // borderColor: 'red',

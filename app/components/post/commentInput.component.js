@@ -23,7 +23,9 @@ class CommentInput extends Component {
     this.setMention = this.setMention.bind(this);
     this.createComment = this.createComment.bind(this);
     this.processInput = this.processInput.bind(this);
-    this.state = {};
+    this.state = {
+      inputHeight: 50
+    };
   }
 
   componentWillUnmount() {
@@ -106,7 +108,7 @@ class CommentInput extends Component {
   }
 
   renderInput() {
-    if (!this.props.editing) {
+    // if (!this.props.editing) {
       let inputImage = null;
       if (this.props.auth.user.image) {
         let imageUrl = this.props.auth.user.image;
@@ -118,7 +120,7 @@ class CommentInput extends Component {
         }}
         style={[
           styles.commentInputParent,
-          { height: Math.min(this.state.inputHeight, 120) }
+          { height: Math.min(this.state.inputHeight, 120), backgroundColor: 'pink' }
         ]}
       >
         {this.renderUserSuggestions()}
@@ -130,7 +132,7 @@ class CommentInput extends Component {
             styles.commentInput,
             styles.font15,
             {
-              // flex: 1,
+              flex: 1,
               lineHeight: 20,
               paddingTop: 10,
               height: 'auto',
@@ -164,8 +166,8 @@ class CommentInput extends Component {
           <Text style={[styles.font15, styles.active]}>Submit</Text>
         </TouchableHighlight>
       </View>);
-    }
-    return null;
+    // }
+    // return null;
   }
 
   render() {

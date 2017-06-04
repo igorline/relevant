@@ -14,7 +14,13 @@ import {
   SET_TOOLTIP_DATA
 } from './actionTypes';
 
+let dismissKeyboard;
+if (process.env.WEB != 'true') {
+  dismissKeyboard = require('react-native-dismiss-keyboard');
+}
+
 export function push(route, key, animation = 'vertical') {
+  if (dismissKeyboard) dismissKeyboard();
   return {
     type: PUSH_ROUTE,
     route,
@@ -39,6 +45,7 @@ export function toggleTopics(showTopics) {
 
 export function pop(key) {
   return dispatch => {
+    if (dismissKeyboard) dismissKeyboard();
     dispatch(toggleTopics(false));
     dispatch({
       type: POP_ROUTE,
@@ -48,6 +55,7 @@ export function pop(key) {
 }
 
 export function changeTab(key) {
+  if (dismissKeyboard) dismissKeyboard();
   return {
     type: CHANGE_TAB,
     key
