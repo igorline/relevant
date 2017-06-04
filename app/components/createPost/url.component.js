@@ -36,6 +36,7 @@ export default class UrlComponent extends Component {
       this.createPreview(this.props.postUrl);
     }
     setTimeout(() => this.initTooltips('shareTip'), 1000);
+    this.input.focus();
   }
 
   componentWillReceiveProps(next) {
@@ -279,7 +280,6 @@ export default class UrlComponent extends Component {
               onChangeText={postBody => this.processInput(postBody, false)}
               onBlur={() => this.processInput(null, true)}
               returnKeyType={'default'}
-              autoFocus
               keyboardShouldPersistTaps={'never'}
               disableFullscreenUI
               textAlignVertical={'top'}

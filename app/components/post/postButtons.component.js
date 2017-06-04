@@ -7,15 +7,25 @@ import {
   TouchableWithoutFeedback,
   ActionSheetIOS,
   Alert,
-  Image
+  Image,
+  Platform
 } from 'react-native';
 import Analytics from 'react-native-firebase-analytics';
 import Share from 'react-native-share';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { globalStyles, fullWidth, blue } from '../../styles/global';
+import { globalStyles, fullWidth, blue, greyText } from '../../styles/global';
 import InvestModal from './investModal.component';
 import { numbers } from '../../utils';
+
+import RNBottomSheet from 'react-native-bottom-sheet';
+
+let ActionSheet = ActionSheetIOS;
+
+if (Platform.OS === 'android') {
+  ActionSheet = RNBottomSheet;
+  ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
+}
 
 let styles;
 
@@ -152,7 +162,7 @@ class PostButtons extends Component {
   }
 
   showActionSheet() {
-    ActionSheetIOS.showActionSheetWithOptions({
+    ActionSheet.showActionSheetWithOptions({
       options: this.menu.buttons,
       cancelButtonIndex: this.menu.cancelIndex,
       destructiveButtonIndex: this.menu.destructiveIndex,
@@ -303,6 +313,10 @@ class PostButtons extends Component {
         !investable ? { opacity: 0.3, shadowOpacity: 0 } : null,
         smallScreen ? styles.invSmall : null]}
       >
+        <Image
+          style={[styles.rup, smallScreen ? styles.smallerR : null]}
+          source={require('../../assets/images/rup.png')}
+        />
         <Text
           suppressHighlighting={false}
           allowFontScaling={false}
@@ -311,12 +325,10 @@ class PostButtons extends Component {
             styles.bold,
             styles.postButtonText,
             smallScreen ? styles.postButtonTextSmall : null,
+            { paddingVertical: 0 },
+            styles.darkGrey,
           ]}
         >
-          <Image
-            style={[styles.rup, smallScreen ? styles.smallerR : null]}
-            source={require('../../assets/images/rup.png')}
-          />
           upvote
         </Text>
       </View>
@@ -470,7 +482,9 @@ const localStyles = StyleSheet.create({
     shadowRadius: 0,
     shadowOpacity: 1,
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    paddingVertical: 5,
   },
   invSmall: {
     paddingHorizontal: 5,
@@ -494,8 +508,9 @@ const localStyles = StyleSheet.create({
     justifyContent: 'center'
   },
   postButtonText: {
-    lineHeight: 28,
-    backgroundColor: 'transparent'
+    alignSelf: 'flex-end',
+    backgroundColor: 'transparent',
+    paddingVertical: 3,
   },
   postButtonTextSmall: {
     fontSize: 13,

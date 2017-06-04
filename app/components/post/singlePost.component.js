@@ -7,7 +7,8 @@ import {
   RefreshControl,
   ListView,
   TouchableHighlight,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import { globalStyles } from '../../styles/global';
 import Comment from './comment.component';
@@ -15,6 +16,10 @@ import Post from './post.component';
 import CommentInput from './commentInput.component';
 
 let styles;
+let KBView = KeyboardAvoidingView;
+if (Platform.OS === 'android') {
+  KBView = View;
+}
 
 class SinglePostComments extends Component {
   constructor(props) {
@@ -196,7 +201,7 @@ class SinglePostComments extends Component {
         dataSource={this.dataSource}
         renderRow={this.renderRow}
         keyboardShouldPersistTaps={'always'}
-        keyboardDismissMode={'on-drag'}
+        // keyboardDismissMode={'on-drag'}
         automaticallyAdjustContentInsets={false}
         // contentInset={{ bottom: offset }}
         // onEndReached={!this.longFormat ? this.loadMoreComments : null}
@@ -233,10 +238,10 @@ class SinglePostComments extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView
+      <KBView
         behavior={'padding'}
-        style={{ flex: 1, position: 'relative' }}
-        keyboardVerticalOffset={59}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={59 + 24}
       >
         <View style={{ flex: 1 }}>
           {this.renderComments()}
@@ -248,7 +253,7 @@ class SinglePostComments extends Component {
             onFocus={this.shouldScrollToBottom}
           />
         </View>
-      </KeyboardAvoidingView>
+      </KBView>
     );
   }
 }

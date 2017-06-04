@@ -5,14 +5,21 @@ import {
   ActionSheetIOS,
   TouchableHighlight,
   Text,
-  Image
+  Image,
+  Platform
 } from 'react-native';
+import RNBottomSheet from 'react-native-bottom-sheet';
 // import * as Progress from 'react-native-progress';
 import moment from 'moment';
 import UserName from '../userNameSmall.component';
 import { globalStyles } from '../../styles/global';
 import { numbers } from '../../utils';
 
+let ActionSheet = ActionSheetIOS;
+if (Platform.OS === 'android') {
+  ActionSheet = RNBottomSheet;
+  ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
+}
 let styles;
 
 class PostInfo extends Component {
@@ -127,7 +134,7 @@ class PostInfo extends Component {
 
   showActionSheet() {
     if (this.myPost) {
-      ActionSheetIOS.showActionSheetWithOptions({
+      ActionSheet.showActionSheetWithOptions({
         options: this.menu.buttons,
         cancelButtonIndex: this.menu.cancelIndex,
         destructiveButtonIndex: this.menu.destructiveIndex,

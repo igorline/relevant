@@ -9,8 +9,9 @@ import {
   TouchableWithoutFeedback,
   ListView,
   AlertIOS,
+  Platform
 } from 'react-native';
-
+import Prompt from 'react-native-prompt';
 import { globalStyles, fullWidth } from '../../styles/global';
 
 let styles;
@@ -58,6 +59,15 @@ class Auth extends Component {
         email: this.props.admin.currentInvite.email
       }, 'auth');
     }
+
+    // Android
+    if (Platform.OS === 'android') {
+      this.promptTitle = 'Enter invitation code';
+      this.setState({ promptVisible: true });
+      return null;
+    }
+
+    // IOS
     AlertIOS.prompt(
       'Enter invitiation code',
       'Relevant is an invitation-only community',
@@ -180,7 +190,7 @@ class Auth extends Component {
           source={require('../../assets/images/intro3.jpg')}
         />
       </View>
-    )
+    );
 
     return (
       <View
@@ -219,6 +229,30 @@ class Auth extends Component {
             </Text>
           </TouchableHighlight>
         </View>
+
+        <Prompt
+          title={this.promptTitle || ''}
+          // placeholder=""
+          // defaultValue="Hello"
+          visible={this.state.promptVisible}
+          onCancel={() => this.setState({ promptVisible: false })}
+          onSubmit={code => {
+            this.props.actions.checkInviteCode(code)
+            .then(invite => {
+              if (invite) {
+                this.props.actions.push({
+                  key: 'signup',
+                  title: 'Signup',
+                  showBackButton: true,
+                  back: true,
+                  email: invite.email,
+                  code: invite.code
+                }, 'auth');
+              }
+              this.setState({ promptVisible: false });
+            });
+          }}
+        />
       </View>
     );
   }

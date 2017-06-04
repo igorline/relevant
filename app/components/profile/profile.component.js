@@ -166,7 +166,7 @@ class ProfileComponent extends Component {
           />
           <Text
             // onPress={() => this.toggleTooltip()}
-            style={[styles.profileBig, styles.bebas, { color: darkGrey }]}
+            style={[styles.profileBig, styles.bebas, styles.darkGrey]}
           >
             {numbers.abbreviateNumber(relevance)}
             {' '}

@@ -8,6 +8,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
+  Platform,
 } from 'react-native';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles, fullHeight } from '../../styles/global';
@@ -192,13 +193,14 @@ class SignUp extends Component {
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
-        style={{ height: fullHeight - 60 }}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0 }
       >
-        <ScrollView
-          keyboardShouldPersistTaps={'always'}
-          keyboardDismissMode={'interactive'}
-          scrollEnabled={false}
-          contentContainerStyle={styles.fieldsParent}
+        <View style={{ flex: 1, margin: 20, marginTop: 15 }}
+          // keyboardShouldPersistTaps={'always'}
+          // keyboardDismissMode={'interactive'}
+          // scrollEnabled={false}
+          // contentContainerStyle={styles.fieldsParent}
         >
 
           <View style={styles.fieldsInner}>
@@ -260,7 +262,6 @@ class SignUp extends Component {
                 autoCapitalize={'none'}
                 secureTextEntry
                 keyboardType={'default'}
-                clearTextOnFocus={false}
                 placeholder="password"
                 onChangeText={password => this.setState({ password })}
                 value={this.state.password}
@@ -303,7 +304,7 @@ class SignUp extends Component {
             <Text style={styles.largeButtonText}>next</Text>
           </TouchableHighlight>
 
-        </ScrollView>
+        </View>
       </KeyboardAvoidingView>
     );
           // <TouchableHighlight

@@ -16,6 +16,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Analytics from 'react-native-firebase-analytics';
 import * as NavigationExperimental from 'react-navigation';
+import RNBottomSheet from 'react-native-bottom-sheet';
+import Prompt from 'react-native-prompt';
 
 import Auth from '../components/auth/auth.container';
 import CreatePostContainer from '../components/createPost/createPost.container';
@@ -40,8 +42,16 @@ import { pickerOptions } from '../utils/pickerOptions';
 import Card from './../components/nav/card.component';
 import IrrelevantAnimation from '../components/animations/irrelevantAnimation.component';
 import Tooltip from '../components/tooltip/tooltip.component';
+import { fullWidth, fullHeight } from '../styles/global';
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
+
+let ActionSheet = ActionSheetIOS;
+
+if (Platform.OS === 'android') {
+  ActionSheet = RNBottomSheet;
+  ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
+}
 
 const {
   Transitioner: NavigationTransitioner,
@@ -186,8 +196,16 @@ class Application extends Component {
   }
 
   changeName() {
-    console.log('change name');
     let user = this.props.auth.user;
+
+    // ANDROID
+    if (Platform.OS === 'android') {
+      this.promptTitle = 'Enter new name';
+      this.setState({ promptVisible: true });
+      return;
+    }
+
+    // IOS
     AlertIOS.prompt(
       'Enter new name',
       user.name,
@@ -238,7 +256,7 @@ class Application extends Component {
   }
 
   showActionSheet() {
-    ActionSheetIOS.showActionSheetWithOptions({
+    ActionSheet.showActionSheetWithOptions({
       options: [
         'Change display name',
         'Add new photo',
@@ -322,31 +340,31 @@ class Application extends Component {
     let component = props.scene.route.component;
     let createPost;
 
-    if (Platform.OS === 'ios') {
+    // if (Platform.OS === 'ios') {
       createPost = (
         <KeyboardAvoidingView
           behavior={'padding'}
           style={{
             flex: 1,
-            // backgroundColor: 'red'
           }}
+          keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0 }
         >
           <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
         </KeyboardAvoidingView>
       );
-    } else {
-      createPost = (
-        <View
-          behavior={'padding'}
-          style={{
-            flex: 1,
-            // backgroundColor: 'red'
-          }}
-        >
-          <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
-        </View>
-      );
-    }
+    // } else {
+    //   createPost = (
+    //     <View
+    //       behavior={'padding'}
+    //       style={{
+    //         flex: 1,
+    //         // backgroundColor: 'red'
+    //       }}
+    //     >
+    //       <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
+    //     </View>
+    //   );
+    // }
 
     switch (component) {
       case 'auth':
@@ -411,6 +429,22 @@ class Application extends Component {
         <InvestAnimation />
         <HeartAnimation />
         <IrrelevantAnimation />
+
+        <Prompt
+          title={this.promptTitle || ''}
+          // placeholder=""
+          // defaultValue="Hello"
+          visible={this.state.promptVisible}
+          onCancel={() => this.setState({ promptVisible: false })}
+          onSubmit={newName => {
+            this.props.auth.user.name = newName;
+            this.props.actions.updateUser(this.props.auth.user);
+            this.setState({
+              promptVisible: false,
+              newName
+            });
+          }}
+        />
       </View>
     );
   }

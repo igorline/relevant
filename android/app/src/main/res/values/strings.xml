@@ -1,6 +1,7 @@
 <resources>
 
 
+
     <string name="app_name">Hello App Display Name</string>
     <string name="title_activity_share">Relevant</string>
 </resources>

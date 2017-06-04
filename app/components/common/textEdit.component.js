@@ -51,7 +51,7 @@ class TextEdit extends Component {
         // }}
         onContentSizeChange={this.props.onContentSizeChange}
       >
-        <TextBody showAllMentions>{this.state.text}</TextBody>
+        <TextBody style={{ flex: 1 }} showAllMentions>{this.state.text}</TextBody>
       </TextInput>
 
       <View style={styles.editingCommentButtons}>

@@ -7,7 +7,8 @@ import {
   AlertIOS,
   StyleSheet,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles } from '../../styles/global';
@@ -24,6 +25,10 @@ class Forgot extends Component {
       username: null,
       sendingEmail: false
     };
+  }
+
+  componentDidMount() {
+    this.userInput.focus();
   }
 
   componentWillUnmount() {
@@ -67,6 +72,7 @@ class Forgot extends Component {
       <KeyboardAvoidingView
         behavior={'padding'}
         style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0 }
       >
         <ScrollView
           keyboardShouldPersistTaps={'always'}

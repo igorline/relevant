@@ -8,11 +8,21 @@ import {
   Animated,
   ActionSheetIOS,
   StatusBar,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from 'react-native';
 import Search from './search.component';
 import { globalStyles, fullWidth } from '../../styles/global';
 import Stats from '../post/stats.component';
+
+import RNBottomSheet from 'react-native-bottom-sheet';
+
+let ActionSheet = ActionSheetIOS;
+
+if (Platform.OS === 'android') {
+  ActionSheet = RNBottomSheet;
+  ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
+}
 
 let styles;
 
@@ -30,7 +40,7 @@ class CardHeader extends Component {
   }
 
   showActionSheet(id) {
-    ActionSheetIOS.showActionSheetWithOptions({
+    ActionSheet.showActionSheetWithOptions({
       options: ['Block User', 'Cancel'],
       cancelButtonIndex: 1,
       destructiveIndex: 0,

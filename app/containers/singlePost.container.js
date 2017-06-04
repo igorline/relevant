@@ -86,20 +86,12 @@ class SinglePostContainer extends Component {
       <View
         style={{ flex: 1 }}
       >
-        <View
-          style={{
-            flex: 1,
-            position: 'relative',
-            backgroundColor: 'white'
-          }}
-        >
-          {dataEl}
-          <CustomSpinnerRelative
-            visible={(!this.postData) &&
-              !this.props.error}
-          />
-          <ErrorComponent parent={'singlepost'} reloadFunction={this.reload} />
-        </View>
+        {dataEl}
+        <CustomSpinnerRelative
+          visible={(!this.postData) &&
+            !this.props.error}
+        />
+        <ErrorComponent parent={'singlepost'} reloadFunction={this.reload} />
       </View>
     );
   }
