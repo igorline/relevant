@@ -32,7 +32,7 @@ class DiscoverUser extends Component {
     let stats = (<Stats
       type={'percent'}
       entity={statsUser}
-      renderLeft={this.props.topic ? this.props.topic + '  ' : null}
+      renderLeft={this.props.topic ? <Text style={[styles.bebas, styles.font17]}>{this.props.topic} </Text> : null}
     />);
     let right = this.props.renderRight ? this.props.renderRight() : stats;
 

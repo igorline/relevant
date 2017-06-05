@@ -6,7 +6,8 @@ import {
   TextInput,
   Image,
   AlertIOS,
-  TouchableHighlight
+  TouchableHighlight,
+  Platform
 } from 'react-native';
 import { globalStyles, fullHeight, greyText } from '../../styles/global';
 import UserSearchComponent from '../createPost/userSearch.component';
@@ -62,7 +63,13 @@ class CommentInput extends Component {
       if (!success) {
         this.setState({ comment, inputHeight: 50 });
         this.textInput.focus();
+        return;
       }
+      this.props.shouldScrollToBottom('new');
+      // console.log('scroll to end');
+      // setTimeout(() => 
+      // this.props.scrollView.scrollToEnd()
+      // , 100);
     });
   }
 
@@ -120,7 +127,7 @@ class CommentInput extends Component {
         }}
         style={[
           styles.commentInputParent,
-          { height: Math.min(this.state.inputHeight, 120), backgroundColor: 'pink' }
+          { height: Math.min(this.state.inputHeight, 120) }
         ]}
       >
         {this.renderUserSuggestions()}
@@ -128,16 +135,20 @@ class CommentInput extends Component {
         <TextInput
           ref={(c) => { this.textInput = c; }}
           underlineColorAndroid={'transparent'}
+          textAlignVertical={'top'}
           style={[
             styles.commentInput,
             styles.font15,
             {
               flex: 1,
-              lineHeight: 20,
-              paddingTop: 10,
-              height: 'auto',
-              maxHeight: 120,
-              minHeight: 50,
+              lineHeight: 15,
+              paddingVertical: Platform.OS === 'ios' ? 10 : 15,
+              // height: 'auto',
+              // maxHeight: 120,
+              // minHeight: 50,
+              flexDirection: 'row',
+              alignItems: 'center',
+              height: Math.min(this.state.inputHeight, 120),
             }
           ]}
           placeholder="Enter comment..."
@@ -149,7 +160,7 @@ class CommentInput extends Component {
           }}
           returnKeyType="default"
           onFocus={this.props.onFocus}
-          onContentSizeChange={(event) => {
+          onChange={(event) => {
             let h = event.nativeEvent.contentSize.height;
             this.setState({
               inputHeight: Math.max(50, h)
