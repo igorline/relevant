@@ -122,7 +122,6 @@ exports.update = (req, res) => {
   })
   .then(() =>
     Comment.findOne({ _id: comment._id })
-    .populate('user', '_id image name relevance balance')
   )
   .then((populatedComment) => {
     res.json(200, populatedComment);

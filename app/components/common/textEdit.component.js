@@ -4,7 +4,8 @@ import {
   Text,
   View,
   TextInput,
-  TouchableHighlight
+  TouchableHighlight,
+  Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, blue, greyText } from '../../styles/global';
@@ -16,7 +17,7 @@ class TextEdit extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      height: 0
+      height: 50
     };
   }
 
@@ -29,6 +30,10 @@ class TextEdit extends Component {
   }
 
   render() {
+    let buttonAdjust = 0;
+    if (Platform.OS === 'android') {
+      buttonAdjust = 80;
+    }
     return (<View style={{ flex: 1 }}>
       <TextInput
         multiline
@@ -38,12 +43,23 @@ class TextEdit extends Component {
         placeholderTextColor={greyText}
         ref={c => this.textInput = c}
         style={[
-          { height: 'auto', maxHeight: 120, minHeight: 50 },
+          {
+            height: Math.min(this.state.height, 120) + buttonAdjust,
+            maxHeight: 120 + buttonAdjust,
+            minHeight: 50,
+            // backgroundColor: 'pink',
+            paddingBottom: buttonAdjust,
+          },
           this.props.style
         ]}
+        textAlignVertical={'top'}
         onFocus={this.props.onFocus}
         onBlur={this.props.onBlur}
-        onChange={(evt) => this.setState({ text: evt.nativeEvent.text })}
+        onChange={(evt) => this.setState({
+          height: Math.max(evt.nativeEvent.contentSize.height, 50),
+          text: evt.nativeEvent.text
+        })}
+        // onLayout={(evt) => this.setState({ height: evt.nativeEvent.contentSize.height})}
         // onChangeText={text => {
         //   this.text = text;
         //   clearTimeout(this.textTimeout);
@@ -54,7 +70,7 @@ class TextEdit extends Component {
         <TextBody style={{ flex: 1 }} showAllMentions>{this.state.text}</TextBody>
       </TextInput>
 
-      <View style={styles.editingCommentButtons}>
+      <View style={[ styles.editingCommentButtons, { marginTop: -1 * buttonAdjust }]}>
 
         <TouchableHighlight
           underlayColor={'transparent'}

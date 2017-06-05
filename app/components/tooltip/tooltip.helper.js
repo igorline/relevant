@@ -34,23 +34,24 @@ exports.data.relevance = {
 exports.text.relevance = function (props) {
   if (!props.auth.user) return null;
   return (
-    <Text style={props.style}>
-      This is your relevance:{' '}
-      <Text style={[styles.bebas]}>
-        <View style={[styles.r, { width: 15, height: 15, top: 1 }]}>
-          <Image
-            resizeMode={'contain'}
-            style={[styles.r, { width: 15, height: 15, top: 1 }]}
-            source={require('../../assets/images/r.png')}
-          />
-        </View>
+    <View>
+      <Text style={[styles.bebas, props.style]}>
+        This is your relevance:{' '}
+
         {numbers.abbreviateNumber(props.auth.user.relevance)}
       </Text>
-      {'\n\n'}
-      You earn relevance when others upvote your posts
-      {'\n\n'}
-      The more relevant you are, the more authority you have when upvoting or downvoting
-    </Text>
+      <Image
+        resizeMode={'contain'}
+        style={[styles.r, { width: 15, height: 15, top: 1 }]}
+        source={require('../../assets/images/r.png')}
+      />
+      <Text style={[styles.bebas, props.style]}>
+        {'\n\n'}
+        You earn relevance when others upvote your posts
+        {'\n\n'}
+        The more relevant you are, the more authority you have when upvoting or downvoting
+      </Text>
+    </View>
   );
 };
 
@@ -65,21 +66,21 @@ exports.data.coin = {
 exports.text.coin = function (props) {
   if (!props.auth.user) return null;
   return (
-    <Text style={props.style}>
-      These are your coins:{' '}
-      <Text style={[styles.bebas]}>
-        <View style={[styles.r, { width: 15, height: 15, top: 1 }]}>
-          <Image
-            resizeMode={'contain'}
-            style={[styles.r, { width: 15, height: 15, top: 1 }]}
-            source={require('../../assets/images/relevantcoin.png')}
-          />
-        </View>
-        {numbers.abbreviateNumber(props.auth.user.balance)}
+    <View>
+      <Text style={[styles.bebas, props.style]}>
+        These are your coins:{' '}
       </Text>
-      {'\n\n'}
-      You can use them to upvote posts. If you run out, don't worry, you will get more tomorrow.
+      <Image
+        resizeMode={'contain'}
+        style={[styles.r, { width: 15, height: 15, top: 1 }]}
+        source={require('../../assets/images/relevantcoin.png')}
+      />
+      <Text style={props.style}>
+        {numbers.abbreviateNumber(props.auth.user.balance)}
+        {'\n\n'}
+        You can use them to upvote posts. If you run out, don't worry, you will get more tomorrow.
     </Text>
+    </View>
   );
 };
 

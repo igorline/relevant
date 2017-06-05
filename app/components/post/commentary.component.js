@@ -125,7 +125,8 @@ export default class Commentary extends Component {
                 post={post}
               />
               <PostBody
-                short {...this.props}
+                short
+                {...this.props}
                 post={post}
                 editing={false}
               />

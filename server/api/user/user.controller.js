@@ -184,10 +184,6 @@ exports.sendConfirmationCode = async (req, res) => {
 exports.onboarding = (req, res) => {
   let user = req.user._id;
   let step = req.params.step;
-  if (typeof step !== 'number') {
-    console.log('old version ', user);
-    step = 0;
-  }
   User.findOneAndUpdate(
     { _id: user },
     { onboarding: step },

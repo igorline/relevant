@@ -4,7 +4,7 @@ import * as errorActions from './error.actions';
 
 let AlertIOS = utils.fetchUtils.Alert();
 let rn = {};
-let PushNotificationIOS;
+let PushNotification;
 let userDefaults;
 
 utils.fetchUtils.env();
@@ -15,10 +15,33 @@ if (process.env.WEB != 'true') {
   rn = require('react-native');
 
   Analytics = require('react-native-firebase-analytics');
-  PushNotificationIOS = rn.PushNotificationIOS;
+  // PushNotificationIOS = rn.PushNotificationIOS;
   // userDefaults = require('react-native-user-defaults').default;
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
   Platform = require('react-native').Platform;
+
+  PushNotification = require('react-native-push-notification');
+  // PushNotification.configure({
+  //   // (optional) Called when Token is generated (iOS and Android)
+  //   onRegister: function(token) {
+  //       console.log( 'TOKEN:', token );
+  //   },
+
+  //   // (required) Called when a remote or local notification is opened or received
+  //   onNotification: function(notification) {
+  //       console.log( 'NOTIFICATION:', notification );
+  //   },
+  //   // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
+  //   senderID: "271994332492",
+  //   // IOS ONLY (optional): default: all - Permissions to register.
+  //   permissions: {
+  //     alert: true,
+  //     badge: true,
+  //     sound: true
+  //   },
+  //   popInitialNotification: true,
+  //   requestPermissions: true,
+  // });
 }
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
@@ -320,9 +343,9 @@ export function getUser(callback) {
 
         dispatch(setSelectedUserData(responseJSON));
         if (process.env.WEB != 'true') {
-          if (Platform.OS === 'ios') {
+          // if (Platform.OS === 'ios') {
             dispatch(addDeviceToken(responseJSON, token));
-          }
+          // }
         }
         dispatch(errorActions.setError('universal', false));
         if (callback) callback(responseJSON);
@@ -378,70 +401,86 @@ export function updateUser(user, preventLocalUpdate) {
     });
 }
 
-export function addDeviceToken(user, authToken) {
+export function addDeviceToken(user) {
+  console.log('add device token');
   return (dispatch) => {
-    PushNotificationIOS.checkPermissions((results) => {
-      console.log(results, 'permissions ios');
-      if (!results.alert) {
-        console.log('requestPermissions');
-        PushNotificationIOS.requestPermissions();
-      } else {
-        userDefaults.get('deviceToken', APP_GROUP_ID)
-        .then(storedDeviceToken => {
-          if (storedDeviceToken) {
-            dispatch(setDeviceToken(storedDeviceToken));
-            let newUser = user;
-            if (user.deviceTokens) {
-              if (user.deviceTokens.indexOf(storedDeviceToken) < 0) {
-                newUser.deviceTokens.push(storedDeviceToken);
-                console.log('adding devicetoken to user here', storedDeviceToken);
-                dispatch(updateUser(newUser));
-              } else {
-                console.log(user.deviceTokens);
-                console.log('devicetoken already present in user');
-              }
-            } else {
-              newUser.deviceTokens = [storedDeviceToken];
-              console.log('adding devicetoken to user object', storedDeviceToken);
-              dispatch(updateUser(newUser));
-            }
-          } else {
-            console.log('no userdefault devicetoken');
-          }
-        })
-        .catch(err => {
-          if (err) console.log('get devicetoken error', err);
-        });
-      }
+    // PushNotification.checkPermissions((results) => {
+    //   console.log(results, 'permissions ios');
+    //   if (!results.alert) {
+    //     console.log('requestPermissions');
+    //     PushNotification.requestPermissions();
+    //   } else {
+    //     userDefaults.get('deviceToken', APP_GROUP_ID)
+    //     .then(storedDeviceToken => {
+    //       if (storedDeviceToken) {
+    //         dispatch(setDeviceToken(storedDeviceToken));
+    //         let newUser = user;
+    //         if (user.deviceTokens) {
+    //           if (user.deviceTokens.indexOf(storedDeviceToken) < 0) {
+    //             newUser.deviceTokens.push(storedDeviceToken);
+    //             console.log('adding devicetoken to user here', storedDeviceToken);
+    //             dispatch(updateUser(newUser));
+    //           } else {
+    //             console.log(user.deviceTokens);
+    //             console.log('devicetoken already present in user');
+    //           }
+    //         } else {
+    //           newUser.deviceTokens = [storedDeviceToken];
+    //           console.log('adding devicetoken to user object', storedDeviceToken);
+    //           dispatch(updateUser(newUser));
+    //         }
+    //       } else {
+    //         console.log('no userdefault devicetoken');
+    //       }
+    //     })
+    //     .catch(err => {
+    //       if (err) console.log('get devicetoken error', err);
+    //     });
+    //   }
+    // });
+
+    PushNotification.configure({
+      // (optional) Called when Token is generated (iOS and Android)
+      onRegister: function(token) {
+          console.log( 'TOKEN:', token );
+      },
+
+      // (required) Called when a remote or local notification is opened or received
+      onNotification: function(notification) {
+          console.log( 'NOTIFICATION:', notification );
+      },
+      // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
+      senderID: '271994332492',
+      // IOS ONLY (optional): default: all - Permissions to register.
+      permissions: {
+        alert: true,
+        badge: true,
+        sound: true
+      },
+      popInitialNotification: true,
+      requestPermissions: true,
     });
 
-
-    PushNotificationIOS.addEventListener('register', (deviceToken) => {
-      console.log('PushNotificationIOS registration');
-      dispatch(setDeviceToken(deviceToken));
-      userDefaults.set('deviceToken', deviceToken, APP_GROUP_ID)
-      .then(() => {
-        console.log('saved devicetoken to userDefaults');
-      })
-      .catch(err => {
-        if (err) console.log('store devicetoken error', err);
-      });
+    PushNotification.onRegister = (deviceToken) => {
+      console.log(deviceToken);
+      let token = deviceToken.token;
+      userDefaults.set('deviceToken', token, APP_GROUP_ID)
       let newUser = user;
       if (user.deviceTokens) {
-        if (user.deviceTokens.indexOf(deviceToken) < 0) {
-          newUser.deviceTokens.push(deviceToken);
-          console.log('adding devicetoken to user object', deviceToken);
+        if (user.deviceTokens.indexOf(token) < 0) {
+          newUser.deviceTokens.push(token);
+          console.log('adding devicetoken to user here', token);
           dispatch(updateUser(newUser));
         } else {
           console.log(user.deviceTokens);
-          console.log('devicetoken already present in user object');
+          console.log('devicetoken already present in user');
         }
       } else {
-        newUser.deviceTokens = [deviceToken];
-        console.log('adding devicetoken to useroject', deviceToken);
+        newUser.deviceTokens = [token];
+        console.log('adding devicetoken to user object', token);
         dispatch(updateUser(newUser));
       }
-    });
+    };
   };
 }
 

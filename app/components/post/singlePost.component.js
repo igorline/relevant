@@ -16,10 +16,10 @@ import Post from './post.component';
 import CommentInput from './commentInput.component';
 
 let styles;
-let KBView = KeyboardAvoidingView;
-if (Platform.OS === 'android') {
-  KBView = View;
-}
+// let KBView = KeyboardAvoidingView;
+// if (Platform.OS === 'android') {
+//   KBView = View;
+// }
 
 class SinglePostComments extends Component {
   constructor(props) {
@@ -89,7 +89,6 @@ class SinglePostComments extends Component {
   }
 
   componentWillReceiveProps(next) {
-    // console.log('new comments dif?', next.comments.commentsById[this.id] !== this.props.comments.commentsById[this.id]);
     if (next.comments.commentsById[this.id] !== this.props.comments.commentsById[this.id]) {
       let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
 
@@ -118,7 +117,9 @@ class SinglePostComments extends Component {
   }
 
   toggleEditing(editing, num, animated) {
-    if (editing && num !== null) this.scrollToComment(num, animated);
+    if (editing && typeof num === 'number') {
+      this.scrollToComment(num, animated);
+    }
     // if (this.props.singlePostEditing) this.props.singlePostEditing(bool);
     this.setState({ editing });
   }
@@ -148,6 +149,7 @@ class SinglePostComments extends Component {
         parentEditing={this.toggleEditing}
         parentId={this.id}
         comment={rowData}
+        parentView={this.scrollView}
       />
     );
   }
@@ -194,6 +196,7 @@ class SinglePostComments extends Component {
 
     if (this.comments) {
       return (<ListView
+        ref={c => this.scrollView = c}
         enableEmptySections
         removeClippedSubviews={false}
         scrollEventThrottle={16}
@@ -206,9 +209,6 @@ class SinglePostComments extends Component {
         // contentInset={{ bottom: offset }}
         // onEndReached={!this.longFormat ? this.loadMoreComments : null}
         onEndReachedThreshold={100}
-        ref={(scrollView) => {
-          this.scrollView = scrollView;
-        }}
         onContentSizeChange={(width, height) => {
           this.listviewHeight = height;
           if (this.scrollOnResize) this.scrollToBottom();
@@ -220,6 +220,7 @@ class SinglePostComments extends Component {
           if (this.scrollOnLayout) this.scrollToBottom();
           this.scrollOnLayout = false;
         }}
+        overScrollMode={'always'}
         style={{ flex: 1 }}
         renderHeader={this.renderHeader}
         refreshControl={
@@ -237,23 +238,32 @@ class SinglePostComments extends Component {
   }
 
   render() {
+    let KBView = KeyboardAvoidingView;
+    if (this.input && Platform.OS === 'android') {
+      KBView = View;
+    }
     return (
-      <KBView
-        behavior={'padding'}
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={59 + 24}
-      >
-        <View style={{ flex: 1 }}>
+        <KBView
+          behavior={'padding'}
+          style={{ flex: 1 }}
+          keyboardVerticalOffset={59 + (Platform.OS === 'android' ? 24 : 0)}
+        >
           {this.renderComments()}
           <CommentInput
             ref={c => this.input = c}
             postId={this.id}
             editing={this.state.editing}
             {...this.props}
-            onFocus={this.shouldScrollToBottom}
+            scrollView={this.scrollView}
+            shouldScrollToBottom={this.shouldScrollToBottom}
+            onFocus={() => {
+              this.shouldScrollToBottom();
+              if (Platform.OS === 'android') {
+                this.scrollView ? this.scrollView.scrollToEnd() : null;
+              }
+            }}
           />
-        </View>
-      </KBView>
+        </KBView>
     );
   }
 }

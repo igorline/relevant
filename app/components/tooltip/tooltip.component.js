@@ -111,6 +111,7 @@ class Tooltip extends Component {
     //   this.props.actions.setOnboardingStep(0);
     // }
     if (index === this.step) {
+      console.log('updating onboarding step here');
       this.props.actions.setOnboardingStep(this.step + 1);
     }
   }

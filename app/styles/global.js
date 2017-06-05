@@ -182,11 +182,10 @@ const layout = StyleSheet.create({
   commentInput: {
     flex: 1,
     padding: 10,
-    paddingVertical: 15
   },
   commentSubmit: {
     flex: 0,
-    width: 85,
+    width: 75,
     justifyContent: 'center',
     alignItems: 'center',
   },

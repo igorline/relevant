@@ -5,12 +5,12 @@ import {
   View,
   Image,
   ActionSheetIOS,
-  AlertIOS,
   TouchableHighlight,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 import RNBottomSheet from 'react-native-bottom-sheet';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, darkGrey } from '../../styles/global';
 import TextEdit from '../common/textEdit.component';
 import UserName from '../userNameSmall.component';
 import { numbers, text as textUtil } from '../../utils';
@@ -71,11 +71,11 @@ class Comment extends Component {
     this.props.actions.updateComment(comment)
     .then((results) => {
       if (results) {
-        this.setState({ editing: false, editedText: null });
-        AlertIOS.alert('Comment updated');
+        this.setState({ editedText: null });
+        Alert.alert('Comment updated');
       } else {
         comment.text = originalText;
-        this.setState({ editing: true, editedText: text });
+        this.setState({ editing: true });
       }
     });
   }
@@ -107,9 +107,12 @@ class Comment extends Component {
   }
 
   scrollToComment(animated) {
+    this.setState({});
     this.singleComment.measure((fx, fy, width, height, px, py) => {
       let num = fy;
-      this.props.parentEditing(true, num, animated);
+      let scroll = true;
+      if (Platform.OS === 'android') scroll = false;
+      this.props.parentEditing(scroll, num, animated);
     });
   }
 
@@ -158,7 +161,7 @@ class Comment extends Component {
         toggleFunction={this.editComment}
         saveEditFunction={this.saveEdit}
         onFocus={() => this.scrollToComment(true)}
-        onContentSizeChange={(e) => {
+        onChange={(e) => {
           let h = e.nativeEvent.contentSize.height;
           if (h !== this.height) {
             this.height = h;
@@ -203,9 +206,13 @@ class Comment extends Component {
     return (
       <View
         ref={(c) => { this.singleComment = c; }}
-        style={[styles.commentContainer]}
+        onLayout={() => null}
+        style={[styles.commentContainer, { position: 'relative' }]}
+        // need this for measure to work on android
       >
-        <View style={styles.commentHeader}>
+        <View
+
+          style={styles.commentHeader}>
           <UserName
             repost={comment.repost}
             size={'small'}
@@ -247,6 +254,7 @@ const localStyles = StyleSheet.create({
   },
   commentBodyText: {
     // lineHeight: 20,
+    color: darkGrey,
     fontFamily: 'Georgia',
     fontSize: 30 / 2,
     lineHeight: 42 / 2,
