@@ -6,7 +6,7 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as animationActions from '../../actions/animation.actions';
-import { globalStyles, fullWidth } from '../../styles/global';
+import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 import Heart from './heart.component';
 
 let styles;
@@ -78,10 +78,10 @@ const localStyles = StyleSheet.create({
   heartsContainer: {
     position: 'absolute',
     bottom: 0,
-    left: (fullWidth / 5) * 3.5,
-    height: 20,
-    width: 40,
-    zIndex: 1000
+    top: 0,
+    left: 0,
+    height: fullHeight,
+    width: fullWidth,
   },
 });
 

@@ -38,7 +38,7 @@ export default function UserName(props) {
       <Image
         resizeMode={'contain'}
         source={require('../assets/images/reposted.png')}
-        style={{ width: 16, height: 14, marginRight: 3, marginBottom: 12 }}
+        style={{ width: 15, height: 15, marginRight: 3, marginBottom: 14 }}
       />
     );
   }

@@ -9,7 +9,8 @@ import {
   Linking,
   Animated,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
@@ -18,6 +19,7 @@ import Analytics from 'react-native-firebase-analytics';
 import * as NavigationExperimental from 'react-navigation';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import Prompt from 'react-native-prompt';
+import PushNotification from 'react-native-push-notification';
 
 import Auth from '../components/auth/auth.container';
 import CreatePostContainer from '../components/createPost/createPost.container';
@@ -86,8 +88,8 @@ class Application extends Component {
         header: false
       }, 0, 'home');
     });
+    PushNotification.setApplicationIconBadgeNumber(0);
     if (Platform.OS === 'ios') {
-      PushNotificationIOS.setApplicationIconBadgeNumber(0);
       Orientation.lockToPortrait();
     }
 
@@ -234,6 +236,7 @@ class Application extends Component {
             this.props.actions.updateUser(newUser);
             setTimeout(() => this.props.actions.getSelectedUser(newUser._id), 250);
           } else {
+            Alert.alert('Error uploading image');
             console.log('image error ', results);
           }
         });
@@ -426,9 +429,6 @@ class Application extends Component {
         }
         />
         <Tooltip />
-        <InvestAnimation />
-        <HeartAnimation />
-        <IrrelevantAnimation />
 
         <Prompt
           title={this.promptTitle || ''}
@@ -445,6 +445,11 @@ class Application extends Component {
             });
           }}
         />
+
+        <InvestAnimation />
+        <HeartAnimation />
+        <IrrelevantAnimation />
+
       </View>
     );
   }

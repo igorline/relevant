@@ -21,6 +21,8 @@ var Video = require('react-native-video').default;
 let styles;
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/);
 
+
+
 export default class UrlComponent extends Component {
 
   constructor(props, context) {
@@ -42,7 +44,9 @@ export default class UrlComponent extends Component {
   componentWillReceiveProps(next) {
     if (this.props.createPreview !== next.createPreview && next.postUrl) {
       this.createPreview(next.postUrl);
+      this.input.focus();
     }
+    // if (!next.postBody.length && !this.input.isFocused()) this.input.focus();
   }
 
   initTooltips(name) {
@@ -280,6 +284,7 @@ export default class UrlComponent extends Component {
               onChangeText={postBody => this.processInput(postBody, false)}
               onBlur={() => this.processInput(null, true)}
               returnKeyType={'default'}
+              onFocus={() => null }
               keyboardShouldPersistTaps={'never'}
               disableFullscreenUI
               textAlignVertical={'top'}

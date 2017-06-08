@@ -6,9 +6,18 @@ import {
   Text,
   TouchableHighlight,
   ActionSheetIOS,
+  Platform
 } from 'react-native';
 import { globalStyles } from '../../styles/global';
 import CustomSpinner from '../CustomSpinner.component';
+import RNBottomSheet from 'react-native-bottom-sheet';
+
+let ActionSheet = ActionSheetIOS;
+
+if (Platform.OS === 'android') {
+  ActionSheet = RNBottomSheet;
+  ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
+}
 
 let styles;
 
@@ -25,7 +34,7 @@ export default class UrlPreviewComponent extends Component {
 
   previewMenu() {
     if (this.props.edit || this.props.repost) return;
-    ActionSheetIOS.showActionSheetWithOptions({
+    ActionSheet.showActionSheetWithOptions({
       options: ['Remove Url', 'Cancel'],
       cancelButtonIndex: 1,
       destructiveButtonIndex: 0,

@@ -481,6 +481,7 @@ const localStyles = StyleSheet.create({
     shadowOffset: { width: 2, height: 2 },
     shadowRadius: 0,
     shadowOpacity: 1,
+    elevation: 3,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-end',
