@@ -3,7 +3,8 @@ import {
   StyleSheet,
   Text,
   InteractionManager,
-  View
+  View,
+  Platform
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -177,7 +178,6 @@ class DiscoverTabs extends Component {
           right: -10 }}
       >
         {'•'}
-        {/*count*/}
       </Text>
     );
   }
@@ -213,8 +213,7 @@ class DiscoverTabs extends Component {
           position: 'absolute',
           backgroundColor: 'white',
           width: fullWidth,
-          height: fullHeight - 108,
-          zIndex: 10000,
+          height: fullHeight - 108 - (Platform.OS === 'android' ? 12 : 0),
         }}
       >
         <Topics
@@ -228,12 +227,11 @@ class DiscoverTabs extends Component {
     }
 
     if (!this.loaded) {
-      return <CustomSpinner />
+      return <CustomSpinner />;
     }
 
     return (
       <View style={{ flex: 1 }}>
-        {topics}
         <ScrollableTabView
           ref={tabView => this.tabView = tabView}
           tabBarTextStyle={[styles.tabFont]}
@@ -258,6 +256,7 @@ class DiscoverTabs extends Component {
         >
           {tabs}
         </ScrollableTabView>
+        {topics}
       </View>
     );
   }
@@ -275,7 +274,6 @@ function mapStateToProps(state) {
   return {
     tags: state.tags,
     view: state.view,
-    // tabs: state.navigation.tabs,
     topics: state.navigation.showTopics,
     feedUnread: state.posts.feedUnread
   };

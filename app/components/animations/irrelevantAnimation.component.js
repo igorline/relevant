@@ -78,13 +78,12 @@ const localStyles = StyleSheet.create({
   heartsContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: 'red',
     position: 'absolute',
-    top: (fullHeight / 2) - 60,
-    left: (fullWidth / 2) - 60,
-    height: 120,
-    width: 120,
-    zIndex: 1000
+    bottom: 0,
+    top: 0,
+    left: 0,
+    height: fullHeight,
+    width: fullWidth,
   },
 });
 

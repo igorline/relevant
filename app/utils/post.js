@@ -198,7 +198,7 @@ export function generatePreview(link) {
 
 export function generatePreviewServer(link) {
   let responseUrl;
-  return fetch(process.env.API_SERVER + '/api/post/preview/generate?url=' + link, {
+  return fetch(process.env.API_SERVER + '/api/post/preview/generate?url=' + encodeURIComponent(link), {
     method: 'GET',
   })
   .then((response) => {

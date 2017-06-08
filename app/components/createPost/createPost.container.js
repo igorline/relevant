@@ -3,9 +3,9 @@ import {
   StyleSheet,
   Text,
   TouchableHighlight,
-  AlertIOS,
   Easing,
-  InteractionManager
+  InteractionManager,
+  Alert
 } from 'react-native';
 import Analytics from 'react-native-firebase-analytics';
 import { bindActionCreators } from 'redux';
@@ -83,7 +83,7 @@ class CreatePostContainer extends Component {
 
   next() {
     if (!this.skipUrl && this.props.createPost.postUrl && !this.props.createPost.urlPreview) {
-      AlertIOS.alert(
+      Alert.alert(
         'Url is still loading, please give it a few more seconds',
         null,
         [
@@ -137,9 +137,9 @@ class CreatePostContainer extends Component {
     this.props.actions.editPost(postBody, this.props.auth.token)
       .then((results) => {
         if (results.success) {
-          AlertIOS.alert('Post error please try again');
+          Alert.alert('Post error please try again');
         } else {
-          AlertIOS.alert('Success!');
+          Alert.alert('Success!');
           this.props.actions.clearCreatePost();
           this.props.navigator.resetRoutes('home');
           this.props.actions.setUserSearch([]);
@@ -183,7 +183,7 @@ class CreatePostContainer extends Component {
     this.image = null;
 
     if (!props.postCategory) {
-      AlertIOS.alert('Please add category');
+      Alert.alert('Please add category');
       return;
     }
 
@@ -195,9 +195,13 @@ class CreatePostContainer extends Component {
           this.image = results.url;
           this.uploadPost();
         } else {
-          AlertIOS.alert('Error uploading image, please try again');
+          Alert.alert('Error uploading image, please try again');
           this.setState({ creatingPost: false });
         }
+      })
+      .catch(err => {
+        Alert.alert('Error uploading image, please try again');
+        this.setState({ creatingPost: false });
       });
     } else {
       this.image = props.urlPreview && props.urlPreview.image ?
@@ -231,9 +235,9 @@ class CreatePostContainer extends Component {
       return this.props.actions.editPost(postBody, this.props.auth.token)
         .then((results) => {
           if (results.success) {
-            AlertIOS.alert('Post error please try again');
+            Alert.alert('Post error please try again');
           } else {
-            AlertIOS.alert('Success!');
+            Alert.alert('Success!');
             this.props.actions.clearCreatePost();
             this.props.actions.resetRoutes('createPost');
             this.props.navigator.resetRoutes('home');
@@ -244,7 +248,7 @@ class CreatePostContainer extends Component {
     this.props.actions.submitPost(postBody, this.props.auth.token)
       .then((results) => {
         if (!results) {
-          AlertIOS.alert('Post error please try again');
+          Alert.alert('Post error please try again');
           this.setState({ creatingPost: false });
         } else {
           if (this.props.close) this.props.close();

@@ -142,7 +142,7 @@ class CommentInput extends Component {
             {
               flex: 1,
               lineHeight: 15,
-              paddingVertical: Platform.OS === 'ios' ? 10 : 15,
+              paddingTop: Platform.OS === 'ios' ? 10 : 15,
               // height: 'auto',
               // maxHeight: 120,
               // minHeight: 50,

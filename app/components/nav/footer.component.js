@@ -8,6 +8,7 @@ import {
   PushNotificationIOS,
   Platform
 } from 'react-native';
+import PushNotification from 'react-native-push-notification';
 import PropTypes from 'prop-types';
 import { globalStyles, fullWidth, blue } from '../../styles/global';
 import Percent from '../percent.component';
@@ -24,9 +25,7 @@ export default class Footer extends Component {
     if (typeof count === 'number') {
       this.totalBadge += count;
     }
-    if (Platform.OS === 'ios') {
-      PushNotificationIOS.setApplicationIconBadgeNumber(this.totalBadge);
-    }
+    PushNotification.setApplicationIconBadgeNumber(this.totalBadge);
 
     if (!count) return null;
     return (<View pointerEvents={'none'} style={styles.notifCount}>
@@ -141,7 +140,8 @@ const localStyles = StyleSheet.create({
     // marginTop: -2,
   },
   icon: {
-    fontSize: 20
+    fontSize: 20,
+    color: 'black'
   },
   activeIcon: {
   },
@@ -152,7 +152,8 @@ const localStyles = StyleSheet.create({
   footerText: {
     paddingTop: 0,
     fontSize: 11,
-    opacity: 0.7
+    opacity: 0.7,
+    color: 'grey'
   },
   footerTextActive: {
     color: blue,
