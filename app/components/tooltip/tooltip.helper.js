@@ -3,7 +3,8 @@ import {
   Text,
   Image,
   View,
-  StyleSheet
+  StyleSheet,
+  Platform
 } from 'react-native';
 import { globalStyles, fullWidth } from '../../styles/global';
 import { numbers } from '../../utils';
@@ -34,23 +35,28 @@ exports.data.relevance = {
 exports.text.relevance = function (props) {
   if (!props.auth.user) return null;
   return (
-    <View>
-      <Text style={[styles.bebas, props.style]}>
+    <View style={styles.textRow}>
+      <Text style={props.style}>
         This is your relevance:{' '}
-
-        {numbers.abbreviateNumber(props.auth.user.relevance)}
       </Text>
       <Image
         resizeMode={'contain'}
-        style={[styles.r, { width: 15, height: 15, top: 1 }]}
+        style={[styles.r, { width: 14.5, height: 18 }]}
         source={require('../../assets/images/r.png')}
       />
-      <Text style={[styles.bebas, props.style]}>
-        {'\n\n'}
-        You earn relevance when others upvote your posts
-        {'\n\n'}
-        The more relevant you are, the more authority you have when upvoting or downvoting
+      <Text
+        style={[styles.bebas,
+          props.style, Platform.OS === 'android' ? { marginBottom: 0 } : null
+        ]}
+      >
+        {numbers.abbreviateNumber(props.auth.user.relevance)}
       </Text>
+    <Text style={[props.style]}>
+      {'\n\n'}
+      You earn relevance when others upvote your posts
+      {'\n\n'}
+      The more relevant you are, the more authority you have when upvoting or downvoting
+    </Text>
     </View>
   );
 };
@@ -66,17 +72,23 @@ exports.data.coin = {
 exports.text.coin = function (props) {
   if (!props.auth.user) return null;
   return (
-    <View>
-      <Text style={[styles.bebas, props.style]}>
+    <View style={styles.textRow}>
+      <Text style={props.style}>
         These are your coins:{' '}
       </Text>
       <Image
         resizeMode={'contain'}
-        style={[styles.r, { width: 15, height: 15, top: 1 }]}
+        style={[styles.r, { width: 15, height: 18, marginRight: 1 }]}
         source={require('../../assets/images/relevantcoin.png')}
       />
-      <Text style={props.style}>
+      <Text
+        style={[styles.bebas,
+          props.style, Platform.OS === 'android' ? { marginBottom: 0 } : null
+        ]}
+      >
         {numbers.abbreviateNumber(props.auth.user.balance)}
+      </Text>
+      <Text style={props.style}>
         {'\n\n'}
         You can use them to upvote posts. If you run out, don't worry, you will get more tomorrow.
     </Text>
@@ -196,6 +208,9 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     paddingRight: 15,
     // alignItems: 'center'
+  },
+  tooltipText: {
+    fontSize: 15,
   },
   textP: {
     fontSize: 12,

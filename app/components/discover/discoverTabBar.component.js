@@ -40,6 +40,7 @@ const DefaultTabBar = React.createClass({
     // const textColor = isTabActive ? activeTextColor : inactiveTextColor;
     const fontWeight = isTabActive ? 'bold' : 'normal';
 
+
     return (<TouchableOpacity
       style={styles.flexOne}
       key={name}
@@ -88,7 +89,6 @@ const DefaultTabBar = React.createClass({
             inputRange: [0, 1],
             outputRange: ['rgba(35, 31, 32, 1)', 'rgba(77, 78, 255, 1)']
           });
-
           const isTabActive = this.props.activeTab === page;
           const renderTab = this.props.renderTab || this.renderTab;
           return renderTab(name, page, isTabActive, this.props.goToPage, textColor);

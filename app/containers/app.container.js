@@ -10,7 +10,9 @@ import {
   Animated,
   KeyboardAvoidingView,
   Platform,
-  Alert
+  Alert,
+  StatusBar,
+  Dimensions
 } from 'react-native';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
@@ -67,6 +69,7 @@ class Application extends Component {
     super(props, context);
     this.state = {
       newName: null,
+      height: fullHeight,
     };
     this.logoutRedirect = this.logoutRedirect.bind(this);
     this.backgroundTime = 0;
@@ -89,11 +92,17 @@ class Application extends Component {
       }, 0, 'home');
     });
     PushNotification.setApplicationIconBadgeNumber(0);
-    if (Platform.OS === 'ios') {
-      Orientation.lockToPortrait();
-    }
 
     Linking.addEventListener('url', this.handleOpenURL);
+    this.statusBarHeight = StatusBar.currentHeight;
+
+    this.fullHeight = fullHeight;
+
+    Orientation.lockToPortrait();
+    Orientation.addOrientationListener(() => {
+      // fullWidth = Dimensions.get('window').width;
+      this.setState({ height: Dimensions.get('window').height });
+    });
   }
 
   componentWillReceiveProps(next) {
@@ -406,9 +415,17 @@ class Application extends Component {
   render() {
     let scene = this.props.navigation;
 
+    // handle hidden bar in android here
+    let route = scene.routes[scene.index];
+    let statusBarHeight = StatusBar.currentHeight;
+    if (route.component === 'articleView') {
+      statusBarHeight = 0;
+    }
+    let height = Platform.OS === 'android' ? this.state.height - statusBarHeight :  this.state.height;
+
     return (
       <View
-        style={{ flex: 1, backgroundColor: 'black' }}
+        style={{ height, backgroundColor: 'black' }}
       >
         <NavigationTransitioner
           style={{ backgroundColor: 'black' }}

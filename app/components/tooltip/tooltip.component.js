@@ -5,11 +5,12 @@ import {
   View,
   StyleSheet,
   Easing,
-  TouchableHighlight
+  TouchableHighlight,
+  Platform
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { globalStyles, blue, fullHeight, fullWidth } from '../../styles/global';
+import { globalStyles, blue, darkGrey, fullHeight, fullWidth } from '../../styles/global';
 import * as authActions from '../../actions/auth.actions';
 import * as navigationActions from '../../actions/navigation.actions';
 import * as helper from './tooltip.helper';
@@ -54,8 +55,6 @@ class Tooltip extends Component {
       clearTimeout(this.timeout);
       this.timeout = setTimeout(() => nextT.toggle(), 300);
     }
-
-
 
     if (next.tooltip.showing.name !== this.props.tooltip.showing.name) {
       let tooltip = next.tooltip.showing;
@@ -106,13 +105,19 @@ class Tooltip extends Component {
     let current = this.props.tooltip.showing.name;
 
     let index = this.props.tooltip.onboarding.findIndex(t => t === current);
+
     this.props.actions.showTooltip(null);
+
     // if (this.step >= 3) {
     //   this.props.actions.setOnboardingStep(0);
     // }
     if (index === this.step) {
-      console.log('updating onboarding step here');
-      this.props.actions.setOnboardingStep(this.step + 1);
+      let inc = 1;
+      if (this.props.tooltip.onboarding[index + 1] === 'shareTip' && Platform.OS === 'android') {
+        inc = 2;
+      }
+      this.step += inc;
+      this.props.actions.setOnboardingStep(this.step);
     }
   }
 
@@ -133,12 +138,12 @@ class Tooltip extends Component {
       ];
       style = {
         ...style,
-        top: parent.y + parent.h + tooltip.verticalOffset - this.state.height / 2,
+        top: -10 + parent.y + parent.h + tooltip.verticalOffset - this.state.height / 2,
         transform
       };
       arrowStyle = [
         ...arrowStyle,
-        { top: -4 },
+        { top: 4 },
       ];
     }
 
@@ -148,13 +153,13 @@ class Tooltip extends Component {
       ];
       style = {
         ...style,
-        top: parent.y - this.state.height / 2 - tooltip.verticalOffset,
+        top: 10 + parent.y - this.state.height / 2 - tooltip.verticalOffset,
         transform
       };
       arrowStyle = [
         ...arrowStyle,
         styles.arrowBottom,
-        { bottom: -4 }
+        { bottom: 5 }
       ];
     }
 
@@ -184,8 +189,6 @@ class Tooltip extends Component {
     }
 
     if (tooltip.horizontal === 'left') {
-      // transform = [...transform,
-        // { translateX: -this.state.width / 2 }];
       style = {
         ...style,
         left: parent.x + tooltip.horizontalOffset,
@@ -198,8 +201,6 @@ class Tooltip extends Component {
     }
 
     if (tooltip.horizontal === 'center') {
-      // transform = [...transform,
-        // { translateX: -this.state.width / 2 }];
       style = {
         ...style,
         width: tooltip.width,
@@ -222,30 +223,31 @@ class Tooltip extends Component {
         <Animated.View
           style={{
             flex: 1,
-            backgroundColor: 'hsla(240,70%,50%,0.4)',
+            backgroundColor: 'hsla(240,70%,0%,0.4)',
+            // backgroundColor: 'hsla(240,70%,50%,0.4)',
             opacity: this.state.opacity
           }}
         >
-        <Animated.View
-          style={[styles.tooltip, style]}
-          onLayout={(e) => {
-            let { width, height } = e.nativeEvent.layout;
-            this.setState({ height, width });
-          }}
-        >
-          <View style={[styles.arrow, ...arrowStyle]} />
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            style={{ padding: 0 }}
-            onPress={this.nextOnboarding}
+          <Animated.View
+            style={[styles.tooltip, style]}
+            onLayout={(e) => {
+              let { width, height } = e.nativeEvent.layout;
+              this.setState({ height, width });
+            }}
           >
-            {helper.text[tooltip.name]({
-              ...this.props,
-              style: styles.tooltipText,
-              ...tooltip
-            })}
-          </TouchableHighlight>
-        </Animated.View>
+            <View style={[styles.arrow, ...arrowStyle]} />
+            <TouchableHighlight
+              underlayColor={'transparent'}
+              style={ styles.tooltipCard }
+              onPress={this.nextOnboarding}
+            >
+              {helper.text[tooltip.name]({
+                ...this.props,
+                style: styles.tooltipText,
+                ...tooltip
+              })}
+            </TouchableHighlight>
+          </Animated.View>
         </Animated.View>
       </TouchableHighlight>
     );
@@ -261,40 +263,42 @@ let localStyles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    // backgroundColor: 'hsla(240,70%,50%,0.4)',
-    // backgroundColor: 'hsla(240,70%,0%,0.4)'
+  },
+  tooltipCard: {
+    backgroundColor: 'white',
+    padding: 15,
+    paddingVertical: 20,
+    // shadowColor: 'black',
+    // shadowOffset: { width: 1, height: 1 },
+    // shadowRadius: 3,
+    // shadowOpacity: 0.8,
+    zIndex: 1000000,
+    width: TOOLTIP_WIDTH,
   },
   tooltip: {
     position: 'absolute',
-    backgroundColor: 'white',
-    // backgroundColor: 'hsla(240,100%,80%,1)',
-    // borderRadius: 5,
-    padding: 15,
-    paddingVertical: 20,
-    shadowColor: 'black',
-    shadowOffset: { width: 1, height: 1 },
-    shadowRadius: 3,
-    shadowOpacity: 0.8,
-    zIndex: 1000000,
-    width: TOOLTIP_WIDTH,
-
+    paddingVertical: 10,
   },
   tooltipText: {
-    // fontFamily: 'Helvetica',
     fontWeight: '100',
     fontSize: 15,
     lineHeight: 20,
+    color: darkGrey,
+    flexDirection: 'row',
+    alignItems: 'flex-end'
   },
   arrow: {
     width: 10,
     height: 10,
     position: 'absolute',
-    transform: [{ rotate: '35deg' }, { skewY: '45deg' }],
+    transform: Platform.OS === 'android' ?
+      [{ rotate: '45deg' }] :
+      [{ rotate: '35deg' }, { skewY: '45deg' }, { translateY: 3 }],
     backgroundColor: 'white',
-    shadowColor: 'black',
-    shadowOffset: { width: -1, height: -1 },
-    shadowRadius: 0,
-    shadowOpacity: 0.1,
+    // shadowColor: 'black',
+    // shadowOffset: { width: -1, height: -1 },
+    // shadowRadius: 0,
+    // shadowOpacity: 0.1,
   },
   arrowBottom: {
     shadowOffset: { width: 1, height: 1 },

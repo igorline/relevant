@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import PropTypes from 'prop-types';
-import { globalStyles, fullWidth, blue } from '../../styles/global';
+import { globalStyles, fullWidth, blue, darkGrey } from '../../styles/global';
 import Percent from '../percent.component';
 
 let styles;
@@ -153,7 +153,7 @@ const localStyles = StyleSheet.create({
     paddingTop: 0,
     fontSize: 11,
     opacity: 0.7,
-    color: 'grey'
+    color: 'black'
   },
   footerTextActive: {
     color: blue,

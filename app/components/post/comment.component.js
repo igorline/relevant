@@ -46,7 +46,6 @@ class Comment extends Component {
     this.showActionSheet = this.showActionSheet.bind(this);
     this.editComment = this.editComment.bind(this);
     this.saveEdit = this.saveEdit.bind(this);
-    this.scrollToComment = this.scrollToComment.bind(this);
   }
 
   componentDidMount() {
@@ -106,15 +105,6 @@ class Comment extends Component {
     }
   }
 
-  scrollToComment(animated) {
-    this.setState({});
-    this.singleComment.measure((fx, fy, width, height, px, py) => {
-      let num = fy;
-      let scroll = true;
-      if (Platform.OS === 'android') scroll = false;
-      this.props.parentEditing(scroll, num, animated);
-    });
-  }
 
   deleteComment() {
     const self = this;
@@ -137,8 +127,10 @@ class Comment extends Component {
   }
 
   editComment() {
-    this.setState({ editedText: this.props.comment.text });
-    this.setState({ editing: !this.state.editing });
+    if (!this.state.editing) {
+      this.props.scrollToComment();
+    }
+    this.setState({ editedText: this.props.comment.text, editing: !this.state.editing });
   }
 
   render() {
@@ -160,12 +152,12 @@ class Comment extends Component {
         text={this.state.editedText || comment.text}
         toggleFunction={this.editComment}
         saveEditFunction={this.saveEdit}
-        onFocus={() => this.scrollToComment(true)}
+        // onFocus={() => this.props.scrollToComment()}
         onChange={(e) => {
           let h = e.nativeEvent.contentSize.height;
           if (h !== this.height) {
             this.height = h;
-            this.scrollToComment(true);
+            // this.props.scrollToComment();
           }
         }}
       />);
@@ -206,13 +198,13 @@ class Comment extends Component {
     return (
       <View
         ref={(c) => { this.singleComment = c; }}
-        onLayout={() => null}
-        style={[styles.commentContainer, { position: 'relative' }]}
         // need this for measure to work on android
+        onLayout={() => null}
+        style={[styles.commentContainer]}
       >
         <View
-
-          style={styles.commentHeader}>
+          style={styles.commentHeader}
+        >
           <UserName
             repost={comment.repost}
             size={'small'}

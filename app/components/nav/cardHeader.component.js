@@ -11,8 +11,9 @@ import {
   TouchableOpacity,
   Platform
 } from 'react-native';
+import Icon from 'react-native-vector-icons/EvilIcons';
 import Search from './search.component';
-import { globalStyles, fullWidth } from '../../styles/global';
+import { globalStyles, fullWidth, darkGrey } from '../../styles/global';
 import Stats from '../post/stats.component';
 
 import RNBottomSheet from 'react-native-bottom-sheet';
@@ -212,9 +213,13 @@ class CardHeader extends Component {
         ref={c => this.title = c}
         style={[styles.titleComponent]}
       >
-        <Text onPress={this.titleAction ? this.titleAction : () => null} style={styles.navTitle}>
-          {clipped}
-        </Text>
+        <TouchableOpacity
+          onPress={this.titleAction ? this.titleAction : () => null}
+        >
+          <Text style={[styles.navTitle]}>
+            {clipped}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -244,13 +249,19 @@ class CardHeader extends Component {
     if (key !== 'myProfile') {
       rightEl = statsEl;
     } else {
+      let gear;
+      if (Platform.OS === 'ios') {
+        gear = <Text style={{ paddingBottom: 5, fontSize: 17 }}>⚙️</Text>;
+      } else {
+        gear = <Icon name="gear" size={24} color={darkGrey} />;
+      }
       rightEl = (
         <TouchableHighlight
           style={styles.gear}
           underlayColor={'transparent'}
           onPress={() => this.props.showActionSheet()}
         >
-          <Text style={{ paddingBottom: 5, fontSize: 17 }}>⚙️</Text>
+          {gear}
         </TouchableHighlight>
       );
     }

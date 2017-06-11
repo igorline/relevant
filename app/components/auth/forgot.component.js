@@ -68,8 +68,14 @@ class Forgot extends Component {
     if (this.state.sendingEmail) {
       spinner = <CustomSpinner />;
     }
+
+    let KBView = KeyboardAvoidingView;
+    if (this.props.share) {
+      KBView = View;
+    }
+
     return (
-      <KeyboardAvoidingView
+      <KBView
         behavior={'padding'}
         style={{ flex: 1 }}
         keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0 }
@@ -85,6 +91,7 @@ class Forgot extends Component {
             <View style={styles.fieldsInputParent}>
               <TextInput
                 ref={c => this.userInput = c}
+                underlineColorAndroid={'transparent'}
                 autoCorrect={false}
                 autoCapitalize={'none'}
                 // keyboardType={'email-address'}
@@ -110,7 +117,7 @@ class Forgot extends Component {
           {spinner}
 
         </ScrollView>
-      </KeyboardAvoidingView>
+      </KBView>
     );
   }
 }

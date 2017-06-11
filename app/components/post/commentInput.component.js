@@ -20,7 +20,6 @@ class CommentInput extends Component {
   constructor(props, context) {
     super(props, context);
     this.renderInput = this.renderInput.bind(this);
-    this.renderUserSuggestions = this.renderUserSuggestions.bind(this);
     this.setMention = this.setMention.bind(this);
     this.createComment = this.createComment.bind(this);
     this.processInput = this.processInput.bind(this);
@@ -65,11 +64,7 @@ class CommentInput extends Component {
         this.textInput.focus();
         return;
       }
-      this.props.shouldScrollToBottom('new');
-      // console.log('scroll to end');
-      // setTimeout(() => 
-      // this.props.scrollView.scrollToEnd()
-      // , 100);
+      this.props.scrollToBottom();
     });
   }
 
@@ -84,38 +79,13 @@ class CommentInput extends Component {
 
     this.commentTags = utils.text.getTags(words);
     this.commentMentions = utils.text.getMentions(words);
-  }
-
-  renderUserSuggestions() {
-    let parentEl = null;
-    if (this.props.users.search) {
-      if (this.props.users.search.length) {
-        parentEl = (
-          <View
-            style={{
-              position: 'absolute',
-              bottom: Math.min(120, this.state.inputHeight),
-              left: 0,
-              right: 0,
-              maxHeight: this.top,
-              backgroundColor: 'white',
-              borderTopWidth: 1,
-              borderTopColor: '#F0F0F0' }}
-          >
-            <UserSearchComponent
-              style={{ paddingTop: 59 }}
-              setSelected={this.setMention}
-              users={this.props.users.search}
-            />
-          </View>
-        );
-      }
-    }
-    return parentEl;
+    this.props.updatePosition({
+      inputHeight: this.state.inputHeight, top: this.top
+    });
   }
 
   renderInput() {
-    // if (!this.props.editing) {
+    if (!this.props.editing) {
       let inputImage = null;
       if (this.props.auth.user.image) {
         let imageUrl = this.props.auth.user.image;
@@ -130,7 +100,6 @@ class CommentInput extends Component {
           { height: Math.min(this.state.inputHeight, 120) }
         ]}
       >
-        {this.renderUserSuggestions()}
         {inputImage}
         <TextInput
           ref={(c) => { this.textInput = c; }}
@@ -141,7 +110,7 @@ class CommentInput extends Component {
             styles.font15,
             {
               flex: 1,
-              lineHeight: 15,
+              lineHeight: 18,
               paddingTop: Platform.OS === 'ios' ? 10 : 15,
               // height: 'auto',
               // maxHeight: 120,
@@ -166,6 +135,19 @@ class CommentInput extends Component {
               inputHeight: Math.max(50, h)
             });
           }}
+
+          // fix for android enter bug!
+          blurOnSubmit={false}
+          onSubmitEditing={() => {
+            if (this.okToSubmit) {
+              let comment = this.state.comment;
+              comment += '\n';
+              this.processInput(comment, false);
+              this.setState({ comment });
+              return this.okToSubmit = false;
+            }
+            return this.okToSubmit = true;
+          }}
         >
           <TextBody style={{ flex: 1 }} showAllMentions>{this.state.comment}</TextBody>
         </TextInput>
@@ -177,8 +159,8 @@ class CommentInput extends Component {
           <Text style={[styles.font15, styles.active]}>Submit</Text>
         </TouchableHighlight>
       </View>);
-    // }
-    // return null;
+    }
+    return null;
   }
 
   render() {

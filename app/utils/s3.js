@@ -3,8 +3,10 @@ let RNFetchBlob;
 let Platform;
 
 if (process.env.WEB != 'true') {
-  RNFetchBlob = require('react-native-fetch-blob').default;
   Platform = require('react-native').Platform;
+  if (Platform.OS === 'android') {
+    RNFetchBlob = require('react-native-fetch-blob').default;
+  }
 }
 
 function executeOnSignedUrl(uri) {

@@ -40,6 +40,7 @@ export default function (props) {
     if (!tooltipParent[name]) return;
     tooltipParent[name].measureInWindow((x, y, w, h) => {
       let parent = { x, y, w, h };
+      console.log(parent);
       if (x + y + w + h === 0) return;
       props.navigator.setTooltipData({
         name,
@@ -288,6 +289,7 @@ export default function (props) {
           <View
             style={[smallScreen ? styles.activityMiddleSmall : styles.activityMiddle]}
             ref={(c) => tooltipParent.activity = c}
+            onLayout={() => null}
           >
             { coin }
             {coin && smallScreen ?
