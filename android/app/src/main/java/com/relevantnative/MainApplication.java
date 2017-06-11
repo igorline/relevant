@@ -24,6 +24,7 @@ import com.evollu.react.fa.FIRAnalyticsPackage;
 import com.github.alinz.rnsk.RNSKPackage;
 import com.gnet.bottomsheet.RNBottomSheetPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
+import com.github.yamill.orientation.OrientationPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +54,8 @@ public class MainApplication extends Application implements ReactApplication {
             new FIRAnalyticsPackage(),
             new ReactNativeContacts(),
             new RNSKPackage(),
-            new RNBottomSheetPackage()
+            new RNBottomSheetPackage(),
+            new OrientationPackage()
         );
     }
   };

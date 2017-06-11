@@ -58,8 +58,13 @@ class Login extends Component {
   render() {
     styles = { ...localStyles, ...globalStyles };
 
+    let KBView = KeyboardAvoidingView;
+    if (this.props.share) {
+      KBView = View;
+    }
+
     return (
-      <KeyboardAvoidingView
+      <KBView
         behavior={'padding'}
         style={{ flex: 1 }}
         keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0 }
@@ -129,7 +134,7 @@ class Login extends Component {
           </TouchableHighlight>
 
         </ScrollView>
-      </KeyboardAvoidingView>
+      </KBView>
     );
   }
 }

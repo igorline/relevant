@@ -4,14 +4,21 @@ import {
   View,
   TouchableHighlight,
   InteractionManager,
-  ScrollView,
-  Image
+  FlatList,
+  StyleSheet,
+  Keyboard,
+  Platform
 } from 'react-native';
 import { globalStyles } from '../../styles/global';
+import TagSelection from './tagSelection.component';
 
 let styles;
 
 export default class topics extends Component {
+  constructor(props) {
+    super(props);
+    this.renderItem = this.renderItem.bind(this);
+  }
 
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
@@ -19,58 +26,97 @@ export default class topics extends Component {
     });
   }
 
-  render() {
-    let topics = this.props.topics.map((topic, i) => {
-      let active = false;
-      if (this.props.selectedTopic &&
-        topic._id === this.props.selectedTopic._id) {
-        active = true;
-      }
-      let x = (
-        <Image
-          style={styles.close}
-          source={require('../../assets/images/x.png')}
+  componentWillReceiveProps(next) {
+    if (next.selectedTopic &&
+      (!this.props.selectedTopic ||
+        this.props.selectedTopic._id !== next.selectedTopic._id)
+      ) {
+      this.goToElement = true;
+    } else this.goToElement = false;
+  }
+
+  renderItem({ item, index }) {
+    let topic = item;
+    let i = index;
+    let active = false;
+    let innerView;
+
+    if (this.props.selectedTopic &&
+      topic._id === this.props.selectedTopic._id) {
+      active = true;
+    }
+
+    if (this.props.type === 'create' && active) {
+      innerView = (
+        <TagSelection
+          key={topic._id}
+          topic={topic}
+          scrollToElement={() => {
+            this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
+            let scroll = () => {
+              setTimeout(() =>
+                this.scrollView.scrollToIndex({ viewPosition: 0.1, index }),
+                1
+              );
+              Keyboard.removeListener('keyboardDidShow', scroll);
+            };
+            if (Platform.OS === 'android') {
+              Keyboard.addListener('keyboardDidShow', scroll);
+            }
+          }}
+          actions={this.props.actions}
+          createPost={this.props.createPost}
         />
       );
-      return (
-        <View
-          key={i}
-          ref={c => {
-            if (active) return this.tagsView = c;
-            return null;
-          }}
-        >
-          <TouchableHighlight
-            onPress={() => this.props.action(topic)}
-            underlayColor={'transparent'}
-            style={[styles.categoryItem, { backgroundColor: active ? '#4d4eff' : 'white' }]}
-          >
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center' }}
-            >
-              <Text style={[active ? { color: 'white' } : null, styles.darkGrey]} >{topic.emoji}{topic.categoryName}</Text>
-              {/*active ? x : null*/}
-            </View>
-          </TouchableHighlight>
-          { active ? this.props.innerView : null }
-        </View>
-      );
-    });
+    }
+
+    if (active && this.goToElement) {
+      setTimeout(() => {
+        this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
+      }, 10);
+    }
 
     return (
-      <ScrollView
-        // centerContent={!this.props.selectedTopic}
+      <View
+        key={i}
+      >
+        <TouchableHighlight
+          onPress={() => this.props.action(topic)}
+          underlayColor={'transparent'}
+          style={[styles.categoryItem, { backgroundColor: active ? '#4d4eff' : 'white' }]}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center' }}
+          >
+            <Text style={[active ? { color: 'white' } : null, styles.darkGrey]} >{topic.emoji}{topic.categoryName}</Text>
+          </View>
+        </TouchableHighlight>
+        {innerView}
+      </View>
+    );
+  }
+
+  render() {
+    return (
+      <FlatList
         ref={c => this.scrollView = c}
         keyboardDismissMode={'interactive'}
         keyboardShouldPersistTaps={'always'}
-      >
-        {topics}
-      </ScrollView>
+        data={this.props.topics}
+        renderItem={this.renderItem}
+        keyExtractor={(item, index) => index}
+        tagsView={this.tagsView}
+        extraData={this.props.selectedTopic}
+      />
     );
   }
 }
 
-styles = { ...globalStyles };
+const localStyles = StyleSheet.create({
+
+});
+
+styles = { ...localStyles, ...globalStyles };

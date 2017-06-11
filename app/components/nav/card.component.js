@@ -69,7 +69,7 @@ class Card extends Component {
         index + 0.99,
         index + 1,
       ]),
-      outputRange: ([1, 1, 1, 0.6, 0]),
+      outputRange: ([1, 1, 1, 0.6, .6]),
     });
 
     if (type === 'header') return { opacity };

@@ -192,6 +192,9 @@ class Auth extends Component {
       </View>
     );
 
+    if (this.props.share) intro = <View style={{ flex: 1 }} />;
+
+
     return (
       <View
         style={[{

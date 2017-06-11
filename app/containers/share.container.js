@@ -2,7 +2,7 @@ import {
   StyleSheet,
   View,
   Text,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
 } from 'react-native';
 import * as NavigationExperimental from 'react-navigation';
 import React, { Component } from 'react';
@@ -62,6 +62,7 @@ class ShareContainer extends Component {
   }
 
   async componentDidMount() {
+    return;
     try {
       const data = await ShareExtension.data();
       this.setState({
@@ -70,8 +71,8 @@ class ShareContainer extends Component {
         data
       });
       this.props.actions.setCreaPostState({
-        postUrl: data.url,
-        postBody: data.selection,
+        postUrl: data.url || data.value,
+        postBody: data.selection || '',
         createPreview: {}
       });
     } catch (e) {
@@ -122,10 +123,17 @@ class ShareContainer extends Component {
   render() {
     let scene = this.props.navigation;
 
+    return <View styles={{ flex: 1, backgroundColor: 'pink' }} />;
+
     return (
       <Modal
         backdrop
-        style={{ backgroundColor: 'transparent' }}
+        style={{
+          backgroundColor: 'transparent',
+          height: fullHeight * 0.9,
+          // width: fullWidth,
+          // left: 0,
+        }}
         animationType={'fade'}
         position="top"
         transparent
@@ -137,7 +145,7 @@ class ShareContainer extends Component {
           style={{
             alignItems: 'center',
             flex: 1,
-            maxHeight: fullHeight * 0.9,
+            // maxHeight: fullHeight * 0.9,
           }}
         >
           <View style={style.modalBody}>

@@ -28,7 +28,7 @@ class DiscoverTabs extends Component {
       routes: [
         { key: 'feed', title: SUB_TITLE },
         { key: 'new', title: 'New' },
-        { key: 'trending', title: 'Trending' },
+        { key: 'top', title: 'Trending' },
       ],
       headerHeight: 50,
     };
@@ -44,7 +44,7 @@ class DiscoverTabs extends Component {
       // this.initialTab = 0;
       this.state.routes = [
         { key: 'new', title: 'New' },
-        { key: 'trending', title: 'Trending' },
+        { key: 'top', title: 'Trending' },
         { key: 'people', title: 'People' },
       ];
     }
@@ -57,6 +57,7 @@ class DiscoverTabs extends Component {
       this.topicView = true;
       this.filter = [this.props.scene.topic];
       this.topic = this.props.scene.topic;
+      this.topicId = this.props.scene.topic._id;
       this.loaded = false;
       this.needsReload = new Date().getTime();
 
@@ -74,8 +75,8 @@ class DiscoverTabs extends Component {
   componentDidMount() {
     // swipe to default tab here
     // if (this.props.view.discover !== this.state.view && this.mainDiscover) {
-    //   this.setState({ view: this.props.view.discover });
-    //   this.tabView.goToPage(this.state.view);
+      // this.setState({ view: this.props.view.discover });
+      if (this.tabView && this.initialTab) this.tabView.goToPage(this.initialTab);
     // }
     // this.setState({ index: 1 });
   }
@@ -106,6 +107,7 @@ class DiscoverTabs extends Component {
   renderScene(route) {
     let index = this.state.index;
     let currentRoute = this.state.routes[index];
+    if (!this.loaded) return <View key={route.key} />;
     switch (route.key) {
       case 'feed':
         return (
@@ -129,7 +131,7 @@ class DiscoverTabs extends Component {
             tabLabel={route.title}
           />
         );
-      case 'trending':
+      case 'top':
         return (
           <Discover
             active={currentRoute.key === route.key}
@@ -183,6 +185,7 @@ class DiscoverTabs extends Component {
   }
 
   renderHeader(props) {
+    if (!this.loaded) return <View {...props} />;
     return (
       <DiscoverHeader
         ref={(c => this.header = c)}
@@ -196,7 +199,9 @@ class DiscoverTabs extends Component {
             borderBottomWidth: StyleSheet.hairlineWidth,
             borderColor: 'black'
           }}
+          initialTab={this.initialTab}
           renderBadge={this.renderBadge}
+          topic={this.topicId || 'default'}
           {...props}
         />
       </DiscoverHeader>
@@ -226,21 +231,21 @@ class DiscoverTabs extends Component {
       </View>);
     }
 
-    if (!this.loaded) {
-      return <CustomSpinner />;
-    }
+    // if (!this.loaded) {
+    //   return <CustomSpinner />;
+    // }
 
     return (
       <View style={{ flex: 1 }}>
         <ScrollableTabView
-          ref={tabView => this.tabView = tabView}
+          ref={c => this.tabView = c}
           tabBarTextStyle={[styles.tabFont]}
           tabBarActiveTextColor={blue}
-          initialPage={this.initialTab}
+          // initialPage={this.initialTab}
           tabBarUnderlineStyle={{ backgroundColor: blue }}
           onChangeTab={(tab) => {
             this.setState({ index: tab.i });
-            this.header.showHeader();
+            // this.header.showHeader();
           }}
           prerenderingSiblingsNumber={Infinity}
           contentProps={{
@@ -257,6 +262,7 @@ class DiscoverTabs extends Component {
           {tabs}
         </ScrollableTabView>
         {topics}
+        <CustomSpinner visible={!this.loaded} />
       </View>
     );
   }

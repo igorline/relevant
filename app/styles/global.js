@@ -54,7 +54,8 @@ const font = StyleSheet.create({
     fontFamily: 'BebasNeueRelevantRegular',
     fontWeight: 'bold',
     letterSpacing: 0.15,
-    marginTop: 3,
+    // marginTop: 3,
+    marginBottom: -2,
     color: darkGrey
   },
   headerInner: {

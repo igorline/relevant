@@ -238,12 +238,12 @@ class PostButtons extends Component {
     }, 'home');
   }
 
-  goToPost() {
+  goToPost(comment) {
     if (this.props.scene) {
       if (this.props.scene.id === this.props.post._id) return;
     }
     let openComment = false;
-    if (!this.props.post.commentCount) openComment = true;
+    if (comment) openComment = true;
     this.props.actions.goToPost(this.props.post, openComment);
   }
 
@@ -394,7 +394,7 @@ class PostButtons extends Component {
     let comments = (<TouchableHighlight
       underlayColor={'transparent'}
       style={[styles.postButton]}
-      onPress={() => this.goToPost()}
+      onPress={() => this.goToPost(true)}
     >
       <Text
         allowFontScaling={false}

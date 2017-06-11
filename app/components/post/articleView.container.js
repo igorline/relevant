@@ -45,16 +45,12 @@ class ArticleView extends Component {
         url: this.props.scene.uri,
       });
     });
-    if (Platform.OS === 'ios') {
-      Orientation.unlockAllOrientations();
-    }
+    Orientation.unlockAllOrientations();
   }
 
   componentWillUnmount() {
     if (this.onInteraction) this.onInteraction.cancel();
-    if (Platform.OS === 'ios') {
-      Orientation.lockToPortrait();
-    }
+    Orientation.lockToPortrait();
   }
 
   back() {

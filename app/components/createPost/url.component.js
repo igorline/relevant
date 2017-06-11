@@ -3,9 +3,9 @@ import {
   StyleSheet,
   TextInput,
   View,
-  KeyboardAvoidingView,
   Text,
-  TouchableHighlight
+  TouchableHighlight,
+  Platform
 } from 'react-native';
 import { globalStyles, blue, fullWidth, greyText } from '../../styles/global';
 import * as utils from '../../utils';
@@ -16,7 +16,7 @@ import PostBody from './../post/postBody.component';
 import PostInfo from './../post/postInfo.component';
 import TextBody from './../post/textBody.component';
 
-var Video = require('react-native-video').default;
+let Video = require('react-native-video').default;
 
 let styles;
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/);
@@ -233,7 +233,7 @@ export default class UrlComponent extends Component {
     }
 
     let tipCTA;
-    if (!this.props.urlPreview && this.props.postBody === '' && !this.props.share) {
+    if (Platform.OS === 'ios' && !this.props.urlPreview && this.props.postBody === '' && !this.props.share) {
       tipCTA = (
         <TouchableHighlight
           ref={c => this.shareTip = c}
@@ -281,19 +281,28 @@ export default class UrlComponent extends Component {
               placeholderTextColor={greyText}
               multiline
               clearButtonMode={'while-editing'}
-              onChangeText={postBody => this.processInput(postBody, false)}
+              onChangeText={postBody => {
+                this.processInput(postBody, false);
+                // this.okToSubmit = false;
+              }}
               onBlur={() => this.processInput(null, true)}
               returnKeyType={'default'}
               onFocus={() => null }
               keyboardShouldPersistTaps={'never'}
               disableFullscreenUI
               textAlignVertical={'top'}
-              // onContentSizeChange={(event) => {
-              //   let h = event.nativeEvent.contentSize.height;
-              //   this.setState({
-              //     inputHeight: Math.max(100, h)
-              //   });
-              // }}
+
+              // fix for android enter bug!
+              blurOnSubmit={false}
+              onSubmitEditing={() => {
+                if (this.okToSubmit) {
+                  let postBody = this.props.postBody;
+                  postBody += '\n';
+                  this.processInput(postBody, false);
+                  return this.okToSubmit = false;
+                }
+                this.okToSubmit = true;
+              }}
             >
               <TextBody showAllMentions>
                 {this.props.postBody}
