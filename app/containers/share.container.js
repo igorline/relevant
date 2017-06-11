@@ -123,8 +123,6 @@ class ShareContainer extends Component {
   render() {
     let scene = this.props.navigation;
 
-    return <View styles={{ flex: 1, backgroundColor: 'pink' }} />;
-
     return (
       <Modal
         backdrop
