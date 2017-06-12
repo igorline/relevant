@@ -70,16 +70,16 @@ class SinglePostComments extends Component {
       this.loaded = true;
       this.reload();
 
-      setTimeout(() => {
-        if (this.props.scene.openComment) {
-          if (!this.props.post.commentCount) {
-            this.scrollToBottom(true);
-          } else {
-            this.input.textInput.focus();
+        setTimeout(() => {
+          if (this.props.scene.openComment) {
+            if (this.props.scene.commentCount && this.comments) {
+              this.scrollToBottom(true);
+            } else if (!this.props.scene.commentCount) {
+              this.input.textInput.focus();
+            }
           }
-        }
-        return;
-      }, 100);
+          return;
+        }, 100);
 
       this.forceUpdate();
     });
@@ -92,6 +92,9 @@ class SinglePostComments extends Component {
     if (next.comments.commentsById[this.id] !== this.props.comments.commentsById[this.id]) {
       if (next.comments.commentsById[this.id]) {
         if (next.comments.commentsById[this.id].data) {
+          if (!this.comments && this.props.scene.openComment) {
+            this.scrollToBottom(true);
+          }
           this.comments = next.comments.commentsById[this.id].data;
         }
 
@@ -138,19 +141,16 @@ class SinglePostComments extends Component {
 
 
   scrollToBottom(init) {
-    let l = this.scrollView._listRef._totalCellLength + this.scrollView._listRef._headerLength;
-    // console.log(this.scrollView._listRef);
-    // console.log(l);
-    // console.log(fullHeight);
     this.scrollTimeout = setTimeout(() => {
+      if (!this.scrollView) return;
+      let l = this.scrollView._listRef._totalCellLength + this.scrollView._listRef._headerLength;
       if (this.comments.length) {
-        if (l < fullHeight - 100 && init) return;
+        if (l < fullHeight - 50 && init) return;
         this.scrollView.scrollToEnd();
       } else if (this.comments.length === 0) {
         let offset = this.headerHeight - this.scrollHeight;
         this.scrollView.scrollToOffset({ offset });
       }
-      // else this.scrollToComment(this.comments.length - 1);
     }, 100);
   }
 

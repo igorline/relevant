@@ -197,12 +197,12 @@ class StatsContainer extends Component {
     if (user.relevance < 5) {
       filler = (<EmptyList visible style={styles.emptyList}>
         <Text
-          style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}
+          style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}
         >
           Earn 5 relevant points to see your stats!
         </Text>
         <Text
-          style={[styles.georgia, styles.emptyText, styles.quarterLetterSpacing]}
+          style={[styles.georgia, styles.darkGrey, styles.emptyText, styles.quarterLetterSpacing]}
         >
           Tip: 🤓 You can earn relevance by being one of the first to upvote a quality post
         </Text>

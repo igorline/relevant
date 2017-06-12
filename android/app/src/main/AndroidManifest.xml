@@ -84,13 +84,13 @@
 
 
       <activity
-          android:noHistory="true"
-          android:name=".share.ShareActivity"
-          android:label="@string/title_activity_share"
-          android:screenOrientation="portrait"
-          android:theme="@style/Theme.Share.Transparent"
-          android:windowSoftInputMode="adjustResize"
-          android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+        android:noHistory="true"
+        android:name=".share.ShareActivity"
+        android:label="@string/title_activity_share"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.Share.Transparent"
+        android:windowSoftInputMode="adjustResize"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
       >
         <intent-filter>
            <action android:name="android.intent.action.SEND" />
