@@ -23,7 +23,7 @@ class EmptyList extends Component {
     let emoji = this.props.emoji || '😶';
     let visible = this.props.visible;
     let content = this.props.children || (
-      <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
+      <Text style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}>
         {this.props.text ? this.props.text : 'Sorry, no ' + type + ' ' + emoji}
       </Text>
     );

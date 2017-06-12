@@ -296,14 +296,13 @@ exports.preview = (req, res) => {
   }
 
   function processReturn(error, response, body) {
-    let uri = response.request.uri.href;
 
     if (error) {
-      console.log(uri)
       console.log('preview error ', error || response.statusMessage);
       return res.status(500).json(error);
     }
 
+    let uri = response.request.uri.href;
 
     let processed = proxyHelpers.generatePreview(body, uri);
 

@@ -9,7 +9,10 @@
     "build": "webpack --config ./webpack.production.config.js --progress --colors -p",
     "build-dev": "webpack --config ./webpack.config.js --progress --colors -p",
     "test": "ava --watch",
-    "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean"
+    "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean",
+    "uninstall": "adb uninstall com.relevantnative",
+    "android": "react-native run-android",
+    "androidRelease": "react-native run-android --variant=release"
   },
   "dependencies": {
     "apn": "^1.7.6",

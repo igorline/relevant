@@ -175,6 +175,7 @@ export function goToPost(post, openComment) {
     title: post.title,
     back: true,
     id: post._id,
+    commentCount: post.commentCount,
     openComment
   });
 }

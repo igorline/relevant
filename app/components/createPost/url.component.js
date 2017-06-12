@@ -38,7 +38,7 @@ export default class UrlComponent extends Component {
       this.createPreview(this.props.postUrl);
     }
     setTimeout(() => this.initTooltips('shareTip'), 1000);
-    this.input.focus();
+    if (!this.props.share) this.input.focus();
   }
 
   componentWillReceiveProps(next) {
@@ -131,7 +131,7 @@ export default class UrlComponent extends Component {
     utils.post.generatePreviewServer(postUrl)
     .then((results) => {
       if (results) {
-        let newBody = this.props.postBody.replace(`${postUrl}`, '').trim();
+        let newBody = this.props.postBody ? this.props.postBody.replace(`${postUrl}`, '').trim() : '';
         let tags = [];
         if (results.tags) {
           tags = results.tags.split(',');

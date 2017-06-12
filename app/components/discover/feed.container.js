@@ -161,7 +161,7 @@ class Read extends Component {
     filler = (
       <View>
         <Text
-          style={[styles.georgia, styles.emptyText, styles.quarterLetterSpacing]}
+          style={[styles.georgia, styles.darkGrey, styles.emptyText, styles.quarterLetterSpacing]}
         >
           {!total ?
             'You have not subscribed to anyone yet' :
@@ -169,7 +169,7 @@ class Read extends Component {
         </Text>
         <Text
           onPress={() => { this.props.actions.setView('discover', 1); }}
-          style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}
+          style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}
         >
           {!total ? '😎\nUpvote posts to subscribe to users' : '😛\nKeep upvoting to subscribe to more users'}
         </Text>
