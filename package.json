@@ -12,7 +12,9 @@
     "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean",
     "uninstall": "adb uninstall com.relevantnative",
     "android": "react-native run-android",
-    "androidRelease": "react-native run-android --variant=release"
+    "androidRelease": "react-native run-android --variant=release",
+    "deployIOS": "code-push release-react Relevant-iOS ios -d Production",
+    "deployAndroid": "code-push release-react Relevant-Android android -d Production"
   },
   "dependencies": {
     "apn": "^1.7.6",
@@ -78,6 +80,7 @@
     "react-native-bottom-sheet": "^1.0.1",
     "react-native-button": "^1.4.2",
     "react-native-chart": "^1.0.8-beta",
+    "react-native-code-push": "^2.1.0-beta",
     "react-native-contacts": "^0.2.3",
     "react-native-custom-action-sheet": "0.0.11",
     "react-native-dismiss-keyboard": "0.0.3",

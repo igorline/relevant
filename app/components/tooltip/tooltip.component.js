@@ -143,7 +143,7 @@ class Tooltip extends Component {
       };
       arrowStyle = [
         ...arrowStyle,
-        { top: 4 },
+        { top: Platform.OS === 'android' ? 5 : 4 },
       ];
     }
 
@@ -223,7 +223,7 @@ class Tooltip extends Component {
         <Animated.View
           style={{
             flex: 1,
-            backgroundColor: 'hsla(240,70%,0%,0.4)',
+            backgroundColor: 'hsla(240,70%,0%,0.6)',
             // backgroundColor: 'hsla(240,70%,50%,0.4)',
             opacity: this.state.opacity
           }}

@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
+import codePush from 'react-native-code-push';
 import { Provider } from 'react-redux';
 import ShareContainer from './share.container';
 import configureStore from '../store/configureShareStore';
 
 const store = configureStore();
+let codePushOptions = {
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  installMode: codePush.InstallMode.ON_NEXT_RESUME
+};
 
-export default class Share extends Component {
+class Share extends Component {
   render() {
     return (
       <Provider store={store}>
@@ -14,3 +19,5 @@ export default class Share extends Component {
     );
   }
 }
+
+export default codePush(codePushOptions)(Share);

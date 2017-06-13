@@ -14,6 +14,7 @@ import {
   StatusBar,
   Dimensions
 } from 'react-native';
+
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -327,9 +328,7 @@ class Application extends Component {
       this.props.actions.getNotificationCount();
       this.props.actions.getFeedCount();
 
-      if (Platform.OS === 'ios') {
-        PushNotificationIOS.setApplicationIconBadgeNumber(0);
-      }
+      PushNotification.setApplicationIconBadgeNumber(0);
 
       // refresh after 5 minutes of inactivity
       let now = new Date().getTime();
@@ -346,6 +345,7 @@ class Application extends Component {
     } else if (currentAppState === 'background') {
       this.backgroundTime = new Date().getTime();
     }
+    return true;
   }
 
   renderScene(props) {

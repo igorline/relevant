@@ -140,6 +140,7 @@ const font = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Georgia',
     fontSize: 18,
+    color: darkGrey,
   },
 });
 

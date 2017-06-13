@@ -67,6 +67,7 @@ import com.android.build.OutputFile
  */
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -116,7 +117,12 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "CODEPUSH_KEY", '"WJJcwSc5ZQe2A8gNeizsJ_uBOIFY52aae8fd-4800-425e-b2b2-b3be3d883f42"'
+            // applicationIdSuffix ".debug"
+        }
         release {
+            buildConfigField "String", "CODEPUSH_KEY", '"xVr64HAXULO11o_wGbgZfg8wC_k152aae8fd-4800-425e-b2b2-b3be3d883f42"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
@@ -138,6 +144,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-code-push')
     compile project(':react-native-fetch-blob')
     compile project(':react-native-push-notification')
     compile project(':react-native-bottom-sheet')

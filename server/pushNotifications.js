@@ -67,15 +67,21 @@ async function sendNotification(user, alert, payload) {
       let badge = await Notification.count({ forUser: user._id, read: false });
       badge += await Feed.count({ userId: user._id, read: false });
 
-
       const registrationIds = [];
       user.deviceTokens.forEach((deviceToken) => {
         registrationIds.push(deviceToken);
         console.log('pushing to device tokens ', deviceToken);
       });
 
+      // console.log(user.deviceTokens);
+
       // user.deviceTokens.forEach((deviceToken) => {
-      //   let newDevice = new apn.Device(deviceToken);
+      //   let newDevice;
+      //   try {
+      //     newDevice = new apn.Device(deviceToken);
+      //   } catch (err) {
+      //     console.log('push error?', err);
+      //   }
       //   devices.push(newDevice);
       //   console.log('pushing to device tokens ', deviceToken);
       // });
@@ -95,13 +101,28 @@ async function sendNotification(user, alert, payload) {
       // note.alert = alert;
       // note.payload = { ...payload, toUser: user._id };
       // service.pushNotification(note, devices);
+
       push.send(registrationIds, data)
       .then((results) => {
+        let updatedTokens = user.deviceTokens;
         results.forEach(result => {
-          result.message.forEach(message => console.log(message));
+          result.message.forEach(message => {
+            if (message.error) {
+              updatedTokens = updatedTokens.filter(token => token !== message.regId);
+              console.log('removing device token', message.regId);
+              console.log(message);
+            }
+          });
         });
+        if (updatedTokens.length !== user.deviceTokens.length) {
+          user.markModified('deviceTokens');
+          user.deviceTokens = updatedTokens;
+          user.save();
+        }
       })
-      .catch((err) => { console.log(err) });
+      .catch((err) => {
+        console.log('push notification error ', err);
+      });
     }
   } catch (err) { console.log(err) };
 }
