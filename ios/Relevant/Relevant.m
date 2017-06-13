@@ -7,9 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CodePush.h"
 #import "ReactNativeShareExtension.h"
 #import "RCTBundleURLProvider.h"
 #import "RCTRootView.h"
+
 
 //@import Firebase;
 
@@ -25,6 +27,11 @@ RCT_EXPORT_MODULE();
   NSURL *jsCodeLocation;
   
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+  #ifdef DEBUG
+    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+  #else
+    jsCodeLocation = [CodePush bundleURL];
+  #endif
   
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"Relevant"

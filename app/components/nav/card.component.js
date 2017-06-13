@@ -206,14 +206,11 @@ class Card extends Component {
 
       if (vertical) {
         headerStyle = this.getAnimatedStyleVertical(sceneProps);
-        // headerStyle = CardStackStyleInterpolator.forVertical(sceneProps);
       }
 
-      let header;
       if (props.header && scene.route.header !== false) {
 
         headers.push(
-        // headers = (
           <CardHeader
             key={scene.key}
             {...this.props}
@@ -233,8 +230,6 @@ class Card extends Component {
           {...panHandlers}
         >
           {props.renderScene(sceneProps)}
-
-          {/*header*/}
         </Animated.View>
       );
     });

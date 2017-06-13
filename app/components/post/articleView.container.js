@@ -14,6 +14,7 @@ import {
   AlertIOS,
   Platform
 } from 'react-native';
+import Share from 'react-native-share';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -27,6 +28,7 @@ class ArticleView extends Component {
     super(props, context);
     // this.showInvestors = this.showInvestors.bind(this);
     this.back = this.back.bind(this);
+    this.onShare = this.onShare.bind(this);
     this.state = {
       backButtonEnabled: false,
       forwardButtonEnabled: false,
@@ -60,13 +62,24 @@ class ArticleView extends Component {
     return () => this.props.actions.pop('home');
   }
 
-  showShareActionSheet() {
-    ActionSheetIOS.showShareActionSheetWithOptions({
-      url: this.url,
-    },
-    (error) => AlertIOS.alert(error),
-    (completed, method) => {
+  // showShareActionSheet() {
+  //   ActionSheetIOS.showShareActionSheetWithOptions({
+  //     url: this.url,
+  //   },
+  //   (error) => AlertIOS.alert(error),
+  //   (completed, method) => {
 
+  //   });
+  // }
+
+  onShare() {
+    Share.open({
+      title: 'Relevant',
+      url: this.url,
+      subject: 'Article from Relevant',
+      message: 'Shared this article on Relevant: ' + this.url
+    }, (e) => {
+      console.log(e);
     });
   }
 
@@ -96,7 +109,7 @@ class ArticleView extends Component {
       <TouchableHighlight
         style={[styles.leftButton]}
         underlayColor={'transparent'}
-        onPress={() => this.showShareActionSheet()}
+        onPress={() => this.onShare()}
       >
         <View style={{ paddingHorizontal: 10, marginLeft: 0 }}>
           <Image

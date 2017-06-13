@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.microsoft.codepush.react.CodePush;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -32,6 +33,12 @@ import java.util.List;
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+
+    @Override
+    protected String getJSBundleFile() {
+      return CodePush.getJSBundleFile();
+    }
+
     @Override
     public boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
@@ -41,21 +48,22 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNFetchBlobPackage(),
-            new ReactNativePushNotificationPackage(),
-            new VectorIconsPackage(),
-            new ReactVideoPackage(),
-            new LinearGradientPackage(),
-            new RNSvgPackage(),
-            new ShareMenuPackage(),
-            new SharePackage(),
-            new RNSharePackage(),
-            new ImagePickerPackage(),
-            new FIRAnalyticsPackage(),
-            new ReactNativeContacts(),
-            new RNSKPackage(),
-            new RNBottomSheetPackage(),
-            new OrientationPackage()
+          new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG), // Add/change this line.
+          new RNFetchBlobPackage(),
+          new ReactNativePushNotificationPackage(),
+          new VectorIconsPackage(),
+          new ReactVideoPackage(),
+          new LinearGradientPackage(),
+          new RNSvgPackage(),
+          new ShareMenuPackage(),
+          new SharePackage(),
+          new RNSharePackage(),
+          new ImagePickerPackage(),
+          new FIRAnalyticsPackage(),
+          new ReactNativeContacts(),
+          new RNSKPackage(),
+          new RNBottomSheetPackage(),
+          new OrientationPackage()
         );
     }
   };

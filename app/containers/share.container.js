@@ -78,7 +78,8 @@ class ShareContainer extends Component {
 
       let url = data.url || data.value;
       if (url) {
-        url = url.split(' ').find(word => utils.post.URL_REGEX.test(word));
+        let words = utils.text.getWords(url);
+        url = words.find(word => utils.post.URL_REGEX.test(word));
       }
       // console.log('url ', url)
       this.props.actions.setCreaPostState({

@@ -442,15 +442,17 @@ export function addDeviceToken(user) {
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
       onRegister: function(token) {
-          console.log( 'TOKEN:', token );
+        // console.log( 'TOKEN:', token );
       },
 
       // (required) Called when a remote or local notification is opened or received
       onNotification: function(notification) {
-          console.log( 'NOTIFICATION:', notification );
+        // console.log( 'NOTIFICATION:', notification );
       },
+
       // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
       senderID: '271994332492',
+
       // IOS ONLY (optional): default: all - Permissions to register.
       permissions: {
         alert: true,
@@ -462,22 +464,24 @@ export function addDeviceToken(user) {
     });
 
     PushNotification.onRegister = (deviceToken) => {
-      console.log(deviceToken);
+      // console.log(deviceToken);
       let token = deviceToken.token;
-      userDefaults.set('deviceToken', token, APP_GROUP_ID)
+      userDefaults.set('deviceToken', token, APP_GROUP_ID);
+      dispatch(setDeviceToken(token));
       let newUser = user;
       if (user.deviceTokens) {
         if (user.deviceTokens.indexOf(token) < 0) {
           newUser.deviceTokens.push(token);
-          console.log('adding devicetoken to user here', token);
+          // console.log(newUser);
+          // console.log('adding devicetoken to user here', token);
           dispatch(updateUser(newUser));
         } else {
           console.log(user.deviceTokens);
-          console.log('devicetoken already present in user');
+          // console.log('devicetoken already present in user');
         }
       } else {
         newUser.deviceTokens = [token];
-        console.log('adding devicetoken to user object', token);
+        // console.log('adding devicetoken to user object', token);
         dispatch(updateUser(newUser));
       }
     };
@@ -489,15 +493,17 @@ export function removeDeviceToken(auth) {
   return dispatch => {
     let user = auth.user;
     if (user.deviceTokens) {
+      // console.log('remove token');
+      // console.log(auth.deviceToken);
       let index = user.deviceTokens.indexOf(auth.deviceToken);
       if (index > -1) {
-        console.log(user.deviceTokens, 'pre splice');
+        // console.log(user.deviceTokens, 'pre splice');
         user.deviceTokens.splice(index, 1);
-        console.log(user.deviceTokens, 'post splice');
-        console.log('upating user to', user);
+        // console.log(user.deviceTokens, 'post splice');
+        // console.log('upating user to', user);
         dispatch(updateUser(user, true));
       } else {
-        console.log('devicetoken not present');
+        // console.log('devicetoken not present');
       }
     }
   };
