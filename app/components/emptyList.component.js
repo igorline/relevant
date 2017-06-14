@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Platform
 } from 'react-native';
 import { globalStyles, fullHeight } from '../styles/global';
 
@@ -20,7 +21,7 @@ class EmptyList extends Component {
 
   render() {
     let type = this.props.type || '';
-    let emoji = this.props.emoji || '😶';
+    let emoji = this.props.emoji || (Platform.OS === 'android' ? '😮' : '😶');
     let visible = this.props.visible;
     let content = this.props.children || (
       <Text style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}>

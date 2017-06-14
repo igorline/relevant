@@ -2,17 +2,11 @@ import React, { Component } from 'react';
 import {
   Text,
   View,
-  TextInput,
   TouchableHighlight,
-  Dimensions,
-  AlertIOS,
   StyleSheet,
-  Keyboard,
-  KeyboardAvoidingView,
-  ScrollView,
   Image,
 } from 'react-native';
-import { globalStyles, fullHeight, fullWidth } from '../../styles/global';
+import { globalStyles } from '../../styles/global';
 import { pickerOptions } from '../../utils/pickerOptions';
 import * as utils from '../../utils';
 import CustomSpinnerRelative from '../customSpinnerRelative.component';

@@ -5,7 +5,7 @@ import {
   View,
   TextInput,
   Image,
-  AlertIOS,
+  Alert,
   TouchableHighlight,
   Platform
 } from 'react-native';
@@ -40,7 +40,7 @@ class CommentInput extends Component {
 
   createComment() {
     if (!this.state.comment || !this.state.comment.length) {
-      return AlertIOS.alert('no comment');
+      return Alert.alert('no comment');
     }
 
     let comment = this.state.comment.trim();

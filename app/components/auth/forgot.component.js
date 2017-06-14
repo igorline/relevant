@@ -4,7 +4,7 @@ import {
   View,
   TextInput,
   TouchableHighlight,
-  AlertIOS,
+  Alert,
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
@@ -38,7 +38,7 @@ class Forgot extends Component {
   async forgotPassword() {
     try {
       if (!this.state.username) {
-        AlertIOS.alert('must enter a username or password');
+        Alert.alert('must enter a username or password');
         return;
       }
 
@@ -51,7 +51,7 @@ class Forgot extends Component {
       if (res && res.email) {
         this.props.actions.pop('auth');
         this.setState({ sendingEmail: false });
-        AlertIOS.alert('Success', `We have set an email to ${res.email}
+        Alert.alert('Success', `We have set an email to ${res.email}
       with a link to reset the password for ${res.username}.`);
       }
     } catch (err) {

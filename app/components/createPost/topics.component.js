@@ -87,9 +87,10 @@ export default class topics extends Component {
         >
           <View
             style={{
-              flexDirection: 'row',
+              // flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'center' }}
+              // justifyContent: 'center'
+            }}
           >
             <Text style={[active ? { color: 'white' } : null, styles.darkGrey]} >{topic.emoji}{topic.categoryName}</Text>
           </View>

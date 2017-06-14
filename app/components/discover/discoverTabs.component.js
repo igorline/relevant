@@ -4,7 +4,8 @@ import {
   Text,
   InteractionManager,
   View,
-  Platform
+  Platform,
+  StatusBar
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -218,7 +219,7 @@ class DiscoverTabs extends Component {
           position: 'absolute',
           backgroundColor: 'white',
           width: fullWidth,
-          height: fullHeight - 108 - (Platform.OS === 'android' ? 12 : 0),
+          height: fullHeight - 108 - (Platform.OS === 'android' ? StatusBar.currentHeight - 14 : 0),
         }}
       >
         <Topics

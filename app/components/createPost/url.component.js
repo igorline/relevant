@@ -5,7 +5,8 @@ import {
   View,
   Text,
   TouchableHighlight,
-  Platform
+  Platform,
+  ScrollView
 } from 'react-native';
 import { globalStyles, blue, fullWidth, greyText } from '../../styles/global';
 import * as utils from '../../utils';
@@ -251,73 +252,73 @@ export default class UrlComponent extends Component {
     }
 
     input = (
+      <ScrollView
+        keyboardShouldPersistTaps={'always'}
+        ref={c => this.scrollView = c}
+        style={{
+          flex: 1,
+          paddingHorizontal: 10,
+        }}
+        contentContainerStyle={{ flexGrow: 1, height: 'auto', minHeight: 260 }}
+
+      >
+        {userHeader}
         <View
-          keyboardShouldPersistTaps={'always'}
-          ref={c => this.scrollView = c}
-          style={{
-            flex: 1,
-            paddingHorizontal: 10,
-            // backgroundColor: 'green',
-          }}
-        >
-          {userHeader}
-
-          <View
-            style={[
-              this.props.urlPreview ? styles.innerBorder : null,
-              this.props.share ? styles.noBorder : null,
-              { flex: 1 }]
-            }
-          >
-            <TextInput
-              ref={(c) => { this.input = c; }}
-              style={[
-                styles.font15,
-                styles.createPostInput,
-                this.props.postBody && this.props.postBody.length ? { flex: 1 } : { flex: 0 },
-              ]}
-              underlineColorAndroid={'transparent'}
-              placeholder={urlPlaceholder}
-              placeholderTextColor={greyText}
-              multiline
-              clearButtonMode={'while-editing'}
-              onChangeText={postBody => {
-                this.processInput(postBody, false);
-                // this.okToSubmit = false;
-              }}
-              onBlur={() => this.processInput(null, true)}
-              returnKeyType={'default'}
-              onFocus={() => null }
-              keyboardShouldPersistTaps={'never'}
-              disableFullscreenUI
-              textAlignVertical={'top'}
-
-              // fix for android enter bug!
-              blurOnSubmit={false}
-              onSubmitEditing={() => {
-                if (this.okToSubmit) {
-                  let postBody = this.props.postBody;
-                  postBody += '\n';
-                  this.processInput(postBody, false);
-                  return this.okToSubmit = false;
-                }
-                this.okToSubmit = true;
-              }}
-            >
-              <TextBody showAllMentions>
-                {this.props.postBody}
-              </TextBody>
-            </TextInput>
-            {addP}
-            {tipCTA}
-          </View>
-          {userSearch}
-          {repostBody}
-          {this.props.postUrl && !this.props.users.search.length ?
-            <UrlPreview size={'small'} {...this.props} actions={this.props.actions} /> :
-            null
+          style={[
+            this.props.urlPreview ? styles.innerBorder : null,
+            this.props.share ? styles.noBorder : null,
+            { flex: 1 }]
           }
+        >
+          <TextInput
+            ref={(c) => { this.input = c; }}
+            style={[
+              styles.font15,
+              styles.createPostInput,
+              this.props.postBody && this.props.postBody.length ? { flex: 1 } : { flex: 0 },
+            ]}
+            underlineColorAndroid={'transparent'}
+            placeholder={urlPlaceholder}
+            placeholderTextColor={greyText}
+            multiline
+            clearButtonMode={'while-editing'}
+            onChangeText={postBody => {
+              this.processInput(postBody, false);
+              // this.okToSubmit = false;
+            }}
+            onBlur={() => this.processInput(null, true)}
+            returnKeyType={'default'}
+            onFocus={() => null }
+            keyboardShouldPersistTaps={'never'}
+            disableFullscreenUI
+            textAlignVertical={'top'}
+
+            // fix for android enter bug!
+            blurOnSubmit={false}
+            onSubmitEditing={() => {
+              if (this.okToSubmit) {
+                let postBody = this.props.postBody;
+                postBody += '\n';
+                this.processInput(postBody, false);
+                return this.okToSubmit = false;
+              }
+              this.okToSubmit = true;
+            }}
+          >
+            <TextBody showAllMentions>
+              {this.props.postBody}
+            </TextBody>
+          </TextInput>
+          {addP}
+          {tipCTA}
         </View>
+        {userSearch}
+        {repostBody}
+        {this.props.postUrl && !this.props.users.search.length ?
+          <UrlPreview size={'small'} {...this.props} actions={this.props.actions} /> :
+          null
+        }
+      </ScrollView>
     );
 
     return (
