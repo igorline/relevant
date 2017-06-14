@@ -4,7 +4,7 @@ import {
   View,
   TextInput,
   TouchableHighlight,
-  AlertIOS,
+  Alert,
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
@@ -38,11 +38,11 @@ class ResetPassword extends Component {
   validate() {
     if (this.state.password) {
       if (this.state.password !== this.state.cPassword) {
-        AlertIOS.alert("Passwords don't match");
+        Alert.alert("Passwords don't match");
         return;
       }
     } else {
-      AlertIOS.alert('Password required');
+      Alert.alert('Password required');
       return;
     }
     dismissKeyboard();

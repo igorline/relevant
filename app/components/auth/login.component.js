@@ -4,7 +4,7 @@ import {
   View,
   TextInput,
   TouchableHighlight,
-  AlertIOS,
+  Alert,
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
@@ -39,12 +39,12 @@ class Login extends Component {
 
   login() {
     if (!this.state.username) {
-      AlertIOS.alert('must enter username');
+      Alert.alert('must enter username');
       return;
     }
 
     if (!this.state.password) {
-      AlertIOS.alert('must enter password');
+      Alert.alert('must enter password');
       return;
     }
     dismissKeyboard();

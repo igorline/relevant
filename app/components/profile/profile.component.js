@@ -229,7 +229,7 @@ class ProfileComponent extends Component {
               {relevanceEl}
             </View>
             <View style={[styles.profileRowContainer]}>
-              <View style={[styles.profileRow, fullWidth <= 320 ? { flexDirection: 'column' } : null]}>
+              <View style={[styles.profileRow, fullWidth <= 320 ? { flexDirection: 'column', alignItems: 'flex-start' } : null]}>
                 <Text style={[styles.font12, styles.darkGrey, styles.profileColumn]}>
                   Subscribers: <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(followers || 0)}</Text>
                 </Text>

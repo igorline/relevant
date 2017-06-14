@@ -91,7 +91,7 @@ exports.sendEmailFunc = async function(_invite) {
       <b>Step 1</b>: <a href="${appStoreUrl}" target="_blank">Download</a> Relevant from the app store (iOS only for now)
       <br />
       <br />
-      <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation (or manually enter the code when prompted)
+      <b>Step 2</b>: Launch the app and enter your invite code: <b>${invite.code}</b>
       <br />
       <br />
       <span style="font-style: italic">Relevant is a social news reader that promotes reliable information and rewards expertise.
@@ -108,6 +108,8 @@ exports.sendEmailFunc = async function(_invite) {
       <div style="margin-top: 30px"><a href="${appStoreUrl}"><img width="100%" src="https://relevant.community/img/fbfimg.jpg" /></a></div>
       `
     };
+    // <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation (or manually enter the code when prompted)
+
     status = await mail.send(data);
     invite.status = 'email sent';
     invite = await invite.save();
