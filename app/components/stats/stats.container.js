@@ -204,7 +204,7 @@ class StatsContainer extends Component {
         <Text
           style={[styles.georgia, styles.darkGrey, styles.emptyText, styles.quarterLetterSpacing]}
         >
-          Tip: 🤓 You can earn relevance by being one of the first to upvote a quality post
+          Tip: {Platform.OS === 'android' ? '😎' : '🤓'} You can earn relevance by being one of the first to upvote a quality post
         </Text>
       </EmptyList>);
     }

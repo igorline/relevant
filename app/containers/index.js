@@ -7,7 +7,7 @@ import configureStore from '../store/configureStore';
 const store = configureStore();
 let codePushOptions = {
   checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
-  installMode: codePush.InstallMode.ON_NEXT_RESUME
+  installMode: codePush.InstallMode.IMMEDIATE
 };
 
 class AppContainer extends Component {
