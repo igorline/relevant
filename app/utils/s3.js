@@ -66,11 +66,14 @@ async function uploadToS3(uri, policy, signature, url, publicUrl, s3_object_name
     body
   })
   .then((response) => {
-    RNFetchBlob.session('uploads').dispose();
-    if (response.status === 201) {
-      return { success: true, url: publicUrl };
+    if (Platform.OS === 'android') {
+      RNFetchBlob.session('uploads').dispose();
+      if (response.status === 201) {
+        return { success: true, url: publicUrl };
+      }
+      return { success: false, response };
     }
-    return { success: false, response };
+    return { success: true, url: publicUrl };
   })
   .catch((error) => {
     console.log(error, 'error');
