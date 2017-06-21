@@ -233,7 +233,7 @@ exports.generatePreview = (body, uri) => {
     articleAuthor: article && article.byline ? [article.byline] : null
   };
 
-  if (!image || !description || !title) {
+  if (!image || !title) {
     console.log('url parse error');
     console.log(data);
     console.log(uri);
