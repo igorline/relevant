@@ -92,7 +92,7 @@ export default class topics extends Component {
               // justifyContent: 'center'
             }}
           >
-            <Text style={[active ? { color: 'white' } : null, styles.darkGrey]} > {topic.emoji}{topic.categoryName} </Text>
+            <Text style={[active ? { color: 'white' } : null, styles.darkGrey]} >{topic.emoji}{topic.categoryName}</Text>
           </View>
         </TouchableHighlight>
         {innerView}

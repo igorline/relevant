@@ -57,11 +57,11 @@ const initialState = {
     key: 'root',
     routes: [
       //🎯🏵🏆🏅🔮🌀🍥
-      { key: 'discover', icon: Platform.OS === 'android' ? ' 📰 ' : '🗞', title: 'Read' },
-      { key: 'stats', icon: Platform.OS === 'android' ? ' 🔘 ' : '🎯', title: 'Stats' },
-      { key: 'createPost', icon: Platform.OS === 'android' ? ' 📝 ' : '✍️', title: 'New Post' },
-      { key: 'activity', con: Platform.OS === 'android' ? ' ⚡ ' : '⚡', title: 'Activity' },
-      { key: 'myProfile', con: Platform.OS === 'android' ? ' 👤 ' : '👤', title: 'Profile' }
+      { key: 'discover', icon: Platform.OS === 'android' ? '📰' : '🗞', title: 'Read' },
+      { key: 'stats', icon: Platform.OS === 'android' ? '🔘' : '🎯', title: 'Stats' },
+      { key: 'createPost', icon: Platform.OS === 'android' ? '📝' : '✍️', title: 'New Post' },
+      { key: 'activity', icon: Platform.OS === 'android' ? '⚡' : '⚡', title: 'Activity' },
+      { key: 'myProfile', icon: Platform.OS === 'android' ? '👤' : '👤', title: 'Profile' }
     ],
   },
   home: {

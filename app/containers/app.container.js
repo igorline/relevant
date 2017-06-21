@@ -14,7 +14,7 @@ import {
   StatusBar,
   Dimensions
 } from 'react-native';
-
+import codePush from 'react-native-code-push';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -86,6 +86,7 @@ class Application extends Component {
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
     utils.token.get()
     .catch(() => {
+      codePush.disallowRestart();
       this.props.actions.replaceRoute({
         key: 'auth',
         component: 'auth',
@@ -108,6 +109,7 @@ class Application extends Component {
 
   componentWillReceiveProps(next) {
     if (!this.props.auth.user && next.auth.user) {
+      codePush.allowRestart();
       this.props.actions.userToSocket(next.auth.user._id);
       this.props.actions.getNotificationCount();
       this.props.actions.getFeedCount();
