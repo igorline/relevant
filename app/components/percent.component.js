@@ -29,13 +29,13 @@ class Percent extends Component {
       this.percent = newPercent;
       this.forceUpdate();
     }
-    this.animationTimer = setTimeout(() => this.animate(), 100);
+    this.animationTimer = setTimeout(() => this.animate(), 300);
   }
 
   render() {
     let user = this.props.user;
     let fontSize = this.props.fontSize || 17;
-    let arrowSize = this.props.fontSize - 1 || 16;
+    // let arrowSize = this.props.fontSize - 1;
     if (!user) return null;
 
     let percent = numbers.percentChange(user);
@@ -44,21 +44,21 @@ class Percent extends Component {
 
     if (percent > 0) {
       percentComponent = (
-        <Text style={[{ fontSize, textAlign: 'right', color: green }, styles.bebas]}>
-          <View style={{ height: arrowSize, width: arrowSize }}>
-            <Text style={{ fontSize, color: green }}>▲</Text>
-          </View>
-          {numbers.abbreviateNumber(percent)}%
-        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+          <Text style={{ fontSize, color: green, marginBottom: -3 }}>▲</Text>
+          <Text style={[{ fontSize, textAlign: 'right', color: green }, styles.bebas]}>
+            {numbers.abbreviateNumber(percent)}%
+          </Text>
+        </View>
       );
     } else if (percent <= 0) {
       percentComponent = (
-        <Text style={[{ fontSize, color: 'red', textAlign: 'right' }, styles.bebas]}>
-          <View style={{ height: arrowSize, width: arrowSize }}>
-            <Text style={{ fontSize: arrowSize, color: 'red' }}>▼</Text>
-          </View>
-          {numbers.abbreviateNumber(percent)}%
-        </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+          <Text style={{ fontSize, color: 'red', marginBottom: -3 }}>▼</Text>
+          <Text style={[{ fontSize, color: 'red', textAlign: 'right' }, styles.bebas]}>
+            {numbers.abbreviateNumber(percent)}%
+          </Text>
+        </View>
       );
     }
 

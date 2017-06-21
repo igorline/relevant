@@ -3,9 +3,10 @@ import {
   StyleSheet,
   TextInput,
   View,
-  KeyboardAvoidingView,
   Text,
-  TouchableHighlight
+  TouchableHighlight,
+  Platform,
+  ScrollView
 } from 'react-native';
 import { globalStyles, blue, fullWidth, greyText } from '../../styles/global';
 import * as utils from '../../utils';
@@ -16,10 +17,12 @@ import PostBody from './../post/postBody.component';
 import PostInfo from './../post/postInfo.component';
 import TextBody from './../post/textBody.component';
 
-var Video = require('react-native-video').default;
+let Video = require('react-native-video').default;
 
 let styles;
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/);
+
+
 
 export default class UrlComponent extends Component {
 
@@ -36,12 +39,15 @@ export default class UrlComponent extends Component {
       this.createPreview(this.props.postUrl);
     }
     setTimeout(() => this.initTooltips('shareTip'), 1000);
+    if (!this.props.share) this.input.focus();
   }
 
   componentWillReceiveProps(next) {
     if (this.props.createPreview !== next.createPreview && next.postUrl) {
       this.createPreview(next.postUrl);
+      this.input.focus();
     }
+    // if (!next.postBody.length && !this.input.isFocused()) this.input.focus();
   }
 
   initTooltips(name) {
@@ -126,7 +132,7 @@ export default class UrlComponent extends Component {
     utils.post.generatePreviewServer(postUrl)
     .then((results) => {
       if (results) {
-        let newBody = this.props.postBody.replace(`${postUrl}`, '').trim();
+        let newBody = this.props.postBody ? this.props.postBody.replace(`${postUrl}`, '').trim() : '';
         let tags = [];
         if (results.tags) {
           tags = results.tags.split(',');
@@ -228,7 +234,7 @@ export default class UrlComponent extends Component {
     }
 
     let tipCTA;
-    if (!this.props.urlPreview && this.props.postBody === '' && !this.props.share) {
+    if (Platform.OS === 'ios' && !this.props.urlPreview && this.props.postBody === '' && !this.props.share) {
       tipCTA = (
         <TouchableHighlight
           ref={c => this.shareTip = c}
@@ -246,61 +252,73 @@ export default class UrlComponent extends Component {
     }
 
     input = (
+      <ScrollView
+        keyboardShouldPersistTaps={'always'}
+        ref={c => this.scrollView = c}
+        style={{
+          flex: 1,
+          paddingHorizontal: 10,
+        }}
+        contentContainerStyle={{ flexGrow: 1, height: 'auto', minHeight: 260 }}
+
+      >
+        {userHeader}
         <View
-          keyboardShouldPersistTaps={'always'}
-          ref={c => this.scrollView = c}
-          style={{
-            flex: 1,
-            paddingHorizontal: 10,
-          }}
-        >
-          {userHeader}
-
-          <View
-            style={[
-              this.props.urlPreview ? styles.innerBorder : null,
-              this.props.share ? styles.noBorder : null,
-              { flex: 1 }]
-            }
-          >
-            <TextInput
-              ref={(c) => { this.input = c; }}
-              style={[
-                styles.font15,
-                styles.createPostInput,
-                this.props.postBody && this.props.postBody.length ? { flex: 1 } : { flex: 0 }
-              ]}
-
-              placeholder={urlPlaceholder}
-              placeholderTextColor={greyText}
-              multiline
-              clearButtonMode={'while-editing'}
-              onChangeText={postBody => this.processInput(postBody, false)}
-              onBlur={() => this.processInput(null, true)}
-              returnKeyType={'default'}
-              autoFocus
-              keyboardShouldPersistTaps={'never'}
-              // onContentSizeChange={(event) => {
-              //   let h = event.nativeEvent.contentSize.height;
-              //   this.setState({
-              //     inputHeight: Math.max(100, h)
-              //   });
-              // }}
-            >
-              <TextBody style={{ flex: 1, width: 400 }} showAllMentions>
-                {this.props.postBody}
-              </TextBody>
-            </TextInput>
-            {addP}
-            {tipCTA}
-          </View>
-          {userSearch}
-          {repostBody}
-          {this.props.postUrl && !this.props.users.search.length ?
-            <UrlPreview size={'small'} {...this.props} actions={this.props.actions} /> :
-            null
+          style={[
+            this.props.urlPreview ? styles.innerBorder : null,
+            this.props.share ? styles.noBorder : null,
+            { flex: 1 }]
           }
+        >
+          <TextInput
+            ref={(c) => { this.input = c; }}
+            style={[
+              styles.font15,
+              styles.createPostInput,
+              this.props.postBody && this.props.postBody.length ? { flex: 1 } : { flex: 0 },
+            ]}
+            underlineColorAndroid={'transparent'}
+            placeholder={urlPlaceholder}
+            placeholderTextColor={greyText}
+            multiline
+            clearButtonMode={'while-editing'}
+            onChangeText={postBody => {
+              this.processInput(postBody, false);
+              // this.okToSubmit = false;
+            }}
+            onBlur={() => this.processInput(null, true)}
+            returnKeyType={'default'}
+            onFocus={() => null }
+            keyboardShouldPersistTaps={'never'}
+            disableFullscreenUI
+            textAlignVertical={'top'}
+
+            // fix for android enter bug!
+            blurOnSubmit={false}
+            onSubmitEditing={() => {
+              if (this.okToSubmit) {
+                let postBody = this.props.postBody;
+                postBody += '\n';
+                this.processInput(postBody, false);
+                return this.okToSubmit = false;
+              }
+              this.okToSubmit = true;
+            }}
+          >
+            <TextBody showAllMentions>
+              {this.props.postBody}
+            </TextBody>
+          </TextInput>
+          {addP}
+          {tipCTA}
         </View>
+        {userSearch}
+        {repostBody}
+        {this.props.postUrl && !this.props.users.search.length ?
+          <UrlPreview size={'small'} {...this.props} actions={this.props.actions} /> :
+          null
+        }
+      </ScrollView>
     );
 
     return (

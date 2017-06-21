@@ -11,8 +11,10 @@ import {
   StatusBar,
   InteractionManager,
   ActionSheetIOS,
-  AlertIOS
+  AlertIOS,
+  Platform
 } from 'react-native';
+import Share from 'react-native-share';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -26,6 +28,7 @@ class ArticleView extends Component {
     super(props, context);
     // this.showInvestors = this.showInvestors.bind(this);
     this.back = this.back.bind(this);
+    this.onShare = this.onShare.bind(this);
     this.state = {
       backButtonEnabled: false,
       forwardButtonEnabled: false,
@@ -37,6 +40,7 @@ class ArticleView extends Component {
   }
 
   componentWillMount() {
+    console.log(this.props.scene.uri);
     this.onInteraction = InteractionManager.runAfterInteractions(() => {
       this.setState({
         initalUrl: this.props.scene.uri,
@@ -52,19 +56,30 @@ class ArticleView extends Component {
   }
 
   back() {
-    if (this.state.backButtonEnabled) {
+    if (this.backButtonEnabled) {
       return () => this.webview.goBack();
     }
     return () => this.props.actions.pop('home');
   }
 
-  showShareActionSheet() {
-    ActionSheetIOS.showShareActionSheetWithOptions({
-      url: this.state.url,
-    },
-    (error) => AlertIOS.alert(error),
-    (completed, method) => {
+  // showShareActionSheet() {
+  //   ActionSheetIOS.showShareActionSheetWithOptions({
+  //     url: this.url,
+  //   },
+  //   (error) => AlertIOS.alert(error),
+  //   (completed, method) => {
 
+  //   });
+  // }
+
+  onShare() {
+    Share.open({
+      title: 'Relevant',
+      url: this.url,
+      subject: 'Article from Relevant',
+      message: 'Shared this article on Relevant: ' + this.url
+    }, (e) => {
+      console.log(e);
     });
   }
 
@@ -94,7 +109,7 @@ class ArticleView extends Component {
       <TouchableHighlight
         style={[styles.leftButton]}
         underlayColor={'transparent'}
-        onPress={() => this.showShareActionSheet()}
+        onPress={() => this.onShare()}
       >
         <View style={{ paddingHorizontal: 10, marginLeft: 0 }}>
           <Image
@@ -123,7 +138,7 @@ class ArticleView extends Component {
       activity = (
         <View
           pointerEvents={'none'}
-          style={{ zIndex: 10, position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
+          style={{ position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
         >
           <ActivityIndicator
             style={{ position: 'absolute', bottom: 0, top: 0, left: 0, right: 0 }}
@@ -140,12 +155,15 @@ class ArticleView extends Component {
         ref={(ref) => { this.webview = ref; }}
         scalesPageToFit
         onNavigationStateChange={(navState) => {
-          this.setState({
-            backButtonEnabled: navState.canGoBack,
-            forwardButtonEnabled: navState.canGoForward,
-            url: navState.url,
-            status: navState.title,
-          });
+          // console.log('nav state change ', navState);
+          this.url = navState.url;
+          this.backButtonEnabled = navState.canGoBack;
+          // this.setState({
+          //   backButtonEnabled: navState.canGoBack,
+          //   forwardButtonEnabled: navState.canGoForward,
+          //   url: navState.url,
+          //   status: navState.title,
+          // });
         }}
         onLoadStart={() => this.setState({ loading: true })}
         onLoadEnd={() => this.setState({ loading: false })}
@@ -155,7 +173,7 @@ class ArticleView extends Component {
     }
 
     return (
-      <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <View style={{ flex: 1, backgroundColor: 'white', paddingTop: 0}}>
         <StatusBar
           hidden={true}
           networkActivityIndicatorVisible
@@ -178,6 +196,7 @@ const localStyles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'black',
+    zIndex: 1
   },
   leftButton: {
     // borderColor: 'red',

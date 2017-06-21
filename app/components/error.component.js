@@ -58,7 +58,7 @@ class ErrorComponent extends Component {
     return (
       <View pointerEvents={this.props.error[this.parent] ? 'auto' : 'none'} style={styles.errorComponentContainer}>
         {errorEl}
-        <CustomSpinner visible={this.state.loading} />
+        {/*<CustomSpinner visible={this.state.loading} />*/}
       </View>
     );
   }

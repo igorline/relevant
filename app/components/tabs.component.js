@@ -50,7 +50,7 @@ class Tabs extends Component {
           <View style={{ position: 'relative', alignItems: 'stretch', flex: 1, justifyContent: 'center' }}>
             <Text
               style={[
-                styles.darkGray,
+                styles.darkGrey,
                 styles.tabFont,
                 styles.quarterLetterSpacing,
                 styles.font15,

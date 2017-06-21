@@ -13,6 +13,7 @@ const initialState = {
     top: false,
     new: false,
     userPosts: false,
+    topics: {}
   },
   newFeedAvailable: false,
   newPostsAvailable: false,
@@ -50,9 +51,10 @@ export default function post(state = initialState, action) {
   switch (action.type) {
 
     case types.INC_FEED_COUNT: {
+      let unread = state.feedUnread || 0;
       return {
         ...state,
-        feedUnread: state.feedUnread + 1,
+        feedUnread: unread + 1,
       };
     }
 
@@ -100,7 +102,14 @@ export default function post(state = initialState, action) {
         posts: { ...state.posts, ...posts },
         loaded: {
           ...state.loaded,
-          [type]: true
+          [type]: true,
+          topics: {
+            ...state.loaded.topics,
+            [topic]: {
+              ...state.loaded.topics[topic],
+              [type]: true
+            }
+          }
         }
       };
     }
@@ -129,7 +138,7 @@ export default function post(state = initialState, action) {
         posts: { ...state.posts, ...posts },
         loaded: {
           ...state.loaded,
-          [type]: true
+          [type]: true,
         }
       };
     }

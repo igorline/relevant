@@ -1,34 +1,35 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   Easing,
 } from 'react-native';
 import * as NavigationExperimental from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Read from './read.container';
-import Discover from './discover.container';
-import SinglePost from './singlePost.container';
-import Activity from './activity.container';
-import Messages from './messages.container';
-import Thirst from './thirst.container';
-import Profile from '../components/profile/profile.container';
-import Blocked from '../components/profile/blocked.container';
-import { transitionConfig } from '../utils';
-import Card from './../components/nav/card.component';
-import * as navigationActions from '../actions/navigation.actions';
-import * as tagActions from '../actions/tag.actions';
-import * as userActions from '../actions/user.actions';
+import Discover from '../discover/discoverTabs.component';
+import DiscoverComponent from '../discover/discover.container';
 
-import PostPeople from '../components/post/people.container';
+import Stats from '../stats/stats.container';
 
-const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
+import SinglePost from '../../containers/singlePost.container';
+import Activity from '../../containers/activity.container';
+// import Messages from './messages.container';
+// import Thirst from './thirst.container';
+import Profile from '../profile/profile.container';
+import Blocked from '../profile/blocked.container';
+import { transitionConfig } from '../../utils';
+import Card from './card.component';
+import * as navigationActions from '../../actions/navigation.actions';
+import * as tagActions from '../../actions/tag.actions';
+import * as userActions from '../../actions/user.actions';
+
+import PostPeople from '../post/people.container';
 
 const {
   Transitioner: NavigationTransitioner,
 } = NavigationExperimental;
 
 
-class CardContainer extends Component {
+class CardContainer extends PureComponent {
 
   constructor(props, context) {
     super(props, context);
@@ -36,21 +37,23 @@ class CardContainer extends Component {
     this.renderScene = this.renderScene.bind(this);
     this.back = this.back.bind(this);
     this.thirsty = this.thirsty.bind(this);
-    this.configureTransition = this.configureTransition.bind(this);
+  }
+
+  shouldComponentUpdate(next) {
+    return next.active;
   }
 
   getDefaultComponent(props) {
     let key = this.default;
-
     switch (key) {
       case 'discover':
-        return <Discover key={key} navigator={this.props.actions} />;
+        return <Discover key={key} actions={this.props.actions} />;
       case 'myProfile':
         return <Profile key={key} navigator={this.props.actions} />;
       case 'activity':
         return <Activity key={key} navigator={this.props.actions} />;
-      case 'read':
-        return <Read key={key} navigator={this.props.actions} />;
+      case 'stats':
+        return <Stats key={key} />;
       default:
         return null;
     }
@@ -76,13 +79,24 @@ class CardContainer extends Component {
       // case 'messages':
       //   return <Messages navigator={this.props.actions} />;
       case 'discover':
-        return <Discover navigator={this.props.actions} scene={props.scene.route} />;
+        return <Discover key={props.scene.route.key} actions={this.props.actions} scene={props.scene.route} />;
 
       case 'profile':
         return <Profile navigator={this.props.actions} scene={props.scene.route} />;
 
       case 'people':
         return <PostPeople scene={props.scene.route} />;
+
+      case 'peopleView':
+        return (<DiscoverComponent
+          active
+          type={'people'}
+          key={'people'}
+          scene={props.scene.route}
+          // onScroll={this.onScroll}
+          // offsetY={this.state.headerHeight}
+          // tabLabel={props.scene.route.title}
+        />);
 
       case 'blocked':
         return <Blocked scene={props.scene.route} />;
@@ -108,33 +122,20 @@ class CardContainer extends Component {
     //   }, 'home');
   }
 
-  configureTransition() {
-    // const easing = Easing.out(Easing.cubic);
-    const easing = Easing.bezier(0.0, 0, 0.58, 1);
-
-    return {
-      // timing: Animated.timing,
-      duration: 220,
-      easing,
-      useNativeDriver: !!NativeAnimatedModule ? true : false,
-      speed: 25,
-    };
-  }
-
   render() {
     const { navigation } = this.props;
     return (
       <NavigationTransitioner
-        style={{ zIndex: 2 }}
         navigation={{ state: navigation[this.default] }}
         configureTransition={transitionConfig}
         render={transitionProps => (
           <Card
             renderScene={this.renderScene}
             back={this.back}
-            {...this.props}
+            auth={this.props.auth}
             scroll={this.props.navigation.scroll}
             globalNav={this.props.navigation}
+            {...this.props}
             {...transitionProps}
             header
           />)}

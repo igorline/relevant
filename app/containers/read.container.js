@@ -97,7 +97,7 @@ class Read extends Component {
 
   scrollToTop() {
     let view = this.listview;
-    if (view) view.listview.scrollTo({ y: 0, animated: true });
+    if (view) view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
   }
 
   load(view, length) {
@@ -112,7 +112,7 @@ class Read extends Component {
   }
 
   goTo(view) {
-    this.props.navigator.push({
+    this.props.actions.push({
       key: view.name,
       title: view.name,
       back: true
@@ -217,6 +217,8 @@ class Read extends Component {
           type={'posts'}
           parent={'feed'}
           active={active}
+          YOffset={this.props.offsetY}
+          onScroll={this.props.onScroll}
           needsReload={this.needsReload}
           actions={this.props.actions}
         >
@@ -245,7 +247,7 @@ class Read extends Component {
     //           <Text>👅💦</Text>
     //         </View>
     //         <View>
-    //           <Text style={[{ fontWeight: '500' }, styles.darkGray]}>{messages ? 'Thirsty messages' : 'No messages'}</Text>
+    //           <Text style={[{ fontWeight: '500' }, styles.darkGrey]}>{messages ? 'Thirsty messages' : 'No messages'}</Text>
     //           <View style={styles.recentNames}>
     //             {recentMessages}
     //           </View>

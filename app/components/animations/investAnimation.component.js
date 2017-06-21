@@ -6,7 +6,7 @@ import {
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as animationActions from '../../actions/animation.actions';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, fullHeight, fullWidth } from '../../styles/global';
 import Dollar from './dollar.component';
 
 const localStyles = StyleSheet.create({
@@ -14,8 +14,9 @@ const localStyles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0,
-    height: 40,
-    width: 80,
+    height: fullHeight,
+    width: fullWidth,
+    // backgroundColor: 'blue'
   }
 });
 
@@ -29,6 +30,8 @@ class InvestAnimation extends Component {
       investAni: [],
       num: 0
     };
+    this.clearEls = this.clearEls.bind(this);
+    this.destroy = this.destroy.bind(this);
   }
 
   componentWillUpdate(next) {
@@ -43,19 +46,35 @@ class InvestAnimation extends Component {
   }
 
   clearEls() {
-    if (this.state.num > 0) this.setState({ num: 0, investAni: [] });
+    // if (this.state.num > 0)
+    this.setState({ num: 0, investAni: [] });
+  }
+
+  destroy(key) {
+    delete this.state.investAni[key];
+    this.setState({ thumbs: this.state.investAni });
   }
 
   investAni() {
-    if (this.state.num < 10) {
-      let newArr = this.state.investAni;
-      newArr.push(<Dollar amount={this.amount} key={this.state.num} specialKey={this.state.num} />);
-      let newNum = this.state.num += 1;
-      this.setState({ num: newNum, investAni: newArr });
-      setTimeout(() => { this.investAni(); }, 50 * Math.random());
-    } else {
-      setTimeout(() => { this.clearEls(); }, 1000);
+    this.clearEls();
+    let newArr = [];
+    for (let i = 0; i <= 10; i++) {
+      newArr.push(<Dollar destroy={this.destroy} amount={this.amount} key={i + Math.random()} specialKey={i} />);
+      // let newNum = this.state.num += 1;
+      this.setState({ investAni: newArr });
+      // setTimeout(() => this.investAni(), 50 * Math.random());
+    // } else {
     }
+
+    // if (this.state.num < 10) {
+    //   let newArr = this.state.investAni;
+    //   newArr.push(<Dollar amount={this.amount} key={this.state.num} specialKey={this.state.num} />);
+    //   let newNum = this.state.num += 1;
+    //   this.setState({ num: newNum, investAni: newArr });
+    //   setTimeout(() => this.investAni(), 50 * Math.random());
+    // } else {
+    //   setTimeout(() => this.clearEls(), 1000);
+    // }
   }
 
   render() {

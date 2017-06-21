@@ -132,7 +132,7 @@ class Messages extends Component {
       />);
     } else {
       messagesEl = (<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={[{ fontWeight: '500' }, styles.darkGray]}>No messages bruh</Text>
+        <Text style={[{ fontWeight: '500' }, styles.darkGrey]}>No messages bruh</Text>
       </View>);
     }
 

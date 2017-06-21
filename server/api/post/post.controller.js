@@ -1,3 +1,4 @@
+import url from 'url';
 import request from 'request';
 import { EventEmitter } from 'events';
 import * as proxyHelpers from './html';
@@ -11,12 +12,55 @@ import Tag from '../tag/tag.model';
 import apnData from '../../pushNotifications';
 import mail from '../../mail';
 
+
 // const rootCas = require('ssl-root-cas/latest').inject();
 // rootCas
   // .addFile(__dirname + '/usr/lib/ssl/certs/ca-certificates.crt')
   // .addFile(__dirname + '/ssl/02-cheap-ssl-intermediary-b.pem')
   // ;
 // require('https').globalAgent.options.ca = rootCas;
+
+// async function fixMassivesci() {
+//   try {
+//     let posts = await Post.find({ $or: [{ link: { $regex: /massivesci.com/ } }, { body: { $regex: /massivesci.com/ } }] })
+//     .populate('metaPost');
+//     posts.forEach(post => {
+//       console.log(post.link);
+//       if (post.link === null) {
+//         post.link = 'https://massivesci.com/articles/meet-the-chemist-who-engineered-the-first-effective-treatment-of-leprosy/';
+//       }
+//       else {
+//         post.link = post.link.replace('.com//', '.com/');
+//       }
+//       post.metaPost.url = post.link;
+//       console.log('new post link ', post.link);
+//       console.log('new meta link ', post.metaPost.url);
+//       post.save();
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// fixMassivesci();
+
+function getBestPosts() {
+  let now = new Date();
+  now.setDate(now.getDate() - 7);
+
+  Post.find({ createdAt: { $gt: now } }).sort('-relevance').limit(13)
+  .then(posts => {
+    posts.forEach(post => {
+      console.log('------');
+      console.log(post.title);
+      console.log(post.link);
+      console.log(post.body);
+      console.log(post.description);
+      console.log(post.user);
+      console.log('------');
+    });
+  });
+}
+// getBestPosts();
 
 const PostEvents = new EventEmitter();
 
@@ -36,7 +80,7 @@ const PostEvents = new EventEmitter();
 // }
 // filterPosts();
 
-request.defaults({ maxRedirects: 20, jar: true });
+request.defaults({ maxRedirects: 22, jar: true });
 // uniqueInvestments()
 // function uniqueInvestments() {
 //   Post.find({})
@@ -232,7 +276,11 @@ exports.userPosts = async (req, res) => {
 
 
 exports.preview = (req, res) => {
-  let previewUrl = req.query.url;
+  // custom param parse to account for — (long dash) character
+  let url_parts = url.parse(req.url, false);
+  let query = url_parts.query;
+  let previewUrl = decodeURIComponent(query.replace('url=', ''));
+  // let previewUrl = decodeURIComponent(req.query.url);
 
   if (!previewUrl.match(/http:\/\//i) && !previewUrl.match(/https:\/\//i)) {
     previewUrl = 'http://' + previewUrl;
@@ -240,7 +288,7 @@ exports.preview = (req, res) => {
 
   function getHeader(uri) {
     let fbHeader = {
-      'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php) Facebot',
+      // 'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php) Facebot',
     };
     let noFb = uri.match('apple.news'); // || uri.match('flip.it');
     if (noFb) return {};
@@ -248,13 +296,13 @@ exports.preview = (req, res) => {
   }
 
   function processReturn(error, response, body) {
-    if (error || response.statusCode !== 200) {
-      console.log('preview error ', error || response.body);
+
+    if (error) {
+      console.log('preview error ', error || response.statusMessage);
       return res.status(500).json(error);
     }
 
     let uri = response.request.uri.href;
-    console.log(uri);
 
     let processed = proxyHelpers.generatePreview(body, uri);
 
@@ -263,7 +311,7 @@ exports.preview = (req, res) => {
       uri = processed.uri;
       return request({
         url: uri,
-        maxRedirects: 20,
+        maxRedirects: 22,
         jar: true,
         gzip: true,
         headers: getHeader(uri),
@@ -283,7 +331,7 @@ exports.preview = (req, res) => {
 
   return request({
     url: previewUrl,
-    maxRedirects: 20,
+    maxRedirects: 22,
     jar: true,
     gzip: true,
     headers: getHeader(previewUrl),
@@ -294,14 +342,15 @@ exports.preview = (req, res) => {
 
 exports.readable = async (req, res) => {
   let short;
+  let article;
   try {
     let uri = req.query.uri;
-    let article = await proxyHelpers.getReadable(uri);
+    article = await proxyHelpers.getReadable(uri);
     short = proxyHelpers.trimToLength(article.article, 140);
   } catch (err) {
     return handleError(res)(err);
   }
-  return res.send(short.innerHTML);
+  return res.send(article.content);
 };
 
 exports.findByID = async (req, res) => {
@@ -544,21 +593,47 @@ exports.create = (req, res) => {
 
           promises.push(
             feed.save()
-            .then(() => {
-              let now = new Date();
-              let follower = subscription.follower;
-              if (now - (24 * 60 * 60 * 1000) > follower.lastFeedNotification) {
-                let alert = 'There is a new post from ' + author.name + ' in your feed!';
-                let payload = { 'New post from': author.name };
-                apnData.sendNotification(follower, alert, payload);
-                follower.lastFeedNotification = now;
-                follower.save();
+            .then(async () => {
+              try {
+                let now = new Date();
+                let follower = subscription.follower;
+                // TODO put it on a queue, only certain hours of the day
+                if (now - (12 * 60 * 60 * 1000) > new Date(follower.lastFeedNotification)) {
+                  let unread = await Feed.find({ userId: follower._id, read: false, createdAt: { $gte: now - (24 * 60 * 60 * 1000) } });
+                  let n = unread.length;
+                  let alert;
+                  if (n === 1) {
+                    alert = 'There is a new posts from ' + author.name + ' in your feed!';
+                  } else {
+                    let from = unread.map(el => el.from);
+                    from = [...new Set(from)];
+                    if (from.length === 1) {
+                      alert = 'There are new posts from ' + author.name + ' in your feed!';
+                    } else {
+                      alert = 'There are new posts from ' + author.name + ' and others in your feed!';
+                    }
+                  }
+                  let payload = {
+                    type: 'newFeedpost',
+                    id: newPost._id,
+                    author: author.name,
+                    number: n,
+                  };
+                  // console.log('New post in feed alert', alert);
+                  apnData.sendNotification(follower, alert, payload);
+                  follower.lastFeedNotification = now;
+                  follower.save();
+                } else {
+                  console.log('recently sent notification');
+                }
+              } catch (err) {
+                console.log(err);
               }
             })
           );
 
           let newFeedPost = {
-            _id: subscription.follower,
+            _id: subscription.follower._id,
             type: 'INC_FEED_COUNT',
           };
           PostEvents.emit('post', newFeedPost);

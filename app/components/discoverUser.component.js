@@ -32,14 +32,15 @@ class DiscoverUser extends Component {
     let stats = (<Stats
       type={'percent'}
       entity={statsUser}
-      renderLeft={this.props.topic ? this.props.topic + '  ' : null}
+      renderLeft={this.props.topic ? <Text style={[styles.bebas, styles.font17]}>{this.props.topic} </Text> : null}
     />);
     let right = this.props.renderRight ? this.props.renderRight() : stats;
 
     bioEl = (
       <View style={styles.bioContainer}>
         <TextBody
-          style={styles.discoverBio}
+          actions={this.props.actions}
+          style={[styles.discoverBio, styles.darkGrey]}
           numberOfLines={3}
         >
           {this.props.user.bio}
@@ -61,7 +62,9 @@ class DiscoverUser extends Component {
               user={user}
               setSelected={this.setSelected}
             />
-            {right}
+            <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }}>
+              {right}
+            </View>
           </View>
           {this.props.user.bio && this.props.bio ? bioEl : null}
         </View>

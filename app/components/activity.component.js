@@ -5,6 +5,7 @@ import {
   View,
   TouchableWithoutFeedback,
   Image,
+  TouchableOpacity
 } from 'react-native';
 
 import { numbers } from '../utils';
@@ -39,6 +40,7 @@ export default function (props) {
     if (!tooltipParent[name]) return;
     tooltipParent[name].measureInWindow((x, y, w, h) => {
       let parent = { x, y, w, h };
+      console.log(parent);
       if (x + y + w + h === 0) return;
       props.navigator.setTooltipData({
         name,
@@ -59,10 +61,20 @@ export default function (props) {
 
   let renderRight = () => {
     if (singleActivity.type) {
-      let amountEl = null;
       return (<View style={styles.time}>
-        {amountEl}
-        <Text style={[{ paddingHorizontal: 5, marginBottom: -6, fontSize: 11, color: '#B0B3B6', textAlign: 'center' }]}>{fromNow}</Text>
+        <View style={styles.border} />
+        <Text
+          style={[{
+            paddingHorizontal: 5,
+            // marginBottom: -6,
+            fontSize: 11,
+            color: '#B0B3B6',
+            textAlign: 'center',
+            backgroundColor: 'white'
+          }]}
+        >
+          {fromNow}
+        </Text>
       </View>);
     }
     return null;
@@ -249,26 +261,22 @@ export default function (props) {
 
     if (singleActivity.coin) {
       coin = (
-        <Text
+        <TouchableOpacity
           onPress={() => toggleTooltip('activity')}
           allowFontScaling={false}
-          style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}
+          style={styles.textRow}
         >
-          <View
-            style={[styles.r, { height: 15, width: 22, marginRight: 0 }]}
-          >
-            <Image
-              resizeMode={'contain'}
-              style={[styles.r, { height: 15, width: 22, marginRight: 0 }]}
-              source={require('../assets/images/coinup.png')}
-            />
-          </View>
-          <Text style={{ lineHeight: 17, fontSize: 17 }}>
+          <Image
+            resizeMode={'contain'}
+            style={[styles.r, { height: 15, width: 22 }]}
+            source={require('../assets/images/coinup.png')}
+          />
+          <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
             {Math.abs(numbers.abbreviateNumber(singleActivity.coin))}
             { !smallScreen && singleActivity.amount ?
               <Text style={styles.darkGrey}>{'•'}</Text> : null}
           </Text>
-        </Text>
+        </TouchableOpacity>
       );
     }
 
@@ -281,29 +289,26 @@ export default function (props) {
           <View
             style={[smallScreen ? styles.activityMiddleSmall : styles.activityMiddle]}
             ref={(c) => tooltipParent.activity = c}
+            onLayout={() => null}
           >
             { coin }
             {coin && smallScreen ?
               <View style={styles.divide} /> : null
             }
-            <Text
+            <TouchableOpacity
               onPress={() => toggleTooltip('activity', singleActivity.type)}
               allowFontScaling={false}
-              style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}
+              style={styles.textRow}
             >
-              <View
-                style={[styles.r, { height: 16, width: 20, marginRight: 0 }]}
-              >
-                <Image
-                  resizeMode={'contain'}
-                  style={[styles.r, { height: 16, width: 20, marginRight: 0 }]}
-                  source={icon}
-                />
-              </View>
-              <Text style={{ lineHeight: 17, fontSize: 17 }}>
+              <Image
+                resizeMode={'contain'}
+                style={[styles.r, { height: 16, width: 20 }]}
+                source={icon}
+              />
+              <Text style={[ styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
                 {Math.abs(numbers.abbreviateNumber(singleActivity.amount))}
               </Text>
-            </Text>
+            </TouchableOpacity>
 
           </View>
         );
@@ -331,7 +336,7 @@ export default function (props) {
                 (<Text allowFontScaling={false} style={styles.incomeEmoji}>
                   🤑
                 </Text>)}
-              <Text style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
+              <Text style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
                 {getText(singleActivity)}
               </Text>
             </View>
@@ -343,7 +348,7 @@ export default function (props) {
       //   return (
       //     <View style={styles.activityLeft}>
       //       <Text allowFontScaling={false} style={styles.incomeEmoji}>😡</Text>
-      //       <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
+      //       <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
       //         {getText(singleActivity)}
       //       </Text>
       //     </View>
@@ -354,7 +359,7 @@ export default function (props) {
         return (
           <View style={styles.activityLeft}>
             <Text allowFontScaling={false} style={styles.incomeEmoji}>🤑</Text>
-            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
+            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
               {getText(singleActivity)}
             </Text>
             {renderPost(singleActivity.post)}
@@ -365,7 +370,7 @@ export default function (props) {
           <View style={styles.activityLeft}>
             <Text allowFontScaling={false} style={styles.incomeEmoji}>🤑</Text>
 
-            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
+            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
               {getText(singleActivity)}
             </Text>
           </View>
@@ -374,7 +379,7 @@ export default function (props) {
         return (
           <View style={styles.activityLeft}>
             {renderImage(singleActivity.byUser)}
-            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGray, styles.georgia]}>
+            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
               {renderName(singleActivity.byUser)}
               {getText(singleActivity)}
             </Text>
@@ -390,7 +395,7 @@ export default function (props) {
         {renderMiddle()}
       </View>
       {renderPost(singleActivity.post)}
-      <View style={styles.border}>
+      <View>
         {renderRight()}
       </View>
     </View>
@@ -402,12 +407,20 @@ const localStyles = StyleSheet.create({
     width: 25,
     margin: 2,
   },
+  time: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 5,
+  },
   border: {
     alignItems: 'center',
     borderBottomColor: '#dddddd',
     borderBottomWidth: StyleSheet.hairlineWidth,
     marginHorizontal: 60,
-    marginBottom: 5,
+    // marginBottom: 5,
+    position: 'absolute',
+    width: fullWidth - 120,
+    bottom: 6,
   },
   singleActivity: {
     padding: 10,

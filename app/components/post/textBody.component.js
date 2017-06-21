@@ -54,7 +54,7 @@ class TextBody extends Component {
 
   render() {
     const expanded = this.props.singlePost;
-    let maxTextLength = this.props.maxTextLength || Math.pow(10, 10);
+    let maxTextLength = this.props.maxTextLength || Math.pow(100, 10);
     let body = this.props.body || this.props.children || '';
     let post = this.props.post || {};
     let showAllMentions = this.props.showAllMentions;

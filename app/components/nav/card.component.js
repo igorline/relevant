@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import * as NavigationExperimental from 'react-navigation';
 import CardStackStyleInterpolator from 'react-navigation/lib/views/CardStackStyleInterpolator';
-import { globalStyles, fullWidth } from '../../styles/global';
+import { globalStyles, fullWidth, headerHeight } from '../../styles/global';
 import CardHeader from './cardHeader.component';
 import NavPanResponder from './navPanResponder';
 
@@ -58,7 +58,7 @@ class Card extends Component {
         index + 0.99,
         index + 1,
       ],
-      outputRange: [0, 0.0, 1, 0.8, 0],
+      outputRange: [0, 0.1, 1, 0.8, 0],
     });
 
     const opacityCard = position.interpolate({
@@ -69,7 +69,7 @@ class Card extends Component {
         index + 0.99,
         index + 1,
       ]),
-      outputRange: ([0, 1, 1, 0.6, 0]),
+      outputRange: ([1, 1, 1, 0.6, .6]),
     });
 
     if (type === 'header') return { opacity };
@@ -186,14 +186,14 @@ class Card extends Component {
 
       let renderHeader = props.header && scene.route.header !== false;
 
-      let headerHeight = renderHeader ? 59 : 0;
-      if (this.props.share) headerHeight = 43;
+      let paddingTop = renderHeader ? headerHeight : 0;
+      if (this.props.share) paddingTop = 44;
 
       const style = [
         styles.card,
         cardTransitionStyle,
         { flex: 1,
-          paddingTop: headerHeight,
+          paddingTop,
         },
       ];
 
@@ -206,10 +206,10 @@ class Card extends Component {
 
       if (vertical) {
         headerStyle = this.getAnimatedStyleVertical(sceneProps);
-        // headerStyle = CardStackStyleInterpolator.forVertical(sceneProps);
       }
 
       if (props.header && scene.route.header !== false) {
+
         headers.push(
           <CardHeader
             key={scene.key}
@@ -236,8 +236,8 @@ class Card extends Component {
 
     return (
       <View style={[{ flex: 1, backgroundColor: 'black' }, this.props.style]}>
-        {headers}
         {scenes}
+        {headers}
       </View>
     );
   }

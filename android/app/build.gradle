@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: 'com.google.gms.google-services' // <- Add this line
 
 import com.android.build.OutputFile
 
@@ -66,6 +67,7 @@ import com.android.build.OutputFile
  */
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -90,10 +92,20 @@ android {
         applicationId "com.relevantnative"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.0.2"
         ndk {
             abiFilters "armeabi-v7a", "x86"
+        }
+    }
+    signingConfigs {
+        release {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
         }
     }
     splits {
@@ -105,9 +117,19 @@ android {
         }
     }
     buildTypes {
+        debug {
+            // Note: CodePush updates should not be tested in Debug mode as they are overriden by the RN packager. However, because CodePush checks for updates in all modes, we must supply a key.
+            buildConfigField "String", "CODEPUSH_KEY", '""'
+        }
+        releaseStaging {
+            buildConfigField "String", "CODEPUSH_KEY", '"WJJcwSc5ZQe2A8gNeizsJ_uBOIFY52aae8fd-4800-425e-b2b2-b3be3d883f42"'
+            // applicationIdSuffix ".debug"
+        }
         release {
+            buildConfigField "String", "CODEPUSH_KEY", '"xVr64HAXULO11o_wGbgZfg8wC_k152aae8fd-4800-425e-b2b2-b3be3d883f42"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
@@ -126,6 +148,11 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-code-push')
+    compile project(':react-native-fetch-blob')
+    compile project(':react-native-push-notification')
+    compile project(':react-native-bottom-sheet')
+    compile project(':react-native-swiss-knife')
     compile project(':react-native-orientation')
     compile project(':react-native-vector-icons')
     compile project(':react-native-video')

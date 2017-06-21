@@ -2,7 +2,8 @@ import {
   StyleSheet,
   View,
   Text,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import * as NavigationExperimental from 'react-navigation';
 import React, { Component } from 'react';
@@ -21,6 +22,11 @@ import * as utils from '../utils';
 import Card from './../components/nav/card.component';
 
 import { fullWidth, fullHeight } from '../styles/global';
+
+let KBView = KeyboardAvoidingView;
+// if (Platform.OS === 'android') {
+//   KBView = View;
+// }
 
 const {
   Transitioner: NavigationTransitioner,
@@ -69,9 +75,16 @@ class ShareContainer extends Component {
         value: data.value,
         data
       });
+
+      let url = data.url || data.value;
+      if (url) {
+        let words = utils.text.getWords(url);
+        url = words.find(word => utils.post.URL_REGEX.test(word));
+      }
+      // console.log('url ', url)
       this.props.actions.setCreaPostState({
-        postUrl: data.url,
-        postBody: data.selection,
+        postUrl: url || null,
+        postBody: data.selection || !url ? data.value : '',
         createPreview: {}
       });
     } catch (e) {
@@ -125,14 +138,20 @@ class ShareContainer extends Component {
     return (
       <Modal
         backdrop
-        style={{ backgroundColor: 'transparent' }}
+        style={{
+          backgroundColor: 'transparent',
+          // height: fullHeight * 0.9,
+          // width: fullWidth,
+          // left: 0,
+          flex: 1,
+        }}
         animationType={'fade'}
         position="top"
         transparent
         isOpen={this.state.isOpen}
         onClosed={this.onClose}
       >
-        <KeyboardAvoidingView
+        <KBView
           behavior={'padding'}
           style={{
             alignItems: 'center',
@@ -160,7 +179,7 @@ class ShareContainer extends Component {
             }
             />
           </View>
-        </KeyboardAvoidingView>
+        </KBView>
       </Modal>
     );
   }
@@ -171,6 +190,7 @@ style = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'white',
     flexGrow: 1,
+    flex: 1,
     width: fullWidth * 0.95,
     marginTop: 65,
     marginBottom: 20,

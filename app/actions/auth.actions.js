@@ -1,19 +1,47 @@
-import Analytics from 'react-native-firebase-analytics';
 import * as types from './actionTypes';
 import * as utils from '../utils';
 import * as errorActions from './error.actions';
 
 let AlertIOS = utils.fetchUtils.Alert();
 let rn = {};
-let PushNotificationIOS;
+let PushNotification;
 let userDefaults;
 
 utils.fetchUtils.env();
+let Analytics;
+let Platform;
 
 if (process.env.WEB != 'true') {
   rn = require('react-native');
-  PushNotificationIOS = rn.PushNotificationIOS;
-  userDefaults = require('react-native-user-defaults').default;
+
+  Analytics = require('react-native-firebase-analytics');
+  // PushNotificationIOS = rn.PushNotificationIOS;
+  // userDefaults = require('react-native-user-defaults').default;
+  userDefaults = require('react-native-swiss-knife').RNSKBucket;
+  Platform = require('react-native').Platform;
+
+  PushNotification = require('react-native-push-notification');
+  // PushNotification.configure({
+  //   // (optional) Called when Token is generated (iOS and Android)
+  //   onRegister: function(token) {
+  //       console.log( 'TOKEN:', token );
+  //   },
+
+  //   // (required) Called when a remote or local notification is opened or received
+  //   onNotification: function(notification) {
+  //       console.log( 'NOTIFICATION:', notification );
+  //   },
+  //   // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
+  //   senderID: "271994332492",
+  //   // IOS ONLY (optional): default: all - Permissions to register.
+  //   permissions: {
+  //     alert: true,
+  //     badge: true,
+  //     sound: true
+  //   },
+  //   popInitialNotification: true,
+  //   requestPermissions: true,
+  // });
 }
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
@@ -299,13 +327,25 @@ export function getUser(callback) {
       .then((responseJSON) => {
         dispatch(setUser(responseJSON));
 
-        Analytics.setUserProperty('relevance', Math.round(responseJSON.relevance).toString());
-        Analytics.setUserProperty('posts', responseJSON.postCount.toString());
-        Analytics.setUserProperty('upvotes', responseJSON.investmentCount.toString());
+        if (Analytics) {
+          let r = responseJSON.relevance;
+          let p = responseJSON.postCount;
+          let i = responseJSON.investmentCount;
+
+          r = r === 0 ? '0' : (r < 25 ? '25' : (r < 200 ? '200' : 'manu'));
+          p = p === 0 ? '0' : (p < 10 ? '10' : (p < 30 ? '30' : 'many'));
+          i = i === 0 ? '0' : (i < 25 ? '75' : (i < 200 ? '200' : 'many'));
+
+          Analytics.setUserProperty('relevance', r);
+          Analytics.setUserProperty('posts', p);
+          Analytics.setUserProperty('upvotes', i);
+        }
 
         dispatch(setSelectedUserData(responseJSON));
         if (process.env.WEB != 'true') {
-          dispatch(addDeviceToken(responseJSON, token));
+          // if (Platform.OS === 'ios') {
+            dispatch(addDeviceToken(responseJSON, token));
+          // }
         }
         dispatch(errorActions.setError('universal', false));
         if (callback) callback(responseJSON);
@@ -361,70 +401,90 @@ export function updateUser(user, preventLocalUpdate) {
     });
 }
 
-export function addDeviceToken(user, authToken) {
+export function addDeviceToken(user) {
+  console.log('add device token');
   return (dispatch) => {
-    PushNotificationIOS.checkPermissions((results) => {
-      console.log(results, 'permissions ios');
-      if (!results.alert) {
-        console.log('requestPermissions');
-        PushNotificationIOS.requestPermissions();
-      } else {
-        userDefaults.get('deviceToken', APP_GROUP_ID)
-        .then(storedDeviceToken => {
-          if (storedDeviceToken) {
-            dispatch(setDeviceToken(storedDeviceToken));
-            let newUser = user;
-            if (user.deviceTokens) {
-              if (user.deviceTokens.indexOf(storedDeviceToken) < 0) {
-                newUser.deviceTokens.push(storedDeviceToken);
-                console.log('adding devicetoken to user here', storedDeviceToken);
-                dispatch(updateUser(newUser));
-              } else {
-                console.log(user.deviceTokens);
-                console.log('devicetoken already present in user');
-              }
-            } else {
-              newUser.deviceTokens = [storedDeviceToken];
-              console.log('adding devicetoken to user object', storedDeviceToken);
-              dispatch(updateUser(newUser));
-            }
-          } else {
-            console.log('no userdefault devicetoken');
-          }
-        })
-        .catch(err => {
-          if (err) console.log('get devicetoken error', err);
-        });
-      }
+    // PushNotification.checkPermissions((results) => {
+    //   console.log(results, 'permissions ios');
+    //   if (!results.alert) {
+    //     console.log('requestPermissions');
+    //     PushNotification.requestPermissions();
+    //   } else {
+    //     userDefaults.get('deviceToken', APP_GROUP_ID)
+    //     .then(storedDeviceToken => {
+    //       if (storedDeviceToken) {
+    //         dispatch(setDeviceToken(storedDeviceToken));
+    //         let newUser = user;
+    //         if (user.deviceTokens) {
+    //           if (user.deviceTokens.indexOf(storedDeviceToken) < 0) {
+    //             newUser.deviceTokens.push(storedDeviceToken);
+    //             console.log('adding devicetoken to user here', storedDeviceToken);
+    //             dispatch(updateUser(newUser));
+    //           } else {
+    //             console.log(user.deviceTokens);
+    //             console.log('devicetoken already present in user');
+    //           }
+    //         } else {
+    //           newUser.deviceTokens = [storedDeviceToken];
+    //           console.log('adding devicetoken to user object', storedDeviceToken);
+    //           dispatch(updateUser(newUser));
+    //         }
+    //       } else {
+    //         console.log('no userdefault devicetoken');
+    //       }
+    //     })
+    //     .catch(err => {
+    //       if (err) console.log('get devicetoken error', err);
+    //     });
+    //   }
+    // });
+
+    PushNotification.configure({
+      // (optional) Called when Token is generated (iOS and Android)
+      onRegister: function(token) {
+        // console.log( 'TOKEN:', token );
+      },
+
+      // (required) Called when a remote or local notification is opened or received
+      onNotification: function(notification) {
+        // console.log( 'NOTIFICATION:', notification );
+      },
+
+      // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
+      senderID: '271994332492',
+
+      // IOS ONLY (optional): default: all - Permissions to register.
+      permissions: {
+        alert: true,
+        badge: true,
+        sound: true
+      },
+      popInitialNotification: true,
+      requestPermissions: true,
     });
 
-
-    PushNotificationIOS.addEventListener('register', (deviceToken) => {
-      console.log('PushNotificationIOS registration');
-      dispatch(setDeviceToken(deviceToken));
-      userDefaults.set('deviceToken', deviceToken, APP_GROUP_ID)
-      .then(() => {
-        console.log('saved devicetoken to userDefaults');
-      })
-      .catch(err => {
-        if (err) console.log('store devicetoken error', err);
-      });
+    PushNotification.onRegister = (deviceToken) => {
+      // console.log(deviceToken);
+      let token = deviceToken.token;
+      userDefaults.set('deviceToken', token, APP_GROUP_ID);
+      dispatch(setDeviceToken(token));
       let newUser = user;
       if (user.deviceTokens) {
-        if (user.deviceTokens.indexOf(deviceToken) < 0) {
-          newUser.deviceTokens.push(deviceToken);
-          console.log('adding devicetoken to user object', deviceToken);
+        if (user.deviceTokens.indexOf(token) < 0) {
+          newUser.deviceTokens.push(token);
+          // console.log(newUser);
+          // console.log('adding devicetoken to user here', token);
           dispatch(updateUser(newUser));
         } else {
           console.log(user.deviceTokens);
-          console.log('devicetoken already present in user object');
+          // console.log('devicetoken already present in user');
         }
       } else {
-        newUser.deviceTokens = [deviceToken];
-        console.log('adding devicetoken to useroject', deviceToken);
+        newUser.deviceTokens = [token];
+        // console.log('adding devicetoken to user object', token);
         dispatch(updateUser(newUser));
       }
-    });
+    };
   };
 }
 
@@ -433,15 +493,17 @@ export function removeDeviceToken(auth) {
   return dispatch => {
     let user = auth.user;
     if (user.deviceTokens) {
+      // console.log('remove token');
+      // console.log(auth.deviceToken);
       let index = user.deviceTokens.indexOf(auth.deviceToken);
       if (index > -1) {
-        console.log(user.deviceTokens, 'pre splice');
+        // console.log(user.deviceTokens, 'pre splice');
         user.deviceTokens.splice(index, 1);
-        console.log(user.deviceTokens, 'post splice');
-        console.log('upating user to', user);
+        // console.log(user.deviceTokens, 'post splice');
+        // console.log('upating user to', user);
         dispatch(updateUser(user, true));
       } else {
-        console.log('devicetoken not present');
+        // console.log('devicetoken not present');
       }
     }
   };
@@ -523,4 +585,71 @@ export function confirmEmail(user, code) {
       console.log(err);
       return false;
     });
+}
+
+export function setStats(stats) {
+  return {
+    type: types.SET_STATS,
+    payload: stats
+  };
+}
+
+
+export function getChart(start, end) {
+  return async dispatch => {
+    try {
+      let chart = await utils.fetchUtils.superFetch({
+        method: 'GET',
+        endpoint: 'relevanceStats',
+        path: `/user`,
+        params: { start, end }
+      });
+      dispatch(setStats({ chart }));
+      dispatch(errorActions.setError('stats', false));
+      return true;
+    } catch (error) {
+      console.log(error);
+      dispatch(errorActions.setError('stats', true, error.message));
+      return false;
+    }
+  };
+}
+
+export function getStats(user) {
+  return async dispatch => {
+    try {
+      let stats = await utils.fetchUtils.superFetch({
+        method: 'GET',
+        endpoint: 'relevance',
+        path: `/user/${user._id}/stats`,
+      });
+      dispatch(setStats(stats));
+      dispatch(errorActions.setError('stats', false));
+      return true;
+    } catch (error) {
+      console.log(error);
+      dispatch(errorActions.setError('stats', true, error.message));
+      return false;
+    }
+  };
+}
+
+export function getRelChart(start, end) {
+  return async dispatch => {
+    try {
+      let relChart = await utils.fetchUtils.superFetch({
+        method: 'GET',
+        endpoint: 'statistics',
+        path: `/user`,
+        params: { start, end }
+      });
+      dispatch(setStats({ relChart }));
+      dispatch(errorActions.setError('stats', false));
+      return true;
+    } catch (error) {
+      console.log(error);
+      dispatch(errorActions.setError('stats', true, error.message));
+      return false;
+    }
+  };
 }

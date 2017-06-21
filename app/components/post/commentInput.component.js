@@ -5,8 +5,9 @@ import {
   View,
   TextInput,
   Image,
-  AlertIOS,
-  TouchableHighlight
+  Alert,
+  TouchableHighlight,
+  Platform
 } from 'react-native';
 import { globalStyles, fullHeight, greyText } from '../../styles/global';
 import UserSearchComponent from '../createPost/userSearch.component';
@@ -19,11 +20,12 @@ class CommentInput extends Component {
   constructor(props, context) {
     super(props, context);
     this.renderInput = this.renderInput.bind(this);
-    this.renderUserSuggestions = this.renderUserSuggestions.bind(this);
     this.setMention = this.setMention.bind(this);
     this.createComment = this.createComment.bind(this);
     this.processInput = this.processInput.bind(this);
-    this.state = {};
+    this.state = {
+      inputHeight: 50
+    };
   }
 
   componentWillUnmount() {
@@ -38,7 +40,7 @@ class CommentInput extends Component {
 
   createComment() {
     if (!this.state.comment || !this.state.comment.length) {
-      return AlertIOS.alert('no comment');
+      return Alert.alert('no comment');
     }
 
     let comment = this.state.comment.trim();
@@ -60,7 +62,9 @@ class CommentInput extends Component {
       if (!success) {
         this.setState({ comment, inputHeight: 50 });
         this.textInput.focus();
+        return;
       }
+      this.props.scrollToBottom();
     });
   }
 
@@ -75,34 +79,9 @@ class CommentInput extends Component {
 
     this.commentTags = utils.text.getTags(words);
     this.commentMentions = utils.text.getMentions(words);
-  }
-
-  renderUserSuggestions() {
-    let parentEl = null;
-    if (this.props.users.search) {
-      if (this.props.users.search.length) {
-        parentEl = (
-          <View
-            style={{
-              position: 'absolute',
-              bottom: Math.min(120, this.state.inputHeight),
-              left: 0,
-              right: 0,
-              maxHeight: this.top,
-              backgroundColor: 'white',
-              borderTopWidth: 1,
-              borderTopColor: '#F0F0F0' }}
-          >
-            <UserSearchComponent
-              style={{ paddingTop: 59 }}
-              setSelected={this.setMention}
-              users={this.props.users.search}
-            />
-          </View>
-        );
-      }
-    }
-    return parentEl;
+    this.props.updatePosition({
+      inputHeight: this.state.inputHeight, top: this.top
+    });
   }
 
   renderInput() {
@@ -121,20 +100,24 @@ class CommentInput extends Component {
           { height: Math.min(this.state.inputHeight, 120) }
         ]}
       >
-        {this.renderUserSuggestions()}
         {inputImage}
         <TextInput
           ref={(c) => { this.textInput = c; }}
+          underlineColorAndroid={'transparent'}
+          textAlignVertical={'top'}
           style={[
             styles.commentInput,
             styles.font15,
             {
-              // flex: 1,
-              lineHeight: 20,
-              paddingTop: 10,
-              height: 'auto',
-              maxHeight: 120,
-              minHeight: 50,
+              flex: 1,
+              lineHeight: 18,
+              paddingTop: Platform.OS === 'ios' ? 10 : 15,
+              // height: 'auto',
+              // maxHeight: 120,
+              // minHeight: 50,
+              flexDirection: 'row',
+              alignItems: 'center',
+              height: Math.min(this.state.inputHeight, 120),
             }
           ]}
           placeholder="Enter comment..."
@@ -146,11 +129,24 @@ class CommentInput extends Component {
           }}
           returnKeyType="default"
           onFocus={this.props.onFocus}
-          onContentSizeChange={(event) => {
+          onChange={(event) => {
             let h = event.nativeEvent.contentSize.height;
             this.setState({
               inputHeight: Math.max(50, h)
             });
+          }}
+
+          // fix for android enter bug!
+          blurOnSubmit={false}
+          onSubmitEditing={() => {
+            if (this.okToSubmit) {
+              let comment = this.state.comment;
+              comment += '\n';
+              this.processInput(comment, false);
+              this.setState({ comment });
+              return this.okToSubmit = false;
+            }
+            return this.okToSubmit = true;
           }}
         >
           <TextBody style={{ flex: 1 }} showAllMentions>{this.state.comment}</TextBody>

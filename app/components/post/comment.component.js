@@ -5,10 +5,12 @@ import {
   View,
   Image,
   ActionSheetIOS,
-  AlertIOS,
-  TouchableHighlight
+  TouchableHighlight,
+  Platform,
+  Alert
 } from 'react-native';
-import { globalStyles } from '../../styles/global';
+import RNBottomSheet from 'react-native-bottom-sheet';
+import { globalStyles, darkGrey } from '../../styles/global';
 import TextEdit from '../common/textEdit.component';
 import UserName from '../userNameSmall.component';
 import { numbers, text as textUtil } from '../../utils';
@@ -16,6 +18,12 @@ import TextBody from './textBody.component';
 
 let moment = require('moment');
 
+let ActionSheet = ActionSheetIOS;
+
+if (Platform.OS === 'android') {
+  ActionSheet = RNBottomSheet;
+  ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
+}
 let styles;
 
 class Comment extends Component {
@@ -38,7 +46,6 @@ class Comment extends Component {
     this.showActionSheet = this.showActionSheet.bind(this);
     this.editComment = this.editComment.bind(this);
     this.saveEdit = this.saveEdit.bind(this);
-    this.scrollToComment = this.scrollToComment.bind(this);
   }
 
   componentDidMount() {
@@ -63,17 +70,17 @@ class Comment extends Component {
     this.props.actions.updateComment(comment)
     .then((results) => {
       if (results) {
-        this.setState({ editing: false, editedText: null });
-        AlertIOS.alert('Comment updated');
+        this.setState({ editedText: null });
+        Alert.alert('Comment updated');
       } else {
         comment.text = originalText;
-        this.setState({ editing: true, editedText: text });
+        this.setState({ editing: true });
       }
     });
   }
 
   showActionSheet() {
-    ActionSheetIOS.showActionSheetWithOptions({
+    ActionSheet.showActionSheetWithOptions({
       options: this.state.buttons,
       cancelButtonIndex: this.state.cancelIndex,
       destructiveButtonIndex: this.state.destructiveIndex,
@@ -98,12 +105,6 @@ class Comment extends Component {
     }
   }
 
-  scrollToComment(animated) {
-    this.singleComment.measure((fx, fy, width, height, px, py) => {
-      let num = fy;
-      this.props.parentEditing(true, num, animated);
-    });
-  }
 
   deleteComment() {
     const self = this;
@@ -126,8 +127,10 @@ class Comment extends Component {
   }
 
   editComment() {
-    this.setState({ editedText: this.props.comment.text });
-    this.setState({ editing: !this.state.editing });
+    if (!this.state.editing) {
+      this.props.scrollToComment();
+    }
+    this.setState({ editedText: this.props.comment.text, editing: !this.state.editing });
   }
 
   render() {
@@ -145,16 +148,16 @@ class Comment extends Component {
 
     if (this.state.editing) {
       editingEl = (<TextEdit
-        style={[styles.darkGray, styles.editingInput]}
+        style={[styles.darkGrey, styles.editingInput]}
         text={this.state.editedText || comment.text}
         toggleFunction={this.editComment}
         saveEditFunction={this.saveEdit}
-        onFocus={() => this.scrollToComment(true)}
-        onContentSizeChange={(e) => {
+        // onFocus={() => this.props.scrollToComment()}
+        onChange={(e) => {
           let h = e.nativeEvent.contentSize.height;
           if (h !== this.height) {
             this.height = h;
-            this.scrollToComment(true);
+            // this.props.scrollToComment();
           }
         }}
       />);
@@ -195,9 +198,13 @@ class Comment extends Component {
     return (
       <View
         ref={(c) => { this.singleComment = c; }}
+        // need this for measure to work on android
+        onLayout={() => null}
         style={[styles.commentContainer]}
       >
-        <View style={styles.commentHeader}>
+        <View
+          style={styles.commentHeader}
+        >
           <UserName
             repost={comment.repost}
             size={'small'}
@@ -239,6 +246,7 @@ const localStyles = StyleSheet.create({
   },
   commentBodyText: {
     // lineHeight: 20,
+    color: darkGrey,
     fontFamily: 'Georgia',
     fontSize: 30 / 2,
     lineHeight: 42 / 2,

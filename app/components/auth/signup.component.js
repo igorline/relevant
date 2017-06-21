@@ -4,10 +4,11 @@ import {
   View,
   TextInput,
   TouchableHighlight,
-  AlertIOS,
+  Alert,
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
+  Platform,
 } from 'react-native';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles, fullHeight } from '../../styles/global';
@@ -103,7 +104,7 @@ class SignUp extends Component {
   }
 
   // userError() {
-  //   if (this.usernameExists) AlertIOS.alert('Username already in use');
+  //   if (this.usernameExists) Alert.alert('Username already in use');
   // }
 
   back() {
@@ -119,40 +120,40 @@ class SignUp extends Component {
     };
 
     if (this.usernameExists) {
-      return AlertIOS.alert('Username already in use');
+      return Alert.alert('Username already in use');
     }
 
     if (!NAME_PATTERN.test(this.state.name)) {
-      return AlertIOS.alert('username can only contain letters, numbers, dashes and underscores');
+      return Alert.alert('username can only contain letters, numbers, dashes and underscores');
     }
 
     if (this.state.name) {
       if (this.state.name.length > 15) {
-        return AlertIOS.alert('name must be less than 15 characters');
+        return Alert.alert('name must be less than 15 characters');
       }
     } else {
-      return AlertIOS.alert('name required');
+      return Alert.alert('name required');
     }
 
     if (!this.state.email) {
-      return AlertIOS.alert('email required');
+      return Alert.alert('email required');
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(this.state.email)) {
-      return AlertIOS.alert('invalid email address');
+      return Alert.alert('invalid email address');
     } else if (this.state.emailError) {
-      return AlertIOS.alert(this.state.emailError);
+      return Alert.alert(this.state.emailError);
     }
 
     // if (!this.state.phone) {
-    //   AlertIOS.alert('phone number required');
+    //   Alert.alert('phone number required');
     //   return;
     // }
 
     if (this.state.password) {
       if (this.state.password !== this.state.cPassword) {
-        return AlertIOS.alert("Passwords don't match");
+        return Alert.alert("Passwords don't match");
       }
     } else {
-      return AlertIOS.alert('Password required');
+      return Alert.alert('Password required');
     }
     this.props.actions.setPreUser(user);
     console.log('saving pre user ', user);
@@ -192,19 +193,22 @@ class SignUp extends Component {
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
-        style={{ height: fullHeight - 60 }}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0 }
       >
         <ScrollView
-          keyboardShouldPersistTaps={'always'}
-          keyboardDismissMode={'interactive'}
-          scrollEnabled={false}
-          contentContainerStyle={styles.fieldsParent}
+          style={{ flex: 1, margin: 20, marginTop: 15 }}
+          // keyboardShouldPersistTaps={'always'}
+          // keyboardDismissMode={'interactive'}
+          // scrollEnabled={false}
+          contentContainerStyle={{ flexGrow: 1, height: 'auto', minHeight: 330 }}
         >
 
           <View style={styles.fieldsInner}>
 
             <View style={styles.fieldsInputParent}>
               <TextInput
+                underlineColorAndroid={'transparent'}
                 autoCapitalize={'none'}
                 autoCorrect={false}
                 keyboardType={'default'}
@@ -225,6 +229,7 @@ class SignUp extends Component {
             }
             <View style={styles.fieldsInputParent}>
               <TextInput
+                underlineColorAndroid={'transparent'}
                 autoCapitalize={'none'}
                 autoCorrect={false}
                 keyboardType={'email-address'}
@@ -254,10 +259,10 @@ class SignUp extends Component {
 
             <View style={styles.fieldsInputParent}>
               <TextInput
+                underlineColorAndroid={'transparent'}
                 autoCapitalize={'none'}
                 secureTextEntry
                 keyboardType={'default'}
-                clearTextOnFocus={false}
                 placeholder="password"
                 onChangeText={password => this.setState({ password })}
                 value={this.state.password}
@@ -267,6 +272,7 @@ class SignUp extends Component {
 
             <View style={styles.fieldsInputParent}>
               <TextInput
+                underlineColorAndroid={'transparent'}
                 autoCapitalize={'none'}
                 secureTextEntry
                 keyboardType={'default'}
@@ -279,7 +285,12 @@ class SignUp extends Component {
             </View>
           </View>
 
-          <Text style={[styles.font12, { textAlign: 'center', paddingBottom: 15 }]}>
+          <Text
+            style={[
+              styles.font12,
+              { textAlign: 'center', paddingTop: 15, paddingBottom: 15 }
+            ]}
+          >
             By clicking Next, you agree to our{' '}
             <Text
               style={styles.active}

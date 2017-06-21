@@ -22,7 +22,7 @@ class Bio extends Component {
 
   componentDidMount() {
     if (this.props.myProfile && !this.props.user.bio) {
-      this.setState({ editing: true });
+      // this.setState({ editing: true });
     }
   }
 
@@ -93,7 +93,7 @@ class Bio extends Component {
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <TextBody
           actions={this.props.actions}
-          style={[styles.bioText, { fontFamily: 'Georgia', flex: 1 }]}
+          style={[styles.bioText, { fontFamily: 'Georgia', flex: 1 }, styles.darkGrey]}
         >
           {user.bio}
         </TextBody>

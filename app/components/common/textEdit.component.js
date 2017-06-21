@@ -4,7 +4,10 @@ import {
   Text,
   View,
   TextInput,
-  TouchableHighlight
+  TouchableHighlight,
+  Platform,
+  Keyboard,
+  InteractionManager
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, blue, greyText } from '../../styles/global';
@@ -16,7 +19,7 @@ class TextEdit extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      height: 0
+      height: 50
     };
   }
 
@@ -25,35 +28,57 @@ class TextEdit extends Component {
   }
 
   componentDidMount() {
-    this.textInput.focus();
+    setTimeout(this.textInput.focus, 100);
   }
 
   render() {
+    let buttonAdjust = 0;
+    if (Platform.OS === 'android') buttonAdjust = 80;
+
     return (<View style={{ flex: 1 }}>
       <TextInput
         multiline
-        // autoGrow
+        underlineColorAndroid={'transparent'}
         placeholder={this.props.placeholder}
         placeholderTextColor={greyText}
         ref={c => this.textInput = c}
         style={[
-          { height: 'auto', maxHeight: 120, minHeight: 50 },
+          {
+            height: Math.min(this.state.height, 120) + buttonAdjust,
+            maxHeight: 120 + buttonAdjust,
+            minHeight: 50,
+            paddingBottom: buttonAdjust,
+          },
           this.props.style
         ]}
+        textAlignVertical={'top'}
         onFocus={this.props.onFocus}
         onBlur={this.props.onBlur}
-        onChange={(evt) => this.setState({ text: evt.nativeEvent.text })}
-        // onChangeText={text => {
-        //   this.text = text;
-        //   clearTimeout(this.textTimeout);
-        //   this.textTimeout = setTimeout(() => this.setState({ text: this.text }), 300);
-        // }}
+        onChange={(evt) => this.setState({
+          height: Math.max(evt.nativeEvent.contentSize.height, 50),
+          text: evt.nativeEvent.text
+        })}
         onContentSizeChange={this.props.onContentSizeChange}
+
+        // fix for android enter bug!
+        blurOnSubmit={false}
+        onSubmitEditing={() => {
+          if (this.bug) {
+            let text = this.state.text;
+            text += '\n';
+            this.setState({
+              text,
+            });
+
+            return this.bug = false;
+          }
+          return this.bug = true;
+        }}
       >
-        <TextBody showAllMentions>{this.state.text}</TextBody>
+        <TextBody style={{ flex: 1 }} showAllMentions>{this.state.text}</TextBody>
       </TextInput>
 
-      <View style={styles.editingCommentButtons}>
+      <View style={[ styles.editingCommentButtons, { marginTop: -1 * buttonAdjust }]}>
 
         <TouchableHighlight
           underlayColor={'transparent'}

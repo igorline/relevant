@@ -5,21 +5,17 @@ import {
   View,
   Image,
   TouchableHighlight,
-  PushNotificationIOS
+  PushNotificationIOS,
+  Platform
 } from 'react-native';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { globalStyles, fullWidth, blue } from '../styles/global';
-import * as authActions from '../actions/auth.actions';
-import * as messageActions from '../actions/message.actions';
-import * as animationActions from '../actions/animation.actions';
-import * as notifActions from '../actions/notif.actions';
-import * as userActions from '../actions/user.actions';
-import Percent from '../components/percent.component';
+import PushNotification from 'react-native-push-notification';
+import PropTypes from 'prop-types';
+import { globalStyles, fullWidth, blue, darkGrey } from '../../styles/global';
+import Percent from '../percent.component';
 
 let styles;
 
-class Footer extends Component {
+export default class Footer extends Component {
   constructor(props, context) {
     super(props, context);
     this.totalBadge = 0;
@@ -29,7 +25,7 @@ class Footer extends Component {
     if (typeof count === 'number') {
       this.totalBadge += count;
     }
-    PushNotificationIOS.setApplicationIconBadgeNumber(this.totalBadge);
+    PushNotification.setApplicationIconBadgeNumber(this.totalBadge);
 
     if (!count) return null;
     return (<View pointerEvents={'none'} style={styles.notifCount}>
@@ -46,7 +42,7 @@ class Footer extends Component {
     let active = tab.key === currentTab.key;
     let activeText;
     if (tab.key === 'activity' && this.props.notif.count) badge = this.props.notif.count;
-    if (tab.key === 'read' && this.props.feedUnread) badge = this.props.feedUnread;
+    if (tab.key === 'discover' && this.props.feedUnread) badge = this.props.feedUnread;
     let icon = (<Text style={[styles.icon, styles.textCenter]}>{tab.icon}</Text>);
     let title = (
       <Text style={[styles.footerText, active || activeText ? styles.footerTextActive : null]}>
@@ -61,7 +57,7 @@ class Footer extends Component {
             style={[styles.footerImg]}
           />);
       }
-      title = <Percent fontSize={11} user={user} />;
+      title = <View><Percent fontSize={11} user={user} /></View>;
       activeText = true;
     }
 
@@ -101,37 +97,12 @@ class Footer extends Component {
 }
 
 Footer.propTypes = {
-  auth: React.PropTypes.object,
-  actions: React.PropTypes.object,
-  navigator: React.PropTypes.object,
-  notif: React.PropTypes.object,
-  messages: React.PropTypes.object,
-  users: React.PropTypes.object
+  changeTab: PropTypes.func,
+  auth: PropTypes.object,
+  navigation: PropTypes.object,
+  notif: PropTypes.object,
+  feedUnread: PropTypes.number,
 };
-
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    notif: state.notif,
-    animation: state.animation,
-    messages: state.messages,
-    users: state.user,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({
-      ...authActions,
-      ...notifActions,
-      ...messageActions,
-      ...userActions,
-      ...animationActions,
-    }, dispatch)
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Footer);
 
 const localStyles = StyleSheet.create({
   footer: {
@@ -166,29 +137,13 @@ const localStyles = StyleSheet.create({
     height: 25,
     width: 25,
     borderRadius: 12.5,
-    marginTop: -2,
+    // marginTop: -2,
   },
   icon: {
-    fontSize: 20
+    fontSize: 20,
+    color: 'black'
   },
   activeIcon: {
-    // fontSize: 20
-    // transform: [{ scale: 1.2 }]
-  },
-  notifCount: {
-    position: 'absolute',
-    top: -3,
-    backgroundColor: 'red',
-    right: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 2.5,
-    paddingVertical: 2,
-    paddingHorizontal: 4
-  },
-  notifText: {
-    fontSize: 12,
-    color: 'white'
   },
   activityRow: {
     flexDirection: 'row',
@@ -197,7 +152,8 @@ const localStyles = StyleSheet.create({
   footerText: {
     paddingTop: 0,
     fontSize: 11,
-    opacity: 0.7
+    opacity: 0.7,
+    color: 'black'
   },
   footerTextActive: {
     color: blue,

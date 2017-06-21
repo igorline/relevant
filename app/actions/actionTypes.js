@@ -11,6 +11,8 @@ export const SET_CONTACTS = 'SET_CONTACTS';
 export const SET_USER_INDEX = 'SET_USER_INDEX';
 export const UPDATE_USER = 'UPDATE_USER';
 export const UPDATE_AUTH_USER = 'UPDATE_AUTH_USER';
+export const SET_STATS = 'SET_STATS';
+export const SET_SELECTED_USER_DATA = 'SET_SELECTED_USER_DATA';
 
 export const SET_ACTIVE_POST = 'SET_ACTIVE_POST';
 export const SET_RECENT_POSTS = 'SET_RECENT_POSTS';

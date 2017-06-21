@@ -4,7 +4,7 @@ import {
   Animated,
   Easing
 } from 'react-native';
-import { fullHeight } from '../../styles/global';
+import { fullHeight, fullWidth } from '../../styles/global';
 
 let styles;
 
@@ -99,6 +99,7 @@ export default Heart;
 styles = StyleSheet.create({
   aniHeart: {
     position: 'absolute',
+    left: (fullWidth / 5) * 3.5,
     fontSize: 12 * 2,
     bottom: 40,
     backgroundColor: 'transparent'

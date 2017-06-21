@@ -8,17 +8,25 @@ import {
   PushNotificationIOS,
   Linking,
   Animated,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+  StatusBar,
+  Dimensions
 } from 'react-native';
+import codePush from 'react-native-code-push';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Analytics from 'react-native-firebase-analytics';
 import * as NavigationExperimental from 'react-navigation';
+import RNBottomSheet from 'react-native-bottom-sheet';
+import Prompt from 'react-native-prompt';
+import PushNotification from 'react-native-push-notification';
 
 import Auth from '../components/auth/auth.container';
 import CreatePostContainer from '../components/createPost/createPost.container';
-import Footer from './footer.container';
+import Footer from '../components/nav/footer.container';
 import ErrorContainer from './error.container';
 import InvestAnimation from '../components/animations/investAnimation.component';
 import HeartAnimation from '../components/animations/heartAnimation.component';
@@ -39,8 +47,16 @@ import { pickerOptions } from '../utils/pickerOptions';
 import Card from './../components/nav/card.component';
 import IrrelevantAnimation from '../components/animations/irrelevantAnimation.component';
 import Tooltip from '../components/tooltip/tooltip.component';
+import { fullWidth, fullHeight } from '../styles/global';
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
+
+let ActionSheet = ActionSheetIOS;
+
+if (Platform.OS === 'android') {
+  ActionSheet = RNBottomSheet;
+  ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
+}
 
 const {
   Transitioner: NavigationTransitioner,
@@ -54,6 +70,7 @@ class Application extends Component {
     super(props, context);
     this.state = {
       newName: null,
+      height: fullHeight,
     };
     this.logoutRedirect = this.logoutRedirect.bind(this);
     this.backgroundTime = 0;
@@ -69,20 +86,30 @@ class Application extends Component {
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
     utils.token.get()
     .catch(() => {
+      codePush.disallowRestart();
       this.props.actions.replaceRoute({
         key: 'auth',
         component: 'auth',
         header: false
       }, 0, 'home');
     });
-    PushNotificationIOS.setApplicationIconBadgeNumber(0);
+    PushNotification.setApplicationIconBadgeNumber(0);
 
     Linking.addEventListener('url', this.handleOpenURL);
+    this.statusBarHeight = StatusBar.currentHeight;
+
+    this.fullHeight = fullHeight;
+
     Orientation.lockToPortrait();
+    Orientation.addOrientationListener(() => {
+      // fullWidth = Dimensions.get('window').width;
+      this.setState({ height: Dimensions.get('window').height });
+    });
   }
 
   componentWillReceiveProps(next) {
     if (!this.props.auth.user && next.auth.user) {
+      codePush.allowRestart();
       this.props.actions.userToSocket(next.auth.user._id);
       this.props.actions.getNotificationCount();
       this.props.actions.getFeedCount();
@@ -183,8 +210,16 @@ class Application extends Component {
   }
 
   changeName() {
-    console.log('change name');
     let user = this.props.auth.user;
+
+    // ANDROID
+    if (Platform.OS === 'android') {
+      this.promptTitle = 'Enter new name';
+      this.setState({ promptVisible: true });
+      return;
+    }
+
+    // IOS
     AlertIOS.prompt(
       'Enter new name',
       user.name,
@@ -213,6 +248,7 @@ class Application extends Component {
             this.props.actions.updateUser(newUser);
             setTimeout(() => this.props.actions.getSelectedUser(newUser._id), 250);
           } else {
+            Alert.alert('Error uploading image');
             console.log('image error ', results);
           }
         });
@@ -235,7 +271,7 @@ class Application extends Component {
   }
 
   showActionSheet() {
-    ActionSheetIOS.showActionSheetWithOptions({
+    ActionSheet.showActionSheetWithOptions({
       options: [
         'Change display name',
         'Add new photo',
@@ -292,44 +328,63 @@ class Application extends Component {
     if (currentAppState === 'active' && this.props.auth.user) {
       this.props.actions.userToSocket(this.props.auth.user._id);
       this.props.actions.getNotificationCount();
-      PushNotificationIOS.setApplicationIconBadgeNumber(0);
+      this.props.actions.getFeedCount();
+
+      PushNotification.setApplicationIconBadgeNumber(0);
 
       // refresh after 5 minutes of inactivity
       let now = new Date().getTime();
+      // if (this.backgroundTime + (1000) < now) {
       if (this.backgroundTime + (10 * 60 * 1000) < now) {
         // reload current tab
         // reload all other tabs on focus
         this.props.actions.reloadAllTabs();
         this.props.actions.reloadTab();
-        // this.props.actions.getUser();
       }
       // if (this.backgroundTime + (40 * 60 * 1000) < now) {
       //   this.props.actions.resetRoutes();
       // }
-
     } else if (currentAppState === 'background') {
       this.backgroundTime = new Date().getTime();
     }
+    return true;
   }
 
   renderScene(props) {
     let component = props.scene.route.component;
+    let createPost;
+
+    // if (Platform.OS === 'ios') {
+      createPost = (
+        <KeyboardAvoidingView
+          behavior={'padding'}
+          style={{
+            flex: 1,
+          }}
+          keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0 }
+        >
+          <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
+        </KeyboardAvoidingView>
+      );
+    // } else {
+    //   createPost = (
+    //     <View
+    //       behavior={'padding'}
+    //       style={{
+    //         flex: 1,
+    //         // backgroundColor: 'red'
+    //       }}
+    //     >
+    //       <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
+    //     </View>
+    //   );
+    // }
 
     switch (component) {
       case 'auth':
         return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
       case 'createPost':
-        return (
-          <KeyboardAvoidingView
-            behavior={'padding'}
-            style={{
-              flex: 1,
-              backgroundColor: '#ffffff'
-            }}
-          >
-            <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
-          </KeyboardAvoidingView>
-        );
+        return createPost;
       case 'categories':
         return (<CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />);
 
@@ -362,8 +417,18 @@ class Application extends Component {
   render() {
     let scene = this.props.navigation;
 
+    // handle hidden bar in android here
+    let route = scene.routes[scene.index];
+    let statusBarHeight = StatusBar.currentHeight;
+    if (route.component === 'articleView') {
+      statusBarHeight = 0;
+    }
+    let height = Platform.OS === 'android' ? this.state.height - statusBarHeight :  this.state.height;
+
     return (
-      <View style={{ flex: 1, backgroundColor: 'black' }} >
+      <View
+        style={{ height, backgroundColor: 'black' }}
+      >
         <NavigationTransitioner
           style={{ backgroundColor: 'black' }}
           navigation={{ state: scene }}
@@ -383,9 +448,27 @@ class Application extends Component {
         }
         />
         <Tooltip />
+
+        <Prompt
+          title={this.promptTitle || ''}
+          // placeholder=""
+          // defaultValue="Hello"
+          visible={this.state.promptVisible}
+          onCancel={() => this.setState({ promptVisible: false })}
+          onSubmit={newName => {
+            this.props.auth.user.name = newName;
+            this.props.actions.updateUser(this.props.auth.user);
+            this.setState({
+              promptVisible: false,
+              newName
+            });
+          }}
+        />
+
         <InvestAnimation />
         <HeartAnimation />
         <IrrelevantAnimation />
+
       </View>
     );
   }

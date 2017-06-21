@@ -1,6 +1,7 @@
 import * as tokenUtil from './token';
 
 const queryParams = (params) => {
+  if (!params) return '';
   let paramString = Object.keys(params)
     .filter(p => params[p])
     .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
@@ -20,7 +21,11 @@ export function env() {
 
 export function Alert() {
   if (process.env.WEB != 'true') {
-    return require('react-native').AlertIOS;
+    let Platform = require('react-native').Platform;
+    if (Platform.OS === 'ios') {
+      return require('react-native').AlertIOS;
+    }
+    return require('react-native').Alert;
   } else if (process.env.BROWSER) {
     return window;
   }
@@ -47,6 +52,7 @@ export async function superFetch(options) {
       body: options.body
     });
     response = await exports.handleErrors(response);
+    console.log('no error')
     let responseJSON = await response.json();
 
     return responseJSON;
@@ -75,7 +81,6 @@ export async function reqOptions() {
 
 export async function handleErrors(response) {
   if (!response.ok) {
-    console.log('error response', response);
     let error = response.statusText;
     try {
       let json = await response.json();
