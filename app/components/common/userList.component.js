@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import CustomListView from '../customList.component';
 import CustomSpinner from '../CustomSpinner.component';
 
-
 export default class UserList extends Component {
   constructor(props, context) {
     super(props, context);

@@ -119,7 +119,7 @@ class PostPeople extends Component {
 
 const localStyles = StyleSheet.create({
   votes: {
-    alignSelf: 'center',
+    alignSelf: 'flex-end',
     fontSize: 17,
   },
 });

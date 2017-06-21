@@ -71,7 +71,7 @@ class AuthContainer extends Component {
     let scene = this.props.navigation;
 
     return (<NavigationTransitioner
-      style={{ backgroundColor: 'white' }}
+      style={{ backgroundColor: 'black' }}
       navigation={{ state: scene }}
       configureTransition={transitionConfig}
       render={transitionProps => (

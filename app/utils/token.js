@@ -2,7 +2,8 @@ let userDefaults;
 let cookie;
 
 if (process.env.WEB != 'true') {
-  userDefaults = require('react-native-user-defaults').default;
+  // userDefaults = require('react-native-user-defaults').default;
+  userDefaults = require('react-native-swiss-knife').RNSKBucket;
 } else {
   cookie = require('react-cookie');
 }
@@ -40,7 +41,12 @@ export function get() {
 
 export function remove() {
   token = null;
-  if (userDefaults) return userDefaults.remove('token', APP_GROUP_ID);
+  if (userDefaults) {
+    return new Promise(resolve => {
+      userDefaults.remove('token', APP_GROUP_ID);
+      resolve();
+    });
+  }
   return new Promise(resolve => {
     cookie.remove('token');
     token = null;
@@ -51,7 +57,10 @@ export function remove() {
 export function set(newToken) {
   token = newToken;
   if (userDefaults) {
-    return userDefaults.set('token', newToken, APP_GROUP_ID);
+    return new Promise(resolve => {
+      userDefaults.set('token', newToken, APP_GROUP_ID);
+      resolve();
+    });
   }
   return new Promise(resolve => {
     cookie.save('token', token);

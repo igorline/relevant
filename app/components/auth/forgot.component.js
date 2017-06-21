@@ -4,10 +4,11 @@ import {
   View,
   TextInput,
   TouchableHighlight,
-  AlertIOS,
+  Alert,
   StyleSheet,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles } from '../../styles/global';
@@ -26,6 +27,10 @@ class Forgot extends Component {
     };
   }
 
+  componentDidMount() {
+    this.userInput.focus();
+  }
+
   componentWillUnmount() {
     this.props.actions.setAuthStatusText();
   }
@@ -33,7 +38,7 @@ class Forgot extends Component {
   async forgotPassword() {
     try {
       if (!this.state.username) {
-        AlertIOS.alert('must enter a username or password');
+        Alert.alert('must enter a username or password');
         return;
       }
 
@@ -46,7 +51,7 @@ class Forgot extends Component {
       if (res && res.email) {
         this.props.actions.pop('auth');
         this.setState({ sendingEmail: false });
-        AlertIOS.alert('Success', `We have set an email to ${res.email}
+        Alert.alert('Success', `We have set an email to ${res.email}
       with a link to reset the password for ${res.username}.`);
       }
     } catch (err) {
@@ -63,10 +68,17 @@ class Forgot extends Component {
     if (this.state.sendingEmail) {
       spinner = <CustomSpinner />;
     }
+
+    let KBView = KeyboardAvoidingView;
+    if (this.props.share) {
+      KBView = View;
+    }
+
     return (
-      <KeyboardAvoidingView
+      <KBView
         behavior={'padding'}
         style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0 }
       >
         <ScrollView
           keyboardShouldPersistTaps={'always'}
@@ -79,6 +91,7 @@ class Forgot extends Component {
             <View style={styles.fieldsInputParent}>
               <TextInput
                 ref={c => this.userInput = c}
+                underlineColorAndroid={'transparent'}
                 autoCorrect={false}
                 autoCapitalize={'none'}
                 // keyboardType={'email-address'}
@@ -104,7 +117,7 @@ class Forgot extends Component {
           {spinner}
 
         </ScrollView>
-      </KeyboardAvoidingView>
+      </KBView>
     );
   }
 }

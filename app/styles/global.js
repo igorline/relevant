@@ -1,6 +1,7 @@
 import {
   StyleSheet,
-  Dimensions
+  Dimensions,
+  Platform
 } from 'react-native';
 
 const fullWidth = Dimensions.get('window').width;
@@ -12,6 +13,10 @@ const lightGrey = '#aaaaaa';
 const greyText = '#999999';
 // const green = '333ef33';
 const green = '#196950';
+
+const IphoneHeader = 59;
+const AndroidHeader = 44;
+const headerHeight = Platform.OS === 'ios' ? IphoneHeader : AndroidHeader;
 
 const font = StyleSheet.create({
   font10: {
@@ -49,8 +54,9 @@ const font = StyleSheet.create({
     fontFamily: 'BebasNeueRelevantRegular',
     fontWeight: 'bold',
     letterSpacing: 0.15,
-    paddingVertical: 13,
-    flex: 1,
+    // marginTop: 3,
+    marginBottom: -2,
+    color: darkGrey
   },
   headerInner: {
     flex: 1,
@@ -61,8 +67,8 @@ const font = StyleSheet.create({
     paddingTop: 0,
   },
   header: {
-    height: 59,
-    paddingTop: 16,
+    height: Platform.OS === 'ios' ? 59 : 44,
+    paddingTop: Platform.OS === 'ios' ? 16 : 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -70,7 +76,7 @@ const font = StyleSheet.create({
     borderBottomColor: '#242425',
     borderBottomWidth: StyleSheet.hairlineWidth,
 
-    zIndex: 1000,
+    // zIndex: 1000,
     position: 'absolute',
     top: 0,
     right: 0,
@@ -97,6 +103,7 @@ const font = StyleSheet.create({
   bebasBold: {
     fontFamily: 'BebasNeueRelevantRegular',
     fontWeight: 'bold',
+    color: darkGrey,
     // marginBottom: -3,
     // lineHeight: 24,
     letterSpacing: 0.5,
@@ -110,6 +117,13 @@ const font = StyleSheet.create({
   tabFont: {
     fontFamily: 'Helvetica',
     fontWeight: 'bold'
+  },
+  tabStyle: {
+    fontFamily: 'Helvetica',
+    fontWeight: 'bold',
+    fontSize: 17,
+    letterSpacing: 0.25,
+    color: darkGrey,
   },
   strokeText: {
     fontFamily: 'HelveticaNeueLTStd-BdOu',
@@ -126,6 +140,7 @@ const font = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Georgia',
     fontSize: 18,
+    color: darkGrey,
   },
 });
 
@@ -169,11 +184,10 @@ const layout = StyleSheet.create({
   commentInput: {
     flex: 1,
     padding: 10,
-    paddingVertical: 15
   },
   commentSubmit: {
     flex: 0,
-    width: 85,
+    width: 75,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -205,12 +219,11 @@ const layout = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   fieldsParent: {
-    backgroundColor: 'white',
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
     justifyContent: 'center',
-    padding: 20,
+    margin: 20,
   },
   fieldsInner: {
     flex: 1,
@@ -380,7 +393,7 @@ const layout = StyleSheet.create({
   },
   fullContainer: {
     flex: 1,
-    backgroundColor: 'hsl(0,0%,90%)',
+    // backgroundColor: 'hsl(0,0%,90%)',
   },
   row: {
     flexDirection: 'row',
@@ -419,7 +432,7 @@ const layout = StyleSheet.create({
   createPostInput: {
     marginTop: 12.5,
     marginBottom: 12.5,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   flex1: {
     flex: 1
@@ -436,10 +449,12 @@ const layout = StyleSheet.create({
     color: darkGrey
   },
 
-  // separator: {
-  //   height: 12,
-  //   backgroundColor: 'hsl(238,20%,95%)',
-  // },
+  separator: {
+    height: 16,
+    borderColor: 'lightgrey',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
   dots: {
     color: greyText,
     fontSize: 20,
@@ -447,35 +462,20 @@ const layout = StyleSheet.create({
     letterSpacing: -0.5
   },
   r: {
-    height: 15,
+    height: 16,
     width: 16,
-    top: 2,
-    right: 1.5,
-    paddingLeft: 1,
-    marginRight: 2,
-    marginLeft: 0,
-    marginBottom: -3.5
+    marginRight: .5,
+    marginLeft: 1,
   },
   coin: {
-    position: 'absolute',
-    top: 3,
-    right: 1,
     height: 17,
-    width: 17,
-    paddingLeft: 3,
-    paddingRight: 2,
-    // marginRight: 2,
-    // marginLeft: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    width: 16,
+    marginRight: 1,
   },
   rup: {
-    height: 19,
-    width: 26,
+    height: 20,
+    width: 24,
     resizeMode: 'contain',
-    marginRight: 1,
-    marginLeft: 0,
-    marginBottom: 1
   },
   postCat: {
     position: 'absolute',
@@ -502,6 +502,41 @@ const layout = StyleSheet.create({
     top: 7,
     right: 5,
     resizeMode: 'contain'
+  },
+  notifCount: {
+    position: 'absolute',
+    top: -3,
+    backgroundColor: 'red',
+    right: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 2.5,
+    paddingVertical: 2,
+    paddingHorizontal: 4
+  },
+  notifText: {
+    fontSize: 12,
+    color: 'white'
+  },
+  emptyText: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+    lineHeight: 28,
+  },
+  emptyList: {
+    flex: 1,
+    paddingHorizontal: 40,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
   }
 });
 
@@ -513,5 +548,7 @@ export {
   fullHeight,
   blue,
   green,
-  greyText
+  greyText,
+  darkGrey,
+  headerHeight
 };

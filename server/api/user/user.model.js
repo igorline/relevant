@@ -42,13 +42,20 @@ const UserSchema = new Schema({
   following: Number,
   followers: Number,
 
-  bio: { type: String, default: ''},
+  bio: { type: String, default: '' },
 
   blocked: [{ type: String, ref: 'User' }],
   blockedBy: {
     type: [{ type: String, ref: 'User' }],
     select: false
-  }
+  },
+
+  level: Number,
+  rank: Number,
+  percentRank: Number,
+  topTopics: [{ type: String, ref: 'Tag' }],
+  totalUsers: Number,
+
 }, {
   timestamps: true,
 });
@@ -114,15 +121,15 @@ UserSchema
 // Validate email is not taken
 UserSchema
   .path('email')
-  .validate(function(value, respond) {
+  .validate(function(value) {
     let self = this;
     this.constructor.findOne({ email: value }, function(err, user) {
       if (err) throw err;
       if (user) {
-        if (self.id === user.id) return respond(true);
-        return respond(false);
+        if (self.id === user.id) return true;
+        return false;
       }
-      respond(true);
+      return true;
     });
   }, 'The specified email address is already in use.');
 

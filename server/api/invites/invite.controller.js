@@ -22,7 +22,7 @@ exports.index = async (req, res) => {
     .skip(skip)
     .limit(limit);
   } catch (err) {
-    handleError(res)(err);
+    return handleError(res)(err);
   }
   res.status(200).json(invites);
 };
@@ -40,7 +40,7 @@ exports.create = async (req, res) => {
     invite = await invite.save();
     exports.sendEmailFunc(invite);
   } catch (err) {
-    handleError(res)(err);
+    return handleError(res)(err);
   }
   res.status(200).json(invite);
 };
@@ -51,8 +51,7 @@ exports.sendEmail = async (req, res) => {
     let _id = req.body.inviteId;
     invite = await exports.sendEmailFunc(_id);
   } catch (err) {
-    throw err;
-    handleError(res)(err);
+    return handleError(res)(err);
   }
   res.status(200).json(invite);
 };
@@ -68,8 +67,10 @@ exports.sendEmailFunc = async function(_invite) {
       invite = await Invite.findById(invite);
     }
 
+    let webUrl = 'https://relevant.community';
     if (!invite || !invite.code) throw new Error('no invite or code');
     let url = `${process.env.API_SERVER}/invite/${invite.code}`;
+    let androidStoreUrl = 'https://play.google.com/store/apps/details?id=com.relevantnative';
     let name = invite.name;
     let hi = '';
     if (name) hi = `<span style="text-transform: capitalize;">${name}!</span><br /><br />`;
@@ -88,26 +89,30 @@ exports.sendEmailFunc = async function(_invite) {
       Your invitation code: <b>${invite.code}</b>
       <br />
       <br />
-      <b>Step 1</b>: <a href="${appStoreUrl}" target="_blank">Download</a> Relevant from the app store (iOS only for now)
-      <br />
-      <br />
-      <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation (or manually enter the code when prompted)
+      <b>Step 1</b>: Download Relevant from the app store:
+      <ul>
+        <li style="padding-bottom: 10px"><a href="${appStoreUrl}" target="_blank">iOS app store</a>
+        <li><a href="${androidStoreUrl}" target="_blank">Android Google Play Store</a>
+      </ul>
+      <b>Step 2</b>: Launch the app and enter your invite code: <b>${invite.code}</b>
       <br />
       <br />
       <span style="font-style: italic">Relevant is a social news reader that promotes reliable information and rewards expertise.
       Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score.
-      This system is designed to penalise clickbait and fake news while promoting useful and reliable information.
+      This system is designed to penalize clickbait and fake news while promoting useful and reliable information.
       </span>
       <br />
       <br />
-      <b>Don't be afraid to downvote poor quality posts and upvote good ones - this is what makes Relevant work.</b>
+      <b>Don't be afraid to share and upvote interesting and informative articles - this is what makes Relevant work.</b>
       <br />
       <br />
       If you have questions, encounter any problems, or wish to send feedback please get in touch via this email: contact@4real.io
       <br />
-      <div style="margin-top: 30px"><a href="${appStoreUrl}"><img width="100%" src="https://relevant.community/img/fbfimg.jpg" /></a></div>
+      <div style="margin-top: 30px"><a href="${webUrl}"><img width="100%" src="https://relevant.community/img/fbfimg.jpg" /></a></div>
       `
     };
+    // <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation (or manually enter the code when prompted)
+
     status = await mail.send(data);
     invite.status = 'email sent';
     invite = await invite.save();
@@ -127,7 +132,7 @@ exports.checkInviteCode = async (req, res) => {
     invite.status = 'checked';
     invite.save();
   } catch (err) {
-    handleError(res)(err);
+    return handleError(res)(err);
   }
   if (invite.email) invite.email = invite.email.trim();
   res.status(200).json(invite);
@@ -138,7 +143,7 @@ exports.destroy = async (req, res) => {
   try {
     await Invite.findById(inviteId).remove();
   } catch (err) {
-    handleError(res)(err);
+    return handleError(res)(err);
   }
   res.sendStatus(200);
 };

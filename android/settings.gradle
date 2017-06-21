@@ -1,4 +1,10 @@
 rootProject.name = 'relevantNative'
+include ':react-native-code-push'
+project(':react-native-code-push').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-code-push/android/app')
+include ':react-native-fetch-blob'
+project(':react-native-fetch-blob').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fetch-blob/android')
+include ':react-native-push-notification'
+project(':react-native-push-notification').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-push-notification/android')
 include ':react-native-vector-icons'
 project(':react-native-vector-icons').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vector-icons/android')
 include ':react-native-video'
@@ -7,6 +13,10 @@ include ':react-native-linear-gradient'
 project(':react-native-linear-gradient').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-linear-gradient/android')
 
 include ':app'
+include ':react-native-bottom-sheet'
+project(':react-native-bottom-sheet').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-bottom-sheet/android')
+include ':react-native-swiss-knife'
+project(':react-native-swiss-knife').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-swiss-knife/android')
 include ':react-native-orientation'
 project(':react-native-orientation').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-orientation/android')
 include ':react-native-google-analytics-bridge'

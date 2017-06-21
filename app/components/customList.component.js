@@ -5,7 +5,8 @@ import {
   View,
   Text,
   StyleSheet,
-  Image
+  Image,
+  Platform
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import CustomSpinner from '../components/CustomSpinner.component';
@@ -19,6 +20,7 @@ export default class ActivityView extends Component {
     this.state = {
       reloading: false,
       none: false,
+      page: 0,
     };
     this.height = fullHeight;
     this.reload = this.reload.bind(this);
@@ -27,7 +29,6 @@ export default class ActivityView extends Component {
     this.lastReload = 0;
     let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.tpmDataSource = ds.cloneWithRows([]);
-    this.showReload = false;
   }
 
   componentWillMount() {
@@ -42,7 +43,6 @@ export default class ActivityView extends Component {
   }
 
   componentDidMount() {
-    this.showReload = true;
   }
 
   componentWillReceiveProps(next) {
@@ -50,7 +50,8 @@ export default class ActivityView extends Component {
       this.updateData(next.data);
       clearTimeout(this.stateTimeout);
       this.stateTimeout = setTimeout(() =>
-        this.setState({ reloading: false, loading: false }), 1000);
+        this.setState({ reloading: false, loading: false })
+        , 100);
       if (!next.data.length) this.setState({ none: true });
     } else {
       // need to update data either way for list to re-render
@@ -58,16 +59,14 @@ export default class ActivityView extends Component {
     }
 
     if (next.active && next.needsReload > this.lastReload) {
-      this.dataSource = null;
-      this.props.load(this.props.view, 0);
       this.setState({ loading: true });
+      this.props.load(this.props.view, 0);
       this.lastReload = new Date().getTime();
     }
   }
 
   shouldComponentUpdate(next) {
     if (!this.props.active && !next.active) return false;
-    // console.log('render list ', this.props.view);
     return true;
   }
 
@@ -117,8 +116,9 @@ export default class ActivityView extends Component {
     if (this.props.loaded && !this.props.data.length) {
       emptyEl = (<EmptyList
         visible
-        emoji={'😔'}
+        emoji={'😶'}
         type={type}
+        YOffset={this.props.YOffset}
       >
         {this.props.children}
       </EmptyList>);
@@ -140,6 +140,9 @@ export default class ActivityView extends Component {
         contentInset={{ top: this.props.YOffset || 0 }}
         contentOffset={{ y: -this.props.YOffset || 0 }}
         renderHeader={this.props.renderHeader}
+        contentContainerStyle={
+          { paddingTop: Platform.OS === 'android' ? this.props.YOffset : 0 }
+        }
         style={{
           flex: 0.5,
           width: fullWidth,
@@ -157,6 +160,7 @@ export default class ActivityView extends Component {
         renderFooter={() => emptyEl}
         refreshControl={
           <RefreshControl
+            // key={this.props.needsReload}
             style={[{ backgroundColor: 'hsl(238,20%,95%)' }, this.props.data.length ? null : styles.hideReload]}
             refreshing={this.state.reloading}
             onRefresh={this.reload}

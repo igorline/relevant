@@ -6,6 +6,8 @@ import {
   ListView,
   Image,
   Text,
+  TouchableWithoutFeedback,
+  TouchableOpacity
 } from 'react-native';
 import { globalStyles, fullWidth } from '../../styles/global';
 import PostBody from './postBody.component';
@@ -82,19 +84,20 @@ export default class Commentary extends Component {
         }
         repostedBy = (
           <View style={styles.reposted}>
-            <Text
+            <TouchableOpacity
               onPress={() => this.props.actions.goToPost(post)}
-              style={[styles.font12, styles.darkGrey, { lineHeight: 14 }]}
             >
-              <View style={{ width: 10, height: 8, marginBottom: -2 }}>
+              <View>
                 <Image
                   resizeMode={'contain'}
                   source={require('../../assets/images/reposted.png')}
                   style={{ width: 10, height: 9, marginBottom: -1 }}
                 />
+                <Text style={[styles.font12, styles.darkGrey, { lineHeight: 14 }]}>
+                  {' '}reposted by @{post.reposted[0].user + and}
+                </Text>
               </View>
-              {' '}reposted by @{post.reposted[0].user + and}
-            </Text>
+            </TouchableOpacity>
           </View>
         );
       }
@@ -124,7 +127,8 @@ export default class Commentary extends Component {
                 post={post}
               />
               <PostBody
-                short {...this.props}
+                short
+                {...this.props}
                 post={post}
                 editing={false}
               />
@@ -146,17 +150,18 @@ export default class Commentary extends Component {
 
     // for testing rank
     // <View><Text>{post.rank}</Text></View>
+    console.log('commentary ', commentary.length);
 
     return (
       <View>
         <ScrollView
           horizontal
           scrollEnabled={commentary.length > 1}
-          decelerationRate={'fast'}
+          // decelerationRate={'fast'}
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
-          contentInset={{ left: length ? 15 : 10, right: length ? 15 : 10 }}
-          contentOffset={{ x: length ? -15 : -10 }}
+          // contentInset={{ left: length ? 15 : 10, right: length ? 15 : 10 }}
+          // contentOffset={{ x: length ? -15 : -10 }}
           contentContainerStyle={[styles.postScroll]}
           snapToInterval={(fullWidth - 20 - 10)}
           snapToAlignment={'center'}
@@ -168,16 +173,21 @@ export default class Commentary extends Component {
               () => this.props.actions.scrolling(false), 300);
           }}
           onChangeVisibleRows={this.changeRow}
-          forceSetResponder={() => {
-            if (!length) return;
-            this.props.actions.scrolling(true);
-            clearTimeout(this.scrollTimeout);
-            this.scrollTimeout = setTimeout(
-              () => this.props.actions.scrolling(false), 80);
-          }}
+          // pagingEnabled
+          // forceSetResponder={() => {
+          //   if (!length) return;
+          //   this.props.actions.scrolling(true);
+          //   clearTimeout(this.scrollTimeout);
+          //   this.scrollTimeout = setTimeout(
+          //     () => this.props.actions.scrolling(false), 80);
+          // }}
           // onScrollAnimationEnd={this.updateCurrent}
         >
-          {commentary}
+          <TouchableWithoutFeedback>
+            <View style={{ flexDirection: 'row' }}>
+              {commentary}
+            </View>
+          </TouchableWithoutFeedback>
         </ScrollView>
 
       </View>);
@@ -200,7 +210,8 @@ const localStyles = StyleSheet.create({
     flexWrap: 'nowrap',
     justifyContent: 'flex-start',
     marginLeft: 0,
-    marginRight: 0
+    marginRight: 0,
+    zIndex: 100
   },
   commentary: {
     flexGrow: 1,

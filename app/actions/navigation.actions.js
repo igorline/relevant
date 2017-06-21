@@ -14,7 +14,13 @@ import {
   SET_TOOLTIP_DATA
 } from './actionTypes';
 
+let dismissKeyboard;
+if (process.env.WEB != 'true') {
+  dismissKeyboard = require('react-native-dismiss-keyboard');
+}
+
 export function push(route, key, animation = 'vertical') {
+  if (dismissKeyboard) dismissKeyboard();
   return {
     type: PUSH_ROUTE,
     route,
@@ -39,6 +45,7 @@ export function toggleTopics(showTopics) {
 
 export function pop(key) {
   return dispatch => {
+    if (dismissKeyboard) dismissKeyboard();
     dispatch(toggleTopics(false));
     dispatch({
       type: POP_ROUTE,
@@ -48,6 +55,7 @@ export function pop(key) {
 }
 
 export function changeTab(key) {
+  if (dismissKeyboard) dismissKeyboard();
   return {
     type: CHANGE_TAB,
     key
@@ -56,7 +64,7 @@ export function changeTab(key) {
 
 export function goToTopic(topic) {
   return dispatch => {
-    dispatch(changeTab('discover'));
+    // dispatch(changeTab('discover'));
     dispatch(push({
       key: 'discover',
       title: topic.categoryName,
@@ -132,6 +140,16 @@ export function replaceRoute(route, index, key) {
   };
 }
 
+export function goToPeople(topic) {
+  return push({
+    key: 'peopleView',
+    component: 'peopleView',
+    title: topic || 'People',
+    back: true,
+    topic: topic ? { _id: topic.toLowerCase() } : null,
+  });
+}
+
 export function goToUrl(url) {
   return push({
     key: 'articleView',
@@ -157,6 +175,7 @@ export function goToPost(post, openComment) {
     title: post.title,
     back: true,
     id: post._id,
+    commentCount: post.commentCount,
     openComment
   });
 }

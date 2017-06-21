@@ -8,7 +8,12 @@ let RelevanceSchema = new Schema({
   tag: { type: String, ref: 'Tag' },
   topTopic: { type: Boolean, deafault: false },
   category: { type: String, ref: 'Tag' },
-  relevance: { type: Number, default: 0 }
+  relevance: { type: Number, default: 0 },
+  rank: Number,
+  totalUsers: Number,
+  level: Number,
+  percentRank: Number,
+  totalUsers: Number,
 }, {
   timestamps: true
 });

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,19 +7,15 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import { globalStyles, fullHeight } from '../../styles/global';
-import PostImage from './postImage.component1';
-import Commentary from './commentary.component';
+import PostImage from './postImage.component';
+import Commentary from './commentary.componentAndroid';
 // import Excerpt from './excerpt.component';
 
 let styles;
 
-class Post extends Component {
+class Post extends PureComponent {
 
   componentWillMount() {
-    // if (this.props.singlePost && this.props.post) {
-    //   let post = this.props.posts.posts[this.props.post];
-    //   this.props.actions.getPostHtml(post);
-    // }
   }
 
   shouldComponentUpdate(next) {
@@ -169,12 +165,6 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
     flex: 1,
-  },
-  separator: {
-    height: 16,
-    borderColor: 'lightgrey',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderTopWidth: StyleSheet.hairlineWidth,
   },
 });
 

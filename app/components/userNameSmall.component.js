@@ -38,7 +38,7 @@ export default function UserName(props) {
       <Image
         resizeMode={'contain'}
         source={require('../assets/images/reposted.png')}
-        style={{ width: 16, height: 14, marginRight: 3, marginBottom: 12 }}
+        style={{ width: 15, height: 15, marginRight: 3, marginBottom: 14 }}
       />
     );
   }
@@ -52,10 +52,10 @@ export default function UserName(props) {
         <Image source={imageSource} style={imageStyle} />
         {repostIcon}
         <View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-end', marginBottom: 2 }}>
             <View>
-              <Text style={[styles.font17, styles.darkGray, styles.bebas]}>
-                {props.user.name}&nbsp;
+              <Text style={[styles.font17, styles.darkGrey, styles.bebas]}>
+                {props.user.name}{' '}
               </Text>
             </View>
             {stats}

@@ -23,46 +23,44 @@ class Dollar extends Component {
 
   componentDidMount() {
     let i = this.props.specialKey;
+    let r = Math.random();
 
-    Animated.timing(this.state.x, {
-      toValue: -(fullWidth / 2.5) + ((Math.random() - 0.5) * 70),
-      delay: i * 30,
-      duration: 500,
-      easing: Easing.out(Easing.ease),
-      // useNativeDriver: true,
-    }).start();
-
-    Animated.timing(this.state.y, {
-      toValue: fullHeight * 0.6,
-      delay: i * 30,
-      duration: 500,
-      easing: Easing.in(Easing.ease),
-      // useNativeDriver: true,
-    }).start();
-
-    // Animated.timing(this.state.opacity, {
-    //   toValue: 0,
-    //   delay: i * 50 + 200,
-    //   duration: 100,
-    //   easing: Easing.in(Easing.exp)
-    // }).start();
-
-    Animated.sequence([
-      Animated.timing(this.state.scale, {
-        toValue: 1,
-        delay: i * 30,
-        duration: 450,
-        easing: Easing.out(Easing.exp),
+    Animated.parallel([
+      Animated.timing(this.state.x, {
+        toValue: -(fullWidth / 2.5) + ((Math.random() - 0.5) * 50),
+        delay: i * (30 + r * 50),
+        duration: 500,
+        easing: Easing.out(Easing.ease),
         // useNativeDriver: true,
       }),
-      Animated.timing(this.state.scale, {
-        toValue: 0,
-        delay: 0,
-        duration: 50,
-        easing: Easing.in(Easing.quad),
+
+      Animated.timing(this.state.y, {
+        toValue: fullHeight * 0.6,
+        delay: i * (30 + r * 50),
+        duration: 500,
+        easing: Easing.in(Easing.ease),
         // useNativeDriver: true,
-      })
+      }),
+
+      Animated.sequence([
+        Animated.timing(this.state.scale, {
+          toValue: 1,
+          delay: i * (30 + r * 50),
+          duration: 450,
+          easing: Easing.out(Easing.exp),
+          // useNativeDriver: true,
+        }),
+        Animated.timing(this.state.scale, {
+          toValue: 0,
+          delay: 1,
+          duration: 50,
+          easing: Easing.in(Easing.quad),
+          // useNativeDriver: true,
+        })
+      ])
     ]).start();
+
+    setTimeout(() => this.props.destroy(i), 500 + i * (30 + r * 50));
   }
 
   render() {
@@ -89,7 +87,7 @@ class Dollar extends Component {
     // }
 
     return (
-      <Animated.Text
+      <Animated.View
         key={specialKey}
         style={[
           styles.aniMoney,
@@ -104,7 +102,7 @@ class Dollar extends Component {
         ]}
       >
         {img}
-      </Animated.Text>
+      </Animated.View>
     );
   }
 }
@@ -113,7 +111,7 @@ export default Dollar;
 
 const localStyles = StyleSheet.create({
   aniMoney: {
-    fontSize: 16 * 4,
+    // fontSize: 16 * 4,
     position: 'absolute',
     top: 25,
     right: 45,

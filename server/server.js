@@ -1,7 +1,6 @@
 /* eslint-disable no-console, no-use-before-define */
 import Express from 'express';
 import morgan from 'morgan';
-import queue from './queue';
 
 let bodyParser = require('body-parser');
 let mongoose = require('mongoose');
@@ -14,6 +13,9 @@ const app = new Express();
 mongoose.Promise = global.Promise;
 
 require('dotenv').config({ silent: true });
+
+require('./queue');
+
 
 console.log('NODE_ENV', process.env.NODE_ENV);
 

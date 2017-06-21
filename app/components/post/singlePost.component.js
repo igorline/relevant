@@ -7,14 +7,23 @@ import {
   RefreshControl,
   ListView,
   TouchableHighlight,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform,
+  StatusBar,
+  FlatList,
+  Keyboard
 } from 'react-native';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, fullHeight } from '../../styles/global';
 import Comment from './comment.component';
 import Post from './post.component';
 import CommentInput from './commentInput.component';
+import UserSearchComponent from '../createPost/userSearch.component';
 
 let styles;
+// let KBView = KeyboardAvoidingView;
+// if (Platform.OS === 'android') {
+//   KBView = View;
+// }
 
 class SinglePostComments extends Component {
   constructor(props) {
@@ -23,6 +32,7 @@ class SinglePostComments extends Component {
       inputHeight: 0,
       editing: false,
       reloading: false,
+      top: 0
     };
     this.post = null;
     this.id = null;
@@ -37,8 +47,10 @@ class SinglePostComments extends Component {
     this.toggleEditing = this.toggleEditing.bind(this);
     this.reload = this.reload.bind(this);
     this.scrollToComment = this.scrollToComment.bind(this);
-    this.shouldScrollToBottom = this.shouldScrollToBottom.bind(this);
+    this.scrollToBottom = this.scrollToBottom.bind(this);
     this.loaded = false;
+    this.renderUserSuggestions = this.renderUserSuggestions.bind(this);
+    this.updatePosition = this.updatePosition.bind(this);
   }
 
   componentWillMount() {
@@ -54,43 +66,35 @@ class SinglePostComments extends Component {
       }
     }
 
-    let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    this.dataSource = ds.cloneWithRows([]);
-
     InteractionManager.runAfterInteractions(() => {
-      // if (!this.comments) this.loadMoreComments();
       this.loaded = true;
       this.reload();
-      if (this.comments) {
-        this.dataSource = ds.cloneWithRows(this.comments);
-      }
 
-      setTimeout(() => {
-        if (this.props.scene.openComment) {
-          this.input.textInput.focus();
-        }
-        return;
-      }, 30);
-
+        setTimeout(() => {
+          if (this.props.scene.openComment) {
+            if (this.props.scene.commentCount && this.comments) {
+              this.scrollToBottom(true);
+            } else if (!this.props.scene.commentCount) {
+              this.input.textInput.focus();
+            }
+          }
+          return;
+        }, 100);
 
       this.forceUpdate();
     });
   }
 
-  componentDidMount() {
-    // if (this.props.scene.openComment) {
-    //   this.input.textInput.focus();
-    // }
+  componentWillUnmount() {
   }
 
   componentWillReceiveProps(next) {
-    // console.log('new comments dif?', next.comments.commentsById[this.id] !== this.props.comments.commentsById[this.id]);
     if (next.comments.commentsById[this.id] !== this.props.comments.commentsById[this.id]) {
-      let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-
       if (next.comments.commentsById[this.id]) {
         if (next.comments.commentsById[this.id].data) {
-          this.dataSource = ds.cloneWithRows(next.comments.commentsById[this.id].data);
+          if (!this.comments && this.props.scene.openComment) {
+            this.scrollToBottom(true);
+          }
           this.comments = next.comments.commentsById[this.id].data;
         }
 
@@ -112,37 +116,55 @@ class SinglePostComments extends Component {
     this.props.actions.getComments(this.id, length, 10);
   }
 
-  toggleEditing(editing, num, animated) {
-    if (editing && num !== null) this.scrollToComment(num, animated);
-    // if (this.props.singlePostEditing) this.props.singlePostEditing(bool);
+  toggleEditing(editing) {
     this.setState({ editing });
   }
 
-  scrollToComment(num, animated) {
-    this.scrollView.scrollTo({ x: 0, y: num, animated });
-  }
-
-  shouldScrollToBottom(type) {
-    if (type === 'new') {
-      this.scrollOnResize = true;
+  scrollToComment(index) {
+    if (typeof index !== 'number') return;
+    this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
+    let scroll = () => {
+      this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
+      Keyboard.removeListener('keyboardDidShow', scroll);
+    };
+    if (Platform.OS === 'android') {
+      Keyboard.addListener('keyboardDidShow', scroll);
     }
-    this.scrollOnLayout = true;
+
+    // this.forceUpdate();
+    // setTimeout(() => {
+    //   this.scrollView.scrollToIndex({
+    //     viewPosition: 0.1, index
+    //   });
+    // }, 80);
   }
 
-  scrollToBottom() {
-    this.scrollTo = Math.max(this.listviewHeight - this.scrollHeight, 0);
-    this.scrollView.scrollTo({ y: this.scrollTo, animated: true });
-    this.forceUpdate();
+
+  scrollToBottom(init) {
+    this.scrollTimeout = setTimeout(() => {
+      if (!this.scrollView) return;
+      let l = this.scrollView._listRef._totalCellLength + this.scrollView._listRef._headerLength;
+      if (this.comments.length) {
+        if (l < fullHeight - 50 && init) return;
+        this.scrollView.scrollToEnd();
+      } else if (this.comments.length === 0) {
+        let offset = this.headerHeight - this.scrollHeight;
+        this.scrollView.scrollToOffset({ offset });
+      }
+    }, 100);
   }
 
-  renderRow(rowData) {
+  renderRow({ item, index }) {
     return (
       <Comment
         {...this.props}
-        key={rowData._id}
+        key={item._id}
         parentEditing={this.toggleEditing}
+        index={index}
+        scrollToComment={() => this.scrollToComment(index)}
         parentId={this.id}
-        comment={rowData}
+        comment={item}
+        parentView={this.scrollView}
       />
     );
   }
@@ -154,9 +176,10 @@ class SinglePostComments extends Component {
   }
 
   renderHeader() {
-    let headerEl = [];
+    let headerEl;
+    let loadEarlier;
 
-    headerEl.push(<Post
+    headerEl = (<Post
       singlePost
       key={0}
       scene={this.props.scene}
@@ -167,7 +190,7 @@ class SinglePostComments extends Component {
     if (this.longFormat) {
       if (this.comments && this.total) {
         if (this.total > this.comments.length) {
-          headerEl.push(<TouchableHighlight
+          loadEarlier = (<TouchableHighlight
             key={1}
             underlayColor={'transparent'}
             onPress={this.loadMoreComments}
@@ -178,45 +201,43 @@ class SinglePostComments extends Component {
         }
       }
     }
-    return headerEl;
+    return (
+      <View
+        onLayout={(e) => {
+          this.headerHeight = e.nativeEvent.layout.height;
+        }}
+      >
+        {headerEl}
+        {loadEarlier}
+      </View>
+    );
   }
 
   renderComments() {
-    // let offset = 0;
-    // if (this.props.users.search.length) {
-      // offset = 149;
-    // }
-
     if (this.comments) {
-      return (<ListView
-        enableEmptySections
-        removeClippedSubviews={false}
-        scrollEventThrottle={16}
-        initialListSize={10}
-        dataSource={this.dataSource}
-        renderRow={this.renderRow}
+      return (<FlatList
+        ref={c => this.scrollView = c}
+        data={this.comments}
+        renderItem={this.renderRow}
+        keyExtractor={(item, index) => index}
+        removeClippedSubviews
+
         keyboardShouldPersistTaps={'always'}
-        keyboardDismissMode={'on-drag'}
-        automaticallyAdjustContentInsets={false}
-        // contentInset={{ bottom: offset }}
-        // onEndReached={!this.longFormat ? this.loadMoreComments : null}
+        keyboardDismissMode={'interactive'}
         onEndReachedThreshold={100}
-        ref={(scrollView) => {
-          this.scrollView = scrollView;
-        }}
-        onContentSizeChange={(width, height) => {
-          this.listviewHeight = height;
-          if (this.scrollOnResize) this.scrollToBottom();
-          this.scrollOnResize = false;
-        }}
-        onLayout={(e) => {
-          let height = e.nativeEvent.layout.height;
-          this.scrollHeight = height;
-          if (this.scrollOnLayout) this.scrollToBottom();
-          this.scrollOnLayout = false;
-        }}
+
+        overScrollMode={'always'}
         style={{ flex: 1 }}
-        renderHeader={this.renderHeader}
+        ListHeaderComponent={this.renderHeader}
+
+        onLayout={(e) => {
+          // console.log('layout', this.scrollOnLayout);
+          this.scrollHeight = e.nativeEvent.layout.height;
+          // this.scrollHeight = height;
+          // if (this.scrollOnLayout) this.scrollToBottom();
+          // this.scrollOnLayout = false;
+        }}
+
         refreshControl={
           <RefreshControl
             refreshing={this.state.reloading}
@@ -231,23 +252,60 @@ class SinglePostComments extends Component {
     return <View style={{ flex: 1 }} />;
   }
 
+  updatePosition(params) {
+    this.setState(params);
+  }
+
+  renderUserSuggestions() {
+    let parentEl = null;
+    if (this.props.users.search) {
+      if (this.props.users.search.length) {
+        parentEl = (
+          <View
+            style={{
+              position: 'absolute',
+              bottom: Math.min(120, this.state.inputHeight),
+              left: 0,
+              right: 0,
+              maxHeight: this.top,
+              backgroundColor: 'white',
+              borderTopWidth: 1,
+              borderTopColor: '#F0F0F0',
+            }}
+          >
+            <UserSearchComponent
+              style={{ paddingTop: 59 }}
+              setSelected={this.input.setMention}
+              users={this.props.users.search}
+            />
+          </View>
+        );
+      }
+    }
+    return parentEl;
+  }
+
   render() {
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
-        style={{ flex: 1, position: 'relative' }}
-        keyboardVerticalOffset={59}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={59 + (Platform.OS === 'android' ? StatusBar.currentHeight / 2 : 0)}
       >
-        <View style={{ flex: 1 }}>
-          {this.renderComments()}
-          <CommentInput
-            ref={c => this.input = c}
-            postId={this.id}
-            editing={this.state.editing}
-            {...this.props}
-            onFocus={this.shouldScrollToBottom}
-          />
-        </View>
+        {this.renderComments()}
+        {this.renderUserSuggestions()}
+        <CommentInput
+          ref={c => this.input = c}
+          postId={this.id}
+          editing={this.state.editing}
+          {...this.props}
+          scrollView={this.scrollView}
+          scrollToBottom={this.scrollToBottom}
+          updatePosition={this.updatePosition}
+          onFocus={() => {
+            this.scrollToBottom();
+          }}
+        />
       </KeyboardAvoidingView>
     );
   }

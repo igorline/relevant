@@ -7,11 +7,23 @@ import {
   Image,
   Animated,
   ActionSheetIOS,
-  StatusBar
+  StatusBar,
+  TouchableOpacity,
+  Platform
 } from 'react-native';
+import Icon from 'react-native-vector-icons/EvilIcons';
 import Search from './search.component';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, fullWidth, darkGrey } from '../../styles/global';
 import Stats from '../post/stats.component';
+
+import RNBottomSheet from 'react-native-bottom-sheet';
+
+let ActionSheet = ActionSheetIOS;
+
+if (Platform.OS === 'android') {
+  ActionSheet = RNBottomSheet;
+  ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
+}
 
 let styles;
 
@@ -29,7 +41,7 @@ class CardHeader extends Component {
   }
 
   showActionSheet(id) {
-    ActionSheetIOS.showActionSheetWithOptions({
+    ActionSheet.showActionSheetWithOptions({
       options: ['Block User', 'Cancel'],
       cancelButtonIndex: 1,
       destructiveIndex: 0,
@@ -37,7 +49,7 @@ class CardHeader extends Component {
     (buttonIndex) => {
       switch (buttonIndex) {
         case 0:
-          console.log(this.props.actions)
+          console.log(this.props.actions);
           this.props.actions.updateBlock(id);
           break;
         default:
@@ -114,14 +126,27 @@ class CardHeader extends Component {
     return leftEl;
   }
 
+  renderBottomArrow() {
+    if (!this.titleAction) return null;
+    return (
+      <TouchableOpacity
+        style={{ position: 'absolute', bottom: -1, left: fullWidth / 2 - 11 }}
+        onPress={this.titleAction}
+      >
+        <Image
+          style={styles.arrow}
+          resizeMode={'contain'}
+          source={require('../../assets/images/downarrow.png')}
+        />
+      </TouchableOpacity>
+    );
+  }
+
   renderTitle(props) {
     if (this.state.search) return null;
     let title = props.scene.route ? props.scene.route.title : '';
     let component = props.scene.route.component;
     let key = props.scene.route.key;
-    let bottomArrow;
-    let rightArrow;
-    let titleAction = () => null;
     let id;
 
     title = title ? title.trim() : null;
@@ -133,33 +158,31 @@ class CardHeader extends Component {
       }
 
       if (this.props.auth.user && id !== this.props.auth.user._id) {
-        titleAction = () => this.showActionSheet(id);
-
-        bottomArrow = (<Text
-          style={[styles.arrow]}
-          onPress={titleAction}
-        >
-          <Image
-            style={styles.arrow}
-            resizeMode={'contain'}
-            source={require('../../assets/images/downarrow.png')}
-          />
-        </Text>);
+        this.titleAction = () => this.showActionSheet(id);
       }
     }
 
-    if (key === 'discover' || component === 'discover') {
-      titleAction = () => this.props.actions.toggleTopics();
-      bottomArrow = (<Text
-        style={[styles.arrow]}
-        onPress={titleAction}
-      >
-        <Image
-          style={styles.arrow}
-          resizeMode={'contain'}
-          source={require('../../assets/images/downarrow.png')}
-        />
-      </Text>);
+    if (key === 'discover' || key === 'mainDiscover' || component === 'discover') {
+      this.titleAction = () => this.props.actions.toggleTopics();
+
+      if (key === 'mainDiscover') {
+        return (
+          <TouchableOpacity
+            style={{
+              alignItems: 'center',
+            }}
+            onPress={this.titleAction}
+          >
+            <View style={{ marginBottom: 0 }}>
+              <Image
+                source={require('../../assets/images/logo.png')}
+                resizeMode={'contain'}
+                style={{ width: 120, height: 20, marginBottom: 0 }}
+              />
+            </View>
+          </TouchableOpacity>
+        );
+      }
     }
 
     if (title === 'Profile' && this.props.auth.user) {
@@ -190,11 +213,13 @@ class CardHeader extends Component {
         ref={c => this.title = c}
         style={[styles.titleComponent]}
       >
-        <Text onPress={titleAction} style={styles.navTitle}>
-          {clipped}
-          {rightArrow}
-        </Text>
-        {bottomArrow}
+        <TouchableOpacity
+          onPress={this.titleAction ? this.titleAction : () => null}
+        >
+          <Text style={[styles.navTitle]}>
+            {clipped}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -224,13 +249,19 @@ class CardHeader extends Component {
     if (key !== 'myProfile') {
       rightEl = statsEl;
     } else {
+      let gear;
+      if (Platform.OS === 'ios') {
+        gear = <Text style={{ paddingBottom: 5, fontSize: 17 }}>⚙️</Text>;
+      } else {
+        gear = <Icon name="gear" size={24} color={darkGrey} />;
+      }
       rightEl = (
         <TouchableHighlight
           style={styles.gear}
           underlayColor={'transparent'}
           onPress={() => this.props.showActionSheet()}
         >
-          <Text style={{ paddingBottom: 5, fontSize: 17 }}>⚙️</Text>
+          {gear}
         </TouchableHighlight>
       );
     }
@@ -270,6 +301,7 @@ class CardHeader extends Component {
         {this.renderLeft(props)}
         {this.renderTitle(props)}
         {this.props.renderRight ? this.props.renderRight(props) : this.renderRight(props)}
+        {this.renderBottomArrow()}
       </Animated.View>
     );
   }
@@ -281,16 +313,12 @@ class CardHeader extends Component {
 
 const localStyles = StyleSheet.create({
   titleComponent: {
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   arrow: {
     alignSelf: 'center',
     backgroundColor: 'transparent',
-    // position: 'absolute',
-    marginTop: -5,
-    bottom: -10,
-    left: 0,
-    right: 0,
     width: 22,
     height: 15,
   },

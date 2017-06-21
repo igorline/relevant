@@ -81,6 +81,8 @@ InvestSchema.statics.updateUserInvestment = async function updateEarnings(
       fromUser = earnings.lastInvestor;
     }
 
+    this.model('RelevanceStats').updateUserStats(investor, relevance);
+
     // updates amount earned by user from post
     earnings = await earnings.save();
 

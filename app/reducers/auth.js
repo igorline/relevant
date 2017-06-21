@@ -9,10 +9,24 @@ const initialState = {
   deviceToken: null,
   preUser: null,
   confirmed: true,
+  stats: null,
+  nextUpdate: new Date(),
+  chart: [],
+  relChart: []
 };
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
+
+    case types.SET_STATS: {
+      return {
+        ...state,
+        stats: action.payload.stats || state.stats,
+        nextUpdate: action.payload.nextUpdate || state.nextUpdate,
+        chart: action.payload.chart || state.chart,
+        relChart: action.payload.relChart || state.relChart,
+      };
+    }
 
     case types.LOGIN_USER_REQUEST:
       return Object.assign({}, state, {
@@ -66,9 +80,7 @@ export default function auth(state = initialState, action) {
       };
 
     case types.SET_SELECTED_USER_DATA: {
-      let updateUser;
-      if (state.user._id === action.payload._id) updateUser = true;
-      if (!updateUser) return state;
+      if (!state.user || state.user._id !== action.payload._id) return state;
       return {
         ...state,
         user: action.payload

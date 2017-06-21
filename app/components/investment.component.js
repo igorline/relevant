@@ -85,7 +85,7 @@ export default function (props) {
   investmentEl = (<View style={[styles.singleActivity]}>
     <View style={styles.activityLeft}>
       <Text
-        style={[styles.darkGray, styles.georgia]}
+        style={[styles.darkGrey, styles.georgia]}
         numberOfLines={2}
       >
         {`${investorName} invested $${investment.amount} in `}

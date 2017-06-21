@@ -5,7 +5,7 @@ import {
   View,
   Image,
 } from 'react-native';
-import { globalStyles, fullWidth } from '../../styles/global';
+import { globalStyles, fullWidth, darkGrey } from '../../styles/global';
 import Percent from '../../components/percent.component';
 import { numbers } from '../../utils';
 import Bio from './bio.component';
@@ -75,8 +75,6 @@ class ProfileComponent extends Component {
   }
 
   render() {
-    const parentStyles = this.props.styles;
-    const styles = { ...localStyles, ...parentStyles };
     let followers = 0;
     let user = null;
     let userImage = null;
@@ -104,8 +102,8 @@ class ProfileComponent extends Component {
               onPress={() => this.goToTopic(tag.tag)}
               style={styles.active}
             >
-                #{tag.tag}
-            </Text>{i !== user.topTags.length - 1  ? ', ' : ''}
+              #{tag.tag}
+            </Text>{i !== user.topTags.length - 1 ? ', ' : ''}
           </Text>
           )
         );
@@ -132,21 +130,19 @@ class ProfileComponent extends Component {
 
     let balanceEl = (
       <View style={[styles.profileRowContainer]}>
-        <Text style={[styles.font14, { lineHeight: 15 }]}>
-          <Text style={[styles.font12, styles.darkGray, styles.profileColumn]}>
-            Coins: 
+        <View style={styles.textRow}>
+          <Text style={[styles.font12, styles.darkGrey]}>
+            Coins:{' '}
           </Text>
-          <View style={[styles.coin, { width: 17, height: 13, right: 0 }]}>
-            <Image
-              resizeMode={'contain'}
-              style={[styles.coin, { width: 17, height: 13, right: 0 }]}
-              source={require('../../assets/images/relevantcoin.png')}
-            />
-          </View>
+          <Image
+            resizeMode={'contain'}
+            style={[styles.coin, { width: 14, height: 14 }]}
+            source={require('../../assets/images/relevantcoin.png')}
+          />
           <Text style={[styles.font12, styles.bebasBold]}>
             {numbers.abbreviateNumber(balance) || 0}
           </Text>
-        </Text>
+        </View>
       </View>
     );
 
@@ -154,23 +150,32 @@ class ProfileComponent extends Component {
 
     relevanceEl = (
       <View style={[styles.profileRow, styles.profileRowContainer]}>
-        <Text
-          // onPress={() => this.toggleTooltip()}
-          style={[styles.profileBig, styles.bebasNoMargin, { flex: 1 }]}
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            alignItems: 'flex-end',
+            alignSelf: 'flex-end'
+          }}
         >
-          <View style={[styles.r, { width: 25, height: 23, right: 3, top: 2.5 }]}>
-            <Image
-              resizeMode={'contain'}
-              style={[styles.r, { width: 25, height: 23, right: 3, top: 2.5 }]}
-              source={require('../../assets/images/r.png')}
-            />
-          </View>
-          {numbers.abbreviateNumber(relevance)}
-          {' '}
-        </Text>
-        <Text style={[styles.profileBig, { flex: 1 }]}>
+          <Image
+            resizeMode={'contain'}
+            style={[styles.r, { width: 25, height: 25 }]}
+            source={require('../../assets/images/r.png')}
+          />
+          <Text
+            // onPress={() => this.toggleTooltip()}
+            style={[styles.profileBig, styles.bebas, styles.darkGrey]}
+          >
+            {numbers.abbreviateNumber(relevance)}
+            {' '}
+          </Text>
+        </View>
+
+        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'flex-start' }}>
           <Percent fontSize={26} user={user} />
-        </Text>
+        </View>
       </View>
     );
 
@@ -179,7 +184,7 @@ class ProfileComponent extends Component {
     if (topTags) {
       bottomSection = (
         <View style={{ padding: 0 }}>
-          <Text style={[styles.font12, styles.darkGray]}>
+          <Text style={[styles.font12, styles.darkGrey]}>
             <Text>{user.topTags.length ? 'Expertise: ' : null}</Text>
             <Text style={[styles.font14, styles.georgia]}>
               {topTags}
@@ -224,11 +229,11 @@ class ProfileComponent extends Component {
               {relevanceEl}
             </View>
             <View style={[styles.profileRowContainer]}>
-              <View style={[styles.profileRow, fullWidth <= 320 ? { flexDirection: 'column' } : null]}>
-                <Text style={[styles.font12, styles.darkGray, styles.profileColumn]}>
+              <View style={[styles.profileRow, fullWidth <= 320 ? { flexDirection: 'column', alignItems: 'flex-start' } : null]}>
+                <Text style={[styles.font12, styles.darkGrey, styles.profileColumn]}>
                   Subscribers: <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(followers || 0)}</Text>
                 </Text>
-                <Text style={[styles.font12, styles.darkGray, styles.profileColumn]}>
+                <Text style={[styles.font12, styles.darkGrey, styles.profileColumn]}>
                   Subscribed to: <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(following || 0)}</Text>
                 </Text>
               </View>
@@ -249,7 +254,7 @@ class ProfileComponent extends Component {
 }
 
             // <View style={styles.onlineRow}>
-            //   <Text style={[styles.darkGray, styles.georgia]}>
+            //   <Text style={[styles.darkGrey, styles.georgia]}>
             //     {user.online ? 'Online' : 'Offline'}
             //   </Text>
             //   <View style={user.online ? styles.onlineCirc : styles.offlineCirc} />
@@ -270,7 +275,7 @@ let localStyles = StyleSheet.create({
   profileRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'flex-end',
   },
   lastRow: {
     borderBottomWidth: 0,
@@ -282,6 +287,13 @@ let localStyles = StyleSheet.create({
     marginTop: 3,
     fontSize: 26,
     lineHeight: 26,
+  },
+  textRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
   }
 });
 

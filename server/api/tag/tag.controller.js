@@ -11,6 +11,18 @@ function handleError(res, statusCode) {
   };
 }
 
+// Tag.findOne({ _id: 'fashion'})
+// .then(love => {
+//   console.log(love)
+//   love.emoji = '✌️';
+//   // love.category = true;
+//   // love.parents = [];
+//   // love.main = ['sex', 'romance'];
+//   // love.categoryName = 'Love';
+//   love.save();
+//   console.log(love)
+// })
+
 exports.update = async (req, res) => {
   let tag;
   let newId = req.body.newId;
