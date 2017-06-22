@@ -77,7 +77,9 @@ async function uploadToS3(uri, policy, signature, url, publicUrl, s3_object_name
   })
   .catch((error) => {
     console.log(error, 'error');
-    RNFetchBlob.session('uploads').dispose();
+    if (Platform.OS === 'android') {
+      RNFetchBlob.session('uploads').dispose();
+    }
     return { success: false, url: null };
   });
 }

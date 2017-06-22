@@ -214,6 +214,8 @@ class CreatePostContainer extends Component {
   uploadPost() {
     let props = this.props.createPost;
 
+    console.log('creating post ', props.postCategory);
+
     let postBody = {
       link: props.postUrl,
       tags: [...new Set(props.allTags.map(tag => tag._id))],

@@ -23,6 +23,9 @@ export default class topics extends Component {
   componentWillMount() {
     InteractionManager.runAfterInteractions(() => {
       if (!this.props.topics.length) this.props.actions.getParentTags();
+      if (this.props.selectedTopic) {
+        this.goToElement = true;
+      }
     });
   }
 
