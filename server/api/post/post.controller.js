@@ -13,35 +13,27 @@ import apnData from '../../pushNotifications';
 import mail from '../../mail';
 
 
-// const rootCas = require('ssl-root-cas/latest').inject();
-// rootCas
-  // .addFile(__dirname + '/usr/lib/ssl/certs/ca-certificates.crt')
-  // .addFile(__dirname + '/ssl/02-cheap-ssl-intermediary-b.pem')
-  // ;
-// require('https').globalAgent.options.ca = rootCas;
-
-// async function fixMassivesci() {
-//   try {
-//     let posts = await Post.find({ $or: [{ link: { $regex: /massivesci.com/ } }, { body: { $regex: /massivesci.com/ } }] })
-//     .populate('metaPost');
+// function updatePostTags() {
+//   Post.find({})
+//   .then(posts => {
 //     posts.forEach(post => {
-//       console.log(post.link);
-//       if (post.link === null) {
-//         post.link = 'https://massivesci.com/articles/meet-the-chemist-who-engineered-the-first-effective-treatment-of-leprosy/';
+//       let hasTag;
+//       if (post.tags) {
+//         hasTag = post.tags.find(tag => tag === post.category);
 //       }
-//       else {
-//         post.link = post.link.replace('.com//', '.com/');
+//       if (!hasTag && !post.category) {
+//         // console.log(post.category);
+//         // post.tags.push(post.category);
+//         // post.save()
 //       }
-//       post.metaPost.url = post.link;
-//       console.log('new post link ', post.link);
-//       console.log('new meta link ', post.metaPost.url);
-//       post.save();
+//     })
+//     .catch(err => {
+//       console.log(err);
 //     });
-//   } catch (err) {
-//     console.log(err);
-//   }
+//   });
 // }
-// fixMassivesci();
+// updatePostTags();
+
 
 function getBestPosts() {
   let now = new Date();
@@ -465,6 +457,9 @@ exports.create = (req, res) => {
   let categoryEmoji = req.body.category ? req.body.category.emoji : null;
   let tags = [];
   let keywords = req.body.keywords || [];
+
+  if (category) tags.push(category);
+
   req.body.tags.forEach(tag => {
     if (tag) {
       tags.push(tag.replace('_category_tag', '').trim());

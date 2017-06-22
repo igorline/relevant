@@ -12,7 +12,14 @@ export default class Categories extends Component {
     this.setTopic = this.setTopic.bind(this);
   }
 
+  componentWillMount() {
+    if (this.props.createPost.postCategory) {
+      this.selectedTopic = this.props.createPost.postCategory;
+    }
+  }
+
   setTopic(topic) {
+    console.log('set topic ', topic);
     if (this.props.createPost.postCategory === topic) {
       this.selectedTopic = null;
       this.props.actions.setPostCategory(null);
