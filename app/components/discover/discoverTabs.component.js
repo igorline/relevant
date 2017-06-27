@@ -246,7 +246,9 @@ class DiscoverTabs extends Component {
           tabBarUnderlineStyle={{ backgroundColor: blue }}
           onChangeTab={(tab) => {
             this.setState({ index: tab.i });
-            // this.header.showHeader();
+            if (this.header) {
+              this.header.showHeader();
+            }
           }}
           prerenderingSiblingsNumber={Infinity}
           contentProps={{

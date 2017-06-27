@@ -14,15 +14,11 @@ import mail from '../../mail';
 
 
 // function updatePostTags() {
-//   Post.find({})
+//   Post.find({ user: 'Timursq' })
 //   .then(posts => {
 //     posts.forEach(post => {
-//       let hasTag;
-//       if (post.tags) {
-//         hasTag = post.tags.find(tag => tag === post.category);
-//       }
-//       if (!hasTag && !post.category) {
-//         // console.log(post.category);
+//       if (!post.link) {
+//         console.log(post);
 //         // post.tags.push(post.category);
 //         // post.save()
 //       }

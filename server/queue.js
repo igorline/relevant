@@ -293,7 +293,8 @@ async function basicIncome(done) {
   });
 
   q.on('timeout', function(next, job) {
-    console.log(next);
+    console.log('error: queue timeout', job);
+    next();
   });
 }
 
@@ -426,9 +427,9 @@ getNextUpdateTime();
 function startBasicIncomeUpdate() {
   // setInterval(basicIncome, 24 * 60 * 60 * 1000);
 
-  basicIncome();
+  basicIncome(() => getUserRank());
   setTimeout(() => {
-    startBasicIncomeUpdate(() => getUserRank());
+    startBasicIncomeUpdate();
   }, getNextUpdateTime());
 }
 
@@ -446,7 +447,7 @@ if (process.env.NODE_ENV === 'production') {
   setTimeout(() => startStatsUpdate(), minutesTillHour * 60 * 1000);
 
   setTimeout(() => {
-    startBasicIncomeUpdate(() => getUserRank());
+    startBasicIncomeUpdate();
   }, getNextUpdateTime());
 }
 
