@@ -31,23 +31,23 @@ import mail from '../../mail';
 // updatePostTags();
 
 
-function getBestPosts() {
-  let now = new Date();
-  now.setDate(now.getDate() - 7);
+// function getBestPosts() {
+//   let now = new Date();
+//   now.setDate(now.getDate() - 7);
 
-  Post.find({ createdAt: { $gt: now } }).sort('-relevance').limit(13)
-  .then(posts => {
-    posts.forEach(post => {
-      console.log('------');
-      console.log(post.title);
-      console.log(post.link);
-      console.log(post.body);
-      console.log(post.description);
-      console.log(post.user);
-      console.log('------');
-    });
-  });
-}
+//   Post.find({ createdAt: { $gt: now } }).sort('-relevance').limit(13)
+//   .then(posts => {
+//     posts.forEach(post => {
+//       console.log('------');
+//       console.log(post.title);
+//       console.log(post.link);
+//       console.log(post.body);
+//       console.log(post.description);
+//       console.log(post.user);
+//       console.log('------');
+//     });
+//   });
+// }
 // getBestPosts();
 
 const PostEvents = new EventEmitter();
