@@ -172,10 +172,6 @@ exports.generatePreview = (body, uri) => {
     });
   });
 
-  if (data.image && data.image.indexOf('http://') !== 0 &&
-      data.image.indexOf('https://') !== 0) {
-    data.image = uri + data.image;
-  }
 
   let description = null;
   let title = null;
@@ -209,14 +205,21 @@ exports.generatePreview = (body, uri) => {
     console.log('couldn\'t parse url ', uri);
   }
   // console.log('author ', article.byline);
-  if (!image && article && article.content) {
-    image = article.content.match(/(http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/);
-    image = image ? image[0] : null;
-    console.log('found image ', image);
-  } else if (!image) {
-    image = $('img').eq(0).attr('src');
-    console.log('found alt image', image);
+
+  // if (!image && article && article.content) {
+  //   image = article.content.match(/(http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/);
+  //   image = image ? image[0] : null;
+  //   console.log('found image ', image);
+  // } else if (!image) {
+  //   image = $('img').eq(0).attr('src');
+  //   console.log('found alt image', image);
+  // }
+
+  if (image && image.indexOf('http://') !== 0 &&
+      image.indexOf('https://') !== 0) {
+    image = 'http://' + domain + image;
   }
+
 
   if (!title && url.match('.pdf')) {
     title = url.substring(url.lastIndexOf('/') + 1);
