@@ -86,7 +86,7 @@ class Application extends Component {
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
     utils.token.get()
     .catch(() => {
-      codePush.disallowRestart();
+      // codePush.disallowRestart();
       this.props.actions.replaceRoute({
         key: 'auth',
         component: 'auth',
@@ -109,7 +109,7 @@ class Application extends Component {
 
   componentWillReceiveProps(next) {
     if (!this.props.auth.user && next.auth.user) {
-      codePush.allowRestart();
+      // codePush.allowRestart();
       this.props.actions.userToSocket(next.auth.user._id);
       this.props.actions.getNotificationCount();
       this.props.actions.getFeedCount();

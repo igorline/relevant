@@ -91,6 +91,8 @@
 
 .splashContent section.header img {
   object-fit: contain;
+  max-width: 80%;
+  max-height: 60%;
 }
 
 .splashContent section.body {
