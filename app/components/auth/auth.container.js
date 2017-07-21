@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   Easing
 } from 'react-native';
+import codePush from 'react-native-code-push';
 import * as NavigationExperimental from 'react-navigation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -32,6 +33,14 @@ class AuthContainer extends Component {
     super(props, context);
     this.renderScene = this.renderScene.bind(this);
     this.back = this.back.bind(this);
+  }
+
+  componentDidMount() {
+    codePush.disallowRestart();
+  }
+
+  componentWillUnmount() {
+    codePush.allowRestart();
   }
 
   renderScene(props) {
