@@ -29,6 +29,7 @@ const initialState = {
   },
   posts: {},
   comments: {},
+  topPosts: [],
 };
 
 function mergePosts(posts, state) {
@@ -49,6 +50,13 @@ function mergePosts(posts, state) {
 
 export default function post(state = initialState, action) {
   switch (action.type) {
+
+    case types.SET_TOP_POSTS: {
+      return {
+        ...state,
+        topPosts: action.payload
+      };
+    }
 
     case types.INC_FEED_COUNT: {
       let unread = state.feedUnread || 0;

@@ -9,6 +9,8 @@ import Meta from './api/metaPost/metaPost.model';
 import Relevance from './api/relevance/relevance.model';
 import * as proxyHelpers from './api/post/html';
 import RelevanceStats from './api/relevanceStats/relevanceStats.model';
+import pagerank from './utils/pagerank';
+import Invest from './api/invest/invest.model';
 
 const extractor = require('unfluff');
 const DECAY = 0.99621947473649;
@@ -92,6 +94,64 @@ function updateUserStats() {
     });
   });
 }
+
+// async function userRank() {
+//   try {
+//     let users = await User.find({});
+//     let rankedUsers = {};
+//     let originalRelevance = {};
+//     let results = users.map(async user => {
+//       rankedUsers[user._id] = {};
+//       originalRelevance[user._id] = user.relevance;
+//       let upvotes = await Invest.find({ investor: user._id });
+//       upvotes.forEach(upvote => {
+//         if (upvote.ownPost) return;
+//         if (rankedUsers[user._id][upvote.author]) {
+//           let a = upvote.amount / Math.abs(upvote.amount);
+//           if (!a) a = 1;
+//           rankedUsers[user._id][upvote.author].weight += a;
+//         } else {
+//           rankedUsers[user._id][upvote.author] = { weight: 1 };
+//         }
+//       });
+//       return upvotes;
+//     });
+
+//     await Promise.all(results);
+//     console.log(rankedUsers);
+
+//     let scores = pagerank(
+//       rankedUsers,
+//       { alpha: 0.85 }
+//     );
+//     console.log(scores);
+//     let max = 0;
+
+
+//     let array = [];
+//     Object.keys(scores).forEach(user => {
+//       let u = scores[user];
+//       if (u > max) max = u;
+//       array.push({
+//         name: user,
+//         rank: u,
+//         relevance: originalRelevance[user]
+//       });
+//     });
+
+//     array = array.sort((a, b) => a.rank - b.rank);
+//     array.forEach(u => {
+//       console.log('name: ', u.name);
+//       console.log('rank ', Math.round(100 * u.rank / max));
+//       console.log('relevance ', u.relevance);
+//     });
+
+
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// userRank();
 
 // setTimeout(basicIncome, 10000);
 async function getUserRank() {

@@ -11,7 +11,6 @@ class Post extends Component {
       showInvestForm: false
     };
     this.onClick = this.onClick.bind(this);
-    this.deletePost = this.deletePost.bind(this);
   }
 
   onClick(e) {
@@ -19,32 +18,16 @@ class Post extends Component {
     this.setState({ showInvestForm: !this.state.showInvestForm });
   }
 
-  deletePost() {
-    this.props.actions.deletePost(this.props.post);
-  }
 
   render() {
     let post = this.props.post;
     let titleEl;
     let buttonEL;
-    let deleteEl;
 
     if (post === 'notFound') {
       return (<div><h1>Post not found</h1></div>);
     }
     if (!post) return null;
-
-    if (post.user._id === this.props.auth.user._id ||
-      this.props.auth.user.role === 'admin') {
-      deleteEl = (
-        <button
-          style={{ ...styles.postButtons, float: 'right' }}
-          onClick={this.deletePost}
-        >
-          Delete
-        </button>
-      );
-    }
 
     titleEl = (
       <h3>
@@ -65,7 +48,6 @@ class Post extends Component {
           💰 Invest
         </button>
         {this.state.showInvestForm && <Invest {...this.props} />}
-        {deleteEl}
       </div>
     );
 
@@ -92,7 +74,7 @@ styles = {
   postBox: {
     margin: 'auto',
     padding: '10px',
-    maxWidth: '400px',
+    // maxWidth: '400px',
     border: '1px solid grey',
   },
   postButtons: {

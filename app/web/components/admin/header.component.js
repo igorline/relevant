@@ -14,6 +14,7 @@ function AdminHeader(props) {
         <Link className={'link'} to="/admin/flagged">Flagged</Link>
         <Link className={'link'} to="/admin/downvotes">Downvotes</Link>
         <Link className={'link'} to="/admin/email">Email</Link>
+        <Link className={'link'} to="/admin/topPosts">Top Posts</Link>
       </div>
       {props.children}
     </container>

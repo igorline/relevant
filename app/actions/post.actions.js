@@ -620,6 +620,47 @@ export function getPostHtml(post) {
     .catch(err => console.log('Subscription error', err));
 }
 
+export function setTopPosts(data) {
+  return {
+    type: types.SET_TOP_POSTS,
+    payload: data,
+  };
+}
+
+export function getTopPosts() {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.fetchUtils.superFetch({
+        method: 'GET',
+        endpoint: 'post',
+        path: '/topPosts',
+      });
+      // console.log('top posts ', responseJSON);
+      return dispatch(setTopPosts(responseJSON));
+    } catch (error) {
+      return false;
+    }
+  };
+}
+
+export function sendPostNotification(post) {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.fetchUtils.superFetch({
+        method: 'POST',
+        endpoint: 'post',
+        path: '/sendPostNotification',
+        body: JSON.stringify(post),
+      });
+      AlertIOS.alert('Notification sent!');
+      // return dispatch(setTopPosts(responseJSON));
+    } catch (error) {
+      return false;
+    }
+  };
+}
+
+
 // export function getPostHtml(post) {
 //   return dispatch =>
 //     // fetch(post.link, {

@@ -19,6 +19,7 @@ import Flagged from './components/admin/flagged.component';
 import Waitlist from './components/admin/waitlist.component';
 import Downvotes from './components/admin/downvotes.container';
 import Email from './components/admin/email.component';
+import TopPosts from './components/admin/topPosts.component';
 
 // Redirects to /login by default
 const userIsAuthenticated = UserAuthWrapper({
@@ -57,6 +58,7 @@ let routes = (store) => {
           { path: 'topics', component: TopicsAdmin },
           { path: 'invites', component: Invites },
           { path: 'email', component: Email },
+          { path: 'topPosts', component: TopPosts },
         ]
       },
 

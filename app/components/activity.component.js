@@ -243,6 +243,13 @@ export default function (props) {
           </Text>
         );
 
+      case 'topPost':
+        return (
+          <Text>
+            In case you miseed this top-ranked post:
+          </Text>
+        );
+
       default:
         return null;
     }
@@ -370,6 +377,15 @@ export default function (props) {
           <View style={styles.activityLeft}>
             <Text allowFontScaling={false} style={styles.incomeEmoji}>🤑</Text>
 
+            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
+              {getText(singleActivity)}
+            </Text>
+          </View>
+        );
+      case 'topPost':
+        return (
+          <View style={styles.activityLeft}>
+            <Image style={[ styles.activityImage, { borderRadius: 0, width: 25, height: 25 } ]} resizeMode={'contain'} source={require('../assets/images/r.png')} />
             <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
               {getText(singleActivity)}
             </Text>
