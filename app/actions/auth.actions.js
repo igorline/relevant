@@ -1,6 +1,7 @@
 import * as types from './actionTypes';
 import * as utils from '../utils';
 import * as errorActions from './error.actions';
+import * as navigationActions from './navigation.actions';
 
 let AlertIOS = utils.fetchUtils.Alert();
 let rn = {};
@@ -447,7 +448,11 @@ export function addDeviceToken(user) {
 
       // (required) Called when a remote or local notification is opened or received
       onNotification: function(notification) {
-        // console.log( 'NOTIFICATION:', notification );
+        let { foreground, userInteraction, message, data } = notification;
+        if (!userInteraction) return;
+        if (data && data.type === 'postLink') {
+          dispatch(navigationActions.goToPost({ _id: data._id, title: data.title }));
+        }
       },
 
       // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)

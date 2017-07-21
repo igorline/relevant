@@ -6,15 +6,23 @@ import Post from '../post/post';
 
 let styles;
 
+if (process.env.BROWSER === true) {
+  require('../post/post.css');
+}
+
 class Flagged extends Component {
   constructor(props) {
     super(props);
+    this.deletePost = this.deletePost.bind(this);
   }
 
   componentDidMount() {
     this.props.actions.getFlaggedPosts();
   }
 
+  deletePost(post) {
+    this.props.actions.deletePost(post);
+  }
 
   render() {
     let { flagged, metaPosts, posts } = this.props;
@@ -27,17 +35,34 @@ class Flagged extends Component {
     flaggedPosts = flaggedPosts.map(p => posts[p]);
     flaggedPosts = flaggedPosts.filter(p => p);
 
+    let deleteEl = (post) => {
+      if (post.user._id === this.props.auth.user._id ||
+        this.props.auth.user.role === 'admin') {
+          return (
+            <button
+              style={{ margin: 'auto' }}
+              onClick={() => this.deletePost(post)}
+            >
+              Delete
+            </button>
+        );
+      }
+    };
+
     let postsEl = flaggedPosts.map(p => (
-      <Post
-        key={p._id}
-        {...this.props}
-        flagged={p.flagged}
-        post={p}
-      />)
+      <div>
+        <Post
+          key={p._id}
+          {...this.props}
+          flagged={p.flagged}
+          post={p}
+        />
+        {deleteEl(p)}
+      </div>)
     );
 
     return (
-      <div style={{}}>
+      <div className={'postContainer'}>
         <h2>Flagged Posts</h2>
         {postsEl}
       </div>

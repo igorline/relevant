@@ -1,0 +1,7 @@
+
+.postContainer {
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+}

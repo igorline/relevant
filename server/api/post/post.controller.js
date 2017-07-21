@@ -11,7 +11,7 @@ import Feed from '../feed/feed.model';
 import Tag from '../tag/tag.model';
 import apnData from '../../pushNotifications';
 import mail from '../../mail';
-
+import Notification from '../notification/notification.model';
 
 // function updatePostTags() {
 //   Post.find({ user: 'Timursq' })
@@ -31,23 +31,7 @@ import mail from '../../mail';
 // updatePostTags();
 
 
-// function getBestPosts() {
-//   let now = new Date();
-//   now.setDate(now.getDate() - 7);
 
-//   Post.find({ createdAt: { $gt: now } }).sort('-relevance').limit(13)
-//   .then(posts => {
-//     posts.forEach(post => {
-//       console.log('------');
-//       console.log(post.title);
-//       console.log(post.link);
-//       console.log(post.body);
-//       console.log(post.description);
-//       console.log(post.user);
-//       console.log('------');
-//     });
-//   });
-// }
 // getBestPosts();
 
 const PostEvents = new EventEmitter();
@@ -109,6 +93,64 @@ function handleError(res, statusCode) {
     res.status(statusCode).send(err);
   };
 }
+
+exports.topPosts = async (req, res) => {
+  let posts;
+  try {
+    let now = new Date();
+    now.setDate(now.getDate() - 7);
+
+    posts = await Post.find({ createdAt: { $gt: now } }).sort('-relevance').limit(20);
+    // .then(posts => {
+    //   posts.forEach(post => {
+    //     // console.log('------');
+    //     // console.log(post.title);
+    //     // console.log(post.link);
+    //     // console.log(post.body);
+    //     // console.log(post.description);
+    //     // console.log(post.user);
+    //     // console.log('------');
+    //   });
+    // });
+  } catch (err) {
+    handleError(res)(err);
+  }
+  res.status(200).json(posts);
+};
+
+exports.sendPostNotification = async (req, res) => {
+  // todo: add tweet option
+  try {
+    let post = req.body;
+    let users = await User.find({});
+
+    let alert = `In case you missed this top-ranked post from @${post.user}: ${post.title}`;
+    let payload = {
+      type: 'postLink',
+      _id: post._id,
+      title: post.title,
+    };
+
+    // TODO - optimize this or put in queu so we don't create a bottle neck;
+    let finished = users.map(async user => {
+      try {
+        await apnData.sendNotification(user, alert, payload);
+      } catch (err) {
+        console.log('sending notifications error ', err);
+      }
+      return Notification.createNotification({
+        post: post._id,
+        forUser: user._id,
+        byUser: post.user,
+        type: 'topPost',
+      });
+    });
+    await Promise.all(finished);
+  } catch (err) {
+    handleError(res)(err);
+  }
+  res.status(200).json({ success: true });
+};
 
 async function sendFlagEmail() {
   let status;

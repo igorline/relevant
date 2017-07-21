@@ -62,8 +62,6 @@ service.on('socketError', console.error);
 async function sendNotification(user, alert, payload) {
   try {
     if (user && user.deviceTokens && user.deviceTokens.length) {
-      // let devices = [];
-
       let badge = await Notification.count({ forUser: user._id, read: false });
       badge += await Feed.count({ userId: user._id, read: false });
 
@@ -73,19 +71,6 @@ async function sendNotification(user, alert, payload) {
         console.log('pushing to device tokens ', deviceToken);
       });
 
-      // console.log(user.deviceTokens);
-
-      // user.deviceTokens.forEach((deviceToken) => {
-      //   let newDevice;
-      //   try {
-      //     newDevice = new apn.Device(deviceToken);
-      //   } catch (err) {
-      //     console.log('push error?', err);
-      //   }
-      //   devices.push(newDevice);
-      //   console.log('pushing to device tokens ', deviceToken);
-      // });
-
       let data = {
         body: alert,
         expiry: Math.floor(Date.now() / 1000) + 3600,
@@ -94,35 +79,25 @@ async function sendNotification(user, alert, payload) {
         topic: 'org.reactjs.native.Relevant'
       };
 
-      // let note = new apn.Notification();
-      // note.badge = badge;
-      // note.expiry = Math.floor(Date.now() / 1000) + 3600;
-      // note.sound = 'ping.aiff';
-      // note.alert = alert;
-      // note.payload = { ...payload, toUser: user._id };
-      // service.pushNotification(note, devices);
+      let results = await push.send(registrationIds, data);
 
-      push.send(registrationIds, data)
-      .then((results) => {
-        let updatedTokens = user.deviceTokens;
-        results.forEach(result => {
-          result.message.forEach(message => {
-            if (message.error) {
-              updatedTokens = updatedTokens.filter(token => token !== message.regId);
-              console.log('removing device token', message.regId);
-              console.log(message);
-            }
-          });
+      if (!results) {
+        console.log('notification error');
+      }
+      let updatedTokens = user.deviceTokens;
+      results.forEach(result => {
+        result.message.forEach(message => {
+          if (message.error) {
+            updatedTokens = updatedTokens.filter(token => token !== message.regId);
+            console.log('removing device token', message.regId);
+          }
         });
-        if (updatedTokens.length !== user.deviceTokens.length) {
-          user.markModified('deviceTokens');
-          user.deviceTokens = updatedTokens;
-          user.save();
-        }
-      })
-      .catch((err) => {
-        console.log('push notification error ', err);
       });
+      if (updatedTokens.length !== user.deviceTokens.length) {
+        user.markModified('deviceTokens');
+        user.deviceTokens = updatedTokens;
+        await user.save();
+      }
     }
   } catch (err) { console.log(err) };
 }
