@@ -152,12 +152,46 @@ class PostButtons extends Component {
     })
     .catch(err => {
       let text1 = err.message;
-      let text2;
       if (text1.match('coin')) {
-        text1 = 'Oops';
-        text2 = 'Looks like you ran out of coins, but don\'t worry, you\'ll get more tomorrow';
+        text1 = 'Oops! Looks like you ran out of coins, but don\'t worry, you\'ll get more tomorrow';
       }
-      Alert.alert(text1, text2);
+      Alert.alert(text1);
+    });
+  }
+
+
+  irrelevantPrompt() {
+    Alert.alert(
+      'Downvote poor quality content to reduce the post\'s relevant score',
+      'If you see innapropriate content you can notify the admins by pressing "Innapropriate".',
+      [
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+        { text: 'Downvote', onPress: () => this.irrelevant() },
+        { text: '🚫Innapropriate', onPress: () => this.flag() },
+      ]
+    );
+  }
+
+  irrelevant() {
+    // this.props.actions.triggerAnimation('invest', -1);
+    // this.props.actions.triggerAnimation('irrelevant', -1);
+    // return;
+
+    this.props.actions.invest(this.props.auth.token, -1, this.props.post, this.props.auth.user)
+    .then((results) => {
+      if (results) {
+        this.props.actions.triggerAnimation('invest', -1);
+        this.props.actions.triggerAnimation('irrelevant', -1);
+      } else {
+        console.log('irrelevant failed');
+      }
+    })
+    .catch(err => {
+      let text1 = err.message;
+      if (text1.match('coin')) {
+        text1 = 'Oops! Looks like you ran out of coins, but don\'t worry, you\'ll get more tomorrow';
+      }
+      Alert.alert(text1);
     });
   }
 
@@ -251,33 +285,6 @@ class PostButtons extends Component {
     this.props.actions.flag(this.props.post);
   }
 
-  irrelevantPrompt() {
-    Alert.alert(
-      'Downvote poor quality content to reduce the post\'s relevant score',
-      'If you see innapropriate content you can notify the admins by pressing "Innapropriate".',
-      [
-        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-        { text: 'Downvote', onPress: () => this.irrelevant() },
-        { text: '🚫Innapropriate', onPress: () => this.flag() },
-      ]
-    );
-  }
-
-  irrelevant() {
-    // this.props.actions.triggerAnimation('invest', -1);
-    // this.props.actions.triggerAnimation('irrelevant', -1);
-    // return;
-
-    this.props.actions.invest(this.props.auth.token, -1, this.props.post, this.props.auth.user)
-    .then((results) => {
-      if (results) {
-        this.props.actions.triggerAnimation('invest', -1);
-        this.props.actions.triggerAnimation('irrelevant', -1);
-      } else {
-        console.log('irrelevant failed');
-      }
-    });
-  }
 
   render() {
     let investButtonEl = null;
