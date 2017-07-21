@@ -12,6 +12,15 @@ let Relevance = require('../relevance/relevance.model');
 
 let InvestEvents = new EventEmitter();
 
+// async function removeDownvotes() {
+//   try {
+//     let notes = await Notification.find({ type: 'downvote' }).remove();
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// removeDownvotes();
+
 const COIN = true;
 
 // function convertInvest() {
@@ -341,19 +350,20 @@ exports.create = async (req, res) => {
     let type = 'upvote';
     if (irrelevant) type = 'downvote';
 
-    Notification.createNotification({
-      post: post._id,
-      forUser: author._id,
-      byUser: user._id,
-      amount: adjust,
-      type,
-      coin,
-    });
 
     // update user's earnings status
     await Invest.updateUserInvestment(user, author, post, adjust, amount);
 
     if (!irrelevant) {
+      Notification.createNotification({
+        post: post._id,
+        forUser: author._id,
+        byUser: user._id,
+        amount: adjust,
+        type,
+        coin,
+      });
+
       let alert = user.name + ' thinks your post is relevant';
       let payload = { 'Relevance from': user.name };
       try {
