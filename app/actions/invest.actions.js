@@ -76,15 +76,14 @@ export function invest(token, amount, post, investingUser) {
       if (data && !data.success) {
         dispatch(undoPostInvest(post._id));
         if (data.message) throw Error(data.message);
-        return false;
+        // return false;
       }
       return data;
     })
     .catch((error) => {
       dispatch(undoPostInvest(post._id));
-      console.log(error, 'error here');
+      console.log('invest error ', error.message);
       throw Error(error.message);
-      // AlertIOS.alert(error.message);
     });
   };
 }

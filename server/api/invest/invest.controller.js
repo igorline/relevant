@@ -263,6 +263,11 @@ exports.create = async (req, res) => {
     if (amount < 0) {
       type = 'downvote';
       amount = -3;
+      let now = new Date();
+      // don't let users downvote posts older than one week
+      if (post.postDate < now.getTime() - 1000 * 60 * 60 * 24 * 7) {
+        throw new InvestException('you cannot downvote posts older than one week');
+      }
     }
 
     if (user._id === post.user) {
