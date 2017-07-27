@@ -275,13 +275,14 @@ class Application extends Component {
       options: [
         'Change display name',
         'Add new photo',
+        'Invite Friends',
         'Blocked Users',
         'FAQ',
         'Logout',
         'Cancel',
       ],
-      cancelButtonIndex: 5,
-      destructiveButtonIndex: 4,
+      cancelButtonIndex: 6,
+      destructiveButtonIndex: 5,
     },
     (buttonIndex) => {
       switch (buttonIndex) {
@@ -292,12 +293,15 @@ class Application extends Component {
           this.initImage();
           break;
         case 2:
-          this.props.actions.viewBlocked();
+          this.props.actions.viewInvites();
           break;
         case 3:
-          this.props.actions.goToUrl('https://relevant.community/faq');
+          this.props.actions.viewBlocked();
           break;
         case 4:
+          this.props.actions.goToUrl('https://relevant.community/faq');
+          break;
+        case 5:
           this.logoutRedirect();
           break;
         default:

@@ -32,7 +32,8 @@ class SinglePostComments extends Component {
       inputHeight: 0,
       editing: false,
       reloading: false,
-      top: 0
+      top: 0,
+      suggestionHeight: 0,
     };
     this.post = null;
     this.id = null;
@@ -69,7 +70,6 @@ class SinglePostComments extends Component {
     InteractionManager.runAfterInteractions(() => {
       this.loaded = true;
       this.reload();
-
         setTimeout(() => {
           if (this.props.scene.openComment) {
             if (this.props.scene.commentCount && this.comments) {
@@ -264,13 +264,16 @@ class SinglePostComments extends Component {
           <View
             style={{
               position: 'absolute',
-              bottom: Math.min(120, this.state.inputHeight),
+              top: this.state.top - this.state.suggestionHeight,
               left: 0,
               right: 0,
-              maxHeight: this.top,
+              maxHeight: this.state.top,
               backgroundColor: 'white',
               borderTopWidth: 1,
               borderTopColor: '#F0F0F0',
+            }}
+            onLayout={e => {
+              this.setState({ suggestionHeight: e.nativeEvent.layout.height });
             }}
           >
             <UserSearchComponent

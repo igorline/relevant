@@ -76,10 +76,12 @@ export function createInvite(invite) {
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(updateInvite(responseJSON));
+      AlertIOS.alert('Invitation email has been sent');
       return responseJSON;
     })
     .catch((error) => {
       console.log('invites error', error);
+      AlertIOS.alert(error.message);
       return false;
     });
 }

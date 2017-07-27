@@ -31,7 +31,7 @@ export default function UserName(props) {
     stats = <Stats entity={props.user} type={'relevance'} />;
   }
   let handle;
-  if (props.user._id) handle = '@' + props.user._id;
+  if (props.user._id) handle = (props.type !== 'invite' ? '@' : '') + props.user._id;
 
   if (props.repost) {
     repostIcon = (

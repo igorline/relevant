@@ -23,6 +23,11 @@ export default function subscriptions(state = initialState, action) {
         users
       };
     }
+
+    case types.LOGOUT_USER: {
+      return { ...initialState };
+    }
+
     default: return state;
   }
 }

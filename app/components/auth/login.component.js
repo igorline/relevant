@@ -67,7 +67,7 @@ class Login extends Component {
       <KBView
         behavior={'padding'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0 }
+        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0}
       >
         <ScrollView
           keyboardShouldPersistTaps={'always'}

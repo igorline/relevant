@@ -48,6 +48,11 @@ export default function tooltip(state = initialState, action) {
       }
       return { ...initialState, data: state.data };
     }
+
+    case types.LOGOUT_USER: {
+      return { ...initialState };
+    }
+
     default: return state;
   }
 }

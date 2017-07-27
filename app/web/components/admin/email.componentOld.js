@@ -1,17 +1,42 @@
 import React, { Component } from 'react';
-
+import { Editor } from 'react-draft-wysiwyg';
+import ReactDOM from 'react-dom';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import ContentEditable from 'react-contenteditable';
+import { convertToHTML } from 'draft-convert';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-// import Quill from 'quill';
+import { ContentState, convertFromHTML, convertToRaw, EditorState } from 'draft-js';
 import * as adminActions from '../../../actions/admin.actions';
 import ShadowButton from '../common/ShadowButton';
 
-let pell;
 if (process.env.BROWSER === true) {
-  pell = require('pell');
-  require('pell/dist/pell.min.css');
-  require('./admin.css');
+  require('react-draft-wysiwyg/dist/react-draft-wysiwyg.css');
 }
+
+// let settings = {
+//   styleToHTML: (style) => {
+//     if (style === 'BOLD') {
+//       return <span style={{color: 'blue'}} />;
+//     }
+//   },
+//   blockToHTML: (block) => {
+//     console.log(block)
+//     if (block.type === 'unstyled') {
+//       return <p style={{ marginBottom: 10 }} />;
+//     }
+//     if (block.type === 'LI') {
+//       return <li style={{ marginBottom: 10 }} />;
+//     }
+//   },
+//   entityToHTML: (entity, originalText) => {
+//     if (entity.type === 'IMAGE') {
+//       return `<img src="${entity.data.src}" style="display: block;float:${entity.data.alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/>`;
+//     }
+//     return originalText;
+//   }
+// };
 
 const customEntityTransform = (entity, text) => {
   switch (entity.type) {
@@ -25,6 +50,7 @@ class Email extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      editorState: null,
       html: '',
       email: '',
       subject: '',
@@ -32,81 +58,19 @@ class Email extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.submit = this.submit.bind(this);
+    this.onEditorStateChange = this.onEditorStateChange.bind(this);
+    this.onContentStateChange = this.onContentStateChange.bind(this);
     this.saveEmail = this.saveEmail.bind(this);
     this.loadEmail = this.loadEmail.bind(this);
   }
 
   componentDidMount() {
     this.loadEmail();
-
-    this.editor = pell.init({
-      element: document.getElementById('email-editor'),
-      onChange: html => {
-        this.setState({ html });
-      },
-      styleWithCSS: true,
-      actions: [
-        'bold',
-        'underline',
-        'italic',
-        {
-          icon: '<b>Sml</b>',
-          title: 'small',
-          // result: () => pell.exec('decreaseFontSize')
-          result: () => pell.exec('fontSize', 2)
-        },
-        {
-          icon: '<b>reg</b>',
-          title: 'small',
-          // result: () => pell.exec('decreaseFontSize')
-          result: () => pell.exec('fontSize', 3)
-        },
-        'paragraph',
-        'heading1',
-        'heading2',
-        {
-          icon: '<b>H<sub>3</sub></b>',
-          title: 'H3',
-          result: () => pell.exec('formatBlock', '<H3>')
-        },
-        {
-          icon: '<b>H<sub>4</sub></b>',
-          title: 'H4',
-          result: () => pell.exec('formatBlock', '<H4>')
-        },
-        {
-          icon: '<b>Center</b>',
-          title: 'center',
-          result: () => pell.exec('justifyCenter')
-        },
-        {
-          icon: '<b>Left</b>',
-          title: 'left',
-          result: () => pell.exec('justifyLeft')
-        },
-        'image',
-        'link',
-        {
-          name: 'resize',
-          icon: '<b>Resize</b>',
-          result: () => pell.exec('enableObjectResizing')
-        },
-        {
-          icon: '<b><u><i>Clear</i></u></b>',
-          name: 'clear',
-          result: () => pell.exec('removeFormat')
-        }
-      ],
-      // classes: {
-      //   actionbar: 'pell-actionbar-custom-name',
-      //   button: 'pell-button-custom-name',
-      //   content: 'pell-content-custom-name'
-      // }
-    });
   }
 
   saveEmail() {
-    let { email, subject, campaign, html } = this.state;
+    let { email, subject, campaign } = this.state;
+    let html = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()), null, null, customEntityTransform);
     this.props.actions.saveEmail({
       email,
       subject,
@@ -119,12 +83,17 @@ class Email extends Component {
     this.props.actions.loadEmail()
     .then(email => {
       this.setState(email);
-      this.editor.content.innerHTML = email.html;
+      let blocksFromHTML = htmlToDraft(email.html);
+      let contentState = ContentState.createFromBlockArray(blocksFromHTML);
+      let editorState = EditorState.createWithContent(contentState);
+      editorState = EditorState.createWithContent(contentState);
+      this.setState({ editorState });
     });
   }
 
   submit() {
-    let { email, subject, campaign, html } = this.state;
+    let { email, subject, campaign } = this.state;
+    let html = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()), null, null, customEntityTransform);
     this.props.actions.sendEmail({ email, subject, campaign, html });
     this.saveEmail();
   }
@@ -132,8 +101,27 @@ class Email extends Component {
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
     if (event.target.name === 'html') {
-      this.editor.content.innerHTML = event.target.value;
+      let blocksFromHTML = htmlToDraft(event.target.value);
+      let contentState = ContentState.createFromBlockArray(blocksFromHTML);
+      let editorState = EditorState.createWithContent(contentState);
+      editorState = EditorState.createWithContent(contentState);
+      this.setState({ editorState });
     }
+  }
+
+  onContentStateChange(contentState) {
+    this.setState({
+      contentState,
+    });
+  }
+
+  onEditorStateChange(editorState) {
+    let html = draftToHtml(convertToRaw(editorState.getCurrentContent()), null, null, customEntityTransform);
+    // let html = convertToHTML(settings)(editorState.getCurrentContent())
+    this.setState({
+      editorState,
+      html
+    });
   }
 
   render() {
@@ -172,10 +160,15 @@ class Email extends Component {
             onChange={this.handleChange}
           />
         </div>
-        <div style={{ display: 'flex', flex: 1, flexDirection: 'row', width: '100%' }}>
+        <div style={{ display: 'flex', flex: 1, flexDirection: 'row' }}>
           <div style={{ flex: 1, margin: 20 }}>
-            <div id="email-editor">
-            </div>
+            <Editor
+              editorState={this.state.editorState}
+              toolbarClassName="home-toolbar"
+              wrapperClassName="home-wrapper"
+              editorClassName="home-editor"
+              onEditorStateChange={this.onEditorStateChange}
+            />
           </div>
           <textarea
             style={{ flex: 1, margin: 20 }}

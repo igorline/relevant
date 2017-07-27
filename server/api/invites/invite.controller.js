@@ -10,14 +10,19 @@ function handleError(res, statusCode) {
   };
 }
 
-// List.find({}).remove().exec();
-
 exports.index = async (req, res) => {
   let invites;
-  let limit = parseInt(req.query.limit, 10) || null;
-  let skip = parseInt(req.query.skip, 10) || null;
+
+  let limit = parseInt(req.query.limit, 50) || null;
+  let skip = parseInt(req.query.skip, 0) || null;
+  console.log(skip)
   try {
-    invites = await Invite.find({})
+    let query;
+    if (req.user.role !== 'admin') {
+      query = { invitedBy: req.user._id };
+    }
+    invites = await Invite.find(query)
+    .populate('registeredAs')
     .sort({ _id: -1 })
     .skip(skip)
     .limit(limit);
@@ -30,14 +35,29 @@ exports.index = async (req, res) => {
 exports.create = async (req, res) => {
   let invite;
   try {
+    let user = req.user;
+    let invites = [];
+    if (user.role !== 'admin') {
+      invites = await Invite.find({ invitedBy: user._id });
+    }
     let code = voucherCodes.generate({
       length: 5,
       count: 1,
       charset: voucherCodes.charset('alphabetic')
     })[0];
     if (req.body.email) req.body.email = req.body.email.trim();
-    invite = new Invite({ ...req.body, code });
-    invite = await invite.save();
+    invite = await Invite.findOne({ email: req.body.email });
+    if (!invite) {
+      // limit invites to 10
+      if (invites.length >= 10) {
+        throw Error('you have sent out too many invites already');
+      }
+      invite = new Invite({ ...req.body, code });
+      invite = await invite.save();
+    } else {
+      invite.invitedBy = req.body.invitedBy;
+      invite.invitedByString = req.body.invitedByString;
+    }
     exports.sendEmailFunc(invite);
   } catch (err) {
     return handleError(res)(err);

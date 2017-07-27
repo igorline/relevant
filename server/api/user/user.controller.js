@@ -396,6 +396,7 @@ exports.create = async (req, res) => {
     if (invite.number === 0) {
       invite.redeemed = true;
     }
+    invite.registeredAs = user._id;
     invite = await invite.save();
 
     token = jwt.sign(

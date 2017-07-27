@@ -67,6 +67,7 @@
     "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.4",
     "path": "^0.12.7",
+    "pell": "^0.7.0",
     "prop-types": "^15.5.7",
     "qs": "^6.4.0",
     "queue": "^4.0.0",

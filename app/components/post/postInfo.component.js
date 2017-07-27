@@ -224,14 +224,18 @@ class PostInfo extends Component {
       user.name = post.embeddedUser.name;
     }
 
+    let userEl = (
+      <UserName
+        big={this.props.big}
+        user={user}
+        setSelected={this.setSelected}
+        postTime={postTime}
+      />
+    )
+
     let info = (<View style={styles.postHeader}>
       <View style={styles.postInfo}>
-        <UserName
-          big={this.props.big}
-          user={user}
-          setSelected={this.setSelected}
-          postTime={postTime}
-        />
+        {userEl}
         <View
           style={[styles.infoRight]}
         >
@@ -262,6 +266,7 @@ class PostInfo extends Component {
       );
     }
 
+    // return this.myPost ? info : null;
     return info;
   }
 }
