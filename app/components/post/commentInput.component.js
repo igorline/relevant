@@ -9,8 +9,7 @@ import {
   TouchableHighlight,
   Platform
 } from 'react-native';
-import { globalStyles, fullHeight, greyText } from '../../styles/global';
-import UserSearchComponent from '../createPost/userSearch.component';
+import { globalStyles, greyText } from '../../styles/global';
 import * as utils from '../../utils';
 import TextBody from './textBody.component';
 
@@ -94,6 +93,10 @@ class CommentInput extends Component {
       return (<View
         onLayout={(e) => {
           this.top = e.nativeEvent.layout.y;
+          this.props.updatePosition({
+            inputHeight: this.state.inputHeight,
+            top: this.top,
+          });
         }}
         style={[
           styles.commentInputParent,

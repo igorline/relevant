@@ -336,6 +336,7 @@ export default function (props) {
       case 'partialUpvote':
       case 'downvote':
       case 'partialDownvote':
+        console.log(singleActivity);
         return (
           <View style={styles.activityLeft}>
             <View style={styles.activityLeft}>

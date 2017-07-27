@@ -24,6 +24,15 @@ async function generateList(type) {
       users = await User.find(query);
     }
     let list = mailgun.lists(type + '@mail.relevant.community');
+
+    // clear old list (needs to run a few times because only returns 100 at a time)
+    // list.members().list(function(err, members) {
+    //   members.items.forEach(m => {
+    //     console.log(m);
+    //     list.members(m.address).delete();
+    //   });
+    // });
+
     users.forEach(user => {
       let vars = {};
       if (type === 'notregistered') {
@@ -35,7 +44,7 @@ async function generateList(type) {
         name: type === 'notregistered' ? user.name : '@' + user._id,
         vars
       };
-      // console.log(u);
+      console.log(u);
       list.members().create(u, function (err, data) {
         if (err) console.log(err);
         else console.log(data);
@@ -46,7 +55,7 @@ async function generateList(type) {
   }
 }
 
-// generateList('registered');
+// generateList('notregistered');
 
 // let list = mailgun.lists('test@mail.relevant.community');
 // let slava = {

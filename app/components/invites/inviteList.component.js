@@ -2,66 +2,88 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  TouchableHighlight
+  TouchableHighlight,
+  Alert,
 } from 'react-native';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { globalStyles } from '../../styles/global';
-import * as userActions from '../../actions/user.actions';
-import * as navigationActions from '../../actions/navigation.actions';
-import * as postActions from '../../actions/post.actions';
 import UserList from '../common/userList.component';
 import DiscoverUser from '../discoverUser.component';
 
-
 let styles;
 
-class Blocked extends Component {
+export default class InviteList extends Component {
   constructor(props, context) {
     super(props, context);
     this.renderRow = this.renderRow.bind(this);
-    this.getDataAction = this.getDataAction.bind(this);
     this.renderRight = this.renderRight.bind(this);
+    this.sendInvite = this.sendInvite.bind(this);
     this.getViewData = this.getViewData.bind(this);
   }
 
   getViewData() {
-    let data = [];
-    if (this.props.auth.user) {
-      data = this.props.auth.user.blocked;
-    }
+    let data = this.props.inviteList.map(id => this.props.invites[id]);
     let loaded = true;
-    // let loaded = this.props.auth.user.loaded;
     return {
       data,
       loaded
     };
   }
 
-  getDataAction(view, length) {
-    this.props.actions.getBlocked();
+  sendInvite(invite) {
+    if (invite.status) {
+      Alert.alert(
+        'Are you sure you want to send another invitation email?',
+        null,
+        [
+          { text: 'Cancel', onPress: () => null, style: 'cancel' },
+          { text: 'Send Email', onPress: () => this.props.actions.sendInvitationEmail(invite._id) },
+        ],
+        { cancelable: true }
+      );
+    } else {
+      this.props.actions.sendInvitationEmail(invite._id);
+    }
   }
 
   renderRow(rowData) {
     let user = rowData;
     if (!user || !user._id) return null;
+    let userEl = {
+      _id: user.email,
+      name: user.name,
+      bio: user.status
+    };
+
+    //if user has registered, use their profile
+    let type = 'invite';
+    if (user.registeredAs) {
+      userEl = user.registeredAs;
+      type = null;
+    }
+
     return (<DiscoverUser
       relevance={false}
-      user={user}
+      user={userEl}
+      type={type}
       {...this.props}
       renderRight={() => this.renderRight(rowData)}
     />);
   }
 
   renderRight(props) {
+    if (props.status === 'registered' || props.redeemed) {
+      return (<Text style={[styles.bebas, styles.votes, {alignSelf: 'flex-end'}]}>
+          Registered
+        </Text>);
+    }
     let inner = (
       <TouchableHighlight
         underlayColor={'transparent'}
         style={[styles.button, { alignSelf: 'flex-end' }]}
-        onPress={() => this.props.actions.updateBlock(props._id, true)}
+        onPress={() => this.sendInvite(props)}
       >
         <Text style={[styles.bebas, styles.votes]}>
-          Unblock
+          Send Reminder Email
         </Text>
       </TouchableHighlight>
     );
@@ -73,8 +95,8 @@ class Blocked extends Component {
       <UserList
         getViewData={this.getViewData}
         renderRow={this.renderRow}
-        getDataAction={this.getDataAction}
-        type={'Blocked Users '}
+        getDataAction={() => null}
+        type={'invite'}
       />
     );
   }
@@ -95,24 +117,4 @@ const localStyles = StyleSheet.create({
 });
 
 styles = { ...localStyles, ...globalStyles };
-
-function mapStateToProps(state) {
-  return {
-    users: state.user.users,
-    auth: state.auth
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(
-      {
-        ...postActions,
-        ...userActions,
-        ...navigationActions,
-      }, dispatch),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Blocked);
 

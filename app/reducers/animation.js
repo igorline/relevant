@@ -16,6 +16,11 @@ export default function auth(state = initialState, action) {
         amount: action.payload.amount,
       };
     }
+
+    case types.LOGOUT_USER: {
+      return { ...initialState };
+    }
+
     default:
       return state;
   }

@@ -55,10 +55,11 @@ InvestSchema.statics.updateUserInvestment = async function updateEarnings(
       });
     }
 
+    // TODO do we want to filter out all negative relevance here?
     if (amount > 0) {
       earnings.lastInvestor = user._id;
     } else {
-      earnings.lastInvestor = null;
+      earnings.lastInvestor = user._id;
     }
 
     if (Math.abs(relevance) < 1) {

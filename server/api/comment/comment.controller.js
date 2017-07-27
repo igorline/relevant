@@ -223,7 +223,7 @@ exports.create = async (req, res) => {
     }
   }
 
-  async function sendOutComments (commentor) {
+  async function sendOutComments(commentor) {
     try {
       if (user._id != commentor._id) {
         let type = 'comment';
@@ -300,10 +300,20 @@ exports.create = async (req, res) => {
 
     otherCommentors = otherCommentors.map(comm => comm.user);
     otherCommentors.push(postAuthor);
+
+    //filter out duplicates
     otherCommentors = otherCommentors.filter((u, i) => {
       let index = otherCommentors.findIndex(c => c._id === u._id);
       return index === i;
     });
+
+    // filter out mentions
+    console.log('mentions ', mentions);
+    console.log(otherCommentors);
+    otherCommentors = otherCommentors.filter(u => {
+      return !mentions.find(m => m === u._id);
+    });
+    console.log(otherCommentors);
 
     otherCommentors.forEach(sendOutComments);
 

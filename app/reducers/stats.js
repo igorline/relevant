@@ -6,10 +6,9 @@ export default function post(state = initialState, action) {
   switch (action.type) {
 
     case 'ADD_STATS': {
-
       return Object.assign({}, state, {
         [action.payload.user]: action.payload.data
-      })
+      });
     }
 
     case 'SET_STATS': {
@@ -17,7 +16,11 @@ export default function post(state = initialState, action) {
       return state;
     }
 
+    case types.LOGOUT_USER: {
+      return { ...initialState };
+    }
+
     default:
-      return state
+      return state;
   }
-};
+}

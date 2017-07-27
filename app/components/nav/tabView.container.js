@@ -16,6 +16,8 @@ import Activity from '../../containers/activity.container';
 // import Thirst from './thirst.container';
 import Profile from '../profile/profile.container';
 import Blocked from '../profile/blocked.container';
+import Invites from '../invites/invites.container';
+
 import { transitionConfig } from '../../utils';
 import Card from './card.component';
 import * as navigationActions from '../../actions/navigation.actions';
@@ -100,6 +102,12 @@ class CardContainer extends PureComponent {
 
       case 'blocked':
         return <Blocked scene={props.scene.route} />;
+
+      case 'invites':
+        return <Invites scene={props.scene.route} />;
+
+      case 'inviteList':
+        return <Invites inviteListView scene={props.scene.route} />;
 
       default:
         return this.getDefaultComponent(props);

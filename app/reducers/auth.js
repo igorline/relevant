@@ -60,15 +60,6 @@ export default function auth(state = initialState, action) {
         statusText: action.payload
       });
 
-    case types.LOGOUT_USER:
-      return Object.assign({}, state, {
-        isAuthenticated: false,
-        token: null,
-        deviceToken: null,
-        user: null,
-        statusText: 'You have been successfully logged out.'
-      });
-
     case types.UPDATE_USER:
       if (!state.user || action.payload._id !== state.user._id) return state;
       return {
@@ -117,6 +108,11 @@ export default function auth(state = initialState, action) {
       return Object.assign({}, state, {
         contacts: action.payload
       });
+
+    case types.LOGOUT_USER: {
+      return { ...initialState };
+    }
+
 
     default:
       return state;

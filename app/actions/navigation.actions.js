@@ -198,3 +198,20 @@ export function viewBlocked() {
   });
 }
 
+export function viewInvites() {
+  return push({
+    key: 'invites',
+    title: 'Invite Friends',
+    back: true,
+  });
+}
+
+export function goToInviteList() {
+  return push({
+    key: 'inviteList',
+    title: 'Invite List',
+    back: true,
+  });
+}
+
+

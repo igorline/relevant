@@ -101,17 +101,15 @@ exports.topPosts = async (req, res) => {
     now.setDate(now.getDate() - 7);
 
     posts = await Post.find({ createdAt: { $gt: now } }).sort('-relevance').limit(20);
-    // .then(posts => {
-    //   posts.forEach(post => {
-    //     // console.log('------');
-    //     // console.log(post.title);
-    //     // console.log(post.link);
-    //     // console.log(post.body);
-    //     // console.log(post.description);
-    //     // console.log(post.user);
-    //     // console.log('------');
-    //   });
-    // });
+    posts.forEach(post => {
+      console.log('------');
+      console.log(post.title);
+      console.log(post.link);
+      console.log(post.body);
+      console.log(post.description);
+      console.log(post.user);
+      console.log('------');
+    });
   } catch (err) {
     handleError(res)(err);
   }

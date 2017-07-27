@@ -58,6 +58,7 @@ class DiscoverUser extends Component {
             <UserName
               bio
               big
+              type={this.props.type}
               relevance={this.props.relevance}
               user={user}
               setSelected={this.setSelected}
