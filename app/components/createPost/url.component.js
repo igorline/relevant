@@ -211,10 +211,14 @@ export default class UrlComponent extends Component {
     let userSearch = null;
 
     if (this.props.users.search && this.props.users.search.length) {
-      userSearch = (<UserSearchComponent
-        setSelected={this.setMention}
-        users={this.props.users.search}
-      />);
+      userSearch = (
+        <View style={{ flex: 1, maxHeight: 220 }}>
+          <UserSearchComponent
+            setSelected={this.setMention}
+            users={this.props.users.search}
+          />
+        </View>
+      );
     }
 
     let addP = null;
@@ -276,6 +280,7 @@ export default class UrlComponent extends Component {
               styles.font15,
               styles.createPostInput,
               this.props.postBody && this.props.postBody.length ? { flex: 1 } : { flex: 0 },
+              { maxHeight: 280 }
             ]}
             underlineColorAndroid={'transparent'}
             placeholder={urlPlaceholder}
