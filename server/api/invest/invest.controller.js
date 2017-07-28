@@ -372,7 +372,7 @@ exports.create = async (req, res) => {
       let alert = user.name + ' thinks your post is relevant';
       let payload = { 'Relevance from': user.name };
       try {
-        apnData.sendNotification(author, alert, payload);
+        // apnData.sendNotification(author, alert, payload);
       } catch (err) {
         console.log(err);
       }

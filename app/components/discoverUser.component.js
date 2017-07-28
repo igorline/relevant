@@ -19,6 +19,7 @@ class DiscoverUser extends Component {
   }
 
   setSelected() {
+    if (this.props.type === 'invite') return;
     if (!this.props.user._id) return;
     this.props.actions.goToProfile(this.props.user);
   }
