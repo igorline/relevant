@@ -17,10 +17,6 @@ export default function auth(state = initialState, action) {
       };
     }
 
-    case types.LOGOUT_USER: {
-      return { ...initialState };
-    }
-
     default:
       return state;
   }
