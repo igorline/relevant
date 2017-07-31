@@ -75,8 +75,13 @@ async function sendNotification(user, alert, payload) {
         body: alert,
         expiry: Math.floor(Date.now() / 1000) + 3600,
         custom: { ...payload, toUser: user._id },
+        // this has the effect of playing the sound if we have an alert
+        // and silence when there is no alert
+        // 0 causes the default sound to be played
+        sound: alert ? 0 : 1,
         badge,
-        topic: 'org.reactjs.native.Relevant'
+        topic: 'org.reactjs.native.Relevant',
+        contentAvailable: 1
       };
 
       let results = await push.send(registrationIds, data);
