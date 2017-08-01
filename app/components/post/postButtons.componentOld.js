@@ -5,7 +5,6 @@ import {
   View,
   TouchableHighlight,
   TouchableWithoutFeedback,
-  TouchableOpacity,
   ActionSheetIOS,
   Alert,
   Image,
@@ -13,8 +12,7 @@ import {
 } from 'react-native';
 import Analytics from 'react-native-firebase-analytics';
 import Share from 'react-native-share';
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
-import IconE from 'react-native-vector-icons/EvilIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import { globalStyles, fullWidth, blue, greyText } from '../../styles/global';
 import InvestModal from './investModal.component';
@@ -46,21 +44,21 @@ class PostButtons extends Component {
 
     this.linkMenu = {
       buttons: [
-        // 'New Post',
-        'Repost with Comment',
-        // 'Share via...',
+        'New Post',
+        'Repost Commentary',
+        'Share',
         'Cancel',
       ],
-      cancelIndex: 3,
+      cancelIndex: 4,
     };
 
     this.menu = {
       buttons: [
-        'Repost',
-        // 'Share',
+        'Repost Commentary',
+        'Share',
         'Cancel',
       ],
-      cancelIndex: 2,
+      cancelIndex: 3,
     };
 
     this.ownerMenu = {
@@ -80,21 +78,10 @@ class PostButtons extends Component {
     this.irrelevant = this.irrelevant.bind(this);
     this.irrelevantPrompt = this.irrelevantPrompt.bind(this);
     this.goToPost = this.goToPost.bind(this);
-    this.showInvestors = this.showInvestors.bind(this);
   }
 
   componentDidMount() {
     if (this.props.post.link) this.menu = this.linkMenu;
-  }
-
-  showInvestors() {
-    this.props.actions.push({
-      key: 'people',
-      id: this.props.post._id,
-      component: 'people',
-      title: 'Votes',
-      back: true
-    });
   }
 
   onShare() {
@@ -224,9 +211,9 @@ class PostButtons extends Component {
           case 1:
             this.repostCommentary();
             break;
-          // case 2:
-          //   this.onShare();
-          //   break;
+          case 2:
+            this.onShare();
+            break;
           default:
             return;
         }
@@ -305,7 +292,7 @@ class PostButtons extends Component {
     let investable = false;
     let irrelevantButton;
     // let commentIcon = <Icon name="ios-chatbubbles" size={18} color={styles.greyText} />;
-    let commentString = '';
+    let commentString = 'comment';
     let earnings;
     let smallScreen = fullWidth <= 320 || false;
 
@@ -319,151 +306,137 @@ class PostButtons extends Component {
     }
 
     if (post && post.commentCount) {
-      if (post.commentCount === 1) commentString = '1';
+      if (post.commentCount === 1) commentString = '1 comment';
       else {
-        commentString = <Text>{post.commentCount}</Text>;
+        commentString = <Text>{post.commentCount} {'comments'}</Text>;
       }
     }
 
-
-    // invest section spacing
-    let space = 10;
-    let opacity = !investable ? 0.3 : 1;
-
-    investButtonEl = (
-      <TouchableOpacity
-        style={{ paddingRight: space, opacity }}
-        onPress={() => investable ? this.invest() : null}
+    investButtonEl = (<TouchableWithoutFeedback
+      onPress={() => investable ? this.invest() : null}
+    >
+      <View style={[
+        styles.investButton,
+        !investable ? { opacity: 0.3, shadowOpacity: 0 } : null,
+        smallScreen ? styles.invSmall : null]}
       >
         <Image
-          resizeMode={'contain'}
-          style={styles.vote}
-          source={require('../../assets/images/icons/upvote.png')}
+          style={[styles.rup, smallScreen ? styles.smallerR : null]}
+          source={require('../../assets/images/rup.png')}
         />
-      </TouchableOpacity>
-    );
-
-          // <Text style={styles.smallInfo}>
-          //   {post.upVotes + post.downVotes}
-          // </Text>
-          // <View style={{ width: 15, borderBottomWidth: 1, borderColor: greyText }} />
-        // </View>
-
-
-    let r = post.relevance;
-
-    let rIcon = (<Image
-      resizeMode={'contain'}
-      style={styles.smallR}
-      source={require('../../assets/images/icons/smallR.png')}
-    />);
-
-
-    let totalVotes = post.upVotes + post.downVotes;
-    let s = 's';
-    if (totalVotes === 1) s = '';
-    let votes = (
-      <View>
-        <View style={{ width: 30, borderBottomWidth: 1, borderColor: greyText }} />
-        <Text style={styles.smallInfo}>
-          {totalVotes} vote{s}
+        <Text
+          suppressHighlighting={false}
+          allowFontScaling={false}
+          style={[
+            styles.font15,
+            styles.bold,
+            styles.postButtonText,
+            smallScreen ? styles.postButtonTextSmall : null,
+            { paddingVertical: 0 },
+            styles.darkGrey,
+          ]}
+        >
+          upvote
         </Text>
       </View>
-    );
+    </TouchableWithoutFeedback>);
 
-    if (totalVotes === 0) {
-      r = 'Vote';
-      rIcon = null;
-      votes = null;
-    }
-
-
-    let stat = (
-      <TouchableOpacity
-        onPress={this.showInvestors}
-      >
-        <View style={{ flexDirection: 'column', alignItems: 'center', paddingHorizontal: space }}>
-          <View style={[styles.textRow, { alignItems: 'center' }]}>
-            {rIcon}
-            <Text style={[styles.smallInfo, styles.greyText]}>
-              {r}
-            </Text>
-          </View>
-          {votes}
-        </View>
-      </TouchableOpacity>
-    );
+    // if (!investable) {
+    //   let image = require('../../assets/images/up.png');
+    //   let amount = earnings ? earnings.amount : 0;
+    //   if (amount < 0) image = require('../../assets/images/down.png');
+    //   let userImage;
+    //   if (this.props.auth && this.props.auth.user.image) {
+    //     userImage = { uri: this.props.auth.user.image };
+    //   } else userImage = require('../../assets/images/default_user.jpg');
+    //   investButtonEl = (
+    //     <TouchableHighlight
+    //       underlayColor={'transparent'}
+    //       // style={styles.earnings}
+    //       ref={c => this.tooltipParent = c}
+    //       onPress={() => this.toggleTooltip()}
+    //     >
+    //       <View style={styles.earnings}>
+    //         <Image
+    //           source={userImage}
+    //           style={styles.investImage}
+    //         />
+    //         <Image
+    //           style={[styles.investArrow]}
+    //           source={image}
+    //         />
+    //         <Text style={[styles.bebas]}>
+    //           {numbers.abbreviateNumber(amount)}
+    //         </Text>
+    //       </View>
+    //     </TouchableHighlight>
+    //   );
+    // }
 
     irrelevantButton = (
-      <TouchableOpacity
-        style={{ paddingLeft: space, opacity }}
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        style={styles.postButton}
         onPress={() => investable ? this.irrelevantPrompt() : null}
       >
-        <Image
-          resizeMode={'contain'}
-          style={styles.vote}
-          source={require('../../assets/images/icons/downvote.png')}
-        />
-      </TouchableOpacity>
+        <Text
+          allowFontScaling={false}
+          style={[styles.font12, styles.greyText, styles.postButtonText, !investable ? { opacity: 0.6 } : null ]}
+        >
+          downvote
+        </Text>
+      </TouchableHighlight>
     );
 
-
-    let comments = (<TouchableOpacity
+    // if (!investable) irrelevantButton = null;
+    // <TouchableHighlight
+    //  underlayColor={'transparent'}
+    //  style={[styles.postButton, { marginRight: 5 }]}
+    //  onPress={this.goToPost}
+    // >
+    //    <Text style={[styles.font10, styles.postButtonText]}>
+    //     Read more
+    //    </Text>
+    //  </TouchableHighlight>
+    let comments = (<TouchableHighlight
+      underlayColor={'transparent'}
+      style={[styles.postButton]}
       onPress={() => this.goToPost(true)}
-      style={{ paddingHorizontal: space }}
     >
-      <View style={[styles.textRow, { alignItems: 'center', }]}>
-        <Image
-          resizeMode={'contain'}
-          style={styles.vote}
-          source={require('../../assets/images/icons/comment.png')}
-        />
-        <Text style={styles.smallInfo}>{commentString}</Text>
-      </View>
-    </TouchableOpacity>);
-
-        // <Image
-        //   resizeMode={'contain'}
-        //   style={styles.vote}
-        //   source={require('../../assets/images/icons/share.png')}
-        // />
-
-    let repost = (
-      <TouchableOpacity
-        style={{ paddingHorizontal: 0 }}
-        onPress={() => this.repostCommentary()}
+      <Text
+        allowFontScaling={false}
+        style={[{ marginRight: 5 }, styles.greyText, styles.font12, styles.postButtonText]}
       >
-        <View style={[styles.textRow, { alignItems: 'center' }]}>
-          <IconE name="retweet" size={28} color={greyText} />
-          <Text style={styles.smallInfo}></Text>
-        </View>
+        {commentString}
+      </Text>
+    </TouchableHighlight>);
 
+      // <View style={styles.postButtons}>
+      //   <Text>{earnings ? 'you earned: ' + earnings.amount : null}</Text>
+      //   <Text>{earnings ? 'post relevance: ' + post.relevance : null}</Text>
+      // </View>
 
-      </TouchableOpacity>
-    );
-
-    let newCommentary = (
-      <TouchableOpacity
-        style={{ paddingHorizontal: 10 }}
-        onPress={() => this.repostUrl()}
-      >
-        <Icon name="pencil" size={19} color={greyText} />
-      </TouchableOpacity>
-    );
 
     return (<View style={styles.postButtonsContainer}>
       <View style={styles.postButtons}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          {investButtonEl}
-          {stat}
-          {irrelevantButton}
-        </View>
+        {investButtonEl}
+        {irrelevantButton}
 
-        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-          {post.link ? newCommentary : null}
-          {comments}
-          {repost}
-        </View>
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          style={[styles.postButton]}
+          onPress={() => this.showActionSheet()}
+        >
+          <Text
+            allowFontScaling={false}
+            style={[styles.font12, styles.greyText, styles.postButtonText]}
+          >
+            share
+          </Text>
+        </TouchableHighlight>
+
+        {comments}
+
 
         <InvestModal
           toggleFunction={this.toggleModal}
@@ -478,10 +451,6 @@ class PostButtons extends Component {
 export default PostButtons;
 
 const localStyles = StyleSheet.create({
-  vote: {
-    width: 25,
-    height: 23,
-  },
   earnings: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -537,7 +506,7 @@ const localStyles = StyleSheet.create({
   },
   postButtonsContainer: {
     paddingBottom: 10,
-    marginTop: 30,
+    marginTop: 10,
   },
   postButton: {
     padding: 3,

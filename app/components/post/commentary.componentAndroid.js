@@ -9,7 +9,7 @@ import {
   FlatList,
   TouchableOpacity
 } from 'react-native';
-import { globalStyles, fullWidth } from '../../styles/global';
+import { globalStyles, fullWidth, mainPadding } from '../../styles/global';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostButtons from './postButtons.component';
@@ -124,8 +124,8 @@ export default class Commentary extends Component {
           flexDirection: 'row',
           // justifyContent: 'space-around',
           alignItems: 'center',
-          width: fullWidth - 20,
-          marginHorizontal: 10,
+          width: fullWidth - mainPadding * 2,
+          marginHorizontal: mainPadding,
           // width: length ? fullWidth - 10 - 20 : fullWidth - 20
         }}
       >
@@ -231,8 +231,7 @@ const localStyles = StyleSheet.create({
     paddingLeft: 10,
   },
   multi: {
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingHorizontal: mainPadding,
     paddingBottom: 10,
   },
   cLabel: {

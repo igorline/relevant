@@ -84,9 +84,9 @@ UserName.propTypes = {
 
 const localStyles = StyleSheet.create({
   userImageBig: {
-    height: 44,
-    width: 44,
-    borderRadius: 22,
+    height: 42,
+    width: 42,
+    borderRadius: 21,
     marginRight: 7,
   },
   postInfo: {
