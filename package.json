@@ -88,6 +88,7 @@
     "react-native-fetch-blob": "^0.10.5",
     "react-native-file-upload": "^1.0.4",
     "react-native-firebase-analytics": "^3.0.0",
+    "react-native-global-props": "^1.1.1",
     "react-native-google-analytics-bridge": "^5.0.1",
     "react-native-htmlview": "^0.8.0",
     "react-native-image-picker": "^0.24.1",

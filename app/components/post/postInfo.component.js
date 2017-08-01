@@ -231,7 +231,7 @@ class PostInfo extends Component {
         setSelected={this.setSelected}
         postTime={postTime}
       />
-    )
+    );
 
     let info = (<View style={styles.postHeader}>
       <View style={styles.postInfo}>
@@ -297,7 +297,7 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     overflow: 'visible',
-    paddingTop: 15,
+    paddingTop: 20,
     paddingBottom: 0,
   },
   progressCirc: {

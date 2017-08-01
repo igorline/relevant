@@ -178,7 +178,7 @@ const localStyles = StyleSheet.create({
     height: 25,
     width: 25,
     borderRadius: 12.5,
-    marginLeft: 5,
+    marginLeft: 15,
   }
 });
 

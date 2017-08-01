@@ -68,7 +68,7 @@ class PostBody extends Component {
 
     if (this.props.preview) {
       numberOfLines = 2;
-      maxTextLength = 20;
+      maxTextLength = 10;
       postStyle = styles.previewText;
     }
 
@@ -122,7 +122,7 @@ class PostBody extends Component {
     return (
       <View style={{ flex: 1 }}>
         {textBody}
-        {!this.props.preview && !this.props.repost ? upvotes : null}
+        {/*!this.props.preview && !this.props.repost ? upvotes : null*/}
       </View>
     );
   }
@@ -132,19 +132,19 @@ export default PostBody;
 
 const localStyles = StyleSheet.create({
   postBody: {
-    marginTop: 20,
+    marginTop: 24,
     flex: 1,
     justifyContent: 'center'
   },
   bodyText: {
     fontFamily: 'Georgia',
-    fontSize: 38 / 2,
+    fontSize: 36 / 2,
     lineHeight: 55 / 2,
   },
   commentaryText: {
     fontFamily: 'Georgia',
-    fontSize: 35 / 2,
-    lineHeight: 52 / 2,
+    fontSize: 36 / 2,
+    lineHeight: 55 / 2,
   },
   repostText: {
     fontFamily: 'Georgia',

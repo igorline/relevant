@@ -177,7 +177,7 @@ export default class UrlComponent extends Component {
 
     if (this.props.repost) {
       repostBody = (
-        <View style={{ flex: 0, height: 120, width: fullWidth - 20 }}>
+        <View style={{ flex: 0, width: fullWidth - 20, paddingBottom: 20 }}>
           <PostInfo post={this.props.repost} />
           <PostBody preview post={this.props.repost} />
         </View>);

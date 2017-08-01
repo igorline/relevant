@@ -7,10 +7,13 @@ import {
 const fullWidth = Dimensions.get('window').width;
 const fullHeight = Dimensions.get('window').height;
 
-const darkGrey = '#231f20';
+const mainPadding = 15;
+// const mainPadding = 10;
+
+const darkGrey = '#242425';
 const blue = '#4d4eff';
-const lightGrey = '#aaaaaa';
-const greyText = '#999999';
+const lightGrey = '#9C9C9C';
+const greyText = '#9C9C9C';
 // const green = '333ef33';
 const green = '#196950';
 
@@ -49,6 +52,18 @@ const font = StyleSheet.create({
   bold: {
     fontWeight: 'bold',
   },
+
+
+  smallInfo: {
+    fontSize: 10,
+    color: greyText
+  },
+  statNumber: {
+    fontSize: 17,
+    fontFamily: 'BebasNeueRelevantRegular',
+    marginBottom: -2,
+  },
+
   navTitle: {
     fontSize: 22.5,
     fontFamily: 'BebasNeueRelevantRegular',
@@ -467,6 +482,11 @@ const layout = StyleSheet.create({
     marginRight: .5,
     marginLeft: 1,
   },
+  smallR: {
+    marginRight: 1,
+    width: 10,
+    height: 10,
+  },
   coin: {
     height: 17,
     width: 16,
@@ -489,9 +509,9 @@ const layout = StyleSheet.create({
     fontSize: 12,
   },
   userImage: {
-    height: 28,
-    width: 28,
-    borderRadius: 14,
+    height: 26,
+    width: 26,
+    borderRadius: 13,
     marginRight: 5,
     resizeMode: 'cover',
   },
@@ -550,5 +570,6 @@ export {
   green,
   greyText,
   darkGrey,
-  headerHeight
+  headerHeight,
+  mainPadding
 };
