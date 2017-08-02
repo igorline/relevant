@@ -2,6 +2,7 @@ import request from 'request-promise-any';
 import jsdom from 'jsdom';
 import Readability from 'readability';
 import cheerio from 'cheerio';
+import { parse as parseUrl } from 'url';
 
 let fbHeader = {
   'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
@@ -181,10 +182,17 @@ exports.generatePreview = (body, uri) => {
   description = data.description || data['og:description'] || data['twitter:description'];
   image = data['og:image'] || data['og:image:url'] || data['twitter:image'] || data['twitter:image:src'] || data.image;
   // why prioritise og tags? flipboard?
-  let url = uri;
-  // let url = data['al:web:url'] || data['og:url'] || uri;
+  let url = data['al:web:url'] || data['og:url'] || uri;
   let tags = data.news_keywords || data.keywords;
   let domain = exports.extractDomain(url);
+
+  let originalUrl = parseUrl(uri);
+  let cannonicalUrl = parseUrl(url);
+
+  // general fix for mismatch
+  if (originalUrl.pathname !== cannonicalUrl.pathname) {
+    url = originalUrl.protocol + '//' + originalUrl.host + originalUrl.pathname;
+  }
   // patch for massive bug?
   // if (domain.match('massivesci.com')) {
   //   url = uri;
