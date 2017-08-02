@@ -103,7 +103,7 @@ class PostBody extends Component {
             this.goToPost();
           }}
         >
-          <View style={[styles.postBody]}>
+          <View style={[styles.postBody, this.props.preview ? { marginTop: 10 } : null]}>
             <Text style={[styles.darkGrey, postStyle]}>
               <TextBody
                 style={postStyle}
@@ -139,12 +139,12 @@ const localStyles = StyleSheet.create({
   bodyText: {
     fontFamily: 'Georgia',
     fontSize: 36 / 2,
-    lineHeight: 55 / 2,
+    lineHeight: 54 / 2,
   },
   commentaryText: {
     fontFamily: 'Georgia',
     fontSize: 36 / 2,
-    lineHeight: 55 / 2,
+    lineHeight: 54 / 2,
   },
   repostText: {
     fontFamily: 'Georgia',
@@ -157,7 +157,7 @@ const localStyles = StyleSheet.create({
     fontFamily: 'Georgia',
     fontSize: 30 / 2,
     lineHeight: 40 / 2,
-    marginTop: -10,
+    // marginTop: -10,
   },
   shortBodyText: {
     fontFamily: 'Libre Caslon Display',

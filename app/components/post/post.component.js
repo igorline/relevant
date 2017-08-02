@@ -137,7 +137,7 @@ const localStyles = StyleSheet.create({
     marginTop: 10,
     fontFamily: 'Georgia',
     fontSize: 38 / 2,
-    lineHeight: 55 / 2,
+    lineHeight: 54 / 2,
   },
   repost: {
     paddingLeft: 10,
@@ -175,8 +175,10 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
-    myInvestments: state.investments.myInvestments,
-    myEarnings: state.investments.myEarnings,
+    // myInvestments: state.investments.myInvestments,
+    // myEarnings: state.investments.myEarnings,
+    myPostInvList: state.investments.myPostInvList,
+    myPostInv: state.investments.myPostInv,
     users: state.user.users
   };
 }

@@ -7,6 +7,8 @@ import {
 const fullWidth = Dimensions.get('window').width;
 const fullHeight = Dimensions.get('window').height;
 
+const smallScreen = fullWidth <= 320 || false;
+
 const mainPadding = 15;
 // const mainPadding = 10;
 
@@ -571,5 +573,6 @@ export {
   greyText,
   darkGrey,
   headerHeight,
-  mainPadding
+  mainPadding,
+  smallScreen
 };

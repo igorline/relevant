@@ -233,7 +233,7 @@ class PostInfo extends Component {
       />
     );
 
-    let info = (<View style={styles.postHeader}>
+    let info = (<View style={[styles.postHeader, this.props.preview ? { paddingTop: 10 } : null]}>
       <View style={styles.postInfo}>
         {userEl}
         <View
@@ -298,7 +298,6 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'visible',
     paddingTop: 20,
-    paddingBottom: 0,
   },
   progressCirc: {
     marginTop: -1,

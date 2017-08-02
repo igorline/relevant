@@ -29,6 +29,7 @@ export default class Commentary extends Component {
     // this.changeRow = this.changeRow.bind(this);
     this.renderItem = this.renderItem.bind(this);
     this.onScrollEnd = this.onScrollEnd.bind(this);
+    this.scrollToPage = this.scrollToPage.bind(this);
   }
 
   // changeRow(event, changed) {
@@ -53,6 +54,9 @@ export default class Commentary extends Component {
     // console.log('scrolled to page ', pageNum);
   }
 
+  scrollToPage(p) {
+    this.scrollView.scrollToIndex({ index: p });
+  }
 
   renderItem({ item, index }) {
     let post = item;
@@ -171,12 +175,14 @@ export default class Commentary extends Component {
           changed={this.state.changed}
           currentIndex={this.state.currentIndex}
           slides={this.props.commentary.map((c, i) => i + 1)}
+          scrollToPage={this.scrollToPage}
         />
       </View>
     );
     return (
       <View>
         <FlatList
+          ref={c => this.scrollView = c}
           scrollEnabled={this.props.commentary.length > 1}
           keyExtractor={(item, index) => index}
           horizontal
