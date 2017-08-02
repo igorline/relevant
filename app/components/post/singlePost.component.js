@@ -184,6 +184,7 @@ class SinglePostComments extends Component {
       key={0}
       scene={this.props.scene}
       post={this.id}
+      focusInput={() => this.input.textInput.focus()}
       {...this.props}
     />);
 

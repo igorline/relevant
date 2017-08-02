@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import { numbers } from '../utils';
-import { globalStyles, fullWidth, green } from '../styles/global';
+import { globalStyles, fullWidth, green, smallScreen } from '../styles/global';
 import UrlPreview from './createPost/urlPreview.component';
 
 let moment = require('moment');
@@ -256,8 +256,6 @@ export default function (props) {
   };
 
   let renderMiddle = () => {
-    let smallScreen = fullWidth <= 320 || false;
-    // smallScreen = true;
     let icon = require('../assets/images/rup.png');
     let color = { color: green };
     let coin;
@@ -457,7 +455,7 @@ const localStyles = StyleSheet.create({
     // marginBottom: -8,
   },
   activityMiddle: {
-    flex: 0.2,
+    flex: 0.25,
     justifyContent: 'flex-end',
     alignItems: 'center',
     flexDirection: 'row',

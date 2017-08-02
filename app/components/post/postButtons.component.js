@@ -175,12 +175,12 @@ class PostButtons extends Component {
 
   irrelevantPrompt() {
     Alert.alert(
-      'Downvote poor quality content to reduce the post\'s relevant score',
-      'If you see innapropriate content you can notify the admins by pressing "Innapropriate".',
+      null,
+      'Downvote poor quality content to reduce the post\'s relevant score.\n\nIf you see something innapropriate, you can notify the admins by pressing "REPORT".',
       [
         { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
         { text: 'Downvote', onPress: () => this.irrelevant() },
-        { text: '🚫Innapropriate', onPress: () => this.flag() },
+        { text: '🚫Report', onPress: () => this.flag() },
       ]
     );
   }
@@ -287,7 +287,10 @@ class PostButtons extends Component {
 
   goToPost(comment) {
     if (this.props.scene) {
-      if (this.props.scene.id === this.props.post._id) return;
+      if (this.props.scene.id === this.props.post._id) {
+        if (this.props.focusInput) this.props.focusInput();
+        return;
+      }
     }
     let openComment = false;
     if (comment) openComment = true;
@@ -304,18 +307,16 @@ class PostButtons extends Component {
     let post = this.props.post;
     let investable = false;
     let irrelevantButton;
-    // let commentIcon = <Icon name="ios-chatbubbles" size={18} color={styles.greyText} />;
     let commentString = '';
-    let earnings;
-    let smallScreen = fullWidth <= 320 || false;
-
+    let myVote;
     if (post && post.user && this.props.auth.user) {
       if (post.user._id !== this.props.auth.user._id) {
-        if (this.props.myInvestments.indexOf(post._id) === -1) {
+        if (!this.props.myPostInv[post._id]) {
           investable = true;
+        } else {
+          myVote = this.props.myPostInv[post._id];
         }
       }
-      earnings = this.props.myEarnings[post._id];
     }
 
     if (post && post.commentCount) {
@@ -327,8 +328,12 @@ class PostButtons extends Component {
 
 
     // invest section spacing
-    let space = 10;
-    let opacity = !investable ? 0.3 : 1;
+    let space = 8;
+    let opacity = investable ? 1 : 0.3;
+    let upvoteIcon = require('../../assets/images/icons/upvote.png');
+    if (myVote && myVote.amount > 0) {
+      upvoteIcon = require('../../assets/images/icons/upvoteActive.png');
+    } //else if (!investable) opacity = .3;
 
     investButtonEl = (
       <TouchableOpacity
@@ -337,8 +342,8 @@ class PostButtons extends Component {
       >
         <Image
           resizeMode={'contain'}
-          style={styles.vote}
-          source={require('../../assets/images/icons/upvote.png')}
+          style={[styles.vote, { opacity }]}
+          source={upvoteIcon}
         />
       </TouchableOpacity>
     );
@@ -364,9 +369,9 @@ class PostButtons extends Component {
     if (totalVotes === 1) s = '';
     let votes = (
       <View>
-        <View style={{ width: 30, borderBottomWidth: 1, borderColor: greyText }} />
+        <View style={{ alignSelf: 'center', width: 30, borderBottomWidth: 1, borderColor: greyText }} />
         <Text style={styles.smallInfo}>
-          {totalVotes} vote{s}
+          {numbers.abbreviateNumber(totalVotes || 0)} vote{s}
         </Text>
       </View>
     );
@@ -382,11 +387,17 @@ class PostButtons extends Component {
       <TouchableOpacity
         onPress={this.showInvestors}
       >
-        <View style={{ flexDirection: 'column', alignItems: 'center', paddingHorizontal: space }}>
+        <View
+          style={{
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: 60
+          }}
+        >
           <View style={[styles.textRow, { alignItems: 'center' }]}>
             {rIcon}
             <Text style={[styles.smallInfo, styles.greyText]}>
-              {r}
+              {totalVotes === 0 ? r : numbers.abbreviateNumber(r)}
             </Text>
           </View>
           {votes}
@@ -394,15 +405,21 @@ class PostButtons extends Component {
       </TouchableOpacity>
     );
 
+
+    //opacity = 1;
+    let downvoteIcon = require('../../assets/images/icons/downvote.png');
+    if (myVote && myVote.amount < 0) {
+      downvoteIcon = require('../../assets/images/icons/downvoteActive.png');
+    } //else if (!investable) opacity = .3;
     irrelevantButton = (
       <TouchableOpacity
-        style={{ paddingLeft: space, opacity }}
+        style={{ paddingLeft: space }}
         onPress={() => investable ? this.irrelevantPrompt() : null}
       >
         <Image
           resizeMode={'contain'}
-          style={styles.vote}
-          source={require('../../assets/images/icons/downvote.png')}
+          style={[styles.vote, { opacity }]}
+          source={downvoteIcon}
         />
       </TouchableOpacity>
     );
@@ -447,7 +464,7 @@ class PostButtons extends Component {
         style={{ paddingHorizontal: 10 }}
         onPress={() => this.repostUrl()}
       >
-        <Icon name="pencil" size={19} color={greyText} />
+        <Icon name="pencil" size={18} color={greyText} />
       </TouchableOpacity>
     );
 
@@ -459,7 +476,7 @@ class PostButtons extends Component {
           {irrelevantButton}
         </View>
 
-        <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           {post.link ? newCommentary : null}
           {comments}
           {repost}
@@ -493,8 +510,8 @@ const localStyles = StyleSheet.create({
     marginRight: 0
   },
   investImage: {
-    width: 24,
-    height: 24,
+    width: 25,
+    height: 25,
     borderRadius: 12,
     resizeMode: 'cover',
     marginLeft: 5,
