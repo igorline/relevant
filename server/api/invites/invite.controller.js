@@ -134,6 +134,7 @@ exports.sendEmailFunc = async function(_invite) {
     // <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation (or manually enter the code when prompted)
 
     status = await mail.send(data);
+    console.log(status);
     invite.status = 'email sent';
     invite = await invite.save();
   } catch (err) {

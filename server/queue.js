@@ -95,62 +95,80 @@ function updateUserStats() {
   });
 }
 
-// async function userRank() {
-//   try {
-//     let users = await User.find({});
-//     let rankedUsers = {};
-//     let originalRelevance = {};
-//     let results = users.map(async user => {
-//       rankedUsers[user._id] = {};
-//       originalRelevance[user._id] = user.relevance;
-//       let upvotes = await Invest.find({ investor: user._id });
-//       upvotes.forEach(upvote => {
-//         if (upvote.ownPost) return;
-//         if (rankedUsers[user._id][upvote.author]) {
-//           let a = upvote.amount / Math.abs(upvote.amount);
-//           if (!a) a = 1;
-//           rankedUsers[user._id][upvote.author].weight += a;
-//         } else {
-//           rankedUsers[user._id][upvote.author] = { weight: 1 };
-//         }
-//       });
-//       return upvotes;
-//     });
+// compute relevance using pagerank
+async function userRank() {
+  try {
+    let users = await User.find({});
+    let N = users.length;
+    let rankedUsers = {};
+    let originalRelevance = {};
+    let results = users.map(async user => {
+      rankedUsers[user._id] = {};
+      originalRelevance[user._id] = user.relevance;
+      let upvotes = await Invest.find({ investor: user._id });
+      upvotes.forEach(upvote => {
+        if (upvote.ownPost) return;
+        let a = upvote.amount / Math.abs(upvote.amount);
+        if (!a) a = 1;
+        // time discount
+        let now = new Date();
+        let t = now.getTime() - upvote.createdAt.getTime();
+        a = a * Math.pow(1 / 2, t / ( 1000 * 60 * 60 * 24 * 30 * 6 ));
+        if (rankedUsers[user._id][upvote.author]) {
+          rankedUsers[user._id][upvote.author].weight += a;
+        } else {
+          rankedUsers[user._id][upvote.author] = { weight: a };
+        }
+      });
+      return upvotes;
+    });
 
-//     await Promise.all(results);
-//     console.log(rankedUsers);
+    await Promise.all(results);
+    Object.keys(rankedUsers).forEach(u => {
+      Object.keys(rankedUsers[u]).forEach(name => {
+        if (rankedUsers[u][name].weight < 0) delete rankedUsers[u][name];
+      });
+    });
+    // console.log(rankedUsers);
 
-//     let scores = pagerank(
-//       rankedUsers,
-//       { alpha: 0.85 }
-//     );
-//     console.log(scores);
-//     let max = 0;
-
-
-//     let array = [];
-//     Object.keys(scores).forEach(user => {
-//       let u = scores[user];
-//       if (u > max) max = u;
-//       array.push({
-//         name: user,
-//         rank: u,
-//         relevance: originalRelevance[user]
-//       });
-//     });
-
-//     array = array.sort((a, b) => a.rank - b.rank);
-//     array.forEach(u => {
-//       console.log('name: ', u.name);
-//       console.log('rank ', Math.round(100 * u.rank / max));
-//       console.log('relevance ', u.relevance);
-//     });
+    let scores = pagerank(
+      rankedUsers,
+      { alpha: 0.85 }
+    );
+    // console.log(scores);
+    let max = 0;
+    let min = 1;
 
 
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
+    let array = [];
+    Object.keys(scores).forEach(user => {
+      let u = scores[user];
+      if (u > max) max = u;
+      if (u < min) min = u;
+      array.push({
+        name: user,
+        rank: u,
+        relevance: originalRelevance[user]
+      });
+    });
+
+    array = array.sort((a, b) => a.rank - b.rank);
+    array.forEach(u => {
+      let rank = Math.log10(N * u.rank + 1 - N * min) * (437 / Math.log10(N * max + 1 - N * min));
+      let ratio = Math.round(rank / u.relevance);
+      // if (ratio > 2) {
+        console.log('name: ', u.name);
+        console.log('pageRank: ', Math.round(rank), ' rel: ', Math.round(u.relevance));
+        console.log('RATIO ', Math.round(rank * 100 / u.relevance) / 100 || 0);
+        console.log('-----')
+      // }
+    });
+
+
+  } catch (err) {
+    console.log(err);
+  }
+}
 // userRank();
 
 // setTimeout(basicIncome, 10000);

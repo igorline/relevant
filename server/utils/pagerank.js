@@ -8,7 +8,7 @@ function pagerank(G, params) {
   if (!params.personalization) params.personalization = null;
   if (!params.max_iter) params.max_iter = 100;
   if (!params.tol) params.tol = 1.0e-6;
-  if (!params.weight) params.weight = 'weight'
+  if (!params.weight) params.weight = 'weight';
 
   // Begin tools
   var values = function(obj) {
@@ -24,21 +24,21 @@ function pagerank(G, params) {
   };
   // End tools
 
-  var N = Object.keys(G).length
-  if (N == 0) return {};
+  var N = Object.keys(G).length;
+  if (N === 0) return {};
 
   // Create a copy in (right) stochastic form
-  var W = {}
+  var W = {};
   for (var node in G) {
     var nodes = G[node];
     var new_nodes = {};
-    var node_degree = .0;
+    var node_degree = 0.0;
     for (var node_ in nodes) {
-      node_degree += nodes[node_][params.weight]
+      node_degree += nodes[node_][params.weight];
     }
     for (var node_ in nodes) {
       new_nodes[node_] = {
-        'weight': 
+        'weight':
           (params.weight ? nodes[node_][params.weight] : 1.0) / node_degree
       };
     }
@@ -104,6 +104,12 @@ function pagerank(G, params) {
       // this matrix multiply looks odd because it is
       // doing a left multiply x^T=xlast^T*W
       for (var nbr in W[node]) {
+        // let d = xlast[node] - xlast[nbr] || 0;
+        // d = Math.max(0, d);
+        // d += 1;
+        // d = Math.pow(d, 10 / 3);
+        // console.log(d);
+
         x[nbr] += params.alpha * xlast[node] * W[node][nbr]['weight'];
       }
       x[node] += danglesum * dangling_weights[node] + (1.0 - params.alpha) * p[node];
