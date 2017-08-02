@@ -122,7 +122,6 @@ class PostBody extends Component {
     return (
       <View style={{ flex: 1 }}>
         {textBody}
-        <Text>{post.link}</Text>
         {!this.props.preview && !this.props.repost ? upvotes : null}
       </View>
     );
