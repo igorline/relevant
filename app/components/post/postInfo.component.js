@@ -3,16 +3,16 @@ import {
   StyleSheet,
   View,
   ActionSheetIOS,
-  TouchableHighlight,
+  TouchableOpacity,
   Text,
   Image,
   Platform
 } from 'react-native';
 import RNBottomSheet from 'react-native-bottom-sheet';
-// import * as Progress from 'react-native-progress';
+import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import UserName from '../userNameSmall.component';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, greyText } from '../../styles/global';
 import { numbers } from '../../utils';
 
 let ActionSheet = ActionSheetIOS;
@@ -171,17 +171,12 @@ class PostInfo extends Component {
         // </Text>
 
     if (this.myPost) {
-      postActions = (<TouchableHighlight
-        underlayColor={'transparent'}
+      postActions = (<TouchableOpacity
         style={[styles.postButton, { paddingRight: 10 }]}
         onPress={() => this.showActionSheet()}
       >
-        <Image
-          resizeMode={'contain'}
-          style={[{ height: 15, width: 25, opacity: 0.6 }]}
-          source={require('../../assets/images/downarrow1.png')}
-        />
-      </TouchableHighlight>);
+        <Icon name="ios-more" size={24} color={greyText} />
+      </TouchableOpacity>);
     }
 
     // if (this.state.passed) {

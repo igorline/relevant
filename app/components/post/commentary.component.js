@@ -202,7 +202,7 @@ export default class Commentary extends Component {
 
 const localStyles = StyleSheet.create({
   reposted: {
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
   },
   postScroll: {
     flexDirection: 'row',
@@ -217,7 +217,7 @@ const localStyles = StyleSheet.create({
     flexGrow: 1,
     marginTop: 10,
     marginBottom: 10,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     flexDirection: 'column',
   },
   vSeparator: {

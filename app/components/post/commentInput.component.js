@@ -123,7 +123,7 @@ class CommentInput extends Component {
               height: Math.min(this.state.inputHeight, 120),
             }
           ]}
-          placeholder="Enter comment..."
+          placeholder="Enter reply..."
           placeholderTextColor={greyText}
           multiline
           onChangeText={(comment) => {

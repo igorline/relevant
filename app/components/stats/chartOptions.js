@@ -4,13 +4,15 @@ let options = {
   width: fullWidth - 50,
   height: 100,
   margin: {
-    top: 25,
+    top: 20,
     left: 30,
     bottom: 50,
-    right: 20
+    // right: 20
   },
   color: blue,
   gutter: 4,
+  strokeWidth: 6,
+  showAreas: false,
   animate: {
     type: 'oneByOne',
     duration: 200,
@@ -18,21 +20,22 @@ let options = {
   },
   axisX: {
     // showAxis: true,
-    // showLines: true,
+    showLines: true,
     showLabels: true,
     showTicks: false,
     zeroAxis: false,
     orient: 'bottom',
-    strokeWidth: 0.5,
+    strokeWidth: .5,
     tickCount: 14,
-    opacity: 1,
-    gridColor: 'rgb(77, 78, 255, .2)',
+    opacity: .5,
+    gridColor: '#979797',
     tailLength: 1,
     label: {
-      fontFamily: 'System',
-      fontSize: 8,
-      fontWeight: 100,
-      fill: darkGrey,
+      fontFamily: 'Arial',
+      fontSize: 7,
+      fontWeight: 0,
+      stroke: darkGrey,
+      // fill: darkGrey,
       rotate: 0,
       bold: false,
     }
@@ -49,10 +52,11 @@ let options = {
     gridColor: 'rgb(77, 78, 255, .2)',
     tailLength: 1,
     label: {
-      fontFamily: 'System',
-      fontSize: 8,
-      fontWeight: 100,
-      fill: darkGrey,
+      fontFamily: 'Arial',
+      fontSize: 7,
+      fontWeight: 0,
+      stroke: darkGrey,
+      strokeWeight: 0.5,
       bold: false,
     }
   }

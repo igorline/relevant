@@ -7,9 +7,6 @@ import * as postActions from '../../actions/post.actions';
 import InviteComponent from './invites.component';
 import InviteList from './inviteList.component';
 
-console.log(InviteList)
-console.log(InviteComponent)
-
 class Invites extends Component {
   constructor(props, context) {
     super(props, context);

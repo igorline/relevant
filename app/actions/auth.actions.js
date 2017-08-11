@@ -299,7 +299,6 @@ function createUser(user, invite) {
         Object.keys(errors).map((key, index) => {
            if (errors[key].message) message += errors[key].message;
         });
-        console.log(message);
         AlertIOS.alert(message);
       }
     })
@@ -403,7 +402,6 @@ export function updateUser(user, preventLocalUpdate) {
 }
 
 export function addDeviceToken(user) {
-  console.log('add device token');
   return (dispatch) => {
     // PushNotification.checkPermissions((results) => {
     //   console.log(results, 'permissions ios');
@@ -481,7 +479,7 @@ export function addDeviceToken(user) {
           // console.log('adding devicetoken to user here', token);
           dispatch(updateUser(newUser));
         } else {
-          console.log(user.deviceTokens);
+          // console.log(user.deviceTokens);
           // console.log('devicetoken already present in user');
         }
       } else {
@@ -498,17 +496,11 @@ export function removeDeviceToken(auth) {
   return dispatch => {
     let user = auth.user;
     if (user.deviceTokens) {
-      // console.log('remove token');
-      // console.log(auth.deviceToken);
       let index = user.deviceTokens.indexOf(auth.deviceToken);
       if (index > -1) {
-        // console.log(user.deviceTokens, 'pre splice');
         user.deviceTokens.splice(index, 1);
-        // console.log(user.deviceTokens, 'post splice');
-        // console.log('upating user to', user);
         dispatch(updateUser(user, true));
       } else {
-        // console.log('devicetoken not present');
       }
     }
   };

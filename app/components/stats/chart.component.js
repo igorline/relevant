@@ -56,7 +56,6 @@ export default class Chart extends Component {
   chartData(props) {
     let { type, data, start, end, dataKey } = props;
 
-
     let current = new Date(start);
     let min;
     let max;
@@ -141,7 +140,7 @@ export default class Chart extends Component {
       chart = (
         <View>
           <StockLine
-            regionStyling={{ fillOpacity: 1 }}
+            regionStyling={{ fillOpacity: 0 }}
             data={[this.data]}
             options={this.chartOptions}
             xKey={'x'}

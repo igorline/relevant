@@ -144,7 +144,7 @@ export function goToPeople(topic) {
   return push({
     key: 'peopleView',
     component: 'peopleView',
-    title: topic || 'People',
+    title: topic ? '#' + topic : 'People',
     back: true,
     topic: topic ? { _id: topic.toLowerCase() } : null,
   });

@@ -29,8 +29,16 @@ class Tabs extends Component {
         title: 'New Post',
         next: 'Post',
         direction: 'vertical',
-        // ownCard: true
       }, 'home');
+      this.props.actions.replaceRoute({
+        key: 'createPost',
+        component: 'createPost',
+        back: true,
+        left: 'Cancel',
+        title: 'New Post',
+        next: 'Next',
+        direction: 'vertical'
+      }, 0, 'createPost');
     } else {
       if (tab.key === key) {
         if (this.props.navigation[key].routes.length === 1) {

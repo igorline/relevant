@@ -293,7 +293,7 @@ class SinglePostComments extends Component {
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
-        style={{ flex: 1 }}
+        style={{ flex: 1, backgroundColor: 'white' }}
         keyboardVerticalOffset={59 + (Platform.OS === 'android' ? StatusBar.currentHeight / 2 : 0)}
       >
         {this.renderComments()}

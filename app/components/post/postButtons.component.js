@@ -174,9 +174,15 @@ class PostButtons extends Component {
 
 
   irrelevantPrompt() {
+    let t1 = 'Downvote poor quality content to reduce the post\'s relevant score.';
+    let t2 = 'If you see something innapropriate, you can notify the admins by pressing "REPORT".';
+    if (Platform.OS === 'android') {
+      t1 = null;
+      t2 = 'Downvote poor quality content to reduce the post\'s relevant score.\n\nIf you see something innapropriate, you can notify the admins by pressing "REPORT".';
+    }
     Alert.alert(
-      null,
-      'Downvote poor quality content to reduce the post\'s relevant score.\n\nIf you see something innapropriate, you can notify the admins by pressing "REPORT".',
+      t1,
+      t2,
       [
         { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
         { text: 'Downvote', onPress: () => this.irrelevant() },
@@ -257,16 +263,28 @@ class PostButtons extends Component {
     });
     this.props.actions.push({
       key: 'createPost',
+      component: 'createPost',
+      back: 'Cancel',
+      title: 'Repost',
+      next: 'Post',
+      direction: 'vertical',
+      left: 'Cancel',
+    }, 'home');
+    this.props.actions.replaceRoute({
+      key: 'createPost',
+      component: 'createPost',
       back: true,
+      left: 'Cancel',
       title: 'Repost',
       next: 'Post',
       direction: 'vertical'
-    }, 'home');
+    }, 0, 'createPost');
   }
 
   repostUrl() {
     this.props.actions.setCreaPostState({
       postBody: '',
+      component: 'createPost',
       nativeImage: true,
       postUrl: this.props.post.link,
       postImage: this.props.post.image,
@@ -279,10 +297,19 @@ class PostButtons extends Component {
     this.props.actions.push({
       key: 'createPost',
       back: true,
-      title: 'Create Post',
+      title: 'Add Commentary',
       next: 'Next',
       direction: 'vertical'
     }, 'home');
+    this.props.actions.replaceRoute({
+      key: 'createPost',
+      component: 'createPost',
+      back: true,
+      left: 'Cancel',
+      title: 'New Commentary',
+      next: 'Next',
+      direction: 'vertical'
+    }, 0, 'createPost');
   }
 
   goToPost(comment) {
@@ -322,7 +349,7 @@ class PostButtons extends Component {
     if (post && post.commentCount) {
       if (post.commentCount === 1) commentString = '1';
       else {
-        commentString = <Text>{post.commentCount}</Text>;
+        commentString = post.commentCount;
       }
     }
 
@@ -427,7 +454,7 @@ class PostButtons extends Component {
 
     let comments = (<TouchableOpacity
       onPress={() => this.goToPost(true)}
-      style={{ paddingHorizontal: space }}
+      style={{ paddingHorizontal: 12 }}
     >
       <View style={[styles.textRow, { alignItems: 'center', }]}>
         <Image
@@ -461,7 +488,7 @@ class PostButtons extends Component {
 
     let newCommentary = (
       <TouchableOpacity
-        style={{ paddingHorizontal: 10 }}
+        style={{ paddingRight: 8 }}
         onPress={() => this.repostUrl()}
       >
         <Icon name="pencil" size={18} color={greyText} />

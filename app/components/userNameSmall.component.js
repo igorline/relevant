@@ -14,6 +14,7 @@ let styles;
 
 export default function UserName(props) {
   let repostIcon;
+  let handleEl;
   if (!props.user) return null;
 
   let imageSource;
@@ -32,6 +33,33 @@ export default function UserName(props) {
   }
   let handle;
   if (props.user._id) handle = (props.type !== 'invite' ? '@' : '') + props.user._id;
+
+  let rIcon = (<Image
+    resizeMode={'contain'}
+    style={[styles.smallR, { width: 10, height: 12, marginRight: 1 }]}
+    source={require('../assets/images/icons/smallR.png')}
+  />);
+
+  if (handle) {
+    handleEl = (
+      <Text style={[styles.font10, styles.greyText]}>
+        {handle} {props.postTime}
+      </Text>
+    );
+    if (props.topic && props.topic.topic) {
+      handleEl = (
+        <View style={styles.textRow}>
+          <Text style={[styles.font10, styles.greyText]}>
+            {handle}{' • '}
+          </Text>
+          {rIcon}
+          <Text style={[styles.font10, styles.greyText]}>
+            {Math.round(props.topic.relevance)} in #{props.topic.topic}
+          </Text>
+        </View>
+      );
+    }
+  }
 
   if (props.repost) {
     repostIcon = (
@@ -60,10 +88,7 @@ export default function UserName(props) {
             </View>
             {stats}
           </View>
-          {handle ? (
-            <Text style={[styles.font10, styles.greyText]}>
-              {handle} {props.postTime}
-            </Text>) : null }
+          {handleEl}
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -94,7 +119,7 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: 'white'
+    // backgroundColor: 'white'
   },
 });
 

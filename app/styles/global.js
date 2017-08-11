@@ -18,6 +18,7 @@ const lightGrey = '#9C9C9C';
 const greyText = '#9C9C9C';
 // const green = '333ef33';
 const green = '#196950';
+const borderGrey = '#E3E3E3';
 
 const IphoneHeader = 59;
 const AndroidHeader = 44;
@@ -62,6 +63,12 @@ const font = StyleSheet.create({
   },
   statNumber: {
     fontSize: 17,
+    fontFamily: 'BebasNeueRelevantRegular',
+    marginBottom: -2,
+  },
+
+  largeNumber: {
+    fontSize: 25,
     fontFamily: 'BebasNeueRelevantRegular',
     marginBottom: -2,
   },
@@ -132,8 +139,8 @@ const font = StyleSheet.create({
     fontFamily: 'Georgia',
   },
   tabFont: {
-    fontFamily: 'Helvetica',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: 14,
   },
   tabStyle: {
     fontFamily: 'Helvetica',
@@ -410,7 +417,6 @@ const layout = StyleSheet.create({
   },
   fullContainer: {
     flex: 1,
-    // backgroundColor: 'hsl(0,0%,90%)',
   },
   row: {
     flexDirection: 'row',
@@ -447,8 +453,8 @@ const layout = StyleSheet.create({
     padding: 10
   },
   createPostInput: {
-    marginTop: 12.5,
-    marginBottom: 12.5,
+    marginTop: 10,
+    marginBottom: 10,
     backgroundColor: '#ffffff',
   },
   flex1: {
@@ -557,9 +563,14 @@ const layout = StyleSheet.create({
   textRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'flex-start',
-  }
+  },
+  break: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: borderGrey,
+    marginHorizontal: 40,
+  },
 });
 
 const globalStyles = { ...colors, ...font, ...alignment, ...layout };
@@ -574,5 +585,6 @@ export {
   darkGrey,
   headerHeight,
   mainPadding,
-  smallScreen
+  smallScreen,
+  borderGrey
 };

@@ -56,11 +56,13 @@ const initialState = {
     index: 0,
     key: 'root',
     routes: [
-      //🎯🏵🏆🏅🔮🌀🍥
-      { key: 'discover', icon: Platform.OS === 'android' ? '📰' : '🗞', title: 'Read' },
-      { key: 'stats', icon: Platform.OS === 'android' ? '🔘' : '🎯', title: 'Stats' },
-      { key: 'createPost', icon: Platform.OS === 'android' ? '📝' : '✍️', title: 'New Post' },
+      //🎯🏵🏆🏅🔮🌀🍥📈📉📊
+      { key: 'discover', icon: Platform.OS === 'android' ? '📰' : '📰', title: 'Read' },
       { key: 'activity', icon: Platform.OS === 'android' ? '⚡' : '⚡', title: 'Activity' },
+
+      { key: 'createPost', icon: Platform.OS === 'android' ? '📝' : '✍️', title: 'New Post' },
+      { key: 'stats', icon: Platform.OS === 'android' ? '📈' : '📈', title: 'Stats' },
+
       { key: 'myProfile', icon: Platform.OS === 'android' ? '👤' : '👤', title: 'Profile' }
     ],
   },
@@ -125,7 +127,7 @@ const initialState = {
     routes: [{
       key: 'createPost',
       component: 'createPost',
-      title: 'New Post',
+      // title: 'New Post',
       back: true,
       left: 'Cancel'
     }],

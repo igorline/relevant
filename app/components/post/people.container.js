@@ -3,18 +3,20 @@ import {
   View,
   InteractionManager,
   Text,
-  StyleSheet
+  StyleSheet,
+  Image
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { globalStyles, green } from '../../styles/global';
+import { globalStyles, green, darkGrey } from '../../styles/global';
 import * as investActions from '../../actions/invest.actions';
 import * as navigationActions from '../../actions/navigation.actions';
 
 import DiscoverUser from '../discoverUser.component';
 import CustomListView from '../customList.component';
 import CustomSpinner from '../CustomSpinner.component';
+import { numbers } from '../../utils';
 
 let styles;
 
@@ -72,19 +74,48 @@ class PostPeople extends Component {
 
   renderRight(props) {
     let { amount, relevantPoints } = props;
-    let inner = (<Text style={[styles.bebas, styles.votes]}>
-      Upvote
-      <Text style={[styles.bebas, { color: green }]}>
-        {' '}▲{relevantPoints || null}
-      </Text>
-    </Text>);
+
+    let icon = require('../../assets/images/rup.png');
+    let color = { color: darkGrey };
+    let coin;
     if (amount < 0) {
-      inner = (<Text style={[styles.bebas, styles.votes]}>
-        Downvote
-        <Text style={[styles.bebas, { color: 'red' }]}>
-          {' '}▼{relevantPoints || null}
+      // color = { color: 'red' };
+      icon = require('../../assets/images/rdown.png');
+    }
+
+    let inner = (
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={[styles.statNumber, color]}>
+        +{' '}
         </Text>
-      </Text>);
+        <Image
+          resizeMode={'contain'}
+          style={[styles.r, { height: 16, width: 20 }]}
+          source={icon}
+        />
+        <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
+          {Math.abs(numbers.abbreviateNumber(relevantPoints))}
+        </Text>
+      </View>
+    );
+
+
+    if (amount < 0) {
+      inner = (
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={[styles.statNumber, color]}>
+          -{' '}
+          </Text>
+          <Image
+            resizeMode={'contain'}
+            style={[styles.r, { height: 16, width: 20 }]}
+            source={icon}
+          />
+          <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
+            {Math.abs(numbers.abbreviateNumber(relevantPoints))}
+          </Text>
+        </View>
+      );
     }
     return inner;
   }
