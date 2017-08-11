@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import { numbers } from '../utils';
-import { globalStyles, fullWidth, green, smallScreen } from '../styles/global';
+import { globalStyles, fullWidth, green, smallScreen, greyText } from '../styles/global';
 import UrlPreview from './createPost/urlPreview.component';
 
 let moment = require('moment');
@@ -40,7 +40,6 @@ export default function (props) {
     if (!tooltipParent[name]) return;
     tooltipParent[name].measureInWindow((x, y, w, h) => {
       let parent = { x, y, w, h };
-      console.log(parent);
       if (x + y + w + h === 0) return;
       props.navigator.setTooltipData({
         name,
@@ -67,8 +66,8 @@ export default function (props) {
           style={[{
             paddingHorizontal: 5,
             // marginBottom: -6,
-            fontSize: 11,
-            color: '#B0B3B6',
+            fontSize: 10,
+            color: greyText,
             textAlign: 'center',
             backgroundColor: 'white'
           }]}
@@ -83,21 +82,21 @@ export default function (props) {
   let renderName = (user) => {
     // TODO depricated!
     if (!user && singleActivity.byUsers) {
-      return <Text>{singleActivity.byUsers.length} users</Text>;
+      return <Text style={styles.activityText}>{singleActivity.byUsers.length} users</Text>;
     }
 
     if (!user && singleActivity.totalUsers) {
       let s = '';
       if (singleActivity.totalUsers > 1) s = 's';
-      return <Text>{singleActivity.totalUsers} user{s}</Text>;
+      return <Text style={styles.activityText}>{singleActivity.totalUsers} user{s}</Text>;
     }
 
     if (user && singleActivity.totalUsers - 1) {
       let s = '';
       if (singleActivity.totalUsers - 1 > 1) s = 's';
-      return (<Text>
+      return (<Text style={styles.activityText}>
         <Text
-          style={styles.link}
+          style={[styles.link, styles.activityText]}
           onPress={() => setSelected(user)}
         >
           {user.name}{' '}
@@ -107,10 +106,10 @@ export default function (props) {
     }
 
     // if (singleActivity.amount < 0) {
-    //   return <Text>someone</Text>;
+    //   return <Text style={styles.activityText}>someone</Text>;
     // }
 
-    return (<Text style={styles.link} onPress={() => setSelected(user)}>
+    return (<Text style={[styles.link, styles.activityText]} onPress={() => setSelected(user)}>
       {user.name}
     </Text>);
   };
@@ -125,7 +124,7 @@ export default function (props) {
     // </Text>);
     let previewProps = { urlPreview: post, domain: post.domain };
     return (
-      <View style={{ marginLeft: 50, marginRight: 10, marginTop: -10 }}>
+      <View style={{ marginLeft: 50, marginRight: 10, }}>
         <UrlPreview
           onPress={() => goToPost(post)}
           size={'small'}
@@ -174,56 +173,56 @@ export default function (props) {
 
       case 'upvote':
         return (
-          <Text>
-            {renderName(singleActivity.byUser)} upvoted your post ➩ you got a coin and your relevance increased by {amount}
+          <Text style={styles.activityText}>
+            {renderName(singleActivity.byUser)} upvoted your post → you got a coin and your relevance increased by {amount}
           </Text>
         );
 
       case 'downvote':
         return (
-          <Text>
-            {renderName(singleActivity.byUser)} downvoted your post ➩ your relevance decreased by {amount}
+          <Text style={styles.activityText}>
+            {renderName(singleActivity.byUser)} downvoted your post → your relevance decreased by {amount}
           </Text>
         );
 
       case 'partialUpvote':
         return (
-          <Text>
-            {renderName(singleActivity.byUser)} {also}upvoted this post ➩ your relevance {action} by {amount}
+          <Text style={styles.activityText}>
+            {renderName(singleActivity.byUser)} {also}upvoted this post → your relevance {action} by {amount}
           </Text>
         );
 
       case 'partialDownvote':
         return (
-          <Text>
-            {renderName(singleActivity.byUser)} {also}downvoted this post ➩ your relevance {action} by {amount}
+          <Text style={styles.activityText}>
+            {renderName(singleActivity.byUser)} {also}downvoted this post → your relevance {action} by {amount}
           </Text>
         );
 
       case 'basicIncome':
         return (
-          <Text>
+          <Text style={styles.activityText}>
             You got {singleActivity.coin} extra coin{singleActivity.coin > 1 ? 's' : ''} so you can upvote more posts!
           </Text>
         );
 
       case 'commentAlso':
         return (
-          <Text>
+          <Text style={styles.activityText}>
             &nbsp;also commented on a post
           </Text>
         );
 
       case 'comment':
         return (
-          <Text>
+          <Text style={styles.activityText}>
             &nbsp;commented on your post
           </Text>
         );
 
       case 'repost':
         return (
-          <Text>
+          <Text style={styles.activityText}>
             &nbsp;reposted your post
           </Text>
         );
@@ -231,21 +230,21 @@ export default function (props) {
       case 'postMention':
       case 'mention':
         return (
-          <Text>
+          <Text style={styles.activityText}>
             &nbsp;mentioned you in the post
           </Text>
         );
 
       case 'commentMention':
         return (
-          <Text>
+          <Text style={styles.activityText}>
             &nbsp;mentioned you in a comment
           </Text>
         );
 
       case 'topPost':
         return (
-          <Text>
+          <Text style={styles.activityText}>
             In case you miseed this top-ranked post:
           </Text>
         );
@@ -310,7 +309,7 @@ export default function (props) {
                 style={[styles.r, { height: 16, width: 20 }]}
                 source={icon}
               />
-              <Text style={[ styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
+              <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
                 {Math.abs(numbers.abbreviateNumber(singleActivity.amount))}
               </Text>
             </TouchableOpacity>
@@ -334,7 +333,7 @@ export default function (props) {
       case 'partialUpvote':
       case 'downvote':
       case 'partialDownvote':
-        console.log(singleActivity);
+        // console.log(singleActivity);
         return (
           <View style={styles.activityLeft}>
             <View style={styles.activityLeft}>
@@ -342,7 +341,7 @@ export default function (props) {
                 (<Text allowFontScaling={false} style={styles.incomeEmoji}>
                   🤑
                 </Text>)}
-              <Text style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
+              <Text style={[{ flex: 1 }, styles.activityText]}>
                 {getText(singleActivity)}
               </Text>
             </View>
@@ -422,37 +421,40 @@ const localStyles = StyleSheet.create({
     width: 25,
     margin: 2,
   },
+  activityText: {
+    fontSize: 15,
+    fontFamily: 'Georgia'
+  },
   time: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 5,
+    marginTop: 15,
   },
   border: {
     alignItems: 'center',
     borderBottomColor: '#dddddd',
     borderBottomWidth: StyleSheet.hairlineWidth,
     marginHorizontal: 60,
-    // marginBottom: 5,
     position: 'absolute',
     width: fullWidth - 120,
     bottom: 6,
   },
   singleActivity: {
     padding: 10,
+    paddingTop: 15,
     width: fullWidth,
     justifyContent: 'space-between',
     flexDirection: 'row',
     alignItems: 'stretch',
     flex: 1,
     overflow: 'visible',
-    backgroundColor: 'white'
+    // backgroundColor: 'white'
   },
   activityMiddleSmall: {
     flex: 0.16,
     justifyContent: 'center',
     alignItems: 'flex-end',
     marginLeft: 3,
-    // marginBottom: -8,
   },
   activityMiddle: {
     flex: 0.25,
@@ -460,7 +462,6 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     marginLeft: 5,
-    // marginBottom: -8,
   },
   activityRight: {
     flex: 0.1,

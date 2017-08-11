@@ -5,7 +5,6 @@ utils.fetchUtils.env();
 
 const reqOptions = async () => {
   let token = await utils.token.get();
-  console.log('get token ', token);
   return {
     credentials: 'include',
     headers: {

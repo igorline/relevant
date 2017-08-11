@@ -6,24 +6,15 @@ import {
   View,
   Image,
   Animated,
-  ActionSheetIOS,
   StatusBar,
   TouchableOpacity,
   Platform
 } from 'react-native';
-import Icon from 'react-native-vector-icons/EvilIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Search from './search.component';
-import { globalStyles, fullWidth, darkGrey } from '../../styles/global';
+import { globalStyles, fullWidth, darkGrey, mainPadding } from '../../styles/global';
 import Stats from '../post/stats.component';
 
-import RNBottomSheet from 'react-native-bottom-sheet';
-
-let ActionSheet = ActionSheetIOS;
-
-if (Platform.OS === 'android') {
-  ActionSheet = RNBottomSheet;
-  ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
-}
 
 let styles;
 
@@ -37,25 +28,6 @@ class CardHeader extends Component {
     this.renderLeft = this.renderLeft.bind(this);
     this.renderRight = this.renderRight.bind(this);
     this.toggleSearch = this.toggleSearch.bind(this);
-    this.showActionSheet = this.showActionSheet.bind(this);
-  }
-
-  showActionSheet(id) {
-    ActionSheet.showActionSheetWithOptions({
-      options: ['Block User', 'Cancel'],
-      cancelButtonIndex: 1,
-      destructiveIndex: 0,
-    },
-    (buttonIndex) => {
-      switch (buttonIndex) {
-        case 0:
-          console.log(this.props.actions);
-          this.props.actions.updateBlock(id);
-          break;
-        default:
-          return;
-      }
-    });
   }
 
   toggleSearch() {
@@ -65,16 +37,34 @@ class CardHeader extends Component {
   renderLeft(props) {
     let leftEl = <View style={styles.leftButton} />;
     let back;
-    if (props.scene.route.back) {
-      back = (
-        <View style={{ paddingHorizontal: 10, marginLeft: -10 }}>
-          <Image
-            resizeMode={'contain'}
-            style={{ width: 11, height: 19 }}
-            source={require('../../assets/images/backarrow.png')}
-          />
-        </View>
+    let backEl;
+    let options;
+    let key = props.scene.route.key;
+    let component = props.scene.route.component;
+
+    if (key === 'discover' || key === 'mainDiscover' || component === 'discover') {
+      options = (
+        <TouchableOpacity
+          onPress={() => this.props.actions.toggleTopics()}
+          style={{ padding: 5, paddingHorizontal: 10 }}
+        >
+          <Icon name="ios-options" size={23} color={darkGrey} />
+        </TouchableOpacity>
       );
+    }
+
+    if (props.scene.route.back) {
+      back = <Icon name="ios-arrow-back" size={28} color={darkGrey} />;
+
+//         <View>
+// {/*          <Image
+//             resizeMode={'contain'}
+//             style={{ width: 11, height: 19 }}
+//             source={require('../../assets/images/backarrow.png')}
+//           />*/}
+//           <Icon name="ios-arrow-back" size={28} color={darkGrey} />
+//         </View>
+//       );
 
       if (this.props.scene.route.left) {
         back = (
@@ -82,7 +72,6 @@ class CardHeader extends Component {
             style={[
               { fontSize: 17 },
               styles.active,
-              styles.leftButtonText,
             ]}
           >
             {this.props.scene.route.left}
@@ -90,13 +79,14 @@ class CardHeader extends Component {
         );
       }
 
-      return (<TouchableHighlight
-        style={[styles.leftButton]}
-        underlayColor={'transparent'}
-        onPress={this.props.back}
-      >
-        {back}
-      </TouchableHighlight>);
+      backEl = (
+        <TouchableOpacity
+          onPress={this.props.back}
+          style={{ justifyContent: 'center', padding: 5, paddingHorizontal: 10 }}
+        >
+          {back}
+        </TouchableOpacity>
+      );
     }
 
     // if (this.props.scene.route.title === 'Discover') {
@@ -123,7 +113,13 @@ class CardHeader extends Component {
     //     );
     //   }
     // }
-    return leftEl;
+    // 
+    return (
+      <View style={[styles.leftButton, { flexDirection: 'row' }]}>
+        {backEl}
+        {options}
+      </View>
+    );
   }
 
   renderBottomArrow() {
@@ -156,14 +152,10 @@ class CardHeader extends Component {
         title = this.props.users.users[props.scene.route.id].name;
         id = this.props.users.users[props.scene.route.id]._id;
       }
-
-      if (this.props.auth.user && id !== this.props.auth.user._id) {
-        this.titleAction = () => this.showActionSheet(id);
-      }
     }
 
     if (key === 'discover' || key === 'mainDiscover' || component === 'discover') {
-      this.titleAction = () => this.props.actions.toggleTopics();
+      // this.titleAction = () => this.props.actions.toggleTopics();
 
       if (key === 'mainDiscover') {
         return (
@@ -173,11 +165,11 @@ class CardHeader extends Component {
             }}
             onPress={this.titleAction}
           >
-            <View style={{ marginBottom: 0 }}>
+            <View>
               <Image
                 source={require('../../assets/images/logo.png')}
                 resizeMode={'contain'}
-                style={{ width: 120, height: 20, marginBottom: 0 }}
+                style={{ width: 120, height: 20 }}
               />
             </View>
           </TouchableOpacity>
@@ -232,10 +224,7 @@ class CardHeader extends Component {
     let key = this.props.defaultContainer;
 
     if (this.props.auth.user) {
-      // let id = this.props.auth.user._id;
-      // let user = this.props.user.users[id];
       let component = props.scene.route.component;
-
       statsEl = (
         <Stats
           type={'nav'}
@@ -253,7 +242,7 @@ class CardHeader extends Component {
       if (Platform.OS === 'ios') {
         gear = <Text style={{ paddingBottom: 5, fontSize: 17 }}>⚙️</Text>;
       } else {
-        gear = <Icon name="gear" size={24} color={darkGrey} />;
+        gear = <Icon name="ios-settings-outline" size={24} color={darkGrey} />;
       }
       rightEl = (
         <TouchableHighlight
@@ -301,7 +290,7 @@ class CardHeader extends Component {
         {this.renderLeft(props)}
         {this.renderTitle(props)}
         {this.props.renderRight ? this.props.renderRight(props) : this.renderRight(props)}
-        {this.renderBottomArrow()}
+        {/*this.renderBottomArrow()*/}
       </Animated.View>
     );
   }
@@ -327,17 +316,14 @@ const localStyles = StyleSheet.create({
   },
   leftButton: {
     flex: 1,
-    marginLeft: 10,
-    justifyContent: 'center',
-    paddingVertical: 10,
-  },
-  leftButtonText: {
-    fontFamily: 'Helvetica'
+    marginLeft: mainPadding - 10,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   rightButton: {
     flex: 1,
-    marginRight: 10,
-    paddingVertical: 10,
+    marginRight: mainPadding,
+    justifyContent: 'center',
   },
   gearImg: {
     height: 20,

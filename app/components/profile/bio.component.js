@@ -68,11 +68,12 @@ class Bio extends Component {
     if (this.props.myProfile && !this.state.editing) {
       editButton = (
         <Text
-          onPress={() =>
+          onPress={() => {
+            this.props.scrollTo(this.offset);
             this.setState({
               editing: true,
-            })
-          }
+            });
+          }}
           style={{ paddingLeft: 10 }}
         >
           <Icon name="ios-create-outline" size={22} color={blue} />
@@ -90,7 +91,9 @@ class Bio extends Component {
     );
 
     let bio = (
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View
+        style={{ flexDirection: 'row', alignItems: 'center' }}
+      >
         <TextBody
           actions={this.props.actions}
           style={[styles.bioText, { fontFamily: 'Georgia', flex: 1 }, styles.darkGrey]}
@@ -111,9 +114,17 @@ class Bio extends Component {
     }
 
     return (
-      <View style={[(user && user.bio) || this.props.myProfile ? styles.bio : null]}>
-        {this.state.editing ? bioEdit : bio }
+      <View
+        onLayout={e => {
+          this.offset = e.nativeEvent.layout.y - 30;
+        }}
+      >
+        <View style={[styles.break, { marginHorizontal: 0 }]} />
+        <View style={[(user && user.bio) || this.props.myProfile ? styles.bio : null]}>
+          {this.state.editing ? bioEdit : bio }
+        </View>
       </View>
+
     );
   }
 }
@@ -126,11 +137,12 @@ let localStyles = StyleSheet.create({
     paddingTop: 5,
   },
   bio: {
-    marginHorizontal: 10,
+    // marginHorizontal: 15,
     paddingVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: 'grey',
+    marginBottom: 10,
   },
 });
 

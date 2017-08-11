@@ -5,7 +5,7 @@ import {
   TouchableHighlight,
   Text
 } from 'react-native';
-import { globalStyles } from '../styles/global';
+import { globalStyles, mainPadding } from '../styles/global';
 import Stats from '../components/post/stats.component';
 import UserName from './userNameSmall.component';
 import TextBody from './post/textBody.component';
@@ -33,7 +33,8 @@ class DiscoverUser extends Component {
     let stats = (<Stats
       type={'percent'}
       entity={statsUser}
-      renderLeft={this.props.topic ? <Text style={[styles.bebas, styles.font17]}>{this.props.topic} </Text> : null}
+      renderLeft={this.props.topic ? <Text/> : null}
+      // renderLeft={this.props.topic ? <Text style={[styles.bebas, styles.font17]}>{this.props.topic} </Text> : null}
     />);
     let right = this.props.renderRight ? this.props.renderRight() : stats;
 
@@ -60,9 +61,10 @@ class DiscoverUser extends Component {
               bio
               big
               type={this.props.type}
-              relevance={this.props.relevance}
-              user={user}
+              relevance={this.props.topic ? false : this.props.relevance}
+              user={{...user, relevance}}
               setSelected={this.setSelected}
+              // topic={{ topic: this.props.topic, relevance }}
             />
             <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }}>
               {right}
@@ -85,7 +87,7 @@ const localStyles = StyleSheet.create({
     fontFamily: 'Georgia',
     fontSize: 30 / 2,
     lineHeight: 40 / 2,
-    paddingTop: 5,
+    paddingTop: 15,
     paddingBottom: 5,
     // textAlign: 'right'
   },
@@ -95,10 +97,10 @@ const localStyles = StyleSheet.create({
   },
   discoverUserContainer: {
     paddingVertical: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: mainPadding,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#242425',
-    backgroundColor: 'white'
+    // backgroundColor: 'white'
   }
 });
 

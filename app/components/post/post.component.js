@@ -36,13 +36,19 @@ class Post extends PureComponent {
     let post;
     let posts;
     let imageEl;
+    // let separator = (
+    //   <LinearGradient
+    //     colors={[
+    //       'hsla(240, 0%, 60%, 1)',
+    //       'hsla(240, 20%, 96%, 1)',
+    //       'hsla(240, 20%, 100%, 1)'
+    //     ]} style={[styles.separator]}
+    //   />);
+
     let separator = (
-      <LinearGradient
-        colors={[
-          'hsla(240, 0%, 60%, 1)',
-          'hsla(240, 20%, 96%, 1)',
-          'hsla(240, 20%, 100%, 1)'
-        ]} style={[styles.separator]}
+      <View
+        style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)'}]}
+        // style={[{ height: 30, backgroundColor: 'hsl(238,20%,95%)'}]}
       />);
     let commentaryEl;
     let reposted;
@@ -156,7 +162,7 @@ const localStyles = StyleSheet.create({
   },
   postContainer: {
     paddingBottom: 20,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
   },
   tagsRow: {
     flexDirection: 'row',
@@ -175,8 +181,6 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
-    // myInvestments: state.investments.myInvestments,
-    // myEarnings: state.investments.myEarnings,
     myPostInvList: state.investments.myPostInvList,
     myPostInv: state.investments.myPostInv,
     users: state.user.users
