@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import ShadowButton from '../common/ShadowButton';
 import Modal from '../common/modal';
 import * as actionCreators from '../../../actions/admin.actions';
-import * as socketActions from '../../actions/socket';
 import Marquee from './marquee';
 
 if (process.env.BROWSER === true) {
@@ -236,7 +235,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => (Object.assign({}, { dispatch }, {
-  actions: bindActionCreators(Object.assign({}, actionCreators, socketActions), dispatch)
+  actions: bindActionCreators(Object.assign({}, actionCreators), dispatch)
 }));
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

@@ -261,7 +261,7 @@ PostSchema.statics.sendOutInvestInfo = async function (postIds, userId) {
 PostSchema.statics.sendOutMentions = async function(mentions, post, mUser, comment) {
   let textParent = comment || post;
   try {
-    let propmises = mentions.map(async mention => {
+    let promises = mentions.map(async mention => {
       try {
         let blocked;
         let type = comment ? 'comment' : 'post';
@@ -318,7 +318,7 @@ PostSchema.statics.sendOutMentions = async function(mentions, post, mUser, comme
       }
     });
 
-    await Promise.all(propmises);
+    await Promise.all(promises);
 
     textParent = await textParent.save();
     console.log('after mention check ', textParent.mentions);
