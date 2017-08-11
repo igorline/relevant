@@ -38,7 +38,7 @@ class NewPostContainer extends Component {
 
   componentDidMount() {
     // console.log(this.props)
-    if (this.props.tags && !this.props.tags.parentTags.length) this.props.actions.getParentTags();
+    if (!this.props.tags || !this.props.tags.parentTags.length) this.props.actions.getParentTags();
   }
 
   componentWillUpdate(newProps, newState) {
@@ -48,6 +48,7 @@ class NewPostContainer extends Component {
     if (newProps.users !== this.props.users) {
       this.renderUserSuggestion(newProps.users.search);
     }
+    console.log('tags', newProps, newState, !!newProps.tags)
     if (newProps.tags && newProps.tags.parentTags !== this.props.tags.parentTags && this.categories === null) {
       this.renderCategories(newProps.tags.parentTags);
     }
@@ -59,7 +60,7 @@ class NewPostContainer extends Component {
   renderPreview(newState) {
     // console.log(newState, 'newState');
     this.urlPreview = (<div>
-      <img src={newState.urlPreview.image} />
+      <img src={newState.urlPreview.image} alt="Article Preview" />
       <p>{newState.urlPreview.title}</p>
       <p>{newState.urlPreview.description}</p>
       <p>{newState.domain}</p>
@@ -205,7 +206,7 @@ class NewPostContainer extends Component {
     }
   }
 
-  createPost() {
+  async createPost() {
     let post = {
       link: this.state.postUrl || this.props.postUrl,
       tags: this.tags,
@@ -219,7 +220,7 @@ class NewPostContainer extends Component {
       domain: this.state.domain
     };
 
-    this.props.actions.createNewPost(post);
+    this.props.actions.submitPost(post, await utils.token.get());
   }
 
   render() {
@@ -250,13 +251,14 @@ class NewPostContainer extends Component {
 
 function mapStateToProps(state) {
   // console.log(state);
+  console.log(state)
   return {
     // isPosting: state.createPost.isPosting,
     // textError: state.createPost.textError,
     // linkError: state.createPost.linkError,
     // imageError: state.createPost.imageError,
     users: state.user,
-    tags: state.tag,
+    tags: state.tags,
   };
 }
 

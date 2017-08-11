@@ -67,7 +67,7 @@ let routes = (store) => {
       // { path: 'profile/:id', component: ProfileContainer },
       // { path: 'messages', component: userIsAuthenticated(MessageContainer), onEnter: connect(userIsAuthenticated.onEnter) },
       { path: 'post/new', component: userIsAuthenticated(NewPostContainer), onEnter: connect(userIsAuthenticated.onEnter) },
-      // { path: 'post/:id', component: Posts },
+      { path: 'post/:id', component: Posts },
       // { path: 'discover', component: DiscoverContainer },
       // { path: 'discover/tag/:tag', component: DiscoverContainer },
       { path: 'resetPassword/:token', component: Auth },

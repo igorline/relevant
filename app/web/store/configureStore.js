@@ -21,7 +21,7 @@ if (process.env.BROWSER) {
   });
 }
 
-export default function configureStore (initialState = {}, history) {
+export default function configureStore(initialState = {}, history) {
   // Compose final middleware and use devtools in debug environment
   // let socketIoMiddleware = str => next => action => next(action);
   let middleware;
@@ -35,7 +35,7 @@ export default function configureStore (initialState = {}, history) {
   }
 
   if (process.env.BROWSER && process.env.DEVTOOLS) {
-    const devTools = typeof window === 'object' && typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f
+    const devTools = typeof window === 'object' && typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f;
     middleware = compose(middleware, devTools);
   }
   // Create final store and subscribe router in debug env ie. for devtools
