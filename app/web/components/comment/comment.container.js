@@ -18,9 +18,9 @@ class Comments extends Component {
     this.createComment(this.auth.token, this.auth.user, text, this.post.selectedPost._id);
   }
 
-  render () {
-    var self = this;
-    var comments = this.props.comment.comments.data;
+  render() {
+    let self = this;
+    let comments = this.props.comment.comments.data;
     if (!comments) return null;
 
     return (
@@ -29,7 +29,7 @@ class Comments extends Component {
         <NewCommentForm {...self.props} onCommentSubmit={this.handleCommentSubmit} />
         {(comments.length !== 0) ?
           <div>
-            {comments.map(function(comment){
+            {comments.map(function (comment) {
               return (
                 <div>
                   <Comment data={comment} />
@@ -53,8 +53,8 @@ export default connect(
     return {
       auth: state.auth,
       comment: state.comment
-    }
+    };
   },
   dispatch => {
-    return Object.assign({}, { dispatch },  bindActionCreators(postActions, dispatch))
-})(Comments)
+    return Object.assign({}, { dispatch }, bindActionCreators(postActions, dispatch));
+  })(Comments);

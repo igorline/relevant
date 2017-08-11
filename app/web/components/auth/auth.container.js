@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as authActions from '../../../actions/auth.actions';
-import * as socketActions from '../../actions/socket';
 import * as routerActions from 'react-router-redux';
 import LoginForm from './login';
 import SignupForm from './signup';
@@ -108,7 +107,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ( Object.assign({}, { dispatch }, {
-  actions: bindActionCreators(Object.assign({}, authActions, socketActions, routerActions), dispatch)
+  actions: bindActionCreators(Object.assign({}, authActions, routerActions), dispatch)
 }));
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
