@@ -17,9 +17,4 @@ router.get('/preview/generate', controller.preview);
 
 router.delete('/:id', auth.isAuthenticated(), controller.delete);
 
-console.log(router)
-router.stack.forEach(l => {
-  console.log(l.route)
-})
-
 module.exports = router;
