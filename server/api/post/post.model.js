@@ -82,6 +82,8 @@ PostSchema.index({ postDate: 1 });
 PostSchema.index({ _id: 1, user: 1 });
 PostSchema.index({ postDate: 1, tags: 1 });
 PostSchema.index({ rank: 1, tags: 1 });
+
+// PostSchema.createIndex({"subject":"text","content":"text"})
 // PostSchema.index({ title: 'text', body: 'text' });
 
 PostSchema.pre('save', async function (next) {

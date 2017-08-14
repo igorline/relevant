@@ -13,6 +13,39 @@ import apnData from '../../pushNotifications';
 import mail from '../../mail';
 import Notification from '../notification/notification.model';
 
+// Post.collection.createIndex({ title: 'text', shortText: 'text', description: 'text', keywords: 'text', tags: 'text'});
+// Post.collection.indexes(function (err, indexes) {
+//   console.log(indexes);
+// });
+
+// Post.collection.dropIndexes(function (err, results) {
+//   console.log(err);
+// });
+
+async function findRelatedPosts() {
+  try {
+    let id = '598e2f3733b0985433527b95';
+    let post = await Post.findOne({ _id: id }).populate('tags');
+    let tagsArr = post.tags.filter(t => !t.category).map(t => t._id);
+    let tags = tagsArr.join(' ');
+    console.log(tags);
+
+    let posts = await Post.find(
+      { $text: { $search: tags } },
+      { score: { $meta: 'textScore' } })
+    .sort({ score: { $meta: 'textScore' } });
+    posts.forEach((p, i) => {
+      console.log(i, ' ', p.title);
+      console.log(p.description);
+      console.log(p.keywords);
+    })
+  } catch (err) {
+    console.log(err);
+  }
+}
+// findRelatedPosts();
+
+
 // function updatePostTags() {
 //   Post.find({ user: 'Timursq' })
 //   .then(posts => {

@@ -58,10 +58,10 @@ const initialState = {
     routes: [
       //🎯🏵🏆🏅🔮🌀🍥📈📉📊
       { key: 'discover', icon: Platform.OS === 'android' ? '📰' : '📰', title: 'Read' },
-      { key: 'activity', icon: Platform.OS === 'android' ? '⚡' : '⚡', title: 'Activity' },
+      { key: 'stats', icon: Platform.OS === 'android' ? '📈' : '📈', title: 'Stats' },
 
       { key: 'createPost', icon: Platform.OS === 'android' ? '📝' : '✍️', title: 'New Post' },
-      { key: 'stats', icon: Platform.OS === 'android' ? '📈' : '📈', title: 'Stats' },
+      { key: 'activity', icon: Platform.OS === 'android' ? '⚡' : '⚡', title: 'Activity' },
 
       { key: 'myProfile', icon: Platform.OS === 'android' ? '👤' : '👤', title: 'Profile' }
     ],
