@@ -30,6 +30,8 @@ class Tabs extends Component {
         next: 'Post',
         direction: 'vertical',
       }, 'home');
+      // need to to do this because the navigator renderer
+      // is using this object to display info and above to render transition
       this.props.actions.replaceRoute({
         key: 'createPost',
         component: 'createPost',
