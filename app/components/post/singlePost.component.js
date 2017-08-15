@@ -184,6 +184,7 @@ class SinglePostComments extends Component {
       key={0}
       scene={this.props.scene}
       post={this.id}
+      focusInput={() => this.input.textInput.focus()}
       {...this.props}
     />);
 
@@ -292,7 +293,7 @@ class SinglePostComments extends Component {
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
-        style={{ flex: 1 }}
+        style={{ flex: 1, backgroundColor: 'white' }}
         keyboardVerticalOffset={59 + (Platform.OS === 'android' ? StatusBar.currentHeight / 2 : 0)}
       >
         {this.renderComments()}

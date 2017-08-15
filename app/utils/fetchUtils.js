@@ -52,7 +52,6 @@ export async function superFetch(options) {
       body: options.body
     });
     response = await exports.handleErrors(response);
-    console.log('no error')
     let responseJSON = await response.json();
 
     return responseJSON;

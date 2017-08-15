@@ -102,18 +102,22 @@ async function userRank() {
     let N = users.length;
     let rankedUsers = {};
     let originalRelevance = {};
+    let originalUsers = {};
     let results = users.map(async user => {
       rankedUsers[user._id] = {};
+      originalUsers[user._id] = user;
       originalRelevance[user._id] = user.relevance;
       let upvotes = await Invest.find({ investor: user._id });
       upvotes.forEach(upvote => {
         if (upvote.ownPost) return;
         let a = upvote.amount / Math.abs(upvote.amount);
         if (!a) a = 1;
-        // time discount
+
+        // time discount (6 month half-life)
         let now = new Date();
         let t = now.getTime() - upvote.createdAt.getTime();
-        a = a * Math.pow(1 / 2, t / ( 1000 * 60 * 60 * 24 * 30 * 6 ));
+        a *= Math.pow(1 / 2, t / ( 1000 * 60 * 60 * 24 * 30 * 6 ));
+
         if (rankedUsers[user._id][upvote.author]) {
           rankedUsers[user._id][upvote.author].weight += a;
         } else {
@@ -133,7 +137,7 @@ async function userRank() {
 
     let scores = pagerank(
       rankedUsers,
-      { alpha: 0.85 }
+      { alpha: 0.85, users: originalUsers }
     );
     // console.log(scores);
     let max = 0;
