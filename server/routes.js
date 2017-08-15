@@ -4,6 +4,11 @@ import userController from './api/user/user.controller';
 
 let express = require('express');
 
+function handleError(res, err) {
+  console.log(err);
+  return res.status(500).json({ message: err.message });
+}
+
 module.exports = (app) => {
 
   // API
@@ -33,4 +38,10 @@ module.exports = (app) => {
   app.get('/confirm/:user/:code', userController.confirm);
 
   app.get('/*', currentUser(), handleRender);
+
+  // Error handler route
+  app.use((err, req, res, next) => {
+    console.error(err);
+    return res.status(500).json({ message: err.message });
+  });
 };
