@@ -205,12 +205,12 @@ exports.generatePreview = (body, uri) => {
     }
   });
 
-  let article = new Readability(uri, doc).parse();
+  let article = new Readability(url, doc).parse();
   let short;
   if (article) {
     short = exports.trimToLength(article.article, 140).innerHTML;
   } else {
-    console.log('couldn\'t parse url ', uri);
+    console.log('couldn\'t parse url ', url);
   }
   // console.log('author ', article.byline);
 
