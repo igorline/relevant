@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Post from './post';
 import * as PostActions from '../../../actions/post.actions';
-import Comments from '../comment/commment.container';
+import Comments from '../comment/comment.container';
 
 class Posts extends Component {
   constructor(props) {
@@ -28,9 +28,9 @@ export default connect(
   state => {
     return {
       auth: state.auth,
-      post: state.post
+      post: state.post,
     };
   },
   dispatch => {
-    return Object.assign({}, { dispatch },  bindActionCreators(PostActions, dispatch));
-})(Posts);
+    return Object.assign({}, { dispatch }, bindActionCreators(PostActions, dispatch));
+  })(Posts);

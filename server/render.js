@@ -91,7 +91,7 @@ function fetchComponentData(dispatch, components, params, req) {
     .filter((component) => component && component.fetchData) // 1
     .map((component) => component.fetchData) // 2
     .map(fetchData => {
-      console.log(fetchData);
+      // console.log(fetchData);
       return fetchData(dispatch, params, req); // 3
     });
   return Promise.all(promises);
@@ -106,7 +106,7 @@ export default function handleRender(req, res) {
   console.log('req ', req.unconfirmed);
   if (req.unconfirmed) confirm = { auth: { confirmed: false } };
   const initialState = { ...confirm };
-  console.log('initialState ', initialState);
+  // console.log('initialState ', initialState);
 
   // Create a new Redux store instance
   const store = configureStore(initialState);
@@ -127,7 +127,7 @@ export default function handleRender(req, res) {
         let renderHtml = () => {
           const component = (
             <Provider store={store}>
-              <div className='parent'>
+              <div className="parent">
                 <RouterContext {...renderProps} />
               </div>
             </Provider>

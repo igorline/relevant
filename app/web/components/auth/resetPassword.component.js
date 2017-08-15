@@ -3,7 +3,7 @@ import { reduxForm } from 'redux-form';
 import { Link } from 'react-router';
 import ShadowButton from '../common/ShadowButton';
 
-class RestPassword extends Component {
+class ResetPassword extends Component {
   constructor(props) {
     super(props);
     this.validate = this.validate.bind(this);
@@ -103,4 +103,4 @@ class RestPassword extends Component {
 }
 
 
-export default RestPassword;
+export default ResetPassword;
