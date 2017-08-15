@@ -349,7 +349,7 @@ exports.preview = (req, res) => {
 
   function getHeader(uri) {
     let fbHeader = {
-      // 'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php) Facebot',
+      'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php) Facebot',
     };
     let noFb = uri.match('apple.news'); // || uri.match('flip.it');
     if (noFb) return {};
