@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as userActions from '../../actions/user';
-import * as postActions from '../../actions/newPost';
-import * as tagActions from '../../../actions/tag';
+import * as userActions from '../../../actions/user.actions';
+import * as postActions from '../../../actions/createPost.actions';
+import * as tagActions from '../../../actions/tag.actions';
 import * as utils from '../../../utils';
 
-const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,16}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
 
 class NewPostContainer extends Component {
   constructor(props) {
@@ -37,7 +37,8 @@ class NewPostContainer extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.tags.parentTags.length) this.props.actions.getParentTags();
+    // console.log(this.props)
+    if (!this.props.tags || !this.props.tags.parentTags.length) this.props.actions.getParentTags();
   }
 
   componentWillUpdate(newProps, newState) {
@@ -47,7 +48,8 @@ class NewPostContainer extends Component {
     if (newProps.users !== this.props.users) {
       this.renderUserSuggestion(newProps.users.search);
     }
-    if (newProps.tags.parentTags !== this.props.tags.parentTags && this.categories === null) {
+    console.log('tags', newProps, newState, !!newProps.tags)
+    if (newProps.tags && newProps.tags.parentTags !== this.props.tags.parentTags && this.categories === null) {
       this.renderCategories(newProps.tags.parentTags);
     }
     if (newState.urlPreview !== this.state.urlPreview) {
@@ -56,9 +58,9 @@ class NewPostContainer extends Component {
   }
 
   renderPreview(newState) {
-    console.log(newState, 'newState');
+    // console.log(newState, 'newState');
     this.urlPreview = (<div>
-      <img src={newState.urlPreview.image} />
+      <img src={newState.urlPreview.image} alt="Article Preview" />
       <p>{newState.urlPreview.title}</p>
       <p>{newState.urlPreview.description}</p>
       <p>{newState.domain}</p>
@@ -106,10 +108,10 @@ class NewPostContainer extends Component {
 
   createPreview() {
     let postUrl = this.url;
-    utils.post.generatePreview(postUrl)
+    utils.post.generatePreviewServer(postUrl)
     .then((results) => {
       if (results) {
-        console.log('set preview', postUrl);
+        // console.log('set preview', postUrl);
         this.setState({
           domain: results.domain,
           postUrl: results.url,
@@ -141,10 +143,10 @@ class NewPostContainer extends Component {
 
     let postUrl = words.find(word => URL_REGEX.test(word.toLowerCase()));
 
-    console.log('parseBody', words);
-    console.log('postUrl', postUrl);
+    // console.log('parseBody', words);
+    // console.log('postUrl', postUrl);
 
-    if (postUrl) {
+    if (postUrl && postUrl !== this.url) {
       this.url = postUrl;
       this.createPreview();
     }
@@ -176,6 +178,7 @@ class NewPostContainer extends Component {
     this.body = postBody;
     this.tags = bodyTags;
     this.mentions = bodyMentions;
+    // console.log(this.body, this.tags, this.mentions)
   }
 
   handleChange(field, data) {
@@ -203,7 +206,7 @@ class NewPostContainer extends Component {
     }
   }
 
-  createPost() {
+  async createPost() {
     let post = {
       link: this.state.postUrl || this.props.postUrl,
       tags: this.tags,
@@ -217,7 +220,7 @@ class NewPostContainer extends Component {
       domain: this.state.domain
     };
 
-    this.props.actions.createNewPost(post);
+    this.props.actions.submitPost(post, await utils.token.get());
   }
 
   render() {
@@ -247,13 +250,15 @@ class NewPostContainer extends Component {
 }
 
 function mapStateToProps(state) {
+  // console.log(state);
+  console.log(state)
   return {
-    isPosting: state.newPost.isPosting,
-    textError: state.newPost.textError,
-    linkError: state.newPost.linkError,
-    imageError: state.newPost.imageError,
+    // isPosting: state.createPost.isPosting,
+    // textError: state.createPost.textError,
+    // linkError: state.createPost.linkError,
+    // imageError: state.createPost.imageError,
     users: state.user,
-    tags: state.tag,
+    tags: state.tags,
   };
 }
 

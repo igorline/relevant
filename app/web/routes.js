@@ -6,8 +6,8 @@ import Home from './components/main/main.container';
 import Auth from './components/auth/auth.container';
 // import ProfileContainer from './components/profile/profile.container';
 // import MessageContainer from './components/message/message.container';
-// import Posts from './components/post/post.container';
-// import NewPostContainer from './components/post/newPost.container';
+import Posts from './components/post/post.container';
+import NewPostContainer from './components/post/newPost.container';
 // import DiscoverContainer from './components/discover/discover.container';
 import NotFound from './components/404';
 import TopicsAdmin from './components/admin/topics.container';
@@ -66,8 +66,8 @@ let routes = (store) => {
       // { path: 'profile', component: userIsAuthenticated(ProfileContainer), onEnter: connect(userIsAuthenticated.onEnter) },
       // { path: 'profile/:id', component: ProfileContainer },
       // { path: 'messages', component: userIsAuthenticated(MessageContainer), onEnter: connect(userIsAuthenticated.onEnter) },
-      // { path: 'post/new', component: userIsAuthenticated(NewPostContainer), onEnter: connect(userIsAuthenticated.onEnter) },
-      // { path: 'post/:id', component: Posts },
+      { path: 'post/new', component: userIsAuthenticated(NewPostContainer), onEnter: connect(userIsAuthenticated.onEnter) },
+      { path: 'post/:id', component: Posts },
       // { path: 'discover', component: DiscoverContainer },
       // { path: 'discover/tag/:tag', component: DiscoverContainer },
       { path: 'resetPassword/:token', component: Auth },
