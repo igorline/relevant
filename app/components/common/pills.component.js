@@ -49,5 +49,5 @@ Pills.propTypes = {
   slides: PropTypes.array,
   // changed: PropTypes.array,
   currentIndex: PropTypes.number,
-  // scrollToPage: PropTypes.func
+  scrollToPage: PropTypes.func
 };

@@ -205,7 +205,13 @@ exports.generatePreview = (body, uri) => {
     }
   });
 
-  let article = new Readability(url, doc).parse();
+  let article;
+  try {
+    article = new Readability(url, doc).parse();
+  } catch (err) {
+    console.log('Readability err ', err);
+  }
+
   let short;
   if (article) {
     short = exports.trimToLength(article.article, 140).innerHTML;

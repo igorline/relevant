@@ -23,16 +23,16 @@ const investmentSchema = new schema.Entity('investments',
   { idAttribute: '_id' }
 );
 
-export function updatePostInvest(posts) {
+export function updatePostInvest(vote) {
   return {
-    type: types.UPDATE_POSTS_INVEST,
-    payload: posts
+    type: types.UPDATE_POST_INVESTMENTS,
+    payload: [vote]
   };
 }
 
 export function undoPostInvest(post) {
   return {
-    type: types.UNDO_POSTS_INVEST,
+    type: types.UNDO_POST_INVESTMENT,
     payload: post
   };
 }
@@ -57,7 +57,7 @@ export function setInvestments(investments, userId, index) {
 
 export function invest(token, amount, post, investingUser) {
   return (dispatch) => {
-    dispatch(updatePostInvest([post._id]));
+    dispatch(updatePostInvest({ post: post._id, amount }));
     return fetch(apiServer + 'invest?access_token=' + token, {
       credentials: 'include',
       method: 'POST',

@@ -9,6 +9,10 @@ import configureStore from '../app/web/store/configureStore';
 // import App from '../app/web/components/app';
 import { setUser } from '../app/actions/auth.actions';
 
+// console.log(router)
+// router.stack.forEach(l => {
+//   console.log(l.route)
+// })
 
 function renderFullPage(html, initialState) {
   let styles;

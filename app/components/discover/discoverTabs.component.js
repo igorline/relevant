@@ -212,7 +212,7 @@ class DiscoverTabs extends Component {
   render() {
     let tabs = this.state.routes.map(route => this.renderScene(route));
 
-    let topics;
+    let topics = null;
     if (this.props.topics) {
       topics = (<View
         style={{

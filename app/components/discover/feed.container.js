@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, blue } from '../../styles/global';
 import Post from '../post/post.component';
 import * as postActions from '../../actions/post.actions';
 import * as createPostActions from '../../actions/createPost.actions';
@@ -136,7 +136,7 @@ class Read extends Component {
       >
         <Text
           onPress={() => this.toggleTooltip('subscriptions')}
-          style={[styles.font12, styles.darkGrey]}
+          style={[styles.font10, { color: 'white' }]}
         >
           You are subscribed to {total} post{total > 1 ? 's' : ''} from {totalUsers} user{totalUsers > 1 ? 's' : ''}
         </Text>
@@ -216,9 +216,9 @@ const localStyles = StyleSheet.create({
   feedHeader: {
     padding: 10,
     alignItems: 'center',
-    backgroundColor: 'white',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'lightgrey',
+    backgroundColor: blue,
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: 'lightgrey',
   },
   thirstyHeader: {
     alignItems: 'center',

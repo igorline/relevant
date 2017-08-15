@@ -29,8 +29,18 @@ class Tabs extends Component {
         title: 'New Post',
         next: 'Post',
         direction: 'vertical',
-        // ownCard: true
       }, 'home');
+      // need to to do this because the navigator renderer
+      // is using this object to display info and above to render transition
+      this.props.actions.replaceRoute({
+        key: 'createPost',
+        component: 'createPost',
+        back: true,
+        left: 'Cancel',
+        title: 'New Post',
+        next: 'Next',
+        direction: 'vertical'
+      }, 0, 'createPost');
     } else {
       if (tab.key === key) {
         if (this.props.navigation[key].routes.length === 1) {

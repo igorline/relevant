@@ -9,7 +9,7 @@ import {
   FlatList,
   TouchableOpacity
 } from 'react-native';
-import { globalStyles, fullWidth } from '../../styles/global';
+import { globalStyles, fullWidth, mainPadding } from '../../styles/global';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostButtons from './postButtons.component';
@@ -29,6 +29,7 @@ export default class Commentary extends Component {
     // this.changeRow = this.changeRow.bind(this);
     this.renderItem = this.renderItem.bind(this);
     this.onScrollEnd = this.onScrollEnd.bind(this);
+    this.scrollToPage = this.scrollToPage.bind(this);
   }
 
   // changeRow(event, changed) {
@@ -53,6 +54,9 @@ export default class Commentary extends Component {
     // console.log('scrolled to page ', pageNum);
   }
 
+  scrollToPage(p) {
+    this.scrollView.scrollToIndex({ index: p });
+  }
 
   renderItem({ item, index }) {
     let post = item;
@@ -124,8 +128,8 @@ export default class Commentary extends Component {
           flexDirection: 'row',
           // justifyContent: 'space-around',
           alignItems: 'center',
-          width: fullWidth - 20,
-          marginHorizontal: 10,
+          width: fullWidth - mainPadding * 2,
+          marginHorizontal: mainPadding,
           // width: length ? fullWidth - 10 - 20 : fullWidth - 20
         }}
       >
@@ -171,12 +175,14 @@ export default class Commentary extends Component {
           changed={this.state.changed}
           currentIndex={this.state.currentIndex}
           slides={this.props.commentary.map((c, i) => i + 1)}
+          scrollToPage={this.scrollToPage}
         />
       </View>
     );
     return (
       <View>
         <FlatList
+          ref={c => this.scrollView = c}
           scrollEnabled={this.props.commentary.length > 1}
           keyExtractor={(item, index) => index}
           horizontal
@@ -197,7 +203,7 @@ export default class Commentary extends Component {
 
 const localStyles = StyleSheet.create({
   reposted: {
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
   },
   postScroll: {
     flexDirection: 'row',
@@ -211,7 +217,7 @@ const localStyles = StyleSheet.create({
     flexGrow: 1,
     marginTop: 10,
     marginBottom: 10,
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     flexDirection: 'column',
   },
   vSeparator: {
@@ -231,8 +237,7 @@ const localStyles = StyleSheet.create({
     paddingLeft: 10,
   },
   multi: {
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingHorizontal: mainPadding,
     paddingBottom: 10,
   },
   cLabel: {

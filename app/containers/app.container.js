@@ -14,6 +14,15 @@ import {
   StatusBar,
   Dimensions
 } from 'react-native';
+
+import {
+  // setCustomView,
+  setCustomTextInput,
+  setCustomText,
+  // setCustomImage,
+  // setCustomTouchableOpacity
+} from 'react-native-global-props';
+
 import codePush from 'react-native-code-push';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
@@ -48,6 +57,16 @@ import Card from './../components/nav/card.component';
 import IrrelevantAnimation from '../components/animations/irrelevantAnimation.component';
 import Tooltip from '../components/tooltip/tooltip.component';
 import { fullWidth, fullHeight } from '../styles/global';
+
+// Setting default styles for all Text components.
+const customTextProps = {
+  style: {
+    fontSize: 16,
+    fontFamily: 'Arial',
+    color: '#242425'
+  }
+};
+setCustomText(customTextProps);
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 

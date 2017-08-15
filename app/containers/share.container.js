@@ -58,6 +58,16 @@ class ShareContainer extends Component {
         next: 'Post',
         back: 'Cancel',
       }, 0, 'home');
+      // need to to do this because the navigator renderer
+      // is using this object to display info and above to render transition
+      this.props.actions.replaceRoute({
+        key: 'createPost',
+        component: 'createPost',
+        title: 'Share on Relevant',
+        next: 'Post',
+        left: 'Cancel',
+        back: true,
+      }, 0, 'createPost');
     })
     .catch(() => {
       this.props.actions.replaceRoute({
