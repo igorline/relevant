@@ -37,9 +37,6 @@ module.exports = (app) => {
 
   app.get('/confirm/:user/:code', userController.confirm);
 
-  app.get('/*', currentUser(), handleRender);
-
-
   // Default response middleware
   app.use((req, res, next) => {
     if (res.jsonResponse) {
@@ -52,4 +49,7 @@ module.exports = (app) => {
     console.error(err);
     return res.status(500).json({ message: err.message });
   });
+
+  app.get('/*', currentUser(), handleRender);
+
 };

@@ -1,5 +1,16 @@
 import * as tokenUtil from './token';
 
+let post;
+let routes = {};
+console.log('BROWSER ', process.env.BROWSER);
+console.log('WEB ', process.env.WEB);
+if (!process.env.BROWSER && process.env.WEB === 'true') {
+  // this can later be put in a separate router
+  console.log('Node server')
+  post = require('../../server/api/post/post.controller');
+  routes['post'] = post;
+}
+
 const queryParams = (params) => {
   if (!params) return '';
   let paramString = Object.keys(params)
@@ -42,17 +53,43 @@ export function Alert() {
  * body: body
  */
 export async function superFetch(options) {
+  // TODO rename to options.query to match node
   let params = queryParams(options.params);
   let uri = options.uri || process.env.API_SERVER + '/api/' + options.endpoint;
   let path = options.path || '';
-  try {
-    let response = await fetch(uri + path + params, {
-      method: options.method,
-      ...await exports.reqOptions(),
-      body: options.body
+
+  // TODO rename to options.params to match node
+  if (options.pathParams) {
+    Object.keys(options.pathParams).forEach(key => {
+      uri += '/' + options.pathParams.key;
     });
-    response = await exports.handleErrors(response);
-    let responseJSON = await response.json();
+  }
+
+  try {
+    let response;
+    let responseJSON;
+    // This is the case when request is orginating from nodejs
+    if (!process.env.BROWSER && process.env.WEB === 'true') {
+      console.log('NODE FETCH')
+      if (options.path == '/') options.path = 'findById';
+      let req = {
+        params: options.pathParams,
+        body: options.body,
+        query: options.params,
+        // TODO add user
+      };
+      let next = () => null;
+      let res = {};
+      responseJSON = await routes[options.endpoint][options.path](req, res, next);
+    } else {
+      response = await fetch(uri + path + params, {
+        method: options.method,
+        ...await exports.reqOptions(),
+        body: options.body
+      });
+      response = await exports.handleErrors(response);
+      responseJSON = await response.json();
+    }
 
     return responseJSON;
   } catch (error) {

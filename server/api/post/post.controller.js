@@ -414,12 +414,12 @@ exports.readable = async (req, res) => {
   return res.send(article.content);
 };
 
-exports.findByID = async (req, res) => {
-  let id;
-  if (req.user) id = req.user._id;
-  let post;
-
+exports.findById = async (req, res, next) => {
   try {
+    let id;
+    if (req.user) id = req.user._id;
+    let post;
+
     let blocked = [];
     if (req.user) {
       let user = req.user;
@@ -431,16 +431,20 @@ exports.findByID = async (req, res) => {
       path: 'user',
       select: 'name image relevance',
     });
-  } catch (err) {
-    return res.send(500, err);
-  }
 
-  res.status(200).json(post);
-  // TODO worker thread
-  if (id && post) {
-    Post.sendOutInvestInfo([post._id], id);
+    // res.status(200).json(post);
+    // TODO worker thread
+    if (id && post) {
+      Post.sendOutInvestInfo([post._id], id);
+    }
+
+    res.jsonResponse = post;
+    next();
+    return post;
+  } catch (err) {
+    next(err);
+    return err;
   }
-  return null;
 };
 
 exports.update = async (req, res) => {

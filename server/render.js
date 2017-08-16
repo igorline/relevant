@@ -9,6 +9,7 @@ import configureStore from '../app/web/store/configureStore';
 // import App from '../app/web/components/app';
 import { setUser } from '../app/actions/auth.actions';
 
+
 // console.log(router)
 // router.stack.forEach(l => {
 //   console.log(l.route)
@@ -89,9 +90,10 @@ function renderFullPage(html, initialState) {
 function fetchComponentData(dispatch, components, params, req) {
   const promises = components
     .filter((component) => component && component.fetchData) // 1
-    .map((component) => component.fetchData) // 2
+    .map((component) => {
+      return component.fetchData;
+    }) // 2
     .map(fetchData => {
-      // console.log(fetchData);
       return fetchData(dispatch, params, req); // 3
     });
   return Promise.all(promises);
@@ -137,9 +139,10 @@ export default function handleRender(req, res) {
 
         // This code pre-fills the data on the server
         fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
-          .then(() => {
-            console.log('GOT DATA, RENDERING COMPONENTS');
-            res.send(renderFullPage(renderHtml(), store.getState()));
+          .then((data) => {
+            console.log('GOT DATA, RENDERING COMPONENTS ', data);
+            // Here we can use the data to render the appropriate meta tags
+            res.send(renderFullPage(renderHtml(data), store.getState()));
           })
           .catch(err => {
             console.log(err);
