@@ -97,7 +97,7 @@ export async function superFetch(options) {
     }
     return responseJSON;
   } catch (error) {
-    console.log('fetch error', uri, error);
+    console.log('superFetch error', uri, error);
     throw error;
   }
 }

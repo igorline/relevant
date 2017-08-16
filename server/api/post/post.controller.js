@@ -414,16 +414,14 @@ exports.readable = async (req, res) => {
   return res.send(article.content);
 };
 
-exports.findById = async (req) => {
+exports.findById = async req => {
   let id;
-  if (req.user) id = req.user._id;
+  let user = req.user;
   let post;
 
+  if (user) id = req.user._id;
   let blocked = [];
-  if (req.user) {
-    let user = req.user;
-    blocked = [...user.blocked, ...user.blockedBy];
-  }
+  if (user) blocked = [...user.blocked, ...user.blockedBy];
 
   post = await Post.findOne({ _id: req.params.id, user: { $nin: blocked } })
   .populate({
@@ -431,8 +429,8 @@ exports.findById = async (req) => {
     select: 'name image relevance',
   });
 
-  // res.status(200).json(post);
   // TODO worker thread
+  // TODO check if we recieve this in time for server rendering!
   if (id && post) {
     Post.sendOutInvestInfo([post._id], id);
   }
