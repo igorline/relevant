@@ -414,37 +414,29 @@ exports.readable = async (req, res) => {
   return res.send(article.content);
 };
 
-exports.findById = async (req, res, next) => {
-  try {
-    let id;
-    if (req.user) id = req.user._id;
-    let post;
+exports.findById = async (req) => {
+  let id;
+  if (req.user) id = req.user._id;
+  let post;
 
-    let blocked = [];
-    if (req.user) {
-      let user = req.user;
-      blocked = [...user.blocked, ...user.blockedBy];
-    }
-
-    post = await Post.findOne({ _id: req.params.id, user: { $nin: blocked } })
-    .populate({
-      path: 'user',
-      select: 'name image relevance',
-    });
-
-    // res.status(200).json(post);
-    // TODO worker thread
-    if (id && post) {
-      Post.sendOutInvestInfo([post._id], id);
-    }
-
-    res.jsonResponse = post;
-    next();
-    return post;
-  } catch (err) {
-    next(err);
-    return err;
+  let blocked = [];
+  if (req.user) {
+    let user = req.user;
+    blocked = [...user.blocked, ...user.blockedBy];
   }
+
+  post = await Post.findOne({ _id: req.params.id, user: { $nin: blocked } })
+  .populate({
+    path: 'user',
+    select: 'name image relevance',
+  });
+
+  // res.status(200).json(post);
+  // TODO worker thread
+  if (id && post) {
+    Post.sendOutInvestInfo([post._id], id);
+  }
+  return post;
 };
 
 exports.update = async (req, res) => {

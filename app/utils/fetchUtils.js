@@ -1,15 +1,18 @@
+'use strict';
 import * as tokenUtil from './token';
 
 let post;
 let routes = {};
-console.log('BROWSER ', process.env.BROWSER);
-console.log('WEB ', process.env.WEB);
-if (!process.env.BROWSER && process.env.WEB === 'true') {
-  // this can later be put in a separate router
-  console.log('Node server')
-  post = require('../../server/api/post/post.controller');
-  routes['post'] = post;
+
+if (process.env.BROWSER || process.env.WEB !== 'true') {
+  // this is a weird hack that makes conditional require work in react-native
+} else {
+  console.log('LOAD NODE DIRECT ROUTER');
+  let n = '../../server/api/post/post.controller';
+  post = require(n);
+  routes.post = post;
 }
+
 
 const queryParams = (params) => {
   if (!params) return '';
@@ -61,7 +64,7 @@ export async function superFetch(options) {
   // TODO rename to options.params to match node
   if (options.pathParams) {
     Object.keys(options.pathParams).forEach(key => {
-      uri += '/' + options.pathParams.key;
+      uri += '/' + options.pathParams[key];
     });
   }
 
@@ -70,8 +73,8 @@ export async function superFetch(options) {
     let responseJSON;
     // This is the case when request is orginating from nodejs
     if (!process.env.BROWSER && process.env.WEB === 'true') {
-      console.log('NODE FETCH')
-      if (options.path == '/') options.path = 'findById';
+      console.log('NODE FETCH');
+      if (options.path === '/') options.path = 'findById';
       let req = {
         params: options.pathParams,
         body: options.body,
@@ -79,8 +82,10 @@ export async function superFetch(options) {
         // TODO add user
       };
       let next = () => null;
-      let res = {};
+      let res = null;
       responseJSON = await routes[options.endpoint][options.path](req, res, next);
+      // in case we ge a mongoose object
+      if (responseJSON.toObject) responseJSON = responseJSON.toObject();
     } else {
       response = await fetch(uri + path + params, {
         method: options.method,
@@ -90,7 +95,6 @@ export async function superFetch(options) {
       response = await exports.handleErrors(response);
       responseJSON = await response.json();
     }
-
     return responseJSON;
   } catch (error) {
     console.log('fetch error', uri, error);

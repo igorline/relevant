@@ -11,7 +11,7 @@ class Comments extends Component {
   }
 
   componentDidMount() {
-    this.props.actions.getComments(this.props.post.selectedPost._id);
+    this.props.actions.getComments(this.props.params.id);
   }
 
   handleCommentSubmit(text) {
@@ -19,14 +19,13 @@ class Comments extends Component {
   }
 
   render() {
-    let self = this;
     let comments = this.props.comments.commentsById[this.props.params.id];
     if (!comments) return null;
-
+    comments = comments.data;
     return (
       <div>
         <h2>Comments</h2>
-        <NewCommentForm {...self.props} onCommentSubmit={this.handleCommentSubmit} />
+        <NewCommentForm {...this.props} onCommentSubmit={this.handleCommentSubmit} />
         {(comments.length !== 0) ?
           <div>
             {comments.map(function (comment) {
