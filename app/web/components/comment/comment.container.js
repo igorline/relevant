@@ -10,8 +10,8 @@ class Comments extends Component {
     super(props);
   }
 
-  componentWillMount() {
-    this.props.getComments(this.props.post.selectedPost._id);
+  componentDidMount() {
+    this.props.actions.getComments(this.props.post.selectedPost._id);
   }
 
   handleCommentSubmit(text) {
@@ -20,7 +20,7 @@ class Comments extends Component {
 
   render() {
     let self = this;
-    let comments = this.props.comment.comments.data;
+    let comments = this.props.comments.commentsById[this.props.params.id];
     if (!comments) return null;
 
     return (
@@ -49,12 +49,13 @@ class Comments extends Component {
 }
 
 export default connect(
-  state => {
-    return {
-      auth: state.auth,
-      comment: state.comment
-    };
-  },
-  dispatch => {
-    return Object.assign({}, { dispatch }, bindActionCreators(postActions, dispatch));
-  })(Comments);
+  state => ({
+    auth: state.auth,
+    comments: state.comments
+  }),
+  dispatch => ({
+    actions: bindActionCreators({
+      ...postActions
+    }, dispatch)
+  })
+)(Comments);

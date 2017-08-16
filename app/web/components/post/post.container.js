@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Post from './post';
-import * as PostActions from '../../../actions/post.actions';
+import * as postActions from '../../../actions/post.actions';
 import Comments from '../comment/comment.container';
 
 class Posts extends Component {
@@ -10,8 +10,13 @@ class Posts extends Component {
     super(props);
   }
 
-  componentWillMount() {
-    this.props.getSelectedPost(this.props.params.id);
+  static fetchData(dispatch, params, req) {
+    console.log('calling fetchData');
+    return dispatch(postActions.getSelectedPost(params.id));
+  }
+
+  componentDidMount() {
+    this.props.actions.getSelectedPost(this.props.params.id);
   }
 
   render () {
@@ -25,12 +30,13 @@ class Posts extends Component {
 }
 
 export default connect(
-  state => {
-    return {
-      auth: state.auth,
-      post: state.post,
-    };
-  },
-  dispatch => {
-    return Object.assign({}, { dispatch }, bindActionCreators(PostActions, dispatch));
-  })(Posts);
+  state => ({
+    auth: state.auth,
+    post: state.post,
+  }),
+  dispatch => ({
+    actions: bindActionCreators({
+      ...postActions
+    }, dispatch)
+  }))(Posts);
+
