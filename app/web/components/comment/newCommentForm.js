@@ -25,7 +25,7 @@ class NewCommentForm extends Component {
         <form onSubmit={this.handleSubmit.bind(this)}>  
           <input type="text" value={this.state.text} onChange={this.handleChange.bind(this)} />
           <br/>
-          {this.props.comment.failureMsg && <div>{ this.props.comment.failureMsg }</div>}
+          {/*this.props.comment.failureMsg && <div>{ this.props.comment.failureMsg }</div>*/}
           <input type="submit" value="Add comment" />
         </form>
       </div>

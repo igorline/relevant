@@ -16,13 +16,16 @@ class Posts extends Component {
   }
 
   componentDidMount() {
-    this.props.actions.getSelectedPost(this.props.params.id);
+    if (!this.post) {
+      this.props.actions.getSelectedPost(this.props.params.id);
+    }
   }
 
   render () {
+    this.post = this.props.posts.posts[this.props.params.id];
     return (
       <div>
-        <Post {...this.props} />
+        <Post post={this.post} {...this.props} />
         <Comments {...this.props} />
       </div>
     );
@@ -32,7 +35,7 @@ class Posts extends Component {
 export default connect(
   state => ({
     auth: state.auth,
-    post: state.post,
+    posts: state.posts,
   }),
   dispatch => ({
     actions: bindActionCreators({

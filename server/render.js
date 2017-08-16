@@ -103,12 +103,11 @@ export default function handleRender(req, res) {
   // const params = qs.parse(req.query);
   cookie.plugToRequest(req, res);
 
-  // const initialState = {routing : {path: req.originalUrl}};
+  // this sets the inital auth state
   let confirm = {};
   console.log('req ', req.unconfirmed);
   if (req.unconfirmed) confirm = { auth: { confirmed: false } };
   const initialState = { ...confirm };
-  // console.log('initialState ', initialState);
 
   // Create a new Redux store instance
   const store = configureStore(initialState);
@@ -140,7 +139,7 @@ export default function handleRender(req, res) {
         // This code pre-fills the data on the server
         fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
           .then((data) => {
-            console.log('GOT DATA, RENDERING COMPONENTS ', data);
+            console.log('GOT DATA, RENDERING COMPONENTS');
             // Here we can use the data to render the appropriate meta tags
             res.send(renderFullPage(renderHtml(data), store.getState()));
           })
