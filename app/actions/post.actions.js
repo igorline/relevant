@@ -498,33 +498,56 @@ export function createComment(token, commentObj) {
 }
 
 export function getSelectedPost(postId) {
-  return function(dispatch) {
-    utils.token.get()
-    .then(token =>
-      fetch(process.env.API_SERVER + '/api/post/' + postId, {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.fetchUtils.superFetch({
         method: 'GET',
-        ...reqOptions(token)
-      })
-    )
-    .then(utils.fetchUtils.handleErrors)
-    .then((response) => response.json())
-    .then((responseJSON) => {
+        endpoint: 'post',
+        path: '/',
+        pathParams: { id: postId }
+      });
       if (!responseJSON) {
         dispatch(removePost(postId));
-        // dispatch(updatePost({ _id: postId }));
       } else {
         dispatch(updatePost(responseJSON));
       }
       dispatch(errorActions.setError('singlepost', false));
-      return true;
-    })
-    .catch((error) => {
-      console.log(error, 'error');
+      return responseJSON;
+    } catch (error) {
       dispatch(errorActions.setError('singlepost', true, error.message));
       return false;
-    });
+    }
   };
 }
+
+// export function getSelectedPost(postId) {
+//   return function(dispatch) {
+//     utils.token.get()
+//     .then(token =>
+//       fetch(process.env.API_SERVER + '/api/post/' + postId, {
+//         method: 'GET',
+//         ...reqOptions(token)
+//       })
+//     )
+//     .then(utils.fetchUtils.handleErrors)
+//     .then((response) => response.json())
+//     .then((responseJSON) => {
+//       if (!responseJSON) {
+//         dispatch(removePost(postId));
+//         // dispatch(updatePost({ _id: postId }));
+//       } else {
+//         dispatch(updatePost(responseJSON));
+//       }
+//       dispatch(errorActions.setError('singlepost', false));
+//       return true;
+//     })
+//     .catch((error) => {
+//       console.log(error, 'error');
+//       dispatch(errorActions.setError('singlepost', true, error.message));
+//       return false;
+//     });
+//   };
+// }
 
 export function setFeedCount(data) {
   return {

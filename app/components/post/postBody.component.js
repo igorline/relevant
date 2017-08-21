@@ -68,7 +68,7 @@ class PostBody extends Component {
 
     if (this.props.preview) {
       numberOfLines = 2;
-      maxTextLength = 20;
+      maxTextLength = 10;
       postStyle = styles.previewText;
     }
 
@@ -103,7 +103,7 @@ class PostBody extends Component {
             this.goToPost();
           }}
         >
-          <View style={[styles.postBody]}>
+          <View style={[styles.postBody, this.props.preview ? { marginTop: 10 } : null]}>
             <Text style={[styles.darkGrey, postStyle]}>
               <TextBody
                 style={postStyle}
@@ -122,7 +122,7 @@ class PostBody extends Component {
     return (
       <View style={{ flex: 1 }}>
         {textBody}
-        {!this.props.preview && !this.props.repost ? upvotes : null}
+        {/*!this.props.preview && !this.props.repost ? upvotes : null*/}
       </View>
     );
   }
@@ -132,19 +132,19 @@ export default PostBody;
 
 const localStyles = StyleSheet.create({
   postBody: {
-    marginTop: 20,
+    marginTop: 24,
     flex: 1,
     justifyContent: 'center'
   },
   bodyText: {
     fontFamily: 'Georgia',
-    fontSize: 38 / 2,
-    lineHeight: 55 / 2,
+    fontSize: 36 / 2,
+    lineHeight: 54 / 2,
   },
   commentaryText: {
     fontFamily: 'Georgia',
-    fontSize: 35 / 2,
-    lineHeight: 52 / 2,
+    fontSize: 36 / 2,
+    lineHeight: 54 / 2,
   },
   repostText: {
     fontFamily: 'Georgia',
@@ -157,7 +157,7 @@ const localStyles = StyleSheet.create({
     fontFamily: 'Georgia',
     fontSize: 30 / 2,
     lineHeight: 40 / 2,
-    marginTop: -10,
+    // marginTop: -10,
   },
   shortBodyText: {
     fontFamily: 'Libre Caslon Display',

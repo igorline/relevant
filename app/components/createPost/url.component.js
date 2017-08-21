@@ -8,7 +8,7 @@ import {
   Platform,
   ScrollView
 } from 'react-native';
-import { globalStyles, blue, fullWidth, greyText } from '../../styles/global';
+import { globalStyles, blue, fullWidth, greyText, borderGrey } from '../../styles/global';
 import * as utils from '../../utils';
 import UrlPreview from './urlPreview.component';
 import UserName from '../userNameSmall.component';
@@ -177,8 +177,8 @@ export default class UrlComponent extends Component {
 
     if (this.props.repost) {
       repostBody = (
-        <View style={{ flex: 0, height: 120, width: fullWidth - 20 }}>
-          <PostInfo post={this.props.repost} />
+        <View style={{ flex: 0, width: fullWidth - 20, paddingBottom: 20 }}>
+          <PostInfo preview post={this.props.repost} />
           <PostBody preview post={this.props.repost} />
         </View>);
     }
@@ -269,7 +269,7 @@ export default class UrlComponent extends Component {
         {userHeader}
         <View
           style={[
-            this.props.urlPreview ? styles.innerBorder : null,
+            // this.props.urlPreview ? styles.innerBorder : null,
             this.props.share ? styles.noBorder : null,
             { flex: 1 }]
           }
@@ -319,7 +319,7 @@ export default class UrlComponent extends Component {
         </View>
         {userSearch}
         {repostBody}
-        {this.props.postUrl && !this.props.users.search.length ?
+        {this.props.postUrl && !this.props.users.search.length && !this.props.repost ?
           <UrlPreview size={'small'} {...this.props} actions={this.props.actions} /> :
           null
         }
@@ -365,7 +365,7 @@ const localStyles = StyleSheet.create({
   },
   postButton: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 0,
     right: 0,
     paddingVertical: 5,
     paddingHorizontal: 5,
@@ -376,7 +376,7 @@ const localStyles = StyleSheet.create({
   innerBorder: {
     height: 55,
     borderBottomWidth: 1,
-    borderBottomColor: 'grey'
+    borderBottomColor: borderGrey
   },
   noBorder: {
     borderBottomWidth: StyleSheet.hairlineWidth,

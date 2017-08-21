@@ -37,6 +37,10 @@ class Percent extends Component {
     let fontSize = this.props.fontSize || 17;
     // let arrowSize = this.props.fontSize - 1;
     if (!user) return null;
+    let fontFamily;
+    if (this.props.fontFamily) {
+      fontFamily = { fontFamily: this.props.fontFamily, letterSpacing: 0 };
+    }
 
     let percent = numbers.percentChange(user);
 
@@ -46,7 +50,7 @@ class Percent extends Component {
       percentComponent = (
         <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
           <Text style={{ fontSize, color: green, marginBottom: -3 }}>▲</Text>
-          <Text style={[{ fontSize, textAlign: 'right', color: green }, styles.bebas]}>
+          <Text style={[{ fontSize, textAlign: 'right', color: green }, styles.bebas, fontFamily]}>
             {numbers.abbreviateNumber(percent)}%
           </Text>
         </View>
@@ -55,7 +59,7 @@ class Percent extends Component {
       percentComponent = (
         <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
           <Text style={{ fontSize, color: 'red', marginBottom: -3 }}>▼</Text>
-          <Text style={[{ fontSize, color: 'red', textAlign: 'right' }, styles.bebas]}>
+          <Text style={[{ fontSize, color: 'red', textAlign: 'right' }, styles.bebas, fontFamily]}>
             {numbers.abbreviateNumber(percent)}%
           </Text>
         </View>

@@ -8,7 +8,7 @@ import {
   ActionSheetIOS,
   Platform
 } from 'react-native';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, greyText, borderGrey } from '../../styles/global';
 import CustomSpinner from '../CustomSpinner.component';
 import RNBottomSheet from 'react-native-bottom-sheet';
 
@@ -62,7 +62,7 @@ export default class UrlPreviewComponent extends Component {
     if (this.props.size === 'small') {
       height = 55;
       imageFlex = 0.25;
-      fontSize = 12;
+      fontSize = 13;
     }
 
     if (this.props.urlPreview && (this.props.urlPreview.image || this.props.size !== 'small')) {
@@ -81,7 +81,7 @@ export default class UrlPreviewComponent extends Component {
 
     if (this.props.domain) {
       if (this.props.size === 'small') maxLines = 2;
-      domain = (<Text style={{ color: '#808080', fontSize: fontSize - 2, paddingTop: 2 }}>
+      domain = (<Text style={{ color: greyText, fontSize: 10, paddingTop: 2 }}>
         from: {this.props.domain}
       </Text>);
     }
@@ -90,7 +90,7 @@ export default class UrlPreviewComponent extends Component {
       preview = (
         <TouchableHighlight
           underlayColor={'transparent'}
-          style={[styles.createPostInput, { height }]}
+          style={[styles.createPostInput, { height, marginTop: 5 }]}
           onPress={this.props.onPress || this.previewMenu}
         >
           <View style={[styles.innerPreview]}>
@@ -98,7 +98,7 @@ export default class UrlPreviewComponent extends Component {
             <View style={{ flex: 0.6, padding: 5, justifyContent: 'center' }}>
               <Text
                 numberOfLines={maxLines}
-                style={{ color: '#808080', fontSize }}
+                style={{ color: greyText, fontSize }}
               >
                 {this.props.urlPreview.title.trim()}
               </Text>
@@ -130,8 +130,8 @@ const localStyles = StyleSheet.create({
     height: 100,
   },
   innerPreview: {
-    borderRadius: 4,
-    borderColor: '#a0a0a0',
+    borderRadius: 0,
+    borderColor: greyText,
     borderStyle: 'solid',
     borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',

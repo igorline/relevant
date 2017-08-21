@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import PropTypes from 'prop-types';
-import { globalStyles, fullWidth, blue, darkGrey } from '../../styles/global';
+import { globalStyles, fullWidth, blue, darkGrey, greyText } from '../../styles/global';
 import Percent from '../percent.component';
 
 let styles;
@@ -43,7 +43,12 @@ export default class Footer extends Component {
     let activeText;
     if (tab.key === 'activity' && this.props.notif.count) badge = this.props.notif.count;
     if (tab.key === 'discover' && this.props.feedUnread) badge = this.props.feedUnread;
-    let icon = (<Text style={[styles.icon, styles.textCenter]}>{tab.icon}</Text>);
+
+    let fontAdjust;
+    if (tab.title === 'Stats' && Platform.OS === 'ios') {
+      fontAdjust = { fontSize: 15, lineHeight: 35 };
+    }
+    let icon = (<Text style={[styles.icon, styles.textCenter, fontAdjust]}>{tab.icon}</Text>);
     let title = (
       <Text style={[styles.footerText, active || activeText ? styles.footerTextActive : null]}>
         {tab.title}
@@ -57,7 +62,7 @@ export default class Footer extends Component {
             style={[styles.footerImg]}
           />);
       }
-      title = <View><Percent fontSize={11} user={user} /></View>;
+      title = <View><Percent fontSize={10} fontFamily={'Arial'} user={user} /></View>;
       activeText = true;
     }
 
@@ -151,9 +156,9 @@ const localStyles = StyleSheet.create({
   },
   footerText: {
     paddingTop: 0,
-    fontSize: 11,
-    opacity: 0.7,
-    color: 'black'
+    fontSize: 10,
+    // opacity: 0.7,
+    color: greyText
   },
   footerTextActive: {
     color: blue,

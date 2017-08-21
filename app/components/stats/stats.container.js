@@ -5,20 +5,22 @@ import {
   InteractionManager,
   View,
   RefreshControl,
-  FlatList
+  FlatList,
+  Platform
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { globalStyles, blue, darkGrey } from '../../styles/global';
+import { globalStyles, blue, darkGrey, borderGrey } from '../../styles/global';
 import * as navigationActions from '../../actions/navigation.actions';
 import * as authActions from '../../actions/auth.actions';
-import StatCategory from './statCategoryView.component';
+import StatCategory from './statCat.component';
 import Chart from './chart.component';
 import CustomSpinner from '../CustomSpinner.component';
 import ErrorComponent from '../error.component';
 import EmptyList from '../emptyList.component';
+import Level from './level.component';
 
 let styles;
 
@@ -74,6 +76,7 @@ class StatsContainer extends Component {
   }
 
   renderHeader() {
+    if (this.filler) return this.filler;
     let nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
     let chart;
     let relChart;
@@ -101,45 +104,32 @@ class StatsContainer extends Component {
       type={'smooth'}
       dataKey={'aggregateRelevance'}
       data={this.props.auth.relChart}
-      renderHeader={() => <Text style={styles.rowTitle}>Relevance</Text>}
-      renderFooter={() => (<LinearGradient
-        colors={[
-          'hsla(240, 0%, 60%, 1)',
-          'hsla(240, 20%, 96%, 1)',
-          'hsla(240, 20%, 100%, 1)',
-        ]}
-        style={[styles.separator]}
-      />)}
+      renderHeader={() => (
+        <Text style={[styles.statNumber, { alignSelf: 'center', marginTop: 45 }]}>Relevance</Text>
+      )}
+      renderFooter={() => (<View style={styles.break} />)}
     />);
 
     return (
       <View>
         <View style={styles.nextUpdate}><Text
-          style={[styles.font12, styles.darkGrey]}
+          style={[styles.smallInfo, { color: 'white' }]}
         >
           {nextUpdate} until next update
         </Text></View>
+
+        <Level level={this.props.auth.user.level} />
+
         <StatCategory
           index={0}
           stats={this.props.auth.user}
           actions={this.props.actions}
         />
 
-        <LinearGradient
-          colors={[
-            'hsla(240, 0%, 60%, 1)',
-            'hsla(240, 20%, 96%, 1)',
-            'hsla(240, 20%, 100%, 1)',
-          ]}
-          style={[styles.separator]}
-        />
+        <View style={styles.break} />
 
         {relChart}
-        {chart}
-
-        {this.props.auth.stats && this.props.auth.stats.length ?  (<Text style={styles.label}>
-          Your top topics
-        </Text>) : null }
+        {/*chart*/}
       </View>
     );
   }
@@ -152,14 +142,7 @@ class StatsContainer extends Component {
           stats={item}
           actions={this.props.actions}
         />
-        <LinearGradient
-          colors={[
-            'hsla(240, 0%, 60%, 1)',
-            'hsla(240, 20%, 96%, 1)',
-            'hsla(240, 20%, 100%, 1)'
-          ]}
-          style={[styles.separator]}
-        />
+        <View style={styles.break} />
       </View>
     );
   }
@@ -167,7 +150,8 @@ class StatsContainer extends Component {
   render() {
     let stats = this.props.auth.stats || [];
     let user = this.props.auth.user;
-    let filler;
+    let header = this.renderHeader();
+    this.filler = null;
 
     if (this.state.loading) {
       return (<CustomSpinner visible />);
@@ -179,7 +163,7 @@ class StatsContainer extends Component {
 
     if (!this.props.auth.user.level) {
       let nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
-      filler = (<EmptyList visible style={styles.emptyList}>
+      this.filler = (<EmptyList visible style={styles.emptyList}>
         <Text
           style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}
         >
@@ -195,7 +179,7 @@ class StatsContainer extends Component {
     }
 
     if (user.relevance < 5) {
-      filler = (<EmptyList visible style={styles.emptyList}>
+      this.filler = (<EmptyList visible style={styles.emptyList}>
         <Text
           style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}
         >
@@ -214,9 +198,10 @@ class StatsContainer extends Component {
         ref={c => this.list = c}
         style={{ flex: 1 }}
         keyExtractor={(item, index) => index}
+        extraData={this.props}
         data={stats}
-        ListHeaderComponent={() => !filler ? this.renderHeader() : filler}
-        renderItem={(item) => !filler ? this.renderItem(item) : null}
+        ListHeaderComponent={this.renderHeader}
+        renderItem={item => !this.filler ? this.renderItem(item) : null}
         refreshControl={
           <RefreshControl
             style={[{ backgroundColor: 'hsl(238,20%,95%)' }]}
@@ -256,9 +241,9 @@ let localStyles = StyleSheet.create({
   nextUpdate: {
     padding: 10,
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: blue,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'lightgrey',
+    // borderBottomColor: 'lightgrey',
   }
 });
 
