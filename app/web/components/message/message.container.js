@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Message from './message';
-import * as MessageActions from '../../actions/message';
+import * as MessageActions from '../../actions/message.actions';
 
 class MessageContainer extends Component {
   constructor(props) {
