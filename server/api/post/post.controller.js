@@ -157,8 +157,8 @@ async function sendFlagEmail() {
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: 'contact@4real.io',
-      subject: 'Innaproprate Content',
-      html: `Someone has flagged a post for innapropriate content
+      subject: 'Inapproprate Content',
+      html: `Someone has flagged a post for inappropriate content
       <br />
       <br />
       You can manage flagged content here:&nbsp;

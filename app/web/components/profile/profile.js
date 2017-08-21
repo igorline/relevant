@@ -1,25 +1,24 @@
-import React, { Component, PropTypes } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import NewMessage from '../message/newMessage'
-import * as ProfileActions from '../../actions/profile'
-import * as MessageActions from '../../actions/message'
+import React, { Component, PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import NewMessage from '../message/newMessage';
+import * as MessageActions from '../../../actions/message.actions';
 
 class Profile extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       showMsgForm: false
-    }
+    };
   }
-  
-  onClick(e){
+
+  onClick(e) {
     e.preventDefault();
-    this.setState({showMsgForm: !this.state.showMsgForm})
+    this.setState({ showMsgForm: !this.state.showMsgForm });
   }
 
   render() {
-    var userPath = this.props.profile.selectedUser
+    const userPath = this.props.profile.selectedUser;
 
     if (userPath) {
       return (
@@ -27,38 +26,33 @@ class Profile extends Component {
           <div>
             <h1>{userPath.name}</h1>
             <h3> Relevance: {Math.round(userPath.relevance * 100) / 100}</h3>
-            <img src={userPath.image} width="15%"></img>
-            <br/>
-            <a onClick={this.onClick.bind(this)} href='#'>Thirsty?</a>
-            {this.state.showMsgForm && <NewMessage { ...this.props} />}
+            <img src={userPath.image} width="15%" role="presentation" />
+            <br />
+            <a onClick={this.onClick.bind(this)} href="#">Thirsty?</a>
+            {this.state.showMsgForm && <NewMessage {...this.props} />}
           </div>
-
-          <br/>
-          <br/>
-          <br/>
-          <br/>
+          <br />
+          <br />
+          <br />
+          <br />
         </div>
-      )
-
-    } else {
-      return (
-        null
-      )
+      );
     }
+    return null;
   }
 }
 
 Profile.defaultProps = {
-    profile: {userPosts: []}
-}
+  profile: { userPosts: [] }
+};
 
 export default connect(
   state => {
     return {
       message: state.message
-    }
+    };
   },
   dispatch => {
     return Object.assign({}, { dispatch },  bindActionCreators(MessageActions, dispatch))
   }
-)(Profile)
+)(Profile);

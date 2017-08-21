@@ -104,8 +104,7 @@ export function searchUser(userName) {
     });
 }
 
-export
-function getSelectedUser(userName) {
+export function getSelectedUser(userName) {
   return async dispatch => {
     dispatch(getUserLoading());
     return fetch(process.env.API_SERVER + '/api/user/user/' + userName, {

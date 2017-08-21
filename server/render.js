@@ -47,7 +47,6 @@ function renderFullPage(html, initialState) {
 
         ${styles}
 
-
         <!-- Facebook Pixel Code -->
         <script>
         !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -65,8 +64,6 @@ function renderFullPage(html, initialState) {
         /></noscript>
         <!-- DO NOT MODIFY -->
         <!-- End Facebook Pixel Code -->
-
-
 
       </head>
       <body>
