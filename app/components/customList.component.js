@@ -141,7 +141,7 @@ export default class ActivityView extends Component {
         contentOffset={{ y: -this.props.YOffset || 0 }}
         renderHeader={this.props.renderHeader}
         contentContainerStyle={
-          { paddingTop: Platform.OS === 'android' ? this.props.YOffset : 0 }
+          { paddingTop: Platform.OS === 'android' ? this.props.YOffset : 0, backgroundColor: 'white' }
         }
         style={{
           flex: 0.5,

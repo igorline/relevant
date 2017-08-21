@@ -8,6 +8,8 @@ const initialState = {
   posts: {},
   loaded: {},
   loadedProfileInv: false,
+  myPostInvList: [],
+  myPostInv: {}
 };
 
 export default function investments(state = initialState, action) {
@@ -45,17 +47,6 @@ export default function investments(state = initialState, action) {
       };
     }
 
-    case types.UNDO_POSTS_INVEST: {
-      let index = state.myInvestments.indexOf(action.payload);
-      return {
-        ...state,
-        myInvestments: [
-          ...state.myInvestments.slice(0, index),
-          ...state.myInvestments.slice(index + 1)
-        ]
-      };
-    }
-
     case types.UPDATE_EARNINGS: {
       let earnings = {};
       action.payload.forEach(earning => {
@@ -70,12 +61,35 @@ export default function investments(state = initialState, action) {
       };
     }
 
-    case types.UPDATE_POSTS_INVEST: {
+    case types.UNDO_POST_INVESTMENT: {
+      let myPostInvList = state.myPostInvList.filter(p => p !== action.payload);
       return {
         ...state,
-        myInvestments: [...state.myInvestments, ...action.payload]
+        myPostInvList,
+        myPostInv: {
+          ...state.myPostInv,
+          [action.payload]: null
+        }
       };
     }
+
+
+    case types.UPDATE_POST_INVESTMENTS: {
+      let postsInv = {};
+      let postInvList = action.payload.map(i => {
+        postsInv[i.post] = i;
+        return i.post;
+      });
+      return {
+        ...state,
+        myPostInvList: [...new Set([...state.myInvestments, ...postInvList])],
+        myPostInv: {
+          ...state.myPostInv,
+          ...postsInv,
+        }
+      };
+    }
+
 
     case 'SET_INVESTMENTS': {
       let id = action.payload.userId;

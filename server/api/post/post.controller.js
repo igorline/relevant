@@ -13,6 +13,39 @@ import apnData from '../../pushNotifications';
 import mail from '../../mail';
 import Notification from '../notification/notification.model';
 
+// Post.collection.createIndex({ title: 'text', shortText: 'text', description: 'text', keywords: 'text', tags: 'text'});
+// Post.collection.indexes(function (err, indexes) {
+//   console.log(indexes);
+// });
+
+// Post.collection.dropIndexes(function (err, results) {
+//   console.log(err);
+// });
+
+async function findRelatedPosts() {
+  try {
+    let id = '598e2f3733b0985433527b95';
+    let post = await Post.findOne({ _id: id }).populate('tags');
+    let tagsArr = post.tags.filter(t => !t.category).map(t => t._id);
+    let tags = tagsArr.join(' ');
+    console.log(tags);
+
+    let posts = await Post.find(
+      { $text: { $search: tags } },
+      { score: { $meta: 'textScore' } })
+    .sort({ score: { $meta: 'textScore' } });
+    posts.forEach((p, i) => {
+      console.log(i, ' ', p.title);
+      console.log(p.description);
+      console.log(p.keywords);
+    })
+  } catch (err) {
+    console.log(err);
+  }
+}
+// findRelatedPosts();
+
+
 // function updatePostTags() {
 //   Post.find({ user: 'Timursq' })
 //   .then(posts => {
@@ -316,7 +349,7 @@ exports.preview = (req, res) => {
 
   function getHeader(uri) {
     let fbHeader = {
-      // 'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php) Facebot',
+      'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php) Facebot',
     };
     let noFb = uri.match('apple.news'); // || uri.match('flip.it');
     if (noFb) return {};
@@ -381,33 +414,27 @@ exports.readable = async (req, res) => {
   return res.send(article.content);
 };
 
-exports.findByID = async (req, res) => {
+exports.findById = async req => {
   let id;
-  if (req.user) id = req.user._id;
+  let user = req.user;
   let post;
 
-  try {
-    let blocked = [];
-    if (req.user) {
-      let user = req.user;
-      blocked = [...user.blocked, ...user.blockedBy];
-    }
+  if (user) id = req.user._id;
+  let blocked = [];
+  if (user) blocked = [...user.blocked, ...user.blockedBy];
 
-    post = await Post.findOne({ _id: req.params.id, user: { $nin: blocked } })
-    .populate({
-      path: 'user',
-      select: 'name image relevance',
-    });
-  } catch (err) {
-    return res.send(500, err);
-  }
+  post = await Post.findOne({ _id: req.params.id, user: { $nin: blocked } })
+  .populate({
+    path: 'user',
+    select: 'name image relevance',
+  });
 
-  res.status(200).json(post);
   // TODO worker thread
+  // TODO check if we recieve this in time for server rendering!
   if (id && post) {
     Post.sendOutInvestInfo([post._id], id);
   }
-  return null;
+  return post;
 };
 
 exports.update = async (req, res) => {

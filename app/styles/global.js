@@ -7,12 +7,18 @@ import {
 const fullWidth = Dimensions.get('window').width;
 const fullHeight = Dimensions.get('window').height;
 
-const darkGrey = '#231f20';
+const smallScreen = fullWidth <= 320 || false;
+
+const mainPadding = 15;
+// const mainPadding = 10;
+
+const darkGrey = '#242425';
 const blue = '#4d4eff';
-const lightGrey = '#aaaaaa';
-const greyText = '#999999';
+const lightGrey = '#9C9C9C';
+const greyText = '#9C9C9C';
 // const green = '333ef33';
 const green = '#196950';
+const borderGrey = '#E3E3E3';
 
 const IphoneHeader = 59;
 const AndroidHeader = 44;
@@ -49,6 +55,24 @@ const font = StyleSheet.create({
   bold: {
     fontWeight: 'bold',
   },
+
+
+  smallInfo: {
+    fontSize: 10,
+    color: greyText
+  },
+  statNumber: {
+    fontSize: 17,
+    fontFamily: 'BebasNeueRelevantRegular',
+    marginBottom: -2,
+  },
+
+  largeNumber: {
+    fontSize: 25,
+    fontFamily: 'BebasNeueRelevantRegular',
+    marginBottom: -2,
+  },
+
   navTitle: {
     fontSize: 22.5,
     fontFamily: 'BebasNeueRelevantRegular',
@@ -115,8 +139,8 @@ const font = StyleSheet.create({
     fontFamily: 'Georgia',
   },
   tabFont: {
-    fontFamily: 'Helvetica',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: 14,
   },
   tabStyle: {
     fontFamily: 'Helvetica',
@@ -393,7 +417,6 @@ const layout = StyleSheet.create({
   },
   fullContainer: {
     flex: 1,
-    // backgroundColor: 'hsl(0,0%,90%)',
   },
   row: {
     flexDirection: 'row',
@@ -430,8 +453,8 @@ const layout = StyleSheet.create({
     padding: 10
   },
   createPostInput: {
-    marginTop: 12.5,
-    marginBottom: 12.5,
+    marginTop: 10,
+    marginBottom: 10,
     backgroundColor: '#ffffff',
   },
   flex1: {
@@ -467,6 +490,11 @@ const layout = StyleSheet.create({
     marginRight: .5,
     marginLeft: 1,
   },
+  smallR: {
+    marginRight: 1,
+    width: 10,
+    height: 10,
+  },
   coin: {
     height: 17,
     width: 16,
@@ -489,9 +517,9 @@ const layout = StyleSheet.create({
     fontSize: 12,
   },
   userImage: {
-    height: 28,
-    width: 28,
-    borderRadius: 14,
+    height: 26,
+    width: 26,
+    borderRadius: 13,
     marginRight: 5,
     resizeMode: 'cover',
   },
@@ -535,9 +563,14 @@ const layout = StyleSheet.create({
   textRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'flex-start',
-  }
+  },
+  break: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: borderGrey,
+    marginHorizontal: 40,
+  },
 });
 
 const globalStyles = { ...colors, ...font, ...alignment, ...layout };
@@ -550,5 +583,8 @@ export {
   green,
   greyText,
   darkGrey,
-  headerHeight
+  headerHeight,
+  mainPadding,
+  smallScreen,
+  borderGrey
 };

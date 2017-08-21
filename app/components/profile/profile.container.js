@@ -51,6 +51,7 @@ class Profile extends Component {
       { id: 1, title: 'Investments' },
     ];
     this.loaded = false;
+    this.scrollTo = this.scrollTo.bind(this);
   }
 
   componentWillMount() {
@@ -142,6 +143,11 @@ class Profile extends Component {
     if (view) view.scrollTo({ y: 0, animated: true });
   }
 
+  scrollTo(y) {
+    let view = this.tabs[this.state.view].component.listview;
+    if (view) view.scrollTo({ y, animated: true });
+  }
+
   renderHeader() {
     let header = null;
     if (this.userId && this.userData) {
@@ -152,6 +158,7 @@ class Profile extends Component {
           myProfile={this.myProfile}
           user={this.userData}
           styles={styles}
+          scrollTo={this.scrollTo}
         />,
         <Tabs
           key={1}

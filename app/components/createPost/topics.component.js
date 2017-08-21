@@ -90,12 +90,10 @@ export default class topics extends Component {
         >
           <View
             style={{
-              // flexDirection: 'row',
               alignItems: 'center',
-              // justifyContent: 'center'
             }}
           >
-            <Text style={[active ? { color: 'white' } : null, styles.darkGrey]} >{topic.emoji}{topic.categoryName}</Text>
+            <Text style={[active ? { color: 'white' } : null, styles.darkGrey]}>{topic.emoji}{topic.categoryName}</Text>
           </View>
         </TouchableHighlight>
         {innerView}
@@ -106,6 +104,8 @@ export default class topics extends Component {
   render() {
     return (
       <FlatList
+        style={{ flex: 1 }}
+        container
         ref={c => this.scrollView = c}
         keyboardDismissMode={'interactive'}
         keyboardShouldPersistTaps={'always'}
@@ -114,6 +114,8 @@ export default class topics extends Component {
         keyExtractor={(item, index) => index}
         tagsView={this.tagsView}
         extraData={this.props.selectedTopic}
+        removeClippedSubviews={false}
+        initialNumToRender={20}
       />
     );
   }

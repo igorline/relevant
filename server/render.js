@@ -10,6 +10,11 @@ import configureStore from '../app/web/store/configureStore';
 import { setUser } from '../app/actions/auth.actions';
 
 
+// console.log(router)
+// router.stack.forEach(l => {
+//   console.log(l.route)
+// })
+
 function renderFullPage(html, initialState) {
   let styles;
 
@@ -82,9 +87,10 @@ function renderFullPage(html, initialState) {
 function fetchComponentData(dispatch, components, params, req) {
   const promises = components
     .filter((component) => component && component.fetchData) // 1
-    .map((component) => component.fetchData) // 2
+    .map((component) => {
+      return component.fetchData;
+    }) // 2
     .map(fetchData => {
-      // console.log(fetchData);
       return fetchData(dispatch, params, req); // 3
     });
   return Promise.all(promises);
@@ -94,12 +100,11 @@ export default function handleRender(req, res) {
   // const params = qs.parse(req.query);
   cookie.plugToRequest(req, res);
 
-  // const initialState = {routing : {path: req.originalUrl}};
+  // this sets the inital auth state
   let confirm = {};
   console.log('req ', req.unconfirmed);
   if (req.unconfirmed) confirm = { auth: { confirmed: false } };
   const initialState = { ...confirm };
-  // console.log('initialState ', initialState);
 
   // Create a new Redux store instance
   const store = configureStore(initialState);
@@ -130,9 +135,10 @@ export default function handleRender(req, res) {
 
         // This code pre-fills the data on the server
         fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
-          .then(() => {
+          .then((data) => {
             console.log('GOT DATA, RENDERING COMPONENTS');
-            res.send(renderFullPage(renderHtml(), store.getState()));
+            // Here we can use the data to render the appropriate meta tags
+            res.send(renderFullPage(renderHtml(data), store.getState()));
           })
           .catch(err => {
             console.log(err);

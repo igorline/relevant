@@ -82,6 +82,8 @@ PostSchema.index({ postDate: 1 });
 PostSchema.index({ _id: 1, user: 1 });
 PostSchema.index({ postDate: 1, tags: 1 });
 PostSchema.index({ rank: 1, tags: 1 });
+
+// PostSchema.createIndex({"subject":"text","content":"text"})
 // PostSchema.index({ title: 'text', body: 'text' });
 
 PostSchema.pre('save', async function (next) {
@@ -236,10 +238,20 @@ PostSchema.statics.sendOutInvestInfo = async function (postIds, userId) {
       { investor: userId, post: { $in: postIds } }
     );
     let postInv = investments.map(inv => inv.post);
-    let updatePosts = {
+
+    // DEPRICATED (HANDLE OLDER CLIENTS WHILE THEY UPDATE)
+    let updatePostsDep = {
       _id: userId,
       type: 'UPDATE_POSTS_INVEST',
-      payload: postInv,
+      payload: postInv
+    };
+    this.events.emit('postEvent', updatePostsDep);
+
+    // NEW
+    let updatePosts = {
+      _id: userId,
+      type: 'UPDATE_POST_INVESTMENTS',
+      payload: investments
     };
     this.events.emit('postEvent', updatePosts);
 

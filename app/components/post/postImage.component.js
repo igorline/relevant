@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { numbers } from '../../utils';
-import { globalStyles, fullWidth, blue } from '../../styles/global';
+import { globalStyles, fullWidth, mainPadding } from '../../styles/global';
 
 let styles;
 
@@ -131,12 +131,14 @@ class PostImage extends Component {
       <View style={[styles.textContainer]}>
         <View>
           <Text
-            numberOfLines={4}
+            numberOfLines={3}
             style={[
-              { fontSize: 19, letterSpacing: 0.4, marginBottom: 5, fontWeight: 'bold' },
               styles.articleTitle,
+              styles.bebasBold,
+              { color: 'white', lineHeight: 28 },
+              { fontSize: 30, letterSpacing: 0.1, marginBottom: 0, paddingTop: 3},
               single ? styles.darkGrey : null,
-              styles.georgia]}
+              ]}
           >
             {title || 'Untitled'}
           </Text>
@@ -250,33 +252,30 @@ const localStyles = StyleSheet.create({
     color: 'white'
   },
   textContainer: {
-    padding: 10,
+    paddingHorizontal: mainPadding,
     paddingVertical: 15,
     flex: 1,
     flexDirection: 'column',
-    // alignItems: 'flex-start',
     justifyContent: 'flex-end',
-    // backgroundColor: 'white',
   },
   articleTitle: {
-    // backgroundColor: blue,
     backgroundColor: 'transparent',
     color: 'white',
   },
   postImage: {
-    height: 240,
+    height: 256,
     flex: 1,
     maxWidth: fullWidth,
     position: 'relative',
     resizeMode: 'cover',
   },
   imageCont: {
-    height: 240,
+    height: 256,
     flex: 1,
     overflow: 'hidden'
   },
   linearGradient: {
-    height: 240,
+    height: 256,
     // paddingTop: 30,
     width: fullWidth,
     position: 'absolute',

@@ -16,7 +16,6 @@ require('dotenv').config({ silent: true });
 
 require('./queue');
 
-
 console.log('NODE_ENV', process.env.NODE_ENV);
 
 // -------------Dev server watch and hot reload---------------

@@ -120,7 +120,7 @@ class TextBody extends Component {
         return (<Text
           key={i}
           onPress={() => this.goToTopic(word.text)}
-          style={styles.active}
+          style={[this.props.style, styles.active]}
         >
           {word.text + space}
         </Text>);
@@ -129,7 +129,7 @@ class TextBody extends Component {
         return (<Text
           key={i}
           onPress={() => this.setSelected(word.text)}
-          style={styles.active}
+          style={[this.props.style, styles.active]}
         >
           {word.text + space}
         </Text>);
@@ -143,22 +143,22 @@ class TextBody extends Component {
             }
             return Linking.openURL(word.text);
           }}
-          style={styles.active}
+          style={[this.props.style, styles.active]}
         >
           {word.text + space}
         </Text>);
       }
       if (i < maxTextLength || expanded) {
-        return (<Text key={i}>{word.text}</Text>);
+        return (<Text style={this.props.style} key={i}>{word.text}</Text>);
       } else if (!breakText) {
         breakText = i;
-        return <Text key={'break'}>... </Text>;
+        return <Text style={this.props.style} key={'break'}>... </Text>;
       }
       return null;
     });
 
     if (breakText) {
-      bodyEl.push(<Text key={'readmore'} style={[styles.greyText]}>{tagsOnEnd ? '...' : ''}read more</Text>);
+      bodyEl.push(<Text style={[...this.props.style, styles.greyText]} key={'readmore'}>{tagsOnEnd ? '...' : ''}read more</Text>);
     }
 
     // console.log('rendering', reduced)
@@ -167,7 +167,7 @@ class TextBody extends Component {
       <Text
         numberOfLines={this.props.numberOfLines}
         ellipsizeMode={'tail'}
-        style={this.props.style}
+        style={[this.props.style]}
       >
         {bodyEl}
       </Text>
