@@ -13,6 +13,7 @@ import apnData from '../../pushNotifications';
 import mail from '../../mail';
 import Notification from '../notification/notification.model';
 
+require('../../processing/posts');
 // Post.collection.createIndex({ title: 'text', shortText: 'text', description: 'text', keywords: 'text', tags: 'text'});
 // Post.collection.indexes(function (err, indexes) {
 //   console.log(indexes);
@@ -22,23 +23,27 @@ import Notification from '../notification/notification.model';
 //   console.log(err);
 // });
 
-async function findRelatedPosts() {
+async function findRelatedPosts(metaId) {
   try {
-    let id = '598e2f3733b0985433527b95';
-    let post = await Post.findOne({ _id: id }).populate('tags');
+    // let id = '598e2f3733b0985433527b95';
+    let post = await MetaPost.findOne({ _id: metaId }).populate('tags');
     let tagsArr = post.tags.filter(t => !t.category).map(t => t._id);
     let tags = tagsArr.join(' ');
-    console.log(tags);
+    let keywords = post.keywords.join(' ');
+    let search = `${tags} ${keywords} ${post.title}`.replace(/"|'/g, '');
+    console.log(search);
 
-    let posts = await Post.find(
-      { $text: { $search: tags } },
+    let posts = await MetaPost.find(
+      { $text: { $search: search }, _id: { $ne: metaId } },
       { score: { $meta: 'textScore' } })
-    .sort({ score: { $meta: 'textScore' } });
+    .sort({ score: { $meta: 'textScore' } })
+    .limit(5);
     posts.forEach((p, i) => {
-      console.log(i, ' ', p.title);
-      console.log(p.description);
-      console.log(p.keywords);
-    })
+      console.log(i, ' ' + p.title);
+      // console.log(p.description);
+      // console.log(p.keywords);
+    });
+    return posts;
   } catch (err) {
     console.log(err);
   }
@@ -434,7 +439,14 @@ exports.findById = async req => {
   if (id && post) {
     Post.sendOutInvestInfo([post._id], id);
   }
+  // let related = await findRelatedPosts(post.metaPost);
+  // return { post, related };
   return post;
+};
+
+exports.related = async req => {
+  let id = req.params.id;
+  return await findRelatedPosts(id);
 };
 
 exports.update = async (req, res) => {

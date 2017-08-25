@@ -8,9 +8,9 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-import { numbers } from '../utils';
-import { globalStyles, fullWidth, green, smallScreen, greyText } from '../styles/global';
-import UrlPreview from './createPost/urlPreview.component';
+import { numbers } from '../../utils';
+import { globalStyles, fullWidth, green, smallScreen, greyText, mainPadding } from '../../styles/global';
+import UrlPreview from '../createPost/urlPreview.component';
 
 let moment = require('moment');
 
@@ -124,7 +124,7 @@ export default function (props) {
     // </Text>);
     let previewProps = { urlPreview: post, domain: post.domain };
     return (
-      <View style={{ marginLeft: 50, marginRight: 10, }}>
+      <View style={{ marginLeft: 55, marginRight: mainPadding }}>
         <UrlPreview
           onPress={() => goToPost(post)}
           size={'small'}
@@ -141,7 +141,7 @@ export default function (props) {
           <Image
             resizeMode={'contain'}
             style={styles.activityImage}
-            source={require('../assets/images/r.png')}
+            source={require('../../assets/images/r.png')}
           />
         </View>
         );
@@ -150,7 +150,7 @@ export default function (props) {
 
     let image = (
       <TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
-        <Image style={styles.activityImage} source={require('../assets/images/default_user.jpg')} />
+        <Image style={styles.activityImage} source={require('../../assets/images/default_user.jpg')} />
       </TouchableWithoutFeedback>);
     if (user && user.image) {
       image = (<TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
@@ -161,7 +161,6 @@ export default function (props) {
   };
 
   let getText = () => {
-
     let action = 'increased';
     let also = 'also ';
     if (singleActivity.amount < 0) {
@@ -255,12 +254,12 @@ export default function (props) {
   };
 
   let renderMiddle = () => {
-    let icon = require('../assets/images/rup.png');
+    let icon = require('../../assets/images/rup.png');
     let color = { color: green };
     let coin;
     if (singleActivity.amount < 0) {
       color = { color: 'red' };
-      icon = require('../assets/images/rdown.png');
+      icon = require('../../assets/images/rdown.png');
     }
 
     if (singleActivity.coin) {
@@ -273,7 +272,7 @@ export default function (props) {
           <Image
             resizeMode={'contain'}
             style={[styles.r, { height: 15, width: 22 }]}
-            source={require('../assets/images/coinup.png')}
+            source={require('../../assets/images/coinup.png')}
           />
           <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
             {Math.abs(numbers.abbreviateNumber(singleActivity.coin))}
@@ -383,7 +382,10 @@ export default function (props) {
       case 'topPost':
         return (
           <View style={styles.activityLeft}>
-            <Image style={[ styles.activityImage, { borderRadius: 0, width: 25, height: 25 } ]} resizeMode={'contain'} source={require('../assets/images/r.png')} />
+            <Image
+              style={[styles.activityImage, { borderRadius: 0, width: 25, height: 25 }]}
+              resizeMode={'contain'} source={require('../../assets/images/r.png')}
+            />
             <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
               {getText(singleActivity)}
             </Text>
@@ -440,7 +442,7 @@ const localStyles = StyleSheet.create({
     bottom: 6,
   },
   singleActivity: {
-    padding: 10,
+    padding: mainPadding,
     paddingTop: 15,
     width: fullWidth,
     justifyContent: 'space-between',

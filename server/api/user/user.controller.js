@@ -15,11 +15,10 @@ import Feed from '../feed/feed.model';
 
 // User.findOneAndUpdate({ _id: 'slava' }, { role: 'admin' }).exec();
 // User.findOneAndUpdate({ _id: 'Analisa' }, { role: 'admin' }).exec();
-User.findOneAndUpdate({ _id: 'jay' }, { role: 'user' }).exec();
-User.findOneAndUpdate({ _id: 'phillip' }, { role: 'user' }).exec();
+// User.findOneAndUpdate({ _id: 'jay' }, { role: 'user' }).exec();
+// User.findOneAndUpdate({ _id: 'phillip' }, { role: 'user' }).exec();
 // User.findOneAndUpdate({ _id: 'balasan' }, { role: 'admin' }).exec();
-
-
+// User.findOneAndUpdate({ _id: 'test' }, { role: 'admin' }).exec();
 
 // async function notifications() {
 //   try {
@@ -33,29 +32,6 @@ User.findOneAndUpdate({ _id: 'phillip' }, { role: 'user' }).exec();
 //   }
 // }
 // notifications();
-
-// let oldUsers = ['praiseshadows', 'ruthgruca', 'willard', 'b', 'n', 'quasimado', 'zainabzmz'];
-// async function old() {
-//   try {
-//     // await User.update({ _id: { $in: oldUsers } }, { onboarding: 0 }, { multi: true });
-//     let users = await User.find({ _id: { $in: oldUsers } });
-//     users.forEach(async user => {
-//       try {
-//         console.log(user._id);
-//         console.log(user.onboarding);
-//         // user.onboarding = 0;
-//         await user.save();
-//         console.log(user.onboarding);
-//       } catch (err) {
-//         console.log(err);
-//       }
-//     });
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-// old();
-
 
 let validationError = (res, err) => {
   console.log(err);

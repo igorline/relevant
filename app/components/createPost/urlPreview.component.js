@@ -8,9 +8,9 @@ import {
   ActionSheetIOS,
   Platform
 } from 'react-native';
-import { globalStyles, greyText, borderGrey } from '../../styles/global';
-import CustomSpinner from '../CustomSpinner.component';
 import RNBottomSheet from 'react-native-bottom-sheet';
+import { globalStyles, greyText } from '../../styles/global';
+import CustomSpinner from '../CustomSpinner.component';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -53,8 +53,6 @@ export default class UrlPreviewComponent extends Component {
     let preview = null;
     let image;
     let domain;
-    let addStyle = {};
-
     let height = 80;
     let imageFlex = 0.4;
     let fontSize = 15;
@@ -94,13 +92,13 @@ export default class UrlPreviewComponent extends Component {
           onPress={this.props.onPress || this.previewMenu}
         >
           <View style={[styles.innerPreview]}>
-            {image ||  <View style={{ width: 5 }} />}
+            {image || <View style={{ width: 5 }} />}
             <View style={{ flex: 0.6, padding: 5, justifyContent: 'center' }}>
               <Text
                 numberOfLines={maxLines}
                 style={{ color: greyText, fontSize }}
               >
-                {this.props.urlPreview.title.trim()}
+                {this.props.urlPreview.title ? this.props.urlPreview.title.trim() : ''}
               </Text>
               {domain}
             </View>

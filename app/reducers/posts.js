@@ -29,7 +29,12 @@ const initialState = {
   },
   posts: {},
   comments: {},
+  // commentary: {
+  //   top: {},
+  //   new: {},
+  // },
   topPosts: [],
+  related: {},
 };
 
 function mergePosts(posts, state) {
@@ -50,6 +55,16 @@ function mergePosts(posts, state) {
 
 export default function post(state = initialState, action) {
   switch (action.type) {
+
+    case types.SET_RELATED: {
+      return {
+        ...state,
+        related: {
+          ...state.related,
+          [action.payload.postId]: action.payload.related
+        }
+      };
+    }
 
     case types.SET_TOP_POSTS: {
       return {
@@ -142,6 +157,12 @@ export default function post(state = initialState, action) {
             ...action.payload.data.entities.metaPosts
           },
         },
+        // commentary: {
+        //   [type]: {
+        //     ...state.metaPosts[type],
+        //     ...action.payload.data.entities.metaPosts
+        //   },
+        // },
         comments: { ...state.comments, ...action.payload.data.entities.comments },
         posts: { ...state.posts, ...posts },
         loaded: {

@@ -25,11 +25,11 @@ class PostImage extends Component {
   componentDidMount() {
   }
 
-  goToPost() {
-    if (!this.props.actions) return;
-    if (this.props.scene && this.props.scene.id === this.props.post._id) return;
-    this.props.actions.goToPost(this.props.post);
-  }
+  // goToPost() {
+  //   if (!this.props.actions) return;
+  //   if (this.props.scene && this.props.scene.id === this.props.post._id) return;
+  //   this.props.actions.goToPost(this.props.post);
+  // }
 
   openLink(url) {
     this.props.actions.goToUrl(url);
@@ -37,7 +37,7 @@ class PostImage extends Component {
 
   render() {
     let image = null;
-    let link = null;
+    let link;
     let post = this.props.metaPost || this.props.post;
     let single = false // this.props.singlePost;
     let smallerImg; // = this.props.singlePost;
@@ -65,7 +65,7 @@ class PostImage extends Component {
               // styles.darkGrey
             ]}
           >
-            {author ? author : ''}
+            {author || ''}
           </Text>
         );
       }
@@ -74,7 +74,6 @@ class PostImage extends Component {
         link = post.link || post.url;
         linkEl = (
           <View>
-            {/*authorEl*/}
             <Text
               // numberOfLines={2}
               style={[
@@ -86,6 +85,7 @@ class PostImage extends Component {
             >
               {post.publisher || post.domain}
               {time ? ' · ' + time : ''}
+              {authorEl ? ' · ' : null}{authorEl}
               {/*post.description ? ' · ' + post.description : null */}
             </Text>
           </View>
@@ -224,7 +224,7 @@ class PostImage extends Component {
           if (Math.abs(this.touchable1x - x) > 5) {
             return;
           }
-          this.openLink(post.link);
+          this.openLink(post.link || post.url);
         }}
         pressRetentionOffset={{ top: 100, left: 100, right: 100, bottom: 100 }}
       >

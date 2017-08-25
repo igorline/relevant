@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  InteractionManager
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -19,8 +18,7 @@ import * as investActions from '../../actions/invest.actions';
 import * as animationActions from '../../actions/animation.actions';
 import * as navigationActions from '../../actions/navigation.actions';
 import * as createPostActions from '../../actions/createPost.actions';
-import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
-import ErrorComponent from '../../components/error.component';
+import { globalStyles } from '../../styles/global';
 import CustomListView from '../../components/customList.component';
 
 let styles;
@@ -51,7 +49,7 @@ class Discover extends Component {
   componentWillMount() {
     if (this.props.scene) {
       this.topic = this.props.scene.topic;
-      this.filter= this.topic ? [this.topic] : [];
+      this.filter = this.topic ? [this.topic] : [];
     }
   }
 
@@ -73,13 +71,45 @@ class Discover extends Component {
     }
   }
 
-  // onScroll()
-
   shouldComponentUpdate(next) {
     if (!next.active) return false;
-    // let tab = next.tabs.routes[next.tabs.index];
-    // if (tab.key !== 'read') return false;
     return true;
+  }
+
+  getViewData(props, view) {
+    switch (view) {
+      case 0:
+        if (this.topic) {
+          return {
+            data: props.posts.topics.top[this.topic._id],
+            loaded: props.posts.loaded.topics[this.topic._id] ?
+              props.posts.loaded.topics[this.topic._id].top : false,
+          };
+        }
+        return {
+          data: props.posts.top,
+          loaded: props.posts.loaded.top,
+        };
+      case 1:
+        if (this.topic) {
+          return {
+            data: props.posts.topics.new[this.topic._id],
+            loaded: props.posts.loaded.topics[this.topic._id] ?
+              props.posts.loaded.topics[this.topic._id].new : false
+          };
+        }
+        return {
+          data: props.posts.new,
+          loaded: props.posts.loaded.new
+        };
+      case 2:
+        return {
+          data: props.userList[this.topic ? this.topic._id : 'all'],
+          loaded: null
+        };
+      default:
+        return null;
+    }
   }
 
   scrollToTop() {
@@ -111,12 +141,18 @@ class Discover extends Component {
     if (view !== 2) {
       let posts = [];
       let metaPost = this.props.posts.metaPosts[type][rowData];
-      if (metaPost) posts = metaPost.commentary;
+      if (metaPost) posts = metaPost.commentary.map(p => this.props.posts.posts[p]);
       else return null;
 
       let showReposts = false;
       if (type === 'new') showReposts = true;
-      return (<Post metaPost={metaPost} showReposts={showReposts} post={posts} {...this.props} styles={styles} />);
+      return (<Post
+        metaPost={metaPost}
+        showReposts={showReposts}
+        commentary={posts}
+        actions={this.props.actions}
+        styles={styles}
+      />);
     }
     let topic = this.topic ? this.topic._id : null;
     return (<DiscoverUser
@@ -126,40 +162,6 @@ class Discover extends Component {
       user={rowData}
       {...this.props}
     />);
-  }
-
-  getViewData(props, view) {
-    switch (view) {
-      case 0:
-        if (this.topic) {
-          return {
-            data: props.posts.topics.top[this.topic._id],
-            loaded: props.posts.loaded.topics[this.topic._id] ? props.posts.loaded.topics[this.topic._id].top : false,
-          };
-        }
-        return {
-          data: props.posts.top,
-          loaded: props.posts.loaded.top,
-        };
-      case 1:
-        if (this.topic) {
-          return {
-            data: props.posts.topics.new[this.topic._id],
-            loaded: props.posts.loaded.topics[this.topic._id] ? props.posts.loaded.topics[this.topic._id].new : false
-          };
-        }
-        return {
-          data: props.posts.new,
-          loaded: props.posts.loaded.new
-        };
-      case 2:
-        return {
-          data: props.userList[this.topic ? this.topic._id : 'all'],
-          loaded: null
-        };
-      default:
-        return null;
-    }
   }
 
   render() {
@@ -183,19 +185,15 @@ class Discover extends Component {
           onScroll={this.props.onScroll}
           needsReload={this.needsReload}
           scrollableTab
+          error={this.props.error}
         />);
     }
 
-    if (this.props.error) {
-      dataEl = [];
-    }
-
-    if (!this.loaded) dataEl = <CustomSpinner />;
+    // if (!this.loaded) dataEl = <CustomSpinner />;
 
     return (
       <View style={{ backgroundColor: 'hsl(0,0%,100%)', flex: 1 }}>
         {dataEl}
-        <ErrorComponent parent={'discover'} reloadFunction={this.load} />
       </View>
     );
   }

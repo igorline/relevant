@@ -120,7 +120,7 @@ export default class StatCategory extends Component {
       { el: (
         <View style={{ flexDirection: 'row', justifyContent: 'flex-start'}}>
           <Text style={[styles.statNumber, styles.statRowNumber]}>
-            {Math.round(untilNext * 100) / 10}
+            {Math.round(untilNext * 100)}
           </Text>
           <Text style={[styles.statNumber, styles.statRowNumber, { fontSize: 16, lineHeight: 18 }]}>%</Text>
         </View>

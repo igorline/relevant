@@ -172,7 +172,7 @@ export function goToComments(post, key, animation) {
 export function goToPost(post, openComment) {
   return push({
     key: 'singlePost',
-    title: post.title,
+    title: post.title ? post.title : '',
     back: true,
     id: post._id,
     commentCount: post.commentCount,
