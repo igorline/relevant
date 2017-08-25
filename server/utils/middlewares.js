@@ -1,17 +1,11 @@
 
-
 exports.asyncMiddleware = fn =>
-  (req, res, next) => {
-    Promise.resolve(fn(req))
-    .then(result => {
-      if (res) res.jsonResponse = result;
+  async (req, res, next) => {
+    try {
+      let result = await fn(req);
+      res.jsonResponse = result;
       next();
-      return result;
-    })
-    .catch(err => {
+    } catch (err) {
       next(err);
-      if (!res) {
-        throw err;
-      }
-    });
+    }
   };

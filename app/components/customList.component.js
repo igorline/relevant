@@ -3,14 +3,13 @@ import {
   ListView,
   RefreshControl,
   View,
-  Text,
   StyleSheet,
-  Image,
   Platform
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import CustomSpinner from '../components/CustomSpinner.component';
 import EmptyList from '../components/emptyList.component';
+import ErrorComponent from './error.component';
 
 let styles;
 
@@ -57,6 +56,9 @@ export default class ActivityView extends Component {
       // need to update data either way for list to re-render
       this.updateData(this.props.data);
     }
+    if (next.error) {
+      this.setState({ reloading: false, loading: false });
+    }
 
     if (next.active && next.needsReload > this.lastReload) {
       this.setState({ loading: true });
@@ -100,7 +102,12 @@ export default class ActivityView extends Component {
   render() {
     let listEl = null;
     let emptyEl = null;
-    let spinnerEl = (<CustomSpinner visible={!this.props.data.length && this.props.active} />);
+    let spinnerEl = (
+      <CustomSpinner
+        visible={!this.props.data.length &&
+          this.props.active &&
+          !this.props.headerData}
+      />);
 
     let listStyle = [styles.commonList, styles.hiddenList];
 
@@ -140,9 +147,10 @@ export default class ActivityView extends Component {
         contentInset={{ top: this.props.YOffset || 0 }}
         contentOffset={{ y: -this.props.YOffset || 0 }}
         renderHeader={this.props.renderHeader}
-        contentContainerStyle={
-          { paddingTop: Platform.OS === 'android' ? this.props.YOffset : 0, backgroundColor: 'white' }
-        }
+        contentContainerStyle={{
+          paddingTop: Platform.OS === 'android' ? this.props.YOffset : 0,
+          backgroundColor: 'white'
+        }}
         style={{
           flex: 0.5,
           width: fullWidth,
@@ -162,7 +170,7 @@ export default class ActivityView extends Component {
           <RefreshControl
             // key={this.props.needsReload}
             style={[{ backgroundColor: 'hsl(238,20%,95%)' }, this.props.data.length ? null : styles.hideReload]}
-            refreshing={this.state.reloading}
+            refreshing={this.state.reloading && !this.props.error}
             onRefresh={this.reload}
             tintColor="#000000"
             colors={['#000000', '#000000', '#000000']}
@@ -171,6 +179,10 @@ export default class ActivityView extends Component {
         }
       />
     );
+
+    if (this.props.error && !this.props.data.length && !this.props.headerData) {
+      return <ErrorComponent parent={this.props.parent} error={this.props.error} reloadFunction={() => this.props.load(this.props.view, 0)} />;
+    }
 
     return (
       <View style={listStyle}>

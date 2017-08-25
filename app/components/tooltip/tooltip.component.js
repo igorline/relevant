@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
 import {
-  Text,
   Animated,
   View,
   StyleSheet,
-  Easing,
   TouchableHighlight,
   Platform
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { globalStyles, blue, darkGrey, fullHeight, fullWidth } from '../../styles/global';
+import { globalStyles, darkGrey, fullHeight, fullWidth } from '../../styles/global';
 import * as authActions from '../../actions/auth.actions';
 import * as navigationActions from '../../actions/navigation.actions';
 import * as helper from './tooltip.helper';
 
 let styles;
 const TOOLTIP_MARGIN = 10;
-const TOOLTIP_WIDTH = fullWidth - 2 * TOOLTIP_MARGIN;
+const TOOLTIP_WIDTH = fullWidth - (2 * TOOLTIP_MARGIN);
 
 class Tooltip extends Component {
   constructor(props, context) {
@@ -46,12 +44,9 @@ class Tooltip extends Component {
 
 
     let id = next.tooltip.current;
-    let tooltip = next.tooltip.onboarding[id];
-    let nextT = next.tooltip.data[tooltip];
-    // console.log(tooltip);
-    // console.log(nextT);
-    if (nextT && nextT.toggle && tooltip !== next.tooltip.showing.name) {
-      // console.log('trigger ', tooltip);
+    let tooltipId = next.tooltip.onboarding[id];
+    let nextT = next.tooltip.data[tooltipId];
+    if (nextT && nextT.toggle && tooltipId !== next.tooltip.showing.name) {
       clearTimeout(this.timeout);
       this.timeout = setTimeout(() => nextT.toggle(), 300);
     }
@@ -63,28 +58,20 @@ class Tooltip extends Component {
         Animated.spring(this.state.scale, {
           toValue: 1,
           delay: 0,
-          // duration: 200,
-          // easing: Easing.in(Easing.elastic(1.0)),
           useNativeDriver: true,
           velocity: 25,
-          // tension: 100,
           friction: 10
-          // easing: Easing.in(Easing.cubic)
         }).start();
         Animated.spring(this.state.opacity, {
           toValue: 1,
           delay: 0,
-          // duration: 200,
-          // easing: Easing.out(Easing.cubic),
           velocity: 25,
-          // tension: 50,
           friction: 10,
           useNativeDriver: true,
         }).start();
       } else {
         this.setState({
           scale: new Animated.Value(0.0),
-          // opacity: new Animated.Value(0),
           x: new Animated.Value(0),
         });
       }
@@ -97,7 +84,7 @@ class Tooltip extends Component {
     });
 
     setTimeout(() => {
-      this.props.actions.setCurrentTooltip(this.props.auth.user.onboarding);
+      this.props.actions.setCurrentTooltip(props.auth.user.onboarding);
     }, 1000);
   }
 
@@ -138,7 +125,7 @@ class Tooltip extends Component {
       ];
       style = {
         ...style,
-        top: -10 + parent.y + parent.h + tooltip.verticalOffset - this.state.height / 2,
+        top: -10 + parent.y + parent.h + tooltip.verticalOffset - (this.state.height / 2),
         transform
       };
       arrowStyle = [
@@ -179,7 +166,7 @@ class Tooltip extends Component {
       ];
       style = {
         ...style,
-        left: px - TOOLTIP_WIDTH / 2 - TOOLTIP_MARGIN,
+        left: px - (TOOLTIP_WIDTH / 2) - TOOLTIP_MARGIN,
         transform,
       };
       arrowStyle = [
@@ -204,7 +191,7 @@ class Tooltip extends Component {
       style = {
         ...style,
         width: tooltip.width,
-        left: parent.x + parent.w / 2 - this.state.width / 2 + tooltip.horizontalOffset,
+        left: parent.x + (parent.w / 2) - (this.state.width / 2) + tooltip.horizontalOffset,
         transform
       };
       arrowStyle = [
@@ -238,7 +225,7 @@ class Tooltip extends Component {
             <View style={[styles.arrow, ...arrowStyle]} />
             <TouchableHighlight
               underlayColor={'transparent'}
-              style={ styles.tooltipCard }
+              style={styles.tooltipCard}
               onPress={this.nextOnboarding}
             >
               {helper.text[tooltip.name]({
@@ -268,10 +255,6 @@ let localStyles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 15,
     paddingVertical: 20,
-    // shadowColor: 'black',
-    // shadowOffset: { width: 1, height: 1 },
-    // shadowRadius: 3,
-    // shadowOpacity: 0.8,
     zIndex: 1000000,
     width: TOOLTIP_WIDTH,
   },
@@ -295,10 +278,6 @@ let localStyles = StyleSheet.create({
       [{ rotate: '45deg' }] :
       [{ rotate: '35deg' }, { skewY: '45deg' }, { translateY: 3 }],
     backgroundColor: 'white',
-    // shadowColor: 'black',
-    // shadowOffset: { width: -1, height: -1 },
-    // shadowRadius: 0,
-    // shadowOpacity: 0.1,
   },
   arrowBottom: {
     shadowOffset: { width: 1, height: 1 },

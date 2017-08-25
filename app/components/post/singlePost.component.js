@@ -3,9 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
-  InteractionManager,
   RefreshControl,
-  ListView,
   TouchableHighlight,
   KeyboardAvoidingView,
   Platform,
@@ -18,12 +16,9 @@ import Comment from './comment.component';
 import Post from './post.component';
 import CommentInput from './commentInput.component';
 import UserSearchComponent from '../createPost/userSearch.component';
+import UrlPreview from '../createPost/urlPreview.component';
 
 let styles;
-// let KBView = KeyboardAvoidingView;
-// if (Platform.OS === 'android') {
-//   KBView = View;
-// }
 
 class SinglePostComments extends Component {
   constructor(props) {
@@ -35,7 +30,6 @@ class SinglePostComments extends Component {
       top: 0,
       suggestionHeight: 0,
     };
-    this.post = null;
     this.id = null;
     this.comments = null;
     this.renderRow = this.renderRow.bind(this);
@@ -49,61 +43,46 @@ class SinglePostComments extends Component {
     this.reload = this.reload.bind(this);
     this.scrollToComment = this.scrollToComment.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
-    this.loaded = false;
+    this.loaded = true;
     this.renderUserSuggestions = this.renderUserSuggestions.bind(this);
-    this.updatePosition = this.updatePosition.bind(this);
+    this.renderRelated = this.renderRelated.bind(this);
   }
 
   componentWillMount() {
-    this.id = this.props.post;
+    this.id = this.props.postId;
 
-    if (this.props.comments.commentsById[this.id]) {
-      if (this.props.comments.commentsById[this.id].data) {
-        this.comments = this.props.comments.commentsById[this.id].data;
-      }
-      if (this.props.comments.commentsById[this.id].total) {
-        this.total = this.props.comments.commentsById[this.id].total;
-        if (this.total > 10) this.longFormat = true;
-      }
+    let comments = this.props.postComments;
+    if (comments) {
+      this.comments = comments.data;
+      this.total = comments.total || 0;
+      if (this.total > 10) this.longFormat = true;
     }
 
-    InteractionManager.runAfterInteractions(() => {
-      this.loaded = true;
-      this.reload();
-        setTimeout(() => {
-          if (this.props.scene.openComment) {
-            if (this.props.scene.commentCount && this.comments) {
-              this.scrollToBottom(true);
-            } else if (!this.props.scene.commentCount) {
-              this.input.textInput.focus();
-            }
-          }
-          return;
-        }, 100);
-
-      this.forceUpdate();
-    });
-  }
-
-  componentWillUnmount() {
-  }
-
-  componentWillReceiveProps(next) {
-    if (next.comments.commentsById[this.id] !== this.props.comments.commentsById[this.id]) {
-      if (next.comments.commentsById[this.id]) {
-        if (next.comments.commentsById[this.id].data) {
-          if (!this.comments && this.props.scene.openComment) {
-            this.scrollToBottom(true);
-          }
-          this.comments = next.comments.commentsById[this.id].data;
-        }
-
-        if (next.comments.commentsById[this.id].total) {
-          this.total = next.comments.commentsById[this.id].total;
-          if (this.total > 10) this.longFormat = true;
+    setTimeout(() => {
+      if (this.props.scene.openComment) {
+        if (this.props.scene.commentCount && this.comments) {
+          this.scrollToBottom(true);
+        } else if (!this.props.scene.commentCount) {
+          this.input.textInput.focus();
         }
       }
+      this.forceUpdate();
+    }, 100);
+  }
 
+
+  componentWillReceiveProps(next) {
+    if (next.postComments && next.postComments !== this.props.postComments) {
+      if (!this.comments && this.props.scene.openComment) {
+        this.scrollToBottom(true);
+      }
+      this.comments = next.postComments.data;
+
+      this.total = next.postComments.total;
+      if (this.total > 10) this.longFormat = true;
+    }
+
+    if (this.props.post !== next.post || this.props.error) {
       clearTimeout(this.stateTimeout);
       this.stateTimeout = setTimeout(() =>
         this.setState({ reloading: false }), 1000);
@@ -130,13 +109,6 @@ class SinglePostComments extends Component {
     if (Platform.OS === 'android') {
       Keyboard.addListener('keyboardDidShow', scroll);
     }
-
-    // this.forceUpdate();
-    // setTimeout(() => {
-    //   this.scrollView.scrollToIndex({
-    //     viewPosition: 0.1, index
-    //   });
-    // }, 80);
   }
 
 
@@ -144,78 +116,29 @@ class SinglePostComments extends Component {
     this.scrollTimeout = setTimeout(() => {
       if (!this.scrollView) return;
       let l = this.scrollView._listRef._totalCellLength + this.scrollView._listRef._headerLength;
-      if (this.comments.length) {
+      if (this.comments && this.comments.length) {
         if (l < fullHeight - 50 && init) return;
         this.scrollView.scrollToEnd();
-      } else if (this.comments.length === 0) {
+      } else if (!this.comments || this.comments.length === 0) {
         let offset = this.headerHeight - this.scrollHeight;
         this.scrollView.scrollToOffset({ offset });
       }
-    }, 100);
+    }, 200);
   }
 
-  renderRow({ item, index }) {
-    return (
-      <Comment
-        {...this.props}
-        key={item._id}
-        parentEditing={this.toggleEditing}
-        index={index}
-        scrollToComment={() => this.scrollToComment(index)}
-        parentId={this.id}
-        comment={item}
-        parentView={this.scrollView}
-      />
-    );
+  reloadComments() {
+    this.props.actions.getComments(this.id, 0, 10);
   }
 
   reload() {
     this.reloading = true;
     this.props.actions.getComments(this.id, 0, 10);
     this.props.actions.getSelectedPost(this.id);
-  }
-
-  renderHeader() {
-    let headerEl;
-    let loadEarlier;
-
-    headerEl = (<Post
-      singlePost
-      key={0}
-      scene={this.props.scene}
-      post={this.id}
-      focusInput={() => this.input.textInput.focus()}
-      {...this.props}
-    />);
-
-    if (this.longFormat) {
-      if (this.comments && this.total) {
-        if (this.total > this.comments.length) {
-          loadEarlier = (<TouchableHighlight
-            key={1}
-            underlayColor={'transparent'}
-            onPress={this.loadMoreComments}
-            style={styles.loadMoreButton}
-          >
-            <Text>load earlier...</Text>
-          </TouchableHighlight>);
-        }
-      }
-    }
-    return (
-      <View
-        onLayout={(e) => {
-          this.headerHeight = e.nativeEvent.layout.height;
-        }}
-      >
-        {headerEl}
-        {loadEarlier}
-      </View>
-    );
+    this.props.actions.getRelated(this.id);
   }
 
   renderComments() {
-    if (this.comments) {
+    if (this.props.post) {
       return (<FlatList
         ref={c => this.scrollView = c}
         data={this.comments}
@@ -232,11 +155,7 @@ class SinglePostComments extends Component {
         ListHeaderComponent={this.renderHeader}
 
         onLayout={(e) => {
-          // console.log('layout', this.scrollOnLayout);
           this.scrollHeight = e.nativeEvent.layout.height;
-          // this.scrollHeight = height;
-          // if (this.scrollOnLayout) this.scrollToBottom();
-          // this.scrollOnLayout = false;
         }}
 
         refreshControl={
@@ -253,8 +172,80 @@ class SinglePostComments extends Component {
     return <View style={{ flex: 1 }} />;
   }
 
-  updatePosition(params) {
-    this.setState(params);
+  renderRelated() {
+    let relatedEl = this.props.related.map(r => {
+      let post = { _id: r.commentary[0], title: r.title };
+      return (
+        <View key={r._id} style={{ paddingHorizontal: 15 }}>
+          <UrlPreview
+            size={'small'}
+            urlPreview={r}
+            onPress={() => this.props.actions.goToPost(post)}
+            domain={r.domain}
+            actions={this.props.actions}
+          />
+        </View>
+      );
+    });
+    return relatedEl;
+  }
+
+  renderHeader() {
+    let headerEl;
+    let loadEarlier;
+
+    headerEl = (<Post
+      // {...this.props}
+      singlePost
+      key={0}
+      scene={this.props.scene}
+      post={this.props.post}
+      actions={this.props.actions}
+      focusInput={() => this.input.textInput.focus()}
+    />);
+
+    if (this.longFormat) {
+      if (this.comments && this.total) {
+        if (this.total > this.comments.length) {
+          loadEarlier = (<TouchableHighlight
+            key={1}
+            underlayColor={'transparent'}
+            onPress={this.loadMoreComments}
+            style={styles.loadMoreButton}
+          >
+            <Text>load earlier...</Text>
+          </TouchableHighlight>);
+        }
+      }
+    }
+
+    return (
+      <View
+        onLayout={(e) => {
+          this.headerHeight = e.nativeEvent.layout.height;
+        }}
+      >
+        {headerEl}
+        {this.renderRelated()}
+        {loadEarlier}
+      </View>
+    );
+  }
+
+
+  renderRow({ item, index }) {
+    return (
+      <Comment
+        {...this.props}
+        key={item._id}
+        parentEditing={this.toggleEditing}
+        index={index}
+        scrollToComment={() => this.scrollToComment(index)}
+        parentId={this.id}
+        comment={item}
+        parentView={this.scrollView}
+      />
+    );
   }
 
   renderUserSuggestions() {
@@ -298,6 +289,7 @@ class SinglePostComments extends Component {
       >
         {this.renderComments()}
         {this.renderUserSuggestions()}
+
         <CommentInput
           ref={c => this.input = c}
           postId={this.id}
@@ -305,7 +297,7 @@ class SinglePostComments extends Component {
           {...this.props}
           scrollView={this.scrollView}
           scrollToBottom={this.scrollToBottom}
-          updatePosition={this.updatePosition}
+          updatePosition={params => this.setState(params)}
           onFocus={() => {
             this.scrollToBottom();
           }}

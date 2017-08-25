@@ -75,7 +75,7 @@ exports.trimToLength = (doc, length) => {
 };
 
 exports.generatePreview = (body, uri) => {
-  console.log('Generate Preview ', uri);
+  // console.log('Generate Preview ', uri);
 
   body = body.replace('<!--', '').replace('-->', '');
   const $ = cheerio.load(body);
@@ -104,7 +104,7 @@ exports.generatePreview = (body, uri) => {
   else canonical = null;
 
   if (canonical && canonical.href) {
-    console.log('check if valid canonical url');
+    // console.log('check if valid canonical url');
     if (!URL_REGEX.test(canonical.href)) {
       canonical.href = exports.extractDomain(uri) + canonical.href;
     }
@@ -154,6 +154,9 @@ exports.generatePreview = (body, uri) => {
     'twitter:creator': null,
     news_keywords: null,
     keywords: null,
+    'article:tag': null,
+    author: null,
+    'article:author': null,
   };
   const meta = $('meta');
   const $title = $('title');
@@ -168,7 +171,8 @@ exports.generatePreview = (body, uri) => {
         || meta[key].attribs.name === s
         || meta[key].attribs.itemprop === s)
       ) {
-        data[s] = meta[key].attribs.content;
+        if (!data[s]) data[s] = meta[key].attribs.content;
+        else data[s] += ', ' + meta[key].attribs.content;
       }
     });
   });
@@ -189,14 +193,83 @@ exports.generatePreview = (body, uri) => {
   let originalUrl = parseUrl(uri);
   let cannonicalUrl = parseUrl(url);
 
+  let k1 = data['keywords'] ? data['keywords'].split(',').map(k => k.trim()) : [];
+  let k2 = data['news_keywords'] ? data['news_keywords'].split(',').map(k => k.trim()) : [];
+  let k3 = data['article:tag'] ?
+  data['article:tag']
+  .split(',')
+  .map(k => k.replace('--primarykeyword-', '').trim())
+  .filter(k => !k.match('--')) : [];
+
+  let keywords = [...new Set([...k1, ...k2, ...k3])];
+
   // general fix for mismatch
   if (originalUrl.pathname !== cannonicalUrl.pathname) {
     url = originalUrl.protocol + '//' + originalUrl.host + originalUrl.pathname;
   }
-  // patch for massive bug?
-  // if (domain.match('massivesci.com')) {
-  //   url = uri;
-  // }
+
+  let amp = $('[type="application/ld+json"]').eq(0).text();
+  let ampKeywords;
+  let ampAuthor;
+  if (amp) {
+    try {
+      amp = amp.replace('//<![CDATA[', '')
+      .replace('// <![CDATA[', '')
+      .replace('//]]>', '')
+      .replace('// ]]>', '')
+      .trim();
+      amp = JSON.parse(amp);
+      if (!amp) throw new Error('no amp');
+      ampAuthor = amp.author ? amp.author.name : null;
+      ampKeywords = amp.keywords && amp.keywords.length ? amp.keywords : null;
+      if (typeof ampAuthor === 'string') ampAuthor = [ampAuthor];
+    } catch (err) {
+      // console.log(amp);
+      // console.log(err);
+    }
+  }
+  // console.log('amp: ', amp ? JSON.parse(amp) : null);
+
+  // console.log('url ', url);
+  // console.log('article:author ', data['article:author']);
+  // console.log('author ', data['author']);
+  // console.log('amp author ', ampAuthor);
+  // console.log('regular keywords ', keywords);
+  // console.log('amp keywords', ampKeywords);
+
+  data['author'] = data['author'] || '';
+
+  data['article:author'] = data['article:author'] || '';
+
+  let metaAuthor = data['author']
+  .split(/,|\sand\s/)
+  .map(a => a.trim())
+  .filter(a => a !== '');
+
+  ampAuthor = ampAuthor || [];
+
+
+  let author = [...ampAuthor, ...metaAuthor];
+  author = [...new Set(author)].filter(a => !a.match('http'));
+
+
+  if (ampKeywords && ampKeywords.length && !keywords.length) {
+    if (typeof keywords !== 'array') {
+
+    } else {
+      keywords = ampKeywords.filter(k => !k.match('@'));
+    }
+  }
+
+  keywords = keywords.map(k => k.toLowerCase());
+  keywords = [...new Set(keywords)];
+
+  // console.log(keywords);
+
+  if (!data['author'] && ampAuthor) {
+    // console.log('AMP AUTHOR');
+    // console.log(ampAuthor);
+  }
 
   let doc = jsdom.jsdom(body, {
     features: {
@@ -215,8 +288,23 @@ exports.generatePreview = (body, uri) => {
   let short;
   if (article) {
     short = exports.trimToLength(article.article, 140).innerHTML;
+    if (!author.length && article.byline) {
+      let by = article.byline.split(/\n|\,|•/)
+      .map(a => a.replace(/by|by:\s/i, '').trim())
+      .filter(a => a !== '' &&
+        !a.match(/^by$/i) &&
+        a.length > 2 &&
+        !a.match('UTC')
+        && (isNaN(new Date(a).getTime()))
+        && !a.match('http')
+        //&& !a.match(/2017|2016|2015|2018/)
+      );
+      // .map(a => new Date(a))
+      // console.log(by);
+      author = by[0] ? [by[0]] : [];
+    }
   } else {
-    console.log('couldn\'t parse url ', url);
+    // console.log('couldn\'t parse url ', url);
   }
   // console.log('author ', article.byline);
 
@@ -228,6 +316,8 @@ exports.generatePreview = (body, uri) => {
   //   image = $('img').eq(0).attr('src');
   //   console.log('found alt image', image);
   // }
+
+  // console.log(author)
 
   if (image && image.indexOf('http://') !== 0 &&
       image.indexOf('https://') !== 0) {
@@ -247,13 +337,14 @@ exports.generatePreview = (body, uri) => {
     domain,
     tags,
     shortText: short,
-    articleAuthor: article && article.byline ? [article.byline] : null
+    articleAuthor: author || null,
+    keywords
   };
 
   if (!image || !title) {
-    console.log('url parse error');
-    console.log(data);
-    console.log(uri);
+    // console.log('url parse incomplete');
+    // console.log(data);
+    // console.log(uri);
     // console.log($('head').html());
   }
 

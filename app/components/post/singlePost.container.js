@@ -1,27 +1,23 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
   View,
   InteractionManager,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as authActions from '../actions/auth.actions';
-import * as userActions from '../actions/user.actions';
-import * as postActions from '../actions/post.actions';
-import * as statsActions from '../actions/stats.actions';
-import * as tagActions from '../actions/tag.actions';
-import * as investActions from '../actions/invest.actions';
-import * as createPostActions from '../actions/createPost.actions';
-import * as navigationActions from '../actions/navigation.actions';
-import { globalStyles, fullWidth } from '../styles/global';
-import * as animationActions from '../actions/animation.actions';
-import CustomSpinnerRelative from '../components/customSpinnerRelative.component';
-import ErrorComponent from '../components/error.component';
-import SinglePost from '../components/post/singlePost.component';
+import * as authActions from '../../actions/auth.actions';
+import * as userActions from '../../actions/user.actions';
+import * as postActions from '../../actions/post.actions';
+import * as statsActions from '../../actions/stats.actions';
+import * as tagActions from '../../actions/tag.actions';
+import * as investActions from '../../actions/invest.actions';
+import * as createPostActions from '../../actions/createPost.actions';
+import * as navigationActions from '../../actions/navigation.actions';
+import * as animationActions from '../../actions/animation.actions';
+import CustomSpinnerRelative from '../customSpinnerRelative.component';
+import ErrorComponent from '../error.component';
+import SinglePost from './singlePost.component';
 
-
-let styles;
 
 class SinglePostContainer extends Component {
   constructor(props, context) {
@@ -38,26 +34,17 @@ class SinglePostContainer extends Component {
   componentWillMount() {
     this.postId = this.props.scene.id;
     this.postData = this.props.posts.posts[this.postId];
+    this.related = this.props.posts.related[this.postId];
 
-    if (!this.postData) {
-      InteractionManager.runAfterInteractions(() => {
+    InteractionManager.runAfterInteractions(() => {
+      if (!this.postData) {
         this.props.actions.getSelectedPost(this.postId);
-      });
-    }
+      } if (!this.related) {
+        // this.props.actions.getRelated(this.postId, 0, 10);
+      }
+      this.props.actions.getComments(this.postId, 0, 10);
+    });
   }
-
-  // shouldComponentUpdate(next) {
-    // console.log('updating single post');
-    // for (let p in next) {
-    //   if (next[p] !== this.props[p]) {
-    //     console.log(p);
-    //     for (let pp in next[p]) {
-    //       if (next[p][pp] !== this.props[p][pp]) console.log('--> ', pp);
-    //     }
-    //   }
-    // }
-    // return true;
-  // }
 
   setEditing(bool) {
     this.setState({ editing: bool });
@@ -72,14 +59,26 @@ class SinglePostContainer extends Component {
 
     this.postData = this.props.posts.posts[this.postId];
     this.commentsData = this.props.comments.commentsById[this.postId];
+    let related = this.props.posts.related[this.postId] || [];
 
-    if (this.postData && !this.props.error) {
+    if (this.postData) {
       dataEl = (<SinglePost
-        post={this.postId}
+        postId={this.postId}
+        post={this.postData}
+        postComments={this.commentsData}
         scene={this.props.scene}
-        {...this.props}
+        actions={this.props.actions}
         singlePostEditing={this.setEditing}
+        error={this.error}
+        users={this.props.users}
+        auth={this.props.auth}
+        related={related}
+        {...this.props}
       />);
+    }
+
+    if (this.props.error && !this.postData) {
+      return <ErrorComponent error={this.props.error} parent={'singlepost'} reloadFunction={this.reload} />;
     }
 
     return (
@@ -88,24 +87,12 @@ class SinglePostContainer extends Component {
       >
         {dataEl}
         <CustomSpinnerRelative
-          visible={(!this.postData) &&
-            !this.props.error}
+          visible={(!this.postData) && !this.props.error}
         />
-        <ErrorComponent parent={'singlepost'} reloadFunction={this.reload} />
       </View>
     );
   }
 }
-
-
-const localStyles = StyleSheet.create({
-  singlePostContainer: {
-    width: fullWidth,
-    flex: 1,
-  },
-});
-
-styles = { ...localStyles, ...globalStyles };
 
 function mapStateToProps(state) {
   return {

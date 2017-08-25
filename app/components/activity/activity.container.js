@@ -5,17 +5,15 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as postActions from '../actions/post.actions';
-import * as userActions from '../actions/user.actions';
-import * as statsActions from '../actions/stats.actions';
-import { globalStyles } from '../styles/global';
-import * as notifActions from '../actions/notif.actions';
-import SingleActivity from '../components/activity.component';
-import DiscoverUser from '../components/discoverUser.component';
-import Tabs from '../components/tabs.component';
-import ErrorComponent from '../components/error.component';
-import CustomListView from '../components/customList.component';
-import EmptyList from '../components/emptyList.component';
+import * as postActions from '../../actions/post.actions';
+import * as userActions from '../../actions/user.actions';
+import * as statsActions from '../../actions/stats.actions';
+import { globalStyles } from '../../styles/global';
+import * as notifActions from '../../actions/notif.actions';
+import SingleActivity from './activity.component';
+import DiscoverUser from '../../components/discoverUser.component';
+import Tabs from '../../components/tabs.component';
+import CustomListView from '../../components/customList.component';
 
 const localStyles = StyleSheet.create({});
 const styles = { ...localStyles, ...globalStyles };
@@ -135,10 +133,12 @@ class Activity extends Component {
           loaded={tabData.loaded}
           renderRow={this.renderRow}
           type={'activity'}
+          parent={'activity'}
           load={this.load}
           view={tab.id}
           active={active}
           needsReload={this.needsReload}
+          error={this.props.error}
         />
       );
     });
@@ -154,7 +154,6 @@ class Activity extends Component {
     return (
       <View style={[styles.fullContainer]}>
         {activityEl}
-        <ErrorComponent parent={'activity'} reloadFunction={this.load} />
       </View>
     );
   }

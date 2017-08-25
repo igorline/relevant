@@ -6,6 +6,7 @@
     "startApp": "REACT_DEBUGGER=\"rndebugger-open --open --port 8081\" node node_modules/react-native/local-cli/cli.js start",
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
+    "native": "NODE_ENV='native' nodemon server/index.js",
     "build": "webpack --config ./webpack.production.config.js --progress --colors -p",
     "build-dev": "webpack --config ./webpack.config.js --progress --colors -p",
     "test": "ava --watch",
@@ -14,7 +15,8 @@
     "android": "react-native run-android",
     "androidRelease": "react-native run-android --variant=release",
     "deployIOS": "code-push release-react Relevant-iOS ios -d Production",
-    "deployAndroid": "code-push release-react Relevant-Android android -d Production"
+    "deployAndroid": "code-push release-react Relevant-Android android -d Production",
+    "fixTime": "adb shell su root date $(date +%m%d%H%M%Y.%S)"
   },
   "dependencies": {
     "apn": "^1.7.6",

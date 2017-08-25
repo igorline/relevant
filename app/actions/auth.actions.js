@@ -624,7 +624,6 @@ export function getStats(user) {
       dispatch(errorActions.setError('stats', false));
       return true;
     } catch (error) {
-      console.log(error);
       dispatch(errorActions.setError('stats', true, error.message));
       return false;
     }
@@ -644,7 +643,6 @@ export function getRelChart(start, end) {
       dispatch(errorActions.setError('stats', false));
       return true;
     } catch (error) {
-      console.log(error);
       dispatch(errorActions.setError('stats', true, error.message));
       return false;
     }

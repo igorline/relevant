@@ -10,8 +10,8 @@ import DiscoverComponent from '../discover/discover.container';
 
 import Stats from '../stats/stats.container';
 
-import SinglePost from '../../containers/singlePost.container';
-import Activity from '../../containers/activity.container';
+import SinglePost from '../post/singlePost.container';
+import Activity from '../activity/activity.container';
 // import Messages from './messages.container';
 // import Thirst from './thirst.container';
 import Profile from '../profile/profile.container';
