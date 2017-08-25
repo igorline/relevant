@@ -49,7 +49,7 @@ class Profile extends Component {
       { id: 0, title: 'Posts' },
       { id: 1, title: 'Investments' },
     ];
-    this.loaded = true;
+    this.loaded = false;
     this.scrollTo = this.scrollTo.bind(this);
   }
 
@@ -63,6 +63,10 @@ class Profile extends Component {
         this.loadUser();
         this.setState({});
       });
+      // requestAnimationFrame(() => {
+      //   this.loaded = true;
+      //   this.setState({});
+      // });
     } else {
       this.loaded = true;
       this.userId = this.props.auth.user._id;

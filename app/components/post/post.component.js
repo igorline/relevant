@@ -68,8 +68,6 @@ class Post extends PureComponent {
       commentaryEl = <Commentary {...this.props} commentary={commentary} />;
     }
 
-    let repostEl = null;
-
     if (post.repost) {
       let repost = this.props.posts.posts[post.repost.post];
       if (!repost) repost = { body: '[deleted]' };
@@ -87,7 +85,6 @@ class Post extends PureComponent {
     return (
       <View style={{ overflow: 'hidden' }}>
         <View style={[styles.postContainer]}>
-          {repostEl}
           {imageEl}
           {commentaryEl}
         </View>

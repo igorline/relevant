@@ -8,7 +8,7 @@ import {
   Platform,
   ScrollView
 } from 'react-native';
-import { globalStyles, blue, fullWidth, greyText, borderGrey } from '../../styles/global';
+import { globalStyles, mainPadding, fullWidth, greyText, borderGrey } from '../../styles/global';
 import * as utils from '../../utils';
 import UrlPreview from './urlPreview.component';
 import UserName from '../userNameSmall.component';
@@ -21,7 +21,6 @@ let Video = require('react-native-video').default;
 
 let styles;
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/);
-
 
 
 export default class UrlComponent extends Component {
@@ -47,7 +46,6 @@ export default class UrlComponent extends Component {
       this.createPreview(next.postUrl);
       this.input.focus();
     }
-    // if (!next.postBody.length && !this.input.isFocused()) this.input.focus();
   }
 
   initTooltips(name) {
@@ -261,7 +259,7 @@ export default class UrlComponent extends Component {
         ref={c => this.scrollView = c}
         style={{
           flex: 1,
-          paddingHorizontal: 10,
+          paddingHorizontal: mainPadding,
         }}
         contentContainerStyle={{ flexGrow: 1, height: 'auto', minHeight: 260 }}
 
@@ -269,7 +267,6 @@ export default class UrlComponent extends Component {
         {userHeader}
         <View
           style={[
-            // this.props.urlPreview ? styles.innerBorder : null,
             this.props.share ? styles.noBorder : null,
             { flex: 1 }]
           }
@@ -293,7 +290,7 @@ export default class UrlComponent extends Component {
             }}
             onBlur={() => this.processInput(null, true)}
             returnKeyType={'default'}
-            onFocus={() => null }
+            onFocus={() => null}
             keyboardShouldPersistTaps={'never'}
             disableFullscreenUI
             textAlignVertical={'top'}
@@ -307,7 +304,7 @@ export default class UrlComponent extends Component {
                 this.processInput(postBody, false);
                 return this.okToSubmit = false;
               }
-              this.okToSubmit = true;
+              return this.okToSubmit = true;
             }}
           >
             <TextBody showAllMentions>
@@ -349,18 +346,13 @@ const localStyles = StyleSheet.create({
     height: 55,
   },
   postButtonShare: {
-
     position: 'absolute',
-    // alignSelf: 'center',
-    // width: 200,
     left: 0,
     right: 0,
     bottom: 10,
     alignItems: 'center',
     paddingVertical: 5,
     paddingHorizontal: 5,
-    // borderColor: blue,
-    // borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 3
   },
   postButton: {
@@ -369,8 +361,6 @@ const localStyles = StyleSheet.create({
     right: 0,
     paddingVertical: 5,
     paddingHorizontal: 5,
-    // borderColor: blue,
-    // borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 3
   },
   innerBorder: {

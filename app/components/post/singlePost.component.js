@@ -9,7 +9,8 @@ import {
   Platform,
   StatusBar,
   FlatList,
-  Keyboard
+  Keyboard,
+  InteractionManager
 } from 'react-native';
 import { globalStyles, fullHeight } from '../../styles/global';
 import Comment from './comment.component';
@@ -43,7 +44,7 @@ class SinglePostComments extends Component {
     this.reload = this.reload.bind(this);
     this.scrollToComment = this.scrollToComment.bind(this);
     this.scrollToBottom = this.scrollToBottom.bind(this);
-    this.loaded = true;
+    this.loaded = false;
     this.renderUserSuggestions = this.renderUserSuggestions.bind(this);
     this.renderRelated = this.renderRelated.bind(this);
   }
@@ -57,6 +58,12 @@ class SinglePostComments extends Component {
       this.total = comments.total || 0;
       if (this.total > 10) this.longFormat = true;
     }
+
+    InteractionManager.runAfterInteractions(() => {
+    // requestAnimationFrame(() => {
+      this.loaded = true;
+      this.setState({});
+    });
 
     setTimeout(() => {
       if (this.props.scene.openComment) {
@@ -134,7 +141,7 @@ class SinglePostComments extends Component {
     this.reloading = true;
     this.props.actions.getComments(this.id, 0, 10);
     this.props.actions.getSelectedPost(this.id);
-    this.props.actions.getRelated(this.id);
+    // this.props.actions.getRelated(this.id);
   }
 
   renderComments() {
@@ -195,7 +202,6 @@ class SinglePostComments extends Component {
     let loadEarlier;
 
     headerEl = (<Post
-      // {...this.props}
       singlePost
       key={0}
       scene={this.props.scene}

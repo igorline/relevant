@@ -16,7 +16,8 @@
     "androidRelease": "react-native run-android --variant=release",
     "deployIOS": "code-push release-react Relevant-iOS ios -d Production",
     "deployAndroid": "code-push release-react Relevant-Android android -d Production",
-    "fixTime": "adb shell su root date $(date +%m%d%H%M%Y.%S)"
+    "fixTime": "adb shell su root date $(date +%m%d%H%M%Y.%S)",
+    "staginIOS": "code-push release-react Relevant-iOS ios -d Staging"
   },
   "dependencies": {
     "apn": "^1.7.6",
