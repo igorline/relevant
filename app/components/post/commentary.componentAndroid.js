@@ -147,6 +147,7 @@ export default class Commentary extends Component {
               actions={this.props.actions}
               auth={this.props.auth}
               myPostInv={myPostInv}
+              focusInput={this.props.focusInput}
             />
           </View>
         </View>
@@ -179,7 +180,7 @@ export default class Commentary extends Component {
           data={this.props.commentary}
           renderItem={this.renderItem}
           pagingEnabled
-          bounces={false}
+          // bounces={false}
           contentContainerStyle={[styles.postScroll]}
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={this.onScrollEnd}
