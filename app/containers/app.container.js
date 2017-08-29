@@ -4,10 +4,7 @@ import {
   AppState,
   ActionSheetIOS,
   AlertIOS,
-  Easing,
-  PushNotificationIOS,
   Linking,
-  Animated,
   KeyboardAvoidingView,
   Platform,
   Alert,
@@ -17,7 +14,7 @@ import {
 
 import {
   // setCustomView,
-  setCustomTextInput,
+  // setCustomTextInput,
   setCustomText,
   // setCustomImage,
   // setCustomTouchableOpacity

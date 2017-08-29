@@ -196,6 +196,8 @@ function navigationState(state = initialState, action) {
       route.key = guid();
 
       const nextScenes = NavigationStateUtils.push(scenes, route);
+      if (!route.id) route.id = route.title || route.key;
+      if (route.id === scenes.routes[scenes.index].id) return state;
 
       if (scenes !== nextScenes) {
         return {

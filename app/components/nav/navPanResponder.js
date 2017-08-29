@@ -123,53 +123,56 @@ class NavPanResponder {
     const props = this._props;
     const layout = props.layout;
 
-    if (props.scrolling) return false;
+      if (props.position._value !== parseInt(props.position._value)) return false;
 
-    if (props.navigation.state.index !== props.scene.index) {
-      return false;
-    }
+      if (props.scrolling) return false;
 
-    const isVertical = this._isVertical;
-    const index = props.navigation.state.index;
+      if (props.navigation.state.index !== props.scene.index) {
+        return false;
+      }
 
-    const immediateIndex = this._immediateIndex == null
-      ? index
-      : this._immediateIndex;
-    const currentDragDistance = gesture[isVertical ? 'dy' : 'dx'];
-    const currentDragPosition = event.nativeEvent[
-      isVertical ? 'pageY' : 'pageX'
-    ];
-    const axisLength = isVertical
-      ? layout.height.__getValue()
-      : layout.width.__getValue();
-    const axisHasBeenMeasured = !!axisLength;
+      const isVertical = this._isVertical;
+      const index = props.navigation.state.index;
 
-    // Measure the distance from the touch to the edge of the screen
-    const screenEdgeDistance = currentDragPosition - currentDragDistance;
-    // Compare to the gesture distance relavant to card or modal
-    const gestureResponseDistance = isVertical
-      ? props.gestureResponseDistance
-      : props.gestureResponseDistance || 30;
-    // GESTURE_RESPONSE_DISTANCE is about 30 or 35. Or 135 for modals
-    if (screenEdgeDistance > gestureResponseDistance) {
-      // Reject touches that started in the middle of the screen
-      return false;
-    }
+      const immediateIndex = this._immediateIndex == null
+        ? index
+        : this._immediateIndex;
+      const currentDragDistance = gesture[isVertical ? 'dy' : 'dx'];
+      const currentDragPosition = event.nativeEvent[
+        isVertical ? 'pageY' : 'pageX'
+      ];
+      const axisLength = isVertical
+        ? layout.height.__getValue()
+        : layout.width.__getValue();
+      const axisHasBeenMeasured = !!axisLength;
 
-    const hasDraggedEnough = Math.abs(currentDragDistance) >
-      RESPOND_THRESHOLD;
+      // Measure the distance from the touch to the edge of the screen
+      const screenEdgeDistance = currentDragPosition - currentDragDistance;
+      // Compare to the gesture distance relavant to card or modal
+      const gestureResponseDistance = isVertical
+        ? props.gestureResponseDistance
+        : props.gestureResponseDistance || 30;
+      // GESTURE_RESPONSE_DISTANCE is about 30 or 35. Or 135 for modals
+      if (screenEdgeDistance > gestureResponseDistance) {
+        // Reject touches that started in the middle of the screen
+        return false;
+      }
 
-    const isOnFirstCard = immediateIndex === 0;
-    const shouldSetResponder = hasDraggedEnough &&
-      axisHasBeenMeasured &&
-      !isOnFirstCard;
+      const hasDraggedEnough = Math.abs(currentDragDistance) >
+        RESPOND_THRESHOLD;
 
-    return shouldSetResponder;
+      const isOnFirstCard = immediateIndex === 0;
+      const shouldSetResponder = hasDraggedEnough &&
+        axisHasBeenMeasured &&
+        !isOnFirstCard;
+
+      return shouldSetResponder;
   }
 
-  onPanResponderGrant() {
+  onPanResponderGrant(event: any, gesture: any) {
     this._props.position.stopAnimation((value: number) => {
       this._isResponding = true;
+
       // we don't care for it to be 0 anyway
       // and this fixes the bug of swipe jump on application first start
       this._startValue = value || 1;
@@ -177,9 +180,9 @@ class NavPanResponder {
 
     // prevents bug when transition gets interrupted
     // so that InteractionManager still works
-    if (this._panResponder.getInteractionHandle()) {
-      InteractionManager.clearInteractionHandle(this._panResponder.getInteractionHandle());
-    }
+    // if (this._panResponder.getInteractionHandle()) {
+    //   InteractionManager.clearInteractionHandle(this._panResponder.getInteractionHandle());
+    // }
   }
 
   onPanResponderMove(event: any, gesture: any): void {
@@ -243,37 +246,6 @@ class NavPanResponder {
     });
   }
 
-  // onPanResponderRelease(event: any, gesture: any): void {
-  //   if (!this._isResponding) {
-  //     return;
-  //   }
-
-  //   this._isResponding = false;
-
-  //   const props = this._props;
-  //   const isVertical = this._isVertical;
-  //   const axis = isVertical ? 'dy' : 'dx';
-  //   const index = props.navigation.state.index;
-  //   const distance = I18nManager.isRTL && axis === 'dx' ?
-  //     -gesture[axis] :
-  //     gesture[axis];
-
-  //   props.position.stopAnimation((value: number) => {
-  //     this._reset();
-
-  //     if (!props.onNavigateBack) {
-  //       return;
-  //     }
-
-  //     if (
-  //       distance > DISTANCE_THRESHOLD  ||
-  //       value <= index - POSITION_THRESHOLD
-  //     ) {
-  //       props.onNavigateBack();
-  //     }
-  //   });
-  // }
-
   onPanResponderTerminate(): void {
     const index = this._props.navigation.state.index;
     this._isResponding = false;
@@ -301,6 +273,7 @@ class NavPanResponder {
     this._immediateIndex = toValue;
     // props.onNavigateBack()
 
+    this.animating = true;
     Animated.spring(position, {
       toValue,
       duration: ANIMATION_DURATION,
@@ -311,12 +284,14 @@ class NavPanResponder {
       this._immediateIndex = null;
       const backFromScene = scenes.find((s: *) => s.index === toValue + 1);
       if (!this._isResponding && backFromScene) {
+        this.animating = false;
         // navigation.dispatch(
-          props.onNavigateBack()
+          // props.onNavigateBack()
           // NavigationActions.back({ key: backFromScene.route.key }),
         // );
       }
     });
+    props.onNavigateBack()
   }
 
   _addNativeListener(animatedValue) {

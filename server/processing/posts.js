@@ -109,12 +109,23 @@ async function updatePostData() {
           if (data.result) {
             post.keywords = data.result.keywords;
             post.articleAuthor = data.result.articleAuthor;
+            post.image = data.result.image;
           }
+
+          // let meta = await Meta.findOne({ _id: post.metaPost });
           // console.log(post.keywords);
           // console.log(post.articleAuthor);
           await post.save();
+          // console.log('p ', post.image);
+          // console.log('mp ', meta.image);
+          // console.log(meta.keywords);
+
           let meta = await post.upsertMetaPost(post.meta);
-          console.log(meta.keywords);
+          // if (!meta.image) {
+          //   console.log('meta ', meta.url);
+          //   console.log('meta ', meta.title);
+          //   console.log('post ', post.image);
+          // }
         } catch (err) {
           console.log(err);
         }

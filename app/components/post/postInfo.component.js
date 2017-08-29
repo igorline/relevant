@@ -105,7 +105,6 @@ class PostInfo extends Component {
 
   setSelected() {
     if (!this.props.actions) return;
-    if (this.props.scene && this.props.scene.id === this.props.post.user._id) return;
     this.props.actions.goToProfile({
       name: this.props.post.embeddedUser.name,
       _id: this.props.post.user._id || this.props.post.user
