@@ -154,7 +154,7 @@ export default class UrlComponent extends Component {
           domain: results.domain,
           postUrl: results.url,
           articleTags: pTags,
-          keywords: pKeywords,
+          keywords: results.keywords,
           articleAuthor: results.articleAuthor,
           shortText: results.shortText,
           urlPreview: {

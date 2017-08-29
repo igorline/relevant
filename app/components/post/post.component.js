@@ -45,7 +45,7 @@ class Post extends PureComponent {
 
     let separator = (
       <View
-        style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)'}]}
+        style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)' }]}
         // style={[{ height: 30, backgroundColor: 'hsl(238,20%,95%)'}]}
       />);
     let commentaryEl;

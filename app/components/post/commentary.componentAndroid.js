@@ -38,7 +38,6 @@ export default class Commentary extends Component {
 
   goToPost() {
     if (!this.props.actions || !this.props.post || !this.props.post._id) return;
-    if (this.props.scene && this.props.scene.id === this.props.post._id) return;
     this.props.actions.goToPost(this.props.post);
   }
 
@@ -69,11 +68,9 @@ export default class Commentary extends Component {
             actions={this.props.actions}
             auth={this.props.auth}
             post={post}
-            scene={this.props.scene}
           />
           <PostBody
             repost
-            scene={this.props.scene}
             actions={this.props.actions}
             auth={this.props.auth}
             post={{ _id: repost._id, body: post.repost.commentBody }}
@@ -130,18 +127,15 @@ export default class Commentary extends Component {
               post={post}
               actions={this.props.actions}
               auth={this.props.auth}
-              scene={this.props.scene}
             />
             <PostBody
               short
-              scene={this.props.scene}
               post={post}
               editing={false}
               actions={this.props.actions}
               auth={this.props.auth}
             />
             <PostButtons
-              scene={this.props.scene}
               post={post}
               comments={post.comments || null}
               actions={this.props.actions}
@@ -180,7 +174,6 @@ export default class Commentary extends Component {
           data={this.props.commentary}
           renderItem={this.renderItem}
           pagingEnabled
-          // bounces={false}
           contentContainerStyle={[styles.postScroll]}
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={this.onScrollEnd}

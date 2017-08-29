@@ -204,6 +204,12 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
       meta.newCommentary = this._id;
       meta.commentary.push(this);
       meta.latestPost = this.postDate;
+      meta.articleAuthor = this.articleAuthor;
+      // meta.url = this.post.link;
+
+      if (this.image) {
+        meta.image = this.image;
+      }
       meta = await meta.save();
     } else {
       meta = {
@@ -215,7 +221,6 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
         commentaryCount: 1,
         tags: this.tags,
         categories: [this.category],
-
         // may not need to do this if meta is pre-populated
         articleAuthor: this.articleAuthor,
         shortText: this.shortText,

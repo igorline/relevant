@@ -61,7 +61,12 @@ class DiscoverTabs extends Component {
       this.loaded = false;
       this.needsReload = new Date().getTime();
 
-      this.onInteraction = InteractionManager.runAfterInteractions(() => {
+      // this.onInteraction = InteractionManager.runAfterInteractions(() => {
+      //   this.loaded = true;
+      //   this.setState({});
+      // });
+
+      requestAnimationFrame(() => {
         this.loaded = true;
         this.setState({});
       });

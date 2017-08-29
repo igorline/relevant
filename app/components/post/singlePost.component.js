@@ -59,8 +59,10 @@ class SinglePostComments extends Component {
       if (this.total > 10) this.longFormat = true;
     }
 
-    InteractionManager.runAfterInteractions(() => {
-    // requestAnimationFrame(() => {
+    // this.loaded = true;
+
+    // InteractionManager.runAfterInteractions(() => {
+    requestAnimationFrame(() => {
       this.loaded = true;
       this.setState({});
     });
