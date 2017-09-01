@@ -60,7 +60,7 @@ export async function superFetch(options) {
   let params = queryParams(options.params);
   let uri = options.uri || process.env.API_SERVER + '/api/' + options.endpoint;
   let path = options.path || '';
-
+  uri += path;
   // TODO rename to options.params to match node
   if (options.pathParams) {
     Object.keys(options.pathParams).forEach(key => {
@@ -73,21 +73,19 @@ export async function superFetch(options) {
     let responseJSON;
     // This is the case when request is orginating from nodejs
     if (!process.env.BROWSER && process.env.WEB === 'true') {
-      console.log('NODE FETCH');
-      if (options.path === '/') options.path = 'findById';
+      if (options.path === '' && options.pathParams) options.path = 'findById';
       let req = {
         params: options.pathParams,
         body: options.body,
         query: options.params,
-        // TODO add user
       };
       let next = () => null;
       let res = null;
       responseJSON = await routes[options.endpoint][options.path](req, res, next);
-      // in case we ge a mongoose object
-      if (responseJSON.toObject) responseJSON = responseJSON.toObject();
+      // in case we get a mongoose object back
+      if (responseJSON && responseJSON.toObject) responseJSON = responseJSON.toObject();
     } else {
-      response = await fetch(uri + path + params, {
+      response = await fetch(uri + params, {
         method: options.method,
         ...await exports.reqOptions(),
         body: options.body

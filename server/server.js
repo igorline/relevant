@@ -19,8 +19,10 @@ require('./queue');
 console.log('NODE_ENV', process.env.NODE_ENV);
 
 // -------------Dev server watch and hot reload---------------
-let isDevelopment = (process.env.NODE_ENV !== 'production');
-if (isDevelopment && process.env.NODE_ENV !== 'test') {
+let isDevelopment = (process.env.NODE_ENV !== 'production' &&
+  process.env.NODE_ENV !== 'test' &&
+  process.env.NODE_ENV !== 'native');
+if (isDevelopment) {
   console.log('in development environment');
   let webpack = require('webpack');
   let webpackDevMiddleware = require('webpack-dev-middleware');

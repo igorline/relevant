@@ -146,6 +146,7 @@ export function goToPeople(topic) {
     component: 'peopleView',
     title: topic ? '#' + topic : 'People',
     back: true,
+    id: topic + '_' + 'people',
     topic: topic ? { _id: topic.toLowerCase() } : null,
   });
 }
@@ -156,6 +157,7 @@ export function goToUrl(url) {
     component: 'articleView',
     back: true,
     uri: url,
+    id: url,
     gestureResponseDistance: 120
   }, 'home');
 }
@@ -172,7 +174,7 @@ export function goToComments(post, key, animation) {
 export function goToPost(post, openComment) {
   return push({
     key: 'singlePost',
-    title: post.title,
+    title: post.title ? post.title : '',
     back: true,
     id: post._id,
     commentCount: post.commentCount,
@@ -194,6 +196,7 @@ export function viewBlocked() {
   return push({
     key: 'blocked',
     title: 'Blocked Users',
+    id: 'blocked',
     back: true,
   });
 }
@@ -202,6 +205,7 @@ export function viewInvites() {
   return push({
     key: 'invites',
     title: 'Invite Friends',
+    id: 'invites',
     back: true,
   });
 }
@@ -210,6 +214,7 @@ export function goToInviteList() {
   return push({
     key: 'inviteList',
     title: 'Invite List',
+    id: 'inviteList',
     back: true,
   });
 }

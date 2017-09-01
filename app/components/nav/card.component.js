@@ -34,6 +34,10 @@ class Card extends Component {
     this.getAnimatedStyleVertical = this.getAnimatedStyleVertical.bind(this);
   }
 
+  componentWillMount() {
+
+  }
+
   getAnimatedStyle(props, type) {
     const {
       layout,

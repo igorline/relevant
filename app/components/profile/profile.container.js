@@ -10,7 +10,6 @@ import { globalStyles } from '../../styles/global';
 // import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Post from '../../components/post/post.component';
 import ProfileComponent from './profile.component';
-import ErrorComponent from '../../components/error.component';
 import CustomSpinner from '../../components/CustomSpinner.component';
 import * as authActions from '../../actions/auth.actions';
 import * as postActions from '../../actions/post.actions';
@@ -60,8 +59,12 @@ class Profile extends Component {
       this.userData = this.props.users[this.userId];
 
       this.onInteraction = InteractionManager.runAfterInteractions(() => {
-        this.loaded = true;
         this.loadUser();
+        this.setState({});
+      });
+
+      requestAnimationFrame(() => {
+        this.loaded = true;
         this.setState({});
       });
     } else {
@@ -130,10 +133,13 @@ class Profile extends Component {
   renderRow(rowData, view) {
     let scene = this.props.scene || { route: { id: this.userId } };
 
-    if (view === 0) return (<Post post={rowData} {...this.props} scene={scene} />);
+    let post = this.props.posts.posts[rowData];
+
+    if (view === 0) return (<Post post={post} {...this.props} scene={scene} />);
     if (view === 1) {
       let investment = this.props.investments.investments[rowData];
-      return (<Post post={investment.post} {...this.props} />);
+      post = this.props.posts.posts[investment.post];
+      return (<Post post={post} {...this.props} />);
     }
     return null;
   }
@@ -235,6 +241,8 @@ class Profile extends Component {
           renderHeader={this.renderHeader}
           needsReload={this.needsReload}
           onReload={this.loadUser}
+          error={this.props.error}
+          headerData={this.userData}
         />
         );
       });
@@ -243,7 +251,6 @@ class Profile extends Component {
     return (
       <View style={styles.profileContainer}>
         {listEl}
-        <ErrorComponent parent={'profile'} reloadFunction={this.loadUser} />
       </View>
     );
   }

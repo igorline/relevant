@@ -99,6 +99,13 @@ export function updatePost(post) {
   };
 }
 
+export function updateRelated(related, postId) {
+  return {
+    type: types.SET_RELATED,
+    payload: related
+  };
+}
+
 export function removePost(post) {
   return {
     type: types.REMOVE_POST,
@@ -503,7 +510,7 @@ export function getSelectedPost(postId) {
       let responseJSON = await utils.fetchUtils.superFetch({
         method: 'GET',
         endpoint: 'post',
-        path: '/',
+        path: '',
         pathParams: { id: postId }
       });
       if (!responseJSON) {
@@ -520,34 +527,26 @@ export function getSelectedPost(postId) {
   };
 }
 
-// export function getSelectedPost(postId) {
-//   return function(dispatch) {
-//     utils.token.get()
-//     .then(token =>
-//       fetch(process.env.API_SERVER + '/api/post/' + postId, {
-//         method: 'GET',
-//         ...reqOptions(token)
-//       })
-//     )
-//     .then(utils.fetchUtils.handleErrors)
-//     .then((response) => response.json())
-//     .then((responseJSON) => {
-//       if (!responseJSON) {
-//         dispatch(removePost(postId));
-//         // dispatch(updatePost({ _id: postId }));
-//       } else {
-//         dispatch(updatePost(responseJSON));
-//       }
-//       dispatch(errorActions.setError('singlepost', false));
-//       return true;
-//     })
-//     .catch((error) => {
-//       console.log(error, 'error');
-//       dispatch(errorActions.setError('singlepost', true, error.message));
-//       return false;
-//     });
-//   };
-// }
+export function getRelated(postId) {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.fetchUtils.superFetch({
+        method: 'GET',
+        endpoint: 'metaPost',
+        path: '/related',
+        pathParams: { id: postId }
+      });
+      dispatch(updateRelated({
+        related: responseJSON,
+        postId
+      }));
+      return responseJSON;
+    } catch (error) {
+      return false;
+    }
+  };
+}
+
 
 export function setFeedCount(data) {
   return {

@@ -3,8 +3,6 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
   TouchableOpacity,
   ActionSheetIOS,
   Alert,
@@ -16,7 +14,7 @@ import Share from 'react-native-share';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import IconE from 'react-native-vector-icons/EvilIcons';
 
-import { globalStyles, fullWidth, blue, greyText } from '../../styles/global';
+import { globalStyles, greyText } from '../../styles/global';
 import InvestModal from './investModal.component';
 import { numbers } from '../../utils';
 
@@ -87,6 +85,15 @@ class PostButtons extends Component {
     if (this.props.post.link) this.menu = this.linkMenu;
   }
 
+  onShare() {
+    Share.open({
+      title: 'Relevant',
+      url: this.props.post.link ? this.props.post.link : 'http://relevant-community.herokuapp.com/',
+      subject: 'Share Link',
+      message: this.props.post.title ? 'Relevant post: ' + this.props.post.title : 'Relevant post:'
+    });
+  }
+
   showInvestors() {
     this.props.actions.push({
       key: 'people',
@@ -94,17 +101,6 @@ class PostButtons extends Component {
       component: 'people',
       title: 'Votes',
       back: true
-    });
-  }
-
-  onShare() {
-    Share.open({
-      title: 'Relevant',
-      url: this.props.post.link ? this.props.post.link : 'http://relevant-community.herokuapp.com/',
-      subject: 'Share Link',
-      message: this.props.post.title ? 'Relevant post: ' + this.props.post.title : 'Relevant post:'
-    }, (e) => {
-      console.log(e);
     });
   }
 
@@ -138,6 +134,7 @@ class PostButtons extends Component {
 
   invest() {
     let investAmount = 1;
+    // DEBUG ANIMATION
     // this.props.actions.triggerAnimation('invest');
     // return;
 
@@ -152,12 +149,7 @@ class PostButtons extends Component {
         this.props.actions.triggerAnimation('invest');
         setTimeout(() => {
           this.props.actions.reloadTab('read');
-          // this.props.navigator.reloadTab('myProfile');
           let name = this.props.post.embeddedUser.name;
-          // let title = 'New subscripion!';
-          // if (results.subscription.amount > 3 ) {
-          //   title = 'Subscription increase';
-          // }
           Alert.alert('You have subscribed to receive ' + results.subscription.amount + ' posts from ' + name);
           Analytics.logEvent('upvote');
         }, 1500);
@@ -184,7 +176,7 @@ class PostButtons extends Component {
       t1,
       t2,
       [
-        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+        { text: 'Cancel', onPress: () => {}, style: 'cancel' },
         { text: 'Downvote', onPress: () => this.irrelevant() },
         { text: '🚫Report', onPress: () => this.flag() },
       ]
@@ -201,8 +193,6 @@ class PostButtons extends Component {
       if (results) {
         this.props.actions.triggerAnimation('invest', -1);
         this.props.actions.triggerAnimation('irrelevant', -1);
-      } else {
-        console.log('irrelevant failed');
       }
     })
     .catch(err => {
@@ -338,10 +328,10 @@ class PostButtons extends Component {
     let myVote;
     if (post && post.user && this.props.auth.user) {
       if (post.user._id !== this.props.auth.user._id) {
-        if (!this.props.myPostInv[post._id]) {
+        if (!this.props.myPostInv) {
           investable = true;
         } else {
-          myVote = this.props.myPostInv[post._id];
+          myVote = this.props.myPostInv;
         }
       }
     }
@@ -360,7 +350,7 @@ class PostButtons extends Component {
     let upvoteIcon = require('../../assets/images/icons/upvote.png');
     if (myVote && myVote.amount > 0) {
       upvoteIcon = require('../../assets/images/icons/upvoteActive.png');
-    } //else if (!investable) opacity = .3;
+    } // else if (!investable) opacity = .3;
 
     investButtonEl = (
       <TouchableOpacity
@@ -433,11 +423,12 @@ class PostButtons extends Component {
     );
 
 
-    //opacity = 1;
+    // opacity = 1;
     let downvoteIcon = require('../../assets/images/icons/downvote.png');
     if (myVote && myVote.amount < 0) {
       downvoteIcon = require('../../assets/images/icons/downvoteActive.png');
-    } //else if (!investable) opacity = .3;
+    }
+    // else if (!investable) opacity = .3;
     irrelevantButton = (
       <TouchableOpacity
         style={{ paddingLeft: space }}
@@ -456,7 +447,7 @@ class PostButtons extends Component {
       onPress={() => this.goToPost(true)}
       style={{ paddingHorizontal: 12 }}
     >
-      <View style={[styles.textRow, { alignItems: 'center', }]}>
+      <View style={[styles.textRow, { alignItems: 'center' }]}>
         <Image
           resizeMode={'contain'}
           style={styles.vote}
@@ -479,7 +470,7 @@ class PostButtons extends Component {
       >
         <View style={[styles.textRow, { alignItems: 'center' }]}>
           <IconE name="retweet" size={28} color={greyText} />
-          <Text style={styles.smallInfo}></Text>
+          {/*<Text style={styles.smallInfo}></Text>*/}
         </View>
 
 
@@ -526,11 +517,6 @@ const localStyles = StyleSheet.create({
     width: 25,
     height: 23,
   },
-  earnings: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: (fullWidth / 2) - 25
-  },
   smallerR: {
     width: 20,
     height: 18,
@@ -553,26 +539,6 @@ const localStyles = StyleSheet.create({
     height: 20,
     resizeMode: 'contain',
   },
-  investButton: {
-    borderWidth: 1,
-    backgroundColor: 'white',
-    borderColor: 'black',
-    paddingHorizontal: 10,
-    height: 30,
-    shadowColor: 'black',
-    shadowOffset: { width: 2, height: 2 },
-    shadowRadius: 0,
-    shadowOpacity: 1,
-    elevation: 3,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    paddingVertical: 5,
-  },
-  invSmall: {
-    paddingHorizontal: 5,
-    height: 28,
-  },
   postButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -582,22 +548,6 @@ const localStyles = StyleSheet.create({
   postButtonsContainer: {
     paddingBottom: 10,
     marginTop: 30,
-  },
-  postButton: {
-    padding: 3,
-    paddingHorizontal: 2,
-    height: 30,
-    flexDirection: 'row',
-    justifyContent: 'center'
-  },
-  postButtonText: {
-    alignSelf: 'flex-end',
-    backgroundColor: 'transparent',
-    paddingVertical: 3,
-  },
-  postButtonTextSmall: {
-    fontSize: 13,
-    lineHeight: 26,
   }
 });
 

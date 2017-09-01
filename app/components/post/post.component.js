@@ -2,14 +2,12 @@ import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   View,
-  Text,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
-import { globalStyles, fullHeight } from '../../styles/global';
+import { globalStyles } from '../../styles/global';
 import PostImage from './postImage.component';
 import Commentary from './commentary.componentAndroid';
-// import Excerpt from './excerpt.component';
 
 let styles;
 
@@ -19,6 +17,7 @@ class Post extends PureComponent {
   }
 
   shouldComponentUpdate(next) {
+    // if (next.myPostInv !== this.props.myPostInv)
     // console.log(next);
     // console.log('updating post');
     // for (let p in next) {
@@ -34,7 +33,6 @@ class Post extends PureComponent {
 
   render() {
     let post;
-    let posts;
     let imageEl;
     // let separator = (
     //   <LinearGradient
@@ -47,7 +45,7 @@ class Post extends PureComponent {
 
     let separator = (
       <View
-        style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)'}]}
+        style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)' }]}
         // style={[{ height: 30, backgroundColor: 'hsl(238,20%,95%)'}]}
       />);
     let commentaryEl;
@@ -56,75 +54,38 @@ class Post extends PureComponent {
     if (!this.props.auth.user) return null;
 
     let blocked = <View style={{ height: StyleSheet.hairlineWidth }} />;
-
-    if (this.props.post) {
-      posts = Array.isArray(this.props.post) ? this.props.post : [this.props.post];
-      posts = posts.filter(p => typeof p === 'string');
-      posts = posts.map(p => this.props.posts.posts[p]);
-      if (!posts.length) return blocked;
-      posts = posts.filter(p => p);
-      post = { ...posts[0] };
-      if (post.repost) reposted = post.repost.post;
-      if (!post) return blocked;
-    }
+    post = this.props.metaPost || this.props.post;
 
     if (!post || !post._id) {
       return blocked;
     }
 
     // if we have a repost, don't render the original post
-    let commentary = posts.filter(p => {
-      return p._id !== reposted;
-    });
+    let commentary = this.props.commentary || [this.props.post];
+    commentary = commentary.filter(p => p && p._id !== reposted);
 
     if (commentary.length) {
       commentaryEl = <Commentary {...this.props} commentary={commentary} />;
     }
 
-    let repostEl = null;
-    let postStyle = {};
-
     if (post.repost) {
       let repost = this.props.posts.posts[post.repost.post];
       if (!repost) repost = { body: '[deleted]' };
-      if (repost.user && this.props.users[repost.user]) {
-        repost.user = this.props.users[repost.user];
-      }
-      post.user = this.props.users[post.user] || post.user;
       post = { ...repost };
     }
 
-    if (post.link || post.image) {
+    if (post.link || post.url || post.image) {
       imageEl = (<PostImage
-        // metaPost={this.props.metaPost || post.metaPost}
         singlePost={this.props.singlePost}
         actions={this.props.actions}
         post={post}
       />);
     }
-    post.user = this.props.users[post.user] || post.user;
-
-    let article;
-    // if (post.shortText && this.props.singlePost) {
-    //   article = (
-    //     <Excerpt
-    //       post={post} actions={this.props.actions}
-    //     />);
-    // }
-
-    // for testing rank
-    // <Text>{this.props.metaPost ? this.props.metaPost.rank : null}</Text>
 
     return (
       <View style={{ overflow: 'hidden' }}>
         <View style={[styles.postContainer]}>
-          <View style={styles.postInner}>
-            {repostEl}
-            <View style={postStyle}>
-              {imageEl}
-            </View>
-          </View>
-          {article}
+          {imageEl}
           {commentaryEl}
         </View>
         {!this.props.singlePost ? separator : null}
@@ -134,35 +95,8 @@ class Post extends PureComponent {
 }
 
 const localStyles = StyleSheet.create({
-  desc: {
-    padding: 10,
-    fontSize: 12,
-  },
-  excerpt: {
-    padding: 10,
-    marginTop: 10,
-    fontFamily: 'Georgia',
-    fontSize: 38 / 2,
-    lineHeight: 54 / 2,
-  },
-  repost: {
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginTop: 10,
-    paddingBottom: 20,
-    paddingTop: 10,
-  },
-  cLabel: {
-    fontSize: 14,
-    paddingTop: 20,
-    paddingBottom: 10,
-    textAlign: 'center',
-  },
-  postInner: {
-  },
   postContainer: {
     paddingBottom: 20,
-    // backgroundColor: 'white',
   },
   tagsRow: {
     flexDirection: 'row',
@@ -180,8 +114,6 @@ styles = { ...localStyles, ...globalStyles };
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    posts: state.posts,
-    myPostInvList: state.investments.myPostInvList,
     myPostInv: state.investments.myPostInv,
     users: state.user.users
   };

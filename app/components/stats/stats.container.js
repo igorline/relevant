@@ -2,17 +2,15 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  InteractionManager,
   View,
   RefreshControl,
   FlatList,
   Platform
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { globalStyles, blue, darkGrey, borderGrey } from '../../styles/global';
+import { globalStyles, blue, darkGrey } from '../../styles/global';
 import * as navigationActions from '../../actions/navigation.actions';
 import * as authActions from '../../actions/auth.actions';
 import StatCategory from './statCat.component';
@@ -40,14 +38,15 @@ class StatsContainer extends Component {
     this.load();
   }
 
-  componentWillUpdate(next) {
+  // componentWillUpdate(next) {
+  componentWillReceiveProps(next) {
     if (next.auth.stats !== this.props.auth.stats) {
       this.setState({ refreshing: false });
       this.setState({ loading: false });
     }
-    if (next.error && this.props.error) {
+    if (next.error) {
       this.setState({ refreshing: false });
-    //   this.setState({ loading: false });
+      this.setState({ loading: false });
     }
     if (this.props.refresh !== next.refresh && this.list) {
       this.list.scrollToOffset({ y: 0 });
@@ -78,25 +77,25 @@ class StatsContainer extends Component {
   renderHeader() {
     if (this.filler) return this.filler;
     let nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
-    let chart;
+    // let chart;
     let relChart;
 
-    chart = (<Chart
-      start={this.start}
-      end={this.end}
-      type={'bar'}
-      dataKey={'change'}
-      data={this.props.auth.chart}
-      renderHeader={() => <Text style={styles.rowTitle}>Relevance - Daily Change</Text>}
-      renderFooter={() => (<LinearGradient
-        colors={[
-          'hsla(240, 0%, 60%, 1)',
-          'hsla(240, 20%, 96%, 1)',
-          'hsla(240, 20%, 100%, 1)',
-        ]}
-        style={[styles.separator]}
-      />)}
-    />);
+    // chart = (<Chart
+    //   start={this.start}
+    //   end={this.end}
+    //   type={'bar'}
+    //   dataKey={'change'}
+    //   data={this.props.auth.chart}
+    //   renderHeader={() => <Text style={styles.rowTitle}>Relevance - Daily Change</Text>}
+    //   renderFooter={() => (<LinearGradient
+    //     colors={[
+    //       'hsla(240, 0%, 60%, 1)',
+    //       'hsla(240, 20%, 96%, 1)',
+    //       'hsla(240, 20%, 100%, 1)',
+    //     ]}
+    //     style={[styles.separator]}
+    //   />)}
+    // />);
 
     relChart = (<Chart
       start={this.relStart}
@@ -150,15 +149,14 @@ class StatsContainer extends Component {
   render() {
     let stats = this.props.auth.stats || [];
     let user = this.props.auth.user;
-    let header = this.renderHeader();
     this.filler = null;
+
+    if (this.props.error && !this.props.auth.user) {
+      return (<ErrorComponent error={this.props.error} parent={'stats'} reloadFunction={this.load} />);
+    }
 
     if (this.state.loading) {
       return (<CustomSpinner visible />);
-    }
-
-    if (this.props.error) {
-      return (<ErrorComponent parent={'stats'} reloadFunction={this.load} />);
     }
 
     if (!this.props.auth.user.level) {
@@ -198,14 +196,14 @@ class StatsContainer extends Component {
         ref={c => this.list = c}
         style={{ flex: 1 }}
         keyExtractor={(item, index) => index}
-        extraData={this.props}
+        extraData={{ ...this.props, ...this.state }}
         data={stats}
         ListHeaderComponent={this.renderHeader}
         renderItem={item => !this.filler ? this.renderItem(item) : null}
         refreshControl={
           <RefreshControl
             style={[{ backgroundColor: 'hsl(238,20%,95%)' }]}
-            refreshing={this.state.refreshing}
+            refreshing={this.state.refreshing && !this.props.error}
             onRefresh={() => {
               this.setState({ refreshing: true });
               this.load();
