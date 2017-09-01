@@ -73,19 +73,19 @@ export function getStats(id) {
 
 export
 function setStats(data) {
-    return {
-        type: 'SET_STATS',
-        payload: data
-    };
+  return {
+    type: 'SET_STATS',
+    payload: data
+  };
 }
 
 export
 function addStats(data) {
-    return {
-        type: 'ADD_STATS',
-        payload: {
-          user: data.user,
-          data: data.data
-        }
-    };
+  return {
+    type: 'ADD_STATS',
+    payload: {
+      user: data.user,
+      data: data.data
+    }
+  };
 }

@@ -5,23 +5,27 @@ import {
   View,
   Image,
   TouchableHighlight,
-  Linking,
-  ScrollView,
   ActivityIndicator,
   StatusBar,
   InteractionManager,
-  ActionSheetIOS,
-  AlertIOS,
-  Platform
+  Platform,
 } from 'react-native';
+import WKWebView from 'react-native-wkwebview-reborn';
 import Share from 'react-native-share';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, fullWidth, blue } from '../../styles/global';
 import * as navigationActions from '../../actions/navigation.actions';
 
 let styles;
+let RWebView;
+
+if (Platform.OS === 'android') {
+  RWebView = WebView;
+} else {
+  RWebView = WKWebView || WebView;
+}
 
 class ArticleView extends Component {
   constructor(props, context) {
@@ -36,11 +40,11 @@ class ArticleView extends Component {
       initalUrl: null,
       status: '',
       loading: true,
+      progress: 0,
     };
   }
 
   componentWillMount() {
-    console.log(this.props.scene.uri);
     this.onInteraction = InteractionManager.runAfterInteractions(() => {
       this.setState({
         initalUrl: this.props.scene.uri,
@@ -77,9 +81,10 @@ class ArticleView extends Component {
       title: 'Relevant',
       url: this.url,
       subject: 'Article from Relevant',
-      message: 'Shared this article on Relevant: ' + this.url
-    }, (e) => {
-      console.log(e);
+      message: this.url
+    })
+    .catch(err => {
+      console.log(err);
     });
   }
 
@@ -133,6 +138,7 @@ class ArticleView extends Component {
 
   render () {
     let activity;
+    let progressEl;
 
     if (this.state.loading) {
       activity = (
@@ -149,36 +155,41 @@ class ArticleView extends Component {
     }
 
     let webView = <View style={{ flex: 1 }} />;
+    if (this.state.progress > 0 && this.state.progress < 1) {
+      progressEl = <View style={{ position: 'absolute', height: 3, width: fullWidth * this.state.progress, backgroundColor: blue }} />;
+      activity = null;
+    }
 
     if (this.state.initalUrl) {
-      webView = (<WebView
+      webView = (<RWebView
         ref={(ref) => { this.webview = ref; }}
         scalesPageToFit
         onNavigationStateChange={(navState) => {
-          // console.log('nav state change ', navState);
           this.url = navState.url;
           this.backButtonEnabled = navState.canGoBack;
-          // this.setState({
-          //   backButtonEnabled: navState.canGoBack,
-          //   forwardButtonEnabled: navState.canGoForward,
-          //   url: navState.url,
-          //   status: navState.title,
-          // });
+        }}
+        onError={(err) => {
+          console.log(err);
+        }}
+        renderError={(err) => {
+          console.log('webview error', err);
         }}
         onLoadStart={() => this.setState({ loading: true })}
         onLoadEnd={() => this.setState({ loading: false })}
         style={{ flex: 1, backgroundColor: 'transparent', marginTop: 0 }}
         source={{ uri: this.state.initalUrl }}
+        onProgress={progress => progress ? this.setState({ progress }) : this.setState({ progress: 0 }) }
       />);
     }
 
     return (
-      <View style={{ flex: 1, backgroundColor: 'white', paddingTop: 0}}>
+      <View style={{ flex: 1, backgroundColor: 'white', paddingTop: 0 }}>
         <StatusBar
-          hidden={true}
+          hidden
           networkActivityIndicatorVisible
           // backgroundColor={'white'}
         />
+        {progressEl}
         {activity}
         {webView}
         {this.renderFooter()}

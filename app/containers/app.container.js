@@ -4,10 +4,7 @@ import {
   AppState,
   ActionSheetIOS,
   AlertIOS,
-  Easing,
-  PushNotificationIOS,
   Linking,
-  Animated,
   KeyboardAvoidingView,
   Platform,
   Alert,
@@ -17,7 +14,7 @@ import {
 
 import {
   // setCustomView,
-  setCustomTextInput,
+  // setCustomTextInput,
   setCustomText,
   // setCustomImage,
   // setCustomTouchableOpacity
@@ -416,8 +413,10 @@ class Application extends Component {
 
       case 'tabs':
         return <Footer showActionSheet={this.showActionSheet} />;
+
       case 'error':
         return <ErrorContainer showActionSheet={this.showActionSheet} />;
+
       case 'stallScreen':
         return <StallScreen />;
 
@@ -446,7 +445,7 @@ class Application extends Component {
     if (route.component === 'articleView') {
       statusBarHeight = 0;
     }
-    let height = Platform.OS === 'android' ? this.state.height - statusBarHeight :  this.state.height;
+    let height = Platform.OS === 'android' ? this.state.height - statusBarHeight : this.state.height;
 
     return (
       <View
@@ -456,8 +455,8 @@ class Application extends Component {
           style={{ backgroundColor: 'black' }}
           navigation={{ state: scene }}
           configureTransition={this.configureTransition}
-          render={transitionProps => {
-            return transitionProps.scene.route.ownCard ? this.renderScene(transitionProps) :
+          render={transitionProps => transitionProps.scene.route.ownCard ?
+            this.renderScene(transitionProps) :
             (<Card
               style={{ backgroundColor: 'black' }}
               renderScene={this.renderScene}
@@ -466,16 +465,13 @@ class Application extends Component {
               header={false}
               scroll={this.props.navigation.sroll}
               {...transitionProps}
-            />);
+            />)
           }
-        }
         />
         <Tooltip />
 
         <Prompt
           title={this.promptTitle || ''}
-          // placeholder=""
-          // defaultValue="Hello"
           visible={this.state.promptVisible}
           onCancel={() => this.setState({ promptVisible: false })}
           onSubmit={newName => {

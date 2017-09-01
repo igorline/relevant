@@ -49,7 +49,7 @@ exports.get = (req, res) => {
       console.log('sending ', comments.length, ' comments');
       let toSend = comments;
       if (total > 10) toSend = comments.reverse();
-      return res.json(200, { data: toSend, total });
+      return res.status(200).json({ data: toSend, total });
     })
     .catch((error) => {
       let message = 'error';

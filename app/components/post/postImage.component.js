@@ -6,7 +6,6 @@ import {
   View,
   TouchableHighlight,
   Image,
-  Linking
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { numbers } from '../../utils';
@@ -25,21 +24,15 @@ class PostImage extends Component {
   componentDidMount() {
   }
 
-  goToPost() {
-    if (!this.props.actions) return;
-    if (this.props.scene && this.props.scene.id === this.props.post._id) return;
-    this.props.actions.goToPost(this.props.post);
-  }
-
   openLink(url) {
     this.props.actions.goToUrl(url);
   }
 
   render() {
     let image = null;
-    let link = null;
+    let link;
     let post = this.props.metaPost || this.props.post;
-    let single = false // this.props.singlePost;
+    let single = false; // this.props.singlePost;
     let smallerImg; // = this.props.singlePost;
     let title = null;
     // let lastPost = false;
@@ -54,7 +47,8 @@ class PostImage extends Component {
       }
       if (post.articleAuthor && post.articleAuthor.length) {
         // test this
-        author = post.articleAuthor.filter(a => a ? !a.match('http') : false).join(', ');
+        author = post.articleAuthor.join(', ');
+    
         authorEl = (
           <Text
             numberOfLines={1}
@@ -65,7 +59,7 @@ class PostImage extends Component {
               // styles.darkGrey
             ]}
           >
-            {author ? author : ''}
+            {author || ''}
           </Text>
         );
       }
@@ -74,7 +68,6 @@ class PostImage extends Component {
         link = post.link || post.url;
         linkEl = (
           <View>
-            {/*authorEl*/}
             <Text
               // numberOfLines={2}
               style={[
@@ -86,46 +79,32 @@ class PostImage extends Component {
             >
               {post.publisher || post.domain}
               {time ? ' · ' + time : ''}
-              {/*post.description ? ' · ' + post.description : null */}
+              {authorEl ? ' · ' : null}{authorEl}
+              {/* post.description ? ' · ' + post.description : null */}
             </Text>
           </View>
         );
       }
       title = post.title ? post.title.trim() : '';
-      // if (post.title) {
-      //   title = post.title;
-      //   if (title.length > 75) {
-      //     let pre = title.substr(0, 75);
-      //     pre += '...';
-      //     title = pre;
-      //   }
-      // }
-      // if (post.lastPost) {
-      //   if (post.lastPost.length) {
-      //     post.lastPost.forEach((lastUser) => {
-      //       if (lastUser === this.props.auth.user._id) lastPost = true;
-      //     });
-      //   }
-      // }
     }
 
+    // let description;
 
-    let description = null;
-    if (post.description) {
-      description = (
-        <Text
-          numberOfLines={3}
-          style={[styles.font12,
-            // styles.georgia,
-            styles.whiteText
-            // styles.darkGrey,
-            // { padding: 10 }
-          ]}
-          >
-          {post.description}
-        </Text>
-      );
-    }
+    // if (post.description) {
+    //   description = (
+    //     <Text
+    //       numberOfLines={3}
+    //       style={[styles.font12,
+    //         // styles.georgia,
+    //         styles.whiteText
+    //         // styles.darkGrey,
+    //         // { padding: 10 }
+    //       ]}
+    //     >
+    //       {post.description}
+    //     </Text>
+    //   );
+    // }
 
     let titleEl = (
       <View style={[styles.textContainer]}>
@@ -136,14 +115,14 @@ class PostImage extends Component {
               styles.articleTitle,
               styles.bebasBold,
               { color: 'white', lineHeight: 28 },
-              { fontSize: 30, letterSpacing: 0.1, marginBottom: 0, paddingTop: 3},
+              { fontSize: 30, letterSpacing: 0.1, marginBottom: 0, paddingTop: 3 },
               single ? styles.darkGrey : null,
-              ]}
+            ]}
           >
             {title || 'Untitled'}
           </Text>
           { linkEl }
-          { /*description*/ }
+          { /* description*/ }
         </View>
       </View>
     );
@@ -189,34 +168,30 @@ class PostImage extends Component {
           style={[styles.postImage,
             smallerImg ? { height: 180 } : null
           ]}
-          // onLoad={(e) => {
-          //   console.log('onLoad ', e);
-          // }}
           source={image ? { uri: image } : require('../../assets/images/missing.png')}
         />
       );
     }
 
-    if (post.link || image) {
+    if (post.link || post.url || image) {
       imageEl = (
         <View
           style={[
             styles.imageCont,
             smallerImg ? { height: 180 } : null]}
-          >
+        >
           {img}
           {!single ? gradient : null}
         </View>
       );
     }
 
-
     return (
       <TouchableHighlight
         style={{ flex: 1, marginTop: 0 }}
         underlayColor={'transparent'}
         // onPress={link ? () => this.openLink(link) : null}
-        onPressIn={e =>{
+        onPressIn={e => {
           this.touchable1x = e.nativeEvent.pageX;
         }}
         onPress={(e) => {
@@ -224,17 +199,17 @@ class PostImage extends Component {
           if (Math.abs(this.touchable1x - x) > 5) {
             return;
           }
-          this.openLink(post.link);
+          this.openLink(post.link || post.url);
         }}
         pressRetentionOffset={{ top: 100, left: 100, right: 100, bottom: 100 }}
       >
         <View style={[styles.postImageContainer]}>
-          {/*linkEl*/}
+          {/* linkEl*/}
           {imageEl}
 
           {single ? titleEl : null}
 
-          {/*lastPost ? <Text style={[styles.lastPost, styles.white]}>
+          {/* lastPost ? <Text style={[styles.lastPost, styles.white]}>
             Last subscribed post❗️
           </Text> : null*/}
 
@@ -276,12 +251,9 @@ const localStyles = StyleSheet.create({
   },
   linearGradient: {
     height: 256,
-    // paddingTop: 30,
     width: fullWidth,
     position: 'absolute',
     bottom: 0,
-    // alignItems: 'flex-end',
-    // justifyContent: 'flex-end'
   },
   postImageContainer: {
     marginBottom: 0,

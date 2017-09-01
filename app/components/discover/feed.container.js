@@ -16,7 +16,6 @@ import * as authActions from '../../actions/auth.actions';
 import * as userActions from '../../actions/user.actions';
 import * as tagActions from '../../actions/tag.actions';
 import * as navigationActions from '../../actions/navigation.actions';
-import ErrorComponent from '../error.component';
 import CustomListView from '../customList.component';
 
 let styles;
@@ -37,9 +36,6 @@ class Read extends Component {
   }
 
   componentWillMount() {
-    // if (this.props.auth.user && this.props.posts.feedUnread) {
-    //   this.props.actions.markFeedRead();
-    // }
   }
 
   componentWillReceiveProps(next) {
@@ -58,29 +54,10 @@ class Read extends Component {
       next.active && !this.props.active) {
       this.needsReload = new Date().getTime();
     }
-    // if (this.props.auth.user &&
-    //     next.posts.feedUnread &&
-    //     next.active) {
-    //   this.props.actions.markFeedRead();
-    // }
   }
 
   shouldComponentUpdate(next) {
     if (!next.active) return false;
-
-    // let tab = next.tabs.routes[next.tabs.index];
-    // if (tab.key !== 'read') return false;
-
-    // console.log('updating read');
-    // for (let p in next) {
-    //   if (next[p] !== this.props[p]) {
-    //     console.log(p);
-    //     for (let pp in next[p]) {
-    //       if (next[p][pp] !== this.props[p][pp]) console.log('--> ',pp);
-    //     }
-    //   }
-    // }
-
     return true;
   }
 
@@ -97,7 +74,6 @@ class Read extends Component {
     if (!this.tooltipParent[name]) return;
     this.tooltipParent[name].measureInWindow((x, y, w, h) => {
       let parent = { x, y, w, h };
-      // console.log(parent);
       if (x + y + w + h === 0) return;
       this.props.actions.setTooltipData({
         name,
@@ -145,8 +121,9 @@ class Read extends Component {
   }
 
   renderRow(rowData) {
+    let post = this.props.posts.posts[rowData];
     return (
-      <Post post={rowData} {...this.props} styles={styles} />
+      <Post post={post} {...this.props} styles={styles} />
     );
   }
 
@@ -154,9 +131,6 @@ class Read extends Component {
     let feedEl = [];
     let filler;
     let { total, totalUsers } = this.props.subscriptions;
-    if (total) {
-      more = 'more ';
-    }
 
     filler = (
       <View>
@@ -197,6 +171,7 @@ class Read extends Component {
           onScroll={this.props.onScroll}
           needsReload={this.needsReload}
           actions={this.props.actions}
+          error={this.props.error}
         >
           {filler}
         </CustomListView>
@@ -206,7 +181,6 @@ class Read extends Component {
     return (
       <View style={[styles.fullContainer, { backgroundColor: 'hsl(0,0%,100%)' }]}>
         {feedEl}
-        <ErrorComponent parent={'read'} reloadFunction={this.load} />
       </View>
     );
   }
@@ -217,8 +191,6 @@ const localStyles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     backgroundColor: blue,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: 'lightgrey',
   },
   thirstyHeader: {
     alignItems: 'center',

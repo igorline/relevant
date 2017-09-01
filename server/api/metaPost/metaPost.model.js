@@ -19,13 +19,17 @@ let MetaPostSchema = new Schema({
   }],
   publisher: String,
   domain: String,
+  keywords: [String],
 
   tags: [{ type: String, ref: 'Tag' }],
   categories: [{ type: String, ref: 'Tag' }],
   rank: { type: Number, default: 0, index: true },
   topCommentary: { type: Schema.Types.ObjectId, ref: 'Post' },
   newCommentary: { type: Schema.Types.ObjectId, ref: 'Post' },
+
+  // May get big
   commentary: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+
   commentaryCount: { type: Number, default: 0 },
   latestPost: { type: Date, index: true },
 

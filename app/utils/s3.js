@@ -34,7 +34,7 @@ async function uploadToS3(uri, policy, signature, url, publicUrl, s3_object_name
   let body = new FormData();
 
   try {
-    if (Platform.OS === 'android' && uri.match('http//') || uri.match('https://')) {
+    if (Platform.OS === 'android' && (uri.match('http://') || uri.match('https://'))) {
       let res = await RNFetchBlob
       .config({
         fileCache: true,

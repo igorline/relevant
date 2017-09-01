@@ -188,7 +188,7 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
         meta.topCommentary = this._id;
       }
       // only do this when we create new post!
-      if (!meta.tags) meta.cats = [];
+      if (!meta.tags) meta.tags = [];
       let tags = [...meta.tags, ...this.tags];
       tags = [...new Set(tags)];
       meta.tags = tags;
@@ -198,10 +198,18 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
       cats = [...new Set(cats)];
       meta.categories = cats;
 
+      meta.keywords = [...new Set([...meta.keywords, ...this.keywords || []])];
+
       meta.commentaryCount++;
       meta.newCommentary = this._id;
       meta.commentary.push(this);
       meta.latestPost = this.postDate;
+      meta.articleAuthor = this.articleAuthor;
+      // meta.url = this.post.link;
+
+      if (this.image) {
+        meta.image = this.image;
+      }
       meta = await meta.save();
     } else {
       meta = {
@@ -213,7 +221,6 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
         commentaryCount: 1,
         tags: this.tags,
         categories: [this.category],
-
         // may not need to do this if meta is pre-populated
         articleAuthor: this.articleAuthor,
         shortText: this.shortText,
@@ -222,6 +229,7 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
         title: this.title,
         description: this.description,
         image: this.image,
+        keywords: this.keywords,
       };
       let metaPost = new MetaPost(meta);
       meta = await metaPost.save();

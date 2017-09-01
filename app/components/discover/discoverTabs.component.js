@@ -1,4 +1,4 @@
-import React, { PureComponent, Component } from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -42,7 +42,6 @@ class DiscoverTabs extends Component {
     this.scrollOffset = {};
     this.initialTab = 1;
     if (this.props.scene) {
-      // this.initialTab = 0;
       this.state.routes = [
         { key: 'new', title: 'New' },
         { key: 'top', title: 'Trending' },
@@ -62,24 +61,22 @@ class DiscoverTabs extends Component {
       this.loaded = false;
       this.needsReload = new Date().getTime();
 
-      this.onInteraction = InteractionManager.runAfterInteractions(() => {
+      // this.onInteraction = InteractionManager.runAfterInteractions(() => {
+      //   this.loaded = true;
+      //   this.setState({});
+      // });
+
+      requestAnimationFrame(() => {
         this.loaded = true;
         this.setState({});
       });
     } else {
       this.loaded = true;
-      // this.setState({ index: 0 });
-      // this.filter = this.props.tags.selectedTags;
     }
   }
 
   componentDidMount() {
-    // swipe to default tab here
-    // if (this.props.view.discover !== this.state.view && this.mainDiscover) {
-      // this.setState({ view: this.props.view.discover });
-      if (this.tabView && this.initialTab) this.tabView.goToPage(this.initialTab);
-    // }
-    // this.setState({ index: 1 });
+    if (this.tabView && this.initialTab) this.tabView.goToPage(this.initialTab);
   }
 
   componentWillReceiveProps(next) {
@@ -90,8 +87,7 @@ class DiscoverTabs extends Component {
     }
   }
 
-  onScroll(event, key) {
-    // this.scrollOffset[key] = event.nativeEvent.contentOffset.y;
+  onScroll(event) {
     this.header.onScroll(event);
   }
 
@@ -159,7 +155,7 @@ class DiscoverTabs extends Component {
       default:
         return null;
     }
-  };
+  }
 
   renderBadge(title) {
     if (title !== SUB_TITLE) return null;
@@ -253,7 +249,7 @@ class DiscoverTabs extends Component {
           prerenderingSiblingsNumber={Infinity}
           contentProps={{
             bounces: false,
-            forceSetResponder: (e) => {
+            forceSetResponder: () => {
               this.props.actions.scrolling(true);
               clearTimeout(this.scrollTimeout);
               this.scrollTimeout = setTimeout(

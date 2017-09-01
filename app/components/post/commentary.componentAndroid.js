@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  ScrollView,
-  ListView,
   Image,
   Text,
   FlatList,
   TouchableOpacity
 } from 'react-native';
-import { globalStyles, fullWidth, mainPadding } from '../../styles/global';
+import { globalStyles, fullWidth, mainPadding, borderGrey } from '../../styles/global';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostButtons from './postButtons.component';
@@ -18,30 +16,15 @@ import Tags from '../tags.component';
 
 let styles;
 
-const LAYOUT = 1;
-
 export default class Commentary extends Component {
 
   componentWillMount() {
     this.state = {
       currentIndex: 0,
     };
-    // this.changeRow = this.changeRow.bind(this);
     this.renderItem = this.renderItem.bind(this);
     this.onScrollEnd = this.onScrollEnd.bind(this);
     this.scrollToPage = this.scrollToPage.bind(this);
-  }
-
-  // changeRow(event, changed) {
-  //   console.log(event, changed)
-  //   if (event && event.s1) this.setState({ currentIndex: event.s1 });
-  //   if (changed && changed.s1) this.setState({ changed: changed.s1 });
-  // }
-
-  goToPost() {
-    if (!this.props.actions || !this.props.post || !this.props.post._id) return;
-    if (this.props.scene && this.props.scene.id === this.props.post._id) return;
-    this.props.actions.goToPost(this.props.post);
   }
 
   onScrollEnd(e) {
@@ -51,7 +34,11 @@ export default class Commentary extends Component {
     // Divide the horizontal offset by the width of the view to see which page is visible
     let pageNum = Math.floor(contentOffset.x / viewSize.width);
     this.setState({ currentIndex: pageNum });
-    // console.log('scrolled to page ', pageNum);
+  }
+
+  goToPost() {
+    if (!this.props.actions || !this.props.post || !this.props.post._id) return;
+    this.props.actions.goToPost(this.props.post);
   }
 
   scrollToPage(p) {
@@ -61,13 +48,11 @@ export default class Commentary extends Component {
   renderItem({ item, index }) {
     let post = item;
     let i = index;
-    let length = this.props.commentary.length - 1;
     let repostEl;
     let postStyle;
 
     post = { ...post };
     if (post.user && this.props.users[post.user]) post.user = this.props.users[post.user];
-    let separator = i < this.props.commentary.length - 1 || false;
 
     if (post.repost) {
       postStyle = [styles.repost];
@@ -76,13 +61,18 @@ export default class Commentary extends Component {
       if (repost.user && this.props.users[repost.user]) {
         repost.user = this.props.users[repost.user];
       }
-      post.user = this.props.users[post.user] || post.user;
       repostEl = (
         <View style={{ marginBottom: 0 }}>
-          <PostInfo repost {...this.props} post={post} />
+          <PostInfo
+            repost
+            actions={this.props.actions}
+            auth={this.props.auth}
+            post={post}
+          />
           <PostBody
             repost
-            {...this.props}
+            actions={this.props.actions}
+            auth={this.props.auth}
             post={{ _id: repost._id, body: post.repost.commentBody }}
           />
         </View>
@@ -100,7 +90,7 @@ export default class Commentary extends Component {
         and = ' and @' + post.reposted[1].user;
       }
       repostedBy = (
-        <View style={styles.reposted}>
+        <View>
           <TouchableOpacity
             onPress={() => this.props.actions.goToPost(post)}
           >
@@ -119,44 +109,39 @@ export default class Commentary extends Component {
       );
     }
 
+    let myPostInv = this.props.myPostInv[post._id];
 
     return (
       <View
         key={post._id + i}
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          // justifyContent: 'space-around',
-          alignItems: 'center',
-          width: fullWidth - mainPadding * 2,
-          marginHorizontal: mainPadding,
-          // width: length ? fullWidth - 10 - 20 : fullWidth - 20
-        }}
+        style={styles.commentaryContainer}
       >
         <View
-          style={[
-            styles.commentary,
-            // length ? styles.multi : null,
-          ]}
+          style={[styles.commentary]}
         >
           {repostEl}
           {repostedBy}
           <View style={[{ flex: 1 }, postStyle]}>
             <PostInfo
               big
-              {...this.props}
               post={post}
+              actions={this.props.actions}
+              auth={this.props.auth}
             />
             <PostBody
-              short {...this.props}
+              short
               post={post}
               editing={false}
+              actions={this.props.actions}
+              auth={this.props.auth}
             />
             <PostButtons
-              scene={this.props.scene}
-              {...this.props}
               post={post}
               comments={post.comments || null}
+              actions={this.props.actions}
+              auth={this.props.auth}
+              myPostInv={myPostInv}
+              focusInput={this.props.focusInput}
             />
           </View>
         </View>
@@ -168,15 +153,15 @@ export default class Commentary extends Component {
   render() {
     let pills = (
       <View style={{ marginVertical: 15 }}>
-{/*        <Text style={[styles.tabFont, styles.cLabel]}>
-          Swipe for other's commentary 🤔
-        </Text>*/}
         <Pills
           changed={this.state.changed}
           currentIndex={this.state.currentIndex}
           slides={this.props.commentary.map((c, i) => i + 1)}
           scrollToPage={this.scrollToPage}
         />
+{/*       <Text style={[styles.smallInfo, {textAlign: 'center'}]}>
+          Swipe for other's commentary 🤔
+        </Text>*/}
       </View>
     );
     return (
@@ -202,8 +187,12 @@ export default class Commentary extends Component {
 }
 
 const localStyles = StyleSheet.create({
-  reposted: {
-    // backgroundColor: 'white',
+  commentaryContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: fullWidth - mainPadding * 2,
+    marginHorizontal: mainPadding,
   },
   postScroll: {
     flexDirection: 'row',
@@ -217,34 +206,12 @@ const localStyles = StyleSheet.create({
     flexGrow: 1,
     marginTop: 10,
     marginBottom: 10,
-    // backgroundColor: 'white',
     flexDirection: 'column',
-  },
-  vSeparator: {
-    width: 0,
-    flexDirection: 'column',
-    marginVertical: 60,
-    borderRightColor: 'black',
-    borderRightWidth: StyleSheet.hairlineWidth,
-  },
-  rightBorder: {
-    // borderRightColor: 'black',
-    // borderRightWidth: StyleSheet.hairlineWidth,
   },
   repost: {
-    borderLeftColor: 'black',
+    borderLeftColor: borderGrey,
     borderLeftWidth: StyleSheet.hairlineWidth,
     paddingLeft: 10,
-  },
-  multi: {
-    paddingHorizontal: mainPadding,
-    paddingBottom: 10,
-  },
-  cLabel: {
-    fontSize: 12,
-    // paddingTop: 20,
-    paddingBottom: 10,
-    textAlign: 'center',
   },
 });
 
