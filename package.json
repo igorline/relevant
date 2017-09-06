@@ -33,6 +33,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-react-hmre": "^1.1.1",
     "babel-preset-stage-2": "^6.5.0",
+    "body-parser": "^1.17.2",
     "buffer": "^4.5.1",
     "cheerio": "^0.22.0",
     "cheerio-without-node-native": "^0.20.0",
