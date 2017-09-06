@@ -373,7 +373,7 @@ exports.create = async (req, res) => {
       let payload = { 'Relevance from': user.name };
       try {
         // TEST - don't send notification after upvote
-        // apnData.sendNotification(author, alert, payload);
+        apnData.sendNotification(author, alert, payload);
         let now = new Date();
         if (post.createdAt > now.getTime() - 7 * 24 * 60 * 60 * 1000) {
           alert = null;
