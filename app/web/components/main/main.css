@@ -80,6 +80,7 @@
 
 .splashContent section.header {
   align-items: center;
+  justify-content: center;
   align-self: center;
   height: 140px;
   display: flex;
