@@ -46,6 +46,10 @@ module.exports = {
     ],
     loaders: [
       {
+        test: /\.svg$/,
+        loader: 'raw-loader'
+      },
+      {
         test: /\.css$|\.scss$/,
         loader: 'style-loader!css-loader!postcss-loader'
         // loader: ExtractTextPlugin.extract('style-loader','css-loader!postcss-loader')

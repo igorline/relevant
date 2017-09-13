@@ -73,7 +73,7 @@ class PostButtons extends Component {
       cancelIndex: 3,
     };
 
-    // this.toggleModal = this.toggleModal.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
     this.irrelevant = this.irrelevant.bind(this);
     this.irrelevantPrompt = this.irrelevantPrompt.bind(this);
@@ -136,7 +136,13 @@ class PostButtons extends Component {
     let investAmount = 1;
     // DEBUG ANIMATION
     // this.props.actions.triggerAnimation('invest');
-    // return;
+
+    this.investButton.measureInWindow((x, y, w, h) => {
+      let parent = { x, y, w, h };
+      if (x + y + w + h === 0) return;
+      this.props.actions.triggerAnimation('upvote', { parent });
+    });
+    return;
 
     this.props.actions.invest(
       this.props.auth.token,
@@ -326,6 +332,10 @@ class PostButtons extends Component {
     let irrelevantButton;
     let commentString = '';
     let myVote;
+    let myPost = false;
+    if (post.user._id === this.props.auth.user._id) {
+      myPost = true;
+    }
     if (post && post.user && this.props.auth.user) {
       if (post.user._id !== this.props.auth.user._id) {
         if (!this.props.myPostInv) {
@@ -342,7 +352,11 @@ class PostButtons extends Component {
         commentString = post.commentCount;
       }
     }
-
+    let canBet;
+    let now = new Date();
+    if (!myPost && !investable && now - new Date(post.createdAt) < 6 * 60 * 60 * 1000) {
+      canBet = true;
+    }
 
     // invest section spacing
     let space = 8;
@@ -352,16 +366,25 @@ class PostButtons extends Component {
       upvoteIcon = require('../../assets/images/icons/upvoteActive.png');
     } // else if (!investable) opacity = .3;
 
+    let investAction = canBet ? this.toggleModal : (investable ? this.invest : null);
+
     investButtonEl = (
       <TouchableOpacity
-        style={{ paddingRight: space, opacity }}
-        onPress={() => investable ? this.invest() : null}
+        style={{ paddingRight: space }}
+        ref={c => this.investButton = c}
+        onPress={investAction}
       >
+        { canBet ? <Image
+          resizeMode={'contain'}
+          style={[styles.r, { width: 20, height: 20, zIndex: 1, position: 'absolute', bottom: 1, right: 0 }]}
+          source={require('../../assets/images/relevantcoin.png')}
+        /> : null }
         <Image
           resizeMode={'contain'}
           style={[styles.vote, { opacity }]}
           source={upvoteIcon}
         />
+
       </TouchableOpacity>
     );
 
@@ -393,7 +416,11 @@ class PostButtons extends Component {
       </View>
     );
 
-    if (totalVotes === 0) {
+    if (canBet) {
+      r = 'Place Bet!';
+      rIcon = null;
+      votes = null;
+    } else if (totalVotes === 0) {
       r = 'Vote';
       rIcon = null;
       votes = null;
@@ -414,14 +441,13 @@ class PostButtons extends Component {
           <View style={[styles.textRow, { alignItems: 'center' }]}>
             {rIcon}
             <Text style={[styles.smallInfo, styles.greyText]}>
-              {totalVotes === 0 ? r : numbers.abbreviateNumber(r)}
+              {isNaN(r) ? r : numbers.abbreviateNumber(r)}
             </Text>
           </View>
           {votes}
         </View>
       </TouchableOpacity>
     );
-
 
     // opacity = 1;
     let downvoteIcon = require('../../assets/images/icons/downvote.png');

@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -55,6 +56,8 @@
 		FB07E07B1F54F6C3002FBDBA /* libRCTWKWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB07E0601F54C9B9002FBDBA /* libRCTWKWebView.a */; };
 		FB0D88071EAEC6B000DEE4B8 /* Images.xcassets in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		FB0D88081EAEC8DE00DEE4B8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		FB202A1C1F632CD000E11BFB /* libjschelpers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB71B0C91E424F28000DA9BD /* libjschelpers.a */; };
+		FB202A481F632CDB00E11BFB /* libjschelpers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB71B0C91E424F28000DA9BD /* libjschelpers.a */; };
 		FB2BD5FF1E8B0A8100DBC2BA /* libRCTGoogleAnalyticsBridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB2BD5111E8AFA3200DBC2BA /* libRCTGoogleAnalyticsBridge.a */; };
 		FB2BD6251E8B0ADA00DBC2BA /* libRNFIRAnalytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB2BD52E1E8AFA3200DBC2BA /* libRNFIRAnalytics.a */; };
 		FB2BD6261E8B0C4C00DBC2BA /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A93E1E6F3A50009404F2 /* CoreData.framework */; };
@@ -628,6 +631,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB202A1C1F632CD000E11BFB /* libjschelpers.a in Frameworks */,
 				FB07E07B1F54F6C3002FBDBA /* libRCTWKWebView.a in Frameworks */,
 				FBDA046F1EEF281F00789ED9 /* CodePush.h in Frameworks */,
 				FBF8A9431E6F3A62009404F2 /* libz.tbd in Frameworks */,
@@ -673,6 +677,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB202A481F632CDB00E11BFB /* libjschelpers.a in Frameworks */,
 				FBDA04701EEF289600789ED9 /* CodePush.h in Frameworks */,
 				FB2BD6271E8B0C5600DBC2BA /* libz.tbd in Frameworks */,
 				FBDA046D1EEF26AC00789ED9 /* libCodePush.a in Frameworks */,

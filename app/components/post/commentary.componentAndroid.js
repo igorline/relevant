@@ -134,6 +134,7 @@ export default class Commentary extends Component {
               editing={false}
               actions={this.props.actions}
               auth={this.props.auth}
+              singlePost={this.props.singlePost}
             />
             <PostButtons
               post={post}

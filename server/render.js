@@ -17,6 +17,7 @@ import { setUser } from '../app/actions/auth.actions';
 
 function renderFullPage(html, initialState) {
   let styles;
+  // html = ''
 
   // load extracted styles in head when in production
   if (process.env.NODE_ENV === 'development') styles = '';

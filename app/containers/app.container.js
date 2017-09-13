@@ -36,6 +36,8 @@ import Footer from '../components/nav/footer.container';
 import ErrorContainer from './error.container';
 import InvestAnimation from '../components/animations/investAnimation.component';
 import HeartAnimation from '../components/animations/heartAnimation.component';
+import UpvoteAnimation from '../components/animations/upvoteAnimation.component';
+
 import StallScreen from '../components/stallScreen.component';
 import ArticleView from '../components/post/articleView.container';
 import * as authActions from '../actions/auth.actions';
@@ -487,6 +489,7 @@ class Application extends Component {
         <InvestAnimation />
         <HeartAnimation />
         <IrrelevantAnimation />
+        <UpvoteAnimation />
 
       </View>
     );
