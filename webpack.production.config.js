@@ -26,6 +26,10 @@ prodConfig.plugins = [
 
 prodConfig.module.loaders = [
   {
+    test: /\.svg$/,
+    loader: 'raw-loader'
+  },
+  {
     test: /\.css$|\.scss$/,
     loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader')
   },

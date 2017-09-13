@@ -1,11 +1,17 @@
 @font-face {
-  font-family: 'Helvetica Outline';
+  font-family: 'Outline';
   src: url('/fonts/helvetica-outline.otf') format('opentype');
 }
 
 @font-face {
-  font-family: 'Bebas Neue';
+  font-family: 'Bebas';
   src: url('/fonts/BebasNeue-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Bebas';
+  src: url('/fonts/BebasNeue-Bold.otf') format('opentype');
+  font-weight: bold;
 }
 
 @font-face {
@@ -24,7 +30,7 @@
 }
 
 .outline {
-  font-family: 'Helvetica Outline';
+  font-family: 'Outline';
 }
 
 .georgia {
@@ -32,10 +38,23 @@
 }
 
 .bebasRegular {
-  font-family: 'Bebas Neue';
+  font-family: 'Bebas';
 }
 
 h1 {
+  font-family: 'Bebas';
+  font-size: 43px;
+  line-height: 39px;
+  font-weight: bold;
+}
+
+.subH {
+  font-family: 'Arial';
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.callout {
   font-family: 'Libre';
   font-size: 64px;
   font-weight: 100;
@@ -45,7 +64,7 @@ h1 {
 
 
 h2 {
-  font-family: 'Helvetica Outline';
+  font-family: 'Outline';
   font-size: 44px;
   color: #242425;
   margin: 40px 0 40px 0;
