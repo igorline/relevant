@@ -3,12 +3,12 @@ import * as utils from '../utils';
 import * as errorActions from './error.actions';
 import * as navigationActions from './navigation.actions';
 
-let AlertIOS = utils.fetchUtils.Alert();
+let AlertIOS = utils.api.Alert();
 let rn = {};
 let PushNotification;
 let userDefaults;
 
-utils.fetchUtils.env();
+utils.api.env();
 let Analytics;
 let Platform;
 
@@ -284,7 +284,7 @@ function createUser(user, invite) {
       },
       body: JSON.stringify({ user, invite })
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       if (responseJSON.token) {
@@ -322,7 +322,7 @@ export function getUser(callback) {
           Authorization: `Bearer ${token}`
         }
       })
-      .then(utils.fetchUtils.handleErrors)
+      .then(utils.api.handleErrors)
       .then(response => response.json())
       .then((responseJSON) => {
         dispatch(setUser(responseJSON));
@@ -388,7 +388,7 @@ export function updateUser(user, preventLocalUpdate) {
       ...await reqOptions(),
       body: JSON.stringify(user)
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       if (!preventLocalUpdate) dispatch(updateAuthUser(responseJSON));
@@ -512,7 +512,7 @@ export function sendConfirmation() {
       method: 'GET',
       ...await reqOptions()
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       return true;
@@ -531,7 +531,7 @@ export function forgotPassword(user) {
       ...await reqOptions(),
       body: JSON.stringify({ user })
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       return responseJSON;
@@ -550,7 +550,7 @@ export function resetPassword(password, token) {
       ...await reqOptions(),
       body: JSON.stringify({ password, token })
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       AlertIOS.alert('Your password has been updated! Try loggin in.');
@@ -570,7 +570,7 @@ export function confirmEmail(user, code) {
       ...await reqOptions(),
       body: JSON.stringify({ user, code })
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       AlertIOS.alert('Your email has been confirmed');
@@ -595,11 +595,11 @@ export function setStats(stats) {
 export function getChart(start, end) {
   return async dispatch => {
     try {
-      let chart = await utils.fetchUtils.superFetch({
+      let chart = await utils.api.request({
         method: 'GET',
         endpoint: 'relevanceStats',
         path: `/user`,
-        params: { start, end }
+        query: { start, end }
       });
       dispatch(setStats({ chart }));
       dispatch(errorActions.setError('stats', false));
@@ -615,7 +615,7 @@ export function getChart(start, end) {
 export function getStats(user) {
   return async dispatch => {
     try {
-      let stats = await utils.fetchUtils.superFetch({
+      let stats = await utils.api.request({
         method: 'GET',
         endpoint: 'relevance',
         path: `/user/${user._id}/stats`,
@@ -633,11 +633,11 @@ export function getStats(user) {
 export function getRelChart(start, end) {
   return async dispatch => {
     try {
-      let relChart = await utils.fetchUtils.superFetch({
+      let relChart = await utils.api.request({
         method: 'GET',
         endpoint: 'statistics',
         path: `/user`,
-        params: { start, end }
+        query: { start, end }
       });
       dispatch(setStats({ relChart }));
       dispatch(errorActions.setError('stats', false));

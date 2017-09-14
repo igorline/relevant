@@ -1,6 +1,6 @@
-import * as fetchUtils from './fetchUtils';
+import * as api from './api';
 
-fetchUtils.env();
+api.env();
 
 const cheerio = require('cheerio-without-node-native');
 

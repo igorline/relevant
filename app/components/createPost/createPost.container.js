@@ -135,16 +135,16 @@ class CreatePostContainer extends Component {
       // shortText: props.shortText,
     };
     this.props.actions.editPost(postBody, this.props.auth.token)
-      .then((results) => {
-        if (results.success) {
-          Alert.alert('Post error please try again');
-        } else {
-          Alert.alert('Success!');
-          this.props.actions.clearCreatePost();
-          this.props.navigator.resetRoutes('home');
-          this.props.actions.setUserSearch([]);
-        }
-      });
+    .then(res => {
+      if (!res) return;
+      Alert.alert('Success!');
+      this.props.actions.clearCreatePost();
+      this.props.navigator.resetRoutes('home');
+      this.props.actions.setUserSearch([]);
+    })
+    .catch(err => {
+      console.log(err);
+    });
   }
 
   createRepost() {
@@ -235,15 +235,12 @@ class CreatePostContainer extends Component {
     if (props.edit) {
       postBody = { ...props.editPost, ...postBody };
       return this.props.actions.editPost(postBody, this.props.auth.token)
-        .then((results) => {
-          if (results.success) {
-            Alert.alert('Post error please try again');
-          } else {
-            Alert.alert('Success!');
-            this.props.actions.clearCreatePost();
-            this.props.actions.resetRoutes('createPost');
-            this.props.navigator.resetRoutes('home');
-          }
+        .then((res) => {
+          if (!res) return;
+          Alert.alert('Success!');
+          this.props.actions.clearCreatePost();
+          this.props.actions.resetRoutes('createPost');
+          this.props.navigator.resetRoutes('home');
         });
     }
 

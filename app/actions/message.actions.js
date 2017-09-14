@@ -2,7 +2,7 @@ import * as types from './actionTypes';
 // require('../publicenv');
 import * as utils from '../utils';
 
-utils.fetchUtils.env();
+utils.api.env();
 var apiServer = process.env.API_SERVER+'/api/'
 
 export function setMessages(messages) {

@@ -2,7 +2,7 @@ import { normalize, schema } from 'normalizr';
 import * as types from './actionTypes';
 import * as utils from '../utils';
 
-let AlertIOS = utils.fetchUtils.Alert();
+let Alert = utils.api.Alert();
 const API = process.env.API_SERVER + '/api';
 const DEFAULT_LIMIT = 20;
 
@@ -47,9 +47,9 @@ export function destroyInvite(invite) {
 export function getInvites(skip, limit) {
   return async dispatch => {
     try {
-      let responseJSON = await utils.fetchUtils.superFetch({
+      let responseJSON = await utils.api.request({
         method: 'GET',
-        params: { skip, limit },
+        query: { skip, limit },
         endpoint: 'invites',
         path: '',
       });
@@ -69,19 +69,19 @@ export function createInvite(invite) {
   return async (dispatch) =>
     fetch(API + '/invites', {
       method: 'POST',
-      ...await utils.fetchUtils.reqOptions(),
+      ...await utils.api.reqOptions(),
       body: JSON.stringify(invite)
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(updateInvite(responseJSON));
-      AlertIOS.alert('Invitation email has been sent');
+      Alert.alert('Invitation email has been sent');
       return responseJSON;
     })
     .catch((error) => {
       console.log('invites error', error);
-      AlertIOS.alert(error.message);
+      Alert.alert(error.message);
       return false;
     });
 }
@@ -90,14 +90,14 @@ export function sendInvitationEmail(id) {
   return async (dispatch) =>
     fetch(API + '/invites/email', {
       method: 'POST',
-      ...await utils.fetchUtils.reqOptions(),
+      ...await utils.api.reqOptions(),
       body: JSON.stringify({ inviteId: id })
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(updateInvite(responseJSON));
-      AlertIOS.alert('Invitation email has been sent');
+      Alert.alert('Invitation email has been sent');
     })
     .catch((error) => {
       console.log('invites error', error);
@@ -108,10 +108,10 @@ export function checkInviteCode(code) {
   return async dispatch =>
     fetch(API + '/invites', {
       method: 'PUT',
-      ...await utils.fetchUtils.reqOptions(),
+      ...await utils.api.reqOptions(),
       body: JSON.stringify({ code })
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(updateInvite(responseJSON));
@@ -119,7 +119,7 @@ export function checkInviteCode(code) {
       return false;
     })
     .catch((error) => {
-      AlertIOS.alert(error.message);
+      Alert.alert(error.message);
       console.log('invites error', error);
     });
 }
@@ -128,15 +128,15 @@ export function destroy(invite) {
   return async dispatch =>
     fetch(API + '/invites/' + invite._id, {
       method: 'DELETE',
-      ...await utils.fetchUtils.reqOptions(),
+      ...await utils.api.reqOptions(),
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then(() => {
-      AlertIOS.alert('removed item');
+      Alert.alert('removed item');
       dispatch(destroyInvite(invite));
     })
     .catch((error) => {
-      AlertIOS.alert(error.message);
+      Alert.alert(error.message);
       console.log('invites error', error);
     });
 }
@@ -145,9 +145,9 @@ export function getWaitlist() {
   return async dispatch =>
     fetch(API + '/list', {
       method: 'GET',
-      ...await utils.fetchUtils.reqOptions()
+      ...await utils.api.reqOptions()
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       let data = normalize(
@@ -165,17 +165,17 @@ export function signupForMailingList(user) {
   return async dispatch =>
     fetch(process.env.API_SERVER + '/api/list/', {
       method: 'POST',
-      ...await utils.fetchUtils.reqOptions(),
+      ...await utils.api.reqOptions(),
       body: JSON.stringify(user)
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     // .then(response => response.json())
     .then(() => {
-      AlertIOS.alert('Your email has been added to the waitlist');
+      Alert.alert('Your email has been added to the waitlist');
       return true;
     })
     .catch(err => {
-      AlertIOS.alert(err.message);
+      Alert.alert(err.message);
       console.log(err);
       return false;
     });
@@ -189,32 +189,27 @@ export function setDownvotes(data) {
 }
 
 export function getDownvotes(skip, limit) {
-  return async dispatch => {
-    try {
-      let responseJSON = await utils.fetchUtils.superFetch({
-        method: 'GET',
-        params: { skip, limit },
-        endpoint: 'invest',
-        path: '/downvotes',
-      });
-      dispatch(setDownvotes(responseJSON));
-      return true;
-    } catch (error) {
-      return false;
-    }
-  };
+  return dispatch =>
+    utils.api.request({
+      method: 'GET',
+      query: { skip, limit },
+      endpoint: 'invest',
+      path: '/downvotes',
+    })
+    .then(res => dispatch(setDownvotes(res)))
+    .catch(err => Alert.alert(err.message));
 }
 
 export function sendEmail(email) {
   return async dispatch => {
     try {
-      let responseJSON = await utils.fetchUtils.superFetch({
+      await utils.api.request({
         method: 'PUT',
         endpoint: 'email',
         path: '/',
         body: JSON.stringify(email)
       });
-      AlertIOS.alert('Email has been sent');
+      Alert.alert('Email has been sent');
       return true;
     } catch (error) {
       return false;
@@ -225,13 +220,13 @@ export function sendEmail(email) {
 export function saveEmail(email) {
   return async dispatch => {
     try {
-      let responseJSON = await utils.fetchUtils.superFetch({
+      await utils.api.request({
         method: 'PUT',
         endpoint: 'email',
         path: '/save',
         body: JSON.stringify(email)
       });
-      AlertIOS.alert('Email has been saved');
+      Alert.alert('Email has been saved');
       return true;
     } catch (error) {
       return false;
@@ -242,7 +237,7 @@ export function saveEmail(email) {
 export function loadEmail() {
   return async dispatch => {
     try {
-      let responseJSON = await utils.fetchUtils.superFetch({
+      let responseJSON = await utils.api.request({
         method: 'GET',
         endpoint: 'email',
         path: '/load',
@@ -258,10 +253,10 @@ export function loadEmail() {
 //   return async dispatch =>
 //   fetch(API + '/list/' + user._id, {
 //     method: 'PUT',
-//     ...await utils.fetchUtils.reqOptions(),
+//     ...await utils.api.reqOptions(),
 //     body: JSON.stringify({ user })
 //   })
-//   .then(utils.fetchUtils.handleErrors)
+//   .then(utils.api.handleErrors)
 //   .then((response) => response.json())
 //   .then((responseJSON) => {
 //     dispatch(updateWaitlist(responseJSON));
@@ -269,7 +264,7 @@ export function loadEmail() {
 //     return false;
 //   })
 //   .catch((error) => {
-//     AlertIOS.alert(error.message);
+//     Alert.alert(error.message);
 //     console.log('invites error', error);
 //   });
 // }

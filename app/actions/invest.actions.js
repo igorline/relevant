@@ -3,8 +3,8 @@ import * as types from './actionTypes';
 import * as utils from '../utils';
 
 // require('../publicenv');
-utils.fetchUtils.env();
-const AlertIOS = utils.fetchUtils.Alert();
+utils.api.env();
+const AlertIOS = utils.api.Alert();
 
 let apiServer = process.env.API_SERVER + '/api/';
 
@@ -100,7 +100,7 @@ export function getInvestments(token, userId, skip, limit, type){
     dispatch(loadingInvestments());
     return fetch(apiServer + 'invest/' + userId + '?skip=' + skip + '&limit=' + limit, {
       method: 'GET',
-      ...await utils.fetchUtils.reqOptions()
+      ...await utils.api.reqOptions()
     })
     .then(response => response.json())
     .then((responseJSON) => {
@@ -180,7 +180,7 @@ export function getPostInvestments(postId, limit, skip) {
     try {
       let response = await fetch(url, {
         method: 'GET',
-        ...await utils.fetchUtils.reqOptions()
+        ...await utils.api.reqOptions()
       });
 
       if (!response.ok) throw response.statusText;

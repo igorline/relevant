@@ -3,7 +3,7 @@ import * as types from './actionTypes';
 import * as utils from '../utils';
 import * as authActions from './auth.actions';
 
-utils.fetchUtils.env();
+utils.api.env();
 
 export function getAllStats() {
   return (dispatch) => {
