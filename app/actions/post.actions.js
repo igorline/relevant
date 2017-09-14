@@ -4,9 +4,9 @@ import * as utils from '../utils';
 import * as errorActions from './error.actions';
 import * as navigationActions from './navigation.actions';
 
-const AlertIOS = utils.fetchUtils.Alert();
+const Alert = utils.api.Alert();
 
-utils.fetchUtils.env();
+utils.api.env();
 const apiServer = process.env.API_SERVER + '/api/';
 
 const commentSchema = new schema.Entity('comments',
@@ -99,7 +99,7 @@ export function updatePost(post) {
   };
 }
 
-export function updateRelated(related, postId) {
+export function updateRelated(related) {
   return {
     type: types.SET_RELATED,
     payload: related
@@ -143,52 +143,42 @@ export function setPosts(data, type, index) {
   };
 }
 
-export function getFeed(skip, tag) {
+export function getFeed(skip, _tag) {
   if (!skip) skip = 0;
   let type = 'feed';
+  let limit = DEFAULT_LIMIT;
+  let tag = _tag ? _tag._id : null;
 
-  function getUrl() {
-    let url = `${apiServer}feed?skip=${skip}&limit=${DEFAULT_LIMIT}`;
-    if (tag) {
-      url = `${apiServer}feed?skip=${skip}&tag=${tag._id}&limit=${DEFAULT_LIMIT}`;
-    }
-    return url;
-  }
-
-  return (dispatch) => {
-    dispatch(getPostsAction(type));
-    utils.token.get()
-    .then(token =>
-      fetch(getUrl(), {
-        method: 'GET',
-        ...reqOptions(token)
-      })
-    )
-    .then(response => response.json())
-    .then((responseJSON) => {
+  return dispatch =>
+    utils.api.request({
+      method: 'GET',
+      query: { skip, limit, tag },
+      endpoint: 'feed',
+      path: '/',
+    })
+    .then(res => {
       let data = normalize(
-        { feed: responseJSON },
+        { feed: res },
         { feed: [postSchema] }
       );
       dispatch(setUsers(data.entities.users));
       dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('read', false));
     })
-    .catch((error) => {
-      console.log('Feed error ', error);
-      if (!error.message.match('Get fail for key: token')) {
-        dispatch(errorActions.setError('read', true, error.message));
+    .catch(err => {
+      // TODO do we need this?
+      if (!err.message.match('Get fail for key: token')) {
+        dispatch(errorActions.setError('read', true, err.message));
       }
     });
-  };
 }
 
 export function deletePost(post, redirect) {
-  let url = apiServer + 'post/' + post._id;
-  return async dispatch =>
-    fetch(url, {
-      ...await utils.fetchUtils.reqOptions(),
+  return dispatch =>
+    utils.api.request({
       method: 'DELETE',
+      endpoint: 'post',
+      params: { id: post._id }
     })
     .then(() => {
       dispatch(removePost(post));
@@ -273,35 +263,26 @@ export function getPosts(skip, tags, sort, limit) {
   if (!skip) skip = 0;
   if (!limit) limit = DEFAULT_LIMIT;
   if (!sort) sort = null;
+  let tag = null;
 
   // change this if we want to store top and new in separate places
   const type = sort ? 'top' : 'new';
   let endpoint = 'metaPost';
-  let params = `?skip=${skip}&sort=${sort}&limit=${limit}`;
   let topic;
 
   if (tags && tags.length) {
-    tagsString = tags.map(tag => tag._id || tag).join(', ');
-    // endpoint = 'post';
-    params += `&tag=${tagsString}`;
+    tagsString = tags.map(t => t._id || t).join(', ');
+    tag = tagsString;
     if (tags.length === 1) topic = tags[0];
   }
 
-  let url = apiServer + endpoint + params;
-
-  return async (dispatch) => {
+  return dispatch => {
     dispatch(getPostsAction(type));
-    let token;
-
-    try {
-      token = await utils.token.get();
-    } catch (err) { console.log('no token when getting postss'); }
-
-    fetch(url, {
+    return utils.api.request({
       method: 'GET',
-      ...reqOptions(token)
+      endpoint,
+      query: { skip, sort, limit, tag }
     })
-    .then(response => response.json())
     .then((responseJSON) => {
       let dataType = metaPostSchema;
       let data = normalize(
@@ -332,19 +313,12 @@ export function getUserPosts(skip, limit, userId) {
   if (!limit) limit = 5;
   return async (dispatch) => {
     dispatch(loadingUserPosts());
-    let token;
-    const url = `${apiServer}post/user/${userId}?skip=${skip}&limit=${limit}`;
-
-    try {
-      token = await utils.token.get();
-    } catch (err) { console.log('no token'); }
-
-    fetch(url, {
+    return utils.api.request({
       method: 'GET',
-      ...reqOptions(token)
+      endpoint: 'post/user',
+      params: { id: userId },
+      query: { skip, limit }
     })
-    .then(utils.fetchUtils.handleErrors)
-    .then((response) => response.json())
     .then((responseJSON) => {
       let data = normalize(
         { [userId]: responseJSON },
@@ -371,56 +345,25 @@ export function addUpdatedComment(updatedComment) {
 }
 
 export function updateComment(comment) {
-  return (dispatch) =>
-    utils.token.get()
-    .then(token =>
-      fetch(apiServer + 'comment', {
-        method: 'PUT',
-        body: JSON.stringify(comment),
-        ...reqOptions(token)
-      })
-    )
-    .then((response) => response.json())
-    .then((responseJSON) => {
-      dispatch(addUpdatedComment(responseJSON));
-      return true;
+  return dispatch =>
+    utils.api.request({
+      method: 'PUT',
+      endpoint: 'comment',
+      body: JSON.stringify(comment),
     })
-    .catch((error) => {
-      console.log(error, 'error');
-      AlertIOS.alert(error.message);
-      return false;
-    });
+    .then(res => dispatch(addUpdatedComment(res)))
+    .catch(error => Alert.alert(error.message));
 }
 
-export function editPost(post, authToken) {
-  let response;
-  return (dispatch) => {
-    return fetch(process.env.API_SERVER + '/api/post?access_token=' + authToken, {
-      credentials: 'include',
+export function editPost(post) {
+  return dispatch =>
+    utils.api.request({
       method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(post)
+      endpoint: 'post',
+      body: JSON.stringify(post),
     })
-    .then(_response => {
-      response = _response;
-      console.log(response);
-      return response.json();
-    })
-    .then((responseJSON) => {
-      if (response.status === 200) {
-        dispatch(updatePost(responseJSON));
-        return true;
-      }
-      return false;
-    })
-    .catch((error) => {
-      console.log(error, 'error');
-      return false;
-    });
-  };
+    .then(res => dispatch(updatePost(res)))
+    .catch(err => Alert.alert('Post error please try again'));
 }
 
 export function removeCommentEl(postId, commentId) {
@@ -448,7 +391,7 @@ export function deleteComment(token, id, postId) {
       dispatch(removeCommentEl(postId, id));
     })
     .catch((error) => {
-      AlertIOS.alert(error.message);
+      Alert.alert(error.message);
       console.log(error, 'error');
     });
 }
@@ -490,7 +433,7 @@ export function createComment(token, commentObj) {
       method: 'POST',
       body: JSON.stringify(commentObj)
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       dispatch(addComment(responseJSON.post, responseJSON));
@@ -498,7 +441,7 @@ export function createComment(token, commentObj) {
     })
     .catch((error) => {
       console.log(error, 'error');
-      AlertIOS.alert(error.message);
+      Alert.alert(error.message);
       return false;
     });
   };
@@ -507,11 +450,11 @@ export function createComment(token, commentObj) {
 export function getSelectedPost(postId) {
   return async dispatch => {
     try {
-      let responseJSON = await utils.fetchUtils.superFetch({
+      let responseJSON = await utils.api.request({
         method: 'GET',
         endpoint: 'post',
         path: '',
-        pathParams: { id: postId }
+        params: { id: postId }
       });
       if (!responseJSON) {
         dispatch(removePost(postId));
@@ -530,11 +473,11 @@ export function getSelectedPost(postId) {
 export function getRelated(postId) {
   return async dispatch => {
     try {
-      let responseJSON = await utils.fetchUtils.superFetch({
+      let responseJSON = await utils.api.request({
         method: 'GET',
         endpoint: 'metaPost',
         path: '/related',
-        pathParams: { id: postId }
+        params: { id: postId }
       });
       dispatch(updateRelated({
         related: responseJSON,
@@ -618,7 +561,7 @@ export function flag(post) {
     )
     .then(response => response.json())
     .then(responseJSON => {
-      AlertIOS.alert('Thank you', 'Flagged posts will be reviewed by the administrators');
+      Alert.alert('Thank you', 'Flagged posts will be reviewed by the administrators');
       dispatch(updatePost(responseJSON));
     })
     .catch(err => console.log('Subscription error', err));
@@ -652,7 +595,7 @@ export function setTopPosts(data) {
 export function getTopPosts() {
   return async dispatch => {
     try {
-      let responseJSON = await utils.fetchUtils.superFetch({
+      let responseJSON = await utils.api.request({
         method: 'GET',
         endpoint: 'post',
         path: '/topPosts',
@@ -668,13 +611,13 @@ export function getTopPosts() {
 export function sendPostNotification(post) {
   return async dispatch => {
     try {
-      let responseJSON = await utils.fetchUtils.superFetch({
+      let responseJSON = await utils.api.request({
         method: 'POST',
         endpoint: 'post',
         path: '/sendPostNotification',
         body: JSON.stringify(post),
       });
-      AlertIOS.alert('Notification sent!');
+      Alert.alert('Notification sent!');
       // return dispatch(setTopPosts(responseJSON));
     } catch (error) {
       return false;
@@ -714,7 +657,7 @@ export function getFlaggedPosts(skip) {
     // dispatch(getPostsAction(type));
     fetch(getUrl(), {
       method: 'GET',
-      ...await utils.fetchUtils.reqOptions()
+      ...await utils.api.reqOptions()
     })
     .then(response => response.json())
     .then((responseJSON) => {

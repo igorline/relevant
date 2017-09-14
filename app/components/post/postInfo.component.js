@@ -68,9 +68,7 @@ class PostInfo extends Component {
 
   deletePost() {
     let redirect = false;
-    if (this.props.scene) {
-      if (this.props.scene.component === 'singlePost') redirect = true;
-    }
+    if (this.props.singlePost) redirect = true;
     this.props.actions.deletePost(this.props.post, redirect);
   }
 

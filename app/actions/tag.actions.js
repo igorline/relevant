@@ -1,7 +1,7 @@
 import * as types from './actionTypes';
 import * as utils from '../utils';
 
-utils.fetchUtils.env();
+utils.api.env();
 
 const reqOptions = async () => {
   let token = await utils.token.get();
@@ -67,7 +67,7 @@ export function getDiscoverTags() {
         'Content-Type': 'application/json'
       }
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then((response) => response.json())
     .then((responseJSON) => {
       dispatch(setDiscoverTags(responseJSON));
