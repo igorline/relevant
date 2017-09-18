@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Header from './common/header.component'
 
 if (process.env.BROWSER === true) {
   console.log('BROWSER, import css');
@@ -10,6 +11,7 @@ if (process.env.BROWSER === true) {
 class App extends Component {
   render() {
     return (<main>
+      <Header />
       {this.props.children}
     </main>);
   }
