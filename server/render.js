@@ -21,34 +21,27 @@ function renderFullPage(html, initialState) {
   // load extracted styles in head when in production
   if (process.env.NODE_ENV === 'development') styles = '';
   else styles = '<link rel="stylesheet" href="/styles.css" />';
-
-  let app = `
-    <!doctype html>
+  
+  let meta = fetchMeta(initialState)
+  
+  let app = `<!doctype html>
     <html>
       <head>
-        <title></title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
         <title>Relevant: A Social News Reader</title>
 
-        <meta name="description"
-          content="
-            Relevant is a social news reader that promotes reliable information and rewards expertise. Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score. This system is designed to penalise clickbait and fake news while promoting useful and reliable information."
-        />
-        <meta property="og:description"
-          content="
-            Relevant promotes reliable information and rewards expertise. Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score. This system is designed to penalise clickbait and fake news while promoting useful and reliable information."
-        />
-        <meta property="og:title" content="Relevant: A Social News Reader" />
-        <meta property="og:url" content="https://relevant.community" />
-        <meta property="og:image" content="https://relevant.community/img/fbfimg.png" />
+        <meta name="description" content="${meta.description}" />
+        <meta property="og:description" content="${meta.description}" />
+        <meta property="og:title" content="${meta.title}" />
+        <meta property="og:url" content="${meta.url}" />
+        <meta property="og:image" content="${meta.image}" />
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@flickr" />
-        <meta name="twitter:title" content="Relevant: A Social News Reader" />
-        <meta name="twitter:description" content="
-            Relevant promotes reliable information and rewards expertise. Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score. This system is designed to penalise clickbait and fake news while promoting useful and reliable information." />
-        <meta name="twitter:image" content="https://relevant.community/img/fbfimg.png" />
+        <meta name="twitter:site" content="@4realglobal" />
+        <meta name="twitter:title" content="${meta.title}" />
+        <meta name="twitter:description" content="${meta.description}" />
+        <meta name="twitter:image" content="${meta.image}" />
 
         ${styles}
 
@@ -69,7 +62,6 @@ function renderFullPage(html, initialState) {
         /></noscript>
         <!-- DO NOT MODIFY -->
         <!-- End Facebook Pixel Code -->
-
       </head>
       <body>
         <div id="app">${html}</div>
@@ -82,6 +74,24 @@ function renderFullPage(html, initialState) {
   `;
 
   return app;
+}
+
+function fetchMeta(initialState) {
+  let title, description, image, url;
+  if (initialState.posts.posts) {
+    const post_id = Object.keys(initialState.posts.posts)[0]
+    if (post_id) {
+      const post = initialState.posts.posts[post_id]
+      title = post.title
+      image = post.image
+      url = 'https://relevant.community/post/' + post_id
+    }
+  }
+  title = title || 'Relevant: A Social News Reader'
+  image = image || 'https://relevant.community/img/fbfimg.png'
+  url = url || 'https://relevant.community/'
+  description = 'Relevant promotes reliable information and rewards expertise. Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score. This system is designed to penalise clickbait and fake news while promoting useful and reliable information.'
+  return { title, description, image, url }
 }
 
 function fetchComponentData(dispatch, components, params, req) {
