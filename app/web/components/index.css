@@ -20,10 +20,10 @@ html, body {
 }
 
 
-
 #app, container, .parent, main {
   flex: 1;
   display: flex;
+  flex-direction: column;
   /*display: block;*/
   min-height: 100%;
   position: relative;
@@ -49,10 +49,53 @@ container {
   display: flex;
 }
 
+header {
+  display: flex;
+  flex-direction: row;
+  background: #242425;
+  color: white;
+}
+
+header .logo {
+  height: 24px;
+  margin: 10px;
+}
+
+header > div {
+  flex: 1;
+  width: 33%;
+  display: flex;
+  justify-content: center;
+}
+
+header > div.right {
+  justify-content: flex-end;
+  align-items: center;
+}
+
+header > div.right a:last-child {
+  margin-right: 10px;
+}
+
+header a {
+  color: white;
+  margin: 0 5px;
+}
+
 a {
   /*color: black;*/
   color: #3E3EFF;
   cursor: pointer;
+}
+
+a.avatar {
+  background-size: cover;
+  background-position: center center;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  color: transparent;
+  overflow: hidden;
 }
 
 .link {
