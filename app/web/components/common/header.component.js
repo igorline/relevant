@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Avatar from './avatar'
 
 class Header extends Component {
   render() {
@@ -17,14 +18,10 @@ class Header extends Component {
   renderLoginButton(){
     console.log(this.props.user)
     if (this.props.user) {
-      const profileLink = '/profile/' + this.props.user.name;
-      const avatarBackgroundImage = {
-        'background-image': 'url(' + this.props.user.image + ')',
-      };
       return (
         <div className='right'>
           <a href='/logout'>Logout</a>
-          <a href={profileLink} className='avatar' style={avatarBackgroundImage}>Profile</a>
+          <Avatar user={this.props.user} />
         </div>
       );
     }
