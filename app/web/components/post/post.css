@@ -60,3 +60,46 @@
 .post .body a:after {
   content: '\0020';
 }
+
+.postbuttons {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+.postbuttons .right {
+
+}
+.postbuttons .left > img {
+  margin-right: 20px;
+}
+.postbuttons .fraction {
+  display: inline-block;
+  margin-right: 20px;
+}
+.fraction {
+  font-size: 10px;
+  color: #9C9C9C;
+  text-align: center;
+  min-width: 30px;
+}
+.fraction .num {
+  border-bottom: 1px solid;
+}
+.fraction .dem {
+}
+.commentcount {
+  display: inline-block;
+  font-size: 10px;
+  color: #9c9c9c;
+  margin-right: 20px;
+}
+.commentcount img {
+  margin-right: 4px;
+}
+.commentcount span {
+  position: relative;
+  top: -4px;
+}
