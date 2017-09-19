@@ -1,21 +1,16 @@
 import React, { Component, PropTypes } from 'react';
-import Invest from '../invest/invest';
-// import Tags from '../tag/tag.container';
-
-let styles;
+import AvatarBox from '../common/avatarbox';
 
 class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInvestForm: false
     };
     this.onClick = this.onClick.bind(this);
   }
 
   onClick(e) {
     e.preventDefault();
-    this.setState({ showInvestForm: !this.state.showInvestForm });
   }
 
 
@@ -28,58 +23,18 @@ class Post extends Component {
       return (<div><h1>Post not found</h1></div>);
     }
     if (!post) return null;
-
-    titleEl = (
-      <h3>
-        <a href={post.link}>{post.title}</a>
-        <br />
-        by <a href={'/profile/' + post.user}>{post.embeddedUser.name}</a>
-        &nbsp;
-        &nbsp;
-      </h3>
-    );
-
-    buttonEL = (
-      <div style={styles.postButtons}>
-        <button
-          onClick={this.onClick}
-          style={styles.investButton}
-        >
-          💰 Invest
-        </button>
-        {this.state.showInvestForm && <Invest {...this.props} />}
-      </div>
-    );
-
-    // let tagsEl = <Tags {...this.props} />;
-
     return (
-      <div style={{ ...styles.postBox, borderColor: this.props.flagged ? 'red' : 'grey' }}>
-        <img alt={post.title} src={post.image} width="100%" />
-        {titleEl}
-        <span>{this.props.flagged}</span>
-        <p>{post.body}</p>
-        <div>Relevance: {Math.round(post.relevance * 100) / 100} Value: {post.value}</div>
-        {buttonEL}
+      <div className='post'>
+        <a href={post.link}>
+          <div class='shadowBox'>
+            <span class='image' alt={post.title} style={'background-image':'url('+post.image+')'} />
+            <h3>{post.title}</h3>
+            <div class='domain'>{post.domain}</div>
+          </div>
+        </a>
+        <AvatarBox user={post.user} date={post.postDate} size='large' />
       </div>
     );
   }
 }
-
-styles = {
-  investButton: {
-    fontSize: '16px',
-    lineHeight: '20px',
-  },
-  postBox: {
-    margin: 'auto',
-    padding: '10px',
-    // maxWidth: '400px',
-    border: '1px solid grey',
-  },
-  postButtons: {
-    margin: '20px 10px'
-  }
-};
-
 export default Post;

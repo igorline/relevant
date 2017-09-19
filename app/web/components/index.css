@@ -89,6 +89,7 @@ a {
 }
 
 a.avatar {
+  display: inline-block;
   background-size: cover;
   background-position: center center;
   border-radius: 50%;
@@ -96,6 +97,23 @@ a.avatar {
   height: 30px;
   color: transparent;
   overflow: hidden;
+}
+
+.avatarBox {
+  display: flex;
+  flex-direction: row;
+}
+
+.userBox {
+  flex-grow: 1;
+}
+.userBox .r {
+  width: 16px;
+  height: 16px;
+}
+
+.gray {
+  font-size: 12px;
 }
 
 .link {
@@ -153,7 +171,7 @@ button.shadowButton {
 }
 
 .blueInput {
-   -webkit-appearance: none;
+  -webkit-appearance: none;
   border-bottom: 2px solid #3E3EFF;
   background-color: transparent;
   border-top: none;
