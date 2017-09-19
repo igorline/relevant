@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import Comments from '../comment/comment.container'
+import Avatar from '../common/avatar'
 
 class NewCommentForm extends Component {
   constructor(props) {
@@ -22,7 +23,8 @@ class NewCommentForm extends Component {
   render() {
     return (
       <div>
-        <form onSubmit={this.handleSubmit.bind(this)}>  
+        <form onSubmit={this.handleSubmit.bind(this)}>
+          <Avatar user={this.props.auth.user} />
           <input type="text" value={this.state.text} onChange={this.handleChange.bind(this)} />
           <br/>
           {/*this.props.comment.failureMsg && <div>{ this.props.comment.failureMsg }</div>*/}
