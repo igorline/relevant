@@ -24,7 +24,6 @@ class Comments extends Component {
     comments = comments.data;
     return (
       <div>
-        <h2>Comments</h2>
         <NewCommentForm {...this.props} onCommentSubmit={this.handleCommentSubmit} />
         {(comments.length !== 0) ?
           <div>

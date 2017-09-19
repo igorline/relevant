@@ -26,21 +26,27 @@ class Post extends Component {
     };
 
     console.log(post);
+    const tags = post.tags.map( (tag) => {
+      return (
+        <a href={'/tag/' + tag}>#{tag}</a>
+      )
+    })
 
     return (
       <div className='post'>
-        <a href={post.link}>
+        <a href={post.link} target='_blank'>
           <div className='shadowBox'>
             <span className='image' alt={post.title} style={postImage} />
-            <div className='headline'>
-              <h3 className='bebasRegular'>{post.title}</h3>
+            <div>
+              <h3 className='headline bebasRegular'>{post.title}</h3>
               <div className='domain'>{post.domain}</div>
             </div>
           </div>
         </a>
         <AvatarBox user={post.user} date={post.postDate} size='large' />
         <div className='body'>
-
+          <span>{post.description}</span>
+          {tags}
         </div>
       </div>
     );

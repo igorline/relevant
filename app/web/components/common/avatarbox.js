@@ -9,7 +9,7 @@ export default class AvatarBox extends Component {
     const profileLink = '/profile/' + user._id;
     let timestamp;
     if (this.props.date) {
-      timestamp = ' · ' + numbers.timeSince(Date.parse(this.props.date));
+      timestamp = ' • ' + numbers.timeSince(Date.parse(this.props.date)) + ' ago';
     }
     if (this.props.topic) {
       timestamp = (
