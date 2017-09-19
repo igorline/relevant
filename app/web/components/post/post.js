@@ -13,26 +13,35 @@ class Post extends Component {
     e.preventDefault();
   }
 
-
   render() {
     let post = this.props.post;
-    let titleEl;
-    let buttonEL;
 
     if (post === 'notFound') {
       return (<div><h1>Post not found</h1></div>);
     }
     if (!post) return null;
+
+    const postImage = {
+      backgroundImage: 'url(' + post.image + ')'
+    };
+
+    console.log(post);
+
     return (
       <div className='post'>
         <a href={post.link}>
-          <div class='shadowBox'>
-            <span class='image' alt={post.title} style={'background-image':'url('+post.image+')'} />
-            <h3>{post.title}</h3>
-            <div class='domain'>{post.domain}</div>
+          <div className='shadowBox'>
+            <span className='image' alt={post.title} style={postImage} />
+            <div className='headline'>
+              <h3 className='bebasRegular'>{post.title}</h3>
+              <div className='domain'>{post.domain}</div>
+            </div>
           </div>
         </a>
         <AvatarBox user={post.user} date={post.postDate} size='large' />
+        <div className='body'>
+
+        </div>
       </div>
     );
   }
