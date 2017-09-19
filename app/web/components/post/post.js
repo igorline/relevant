@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import AvatarBox from '../common/avatarbox';
+import PostButtons from './postbuttons';
 
 class Post extends Component {
   constructor(props) {
@@ -48,6 +49,7 @@ class Post extends Component {
           <span>{post.description}</span>
           {tags}
         </div>
+        <PostButtons post={post} />
       </div>
     );
   }
