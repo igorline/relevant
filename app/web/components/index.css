@@ -14,7 +14,7 @@ html, body {
   color: black;
   font-family: sans-serif;
   min-height: 100%;
-  background-color: #EDEDED;
+  background-color: #f8f8f8;
   position:relative;
   flex: 1;
 }
@@ -81,9 +81,8 @@ header a {
   color: white;
   margin: 0 5px;
 }
-
 a {
-  /*color: black;*/
+ /*color: black;*/
   color: #3E3EFF;
   cursor: pointer;
 }
@@ -103,17 +102,28 @@ a.avatar {
   display: flex;
   flex-direction: row;
 }
-
+.avatarBox a.avatar {
+  width: 42px;
+  height: 42px;
+  margin-right: 8px;
+}
 .userBox {
   flex-grow: 1;
+  padding-top: 6px;
+  font-size: 17px;
+}
+.userBox a {
+  color: #000;
 }
 .userBox .r {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 13px;
+  margin: 0 5px;
 }
-
-.gray {
-  font-size: 12px;
+.gray,
+.userBox .gray a {
+  color: #9C9C9C;
+  font-size: 10px;
 }
 
 .link {
@@ -274,4 +284,3 @@ button.shadowButton {
     z-index: 1;
   }
 }
-

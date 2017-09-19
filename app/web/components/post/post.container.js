@@ -5,6 +5,11 @@ import Post from './post';
 import * as postActions from '../../../actions/post.actions';
 import Comments from '../comment/comment.container';
 
+if (process.env.BROWSER === true) {
+  console.log('BROWSER, import css');
+  require('./post.css');
+}
+
 class Posts extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +29,7 @@ class Posts extends Component {
   render () {
     this.post = this.props.posts.posts[this.props.params.id];
     return (
-      <div>
+      <div className='postContainer'>
         <Post post={this.post} {...this.props} />
         <Comments {...this.props} />
       </div>
@@ -42,4 +47,3 @@ export default connect(
       ...postActions
     }, dispatch)
   }))(Posts);
-
