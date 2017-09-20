@@ -20,7 +20,7 @@ class Header extends Component {
   }
 
   renderLoginButton(){
-    console.log(this.props.user)
+    // console.log(this.props.user)
     if (this.props.user) {
       return (
         <div className='right'>
