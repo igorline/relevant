@@ -96,6 +96,7 @@ class NewCommentForm extends Component {
   }
 
   render() {
+    if (! this.props.auth.isAuthenticated) return null
     return (
       <div>
         <form onSubmit={this.handleSubmit}>

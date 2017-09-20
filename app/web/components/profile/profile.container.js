@@ -53,6 +53,10 @@ export default connect(
     };
   },
   dispatch => {
-    return Object.assign({}, { dispatch }, bindActionCreators({ ...UserActions, ...MessageActions, ...PostActions }, dispatch));
+    return Object.assign({}, { dispatch }, bindActionCreators({
+      ...UserActions,
+      ...MessageActions,
+      ...PostActions
+    }, dispatch));
   }
 )(ProfileContainer);
