@@ -103,3 +103,8 @@
   position: relative;
   top: -4px;
 }
+.post .share {
+  flex: 0 0 21px;
+  width: 21px;
+  height: 18px;
+}
