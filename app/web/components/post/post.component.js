@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import AvatarBox from '../common/avatarbox';
-import PostButtons from './postbuttons';
+import AvatarBox from '../common/avatarbox.component';
+import PostButtons from './postbuttons.component';
 
 class Post extends Component {
   constructor(props) {

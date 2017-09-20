@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import NewCommentForm from './newCommentForm';
-import Comment from './comment';
+import NewCommentForm from './newCommentForm.component';
+import Comment from './comment.component';
 import * as postActions from '../../../actions/post.actions';
 
 class Comments extends Component {
@@ -23,7 +23,7 @@ class Comments extends Component {
     if (!comments) return null;
     comments = comments.data;
     return (
-      <div>
+      <div className='comments'>
         <NewCommentForm {...this.props} onCommentSubmit={this.handleCommentSubmit} />
         {(comments.length !== 0) ?
           <div>
@@ -36,7 +36,7 @@ class Comments extends Component {
             })}
           </div>
         :
-          <div>
+          <div className='empty'>
             <br />
             No comments
           </div>

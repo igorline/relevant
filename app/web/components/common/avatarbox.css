@@ -1,0 +1,39 @@
+a.avatar {
+  display: inline-block;
+  background-size: cover;
+  background-position: center center;
+  border-radius: 50%;
+  flex: 0 0 27px;
+  width: 27px;
+  height: 27px;
+  color: transparent;
+  overflow: hidden;
+}
+
+.avatarBox {
+  display: flex;
+  flex-direction: row;
+}
+.avatarBox a.avatar {
+  width: 42px;
+  height: 42px;
+  margin-right: 8px;
+}
+.userBox {
+  flex-grow: 1;
+  padding-top: 6px;
+  font-size: 17px;
+}
+.userBox a {
+  color: #000;
+}
+.userBox .r {
+  width: 14px;
+  height: 13px;
+  margin: 0 5px;
+}
+.gray,
+.userBox .gray a {
+  color: #9C9C9C;
+  font-size: 10px;
+}

@@ -1,6 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import Avatar from './avatar'
+import Avatar from './avatar.component'
+
+if (process.env.BROWSER === true) {
+  require('./header.css');
+}
 
 class Header extends Component {
   render() {
@@ -14,7 +18,7 @@ class Header extends Component {
       </header>
     );
   }
-  
+
   renderLoginButton(){
     console.log(this.props.user)
     if (this.props.user) {

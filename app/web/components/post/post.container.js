@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Post from './post';
+import Post from './post.component';
 import * as postActions from '../../../actions/post.actions';
 import Comments from '../comment/comment.container';
 

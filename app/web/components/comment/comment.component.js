@@ -1,6 +1,10 @@
 import React, { Component, PropTypes } from 'react'
 import Comments from '../comment/comment.container'
-import AvatarBox from '../common/avatarbox.js'
+import AvatarBox from '../common/avatarbox.component.js'
+
+if (process.env.BROWSER === true) {
+  require('./comment.css');
+}
 
 class Comment extends Component {
   constructor(props) {
@@ -10,7 +14,7 @@ class Comment extends Component {
   render() {
     var comment = this.props.data
     return (
-      <div>
+      <div class='comment'>
         <AvatarBox user={comment.user} />
         <p>{comment.text}</p>
       </div>

@@ -1,0 +1,45 @@
+.comments form {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.comments form .avatar {
+  margin-right: 5px;
+}
+.comments form textarea {
+  width: 100%;
+  padding: 7px 5px;
+  font-size: 16px;
+  font-family: Helvetica, sans-serif;
+  border: 0;
+  background: transparent;
+}
+
+.comments form textarea::-webkit-input-placeholder {
+  color: #CBCBD1;
+}
+
+.comments form textarea:-ms-input-placeholder {
+  color: #CBCBD1;
+}
+
+.comments form textarea::-moz-placeholder {
+  color: #CBCBD1;
+  opacity: 1;
+}
+
+.comments form textarea:-moz-placeholder {
+  color: #CBCBD1;
+  opacity: 1;
+}
+
+.comments form input[type=submit] {
+  border: 0;
+  background: transparent;
+  padding: 7px 0;
+  margin-left: 5px;
+  font-size: 16px;
+  font-family: Helvetica, sans-serif;
+  color: #3E3EFF;
+}
