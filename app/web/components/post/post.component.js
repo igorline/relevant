@@ -26,7 +26,7 @@ class Post extends Component {
       backgroundImage: 'url(' + post.image + ')'
     };
 
-    console.log(post);
+    console.log(this.props);
     const tags = post.tags.map( (tag) => {
       return (
         <a href={'/tag/' + tag} key={tag}>#{tag}</a>
@@ -49,7 +49,7 @@ class Post extends Component {
           <span>{post.description}</span>
           {tags}
         </div>
-        <PostButtons post={post} />
+        <PostButtons post={post} {...this.props} />
       </div>
     );
   }
