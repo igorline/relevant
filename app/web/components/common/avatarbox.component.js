@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { numbers } from '../../../utils';
-import Avatar from './avatar';
+import Avatar from './avatar.component';
 
 export default class AvatarBox extends Component {
   render() {

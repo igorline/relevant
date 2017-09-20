@@ -23,7 +23,7 @@ class PostButtons extends Component {
     return (
       <div className='postbuttons'>
         <div className='left'>
-          <img src='/img/upvote-shadow.svg' />
+          <a href='#'><img src='/img/upvote-shadow.svg' /></a>
           <div className='fraction'>
             <div className='num'>
               {post.upVotes + post.downVotes}
@@ -33,14 +33,14 @@ class PostButtons extends Component {
               <img src='/img/r-gray.svg' />
             </div>
           </div>
-          <img src='/img/downvote-gray.svg' />
+          <a href='#'><img src='/img/downvote-gray.svg' /></a>
         </div>
         <div className='right'>
           <div className='commentcount'>
             <img src='/img/comment.svg' />
             <span>{post.commentCount}</span>
           </div>
-          <img src='/img/share.svg' />
+          <a href='#'><img src='/img/share.svg' /></a>
         </div>
       </div>
     );

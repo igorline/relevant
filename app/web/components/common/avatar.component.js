@@ -1,6 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
+if (process.env.BROWSER === true) {
+  require('./avatarbox.css');
+}
+
 export default class Avatar extends Component {
   render() {
     const profileLink = '/profile/' + this.props.user.id;

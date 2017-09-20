@@ -72,7 +72,7 @@
 .postbuttons .right {
 
 }
-.postbuttons .left > img {
+.postbuttons .left > a {
   margin-right: 20px;
 }
 .postbuttons .fraction {
