@@ -13,6 +13,7 @@ class PostButtons extends Component {
 
   async invest(e) {
     e && e.preventDefault()
+    if (! this.props.auth.isAuthenticated) return null
 
     let investAmount = 1;
 
@@ -45,6 +46,7 @@ class PostButtons extends Component {
 
   async irrelevant(e) {
     e && e.preventDefault()
+    if (! this.props.auth.isAuthenticated) return null
     // this.props.actions.triggerAnimation('invest', -1);
     // this.props.actions.triggerAnimation('irrelevant', -1);
     // return;
