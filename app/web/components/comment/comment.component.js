@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import { numbers } from '../../../utils';
 import Comments from '../comment/comment.container'
 import AvatarBox from '../common/avatarbox.component.js'
 
@@ -12,11 +13,19 @@ class Comment extends Component {
   }
 
   render() {
-    var comment = this.props.data
+    const comment = this.props.data
+    const timestamp = numbers.timeSince(Date.parse(comment.createdAt));
     return (
-      <div class='comment'>
-        <AvatarBox user={comment.user} />
-        <p>{comment.text}</p>
+      <div className='comment'>
+        <div className='commentDate'>
+          <div></div>
+          <div className='ts'>{timestamp}</div>
+          <div></div>
+        </div>
+        <AvatarBox
+          user={{ ...comment.embeddedUser, _id: comment.user }}
+        />
+        <p className='body'>{comment.text}</p>
       </div>
     )
   }
