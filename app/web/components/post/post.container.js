@@ -31,7 +31,7 @@ class Posts extends Component {
     return (
       <div className='postContainer'>
         <Post post={this.post} {...this.props} />
-        <Comments {...this.props} />
+        <Comments post={this.post} {...this.props} />
       </div>
     );
   }

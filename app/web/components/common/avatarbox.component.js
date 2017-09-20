@@ -14,6 +14,7 @@ export default class AvatarBox extends Component {
     if (this.props.topic) {
       timestamp = (
         <span>
+          {' • '}
           <img src='/img/r-emoji.png' className='r' />
           {Math.round(this.props.topic.relevance)}
           in
@@ -21,14 +22,22 @@ export default class AvatarBox extends Component {
         </span>
       )
     }
+    let relevance;
+    if (user.relevance) {
+      relevance = (
+        <span>
+          <img src='/img/r-emoji.png' className='r' />
+          {Math.round(user.relevance)}
+        </span>
+      );
+    }
     return (
       <div className='avatarBox'>
         <Avatar user={user} />
         <div className='userBox'>
           <div className='bebasRegular username'>
             <a href={profileLink}>{user.name}</a>
-            <img src='/img/r-emoji.png' className='r' />
-            {Math.round(user.relevance)}
+            {relevance}
           </div>
           <div className='gray'>
             @<a href={profileLink}>{user._id}</a>

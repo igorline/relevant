@@ -14,8 +14,8 @@ class Comments extends Component {
     this.props.actions.getComments(this.props.params.id);
   }
 
-  handleCommentSubmit(text) {
-    this.createComment(this.auth.token, this.auth.user, text, this.post.selectedPost._id);
+  handleCommentSubmit(commentObj) {
+    this.props.actions.createComment(this.auth.token, commentObj)
   }
 
   render() {
@@ -27,9 +27,9 @@ class Comments extends Component {
         <NewCommentForm {...this.props} onCommentSubmit={this.handleCommentSubmit} />
         {(comments.length !== 0) ?
           <div>
-            {comments.map(function (comment) {
+            {comments.map(function (comment, i) {
               return (
-                <div>
+                <div key={i}>
                   <Comment data={comment} />
                 </div>
               );

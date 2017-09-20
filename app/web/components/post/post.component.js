@@ -29,7 +29,7 @@ class Post extends Component {
     console.log(post);
     const tags = post.tags.map( (tag) => {
       return (
-        <a href={'/tag/' + tag}>#{tag}</a>
+        <a href={'/tag/' + tag} key={tag}>#{tag}</a>
       )
     })
 
