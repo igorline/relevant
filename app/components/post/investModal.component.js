@@ -3,12 +3,13 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableHighlight,
+  TouchableOpacity,
   Modal,
   Alert,
+  Image
 } from 'react-native';
 import * as investActions from '../../actions/invest.actions';
-import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
+import { globalStyles, fullWidth, fullHeight, blue, borderGrey } from '../../styles/global';
 import * as animationActions from '../../actions/animation.actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -17,29 +18,40 @@ let styles;
 class InvestModal extends Component {
   constructor(props, context) {
     super(props, context);
-    this.invest = this.invest.bind(this);
+    this.state = {
+      selected: 0
+    };
   }
 
-  invest(investAmount) {
-    // console.log(investAmount, 'amount');
-    // console.log(this.props.post, 'post');
-    // console.log(this.props.auth.token, 'token');
-    // console.log(this.props.auth.user, 'user');
-
-    this.props.actions.invest(this.props.auth.token, investAmount, this.props.post, this.props.auth.user)
-    .then((results) => {
-      if (results) {
-        this.props.actions.triggerAnimation('invest');
-        setTimeout(() => {
-          let name = this.props.post.embeddedUser.name;
-          Alert.alert('You have subscribed to recieve ' + results.subscription.amount + ' posts from ' + name);
-        }, 1500);
-      }
-    });
-    this.props.toggleFunction(false);
-  }
 
   render() {
+    let betOptions = [0, 1, 5, 15, 50, 100];
+    let betEl = betOptions.map((i, n) => {
+      let border;
+      let selected = n === this.state.selected;
+      if (n !== 2 && n !== 5) {
+        border = true;
+      }
+      return (
+        <TouchableOpacity
+          key={i}
+          style={[styles.investOption, border ? styles.border : null, selected ? styles.selected : null]}
+          onPress={() => this.setState({ selected: n })}
+        >
+          <View style={styles.textRow}>
+            <Image
+              resizeMode={'contain'}
+              style={[styles.r, { width: 19, height: 17 }]}
+              source={require('../../assets/images/relevantcoin.png')}
+            />
+            <Text style={styles.statNumber}>
+              {i}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      );
+    });
+
     return (
       <Modal
         animationType={'fade'}
@@ -47,40 +59,29 @@ class InvestModal extends Component {
         visible={this.props.visible}
         onRequestClose={() => this.props.toggleFunction()}
       >
-        <View style={{ padding: 20, flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.1)' }}>
-          <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 5 }}>
-            <Text style={{ fontSize: 20, textAlign: 'center' }}>Invest</Text>
-            <View style={{ justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap', overflow: 'visible', marginTop: 10, marginBottom: 10 }}>
-              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(50)}>
-                <Text style={styles.modalButtonText}>50</Text>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(100)}>
-                <Text style={styles.modalButtonText}>100</Text>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(500)}>
-                <Text style={styles.modalButtonText}>500</Text>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(1000)}>
-                <Text style={styles.modalButtonText}>1000</Text>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(2000)}>
-                <Text style={styles.modalButtonText}>2000</Text>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(5000)}>
-                <Text style={styles.modalButtonText}>5000</Text>
-              </TouchableHighlight>
-              <TouchableHighlight style={styles.investOption} underlayColor={'black'} onPress={() => this.invest(10000)}>
-                <Text style={styles.modalButtonText}>10000</Text>
-              </TouchableHighlight>
+        <View style={{ padding: 20, flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.3)' }}>
+          <View style={styles.modal}>
+            <Text style={{ fontSize: 17, fontWeight: 'bold', textAlign: 'center' }}>Will this be one of the top{'\n'} posts of the week?</Text>
+            <View style={{ justifyContent: 'center', flexDirection: 'row', flexWrap: 'wrap', marginTop: 10, marginBottom: 10 }}>
+              {betEl}
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-              <TouchableHighlight
-                style={styles.investOption}
-                underlayColor={'black'}
+            <Text style={[styles.smallInfo, { textAlign: 'center', paddingHorizontal: 20 }]}>If you're right, you will recieve a payout at the end of the week proprtional to the amount of the bet</Text>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+              <TouchableOpacity
+                style={styles.uiBtton}
                 onPress={() => this.props.toggleFunction()}
               >
-                <Text style={styles.modalButtonText}>Cancel</Text>
-              </TouchableHighlight>
+                <Text style={styles.uiText}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.uiBtton}
+                onPress={() => this.props.toggleFunction()}
+              >
+                <Text style={styles.uiText}>Place Bet</Text>
+              </TouchableOpacity>
+
             </View>
           </View>
         </View>
@@ -108,18 +109,39 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(InvestModal);
 
 const localStyles = StyleSheet.create({
-  investOption: {
-    margin: 5,
-    borderWidth: 1,
-    borderColor: 'black',
-    padding: 5,
+  modal: {
+    backgroundColor: 'white',
+    padding: 20,
     borderRadius: 5,
-    width: 75,
-    height: 35,
+    paddingBottom: 0,
+  },
+  uiText: {
+    color: blue,
+    fontSize: 17,
+    padding: 20
+  },
+  uiButton: {
+    flex: 1,
+  },
+  border: {
+    // borderRightColor: borderGrey,
+    // borderRightWidth: 1,
+  },
+  selected: {
+    borderBottomColor: blue,
+  },
+  investOption: {
+    borderBottomColor: 'white',
+    borderBottomWidth: 4,
+    margin: 0,
+    marginVertical: 10,
+    padding: 10,
+    paddingHorizontal: 10,
+    width: 79,
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black',
-  },
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };

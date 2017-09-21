@@ -1,4 +1,3 @@
-'use strict';
 import * as tokenUtil from './token';
 
 let post;
@@ -47,45 +46,54 @@ export function Alert() {
 }
 
 /**
- * [superFetch description]
+ * send request to api
  * @param  {[type]} options
- * params - Object of url query params
+ * query - Object of url query params
+ * params - url params
  * endpoint - api endpoint
  * uri - optional - custom url
  * method - REST method
  * body: body
  */
-export async function superFetch(options) {
-  // TODO rename to options.query to match node
-  let params = queryParams(options.params);
+export async function request(options) {
+  let query = queryParams(options.query);
   let uri = options.uri || process.env.API_SERVER + '/api/' + options.endpoint;
   let path = options.path || '';
   uri += path;
-  // TODO rename to options.params to match node
-  if (options.pathParams) {
-    Object.keys(options.pathParams).forEach(key => {
-      uri += '/' + options.pathParams[key];
-    });
-  }
 
   try {
+    if (options.params) {
+      Object.keys(options.params).forEach(key => {
+        uri += '/' + options.params[key];
+      });
+    }
+
     let response;
     let responseJSON;
+
+    // ---------------------------------------------
     // This is the case when request is orginating from nodejs
+    // ---------------------------------------------
+
+
     if (!process.env.BROWSER && process.env.WEB === 'true') {
-      if (options.path === '' && options.pathParams) options.path = 'findById';
+      if (options.path === '' && options.params) options.path = 'findById';
       let req = {
-        params: options.pathParams,
+        params: options.params,
         body: options.body,
-        query: options.params,
+        query: options.query,
       };
       let next = () => null;
       let res = null;
       responseJSON = await routes[options.endpoint][options.path](req, res, next);
       // in case we get a mongoose object back
       if (responseJSON && responseJSON.toObject) responseJSON = responseJSON.toObject();
+
+    // ---------------------------------------------
+    // This is the case when request is orginating from client
+    // ---------------------------------------------
     } else {
-      response = await fetch(uri + params, {
+      response = await fetch(uri + query, {
         method: options.method,
         ...await exports.reqOptions(),
         body: options.body
@@ -93,9 +101,10 @@ export async function superFetch(options) {
       response = await exports.handleErrors(response);
       responseJSON = await response.json();
     }
+    // throw new Error('omg');
     return responseJSON;
   } catch (error) {
-    console.log('superFetch error', uri, error);
+    console.log('api error', uri, error);
     throw error;
   }
 }

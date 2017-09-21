@@ -1,4 +1,4 @@
-require('./fetchUtils').env();
+require('./api').env();
 let RNFetchBlob;
 let Platform;
 
