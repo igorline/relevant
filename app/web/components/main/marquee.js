@@ -54,7 +54,7 @@ export default class Marquee extends Component {
     this.marqueeData.forEach((data, i) => {
       if (initial) this.innerEls[i] = [];
       data.forEach((innerData, j) => {
-        let color = i === 1 ? 'black' : '#EDEDED';
+        let color = i === 1 ? '#242425' : '#EDEDED';
         let userData = (
           <div>
             <p style={{ color }}>{innerData.name}</p>
@@ -78,7 +78,7 @@ export default class Marquee extends Component {
   render() {
     return (
       <div className="marqueeParent">
-        <article style={{ backgroundColor: 'black' }}>
+        <article style={{ backgroundColor: '#444445' }}>
           <section
             className="m0"
             style={{ transform: `translateX(${this.x[0]}px)` }}
@@ -96,7 +96,7 @@ export default class Marquee extends Component {
             {this.innerEls[1]}
           </section>
         </article>
-        <article style={{ backgroundColor: 'black' }}>
+        <article style={{ backgroundColor: '#444445' }}>
           <section
             className="m2"
             style={{ transform: `translateX(${this.x[2]}px)` }}

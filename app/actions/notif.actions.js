@@ -4,7 +4,7 @@ import * as utils from '../utils';
 import * as authActions from './auth.actions';
 
 // require('../publicenv');
-utils.fetchUtils.env();
+utils.api.env();
 const apiServer = `${process.env.API_SERVER}/api/notification`;
 
 const reqOptions = (token) => {

@@ -2,7 +2,7 @@ import * as utils from '../utils';
 import * as errorActions from './error.actions';
 import * as types from './actionTypes';
 
-utils.fetchUtils.env();
+utils.api.env();
 
 const getOptions = {
   credentials: 'include',
@@ -13,7 +13,7 @@ const getOptions = {
   }
 };
 
-const AlertIOS = utils.fetchUtils.Alert();
+const AlertIOS = utils.api.Alert();
 
 const queryParams = (params) => {
   return Object.keys(params)
@@ -92,7 +92,7 @@ export function searchUser(userName) {
   return async dispatch =>
     fetch(url, {
       method: 'GET',
-      ...await utils.fetchUtils.reqOptions()
+      ...await utils.api.reqOptions()
     })
     .then(response => response.json())
     .then((responseJSON) => {
@@ -109,7 +109,7 @@ export function getSelectedUser(userName) {
     dispatch(getUserLoading());
     return fetch(process.env.API_SERVER + '/api/user/user/' + userName, {
       method: 'GET',
-      ...await utils.fetchUtils.reqOptions()
+      ...await utils.api.reqOptions()
     })
     .then(response => response.json())
     .then((responseJSON) => {
@@ -151,7 +151,7 @@ function getOnlineUser(userId) {
       process.env.API_SERVER +
       '/api/user/user/' + userId, {
         method: 'GET',
-        ...await utils.fetchUtils.reqOptions()
+        ...await utils.api.reqOptions()
       }
     )
     .then((response) => response.json())
@@ -174,7 +174,7 @@ function getPostUser(userId, token) {
       '?access_token=' + token,
       getOptions
     )
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       return responseJSON;
@@ -198,7 +198,7 @@ export function getUsers(skip, limit, tags) {
     dispatch(getUsersLoading());
     fetch(url, {
       method: 'GET',
-      ...await utils.fetchUtils.reqOptions()
+      ...await utils.api.reqOptions()
     })
     .then(response => response.json())
     .then((responseJSON) => {
@@ -223,9 +223,9 @@ export function updateBlock(block, unblock) {
       body: JSON.stringify({
         block
       }),
-      ...await utils.fetchUtils.reqOptions()
+      ...await utils.api.reqOptions()
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       let action = 'blocked';
@@ -243,9 +243,9 @@ export function getBlocked() {
   return async dispatch =>
     fetch(process.env.API_SERVER + '/api/user/blocked', {
       method: 'GET',
-      ...await utils.fetchUtils.reqOptions()
+      ...await utils.api.reqOptions()
     })
-    .then(utils.fetchUtils.handleErrors)
+    .then(utils.api.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
       console.log('block result ', responseJSON);

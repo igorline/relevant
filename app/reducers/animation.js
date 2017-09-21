@@ -4,6 +4,8 @@ const initialState = {
   invest: 0,
   irrelevant: 0,
   amount: 0,
+  upvote: 0,
+  parents: {}
 };
 
 export default function auth(state = initialState, action) {
@@ -14,6 +16,10 @@ export default function auth(state = initialState, action) {
         ...state,
         [type]: state[type] + 1,
         amount: action.payload.amount,
+        parents: {
+          ...state.parents,
+          [type]: action.payload.parent
+        }
       };
     }
 

@@ -3,13 +3,21 @@ import React, {
 } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import SVGInline from 'react-svg-inline';
 import ShadowButton from '../common/ShadowButton';
 import Modal from '../common/modal';
+
+
 import * as actionCreators from '../../../actions/admin.actions';
 import Marquee from './marquee';
 
+// let SVGInline = null;
+let logoSvg = '';
+
 if (process.env.BROWSER === true) {
   require('./main.css');
+  logoSvg = require('../../public/img/logo.svg');
+  // SVGInline = require('react-svg-inline');
 }
 
 export class Main extends Component {
@@ -66,18 +74,15 @@ export class Main extends Component {
     this.setState({ modal: !this.state.modal });
   }
 
-
-
-
   render() {
-    let login = (
-      <div className="loginBar">
-        <p>beta tester?</p>
-        <a style={{ cursor: 'pointer' }} onClick={() => this.setState({ modal: !this.state.modal })}>
-          login to post
-        </a>
-      </div>
-    );
+    // let login = (
+    //   <div className="loginBar">
+    //     <p>beta tester?</p>
+    //     <a style={{ cursor: 'pointer' }} onClick={() => this.setState({ modal: !this.state.modal })}>
+    //       login to post
+    //     </a>
+    //   </div>
+    // );
 
                   // <br />
 
@@ -96,20 +101,18 @@ export class Main extends Component {
     return (
       <div className="splashContainer">
 
+        <section className="header">
+          <img src="/img/logoWhite.svg" alt="logo" />
+          {/*<SVGInline style={{ fill: 'white' }} svg={logoSvg} />*/}
+        </section>
+
         <Marquee {...this.props} />
 
         {/*login*/}
 
         <div className="splashContent">
 
-          <section className="header">
-            <img src="/img/logo.svg" alt="logo" />
-          </section>
-          <div className="divider" />
-
           <mainSection>
-            <img src="/img/phone.png" alt="phone" className="phone" />
-
             <section className="body">
               <p className="libre">
                 <span className="outline">
@@ -171,6 +174,118 @@ export class Main extends Component {
             </section>
 
           </mainSection>
+
+          <div className="phone">
+            <img src="/img/hand.jpg" alt="phone" />
+          </div>
+
+        </div>
+
+
+        <panel className={'dark center'}>
+          <img src={'/img/rWhite.svg'} />
+          <div className={'libre pitch'}>
+            At Relevant we are building an attention ecology that prioritises the qualitative aspects of attention.
+            <br/><br/>
+            With the Relevant news sharing app, we are experimenting with incentives that support curation of meaningful information, paving the way for a broad ecosystem for a new generation of apps and services that promote humanistic values. 
+          </div>
+        </panel>
+
+        <panel className={'grey'}>
+          <h1>A Promise Betrayed</h1>
+
+          <columns>
+            <div className={'innerPanel'}>
+
+              <p>
+                Once upon a time there was universal optimism about the internet. Every tech company’s mission was to make the world a better place — and for the most part, we believed them.
+              </p>
+              <p>
+                The internet would revolutionize knowledge, social networks would spread democracy, automation would reduce inequality, and AI would accelerate the genius of the species.
+              </p>
+              <p className={'subH'}>
+                What happened?
+              </p>
+              <p>
+                Web 2.0 platforms had to adjust to the economic realities of running a business that offers free services. In order to raise income, centralized platforms began exploiting human nature to produce behaviour that was beneficial to their networks. This dynamic has led us to the current state of the attention economy. 
+              </p>
+            </div>
+{/*
+            <div className={'callout'}>
+              <p>
+                what you <b>measure</b><br/>determines<br/>what is <b>valuable</b>
+              </p>
+              <p>
+                what is <b>valued</b><br/>determines<br/>what is <b>measured</b>
+              </p>
+            </div>
+
+*/}
+          </columns>
+
+
+          <div className={'divider'}></div>
+          <div className={'subH'}>Garbage in Garbage out</div>
+          <p>Platforms do not measure behavior, they determine it</p>
+
+          <div className={'divider'}></div>
+
+          <div className={'subH'}>Perverse Incentive = Perverse Innovation</div>
+
+
+        </panel>
+
+
+
+        <panel>
+          <h1>Attention Ecology</h1>
+          <columns>
+{/*          <div style={{ flex: 1 }}>
+            <img src='/img/ecosystem.png'/>
+          </div>*/}
+          <div className={'innerPanel'}>
+            <p>
+              We don’t need to subscribe to a single economic reality anymore. With decentralized blockchain technology we can create new economic structures. There are now two degrees of freedom: economic incentives and user attention.
+            </p>
+            <p>
+  Instead of manipulating user attention to extract capital, we are now able to structure incorruptible economic incentives that support humanistic values. 
+            </p>
+            <p>
+            We now have the opportunity to focus on the qualitative side of attention - the attention ecology. 
+            </p>
+          </div>
+          </columns>
+        </panel>
+
+
+
+        <panel className={'grey'}>
+          <h1>Relevant News Reader</h1>
+
+          <columns>
+
+          <div className={'innerPanel'}>
+            <p>
+            Relevant news reader is our first step in the development of the Relevant Ecosystem.
+            </p>
+            <p>
+As a collaborative result of the agency, engagement, and expertise of its users, relevant marries the social sharing of news articles with a knowledge project based on creating new values for online content.            </p>
+            <p>
+            It is currently in closed beta and available for both iOS and Android mobile devices. 
+            </p>
+            <p>
+            The app serves as a lab for researching and experimenting with the Relevance metric and economic incentives.
+            </p>
+          </div>
+
+          <div style={{ flex: .8 }}>
+            <img src="/img/phone-upright.png"/>
+          </div>
+          </columns>
+
+        </panel>
+
+        <panel>
           <section className="copyright">
             <div className="rParent">
               <img src="/img/r.svg" alt="relevant" className="r" />
@@ -184,7 +299,8 @@ export class Main extends Component {
               </p>
             </div>
           </section>
-        </div>
+        </panel>
+
 
         <Modal
           visible={this.state.modal}

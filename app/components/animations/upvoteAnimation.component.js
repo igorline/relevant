@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as animationActions from '../../actions/animation.actions';
 import { globalStyles, fullHeight, fullWidth } from '../../styles/global';
-import Dollar from './coin.component';
+import Relevance from './relevant.component';
 
 const localStyles = StyleSheet.create({
   moneyContainer: {
@@ -16,27 +16,25 @@ const localStyles = StyleSheet.create({
     right: 0,
     height: fullHeight,
     width: fullWidth,
-    // backgroundColor: 'blue'
   }
 });
 
 const styles = { ...globalStyles, ...localStyles };
 
-class InvestAnimation extends Component {
+class UpvoteAnimation extends Component {
   constructor(props, context) {
     super(props, context);
     this.enabled = true;
     this.state = {
       investAni: [],
-      num: 0
     };
     this.clearEls = this.clearEls.bind(this);
     this.destroy = this.destroy.bind(this);
   }
 
   componentWillUpdate(next) {
-    if (this.props.animation.invest !== next.animation.invest) {
-      this.amount = next.animation.amount;
+    if (this.props.animation.upvote !== next.animation.upvote) {
+      this.parent = next.animation.parents.upvote;
       this.investAni();
     }
   }
@@ -46,8 +44,7 @@ class InvestAnimation extends Component {
   }
 
   clearEls() {
-    // if (this.state.num > 0)
-    this.setState({ num: 0, investAni: [] });
+    this.setState({ investAni: [] });
   }
 
   destroy(key) {
@@ -59,22 +56,14 @@ class InvestAnimation extends Component {
     this.clearEls();
     let newArr = [];
     for (let i = 0; i <= 10; i++) {
-      newArr.push(<Dollar destroy={this.destroy} amount={this.amount} key={i + Math.random()} specialKey={i} />);
-      // let newNum = this.state.num += 1;
+      newArr.push(<Relevance
+        destroy={this.destroy}
+        parent={this.parent}
+        key={i}
+        specialKey={i}
+      />);
       this.setState({ investAni: newArr });
-      // setTimeout(() => this.investAni(), 50 * Math.random());
-    // } else {
     }
-
-    // if (this.state.num < 10) {
-    //   let newArr = this.state.investAni;
-    //   newArr.push(<Dollar amount={this.amount} key={this.state.num} specialKey={this.state.num} />);
-    //   let newNum = this.state.num += 1;
-    //   this.setState({ num: newNum, investAni: newArr });
-    //   setTimeout(() => this.investAni(), 50 * Math.random());
-    // } else {
-    //   setTimeout(() => this.clearEls(), 1000);
-    // }
   }
 
   render() {
@@ -100,4 +89,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvestAnimation);
+export default connect(mapStateToProps, mapDispatchToProps)(UpvoteAnimation);

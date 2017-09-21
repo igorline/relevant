@@ -1,12 +1,4 @@
-.phone {
-  position: absolute;
-  top: 60%;
-  transform: translateY(-50%);
-  right: -7%;
-  z-index: 0;
-  width: 43%;
-}
-
+$blue: #3E3EFF;
 
 .loginBar {
   height: 27px;
@@ -29,47 +21,59 @@
 }
 
 .loginText {
-  font-family: 'Helvetica Outline';
+  font-family: 'Outline';
   font-size: 44px;
   color: #242425;
   margin: 40px 0 10px 0;
 }
 
 .splashContainer {
-  background-color: #EDEDED;
+  background-color: #F1F1F1;
   min-height: 100vh;
   flex: 1;
   display: flex;
   flex-direction: column;
+  margin-top: 58px;
 }
 
 .splashContent {
-  width: 80vw;
-  max-width: 1000px;
   margin: auto;
   position: relative;
   flex: 1;
   display: flex;
   justify-content: flex-start;
-  align-items: flex-start;
-  flex-direction: column;
+  align-items: center;
+  flex-direction: row;
+
+  img {
+    width: 100%;
+  }
+
   mainSection {
     display: flex;
     position: relative;
-    flex-grow: .5;
+    flex: .5;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     flex-direction: column;
+    padding-left: 10%;
+    padding-bottom: 50px;
+  }
+  .phone {
+    flex: .5;
+    align-self: flex-end;
   }
 }
 
-.splashContent .divider {
-  width: 100%;
+.splashContainer .divider {
+  width: 80%;
+  max-width: 600px;
   align-self: center;
-  height: 8px;
-  border-top: 1px solid black;
+  height: 1px;
   border-bottom: 1px solid black;
+  margin: 40px 0;
+  opacity: .16;
 }
 
 .splashContent section {
@@ -78,25 +82,90 @@
   margin-top: 20px;
 }
 
-.splashContent section.header {
+.splashContainer section.header {
   align-items: center;
+  justify-content: center;
   align-self: center;
-  height: 140px;
+  height: 58px;
   display: flex;
-  flex: .25;
+  width: 100%;
   margin-top: 0;
-  min-height: 90px;
-  height: 100px;
+  background-color: #242425;
+  position: fixed;
+  top: 0;
+  z-index: 10;
+  svg {
+    height: 30px;
+    width: auto;
+  }
 }
 
-.splashContent section.header img {
-  object-fit: contain;
-  max-width: 80%;
-  max-height: 60%;
+
+panel {
+  display: flex;
+  align-items: center;
+  padding: 115px 10vw 115px 10vw;
+  flex-direction: column;
+  justify-content: center;
+  img {
+    max-width: 100%;
+  }
+  &.dark {
+    background-color: #444445;
+    color: white;
+  }
+  &.grey {
+    background-color: #DFDFDF;
+  }
+  .innerPanel {
+    max-width: 750px;
+  }
+  p, ol {
+    font-family: Georgia;
+    font-size: 18px;
+    line-height: 27px;
+  }
+  ol {
+    margin-top: 20px;
+  }
+  li {
+    margin: 20px 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid hsla(0, 0%, 0%, .16);
+  }
+  .callout p {
+    font-family: 'Arial';
+    font-size: 20px;
+    align-self: 'center';
+    /*color: orange;*/
+    text-align: center;
+    b {
+      /*color: $blue;*/
+    }
+  }
+  .subH {
+    text-align: center;
+  }
 }
 
-.splashContent section.body {
-  width: 75%;
+columns {
+  display: flex;
+  flex-direction: row;
+  div {
+    /*padding: 0 10%;*/
+    flex: 1;
+    align-self: center;
+  }
+  .innerPanel {
+    padding: 0 10%;
+    /*max-width: 400px;*/
+  }
+  .callout {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    flex: 1;
+  }
 }
 
 .splashContent section.body p {
@@ -221,8 +290,17 @@
   text-decoration: underline;
 }
 
-@media only screen
-  and (max-device-width: 736px) {
+.pitch {
+  font-size: 35px;
+  line-height: 40px;
+  max-width: 750px;
+  margin-top: 25px;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+@media screen
+  and (max-width: 736px) {
 
   .splashContainer {
     /*min-height: 0vh;*/
@@ -232,13 +310,19 @@
     overflow-x: hidden;
   }
 
+
   .splashContent {
-    width: 90vw;
+    flex-direction: column;
+    mainSection {
+      width: 90vw;
+    }
+    .phone {
+      flex: .5;
+      margin-top: -250px;
+      opacity: .5;
+    }
   }
 
-  .splashContent .divider {
-    height: 4px;
-  }
 
   .splashContent section.header img {
     width: 60vw;
@@ -260,11 +344,8 @@
   }
 
   .splashContent mainSection {
-    flex-grow: .9;
-  }
-
-  .splashContent section.body {
-    width: 75%;
+    flex-grow: 1;
+    padding-left: 0;
   }
 
   .splashContent section.body p {
@@ -279,15 +360,6 @@
   .marqueeParent article {
     padding: 5px;
   }
-
-  .phone {
-    top: auto;
-    bottom: 0;
-    transform: translateY(0%) translateX(25%);;
-    width: 80%;
-    max-width: 350px;
-/*    right: -25%;
-*/  }
 
   .marqueeParent article section div {
     margin: 0 20px 0 0;
@@ -338,8 +410,10 @@
 }
 
 
+
+
 @media only screen
-  and (max-device-width: 320px) {
+  and (max-width: 320px) {
   .splashContent section.body p {
     font-size: 19px;
     margin: 0px 0 0 0;
@@ -347,8 +421,5 @@
     .outline{
       line-height: 22px;
     }
-  }
-  .splashContent section.body {
-    width: 80%;
   }
 }
