@@ -13,7 +13,6 @@ class Invites extends Component {
   }
 
   componentWillMount() {
-    console.log('load invites')
     let skip = this.props.inviteList.length;
     this.props.actions.getInvites(skip, 100);
   }
