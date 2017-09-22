@@ -82,25 +82,6 @@ $blue: #3E3EFF;
   margin-top: 20px;
 }
 
-.splashContainer section.header {
-  align-items: center;
-  justify-content: center;
-  align-self: center;
-  height: 58px;
-  display: flex;
-  width: 100%;
-  margin-top: 0;
-  background-color: #242425;
-  position: fixed;
-  top: 0;
-  z-index: 10;
-  svg {
-    height: 30px;
-    width: auto;
-  }
-}
-
-
 panel {
   display: flex;
   align-items: center;
@@ -122,13 +103,13 @@ panel {
   }
   p, ol {
     font-family: Georgia;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 27px;
   }
   ol {
     margin-top: 20px;
   }
-  li {
+  li.special {
     margin: 20px 0;
     padding-bottom: 20px;
     border-bottom: 1px solid hsla(0, 0%, 0%, .16);
@@ -157,7 +138,7 @@ columns {
     align-self: center;
   }
   .innerPanel {
-    padding: 0 10%;
+    /*padding: 0 10%;*/
     /*max-width: 400px;*/
   }
   .callout {
@@ -290,13 +271,23 @@ columns {
   text-decoration: underline;
 }
 
+.quote {
+  font-style: italic;
+  padding: 10px 30px;
+  font-size: 16px;
+  line-height: 22px;
+}
+
 .pitch {
-  font-size: 35px;
-  line-height: 40px;
-  max-width: 750px;
-  margin-top: 25px;
-  text-align: center;
-  letter-spacing: 1px;
+  p {
+    font-family: 'Libre';
+    font-size: 35px;
+    line-height: 40px;
+    max-width: 750px;
+    margin-top: 25px;
+    text-align: center;
+    letter-spacing: 1px;
+  }
 }
 
 @media screen

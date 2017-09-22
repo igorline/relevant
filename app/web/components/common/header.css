@@ -1,12 +1,16 @@
 header {
+  position: fixed;
   display: flex;
   flex-direction: row;
   background: #242425;
   color: white;
+  height: 58px;
+  width: 100vw;
+  z-index: 10;
 }
 
 header .logo {
-  height: 24px;
+  height: 30px;
   margin: 10px;
 }
 

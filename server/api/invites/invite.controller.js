@@ -15,7 +15,6 @@ exports.index = async (req, res) => {
 
   let limit = parseInt(req.query.limit, 50) || null;
   let skip = parseInt(req.query.skip, 0) || null;
-  console.log(skip)
   try {
     let query;
     if (req.user.role !== 'admin') {
@@ -36,6 +35,9 @@ exports.create = async (req, res) => {
   let invite;
   try {
     let user = req.user;
+    if (!user.confirmed) {
+      throw new Error('please confirm your email before sending invites');
+    }
     let invites = [];
     if (user.role !== 'admin') {
       invites = await Invite.find({ invitedBy: user._id });

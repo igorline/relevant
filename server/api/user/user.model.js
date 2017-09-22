@@ -8,8 +8,8 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema({
   _id: { type: String, required: true, index: true },
   name: String,
-  email: { type: String, lowercase: true },
-  phone: String,
+  email: { type: String, lowercase: true, select: false },
+  phone: { type: String, select: false },
   role: {
     type: String,
     default: 'user'
@@ -18,7 +18,10 @@ const UserSchema = new Schema({
   messages: { type: Number, default: 0 },
   relevance: { type: Number, default: 0 },
   balance: { type: Number, default: 0 },
-  deviceTokens: [String],
+  deviceTokens: {
+    // select: false,
+    type: [String]
+  },
   image: String,
   hashedPassword: { type: String, select: false },
   provider: String,
@@ -44,7 +47,10 @@ const UserSchema = new Schema({
 
   bio: { type: String, default: '' },
 
-  blocked: [{ type: String, ref: 'User' }],
+  blocked: {
+    type: [{ type: String, ref: 'User' }],
+    select: false,
+  },
   blockedBy: {
     type: [{ type: String, ref: 'User' }],
     select: false
