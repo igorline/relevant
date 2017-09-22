@@ -137,12 +137,12 @@ class PostButtons extends Component {
     // DEBUG ANIMATION
     // this.props.actions.triggerAnimation('invest');
 
-    this.investButton.measureInWindow((x, y, w, h) => {
-      let parent = { x, y, w, h };
-      if (x + y + w + h === 0) return;
-      this.props.actions.triggerAnimation('upvote', { parent });
-    });
-    return;
+    // this.investButton.measureInWindow((x, y, w, h) => {
+    //   let parent = { x, y, w, h };
+    //   if (x + y + w + h === 0) return;
+    //   this.props.actions.triggerAnimation('invest', { parent });
+    // });
+    // return;
 
     this.props.actions.invest(
       this.props.auth.token,
@@ -354,9 +354,9 @@ class PostButtons extends Component {
     }
     let canBet;
     let now = new Date();
-    if (!myPost && !investable && now - new Date(post.createdAt) < 6 * 60 * 60 * 1000) {
-      canBet = true;
-    }
+    // if (!myPost && !investable && now - new Date(post.createdAt) < 6 * 60 * 60 * 1000) {
+    //   canBet = true;
+    // }
 
     // invest section spacing
     let space = 8;
