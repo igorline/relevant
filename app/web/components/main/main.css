@@ -33,7 +33,6 @@ $blue: #3E3EFF;
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-top: 58px;
 }
 
 .splashContent {
@@ -63,6 +62,7 @@ $blue: #3E3EFF;
   .phone {
     flex: .5;
     align-self: flex-end;
+    font-size: 0;
   }
 }
 
@@ -88,6 +88,10 @@ panel {
   padding: 115px 10vw 115px 10vw;
   flex-direction: column;
   justify-content: center;
+  z-index: 1;
+  h1{
+    text-align: center;
+  }
   img {
     max-width: 100%;
   }
@@ -101,7 +105,7 @@ panel {
   .innerPanel {
     max-width: 750px;
   }
-  p, ol {
+  p, ol, ul {
     font-family: Georgia;
     font-size: 16px;
     line-height: 27px;
@@ -117,12 +121,8 @@ panel {
   .callout p {
     font-family: 'Arial';
     font-size: 20px;
-    align-self: 'center';
-    /*color: orange;*/
+    align-self: center;
     text-align: center;
-    b {
-      /*color: $blue;*/
-    }
   }
   .subH {
     text-align: center;
@@ -133,13 +133,12 @@ columns {
   display: flex;
   flex-direction: row;
   div {
-    /*padding: 0 10%;*/
     flex: 1;
     align-self: center;
   }
   .innerPanel {
-    /*padding: 0 10%;*/
-    /*max-width: 400px;*/
+    padding: 0 20px;
+    max-width: 750px;
   }
   .callout {
     display: flex;
@@ -158,17 +157,9 @@ columns {
   }
 }
 
-.splashContent section.copyright {
-  flex: 0.2;
-  align-items: flex-end;
-  justify-content: flex-start;
-  width: 100%;
-  padding: 0 0vw 40px 0vw;
-}
 
 .splashContent section.form {
   flex: 0.1;
-  /*flex-direction: column;*/
   align-items: center;
 
   justify-content: flex-start;
@@ -197,6 +188,7 @@ columns {
   white-space: nowrap;
   width: 100vw;
   overflow: hidden;
+  z-index: 1;
 }
 
 .marqueeParent article {
@@ -231,6 +223,10 @@ columns {
   font-size: 12px;
 }
 
+b {
+  font-weight: 800;
+ }
+
 .download {
   border: 1px solid black;
   display: inline-block;
@@ -252,30 +248,15 @@ columns {
   height: 20px;
 }
 
-.r {
-  height: 22px;
-}
 
-.copyrightParent {
-  margin: 20px 0 5px 5px;
-}
-
-.copyrightParent p {
-  margin: 0;
-  font-family: Helvetica;
-  font-size: 9px;
-  font-weight: bold;
-}
-
-.copyrightParent a {
-  text-decoration: underline;
-}
 
 .quote {
   font-style: italic;
-  padding: 10px 30px;
+  padding: 10px 5vw;
   font-size: 16px;
-  line-height: 22px;
+  line-height: 28px;
+  letter-spacing: .5px;
+  margin-bottom: 50px;
 }
 
 .pitch {
@@ -283,15 +264,40 @@ columns {
     font-family: 'Libre';
     font-size: 35px;
     line-height: 40px;
-    max-width: 750px;
+    max-width: 700px;
     margin-top: 25px;
     text-align: center;
     letter-spacing: 1px;
+  }
+  p b {
+    /*color: $blue;*/
+    /*font-family: Outline;*/
+    font-weight: normal;
+    /*text-decoration: underline;*/
+    /*text-transform: uppercase;*/
+    text-shadow: 3px 3px $blue;
   }
 }
 
 @media screen
   and (max-width: 736px) {
+
+  .splashContent section.invitation {
+    margin-top: 70px;
+
+  }
+
+  .pitch {
+    p {
+      font-family: 'Libre';
+      font-size: 24px;
+      line-height: 30px;
+      max-width: 750px;
+      margin-top: 25px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+  }
 
   .splashContainer {
     /*min-height: 0vh;*/
@@ -306,11 +312,16 @@ columns {
     flex-direction: column;
     mainSection {
       width: 90vw;
+      padding-bottom: 30px;
     }
     .phone {
-      flex: .5;
-      margin-top: -250px;
-      opacity: .5;
+      position: absolute;
+      bottom: 0;
+      width: 100vw;
+      right: -80px;
+      /*flex: .5;*/
+      /*margin-top: -350px;*/
+      opacity: .3;
     }
   }
 
@@ -326,13 +337,9 @@ columns {
   .splashContent  section.form {
     flex-direction: column;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: flex-end;
   }
 
-  .splashContent section.copyright {
-    margin: auto;
-    padding: 0 5vw 10px 5vw;
-  }
 
   .splashContent mainSection {
     flex-grow: 1;
@@ -340,11 +347,11 @@ columns {
   }
 
   .splashContent section.body p {
-    font-size: 23px;
+    font-size: 36px;
     margin: 0px 0 0 0;
-    line-height: 32px;
+    line-height: 44px;
     .outline{
-      line-height: 22px;
+      line-height: 36px;
     }
   }
 
@@ -360,11 +367,6 @@ columns {
     font-size: 14px;
     letter-spacing: 0.5px;
     margin: 2px 0 0 0;
-  }
-
-  .loginBar {
-    height: 37px;
-    padding: 5px;
   }
 
   .loginBar a, .loginBar p {
@@ -395,8 +397,18 @@ columns {
     height: 10px;
   }
 
-  .r {
-    height: 22px;
+
+  columns {
+    flex-direction: column;
+  }
+
+  panel {
+    display: flex;
+    align-items: center;
+    padding: 50px 5vw 50px 5vw;
+    .innerPanel {
+      padding: 0 0px;
+    }
   }
 }
 
@@ -406,11 +418,11 @@ columns {
 @media only screen
   and (max-width: 320px) {
   .splashContent section.body p {
-    font-size: 19px;
+    /*font-size: 19px;*/
     margin: 0px 0 0 0;
-    line-height: 32px;
-    .outline{
-      line-height: 22px;
-    }
+    /*line-height: 32px;*/
+    /*.outline{*/
+      /*line-height: 22px;*/
+    /*}*/
   }
 }
