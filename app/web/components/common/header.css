@@ -2,11 +2,19 @@ header {
   position: fixed;
   display: flex;
   flex-direction: row;
-  background: #242425;
+  justify-content: center;
+  background: rgba(36,36,37, .8);
   color: white;
   height: 58px;
   width: 100vw;
   z-index: 10;
+  /*background : linear-gradient(to top, rgba(36,36,37, .2), rgba(36,36,37, 1));*/
+}
+
+.headerContainer {
+  height: 58px;
+  width: 100%;
+  background: #242425;
 }
 
 header .logo {
@@ -33,4 +41,21 @@ header > div.right a:last-child {
 header a {
   color: white;
   margin: 0 5px;
+}
+
+@media only screen
+  and (max-width: 736px) {
+
+  header .logo {
+    height: 24px;
+    margin: 13px;
+  }
+
+  header {
+    height: 50px;
+  }
+  .headerContainer {
+    height: 50px;
+  }
+
 }

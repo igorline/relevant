@@ -172,7 +172,7 @@ button.shadowButton {
     height: 350px;
     z-index: 5;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     flex-direction: column;
 }

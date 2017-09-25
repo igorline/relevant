@@ -11,7 +11,7 @@ if (process.env.BROWSER === true) {
 class App extends Component {
   render() {
     return (<main>
-      <Header />
+      <Header location={this.props.location} />
       {this.props.children}
     </main>);
   }
