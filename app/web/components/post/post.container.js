@@ -12,6 +12,7 @@ import * as createPostActions from '../../../actions/createPost.actions';
 import * as navigationActions from '../../../actions/navigation.actions';
 import * as animationActions from '../../../actions/animation.actions';
 import Comments from '../comment/comment.container';
+import Splash from '../main/splash.component';
 
 if (process.env.BROWSER === true) {
   console.log('BROWSER, import css');

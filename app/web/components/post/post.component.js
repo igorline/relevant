@@ -31,7 +31,7 @@ class Post extends Component {
         <a href={'/tag/' + tag} key={tag}>#{tag}</a>
       )
     })
-    
+
     let postBox;
     if (post.link) {
       postBox = (
