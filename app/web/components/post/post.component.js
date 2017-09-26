@@ -26,15 +26,15 @@ class Post extends Component {
       backgroundImage: 'url(' + post.image + ')'
     };
 
-    console.log(this.props);
     const tags = post.tags.map( (tag) => {
       return (
         <a href={'/tag/' + tag} key={tag}>#{tag}</a>
       )
     })
-
-    return (
-      <div className='post'>
+    
+    let postBox;
+    if (post.link) {
+      postBox = (
         <a href={post.link} target='_blank'>
           <div className='shadowBox'>
             <span className='image' alt={post.title} style={postImage} />
@@ -44,6 +44,21 @@ class Post extends Component {
             </div>
           </div>
         </a>
+      )
+    }
+    else {
+      postBox = (
+        <div className='shadowBox'>
+          <div>
+            <h3 className='headline bebasRegular'>{post.title}</h3>
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <div className='post'>
+        {postBox}
         <AvatarBox user={post.user} date={post.postDate} size='large' />
         <div className='body'>
           <span>{post.description}</span>
