@@ -51,27 +51,3 @@
   color: #242425;
   margin: 20px 0 20px 0;
 }
-
-.commentDate {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  font-family: 'Helvetica', sans-serif;
-  font-size: 10px;
-  color: #D8D8D8;
-  margin: 20px 0;
-  opacity: 0.5;
-}
-.commentDate div {
-  position: relative;
-  top: -5px;
-  border-bottom: 0.5px solid;
-  flex: 1;
-}
-.commentDate div.ts {
-  padding: 0 5px;
-  border: 0;
-  flex: 0;
-  top: 0;
-  text-align: center;
-}

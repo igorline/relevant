@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { numbers } from '../../../utils';
 import Comments from '../comment/comment.container'
+import Divider from '../common/divider.component'
 import AvatarBox from '../common/avatarbox.component.js'
 
 if (process.env.BROWSER === true) {
@@ -17,11 +18,9 @@ class Comment extends Component {
     const timestamp = numbers.timeSince(Date.parse(comment.createdAt));
     return (
       <div className='comment'>
-        <div className='commentDate'>
-          <div></div>
-          <div className='ts'>{timestamp}</div>
-          <div></div>
-        </div>
+        <Divider>
+          {timestamp}
+        </Divider>
         <AvatarBox
           user={{ ...comment.embeddedUser, _id: comment.user }}
         />
