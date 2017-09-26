@@ -1,0 +1,12 @@
+<svg width="44px" height="55px" viewBox="0 0 44 55" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="illo-arrow-copy-16" transform="translate(1.000000, 1.000000)" stroke="#3E3EFF" fill-rule="nonzero">
+            <g id="Group-13-Copy" style="mix-blend-mode: darken;">
+                <g id="Group-Copy-9" transform="translate(20.500000, 27.500000) rotate(-90.000000) translate(-20.500000, -27.500000) translate(-5.000000, 7.000000)" fill="#3E3EFF">
+                    <polygon id="Shape" points="25.5 41 51 15.4126767 37.1618647 15.4126767 37.1618647 0 13.8392566 0 13.8392566 15.4126767 0 15.4126767"></polygon>
+                </g>
+                <polygon id="Shape" fill="#FFFFFF" transform="translate(22.500000, 25.500000) rotate(-90.000000) translate(-22.500000, -25.500000) " points="22.5 46 48 20.4126767 34.1618647 20.4126767 34.1618647 5 10.8392566 5 10.8392566 20.4126767 -3 20.4126767"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -311,7 +311,12 @@ class Application extends Component {
           this.initImage();
           break;
         case 2:
-          this.props.actions.viewInvites();
+          console.log(this.props.auth.user)
+          if (!this.props.auth.user.confirmed) {
+            Alert.alert('Please confirm your email first');
+          } else {
+            this.props.actions.viewInvites();
+          }
           break;
         case 3:
           this.props.actions.viewBlocked();

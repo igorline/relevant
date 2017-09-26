@@ -5,7 +5,7 @@ const auth = require('../../auth/auth.service');
 
 const router = express.Router();
 
-router.get('/', controller.index);
+router.get('/', auth.isAuthenticated(), controller.index);
 router.get('/sendConfirmation', auth.isAuthenticated(), controller.sendConfirmationCode);
 router.get('/search', auth.blocked(), controller.search);
 router.get('/me', auth.isAuthenticated(), controller.show);

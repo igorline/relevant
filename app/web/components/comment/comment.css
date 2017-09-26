@@ -1,0 +1,77 @@
+.comments form {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+.comments form .avatar {
+  margin-right: 5px;
+}
+.comments form textarea {
+  width: 100%;
+  padding: 7px 5px;
+  font-size: 16px;
+  font-family: Helvetica, sans-serif;
+  border: 0;
+  background: transparent;
+}
+
+.comments form textarea::-webkit-input-placeholder {
+  color: #CBCBD1;
+}
+
+.comments form textarea:-ms-input-placeholder {
+  color: #CBCBD1;
+}
+
+.comments form textarea::-moz-placeholder {
+  color: #CBCBD1;
+  opacity: 1;
+}
+
+.comments form textarea:-moz-placeholder {
+  color: #CBCBD1;
+  opacity: 1;
+}
+
+.comments form input[type=submit] {
+  border: 0;
+  background: transparent;
+  padding: 7px 0;
+  margin-left: 5px;
+  font-size: 16px;
+  font-family: Helvetica, sans-serif;
+  color: #3E3EFF;
+}
+
+.comment .body {
+  font-family: 'Georgia', serif;
+  font-size: 15px;
+  color: #242425;
+  margin: 20px 0 20px 0;
+}
+
+.commentDate {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  font-family: 'Helvetica', sans-serif;
+  font-size: 10px;
+  color: #D8D8D8;
+  margin: 20px 0;
+  opacity: 0.5;
+}
+.commentDate div {
+  position: relative;
+  top: -5px;
+  border-bottom: 0.5px solid;
+  flex: 1;
+}
+.commentDate div.ts {
+  padding: 0 5px;
+  border: 0;
+  flex: 0;
+  top: 0;
+  text-align: center;
+}

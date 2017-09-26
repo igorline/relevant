@@ -1,0 +1,11 @@
+<svg width="8px" height="8px" viewBox="0 0 8 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="assets-/-post-button-/-info" transform="translate(-15.000000, -11.000000)">
+            <g id="Group-2" transform="translate(14.228325, 11.000000)">
+                <polygon id="Fill-1" stroke="#FFFFFF" stroke-width="0.25" fill="#9C9C9C" points="2.18500735 0.794609962 0.845108522 2.03957698 1.58902152 2.73067238 1.58902152 5.83536049 0.845108522 6.52666765 2.18500735 7.77163467 3.52490619 6.52666765 3.52490619 2.03957698"></polygon>
+                <polygon id="Fill-4" stroke="#FFFFFF" stroke-width="0.25" fill="#9C9C9C" points="6.07657652 0.794567609 4.73667769 2.03953462 6.46819753 3.64831408 4.73396534 5.25963471 7.4341056 7.77159231 8.77410875 6.5266253 6.49761605 4.41130373 8.23184823 2.80008898"></polygon>
+                <path d="M4.20770479,1.00432228 L4.20770479,7.16081581" id="Line-4" stroke="#9C9C9C" stroke-width="0.75" stroke-linecap="square"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
 
-let styles;
-
 function AdminHeader(props) {
   return (
     <container>

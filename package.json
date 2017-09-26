@@ -82,6 +82,7 @@
     "react-cookie": "^1.0.4",
     "react-dom": "^15.0.1",
     "react-draft-wysiwyg": "^1.10.0",
+    "react-infinite": "^0.12.1",
     "react-motion": "^0.4.7",
     "react-native": "^0.43.0",
     "react-native-bottom-sheet": "^1.0.1",
