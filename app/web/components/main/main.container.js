@@ -3,21 +3,15 @@ import React, {
 } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import SVGInline from 'react-svg-inline';
 import ShadowButton from '../common/ShadowButton';
-import Modal from '../common/modal';
-
+import Problem from './problem1.component';
 
 import * as actionCreators from '../../../actions/admin.actions';
 import Marquee from './marquee';
-
-// let SVGInline = null;
-let logoSvg = '';
+import Footer from '../common/footer.component';
 
 if (process.env.BROWSER === true) {
   require('./main.css');
-  logoSvg = require('../../public/img/logo.svg');
-  // SVGInline = require('react-svg-inline');
 }
 
 export class Main extends Component {
@@ -25,17 +19,12 @@ export class Main extends Component {
     super(props, context);
     this.submit = this.submit.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.close = this.close.bind(this);
-    this.login = this.login.bind(this);
     this.state = {
-      modal: false,
       email: '',
       name: ''
     };
   }
 
-  componentDidMount() {
-  }
 
   handleChange(field, data) {
     this.setState({ [field]: data });
@@ -60,55 +49,10 @@ export class Main extends Component {
     });
   }
 
-  close() {
-    this.setState({ modal: !this.state.modal });
-  }
-
-  login() {
-    let user = {
-      name: this.username,
-      password: this.password
-    };
-    let redirect = this.props.location.query.redirect || '/login';
-    this.props.actions.loginUser(user, redirect);
-    this.setState({ modal: !this.state.modal });
-  }
-
   render() {
-    // let login = (
-    //   <div className="loginBar">
-    //     <p>beta tester?</p>
-    //     <a style={{ cursor: 'pointer' }} onClick={() => this.setState({ modal: !this.state.modal })}>
-    //       login to post
-    //     </a>
-    //   </div>
-    // );
-
-                  // <br />
-
-                  // <input
-                  //   className="blueInput"
-                  //   value={this.topics}
-                  //   onChange={(topics) => {
-                  //     this.topics = topics.target.value;
-                  //   }}
-                  //   type="text"
-                  //   name="topics"
-                  //   placeholder="Topics of expertise, ex: music, tech"
-                  // />
-
-
     return (
       <div className="splashContainer">
-
-        <section className="header">
-          <img src="/img/logoWhite.svg" alt="logo" />
-          {/*<SVGInline style={{ fill: 'white' }} svg={logoSvg} />*/}
-        </section>
-
         <Marquee {...this.props} />
-
-        {/*login*/}
 
         <div className="splashContent">
 
@@ -117,8 +61,7 @@ export class Main extends Component {
               <p className="libre">
                 <span className="outline">
                   Relevant
-                </span> is a community of thought leaders fighting against <span className="outline">algorithmic oppression</span>.
-                {'\n'}Do you have something to contribute?
+                </span> is a social news reader that values <span className="outline">quality</span> over clicks.
                 {/* <a href="http://www.apple.com" className="download">
                   <img src="/img/apple.png" />
                   <span className="bebasRegular">download</span>
@@ -185,97 +128,200 @@ export class Main extends Component {
         <panel className={'dark center'}>
           <img src={'/img/rWhite.svg'} />
           <div className={'libre pitch'}>
-            At Relevant we are building an attention ecology that prioritises the qualitative aspects of attention.
-            <br/><br/>
-            With the Relevant news sharing app, we are experimenting with incentives that support curation of meaningful information, paving the way for a broad ecosystem for a new generation of apps and services that promote humanistic values. 
+          <p>
+Our mission is to create a token-backed <b>qualitative metric</b> for the information economy — making the <b>human values</b> of veracity, expertise and agency <b>economically valuable</b>. 
+          </p>
+{/*          <p>
+By backing it with a token — we can make the human values of veracity, expertise and agency economically valuable. 
+          </p>*/}
           </div>
         </panel>
 
-        <panel className={'grey'}>
-          <h1>A Promise Betrayed</h1>
 
-          <columns>
-            <div className={'innerPanel'}>
-
-              <p>
-                Once upon a time there was universal optimism about the internet. Every tech company’s mission was to make the world a better place — and for the most part, we believed them.
-              </p>
-              <p>
-                The internet would revolutionize knowledge, social networks would spread democracy, automation would reduce inequality, and AI would accelerate the genius of the species.
-              </p>
-              <p className={'subH'}>
-                What happened?
-              </p>
-              <p>
-                Web 2.0 platforms had to adjust to the economic realities of running a business that offers free services. In order to raise income, centralized platforms began exploiting human nature to produce behaviour that was beneficial to their networks. This dynamic has led us to the current state of the attention economy. 
-              </p>
-            </div>
-{/*
-            <div className={'callout'}>
-              <p>
-                what you <b>measure</b><br/>determines<br/>what is <b>valuable</b>
-              </p>
-              <p>
-                what is <b>valued</b><br/>determines<br/>what is <b>measured</b>
-              </p>
-            </div>
-
-*/}
-          </columns>
-
-
-          <div className={'divider'}></div>
-          <div className={'subH'}>Garbage in Garbage out</div>
-          <p>Platforms do not measure behavior, they determine it</p>
-
-          <div className={'divider'}></div>
-
-          <div className={'subH'}>Perverse Incentive = Perverse Innovation</div>
-
-
-        </panel>
-
+        <Problem />
 
 
         <panel>
-          <h1>Attention Ecology</h1>
+          <h1>OPPORTUNITY & THE BLOCKCHAIN</h1>
           <columns>
 {/*          <div style={{ flex: 1 }}>
             <img src='/img/ecosystem.png'/>
           </div>*/}
+{/*
+          <div style={{ flex: .3, padding: '0 50px' }} >
+            <img src="/img/blockchain.png" />
+          </div>*/}
+
+
           <div className={'innerPanel'}>
             <p>
-              We don’t need to subscribe to a single economic reality anymore. With decentralized blockchain technology we can create new economic structures. There are now two degrees of freedom: economic incentives and user attention.
-            </p>
+Blockchain technology allows us to build an economy around the information we value. Instead of manipulating user behavior to extract capital, we can formulate new economic incentives that reward the creation and dissemination of quality content.             </p>
             <p>
-  Instead of manipulating user attention to extract capital, we are now able to structure incorruptible economic incentives that support humanistic values. 
+            <b>
+Put simply, if we can attach economic value to human values — we can transform the information economy.
+            </b>
             </p>
-            <p>
-            We now have the opportunity to focus on the qualitative side of attention - the attention ecology. 
+{/*            <p>
+We can do this in three steps:
             </p>
+              <ol>
+                <li>Create a quality metric for information</li>
+                <li>Develop a platform where content can be filtered, ranked and distributed according to that metric</li>
+                <li>Create a virtual economy that rewards valuable contributions to that platform</li>
+              </ol>*/}
           </div>
+
           </columns>
         </panel>
 
 
 
         <panel className={'grey'}>
+          <h1>RELEVANCE: A Quality Metric for Information</h1>
+
+          <div className={'innerPanel'}>
+          <p>
+Relevant relies on a qualitative metric — Relevance.
+          </p>
+
+          <p><b>
+          Relevance is the return on attention (ROA): how much value we get back when we pay attention. 
+
+          </b>
+          </p>
+
+          <p>
+          Relevance differs from traditional Web 2.0 engagement metrics in that the latter doesn't measure the quality of attention - only it’s quantity. 
+          {/*For example:*/}
+          </p>
+{/*
+          <p>
+          If a person spends 2 hours looking at cat videos and 10 minutes reading about climate change, Facebook would infer that cats are more important than climate change and that everyone should pay attention to whatever it is that cats are doing.
+          </p>
+
+          <p>
+This user would probably tell you that climate change is more important to them than cat videos — but Facebook’s algorithms never thought bother to ask. These metrics are not just intellectually problematic but also factually wrong.
+  </p>
+
+          <p>
+          In contrast, the Relevance metric gives users the option to rate, classify, and annotate their experiences — bringing agency, nuance and meaning back into the information ecosystem. In the short term this will result in better curation and discovery methods. In the long term, this will lead to the total restructuring of the information environment.
+          </p>
+*/}
+          </div>
+        </panel>
+
+
+        <panel>
+          <h1>Relevant Economy</h1>
+
+          <div className={'innerPanel'}>
+
+          <p>
+User activity in the Relevant App produces Relevance — both a social good, and a data-rich record of information quality. 
+          </p>
+
+          <p>
+This data will be stored in the Relevant Knowledge Base — an open, decentralized database that maps the relationship between users, content and applications. The value of the Relevant Knowledge Base is represented by total market cap of Relevant Tokens. 
+          </p>
+
+          <p>
+Because Relevant data is generated by users, we believe they are the ones that should reap its benefits. The more value users contribute to the platform the more tokens they receive. 
+          </p>
+
+          <p>
+A decentralized protocol will control how these tokens are distributed and control access to the data.
+          </p>
+{/*
+          <p>
+A decentralized protocol will control how these tokens are distributed and control access to the data.
+
+          </p>
+
+          <p>
+Relevance data is the result of engaged and intentional behaviour — not spying. Relevant does not track, package or sell users as a product. What we measure is the saliency of the content — the issues, positions and publishing platforms that really matter to them. 
+
+          </p>
+
+          <p>
+We do not sell ads
+
+          </p>
+
+          <p>
+Relevant does not sell or display advertising of any kind, but the Relevant Knowledge Base offers a new opportunity for ad placement. Instead of coupling advertising to individual users through invasive profiling — Relevant data enables coupling to high-quality content and sources, whether they are large publishers, individual writers or influencers. 
+          </p>
+
+
+          <p>
+          Context-coupled advertising will gain an ever-increasing market share as consumers switch to more privacy oriented solutions — like browsers that block third-party cookies. By identifying the most relevant real estate in the information environment — we can create a space for advertisers to pursue sophisticated brand awareness campaigns that go beyond the one-off calls to action of most digital advertising.
+          </p>
+
+          <p>
+This also provides concrete financial incentives for publishers to produce the kind of original research and investigative journalism that has been drowned out thanks to the click-metrics of Web 2.0.
+
+          </p>
+
+          <p>
+Relevance as a high-value subset of the attention economy enables an ecosystem of businesses to be built around the Relevant Knowledge Base: from market and social research to polling, education and knowledge production — giving developers and businesses a fuller picture of the global information environment.
+
+          </p>
+
+          <p>
+Because access to the Relevant Knowledge Base is paid for in Relevant Tokens, businesses will have to buy tokens from users in exchange for fiat currencies. This means users directly benefit from the value they create.
+
+          </p>
+*/}
+          </div>
+
+        </panel>
+
+
+
+        <panel className={"grey"}>
           <h1>Relevant News Reader</h1>
 
           <columns>
 
           <div className={'innerPanel'}>
             <p>
-            Relevant news reader is our first step in the development of the Relevant Ecosystem.
+Relevant is a news sharing app that encourages users to rank content according to quality. 
             </p>
             <p>
-As a collaborative result of the agency, engagement, and expertise of its users, relevant marries the social sharing of news articles with a knowledge project based on creating new values for online content.            </p>
+The app serves as a lab for formulating and experimenting with the Relevance metric and its underlying economy as we work on the decentralized technology to support it.
+            </p>
+            <p><b>
+Here are a few things we have learned:
+            </b>
+            </p>
+
+            <ul>
+              <li className={'special'}>
+                Democracy needs expertise
+              </li>
+
+              <li className={'special'}>
+              A "Like" is not enough
+              </li>
+
+              <li className={'special'}>
+              Personalization is perverse
+              </li>
+            </ul>
+
             <p>
-            It is currently in closed beta and available for both iOS and Android mobile devices. 
+At Relevant, we envision a decentralized, democratic and transparent network that allows engaged experts to participate in the creation of a global knowledge project while providing readers with the best discovery tool on the market. 
+            </p>
+{/*            <p>
+For example: Kim Kardashian might have a high Relevance ranking for fashion, but a low ranking when it comes to science. If she upvotes an article about fashion week - that content will shoot up in Relevance, but if she upvotes an article on climate change - the content’s Relevance value will change very little.
             </p>
             <p>
-            The app serves as a lab for researching and experimenting with the Relevance metric and economic incentives.
+Relevant is not a popularity contest. Your Relevance is not tied to the number of followers you have, but your authority on a given subject. You build that authority by making valuable contributions to the platform. 
             </p>
+            <p>
+This allows engaged experts to participate in the curation of a global knowledge project, while providing passive users the best discovery tool on the market.
+            </p>
+
+*/}
           </div>
 
           <div style={{ flex: .8 }}>
@@ -285,57 +331,45 @@ As a collaborative result of the agency, engagement, and expertise of its users,
 
         </panel>
 
+
         <panel>
-          <section className="copyright">
-            <div className="rParent">
-              <img src="/img/r.svg" alt="relevant" className="r" />
-            </div>
-            <div className="copyrightParent georgia">
-              <p>
-                Copyright 2017. All rights reserved.
-              </p>
-              <p>
-                Relevant is created by <a href="http://4real.io/">4Real</a> & <a href="http://www.phillipfivel.com/">Phillip Fivel Nessen</a>
-              </p>
-            </div>
-          </section>
+          <h1>Development Roadmap</h1>
+          <div className={'innerPanel'}>
+            <ol>
+              <li>
+              Develop Proof-of-Concept Relevance metric - Completed
+              </li>
+
+              <li>
+Build a centralized mobile news sharing app to test Relevant metric - Completed
+              </li>
+
+              <li>
+Proof of Concept economic incentives - In progress
+              </li>
+
+              <li>
+Desktop browser version of app - In progress
+              </li>
+
+              <li>
+Integrate cryptocurrency token into the app - Winter 2018
+              </li>
+
+              <li>
+Blockchain-based record of Relevance metric - Spring 2018
+              </li>
+
+              <li>
+Decentralized Relevant database fully integrated with Currency - Fall 2018
+              </li>
+            </ol>
+
+          </div>
         </panel>
 
 
-        <Modal
-          visible={this.state.modal}
-          close={this.close}
-          title={'login'}
-        >
-          <p className="loginText">{this.props.title}</p>
-          <input
-            className="blueInput special"
-            value={this.username}
-            onChange={(username) => {
-              this.username = username.target.value;
-            }}
-            type="text"
-            name="username"
-            placeholder="username"
-          />
-          <input
-            className="blueInput special pass"
-            value={this.password}
-            onChange={(password) => {
-              this.password = password.target.value;
-            }}
-            type="password"
-            name="password"
-            placeholder="password"
-          />
-          <ShadowButton
-            backgroundColor={'white'}
-            color={'#3E3EFF'}
-            onClick={this.login}
-          >
-            Login
-          </ShadowButton>
-        </Modal>
+        <Footer />
 
       </div>
     );

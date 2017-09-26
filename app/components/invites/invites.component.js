@@ -43,8 +43,8 @@ export default class InviteComponent extends Component {
     };
     return this.props.actions.createInvite(invite)
     .then(createdInvite => {
+      this.setState({ sending: false });
       if (createdInvite) {
-        this.setState({ sending: false });
         this.setState({ name: null, email: null, invitedByString: null });
       }
       // if (createdInvite) this.sendInvite(createdInvite);

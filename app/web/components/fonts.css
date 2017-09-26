@@ -14,15 +14,22 @@
   font-weight: bold;
 }
 
-@font-face {
+/*@font-face {
   font-family: 'Georgia';
   src: url('/fonts/Georgia.ttf') format('truetype');
-}
+}*/
 
 @font-face {
   font-family: 'Libre';
   src: url('/fonts/LibreCaslonDisplay-Regular.ttf') format('truetype');
 }
+
+@font-face {
+  font-family: 'Libre';
+  src: url('/fonts/librecaslontext-bold.otf');
+  font-weight: bold;
+}
+
 
 
 .libre {
@@ -69,4 +76,14 @@ h2 {
   color: #242425;
   margin: 40px 0 40px 0;
 }
+
+@media screen
+  and (max-width: 736px) {
+  h1 {
+    font-size: 34px;
+    line-height: 39px;
+  }
+
+}
+
 

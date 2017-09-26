@@ -4,7 +4,7 @@ import { UserAuthWrapper } from 'redux-auth-wrapper';
 import App from './components/app';
 import Home from './components/main/main.container';
 import Auth from './components/auth/auth.container';
-// import ProfileContainer from './components/profile/profile.container';
+import ProfileContainer from './components/profile/profile.container';
 // import MessageContainer from './components/message/message.container';
 import Posts from './components/post/post.container';
 import NewPostContainer from './components/post/newPost.container';

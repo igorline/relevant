@@ -125,7 +125,7 @@ exports.confirm = async (req, res, next) => {
     if (!_id || !confirmCode) throw new Error('Missing user id or confirmation token');
     user = await User.findOne({ _id, confirmCode }, 'confirmCode confirmed email');
     if (user && !user.confirmed) {
-      Invite.generateCodes(user);
+      // Invite.generateCodes(user);
       user.confirmed = true;
       user = await user.save();
     } else {
@@ -380,7 +380,7 @@ exports.create = async (req, res) => {
     );
 
     if (!confirmed) sendConfirmation(user, true);
-    else Invite.generateCodes(user);
+    // else Invite.generateCodes(user);
   } catch (err) {
     return handleError(res, err);
   }

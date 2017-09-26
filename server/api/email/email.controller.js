@@ -21,7 +21,7 @@ async function generateList(type) {
       let now = new Date();
       now.setDate(now.getDate() - 5);
       query = { createdAt: { $lt: now } };
-      users = await User.find(query);
+      users = await User.find(query, 'email code');
     }
     let list = mailgun.lists(type + '@mail.relevant.community');
 
@@ -45,16 +45,17 @@ async function generateList(type) {
         vars
       };
       console.log(u);
-      list.members().create(u, function (err, data) {
-        if (err) console.log(err);
-        else console.log(data);
-      });
+      // list.members().create(u, function (err, data) {
+      //   if (err) console.log(err);
+      //   else console.log(data);
+      // });
     });
   } catch (err) {
     console.log(err);
   }
 }
 
+// generateList('registered');
 // generateList('notregistered');
 
 // let list = mailgun.lists('test@mail.relevant.community');
