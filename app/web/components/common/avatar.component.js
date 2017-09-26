@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
+
 
 if (process.env.BROWSER === true) {
   require('./avatarbox.css');
@@ -12,7 +14,13 @@ export default class Avatar extends Component {
       backgroundImage: 'url(' + this.props.user.image + ')',
     };
     return (
-      <a className='avatar' href={profileLink} style={avatarBackgroundImage}>{this.props.user.name}</a>
+      <Link
+        className={'avatar'}
+        to={profileLink}
+        style={avatarBackgroundImage}
+      >
+        {this.props.user.name}
+      </Link>
     );
   }
 }

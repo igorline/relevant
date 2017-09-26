@@ -5,6 +5,7 @@ import Avatar from './avatar.component';
 import Modal from '../common/modal';
 import ShadowButton from '../common/ShadowButton';
 import * as authActions from '../../../actions/auth.actions';
+import { Link } from 'react-router';
 
 if (process.env.BROWSER === true) {
   require('./header.css');
@@ -73,14 +74,14 @@ class Header extends Component {
   renderLoginButton() {
     if (this.props.user) {
       return (
-        <div className='right'>
+        <div className={'right'}>
           <a onClick={() => this.props.actions.logoutAction()} >Logout</a>
           <Avatar user={this.props.user} />
         </div>
       );
     } else {
       return (
-        <div className='right'>
+        <div className={'right'}>
           <a onClick={() => this.setState({ modal: true })} >Login</a>
         </div>
       );
@@ -93,7 +94,9 @@ class Header extends Component {
         <header>
           <div></div>
           <div>
-            <a href='/'><img src='/img/logo-white.svg' className='logo' alt='Relevant' /></a>
+            <Link to={'/'}>
+              <img src={'/img/logo-white.svg'} className={'logo'} alt={'Relevant'} />
+            </Link>
           </div>
           {this.renderLoginButton()}
           {this.renderModal()}
@@ -103,7 +106,6 @@ class Header extends Component {
   }
 
 }
-//           <LoginButton user={this.props.user} />
 
 const mapStateToProps = (state) => ({
   user: state.auth.user
