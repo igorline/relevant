@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 if (process.env.BROWSER === true) {
   require('./footer.css');
 }
