@@ -44,16 +44,6 @@ function renderFullPage(html, initialState) {
         <meta name="twitter:description" content="${meta.description}" />
         <meta name="twitter:image" content="${meta.image}" />
 
-        <style>
-          body.loading {
-            opacity: 0;
-          }
-
-          body {
-            transition: opacity 0.2s;
-          }
-        </style>
-
         ${styles}
 
         <!-- Facebook Pixel Code -->

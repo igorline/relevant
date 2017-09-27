@@ -14,7 +14,7 @@ export default function () {
         </a>
 
         <a href="https://join.slack.com/t/relevantcommunity/shared_invite/enQtMjIwMjEwNzUzMjUzLTFkOTkwNzFjN2EzMjFhYTVkZDZmYzU1ZGFlZmY4MzdjNGMyOWIwYjhmYTE2OTQ1NmJlOWVmNjkyODNjM2I4YWI" target="_blank">
-          <img className="footerIcon" src='/img/slack.svg' />
+          <img className="footerIcon slack" src='/img/slack-white.svg' />
         </a>
 
         <a href="mailto:contact@4real.io" target='_blank'>
