@@ -36,13 +36,17 @@ class Posts extends Component {
 
   render () {
     this.post = this.props.posts.posts[this.props.params.id];
+    const hasPost = this.post && this.post !== 'notFound'
+
     return (
       <div className='parent'>
+        {hasPost &&
+          <div className='postContainer'>
+            <Post post={this.post} {...this.props} />
+            <Comments post={this.post} {...this.props} />
+          </div>
+        }
         <Splash {...this.props} />
-        <div className='postContainer'>
-          <Post post={this.post} {...this.props} />
-          <Comments post={this.post} {...this.props} />
-        </div>
       </div>
     );
   }
@@ -53,6 +57,7 @@ export default connect(
     auth: state.auth,
     posts: state.posts,
     myPostInv: state.investments.myPostInv,
+    isAuthenticated: state.auth.isAuthenticated,
   }),
   dispatch => ({
     actions: bindActionCreators({

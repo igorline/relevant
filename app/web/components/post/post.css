@@ -97,6 +97,7 @@
   font-size: 10px;
   color: #9c9c9c;
   margin-right: 20px;
+  cursor: pointer;
 }
 .commentcount img {
   margin-right: 4px;
