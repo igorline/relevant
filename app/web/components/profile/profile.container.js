@@ -15,12 +15,12 @@ class ProfileContainer extends Component {
 
   // Get user object based on userid param in route
   grabUser() {
-    this.props.getSelectedUser(this.props.params.id);
+    this.props.actions.getSelectedUser(this.props.params.id);
   }
 
   // Get array of posts based on userid param in route
   grabPosts() {
-    this.props.getUserPosts(0, 5, this.props.params.id);
+    this.props.actions.getUserPosts(0, 5, this.props.params.id);
   }
 
   componentWillMount() {
@@ -45,18 +45,19 @@ class ProfileContainer extends Component {
   }
 }
 
-export default connect(
-  state => {
-    return {
-      auth: state.auth,
-      profile: state.profile
-    };
-  },
-  dispatch => {
-    return Object.assign({}, { dispatch }, bindActionCreators({
-      ...UserActions,
-      ...MessageActions,
-      ...PostActions
-    }, dispatch));
-  }
-)(ProfileContainer);
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+  user: state.user,
+  posts: state.posts,
+  profile: state.profile
+});
+
+const mapDispatchToProps = (dispatch) => (Object.assign({}, { dispatch }, {
+  actions: bindActionCreators(Object.assign({}, {
+    ...UserActions,
+    ...MessageActions,
+    ...PostActions
+  }), dispatch)
+}));
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileContainer);
