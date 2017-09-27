@@ -27,6 +27,8 @@ class UserPosts extends Component {
 
   // Extends postsToRender on scroll
   loadMorePosts() {
+    console.log(this.props, this.state)
+    
     this.setState({
       isInfiniteLoading: true
     });
