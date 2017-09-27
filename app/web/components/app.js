@@ -20,11 +20,10 @@ class App extends Component {
   }
 
   componentDidMount(){
-    document.body.classList.remove('loading')
+    // document.body.classList.remove('loading')
   }
 
   render() {
-    console.log(this.props, this.state)
     return (
       <main>
         <Header location={this.props.location} />
