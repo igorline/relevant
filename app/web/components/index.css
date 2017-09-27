@@ -19,7 +19,6 @@ html, body {
   flex: 1;
 }
 
-
 #app, container, .parent, main {
   flex: 1;
   display: flex;
