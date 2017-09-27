@@ -14,53 +14,80 @@
   border: 1px solid #000;
   box-shadow: 2px 2px 0 0 #000;
 }
-.post .shadowBox {
-  border: 1px solid #3E3EFF;
-  box-shadow: 2px 2px 0 0 #3E3EFF;
-  color: black;
+
+
+.postinfo {
+  .shadowBox {
+    border: 1px solid #3E3EFF;
+    box-shadow: 2px 2px 0 0 #3E3EFF;
+    color: black;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 40px;
+  }
+  .image {
+    flex: 0 0 191px;
+    width: 191px;
+    margin-right: 20px;
+    background-size: cover;
+    display: block;
+  }
+  .headline {
+    font-size: 43px;
+    margin: 0 0;
+    display: inline-block;
+    padding-top: 5px;
+  }
+  .headline:after {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-left: 5px;
+    background-image: url(/img/linkout.png);
+    background-size: cover;
+  }
+  .domain {
+    font-size: 15px;
+  }
+}
+
+.postMeta {
   display: flex;
   flex-direction: row;
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 40px;
+  align-items: center;
+  justify-content: flex-start;
+  .avatarBox.repost {
+    margin-left: 10px;
+    .avatar {
+      width: 26px;
+      height: 26px;
+      flex: 0 0 26px;
+    }
+  }
 }
+
 .post .avatarBox {
   margin: 20px 0;
 }
-.post .image {
-  flex: 0 0 191px;
-  width: 191px;
-  margin-right: 20px;
-  background-size: cover;
-  display: block;
-}
-.post .headline {
-  font-size: 43px;
-  margin: 0 0;
-  display: inline-block;
-  padding-top: 5px;
-}
-.post .headline:after {
-  content: '';
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  margin-left: 5px;
-  background-image: url(/img/linkout.png);
-  background-size: cover;
-}
-.post .domain {
-  font-size: 15px;
-}
-.post .body {
+.postBody {
   font-family: 'Georgia', sans-serif;
   font-size: 18px;
   line-height: 27.5px;
   color: #242425;
 }
-.post .body span:after,
-.post .body a:after {
+.postBody span:after,
+.postBody a:after {
   content: '\0020';
+}
+.repostBody {
+  font-size: 14px;
+  line-height: 21px;
+  padding-left: 10px;
+  border-left: 1px solid #b4b4b5;
+  margin-bottom: 10px;
 }
 
 .postbuttons {
@@ -70,42 +97,43 @@
   justify-content: space-between;
   margin-top: 20px;
   margin-bottom: 40px;
+  .right {}
+  .left > a {
+    margin-right: 20px;
+  }
+  .fraction {
+    display: inline-block;
+    margin-right: 20px;
+  }
 }
-.postbuttons .right {
 
-}
-.postbuttons .left > a {
-  margin-right: 20px;
-}
-.postbuttons .fraction {
-  display: inline-block;
-  margin-right: 20px;
-}
 .fraction {
   font-size: 10px;
   color: #9C9C9C;
   text-align: center;
   min-width: 30px;
+  .num {
+    border-bottom: 1px solid;
+  }
+  .dem {
+  }
 }
-.fraction .num {
-  border-bottom: 1px solid;
-}
-.fraction .dem {
-}
+
 .commentcount {
   display: inline-block;
   font-size: 10px;
   color: #9c9c9c;
   margin-right: 20px;
   cursor: pointer;
+  img {
+    margin-right: 4px;
+  }
+  span {
+    position: relative;
+    top: -4px;
+  }
 }
-.commentcount img {
-  margin-right: 4px;
-}
-.commentcount span {
-  position: relative;
-  top: -4px;
-}
+
 .post .share {
   flex: 0 0 21px;
   width: 21px;

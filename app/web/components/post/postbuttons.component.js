@@ -79,9 +79,10 @@ class PostButtons extends Component {
     }
     if (!post) return null;
 
-    console.log(this.props)
-    const isInvested = this.props.post.id in this.props.myPostInv
-    console.log( isInvested, this.props.post.id, this.props.myPostInv )
+    // console.log(this.props)
+    // const isInvested = this.props.post.id in this.props.myPostInv
+    // console.log( isInvested, this.props.post.id, this.props.myPostInv )
+    const isInvested = false
 
     return (
       <div className='postbuttons'>

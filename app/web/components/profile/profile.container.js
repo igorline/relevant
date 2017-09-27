@@ -47,8 +47,10 @@ class ProfileContainer extends Component {
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
+  isAuthenticated: state.auth.isAuthenticated,
   user: state.user,
   posts: state.posts,
+  investments: state.investments,
 });
 
 const mapDispatchToProps = (dispatch) => (Object.assign({}, { dispatch }, {
