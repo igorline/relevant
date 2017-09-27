@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 
+import Post from '../post/post.component';
+
 const Infinite = require('react-infinite');
 
 const postInitialAmt = 5; // # of posts to initially load on page
@@ -86,29 +88,33 @@ class UserPosts extends Component {
   // }
 
   render() {
-    const posts = this.state.postsToRender;
-    console.log(this.props.posts)
+    const userId = this.props.params.id;
+    const postIds = this.props.posts.userPosts[userId] || []
+
+    const posts = postIds.map(id => {
+      const post = this.props.posts.posts[id];
+      const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
+      const postUser = {
+        ...post.embeddedUser,
+        _id: post.user,
+      };
+      // console.log(post, repost, postUser)
+      return (
+        <Post key={id}
+          post={post}
+          repost={repost}
+          postUser={postUser}
+          {...this.props}
+        />
+      );
+    });
+
     // if (!this.props.user) return null;
     return (
-      <div>
-        <h1>Posts</h1>
-        {posts.map(post => {
-          return (
-            <div style={{ height: 250 + 'px' }} key={post._id}>
-              <h3>
-                <a href={'/post/' + post._id}>↪</a>
-                <a href={post.link}>{post.title}</a>
-                (Relevance: {Math.round(post.relevance * 100) / 100} Value: {post.value})
-                 by <a href={'/profile/' + post.user._id}>{post.user.name}</a>
-              </h3>
-
-              {post.image && <img src={post.image} height="55%" role="presentation" />}
-              <p>{post.body}</p>
-              <br />
-              <br />
-            </div>
-          );
-        })}
+      <div className='parent'>
+        <div className='postContainer'>
+          {posts}
+        </div>
       </div>
     );
   }

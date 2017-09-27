@@ -56,6 +56,7 @@ export default connect(
   state => ({
     auth: state.auth,
     posts: state.posts,
+    investments: state.investments,
     myPostInv: state.investments.myPostInv,
     isAuthenticated: state.auth.isAuthenticated,
   }),

@@ -11,6 +11,11 @@ export default class AvatarBox extends Component {
     if (this.props.date) {
       timestamp = ' • ' + numbers.timeSince(Date.parse(this.props.date)) + ' ago';
     }
+    let premsg, className;
+    if (this.props.isRepost) {
+      className = 'repost';
+      premsg = 'reposted by ';
+    }
     if (this.props.topic) {
       timestamp = (
         <span>
@@ -32,10 +37,11 @@ export default class AvatarBox extends Component {
       );
     }
     return (
-      <div className='avatarBox'>
+      <div className={['avatarBox', className].join(' ')}>
         <Avatar user={user} />
         <div className='userBox'>
           <div className='bebasRegular username'>
+            {premsg}
             <a href={profileLink}>{user.name}</a>
             {relevance}
           </div>

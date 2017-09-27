@@ -25,7 +25,7 @@ class Profile extends Component {
   render() {
     const userPath = this.props.user.users[this.props.params.id];
     // console.log(this.props)
-    console.log(userPath)
+    // console.log(userPath)
     if (userPath) {
       return (
         <div className='profileContainer'>
@@ -86,6 +86,7 @@ const mapStateToProps = (state) => ({
   user: state.user,
   posts: state.posts,
   profile: state.profile,
+  investments: state.investments,
 });
 
 const mapDispatchToProps = (dispatch) => (Object.assign({}, { dispatch }, {
