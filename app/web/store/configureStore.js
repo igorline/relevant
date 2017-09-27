@@ -19,6 +19,7 @@ if (process.env.BROWSER) {
   socket.on('pingKeepAlive', () => {
     socket.emit('pingResponse');
   });
+
 }
 
 export default function configureStore(initialState = {}, history) {
@@ -30,6 +31,16 @@ export default function configureStore(initialState = {}, history) {
     // only use the socket middleware on client and not on server
     let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
     middleware = applyMiddleware(thunk, routerMiddleware(history), socketIoMiddleware);
+
+    socket.on('connect', () => {
+      let s = store.getState();
+      if (s.auth && s.auth.user) {
+        socket.emit('action', {
+          type: 'server/storeUser',
+          payload: s.auth.user._id
+        });
+      }
+    });
   } else {
     middleware = applyMiddleware(thunk, routerMiddleware(history));
   }
