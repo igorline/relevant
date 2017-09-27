@@ -11,27 +11,11 @@ import * as proxyHelpers from './api/post/html';
 import RelevanceStats from './api/relevanceStats/relevanceStats.model';
 import pagerank from './utils/pagerank';
 import Invest from './api/invest/invest.model';
+import Treasury from './api/treasury/treasury.model';
 
 const extractor = require('unfluff');
+// daily relevance decay
 const DECAY = 0.99621947473649;
-
-
-function extractDomain(url) {
-  let domain;
-  if (url.indexOf('://') > -1) {
-    domain = url.split('/')[2];
-  } else {
-    domain = url.split('/')[0];
-  }
-  domain = domain.split(':')[0];
-
-  let noPrefix = domain;
-
-  if (domain.indexOf('www.') > -1) {
-    noPrefix = domain.replace('www.', '');
-  }
-  return noPrefix;
-}
 
 let q = queue({
   concurrency: 1,
@@ -316,8 +300,9 @@ async function basicIncome(done) {
     };
   }
 
-  function updateUserRelevance() {
+  async function updateUserRelevance() {
     console.log('updating user relevance');
+    let treasury = Treasury.findOne();
     return (user) => {
       q.push(async cb => {
         try {
@@ -325,7 +310,21 @@ async function basicIncome(done) {
           let diff = r - user.relevance;
           user.relevance += diff;
           user.updateRelevanceRecord();
+
           RelevanceStats.updateUserStats(user, diff);
+
+          // Friday is payout day
+          // if (day === 5) {
+          //   user.accumilatedDecay *
+          // }
+
+          treasury.accumilatedDecay += -diff;
+
+          user.accumilatedDecay += -diff;
+          let now = new Date();
+          let day = now.getDay();
+
+
 
           await user.save();
         } catch (err) {

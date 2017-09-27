@@ -62,6 +62,10 @@ const UserSchema = new Schema({
   topTopics: [{ type: String, ref: 'Tag' }],
   totalUsers: Number,
 
+  accumilatedDecay: { type: Number, select: false },
+  estimatedPayout: { type: Number },
+  lastPayout: { type: Number },
+
 }, {
   timestamps: true,
 });
