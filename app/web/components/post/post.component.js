@@ -59,12 +59,14 @@ class Post extends Component {
     return (
       <div className='post'>
         {postBox}
-        <AvatarBox user={post.user} date={post.postDate} size='large' />
-        <div className='body'>
-          <span>{post.description}</span>
-          {tags}
+        <div className='postContent'>
+          <AvatarBox user={post.user} date={post.postDate} size='large' />
+          <div className='body'>
+            <span>{post.description}</span>
+            {tags}
+          </div>
+          <PostButtons post={post} {...this.props} />
         </div>
-        <PostButtons post={post} {...this.props} />
       </div>
     );
   }

@@ -57,5 +57,8 @@ header a {
   .headerContainer {
     height: 50px;
   }
+  header .right * {
+    display: none;
+  }
 
 }
