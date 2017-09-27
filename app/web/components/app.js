@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import Header from './common/header.component'
+import Header from './common/header.component';
 
 if (process.env.BROWSER === true) {
   console.log('BROWSER, import css');
