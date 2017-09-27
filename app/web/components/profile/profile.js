@@ -45,8 +45,8 @@ class Profile extends Component {
             </div>
             <div className='tags'>
               {'Expertise: '}
-              {(userPath.topTags || []).map(tag => {
-                return (<a className='tag'>{'#' + tag.tag + ' '}</a>)
+              {(userPath.topTags || []).map((tag,i) => {
+                return (<a className='tag' key={i}>{'#' + tag.tag + ' '}</a>)
               })}
             </div>
           </div>

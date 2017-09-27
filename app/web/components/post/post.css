@@ -101,6 +101,10 @@
   .left > a {
     margin-right: 20px;
   }
+  .upvote, .downvote {
+    width: 23px;
+    height: 20px;
+  }
   .fraction {
     display: inline-block;
     margin-right: 20px;
