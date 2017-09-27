@@ -79,10 +79,16 @@ class PostButtons extends Component {
     }
     if (!post) return null;
 
+    console.log(this.props)
+    const isInvested = this.props.post.id in this.props.myPostInv
+    console.log( isInvested, this.props.post.id, this.props.myPostInv )
+
     return (
       <div className='postbuttons'>
         <div className='left'>
-          <a onClick={this.invest} href='#'><img src='/img/upvote-shadow.svg' className='upvote' /></a>
+          {this.props.isAuthenticated &&
+            <a onClick={this.invest} href='#'><img src={isInvested ? '/img/upvoteActive.png' : '/img/upvote-shadow.svg'} className='upvote' /></a>
+          }
           <div className='fraction'>
             <div className='num'>
               {post.upVotes}
@@ -92,7 +98,9 @@ class PostButtons extends Component {
               <img src='/img/r-gray.svg' />
             </div>
           </div>
-          <a onClick={this.irrelevant} href='#'><img src='/img/downvote-gray.svg' className='downvote' /></a>
+          {this.props.isAuthenticated &&
+            <a onClick={this.irrelevant} href='#'><img src='/img/downvote-gray.svg' className='downvote' /></a>
+          }
         </div>
         <div className='right'>
           <div className='commentcount'>

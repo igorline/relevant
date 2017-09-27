@@ -10,13 +10,20 @@
 }
 .comments form textarea {
   width: 100%;
+  height: 32px;
   padding: 7px 5px;
   font-size: 16px;
   font-family: Helvetica, sans-serif;
-  border: 0;
+  border: 1px solid transparent;
   background: transparent;
+  outline: 0 !important;
+  resize: none;
+  border-radius: 3px;
 }
-
+.comments form textarea:focus {
+  background: white;
+  border-color: #b5b5b6;
+}
 .comments form textarea::-webkit-input-placeholder {
   color: #CBCBD1;
 }
@@ -43,6 +50,7 @@
   font-size: 16px;
   font-family: Helvetica, sans-serif;
   color: #3E3EFF;
+  cursor: pointer;
 }
 
 .comment .body {
