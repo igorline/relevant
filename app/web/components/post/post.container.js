@@ -15,7 +15,6 @@ import Comments from '../comment/comment.container';
 import Splash from '../main/splash.component';
 
 if (process.env.BROWSER === true) {
-  console.log('BROWSER, import css');
   require('./post.css');
 }
 

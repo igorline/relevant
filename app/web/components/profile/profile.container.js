@@ -49,7 +49,6 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
   user: state.user,
   posts: state.posts,
-  profile: state.profile
 });
 
 const mapDispatchToProps = (dispatch) => (Object.assign({}, { dispatch }, {

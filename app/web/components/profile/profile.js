@@ -5,6 +5,10 @@ import NewMessage from '../message/newMessage';
 import Avatar from '../common/avatar.component';
 import * as MessageActions from '../../../actions/message.actions';
 
+if (process.env.BROWSER === true) {
+  require('./profile.css');
+}
+
 class Profile extends Component {
   constructor(props) {
     super(props);
@@ -21,21 +25,30 @@ class Profile extends Component {
   render() {
     const userPath = this.props.user.users[this.props.params.id];
     // console.log(this.props)
+    console.log(userPath)
     if (userPath) {
       return (
         <div className='profileContainer'>
-          <div>
+          <div className='profileHero'>
             <Avatar user={userPath} />
-            <h1>{userPath.name}</h1>
-            <h3>
-              <img src='/img/r.svg' className='r' />
+            <div className='name'>{userPath.name}</div>
+            <div className='relevance'>
+              <img src='/img/r-emoji.png' className='r' />
               {Math.round(userPath.relevance)}
-              <img src='/img/coin.svg' className='coin' />
-            </h3>
-
-            <br />
-            <a onClick={this.onClick.bind(this)} href="#">Thirsty?</a>
-            {this.state.showMsgForm && <NewMessage {...this.props} />}
+              <img src='/img/coin.png' className='coin' />
+              {Math.round(userPath.balance)}
+            </div>
+            <div className='subscribers'>
+              {'Subscribers: '}<b>{userPath.followers}</b>
+              {' • '}
+              {'Following: '}<b>{userPath.following}</b>
+            </div>
+            <div className='tags'>
+              {'Expertise: '}
+              {(userPath.topTags || []).map(tag => {
+                return (<a className='tag'>{'#' + tag.tag + ' '}</a>)
+              })}
+            </div>
           </div>
         </div>
       );
@@ -44,6 +57,9 @@ class Profile extends Component {
   }
 }
 
+// <br />
+// <a onClick={this.onClick.bind(this)} href="#">Thirsty?</a>
+// {this.state.showMsgForm && <NewMessage {...this.props} />}
 // Circle avatar
 // dots
 // R score
