@@ -19,6 +19,10 @@ class App extends Component {
     super(props, context);
   }
 
+  componentDidMount(){
+    document.body.classList.remove('loading')
+  }
+
   render() {
     console.log(this.props, this.state)
     return (

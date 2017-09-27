@@ -22,9 +22,9 @@ function renderFullPage(html, initialState) {
   // load extracted styles in head when in production
   if (process.env.NODE_ENV === 'development') styles = '';
   else styles = '<link rel="stylesheet" href="/styles.css" />';
-  
+
   let meta = fetchMeta(initialState)
-  
+
   let app = `<!doctype html>
     <html>
       <head>
@@ -43,6 +43,16 @@ function renderFullPage(html, initialState) {
         <meta name="twitter:title" content="${meta.title}" />
         <meta name="twitter:description" content="${meta.description}" />
         <meta name="twitter:image" content="${meta.image}" />
+
+        <style>
+          body.loading {
+            opacity: 0;
+          }
+
+          body {
+            transition: opacity 0.2s;
+          }
+        </style>
 
         ${styles}
 
@@ -64,7 +74,7 @@ function renderFullPage(html, initialState) {
         <!-- DO NOT MODIFY -->
         <!-- End Facebook Pixel Code -->
       </head>
-      <body>
+      <body class='loading'>
         <div id="app">${html}</div>
          <script>
           window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
@@ -161,4 +171,3 @@ export default function handleRender(req, res) {
     }
   );
 }
-
