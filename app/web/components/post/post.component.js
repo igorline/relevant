@@ -81,7 +81,6 @@ function PostBody (props) {
       <a href={'/tag/' + tag} key={tag}>#{tag}</a>
     )
   })
-
   return (
     <div>
       <span>{body}</span>
