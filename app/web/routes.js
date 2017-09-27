@@ -63,8 +63,8 @@ let routes = (store) => {
       },
 
       { path: 'invite/:code', component: Invite },
-      // { path: 'profile', component: userIsAuthenticated(ProfileContainer), onEnter: connect(userIsAuthenticated.onEnter) },
-      // { path: 'profile/:id', component: ProfileContainer },
+      { path: 'profile', component: userIsAuthenticated(ProfileContainer), onEnter: connect(userIsAuthenticated.onEnter) },
+      { path: 'profile/:id', component: ProfileContainer },
       // { path: 'messages', component: userIsAuthenticated(MessageContainer), onEnter: connect(userIsAuthenticated.onEnter) },
       { path: 'post/new', component: userIsAuthenticated(NewPostContainer), onEnter: connect(userIsAuthenticated.onEnter) },
       { path: 'post/:id', component: Posts },
