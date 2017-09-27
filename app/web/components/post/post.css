@@ -110,3 +110,43 @@
   width: 21px;
   height: 18px;
 }
+
+@media screen
+  and (max-width: 736px) {
+
+  .postContainer {
+    padding: 0;
+  }
+  .post .shadowBox {
+    padding: 0;
+    position: relative;
+    border: 0;
+    min-height: 240px;
+    box-shadow: 0 0;
+    margin-bottom: 0;
+  }
+  .post .image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background-color: #212121;
+  }
+  .post .shadowBox > div {
+    padding: 10px;
+    z-index: 1;
+    color: white;
+    flex-direction: column;
+    display: flex;
+    justify-content: flex-end;
+    background: linear-gradient(0deg, #242425, rgba(36,36,36,0.3));
+  }
+  .post .headline {
+    font-size: 34px;
+  }
+  .postContent {
+    padding: 0 10px;
+  }
+}

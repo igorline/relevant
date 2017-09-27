@@ -36,6 +36,8 @@ $blue: #3E3EFF;
   justify-content: flex-start;
   align-items: center;
   flex-direction: row;
+  max-height: 600px;
+  overflow: hidden;
 
   img {
     width: 100%;
@@ -52,10 +54,19 @@ $blue: #3E3EFF;
     padding-left: 10%;
     padding-bottom: 50px;
   }
+
   .phone {
     flex: .5;
     align-self: flex-end;
     font-size: 0;
+    max-height: 600px;
+  }
+}
+
+.splashContainer .splashContent {
+  max-height: auto;
+  .phone {
+    max-height: auto;
   }
 }
 
@@ -303,6 +314,7 @@ b {
 
   .splashContent {
     flex-direction: column;
+    width: 100vw;
     mainSection {
       width: 90vw;
       padding-bottom: 30px;
