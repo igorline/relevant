@@ -4,7 +4,7 @@ import React, {
 
 import ShadowButton from '../common/ShadowButton';
 
-export default class Splash extends Component {
+export default class RequestInvite extends Component {
   constructor(props, context) {
     super(props, context);
     this.submit = this.submit.bind(this);
