@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
 if (process.env.BROWSER === true) {
-  require('./main/main.css');
+  require('./splash/splash.css');
 }
 
 import Header from './common/header.component'
