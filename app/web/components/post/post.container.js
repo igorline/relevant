@@ -12,7 +12,7 @@ import * as createPostActions from '../../../actions/createPost.actions';
 import * as navigationActions from '../../../actions/navigation.actions';
 import * as animationActions from '../../../actions/animation.actions';
 import Comments from '../comment/comment.container';
-import RequestInvite from '../main/requestInvite.component';
+import RequestInvite from '../splash/requestInvite.component';
 
 if (process.env.BROWSER === true) {
   require('./post.css');
