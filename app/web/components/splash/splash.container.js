@@ -11,7 +11,7 @@ import Mission from './mission.component';
 import Footer from '../common/footer.component';
 
 if (process.env.BROWSER === true) {
-  require('./main.css');
+  require('./splash.css');
 }
 
 export class Splash extends Component {
@@ -42,4 +42,4 @@ const mapDispatchToProps = (dispatch) => (Object.assign({}, { dispatch }, {
   actions: bindActionCreators(Object.assign({}, actionCreators), dispatch)
 }));
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default connect(mapStateToProps, mapDispatchToProps)(Splash);
