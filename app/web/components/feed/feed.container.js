@@ -28,7 +28,8 @@ export class Home extends Component {
   }
 
   componentWillMount() {
-    this.props.actions.getFeed(0, null);
+    // post ids are in props.posts.new
+    this.props.actions.getPosts(15, [], null, 5);
   }
 
   render() {
