@@ -41,7 +41,7 @@ class Profile extends Component {
             <div className='subscribers'>
               {'Subscribers: '}<b>{userPath.followers}</b>
               {' • '}
-              {'Following: '}<b>{userPath.following}</b>
+              {'Subscribed to: '}<b>{userPath.following}</b>
             </div>
             <div className='tags'>
               {'Expertise: '}
@@ -56,22 +56,6 @@ class Profile extends Component {
     return null;
   }
 }
-
-// <br />
-// <a onClick={this.onClick.bind(this)} href="#">Thirsty?</a>
-// {this.state.showMsgForm && <NewMessage {...this.props} />}
-// Circle avatar
-// dots
-// R score
-// percent change
-// coins
-// subscribers <b> middot subscribed to <b>
-// Expertise: #hashtags
-//
-// __________________________
-// Posts 85 |  Upvotes 152
-// =========|________________
-// (centered.. circular font)
 
 Profile.defaultProps = {
   profile: { userPosts: [] }

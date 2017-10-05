@@ -14,7 +14,7 @@ if (process.env.BROWSER === true) {
   require('./main.css');
 }
 
-export class Main extends Component {
+export class Splash extends Component {
   constructor(props, context) {
     super(props, context);
   }
