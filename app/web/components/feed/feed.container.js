@@ -16,8 +16,10 @@ import * as investActions from '../../../actions/invest.actions';
 import * as navigationActions from '../../../actions/navigation.actions';
 import * as utils from '../../../utils';
 
+import Posts from './posts.component';
+
 if (process.env.BROWSER === true) {
-  require('./home.css');
+  require('./feed.css');
 }
 
 export class Home extends Component {
@@ -25,10 +27,15 @@ export class Home extends Component {
     super(props, context);
   }
 
+  componentWillMount() {
+    this.props.actions.getFeed(0, null);
+  }
+
   render() {
     return (
-      <div className="homeContainer">
-        <h1>Home</h1>
+      <div className="feedContainer">
+        <h1>Feed</h1>
+        <Posts {...this.props} />
       </div>
     );
   }
@@ -38,6 +45,7 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     user: state.auth.user,
+    posts: state.posts,
     error: state.error.universal,
   };
 }

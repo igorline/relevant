@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Profile from './profile';
-import UserPosts from './userPosts';
+import Profile from './profile.component';
+import UserPosts from './userPosts.component';
 import * as MessageActions from '../../../actions/message.actions';
 import * as UserActions from '../../../actions/user.actions';
 import * as PostActions from '../../../actions/post.actions';
