@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import * as actionCreators from '../../../actions/admin.actions';
 import Marquee from './marquee';
-import Splash from './splash.component';
+import RequestInvite from './requestInvite.component';
 import Mission from './mission.component';
 import Footer from '../common/footer.component';
 
@@ -23,7 +23,7 @@ export class Main extends Component {
     return (
       <div className="splashContainer">
         <Marquee {...this.props} />
-        <Splash {...this.props} />
+        <RequestInvite {...this.props} />
         <Mission />
       </div>
     );

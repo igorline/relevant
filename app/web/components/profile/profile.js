@@ -34,9 +34,9 @@ class Profile extends Component {
             <div className='name'>{userPath.name}</div>
             <div className='relevance'>
               <img src='/img/r-emoji.png' className='r' />
-              {Math.round(userPath.relevance)}
+              {Math.round(userPath.relevance || 0)}
               <img src='/img/coin.png' className='coin' />
-              {Math.round(userPath.balance)}
+              {Math.round(userPath.balance || 0)}
             </div>
             <div className='subscribers'>
               {'Subscribers: '}<b>{userPath.followers}</b>

@@ -12,7 +12,7 @@ import * as createPostActions from '../../../actions/createPost.actions';
 import * as navigationActions from '../../../actions/navigation.actions';
 import * as animationActions from '../../../actions/animation.actions';
 import Comments from '../comment/comment.container';
-import Splash from '../main/splash.component';
+import RequestInvite from '../main/requestInvite.component';
 
 if (process.env.BROWSER === true) {
   require('./post.css');
@@ -46,7 +46,7 @@ class Posts extends Component {
             <Comments post={this.post} {...this.props} />
           </div>
         }
-        <Splash {...this.props} />
+        <RequestInvite {...this.props} />
       </div>
     );
   }
