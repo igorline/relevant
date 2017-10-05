@@ -5,16 +5,16 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as actionCreators from '../../../actions/admin.actions';
-import Marquee from './marquee';
-import Splash from './splash.component';
+import Marquee from './marquee.component';
+import RequestInvite from './requestInvite.component';
 import Mission from './mission.component';
 import Footer from '../common/footer.component';
 
 if (process.env.BROWSER === true) {
-  require('./main.css');
+  require('./splash.css');
 }
 
-export class Main extends Component {
+export class Splash extends Component {
   constructor(props, context) {
     super(props, context);
   }
@@ -23,7 +23,7 @@ export class Main extends Component {
     return (
       <div className="splashContainer">
         <Marquee {...this.props} />
-        <Splash {...this.props} />
+        <RequestInvite {...this.props} />
         <Mission />
       </div>
     );
@@ -42,4 +42,4 @@ const mapDispatchToProps = (dispatch) => (Object.assign({}, { dispatch }, {
   actions: bindActionCreators(Object.assign({}, actionCreators), dispatch)
 }));
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default connect(mapStateToProps, mapDispatchToProps)(Splash);
