@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as actionCreators from '../../../actions/admin.actions';
-import Marquee from './marquee';
+import Marquee from './marquee.component';
 import RequestInvite from './requestInvite.component';
 import Mission from './mission.component';
 import Footer from '../common/footer.component';
