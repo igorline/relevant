@@ -18,6 +18,7 @@ class Post extends Component {
   render() {
     const post = this.props.post;
     const repost = this.props.repost;
+    const metaPost = this.props.metaPost;
 
     if (post === 'notFound') {
       return (<div><h1>Post not found</h1></div>);
@@ -27,6 +28,11 @@ class Post extends Component {
     // console.log(post)
 
     let postInfo;
+    if (metaPost) {
+      postInfo = (
+        <PostInfo post={metaPost} />
+      );
+    }
     if (repost) {
       // console.log(repost)
       // console.log(this.props.posts.posts[post.repost.post])

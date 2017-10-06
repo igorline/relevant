@@ -14,22 +14,25 @@ class Posts extends Component {
   }
 
   render() {
-    console.log(this.props)
-    return null
-
-    const userId = this.props.params.id;
-    const postIds = this.props.posts.userPosts[userId] || []
+    const section = this.props.section;
+    const postIds = this.props.posts[section];
+    const metaPosts = this.props.posts.metaPosts[section];
 
     const posts = postIds.map(id => {
-      const post = this.props.posts.posts[id];
+      const metaPost = metaPosts[id];
+      if (! metaPost) return
+      const postId = section === 'new' ? metaPost.newCommentary : metaPost.topCommentary
+      const post = this.props.posts.posts[postId]
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
       const postUser = {
         ...post.embeddedUser,
         _id: post.user,
       };
+      console.log(metaPost, post)
       // console.log(post, repost, postUser)
       return (
         <Post key={id}
+          metaPost={metaPost}
           post={post}
           repost={repost}
           postUser={postUser}
