@@ -44,9 +44,7 @@ class Posts extends Component {
     // if (!this.props.user) return null;
     return (
       <div className='parent'>
-        <div className='postContainer'>
-          {posts}
-        </div>
+        {posts}
       </div>
     );
   }
