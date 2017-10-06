@@ -1,3 +1,19 @@
-.feedContainer {
-
+.tabs {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.tabs li {
+  display: block;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  cursor: pointer;
+  border-bottom: 0px solid black;
+}
+.tabs li.selected {
+  font-weight: bold;
+  border-bottom: 3px solid black;
 }
