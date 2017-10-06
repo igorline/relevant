@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
 import * as utils from '../../../utils';
 
 class PostButtons extends Component {
@@ -92,7 +93,7 @@ class PostButtons extends Component {
       <div className='postbuttons'>
         <div className='left'>
           {this.props.isAuthenticated &&
-            <a onClick={  this.invest} href='#'><img src={votedUp ? '/img/upvoteActive.png' : '/img/upvote-shadow.svg'} className='upvote' /></a>
+            <a onClick={this.invest} href='#'><img src={votedUp ? '/img/upvoteActive.png' : '/img/upvote-shadow.svg'} className='upvote' /></a>
           }
           <div className='fraction'>
             <div className='num'>
@@ -112,7 +113,9 @@ class PostButtons extends Component {
             <img src='/img/comment.svg' />
             <span>{post.commentCount}</span>
           </div>
-          <a onClick={this.share} href='#'><img src='/img/share.png' className='share' /></a>
+          <Link to={'/post/' + post._id}>
+            <img src='/img/share.png' className='share' />
+          </Link>
         </div>
       </div>
     );
