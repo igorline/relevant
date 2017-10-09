@@ -7,7 +7,7 @@ import Feed from './components/feed/feed.container';
 import Auth from './components/auth/auth.container';
 import ProfileContainer from './components/profile/profile.container';
 // import MessageContainer from './components/message/message.container';
-import Posts from './components/post/post.container';
+import PostContainer from './components/post/post.container';
 import NewPostContainer from './components/post/newPost.container';
 // import DiscoverContainer from './components/discover/discover.container';
 import NotFound from './components/404';
@@ -50,7 +50,12 @@ let routes = (store) => {
       { path: 'login', component: Auth },
       { path: 'signup', component: Auth },
       { path: 'splash', component: Splash },
+      { path: 'home', component: Feed },
       { path: 'feed', component: Feed },
+      { path: 'discover', component: Feed },
+      { path: 'discover/:sort', component: Feed },
+      { path: 'discover/tag/:tag', component: Feed },
+      { path: 'discover/tag/:tag/:sort', component: Feed },
       { path: 'admin',
         component: userIsAuthenticated(userIsAdmin(AdminHeader)), onEnter: connect(userIsAuthenticated.onEnter),
         childRoutes: [
@@ -69,9 +74,8 @@ let routes = (store) => {
       { path: 'profile/:id', component: ProfileContainer },
       // { path: 'messages', component: userIsAuthenticated(MessageContainer), onEnter: connect(userIsAuthenticated.onEnter) },
       { path: 'post/new', component: userIsAuthenticated(NewPostContainer), onEnter: connect(userIsAuthenticated.onEnter) },
-      { path: 'post/:id', component: Posts },
+      { path: 'post/:id', component: PostContainer },
       // { path: 'discover', component: DiscoverContainer },
-      // { path: 'discover/tag/:tag', component: DiscoverContainer },
       { path: 'resetPassword/:token', component: Auth },
       { path: 'confirm/:user/:code', component: Auth },
       { path: 'forgot', component: Auth },

@@ -39,14 +39,16 @@ class Posts extends Component {
     const hasPost = this.post && this.post !== 'notFound'
 
     return (
-      <div className='parent'>
+      <div className='parent singlePost'>
         {hasPost &&
           <div className='postContainer'>
             <Post post={this.post} {...this.props} />
             <Comments post={this.post} {...this.props} />
           </div>
         }
-        <RequestInvite {...this.props} />
+        {! this.props.isAuthenticated &&
+          <RequestInvite {...this.props} />
+        }
       </div>
     );
   }

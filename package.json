@@ -78,6 +78,7 @@
     "queue": "^4.0.0",
     "raw-loader": "^0.5.1",
     "react": "16.0.0-alpha.6",
+    "react-activity": "^1.1.2",
     "react-contenteditable": "^2.0.2",
     "react-cookie": "^1.0.4",
     "react-dom": "^15.0.1",
