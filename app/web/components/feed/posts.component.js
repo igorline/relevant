@@ -12,21 +12,15 @@ class Posts extends Component {
     this.state = {
     };
   }
-
-  render() {
-    console.log(this.props)
-    return null
-
-    const userId = this.props.params.id;
-    const postIds = this.props.posts.userPosts[userId] || []
-
-    const posts = postIds.map(id => {
-      const post = this.props.posts.posts[id];
+  renderFeed() {
+    return this.props.posts.feed.map(id => {
+      const post = this.props.posts.posts[id]
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
       const postUser = {
         ...post.embeddedUser,
         _id: post.user,
       };
+      // console.log(metaPost, post)
       // console.log(post, repost, postUser)
       return (
         <Post key={id}
@@ -37,13 +31,50 @@ class Posts extends Component {
         />
       );
     });
+  }
+  renderDiscover(sort, tag) {
+    const postIds = tag ? this.props.posts.topics[sort][tag] : this.props.posts[sort];
+    const metaPosts = this.props.posts.metaPosts[sort];
+
+    return (postIds || []).map(id => {
+      const metaPost = metaPosts[id];
+      if (! metaPost) return
+      const postId = sort === 'new' ? metaPost.newCommentary : metaPost.topCommentary
+      const post = this.props.posts.posts[postId]
+      if (! post) return
+      const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
+      const postUser = {
+        ...post.embeddedUser,
+        _id: post.user,
+      };
+      // console.log(metaPost, post)
+      // console.log(post, repost, postUser)
+      return (
+        <Post key={id}
+          metaPost={metaPost}
+          post={post}
+          repost={repost}
+          postUser={postUser}
+          {...this.props}
+        />
+      );
+    });
+  }
+  render() {
+    const sort = this.props.sort;
+    const tag = this.props.tag;
+    let posts;
+    if (sort === 'feed') {
+      posts = this.renderFeed()
+    }
+    else {
+      posts = this.renderDiscover(sort, tag)
+    }
 
     // if (!this.props.user) return null;
     return (
       <div className='parent'>
-        <div className='postContainer'>
-          {posts}
-        </div>
+        {posts}
       </div>
     );
   }

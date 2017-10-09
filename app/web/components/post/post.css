@@ -6,7 +6,6 @@
   display: flex;
   flex-direction: column;
   align-self: center;
-  padding-top: 100px;
   padding-bottom: 100px;
 }
 
@@ -15,6 +14,9 @@
   box-shadow: 2px 2px 0 0 #000;
 }
 
+.singlePost .postContainer {
+  padding-top: 100px;
+}
 
 .postinfo {
   .shadowBox {
@@ -168,6 +170,7 @@
     background-color: #212121;
   }
   .post .shadowBox > div {
+    width: 100%;
     padding: 10px;
     z-index: 1;
     color: white;
