@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import AvatarBox from '../common/avatarbox.component';
 import PostButtons from './postbuttons.component';
 import PostInfo from './postinfo.component';
+import Tag from '../tag/tag.component'
 
 class Post extends Component {
   constructor(props) {
@@ -84,7 +85,7 @@ function PostBody (props) {
   const body = props.post.body
   const tags = (props.post.tags || []).map( (tag) => {
     return (
-      <a href={'/tag/' + tag} key={tag}>#{tag}</a>
+      <Tag name={tag} key={tag} />
     )
   })
   return (

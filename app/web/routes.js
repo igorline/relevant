@@ -50,9 +50,12 @@ let routes = (store) => {
       { path: 'login', component: Auth },
       { path: 'signup', component: Auth },
       { path: 'splash', component: Splash },
-      { path: 'feed', component: Feed },
       { path: 'home', component: Feed },
+      { path: 'feed', component: Feed },
+      { path: 'discover', component: Feed },
+      { path: 'discover/:sort', component: Feed },
       { path: 'discover/tag/:tag', component: Feed },
+      { path: 'discover/tag/:tag/:sort', component: Feed },
       { path: 'admin',
         component: userIsAuthenticated(userIsAdmin(AdminHeader)), onEnter: connect(userIsAuthenticated.onEnter),
         childRoutes: [

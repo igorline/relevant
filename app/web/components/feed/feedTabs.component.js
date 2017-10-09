@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
+import { Link } from 'react-router';
 
 class FeedTabs extends Component {
   constructor(props) {
@@ -8,14 +9,21 @@ class FeedTabs extends Component {
 
   render() {
     const tabs = this.props.tabs.map( (tab, i) => {
+      let dest = '/discover';
+      if (this.props.tag) {
+        dest += '/tag/' + this.props.tag;
+      }
+      dest += '/' + tab.key;
       return (
-        <li
+        <Link
           key={tab.key}
           className={i == this.props.currentTab ? 'selected' : ''}
-          onClick={() => this.props.onChange(i)}
+          to={dest}
         >
-          {tab.title}
-        </li>
+          <li>
+            {tab.title}
+          </li>
+        </Link>
       )
     })
     return (
