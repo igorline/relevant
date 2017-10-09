@@ -2,7 +2,7 @@ import React, {
   Component,
 } from 'react';
 
-import ShadowButton from '../common/ShadowButton';
+import InviteCta from './inviteCta.component';
 
 export default class RequestInvite extends Component {
   constructor(props, context) {
@@ -48,66 +48,22 @@ export default class RequestInvite extends Component {
               <span className="outline">
                 Relevant
               </span> is a social news reader that values <span className="outline">quality</span> over clicks.
+            </p>
+            <p className="libre">
+              Join the community and help us build a better information environment for all.
+            </p>
               {/* <a href="http://www.apple.com" className="download">
                 <img src="/img/apple.png" />
                 <span className="bebasRegular">download</span>
               </a> */}
-            </p>
           </section>
 
-          <section className="invitation">
-            <div>
-              <p>
-                Sign up for your <br />invitation to Relevant.
-              </p>
-
-              <div style={{ display: 'inline-block' }}>
-                <input
-                  className="blueInput"
-                  value={this.state.name}
-                  onChange={(e) => {
-                    this.setState({ name: e.target.value });
-                  }}
-                  autoCorrect="off"
-                  type="text"
-                  name="name"
-                  placeholder="Your name"
-                />
-
-                <br />
-
-                <input
-                  className="blueInput"
-                  value={this.state.email}
-                  onChange={(e) => {
-                    this.setState({ email: e.target.value });
-                  }}
-                  autoCapitalize="off"
-                  autoCorrect="off"
-                  type="email"
-                  name="email"
-                  placeholder="Your email"
-                />
-
-
-              </div>
-
-              <ShadowButton
-                style={{ margin: '10px 0 10px 0' }}
-                color={'#3E3EFF'}
-                onClick={this.submit}
-              >
-                Submit
-              </ShadowButton>
-            </div>
-          </section>
+          <InviteCta />
 
         </mainSection>
-
         <div className="phone">
           <img src="/img/hand.jpg" alt="phone" />
         </div>
-
       </div>
     );
   }
