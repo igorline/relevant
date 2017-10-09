@@ -5,7 +5,7 @@ import { Spinner } from 'react-activity';
 
 if (process.env.BROWSER === true) {
   require('./loading.css');
-  require('../../../../node_modules/react-activity/dist/react-activity.css');
+  require('../../../../node_modules/react-activity/lib/Spinner/Spinner.css');
 }
 
 export default function (props) {
