@@ -17,9 +17,10 @@ export default function (props) {
 
   if (post.link) {
     return (
-      <Link
+      <a
         className={'postinfo'}
-        to={post.link}
+        href={post.link}
+        target='_blank'
       >
         <div className='shadowBox postinfo'>
           <span className='image' alt={post.title} style={postImage} />
@@ -28,7 +29,7 @@ export default function (props) {
             <div className='domain'>{post.domain}</div>
           </div>
         </div>
-      </Link>
+      </a>
     )
   }
   else if (post.title) {

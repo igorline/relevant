@@ -86,7 +86,7 @@ class PostButtons extends Component {
       if (investment) {
         votedUp = investment.amount > 0
         votedDown = investment.amount < 0
-        console.log(investment)
+        // console.log(investment)
       }
     }
     return (

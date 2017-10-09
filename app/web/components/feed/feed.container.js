@@ -26,55 +26,68 @@ if (process.env.BROWSER === true) {
   require('./feed.css');
 }
 
+const standardRoutes = [
+  { key: 'feed', title: 'Subscriptions' },
+  { key: 'new', title: 'New' },
+  { key: 'top', title: 'Trending' },
+];
+
+const tagRoutes = [
+  { key: 'new', title: 'New' },
+  { key: 'top', title: 'Trending' },
+  { key: 'people', title: 'People' },
+];
+
 export class Feed extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
       tabIndex: 1,
-      routes: [
-        { key: 'feed', title: 'Subscriptions' },
-        { key: 'new', title: 'New' },
-        { key: 'top', title: 'Trending' },
-      ],
+      routes: this.props.params.tag ? tagRoutes : standardRoutes,
     };
-    if (this.props.scene) {
-      this.state.routes = [
-        { key: 'new', title: 'New' },
-        { key: 'top', title: 'Trending' },
-        { key: 'people', title: 'People' },
-      ];
+    if (this.props.params.sort) {
+      const sort = this.props.params.sort;
+      this.state.tabIndex = this.state.routes.findIndex(tab => tab.key === sort);
     }
-    this.load = this.load.bind(this)
-    this.switchTab = this.switchTab.bind(this)
+    this.load = this.load.bind(this);
   }
 
-  componentWillMount(props){
+  componentWillMount(props) {
     this.load()
   }
 
-  load(key) {
-    key = key || this.state.routes[this.state.tabIndex].key;
-    const tags = this.props.params.tag ? [this.props.params.tag] : [];
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.sort !== nextProps.params.sort ||
+        this.props.params.tag !== nextProps.params.tag) {
+      this.load(nextProps.params.sort, nextProps);
+      if (nextProps.params.sort) {
+        const sort = nextProps.params.sort;
+        const tabIndex = this.state.routes.findIndex(tab => tab.key === sort);
+        const routes = nextProps.params.tag ? tagRoutes : standardRoutes;
+        this.setState({ tabIndex, routes })
+      }
+    }
+  }
+
+  load(sort, props) {
+    sort = sort || this.state.routes[this.state.tabIndex].key;
+    props = props || this.props;
+    const tags = props.params.tag ? [props.params.tag] : [];
     const length = 0;
-    console.log('load', key)
-    switch (key) {
+    switch (sort) {
       case 'feed':
         this.props.actions.getFeed(length, tags);
         break;
       case 'new':
-        this.props.actions.getPosts(length, tags, 'rank', POST_PAGE_SIZE);
+        this.props.actions.getPosts(length, tags, null, POST_PAGE_SIZE);
         break;
       case 'top':
-        this.props.actions.getPosts(length, tags, null, POST_PAGE_SIZE);
+        this.props.actions.getPosts(length, tags, 'rank', POST_PAGE_SIZE);
         break;
       case 'people':
         if (this.props.auth.user) this.props.actions.getUsers(length, POST_PAGE_SIZE * 2, tags);
         break;
     }
-  }
-
-  switchTab(tabIndex) {
-    this.setState({ tabIndex })
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -93,15 +106,19 @@ export class Feed extends Component {
     }
     else {
       content = (
-        <Posts section={key} {...this.props} />
+        <Posts sort={key} tag={this.props.params.tag} {...this.props} />
       );
     }
+    console.log(this.props.posts.loading, this.props.posts.loaded)
     return (
-      <div className="postContainer">
+      <div className="feedContainer postContainer">
+        {this.props.params.tag &&
+          <h1>{this.props.params.tag}</h1>
+        }
         <FeedTabs
+          tag={this.props.params.tag}
           tabs={this.state.routes}
           currentTab={this.state.tabIndex}
-          onChange={this.switchTab}
         />
         {content}
       </div>
