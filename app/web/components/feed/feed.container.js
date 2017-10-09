@@ -18,6 +18,7 @@ import * as utils from '../../../utils';
 
 import FeedTabs from './feedTabs.component';
 import Posts from './posts.component';
+import Loading from '../common/loading.component';
 
 const POST_PAGE_SIZE = 5;
 
@@ -69,6 +70,12 @@ export class Feed extends Component {
     }
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.tabIndex !== nextState.tabIndex) {
+      // this.load( this.state.routes[nextState.tabIndex].key, nextProps )
+    }
+  }
+
   load(sort, props) {
     sort = sort || this.state.routes[this.state.tabIndex].key;
     props = props || this.props;
@@ -90,26 +97,23 @@ export class Feed extends Component {
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.tabIndex !== nextState.tabIndex) {
-      this.load( this.state.routes[nextState.tabIndex].key )
-    }
-  }
-
   render() {
-    const key = this.state.routes[this.state.tabIndex].key;
+    const sort = this.state.routes[this.state.tabIndex].key;
+    const tag = this.props.params.tag;
     let content;
-    if (key === 'people') {
+    if (sort === 'people') {
       content = (
         <div>USER LIST</div>
       );
     }
     else {
       content = (
-        <Posts sort={key} tag={this.props.params.tag} {...this.props} />
+        <Posts sort={sort} tag={this.props.params.tag} {...this.props} />
       );
     }
-    console.log(this.props.posts.loading, this.props.posts.loaded)
+    let loadLookup = tag ? this.props.posts.loaded.topics[tag] : this.props.posts.loaded;
+    let isLoaded = loadLookup[sort];
+    console.log(this.props.posts)
     return (
       <div className="feedContainer postContainer">
         {this.props.params.tag &&
@@ -120,7 +124,7 @@ export class Feed extends Component {
           tabs={this.state.routes}
           currentTab={this.state.tabIndex}
         />
-        {content}
+      {isLoaded ? content : <Loading />}
       </div>
     );
   }

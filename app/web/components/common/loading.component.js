@@ -1,16 +1,17 @@
 import React, {
   PropTypes
 } from 'react';
-// import { Motion, spring, presets } from 'react-motion';
+import { Spinner } from 'react-activity';
 
 if (process.env.BROWSER === true) {
   require('./loading.css');
+  require('../../../../node_modules/react-activity/dist/react-activity.css');
 }
 
 export default function (props) {
   return (
     <div className="loadingContainer">
-      <div className="loadingEl"></div>
+      <div className="loadingEl"><Spinner color="#858586" size={32} speed={1} /></div>
     </div>
   );
 }
