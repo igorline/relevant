@@ -80,7 +80,7 @@ a {
 }
 
 button.shadowButton {
-  font-family: Helvetica;
+  font-family: Arial;
   font-weight: bold;
   font-size: 18px;
 
@@ -93,7 +93,7 @@ button.shadowButton {
 
   box-shadow: 5px 5px 0px 0px black;
   min-width: 150px;
-  padding: 0 10px;
+  padding: 0 30px;
   height: 40px;
   cursor: pointer;
 
@@ -189,26 +189,20 @@ button.shadowButton {
     flex-direction: column;
 }
 
-@media only screen
-  and (max-device-width: 736px) {
+@media screen
+  and (max-device-width: 414px) {
 
   container.main {
     padding: 10px;
   }
 
   .blueInput {
-    width: 180px;
-    height: 20px;
-    margin: 0 0 10px 0;
-    font-size: 14px;
-    border-radius: 0;
+    width: 100%;
   }
 
   button.shadowButton {
-    display: flex;
-    font-size: 14px;
-    width: 85px;
-    height: 30px;
+    margin-top: 20px !important;
     z-index: 1;
+    width: 100%;
   }
 }

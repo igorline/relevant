@@ -12,10 +12,10 @@ export default function () {
         <a href="https://twitter.com/relevantfeed" target='_blank'>
           <img className="footerIcon" src='/img/twitter.svg' />
         </a>
-{/*
+
         <a href="https://join.slack.com/t/relevantcommunity/shared_invite/enQtMjIwMjEwNzUzMjUzLTFkOTkwNzFjN2EzMjFhYTVkZDZmYzU1ZGFlZmY4MzdjNGMyOWIwYjhmYTE2OTQ1NmJlOWVmNjkyODNjM2I4YWI" target="_blank">
           <img className="footerIcon slack" src='/img/slack-white.svg' />
-        </a>*/}
+        </a>
 
         <a href="mailto:contact@4real.io" target='_blank'>
           <img className="footerIcon" src='/img/email.svg' />

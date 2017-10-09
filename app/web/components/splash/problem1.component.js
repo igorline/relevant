@@ -11,7 +11,9 @@ export default class Problem extends Component {
   render () {
     return (
       <panel className={'grey'}>
+
         <columns>
+
         <div className={'innerPanel'}>
 
           <p>
@@ -22,17 +24,19 @@ export default class Problem extends Component {
             <span className={'more'}
               onClick={() => this.setState({ more: !this.state.more })}
             >
-              {this.state.more ? ' ...read less' : ' ...read more'}
+{/*              {this.state.more ? ' ...read less' : ' ...read more'}*/}
             </span>
           </p>
 
+          <h1 style={{ paddingTop: 20 }}>What happened to the Internet?</h1>
+
+{/*
           <div style={{ display: this.state.more ? 'block' : 'none' }}>
             <p>
   As they scaled, Web 2.0 platforms had to face the economic realities of running a business that offered free services. In order to generate income, they had no choice but to turn their users into products — exploiting user behavior to capture, monopolize and privatize data as a means to maximize ad revenue. 
             </p>
-          </div>
+          </div>*/}
 
-          <h1 style={{ paddingTop: 20 }}>What happened to the Internet?</h1>
 
 
           <p className={'quote'}>
@@ -49,6 +53,7 @@ The current culture of misinformation is a direct result of the way we measure o
 
         </div>
 
+{/*
         <div className={'sidebar'} style={{ flex: 0.3 }}>
           <p className={'sidebarSection'}>
             Preverse Incentives
@@ -73,15 +78,8 @@ The current culture of misinformation is a direct result of the way we measure o
             <arrow>⇵</arrow>
             Copy/Paste Journalism
           </p>
-
-          <p className={'sidebarSection'}>
-            Gamification
-            <arrow>⇵</arrow>
-            Addiction
-          </p>
-
         </div>
-
+*/}
         </columns>
 
 
