@@ -190,7 +190,7 @@ export function getUsers(skip, limit, tags) {
   if (!limit) limit = 10;
   let topic = null;
   if (tags.length === 1) {
-    topic = tags[0]._id;
+    topic = tags[0]._id || tags[0];
   }
   let url = process.env.API_SERVER +
     '/api/user/general/list?' + queryParams({ skip, limit, topic });

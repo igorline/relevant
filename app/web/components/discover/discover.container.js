@@ -16,15 +16,16 @@ import * as investActions from '../../../actions/invest.actions';
 import * as navigationActions from '../../../actions/navigation.actions';
 import * as utils from '../../../utils';
 
-import FeedTabs from './feedTabs.component';
-import Posts from './posts.component';
+import DiscoverTabs from './discoverTabs.component';
+import DiscoverPosts from './discoverPosts.component';
+import DiscoverUsers from './discoverUsers.component';
 import Loading from '../common/loading.component';
 
 const POST_PAGE_SIZE = 5;
 
 if (process.env.BROWSER === true) {
   require('../post/post.css');
-  require('./feed.css');
+  require('./discover.css');
 }
 
 const standardRoutes = [
@@ -39,7 +40,7 @@ const tagRoutes = [
   { key: 'people', title: 'People' },
 ];
 
-export class Feed extends Component {
+export class Discover extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -100,27 +101,28 @@ export class Feed extends Component {
   render() {
     const sort = this.state.routes[this.state.tabIndex].key;
     const tag = this.props.params.tag;
+    let loadLookup = tag ? this.props.posts.loaded.topics[tag] : this.props.posts.loaded;
+    let isLoaded;
     let content;
     if (sort === 'people') {
       content = (
-        <div>USER LIST</div>
+        <DiscoverUsers tag={tag} {...this.props} />
       );
+      isLoaded = ! this.props.user.loading;
     }
     else {
       content = (
-        <Posts sort={sort} tag={this.props.params.tag} {...this.props} />
+        <DiscoverPosts sort={sort} tag={tag} {...this.props} />
       );
+      isLoaded = loadLookup && loadLookup[sort];
     }
-    let loadLookup = tag ? this.props.posts.loaded.topics[tag] : this.props.posts.loaded;
-    let isLoaded = loadLookup[sort];
-    console.log(this.props.posts)
     return (
-      <div className="feedContainer postContainer">
-        {this.props.params.tag &&
-          <h1>{this.props.params.tag}</h1>
+      <div className="discoverContainer postContainer">
+        {tag &&
+          <h1>{tag}</h1>
         }
-        <FeedTabs
-          tag={this.props.params.tag}
+        <DiscoverTabs
+          tag={tag}
           tabs={this.state.routes}
           currentTab={this.state.tabIndex}
         />
@@ -131,9 +133,10 @@ export class Feed extends Component {
 }
 
 function mapStateToProps(state) {
+  console.log(state)
   return {
     auth: state.auth,
-    user: state.auth.user,
+    user: state.user,
     posts: state.posts,
     error: state.error.universal,
     investments: state.investments,
@@ -157,4 +160,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Feed);
+export default connect(mapStateToProps, mapDispatchToProps)(Discover);
