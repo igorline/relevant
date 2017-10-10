@@ -23,7 +23,7 @@ class ProfileContainer extends Component {
     this.props.actions.getUserPosts(0, 5, this.props.params.id);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.grabUser();
     this.grabPosts();
   }

@@ -24,10 +24,10 @@ class Profile extends Component {
 
   render() {
     const user = this.props.user.users[this.props.params.id];
-    if (! user) {
-      <div className='profileContainer'>
+    if (!user) {
+      return (<div className='profileContainer'>
         User not found!
-      </div>
+      </div>);
     }
     return (
       <div className='profileContainer'>
@@ -48,7 +48,7 @@ class Profile extends Component {
           <div className='tags'>
             {'Expertise: '}
             {(user.topTags || []).map((tag,i) => {
-              return (<a className='tag' key={i}>{'#' + tag.tag + ' '}</a>)
+              return (<a className='tag' key={i}>{'#' + tag.tag + ' '}</a>);
             })}
           </div>
         </div>
