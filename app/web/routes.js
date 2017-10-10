@@ -3,7 +3,7 @@ import { push } from 'react-router-redux';
 import { UserAuthWrapper } from 'redux-auth-wrapper';
 import App from './components/app';
 import Splash from './components/splash/splash.container';
-import Feed from './components/feed/feed.container';
+import Discover from './components/discover/discover.container';
 import Auth from './components/auth/auth.container';
 import ProfileContainer from './components/profile/profile.container';
 // import MessageContainer from './components/message/message.container';
@@ -50,12 +50,12 @@ let routes = (store) => {
       { path: 'login', component: Auth },
       { path: 'signup', component: Auth },
       { path: 'splash', component: Splash },
-      { path: 'home', component: Feed },
-      { path: 'feed', component: Feed },
-      { path: 'discover', component: Feed },
-      { path: 'discover/:sort', component: Feed },
-      { path: 'discover/tag/:tag', component: Feed },
-      { path: 'discover/tag/:tag/:sort', component: Feed },
+      { path: 'home', component: Discover },
+      { path: 'discover', component: Discover },
+      { path: 'discover', component: Discover },
+      { path: 'discover/:sort', component: Discover },
+      { path: 'discover/tag/:tag', component: Discover },
+      { path: 'discover/tag/:tag/:sort', component: Discover },
       { path: 'admin',
         component: userIsAuthenticated(userIsAdmin(AdminHeader)), onEnter: connect(userIsAuthenticated.onEnter),
         childRoutes: [

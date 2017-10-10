@@ -77,7 +77,7 @@
 .postBody {
   font-family: 'Georgia', sans-serif;
   font-size: 18px;
-  line-height: 27.5px;
+  line-height: 1.52;
   color: #242425;
 }
 .postBody span:after,
