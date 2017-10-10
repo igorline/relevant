@@ -23,37 +23,37 @@ class Profile extends Component {
   }
 
   render() {
-    const userPath = this.props.user.users[this.props.params.id];
-    // console.log(this.props)
-    // console.log(userPath)
-    if (userPath) {
-      return (
-        <div className='profileContainer'>
-          <div className='profileHero'>
-            <Avatar user={userPath} />
-            <div className='name'>{userPath.name}</div>
-            <div className='relevance'>
-              <img src='/img/r-emoji.png' className='r' />
-              {Math.round(userPath.relevance || 0)}
-              <img src='/img/coin.png' className='coin' />
-              {Math.round(userPath.balance || 0)}
-            </div>
-            <div className='subscribers'>
-              {'Subscribers: '}<b>{userPath.followers}</b>
-              {' • '}
-              {'Subscribed to: '}<b>{userPath.following}</b>
-            </div>
-            <div className='tags'>
-              {'Expertise: '}
-              {(userPath.topTags || []).map((tag,i) => {
-                return (<a className='tag' key={i}>{'#' + tag.tag + ' '}</a>)
-              })}
-            </div>
+    const user = this.props.user.users[this.props.params.id];
+    if (! user) {
+      <div className='profileContainer'>
+        User not found!
+      </div>
+    }
+    return (
+      <div className='profileContainer'>
+        <div className='profileHero'>
+          <Avatar user={user} />
+          <div className='name'>{user.name}</div>
+          <div className='relevance'>
+            <img src='/img/r-emoji.png' className='r' />
+            {Math.round(user.relevance || 0)}
+            <img src='/img/coin.png' className='coin' />
+            {Math.round(user.balance || 0)}
+          </div>
+          <div className='subscribers'>
+            {'Subscribers: '}<b>{user.followers}</b>
+            {' • '}
+            {'Subscribed to: '}<b>{user.following}</b>
+          </div>
+          <div className='tags'>
+            {'Expertise: '}
+            {(user.topTags || []).map((tag,i) => {
+              return (<a className='tag' key={i}>{'#' + tag.tag + ' '}</a>)
+            })}
           </div>
         </div>
-      );
-    }
-    return null;
+      </div>
+    );
   }
 }
 

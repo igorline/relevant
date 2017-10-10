@@ -6,7 +6,7 @@ import Post from '../post/post.component';
 const postInitialAmt = 5; // # of posts to initially load on page
 const postUpdateAmt = 5; // # of posts to load for each scroll
 
-class Posts extends Component {
+class DiscoverPosts extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -81,4 +81,4 @@ class Posts extends Component {
 
 }
 
-export default Posts;
+export default DiscoverPosts;

@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { Link } from 'react-router';
 
-class FeedTabs extends Component {
+class DiscoverTabs extends Component {
   constructor(props) {
     super(props);
   }
@@ -34,4 +34,4 @@ class FeedTabs extends Component {
   }
 }
 
-export default FeedTabs;
+export default DiscoverTabs;
