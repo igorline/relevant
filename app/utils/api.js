@@ -7,9 +7,11 @@ if (process.env.BROWSER || process.env.WEB !== 'true') {
   // this is a weird hack that makes conditional require work in react-native
 } else {
   console.log('LOAD NODE DIRECT ROUTER');
-  let n = '../../server/api/post/post.controller';
-  post = require(n);
-  routes.post = post;
+  let postApi = '../../server/api/post/post.controller';
+  let userApi = '../../server/api/user/user.controller';
+  // post = require(postApi);
+  routes.post = require(postApi);
+  routes.user = require(userApi);
 }
 
 

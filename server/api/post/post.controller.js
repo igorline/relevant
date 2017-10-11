@@ -321,11 +321,10 @@ exports.userPosts = async (req, res) => {
     return res.send(500, err);
   }
 
-  console.log('sending ', posts.length, ' posts');
+  console.log('sending ', posts.length, ' user posts');
   res.status(200).json(posts);
 
   // TODO worker thread
-  console.log('get invest info', id);
   if (id) {
     let postIds = [];
     posts.forEach(post => {
@@ -673,7 +672,7 @@ exports.create = (req, res) => {
                   let n = unread.length;
                   let alert;
                   if (n === 1) {
-                    alert = 'There is a new posts from ' + author.name + ' in your feed!';
+                    alert = 'There is a new post from ' + author.name + ' in your feed!';
                   } else {
                     let from = unread.map(el => el.from);
                     from = [...new Set(from)];

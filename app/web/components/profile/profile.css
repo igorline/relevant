@@ -1,0 +1,35 @@
+.profileHero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+}
+.profileHero .avatar {
+  flex: 0 0 192px;
+  width: 192px;
+  height: 192px;
+  margin: 10px;
+}
+.profileHero .name {
+  font-family: 'Bebas';
+  font-size: 43px;
+  margin: 10px;
+}
+.profileHero .relevance {
+  margin: 10px;
+  font-family: 'Bebas';
+  font-size: 23px;
+}
+.profileHero .relevance img {
+  height: 18px;
+  margin-right: 4px;
+}
+.profileHero .coin {
+  margin-left: 10px;
+}
+.profileHero .subscribers,
+.profileHero .tags {
+  font-weight: 500;
+  font-size: 12px;
+  margin-bottom: 5px;
+}

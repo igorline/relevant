@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { numbers } from '../../../utils';
+import { Link } from 'react-router';
+
 import Avatar from './avatar.component';
 
 export default class AvatarBox extends Component {
@@ -10,6 +12,11 @@ export default class AvatarBox extends Component {
     let timestamp;
     if (this.props.date) {
       timestamp = ' • ' + numbers.timeSince(Date.parse(this.props.date)) + ' ago';
+    }
+    let premsg, className;
+    if (this.props.isRepost) {
+      className = 'repost';
+      premsg = 'reposted by ';
     }
     if (this.props.topic) {
       timestamp = (
@@ -23,7 +30,7 @@ export default class AvatarBox extends Component {
       )
     }
     let relevance;
-    if (user.relevance) {
+    if (user.relevance && ! this.props.dontShowRelevance) {
       relevance = (
         <span>
           <img src='/img/r-emoji.png' className='r' />
@@ -32,15 +39,16 @@ export default class AvatarBox extends Component {
       );
     }
     return (
-      <div className='avatarBox'>
+      <div className={['avatarBox', className].join(' ')}>
         <Avatar user={user} />
         <div className='userBox'>
           <div className='bebasRegular username'>
-            <a href={profileLink}>{user.name}</a>
+            {premsg}
+            <Link to={profileLink}>{user.name}</Link>
             {relevance}
           </div>
           <div className='gray'>
-            @<a href={profileLink}>{user._id}</a>
+            @<Link to={profileLink}>{user._id}</Link>
             {timestamp}
           </div>
         </div>

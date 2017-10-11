@@ -94,7 +94,7 @@ class Header extends Component {
         <header>
           <div></div>
           <div>
-            <Link to={'/'}>
+            <Link to={this.props.isAuthenticated ? '/home' : '/'}>
               <img src={'/img/logo-white.svg'} className={'logo'} alt={'Relevant'} />
             </Link>
           </div>
@@ -108,7 +108,8 @@ class Header extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.auth.user
+  user: state.auth.user,
+  isAuthenticated: state.auth.isAuthenticated,
 });
 
 const mapDispatchToProps = (dispatch) => ({

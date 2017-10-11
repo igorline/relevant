@@ -32,6 +32,7 @@ header > div {
 header > div.right {
   justify-content: flex-end;
   align-items: center;
+  padding-right: 15px;
 }
 
 header > div.right a:last-child {
@@ -56,6 +57,9 @@ header a {
   }
   .headerContainer {
     height: 50px;
+  }
+  header .right * {
+    display: none;
   }
 
 }

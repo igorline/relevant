@@ -10,13 +10,20 @@
 }
 .comments form textarea {
   width: 100%;
+  height: 32px;
   padding: 7px 5px;
   font-size: 16px;
   font-family: Helvetica, sans-serif;
-  border: 0;
+  border: 1px solid transparent;
   background: transparent;
+  outline: 0 !important;
+  resize: none;
+  border-radius: 3px;
 }
-
+.comments form textarea:focus {
+  background: white;
+  border-color: #b5b5b6;
+}
 .comments form textarea::-webkit-input-placeholder {
   color: #CBCBD1;
 }
@@ -43,6 +50,7 @@
   font-size: 16px;
   font-family: Helvetica, sans-serif;
   color: #3E3EFF;
+  cursor: pointer;
 }
 
 .comment .body {
@@ -52,26 +60,8 @@
   margin: 20px 0 20px 0;
 }
 
-.commentDate {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  font-family: 'Helvetica', sans-serif;
-  font-size: 10px;
-  color: #D8D8D8;
-  margin: 20px 0;
-  opacity: 0.5;
-}
-.commentDate div {
-  position: relative;
-  top: -5px;
-  border-bottom: 0.5px solid;
-  flex: 1;
-}
-.commentDate div.ts {
-  padding: 0 5px;
-  border: 0;
-  flex: 0;
-  top: 0;
-  text-align: center;
+@media screen and (max-width: 736px) {
+  .comments {
+    padding: 0 10px;
+  }
 }

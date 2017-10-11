@@ -26,6 +26,10 @@ export default class Marquee extends Component {
     this.renderMarquee(true);
   }
 
+  componentWillUnmount() {
+     window.cancelAnimationFrame(this.lastFrame);
+  }
+
   animate() {
     let now = new Date();
     let elapsed = 0;
@@ -46,7 +50,7 @@ export default class Marquee extends Component {
       return x;
     });
     this.lastTime = now;
-    window.requestAnimationFrame(() => this.animate());
+    this.lastFrame = window.requestAnimationFrame(() => this.animate());
   }
 
   renderMarquee(initial) {
