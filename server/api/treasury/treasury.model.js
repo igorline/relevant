@@ -11,9 +11,12 @@ let TreasurySchema = new Schema({
   balance: { type: Number, default: 0 },
   out: { type: Number, default: 0 },
   in: { type: Number, default: 0 },
-  accumilatedDecay: { type: Number, default: 0 },
+  totalTokens: Number,
+  // accumilatedDecay: { type: Number, default: 0 },
   // based on 10%
   weeklyPayout: Number,
+  currentShares: Number,
+  rewardFund: Number,
 }, {
   timestamps: true
 });

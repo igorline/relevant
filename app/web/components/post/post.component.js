@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import AvatarBox from '../common/avatarbox.component';
 import PostButtons from './postbuttons.component';
+import PostInfo from './postinfo.component';
+import Tag from '../tag/tag.component'
 
 class Post extends Component {
   constructor(props) {
@@ -15,43 +17,82 @@ class Post extends Component {
   }
 
   render() {
-    let post = this.props.post;
+    const post = this.props.post;
+    const repost = this.props.repost;
+    const metaPost = this.props.metaPost;
 
     if (post === 'notFound') {
       return (<div><h1>Post not found</h1></div>);
     }
     if (!post) return null;
 
-    const postImage = {
-      backgroundImage: 'url(' + post.image + ')'
-    };
+    // console.log(post)
 
-    console.log(this.props);
-    const tags = post.tags.map( (tag) => {
-      return (
-        <a href={'/tag/' + tag} key={tag}>#{tag}</a>
-      )
-    })
+    let postInfo;
+    if (metaPost) {
+      postInfo = (
+        <PostInfo post={metaPost} />
+      );
+    }
+    if (repost) {
+      // console.log(repost)
+      // console.log(this.props.posts.posts[post.repost.post])
+      postInfo = (
+        <PostInfo post={repost} />
+      );
+    } else {
+      postInfo = (
+        <PostInfo post={post} />
+      );
+    }
+
+    let user = this.props.postUser || post.user
 
     return (
       <div className='post'>
-        <a href={post.link} target='_blank'>
-          <div className='shadowBox'>
-            <span className='image' alt={post.title} style={postImage} />
-            <div>
-              <h3 className='headline bebasRegular'>{post.title}</h3>
-              <div className='domain'>{post.domain}</div>
-            </div>
+        {postInfo}
+        <div className='postContent'>
+          <div className='postMeta'>
+            <AvatarBox user={user} date={post.postDate} />
+            {repost && (
+              <AvatarBox user={user} date={post.postDate} isRepost/>
+            )}
           </div>
-        </a>
-        <AvatarBox user={post.user} date={post.postDate} size='large' />
-        <div className='body'>
-          <span>{post.description}</span>
-          {tags}
+          <div className='postBody'>
+            {repost && (
+              <div>
+                <div className='repostBody'>
+                  <PostBody post={repost} />
+                </div>
+                <div className='repostComment'>{post.repost.commentBody}</div>
+              </div>
+            )}
+            {this.props.showDescription && (
+              <div className='postDescription'>
+                {post.description}
+              </div>
+            )}
+            <PostBody post={post} />
+          </div>
+          <PostButtons post={post} {...this.props} />
         </div>
-        <PostButtons post={post} {...this.props} />
       </div>
     );
   }
+}
+
+function PostBody (props) {
+  const body = props.post.body
+  const tags = (props.post.tags || []).map( (tag) => {
+    return (
+      <Tag name={tag} key={tag} />
+    )
+  })
+  return (
+    <div>
+      <span>{body}</span>
+      {tags}
+    </div>
+  )
 }
 export default Post;

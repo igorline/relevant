@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import Tags from '../tag/tag.container'
+import { Link } from 'react-router';
 
 class Tag extends Component {
   constructor(props) {
@@ -8,9 +8,9 @@ class Tag extends Component {
 
   render() {
   	return (
-  		<div>
-        <a href={'/discover/tag/' + this.props.data.name}>{this.props.data.name}</a> 
-  		</div>
+      <Link to={'/discover/tag/' + this.props.name}>
+        {'#'}{this.props.name}
+      </Link>
   	)
   }
 }

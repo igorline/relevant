@@ -578,4 +578,3 @@ const localStyles = StyleSheet.create({
 });
 
 styles = { ...globalStyles, ...localStyles };
-

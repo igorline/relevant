@@ -12,9 +12,9 @@ import * as createPostActions from '../../../actions/createPost.actions';
 import * as navigationActions from '../../../actions/navigation.actions';
 import * as animationActions from '../../../actions/animation.actions';
 import Comments from '../comment/comment.container';
+import RequestInvite from '../splash/requestInvite.component';
 
 if (process.env.BROWSER === true) {
-  console.log('BROWSER, import css');
   require('./post.css');
 }
 
@@ -36,10 +36,19 @@ class Posts extends Component {
 
   render () {
     this.post = this.props.posts.posts[this.props.params.id];
+    const hasPost = this.post && this.post !== 'notFound'
+
     return (
-      <div className='postContainer'>
-        <Post post={this.post} {...this.props} />
-        <Comments post={this.post} {...this.props} />
+      <div className='parent singlePost'>
+        {hasPost &&
+          <div className='postContainer'>
+            <Post post={this.post} {...this.props} />
+            <Comments post={this.post} {...this.props} />
+          </div>
+        }
+        {! this.props.isAuthenticated &&
+          <RequestInvite {...this.props} />
+        }
       </div>
     );
   }
@@ -49,7 +58,9 @@ export default connect(
   state => ({
     auth: state.auth,
     posts: state.posts,
+    investments: state.investments,
     myPostInv: state.investments.myPostInv,
+    isAuthenticated: state.auth.isAuthenticated,
   }),
   dispatch => ({
     actions: bindActionCreators({

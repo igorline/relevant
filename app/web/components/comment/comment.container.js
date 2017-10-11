@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import NewCommentForm from './newCommentForm.component';
 import Comment from './comment.component';
+import Divider from '../common/divider.component'
 import * as postActions from '../../../actions/post.actions';
 
 class Comments extends Component {
@@ -37,8 +38,7 @@ class Comments extends Component {
           </div>
         :
           <div className='empty'>
-            <br />
-            No comments
+            <Divider>No comments</Divider>
           </div>
         }
       </div>

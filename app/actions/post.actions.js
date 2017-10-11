@@ -124,7 +124,7 @@ export function setTopic(data, type, index, topic) {
   return {
     type: types.SET_TOPIC_POSTS,
     payload: {
-      topic: topic._id,
+      topic: topic._id || topic,
       data,
       type,
       index

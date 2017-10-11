@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
 import * as utils from '../../../utils';
 
 class PostButtons extends Component {
@@ -79,10 +80,21 @@ class PostButtons extends Component {
     }
     if (!post) return null;
 
+    let investment, votedUp, votedDown;
+    if (this.props.investments.myPostInv) {
+      investment = this.props.investments.myPostInv[post.id];
+      if (investment) {
+        votedUp = investment.amount > 0
+        votedDown = investment.amount < 0
+        // console.log(investment)
+      }
+    }
     return (
       <div className='postbuttons'>
         <div className='left'>
-          <a onClick={this.invest} href='#'><img src='/img/upvote-shadow.svg' className='upvote' /></a>
+          {this.props.isAuthenticated &&
+            <a onClick={this.invest} href='#'><img src={votedUp ? '/img/upvoteActive.png' : '/img/upvote-shadow.svg'} className='upvote' /></a>
+          }
           <div className='fraction'>
             <div className='num'>
               {post.upVotes}
@@ -92,14 +104,18 @@ class PostButtons extends Component {
               <img src='/img/r-gray.svg' />
             </div>
           </div>
-          <a onClick={this.irrelevant} href='#'><img src='/img/downvote-gray.svg' className='downvote' /></a>
+          {this.props.isAuthenticated &&
+            <a onClick={this.irrelevant} href='#'><img src={votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg'} className='downvote' /></a>
+          }
         </div>
         <div className='right'>
           <div className='commentcount'>
             <img src='/img/comment.svg' />
             <span>{post.commentCount}</span>
           </div>
-          <a onClick={this.share} href='#'><img src='/img/share.png' className='share' /></a>
+          <Link to={'/post/' + post._id}>
+            <img src='/img/share.png' className='share' />
+          </Link>
         </div>
       </div>
     );
