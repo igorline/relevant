@@ -1,28 +1,34 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import Textarea from 'react-textarea-autosize';
 import * as userActions from '../../../actions/user.actions';
 import * as postActions from '../../../actions/createPost.actions';
 import * as tagActions from '../../../actions/tag.actions';
 import * as utils from '../../../utils';
 
-import PostInfo from './postinfo.component';
+import AvatarBox from '../common/avatarbox.component';
+import PostInfo from '../post/postinfo.component';
 
 // eslint-disable-next-line no-useless-escape, max-len
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,16}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
 
+const urlPlaceholder = 'What\'s relevant?  Add a link to post commentary';
+const textPlaceholder = 'Enter your commentary';
+
 if (process.env.BROWSER === true) {
-  require('./post.css');
-  require('./newPost.css');
+  require('../post/post.css');
+  require('./createPost.css');
 }
 
-class NewPostContainer extends Component {
+class CreatePostContainer extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.parseBody = this.parseBody.bind(this);
     this.createPreview = this.createPreview.bind(this);
     this.setMention = this.setMention.bind(this);
+    this.addTextFromLink = this.addTextFromLink.bind(this);
     this.renderUserSuggestion = this.renderUserSuggestion.bind(this);
     this.renderCategories = this.renderCategories.bind(this);
     this.renderPreview = this.renderPreview.bind(this);
@@ -101,19 +107,20 @@ class NewPostContainer extends Component {
     .then((results) => {
       if (results) {
         // console.log('set preview', postUrl);
-        let image = results.image;
-        if (image.indexOf(', ')) {
-          image = image.split(', ')[0];
+        let imageURL = results.image;
+        if (imageURL.indexOf(', ')) {
+          imageURL = imageURL.split(', ')[0];
         }
         this.setState({
           domain: results.domain,
           postUrl: results.url,
           urlPreview: {
-            image: image,
+            image: imageURL,
             title: results.title ? results.title : 'Untitled',
             description: results.description,
             domain: results.domain,
-          }
+          },
+          body: this.state.body.replace(postUrl, '').trim(),
         });
       } else {
         this.url = null;
@@ -126,6 +133,10 @@ class NewPostContainer extends Component {
     this.setState({ body: postBody });
     this.props.actions.setUserSearch([]);
     this.input.focus();
+  }
+
+  addTextFromLink() {
+    this.setState({ body: '"' + this.state.urlPreview.description + '"' });
   }
 
   static extractDomain(url) {
@@ -198,14 +209,13 @@ class NewPostContainer extends Component {
 
   renderUserSuggestion(users) {
     let inner = users.map((user, i) => (
-      <a
+      <button
         style={{ display: 'block', cursor: 'pointer' }}
         key={i}
-        role="menuitem"
         onClick={() => this.setMention(user)}
       >
         {user._id}
-      </a>
+      </button>
     ));
 
     if (inner.length > 0) {
@@ -236,19 +246,27 @@ class NewPostContainer extends Component {
   }
 
   render() {
+    const placeholderText = this.state.urlPreview ? textPlaceholder : urlPlaceholder;
     return (
-      <div className="postContainer newPostContainer">
-        <textarea
+      <div className="postContainer createPostContainer">
+        <AvatarBox user={this.props.auth.user} />
+        {this.urlPreview}
+        <Textarea
+          minRows={2}
           value={this.state.body}
           onChange={(body) => {
             this.handleChange('body', body.target.value);
           }}
-          placeholder="What's relevant?  Add a link to post commentary"
+          placeholder={placeholderText}
           autoFocus
           ref={(c) => { this.input = c; }}
         />
+        {this.state.urlPreview &&
+          <button onClick={this.addTextFromLink} className="addTextFromLink">
+            Add text from link
+          </button>
+        }
         {this.userSuggestion}
-        {this.urlPreview}
         {this.categories}
         <button
           onClick={() => this.createPost()}
@@ -269,6 +287,7 @@ function mapStateToProps(state) {
     // textError: state.createPost.textError,
     // linkError: state.createPost.linkError,
     // imageError: state.createPost.imageError,
+    auth: state.auth,
     users: state.user,
     tags: state.tags,
   };
@@ -286,4 +305,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewPostContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePostContainer);
