@@ -1,0 +1,21 @@
+.createPostContainer {
+  .avatarBox {
+    margin: 10px 0;
+  }
+  textarea {
+    font-size: 17px;
+    font-family: Georgia, serif;
+    line-height: 1.5;
+    padding: 5px;
+    margin: 10px 0;
+  }
+  .addTextFromLink {
+    color: #3E3EFF;
+    font-family: Helvetica, sans-serif;
+    font-size: 13px;
+    text-align: right;
+    border: 0;
+    background: transparent;
+    display: inline;
+  }
+}

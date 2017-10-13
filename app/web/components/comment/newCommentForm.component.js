@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import Textarea from 'react-textarea-autosize';
 import Comments from '../comment/comment.container'
 import Avatar from '../common/avatar.component'
 import * as utils from '../../../utils';
@@ -19,12 +20,12 @@ class NewCommentForm extends Component {
   }
 
   handleChange(e) {
-    console.log('change', e.target.value)
+    // console.log('change', e.target.value)
     this.setState({comment: e.target.value});
   }
 
   handleKeydown(e) {
-    console.log('keydown', e.target.value)
+    // console.log('keydown', e.target.value)
     if (e.keyCode == 13 && e.shiftKey == false) {
       this.handleSubmit(e);
     }
@@ -101,7 +102,12 @@ class NewCommentForm extends Component {
       <div>
         <form onSubmit={this.handleSubmit}>
           <Avatar user={this.props.auth.user} />
-          <textarea placeholder="Enter comment..." value={this.state.comment} onKeyDown={this.handleKeydown} onChange={this.handleChange} />
+          <Textarea
+            placeholder="Enter comment..."
+            value={this.state.comment}
+            onKeyDown={this.handleKeydown}
+            onChange={this.handleChange}
+          />
           <input type="submit" value="Submit" />
           {/*this.props.comment.failureMsg && <div>{ this.props.comment.failureMsg }</div>*/}
         </form>
