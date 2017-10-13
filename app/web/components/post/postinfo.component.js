@@ -1,45 +1,46 @@
-import React, {
-  PropTypes
-} from 'react';
-// import { Motion, spring, presets } from 'react-motion';
-import { Link } from 'react-router';
+import React from 'react';
 
 if (process.env.BROWSER === true) {
   require('./post.css');
 }
 
 export default function (props) {
-  const post = props.post
+  const post = props.post;
 
-  const postImage = {
-    backgroundImage: post.image ? 'url(' + post.image + ')' : 'none'
+  if (!post.title) {
+    return (
+      <div />
+    );
+  }
+
+  const postImage = post.image && {
+    backgroundImage: 'url(' + post.image + ')',
   };
+
+  const postContent = (
+    <div className="shadowBox postinfo">
+      {post.image &&
+        <span className="image" style={postImage} />
+      }
+      <div>
+        <h3 className="headline bebasRegular">{post.title}</h3>
+        {post.domain &&
+          <div className="domain">{post.domain}</div>
+        }
+      </div>
+    </div>
+  );
 
   if (post.link) {
     return (
       <a
-        className={'postinfo'}
         href={post.link}
-        target='_blank'
+        target="_blank"
+        rel="noopener noreferrer"
       >
-        <div className='shadowBox postinfo'>
-          <span className='image' alt={post.title} style={postImage} />
-          <div>
-            <h3 className='headline bebasRegular'>{post.title}</h3>
-            <div className='domain'>{post.domain}</div>
-          </div>
-        </div>
+        {postContent}
       </a>
-    )
+    );
   }
-  else if (post.title) {
-    <div className='shadowBox postinfo'>
-      <div>
-        <h3 className='headline bebasRegular'>{post.title}</h3>
-      </div>
-    </div>
-  }
-  else {
-    return null;
-  }
+  return postContent;
 }

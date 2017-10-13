@@ -25,9 +25,11 @@ class Profile extends Component {
   render() {
     const user = this.props.user.users[this.props.params.id];
     if (! user) {
-      <div className='profileContainer'>
-        User not found!
-      </div>
+      return (
+        <div className='profileContainer'>
+          User not found!
+        </div>
+      );
     }
     return (
       <div className='profileContainer'>

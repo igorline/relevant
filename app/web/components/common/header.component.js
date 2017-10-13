@@ -74,17 +74,32 @@ class Header extends Component {
   renderLoginButton() {
     if (this.props.user) {
       return (
-        <div className={'right'}>
+        <div>
           <a onClick={() => this.props.actions.logoutAction()} >Logout</a>
           <Avatar user={this.props.user} />
         </div>
       );
     } else {
       return (
-        <div className={'right'}>
+        <div>
           <a onClick={() => this.setState({ modal: true })} >Login</a>
         </div>
       );
+    }
+  }
+
+  renderPostButton() {
+    if (this.props.user) {
+      return (
+        <div>
+          <Link to={'/post/new'}>
+            Create Post
+          </Link>
+        </div>
+      );
+    }
+    else {
+      return (<div></div>);
     }
   }
 
@@ -92,7 +107,7 @@ class Header extends Component {
     return (
       <div className="headerContainer">
         <header>
-          <div></div>
+          {this.renderPostButton()}
           <div>
             <Link to={this.props.isAuthenticated ? '/home' : '/'}>
               <img src={'/img/logo-white.svg'} className={'logo'} alt={'Relevant'} />
