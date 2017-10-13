@@ -6,7 +6,15 @@ import * as postActions from '../../../actions/createPost.actions';
 import * as tagActions from '../../../actions/tag.actions';
 import * as utils from '../../../utils';
 
+import PostInfo from './postinfo.component';
+
+// eslint-disable-next-line no-useless-escape, max-len
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,16}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+
+if (process.env.BROWSER === true) {
+  require('./post.css');
+  require('./newPost.css');
+}
 
 class NewPostContainer extends Component {
   constructor(props) {
@@ -17,7 +25,6 @@ class NewPostContainer extends Component {
     this.setMention = this.setMention.bind(this);
     this.renderUserSuggestion = this.renderUserSuggestion.bind(this);
     this.renderCategories = this.renderCategories.bind(this);
-    this.extractDomain = this.extractDomain.bind(this);
     this.renderPreview = this.renderPreview.bind(this);
     this.createPost = this.createPost.bind(this);
     this.state = {
@@ -48,8 +55,10 @@ class NewPostContainer extends Component {
     if (newProps.users !== this.props.users) {
       this.renderUserSuggestion(newProps.users.search);
     }
-    console.log('tags', newProps, newState, !!newProps.tags)
-    if (newProps.tags && newProps.tags.parentTags !== this.props.tags.parentTags && this.categories === null) {
+    // console.log('tags', newProps, newState, !!newProps.tags)
+    if (newProps.tags &&
+        newProps.tags.parentTags !== this.props.tags.parentTags &&
+        this.categories === null) {
       this.renderCategories(newProps.tags.parentTags);
     }
     if (newState.urlPreview !== this.state.urlPreview) {
@@ -59,40 +68,20 @@ class NewPostContainer extends Component {
 
   renderPreview(newState) {
     // console.log(newState, 'newState');
-    this.urlPreview = (<div>
-      <img src={newState.urlPreview.image} alt="Article Preview" />
-      <p>{newState.urlPreview.title}</p>
-      <p>{newState.urlPreview.description}</p>
-      <p>{newState.domain}</p>
-    </div>);
-  }
-
-  extractDomain(url) {
-    let domain;
-    if (url.indexOf('://') > -1) {
-      domain = url.split('/')[2];
-    } else {
-      domain = url.split('/')[0];
-    }
-    domain = domain.split(':')[0];
-
-    let noPrefix = domain;
-
-    if (domain.indexOf('www.') > -1) {
-      noPrefix = domain.replace('www.', '');
-    }
-    return noPrefix;
+    this.urlPreview = (
+      <PostInfo post={newState.urlPreview} />
+    );
   }
 
   renderCategories(categories) {
-    let inner = categories.map((category, i) => {
-      return (<option
+    let inner = categories.map((category, i) => (
+      <option
         value={JSON.stringify(category)}
         key={i}
       >
         {category.emoji}&nbsp;{category.categoryName}
-      </option>);
-    });
+      </option>
+    ));
     this.categories = (<div style={{ margin: '10px 0' }}>
       <h4 style={{ margin: 0 }}>select category</h4>
       <select
@@ -112,13 +101,18 @@ class NewPostContainer extends Component {
     .then((results) => {
       if (results) {
         // console.log('set preview', postUrl);
+        let image = results.image;
+        if (image.indexOf(', ')) {
+          image = image.split(', ')[0];
+        }
         this.setState({
           domain: results.domain,
           postUrl: results.url,
           urlPreview: {
-            image: results.image,
+            image: image,
             title: results.title ? results.title : 'Untitled',
             description: results.description,
+            domain: results.domain,
           }
         });
       } else {
@@ -132,6 +126,23 @@ class NewPostContainer extends Component {
     this.setState({ body: postBody });
     this.props.actions.setUserSearch([]);
     this.input.focus();
+  }
+
+  static extractDomain(url) {
+    let domain;
+    if (url.indexOf('://') > -1) {
+      domain = url.split('/')[2];
+    } else {
+      domain = url.split('/')[0];
+    }
+    domain = domain.split(':')[0];
+
+    let noPrefix = domain;
+
+    if (domain.indexOf('www.') > -1) {
+      noPrefix = domain.replace('www.', '');
+    }
+    return noPrefix;
   }
 
   parseBody(newState) {
@@ -186,15 +197,16 @@ class NewPostContainer extends Component {
   }
 
   renderUserSuggestion(users) {
-    let inner = users.map((user, i) => {
-      return (<a
+    let inner = users.map((user, i) => (
+      <a
         style={{ display: 'block', cursor: 'pointer' }}
         key={i}
+        role="menuitem"
         onClick={() => this.setMention(user)}
       >
         {user._id}
-      </a>);
-    });
+      </a>
+    ));
 
     if (inner.length > 0) {
       this.userSuggestion = (<div>
@@ -225,7 +237,7 @@ class NewPostContainer extends Component {
 
   render() {
     return (
-      <div style={{ padding: '10px' }}>
+      <div className="postContainer newPostContainer">
         <textarea
           value={this.state.body}
           onChange={(body) => {
@@ -235,8 +247,8 @@ class NewPostContainer extends Component {
           autoFocus
           ref={(c) => { this.input = c; }}
         />
-        {this.urlPreview}
         {this.userSuggestion}
+        {this.urlPreview}
         {this.categories}
         <button
           onClick={() => this.createPost()}
@@ -251,7 +263,7 @@ class NewPostContainer extends Component {
 
 function mapStateToProps(state) {
   // console.log(state);
-  console.log(state)
+  // console.log(state)
   return {
     // isPosting: state.createPost.isPosting,
     // textError: state.createPost.textError,

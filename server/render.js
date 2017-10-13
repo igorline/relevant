@@ -64,9 +64,9 @@ function renderFullPage(html, initialState) {
         <!-- DO NOT MODIFY -->
         <!-- End Facebook Pixel Code -->
       </head>
-      <body class='loading'>
+      <body>
         <div id="app">${html}</div>
-         <script>
+        <script>
           window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
         </script>
         <script src="/bundle.js"></script>

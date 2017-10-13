@@ -2,20 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import AvatarBox from '../common/avatarbox.component';
 import PostButtons from './postbuttons.component';
 import PostInfo from './postinfo.component';
-import Tag from '../tag/tag.component'
+import Tag from '../tag/tag.component';
 
 class Post extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-    this.onClick = this.onClick.bind(this);
-  }
-
-  onClick(e) {
-    e.preventDefault();
-  }
-
   render() {
     const post = this.props.post;
     const repost = this.props.repost;
@@ -33,8 +22,7 @@ class Post extends Component {
       postInfo = (
         <PostInfo post={metaPost} />
       );
-    }
-    if (repost) {
+    } else if (repost) {
       // console.log(repost)
       // console.log(this.props.posts.posts[post.repost.post])
       postInfo = (
@@ -46,29 +34,29 @@ class Post extends Component {
       );
     }
 
-    let user = this.props.postUser || post.user
+    let user = this.props.postUser || post.user;
 
     return (
-      <div className='post'>
+      <div className="post">
         {postInfo}
-        <div className='postContent'>
-          <div className='postMeta'>
+        <div className="postContent">
+          <div className="postMeta">
             <AvatarBox user={user} date={post.postDate} />
             {repost && (
-              <AvatarBox user={user} date={post.postDate} isRepost/>
+              <AvatarBox user={user} date={post.postDate} isRepost />
             )}
           </div>
-          <div className='postBody'>
+          <div className="postBody">
             {repost && (
               <div>
-                <div className='repostBody'>
+                <div className="repostBody">
                   <PostBody post={repost} />
                 </div>
-                <div className='repostComment'>{post.repost.commentBody}</div>
+                <div className="repostComment">{post.repost.commentBody}</div>
               </div>
             )}
             {this.props.showDescription && (
-              <div className='postDescription'>
+              <div className="postDescription">
                 {post.description}
               </div>
             )}
@@ -81,18 +69,16 @@ class Post extends Component {
   }
 }
 
-function PostBody (props) {
-  const body = props.post.body
-  const tags = (props.post.tags || []).map( (tag) => {
-    return (
-      <Tag name={tag} key={tag} />
-    )
-  })
+function PostBody(props) {
+  const body = props.post.body;
+  const tags = (props.post.tags || []).map((tag) => (
+    <Tag name={tag} key={tag} />
+    ));
   return (
     <div>
       <span>{body}</span>
       {tags}
     </div>
-  )
+  );
 }
 export default Post;
