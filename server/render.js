@@ -23,7 +23,7 @@ function renderFullPage(html, initialState) {
   if (process.env.NODE_ENV === 'development') styles = '';
   else styles = '<link rel="stylesheet" href="/styles.css" />';
 
-  let meta = fetchMeta(initialState)
+  let meta = fetchMeta(initialState);
 
   let app = `<!doctype html>
     <html>
@@ -80,30 +80,26 @@ function renderFullPage(html, initialState) {
 function fetchMeta(initialState) {
   let title, description, image, url;
   if (initialState.posts.posts) {
-    const post_id = Object.keys(initialState.posts.posts)[0]
+    const post_id = Object.keys(initialState.posts.posts)[0];
     if (post_id) {
-      const post = initialState.posts.posts[post_id]
-      title = post.title
-      image = post.image
-      url = 'https://relevant.community/post/' + post_id
+      const post = initialState.posts.posts[post_id];
+      title = post.title;
+      image = post.image;
+      url = 'https://relevant.community/post/' + post_id;
     }
   }
-  title = title || 'Relevant: A Social News Reader'
-  image = image || 'https://relevant.community/img/fbfimg.png'
-  url = url || 'https://relevant.community/'
-  description = 'Relevant promotes reliable information and rewards expertise. Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score. This system is designed to penalise clickbait and fake news while promoting useful and reliable information.'
-  return { title, description, image, url }
+  title = title || 'Relevant: A Social News Reader';
+  image = image || 'https://relevant.community/img/fbfimg.png';
+  url = url || 'https://relevant.community/';
+  description = 'Relevant promotes reliable information and rewards expertise. Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score. This system is designed to penalise clickbait and fake news while promoting useful and reliable information.';
+  return { title, description, image, url };
 }
 
 function fetchComponentData(dispatch, components, params, req) {
   const promises = components
-    .filter((component) => component && component.fetchData) // 1
-    .map((component) => {
-      return component.fetchData;
-    }) // 2
-    .map(fetchData => {
-      return fetchData(dispatch, params, req); // 3
-    });
+    .filter(component => component && component.fetchData)
+    .map(component => component.fetchData)
+    .map(fetchData => fetchData(dispatch, params, req));
   return Promise.all(promises);
 }
 
