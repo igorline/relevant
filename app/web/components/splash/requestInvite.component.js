@@ -13,7 +13,22 @@ export default class RequestInvite extends Component {
       email: '',
       name: ''
     };
+
+    this.onScroll = this.onScroll.bind(this);
   }
+
+  componentDidMount() {
+    window.addEventListener('scroll', this.onScroll);
+  }
+
+  onScroll(e) {
+    if (!this.phone) return;
+    this.phone.style.transform = '';
+    let top = this.phone.getBoundingClientRect().top - 169;
+    let y = Math.max(-top / 3, 0);
+    this.phone.style.transform = `translateX(0) translateY(${y}px)`;
+  }
+
 
   handleChange(field, data) {
     this.setState({ [field]: data });
@@ -40,7 +55,7 @@ export default class RequestInvite extends Component {
 
   render() {
     return (
-      <div className="splashContent">
+      <div ref={c => this.container = c} className="splashContent">
 
         <mainSection>
           <section className="body">
@@ -62,7 +77,7 @@ export default class RequestInvite extends Component {
 
         </mainSection>
         <div className="phone">
-          <img src="/img/hand.jpg" alt="phone" />
+          <img ref={c => this.phone = c}  src="/img/hand.jpg" alt="phone" />
         </div>
       </div>
     );
