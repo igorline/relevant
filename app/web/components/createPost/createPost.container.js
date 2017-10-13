@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import Textarea from 'react-textarea-autosize';
 import * as userActions from '../../../actions/user.actions';
 import * as postActions from '../../../actions/createPost.actions';
@@ -108,7 +109,7 @@ class CreatePostContainer extends Component {
       if (results) {
         // console.log('set preview', postUrl);
         let imageURL = results.image;
-        if (imageURL.indexOf(', ')) {
+        if (imageURL && imageURL.indexOf(', ')) {
           imageURL = imageURL.split(', ')[0];
         }
         this.setState({
@@ -242,7 +243,23 @@ class CreatePostContainer extends Component {
       domain: this.state.domain
     };
 
-    this.props.actions.submitPost(post, await utils.token.get());
+    this.props.actions.submitPost(post, await utils.token.get())
+      .then((res) => {
+        if (!res) {
+          alert('Post error please try again');
+          this.setState({ creatingPost: false });
+          return null;
+        }
+        return res.json();
+      }).then((data) => {
+        if (!data) return;
+        // console.log(data)
+        if (this.props.close) this.props.close();
+        this.props.router.push('/post/' + data.id);
+        // Analytics.logEvent('newPost', {
+        //   viaShare: this.props.share
+        // });
+      });
   }
 
   render() {
@@ -272,7 +289,7 @@ class CreatePostContainer extends Component {
           onClick={() => this.createPost()}
           disabled={!this.state.category}
         >
-          create post
+          Create Post
         </button>
       </div>
     );
@@ -281,12 +298,12 @@ class CreatePostContainer extends Component {
 
 function mapStateToProps(state) {
   // console.log(state);
-  // console.log(state)
   return {
     // isPosting: state.createPost.isPosting,
     // textError: state.createPost.textError,
     // linkError: state.createPost.linkError,
     // imageError: state.createPost.imageError,
+    createPost: state.createPost,
     auth: state.auth,
     users: state.user,
     tags: state.tags,
@@ -305,4 +322,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreatePostContainer);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreatePostContainer));
