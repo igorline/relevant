@@ -133,8 +133,15 @@ export default class ContentEditable extends React.Component {
       // rerendering) did not update the DOM. So we update it manually now.
       this.htmlEl.innerHTML = this.props.html;
     }
-    const offset = this.hitEnter ? 1 : 0;
-    setCurrentCursorPosition(this.htmlEl, this.position + offset);
+    const lengthWithoutNewlines = this.props.body.replace(/\n/, '').replace(/&[^;]+;/g, ' ').length + 1;
+    const newPosition = this.position + (this.hitEnter ? 1 : 0);
+    // console.log(this.position, lengthWithoutNewlines);
+    if (newPosition <= lengthWithoutNewlines) {
+      setCurrentCursorPosition(this.htmlEl, newPosition);
+      this.hitEnter = false;
+    } else {
+      setCurrentCursorPosition(this.htmlEl, lengthWithoutNewlines - 1);
+    }
   }
 
   handleKeydown(e) {
@@ -144,16 +151,16 @@ export default class ContentEditable extends React.Component {
   emitChange(e) {
     if (!this.htmlEl) return;
     const html = this.htmlEl.innerHTML;
-    this.position = getCurrentCursorPosition('editor');
     if (this.props.onChange && html !== this.lastHtml) {
       e.target = { value: html };
       this.props.onChange(e);
     }
     this.lastHtml = html;
+    this.position = getCurrentCursorPosition('editor');
   }
 
   render() {
-    const { tagName, html, ...props } = this.props;
+    const { tagName, html, body, ...props } = this.props;
 
     return React.createElement(
       tagName || 'div',

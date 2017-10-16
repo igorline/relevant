@@ -61,10 +61,12 @@ class CreatePostContainer extends Component {
     this.createPost = this.createPost.bind(this);
     this.state = {
       body: '',
+      html: '',
       category: '',
       domain: null,
       urlPreview: null,
       addedTextFromLink: false,
+      loadingPreview: false,
     };
     this.body = '';
     this.tags = null;
@@ -140,16 +142,25 @@ class CreatePostContainer extends Component {
         this.setState({
           domain: results.domain,
           postUrl: results.url,
+          loadingPreview: false,
           urlPreview: {
             image: imageURL,
             title: results.title || 'Untitled',
             description: results.description,
             domain: results.domain,
+            loading: false,
           },
-          body: this.state.body.replace(postUrl, '').trim(),
         });
       } else {
         this.url = null;
+      }
+    });
+    this.setState({
+      body: this.state.body.replace(postUrl, '').trim(),
+      html: this.state.html.replace(postUrl, ''),
+      loadingPreview: true,
+      urlPreview: {
+        loading: true,
       }
     });
   }
@@ -162,8 +173,10 @@ class CreatePostContainer extends Component {
   }
 
   addTextFromLink() {
+    const description = '"' + stripContentEditableHTML(this.state.urlPreview.description) + '"';
     this.setState({
-      body: '"' + this.state.urlPreview.description + '"',
+      body: description,
+      html: description,
       addedTextFromLink: true,
     });
   }
@@ -171,7 +184,7 @@ class CreatePostContainer extends Component {
   parseBody(newState) {
     let postBody = '';
     if (newState) postBody = newState.body;
-    let lines = postBody.split('\n');
+    let lines = postBody.replace(/&nbsp;/g, ' ').split('\n');
     let words = [];
     lines.forEach(line => words = words.concat(line.split(' ')));
 
@@ -290,6 +303,7 @@ class CreatePostContainer extends Component {
         <ContentEditable
           className="editor"
           html={this.state.html}
+          body={this.state.body}
           onChange={this.handleBodyChange}
           autoFocus
           ref={(c) => { this.input = c; }}

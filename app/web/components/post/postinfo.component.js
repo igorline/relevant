@@ -1,4 +1,5 @@
 import React from 'react';
+import Loading from '../common/loading.component';
 
 if (process.env.BROWSER === true) {
   require('./post.css');
@@ -7,6 +8,13 @@ if (process.env.BROWSER === true) {
 export default function (props) {
   const post = props.post;
 
+  if (post.loading) {
+    return (
+      <div className="postinfo loading">
+        <Loading />
+      </div>
+    );
+  }
   if (!post.title) {
     return (
       <div />
