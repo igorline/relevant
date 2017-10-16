@@ -12,6 +12,7 @@ import RelevanceStats from './api/relevanceStats/relevanceStats.model';
 import pagerank from './utils/pagerank';
 import Invest from './api/invest/invest.model';
 import Treasury from './api/treasury/treasury.model';
+import Economy  from './utils/economy.js';
 
 const extractor = require('unfluff');
 // daily relevance decay
@@ -324,8 +325,6 @@ async function basicIncome(done) {
           let now = new Date();
           let day = now.getDay();
 
-
-
           await user.save();
         } catch (err) {
           console.log('error updating user relevance income ', err);
@@ -399,6 +398,7 @@ function getNextUpdateTime() {
   global.nextUpdate = nextUpdate;
   return timeToUpdate;
 }
+
 
 getNextUpdateTime();
 

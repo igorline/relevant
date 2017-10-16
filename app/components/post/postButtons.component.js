@@ -140,7 +140,7 @@ class PostButtons extends Component {
     // this.investButton.measureInWindow((x, y, w, h) => {
     //   let parent = { x, y, w, h };
     //   if (x + y + w + h === 0) return;
-    //   this.props.actions.triggerAnimation('invest', { parent });
+    //   this.props.actions.triggerAnimation('upvote', { parent });
     // });
     // return;
 

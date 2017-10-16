@@ -50,8 +50,8 @@ class Relevance extends Component {
     });
 
     this.scale = this.state.position.interpolate({
-      inputRange: [0, 0.2, 0.3],
-      outputRange: [0, 1.2, 1],
+      inputRange: [0, 0.2, 0.3, 1],
+      outputRange: [0, 1.2, 1, 1.5],
       extrapolate: 'clamp'
     });
   }
@@ -71,7 +71,7 @@ class Relevance extends Component {
     let specialKey = this.props.specialKey;
     let img;
 
-    let icon = require('../../assets/images/icons/upvote.png');
+    let icon = require('../../assets/images/icons/upvoteActive.png');
     img = (<Image
       resizeMode={'contain'}
       style={[styles.r, { width: 24, height: 24 }]}

@@ -1,6 +1,7 @@
 import MetaPost from './metaPost.model';
 import Post from '../post/post.model';
 
+
 // MetaPost.collection.dropIndexes(function (err, results) {
 //   console.log(err);
 // });

@@ -35,6 +35,7 @@
 		5189AEBD024E4F89A78F5B28 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 656E7FBE6B85404CB71D2CD0 /* FontAwesome.ttf */; };
 		557520F822634518863413E9 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FEDBF8587C114786882771F4 /* EvilIcons.ttf */; };
 		56C921FCC2B44637B46733C9 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2CFF5F025ED3455183847E5E /* MaterialIcons.ttf */; };
+		5E177E3742B7495B93D90824 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2930D1F26CA244DF809E3D38 /* Feather.ttf */; };
 		6698184F50FB46E0BB414BEB /* libRCTGoogleAnalyticsBridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FF9B69421BD42B18F2F1E2C /* libRCTGoogleAnalyticsBridge.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8F3570BC5F7C49AFB8DAC1DB /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 896F0A9D02424FBF979AE5E1 /* libRNShare.a */; };
@@ -84,6 +85,8 @@
 		FB983E3A1DA1E21900DAF00D /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB88BEA21D9ED842002D0069 /* libReactNativeShareExtension.a */; };
 		FB983E3D1DA2044900DAF00D /* libRCTUserDefaults.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB983E341DA1E1E400DAF00D /* libRCTUserDefaults.a */; };
 		FB9F3BB71E327FC100C92158 /* WebsiteProcessor.js in Resources */ = {isa = PBXBuildFile; fileRef = FB9F3BB61E327FC100C92158 /* WebsiteProcessor.js */; };
+		FBBBF1A31F8F0C7B00F68218 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 258B672691D941D6BD86DABA /* Ionicons.ttf */; };
+		FBBBF2081F8F1B6500F68218 /* libSafariViewManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBBBF2051F8F134000F68218 /* libSafariViewManager.a */; };
 		FBD6A2541E8B0F840088BBC2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FBD6A2531E8B0F840088BBC2 /* GoogleService-Info.plist */; };
 		FBD8EECC1E087A670074EE90 /* helvetica-outline.otf in Resources */ = {isa = PBXBuildFile; fileRef = 2A43980B1DFF3B6200E7FC9B /* helvetica-outline.otf */; };
 		FBD8EECD1E087A6A0074EE90 /* Georgia.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2A46C3461DEA396400DAFC70 /* Georgia.ttf */; };
@@ -462,6 +465,27 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RCTUserDefaults;
 		};
+		FBBBF16F1F8F0BC300F68218 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FBDC86AB1E8C391B00B6ADE1 /* BVLinearGradient.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 64AA15081EF7F30100718508;
+			remoteInfo = "BVLinearGradient-tvOS";
+		};
+		FBBBF18A1F8F0BC300F68218 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F1057B85D55E4582ADB07B86 /* RCTVideo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 641E28441F0EEC8500443AF6;
+			remoteInfo = "RCTVideo-tvOS";
+		};
+		FBBBF2041F8F134000F68218 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E70283C0B8E8488689465F9C /* SafariViewManager.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = SafariViewManager;
+		};
 		FBDA02D51EECBF8300789ED9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FBDA02A91EECBF8300789ED9 /* RNSKBucket.xcodeproj */;
@@ -496,13 +520,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = BVLinearGradient;
-		};
-		FBDD087D1EBD982700ED6D09 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 567114987AC047DEB33536A1 /* RNVectorIcons.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A39873CE1EA65EE60051E01A;
-			remoteInfo = "RNVectorIcons-tvOS";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -545,6 +562,7 @@
 		1657EF8EBCA44BD0B7103C18 /* libRCTActionSheet.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTActionSheet.a; sourceTree = "<group>"; };
 		225BA948531E4A8DABA2A505 /* libRNFIRAnalytics.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFIRAnalytics.a; sourceTree = "<group>"; };
 		258B672691D941D6BD86DABA /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
+		2930D1F26CA244DF809E3D38 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		2A13C5CA1DE4EAD100705F90 /* LibreCaslonDisplay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "LibreCaslonDisplay-Regular.ttf"; path = "../app/assets/fonts/LibreCaslonDisplay-Regular.ttf"; sourceTree = "<group>"; };
 		2A43980B1DFF3B6200E7FC9B /* helvetica-outline.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "helvetica-outline.otf"; path = "../app/assets/fonts/helvetica-outline.otf"; sourceTree = "<group>"; };
 		2A46C3461DEA396400DAFC70 /* Georgia.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Georgia.ttf; path = ../app/assets/fonts/Georgia.ttf; sourceTree = "<group>"; };
@@ -588,6 +606,7 @@
 		BFE6486FE737442E975C2815 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		C1F1B49A57EB433E8F41F59C /* RCTOrientation.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTOrientation.xcodeproj; path = "../node_modules/react-native-orientation/iOS/RCTOrientation.xcodeproj"; sourceTree = "<group>"; };
 		DA563EFA2A5349C2BEA66205 /* RCTWKWebView.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTWKWebView.xcodeproj; path = "../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView.xcodeproj"; sourceTree = "<group>"; };
+		E70283C0B8E8488689465F9C /* SafariViewManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SafariViewManager.xcodeproj; path = "../node_modules/react-native-safari-view/SafariViewManager.xcodeproj"; sourceTree = "<group>"; };
 		EB0EBF26102A47CBBCAB6075 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		EF67CB4A1BD94842D9A0545E /* Pods-relevantNativeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-relevantNativeTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-relevantNativeTests/Pods-relevantNativeTests.release.xcconfig"; sourceTree = "<group>"; };
 		F1057B85D55E4582ADB07B86 /* RCTVideo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTVideo.xcodeproj; path = "../node_modules/react-native-video/ios/RCTVideo.xcodeproj"; sourceTree = "<group>"; };
@@ -631,6 +650,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBBBF2081F8F1B6500F68218 /* libSafariViewManager.a in Frameworks */,
 				FB202A1C1F632CD000E11BFB /* libjschelpers.a in Frameworks */,
 				FB07E07B1F54F6C3002FBDBA /* libRCTWKWebView.a in Frameworks */,
 				FBDA046F1EEF281F00789ED9 /* CodePush.h in Frameworks */,
@@ -912,6 +932,7 @@
 				9F78967AAC6F48A4B7FBC6C2 /* CodePush.xcodeproj */,
 				7AD9644A340D483D81C9318A /* ReactNativeGlobalProps.xcodeproj */,
 				DA563EFA2A5349C2BEA66205 /* RCTWKWebView.xcodeproj */,
+				E70283C0B8E8488689465F9C /* SafariViewManager.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -970,6 +991,7 @@
 				415B69253A6D4EC6AA92F76D /* Octicons.ttf */,
 				7854DE6F4CAC458F8533F7B8 /* SimpleLineIcons.ttf */,
 				69D68DD57A7D46E1932AC656 /* Zocial.ttf */,
+				2930D1F26CA244DF809E3D38 /* Feather.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1025,6 +1047,7 @@
 			isa = PBXGroup;
 			children = (
 				FB0D883A1EB29E8600DEE4B8 /* libRCTVideo.a */,
+				FBBBF18B1F8F0BC300F68218 /* libRCTVideo.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1085,7 +1108,6 @@
 			isa = PBXGroup;
 			children = (
 				FB9067F51EB908180027FEA3 /* libRNVectorIcons.a */,
-				FBDD087E1EBD982700ED6D09 /* libRNVectorIcons-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1094,6 +1116,14 @@
 			isa = PBXGroup;
 			children = (
 				FB983E341DA1E1E400DAF00D /* libRCTUserDefaults.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FBBBF1D01F8F134000F68218 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FBBBF2051F8F134000F68218 /* libSafariViewManager.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1126,6 +1156,7 @@
 			isa = PBXGroup;
 			children = (
 				FBDC86B11E8C391B00B6ADE1 /* libBVLinearGradient.a */,
+				FBBBF1701F8F0BC300F68218 /* libBVLinearGradient.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1392,6 +1423,10 @@
 				{
 					ProductGroup = FB9067CB1EB908180027FEA3 /* Products */;
 					ProjectRef = 567114987AC047DEB33536A1 /* RNVectorIcons.xcodeproj */;
+				},
+				{
+					ProductGroup = FBBBF1D01F8F134000F68218 /* Products */;
+					ProjectRef = E70283C0B8E8488689465F9C /* SafariViewManager.xcodeproj */;
 				},
 				{
 					ProductGroup = 2A7DD2AE1E1EEA7300C58771 /* Products */;
@@ -1730,6 +1765,27 @@
 			remoteRef = FB983E331DA1E1E400DAF00D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FBBBF1701F8F0BC300F68218 /* libBVLinearGradient.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libBVLinearGradient.a;
+			remoteRef = FBBBF16F1F8F0BC300F68218 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FBBBF18B1F8F0BC300F68218 /* libRCTVideo.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTVideo.a;
+			remoteRef = FBBBF18A1F8F0BC300F68218 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FBBBF2051F8F134000F68218 /* libSafariViewManager.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSafariViewManager.a;
+			remoteRef = FBBBF2041F8F134000F68218 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FBDA02D61EECBF8300789ED9 /* libRNSKBucket.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1756,13 +1812,6 @@
 			fileType = archive.ar;
 			path = libBVLinearGradient.a;
 			remoteRef = FBDC86B01E8C391B00B6ADE1 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		FBDD087E1EBD982700ED6D09 /* libRNVectorIcons-tvOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libRNVectorIcons-tvOS.a";
-			remoteRef = FBDD087D1EBD982700ED6D09 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1798,6 +1847,7 @@
 				0347C1DAE28E47D98F82D771 /* Octicons.ttf in Resources */,
 				FDF0AAE9B41343AB80114ED0 /* SimpleLineIcons.ttf in Resources */,
 				E55F878B26CF4578AFCF67C6 /* Zocial.ttf in Resources */,
+				5E177E3742B7495B93D90824 /* Feather.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1805,6 +1855,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBBBF1A31F8F0C7B00F68218 /* Ionicons.ttf in Resources */,
 				FB0D88081EAEC8DE00DEE4B8 /* Images.xcassets in Resources */,
 				FB9F3BB71E327FC100C92158 /* WebsiteProcessor.js in Resources */,
 				FBD8EEDB1E08EAFF0074EE90 /* BebasNeuerelevantRegular-2.ttf in Resources */,
@@ -2070,6 +2121,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2089,6 +2141,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2144,6 +2197,7 @@
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-global-props/ios/ReactNativeGlobalProps/**",
 					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
+					"$(SRCROOT)/../node_modules/react-native-safari-view",
 				);
 				INFOPLIST_FILE = relevantNative/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -2194,6 +2248,7 @@
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-global-props/ios/ReactNativeGlobalProps/**",
 					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
+					"$(SRCROOT)/../node_modules/react-native-safari-view",
 				);
 				INFOPLIST_FILE = relevantNative/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -2365,12 +2420,14 @@
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-global-props/ios/ReactNativeGlobalProps/**",
 					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
+					"$(SRCROOT)/../node_modules/react-native-safari-view",
 				);
 				INFOPLIST_FILE = Relevant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2434,12 +2491,14 @@
 					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
 					"$(SRCROOT)/../node_modules/react-native-global-props/ios/ReactNativeGlobalProps/**",
 					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
+					"$(SRCROOT)/../node_modules/react-native-safari-view",
 				);
 				INFOPLIST_FILE = Relevant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2558,6 +2617,7 @@
 					"$(BUILD_DIR)/Release$(EFFECTIVE_PLATFORM_NAME)/**",
 					"$(SRCROOT)/../node_modules/react-native-global-props/ios/ReactNativeGlobalProps/**",
 					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
+					"$(SRCROOT)/../node_modules/react-native-safari-view",
 				);
 				INFOPLIST_FILE = relevantNative/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -2589,6 +2649,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2647,6 +2708,7 @@
 					"$(REACT_HEADERS_PATH)",
 					"$(SRCROOT)/../node_modules/react-native-global-props/ios/ReactNativeGlobalProps/**",
 					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
+					"$(SRCROOT)/../node_modules/react-native-safari-view",
 				);
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(inherited)",
@@ -2673,6 +2735,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

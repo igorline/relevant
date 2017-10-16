@@ -46,9 +46,9 @@ class CardHeader extends Component {
       options = (
         <TouchableOpacity
           onPress={() => this.props.actions.toggleTopics()}
-          style={{ padding: 5, paddingHorizontal: 10 }}
+          style={{ padding: 0, paddingHorizontal: 10 }}
         >
-          <Icon name="ios-options" size={23} color={darkGrey} />
+          <Icon name="ios-options" size={23} style={{ height: 27 }} color={darkGrey} />
         </TouchableOpacity>
       );
     }
@@ -82,7 +82,7 @@ class CardHeader extends Component {
       backEl = (
         <TouchableOpacity
           onPress={this.props.back}
-          style={{ justifyContent: 'center', padding: 5, paddingHorizontal: 10 }}
+          style={{ justifyContent: 'center', padding: 0, paddingHorizontal: 10 }}
         >
           {back}
         </TouchableOpacity>
@@ -113,7 +113,7 @@ class CardHeader extends Component {
     //     );
     //   }
     // }
-    // 
+    //
     return (
       <View style={[styles.leftButton, { flexDirection: 'row' }]}>
         {backEl}
@@ -169,7 +169,7 @@ class CardHeader extends Component {
               <Image
                 source={require('../../assets/images/logo.png')}
                 resizeMode={'contain'}
-                style={{ width: 120, height: 20 }}
+                style={{ width: 120, height: 20, marginBottom: 2 }}
               />
             </View>
           </TouchableOpacity>
@@ -223,7 +223,7 @@ class CardHeader extends Component {
 
     let key = this.props.defaultContainer;
 
-    if (this.props.auth.user) {
+    if (this.props.auth && this.props.auth.user) {
       let component = props.scene.route.component;
       statsEl = (
         <Stats
@@ -271,7 +271,11 @@ class CardHeader extends Component {
       // );
     // }
 
-    return <View style={styles.rightButton}>{rightEl}</View>;
+    return <View style={styles.rightButton}>
+      <View style={{ paddingRight: 10 }}>
+        {rightEl}
+      </View>
+    </View>;
   }
 
   renderHeader(props, headerStyle) {
@@ -322,7 +326,7 @@ const localStyles = StyleSheet.create({
   },
   rightButton: {
     flex: 1,
-    marginRight: mainPadding,
+    marginRight: mainPadding - 10,
     justifyContent: 'center',
   },
   gearImg: {

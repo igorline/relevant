@@ -267,7 +267,6 @@ export default class UrlComponent extends Component {
         {userHeader}
         <View
           style={[
-            this.props.share ? styles.noBorder : null,
             { flex: 1 }]
           }
         >

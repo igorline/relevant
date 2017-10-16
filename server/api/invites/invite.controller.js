@@ -2,6 +2,10 @@ import voucherCodes from 'voucher-code-generator';
 import Invite from './invite.model';
 import mail from '../../mail';
 
+// Invite.collection.dropIndexes(function (err, results) {
+//   console.log(err);
+// });
+
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return (err) => {

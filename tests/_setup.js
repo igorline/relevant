@@ -1,26 +1,26 @@
-import mockery from 'mockery'
+import mockery from 'mockery';
 
 require('isomorphic-fetch');
 
 // inject __DEV__
-global.__DEV__ = true
+global.__DEV__ = true;
 
 // We enable mockery and leave it on.
-mockery.enable()
+mockery.enable();
 
 // Silence mockery's warnings as we'll opt-in to mocks instead
-mockery.warnOnUnregistered(false)
+mockery.warnOnUnregistered(false);
 
-var token;
+let token;
 
-mockery.registerMock('react-native-user-defaults', {
+mockery.registerMock('react-native-swiss-knife', {
   remove: () => {
     token = null;
-    return Promise.resolve()
+    return Promise.resolve();
   },
   set: (_token) => {
     token = _token;
-    return Promise.resolve()
+    return Promise.resolve();
   },
   get: () => Promise.resolve(token)
 });
