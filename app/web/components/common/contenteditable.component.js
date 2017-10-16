@@ -8,8 +8,7 @@ function onPaste(e) {
   const text = e.clipboardData.getData('text/plain')
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')
-    .replace(/>/g, '&gt')
-    .replace(/\n/g, '<br>');
+    .replace(/>/g, '&gt');
 
   // insert text manually
   document.execCommand('insertHTML', false, text);
@@ -103,6 +102,7 @@ export default class ContentEditable extends React.Component {
   constructor() {
     super();
     this.emitChange = this.emitChange.bind(this);
+    this.handleKeydown = this.handleKeydown.bind(this);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -133,7 +133,12 @@ export default class ContentEditable extends React.Component {
       // rerendering) did not update the DOM. So we update it manually now.
       this.htmlEl.innerHTML = this.props.html;
     }
-    setCurrentCursorPosition(this.htmlEl, this.position);
+    const offset = this.hitEnter ? 1 : 0;
+    setCurrentCursorPosition(this.htmlEl, this.position + offset);
+  }
+
+  handleKeydown(e) {
+    this.hitEnter = e.keyCode === 13;
   }
 
   emitChange(e) {
@@ -150,7 +155,6 @@ export default class ContentEditable extends React.Component {
   render() {
     const { tagName, html, ...props } = this.props;
 
-    // eslint-disable-next-line react/no-danger-with-children
     return React.createElement(
       tagName || 'div',
       {
@@ -158,11 +162,11 @@ export default class ContentEditable extends React.Component {
         id: 'editor',
         ref: (e) => this.htmlEl = e,
         onInput: this.emitChange,
+        onKeyDown: this.handleKeydown,
         onBlur: this.props.onBlur || this.emitChange,
         onPaste,
         contentEditable: !this.props.disabled,
         dangerouslySetInnerHTML: { __html: html },
-      },
-      this.props.children);
+      });
   }
 }

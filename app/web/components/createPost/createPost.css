@@ -9,6 +9,7 @@
     border: 1px solid #bbb;
     border-radius: 2px;
     min-height: 35px;
+    white-space: pre-line;
     p {
       margin: 0;
     }
