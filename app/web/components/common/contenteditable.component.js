@@ -1,5 +1,30 @@
 import React from 'react';
 
+const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
+
+function stripContentEditableHTML(text) {
+  return (text || '')
+    .replace(/<div><br>/g, '\n')
+    .replace(/<div>/g, '\n')
+    .replace(/<br>\u200B/g, '\n')
+    .replace(HTML_REGEX, '');
+}
+
+function renderBody(lines) {
+  return lines.split('\n')
+    .map((line) =>
+      line.split(' ')
+        .map((word) => {
+          if (word[0] === '#' || word[0] === '@') {
+            return '<b>' + word + '</b>';
+          }
+          return word;
+        })
+        .join(' ')
+    )
+    .join('<br>\u200B');
+}
+
 function onPaste(e) {
   // cancel paste
   e.preventDefault();
@@ -105,38 +130,18 @@ export default class ContentEditable extends React.Component {
     this.handleKeydown = this.handleKeydown.bind(this);
   }
 
-  shouldComponentUpdate(nextProps) {
-    let { props, htmlEl } = this;
-
-    // We need not rerender if the change of props simply reflects the user's edits.
-    // Rerendering in this case would make the cursor/caret jump
-
-    // Rerender if there is no element yet... (somehow?)
-    if (!htmlEl) {
-      return true;
-    }
-
-    // ...or if html really changed... (programmatically, not by user edit)
-    if (nextProps.html !== props.html) {
-      return true;
-    }
-
-    let optional = ['style', 'className', 'disable', 'tagName'];
-
-    // Handle additional properties
-    return optional.some(name => props[name] !== nextProps[name]);
-  }
-
   componentDidUpdate() {
-    if (this.htmlEl && this.props.html !== this.htmlEl.innerHTML) {
-      // Perhaps React (whose VDOM gets outdated because we often prevent
-      // rerendering) did not update the DOM. So we update it manually now.
-      this.htmlEl.innerHTML = this.props.html;
-    }
+    // if (this.htmlEl && this.props.html !== this.htmlEl.innerHTML) {
+    //   // Perhaps React (whose VDOM gets outdated because we often prevent
+    //   // rerendering) did not update the DOM. So we update it manually now.
+    //   this.htmlEl.innerHTML = this.lastHTML;
+    // }
     const lengthWithoutNewlines = this.props.body.replace(/\n/, '').replace(/&[^;]+;/g, ' ').length + 1;
     const newPosition = this.position + (this.hitEnter ? 1 : 0);
     // console.log(this.position, lengthWithoutNewlines);
-    if (newPosition <= lengthWithoutNewlines) {
+    if (this.props.lengthDelta) {
+      setCurrentCursorPosition(this.htmlEl, this.position += this.props.lengthDelta);
+    } else if (newPosition <= lengthWithoutNewlines) {
       setCurrentCursorPosition(this.htmlEl, newPosition);
       this.hitEnter = false;
     } else {
@@ -152,7 +157,7 @@ export default class ContentEditable extends React.Component {
     if (!this.htmlEl) return;
     const html = this.htmlEl.innerHTML;
     if (this.props.onChange && html !== this.lastHtml) {
-      e.target = { value: html };
+      e.target = { value: stripContentEditableHTML(html) };
       this.props.onChange(e);
     }
     this.lastHtml = html;
@@ -160,20 +165,22 @@ export default class ContentEditable extends React.Component {
   }
 
   render() {
-    const { tagName, html, body, ...props } = this.props;
+    const { body, className, ...props } = this.props;
 
-    return React.createElement(
-      tagName || 'div',
-      {
-        ...props,
-        id: 'editor',
-        ref: (e) => this.htmlEl = e,
-        onInput: this.emitChange,
-        onKeyDown: this.handleKeydown,
-        onBlur: this.props.onBlur || this.emitChange,
-        onPaste,
-        contentEditable: !this.props.disabled,
-        dangerouslySetInnerHTML: { __html: html },
-      });
+    this.lastHTML = renderBody(body);
+
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions react/no-danger
+    return (<div
+      id="editor"
+      className={className}
+      role="textbox"
+      ref={(e) => this.htmlEl = e}
+      onInput={this.emitChange}
+      onKeyDown={this.handleKeydown}
+      onBlur={this.props.onBlur || this.emitChange}
+      onPaste={onPaste}
+      contentEditable={!this.props.disabled}
+      dangerouslySetInnerHTML={{ __html: this.lastHTML }}
+    />);
   }
 }

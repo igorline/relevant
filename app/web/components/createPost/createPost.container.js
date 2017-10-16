@@ -18,33 +18,9 @@ if (process.env.BROWSER === true) {
 
 // eslint-disable-next-line no-useless-escape, max-len
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,16}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
 
-function stripContentEditableHTML(text) {
-  return (text || '')
-    .replace(/<div><br>/g, '\n')
-    .replace(/<div>/g, '\n')
-    .replace(/<br>\u200B/g, '\n')
-    .replace(HTML_REGEX, '');
-}
-
-const urlPlaceholder = 'What\'s relevant?  Add a link to post commentary';
-const textPlaceholder = 'Enter your commentary';
-
-function renderBody(lines) {
-  return lines.split('\n')
-    .map((line) =>
-      line.split(' ')
-        .map((word) => {
-          if (word[0] === '#' || word[0] === '@') {
-            return '<b>' + word + '</b>';
-          }
-          return word;
-        })
-        .join(' ')
-    )
-    .join('<br>\u200B');
-}
+// const urlPlaceholder = 'What\'s relevant?  Add a link to post commentary';
+// const textPlaceholder = 'Enter your commentary';
 
 class CreatePostContainer extends Component {
   constructor(props) {
@@ -61,7 +37,6 @@ class CreatePostContainer extends Component {
     this.createPost = this.createPost.bind(this);
     this.state = {
       body: '',
-      html: '',
       category: '',
       domain: null,
       urlPreview: null,
@@ -95,90 +70,64 @@ class CreatePostContainer extends Component {
         newProps.tags.parentTags !== this.props.tags.parentTags &&
         this.categories === null) {
       this.renderCategories(newProps.tags.parentTags);
+      // this.setState({ category: JSON.parse(newProps.tags.parentTags[0].target.value) });
     }
     if (newState.urlPreview !== this.state.urlPreview) {
       this.renderPreview(newState);
     }
   }
 
-  renderPreview(newState) {
-    this.urlPreview = (
-      <PostInfo post={newState.urlPreview} />
-    );
+  componentDidUpdate() {
+    this.lengthDelta = 0;
   }
 
-  renderCategories(categories) {
-    let inner = categories.map((category, i) => (
-      <option
-        value={JSON.stringify(category)}
-        key={i}
-      >
-        {category.emoji}&nbsp;{category.categoryName}
-      </option>
-    ));
-    this.categories = (<div style={{ margin: '10px 0' }}>
-      <h4 style={{ margin: 0 }}>select category</h4>
-      <select
-        style={{ display: 'block' }}
-        onChange={(val) => {
-          this.setState({ category: JSON.parse(val.target.value) });
-        }}
-      >
-        {inner}
-      </select>
-    </div>);
-  }
+  async createPost() {
+    let post = {
+      link: this.state.postUrl || this.props.postUrl,
+      tags: this.tags,
+      body: this.state.body,
+      title: this.state.urlPreview ? this.state.urlPreview.title : null,
+      description: this.state.urlPreview ? this.state.urlPreview.description : null,
+      category: this.state.category,
+      image: this.state.urlPreview ? this.state.urlPreview.image : null,
+      mentions: this.mentions,
+      investments: [],
+      domain: this.state.domain
+    };
 
-  createPreview() {
-    let postUrl = this.url;
-    utils.post.generatePreviewServer(postUrl)
-    .then((results) => {
-      if (results && results.url) {
-        // console.log('set preview', postUrl);
-        let imageURL = results.image;
-        if (imageURL && imageURL.indexOf(', ')) {
-          imageURL = imageURL.split(', ')[0];
+    this.props.actions.submitPost(post, await utils.token.get())
+      .then((res) => {
+        if (!res) {
+          alert('Post error please try again');
+          this.setState({ creatingPost: false });
+          return null;
         }
-        this.setState({
-          domain: results.domain,
-          postUrl: results.url,
-          loadingPreview: false,
-          urlPreview: {
-            image: imageURL,
-            title: results.title || 'Untitled',
-            description: results.description,
-            domain: results.domain,
-            loading: false,
-          },
-        });
-      } else {
-        this.url = null;
-      }
-    });
-    this.setState({
-      body: this.state.body.replace(postUrl, '').trim(),
-      html: this.state.html.replace(postUrl, ''),
-      loadingPreview: true,
-      urlPreview: {
-        loading: true,
-      }
-    });
+        return res.json();
+      }).then((data) => {
+        if (!data) return;
+        // console.log(data)
+        if (this.props.close) this.props.close();
+        this.props.router.push('/post/' + data.id);
+        // Analytics.logEvent('newPost', {
+        //   viaShare: this.props.share
+        // });
+      });
+  }
+
+  handleChange(field, data) {
+    this.setState({ [field]: data });
+  }
+
+  handleBodyChange(e) {
+    const body = e.target.value;
+    this.setState({ body });
   }
 
   setMention(user) {
-    let postBody = this.state.body.replace(this.mention, '@' + user._id);
-    this.setState({ body: postBody });
+    this.lengthDelta = user._id.length - this.mention.length + 2;
+    const body = this.state.body.replace(this.mention, '@' + user._id + '\u00A0');
+    this.setState({ body });
     this.props.actions.setUserSearch([]);
-    this.input.focus();
-  }
-
-  addTextFromLink() {
-    const description = '"' + stripContentEditableHTML(this.state.urlPreview.description) + '"';
-    this.setState({
-      body: description,
-      html: description,
-      addedTextFromLink: true,
-    });
   }
 
   parseBody(newState) {
@@ -189,9 +138,6 @@ class CreatePostContainer extends Component {
     lines.forEach(line => words = words.concat(line.split(' ')));
 
     let postUrl = words.find(word => URL_REGEX.test(word.toLowerCase()));
-
-    // console.log('parseBody', words);
-    // console.log('postUrl', postUrl);
 
     if (postUrl && postUrl !== this.url) {
       this.url = postUrl;
@@ -228,8 +174,47 @@ class CreatePostContainer extends Component {
     // console.log(this.body, this.tags, this.mentions)
   }
 
-  handleChange(field, data) {
-    this.setState({ [field]: data });
+  addTextFromLink() {
+    const description = '"' + utils.text.stripHTML(this.state.urlPreview.description) + '"';
+    this.setState({
+      body: description,
+      addedTextFromLink: true,
+    });
+  }
+
+  createPreview() {
+    let postUrl = this.url;
+    utils.post.generatePreviewServer(postUrl)
+    .then((results) => {
+      if (results && results.url) {
+        // console.log('set preview', postUrl);
+        let imageURL = results.image;
+        if (imageURL && imageURL.indexOf(', ')) {
+          imageURL = imageURL.split(', ')[0];
+        }
+        this.setState({
+          domain: results.domain,
+          postUrl: results.url,
+          loadingPreview: false,
+          urlPreview: {
+            image: imageURL,
+            title: results.title || 'Untitled',
+            description: results.description,
+            domain: results.domain,
+            loading: false,
+          },
+        });
+      } else {
+        this.url = null;
+      }
+    });
+    this.setState({
+      body: this.state.body.replace(postUrl, '').trim(),
+      loadingPreview: true,
+      urlPreview: {
+        loading: true,
+      }
+    });
   }
 
   renderUserSuggestion(users) {
@@ -253,43 +238,32 @@ class CreatePostContainer extends Component {
     }
   }
 
-  async createPost() {
-    let post = {
-      link: this.state.postUrl || this.props.postUrl,
-      tags: this.tags,
-      body: this.state.body,
-      title: this.state.urlPreview ? this.state.urlPreview.title : null,
-      description: this.state.urlPreview ? this.state.urlPreview.description : null,
-      category: this.state.category,
-      image: this.state.urlPreview ? this.state.urlPreview.image : null,
-      mentions: this.mentions,
-      investments: [],
-      domain: this.state.domain
-    };
-
-    this.props.actions.submitPost(post, await utils.token.get())
-      .then((res) => {
-        if (!res) {
-          alert('Post error please try again');
-          this.setState({ creatingPost: false });
-          return null;
-        }
-        return res.json();
-      }).then((data) => {
-        if (!data) return;
-        // console.log(data)
-        if (this.props.close) this.props.close();
-        this.props.router.push('/post/' + data.id);
-        // Analytics.logEvent('newPost', {
-        //   viaShare: this.props.share
-        // });
-      });
+  renderCategories(categories) {
+    let inner = categories.map((category, i) => (
+      <option
+        value={JSON.stringify(category)}
+        key={i}
+      >
+        {category.emoji}&nbsp;{category.categoryName}
+      </option>
+    ));
+    this.categories = (<div style={{ margin: '10px 0' }}>
+      <h4 style={{ margin: 0 }}>select category</h4>
+      <select
+        style={{ display: 'block' }}
+        onChange={(val) => {
+          this.setState({ category: JSON.parse(val.target.value) });
+        }}
+      >
+        {inner}
+      </select>
+    </div>);
   }
 
-  handleBodyChange(e) {
-    const body = stripContentEditableHTML(e.target.value);
-    const html = renderBody(body);
-    this.setState({ html, body });
+  renderPreview(newState) {
+    this.urlPreview = (
+      <PostInfo post={newState.urlPreview} />
+    );
   }
 
   render() {
@@ -302,23 +276,23 @@ class CreatePostContainer extends Component {
         </div>
         <ContentEditable
           className="editor"
-          html={this.state.html}
           body={this.state.body}
           onChange={this.handleBodyChange}
-          autoFocus
-          ref={(c) => { this.input = c; }}
+          lengthDelta={this.lengthDelta}
         />
-        {this.state.urlPreview && !this.state.addedTextFromLink &&
-          <button onClick={this.addTextFromLink} className="addTextFromLink">
-            Add text from link
-          </button>
-        }
-        {this.userSuggestion}
-        {this.state.urlPreview &&
-          <div>
-            {this.categories}
-          </div>
-        }
+        <div>
+          {this.state.urlPreview && !this.state.addedTextFromLink &&
+            <button onClick={this.addTextFromLink} className="addTextFromLink">
+              Add text from link
+            </button>
+          }
+          {this.userSuggestion}
+          {this.state.urlPreview &&
+            <div>
+              {this.categories}
+            </div>
+          }
+        </div>
         <button
           onClick={() => this.createPost()}
           disabled={!this.state.category}
