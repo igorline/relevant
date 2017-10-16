@@ -20,9 +20,12 @@ if (process.env.BROWSER === true) {
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,16}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
 const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
 
-function stripHTML(text) {
-  return (text || '').replace(/<br>/g, '\n').replace(HTML_REGEX, '');
-  // .replace(/<p><\/p>/g, '\n')
+function stripContentEditableHTML(text) {
+  return (text || '')
+    .replace(/<div><br>/g, '\n')
+    .replace(/<div>/g, '\n')
+    .replace(/<br>\u200B/g, '\n')
+    .replace(HTML_REGEX, '');
 }
 
 const urlPlaceholder = 'What\'s relevant?  Add a link to post commentary';
@@ -40,7 +43,7 @@ function renderBody(lines) {
         })
         .join(' ')
     )
-    .join('<br>');
+    .join('<br>\u200B');
 }
 
 class CreatePostContainer extends Component {
@@ -271,7 +274,7 @@ class CreatePostContainer extends Component {
   }
 
   handleBodyChange(e) {
-    const body = stripHTML(e.target.value);
+    const body = stripContentEditableHTML(e.target.value);
     const html = renderBody(body);
     this.setState({ html, body });
   }
