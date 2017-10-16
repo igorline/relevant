@@ -31,10 +31,10 @@ export default function (props) {
     </div>
   );
 
-  if (post.link) {
+  if (post.url) {
     return (
       <a
-        href={post.link}
+        href={post.url}
         target="_blank"
         rel="noopener noreferrer"
       >

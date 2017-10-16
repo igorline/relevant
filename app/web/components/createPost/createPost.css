@@ -1,13 +1,21 @@
 .createPostContainer {
-  .avatarBox {
-    margin: 10px 0;
-  }
-  textarea {
+  .editor {
     font-size: 17px;
     font-family: Georgia, serif;
     line-height: 1.5;
     padding: 5px;
-    margin: 10px 0;
+    margin: 0 5px 10px 5px;
+    background: white;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    min-height: 35px;
+    p {
+      margin: 0;
+    }
+    b {
+      color: #3E3EFF;
+      font-weight: normal;
+    }
   }
   .addTextFromLink {
     color: #3E3EFF;
@@ -17,5 +25,16 @@
     border: 0;
     background: transparent;
     display: inline;
+  }
+  .urlPreview {
+    margin: 40px 0 10px 0;
+  }
+  .avatarbox {
+    margin: 0;
+  }
+  .postinfo {
+    cursor: default;
+    user-select: none;
+    margin-bottom: 20px;
   }
 }
