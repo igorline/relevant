@@ -15,8 +15,10 @@ import {
 } from './actionTypes';
 
 let dismissKeyboard;
+let safariView;
 if (process.env.WEB != 'true') {
   dismissKeyboard = require('react-native-dismiss-keyboard');
+  safariView = require('react-native-safari-view').default;
 }
 
 export function push(route, key, animation = 'vertical') {
@@ -151,15 +153,31 @@ export function goToPeople(topic) {
   });
 }
 
+
 export function goToUrl(url) {
-  return push({
-    key: 'articleView',
-    component: 'articleView',
-    back: true,
-    uri: url,
-    id: url,
-    gestureResponseDistance: 120
-  }, 'home');
+  return dispatch => {
+    if (safariView) {
+      safariView.isAvailable()
+      .then(() => {
+        safariView.show({
+          url,
+          readerMode: true, // optional,
+          // tintColor: '#ffffff', // optional
+          // barTintColor: '#ffffff' // optional
+        });
+      })
+      .catch(() => {
+        dispatch(push({
+          key: 'articleView',
+          component: 'articleView',
+          back: true,
+          uri: url,
+          id: url,
+          gestureResponseDistance: 120
+        }, 'home'));
+      });
+    }
+  };
 }
 
 export function goToComments(post, key, animation) {

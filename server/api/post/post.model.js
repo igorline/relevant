@@ -66,6 +66,13 @@ let PostSchema = new Schema({
   upVotes: { type: Number, default: 0 },
   downVotes: { type: Number, default: 0 },
   keywords: [String],
+
+  paidOut: { type: Boolean, default: false },
+  payoutTime: { type: Date },
+  payout: { type: Number, default: 0 },
+  payOutShare: { type: Number, default: 0 },
+
+  balance: { type: Number, default: 0 },
 }, {
   timestamps: true,
   toJSON: { virtuals: true }
@@ -82,6 +89,7 @@ PostSchema.index({ postDate: 1 });
 PostSchema.index({ _id: 1, user: 1 });
 PostSchema.index({ postDate: 1, tags: 1 });
 PostSchema.index({ rank: 1, tags: 1 });
+PostSchema.index({ paidOut: 1, payoutTime: 1 });
 
 // PostSchema.createIndex({"subject":"text","content":"text"})
 // PostSchema.index({ title: 'text', body: 'text' });

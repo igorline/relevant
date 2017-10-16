@@ -19,7 +19,7 @@ import {
   // setCustomImage,
   // setCustomTouchableOpacity
 } from 'react-native-global-props';
-
+import StatusBarSizeIOS from 'react-native-status-bar-size';
 import codePush from 'react-native-code-push';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
@@ -89,6 +89,7 @@ class Application extends Component {
     this.state = {
       newName: null,
       height: fullHeight,
+      statusBarHeight: StatusBarSizeIOS.currentHeight,
     };
     this.logoutRedirect = this.logoutRedirect.bind(this);
     this.backgroundTime = 0;
@@ -104,7 +105,6 @@ class Application extends Component {
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
     utils.token.get()
     .catch(() => {
-      // codePush.disallowRestart();
       this.props.actions.replaceRoute({
         key: 'auth',
         component: 'auth',
@@ -122,6 +122,13 @@ class Application extends Component {
     Orientation.addOrientationListener(() => {
       // fullWidth = Dimensions.get('window').width;
       this.setState({ height: Dimensions.get('window').height });
+    });
+
+    StatusBarSizeIOS.addEventListener('willChange', h => {
+      // console.log('status bar ', h);
+      //TODO user Dimensions.get('screen');
+      // console.log(Dimensions.get('window'));
+      this.setState({ statusBarHeight: h });
     });
   }
 
@@ -311,7 +318,6 @@ class Application extends Component {
           this.initImage();
           break;
         case 2:
-          console.log(this.props.auth.user)
           if (!this.props.auth.user.confirmed) {
             Alert.alert('Please confirm your email first');
           } else {
@@ -452,8 +458,14 @@ class Application extends Component {
     if (route.component === 'articleView') {
       statusBarHeight = 0;
     }
-    let height = Platform.OS === 'android' ? this.state.height - statusBarHeight : this.state.height;
+    let defaultIOSBar = this.state.statusBarHeight ? 20 : 0;
+    let height = Platform.OS === 'android' ?
+      this.state.height - statusBarHeight :
+      // TODO seems like height is defaults to 20? adjust for iphonex?
+      this.state.height + defaultIOSBar - this.state.statusBarHeight;
 
+    // main app view has to be absolute to make android keyboard work
+    // could be relative for ios?
     return (
       <View
         style={{ height, backgroundColor: 'black' }}

@@ -13,6 +13,7 @@ import {
 import WKWebView from 'react-native-wkwebview-reborn';
 import Share from 'react-native-share';
 import Orientation from 'react-native-orientation';
+
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { globalStyles, fullWidth, blue } from '../../styles/global';

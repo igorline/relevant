@@ -3,7 +3,7 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
 let TagSchema = new Schema({
-  _id: { type: String, trim: true, index: true, unique: true },
+  _id: { type: String, trim: true },
   parents: [{ type: String, ref: 'Tag' }],
   categoryName: { type: String },
   category: { type: Boolean, index: true, default: false },

@@ -13,6 +13,13 @@ import Invite from '../invites/invite.model';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 
+// User.findOne({ _id: 'test'}, 'hashedPassword')
+// .then(u => console.log(u))
+
+// User.collection.dropIndexes(function (err, results) {
+//   console.log(err);
+// });
+
 // User.findOneAndUpdate({ _id: 'slava' }, { role: 'admin' }).exec();
 // User.findOneAndUpdate({ _id: 'Analisa' }, { role: 'admin' }).exec();
 // User.findOneAndUpdate({ _id: 'jay' }, { role: 'user' }).exec();

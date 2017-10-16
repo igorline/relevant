@@ -85,22 +85,23 @@ const font = StyleSheet.create({
   headerInner: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center'
   },
   shareHeader: {
-    height: 45,
+    height: 42,
     paddingTop: 0,
   },
   header: {
     height: Platform.OS === 'ios' ? 59 : 44,
-    paddingTop: Platform.OS === 'ios' ? 16 : 0,
+    paddingTop: Platform.OS === 'ios' ? 20 : 0,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
     borderBottomColor: '#242425',
     borderBottomWidth: StyleSheet.hairlineWidth,
 
-    // zIndex: 1000,
+    zIndex: 1000,
     position: 'absolute',
     top: 0,
     right: 0,

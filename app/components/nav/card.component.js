@@ -5,7 +5,7 @@ import {
   Animated,
 } from 'react-native';
 import * as NavigationExperimental from 'react-navigation';
-import CardStackStyleInterpolator from 'react-navigation/lib/views/CardStackStyleInterpolator';
+// import CardStackStyleInterpolator from 'react-navigation/lib/views/CardStack/CardStackStyleInterpolator';
 import { globalStyles, fullWidth, headerHeight } from '../../styles/global';
 import CardHeader from './cardHeader.component';
 import NavPanResponder from './navPanResponder';
@@ -223,7 +223,7 @@ class Card extends Component {
             style={[headerStyle]}
             share={this.props.share}
             back={props.back}
-            renderRight={props.renderRight}
+            renderRight={props.renderRight ? p => props.renderRight(p) : null}
           />);
       }
 

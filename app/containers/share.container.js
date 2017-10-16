@@ -109,7 +109,7 @@ class ShareContainer extends Component {
         key: 'createPost',
         component: 'createPost',
         title: 'Share on Relevant',
-        next: 'Post',
+        next: 'Next',
         back: 'Cancel',
       }, 0, 'home');
     }

@@ -249,6 +249,9 @@ export default function (props) {
         );
 
       default:
+        if (singleActivity.text) {
+          return <Text style={styles.activityText}>{singleActivity.text}</Text>;
+        }
         return null;
     }
   };
@@ -321,7 +324,9 @@ export default function (props) {
             {coin}
           </View>
         );
-      default: return <View style={[styles.activityMiddle]} />;
+      default:
+        if (singleActivity.coin) return <View style={[styles.activityMiddle]} >{coin}</View>;
+        return <View style={[styles.activityMiddle]} />;
     }
   };
 
@@ -370,6 +375,7 @@ export default function (props) {
           </View>
         );
       case 'basicIncome':
+      case 'reward':
         return (
           <View style={styles.activityLeft}>
             <Text allowFontScaling={false} style={styles.incomeEmoji}>🤑</Text>
@@ -486,7 +492,7 @@ const localStyles = StyleSheet.create({
     height: 30,
     marginRight: 10,
     textAlign: 'center',
-    fontSize: 28,
+    fontSize: 24,
   },
   activityImage: {
     width: 30,

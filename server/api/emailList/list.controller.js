@@ -1,5 +1,9 @@
 import List from './list.model';
 
+// List.collection.dropIndexes(function (err, results) {
+//   console.log(err);
+// });
+
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return (err) => {

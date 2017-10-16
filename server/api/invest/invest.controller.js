@@ -220,25 +220,11 @@ exports.create = async (req, res) => {
   }
 
   async function updateInvestment() {
-    await Invest.findOneAndUpdate(
-      {
-        investor: user._id,
-        post: post._id
-      },
-      {
-        investor: user._id,
-        author: post.user,
-        amount,
-        relevantPoints: relevanceToAdd,
-        post: post._id,
-        ownPost: post.user === user._id,
-      },
-      {
-        new: true,
-        upsert: true,
-      }
-    );
+    Invest.createVote({
+      post, user, amount, relevanceToAdd
+    });
 
+    // when do we need this?
     if (investmentExists) {
       // TODO if also commented, increase investment?
       investmentExists.amount = amount;
@@ -479,6 +465,7 @@ exports.create = async (req, res) => {
 
     if (user.relevance < 0) relevanceToAdd = 0;
     else {
+      // use sqrt function for post relevance
       relevanceToAdd = Math.round(Math.sqrt(user.relevance));
       relevanceToAdd = Math.max(1, relevanceToAdd);
     }
