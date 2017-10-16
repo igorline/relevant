@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Textarea from 'react-textarea-autosize';
+import ContentEditable from '../common/contenteditable.component';
 import * as userActions from '../../../actions/user.actions';
 import * as postActions from '../../../actions/createPost.actions';
 import * as tagActions from '../../../actions/tag.actions';
@@ -11,21 +11,43 @@ import * as utils from '../../../utils';
 import AvatarBox from '../common/avatarbox.component';
 import PostInfo from '../post/postinfo.component';
 
+if (process.env.BROWSER === true) {
+  require('../post/post.css');
+  require('./createPost.css');
+}
+
 // eslint-disable-next-line no-useless-escape, max-len
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,16}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
+
+function stripHTML(text) {
+  return (text || '').replace(/<br>/g, '\n').replace(HTML_REGEX, '');
+  // .replace(/<p><\/p>/g, '\n')
+}
 
 const urlPlaceholder = 'What\'s relevant?  Add a link to post commentary';
 const textPlaceholder = 'Enter your commentary';
 
-if (process.env.BROWSER === true) {
-  require('../post/post.css');
-  require('./createPost.css');
+function renderBody(lines) {
+  return lines.split('\n')
+    .map((line) =>
+      line.split(' ')
+        .map((word) => {
+          if (word[0] === '#' || word[0] === '@') {
+            return '<b>' + word + '</b>';
+          }
+          return word;
+        })
+        .join(' ')
+    )
+    .join('<br>');
 }
 
 class CreatePostContainer extends Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
+    this.handleBodyChange = this.handleBodyChange.bind(this);
     this.parseBody = this.parseBody.bind(this);
     this.createPreview = this.createPreview.bind(this);
     this.setMention = this.setMention.bind(this);
@@ -39,6 +61,7 @@ class CreatePostContainer extends Component {
       category: '',
       domain: null,
       urlPreview: null,
+      addedTextFromLink: false,
     };
     this.body = '';
     this.tags = null;
@@ -74,7 +97,6 @@ class CreatePostContainer extends Component {
   }
 
   renderPreview(newState) {
-    // console.log(newState, 'newState');
     this.urlPreview = (
       <PostInfo post={newState.urlPreview} />
     );
@@ -106,7 +128,7 @@ class CreatePostContainer extends Component {
     let postUrl = this.url;
     utils.post.generatePreviewServer(postUrl)
     .then((results) => {
-      if (results) {
+      if (results && results.url) {
         // console.log('set preview', postUrl);
         let imageURL = results.image;
         if (imageURL && imageURL.indexOf(', ')) {
@@ -117,7 +139,7 @@ class CreatePostContainer extends Component {
           postUrl: results.url,
           urlPreview: {
             image: imageURL,
-            title: results.title ? results.title : 'Untitled',
+            title: results.title || 'Untitled',
             description: results.description,
             domain: results.domain,
           },
@@ -137,24 +159,10 @@ class CreatePostContainer extends Component {
   }
 
   addTextFromLink() {
-    this.setState({ body: '"' + this.state.urlPreview.description + '"' });
-  }
-
-  static extractDomain(url) {
-    let domain;
-    if (url.indexOf('://') > -1) {
-      domain = url.split('/')[2];
-    } else {
-      domain = url.split('/')[0];
-    }
-    domain = domain.split(':')[0];
-
-    let noPrefix = domain;
-
-    if (domain.indexOf('www.') > -1) {
-      noPrefix = domain.replace('www.', '');
-    }
-    return noPrefix;
+    this.setState({
+      body: '"' + this.state.urlPreview.description + '"',
+      addedTextFromLink: true,
+    });
   }
 
   parseBody(newState) {
@@ -262,29 +270,38 @@ class CreatePostContainer extends Component {
       });
   }
 
+  handleBodyChange(e) {
+    const body = stripHTML(e.target.value);
+    const html = renderBody(body);
+    this.setState({ html, body });
+  }
+
   render() {
-    const placeholderText = this.state.urlPreview ? textPlaceholder : urlPlaceholder;
+    // const placeholderText = this.state.urlPreview ? textPlaceholder : urlPlaceholder;
     return (
       <div className="postContainer createPostContainer">
-        <AvatarBox user={this.props.auth.user} />
-        {this.urlPreview}
-        <Textarea
-          minRows={2}
-          value={this.state.body}
-          onChange={(body) => {
-            this.handleChange('body', body.target.value);
-          }}
-          placeholder={placeholderText}
+        <div className="urlPreview">
+          {this.urlPreview}
+          <AvatarBox user={this.props.auth.user} />
+        </div>
+        <ContentEditable
+          className="editor"
+          html={this.state.html}
+          onChange={this.handleBodyChange}
           autoFocus
           ref={(c) => { this.input = c; }}
         />
-        {this.state.urlPreview &&
+        {this.state.urlPreview && !this.state.addedTextFromLink &&
           <button onClick={this.addTextFromLink} className="addTextFromLink">
             Add text from link
           </button>
         }
         {this.userSuggestion}
-        {this.categories}
+        {this.state.urlPreview &&
+          <div>
+            {this.categories}
+          </div>
+        }
         <button
           onClick={() => this.createPost()}
           disabled={!this.state.category}
