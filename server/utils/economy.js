@@ -61,8 +61,8 @@ exports.allocateRewards = async () => {
 exports.distributeRewards = async () => {
   let treasury = await Treasury.findOne({});
   let now = new Date();
-  let posts = await Post.find({ paidOut: false, payoutTime: { $gte: now } });
-  let estimatePosts = await Post.find({ paidOut: false, payoutTime: { $lt: now } });
+  let posts = await Post.find({ paidOut: false, payoutTime: { $lte: now } });
+  let estimatePosts = await Post.find({ paidOut: false, payoutTime: { $gt: now } });
 
   // decay curren reward shares
   let decay = (now.getTime() - treasury.lastRewardFundUpdate.getTime()) / SHARE_DECAY;
@@ -79,6 +79,9 @@ exports.distributeRewards = async () => {
 
   let updatedPosts = await computePostPayout(posts, treasury);
   estimatePosts = await computePostPayout(estimatePosts, treasury);
+  console.log(updatedPosts);
+  console.log(estimatePosts);
+
   return updatedPosts;
 };
 
@@ -96,6 +99,7 @@ async function rewardUser(props) {
   let s = reward === 1 ? '' : 's';
   let action = type === 'vote' ? 'upvoting ' : '';
   let text = `You earned ${reward} coin${s} from ${action}this post`;
+  let alertText = `You earned ${reward} coin${s} from ${action}a post`;
 
   Notification.createNotification({
     post: post._id,
@@ -105,8 +109,7 @@ async function rewardUser(props) {
     text
   });
 
-  apnData.sendNotification(user, text, {});
-
+  apnData.sendNotification(user, alertText, {});
   return user;
 }
 
@@ -142,14 +145,14 @@ exports.distributeUserRewards = async (posts) => {
 
     payouts[author._id] = payouts[author._id] ? payouts[author._id] + authorPayout : authorPayout;
 
-    rewardUser({ user: author, reward: authorPayout, treasury, post });
+    if (authorPayout > 0) {
+      rewardUser({ user: author, reward: authorPayout, treasury, post });
+    }
 
 
     //  ---------- Curation rewards ------------
 
     console.log('curationReward', curationReward);
-
-
 
 
     let updatedVotes = votes.map(async vote => {
@@ -178,3 +181,10 @@ exports.distributeUserRewards = async (posts) => {
 
   return payouts;
 };
+
+// exports.pendingUserReward(userId) {
+//   let now = new Date();
+//   let votes = await Invest.find({ payoutDate: { $lt: now } });
+  
+
+// }

@@ -90,6 +90,7 @@ class Application extends Component {
       newName: null,
       height: fullHeight,
       statusBarHeight: StatusBarSizeIOS.currentHeight,
+      statusBarInitial: StatusBarSizeIOS.currentHeight,
     };
     this.logoutRedirect = this.logoutRedirect.bind(this);
     this.backgroundTime = 0;
@@ -458,7 +459,7 @@ class Application extends Component {
     if (route.component === 'articleView') {
       statusBarHeight = 0;
     }
-    let defaultIOSBar = this.state.statusBarHeight ? 20 : 0;
+    let defaultIOSBar = this.state.statusBarHeight ? this.state.statusBarInitial : 0;
     let height = Platform.OS === 'android' ?
       this.state.height - statusBarHeight :
       // TODO seems like height is defaults to 20? adjust for iphonex?

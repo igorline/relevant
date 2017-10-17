@@ -20,8 +20,7 @@ class Dollar extends Component {
   }
 
   componentWillMount() {
-
-    let ENDX = -(fullWidth / 2.5) + ((Math.random() - 0.5) * 50);
+    let ENDX = -(fullWidth / 3) + ((Math.random() - 0.5) * 50);
 
     this.y = this.state.position.interpolate({
       inputRange: [0, 1],
@@ -35,14 +34,18 @@ class Dollar extends Component {
       easing: Easing.out(Easing.ease),
     });
 
-    this.opacity = 1;
-
-    this.scale = this.state.position.interpolate({
-      inputRange: [0, .3, .9, 1],
-      outputRange: [0, 1, 1, 0],
+    this.opacity = this.state.position.interpolate({
+      inputRange: [0.8, 1],
+      outputRange: [1, 0],
+      easing: Easing.out(Easing.ease),
       extrapolate: 'clamp'
     });
 
+    this.scale = this.state.position.interpolate({
+      inputRange: [0, 0.5, 0.9, 1],
+      outputRange: [0, 1, 1, 1],
+      extrapolate: 'clamp'
+    });
   }
 
   componentDidMount() {
@@ -52,7 +55,7 @@ class Dollar extends Component {
     Animated.timing(this.state.position, {
       toValue: 1,
       delay: i * (30 + r * 50),
-      duration: 500,
+      duration: 1200,
     }).start(() => this.props.destroy(i));
   }
 
@@ -63,7 +66,7 @@ class Dollar extends Component {
     let icon = require('../../assets/images/relevantcoin.png');
 
     img = (<Image
-      style={[styles.coin, { width: 25, height: 25 }]}
+      style={[styles.coin, { width: 40, height: 40 }]}
       source={icon}
     />);
 

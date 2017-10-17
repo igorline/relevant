@@ -126,10 +126,10 @@ class SinglePostComments extends Component {
       if (!this.scrollView) return;
       let l = this.scrollView._listRef._totalCellLength + this.scrollView._listRef._headerLength;
       if (this.comments && this.comments.length) {
-        if (l < fullHeight - 50 && init) return;
+        // let offset = Math.min(0, l);
         this.scrollView.scrollToEnd();
       } else if (!this.comments || this.comments.length === 0) {
-        let offset = this.headerHeight - this.scrollHeight;
+        let offset = Math.max(0, this.headerHeight - this.scrollHeight);
         this.scrollView.scrollToOffset({ offset });
       }
     }, 200);

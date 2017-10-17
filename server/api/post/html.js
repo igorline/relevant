@@ -158,6 +158,14 @@ exports.generatePreview = (body, uri) => {
     author: null,
     'article:author': null,
   };
+  // ads milti element concotenation
+  const miltiElement = [
+    'news_keywords',
+    'keywords',
+    'article:tag',
+    'author',
+    'article:author'
+  ];
   const meta = $('meta');
   const $title = $('title');
   const keys = Object.keys(meta);
@@ -172,7 +180,9 @@ exports.generatePreview = (body, uri) => {
         || meta[key].attribs.itemprop === s)
       ) {
         if (!data[s]) data[s] = meta[key].attribs.content;
-        else data[s] += ', ' + meta[key].attribs.content;
+        else if (miltiElement.find(m => m === s)) {
+          data[s] += ', ' + meta[key].attribs.content;
+        }
       }
     });
   });
@@ -317,7 +327,6 @@ exports.generatePreview = (body, uri) => {
   //   console.log('found alt image', image);
   // }
 
-  // console.log(author)
 
   if (image && image.indexOf('http://') !== 0 &&
       image.indexOf('https://') !== 0) {

@@ -3,7 +3,7 @@ import * as types from '../actions/actionTypes';
 const initialState = {
   invest: 0,
   irrelevant: 0,
-  amount: 0,
+  amount: {},
   upvote: 0,
   parents: {}
 };
@@ -15,7 +15,10 @@ export default function auth(state = initialState, action) {
       return {
         ...state,
         [type]: state[type] + 1,
-        amount: action.payload.amount,
+        amount: {
+          ...state.amount,
+          [type]: action.payload.amount,
+        },
         parents: {
           ...state.parents,
           [type]: action.payload.parent

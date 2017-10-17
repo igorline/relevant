@@ -169,11 +169,11 @@ export default function (props) {
     }
 
     switch (singleActivity.type) {
-
       case 'upvote':
+        let coinText = singleActivity.coin ? 'you got a coin and ' : '';
         return (
           <Text style={styles.activityText}>
-            {renderName(singleActivity.byUser)} upvoted your post → you got a coin and your relevance increased by {amount}
+            {renderName(singleActivity.byUser)} upvoted your post → {coinText}your relevance increased by {amount}
           </Text>
         );
 

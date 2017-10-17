@@ -963,6 +963,7 @@
 				FBF8A93D1E6F3A50009404F2 /* Frameworks */,
 				AF49FD6F2E6CBDDD31DADCFC /* Pods */,
 				A715F48C62204E9582EAB6C3 /* Resources */,
+				FBD1A6C51F96559C002D2D57 /* Recovered References */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -1126,6 +1127,26 @@
 				FBBBF2051F8F134000F68218 /* libSafariViewManager.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		FBD1A6C51F96559C002D2D57 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				3E20E96A4BE64D4EB36FDE6A /* libRCTContacts.a */,
+				A1787E34623C4D149698AD8F /* libRNImagePicker.a */,
+				896F0A9D02424FBF979AE5E1 /* libRNShare.a */,
+				6E0991F2715D473780511B85 /* libRNSVG.a */,
+				8DC345E22A8C4EC3B7D1FC04 /* libToolTipMenu.a */,
+				225BA948531E4A8DABA2A505 /* libRNFIRAnalytics.a */,
+				7FF9B69421BD42B18F2F1E2C /* libRCTGoogleAnalyticsBridge.a */,
+				3125EB69E77341E28280B97B /* libRCTVideo.a */,
+				EB0EBF26102A47CBBCAB6075 /* libRNVectorIcons.a */,
+				6DB86F069A10404E9DA1C0FB /* libRCTOrientation.a */,
+				124E6D04C1EB46D0B367A9DA /* libRNFetchBlob.a */,
+				BDEA7658144542D2A4313AEC /* libCodePush.a */,
+				1657EF8EBCA44BD0B7103C18 /* libRCTActionSheet.a */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		FBDA02AA1EECBF8300789ED9 /* Products */ = {

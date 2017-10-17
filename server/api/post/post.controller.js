@@ -576,7 +576,9 @@ exports.create = (req, res) => {
     domain: req.body.domain,
     keywords,
 
-    payoutTime: process.env === 'test' ? now : now.setDate(now.getDate() + 1)
+    payoutTime: process.env.NODE_ENV === 'production' ?
+      now.setDate(now.getDate() + 3) :
+      new Date(now.getTime() + 1000 * 60 * 5),
   };
 
   // TODO WHY?
@@ -609,6 +611,7 @@ exports.create = (req, res) => {
   // create and populate meta post
   .then(() => newPost.upsertMetaPost())
   .then((metaPost) => {
+    console.log('created meta post ', metaPost);
     newPost.metaPost = metaPost._id;
     return User.findOne({ _id: newPost.user });
   })

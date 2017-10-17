@@ -137,6 +137,8 @@ class PostButtons extends Component {
     // DEBUG ANIMATION
     // this.props.actions.triggerAnimation('invest');
 
+    // this.props.actions.triggerAnimation('invest', { amount: 1 });
+
     // this.investButton.measureInWindow((x, y, w, h) => {
     //   let parent = { x, y, w, h };
     //   if (x + y + w + h === 0) return;
@@ -152,7 +154,12 @@ class PostButtons extends Component {
     )
     .then((results) => {
       if (results) {
-        this.props.actions.triggerAnimation('invest');
+        // this.props.actions.triggerAnimation('invest');
+        this.investButton.measureInWindow((x, y, w, h) => {
+          let parent = { x, y, w, h };
+          if (x + y + w + h === 0) return;
+          this.props.actions.triggerAnimation('upvote', { parent });
+        });
         setTimeout(() => {
           this.props.actions.reloadTab('read');
           let name = this.props.post.embeddedUser.name;

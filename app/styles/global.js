@@ -3,6 +3,7 @@ import {
   Dimensions,
   Platform
 } from 'react-native';
+import StatusBarSizeIOS from 'react-native-status-bar-size';
 
 const fullWidth = Dimensions.get('window').width;
 const fullHeight = Dimensions.get('window').height;
@@ -22,7 +23,26 @@ const borderGrey = '#E3E3E3';
 
 const IphoneHeader = 59;
 const AndroidHeader = 44;
-const headerHeight = Platform.OS === 'ios' ? IphoneHeader : AndroidHeader;
+
+function isIphoneX() {
+  let dimen = Dimensions.get('window');
+  return (
+    Platform.OS === 'ios' &&
+    !Platform.isPad &&
+    !Platform.isTVOS &&
+    (dimen.height === 812 || dimen.width === 812)
+  );
+}
+const IphoneX = isIphoneX();
+
+let headerHeight = Platform.OS === 'ios' ? IphoneHeader : AndroidHeader;
+let statusBar = 20;
+
+
+if (IphoneX) {
+  statusBar = 44;
+  headerHeight = 89;
+}
 
 const font = StyleSheet.create({
   font10: {
@@ -92,8 +112,8 @@ const font = StyleSheet.create({
     paddingTop: 0,
   },
   header: {
-    height: Platform.OS === 'ios' ? 59 : 44,
-    paddingTop: Platform.OS === 'ios' ? 20 : 0,
+    height: Platform.OS === 'ios' ? headerHeight : 44,
+    paddingTop: Platform.OS === 'ios' ? statusBar : 0,
     flexDirection: 'row',
     // justifyContent: 'space-between',
     alignItems: 'center',
@@ -572,5 +592,6 @@ export {
   headerHeight,
   mainPadding,
   smallScreen,
-  borderGrey
+  borderGrey,
+  IphoneX
 };

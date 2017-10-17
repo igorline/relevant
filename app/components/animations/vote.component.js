@@ -11,7 +11,7 @@ import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 let styles;
 let ENDY = fullHeight * 0.5;
 
-class Relevance extends Component {
+class Vote extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -78,10 +78,14 @@ class Relevance extends Component {
       source={icon}
     />);
 
-    // if (specialKey % 3) {
-    // 🤔🍀🌿☀️🌟✨🍥🎗🏆📈📚🔆🌐🔔💭
-      // img = (<Text style={{ fontSize: 24 }}>🌟</Text>);
-    // }
+    // let icon = require('../../assets/images/relevantcoin.png');
+
+    if (specialKey === 10) {
+      img = (<Image
+        style={[styles.coin, { zIndex: 10, width: 30, height: 30 }]}
+        source={require('../../assets/images/relevantcoin.png')}
+      />);
+    }
 
     return (
       <Animated.View
@@ -105,7 +109,7 @@ class Relevance extends Component {
   }
 }
 
-export default Relevance;
+export default Vote;
 
 const localStyles = StyleSheet.create({
   aniMoney: {
