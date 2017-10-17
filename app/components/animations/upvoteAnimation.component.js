@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as animationActions from '../../actions/animation.actions';
 import { globalStyles, fullHeight, fullWidth } from '../../styles/global';
-import Relevance from './relevant.component';
+import Vote from './vote.component';
 
 const localStyles = StyleSheet.create({
   moneyContainer: {
@@ -56,7 +56,7 @@ class UpvoteAnimation extends Component {
     this.clearEls();
     let newArr = [];
     for (let i = 0; i <= 10; i++) {
-      newArr.push(<Relevance
+      newArr.push(<Vote
         destroy={this.destroy}
         parent={this.parent}
         key={i}

@@ -25,7 +25,10 @@ let InvestSchema = new Schema({
   relevance: { type: Number, default: 0 },
   partialRelevance: { type: Number, default: 0 },
 
-  voteWeight: { type: Number, default: 0 }
+  voteWeight: { type: Number, default: 0 },
+
+  paidOut: { type: Boolean, default: false },
+  payoutDate: { type: Date },
 }, {
   timestamps: true
 });
@@ -59,7 +62,9 @@ InvestSchema.statics.createVote = async function updateEarnings(props) {
       relevantPoints: relevanceToAdd,
       post: post._id,
       ownPost: post.user === user._id,
-      voteWeight
+      voteWeight,
+      payoutDate: post.payoutDate,
+      paidOut: post.paidOut,
     },
     {
       new: true,

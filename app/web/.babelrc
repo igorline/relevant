@@ -14,7 +14,8 @@
     "production": {
       "plugins": [
         "espower",
-        "transform-runtime"
+        "transform-runtime",
+        "transform-remove-console"
       ],
     }
   },

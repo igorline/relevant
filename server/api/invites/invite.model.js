@@ -13,7 +13,7 @@ let InviteSchema = new Schema({
   status: { type: String },
   invitedBy: { type: String, ref: 'User' },
   registeredAs: { type: String, ref: 'User' },
-  invitedByString: { type: String }
+  invitedByString: { type: String },
 }, {
   timestamps: true
 });

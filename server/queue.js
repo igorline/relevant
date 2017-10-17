@@ -12,7 +12,7 @@ import RelevanceStats from './api/relevanceStats/relevanceStats.model';
 import pagerank from './utils/pagerank';
 import Invest from './api/invest/invest.model';
 import Treasury from './api/treasury/treasury.model';
-import Economy  from './utils/economy.js';
+import economy from './utils/economy.js';
 
 const extractor = require('unfluff');
 // daily relevance decay
@@ -33,7 +33,18 @@ q.on('timeout', (next, job) => {
 // TODO make a que that updates users stats once in a while
 // Stats.find({}).remove(() => {});
 
-function updateUserStats() {
+async function updateUserStats() {
+
+  try {
+    let rewardsAllocation = await economy.allocateRewards();
+    let updatedPosts = await economy.distributeRewards();
+    let payouts = await economy.distributeUserRewards(updatedPosts);
+
+  } catch(error) {
+    console.log('rewards error', error);
+  }
+
+
   User.find({}, { _id: 1, relevance: 1 })
   .exec((err, res) => {
     if (err || !res) {
@@ -70,7 +81,7 @@ function updateUserStats() {
     });
     q.start((queErr, results) => {
       if (queErr) return console.log(queErr);
-      return console.log('all done: ', results);
+      return console.log('done updating stats: ', results);
     });
   });
 }
@@ -411,11 +422,15 @@ function startBasicIncomeUpdate() {
   }, getNextUpdateTime());
 }
 
-function startStatsUpdate() {
+async function startStatsUpdate() {
   // taking too long - should move to diff thread?
   setInterval(updateUserStats, 60 * 60 * 1000);
+
   updateUserStats();
 }
+
+updateUserStats();
+startStatsUpdate();
 
 if (process.env.NODE_ENV === 'production') {
   updateUserStats();

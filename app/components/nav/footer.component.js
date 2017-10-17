@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import PropTypes from 'prop-types';
-import { globalStyles, fullWidth, blue, darkGrey, greyText } from '../../styles/global';
+import { globalStyles, fullWidth, blue, greyText, IphoneX } from '../../styles/global';
 import Percent from '../percent.component';
 
 let styles;
@@ -114,12 +114,13 @@ const localStyles = StyleSheet.create({
     position: 'absolute',
     width: fullWidth,
     bottom: 0,
-    height: 50,
+    height: IphoneX ? 83 : 50,
     flexDirection: 'row',
     alignItems: 'stretch',
     backgroundColor: 'white',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'black',
+    paddingBottom: IphoneX ? 33 : 0,
   },
   footerItem: {
     flex: 1,

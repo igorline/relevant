@@ -260,13 +260,13 @@ exports.create = async (req, res) => {
       throw new InvestException('You can not ' + type + 'your own post');
     }
 
-    if (COIN && user.balance < Math.abs(amount)) {
+    if (user.balance < Math.abs(amount)) {
       throw new InvestException('coin');
     }
 
-    if (!COIN && user.relevance < Math.abs(amount)) {
-      throw new InvestException('You do not have enough relevance to ' + type + '!');
-    }
+    // if (user.relevance < Math.abs(amount)) {
+    //   throw new InvestException('You do not have enough relevance to ' + type + '!');
+    // }
 
     let investment = await Invest.findOne({ investor: user._id, post: post._id });
 
@@ -322,7 +322,11 @@ exports.create = async (req, res) => {
     let adjust = 1;
     if (diff > 0) adjust = Math.pow(diff, 1 / 3) + 1;
     if (irrelevant) adjust *= -1;
-    adjust = Math.round(adjust);
+    // adjust = Math.round(adjust);
+    if (user.relevance < 1) {
+      adjust = 0;
+    }
+    // TEST THIS
     author.relevance += adjust;
 
     if (adjust !== 0) {
@@ -331,10 +335,13 @@ exports.create = async (req, res) => {
     }
 
     let coin;
-    if (COIN && amount > 0) {
-      author.balance += amount;
-      coin = amount;
-    }
+
+    // don't send coint to author on upvote
+    // add to reward fund instead
+    // if (amount > 0) {
+    //   author.balance += amount;
+    //   coin = amount;
+    // }
 
     console.log('adding ', adjust, ' relevance to ', author.name);
 
@@ -388,7 +395,7 @@ exports.create = async (req, res) => {
     existingInvestments.forEach(async investment => {
       try {
         let existingInvestor = await User.findOne({ _id: investment.investor }, 'relevance');
-        let ratio = 0.5 / existingInvestments.length;
+        let ratio = 1 / existingInvestments.length;
 
         let relevanceEarning = 0;
         let earnings;
@@ -397,6 +404,9 @@ exports.create = async (req, res) => {
           let diff = user.relevance - existingInvestor.relevance;
           relevanceEarning = 1;
           if (diff > 0) relevanceEarning = Math.pow(diff, 1 / 3) + 1;
+
+          // TODO: test this
+          if (user.relevance < 1) relevanceEarning = 0;
 
           let previousSign = investment.amount / Math.abs(investment.amount);
           let thisSign = amount / Math.abs(amount);
@@ -455,9 +465,9 @@ exports.create = async (req, res) => {
     // ------ get existing investment ------
     investmentExists = await investCheck(user, post);
 
-    // ------- everything is fine, deduct user's relevance ---
-    if (COIN) user.balance -= Math.abs(amount);
-    else user.relevance -= Math.abs(amount);
+    // ------- everything is fine, deduct user's balance ---
+    user.balance -= Math.abs(amount);
+    // else user.relevance -= Math.abs(amount);
 
 
     // ------ add or remove post to feed ------

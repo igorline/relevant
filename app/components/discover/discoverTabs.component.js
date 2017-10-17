@@ -103,7 +103,7 @@ class DiscoverTabs extends Component {
 
   renderScene(route) {
     let index = this.state.index;
-    let currentRoute = this.state.routes[index];
+    let currentRoute = this.state.routes[index] || {};
     if (!this.loaded) return <View key={route.key} />;
     switch (route.key) {
       case 'feed':
@@ -250,6 +250,7 @@ class DiscoverTabs extends Component {
           contentProps={{
             bounces: false,
             forceSetResponder: () => {
+              console.log('scrolling!')
               this.props.actions.scrolling(true);
               clearTimeout(this.scrollTimeout);
               this.scrollTimeout = setTimeout(
