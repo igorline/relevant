@@ -462,6 +462,20 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RCTUserDefaults;
 		};
+		FBD1A72A1F96B5CE002D2D57 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FBDC86AB1E8C391B00B6ADE1 /* BVLinearGradient.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 64AA15081EF7F30100718508;
+			remoteInfo = "BVLinearGradient-tvOS";
+		};
+		FBD1A7451F96B5CE002D2D57 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F1057B85D55E4582ADB07B86 /* RCTVideo.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 641E28441F0EEC8500443AF6;
+			remoteInfo = "RCTVideo-tvOS";
+		};
 		FBDA02D51EECBF8300789ED9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = FBDA02A91EECBF8300789ED9 /* RNSKBucket.xcodeproj */;
@@ -496,13 +510,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = BVLinearGradient;
-		};
-		FBDD087D1EBD982700ED6D09 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 567114987AC047DEB33536A1 /* RNVectorIcons.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = A39873CE1EA65EE60051E01A;
-			remoteInfo = "RNVectorIcons-tvOS";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -942,6 +949,7 @@
 				FBF8A93D1E6F3A50009404F2 /* Frameworks */,
 				AF49FD6F2E6CBDDD31DADCFC /* Pods */,
 				A715F48C62204E9582EAB6C3 /* Resources */,
+				FBD1A7261F96B5CD002D2D57 /* Recovered References */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -1025,6 +1033,7 @@
 			isa = PBXGroup;
 			children = (
 				FB0D883A1EB29E8600DEE4B8 /* libRCTVideo.a */,
+				FBD1A7461F96B5CE002D2D57 /* libRCTVideo.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1085,7 +1094,6 @@
 			isa = PBXGroup;
 			children = (
 				FB9067F51EB908180027FEA3 /* libRNVectorIcons.a */,
-				FBDD087E1EBD982700ED6D09 /* libRNVectorIcons-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1096,6 +1104,26 @@
 				FB983E341DA1E1E400DAF00D /* libRCTUserDefaults.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		FBD1A7261F96B5CD002D2D57 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				3E20E96A4BE64D4EB36FDE6A /* libRCTContacts.a */,
+				A1787E34623C4D149698AD8F /* libRNImagePicker.a */,
+				896F0A9D02424FBF979AE5E1 /* libRNShare.a */,
+				6E0991F2715D473780511B85 /* libRNSVG.a */,
+				8DC345E22A8C4EC3B7D1FC04 /* libToolTipMenu.a */,
+				225BA948531E4A8DABA2A505 /* libRNFIRAnalytics.a */,
+				7FF9B69421BD42B18F2F1E2C /* libRCTGoogleAnalyticsBridge.a */,
+				3125EB69E77341E28280B97B /* libRCTVideo.a */,
+				EB0EBF26102A47CBBCAB6075 /* libRNVectorIcons.a */,
+				6DB86F069A10404E9DA1C0FB /* libRCTOrientation.a */,
+				124E6D04C1EB46D0B367A9DA /* libRNFetchBlob.a */,
+				BDEA7658144542D2A4313AEC /* libCodePush.a */,
+				1657EF8EBCA44BD0B7103C18 /* libRCTActionSheet.a */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		FBDA02AA1EECBF8300789ED9 /* Products */ = {
@@ -1126,6 +1154,7 @@
 			isa = PBXGroup;
 			children = (
 				FBDC86B11E8C391B00B6ADE1 /* libBVLinearGradient.a */,
+				FBD1A72B1F96B5CE002D2D57 /* libBVLinearGradient.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1730,6 +1759,20 @@
 			remoteRef = FB983E331DA1E1E400DAF00D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FBD1A72B1F96B5CE002D2D57 /* libBVLinearGradient.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libBVLinearGradient.a;
+			remoteRef = FBD1A72A1F96B5CE002D2D57 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FBD1A7461F96B5CE002D2D57 /* libRCTVideo.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTVideo.a;
+			remoteRef = FBD1A7451F96B5CE002D2D57 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FBDA02D61EECBF8300789ED9 /* libRNSKBucket.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1756,13 +1799,6 @@
 			fileType = archive.ar;
 			path = libBVLinearGradient.a;
 			remoteRef = FBDC86B01E8C391B00B6ADE1 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		FBDD087E1EBD982700ED6D09 /* libRNVectorIcons-tvOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libRNVectorIcons-tvOS.a";
-			remoteRef = FBDD087D1EBD982700ED6D09 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
