@@ -65,7 +65,7 @@ export default class RequestInvite extends Component {
               </span> is a social news reader that values <span className="outline">quality</span> over clicks.
             </p>
             <p className="libre">
-              Join the community and help us build a better information environment for all.
+              Join the <span className="outline">community</span> and help us build a better information environment <span className="outline">for all</span>.
             </p>
               {/* <a href="http://www.apple.com" className="download">
                 <img src="/img/apple.png" />

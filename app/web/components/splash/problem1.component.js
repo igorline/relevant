@@ -11,24 +11,21 @@ export default class Problem extends Component {
   render () {
     return (
       <panel className={'grey'}>
+        <h1>The Promise of the Internet Betrayed</h1>
 
         <columns>
 
         <div className={'innerPanel'}>
 
           <p>
-  Once upon a time there was universal optimism about the web. Every tech company’s mission was to make the world a better place, and we believed them. 
-          </p>
-          <p>
-            The internet would revolutionize knowledge, social networks would spread democracy, and automation would reduce inequality.
+  Once upon a time there was universal optimism about the web. Every tech company’s mission was to make the world a better place, and we believed them — the internet would revolutionize knowledge, social networks would spread democracy, and automation would reduce inequality...
             <span className={'more'}
               onClick={() => this.setState({ more: !this.state.more })}
             >
 {/*              {this.state.more ? ' ...read less' : ' ...read more'}*/}
             </span>
           </p>
-
-          <h1 style={{ paddingTop: 20 }}>What happened to the Internet?</h1>
+          <p><b>What happened?</b></p>
 
 {/*
           <div style={{ display: this.state.more ? 'block' : 'none' }}>
