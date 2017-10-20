@@ -20,7 +20,7 @@ export default class Problem extends Component {
   Once upon a time there was universal optimism about the web. Every tech company’s mission was to make the world a better place, and we believed them. 
           </p>
           <p>
-  The internet would revolutionize knowledge, social networks would spread democracy, and automation would reduce inequality.
+            The internet would revolutionize knowledge, social networks would spread democracy, and automation would reduce inequality.
             <span className={'more'}
               onClick={() => this.setState({ more: !this.state.more })}
             >

@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 import * as animationActions from '../../actions/animation.actions';
 import { globalStyles, fullHeight, fullWidth } from '../../styles/global';
 import Vote from './vote.component';
+import Coin from './coinVote.component';
 
 const localStyles = StyleSheet.create({
   moneyContainer: {
@@ -27,6 +28,7 @@ class UpvoteAnimation extends Component {
     this.enabled = true;
     this.state = {
       investAni: [],
+      coinAni: [],
     };
     this.clearEls = this.clearEls.bind(this);
     this.destroy = this.destroy.bind(this);
@@ -35,6 +37,7 @@ class UpvoteAnimation extends Component {
   componentWillUpdate(next) {
     if (this.props.animation.upvote !== next.animation.upvote) {
       this.parent = next.animation.parents.upvote;
+      this.amount = Math.min(20, next.animation.amount.upvote) || 10;
       this.investAni();
     }
   }
@@ -44,17 +47,22 @@ class UpvoteAnimation extends Component {
   }
 
   clearEls() {
-    this.setState({ investAni: [] });
+    this.setState({ investAni: [], coinAni: [] });
   }
 
-  destroy(key) {
-    delete this.state.investAni[key];
-    this.setState({ thumbs: this.state.investAni });
+  destroy(key, coinKey) {
+    if (typeof key === 'number') {
+      delete this.state.investAni[key];
+    }
+    if (typeof coinKey === 'number') {
+      delete this.state.coinAni[coinKey];
+    }
   }
 
   investAni() {
-    this.clearEls();
+    // this.clearEls();
     let newArr = [];
+    let coinArr = [];
     for (let i = 0; i <= 10; i++) {
       newArr.push(<Vote
         destroy={this.destroy}
@@ -62,13 +70,24 @@ class UpvoteAnimation extends Component {
         key={i}
         specialKey={i}
       />);
-      this.setState({ investAni: newArr });
     }
+
+    for (let i = 0; i < this.amount; i++) {
+      coinArr.push(<Coin
+        destroy={this.destroy}
+        parent={this.parent}
+        amount={this.amount}
+        key={i}
+        specialKey={i}
+      />);
+    }
+    this.setState({ coinAni: coinArr, investAni: newArr });
   }
 
   render() {
     return (
       <View pointerEvents={'none'} style={styles.moneyContainer}>
+        {this.state.coinAni}
         {this.state.investAni}
       </View>
     );

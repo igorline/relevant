@@ -86,14 +86,17 @@ export default class topics extends Component {
         <TouchableHighlight
           onPress={() => this.props.action(topic)}
           underlayColor={'transparent'}
-          style={[styles.categoryItem, { backgroundColor: active ? '#4d4eff' : 'white' }]}
+          style={[
+            styles.categoryItem,
+            { backgroundColor: active ? '#4d4eff' : 'white' }
+          ]}
         >
           <View
             style={{
               alignItems: 'center',
             }}
           >
-            <Text style={[active ? { color: 'white' } : null, styles.darkGrey]}>{topic.emoji}{topic.categoryName}</Text>
+            <Text style={[active ? { color: 'white' } : null]}>{Platform.OS === 'android' ? '#' : topic.emoji + ' '}{topic.categoryName}</Text>
           </View>
         </TouchableHighlight>
         {innerView}

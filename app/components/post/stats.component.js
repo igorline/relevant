@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { globalStyles, fullWidth } from '../../styles/global';
+import { globalStyles, fullWidth, smallScreen } from '../../styles/global';
 import Percent from '../percent.component';
 import { numbers } from '../../utils';
 import * as navigationActions from '../../actions/navigation.actions';
@@ -56,7 +56,6 @@ class Stats extends Component {
 
   render() {
     let { type, entity } = this.props;
-    let smallScreen = fullWidth <= 320 || false;
 
     let statsStyle = [
       { fontSize: 17, lineHeight: 17 },
@@ -129,7 +128,7 @@ class Stats extends Component {
       return null;
     };
 
-    let br = <View style={styles.statInner}><Text style={statsStyle}> • </Text></View>;
+    let br = <View style={styles.statInner}><Text style={statsStyle}>{smallScreen ? '•' : ' • '}</Text></View>;
 
     return (
       <View

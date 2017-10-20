@@ -118,7 +118,7 @@ export default class StatCategory extends Component {
         label: 'Rank'
       },
       { el: (
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-start'}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
           <Text style={[styles.statNumber, styles.statRowNumber]}>
             {Math.round(untilNext * 100)}
           </Text>

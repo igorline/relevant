@@ -9,9 +9,9 @@ import {
 import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 
 let styles;
-let ENDY = fullHeight * 0.7;
+let ENDY = fullHeight * 0.5;
 
-class Dollar extends Component {
+class Coin extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -20,31 +20,35 @@ class Dollar extends Component {
   }
 
   componentWillMount() {
-    let ENDX = -(fullWidth / 3) + ((Math.random() - 0.5) * 50);
+    let { x, y, w, h } = this.props.parent;
+    let ENDX = Math.random() * 50;
 
     this.y = this.state.position.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, ENDY],
+      outputRange: [y, y - ENDY],
       easing: Easing.in(Easing.ease)
     });
 
     this.x = this.state.position.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, ENDX],
+      inputRange: [0, 0.5 * Math.random(), 1],
+      outputRange: [x, x + ENDX / 2, x + ENDX],
       easing: Easing.out(Easing.ease),
     });
 
-    this.opacity = 1;
-    // this.opacity = this.state.position.interpolate({
-    //   inputRange: [0.8, 1],
-    //   outputRange: [1, 0],
-    //   easing: Easing.out(Easing.ease),
-    //   extrapolate: 'clamp'
-    // });
+    this.opacity = this.state.position.interpolate({
+      inputRange: [0.7, 1],
+      outputRange: [1, 0],
+      extrapolate: 'clamp'
+    });
+
+    this.rotateAnimation = this.state.position.interpolate({
+      inputRange: [0, 1 / 4, 1 / 3, 1 / 2, 1],
+      outputRange: ['0deg', '-2deg', '0deg', '2deg', '0deg']
+    });
 
     this.scale = this.state.position.interpolate({
-      inputRange: [0, 0.5, 0.9, 1],
-      outputRange: [0, 1, 1, 0],
+      inputRange: [0, 0.2, 0.3, 1],
+      outputRange: [0, 1.2, 1, 1.5],
       extrapolate: 'clamp'
     });
   }
@@ -58,7 +62,7 @@ class Dollar extends Component {
       toValue: 1,
       delay: r * 30 + i * 100 * 10 / amount,
       duration: 1000,
-    }).start(() => this.props.destroy(i));
+    }).start(() => this.props.destroy(null, i));
   }
 
   render() {
@@ -68,7 +72,7 @@ class Dollar extends Component {
     let icon = require('../../assets/images/relevantcoin.png');
 
     img = (<Image
-      style={[styles.coin, { width: 30, height: 30 }]}
+      style={[styles.coin, { width: 20, height: 20 }]}
       source={icon}
     />);
 
@@ -93,13 +97,13 @@ class Dollar extends Component {
   }
 }
 
-export default Dollar;
+export default Coin;
 
 const localStyles = StyleSheet.create({
   aniMoney: {
     position: 'absolute',
-    top: 25,
-    right: 45,
+    top: 0,
+    left: 0,
     backgroundColor: 'transparent'
   },
 });

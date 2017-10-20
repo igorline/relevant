@@ -11,6 +11,7 @@ let userDefaults;
 utils.api.env();
 let Analytics;
 let Platform;
+let okToRequestPermissions = true;;
 
 if (process.env.WEB != 'true') {
   rn = require('react-native');
@@ -177,7 +178,6 @@ export function setCurrentTooltip(step) {
 
 export function setOnboardingStep(step) {
   return async dispatch => {
-    dispatch(setCurrentTooltip(step));
     return fetch(process.env.API_SERVER + '/api/user/onboarding/' + step, {
       credentials: 'include',
       method: 'GET',
@@ -403,45 +403,10 @@ export function updateUser(user, preventLocalUpdate) {
 
 export function addDeviceToken(user) {
   return (dispatch) => {
-    // PushNotification.checkPermissions((results) => {
-    //   console.log(results, 'permissions ios');
-    //   if (!results.alert) {
-    //     console.log('requestPermissions');
-    //     PushNotification.requestPermissions();
-    //   } else {
-    //     userDefaults.get('deviceToken', APP_GROUP_ID)
-    //     .then(storedDeviceToken => {
-    //       if (storedDeviceToken) {
-    //         dispatch(setDeviceToken(storedDeviceToken));
-    //         let newUser = user;
-    //         if (user.deviceTokens) {
-    //           if (user.deviceTokens.indexOf(storedDeviceToken) < 0) {
-    //             newUser.deviceTokens.push(storedDeviceToken);
-    //             console.log('adding devicetoken to user here', storedDeviceToken);
-    //             dispatch(updateUser(newUser));
-    //           } else {
-    //             console.log(user.deviceTokens);
-    //             console.log('devicetoken already present in user');
-    //           }
-    //         } else {
-    //           newUser.deviceTokens = [storedDeviceToken];
-    //           console.log('adding devicetoken to user object', storedDeviceToken);
-    //           dispatch(updateUser(newUser));
-    //         }
-    //       } else {
-    //         console.log('no userdefault devicetoken');
-    //       }
-    //     })
-    //     .catch(err => {
-    //       if (err) console.log('get devicetoken error', err);
-    //     });
-    //   }
-    // });
-
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
       onRegister: function(token) {
-        // console.log( 'TOKEN:', token );
+        console.log( 'TOKEN:', token );
       },
 
       // (required) Called when a remote or local notification is opened or received
@@ -463,11 +428,24 @@ export function addDeviceToken(user) {
         sound: true
       },
       popInitialNotification: true,
-      requestPermissions: true,
+      requestPermissions: false,
     });
 
+    if (Platform.os === 'ios') {
+      if (okToRequestPermissions) {
+        okToRequestPermissions = false;
+        PushNotification.requestPermissions()
+        .then(() => {
+          okToRequestPermissions = true;
+          dispatch(navigationActions.tooltipReady(true));
+        });
+      }
+    } else {
+      dispatch(navigationActions.tooltipReady(true));
+    }
+
     PushNotification.onRegister = (deviceToken) => {
-      // console.log(deviceToken);
+      console.log('registered notification');
       let token = deviceToken.token;
       userDefaults.set('deviceToken', token, APP_GROUP_ID);
       dispatch(setDeviceToken(token));
@@ -500,7 +478,6 @@ export function removeDeviceToken(auth) {
       if (index > -1) {
         user.deviceTokens.splice(index, 1);
         dispatch(updateUser(user, true));
-      } else {
       }
     }
   };

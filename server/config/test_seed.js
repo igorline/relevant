@@ -31,7 +31,7 @@ let dummyUsers = [
     password: 'test',
     salt: '1juLhuAPx0BY9ZrWz2B7Vg==',
     relevance: 100,
-    balance: 10,
+    balance: 100000,
     role: 'user',
     __v: 224,
   },
@@ -113,8 +113,8 @@ let cleanupData = () => {
     { author: { $in: dummies } },
   ] }).remove();
 
-  let clearPosts = Post.findOne({ title: 'Test post title' }).remove().exec() || null;
-  let clearMeta = MetaPost.findOne({ title: 'Test post title' }).remove().exec() || null;
+  let clearPosts = Post.find({ title: 'Test post title' }).remove().exec() || null;
+  let clearMeta = MetaPost.find({ title: 'Test post title' }).remove().exec() || null;
 
   return Promise.all([
     ...clearUsers,
@@ -122,7 +122,8 @@ let cleanupData = () => {
     ...clearFeed,
     clearPosts,
     clearNotifications,
-    clearUpvotes
+    clearUpvotes,
+    clearMeta
   ]);
 };
 

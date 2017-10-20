@@ -4,17 +4,19 @@ import {
   View,
   StyleSheet,
   TouchableHighlight,
-  Platform
+  Platform,
+  Text,
+  TouchableOpacity
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { globalStyles, darkGrey, fullHeight, fullWidth } from '../../styles/global';
+import { globalStyles, darkGrey, fullHeight, fullWidth, blue, smallScreen } from '../../styles/global';
 import * as authActions from '../../actions/auth.actions';
 import * as navigationActions from '../../actions/navigation.actions';
 import * as helper from './tooltip.helper';
 
 let styles;
-const TOOLTIP_MARGIN = 10;
+const TOOLTIP_MARGIN = smallScreen ? 4 : 10;
 const TOOLTIP_WIDTH = fullWidth - (2 * TOOLTIP_MARGIN);
 
 class Tooltip extends Component {
@@ -35,9 +37,11 @@ class Tooltip extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (!this.props.auth.user && next.auth.user) {
+    if (!this.props.tooltip.ready && next.tooltip.ready) {
+    // if (!this.props.auth.user && next.auth.user) {
       this.initTooltipData(next);
     }
+
 
     if (!this.props.auth.user) return;
     this.step = this.props.auth.user.onboarding;
@@ -85,7 +89,7 @@ class Tooltip extends Component {
 
     setTimeout(() => {
       this.props.actions.setCurrentTooltip(props.auth.user.onboarding);
-    }, 1000);
+    }, 1100);
   }
 
   nextOnboarding() {
@@ -95,17 +99,21 @@ class Tooltip extends Component {
 
     this.props.actions.showTooltip(null);
 
-    // if (this.step >= 3) {
-    //   this.props.actions.setOnboardingStep(0);
-    // }
     if (index === this.step) {
       let inc = 1;
       if (this.props.tooltip.onboarding[index + 1] === 'shareTip' && Platform.OS === 'android') {
         inc = 2;
       }
       this.step += inc;
+
+      this.props.actions.tooltipReady(false);
       this.props.actions.setOnboardingStep(this.step);
     }
+
+
+    // if (this.step >= 3) {
+    //   this.props.actions.setOnboardingStep(0);
+    // }
   }
 
   render() {
@@ -118,6 +126,12 @@ class Tooltip extends Component {
     let transform = [{ scale: this.state.scale }];
 
     let parent = tooltip.parent;
+
+    if (parent.y < fullHeight / 2) {
+      tooltip.vertical = 'bottom';
+    } else {
+      tooltip.vertical = 'top';
+    }
 
     if (tooltip.vertical === 'bottom') {
       transform = [...transform,
@@ -136,7 +150,7 @@ class Tooltip extends Component {
 
     if (tooltip.vertical === 'top') {
       transform = [...transform,
-        { translateY: - this.state.height / 2 }
+        { translateY: -this.state.height / 2 }
       ];
       style = {
         ...style,
@@ -146,7 +160,7 @@ class Tooltip extends Component {
       arrowStyle = [
         ...arrowStyle,
         styles.arrowBottom,
-        { bottom: 5 }
+        { bottom: Platform.OS === 'ios' ? 9 : 5 }
       ];
     }
 
@@ -157,7 +171,7 @@ class Tooltip extends Component {
 
       let x = this.state.scale.interpolate({
         inputRange: [0, 1],
-        outputRange: [0, - TOOLTIP_WIDTH + TOOLTIP_WIDTH / 2 + o + TOOLTIP_MARGIN],
+        outputRange: [0, -TOOLTIP_WIDTH + TOOLTIP_WIDTH / 2 + o + TOOLTIP_MARGIN],
       });
 
       transform = [
@@ -201,19 +215,32 @@ class Tooltip extends Component {
       ];
     }
 
+    let button = (
+      <TouchableOpacity
+        style={[styles.mediumButton, { borderColor: 'white' }]}
+        onPress={this.nextOnboarding}
+        underlayColor={blue}
+      >
+        <Text style={[styles.mediumButtonText, { color: 'white' }]}>Got It</Text>
+      </TouchableOpacity>
+    );
+    let dismiss = helper.data[tooltip.name].noButton || false;
+
     return (
       <TouchableHighlight
-        underlayColor={'hsla(240,70%,50%,0.4)'}
         style={styles.overlay}
-        onPress={this.nextOnboarding}
+        onPress={dismiss ? this.nextOnboarding : null}
+        underlayColor={blue}
+        // pointerEvents={dismiss ? 'all' : 'none'}
       >
         <Animated.View
           style={{
             flex: 1,
-            backgroundColor: 'hsla(240,70%,0%,0.6)',
+            backgroundColor: 'hsla(0,0%,100%,0.3)',
             // backgroundColor: 'hsla(240,70%,50%,0.4)',
             opacity: this.state.opacity
           }}
+          // pointerEvents={dismiss ? 'all' : 'none'}
         >
           <Animated.View
             style={[styles.tooltip, style]}
@@ -224,15 +251,18 @@ class Tooltip extends Component {
           >
             <View style={[styles.arrow, ...arrowStyle]} />
             <TouchableHighlight
-              underlayColor={'transparent'}
               style={styles.tooltipCard}
               onPress={this.nextOnboarding}
+              underlayColor={blue}
             >
-              {helper.text[tooltip.name]({
-                ...this.props,
-                style: styles.tooltipText,
-                ...tooltip
-              })}
+              <View>
+                {helper.text[tooltip.name]({
+                  ...this.props,
+                  style: styles.tooltipText,
+                  ...tooltip
+                })}
+                {helper.data[tooltip.name].noButton ? null : button}
+              </View>
             </TouchableHighlight>
           </Animated.View>
         </Animated.View>
@@ -252,9 +282,11 @@ let localStyles = StyleSheet.create({
     bottom: 0,
   },
   tooltipCard: {
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
+    backgroundColor: blue,
     padding: 15,
     paddingVertical: 20,
+    paddingTop: 25,
     zIndex: 1000000,
     width: TOOLTIP_WIDTH,
   },
@@ -263,12 +295,13 @@ let localStyles = StyleSheet.create({
     paddingVertical: 10,
   },
   tooltipText: {
-    fontWeight: '100',
+    // fontWeight: '100',
     fontSize: 15,
     lineHeight: 20,
-    color: darkGrey,
-    flexDirection: 'row',
-    alignItems: 'flex-end'
+    // color: darkGrey,
+    color: 'white',
+    // flexDirection: 'row',
+    // alignItems: 'center'
   },
   arrow: {
     width: 10,
@@ -277,7 +310,9 @@ let localStyles = StyleSheet.create({
     transform: Platform.OS === 'android' ?
       [{ rotate: '45deg' }] :
       [{ rotate: '35deg' }, { skewY: '45deg' }, { translateY: 3 }],
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
+    backgroundColor: blue,
+
   },
   arrowBottom: {
     shadowOffset: { width: 1, height: 1 },

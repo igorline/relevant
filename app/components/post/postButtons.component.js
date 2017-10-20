@@ -79,10 +79,15 @@ class PostButtons extends Component {
     this.irrelevantPrompt = this.irrelevantPrompt.bind(this);
     this.goToPost = this.goToPost.bind(this);
     this.showInvestors = this.showInvestors.bind(this);
+    this.initTooltips = this.initTooltips.bind(this);
+    this.toggleTooltip = this.toggleTooltip.bind(this);
   }
 
   componentDidMount() {
     if (this.props.post.link) this.menu = this.linkMenu;
+    if (this.props.tooltip) {
+      this.initTooltips();
+    }
   }
 
   onShare() {
@@ -91,6 +96,28 @@ class PostButtons extends Component {
       url: this.props.post.link ? this.props.post.link : 'http://relevant-community.herokuapp.com/',
       subject: 'Share Link',
       message: this.props.post.title ? 'Relevant post: ' + this.props.post.title : 'Relevant post:'
+    });
+  }
+
+  initTooltips() {
+    ['vote'].forEach(name => {
+      this.props.actions.setTooltipData({
+        name,
+        toggle: () => this.toggleTooltip(name)
+      });
+    });
+  }
+
+  toggleTooltip(name) {
+    if (!this.investButton) return;
+    this.investButton.measureInWindow((x, y, w, h) => {
+      let parent = { x, y, w, h };
+      if (x + y + w + h === 0) return;
+      this.props.actions.setTooltipData({
+        name,
+        parent
+      });
+      this.props.actions.showTooltip(name);
     });
   }
 
@@ -104,28 +131,28 @@ class PostButtons extends Component {
     });
   }
 
-  toggleTooltip() {
-    let your = 'upvote';
-    if (this.props.post.user._id === this.props.auth.user._id) {
-      your = 'post';
-    }
-    this.tooltipData = {
-      vertical: 'top',
-      horizontal: 'left',
-      horizontalOffset: 3,
-      name: 'earnings',
-      verticalOffset: 16,
-      text: 'This is how much\nrelevance you earned\nfrom your ' + your
-    };
+  // toggleTooltip() {
+  //   let your = 'upvote';
+  //   if (this.props.post.user._id === this.props.auth.user._id) {
+  //     your = 'post';
+  //   }
+  //   this.tooltipData = {
+  //     vertical: 'top',
+  //     horizontal: 'left',
+  //     horizontalOffset: 3,
+  //     name: 'earnings',
+  //     verticalOffset: 16,
+  //     text: 'This is how much\nrelevance you earned\nfrom your ' + your
+  //   };
 
-    this.tooltipParent.measureInWindow((x, y, w, h) => {
-      let parent = { x, y, w, h };
-      this.props.actions.showTooltip({
-        ...this.tooltipData,
-        parent
-      });
-    });
-  }
+  //   this.tooltipParent.measureInWindow((x, y, w, h) => {
+  //     let parent = { x, y, w, h };
+  //     this.props.actions.showTooltip({
+  //       ...this.tooltipData,
+  //       parent
+  //     });
+  //   });
+  // }
 
   toggleModal(bool) {
     if (!bool) bool = !this.state.modalVisible;
@@ -136,13 +163,18 @@ class PostButtons extends Component {
     let investAmount = 1;
     // DEBUG ANIMATION
     // this.props.actions.triggerAnimation('invest');
-
-    // this.props.actions.triggerAnimation('invest', { amount: 1 });
+    if (!this.props.auth || !this.props.auth.user) return;
+    let user = this.props.auth.user;
+    if (user.balance <= 0) {
+      return Alert.alert('You don\'t have enough coins to vote 🙁', 'But don\'t worry, you should get a payout in a few days!');
+    }
+    let investment = Math.floor(Math.max(1, user.balance * 0.07));
+    // this.props.actions.triggerAnimation('invest', { amount: investment });
 
     // this.investButton.measureInWindow((x, y, w, h) => {
     //   let parent = { x, y, w, h };
     //   if (x + y + w + h === 0) return;
-    //   this.props.actions.triggerAnimation('upvote', { parent });
+    //   this.props.actions.triggerAnimation('upvote', { parent, amount: investment });
     // });
     // return;
 
@@ -154,12 +186,13 @@ class PostButtons extends Component {
     )
     .then((results) => {
       if (results) {
-        // this.props.actions.triggerAnimation('invest');
+
         this.investButton.measureInWindow((x, y, w, h) => {
           let parent = { x, y, w, h };
           if (x + y + w + h === 0) return;
-          this.props.actions.triggerAnimation('upvote', { parent });
+          this.props.actions.triggerAnimation('upvote', { parent, amount: investment });
         });
+
         setTimeout(() => {
           this.props.actions.reloadTab('read');
           let name = this.props.post.embeddedUser.name;
@@ -436,7 +469,7 @@ class PostButtons extends Component {
 
     let stat = (
       <TouchableOpacity
-        onPress={this.showInvestors}
+        onPress={() => totalVotes !== 0 ? this.showInvestors() : this.toggleTooltip('vote')}
       >
         <View
           style={{
@@ -521,7 +554,9 @@ class PostButtons extends Component {
 
     return (<View style={styles.postButtonsContainer}>
       <View style={styles.postButtons}>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center' }}
+        >
           {investButtonEl}
           {stat}
           {irrelevantButton}

@@ -47,7 +47,7 @@ class Profile extends Component {
     this.needsReload = new Date().getTime();
     this.tabs = [
       { id: 0, title: 'Posts' },
-      { id: 1, title: 'Investments' },
+      { id: 1, title: 'Upvotes' },
     ];
     this.loaded = false;
     this.scrollTo = this.scrollTo.bind(this);
@@ -223,7 +223,7 @@ class Profile extends Component {
         }
         if (tab.id === 1) {
           tab.title = 'Upvotes ' + Upvotes;
-          tab.type = 'investments';
+          tab.type = 'upvotes';
         }
 
         listEl.push(<CustomListView

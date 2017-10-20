@@ -136,7 +136,7 @@ class Discover extends Component {
     }
   }
 
-  renderRow(rowData, view) {
+  renderRow(rowData, view, i) {
     let type = this.myTabs[view].type;
     if (view !== 2) {
       let posts = [];
@@ -146,7 +146,9 @@ class Discover extends Component {
 
       let showReposts = false;
       if (type === 'new') showReposts = true;
+
       return (<Post
+        tooltip={parseInt(i) === 0 || false}
         metaPost={metaPost}
         showReposts={showReposts}
         commentary={posts}

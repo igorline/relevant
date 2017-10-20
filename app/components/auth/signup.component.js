@@ -293,7 +293,7 @@ class SignUp extends Component {
           >
             By clicking Next, you agree to our{' '}
             <Text
-              style={styles.active}
+              style={[styles.font12, styles.active]}
               onPress={() =>
                 this.props.actions.goToUrl('https://relevant.community/eula.html')
               }

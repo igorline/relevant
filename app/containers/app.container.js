@@ -364,6 +364,8 @@ class Application extends Component {
       this.props.actions.getNotificationCount();
       this.props.actions.getFeedCount();
 
+      this.props.actions.tooltipReady(true);
+
       PushNotification.setApplicationIconBadgeNumber(0);
 
       // refresh after 5 minutes of inactivity
