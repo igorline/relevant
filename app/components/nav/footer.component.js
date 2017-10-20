@@ -48,7 +48,7 @@ export default class Footer extends Component {
     if (tab.title === 'Stats' && Platform.OS === 'ios') {
       fontAdjust = { fontSize: 15, lineHeight: 35 };
     }
-    let icon = (<Text style={[styles.icon, styles.textCenter, fontAdjust]}>{tab.icon}</Text>);
+    let icon = (<Text style={[styles.icon, styles.textCenter, fontAdjust, active ? styles.footerTextActive : null]}>{tab.icon}</Text>);
     let title = (
       <Text style={[styles.footerText, active || activeText ? styles.footerTextActive : null]}>
         {tab.title}
@@ -147,7 +147,12 @@ const localStyles = StyleSheet.create({
   },
   icon: {
     fontSize: 20,
-    color: 'black'
+    color: greyText,
+    // height: 26,
+    // width: 20,
+    fontFamily: Platform.OS === 'android' ? 'AndroidEmoji' : 'Georgia',
+    // lineHeight: 26,
+    // color: blue,
   },
   activeIcon: {
   },

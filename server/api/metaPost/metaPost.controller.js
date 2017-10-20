@@ -1,7 +1,6 @@
 import MetaPost from './metaPost.model';
 import Post from '../post/post.model';
 
-
 // MetaPost.collection.dropIndexes(function (err, results) {
 //   console.log(err);
 // });
@@ -111,7 +110,7 @@ exports.index = async (req, res) => {
   let sort = req.query.sort || null;
   let category = req.query.category || null;
   if (category === '') category = null;
-  let query = null;
+  let query = {};
   let tagsArr = null;
   let sortQuery;
   let commentarySort = { postDate: -1 };
@@ -129,6 +128,8 @@ exports.index = async (req, res) => {
       tagsArr = tags.split(',');
       query = { $or: [{ tags: { $in: tagsArr } }, { categories: { $in: tagsArr } }] };
     }
+
+    console.log(sortQuery);
 
     posts = await MetaPost.find(query)
     // TODO - limit the commenatry and paginate / inf scroll it on backend

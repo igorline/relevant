@@ -9,6 +9,7 @@ let Notification = require('../notification/notification.model');
 let Invest = require('./invest.model');
 let Relevance = require('../relevance/relevance.model');
 // let Feed = require('../feed/feed.model');
+let Treasury = require('../treasury/treasury.model');
 
 let InvestEvents = new EventEmitter();
 
@@ -466,9 +467,13 @@ exports.create = async (req, res) => {
     investmentExists = await investCheck(user, post);
 
     // ------- everything is fine, deduct user's balance ---
-    user.balance -= Math.abs(amount);
-    // else user.relevance -= Math.abs(amount);
+    // user.balance -= Math.abs(amount);
+    let payment = Math.floor(Math.max(1, user.balance * 0.07));
+    user.balance -= payment;
 
+    // send payment back to reward fund
+    let treasuryUpdate = await Treasury.findOneAndUpdate({}, { $inc: { rewardFund: payment } }, { new: true });
+    // else user.relevance -= Math.abs(amount);
 
     // ------ add or remove post to feed ------
     // await updateUserFeed(user, post, irrelevant);

@@ -13,6 +13,7 @@ import pagerank from './utils/pagerank';
 import Invest from './api/invest/invest.model';
 import Treasury from './api/treasury/treasury.model';
 import economy from './utils/economy.js';
+import { PAYOUT_FREQUENCY } from './config/globalConstants';
 
 const extractor = require('unfluff');
 // daily relevance decay
@@ -34,16 +35,6 @@ q.on('timeout', (next, job) => {
 // Stats.find({}).remove(() => {});
 
 async function updateUserStats() {
-
-  try {
-    let rewardsAllocation = await economy.allocateRewards();
-    let updatedPosts = await economy.distributeRewards();
-    let payouts = await economy.distributeUserRewards(updatedPosts);
-
-  } catch(error) {
-    console.log('rewards error', error);
-  }
-
 
   User.find({}, { _id: 1, relevance: 1 })
   .exec((err, res) => {
@@ -422,15 +413,25 @@ function startBasicIncomeUpdate() {
   }, getNextUpdateTime());
 }
 
-async function startStatsUpdate() {
+function startStatsUpdate() {
   // taking too long - should move to diff thread?
   setInterval(updateUserStats, 60 * 60 * 1000);
-
   updateUserStats();
 }
 
-updateUserStats();
-startStatsUpdate();
+async function updateRewards() {
+  await economy.rewards();
+}
+
+function startRewards() {
+  // taking too long - should move to diff thread?
+  setInterval(updateRewards, PAYOUT_FREQUENCY);
+  updateRewards();
+}
+
+
+// updateUserStats();
+// startStatsUpdate();
 
 if (process.env.NODE_ENV === 'production') {
   updateUserStats();

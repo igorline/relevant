@@ -264,10 +264,10 @@ export default function (props) {
       color = { color: 'red' };
       icon = require('../../assets/images/rdown.png');
     }
-
     if (singleActivity.coin) {
       coin = (
         <TouchableOpacity
+          key={singleActivity._id}
           onPress={() => toggleTooltip('activity')}
           allowFontScaling={false}
           style={styles.textRow}
@@ -278,7 +278,7 @@ export default function (props) {
             source={require('../../assets/images/coinup.png')}
           />
           <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
-            {Math.abs(numbers.abbreviateNumber(singleActivity.coin))}
+            {numbers.abbreviateNumber(Math.abs(singleActivity.coin))}
             { !smallScreen && singleActivity.amount ?
               <Text style={styles.darkGrey}>{'•'}</Text> : null}
           </Text>

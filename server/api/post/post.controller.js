@@ -14,6 +14,8 @@ import mail from '../../mail';
 import Notification from '../notification/notification.model';
 import Invest from '../invest/invest.model';
 
+import { PAYOUT_TIME } from '../../config/globalConstants';
+
 require('../../processing/posts');
 // Post.collection.createIndex({ title: 'text', shortText: 'text', description: 'text', keywords: 'text', tags: 'text'});
 // Post.collection.indexes(function (err, indexes) {
@@ -547,6 +549,16 @@ exports.create = (req, res) => {
   let link = req.body.link;
 
   let now = new Date();
+  let payoutDate = new Date();
+
+  let payoutTime = process.env.NODE_ENV === 'production' ?
+      new Date(now.getTime() + PAYOUT_TIME) :
+      // TODO remove this in case of dev on live server
+      new Date(payoutDate.getTime() + 1000 * 60 * 5); // 5 minutes when in dev mode for testing
+
+  if (process.env.NODE_ENV === 'test' && req.body.payoutTime) {
+    payoutTime = req.body.payoutTime;
+  }
 
   let newPostObj = {
     link,
@@ -576,9 +588,7 @@ exports.create = (req, res) => {
     domain: req.body.domain,
     keywords,
 
-    payoutTime: process.env.NODE_ENV === 'production' ?
-      now.setDate(now.getDate() + 3) :
-      new Date(now.getTime() + 1000 * 60 * 5),
+    payoutTime
   };
 
   // TODO WHY?
@@ -611,7 +621,6 @@ exports.create = (req, res) => {
   // create and populate meta post
   .then(() => newPost.upsertMetaPost())
   .then((metaPost) => {
-    console.log('created meta post ', metaPost);
     newPost.metaPost = metaPost._id;
     return User.findOne({ _id: newPost.user });
   })
@@ -624,8 +633,6 @@ exports.create = (req, res) => {
     return newPost.save();
   })
   .then((savedPost) => {
-    console.log('saved post ', savedPost._id);
-
     // update meta post rank async
     MetaPost.updateRank(savedPost.metaPost);
     // update user post count async

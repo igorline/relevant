@@ -11,7 +11,8 @@ import {
   SET_VIEW,
   TOGGLE_TOPICS,
   SCROLL,
-  SET_TOOLTIP_DATA
+  SET_TOOLTIP_DATA,
+  TOOLTIP_READY
 } from './actionTypes';
 
 let dismissKeyboard;
@@ -89,6 +90,14 @@ export function setView(type, view) {
   };
 }
 
+
+export function tooltipReady(ready) {
+  return {
+    type: TOOLTIP_READY,
+    payload: ready
+  };
+}
+
 export function setTooltipData(data) {
   return {
     type: SET_TOOLTIP_DATA,
@@ -100,6 +109,22 @@ export function showTooltip(name) {
   return {
     type: SHOW_TOOLTIP,
     payload: name
+  };
+}
+
+
+export function createToggleAction(name, el) {
+  return dispatch => {
+    if (!el) return;
+    el.measureInWindow((x, y, w, h) => {
+      let parent = { x, y, w, h };
+      if (x + y + w + h === 0) return;
+      dispatch(setTooltipData({
+        name,
+        parent
+      }));
+      dispatch(showTooltip(name));
+    });
   };
 }
 
@@ -165,8 +190,10 @@ export function goToUrl(url) {
           // tintColor: '#ffffff', // optional
           // barTintColor: '#ffffff' // optional
         });
+        // dispatch(tooltipReady());
       })
       .catch(() => {
+        // dispatch(tooltipReady());
         dispatch(push({
           key: 'articleView',
           component: 'articleView',

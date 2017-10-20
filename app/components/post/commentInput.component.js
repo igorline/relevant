@@ -9,7 +9,7 @@ import {
   TouchableHighlight,
   Platform
 } from 'react-native';
-import { globalStyles, greyText } from '../../styles/global';
+import { globalStyles, greyText, mainPadding } from '../../styles/global';
 import * as utils from '../../utils';
 import TextBody from './textBody.component';
 
@@ -178,7 +178,7 @@ const localStyles = StyleSheet.create({
     height: 25,
     width: 25,
     borderRadius: 12.5,
-    marginLeft: 15,
+    marginLeft: mainPadding,
   }
 });
 

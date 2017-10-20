@@ -12,7 +12,7 @@ import {
   Platform
 } from 'react-native';
 import Prompt from 'react-native-prompt';
-import { globalStyles, fullWidth } from '../../styles/global';
+import { globalStyles, fullWidth, fullHeight, smallScreen } from '../../styles/global';
 
 let styles;
 
@@ -20,11 +20,12 @@ class Auth extends Component {
   constructor(props, context) {
     super(props, context);
     let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    this.slides = [1];
+    this.slides = [1, 2, 3, 4];
     this.state = {
       visibleHeight: Dimensions.get('window').height,
       xOffset: 0,
       dataSource: ds.cloneWithRows(this.slides),
+      currentIndex: 0
     };
     this.scrollToPage = this.scrollToPage.bind(this);
     this.signup = this.signup.bind(this);
@@ -33,10 +34,20 @@ class Auth extends Component {
     this.listview = null;
     this.changeRow = this.changeRow.bind(this);
     this.renderRow = this.renderRow.bind(this);
+    this.onScrollEnd = this.onScrollEnd.bind(this);
   }
 
   componentDidMount() {
     setTimeout(() => this.setState({ changed: [false, false, false] }), 100);
+  }
+
+  onScrollEnd(e) {
+    let contentOffset = e.nativeEvent.contentOffset;
+    let viewSize = e.nativeEvent.layoutMeasurement;
+
+    // Divide the horizontal offset by the width of the view to see which page is visible
+    let pageNum = Math.floor(contentOffset.x / viewSize.width);
+    this.setState({ currentIndex: pageNum });
   }
 
   login() {
@@ -100,14 +111,7 @@ class Auth extends Component {
     if (!this.slides) return indicator;
     if (this.slides.length) {
       this.slides.forEach((slide, i) => {
-        let active = false;
-
-        if (this.state.currentIndex) {
-          if (this.state.currentIndex[i]) active = true;
-          if (this.state.changed && this.state.changed[i]) active = false;
-          if (i === 0 && this.state.currentIndex[0] && !this.state.currentIndex[1]) active = true;
-        } else if (i === 0) active = true;
-
+        let active = this.state.currentIndex === i;
         indicator.push(<TouchableWithoutFeedback onPress={() => this.scrollToPage(i)} key={i} >
           <View style={[styles.indicatorItem, { backgroundColor: active ? 'black' : 'white' }]} />
         </TouchableWithoutFeedback>);
@@ -129,29 +133,61 @@ class Auth extends Component {
   renderRow(data, section, i) {
     // <View style={{ height: 24, width: 115 }}><Text style={[styles.strokeText, styles.adjust]}>Relevant</Text></View>&nbsp;
 
+    function sentance(text, special) {
+      let words = text.split(/\s/);
+      let l = words.length - 1;
+      return words.map((t, i) => {
+        if (special.find(w => t === w)) {
+          return (
+            <Text key={i + t} allowFontScaling={false} style={[styles.strokeText, styles.relevant]}>
+              {t + (l === i ? '' : ' ')}
+            </Text>
+          );
+        }
+        return (<Text key={i + t} allowFontScaling={false} style={[styles.slideText]}>
+          {t + (l === i ? '' : ' ')}
+        </Text>);
+      });
+    }
+
     switch (i) {
       case '0':
-        return (<View key={i} style={styles.authSlide}>
-          <Text allowFontScaling={false} style={{ fontFamily: 'Georgia', fontSize: 36, lineHeight: 46 }}>
-            <Text allowFontScaling={false} style={[styles.strokeText, styles.relevant]}>Relevant</Text> is a social news reader that emphasizes quality over quantity.
-          </Text>
-        </View>);
+        return (
+          <View>
+            <View key={i} style={styles.authSlide}>
+              {sentance('Relevant is a social news reader that values quality over clicks', ['Relevant', 'quality', 'clicks'])}
+              <Text allowFontScaling={false} style={styles.slideText}></Text>
+            </View>
+            <View style={styles.splashEmojiContainer}><Text style={styles.splashEmoji}>✌️</Text></View>
+          </View>
+        );
       case '1':
-        return (<View key={i} style={styles.authSlide}>
-          <Text allowFontScaling={false} style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
-            Post <Text
-              allowFontScaling={false}
-              style={[styles.strokeText, styles.adjust]}
-            >
-            insightful
-            </Text> commentary and watch your <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>relevance</Text> rise.
-          </Text>
-        </View>);
+        return (
+          <View>
+            <View key={i} style={styles.authSlide}>
+              {sentance('Discover relevant content and silence the noise of the attention economy', ['relevant', 'noise', 'content'])}
+              <Text allowFontScaling={false} style={styles.slideText}></Text>
+            </View>
+          </View>
+        );
       case '2':
+        return (
+          <View>
+            <View key={i} style={styles.authSlide}>
+              {sentance('Earn rewards by sharing articles that are worth reading', [ 'rewards', 'Earn', 'worth', 'reading'])}
+              <Text allowFontScaling={false} style={styles.slideText}></Text>
+            </View>
+{/*            <Image
+              resizeMode={'contain'}
+              style={[styles.r, { width: 60, height: 60, marginTop: 10, alignSelf: 'center' }]}
+              source={require('../../assets/images/relevantcoin.png')}
+            />*/}
+          </View>
+        );
+      case '3':
         return (<View key={i} style={styles.authSlide}>
-          <Text allowFontScaling={false} style={{ fontFamily: 'Georgia', fontSize: 26, lineHeight: 36 }}>
-            <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>Invest</Text> in relevant posts to curate <Text allowFontScaling={false} style={[styles.strokeText, styles.adjust]}>your</Text> feed and watch your money grow.
-          </Text>
+          {sentance('Join the community and help us build a better information environment for all', ['Join', 'community', 'for', 'all'])}
+          <Text allowFontScaling={false} style={styles.slideText}></Text>
         </View>);
       default: return <View key={i} style={styles.authSlide} />;
     }
@@ -160,28 +196,28 @@ class Auth extends Component {
   render() {
     const { isAuthenticated } = this.props.auth;
 
-    // let intro = (
-    //   <View style={{ flex: 1, justifyContent: 'center' }}>
-    //     <ListView
-    //       horizontal
-    //       scrollEnabled
-    //       ref={(c) => { this.listview = c; }}
-    //       decelerationRate={'fast'}
-    //       showsHorizontalScrollIndicator={false}
-    //       automaticallyAdjustContentInsets={false}
-    //       snapToInterval={(fullWidth)}
-    //       contentContainerStyle={styles.authSlidesParent}
-    //       onChangeVisibleRows={this.changeRow}
-    //       renderRow={this.renderRow}
-    //       dataSource={this.state.dataSource}
-    //       onScroll={this.checkScroll}
-    //     />
-    //     <View style={styles.indicatorParent}>
-    //       {this.renderIndicator()}
-    //     </View>
-    //   </View>
-    // );
-
+    let intro = (
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+        <ListView
+          horizontal
+          scrollEnabled
+          ref={(c) => { this.listview = c; }}
+          decelerationRate={'fast'}
+          showsHorizontalScrollIndicator={false}
+          automaticallyAdjustContentInsets={false}
+          snapToInterval={(fullWidth)}
+          contentContainerStyle={styles.authSlidesParent}
+          renderRow={this.renderRow}
+          dataSource={this.state.dataSource}
+          onMomentumScrollEnd={this.onScrollEnd}
+          pagingEnabled
+        />
+        <View style={styles.indicatorParent}>
+          {this.renderIndicator()}
+        </View>
+      </View>
+    );
+{/* 
     let intro = (
       <View style={{ flex: 1, paddingHorizontal: 20, alignItems: 'stretch' }}>
         <Image
@@ -190,7 +226,7 @@ class Auth extends Component {
           source={require('../../assets/images/intro3.jpg')}
         />
       </View>
-    );
+    ); */}
 
     if (this.props.share) intro = <View style={{ flex: 1 }} />;
 
@@ -266,17 +302,36 @@ const localStyles = StyleSheet.create({
     fontSize: 38,
     lineHeight: 30,
   },
+  strokeText: {
+    fontSize: smallScreen ? 32 : 38,
+    fontFamily: 'HelveticaNeueLTStd-BdOu',
+    lineHeight: Platform.OS === 'ios' ? (smallScreen ? 47 : 55) : (smallScreen ? 39 : 46),
+    // lineHeight: 45,rr
+    // flexDirection: 'row',
+    // alignSelf: 'flex-start'
+    // marginTop: 8
+  },
+  slideText: {
+    fontFamily: 'Georgia',
+    fontSize: smallScreen ? 30 : 36,
+    lineHeight: smallScreen ? 40 : 46
+  },
   relevant: {
-    height: 30,
-    width: 70,
+    height: smallScreen ? 40 : 46,
+    // width: 200,
   },
   authSlidesParent: {
+    marginTop: 20,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     flexWrap: 'nowrap',
     justifyContent: 'flex-start'
   },
   authSlide: {
+    flexDirection: 'row',
+    // alignItems: 'flex-start',
+    // justifyContent: 'center',
+    flexWrap: 'wrap',
     width: (fullWidth - 40),
     marginHorizontal: 20,
   },
@@ -284,20 +339,20 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 40
+    paddingBottom: 30
   },
   indicatorItem: {
     marginLeft: 5,
     marginRight: 5,
-    height: 10,
-    width: 10,
-    borderRadius: 5,
+    height: 8,
+    width: 8,
+    borderRadius: 4,
     borderColor: 'black',
     borderWidth: 1,
   },
   authDivider: {
     height: 5,
-    marginTop: 20,
+    marginTop: fullHeight / 40,
     marginBottom: 0,
     borderTopWidth: 1,
     borderBottomWidth: 1,
@@ -325,7 +380,20 @@ const localStyles = StyleSheet.create({
   },
   authPadding: {
     paddingHorizontal: 20,
+  },
+  splashEmojiContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1
+  },
+  splashEmoji: {
+    alignSelf: 'center',
+    // justifyContent: 'center',
+    fontSize: Platform.OS === 'android' ? 50 : 65,
+    fontFamily: Platform.OS === 'android' ? 'NotoColorEmoji' : 'Georgia',
   }
+
 });
 
 styles = { ...localStyles, ...globalStyles };

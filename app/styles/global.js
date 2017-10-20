@@ -10,7 +10,7 @@ const fullHeight = Dimensions.get('window').height;
 
 const smallScreen = fullWidth <= 320 || false;
 
-const mainPadding = 15;
+const mainPadding = smallScreen ? 10 : 15;
 // const mainPadding = 10;
 
 const darkGrey = '#242425';
@@ -170,10 +170,6 @@ const font = StyleSheet.create({
     letterSpacing: 0.25,
     color: darkGrey,
   },
-  strokeText: {
-    fontFamily: 'HelveticaNeueLTStd-BdOu',
-    // lineHeight: 30,
-  },
   halfLetterSpacing: {
     letterSpacing: 0.5,
   },
@@ -267,7 +263,8 @@ const layout = StyleSheet.create({
   },
   fieldsInput: {
     height: 50,
-    fontFamily: 'Georgia'
+    fontFamily: 'Arial',
+    paddingHorizontal: 0,
   },
   largeButton: {
     height: 50,
@@ -282,16 +279,18 @@ const layout = StyleSheet.create({
     fontSize: 29,
   },
   mediumButton: {
-    height: 50,
-    borderWidth: 2,
+    height: 35,
+    // borderWidth: 2,
     borderColor: '#3E3EFF',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    marginTop: 20,
   },
   mediumButtonText: {
     fontFamily: 'BebasNeueRelevantRegular',
     color: '#3E3EFF',
-    fontSize: 15,
+    fontSize: 17,
   },
   onlineUser: {
     justifyContent: 'space-between',
@@ -365,6 +364,9 @@ const layout = StyleSheet.create({
   },
   emoji: {
     marginTop: -3,
+  },
+  emojiFont: {
+    fontFamily: Platform.OS === 'android' ? 'AndroidEmoji' : 'Georgia',
   },
   tagBox: {
     backgroundColor: '#F0F0F0',
@@ -462,6 +464,7 @@ const layout = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     backgroundColor: '#ffffff',
+    paddingHorizontal: 0,
   },
   flex1: {
     flex: 1

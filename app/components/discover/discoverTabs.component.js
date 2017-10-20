@@ -250,7 +250,6 @@ class DiscoverTabs extends Component {
           contentProps={{
             bounces: false,
             forceSetResponder: () => {
-              console.log('scrolling!')
               this.props.actions.scrolling(true);
               clearTimeout(this.scrollTimeout);
               this.scrollTimeout = setTimeout(

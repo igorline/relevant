@@ -74,18 +74,17 @@ class Vote extends Component {
     let icon = require('../../assets/images/icons/upvoteActive.png');
     img = (<Image
       resizeMode={'contain'}
-      style={[styles.r, { width: 24, height: 24 }]}
+      style={[styles.r, { width: 28, height: 28 }]}
       source={icon}
     />);
 
     // let icon = require('../../assets/images/relevantcoin.png');
-
-    if (specialKey === 10) {
-      img = (<Image
-        style={[styles.coin, { zIndex: 10, width: 30, height: 30 }]}
-        source={require('../../assets/images/relevantcoin.png')}
-      />);
-    }
+    // if (specialKey === 10) {
+    //   img = (<Image
+    //     style={[styles.coin, { zIndex: 10, width: 30, height: 30 }]}
+    //     source={require('../../assets/images/relevantcoin.png')}
+    //   />);
+    // }
 
     return (
       <Animated.View

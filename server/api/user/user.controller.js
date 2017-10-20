@@ -26,7 +26,6 @@ import Feed from '../feed/feed.model';
 // User.findOneAndUpdate({ _id: 'phillip' }, { role: 'user' }).exec();
 // User.findOneAndUpdate({ _id: 'balasan' }, { role: 'admin' }).exec();
 // User.findOneAndUpdate({ _id: 'test' }, { role: 'admin' }).exec();
-
 // async function notifications() {
 //   try {
 //     let users = await User.find({ 'deviceTokens.0': { $exists: true } });
@@ -39,6 +38,8 @@ import Feed from '../feed/feed.model';
 //   }
 // }
 // notifications();
+
+User.update({}, { onboarding: 0 }, { multi: true }).exec();
 
 let validationError = (res, err) => {
   console.log(err);
@@ -339,7 +340,7 @@ exports.list = async (req, res) => {
  * Creates a new user
  */
 exports.create = async (req, res) => {
-  let startingAmount = 5;
+  let startingAmount = 10;
   let token;
 
   try {

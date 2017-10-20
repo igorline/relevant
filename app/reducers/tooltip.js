@@ -10,12 +10,20 @@ const initialState = {
   next: null,
   data: {},
   showing: {},
-  onboarding: ['relevance', 'coin', 'subscriptions', 'shareTip'],
-  current: null
+  onboarding: ['vote', 'relevance', 'coin', 'subscriptions', 'shareTip'],
+  current: null,
+  ready: false
 };
 
 export default function tooltip(state = initialState, action) {
   switch (action.type) {
+
+    case types.TOOLTIP_READY: {
+      return {
+        ...state,
+        ready: action.payload,
+      };
+    }
 
     case types.SET_ONBOARDING_STEP: {
       return {

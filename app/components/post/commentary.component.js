@@ -139,6 +139,7 @@ export default class Commentary extends Component {
             />
             <PostButtons
               post={post}
+              tooltip={index === 0 ? this.props.tooltip : null}
               comments={post.comments || null}
               actions={this.props.actions}
               auth={this.props.auth}

@@ -55,7 +55,7 @@ class ShareContainer extends Component {
         key: 'createPost',
         component: 'createPost',
         title: 'Share on Relevant',
-        next: 'Post',
+        next: 'Next',
         back: 'Cancel',
       }, 0, 'home');
       // need to to do this because the navigator renderer
@@ -64,7 +64,7 @@ class ShareContainer extends Component {
         key: 'createPost',
         component: 'createPost',
         title: 'Share on Relevant',
-        next: 'Post',
+        next: 'Next',
         left: 'Cancel',
         back: true,
       }, 0, 'createPost');

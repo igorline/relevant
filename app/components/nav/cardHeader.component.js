@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Search from './search.component';
-import { globalStyles, fullWidth, darkGrey, mainPadding } from '../../styles/global';
+import { globalStyles, fullWidth, darkGrey, mainPadding, smallScreen } from '../../styles/global';
 import Stats from '../post/stats.component';
 
 
@@ -48,7 +48,7 @@ class CardHeader extends Component {
           onPress={() => this.props.actions.toggleTopics()}
           style={{ padding: 0, paddingHorizontal: 10 }}
         >
-          <Icon name="ios-options" size={23} style={{ height: 27 }} color={darkGrey} />
+          <Icon name="ios-options" size={23} style={{ height: 26 }} color={darkGrey} />
         </TouchableOpacity>
       );
     }
@@ -184,7 +184,7 @@ class CardHeader extends Component {
     let clipped = title;
 
     if (title && title.length > 20) {
-      clipped = title.substring(0, 18);
+      clipped = title.substring(0, smallScreen ? 14 : 18);
       clipped += '...';
     }
 

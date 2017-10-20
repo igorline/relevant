@@ -15,8 +15,8 @@ let postId;
 let postId2;
 let savedPost;
 
-
 function getPostObj() {
+  let now = new Date();
   return {
     link: 'https://www.washingtonpost.com/news/checkpoint/wp/2016/05/12/three-deaths-linked-to-recent-navy-seal-training-classes/?hpid=hp_hp-top-table-main_navyseals-118pm%3Ahomepage%2Fstory',
     body: 'Hotties',
@@ -24,6 +24,7 @@ function getPostObj() {
     description: 'Test post description',
     image: 'https://static.boredpanda.com/blog/wp-content/uploads/2016/08/cute-kittens-30-57b30ad41bc90__605.jpg',
     tags: ['tag1', 'tag2'],
+    payoutTime: now
   };
 }
 
@@ -152,24 +153,7 @@ test.serial('Payout Upvote', async (t) => {
   // .post('/auth/local')
   // .send({ name: 'dummy1', password: 'test' });
   try {
-    let rewardsAllocation = await economy.allocateRewards();
-    console.log("\x1b[32m", 'allocated rewards ', rewardsAllocation);
-    console.log("\x1b[0m", '');
-
-    let updatedPosts = await economy.distributeRewards();
-    let displayPosts = updatedPosts.map(p => ({
-      title: p.title,
-      payout: p.payout,
-      payoutShare: p.payoutShare,
-      relevance: p.relevance,
-    }));
-    console.log("\x1b[32m", 'distributed rewards to posts ', displayPosts);
-
-    console.log("\x1b[0m", 'reset');
-
-    let payouts = await economy.distributeUserRewards(updatedPosts);
-    console.log("\x1b[32m", payouts);
-
+    await economy.rewards();
   } catch (err) {
     console.log(err);
   }
@@ -177,11 +161,12 @@ test.serial('Payout Upvote', async (t) => {
 
 });
 
-test.serial('Delete post', async (t) => {
-  t.plan(1);
+// test.serial('Delete post', async (t) => {
+//   t.plan(1);
 
-  const res = await r
-  .delete(`/api/post/${postId}?access_token=${authorToken}`);
+//   const res = await r
+//   .delete(`/api/post/${postId}?access_token=${authorToken}`);
 
-  t.is(res.status, 200);
-});
+//   t.is(res.status, 200);
+// });
+

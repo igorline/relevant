@@ -54,7 +54,7 @@ class Post extends PureComponent {
     if (!this.props.auth.user) return null;
 
     let blocked = <View style={{ height: StyleSheet.hairlineWidth }} />;
-    post = this.props.post;
+    post = this.props.metaPost || this.props.post;
 
     if (!post || !post._id) {
       return blocked;
