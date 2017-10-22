@@ -9,6 +9,7 @@ import * as tagActions from '../../../actions/tag.actions';
 import * as utils from '../../../utils';
 
 import AvatarBox from '../common/avatarbox.component';
+import Avatar from '../common/avatar.component';
 import PostInfo from '../post/postinfo.component';
 
 if (process.env.BROWSER === true) {
@@ -124,8 +125,9 @@ class CreatePostContainer extends Component {
   }
 
   setMention(user) {
+     // replace the partial @username with @username plus a nbsp
     this.lengthDelta = user._id.length - this.mention.length + 2;
-    const body = this.state.body.replace(this.mention, '@' + user._id + '\u00A0');
+    const body = this.state.body.replace(this.mention, '@' + user._id + '\u00A0'); // nbsp
     this.setState({ body });
     this.props.actions.setUserSearch([]);
   }
@@ -220,19 +222,20 @@ class CreatePostContainer extends Component {
   renderUserSuggestion(users) {
     let inner = users.map((user, i) => (
       <button
-        style={{ display: 'block', cursor: 'pointer' }}
         key={i}
         onClick={() => this.setMention(user)}
       >
-        {user._id}
+        <Avatar user={user} nolink />
+        <span className="username">{user._id}</span>
       </button>
     ));
 
     if (inner.length > 0) {
-      this.userSuggestion = (<div>
-        <h4 style={{ margin: 0 }}>suggested user{inner.length > 1 ? 's' : ''}</h4>
-        {inner}
-      </div>);
+      this.userSuggestion = (
+        <div className="suggestedUsers">
+          {inner}
+        </div>
+      );
     } else {
       this.userSuggestion = null;
     }
@@ -247,17 +250,15 @@ class CreatePostContainer extends Component {
         {category.emoji}&nbsp;{category.categoryName}
       </option>
     ));
-    this.categories = (<div style={{ margin: '10px 0' }}>
-      <h4 style={{ margin: 0 }}>select category</h4>
+    this.categories = (
       <select
-        style={{ display: 'block' }}
         onChange={(val) => {
           this.setState({ category: JSON.parse(val.target.value) });
         }}
       >
         {inner}
       </select>
-    </div>);
+    );
   }
 
   renderPreview(newState) {
@@ -280,25 +281,23 @@ class CreatePostContainer extends Component {
           onChange={this.handleBodyChange}
           lengthDelta={this.lengthDelta}
         />
-        <div>
+        <div className="createOptions">
           {this.state.urlPreview && !this.state.addedTextFromLink &&
             <button onClick={this.addTextFromLink} className="addTextFromLink">
               Add text from link
             </button>
           }
           {this.userSuggestion}
-          {this.state.urlPreview &&
-            <div>
-              {this.categories}
-            </div>
-          }
+          <div>
+            {this.categories}
+            <button
+              onClick={() => this.createPost()}
+              disabled={!this.state.category}
+            >
+              Create Post
+            </button>
+          </div>
         </div>
-        <button
-          onClick={() => this.createPost()}
-          disabled={!this.state.category}
-        >
-          Create Post
-        </button>
       </div>
     );
   }
