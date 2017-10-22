@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import ContentEditable from '../common/contenteditable.component';
+import ContentEditable from '../common/contentEditable.component';
 import * as userActions from '../../../actions/user.actions';
 import * as postActions from '../../../actions/createPost.actions';
 import * as tagActions from '../../../actions/tag.actions';
 import * as utils from '../../../utils';
 
 import AvatarBox from '../common/avatarbox.component';
-import Avatar from '../common/avatar.component';
 import PostInfo from '../post/postinfo.component';
+import UserSuggestion from './userSuggestion.component';
 
 if (process.env.BROWSER === true) {
   require('../post/post.css');
@@ -36,6 +36,7 @@ class CreatePostContainer extends Component {
     this.renderCategories = this.renderCategories.bind(this);
     this.renderPreview = this.renderPreview.bind(this);
     this.createPost = this.createPost.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.state = {
       body: '',
       category: '',
@@ -117,6 +118,20 @@ class CreatePostContainer extends Component {
 
   handleChange(field, data) {
     this.setState({ [field]: data });
+  }
+
+  handleKeyDown(e) {
+    // if (this.)
+    switch (e.keyCode) {
+      case 38: // up
+        break;
+      case 40: // down
+        break;
+      default:
+        break;
+    }
+    console.log(e.keyCode);
+    return true;
   }
 
   handleBodyChange(e) {
@@ -219,28 +234,6 @@ class CreatePostContainer extends Component {
     });
   }
 
-  renderUserSuggestion(users) {
-    let inner = users.map((user, i) => (
-      <button
-        key={i}
-        onClick={() => this.setMention(user)}
-      >
-        <Avatar user={user} nolink />
-        <span className="username">{user._id}</span>
-      </button>
-    ));
-
-    if (inner.length > 0) {
-      this.userSuggestion = (
-        <div className="suggestedUsers">
-          {inner}
-        </div>
-      );
-    } else {
-      this.userSuggestion = null;
-    }
-  }
-
   renderCategories(categories) {
     let inner = categories.map((category, i) => (
       <option
@@ -279,15 +272,19 @@ class CreatePostContainer extends Component {
           className="editor"
           body={this.state.body}
           onChange={this.handleBodyChange}
+          onKeyDown={this.handleKeyDown}
           lengthDelta={this.lengthDelta}
         />
         <div className="createOptions">
-          {this.state.urlPreview && !this.state.addedTextFromLink &&
-            <button onClick={this.addTextFromLink} className="addTextFromLink">
-              Add text from link
-            </button>
-          }
           {this.userSuggestion}
+          <UserSuggestion users={this.props.users} />
+          <div>
+            {this.state.urlPreview && !this.state.addedTextFromLink &&
+              <button onClick={this.addTextFromLink} className="addTextFromLink">
+                Add text from link
+              </button>
+            }
+          </div>
           <div>
             {this.categories}
             <button

@@ -127,7 +127,7 @@ export default class ContentEditable extends React.Component {
   constructor() {
     super();
     this.emitChange = this.emitChange.bind(this);
-    this.handleKeydown = this.handleKeydown.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   componentDidUpdate() {
@@ -149,8 +149,12 @@ export default class ContentEditable extends React.Component {
     }
   }
 
-  handleKeydown(e) {
+  handleKeyDown(e) {
+    if (this.props.onKeyDown && this.props.onKeyDown(e) === false) {
+      return false;
+    }
     this.hitEnter = e.keyCode === 13;
+    return true;
   }
 
   emitChange(e) {
@@ -174,7 +178,7 @@ export default class ContentEditable extends React.Component {
       role="textbox"
       ref={(e) => this.htmlEl = e}
       onInput={this.emitChange}
-      onKeyDown={this.handleKeydown}
+      onKeyDown={this.handleKeyDown}
       onBlur={this.props.onBlur || this.emitChange}
       onPaste={onPaste}
       contentEditable={!this.props.disabled}

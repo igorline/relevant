@@ -17,6 +17,10 @@
       color: #3E3EFF;
       font-weight: normal;
     }
+    outline: 0;
+    &:focus {
+      border-color: #454444;
+    }
   }
   .addTextFromLink {
     color: #3E3EFF;
@@ -42,10 +46,18 @@
 
 .createOptions {
   position: relative;
-  padding-top: 0;
-  padding-left: 5px;
+  padding: 5px 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  select {
+    padding: 10px;
+    height: 30px;
+    min-width: 130px;
+  }
 }
-.suggestedUsers {
+.userSuggestion {
   position: absolute;
   top: -1px;
   left: 5px;
@@ -55,6 +67,7 @@
   overflow-x: hidden;
   border: 1px solid #bbb;
   background: white;
+  border-radius: 2px;
   button {
     display: block;
     height: auto;
@@ -67,6 +80,9 @@
     font-weight: 300;
     font-size: 15px;
     padding-top: 5px;
+    &:hover, .selected {
+      background-color: #ddd;
+    }
     .username {
       position: relative;
       top: -9px;
