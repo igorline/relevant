@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Link } from 'react-router';
 import Avatar from './avatar.component';
 import Modal from '../common/modal';
 import ShadowButton from '../common/ShadowButton';
 import * as authActions from '../../../actions/auth.actions';
-import { Link } from 'react-router';
 
 if (process.env.BROWSER === true) {
   require('./header.css');
@@ -79,28 +79,25 @@ class Header extends Component {
           <Avatar user={this.props.user} />
         </div>
       );
-    } else {
-      return (
-        <div>
-          <a onClick={() => this.setState({ modal: true })} >Login</a>
-        </div>
-      );
     }
+    return (
+      <div>
+        <a onClick={() => this.setState({ modal: true })} >Login</a>
+      </div>
+    );
   }
 
   renderPostButton() {
-    if (this.props.user) {
-      return (
-        <div>
-          <Link to={'/post/new'}>
-            Create Post
-          </Link>
-        </div>
-      );
-    }
-    else {
-      return (<div></div>);
-    }
+    // if (this.props.user) {
+    //   return (
+    //     <div>
+    //       <Link to={'/post/new'}>
+    //         Create Post
+    //       </Link>
+    //     </div>
+    //   );
+    // }
+    return <div />;
   }
 
   render() {
