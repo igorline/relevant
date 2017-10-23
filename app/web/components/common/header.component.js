@@ -92,13 +92,13 @@ class Header extends Component {
     return (
       <div className="headerContainer">
         <header>
-          <div></div>
-          <div>
-            <Link to={this.props.isAuthenticated ? '/home' : '/'}>
-              <img src={'/img/logo-white.svg'} className={'logo'} alt={'Relevant'} />
-            </Link>
-          </div>
-          {this.renderLoginButton()}
+{/*          <div></div>
+*/}          <div>
+{/*            <Link to={this.props.isAuthenticated ? '/home' : '/'}>
+*/}              <img src={'/img/logo-white.svg'} className={'logo'} alt={'Relevant'} />
+{/*            </Link>
+*/}          </div>
+          {/*this.renderLoginButton()*/}
           {this.renderModal()}
         </header>
       </div>
