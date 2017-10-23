@@ -104,7 +104,7 @@ class Header extends Component {
               <img src={'/img/logo-white.svg'} className={'logo'} alt={'Relevant'} />
             </Link>
           </div>
-          {desktopApp ? this.renderLoginButton() : null}
+          {desktopApp ? this.renderLoginButton() : <div></div>}
           {this.renderModal()}
         </header>
       </div>
