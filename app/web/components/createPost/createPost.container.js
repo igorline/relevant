@@ -80,9 +80,12 @@ class CreatePostContainer extends Component {
   }
 
   async createPost() {
+    const allTags = this.tags.concat(this.props.tags.selectedTags.map(tag => tag._id));
+    const tags = Array.from(new Set(allTags));
+
     let post = {
       link: this.state.postUrl || this.props.postUrl,
-      tags: this.tags,
+      tags,
       body: this.state.body,
       title: this.state.urlPreview ? this.state.urlPreview.title : null,
       description: this.state.urlPreview ? this.state.urlPreview.description : null,
@@ -195,6 +198,7 @@ class CreatePostContainer extends Component {
       return null;
     })
     .filter(el => el !== null);
+
 
     let bodyMentions = words.map((word) => {
       if (word.match(/^@\S+/g)) {
