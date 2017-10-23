@@ -16,6 +16,7 @@ import * as investActions from '../../../actions/invest.actions';
 import * as navigationActions from '../../../actions/navigation.actions';
 import * as utils from '../../../utils';
 
+import CreatePost from '../createPost/createPost.container';
 import DiscoverTabs from './discoverTabs.component';
 import DiscoverPosts from './discoverPosts.component';
 import DiscoverUsers from './discoverUsers.component';
@@ -118,6 +119,7 @@ export class Discover extends Component {
     }
     return (
       <div className="discoverContainer postContainer">
+        <CreatePost {...this.props} />
         {tag &&
           <h1>{tag}</h1>
         }
@@ -133,11 +135,12 @@ export class Discover extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state)
+  // console.log(state)
   return {
     auth: state.auth,
     user: state.user,
     posts: state.posts,
+    tags: state.tags,
     error: state.error.universal,
     investments: state.investments,
   };

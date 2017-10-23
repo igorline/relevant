@@ -8,6 +8,7 @@ import * as postActions from '../../../actions/createPost.actions';
 import * as tagActions from '../../../actions/tag.actions';
 import * as utils from '../../../utils';
 
+import CreatePostTeaser from './createPostTeaser.component';
 import AvatarBox from '../common/avatarbox.component';
 import PostInfo from '../post/postinfo.component';
 import UserSearch from './userSearch.component';
@@ -265,6 +266,14 @@ class CreatePostContainer extends Component {
 
   render() {
     // const placeholderText = this.state.urlPreview ? textPlaceholder : urlPlaceholder;
+    if (!this.state.active) {
+      return (
+        <CreatePostTeaser
+          user={this.props.auth.user}
+          onClick={() => this.setState({ active: true })}
+        />
+      );
+    }
     return (
       <div className="postContainer createPostContainer">
         <div className="urlPreview">
