@@ -104,7 +104,7 @@ export default class MissionText extends Component {
 
 
             <div className={'diagramContainer'}>
-              <img src="/img/virtuous.svg" />
+              <img src="/img/virtuous1.svg" />
             </div>
 
 
