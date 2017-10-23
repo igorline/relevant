@@ -21,6 +21,11 @@
     &:focus, &.active {
       border-color: #454444;
     }
+    &:empty:before {
+      content: attr(placeholder);
+      display: block;
+      color: #888888;
+    }
   }
   .addTextFromLink {
     color: #3E3EFF;

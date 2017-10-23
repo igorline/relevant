@@ -23,8 +23,8 @@ if (process.env.BROWSER === true) {
 // eslint-disable-next-line no-useless-escape, max-len
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,16}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
 
-// const urlPlaceholder = 'What\'s relevant?  Add a link to post commentary';
-// const textPlaceholder = 'Enter your commentary';
+const urlPlaceholder = 'What\'s relevant?  Add a link to post commentary';
+const textPlaceholder = 'Enter your commentary';
 
 class CreatePostContainer extends Component {
   constructor(props) {
@@ -265,7 +265,7 @@ class CreatePostContainer extends Component {
   }
 
   render() {
-    // const placeholderText = this.state.urlPreview ? textPlaceholder : urlPlaceholder;
+    const placeholder = this.state.urlPreview ? textPlaceholder : urlPlaceholder;
     if (!this.state.active) {
       return (
         <CreatePostTeaser
@@ -283,9 +283,11 @@ class CreatePostContainer extends Component {
         <ContentEditable
           className="editor"
           body={this.state.body}
+          placeholder={placeholder}
           onChange={this.handleBodyChange}
           onKeyDown={this.handleKeyDown}
           lengthDelta={this.lengthDelta}
+          autoFocus
         />
         <div className="createOptions">
           <UserSearch
