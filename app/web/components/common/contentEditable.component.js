@@ -130,23 +130,28 @@ export default class ContentEditable extends React.Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
+  componentDidMount() {
+    this.el.focus();
+  }
+
   componentDidUpdate() {
-    // if (this.htmlEl && this.props.html !== this.htmlEl.innerHTML) {
+    // if (this.el && this.props.html !== this.el.innerHTML) {
     //   // Perhaps React (whose VDOM gets outdated because we often prevent
     //   // rerendering) did not update the DOM. So we update it manually now.
-    //   this.htmlEl.innerHTML = this.lastHTML;
+    //   this.el.innerHTML = this.lastHTML;
     // }
     const lengthWithoutNewlines = this.props.body.replace(/\n/, '').replace(/&[^;]+;/g, ' ').length + 1;
     const newPosition = this.position + (this.hitEnter ? 1 : 0);
     // console.log(this.position, lengthWithoutNewlines);
     if (this.props.lengthDelta) {
-      setCurrentCursorPosition(this.htmlEl, this.position += this.props.lengthDelta);
+      setCurrentCursorPosition(this.el, this.position += this.props.lengthDelta);
     } else if (newPosition <= lengthWithoutNewlines) {
-      setCurrentCursorPosition(this.htmlEl, newPosition);
+      setCurrentCursorPosition(this.el, newPosition);
       this.hitEnter = false;
     } else {
-      setCurrentCursorPosition(this.htmlEl, lengthWithoutNewlines - 1);
+      setCurrentCursorPosition(this.el, lengthWithoutNewlines - 1);
     }
+    this.el.focus();
   }
 
   handleKeyDown(e) {
@@ -158,8 +163,8 @@ export default class ContentEditable extends React.Component {
   }
 
   emitChange(e) {
-    if (!this.htmlEl) return;
-    const html = this.htmlEl.innerHTML;
+    if (!this.el) return;
+    const html = this.el.innerHTML;
     if (this.props.onChange && html !== this.lastHtml) {
       e.target = { value: stripContentEditableHTML(html) };
       this.props.onChange(e);
@@ -176,8 +181,9 @@ export default class ContentEditable extends React.Component {
     return (<div
       id="editor"
       className={this.props.className}
+      placeholder={this.props.placeholder}
       role="textbox"
-      ref={(e) => this.htmlEl = e}
+      ref={(el) => this.el = el}
       onInput={this.emitChange}
       onKeyDown={this.handleKeyDown}
       onBlur={this.props.onBlur || this.emitChange}
