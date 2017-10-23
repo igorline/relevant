@@ -170,7 +170,8 @@ export default class ContentEditable extends React.Component {
 
   render() {
     this.lastHTML = renderBody(this.props.body);
-
+    const className = [this.props.className];
+    if (this.props.body.length) className.push('active');
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions react/no-danger
     return (<div
       id="editor"

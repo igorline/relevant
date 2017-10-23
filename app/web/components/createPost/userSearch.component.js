@@ -36,7 +36,7 @@ export default class UserSuggestion extends Component {
     return (
       <div
         ref={(el) => { this.el = el; }}
-        className="userSuggestion"
+        className="userSearch"
       >
         {inner}
       </div>
