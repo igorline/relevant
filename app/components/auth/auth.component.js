@@ -127,6 +127,7 @@ class Auth extends Component {
 
   scrollToPage(index) {
     let num = (index * (fullWidth));
+    this.setState({ currentIndex: index });
     this.listview.scrollTo({ x: num, animated: true });
   }
 
@@ -303,7 +304,7 @@ const localStyles = StyleSheet.create({
     lineHeight: 30,
   },
   strokeText: {
-    fontSize: smallScreen ? 32 : 38,
+    fontSize: smallScreen ? 32 : 36,
     fontFamily: 'HelveticaNeueLTStd-BdOu',
     lineHeight: Platform.OS === 'ios' ? (smallScreen ? 47 : 55) : (smallScreen ? 39 : 46),
     // lineHeight: 45,rr
@@ -312,12 +313,12 @@ const localStyles = StyleSheet.create({
     // marginTop: 8
   },
   slideText: {
-    fontFamily: 'Georgia',
-    fontSize: smallScreen ? 30 : 36,
-    lineHeight: smallScreen ? 40 : 46
+    fontFamily: 'Libre Caslon Display',
+    fontSize: smallScreen ? 32 : 36,
+    lineHeight: smallScreen ? 40 : 45
   },
   relevant: {
-    height: smallScreen ? 40 : 46,
+    height: smallScreen ? 40 : 45,
     // width: 200,
   },
   authSlidesParent: {

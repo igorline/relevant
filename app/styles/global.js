@@ -179,8 +179,8 @@ const font = StyleSheet.create({
   signInText: {
     marginTop: 20,
     textAlign: 'center',
-    fontFamily: 'Georgia',
-    fontSize: 18,
+    fontFamily: 'Arial',
+    fontSize: 15,
     color: darkGrey,
   },
 });

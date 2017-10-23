@@ -109,6 +109,10 @@ panel {
   }
   .innerPanel {
     max-width: 750px;
+    h1 {
+      margin-bottom: 50px;
+      text-align: left;
+    }
   }
   p, ol, ul {
     font-family: Georgia;
@@ -341,7 +345,7 @@ b {
 
 .quote {
   font-style: italic;
-  padding: 10px 5vw;
+  padding: 10px 20px;
   font-size: 16px;
   line-height: 28px;
   letter-spacing: .5px;
@@ -388,10 +392,9 @@ b {
     border: 1px solid $blue;
     padding: 8px 5px;
     box-shadow: 4px 4px 0px 0px $blue;
-  min-width: 30%;
+    min-width: 30%;
     margin: 10px 1%;
     flex: .25;
-
   }
   p {
     font-family: Bebas;
@@ -409,6 +412,25 @@ b {
 
 .uprightPhone {
   flex: .8;
+}
+
+.inlineDiagram {
+  img {
+    /*max-width: 300px;*/
+    margin: auto;
+    display: block;
+    margin-bottom: 40px;
+  }
+}
+
+.diagramContainer {
+  padding: 0 50px;
+  flex: .6;
+  /*float: right;*/
+}
+
+.floatLeft {
+  float: left;
 }
 
 @media screen
@@ -576,6 +598,10 @@ b {
 
   .uprightPhone {
     margin-top: 50px;
+  }
+
+  .diagramContainer{
+    padding: 0;
   }
 
 }
