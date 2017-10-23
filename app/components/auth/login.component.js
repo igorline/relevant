@@ -108,18 +108,7 @@ class Login extends Component {
                 style={styles.fieldsInput}
               />
             </View>
-            <Text
-              onPress={() => {
-                this.props.actions.push({
-                  key: 'forgot',
-                  title: 'Forgot Pass',
-                  back: true
-                }, 'auth');
-              }}
-              style={[styles.active, styles.forgot]}
-            >
-              reset password
-            </Text>
+
 
           </View>
 
@@ -132,7 +121,18 @@ class Login extends Component {
               sign in
             </Text>
           </TouchableHighlight>
-
+          <Text
+            onPress={() => {
+              this.props.actions.push({
+                key: 'forgot',
+                title: 'Forgot Pass',
+                back: true
+              }, 'auth');
+            }}
+            style={[styles.signInText, styles.active]}
+          >
+            Forgot you password?
+          </Text>
         </ScrollView>
       </KBView>
     );

@@ -5,7 +5,7 @@ import User from './user.model';
 import Comment from '../comment/comment.model';
 import Post from '../post/post.model';
 import config from '../../config/config';
-// import Treasury from '../treasury/treasury.model';
+import Treasury from '../treasury/treasury.model';
 // import Earnings from '../earnings/earnings.model';
 import Relevance from '../relevance/relevance.model';
 import mail from '../../mail';
@@ -39,7 +39,7 @@ import Feed from '../feed/feed.model';
 // }
 // notifications();
 
-User.update({}, { onboarding: 0 }, { multi: true }).exec();
+// User.update({}, { onboarding: 0 }, { multi: true }).exec();
 
 let validationError = (res, err) => {
   console.log(err);
@@ -389,37 +389,18 @@ exports.create = async (req, res) => {
 
     if (!confirmed) sendConfirmation(user, true);
     // else Invite.generateCodes(user);
+
+    await Treasury.findOneAndUpdate(
+        {},
+        { $inc: { balance: -startingAmount } },
+        { new: true, upsert: true }
+      ).exec();
   } catch (err) {
     return handleError(res, err);
   }
 
   return res.status(200).json({ token });
 
-  // let earningsObj = {
-  //   user: newUser._id,
-  //   source: 'treasury',
-  //   amount: startingAmount
-  // };
-
-  // let earnings = new Earnings(earningsObj);
-  // let saveEarnings = () => earnings.save();
-
-  // let updateTreasury = () =>
-  //   Treasury.findOneAndUpdate(
-  //     {},
-  //     { $inc: { balance: -startingAmount, out: startingAmount } },
-  //     { new: true, upsert: true }
-  //   ).exec();
-    // let dbNotificationObj = {
-    //   post: null,
-    //   forUser: null,
-    //   byUser: user._id,
-    //   amount: null,
-    //   type: 'newUser',
-    //   personal: false,
-    //   read: false,
-    //   tag: null
-    // };
 };
 
 /**
