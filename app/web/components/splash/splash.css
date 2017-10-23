@@ -116,8 +116,8 @@ panel {
   }
   p, ol, ul {
     font-family: Georgia;
-    font-size: 16px;
-    line-height: 27px;
+    font-size: 18px;
+    line-height: 28px;
   }
   ol {
     /*margin-top: 20px;*/
@@ -346,7 +346,7 @@ b {
 .quote {
   font-style: italic;
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 28px;
   letter-spacing: .5px;
   margin-bottom: 50px;

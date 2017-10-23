@@ -15,21 +15,6 @@
 }
 
 @font-face {
-  font-family: 'BebasNeueBold';
-  src: url('/fonts/BebasNeue-Bold.otf') format('opentype');
-}
-
-svg {
-  font-family: 'BebasNeueBold';
-}
-
-
-/*@font-face {
-  font-family: 'Georgia';
-  src: url('/fonts/Georgia.ttf') format('truetype');
-}*/
-
-@font-face {
   font-family: 'Libre';
   src: url('/fonts/LibreCaslonDisplay-Regular.ttf') format('truetype');
 }
