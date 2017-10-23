@@ -19,7 +19,9 @@
   src: url('/fonts/BebasNeue-Bold.otf') format('opentype');
 }
 
-
+svg {
+  font-family: 'BebasNeueBold';
+}
 
 
 /*@font-face {
