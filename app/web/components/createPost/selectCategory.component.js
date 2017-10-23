@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 if (process.env.BROWSER === true) {
   // require('./divider.css');
 }
 
-export default function SelectCategory(props) {
+export default function SelectTags(props) {
   let inner = props.categories.map((category, i) => (
     <option
       value={i}

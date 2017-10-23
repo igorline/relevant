@@ -12,6 +12,7 @@ import AvatarBox from '../common/avatarbox.component';
 import PostInfo from '../post/postinfo.component';
 import UserSearch from './userSearch.component';
 import SelectCategory from './selectCategory.component';
+import SelectTags from './selectTags.component';
 
 if (process.env.BROWSER === true) {
   require('../post/post.css');
@@ -65,7 +66,6 @@ class CreatePostContainer extends Component {
   }
 
   componentWillUpdate(newProps, newState) {
-    console.log(newProps);
     if (newState.body !== this.state.body) {
       this.parseBody(newState);
     }
@@ -217,9 +217,9 @@ class CreatePostContainer extends Component {
     });
   }
 
-  setCategory(topic) {
-    this.setState({ topic });
-    this.props.actions.setPostCategory(topic);
+  setCategory(category) {
+    this.setState({ category });
+    this.props.actions.setPostCategory(category);
   }
 
   createPreview() {
@@ -300,10 +300,17 @@ class CreatePostContainer extends Component {
             />
             <button
               onClick={() => this.createPost()}
-              disabled={!(this.category && this.body.length)}
+              disabled={!(this.state.category && this.body.length)}
             >
               Create Post
             </button>
+            {this.state.category &&
+              <SelectTags
+                tags={this.state.category.children}
+                selectedTags={this.props.tags.selectedTags}
+                actions={this.props.actions}
+              />
+            }
           </div>
         </div>
       </div>
