@@ -55,15 +55,23 @@
     padding: 10px;
     height: 30px;
     min-width: 130px;
+    font-family: Helvetica;
+    font-size: 14px;
+  }
+  button {
+    font-family: Helvetica;
+    font-size: 14px;
+    padding: 7px;
+    height: auto;
   }
 }
 .userSuggestion {
   position: absolute;
   top: -1px;
   left: 5px;
-  max-height: 300px;
-  min-width: 300px;
-  overflow-y: auto;
+  max-height: 250px;
+  min-width: 250px;
+  overflow-y: scroll;
   overflow-x: hidden;
   border: 1px solid #bbb;
   background: white;

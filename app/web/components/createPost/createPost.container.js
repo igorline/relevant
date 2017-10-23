@@ -63,9 +63,13 @@ class CreatePostContainer extends Component {
     if (newProps.userSearch !== this.props.userSearch) {
       this.setState({ userSearchIndex: -1 });
     }
+    // if (newProps.tags.parentTags && !this.categories) {
+    //   this.setState({ category: newProps.tags.parentTags[0] });
+    // }
   }
 
   componentWillUpdate(newProps, newState) {
+    console.log(newProps);
     if (newState.body !== this.state.body) {
       this.parseBody(newState);
     }
@@ -74,7 +78,6 @@ class CreatePostContainer extends Component {
         newProps.tags.parentTags !== this.props.tags.parentTags &&
         this.categories === null) {
       this.renderCategories(newProps.tags.parentTags);
-      // this.setState({ category: JSON.parse(newProps.tags.parentTags[0].target.value) });
     }
     if (newState.urlPreview !== this.state.urlPreview) {
       this.renderPreview(newState);
@@ -271,9 +274,14 @@ class CreatePostContainer extends Component {
     this.categories = (
       <select
         onChange={(val) => {
-          this.setState({ category: JSON.parse(val.target.value) });
+          if (val.target.value === 'undefined') {
+            this.setState({ category: '' });
+          } else {
+            this.setState({ category: JSON.parse(val.target.value) });
+          }
         }}
       >
+        <option value="undefined">➡️ Pick a category</option>
         {inner}
       </select>
     );
@@ -307,7 +315,9 @@ class CreatePostContainer extends Component {
             userSearchIndex={this.state.userSearchIndex}
           />
           <div>
-            {this.state.urlPreview && !this.state.addedTextFromLink &&
+            {this.state.urlPreview &&
+              !this.state.addedTextFromLink &&
+              this.state.urlPreview.description &&
               <button onClick={this.addTextFromLink} className="addTextFromLink">
                 Add text from link
               </button>
@@ -317,7 +327,7 @@ class CreatePostContainer extends Component {
             {this.categories}
             <button
               onClick={() => this.createPost()}
-              disabled={!this.state.category}
+              disabled={!(this.category && this.body.length)}
             >
               Create Post
             </button>
