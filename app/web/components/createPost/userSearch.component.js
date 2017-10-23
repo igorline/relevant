@@ -5,7 +5,7 @@ if (process.env.BROWSER === true) {
   // require('./divider.css');
 }
 
-const USER_ELEMENT_HEIGHT = 30;
+const USER_ELEMENT_HEIGHT = 38;
 
 export default class UserSuggestion extends Component {
   componentDidMount() {
