@@ -15,20 +15,19 @@ export default class UserSuggestion extends Component {
     this.updateScrollPosition();
   }
   updateScrollPosition() {
-    // const len = this.props.users.length;
-    // this.scrollIndex = (this.scrollIndex - 1 + len) % len;
-    // this.scrollIndex = (this.scrollIndex + 1) % this.props.users.length;
-    const offset = Math.max(this.props.selectedIndex - 1, 0) * USER_ELEMENT_HEIGHT;
-    this.el.scrollTop = offset;
+    const offset = Math.max(this.props.userSearchIndex - 1, 0) * USER_ELEMENT_HEIGHT;
+    if (this.el) this.el.scrollTop = offset;
   }
   render() {
-    // this.suggestedUsers = users;
-    const selectedIndex = this.props.selectedIndex;
+    if (!this.props.users || !this.props.users.length) {
+      return null;
+    }
+    const selected = this.props.userSearchIndex;
     let inner = this.props.users.map((user, i) => (
       <button
         key={i}
-        className={selectedIndex === i ? 'selected' : ''}
-        onClick={() => this.setMention(user)}
+        className={selected === i ? 'selected' : ''}
+        onClick={() => this.props.onChange(user)}
       >
         <Avatar user={user} nolink />
         <span className="username">{user._id}</span>

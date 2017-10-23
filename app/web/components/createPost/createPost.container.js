@@ -10,7 +10,7 @@ import * as utils from '../../../utils';
 
 import AvatarBox from '../common/avatarbox.component';
 import PostInfo from '../post/postinfo.component';
-import UserSuggestion from './userSuggestion.component';
+import UserSearch from './userSearch.component';
 
 if (process.env.BROWSER === true) {
   require('../post/post.css');
@@ -30,9 +30,8 @@ class CreatePostContainer extends Component {
     this.handleBodyChange = this.handleBodyChange.bind(this);
     this.parseBody = this.parseBody.bind(this);
     this.createPreview = this.createPreview.bind(this);
-    this.setMention = this.setMention.bind(this);
+    this.handleSetMention = this.handleSetMention.bind(this);
     this.addTextFromLink = this.addTextFromLink.bind(this);
-    this.renderUserSuggestion = this.renderUserSuggestion.bind(this);
     this.renderCategories = this.renderCategories.bind(this);
     this.renderPreview = this.renderPreview.bind(this);
     this.createPost = this.createPost.bind(this);
@@ -44,13 +43,13 @@ class CreatePostContainer extends Component {
       urlPreview: null,
       addedTextFromLink: false,
       loadingPreview: false,
+      userSearchIndex: -1,
     };
     this.body = '';
     this.tags = null;
     this.url = null;
     this.mention = null;
     this.urlPreview = null;
-    this.userSuggestion = null;
     this.input = null;
     this.categories = null;
   }
@@ -60,12 +59,15 @@ class CreatePostContainer extends Component {
     if (!this.props.tags || !this.props.tags.parentTags.length) this.props.actions.getParentTags();
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.userSearch !== this.props.userSearch) {
+      this.setState({ userSearchIndex: -1 });
+    }
+  }
+
   componentWillUpdate(newProps, newState) {
     if (newState.body !== this.state.body) {
       this.parseBody(newState);
-    }
-    if (newProps.users !== this.props.users) {
-      this.renderUserSuggestion(newProps.users.search);
     }
     // console.log('tags', newProps, newState, !!newProps.tags)
     if (newProps.tags &&
@@ -121,16 +123,38 @@ class CreatePostContainer extends Component {
   }
 
   handleKeyDown(e) {
-    // if (this.)
+    // console.log(e.keyCode);
+    const userCount = this.props.userSearch.length;
     switch (e.keyCode) {
+      case 37: // left
       case 38: // up
+        if (this.props.userSearch.length) {
+          e.preventDefault();
+          this.setState({
+            userSearchIndex: (this.state.userSearchIndex - 1 + userCount) % userCount,
+          });
+        }
         break;
+      case 39: // right
       case 40: // down
+        if (this.props.userSearch.length) {
+          e.preventDefault();
+          this.setState({
+            userSearchIndex: (this.state.userSearchIndex + 1) % userCount,
+          });
+        }
+        break;
+      case 13: // enter
+        if (this.props.userSearch.length) {
+          e.preventDefault();
+          const userIndex = Math.max(this.state.userSearchIndex, 0);
+          const user = this.props.userSearch[userIndex];
+          this.handleSetMention(user);
+        }
         break;
       default:
         break;
     }
-    console.log(e.keyCode);
     return true;
   }
 
@@ -139,11 +163,12 @@ class CreatePostContainer extends Component {
     this.setState({ body });
   }
 
-  setMention(user) {
+  handleSetMention(user) {
+    if (!user) return;
      // replace the partial @username with @username plus a nbsp
     this.lengthDelta = user._id.length - this.mention.length + 2;
     const body = this.state.body.replace(this.mention, '@' + user._id + '\u00A0'); // nbsp
-    this.setState({ body });
+    this.setState({ body, userSearchIndex: -1 });
     this.props.actions.setUserSearch([]);
   }
 
@@ -276,8 +301,11 @@ class CreatePostContainer extends Component {
           lengthDelta={this.lengthDelta}
         />
         <div className="createOptions">
-          {this.userSuggestion}
-          <UserSuggestion users={this.props.users} />
+          <UserSearch
+            users={this.props.userSearch}
+            onChange={this.handleSetMention}
+            userSearchIndex={this.state.userSearchIndex}
+          />
           <div>
             {this.state.urlPreview && !this.state.addedTextFromLink &&
               <button onClick={this.addTextFromLink} className="addTextFromLink">
@@ -311,6 +339,7 @@ function mapStateToProps(state) {
     auth: state.auth,
     users: state.user,
     tags: state.tags,
+    userSearch: state.user.search,
   };
 }
 

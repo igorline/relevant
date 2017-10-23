@@ -32,7 +32,7 @@ export default function AvatarBox(props) {
   if (user.relevance && !props.dontShowRelevance) {
     relevance = (
       <span>
-        <img src="/img/r-emoji.png" alt="R" className="R" />
+        <img src="/img/r-emoji.png" alt="R" className="r" />
         {Math.round(user.relevance)}
       </span>
     );
