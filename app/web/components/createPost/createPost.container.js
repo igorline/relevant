@@ -11,6 +11,7 @@ import * as utils from '../../../utils';
 import AvatarBox from '../common/avatarbox.component';
 import PostInfo from '../post/postinfo.component';
 import UserSearch from './userSearch.component';
+import SelectCategory from './selectCategory.component';
 
 if (process.env.BROWSER === true) {
   require('../post/post.css');
@@ -32,7 +33,7 @@ class CreatePostContainer extends Component {
     this.createPreview = this.createPreview.bind(this);
     this.handleSetMention = this.handleSetMention.bind(this);
     this.addTextFromLink = this.addTextFromLink.bind(this);
-    this.renderCategories = this.renderCategories.bind(this);
+    this.setCategory = this.setCategory.bind(this);
     this.renderPreview = this.renderPreview.bind(this);
     this.createPost = this.createPost.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -50,8 +51,6 @@ class CreatePostContainer extends Component {
     this.url = null;
     this.mention = null;
     this.urlPreview = null;
-    this.input = null;
-    this.categories = null;
   }
 
   componentDidMount() {
@@ -63,21 +62,12 @@ class CreatePostContainer extends Component {
     if (newProps.userSearch !== this.props.userSearch) {
       this.setState({ userSearchIndex: -1 });
     }
-    // if (newProps.tags.parentTags && !this.categories) {
-    //   this.setState({ category: newProps.tags.parentTags[0] });
-    // }
   }
 
   componentWillUpdate(newProps, newState) {
     console.log(newProps);
     if (newState.body !== this.state.body) {
       this.parseBody(newState);
-    }
-    // console.log('tags', newProps, newState, !!newProps.tags)
-    if (newProps.tags &&
-        newProps.tags.parentTags !== this.props.tags.parentTags &&
-        this.categories === null) {
-      this.renderCategories(newProps.tags.parentTags);
     }
     if (newState.urlPreview !== this.state.urlPreview) {
       this.renderPreview(newState);
@@ -227,6 +217,11 @@ class CreatePostContainer extends Component {
     });
   }
 
+  setCategory(topic) {
+    this.setState({ topic });
+    this.props.actions.setPostCategory(topic);
+  }
+
   createPreview() {
     let postUrl = this.url;
     utils.post.generatePreviewServer(postUrl)
@@ -260,31 +255,6 @@ class CreatePostContainer extends Component {
         loading: true,
       }
     });
-  }
-
-  renderCategories(categories) {
-    let inner = categories.map((category, i) => (
-      <option
-        value={JSON.stringify(category)}
-        key={i}
-      >
-        {category.emoji}&nbsp;{category.categoryName}
-      </option>
-    ));
-    this.categories = (
-      <select
-        onChange={(val) => {
-          if (val.target.value === 'undefined') {
-            this.setState({ category: '' });
-          } else {
-            this.setState({ category: JSON.parse(val.target.value) });
-          }
-        }}
-      >
-        <option value="undefined">➡️ Pick a category</option>
-        {inner}
-      </select>
-    );
   }
 
   renderPreview(newState) {
@@ -324,7 +294,10 @@ class CreatePostContainer extends Component {
             }
           </div>
           <div>
-            {this.categories}
+            <SelectCategory
+              categories={this.props.tags.parentTags}
+              onChange={this.setCategory}
+            />
             <button
               onClick={() => this.createPost()}
               disabled={!(this.category && this.body.length)}
