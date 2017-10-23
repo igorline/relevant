@@ -3,7 +3,7 @@ header {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  background: rgba(36,36,37, .8);
+  background: rgba(36,36,37, 1);
   color: white;
   height: 58px;
   width: 100vw;
