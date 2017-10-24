@@ -118,7 +118,8 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     myPostInv: state.investments.myPostInv,
-    users: state.user.users
+    users: state.user.users,
+    // tooltip: state.tooltip.buttonId
   };
 }
 

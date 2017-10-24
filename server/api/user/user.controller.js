@@ -41,6 +41,9 @@ import Feed from '../feed/feed.model';
 
 // User.update({}, { onboarding: 0 }, { multi: true }).exec();
 
+// User.find({ confirmed: false }, '_id')
+// .then(users => console.log(users));
+
 let validationError = (res, err) => {
   console.log(err);
   return res.status(422).json(err);
@@ -54,28 +57,29 @@ function handleError(res, err) {
 async function sendConfirmation(user, newUser) {
   let status;
   let text = '';
-  if (newUser) text = 'Welcome to relevant! ';
+  if (newUser) text = 'Welcome to Relevant! ';
   try {
     console.log('sending email', user.email);
     let url = `${process.env.API_SERVER}/confirm/${user._id}/${user.confirmCode}`;
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
-      subject: 'Email Confirmation',
+      subject: 'Relevant Email Confirmation',
       html: `${text}Click on this link to confirm your email address:
       <br />
       <br />
       <a href="${url}" target="_blank">${url}</a>
       <br />
       <br />
-      Once you confirm your email we will send you additional invite codes to invite your friends!`
+      Once you confirm your email you will be able to invite your friends to the app!
+      `
     };
     status = await mail.send(data);
   } catch (err) {
     console.log('mail error ', err);
     throw err;
   }
-  return status;
+  return { email: user.email };
 }
 
 async function sendResetEmail(user) {
@@ -85,7 +89,7 @@ async function sendResetEmail(user) {
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
-      subject: 'Reset Password',
+      subject: 'Reset Relevant Password',
       html: `You are receiving this because you (or someone else) have requested the reset of the password for your account.<br />
       Please click on the following link, or paste this into your browser to complete the process:<br/><br/>
       ${url}<br/><br/>
@@ -150,7 +154,7 @@ exports.confirm = async (req, res, next) => {
 exports.sendConfirmationCode = async (req, res) => {
   let status;
   try {
-    let user = req.user;
+    let user = await User.findOne({ _id: req.user._id }, 'email confirmCode');
     let rand = await crypto.randomBytes(32);
     let token = rand.toString('hex');
     user.confirmCode = token;

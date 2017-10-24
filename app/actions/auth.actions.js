@@ -15,35 +15,10 @@ let okToRequestPermissions = true;;
 
 if (process.env.WEB != 'true') {
   rn = require('react-native');
-
   Analytics = require('react-native-firebase-analytics');
-  // PushNotificationIOS = rn.PushNotificationIOS;
-  // userDefaults = require('react-native-user-defaults').default;
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
   Platform = require('react-native').Platform;
-
   PushNotification = require('react-native-push-notification');
-  // PushNotification.configure({
-  //   // (optional) Called when Token is generated (iOS and Android)
-  //   onRegister: function(token) {
-  //       console.log( 'TOKEN:', token );
-  //   },
-
-  //   // (required) Called when a remote or local notification is opened or received
-  //   onNotification: function(notification) {
-  //       console.log( 'NOTIFICATION:', notification );
-  //   },
-  //   // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
-  //   senderID: "271994332492",
-  //   // IOS ONLY (optional): default: all - Permissions to register.
-  //   permissions: {
-  //     alert: true,
-  //     badge: true,
-  //     sound: true
-  //   },
-  //   popInitialNotification: true,
-  //   requestPermissions: true,
-  // });
 }
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
@@ -314,7 +289,7 @@ function createUser(user, invite) {
 export function getUser(callback) {
   return (dispatch) => {
     function fetchUser(token) {
-      fetch(process.env.API_SERVER + '/api/user/me', {
+      return fetch(process.env.API_SERVER + '/api/user/me', {
         credentials: 'include',
         method: 'GET',
         timeout: 0,
@@ -343,12 +318,11 @@ export function getUser(callback) {
 
         dispatch(setSelectedUserData(responseJSON));
         if (process.env.WEB != 'true') {
-          // if (Platform.OS === 'ios') {
-            dispatch(addDeviceToken(responseJSON, token));
-          // }
+          dispatch(addDeviceToken(responseJSON, token));
         }
         dispatch(errorActions.setError('universal', false));
         if (callback) callback(responseJSON);
+        return responseJSON;
       })
       .catch((error) => {
         console.log('get user error ', error);
@@ -362,10 +336,10 @@ export function getUser(callback) {
       });
     }
 
-    utils.token.get()
+    return utils.token.get()
     .then((newToken) => {
       dispatch(loginUserSuccess(newToken));
-      fetchUser(newToken);
+      return fetchUser(newToken);
     })
     .catch((error) => {
       console.log('no token');
@@ -428,10 +402,10 @@ export function addDeviceToken(user) {
         sound: true
       },
       popInitialNotification: true,
-      requestPermissions: false,
+      requestPermissions: Platform.OS === 'ios' ? false : true,
     });
 
-    if (Platform.os === 'ios') {
+    if (Platform.OS === 'ios') {
       if (okToRequestPermissions) {
         okToRequestPermissions = false;
         PushNotification.requestPermissions()
@@ -450,19 +424,11 @@ export function addDeviceToken(user) {
       userDefaults.set('deviceToken', token, APP_GROUP_ID);
       dispatch(setDeviceToken(token));
       let newUser = user;
-      if (user.deviceTokens) {
-        if (user.deviceTokens.indexOf(token) < 0) {
-          newUser.deviceTokens.push(token);
-          // console.log(newUser);
-          // console.log('adding devicetoken to user here', token);
-          dispatch(updateUser(newUser));
-        } else {
-          // console.log(user.deviceTokens);
-          // console.log('devicetoken already present in user');
-        }
+      if (user.deviceTokens && user.deviceTokens.indexOf(token) < 0) {
+        newUser.deviceTokens.push(token);
+        dispatch(updateUser(newUser));
       } else {
         newUser.deviceTokens = [token];
-        // console.log('adding devicetoken to user object', token);
         dispatch(updateUser(newUser));
       }
     };
@@ -492,6 +458,7 @@ export function sendConfirmation() {
     .then(utils.api.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
+      AlertIOS.alert('A confirmation email has been sent to ' + responseJSON.email);
       return true;
     })
     .catch(err => {
