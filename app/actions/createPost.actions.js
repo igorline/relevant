@@ -41,11 +41,10 @@ export function submitPost(post, token) {
     .then((response) => {
       // console.log(response, 'submitPost response');
       if (response.status === 200) {
-        return true;
+        return response;
       }
       return false;
     })
     .catch(error => false);
   };
 }
-
