@@ -12,7 +12,8 @@ import {
   TOGGLE_TOPICS,
   SCROLL,
   SET_TOOLTIP_DATA,
-  TOOLTIP_READY
+  TOOLTIP_READY,
+  SET_BUTTON_TOOLTIP,
 } from './actionTypes';
 
 let dismissKeyboard;
@@ -87,6 +88,13 @@ export function setView(type, view) {
       view,
       type
     }
+  };
+}
+
+export function setButtonTooltip(type, id) {
+  return {
+    type: SET_BUTTON_TOOLTIP,
+    payload: { id, type }
   };
 }
 
@@ -179,8 +187,9 @@ export function goToPeople(topic) {
 }
 
 
-export function goToUrl(url) {
+export function goToUrl(url, id) {
   return dispatch => {
+    dispatch(setButtonTooltip('upvote', id));
     if (safariView) {
       safariView.isAvailable()
       .then(() => {

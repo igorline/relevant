@@ -25,7 +25,7 @@ class PostImage extends Component {
   }
 
   openLink(url) {
-    this.props.actions.goToUrl(url);
+    this.props.actions.goToUrl(url, this.props.post._id);
   }
 
   render() {

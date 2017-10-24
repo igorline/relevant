@@ -14,7 +14,7 @@ import Share from 'react-native-share';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import IconE from 'react-native-vector-icons/EvilIcons';
 
-import { globalStyles, greyText } from '../../styles/global';
+import { globalStyles, greyText, fullHeight } from '../../styles/global';
 import InvestModal from './investModal.component';
 import { numbers } from '../../utils';
 
@@ -85,10 +85,19 @@ class PostButtons extends Component {
 
   componentDidMount() {
     if (this.props.post.link) this.menu = this.linkMenu;
+    // let post = this.props.metaPost || this.props.post;
+    // if (this.props.tooltip.upvote === post._id) {
     if (this.props.tooltip) {
       this.initTooltips();
     }
   }
+
+  // componentWillReceiveProps(newProps) {
+  //   let post = newProps.metaPost || newProps.post;
+  //   if (this.props.tooltip.upvote === post._id) {
+  //     this.initTooltips();
+  //   }
+  // }
 
   onShare() {
     Share.open({
@@ -113,6 +122,7 @@ class PostButtons extends Component {
     this.investButton.measureInWindow((x, y, w, h) => {
       let parent = { x, y, w, h };
       if (x + y + w + h === 0) return;
+      if (y > fullHeight - 50) return;
       this.props.actions.setTooltipData({
         name,
         parent
