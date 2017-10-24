@@ -12,6 +12,16 @@ export default class Avatar extends Component {
     const avatarBackgroundImage = {
       backgroundImage: 'url(' + this.props.user.image + ')',
     };
+    if (this.props.nolink) {
+      return (
+        <span
+          className={'avatar'}
+          style={avatarBackgroundImage}
+        >
+          {this.props.user.name}
+        </span>
+      );
+    }
     return (
       <Link
         className={'avatar'}
