@@ -1,9 +1,9 @@
 {
   "presets": ["react-native"],
-  env: {
+  "env": {
     "production": {
       "plugins": [
-        "transform-runtime",
+        "transform-remove-console",
       ],
     }
   },
