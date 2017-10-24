@@ -1,4 +1,4 @@
-a.avatar {
+.avatar {
   display: inline-block;
   background-size: cover;
   background-position: center center;
@@ -14,7 +14,7 @@ a.avatar {
   display: flex;
   flex-direction: row;
 }
-.avatarBox a.avatar {
+.avatarBox .avatar {
   flex: 0 0 42px;
   width: 42px;
   height: 42px;

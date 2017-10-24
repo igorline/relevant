@@ -1,0 +1,76 @@
+.createPostContainer {
+  .editor {
+    font-size: 17px;
+    font-family: Georgia, serif;
+    line-height: 1.5;
+    padding: 5px;
+    margin: 0 5px;
+    background: white;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    min-height: 35px;
+    white-space: pre-line;
+    p {
+      margin: 0;
+    }
+    b {
+      color: #3E3EFF;
+      font-weight: normal;
+    }
+    outline: 0;
+    &:focus, &.active {
+      border-color: #454444;
+    }
+    &:empty:before {
+      content: attr(placeholder);
+      display: block;
+      color: #888888;
+    }
+  }
+  .addTextFromLink {
+    color: #3E3EFF;
+    font-family: Helvetica, sans-serif;
+    font-size: 13px;
+    text-align: right;
+    border: 0;
+    background: transparent;
+    display: inline;
+  }
+  .urlPreview {
+    margin: 40px 0 10px 0;
+  }
+  .avatarbox {
+    margin: 0;
+  }
+  .postinfo {
+    cursor: default;
+    user-select: none;
+    margin-bottom: 20px;
+  }
+}
+
+.createOptions {
+  position: relative;
+  padding: 5px 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  div:last-child {
+    text-align: right;
+  }
+  select {
+    padding: 10px;
+    height: 30px;
+    min-width: 130px;
+    font-family: Helvetica;
+    font-size: 14px;
+  }
+  button {
+    font-family: Helvetica;
+    font-size: 14px;
+    padding: 7px;
+    height: auto;
+    white-space: nowrap;
+  }
+}

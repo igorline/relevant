@@ -29,13 +29,19 @@ header > div {
   justify-content: center;
 }
 
-header > div.right {
+header > div:first-child {
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 5px;
+}
+
+header > div:last-child {
   justify-content: flex-end;
   align-items: center;
   padding-right: 15px;
 }
 
-header > div.right a:last-child {
+header > div:last-child a:last-child {
   margin-right: 10px;
 }
 
@@ -58,7 +64,7 @@ header a {
   .headerContainer {
     height: 50px;
   }
-  header .right * {
+  header > div:last-child * {
     display: none;
   }
 
