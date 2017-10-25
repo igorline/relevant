@@ -1,0 +1,35 @@
+.createPostTeaser {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  .avatar {
+    margin-right: 5px;
+  }
+  .textarea {
+    font-size: 15px;
+    font-family: Georgia, serif;
+    line-height: 1.5;
+    padding: 2px 5px;
+    margin: 0 5px;
+    background: white;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    min-height: 28px;
+    flex: 1;
+    color: #bbb;
+  }
+  button {
+    font-family: Helvetica;
+    font-size: 14px;
+    padding: 1px 7px;
+    height: auto;
+    white-space: nowrap;
+    color: black;
+    border: 1px solid;
+    border-radius: 20px;
+    background: transparent;
+    opacity: 0.2;
+  }
+}

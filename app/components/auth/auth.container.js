@@ -35,10 +35,6 @@ class AuthContainer extends Component {
     this.back = this.back.bind(this);
   }
 
-  componentDidMount() {
-    codePush.disallowRestart();
-  }
-
   componentWillUnmount() {
     codePush.allowRestart();
   }

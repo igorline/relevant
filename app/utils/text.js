@@ -26,3 +26,9 @@ export function getWords(text) {
   .split(/`/);
   return res;
 }
+
+const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
+
+export function stripHTML(text) {
+  return (text || '').replace(HTML_REGEX, '');
+}

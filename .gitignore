@@ -4,6 +4,9 @@
 publicenv.js
 app/publicenv.js
 
+#ios
+ios/Pods/
+
 # Xcode
 #
 build/
