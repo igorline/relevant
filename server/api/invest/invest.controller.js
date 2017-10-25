@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import apnData from '../../pushNotifications';
 import MetaPost from '../metaPost/metaPost.model';
+import VOTE_COST_RATIO from '../../config/globalConstants';
 
 let Post = require('../post/post.model');
 let User = require('../user/user.model');
@@ -468,7 +469,7 @@ exports.create = async (req, res) => {
 
     // ------- everything is fine, deduct user's balance ---
     // user.balance -= Math.abs(amount);
-    let payment = Math.floor(Math.max(1, user.balance * 0.07));
+    let payment = Math.floor(Math.max(1, user.balance * VOTE_COST_RATIO));
     user.balance -= payment;
 
     // send payment back to reward fund

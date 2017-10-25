@@ -7,8 +7,6 @@ import Notification from '../api/notification/notification.model';
 
 import { INTERVAL_INFLAITION, INIT_COIN, SHARE_DECAY } from '../config/globalConstants';
 
-
-
 async function createCoins() {
   let treasury = await Treasury.findOne({});
   let outstanding = 0;
