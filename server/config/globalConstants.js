@@ -8,4 +8,5 @@ export const INTERVAL_INFLAITION = Math.pow(1 + YEARLY_INFLATION, PAYOUT_FREQUEN
 export const INIT_COIN = 1000000;
 export const SHARE_DECAY = 6 * DAYS; // time it takes to decay payout post shares
 export const PAYOUT_TIME = 3 * DAYS; // time it takes for post to pay out
+export const VOTE_COST_RATIO = 0.07; // votes cost 7% of user balace
 // const AUTHOR_SHARE = 1 / 2;
