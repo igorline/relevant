@@ -117,8 +117,8 @@ class Header extends Component {
             </Link>
           </div>
           {desktopApp ? this.renderLoginButton() : <div></div>}
-          {this.renderModal()}
         </header>
+        {this.renderModal()}
       </div>
     );
   }
