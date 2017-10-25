@@ -37,6 +37,15 @@ class SignUp extends Component {
     };
   }
 
+  componentDidMount() {
+    this.userInput.focus();
+    codePush.disallowRestart();
+  }
+
+  componentWillUnmount() {
+    codePush.allowRestart();
+  }
+
   componentWillMount() {
     if (this.props.auth.preUser) {
       this.setState({

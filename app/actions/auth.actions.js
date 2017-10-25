@@ -592,3 +592,25 @@ export function getRelChart(start, end) {
     }
   };
 }
+
+export function twitterAuth(profile) {
+  return async dispatch => {
+    try {
+      let user = await utils.api.request({
+        method: 'POST',
+        endpoint: '/auth/',
+        path: `twitter/login`,
+        body: JSON.stringify(profile)
+      });
+      AlertIOS.alert(user);
+
+      // dispatch(setStats({ relChart }));
+      // dispatch(errorActions.setError('stats', false));
+      // return true;
+    } catch (error) {
+      AlertIOS.alert(error.message);
+      // dispatch(errorActions.setError('stats', true, error.message));
+      // return false;
+    }
+  };
+}

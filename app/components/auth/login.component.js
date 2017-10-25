@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles } from '../../styles/global';
+import TwitterButton from './TwitterButton.component';
 
 let localStyles;
 let styles;
@@ -109,6 +110,7 @@ class Login extends Component {
               />
             </View>
 
+            <TwitterButton actions={this.props.actions} />
 
           </View>
 

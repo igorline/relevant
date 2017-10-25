@@ -32,15 +32,18 @@
 		3071DFFF997F93323F5CFDDE /* libPods-relevantNativeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BF8A7EE663221E457C45D1CA /* libPods-relevantNativeTests.a */; };
 		3D7EC265C098ED9B7311FBB4 /* libPods-relevantNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6207DE174BD38E3207E5FE23 /* libPods-relevantNative.a */; };
 		4490D1F07C4947049C3FB064 /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3125EB69E77341E28280B97B /* libRCTVideo.a */; };
+		47AD081934E946E78F88B7D1 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D47904C13CF4AB1B3EED2A4 /* libReact.a */; };
 		5189AEBD024E4F89A78F5B28 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 656E7FBE6B85404CB71D2CD0 /* FontAwesome.ttf */; };
 		557520F822634518863413E9 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FEDBF8587C114786882771F4 /* EvilIcons.ttf */; };
 		56C921FCC2B44637B46733C9 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2CFF5F025ED3455183847E5E /* MaterialIcons.ttf */; };
 		5E177E3742B7495B93D90824 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2930D1F26CA244DF809E3D38 /* Feather.ttf */; };
+		64CF6EE408AD4065A5893E9C /* libyoga.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D911302890D43DB8A512450 /* libyoga.a */; };
 		6698184F50FB46E0BB414BEB /* libRCTGoogleAnalyticsBridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FF9B69421BD42B18F2F1E2C /* libRCTGoogleAnalyticsBridge.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8F3570BC5F7C49AFB8DAC1DB /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 896F0A9D02424FBF979AE5E1 /* libRNShare.a */; };
 		ACBD7CFB791B4A85BFB30E9F /* libRCTOrientation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB86F069A10404E9DA1C0FB /* libRCTOrientation.a */; };
 		AF16A7D67874436283A3838F /* libRNFIRAnalytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 225BA948531E4A8DABA2A505 /* libRNFIRAnalytics.a */; };
+		B00FFFC03E93458D93116747 /* libcxxreact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC5FEE109BF44588811576A3 /* libcxxreact.a */; };
 		B2B1E5D6542F4D8E985F8E90 /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E20E96A4BE64D4EB36FDE6A /* libRCTContacts.a */; };
 		CE7A7E0E7DD948AA2DEA98BD /* libPods-Relevant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 549F04AB9497946054EC0B34 /* libPods-Relevant.a */; };
 		DF2FB155198F4F4CAB9F9352 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 124E6D04C1EB46D0B367A9DA /* libRNFetchBlob.a */; };
@@ -49,6 +52,7 @@
 		E348C8AEB8B24979AE0B607D /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E0991F2715D473780511B85 /* libRNSVG.a */; };
 		E55F878B26CF4578AFCF67C6 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69D68DD57A7D46E1932AC656 /* Zocial.ttf */; };
 		E91573B35AA94626AC59C39D /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B9D73294842405B97D27972 /* Foundation.ttf */; };
+		EDCE35C03E834FF0A8DE5BBA /* libjschelpers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 99B0DC321E9340E79E38A4C4 /* libjschelpers.a */; };
 		F40FD9A63D504956845C224A /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 258B672691D941D6BD86DABA /* Ionicons.ttf */; };
 		F414C5B80C634F31AA4036C1 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EB0EBF26102A47CBBCAB6075 /* libRNVectorIcons.a */; };
 		FB0327701EC4E88700ECC4B3 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB03276A1EC4E73500ECC4B3 /* libRCTAnimation.a */; };
@@ -57,6 +61,7 @@
 		FB07E07B1F54F6C3002FBDBA /* libRCTWKWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB07E0601F54C9B9002FBDBA /* libRCTWKWebView.a */; };
 		FB0D88071EAEC6B000DEE4B8 /* Images.xcassets in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		FB0D88081EAEC8DE00DEE4B8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		FB17DDD21FA02BF900293C05 /* libRNTwitterSignIn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB17DDD11FA0255E00293C05 /* libRNTwitterSignIn.a */; };
 		FB202A1C1F632CD000E11BFB /* libjschelpers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB71B0C91E424F28000DA9BD /* libjschelpers.a */; };
 		FB202A481F632CDB00E11BFB /* libjschelpers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB71B0C91E424F28000DA9BD /* libjschelpers.a */; };
 		FB2BD5FF1E8B0A8100DBC2BA /* libRCTGoogleAnalyticsBridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB2BD5111E8AFA3200DBC2BA /* libRCTGoogleAnalyticsBridge.a */; };
@@ -367,6 +372,13 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RCTVideo;
 		};
+		FB17DDD01FA0255E00293C05 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7E7731FC7681402183C93C4E /* RNTwitterSignIn.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D07E57251F07806700A7160F;
+			remoteInfo = RNTwitterSignIn;
+		};
 		FB2BD5101E8AFA3200DBC2BA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B0FA0D2C5E6743A49AD688C2 /* RCTGoogleAnalyticsBridge.xcodeproj */;
@@ -546,6 +558,7 @@
 		00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTVibration.xcodeproj; path = "../node_modules/react-native/Libraries/Vibration/RCTVibration.xcodeproj"; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* relevantNativeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = relevantNativeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		02B9ABBAF312A1FEA32C6E3D /* Pods-relevantNative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-relevantNative.debug.xcconfig"; path = "Pods/Target Support Files/Pods-relevantNative/Pods-relevantNative.debug.xcconfig"; sourceTree = "<group>"; };
+		0D911302890D43DB8A512450 /* libyoga.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libyoga.a; sourceTree = "<group>"; };
 		100BA574186A3D4A8CC1A6F1 /* Pods-relevantNativeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-relevantNativeTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-relevantNativeTests/Pods-relevantNativeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		10C5474A35C64FC4A2D72CC9 /* RNFIRAnalytics.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFIRAnalytics.xcodeproj; path = "../node_modules/react-native-firebase-analytics/ios/RNFIRAnalytics.xcodeproj"; sourceTree = "<group>"; };
 		124E6D04C1EB46D0B367A9DA /* libRNFetchBlob.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFetchBlob.a; sourceTree = "<group>"; };
@@ -591,20 +604,27 @@
 		7854DE6F4CAC458F8533F7B8 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		7AD9644A340D483D81C9318A /* ReactNativeGlobalProps.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeGlobalProps.xcodeproj; path = "../node_modules/react-native-global-props/ios/ReactNativeGlobalProps.xcodeproj"; sourceTree = "<group>"; };
+		7C344A32CE77FC7500F00A4D /* Pods-relevantNativeTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-relevantNativeTests.staging.xcconfig"; path = "Pods/Target Support Files/Pods-relevantNativeTests/Pods-relevantNativeTests.staging.xcconfig"; sourceTree = "<group>"; };
+		7D47904C13CF4AB1B3EED2A4 /* libReact.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReact.a; sourceTree = "<group>"; };
+		7E7731FC7681402183C93C4E /* RNTwitterSignIn.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNTwitterSignIn.xcodeproj; path = "../node_modules/react-native-twitter-signin/ios/RNTwitterSignIn.xcodeproj"; sourceTree = "<group>"; };
 		7FF9B69421BD42B18F2F1E2C /* libRCTGoogleAnalyticsBridge.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTGoogleAnalyticsBridge.a; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		857C24108B663515187720BA /* Pods-relevantNative.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-relevantNative.release.xcconfig"; path = "Pods/Target Support Files/Pods-relevantNative/Pods-relevantNative.release.xcconfig"; sourceTree = "<group>"; };
 		896F0A9D02424FBF979AE5E1 /* libRNShare.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNShare.a; sourceTree = "<group>"; };
 		8DC345E22A8C4EC3B7D1FC04 /* libToolTipMenu.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libToolTipMenu.a; sourceTree = "<group>"; };
+		99B0DC321E9340E79E38A4C4 /* libjschelpers.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libjschelpers.a; sourceTree = "<group>"; };
 		9C586206FBB64D7A86D2ABCD /* ToolTipMenu.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ToolTipMenu.xcodeproj; path = "../node_modules/react-native-tooltip/ToolTipMenu.xcodeproj"; sourceTree = "<group>"; };
 		9EF1DA7CACB8BD337E40E3D5 /* Pods-Relevant.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Relevant.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Relevant/Pods-Relevant.debug.xcconfig"; sourceTree = "<group>"; };
 		9F78967AAC6F48A4B7FBC6C2 /* CodePush.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = CodePush.xcodeproj; path = "../node_modules/react-native-code-push/ios/CodePush.xcodeproj"; sourceTree = "<group>"; };
 		A1787E34623C4D149698AD8F /* libRNImagePicker.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNImagePicker.a; sourceTree = "<group>"; };
+		AE13E594BD5D3F8DFD1A6C24 /* Pods-Relevant.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Relevant.staging.xcconfig"; path = "Pods/Target Support Files/Pods-Relevant/Pods-Relevant.staging.xcconfig"; sourceTree = "<group>"; };
 		B0FA0D2C5E6743A49AD688C2 /* RCTGoogleAnalyticsBridge.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTGoogleAnalyticsBridge.xcodeproj; path = "../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/RCTGoogleAnalyticsBridge.xcodeproj"; sourceTree = "<group>"; };
+		BC5FEE109BF44588811576A3 /* libcxxreact.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libcxxreact.a; sourceTree = "<group>"; };
 		BDEA7658144542D2A4313AEC /* libCodePush.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libCodePush.a; sourceTree = "<group>"; };
 		BF8A7EE663221E457C45D1CA /* libPods-relevantNativeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-relevantNativeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFE6486FE737442E975C2815 /* RNSVG.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSVG.xcodeproj; path = "../node_modules/react-native-svg/ios/RNSVG.xcodeproj"; sourceTree = "<group>"; };
 		C1F1B49A57EB433E8F41F59C /* RCTOrientation.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTOrientation.xcodeproj; path = "../node_modules/react-native-orientation/iOS/RCTOrientation.xcodeproj"; sourceTree = "<group>"; };
+		CF9476613C0F088EFB746E02 /* Pods-relevantNative.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-relevantNative.staging.xcconfig"; path = "Pods/Target Support Files/Pods-relevantNative/Pods-relevantNative.staging.xcconfig"; sourceTree = "<group>"; };
 		DA563EFA2A5349C2BEA66205 /* RCTWKWebView.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTWKWebView.xcodeproj; path = "../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView.xcodeproj"; sourceTree = "<group>"; };
 		E70283C0B8E8488689465F9C /* SafariViewManager.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = SafariViewManager.xcodeproj; path = "../node_modules/react-native-safari-view/SafariViewManager.xcodeproj"; sourceTree = "<group>"; };
 		EB0EBF26102A47CBBCAB6075 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
@@ -650,6 +670,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB17DDD21FA02BF900293C05 /* libRNTwitterSignIn.a in Frameworks */,
 				FBBBF2081F8F1B6500F68218 /* libSafariViewManager.a in Frameworks */,
 				FB202A1C1F632CD000E11BFB /* libjschelpers.a in Frameworks */,
 				FB07E07B1F54F6C3002FBDBA /* libRCTWKWebView.a in Frameworks */,
@@ -690,6 +711,10 @@
 				DF2FB155198F4F4CAB9F9352 /* libRNFetchBlob.a in Frameworks */,
 				2865C8E9479A4D11A7BC0A0B /* libCodePush.a in Frameworks */,
 				0AE6A32B06B442FD871C1934 /* libRCTActionSheet.a in Frameworks */,
+				47AD081934E946E78F88B7D1 /* libReact.a in Frameworks */,
+				64CF6EE408AD4065A5893E9C /* libyoga.a in Frameworks */,
+				B00FFFC03E93458D93116747 /* libcxxreact.a in Frameworks */,
+				EDCE35C03E834FF0A8DE5BBA /* libjschelpers.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -933,6 +958,7 @@
 				7AD9644A340D483D81C9318A /* ReactNativeGlobalProps.xcodeproj */,
 				DA563EFA2A5349C2BEA66205 /* RCTWKWebView.xcodeproj */,
 				E70283C0B8E8488689465F9C /* SafariViewManager.xcodeproj */,
+				7E7731FC7681402183C93C4E /* RNTwitterSignIn.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1006,6 +1032,9 @@
 				857C24108B663515187720BA /* Pods-relevantNative.release.xcconfig */,
 				100BA574186A3D4A8CC1A6F1 /* Pods-relevantNativeTests.debug.xcconfig */,
 				EF67CB4A1BD94842D9A0545E /* Pods-relevantNativeTests.release.xcconfig */,
+				AE13E594BD5D3F8DFD1A6C24 /* Pods-Relevant.staging.xcconfig */,
+				CF9476613C0F088EFB746E02 /* Pods-relevantNative.staging.xcconfig */,
+				7C344A32CE77FC7500F00A4D /* Pods-relevantNativeTests.staging.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1049,6 +1078,14 @@
 			children = (
 				FB0D883A1EB29E8600DEE4B8 /* libRCTVideo.a */,
 				FBBBF18B1F8F0BC300F68218 /* libRCTVideo.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FB17DDCD1FA0255E00293C05 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FB17DDD11FA0255E00293C05 /* libRNTwitterSignIn.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1145,6 +1182,10 @@
 				124E6D04C1EB46D0B367A9DA /* libRNFetchBlob.a */,
 				BDEA7658144542D2A4313AEC /* libCodePush.a */,
 				1657EF8EBCA44BD0B7103C18 /* libRCTActionSheet.a */,
+				7D47904C13CF4AB1B3EED2A4 /* libReact.a */,
+				0D911302890D43DB8A512450 /* libyoga.a */,
+				BC5FEE109BF44588811576A3 /* libcxxreact.a */,
+				99B0DC321E9340E79E38A4C4 /* libjschelpers.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1442,6 +1483,10 @@
 					ProjectRef = BFE6486FE737442E975C2815 /* RNSVG.xcodeproj */;
 				},
 				{
+					ProductGroup = FB17DDCD1FA0255E00293C05 /* Products */;
+					ProjectRef = 7E7731FC7681402183C93C4E /* RNTwitterSignIn.xcodeproj */;
+				},
+				{
 					ProductGroup = FB9067CB1EB908180027FEA3 /* Products */;
 					ProjectRef = 567114987AC047DEB33536A1 /* RNVectorIcons.xcodeproj */;
 				},
@@ -1695,6 +1740,13 @@
 			remoteRef = FB0D88391EB29E8600DEE4B8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FB17DDD11FA0255E00293C05 /* libRNTwitterSignIn.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNTwitterSignIn.a;
+			remoteRef = FB17DDD01FA0255E00293C05 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FB2BD5111E8AFA3200DBC2BA /* libRCTGoogleAnalyticsBridge.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1911,13 +1963,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-relevantNativeTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		2AFFBF725C10DF1EF9AFAFEC /* [CP] Check Pods Manifest.lock */ = {
@@ -1926,13 +1981,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Relevant-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		46E1BC5736F1C6E84806868C /* [CP] Embed Pods Frameworks */ = {
@@ -1956,9 +2014,13 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Relevant/Pods-Relevant-resources.sh",
+				"${PODS_ROOT}/TwitterKit/iOS/TwitterKit.framework/TwitterKitResources.bundle",
+				"${PODS_ROOT}/TwitterKit/iOS/TwitterKit.framework/TwitterShareExtensionUIResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2001,9 +2063,13 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-relevantNative/Pods-relevantNative-resources.sh",
+				"${PODS_ROOT}/TwitterKit/iOS/TwitterKit.framework/TwitterKitResources.bundle",
+				"${PODS_ROOT}/TwitterKit/iOS/TwitterKit.framework/TwitterShareExtensionUIResources.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2016,13 +2082,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-relevantNative-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FB88BEB01D9EDF26002D0069 /* ShellScript */ = {
@@ -2143,6 +2212,10 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2162,6 +2235,10 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2219,6 +2296,7 @@
 					"$(SRCROOT)/../node_modules/react-native-global-props/ios/ReactNativeGlobalProps/**",
 					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
 					"$(SRCROOT)/../node_modules/react-native-safari-view",
+					"$(SRCROOT)/../node_modules/react-native-twitter-signin/ios/**",
 				);
 				INFOPLIST_FILE = relevantNative/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -2270,6 +2348,7 @@
 					"$(SRCROOT)/../node_modules/react-native-global-props/ios/ReactNativeGlobalProps/**",
 					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
 					"$(SRCROOT)/../node_modules/react-native-safari-view",
+					"$(SRCROOT)/../node_modules/react-native-twitter-signin/ios/**",
 				);
 				INFOPLIST_FILE = relevantNative/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -2442,12 +2521,17 @@
 					"$(SRCROOT)/../node_modules/react-native-global-props/ios/ReactNativeGlobalProps/**",
 					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
 					"$(SRCROOT)/../node_modules/react-native-safari-view",
+					"$(SRCROOT)/../node_modules/react-native-twitter-signin/ios/**",
 				);
 				INFOPLIST_FILE = Relevant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2513,12 +2597,17 @@
 					"$(SRCROOT)/../node_modules/react-native-global-props/ios/ReactNativeGlobalProps/**",
 					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
 					"$(SRCROOT)/../node_modules/react-native-safari-view",
+					"$(SRCROOT)/../node_modules/react-native-twitter-signin/ios/**",
 				);
 				INFOPLIST_FILE = Relevant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2608,7 +2697,7 @@
 		};
 		FBDA046A1EEF221600789ED9 /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 857C24108B663515187720BA /* Pods-relevantNative.release.xcconfig */;
+			baseConfigurationReference = CF9476613C0F088EFB746E02 /* Pods-relevantNative.staging.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				BUILD_VARIANTS = normal;
@@ -2639,6 +2728,7 @@
 					"$(SRCROOT)/../node_modules/react-native-global-props/ios/ReactNativeGlobalProps/**",
 					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
 					"$(SRCROOT)/../node_modules/react-native-safari-view",
+					"$(SRCROOT)/../node_modules/react-native-twitter-signin/ios/**",
 				);
 				INFOPLIST_FILE = relevantNative/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
@@ -2660,7 +2750,7 @@
 		};
 		FBDA046B1EEF221600789ED9 /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EF67CB4A1BD94842D9A0545E /* Pods-relevantNativeTests.release.xcconfig */;
+			baseConfigurationReference = 7C344A32CE77FC7500F00A4D /* Pods-relevantNativeTests.staging.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -2687,6 +2777,10 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2696,7 +2790,7 @@
 		};
 		FBDA046C1EEF221600789ED9 /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 399DA1B325D0321D5C011495 /* Pods-Relevant.release.xcconfig */;
+			baseConfigurationReference = AE13E594BD5D3F8DFD1A6C24 /* Pods-Relevant.staging.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -2730,6 +2824,7 @@
 					"$(SRCROOT)/../node_modules/react-native-global-props/ios/ReactNativeGlobalProps/**",
 					"$(SRCROOT)/../node_modules/react-native-wkwebview-reborn/ios/RCTWKWebView",
 					"$(SRCROOT)/../node_modules/react-native-safari-view",
+					"$(SRCROOT)/../node_modules/react-native-twitter-signin/ios/**",
 				);
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(inherited)",
@@ -2756,6 +2851,10 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

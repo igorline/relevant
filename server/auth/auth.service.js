@@ -119,9 +119,12 @@ function setTokenCookie(req, res) {
   if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.' });
 
   let token = signToken(req.user._id, req.user.role);
+  if (req.user.type === 'temp') {
+    return res.json({ tmpUser: token });
+  }
 
   res.cookie('token', token);
-  return res.redirect('/');
+  return res.redirect('/signup');
 }
 
 exports.isAuthenticated = isAuthenticated;
