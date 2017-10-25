@@ -438,7 +438,10 @@ if (process.env.NODE_ENV === 'production') {
 
   // start interval on the hour
   let minutesTillHour = 60 - (new Date()).getMinutes();
-  setTimeout(() => startStatsUpdate(), minutesTillHour * 60 * 1000);
+  setTimeout(() => {
+    startStatsUpdate();
+    startRewards();
+  }, minutesTillHour * 60 * 1000);
 
   setTimeout(() => {
     startBasicIncomeUpdate();

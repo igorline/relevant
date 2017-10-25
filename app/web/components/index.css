@@ -16,6 +16,7 @@ html, body {
   min-height: 100%;
   background-color: #f8f8f8;
   position:relative;
+  overflow-y: auto;
   flex: 1;
 }
 

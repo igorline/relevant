@@ -19,11 +19,7 @@ if (process.env.BROWSER === true) {
 }
 
 class Posts extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  static fetchData(dispatch, params, req) {
+  static fetchData(dispatch, params) {
     console.log('calling fetchData');
     return dispatch(postActions.getSelectedPost(params.id));
   }
@@ -34,19 +30,19 @@ class Posts extends Component {
     }
   }
 
-  render () {
+  render() {
     this.post = this.props.posts.posts[this.props.params.id];
-    const hasPost = this.post && this.post !== 'notFound'
+    const hasPost = this.post && this.post !== 'notFound';
 
     return (
-      <div className='parent singlePost'>
+      <div className="parent singlePost">
         {hasPost &&
-          <div className='postContainer'>
+          <div className="postContainer">
             <Post post={this.post} {...this.props} />
             <Comments post={this.post} {...this.props} />
           </div>
         }
-        {! this.props.isAuthenticated &&
+        {!this.props.isAuthenticated &&
           <RequestInvite {...this.props} />
         }
       </div>

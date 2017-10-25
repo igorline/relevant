@@ -206,7 +206,7 @@ class Auth extends Component {
           decelerationRate={'fast'}
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
-          snapToInterval={(fullWidth)}
+          // snapToInterval={(fullWidth)}
           contentContainerStyle={styles.authSlidesParent}
           renderRow={this.renderRow}
           dataSource={this.state.dataSource}
