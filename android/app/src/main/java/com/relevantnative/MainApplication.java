@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.goldenowl.twittersignin.TwitterSigninPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
@@ -48,6 +49,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new TwitterSigninPackage(),
           new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG), // Add/change this line.
           new RNFetchBlobPackage(),
           new ReactNativePushNotificationPackage(),

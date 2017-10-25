@@ -8,6 +8,7 @@ target 'Relevant' do
 
   # Pods for Relevant
   pod 'Firebase/Core'
+  pod 'TwitterKit'
 
   target 'relevantNativeTests' do
     inherit! :search_paths
@@ -22,6 +23,7 @@ target 'relevantNative' do
 
   # Pods for relevantNative
   pod 'Firebase/Core'
+  pod 'TwitterKit'
 
 
 end
