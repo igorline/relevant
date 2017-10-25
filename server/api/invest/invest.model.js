@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
-import VOTE_COST_RATIO from '../../config/globalConstants';
+import { VOTE_COST_RATIO } from '../../config/globalConstants';
 
 const InvestSchemaEvents = new EventEmitter();
 let Schema = mongoose.Schema;
