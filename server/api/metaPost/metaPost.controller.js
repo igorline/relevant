@@ -80,7 +80,6 @@ exports.related = async req => {
   let tags = tagsArr.join(' ');
   let keywords = post.keywords.join(' ');
   let search = `${tags} ${keywords} ${post.title}`.replace(/"|'/g, '');
-  console.log(search);
 
   let posts = await MetaPost.find(
     { $text: { $search: search }, _id: { $ne: post._id } },
@@ -128,8 +127,6 @@ exports.index = async (req, res) => {
       tagsArr = tags.split(',');
       query = { $or: [{ tags: { $in: tagsArr } }, { categories: { $in: tagsArr } }] };
     }
-
-    console.log(sortQuery);
 
     posts = await MetaPost.find(query)
     // TODO - limit the commenatry and paginate / inf scroll it on backend

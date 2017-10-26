@@ -9,7 +9,7 @@ let fbHeader = {
 };
 
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%_\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+~#?&//=]*)/);
-
+const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
 
 exports.extractDomain = (url) => {
   let domain;
@@ -27,6 +27,10 @@ exports.extractDomain = (url) => {
   }
   return noPrefix;
 };
+
+function stripHTML(text) {
+  return (text || '').replace(HTML_REGEX, '');
+}
 
 exports.getReadable = async (uri) => {
   let article;
@@ -193,7 +197,7 @@ exports.generatePreview = (body, uri) => {
   let image = null;
 
   title = data['og:title'] || data['twitter:title'] || data.title;
-  description = data.description || data['og:description'] || data['twitter:description'];
+  description = stripHTML(data.description || data['og:description'] || data['twitter:description']).trim();
   image = data['og:image'] || data['og:image:url'] || data['twitter:image'] || data['twitter:image:src'] || data.image;
   // why prioritise og tags? flipboard?
   let url = data['al:web:url'] || data['og:url'] || uri;

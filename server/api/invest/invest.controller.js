@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import apnData from '../../pushNotifications';
 import MetaPost from '../metaPost/metaPost.model';
+import { VOTE_COST_RATIO } from '../../config/globalConstants';
 
 let Post = require('../post/post.model');
 let User = require('../user/user.model');
@@ -321,7 +322,7 @@ exports.create = async (req, res) => {
 
     let diff = user.relevance - author.relevance;
     let adjust = 1;
-    if (diff > 0) adjust = Math.pow(diff, 1 / 3) + 1;
+    if (diff > 0) adjust = Math.pow(diff, 1 / 4) + 1;
     if (irrelevant) adjust *= -1;
     // adjust = Math.round(adjust);
     if (user.relevance < 1) {
@@ -404,7 +405,7 @@ exports.create = async (req, res) => {
         if (relevanceToAdd !== 0) {
           let diff = user.relevance - existingInvestor.relevance;
           relevanceEarning = 1;
-          if (diff > 0) relevanceEarning = Math.pow(diff, 1 / 3) + 1;
+          if (diff > 0) relevanceEarning = Math.pow(diff, 1 / 4) + 1;
 
           // TODO: test this
           if (user.relevance < 1) relevanceEarning = 0;
@@ -468,7 +469,7 @@ exports.create = async (req, res) => {
 
     // ------- everything is fine, deduct user's balance ---
     // user.balance -= Math.abs(amount);
-    let payment = Math.floor(Math.max(1, user.balance * 0.07));
+    let payment = Math.floor(Math.max(1, user.balance * VOTE_COST_RATIO));
     user.balance -= payment;
 
     // send payment back to reward fund

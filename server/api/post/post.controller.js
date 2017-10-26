@@ -543,6 +543,7 @@ exports.create = (req, res) => {
     }
   });
   tags = [...new Set(tags)];
+  console.log('tags ', tags);
   let author;
 
   // console.log('Post category ', category);
@@ -650,7 +651,6 @@ exports.create = (req, res) => {
     subscribers.forEach(async subscription => {
       try {
         let updateFeed;
-
         /**
          * In case subscription has expired, but user hasn't seen the articles
          * remove oldest unread in feed and push new one

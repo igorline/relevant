@@ -27,7 +27,7 @@ const queryParams = (params) => {
 
 
 export function env() {
-  if (process.env.WEB != 'true') {
+  if (process.env.WEB !== 'true') {
     require('../publicenv');
     return process.env;
   }
@@ -35,7 +35,7 @@ export function env() {
 }
 
 export function Alert() {
-  if (process.env.WEB != 'true') {
+  if (process.env.WEB !== 'true') {
     let Platform = require('react-native').Platform;
     if (Platform.OS === 'ios') {
       return require('react-native').AlertIOS;

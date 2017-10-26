@@ -13,8 +13,8 @@ class PostButtons extends Component {
   }
 
   async invest(e) {
-    e && e.preventDefault()
-    if (! this.props.auth.isAuthenticated) return null
+    e && e.preventDefault();
+    if (!this.props.auth.isAuthenticated) return null;
 
     let investAmount = 1;
 
@@ -36,7 +36,7 @@ class PostButtons extends Component {
       }
     })
     .catch(err => {
-      console.log(err)
+      console.log(err);
       let text1 = err.message;
       if (text1.match('coin')) {
         text1 = 'Oops! Looks like you ran out of coins, but don\'t worry, you\'ll get more tomorrow';
@@ -46,8 +46,8 @@ class PostButtons extends Component {
   }
 
   async irrelevant(e) {
-    e && e.preventDefault()
-    if (! this.props.auth.isAuthenticated) return null
+    e && e.preventDefault();
+    if (!this.props.auth.isAuthenticated) return null;
     // this.props.actions.triggerAnimation('invest', -1);
     // this.props.actions.triggerAnimation('irrelevant', -1);
     // return;
@@ -69,7 +69,7 @@ class PostButtons extends Component {
   }
 
   async share(e) {
-    e && e.preventDefault()
+    e && e.preventDefault();
   }
 
   render() {
@@ -80,41 +80,47 @@ class PostButtons extends Component {
     }
     if (!post) return null;
 
-    let investment, votedUp, votedDown;
+    let investment;
+    let votedUp;
+    let votedDown;
     if (this.props.investments.myPostInv) {
       investment = this.props.investments.myPostInv[post.id];
       if (investment) {
-        votedUp = investment.amount > 0
-        votedDown = investment.amount < 0
+        votedUp = investment.amount > 0;
+        votedDown = investment.amount < 0;
         // console.log(investment)
       }
     }
     return (
-      <div className='postbuttons'>
-        <div className='left'>
+      <div className="postbuttons">
+        <div className="left">
           {this.props.isAuthenticated &&
-            <a onClick={this.invest} href='#'><img src={votedUp ? '/img/upvoteActive.png' : '/img/upvote-shadow.svg'} className='upvote' /></a>
+            <a onClick={this.invest} href="#">
+              <img alt="Upvote" src={votedUp ? '/img/upvoteActive.png' : '/img/upvote-shadow.svg'} className="upvote" />
+            </a>
           }
-          <div className='fraction'>
-            <div className='num'>
+          <div className="fraction">
+            <div className="num">
               {post.upVotes}
             </div>
-            <div className='dem'>
+            <div className="dem">
               {post.relevance}
-              <img src='/img/r-gray.svg' />
+              <img alt="R" src="/img/r-gray.svg" />
             </div>
           </div>
           {this.props.isAuthenticated &&
-            <a onClick={this.irrelevant} href='#'><img src={votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg'} className='downvote' /></a>
+            <a onClick={this.irrelevant} href="#">
+              <img alt="Downvote" src={votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg'} className="downvote" />
+            </a>
           }
         </div>
-        <div className='right'>
-          <div className='commentcount'>
-            <img src='/img/comment.svg' />
+        <div className="right">
+          <Link className="commentcount" to={'/post/' + post._id}>
+            <img alt="Comment" src="/img/comment.svg" />
             <span>{post.commentCount}</span>
-          </div>
+          </Link>
           <Link to={'/post/' + post._id}>
-            <img src='/img/share.png' className='share' />
+            <img alt="Share" src="/img/share.png" className="share" />
           </Link>
         </div>
       </div>
