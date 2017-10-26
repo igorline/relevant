@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina5_9" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13174"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,13 +16,13 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" semanticContentAttribute="spatial" misplaced="YES" image="default-launch.png" translatesAutoresizingMaskIntoConstraints="NO" id="83E-3a-Cjr">
-                    <frame key="frameInset" minY="-142" width="480" height="770"/>
+                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" semanticContentAttribute="spatial" image="default-launch.png" translatesAutoresizingMaskIntoConstraints="NO" id="83E-3a-Cjr">
+                    <rect key="frame" x="124.66666666666667" y="0.0" width="230.66666666666663" height="480"/>
                     <accessibility key="accessibilityConfiguration">
                         <accessibilityTraits key="traits" notEnabled="YES"/>
                     </accessibility>
                     <constraints>
-                        <constraint firstAttribute="width" secondItem="83E-3a-Cjr" secondAttribute="height" multiplier="48:77" id="UbJ-Vo-o5P"/>
+                        <constraint firstAttribute="width" relation="lessThanOrEqual" secondItem="83E-3a-Cjr" secondAttribute="height" multiplier="48:100" id="UbJ-Vo-o5P"/>
                     </constraints>
                 </imageView>
             </subviews>
@@ -35,6 +38,6 @@
         </view>
     </objects>
     <resources>
-        <image name="default-launch.png" width="1242" height="2208"/>
+        <image name="default-launch.png" width="1242" height="2436"/>
     </resources>
 </document>

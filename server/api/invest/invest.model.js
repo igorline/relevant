@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
+import { VOTE_COST_RATIO } from '../../config/globalConstants';
 
 const InvestSchemaEvents = new EventEmitter();
 let Schema = mongoose.Schema;
@@ -11,16 +12,24 @@ let InvestSchema = new Schema({
   author: { type: String, ref: 'User' },
   ownPost: { type: Boolean, default: false },
   amount: Number,
+
+  // vote weight
   relevantPoints: { type: Number, default: 0 },
 
   // this info helps us determin how much the
   // investor (or author) has earned from this post
+
   upvotes: { type: Number, default: 0 },
   downVotes: { type: Number, default: 0 },
   lastInvestor: { type: String, ref: 'User' },
   partialUsers: { type: Number, default: 0 },
   relevance: { type: Number, default: 0 },
   partialRelevance: { type: Number, default: 0 },
+
+  voteWeight: { type: Number, default: 0 },
+
+  paidOut: { type: Boolean, default: false },
+  payoutDate: { type: Date },
 }, {
   timestamps: true
 });
@@ -30,6 +39,43 @@ InvestSchema.index({ investor: 1 });
 InvestSchema.index({ post: 1, investor: 1, ownPost: 1 });
 
 InvestSchema.statics.events = InvestSchemaEvents;
+
+InvestSchema.statics.createVote = async function updateEarnings(props) {
+  let { user, post, relevanceToAdd, amount } = props;
+
+  let voteWeight = 0;
+  // author gets first curation vote weight
+  if ((amount > 0 || post.user === user._id) && user.balance > 0) {
+    let payment = Math.floor(Math.max(1, user.balance * VOTE_COST_RATIO));
+    voteWeight = payment / (post.balance + payment);
+    post.balance += user.balance;
+    await post.save();
+  }
+
+  let investment = await this.findOneAndUpdate(
+    {
+      investor: user._id,
+      post: post._id
+    },
+    {
+      investor: user._id,
+      author: post.user,
+      amount,
+      relevantPoints: relevanceToAdd,
+      post: post._id,
+      ownPost: post.user === user._id,
+      voteWeight,
+      payoutDate: post.payoutDate,
+      paidOut: post.paidOut,
+    },
+    {
+      new: true,
+      upsert: true,
+    }
+  );
+  return investment;
+};
+
 
 /**
  * When the amount is not a whole number, we save add up the increments and save the list of users
@@ -44,6 +90,8 @@ InvestSchema.statics.updateUserInvestment = async function updateEarnings(
     earnings = await this.findOne({ investor: investor._id, post: post._id });
 
     if (!earnings) {
+      // TODO do this when we create post?
+      // when does this happen - author?
       earnings = new this({
         investor: investor._id,
         post: post._id,
@@ -51,7 +99,9 @@ InvestSchema.statics.updateUserInvestment = async function updateEarnings(
         relevance: 0,
         partialRelevance: 0,
         partialUsers: 0,
-        ownPost: investor._id === post.user
+        ownPost: investor._id === post.user,
+        amount: 0,
+        relevantPoints: 0,
       });
     }
 

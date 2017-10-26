@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  TouchableHighlight,
+  TouchableOpacity,
   Easing,
   InteractionManager,
   Alert
@@ -23,7 +23,7 @@ import * as utils from '../../utils';
 import Card from '../nav/card.component';
 import CustomSpinner from '../CustomSpinner.component';
 
-import { globalStyles } from '../../styles/global';
+import { globalStyles, mainPadding } from '../../styles/global';
 
 const {
   Transitioner: NavigationTransitioner,
@@ -43,7 +43,7 @@ class CreatePostContainer extends Component {
     };
 
     this.renderScene = this.renderScene.bind(this);
-    this.renderRight = this.renderRight.bind(this);
+    // this.renderRight = this.renderRight.bind(this);
     this.back = this.back.bind(this);
     this.next = this.next.bind(this);
     this.uploadPost = this.uploadPost.bind(this);
@@ -112,6 +112,8 @@ class CreatePostContainer extends Component {
         key: 'categories',
         back: true,
         title: 'Post Category',
+        next: 'Post',
+        // left: this.props.share ? 'Back' : null
       }, 'createPost');
     }
     return null;
@@ -218,7 +220,9 @@ class CreatePostContainer extends Component {
 
     let postBody = {
       link: props.postUrl,
-      tags: [...new Set(props.allTags.map(tag => tag._id))],
+
+      tags: [...new Set([...props.allTags.map(tag => tag._id), ...props.bodyTags])],
+
       body: props.postBody,
       title: props.urlPreview ? props.urlPreview.title.trim() : null,
       description: props.urlPreview ? props.urlPreview.description : null,
@@ -278,33 +282,37 @@ class CreatePostContainer extends Component {
     }
     if (this.state.creatingPost) this.enabledNext = false;
 
-    let rightText = props.scene.route.next || 'Next';
-    let enabled = this.enableNext;
-    let rightAction = p => this.next(p);
-    if (this.current !== 'url') {
-      rightText = 'Post';
+    let rightText = props.scene.route.next || 'Post';
+
+    let enabled;
+    let rightAction;
+
+    if (props.scene.route.key === 'createPost') {
+      enabled = this.enableNext;
+      rightAction = p => this.next(p);
+    } else {
       enabled = this.props.createPost.postCategory && !this.state.creatingPost;
       rightAction = () => {
-        // if (this.props.createPost.edit) return this.editPost();
         return this.createPost();
       };
     }
 
     return (
-      <TouchableHighlight
-        style={[styles.rightButton, { opacity: enabled ? 1 : 0.3 }]}
-        underlayColor={'transparent'}
+      <TouchableOpacity
+        key={props.scene.route.key}
+        style={[styles.rightButton]}
         onPress={() => rightAction(props)}
       >
         <Text
           style={[
+            { opacity: enabled ? 1 : 0.6 },
             styles.active,
             styles.rightButtonText,
           ]}
         >
           {rightText}
         </Text>
-      </TouchableHighlight>
+      </TouchableOpacity>
     );
   }
 
@@ -350,18 +358,21 @@ class CreatePostContainer extends Component {
       style={{ backgroundColor: 'white' }}
       navigation={{ state: scene }}
       configureTransition={utils.transitionConfig}
-      render={transitionProps => (
-        <Card
-          style={{ backgroundColor: 'white' }}
-          renderScene={this.renderScene}
-          back={this.back}
-          scroll={this.props.navigation.scroll}
-          next={this.next}
-          renderRight={this.renderRight}
-          share={this.props.share}
-          header
-          {...transitionProps}
-        />)}
+      render={transitionProps => {
+        return (
+          <Card
+            style={{ backgroundColor: 'white' }}
+            renderScene={this.renderScene}
+            back={this.back}
+            scroll={this.props.navigation.scroll}
+            next={this.next}
+            renderRight={props => this.renderRight(props)}
+            share={this.props.share}
+            header
+            {...transitionProps}
+          />);
+        }
+      }
     />);
   }
 }
@@ -369,13 +380,14 @@ class CreatePostContainer extends Component {
 const localStyles = StyleSheet.create({
   rightButton: {
     flex: 1,
-    marginRight: 15,
+    marginRight: mainPadding - 10,
     paddingVertical: 10,
   },
   rightButtonText: {
     textAlign: 'right',
     fontSize: 17,
-    fontFamily: 'Helvetica'
+    fontFamily: 'Helvetica',
+    paddingRight: 10,
   }
 });
 

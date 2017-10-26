@@ -1,8 +1,7 @@
-
 const htmlToText = require('html-to-text');
 const mailgun = require('mailgun-js')({
   apiKey: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN
+  domain: process.env.MAILGUN_DOMAIN,
 });
 
 
@@ -23,6 +22,10 @@ exports.test = () => {
 exports.send = data => {
   let text = htmlToText.fromString(data.html);
   data = { ...data, text };
+  // console.log('env ', process.env.NODE_ENV)
+  if (process.env.NODE_ENV === 'test') {
+    return Promise.resolve();
+  }
   return mailgun.messages()
   .send(data)
   .catch(err => {

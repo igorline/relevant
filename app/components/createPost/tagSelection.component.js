@@ -117,7 +117,7 @@ class TagSelection extends Component {
     }
 
     return (
-      <View >
+      <View style={{ flexDirection: 'column' }}>
         <TextInput
           autoCapitalize={'none'}
           autoCorrect={false}
@@ -156,6 +156,6 @@ const localStyles = StyleSheet.create({
   }
 });
 
-styles = { ...localStyles, ...globalStyles };
+styles = { ...globalStyles, ...localStyles };
 
 export default TagSelection;

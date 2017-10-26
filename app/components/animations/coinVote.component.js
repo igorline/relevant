@@ -4,14 +4,14 @@ import {
   Animated,
   Easing,
   Image,
-  Text,
+  Text
 } from 'react-native';
 import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 
 let styles;
 let ENDY = fullHeight * 0.5;
 
-class Relevance extends Component {
+class Coin extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -21,15 +21,12 @@ class Relevance extends Component {
 
   componentWillMount() {
     let { x, y, w, h } = this.props.parent;
-    // x += w / 2;
-    // y -= h / 2;
-
     let ENDX = Math.random() * 50;
 
     this.y = this.state.position.interpolate({
       inputRange: [0, 1],
       outputRange: [y, y - ENDY],
-      // easing: Easing.in(Easing.ease)
+      easing: Easing.in(Easing.ease)
     });
 
     this.x = this.state.position.interpolate({
@@ -50,8 +47,8 @@ class Relevance extends Component {
     });
 
     this.scale = this.state.position.interpolate({
-      inputRange: [0, 0.2, 0.3],
-      outputRange: [0, 1.2, 1],
+      inputRange: [0, 0.2, 0.3, 1],
+      outputRange: [0, 1.2, 1, 1.5],
       extrapolate: 'clamp'
     });
   }
@@ -59,29 +56,25 @@ class Relevance extends Component {
   componentDidMount() {
     let i = this.props.specialKey;
     let r = Math.random();
+    let amount = this.props.amount;
 
     Animated.timing(this.state.position, {
       toValue: 1,
-      delay: i * (75 + r * 50),
+      delay: r * 30 + i * 100 * 10 / amount,
       duration: 1000,
-    }).start(() => this.props.destroy(i));
+    }).start(() => this.props.destroy(null, i));
   }
 
   render() {
     let specialKey = this.props.specialKey;
     let img;
 
-    let icon = require('../../assets/images/icons/upvote.png');
+    let icon = require('../../assets/images/relevantcoin.png');
+
     img = (<Image
-      resizeMode={'contain'}
-      style={[styles.r, { width: 24, height: 24 }]}
+      style={[styles.coin, { width: 20, height: 20 }]}
       source={icon}
     />);
-
-    // if (specialKey % 3) {
-    // 🤔🍀🌿☀️🌟✨🍥🎗🏆📈📚🔆🌐🔔💭
-      // img = (<Text style={{ fontSize: 24 }}>🌟</Text>);
-    // }
 
     return (
       <Animated.View
@@ -92,7 +85,6 @@ class Relevance extends Component {
             { translateX: this.x },
             { translateY: this.y },
             { scale: this.scale },
-            { rotate: this.rotateAnimation }
 
           ],
             opacity: this.opacity
@@ -105,7 +97,7 @@ class Relevance extends Component {
   }
 }
 
-export default Relevance;
+export default Coin;
 
 const localStyles = StyleSheet.create({
   aniMoney: {

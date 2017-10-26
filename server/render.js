@@ -89,7 +89,7 @@ function fetchMeta(initialState) {
     }
   }
   title = title || 'Relevant: A Social News Reader';
-  image = image || 'https://relevant.community/img/fbfimg.png';
+  image = image || 'https://relevant.community/img/fbimg.png';
   url = url || 'https://relevant.community/';
   description = 'Relevant promotes reliable information and rewards expertise. Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score. This system is designed to penalise clickbait and fake news while promoting useful and reliable information.';
   return { title, description, image, url };

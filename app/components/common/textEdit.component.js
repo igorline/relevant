@@ -48,6 +48,7 @@ class TextEdit extends Component {
             maxHeight: 120 + buttonAdjust,
             minHeight: 50,
             paddingBottom: buttonAdjust,
+            paddingHorizontal: 0,
           },
           this.props.style
         ]}

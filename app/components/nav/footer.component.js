@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
 import PropTypes from 'prop-types';
-import { globalStyles, fullWidth, blue, darkGrey, greyText } from '../../styles/global';
+import { globalStyles, fullWidth, blue, greyText, IphoneX } from '../../styles/global';
 import Percent from '../percent.component';
 
 let styles;
@@ -48,7 +48,7 @@ export default class Footer extends Component {
     if (tab.title === 'Stats' && Platform.OS === 'ios') {
       fontAdjust = { fontSize: 15, lineHeight: 35 };
     }
-    let icon = (<Text style={[styles.icon, styles.textCenter, fontAdjust]}>{tab.icon}</Text>);
+    let icon = (<Text style={[styles.icon, styles.textCenter, fontAdjust, active ? styles.footerTextActive : null]}>{tab.icon}</Text>);
     let title = (
       <Text style={[styles.footerText, active || activeText ? styles.footerTextActive : null]}>
         {tab.title}
@@ -114,12 +114,13 @@ const localStyles = StyleSheet.create({
     position: 'absolute',
     width: fullWidth,
     bottom: 0,
-    height: 50,
+    height: IphoneX ? 83 : 50,
     flexDirection: 'row',
     alignItems: 'stretch',
     backgroundColor: 'white',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'black',
+    paddingBottom: IphoneX ? 33 : 0,
   },
   footerItem: {
     flex: 1,
@@ -146,7 +147,12 @@ const localStyles = StyleSheet.create({
   },
   icon: {
     fontSize: 20,
-    color: 'black'
+    color: greyText,
+    // height: 26,
+    // width: 20,
+    fontFamily: Platform.OS === 'android' ? 'AndroidEmoji' : 'Georgia',
+    // lineHeight: 26,
+    // color: blue,
   },
   activeIcon: {
   },

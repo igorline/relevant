@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 let ListSchema = new Schema({
-  email: { type: String, index: { unique: true } },
+  email: { type: String },
   name: { type: String },
   status: { type: String, default: 'waitlist' }
 }, {

@@ -80,7 +80,6 @@ exports.related = async req => {
   let tags = tagsArr.join(' ');
   let keywords = post.keywords.join(' ');
   let search = `${tags} ${keywords} ${post.title}`.replace(/"|'/g, '');
-  console.log(search);
 
   let posts = await MetaPost.find(
     { $text: { $search: search }, _id: { $ne: post._id } },
@@ -110,7 +109,7 @@ exports.index = async (req, res) => {
   let sort = req.query.sort || null;
   let category = req.query.category || null;
   if (category === '') category = null;
-  let query = null;
+  let query = {};
   let tagsArr = null;
   let sortQuery;
   let commentarySort = { postDate: -1 };

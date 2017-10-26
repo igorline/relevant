@@ -11,27 +11,13 @@ import * as proxyHelpers from './api/post/html';
 import RelevanceStats from './api/relevanceStats/relevanceStats.model';
 import pagerank from './utils/pagerank';
 import Invest from './api/invest/invest.model';
+import Treasury from './api/treasury/treasury.model';
+import economy from './utils/economy.js';
+import { PAYOUT_FREQUENCY } from './config/globalConstants';
 
 const extractor = require('unfluff');
+// daily relevance decay
 const DECAY = 0.99621947473649;
-
-
-function extractDomain(url) {
-  let domain;
-  if (url.indexOf('://') > -1) {
-    domain = url.split('/')[2];
-  } else {
-    domain = url.split('/')[0];
-  }
-  domain = domain.split(':')[0];
-
-  let noPrefix = domain;
-
-  if (domain.indexOf('www.') > -1) {
-    noPrefix = domain.replace('www.', '');
-  }
-  return noPrefix;
-}
 
 let q = queue({
   concurrency: 1,
@@ -48,7 +34,8 @@ q.on('timeout', (next, job) => {
 // TODO make a que that updates users stats once in a while
 // Stats.find({}).remove(() => {});
 
-function updateUserStats() {
+async function updateUserStats() {
+
   User.find({}, { _id: 1, relevance: 1 })
   .exec((err, res) => {
     if (err || !res) {
@@ -85,7 +72,7 @@ function updateUserStats() {
     });
     q.start((queErr, results) => {
       if (queErr) return console.log(queErr);
-      return console.log('all done: ', results);
+      return console.log('done updating stats: ', results);
     });
   });
 }
@@ -316,8 +303,9 @@ async function basicIncome(done) {
     };
   }
 
-  function updateUserRelevance() {
+  async function updateUserRelevance() {
     console.log('updating user relevance');
+    let treasury = Treasury.findOne();
     return (user) => {
       q.push(async cb => {
         try {
@@ -325,7 +313,19 @@ async function basicIncome(done) {
           let diff = r - user.relevance;
           user.relevance += diff;
           user.updateRelevanceRecord();
+
           RelevanceStats.updateUserStats(user, diff);
+
+          // Friday is payout day
+          // if (day === 5) {
+          //   user.accumilatedDecay *
+          // }
+
+          treasury.accumilatedDecay += -diff;
+
+          user.accumilatedDecay += -diff;
+          let now = new Date();
+          let day = now.getDay();
 
           await user.save();
         } catch (err) {
@@ -401,6 +401,7 @@ function getNextUpdateTime() {
   return timeToUpdate;
 }
 
+
 getNextUpdateTime();
 
 function startBasicIncomeUpdate() {
@@ -418,12 +419,29 @@ function startStatsUpdate() {
   updateUserStats();
 }
 
+async function updateRewards() {
+  await economy.rewards();
+}
+
+function startRewards() {
+  // taking too long - should move to diff thread?
+  setInterval(updateRewards, PAYOUT_FREQUENCY);
+  updateRewards();
+}
+
+
+// updateUserStats();
+// startStatsUpdate();
+
 if (process.env.NODE_ENV === 'production') {
   updateUserStats();
 
   // start interval on the hour
   let minutesTillHour = 60 - (new Date()).getMinutes();
-  setTimeout(() => startStatsUpdate(), minutesTillHour * 60 * 1000);
+  setTimeout(() => {
+    startStatsUpdate();
+    startRewards();
+  }, minutesTillHour * 60 * 1000);
 
   setTimeout(() => {
     startBasicIncomeUpdate();

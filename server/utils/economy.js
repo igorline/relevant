@@ -5,12 +5,7 @@ import Invest from '../api/invest/invest.model';
 import apnData from '../pushNotifications';
 import Notification from '../api/notification/notification.model';
 
-const PAYOUT_FREQUENCY = 1 / (365 * 24); // once an hour
-const YEARLY_INFLATION = 0.1; // 10%
-const INTERVAL_INFLAITION = Math.pow(1 + YEARLY_INFLATION, PAYOUT_FREQUENCY) - 1;
-const INIT_COIN = 10000000;
-const SHARE_DECAY = 6 * 24 * 60 * 60 * 1000; // 6 days in ms
-const AUTHOR_SHARE = 1 / 2;
+import { INTERVAL_INFLAITION, INIT_COIN, SHARE_DECAY } from '../config/globalConstants';
 
 async function createCoins() {
   let treasury = await Treasury.findOne({});
@@ -34,11 +29,13 @@ async function createCoins() {
 // init();
 
 
-
 async function computePostPayout(posts, treasury) {
   // let posts = await Post.find({ paidOut: false, payoutTime: { $lt: now } });
   let updatedPosts = posts.map(async post => {
     // linear reward curve
+    if (post.relevance === 0) {
+      return await post.save();
+    }
     post.payoutShare = post.relevance / treasury.currentShares;
     post.payout = treasury.rewardFund * post.payoutShare;
     post = await post.save();
@@ -49,16 +46,16 @@ async function computePostPayout(posts, treasury) {
 }
 
 
-exports.allocateRewards = async () => {
+async function allocateRewards() {
   let treasury = await Treasury.findOne({});
   let newTokens = INTERVAL_INFLAITION * treasury.totalTokens;
   treasury.totalTokens += newTokens;
   treasury.rewardFund += newTokens;
   return await treasury.save();
-};
+}
 
 
-exports.distributeRewards = async () => {
+async function distributeRewards() {
   let treasury = await Treasury.findOne({});
   let now = new Date();
   let posts = await Post.find({ paidOut: false, payoutTime: { $lte: now } });
@@ -66,12 +63,13 @@ exports.distributeRewards = async () => {
 
   // decay curren reward shares
   let decay = (now.getTime() - treasury.lastRewardFundUpdate.getTime()) / SHARE_DECAY;
-  console.log('decay ', decay);
   treasury.currentShares *= 1 / decay;
 
   // add post relevance to treasury
   posts.forEach(post => {
-    treasury.currentShares += post.relevance;
+    if (post.relevance > 0) {
+      treasury.currentShares += post.relevance;
+    }
     post.paidOut = true;
   });
 
@@ -79,11 +77,9 @@ exports.distributeRewards = async () => {
 
   let updatedPosts = await computePostPayout(posts, treasury);
   estimatePosts = await computePostPayout(estimatePosts, treasury);
-  console.log(updatedPosts);
-  console.log(estimatePosts);
 
   return updatedPosts;
-};
+}
 
 async function rewardUser(props) {
   let { user, reward, post, treasury, type } = props;
@@ -94,7 +90,7 @@ async function rewardUser(props) {
   user.balance += reward;
   user = await user.save();
 
-  console.log('Awarded ', user.name, ' ', reward, ' tokens');
+  console.log('Awarded ', user.name, ' ', reward, ' tokens for ', post.title);
 
   let s = reward === 1 ? '' : 's';
   let action = type === 'vote' ? 'upvoting ' : '';
@@ -113,7 +109,7 @@ async function rewardUser(props) {
   return user;
 }
 
-exports.distributeUserRewards = async (posts) => {
+async function distributeUserRewards(posts) {
   let treasury = await Treasury.findOne({});
   let payouts = {};
   let updatedUsers = posts.map(async post => {
@@ -153,6 +149,7 @@ exports.distributeUserRewards = async (posts) => {
 
     console.log('curationReward', curationReward);
 
+
     let updatedVotes = votes.map(async vote => {
       // don't count downvotes
       if (vote.amount <= 0) return;
@@ -178,11 +175,42 @@ exports.distributeUserRewards = async (posts) => {
   console.log('Finished distributing rewards, remaining reward fund: ', treasury.rewardFund);
 
   return payouts;
-};
+}
 
 // exports.pendingUserReward(userId) {
 //   let now = new Date();
 //   let votes = await Invest.find({ payoutDate: { $lt: now } });
-  
-
 // }
+//
+
+let computingRewards = false;
+exports.rewards = async () => {
+  // safeguard
+  if (computingRewards) {
+    console.log('Computing rewards in progress');
+    return null;
+  }
+  computingRewards = true;
+  try {
+    let rewardsAllocation = await allocateRewards();
+    let updatedPosts = await distributeRewards();
+    let payouts = await distributeUserRewards(updatedPosts);
+
+    let displayPosts = updatedPosts.map(p => ({
+      title: p.title,
+      payout: p.payout,
+      payoutShare: p.payoutShare,
+      relevance: p.relevance,
+    }));
+    console.log('\x1b[32m', 'allocated rewards ', rewardsAllocation);
+    console.log('\x1b[32m', 'distributed rewards to posts ', displayPosts);
+    console.log('\x1b[32m', payouts);
+    console.log('\x1b[0m');
+    computingRewards = false;
+    return payouts;
+  } catch (error) {
+    console.log('rewards error', error);
+    return null;
+  }
+};
+

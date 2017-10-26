@@ -143,7 +143,7 @@ export default class ActivityView extends Component {
         automaticallyAdjustContentInsets={false}
         stickyHeaderIndices={this.props.stickyHeaderIndices}
         dataSource={this.dataSource || this.tpmDataSource}
-        renderRow={row => this.props.renderRow(row, this.props.view)}
+        renderRow={(row, s, i) => this.props.renderRow(row, this.props.view, i)}
         contentInset={{ top: this.props.YOffset || 0 }}
         contentOffset={{ y: -this.props.YOffset || 0 }}
         renderHeader={this.props.renderHeader}

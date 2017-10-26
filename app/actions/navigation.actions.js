@@ -11,12 +11,16 @@ import {
   SET_VIEW,
   TOGGLE_TOPICS,
   SCROLL,
-  SET_TOOLTIP_DATA
+  SET_TOOLTIP_DATA,
+  TOOLTIP_READY,
+  SET_BUTTON_TOOLTIP,
 } from './actionTypes';
 
 let dismissKeyboard;
+let safariView;
 if (process.env.WEB != 'true') {
   dismissKeyboard = require('react-native-dismiss-keyboard');
+  safariView = require('react-native-safari-view').default;
 }
 
 export function push(route, key, animation = 'vertical') {
@@ -87,6 +91,21 @@ export function setView(type, view) {
   };
 }
 
+export function setButtonTooltip(type, id) {
+  return {
+    type: SET_BUTTON_TOOLTIP,
+    payload: { id, type }
+  };
+}
+
+
+export function tooltipReady(ready) {
+  return {
+    type: TOOLTIP_READY,
+    payload: ready
+  };
+}
+
 export function setTooltipData(data) {
   return {
     type: SET_TOOLTIP_DATA,
@@ -98,6 +117,22 @@ export function showTooltip(name) {
   return {
     type: SHOW_TOOLTIP,
     payload: name
+  };
+}
+
+
+export function createToggleAction(name, el) {
+  return dispatch => {
+    if (!el) return;
+    el.measureInWindow((x, y, w, h) => {
+      let parent = { x, y, w, h };
+      if (x + y + w + h === 0) return;
+      dispatch(setTooltipData({
+        name,
+        parent
+      }));
+      dispatch(showTooltip(name));
+    });
   };
 }
 
@@ -151,15 +186,34 @@ export function goToPeople(topic) {
   });
 }
 
-export function goToUrl(url) {
-  return push({
-    key: 'articleView',
-    component: 'articleView',
-    back: true,
-    uri: url,
-    id: url,
-    gestureResponseDistance: 120
-  }, 'home');
+
+export function goToUrl(url, id) {
+  return dispatch => {
+    dispatch(setButtonTooltip('upvote', id));
+    if (safariView) {
+      safariView.isAvailable()
+      .then(() => {
+        safariView.show({
+          url,
+          readerMode: true, // optional,
+          // tintColor: '#ffffff', // optional
+          // barTintColor: '#ffffff' // optional
+        });
+        // dispatch(tooltipReady());
+      })
+      .catch(() => {
+        // dispatch(tooltipReady());
+        dispatch(push({
+          key: 'articleView',
+          component: 'articleView',
+          back: true,
+          uri: url,
+          id: url,
+          gestureResponseDistance: 120
+        }, 'home'));
+      });
+    }
+  };
 }
 
 export function goToComments(post, key, animation) {

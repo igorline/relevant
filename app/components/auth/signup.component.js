@@ -10,6 +10,7 @@ import {
   ScrollView,
   Platform,
 } from 'react-native';
+import codePush from 'react-native-code-push';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles, fullHeight } from '../../styles/global';
 
@@ -36,6 +37,11 @@ class SignUp extends Component {
       emailError: null,
     };
   }
+
+  componentDidMount() {
+    codePush.disallowRestart();
+  }
+
 
   componentWillMount() {
     if (this.props.auth.preUser) {
@@ -293,7 +299,7 @@ class SignUp extends Component {
           >
             By clicking Next, you agree to our{' '}
             <Text
-              style={styles.active}
+              style={[styles.font12, styles.active]}
               onPress={() =>
                 this.props.actions.goToUrl('https://relevant.community/eula.html')
               }

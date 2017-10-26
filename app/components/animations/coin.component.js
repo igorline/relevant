@@ -9,7 +9,7 @@ import {
 import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 
 let styles;
-let ENDY = fullHeight * 0.6;
+let ENDY = fullHeight * 0.7;
 
 class Dollar extends Component {
   constructor(props, context) {
@@ -20,8 +20,7 @@ class Dollar extends Component {
   }
 
   componentWillMount() {
-
-    let ENDX = -(fullWidth / 2.5) + ((Math.random() - 0.5) * 50);
+    let ENDX = -(fullWidth / 3) + ((Math.random() - 0.5) * 50);
 
     this.y = this.state.position.interpolate({
       inputRange: [0, 1],
@@ -36,23 +35,29 @@ class Dollar extends Component {
     });
 
     this.opacity = 1;
+    // this.opacity = this.state.position.interpolate({
+    //   inputRange: [0.8, 1],
+    //   outputRange: [1, 0],
+    //   easing: Easing.out(Easing.ease),
+    //   extrapolate: 'clamp'
+    // });
 
     this.scale = this.state.position.interpolate({
-      inputRange: [0, .3, .9, 1],
+      inputRange: [0, 0.5, 0.9, 1],
       outputRange: [0, 1, 1, 0],
       extrapolate: 'clamp'
     });
-
   }
 
   componentDidMount() {
     let i = this.props.specialKey;
     let r = Math.random();
+    let amount = this.props.amount;
 
     Animated.timing(this.state.position, {
       toValue: 1,
-      delay: i * (30 + r * 50),
-      duration: 500,
+      delay: r * 30 + i * 100 * 10 / amount,
+      duration: 1000,
     }).start(() => this.props.destroy(i));
   }
 
@@ -63,7 +68,7 @@ class Dollar extends Component {
     let icon = require('../../assets/images/relevantcoin.png');
 
     img = (<Image
-      style={[styles.coin, { width: 25, height: 25 }]}
+      style={[styles.coin, { width: 30, height: 30 }]}
       source={icon}
     />);
 

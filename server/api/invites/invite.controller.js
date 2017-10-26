@@ -2,6 +2,10 @@ import voucherCodes from 'voucher-code-generator';
 import Invite from './invite.model';
 import mail from '../../mail';
 
+// Invite.collection.dropIndexes(function (err, results) {
+//   console.log(err);
+// });
+
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return (err) => {
@@ -45,7 +49,7 @@ exports.create = async (req, res) => {
     let code = voucherCodes.generate({
       length: 5,
       count: 1,
-      charset: voucherCodes.charset('alphabetic')
+      charset: 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ'
     })[0];
     if (req.body.email) req.body.email = req.body.email.trim();
     invite = await Invite.findOne({ email: req.body.email });
@@ -94,9 +98,9 @@ exports.sendEmailFunc = async function(_invite) {
     let url = `${process.env.API_SERVER}/invite/${invite.code}`;
     let androidStoreUrl = 'https://play.google.com/store/apps/details?id=com.relevantnative';
     let name = invite.name;
-    let hi = '';
-    if (name) hi = `<span style="text-transform: capitalize;">${name}!</span><br /><br />`;
-    let intro = 'You must be WOKE, because you are invited to join Relevant';
+    let hi = 'Hi!<br /><br />';
+    if (name) hi = `<span style="text-transform: capitalize;">Hi ${name}!</span><br /><br />`;
+    let intro = 'You are invited to join Relevant';
     if (invite.invitedByString && invite.invitedByString !== '') {
       intro = `${invite.invitedByString} invited you to join Relevant`;
     }
@@ -119,10 +123,21 @@ exports.sendEmailFunc = async function(_invite) {
       <b>Step 2</b>: Launch the app and enter your invite code: <b>${invite.code}</b>
       <br />
       <br />
-      <span style="font-style: italic">Relevant is a social news reader that promotes reliable information and rewards expertise.
-      Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score.
-      This system is designed to penalize clickbait and fake news while promoting useful and reliable information.
+      -------------------------
+      <br />
+      <br />
+      <span style="font-style: normal">
+      Relevant is a social news reader that values quality over clicks. 
+      <br/>
+      <br/>
+      Instead of relying on quantity (# of likes, followers), Relevant implements a quality metric designed to extract valuable content from the noise of the attention economy. Beneficial contributions to the platform are rewarded with Relevant Tokens.
+      <br/>
+      <br/>
+      The app serves as a lab for formulating and experimenting with the Relevance Metric and Relevant Token with the goal of building a self-sustaining economic ecosystem that provides financial incentives to share and curate quality content.
       </span>
+      <br />
+      <br />
+      -------------------------
       <br />
       <br />
       <b>Don't be afraid to share and upvote interesting and informative articles - this is what makes Relevant work.</b>
@@ -130,7 +145,7 @@ exports.sendEmailFunc = async function(_invite) {
       <br />
       If you have questions, encounter any problems, or wish to send feedback please get in touch via this email: contact@4real.io
       <br />
-      <div style="margin-top: 30px"><a href="${webUrl}"><img width="100%" src="https://relevant.community/img/fbfimg.jpg" /></a></div>
+      <div style="margin-top: 30px"><a href="${webUrl}"><img width="100%" src="https://relevant.community/img/fbimg.jpg" /></a></div>
       `
     };
     // <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation (or manually enter the code when prompted)

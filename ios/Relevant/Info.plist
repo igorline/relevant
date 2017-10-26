@@ -17,9 +17,9 @@
 	<key>CFBundlePackageType</key>
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.9.53</string>
+	<string>0.9.61</string>
 	<key>CFBundleVersion</key>
-	<string>0.9.53.1</string>
+	<string>0.9.61.1</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>NSAppTransportSecurity</key>
@@ -64,6 +64,7 @@
 	<array>
 		<string>BebasNeuerelevantRegular-2.ttf</string>
 		<string>BebasNeueRelevant Bold.ttf</string>
+		<string>Ionicons.ttf</string>
 	</array>
 </dict>
 </plist>

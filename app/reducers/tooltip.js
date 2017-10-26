@@ -10,12 +10,33 @@ const initialState = {
   next: null,
   data: {},
   showing: {},
-  onboarding: ['relevance', 'coin', 'subscriptions', 'shareTip'],
-  current: null
+  onboarding: ['vote', 'relevance', 'coin', 'subscriptions', 'shareTip'],
+  current: null,
+  ready: false,
+  buttonId: {}
 };
 
 export default function tooltip(state = initialState, action) {
   switch (action.type) {
+
+    case types.SET_BUTTON_TOOLTIP: {
+      console.log(action.payload);
+      console.log(state);
+      return {
+        ...state,
+        buttonId: {
+          ...state.buttonId,
+          [action.payload.type]: action.payload.id
+        }
+      };
+    }
+
+    case types.TOOLTIP_READY: {
+      return {
+        ...state,
+        ready: action.payload,
+      };
+    }
 
     case types.SET_ONBOARDING_STEP: {
       return {

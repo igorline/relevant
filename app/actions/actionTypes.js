@@ -86,10 +86,12 @@ export const REPLACE_ROUTE = 'REPLACE_ROUTE';
 export const RELOAD_ROUTE = 'RELOAD_ROUTE';
 export const RELOAD_ALL_TABS = 'RELOAD_ALL_TABS';
 export const SHOW_TOOLTIP = 'SHOW_TOOLTIP';
+export const TOOLTIP_READY = 'TOOLTIP_READY';
 export const SET_TOOLTIP_DATA = 'SET_TOOLTIP_DATA';
 export const TOGGLE_TOPICS = 'TOGGLE_TOPICS';
 export const SCROLL = 'SCROLL';
 export const SET_ONBOARDING_STEP = 'SET_ONBOARDING_STEP';
+export const SET_BUTTON_TOOLTIP = 'SET_BUTTON_TOOLTIP';
 
 export const SET_VIEW = 'SET_VIEW';
 
