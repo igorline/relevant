@@ -6,7 +6,7 @@ const authTypes = ['github', 'twitter', 'facebook', 'google'];
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
-  _id: { type: String, required: true, index: true },
+  _id: { type: String, required: true },
   name: String,
   email: { type: String, lowercase: true, select: false },
   phone: { type: String, select: false },
@@ -62,11 +62,15 @@ const UserSchema = new Schema({
   topTopics: [{ type: String, ref: 'Tag' }],
   totalUsers: Number,
 
+  accumilatedDecay: { type: Number, select: false },
+  estimatedPayout: { type: Number },
+  lastPayout: { type: Number },
+
 }, {
   timestamps: true,
 });
 
-UserSchema.index({ name: 'text' });
+// UserSchema.index({ name: 'text' });
 
 UserSchema.statics.events = new EventEmitter();
 

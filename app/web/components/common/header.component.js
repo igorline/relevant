@@ -101,18 +101,24 @@ class Header extends Component {
   }
 
   render() {
+
+    let desktopApp = false;
+    if (process.env.DEVTOOLS) {
+      desktopApp = true;
+    }
+
     return (
       <div className="headerContainer">
         <header>
           {this.renderPostButton()}
           <div>
-            <Link to={this.props.isAuthenticated ? '/home' : '/'}>
+            <Link to={this.props.isAuthenticated && desktopApp ? '/home' : '/'}>
               <img src={'/img/logo-white.svg'} className={'logo'} alt={'Relevant'} />
             </Link>
           </div>
-          {this.renderLoginButton()}
-          {this.renderModal()}
+          {desktopApp ? this.renderLoginButton() : <div></div>}
         </header>
+        {this.renderModal()}
       </div>
     );
   }

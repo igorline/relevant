@@ -12,6 +12,9 @@ import Tag from '../tag/tag.model';
 import apnData from '../../pushNotifications';
 import mail from '../../mail';
 import Notification from '../notification/notification.model';
+import Invest from '../invest/invest.model';
+
+import { PAYOUT_TIME } from '../../config/globalConstants';
 
 require('../../processing/posts');
 // Post.collection.createIndex({ title: 'text', shortText: 'text', description: 'text', keywords: 'text', tags: 'text'});
@@ -454,7 +457,7 @@ exports.update = async (req, res) => {
   tags = tags.map(
     tag => tag.replace('_category_tag', '').trim()
   );
-  let mentions = req.body.mentions;
+  let mentions = req.body.mentions || [];
   let newMentions;
   let newTags;
   let category = req.body.category;
@@ -525,7 +528,7 @@ exports.update = async (req, res) => {
  * Creates a new post
  */
 exports.create = (req, res) => {
-  let mentions = req.body.mentions;
+  let mentions = req.body.mentions || [];
   let category = req.body.category ? req.body.category._id : null;
   let categoryName = req.body.category ? req.body.category.categoryName : null;
   let categoryEmoji = req.body.category ? req.body.category.emoji : null;
@@ -540,10 +543,23 @@ exports.create = (req, res) => {
     }
   });
   tags = [...new Set(tags)];
+  console.log('tags ', tags);
   let author;
 
   // console.log('Post category ', category);
   let link = req.body.link;
+
+  let now = new Date();
+  let payoutDate = new Date();
+
+  let payoutTime = process.env.NODE_ENV === 'production' ?
+      new Date(now.getTime() + PAYOUT_TIME) :
+      // TODO remove this in case of dev on live server
+      new Date(payoutDate.getTime() + 1000 * 60 * 5); // 5 minutes when in dev mode for testing
+
+  if (process.env.NODE_ENV === 'test' && req.body.payoutTime) {
+    payoutTime = req.body.payoutTime;
+  }
 
   let newPostObj = {
     link,
@@ -569,9 +585,11 @@ exports.create = (req, res) => {
     comments: [],
     lastPost: [],
     mentions: req.body.mentions,
-    postDate: new Date(),
+    postDate: now,
     domain: req.body.domain,
-    keywords
+    keywords,
+
+    payoutTime
   };
 
   // TODO WHY?
@@ -616,8 +634,6 @@ exports.create = (req, res) => {
     return newPost.save();
   })
   .then((savedPost) => {
-    console.log('saved post ', savedPost._id);
-
     // update meta post rank async
     MetaPost.updateRank(savedPost.metaPost);
     // update user post count async
@@ -635,7 +651,6 @@ exports.create = (req, res) => {
     subscribers.forEach(async subscription => {
       try {
         let updateFeed;
-
         /**
          * In case subscription has expired, but user hasn't seen the articles
          * remove oldest unread in feed and push new one
@@ -712,6 +727,12 @@ exports.create = (req, res) => {
       }
     });
     return Promise.all(promises);
+  })
+  .then(() => {
+    // creates an invest(vote) record for pots author
+    return Invest.createVote({
+      post: newPost, user: author, amount: 0, relevanceToAdd: 0
+    });
   })
   .then(() => {
     res.status(200).json(newPost);

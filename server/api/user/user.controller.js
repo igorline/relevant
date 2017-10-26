@@ -5,7 +5,7 @@ import User from './user.model';
 import Comment from '../comment/comment.model';
 import Post from '../post/post.model';
 import config from '../../config/config';
-// import Treasury from '../treasury/treasury.model';
+import Treasury from '../treasury/treasury.model';
 // import Earnings from '../earnings/earnings.model';
 import Relevance from '../relevance/relevance.model';
 import mail from '../../mail';
@@ -13,13 +13,19 @@ import Invite from '../invites/invite.model';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 
+// User.findOne({ _id: 'test'}, 'hashedPassword')
+// .then(u => console.log(u))
+
+// User.collection.dropIndexes(function (err, results) {
+//   console.log(err);
+// });
+
 // User.findOneAndUpdate({ _id: 'slava' }, { role: 'admin' }).exec();
 // User.findOneAndUpdate({ _id: 'Analisa' }, { role: 'admin' }).exec();
 // User.findOneAndUpdate({ _id: 'jay' }, { role: 'user' }).exec();
 // User.findOneAndUpdate({ _id: 'phillip' }, { role: 'user' }).exec();
 // User.findOneAndUpdate({ _id: 'balasan' }, { role: 'admin' }).exec();
 // User.findOneAndUpdate({ _id: 'test' }, { role: 'admin' }).exec();
-
 // async function notifications() {
 //   try {
 //     let users = await User.find({ 'deviceTokens.0': { $exists: true } });
@@ -32,6 +38,11 @@ import Feed from '../feed/feed.model';
 //   }
 // }
 // notifications();
+
+// User.update({}, { onboarding: 0 }, { multi: true }).exec();
+
+// User.find({ confirmed: false }, '_id')
+// .then(users => console.log(users));
 
 let validationError = (res, err) => {
   console.log(err);
@@ -46,28 +57,29 @@ function handleError(res, err) {
 async function sendConfirmation(user, newUser) {
   let status;
   let text = '';
-  if (newUser) text = 'Welcome to relevant! ';
+  if (newUser) text = 'Welcome to Relevant! ';
   try {
     console.log('sending email', user.email);
     let url = `${process.env.API_SERVER}/confirm/${user._id}/${user.confirmCode}`;
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
-      subject: 'Email Confirmation',
+      subject: 'Relevant Email Confirmation',
       html: `${text}Click on this link to confirm your email address:
       <br />
       <br />
       <a href="${url}" target="_blank">${url}</a>
       <br />
       <br />
-      Once you confirm your email we will send you additional invite codes to invite your friends!`
+      Once you confirm your email you will be able to invite your friends to the app!
+      `
     };
     status = await mail.send(data);
   } catch (err) {
     console.log('mail error ', err);
     throw err;
   }
-  return status;
+  return { email: user.email };
 }
 
 async function sendResetEmail(user) {
@@ -77,7 +89,7 @@ async function sendResetEmail(user) {
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
-      subject: 'Reset Password',
+      subject: 'Reset Relevant Password',
       html: `You are receiving this because you (or someone else) have requested the reset of the password for your account.<br />
       Please click on the following link, or paste this into your browser to complete the process:<br/><br/>
       ${url}<br/><br/>
@@ -142,7 +154,7 @@ exports.confirm = async (req, res, next) => {
 exports.sendConfirmationCode = async (req, res) => {
   let status;
   try {
-    let user = req.user;
+    let user = await User.findOne({ _id: req.user._id }, 'email confirmCode');
     let rand = await crypto.randomBytes(32);
     let token = rand.toString('hex');
     user.confirmCode = token;
@@ -332,7 +344,7 @@ exports.list = async (req, res) => {
  * Creates a new user
  */
 exports.create = async (req, res) => {
-  let startingAmount = 5;
+  let startingAmount = 10;
   let token;
 
   try {
@@ -381,37 +393,18 @@ exports.create = async (req, res) => {
 
     if (!confirmed) sendConfirmation(user, true);
     // else Invite.generateCodes(user);
+
+    await Treasury.findOneAndUpdate(
+        {},
+        { $inc: { balance: -startingAmount } },
+        { new: true, upsert: true }
+      ).exec();
   } catch (err) {
     return handleError(res, err);
   }
 
   return res.status(200).json({ token });
 
-  // let earningsObj = {
-  //   user: newUser._id,
-  //   source: 'treasury',
-  //   amount: startingAmount
-  // };
-
-  // let earnings = new Earnings(earningsObj);
-  // let saveEarnings = () => earnings.save();
-
-  // let updateTreasury = () =>
-  //   Treasury.findOneAndUpdate(
-  //     {},
-  //     { $inc: { balance: -startingAmount, out: startingAmount } },
-  //     { new: true, upsert: true }
-  //   ).exec();
-    // let dbNotificationObj = {
-    //   post: null,
-    //   forUser: null,
-    //   byUser: user._id,
-    //   amount: null,
-    //   type: 'newUser',
-    //   personal: false,
-    //   read: false,
-    //   tag: null
-    // };
 };
 
 /**

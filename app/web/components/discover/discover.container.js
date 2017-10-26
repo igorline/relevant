@@ -55,8 +55,8 @@ export class Discover extends Component {
     this.load = this.load.bind(this);
   }
 
-  componentWillMount(props) {
-    this.load()
+  componentDidMount(props) {
+    this.load();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -67,7 +67,7 @@ export class Discover extends Component {
         const sort = nextProps.params.sort;
         const tabIndex = this.state.routes.findIndex(tab => tab.key === sort);
         const routes = nextProps.params.tag ? tagRoutes : standardRoutes;
-        this.setState({ tabIndex, routes })
+        this.setState({ tabIndex, routes });
       }
     }
   }
@@ -79,6 +79,7 @@ export class Discover extends Component {
   }
 
   load(sort, props) {
+    if (!this.state.routes[this.state.tabIndex]) return null;
     sort = sort || this.state.routes[this.state.tabIndex].key;
     props = props || this.props;
     const tags = props.params.tag ? [props.params.tag] : [];
@@ -100,6 +101,7 @@ export class Discover extends Component {
   }
 
   render() {
+    if (!this.state.routes[this.state.tabIndex]) return null;
     const sort = this.state.routes[this.state.tabIndex].key;
     const tag = this.props.params.tag;
     let loadLookup = tag ? this.props.posts.loaded.topics[tag] : this.props.posts.loaded;
@@ -109,9 +111,8 @@ export class Discover extends Component {
       content = (
         <DiscoverUsers tag={tag} {...this.props} />
       );
-      isLoaded = ! this.props.user.loading;
-    }
-    else {
+      isLoaded = !this.props.user.loading;
+    } else {
       content = (
         <DiscoverPosts sort={sort} tag={tag} {...this.props} />
       );
@@ -128,14 +129,13 @@ export class Discover extends Component {
           tabs={this.state.routes}
           currentTab={this.state.tabIndex}
         />
-      {isLoaded ? content : <Loading />}
+        {isLoaded ? content : <Loading />}
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  // console.log(state)
   return {
     auth: state.auth,
     user: state.user,

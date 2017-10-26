@@ -3,13 +3,14 @@ import {
   Dimensions,
   Platform
 } from 'react-native';
+import StatusBarSizeIOS from 'react-native-status-bar-size';
 
 const fullWidth = Dimensions.get('window').width;
 const fullHeight = Dimensions.get('window').height;
 
 const smallScreen = fullWidth <= 320 || false;
 
-const mainPadding = 15;
+const mainPadding = smallScreen ? 10 : 15;
 // const mainPadding = 10;
 
 const darkGrey = '#242425';
@@ -22,7 +23,26 @@ const borderGrey = '#E3E3E3';
 
 const IphoneHeader = 59;
 const AndroidHeader = 44;
-const headerHeight = Platform.OS === 'ios' ? IphoneHeader : AndroidHeader;
+
+function isIphoneX() {
+  let dimen = Dimensions.get('window');
+  return (
+    Platform.OS === 'ios' &&
+    !Platform.isPad &&
+    !Platform.isTVOS &&
+    (dimen.height === 812 || dimen.width === 812)
+  );
+}
+const IphoneX = isIphoneX();
+
+let headerHeight = Platform.OS === 'ios' ? IphoneHeader : AndroidHeader;
+let statusBar = 20;
+
+
+if (IphoneX) {
+  statusBar = 44;
+  headerHeight = 89;
+}
 
 const font = StyleSheet.create({
   font10: {
@@ -85,22 +105,23 @@ const font = StyleSheet.create({
   headerInner: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center'
   },
   shareHeader: {
-    height: 45,
+    height: 42,
     paddingTop: 0,
   },
   header: {
-    height: Platform.OS === 'ios' ? 59 : 44,
-    paddingTop: Platform.OS === 'ios' ? 16 : 0,
+    height: Platform.OS === 'ios' ? headerHeight : 44,
+    paddingTop: Platform.OS === 'ios' ? statusBar : 0,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'white',
     borderBottomColor: '#242425',
     borderBottomWidth: StyleSheet.hairlineWidth,
 
-    // zIndex: 1000,
+    zIndex: 1000,
     position: 'absolute',
     top: 0,
     right: 0,
@@ -149,10 +170,6 @@ const font = StyleSheet.create({
     letterSpacing: 0.25,
     color: darkGrey,
   },
-  strokeText: {
-    fontFamily: 'HelveticaNeueLTStd-BdOu',
-    // lineHeight: 30,
-  },
   halfLetterSpacing: {
     letterSpacing: 0.5,
   },
@@ -162,8 +179,8 @@ const font = StyleSheet.create({
   signInText: {
     marginTop: 20,
     textAlign: 'center',
-    fontFamily: 'Georgia',
-    fontSize: 18,
+    fontFamily: 'Arial',
+    fontSize: 15,
     color: darkGrey,
   },
 });
@@ -246,7 +263,8 @@ const layout = StyleSheet.create({
   },
   fieldsInput: {
     height: 50,
-    fontFamily: 'Georgia'
+    fontFamily: 'Arial',
+    paddingHorizontal: 0,
   },
   largeButton: {
     height: 50,
@@ -261,16 +279,18 @@ const layout = StyleSheet.create({
     fontSize: 29,
   },
   mediumButton: {
-    height: 50,
-    borderWidth: 2,
+    height: 35,
+    // borderWidth: 2,
     borderColor: '#3E3EFF',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    marginTop: 20,
   },
   mediumButtonText: {
     fontFamily: 'BebasNeueRelevantRegular',
     color: '#3E3EFF',
-    fontSize: 15,
+    fontSize: 17,
   },
   onlineUser: {
     justifyContent: 'space-between',
@@ -344,6 +364,9 @@ const layout = StyleSheet.create({
   },
   emoji: {
     marginTop: -3,
+  },
+  emojiFont: {
+    fontFamily: Platform.OS === 'android' ? 'AndroidEmoji' : 'Georgia',
   },
   tagBox: {
     backgroundColor: '#F0F0F0',
@@ -441,6 +464,7 @@ const layout = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     backgroundColor: '#ffffff',
+    paddingHorizontal: 0,
   },
   flex1: {
     flex: 1
@@ -571,5 +595,6 @@ export {
   headerHeight,
   mainPadding,
   smallScreen,
-  borderGrey
+  borderGrey,
+  IphoneX
 };

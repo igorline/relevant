@@ -7,7 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import { globalStyles } from '../../styles/global';
 import PostImage from './postImage.component';
-import Commentary from './commentary.componentAndroid';
+import Commentary from './commentary.component';
 
 let styles;
 
@@ -66,6 +66,8 @@ class Post extends PureComponent {
 
     if (commentary.length) {
       commentaryEl = <Commentary {...this.props} commentary={commentary} />;
+    } else {
+      return null;
     }
 
     if (post.repost) {
@@ -76,6 +78,7 @@ class Post extends PureComponent {
 
     if (post.link || post.url || post.image) {
       imageEl = (<PostImage
+        key={post._id}
         singlePost={this.props.singlePost}
         actions={this.props.actions}
         post={post}
@@ -115,7 +118,8 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     myPostInv: state.investments.myPostInv,
-    users: state.user.users
+    users: state.user.users,
+    // tooltip: state.tooltip.buttonId
   };
 }
 

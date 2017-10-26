@@ -59,7 +59,7 @@ MetaPostSchema.statics.updateRank = async function (_id) {
     if (!meta) throw new Error('no meta post found');
     let highestRank = meta.commentary && meta.commentary.length ? meta.commentary[0].rank : 0;
     if (!meta.commentary || !meta.commentary.length) {
-      console.log(meta);
+      // console.log(meta);
     }
     meta.rank = highestRank;
     meta = await meta.save();

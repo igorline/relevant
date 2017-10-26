@@ -309,11 +309,11 @@ exports.create = async (req, res) => {
 
     // filter out mentions
     console.log('mentions ', mentions);
-    console.log(otherCommentors);
+    // console.log(otherCommentors);
     otherCommentors = otherCommentors.filter(u => {
       return !mentions.find(m => m === u._id);
     });
-    console.log(otherCommentors);
+    // console.log(otherCommentors);
 
     otherCommentors.forEach(sendOutComments);
 

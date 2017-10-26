@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { numbers } from '../../utils';
-import { globalStyles, fullWidth, mainPadding } from '../../styles/global';
+import { globalStyles, fullWidth, mainPadding, smallScreen } from '../../styles/global';
 
 let styles;
 
@@ -25,7 +25,7 @@ class PostImage extends Component {
   }
 
   openLink(url) {
-    this.props.actions.goToUrl(url);
+    this.props.actions.goToUrl(url, this.props.post._id);
   }
 
   render() {
@@ -238,14 +238,14 @@ const localStyles = StyleSheet.create({
     color: 'white',
   },
   postImage: {
-    height: 256,
+    height: smallScreen ? 200 : 256,
     flex: 1,
     maxWidth: fullWidth,
     position: 'relative',
     resizeMode: 'cover',
   },
   imageCont: {
-    height: 256,
+    height: smallScreen ? 200 : 256,
     flex: 1,
     overflow: 'hidden'
   },

@@ -11,38 +11,14 @@ let userDefaults;
 utils.api.env();
 let Analytics;
 let Platform;
+let okToRequestPermissions = true;;
 
 if (process.env.WEB != 'true') {
   rn = require('react-native');
-
   Analytics = require('react-native-firebase-analytics');
-  // PushNotificationIOS = rn.PushNotificationIOS;
-  // userDefaults = require('react-native-user-defaults').default;
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
   Platform = require('react-native').Platform;
-
   PushNotification = require('react-native-push-notification');
-  // PushNotification.configure({
-  //   // (optional) Called when Token is generated (iOS and Android)
-  //   onRegister: function(token) {
-  //       console.log( 'TOKEN:', token );
-  //   },
-
-  //   // (required) Called when a remote or local notification is opened or received
-  //   onNotification: function(notification) {
-  //       console.log( 'NOTIFICATION:', notification );
-  //   },
-  //   // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
-  //   senderID: "271994332492",
-  //   // IOS ONLY (optional): default: all - Permissions to register.
-  //   permissions: {
-  //     alert: true,
-  //     badge: true,
-  //     sound: true
-  //   },
-  //   popInitialNotification: true,
-  //   requestPermissions: true,
-  // });
 }
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
@@ -177,7 +153,6 @@ export function setCurrentTooltip(step) {
 
 export function setOnboardingStep(step) {
   return async dispatch => {
-    dispatch(setCurrentTooltip(step));
     return fetch(process.env.API_SERVER + '/api/user/onboarding/' + step, {
       credentials: 'include',
       method: 'GET',
@@ -314,7 +289,7 @@ function createUser(user, invite) {
 export function getUser(callback) {
   return (dispatch) => {
     function fetchUser(token) {
-      fetch(process.env.API_SERVER + '/api/user/me', {
+      return fetch(process.env.API_SERVER + '/api/user/me', {
         credentials: 'include',
         method: 'GET',
         timeout: 0,
@@ -343,12 +318,11 @@ export function getUser(callback) {
 
         dispatch(setSelectedUserData(responseJSON));
         if (process.env.WEB != 'true') {
-          // if (Platform.OS === 'ios') {
-            dispatch(addDeviceToken(responseJSON, token));
-          // }
+          dispatch(addDeviceToken(responseJSON, token));
         }
         dispatch(errorActions.setError('universal', false));
         if (callback) callback(responseJSON);
+        return responseJSON;
       })
       .catch((error) => {
         console.log('get user error ', error);
@@ -362,10 +336,10 @@ export function getUser(callback) {
       });
     }
 
-    utils.token.get()
+    return utils.token.get()
     .then((newToken) => {
       dispatch(loginUserSuccess(newToken));
-      fetchUser(newToken);
+      return fetchUser(newToken);
     })
     .catch((error) => {
       console.log('no token');
@@ -403,45 +377,10 @@ export function updateUser(user, preventLocalUpdate) {
 
 export function addDeviceToken(user) {
   return (dispatch) => {
-    // PushNotification.checkPermissions((results) => {
-    //   console.log(results, 'permissions ios');
-    //   if (!results.alert) {
-    //     console.log('requestPermissions');
-    //     PushNotification.requestPermissions();
-    //   } else {
-    //     userDefaults.get('deviceToken', APP_GROUP_ID)
-    //     .then(storedDeviceToken => {
-    //       if (storedDeviceToken) {
-    //         dispatch(setDeviceToken(storedDeviceToken));
-    //         let newUser = user;
-    //         if (user.deviceTokens) {
-    //           if (user.deviceTokens.indexOf(storedDeviceToken) < 0) {
-    //             newUser.deviceTokens.push(storedDeviceToken);
-    //             console.log('adding devicetoken to user here', storedDeviceToken);
-    //             dispatch(updateUser(newUser));
-    //           } else {
-    //             console.log(user.deviceTokens);
-    //             console.log('devicetoken already present in user');
-    //           }
-    //         } else {
-    //           newUser.deviceTokens = [storedDeviceToken];
-    //           console.log('adding devicetoken to user object', storedDeviceToken);
-    //           dispatch(updateUser(newUser));
-    //         }
-    //       } else {
-    //         console.log('no userdefault devicetoken');
-    //       }
-    //     })
-    //     .catch(err => {
-    //       if (err) console.log('get devicetoken error', err);
-    //     });
-    //   }
-    // });
-
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
       onRegister: function(token) {
-        // console.log( 'TOKEN:', token );
+        console.log( 'TOKEN:', token );
       },
 
       // (required) Called when a remote or local notification is opened or received
@@ -463,28 +402,33 @@ export function addDeviceToken(user) {
         sound: true
       },
       popInitialNotification: true,
-      requestPermissions: true,
+      requestPermissions: Platform.OS === 'ios' ? false : true,
     });
 
+    if (Platform.OS === 'ios') {
+      if (okToRequestPermissions) {
+        okToRequestPermissions = false;
+        PushNotification.requestPermissions()
+        .then(() => {
+          okToRequestPermissions = true;
+          dispatch(navigationActions.tooltipReady(true));
+        });
+      }
+    } else {
+      dispatch(navigationActions.tooltipReady(true));
+    }
+
     PushNotification.onRegister = (deviceToken) => {
-      // console.log(deviceToken);
+      console.log('registered notification');
       let token = deviceToken.token;
       userDefaults.set('deviceToken', token, APP_GROUP_ID);
       dispatch(setDeviceToken(token));
       let newUser = user;
-      if (user.deviceTokens) {
-        if (user.deviceTokens.indexOf(token) < 0) {
-          newUser.deviceTokens.push(token);
-          // console.log(newUser);
-          // console.log('adding devicetoken to user here', token);
-          dispatch(updateUser(newUser));
-        } else {
-          // console.log(user.deviceTokens);
-          // console.log('devicetoken already present in user');
-        }
+      if (user.deviceTokens && user.deviceTokens.indexOf(token) < 0) {
+        newUser.deviceTokens.push(token);
+        dispatch(updateUser(newUser));
       } else {
         newUser.deviceTokens = [token];
-        // console.log('adding devicetoken to user object', token);
         dispatch(updateUser(newUser));
       }
     };
@@ -500,7 +444,6 @@ export function removeDeviceToken(auth) {
       if (index > -1) {
         user.deviceTokens.splice(index, 1);
         dispatch(updateUser(user, true));
-      } else {
       }
     }
   };
@@ -515,6 +458,7 @@ export function sendConfirmation() {
     .then(utils.api.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
+      AlertIOS.alert('A confirmation email has been sent to ' + responseJSON.email);
       return true;
     })
     .catch(err => {

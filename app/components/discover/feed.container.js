@@ -103,7 +103,7 @@ class Read extends Component {
   renderHeader() {
     let { total, totalUsers } = this.props.subscriptions;
     if (!total) return null;
-    setTimeout(this.initTooltips, 1000);
+    setTimeout(this.initTooltips, 0);
 
     return (
       <View

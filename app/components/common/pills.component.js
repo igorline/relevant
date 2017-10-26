@@ -38,16 +38,12 @@ styles = StyleSheet.create({
     height: 5,
     width: 5,
     borderRadius: 5,
-    // borderColor: 'black',
-    // borderWidth: 1,
-    // backgroundColor: 'grey'
   },
 });
 
 
 Pills.propTypes = {
   slides: PropTypes.array,
-  // changed: PropTypes.array,
   currentIndex: PropTypes.number,
   scrollToPage: PropTypes.func
 };

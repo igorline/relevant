@@ -32,6 +32,8 @@ class ProfileComponent extends Component {
     super(props, context);
     this.setTag = this.setTag.bind(this);
     this.showActionSheet = this.showActionSheet.bind(this);
+    this.initTooltips = this.initTooltips.bind(this);
+    this.toggleTooltip = this.toggleTooltip.bind(this);
   }
 
   componentDidMount() {
@@ -39,6 +41,18 @@ class ProfileComponent extends Component {
     //   this.props.auth.user.onboarding === 'relevance') {
     //   setTimeout(() => this.toggleTooltip(), 1000);
     // }
+    // setTimeout(this.initTooltips, 1000);
+  }
+
+  toggleTooltip() {
+    this.props.actions.createToggleAction('relevance', this.tooltipParent);
+  }
+
+  initTooltips() {
+    this.props.actions.setTooltipData({
+      name: 'relevance',
+      toggle: () => this.toggleTooltip(),
+    });
   }
 
   showActionSheet(id) {
@@ -84,26 +98,6 @@ class ProfileComponent extends Component {
       categoryName: '#' + name
     };
     this.props.actions.goToTopic(topic);
-  }
-
-  toggleTooltip() {
-    this.tooltipData = {
-      vertical: 'bottom',
-      horizontal: 'center',
-      horizontalOffset: -97,
-      name: 'relevance',
-      verticalOffset: 0,
-      width: 240,
-      text: 'See your relevance? The higher your relevance the more your upvotes count and the more coins you\'ll get each day.'
-    };
-
-    this.tooltipParent.measureInWindow((x, y, w, h) => {
-      let parent = { x, y, w, h };
-      this.props.navigator.showTooltip({
-        ...this.tooltipData,
-        parent
-      });
-    });
   }
 
   render() {
@@ -160,7 +154,9 @@ class ProfileComponent extends Component {
 
     let statEls = [
       { el: (
-        <View
+        <TouchableOpacity
+          onPress={() => this.toggleTooltip()}
+          ref={c => this.tooltipParent = c}
           style={{
             flex: 1,
             flexDirection: 'row',
@@ -180,7 +176,7 @@ class ProfileComponent extends Component {
             {numbers.abbreviateNumber(relevance)}
             {' '}
           </Text>
-        </View>
+        </TouchableOpacity>
         )
       },
       { el: (

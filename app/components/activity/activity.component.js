@@ -169,11 +169,11 @@ export default function (props) {
     }
 
     switch (singleActivity.type) {
-
       case 'upvote':
+        let coinText = singleActivity.coin ? 'you got a coin and ' : '';
         return (
           <Text style={styles.activityText}>
-            {renderName(singleActivity.byUser)} upvoted your post → you got a coin and your relevance increased by {amount}
+            {renderName(singleActivity.byUser)} upvoted your post → {coinText}your relevance increased by {amount}
           </Text>
         );
 
@@ -249,6 +249,9 @@ export default function (props) {
         );
 
       default:
+        if (singleActivity.text) {
+          return <Text style={styles.activityText}>{singleActivity.text}</Text>;
+        }
         return null;
     }
   };
@@ -261,10 +264,10 @@ export default function (props) {
       color = { color: 'red' };
       icon = require('../../assets/images/rdown.png');
     }
-
     if (singleActivity.coin) {
       coin = (
         <TouchableOpacity
+          key={singleActivity._id}
           onPress={() => toggleTooltip('activity')}
           allowFontScaling={false}
           style={styles.textRow}
@@ -275,7 +278,7 @@ export default function (props) {
             source={require('../../assets/images/coinup.png')}
           />
           <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
-            {Math.abs(numbers.abbreviateNumber(singleActivity.coin))}
+            {numbers.abbreviateNumber(Math.abs(singleActivity.coin))}
             { !smallScreen && singleActivity.amount ?
               <Text style={styles.darkGrey}>{'•'}</Text> : null}
           </Text>
@@ -321,7 +324,9 @@ export default function (props) {
             {coin}
           </View>
         );
-      default: return <View style={[styles.activityMiddle]} />;
+      default:
+        if (singleActivity.coin) return <View style={[styles.activityMiddle]} >{coin}</View>;
+        return <View style={[styles.activityMiddle]} />;
     }
   };
 
@@ -370,6 +375,7 @@ export default function (props) {
           </View>
         );
       case 'basicIncome':
+      case 'reward':
         return (
           <View style={styles.activityLeft}>
             <Text allowFontScaling={false} style={styles.incomeEmoji}>🤑</Text>
@@ -486,7 +492,7 @@ const localStyles = StyleSheet.create({
     height: 30,
     marginRight: 10,
     textAlign: 'center',
-    fontSize: 28,
+    fontSize: 24,
   },
   activityImage: {
     width: 30,

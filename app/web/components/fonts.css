@@ -14,11 +14,6 @@
   font-weight: bold;
 }
 
-/*@font-face {
-  font-family: 'Georgia';
-  src: url('/fonts/Georgia.ttf') format('truetype');
-}*/
-
 @font-face {
   font-family: 'Libre';
   src: url('/fonts/LibreCaslonDisplay-Regular.ttf') format('truetype');

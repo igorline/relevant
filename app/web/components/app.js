@@ -1,17 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-
-if (process.env.BROWSER === true) {
-  require('./splash/splash.css');
-}
-
-import Header from './common/header.component'
-import Footer from './common/footer.component'
+import Header from './common/header.component';
+import Footer from './common/footer.component';
 
 if (process.env.BROWSER === true) {
   console.log('BROWSER, import css');
   require('./index.css');
   require('./fonts.css');
+  require('./splash/splash.css');
 }
 
 class App extends Component {

@@ -3,11 +3,13 @@ import test from 'ava';
 import mockStore from './_mockStore';
 
 import * as types from '../app/actions/actionTypes';
-import * as postActions from '../app/actions/post.actions'
-import * as authActions from '../app/actions/auth.actions'
-import * as investActions from '../app/actions/invest.actions'
+import * as postActions from '../app/actions/post.actions';
+import * as authActions from '../app/actions/auth.actions';
+import * as investActions from '../app/actions/invest.actions';
+
 require('../app/publicenv');
-import nock from 'nock'
+
+import nock from 'nock';
 
 test('should create an action SET_USER', t => {
   const user = {
@@ -27,9 +29,9 @@ test('should create an action SET_USER', t => {
   const expectedAction = {
     type: 'SET_USER',
     payload: user
-  }
+  };
   t.deepEqual(authActions.setUser(user), expectedAction);
-})
+});
 
 
 test('create SET_USER after new user is created', async t => {
@@ -41,30 +43,28 @@ test('create SET_USER after new user is created', async t => {
     phone: 'testPhone',
     email: 'testEmail',
     password: 'testPass'
-  }
+  };
 
   nock(process.env.API_SERVER)
     .post('/api/user')
-    .reply(200, {token: token})
+    .reply(200, { token });
 
   nock(process.env.API_SERVER)
     .get('/api/user/me')
-    .reply(200, newUser)
-
-
+    .reply(200, newUser);
 
   const expectedActions = [
     {
       type: types.LOGIN_USER_SUCCESS,
       payload: {
-          token: token
+        token
       }
     },
     {
       type: types.SET_USER,
       payload: newUser
     }
-  ]
+  ];
   const store = mockStore({
     token: null,
     isAuthenticated: false,
@@ -73,18 +73,16 @@ test('create SET_USER after new user is created', async t => {
     user: null,
     userIndex: null,
     deviceToken: null
-  })
+  });
 
 
-  await store.dispatch(authActions.createUser(newUser, false))
+  await store.dispatch(authActions.createUser(newUser, false));
 
   t.deepEqual(store.getActions()[0], expectedActions[0]);
 
   // await store.dispatch(authActions.getUser(token, false))
 
-  console.log("ACTIONS ", store.getActions())
+  console.log('ACTIONS ', store.getActions());
 
   // t.deepEqual(store.getActions()[1], expectedActions[1]);
-
-
 })
