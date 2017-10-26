@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform
 } from 'react-native';
+import codePush from 'react-native-code-push';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles } from '../../styles/global';
 import TwitterButton from './TwitterButton.component';
@@ -32,6 +33,7 @@ class Login extends Component {
 
   componentDidMount() {
     this.userInput.focus();
+    codePush.disallowRestart();
   }
 
   componentWillUnmount() {

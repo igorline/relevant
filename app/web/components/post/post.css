@@ -19,7 +19,7 @@
 }
 
 .postinfo {
-  .shadowBox {
+  &.shadowBox {
     border: 1px solid #3E3EFF;
     box-shadow: 2px 2px 0 0 #3E3EFF;
     color: black;
@@ -32,9 +32,12 @@
   .image {
     flex: 0 0 191px;
     width: 191px;
-    margin-right: 20px;
+    margin-right: 15px;
     background-size: cover;
     display: block;
+  }
+  & > div {
+    margin-left: 5px;
   }
   .headline {
     font-size: 43px;
@@ -53,6 +56,7 @@
   }
   .domain {
     font-size: 15px;
+    padding-bottom: 5px;
   }
 }
 

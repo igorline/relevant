@@ -220,7 +220,9 @@ class CreatePostContainer extends Component {
 
     let postBody = {
       link: props.postUrl,
-      tags: [...new Set(props.allTags.map(tag => tag._id))],
+
+      tags: [...new Set([...props.allTags.map(tag => tag._id), ...props.bodyTags])],
+
       body: props.postBody,
       title: props.urlPreview ? props.urlPreview.title.trim() : null,
       description: props.urlPreview ? props.urlPreview.description : null,
