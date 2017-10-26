@@ -4,6 +4,7 @@ import queue from 'queue';
 import Meta from '../api/metaPost/metaPost.model';
 import Post from '../api/post/post.model';
 import * as proxyHelpers from '../api/post/html';
+import { text } from '../../app/utils';
 
 let requestAsync = promisify(request);
 
@@ -144,3 +145,32 @@ async function updatePostData() {
 
 // populateMeta();
 // updatePostData();
+
+async function processTags() {
+  let posts = await Post.find({});
+  let processed = posts.map(async post => {
+    if(!post.body) return;
+    let words = text.getWords(post.body);
+    let bodyTags = text.getTags(words);
+    if (!bodyTags.length) return;
+    let newTags = [...new Set([...post.tags, ...bodyTags])];
+    if (newTags.length !== post.tags.length) {
+      console.log('found tags');
+      console.log(bodyTags);
+      console.log(post.tags);
+      post.tags = newTags;
+      await post.upsertMetaPost(post.metaPost);
+      return await post.save();
+    }
+  });
+  return await Promise.all(processed);
+}
+async function init() {
+  try {
+    await processTags();
+  } catch (err) {
+    console.log('error ', err);
+  }
+}
+// init();
+

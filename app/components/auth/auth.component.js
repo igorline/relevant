@@ -263,9 +263,12 @@ class Auth extends Component {
             onPress={this.login}
             underlayColor={'transparent'}
           >
-            <Text allowFontScaling={false} style={styles.signInText}>
-              Already have an account? <Text style={{ color: '#3E3EFF' }}>Sign In.</Text>
-            </Text>
+            <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
+              <Text allowFontScaling={false} style={styles.signInText}>
+                Already have an account?
+              </Text>
+              <Text style={[styles.signInText, { color: '#3E3EFF' }]}> Sign In.</Text>
+            </View>
           </TouchableHighlight>
         </View>
 

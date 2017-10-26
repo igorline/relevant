@@ -27,7 +27,9 @@ export function getWords(text) {
   return res;
 }
 
-const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
+// Android crashes when flag is separate argument w error:
+// Cannot supply flags when constructing one RegExp from another
+const HTML_REGEX = new RegExp(/<[^>]*>/gm);
 
 export function stripHTML(text) {
   return (text || '').replace(HTML_REGEX, '');
