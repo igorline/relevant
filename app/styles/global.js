@@ -277,6 +277,7 @@ const layout = StyleSheet.create({
     fontFamily: 'BebasNeueRelevantRegular',
     color: '#3E3EFF',
     fontSize: 29,
+    backgroundColor: 'transparent',
   },
   mediumButton: {
     height: 35,

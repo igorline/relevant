@@ -66,6 +66,12 @@ const UserSchema = new Schema({
   estimatedPayout: { type: Number },
   lastPayout: { type: Number },
 
+  twitterHandle: { type: String },
+  twitterImage: { type: String },
+  twitterEmail: { type: String, select: false },
+  twitterAuthToken: { type: String, select: false },
+  twitterAuthSecret: { type: String, select: false },
+  twitterId: { type: Number, unique: true, index: true, sparse: true }
 }, {
   timestamps: true,
 });

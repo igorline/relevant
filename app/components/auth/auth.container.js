@@ -9,6 +9,8 @@ import { connect } from 'react-redux';
 import Auth from './auth.component';
 import Login from './login.component';
 import SignUp from './signup.component';
+import TwitterSignup from './twitterSignup.component';
+
 import ImageUpload from './imageUpload.component';
 import Forgot from './forgot.component';
 import ResetPassword from './resetPassword.component';
@@ -48,6 +50,9 @@ class AuthContainer extends Component {
 
       case 'login':
         return <Login {...this.props} />;
+
+      case 'twitterSignup':
+        return <TwitterSignup {...this.props} />;
 
       case 'signup':
         return <SignUp {...this.props} scene={props.scene.route} />;

@@ -286,6 +286,30 @@ function createUser(user, invite) {
   };
 }
 
+function setupUser(user, dispatch) {
+  dispatch(setUser(user));
+  if (Analytics) {
+    let r = user.relevance;
+    let p = user.postCount;
+    let i = user.investmentCount;
+
+    r = r === 0 ? '0' : (r < 25 ? '25' : (r < 200 ? '200' : 'manu'));
+    p = p === 0 ? '0' : (p < 10 ? '10' : (p < 30 ? '30' : 'many'));
+    i = i === 0 ? '0' : (i < 25 ? '75' : (i < 200 ? '200' : 'many'));
+
+    Analytics.setUserProperty('relevance', r);
+    Analytics.setUserProperty('posts', p);
+    Analytics.setUserProperty('upvotes', i);
+  }
+
+  dispatch(setSelectedUserData(user));
+  if (process.env.WEB != 'true') {
+    dispatch(addDeviceToken(user));
+  }
+  dispatch(errorActions.setError('universal', false));
+  return user;
+}
+
 export function getUser(callback) {
   return (dispatch) => {
     function fetchUser(token) {
@@ -299,30 +323,9 @@ export function getUser(callback) {
       })
       .then(utils.api.handleErrors)
       .then(response => response.json())
-      .then((responseJSON) => {
-        dispatch(setUser(responseJSON));
-
-        if (Analytics) {
-          let r = responseJSON.relevance;
-          let p = responseJSON.postCount;
-          let i = responseJSON.investmentCount;
-
-          r = r === 0 ? '0' : (r < 25 ? '25' : (r < 200 ? '200' : 'manu'));
-          p = p === 0 ? '0' : (p < 10 ? '10' : (p < 30 ? '30' : 'many'));
-          i = i === 0 ? '0' : (i < 25 ? '75' : (i < 200 ? '200' : 'many'));
-
-          Analytics.setUserProperty('relevance', r);
-          Analytics.setUserProperty('posts', p);
-          Analytics.setUserProperty('upvotes', i);
-        }
-
-        dispatch(setSelectedUserData(responseJSON));
-        if (process.env.WEB != 'true') {
-          dispatch(addDeviceToken(responseJSON, token));
-        }
-        dispatch(errorActions.setError('universal', false));
-        if (callback) callback(responseJSON);
-        return responseJSON;
+      .then((user) => {
+        setupUser(user, dispatch);
+        if (callback) callback(user);
       })
       .catch((error) => {
         console.log('get user error ', error);
@@ -593,24 +596,33 @@ export function getRelChart(start, end) {
   };
 }
 
+export function setTwitter(profile) {
+  return {
+    type: types.SET_TWITTER,
+    payload: profile,
+  };
+}
+
 export function twitterAuth(profile) {
   return async dispatch => {
     try {
-      let user = await utils.api.request({
+      let result = await utils.api.request({
         method: 'POST',
         endpoint: '/auth/',
         path: `twitter/login`,
         body: JSON.stringify(profile)
       });
-      AlertIOS.alert(user);
-
-      // dispatch(setStats({ relChart }));
-      // dispatch(errorActions.setError('stats', false));
-      // return true;
+      if (result.token && result.user) {
+        await utils.token.set(result.token);
+        dispatch(loginUserSuccess(result.token));
+        setupUser(result.user, dispatch);
+      }
+      if (result.twitter) {
+        dispatch(setTwitter(profile));
+      }
     } catch (error) {
+      console.log(error);
       AlertIOS.alert(error.message);
-      // dispatch(errorActions.setError('stats', true, error.message));
-      // return false;
     }
   };
 }
