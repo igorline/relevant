@@ -1,7 +1,98 @@
 const passport = require('passport');
 const TwitterStrategy = require('passport-twitter').Strategy;
+const config = require('../../config/config');
+const { promisify } = require('util');
+const User = require('../../api/user/user.model');
+const auth = require('../auth.service');
 
-exports.setup = function (User, config) {
+export async function getProfile(props) {
+  let authToken = props.authToken;
+  let authTokenSecret = props.authTokenSecret;
+  let user_id = props.userID;
+  let url = 'https://api.twitter.com/1.1/users/show.json';
+  let twitter = new TwitterStrategy({
+    consumerKey: process.env.TWITTER_ID,
+    consumerSecret: process.env.TWITTER_SECRET,
+    callbackURL: config.twitter.callbackURL,
+    passReqToCallback: true,
+    includeEmail: true,
+  }, () => null);
+
+  // need to bind original object
+  let userProfile = promisify(twitter.userProfile.bind(twitter));
+
+  let profile = await userProfile(
+    authToken,
+    authTokenSecret,
+    { url, user_id },
+  );
+  return profile;
+}
+
+export async function addTwitterProfile(param) {
+  let { user, profile, twitterAuth } = param;
+  let description = profile._json.description;
+  if (profile._json.entities.description && profile._json.entities.description.urls) {
+    profile._json.entities.description.urls.forEach(u => {
+      description = description.replace(u.url, u.display_url);
+      console.log(description);
+    });
+  }
+  let image = profile._json.profile_image_url_https;
+  let twitterHandle = profile.username;
+  let twitterEmail = profile.email;
+  let twitterImage = image.replace('_normal', '');
+  let twitterId = profile.id;
+
+  // TODO include twitter bio URL?
+  // console.log(profile._json.entities.url.urls);
+  description += `\ntwitter.com/${profile.username}`;
+
+  // if (!user.bio || !user.bio.length) {
+    user.bio = description;
+  // }
+  // if (!user.image || user.image.length) {
+    // TODO update existing posts using this
+    user.image = twitterImage;
+  // }
+  user.twitter = profile._json;
+  user.twitterHandle = twitterHandle;
+  user.twitterImage = twitterImage;
+  user.twitterEmail = twitterEmail;
+  user.twitterId = twitterId;
+
+  user.twitterAuthToken = twitterAuth.authToken;
+  user.twitterAuthSecret = twitterAuth.authTokenSecret;
+
+  user = await user.save();
+  return user;
+}
+
+exports.login = async (req, res, next) => {
+  try {
+    let user = await User.findOne(
+      { twitterId: req.body.userID },
+      ['+twitterAuthToken', '+twitterAuthSecret']
+    );
+    if (user) {
+      if (user.twitterAuthToken !== req.body.authToken
+        ||
+        user.twitterAuthSecret !== req.body.authTokenSecret) {
+        console.log('tw auth not equal!, need to update');
+        user.twitterAuthToken = req.body.authToken;
+        user.twitterAuthSecret = req.body.authSecret;
+        await user.save();
+      }
+      let token = auth.signToken(user._id, user.role);
+      return res.json({ token, user });
+    }
+    return res.json(200, { twitter: true });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.setup = () => {
   passport.use(new TwitterStrategy({
     consumerKey: process.env.TWITTER_ID,
     consumerSecret: process.env.TWITTER_SECRET,

@@ -4,13 +4,14 @@ import {
   Text,
   View,
   Dimensions,
-  TouchableHighlight,
   Image,
   TouchableWithoutFeedback,
   ListView,
   AlertIOS,
-  Platform
+  Platform,
+  TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Prompt from 'react-native-prompt';
 import { globalStyles, fullWidth, fullHeight, smallScreen } from '../../styles/global';
 
@@ -62,7 +63,7 @@ class Auth extends Component {
   signup() {
     if (this.props.admin.currentInvite) {
       return this.props.actions.push({
-        key: 'signup',
+        key: 'twitterSignup',
         title: 'Signup',
         showBackButton: true,
         back: true,
@@ -93,7 +94,7 @@ class Auth extends Component {
             action.then(invite => {
               if (invite) {
                 this.props.actions.push({
-                  key: 'signup',
+                  key: 'twitterSignup',
                   title: 'Signup',
                   showBackButton: true,
                   back: true,
@@ -137,16 +138,16 @@ class Auth extends Component {
     function sentance(text, special) {
       let words = text.split(/\s/);
       let l = words.length - 1;
-      return words.map((t, i) => {
+      return words.map((t, j) => {
         if (special.find(w => t === w)) {
           return (
-            <Text key={i + t} allowFontScaling={false} style={[styles.strokeText, styles.relevant]}>
-              {t + (l === i ? '' : ' ')}
+            <Text key={j + t} allowFontScaling={false} style={[styles.strokeText, styles.relevant]}>
+              {t + (l === j ? '' : ' ')}
             </Text>
           );
         }
-        return (<Text key={i + t} allowFontScaling={false} style={[styles.slideText]}>
-          {t + (l === i ? '' : ' ')}
+        return (<Text key={j + t} allowFontScaling={false} style={[styles.slideText]}>
+          {t + (l === j ? '' : ' ')}
         </Text>);
       });
     }
@@ -217,7 +218,7 @@ class Auth extends Component {
         </View>
       </View>
     );
-{/* 
+    {/*
     let intro = (
       <View style={{ flex: 1, paddingHorizontal: 20, alignItems: 'stretch' }}>
         <Image
@@ -248,20 +249,18 @@ class Auth extends Component {
         {intro}
 
         <View style={styles.authPadding}>
-          <TouchableHighlight
+          <TouchableOpacity
             onPress={this.signup}
             style={styles.largeButton}
-            underlayColor={'transparent'}
           >
             <Text style={styles.largeButtonText}>
               Sign Up Now
             </Text>
-          </TouchableHighlight>
+          </TouchableOpacity>
 
-          <TouchableHighlight
+          <TouchableOpacity
             style={{}}
             onPress={this.login}
-            underlayColor={'transparent'}
           >
             <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
               <Text allowFontScaling={false} style={styles.signInText}>
@@ -269,7 +268,7 @@ class Auth extends Component {
               </Text>
               <Text style={[styles.signInText, { color: '#3E3EFF' }]}> Sign In.</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
 
         <Prompt
@@ -283,7 +282,7 @@ class Auth extends Component {
             .then(invite => {
               if (invite) {
                 this.props.actions.push({
-                  key: 'signup',
+                  key: 'twitterSignup',
                   title: 'Signup',
                   showBackButton: true,
                   back: true,
@@ -398,6 +397,15 @@ const localStyles = StyleSheet.create({
   }
 
 });
+
+Auth.propTypes = {
+  auth: PropTypes.object,
+  actions: PropTypes.object,
+  navigation: PropTypes.object,
+  admin: PropTypes.object,
+  share: PropTypes.bool, // flag for share extension
+};
+
 
 styles = { ...localStyles, ...globalStyles };
 

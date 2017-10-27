@@ -10,82 +10,95 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { globalStyles, blue } from '../../styles/global';
 
 require('../../publicenv');
 
 const { RNTwitterSignIn } = NativeModules;
+let styles;
 
 const Constants = {
-    //Dev Parse keys
-    TWITTER_COMSUMER_KEY: process.env.TWITTER_COMSUMER_KEY,
-    TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
+  //Dev Parse keys
+  TWITTER_COMSUMER_KEY: process.env.TWITTER_COMSUMER_KEY,
+  TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
 };
 
 export default class TwitterButton extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      isLoggedIn: false,
-    }
-    this.handleLogout = this.handleLogout.bind(this);
   }
 
   _twitterSignIn() {
     RNTwitterSignIn.init(Constants.TWITTER_COMSUMER_KEY, Constants.TWITTER_CONSUMER_SECRET);
     RNTwitterSignIn.logIn()
-      .then((loginData)=>{
-        console.log(loginData);
-        const { authToken, authTokenSecret } = loginData;
-        if (authToken && authTokenSecret) {
-          this.props.actions.twitterAuth(loginData);
-          this.setState({
-            isLoggedIn: true,
-          });
-        }
-      }).catch((error)=>{
-        console.log(error);
-      });
-  }
-
-  handleLogout() {
-    console.log('logout');
-    RNTwitterSignIn.logOut();
-    this.setState({
-      isLoggedIn: false,
+    .then(loginData => {
+      const { authToken, authTokenSecret } = loginData;
+      if (authToken && authTokenSecret) {
+        this.props.actions.twitterAuth(loginData);
+      }
+    }).catch(error => {
+      console.log(error);
     });
   }
 
   render() {
-    const { isLoggedIn } = this.state;
+    let text = this.props.type === 'signup' ? 'Sign up' : 'Sign In';
+    text += ' with Twitter';
+    const isLoggedIn = this.props.auth.twitter;
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 0, paddingVertical: 20, flexDirection: 'row' }}>
         {
           isLoggedIn
           ?
-          <TouchableOpacity
-            onPress={this.handleLogout}
-          >
-            <Text>Log out</Text>
-          </TouchableOpacity>
+          (<Text style={[{ alignSelf: 'center' }, styles.signInText]}>
+            Twitter connected! Log in to complete.
+          </Text>)
           :
-          <Icon.Button
-            name={'logo-twitter'}
-            size={32} color={'white'}
-            style={styles.icon}
+          <TouchableOpacity
+            style={[styles.twitterButton, { flexDirection: 'row' }]}
             onPress={this._twitterSignIn.bind(this)}
           >
-            Login with Twitter
-          </Icon.Button>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Icon
+                borderRadius={0}
+                name={'logo-twitter'}
+                size={30} color={'white'}
+                style={styles.icon}
+              />
+              <Text style={styles.twitterText}>{text}</Text>
+            </View>
+          </TouchableOpacity>
         }
       </View>
     );
   }
 };
 
-const styles = StyleSheet.create({
+const local = StyleSheet.create({
+  twitterText: {
+    color: 'white',
+    fontFamily: 'Arial',
+    alignSelf: 'center',
+    textAlign: 'center',
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  twitterButton: {
+    backgroundColor: '#00aced',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 15
+  },
   icon: {
-    width: 200,
-    height: 50,
+    position: 'absolute',
+    left: 5,
+    // width: 50,
+    // height: 50,
+    color: 'white',
+    alignSelf: 'center',
+    marginRight: 20,
+    backgroundColor: 'transparent',
   }
 });
+
+styles = { ...globalStyles, ...local };

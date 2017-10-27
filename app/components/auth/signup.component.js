@@ -9,10 +9,12 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  TouchableOpacity
 } from 'react-native';
+import PropTypes from 'prop-types';
 import codePush from 'react-native-code-push';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
-import { globalStyles, fullHeight } from '../../styles/global';
+import { globalStyles } from '../../styles/global';
 
 let localStyles;
 let styles;
@@ -35,14 +37,9 @@ class SignUp extends Component {
       cPassword: null,
       nameError: null,
       emailError: null,
+      twitter: true,
     };
   }
-
-  componentDidMount() {
-    this.userInput.focus();
-    codePush.disallowRestart();
-  }
-
 
   componentWillMount() {
     if (this.props.auth.preUser) {
@@ -61,6 +58,11 @@ class SignUp extends Component {
       });
       setTimeout(() => this.checkEmail(), 100);
     }
+  }
+
+  componentDidMount() {
+    // this.userInput.focus();
+    codePush.disallowRestart();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -178,7 +180,7 @@ class SignUp extends Component {
   devSkip() {
     let randomNum = String(Math.floor(Math.random() * 1000));
     let randomName = 'test' + randomNum;
-    let randomEmail = 'test' +  randomNum + '@test.com';
+    let randomEmail = 'test' + randomNum + '@test.com';
     this.setState({
       name: randomName,
       email: randomEmail,
@@ -201,13 +203,10 @@ class SignUp extends Component {
       <KeyboardAvoidingView
         behavior={'padding'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0 }
+        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0}
       >
         <ScrollView
-          style={{ flex: 1, margin: 20, marginTop: 15 }}
-          // keyboardShouldPersistTaps={'always'}
-          // keyboardDismissMode={'interactive'}
-          // scrollEnabled={false}
+          style={{ flex: 1, marginBottom: 20, marginTop: 15, paddingHorizontal: 20 }}
           contentContainerStyle={{ flexGrow: 1, height: 'auto', minHeight: 330 }}
         >
 
@@ -220,7 +219,6 @@ class SignUp extends Component {
                 autoCorrect={false}
                 keyboardType={'default'}
                 clearTextOnFocus={false}
-                // onBlur={() => this.userError()}
                 placeholder="username"
                 onChangeText={(name) => {
                   this.setState({ name: name.trim() });
@@ -253,17 +251,6 @@ class SignUp extends Component {
               null
             }
 
-            {/*<View style={styles.fieldsInputParent}>
-              <TextInput
-                autoCapitalize={'none'}
-                keyboardType={'phone-pad'}
-                clearTextOnFocus={false}
-                placeholder="phone number"
-                onChangeText={phone => this.setState({ phone })}
-                value={this.state.phone} style={styles.fieldsInput}
-              />
-            </View>*/}
-
             <View style={styles.fieldsInputParent}>
               <TextInput
                 underlineColorAndroid={'transparent'}
@@ -292,23 +279,6 @@ class SignUp extends Component {
             </View>
           </View>
 
-          <Text
-            style={[
-              styles.font12,
-              { textAlign: 'center', paddingTop: 15, paddingBottom: 15 }
-            ]}
-          >
-            By clicking Next, you agree to our{' '}
-            <Text
-              style={[styles.font12, styles.active]}
-              onPress={() =>
-                this.props.actions.goToUrl('https://relevant.community/eula.html')
-              }
-            >
-              Terms of Use
-            </Text>
-          </Text>
-
           <TouchableHighlight
             underlayColor={'transparent'}
             style={[styles.largeButton]}
@@ -317,23 +287,36 @@ class SignUp extends Component {
             <Text style={styles.largeButtonText}>next</Text>
           </TouchableHighlight>
 
+          <Text
+            style={[
+              styles.signInText,
+              styles.font12
+            ]}
+          >
+            By signing up, you agree to our{' '}
+            <Text
+              style={[styles.signInText, styles.active, styles.font12]}
+              onPress={() =>
+                this.props.actions.goToUrl('https://relevant.community/eula.html')
+              }
+            >
+              Terms of Use
+            </Text>
+          </Text>
+
         </ScrollView>
       </KeyboardAvoidingView>
     );
-          // <TouchableHighlight
-          //   onPress={this.devSkip}
-          //   underlayColor={'transparent'}
-          // >
-          //   <Text style={styles.signInText}>
-          //     <Text style={{ color: '#3E3EFF' }}>devSkip</Text>
-          //   </Text>
-          // </TouchableHighlight>
   }
 }
 
 SignUp.propTypes = {
-  actions: React.PropTypes.object,
+  actions: PropTypes.object,
+  auth: PropTypes.object,
+  scene: PropTypes.object,
+  navigation: PropTypes.object, //navigation store
 };
+
 
 localStyles = StyleSheet.create({
   error: {

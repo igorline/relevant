@@ -188,7 +188,11 @@ class CardHeader extends Component {
       clipped += '...';
     }
 
-    if (title === 'Read' || component === 'login' || component === 'signup' || component === 'imageUpload') {
+    if (title === 'Read' ||
+      component === 'login' ||
+      component === 'signup' ||
+      component === 'imageUpload' ||
+      component === 'twitterSignup') {
       return (
         <View style={{ alignItems: 'center', paddingVertical: 6, backgroundColor: 'transparent' }}>
           <Image

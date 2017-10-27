@@ -12,11 +12,19 @@ const initialState = {
   stats: null,
   nextUpdate: new Date(),
   chart: [],
-  relChart: []
+  relChart: [],
+  twitter: null
 };
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
+
+    case types.SET_TWITTER: {
+      return {
+        ...state,
+        twitter: action.payload
+      };
+    }
 
     case types.SET_STATS: {
       return {
