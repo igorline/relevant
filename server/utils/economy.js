@@ -73,6 +73,7 @@ async function distributeRewards() {
     post.paidOut = true;
   });
 
+  treasury.lastRewardFundUpdate = now;
   treasury = await treasury.save();
 
   let updatedPosts = await computePostPayout(posts, treasury);
