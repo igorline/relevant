@@ -16,7 +16,7 @@ async function createCoins() {
   treasury.totalTokens = INIT_COIN;
   treasury.currentShares = 0;
   treasury.rewardFund = 0;
-  treasury.lastRewardFundUpdate = new Date(0);
+  treasury.lastRewardFundUpdate = new Date();
   treasury = await treasury.save();
   console.log(treasury);
   return treasury;
@@ -63,7 +63,13 @@ async function distributeRewards() {
 
   // decay curren reward shares
   let decay = (now.getTime() - treasury.lastRewardFundUpdate.getTime()) / SHARE_DECAY;
-  treasury.currentShares *= 1 / decay;
+  // console.log(decay)
+  // console.log('start shares ', treasury.currentShares);
+
+  treasury.currentShares *= (1 - Math.min(1, decay));
+
+  // console.log('end shares ', treasury.currentShares);
+
 
   // add post relevance to treasury
   posts.forEach(post => {

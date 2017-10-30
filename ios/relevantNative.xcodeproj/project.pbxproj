@@ -39,12 +39,14 @@
 		5E177E3742B7495B93D90824 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2930D1F26CA244DF809E3D38 /* Feather.ttf */; };
 		64CF6EE408AD4065A5893E9C /* libyoga.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D911302890D43DB8A512450 /* libyoga.a */; };
 		6698184F50FB46E0BB414BEB /* libRCTGoogleAnalyticsBridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FF9B69421BD42B18F2F1E2C /* libRCTGoogleAnalyticsBridge.a */; };
+		6F07DBE2ECCC6C052C4DDCA3 /* libPods-Relevant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBFBE05E1FA6EB37005DCC25 /* libPods-Relevant.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8F3570BC5F7C49AFB8DAC1DB /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 896F0A9D02424FBF979AE5E1 /* libRNShare.a */; };
 		ACBD7CFB791B4A85BFB30E9F /* libRCTOrientation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DB86F069A10404E9DA1C0FB /* libRCTOrientation.a */; };
 		AF16A7D67874436283A3838F /* libRNFIRAnalytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 225BA948531E4A8DABA2A505 /* libRNFIRAnalytics.a */; };
 		B00FFFC03E93458D93116747 /* libcxxreact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BC5FEE109BF44588811576A3 /* libcxxreact.a */; };
 		B2B1E5D6542F4D8E985F8E90 /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E20E96A4BE64D4EB36FDE6A /* libRCTContacts.a */; };
+		C242DF693C40F7EE4DC2ED93 /* libPods-relevantNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBFBE0261FA6EA88005DCC25 /* libPods-relevantNative.a */; };
 		CE7A7E0E7DD948AA2DEA98BD /* libPods-Relevant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 549F04AB9497946054EC0B34 /* libPods-Relevant.a */; };
 		DF2FB155198F4F4CAB9F9352 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 124E6D04C1EB46D0B367A9DA /* libRNFetchBlob.a */; };
 		E02A87FF0F6A4310BBBD8F28 /* libToolTipMenu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC345E22A8C4EC3B7D1FC04 /* libToolTipMenu.a */; };
@@ -117,6 +119,8 @@
 		FBF8A9411E6F3A5A009404F2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A9401E6F3A5A009404F2 /* SystemConfiguration.framework */; };
 		FBF8A9431E6F3A62009404F2 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A9421E6F3A62009404F2 /* libz.tbd */; };
 		FBF8A9451E6F3A6E009404F2 /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A9441E6F3A6E009404F2 /* libsqlite3.0.tbd */; };
+		FBFBE0251FA6EA88005DCC25 /* libPods-relevantNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBFBE0261FA6EA88005DCC25 /* libPods-relevantNative.a */; };
+		FBFBE05D1FA6EB37005DCC25 /* libPods-Relevant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBFBE05E1FA6EB37005DCC25 /* libPods-Relevant.a */; };
 		FDF0AAE9B41343AB80114ED0 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7854DE6F4CAC458F8533F7B8 /* SimpleLineIcons.ttf */; };
 /* End PBXBuildFile section */
 
@@ -647,6 +651,8 @@
 		FBF8A9401E6F3A5A009404F2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		FBF8A9421E6F3A62009404F2 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		FBF8A9441E6F3A6E009404F2 /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
+		FBFBE0261FA6EA88005DCC25 /* libPods-relevantNative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-relevantNative.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FBFBE05E1FA6EB37005DCC25 /* libPods-Relevant.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-Relevant.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEDBF8587C114786882771F4 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -664,6 +670,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBFBE05D1FA6EB37005DCC25 /* libPods-Relevant.a in Frameworks */,
 				FB17DDD21FA02BF900293C05 /* libRNTwitterSignIn.a in Frameworks */,
 				FBBBF2081F8F1B6500F68218 /* libSafariViewManager.a in Frameworks */,
 				FB202A1C1F632CD000E11BFB /* libjschelpers.a in Frameworks */,
@@ -709,6 +716,7 @@
 				64CF6EE408AD4065A5893E9C /* libyoga.a in Frameworks */,
 				B00FFFC03E93458D93116747 /* libcxxreact.a in Frameworks */,
 				EDCE35C03E834FF0A8DE5BBA /* libjschelpers.a in Frameworks */,
+				C242DF693C40F7EE4DC2ED93 /* libPods-relevantNative.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -716,6 +724,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FBFBE0251FA6EA88005DCC25 /* libPods-relevantNative.a in Frameworks */,
 				FB202A481F632CDB00E11BFB /* libjschelpers.a in Frameworks */,
 				FBDA04701EEF289600789ED9 /* CodePush.h in Frameworks */,
 				FB2BD6271E8B0C5600DBC2BA /* libz.tbd in Frameworks */,
@@ -746,6 +755,7 @@
 				FB88BEAE1D9ED8F6002D0069 /* libReact.a in Frameworks */,
 				FB88BEAF1D9ED8F6002D0069 /* libReactNativeShareExtension.a in Frameworks */,
 				CE7A7E0E7DD948AA2DEA98BD /* libPods-Relevant.a in Frameworks */,
+				6F07DBE2ECCC6C052C4DDCA3 /* libPods-Relevant.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1214,6 +1224,8 @@
 		FBF8A93D1E6F3A50009404F2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FBFBE05E1FA6EB37005DCC25 /* libPods-Relevant.a */,
+				FBFBE0261FA6EA88005DCC25 /* libPods-relevantNative.a */,
 				FBDA04731EEF40F000789ED9 /* libGoogleToolboxForMac.a */,
 				FBDA046E1EEF281F00789ED9 /* CodePush.h */,
 				FBF8A9441E6F3A6E009404F2 /* libsqlite3.0.tbd */,
@@ -2814,26 +2826,7 @@
 					"$(SRCROOT)/../node_modules/react-native-safari-view",
 					"$(SRCROOT)/../node_modules/react-native-twitter-signin/ios/**",
 				);
-				"HEADER_SEARCH_PATHS[arch=*]" = (
-					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SRCROOT)/../node_modules/react-native/React/**",
-					"$(SRCROOT)/../node_modules/react-native-share-extension/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-contacts/ios/RCTContacts",
-					"$(SRCROOT)/../node_modules/react-native-image-picker/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-overlay",
-					"$(SRCROOT)/../node_modules/react-native-share/ios",
-					"$(SRCROOT)/../node_modules/react-native-svg/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-tooltip/ToolTipMenu",
-					"$(SRCROOT)/../node_modules/react-native-firebase-analytics/ios",
-					"$(SRCROOT)/../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/**",
-					"$(SRCROOT)/../node_modules/react-native-overlay",
-					"$(SRCROOT)/../node_modules/react-native-video/ios",
-					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
-					"$(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/**",
-					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
-					"$(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**",
-				);
+				"HEADER_SEARCH_PATHS[arch=*]" = "$(inherited) /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include $(SRCROOT)/../node_modules/react-native/React/** $(SRCROOT)/../node_modules/react-native-share-extension/ios/** $(SRCROOT)/../node_modules/react-native-contacts/ios/RCTContacts $(SRCROOT)/../node_modules/react-native-image-picker/ios/** $(SRCROOT)/../node_modules/react-native-overlay $(SRCROOT)/../node_modules/react-native-share/ios $(SRCROOT)/../node_modules/react-native-svg/ios/** $(SRCROOT)/../node_modules/react-native-tooltip/ToolTipMenu $(SRCROOT)/../node_modules/react-native-firebase-analytics/ios $(SRCROOT)/../node_modules/react-native-google-analytics-bridge/ios/RCTGoogleAnalyticsBridge/** $(SRCROOT)/../node_modules/react-native-overlay $(SRCROOT)/../node_modules/react-native-video/ios $(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager $(SRCROOT)/../node_modules/react-native-orientation/iOS/RCTOrientation/** $(SRCROOT)/../node_modules/react-native-fetch-blob/ios/** $(SRCROOT)/../node_modules/react-native-code-push/ios/CodePush/**";
 				INFOPLIST_FILE = Relevant/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
