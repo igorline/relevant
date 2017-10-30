@@ -39,7 +39,7 @@ export async function addTwitterProfile(param) {
   if (profile._json.entities.description && profile._json.entities.description.urls) {
     profile._json.entities.description.urls.forEach(u => {
       description = description.replace(u.url, u.display_url);
-      console.log(description);
+      // console.log(description);
     });
   }
   let image = profile._json.profile_image_url_https;
@@ -88,7 +88,7 @@ exports.login = async (req, res, next) => {
     let profile;
 
     if (user) {
-      console.log('found user! ', user);
+      // console.log('found user! ', user);
 
       // check that we have auth
       profile = await getProfile(req.body);
