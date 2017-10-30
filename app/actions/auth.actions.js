@@ -603,15 +603,25 @@ export function setTwitter(profile) {
   };
 }
 
+export function setLoading(loading) {
+  return {
+    type: types.SET_LOADING,
+    payload: loading,
+  };
+}
+
+
 export function twitterAuth(profile) {
   return async dispatch => {
     try {
+      dispatch(setLoading(true));
       let result = await utils.api.request({
         method: 'POST',
         endpoint: '/auth/',
         path: `twitter/login`,
         body: JSON.stringify(profile)
       });
+      dispatch(setLoading(false));
       if (result.token && result.user) {
         await utils.token.set(result.token);
         dispatch(loginUserSuccess(result.token));
@@ -621,6 +631,7 @@ export function twitterAuth(profile) {
         dispatch(setTwitter(profile));
       }
     } catch (error) {
+      dispatch(setLoading(false));
       console.log(error);
       AlertIOS.alert(error.message);
     }

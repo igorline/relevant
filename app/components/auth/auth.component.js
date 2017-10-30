@@ -85,7 +85,7 @@ class Auth extends Component {
       'Relevant is an invitation-only community',
       [
         { text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
+          onPress: () => null,
           style: 'cancel'
         },
         { text: 'OK',
@@ -107,6 +107,17 @@ class Auth extends Component {
       ]);
   }
 
+  changeRow(event, changed) {
+    if (event && event.s1) this.setState({ currentIndex: event.s1 });
+    if (changed && changed.s1) this.setState({ changed: changed.s1 });
+  }
+
+  scrollToPage(index) {
+    let num = (index * (fullWidth));
+    this.setState({ currentIndex: index });
+    this.listview.scrollTo({ x: num, animated: true });
+  }
+
   renderIndicator() {
     let indicator = [];
     if (!this.slides) return indicator;
@@ -121,20 +132,7 @@ class Auth extends Component {
     return indicator;
   }
 
-  changeRow(event, changed) {
-    if (event && event.s1) this.setState({ currentIndex: event.s1 });
-    if (changed && changed.s1) this.setState({ changed: changed.s1 });
-  }
-
-  scrollToPage(index) {
-    let num = (index * (fullWidth));
-    this.setState({ currentIndex: index });
-    this.listview.scrollTo({ x: num, animated: true });
-  }
-
   renderRow(data, section, i) {
-    // <View style={{ height: 24, width: 115 }}><Text style={[styles.strokeText, styles.adjust]}>Relevant</Text></View>&nbsp;
-
     function sentance(text, special) {
       let words = text.split(/\s/);
       let l = words.length - 1;
@@ -158,9 +156,13 @@ class Auth extends Component {
           <View>
             <View key={i} style={styles.authSlide}>
               {sentance('Relevant is a social news reader that values quality over clicks', ['Relevant', 'quality', 'clicks'])}
-              <Text allowFontScaling={false} style={styles.slideText}></Text>
+              <Text allowFontScaling={false} style={styles.slideText} />
             </View>
-            <View style={styles.splashEmojiContainer}><Text style={styles.splashEmoji}>✌️</Text></View>
+            <View style={styles.splashEmojiContainer}>
+              <Text style={styles.splashEmoji}>
+                ✌️
+              </Text>
+            </View>
           </View>
         );
       case '1':
@@ -168,7 +170,7 @@ class Auth extends Component {
           <View>
             <View key={i} style={styles.authSlide}>
               {sentance('Discover relevant content and silence the noise of the attention economy', ['relevant', 'noise', 'content'])}
-              <Text allowFontScaling={false} style={styles.slideText}></Text>
+              <Text allowFontScaling={false} style={styles.slideText} />
             </View>
           </View>
         );
@@ -176,10 +178,10 @@ class Auth extends Component {
         return (
           <View>
             <View key={i} style={styles.authSlide}>
-              {sentance('Earn rewards by sharing articles that are worth reading', [ 'rewards', 'Earn', 'worth', 'reading'])}
-              <Text allowFontScaling={false} style={styles.slideText}></Text>
+              {sentance('Earn rewards by sharing articles that are worth reading', ['rewards', 'Earn', 'worth', 'reading'])}
+              <Text allowFontScaling={false} style={styles.slideText} />
             </View>
-{/*            <Image
+            { /* <Image
               resizeMode={'contain'}
               style={[styles.r, { width: 60, height: 60, marginTop: 10, alignSelf: 'center' }]}
               source={require('../../assets/images/relevantcoin.png')}
@@ -189,7 +191,7 @@ class Auth extends Component {
       case '3':
         return (<View key={i} style={styles.authSlide}>
           {sentance('Join the community and help us build a better information environment for all', ['Join', 'community', 'for', 'all'])}
-          <Text allowFontScaling={false} style={styles.slideText}></Text>
+          <Text allowFontScaling={false} style={styles.slideText} />
         </View>);
       default: return <View key={i} style={styles.authSlide} />;
     }
@@ -218,19 +220,61 @@ class Auth extends Component {
         </View>
       </View>
     );
-    {/*
-    let intro = (
-      <View style={{ flex: 1, paddingHorizontal: 20, alignItems: 'stretch' }}>
-        <Image
-          resizeMode={'contain'}
-          style={{ flex: 1, width: null, height: null }}
-          source={require('../../assets/images/intro3.jpg')}
-        />
-      </View>
-    ); */}
+    // let intro = (
+    //   <View style={{ flex: 1, paddingHorizontal: 20, alignItems: 'stretch' }}>
+    //     <Image
+    //       resizeMode={'contain'}
+    //       style={{ flex: 1, width: null, height: null }}
+    //       source={require('../../assets/images/intro3.jpg')}
+    //     />
+    //   </View>
+    // );
 
     if (this.props.share) intro = <View style={{ flex: 1 }} />;
 
+    let cta = (
+      <View style={styles.authPadding}>
+        <TouchableOpacity
+          onPress={this.signup}
+          style={styles.largeButton}
+        >
+          <Text style={styles.largeButtonText}>
+            Sign Up Now
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{}}
+          onPress={this.login}
+        >
+          <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
+            <Text allowFontScaling={false} style={styles.signInText}>
+              Already have an account?
+            </Text>
+            <Text style={[styles.signInText, { color: '#3E3EFF' }]}> Sign In.</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+
+    if (this.props.share) {
+      cta = (
+        <View style={{ flex: 1, alignSelf: 'center' }}>
+          <Text
+            style={{
+              fontFamily: 'Libre Caslon Display',
+              fontSize: 34,
+              alignSelf: 'center',
+              textAlign: 'center',
+              padding: 20,
+              lineHeight: 44,
+            }}
+          >
+            Ooops{'\n'}You are not logged in{'\n'}Please sign in via{'\n'}Relevant App
+          </Text>
+        </View>
+      );
+    }
 
     return (
       <View
@@ -240,36 +284,19 @@ class Auth extends Component {
         ]}
       >
         <View style={styles.logoContainer}>
-          <Image source={require('../../assets/images/logo.png')} resizeMode={'contain'} style={styles.authLogo} />
+          <Image
+            source={require('../../assets/images/logo.png')}
+            // resizeMode={'contain'}
+            style={styles.authLogo}
+          />
         </View>
         <View style={styles.authPadding}>
           <View style={styles.authDivider} />
         </View>
 
-        {intro}
+        {this.props.share ? null : intro}
 
-        <View style={styles.authPadding}>
-          <TouchableOpacity
-            onPress={this.signup}
-            style={styles.largeButton}
-          >
-            <Text style={styles.largeButtonText}>
-              Sign Up Now
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{}}
-            onPress={this.login}
-          >
-            <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
-              <Text allowFontScaling={false} style={styles.signInText}>
-                Already have an account?
-              </Text>
-              <Text style={[styles.signInText, { color: '#3E3EFF' }]}> Sign In.</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+        {cta}
 
         <Prompt
           title={this.promptTitle || ''}
@@ -331,8 +358,6 @@ const localStyles = StyleSheet.create({
   },
   authSlide: {
     flexDirection: 'row',
-    // alignItems: 'flex-start',
-    // justifyContent: 'center',
     flexWrap: 'wrap',
     width: (fullWidth - 40),
     marginHorizontal: 20,
@@ -364,12 +389,14 @@ const localStyles = StyleSheet.create({
   logoContainer: {
     marginTop: 10,
     height: 90,
-    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 20,
+    width: 'auto',
+    flexDirection: 'row',
   },
   authLogo: {
-    width: fullWidth - 40,
+    resizeMode: 'contain',
     flex: 1,
   },
   authParent: {
@@ -391,7 +418,6 @@ const localStyles = StyleSheet.create({
   },
   splashEmoji: {
     alignSelf: 'center',
-    // justifyContent: 'center',
     fontSize: Platform.OS === 'android' ? 50 : 65,
     fontFamily: Platform.OS === 'android' ? 'NotoColorEmoji' : 'Georgia',
   }
@@ -401,7 +427,7 @@ const localStyles = StyleSheet.create({
 Auth.propTypes = {
   auth: PropTypes.object,
   actions: PropTypes.object,
-  navigation: PropTypes.object,
+  navigation: PropTypes.object, // need this prop to pass to child components
   admin: PropTypes.object,
   share: PropTypes.bool, // flag for share extension
 };

@@ -177,7 +177,7 @@ const font = StyleSheet.create({
     letterSpacing: 0.25,
   },
   signInText: {
-    marginTop: 20,
+    paddingTop: 20,
     textAlign: 'center',
     fontFamily: 'Arial',
     fontSize: 15,
@@ -249,7 +249,7 @@ const layout = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'stretch',
     justifyContent: 'center',
-    margin: 20,
+    padding: 20,
   },
   fieldsInner: {
     flex: 1,
@@ -581,6 +581,11 @@ const layout = StyleSheet.create({
     borderBottomColor: borderGrey,
     marginHorizontal: 40,
   },
+  authScrollContent: {
+    padding: 20,
+    paddingTop: 15,
+    flexGrow: 1,
+  }
 });
 
 const globalStyles = { ...colors, ...font, ...alignment, ...layout };

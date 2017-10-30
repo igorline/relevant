@@ -27,13 +27,12 @@ class PostPeople extends Component {
     this.load = this.load.bind(this);
     this.renderRight = this.renderRight.bind(this);
     this.state = {};
-    this.loading = true;
+    this.loading = false;
   }
 
   componentWillMount() {
     this.postId = this.props.scene.id;
     this.onInteraction = InteractionManager.runAfterInteractions(() => {
-      this.loading = false;
       this.load();
       this.forceUpdate();
     });

@@ -51,6 +51,22 @@ async function sendInviteCodes(user, codes) {
   return status;
 }
 
+InviteSchema.statics.checkInvite = async function (invite) {
+  invite = await this.findOne({ _id: invite._id, redeemed: false });
+  if (!invite) throw new Error('No invitation code found');
+  return invite;
+};
+
+InviteSchema.methods.registered = async function (user) {
+  this.status = 'registered';
+  this.number -= 1;
+  if (this.number === 0) {
+    this.redeemed = true;
+  }
+  this.registeredAs = user._id;
+  return await this.save();
+};
+
 InviteSchema.statics.generateCodes = async function (user) {
   let invites = [];
   try {

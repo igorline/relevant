@@ -27,6 +27,8 @@ export function getWords(text) {
   return res;
 }
 
+export const NAME_PATTERN = /^[a-zA-Z0-9-_]+$/;
+
 // Android crashes when flag is separate argument w error:
 // Cannot supply flags when constructing one RegExp from another
 const HTML_REGEX = new RegExp(/<[^>]*>/gm);
