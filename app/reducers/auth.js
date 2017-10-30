@@ -12,11 +12,28 @@ const initialState = {
   stats: null,
   nextUpdate: new Date(),
   chart: [],
-  relChart: []
+  relChart: [],
+  twitter: null,
+  currentInvite: null,
+  loading: false,
 };
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
+
+    case types.SET_LOADING: {
+      return {
+        ...state,
+        loading: action.payload
+      };
+    }
+
+    case types.SET_TWITTER: {
+      return {
+        ...state,
+        twitter: action.payload
+      };
+    }
 
     case types.SET_STATS: {
       return {
@@ -113,6 +130,18 @@ export default function auth(state = initialState, action) {
       return { ...initialState };
     }
 
+    case types.UPDATE_INVITE: {
+      if (action.payload === null) {
+        return {
+          ...state,
+          currentInvite: null
+        };
+      }
+      return {
+        ...state,
+        currentInvite: action.payload,
+      };
+    }
 
     default:
       return state;

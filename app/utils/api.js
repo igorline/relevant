@@ -59,7 +59,9 @@ export function Alert() {
  */
 export async function request(options) {
   let query = queryParams(options.query);
-  let uri = options.uri || process.env.API_SERVER + '/api/' + options.endpoint;
+  let apiPath = '/api/';
+  if (options.endpoint.match('auth')) apiPath = '';
+  let uri = options.uri || process.env.API_SERVER + apiPath + options.endpoint;
   let path = options.path || '';
   uri += path;
 

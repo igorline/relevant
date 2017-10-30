@@ -3,16 +3,19 @@ import {
   Text,
   View,
   TextInput,
-  TouchableHighlight,
   Alert,
   StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  TouchableOpacity
 } from 'react-native';
+import PropTypes from 'prop-types';
 import codePush from 'react-native-code-push';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles } from '../../styles/global';
+import TwitterButton from './TwitterButton.component';
+import CustomSpinner from '../CustomSpinner.component';
 
 let localStyles;
 let styles;
@@ -31,7 +34,7 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    this.userInput.focus();
+    // this.userInput.focus();
     codePush.disallowRestart();
   }
 
@@ -50,7 +53,11 @@ class Login extends Component {
       return;
     }
     dismissKeyboard();
-    this.props.actions.loginUser({ name: this.state.username, password: this.state.password });
+    this.props.actions.loginUser({
+      name: this.state.username,
+      password: this.state.password,
+      twitter: this.props.auth.twitter
+    });
   }
 
   back() {
@@ -65,6 +72,41 @@ class Login extends Component {
       KBView = View;
     }
 
+    let local = this.state.username
+      && this.state.password
+      && this.state.username.length
+      && this.state.password.length;
+
+    if (this.props.auth.twitter) local = true;
+
+    let twitterConnect = (
+      <View style={[{ justifyContent: 'center', alignItems: 'center' }]}>
+        <Text style={styles.signInText}>Sign with your Relevant account to finish</Text>
+      </View>
+    );
+
+    let twitter = (
+      <View style={{ flex: 1 }}>
+        <Text style={styles.signInText}>or</Text>
+        <TwitterButton auth={this.props.auth} actions={this.props.actions} />
+      </View>
+    );
+
+    let signIn = (
+      <TouchableOpacity
+        onPress={this.login}
+        style={[styles.largeButton]}
+      >
+        <Text style={styles.largeButtonText}>
+          sign in
+        </Text>
+      </TouchableOpacity>
+    );
+
+    if (this.props.auth.loading) {
+      return <CustomSpinner />;
+    }
+
     return (
       <KBView
         behavior={'padding'}
@@ -74,19 +116,16 @@ class Login extends Component {
         <ScrollView
           keyboardShouldPersistTaps={'always'}
           keyboardDismissMode={'interactive'}
-          scrollEnabled={false}
-          contentContainerStyle={styles.fieldsParent}
+          contentContainerStyle={styles.authScrollContent}
         >
 
           <View style={styles.fieldsInner}>
-
             <View style={styles.fieldsInputParent}>
               <TextInput
                 ref={c => this.userInput = c}
                 underlineColorAndroid={'transparent'}
                 autoCorrect={false}
                 autoCapitalize={'none'}
-                // keyboardType={'email-address'}
                 clearTextOnFocus={false}
                 placeholder="username"
                 onChangeText={username => this.setState({ username: username.trim() })}
@@ -110,20 +149,13 @@ class Login extends Component {
                 style={styles.fieldsInput}
               />
             </View>
-
-
+            {local ? null : twitter}
+            {this.props.auth.twitter ? twitterConnect : null}
           </View>
 
-          <TouchableHighlight
-            onPress={this.login}
-            underlayColor={'transparent'}
-            style={[styles.largeButton]}
-          >
-            <Text style={styles.largeButtonText}>
-              sign in
-            </Text>
-          </TouchableHighlight>
-          <Text
+          {local ? signIn : null}
+
+          <TouchableOpacity
             onPress={() => {
               this.props.actions.push({
                 key: 'forgot',
@@ -131,10 +163,9 @@ class Login extends Component {
                 back: true
               }, 'auth');
             }}
-            style={[styles.signInText, styles.active]}
           >
-            Forgot you password?
-          </Text>
+            <Text style={[styles.signInText, styles.active]}>Forgot you password?</Text>
+          </TouchableOpacity>
         </ScrollView>
       </KBView>
     );
@@ -142,7 +173,10 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  actions: React.PropTypes.object,
+  auth: PropTypes.object,
+  actions: PropTypes.object,
+  navigation: PropTypes.object,
+  share: PropTypes.bool, // flag for share extension
 };
 
 localStyles = StyleSheet.create({

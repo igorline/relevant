@@ -1,36 +1,38 @@
-'use strict';
+const mongoose = require('mongoose');
 
-var mongoose = require('mongoose');
+const db = mongoose.connection;
 
-var db = mongoose.connection;
-
-var db_config = {
-  server: {
-    auto_reconnect: true
-  }
+const config = {
+  socketTimeoutMS: 0,
+  keepAlive: 120,
+  reconnectTries: 30,
+  useMongoClient: true,
 };
 
-db.on('connecting', function() {
+mongoose.connect(process.env.MONGO_URI, config);
+
+db.on('connecting', () => {
   console.log('connecting to MongoDB...');
 });
 
-db.on('error', function(error) {
+db.on('error', (error) => {
   console.error('Error in MongoDb connection: ' + error);
   mongoose.disconnect();
 });
-db.on('connected', function() {
+db.on('connected', () => {
   console.log('MongoDB connected!');
 });
-db.once('open', function() {
+db.once('open', () => {
   console.log('MongoDB connection opened!');
 });
-db.on('reconnected', function() {
+db.on('reconnected', () => {
   console.log('MongoDB reconnected!');
 });
-db.on('disconnected', function() {
-  console.log('MongoDB disconnected!');
-  mongoose.connect(process.env.MONGO_URI, db_config);
-});
-mongoose.connect(process.env.MONGO_URI, db_config);
+// TEST DONT'T NEED THIS ANYMORE?
+// db.on('disconnected', () => {
+//   console.log('MongoDB disconnected!');
+//   mongoose.connect(process.env.MONGO_URI, config);
+// });
+
 
 module.exports = {};
