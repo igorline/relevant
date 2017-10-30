@@ -41,6 +41,9 @@ class Stats extends Component {
   }
 
   toggleTooltip(name) {
+    if ((name === 'relevance' || name === 'coin') && this.props.currentView !== 'discover') {
+      return;
+    }
     if (this.props.type !== 'nav') return;
     if (!this.tooltipParent[name]) return;
     this.tooltipParent[name].measureInWindow((x, y, w, h) => {
@@ -168,6 +171,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   (state) => ({
     auth: state.auth,
+    currentView: state.navigation.currentView
   }),
   mapDispatchToProps
 )(Stats);

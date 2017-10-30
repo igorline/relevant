@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 import { EventEmitter } from 'events';
+import { NEW_USER_COINS } from '../../config/globalConstants';
 
 const authTypes = ['github', 'twitter', 'facebook', 'google'];
 const Schema = mongoose.Schema;
@@ -66,6 +67,12 @@ const UserSchema = new Schema({
   estimatedPayout: { type: Number },
   lastPayout: { type: Number },
 
+  twitterHandle: { type: String },
+  twitterImage: { type: String },
+  twitterEmail: { type: String, select: false },
+  twitterAuthToken: { type: String, select: false },
+  twitterAuthSecret: { type: String, select: false },
+  twitterId: { type: Number, unique: true, index: true, sparse: true }
 }, {
   timestamps: true,
 });
@@ -258,6 +265,17 @@ UserSchema.methods.updateClient = function (actor) {
     userData._id = actor._id;
     this.model('User').events.emit('userEvent', userData);
   }
+};
+
+UserSchema.methods.initialCoins = async function () {
+  await this.model('Treasury').findOneAndUpdate(
+      {},
+      { $inc: { balance: -NEW_USER_COINS } },
+      { new: true, upsert: true }
+    ).exec();
+
+  this.balance += NEW_USER_COINS;
+  return this;
 };
 
 module.exports = mongoose.model('User', UserSchema);

@@ -14,6 +14,7 @@
 #import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
 #import "Orientation.h" // <--- import
+#import <TwitterKit/TwitterKit.h>
 
 @import Firebase;
 
@@ -51,6 +52,11 @@
 {
   return [RCTLinkingManager application:application openURL:url
                       sourceApplication:sourceApplication annotation:annotation];
+}
+
+// twitter
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
+  return [[Twitter sharedInstance] application:app openURL:url options:options];
 }
 
 // Used for universal links

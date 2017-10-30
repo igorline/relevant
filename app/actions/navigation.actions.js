@@ -18,9 +18,19 @@ import {
 
 let dismissKeyboard;
 let safariView;
+let Orientation;
 if (process.env.WEB != 'true') {
+  Orientation = require('react-native-orientation');
   dismissKeyboard = require('react-native-dismiss-keyboard');
   safariView = require('react-native-safari-view').default;
+
+  console.log(Orientation);
+  // safariView.addEventListener(
+  //   'onDismiss',
+  //   () => {
+  //     Orientation.lockToPortrait();
+  //   }
+  // );
 }
 
 export function push(route, key, animation = 'vertical') {
@@ -193,6 +203,7 @@ export function goToUrl(url, id) {
     if (safariView) {
       safariView.isAvailable()
       .then(() => {
+        Orientation.unlockAllOrientations();
         safariView.show({
           url,
           readerMode: true, // optional,
@@ -201,7 +212,8 @@ export function goToUrl(url, id) {
         });
         // dispatch(tooltipReady());
       })
-      .catch(() => {
+      .catch(err => {
+        console.log(err);
         // dispatch(tooltipReady());
         dispatch(push({
           key: 'articleView',

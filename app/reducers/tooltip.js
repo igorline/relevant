@@ -20,8 +20,6 @@ export default function tooltip(state = initialState, action) {
   switch (action.type) {
 
     case types.SET_BUTTON_TOOLTIP: {
-      console.log(action.payload);
-      console.log(state);
       return {
         ...state,
         buttonId: {

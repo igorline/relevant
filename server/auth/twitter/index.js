@@ -1,10 +1,10 @@
-'use strict';
+const express = require('express');
+const passport = require('passport');
+const auth = require('../auth.service');
+const Controller = require('./passport');
 
-var express = require('express');
-var passport = require('passport');
-var auth = require('../auth.service');
-
-var router = express.Router();
+// var Twitter = require('twitter');
+let router = express.Router();
 
 router
   .get('/', passport.authenticate('twitter', {
@@ -15,6 +15,8 @@ router
   .get('/callback', passport.authenticate('twitter', {
     failureRedirect: '/',
     session: false
-  }), auth.setTokenCookie);
+  }), auth.setTokenCookie)
+
+  .post('/login', Controller.login, auth.setTokenCookie);
 
 module.exports = router;
