@@ -326,6 +326,7 @@ export function getUser(callback) {
       .then((user) => {
         setupUser(user, dispatch);
         if (callback) callback(user);
+        return user;
       })
       .catch((error) => {
         console.log('get user error ', error);
