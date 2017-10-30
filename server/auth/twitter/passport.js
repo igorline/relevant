@@ -55,7 +55,7 @@ export async function addTwitterProfile(param) {
   if (!user.bio || !user.bio.length) {
     user.bio = description;
   }
-  if (!user.image || user.image.length) {
+  if (!user.image || !user.image.length) {
     // TODO update existing posts using this
     user.image = twitterImage;
   }
