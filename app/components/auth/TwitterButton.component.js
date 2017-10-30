@@ -1,16 +1,15 @@
 
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
-  Alert,
   NativeModules,
   TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { globalStyles, blue } from '../../styles/global';
+import { globalStyles } from '../../styles/global';
 
 require('../../publicenv');
 
@@ -18,7 +17,6 @@ const { RNTwitterSignIn } = NativeModules;
 let styles;
 
 const Constants = {
-  //Dev Parse keys
   TWITTER_COMSUMER_KEY: process.env.TWITTER_COMSUMER_KEY,
   TWITTER_CONSUMER_SECRET: process.env.TWITTER_CONSUMER_SECRET,
 };
@@ -26,6 +24,25 @@ const Constants = {
 export default class TwitterButton extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      loggedIn: false
+    };
+    this.signUp = this.signUp.bind(this);
+  }
+
+  signUp(loginData) {
+    loginData.signup = true;
+    loginData.invite = this.props.auth.currentInvite;
+    this.props.actions.twitterAuth(loginData);
+
+    // this.actions.checkUser(loginData.userName, 'name')
+    // .then(ok => {
+    //   if (ok) {
+    //     return this.props.actions.twitterAuth(loginData);
+    //   } else {
+    //     Alert.alert;
+    //   }
+    // });
   }
 
   _twitterSignIn() {
@@ -34,8 +51,15 @@ export default class TwitterButton extends Component {
     .then(loginData => {
       const { authToken, authTokenSecret } = loginData;
       if (authToken && authTokenSecret) {
-        this.props.actions.twitterAuth(loginData);
+        this.props.actions.setTwitter(loginData);
+        // if (this.props.type === 'signup') {
+        //   return this.signup(loginData);
+        // }
+        // if (this.props.type !== 'signup') {
+          return this.props.actions.twitterAuth(loginData);
+        // }
       }
+      return null;
     }).catch(error => {
       console.log(error);
     });
@@ -45,18 +69,23 @@ export default class TwitterButton extends Component {
     let text = this.props.type === 'signup' ? 'Sign up' : 'Sign In';
     text += ' with Twitter';
     const isLoggedIn = this.props.auth.twitter;
+    let connected;
+    if (isLoggedIn && !this.props.type === 'signup') {
+      connected = (<Text style={[{ alignSelf: 'center' }, styles.signInText]}>
+        Twitter connected! Log in to complete.
+      </Text>);
+    }
+
     return (
-      <View style={{ flex: 0, paddingVertical: 20, flexDirection: 'row' }}>
+      <View style={{ flex: 0, paddingTop: 20, flexDirection: 'row' }}>
         {
           isLoggedIn
           ?
-          (<Text style={[{ alignSelf: 'center' }, styles.signInText]}>
-            Twitter connected! Log in to complete.
-          </Text>)
+          connected
           :
           <TouchableOpacity
             style={[styles.twitterButton, { flexDirection: 'row' }]}
-            onPress={this._twitterSignIn.bind(this)}
+            onPress={() => this._twitterSignIn()}
           >
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Icon
@@ -72,7 +101,15 @@ export default class TwitterButton extends Component {
       </View>
     );
   }
+}
+
+TwitterButton.propTypes = {
+  auth: PropTypes.object,
+  actions: PropTypes.object,
+  type: PropTypes.string, // login or signup?
+  // onLogin: PropTypes.func,
 };
+
 
 const local = StyleSheet.create({
   twitterText: {
@@ -87,13 +124,11 @@ const local = StyleSheet.create({
     backgroundColor: '#00aced',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 15
+    padding: 15,
   },
   icon: {
     position: 'absolute',
     left: 5,
-    // width: 50,
-    // height: 50,
     color: 'white',
     alignSelf: 'center',
     marginRight: 20,

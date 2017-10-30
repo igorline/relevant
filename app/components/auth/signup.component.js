@@ -3,7 +3,6 @@ import {
   Text,
   View,
   TextInput,
-  TouchableHighlight,
   Alert,
   StyleSheet,
   KeyboardAvoidingView,
@@ -15,11 +14,10 @@ import PropTypes from 'prop-types';
 import codePush from 'react-native-code-push';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles } from '../../styles/global';
+import { NAME_PATTERN } from '../../utils/text';
 
 let localStyles;
 let styles;
-
-const NAME_PATTERN = /^[a-zA-Z0-9-_]+$/;
 
 class SignUp extends Component {
   constructor(props, context) {
@@ -206,8 +204,10 @@ class SignUp extends Component {
         keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0}
       >
         <ScrollView
-          style={{ flex: 1, marginBottom: 20, marginTop: 15, paddingHorizontal: 20 }}
-          contentContainerStyle={{ flexGrow: 1, height: 'auto', minHeight: 330 }}
+          keyboardDismissMode={'interactive'}
+          keyboardShouldPersistTaps={'always'}
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.authScrollContent}
         >
 
           <View style={styles.fieldsInner}>
@@ -229,7 +229,7 @@ class SignUp extends Component {
               />
             </View>
             { this.nameError ?
-              <Text style={styles.error}>{this.nameError}</Text> :
+              <Text style={[styles.smallInfo, styles.error]}>{this.nameError}</Text> :
               null
             }
             <View style={styles.fieldsInputParent}>
@@ -247,7 +247,7 @@ class SignUp extends Component {
               />
             </View>
             { this.state.emailError ?
-              <Text style={styles.error}>{this.state.emailError}</Text> :
+              <Text style={[styles.smallInfo, styles.error]}>{this.state.emailError}</Text> :
               null
             }
 
@@ -279,31 +279,31 @@ class SignUp extends Component {
             </View>
           </View>
 
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            style={[styles.largeButton]}
+          <TouchableOpacity
+            style={[styles.largeButton, { marginTop: 20 }]}
             onPress={this.validate}
           >
             <Text style={styles.largeButtonText}>next</Text>
-          </TouchableHighlight>
+          </TouchableOpacity>
 
-          <Text
-            style={[
-              styles.signInText,
-              styles.font12
-            ]}
-          >
-            By signing up, you agree to our{' '}
+          <TouchableOpacity>
             <Text
-              style={[styles.signInText, styles.active, styles.font12]}
-              onPress={() =>
-                this.props.actions.goToUrl('https://relevant.community/eula.html')
-              }
+              style={[
+                styles.signInText,
+                styles.font12
+              ]}
             >
-              Terms of Use
+              By signing up, you agree to our{' '}
+              <Text
+                style={[styles.signInText, styles.active, styles.font12]}
+                onPress={() =>
+                  this.props.actions.goToUrl('https://relevant.community/eula.html')
+                }
+              >
+                Terms of Use
+              </Text>
             </Text>
-          </Text>
-
+          </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
     );
@@ -320,6 +320,7 @@ SignUp.propTypes = {
 
 localStyles = StyleSheet.create({
   error: {
+    marginTop: 5,
     color: 'red',
     textAlign: 'center'
   }

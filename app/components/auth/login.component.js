@@ -15,6 +15,7 @@ import codePush from 'react-native-code-push';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles } from '../../styles/global';
 import TwitterButton from './TwitterButton.component';
+import CustomSpinner from '../CustomSpinner.component';
 
 let localStyles;
 let styles;
@@ -33,7 +34,7 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    this.userInput.focus();
+    // this.userInput.focus();
     codePush.disallowRestart();
   }
 
@@ -102,6 +103,10 @@ class Login extends Component {
       </TouchableOpacity>
     );
 
+    if (this.props.auth.loading) {
+      return <CustomSpinner />;
+    }
+
     return (
       <KBView
         behavior={'padding'}
@@ -111,19 +116,16 @@ class Login extends Component {
         <ScrollView
           keyboardShouldPersistTaps={'always'}
           keyboardDismissMode={'interactive'}
-          scrollEnabled={false}
-          contentContainerStyle={styles.fieldsParent}
+          contentContainerStyle={styles.authScrollContent}
         >
 
           <View style={styles.fieldsInner}>
-
             <View style={styles.fieldsInputParent}>
               <TextInput
                 ref={c => this.userInput = c}
                 underlineColorAndroid={'transparent'}
                 autoCorrect={false}
                 autoCapitalize={'none'}
-                // keyboardType={'email-address'}
                 clearTextOnFocus={false}
                 placeholder="username"
                 onChangeText={username => this.setState({ username: username.trim() })}
@@ -152,6 +154,7 @@ class Login extends Component {
           </View>
 
           {local ? signIn : null}
+
           <TouchableOpacity
             onPress={() => {
               this.props.actions.push({

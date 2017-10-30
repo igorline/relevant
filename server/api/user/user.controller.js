@@ -344,16 +344,14 @@ exports.list = async (req, res) => {
  * Creates a new user
  */
 exports.create = async (req, res) => {
-  let startingAmount = 10;
   let token;
-
   try {
     let rand = await crypto.randomBytes(32);
     let confirmCode = rand.toString('hex');
+
     let user = req.body.user;
-    let invite = req.body.invite;
-    invite = await Invite.findOne({ _id: invite._id, redeemed: false });
-    if (!invite) throw new Error('No invitation code found');
+
+    let invite = await Invite.checkInvite(req.body.invite);
 
     let confirmed = invite.email === user.email;
 
@@ -369,7 +367,6 @@ exports.create = async (req, res) => {
       provider: 'local',
       role: 'user',
       relevance: 0,
-      balance: startingAmount,
       confirmed,
       confirmCode
     };
@@ -377,13 +374,7 @@ exports.create = async (req, res) => {
     user = new User(userObj);
     user = await user.save();
 
-    invite.status = 'registered';
-    invite.number -= 1;
-    if (invite.number === 0) {
-      invite.redeemed = true;
-    }
-    invite.registeredAs = user._id;
-    invite = await invite.save();
+    await invite.registered(user);
 
     token = jwt.sign(
       { _id: user._id },
@@ -394,17 +385,13 @@ exports.create = async (req, res) => {
     if (!confirmed) sendConfirmation(user, true);
     // else Invite.generateCodes(user);
 
-    await Treasury.findOneAndUpdate(
-        {},
-        { $inc: { balance: -startingAmount } },
-        { new: true, upsert: true }
-      ).exec();
+    user = await user.initialCoins();
+    user = await user.save();
   } catch (err) {
     return handleError(res, err);
   }
 
   return res.status(200).json({ token });
-
 };
 
 /**

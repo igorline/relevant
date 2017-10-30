@@ -49,7 +49,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new TwitterSigninPackage(),
+          new TwitterSigninPackage(),
           new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG), // Add/change this line.
           new RNFetchBlobPackage(),
           new ReactNativePushNotificationPackage(),

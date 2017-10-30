@@ -62,6 +62,7 @@
 	</dict>
 	<key>UIAppFonts</key>
 	<array>
+		<string>LibreCaslonDisplay-Regular.ttf</string>
 		<string>BebasNeuerelevantRegular-2.ttf</string>
 		<string>BebasNeueRelevant Bold.ttf</string>
 		<string>Ionicons.ttf</string>
