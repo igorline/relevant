@@ -70,15 +70,17 @@ function addClient(socket, currentUser) {
       { _id: currentUser },
       { online: true })
       .exec()
-      .then((online) => {
-        let data = {
-          type: 'UPDATE_USER',
-          payload: {
-            _id: online._id,
-            online: true
-          }
-        };
-        NotificationEvents.emit('notification', data);
+      .then(online => {
+        if (online) {
+          let data = {
+            type: 'UPDATE_USER',
+            payload: {
+              _id: online._id,
+              online: true
+            }
+          };
+          NotificationEvents.emit('notification', data);
+        }
       })
       .catch(err => console.log(err));
   }

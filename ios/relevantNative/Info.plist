@@ -17,17 +17,17 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.9.61</string>
+	<string>0.9.62</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-    <key>CFBundleURLSchemes</key>
-    <array>
-      <string>twitterkit-5kfwS2t05aNKoZnOEXjFVLzMn</string>
-    </array>
-  	</dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>twitterkit-5kfwS2t05aNKoZnOEXjFVLzMn</string>
+			</array>
+		</dict>
 		<dict>
 			<key>CFBundleURLName</key>
 			<string>com.relevant.community</string>
@@ -38,11 +38,16 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>0.9.61.1</string>
+	<string>0.9.62.0</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>twitter</string>
+		<string>twitterauth</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -97,10 +102,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-	  <string>twitter</string>
-	  <string>twitterauth</string>
-	</array>
 </dict>
 </plist>

@@ -6,9 +6,8 @@ const User = require('../../api/user/user.model');
 const auth = require('../auth.service');
 const Invite = require('../../api/invites/invite.model');
 
-User.findOne({ twitterHandle: 'relevantfeed' })
-.then(user => { console.log(user); user.remove(); });
-
+// User.findOne({ twitterHandle: 'relevantfeed' })
+// .then(user => { console.log(user); user.remove(); });
 
 export async function getProfile(props) {
   let authToken = props.authToken;
@@ -81,13 +80,13 @@ exports.login = async (req, res, next) => {
     if (!req.body.userID) throw new Error('missing twitter id');
 
     let user = await User.findOne(
-      { twitterId: req.body.userID },
+      { twitterId: parseInt(req.body.userID, 10) },
       ['+twitterAuthToken', '+twitterAuthSecret']
     );
     let profile;
 
     if (user) {
-      // console.log('found user! ', req.body.userID);
+      console.log('found user! ', user);
 
       // check that we have auth
       profile = await getProfile(req.body);
