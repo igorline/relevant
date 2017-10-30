@@ -51,13 +51,15 @@ export async function addTwitterProfile(param) {
   // TODO include twitter bio URL?
   // console.log(profile._json.entities.url.urls);
   description += `\ntwitter.com/${profile.username}`;
+  let newImage;
 
   if (!user.bio || !user.bio.length) {
     user.bio = description;
   }
   if (!user.image || !user.image.length) {
-    // TODO update existing posts using this
     user.image = twitterImage;
+    // update existing posts using this
+    await user.updateMeta();
   }
   if (!user.name) {
     user.name = profile.displayName;

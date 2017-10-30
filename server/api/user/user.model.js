@@ -267,6 +267,32 @@ UserSchema.methods.updateClient = function (actor) {
   }
 };
 
+UserSchema.methods.updateMeta = async function () {
+  try {
+    let newUser = {
+      name: this.name,
+      image: this.image
+    };
+
+    // Do this on a separate thread?
+    await this.model('Post').update(
+      { user: this._id },
+      { embeddedUser: newUser },
+      { multi: true }
+    );
+
+    await this.model('Comment').update(
+      { user: this._id },
+      { embeddedUser: newUser },
+      { multi: true }
+    );
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 UserSchema.methods.initialCoins = async function () {
   await this.model('Treasury').findOneAndUpdate(
       {},
