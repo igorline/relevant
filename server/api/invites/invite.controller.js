@@ -32,7 +32,43 @@ exports.index = async (req, res) => {
   } catch (err) {
     return handleError(res)(err);
   }
-  res.status(200).json(invites);
+  return res.status(200).json(invites);
+};
+
+// Takes array of invites;
+exports.createInvites = async (invites) => {
+  invites = invites.map(async invite => {
+    let code = voucherCodes.generate({
+      length: 5,
+      count: 1,
+      charset: 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ'
+    })[0];
+
+    let existingInvite;
+    if (invite.email) {
+      let email = invite.email.trim();
+      existingInvite = await Invite.findOne({ email });
+      invite = existingInvite || invite;
+    }
+
+    if (!existingInvite) {
+      // limit invites to 10
+      if (invites.length >= 10) {
+        throw Error('You can\'t send more than 10 invites at the moment');
+      }
+
+      invite = new Invite({ ...invite, code });
+    } else {
+      invite.invitedBy = invite.invitedBy;
+      invite.invitedByString = invite.invitedByString;
+    }
+    invite = await invite.save();
+    if (invite.email) {
+      invite = await exports.sendEmailFunc(invite);
+    }
+    return invite;
+  });
+  return Promise.all(invites);
 };
 
 exports.create = async (req, res) => {
@@ -43,36 +79,19 @@ exports.create = async (req, res) => {
       throw new Error('please confirm your email before sending invites');
     }
     let invites = [];
+    invite = req.body;
     if (user.role !== 'admin') {
       invites = await Invite.find({ invitedBy: user._id });
-      if (!req.body.email) throw new Error('please provide invite email');
-      if (req.body.number > 1) req.body.number = 1;
+      if (!invite.email) throw new Error('please provide invite email');
+      if (invite.number > 1) invite.number = 1;
     }
-    let code = voucherCodes.generate({
-      length: 5,
-      count: 1,
-      charset: 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ'
-    })[0];
-    if (req.body.email) {
-      req.body.email = req.body.email.trim();
-      invite = await Invite.findOne({ email: req.body.email });
-    }
-    if (!invite) {
-      // limit invites to 10
-      if (invites.length >= 10) {
-        throw Error('you have sent out too many invites already');
-      }
-      invite = new Invite({ ...req.body, code });
-      invite = await invite.save();
-    } else {
-      invite.invitedBy = req.body.invitedBy;
-      invite.invitedByString = req.body.invitedByString;
-    }
-    exports.sendEmailFunc(invite);
+    invite.invitedBy = user._id;
+    invites = await exports.createInvites([invite]);
+    invite = invites[0];
   } catch (err) {
     return handleError(res)(err);
   }
-  res.status(200).json(invite);
+  return res.status(200).json(invite);
 };
 
 exports.sendEmail = async (req, res) => {
@@ -83,7 +102,7 @@ exports.sendEmail = async (req, res) => {
   } catch (err) {
     return handleError(res)(err);
   }
-  res.status(200).json(invite);
+  return res.status(200).json(invite);
 };
 
 exports.sendEmailFunc = async function(_invite) {
@@ -177,7 +196,7 @@ exports.checkInviteCode = async (req, res) => {
     return handleError(res)(err);
   }
   if (invite.email) invite.email = invite.email.trim();
-  res.status(200).json(invite);
+  return res.status(200).json(invite);
 };
 
 exports.destroy = async (req, res) => {
@@ -187,6 +206,6 @@ exports.destroy = async (req, res) => {
   } catch (err) {
     return handleError(res)(err);
   }
-  res.sendStatus(200);
+  return res.sendStatus(200);
 };
 

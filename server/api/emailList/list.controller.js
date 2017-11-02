@@ -1,5 +1,5 @@
 import List from './list.model';
-
+import * as InviteController from '../invites/invite.controller';
 // List.collection.dropIndexes(function (err, results) {
 //   console.log(err);
 // });
@@ -33,14 +33,24 @@ exports.addWaitlist = async (req, res) => {
   } catch (err) {
     handleError(res)(err);
   }
-  res.send(200);
+  res.sendStatus(200);
+};
+
+exports.invite = async (req, res) => {
+  let invites = req.body;
+  await InviteController.createInvites(invites);
+  await List.update(
+    { _id: { $in: invites.map(i => i._id) } },
+    { status: 'invited' }
+  );
+  return await invites;
 };
 
 exports.delete = async (req, res) => {
   try {
-    let id = req.params._id;
+    let id = req.params.id;
     await List.findOne({ _id: id }).remove();
-    res.send(200);
+    res.sendStatus(200);
   } catch (err) {
     handleError(res)(err);
   }

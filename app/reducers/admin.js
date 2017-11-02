@@ -22,12 +22,16 @@ export default function admin(state = initialState, action) {
     }
 
     case types.DELETE_WAITLIST_USER: {
+      let users = {};
+      action.payload.forEach(u => users[u._id] = null);
+      let waitList = state.waitList.filter(u => users[u] !== null);
       return {
         ...state,
         wait: {
           ...state.wait,
-          [this.payload.id]: null
-        }
+          ...users
+        },
+        waitList
       };
     }
 
