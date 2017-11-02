@@ -36,3 +36,13 @@ exports.addWaitlist = async (req, res) => {
   res.send(200);
 };
 
+exports.delete = async (req, res) => {
+  try {
+    let id = req.params._id;
+    await List.findOne({ _id: id }).remove();
+    res.send(200);
+  } catch (err) {
+    handleError(res)(err);
+  }
+};
+

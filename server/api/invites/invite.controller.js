@@ -45,14 +45,18 @@ exports.create = async (req, res) => {
     let invites = [];
     if (user.role !== 'admin') {
       invites = await Invite.find({ invitedBy: user._id });
+      if (!req.body.email) throw new Error('please provide invite email');
+      if (req.body.number > 1) req.body.number = 1;
     }
     let code = voucherCodes.generate({
       length: 5,
       count: 1,
       charset: 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ'
     })[0];
-    if (req.body.email) req.body.email = req.body.email.trim();
-    invite = await Invite.findOne({ email: req.body.email });
+    if (req.body.email) {
+      req.body.email = req.body.email.trim();
+      invite = await Invite.findOne({ email: req.body.email });
+    }
     if (!invite) {
       // limit invites to 10
       if (invites.length >= 10) {

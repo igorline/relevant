@@ -30,6 +30,13 @@ export function setWaitlist(data) {
   };
 }
 
+export function deleteWaitlistUser(id) {
+  return {
+    type: types.DELETE_WAITLIST_USER,
+    payload: id
+  };
+}
+
 export function updateInvite(invite) {
   return {
     type: types.UPDATE_INVITE,
@@ -161,6 +168,27 @@ export function getWaitlist() {
     });
 }
 
+export function inviteFromWaitlist(users) {
+  return async dispatch =>
+    fetch(process.env.API_SERVER + '/api/list/', {
+      method: 'PUT',
+      ...await utils.api.reqOptions(),
+      body: JSON.stringify({ users })
+    })
+    .then(utils.api.handleErrors)
+    // .then(response => response.json())
+    .then(() => {
+      Alert.alert('users have been invited!');
+      if (user)
+      return true;
+    })
+    .catch(err => {
+      Alert.alert(err.message);
+      console.log(err);
+      return false;
+    });
+}
+
 export function signupForMailingList(user) {
   return async dispatch =>
     fetch(process.env.API_SERVER + '/api/list/', {
@@ -245,6 +273,23 @@ export function loadEmail() {
       return responseJSON;
     } catch (error) {
       return false;
+    }
+  };
+}
+
+export function deleteWaitlist(id) {
+  return async dispatch => {
+    try {
+      let result = await fetch(API + '/list/' + id, {
+        method: 'DELETE',
+        ...await utils.api.reqOptions(),
+      });
+      // console.log(result)
+      if (result) {
+        dispatch(deleteWaitlistUser(id));
+      }
+    } catch (err) {
+      Alert.alert(err.message);
     }
   };
 }

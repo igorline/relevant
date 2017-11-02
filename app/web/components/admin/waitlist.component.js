@@ -42,7 +42,7 @@ class Waitlist extends Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
-  renderInvite(waitlistId) {
+  renderWaitlist(waitlistId) {
     let user = this.props.admin.wait[waitlistId];
     if (!user) return null;
     return (<div key={waitlistId} className={'adminRow'}>
@@ -54,13 +54,18 @@ class Waitlist extends Component {
       >
         Send Invite
       </button>
+      <button
+        onClick={() => this.sendInvite(user)}
+      >
+        Remove
+      </button>
     </div>);
   }
 
   render() {
 
     let waitlist = this.props.admin.waitList
-    .map(id => this.renderInvite(id));
+    .map(id => this.renderWaitlist(id));
 
     return (
       <div className="adminContainer">
