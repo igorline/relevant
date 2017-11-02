@@ -21,6 +21,16 @@ export default function admin(state = initialState, action) {
       };
     }
 
+    case types.DELETE_WAITLIST_USER: {
+      return {
+        ...state,
+        wait: {
+          ...state.wait,
+          [this.payload.id]: null
+        }
+      };
+    }
+
     case types.SET_WAITLIST: {
       return {
         ...state,
