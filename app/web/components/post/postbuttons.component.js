@@ -83,8 +83,8 @@ class PostButtons extends Component {
     let investment;
     let votedUp;
     let votedDown;
-    if (this.props.investments.myPostInv) {
-      investment = this.props.investments.myPostInv[post.id];
+    if (this.props.myPostInv) {
+      investment = this.props.myPostInv[post.id];
       if (investment) {
         votedUp = investment.amount > 0;
         votedDown = investment.amount < 0;

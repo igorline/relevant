@@ -30,10 +30,10 @@ export function setWaitlist(data) {
   };
 }
 
-export function deleteWaitlistUser(id) {
+export function deleteWaitlistUsers(users) {
   return {
     type: types.DELETE_WAITLIST_USER,
-    payload: id
+    payload: users
   };
 }
 
@@ -168,18 +168,18 @@ export function getWaitlist() {
     });
 }
 
-export function inviteFromWaitlist(users) {
+export function inviteFromWaitlist(invites) {
   return async dispatch =>
     fetch(process.env.API_SERVER + '/api/list/', {
       method: 'PUT',
       ...await utils.api.reqOptions(),
-      body: JSON.stringify({ users })
+      body: JSON.stringify(invites)
     })
     .then(utils.api.handleErrors)
     // .then(response => response.json())
     .then(() => {
       Alert.alert('users have been invited!');
-      if (user)
+      dispatch(deleteWaitlistUsers(invites));
       return true;
     })
     .catch(err => {
@@ -277,16 +277,16 @@ export function loadEmail() {
   };
 }
 
-export function deleteWaitlist(id) {
+export function deleteWaitlistUser(user) {
   return async dispatch => {
     try {
-      let result = await fetch(API + '/list/' + id, {
+      let result = await fetch(API + '/list/' + user._id, {
         method: 'DELETE',
         ...await utils.api.reqOptions(),
       });
       // console.log(result)
       if (result) {
-        dispatch(deleteWaitlistUser(id));
+        dispatch(deleteWaitlistUsers([user]));
       }
     } catch (err) {
       Alert.alert(err.message);
