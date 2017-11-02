@@ -1,10 +1,12 @@
 import React, {
   Component,
 } from 'react';
-
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as adminActions from '../../../actions/admin.actions';
 import ShadowButton from '../common/ShadowButton';
 
-export default class InviteCta extends Component {
+class InviteCta extends Component {
   constructor(props, context) {
     super(props, context);
     this.submit = this.submit.bind(this);
@@ -87,3 +89,13 @@ export default class InviteCta extends Component {
     );
   }
 }
+
+
+const mapStateToProps = (state) => ({
+});
+
+const mapDispatchToProps = (dispatch) => (Object.assign({}, { dispatch }, {
+  actions: bindActionCreators({ ...adminActions }, dispatch)
+}));
+
+export default connect(mapStateToProps, mapDispatchToProps)(InviteCta);

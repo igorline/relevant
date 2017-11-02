@@ -7,13 +7,6 @@ import InviteCta from './inviteCta.component';
 export default class RequestInvite extends Component {
   constructor(props, context) {
     super(props, context);
-    this.submit = this.submit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.state = {
-      email: '',
-      name: ''
-    };
-
     this.onScroll = this.onScroll.bind(this);
   }
 
@@ -27,30 +20,6 @@ export default class RequestInvite extends Component {
     let top = this.phone.getBoundingClientRect().top - 169;
     let y = Math.max(-top / 3, 0);
     this.phone.style.transform = `translateX(0) translateY(${y}px)`;
-  }
-
-
-  handleChange(field, data) {
-    this.setState({ [field]: data });
-  }
-
-  submit() {
-    let { name, email } = this.state;
-    if (!name || name == '') {
-      return window.alert('missing name');
-    }
-    if (!email || !email.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
-      return window.alert('bad email');
-    }
-    this.props.actions.signupForMailingList({
-      name,
-      email
-    });
-    this.setState({ email: '', name: '' });
-
-    window.fbq('track', 'waitlist', {
-      name,
-    });
   }
 
   render() {
