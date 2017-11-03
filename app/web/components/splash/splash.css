@@ -11,7 +11,7 @@ $orange: #ff5a00;
 }
 
 .loginBar a, .loginBar p {
-  font-family: Helvetica;
+  font-family: Arial;
   font-weight: normal;
   font-size: 14px;
 }
@@ -94,8 +94,18 @@ panel {
   flex-direction: column;
   justify-content: center;
   z-index: 1;
+  &.mission {
+    padding: 200px 10vw;
+    img {
+      width: 300px;
+      margin-bottom: 100px;
+    }
+  }
   h1{
     text-align: center;
+    font-size: 64px;
+    line-height: 1.2;
+    width: 75%;
   }
   img {
     max-width: 100%;
@@ -116,8 +126,12 @@ panel {
   }
   p, ol, ul {
     font-family: Georgia;
-    font-size: 18px;
-    line-height: 28px;
+    font-size: 24px;
+    line-height: 1.6;
+  }
+  ul {
+    padding-left: 0;
+
   }
   ol {
     /*margin-top: 20px;*/
@@ -149,9 +163,16 @@ panel {
   li.special {
     margin: 20px 0;
     padding-bottom: 20px;
-    border-bottom: 1px solid hsla(0, 0%, 0%, .16);
+    border-bottom: 1px solid rgba(0,0,0,.16);
     cursor: pointer;
     user-select: none;
+    list-style: none;
+    span {
+      color: #3e3eff;
+      font-weight: 600;
+      font-family: Arial;
+      letter-spacing: -.5px;
+    }
   }
   .callout p {
     font-family: 'Arial';
@@ -160,6 +181,9 @@ panel {
     text-align: center;
   }
   .subH {
+    font-family: Arial;
+    font-size: 24px !important;
+    margin-top: 100px;
     text-align: center;
   }
 }
@@ -229,6 +253,9 @@ columns {
   .innerPanel {
     padding: 0 20px;
     max-width: 750px;
+    p {
+      font-size: 18px;
+    }
   }
   .callout {
     display: flex;
@@ -238,12 +265,20 @@ columns {
   }
 }
 
-.splashContent section.body p {
-  font-size: 42px;
+.splashContent section.body p.subH {
+  font-size: 24px;
+  line-height: 34px;
+  margin: 40px 0 0 0;
+  font-family: 'Arial';
+}
+
+.splashContent section.body p.big {
+  font-size: 54px;
   margin: 22px 0 0 0;
+  letter-spacing: -1px;
   .outline{
-    line-height: 40px;
-    letter-spacing: 1px;
+    line-height: 52px;
+    letter-spacing: 0px;
   }
 }
 
@@ -261,11 +296,11 @@ columns {
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  padding: 20px 0 0 0;
+  padding: 0px 0 0 0;
 }
 
 .splashContent section.invitation p {
-  font-family: Helvetica;
+  font-family: Arial;
   font-size: 18px;
   font-weight: bold;
   width: 300px;
@@ -344,35 +379,46 @@ b {
 }
 
 .quote {
-  font-style: italic;
-  padding: 10px 20px;
-  font-size: 18px;
-  line-height: 28px;
-  letter-spacing: .5px;
-  margin-bottom: 50px;
-  color: hsl(0, 0%, 30%);
+    font-style: italic;
+    padding: 10px 20px;
+    font-size: 18px;
+    line-height: 3;
+    letter-spacing: .5px;
+    margin-bottom: 50px;
+    font-family: 'times new roman';
+    margin-bottom: 150px;
 }
 
 .pitch {
   p {
-    font-family: 'Libre';
+    font-family: bebas;
+    font-size: 64px;
+    line-height: 2.3;
+    max-width: 900px;
+    margin-top: 25px;
+    text-align: center;
+    letter-spacing: 1px;
+    font-weight: 300;
+
+/*    font-family: 'Libre';
     font-size: 35px;
     line-height: 50px;
     max-width: 700px;
     margin-top: 25px;
     text-align: center;
-    letter-spacing: 1px;
+    letter-spacing: 1px;*/
   }
   p b {
-    /*color: $blue;*/
-    /*font-family: Outline;*/
-    font-weight: normal;
-    /*line-height: 30px;*/
-    /*font-size: 32px;*/
-    /*text-decoration: underline;*/
-    /*text-transform: uppercase;*/
-    /*text-shadow: 3px 3px $blue;*/
-    color: $orange;
+
+    font-weight: 400;
+    color: #fff;
+    background-color: #fff;
+    color: #444;
+    padding: 10px 7px 0px;
+    font-weight: 600;
+
+/*    font-weight: normal;
+    color: $orange;*/
   }
 }
 
@@ -589,7 +635,7 @@ b {
   }
 
   ul, ol {
-    padding-left: 1em;
+    padding-left: 0em;
   }
 
   .dropdown.open div {
