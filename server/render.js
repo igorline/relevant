@@ -31,7 +31,7 @@ function renderFullPage(html, initialState) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
         <title>Relevant: A Social News Reader</title>
-
+        <link rel="icon" href="favicon.ico?v=2" />
         <meta name="description" content="${meta.description}" />
         <meta property="og:description" content="${meta.description}" />
         <meta property="og:title" content="${meta.title}" />
