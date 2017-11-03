@@ -111,7 +111,8 @@ export default class MissionText extends Component {
             <div className={'innerPanel'}>
               <p><b>
   We can do this in three steps:
-              </b></p>
+              </b>
+              </p>
 
 
                 <ol className={'ccolumn'}>
@@ -168,7 +169,6 @@ export default class MissionText extends Component {
           <panel>
             <h1>Relevant Economy</h1>
 
-            <columns>
 
             <div className={'innerPanel'}>
 
@@ -299,7 +299,6 @@ export default class MissionText extends Component {
             </div>
 
 
-         </columns>
 
         </panel>
 

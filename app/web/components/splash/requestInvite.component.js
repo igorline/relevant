@@ -28,13 +28,13 @@ export default class RequestInvite extends Component {
 
         <mainSection>
           <section className="body">
-            <p className="libre">
+            <p className="libre big">
               <span className="outline">
                 Relevant
               </span> is a social news reader that values <span className="outline">quality</span> over clicks.
             </p>
-            <p className="libre">
-              Join the <span className="outline">community</span> and help us build a better information environment <span className="outline">for all</span>.
+            <p className="subH">
+              Join the community and help us build a better information environment for all.
             </p>
               {/* <a href="http://www.apple.com" className="download">
                 <img src="/img/apple.png" />

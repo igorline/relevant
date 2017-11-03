@@ -16,7 +16,7 @@ export default class Mission extends Component {
   render() {
     return (
       <div>
-        <panel className={'dark center'}>
+        <panel className={'dark center mission'}>
           <img src={'/img/rWhite.svg'} />
           <div className={'libre pitch'}>
           <p>
