@@ -109,7 +109,7 @@ export default class MissionText extends Component {
 
 
             <div className={'innerPanel'}>
-              <p><b>
+              <p className={'listHead'}><b>
   We can do this in three steps:
               </b>
               </p>
