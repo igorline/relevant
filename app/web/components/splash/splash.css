@@ -97,8 +97,8 @@ panel {
   &.mission {
     padding: 200px 10vw;
     img {
-      width: 300px;
-      margin-bottom: 100px;
+      width: 250px;
+      margin-bottom: 70px;
     }
   }
   h1{
@@ -134,7 +134,7 @@ panel {
 
   }
   ol {
-    /*margin-top: 20px;*/
+    padding-left: 1.2em;
   }
   ol.column{
     display: flex;
@@ -162,7 +162,7 @@ panel {
   }
   li.special {
     margin: 20px 0;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     border-bottom: 1px solid rgba(0,0,0,.16);
     cursor: pointer;
     user-select: none;
@@ -238,7 +238,7 @@ marrow img{
     transition: .4s;
   }
   &.open div {
-    max-height: 500px;
+    max-height: 700px;
   }
 }
 
@@ -253,7 +253,7 @@ columns {
   .innerPanel {
     padding: 0 20px;
     max-width: 750px;
-    p {
+    p, ol, ul{
       font-size: 18px;
     }
   }
@@ -263,6 +263,10 @@ columns {
     align-self: center;
     flex: 1;
   }
+}
+
+.splashContent section.body {
+  max-width: 600px;
 }
 
 .splashContent section.body p.subH {
@@ -378,11 +382,16 @@ b {
   cursor: pointer;
 }
 
+.listHead {
+  font-family: Arial;
+  margin: 40px 0;
+}
+
 .quote {
     font-style: italic;
     padding: 10px 20px;
     font-size: 18px;
-    line-height: 3;
+    line-height: 2.6;
     letter-spacing: .5px;
     margin-bottom: 50px;
     font-family: 'times new roman';
@@ -393,7 +402,7 @@ b {
   p {
     font-family: bebas;
     font-size: 64px;
-    line-height: 2.3;
+    line-height: 2.0;
     max-width: 900px;
     margin-top: 25px;
     text-align: center;
@@ -416,6 +425,7 @@ b {
     color: #444;
     padding: 10px 7px 0px;
     font-weight: 600;
+    white-space: nowrap;
 
 /*    font-weight: normal;
     color: $orange;*/
@@ -495,14 +505,42 @@ b {
 @media screen
   and (max-width: 768px) {
 
+  panel.mission {
+    padding: 100px 10vw;
+    img {
+      width: 150px;
+      margin-bottom: 50px
+    }
+  }
+  panel h1 {
+    font-size: 44px;
+    width: auto;
+  }
+
+  panel {
+    .subH {
+      margin-top: 70px;
+    }
+    .quote {
+      line-height: 38px;
+      margin-bottom: 100px;
+    }
+    p, ul, ol {
+      font-size: 18px;
+    }
+  }
+
+
   .pitch {
     p {
-      font-family: 'Libre';
-      font-size: 24px;
-      line-height: 30px;
+      font-family: bebas;
+      font-size: 40px;
+      line-height: 1.9;
+      max-width: 900px;
       margin-top: 25px;
       text-align: center;
       letter-spacing: 1px;
+      font-weight: 300;
     }
   }
 
@@ -554,10 +592,13 @@ b {
   }
 
   .splashContent section.body p {
-    font-size: 36px;
-    line-height: 44px;
-    .outline {
-      line-height: 36px;
+    &.subH { font-size: 18px; line-height: 28px }
+    &.big {
+      font-size: 44px;
+      line-height: 52px;
+      .outline {
+        line-height: 44px;
+      }
     }
   }
 
@@ -634,7 +675,11 @@ b {
     }
   }
 
-  ul, ol {
+  ol {
+    padding-left: 1em;
+  }
+
+  ul {
     padding-left: 0em;
   }
 
@@ -651,15 +696,16 @@ b {
   }
 
 }
-
+/*
 @media screen
   and (max-width: 320px) {
   .splashContent section.body p {
-    font-size: 32px;
-    line-height: 40px;
-    .outline {
-      line-height: 32px;
+    &.big {
+      font-size: 32px;
+      line-height: 40px;
+      .outline {
+        line-height: 32px;
+      }
     }
   }
-
-}
+}*/

@@ -20,7 +20,7 @@ export default class Mission extends Component {
           <img src={'/img/rWhite.svg'} />
           <div className={'libre pitch'}>
           <p>
-Our mission is to create a token-backed <b>qualitative metric</b> for the information economy — making the <b>human values</b> of veracity, expertise and agency <b>economically valuable</b>.
+Our mission is to create a token-backed <b>qualitative metric</b> for the information economy — making the <b>human values</b> of veracity, expertise and agency <b>economically valuable</b>
           </p>
 {/*          <p>
 By backing it with a token — we can make the human values of veracity, expertise and agency economically valuable.
@@ -51,7 +51,7 @@ For the past six months we have been beta-testing the Relevant app, a news shari
             </p>
 
 
-            <p><b>
+            <p className={'listHead'}><b>
 How it works:
             </b>
             </p>
