@@ -125,6 +125,7 @@
     "react-native-tab-view": "0.0.65",
     "react-native-textinput-utils": "^0.3.0",
     "react-native-tooltip": "^5.0.0",
+    "react-native-twitter-signin": "https://github.com/balasan/react-native-twitter-signin/tarball/master",
     "react-native-user-defaults": "^0.1.4",
     "react-native-vector-icons": "^4.0.1",
     "react-native-video": "^1.0.0",
