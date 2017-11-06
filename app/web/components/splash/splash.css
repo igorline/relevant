@@ -37,8 +37,8 @@ $orange: #ff5a00;
   justify-content: flex-start;
   align-items: center;
   flex-direction: row;
-  /*max-height: 600px;*/
   overflow: hidden;
+  min-height: 75vh;
 
   img {
     width: 100%;
@@ -61,7 +61,6 @@ $orange: #ff5a00;
     font-size: 0;
     max-height: 600px;
     transform-origin: bottom;
-    margin-top: 40px;
   }
 }
 
@@ -287,7 +286,7 @@ columns {
   font-size: 54px;
   margin: 22px 0 0 0;
   letter-spacing: -1px;
-  line-height: .9;
+  line-height: 66px;
   .outline{
     line-height: 52px;
     letter-spacing: 0px;
@@ -582,8 +581,10 @@ b {
   .splashContent {
     flex-direction: column;
     width: 100vw;
+    min-height: none;
+
     mainSection {
-      display: block;
+      display: flex;
       width: 90vw;
       padding-bottom: 30px;
       z-index: 1;
