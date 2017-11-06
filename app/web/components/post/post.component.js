@@ -46,24 +46,24 @@ class Post extends Component {
               <AvatarBox user={user} date={post.postDate} isRepost />
             )}
           </div>
-          <div className="postBody">
-            {repost && (
-              <div>
-                <div className="repostBody">
-                  <PostBody post={repost} />
+            <div className="postBody">
+              {repost && (
+                <div>
+                  <div className="repostBody">
+                    <PostBody post={repost} />
+                  </div>
+                  <div className="repostComment">{post.repost.commentBody}</div>
                 </div>
-                <div className="repostComment">{post.repost.commentBody}</div>
-              </div>
-            )}
-            {this.props.showDescription && (
-              <div className="postDescription">
-                {post.description}
-              </div>
-            )}
-            <PostBody post={post} />
+              )}
+              {this.props.showDescription && (
+                <div className="postDescription">
+                  {post.description}
+                </div>
+              )}
+              <PostBody post={post} />
+            </div>
+            <PostButtons post={post} {...this.props} />
           </div>
-          <PostButtons post={post} {...this.props} />
-        </div>
       </div>
     );
   }
