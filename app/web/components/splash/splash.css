@@ -213,12 +213,12 @@ panel {
 
   margin-bottom: 100px;
 
-  &:hover {
+  /*&:hover {*/
     /*color: white;*/
     /*background-color: $blue;*/
     /*box-shadow: 3px 3px 0px 0px $blue;*/
     /*transform: translateX(2px) translateY(2px);*/
-  }
+  /*}*/
 }
 
 marrow img{
@@ -286,7 +286,7 @@ columns {
   font-size: 54px;
   margin: 22px 0 0 0;
   letter-spacing: -1px;
-  line-height: .9
+  line-height: .9;
   .outline{
     line-height: 52px;
     letter-spacing: 0px;
