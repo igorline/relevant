@@ -37,7 +37,7 @@ $orange: #ff5a00;
   justify-content: flex-start;
   align-items: center;
   flex-direction: row;
-  max-height: 600px;
+  /*max-height: 600px;*/
   overflow: hidden;
 
   img {
@@ -61,6 +61,7 @@ $orange: #ff5a00;
     font-size: 0;
     max-height: 600px;
     transform-origin: bottom;
+    margin-top: 40px;
   }
 }
 
