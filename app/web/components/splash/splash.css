@@ -499,7 +499,6 @@ b {
 
 .inlineDiagram {
   img {
-    /*max-width: 300px;*/
     margin: auto;
     display: block;
     margin-bottom: 40px;
@@ -509,7 +508,6 @@ b {
 .diagramContainer {
   padding: 0 50px;
   flex: .6;
-  /*float: right;*/
 }
 
 .floatLeft {
@@ -728,16 +726,4 @@ b {
   }
 
 }
-/*
-@media screen
-  and (max-width: 320px) {
-  .splashContent section.body p {
-    &.big {
-      font-size: 32px;
-      line-height: 40px;
-      .outline {
-        line-height: 32px;
-      }
-    }
-  }
-}*/
+
