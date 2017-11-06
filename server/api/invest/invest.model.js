@@ -48,7 +48,7 @@ InvestSchema.statics.createVote = async function updateEarnings(props) {
   if ((amount > 0 || post.user === user._id) && user.balance > 0) {
     let payment = Math.floor(Math.max(1, user.balance * VOTE_COST_RATIO));
     voteWeight = payment / (post.balance + payment);
-    post.balance += user.balance;
+    post.balance += payment;
     await post.save();
   }
 

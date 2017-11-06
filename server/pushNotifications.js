@@ -3,10 +3,12 @@ import Notification from './api/notification/notification.model';
 import Feed from './api/feed/feed.model';
 import User from './api/user/user.model';
 
+const CERT_TYPE = process.env.NODE_ENV === 'production' ? '-prod' : '-dev';
+
 let options = {
-  cert: __dirname + '/api/cert.pem',
-  key: __dirname + '/api/key.pem',
-  production: true
+  cert: __dirname + `/api/cert${CERT_TYPE}.pem`,
+  key: __dirname + `/api/key${CERT_TYPE}.pem`,
+  production: process.env.NODE_ENV === 'production'
 };
 
 let KEY = process.env.ANDROID_KEY;
@@ -16,14 +18,9 @@ const settings = {
     id: KEY,
   },
   apn: {
-    cert: __dirname + '/api/cert.pem',
-    key: __dirname + '/api/key.pem',
-    production: true
-    // token: {
-    //     key: './certs/key.p8', // optionally: fs.readFileSync('./certs/key.p8')
-    //     keyId: 'ABCD',
-    //     teamId: 'EFGH',
-    // },
+    cert: __dirname + `/api/cert${CERT_TYPE}.pem`,
+    key: __dirname + `/api/key${CERT_TYPE}.pem`,
+    production: process.env.NODE_ENV === 'production'
   }
 };
 const PushNotifications = require('node-pushnotifications');
