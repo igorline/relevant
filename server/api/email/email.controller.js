@@ -2,6 +2,36 @@ import mail from '../../mail';
 import Email from './email.model';
 import Invite from '../invites/invite.model';
 import User from '../user/user.model';
+const inlineCss = require('inline-css');
+
+let emailStyle = `
+<style>
+  p {
+    font-size: 18px;
+    line-height: 27.5px;
+    font-family: Georgia;
+    max-width: 667px;
+  }
+  p img {
+    max-width: 100%;
+    margin: auto;
+    text-align: center;
+  }
+  a {
+    color: #3E3EFF;
+  }
+  a span {
+    font-weight: bold;
+    font-size: 24px;
+    border: 3px solid #3E3EFF;
+    padding: 15px 20px;
+    display: inline-block;
+    margin: 15px 0;
+    font-family: Arial;
+  }
+</style>
+`;
+
 
 const mailgun = require('mailgun-js')({
   apiKey: process.env.MAILGUN_API_KEY,
@@ -113,7 +143,12 @@ exports.index = async (req, res) => {
   let status;
   try {
     let email = req.body.email;
-    let html = req.body.html;
+    let html = emailStyle + req.body.html;
+
+    html = await inlineCss(html, { url: 'https://relevant.community' });
+
+    console.log('html', html);
+
     if (!email) throw new Error('no email');
     if (!html) throw new Error('no html');
 
@@ -126,6 +161,7 @@ exports.index = async (req, res) => {
     };
     status = await mail.send(data);
   } catch (err) {
+    console.log(err);
     handleError(res, err);
   }
   return res.status(200).json(status);
