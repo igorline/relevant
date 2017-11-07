@@ -101,7 +101,7 @@ function fetchMeta(initialState) {
   title = title || 'Relevant: A Social News Reader';
   image = image || 'https://relevant.community/img/fbimg.png';
   url = url || 'https://relevant.community/';
-  description = 'Relevant promotes reliable information and rewards expertise. Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score. This system is designed to penalise clickbait and fake news while promoting useful and reliable information.';
+  description = 'Relevant is a social news reader that values quality over clicks. Our mission is to create a token-backed qualitative metric for the information economy — making the human values of veracity, expertise and agency economically valuable.';
   return { title, description, image, url };
 }
 
