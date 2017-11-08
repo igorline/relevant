@@ -259,6 +259,7 @@ async function basicIncome(done) {
     return (user) => {
       q.push(async cb => {
         try {
+          console.log('updating users ', teir)
           let balanceIncrease;
           if (teir === 1) balanceIncrease = 5;
           if (teir === 2) balanceIncrease = 10;
@@ -303,29 +304,18 @@ async function basicIncome(done) {
     };
   }
 
-  async function updateUserRelevance() {
+  function updateUserRelevance() {
     console.log('updating user relevance');
-    let treasury = Treasury.findOne();
-    return (user) => {
+    // let treasury = Treasury.findOne();
+    return user => {
       q.push(async cb => {
         try {
           let r = user.relevance * DECAY;
           let diff = r - user.relevance;
           user.relevance += diff;
+
           user.updateRelevanceRecord();
-
           RelevanceStats.updateUserStats(user, diff);
-
-          // Friday is payout day
-          // if (day === 5) {
-          //   user.accumilatedDecay *
-          // }
-
-          treasury.accumilatedDecay += -diff;
-
-          user.accumilatedDecay += -diff;
-          let now = new Date();
-          let day = now.getDay();
 
           await user.save();
         } catch (err) {
@@ -375,7 +365,7 @@ async function basicIncome(done) {
   });
 }
 
-// basicIncome();
+basicIncome();
 
 
 function getNextUpdateTime() {
