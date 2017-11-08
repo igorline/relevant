@@ -8,6 +8,7 @@ const { emailStyle } = require('../../utils/emailStyle');
 //   console.log(err);
 // });
 
+
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return (err) => {
@@ -54,11 +55,6 @@ exports.createInvites = async (invites) => {
     }
 
     if (!existingInvite) {
-      // limit invites to 10
-      if (invites.length >= 10) {
-        throw Error('You can\'t send more than 10 invites at the moment');
-      }
-
       invite = new Invite({ ...invite, code });
     } else {
       invite.invitedBy = invite.invitedBy;
@@ -86,6 +82,11 @@ exports.create = async (req, res) => {
       invites = await Invite.find({ invitedBy: user._id });
       if (!invite.email) throw new Error('please provide invite email');
       if (invite.number > 1) invite.number = 1;
+
+      // limit invites to 10
+      if (invites.length >= 10) {
+        throw Error('You can\'t send more than 10 invites at the moment');
+      }
     }
     invite.invitedBy = user._id;
     invites = await exports.createInvites([invite]);

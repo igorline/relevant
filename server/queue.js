@@ -365,8 +365,6 @@ async function basicIncome(done) {
   });
 }
 
-basicIncome();
-
 
 function getNextUpdateTime() {
   console.log('get next time');

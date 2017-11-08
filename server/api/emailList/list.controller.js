@@ -4,6 +4,9 @@ import * as InviteController from '../invites/invite.controller';
 //   console.log(err);
 // });
 
+// List.find({}).sort('-updatedAt').limit(20).then(i => console.log(i));
+
+
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return (err) => {
@@ -38,12 +41,13 @@ exports.addWaitlist = async (req, res) => {
 
 exports.invite = async (req, res) => {
   let invites = req.body;
-  await InviteController.createInvites(invites);
+  invites = await InviteController.createInvites(invites);
   await List.update(
     { _id: { $in: invites.map(i => i._id) } },
-    { status: 'invited' }
-  );
-  return await invites;
+    { status: 'invited' },
+    { multi: true }
+  ).exec();
+  return invites;
 };
 
 exports.delete = async (req, res) => {
