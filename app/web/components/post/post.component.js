@@ -34,7 +34,14 @@ class Post extends Component {
       );
     }
 
+
     let user = this.props.postUser || post.user;
+    if (user && !user.name) {
+      user = {};
+      user._id = post.user;
+      user.image = post.embeddedUser.image;
+      user.name = post.embeddedUser.name;
+    }
 
     return (
       <div className="post">

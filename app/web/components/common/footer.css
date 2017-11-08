@@ -5,6 +5,7 @@ footer {
   justify-content: center;
 
   background-color: #444445;
+  /*background: rgba(36,36,37, 1);*/
   color: white;
   padding: 0 5vw;
 }

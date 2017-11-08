@@ -31,7 +31,7 @@ function renderFullPage(html, initialState) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
         <title>Relevant: A Social News Reader</title>
-        <link rel="icon" href="favicon.ico?v=2" />
+        <link rel="icon" href="https://relevant.community/favicon.ico?v=2" />
         <meta name="description" content="${meta.description}" />
         <meta property="og:description" content="${meta.description}" />
         <meta property="og:title" content="${meta.title}" />
@@ -101,7 +101,7 @@ function fetchMeta(initialState) {
   title = title || 'Relevant: A Social News Reader';
   image = image || 'https://relevant.community/img/fbimg.png';
   url = url || 'https://relevant.community/';
-  description = 'Relevant promotes reliable information and rewards expertise. Instead of relying on quantity (# of likes, followers), Relevant’s algorithm relies on a quality metric - relevance score. This system is designed to penalise clickbait and fake news while promoting useful and reliable information.';
+  description = 'Relevant is a social news reader that values quality over clicks. Our mission is to create a token-backed qualitative metric for the information economy — making the human values of veracity, expertise and agency economically valuable.';
   return { title, description, image, url };
 }
 
@@ -150,6 +150,7 @@ export default function handleRender(req, res) {
           return renderToString(component);
         };
 
+        console.log('NEW RENDER!!! ', renderProps.params);
         // This code pre-fills the data on the server
         fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
           .then((data) => {

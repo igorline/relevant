@@ -37,7 +37,7 @@ class Profile extends Component {
           <div className="relevance">
             <img src="/img/r-emoji.png" alt="Relevance" className="r" />
             {Math.round(user.relevance || 0)}
-            <img src="/img/coin.png" alt="Coins" className="coin" />
+            <img src="/img/relevantcoin.png" alt="Coins" className="coin" />
             {Math.round(user.balance || 0)}
           </div>
           <div className="subscribers">
