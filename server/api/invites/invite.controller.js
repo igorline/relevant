@@ -29,7 +29,7 @@ exports.index = async (req, res) => {
     }
     invites = await Invite.find(query)
     .populate('registeredAs')
-    .sort({ _id: -1 })
+    .sort({ updatedAt: -1 })
     .skip(skip)
     .limit(limit);
   } catch (err) {
