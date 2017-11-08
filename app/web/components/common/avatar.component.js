@@ -8,6 +8,7 @@ if (process.env.BROWSER === true) {
 
 export default class Avatar extends Component {
   render() {
+    if (!this.props.user) return null;
     const profileLink = '/profile/' + this.props.user._id;
     const avatarBackgroundImage = {
       backgroundImage: 'url(' + this.props.user.image + ')',
