@@ -147,8 +147,6 @@ exports.index = async (req, res) => {
 
     html = await inlineCss(html, { url: 'https://relevant.community' });
 
-    console.log('html', html);
-
     if (!email) throw new Error('no email');
     if (!html) throw new Error('no html');
 
