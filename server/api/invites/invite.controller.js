@@ -1,6 +1,8 @@
 import voucherCodes from 'voucher-code-generator';
 import Invite from './invite.model';
 import mail from '../../mail';
+const inlineCss = require('inline-css');
+const { emailStyle } = require('../../utils/emailStyle');
 
 // Invite.collection.dropIndexes(function (err, results) {
 //   console.log(err);
@@ -123,53 +125,63 @@ exports.sendEmailFunc = async function(_invite) {
     let name = invite.name;
     let hi = 'Hi!<br /><br />';
     if (name) hi = `<span style="text-transform: capitalize;">Hi ${name}!</span><br /><br />`;
-    let intro = 'You are invited to join Relevant';
+    let intro = 'You are invited to join Relevant, a social news reader that values <i>quality</i> over <i>clicks</i>.';
     if (invite.invitedByString && invite.invitedByString !== '') {
-      intro = `${invite.invitedByString} invited you to join Relevant`;
+      intro = `${invite.invitedByString} invited you to join Relevant, a social news reader that values <i>quality</i> over <i>clicks</i>.`;
     }
-    let data = {
-      from: 'Relevant <noreply@mail.relevant.community>',
-      to: invite.email,
-      subject: 'Your Relevant Invitation',
-      html: `
+
+    let html = `
+      <p>
       ${hi}${intro}
-      <br />
-      <br />
+      <p>
+      <p>
       Your invitation code: <b>${invite.code}</b>
-      <br />
-      <br />
+      </p>
+      <p>
       <b>Step 1</b>: Download Relevant from the app store:
+      </p>
       <ul>
         <li style="padding-bottom: 10px"><a href="${appStoreUrl}" target="_blank">iOS app store</a>
         <li><a href="${androidStoreUrl}" target="_blank">Android Google Play Store</a>
       </ul>
+      <p>
       <b>Step 2</b>: Launch the app and enter your invite code: <b>${invite.code}</b>
-      <br />
-      <br />
-      -------------------------
-      <br />
-      <br />
-      <span style="font-style: normal">
-      Relevant is a social news reader that values quality over clicks. 
-      <br/>
-      <br/>
-      Instead of relying on quantity (# of likes, followers), Relevant implements a quality metric designed to extract valuable content from the noise of the attention economy. Beneficial contributions to the platform are rewarded with Relevant Tokens.
-      <br/>
-      <br/>
-      The app serves as a lab for formulating and experimenting with the Relevance Metric and Relevant Token with the goal of building a self-sustaining economic ecosystem that provides financial incentives to share and curate quality content.
-      </span>
-      <br />
-      <br />
-      -------------------------
-      <br />
-      <br />
-      <b>Don't be afraid to share and upvote interesting and informative articles - this is what makes Relevant work.</b>
-      <br />
-      <br />
-      If you have questions, encounter any problems, or wish to send feedback please get in touch via this email: contact@4real.io
-      <br />
-      <div style="margin-top: 30px"><a href="${webUrl}"><img width="100%" src="https://relevant.community/img/fbimg.jpg" /></a></div>
-      `
+      </p>
+      <hr/>
+      <p>
+      <a href="https://blog.relevant.community/relevant-an-introduction-5b79ef7afa9" target="_blank" style="text-decoration:none;">
+      <span>Read Our Mission Statement</span>
+      </a>
+      </p>
+      <p>
+        We created Relevant because we saw how exploitative existing platforms have become — they treat people like commodities and culture like a slot machine and we are starting to fear their long-term effects on our world.
+      </p>
+
+      <p>
+      At Relevant, we have created a <b>quality metric</b> for the attention economy that lets you share and rank information according to it’s value. Unlike other networks that fill your feed with clickbait and promoted posts, Relevant is optimized for and by <b>you</b>. 
+      </p>
+
+      <p>
+      Join RELEVANT and get the best social news reader today — for a better information environment tomorrow.
+      </p>
+
+      <hr/>
+
+      <p>If you want to get involved or just say hello you can find us on <a href="https://join.slack.com/t/relevantcommunity/shared_invite/enQtMjIwMjEwNzUzMjUzLTFkOTkwNzFjN2EzMjFhYTVkZDZmYzU1ZGFlZmY4MzdjNGMyOWIwYjhmYTE2OTQ1NmJlOWVmNjkyODNjM2I4YWI">Slack</a> or <a href="https://twitter.com/relevantfeed">Twitter</a><br></p><p><br></p>
+      <p>
+      <a href="https://relevant.community">
+      <img src="https://relevant.community/img/logo.png">
+      </a>
+      </p>
+      `;
+
+    html = await inlineCss(emailStyle + html, { url: 'https://relevant.community' });
+
+    let data = {
+      from: 'Relevant <noreply@mail.relevant.community>',
+      to: invite.email,
+      subject: 'Your Relevant Invitation',
+      html
     };
     // <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation (or manually enter the code when prompted)
 

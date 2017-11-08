@@ -20,7 +20,8 @@ if (process.env.BROWSER === true) {
 
 class Posts extends Component {
   static fetchData(dispatch, params) {
-    console.log('calling fetchData');
+    console.log('calling fetchData ', params);
+    if (!params.id || params.id === undefined) return null;
     return dispatch(postActions.getSelectedPost(params.id));
   }
 
