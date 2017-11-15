@@ -13,6 +13,11 @@ import Analytics from 'react-native-firebase-analytics';
 import Share from 'react-native-share';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import IconE from 'react-native-vector-icons/EvilIcons';
+import IconEn from 'react-native-vector-icons/Entypo';
+import IconI from 'react-native-vector-icons/Ionicons';
+import IconO from 'react-native-vector-icons/Octicons';
+
+
 
 import { globalStyles, greyText, fullHeight } from '../../styles/global';
 import InvestModal from './investModal.component';
@@ -523,14 +528,22 @@ class PostButtons extends Component {
       onPress={() => this.goToPost(true)}
       style={{ paddingHorizontal: 12 }}
     >
-      <View style={[styles.textRow, { alignItems: 'center' }]}>
-        <Image
-          resizeMode={'contain'}
-          style={styles.vote}
-          source={require('../../assets/images/icons/comment.png')}
-        />
-        <Text style={styles.smallInfo}>{commentString}</Text>
+
+      <View style={[{flexDirection: 'row', alignItems: 'center' }]}>
+
+        <IconI
+          style={{ transform: [
+            { scaleX: -1 },
+          ]
+          }}
+          name="ios-redo-outline"
+          size={28}
+          color={greyText} />
+        <Text style={styles.smallInfo}> {commentString}</Text>
+
+        {/*<Text style={styles.smallInfo}>reply</Text>*/}
       </View>
+
     </TouchableOpacity>);
 
         // <Image
@@ -541,11 +554,17 @@ class PostButtons extends Component {
 
     let repost = (
       <TouchableOpacity
-        style={{ paddingHorizontal: 0 }}
+        style={{ paddingLeft: 10, paddingRight: 5 }}
         onPress={() => this.repostCommentary()}
       >
         <View style={[styles.textRow, { alignItems: 'center' }]}>
-          <IconE name="retweet" size={28} color={greyText} />
+
+          <IconI
+            name="ios-quote-outline"
+            size={24}
+            color={greyText}
+          />
+
           {/*<Text style={styles.smallInfo}></Text>*/}
         </View>
 
@@ -558,7 +577,15 @@ class PostButtons extends Component {
         style={{ paddingRight: 8 }}
         onPress={() => this.repostUrl()}
       >
-        <Icon name="pencil" size={18} color={greyText} />
+        {/*<Icon name="pencil" size={18} color={greyText} />*/}
+        <View style={[{flexDirection: 'column', alignItems: 'center' }]}>
+          <Image
+            resizeMode={'contain'}
+            style={styles.vote}
+            source={require('../../assets/images/icons/comment.png')}
+          />
+
+        </View>
       </TouchableOpacity>
     );
 

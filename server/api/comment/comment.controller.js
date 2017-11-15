@@ -8,6 +8,7 @@ const Notification = require('../notification/notification.model');
 const apnData = require('../../pushNotifications');
 const Subscriptiton = require('../subscription/subscription.model');
 const Feed = require('../feed/feed.model');
+const Invest = require('../invest/invest.model');
 
 const PostEvents = new EventEmitter();
 const CommentEvents = new EventEmitter();
@@ -255,7 +256,7 @@ exports.create = async (req, res) => {
         };
         CommentEvents.emit('comment', newNotifsObj);
 
-        let action = `${!ownPost ? ' also' : ' '} commented on ${ownPost ? 'your' : 'a'} post`;
+        let action = ` commented on ${ownPost ? 'your' : 'a'} post`;
         if (comment.repost && ownPost) action = ' reposted your post';
 
         let alert = user.name + action;
@@ -301,7 +302,13 @@ exports.create = async (req, res) => {
     otherCommentors = otherCommentors.map(comm => comm.user);
     otherCommentors.push(postAuthor);
 
-    //filter out duplicates
+    let voters = await Invest.find({ post: post._id })
+    .populate('investor', 'name _id deviceTokens');
+    voters = voters.map(v => v.investor);
+    console.log(voters);
+    otherCommentors = [...otherCommentors, ...voters];
+
+    // filter out duplicates
     otherCommentors = otherCommentors.filter((u, i) => {
       let index = otherCommentors.findIndex(c => c._id === u._id);
       return index === i;
