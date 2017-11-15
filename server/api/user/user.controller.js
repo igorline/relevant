@@ -413,6 +413,7 @@ exports.show = async function (req, res) {
     }
 
     let user = await User.findOne({ _id: userId });
+    if (!user) throw new Error('no such user ', userId);
     user = await user.getSubscriptions();
 
     let relevance = await Relevance.find({ user: userId, tag: { $ne: null } })
