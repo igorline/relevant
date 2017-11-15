@@ -208,7 +208,7 @@ export default function (props) {
       case 'commentAlso':
         return (
           <Text style={styles.activityText}>
-            &nbsp;also commented on a post
+            &nbsp;commented on a post
           </Text>
         );
 
