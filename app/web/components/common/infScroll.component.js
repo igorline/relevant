@@ -8,11 +8,13 @@ export default class InfScroll extends Component {
     super(props);
 
     this.scrollListener = this.scrollListener.bind(this);
+    this.attachScrollListener = this.attachScrollListener.bind(this);
   }
 
   componentDidMount() {
     this.pageLoaded = this.props.pageStart;
     this.attachScrollListener();
+    this.props.loadMore(this.pageLoaded);
   }
 
   componentDidUpdate() {
@@ -30,6 +32,7 @@ export default class InfScroll extends Component {
 
   detachScrollListener() {
     let scrollEl = window;
+    console.log('detach');
     if (this.props.useWindow === false) {
       scrollEl = this.scrollComponent.parentNode;
     }
@@ -57,6 +60,7 @@ export default class InfScroll extends Component {
   }
 
   scrollListener() {
+    if (!this.props.data || !this.props.data.length) return;
     const el = this.scrollComponent;
     const scrollEl = window;
 
@@ -83,6 +87,7 @@ export default class InfScroll extends Component {
       this.detachScrollListener();
       // Call loadMore after detachScrollListener to allow for non-async loadMore functions
       if (typeof this.props.loadMore === 'function') {
+        console.log('load page ', this.pageLoaded);
         this.props.loadMore(this.pageLoaded += 1);
       }
     }
@@ -146,7 +151,7 @@ InfScroll.defaultProps = {
   hasMore: false,
   initialLoad: true,
   pageStart: 0,
-  threshold: 250,
+  threshold: 250, // footer height?
   useWindow: true,
   isReverse: false,
   useCapture: false,

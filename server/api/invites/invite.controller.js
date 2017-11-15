@@ -20,8 +20,9 @@ function handleError(res, statusCode) {
 exports.index = async (req, res) => {
   let invites;
 
-  let limit = parseInt(req.query.limit, 50) || null;
+  let limit = parseInt(req.query.limit, 0) || null;
   let skip = parseInt(req.query.skip, 0) || null;
+
   try {
     let query;
     if (req.user.role !== 'admin') {

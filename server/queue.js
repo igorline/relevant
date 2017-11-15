@@ -72,7 +72,7 @@ async function updateUserStats() {
     });
     q.start((queErr, results) => {
       if (queErr) return console.log(queErr);
-      return console.log('done updating stats: ', results);
+      return console.log('done updating stats');
     });
   });
 }

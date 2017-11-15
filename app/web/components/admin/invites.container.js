@@ -36,6 +36,7 @@ class Invites extends Component {
   load(page) {
     let l = this.props.admin.inviteList.length;
     this.hasMore = (page - 1) * PAGE_SIZE <= l;
+
     if (this.hasMore) {
       this.props.actions.getInvites(l, PAGE_SIZE);
     }
