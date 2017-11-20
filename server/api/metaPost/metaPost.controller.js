@@ -109,7 +109,7 @@ exports.index = async (req, res) => {
   let sort = req.query.sort || null;
   let category = req.query.category || null;
   if (category === '') category = null;
-  let query = {};
+  let query = { 'commentary.0' : { $exists: true }};
   let tagsArr = null;
   let sortQuery;
   let commentarySort = { postDate: -1 };
@@ -125,7 +125,7 @@ exports.index = async (req, res) => {
   try {
     if (tags) {
       tagsArr = tags.split(',');
-      query = { $or: [{ tags: { $in: tagsArr } }, { categories: { $in: tagsArr } }] };
+      query = { 'commentary.0' : { $exists: true }, $or: [{ tags: { $in: tagsArr } }, { categories: { $in: tagsArr } }] };
     }
 
     posts = await MetaPost.find(query)
@@ -158,15 +158,15 @@ exports.index = async (req, res) => {
   res.status(200).json(posts);
 
   // TODO worker thread
-  if (userId) {
-    let postIds = [];
-    posts.forEach(meta => {
-      meta.commentary.forEach(post => {
-        postIds.push(post._id || post);
-      });
-    });
-    Post.sendOutInvestInfo(postIds, userId);
-  }
+  // if (userId) {
+  //   let postIds = [];
+  //   posts.forEach(meta => {
+  //     meta.commentary.forEach(post => {
+  //       postIds.push(post._id || post);
+  //     });
+  //   });
+  //   Post.sendOutInvestInfo(postIds, userId);
+  // }
 };
 
 exports.flagged = async (req, res) => {
