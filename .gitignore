@@ -3,6 +3,8 @@
 .DS_Store
 publicenv.js
 app/publicenv.js
+.env
+*.pem
 
 #ios
 ios/Pods/
