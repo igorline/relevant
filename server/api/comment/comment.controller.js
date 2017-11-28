@@ -294,7 +294,7 @@ exports.create = async (req, res) => {
 
     if (comment.repost) createRepost();
 
-    postAuthor = await User.findOne({ _id: post.user });
+    postAuthor = await User.findOne({ _id: post.user }, 'name _id deviceTokens');
 
     let otherCommentors = await Comment.find({ post: post._id })
     .populate('user', 'name _id deviceTokens');
@@ -305,6 +305,8 @@ exports.create = async (req, res) => {
     let voters = await Invest.find({ post: post._id })
     .populate('investor', 'name _id deviceTokens');
     voters = voters.map(v => v.investor);
+    voters = voters || [];
+    otherCommentors = otherCommentors || [];
     console.log(voters);
     otherCommentors = [...otherCommentors, ...voters];
 
@@ -323,7 +325,6 @@ exports.create = async (req, res) => {
     // console.log(otherCommentors);
 
     otherCommentors.forEach(sendOutComments);
-
   } catch (error) {
     console.log(error);
     return res.status(500).send(error);
