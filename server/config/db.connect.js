@@ -9,7 +9,10 @@ const config = {
   useMongoClient: true,
 };
 
-mongoose.connect(process.env.MONGO_URI, config);
+mongoose.connect(process.env.MONGO_URI, config)
+.catch(err => {
+  console.log('catch ', err);
+});
 
 db.on('connecting', () => {
   console.log('connecting to MongoDB...');
