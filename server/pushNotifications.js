@@ -5,8 +5,8 @@ import User from './api/user/user.model';
 
 // const CERT_TYPE = process.env.NODE_ENV === 'production' ? '-prod' : '-dev';
 
-console.log(process.env.APN_CERT)
-console.log(process.env.APN_KEY)
+// console.log(process.env.APN_CERT)
+// console.log(process.env.APN_KEY)
 
 let options = {
   cert: process.env.APN_CERT,
