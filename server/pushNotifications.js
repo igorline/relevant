@@ -3,11 +3,14 @@ import Notification from './api/notification/notification.model';
 import Feed from './api/feed/feed.model';
 import User from './api/user/user.model';
 
-const CERT_TYPE = process.env.NODE_ENV === 'production' ? '-prod' : '-dev';
+// const CERT_TYPE = process.env.NODE_ENV === 'production' ? '-prod' : '-dev';
+
+console.log(process.env.APN_CERT)
+console.log(process.env.APN_KEY)
 
 let options = {
-  cert: __dirname + `/api/cert${CERT_TYPE}.pem`,
-  key: __dirname + `/api/key${CERT_TYPE}.pem`,
+  cert: process.env.APN_CERT,
+  key: process.env.APN_KEY,
   production: process.env.NODE_ENV === 'production'
 };
 
@@ -18,11 +21,12 @@ const settings = {
     id: KEY,
   },
   apn: {
-    cert: __dirname + `/api/cert${CERT_TYPE}.pem`,
-    key: __dirname + `/api/key${CERT_TYPE}.pem`,
+    cert: process.env.APN_CERT,
+    key: process.env.APN_KEY,
     production: process.env.NODE_ENV === 'production'
   }
 };
+
 const PushNotifications = require('node-pushnotifications');
 const push = new PushNotifications(settings);
 
