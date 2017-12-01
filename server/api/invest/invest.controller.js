@@ -470,7 +470,7 @@ exports.create = async (req, res) => {
     // ------- everything is fine, deduct user's balance ---
     // user.balance -= Math.abs(amount);
     let payment = Math.floor(Math.max(1, user.balance * VOTE_COST_RATIO));
-    user.balance -= payment;
+    // user.balance -= payment;
 
     // send payment back to reward fund
     let treasuryUpdate = await Treasury.findOneAndUpdate({}, { $inc: { rewardFund: payment } }, { new: true });

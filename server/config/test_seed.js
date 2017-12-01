@@ -5,6 +5,7 @@ let Feed = require('../api/feed/feed.model');
 let Notification = require('../api/notification/notification.model');
 let Invest = require('../api/invest/invest.model');
 let MetaPost = require('../api/metaPost/metaPost.model');
+let Earnings = require('../api/earnings/earnings.model');
 
 let dummyUsers = [
   {
@@ -31,7 +32,7 @@ let dummyUsers = [
     password: 'test',
     salt: '1juLhuAPx0BY9ZrWz2B7Vg==',
     relevance: 100,
-    balance: 100000,
+    balance: 10000,
     role: 'user',
     __v: 224,
   },
@@ -45,7 +46,7 @@ let dummyUsers = [
     password: 'test',
     salt: '1juLhuAPx0BY9ZrWz2B7Vg==',
     relevance: 400,
-    balance: 20,
+    balance: 500,
     invest: [],
     role: 'user',
     __v: 224,
@@ -115,6 +116,7 @@ let cleanupData = () => {
 
   let clearPosts = Post.find({ title: 'Test post title' }).remove().exec() || null;
   let clearMeta = MetaPost.find({ title: 'Test post title' }).remove().exec() || null;
+  let clearEarnings = Earnings.find({ user: { $in: dummies }}).remove().exec() || null;
 
   return Promise.all([
     ...clearUsers,
@@ -123,7 +125,8 @@ let cleanupData = () => {
     clearPosts,
     clearNotifications,
     clearUpvotes,
-    clearMeta
+    clearMeta,
+    clearEarnings
   ]);
 };
 

@@ -115,7 +115,8 @@ async function userRank() {
         if (rankedUsers[u][name].weight < 0) delete rankedUsers[u][name];
       });
     });
-    // console.log(rankedUsers);
+
+    console.log(rankedUsers);
 
     let scores = pagerank(
       rankedUsers,

@@ -15,6 +15,8 @@ let TreasurySchema = new Schema({
   totalTokens: { type: Number, default: 0 },
 
   currentShares: { type: Number, default: 0 },
+  postCount: { type: Number, default: 0 },
+
   rewardFund: { type: Number, default: 0 },
   lastRewardFundUpdate: { type: Date },
 }, {
