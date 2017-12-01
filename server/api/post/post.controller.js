@@ -535,6 +535,10 @@ exports.create = (req, res) => {
   let tags = [];
   let keywords = req.body.keywords || [];
 
+  if (req.user.balance < 1) {
+    return handleError(res)(new Error('You need to have at least one coin to post'));
+  }
+
   if (category) tags.push(category);
 
   req.body.tags.forEach(tag => {

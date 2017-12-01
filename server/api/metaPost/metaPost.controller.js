@@ -154,19 +154,19 @@ exports.index = async (req, res) => {
     handleError(res, err);
   }
 
-  console.log('sending ', posts.length, ' metaPosts');
+  // console.log('sending ', posts.length, ' metaPosts');
   res.status(200).json(posts);
 
   // TODO worker thread
-  // if (userId) {
-  //   let postIds = [];
-  //   posts.forEach(meta => {
-  //     meta.commentary.forEach(post => {
-  //       postIds.push(post._id || post);
-  //     });
-  //   });
-  //   Post.sendOutInvestInfo(postIds, userId);
-  // }
+  if (userId) {
+    let postIds = [];
+    posts.forEach(meta => {
+      meta.commentary.forEach(post => {
+        postIds.push(post._id || post);
+      });
+    });
+    Post.sendOutInvestInfo(postIds, userId);
+  }
 };
 
 exports.flagged = async (req, res) => {

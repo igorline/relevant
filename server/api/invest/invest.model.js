@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
 import { VOTE_COST_RATIO } from '../../config/globalConstants';
+import Earnigns from '../earnings/earnings.model';
 
 const InvestSchemaEvents = new EventEmitter();
 let Schema = mongoose.Schema;
@@ -48,7 +49,16 @@ InvestSchema.statics.createVote = async function updateEarnings(props) {
   if ((amount > 0 || post.user === user._id) && user.balance > 0) {
     let payment = Math.floor(Math.max(1, user.balance * VOTE_COST_RATIO));
     voteWeight = payment / (post.balance + payment);
+    user.balance -= payment;
     post.balance += payment;
+
+    await Earnigns.updateRewardsRecord({
+      user: user._id,
+      post: post._id,
+      spent: payment,
+    });
+
+    await user.save();
     await post.save();
   }
 

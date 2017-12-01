@@ -4,6 +4,7 @@ import Post from '../api/post/post.model';
 import Invest from '../api/invest/invest.model';
 import apnData from '../pushNotifications';
 import Notification from '../api/notification/notification.model';
+import Earnings from '../api/earnings/earnings.model';
 
 import { INTERVAL_INFLAITION, INIT_COIN, SHARE_DECAY } from '../config/globalConstants';
 
@@ -16,6 +17,7 @@ async function createCoins() {
   treasury.totalTokens = INIT_COIN;
   treasury.currentShares = 0;
   treasury.rewardFund = 0;
+  treasury.postCount = 0;
   treasury.lastRewardFundUpdate = new Date();
   treasury = await treasury.save();
   console.log(treasury);
@@ -32,12 +34,14 @@ async function createCoins() {
 async function computePostPayout(posts, treasury) {
   // let posts = await Post.find({ paidOut: false, payoutTime: { $lt: now } });
   let updatedPosts = posts.map(async post => {
-    // linear reward curve
-    if (post.relevance === 0) {
+    // posts w negative relevance don't get rewars
+    if (post.relevance <= 0) {
       return await post.save();
     }
+    // linear reward curve
     post.payoutShare = post.relevance / treasury.currentShares;
-    post.payout = treasury.rewardFund * post.payoutShare;
+    post.payout = post.balance + treasury.rewardFund * post.payoutShare;
+    post.balance = 0;
     post = await post.save();
     return post;
   });
@@ -67,7 +71,7 @@ async function distributeRewards() {
   // console.log('start shares ', treasury.currentShares);
 
   treasury.currentShares *= (1 - Math.min(1, decay));
-
+  treasury.postCount *= (1 - Math.min(1, decay));
   // console.log('end shares ', treasury.currentShares);
 
 
@@ -75,6 +79,8 @@ async function distributeRewards() {
   posts.forEach(post => {
     if (post.relevance > 0) {
       treasury.currentShares += post.relevance;
+      treasury.postCount += 1;
+      console.log('average post shares ', treasury.currentShares / treasury.postCount);
     }
     post.paidOut = true;
   });
@@ -103,6 +109,13 @@ async function rewardUser(props) {
   let action = type === 'vote' ? 'upvoting ' : '';
   let text = `You earned ${reward} coin${s} from ${action}this post`;
   let alertText = `You earned ${reward} coin${s} from ${action}a post`;
+
+  console.log()
+  await Earnings.updateRewardsRecord({
+    user: user._id,
+    post: post._id,
+    earned: reward,
+  });
 
   Notification.createNotification({
     post: post._id,
@@ -148,7 +161,7 @@ async function distributeUserRewards(posts) {
     payouts[author._id] = payouts[author._id] ? payouts[author._id] + authorPayout : authorPayout;
 
     if (authorPayout > 0) {
-      rewardUser({ user: author, reward: authorPayout, treasury, post });
+      await rewardUser({ user: author, reward: authorPayout, treasury, post });
     }
 
 
@@ -172,7 +185,7 @@ async function distributeUserRewards(posts) {
 
       payouts[user._id] = payouts[user._id] ? payouts[user._id] + curationPayout : curationPayout;
 
-      rewardUser({ user, reward: curationPayout, treasury, post, type: 'vote' });
+      await rewardUser({ user, reward: curationPayout, treasury, post, type: 'vote' });
     });
     updatedVotes = await Promise.all(updatedVotes);
     return updatedVotes;
