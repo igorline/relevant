@@ -108,14 +108,26 @@ class DiscoverTabs extends Component {
     switch (route.key) {
       case 'feed':
         return (
-          <Feed
-            key={'feed'}
+          <Discover
             active={currentRoute.key === route.key}
+            type={'twitterFeed'}
+            key={'twitterFeed'}
+            scene={this.props.scene}
             onScroll={this.onScroll}
             offsetY={this.state.headerHeight}
             tabLabel={route.title}
           />
         );
+      // case 'feed':
+      //   return (
+      //     <Feed
+      //       key={'feed'}
+      //       active={currentRoute.key === route.key}
+      //       onScroll={this.onScroll}
+      //       offsetY={this.state.headerHeight}
+      //       tabLabel={route.title}
+      //     />
+      //   );
       case 'new':
         return (
           <Discover

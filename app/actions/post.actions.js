@@ -39,6 +39,7 @@ const postSchema = new schema.Entity('posts',
 metaPostSchema = new schema.Entity('metaPosts',
   {
     commentary: [postSchema],
+    twitterCommentary: [postSchema],
     // new: [postSchema],
     // top: [postSchema],
   },
@@ -172,6 +173,38 @@ export function getFeed(skip, _tag) {
       }
     });
 }
+
+
+export function getTwitterFeed(skip, _tag) {
+  if (!skip) skip = 0;
+  let type = 'twitterFeed';
+  let limit = DEFAULT_LIMIT;
+  let tag = _tag ? _tag._id : null;
+
+  return dispatch =>
+    utils.api.request({
+      method: 'GET',
+      query: { skip, limit, tag },
+      endpoint: 'twitterFeed',
+      path: '/',
+    })
+    .then(res => {
+      let data = normalize(
+        { twitterFeed: res },
+        { twitterFeed: [metaPostSchema] }
+      );
+      console.log(res);
+      dispatch(setPosts(data, type, skip));
+      dispatch(errorActions.setError('read', false));
+    })
+    .catch(err => {
+      // TODO do we need this?
+      if (!err.message.match('Get fail for key: token')) {
+        dispatch(errorActions.setError('read', true, err.message));
+      }
+    });
+}
+
 
 export function deletePost(post, redirect) {
   return dispatch =>

@@ -15,11 +15,15 @@ import Treasury from './api/treasury/treasury.model';
 import economy from './utils/economy.js';
 import { PAYOUT_FREQUENCY } from './config/globalConstants';
 
+require('./utils/twitterWorker');
+
+
 const extractor = require('unfluff');
 // daily relevance decay
 const DECAY = 0.99621947473649;
 
 let q = queue({
+  concurrency: 5,
   concurrency: 1,
 });
 
@@ -115,8 +119,7 @@ async function userRank() {
         if (rankedUsers[u][name].weight < 0) delete rankedUsers[u][name];
       });
     });
-
-    console.log(rankedUsers);
+    // console.log(rankedUsers);
 
     let scores = pagerank(
       rankedUsers,

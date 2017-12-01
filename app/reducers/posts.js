@@ -4,6 +4,7 @@ const initialState = {
   postError: null,
   feedUnread: null,
   feed: [],
+  twitterFeed: [],
   top: [],
   new: [],
   flagged: [],

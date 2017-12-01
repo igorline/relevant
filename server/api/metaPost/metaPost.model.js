@@ -37,6 +37,13 @@ let MetaPostSchema = new Schema({
   flaggedBy: [{ type: String, ref: 'User', select: false }],
   flaggedTime: Date,
 
+  twitterCommentary: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+  twitterScore: { type: Number, default: 0 },
+  tweetCount: { type: Number, default: 0 },
+  // TODO this could get big - should be separate table
+  seenInFeedNumber: { type: Number, default: 0 },
+  latestTweet: Date,
+
 }, {
   timestamps: true,
 });

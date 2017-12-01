@@ -42,6 +42,7 @@ let PostSchema = new Schema({
   category: { type: String, ref: 'Tag' },
   user: { type: String, ref: 'User', index: true },
   embeddedUser: {
+    id: String,
     name: String,
     image: String,
   },
@@ -73,6 +74,11 @@ let PostSchema = new Schema({
   payOutShare: { type: Number, default: 0 },
 
   balance: { type: Number, default: 0 },
+
+  twitter: { type: Boolean, default: false },
+  twitterUser: Number,
+  twitterId: Number,
+  twitterScore: Number,
 }, {
   timestamps: true,
   toJSON: { virtuals: true }
@@ -207,13 +213,21 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
       meta.categories = cats;
 
       meta.keywords = [...new Set([...meta.keywords, ...this.keywords || []])];
-
-      meta.commentaryCount++;
-      meta.newCommentary = this._id;
-      meta.commentary.push(this);
-      meta.latestPost = this.postDate;
       meta.articleAuthor = this.articleAuthor;
-      // meta.url = this.post.link;
+
+      if (!this.twitter) {
+        meta.commentaryCount++;
+        meta.newCommentary = this._id;
+        meta.commentary.push(this);
+        meta.latestPost = this.postDate;
+        // meta.url = this.post.link;
+      } else {
+        meta.latestTweet = this.postDate;
+        meta.tweetCount++;
+        meta.twitterCommentary.push(this);
+        meta.seenInFeedNumber++;
+        meta.twitterScore += this.relevance;
+      }
 
       if (this.image) {
         meta.image = this.image;
@@ -232,15 +246,27 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
         // may not need to do this if meta is pre-populated
         articleAuthor: this.articleAuthor,
         shortText: this.shortText,
-        domain: [this.domain],
-        commentary: [this._id],
+        domain: this.domain,
+        commentary: this.twitter ? null : [this._id],
         title: this.title,
         description: this.description,
         image: this.image,
         keywords: this.keywords,
       };
+      if (this.twitter) {
+        meta = {
+          ...meta,
+          tweetCount: 1,
+          seenInFeedNumber: 1,
+          twitterCommentary: [this._id],
+          latestTweet: this.postDate,
+          twitterScore: this.relevance,
+        };
+      }
       let metaPost = new MetaPost(meta);
+      // console.log(meta);
       meta = await metaPost.save();
+      this.metaPost = metaPost._id;
       console.log('meta tags', meta.tags);
     }
   } catch (err) {
