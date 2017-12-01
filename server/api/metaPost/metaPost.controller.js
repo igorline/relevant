@@ -154,7 +154,6 @@ exports.index = async (req, res) => {
     handleError(res, err);
   }
 
-  // console.log('sending ', posts.length, ' metaPosts');
   res.status(200).json(posts);
 
   // TODO worker thread

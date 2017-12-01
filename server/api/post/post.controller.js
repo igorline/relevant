@@ -1,3 +1,5 @@
+import { promisify } from 'util';
+
 import url from 'url';
 import request from 'request';
 import { EventEmitter } from 'events';
@@ -15,6 +17,9 @@ import Notification from '../notification/notification.model';
 import Invest from '../invest/invest.model';
 
 import { PAYOUT_TIME } from '../../config/globalConstants';
+
+let requestAsync = promisify(request);
+
 
 require('../../processing/posts');
 // Post.collection.createIndex({ title: 'text', shortText: 'text', description: 'text', keywords: 'text', tags: 'text'});
@@ -341,14 +346,21 @@ exports.userPosts = async (req, res) => {
   return null;
 };
 
+exports.preview = async (req, res) => {
+  try {
+    let urlParts = url.parse(req.url, false);
+    let query = urlParts.query;
+    let previewUrl = decodeURIComponent(query.replace('url=', ''));
+    let result = await exports.previewDataAsync(previewUrl);
+    console.log(result);
+    return res.status(200).json(result);
+  } catch (err) {
+    handleError(res)(err);
+  }
+}
 
 
-exports.preview = (req, res) => {
-  // custom param parse to account for — (long dash) character
-  let url_parts = url.parse(req.url, false);
-  let query = url_parts.query;
-  let previewUrl = decodeURIComponent(query.replace('url=', ''));
-  // let previewUrl = decodeURIComponent(req.query.url);
+exports.previewDataAsync = async previewUrl => {
 
   if (!previewUrl.match(/http:\/\//i) && !previewUrl.match(/https:\/\//i)) {
     previewUrl = 'http://' + previewUrl;
@@ -363,49 +375,50 @@ exports.preview = (req, res) => {
     return fbHeader;
   }
 
-  function processReturn(error, response, body) {
-
-    if (error) {
-      console.log('preview error ', error || response.statusMessage);
-      return res.status(500).json(error);
-    }
+  // recursive fuction TODO - max recursive calls check?
+  async function queryUrl(_url) {
+    let response = await requestAsync({
+      url: _url,
+      maxRedirects: 22,
+      jar: true,
+      gzip: true,
+      headers: getHeader(_url),
+      rejectUnauthorized: false,
+    });
 
     let uri = response.request.uri.href;
-
-    let processed = proxyHelpers.generatePreview(body, uri);
+    let processed = proxyHelpers.generatePreview(response.body, uri);
 
     if (processed.redirect && processed.uri) {
       console.log('redirect ', processed.uri);
       uri = processed.uri;
-      return request({
-        url: uri,
-        maxRedirects: 22,
-        jar: true,
-        gzip: true,
-        headers: getHeader(uri),
-        rejectUnauthorized: false,
-      }, processReturn);
+      return await queryUrl(uri);
     }
-    return res.status(200).json(processed.result);
+    return Promise.resolve(processed.result);
   }
 
+  // Its a PDF
   if (previewUrl.match('.pdf')) {
-    return res.status(200).json({
+    return {
       url: previewUrl,
       title: previewUrl.substring(previewUrl.lastIndexOf('/') + 1),
       domain: proxyHelpers.extractDomain(previewUrl)
-    });
+    };
   }
 
-  return request({
-    url: previewUrl,
-    maxRedirects: 22,
-    jar: true,
-    gzip: true,
-    headers: getHeader(previewUrl),
-    rejectUnauthorized: false,
-  }, processReturn);
+  return await queryUrl(previewUrl);
 };
+
+// async function test() {
+//   try {
+//     let result = await exports.previewDataAsync('https://t.co/1jMhfIuh0p');
+//     console.log(result);
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// test();
+
 
 
 exports.readable = async (req, res) => {

@@ -1,5 +1,5 @@
-import Feed from './feed.model';
-import Post from '../post/post.model';
+import Feed from './twitterFeed.model';
+import MetaPost from '../metaPost/metaPost.model';
 
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
@@ -8,39 +8,41 @@ function handleError(res, statusCode) {
   };
 }
 
+
 exports.get = async (req, res) => {
-  let userId = req.user._id;
+  let user = req.user._id;
+
   let skip = parseInt(req.query.skip, 10) || 0;
   let limit = parseInt(req.query.limit, 10) || 5;
   let tag = req.query.tag || null;
-  let query = { userId };
-  if (tag) query = { tags: tag, userId };
+  let query = { user: { $in : [user, '_common_Feed_'] } };
+  if (tag) query = { tags: tag, user };
   let feed;
   let posts = [];
 
   try {
     feed = await Feed.find(query)
-    .sort({ createdAt: -1 })
+    .sort({ rank: -1 })
     .skip(skip)
     .limit(limit)
     .populate({
-      path: 'post',
+      path: 'metaPost',
+      options: { sort: { relevance: -1 } },
       populate: [
         {
-          path: 'user',
-          select: 'name image relevance',
+          path: 'twitterCommentary',
         },
-        { path: 'repost.post',
-          populate: {
-            path: 'user',
-            select: 'name image relevance',
-          }
-        }
       ]
     });
 
     feed.forEach((f) => {
-      if (f.post) posts.push(f.post);
+      if (f.metaPost) posts.push(f.metaPost);
+      console.log('title ', f.metaPost.title);
+      console.log('rank ', f.rank);
+      console.log('rank ', f.metaPost.rank);
+      console.log('rank ', f.inTimeline);
+      console.log('score ', f.metaPost.twitterScore);
+
     });
     res.status(200).json(posts);
   } catch (err) {
@@ -48,16 +50,16 @@ exports.get = async (req, res) => {
   }
 
   // TODO worker thread?
-  if (userId) {
-    let postIds = [];
-    posts.forEach(post => {
-      postIds.push(post._id || post);
-      if (post.repost && post.repost.post) {
-        postIds.push(post.repost.post._id);
-      }
-    });
-    Post.sendOutInvestInfo(postIds, userId);
-  }
+  // if (user) {
+  //   let postIds = [];
+  //   posts.forEach(post => {
+  //     postIds.push(post._id || post);
+  //     if (post.repost && post.repost.post) {
+  //       postIds.push(post.repost.post._id);
+  //     }
+  //   });
+  //   Post.sendOutInvestInfo(postIds, user);
+  // }
 };
 
 exports.unread = (req, res) => {

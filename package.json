@@ -153,6 +153,7 @@
     "socket.io-client": "~1.4.5",
     "ssl-root-cas": "^1.2.3",
     "supertest-as-promised": "^4.0.2",
+    "twitter": "^1.7.1",
     "unfluff": "^1.1.0",
     "uuid": "^3.0.1",
     "voucher-code-generator": "^1.1.1",

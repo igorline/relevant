@@ -40,6 +40,7 @@ class Discover extends Component {
       { id: 0, title: 'Trending', type: 'top' },
       { id: 1, title: 'New', type: 'new' },
       { id: 2, title: 'People', type: 'people' },
+      { id: 3, title: 'Twitter', type: 'twitterFeed' },
     ];
     this.loaded = true;
     this.type = this.props.type;
@@ -107,6 +108,18 @@ class Discover extends Component {
           data: props.userList[this.topic ? this.topic._id : 'all'],
           loaded: null
         };
+      case 3:
+        // if (this.topic) {
+        //   return {
+        //     data: props.posts.topics.top[this.topic._id],
+        //     loaded: props.posts.loaded.topics[this.topic._id] ?
+        //       props.posts.loaded.topics[this.topic._id].top : false,
+        //   };
+        // }
+        return {
+          data: props.posts.twitterFeed,
+          loaded: props.posts.loaded.twitterFeed,
+        };
       default:
         return null;
     }
@@ -131,6 +144,9 @@ class Discover extends Component {
       case 2:
         if (this.props.auth.user) this.props.actions.getUsers(length, POST_PAGE_SIZE * 2, tags);
         break;
+      case 3:
+        this.props.actions.getTwitterFeed(length, tags);
+        break;
       default:
         return;
     }
@@ -141,8 +157,13 @@ class Discover extends Component {
     if (view !== 2) {
       let posts = [];
       let metaPost = this.props.posts.metaPosts[type][rowData];
-      if (metaPost) posts = metaPost.commentary.map(p => this.props.posts.posts[p]);
+      if (metaPost && view !== 3) posts = metaPost.commentary.map(p => this.props.posts.posts[p]);
+      else if (metaPost && view === 3) posts = metaPost.twitterCommentary.map(p => this.props.posts.posts[p]);
       else return null;
+
+      // if (view === 3) {
+      //   console.log(posts);
+      // }
 
       let showReposts = false;
       if (type === 'new') showReposts = true;
