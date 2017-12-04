@@ -352,12 +352,11 @@ exports.preview = async (req, res) => {
     let query = urlParts.query;
     let previewUrl = decodeURIComponent(query.replace('url=', ''));
     let result = await exports.previewDataAsync(previewUrl);
-    console.log(result);
     return res.status(200).json(result);
   } catch (err) {
     handleError(res)(err);
   }
-}
+};
 
 
 exports.previewDataAsync = async previewUrl => {
@@ -384,10 +383,11 @@ exports.previewDataAsync = async previewUrl => {
       gzip: true,
       headers: getHeader(_url),
       rejectUnauthorized: false,
+      timeout: 10000,
     });
 
     let uri = response.request.uri.href;
-    let processed = proxyHelpers.generatePreview(response.body, uri);
+    let processed = await proxyHelpers.generatePreview(response.body, uri);
 
     if (processed.redirect && processed.uri) {
       console.log('redirect ', processed.uri);

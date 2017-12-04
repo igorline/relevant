@@ -9,15 +9,26 @@ import TwitterFeed from '../api/twitterFeed/twitterFeed.model';
 
 let requestAsync = promisify(request);
 
-const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
+const TENTH_LIFE = 1 * 12 * 60 * 60 * 1000;
 
 
 const Twitter = require('twitter');
 const User = require('../api/user/user.model');
 const queue = require('queue');
 
+let allUsers;
+
+// Post.find({ twitter: true }).sort('title').then(posts => {
+//   posts.forEach(p => {
+//     console.log('title ', p.title);
+//     console.log('meta ', p.metaPost);
+//   });
+// });
+
 
 // Post.find({ twitter: true }).remove().exec();
+// TwitterFeed.find({}).remove().exec();
+// Meta.find({ 'twitterCommentary.0': { $exists: true } }).remove().exec();
 
 // User.find({ twitterId: { $exists: true } }).then(users => {
 //   users.map(u => {
@@ -36,19 +47,63 @@ q.on('timeout', (next, job) => {
   next();
 });
 
+function computeRank(metaPost) {
+  // let rank = metaPost.twitterScore;
+  let rank = metaPost.seenInFeedNumber * 2 + Math.log(metaPost.twitterScore + 1) * 5;
+  let newRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
+  let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(50 + rank);
+  newRank = Math.round(newRank * 1000) / 1000;
+  inFeedRank = Math.round(inFeedRank * 1000) / 1000;
 
+  // console.log(metaPost.latestTweet);
+  console.log(metaPost.title);
+  // console.log(metaPost.twitterScore);
+  console.log('rank ', rank);
+  console.log('own rank', rank + 50);
 
+  return { newRank, inFeedRank };
+}
 
+async function updateRank() {
+  try {
+    let metaPosts = await Meta.find({ 'twitterCommentary.0': { $exists: true } });
+    metaPosts.forEach(async metaPost => {
+      let { newRank, inFeedRank } = computeRank(metaPost);
+      console.log(metaPost.title)
+      console.log(newRank)
+      console.log(inFeedRank)
+      await TwitterFeed.update(
+        { metaPost: metaPost._id, inTimeline: false },
+        { rank: newRank },
+        { upsert: false, multi: true }
+      );
+      await TwitterFeed.update(
+        { metaPost: metaPost._id, inTimeline: true },
+        { rank: inFeedRank },
+        { upsert: false, multi: true }
+      );
+    });
+  } catch (err) {
+    console.log('error updating twitter rank ', err);
+  }
+}
+
+updateRank();
 
 async function processTweet(tweet, user) {
-  if (!tweet.entities.urls.length || !tweet.entities.urls[0].url) {
-    return;
-  }
+
   let originalTweet = tweet;
   if (tweet.retweeted_status) {
     tweet = tweet.retweeted_status;
   }
 
+  if (!tweet.entities.urls.length || !tweet.entities.urls[0].url) {
+    return;
+  }
+
+  if (tweet.entities.urls[0].expanded_url.match('twitter.com')) return;
+
+  // console.log(tweet.entities);
 
   // check if tw post exists
   // if it does, update feed and increment 'seen in feed counter'
@@ -61,6 +116,7 @@ async function processTweet(tweet, user) {
   } else {
     let processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);
 
+
     let tags = tweet.entities.hashtags.map(t => t.text);
     post = new Post({
       title: processed.title,
@@ -71,7 +127,7 @@ async function processTweet(tweet, user) {
       domain: processed.domain,
       // TODO we are not using this
       shortText: processed.shortText,
-      body: tweet.full_text,
+      body: tweet.full_text.replace(new RegExp(tweet.entities.urls[0].url, 'g'), ''),
       keywords: processed.keywords,
       tags,
       postDate: originalTweet.created_at,
@@ -79,7 +135,7 @@ async function processTweet(tweet, user) {
       embeddedUser: {
         name: tweet.user.name,
         id: tweet.user.screen_name,
-        image: tweet.user.profile_image_url_https
+        image: tweet.user.profile_image_url_https.replace('_normal', '')
       },
       twitterUser: tweet.user.id,
       twitterId: tweet.id,
@@ -97,19 +153,11 @@ async function processTweet(tweet, user) {
     await post.save();
   }
 
-
-  let rank = metaPost.twitterScore;
-  let newRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
-  let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(10 * (rank + 1));
-  rank = Math.round(newRank * 1000) / 1000;
-
-  console.log(metaPost.twitterScore);
-  console.log(metaPost.latestTweet);
-  console.log(rank);
+  let { newRank, inFeedRank } = computeRank(metaPost);
 
   let feedObject = {
     post: post._id,
-    rank,
+    rank: newRank,
     tweetDate: metaPost.latestTweet,
   };
 
@@ -121,25 +169,33 @@ async function processTweet(tweet, user) {
     { upsert: true }
   ).exec();
 
+  let updateAllUsers = allUsers.map(async u => {
+    return await TwitterFeed.update(
+      { user: u, metaPost: metaPost._id },
+      feedObject,
+      { upsert: true }
+    ).exec();
+  });
+
+  await Promise.all(updateAllUsers);
+
   // update current user
   let userFeed = await TwitterFeed.findOneAndUpdate(
     { user: user._id, metaPost: metaPost._id },
-    { ...feedObject, inTimeline: true, rank: rank * 10 },
+    { ...feedObject, inTimeline: true, rank: inFeedRank },
     { upsert: true, new: true }
   );
-  console.log(userFeed);
+  // console.log(userFeed);
 
   // update rank of existing posts
   await TwitterFeed.update(
     { metaPost: metaPost._id, inTimeline: true },
-    { ...feedObject, rank: rank * 10 },
-    { upsert: true, multi: true }
+    { ...feedObject, rank: inFeedRank },
+    { upsert: false, multi: true }
   );
 
 
   // if it doesn't - create post and upsert metapost
-
-
   // console.log('text ', tweet.full_text);
   // console.log('truncated ', tweet.truncated);
   // console.log('urls ', tweet.entities.urls);
@@ -172,12 +228,15 @@ async function getUserFeed(user) {
   return feed;
 }
 
+
 async function getUsers() {
   try {
     let users = await User.find(
       { twitterHandle: { $exists: true } },
       'twitterAuthToken twitterAuthSecret twitterHandle'
     );
+
+    allUsers = users.map(u => u._id);
 
     let processedUsers = users.map(async u => {
       try {
@@ -195,7 +254,7 @@ async function getUsers() {
     });
 
   } catch (err) {
-    // console.log(err);
+    console.log(err);
   }
 }
 

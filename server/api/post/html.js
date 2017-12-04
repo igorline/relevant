@@ -1,6 +1,6 @@
 import request from 'request-promise-any';
 import jsdom from 'jsdom';
-import Readability from 'readability';
+import { JSDOMParser, Readability } from 'readability/index';
 import cheerio from 'cheerio';
 import { parse as parseUrl } from 'url';
 
@@ -41,6 +41,8 @@ exports.getReadable = async (uri) => {
       headers: fbHeader
     });
 
+    // let doc = new JSDOMParser().parse(body);
+
     let doc = jsdom.jsdom(body, {
       features: {
         FetchExternalResources: false,
@@ -78,7 +80,7 @@ exports.trimToLength = (doc, length) => {
   return doc;
 };
 
-exports.generatePreview = (body, uri) => {
+exports.generatePreview = async (body, uri) => {
   // console.log('Generate Preview ', uri);
 
   body = body.replace('<!--', '').replace('-->', '');
@@ -293,15 +295,21 @@ exports.generatePreview = (body, uri) => {
   });
 
   let article;
+
   try {
     article = new Readability(url, doc).parse();
   } catch (err) {
-    console.log('Readability err ', err);
+    console.log('Readability ERR ', err);
   }
 
   let short;
-  if (article) {
-    short = exports.trimToLength(article.article, 140).innerHTML;
+  if (article && article.article) {
+    try {
+      short = article.excerpt || exports.trimToLength(article.article, 140).innerHTML;
+    } catch (err) {
+      console.log(err);
+    }
+    console.log('readability author ', article.byline);
     if (!author.length && article.byline) {
       let by = article.byline.split(/\n|\,|•/)
       .map(a => a.replace(/by|by:\s/i, '').trim())
@@ -320,6 +328,8 @@ exports.generatePreview = (body, uri) => {
   } else {
     // console.log('couldn\'t parse url ', url);
   }
+  console.log('final author ', author);
+
   // console.log('author ', article.byline);
 
   // if (!image && article && article.content) {
