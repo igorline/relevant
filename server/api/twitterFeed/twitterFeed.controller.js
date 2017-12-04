@@ -4,6 +4,7 @@ import MetaPost from '../metaPost/metaPost.model';
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return (err) => {
+    console.log(err);
     res.status(statusCode).send(err);
   };
 }
@@ -15,7 +16,10 @@ exports.get = async (req, res) => {
   let skip = parseInt(req.query.skip, 10) || 0;
   let limit = parseInt(req.query.limit, 10) || 5;
   let tag = req.query.tag || null;
-  let query = { user: { $in : [user, '_common_Feed_'] } };
+
+  // let query = { user: { $in : [user, '_common_Feed_'] } };
+  let query = { user };
+
   if (tag) query = { tags: tag, user };
   let feed;
   let posts = [];
@@ -37,13 +41,14 @@ exports.get = async (req, res) => {
 
     feed.forEach((f) => {
       if (f.metaPost) posts.push(f.metaPost);
-      console.log('title ', f.metaPost.title);
-      console.log('rank ', f.rank);
-      console.log('rank ', f.metaPost.rank);
-      console.log('rank ', f.inTimeline);
-      console.log('score ', f.metaPost.twitterScore);
-
+      // console.log('title ', f.metaPost.title);
+      // console.log('rank ', f.rank);
+      // console.log('metapost rank ', f.metaPost.rank);
+      // console.log('own ', f.inTimeline);
+      // console.log('seen ', f.metaPost.seenInFeedNumber);
+      // console.log('tw score ', f.metaPost.twitterScore);
     });
+
     res.status(200).json(posts);
   } catch (err) {
     handleError(res)(err);

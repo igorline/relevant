@@ -208,7 +208,7 @@ class PostInfo extends Component {
     // }
 
 
-    let user = post.user;
+    let user = post.user || post.twitterUser;
     if (user && !user.name) {
       user = {};
       user._id = post.user;
