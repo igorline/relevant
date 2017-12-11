@@ -70,7 +70,7 @@ let twitterCount = 0;
 //   avgTwitterScore
 // }
 
-async function computeRank(metaPost) {
+async function computeRank(metaPost, user) {
   // let rank = metaPost.twitterScore;
   let rank = metaPost.seenInFeedNumber * 4 + Math.log(metaPost.twitterScore + 1) * 5;
 
@@ -80,7 +80,7 @@ async function computeRank(metaPost) {
   console.log('personalize ', personalize);
 
   let newRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
-  let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(personalize * 0.7 + rank);
+  let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(personalize * 2 + rank);
   newRank = Math.round(newRank * 1000) / 1000;
   inFeedRank = Math.round(inFeedRank * 1000) / 1000;
 
@@ -128,7 +128,7 @@ async function updateRank() {
   }
 }
 
-// updateRank();
+updateRank();
 
 async function processTweet(tweet, user) {
   let originalTweet = tweet;
@@ -198,7 +198,7 @@ async function processTweet(tweet, user) {
     await post.save();
   }
 
-  let { newRank, inFeedRank } = await computeRank(metaPost);
+  let { newRank, inFeedRank } = await computeRank(metaPost, user);
 
   let feedObject = {
     post: post._id,
@@ -299,7 +299,7 @@ async function getUsers(userId) {
     let query = userId ? { _id: userId } : {};
     let users = await User.find(
       { twitterHandle: { $exists: true }, ...query },
-      'twitterAuthToken twitterAuthSecret twitterHandle lastTweetId'
+      'twitterAuthToken twitterAuthSecret twitterHandle lastTweetId relevance'
     );
 
     let treasury = await Treasury.findOne();
