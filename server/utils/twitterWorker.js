@@ -6,6 +6,8 @@ import * as proxyHelpers from '../api/post/html';
 import { text } from '../../app/utils';
 import * as postController from '../api/post/post.controller';
 import TwitterFeed from '../api/twitterFeed/twitterFeed.model';
+import Treasury from '../api/treasury/treasury.model';
+import { TWITTER_DECAY } from '../config/globalConstants';
 
 let requestAsync = promisify(request);
 
@@ -18,6 +20,10 @@ const queue = require('queue');
 
 let allUsers;
 
+// TwitterFeed.find({ user: 'balasan', inTimeline: true }).then(posts => {
+//   console.log(posts);
+// })
+
 // Post.find({ twitter: true }).sort('title').then(posts => {
 //   posts.forEach(p => {
 //     console.log('title ', p.title);
@@ -25,10 +31,17 @@ let allUsers;
 //   });
 // });
 
+// Post.find().then(posts => {
+//   posts.forEach(p => {
+//     p.upsertMetaPost();
+//   });
+// });
 
 // Post.find({ twitter: true }).remove().exec();
 // TwitterFeed.find({}).remove().exec();
-// Meta.find({ 'twitterCommentary.0': { $exists: true } }).remove().exec();
+// Meta.find({ twitter: true }).remove().exec();
+// Meta.find({ twitter: 'true' }).remove().exec();
+
 
 // User.find({ twitterId: { $exists: true } }).then(users => {
 //   users.map(u => {
@@ -39,7 +52,7 @@ let allUsers;
 
 
 let q = queue({
-  concurrency: 1,
+  concurrency: 5,
 });
 
 q.on('timeout', (next, job) => {
@@ -47,33 +60,56 @@ q.on('timeout', (next, job) => {
   next();
 });
 
-function computeRank(metaPost) {
+let avgTwitterScore = 0;
+let twitterCount = 0;
+
+// updateAvg() {
+//   avgTwitterScore
+// }
+
+async function computeRank(metaPost) {
   // let rank = metaPost.twitterScore;
-  let rank = metaPost.seenInFeedNumber * 2 + Math.log(metaPost.twitterScore + 1) * 5;
+  let rank = metaPost.seenInFeedNumber * 4 + Math.log(metaPost.twitterScore + 1) * 5;
+
+  avgTwitterScore = (rank + avgTwitterScore * twitterCount) / (twitterCount + 1);
+  twitterCount++;
+  let personalize = avgTwitterScore * 1;
+  console.log('personalize ', personalize);
+
   let newRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
-  let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(50 + rank);
+  let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(personalize * 0.7 + rank);
   newRank = Math.round(newRank * 1000) / 1000;
   inFeedRank = Math.round(inFeedRank * 1000) / 1000;
 
   // console.log(metaPost.latestTweet);
-  console.log(metaPost.title);
-  // console.log(metaPost.twitterScore);
-  console.log('rank ', rank);
-  console.log('own rank', rank + 50);
+  // console.log('time ', metaPost.latestTweet);
+  // console.log(metaPost.title);
+  // console.log('rank ', rank);
+  // console.log('own rank', rank + 50);
+  console.log('avgTwitterScore ', avgTwitterScore);
+  console.log('twitterCount ', twitterCount);
+
 
   return { newRank, inFeedRank };
 }
 
 async function updateRank() {
   try {
-    let metaPosts = await Meta.find({ 'twitterCommentary.0': { $exists: true } });
+    let treasury = await Treasury.findOne();
+
+    let now = new Date();
+    let decay = (now.getTime() - treasury.lastTwitterUpdate.getTime()) / TWITTER_DECAY;
+    avgTwitterScore = treasury.avgTwitterScore * (1 - Math.min(1, decay)) || 0;
+    twitterCount = treasury.twitterCount * (1 - Math.min(1, decay)) || 0;
+
+    let metaPosts = await Meta.find({ twitter: true });
     metaPosts.forEach(async metaPost => {
-      let { newRank, inFeedRank } = computeRank(metaPost);
-      console.log(metaPost.title)
-      console.log(newRank)
-      console.log(inFeedRank)
+      let { newRank, inFeedRank } = await computeRank(metaPost);
+      // console.log(metaPost.title);
+      // console.log(newRank);
+      // console.log(inFeedRank);
       await TwitterFeed.update(
-        { metaPost: metaPost._id, inTimeline: false },
+        { metaPost: metaPost._id, inTimeline: { $ne: true }},
         { rank: newRank },
         { upsert: false, multi: true }
       );
@@ -88,14 +124,15 @@ async function updateRank() {
   }
 }
 
-updateRank();
+// updateRank();
 
 async function processTweet(tweet, user) {
-
   let originalTweet = tweet;
   if (tweet.retweeted_status) {
     tweet = tweet.retweeted_status;
   }
+
+  console.log('processing tweet');
 
   if (!tweet.entities.urls.length || !tweet.entities.urls[0].url) {
     return;
@@ -108,6 +145,7 @@ async function processTweet(tweet, user) {
   // check if tw post exists
   // if it does, update feed and increment 'seen in feed counter'
   let post = await Post.findOne({ twitter: true, twitterId: tweet.id });
+
   let metaPost;
   if (post) {
     metaPost = await Meta.findOne({ _id: post.metaPost });
@@ -116,6 +154,10 @@ async function processTweet(tweet, user) {
   } else {
     let processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);
 
+    let dupPost = await Post.findOne({ twitterUser: tweet.user.id, link: processed.url });
+    if (dupPost) return;
+    // console.log(tweet.full_text);
+    // console.log(tweet.entities.urls);
 
     let tags = tweet.entities.hashtags.map(t => t.text);
     post = new Post({
@@ -142,8 +184,7 @@ async function processTweet(tweet, user) {
       twitterRetweets: tweet.retweet_count,
       twitterFavs: tweet.favorite_count,
       // TODO do we know user? use relevance!
-      relevance: tweet.retweet_count + tweet.favorite_count,
-      rankRelevance: tweet.retweet_count + tweet.favorite_count,
+      twitterScore: tweet.retweet_count + tweet.favorite_count,
       twitter: true,
       category: [],
     });
@@ -153,7 +194,7 @@ async function processTweet(tweet, user) {
     await post.save();
   }
 
-  let { newRank, inFeedRank } = computeRank(metaPost);
+  let { newRank, inFeedRank } = await computeRank(metaPost);
 
   let feedObject = {
     post: post._id,
@@ -185,7 +226,6 @@ async function processTweet(tweet, user) {
     { ...feedObject, inTimeline: true, rank: inFeedRank },
     { upsert: true, new: true }
   );
-  // console.log(userFeed);
 
   // update rank of existing posts
   await TwitterFeed.update(
@@ -213,8 +253,29 @@ async function getUserFeed(user) {
     access_token_secret: user.twitterAuthSecret
   });
 
-  const params = { screen_name: user.twitterHandle, exclude_replies: true, tweet_mode: 'extended' };
+  // console.log(user.lastTweetId.toString());
+
+  const params = {
+    since_id: user.lastTweetId.toString(),
+    screen_name: user.twitterHandle,
+    exclude_replies: true,
+    tweet_mode: 'extended'
+  };
   let feed = await client.get('statuses/home_timeline', params);
+
+  if (feed && feed.length) {
+    // let lastId = feed[feed.length - 1].id;
+    let lastId = feed[0].id;
+
+    console.log('last id ', lastId);
+
+    user.lastTweetId = lastId;
+    user = await user.save();
+    console.log(user.lastTweetId);
+
+  }
+  if (!feed) feed = [];
+
   feed.map(tweet => {
     q.push(async cb => {
       try {
@@ -229,12 +290,24 @@ async function getUserFeed(user) {
 }
 
 
-async function getUsers() {
+async function getUsers(userId) {
   try {
+    let query = userId ? { _id: userId } : null;
     let users = await User.find(
-      { twitterHandle: { $exists: true } },
-      'twitterAuthToken twitterAuthSecret twitterHandle'
+      { twitterHandle: { $exists: true }, query },
+      'twitterAuthToken twitterAuthSecret twitterHandle lastTweetId'
     );
+
+    let treasury = await Treasury.findOne();
+
+    let now = new Date();
+    let decay = (now.getTime() - treasury.lastTwitterUpdate.getTime()) / TWITTER_DECAY;
+
+    avgTwitterScore = treasury.avgTwitterScore * (1 - Math.min(1, decay)) || 0;
+    twitterCount = treasury.twitterCount * (1 - Math.min(1, decay)) || 0;
+
+    console.log('avg score from db ', avgTwitterScore);
+    console.log('avg count from db ', twitterCount);
 
     allUsers = users.map(u => u._id);
 
@@ -248,6 +321,15 @@ async function getUsers() {
 
     await Promise.all(processedUsers);
 
+    treasury.avgTwitterScore = avgTwitterScore;
+    treasury.twitterCount = twitterCount;
+    treasury.lastTwitterUpdate = new Date();
+
+    console.log('new avg score from db ', avgTwitterScore);
+    console.log('new count from db ', twitterCount);
+
+    await treasury.save();
+
     q.start((queErr, results) => {
       if (queErr) return console.log(queErr);
       return console.log('finished processing tweets');
@@ -259,4 +341,7 @@ async function getUsers() {
 }
 
 // getUsers();
+module.exports = {
+  updateTwitterPosts: getUsers
+};
 

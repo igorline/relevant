@@ -391,8 +391,8 @@ class PostButtons extends Component {
     if (post.user && post.user._id === this.props.auth.user._id) {
       myPost = true;
     }
-    if (post && post.user && this.props.auth.user) {
-      if (post.user._id !== this.props.auth.user._id) {
+    if (post && this.props.auth.user) {
+      if (!post.user || post.user._id !== this.props.auth.user._id) {
         if (!this.props.myPostInv) {
           investable = true;
         } else {
@@ -589,6 +589,9 @@ class PostButtons extends Component {
       </TouchableOpacity>
     );
 
+    let metaPost = this.props.metaPost;
+    let twitter = (metaPost && metaPost.twitter === true);
+
     return (<View style={styles.postButtonsContainer}>
       <View style={styles.postButtons}>
         <View
@@ -601,8 +604,8 @@ class PostButtons extends Component {
 
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           {post.link ? newCommentary : null}
-          {comments}
-          {repost}
+          {twitter ? null : comments}
+          {twitter ? null : repost}
         </View>
 
         <InvestModal

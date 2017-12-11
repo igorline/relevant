@@ -62,8 +62,8 @@ async function allocateRewards() {
 async function distributeRewards() {
   let treasury = await Treasury.findOne({});
   let now = new Date();
-  let posts = await Post.find({ twitter: false, paidOut: false, payoutTime: { $lte: now } });
-  let estimatePosts = await Post.find({ twitter: false, paidOut: false, payoutTime: { $gt: now } });
+  let posts = await Post.find({ twitter: { $ne: true }, paidOut: false, payoutTime: { $lte: now } });
+  let estimatePosts = await Post.find({ twitter: { $ne: true }, paidOut: false, payoutTime: { $gt: now } });
 
   // decay curren reward shares
   let decay = (now.getTime() - treasury.lastRewardFundUpdate.getTime()) / SHARE_DECAY;

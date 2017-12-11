@@ -180,7 +180,7 @@ PostSchema.pre('remove', async function (next) {
 PostSchema.statics.events = PostSchemaEvents;
 
 PostSchema.methods.updateClient = function (user) {
-  if (this.user._id) this.user = this.user._id;
+  if (this.user && this.user._id) this.user = this.user._id;
   let postNote = {
     _id: user ? user._id : null,
     type: 'UPDATE_POST',
@@ -220,13 +220,15 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
         meta.newCommentary = this._id;
         meta.commentary.push(this);
         meta.latestPost = this.postDate;
+        meta.twitter = false;
         // meta.url = this.post.link;
       } else {
         meta.latestTweet = this.postDate;
         meta.tweetCount++;
-        meta.twitterCommentary.push(this);
+        meta.commentary.push(this);
+        // meta.twitterCommentary.push(this);
         meta.seenInFeedNumber++;
-        meta.twitterScore += this.relevance;
+        meta.twitterScore = Math.max(meta.twitterScore, this.twitterScore);
       }
 
       if (this.image) {
@@ -247,7 +249,9 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
         articleAuthor: this.articleAuthor,
         shortText: this.shortText,
         domain: this.domain,
-        commentary: this.twitter ? null : [this._id],
+        commentary: [this._id],
+
+        // commentary: this.twitter ? null : [this._id],
         title: this.title,
         description: this.description,
         image: this.image,
@@ -258,9 +262,10 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
           ...meta,
           tweetCount: 1,
           seenInFeedNumber: 1,
-          twitterCommentary: [this._id],
+          // twitterCommentary: [this._id],
           latestTweet: this.postDate,
-          twitterScore: this.relevance,
+          twitterScore: this.twitterScore,
+          twitter: true,
         };
       }
       let metaPost = new MetaPost(meta);

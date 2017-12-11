@@ -15,7 +15,7 @@ import Treasury from './api/treasury/treasury.model';
 import economy from './utils/economy.js';
 import { PAYOUT_FREQUENCY } from './config/globalConstants';
 
-require('./utils/twitterWorker');
+const TwitterWorker = require('./utils/twitterWorker');
 
 
 const extractor = require('unfluff');
@@ -421,9 +421,15 @@ function startRewards() {
   updateRewards();
 }
 
+function startTwitterUpdate() {
+  setInterval( TwitterWorker.updateTwitterPosts, 20 * 60 * 1000);
+  TwitterWorker.updateTwitterPosts();
+}
+
 
 // updateUserStats();
 // startStatsUpdate();
+startTwitterUpdate();
 
 if (process.env.NODE_ENV === 'production') {
   updateUserStats();
@@ -434,6 +440,11 @@ if (process.env.NODE_ENV === 'production') {
     startStatsUpdate();
     startRewards();
   }, minutesTillHour * 60 * 1000);
+
+  setTimeout(() => {
+    startTwitterUpdate();
+  }, minutesTillHour * 60 * 1000 + 10);
+
 
   setTimeout(() => {
     startBasicIncomeUpdate();

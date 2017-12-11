@@ -309,7 +309,6 @@ exports.generatePreview = async (body, uri) => {
     } catch (err) {
       console.log(err);
     }
-    console.log('readability author ', article.byline);
     if (!author.length && article.byline) {
       let by = article.byline.split(/\n|\,|•/)
       .map(a => a.replace(/by|by:\s/i, '').trim())
@@ -328,7 +327,6 @@ exports.generatePreview = async (body, uri) => {
   } else {
     // console.log('couldn\'t parse url ', url);
   }
-  console.log('final author ', author);
 
   // console.log('author ', article.byline);
 
@@ -368,7 +366,7 @@ exports.generatePreview = async (body, uri) => {
     console.log('url parse incomplete');
     // console.log(data);
     // console.log(uri);
-    console.log($('head').html());
+    // console.log($('head').html());
   }
 
   // console.log(obj);
