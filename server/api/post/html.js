@@ -381,6 +381,8 @@ exports.generatePreview = async (body, uri, reqUrl) => {
   // console.log(body);
   $ = null;
   body = null;
+  article = null;
+  data = null;
 
   return {
     redirect: false,

@@ -156,7 +156,7 @@ async function processTweet(tweet, user) {
   if (post) {
     metaPost = await Meta.findOne({ _id: post.metaPost });
     if (metaPost) metaPost.seenInFeedNumber += 1;
-    await metaPost.save();
+    // await metaPost.save();
   } else {
     let processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);
 
@@ -164,6 +164,10 @@ async function processTweet(tweet, user) {
     if (dupPost) return;
     // console.log(tweet.full_text);
     // console.log(tweet.entities.urls);
+    // 
+    let body = tweet.full_text
+    .replace(new RegExp(tweet.entities.urls[0].url, 'g'), '')
+    .replace('&amp;', '&');
 
     let tags = tweet.entities.hashtags.map(t => t.text);
     post = new Post({
@@ -175,7 +179,7 @@ async function processTweet(tweet, user) {
       domain: processed.domain,
       // TODO we are not using this
       shortText: processed.shortText,
-      body: tweet.full_text.replace(new RegExp(tweet.entities.urls[0].url, 'g'), ''),
+      body,
       keywords: processed.keywords,
       tags,
       postDate: originalTweet.created_at,
@@ -198,6 +202,12 @@ async function processTweet(tweet, user) {
     // console.log(post);
     metaPost = await post.upsertMetaPost();
     post.metaPost = metaPost._id;
+
+    var heapUsed = process.memoryUsage().heapUsed;
+    let mb = Math.round(100 * heapUsed / 1048576) / 100
+    console.log("Program is using " + mb + " mb of Heap.")
+
+    processed = null;
     await post.save();
   }
 
