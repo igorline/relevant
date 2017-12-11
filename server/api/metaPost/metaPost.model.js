@@ -43,7 +43,8 @@ let MetaPostSchema = new Schema({
   // TODO this could get big - should be separate table
   seenInFeedNumber: { type: Number, default: 0 },
   latestTweet: Date,
-  twitter: { type: Boolean, default: false }
+  twitter: { type: Boolean, default: false },
+  feedRelevance: Number,
 
 }, {
   timestamps: true,

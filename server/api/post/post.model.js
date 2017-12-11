@@ -79,6 +79,7 @@ let PostSchema = new Schema({
   twitterUser: Number,
   twitterId: Number,
   twitterScore: Number,
+  feedRelevance: Number,
 }, {
   timestamps: true,
   toJSON: { virtuals: true }
@@ -229,6 +230,7 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
         // meta.twitterCommentary.push(this);
         meta.seenInFeedNumber++;
         meta.twitterScore = Math.max(meta.twitterScore, this.twitterScore);
+        meta.feedRelevance = Math.max(meta.feedRelevance, this.feedRelevance);
       }
 
       if (this.image) {
@@ -265,6 +267,7 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
           // twitterCommentary: [this._id],
           latestTweet: this.postDate,
           twitterScore: this.twitterScore,
+          feedRelevance: this.feedRelevance,
           twitter: true,
         };
       }
