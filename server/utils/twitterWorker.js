@@ -42,7 +42,8 @@ let allUsers;
 // Post.find({ twitter: true }).remove().exec();
 // TwitterFeed.find({}).remove().exec();
 // Meta.find({ twitter: true }).remove().exec();
-// Meta.find({ twitter: 'true' }).remove().exec();
+// Meta.find({ twitterCommentary: { $exists: true } })
+// .remove().exec();
 
 
 // User.find({ twitterId: { $exists: true } }).then(users => {
@@ -100,7 +101,8 @@ async function updateRank() {
     let treasury = await Treasury.findOne();
 
     let now = new Date();
-    let decay = (now.getTime() - treasury.lastTwitterUpdate.getTime()) / TWITTER_DECAY;
+    let lastUpdate = treasury.lastTwitterUpdate ? treasury.lastTwitterUpdate.getTime() : 0;
+    let decay = (now.getTime() - lastUpdate) / TWITTER_DECAY;
     avgTwitterScore = treasury.avgTwitterScore * (1 - Math.min(1, decay)) || 0;
     twitterCount = treasury.twitterCount * (1 - Math.min(1, decay)) || 0;
 
@@ -303,7 +305,8 @@ async function getUsers(userId) {
     let treasury = await Treasury.findOne();
 
     let now = new Date();
-    let decay = (now.getTime() - treasury.lastTwitterUpdate.getTime()) / TWITTER_DECAY;
+    let lastUpdate = treasury.lastTwitterUpdate ? treasury.lastTwitterUpdate.getTime : 0;
+    let decay = (now.getTime() - lastUpdate) / TWITTER_DECAY;
 
     avgTwitterScore = treasury.avgTwitterScore * (1 - Math.min(1, decay)) || 0;
     twitterCount = treasury.twitterCount * (1 - Math.min(1, decay)) || 0;
@@ -343,7 +346,7 @@ async function getUsers(userId) {
 }
 
 
-// getUsers('4REALGLOBAL');
+// getUsers();
 module.exports = {
   updateTwitterPosts: getUsers
 };
