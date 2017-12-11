@@ -388,7 +388,6 @@ class PostButtons extends Component {
     let commentString = '';
     let myVote;
     let myPost = false;
-    // if (!post.user) console.log('user undefined ', post.user);
     if (post.user && post.user._id === this.props.auth.user._id) {
       myPost = true;
     }
