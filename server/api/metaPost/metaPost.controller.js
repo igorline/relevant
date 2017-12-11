@@ -109,7 +109,7 @@ exports.index = async (req, res) => {
   let sort = req.query.sort || null;
   let category = req.query.category || null;
   if (category === '') category = null;
-  let query = { 'commentary.0' : { $exists: true }};
+  let query = { twitter: { $ne: true } };
   let tagsArr = null;
   let sortQuery;
   let commentarySort = { postDate: -1 };
@@ -125,7 +125,7 @@ exports.index = async (req, res) => {
   try {
     if (tags) {
       tagsArr = tags.split(',');
-      query = { 'commentary.0' : { $exists: true }, $or: [{ tags: { $in: tagsArr } }, { categories: { $in: tagsArr } }] };
+      query = { twitter: { $ne: true }, $or: [{ tags: { $in: tagsArr } }, { categories: { $in: tagsArr } }] };
     }
 
     posts = await MetaPost.find(query)
@@ -154,7 +154,6 @@ exports.index = async (req, res) => {
     handleError(res, err);
   }
 
-  // console.log('sending ', posts.length, ' metaPosts');
   res.status(200).json(posts);
 
   // TODO worker thread
