@@ -5,6 +5,7 @@ const { promisify } = require('util');
 const User = require('../../api/user/user.model');
 const auth = require('../auth.service');
 const Invite = require('../../api/invites/invite.model');
+const TwitterWorker = require('../../utils/twitterWorker');
 
 // User.findOne({ twitterHandle: '4REALGLOBAL' })
 // .then(user => { console.log(user); user.remove(); });
@@ -80,14 +81,14 @@ export async function addTwitterProfile(param) {
 
 exports.login = async (req, res, next) => {
   try {
-    if (!req.body.userID) throw new Error('missing twitter id');
+    let profile = req.body.profile;
+    if (!profile.userID) throw new Error('missing twitter id');
     let relUser = req.user;
 
     let user = await User.findOne(
-      { twitterId: parseInt(req.body.userID, 10) },
+      { twitterId: parseInt(profile.userID, 10) },
       ['+twitterAuthToken', '+twitterAuthSecret']
     );
-    let profile;
 
     if (user && relUser && relUser._id !== user._id) {
       throw new Error('user with this twitter handle already exists');
@@ -100,17 +101,19 @@ exports.login = async (req, res, next) => {
     if (user) {
       // console.log('found user! ', user);
       // check that we have auth
-      profile = await getProfile(req.body);
+      profile = await getProfile(profile);
       if (!profile) throw new Error('missing twitter profile');
 
       // connect twitter for logged in user;
       if (relUser) {
-        user = await addTwitterProfile({ user, profile, twitterAuth: req.body });
+        user = await addTwitterProfile({ user, profile, twitterAuth: req.body.profile });
+        // async fetch posts
+        TwitterWorker.updateTwitterPosts(user._id);
       }
 
-      if (user.twitterAuthToken !== req.body.authToken
+      if (user.twitterAuthToken !== req.body.profile.authToken
         ||
-        user.twitterAuthSecret !== req.body.authTokenSecret) {
+        user.twitterAuthSecret !== req.body.profile.authTokenSecret) {
         console.log('tw auth not equal!, need to update');
         user.twitterAuthToken = req.body.authToken;
         user.twitterAuthSecret = req.body.authSecret;
@@ -121,24 +124,28 @@ exports.login = async (req, res, next) => {
     }
 
     if (signup) {
-      profile = await getProfile(req.body);
-      // console.log(profile);
+      profile = await getProfile(req.body.profile);
       // check invite
+      if (!req.body.invite) throw new Error('No user found, please make sure you sign up first');
       let invite = await Invite.checkInvite(req.body.invite);
 
-      if (req.body.userName === 'everyone') {
+      if (req.body.profile.userName === 'everyone') {
         return res.json(200, { needHandle: true });
       }
 
       user = new User({
-        _id: req.body.userName,
+        _id: req.body.profile.userName,
         confirmed: true,
         provider: 'twitter',
         role: 'user',
       });
 
-      user = await addTwitterProfile({ user, profile, twitterAuth: req.body });
+      user = await addTwitterProfile({ user, profile, twitterAuth: req.body.profile });
       user = await user.initialCoins();
+
+      // async fetch tweets
+      await TwitterWorker.updateTwitterPosts(user._id);
+
       await invite.registered(user);
 
       await user.save();

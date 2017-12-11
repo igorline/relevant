@@ -20,6 +20,8 @@ const queue = require('queue');
 
 let allUsers;
 
+// User.find({ _id: '4REALGLOBAL' }).then(u => console.log(u));
+
 // TwitterFeed.find({ user: 'balasan', inTimeline: true }).then(posts => {
 //   console.log(posts);
 // })
@@ -256,7 +258,7 @@ async function getUserFeed(user) {
   // console.log(user.lastTweetId.toString());
 
   const params = {
-    since_id: user.lastTweetId.toString(),
+    since_id: user.lastTweetId ? user.lastTweetId.toString() : undefined,
     screen_name: user.twitterHandle,
     exclude_replies: true,
     tweet_mode: 'extended'
@@ -292,9 +294,9 @@ async function getUserFeed(user) {
 
 async function getUsers(userId) {
   try {
-    let query = userId ? { _id: userId } : null;
+    let query = userId ? { _id: userId } : {};
     let users = await User.find(
-      { twitterHandle: { $exists: true }, query },
+      { twitterHandle: { $exists: true }, ...query },
       'twitterAuthToken twitterAuthSecret twitterHandle lastTweetId'
     );
 
@@ -340,7 +342,8 @@ async function getUsers(userId) {
   }
 }
 
-// getUsers();
+
+// getUsers('4REALGLOBAL');
 module.exports = {
   updateTwitterPosts: getUsers
 };

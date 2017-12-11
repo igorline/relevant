@@ -37,13 +37,14 @@ export default class TwitterButton extends Component {
   // }
 
   _twitterSignIn() {
+    // return console.log(this.props);
     RNTwitterSignIn.init(Constants.TWITTER_COMSUMER_KEY, Constants.TWITTER_CONSUMER_SECRET);
     RNTwitterSignIn.logIn()
     .then(loginData => {
       const { authToken, authTokenSecret } = loginData;
       if (authToken && authTokenSecret) {
         this.props.actions.setTwitter(loginData);
-        return this.props.actions.twitterAuth(loginData);
+        return this.props.actions.twitterAuth(loginData, this.props.admin ? this.props.admin.currentInvite : null);
       }
       return null;
     }).catch(error => {
@@ -95,6 +96,7 @@ TwitterButton.propTypes = {
   actions: PropTypes.object,
   type: PropTypes.string, // login or signup?
   children: PropTypes.string,
+  admin: PropTypes.object,
 };
 
 
