@@ -11,7 +11,7 @@ import { TWITTER_DECAY } from '../config/globalConstants';
 
 let requestAsync = promisify(request);
 
-const TENTH_LIFE = 1 * 12 * 60 * 60 * 1000;
+const TENTH_LIFE = 1 * 6 * 60 * 60 * 1000;
 
 
 const Twitter = require('twitter');
@@ -73,6 +73,7 @@ let twitterCount = 0;
 async function computeRank(metaPost, user) {
   // let rank = metaPost.twitterScore;
   let rank = metaPost.seenInFeedNumber * 4 + Math.log(metaPost.twitterScore + 1) * 5;
+  // rank *= metaPost.feedRelevance ? Math.log(metaPost.feedRelevance + 1) : 1;
 
   avgTwitterScore = (rank + avgTwitterScore * twitterCount) / (twitterCount + 1);
   twitterCount++;
@@ -80,7 +81,7 @@ async function computeRank(metaPost, user) {
   console.log('personalize ', personalize);
 
   let newRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
-  let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(personalize * 2 + rank);
+  let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(personalize * 3 + rank);
   newRank = Math.round(newRank * 1000) / 1000;
   inFeedRank = Math.round(inFeedRank * 1000) / 1000;
 
@@ -103,6 +104,7 @@ async function updateRank() {
     let now = new Date();
     let lastUpdate = treasury.lastTwitterUpdate ? treasury.lastTwitterUpdate.getTime() : 0;
     let decay = (now.getTime() - lastUpdate) / TWITTER_DECAY;
+
     avgTwitterScore = treasury.avgTwitterScore * (1 - Math.min(1, decay)) || 0;
     twitterCount = treasury.twitterCount * (1 - Math.min(1, decay)) || 0;
 
@@ -191,6 +193,7 @@ async function processTweet(tweet, user) {
       twitterScore: tweet.retweet_count + tweet.favorite_count,
       twitter: true,
       category: [],
+      feedRelevance: user.relevance,
     });
     // console.log(post);
     metaPost = await post.upsertMetaPost();
@@ -307,6 +310,7 @@ async function getUsers(userId) {
     let now = new Date();
     let lastUpdate = treasury.lastTwitterUpdate ? treasury.lastTwitterUpdate.getTime : 0;
     let decay = (now.getTime() - lastUpdate) / TWITTER_DECAY;
+    console.log(decay);
 
     avgTwitterScore = treasury.avgTwitterScore * (1 - Math.min(1, decay)) || 0;
     twitterCount = treasury.twitterCount * (1 - Math.min(1, decay)) || 0;
@@ -326,18 +330,25 @@ async function getUsers(userId) {
 
     await Promise.all(processedUsers);
 
-    treasury.avgTwitterScore = avgTwitterScore;
-    treasury.twitterCount = twitterCount;
-    treasury.lastTwitterUpdate = new Date();
 
-    console.log('new avg score from db ', avgTwitterScore);
-    console.log('new count from db ', twitterCount);
 
-    await treasury.save();
+    q.start(async (queErr, results) => {
+      try {
+        if (queErr) return console.log(queErr);
 
-    q.start((queErr, results) => {
-      if (queErr) return console.log(queErr);
-      return console.log('finished processing tweets');
+        treasury.twitterCount = twitterCount;
+        treasury.avgTwitterScore = avgTwitterScore;
+        treasury.lastTwitterUpdate = new Date();
+
+        console.log('new avg score from db ', avgTwitterScore);
+        console.log('new count from db ', twitterCount);
+
+        await treasury.save();
+
+        return console.log('finished processing tweets');
+      } catch (err) {
+        console.log(err);
+      }
     });
 
   } catch (err) {
