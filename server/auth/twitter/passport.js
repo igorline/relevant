@@ -6,7 +6,7 @@ const User = require('../../api/user/user.model');
 const auth = require('../auth.service');
 const Invite = require('../../api/invites/invite.model');
 
-// User.findOne({ twitterHandle: 'relevantfeed' })
+// User.findOne({ twitterHandle: '4REALGLOBAL' })
 // .then(user => { console.log(user); user.remove(); });
 
 export async function getProfile(props) {
@@ -73,6 +73,7 @@ export async function addTwitterProfile(param) {
   user.twitterAuthToken = twitterAuth.authToken;
   user.twitterAuthSecret = twitterAuth.authTokenSecret;
 
+  // console.log(user);
   user = await user.save();
   return user;
 }
@@ -80,6 +81,7 @@ export async function addTwitterProfile(param) {
 exports.login = async (req, res, next) => {
   try {
     if (!req.body.userID) throw new Error('missing twitter id');
+    let relUser = req.user;
 
     let user = await User.findOne(
       { twitterId: parseInt(req.body.userID, 10) },
@@ -87,12 +89,24 @@ exports.login = async (req, res, next) => {
     );
     let profile;
 
+    if (user && relUser && relUser._id !== user._id) {
+      throw new Error('user with this twitter handle already exists');
+    }
+
+    if (relUser) user = relUser;
+
+    let signup = !user;
+
     if (user) {
       // console.log('found user! ', user);
-
       // check that we have auth
       profile = await getProfile(req.body);
       if (!profile) throw new Error('missing twitter profile');
+
+      // connect twitter for logged in user;
+      if (relUser) {
+        user = await addTwitterProfile({ user, profile, twitterAuth: req.body });
+      }
 
       if (user.twitterAuthToken !== req.body.authToken
         ||
@@ -106,7 +120,7 @@ exports.login = async (req, res, next) => {
       return res.json({ token, user });
     }
 
-    if (req.body.signup) {
+    if (signup) {
       profile = await getProfile(req.body);
       // console.log(profile);
       // check invite
@@ -131,8 +145,10 @@ exports.login = async (req, res, next) => {
       let token = auth.signToken(user._id, user.role);
       return res.json({ token, user });
     }
-    return res.json(200, { twitter: true });
+
+    // return res.json(200, { twitter: true });
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };

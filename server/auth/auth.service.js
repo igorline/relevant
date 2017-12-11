@@ -28,10 +28,14 @@ function blocked(req, res) {
 function currentUser(req, res) {
   return compose()
   .use((req, res, next) => {
-    let token = req.cookies.token;
-    if (token) {
-      req.headers.authorization = 'Bearer ' + token;
+    // let token = req.cookies.token;
+    // if (token) {
+    //   req.headers.authorization = 'Bearer ' + token;
+    // }
+    if (req.query && req.query.hasOwnProperty('access_token')) {
+      req.headers.authorization = 'Bearer ' + req.query.access_token;
     }
+    console.log('user auth');
     validateJwt(req, res, (err, decoded) => {
       if (err || !req.user) return next();
       User.findById(req.user._id, (err, user) => {

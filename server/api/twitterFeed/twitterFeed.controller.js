@@ -1,5 +1,5 @@
 import Feed from './twitterFeed.model';
-import MetaPost from '../metaPost/metaPost.model';
+import Post from '../post/post.model';
 
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
@@ -8,7 +8,6 @@ function handleError(res, statusCode) {
     res.status(statusCode).send(err);
   };
 }
-
 
 exports.get = async (req, res) => {
   let user = req.user._id;
@@ -19,6 +18,9 @@ exports.get = async (req, res) => {
 
   // let query = { user: { $in : [user, '_common_Feed_'] } };
   let query = { user };
+  if (!req.user.twitterId) query = { user: '_common_Feed_' };
+
+  console.log(query);
 
   if (tag) query = { tags: tag, user };
   let feed;
@@ -34,19 +36,19 @@ exports.get = async (req, res) => {
       options: { sort: { relevance: -1 } },
       populate: [
         {
-          path: 'twitterCommentary',
+          path: 'commentary',
         },
       ]
     });
 
     feed.forEach((f) => {
       if (f.metaPost) posts.push(f.metaPost);
-      // console.log('title ', f.metaPost.title);
-      // console.log('rank ', f.rank);
-      // console.log('metapost rank ', f.metaPost.rank);
-      // console.log('own ', f.inTimeline);
-      // console.log('seen ', f.metaPost.seenInFeedNumber);
-      // console.log('tw score ', f.metaPost.twitterScore);
+      console.log('title ', f.metaPost.title);
+      console.log('rank ', f.rank);
+      console.log('metapost rank ', f.metaPost.rank);
+      console.log('own ', f.inTimeline);
+      console.log('seen ', f.metaPost.seenInFeedNumber);
+      console.log('tw score ', f.metaPost.twitterScore);
     });
 
     res.status(200).json(posts);
@@ -55,16 +57,16 @@ exports.get = async (req, res) => {
   }
 
   // TODO worker thread?
-  // if (user) {
-  //   let postIds = [];
-  //   posts.forEach(post => {
-  //     postIds.push(post._id || post);
-  //     if (post.repost && post.repost.post) {
-  //       postIds.push(post.repost.post._id);
-  //     }
-  //   });
-  //   Post.sendOutInvestInfo(postIds, user);
-  // }
+  // TODO worker thread
+  if (user) {
+    let postIds = [];
+    posts.forEach(meta => {
+      meta.commentary.forEach(post => {
+        postIds.push(post._id || post);
+      });
+    });
+    Post.sendOutInvestInfo(postIds, user);
+  }
 };
 
 exports.unread = (req, res) => {

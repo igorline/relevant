@@ -72,7 +72,8 @@ const UserSchema = new Schema({
   twitterEmail: { type: String, select: false },
   twitterAuthToken: { type: String, select: false },
   twitterAuthSecret: { type: String, select: false },
-  twitterId: { type: Number, unique: true, index: true, sparse: true }
+  twitterId: { type: Number, unique: true, index: true, sparse: true },
+  lastTweetId: { type: Number },
 }, {
   timestamps: true,
 });

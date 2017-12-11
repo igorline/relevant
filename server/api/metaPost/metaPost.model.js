@@ -43,6 +43,7 @@ let MetaPostSchema = new Schema({
   // TODO this could get big - should be separate table
   seenInFeedNumber: { type: Number, default: 0 },
   latestTweet: Date,
+  twitter: { type: Boolean, default: false }
 
 }, {
   timestamps: true,
@@ -50,12 +51,12 @@ let MetaPostSchema = new Schema({
 
 MetaPostSchema.index({ url: 1 });
 MetaPostSchema.index({ rank: 1 });
-MetaPostSchema.index({ latestPost: 1 });
+MetaPostSchema.index({ twitter: 1 });
 MetaPostSchema.index({ latestPost: 1 });
 MetaPostSchema.index({ latestPost: 1, tags: 1 });
 MetaPostSchema.index({ rank: 1, tags: 1 });
 
-MetaPostSchema.statics.updateRank = async function (_id) {
+MetaPostSchema.statics.updateRank = async function (_id, twitter) {
   let meta;
   try {
     meta = await this.findOne({ _id })
@@ -67,6 +68,10 @@ MetaPostSchema.statics.updateRank = async function (_id) {
     let highestRank = meta.commentary && meta.commentary.length ? meta.commentary[0].rank : 0;
     if (!meta.commentary || !meta.commentary.length) {
       // console.log(meta);
+    }
+    if (twitter && meta.twitter) {
+      meta.twitter = false;
+      meta.latestPost = new Date();
     }
     meta.rank = highestRank;
     meta = await meta.save();

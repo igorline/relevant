@@ -3,6 +3,7 @@ import {
   View,
   Alert
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as navigationActions from '../../actions/navigation.actions';
@@ -76,6 +77,7 @@ class Tabs extends Component {
 
       this.props.actions.changeTab(key);
     }
+    return null;
   }
 
   initNavView(key) {
@@ -123,6 +125,15 @@ class Tabs extends Component {
     );
   }
 }
+
+Tabs.propTypes = {
+  showActionSheet: PropTypes.func,
+  actions: PropTypes.object,
+  auth: PropTypes.object,
+  navigation: PropTypes.object,
+  notif: PropTypes.object,
+  feedUnread: PropTypes.number
+};
 
 function mapStateToProps(state) {
   return {

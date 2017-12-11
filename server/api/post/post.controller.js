@@ -383,7 +383,7 @@ exports.previewDataAsync = async previewUrl => {
       gzip: true,
       headers: getHeader(_url),
       rejectUnauthorized: false,
-      timeout: 10000,
+      timeout: 20000,
     });
 
     let uri = response.request.uri.href;

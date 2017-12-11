@@ -27,23 +27,14 @@ export default class TwitterButton extends Component {
     this.state = {
       loggedIn: false
     };
-    this.signUp = this.signUp.bind(this);
+    // this.signUp = this.signUp.bind(this);
   }
 
-  signUp(loginData) {
-    loginData.signup = true;
-    loginData.invite = this.props.auth.currentInvite;
-    this.props.actions.twitterAuth(loginData);
-
-    // this.actions.checkUser(loginData.userName, 'name')
-    // .then(ok => {
-    //   if (ok) {
-    //     return this.props.actions.twitterAuth(loginData);
-    //   } else {
-    //     Alert.alert;
-    //   }
-    // });
-  }
+  // signUp(loginData) {
+  //   loginData.signup = true;
+  //   loginData.invite = this.props.auth.currentInvite;
+  //   this.props.actions.twitterAuth(loginData);
+  // }
 
   _twitterSignIn() {
     RNTwitterSignIn.init(Constants.TWITTER_COMSUMER_KEY, Constants.TWITTER_CONSUMER_SECRET);
@@ -52,12 +43,7 @@ export default class TwitterButton extends Component {
       const { authToken, authTokenSecret } = loginData;
       if (authToken && authTokenSecret) {
         this.props.actions.setTwitter(loginData);
-        // if (this.props.type === 'signup') {
-        //   return this.signup(loginData);
-        // }
-        // if (this.props.type !== 'signup') {
-          return this.props.actions.twitterAuth(loginData);
-        // }
+        return this.props.actions.twitterAuth(loginData);
       }
       return null;
     }).catch(error => {
@@ -68,6 +54,7 @@ export default class TwitterButton extends Component {
   render() {
     let text = this.props.type === 'signup' ? 'Sign up' : 'Sign In';
     text += ' with Twitter';
+    if (this.props.children) text = this.props.children;
     const isLoggedIn = this.props.auth.twitter;
     let connected;
     if (isLoggedIn && !this.props.type === 'signup') {
@@ -107,7 +94,7 @@ TwitterButton.propTypes = {
   auth: PropTypes.object,
   actions: PropTypes.object,
   type: PropTypes.string, // login or signup?
-  // onLogin: PropTypes.func,
+  children: PropTypes.string,
 };
 
 

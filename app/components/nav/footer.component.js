@@ -5,7 +5,6 @@ import {
   View,
   Image,
   TouchableHighlight,
-  PushNotificationIOS,
   Platform
 } from 'react-native';
 import PushNotification from 'react-native-push-notification';
@@ -42,7 +41,7 @@ export default class Footer extends Component {
     let active = tab.key === currentTab.key;
     let activeText;
     if (tab.key === 'activity' && this.props.notif.count) badge = this.props.notif.count;
-    if (tab.key === 'discover' && this.props.feedUnread) badge = this.props.feedUnread;
+    // if (tab.key === 'discover' && this.props.feedUnread) badge = this.props.feedUnread;
 
     let fontAdjust;
     if (tab.title === 'Stats' && Platform.OS === 'ios') {

@@ -61,6 +61,7 @@ export default class Commentary extends Component {
       if (repost.user && this.props.users[repost.user]) {
         repost.user = this.props.users[repost.user];
       }
+
       repostEl = (
         <View style={{ marginBottom: 0 }}>
           <PostInfo

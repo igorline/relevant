@@ -13,6 +13,7 @@ const initialState = {
     feed: false,
     top: false,
     new: false,
+    twitterFeed: false,
     userPosts: false,
     topics: {}
   },

@@ -39,7 +39,7 @@ const postSchema = new schema.Entity('posts',
 metaPostSchema = new schema.Entity('metaPosts',
   {
     commentary: [postSchema],
-    twitterCommentary: [postSchema],
+    // twitterCommentary: [postSchema],
     // new: [postSchema],
     // top: [postSchema],
   },
@@ -193,7 +193,6 @@ export function getTwitterFeed(skip, _tag) {
         { twitterFeed: res },
         { twitterFeed: [metaPostSchema] }
       );
-      console.log(res);
       dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('read', false));
     })
