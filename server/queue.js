@@ -429,7 +429,7 @@ function startTwitterUpdate() {
 
 // updateUserStats();
 // startStatsUpdate();
-startTwitterUpdate();
+// startTwitterUpdate();
 
 if (process.env.NODE_ENV === 'production') {
   updateUserStats();

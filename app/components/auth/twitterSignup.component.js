@@ -111,6 +111,7 @@ export default class TwitterSignup extends Component {
         <TwitterButton
           type={'signup'}
           auth={this.props.auth}
+          admin={this.props.admin}
           actions={this.props.actions}
         />
         <Text style={styles.signInText}>or</Text>
@@ -190,6 +191,7 @@ export default class TwitterSignup extends Component {
 TwitterSignup.propTypes = {
   auth: PropTypes.object,
   actions: PropTypes.object,
+  admin: PropTypes.object,
 };
 
 let localStyles = StyleSheet.create({
