@@ -146,7 +146,8 @@ async function processTweet(tweet, user) {
 
   if (tweet.entities.urls[0].expanded_url.match('twitter.com')) return;
 
-  // console.log(tweet.entities);
+  // console.log('extended ', tweet.extended_entities);
+  // console.log('regular ', tweet.entities);
 
   // check if tw post exists
   // if it does, update feed and increment 'seen in feed counter'
@@ -273,9 +274,10 @@ async function getUserFeed(user) {
   // console.log(user.lastTweetId.toString());
 
   const params = {
-    since_id: user.lastTweetId ? user.lastTweetId.toString() : undefined,
+    since_id: undefined, //user.lastTweetId ? user.lastTweetId.toString() : undefined,
     screen_name: user.twitterHandle,
     exclude_replies: true,
+    // include_entities: true,
     tweet_mode: 'extended'
   };
   let feed = await client.get('statuses/home_timeline', params);
