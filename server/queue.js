@@ -422,7 +422,7 @@ function startRewards() {
 }
 
 function startTwitterUpdate() {
-  setInterval( TwitterWorker.updateTwitterPosts, 20 * 60 * 1000);
+  setInterval( TwitterWorker.updateTwitterPosts, 40 * 60 * 1000);
   TwitterWorker.updateTwitterPosts();
 }
 
@@ -443,7 +443,7 @@ if (process.env.NODE_ENV === 'production') {
 
   setTimeout(() => {
     startTwitterUpdate();
-  }, minutesTillHour * 60 * 1000 + 10);
+  }, (10 + minutesTillHour) * 60 * 1000);
 
 
   setTimeout(() => {
