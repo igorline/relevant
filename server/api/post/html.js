@@ -84,7 +84,7 @@ exports.generatePreview = async (body, uri) => {
   // console.log('Generate Preview ', uri);
 
   body = body.replace('<!--', '').replace('-->', '');
-  const $ = cheerio.load(body);
+  let $ = cheerio.load(body);
 
   let redirect = $("meta[http-equiv='refresh']")[0];
   let redirectUrl;
@@ -372,6 +372,8 @@ exports.generatePreview = async (body, uri) => {
   // console.log(obj);
   // console.log($('head').html());
   // console.log(body);
+  $ = null;
+  body = null;
 
   return {
     redirect: false,
