@@ -55,7 +55,7 @@ let allUsers;
 
 
 let q = queue({
-  concurrency: 2,
+  concurrency: 1,
 });
 
 q.on('timeout', (next, job) => {
