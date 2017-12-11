@@ -422,7 +422,7 @@ function startRewards() {
 }
 
 function startTwitterUpdate() {
-  setInterval( TwitterWorker.updateTwitterPosts, 40 * 60 * 1000);
+  setInterval( TwitterWorker.updateTwitterPosts, 60 * 60 * 1000);
   TwitterWorker.updateTwitterPosts();
 }
 
