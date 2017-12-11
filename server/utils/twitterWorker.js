@@ -130,7 +130,7 @@ async function updateRank() {
   }
 }
 
-updateRank();
+// updateRank();
 
 async function processTweet(tweet, user) {
   let originalTweet = tweet;
