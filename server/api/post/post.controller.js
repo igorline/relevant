@@ -387,7 +387,7 @@ exports.previewDataAsync = async previewUrl => {
     });
 
     let uri = response.request.uri.href;
-    let processed = await proxyHelpers.generatePreview(response.body, uri);
+    let processed = await proxyHelpers.generatePreview(response.body, uri, _url);
 
     if (processed.redirect && processed.uri) {
       console.log('redirect ', processed.uri);
