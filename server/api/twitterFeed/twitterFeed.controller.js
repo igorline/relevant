@@ -43,29 +43,30 @@ exports.get = async (req, res) => {
 
     feed.forEach((f) => {
       if (f.metaPost) posts.push(f.metaPost);
-      console.log('title ', f.metaPost.title);
-      console.log('rank ', f.rank);
-      console.log('metapost rank ', f.metaPost.rank);
-      console.log('own ', f.inTimeline);
-      console.log('seen ', f.metaPost.seenInFeedNumber);
-      console.log('tw score ', f.metaPost.twitterScore);
+      // console.log('title ', f.metaPost.title);
+      // console.log('rank ', f.rank);
+      // console.log('metapost rank ', f.metaPost.rank);
+      // console.log('own ', f.inTimeline);
+      // console.log('seen ', f.metaPost.seenInFeedNumber);
+      // console.log('tw score ', f.metaPost.twitterScore);
     });
+
+    // TODO worker thread?
+    // TODO worker thread
+    if (user) {
+      let postIds = [];
+      posts.forEach(meta => {
+        meta.commentary.forEach(post => {
+          post.user = post.embeddedUser.id;
+          postIds.push(post._id || post);
+        });
+      });
+      Post.sendOutInvestInfo(postIds, user);
+    }
 
     res.status(200).json(posts);
   } catch (err) {
     handleError(res)(err);
-  }
-
-  // TODO worker thread?
-  // TODO worker thread
-  if (user) {
-    let postIds = [];
-    posts.forEach(meta => {
-      meta.commentary.forEach(post => {
-        postIds.push(post._id || post);
-      });
-    });
-    Post.sendOutInvestInfo(postIds, user);
   }
 };
 
