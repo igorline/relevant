@@ -150,22 +150,23 @@ exports.index = async (req, res) => {
     .limit(limit)
     .skip(skip)
     .sort(sortQuery);
+
+    // TODO worker thread?
+    if (userId) {
+      let postIds = [];
+      posts.forEach(meta => {
+        meta.commentary.forEach(post => {
+          if (!post.user) post.user = post.embeddedUser.id;
+          postIds.push(post._id || post);
+        });
+      });
+      Post.sendOutInvestInfo(postIds, userId);
+    }
   } catch (err) {
     handleError(res, err);
   }
 
   res.status(200).json(posts);
-
-  // TODO worker thread
-  if (userId) {
-    let postIds = [];
-    posts.forEach(meta => {
-      meta.commentary.forEach(post => {
-        postIds.push(post._id || post);
-      });
-    });
-    Post.sendOutInvestInfo(postIds, userId);
-  }
 };
 
 exports.flagged = async (req, res) => {
