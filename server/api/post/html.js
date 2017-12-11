@@ -80,7 +80,7 @@ exports.trimToLength = (doc, length) => {
   return doc;
 };
 
-exports.generatePreview = async (body, uri) => {
+exports.generatePreview = async (body, uri, reqUrl) => {
   // console.log('Generate Preview ', uri);
 
   body = body.replace('<!--', '').replace('-->', '');
@@ -96,9 +96,11 @@ exports.generatePreview = async (body, uri) => {
       redirectUrl = uri;
     }
   }
+
   if (redirectUrl &&
-    exports.extractDomain(redirectUrl) !== ''  &&
-    exports.extractDomain(redirectUrl) !== exports.extractDomain(uri)) {
+    exports.extractDomain(redirectUrl) !== '' &&
+    exports.extractDomain(redirectUrl) !== exports.extractDomain(uri) &&
+    reqUrl !== redirectUrl) {
     return {
       redirect: true,
       uri: redirectUrl
@@ -116,9 +118,14 @@ exports.generatePreview = async (body, uri) => {
     }
   }
 
+  // console.log('reqUrl ', reqUrl);
+  // console.log('canonical url ', canonical.href);
+  // console.log('original url  ', uri);
+
   if (canonical &&
     canonical.href &&
-    exports.extractDomain(canonical.href) !== exports.extractDomain(uri)) {
+    exports.extractDomain(canonical.href) !== exports.extractDomain(uri) &&
+    reqUrl !== canonical.href) {
     return {
       redirect: true,
       uri: canonical.href
