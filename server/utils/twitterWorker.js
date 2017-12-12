@@ -55,7 +55,7 @@ let allUsers;
 
 
 let q = queue({
-  concurrency: 12,
+  concurrency: 20,
 });
 
 q.on('timeout', (next, job) => {
@@ -269,6 +269,11 @@ async function processTweet(tweet, user) {
   // console.log('fav', tweet.favorite_count);
 }
 
+
+
+let userCounter = 0;
+let lastUser;
+
 async function getUserFeed(user, i) {
   const client = new Twitter({
     consumer_key: process.env.TWITTER_ID,
@@ -304,10 +309,14 @@ async function getUserFeed(user, i) {
   feed.map((tweet, j) => {
     q.push(async cb => {
       try {
-        console.log('processing user ', i + 1, ' out of ', allUsers.length);
-        console.log('tweet ', j + 1, ' out of ', feed.length);
-
+        if (i !== lastUser) {
+          userCounter++;
+          console.log('processing user ', userCounter + 1, ' out of ', allUsers.length, ' tweets: ', feed.length);
+        };
+        lastUser = i;
         let post = await processTweet(tweet, user);
+
+
         cb();
         return post;
       } catch (err) {
@@ -341,6 +350,9 @@ async function getUsers(userId) {
     console.log('avg count from db ', twitterCount);
 
     allUsers = users.map(u => u._id);
+
+    userCounter = 0;
+    lastUser = null;
 
     let processedUsers = users.map(async (u, i) => {
       try {

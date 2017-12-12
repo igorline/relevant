@@ -376,6 +376,7 @@ exports.previewDataAsync = async previewUrl => {
 
   // recursive fuction TODO - max recursive calls check?
   async function queryUrl(_url) {
+    console.log('made requeest ');
     let response = await requestAsync({
       url: _url,
       maxRedirects: 22,
@@ -384,7 +385,9 @@ exports.previewDataAsync = async previewUrl => {
       headers: getHeader(_url),
       rejectUnauthorized: false,
       timeout: 20000,
+      pool: { maxSockets: 1000 }
     });
+    console.log('got response ');
 
     let uri = response.request.uri.href;
     let processed = await proxyHelpers.generatePreview(response.body, uri, _url);
