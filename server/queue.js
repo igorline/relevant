@@ -443,6 +443,7 @@ if (process.env.NODE_ENV === 'production') {
   setTimeout(() => {
     startTwitterUpdate();
   }, ((10 + minutesTillHour) % 60) * 60 * 1000);
+  TwitterWorker.updateTwitterPosts();
 
 
   setTimeout(() => {
