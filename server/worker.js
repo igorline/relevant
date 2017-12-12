@@ -9,5 +9,9 @@ require('babel-polyfill');
 require('dotenv').config({ silent: true });
 // console.log(process.env.MONGO_URI)
 
-require('./queue');
 // setInterval(() => console.log('test'), 1000);
+const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+require('./config/db.connect');
+
+require('./queue');
