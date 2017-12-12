@@ -45,6 +45,7 @@ let MetaPostSchema = new Schema({
   latestTweet: Date,
   twitter: { type: Boolean, default: false },
   feedRelevance: Number,
+  twitterUrl: String,
 
 }, {
   timestamps: true,

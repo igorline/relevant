@@ -19,7 +19,7 @@ import Topics from '../createPost/topics.component';
 import CustomSpinner from '../../components/CustomSpinner.component';
 
 let styles;
-const SUB_TITLE = 'From Twitter';
+const SUB_TITLE = 'Via Twitter';
 
 class DiscoverTabs extends Component {
   constructor(props, context) {

@@ -152,23 +152,30 @@ async function processTweet(tweet, user) {
   // check if tw post exists
   // if it does, update feed and increment 'seen in feed counter'
   let post = await Post.findOne({ twitter: true, twitterId: tweet.id });
-
   let metaPost;
+
   if (post) {
     metaPost = await Meta.findOne({ _id: post.metaPost });
     if (metaPost) metaPost.seenInFeedNumber += 1;
     // await metaPost.save();
   } else {
-    let processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);
+    let processed = await Meta.findOne({ twitterUrl: tweet.entities.urls[0].expanded_url });
+    console.log('found existing ', processed);
+
+    return;
+    if (!processed) {
+      console.log('new post!');
+      processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);
+    }
 
     let dupPost = await Post.findOne({ twitterUser: tweet.user.id, link: processed.url });
     if (dupPost) return;
     // console.log(tweet.full_text);
     // console.log(tweet.entities.urls);
-    // 
+
     let body = tweet.full_text
     .replace(new RegExp(tweet.entities.urls[0].url, 'g'), '')
-    .replace('&amp;', '&');
+    .replace(/&amp;/, '&');
 
     let tags = tweet.entities.hashtags.map(t => t.text);
     post = new Post({
@@ -199,14 +206,15 @@ async function processTweet(tweet, user) {
       twitter: true,
       category: [],
       feedRelevance: user.relevance,
+      twitterUrl: tweet.entities.urls[0].expanded_url
     });
     // console.log(post);
     metaPost = await post.upsertMetaPost();
     post.metaPost = metaPost._id;
 
-    var heapUsed = process.memoryUsage().heapUsed;
-    let mb = Math.round(100 * heapUsed / 1048576) / 100
-    console.log("Program is using " + mb + " mb of Heap.")
+    let heapUsed = process.memoryUsage().heapUsed;
+    let mb = Math.round(100 * heapUsed / 1048576) / 100;
+    console.log('Program is using ' + mb + 'MB of Heap.');
 
     processed = null;
     await post.save();
@@ -274,7 +282,7 @@ async function getUserFeed(user) {
   // console.log(user.lastTweetId.toString());
 
   const params = {
-    since_id: undefined, //user.lastTweetId ? user.lastTweetId.toString() : undefined,
+    since_id: user.lastTweetId ? user.lastTweetId.toString() : undefined,
     screen_name: user.twitterHandle,
     exclude_replies: true,
     // include_entities: true,
@@ -341,8 +349,6 @@ async function getUsers(userId) {
     });
 
     await Promise.all(processedUsers);
-
-
 
     q.start(async (queErr, results) => {
       try {
