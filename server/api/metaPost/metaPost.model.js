@@ -51,6 +51,7 @@ let MetaPostSchema = new Schema({
   timestamps: true,
 });
 
+MetaPostSchema.index({ twitter: 1 });
 MetaPostSchema.index({ url: 1 });
 MetaPostSchema.index({ rank: 1 });
 MetaPostSchema.index({ twitter: 1 });

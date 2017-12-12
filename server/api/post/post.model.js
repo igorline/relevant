@@ -92,6 +92,7 @@ PostSchema.virtual('reposted', {
   foreignField: 'repost.post'
 });
 
+PostSchema.index({ twitter: 1 });
 PostSchema.index({ rank: 1 });
 PostSchema.index({ postDate: 1 });
 PostSchema.index({ _id: 1, user: 1 });
