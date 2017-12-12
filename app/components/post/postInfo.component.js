@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   Text,
   Image,
-  Platform
+  Platform,
+  Linking
 } from 'react-native';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -105,7 +106,7 @@ class PostInfo extends Component {
     if (!this.props.actions) return;
 
     if (this.props.post.twitter) {
-      return this.props.actions.goToUrl('https://twitter.com/' + this.props.post.embeddedUser.id)
+      return Linking.openURL('https://twitter.com/' + this.props.post.embeddedUser.id)
     }
 
     this.props.actions.goToProfile({

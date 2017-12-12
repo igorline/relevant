@@ -80,6 +80,7 @@ let PostSchema = new Schema({
   twitterId: Number,
   twitterScore: Number,
   feedRelevance: Number,
+  twitterUrl: String,
 }, {
   timestamps: true,
   toJSON: { virtuals: true }
@@ -269,6 +270,7 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
           twitterScore: this.twitterScore,
           feedRelevance: this.feedRelevance,
           twitter: true,
+          twitterUrl: this.twitterUrl
         };
       }
       let metaPost = new MetaPost(meta);
