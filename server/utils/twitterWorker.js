@@ -20,6 +20,13 @@ const queue = require('queue');
 
 let allUsers;
 
+
+
+let userCounter = 0;
+let lastUser;
+let processedTweets = 0;
+
+
 // User.find({ _id: '4REALGLOBAL' }).then(u => console.log(u));
 
 // TwitterFeed.find({ user: 'balasan', inTimeline: true }).then(posts => {
@@ -164,6 +171,7 @@ async function processTweet(tweet, user) {
 
     if (!processed) {
       processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);
+      processedTweets++;
     }
 
     let dupPost = await Post.findOne({ twitterUser: tweet.user.id, link: processed.url });
@@ -269,11 +277,6 @@ async function processTweet(tweet, user) {
   // console.log('fav', tweet.favorite_count);
 }
 
-
-
-let userCounter = 0;
-let lastUser;
-
 async function getUserFeed(user, i) {
   const client = new Twitter({
     consumer_key: process.env.TWITTER_ID,
@@ -309,13 +312,13 @@ async function getUserFeed(user, i) {
   feed.map((tweet, j) => {
     q.push(async cb => {
       try {
+
+        let post = await processTweet(tweet, user);
         if (i !== lastUser) {
-          userCounter++;
           console.log('processing user ', userCounter + 1, ' out of ', allUsers.length, ' tweets: ', feed.length);
+          userCounter++;
         };
         lastUser = i;
-        let post = await processTweet(tweet, user);
-
 
         cb();
         return post;
@@ -353,6 +356,7 @@ async function getUsers(userId) {
 
     userCounter = 0;
     lastUser = null;
+    processedTweets = 0;
 
     let processedUsers = users.map(async (u, i) => {
       try {
@@ -373,8 +377,13 @@ async function getUsers(userId) {
         treasury.avgTwitterScore = avgTwitterScore;
         treasury.lastTwitterUpdate = new Date();
 
-        console.log('new avg score from db ', avgTwitterScore);
-        console.log('new count from db ', twitterCount);
+        // console.log('new avg score from db ', avgTwitterScore);
+        // console.log('new count from db ', twitterCount);
+        let finished = new Date();
+        let time = finished.getTime() - now.getTime();
+        time /= (1000 * 60)
+        console.log('processed ', processedTweets, ' tweets');
+        console.log('in ', time, 'min');
 
         await treasury.save();
 
