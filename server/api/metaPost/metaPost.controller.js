@@ -133,7 +133,10 @@ exports.index = async (req, res) => {
     .populate({
       path: 'commentary',
       // match: { user: { $nin: blocked } },
-      match: { repost: { $exists: false }, user: { $nin: blocked } },
+      match: {
+        repost: { $exists: false },
+        user: { $nin: blocked },
+        $or: [{ twitter: { $ne: true } }, { relevance: { $gt: 0 } }] },
       options: { sort: commentarySort },
       populate: [
         {

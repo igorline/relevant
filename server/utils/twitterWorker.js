@@ -374,7 +374,7 @@ async function getUsers(userId) {
 }
 
 
-getUsers();
+// getUsers();
 module.exports = {
   updateTwitterPosts: getUsers
 };
