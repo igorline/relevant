@@ -13,7 +13,7 @@ const app = new Express();
 mongoose.Promise = global.Promise;
 
 require('dotenv').config({ silent: true });
-require('./queue');
+// require('./queue');
 
 console.log('NODE_ENV', process.env.NODE_ENV);
 

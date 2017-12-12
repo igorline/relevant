@@ -55,7 +55,7 @@ let allUsers;
 
 
 let q = queue({
-  concurrency: 1,
+  concurrency: 5,
 });
 
 q.on('timeout', (next, job) => {
@@ -163,7 +163,6 @@ async function processTweet(tweet, user) {
     if (processed) console.log('found existing ');
 
     if (!processed) {
-      console.log('new post!');
       processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);
     }
 
@@ -327,9 +326,9 @@ async function getUsers(userId) {
     let treasury = await Treasury.findOne();
 
     let now = new Date();
-    let lastUpdate = treasury.lastTwitterUpdate ? treasury.lastTwitterUpdate.getTime : 0;
+    let lastUpdate = treasury.lastTwitterUpdate ? treasury.lastTwitterUpdate.getTime() : 0;
+
     let decay = (now.getTime() - lastUpdate) / TWITTER_DECAY;
-    console.log(decay);
 
     avgTwitterScore = treasury.avgTwitterScore * (1 - Math.min(1, decay)) || 0;
     twitterCount = treasury.twitterCount * (1 - Math.min(1, decay)) || 0;

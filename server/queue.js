@@ -1,19 +1,18 @@
-import request from 'request-promise-any';
-import queue from 'queue';
-import User from './api/user/user.model';
-import Stats from './api/statistics/statistics.model';
-import Earnings from './api/earnings/earnings.model';
-import apnData from './pushNotifications';
-import Notification from './api/notification/notification.model';
-import Meta from './api/metaPost/metaPost.model';
-import Relevance from './api/relevance/relevance.model';
-import * as proxyHelpers from './api/post/html';
-import RelevanceStats from './api/relevanceStats/relevanceStats.model';
-import pagerank from './utils/pagerank';
-import Invest from './api/invest/invest.model';
-import Treasury from './api/treasury/treasury.model';
-import economy from './utils/economy.js';
-import { PAYOUT_FREQUENCY } from './config/globalConstants';
+const queue = require('queue');
+const User = require('./api/user/user.model');
+const Stats = require('./api/statistics/statistics.model');
+const Earnings = require('./api/earnings/earnings.model');
+const apnData = require('./pushNotifications');
+const Notification = require('./api/notification/notification.model');
+// const Meta = require('./api/metaPost/metaPost.model');
+const Relevance = require('./api/relevance/relevance.model');
+// const proxyHelpers = require('./api/post/html');
+const RelevanceStats = require('./api/relevanceStats/relevanceStats.model');
+const pagerank = require('./utils/pagerank');
+const Invest = require('./api/invest/invest.model');
+// const Treasury = require('./api/treasury/treasury.model');
+const economy = require('./utils/economy.js');
+const { PAYOUT_FREQUENCY } = require('./config/globalConstants');
 
 const TwitterWorker = require('./utils/twitterWorker');
 
