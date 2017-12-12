@@ -160,9 +160,8 @@ async function processTweet(tweet, user) {
     // await metaPost.save();
   } else {
     let processed = await Meta.findOne({ twitterUrl: tweet.entities.urls[0].expanded_url });
-    console.log('found existing ', processed);
+    if (processed) console.log('found existing ');
 
-    return;
     if (!processed) {
       console.log('new post!');
       processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);
@@ -299,8 +298,8 @@ async function getUserFeed(user) {
     user.lastTweetId = lastId;
     user = await user.save();
     console.log(user.lastTweetId);
-
   }
+
   if (!feed) feed = [];
 
   feed.map(tweet => {
@@ -375,7 +374,7 @@ async function getUsers(userId) {
 }
 
 
-// getUsers();
+getUsers();
 module.exports = {
   updateTwitterPosts: getUsers
 };
