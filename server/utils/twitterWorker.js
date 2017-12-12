@@ -55,7 +55,7 @@ let allUsers;
 
 
 let q = queue({
-  concurrency: 4,
+  concurrency: 12,
 });
 
 q.on('timeout', (next, job) => {
@@ -78,7 +78,7 @@ async function computeRank(metaPost, user) {
   avgTwitterScore = (rank + avgTwitterScore * twitterCount) / (twitterCount + 1);
   twitterCount++;
   let personalize = avgTwitterScore * 1;
-  console.log('personalize ', personalize);
+  // console.log('personalize ', personalize);
 
   let newRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
   let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(personalize * 3 + rank);
@@ -90,8 +90,8 @@ async function computeRank(metaPost, user) {
   // console.log(metaPost.title);
   // console.log('rank ', rank);
   // console.log('own rank', rank + 50);
-  console.log('avgTwitterScore ', avgTwitterScore);
-  console.log('twitterCount ', twitterCount);
+  // console.log('avgTwitterScore ', avgTwitterScore);
+  // console.log('twitterCount ', twitterCount);
 
 
   return { newRank, inFeedRank };
@@ -138,7 +138,7 @@ async function processTweet(tweet, user) {
     tweet = tweet.retweeted_status;
   }
 
-  console.log('processing tweet');
+  // console.log('processing tweet');
 
   if (!tweet.entities.urls.length || !tweet.entities.urls[0].url) {
     return;
@@ -210,9 +210,9 @@ async function processTweet(tweet, user) {
     metaPost = await post.upsertMetaPost();
     post.metaPost = metaPost._id;
 
-    let heapUsed = process.memoryUsage().heapUsed;
-    let mb = Math.round(100 * heapUsed / 1048576) / 100;
-    console.log('Program is using ' + mb + 'MB of Heap.');
+    // let heapUsed = process.memoryUsage().heapUsed;
+    // let mb = Math.round(100 * heapUsed / 1048576) / 100;
+    // console.log('Program is using ' + mb + 'MB of Heap.');
 
     processed = null;
     await post.save();
@@ -269,7 +269,7 @@ async function processTweet(tweet, user) {
   // console.log('fav', tweet.favorite_count);
 }
 
-async function getUserFeed(user) {
+async function getUserFeed(user, i) {
   const client = new Twitter({
     consumer_key: process.env.TWITTER_ID,
     consumer_secret: process.env.TWITTER_SECRET,
@@ -301,17 +301,21 @@ async function getUserFeed(user) {
 
   if (!feed) feed = [];
 
-  feed.map(tweet => {
+  feed.map((tweet, j) => {
     q.push(async cb => {
       try {
+        console.log('processing user ', i + 1, ' out of ', allUsers.length);
+        console.log('tweet ', j + 1, ' out of ', feed.length);
+
         let post = await processTweet(tweet, user);
         cb();
+        return post;
       } catch (err) {
         console.log(err);
       }
     });
   });
-  return feed;
+  return Promise.all(feed);
 }
 
 
@@ -338,9 +342,10 @@ async function getUsers(userId) {
 
     allUsers = users.map(u => u._id);
 
-    let processedUsers = users.map(async u => {
+    let processedUsers = users.map(async (u, i) => {
       try {
-        return await getUserFeed(u);
+        // console.log('processing user ', i, ' out of ', users.length);
+        return await getUserFeed(u, i);
       } catch (err) {
         console.log(err);
       }
