@@ -10,5 +10,4 @@ require('dotenv').config({ silent: true });
 // console.log(process.env.MONGO_URI)
 
 require('./queue');
-
-setInterval(() => console.log('test'), 1000);
+// setInterval(() => console.log('test'), 1000);
