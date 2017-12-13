@@ -20,8 +20,6 @@ exports.get = async (req, res) => {
   let query = { user };
   if (!req.user.twitterId) query = { user: '_common_Feed_' };
 
-  console.log(query);
-
   if (tag) query = { tags: tag, user };
   let feed;
   let posts = [];
@@ -33,10 +31,10 @@ exports.get = async (req, res) => {
     .limit(limit)
     .populate({
       path: 'metaPost',
-      options: { sort: { postDate: -1 } },
       populate: [
         {
           path: 'commentary',
+          options: { sort: { postDate: -1 } },
         },
       ]
     });
