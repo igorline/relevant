@@ -33,7 +33,7 @@ exports.get = async (req, res) => {
     .limit(limit)
     .populate({
       path: 'metaPost',
-      options: { sort: { relevance: -1 } },
+      options: { sort: { postDate: -1 } },
       populate: [
         {
           path: 'commentary',
