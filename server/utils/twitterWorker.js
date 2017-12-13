@@ -302,10 +302,10 @@ async function getUserFeed(user, i) {
   if (feed && feed.length) {
     // let lastId = feed[feed.length - 1].id;
     let lastId = feed[0].id;
-    console.log('last id ', lastId);
+    // console.log('last id ', lastId);
     user.lastTweetId = lastId;
     user = await user.save();
-    console.log(user.lastTweetId);
+    // console.log(user.lastTweetId);
   }
 
   if (!feed) feed = [];
