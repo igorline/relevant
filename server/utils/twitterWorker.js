@@ -396,8 +396,7 @@ async function getUsers(userId) {
         let finished = new Date();
         let time = finished.getTime() - now.getTime();
         time /= (1000 * 60);
-        console.log('processed ', processedTweets, ' tweets');
-        console.log('in ', time, 'min');
+        console.log('processed ', processedTweets, ' tweets', ' in ', time, 'min');
 
         await treasury.save();
 

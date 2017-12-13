@@ -350,7 +350,6 @@ exports.userPosts = async (req, res) => {
     return res.send(500, err);
   }
 
-  console.log('sending ', posts.length, ' user posts');
   res.status(200).json(posts);
 
   // TODO worker thread
