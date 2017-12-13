@@ -241,6 +241,7 @@ async function processTweet(tweet, user) {
     { upsert: true }
   ).exec();
 
+
   let updateAllUsers = allUsers.map(async u => {
     return await TwitterFeed.update(
       { user: u, metaPost: metaPost._id },
@@ -257,6 +258,9 @@ async function processTweet(tweet, user) {
     { ...feedObject, inTimeline: true, rank: inFeedRank },
     { upsert: true, new: true }
   );
+
+  // .remove()
+  // .exec();
 
   // update rank of existing posts
   await TwitterFeed.update(
@@ -287,20 +291,20 @@ async function getUserFeed(user, i) {
   // console.log(user.lastTweetId.toString());
 
   const params = {
-    since_id: undefined, //user.lastTweetId ? user.lastTweetId.toString() : undefined,
+    since_id: undefined, // user.lastTweetId ? user.lastTweetId.toString() : undefined,
     screen_name: user.twitterHandle,
     exclude_replies: true,
+    count: 40,
     // include_entities: true,
     tweet_mode: 'extended'
   };
+
   let feed = await client.get('statuses/home_timeline', params);
 
   if (feed && feed.length) {
     // let lastId = feed[feed.length - 1].id;
     let lastId = feed[0].id;
-
     console.log('last id ', lastId);
-
     user.lastTweetId = lastId;
     user = await user.save();
     console.log(user.lastTweetId);
@@ -358,6 +362,21 @@ async function getUsers(userId) {
 
     let processedUsers = users.map(async (u, i) => {
       try {
+        let trim = await TwitterFeed.find({ user: '_common_Feed_' })
+        .sort({ rank: -1 })
+        .skip(500);
+        // .then(f => console.log(f));
+        let ids = trim.map(t => t._id);
+        await TwitterFeed.remove({ _id: { $in: ids }});
+        // .exec();
+
+        trim = await TwitterFeed.find({ user: u._id })
+        .sort({ rank: -1 })
+        .skip(500);
+        ids = trim.map(t => t._id);
+        // .then(f => console.log(f))
+        await TwitterFeed.remove({ _id: { $in: ids }});
+
         // console.log('processing user ', i, ' out of ', users.length);
         return await getUserFeed(u, i);
       } catch (err) {
@@ -397,7 +416,7 @@ async function getUsers(userId) {
 }
 
 
-// getUsers();
+getUsers();
 module.exports = {
   updateTwitterPosts: getUsers
 };
