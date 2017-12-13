@@ -364,7 +364,7 @@ async function getUsers(userId) {
       try {
         let trim = await TwitterFeed.find({ user: '_common_Feed_' })
         .sort({ rank: -1 })
-        .skip(500);
+        .skip(1000);
         // .then(f => console.log(f));
         let ids = trim.map(t => t._id);
         await TwitterFeed.remove({ _id: { $in: ids }});
@@ -372,7 +372,7 @@ async function getUsers(userId) {
 
         trim = await TwitterFeed.find({ user: u._id })
         .sort({ rank: -1 })
-        .skip(500);
+        .skip(1000);
         ids = trim.map(t => t._id);
         // .then(f => console.log(f))
         await TwitterFeed.remove({ _id: { $in: ids }});
@@ -415,7 +415,7 @@ async function getUsers(userId) {
   }
 }
 
-setTimeout(getUsers, 20000);
+// setTimeout(getUsers, 20000);
 // getUsers();
 module.exports = {
   updateTwitterPosts: getUsers
