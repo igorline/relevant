@@ -144,7 +144,6 @@ async function processTweet(tweet, user) {
   if (tweet.retweeted_status) {
     tweet = tweet.retweeted_status;
   }
-
   // console.log('processing tweet');
 
   if (!tweet.entities.urls.length || !tweet.entities.urls[0].url) {
@@ -288,7 +287,7 @@ async function getUserFeed(user, i) {
   // console.log(user.lastTweetId.toString());
 
   const params = {
-    since_id: user.lastTweetId ? user.lastTweetId.toString() : undefined,
+    since_id: undefined, //user.lastTweetId ? user.lastTweetId.toString() : undefined,
     screen_name: user.twitterHandle,
     exclude_replies: true,
     // include_entities: true,
@@ -314,11 +313,10 @@ async function getUserFeed(user, i) {
       try {
 
         let post = await processTweet(tweet, user);
-        if (i !== lastUser) {
+        if (j === feed.length - 1) {
           console.log('processing user ', userCounter + 1, ' out of ', allUsers.length, ' tweets: ', feed.length);
           userCounter++;
         };
-        lastUser = i;
 
         cb();
         return post;
