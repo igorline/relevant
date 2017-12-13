@@ -291,10 +291,10 @@ async function getUserFeed(user, i) {
   // console.log(user.lastTweetId.toString());
 
   const params = {
-    since_id: undefined, // user.lastTweetId ? user.lastTweetId.toString() : undefined,
+    since_id: user.lastTweetId ? user.lastTweetId.toString() : undefined,
     screen_name: user.twitterHandle,
     exclude_replies: true,
-    count: 40,
+    // count: 40,
     // include_entities: true,
     tweet_mode: 'extended'
   };
@@ -415,8 +415,8 @@ async function getUsers(userId) {
   }
 }
 
-
-getUsers();
+setTimeout(getUsers, 20000);
+// getUsers();
 module.exports = {
   updateTwitterPosts: getUsers
 };
