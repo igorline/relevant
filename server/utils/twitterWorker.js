@@ -20,8 +20,6 @@ const queue = require('queue');
 
 let allUsers;
 
-
-
 let userCounter = 0;
 let lastUser;
 let processedTweets = 0;
@@ -294,7 +292,7 @@ async function getUserFeed(user, i) {
     since_id: user.lastTweetId ? user.lastTweetId.toString() : undefined,
     screen_name: user.twitterHandle,
     exclude_replies: true,
-    // count: 40,
+    count: 40,
     // include_entities: true,
     tweet_mode: 'extended'
   };
@@ -357,7 +355,6 @@ async function getUsers(userId) {
     allUsers = users.map(u => u._id);
 
     userCounter = 0;
-    lastUser = null;
     processedTweets = 0;
 
     let processedUsers = users.map(async (u, i) => {
@@ -409,7 +406,6 @@ async function getUsers(userId) {
         console.log(err);
       }
     });
-
   } catch (err) {
     console.log(err);
   }
