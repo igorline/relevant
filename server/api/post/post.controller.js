@@ -20,6 +20,27 @@ import { PAYOUT_TIME } from '../../config/globalConstants';
 
 let requestAsync = promisify(request);
 
+// Post.find({ })
+// .then(posts => {
+//   posts.forEach(p => {
+//     MetaPost.find({ _id: p.metaPost }).then(m => {
+//       console.log(p.metaPost);
+//       console.log(m._id);
+//     });
+//   });
+// });
+
+// MetaPost.find({})
+// .populate('commentary')
+// .then(metas => metas.forEach(m => {
+//   m.commentary.forEach(c => {
+//     // console.log(c.metaPost);
+//     c.metaPost = m._id;
+//     c.save();
+//   });
+//   // console.log(m.commentary);
+// }));
+
 
 require('../../processing/posts');
 // Post.collection.createIndex({ title: 'text', shortText: 'text', description: 'text', keywords: 'text', tags: 'text'});
@@ -703,6 +724,7 @@ exports.create = (req, res) => {
                 if (now - (12 * 60 * 60 * 1000) > new Date(follower.lastFeedNotification)) {
                   let unread = await Feed.find({ userId: follower._id, read: false, createdAt: { $gte: now - (24 * 60 * 60 * 1000) } });
                   let n = unread.length;
+                  await Feed.update({ userId: follower._id, read: false }, { read: true }, { multi: true });
                   let alert;
                   if (n === 1) {
                     alert = 'There is a new post from ' + author.name + ' in your feed!';

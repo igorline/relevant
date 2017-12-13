@@ -165,7 +165,6 @@ exports.destroy = (req, res) => {
     investor: req.body.investor,
     post: req.body.post
   };
-  console.log(query, 'query');
   let investmentId = null;
 
   Invest.find(query).then((invests) => invests)
@@ -495,6 +494,7 @@ exports.create = async (req, res) => {
     post = await post.save();
 
     // async update meta post rank
+    // console.log('meta post ', post.metaPost);
     MetaPost.updateRank(post.metaPost, post.twitter);
 
     // if (post.twitter) {
