@@ -62,7 +62,7 @@ let processedTweets = 0;
 
 
 let q = queue({
-  concurrency: 8,
+  concurrency: 4,
 });
 
 q.on('timeout', (next, job) => {
