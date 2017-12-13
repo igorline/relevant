@@ -62,7 +62,7 @@ let processedTweets = 0;
 
 
 let q = queue({
-  concurrency: 20,
+  concurrency: 8,
 });
 
 q.on('timeout', (next, job) => {
@@ -379,7 +379,7 @@ async function getUsers(userId) {
         // console.log('new count from db ', twitterCount);
         let finished = new Date();
         let time = finished.getTime() - now.getTime();
-        time /= (1000 * 60)
+        time /= (1000 * 60);
         console.log('processed ', processedTweets, ' tweets');
         console.log('in ', time, 'min');
 
@@ -397,7 +397,7 @@ async function getUsers(userId) {
 }
 
 
-// getUsers();
+getUsers();
 module.exports = {
   updateTwitterPosts: getUsers
 };

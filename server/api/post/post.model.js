@@ -281,7 +281,7 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
       // console.log('meta tags', meta.tags);
     }
   } catch (err) {
-    console.log('error creating / updating metapost');
+    console.log('error creating / updating metapost ', err);
   }
   return meta;
 };
