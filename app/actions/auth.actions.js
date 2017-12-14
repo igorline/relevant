@@ -631,11 +631,13 @@ export function twitterAuth(profile, invite) {
       if (result.twitter) {
         dispatch(setTwitter(profile));
       }
+      return true;
     } catch (error) {
-      dispatch(setTwitter(null))
+      dispatch(setTwitter(null));
       dispatch(setLoading(false));
       console.log(error);
       AlertIOS.alert(error.message);
+      return false;
     }
   };
 }

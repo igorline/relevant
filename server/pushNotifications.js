@@ -64,7 +64,7 @@ async function sendNotification(user, alert, payload) {
   try {
     if (user && user.deviceTokens && user.deviceTokens.length) {
       let badge = await Notification.count({ forUser: user._id, read: false });
-      badge += await Feed.count({ userId: user._id, read: false });
+      // badge += await Feed.count({ userId: user._id, read: false });
 
       const registrationIds = [];
       user.deviceTokens.forEach((deviceToken) => {
