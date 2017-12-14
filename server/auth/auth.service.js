@@ -28,11 +28,10 @@ function blocked(req, res) {
 function currentUser(req, res) {
   return compose()
   .use((req, res, next) => {
-    // let token = req.cookies.token;
-    // if (token) {
-    //   req.headers.authorization = 'Bearer ' + token;
-    // }
-    if (req.query && req.query.hasOwnProperty('access_token')) {
+    let token = req.cookies.token;
+    if (token) {
+      req.headers.authorization = 'Bearer ' + token;
+    } else if (req.query && req.query.hasOwnProperty('access_token')) {
       req.headers.authorization = 'Bearer ' + req.query.access_token;
     }
     console.log('user auth');
