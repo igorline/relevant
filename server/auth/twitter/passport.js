@@ -6,9 +6,24 @@ const User = require('../../api/user/user.model');
 const auth = require('../auth.service');
 const Invite = require('../../api/invites/invite.model');
 const TwitterWorker = require('../../utils/twitterWorker');
+const TwitterFeed = require('../../api/twitterFeed/twitterFeed.model');
 
 // User.findOne({ twitterHandle: '4REALGLOBAL' })
-// .then(user => { console.log(user); user.remove(); });
+// .then(user => {
+//   if (!user) return;
+//   user.twitter = {};
+//   user.twitterHandle = null;
+//   user.twitterId = null;
+//   user.lastTweetId = null;
+//   user.twitterImage = null;
+//   user.twitter.twitterAuthToken = null;
+//   user.twitter.twitterAuthSecret = null;
+//   user.save();
+//   TwitterFeed.find({ user: user._id }).remove().exec();
+//   // user.remove();
+// })
+// .catch(err => console.log(err));
+
 
 export async function getProfile(props) {
   let authToken = props.authToken;
@@ -76,6 +91,8 @@ export async function addTwitterProfile(param) {
 
   // console.log(user);
   user = await user.save();
+  TwitterWorker.updateTwitterPosts(user._id);
+
   return user;
 }
 
@@ -96,8 +113,6 @@ exports.login = async (req, res, next) => {
 
     if (relUser) user = relUser;
 
-    let signup = !user;
-
     if (user) {
       // console.log('found user! ', user);
       // check that we have auth
@@ -108,7 +123,6 @@ exports.login = async (req, res, next) => {
       if (relUser) {
         user = await addTwitterProfile({ user, profile, twitterAuth: req.body.profile });
         // async fetch posts
-        TwitterWorker.updateTwitterPosts(user._id);
       }
 
       if (user.twitterAuthToken !== req.body.profile.authToken
@@ -121,9 +135,7 @@ exports.login = async (req, res, next) => {
       }
       let token = auth.signToken(user._id, user.role);
       return res.json({ token, user });
-    }
-
-    if (signup) {
+    } else if (req.body.profile.signup) {
       profile = await getProfile(req.body.profile);
       // check invite
       if (!req.body.invite) throw new Error('No user found, please make sure you sign up first');
@@ -151,9 +163,9 @@ exports.login = async (req, res, next) => {
       await user.save();
       let token = auth.signToken(user._id, user.role);
       return res.json({ token, user });
+    } else {
+      return res.json(200, { twitter: true });
     }
-
-    // return res.json(200, { twitter: true });
   } catch (err) {
     console.log(err);
     next(err);

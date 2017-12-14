@@ -43,8 +43,17 @@ export default class TwitterButton extends Component {
     .then(loginData => {
       const { authToken, authTokenSecret } = loginData;
       if (authToken && authTokenSecret) {
+        if (this.props.type === 'signup') {
+          loginData.singup = true;
+        }
         this.props.actions.setTwitter(loginData);
-        return this.props.actions.twitterAuth(loginData, this.props.admin ? this.props.admin.currentInvite : null);
+        return this.props.actions.twitterAuth(loginData, this.props.admin ? this.props.admin.currentInvite : null)
+        .then(r => {
+          setTimeout(() => {
+            this.props.actions.reloadTab('discover');
+          }, 3000);
+        })
+        .catch(err => console.log(err));
       }
       return null;
     }).catch(error => {

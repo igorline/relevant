@@ -209,9 +209,9 @@ class PostButtons extends Component {
         });
 
         setTimeout(() => {
-          this.props.actions.reloadTab('read');
-          let name = this.props.post.embeddedUser.name;
-          Alert.alert('You have subscribed to receive ' + results.subscription.amount + ' posts from ' + name);
+          // this.props.actions.reloadTab('read');
+          // let name = this.props.post.embeddedUser.name;
+          // Alert.alert('You have subscribed to receive ' + results.subscription.amount + ' posts from ' + name);
           Analytics.logEvent('upvote');
         }, 1500);
       }
