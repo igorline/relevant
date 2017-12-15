@@ -3,34 +3,35 @@ import Email from './email.model';
 import Invite from '../invites/invite.model';
 import User from '../user/user.model';
 const inlineCss = require('inline-css');
+const { emailStyle } = require('../../utils/emailStyle');
 
-let emailStyle = `
-<style>
-  p {
-    font-size: 18px;
-    line-height: 27.5px;
-    font-family: Georgia;
-    max-width: 667px;
-  }
-  p img {
-    max-width: 100%;
-    margin: auto;
-    text-align: center;
-  }
-  a {
-    color: #3E3EFF;
-  }
-  a span {
-    font-weight: bold;
-    font-size: 24px;
-    border: 3px solid #3E3EFF;
-    padding: 15px 20px;
-    display: inline-block;
-    margin: 15px 0;
-    font-family: Arial;
-  }
-</style>
-`;
+// let emailStyle = `
+// <style>
+//   p {
+//     font-size: 18px;
+//     line-height: 27.5px;
+//     font-family: Georgia;
+//     max-width: 667px;
+//   }
+//   p img {
+//     max-width: 100%;
+//     margin: auto;
+//     text-align: center;
+//   }
+//   a {
+//     color: #3E3EFF;
+//   }
+//   a span {
+//     font-weight: bold;
+//     font-size: 24px;
+//     border: 3px solid #3E3EFF;
+//     padding: 15px 20px;
+//     display: inline-block;
+//     margin: 15px 0;
+//     font-family: Arial;
+//   }
+// </style>
+// `;
 
 
 const mailgun = require('mailgun-js')({
@@ -51,39 +52,61 @@ async function generateList(type) {
       let now = new Date();
       now.setDate(now.getDate() - 5);
       query = { createdAt: { $lt: now } };
-      users = await User.find(query, 'email code');
+      users = await User.find(query, 'email code twitterEmail twitter');
     }
-    let list = mailgun.lists(type + '@mail.relevant.community');
 
-    // clear old list (needs to run a few times because only returns 100 at a time)
-    // list.members().list(function(err, members) {
-    //   members.items.forEach(m => {
-    //     console.log(m);
-    //     list.members(m.address).delete();
-    //   });
-    // });
+    try {
+      let oldList = mailgun.lists(type + '@mail.relevant.community');
+
+      // clear old list (needs to run a few times because only returns 100 at a time)
+      // list.members().list(function(err, members) {
+      //   members.items.forEach(m => {
+      //     console.log(m);
+      //     list.members(m.address).delete();
+      //   });
+      // });
+      await oldList.delete();
+    } catch (err) {
+      console.log(err);
+    }
+
+    let list = await mailgun.lists().create({
+      address: type + '@mail.relevant.community',
+      name: type,
+      description: type,
+    });
+    list = mailgun.lists(type + '@mail.relevant.community');
 
     users.forEach(user => {
       let vars = {};
       if (type === 'notregistered') {
         vars = { code: user.code };
       }
+      if (!user.email) {
+        console.log(user);
+      }
       let u = {
         subscribed: true,
-        address: user.email,
+        address: user.email || user.twitterEmail,
         name: type === 'notregistered' ? user.name : '@' + user._id,
         vars
       };
-      console.log(u);
-      // list.members().create(u, function (err, data) {
-      //   if (err) console.log(err);
-      //   else console.log(data);
-      // });
+      // console.log(u);
+      list.members().create(u, function (err, data) {
+        if (err) console.log(err);
+        // else console.log(data);
+      });
     });
   } catch (err) {
     console.log(err);
   }
 }
+
+// mailgun.lists().create({
+//   address: 'test1@mail.relevant.community',
+//   name: 'test1',
+//   description: 'Users that have invites but have not registered',
+// });
 
 // generateList('registered');
 // generateList('notregistered');

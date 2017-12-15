@@ -77,10 +77,12 @@ let twitterCount = 0;
 
 async function computeRank(metaPost, user) {
   // let rank = metaPost.twitterScore;
-  let rank = metaPost.seenInFeedNumber * 4 + Math.log(metaPost.twitterScore + 1) * 5;
+  let rank = 0
+  + metaPost.seenInFeedNumber;
+  + Math.log(metaPost.twitterScore + 1) * 5;
   let feedRelevance = metaPost.feedRelevance ? Math.log(metaPost.feedRelevance + 1) : 0;
 
-  rank += feedRelevance * 3;
+  // rank += feedRelevance * 3;
 
   avgTwitterScore = (rank + avgTwitterScore * twitterCount) / (twitterCount + 1);
   twitterCount++;
@@ -88,7 +90,7 @@ async function computeRank(metaPost, user) {
   // console.log('personalize ', personalize);
 
   let newRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
-  let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(personalize * 5 + rank);
+  let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(personalize * 3 + rank);
   newRank = Math.round(newRank * 1000) / 1000;
   inFeedRank = Math.round(inFeedRank * 1000) / 1000;
 
@@ -115,7 +117,7 @@ async function updateRank() {
     avgTwitterScore = treasury.avgTwitterScore * (1 - Math.min(1, decay)) || 0;
     twitterCount = treasury.twitterCount * (1 - Math.min(1, decay)) || 0;
 
-    let metaPosts = await Meta.find({ twitter: true }).sort({ lastTwitterUpdate: -1 }).limit(100000);
+    let metaPosts = await Meta.find({ twitter: true }).sort({ lastTwitterUpdate: -1 }).limit(20000);
     console.log('got posts, updating...');
     metaPosts.forEach(async metaPost => {
       // console.log(metaPost.title);
