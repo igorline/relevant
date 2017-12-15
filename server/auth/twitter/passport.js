@@ -24,6 +24,17 @@ const TwitterFeed = require('../../api/twitterFeed/twitterFeed.model');
 // })
 // .catch(err => console.log(err));
 
+// User.findOne({ twitterHandle: '4REALGLOBAL' }).remove().exec();
+
+// User.find({ email: { $exists: false }}).then(users => {
+//   users.forEach(u => {
+//     console.log(u._id);
+//     console.log(u);
+//     // u.email = u.twitter.email;
+//     // u.twitterEmail = u.email;
+//     // u.save();
+//   });
+// });
 
 export async function getProfile(props) {
   let authToken = props.authToken;
@@ -60,7 +71,8 @@ export async function addTwitterProfile(param) {
   }
   let image = profile._json.profile_image_url_https;
   let twitterHandle = profile.username;
-  let twitterEmail = profile.email;
+  let twitterEmail = profile._json.email;
+  console.log(twitterEmail);
   let twitterImage = image.replace('_normal', '');
   let twitterId = profile.id;
 
@@ -80,6 +92,7 @@ export async function addTwitterProfile(param) {
   if (!user.name) {
     user.name = profile.displayName;
   }
+  if (!user.email) user.email = twitterEmail;
   user.twitter = profile._json;
   user.twitterHandle = twitterHandle;
   user.twitterImage = twitterImage;

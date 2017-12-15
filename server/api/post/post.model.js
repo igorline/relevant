@@ -226,7 +226,8 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
         meta.twitter = false;
         // meta.url = this.post.link;
       } else {
-        // meta.latestTweet = this.postDate;
+        // meta.latestPost = this.postDate;
+        meta.latestTweet = this.postDate;
         meta.tweetCount++;
         meta.commentary.push(this);
         // meta.twitterCommentary.push(this);
