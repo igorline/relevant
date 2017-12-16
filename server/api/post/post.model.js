@@ -93,6 +93,8 @@ PostSchema.virtual('reposted', {
 });
 
 PostSchema.index({ twitter: 1 });
+PostSchema.index({ twitter: 1, twitterId: 1 });
+
 PostSchema.index({ rank: 1 });
 PostSchema.index({ postDate: 1 });
 PostSchema.index({ _id: 1, user: 1 });
@@ -133,17 +135,19 @@ PostSchema.pre('remove', async function (next) {
     // this.model('Invest').remove({ post: this._id }, next);
     // this.model('Earnings').remove({ post: this._id }, next);
 
-    let feed = this.model('Feed').remove({ post: this._id });
+    let feed = await this.model('Feed').remove({ post: this._id });
+    let twitterFeed = await this.model('TwitterFeed').remove({ post: this._id });
+
     let comment = this.model('Comment').remove({ post: this._id });
-    let meta = this.model('MetaPost').findOneAndUpdate(
+    let meta = await this.model('MetaPost').findOneAndUpdate(
       { _id: this.metaPost },
       { $pull: { commentary: this._id }, $inc: { commentaryCount: -1 } },
-      { multi: true, new: true }, (err, metaPost) => {
-        if (metaPost && metaPost.commentaryCount <= 0) {
-          metaPost.remove();
-        }
-      }
+      { multi: true, new: true }
     );
+    console.log(meta);
+    if (meta && meta.commentary.length === 0) {
+      await meta.remove();
+    }
 
     // let post = this.model('Post').remove({ 'repost.post': this._id });
     // let user = this.model('User').update(
@@ -171,7 +175,7 @@ PostSchema.pre('remove', async function (next) {
       });
     });
 
-    let promises = [note, feed, comment, meta];
+    let promises = [note, feed, comment, meta, twitterFeed];
     let finished = await Promise.all(promises);
     // console.log(finished);
   } catch (err) {

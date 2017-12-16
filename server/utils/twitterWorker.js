@@ -58,6 +58,40 @@ let processedTweets = 0;
 //   });
 // });
 
+// let now = new Date();
+// Post.find({
+//   twitter: true,
+//   relevance: { $lte: 0 },
+//   postDate: { $lt: now.getTime() - 3 * 24 * 60 * 60 * 1000 } })
+// .limit(1000)
+// .then(posts => {
+//   console.log(posts.length)
+//   posts.forEach(p => {
+//     console.log(p.title);
+//     console.log(p.postDate);
+//     console.log(p.relevance);
+//     p.remove();
+//   });
+// })
+// .catch(err => console.log(err));
+
+// let now = new Date();
+// Meta.find({
+//   twitter: true,
+//   // relevance: { $lte: 0 },
+//   latestTweet: { $lt: now.getTime() - 3 * 24 * 60 * 60 * 1000 } })
+// .populate('commentary')
+// .limit(1000)
+// .then(posts => {
+//   posts.forEach(p => {
+//     console.log(p.title);
+//     console.log(p.latestTweet);
+//     console.log(p.commentary);
+//     if (!p.commentary.leght) {
+//       p.remove();
+//     }
+//   });
+// });
 
 let q = queue({
   concurrency: 2,
@@ -336,6 +370,50 @@ async function getUserFeed(user, i) {
   return Promise.all(feed);
 }
 
+async function cleanup(users) {
+  let now = new Date();
+  let posts = await Post.find({
+    twitter: true,
+    relevance: { $lte: 0 },
+    postDate: { $lt: now.getTime() - 3 * 24 * 60 * 60 * 1000 } })
+  .limit(1000);
+
+  console.log('clearing ', posts.length, ' posts');
+
+  let removePosts = await posts.map(p => {
+    // console.log(p.title);
+    // console.log(p.postDate);
+    // console.log(p.relevance);
+    return p.remove();
+  });
+
+  let processedUsers = users.map(async (u, i) => {
+    try {
+      let trim = await TwitterFeed.find({ user: '_common_Feed_' })
+      .sort({ rank: -1 })
+      .skip(1000);
+      // .then(f => console.log(f));
+      let ids = trim.map(t => t._id);
+      await TwitterFeed.remove({ _id: { $in: ids }});
+      // .exec();
+
+      trim = await TwitterFeed.find({ user: u._id })
+      .sort({ rank: -1 })
+      .skip(1000);
+      ids = trim.map(t => t._id);
+      // .then(f => console.log(f))
+      await TwitterFeed.remove({ _id: { $in: ids }});
+
+      // console.log('processing user ', i, ' out of ', users.length);
+      return await getUserFeed(u, i);
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
+  await Promise.all([...processedUsers, ...removePosts]);
+}
+
 
 async function getUsers(userId) {
   try {
@@ -363,31 +441,7 @@ async function getUsers(userId) {
     userCounter = 0;
     processedTweets = 0;
 
-    let processedUsers = users.map(async (u, i) => {
-      try {
-        let trim = await TwitterFeed.find({ user: '_common_Feed_' })
-        .sort({ rank: -1 })
-        .skip(1000);
-        // .then(f => console.log(f));
-        let ids = trim.map(t => t._id);
-        await TwitterFeed.remove({ _id: { $in: ids }});
-        // .exec();
-
-        trim = await TwitterFeed.find({ user: u._id })
-        .sort({ rank: -1 })
-        .skip(1000);
-        ids = trim.map(t => t._id);
-        // .then(f => console.log(f))
-        await TwitterFeed.remove({ _id: { $in: ids }});
-
-        // console.log('processing user ', i, ' out of ', users.length);
-        return await getUserFeed(u, i);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    await Promise.all(processedUsers);
+    await cleanup(users);
 
     q.start(async (queErr, results) => {
       try {
