@@ -128,8 +128,6 @@ PostSchema.pre('save', async function (next) {
 
 PostSchema.pre('remove', async function (next) {
   try {
-    let repost = this.repost || false;
-    console.log('removing repost', repost);
     let note = this.model('Notification').remove({ post: this._id });
     // keep these but update with 'removed post flag?'
     // this.model('Invest').remove({ post: this._id }, next);
@@ -144,7 +142,6 @@ PostSchema.pre('remove', async function (next) {
       { $pull: { commentary: this._id }, $inc: { commentaryCount: -1 } },
       { multi: true, new: true }
     );
-    console.log(meta);
     if (meta && meta.commentary.length === 0) {
       await meta.remove();
     }
