@@ -325,7 +325,7 @@ exports.generatePreview = async (body, uri, reqUrl) => {
         !a.match('UTC')
         && (isNaN(new Date(a).getTime()))
         && !a.match('http')
-        //&& !a.match(/2017|2016|2015|2018/)
+        // && !a.match(/2017|2016|2015|2018/)
       );
       // .map(a => new Date(a))
       // console.log(by);
@@ -383,6 +383,7 @@ exports.generatePreview = async (body, uri, reqUrl) => {
   body = null;
   article = null;
   data = null;
+  doc = null;
 
   return {
     redirect: false,

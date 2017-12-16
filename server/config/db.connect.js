@@ -3,10 +3,11 @@ const mongoose = require('mongoose');
 const db = mongoose.connection;
 
 const config = {
-  socketTimeoutMS: 0,
-  keepAlive: 120,
+  socketTimeoutMS: 30000,
+  keepAlive: 1,
   reconnectTries: 30,
   useMongoClient: true,
+
 };
 
 function connectWithRetry() {
