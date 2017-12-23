@@ -124,7 +124,8 @@ exports.sendEmailFunc = async function(_invite) {
     if (!invite || !invite.code) throw new Error('no invite or code');
     let url = `${process.env.API_SERVER}/invite/${invite.code}`;
     let androidStoreUrl = 'https://play.google.com/store/apps/details?id=com.relevantnative';
-    let name = invite.name;
+    let name = invite.name ? invite.name.split(' ')[0] : null;
+    if (name) name = name.charAt(0).toUpperCase() + name.slice(1);
     let hi = 'Hi!<br /><br />';
     if (name) hi = `<span style="text-transform: capitalize;">Hi ${name}!</span><br /><br />`;
     let intro = 'You are invited to join Relevant, a social news reader that values <i>quality</i> over <i>clicks</i>.';
@@ -142,13 +143,18 @@ exports.sendEmailFunc = async function(_invite) {
       <p>
       <b>Step 1</b>: Download Relevant from the app store:
       </p>
-      <ul>
-        <li style="padding-bottom: 10px"><a href="${appStoreUrl}" target="_blank">iOS app store</a>
-        <li><a href="${androidStoreUrl}" target="_blank">Android Google Play Store</a>
-      </ul>
+
+      <p class="buttons">
+      <a href="https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051?mt=8" style="display:inline-block;overflow:hidden;background:url(https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/2000px-Download_on_the_App_Store_Badge.svg.png) no-repeat;width:135px;height:40px;background-size:contain;"></a>
+
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="https://play.google.com/store/apps/details?id=com.relevantnative&amp;pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1" style="display:inline-block;overflow:hidden;background:url(https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png) no-repeat;width:137px;height:40px;background-size:157px auto; background-position: center -10px"></a>
+      </p>
+
       <p>
       <b>Step 2</b>: Launch the app and enter your invite code: <b>${invite.code}</b>
       </p>
+
       <hr/>
       <p>
       <a href="https://blog.relevant.community/relevant-an-introduction-5b79ef7afa9" target="_blank" style="text-decoration:none;">

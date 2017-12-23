@@ -17,6 +17,9 @@ exports.emailStyle = `
     margin: auto;
     text-align: center;
   }
+  p.buttons {
+    margin: 30px 0;
+  }
   a {
     color: #3E3EFF;
   }
