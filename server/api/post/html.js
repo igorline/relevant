@@ -98,6 +98,7 @@ exports.generatePreview = async (body, uri, reqUrl) => {
   }
 
   if (redirectUrl &&
+    redirectUrl.match('http') &&
     exports.extractDomain(redirectUrl) !== '' &&
     exports.extractDomain(redirectUrl) !== exports.extractDomain(uri) &&
     reqUrl !== redirectUrl) {
@@ -124,6 +125,7 @@ exports.generatePreview = async (body, uri, reqUrl) => {
 
   if (canonical &&
     canonical.href &&
+    canonical.href.match('http') &&
     exports.extractDomain(canonical.href) !== exports.extractDomain(uri) &&
     reqUrl !== canonical.href) {
     return {
