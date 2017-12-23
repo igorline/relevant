@@ -120,15 +120,16 @@ export class Discover extends Component {
     }
     return (
       <div className="discoverContainer postContainer">
-        <CreatePost {...this.props} />
-        {tag &&
-          <h1>{tag}</h1>
-        }
+
         <DiscoverTabs
           tag={tag}
           tabs={this.state.routes}
           currentTab={this.state.tabIndex}
         />
+        <CreatePost {...this.props} />
+        {tag &&
+          <h1>{tag}</h1>
+        }
         {isLoaded ? content : <Loading />}
       </div>
     );
