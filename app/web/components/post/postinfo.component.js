@@ -47,11 +47,12 @@ export default function (props) {
       </div>
     </div>
   );
+  let url = post.url || post.link;
 
-  if (post.url) {
+  if (url) {
     return (
       <a
-        href={post.url}
+        href={url}
         target="_blank"
         rel="noopener noreferrer"
       >
