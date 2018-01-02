@@ -50,29 +50,29 @@ class Post extends Component {
         {postInfo}
         <div className="postContent">
           <div className="postMeta">
-            <AvatarBox user={user} date={post.postDate} />
+            <AvatarBox user={user} auth={this.props.auth} date={post.postDate} />
             {repost && (
-              <AvatarBox user={user} date={post.postDate} isRepost />
+              <AvatarBox user={user} auth={this.props.auth} date={post.postDate} isRepost />
             )}
           </div>
-            <div className="postBody">
-              {repost && (
-                <div>
-                  <div className="repostBody">
-                    <PostBody post={repost} />
-                  </div>
-                  <div className="repostComment">{post.repost.commentBody}</div>
+          <div className="postBody">
+            {repost && (
+              <div>
+                <div className="repostBody">
+                  <PostBody post={repost} />
                 </div>
-              )}
-              {this.props.showDescription && (
-                <div className="postDescription">
-                  {post.description}
-                </div>
-              )}
-              <PostBody post={post} />
-            </div>
-            <PostButtons post={post} {...this.props} />
+                <div className="repostComment">{post.repost.commentBody}</div>
+              </div>
+            )}
+            {this.props.showDescription && (
+              <div className="postDescription">
+                {post.description}
+              </div>
+            )}
+            <PostBody auth={this.props.auth} post={post} />
           </div>
+          <PostButtons post={post} {...this.props} />
+        </div>
       </div>
     );
   }
@@ -81,7 +81,7 @@ class Post extends Component {
 function PostBody(props) {
   const body = props.post.body;
   const tags = (props.post.tags || []).map((tag) => (
-    <Tag name={tag} key={tag} />
+    <Tag {...props} name={tag} key={tag} />
     ));
   return (
     <div>

@@ -7,8 +7,12 @@ class Tag extends Component {
   }
 
   render() {
+    let link = '/discover/tag/' + this.props.name;
+    if (this.props.auth && !this.props.auth.user) {
+      link = '/';
+    }
   	return (
-      <Link to={'/discover/tag/' + this.props.name}>
+      <Link to={link}>
         {'#'}{this.props.name}
       </Link>
   	)
