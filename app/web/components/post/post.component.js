@@ -45,10 +45,6 @@ class Post extends Component {
       user = post.embeddedUser;
     }
 
-    // return (
-    //   <div> {postInfo}<PostBody post={post} /></div>
-    // );
-
     return (
       <div className="post">
         {postInfo}
