@@ -34,7 +34,6 @@ class Post extends Component {
       );
     }
 
-
     let user = this.props.postUser || post.user;
     if (user && !user.name) {
       user = {};
@@ -42,6 +41,13 @@ class Post extends Component {
       user.image = post.embeddedUser.image;
       user.name = post.embeddedUser.name;
     }
+    if (!user && post.twitter) {
+      user = post.embeddedUser;
+    }
+
+    // return (
+    //   <div> {postInfo}<PostBody post={post} /></div>
+    // );
 
     return (
       <div className="post">

@@ -165,7 +165,8 @@ exports.topPosts = async (req, res) => {
   let posts;
   try {
     let now = new Date();
-    now.setDate(now.getDate() - 4);
+    now.setDate(now.getDate() - 7);
+    // console.log(now);
 
     posts = await Post.find({ createdAt: { $gt: now } }).sort('-relevance').limit(20);
     posts.forEach(post => {
@@ -180,6 +181,7 @@ exports.topPosts = async (req, res) => {
   } catch (err) {
     handleError(res)(err);
   }
+  // console.log(posts);
   res.status(200).json(posts);
 };
 

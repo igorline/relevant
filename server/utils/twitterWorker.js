@@ -120,11 +120,11 @@ async function computeRank(metaPost, user) {
 
   avgTwitterScore = (rank + avgTwitterScore * twitterCount) / (twitterCount + 1);
   twitterCount++;
-  let personalize = avgTwitterScore * 1;
+  let personalize = avgTwitterScore * 10;
   // console.log('personalize ', personalize);
 
   let newRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
-  let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(personalize * 3 + rank);
+  let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(personalize + rank + 1);
   newRank = Math.round(newRank * 1000) / 1000;
   inFeedRank = Math.round(inFeedRank * 1000) / 1000;
 
