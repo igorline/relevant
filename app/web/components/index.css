@@ -20,7 +20,7 @@ html, body {
   flex: 1;
 }
 
-#app, container, .parent, main {
+#app, .parent, main {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -33,6 +33,9 @@ html, body {
 container {
   /*padding: 20px;*/
   background: white;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   display: flex;
   flex-direction: column;
   ul {
