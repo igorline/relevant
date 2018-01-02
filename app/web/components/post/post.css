@@ -15,7 +15,7 @@
 }
 
 .singlePost .postContainer {
-  padding-top: 100px;
+  /*padding-top: 50px;*/
 }
 
 .postinfo {
@@ -41,7 +41,7 @@
     display: block;
   }
   & > div {
-    margin-left: 5px;
+    /*margin-left: 5px;*/
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
