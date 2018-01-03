@@ -101,7 +101,7 @@ class NewCommentForm extends Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <Avatar user={this.props.auth.user} />
+          <Avatar auth={this.props.auth} user={this.props.auth.user} />
           <Textarea
             placeholder="Enter comment..."
             value={this.state.comment}
