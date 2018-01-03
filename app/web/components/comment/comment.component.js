@@ -22,6 +22,7 @@ class Comment extends Component {
           {timestamp}
         </Divider>
         <AvatarBox
+          auth={this.props.auth}
           user={{ ...comment.embeddedUser, _id: comment.user }}
         />
         <p className='body'>{comment.text}</p>
