@@ -11,7 +11,7 @@ export default class Avatar extends Component {
     if (!this.props.user) return null;
     let profileLink = '/profile/' + this.props.user._id;
     // temp - not logged in - redirect to home
-    if (!this.props.auth.user) {
+    if (this.props.auth && !this.props.auth.user) {
       profileLink = '/';
     }
     const avatarBackgroundImage = {
