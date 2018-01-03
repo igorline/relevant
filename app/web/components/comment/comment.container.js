@@ -28,10 +28,10 @@ class Comments extends Component {
         <NewCommentForm {...this.props} onCommentSubmit={this.handleCommentSubmit} />
         {(comments.length !== 0) ?
           <div>
-            {comments.map(function (comment, i) {
+            {comments.map((comment, i) => {
               return (
                 <div key={i}>
-                  <Comment data={comment} />
+                  <Comment auth={this.props.auth} data={comment} />
                 </div>
               );
             })}
