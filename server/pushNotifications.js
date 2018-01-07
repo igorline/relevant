@@ -94,7 +94,8 @@ async function sendNotification(user, alert, payload) {
       results.forEach(result => {
         result.message.forEach(message => {
           if (message.error) {
-            updatedTokens = updatedTokens.filter(token => token !== message.regId);
+            // updatedTokens = updatedTokens.filter(token => token !== message.regId);
+            console.log('push notification error ', message.error);
             console.log('removing device token', message.regId);
           }
         });

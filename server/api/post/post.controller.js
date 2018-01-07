@@ -15,10 +15,36 @@ import apnData from '../../pushNotifications';
 import mail from '../../mail';
 import Notification from '../notification/notification.model';
 import Invest from '../invest/invest.model';
+import cheerio from 'cheerio';
 
 import { PAYOUT_TIME } from '../../config/globalConstants';
 
 let requestAsync = promisify(request);
+
+// requestAsync('https://news.google.com/rss/story/dbtBhhEGtGqVUXM?ned=us&gl=US&hl=en')
+// .then(res => {
+//   // console.log(res.body)
+//   let $ = cheerio.load(res.body);
+//   $('item').each((i, item) => {
+//     let $item = $(item);
+//     $item.children().each((i, c) => {
+//       let $c = $(c);
+//       if ($c.prop("tagName") === 'LINK') console.log('LINK : ', $c[0].next.data)
+//       else {
+//         console.log($c.prop("tagName"), ' : ', $c.text());
+//       }
+//     });
+//     let $$ = cheerio.load($item.children('description').text());
+//     // console.log(description.html())
+//     console.log('IMAGE : ', $$('img').attr('src'));
+//     $$('a').each((i, el) => {
+//       let $el = $(el);
+//       console.log($el.text(), ' : ',  $el.attr('href'));
+//     })
+//   })
+
+// })
+// .catch(err => console.log(err));
 
 // Post.find({ })
 // .then(posts => {

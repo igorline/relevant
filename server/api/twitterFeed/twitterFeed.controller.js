@@ -34,6 +34,7 @@ exports.get = async (req, res) => {
       populate: [
         {
           path: 'commentary',
+          match: { repost: { $exists: false } },
           options: { sort: { postDate: -1 } },
         },
       ]
