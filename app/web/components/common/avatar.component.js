@@ -14,8 +14,9 @@ export default class Avatar extends Component {
     if (this.props.auth && !this.props.auth.user) {
       profileLink = '/';
     }
+    let image = this.props.user.image || '/img/default_user.jpg';
     const avatarBackgroundImage = {
-      backgroundImage: 'url(' + this.props.user.image + ')',
+      backgroundImage: 'url(' + image + ')',
     };
     if (this.props.nolink) {
       return (
