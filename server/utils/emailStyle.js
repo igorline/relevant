@@ -17,6 +17,10 @@ exports.emailStyle = `
     margin: auto;
     text-align: center;
   }
+  p img.storeButton {
+    margin-top: -10px;
+    margin-left: -10px;
+  }
   p.buttons {
     margin: 30px 0;
   }

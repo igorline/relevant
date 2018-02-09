@@ -144,11 +144,17 @@ exports.sendEmailFunc = async function(_invite) {
       <b>Step 1</b>: Download Relevant from the app store:
       </p>
 
-      <p class="buttons">
-      <a href="https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051?mt=8" style="display:inline-block;overflow:hidden;background:url(https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Download_on_the_App_Store_Badge.svg/2000px-Download_on_the_App_Store_Badge.svg.png) no-repeat;width:135px;height:40px;background-size:contain;"></a>
+      <p>
+        <a href="https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051?mt=8" style="display:inline-block;">
+         <img alt="iOS App Store" style="width:auto; height: 40px; max-width:none;" src="http://localhost:3000/img/appstore.png"/>
+        </a>
 
-      &nbsp;&nbsp;&nbsp;&nbsp;
-      <a href="https://play.google.com/store/apps/details?id=com.relevantnative&amp;pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1" style="display:inline-block;overflow:hidden;background:url(https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png) no-repeat;width:137px;height:40px;background-size:157px auto; background-position: center -10px"></a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="https://play.google.com/store/apps/details?id=com.relevantnative&amp;pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1" style="display:inline-block;">
+
+        <img alt="Google Play Store" style="width:auto; height: 40px; max-width:none;" src="http://localhost:3000/img/googleplaystore.png">
+
+        </a>
       </p>
 
       <p>
