@@ -145,16 +145,26 @@ exports.sendEmailFunc = async function(_invite) {
       </p>
 
       <p>
-        <a href="https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051?mt=8" style="display:inline-block;">
-         <img alt="iOS App Store" style="width:auto; height: 40px; max-width:none;" src="http://localhost:3000/img/appstore.png"/>
+        <a
+          href="https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051?mt=8"
+          style="display:inline-block;"
+        >
+         <img
+          alt="iOS App Store"
+          style="width:auto; height: 40px; max-width:none;"
+          src="https://relevant.community/img/appstore.png"/>
         </a>
 
         &nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="https://play.google.com/store/apps/details?id=com.relevantnative&amp;pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1" style="display:inline-block;">
-
-        <img alt="Google Play Store" style="width:auto; height: 40px; max-width:none;" src="http://localhost:3000/img/googleplaystore.png">
-
-        </a>
+        <a
+          href="https://play.google.com/store/apps/details?id=com.relevantnative&amp;pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"
+          style="display:inline-block;"
+        >
+          <img
+            alt="Google Play Store"
+            style="width:auto; height: 40px; max-width:none;"
+            src="https://relevant.community/img/googleplaystore.png">
+          </a>
       </p>
 
       <p>
