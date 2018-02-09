@@ -7,7 +7,6 @@ const config = {
   keepAlive: 1,
   reconnectTries: 30,
   useMongoClient: true,
-
 };
 
 function connectWithRetry() {

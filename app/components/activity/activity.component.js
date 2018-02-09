@@ -244,7 +244,7 @@ export default function (props) {
       case 'topPost':
         return (
           <Text style={styles.activityText}>
-            In case you miseed this top-ranked post:
+            In case you missed this top-ranked post:
           </Text>
         );
 
