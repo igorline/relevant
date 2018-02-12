@@ -210,8 +210,13 @@ exports.generatePreview = async (body, uri, reqUrl) => {
   title = data['og:title'] || data['twitter:title'] || data.title;
   description = stripHTML(data.description || data['og:description'] || data['twitter:description']).trim();
   image = data['og:image'] || data['og:image:url'] || data['twitter:image'] || data['twitter:image:src'] || data.image;
+
   // why prioritise og tags? flipboard?
-  let url = data['al:web:url'] || data['og:url'] || uri;
+  let url;
+  if (uri.match('flip.it')) {
+    url = data['al:web:url'] || data['og:url'] || uri;
+  }
+  url = uri || data['al:web:url'] || data['og:url'];
   let tags = data.news_keywords || data.keywords;
   let domain = exports.extractDomain(url);
 
