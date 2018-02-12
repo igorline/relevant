@@ -79,7 +79,6 @@ test.serial('Payout Create Post', async (t) => {
 });
 
 
-
 test.serial('Upvote 1', async (t) => {
   t.plan(2);
 
@@ -119,7 +118,6 @@ test.serial('Upvote 2', async (t) => {
 
   t.is(upvote.status, 200);
   t.is(upvote2.status, 200);
-
 });
 
 test.serial('Check feed objects', async (t) => {
@@ -144,25 +142,19 @@ test.serial('Check feed objects', async (t) => {
 
 test.serial('Payout Upvote', async (t) => {
   t.plan(0);
-
-  // const res = await r
-  // .post('/auth/local')
-  // .send({ name: 'dummy1', password: 'test' });
   try {
     await economy.rewards();
   } catch (err) {
     console.log(err);
   }
-
-
 });
 
-// test.serial('Delete post', async (t) => {
-//   t.plan(1);
+test.serial('Delete post', async (t) => {
+  t.plan(1);
 
-//   const res = await r
-//   .delete(`/api/post/${postId}?access_token=${authorToken}`);
+  const res = await r
+  .delete(`/api/post/${postId}?access_token=${authorToken}`);
 
-//   t.is(res.status, 200);
-// });
+  t.is(res.status, 200);
+});
 

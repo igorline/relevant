@@ -80,6 +80,7 @@ export class Discover extends Component {
 
   load(sort, props) {
     if (!this.state.routes[this.state.tabIndex]) return null;
+    let community = this.props.auth.community;
     sort = sort || this.state.routes[this.state.tabIndex].key;
     props = props || this.props;
     const tags = props.params.tag ? [props.params.tag] : [];
@@ -89,10 +90,10 @@ export class Discover extends Component {
         this.props.actions.getFeed(length, tags);
         break;
       case 'new':
-        this.props.actions.getPosts(length, tags, null, POST_PAGE_SIZE);
+        this.props.actions.getPosts(length, tags, null, POST_PAGE_SIZE, community);
         break;
       case 'top':
-        this.props.actions.getPosts(length, tags, 'rank', POST_PAGE_SIZE);
+        this.props.actions.getPosts(length, tags, 'rank', POST_PAGE_SIZE, community);
         break;
       case 'people':
         if (this.props.auth.user) this.props.actions.getUsers(length, POST_PAGE_SIZE * 2, tags);

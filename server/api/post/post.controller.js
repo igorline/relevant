@@ -596,6 +596,7 @@ exports.create = (req, res) => {
   let categoryEmoji = req.body.category ? req.body.category.emoji : null;
   let tags = [];
   let keywords = req.body.keywords || [];
+  let community = req.subdomain || 'relevant';
 
   if (req.user.balance < 1) {
     return handleError(res)(new Error('You need to have at least one coin to post'));
@@ -638,6 +639,7 @@ exports.create = (req, res) => {
     image: req.body.image ? req.body.image : null,
     articleAuthor: req.body.articleAuthor,
     shortText: req.body.shortText,
+    community,
 
     category,
     categoryName,
@@ -715,6 +717,7 @@ exports.create = (req, res) => {
   .then((subscribers) => {
     let promises = [];
     subscribers.forEach(async subscription => {
+      if (!subscription.follower) return;
       try {
         let updateFeed;
         /**

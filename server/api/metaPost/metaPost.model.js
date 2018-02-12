@@ -62,10 +62,18 @@ MetaPostSchema.index({ latestPost: 1 });
 MetaPostSchema.index({ latestPost: 1, tags: 1 });
 MetaPostSchema.index({ rank: 1, tags: 1 });
 
-MetaPostSchema.statics.updateRank = async function (_id, twitter) {
-  let meta;
+MetaPostSchema.pre('remove', async function (next) {
   try {
-    meta = await this.findOne({ _id })
+    await this.model('CommunityFeed').find({ metaPost: this._id }).remove();
+    next();
+  } catch (err) {
+    console.log('error removing community feed', err);
+  }
+});
+
+MetaPostSchema.statics.updateRank = async function (_id, twitter) {
+  try {
+    let meta = await this.findOne({ _id })
     .populate({
       path: 'commentary',
       options: { sort: { rank: -1 }, limit: 1 },
@@ -82,12 +90,11 @@ MetaPostSchema.statics.updateRank = async function (_id, twitter) {
     meta.rank = highestRank;
     meta = await meta.save();
     console.log('updated meta rank ', meta.rank);
+    return meta;
   } catch (err) {
     console.log('error updating meta rank ', err);
   }
-  return meta;
 };
-
 
 module.exports = mongoose.model('MetaPost', MetaPostSchema);
 

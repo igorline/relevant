@@ -116,7 +116,7 @@ let cleanupData = () => {
 
   let clearPosts = Post.find({ title: 'Test post title' }).remove().exec() || null;
   let clearMeta = MetaPost.find({ title: 'Test post title' }).remove().exec() || null;
-  let clearEarnings = Earnings.find({ user: { $in: dummies }}).remove().exec() || null;
+  let clearEarnings = Earnings.find({ user: { $in: dummies } }).remove().exec() || null;
 
   return Promise.all([
     ...clearUsers,

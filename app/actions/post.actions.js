@@ -289,7 +289,7 @@ export function setComments(postId, comments, index, total) {
 }
 
 // this function queries the meta posts
-export function getPosts(skip, tags, sort, limit) {
+export function getPosts(skip, tags, sort, limit, community) {
   // console.log(skip, tags, sort);
   let tagsString = '';
   if (!skip) skip = 0;
@@ -300,6 +300,8 @@ export function getPosts(skip, tags, sort, limit) {
   // change this if we want to store top and new in separate places
   const type = sort ? 'top' : 'new';
   let endpoint = 'metaPost';
+  // TODO migrate community
+  if (community === 'crypto') endpoint = 'communityFeed';
   let topic;
 
   if (tags && tags.length) {

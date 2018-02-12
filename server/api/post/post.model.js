@@ -21,6 +21,7 @@ let PostSchema = new Schema({
   tags: [{ type: String, ref: 'Tag' }],
   body: String,
   domain: String,
+  community: String,
 
   shortText: { type: String },
   longText: { type: String },
@@ -92,6 +93,19 @@ PostSchema.virtual('reposted', {
   foreignField: 'repost.post'
 });
 
+// PostSchema.virtual('posts', {
+//   ref: 'BlogPost',
+//   localField: '_id',
+//   foreignField: 'author'
+// });
+
+PostSchema.virtual('embeddedUser.reputation')
+.get(async function() {
+  let communtiy = this.community || 'relevant';
+  let reputationRecord = await this.model('Reputation').findOne({ communtiy, user: this.user });
+  return reputationRecord.reputation;
+});
+
 PostSchema.index({ twitter: 1 });
 PostSchema.index({ twitter: 1, twitterId: 1 });
 
@@ -129,9 +143,6 @@ PostSchema.pre('save', async function (next) {
 PostSchema.pre('remove', async function (next) {
   try {
     let note = this.model('Notification').remove({ post: this._id });
-    // keep these but update with 'removed post flag?'
-    // this.model('Invest').remove({ post: this._id }, next);
-    // this.model('Earnings').remove({ post: this._id }, next);
 
     let feed = await this.model('Feed').remove({ post: this._id });
     let twitterFeed = await this.model('TwitterFeed').remove({ post: this._id });
@@ -145,14 +156,6 @@ PostSchema.pre('remove', async function (next) {
     if (meta && meta.commentary.length === 0) {
       await meta.remove();
     }
-
-    // let post = this.model('Post').remove({ 'repost.post': this._id });
-    // let user = this.model('User').update(
-    //     { _id: this.user },
-    //     { $inc: { postCount: -1 } },
-    //     { multi: true },
-    //     next
-    // );
 
     this.tags.forEach((tag) => {
       console.log(tag, 'tag');
@@ -279,9 +282,24 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
       let metaPost = new MetaPost(meta);
       // console.log(meta);
       meta = await metaPost.save();
+
       this.metaPost = metaPost._id;
       // console.log('meta tags', meta.tags);
     }
+
+    let community = this.community || 'relevant';
+    let feedItem = await this.model('CommunityFeed').findOneAndUpdate(
+      { community, metaPost: meta._id },
+      {
+        lastPost: meta.lastPost,
+        tags: meta.tags,
+        categories: meta.categories,
+        keywords: meta.keywords
+      },
+      { upsert: true, new: true }
+    );
+
+    console.log(feedItem);
   } catch (err) {
     console.log('error creating / updating metapost ', err);
   }
