@@ -3,22 +3,30 @@ import Tag from '../tag/tag.model';
 
 let Schema = mongoose.Schema;
 
+
 let RelevanceSchema = new Schema({
   user: { type: String, ref: 'User', index: true },
   tag: { type: String, ref: 'Tag' },
+  global: { type: Boolean, default: false },
   topTopic: { type: Boolean, deafault: false },
+  community: { type: String },
   category: { type: String, ref: 'Tag' },
   relevance: { type: Number, default: 0 },
   rank: Number,
   totalUsers: Number,
   level: Number,
   percentRank: Number,
-  totalUsers: Number,
+  relevanceRecord: [{
+    relevance: Number,
+    time: Date,
+  }],
 }, {
   timestamps: true
 });
 
 RelevanceSchema.index({ user: 1, relevance: 1 });
+RelevanceSchema.index({ user: 1, community: 1 });
+
 
 RelevanceSchema.statics.updateUserRelevance = async function (user, post, relevanceToAdd) {
   let tagRelevance;

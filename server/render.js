@@ -119,10 +119,11 @@ export default function handleRender(req, res) {
   cookie.plugToRequest(req, res);
 
   // this sets the inital auth state
-  let confirm = {};
-  console.log('req ', req.unconfirmed);
-  if (req.unconfirmed) confirm = { auth: { confirmed: false } };
-  const initialState = { ...confirm };
+  let auth = {};
+  // console.log('req ', req.unconfirmed);
+  if (req.unconfirmed) auth.confirmed = false;
+  auth.community = req.subdomain || 'relevant';
+  const initialState = { auth };
 
   // Create a new Redux store instance
   const store = configureStore(initialState);

@@ -30,8 +30,7 @@ test('Create post without being logged in', async t => {
   const res = await request(t.context.app)
       .post('/api/post');
 
-  t.is(res.status, 500, 'Should not be able to creat new post if not logged in')
+  t.is(res.status, 500, 'Should not be able to creat new post if not logged in');
 });
-
 
 

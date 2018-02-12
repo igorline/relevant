@@ -346,14 +346,18 @@ exports.list = async (req, res) => {
 exports.create = async (req, res) => {
   let token;
   try {
+    let community = req.subdomain || 'relevant';
     let rand = await crypto.randomBytes(32);
     let confirmCode = rand.toString('hex');
 
     let user = req.body.user;
 
-    let invite = await Invite.checkInvite(req.body.invite);
+    let invite;
+    if (community === 'relevant') {
+      invite = await Invite.checkInvite(req.body.invite);
+    }
 
-    let confirmed = invite.email === user.email;
+    let confirmed = invite && invite.email === user.email;
 
     if (user.name === 'everyone') throw new Error('username taken');
 
@@ -374,7 +378,9 @@ exports.create = async (req, res) => {
     user = new User(userObj);
     user = await user.save();
 
-    await invite.registered(user);
+    if (invite) {
+      await invite.registered(user);
+    }
 
     token = jwt.sign(
       { _id: user._id },

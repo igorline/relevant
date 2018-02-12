@@ -16,6 +16,7 @@ const initialState = {
   twitter: null,
   currentInvite: null,
   loading: false,
+  community: null,
 };
 
 export default function auth(state = initialState, action) {
