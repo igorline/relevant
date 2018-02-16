@@ -1,84 +1,106 @@
-import React, { Component, PropTypes } from 'react';
-import { bindActionCreators } from 'redux';
-
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import InfScroll from '../common/infScroll.component';
 import Post from '../post/post.component';
-
-const postInitialAmt = 5; // # of posts to initially load on page
-const postUpdateAmt = 5; // # of posts to load for each scroll
 
 class DiscoverPosts extends Component {
   constructor(props) {
     super(props);
     this.state = {
     };
+    this.load = this.load.bind(this);
+    this.hasMore = true;
   }
+
+  getData(sort, tag) {
+    let data;
+    if (sort === 'feed') {
+      data = this.props.posts.feed;
+    } else {
+      data = tag ? this.props.posts.topics[sort][tag] : this.props.posts[sort];
+    }
+    return data || [];
+  }
+
+  load(page, length) {
+    this.hasMore = (page) * this.props.pageSize <= length;
+    if (this.hasMore) {
+      this.props.load(null, null, length);
+    }
+  }
+
   renderFeed() {
     return this.props.posts.feed.map(id => {
-      const post = this.props.posts.posts[id]
+      const post = this.props.posts.posts[id];
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
-      const postUser = {
-        ...post.embeddedUser,
-        _id: post.user,
-      };
-      // console.log(metaPost, post)
-      // console.log(post, repost, postUser)
+
       return (
-        <Post key={id}
+        <Post
+          key={id}
           post={post}
           repost={repost}
-          postUser={postUser}
           {...this.props}
         />
       );
     });
   }
+
   renderDiscover(sort, tag) {
     const postIds = tag ? this.props.posts.topics[sort][tag] : this.props.posts[sort];
     const metaPosts = this.props.posts.metaPosts[sort];
 
     return (postIds || []).map(id => {
       const metaPost = metaPosts[id];
-      if (! metaPost) return
-      const postId = sort === 'new' ? metaPost.newCommentary : metaPost.topCommentary
-      const post = this.props.posts.posts[postId]
-      if (! post) return
+      if (!metaPost) return null;
+      const postId = sort === 'new' ? metaPost.newCommentary : metaPost.topCommentary;
+      const post = this.props.posts.posts[postId];
+      if (!post) return null;
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
-      const postUser = {
-        ...post.embeddedUser,
-        _id: post.user,
-      };
-      // console.log(metaPost, post)
-      // console.log(post, repost, postUser)
+
       return (
-        <Post key={id}
+        <Post
+          key={id}
           metaPost={metaPost}
           post={post}
           repost={repost}
-          postUser={postUser}
           {...this.props}
         />
       );
     });
   }
+
   render() {
     const sort = this.props.sort;
     const tag = this.props.tag;
     let posts;
-    if (sort === 'feed') {
-      posts = this.renderFeed()
-    }
-    else {
-      posts = this.renderDiscover(sort, tag)
-    }
 
-    // if (!this.props.user) return null;
+    let data = this.getData(sort, tag);
+    if (sort === 'feed') {
+      posts = this.renderFeed();
+    } else {
+      posts = this.renderDiscover(sort, tag);
+    }
+    let length = posts.length;
+
     return (
-      <div className='parent'>
+      <InfScroll
+        className={'parent'}
+        data={data}
+        loadMore={(p) => this.load(p, length)}
+        hasMore={this.hasMore}
+      >
         {posts}
-      </div>
+      </InfScroll>
     );
   }
-
 }
+
+DiscoverPosts.propTypes = {
+  pageSize: PropTypes.number,
+  load: PropTypes.func,
+  posts: PropTypes.object,
+  sort: PropTypes.string,
+  tag: PropTypes.string,
+};
 
 export default DiscoverPosts;

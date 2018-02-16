@@ -4,6 +4,6 @@ import auth from '../../auth/auth.service';
 
 const router = express.Router();
 
-router.get('/', controller.get);
+router.get('/', auth.blocked(), controller.get);
 
 module.exports = router;

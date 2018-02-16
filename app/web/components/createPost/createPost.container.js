@@ -80,39 +80,33 @@ class CreatePostContainer extends Component {
   }
 
   async createPost() {
-    const allTags = this.tags.concat(this.props.tags.selectedTags.map(tag => tag._id));
-    const tags = Array.from(new Set(allTags));
+    try {
+      const allTags = this.tags.concat(this.props.tags.selectedTags.map(tag => tag._id));
+      const tags = Array.from(new Set(allTags));
 
-    let post = {
-      link: this.state.postUrl || this.props.postUrl,
-      tags,
-      body: this.state.body,
-      title: this.state.urlPreview ? this.state.urlPreview.title : null,
-      description: this.state.urlPreview ? this.state.urlPreview.description : null,
-      category: this.state.category,
-      image: this.state.urlPreview ? this.state.urlPreview.image : null,
-      mentions: this.mentions,
-      investments: [],
-      domain: this.state.domain
-    };
+      let post = {
+        link: this.state.postUrl || this.props.postUrl,
+        tags,
+        body: this.state.body,
+        title: this.state.urlPreview ? this.state.urlPreview.title : null,
+        description: this.state.urlPreview ? this.state.urlPreview.description : null,
+        category: this.state.category,
+        image: this.state.urlPreview ? this.state.urlPreview.image : null,
+        mentions: this.mentions,
+        investments: [],
+        domain: this.state.domain
+      };
 
-    this.props.actions.submitPost(post, await utils.token.get())
-      .then((res) => {
-        if (!res) {
-          alert('Post error please try again');
-          this.setState({ creatingPost: false });
-          return null;
-        }
-        return res.json();
-      }).then((data) => {
-        if (!data) return;
-        // console.log(data)
-        if (this.props.close) this.props.close();
-        this.props.router.push('/post/' + data.id);
-        // Analytics.logEvent('newPost', {
-        //   viaShare: this.props.share
-        // });
-      });
+      let newPost = await this.props.actions.submitPost(post);
+
+      if (this.props.close) this.props.close();
+      this.props.router.push('/post/' + newPost.id);
+          // Analytics.logEvent('newPost', {
+          //   viaShare: this.props.share
+          // });
+    } catch (err) {
+      alert(err.message);
+    }
   }
 
   handleChange(field, data) {

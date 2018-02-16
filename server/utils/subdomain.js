@@ -45,7 +45,7 @@ module.exports = function(options) {
       // subdomain
       if (matches && matches.length === 2) {
         // request.url = '/' + options.prefix + '/' + matches[1] + request.url;
-        request.subdomain = matches[1];
+        request.subdomain = matches[1].split('.')[0];
         next();
       } else {
         next();

@@ -7,6 +7,7 @@ import Invest from '../invest/invest.model';
 
 let apnData = require('../../pushNotifications');
 let mongoose = require('mongoose');
+// var mongoose = require('mongoose-fill')
 
 let PostSchemaEvents = new EventEmitter();
 let Schema = mongoose.Schema;
@@ -46,6 +47,7 @@ let PostSchema = new Schema({
     id: String,
     name: String,
     image: String,
+    relevance: { type: String, ref: 'Relevance' },
   },
 
   flagged: { type: Boolean, default: false },
@@ -84,7 +86,8 @@ let PostSchema = new Schema({
   twitterUrl: String,
 }, {
   timestamps: true,
-  toJSON: { virtuals: true }
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
 });
 
 PostSchema.virtual('reposted', {
@@ -92,19 +95,25 @@ PostSchema.virtual('reposted', {
   localField: '_id',
   foreignField: 'repost.post'
 });
-
 // PostSchema.virtual('posts', {
 //   ref: 'BlogPost',
 //   localField: '_id',
 //   foreignField: 'author'
 // });
+// PostSchema.virtual('embeddedUser.reputation')
+// .get(async function() {
+//   let community = this.community || 'relevant';
+//   let reputationRecord = await this.model('Relevance').findOne({ community, user: this.user, global: true });
+//   console.log(reputationRecord);
+//   return reputationRecord ? reputationRecord.relevance : 0;
+// });
 
-PostSchema.virtual('embeddedUser.reputation')
-.get(async function() {
-  let communtiy = this.community || 'relevant';
-  let reputationRecord = await this.model('Reputation').findOne({ communtiy, user: this.user });
-  return reputationRecord.reputation;
-});
+// PostSchema.fill('embeddedUser.reputation', async function(callback){
+//   let community = this.community || 'relevant';
+//   let reputationRecord = await this.model('Relevance').findOne({ community, user: this.user, global: true });
+//   console.log(reputationRecord);
+//   return callback(null, reputationRecord ? reputationRecord.relevance : 0);
+// });
 
 PostSchema.index({ twitter: 1 });
 PostSchema.index({ twitter: 1, twitterId: 1 });
@@ -158,18 +167,14 @@ PostSchema.pre('remove', async function (next) {
     }
 
     this.tags.forEach((tag) => {
-      console.log(tag, 'tag');
       this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
         if (!foundTag) return next();
-        console.log('foundTag ', foundTag._id);
         if (foundTag.count > 1) {
           foundTag.count--;
-          console.log('changing tag count for ', foundTag._id);
           foundTag.save((err) => {
             if (err) console.log('saving tag error');
           });
         } else {
-          console.log('removing tag ', foundTag.name);
           foundTag.remove();
         }
       });
@@ -291,10 +296,11 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
     let feedItem = await this.model('CommunityFeed').findOneAndUpdate(
       { community, metaPost: meta._id },
       {
-        lastPost: meta.lastPost,
+        latestPost: this.postDate,
         tags: meta.tags,
         categories: meta.categories,
-        keywords: meta.keywords
+        keywords: meta.keywords,
+        rank: meta.rank,
       },
       { upsert: true, new: true }
     );

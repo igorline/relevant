@@ -34,12 +34,16 @@ class Post extends Component {
       );
     }
 
-    let user = this.props.postUser || post.user;
-    if (user && !user.name) {
+    let user = post.user || post.twitterUser;
+
+    user = this.props.user.users[user] || user;
+
+    if (user && !user._id) {
       user = {};
       user._id = post.user;
       user.image = post.embeddedUser.image;
       user.name = post.embeddedUser.name;
+      user.relevance = post.embeddedUser.relevance.relevance;
     }
     if (!user && post.twitter) {
       user = post.embeddedUser;

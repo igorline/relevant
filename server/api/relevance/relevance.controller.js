@@ -3,32 +3,6 @@ let Relevance = require('./relevance.model');
 
 import User from '../user/user.model';
 
-async function migrateToCommunityReputation() {
-  try {
-    let users = await User.find({});
-    users.forEach(async u => {
-      try {
-        let newRep = await Relevance.findOneAndUpdate(
-          { community: 'relevant', user: u._id },
-          { reputation: u.reputation,
-            level: u.level || 0,
-            rank: u.rank || 0,
-            percentRank: u.percentRank || 0,
-            relevanceRecord: u.relevanceRecord,
-            global: true,
-          },
-          { upsert: true, new: true }
-        );
-        console.log(newRep);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-// migrateToCommunityReputation();
 
 function handleError(res, err) {
   console.log(err);

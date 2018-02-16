@@ -38,18 +38,22 @@ CommunityFeedSchema.statics.updateDate = async function (_id, community, date) {
 
 CommunityFeedSchema.statics.updateRank = async function (_id, community) {
   try {
-    let feedItem = await this.findOne({ _id, community })
+    let feedItem = await this.findOne({ metaPost: _id, community })
     .populate({
-      path: 'commentary',
-      match: { community },
-      options: { sort: { rank: -1 }, limit: 1 },
+      path: 'metaPost',
+      populate: [
+        {
+          path: 'commentary',
+          match: { community },
+          options: { sort: { rank: -1 }, limit: 1 },
+        }
+      ]
     });
-    if (!feedItem) throw new Error('no feed item found');
-    let highestRank = feedItem.commentary && feedItem.commentary.length ?
-      feedItem.commentary[0].rank : 0;
+    if (!feedItem || !feedItem.metaPost) throw new Error('no feed item found');
+    let highestRank = feedItem.metaPost.commentary && feedItem.metaPost.commentary.length ?
+      feedItem.metaPost.commentary[0].rank : 0;
     feedItem.rank = highestRank;
     feedItem = await feedItem.save();
-    console.log('updated feedItem rank ', feedItem.rank);
     return feedItem;
   } catch (err) {
     console.log('error updating feedItem rank ', err);

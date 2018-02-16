@@ -13,7 +13,6 @@ const app = new Express();
 mongoose.Promise = global.Promise;
 
 require('dotenv').config({ silent: true });
-// require('./queue');
 
 console.log('NODE_ENV', process.env.NODE_ENV);
 
@@ -21,8 +20,12 @@ console.log('NODE_ENV', process.env.NODE_ENV);
 let isDevelopment = (process.env.NODE_ENV !== 'production' &&
   process.env.NODE_ENV !== 'test' &&
   process.env.NODE_ENV !== 'native');
+
 if (isDevelopment) {
   console.log('in development environment');
+  // can test queue in development
+  require('./queue');
+
   let webpack = require('webpack');
   let webpackDevMiddleware = require('webpack-dev-middleware');
   let webpackHotMiddleware = require('webpack-hot-middleware');
@@ -95,6 +98,8 @@ if (process.env.NODE_ENV !== 'test') {
   });
   socketServer(server);
 }
+
+require('./utils/updateDB-Community0.1.0');
 
 exports.app = app;
 exports.server = server;

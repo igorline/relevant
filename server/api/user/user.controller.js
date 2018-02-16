@@ -314,24 +314,29 @@ exports.list = async (req, res) => {
   }
 
   try {
+    let community = req.subdomain || 'relevant';
+    let query;
     if (topic && topic !== 'null') {
-      let query = { tag: topic, user: { $nin: blocked } };
-      let rel = await Relevance.find(query)
-      .limit(limit)
-      .skip(skip)
-      .sort({ relevance: -1 })
-      .populate('user');
-      users = rel.map(r => {
-        r = r.toObject();
-        r.user[topic + '_relevance'] = r.relevance;
-        return r.user;
-      });
-    } else {
-      users = await User.find({ _id: { $nin: blocked } })
-      .limit(limit)
-      .skip(skip)
-      .sort({ relevance: -1 });
-    }
+      // TODO should topic relevance be limited to community? maybe not?
+      query = { community, tag: topic, user: { $nin: blocked } };
+    } else query = { global: true, community, user: { $nin: blocked } };
+
+    let rel = await Relevance.find(query)
+    .limit(limit)
+    .skip(skip)
+    .sort({ relevance: -1 })
+    .populate('user');
+    users = rel.map(r => {
+      r = r.toObject();
+      r.user[topic + '_relevance'] = r.relevance;
+      return r.user;
+    });
+    // } else {
+    //   users = await User.find({ _id: { $nin: blocked } })
+    //   .limit(limit)
+    //   .skip(skip)
+    //   .sort({ relevance: -1 });
+    // }
   } catch (err) {
     console.log('user list error ', err);
     res.status(500).json(err);
@@ -363,6 +368,7 @@ exports.create = async (req, res) => {
 
     let userObj = {
       _id: user.name,
+      handle: user.name,
       name: user.name,
       phone: user.phone,
       email: user.email,
@@ -408,6 +414,7 @@ exports.show = async function (req, res) {
   if (!userId) userId = req.user._id;
 
   try {
+    let community = req.subdomain || 'relevant';
     // don't show blocked user;
     let blocked = [];
     if (req.user) {
@@ -426,10 +433,10 @@ exports.show = async function (req, res) {
     .sort('-relevance')
     .limit(5);
 
-    // let category = await Relevance.find({ user: userId, category: { $ne: null } })
-    // .sort('-relevance')
-    // .limit(1);
+    user = await user.getRelevance(community);
+
     user = user.toObject();
+
     user.topTags = relevance || [];
     // user.topCategory = category[0];
     res.json(user);
@@ -514,17 +521,19 @@ exports.update = async (req, res) => {
 /**
  * Get my info
  */
-exports.me = (req, res, next) => {
-  let userId = req.user._id;
-  User.findOne({ _id: userId }, '-salt -hashedPassword')
-  .exec((err, user) => {
-    if (err) return next(err);
+exports.me = async (req, res) => {
+  try {
+    let community = req.subdomain || 'relevant';
+    let userId = req.user._id;
+    let user = await User.findOne({ _id: userId }, '-salt -hashedPassword');
     if (!user) return res.json(401);
-    return user.getSubscriptions()
-    .then((_user) => {
-      res.status(200).json(_user);
-    });
-  });
+    // TODO this is depricated
+    user = await user.getRelevance(community);
+    user = await user.getSubscriptions();
+    return res.status(200).json(user);
+  } catch (err) {
+    return handleError(res, err);
+  }
 };
 
 
@@ -557,7 +566,7 @@ exports.block = async (req, res) => {
   } catch (err) {
     return handleError(res, err);
   }
-  res.status(200).json(user);
+  return res.status(200).json(user);
 };
 
 exports.unblock = async (req, res) => {

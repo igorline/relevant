@@ -301,7 +301,8 @@ export function getPosts(skip, tags, sort, limit, community) {
   const type = sort ? 'top' : 'new';
   let endpoint = 'metaPost';
   // TODO migrate community
-  if (community === 'crypto') endpoint = 'communityFeed';
+  // if (community === 'crypto')
+  endpoint = 'communityFeed';
   let topic;
 
   if (tags && tags.length) {

@@ -22,7 +22,8 @@ function getPostObj() {
     description: 'Test post description',
     image: 'https://static.boredpanda.com/blog/wp-content/uploads/2016/08/cute-kittens-30-57b30ad41bc90__605.jpg',
     tags: ['tag1', 'tag2'],
-    payoutTime: now
+    category: { _id: 'testCat' },
+    payoutTime: now,
   };
 }
 
@@ -43,11 +44,11 @@ test.before(async () => {
 });
 
 test.after(async () => {
-  // await cleanupData();
+  await cleanupData();
 });
 
 test.serial('Community Create Post', async (t) => {
-  t.plan(2);
+  t.plan(3);
 
   const res = await r
   .post('/auth/local')
@@ -64,23 +65,96 @@ test.serial('Community Create Post', async (t) => {
   postId = newPost.body._id;
   savedPost = newPost.body;
 
+  t.truthy(savedPost.postDate);
+
   t.is(newPost.status, 200);
   t.is(savedPost.community, 'crypto');
 });
 
-test.serial('Community Create Post', async (t) => {
-  t.plan(4);
+test.serial('Upvote 1', async (t) => {
+  t.plan(2);
+
+  const login = await r
+  .post('/auth/local')
+  .set('Host', 'crypto.localhost:3000')
+  .send({ name: 'dummy2', password: 'test' });
+
+  token = login.body.token;
+
+  t.is(login.status, 200);
+
+  const upvote = await r
+  .post(`/api/invest?access_token=${token}`)
+  .set('Host', 'crypto.localhost:3000')
+  .send(getUpvoteObj(postId));
+
+  t.is(upvote.status, 200);
+});
+
+test.serial('Upvote 2', async (t) => {
+  t.plan(2);
+
+  const login = await r
+  .post('/auth/local')
+  .set('Host', 'crypto.localhost:3000')
+  .send({ name: 'dummy3', password: 'test' });
+
+  token = login.body.token;
+  t.is(login.status, 200);
+
+  const upvote = await r
+  .post(`/api/invest?access_token=${token}`)
+  .set('Host', 'crypto.localhost:3000')
+  .send(getUpvoteObj(postId));
+
+  t.is(upvote.status, 200);
+});
+
+
+test.serial('Community Get Feed', async (t) => {
+  t.plan(6);
 
   const res = await r
   .get('/api/communityFeed')
   .set('Host', 'crypto.localhost:3000');
 
-  t.is(res.status, 200);
-  t.truthy(res.body.length);
-  t.is(res.body[0].commentary[0]._id, postId);
 
+  t.is(res.status, 200, 'should not return error');
+  t.truthy(res.body.length, 'there should be a feed');
+
+  let post = res.body[0].commentary[0];
+
+  t.is(post._id, postId, 'new post should be first one in the feed');
+  t.true(res.body[0].rank > 0, 'rank should be bigger than 0 after upvote');
+  t.truthy(post.embeddedUser.relevance.relevance, 'should populate user relevance');
+
+  console.log(post.embeddedUser);
   // user is populated
-  t.is(res.body[0].commentary[0].user._id, 'dummy1');
+  t.is(res.body[0].commentary[0].user, 'dummy1');
+});
+
+test.serial('Should get author relevance correctly', async (t) => {
+  t.plan(3);
+
+  const res = await r
+  .get('/api/user/user/dummy1')
+  .set('Host', 'crypto.localhost:3000');
+
+  t.is(res.status, 200);
+  t.truthy(res.body);
+  t.is(res.body.relevance, 2, 'user relevance should be 2');
+});
+
+test.serial('Should get voter relevance correctly', async (t) => {
+  t.plan(3);
+
+  const res = await r
+  .get('/api/user/user/dummy2')
+  .set('Host', 'crypto.localhost:3000');
+
+  t.is(res.status, 200);
+  t.truthy(res.body);
+  t.is(res.body.relevance, 1, 'voter relevance should be 1');
 });
 
 test.serial('Delete post', async (t) => {

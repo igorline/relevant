@@ -6,10 +6,13 @@ let Notification = require('../api/notification/notification.model');
 let Invest = require('../api/invest/invest.model');
 let MetaPost = require('../api/metaPost/metaPost.model');
 let Earnings = require('../api/earnings/earnings.model');
+let Relevance = require('../api/relevance/relevance.model');
+
 
 let dummyUsers = [
   {
     _id: 'dummy1',
+    handle: 'dummy1',
     provider: 'local',
     name: 'dummy1',
     phone: 'dummy1',
@@ -24,6 +27,7 @@ let dummyUsers = [
   },
   {
     _id: 'dummy2',
+    handle: 'dummy2',
     provider: 'local',
     name: 'dummy2',
     phone: 'dummy2',
@@ -38,6 +42,7 @@ let dummyUsers = [
   },
   {
     _id: 'dummy3',
+    handle: 'dummy3',
     provider: 'local',
     name: 'dummy3',
     phone: 'dummy3',
@@ -117,6 +122,7 @@ let cleanupData = () => {
   let clearPosts = Post.find({ title: 'Test post title' }).remove().exec() || null;
   let clearMeta = MetaPost.find({ title: 'Test post title' }).remove().exec() || null;
   let clearEarnings = Earnings.find({ user: { $in: dummies } }).remove().exec() || null;
+  let clearRelevance = Relevance.find({ user: { $in: dummies } }).remove().exec() || null;
 
   return Promise.all([
     ...clearUsers,
@@ -126,7 +132,8 @@ let cleanupData = () => {
     clearNotifications,
     clearUpvotes,
     clearMeta,
-    clearEarnings
+    clearEarnings,
+    clearRelevance
   ]);
 };
 
