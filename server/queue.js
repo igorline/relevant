@@ -461,7 +461,7 @@ function startTwitterUpdate() {
   TwitterWorker.updateTwitterPosts();
 }
 
-basicIncome();
+// basicIncome();
 // updateUserStats();
 // startStatsUpdate();
 // startTwitterUpdate();
