@@ -160,6 +160,7 @@ exports.login = async (req, res, next) => {
 
       user = new User({
         _id: req.body.profile.userName,
+        handle: req.body.profile.userName,
         confirmed: true,
         provider: 'twitter',
         role: 'user',

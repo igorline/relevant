@@ -8,6 +8,8 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
   _id: { type: String, required: true },
+  handle: { type: String, unique: true },
+  publicKey: { type: String, unique: true, sparse: true },
   name: String,
   email: { type: String, lowercase: true, select: false },
   phone: { type: String, select: false },
@@ -87,19 +89,19 @@ UserSchema.statics.events = new EventEmitter();
  */
 UserSchema
   .virtual('password')
-  .set(function(password) {
+  .set(function (password) {
     this._password = password;
     this.salt = this.makeSalt();
     this.hashedPassword = this.encryptPassword(password);
   })
-  .get(function() {
+  .get(function () {
     return this._password;
   });
 
 // Public profile information
 UserSchema
   .virtual('profile')
-  .get(function() {
+  .get(function () {
     return {
       name: this.name,
       role: this.role
@@ -109,7 +111,7 @@ UserSchema
 // Non-sensitive info we'll be putting in the token
 UserSchema
   .virtual('token')
-  .get(function() {
+  .get(function () {
     return {
       _id: this._id,
       role: this.role
@@ -123,7 +125,7 @@ UserSchema
 // Validate empty email
 UserSchema
   .path('email')
-  .validate(function(email) {
+  .validate(function (email) {
     if (authTypes.indexOf(this.provider) !== -1) return true;
     return email.length;
   }, 'Email cannot be blank');
@@ -131,7 +133,7 @@ UserSchema
 // Validate empty password
 UserSchema
   .path('hashedPassword')
-  .validate(function(hashedPassword) {
+  .validate(function (hashedPassword) {
     if (authTypes.indexOf(this.provider) !== -1) return true;
     return hashedPassword.length;
   }, 'Password cannot be blank');
@@ -139,9 +141,9 @@ UserSchema
 // Validate email is not taken
 UserSchema
   .path('email')
-  .validate(function(value) {
+  .validate(function (value) {
     let self = this;
-    this.constructor.findOne({ email: value }, function(err, user) {
+    this.constructor.findOne({ email: value }, function (err, user) {
       if (err) throw err;
       if (user) {
         if (self.id === user.id) return true;
@@ -185,7 +187,7 @@ UserSchema.methods = {
    * @return {Boolean}
    * @api public
    */
-  authenticate: function(plainText) {
+  authenticate: function (plainText) {
     return this.encryptPassword(plainText) === this.hashedPassword;
   },
 
@@ -195,7 +197,7 @@ UserSchema.methods = {
    * @return {String}
    * @api public
    */
-  makeSalt: function() {
+  makeSalt: function () {
     return crypto.randomBytes(16).toString('base64');
   },
 
@@ -206,25 +208,46 @@ UserSchema.methods = {
    * @return {String}
    * @api public
    */
-  encryptPassword: function(password) {
+  encryptPassword: function (password) {
     if (!password || !this.salt) return '';
     var salt = new Buffer(this.salt, 'base64');
     return crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha1').toString('base64');
   },
 
   // update user relevance and save record
-  updateRelevanceRecord: function() {
-    if (!this.relevanceRecord) this.relevanceRecord = [];
-    this.relevanceRecord.unshift({
-      time: new Date(),
-      relevance: this.relevance
-    });
-    this.relevanceRecord = this.relevanceRecord.slice(0, 10);
+  updateRelevanceRecord: async function (community) {
+    if (!community) community = 'relevant';
+    if (community === 'relevant') {
+      if (!this.relevanceRecord) this.relevanceRecord = [];
+      this.relevanceRecord.unshift({
+        time: new Date(),
+        relevance: this.relevance
+      });
+      this.relevanceRecord = this.relevanceRecord.slice(0, 10);
+      console.log('this is depricated, remove in future versions');
+    }
+
+    // TODO test updateRelevanceRecord
+    let relevance = await this.model('Relevance')
+    .findOneAndUpdate(
+      { user: this._id, community, global: true },
+      { upsert: true, new: true }
+    );
+    // let relevanceRecord = relevance.relevanceRecord;
+    // if (!relevanceRecord) relevanceRecord = [];
+    // relevanceRecord.unshift({
+    //   time: new Date(),
+    //   relevance: this.relevance
+    // });
+    // relevanceRecord = this.relevanceRecord.slice(0, 10);
+    // relevance.relevanceRecord = relevanceRecord;
+    relevance.updateRelevanceRecord();
+    await relevance.save();
     return this;
   },
 
   // get following and followers
-  getSubscriptions: function() {
+  getSubscriptions: function () {
     // let user = this.toObject();
     return this.model('Subscription').count({ follower: this._id })
     .then((following) => {
@@ -240,7 +263,16 @@ UserSchema.methods = {
       return this;
     });
   },
+};
 
+UserSchema.methods.getRelevance = async function (community) {
+  try {
+    let rel = await this.model('Relevance').findOne({ community, user: this._id, global: true });
+    this.relevance = rel ? rel.relevance : 0;
+    return this;
+  } catch (err) {
+    console.log('failed get relevance ', err);
+  }
 };
 
 UserSchema.methods.updatePostCount = async function () {

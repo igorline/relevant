@@ -15,7 +15,7 @@ class App extends Component {
     super(props, context);
   }
 
-  componentDidMount(){
+  componentDidMount() {
     // document.body.classList.remove('loading')
   }
 
@@ -24,7 +24,6 @@ class App extends Component {
       <main>
         <Header location={this.props.location} />
         {this.props.children}
-        <Footer location={this.props.location} />
       </main>
     );
   }

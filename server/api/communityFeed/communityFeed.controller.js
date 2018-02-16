@@ -9,7 +9,6 @@ function handleError(res, statusCode) {
   };
 }
 
-// Feed.find({}).remove().exec();
 
 exports.get = async (req, res) => {
   try {
@@ -31,6 +30,11 @@ exports.get = async (req, res) => {
       commentarySort = { postDate: -1 };
     }
 
+    let blocked = [];
+    if (req.user) {
+      blocked = [...req.user.blocked, ...req.user.blockedBy];
+    }
+
     let query = { community };
 
     if (tag) query = { tags: tag };
@@ -46,12 +50,16 @@ exports.get = async (req, res) => {
       populate: [
         {
           path: 'commentary',
-          match: { community, repost: { $exists: false } },
+          match: { community, repost: { $exists: false }, user: { $nin: blocked } },
           options: { sort: commentarySort },
           populate: {
-            path: 'user',
-            model: 'User'
-          }
+            path: 'embeddedUser.relevance',
+            select: 'relevance'
+          },
+          // populate: {
+          //   path: 'user',
+          //   model: 'User'
+          // }
         },
       ]
     });
@@ -65,10 +73,11 @@ exports.get = async (req, res) => {
       let postIds = [];
       posts.forEach(meta => {
         meta.commentary.forEach(post => {
-          post.user = post.embeddedUser.id;
+          // post.user = post.embeddedUser.id;
           postIds.push(post._id || post);
         });
       });
+      console.log(postIds);
       Post.sendOutInvestInfo(postIds, user._id);
     }
 

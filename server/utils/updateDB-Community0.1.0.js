@@ -1,0 +1,135 @@
+import User from '../api/user/user.model';
+import RelevanceStats from '../api/relevanceStats/relevanceStats.model';
+import Relevance from '../api/relevance/relevance.model';
+import Post from '../api/post/post.model';
+import CommunityFeed from '../api/communityFeed/communityFeed.model';
+import MetaPost from '../api/metaPost/metaPost.model';
+
+// CommunityFeed.find({ community: 'relevant' }).remove().exec();
+
+async function updateUserHandles() {
+  console.log('POPULATING HANDLES');
+  let users = await User.find({}, '_id handle');
+  let update = users.map(async user => {
+    user.handle = user._id;
+    console.log(user);
+    return await user.save();
+  });
+  return await Promise.all(update);
+}
+
+async function addStatCommuntyField() {
+  console.log('ADDING STAT COMMUNITY FIELD');
+  return await RelevanceStats.update(
+    { community: { $exists: false } },
+    { community: 'relevant' },
+    { multi: true }
+  ).exec();
+}
+
+async function migrateToCommunityReputation() {
+  try {
+    let users = await User.find({});
+    // update existing reps w community
+    await Relevance.update({ community: { $exists: false }, twitter: false }, { community: 'relevant' });
+    // await Relevance.update({ community: { $exists: false }, twitter: true }, { community: 'twitter' });
+
+    let allDone = users.map(async u => {
+      try {
+        let newRep = await Relevance.findOneAndUpdate(
+          { community: 'relevant', user: u._id },
+          { relevance: u.relevance,
+            level: u.level || 0,
+            rank: u.rank || 0,
+            percentRank: u.percentRank || 0,
+            relevanceRecord: u.relevanceRecord,
+            global: true,
+          },
+          { upsert: true, new: true }
+        );
+        console.log(newRep);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    return Promise.all(allDone);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+
+async function connectReputation() {
+  try {
+    await Post.update(
+      { community: { $exists: false }, twitter: false },
+      { community: 'relevant' },
+      { multi: true }
+    ).exec();
+    await Post.update(
+      { twitter: true },
+      { community: 'twitter' },
+      { multi: true }
+    ).exec();
+    let posts = await Post.find({});
+    let allDone = await posts.map(async p => {
+      try {
+        let community = p.community;
+        let rep = await Relevance.findOne({ user: p.user, community, global: true });
+        if (!rep) return console.log('no rep!');
+        p.embeddedUser.relevance = rep._id;
+        console.log(p.embeddedUser);
+        return await p.save();
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    return await Promise.all(allDone);
+  } catch(err) {
+    console.log(err);
+  }
+}
+
+
+async function createRelevantCommunityFeed() {
+  let community = 'relevant';
+  let metaIds = await Post.find({ community }, 'metaPost');
+  metaIds = metaIds.map(p => p.metaPost);
+  console.log(metaIds);
+
+  let metaPosts = await MetaPost.find(
+    { _id: { $in: metaIds } },
+    '_id rank latestPost tags categories keywords'
+  );
+
+  let allDone = await metaPosts.map(async meta => {
+    let feedItem = await CommunityFeed.findOneAndUpdate(
+      { community, metaPost: meta._id },
+      {
+        latestPost: meta.latestPost,
+        tags: meta.tags,
+        categories: meta.categories,
+        keywords: meta.keywords,
+        rank: meta.rank || 0
+      },
+      { upsert: true, new: true }
+    );
+    console.log(feedItem);
+    return feedItem;
+  });
+  return await Promise.all(allDone);
+}
+
+async function runUpdates() {
+  try {
+    // await updateUserHandles();
+    // await addStatCommuntyField();
+    // await migrateToCommunityReputation();
+    // await connectReputation();
+    // await createRelevantCommunityFeed();
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+// runUpdates();

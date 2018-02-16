@@ -15,10 +15,14 @@ export default class InfScroll extends Component {
     this.pageLoaded = this.props.pageStart;
     this.attachScrollListener();
     this.props.loadMore(this.pageLoaded);
+    this.data = this.props.data;
   }
 
   componentDidUpdate() {
-    this.attachScrollListener();
+    if (this.data.length !== this.props.data.length) {
+      this.attachScrollListener();
+      this.data = this.props.data;
+    }
   }
 
   componentWillUnmount() {
@@ -32,7 +36,6 @@ export default class InfScroll extends Component {
 
   detachScrollListener() {
     let scrollEl = window;
-    console.log('detach');
     if (this.props.useWindow === false) {
       scrollEl = this.scrollComponent.parentNode;
     }
@@ -75,7 +78,8 @@ export default class InfScroll extends Component {
         offset = this.calculateTopPosition(el) +
                      (el.offsetHeight -
                      scrollTop -
-                     window.innerHeight);
+                     window.innerHeight
+                     );
       }
     } else if (this.props.isReverse) {
       offset = el.parentNode.scrollTop;
@@ -87,7 +91,6 @@ export default class InfScroll extends Component {
       this.detachScrollListener();
       // Call loadMore after detachScrollListener to allow for non-async loadMore functions
       if (typeof this.props.loadMore === 'function') {
-        console.log('load page ', this.pageLoaded);
         this.props.loadMore(this.pageLoaded += 1);
       }
     }

@@ -75,7 +75,7 @@ exports.index = async (req, res) => {
       populate: [
         {
           path: 'embeddedUser.relevance',
-          // select: 'relevance name image'
+          select: 'relevance'
         },
         {
           path: 'reposted',
@@ -95,11 +95,11 @@ exports.index = async (req, res) => {
         meta.commentary.forEach(post => {
           if (!post.user) post.user = post.embeddedUser.id;
           postIds.push(post._id || post);
+          console.log(post.embeddedUser);
         });
       });
       Post.sendOutInvestInfo(postIds, userId);
     }
-    console.log(posts)
     res.status(200).json(posts);
   } catch (err) {
     handleError(res, err);

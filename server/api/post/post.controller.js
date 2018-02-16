@@ -5,6 +5,7 @@ import request from 'request';
 import { EventEmitter } from 'events';
 import * as proxyHelpers from './html';
 import MetaPost from '../metaPost/metaPost.model';
+import Relevance from '../relevance/relevance.model';
 
 import Post from './post.model';
 import User from '../user/user.model';
@@ -21,62 +22,7 @@ import { PAYOUT_TIME } from '../../config/globalConstants';
 
 let requestAsync = promisify(request);
 
-// requestAsync('https://news.google.com/rss/story/dbtBhhEGtGqVUXM?ned=us&gl=US&hl=en')
-// .then(res => {
-//   // console.log(res.body)
-//   let $ = cheerio.load(res.body);
-//   $('item').each((i, item) => {
-//     let $item = $(item);
-//     $item.children().each((i, c) => {
-//       let $c = $(c);
-//       if ($c.prop("tagName") === 'LINK') console.log('LINK : ', $c[0].next.data)
-//       else {
-//         console.log($c.prop("tagName"), ' : ', $c.text());
-//       }
-//     });
-//     let $$ = cheerio.load($item.children('description').text());
-//     // console.log(description.html())
-//     console.log('IMAGE : ', $$('img').attr('src'));
-//     $$('a').each((i, el) => {
-//       let $el = $(el);
-//       console.log($el.text(), ' : ',  $el.attr('href'));
-//     })
-//   })
-
-// })
-// .catch(err => console.log(err));
-
-// Post.find({ })
-// .then(posts => {
-//   posts.forEach(p => {
-//     MetaPost.find({ _id: p.metaPost }).then(m => {
-//       console.log(p.metaPost);
-//       console.log(m._id);
-//     });
-//   });
-// });
-
-// MetaPost.find({})
-// .populate('commentary')
-// .then(metas => metas.forEach(m => {
-//   m.commentary.forEach(c => {
-//     // console.log(c.metaPost);
-//     c.metaPost = m._id;
-//     c.save();
-//   });
-//   // console.log(m.commentary);
-// }));
-
-
-require('../../processing/posts');
-// Post.collection.createIndex({ title: 'text', shortText: 'text', description: 'text', keywords: 'text', tags: 'text'});
-// Post.collection.indexes(function (err, indexes) {
-//   console.log(indexes);
-// });
-
-// Post.collection.dropIndexes(function (err, results) {
-//   console.log(err);
-// });
+// require('../../processing/posts');
 
 async function findRelatedPosts(metaId) {
   try {
@@ -95,8 +41,6 @@ async function findRelatedPosts(metaId) {
     .limit(5);
     posts.forEach((p, i) => {
       console.log(i, ' ' + p.title);
-      // console.log(p.description);
-      // console.log(p.keywords);
     });
     return posts;
   } catch (err) {
@@ -182,8 +126,7 @@ request.defaults({ maxRedirects: 22, jar: true });
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return (err) => {
-    console.log(err);
-    res.status(statusCode).send(err);
+    throw err;
   };
 }
 
@@ -315,8 +258,8 @@ exports.index = async (req, res) => {
   try {
     posts = await Post.find(query)
     .populate({
-      path: 'user',
-      select: 'name image relevance',
+      path: 'embeddedUser.relevance',
+      select: 'relevance'
     })
     .limit(limit)
     .skip(skip)
@@ -324,7 +267,7 @@ exports.index = async (req, res) => {
 
     res.status(200).json(posts);
   } catch (err) {
-    return res.send(500, err);
+    return handleError(res)(err);
   }
 
   // TODO worker thread
@@ -362,20 +305,26 @@ exports.userPosts = async (req, res) => {
     .populate({
       path: 'repost.post',
       populate: {
-        path: 'user',
-        select: 'name image relevance',
+        path: 'embeddedUser.relevance',
+        select: 'relevance'
+        // path: 'user',
+        // select: 'name image relevance',
       }
     })
     .populate({
-      path: 'user',
-      select: 'name image relevance',
+      path: 'embeddedUser.relevance',
+      select: 'relevance'
     })
+    // .populate({
+    //   path: 'user',
+    //   select: 'name image relevance',
+    // })
     .limit(limit)
     .skip(skip)
     .sort(sortQuery);
   } catch (err) {
     console.log(err);
-    return res.send(500, err);
+    return handleError(res)(err);
   }
 
   res.status(200).json(posts);
@@ -494,8 +443,8 @@ exports.findById = async req => {
 
   post = await Post.findOne({ _id: req.params.id, user: { $nin: blocked } })
   .populate({
-    path: 'user',
-    select: 'name image relevance',
+    path: 'embeddedUser.relevance',
+    select: 'relevance'
   });
 
   // TODO worker thread
@@ -599,7 +548,7 @@ exports.create = (req, res) => {
   let community = req.subdomain || 'relevant';
 
   if (req.user.balance < 1) {
-    return handleError(res)(new Error('You need to have at least one coin to post'));
+    throw new Error('You need to have at least one coin to post');
   }
 
   if (category) tags.push(category);
@@ -695,9 +644,17 @@ exports.create = (req, res) => {
   })
   .then((user) => {
     author = user;
+    return Relevance.findOneAndUpdate({
+      user: user._id,
+      community: newPost.community,
+      global: true
+    }, {}, { new: true, upsert: true });
+  })
+  .then(relevance => {
     newPost.embeddedUser = {
-      name: user.name,
-      image: user.image
+      name: author.name,
+      image: author.image,
+      relevance: relevance._id,
     };
     return newPost.save();
   })
@@ -810,7 +767,9 @@ exports.create = (req, res) => {
   })
   // this happens async
   .then(() => Post.sendOutMentions(mentions, newPost, author))
-  .catch(handleError(res));
+  .catch(err => {
+    throw err;
+  });
 };
 
 exports.delete = (req, res) => {
