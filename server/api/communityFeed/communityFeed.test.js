@@ -118,7 +118,6 @@ test.serial('Community Get Feed', async (t) => {
   .get('/api/communityFeed')
   .set('Host', 'crypto.localhost:3000');
 
-
   t.is(res.status, 200, 'should not return error');
   t.truthy(res.body.length, 'there should be a feed');
 
