@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import Header from './common/header.component';
 import Footer from './common/footer.component';
+import * as authActions from '../../actions/auth.actions';
 
 if (process.env.BROWSER === true) {
   console.log('BROWSER, import css');
@@ -17,6 +19,7 @@ class App extends Component {
 
   componentDidMount() {
     // document.body.classList.remove('loading')
+    this.props.actions.getUser();
   }
 
   render() {
@@ -29,12 +32,14 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   user: state.auth.user
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  dispatch
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({
+    ...authActions,
+  }, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

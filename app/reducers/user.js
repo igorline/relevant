@@ -51,7 +51,10 @@ export default function auth(state = initialState, action) {
         ...state,
         users: {
           ...state.users,
-          [action.payload._id]: action.payload,
+          [action.payload._id]: {
+            ...state.users[action.payload._id],
+            ...action.payload,
+          }
         }
       };
     }

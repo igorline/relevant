@@ -86,7 +86,6 @@ class PostButtons extends Component {
     let votedDown;
     let buttonOpacity = { opacity: 1 };
 
-    console.log(this.props.myPostInv);
     if (this.props.myPostInv) {
       vote = this.props.myPostInv[post.id];
       if (vote) {

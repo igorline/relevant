@@ -170,9 +170,15 @@ class CreatePostContainer extends Component {
     let words = [];
     lines.forEach(line => words = words.concat(line.split(' ')));
 
+    let shouldParseUrl = false;
+    let prevLength = this.body.length || 0;
+    if (length - prevLength > 1) shouldParseUrl = true;
+    if (words[words.length - 1] == '') shouldParseUrl = true;
+    if (postBody[postBody.length - 1] == '\n') shouldParseUrl = true;
+
     let postUrl = words.find(word => URL_REGEX.test(word.toLowerCase()));
 
-    if (postUrl && postUrl !== this.url) {
+    if (shouldParseUrl && postUrl && postUrl !== this.url) {
       this.url = postUrl;
       this.createPreview();
     }
@@ -272,6 +278,7 @@ class CreatePostContainer extends Component {
         />
       );
     }
+    const community = this.props.auth.community;
     return (
       <div className="postContainer createPostContainer">
         <div className="urlPreview">
@@ -303,13 +310,13 @@ class CreatePostContainer extends Component {
             }
           </div>
           <div>
-            <SelectCategory
+            {community === 'crypto' ? null : <SelectCategory
               categories={this.props.tags.parentTags}
               onChange={this.setCategory}
-            />
+            />}
             <button
               onClick={() => this.createPost()}
-              disabled={!(this.state.category && this.body.length)}
+              disabled={!(community === 'crypto' || this.state.category) || !this.body.length}
             >
               Create Post
             </button>
