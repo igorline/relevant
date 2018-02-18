@@ -21,6 +21,7 @@ import Waitlist from './components/admin/waitlist.component';
 import Downvotes from './components/admin/downvotes.container';
 import Email from './components/admin/email.component';
 import TopPosts from './components/admin/topPosts.component';
+import BondingCurve from './components/bonding-curve-ui/src/App';
 
 // Redirects to /login by default
 const userIsAuthenticated = UserAuthWrapper({
@@ -80,6 +81,7 @@ let routes = (store) => {
       { path: 'resetPassword/:token', component: Auth },
       { path: 'confirm/:user/:code', component: Auth },
       { path: 'forgot', component: Auth },
+      { path: 'bonding', component: BondingCurve },
       { path: '*', component: NotFound }
     ]
   };
