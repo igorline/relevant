@@ -57,31 +57,31 @@ exports.update = async (req, res) => {
 
     console.log('new tag ', tag);
 
-    Post.update(
+    await Post.update(
       { category: oldId },
       { $set: { category: newId } },
       { multi: true }
     ).exec();
 
-    Tag.update(
+    await Tag.update(
       { parents: oldId },
       { $addToSet: { 'parents.$': newId }, $pull: { 'parents.$': oldId } },
       { multi: true }
     ).exec();
 
-    Relevance.update(
+    await Relevance.update(
       { category: oldId },
       { $set: { category: newId } },
       { multi: true }
     ).exec();
 
-    Relevance.update(
+    await Relevance.update(
       { tag: oldId },
       { $set: { tag: newId } },
       { multi: true }
     ).exec();
 
-    Relevance.mergeDuplicates();
+    await Relevance.mergeDuplicates();
   } catch (err) { return handleError(res)(err); }
   return res.status(200).json(tag);
 };
