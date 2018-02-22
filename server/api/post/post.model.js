@@ -164,7 +164,7 @@ PostSchema.pre('remove', async function (next) {
     }
 
     let promises = [note, feed, comment, meta, twitterFeed];
-    return await Promise.all(promises);
+    await Promise.all(promises);
   } catch (err) {
     console.log('error deleting post references ', err);
   }

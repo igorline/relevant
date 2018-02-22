@@ -1,15 +1,9 @@
-import { promisify } from 'util';
-import request from 'request';
 import Meta from '../api/metaPost/metaPost.model';
 import Post from '../api/post/post.model';
-import * as proxyHelpers from '../api/post/html';
-import { text } from '../../app/utils';
 import * as postController from '../api/post/post.controller';
 import TwitterFeed from '../api/twitterFeed/twitterFeed.model';
 import Treasury from '../api/treasury/treasury.model';
 import { TWITTER_DECAY } from '../config/globalConstants';
-
-let requestAsync = promisify(request);
 
 const TENTH_LIFE = 1 * 6 * 60 * 60 * 1000;
 
@@ -21,7 +15,6 @@ const queue = require('queue');
 let allUsers;
 
 let userCounter = 0;
-let lastUser;
 let processedTweets = 0;
 
 
@@ -109,19 +102,18 @@ let twitterCount = 0;
 //   avgTwitterScore
 // }
 
-async function computeRank(metaPost, user) {
-  // let rank = metaPost.twitterScore;
+async function computeRank(metaPost) {
   let rank = 0
-  + metaPost.seenInFeedNumber;
-  + Math.log(metaPost.twitterScore + 1) * 5;
-  let feedRelevance = metaPost.feedRelevance ? Math.log(metaPost.feedRelevance + 1) : 0;
+    + metaPost.seenInFeedNumber
+    + Math.log(metaPost.twitterScore + 1) * 5;
 
+  // use user's relevance score to rank feed?
+  // let feedRelevance = metaPost.feedRelevance ? Math.log(metaPost.feedRelevance + 1) : 0;
   // rank += feedRelevance * 3;
 
   avgTwitterScore = (rank + avgTwitterScore * twitterCount) / (twitterCount + 1);
   twitterCount++;
   let personalize = avgTwitterScore * 10;
-  // console.log('personalize ', personalize);
 
   let newRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
   let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(personalize + rank + 1);
@@ -135,7 +127,6 @@ async function computeRank(metaPost, user) {
   // console.log('own rank', rank + 50);
   // console.log('avgTwitterScore ', avgTwitterScore);
   // console.log('twitterCount ', twitterCount);
-
 
   return { newRank, inFeedRank };
 }
@@ -154,11 +145,7 @@ async function updateRank() {
     let metaPosts = await Meta.find({ twitter: true }).sort({ lastTwitterUpdate: -1 }).limit(20000);
     console.log('got posts, updating...');
     metaPosts.forEach(async metaPost => {
-      // console.log(metaPost.title);
       let { newRank, inFeedRank } = await computeRank(metaPost);
-      // console.log(metaPost.title);
-      // console.log(newRank);
-      // console.log(inFeedRank);
       await TwitterFeed.update(
         { metaPost: metaPost._id, inTimeline: { $ne: true } },
         { rank: newRank },
@@ -280,25 +267,22 @@ async function processTweet(tweet, user) {
   ).exec();
 
 
-  let updateAllUsers = allUsers.map(async u => {
-    return await TwitterFeed.update(
+  let updateAllUsers = allUsers.map(async u =>
+    await TwitterFeed.update(
       { user: u, metaPost: metaPost._id },
       feedObject,
       { upsert: true }
-    ).exec();
-  });
+    ).exec()
+  );
 
   await Promise.all(updateAllUsers);
 
   // update current user
-  let userFeed = await TwitterFeed.findOneAndUpdate(
+  await TwitterFeed.findOneAndUpdate(
     { user: user._id, metaPost: metaPost._id },
     { ...feedObject, inTimeline: true, rank: inFeedRank },
     { upsert: true, new: true }
   );
-
-  // .remove()
-  // .exec();
 
   // update rank of existing posts
   await TwitterFeed.update(
@@ -306,68 +290,60 @@ async function processTweet(tweet, user) {
     { ...feedObject, rank: inFeedRank },
     { upsert: false, multi: true }
   );
-
-
-  // if it doesn't - create post and upsert metapost
-  // console.log('text ', tweet.full_text);
-  // console.log('truncated ', tweet.truncated);
-  // console.log('urls ', tweet.entities.urls);
-  // console.log('entities ', tweet.entities);
-  // console.log('user', tweet.user.screen_name);
-  // console.log('retweet', tweet.retweet_count);
-  // console.log('fav', tweet.favorite_count);
 }
 
 async function getUserFeed(user, i) {
-  const client = new Twitter({
-    consumer_key: process.env.TWITTER_ID,
-    consumer_secret: process.env.TWITTER_SECRET,
-    access_token_key: user.twitterAuthToken,
-    access_token_secret: user.twitterAuthSecret
-  });
-
-  // console.log(user.lastTweetId.toString());
-
-  const params = {
-    since_id: user.lastTweetId ? user.lastTweetId.toString() : undefined,
-    screen_name: user.twitterHandle,
-    exclude_replies: true,
-    count: 40,
-    // include_entities: true,
-    tweet_mode: 'extended'
-  };
-
-  let feed = await client.get('statuses/home_timeline', params);
-
-  if (feed && feed.length) {
-    // let lastId = feed[feed.length - 1].id;
-    let lastId = feed[0].id;
-    // console.log('last id ', lastId);
-    user.lastTweetId = lastId;
-    user = await user.save();
-    // console.log(user.lastTweetId);
-  }
-
-  if (!feed) feed = [];
-
-  feed.map((tweet, j) => {
-    q.push(async cb => {
-      try {
-
-        let post = await processTweet(tweet, user);
-        if (j === feed.length - 1) {
-          console.log('processing user ', userCounter + 1, ' out of ', allUsers.length, ' tweets: ', feed.length);
-          userCounter++;
-        };
-
-        cb();
-        return post;
-      } catch (err) {
-        console.log(err);
-      }
+  try {
+    const client = new Twitter({
+      consumer_key: process.env.TWITTER_ID,
+      consumer_secret: process.env.TWITTER_SECRET,
+      access_token_key: user.twitterAuthToken,
+      access_token_secret: user.twitterAuthSecret
     });
-  });
-  return Promise.all(feed);
+
+    // console.log(user.lastTweetId.toString());
+
+    const params = {
+      since_id: user.lastTweetId ? user.lastTweetId.toString() : undefined,
+      screen_name: user.twitterHandle,
+      exclude_replies: true,
+      count: 40,
+      tweet_mode: 'extended'
+    };
+
+    let feed = await client.get('statuses/home_timeline', params);
+
+    if (feed && feed.length) {
+      // let lastId = feed[feed.length - 1].id;
+      let lastId = feed[0].id;
+      // console.log('last id ', lastId);
+      user.lastTweetId = lastId;
+      user = await user.save();
+      // console.log(user.lastTweetId);
+    }
+
+    if (!feed) feed = [];
+
+    feed.map((tweet, j) =>
+      q.push(async cb => {
+        try {
+          let post = await processTweet(tweet, user);
+          if (j === feed.length - 1) {
+            console.log('processing user ', userCounter + 1, ' out of ', allUsers.length, ' tweets: ', feed.length);
+            userCounter++;
+          }
+          cb();
+          return post;
+        } catch (err) {
+          console.log(err);
+          return null;
+        }
+      })
+    );
+    return Promise.all(feed);
+  } catch (err) {
+    console.log('couldn\'t get user feed ', err);
+  }
 }
 
 async function cleanup(users) {
@@ -380,34 +356,26 @@ async function cleanup(users) {
 
   console.log('clearing ', posts.length, ' posts');
 
-  let removePosts = await posts.map(p => {
-    // console.log(p.title);
-    // console.log(p.postDate);
-    // console.log(p.relevance);
-    return p.remove();
-  });
+  let removePosts = await posts.map(p => p.remove());
 
   let processedUsers = users.map(async (u, i) => {
     try {
       let trim = await TwitterFeed.find({ user: '_common_Feed_' })
       .sort({ rank: -1 })
       .skip(1000);
-      // .then(f => console.log(f));
       let ids = trim.map(t => t._id);
-      await TwitterFeed.remove({ _id: { $in: ids }});
-      // .exec();
+      await TwitterFeed.remove({ _id: { $in: ids } });
 
       trim = await TwitterFeed.find({ user: u._id })
       .sort({ rank: -1 })
       .skip(1000);
       ids = trim.map(t => t._id);
-      // .then(f => console.log(f))
-      await TwitterFeed.remove({ _id: { $in: ids }});
+      await TwitterFeed.remove({ _id: { $in: ids } });
 
-      // console.log('processing user ', i, ' out of ', users.length);
       return await getUserFeed(u, i);
     } catch (err) {
-      console.log(err);
+      console.log('error getting user feed ', err);
+      return null;
     }
   });
 
@@ -466,11 +434,11 @@ async function getUsers(userId) {
       }
     });
   } catch (err) {
-    console.log(err);
+    console.log('twitter error ', err);
   }
 }
 
-// setTimeout(getUsers, 20000);
+setTimeout(getUsers, 20000);
 // getUsers();
 module.exports = {
   updateTwitterPosts: getUsers
