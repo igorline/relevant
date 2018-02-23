@@ -32,13 +32,22 @@ exports.addWaitlist = async (req, res) => {
     let email = req.body.email;
     if (!email) throw new Error('no email');
     email = email.trim();
-    await List.findOneAndUpdate({ email }, req.body, { upsert: true }).exec();
+    let waitlist = await List.findOneAndUpdate({ email }, req.body, { upsert: true, new: true }).exec();
+    res.status(200).json(waitlist);
   } catch (err) {
     handleError(res)(err);
   }
-  res.sendStatus(200);
 };
 
+/*
+  req.body should contains an array of invite objects
+  [{
+    invitedBy: handle,
+    invitedByString: inviter name,
+    name: invitee name
+    email: eamil
+  }]
+ */
 exports.invite = async (req, res) => {
   let invites = req.body;
   invites = await InviteController.createInvites(invites);
