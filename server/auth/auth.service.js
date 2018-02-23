@@ -103,7 +103,7 @@ function hasRole(roleRequired) {
     if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
       next();
     } else {
-      res.send(403);
+      res.sendStatus(403);
     }
   });
 }

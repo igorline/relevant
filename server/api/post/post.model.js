@@ -166,23 +166,25 @@ PostSchema.pre('remove', async function (next) {
       await meta.remove();
     }
 
-    this.tags.forEach((tag) => {
-      this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
-        if (!foundTag) return next();
-        if (foundTag.count > 1) {
-          foundTag.count--;
-          foundTag.save((err) => {
-            if (err) console.log('saving tag error');
-          });
-        } else {
-          foundTag.remove();
-        }
+    if (!this.twitter) {
+      this.tags.forEach((tag) => {
+        this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
+          if (!foundTag) return next();
+          if (foundTag.count > 1) {
+            foundTag.count--;
+            foundTag.save(err => {
+              if (err) console.log('saving tag error');
+            });
+          } else {
+            console.log('removing tag ', foundTag.name);
+            foundTag.remove();
+          }
+        });
       });
-    });
+    }
 
     let promises = [note, feed, comment, meta, twitterFeed];
-    let finished = await Promise.all(promises);
-    // console.log(finished);
+    await Promise.all(promises);
   } catch (err) {
     console.log('error deleting post references ', err);
   }

@@ -199,7 +199,7 @@
     "webpack-hot-middleware": "^2.2.0"
   },
   "engines": {
-    "node": "8.6.0"
+    "node": ">=8.6.0"
   },
   "ava": {
     "babel": "inherit",

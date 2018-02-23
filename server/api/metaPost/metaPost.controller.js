@@ -30,12 +30,11 @@ exports.related = async req => {
 
 exports.index = async (req, res) => {
   try {
-    // let community = req.subdomain;
     let userId;
     let blocked = [];
     if (req.user) {
       userId = req.user._id;
-      blocked = [...req.user.blocked, ...req.user.blockedBy];
+      blocked = [...req.user.blocked || [], ...req.user.blockedBy || []];
     }
 
     let limit = parseInt(req.query.limit, 10) || 5;
