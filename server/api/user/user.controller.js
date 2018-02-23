@@ -349,9 +349,10 @@ exports.list = async (req, res) => {
  * Creates a new user
  */
 exports.create = async (req, res) => {
-  let token;
   try {
     let community = req.subdomain || 'relevant';
+
+    let token;
     let rand = await crypto.randomBytes(32);
     let confirmCode = rand.toString('hex');
 
@@ -399,11 +400,11 @@ exports.create = async (req, res) => {
 
     user = await user.initialCoins();
     user = await user.save();
+
+    return res.status(200).json({ token, user });
   } catch (err) {
     return handleError(res, err);
   }
-
-  return res.status(200).json({ token });
 };
 
 /**
@@ -447,13 +448,22 @@ exports.show = async function (req, res) {
 
 /**
  * Deletes a user
- * restriction: 'admin'
+ * restriction: 'admin' or user
  */
-exports.destroy = (req, res) => {
-  User.findByIdAndRemove(req.params.id, (err) => {
-    if (err) return res.send(500, err);
-    return res.sendStatus(204);
-  });
+exports.destroy = async (req, res) => {
+  try {
+    if (!req.user ||
+      (!req.user.role === 'admin' &&
+      req.user._id !== req.params.id)) {
+      throw new Error('no right to delete');
+    }
+    await User.findByIdAndRemove(req.params.id, (err) => {
+      if (err) return res.send(500, err);
+      return res.sendStatus(204);
+    });
+  } catch (err) {
+    throw err;
+  }
 };
 
 exports.update = async (req, res) => {
