@@ -22,11 +22,14 @@ import DiscoverPosts from './discoverPosts.component';
 import DiscoverUsers from './discoverUsers.component';
 import Loading from '../common/loading.component';
 
+let BondingCurve = null;
+
 const POST_PAGE_SIZE = 5;
 
 if (process.env.BROWSER === true) {
   require('../post/post.css');
   require('./discover.css');
+  BondingCurve = require('bonded-token').default;
 }
 
 const standardRoutes = [
@@ -145,19 +148,23 @@ export class Discover extends Component {
     // let isLoaded = this.getLoadedState();
 
     return (
-      <div className="discoverContainer postContainer">
+      <div className="discoverContainer">
 
-        <DiscoverTabs
-          tag={tag}
-          tabs={this.state.routes}
-          currentTab={this.state.tabIndex}
-        />
-        <CreatePost {...this.props} />
-        {tag &&
-          <h1>{tag}</h1>
-        }
-        { this.renderFeed() }
-        {/* isLoaded ? this.renderFeed() : <Loading />*/}
+        {BondingCurve ? <BondingCurve /> : null}
+        <div className="postContainer">
+
+          <DiscoverTabs
+            tag={tag}
+            tabs={this.state.routes}
+            currentTab={this.state.tabIndex}
+          />
+          <CreatePost {...this.props} />
+          {tag &&
+            <h1>{tag}</h1>
+          }
+          { this.renderFeed() }
+          {/* isLoaded ? this.renderFeed() : <Loading />*/}
+        </div>
       </div>
     );
   }
