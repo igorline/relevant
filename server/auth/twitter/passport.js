@@ -112,7 +112,7 @@ export async function addTwitterProfile(param) {
 exports.login = async (req, res, next) => {
   try {
     let profile = req.body.profile;
-    if (!profile.userID) throw new Error('missing twitter id');
+    if (!profile || !profile.userID) throw new Error('missing twitter id');
     let relUser = req.user;
 
     let user = await User.findOne(

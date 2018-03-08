@@ -1,4 +1,1 @@
 
-[submodule "app/web/components/bonding-curve-ui"]
-	path = app/web/components/bonding-curve-ui
-	url = https://github.com/relevant-community/bonding-curve-ui.git

@@ -77,7 +77,6 @@ exports.get = async (req, res) => {
           postIds.push(post._id || post);
         });
       });
-      console.log(postIds);
       Post.sendOutInvestInfo(postIds, user._id);
     }
 
