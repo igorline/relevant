@@ -151,7 +151,7 @@ exports.sendEmailFunc = async function(_invite) {
         >
          <img
           alt="iOS App Store"
-          style="width:auto; height: 40px; max-width:none;"
+          style="width:auto; max-height: 40px; height: 40px; max-width:none;"
           src="https://relevant.community/img/appstore.png"/>
         </a>
 
@@ -162,7 +162,7 @@ exports.sendEmailFunc = async function(_invite) {
         >
           <img
             alt="Google Play Store"
-            style="width:auto; height: 40px; max-width:none;"
+            style="width:auto; max-height: 40px; height: 40px; max-width:none;"
             src="https://relevant.community/img/googleplaystore.png">
           </a>
       </p>

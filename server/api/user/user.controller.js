@@ -25,7 +25,7 @@ import Feed from '../feed/feed.model';
 // User.findOneAndUpdate({ _id: 'jay' }, { role: 'user' }).exec();
 // User.findOneAndUpdate({ _id: 'phillip' }, { role: 'user' }).exec();
 // User.findOneAndUpdate({ _id: 'balasan' }, { role: 'admin' }).exec();
-// User.findOneAndUpdate({ _id: 'test' }, { role: 'admin' }).exec();
+// User.findOneAndUpdate({ _id: 'test' }, { role: 'admin', confirmed: true }).exec();
 // async function notifications() {
 //   try {
 //     let users = await User.find({ 'deviceTokens.0': { $exists: true } });
