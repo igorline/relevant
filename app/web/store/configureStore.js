@@ -1,6 +1,5 @@
 import { routerMiddleware } from 'react-router-redux';
 import createSocketIoMiddleware from 'redux-socket.io';
-// import io from 'socket.io-client';
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from '../../reducers';
@@ -11,6 +10,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 let socket;
 let io;
+
 if (process.env.BROWSER) {
   console.log('This is a browser, initialising socket io');
   io = require('socket.io-client');
@@ -19,7 +19,6 @@ if (process.env.BROWSER) {
   socket.on('pingKeepAlive', () => {
     socket.emit('pingResponse');
   });
-
 }
 
 export default function configureStore(initialState = {}, history) {
@@ -31,16 +30,6 @@ export default function configureStore(initialState = {}, history) {
     // only use the socket middleware on client and not on server
     let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
     middleware = applyMiddleware(thunk, routerMiddleware(history), socketIoMiddleware);
-
-    socket.on('connect', () => {
-      let s = store.getState();
-      if (s.auth && s.auth.user) {
-        socket.emit('action', {
-          type: 'server/storeUser',
-          payload: s.auth.user._id
-        });
-      }
-    });
   } else {
     middleware = applyMiddleware(thunk, routerMiddleware(history));
   }
@@ -51,6 +40,18 @@ export default function configureStore(initialState = {}, history) {
   }
   // Create final store and subscribe router in debug env ie. for devtools
   const store = middleware(createStore)(rootReducer, initialState);
+
+  if (process.env.BROWSER) {
+    socket.on('connect', () => {
+      let state = store.getState();
+      if (state.auth && state.auth.user) {
+        socket.emit('action', {
+          type: 'server/storeUser',
+          payload: state.auth.user._id
+        });
+      }
+    });
+  }
 
   if (module.hot) {
     module.hot.accept('../../reducers', () => {
