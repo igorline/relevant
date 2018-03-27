@@ -100,7 +100,7 @@ exports.index = async (req, res) => {
   let blocked = [];
   if (req.user) {
     userId = req.user._id;
-    blocked = [...req.user.blocked, ...req.user.blockedBy];
+    blocked = [...req.user.blocked || [], ...req.user.blockedBy || []];
   }
 
   let limit = parseInt(req.query.limit, 10) || 5;

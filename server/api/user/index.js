@@ -25,7 +25,7 @@ router.put('/', auth.isAuthenticated(), controller.update);
 router.put('/block', auth.isAuthenticated(), controller.block);
 router.put('/unblock', auth.isAuthenticated(), controller.unblock);
 
-router.delete('/:id', auth.hasRole('admin'), controller.destroy);
+router.delete('/:id', auth.isAuthenticated(), controller.destroy);
 
 
 module.exports = router;

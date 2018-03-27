@@ -146,35 +146,25 @@ PostSchema.pre('remove', async function (next) {
       await meta.remove();
     }
 
-    // let post = this.model('Post').remove({ 'repost.post': this._id });
-    // let user = this.model('User').update(
-    //     { _id: this.user },
-    //     { $inc: { postCount: -1 } },
-    //     { multi: true },
-    //     next
-    // );
-
-    this.tags.forEach((tag) => {
-      console.log(tag, 'tag');
-      this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
-        if (!foundTag) return next();
-        console.log('foundTag ', foundTag._id);
-        if (foundTag.count > 1) {
-          foundTag.count--;
-          console.log('changing tag count for ', foundTag._id);
-          foundTag.save((err) => {
-            if (err) console.log('saving tag error');
-          });
-        } else {
-          console.log('removing tag ', foundTag.name);
-          foundTag.remove();
-        }
+    if (!this.twitter) {
+      this.tags.forEach((tag) => {
+        this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
+          if (!foundTag) return next();
+          if (foundTag.count > 1) {
+            foundTag.count--;
+            foundTag.save(err => {
+              if (err) console.log('saving tag error');
+            });
+          } else {
+            console.log('removing tag ', foundTag.name);
+            foundTag.remove();
+          }
+        });
       });
-    });
+    }
 
     let promises = [note, feed, comment, meta, twitterFeed];
-    let finished = await Promise.all(promises);
-    // console.log(finished);
+    await Promise.all(promises);
   } catch (err) {
     console.log('error deleting post references ', err);
   }
