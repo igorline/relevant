@@ -44,6 +44,7 @@ let PostSchema = new Schema({
   category: { type: String, ref: 'Tag' },
   user: { type: String, ref: 'User', index: true },
   embeddedUser: {
+    handle: String,
     id: String,
     name: String,
     image: String,
@@ -128,7 +129,7 @@ PostSchema.index({ paidOut: 1, payoutTime: 1 });
 // PostSchema.createIndex({"subject":"text","content":"text"})
 // PostSchema.index({ title: 'text', body: 'text' });
 
-PostSchema.pre('save', async function (next) {
+PostSchema.pre('save', async function save(next) {
   try {
     let sign = 1;
     if (this.rankRelevance < 0) {
@@ -149,7 +150,7 @@ PostSchema.pre('save', async function (next) {
 });
 
 
-PostSchema.pre('remove', async function (next) {
+PostSchema.pre('remove', async function remove(next) {
   try {
     let note = this.model('Notification').remove({ post: this._id });
 
@@ -157,13 +158,22 @@ PostSchema.pre('remove', async function (next) {
     let twitterFeed = await this.model('TwitterFeed').remove({ post: this._id });
 
     let comment = this.model('Comment').remove({ post: this._id });
+
     let meta = await this.model('MetaPost').findOneAndUpdate(
       { _id: this.metaPost },
       { $pull: { commentary: this._id }, $inc: { commentaryCount: -1 } },
       { multi: true, new: true }
     );
+
     if (meta && meta.commentary.length === 0) {
+      console.log('removing meta');
       await meta.remove();
+      meta = null;
+    }
+
+    // problem: if meta includes post from a diff community it wont be removed;
+    if (meta) {
+      meta.pruneCommunityFeed(this.community);
     }
 
     if (!this.twitter) {
@@ -193,7 +203,7 @@ PostSchema.pre('remove', async function (next) {
 
 PostSchema.statics.events = PostSchemaEvents;
 
-PostSchema.methods.updateClient = function (user) {
+PostSchema.methods.updateClient = function updateClient(user) {
   if (this.user && this.user._id) this.user = this.user._id;
   let postNote = {
     _id: user ? user._id : null,
@@ -203,7 +213,7 @@ PostSchema.methods.updateClient = function (user) {
   this.model('Post').events.emit('postEvent', postNote);
 };
 
-PostSchema.methods.upsertMetaPost = async function (metaId) {
+PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId) {
   let meta;
   try {
     if (metaId) meta = await MetaPost.findOne({ _id: metaId });
@@ -306,15 +316,13 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
       },
       { upsert: true, new: true }
     );
-
-    console.log(feedItem);
   } catch (err) {
     console.log('error creating / updating metapost ', err);
   }
   return meta;
 };
 
-PostSchema.statics.sendOutInvestInfo = async function (postIds, userId) {
+PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds, userId) {
   try {
     let investments = await Invest.find(
       { investor: userId, post: { $in: postIds } }
@@ -352,7 +360,7 @@ PostSchema.statics.sendOutInvestInfo = async function (postIds, userId) {
   }
 };
 
-PostSchema.statics.sendOutMentions = async function(mentions, post, mUser, comment) {
+PostSchema.statics.sendOutMentions = async function sendOutMentions(mentions, post, mUser, comment) {
   let textParent = comment || post;
   try {
     let promises = mentions.map(async mention => {

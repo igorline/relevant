@@ -1,54 +1,187 @@
+@import '../global.css';
+
 header {
   position: fixed;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
   background: rgba(36,36,37, 1);
   color: white;
   height: 58px;
   width: 100vw;
   z-index: 10;
+  top: 0;
   /*background : linear-gradient(to top, rgba(36,36,37, .2), rgba(36,36,37, 1));*/
+  h3 {
+    margin: 0 0 0 10px;
+    color: black;
+  }
+}
+
+.subHeader{
+  background: $darkBg;
+  color: white;
+  padding: 20px 0;
+  h2 {
+    color: white;
+  }
+  button.shadowButton {
+    color: white;
+  }
 }
 
 .headerContainer {
-  height: 58px;
   width: 100%;
   background: #242425;
+  padding-top: 58px;
+}
+
+.signupCTA {
+  display: flex;
+  padding: 50px 0;
+  width: 100%;
+  align-items: flex-end;
+  a {
+    /*font-weight: bold;*/
+    /*font-size: 18px;*/
+  }
+  div {
+    margin-right: 40px;
+  }
+  /*justify-content: space-between;*/
+}
+
+.headerContainer.appHeader {
+  background: white;
+  /*margin-bottom: 40px;*/
+}
+.appHeader header {
+  background: white;
+  /*box-shadow: 0 0px 100px hsl(0, 0%, 80%);*/
+  /*border-bottom: 1px solid black;*/
+  box-shadow: 0 .5px 0px $darkGrey;
+  /*box-shadow: 0px 0px 30px -10px $darkGrey;*/
+
+  /*box-shadow: 0px 1px 20px $borderGrey;*/
+
+  /*border-bottom: 1px solid grey;*/
+  /*position:relative;*/
+  color: $darkGrey;
+  a {
+    color: $blue;
+  }
 }
 
 header .logo {
   height: 30px;
-  margin: 10px;
+  /*margin: 10px;*/
 }
 
-header > div {
-  flex: 1;
-  width: 33%;
-  display: flex;
-  justify-content: center;
-}
-
-header > div:first-child {
-  justify-content: flex-start;
-  align-items: center;
-  padding-left: 5px;
-}
-
-header > div:last-child {
-  justify-content: flex-end;
-  align-items: center;
-  padding-right: 15px;
-}
-
-header > div:last-child a:last-child {
+.appHeader header .logo {
+  height: 25px;
   margin-right: 10px;
 }
 
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  justify-content: space-between;
+  height: 100%;
+}
+
+
+.headerInner > div:first-child {
+  justify-content: flex-start;
+  flex: 1;
+  margin-left: $leftMargin;
+  /*padding-left: 15px;*/
+  /*$leftMargin;*/
+  /*max-width: $postOffsetPadding;*/
+  /*box-sizing: content-box;*/
+  max-width: 160px;
+}
+.headerInner > div {
+  display: flex;
+  justify-content: flex-start;
+  flex: 2;
+}
+
+.headerInner  > div:last-child {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 15px;
+  flex: 1;
+}
+
+.rightNav {
+  display: flex;
+  align-items: center;
+  .navInner {
+    display: flex;
+    align-items: center;
+  }
+  .navLink {
+    color: $blue;
+    cursor: pointer;
+    display: flex;
+    position: relative;
+    margin: 0 10px;
+    user-select: none;
+  }
+}
+
+
 header a {
   color: white;
-  margin: 0 5px;
+  /*margin: 0 10px;*/
 }
+
+.tabContainer {
+  height: 100%;
+}
+
+.tabs {
+  display: flex;
+  height: 100%;
+  width: 300px;
+  flex-direction: row;
+  justify-content: space-around;
+  list-style-type: none;
+  align-items: center;
+  padding: 6px 0 0 0;
+  /*background: white;*/
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: .9rem;
+
+}
+.tabs a {
+  display: flex;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  height: 100%;
+  /*padding-bottom: 10px;*/
+  border-bottom: 3px solid white;
+  color: #444445;
+  margin: 0 15px 0 0;
+}
+.tabs a:hover {
+  color: #3E3EFF;
+}
+.tabs a.selected {
+  font-weight: bold;
+  border-bottom: 3px solid;
+  color: #3E3EFF;
+}
+
 
 @media only screen
   and (max-width: 736px) {

@@ -285,7 +285,6 @@ exports.generatePreview = async (body, uri, reqUrl) => {
 
   if (ampKeywords && ampKeywords.length && !keywords.length) {
     if (typeof keywords !== 'array') {
-
     } else {
       keywords = ampKeywords.filter(k => !k.match('@'));
     }

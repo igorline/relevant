@@ -30,11 +30,12 @@ export function clearCreatePost() {
 export function submitPost(post) {
   return async () => {
     try {
-      return await utils.api.request({
+      await utils.api.request({
         method: 'POST',
         endpoint: 'post',
         body: JSON.stringify(post)
       });
+      return true;
     } catch (err) {
       console.log(err);
       throw err;

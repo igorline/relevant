@@ -8,6 +8,7 @@ let cookieParser = require('cookie-parser');
 let session = require('express-session');
 let favicon = require('serve-favicon');
 let MongoStore = require('connect-mongo')(session);
+const cookiesMiddleware = require('universal-cookie-express');
 
 const app = new Express();
 mongoose.Promise = global.Promise;
@@ -45,6 +46,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+
 app.use(favicon(__dirname + '/../app/web/public/img/favicon.ico'));
 
 // Connect to db
@@ -80,7 +82,7 @@ app.use(requireHTTPS);
 
 // public folder
 app.use(Express.static(__dirname + '/../app/web/public'));
-
+app.use(cookiesMiddleware());
 let routes = require('./routes')(app);
 
 let port = process.env.PORT || 3000;
@@ -102,6 +104,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 require('./utils/updateDB-Community0.1.0');
+require('./utils/ethereum').init();
 
 exports.app = app;
 exports.server = server;

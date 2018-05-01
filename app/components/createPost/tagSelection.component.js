@@ -99,7 +99,7 @@ class TagSelection extends Component {
       this.selectedTags.push({ _id: tag });
     }
 
-    this.props.actions.setCreaPostState({ allTags: [...this.inputTags, ...this.selectedTags] });
+    this.props.actions.setCreaPostState({ allTags: [...this.inputTags, ...this.selectedTags], selectedTags: this.selectedTags });
     this.forceUpdate();
     return null;
   }

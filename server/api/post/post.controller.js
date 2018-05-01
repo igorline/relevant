@@ -462,24 +462,23 @@ exports.related = async req => {
   return await findRelatedPosts(id);
 };
 
-exports.update = async (req, res) => {
-  console.log('init update');
-  let tags = req.body.tags.filter(tag => tag);
-  tags = tags.map(
-    tag => tag.replace('_category_tag', '').trim()
-  );
-  let mentions = req.body.mentions || [];
-  let newMentions;
-  let newTags;
-  let category = req.body.category;
-  let newPost;
+exports.update = async (req, res, next) => {
   try {
+    let tags = req.body.tags.filter(tag => tag);
+    tags = tags.map(tag => tag.replace('_category_tag', '').trim());
+    let mentions = req.body.mentions || [];
+    let newMentions;
+    let newTags;
+    let category = req.body.category;
+    let newPost;
+
     newPost = await Post.findOne({ _id: req.body._id });
     let prevMentions = [...newPost.mentions];
-    let prevTags = [...newPost.tags];
+
+    // let prevTags = [...newPost.tags];
     newMentions = mentions.filter(m => prevMentions.indexOf(m) < 0);
-    // TODO enable editing tags when editing post
-    newPost.tags = [...new Set([...tags, ...prevTags])];
+
+    newPost.tags = tags;
     newPost.mentions = mentions;
     newPost.body = req.body.body;
     newPost.title = req.body.title;
@@ -503,12 +502,9 @@ exports.update = async (req, res) => {
     newPost.metaPost = metaPost._id;
 
     newPost = await newPost.save();
-  } catch (err) {
-    return handleError(res)(err);
-  }
-  res.status(200).json(newPost);
+    res.status(200).json(newPost);
 
-  try {
+    // some post processing
     newTags = newTags || [];
     newMentions = newMentions || [];
     let pTags = newTags.map(tag =>
@@ -530,7 +526,7 @@ exports.update = async (req, res) => {
 
     return await Promise.all([...pTags, ...pMentions]);
   } catch (err) {
-    return console.log('tag or mentions error during post edit ', err);
+    next(err);
   }
 };
 
@@ -559,19 +555,17 @@ exports.create = (req, res) => {
     }
   });
   tags = [...new Set(tags)];
-  console.log('tags ', tags);
   let author;
 
-  // console.log('Post category ', category);
   let link = req.body.link;
 
   let now = new Date();
   let payoutDate = new Date();
 
   let payoutTime = process.env.NODE_ENV === 'production' ?
-      new Date(now.getTime() + PAYOUT_TIME) :
-      // TODO remove this in case of dev on live server
-      new Date(payoutDate.getTime() + 1000 * 60 * 5); // 5 minutes when in dev mode for testing
+    new Date(now.getTime() + PAYOUT_TIME) :
+    // TODO remove this in case of dev on live server
+    new Date(payoutDate.getTime() + 1000 * 60 * 5); // 5 minutes when in dev mode for testing
 
   if (process.env.NODE_ENV === 'test' && req.body.payoutTime) {
     payoutTime = req.body.payoutTime;
@@ -652,6 +646,8 @@ exports.create = (req, res) => {
   })
   .then(relevance => {
     newPost.embeddedUser = {
+      id: author._id,
+      handle: author.handle,
       name: author.name,
       image: author.image,
       relevance: relevance._id,
@@ -758,7 +754,11 @@ exports.create = (req, res) => {
   .then(() => {
     // creates an invest(vote) record for pots author
     return Invest.createVote({
-      post: newPost, user: author, amount: 0, relevanceToAdd: 0
+      post: newPost,
+      user: author,
+      amount: 0,
+      relevanceToAdd: 0,
+      userBalance: author.balance
     });
   })
   .then(() => {
