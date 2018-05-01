@@ -19,6 +19,7 @@ import admin from './admin';
 
 let navigation = {};
 let routing = {};
+let drizzleReducers = require('drizzle').drizzleReducers;
 if (process.env.WEB != 'true') {
   navigation = require('./navigation').default;
 } else {
@@ -44,7 +45,8 @@ const rootReducer = combineReducers({
   tags,
   tooltip,
   subscriptions,
-  admin
+  admin,
+  ...drizzleReducers,
 });
 
 export default rootReducer;

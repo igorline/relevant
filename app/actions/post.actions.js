@@ -391,14 +391,20 @@ export function updateComment(comment) {
 }
 
 export function editPost(post) {
-  return dispatch =>
-    utils.api.request({
-      method: 'PUT',
-      endpoint: 'post',
-      body: JSON.stringify(post),
-    })
-    .then(res => dispatch(updatePost(res)))
-    .catch(err => Alert.alert('Post error please try again'));
+  return async dispatch => {
+    try {
+      let response = await utils.api.request({
+        method: 'PUT',
+        endpoint: 'post',
+        body: JSON.stringify(post),
+      });
+      dispatch(updatePost(response));
+      return true;
+    } catch (err) {
+      Alert.alert('Post error please try again');
+      return false;
+    }
+  };
 }
 
 export function removeCommentEl(postId, commentId) {

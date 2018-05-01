@@ -3,6 +3,12 @@ import { Link } from 'react-router';
 import PropTypes from 'prop-types';
 
 class PostButtons extends Component {
+  static propTypes = {
+    auth: PropTypes.object,
+    myPostInv: PropTypes.object,
+    post: PropTypes.object,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -95,6 +101,9 @@ class PostButtons extends Component {
       }
     }
 
+    let comments = post.commentCount || '';
+    let commentText = comments > 1 ? comments + ' comments' : comments + ' comment';
+
     return (
       <div className="postbuttons">
         <div className="left">
@@ -125,23 +134,17 @@ class PostButtons extends Component {
           }
         </div>
         <div className="right">
-          <Link className="commentcount" to={'/post/' + post._id}>
+          <Link className="commentcount details" to={'/post/' + post._id}>
             <img alt="Comment" src="/img/comment.svg" />
-            <span>{post.commentCount}</span>
+            <span>{commentText}</span>
           </Link>
-          <Link to={'/post/' + post._id}>
+{/*          <Link to={'/post/' + post._id}>
             <img alt="Share" src="/img/share.png" className="share" />
-          </Link>
+          </Link>*/}
         </div>
       </div>
     );
   }
 }
-
-PostButtons.propTypes = {
-  auth: PropTypes.object,
-  myPostInv: PropTypes.object,
-  post: PropTypes.object,
-};
 
 export default PostButtons;

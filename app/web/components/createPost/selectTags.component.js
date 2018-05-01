@@ -12,9 +12,12 @@ export default class SelectTags extends Component {
   render() {
     const props = this.props;
     if (!props.tags || !props.tags.length) return null;
-    const selectedTags = props.selectedTags.map(x => x._id);
+    const selectedTags = props.selectedTags;
+
     let inner = props.tags.map((tag, i) => {
+      tag = tag.replace(/\s/g, '');
       const selected = selectedTags.indexOf(tag) !== -1;
+      if (selected) return null;
       return (
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions
         <span
@@ -24,9 +27,9 @@ export default class SelectTags extends Component {
           aria-checked={selected}
           onClick={() => {
             if (selected) {
-              props.actions.deselectTag({ _id: tag });
+              props.deselectTag(tag);
             } else {
-              props.actions.selectTag({ _id: tag });
+              props.selectTag(tag);
             }
           }}
         >
@@ -36,7 +39,7 @@ export default class SelectTags extends Component {
     });
     return (
       <div className="selectTags">
-        {'suggested tags: '}
+        <p>{this.props.text + ': '}</p>
         {inner}
       </div>
     );

@@ -1,21 +1,30 @@
+@import '../global.css';
+
 .selectTags {
-  font-family: 'Helvetica', sans-serif;
+  font-family: 'Arial', sans-serif;
   font-size: 13px;
   margin-top: 10px;
-  max-width: 400px;
   color: #111112;
   span {
     cursor: pointer;
     display: inline-block;
     white-space: nowrap;
-    padding: 5px;
+    letter-spacing: 1px;
+    padding: 5px 10px;
     margin-right: 4px;
     margin-bottom: 4px;
-    border: 1px solid #c0c0c0;
+    /*border: 1px solid #c0c0c0;*/
+    background-color: hsl(0,0%,95%);
+    color: $greyText;
     &.selected {
-      background: #4d4eff;
-      border: 1px solid #4d4eff;
+      background: $blue;
+      /*border: 1px solid $blue;*/
       color: white;
+      &::after {
+        font-weight: bold;
+        margin-left: 8px;
+        content: '✕';
+      };
     }
   }
 }

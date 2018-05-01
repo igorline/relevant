@@ -35,6 +35,7 @@ let InvestSchema = new Schema({
   timestamps: true
 });
 
+
 InvestSchema.index({ post: 1 });
 InvestSchema.index({ investor: 1 });
 InvestSchema.index({ post: 1, investor: 1, ownPost: 1 });
@@ -42,24 +43,26 @@ InvestSchema.index({ post: 1, investor: 1, ownPost: 1 });
 InvestSchema.statics.events = InvestSchemaEvents;
 
 InvestSchema.statics.createVote = async function updateEarnings(props) {
-  let { user, post, relevanceToAdd, amount } = props;
+  let { user, post, relevanceToAdd, amount, userBalance } = props;
 
   let voteWeight = 0;
   // author gets first curation vote weight
-  if ((amount > 0 || post.user === user._id) && user.balance > 0) {
-    let payment = Math.floor(Math.max(1, user.balance * VOTE_COST_RATIO));
+  if ((amount > 0 || post.user === user._id) && userBalance > 0) {
+    let payment = userBalance * VOTE_COST_RATIO;
     voteWeight = payment / (post.balance + payment);
-    user.balance -= payment;
-    post.balance += payment;
 
-    await Earnigns.updateRewardsRecord({
-      user: user._id,
-      post: post._id,
-      spent: payment,
-    });
+    // TODO - this should be implemented later and differently
+    // user.balance -= payment;
+    // post.balance += payment;
 
-    await user.save();
-    await post.save();
+    // await Earnigns.updateRewardsRecord({
+    //   user: user._id,
+    //   post: post._id,
+    //   spent: payment,
+    // });
+
+    // await user.save();
+    // await post.save();
   }
 
   let investment = await this.findOneAndUpdate(

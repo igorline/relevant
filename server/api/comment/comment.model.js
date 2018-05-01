@@ -11,11 +11,12 @@ let CommentSchema = new Schema({
   repost: { type: Boolean, default: false },
   mentions: [{ type: String, ref: 'User' }],
   embeddedUser: {
+    handle: String,
     name: String,
     image: String
   }
 }, {
-  timestamps: true
+  timestamps: true,
 });
 
 CommentSchema.index({ userId: 1, createdAt: -1, tags: 1 });

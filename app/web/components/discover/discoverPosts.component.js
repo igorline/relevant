@@ -6,8 +6,7 @@ import Post from '../post/post.component';
 class DiscoverPosts extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-    };
+
     this.load = this.load.bind(this);
     this.hasMore = true;
   }

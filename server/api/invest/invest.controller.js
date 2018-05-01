@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import apnData from '../../pushNotifications';
 import MetaPost from '../metaPost/metaPost.model';
 import { VOTE_COST_RATIO } from '../../config/globalConstants';
+import * as ethUtils from '../../utils/ethereum';
 
 let Post = require('../post/post.model');
 let User = require('../user/user.model');
@@ -215,8 +216,12 @@ exports.create = async (req, res) => {
   let investmentExists;
   let subscription;
   let author;
-  let community;
+  let postCommunity;
   let userRelevance;
+  let userBalance;
+
+  // TODO - update both - voter community and post community
+  let voterCommunity = req.subdomain || 'relevant';
 
   function InvestException(message) {
     this.message = message;
@@ -225,7 +230,7 @@ exports.create = async (req, res) => {
 
   async function updateInvestment() {
     Invest.createVote({
-      post, user, amount, relevanceToAdd
+      post, user, amount, relevanceToAdd, userBalance
     });
 
     // when do we need this?
@@ -264,9 +269,10 @@ exports.create = async (req, res) => {
       throw new InvestException('You can not ' + type + 'your own post');
     }
 
-    if (user.balance < Math.abs(amount)) {
-      throw new InvestException('coin');
-    }
+    // TODO - instead user token-based rate-limiting
+    // if (userBalance < Math.abs(amount)) {
+    //   throw new InvestException('coin');
+    // }
 
     // if (user.relevance < Math.abs(amount)) {
     //   throw new InvestException('You do not have enough relevance to ' + type + '!');
@@ -276,7 +282,7 @@ exports.create = async (req, res) => {
 
     // TODO undo invest
     // let now = new Date();
-     // && new Date(investment.createdAt).getTime() + (1000 * 15) < now.getTime()
+    // && new Date(investment.createdAt).getTime() + (1000 * 15) < now.getTime()
     if (investment) {
       console.log('user already invested in post');
       relevanceToAdd = 0;
@@ -320,10 +326,10 @@ exports.create = async (req, res) => {
     // TODO do we really need to query for author?
     author = await User.findOne(
       { _id: post.user },
-      'relevance balance name relevanceRecord deviceTokens badge'
+      'relevance balance name relevanceRecord deviceTokens badge image'
     );
 
-    if (!author) return;
+    if (!author) return null;
 
     let authorRelevance = await Relevance.findOne({
       community: post.community,
@@ -336,7 +342,7 @@ exports.create = async (req, res) => {
     let diff = userRelevance - authorRelevance;
 
     let adjust = 1;
-    if (diff > 0) adjust = Math.pow(diff, 1 / 4) + 1;
+    if (diff > 0) adjust = (diff ** (1 / 4)) + 1;
     if (irrelevant) adjust *= -1;
 
     // adjust = Math.round(adjust);
@@ -345,11 +351,12 @@ exports.create = async (req, res) => {
     }
     // TEST THIS
     // TODO remove - depricated
-    author.relevance += adjust;
+    authorRelevance += adjust;
 
     if (adjust !== 0) {
-      await Relevance.updateUserRelevance(post.user, post, adjust);
-      author = await author.updateRelevanceRecord(community);
+      authorRelevance = await Relevance.updateUserRelevance(post.user, post, adjust);
+      author = await author.updateRelevanceRecord(postCommunity);
+      // TODO update author community rel
     }
 
     let coin;
@@ -396,6 +403,8 @@ exports.create = async (req, res) => {
 
     author = await author.save();
 
+    // temp relevance storage for update
+    author.relevance = authorRelevance;
     author.updateClient(user);
     console.log('updated author');
 
@@ -404,29 +413,34 @@ exports.create = async (req, res) => {
 
   async function handleOtherInvestments() {
     try {
-      existingInvestments = await Invest.find({ post: post._id, investor: { $nin: [user._id, post.user] } });
+      existingInvestments = await Invest.find({
+        post: post._id,
+        investor: { $nin: [user._id, post.user] }
+      });
     } catch (err) {
       return console.log(err);
     }
 
     existingInvestments.forEach(async investment => {
       try {
-        let existingInvestor = await User.findOne({ _id: investment.investor }, 'relevance');
+        let existingInvestor = await User.findOne({ _id: investment.investor }, 'relevance name image');
         let ratio = 1 / existingInvestments.length;
 
         let relevanceEarning = 0;
         let earnings;
 
         // need this to determine relevance increase;
+        // TODO also do voter community
         let existingInvestorRelevance = await Relevance.findOne({
-          community,
+          community: postCommunity,
           user: investment.investor,
           global: true
         }, 'relevance');
-        existingInvestorRelevance = existingInvestorRelevance ? existingInvestorRelevance.relevance : 0;
+        existingInvestorRelevance = existingInvestorRelevance ?
+          existingInvestorRelevance.relevance :
+          0;
 
         if (relevanceToAdd !== 0) {
-
           let diff = userRelevance - existingInvestorRelevance;
 
           relevanceEarning = 1;
@@ -443,21 +457,29 @@ exports.create = async (req, res) => {
           relevanceEarning *= ratio;
 
           if (relevanceEarning < 0.05) return null;
-          earnings = await Invest.updateUserInvestment(user, existingInvestor, post, relevanceEarning, amount);
+          earnings = await Invest.updateUserInvestment(
+            user,
+            existingInvestor,
+            post,
+            relevanceEarning,
+            amount
+          );
         }
 
         if (Math.abs(earnings.relevance) >= 1) {
           relevanceEarning = earnings.relevance;
 
           // add to relevance tag record
-          await Relevance.updateUserRelevance(existingInvestor._id, post, earnings.relevance);
-          existingInvestor = await existingInvestor.updateRelevanceRecord(community);
+          // TODO also do voter community
+          let relevance = await Relevance.updateUserRelevance(existingInvestor._id, post, earnings.relevance);
+          existingInvestor = await existingInvestor.updateRelevanceRecord(postCommunity);
 
-          // TODO remove depricated
+          // TODO remove deprecated
           existingInvestor.relevance += relevanceEarning;
           existingInvestor = await existingInvestor.save();
 
           // TODO - need to update relevance here and test
+          existingInvestor.relevance = relevance;
           existingInvestor.updateClient();
 
           let type = 'partialUpvote';
@@ -487,13 +509,27 @@ exports.create = async (req, res) => {
     // ------ post ------
     post = await Post.findOne({ _id: post._id }, '-comments');
     // .populate('investments').exec();
-    community = post.community || 'relevant';
+    postCommunity = post.community || 'relevant';
 
     // ------ investor ------
-    user = await User.findOne({ _id: user }, 'relevance name balance');
+    user = await User.findOne({ _id: user }, 'relevance name balance ethAddress image');
+    userBalance = user.balance;
+
+    // TODO migrate all
+    if (voterCommunity === 'crypto') {
+      if (!user.ethAddress[0]) {
+        // let users vote without? with balance of 0?
+        throw new Error('missing Ethereum address');
+      }
+      userBalance = await ethUtils.getBalance(user.ethAddress[0]);
+      console.log('user ', user._id);
+      console.log('got userBalance from ethereum ', userBalance);
+      user.tokenBalance = userBalance;
+      userBalance += user.balance;
+    }
 
     userRelevance = await Relevance.findOne(
-      { user: user._id, community, global: true },
+      { user: user._id, community: voterCommunity, global: true },
       'relevance'
     );
     userRelevance = userRelevance ? userRelevance.relevance : 0;
@@ -502,12 +538,14 @@ exports.create = async (req, res) => {
     investmentExists = await investCheck(user, post);
 
     // ------- everything is fine, deduct user's balance ---
-    // user.balance -= Math.abs(amount);
-    let payment = Math.floor(Math.max(1, user.balance * VOTE_COST_RATIO));
-    // user.balance -= payment;
-
+    // DEPRECATED
+    // let payment = userBalance * VOTE_COST_RATIO;
     // send payment back to reward fund
-    let treasuryUpdate = await Treasury.findOneAndUpdate({}, { $inc: { rewardFund: payment } }, { new: true });
+    // let treasuryUpdate = await Treasury.findOneAndUpdate(
+    //   {},
+    //   { $inc: { rewardFund: payment } },
+    //   { new: true }
+    // );
     // else userRelevance -= Math.abs(amount);
 
     // ------ add or remove post to feed ------
@@ -533,7 +571,11 @@ exports.create = async (req, res) => {
     await CommunityFeed.updateRank(post.metaPost, post.community);
 
     // if (post.twitter) {
-    //   let updateM = await MetaPost.findOneAndUpdate({ _id: post.metaPost }, { twitter: false }, { new: true });
+    //   let updateM = await MetaPost.findOneAndUpdate(
+    //    { _id: post.metaPost },
+    //    { twitter: false },
+    //    { new: true }
+    //   );
     //   console.log(updateM);
     // }
     // updates user investments
@@ -551,10 +593,8 @@ exports.create = async (req, res) => {
     // update subscriptions
     await updateSubscriptions();
 
-
     // updates author relevance
     await updateAuthor();
-
 
     // updates previous user's relevance
     handleOtherInvestments();

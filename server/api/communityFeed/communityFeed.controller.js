@@ -9,7 +9,6 @@ function handleError(res, statusCode) {
   };
 }
 
-
 exports.get = async (req, res) => {
   try {
     let community = req.subdomain || 'relevant';
@@ -64,8 +63,13 @@ exports.get = async (req, res) => {
       ]
     });
 
-    feed.forEach((f) => {
-      if (f.metaPost) posts.push(f.metaPost);
+    feed.forEach(async (f) => {
+      if (f.metaPost) {
+        posts.push(f.metaPost);
+      } else { // just in case - this shouldn't happen
+        console.log('error: metapost is null!');
+        await f.remove();
+      }
     });
 
     // TODO worker thread?

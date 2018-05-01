@@ -1,15 +1,42 @@
+@import '../global.css';
+
+.modal .createPostContainer {
+  width: 600px;
+  margin: 0 80px;
+  text-align: left;
+  border: none;
+}
+
 .createPostContainer {
-  .editor {
-    font-size: 17px;
-    font-family: Georgia, serif;
+  border-bottom: 1px solid $borderGrey;
+  padding-bottom: 40px;
+  margin-top: 20px;
+  /*padding-top: 20px;*/
+  .tagInput input {
+    font-size: 15px;
     line-height: 1.5;
-    padding: 5px;
-    margin: 0 5px;
+    padding: 8px 15px;
+    margin: 10px 0 0 0;
     background: white;
-    border: 1px solid #bbb;
-    border-radius: 2px;
-    min-height: 35px;
+    box-shadow: 0 0 0 .5px $borderGrey, inset 0 0 10px -4px $grey;
+    border-radius: 0px;
     white-space: pre-line;
+    border: none;
+    font-size: 15px;
+    outline: none;
+    width: 100%;
+  }
+  .editor {
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 15px;
+    margin: 20px 0 0 0;
+    background: white;
+    box-shadow: 0 0 0 .5px $borderGrey, inset 0 0 10px -4px $grey;
+    border-radius: 0px;
+    min-height: 200px;
+    white-space: pre-line;
+    outline: 0;
     p {
       margin: 0;
     }
@@ -17,15 +44,22 @@
       color: #3E3EFF;
       font-weight: normal;
     }
-    outline: 0;
-    &:focus, &.active {
-      border-color: #454444;
-    }
     &:empty:before {
       content: attr(placeholder);
+      font-family: Arial, sans-serif;
       display: block;
       color: #888888;
     }
+  }
+
+  .editor:focus, .editor.active, .tagInput input:focus, .tagInput input.active {
+    box-shadow: 0 0 0 .5px $borderGrey, 0 0 4px 1px $blue;
+  }
+
+  .addFromLink {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
   }
   .addTextFromLink {
     color: #3E3EFF;
@@ -35,42 +69,50 @@
     border: 0;
     background: transparent;
     display: inline;
+    margin: 0;
   }
   .urlPreview {
-    margin: 40px 0 10px 0;
+    margin: 40px 0 20px 0;
   }
-  .avatarbox {
-    margin: 0;
+  .avatarBox {
+    margin: 20px 0 20px 0;
   }
   .postinfo {
     cursor: default;
     user-select: none;
     margin-bottom: 20px;
   }
+  row {
+    align-self: flex-end;
+    .basicButton {
+      margin-right: 30px;
+    }
+  }
+  button {
+    align-self: flex-end;
+    float:right;
+    margin: 30px 0px 10px 0px;
+  }
 }
+
+
 
 .createOptions {
   position: relative;
-  padding: 5px 5px;
+  padding: 20px 0px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
 
   div:last-child {
-    text-align: right;
+    /*text-align: right;*/
+    justify-content: flex-end;
   }
   select {
-    padding: 10px;
-    height: 30px;
-    min-width: 130px;
-    font-family: Helvetica;
     font-size: 14px;
+    height: 40px;
   }
-  button {
-    font-family: Helvetica;
-    font-size: 14px;
-    padding: 7px;
-    height: auto;
-    white-space: nowrap;
+  select {
+    line-height: 18px;
   }
 }

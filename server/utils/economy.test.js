@@ -150,11 +150,15 @@ test.serial('Payout Upvote', async (t) => {
 });
 
 test.serial('Delete post', async (t) => {
-  t.plan(1);
+  t.plan(2);
 
   const res = await r
   .delete(`/api/post/${postId}?access_token=${authorToken}`);
 
+  const res2 = await r
+  .delete(`/api/post/${postId2}?access_token=${authorToken}`);
+
+  t.is(res2.status, 200);
   t.is(res.status, 200);
 });
 

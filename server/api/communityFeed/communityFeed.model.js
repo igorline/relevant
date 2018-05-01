@@ -23,7 +23,7 @@ CommunityFeedSchema.index({ community: 1, metaPost: 1 });
 CommunityFeedSchema.index({ community: 1, latestPost: 1 });
 // CommunityFeedSchema.index({ comminity: 1, rank: 1, metaPost: 1 });
 
-CommunityFeedSchema.statics.updateDate = async function (_id, community, date) {
+CommunityFeedSchema.statics.updateDate = async function updateDate(_id, community, date) {
   try {
     let feedItem = await this.findOneAndUpdate(
       { _id, community },
@@ -33,10 +33,11 @@ CommunityFeedSchema.statics.updateDate = async function (_id, community, date) {
     return feedItem;
   } catch (err) {
     console.log('error updating post date ', err);
+    return null;
   }
 };
 
-CommunityFeedSchema.statics.updateRank = async function (_id, community) {
+CommunityFeedSchema.statics.updateRank = async function updateRank(_id, community) {
   try {
     let feedItem = await this.findOne({ metaPost: _id, community })
     .populate({
@@ -57,6 +58,7 @@ CommunityFeedSchema.statics.updateRank = async function (_id, community) {
     return feedItem;
   } catch (err) {
     console.log('error updating feedItem rank ', err);
+    return null;
   }
 };
 

@@ -4,8 +4,19 @@ import Relevance from '../api/relevance/relevance.model';
 import Post from '../api/post/post.model';
 import CommunityFeed from '../api/communityFeed/communityFeed.model';
 import MetaPost from '../api/metaPost/metaPost.model';
+import Treasury from '../api/treasury/treasury.model';
+import Comment from '../api/comment/comment.model';
 
 // CommunityFeed.find({ community: 'relevant' }).remove().exec();
+
+async function updateTreasury() {
+  let t = await Treasury.findOne({ community: { $exists: false } });
+  if (!t) return true;
+  console.log('treasury to update ', t);
+  t.community = 'relevant';
+  return t.save();
+}
+
 
 async function updateUserHandles() {
   console.log('POPULATING HANDLES');
@@ -120,6 +131,30 @@ async function createRelevantCommunityFeed() {
   return await Promise.all(allDone);
 }
 
+async function updatePostUserHandle() {
+  let posts = await Post.find({}).populate({
+    path: 'user',
+    select: 'handle',
+  });
+  let updatedPosts = posts.map(async post => {
+    post.embeddedUser.handle = post.user.handle;
+    return post.save();
+  });
+  return Promise.all(updatedPosts);
+}
+
+async function updateCommentUserHandle() {
+  let comments = await Comment.find({}).populate({
+    path: 'user',
+    select: 'handle',
+  });
+  let updatedComments = comments.map(async comment => {
+    comment.embeddedUser.handle = comment.user.handle;
+    return comment.save();
+  });
+  return Promise.all(updatedComments);
+}
+
 async function runUpdates() {
   try {
     // await updateUserHandles();
@@ -127,9 +162,12 @@ async function runUpdates() {
     // await migrateToCommunityReputation();
     // await connectReputation();
     // await createRelevantCommunityFeed();
+    // await updateTreasury();
+    // await updatePostUserHandle();
+    await updateCommentUserHandle();
   } catch (err) {
     console.log(err);
   }
 }
 
-// runUpdates();
+runUpdates();

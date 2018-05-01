@@ -1,49 +1,66 @@
 import React, { Component } from 'react';
-import { reduxForm } from 'redux-form';
 import { Link } from 'react-router';
+import ShadowButton from '../common/ShadowButton';
+import { NAME_PATTERN } from '../../../utils/text';
+import SetHandle from './handle.component';
 
 class SignupForm extends Component {
   constructor(props) {
     super(props);
-    this.validate = this.validate.bind(this);
-    this.handleChange = this.handleChange.bind(this);
     this.state = {
       username: '',
       email: '',
       password: '',
       cPassword: '',
+      errors: {}
     };
-    this.submit = this.submit.bind(this);
+
     this.errors = {
       username: null,
       email: null,
       cPassword: null,
       password: null,
     };
+
+    this.checkUser = this.checkUser.bind(this);
+    this.submit = this.submit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  validate(newState) {
-    if (newState.email) {
-      if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(newState.email)) {
-        this.errors = { ...this.errors, email: 'Invalid email address' };
-      } else {
-        this.errors = { ...this.errors, email: null };
-      }
-    }
+  checkEmail() {
+    let string = this.state.email;
+    if (!string.length) return null;
+    let valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(string);
+    if (!valid) return this.setState({ errors: { email: 'invalid email' } });
 
-    if (newState.username) {
-      if (newState.username.length > 15) {
-        this.errors = { ...this.errors, username: 'Must be 15 characters or less' };
-      } else {
-        this.errors = { ...this.errors, username: null };
+    return this.props.actions.checkUser(string, 'email')
+    .then((results) => {
+      if (!results) {
+        return this.setState({ errors: { email: 'This email has already been used' } });
       }
-    }
+      return null;
+    });
+  }
 
-    if (newState.password && newState.cPassword) {
-      if (newState.password !== newState.cPassword) {
-        this.errors = { ...this.errors, cPassword: "Passwords don't match" };
+  checkUser(name) {
+    this.nameError = null;
+    let toCheck = name || this.state.name;
+    if (toCheck) {
+      let string = toCheck;
+      let match = NAME_PATTERN.test(string);
+      if (match) {
+        this.props.actions.checkUser(string, 'name')
+        .then((results) => {
+          if (!results) {
+            this.usernameExists = true;
+            this.nameError = 'This username is already taken';
+          } else this.usernameExists = false;
+          this.setState({});
+        });
       } else {
-        this.errors = { ...this.errors, cPassword: false };
+        this.nameError = 'username can only contain letters, \nnumbers, dashes and underscores';
+        console.log(this.nameError);
+        this.setState({});
       }
     }
   }
@@ -54,7 +71,7 @@ class SignupForm extends Component {
 
   componentWillUpdate(newProps, newState) {
     if (newState !== this.state) {
-      this.validate(newState);
+      // this.validate(newState);
     }
   }
 
@@ -83,73 +100,106 @@ class SignupForm extends Component {
   }
 
   render() {
+    let errors = this.state.errors;
+    if (this.props.user && this.props.user.role === 'temp') {
+      return <SetHandle
+        checkUser={this.checkUser}
+        nameError={this.nameError}
+        user={this.props.user}
+        {...this.props}
+      />;
+    }
     return (
-      <div>
+      <div className="innerForm">
+        <div style={{ width: '100%' }}>
+          <a
+            className={'twitterButton'}
+            href="/auth/twitter"
+          >
+              Sign up with Twitter
+          </a>
+          <span className={'or'}>or</span>
+        </div>
+
         <div>
-          <label>Email</label>
           <input
+            className="blueInput special"
+            type="text"
+            placeholder="username"
+            value={this.state.username}
+            onChange={(e) => {
+              let username = e.target.value.trim();
+              this.checkUser(username.trim());
+              this.handleChange('username', username);
+            }}
+          />
+          {this.nameError ? <div className={'error'}>{this.nameError}</div> : null}
+        </div>
+
+        <div>
+          <input
+            className="blueInput special"
             type="text"
             value={this.state.email}
             onChange={(email) => {
               this.handleChange('email', email.target.value);
             }}
-            placeholder="Email"
+            onBlur={this.checkEmail.bind(this)}
+            onFocus={() => this.setState({ errors: { email: null } })}
+            placeholder="email"
           />
-          {this.errors.email ? <div>{this.errors.email}</div> : null}
+          {errors.email ? <div className={'error'}>{errors.email}</div> : null}
         </div>
+
         <div>
-          <label>Username</label>
           <input
-            type="text"
-            placeholder="Username"
-            value={this.state.username}
-            onChange={(username) => {
-              this.handleChange('username', username.target.value);
-            }}
-          />
-          {this.errors.username ? <div>{this.errors.username}</div> : null}
-        </div>
-        <div>
-          <label>Password</label>
-          <input
+            className="blueInput special"
             type="password"
-            placeholder="Password"
+            placeholder="password"
             value={this.state.password}
             onChange={(password) => {
               this.handleChange('password', password.target.value);
             }}
           />
-          {this.errors.password ? <div>{this.errors.password}</div> : null}
+          {this.errors.password ? <div className={'error'}>{this.errors.password}</div> : null}
         </div>
         <div>
-          <label>Confirm Password</label>
           <input
+            className="blueInput special"
             type="password"
-            placeholder="Confirm Password"
+            placeholder="confirm password"
             value={this.state.cPassword}
             onChange={(cPassword) => {
               this.handleChange('cPassword', cPassword.target.value);
             }}
+            onKeyDown={e => {
+              if (e.keyCode === 13) {
+                this.submit();
+              }
+            }}
           />
-          {this.errors.cPassword ? <div>{this.errors.cPassword}</div> : null}
+          {this.errors.cPassword ? <div className={'error'}>{this.errors.cPassword}</div> : null}
         </div>
-        <button type="submit" onClick={() => this.submit()}>Sign up</button>
-        {' '}
-        or
-        {' '}
-        <Link to="/login">Log in</Link>
-        <a href="/auth/facebook">Log in with facebook</a>
-        {' '}
-        <a href="/auth/twitter">Log in with twitter</a>
+
+        <div style={{ width: '100%' }}>
+          <ShadowButton
+            onClick={this.submit}
+          >
+            Sign Up
+          </ShadowButton>
+        </div>
+
+        <div className={'smallText'}>
+          Already registered? <Link
+            onClick={() => this.props.authNav('login')}
+          >
+            Sign in
+          </Link>
+        </div>
       </div>
     );
   }
 }
 
-// SignupForm = reduxForm({
-//   form: 'login',
-//   fields: ['email', 'username', 'password', 'confirmPassword'],
-//   validate
-// })(SignupForm);
 
 export default SignupForm;

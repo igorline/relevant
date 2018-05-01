@@ -4,6 +4,7 @@ import React, {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router';
 
 import * as authActions from '../../../actions/auth.actions';
 import * as adminActions from '../../../actions/admin.actions';
@@ -20,36 +21,26 @@ import CreatePost from '../createPost/createPost.container';
 import DiscoverTabs from './discoverTabs.component';
 import DiscoverPosts from './discoverPosts.component';
 import DiscoverUsers from './discoverUsers.component';
-import Loading from '../common/loading.component';
-
-let BondingCurve = null;
+// import Loading from '../common/loading.component';
+import Wallet from '../wallet/wallet.container';
+import * as discoverHelper from './discoverHelper';
+import ShadowButton from '../common/ShadowButton';
+import Sidebar from '../common/sidebar.component';
 
 const POST_PAGE_SIZE = 5;
 
 if (process.env.BROWSER === true) {
   require('../post/post.css');
   require('./discover.css');
-  BondingCurve = require('bonded-token').default;
 }
-
-const standardRoutes = [
-  { key: 'feed', title: 'Subscriptions' },
-  { key: 'new', title: 'New' },
-  { key: 'top', title: 'Trending' },
-];
-
-const tagRoutes = [
-  { key: 'new', title: 'New' },
-  { key: 'top', title: 'Trending' },
-  { key: 'people', title: 'People' },
-];
 
 export class Discover extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
       tabIndex: 1,
-      routes: this.props.params.tag ? tagRoutes : standardRoutes,
+      routes: this.props.params.tag ?
+        discoverHelper.tagRoutes : discoverHelper.standardRoutes,
     };
     if (this.props.params.sort) {
       const sort = this.props.params.sort;
@@ -59,28 +50,20 @@ export class Discover extends Component {
     this.renderFeed = this.renderFeed.bind(this);
   }
 
-  // componentDidMount(props) {
-  //   // this.load();
-  // }
+  componentDidMount() {
+    this.load();
+  }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.params.sort !== nextProps.params.sort ||
-        this.props.params.tag !== nextProps.params.tag) {
-      this.load(nextProps.params.sort, nextProps);
-      if (nextProps.params.sort) {
-        const sort = nextProps.params.sort;
-        const tabIndex = this.state.routes.findIndex(tab => tab.key === sort);
-        const routes = nextProps.params.tag ? tagRoutes : standardRoutes;
-        this.setState({ tabIndex, routes });
-      }
+  static getDerivedStateFromProps(nextProps, prevState) {
+    return discoverHelper.getDiscoverState(nextProps, prevState);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.params.tag !== prevProps.params.tag) {
+      this.load(this.props.params.sort, this.props);
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.tabIndex !== nextState.tabIndex) {
-      // this.load( this.state.routes[nextState.tabIndex].key, nextProps )
-    }
-  }
 
   getLoadedState() {
     const sort = this.state.routes[this.state.tabIndex].key;
@@ -145,26 +128,30 @@ export class Discover extends Component {
   render() {
     if (!this.state.routes[this.state.tabIndex]) return null;
     const tag = this.props.params.tag;
-    // let isLoaded = this.getLoadedState();
+    let sidebar = <Sidebar {...this.props} />;
 
     return (
-      <div className="discoverContainer">
+      <div className="discoverContainer row pageContainer">
 
-        {BondingCurve ? <BondingCurve /> : null}
-        <div className="postContainer">
+{/*        <nav>
+          communities:
+            <ul>
+              <a href="localhost:3000/discover/new">relevant</a>
+              <a href="crypto.z.localhost:3000/discover/new">crypto</a>
+            </ul>
+        </nav>*/}
 
-          <DiscoverTabs
-            tag={tag}
-            tabs={this.state.routes}
-            currentTab={this.state.tabIndex}
-          />
-          <CreatePost {...this.props} />
-          {tag &&
-            <h1>{tag}</h1>
-          }
-          { this.renderFeed() }
-          {/* isLoaded ? this.renderFeed() : <Loading />*/}
+        <div className="discoverInner">
+          <div className="postContainer">
+            {tag &&
+              <h3><Link to='/discover/new'>{this.props.auth.community}</Link> - #{tag}</h3>
+            }
+            <CreatePost {...this.props} />
+            { this.renderFeed() }
+            {/* isLoaded ? this.renderFeed() : <Loading />*/}
+          </div>
         </div>
+        <Sidebar {...this.props} />
       </div>
     );
   }

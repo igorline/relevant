@@ -1,5 +1,4 @@
 import React from 'react';
-import cookie from 'react-cookie';
 import { renderToString } from 'react-dom/server';
 import { RouterContext, match } from 'react-router';
 import { Provider } from 'react-redux';
@@ -108,16 +107,14 @@ function fetchMeta(initialState) {
 
 function fetchComponentData(dispatch, components, params, req) {
   const promises = components
-    .filter(component => component && component.fetchData)
-    .map(component => component.fetchData)
-    .map(fetchData => fetchData(dispatch, params, req));
+  .filter(component => component && component.fetchData)
+  .map(component => component.fetchData)
+  .map(fetchData => fetchData(dispatch, params, req));
   return Promise.all(promises);
 }
 
 export default function handleRender(req, res) {
   // const params = qs.parse(req.query);
-  cookie.plugToRequest(req, res);
-
   // this sets the inital auth state
   let auth = {};
   // console.log('req ', req.unconfirmed);

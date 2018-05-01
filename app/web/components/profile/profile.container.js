@@ -37,7 +37,7 @@ class ProfileContainer extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ flex: 1 }}>
         <Profile {...this.props} />
         <UserPosts {...this.props} />
       </div>

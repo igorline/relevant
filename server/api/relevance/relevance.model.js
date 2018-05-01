@@ -40,7 +40,7 @@ RelevanceSchema.methods.updateRelevanceRecord = function () {
   return this;
 };
 
-RelevanceSchema.statics.updateUserRelevance = async function (user, post, relevanceToAdd) {
+RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance(user, post, relevanceToAdd) {
   let tagRelevance;
   // TODO await?
   // TODO right now we are updating reputation based on post community
@@ -82,12 +82,13 @@ RelevanceSchema.statics.updateUserRelevance = async function (user, post, releva
       { $inc: { relevance: relevanceToAdd } },
       { upsert: true, new: true },
     );
-    return relevance;
+
+    // return Promise.all(tagRelevance);
+    return relevance.relevance;
   } catch (err) {
     console.log('relevance error ', err);
     return null;
   }
-  return Promise.all(tagRelevance);
 };
 
 RelevanceSchema.statics.mergeDuplicates = async function mergeDuplicates() {

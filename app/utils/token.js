@@ -5,7 +5,8 @@ if (process.env.WEB != 'true') {
   // userDefaults = require('react-native-user-defaults').default;
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
 } else {
-  cookie = require('react-cookie');
+  let Cookies = require('universal-cookie');
+  cookie = new Cookies();
 }
 
 const APP_GROUP_ID = 'group.com.4real.relevant';
@@ -24,13 +25,13 @@ export function get() {
           token = newToken;
           return resolve(token);
         }
-        console.log('userDefaults didnt find token');
+        console.log('userDefaults didn\'t find token');
         return reject();
       })
       .catch(err => reject(err));
     }
     // WEB
-    let newToken = cookie.load('token');
+    let newToken = cookie.get('token', { path: '/' });
     if (newToken) {
       token = newToken;
       return resolve(token);
@@ -48,8 +49,8 @@ export function remove() {
     });
   }
   return new Promise(resolve => {
-    cookie.remove('token');
-    token = null;
+    cookie.remove('token', { path: '/' });
+    console.log("REMOVED TOKEN ", cookie.get('token'));
     resolve();
   });
 }
@@ -63,7 +64,7 @@ export function set(newToken) {
     });
   }
   return new Promise(resolve => {
-    cookie.save('token', token);
+    cookie.set('token', token, { path: '/' });
     resolve();
   });
 }

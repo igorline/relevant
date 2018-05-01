@@ -6,17 +6,19 @@ const Controller = require('./passport');
 // var Twitter = require('twitter');
 let router = express.Router();
 
-router
-  .get('/', passport.authenticate('twitter', {
-    failureRedirect: '/',
-    session: false
-  }))
 
-  .get('/callback', passport.authenticate('twitter', {
-    failureRedirect: '/',
+router.get('/', (req, res, next) => {
+  passport.authenticate('twitter', {
+    failureRedirect: '/login',
     session: false
-  }), auth.setTokenCookie)
+  })(req, res, next);
+});
 
-  .post('/login', auth.currentUser(), Controller.login, auth.setTokenCookie);
+router.get('/callback', passport.authenticate('twitter', {
+  failureRedirect: '/login',
+  session: false
+}), auth.setTokenCookieDesktop);
+
+router.post('/login', auth.currentUser(), Controller.login, auth.setTokenCookie);
 
 module.exports = router;

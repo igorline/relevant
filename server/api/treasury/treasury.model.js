@@ -21,9 +21,10 @@ let TreasurySchema = new Schema({
   lastRewardFundUpdate: { type: Date },
 
   avgTwitterScore: { type: Number, default: 0 },
-  twitterCount: { type: Number, default: 0 },
-  lastTwitterUpdate: { type: Date }
 
+  twitterCount: { type: Number, default: 0 },
+  lastTwitterUpdate: { type: Date },
+  community: String
 }, {
   timestamps: true
 });

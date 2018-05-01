@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import Loading from '../common/loading.component';
 
 if (process.env.BROWSER === true) {
@@ -6,7 +7,7 @@ if (process.env.BROWSER === true) {
 }
 
 export default function (props) {
-  const post = props.post;
+  const { link, post } = props;
 
   if (post.loading) {
     return (
@@ -21,25 +22,17 @@ export default function (props) {
     );
   }
 
-  let gradient = ['hsla(240, 70%, 30%, .01)',
-    'hsla(240, 70%, 20%, .05)',
-    'hsla(240, 70%, 10%, .2)',
-    'hsla(240, 70%, 10%, .7)',
-    'hsla(240, 70%, 10%, .6)'
-  ]
-  .join(',', ', ');
-
   let postImage = post.image ? {
-    backgroundImage: 'linear-gradient(' + gradient + '), url(' + post.image + ')',
-  } :
-  { background: '#3E3EFF' };
+    backgroundImage: 'url(' + post.image + ')',
+  } : { backgroundColor: 'blue'};
+
+  let small = props.small ? 'small' : '';
+  let preview = props.preview ? 'preview' : '';
 
   const postContent = (
-    <div className="shadowBox postinfo" style={postImage}>
-{/*      {post.image &&
-        <span className="image"  />
-      }*/}
-      <div>
+    <div className={'minimalPost postinfo ' + small + ' ' + preview}>
+      <div className='image'><div style={postImage}></div></div>
+      <div className={'headlineContainer'}>
         <h3 className="headline bebasRegular">{post.title}</h3>
         {post.domain &&
           <div className="domain">{post.domain}</div>
@@ -47,6 +40,11 @@ export default function (props) {
       </div>
     </div>
   );
+
+  if (link) {
+    return <Link to={link} >{postContent}</Link>;
+  }
+
   let url = post.url || post.link;
 
   if (url) {

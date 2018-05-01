@@ -8,7 +8,7 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
   _id: { type: String, required: true },
-  handle: { type: String, unique: true },
+  handle: { type: String, unique: true, required: true },
   publicKey: { type: String, unique: true, sparse: true },
   name: String,
   email: { type: String, lowercase: true, select: false },
@@ -76,6 +76,16 @@ const UserSchema = new Schema({
   twitterAuthSecret: { type: String, select: false },
   twitterId: { type: Number, unique: true, index: true, sparse: true },
   lastTweetId: { type: Number },
+
+  tokenBalance: { type: Number, default: 0 },
+  ethAddress: [String],
+
+  // eth cash out
+  cashOut: {
+    nonce: Number,
+    sig: String,
+    amount: Number,
+  },
 }, {
   timestamps: true,
 });
@@ -83,6 +93,7 @@ const UserSchema = new Schema({
 // UserSchema.index({ name: 'text' });
 
 UserSchema.statics.events = new EventEmitter();
+// UserSchema.index({ handle: 1 });
 
 /**
  * Virtuals
@@ -265,7 +276,7 @@ UserSchema.methods = {
   },
 };
 
-UserSchema.methods.getRelevance = async function (community) {
+UserSchema.methods.getRelevance = async function getRelevance(community) {
   try {
     let rel = await this.model('Relevance').findOne({ community, user: this._id, global: true });
     this.relevance = rel ? rel.relevance : 0;
@@ -275,7 +286,7 @@ UserSchema.methods.getRelevance = async function (community) {
   }
 };
 
-UserSchema.methods.updatePostCount = async function () {
+UserSchema.methods.updatePostCount = async function updatePostCount() {
   try {
     this.postCount = await this.model('Post').count({ user: this._id });
     await this.save();
@@ -286,7 +297,7 @@ UserSchema.methods.updatePostCount = async function () {
   return this;
 };
 
-UserSchema.methods.updateClient = function (actor) {
+UserSchema.methods.updateClient = function updateClient(actor) {
   let userData = {
     _id: this._id,
     type: 'UPDATE_USER',
@@ -300,7 +311,7 @@ UserSchema.methods.updateClient = function (actor) {
   }
 };
 
-UserSchema.methods.updateMeta = async function () {
+UserSchema.methods.updateMeta = async function updateMeta() {
   try {
     let newUser = {
       name: this.name,
@@ -326,12 +337,12 @@ UserSchema.methods.updateMeta = async function () {
   }
 };
 
-UserSchema.methods.initialCoins = async function () {
+UserSchema.methods.initialCoins = async function initialCoins() {
   await this.model('Treasury').findOneAndUpdate(
-      {},
-      { $inc: { balance: -NEW_USER_COINS } },
-      { new: true, upsert: true }
-    ).exec();
+    {},
+    { $inc: { balance: -NEW_USER_COINS } },
+    { new: true, upsert: true }
+  ).exec();
 
   this.balance += NEW_USER_COINS;
   return this;
