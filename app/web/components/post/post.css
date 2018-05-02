@@ -1,12 +1,16 @@
+@import '../global.css';
 
 .postContainer {
-  width: 646px;
-  max-width: 100%;
+  /*max-width: 800px;*/
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-self: center;
+  /*align-self: center;*/
   padding-bottom: 100px;
+  &.narrow {
+    max-width: 600px;
+    margin: auto;
+  }
 }
 
 .shadowBox {
@@ -14,11 +18,21 @@
   /*box-shadow: 2px 2px 0 0 #000;*/
 }
 
-.singlePost .postContainer {
-  /*padding-top: 50px;*/
-}
+/*.singlePost .postContainer  {
+  margin: 0 0 0 $leftMargin;
+}*/
 
 .postinfo {
+  /*margin: -30px 0 0 0;*/
+
+  /*border: 1px solid $borderGrey;*/
+  /*box-shadow: 0 0 0 .5px $blue;*/
+  /*background: $lightBg;*/
+  /*color: white !important;*/
+  /*@extend %flatBorder;*/
+  border: 4px solid $borderGrey;
+
+  padding-right: 20px;
   &.shadowBox {
     /*border: 1px solid #3E3EFF;*/
     /*box-shadow: 4px 4px 0 0 #3E3EFF;*/
@@ -32,75 +46,188 @@
     color: white;
     background-size: cover;
   }
-  .image {
-    flex: 0 0 191px;
-    width: 191px;
-    margin-right: 15px;
-    background-size: cover;
-    background-position: center;
-    display: block;
+  &.minimalPost{
+    flex-direction: row;
+    color: black;
+    display: flex;
   }
-  & > div {
-    /*margin-left: 5px;*/
+
+  .image {
+    position: relative;
+    /*height: 150px;*/
+    /*align-self: flex-start;*/
+    div {
+      background-size: cover;
+      background-position: center;
+      /*width: 150px;*/
+      min-height: 120px;
+      height: 100%;
+      /*float: right;*/
+      width: 100%;
+    }
+  }
+
+
+  .headlineContainer {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    flex: 1;
+    padding-left: 10px;
+    /*border-left: 4px solid $borderGrey;*/
+
   }
   .headline {
-    font-size: 43px;
+    font-size: 32px;
+    line-height: 40px;
     margin: 0 0;
     display: inline-block;
     padding-top: 5px;
-
+    padding-right: 20px;
+    /*color: $blue;*/
   }
   .headline:after {
     content: '';
     display: inline-block;
-    width: 7px;
-    height: 7px;
-    margin-left: 5px;
+    width: 10px;
+    height: 10px;
+    margin-left: -10px;
     background-image: url(/img/linkout.png);
     background-size: cover;
+    transform: translateX(150%);
   }
   .domain {
     font-size: 15px;
     padding-bottom: 5px;
   }
+  &.small {
+    max-height: none;
+    .image {
+      width: 200px;
+      height: 100px;
+      div {
+        height: 100px;
+        position: relative;
+      }
+    }
+    .headline {
+      font-size: 25px;
+      line-height: normal;
+    }
+    .headlineContainer {
+      border: none;
+    }
+  }
+  &.preview {
+    padding: 0px;
+    border: none;
+    box-shadow: 0px 0px 0px 0.5px $borderGrey;
+    align-items: center;
+    &:hover {
+      box-shadow: 0px 0px 0px .5px $borderGrey;
+    };
+    .image {
+      width: 90px;
+      height: auto;
+      margin-right: 0px;
+      div {
+        min-height: 60px;
+        height: 60px;
+        position: relative;
+        /*display: absolute;*/
+      }
+    }
+    .headlineContainer {
+      border: none;
+      padding-left: 0;
+    }
+    .headline {
+      font-family: Arial;
+      font-weight: 100;
+      color: $greyText;
+      font-size: 14px;
+      padding: 5px 10px 0 10px;
+      line-height: normal;
+      &::after {
+        display: none;
+      }
+    }
+    .domain {
+      font-size: 10px;
+      padding-bottom: 0px;
+      color: $greyText;
+      padding: 0 10px;
+    }
+  }
 }
 
-.postMeta {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  .avatarBox.repost {
-    margin-left: 10px;
-    .avatar {
-      width: 26px;
-      height: 26px;
-      flex: 0 0 26px;
+.post {
+  .image, .postMeta {
+    width: 200px;
+    height: auto;
+
+    /*align-self: flex-start;*/
+    justify-content: flex-end;
+  }
+  .postMeta {
+    flex: 1;
+    margin-right: 20px;
+  }
+}
+.post {
+  .postBody, .headlineContainer {
+    flex: 3;
+  }
+}
+
+.post {
+  .postMeta {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-end;
+    width: 0px;
+    .avatarBox.repost {
+      margin-left: 10px;
+      .avatar {
+        width: 26px;
+        height: 26px;
+        flex: 0 0 26px;
+      }
     }
   }
 }
 
 .post {
   background-color: white;
-  margin: 20px 0;
+  margin: 10px 0 0px 0;
+  position: relative;
+  padding: 20px 0px 0;
+  @extend %flatBorderBottom;
+  /*border-bottom: 1px solid $borderGrey;*/
 }
 
 .postContent {
-  padding: 0px 20px;
-  margin-top: 20px;
+  padding-top: 10px;
+  display: flex;
 }
 
 .post .avatarBox {
-  margin: 20px 0;
+  margin: 20px 0 25px 0;
 }
+
 .postBody {
+  flex: 1;
+  /*margin-top: -10px;*/
+  /*border-left: 6px solid $borderGrey;*/
+  /*padding-left: 50px;*/
   font-family: 'Georgia', sans-serif;
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.52;
-  color: #242425;
+  color: @darkGrey;
+  flex: 1;
+  padding-bottom: 10px;
+  /*border-bottom: 1px solid $borderGrey;*/
 }
 .postBody span:after,
 .postBody a:after {
@@ -119,15 +246,20 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 20px;
+  align-items: center;
+  margin-top: 30px;
   margin-bottom: 40px;
-  .right {}
+  font-family: Arial, sans-serif;
+  .right .details {
+    display: flex;
+    align-items: center;
+  }
   .left > a {
     margin-right: 20px;
   }
   .upvote, .downvote {
-    width: 23px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
   }
   .fraction {
     display: inline-block;
@@ -158,7 +290,6 @@
   }
   span {
     position: relative;
-    top: -4px;
   }
 }
 

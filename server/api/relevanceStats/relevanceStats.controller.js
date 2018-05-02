@@ -1,6 +1,7 @@
 import RelevanceStats from './relevanceStats.model';
 import Invest from '../invest/invest.model';
 
+
 async function populateStats() {
   try {
     await RelevanceStats.find({}).remove();

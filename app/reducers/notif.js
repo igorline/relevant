@@ -9,7 +9,6 @@ const initialState = {
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
-
     case types.SET_ACTIVITY: {
       let type = action.payload.type;
       return {

@@ -1,26 +1,55 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { BondedTokenUtils } from 'bonded-token';
 // import NewMessage from '../message/newMessage';
 import Avatar from '../common/avatar.component';
-import * as MessageActions from '../../../actions/message.actions';
+// import * as MessageActions from '../../../actions/message.actions';
 
 if (process.env.BROWSER === true) {
   require('./profile.css');
 }
 
 class Profile extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showMsgForm: false
-    };
+  static propTypes = {
+    user: PropTypes.object,
+    auth: PropTypes.object,
+    community: PropTypes.string,
+    RelevantCoin: PropTypes.object,
+    account: PropTypes.string,
   }
 
-  onClick(e) {
-    e.preventDefault();
-    this.setState({ showMsgForm: !this.state.showMsgForm });
+  state = { token: null };
+
+  static getDerivedStateFromProps(nextProps) {
+    let props = nextProps;
+    const user = props.user.users[props.params.id];
+    if (!user) return null;
+    let tokens = user.balance;
+    if (props.community === 'crypto') {
+      tokens = 0;
+    }
+    let owner = props.auth.user;
+    let account = props.account;
+    if (account && props.community === 'crypto' && owner && owner._id === user._id && user.ethAddress) {
+      if (account !== user.ethAddress[0]) return { tokens: 0 };
+      tokens = BondedTokenUtils.getValue(props.RelevantCoin, 'balanceOf', account);
+    }
+    return { tokens };
   }
+
+  // getTokens(props) {
+  //   const user = props.user.users[props.params.id];
+  //   if (!user) return;
+  //   this.tokens = user.balance;
+  //   let owner = props.auth.user;
+  //   let account = props.account;
+  //   if (account && props.community === 'crypto' && owner && owner._id === user._id) {
+  //     this.tokens = BondedTokenUtils.getValue(props.RelevantCoin, 'balanceOf', account);
+  //     // this.tokens = props.RelevantCoin.methods.balanceOf.cacheCall(account);
+  //   }
+  // }
 
   render() {
     const user = this.props.user.users[this.props.params.id];
@@ -29,6 +58,7 @@ class Profile extends Component {
         User not found!
       </div>);
     }
+
     return (
       <div className="profileContainer">
         <div className="profileHero">
@@ -38,7 +68,7 @@ class Profile extends Component {
             <img src="/img/r-emoji.png" alt="Relevance" className="r" />
             {Math.round(user.relevance || 0)}
             <img src="/img/relevantcoin.png" alt="Coins" className="coin" />
-            {Math.round(user.balance || 0)}
+            {Math.round(this.state.tokens || 0)}
           </div>
           <div className="subscribers">
             {'Subscribers: '}<b>{user.followers}</b>
@@ -57,23 +87,18 @@ class Profile extends Component {
   }
 }
 
-Profile.defaultProps = {
-  profile: { userPosts: [] }
-};
-
 const mapStateToProps = (state) => ({
-  isAuthenticating: state.auth.isAuthenticating,
-  isAuthenticated: state.auth.isAuthenticated,
-  statusText: state.auth.statusText,
-  message: state.socket.message || state.message,
   user: state.user,
-  posts: state.posts,
-  profile: state.profile,
-  investments: state.investments,
+  auth: state.auth,
+  community: state.auth.community,
+  RelevantCoin: state.contracts.RelevantCoin,
+  account: state.accounts[0]
 });
 
-const mapDispatchToProps = (dispatch) => (Object.assign({}, { dispatch }, {
-  actions: bindActionCreators(Object.assign({}, MessageActions), dispatch)
-}));
+// const mapDispatchToProps = (dispatch) => ({
+//   actions: bindActionCreators({
+//     ...MessageActions
+//   }, dispatch)
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default connect(mapStateToProps, {})(Profile);

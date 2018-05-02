@@ -17,7 +17,8 @@ let NotificationSchema = new Schema({
   type: String,
   personal: { type: Boolean, default: true },
   tag: { type: String, ref: 'Tag' },
-  text: { type: String }
+  text: { type: String },
+  coinType: String,
 }, {
   timestamps: true
 });

@@ -1,8 +1,8 @@
 
 let Relevance = require('./relevance.model');
 
-// Relevance.find({ _id: '58545d5478ee31e893ffecb8' }).remove().exec();
-// .then(tag => console.log('empty tag', tag));
+import User from '../user/user.model';
+
 
 function handleError(res, err) {
   console.log(err);

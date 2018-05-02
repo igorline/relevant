@@ -1,30 +1,29 @@
-var path = require('path');
-var webpack = require('webpack');
-var precss = require('precss');
-var customMedia = require('postcss-custom-media');
-var easings = require('postcss-easings');
-var postcss = require('postcss-loader');
-var autoprefixer = require('autoprefixer');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
-
-  devtool: 'inline-source-map',
-  entry: [
-    'webpack-hot-middleware/client?reload=true',
-    './index.webNew.js',
-    'whatwg-fetch',
-  ],
+  devtool: 'cheap-eval-source-map',
+  entry: {
+    app: [
+      './index.webNew.js',
+      'whatwg-fetch',
+      'webpack-hot-middleware/client?quiet=true'
+    ]
+  },
   output: {
     path: path.join(__dirname, '/app/web/public'),
     filename: 'bundle.js',
     publicPath: '/'
   },
+  mode: 'development',
+  // optimization: {
+  //   splitChunks: {
+  //     chunks: "all"
+  //   }
+  // },
   plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
-    new ExtractTextPlugin('styles.css'),
+    new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         BROWSER: JSON.stringify(true),
@@ -35,36 +34,42 @@ module.exports = {
       }
     })
   ],
-  postcss: function () {
-    return [easings, autoprefixer, precss];
+  resolve: {
+    symlinks: false,
+    alias: {
+      react: path.resolve('./node_modules/react'),
+      'react-dom': path.resolve('./node_modules/react-dom')
+    }
   },
+
   module: {
     exprContextRegExp: /$^/,
     exprContextCritical: false,
-    preLoaders: [
-      { test: /\.json$/, loader: 'json' },
-    ],
-    loaders: [
+    rules: [
       {
         test: /\.svg$/,
         loader: 'raw-loader'
       },
       {
-        test: /\.css$|\.scss$/,
-        loader: 'style-loader!css-loader!postcss-loader'
-        // loader: ExtractTextPlugin.extract('style-loader','css-loader!postcss-loader')
-        // loader: 'css?sourceMap!postcss!sass?sourceMap&sourceMapContents',
+        test: /\.js$/,
+        exclude: [/node_modules/],
+        use: [{
+          loader: 'babel-loader',
+          options: {
+            babelrc: true,
+            // This is a feature of `babel-loader` for Webpack (not Babel itself).
+            // It enables caching results in ./node_modules/.cache/babel-loader/
+            // directory for faster rebuilds.
+            cacheDirectory: true,
+            plugins: ['react-hot-loader/babel'],
+          },
+        }],
       },
       {
-        test: /\.js$/,
-        loader: 'babel',
-        exclude: /node_modules/,
-        include: __dirname,
-        query: {
-          presets: ['react-hmre']
-        }
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader', 'postcss-loader']
       }
-    ],
-  }
+    ]
+  },
 };
 

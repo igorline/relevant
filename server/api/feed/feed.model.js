@@ -12,7 +12,7 @@ let FeedSchema = new Schema({
   createdAt: { type: Date },
   read: { type: Boolean, default: false }
 }, {
-  timestamps: false
+  timestamps: false,
 });
 
 FeedSchema.index({ userId: 1, createdAt: 1 });

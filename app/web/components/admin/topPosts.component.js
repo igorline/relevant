@@ -29,13 +29,14 @@ class TopPosts extends Component {
           {...this.props}
           post={p}
         />
-        <button onClick={() => this.props.actions.sendPostNotification(p)} >Send 'Top Post' notification</button>
+        <button onClick={() => this.props.actions.sendPostNotification(p)} >
+          Send 'Top Post' notification
+        </button>
       </div>
-      )
-    );
+    ));
 
     return (
-      <div className={'postContainer'}>
+      <div className={'postContainer narrow'}>
         <h2>Top Posts</h2>
         {postsEl}
       </div>
@@ -47,6 +48,7 @@ export default connect(
   state => ({
     auth: state.auth,
     topPosts: state.posts.topPosts,
+    user: state.user,
   }),
   dispatch => ({
     actions: bindActionCreators(postActions, dispatch)

@@ -1,0 +1,29 @@
+@import '../global.css';
+
+sidebar{
+  /*width: 40%;*/
+  /*max-width: 400px;*/
+  flex: .7;
+  position: relative;
+  margin-top: 1px;
+  display: block;
+  .innerSidebar {
+    /*background: hsl(240,20%,95%);*/
+    background: $lightBg;
+    padding: 9%;
+    padding-top: 20px;
+    margin: 0 0 0 $globalMargin;
+    width: 300px;
+
+    button {
+      width: 100%;
+      margin: 20px 0;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    li {
+      padding: 5px 0;
+    }
+  }
+}
