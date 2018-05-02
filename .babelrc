@@ -1,6 +1,11 @@
 {
   "presets": ["react-native"],
   "env": {
+    "development": {
+      "plugins": [
+        "react-hot-loader/babel"
+      ]
+    },
     "production": {
       "plugins": [
         "transform-remove-console",

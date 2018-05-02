@@ -1,6 +1,6 @@
-let ExtractTextPlugin = require('extract-text-webpack-plugin');
-let webpack = require('webpack');
-let devConfig = require('./webpack.config');
+const webpack = require('webpack');
+const devConfig = require('./webpack.config');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 let prodConfig = {};
 
@@ -10,10 +10,10 @@ Object.keys(devConfig).forEach((key) => {
 
 delete prodConfig.devtool;
 
-prodConfig.entry = ['./index.web.js', 'whatwg-fetch'];
+prodConfig.entry = ['./index.webNew.js', 'whatwg-fetch'];
 
 prodConfig.plugins = [
-  new ExtractTextPlugin('styles.css'),
+  new ExtractTextPlugin("styles.css"),
   new webpack.DefinePlugin({
     'process.env': {
       BROWSER: JSON.stringify(true),
@@ -21,21 +21,27 @@ prodConfig.plugins = [
       WEB: JSON.stringify('true'),
       API_SERVER: JSON.stringify('')
     }
-  })
+  }),
+  new webpack.NamedModulesPlugin(),
 ];
 
-prodConfig.module.loaders = [
+prodConfig.mode = 'production';
+
+prodConfig.module.rules = [
   {
     test: /\.svg$/,
-    loader: 'raw-loader'
+    use: 'raw-loader'
   },
   {
     test: /\.css$|\.scss$/,
-    loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader')
+    use: ExtractTextPlugin.extract({
+      fallback: 'style-loader',
+      use: 'css-loader!postcss-loader'
+    })
   },
   {
     test: /\.js$/,
-    loader: 'babel',
+    use: ['babel-loader'],
     exclude: /node_modules/,
     include: __dirname,
   }

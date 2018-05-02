@@ -38,7 +38,6 @@ q.on('timeout', (next, job) => {
 // Stats.find({}).remove(() => {});
 
 async function updateUserStats() {
-
   User.find({}, { _id: 1, relevance: 1 })
   .exec((err, res) => {
     if (err || !res) {
@@ -101,7 +100,7 @@ async function userRank() {
         // time discount (6 month half-life)
         let now = new Date();
         let t = now.getTime() - upvote.createdAt.getTime();
-        a *= Math.pow(1 / 2, t / ( 1000 * 60 * 60 * 24 * 30 * 6 ));
+        a *= Math.pow(1 / 2, t / (1000 * 60 * 60 * 24 * 30 * 6));
 
         if (rankedUsers[user._id][upvote.author]) {
           rankedUsers[user._id][upvote.author].weight += a;
@@ -149,7 +148,7 @@ async function userRank() {
         console.log('name: ', u.name);
         console.log('pageRank: ', Math.round(rank), ' rel: ', Math.round(u.relevance));
         console.log('RATIO ', Math.round(rank * 100 / u.relevance) / 100 || 0);
-        console.log('-----')
+        console.log('-----');
       // }
     });
 
@@ -182,7 +181,34 @@ async function getUserRank() {
           user.level = level;
           user.totalUsers = totalUsers;
 
-          let topicRelevance = await Relevance.find({ user: user._id, tag: { $ne: null } })
+          let comsRel = await Relevance.find({ user: user._id, global: true });
+          comsRel.forEach(async comRel => {
+            // cache this
+            let cRank = await Relevance.find({
+              community: comRel.community,
+              global: true,
+              relevance: { $lt: comRel.relevance, $gt: 0 }
+            }).count();
+            let cTotal = Relevance.find({
+              community: comRel.community,
+              global: true
+            }).count();
+            let cPercentRank = Math.round(((cRank) * 100) / (cTotal));
+            let cLevel = Math.round(1000 * comRel.relevance / topR) / 10;
+
+            comRel.percentRank = cPercentRank;
+            comRel.rank = cTotal - cRank;
+            comRel.level = cLevel;
+            comRel.totalUsers = topR;
+            return comRel;
+          });
+
+
+          // this will update both global and local reps
+          let topicRelevance = await Relevance.find({
+            user: user._id,
+            tag: { $ne: null }
+          })
           .sort('-relevance')
           .limit(5);
 
@@ -214,7 +240,7 @@ async function getUserRank() {
             user.onboarding = 0;
           }
 
-          await Promise.all(topicPromises);
+          await Promise.all([ ...topicPromises, ...comsRel]);
 
           await user.save();
           // console.log(user._id, ' ', percentRank);
@@ -262,7 +288,7 @@ async function basicIncome(done) {
     return (user) => {
       q.push(async cb => {
         try {
-          console.log('updating users ', teir)
+          console.log('updating users ', teir);
           let balanceIncrease;
           if (teir === 1) balanceIncrease = 5;
           if (teir === 2) balanceIncrease = 10;
@@ -309,6 +335,7 @@ async function basicIncome(done) {
 
   function updateUserRelevance() {
     console.log('updating user relevance');
+    console.log('updateUserRelevance is depricated - remove');
     // let treasury = Treasury.findOne();
     return user => {
       q.push(async cb => {
@@ -317,8 +344,10 @@ async function basicIncome(done) {
           let diff = r - user.relevance;
           user.relevance += diff;
 
-          user.updateRelevanceRecord();
-          RelevanceStats.updateUserStats(user, diff);
+          // this is now done on via topics
+          // await user.updateRelevanceRecord();
+          // depricated
+          // RelevanceStats.updateUserStats(user, diff);
 
           await user.save();
         } catch (err) {
@@ -339,6 +368,12 @@ async function basicIncome(done) {
           let r = topic.relevance * DECAY;
           let diff = r - topic.relevance;
           topic.relevance += diff;
+          if (topic.global === true) {
+            console.log(topic);
+            await topic.updateRelevanceRecord(topic.community);
+            // TODO update community stats
+            RelevanceStats.updateUserStats(topic.user, diff, topic.community);
+          }
           await topic.save();
         } catch (err) {
           console.log('error updating topic relevance income ', err);
@@ -353,8 +388,9 @@ async function basicIncome(done) {
   tier1.forEach(updateUsers(1));
   tier2.forEach(updateUsers(2));
   tier3.forEach(updateUsers(3));
-  all.forEach(updateUserRelevance());
   topicRelevance.forEach(updateTopicRelevance());
+  // depricated
+  all.forEach(updateUserRelevance());
 
   q.start((queErr, results) => {
     if (queErr) return console.log(queErr);
@@ -421,11 +457,11 @@ function startRewards() {
 }
 
 function startTwitterUpdate() {
-  setInterval( TwitterWorker.updateTwitterPosts, 60 * 60 * 1000);
+  setInterval(TwitterWorker.updateTwitterPosts, 60 * 60 * 1000);
   TwitterWorker.updateTwitterPosts();
 }
 
-
+// basicIncome();
 // updateUserStats();
 // startStatsUpdate();
 // startTwitterUpdate();
@@ -450,3 +486,9 @@ if (process.env.NODE_ENV === 'production') {
   }, getNextUpdateTime());
 }
 
+module.exports = {
+  updateUserStats,
+  // userRank,
+  basicIncome,
+  getUserRank
+};

@@ -8,8 +8,8 @@ import Earnings from '../api/earnings/earnings.model';
 
 import { INTERVAL_INFLAITION, INIT_COIN, SHARE_DECAY } from '../config/globalConstants';
 
-async function createCoins() {
-  let treasury = await Treasury.findOne({});
+async function createCoins(community) {
+  let treasury = await Treasury.findOne({ community });
   let outstanding = 0;
   let users = await User.find({});
   users.forEach(u => outstanding += u.balance);
@@ -25,7 +25,8 @@ async function createCoins() {
 }
 
 // function init() {
-//   createCoins()
+//   let community = 'relevant'
+//   createCoins(community)
 //   .catch(err => console.log(err));
 // }
 // init();
@@ -34,39 +35,38 @@ async function createCoins() {
 async function computePostPayout(posts, treasury) {
   // let posts = await Post.find({ paidOut: false, payoutTime: { $lt: now } });
   let updatedPosts = posts.map(async post => {
-    // posts w negative relevance don't get rewars
+    // posts w negative relevance don't get rewards
     if (post.relevance <= 0) {
-      return await post.save();
+      return post.save();
     }
     // linear reward curve
     post.payoutShare = post.relevance / treasury.currentShares;
     post.payout = post.balance + treasury.rewardFund * post.payoutShare;
     post.balance = 0;
-    post = await post.save();
-    return post;
+    return post.save();
   });
   updatedPosts = await Promise.all(updatedPosts);
   return updatedPosts;
 }
 
 
-async function allocateRewards() {
-  let treasury = await Treasury.findOne({});
+async function allocateRewards(community) {
+  let treasury = await Treasury.findOne({ community });
   let newTokens = INTERVAL_INFLAITION * treasury.totalTokens;
   treasury.totalTokens += newTokens;
   treasury.rewardFund += newTokens;
-  return await treasury.save();
+  return treasury.save();
 }
 
 
-async function distributeRewards() {
-  let treasury = await Treasury.findOne({});
+async function distributeRewards(community) {
+  let treasury = await Treasury.findOne({ community });
   let now = new Date();
 
-  let posts = await Post.find({ twitter: { $ne: true }, paidOut: false, payoutTime: { $lte: now } });
+  let posts = await Post.find({ twitter: { $ne: true }, community: 'relevant', paidOut: false, payoutTime: { $lte: now } });
   let estimatePosts = await Post.find({ twitter: { $ne: true }, paidOut: false, payoutTime: { $gt: now } });
 
-  // decay curren reward shares
+  // decay current reward shares
   let decay = (now.getTime() - treasury.lastRewardFundUpdate.getTime()) / SHARE_DECAY;
   // console.log(decay)
   // console.log('start shares ', treasury.currentShares);
@@ -111,7 +111,6 @@ async function rewardUser(props) {
   let text = `You earned ${reward} coin${s} from ${action}this post`;
   let alertText = `You earned ${reward} coin${s} from ${action}a post`;
 
-  console.log()
   await Earnings.updateRewardsRecord({
     user: user._id,
     post: post._id,
@@ -130,8 +129,8 @@ async function rewardUser(props) {
   return user;
 }
 
-async function distributeUserRewards(posts) {
-  let treasury = await Treasury.findOne({});
+async function distributeUserRewards(posts, community) {
+  let treasury = await Treasury.findOne({ community });
   let payouts = {};
   let updatedUsers = posts.map(async post => {
     let votes = await Invest.find({ post: post._id });
@@ -213,9 +212,10 @@ exports.rewards = async () => {
   }
   computingRewards = true;
   try {
-    let rewardsAllocation = await allocateRewards();
-    let updatedPosts = await distributeRewards();
-    let payouts = await distributeUserRewards(updatedPosts);
+    let community = 'relevant';
+    let rewardsAllocation = await allocateRewards(community);
+    let updatedPosts = await distributeRewards(community);
+    let payouts = await distributeUserRewards(updatedPosts, community);
 
     let displayPosts = updatedPosts.map(p => ({
       title: p.title,

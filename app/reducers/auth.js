@@ -16,6 +16,7 @@ const initialState = {
   twitter: null,
   currentInvite: null,
   loading: false,
+  community: null,
 };
 
 export default function auth(state = initialState, action) {
@@ -127,7 +128,7 @@ export default function auth(state = initialState, action) {
       });
 
     case types.LOGOUT_USER: {
-      return { ...initialState };
+      return { ...initialState, community: state.community };
     }
 
     case types.UPDATE_INVITE: {

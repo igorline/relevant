@@ -13,17 +13,19 @@ let RelevanceStatsSchema = new Schema({
   downvotes: { type: Number, default: 0 },
   views: { type: Number, default: 0 },
   linkViews: { type: Number, default: 0 },
+  community: { type: String },
 }, {
   timestamps: true
 });
 
 RelevanceStatsSchema.index({ user: 1, date: 1 });
 
-RelevanceStatsSchema.statics.updateUserStats = async function (user, relevance) {
+RelevanceStatsSchema.statics.updateUserStats = async function (user, relevance, community) {
   try {
+    community = community || 'relevant';
     let date = new Date();
     date = date.setUTCHours(0, 0, 0, 0);
-    let stat = await this.findOne({ user: user._id, date });
+    let stat = await this.findOne({ user: user._id, date, community });
     if (!stat) {
       stat = new this({ user: user._id, date });
     }

@@ -8,12 +8,12 @@ let cookieParser = require('cookie-parser');
 let session = require('express-session');
 let favicon = require('serve-favicon');
 let MongoStore = require('connect-mongo')(session);
+const cookiesMiddleware = require('universal-cookie-express');
 
 const app = new Express();
 mongoose.Promise = global.Promise;
 
 require('dotenv').config({ silent: true });
-// require('./queue');
 
 console.log('NODE_ENV', process.env.NODE_ENV);
 require('events').EventEmitter.prototype._maxListeners = 100;
@@ -23,8 +23,12 @@ require('events').EventEmitter.prototype._maxListeners = 100;
 let isDevelopment = (process.env.NODE_ENV !== 'production' &&
   process.env.NODE_ENV !== 'test' &&
   process.env.NODE_ENV !== 'native');
+
 if (isDevelopment) {
   console.log('in development environment');
+  // can test queue in development
+  require('./queue');
+
   let webpack = require('webpack');
   let webpackDevMiddleware = require('webpack-dev-middleware');
   let webpackHotMiddleware = require('webpack-hot-middleware');
@@ -42,6 +46,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+
 app.use(favicon(__dirname + '/../app/web/public/img/favicon.ico'));
 
 // Connect to db
@@ -77,7 +82,7 @@ app.use(requireHTTPS);
 
 // public folder
 app.use(Express.static(__dirname + '/../app/web/public'));
-
+app.use(cookiesMiddleware());
 let routes = require('./routes')(app);
 
 let port = process.env.PORT || 3000;
@@ -97,6 +102,9 @@ if (process.env.NODE_ENV !== 'test') {
   });
   socketServer(server);
 }
+
+require('./utils/updateDB-Community0.1.0');
+require('./utils/ethereum').init();
 
 exports.app = app;
 exports.server = server;

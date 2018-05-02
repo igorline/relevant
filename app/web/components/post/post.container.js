@@ -13,6 +13,8 @@ import * as navigationActions from '../../../actions/navigation.actions';
 import * as animationActions from '../../../actions/animation.actions';
 import Comments from '../comment/comment.container';
 import RequestInvite from '../splash/requestInvite.component';
+import Footer from '../common/footer.component';
+import Sidebar from '../common/sidebar.component';
 
 if (process.env.BROWSER === true) {
   require('./post.css');
@@ -36,16 +38,21 @@ class Posts extends Component {
     const hasPost = this.post && this.post !== 'notFound';
 
     return (
-      <div className="parent singlePost">
-        {hasPost &&
-          <div className="postContainer">
-            <Post post={this.post} {...this.props} />
-            <Comments post={this.post} {...this.props} />
-          </div>
-        }
-        {!this.props.isAuthenticated &&
+      <div style={{ flex: 1 }}>
+        <div className="singlePost row column pageContainer">
+          {hasPost &&
+            <div className="postContainer">
+              <Post post={this.post} {...this.props} />
+              <Comments post={this.post} {...this.props} />
+            </div>
+          }
+          <Sidebar {...this.props} />
+
+        </div>
+{/*        {!this.props.isAuthenticated &&
           <RequestInvite {...this.props} />
-        }
+        }*/}
+        <Footer location={this.props.location} />
       </div>
     );
   }
@@ -55,6 +62,7 @@ export default connect(
   state => ({
     auth: state.auth,
     posts: state.posts,
+    user: state.user,
     investments: state.investments,
     myPostInv: state.investments.myPostInv,
     isAuthenticated: state.auth.isAuthenticated,
@@ -64,4 +72,5 @@ export default connect(
       ...postActions,
       ...investActions,
     }, dispatch)
-  }))(Posts);
+  })
+)(Posts);

@@ -4,6 +4,7 @@ import React, {
 import MissionText from './missionText.component';
 import ShadowButton from '../common/ShadowButton';
 import InviteCta from './inviteCta.component';
+import Footer from '../common/footer.component';
 
 export default class Mission extends Component {
   constructor(props, context) {
@@ -87,6 +88,7 @@ Decentralized Relevant database fully integrated with Currency - Fall 2018
 
           </div>
         </panel>*/}
+      <Footer location={this.props.location} />
 
       </div>
     );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { push } from 'react-router-redux';
+import { push, routerActions } from 'react-router-redux';
 import { UserAuthWrapper } from 'redux-auth-wrapper';
 import App from './components/app';
 import Splash from './components/splash/splash.container';
@@ -21,26 +21,47 @@ import Waitlist from './components/admin/waitlist.component';
 import Downvotes from './components/admin/downvotes.container';
 import Email from './components/admin/email.component';
 import TopPosts from './components/admin/topPosts.component';
+import Wallet from './components/wallet/wallet.container';
+import AdminWallet from './components/admin/admin.main.component';
+
+import { connectedRouterRedirect } from 'redux-auth-wrapper/history3/redirect'
+
+
+// import BondingCurve from './bonding-curve-ui/src/App';
 
 // Redirects to /login by default
-const userIsAuthenticated = UserAuthWrapper({
-  authSelector: state => state.auth.user, // how to get the user state
-  redirectAction: push, // the redux action to dispatch for redirect
-  wrapperDisplayName: 'UserIsAuthenticated' // a nice name for this auth check
+const userIsAuthenticated = connectedRouterRedirect({
+  // authSelector: state => state.auth.user, // how to get the user state
+  // redirectAction: routerActions.replace, // the redux action to dispatch for redirect
+  // wrapperDisplayName: 'UserIsAuthenticated' // a nice name for this auth check
+
+  redirectPath: '/login',
+  authenticatedSelector: state => state.auth.user !== null,
+  // authenticatingSelector: state => state.user.isLoading,
+  // AuthenticatingComponent: Loading,
+  redirectAction: routerActions.replace,
+  wrapperDisplayName: 'UserIsAuthenticated'
+
 });
 
-const userIsAdmin = UserAuthWrapper({
-  authSelector: state => state.auth.user,
-  wrapperDisplayName: 'UserIsAdmin',
-  redirectAction: push,
+const userIsAdmin = connectedRouterRedirect({
+  // authSelector: state => state.auth.user,
+  // wrapperDisplayName: 'UserIsAdmin',
+  // redirectAction: routerActions.replace,
   // failureRedirectPath: '/login',
-  // allowRedirectBack: false,
-  predicate: user => user.role === 'admin'
+  // // allowRedirectBack: false,
+  // predicate: user => user.role === 'admin'
+  redirectPath: '/login',
+  allowRedirectBack: false,
+  authenticatedSelector: state => state.auth.user && state.auth.user.role === 'admin',
+  redirectAction: routerActions.replace,
+  wrapperDisplayName: 'UserIsAdmin'
 });
 
 let routes = (store) => {
   // console.log('router store', store)
   const connect = (fn) => (nextState, replaceState) => fn(store, nextState, replaceState);
+
   return {
     path: '/',
     component: App,
@@ -54,11 +75,12 @@ let routes = (store) => {
       { path: 'discover', component: Discover },
       { path: 'discover', component: Discover },
       { path: 'discover/:sort', component: Discover },
-      { path: 'discover/tag/:tag', component: Discover },
+      { path: 'discover/tag/:tag/::sort', component: Discover },
       { path: 'discover/tag/:tag/:sort', component: Discover },
       { path: 'admin',
         component: userIsAuthenticated(userIsAdmin(AdminHeader)),
-        onEnter: connect(userIsAuthenticated.onEnter),
+        // onEnter: connect(userIsAuthenticated.onEnter),
+        indexRoute: { component: AdminWallet },
         childRoutes: [
           { path: 'flagged', component: Flagged },
           { path: 'waitlist', component: Waitlist },
@@ -69,17 +91,26 @@ let routes = (store) => {
           { path: 'topPosts', component: TopPosts },
         ]
       },
-
+      { path: 'wallet', component: Wallet },
       { path: 'invite/:code', component: Invite },
-      { path: 'profile', component: userIsAuthenticated(ProfileContainer), onEnter: connect(userIsAuthenticated.onEnter) },
+      { path: 'profile',
+        component: userIsAuthenticated(ProfileContainer),
+        // onEnter: connect(userIsAuthenticated.onEnter)
+      },
       { path: 'profile/:id', component: ProfileContainer },
-      // { path: 'messages', component: userIsAuthenticated(MessageContainer), onEnter: connect(userIsAuthenticated.onEnter) },
-      { path: 'post/new', component: userIsAuthenticated(CreatePostContainer), onEnter: connect(userIsAuthenticated.onEnter) },
+      // { path: 'messages', component: userIsAuthenticated(MessageContainer),
+      // // onEnter: connect(userIsAuthenticated.onEnter) },
+      // },
+      { path: 'post/new',
+        component: userIsAuthenticated(CreatePostContainer),
+        // onEnter: connect(userIsAuthenticated.onEnter)
+      },
       { path: 'post/:id', component: PostContainer },
       // { path: 'discover', component: DiscoverContainer },
       { path: 'resetPassword/:token', component: Auth },
       { path: 'confirm/:user/:code', component: Auth },
       { path: 'forgot', component: Auth },
+      // { path: 'bonding', component: BondingCurve },
       { path: '*', component: NotFound }
     ]
   };

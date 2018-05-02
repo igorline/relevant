@@ -23,14 +23,14 @@ const investmentSchema = new schema.Entity('investments',
   { idAttribute: '_id' }
 );
 
-export function updatePostInvest(vote) {
+export function updatePostVote(vote) {
   return {
     type: types.UPDATE_POST_INVESTMENTS,
     payload: [vote]
   };
 }
 
-export function undoPostInvest(post) {
+export function undoPostVote(post) {
   return {
     type: types.UNDO_POST_INVESTMENT,
     payload: post
@@ -55,36 +55,25 @@ export function setInvestments(investments, userId, index) {
   };
 }
 
-export function invest(token, amount, post, investingUser) {
-  return (dispatch) => {
-    dispatch(updatePostInvest({ post: post._id, amount }));
-    return fetch(apiServer + 'invest?access_token=' + token, {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        investor: investingUser._id,
-        amount,
-        post
-      })
-    })
-    .then(response => response.json())
-    .then((data) => {
-      if (data && !data.success) {
-        dispatch(undoPostInvest(post._id));
-        if (data.message) throw Error(data.message);
-        // return false;
-      }
-      return data;
-    })
-    .catch((error) => {
-      dispatch(undoPostInvest(post._id));
-      console.log('invest error ', error.message);
-      throw Error(error.message);
-    });
+export function vote(amount, post, user) {
+  return async dispatch => {
+    try {
+      dispatch(updatePostVote({ post: post._id, amount }));
+      let responseJSON = await utils.api.request({
+        method: 'POST',
+        endpoint: 'invest',
+        path: '/',
+        body: JSON.stringify({
+          investor: user._id,
+          amount,
+          post
+        }),
+      });
+      return responseJSON;
+    } catch (error) {
+      dispatch(undoPostVote(post._id));
+      throw new Error(error.message);
+    }
   };
 }
 
