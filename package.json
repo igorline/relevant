@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "startApp": "REACT_DEBUGGER=\"rndebugger-open --open --port 8081\" node node_modules/react-native/scripts/packager.sh",
+    "startApp": "REACT_DEBUGGER=\"rndebugger-open --open --port 8081\" node node_modules/react-native/local-cli/cli.js start",
     "start": "node server/index.js",
     "worker": "node server/worker.js",
     "dev": "nodemon server/index.js",
