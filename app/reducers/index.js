@@ -19,11 +19,13 @@ import admin from './admin';
 
 let navigation = {};
 let routing = {};
-let drizzleReducers = require('drizzle').drizzleReducers;
+let drizzleReducers = {};
 if (process.env.WEB != 'true') {
   navigation = require('./navigation').default;
 } else {
   routing = require('react-router-redux').routerReducer;
+  // let drizzle = require('drizzle');
+  // drizzleReducers = drizzle ? drizzle.drizzleReducers : {};
 }
 
 const rootReducer = combineReducers({
@@ -46,7 +48,7 @@ const rootReducer = combineReducers({
   tooltip,
   subscriptions,
   admin,
-  ...drizzleReducers,
+  // ...drizzleReducers,
 });
 
 export default rootReducer;

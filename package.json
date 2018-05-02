@@ -145,7 +145,7 @@
     "react-textarea-autosize": "^5.1.0",
     "readability": "git+https://github.com/balasan/readability-1.git",
     "redux": "^3.7.2",
-    "redux-auth-wrapper": "^1.0.0",
+    "redux-auth-wrapper": "^2.0.2",
     "redux-form": "^7.3.0",
     "redux-logger": "^2.6.1",
     "redux-saga": "^0.16.0",
@@ -166,9 +166,17 @@
     "universal-cookie-express": "^2.1.2",
     "uuid": "^3.0.1",
     "voucher-code-generator": "^1.1.1",
-    "web3": "^1.0.0-beta.33",
+    "web3": "^1.0.0-beta.34",
     "webpack": "^4.4.1",
     "whatwg-fetch": "^2.0.1"
+  },
+  "react-native": {
+    "crypto": false,
+    "./server/api/post/post.controller": false,
+    "./server/api/user/user.controller": false,
+    "web3-eth-accounts": false,
+    "drizzle": false,
+    "web3": false
   },
   "devDependencies": {
     "autoprefixer": "^6.1.1",

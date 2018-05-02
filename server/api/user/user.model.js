@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
-import crypto from 'crypto';
 import { EventEmitter } from 'events';
 import { NEW_USER_COINS } from '../../config/globalConstants';
+
+const crypto = require('crypto');
 
 const authTypes = ['github', 'twitter', 'facebook', 'google'];
 const Schema = mongoose.Schema;
