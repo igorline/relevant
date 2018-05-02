@@ -117,7 +117,7 @@
     "react-native-navbar": "^1.4.2",
     "react-native-orientation": "git+https://github.com/yamill/react-native-orientation.git",
     "react-native-overlay": "^0.4.2",
-    "react-native-pathjs-charts": "0.0.34",
+    "react-native-pathjs-charts": "git+https://github.com/balasan/react-native-pathjs-charts.git",
     "react-native-progress": "^3.1.0",
     "react-native-prompt": "^1.0.0",
     "react-native-push-notification": "^3.0.0",
