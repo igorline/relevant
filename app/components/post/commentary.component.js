@@ -17,8 +17,8 @@ import Tags from '../tags.component';
 let styles;
 
 export default class Commentary extends Component {
-
-  componentWillMount() {
+  constructor(props) {
+    super(props);
     this.state = {
       currentIndex: 0,
     };
@@ -177,7 +177,7 @@ export default class Commentary extends Component {
         <FlatList
           ref={c => this.scrollView = c}
           scrollEnabled={this.props.commentary.length > 1}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(item, index) => index.toString()}
           horizontal
           data={this.props.commentary}
           renderItem={this.renderItem}
@@ -185,6 +185,7 @@ export default class Commentary extends Component {
           contentContainerStyle={[styles.postScroll]}
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={this.onScrollEnd}
+          // columnWrapperStyle={{ flex: 1 }}
         />
         {this.props.commentary.length > 1 ? pills : null }
       </View>
@@ -196,9 +197,9 @@ export default class Commentary extends Component {
 
 const localStyles = StyleSheet.create({
   commentaryContainer: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'center',
     width: fullWidth - mainPadding * 2,
     marginHorizontal: mainPadding,
   },
@@ -212,6 +213,7 @@ const localStyles = StyleSheet.create({
   },
   commentary: {
     flexGrow: 1,
+    // flex: 1,
     marginTop: 10,
     marginBottom: 10,
     flexDirection: 'column',

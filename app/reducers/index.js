@@ -23,9 +23,10 @@ let drizzleReducers = {};
 if (process.env.WEB != 'true') {
   navigation = require('./navigation').default;
 } else {
+  // block these imports in package.json in react-native field
   routing = require('react-router-redux').routerReducer;
-  // let drizzle = require('drizzle');
-  // drizzleReducers = drizzle ? drizzle.drizzleReducers : {};
+  let drizzle = require('drizzle');
+  drizzleReducers = drizzle ? drizzle.drizzleReducers : {};
 }
 
 const rootReducer = combineReducers({
@@ -48,7 +49,7 @@ const rootReducer = combineReducers({
   tooltip,
   subscriptions,
   admin,
-  // ...drizzleReducers,
+  ...drizzleReducers,
 });
 
 export default rootReducer;

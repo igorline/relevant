@@ -10,7 +10,7 @@ import {
   InteractionManager,
   Platform,
 } from 'react-native';
-import WKWebView from 'react-native-wkwebview-reborn';
+// import WKWebView from 'react-native-wkwebview-reborn';
 import Share from 'react-native-share';
 import Orientation from 'react-native-orientation';
 
@@ -25,7 +25,7 @@ let RWebView;
 if (Platform.OS === 'android') {
   RWebView = WebView;
 } else {
-  RWebView = WKWebView || WebView;
+  RWebView = WebView;
 }
 
 class ArticleView extends Component {

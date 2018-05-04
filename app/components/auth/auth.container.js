@@ -3,7 +3,9 @@ import {
   Easing
 } from 'react-native';
 import codePush from 'react-native-code-push';
-import * as NavigationExperimental from 'react-navigation';
+// import { Transitioner } from 'react-navigation';
+import Transitioner from '../nav/Transitioner';
+
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Auth from './auth.component';
@@ -20,12 +22,6 @@ import * as navigationActions from '../../actions/navigation.actions';
 import Card from '../nav/card.component';
 import { globalStyles, localStyles } from '../../styles/global';
 import { transitionConfig } from '../../utils';
-
-const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
-
-const {
-  Transitioner: NavigationTransitioner,
-} = NavigationExperimental;
 
 let styles;
 
@@ -80,7 +76,7 @@ class AuthContainer extends Component {
   render() {
     let scene = this.props.navigation;
 
-    return (<NavigationTransitioner
+    return (<Transitioner
       style={{ backgroundColor: 'black' }}
       navigation={{ state: scene }}
       configureTransition={transitionConfig}

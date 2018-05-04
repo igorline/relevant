@@ -27,6 +27,8 @@ node_modules/react-native/flow/
 node_modules/react-native/flow-github/
 
 [options]
+emoji=true
+
 module.system=haste
 
 munge_underscores=true

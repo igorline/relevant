@@ -62,7 +62,7 @@ export default class Level extends Component {
         renderItem={renderItem}
         ListHeaderComponent={() => <View style={{ flex: 1, width: fullWidth / 2 }} />}
         ListFooterComponent={() => <View style={{ flex: 1, width: fullWidth / 2 }} />}
-        keyExtractor={(item) => item.level}
+        keyExtractor={(item) => item.level.toString()}
         style={{ marginTop: 35 }}
         scrollEnabled={false}
         showsHorizontalScrollIndicator={false}

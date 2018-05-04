@@ -114,10 +114,9 @@ class CommentInput extends Component {
             {
               flex: 1,
               lineHeight: 18,
-              paddingTop: Platform.OS === 'ios' ? 10 : 15,
-              // height: 'auto',
-              // maxHeight: 120,
-              // minHeight: 50,
+              paddingTop: 15,
+              maxHeight: 120,
+              minHeight: 50,
               flexDirection: 'row',
               alignItems: 'center',
               height: Math.min(this.state.inputHeight, 120),
@@ -130,14 +129,14 @@ class CommentInput extends Component {
             this.processInput(comment, false);
             this.setState({ comment });
           }}
-          returnKeyType="default"
-          onFocus={this.props.onFocus}
-          onChange={(event) => {
+          onContentSizeChange={(event) => {
             let h = event.nativeEvent.contentSize.height;
             this.setState({
               inputHeight: Math.max(50, h)
             });
           }}
+          returnKeyType="default"
+          onFocus={this.props.onFocus}
 
           // fix for android enter bug!
           blurOnSubmit={false}

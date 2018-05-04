@@ -7,10 +7,10 @@ import {
   InteractionManager,
   Alert
 } from 'react-native';
+import Transitioner from '../nav/Transitioner';
 import Analytics from 'react-native-firebase-analytics';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as NavigationExperimental from 'react-navigation';
 import * as authActions from '../../actions/auth.actions';
 import * as createPostActions from '../../actions/createPost.actions';
 import * as postActions from '../../actions/post.actions';
@@ -24,10 +24,6 @@ import Card from '../nav/card.component';
 import CustomSpinner from '../CustomSpinner.component';
 
 import { globalStyles, mainPadding } from '../../styles/global';
-
-const {
-  Transitioner: NavigationTransitioner,
-} = NavigationExperimental;
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
@@ -354,7 +350,8 @@ class CreatePostContainer extends Component {
   render() {
     let scene = this.props.navigation;
 
-    return (<NavigationTransitioner
+    return (<Transitioner
+      key='CreatePost'
       style={{ backgroundColor: 'white' }}
       navigation={{ state: scene }}
       configureTransition={utils.transitionConfig}

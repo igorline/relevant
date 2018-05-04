@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import ShareExtension from 'react-native-share-extension';
 import * as createPostActions from '../actions/createPost.actions';
+import Transitioner from '../components/nav/Transitioner';
 
 import * as navigationActions from '../actions/navigation.actions';
 import * as authActions from '../actions/auth.actions';
@@ -24,13 +25,6 @@ import Card from './../components/nav/card.component';
 import { fullWidth, fullHeight } from '../styles/global';
 
 let KBView = KeyboardAvoidingView;
-// if (Platform.OS === 'android') {
-//   KBView = View;
-// }
-
-const {
-  Transitioner: NavigationTransitioner,
-} = NavigationExperimental;
 
 let style;
 
@@ -150,11 +144,9 @@ class ShareContainer extends Component {
         backdrop
         style={{
           backgroundColor: 'transparent',
-          // height: fullHeight * 0.9,
-          // width: fullWidth,
-          // left: 0,
           flex: 1,
         }}
+        swipeToClose={false}
         animationType={'fade'}
         position="top"
         transparent
@@ -170,7 +162,7 @@ class ShareContainer extends Component {
           }}
         >
           <View style={style.modalBody}>
-            <NavigationTransitioner
+            <Transitioner
               style={{ backgroundColor: 'white', paddingBottom: 0 }}
               navigation={{ state: scene }}
               configureTransition={utils.transitionConfig}
@@ -202,7 +194,7 @@ style = StyleSheet.create({
     flexGrow: 1,
     flex: 1,
     width: fullWidth * 0.95,
-    marginTop: 20,
+    marginTop: fullHeight * 0.05,
     marginBottom: 30,
     padding: 0,
     overflow: 'hidden',
