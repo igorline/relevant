@@ -152,7 +152,7 @@ class SinglePostComments extends Component {
         ref={c => this.scrollView = c}
         data={this.comments}
         renderItem={this.renderRow}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item, index) => index.toString()}
         removeClippedSubviews
 
         keyboardShouldPersistTaps={'always'}

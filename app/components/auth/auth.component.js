@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Prompt from 'react-native-prompt';
+import Prompt from 'rn-prompt';
 import { globalStyles, fullWidth, fullHeight, smallScreen } from '../../styles/global';
 
 let styles;

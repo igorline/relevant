@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles } from '../../styles/global';
 import { pickerOptions } from '../../utils/pickerOptions';
 import * as utils from '../../utils';
@@ -135,7 +136,7 @@ class ImageUpload extends Component {
 }
 
 ImageUpload.propTypes = {
-  actions: React.PropTypes.object,
+  actions: PropTypes.object,
 };
 
 localStyles = StyleSheet.create({

@@ -7,8 +7,6 @@ import screenTracking from './screenTracking';
 window.navigator.userAgent = 'react-native';
 const io = require('socket.io-client/socket.io');
 
-// require('../publicenv');
-
 let socket = io(process.env.API_SERVER, {
   transports: ['websocket'],
   jsonp: false

@@ -141,7 +141,7 @@ const font = StyleSheet.create({
     fontWeight: 'normal',
     letterSpacing: 0.5,
     // flex: 1,
-    marginBottom: -2,
+    marginBottom: -2.5,
     // justifyContent: 'flex-end',
     // alignItems: 'flex-end',
   },

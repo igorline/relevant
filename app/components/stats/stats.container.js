@@ -195,7 +195,7 @@ class StatsContainer extends Component {
       <FlatList
         ref={c => this.list = c}
         style={{ flex: 1 }}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item, index) => index.toString()}
         extraData={{ ...this.props, ...this.state }}
         data={stats}
         ListHeaderComponent={this.renderHeader}

@@ -114,7 +114,7 @@ export default class topics extends Component {
         keyboardShouldPersistTaps={'always'}
         data={this.props.topics}
         renderItem={this.renderItem}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item, index) => index.toString()}
         tagsView={this.tagsView}
         extraData={this.props.selectedTopic}
         removeClippedSubviews={false}

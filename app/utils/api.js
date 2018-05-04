@@ -15,12 +15,14 @@ if (true) {
   // routes.post = require(postApi);
   // routes.user = require(userApi);
 } else {
-  console.log('LOAD NODE DIRECT ROUTER');
+  // Desktop ONLY!!!
+  // the if statment doesn't work anymore - user reat-native field in package.json
+  // prevent react native from loading these modules
   let postApi = '../../server/api/post/post.controller';
   let userApi = '../../server/api/user/user.controller';
   // post = require(postApi);
-  // routes.post = require(postApi) || {};
-  // routes.user = require(userApi) || {};
+  routes.post = require(postApi) || {};
+  routes.user = require(userApi) || {};
 }
 
 

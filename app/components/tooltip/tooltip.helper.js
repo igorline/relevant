@@ -238,12 +238,12 @@ exports.data.shareTip = {
   noButton: true,
 };
 
-exports.text.shareTip = function (props) {
-  let width = (fullWidth - 20) / 2;
+exports.text.shareTip = function shareTip() {
+  let width = (fullWidth) / 3;
   const Video = require('react-native-video').default;
   return (
     <View style={styles.videoTip}>
-      <View style={{ flex: 0.5 }}>
+      <View style={{ flex: 1 }}>
         <View style={styles.ol}>
           <Text allowFontScaling={false} style={[styles.textP, { fontWeight: 'bold', fontSize: 14 }]}>Enable posting from Chrome, Safari and other apps:</Text>
         </View>
@@ -268,7 +268,7 @@ exports.text.shareTip = function (props) {
         </View>
       </View>
       <View
-        style={{ width, height: width + 40, overflow: 'hidden' }}
+        style={{ flex: 0, width, height: width + 40, overflow: 'hidden' }}
       >
         <Video
           resizeMode={'contain'}

@@ -29,14 +29,15 @@ class Tabs extends Component {
         return Alert.alert('You need to have at least one coin to post');
       }
       this.props.actions.push({
-        key,
+        key: 'createPost',
         back: true,
         title: 'New Post',
         next: 'Post',
         direction: 'vertical',
       }, 'home');
+
       // need to to do this because the navigator renderer
-      // is using this object to display info and above to render transition
+      // is using this object to display info above and to render transition
       this.props.actions.replaceRoute({
         key: 'createPost',
         component: 'createPost',
@@ -46,6 +47,7 @@ class Tabs extends Component {
         next: 'Next',
         direction: 'vertical'
       }, 0, 'createPost');
+
     } else {
       if (tab.key === key) {
         if (this.props.navigation[key].routes.length === 1) {
