@@ -61,7 +61,7 @@ class Stats extends Component {
     let { type, entity } = this.props;
 
     let statsStyle = [
-      { fontSize: 17, lineHeight: 17 },
+      { fontSize: 17, lineHeight: 17, height: 17 },
       styles.bebas,
       styles.quarterLetterSpacing,
     ];
@@ -154,7 +154,7 @@ let localStyles = StyleSheet.create({
   statInner: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignItems: 'flex-end',
+    alignItems: 'center',
   }
 });
 

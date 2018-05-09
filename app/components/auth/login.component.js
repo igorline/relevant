@@ -127,7 +127,7 @@ class Login extends Component {
                 autoCorrect={false}
                 autoCapitalize={'none'}
                 clearTextOnFocus={false}
-                placeholder="username"
+                placeholder="username or email"
                 onChangeText={username => this.setState({ username: username.trim() })}
                 value={this.state.username}
                 style={styles.fieldsInput}
@@ -164,7 +164,7 @@ class Login extends Component {
               }, 'auth');
             }}
           >
-            <Text style={[styles.signInText, styles.active]}>Forgot you password?</Text>
+            <Text style={[styles.signInText, styles.active]}>Forgot your password?</Text>
           </TouchableOpacity>
         </ScrollView>
       </KBView>

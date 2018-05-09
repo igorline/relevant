@@ -166,7 +166,7 @@ class ProfileComponent extends Component {
         >
           <Image
             resizeMode={'contain'}
-            style={[styles.r, { width: 22, height: 25 }]}
+            style={[styles.r, { width: 24, height: 22 }]}
             source={require('../../assets/images/r.png')}
           />
           <Text
@@ -189,7 +189,7 @@ class ProfileComponent extends Component {
         <View style={styles.textRow}>
           <Image
             resizeMode={'contain'}
-            style={[styles.coin, { width: 22, height: 24 }]}
+            style={[styles.coin, { width: 23, height: 23 }]}
             source={require('../../assets/images/relevantcoin.png')}
           />
           <Text style={[styles.largeNumber]}>

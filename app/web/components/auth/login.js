@@ -45,7 +45,7 @@ class LoginForm extends Component {
           }}
           type="text"
           name="username"
-          placeholder="username"
+          placeholder="username or email"
         />
         <input
           className="blueInput special"

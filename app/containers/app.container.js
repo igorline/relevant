@@ -11,6 +11,7 @@ import {
   StatusBar,
   Dimensions,
   Animated,
+  YellowBox,
 } from 'react-native';
 
 import {
@@ -61,6 +62,7 @@ import Card from './../components/nav/card.component';
 import IrrelevantAnimation from '../components/animations/irrelevantAnimation.component';
 import Tooltip from '../components/tooltip/tooltip.component';
 import { fullWidth, fullHeight } from '../styles/global';
+import SafariView from 'react-native-safari-view';
 
 // Setting default styles for all Text components.
 const customTextProps = {
@@ -71,6 +73,8 @@ const customTextProps = {
   }
 };
 setCustomText(customTextProps);
+
+YellowBox.ignoreWarnings(['Setting a timer']);
 
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
@@ -117,6 +121,15 @@ class Application extends Component {
     this.fullHeight = fullHeight;
 
     Orientation.lockToPortrait();
+
+    if (SafariView.addEventListener) {
+      SafariView.addEventListener(
+        'onDismiss',
+        () => {
+          Orientation.lockToPortrait();
+        }
+      );
+    }
   }
 
   componentWillReceiveProps(next) {

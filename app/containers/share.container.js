@@ -19,6 +19,7 @@ import * as authActions from '../actions/auth.actions';
 import * as postActions from '../actions/post.actions';
 import CreatePost from '../components/createPost/createPost.container';
 import Auth from '../components/auth/auth.container';
+
 import * as utils from '../utils';
 import Card from './../components/nav/card.component';
 
@@ -43,6 +44,7 @@ class ShareContainer extends Component {
   }
 
   componentWillMount() {
+    console.log('will mount');
     utils.token.get()
     .then(() => {
       this.props.actions.replaceRoute({
@@ -72,8 +74,11 @@ class ShareContainer extends Component {
   }
 
   async componentDidMount() {
+    console.log('did mount');
     try {
       const data = await ShareExtension.data();
+      this.data = data;
+      console.log('sharedata', data);
       this.setState({
         type: data.type,
         value: data.value,
