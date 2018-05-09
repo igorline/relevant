@@ -1,3 +1,5 @@
+console.log('trying to load user');
+
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto-promise';
 import sigUtil from 'eth-sig-util';

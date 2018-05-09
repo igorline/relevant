@@ -18,9 +18,11 @@ export default class Level extends Component {
 
   componentWillReceiveProps(next) {
     let level = Math.floor(next.level / 10);
-    if (this.scrollView) {
-      this.scrollView.scrollToIndex({ index: level, viewPosition: 0.5, animated: true });
-    }
+    // if (this.scrollView && this.scrollView.getItemLayout) {
+    //   this.scrollView.getItemLayout(() => {
+    //     this.scrollView.scrollToIndex({ index: level, viewPosition: 0.5, animated: true });
+    //   });
+    // }
   }
 
   render() {

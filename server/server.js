@@ -100,7 +100,7 @@ if (process.env.NODE_ENV !== 'test') {
       console.info(`==> 🌎  Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`);
     }
   });
-  socketServer(server);
+  socketServer(server, { pingTimeout: 30000 });
 }
 
 require('./utils/updateDB-Community0.1.0');

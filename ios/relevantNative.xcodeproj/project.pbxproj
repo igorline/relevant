@@ -63,6 +63,7 @@
 		FB0D88071EAEC6B000DEE4B8 /* Images.xcassets in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		FB0D88081EAEC8DE00DEE4B8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		FB17DDD21FA02BF900293C05 /* libRNTwitterSignIn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB17DDD11FA0255E00293C05 /* libRNTwitterSignIn.a */; };
+		FB20095020A2867A00FC7E72 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A3863041DFB5E5B00BC57DF /* libRNSVG.a */; };
 		FB202A1C1F632CD000E11BFB /* libjschelpers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB71B0C91E424F28000DA9BD /* libjschelpers.a */; };
 		FB202A481F632CDB00E11BFB /* libjschelpers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB71B0C91E424F28000DA9BD /* libjschelpers.a */; };
 		FB2BD5FF1E8B0A8100DBC2BA /* libRCTGoogleAnalyticsBridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB2BD5111E8AFA3200DBC2BA /* libRCTGoogleAnalyticsBridge.a */; };
@@ -368,6 +369,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = D07E57251F07806700A7160F;
 			remoteInfo = RNTwitterSignIn;
+		};
+		FB20094E20A2867A00FC7E72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFE6486FE737442E975C2815 /* RNSVG.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FB20094A20A2843000FC7E72;
+			remoteInfo = "RNSVG-tvOS";
+		};
+		FB20095720A2867A00FC7E72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9F78967AAC6F48A4B7FBC6C2 /* CodePush.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F886647B1F4ADB500036D01B;
+			remoteInfo = "CodePush-tvOS";
 		};
 		FB2BD5101E8AFA3200DBC2BA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -798,6 +813,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB20095020A2867A00FC7E72 /* libRNSVG.a in Frameworks */,
 				FBA9F21C209A5177005635BD /* libRCTBlob.a in Frameworks */,
 				FBFBE0251FA6EA88005DCC25 /* libPods-relevantNative.a in Frameworks */,
 				FB202A481F632CDB00E11BFB /* libjschelpers.a in Frameworks */,
@@ -964,6 +980,7 @@
 			isa = PBXGroup;
 			children = (
 				2A3863041DFB5E5B00BC57DF /* libRNSVG.a */,
+				FB20094F20A2867A00FC7E72 /* libRNSVG-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1285,6 +1302,7 @@
 			isa = PBXGroup;
 			children = (
 				FBDA043B1EEF1D1B00789ED9 /* libCodePush.a */,
+				FB20095820A2867A00FC7E72 /* libCodePush.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1811,6 +1829,20 @@
 			fileType = archive.ar;
 			path = libRNTwitterSignIn.a;
 			remoteRef = FB17DDD01FA0255E00293C05 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FB20094F20A2867A00FC7E72 /* libRNSVG-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRNSVG-tvOS.a";
+			remoteRef = FB20094E20A2867A00FC7E72 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FB20095820A2867A00FC7E72 /* libCodePush.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libCodePush.a;
+			remoteRef = FB20095720A2867A00FC7E72 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		FB2BD5111E8AFA3200DBC2BA /* libRCTGoogleAnalyticsBridge.a */ = {

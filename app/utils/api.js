@@ -9,8 +9,7 @@ let routes = {};
 console.log('BROWSER ', process.env.BROWSER);
 console.log('WEB ', process.env.WEB);
 
-if (true) {
-// if (process.env.BROWSER || process.env.WEB !== 'true') {
+if (process.env.BROWSER || process.env.WEB !== 'true') {
   // this is a weird hack that makes conditional require work in react-native
   // routes.post = require(postApi);
   // routes.user = require(userApi);
@@ -24,7 +23,6 @@ if (true) {
   routes.post = require(postApi) || {};
   routes.user = require(userApi) || {};
 }
-
 
 const queryParams = (params) => {
   if (!params) return '';

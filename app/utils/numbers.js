@@ -41,9 +41,9 @@ export function percentChange(user) {
 
 export function abbreviateNumber(num, _fixed) {
   let fixed = 0;
-  if (Math.abs(num) < 1000) fixed += 1;
-  if (Math.abs(num) < 100) fixed += 1;
-  // fixed = _fixed;
+  if (Math.abs(num) < 100) fixed = 1;
+  if (Math.abs(num) < 10) fixed = 1;
+  if (typeof _fixed === 'number') fixed = _fixed;
   if (num === null) { return null; } // terminate early
   if (num === 0) { return '0'; } // terminate early
   if (typeof num !== 'number') num = Number(num);

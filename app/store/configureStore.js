@@ -9,13 +9,16 @@ const io = require('socket.io-client/socket.io');
 
 let socket = io(process.env.API_SERVER, {
   transports: ['websocket'],
-  jsonp: false
+  jsonp: false,
 });
 
 socket.on('pingKeepAlive', () => {
   socket.emit('pingResponse');
 });
 
+socket.on('reconnect_attempt', () => {
+  socket.io.opts.transports = ['polling', 'websocket'];
+});
 
 export default function configureStore() {
   let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
