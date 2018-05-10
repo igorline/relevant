@@ -10,9 +10,9 @@ class NewCommentForm extends Component {
     this.setMention = this.setMention.bind(this);
     this.createComment = this.createComment.bind(this);
     this.processInput = this.processInput.bind(this);
-    this.handleChange = this.handleChange.bind(this)
-    this.handleKeydown = this.handleKeydown.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleChange = this.handleChange.bind(this);
+    this.handleKeydown = this.handleKeydown.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {
       inputHeight: 50,
       comment: '',
@@ -20,14 +20,12 @@ class NewCommentForm extends Component {
   }
 
   handleChange(e) {
-    // console.log('change', e.target.value)
-    this.setState({comment: e.target.value});
+    this.setState({ comment: e.target.value });
   }
 
   handleKeydown(e) {
-    // console.log('keydown', e.target.value)
     if (e.keyCode == 13 && e.shiftKey == false) {
-      this.handleSubmit(e);
+      // this.handleSubmit(e);
     }
   }
 
@@ -42,12 +40,15 @@ class NewCommentForm extends Component {
   }
 
   async createComment() {
+    if (!this.props.auth.isAuthenticated) {
+      return alert('Please log in to post comments');
+    }
     if (!this.state.comment || !this.state.comment.length) {
       return alert('no comment');
     }
 
     let comment = this.state.comment.trim();
-    console.log(this.props)
+    console.log(this.props);
     let commentObj = {
       post: this.props.post._id,
       text: comment,
@@ -91,29 +92,37 @@ class NewCommentForm extends Component {
   }
 
   handleSubmit(e) {
-    console.log('submit', this.state.comment)
+    console.log('submit', this.state.comment);
     e.preventDefault();
-    this.createComment()
+    this.createComment();
   }
 
   render() {
-    if (! this.props.auth.isAuthenticated) return null
+    if (! this.props.auth.isAuthenticated) return null;
     return (
-      <div>
+      <div className={'formContainer'}>
         <form onSubmit={this.handleSubmit}>
           <Avatar auth={this.props.auth} user={this.props.auth.user} />
           <Textarea
+            style={{ margin: '0 15px', minHeight: '60px' }}
+            rows={2}
             placeholder="Enter comment..."
             value={this.state.comment}
             onKeyDown={this.handleKeydown}
             onChange={this.handleChange}
           />
-          <input type="submit" value="Submit" />
           {/*this.props.comment.failureMsg && <div>{ this.props.comment.failureMsg }</div>*/}
         </form>
+        <button
+          onClick={this.handleSubmit}
+          className={'shadowButton'}
+          disabled={!this.props.auth.isAuthenticated}
+        >
+          Reply
+        </button>
       </div>
-    )
+    );
   }
 }
 
-export default NewCommentForm
+export default NewCommentForm;

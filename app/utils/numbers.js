@@ -39,17 +39,18 @@ export function percentChange(user) {
   // return percent;
 }
 
-export function abbreviateNumber(num) {
+export function abbreviateNumber(num, _fixed) {
   let fixed = 0;
+  if (Math.abs(num) < 100) fixed = 1;
   if (Math.abs(num) < 10) fixed = 1;
-  if (Math.abs(num) < 1) fixed = 2;
+  if (typeof _fixed === 'number') fixed = _fixed;
   if (num === null) { return null; } // terminate early
   if (num === 0) { return '0'; } // terminate early
   if (typeof num !== 'number') num = Number(num);
   fixed = (!fixed || fixed < 0) ? 0 : fixed; // number of decimal places to show
   let b = (num).toPrecision(2).split('e'); // get power
   let k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3); // floor at decimals, ceiling at trillions
-  let c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, k * 3)).toFixed(1 + fixed); // divide by power
+  let c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, k * 3)).toFixed(2 + fixed); // divide by power
   let d = c < 0 ? -Math.abs(c) : Math.abs(c); // enforce -0 is 0 and trim .00s
   let e = d + ['', 'K', 'M', 'B', 'T'][k]; // append power
   return e;

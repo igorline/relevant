@@ -89,6 +89,8 @@ const font = StyleSheet.create({
 
   largeNumber: {
     fontSize: 25,
+    height: 24,
+    lineHeight: 25,
     fontFamily: 'BebasNeueRelevantRegular',
     marginBottom: -2,
   },
@@ -142,8 +144,6 @@ const font = StyleSheet.create({
     letterSpacing: 0.5,
     // flex: 1,
     marginBottom: -2,
-    // justifyContent: 'flex-end',
-    // alignItems: 'flex-end',
   },
   bebasBold: {
     fontFamily: 'BebasNeueRelevantRegular',
@@ -495,7 +495,7 @@ const layout = StyleSheet.create({
     letterSpacing: -0.5
   },
   r: {
-    height: 16,
+    height: 15,
     width: 16,
     marginRight: .5,
     marginLeft: 1,
@@ -506,7 +506,7 @@ const layout = StyleSheet.create({
     height: 10,
   },
   coin: {
-    height: 17,
+    height: 15,
     width: 16,
     marginRight: 1,
   },
@@ -574,7 +574,7 @@ const layout = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-end',
   },
   break: {
     borderBottomWidth: StyleSheet.hairlineWidth,

@@ -62,10 +62,19 @@ MetaPostSchema.index({ latestPost: 1 });
 MetaPostSchema.index({ latestPost: 1, tags: 1 });
 MetaPostSchema.index({ rank: 1, tags: 1 });
 
-MetaPostSchema.statics.updateRank = async function (_id, twitter) {
-  let meta;
+MetaPostSchema.pre('remove', async function remove(next) {
   try {
-    meta = await this.findOne({ _id })
+    console.log('removing el from comm feed');
+    await this.model('CommunityFeed').find({ metaPost: this._id }).remove();
+    next();
+  } catch (err) {
+    console.log('error removing community feed', err);
+  }
+});
+
+MetaPostSchema.statics.updateRank = async function updateRank(_id, twitter) {
+  try {
+    let meta = await this.findOne({ _id })
     .populate({
       path: 'commentary',
       options: { sort: { rank: -1 }, limit: 1 },
@@ -82,12 +91,30 @@ MetaPostSchema.statics.updateRank = async function (_id, twitter) {
     meta.rank = highestRank;
     meta = await meta.save();
     console.log('updated meta rank ', meta.rank);
+    return meta;
   } catch (err) {
     console.log('error updating meta rank ', err);
+    return null;
   }
-  return meta;
 };
 
+MetaPostSchema.methods.pruneCommunityFeed = async function pruneCommunityFeed(community) {
+  try {
+    let meta = await this.model('MetaPost').findOne({ _id: this._id })
+    .populate({
+      path: 'commentary',
+      match: { community },
+    });
+    if (!meta.commentary.length) {
+      await this.model('CommunityFeed')
+      .findOne({ metaPost: this._id, community })
+      .remove();
+    }
+    return;
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 module.exports = mongoose.model('MetaPost', MetaPostSchema);
 

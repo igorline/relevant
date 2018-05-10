@@ -4,7 +4,7 @@ import compose from 'composable-middleware';
 import config from '../config/config';
 import User from '../api/user/user.model';
 
-let validateJwt = expressJwt({ secret: config.secrets.session, ignoreExpiration: true });
+let validateJwt = expressJwt({ secret: process.env.SESSION_SECRET, ignoreExpiration: true });
 
 function blocked(req, res) {
   return compose()
@@ -112,7 +112,19 @@ function hasRole(roleRequired) {
  * Returns a jwt token signed by the app secret
  */
 function signToken(id, role) {
-  return jwt.sign({ _id: id, role }, config.secrets.session, { expiresIn: '7 days' });
+  return jwt.sign({ _id: id, role }, process.env.SESSION_SECRET, { expiresIn: '7 days' });
+}
+
+
+function setTokenCookieDesktop(req, res) {
+  if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.' });
+
+  let token = signToken(req.user._id, req.user.role);
+
+  res.cookie('token', token);
+  // console.log('query params ', req.query);
+  let redirect = req.query.redirect || '/discover/new';
+  return res.redirect(redirect);
 }
 
 /**
@@ -137,4 +149,5 @@ exports.setTokenCookie = setTokenCookie;
 exports.authMiddleware = authMiddleware;
 exports.currentUser = currentUser;
 exports.blocked = blocked;
+exports.setTokenCookieDesktop = setTokenCookieDesktop;
 

@@ -64,7 +64,7 @@ class ResetPassword extends Component {
 
   render() {
     return (
-      <div>
+      <div className="innerForm">
         <div>
           <input
             className="blueInput special"
@@ -86,16 +86,19 @@ class ResetPassword extends Component {
             onChange={(cPassword) => {
               this.handleChange('cPassword', cPassword.target.value);
             }}
+            onKeyDown={e => {
+              if (e.keyCode === 13) {
+                this.submit();
+              }
+            }}
           />
           {this.errors.cPassword ? <div>{this.errors.cPassword}</div> : null}
         </div>
         <br />
         <ShadowButton
-          backgroundColor={'white'}
-          color={'#3E3EFF'}
           onClick={() => this.submit()}
         >
-          Update password
+          Update Password
         </ShadowButton>
       </div>
     );

@@ -6,10 +6,28 @@ let Notification = require('../api/notification/notification.model');
 let Invest = require('../api/invest/invest.model');
 let MetaPost = require('../api/metaPost/metaPost.model');
 let Earnings = require('../api/earnings/earnings.model');
+let Relevance = require('../api/relevance/relevance.model');
+let Eth = require('../utils/ethereum');
 
-let dummyUsers = [
+export const testAccounts = [
+  {
+    address: '0x627306090abaB3A6e1400e9345bC60c78a8BEf57',
+    key: 'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'
+  },
+  {
+    address: '0xf17f52151EbEF6C7334FAD080c5704D77216b732',
+    key: 'ae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f'
+  },
+  {
+    address: '0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef',
+    key: '0dbbe8e4ae425a6d2687f1a7e3ba17bc98c673636790f1b8ad91193c05875ef1'
+  },
+];
+
+export const dummyUsers = [
   {
     _id: 'dummy1',
+    handle: 'dummy1',
     provider: 'local',
     name: 'dummy1',
     phone: 'dummy1',
@@ -21,9 +39,11 @@ let dummyUsers = [
     balance: 30,
     role: 'user',
     __v: 224,
+    ethAddress: [testAccounts[0].address]
   },
   {
     _id: 'dummy2',
+    handle: 'dummy2',
     provider: 'local',
     name: 'dummy2',
     phone: 'dummy2',
@@ -35,9 +55,11 @@ let dummyUsers = [
     balance: 10000,
     role: 'user',
     __v: 224,
+    ethAddress: [testAccounts[1].address]
   },
   {
     _id: 'dummy3',
+    handle: 'dummy3',
     provider: 'local',
     name: 'dummy3',
     phone: 'dummy3',
@@ -50,6 +72,7 @@ let dummyUsers = [
     invest: [],
     role: 'user',
     __v: 224,
+    ethAddress: [testAccounts[2].address]
   },
 ];
 
@@ -83,7 +106,7 @@ let dummySubscriptions = [
   },
 ];
 
-exports.setupData = () => {
+export function setupData() {
   let saveUsers = dummyUsers.map((user) => {
     let userObj = new User(user);
     return userObj.save();
@@ -94,9 +117,10 @@ exports.setupData = () => {
   }) || [];
 
   return Promise.all([...saveUsers, ...saveSub]);
-};
+}
 
-let cleanupData = () => {
+export async function cleanupData() {
+  console.log('CLEAN UP DATA');
   let clearFeed = [];
   let clearUsers = dummyUsers.map((user) => {
     clearFeed.push(Feed.findOne({ user: user._id }).remove().exec());
@@ -109,27 +133,38 @@ let cleanupData = () => {
   let dummies = dummyUsers.map(user => user._id);
   let clearNotifications = Notification.find({ forUser: { $in: dummies } }).remove();
 
-  let clearUpvotes = Invest.find({ $or: [
-    { investor: { $in: dummies } },
-    { author: { $in: dummies } },
-  ] }).remove();
+  let clearUpvotes = Invest.find({
+    $or: [
+      { investor: { $in: dummies } },
+      { author: { $in: dummies } },
+    ]
+  }).remove();
 
-  let clearPosts = Post.find({ title: 'Test post title' }).remove().exec() || null;
-  let clearMeta = MetaPost.find({ title: 'Test post title' }).remove().exec() || null;
-  let clearEarnings = Earnings.find({ user: { $in: dummies }}).remove().exec() || null;
+  let posts = await Post.find({ title: 'Test post title' });
+  let clearPosts = posts.map(async post => post.remove());
+  let clearEarnings = Earnings.find({ user: { $in: dummies } }).remove().exec() || null;
+  let clearRelevance = Relevance.find({ user: { $in: dummies } }).remove().exec() || null;
 
   return Promise.all([
     ...clearUsers,
     ...clearSub,
     ...clearFeed,
-    clearPosts,
+    ...clearPosts,
     clearNotifications,
     clearUpvotes,
-    clearMeta,
-    clearEarnings
+    clearEarnings,
+    clearRelevance
   ]);
-};
+}
 
-exports.cleanupData = cleanupData;
+export async function initEth() {
+  let balances = testAccounts.map(async (acc, i) => {
+    let balance = await Eth.getBalance(acc.address);
+    if (balance === 0) {
+      return Eth.buyTokens(acc.address, acc.key, i + 1);
+    }
+    return balance;
+  });
+  return Promise.all(balances);
+}
 
-exports.dummyUsers = dummyUsers;

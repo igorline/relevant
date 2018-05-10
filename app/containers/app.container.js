@@ -9,7 +9,9 @@ import {
   Platform,
   Alert,
   StatusBar,
-  Dimensions
+  Dimensions,
+  Animated,
+  YellowBox,
 } from 'react-native';
 
 import {
@@ -20,14 +22,18 @@ import {
   // setCustomTouchableOpacity
 } from 'react-native-global-props';
 import StatusBarSizeIOS from 'react-native-status-bar-size';
-import codePush from 'react-native-code-push';
+// import codePush from 'react-native-code-push';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Analytics from 'react-native-firebase-analytics';
-import * as NavigationExperimental from 'react-navigation';
+
+// import * as NavigationExperimental from 'react-navigation';
+// import { Transitioner } from 'react-navigation';
+import Transitioner from '../components/nav/Transitioner';
+
 import RNBottomSheet from 'react-native-bottom-sheet';
-import Prompt from 'react-native-prompt';
+import Prompt from 'rn-prompt';
 import PushNotification from 'react-native-push-notification';
 
 import Auth from '../components/auth/auth.container';
@@ -56,6 +62,7 @@ import Card from './../components/nav/card.component';
 import IrrelevantAnimation from '../components/animations/irrelevantAnimation.component';
 import Tooltip from '../components/tooltip/tooltip.component';
 import { fullWidth, fullHeight } from '../styles/global';
+import SafariView from 'react-native-safari-view';
 
 // Setting default styles for all Text components.
 const customTextProps = {
@@ -67,6 +74,8 @@ const customTextProps = {
 };
 setCustomText(customTextProps);
 
+YellowBox.ignoreWarnings(['Setting a timer']);
+
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
 let ActionSheet = ActionSheetIOS;
@@ -76,11 +85,6 @@ if (Platform.OS === 'android') {
   ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
 }
 
-const {
-  Transitioner: NavigationTransitioner,
-} = NavigationExperimental;
-
-
 let ImagePicker = require('react-native-image-picker');
 
 class Application extends Component {
@@ -89,8 +93,6 @@ class Application extends Component {
     this.state = {
       newName: null,
       height: fullHeight,
-      statusBarHeight: StatusBarSizeIOS.currentHeight,
-      statusBarInitial: StatusBarSizeIOS.currentHeight,
     };
     this.logoutRedirect = this.logoutRedirect.bind(this);
     this.backgroundTime = 0;
@@ -115,22 +117,19 @@ class Application extends Component {
     PushNotification.setApplicationIconBadgeNumber(0);
 
     Linking.addEventListener('url', this.handleOpenURL);
-    this.statusBarHeight = StatusBar.currentHeight;
 
     this.fullHeight = fullHeight;
 
     Orientation.lockToPortrait();
-    Orientation.addOrientationListener(() => {
-      // fullWidth = Dimensions.get('window').width;
-      this.setState({ height: Dimensions.get('window').height });
-    });
 
-    StatusBarSizeIOS.addEventListener('willChange', h => {
-      // console.log('status bar ', h);
-      //TODO user Dimensions.get('screen');
-      // console.log(Dimensions.get('window'));
-      this.setState({ statusBarHeight: h });
-    });
+    if (SafariView.addEventListener) {
+      SafariView.addEventListener(
+        'onDismiss',
+        () => {
+          Orientation.lockToPortrait();
+        }
+      );
+    }
   }
 
   componentWillReceiveProps(next) {
@@ -455,6 +454,9 @@ class Application extends Component {
     return {
       useNativeDriver: !!NativeAnimatedModule ? true : false,
       speed: 20,
+      timing: Animated.spring,
+      bounciness: 0,
+      overshootClamping: true,
     };
   }
 
@@ -471,19 +473,23 @@ class Application extends Component {
     if (route.component === 'articleView') {
       statusBarHeight = 0;
     }
-    let defaultIOSBar = this.state.statusBarHeight ? this.state.statusBarInitial : 0;
-    let height = Platform.OS === 'android' ?
-      this.state.height - statusBarHeight :
-      // TODO seems like height is defaults to 20? adjust for iphonex?
-      this.state.height + defaultIOSBar - this.state.statusBarHeight;
+    // android only
+    let height = this.state.height - statusBarHeight;
 
+    let platformStyles = {};
+    if (Platform.OS === 'android') {
+      platformStyles = { height };
+    } else {
+      platformStyles = { flex: 1 };
+    }
     // main app view has to be absolute to make android keyboard work
     // could be relative for ios?
     return (
       <View
-        style={{ height, backgroundColor: 'black' }}
+        style={{ ...platformStyles, backgroundColor: 'black' }}
       >
-        <NavigationTransitioner
+        <Transitioner
+          key='Home'
           style={{ backgroundColor: 'black' }}
           navigation={{ state: scene }}
           configureTransition={this.configureTransition}

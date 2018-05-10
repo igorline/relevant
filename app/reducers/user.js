@@ -51,7 +51,10 @@ export default function auth(state = initialState, action) {
         ...state,
         users: {
           ...state.users,
-          [action.payload._id]: action.payload,
+          [action.payload._id]: {
+            ...state.users[action.payload._id],
+            ...action.payload,
+          }
         }
       };
     }
@@ -97,9 +100,9 @@ export default function auth(state = initialState, action) {
       });
     }
 
-    case types.LOGOUT_USER: {
-      return { ...initialState };
-    }
+    // case types.LOGOUT_USER: {
+    //   return { ...initialState };
+    // }
 
     default:
       return state;

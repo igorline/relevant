@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   ScrollView,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles, fullHeight } from '../../styles/global';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 
@@ -118,7 +119,7 @@ class ResetPassword extends Component {
 }
 
 ResetPassword.propTypes = {
-  actions: React.PropTypes.object,
+  actions: PropTypes.object,
 };
 
 localStyles = StyleSheet.create({

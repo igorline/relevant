@@ -1,32 +1,4 @@
-$blue: #3E3EFF;
-$orange: #ff5a00;
-
-.loginBar {
-  height: 27px;
-  display: flex;
-  padding: 10px;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.loginBar a, .loginBar p {
-  font-family: Arial;
-  font-weight: normal;
-  font-size: 14px;
-}
-
-.loginBar p {
-  color: #242425;
-  margin-right: 5px;
-}
-
-.loginText {
-  font-family: 'Outline';
-  font-size: 44px;
-  color: #242425;
-  margin: 40px 0 10px 0;
-}
+@import '../global.css';
 
 .splashContent {
   background-color: #F1F1F1;
@@ -63,6 +35,49 @@ $orange: #ff5a00;
     transform-origin: bottom;
   }
 }
+
+
+.banner .splashContent {
+  max-height: 550px;
+  min-height: 0;
+  background: white;
+  /*box-shadow: inset 0 -4px 20px -10px;*/
+  /*@extend %flatBorderBottom;*/
+  box-shadow: $navShadow;
+  justify-content: space-between;
+  &.metamask {
+    max-height: 260px;
+    width: auto;
+    /*justify-content: space-around;*/
+    button {
+      /*float: right;*/
+    }
+    .subH {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .phone {
+      text-align: center;
+    }
+    .phone img {
+      max-width: 360px;
+      max-height: 360px;
+    }
+    mainsection {
+      flex: 1;
+    }
+  }
+  mainsection {
+    padding-left: calc(50% - 37.5rem);
+    margin-left: 20px;
+    padding-bottom: 0;
+  }
+  section {
+    margin: 0;
+  }
+}
+
 
 .splashContainer .splashContent {
   max-height: auto;
@@ -280,6 +295,10 @@ columns {
   margin: 40px 0 0 0;
   font-family: 'Georgia';
   font-weight: 200;
+  &.note {
+    font-size: 16px;
+    margin: 20px 0 0 0;
+  }
 }
 
 .splashContent section.body p.big {
@@ -293,6 +312,30 @@ columns {
   }
 }
 
+.splashContent section.body.smaller {
+  margin-bottom: 30px;
+  p.subH {
+    font-size: 18px;
+    line-height: 28px;
+    &.note {
+      font-size: 14px;
+    }
+  }
+  .image {
+    width: 200px;
+  }
+  p.big {
+    font-size: 34px;
+    line-height: 36px;
+    .outline {
+      font-size: 34px;
+      line-height: 34px;
+    }
+  }
+  p {
+    margin: 30px 0 0 0;
+  }
+}
 
 .splashContent section.form {
   flex: 0.1;
@@ -493,6 +536,9 @@ b {
   }
 }
 
+
+
+
 .uprightPhone {
   flex: .8;
 }
@@ -630,6 +676,7 @@ b {
     }
   }
 
+
   .marqueeParent article {
     padding: 5px;
   }
@@ -642,10 +689,6 @@ b {
     font-size: 14px;
     letter-spacing: 0.5px;
     margin: 2px 0 0 0;
-  }
-
-  .loginBar a, .loginBar p {
-    font-size: 14px;
   }
 
   .marqueeParent article section div p:first-of-type {

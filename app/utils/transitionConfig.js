@@ -1,3 +1,4 @@
+import { Animated } from 'react-native';
 
 let NativeAnimatedModule = null;
 if (process.env.WEB != 'true') {
@@ -5,12 +6,11 @@ if (process.env.WEB != 'true') {
 }
 
 export default function transtionConfig() {
-  // const easing = Easing.out(Easing.cubic);
-  // const easing = Easing.bezier(0.0, 0, 0.58, 1);
   return {
-    // timing: Animated.timing,
-    duration: 220,
+    timing: Animated.spring,
     useNativeDriver: NativeAnimatedModule || false,
-    speed: 25,
+    speed: 20,
+    bounciness: 0,
+    overshootClamping: true,
   };
 }

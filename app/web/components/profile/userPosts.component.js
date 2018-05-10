@@ -89,10 +89,11 @@ class UserPosts extends Component {
 
   render() {
     const userId = this.props.params.id;
-    const postIds = this.props.posts.userPosts[userId] || []
+    const postIds = this.props.posts.userPosts[userId] || [];
 
     const posts = postIds.map(id => {
       const post = this.props.posts.posts[id];
+      if (!post) return null;
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
       const postUser = {
         ...post.embeddedUser,
@@ -111,14 +112,13 @@ class UserPosts extends Component {
 
     // if (!this.props.user) return null;
     return (
-      <div className='parent'>
-        <div className='postContainer'>
+      <div>
+        <div className='postContainer userPosts'>
           {posts}
         </div>
       </div>
     );
   }
-
 }
 
 export default UserPosts;

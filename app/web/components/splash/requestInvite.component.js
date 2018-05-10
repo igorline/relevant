@@ -23,6 +23,12 @@ export default class RequestInvite extends Component {
   }
 
   render() {
+    let img = "/img/hand.jpg";
+    let cta = <InviteCta />;
+    if (this.props.type === 'app') {
+      img = "/img/hand-transparent.png";
+      cta = this.props.cta;
+    }
     return (
       <div ref={c => this.container = c} className="splashContent">
 
@@ -31,7 +37,7 @@ export default class RequestInvite extends Component {
             <p className="libre big">
               <span className="outline">
                 Relevant
-              </span> is a social news reader that values <span className="outline">quality</span> over clicks.
+              </span> is a social platform that values <span className="outline">quality</span> over clicks.
             </p>
             <p className="subH">
               Join the community and help us build a better information environment for all.
@@ -42,11 +48,11 @@ export default class RequestInvite extends Component {
               </a> */}
           </section>
 
-          <InviteCta />
+          {cta}
 
         </mainSection>
         <div className="phone">
-          <img ref={c => this.phone = c}  src="/img/hand.jpg" alt="phone" />
+          <img ref={c => this.phone = c} src={img} alt="phone" />
         </div>
       </div>
     );

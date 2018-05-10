@@ -27,11 +27,13 @@ export default class Forgot extends Component {
     let content;
 
     if (this.state.sentEmailTo) {
-      content = `We have set an email to ${this.state.sentEmailTo}
-      with a link to reset your password.`;
+      content = <div>
+        We have set an email to {this.state.sentEmailTo}<br />
+      with a link to reset your password.
+      </div>;
     } else {
       content = (
-        <div>
+        <div className="innerForm">
           <input
             className="blueInput special"
             type="text"
@@ -40,6 +42,11 @@ export default class Forgot extends Component {
               this.handleChange('username', username.target.value);
             }}
             placeholder="Username or Email"
+            onKeyDown={e => {
+              if (e.keyCode === 13) {
+                this.sendEmail();
+              }
+            }}
           />
           <ShadowButton
             backgroundColor={'white'}
@@ -48,13 +55,19 @@ export default class Forgot extends Component {
           >
             Send Recovery Email
           </ShadowButton>
+          <div className={'smallText'}>
+            Back to <a
+              onClick={() => this.props.authNav('login')}
+            >
+              Sign in
+            </a>
+          </div>
         </div>
       );
     }
 
     return (
       <div>
-        <h2 style={{ textAlign: 'center' }}>Recover password</h2>
         {content}
       </div>
     );

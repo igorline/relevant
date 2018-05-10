@@ -6,7 +6,8 @@ import Avatar from './avatar.component';
 
 export default function AvatarBox(props) {
   const user = props.user;
-  let profileLink = '/profile/' + user._id;
+  const reverse = props.reverse;
+  let profileLink = user ? '/profile/' + user.handle : null;
   // temp - not logged in - redirect to home
   if (!props.auth.user) {
     profileLink = '/';
@@ -16,7 +17,7 @@ export default function AvatarBox(props) {
     timestamp = ' • ' + numbers.timeSince(Date.parse(props.date)) + ' ago';
   }
   let premsg;
-  let className;
+  let className = reverse ? 'reverse ' : '';
   if (props.isRepost) {
     className = 'repost';
     premsg = 'reposted by ';
@@ -43,7 +44,7 @@ export default function AvatarBox(props) {
   }
   return (
     <div className={['avatarBox', className].join(' ')}>
-      <Avatar auth={props.auth} user={user} />
+      { !reverse ? <Avatar auth={props.auth} user={user} /> : null}
       <div className="userBox">
         <div className="bebasRegular username">
           {premsg}
@@ -51,10 +52,11 @@ export default function AvatarBox(props) {
           {relevance}
         </div>
         <div className="gray">
-          @<Link to={profileLink}>{user._id}</Link>
+          @<Link to={profileLink}>{user.handle}</Link>
           {timestamp}
         </div>
       </div>
+      { reverse ? <Avatar auth={props.auth} user={user} /> : null}
     </div>
   );
 }

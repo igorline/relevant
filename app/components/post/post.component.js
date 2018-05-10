@@ -12,25 +12,6 @@ import Commentary from './commentary.component';
 let styles;
 
 class Post extends PureComponent {
-
-  componentWillMount() {
-  }
-
-  shouldComponentUpdate(next) {
-    // if (next.myPostInv !== this.props.myPostInv)
-    // console.log(next);
-    // console.log('updating post');
-    // for (let p in next) {
-    //   if (next[p] !== this.props[p]) {
-    //     console.log(p);
-    //     for (let pp in next[p]) {
-    //       if (next[p][pp] !== this.props[p][pp]) console.log('--> ', pp);
-    //     }
-    //   }
-    // }
-    return true;
-  }
-
   render() {
     let post;
     let imageEl;

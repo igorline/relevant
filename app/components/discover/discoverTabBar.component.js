@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,36 +10,41 @@ import PropTypes from 'prop-types';
 
 let styles;
 
-const DefaultTabBar = React.createClass({
-  propTypes: {
+class DefaultTabBar extends Component {
+  static propTypes = {
     goToPage: PropTypes.func,
     activeTab: PropTypes.number,
     tabs: PropTypes.array,
     backgroundColor: PropTypes.string,
     activeTextColor: PropTypes.string,
     inactiveTextColor: PropTypes.string,
-    textStyle: Text.propTypes.style,
-    tabStyle: View.propTypes.style,
+    textStyle: PropTypes.array,
+    tabStyle: PropTypes.object,
     renderTab: PropTypes.func,
-    underlineStyle: View.propTypes.style,
-  },
+    underlineStyle: PropTypes.object,
+  }
 
-  getDefaultProps() {
-    return {
-      activeTextColor: 'navy',
-      inactiveTextColor: 'black',
-      backgroundColor: null,
-    };
-  },
+  static defaultProps = {
+    activeTextColor: 'navy',
+    inactiveTextColor: 'black',
+    backgroundColor: null,
+  }
 
-  // renderTabOption(name, page) {
-  // },
+  // nonNativeScroll = new Animated.Value(0);
+
+  constructor(props) {
+    super(props);
+    this.nonNativeScroll = new Animated.Value(props.initialTab);
+    props.scrollValue.addListener(
+      Animated.event([{
+        value: this.nonNativeScroll
+      }], { useNativeDriver: false }
+    ));
+  }
 
   renderTab(name, page, isTabActive, onPressHandler, textColor) {
-    const { activeTextColor, inactiveTextColor, textStyle } = this.props;
-    // const textColor = isTabActive ? activeTextColor : inactiveTextColor;
+    const { textStyle } = this.props;
     const fontWeight = isTabActive ? 'bold' : 'normal';
-
 
     return (<TouchableOpacity
       style={styles.flexOne}
@@ -58,7 +63,7 @@ const DefaultTabBar = React.createClass({
         </View>
       </View>
     </TouchableOpacity>);
-  },
+  }
 
   render() {
     const containerWidth = this.props.containerWidth;
@@ -82,7 +87,7 @@ const DefaultTabBar = React.createClass({
           let inputRange = [0, 1, 2];
           let outputRange = inputRange.map(i => i === page ? 1 : 0);
 
-          const textColor = this.props.scrollValue.interpolate({
+          const textColor = this.nonNativeScroll.interpolate({
             inputRange,
             outputRange
           }).interpolate({
@@ -90,14 +95,14 @@ const DefaultTabBar = React.createClass({
             outputRange: ['rgba(35, 31, 32, 1)', 'rgba(77, 78, 255, 1)']
           });
           const isTabActive = this.props.activeTab === page;
-          const renderTab = this.props.renderTab || this.renderTab;
+          const renderTab = this.props.renderTab || this.renderTab.bind(this);
           return renderTab(name, page, isTabActive, this.props.goToPage, textColor);
         })}
         <Animated.View style={[tabUnderlineStyle, { transform: [{ translateX: left }] }, this.props.underlineStyle]} />
       </View>
     );
-  },
-});
+  }
+}
 
 styles = StyleSheet.create({
   tab: {
