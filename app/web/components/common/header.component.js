@@ -75,7 +75,7 @@ class Header extends Component {
     if (this.props.user) {
       return (
         <div>
-          <a onClick={() => this.props.actions.logoutAction()} >Logout</a>
+          <a onClick={() => this.props.actions.logoutAction(this.props.user)}>Logout</a>
           <Avatar user={this.props.user} />
         </div>
       );

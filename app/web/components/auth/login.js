@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
 import { Link } from 'react-router';
+import ShadowButton from '../common/ShadowButton';
+
 
 class LoginForm extends Component {
   constructor(props) {
@@ -31,47 +33,66 @@ class LoginForm extends Component {
   }
 
   render() {
+    let { username, password } = this.state;
+    let local = username.length && password.length;
     return (
-      <div>
-        <div>
-          <label>Username</label>
-          <input
-            type="text"
-            value={this.state.username}
-            onChange={(username) => {
-              this.handleChange('username', username.target.value);
-            }}
-            placeholder="Username"
-          />
+      <div className="innerForm">
+        <input
+          className="blueInput special"
+          value={this.state.username}
+          onChange={e => {
+            this.setState({ username: e.target.value });
+          }}
+          type="text"
+          name="username"
+          placeholder="username or email"
+        />
+        <input
+          className="blueInput special"
+          value={this.state.password}
+          onChange={e => {
+            this.setState({ password: e.target.value });
+          }}
+          onKeyDown={e => {
+            if (e.keyCode === 13) {
+              this.submit();
+            }
+          }}
+          type="password"
+          name="password"
+          placeholder="password"
+        />
+        <a onClick={() => this.props.authNav('forgot')} className="subLink">
+          Forgot Your Password?
+        </a>
+        <div style={{ width: '100%', visibility: !local ? 'visible' : 'hidden' }}>
+          <span className={'or'}>or</span>
+          <a
+            className={'twitterButton'}
+            href={`/auth/twitter?redirect=${this.props.location.pathname}`}
+          >
+              Sign in with Twitter
+          </a>
         </div>
-        <div>
-          <label>Password</label>
-          <input
-            value={this.state.password}
-            onChange={(password) => {
-              this.handleChange('password', password.target.value);
-            }}
-            type="password"
-            placeholder="Password"
-          />
+
+        <div style={{ width: '100%', visibility: local ? 'visible' : 'hidden' }}>
+          <ShadowButton
+            onClick={this.submit}
+          >
+            Sign In
+          </ShadowButton>
         </div>
-        <button onClick={() => this.submit()} type="submit">Log in</button>
-        <br />
-        {' '}
-        or
-        {' '}
-        <Link to="/signup">Sign up</Link>
-        <a href="/auth/facebook">Log in with facebook</a>
-        {' '}
-        <a href="/auth/twitter">Log in with twitter</a>
+
+        <div className={'smallText'}>
+          Not registered yet? <Link
+            onClick={() => this.props.authNav('signup')}
+          >
+            Sign up
+          </Link>
+        </div>
       </div>
     );
   }
 }
-
-// LoginForm = reduxForm({
-//   form: 'login',
-//   fields: ['username', 'password']
-// })(LoginForm);
 
 export default LoginForm;

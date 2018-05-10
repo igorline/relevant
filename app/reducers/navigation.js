@@ -127,7 +127,6 @@ const initialState = {
     routes: [{
       key: 'createPost',
       component: 'createPost',
-      // title: 'New Post',
       back: true,
       left: 'Cancel'
     }],

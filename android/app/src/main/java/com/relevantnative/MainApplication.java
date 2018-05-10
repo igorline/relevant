@@ -11,7 +11,7 @@ import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
-import com.horcrux.svg.RNSvgPackage;
+import com.horcrux.svg.SvgPackage;
 import com.meedan.ShareMenuPackage;
 import com.alinz.parkerdan.shareextension.SharePackage;
 import cl.json.RNSharePackage;
@@ -56,7 +56,7 @@ public class MainApplication extends Application implements ReactApplication {
           new VectorIconsPackage(),
           new ReactVideoPackage(),
           new LinearGradientPackage(),
-          new RNSvgPackage(),
+          new SvgPackage(),
           new ShareMenuPackage(),
           new SharePackage(),
           new RNSharePackage(),
@@ -67,6 +67,11 @@ public class MainApplication extends Application implements ReactApplication {
           new RNBottomSheetPackage(),
           new OrientationPackage()
         );
+    }
+
+    @Override
+    protected String getJSMainModuleName() {
+      return "index";
     }
   };
 

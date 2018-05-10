@@ -104,15 +104,13 @@ export async function addTwitterProfile(param) {
 
   // console.log(user);
   user = await user.save();
-  TwitterWorker.updateTwitterPosts(user._id);
-
   return user;
 }
 
 exports.login = async (req, res, next) => {
   try {
     let profile = req.body.profile;
-    if (!profile.userID) throw new Error('missing twitter id');
+    if (!profile || !profile.userID) throw new Error('missing twitter id');
     let relUser = req.user;
 
     let user = await User.findOne(
@@ -135,6 +133,7 @@ exports.login = async (req, res, next) => {
       // connect twitter for logged in user;
       if (relUser) {
         user = await addTwitterProfile({ user, profile, twitterAuth: req.body.profile });
+        TwitterWorker.updateTwitterPosts(user._id);
         // async fetch posts
       }
 
@@ -160,6 +159,7 @@ exports.login = async (req, res, next) => {
 
       user = new User({
         _id: req.body.profile.userName,
+        handle: req.body.profile.userName,
         confirmed: true,
         provider: 'twitter',
         role: 'user',
@@ -167,18 +167,18 @@ exports.login = async (req, res, next) => {
 
       user = await addTwitterProfile({ user, profile, twitterAuth: req.body.profile });
       user = await user.initialCoins();
+      TwitterWorker.updateTwitterPosts(user._id);
 
       // async fetch tweets
       await TwitterWorker.updateTwitterPosts(user._id);
-
       await invite.registered(user);
 
       await user.save();
       let token = auth.signToken(user._id, user.role);
       return res.json({ token, user });
-    } else {
-      return res.json(200, { twitter: true });
     }
+
+    return res.json(200, { twitter: true });
   } catch (err) {
     console.log(err);
     next(err);
@@ -186,59 +186,41 @@ exports.login = async (req, res, next) => {
 };
 
 exports.setup = () => {
-  passport.use(new TwitterStrategy({
-    consumerKey: process.env.TWITTER_ID,
-    consumerSecret: process.env.TWITTER_SECRET,
-    callbackURL: config.twitter.callbackURL,
-    passReqToCallback: true,
-    includeEmail: true,
-  },
-  async (req, token, tokenSecret, profile, done) => {
-    try {
-      let user = await User.findOne({
-        'twitter.id': profile.id
-      });
+  passport.use(new TwitterStrategy(
+    {
+      consumerKey: process.env.TWITTER_ID,
+      consumerSecret: process.env.TWITTER_SECRET,
+      callbackURL: config.twitter.callbackURL,
+      passReqToCallback: true,
+      includeEmail: true,
+    },
+    async (req, token, tokenSecret, profile, done) => {
+      try {
+        let user = await User.findOne({
+          twitterId: profile.id
+        });
 
-      if (!user) {
-        let description = profile._json.description;
-        if (profile._json.entities.description && profile._json.entities.description.urls) {
-          profile._json.entities.description.urls.forEach(u => {
-            description = description.replace(u.url, u.display_url);
-            console.log(description);
-          });
+        if (!user) {
+          let params = {
+            profile,
+            user: new User({
+              role: 'temp',
+              _id: profile.id,
+              handle: profile.username,
+              confirmed: true,
+              provider: 'twitter',
+            }),
+            twitterAuth: {
+              authToken: token,
+              authTokenSecret: tokenSecret,
+            }
+          };
+          user = await addTwitterProfile(params);
         }
-
-        // TODO include twitter bio URL?
-        // console.log(profile._json.entities.url.urls);
-        description += `\ntwitter.com/${profile.displayName}`;
-
-        user = {
-          name: profile.displayName,
-          username: profile.username,
-          role: 'user',
-          provider: 'twitter',
-          twitter: profile._json,
-          email: profile.email,
-          image: profile._json.profile_image_url_https,
-          bio: description,
-          type: 'temp'
-        };
-        // console.log(user);
-        // user = new User({
-        //   name: profile.displayName,
-        //   _id: profile.username + _tmpUser,
-        //   role: 'user',
-        //   provider: 'twitter',
-        //   twitter: profile._json
-        // });
-        // user.save(function(err) {
-        //   if (err) return done(err);
-        //   return done(err, user);
-        // });
+        return done(null, user);
+      } catch (err) {
+        return done(err);
       }
-      return done(null, user);
-    } catch (err) {
-      return done(err);
     }
-  }));
+  ));
 };

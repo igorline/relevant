@@ -17,6 +17,8 @@ export default class Avatar extends Component {
     let image = this.props.user.image || '/img/default_user.jpg';
     const avatarBackgroundImage = {
       backgroundImage: 'url(' + image + ')',
+      width: this.props.size,
+      height: this.props.size,
     };
     if (this.props.nolink) {
       return (
@@ -24,7 +26,7 @@ export default class Avatar extends Component {
           className={'avatar'}
           style={avatarBackgroundImage}
         >
-          {this.props.user.name}
+          {this.props.noName ? null : this.props.user.name}
         </span>
       );
     }
@@ -34,7 +36,7 @@ export default class Avatar extends Component {
         to={profileLink}
         style={avatarBackgroundImage}
       >
-        {this.props.user.name}
+        {this.props.noName ? null : this.props.user.name}
       </Link>
     );
   }

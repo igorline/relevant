@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import {
   Easing,
 } from 'react-native';
-import * as NavigationExperimental from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Discover from '../discover/discoverTabs.component';
@@ -18,6 +17,9 @@ import Profile from '../profile/profile.container';
 import Blocked from '../profile/blocked.container';
 import Invites from '../invites/invites.container';
 
+import Transitioner from '../nav/Transitioner';
+// import{ Transitioner } from 'react-navigation';
+
 import { transitionConfig } from '../../utils';
 import Card from './card.component';
 import * as navigationActions from '../../actions/navigation.actions';
@@ -25,11 +27,6 @@ import * as tagActions from '../../actions/tag.actions';
 import * as userActions from '../../actions/user.actions';
 
 import PostPeople from '../post/people.container';
-
-const {
-  Transitioner: NavigationTransitioner,
-} = NavigationExperimental;
-
 
 class CardContainer extends PureComponent {
 
@@ -41,9 +38,9 @@ class CardContainer extends PureComponent {
     this.thirsty = this.thirsty.bind(this);
   }
 
-  shouldComponentUpdate(next) {
-    return next.active;
-  }
+  // shouldComponentUpdate(next) {
+  //   return next.active;
+  // }
 
   getDefaultComponent(props) {
     let key = this.default;
@@ -133,7 +130,7 @@ class CardContainer extends PureComponent {
   render() {
     const { navigation } = this.props;
     return (
-      <NavigationTransitioner
+      <Transitioner
         navigation={{ state: navigation[this.default] }}
         configureTransition={transitionConfig}
         render={transitionProps => (

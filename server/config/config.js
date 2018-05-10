@@ -1,6 +1,6 @@
 module.exports = {
   secrets: {
-    session: process.env.SESSION_SECRET || 'relevantsecret'
+    session: process.env.SESSION_SECRET
   },
   userRoles : ['guest', 'user', 'admin'],
 

@@ -1,35 +1,32 @@
+@import '../global.css';
+
 .createPostTeaser {
   display: flex;
   flex-direction: row;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0px;
+  padding-bottom: 50px;
+  /*@extend %flatBorderBottom;*/
+  margin-bottom: 0px;
   cursor: pointer;
+  /*margin-left: $postOffsetPadding;*/
   .avatar {
     margin-right: 5px;
   }
   .textarea {
     font-size: 15px;
-    font-family: Georgia, serif;
-    line-height: 1.5;
-    padding: 2px 5px;
-    margin: 0 5px;
+    /*line-height: 1.5;*/
+    padding: 10px 15px;
+    margin: 0px 0 0 10px;
     background: white;
-    border: 1px solid #bbb;
-    border-radius: 2px;
-    min-height: 28px;
     flex: 1;
-    color: #bbb;
+    /*border: .1px solid #bbb;*/
+    box-shadow: 0 0 0 .5px $borderGrey, inset 0 0 10px -4px $grey;
+    border-radius: 0px;
+    white-space: pre-line;
+    color: $greyText;
   }
   button {
-    font-family: Helvetica;
-    font-size: 14px;
-    padding: 1px 7px;
-    height: auto;
-    white-space: nowrap;
-    color: black;
-    border: 1px solid;
-    border-radius: 20px;
-    background: transparent;
-    opacity: 0.2;
   }
 }

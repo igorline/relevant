@@ -7,6 +7,7 @@ import Invest from '../invest/invest.model';
 
 let apnData = require('../../pushNotifications');
 let mongoose = require('mongoose');
+// var mongoose = require('mongoose-fill')
 
 let PostSchemaEvents = new EventEmitter();
 let Schema = mongoose.Schema;
@@ -21,6 +22,7 @@ let PostSchema = new Schema({
   tags: [{ type: String, ref: 'Tag' }],
   body: String,
   domain: String,
+  community: String,
 
   shortText: { type: String },
   longText: { type: String },
@@ -42,9 +44,11 @@ let PostSchema = new Schema({
   category: { type: String, ref: 'Tag' },
   user: { type: String, ref: 'User', index: true },
   embeddedUser: {
+    handle: String,
     id: String,
     name: String,
     image: String,
+    relevance: { type: String, ref: 'Relevance' },
   },
 
   flagged: { type: Boolean, default: false },
@@ -83,7 +87,8 @@ let PostSchema = new Schema({
   twitterUrl: String,
 }, {
   timestamps: true,
-  toJSON: { virtuals: true }
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
 });
 
 PostSchema.virtual('reposted', {
@@ -91,6 +96,25 @@ PostSchema.virtual('reposted', {
   localField: '_id',
   foreignField: 'repost.post'
 });
+// PostSchema.virtual('posts', {
+//   ref: 'BlogPost',
+//   localField: '_id',
+//   foreignField: 'author'
+// });
+// PostSchema.virtual('embeddedUser.reputation')
+// .get(async function() {
+//   let community = this.community || 'relevant';
+//   let reputationRecord = await this.model('Relevance').findOne({ community, user: this.user, global: true });
+//   console.log(reputationRecord);
+//   return reputationRecord ? reputationRecord.relevance : 0;
+// });
+
+// PostSchema.fill('embeddedUser.reputation', async function(callback){
+//   let community = this.community || 'relevant';
+//   let reputationRecord = await this.model('Relevance').findOne({ community, user: this.user, global: true });
+//   console.log(reputationRecord);
+//   return callback(null, reputationRecord ? reputationRecord.relevance : 0);
+// });
 
 PostSchema.index({ twitter: 1 });
 PostSchema.index({ twitter: 1, twitterId: 1 });
@@ -105,7 +129,7 @@ PostSchema.index({ paidOut: 1, payoutTime: 1 });
 // PostSchema.createIndex({"subject":"text","content":"text"})
 // PostSchema.index({ title: 'text', body: 'text' });
 
-PostSchema.pre('save', async function (next) {
+PostSchema.pre('save', async function save(next) {
   try {
     let sign = 1;
     if (this.rankRelevance < 0) {
@@ -126,24 +150,30 @@ PostSchema.pre('save', async function (next) {
 });
 
 
-PostSchema.pre('remove', async function (next) {
+PostSchema.pre('remove', async function remove(next) {
   try {
     let note = this.model('Notification').remove({ post: this._id });
-    // keep these but update with 'removed post flag?'
-    // this.model('Invest').remove({ post: this._id }, next);
-    // this.model('Earnings').remove({ post: this._id }, next);
 
     let feed = await this.model('Feed').remove({ post: this._id });
     let twitterFeed = await this.model('TwitterFeed').remove({ post: this._id });
 
     let comment = this.model('Comment').remove({ post: this._id });
+
     let meta = await this.model('MetaPost').findOneAndUpdate(
       { _id: this.metaPost },
       { $pull: { commentary: this._id }, $inc: { commentaryCount: -1 } },
       { multi: true, new: true }
     );
+
     if (meta && meta.commentary.length === 0) {
+      console.log('removing meta');
       await meta.remove();
+      meta = null;
+    }
+
+    // problem: if meta includes post from a diff community it wont be removed;
+    if (meta) {
+      meta.pruneCommunityFeed(this.community);
     }
 
     if (!this.twitter) {
@@ -173,7 +203,7 @@ PostSchema.pre('remove', async function (next) {
 
 PostSchema.statics.events = PostSchemaEvents;
 
-PostSchema.methods.updateClient = function (user) {
+PostSchema.methods.updateClient = function updateClient(user) {
   if (this.user && this.user._id) this.user = this.user._id;
   let postNote = {
     _id: user ? user._id : null,
@@ -183,7 +213,7 @@ PostSchema.methods.updateClient = function (user) {
   this.model('Post').events.emit('postEvent', postNote);
 };
 
-PostSchema.methods.upsertMetaPost = async function (metaId) {
+PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId) {
   let meta;
   try {
     if (metaId) meta = await MetaPost.findOne({ _id: metaId });
@@ -269,16 +299,30 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
       let metaPost = new MetaPost(meta);
       // console.log(meta);
       meta = await metaPost.save();
+
       this.metaPost = metaPost._id;
       // console.log('meta tags', meta.tags);
     }
+
+    let community = this.community || 'relevant';
+    let feedItem = await this.model('CommunityFeed').findOneAndUpdate(
+      { community, metaPost: meta._id },
+      {
+        latestPost: this.postDate,
+        tags: meta.tags,
+        categories: meta.categories,
+        keywords: meta.keywords,
+        rank: meta.rank,
+      },
+      { upsert: true, new: true }
+    );
   } catch (err) {
     console.log('error creating / updating metapost ', err);
   }
   return meta;
 };
 
-PostSchema.statics.sendOutInvestInfo = async function (postIds, userId) {
+PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds, userId) {
   try {
     let investments = await Invest.find(
       { investor: userId, post: { $in: postIds } }
@@ -316,7 +360,7 @@ PostSchema.statics.sendOutInvestInfo = async function (postIds, userId) {
   }
 };
 
-PostSchema.statics.sendOutMentions = async function(mentions, post, mUser, comment) {
+PostSchema.statics.sendOutMentions = async function sendOutMentions(mentions, post, mUser, comment) {
   let textParent = comment || post;
   try {
     let promises = mentions.map(async mention => {

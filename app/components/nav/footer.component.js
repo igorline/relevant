@@ -45,9 +45,11 @@ export default class Footer extends Component {
 
     let fontAdjust;
     if (tab.title === 'Stats' && Platform.OS === 'ios') {
-      fontAdjust = { fontSize: 15, lineHeight: 35 };
+      fontAdjust = { fontSize: 15 };
     }
-    let icon = (<Text style={[styles.icon, styles.textCenter, fontAdjust, active ? styles.footerTextActive : null]}>{tab.icon}</Text>);
+    let icon = (<Text style={[styles.icon, styles.textCenter, fontAdjust, active ? styles.footerTextActive : null]}>
+      {tab.icon}
+    </Text>);
     let title = (
       <Text style={[styles.footerText, active || activeText ? styles.footerTextActive : null]}>
         {tab.title}

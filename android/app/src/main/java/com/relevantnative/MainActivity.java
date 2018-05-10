@@ -1,7 +1,6 @@
 package com.relevantnative;
 
 import com.facebook.react.ReactActivity;
-import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import android.content.Intent;
 import android.content.res.Configuration;
 

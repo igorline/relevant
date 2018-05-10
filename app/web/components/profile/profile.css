@@ -1,3 +1,8 @@
+.userPosts {
+  max-width: 700px;
+  margin: auto;
+  display: block;
+}
 .profileHero {
   display: flex;
   flex-direction: column;
@@ -21,6 +26,7 @@
   font-family: 'Bebas';
   font-size: 23px;
   display: flex;
+  line-height: 26px;
 }
 .profileHero .relevance img {
   height: 20px;

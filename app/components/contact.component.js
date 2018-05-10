@@ -7,7 +7,6 @@ import {
   View,
   TextInput
 } from 'react-native';
-import Button from 'react-native-button';
 
 class Contact extends Component {
   constructor (props, context) {
