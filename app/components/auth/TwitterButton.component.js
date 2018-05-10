@@ -27,37 +27,33 @@ export default class TwitterButton extends Component {
     this.state = {
       loggedIn: false
     };
-    this.signUp = this.signUp.bind(this);
+    // this.signUp = this.signUp.bind(this);
   }
 
-  signUp(loginData) {
-    loginData.signup = true;
-    loginData.invite = this.props.auth.currentInvite;
-    this.props.actions.twitterAuth(loginData);
-
-    // this.actions.checkUser(loginData.userName, 'name')
-    // .then(ok => {
-    //   if (ok) {
-    //     return this.props.actions.twitterAuth(loginData);
-    //   } else {
-    //     Alert.alert;
-    //   }
-    // });
-  }
+  // signUp(loginData) {
+  //   loginData.signup = true;
+  //   loginData.invite = this.props.auth.currentInvite;
+  //   this.props.actions.twitterAuth(loginData);
+  // }
 
   _twitterSignIn() {
+    // return console.log(this.props);
     RNTwitterSignIn.init(Constants.TWITTER_COMSUMER_KEY, Constants.TWITTER_CONSUMER_SECRET);
     RNTwitterSignIn.logIn()
     .then(loginData => {
       const { authToken, authTokenSecret } = loginData;
       if (authToken && authTokenSecret) {
+        if (this.props.type === 'signup') {
+          loginData.singup = true;
+        }
         this.props.actions.setTwitter(loginData);
-        // if (this.props.type === 'signup') {
-        //   return this.signup(loginData);
-        // }
-        // if (this.props.type !== 'signup') {
-          return this.props.actions.twitterAuth(loginData);
-        // }
+        return this.props.actions.twitterAuth(loginData, this.props.admin ? this.props.admin.currentInvite : null)
+        .then(r => {
+          setTimeout(() => {
+            this.props.actions.reloadTab('discover');
+          }, 3000);
+        })
+        .catch(err => console.log(err));
       }
       return null;
     }).catch(error => {
@@ -68,6 +64,7 @@ export default class TwitterButton extends Component {
   render() {
     let text = this.props.type === 'signup' ? 'Sign up' : 'Sign In';
     text += ' with Twitter';
+    if (this.props.children) text = this.props.children;
     const isLoggedIn = this.props.auth.twitter;
     let connected;
     if (isLoggedIn && !this.props.type === 'signup') {
@@ -107,7 +104,8 @@ TwitterButton.propTypes = {
   auth: PropTypes.object,
   actions: PropTypes.object,
   type: PropTypes.string, // login or signup?
-  // onLogin: PropTypes.func,
+  children: PropTypes.string,
+  admin: PropTypes.object,
 };
 
 

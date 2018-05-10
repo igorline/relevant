@@ -1,6 +1,6 @@
 import request from 'request-promise-any';
 import jsdom from 'jsdom';
-import Readability from 'readability';
+import { JSDOMParser, Readability } from 'readability/index';
 import cheerio from 'cheerio';
 import { parse as parseUrl } from 'url';
 
@@ -41,6 +41,8 @@ exports.getReadable = async (uri) => {
       headers: fbHeader
     });
 
+    // let doc = new JSDOMParser().parse(body);
+
     let doc = jsdom.jsdom(body, {
       features: {
         FetchExternalResources: false,
@@ -78,11 +80,11 @@ exports.trimToLength = (doc, length) => {
   return doc;
 };
 
-exports.generatePreview = (body, uri) => {
+exports.generatePreview = async (body, uri, reqUrl) => {
   // console.log('Generate Preview ', uri);
 
   body = body.replace('<!--', '').replace('-->', '');
-  const $ = cheerio.load(body);
+  let $ = cheerio.load(body);
 
   let redirect = $("meta[http-equiv='refresh']")[0];
   let redirectUrl;
@@ -94,9 +96,12 @@ exports.generatePreview = (body, uri) => {
       redirectUrl = uri;
     }
   }
+
   if (redirectUrl &&
-    exports.extractDomain(redirectUrl) !== ''  &&
-    exports.extractDomain(redirectUrl) !== exports.extractDomain(uri)) {
+    redirectUrl.match('http') &&
+    exports.extractDomain(redirectUrl) !== '' &&
+    exports.extractDomain(redirectUrl) !== exports.extractDomain(uri) &&
+    reqUrl !== redirectUrl) {
     return {
       redirect: true,
       uri: redirectUrl
@@ -114,9 +119,15 @@ exports.generatePreview = (body, uri) => {
     }
   }
 
+  // console.log('reqUrl ', reqUrl);
+  // console.log('canonical url ', canonical.href);
+  // console.log('original url  ', uri);
+
   if (canonical &&
     canonical.href &&
-    exports.extractDomain(canonical.href) !== exports.extractDomain(uri)) {
+    canonical.href.match('http') &&
+    exports.extractDomain(canonical.href) !== exports.extractDomain(uri) &&
+    reqUrl !== canonical.href) {
     return {
       redirect: true,
       uri: canonical.href
@@ -199,8 +210,13 @@ exports.generatePreview = (body, uri) => {
   title = data['og:title'] || data['twitter:title'] || data.title;
   description = stripHTML(data.description || data['og:description'] || data['twitter:description']).trim();
   image = data['og:image'] || data['og:image:url'] || data['twitter:image'] || data['twitter:image:src'] || data.image;
+
   // why prioritise og tags? flipboard?
-  let url = data['al:web:url'] || data['og:url'] || uri;
+  let url;
+  if (uri.match('flip.it')) {
+    url = data['al:web:url'] || data['og:url'] || uri;
+  }
+  url = uri || data['al:web:url'] || data['og:url'];
   let tags = data.news_keywords || data.keywords;
   let domain = exports.extractDomain(url);
 
@@ -293,15 +309,20 @@ exports.generatePreview = (body, uri) => {
   });
 
   let article;
+
   try {
     article = new Readability(url, doc).parse();
   } catch (err) {
-    console.log('Readability err ', err);
+    console.log('Readability ERR ', err);
   }
 
   let short;
-  if (article) {
-    short = exports.trimToLength(article.article, 140).innerHTML;
+  if (article && article.article) {
+    try {
+      short = article.excerpt || exports.trimToLength(article.article, 140).innerHTML;
+    } catch (err) {
+      console.log(err);
+    }
     if (!author.length && article.byline) {
       let by = article.byline.split(/\n|\,|•/)
       .map(a => a.replace(/by|by:\s/i, '').trim())
@@ -311,7 +332,7 @@ exports.generatePreview = (body, uri) => {
         !a.match('UTC')
         && (isNaN(new Date(a).getTime()))
         && !a.match('http')
-        //&& !a.match(/2017|2016|2015|2018/)
+        // && !a.match(/2017|2016|2015|2018/)
       );
       // .map(a => new Date(a))
       // console.log(by);
@@ -320,6 +341,7 @@ exports.generatePreview = (body, uri) => {
   } else {
     // console.log('couldn\'t parse url ', url);
   }
+
   // console.log('author ', article.byline);
 
   // if (!image && article && article.content) {
@@ -364,6 +386,11 @@ exports.generatePreview = (body, uri) => {
   // console.log(obj);
   // console.log($('head').html());
   // console.log(body);
+  $ = null;
+  body = null;
+  article = null;
+  data = null;
+  doc = null;
 
   return {
     redirect: false,

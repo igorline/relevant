@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
+  Text
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -18,8 +19,9 @@ import * as investActions from '../../actions/invest.actions';
 import * as animationActions from '../../actions/animation.actions';
 import * as navigationActions from '../../actions/navigation.actions';
 import * as createPostActions from '../../actions/createPost.actions';
-import { globalStyles } from '../../styles/global';
+import { globalStyles, mainPadding } from '../../styles/global';
 import CustomListView from '../../components/customList.component';
+import TwitterButton from '../auth/TwitterButton.component';
 
 let styles;
 const POST_PAGE_SIZE = 15;
@@ -32,6 +34,7 @@ class Discover extends Component {
       view: 0,
     };
     this.renderRow = this.renderRow.bind(this);
+    this.renderHeader = this.renderHeader.bind(this);
     this.load = this.load.bind(this);
     this.scrollToTop = this.scrollToTop.bind(this);
 
@@ -40,6 +43,7 @@ class Discover extends Component {
       { id: 0, title: 'Trending', type: 'top' },
       { id: 1, title: 'New', type: 'new' },
       { id: 2, title: 'People', type: 'people' },
+      { id: 3, title: 'Twitter', type: 'twitterFeed' },
     ];
     this.loaded = true;
     this.type = this.props.type;
@@ -107,6 +111,18 @@ class Discover extends Component {
           data: props.userList[this.topic ? this.topic._id : 'all'],
           loaded: null
         };
+      case 3:
+        // if (this.topic) {
+        //   return {
+        //     data: props.posts.topics.top[this.topic._id],
+        //     loaded: props.posts.loaded.topics[this.topic._id] ?
+        //       props.posts.loaded.topics[this.topic._id].top : false,
+        //   };
+        // }
+        return {
+          data: props.posts.twitterFeed,
+          loaded: props.posts.loaded.twitterFeed,
+        };
       default:
         return null;
     }
@@ -131,9 +147,24 @@ class Discover extends Component {
       case 2:
         if (this.props.auth.user) this.props.actions.getUsers(length, POST_PAGE_SIZE * 2, tags);
         break;
+      case 3:
+        this.props.actions.getTwitterFeed(length, tags);
+        break;
       default:
         return;
     }
+  }
+
+  renderHeader() {
+    if (this.state.view !== 3 || this.props.auth.user.twitterId) return null;
+    return (
+      <View style={{ paddingBottom: 20, paddingHorizontal: mainPadding}}>
+        <TwitterButton auth={this.props.auth} actions={this.props.actions}>
+          Connect Twitter Account
+        </TwitterButton>
+        <Text style={[styles.smallInfo, { paddingTop: 5, textAlign: 'center' }]}>Connect your accont to see relevant post from your twitter feed</Text>
+      </View>
+    );
   }
 
   renderRow(rowData, view, i) {
@@ -142,7 +173,12 @@ class Discover extends Component {
       let posts = [];
       let metaPost = this.props.posts.metaPosts[type][rowData];
       if (metaPost) posts = metaPost.commentary.map(p => this.props.posts.posts[p]);
+      // else if (metaPost && view === 3) posts = metaPost.twitterCommentary.map(p => this.props.posts.posts[p]);
       else return null;
+
+      // if (view === 3) {
+      //   console.log(posts);
+      // }
 
       let showReposts = false;
       if (type === 'new') showReposts = true;
@@ -178,6 +214,7 @@ class Discover extends Component {
           data={tabData.data || []}
           loaded={tabData.loaded}
           renderRow={this.renderRow}
+          renderHeader={this.renderHeader}
           load={this.load}
           type={'posts'}
           parent={'discover'}

@@ -95,13 +95,14 @@ function fetchMeta(initialState) {
       const post = initialState.posts.posts[post_id];
       title = post.title;
       image = post.image;
+      description = post.body;
       url = 'https://relevant.community/post/' + post_id;
     }
   }
   title = title || 'Relevant: A Social News Reader';
   image = image || 'https://relevant.community/img/fbimg.png';
   url = url || 'https://relevant.community/';
-  description = 'Relevant is a social news reader that values quality over clicks. Our mission is to create a token-backed qualitative metric for the information economy — making the human values of veracity, expertise and agency economically valuable.';
+  description = description || 'Relevant is a social news reader that values quality over clicks. Our mission is to create a token-backed qualitative metric for the information economy — making the human values of veracity, expertise and agency economically valuable.';
   return { title, description, image, url };
 }
 

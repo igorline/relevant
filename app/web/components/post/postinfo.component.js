@@ -21,15 +21,24 @@ export default function (props) {
     );
   }
 
-  const postImage = post.image && {
-    backgroundImage: 'url(' + post.image + ')',
-  };
+  let gradient = ['hsla(240, 70%, 30%, .01)',
+    'hsla(240, 70%, 20%, .05)',
+    'hsla(240, 70%, 10%, .2)',
+    'hsla(240, 70%, 10%, .7)',
+    'hsla(240, 70%, 10%, .6)'
+  ]
+  .join(',', ', ');
+
+  let postImage = post.image ? {
+    backgroundImage: 'linear-gradient(' + gradient + '), url(' + post.image + ')',
+  } :
+  { background: '#3E3EFF' };
 
   const postContent = (
-    <div className="shadowBox postinfo">
-      {post.image &&
-        <span className="image" style={postImage} />
-      }
+    <div className="shadowBox postinfo" style={postImage}>
+{/*      {post.image &&
+        <span className="image"  />
+      }*/}
       <div>
         <h3 className="headline bebasRegular">{post.title}</h3>
         {post.domain &&
@@ -38,11 +47,12 @@ export default function (props) {
       </div>
     </div>
   );
+  let url = post.url || post.link;
 
-  if (post.url) {
+  if (url) {
     return (
       <a
-        href={post.url}
+        href={url}
         target="_blank"
         rel="noopener noreferrer"
       >

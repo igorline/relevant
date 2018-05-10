@@ -8,8 +8,6 @@ function handleError(res, statusCode) {
   };
 }
 
-Feed.update({ userId: 'z' }, { read: false }, { multi: true }).exec();
-
 exports.get = async (req, res) => {
   let userId = req.user._id;
   let skip = parseInt(req.query.skip, 10) || 0;

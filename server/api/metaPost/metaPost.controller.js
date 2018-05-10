@@ -100,7 +100,7 @@ exports.index = async (req, res) => {
   let blocked = [];
   if (req.user) {
     userId = req.user._id;
-    blocked = [...req.user.blocked, ...req.user.blockedBy];
+    blocked = [...req.user.blocked || [], ...req.user.blockedBy || []];
   }
 
   let limit = parseInt(req.query.limit, 10) || 5;
@@ -133,7 +133,10 @@ exports.index = async (req, res) => {
     .populate({
       path: 'commentary',
       // match: { user: { $nin: blocked } },
-      match: { repost: { $exists: false }, user: { $nin: blocked } },
+      match: {
+        repost: { $exists: false },
+        user: { $nin: blocked },
+        $or: [{ twitter: { $ne: true } }, { relevance: { $gt: 0 } }] },
       options: { sort: commentarySort },
       populate: [
         {
@@ -150,22 +153,23 @@ exports.index = async (req, res) => {
     .limit(limit)
     .skip(skip)
     .sort(sortQuery);
+
+    // TODO worker thread?
+    if (userId) {
+      let postIds = [];
+      posts.forEach(meta => {
+        meta.commentary.forEach(post => {
+          if (!post.user) post.user = post.embeddedUser.id;
+          postIds.push(post._id || post);
+        });
+      });
+      Post.sendOutInvestInfo(postIds, userId);
+    }
   } catch (err) {
     handleError(res, err);
   }
 
   res.status(200).json(posts);
-
-  // TODO worker thread
-  if (userId) {
-    let postIds = [];
-    posts.forEach(meta => {
-      meta.commentary.forEach(post => {
-        postIds.push(post._id || post);
-      });
-    });
-    Post.sendOutInvestInfo(postIds, userId);
-  }
 };
 
 exports.flagged = async (req, res) => {

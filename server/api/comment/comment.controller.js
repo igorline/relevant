@@ -299,7 +299,9 @@ exports.create = async (req, res) => {
     let otherCommentors = await Comment.find({ post: post._id })
     .populate('user', 'name _id deviceTokens');
 
-    otherCommentors = otherCommentors.map(comm => comm.user);
+    otherCommentors = otherCommentors
+    .map(comm => comm.user)
+    .filter(u => u);
     otherCommentors.push(postAuthor);
 
     let voters = await Invest.find({ post: post._id })
@@ -307,12 +309,12 @@ exports.create = async (req, res) => {
     voters = voters.map(v => v.investor);
     voters = voters || [];
     otherCommentors = otherCommentors || [];
-    console.log(voters);
     otherCommentors = [...otherCommentors, ...voters];
+    console.log('otherCommentors ', otherCommentors);
 
     // filter out duplicates
     otherCommentors = otherCommentors.filter((u, i) => {
-      let index = otherCommentors.findIndex(c => c._id === u._id);
+      let index = otherCommentors.findIndex(c => c ? c._id === u._id : false);
       return index === i;
     });
 

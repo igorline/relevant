@@ -9,6 +9,7 @@ import {
 import PropTypes from 'prop-types';
 import { globalStyles } from '../styles/global';
 import Stats from './post/stats.component';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 let styles;
 
@@ -71,6 +72,16 @@ export default function UserName(props) {
     );
   }
 
+  let twitterIcon;
+  if (props.twitter) {
+    twitterIcon = (<Icon
+      borderRadius={0}
+      name={'logo-twitter'}
+      size={17} color={'#00aced'}
+      style={styles.icon}
+    />);
+  }
+
   return (
     <TouchableWithoutFeedback
       onPress={() => props.setSelected(props.user)}
@@ -83,7 +94,7 @@ export default function UserName(props) {
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-end', marginBottom: 2 }}>
             <View>
               <Text style={[styles.font17, styles.darkGrey, styles.bebas]}>
-                {props.user.name}{' '}
+                {props.user.name}{' '} {twitterIcon}
               </Text>
             </View>
             {stats}
@@ -108,6 +119,9 @@ UserName.propTypes = {
 };
 
 const localStyles = StyleSheet.create({
+  icon: {
+    marginLeft: 5,
+  },
   userImageBig: {
     height: 42,
     width: 42,

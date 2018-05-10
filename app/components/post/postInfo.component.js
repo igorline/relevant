@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   Text,
   Image,
-  Platform
+  Platform,
+  Linking
 } from 'react-native';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -103,6 +104,11 @@ class PostInfo extends Component {
 
   setSelected() {
     if (!this.props.actions) return;
+
+    if (this.props.post.twitter) {
+      return Linking.openURL('https://twitter.com/' + this.props.post.embeddedUser.id)
+    }
+
     this.props.actions.goToProfile({
       name: this.props.post.embeddedUser.name,
       _id: this.props.post.user._id || this.props.post.user
@@ -208,10 +214,10 @@ class PostInfo extends Component {
     // }
 
 
-    let user = post.user;
+    let user = post.user || post.twitterUser;
     if (user && !user.name) {
       user = {};
-      user._id = post.user;
+      user._id = post.user || (post.embeddedUser.id + ' via twitter');
       user.image = post.embeddedUser.image;
       user.name = post.embeddedUser.name;
     }
@@ -222,6 +228,7 @@ class PostInfo extends Component {
         user={user}
         setSelected={this.setSelected}
         postTime={postTime}
+        twitter={post.twitter}
       />
     );
 

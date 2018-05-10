@@ -45,11 +45,15 @@ let MetaPostSchema = new Schema({
   latestTweet: Date,
   twitter: { type: Boolean, default: false },
   feedRelevance: Number,
-
+  twitterUrl: String,
 }, {
   timestamps: true,
 });
 
+MetaPostSchema.index({ lastTwitterUpdate: 1 });
+MetaPostSchema.index({ twitterurl: 1 });
+
+MetaPostSchema.index({ twitter: 1 });
 MetaPostSchema.index({ url: 1 });
 MetaPostSchema.index({ rank: 1 });
 MetaPostSchema.index({ twitter: 1 });

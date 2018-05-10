@@ -9,9 +9,14 @@ if (process.env.BROWSER === true) {
 export default class Avatar extends Component {
   render() {
     if (!this.props.user) return null;
-    const profileLink = '/profile/' + this.props.user._id;
+    let profileLink = '/profile/' + this.props.user._id;
+    // temp - not logged in - redirect to home
+    if (this.props.auth && !this.props.auth.user) {
+      profileLink = '/';
+    }
+    let image = this.props.user.image || '/img/default_user.jpg';
     const avatarBackgroundImage = {
-      backgroundImage: 'url(' + this.props.user.image + ')',
+      backgroundImage: 'url(' + image + ')',
     };
     if (this.props.nolink) {
       return (

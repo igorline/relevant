@@ -5,6 +5,7 @@
   "scripts": {
     "startApp": "REACT_DEBUGGER=\"rndebugger-open --open --port 8081\" node node_modules/react-native/local-cli/cli.js start",
     "start": "node server/index.js",
+    "worker": "node server/worker.js",
     "dev": "nodemon server/index.js",
     "native": "NODE_ENV='native' nodemon server/index.js",
     "build": "webpack --config ./webpack.production.config.js --progress --colors -p",
@@ -153,6 +154,7 @@
     "socket.io-client": "~1.4.5",
     "ssl-root-cas": "^1.2.3",
     "supertest-as-promised": "^4.0.2",
+    "twitter": "^1.7.1",
     "unfluff": "^1.1.0",
     "uuid": "^3.0.1",
     "voucher-code-generator": "^1.1.1",
@@ -194,7 +196,7 @@
     "webpack-hot-middleware": "^2.2.0"
   },
   "engines": {
-    "node": "8.6.0"
+    "node": ">=8.6.0"
   },
   "ava": {
     "babel": "inherit",

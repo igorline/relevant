@@ -23,7 +23,6 @@ class TopPosts extends Component {
   render() {
     let { topPosts } = this.props;
 
-
     let postsEl = topPosts.map(p => (
       <div key={p._id}>
         <Post

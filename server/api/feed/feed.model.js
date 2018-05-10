@@ -24,7 +24,6 @@ FeedSchema.statics.processExpired = async function (user) {
     let oldestUnread = await this.findOne({ userId: user, read: false })
     .sort({ createdAt: 1 })
     .limit(1);
-    console.log(oldestUnread);
     if (oldestUnread) {
       oldestUnread.remove();
       updateFeed = true;
