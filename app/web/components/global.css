@@ -15,12 +15,15 @@ $lightBlue: hsl(240, 70%, 100%);
 $shadowBorderGrey: hsl(0,0%,70%);
 
 $darkBg: #444445;
-$lightBg: #F1F1F1;
+$lightBg: hsl(0,0%,92%);
 
 $twitterBlue: #00aced;
 
 $leftMargin: 25px;
 $globalMargin: 25px;
+
+$navShadow: 0 3.5px 4px -5px $darkGrey;
+
 
 %bebasFont {
   font-family: Bebas;

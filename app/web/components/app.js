@@ -83,6 +83,7 @@ class App extends Component {
     const location = this.props.location;
     let header =
       <AppHeader
+        location={location}
         params={this.props.params}
         toggleLogin={this.toggleLogin.bind(this)}
       />;

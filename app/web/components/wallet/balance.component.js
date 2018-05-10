@@ -56,6 +56,8 @@ export default class Balance extends Component {
     tokenBalance = user.tokenBalance || connectedBalance || 0;
     let total = rewardBalance + tokenBalance;
 
+    if (tokenBalance < .0000001) tokenBalance = 0;
+
     let usd = total * priceDollar;
     let accountWarning;
 

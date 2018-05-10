@@ -78,10 +78,12 @@ class AppHeader extends Component {
 
   renderWallet() {
     if (!this.props.isAuthenticated) return null;
+    let active = this.props.location.pathname === '/wallet';
+    active = active ? 'active' : '';
     return (
       <Link
         to={'/wallet'}
-        className={'navLink'}
+        className={'navLink ' + active}
       >
         Wallet
       </Link>
