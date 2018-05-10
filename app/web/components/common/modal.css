@@ -4,11 +4,12 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: hsla(240, 100%, 5%, 0.5);
+  background-color: hsla(240, 50%, 5%, 0.7);
   z-index: 20;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  overflow: scroll;
 }
 
 .ethAddress {
@@ -22,7 +23,7 @@
       margin: 0 0 30px 0;
   }
   button{
-    margin: 20px 0 10px 0;
+    margin: 30px 0 10px 0;
   }
   .smallInfo {
     font-size: 12px;
@@ -34,23 +35,25 @@
   }
 }
 
+.modalScroll {
+  display: flex;
+  align-items: center;
+  flex-shrink: 1;
+  min-height: 100%;
+  padding: 20px 0;
+}
 
 .modal {
   background-color: white;
   position: relative;
   min-width: 600px;
-
-  /*flex: 0 0 600px;*/
-  /*height: 350px;*/
-
+  display: flex;
   z-index: 5;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
   padding: 70px 30px 50px 30px;
-  max-height: 100vh;
-  overflow: scroll;
 }
 
 .modalHeader {

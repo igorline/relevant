@@ -10,7 +10,7 @@
 .createPostContainer {
   border-bottom: 1px solid $borderGrey;
   padding-bottom: 40px;
-  margin-top: 20px;
+  margin-top: 0px;
   /*padding-top: 20px;*/
   .tagInput input {
     font-size: 15px;

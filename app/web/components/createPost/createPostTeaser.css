@@ -5,9 +5,9 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-top: 60px;
-  padding-bottom: 60px;
-  @extend %flatBorderBottom;
+  margin-top: 0px;
+  padding-bottom: 50px;
+  /*@extend %flatBorderBottom;*/
   margin-bottom: 0px;
   cursor: pointer;
   /*margin-left: $postOffsetPadding;*/
