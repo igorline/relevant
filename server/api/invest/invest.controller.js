@@ -165,7 +165,6 @@ exports.destroy = (req, res) => {
     investor: req.body.investor,
     post: req.body.post
   };
-  console.log(query, 'query');
   let investmentId = null;
 
   Invest.find(query).then((invests) => invests)
@@ -319,6 +318,7 @@ exports.create = async (req, res) => {
       { _id: post.user },
       'relevance balance name relevanceRecord deviceTokens badge'
     );
+    if (!author) return;
 
     let diff = user.relevance - author.relevance;
     let adjust = 1;
@@ -494,8 +494,13 @@ exports.create = async (req, res) => {
     post = await post.save();
 
     // async update meta post rank
-    MetaPost.updateRank(post.metaPost);
+    // console.log('meta post ', post.metaPost);
+    MetaPost.updateRank(post.metaPost, post.twitter);
 
+    // if (post.twitter) {
+    //   let updateM = await MetaPost.findOneAndUpdate({ _id: post.metaPost }, { twitter: false }, { new: true });
+    //   console.log(updateM);
+    // }
     // updates user investments
     user.investmentCount = await Invest.count({ investor: user._id, amount: { $gt: 0 } });
 
@@ -513,7 +518,7 @@ exports.create = async (req, res) => {
 
 
     // updates author relevance
-    updateAuthor();
+    await updateAuthor();
 
 
     // updates previous user's relevance

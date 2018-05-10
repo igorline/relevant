@@ -42,6 +42,7 @@ let PostSchema = new Schema({
   category: { type: String, ref: 'Tag' },
   user: { type: String, ref: 'User', index: true },
   embeddedUser: {
+    id: String,
     name: String,
     image: String,
   },
@@ -73,6 +74,13 @@ let PostSchema = new Schema({
   payOutShare: { type: Number, default: 0 },
 
   balance: { type: Number, default: 0 },
+
+  twitter: { type: Boolean, default: false },
+  twitterUser: Number,
+  twitterId: Number,
+  twitterScore: Number,
+  feedRelevance: Number,
+  twitterUrl: String,
 }, {
   timestamps: true,
   toJSON: { virtuals: true }
@@ -83,6 +91,9 @@ PostSchema.virtual('reposted', {
   localField: '_id',
   foreignField: 'repost.post'
 });
+
+PostSchema.index({ twitter: 1 });
+PostSchema.index({ twitter: 1, twitterId: 1 });
 
 PostSchema.index({ rank: 1 });
 PostSchema.index({ postDate: 1 });
@@ -117,54 +128,43 @@ PostSchema.pre('save', async function (next) {
 
 PostSchema.pre('remove', async function (next) {
   try {
-    let repost = this.repost || false;
-    console.log('removing repost', repost);
     let note = this.model('Notification').remove({ post: this._id });
     // keep these but update with 'removed post flag?'
     // this.model('Invest').remove({ post: this._id }, next);
     // this.model('Earnings').remove({ post: this._id }, next);
 
-    let feed = this.model('Feed').remove({ post: this._id });
+    let feed = await this.model('Feed').remove({ post: this._id });
+    let twitterFeed = await this.model('TwitterFeed').remove({ post: this._id });
+
     let comment = this.model('Comment').remove({ post: this._id });
-    let meta = this.model('MetaPost').findOneAndUpdate(
+    let meta = await this.model('MetaPost').findOneAndUpdate(
       { _id: this.metaPost },
       { $pull: { commentary: this._id }, $inc: { commentaryCount: -1 } },
-      { multi: true, new: true }, (err, metaPost) => {
-        if (metaPost && metaPost.commentaryCount <= 0) {
-          metaPost.remove();
-        }
-      }
+      { multi: true, new: true }
     );
+    if (meta && meta.commentary.length === 0) {
+      await meta.remove();
+    }
 
-    // let post = this.model('Post').remove({ 'repost.post': this._id });
-    // let user = this.model('User').update(
-    //     { _id: this.user },
-    //     { $inc: { postCount: -1 } },
-    //     { multi: true },
-    //     next
-    // );
-
-    this.tags.forEach((tag) => {
-      console.log(tag, 'tag');
-      this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
-        if (!foundTag) return next();
-        console.log('foundTag ', foundTag._id);
-        if (foundTag.count > 1) {
-          foundTag.count--;
-          console.log('changing tag count for ', foundTag._id);
-          foundTag.save((err) => {
-            if (err) console.log('saving tag error');
-          });
-        } else {
-          console.log('removing tag ', foundTag.name);
-          foundTag.remove();
-        }
+    if (!this.twitter) {
+      this.tags.forEach((tag) => {
+        this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
+          if (!foundTag) return next();
+          if (foundTag.count > 1) {
+            foundTag.count--;
+            foundTag.save(err => {
+              if (err) console.log('saving tag error');
+            });
+          } else {
+            console.log('removing tag ', foundTag.name);
+            foundTag.remove();
+          }
+        });
       });
-    });
+    }
 
-    let promises = [note, feed, comment, meta];
-    let finished = await Promise.all(promises);
-    // console.log(finished);
+    let promises = [note, feed, comment, meta, twitterFeed];
+    await Promise.all(promises);
   } catch (err) {
     console.log('error deleting post references ', err);
   }
@@ -174,7 +174,7 @@ PostSchema.pre('remove', async function (next) {
 PostSchema.statics.events = PostSchemaEvents;
 
 PostSchema.methods.updateClient = function (user) {
-  if (this.user._id) this.user = this.user._id;
+  if (this.user && this.user._id) this.user = this.user._id;
   let postNote = {
     _id: user ? user._id : null,
     type: 'UPDATE_POST',
@@ -207,13 +207,25 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
       meta.categories = cats;
 
       meta.keywords = [...new Set([...meta.keywords, ...this.keywords || []])];
-
-      meta.commentaryCount++;
-      meta.newCommentary = this._id;
-      meta.commentary.push(this);
-      meta.latestPost = this.postDate;
       meta.articleAuthor = this.articleAuthor;
-      // meta.url = this.post.link;
+
+      if (!this.twitter) {
+        meta.commentaryCount++;
+        meta.newCommentary = this._id;
+        meta.commentary.push(this);
+        meta.latestPost = this.postDate;
+        meta.twitter = false;
+        // meta.url = this.post.link;
+      } else {
+        // meta.latestPost = this.postDate;
+        meta.latestTweet = this.postDate;
+        meta.tweetCount++;
+        meta.commentary.push(this);
+        // meta.twitterCommentary.push(this);
+        meta.seenInFeedNumber++;
+        meta.twitterScore = Math.max(meta.twitterScore, this.twitterScore);
+        meta.feedRelevance = Math.max(meta.feedRelevance, this.feedRelevance);
+      }
 
       if (this.image) {
         meta.image = this.image;
@@ -232,19 +244,36 @@ PostSchema.methods.upsertMetaPost = async function (metaId) {
         // may not need to do this if meta is pre-populated
         articleAuthor: this.articleAuthor,
         shortText: this.shortText,
-        domain: [this.domain],
+        domain: this.domain,
         commentary: [this._id],
+
+        // commentary: this.twitter ? null : [this._id],
         title: this.title,
         description: this.description,
         image: this.image,
         keywords: this.keywords,
       };
+      if (this.twitter) {
+        meta = {
+          ...meta,
+          tweetCount: 1,
+          seenInFeedNumber: 1,
+          // twitterCommentary: [this._id],
+          latestTweet: this.postDate,
+          twitterScore: this.twitterScore,
+          feedRelevance: this.feedRelevance,
+          twitter: true,
+          twitterUrl: this.twitterUrl
+        };
+      }
       let metaPost = new MetaPost(meta);
+      // console.log(meta);
       meta = await metaPost.save();
-      console.log('meta tags', meta.tags);
+      this.metaPost = metaPost._id;
+      // console.log('meta tags', meta.tags);
     }
   } catch (err) {
-    console.log('error creating / updating metapost');
+    console.log('error creating / updating metapost ', err);
   }
   return meta;
 };

@@ -612,7 +612,7 @@ export function setLoading(loading) {
 }
 
 
-export function twitterAuth(profile) {
+export function twitterAuth(profile, invite) {
   return async dispatch => {
     try {
       dispatch(setLoading(true));
@@ -620,7 +620,7 @@ export function twitterAuth(profile) {
         method: 'POST',
         endpoint: '/auth/',
         path: `twitter/login`,
-        body: JSON.stringify(profile)
+        body: JSON.stringify({ profile, invite })
       });
       dispatch(setLoading(false));
       if (result.token && result.user) {
@@ -631,10 +631,13 @@ export function twitterAuth(profile) {
       if (result.twitter) {
         dispatch(setTwitter(profile));
       }
+      return true;
     } catch (error) {
+      dispatch(setTwitter(null));
       dispatch(setLoading(false));
       console.log(error);
       AlertIOS.alert(error.message);
+      return false;
     }
   };
 }

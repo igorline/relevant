@@ -4,6 +4,7 @@ const initialState = {
   postError: null,
   feedUnread: null,
   feed: [],
+  twitterFeed: [],
   top: [],
   new: [],
   flagged: [],
@@ -12,6 +13,7 @@ const initialState = {
     feed: false,
     top: false,
     new: false,
+    twitterFeed: false,
     userPosts: false,
     topics: {}
   },

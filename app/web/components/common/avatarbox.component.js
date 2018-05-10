@@ -6,7 +6,11 @@ import Avatar from './avatar.component';
 
 export default function AvatarBox(props) {
   const user = props.user;
-  const profileLink = '/profile/' + user._id;
+  let profileLink = '/profile/' + user._id;
+  // temp - not logged in - redirect to home
+  if (!props.auth.user) {
+    profileLink = '/';
+  }
   let timestamp;
   if (props.date) {
     timestamp = ' • ' + numbers.timeSince(Date.parse(props.date)) + ' ago';
@@ -39,7 +43,7 @@ export default function AvatarBox(props) {
   }
   return (
     <div className={['avatarBox', className].join(' ')}>
-      <Avatar user={user} />
+      <Avatar auth={props.auth} user={user} />
       <div className="userBox">
         <div className="bebasRegular username">
           {premsg}

@@ -34,7 +34,6 @@ class Post extends Component {
       );
     }
 
-
     let user = this.props.postUser || post.user;
     if (user && !user.name) {
       user = {};
@@ -42,15 +41,18 @@ class Post extends Component {
       user.image = post.embeddedUser.image;
       user.name = post.embeddedUser.name;
     }
+    if (!user && post.twitter) {
+      user = post.embeddedUser;
+    }
 
     return (
       <div className="post">
         {postInfo}
         <div className="postContent">
           <div className="postMeta">
-            <AvatarBox user={user} date={post.postDate} />
+            <AvatarBox user={user} auth={this.props.auth} date={post.postDate} />
             {repost && (
-              <AvatarBox user={user} date={post.postDate} isRepost />
+              <AvatarBox user={user} auth={this.props.auth} date={post.postDate} isRepost />
             )}
           </div>
           <div className="postBody">
@@ -67,7 +69,7 @@ class Post extends Component {
                 {post.description}
               </div>
             )}
-            <PostBody post={post} />
+            <PostBody auth={this.props.auth} post={post} />
           </div>
           <PostButtons post={post} {...this.props} />
         </div>
@@ -79,7 +81,7 @@ class Post extends Component {
 function PostBody(props) {
   const body = props.post.body;
   const tags = (props.post.tags || []).map((tag) => (
-    <Tag name={tag} key={tag} />
+    <Tag {...props} name={tag} key={tag} />
     ));
   return (
     <div>

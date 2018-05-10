@@ -3,16 +3,21 @@ const mongoose = require('mongoose');
 const db = mongoose.connection;
 
 const config = {
-  socketTimeoutMS: 0,
-  keepAlive: 120,
+  socketTimeoutMS: 30000,
+  keepAlive: 1,
   reconnectTries: 30,
   useMongoClient: true,
 };
 
-mongoose.connect(process.env.MONGO_URI, config)
-.catch(err => {
-  console.log('catch ', err);
-});
+function connectWithRetry() {
+  mongoose.connect(process.env.MONGO_URI, config)
+  .catch(err => {
+    console.log('catch ', err);
+    console.error('Failed to connect to mongo on startup - retrying in 5 sec', err);
+    setTimeout(connectWithRetry, 5000);
+  });
+}
+connectWithRetry();
 
 db.on('connecting', () => {
   console.log('connecting to MongoDB...');

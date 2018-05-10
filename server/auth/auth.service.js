@@ -31,7 +31,10 @@ function currentUser(req, res) {
     let token = req.cookies.token;
     if (token) {
       req.headers.authorization = 'Bearer ' + token;
+    } else if (req.query && req.query.hasOwnProperty('access_token')) {
+      req.headers.authorization = 'Bearer ' + req.query.access_token;
     }
+    console.log('user auth');
     validateJwt(req, res, (err, decoded) => {
       if (err || !req.user) return next();
       User.findById(req.user._id, (err, user) => {
@@ -100,7 +103,7 @@ function hasRole(roleRequired) {
     if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
       next();
     } else {
-      res.send(403);
+      res.sendStatus(403);
     }
   });
 }

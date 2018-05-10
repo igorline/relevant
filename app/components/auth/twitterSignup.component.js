@@ -28,7 +28,6 @@ export default class TwitterSignup extends Component {
     this.renderUserName = this.renderUserName.bind(this);
     this.signUp = this.signUp.bind(this);
     this.checkUser = this.checkUser.bind(this);
-
   }
 
   componentDidMount() {
@@ -51,8 +50,7 @@ export default class TwitterSignup extends Component {
     loginData.userName = this.state.username;
     loginData.signup = true;
     loginData.invite = this.props.auth.currentInvite;
-    this.props.actions.twitterAuth(loginData);
-
+    this.props.actions.twitterAuth(loginData, this.props.admin ? this.props.admin.currentInvite : null);
   }
 
   checkUser(name) {
@@ -111,6 +109,7 @@ export default class TwitterSignup extends Component {
         <TwitterButton
           type={'signup'}
           auth={this.props.auth}
+          admin={this.props.admin}
           actions={this.props.actions}
         />
         <Text style={styles.signInText}>or</Text>
@@ -190,6 +189,7 @@ export default class TwitterSignup extends Component {
 TwitterSignup.propTypes = {
   auth: PropTypes.object,
   actions: PropTypes.object,
+  admin: PropTypes.object,
 };
 
 let localStyles = StyleSheet.create({

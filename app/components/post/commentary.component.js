@@ -55,12 +55,15 @@ export default class Commentary extends Component {
     if (post.user && this.props.users[post.user]) post.user = this.props.users[post.user];
 
     if (post.repost) {
+      // console.log(post)
+      // if(!this.props.posts) return null;
       postStyle = [styles.repost];
       let repost = this.props.posts.posts[post.repost.post];
       if (!repost) repost = { body: '[deleted]' };
       if (repost.user && this.props.users[repost.user]) {
         repost.user = this.props.users[repost.user];
       }
+
       repostEl = (
         <View style={{ marginBottom: 0 }}>
           <PostInfo

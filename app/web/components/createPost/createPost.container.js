@@ -282,7 +282,7 @@ class CreatePostContainer extends Component {
       <div className="postContainer createPostContainer">
         <div className="urlPreview">
           {this.urlPreview}
-          <AvatarBox user={this.props.auth.user} />
+          <AvatarBox user={this.props.auth.user} auth={this.props.auth} />
         </div>
         <ContentEditable
           className="editor"

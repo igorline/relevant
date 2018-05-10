@@ -13,9 +13,11 @@ const app = new Express();
 mongoose.Promise = global.Promise;
 
 require('dotenv').config({ silent: true });
-require('./queue');
+// require('./queue');
 
 console.log('NODE_ENV', process.env.NODE_ENV);
+require('events').EventEmitter.prototype._maxListeners = 100;
+
 
 // -------------Dev server watch and hot reload---------------
 let isDevelopment = (process.env.NODE_ENV !== 'production' &&

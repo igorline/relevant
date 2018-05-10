@@ -24,6 +24,14 @@ async function createCoins() {
   return treasury;
 }
 
+async function getUserBalances() {
+  let outstanding = 0;
+  let users = await User.find({});
+  users.forEach(u => outstanding += u.balance);
+  console.log('total outstanding coins ', outstanding);
+}
+
+// getUserBalances();
 // function init() {
 //   createCoins()
 //   .catch(err => console.log(err));

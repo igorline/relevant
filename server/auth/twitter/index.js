@@ -17,6 +17,6 @@ router
     session: false
   }), auth.setTokenCookie)
 
-  .post('/login', Controller.login, auth.setTokenCookie);
+  .post('/login', auth.currentUser(), Controller.login, auth.setTokenCookie);
 
 module.exports = router;

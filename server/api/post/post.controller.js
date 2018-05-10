@@ -1,3 +1,5 @@
+import { promisify } from 'util';
+
 import url from 'url';
 import request from 'request';
 import { EventEmitter } from 'events';
@@ -13,8 +15,58 @@ import apnData from '../../pushNotifications';
 import mail from '../../mail';
 import Notification from '../notification/notification.model';
 import Invest from '../invest/invest.model';
+import cheerio from 'cheerio';
 
 import { PAYOUT_TIME } from '../../config/globalConstants';
+
+let requestAsync = promisify(request);
+
+// requestAsync('https://news.google.com/rss/story/dbtBhhEGtGqVUXM?ned=us&gl=US&hl=en')
+// .then(res => {
+//   // console.log(res.body)
+//   let $ = cheerio.load(res.body);
+//   $('item').each((i, item) => {
+//     let $item = $(item);
+//     $item.children().each((i, c) => {
+//       let $c = $(c);
+//       if ($c.prop("tagName") === 'LINK') console.log('LINK : ', $c[0].next.data)
+//       else {
+//         console.log($c.prop("tagName"), ' : ', $c.text());
+//       }
+//     });
+//     let $$ = cheerio.load($item.children('description').text());
+//     // console.log(description.html())
+//     console.log('IMAGE : ', $$('img').attr('src'));
+//     $$('a').each((i, el) => {
+//       let $el = $(el);
+//       console.log($el.text(), ' : ',  $el.attr('href'));
+//     })
+//   })
+
+// })
+// .catch(err => console.log(err));
+
+// Post.find({ })
+// .then(posts => {
+//   posts.forEach(p => {
+//     MetaPost.find({ _id: p.metaPost }).then(m => {
+//       console.log(p.metaPost);
+//       console.log(m._id);
+//     });
+//   });
+// });
+
+// MetaPost.find({})
+// .populate('commentary')
+// .then(metas => metas.forEach(m => {
+//   m.commentary.forEach(c => {
+//     // console.log(c.metaPost);
+//     c.metaPost = m._id;
+//     c.save();
+//   });
+//   // console.log(m.commentary);
+// }));
+
 
 require('../../processing/posts');
 // Post.collection.createIndex({ title: 'text', shortText: 'text', description: 'text', keywords: 'text', tags: 'text'});
@@ -139,7 +191,8 @@ exports.topPosts = async (req, res) => {
   let posts;
   try {
     let now = new Date();
-    now.setDate(now.getDate() - 4);
+    now.setDate(now.getDate() - 7);
+    // console.log(now);
 
     posts = await Post.find({ createdAt: { $gt: now } }).sort('-relevance').limit(20);
     posts.forEach(post => {
@@ -154,6 +207,7 @@ exports.topPosts = async (req, res) => {
   } catch (err) {
     handleError(res)(err);
   }
+  // console.log(posts);
   res.status(200).json(posts);
 };
 
@@ -324,7 +378,6 @@ exports.userPosts = async (req, res) => {
     return res.send(500, err);
   }
 
-  console.log('sending ', posts.length, ' user posts');
   res.status(200).json(posts);
 
   // TODO worker thread
@@ -341,14 +394,20 @@ exports.userPosts = async (req, res) => {
   return null;
 };
 
+exports.preview = async (req, res) => {
+  try {
+    let urlParts = url.parse(req.url, false);
+    let query = urlParts.query;
+    let previewUrl = decodeURIComponent(query.replace('url=', ''));
+    let result = await exports.previewDataAsync(previewUrl);
+    return res.status(200).json(result);
+  } catch (err) {
+    handleError(res)(err);
+  }
+};
 
 
-exports.preview = (req, res) => {
-  // custom param parse to account for — (long dash) character
-  let url_parts = url.parse(req.url, false);
-  let query = url_parts.query;
-  let previewUrl = decodeURIComponent(query.replace('url=', ''));
-  // let previewUrl = decodeURIComponent(req.query.url);
+exports.previewDataAsync = async previewUrl => {
 
   if (!previewUrl.match(/http:\/\//i) && !previewUrl.match(/https:\/\//i)) {
     previewUrl = 'http://' + previewUrl;
@@ -363,49 +422,52 @@ exports.preview = (req, res) => {
     return fbHeader;
   }
 
-  function processReturn(error, response, body) {
-
-    if (error) {
-      console.log('preview error ', error || response.statusMessage);
-      return res.status(500).json(error);
-    }
+  // recursive fuction TODO - max recursive calls check?
+  async function queryUrl(_url) {
+    let response = await requestAsync({
+      url: _url,
+      maxRedirects: 22,
+      jar: true,
+      gzip: true,
+      headers: getHeader(_url),
+      rejectUnauthorized: false,
+      timeout: 20000,
+      pool: { maxSockets: 1000 }
+    });
 
     let uri = response.request.uri.href;
-
-    let processed = proxyHelpers.generatePreview(body, uri);
+    let processed = await proxyHelpers.generatePreview(response.body, uri, _url);
 
     if (processed.redirect && processed.uri) {
       console.log('redirect ', processed.uri);
       uri = processed.uri;
-      return request({
-        url: uri,
-        maxRedirects: 22,
-        jar: true,
-        gzip: true,
-        headers: getHeader(uri),
-        rejectUnauthorized: false,
-      }, processReturn);
+      return await queryUrl(uri);
     }
-    return res.status(200).json(processed.result);
+    return Promise.resolve(processed.result);
   }
 
+  // Its a PDF
   if (previewUrl.match('.pdf')) {
-    return res.status(200).json({
+    return {
       url: previewUrl,
       title: previewUrl.substring(previewUrl.lastIndexOf('/') + 1),
       domain: proxyHelpers.extractDomain(previewUrl)
-    });
+    };
   }
 
-  return request({
-    url: previewUrl,
-    maxRedirects: 22,
-    jar: true,
-    gzip: true,
-    headers: getHeader(previewUrl),
-    rejectUnauthorized: false,
-  }, processReturn);
+  return await queryUrl(previewUrl);
 };
+
+// async function test() {
+//   try {
+//     let result = await exports.previewDataAsync('https://t.co/1jMhfIuh0p');
+//     console.log(result);
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
+// test();
+
 
 
 exports.readable = async (req, res) => {
@@ -689,6 +751,7 @@ exports.create = (req, res) => {
                 if (now - (12 * 60 * 60 * 1000) > new Date(follower.lastFeedNotification)) {
                   let unread = await Feed.find({ userId: follower._id, read: false, createdAt: { $gte: now - (24 * 60 * 60 * 1000) } });
                   let n = unread.length;
+                  await Feed.update({ userId: follower._id, read: false }, { read: true }, { multi: true });
                   let alert;
                   if (n === 1) {
                     alert = 'There is a new post from ' + author.name + ' in your feed!';

@@ -209,9 +209,9 @@ class PostButtons extends Component {
         });
 
         setTimeout(() => {
-          this.props.actions.reloadTab('read');
-          let name = this.props.post.embeddedUser.name;
-          Alert.alert('You have subscribed to receive ' + results.subscription.amount + ' posts from ' + name);
+          // this.props.actions.reloadTab('read');
+          // let name = this.props.post.embeddedUser.name;
+          // Alert.alert('You have subscribed to receive ' + results.subscription.amount + ' posts from ' + name);
           Analytics.logEvent('upvote');
         }, 1500);
       }
@@ -388,11 +388,11 @@ class PostButtons extends Component {
     let commentString = '';
     let myVote;
     let myPost = false;
-    if (post.user._id === this.props.auth.user._id) {
+    if (post && post.user && post.user._id === this.props.auth.user._id) {
       myPost = true;
     }
-    if (post && post.user && this.props.auth.user) {
-      if (post.user._id !== this.props.auth.user._id) {
+    if (post && this.props.auth.user) {
+      if (!post.user || post.user._id !== this.props.auth.user._id) {
         if (!this.props.myPostInv) {
           investable = true;
         } else {
@@ -589,6 +589,9 @@ class PostButtons extends Component {
       </TouchableOpacity>
     );
 
+    let metaPost = this.props.metaPost;
+    let twitter = (metaPost && metaPost.twitter === true);
+
     return (<View style={styles.postButtonsContainer}>
       <View style={styles.postButtons}>
         <View
@@ -601,8 +604,8 @@ class PostButtons extends Component {
 
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           {post.link ? newCommentary : null}
-          {comments}
-          {repost}
+          {twitter ? null : comments}
+          {twitter ? null : repost}
         </View>
 
         <InvestModal

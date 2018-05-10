@@ -52,6 +52,7 @@ async function sendInviteCodes(user, codes) {
 }
 
 InviteSchema.statics.checkInvite = async function (invite) {
+  if (!invite) throw new Error('No invitation code found');
   invite = await this.findOne({ _id: invite._id, redeemed: false });
   if (!invite) throw new Error('No invitation code found');
   return invite;

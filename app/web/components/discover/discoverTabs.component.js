@@ -17,20 +17,20 @@ class DiscoverTabs extends Component {
       return (
         <Link
           key={tab.key}
-          className={i == this.props.currentTab ? 'selected' : ''}
+          className={i === this.props.currentTab ? 'selected' : ''}
           to={dest}
         >
           <li>
             {tab.title}
           </li>
         </Link>
-      )
-    })
+      );
+    });
     return (
       <ul className='tabs'>
         {tabs}
       </ul>
-    )
+    );
   }
 }
 
