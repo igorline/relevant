@@ -149,8 +149,8 @@ async function distributeUserRewards(posts, community) {
 
     payouts[author._id] = payouts[author._id] ? payouts[author._id] + authorPayout : authorPayout;
 
-    authorPayout.balance += curationReward;
-    await authorPayout.save();
+    author.balance += curationReward;
+    await author.save();
 
     if (authorPayout > 0) {
       // await rewardUser({ user: author, reward: authorPayout, treasury, post, community });

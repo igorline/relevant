@@ -22,6 +22,7 @@ class PostButtons extends Component {
     try {
       e && e.preventDefault();
       if (!this.props.auth.isAuthenticated) return null;
+      e.stopPropagation();
 
       let amount = 1;
       await this.props.actions.vote(
@@ -53,6 +54,8 @@ class PostButtons extends Component {
   async irrelevant(e) {
     try {
       e && e.preventDefault();
+      e.stopPropagation();
+
       if (!this.props.auth.isAuthenticated) return;
       // for testing
       // this.props.actions.triggerAnimation('vote', -1);
@@ -116,9 +119,9 @@ class PostButtons extends Component {
             </a>
           }
           <div className="fraction">
-            <div className="num">
+{/*            <div className="num">
               {post.upVotes}
-            </div>
+            </div>*/}
             <div className="dem">
               {post.relevance}
               <img alt="R" src="/img/r-gray.svg" />

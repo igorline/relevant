@@ -48,11 +48,12 @@ export default function AvatarBox(props) {
       <div className="userBox">
         <div className="bebasRegular username">
           {premsg}
-          <Link to={profileLink}>{user.name}</Link>
+          <Link onClick={e => e.stopPropagation()} to={profileLink}>{user.name}</Link>
           {relevance}
         </div>
         <div className="gray">
-          @<Link to={profileLink}>{user.handle}</Link>
+          @<Link to={profileLink} onClick={e => e.stopPropagation()}
+>{user.handle}</Link>
           {timestamp}
         </div>
       </div>

@@ -36,6 +36,7 @@ export async function init() {
       key = 'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3';
       account = '0x627306090abaB3A6e1400e9345bC60c78a8BEf57';
     }
+
     const provider = new Web3.providers.HttpProvider(rpcUrl);
     RelevantCoin.setProvider(provider);
 
@@ -49,7 +50,7 @@ export async function init() {
     initialized = true;
     return true;
   } catch (err) {
-    console.log(err);
+    console.log('contract initialization error ', err);
     return false;
   }
 }

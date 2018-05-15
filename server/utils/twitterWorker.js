@@ -3,6 +3,8 @@ import Post from '../api/post/post.model';
 import * as postController from '../api/post/post.controller';
 import TwitterFeed from '../api/twitterFeed/twitterFeed.model';
 import Treasury from '../api/treasury/treasury.model';
+import Relevance from '../api/relevance/relevance.model';
+
 import { TWITTER_DECAY } from '../config/globalConstants';
 
 const TENTH_LIFE = 1 * 6 * 60 * 60 * 1000;
@@ -355,9 +357,11 @@ async function cleanup(users) {
   .limit(1000);
 
   console.log('clearing ', posts.length, ' posts');
-
   let removePosts = await posts.map(p => p.remove());
 
+  await Promise.all(removePosts)
+
+  console.log('processing ', users.length, ' users');
   let processedUsers = users.map(async (u, i) => {
     try {
       let trim = await TwitterFeed.find({ user: '_common_Feed_' })
@@ -379,13 +383,18 @@ async function cleanup(users) {
     }
   });
 
-  await Promise.all([...processedUsers, ...removePosts]);
+  await Promise.all(processedUsers);
 }
 
 
 async function getUsers(userId) {
   try {
-    let query = userId ? { _id: userId } : {};
+    // for now we are only pulling tweets for the relevant community
+    let userList = await Relevance.find({ community: 'relevant', global: true, relevance: { $gt: 1 }});
+    userList = userList.map(u => u.user);
+
+    let query = userId ? { _id: userId } : { _id: { $in: userList }};
+
     let users = await User.find(
       { twitterHandle: { $exists: true }, ...query },
       'twitterAuthToken twitterAuthSecret twitterHandle lastTweetId relevance'
@@ -438,7 +447,7 @@ async function getUsers(userId) {
   }
 }
 
-// setTimeout(getUsers, 20000);
+setTimeout(getUsers, 5000);
 // getUsers();
 module.exports = {
   updateTwitterPosts: getUsers
