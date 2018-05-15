@@ -108,7 +108,10 @@ class Post extends Component {
     }
 
     return (
-      <div className="post">
+      <div
+        className="post"
+        onClick={() => this.props.actions.push('/post/' + post._id)}
+      >
         {postInfo}
         <div className="postContent">
 

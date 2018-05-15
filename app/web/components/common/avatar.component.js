@@ -32,6 +32,7 @@ export default class Avatar extends Component {
     }
     return (
       <Link
+        onClick={e => e.stopPropagation()}
         className={'avatar'}
         to={profileLink}
         style={avatarBackgroundImage}

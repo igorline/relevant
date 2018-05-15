@@ -9,7 +9,7 @@ class Tag extends Component {
       link = '/';
     }
     return (
-      <Link to={link}>
+      <Link to={link} onClick={e => e.stopPropagation()}>
         {'#'}{this.props.name}
       </Link>
     );

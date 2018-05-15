@@ -23,6 +23,9 @@ $leftMargin: 25px;
 $globalMargin: 25px;
 
 $navShadow: 0 3.5px 4px -5px $darkGrey;
+$postShadow: 0 0 8px -4px $grey;
+$postShadowHover: 0 0 12px -4px $grey;
+
 
 
 %bebasFont {

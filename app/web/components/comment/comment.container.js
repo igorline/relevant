@@ -31,19 +31,18 @@ class Comments extends Component {
           scrollToBottom={this.scrollToBottom.bind(this)}
         />
         {(comments.length !== 0) ?
-          <div>
-            {comments.map((comment, i) => {
+            <div>{comments.map((comment, i) => {
               return (
-                <div key={i}>
-                  <Comment auth={this.props.auth} data={comment} />
-                </div>
+                <Comment key={comment._id} auth={this.props.auth} data={comment} />
               );
             })}
-          </div>
-          :
+            </div>
+          : null
+/*
           <div className='empty'>
             <Divider>No comments</Divider>
           </div>
+          */
         }
       </div>
     );

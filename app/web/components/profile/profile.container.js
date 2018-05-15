@@ -51,6 +51,7 @@ const mapStateToProps = (state) => ({
   user: state.user,
   posts: state.posts,
   investments: state.investments,
+  myPostInv: state.investments.myPostInv,
 });
 
 const mapDispatchToProps = (dispatch) => (Object.assign({}, { dispatch }, {

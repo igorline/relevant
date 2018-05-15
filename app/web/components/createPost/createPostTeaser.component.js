@@ -14,7 +14,7 @@ function CreatePostTeaser(props) {
       className="createPostTeaser"
       role="button"
     >
-      <Avatar size={44} user={props.user} />
+      <Avatar size={44} user={props.user} nolink />
       <div className="textarea">
         {'Have you read anything good lately?'}
       </div>
