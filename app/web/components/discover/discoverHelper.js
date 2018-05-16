@@ -12,7 +12,10 @@ export const tagRoutes = [
 ];
 
 export function getDiscoverState(nextProps, prevState) {
-  const sort = nextProps.params.sort;
+  let sort = nextProps.params.sort;
+  if (nextProps.location && nextProps.location.pathname === '/home') {
+    sort = 'new';
+  }
   const routes = nextProps.params.tag ? tagRoutes : standardRoutes;
   if (sort && sort !== prevState.sort) {
     const tabIndex = prevState.routes.findIndex(tab => tab.key === sort);

@@ -114,6 +114,11 @@ header .logo {
   flex: 1;
 }
 
+.navLink{
+  cursor: pointer;
+  user-select: none;
+}
+
 .rightNav {
   display: flex;
   align-items: center;

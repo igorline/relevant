@@ -40,11 +40,11 @@ class EthTools extends Component {
 
     account = props.account;
     if (!user) {
-      return EthTools.initialState;
+      return this.initialState;
     }
     connectedAccount = user.ethAddress ? user.ethAddress[0] : null;
 
-    if (!connectedAccount && !account) return EthTools.initialState;
+    if (!connectedAccount && !account) return this.initialState;
 
     if (account) {
       balance = BondedTokenUtils.getValue(props.RelevantCoin, 'balanceOf', account);

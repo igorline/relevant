@@ -20,7 +20,7 @@ const { PAYOUT_FREQUENCY } = require('./config/globalConstants');
 const TwitterWorker = require('./utils/twitterWorker');
 
 
-const extractor = require('unfluff');
+// const extractor = require('unfluff');
 // daily relevance decay
 const DECAY = 0.99621947473649;
 

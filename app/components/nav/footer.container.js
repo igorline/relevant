@@ -10,6 +10,8 @@ import * as navigationActions from '../../actions/navigation.actions';
 import CardContainer from './tabView.container';
 import * as userActions from '../../actions/user.actions';
 import Footer from './footer.component';
+import { IphoneX } from '../../styles/global';
+
 
 class Tabs extends Component {
   constructor(props, context) {
@@ -98,11 +100,12 @@ class Tabs extends Component {
     return Object.keys(this.tabs).map(k => {
       let tab = this.tabs[k];
       let active = tab.key === key;
+      let margin = IphoneX ? 83 : 50;
       return (
         <View
           key={tab.key}
           style={[
-            active ? { flex: 1, marginBottom: 50 } : { flex: 0 }
+            active ? { flex: 1, marginBottom: margin } : { flex: 0 }
           ]}
         >
           <CardContainer

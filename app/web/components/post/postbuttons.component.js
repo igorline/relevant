@@ -21,8 +21,9 @@ class PostButtons extends Component {
   async vote(e) {
     try {
       e && e.preventDefault();
-      if (!this.props.auth.isAuthenticated) return null;
       e.stopPropagation();
+
+      if (!this.props.auth.isAuthenticated) return null;
 
       let amount = 1;
       await this.props.actions.vote(
@@ -96,7 +97,7 @@ class PostButtons extends Component {
     let buttonOpacity = { opacity: 1 };
 
     if (this.props.myPostInv) {
-      vote = this.props.myPostInv[post.id];
+      vote = this.props.myPostInv[post.id] || !this.props.isAuthenticated;
       if (vote) {
         votedUp = vote.amount > 0;
         votedDown = vote.amount < 0;
@@ -110,14 +111,12 @@ class PostButtons extends Component {
     return (
       <div className="postbuttons">
         <div className="left">
-          {this.props.auth.isAuthenticated &&
-            <a
-              style={buttonOpacity}
-              onClick={vote ? null : this.vote}
-            >
-              <img alt="Upvote" src={votedUp ? '/img/upvoteActive.png' : '/img/upvote-shadow.svg'} className="upvote" />
-            </a>
-          }
+          <a
+            style={buttonOpacity}
+            onClick={e => vote ? e.stopPropagation() : this.vote(e)}
+          >
+            <img alt="Upvote" src={votedUp ? '/img/upvoteActive.png' : '/img/upvote-shadow.svg'} className="upvote" />
+          </a>
           <div className="fraction">
 {/*            <div className="num">
               {post.upVotes}
@@ -127,14 +126,12 @@ class PostButtons extends Component {
               <img alt="R" src="/img/r-gray.svg" />
             </div>
           </div>
-          {this.props.auth.isAuthenticated &&
-            <a
-              style={buttonOpacity}
-              onClick={vote ? null : this.irrelevant}
-            >
-              <img alt="Downvote" src={votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg'} className="downvote" />
-            </a>
-          }
+          <a
+            style={buttonOpacity}
+            onClick={e => vote ? e.stopPropagation() : this.irrelevant(e)}
+          >
+            <img alt="Downvote" src={votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg'} className="downvote" />
+          </a>
         </div>
         <div className="right">
           <Link className="commentcount details" to={'/post/' + post._id}>
