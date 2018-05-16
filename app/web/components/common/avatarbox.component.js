@@ -8,10 +8,7 @@ export default function AvatarBox(props) {
   const user = props.user;
   const reverse = props.reverse;
   let profileLink = user ? '/profile/' + user.handle : null;
-  // temp - not logged in - redirect to home
-  if (!props.auth.user) {
-    profileLink = '/';
-  }
+
   let timestamp;
   if (props.date) {
     timestamp = ' • ' + numbers.timeSince(Date.parse(props.date)) + ' ago';

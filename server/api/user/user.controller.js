@@ -342,6 +342,7 @@ exports.list = async (req, res) => {
     //   .skip(skip)
     //   .sort({ relevance: -1 });
     // }
+    // console.log('got users ', users);
   } catch (err) {
     console.log('user list error ', err);
     res.status(500).json(err);

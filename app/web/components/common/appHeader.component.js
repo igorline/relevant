@@ -137,7 +137,7 @@ class AppHeader extends Component {
 {/*            <h3>#{this.props.auth.community}</h3>
 */}
             <div className="tabContainer">
-              <DiscoverTabs params={this.props.params} />
+              <DiscoverTabs params={this.props.params} location={this.props.location} />
             </div>
 
             <div className={'rightNav'}>

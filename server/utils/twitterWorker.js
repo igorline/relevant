@@ -447,7 +447,7 @@ async function getUsers(userId) {
   }
 }
 
-setTimeout(getUsers, 5000);
+// setTimeout(getUsers, 5000);
 // getUsers();
 module.exports = {
   updateTwitterPosts: getUsers

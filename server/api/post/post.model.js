@@ -5,7 +5,7 @@ import User from '../user/user.model';
 import Notification from '../notification/notification.model';
 import Invest from '../invest/invest.model';
 import Comment from '../comment/comment.model';
-import CommunityFeed from '../CommunityFeed/communityFeed.model';
+import CommunityFeed from '../communityFeed/communityFeed.model';
 
 
 let apnData = require('../../pushNotifications');
