@@ -165,11 +165,11 @@ async function runUpdates() {
     // await createRelevantCommunityFeed();
     // await updateTreasury();
     // await updatePostUserHandle();
-    await updateCommentUserHandle();
+    // await updateCommentUserHandle();
     console.log('finished db updates');
   } catch (err) {
     console.log(err);
   }
 }
 
-runUpdates();
+// runUpdates();
