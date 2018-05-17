@@ -37,7 +37,7 @@ export default class Popup extends Component {
       <a
         ref={c => this.el = c}
         onClick={e => {
-          this.setState({ visible: !visible };
+          this.setState({ visible: !visible });
           e.preventDefault();
           e.stopPropagation();
         }}
