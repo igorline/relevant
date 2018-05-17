@@ -26,7 +26,7 @@ class Post extends Component {
     if (!okToDelete) return null;
     this.props.actions.deletePost(this.props.post);
   }
-  editPost() {
+  editPost(e) {
     let post = this.props.post;
     this.props.actions.clearCreatePost();
     let editPost = {

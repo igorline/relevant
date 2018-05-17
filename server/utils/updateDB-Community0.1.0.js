@@ -137,6 +137,7 @@ async function updatePostUserHandle() {
     select: 'handle',
   });
   let updatedPosts = posts.map(async post => {
+    if (!post.embeddedUser || !post.user) return;
     post.embeddedUser.handle = post.user.handle;
     return post.save();
   });
@@ -165,6 +166,7 @@ async function runUpdates() {
     // await updateTreasury();
     // await updatePostUserHandle();
     await updateCommentUserHandle();
+    console.log('finished db updates');
   } catch (err) {
     console.log(err);
   }
