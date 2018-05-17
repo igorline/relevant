@@ -46,7 +46,6 @@ export async function init() {
     instance = await RelevantCoin.deployed();
     decimals = await instance.decimals.call();
     decimals = decimals.toNumber();
-    // await buyTokens();
     initialized = true;
     return true;
   } catch (err) {

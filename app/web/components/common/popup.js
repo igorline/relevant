@@ -36,7 +36,11 @@ export default class Popup extends Component {
     return (
       <a
         ref={c => this.el = c}
-        onClick={() => this.setState({ visible: !visible })}
+        onClick={e => {
+          this.setState({ visible: !visible };
+          e.preventDefault();
+          e.stopPropagation();
+        }}
         className={'popup'}
       >
         {this.props.children}
