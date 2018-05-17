@@ -72,10 +72,15 @@ exports.index = async (req, res) => {
         $or: [{ twitter: { $ne: true } }, { relevance: { $gt: 0 } }] },
       options: { sort: commentarySort },
       populate: [
+        // DEPRECATED (this is to support react-native 43 - but new version doesn't use metaPost anyway)
         {
-          path: 'embeddedUser.relevance',
-          select: 'relevance'
+          path: 'user',
+          select: 'relevance name image'
         },
+        // {
+        //   path: 'embeddedUser.relevance',
+        //   select: 'relevance'
+        // },
         {
           path: 'reposted',
           select: 'user embeddedUser',
@@ -94,7 +99,6 @@ exports.index = async (req, res) => {
         meta.commentary.forEach(post => {
           if (!post.user) post.user = post.embeddedUser.id;
           postIds.push(post._id || post);
-          console.log(post.embeddedUser);
         });
       });
       Post.sendOutInvestInfo(postIds, userId);
