@@ -12,9 +12,34 @@ import Comment from '../api/comment/comment.model';
 async function updateTreasury() {
   let t = await Treasury.findOne({ community: { $exists: false } });
   if (!t) return true;
-  console.log('treasury to update ', t);
+  console.log('treasury to update ', );
   t.community = 'relevant';
   return t.save();
+}
+
+async function removeEmptyCommunityFeedEls() {
+  let community = 'relevant';
+
+  let cf = await CommunityFeed.find({}, 'metaPost')
+    .populate({
+      path: 'metaPost',
+      select: 'commentary title latestPost',
+      populate: [
+        {
+          path: 'commentary',
+          match: { community, repost: { $exists: false } },
+          // options: { sort: commentarySort },
+          populate: {
+            path: 'embeddedUser.relevance',
+            select: 'relevance'
+          },
+        },
+      ]
+    });
+
+  let filtered = cf.filter(el => !el.metaPost.commentary.length);
+  let removeItems = filtered.map(f => f.remove());
+  return Promise.all(removeItems);
 }
 
 
@@ -166,10 +191,12 @@ async function runUpdates() {
     // await updateTreasury();
     // await updatePostUserHandle();
     // await updateCommentUserHandle();
+
+    // await removeEmptyCommunityFeedEls()
     console.log('finished db updates');
   } catch (err) {
     console.log(err);
   }
 }
 
-// runUpdates();
+runUpdates();

@@ -84,10 +84,25 @@ MetaPostSchema.statics.updateRank = async function updateRank(_id, twitter) {
     if (!meta.commentary || !meta.commentary.length) {
       // console.log(meta);
     }
+
     if (twitter && meta.twitter) {
       meta.twitter = false;
       meta.latestPost = new Date();
+      // twitter integration is only supported in relevant
+      // let community = 'relevant';
+      // let feedItem = await this.model('CommunityFeed').findOneAndUpdate(
+      //   { community, metaPost: meta._id },
+      //   {
+      //     latestPost: meta.latestPost,
+      //     tags: meta.tags,
+      //     categories: meta.categories,
+      //     keywords: meta.keywords,
+      //     rank: meta.rank,
+      //   },
+      //   { upsert: true, new: true }
+      // );
     }
+
     meta.rank = highestRank;
     meta = await meta.save();
     console.log('updated meta rank ', meta.rank);

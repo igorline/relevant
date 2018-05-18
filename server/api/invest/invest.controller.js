@@ -567,7 +567,7 @@ exports.create = async (req, res) => {
 
     // async update meta post rank
     // console.log('meta post ', post.metaPost);
-    MetaPost.updateRank(post.metaPost, post.twitter);
+    MetaPost.updateRank(post.metaPost, post.twitter, post);
     await CommunityFeed.updateRank(post.metaPost, post.community);
 
     // if (post.twitter) {
