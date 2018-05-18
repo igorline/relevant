@@ -72,6 +72,9 @@ exports.get = async (req, res) => {
       }
     });
 
+    // let logPost = feed.map(t => ({ time: t.latestPost, title: t.metaPost.title, mTime: t.metaPost.latestPost }));
+    // console.log(logPost);
+
     // TODO worker thread?
     if (user) {
       let postIds = [];

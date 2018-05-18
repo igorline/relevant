@@ -307,18 +307,23 @@ PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId) {
       // console.log('meta tags', meta.tags);
     }
 
-    let community = this.community || 'relevant';
-    let feedItem = await this.model('CommunityFeed').findOneAndUpdate(
-      { community, metaPost: meta._id },
-      {
-        latestPost: this.postDate,
-        tags: meta.tags,
-        categories: meta.categories,
-        keywords: meta.keywords,
-        rank: meta.rank,
-      },
-      { upsert: true, new: true }
-    );
+    // don't add post to community feed from twitter
+    if (this.twitter != true) {
+      let community = this.community || 'relevant';
+
+      let feedItem = await this.model('CommunityFeed').findOneAndUpdate(
+        { community, metaPost: meta._id },
+        {
+          latestPost: this.postDate,
+          tags: meta.tags,
+          categories: meta.categories,
+          keywords: meta.keywords,
+          rank: meta.rank,
+        },
+        { upsert: true, new: true }
+      );
+    }
+
   } catch (err) {
     console.log('error creating / updating metapost ', err);
   }
