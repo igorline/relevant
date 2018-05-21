@@ -49,16 +49,21 @@ exports.get = async (req, res) => {
       populate: [
         {
           path: 'commentary',
-          match: { community, repost: { $exists: false }, user: { $nin: blocked } },
+          match: {
+            // this is a temp problem for twitter
+            // community,
+
+            // TODO - we should probably sort the non-community commentary
+            // with some randomness on client side
+            repost: { $exists: false },
+            user: { $nin: blocked },
+            $or: [{ twitter: { $ne: true } }, { relevance: { $gt: 0 } }],
+          },
           options: { sort: commentarySort },
           populate: {
             path: 'embeddedUser.relevance',
             select: 'relevance'
           },
-          // populate: {
-          //   path: 'user',
-          //   model: 'User'
-          // }
         },
       ]
     });
@@ -72,8 +77,23 @@ exports.get = async (req, res) => {
       }
     });
 
-    // let logPost = feed.map(t => ({ time: t.latestPost, title: t.metaPost.title, mTime: t.metaPost.latestPost }));
-    // console.log(logPost);
+    let logPost = feed.map(t => {
+      let commentary = t.metaPost.commentary[0];
+      if (commentary) {
+        commentary = {
+          relevance: commentary.relevance,
+          repost: commentary.repost,
+          twitter: commentary.twitter,
+          community: commentary.community
+        }
+      }
+      return {
+        title: t.metaPost.title,
+        commentary
+      }
+    });
+    console.log(logPost);
+
 
     // TODO worker thread?
     if (user) {

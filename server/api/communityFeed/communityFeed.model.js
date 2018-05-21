@@ -56,7 +56,7 @@ CommunityFeedSchema.statics.updateRank = async function updateRank(_id, communit
     if (!feedItem || !feedItem.metaPost) {
       if (community === 'twitter') community = 'relevant';
       let meta = this.model('MetaPost').findOne({ _id });
-      feedItem = new CommunityFeed({
+      feedItem = new this.model('CommuintyFeed')({
         metaPost: meta._id,
         community,
         latestPost: meta.latestPost,
@@ -68,8 +68,10 @@ CommunityFeedSchema.statics.updateRank = async function updateRank(_id, communit
       feedItem = await feedItem.save();
     }
 
+    // TODO - post rank should be tracked in a separate table so that we are not grabbing stuff from a diff communities
     let highestRank = feedItem.metaPost.commentary && feedItem.metaPost.commentary.length ?
       feedItem.metaPost.commentary[0].rank : 0;
+
     feedItem.rank = highestRank;
     feedItem = await feedItem.save();
     return feedItem;
