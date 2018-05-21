@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import * as navigationActions from '../../../actions/navigation.actions';
 import ContentEditable from '../common/contentEditable.component';
 import * as userActions from '../../../actions/user.actions';
 import * as createPostActions from '../../../actions/createPost.actions';
@@ -160,10 +161,14 @@ class CreatePostContainer extends Component {
       let newPost = await this.props.actions.submitPost(post);
 
       if (this.props.close) this.props.close();
-      this.props.router.push('/discover/new/');
       if (newPost) {
         this.clearPost();
       }
+
+      // this.props.actions.replace(this.props.location.pathname);
+      this.props.router.push('/discover/new/');
+      this.props.actions.refreshTab('discover');
+
       // Analytics.logEvent('newPost', {
       //   viaShare: this.props.share
       // });
@@ -468,6 +473,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       {
+        ...navigationActions,
         ...createPostActions,
         ...postActions,
         ...userActions,

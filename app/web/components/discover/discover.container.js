@@ -48,6 +48,7 @@ export class Discover extends Component {
     }
     this.load = this.load.bind(this);
     this.renderFeed = this.renderFeed.bind(this);
+    this.lastRefresh = 0;
   }
 
   componentDidMount() {
@@ -59,6 +60,10 @@ export class Discover extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (this.props.refresh && this.props.refresh > this.lastRefresh) {
+      this.lastRefresh = this.props.refresh;
+      this.load(this.props.params.sort, this.props);
+    }
     if (this.props.params.tag !== prevProps.params.tag) {
       this.load(this.props.params.sort, this.props);
     }
@@ -174,6 +179,7 @@ function mapStateToProps(state) {
     error: state.error.universal,
     investments: state.investments,
     myPostInv: state.investments.myPostInv,
+    refresh: state.view.refresh.discover
   };
 }
 

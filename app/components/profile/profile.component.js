@@ -116,7 +116,7 @@ class ProfileComponent extends Component {
       following = this.props.user.following;
       if (user.image) userImage = user.image;
       if (user.relevance) relevance = user.relevance.toFixed(1);
-      if (user.balance) balance = user.balance.toFixed(0);
+      if (user) balance = (user.balance + user.tokenBalance).toFixed(0);
 
       if (user.topTags) {
         topTags = user.topTags.map((tag, i) => (

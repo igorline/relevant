@@ -79,6 +79,8 @@ class Stats extends Component {
       // coinStyle = [{ width: 18, height: 15, marginBottom: -6 }];
     }
 
+    console.log('tokenBalance ', entity)
+
     let value = (
       <TouchableOpacity
         ref={(c) => this.tooltipParent.coin = c}
@@ -91,7 +93,7 @@ class Stats extends Component {
           source={require('../../assets/images/relevantcoin.png')}
         />
         <Text style={[this.props.textStyle, statsStyle, styles.darkGrey]}>
-          {numbers.abbreviateNumber(entity.value || entity.balance || 0)}
+          {numbers.abbreviateNumber(entity.value || entity.balance + entity.tokenBalance || 0)}
         </Text>
       </TouchableOpacity>
     );

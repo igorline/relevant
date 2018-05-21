@@ -38,7 +38,6 @@
 		56C921FCC2B44637B46733C9 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2CFF5F025ED3455183847E5E /* MaterialIcons.ttf */; };
 		5E177E3742B7495B93D90824 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2930D1F26CA244DF809E3D38 /* Feather.ttf */; };
 		64CF6EE408AD4065A5893E9C /* libyoga.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D911302890D43DB8A512450 /* libyoga.a */; };
-		6698184F50FB46E0BB414BEB /* libRCTGoogleAnalyticsBridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FF9B69421BD42B18F2F1E2C /* libRCTGoogleAnalyticsBridge.a */; };
 		6F07DBE2ECCC6C052C4DDCA3 /* libPods-Relevant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBFBE05E1FA6EB37005DCC25 /* libPods-Relevant.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		8F3570BC5F7C49AFB8DAC1DB /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 896F0A9D02424FBF979AE5E1 /* libRNShare.a */; };
@@ -49,7 +48,6 @@
 		C242DF693C40F7EE4DC2ED93 /* libPods-relevantNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FBFBE0261FA6EA88005DCC25 /* libPods-relevantNative.a */; };
 		CE7A7E0E7DD948AA2DEA98BD /* libPods-Relevant.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 549F04AB9497946054EC0B34 /* libPods-Relevant.a */; };
 		DF2FB155198F4F4CAB9F9352 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 124E6D04C1EB46D0B367A9DA /* libRNFetchBlob.a */; };
-		E02A87FF0F6A4310BBBD8F28 /* libToolTipMenu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DC345E22A8C4EC3B7D1FC04 /* libToolTipMenu.a */; };
 		E262D6F76A0144AEB886635B /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40A15E4F9FA34E0EBE964209 /* Entypo.ttf */; };
 		E348C8AEB8B24979AE0B607D /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E0991F2715D473780511B85 /* libRNSVG.a */; };
 		E55F878B26CF4578AFCF67C6 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69D68DD57A7D46E1932AC656 /* Zocial.ttf */; };
@@ -66,7 +64,6 @@
 		FB20095020A2867A00FC7E72 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A3863041DFB5E5B00BC57DF /* libRNSVG.a */; };
 		FB202A1C1F632CD000E11BFB /* libjschelpers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB71B0C91E424F28000DA9BD /* libjschelpers.a */; };
 		FB202A481F632CDB00E11BFB /* libjschelpers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB71B0C91E424F28000DA9BD /* libjschelpers.a */; };
-		FB2BD5FF1E8B0A8100DBC2BA /* libRCTGoogleAnalyticsBridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB2BD5111E8AFA3200DBC2BA /* libRCTGoogleAnalyticsBridge.a */; };
 		FB2BD6251E8B0ADA00DBC2BA /* libRNFIRAnalytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB2BD52E1E8AFA3200DBC2BA /* libRNFIRAnalytics.a */; };
 		FB2BD6261E8B0C4C00DBC2BA /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A93E1E6F3A50009404F2 /* CoreData.framework */; };
 		FB2BD6271E8B0C5600DBC2BA /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FBF8A9421E6F3A62009404F2 /* libz.tbd */; };
@@ -791,9 +788,7 @@
 				22ED31BD968C4665B9DE83D5 /* libRNImagePicker.a in Frameworks */,
 				8F3570BC5F7C49AFB8DAC1DB /* libRNShare.a in Frameworks */,
 				E348C8AEB8B24979AE0B607D /* libRNSVG.a in Frameworks */,
-				E02A87FF0F6A4310BBBD8F28 /* libToolTipMenu.a in Frameworks */,
 				AF16A7D67874436283A3838F /* libRNFIRAnalytics.a in Frameworks */,
-				6698184F50FB46E0BB414BEB /* libRCTGoogleAnalyticsBridge.a in Frameworks */,
 				3D7EC265C098ED9B7311FBB4 /* libPods-relevantNative.a in Frameworks */,
 				4490D1F07C4947049C3FB064 /* libRCTVideo.a in Frameworks */,
 				F414C5B80C634F31AA4036C1 /* libRNVectorIcons.a in Frameworks */,
@@ -829,7 +824,6 @@
 				FB2BD6281E8B0C6200DBC2BA /* libsqlite3.0.tbd in Frameworks */,
 				FB2BD6261E8B0C4C00DBC2BA /* CoreData.framework in Frameworks */,
 				FB2BD6251E8B0ADA00DBC2BA /* libRNFIRAnalytics.a in Frameworks */,
-				FB2BD5FF1E8B0A8100DBC2BA /* libRCTGoogleAnalyticsBridge.a in Frameworks */,
 				FBDAAA7B1DFF89C800A4363B /* libART.a in Frameworks */,
 				FB983E3D1DA2044900DAF00D /* libRCTUserDefaults.a in Frameworks */,
 				FB88BEA41D9ED8F6002D0069 /* libRCTActionSheet.a in Frameworks */,

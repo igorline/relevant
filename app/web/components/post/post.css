@@ -105,8 +105,9 @@
     .image {
       width: 200px;
       height: 100px;
-      div {
+      > div {
         height: 100px;
+        min-height: 100px;
         position: relative;
       }
     }
@@ -115,7 +116,8 @@
       line-height: normal;
     }
     .headlineContainer {
-      border: none;
+      flex: 1;
+      /*border: none;*/
     }
   }
   &.preview {
@@ -145,7 +147,7 @@
       font-family: Arial;
       font-weight: 100;
       color: $greyText;
-      font-size: 14px;
+      font-size: 13px;
       padding: 5px 10px 0 10px;
       line-height: normal;
       &::after {

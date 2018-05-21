@@ -16,7 +16,7 @@ exports.setup = function setup(User) {
       if (err) return done(err);
       if (!user) {
         console.log(name, 'name here');
-        return done(null, false, { message: 'This name is not registered.' });
+        return done(null, false, { message: 'This username or email is not registered.' });
       }
       if (!user.authenticate(password)) {
         return done(null, false, { message: 'This password is not correct.' });

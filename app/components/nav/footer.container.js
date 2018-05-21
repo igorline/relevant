@@ -27,9 +27,9 @@ class Tabs extends Component {
 
     // This is if we want to make create post a separate scene
     if (key === 'createPost') {
-      if (this.props.auth.user.balance < 1) {
-        return Alert.alert('You need to have at least one coin to post');
-      }
+      // if (this.props.auth.user.balance < 1) {
+      //   return Alert.alert('You need to have at least one coin to post');
+      // }
       this.props.actions.push({
         key: 'createPost',
         back: true,

@@ -92,9 +92,9 @@ exports.text.coin = function (props) {
   if (!props.auth.user) return null;
 
   let data = [
-    'You spend coins when you upvote posts',
+    'You stake coins when you upvote posts',
     'You earn coins when you create or upvote quality posts (it takes a few days)',
-    'The more coins you spend on a vote, the more rewards you\'ll earn'
+    'The more coins you stake on a vote, the more rewards you\'ll earn'
   ];
 
   let dataEl = data.map(txt => renderRow(props, txt));
@@ -117,7 +117,7 @@ exports.text.coin = function (props) {
             styles.title,
           ]}
         >
-          {numbers.abbreviateNumber(props.auth.user.balance)}
+          {numbers.abbreviateNumber(props.auth.user.balance + props.auth.user.tokenBalance)}
         </Text>
       </View>
       <View style={styles.ulParent}>

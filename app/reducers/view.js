@@ -3,6 +3,7 @@ import * as types from '../actions/actionTypes';
 const initialState = {
   // read: 1,
   discover: {},
+  refresh: {}
   // post: 'url',
   // profile: 1
 };
@@ -10,6 +11,16 @@ const initialState = {
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
+    case types.REFRESH_ROUTE: {
+      return {
+        ...state,
+        refresh: {
+          ...state.refresh,
+          [action.key]: new Date()
+        }
+      };
+    }
+
     case types.SET_VIEW: {
       switch (action.payload.type) {
         // case 'read':

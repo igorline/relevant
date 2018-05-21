@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import * as NavigationExperimental from 'react-navigation';
 import {
   PUSH_ROUTE,
@@ -12,13 +13,11 @@ import {
   SCROLL,
 } from '../actions/actionTypes';
 
-import { Platform } from 'react-native';
-
 const {
- StateUtils: NavigationStateUtils
+  StateUtils: NavigationStateUtils
 } = NavigationExperimental;
 
-const scaleNum = 3.8;
+// const scaleNum = 3.8;
 
 // const readIcon = {
 //   scale: scaleNum,
@@ -56,7 +55,7 @@ const initialState = {
     index: 0,
     key: 'root',
     routes: [
-      //🎯🏵🏆🏅🔮🌀🍥📈📉📊
+      // 🎯🏵🏆🏅🔮🌀🍥📈📉📊
       { key: 'discover', icon: Platform.OS === 'android' ? '📰' : '📰', title: 'Read' },
       { key: 'stats', icon: Platform.OS === 'android' ? '📈' : '📈', title: 'Stats' },
 
@@ -165,7 +164,6 @@ function guid() {
 
 function navigationState(state = initialState, action) {
   switch (action.type) {
-
     case SCROLL: {
       return {
         ...state,
