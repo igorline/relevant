@@ -19,10 +19,12 @@ exports.index = (req, res) => {
 };
 
 exports.stats = async (req, res) => {
+  // TODO - query ?
+  let community = req.subdomain || req.query.community ||  'relevant';
   let user = req.user;
   let stats;
   try {
-    stats = await Relevance.find({ user: user._id, tag: { $in: user.topTopics } })
+    stats = await Relevance.find({ user: user._id, community, tag: { $in: user.topTopics } })
     .sort('-relevance');
   } catch (err) {
     handleError(err);

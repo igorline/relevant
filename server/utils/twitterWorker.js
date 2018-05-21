@@ -211,6 +211,8 @@ async function processTweet(tweet, user) {
 
     let tags = tweet.entities.hashtags.map(t => t.text);
     post = new Post({
+      // for now only pull tweets for relevant
+      community: 'relevant',
       title: processed.title,
       link: processed.url,
       description: processed.description,

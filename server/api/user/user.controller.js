@@ -323,7 +323,7 @@ exports.list = async (req, res) => {
     let query;
     if (topic && topic !== 'null') {
       // TODO should topic relevance be limited to community? maybe not?
-      query = { community, tag: topic, user: { $nin: blocked } };
+      query = { tag: topic, user: { $nin: blocked } };
     } else query = { global: true, community, user: { $nin: blocked } };
 
     let rel = await Relevance.find(query)

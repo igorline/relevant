@@ -100,7 +100,7 @@ class Post extends Component {
       user._id = post.user;
       user.image = post.embeddedUser.image;
       user.name = post.embeddedUser.name;
-      user.relevance = post.embeddedUser.relevance.relevance;
+      user.relevance = post.embeddedUser.relevance ? post.embeddedUser.relevance.relevance : null;
       user.handle = post.embeddedUser.handle;
     }
     if (!user && post.twitter) {
