@@ -19,8 +19,8 @@ exports.index = (req, res) => {
 };
 
 exports.stats = async (req, res) => {
-  // TODO - query ?
-  let community = req.subdomain || req.query.community ||  'relevant';
+  let community = req.subdomain ||  'relevant';
+  if(req.query.community !== '') community = req.query.community;
   let user = req.user;
   let stats;
   try {
