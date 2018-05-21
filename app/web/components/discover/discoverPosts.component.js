@@ -47,15 +47,12 @@ class DiscoverPosts extends Component {
   renderDiscover(sort, tag) {
     const postIds = tag ? this.props.posts.topics[sort][tag] : this.props.posts[sort];
     const metaPosts = this.props.posts.metaPosts[sort];
-    console.log(this.props.posts.posts)
 
     return (postIds || []).map(id => {
       const metaPost = metaPosts[id];
       if (!metaPost) return null;
       // const postId = sort === 'new' ? metaPost.newCommentary : metaPost.topCommentary;
-      console.log(metaPost);
       const postId = metaPost.commentary[0] || metaPost.twitterCommentary[0];
-      console.log(postId);
       const post = this.props.posts.posts[postId];
       if (!post) return null;
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;

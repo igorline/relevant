@@ -1,5 +1,3 @@
-console.log('trying to load user');
-
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto-promise';
 import sigUtil from 'eth-sig-util';
@@ -417,11 +415,15 @@ exports.create = async (req, res, next) => {
 /**
  * Get a single user
  */
-exports.show = async function show(req, res) {
-  let handle = req.params.id;
-  if (!handle) handle = req.user.handle;
-
+exports.show = async function show(req, res, next) {
   try {
+    let handle = req.params.id;
+    let me = null;
+    if (!handle) {
+      handle = req.user.handle;
+      me = true;
+    }
+
     let community = req.subdomain || 'relevant';
     // don't show blocked user;
     let blocked = [];
@@ -443,11 +445,22 @@ exports.show = async function show(req, res) {
     let relevance = await Relevance.find({ user: handle, tag: { $ne: null } })
     .sort('-relevance')
     .limit(5);
-    user = user.toObject();
-    user.topTags = relevance || [];
+    let userObj = user.toObject();
+    userObj.topTags = relevance || [];
 
     // user.topCategory = category[0];
-    res.json(user);
+    res.status(200).json(userObj);
+
+    // update token balance based on ETH account
+    if (me) {
+      let addr = user.ethAddress[0];
+      let tokenBalance = addr ? await ethUtils.getBalance(user.ethAddress[0]) : 0;
+      if (user.tokenBalance !== tokenBalance) {
+        user.tokenBalance = tokenBalance;
+        user = await user.save();
+        await user.updateClient();
+      }
+    }
   } catch (err) {
     handleError(res, err);
   }
@@ -583,20 +596,23 @@ exports.update = async (req, res, next) => {
 /**
  * Get my info
  */
-exports.me = async (req, res) => {
-  try {
-    let community = req.subdomain || 'relevant';
-    let userId = req.user._id;
-    let user = await User.findOne({ _id: userId }, '-salt -hashedPassword');
-    if (!user) return res.json(401);
-    // TODO this is depricated
-    user = await user.getRelevance(community);
-    user = await user.getSubscriptions();
-    return res.status(200).json(user);
-  } catch (err) {
-    return handleError(res, err);
-  }
-};
+// exports.me = async (req, res) => {
+//   try {
+//     let community = req.subdomain || 'relevant';
+//     let userId = req.user._id;
+//     let user = await User.findOne({ _id: userId }, '-salt -hashedPassword');
+//     if (!user) return res.json(401);
+//     // TODO this is depricated
+//     user = await user.getRelevance(community);
+//     user = await user.getSubscriptions();
+
+//     res.status(200).json(user);
+
+//     return null;
+//   } catch (err) {
+//     return handleError(res, err);
+//   }
+// };
 
 
 exports.block = async (req, res) => {

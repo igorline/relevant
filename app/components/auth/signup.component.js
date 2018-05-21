@@ -127,7 +127,7 @@ class SignUp extends Component {
     };
 
     if (this.usernameExists) {
-      return Alert.alert('Username already in use');
+      return Alert.alert('this username is taken');
     }
 
     if (!NAME_PATTERN.test(this.state.name)) {

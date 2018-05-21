@@ -77,24 +77,6 @@ exports.get = async (req, res) => {
       }
     });
 
-    let logPost = feed.map(t => {
-      let commentary = t.metaPost.commentary[0];
-      if (commentary) {
-        commentary = {
-          relevance: commentary.relevance,
-          repost: commentary.repost,
-          twitter: commentary.twitter,
-          community: commentary.community
-        }
-      }
-      return {
-        title: t.metaPost.title,
-        commentary
-      }
-    });
-    console.log(logPost);
-
-
     // TODO worker thread?
     if (user) {
       let postIds = [];

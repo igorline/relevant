@@ -61,50 +61,50 @@ class Auth extends Component {
   }
 
   signup() {
-    if (this.props.admin.currentInvite) {
+    // if (this.props.admin.currentInvite) {
       return this.props.actions.push({
         key: 'twitterSignup',
         title: 'Signup',
         showBackButton: true,
         back: true,
-        code: this.props.admin.currentInvite.code,
-        email: this.props.admin.currentInvite.email
+        // code: this.props.admin.currentInvite.code,
+        // email: this.props.admin.currentInvite.email
       }, 'auth');
-    }
+    // }
 
-    // Android
-    if (Platform.OS === 'android') {
-      this.promptTitle = 'Enter invitation code';
-      this.setState({ promptVisible: true });
-      return null;
-    }
+    // // Android
+    // if (Platform.OS === 'android') {
+    //   this.promptTitle = 'Enter invitation code';
+    //   this.setState({ promptVisible: true });
+    //   return null;
+    // }
 
-    // IOS
-    AlertIOS.prompt(
-      'Enter invitiation code',
-      'Relevant is an invitation-only community',
-      [
-        { text: 'Cancel',
-          onPress: () => null,
-          style: 'cancel'
-        },
-        { text: 'OK',
-          onPress: code => {
-            let action = this.props.actions.checkInviteCode(code);
-            action.then(invite => {
-              if (invite) {
-                this.props.actions.push({
-                  key: 'twitterSignup',
-                  title: 'Signup',
-                  showBackButton: true,
-                  back: true,
-                  email: invite.email,
-                  code: invite.code
-                }, 'auth');
-              }
-            });
-          } }
-      ]);
+    // // IOS
+    // AlertIOS.prompt(
+    //   'Enter invitiation code',
+    //   'Relevant is an invitation-only community',
+    //   [
+    //     { text: 'Cancel',
+    //       onPress: () => null,
+    //       style: 'cancel'
+    //     },
+    //     { text: 'OK',
+    //       onPress: code => {
+    //         let action = this.props.actions.checkInviteCode(code);
+    //         action.then(invite => {
+    //           if (invite) {
+    //             this.props.actions.push({
+    //               key: 'twitterSignup',
+    //               title: 'Signup',
+    //               showBackButton: true,
+    //               back: true,
+    //               email: invite.email,
+    //               code: invite.code
+    //             }, 'auth');
+    //           }
+    //         });
+    //       } }
+    //   ]);
   }
 
   changeRow(event, changed) {

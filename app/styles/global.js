@@ -574,7 +574,7 @@ const layout = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    // justifyContent: 'flex-end',
   },
   break: {
     borderBottomWidth: StyleSheet.hairlineWidth,

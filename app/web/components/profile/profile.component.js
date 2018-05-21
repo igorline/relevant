@@ -26,16 +26,16 @@ class Profile extends Component {
     let props = nextProps;
     const user = props.user.users[props.params.id];
     if (!user) return null;
-    let tokens = user.balance;
-    if (props.community === 'crypto') {
-      tokens = 0;
-    }
-    let owner = props.auth.user;
-    let account = props.account;
-    if (account && props.community === 'crypto' && owner && owner._id === user._id && user.ethAddress) {
-      if (account !== user.ethAddress[0]) return { tokens: 0 };
-      tokens = BondedTokenUtils.getValue(props.RelevantCoin, 'balanceOf', account);
-    }
+    let tokens = user.balance + user.tokenBalance;
+    // if (props.community === 'crypto') {
+    //   tokens = 0;
+    // }
+    // let owner = props.auth.user;
+    // let account = props.account;
+    // if (account && props.community === 'crypto' && owner && owner._id === user._id && user.ethAddress) {
+    //   if (account !== user.ethAddress[0]) return { tokens: 0 };
+    //   tokens = BondedTokenUtils.getValue(props.RelevantCoin, 'balanceOf', account);
+    // }
     return { tokens };
   }
 
