@@ -2737,6 +2737,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -2813,6 +2814,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -3061,6 +3063,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Staging;
 		};

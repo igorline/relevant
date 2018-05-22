@@ -114,6 +114,7 @@ export async function buyTokens(acc, accKey, _value) {
 }
 
 export async function mintRewardTokens() {
+  if (!instance) await init();
   const lastMint = await instance.intervalsSinceLastInflationUpdate.call();
   console.log('lastMint ', lastMint.toNumber());
   if (lastMint.toNumber() === 0) return null;

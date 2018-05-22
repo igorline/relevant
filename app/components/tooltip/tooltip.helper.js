@@ -239,7 +239,7 @@ exports.data.shareTip = {
 };
 
 exports.text.shareTip = function shareTip() {
-  let width = (fullWidth) / 3;
+  let width = (fullWidth) / 2.4;
   const Video = require('react-native-video').default;
   return (
     <View style={styles.videoTip}>

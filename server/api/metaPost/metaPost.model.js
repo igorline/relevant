@@ -64,7 +64,6 @@ MetaPostSchema.index({ rank: 1, tags: 1 });
 
 MetaPostSchema.pre('remove', async function remove(next) {
   try {
-    console.log('removing el from comm feed');
     await this.model('CommunityFeed').find({ metaPost: this._id }).remove();
     next();
   } catch (err) {

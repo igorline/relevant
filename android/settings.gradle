@@ -1,4 +1,36 @@
 rootProject.name = 'relevantNative'
+include ':react-native-video'
+project(':react-native-video').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-video/android')
+include ':react-native-vector-icons'
+project(':react-native-vector-icons').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vector-icons/android')
+include ':react-native-twitter-signin'
+project(':react-native-twitter-signin').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-twitter-signin/android')
+include ':react-native-swiss-knife'
+project(':react-native-swiss-knife').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-swiss-knife/android')
+include ':react-native-svg'
+project(':react-native-svg').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-svg/android')
+include ':react-native-share-menu'
+project(':react-native-share-menu').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-share-menu/android')
+include ':react-native-share-extension'
+project(':react-native-share-extension').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-share-extension/android')
+include ':react-native-share'
+project(':react-native-share').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-share/android')
+include ':react-native-push-notification'
+project(':react-native-push-notification').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-push-notification/android')
+include ':react-native-orientation'
+project(':react-native-orientation').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-orientation/android')
+include ':react-native-linear-gradient'
+project(':react-native-linear-gradient').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-linear-gradient/android')
+include ':react-native-image-picker'
+project(':react-native-image-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-picker/android')
+include ':react-native-firebase-analytics'
+project(':react-native-firebase-analytics').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-firebase-analytics/android')
+include ':react-native-fetch-blob'
+project(':react-native-fetch-blob').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fetch-blob/android')
+include ':react-native-contacts'
+project(':react-native-contacts').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-contacts/android')
+include ':react-native-bottom-sheet'
+project(':react-native-bottom-sheet').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-bottom-sheet/android')
 include ':react-native-twitter-signin'
 project(':react-native-twitter-signin').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-twitter-signin/android')
 include ':react-native-code-push'
