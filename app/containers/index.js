@@ -19,6 +19,6 @@ class AppContainer extends Component {
     );
   }
 }
-
-export default codePush(codePushOptions)(AppContainer);
+export default AppContainer;
+// export default codePush(codePushOptions)(AppContainer);
 

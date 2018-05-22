@@ -45,11 +45,12 @@ export function env() {
 
 export function Alert() {
   if (process.env.WEB !== 'true') {
-    let Platform = require('react-native').Platform;
+    let ReactNative = require('react-native');
+    let Platform = ReactNative.Platform;
     if (Platform.OS === 'ios') {
-      return require('react-native').AlertIOS;
+      return ReactNative.AlertIOS;
     }
-    return require('react-native').Alert;
+    return ReactNative.Alert;
   } else if (process.env.BROWSER) {
     return window;
   }

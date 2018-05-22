@@ -286,7 +286,11 @@ class SignUp extends Component {
             <Text style={styles.largeButtonText}>next</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              this.props.actions.goToUrl('https://relevant.community/eula.html')
+            }
+          >
             <Text
               style={[
                 styles.signInText,
@@ -296,9 +300,6 @@ class SignUp extends Component {
               By signing up, you agree to our{' '}
               <Text
                 style={[styles.signInText, styles.active, styles.font12]}
-                onPress={() =>
-                  this.props.actions.goToUrl('https://relevant.community/eula.html')
-                }
               >
                 Terms of Use
               </Text>

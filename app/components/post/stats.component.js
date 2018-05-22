@@ -79,8 +79,6 @@ class Stats extends Component {
       // coinStyle = [{ width: 18, height: 15, marginBottom: -6 }];
     }
 
-    console.log('tokenBalance ', entity)
-
     let value = (
       <TouchableOpacity
         ref={(c) => this.tooltipParent.coin = c}

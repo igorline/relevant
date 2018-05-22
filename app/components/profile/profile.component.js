@@ -64,7 +64,6 @@ class ProfileComponent extends Component {
     (buttonIndex) => {
       switch (buttonIndex) {
         case 0:
-          console.log(this.props.actions);
           this.props.actions.updateBlock(id);
           break;
         default:
