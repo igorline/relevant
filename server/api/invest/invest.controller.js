@@ -517,6 +517,7 @@ exports.create = async (req, res) => {
 
     // TODO migrate all
     userBalance = await ethUtils.getBalance(user.ethAddress[0]);
+
     // console.log('user ', user._id);
     // console.log('got userBalance from ethereum ', userBalance);
     user.tokenBalance = userBalance;
