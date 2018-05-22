@@ -145,7 +145,7 @@ async function updateRank() {
     twitterCount = treasury.twitterCount * (1 - Math.min(1, decay)) || 0;
 
     let metaPosts = await Meta.find({ twitter: true }).sort({ lastTwitterUpdate: -1 }).limit(20000);
-    console.log('got posts, updating...');
+    // console.log('got posts, updating...');
     metaPosts.forEach(async metaPost => {
       let { newRank, inFeedRank } = await computeRank(metaPost);
       await TwitterFeed.update(
@@ -160,7 +160,7 @@ async function updateRank() {
       );
     });
   } catch (err) {
-    console.log('error updating twitter rank ', err);
+    // console.log('error updating twitter rank ', err);
   }
 }
 
@@ -193,7 +193,7 @@ async function processTweet(tweet, user) {
     // await metaPost.save();
   } else {
     let processed = await Meta.findOne({ twitterUrl: tweet.entities.urls[0].expanded_url });
-    if (processed) console.log('found existing ');
+    // if (processed) console.log('found existing ');
 
     if (!processed) {
       processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);

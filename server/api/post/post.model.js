@@ -169,7 +169,6 @@ PostSchema.pre('remove', async function remove(next) {
     );
 
     if (meta && meta.commentary.length === 0) {
-      console.log('removing meta');
       await meta.remove();
       meta = null;
     }
@@ -189,7 +188,6 @@ PostSchema.pre('remove', async function remove(next) {
               if (err) console.log('saving tag error');
             });
           } else {
-            console.log('removing tag ', foundTag.name);
             foundTag.remove();
           }
         });
@@ -379,7 +377,6 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(mentions, po
         mUser = await User.findOne({ _id: mUser._id || mUser }, 'blockedBy blocked name role');
         blocked = mUser.blockedBy.find(u => u === mention) || mUser.blocked.find(u => u === mention);
         if (blocked) {
-          console.log('user blocked, removing mention ', blocked);
           textParent.mentions = textParent.mentions.filter(m => m !== blocked);
         }
 
