@@ -59,6 +59,11 @@ class Profile extends Component {
       </div>);
     }
 
+    let uploadImg;
+    if (this.props.auth.user && user._id === this.props.auth.user._id) {
+      uploadImg = <button className={'uploadImg edit'}>Update Profile Image</button>;
+    }
+
     return (
       <div className="profileContainer">
         <div className="profileHero">

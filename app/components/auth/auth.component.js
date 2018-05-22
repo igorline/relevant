@@ -387,8 +387,8 @@ const localStyles = StyleSheet.create({
     borderTopColor: 'black',
   },
   logoContainer: {
-    marginTop: 10,
-    height: 90,
+    marginTop: fullHeight / 40,
+    height: fullHeight / 8,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,

@@ -516,17 +516,11 @@ exports.create = async (req, res) => {
     userBalance = user.balance;
 
     // TODO migrate all
-    if (voterCommunity === 'crypto') {
-      if (!user.ethAddress[0]) {
-        // let users vote without? with balance of 0?
-        throw new Error('missing Ethereum address');
-      }
-      userBalance = await ethUtils.getBalance(user.ethAddress[0]);
-      console.log('user ', user._id);
-      console.log('got userBalance from ethereum ', userBalance);
-      user.tokenBalance = userBalance;
-      userBalance += user.balance;
-    }
+    userBalance = await ethUtils.getBalance(user.ethAddress[0]);
+    // console.log('user ', user._id);
+    // console.log('got userBalance from ethereum ', userBalance);
+    user.tokenBalance = userBalance;
+    userBalance += user.balance;
 
     userRelevance = await Relevance.findOne(
       { user: user._id, community: voterCommunity, global: true },
