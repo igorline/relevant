@@ -122,7 +122,6 @@
     "react-native-svg": "5.5.1",
     "react-native-swiss-knife": "^0.0.5",
     "react-native-tab-view": "0.0.65",
-    "react-native-twitter-signin": "git+https://github.com/balasan/react-native-twitter-signin.git",
     "react-native-user-defaults": "^0.1.4",
     "react-native-vector-icons": "^4.0.1",
     "react-native-video": "^2.0.0",
@@ -205,6 +204,7 @@
     "precss": "^3.1.2",
     "react-hot-loader": "^4.0.0",
     "react-native-debugger-open": "^0.3.11",
+    "react-native-twitter-signin": "git+https://github.com/balasan/react-native-twitter-signin.git",
     "react-native-mock": "^0.2.7",
     "redux-mock-store": "^1.0.2",
     "style-loader": "^0.13.0",
@@ -214,7 +214,7 @@
     "webpack-hot-middleware": "^2.21.2"
   },
   "engines": {
-    "node": ">=8.6.0"
+    "node": ">=9.4.0",
   },
   "ava": {
     "babel": "inherit",
