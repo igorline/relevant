@@ -513,10 +513,13 @@ exports.create = async (req, res) => {
 
     // ------ investor ------
     user = await User.findOne({ _id: user }, 'relevance name balance ethAddress image');
-    userBalance = user.balance;
+    userBalance = 0;
 
     // TODO migrate all
-    userBalance = await ethUtils.getBalance(user.ethAddress[0]);
+    let ethAddress = user.ethAddress[0];
+    if (ethAddress) {
+      userBalance = await ethUtils.getBalance(ethAddress);
+    }
 
     // console.log('user ', user._id);
     // console.log('got userBalance from ethereum ', userBalance);
