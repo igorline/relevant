@@ -489,7 +489,11 @@ exports.updateHandle = async (req, res, next) => {
     let user = req.user;
     let twitterId = user._id;
     if (user.role !== 'temp') throw new Error('Cannot change user handle');
-    if (user._id !== user.twitterId.toString()) throw new Error('Cannot change user handle');
+
+    // this throws sometimes
+    console.log('user id', user._id);
+    console.log('user.twitterId', user.twitterId);
+    if (user._id.toString() !== user.twitterId.toString()) throw new Error('TwitterId doesn\'t match user', user._id, user.twitterId);
 
     let handle = req.body.user.handle;
     if (!handle) throw new Error('missing handle');

@@ -24,7 +24,9 @@ const TwitterFeed = require('../../api/twitterFeed/twitterFeed.model');
 // })
 // .catch(err => console.log(err));
 
-// User.findOne({ twitterHandle: '4REALGLOBAL' }).remove().exec();
+User.findOne({ twitterHandle: '4REALGLOBAL' }).remove().exec();
+User.findOne({ email: 'contact@4real.io' }).remove().exec();
+// User.findOne({ email: 'contact@4real.io' }, 'twitterHandle').then(u => console.log(u));
 
 // User.find({ email: { $exists: false }}).then(users => {
 //   users.forEach(u => {
@@ -196,27 +198,50 @@ exports.setup = () => {
     },
     async (req, token, tokenSecret, profile, done) => {
       try {
+        console.log('profile id ', profile.id);
         let user = await User.findOne({
-          twitterId: profile.id
+          $or: [{ twitterId: profile.id }, { email: profile._json.email, confirmed: true }]
         });
 
+        if (req.user) user = req.user;
+        // if (user && !user.confirmed) {
+        //   throw new Error('Seems like your account already exists but your email is not confirmed');
+        // }
+
+        let handle = profile.username;
+        let handleExists = await User.findOne({ handle });
+        if (handleExists) {
+          handle = Math.random().toString(36).substr(2, 5);
+        }
+
         if (!user) {
-          let params = {
-            profile,
-            user: new User({
-              role: 'temp',
-              _id: profile.id,
-              handle: profile.username,
-              confirmed: true,
-              provider: 'twitter',
-            }),
-            twitterAuth: {
-              authToken: token,
-              authTokenSecret: tokenSecret,
-            }
-          };
+          user = new User({
+            role: 'temp',
+            _id: profile.id,
+            handle,
+            confirmed: true,
+            provider: 'twitter',
+          });
+        }
+
+        let params = {
+          profile,
+          user,
+          twitterAuth: {
+            authToken: token,
+            authTokenSecret: tokenSecret,
+          }
+        };
+        if (!user.twitterId) {
           user = await addTwitterProfile(params);
         }
+        console.log('user twitterId ', user.twitterId);
+        console.log('user twitterId type', typeof user.twitterId);
+
+        console.log('profile.id ', profile.id);
+        console.log('profile.id ', typeof profile.id);
+        console.log('should be equal ', user.twitterId.toString() === profile.id.toString());
+
         return done(null, user);
       } catch (err) {
         return done(err);
