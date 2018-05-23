@@ -51,10 +51,13 @@ class DiscoverPosts extends Component {
     return (postIds || []).map(id => {
       const metaPost = metaPosts[id];
       if (!metaPost) return null;
-      const postId = sort === 'new' ? metaPost.newCommentary : metaPost.topCommentary;
+      // const postId = sort === 'new' ? metaPost.newCommentary : metaPost.topCommentary;
+      const postId = metaPost.commentary[0] || metaPost.twitterCommentary[0];
       const post = this.props.posts.posts[postId];
       if (!post) return null;
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
+
+      // console.log(post.twitter);
 
       return (
         <Post

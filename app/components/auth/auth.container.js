@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import {
-  Easing
-} from 'react-native';
+// import {
+//   // Easing
+// } from 'react-native';
 import codePush from 'react-native-code-push';
-// import { Transitioner } from 'react-navigation';
-import Transitioner from '../nav/Transitioner';
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
+import Transitioner from '../nav/Transitioner';
 import Auth from './auth.component';
 import Login from './login.component';
 import SignUp from './signup.component';

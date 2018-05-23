@@ -18,6 +18,7 @@ let CommunityFeedSchema = new Schema({
 
 CommunityFeedSchema.index({ community: 1 });
 CommunityFeedSchema.index({ metaPost: 1 });
+CommunityFeedSchema.index({ latestPost: 1 });
 CommunityFeedSchema.index({ community: 1, rank: 1 });
 CommunityFeedSchema.index({ community: 1, metaPost: 1 });
 CommunityFeedSchema.index({ community: 1, latestPost: 1 });
@@ -50,9 +51,27 @@ CommunityFeedSchema.statics.updateRank = async function updateRank(_id, communit
         }
       ]
     });
-    if (!feedItem || !feedItem.metaPost) throw new Error('no feed item found');
+
+    // create new feed item if needed
+    if (!feedItem || !feedItem.metaPost) {
+      if (community === 'twitter') community = 'relevant';
+      let meta = this.model('MetaPost').findOne({ _id });
+      feedItem = new this.model('CommuintyFeed')({
+        metaPost: meta._id,
+        community,
+        latestPost: meta.latestPost,
+        tags: meta.tags,
+        categories: meta.categories,
+        keywords: meta.keywords,
+        rank: meta.rank,
+      })
+      feedItem = await feedItem.save();
+    }
+
+    // TODO - post rank should be tracked in a separate table so that we are not grabbing stuff from a diff communities
     let highestRank = feedItem.metaPost.commentary && feedItem.metaPost.commentary.length ?
       feedItem.metaPost.commentary[0].rank : 0;
+
     feedItem.rank = highestRank;
     feedItem = await feedItem.save();
     return feedItem;

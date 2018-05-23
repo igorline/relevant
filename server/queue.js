@@ -11,13 +11,16 @@ const RelevanceStats = require('./api/relevanceStats/relevanceStats.model');
 const pagerank = require('./utils/pagerank');
 const Invest = require('./api/invest/invest.model');
 // const Treasury = require('./api/treasury/treasury.model');
-const economy = require('./utils/economy.js');
+// const economy = require('./utils/economy.js');
+
+const economy = require('./utils/ethRewards.js');
+
 const { PAYOUT_FREQUENCY } = require('./config/globalConstants');
 
 const TwitterWorker = require('./utils/twitterWorker');
 
 
-const extractor = require('unfluff');
+// const extractor = require('unfluff');
 // daily relevance decay
 const DECAY = 0.99621947473649;
 

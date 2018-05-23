@@ -26,7 +26,7 @@ class Post extends Component {
     if (!okToDelete) return null;
     this.props.actions.deletePost(this.props.post);
   }
-  editPost() {
+  editPost(e) {
     let post = this.props.post;
     this.props.actions.clearCreatePost();
     let editPost = {
@@ -100,7 +100,7 @@ class Post extends Component {
       user._id = post.user;
       user.image = post.embeddedUser.image;
       user.name = post.embeddedUser.name;
-      user.relevance = post.embeddedUser.relevance.relevance;
+      user.relevance = post.embeddedUser.relevance ? post.embeddedUser.relevance.relevance : null;
       user.handle = post.embeddedUser.handle;
     }
     if (!user && post.twitter) {
@@ -108,7 +108,10 @@ class Post extends Component {
     }
 
     return (
-      <div className="post">
+      <div
+        className="post"
+        onClick={() => this.props.actions.push('/post/' + post._id)}
+      >
         {postInfo}
         <div className="postContent">
 

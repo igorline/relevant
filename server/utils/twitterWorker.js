@@ -3,6 +3,8 @@ import Post from '../api/post/post.model';
 import * as postController from '../api/post/post.controller';
 import TwitterFeed from '../api/twitterFeed/twitterFeed.model';
 import Treasury from '../api/treasury/treasury.model';
+import Relevance from '../api/relevance/relevance.model';
+
 import { TWITTER_DECAY } from '../config/globalConstants';
 
 const TENTH_LIFE = 1 * 6 * 60 * 60 * 1000;
@@ -143,7 +145,7 @@ async function updateRank() {
     twitterCount = treasury.twitterCount * (1 - Math.min(1, decay)) || 0;
 
     let metaPosts = await Meta.find({ twitter: true }).sort({ lastTwitterUpdate: -1 }).limit(20000);
-    console.log('got posts, updating...');
+    // console.log('got posts, updating...');
     metaPosts.forEach(async metaPost => {
       let { newRank, inFeedRank } = await computeRank(metaPost);
       await TwitterFeed.update(
@@ -158,7 +160,7 @@ async function updateRank() {
       );
     });
   } catch (err) {
-    console.log('error updating twitter rank ', err);
+    // console.log('error updating twitter rank ', err);
   }
 }
 
@@ -191,7 +193,7 @@ async function processTweet(tweet, user) {
     // await metaPost.save();
   } else {
     let processed = await Meta.findOne({ twitterUrl: tweet.entities.urls[0].expanded_url });
-    if (processed) console.log('found existing ');
+    // if (processed) console.log('found existing ');
 
     if (!processed) {
       processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);
@@ -209,6 +211,8 @@ async function processTweet(tweet, user) {
 
     let tags = tweet.entities.hashtags.map(t => t.text);
     post = new Post({
+      // for now only pull tweets for relevant
+      community: 'relevant',
       title: processed.title,
       link: processed.url,
       description: processed.description,
@@ -355,9 +359,11 @@ async function cleanup(users) {
   .limit(1000);
 
   console.log('clearing ', posts.length, ' posts');
-
   let removePosts = await posts.map(p => p.remove());
 
+  await Promise.all(removePosts)
+
+  console.log('processing ', users.length, ' users');
   let processedUsers = users.map(async (u, i) => {
     try {
       let trim = await TwitterFeed.find({ user: '_common_Feed_' })
@@ -379,13 +385,18 @@ async function cleanup(users) {
     }
   });
 
-  await Promise.all([...processedUsers, ...removePosts]);
+  await Promise.all(processedUsers);
 }
 
 
 async function getUsers(userId) {
   try {
-    let query = userId ? { _id: userId } : {};
+    // for now we are only pulling tweets for the relevant community
+    let userList = await Relevance.find({ community: 'relevant', global: true, relevance: { $gt: 1 }});
+    userList = userList.map(u => u.user);
+
+    let query = userId ? { _id: userId } : { _id: { $in: userList }};
+
     let users = await User.find(
       { twitterHandle: { $exists: true }, ...query },
       'twitterAuthToken twitterAuthSecret twitterHandle lastTweetId relevance'
@@ -438,7 +449,7 @@ async function getUsers(userId) {
   }
 }
 
-// setTimeout(getUsers, 20000);
+// setTimeout(getUsers, 5000);
 // getUsers();
 module.exports = {
   updateTwitterPosts: getUsers

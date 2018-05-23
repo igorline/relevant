@@ -4,6 +4,9 @@ import MetaPost from '../metaPost/metaPost.model';
 import User from '../user/user.model';
 import Notification from '../notification/notification.model';
 import Invest from '../invest/invest.model';
+import Comment from '../comment/comment.model';
+import CommunityFeed from '../communityFeed/communityFeed.model';
+
 
 let apnData = require('../../pushNotifications');
 let mongoose = require('mongoose');
@@ -166,7 +169,6 @@ PostSchema.pre('remove', async function remove(next) {
     );
 
     if (meta && meta.commentary.length === 0) {
-      console.log('removing meta');
       await meta.remove();
       meta = null;
     }
@@ -186,7 +188,6 @@ PostSchema.pre('remove', async function remove(next) {
               if (err) console.log('saving tag error');
             });
           } else {
-            console.log('removing tag ', foundTag.name);
             foundTag.remove();
           }
         });
@@ -304,18 +305,23 @@ PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId) {
       // console.log('meta tags', meta.tags);
     }
 
-    let community = this.community || 'relevant';
-    let feedItem = await this.model('CommunityFeed').findOneAndUpdate(
-      { community, metaPost: meta._id },
-      {
-        latestPost: this.postDate,
-        tags: meta.tags,
-        categories: meta.categories,
-        keywords: meta.keywords,
-        rank: meta.rank,
-      },
-      { upsert: true, new: true }
-    );
+    // don't add post to community feed from twitter
+    if (this.twitter != true) {
+      let community = this.community || 'relevant';
+
+      let feedItem = await this.model('CommunityFeed').findOneAndUpdate(
+        { community, metaPost: meta._id },
+        {
+          latestPost: this.postDate,
+          tags: meta.tags,
+          categories: meta.categories,
+          keywords: meta.keywords,
+          rank: meta.rank,
+        },
+        { upsert: true, new: true }
+      );
+    }
+
   } catch (err) {
     console.log('error creating / updating metapost ', err);
   }
@@ -371,7 +377,6 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(mentions, po
         mUser = await User.findOne({ _id: mUser._id || mUser }, 'blockedBy blocked name role');
         blocked = mUser.blockedBy.find(u => u === mention) || mUser.blocked.find(u => u === mention);
         if (blocked) {
-          console.log('user blocked, removing mention ', blocked);
           textParent.mentions = textParent.mentions.filter(m => m !== blocked);
         }
 

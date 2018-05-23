@@ -49,16 +49,21 @@ exports.get = async (req, res) => {
       populate: [
         {
           path: 'commentary',
-          match: { community, repost: { $exists: false }, user: { $nin: blocked } },
+          match: {
+            // this is a temp problem for twitter
+            // community,
+
+            // TODO - we should probably sort the non-community commentary
+            // with some randomness on client side
+            repost: { $exists: false },
+            user: { $nin: blocked },
+            $or: [{ twitter: { $ne: true } }, { relevance: { $gt: 0 } }],
+          },
           options: { sort: commentarySort },
           populate: {
             path: 'embeddedUser.relevance',
             select: 'relevance'
           },
-          // populate: {
-          //   path: 'user',
-          //   model: 'User'
-          // }
         },
       ]
     });

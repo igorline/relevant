@@ -543,9 +543,10 @@ exports.create = (req, res) => {
   let keywords = req.body.keywords || [];
   let community = req.subdomain || 'relevant';
 
-  if (req.user.balance < 1) {
-    throw new Error('You need to have at least one coin to post');
-  }
+  // TODO rate limiting
+  // if (req.user.balance < 1) {
+  //   throw new Error('You need to have at least one coin to post');
+  // }
 
   if (category) tags.push(category);
 

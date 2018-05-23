@@ -36,6 +36,7 @@ export async function init() {
       key = 'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3';
       account = '0x627306090abaB3A6e1400e9345bC60c78a8BEf57';
     }
+
     const provider = new Web3.providers.HttpProvider(rpcUrl);
     RelevantCoin.setProvider(provider);
 
@@ -45,11 +46,10 @@ export async function init() {
     instance = await RelevantCoin.deployed();
     decimals = await instance.decimals.call();
     decimals = decimals.toNumber();
-    // await buyTokens();
     initialized = true;
     return true;
   } catch (err) {
-    console.log(err);
+    console.log('contract initialization error ', err);
     return false;
   }
 }
@@ -114,6 +114,7 @@ export async function buyTokens(acc, accKey, _value) {
 }
 
 export async function mintRewardTokens() {
+  if (!instance) await init();
   const lastMint = await instance.intervalsSinceLastInflationUpdate.call();
   console.log('lastMint ', lastMint.toNumber());
   if (lastMint.toNumber() === 0) return null;
@@ -122,10 +123,15 @@ export async function mintRewardTokens() {
   return sendTx({ data, acc: account, accKey: key, value: 0, fn: 'mintTokens' });
 }
 
-export async function distributeRewards(accounts, _balances) {
-  let balances = _balances.map(b => b * (10 ** decimals));
-  const data = await instance.distributeRewards.request(accounts, balances).params[0].data;
-  return sendTx({ data, acc: account, accKey: key, value: 0, fn: 'distributeRewards' });
+// export async function distributeRewards(accounts, _balances) {
+//   let balances = _balances.map(b => b * (10 ** decimals));
+//   const data = await instance.distributeRewards.request(accounts, balances).params[0].data;
+//   return sendTx({ data, acc: account, accKey: key, value: 0, fn: 'distributeRewards' });
+// }
+
+export async function allocateRewards(_amount) {
+  const data = await instance.allocateRewards.request(_amount).params[0].data;
+  return sendTx({ data, acc: account, accKey: key, value: 0, fn: 'allocateRewards' });
 }
 
 export async function getNonce(_account) {

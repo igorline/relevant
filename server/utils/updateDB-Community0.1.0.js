@@ -12,9 +12,34 @@ import Comment from '../api/comment/comment.model';
 async function updateTreasury() {
   let t = await Treasury.findOne({ community: { $exists: false } });
   if (!t) return true;
-  console.log('treasury to update ', t);
+  console.log('treasury to update ', );
   t.community = 'relevant';
   return t.save();
+}
+
+async function removeEmptyCommunityFeedEls() {
+  let community = 'relevant';
+
+  let cf = await CommunityFeed.find({}, 'metaPost')
+    .populate({
+      path: 'metaPost',
+      select: 'commentary title latestPost',
+      populate: [
+        {
+          path: 'commentary',
+          match: { community, repost: { $exists: false } },
+          // options: { sort: commentarySort },
+          populate: {
+            path: 'embeddedUser.relevance',
+            select: 'relevance'
+          },
+        },
+      ]
+    });
+
+  let filtered = cf.filter(el => !el.metaPost.commentary.length);
+  let removeItems = filtered.map(f => f.remove());
+  return Promise.all(removeItems);
 }
 
 
@@ -42,28 +67,32 @@ async function migrateToCommunityReputation() {
   try {
     let users = await User.find({});
     // update existing reps w community
-    await Relevance.update({ community: { $exists: false }, twitter: false }, { community: 'relevant' });
+    await Relevance.update(
+      { community: { $exists: false }, twitter: false },
+      { community: 'relevant' },
+      { multi: true }
+    );
     // await Relevance.update({ community: { $exists: false }, twitter: true }, { community: 'twitter' });
 
-    let allDone = users.map(async u => {
-      try {
-        let newRep = await Relevance.findOneAndUpdate(
-          { community: 'relevant', user: u._id },
-          { relevance: u.relevance,
-            level: u.level || 0,
-            rank: u.rank || 0,
-            percentRank: u.percentRank || 0,
-            relevanceRecord: u.relevanceRecord,
-            global: true,
-          },
-          { upsert: true, new: true }
-        );
-        console.log(newRep);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-    return Promise.all(allDone);
+    // let allDone = users.map(async u => {
+    //   try {
+    //     let newRep = await Relevance.findOneAndUpdate(
+    //       { community: 'relevant', user: u._id, tag: { $exists: false } },
+    //       { relevance: u.relevance,
+    //         level: u.level || 0,
+    //         rank: u.rank || 0,
+    //         percentRank: u.percentRank || 0,
+    //         relevanceRecord: u.relevanceRecord,
+    //         global: true,
+    //       },
+    //       { upsert: true, new: true }
+    //     );
+    //     console.log(newRep);
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // });
+    // return Promise.all(allDone);
   } catch (err) {
     console.log(err);
   }
@@ -104,9 +133,15 @@ async function connectReputation() {
 
 async function createRelevantCommunityFeed() {
   let community = 'relevant';
+  await CommunityFeed.find({ community }).remove();
+
   let metaIds = await Post.find({ community }, 'metaPost');
   metaIds = metaIds.map(p => p.metaPost);
-  console.log(metaIds);
+
+  let twMetas = await Post.find({ twitter: true, upVotes: { $gt: 0 } }, 'metaPost')
+  twMetas = twMetas.map(p => p.metaPost);
+
+  metaIds = [ ...metaIds, ...twMetas ];
 
   let metaPosts = await MetaPost.find(
     { _id: { $in: metaIds } },
@@ -125,7 +160,7 @@ async function createRelevantCommunityFeed() {
       },
       { upsert: true, new: true }
     );
-    console.log(feedItem);
+    // console.log(feedItem);
     return feedItem;
   });
   return await Promise.all(allDone);
@@ -137,6 +172,7 @@ async function updatePostUserHandle() {
     select: 'handle',
   });
   let updatedPosts = posts.map(async post => {
+    if (!post.embeddedUser || !post.user) return;
     post.embeddedUser.handle = post.user.handle;
     return post.save();
   });
@@ -164,10 +200,13 @@ async function runUpdates() {
     // await createRelevantCommunityFeed();
     // await updateTreasury();
     // await updatePostUserHandle();
-    await updateCommentUserHandle();
+    // await updateCommentUserHandle();
+
+    // await removeEmptyCommunityFeedEls()
+    console.log('finished db updates');
   } catch (err) {
     console.log(err);
   }
 }
 
-runUpdates();
+// runUpdates();

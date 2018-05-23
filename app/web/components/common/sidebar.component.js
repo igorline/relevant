@@ -3,8 +3,6 @@ import { Link, withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as routerActions from 'react-router-redux';
-import ShadowButton from './ShadowButton';
-
 
 if (process.env.BROWSER === true) {
   require('./sidebar.css');
@@ -26,11 +24,12 @@ class Sidebar extends Component {
           <h3>Welcome to the #{community} community!</h3>
           {introText}
           <Link to={this.props.location.pathname + '#newpost'}>
-            <ShadowButton
-              // onClick={() => this.props.actions.push(props.location.path + '#newpost')}
+            <button
+              className={'shadowButton'}
+              disabled={!this.props.auth.user}
             >
               Share a Link
-            </ShadowButton>
+            </button>
           </Link>
           <h3>How Relevant works:</h3>
           <ul>
