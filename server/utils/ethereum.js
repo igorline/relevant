@@ -123,10 +123,15 @@ export async function mintRewardTokens() {
   return sendTx({ data, acc: account, accKey: key, value: 0, fn: 'mintTokens' });
 }
 
-export async function distributeRewards(accounts, _balances) {
-  let balances = _balances.map(b => b * (10 ** decimals));
-  const data = await instance.distributeRewards.request(accounts, balances).params[0].data;
-  return sendTx({ data, acc: account, accKey: key, value: 0, fn: 'distributeRewards' });
+// export async function distributeRewards(accounts, _balances) {
+//   let balances = _balances.map(b => b * (10 ** decimals));
+//   const data = await instance.distributeRewards.request(accounts, balances).params[0].data;
+//   return sendTx({ data, acc: account, accKey: key, value: 0, fn: 'distributeRewards' });
+// }
+
+export async function allocateRewards(_amount) {
+  const data = await instance.allocateRewards.request(_amount).params[0].data;
+  return sendTx({ data, acc: account, accKey: key, value: 0, fn: 'allocateRewards' });
 }
 
 export async function getNonce(_account) {

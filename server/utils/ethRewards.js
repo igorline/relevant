@@ -121,6 +121,8 @@ async function distributeUserRewards(posts, community) {
   let ethAccounts = [];
   let ethBalances = [];
   let notifications = [];
+  let distributedRewards = 0;
+
   let updatedUsers = posts.map(async post => {
     let votes = await Invest.find({ post: post._id });
     // compute total vote shares
@@ -147,16 +149,19 @@ async function distributeUserRewards(posts, community) {
     let authorPayout = Math.floor(authorShare * post.payout);
     let curationReward = post.payout;
 
+    distributedRewards += authorPayout;
+
     payouts[author._id] = payouts[author._id] ? payouts[author._id] + authorPayout : authorPayout;
 
-    author.balance += curationReward;
+    // TODO diff decimal
+    author.balance += authorPayout / (10 ** 18);
     await author.save();
 
     if (authorPayout > 0) {
       // await rewardUser({ user: author, reward: authorPayout, treasury, post, community });
       notifications.push({
         user: author,
-        reward: authorPayout,
+        reward: authorPayout / (10 ** 18),
         treasury,
         post,
         community
@@ -177,7 +182,9 @@ async function distributeUserRewards(posts, community) {
       let user = await User.findOne({ _id: vote.investor }, 'name balance deviceTokens badge');
 
       let curationWeight = vote.voteWeight / totalWeights;
-      let curationPayout = curationWeight * curationReward;
+      let curationPayout = Math.floor(curationWeight * curationReward);
+
+      distributedRewards += curationPayout;
 
       console.log('weight ', curationWeight);
       console.log('payout ', curationPayout);
@@ -185,12 +192,13 @@ async function distributeUserRewards(posts, community) {
 
       payouts[user._id] = payouts[user._id] ? payouts[user._id] + curationPayout : curationPayout;
 
-      user.balance += curationPayout;
+      // TODO diff decimal
+      user.balance += curationPayout / (10 ** 18);
       await user.save();
 
       notifications.push({
         user,
-        reward: curationPayout,
+        reward: curationPayout / (10 ** 18),
         treasury,
         post,
         type: 'vote',
@@ -204,6 +212,14 @@ async function distributeUserRewards(posts, community) {
   });
 
   await Promise.all(updatedUsers);
+
+  // transfer amounts to distributed rewards
+  console.log('distribute rewards ', distributedRewards);
+  console.log('distribute rewards should be', distributedRewards);
+
+  if (distributedRewards > 0) {
+    await Eth.allocateRewards(distributedRewards);
+  }
 
   // we'll do this individually upon request to save on gas
   // let success = await Eth.distributeRewards(ethAccounts, ethBalances);
