@@ -31,7 +31,7 @@ exports.get = async (req, res) => {
 
     let blocked = [];
     if (req.user) {
-      blocked = [...req.user.blocked, ...req.user.blockedBy];
+      blocked = [...req.user.blocked || [], ...req.user.blockedBy || []];
     }
 
     let query = { community };

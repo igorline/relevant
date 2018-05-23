@@ -85,9 +85,9 @@ exports.create = async (req, res) => {
       if (invite.number > 1) invite.number = 1;
 
       // limit invites to 10
-      if (invites.length >= 10) {
-        throw Error('You can\'t send more than 10 invites at the moment');
-      }
+      // if (invites.length >= 10) {
+      //   throw Error('You can\'t send more than 10 invites at the moment');
+      // }
     }
     invite.invitedBy = user._id;
     invites = await exports.createInvites([invite]);
@@ -109,7 +109,7 @@ exports.sendEmail = async (req, res) => {
   return res.status(200).json(invite);
 };
 
-exports.sendEmailFunc = async function(_invite) {
+exports.sendEmailFunc = async function inviteEamil(_invite) {
   let status;
   let invite = _invite;
   try {
@@ -137,12 +137,12 @@ exports.sendEmailFunc = async function(_invite) {
       <p>
       ${hi}${intro}
       <p>
+
       <p>
-      Your invitation code: <b>${invite.code}</b>
+      <b>Mobile</b>: Download Relevant from the app store:
       </p>
-      <p>
-      <b>Step 1</b>: Download Relevant from the app store:
-      </p>
+
+      <hr/>
 
       <p>
         <a
@@ -168,7 +168,7 @@ exports.sendEmailFunc = async function(_invite) {
       </p>
 
       <p>
-      <b>Step 2</b>: Launch the app and enter your invite code: <b>${invite.code}</b>
+      <b>Desktop</b>: Navigate to https://relevant.community/home and sing up!
       </p>
 
       <hr/>

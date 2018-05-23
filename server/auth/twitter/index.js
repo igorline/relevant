@@ -14,7 +14,7 @@ router.get('/', (req, res, next) => {
   })(req, res, next);
 });
 
-router.get('/callback', passport.authenticate('twitter', {
+router.get('/callback', auth.currentUser(), passport.authenticate('twitter', {
   failureRedirect: '/login',
   session: false
 }), auth.setTokenCookieDesktop);
