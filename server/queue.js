@@ -287,6 +287,7 @@ async function basicIncome(done) {
 
   let topicRelevance = await Relevance.find({});
 
+  // DEPRICATED don't need basic income unless we have people spend tokens
   function updateUsers(teir) {
     return (user) => {
       q.push(async cb => {
@@ -388,9 +389,9 @@ async function basicIncome(done) {
     };
   }
 
-  tier1.forEach(updateUsers(1));
-  tier2.forEach(updateUsers(2));
-  tier3.forEach(updateUsers(3));
+  // tier1.forEach(updateUsers(1));
+  // tier2.forEach(updateUsers(2));
+  // tier3.forEach(updateUsers(3));
   topicRelevance.forEach(updateTopicRelevance());
   // depricated
   all.forEach(updateUserRelevance());
