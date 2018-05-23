@@ -91,7 +91,7 @@ class Stats extends Component {
           source={require('../../assets/images/relevantcoin.png')}
         />
         <Text style={[this.props.textStyle, statsStyle, styles.darkGrey]}>
-          {numbers.abbreviateNumber(entity.value || entity.balance || 0)}
+          {numbers.abbreviateNumber(entity.value || entity.balance + entity.tokenBalance || 0)}
         </Text>
       </TouchableOpacity>
     );

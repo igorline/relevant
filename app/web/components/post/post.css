@@ -63,7 +63,6 @@
     flex: 1;
     margin-left: 10px;
     border-bottom: 3px solid;
-
   }
   .headline {
     font-size: 28px;
@@ -74,6 +73,19 @@
     padding-right: 20px;
     /*color: $blue;*/
   }
+
+  &:hover {
+    .headlineContainer {
+      border-color: $blue;
+    }
+    .domain {
+      color: blue;
+    }
+    .headline {
+      color: $blue;
+    }
+  };
+
   .headline:after {
     content: '';
     display: inline-block;
@@ -93,8 +105,9 @@
     .image {
       width: 200px;
       height: 100px;
-      div {
+      > div {
         height: 100px;
+        min-height: 100px;
         position: relative;
       }
     }
@@ -103,7 +116,8 @@
       line-height: normal;
     }
     .headlineContainer {
-      border: none;
+      flex: 1;
+      /*border: none;*/
     }
   }
   &.preview {
@@ -133,7 +147,7 @@
       font-family: Arial;
       font-weight: 100;
       color: $greyText;
-      font-size: 14px;
+      font-size: 13px;
       padding: 5px 10px 0 10px;
       line-height: normal;
       &::after {
@@ -191,7 +205,11 @@
   margin: 0px 0 20px 0;
   position: relative;
   padding: 25px 20px;
-  box-shadow: 0 0 8px -4px $grey;
+  box-shadow: $postShadow;
+  cursor: pointer;
+  &:hover {
+    box-shadow: $postShadowHover;
+  };
   /*@extend %flatBorderBottom;*/
   /*border-bottom: 1px solid $borderGrey;*/
 }
@@ -240,11 +258,16 @@
   justify-content: space-between;
   align-items: center;
   margin-top: 25px;
-  /*margin-bottom: 40px;*/
+  margin-bottom: 5px;
   font-family: Arial, sans-serif;
   .right .details {
     display: flex;
     align-items: center;
+  }
+  .left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .left > a {
     margin-right: 20px;
@@ -257,17 +280,28 @@
     display: inline-block;
     margin-right: 20px;
   }
+  a {
+    display: flex;
+    /*box-shadow: 0 0 10px -4px $grey;*/
+  }
 }
 
 .fraction {
-  font-size: 10px;
+  font-size: 12px;
   color: #9C9C9C;
   text-align: center;
   min-width: 30px;
+  img {
+    margin-left: 1px;
+    margin-bottom: -1px;
+    height: 11px;
+    width: auto;
+  }
   .num {
     border-bottom: 1px solid;
   }
   .dem {
+    padding-bottom: 4px;
   }
 }
 

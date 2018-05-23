@@ -102,7 +102,7 @@ export default class AdminContract extends Component {
 
             <div className="transferTokens">
               <input
-                class="blueInput"
+                className="blueInput"
                 type="text"
                 name="buyAmount"
                 value={this.state.buyAmount}
@@ -139,7 +139,7 @@ export default class AdminContract extends Component {
 
             <div className="transferTokens">
               <input
-                class="blueInput"
+                className="blueInput"
                 type="text"
                 name="rewardsAmount"
                 value={this.state.rewardsAmount}

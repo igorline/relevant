@@ -4,7 +4,7 @@ import * as errorActions from './error.actions';
 import * as navigationActions from './navigation.actions';
 
 let AlertIOS = utils.api.Alert();
-let rn = {};
+let ReactNative = {};
 let PushNotification;
 let userDefaults;
 
@@ -14,10 +14,10 @@ let Platform;
 let okToRequestPermissions = true;;
 
 if (process.env.WEB != 'true') {
-  rn = require('react-native');
+  ReactNative = require('react-native');
   Analytics = require('react-native-firebase-analytics');
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
-  Platform = require('react-native').Platform;
+  Platform = ReactNative.Platform;
   PushNotification = require('react-native-push-notification');
 }
 

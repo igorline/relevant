@@ -17,9 +17,9 @@
 	<key>CFBundlePackageType</key>
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.9.63</string>
+	<string>0.9.70</string>
 	<key>CFBundleVersion</key>
-	<string>0.9.63.0</string>
+	<string>0.9.70.5</string>
 	<key>CodePushDeploymentKey</key>
 	<string>$(CODEPUSH_KEY)</string>
 	<key>NSAppTransportSecurity</key>
@@ -28,9 +28,9 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>localhost</key>
-			<true/>
 			<key>127.0.0.1</key>
+			<true/>
+			<key>localhost</key>
 			<true/>
 		</dict>
 	</dict>
@@ -46,9 +46,9 @@
 	            SUBQUERY (
 	                $extensionItem.attachments,
 	                $attachment,
-	                ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.url&quot; ||
-	                ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.text&quot; ||
-	                ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO &quot;public.data&quot; 
+	                ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.url" ||
+	                ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.text" ||
+	                ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.data" 
 	            ).@count == $extensionItem.attachments.@count
 	        ).@count &gt; 0             
 	    </string>

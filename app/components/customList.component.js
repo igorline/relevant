@@ -138,7 +138,7 @@ export default class ActivityView extends Component {
         enableEmptySections
         removeClippedSubviews
         pageSize={1}
-        initialListSize={3}
+        initialListSize={10}
         scrollEventThrottle={10}
         automaticallyAdjustContentInsets={false}
         stickyHeaderIndices={this.props.stickyHeaderIndices}
