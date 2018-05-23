@@ -57,6 +57,7 @@ async function distributeRewards(community, rewardPool) {
   treasury.rewardFund = rewardPool;
   treasury.currentShares *= (1 - Math.min(1, decay));
   treasury.postCount *= (1 - Math.min(1, decay));
+  console.log('total shares ', treasury.currentShares);
   let currentShares = 0;
 
   // add post relevance to treasury
@@ -81,9 +82,9 @@ async function distributeRewards(community, rewardPool) {
 async function rewardUser(props) {
   let { user, reward, post, treasury, type, community } = props;
 
-  treasury.rewardFund -= reward;
-  if (treasury.rewardFund < 0) throw new Error('Reward fund is empty!');
-  treasury = await treasury.save();
+  // treasury.rewardFund -= reward;
+  // if (treasury.rewardFund < 0) throw new Error('Reward fund is empty!');
+  // treasury = await treasury.save();
   // user.balance += reward;
   // user = await user.save();
 
@@ -228,7 +229,11 @@ async function distributeUserRewards(posts, community) {
   await Promise.all(sendNotes);
   // }
 
-  console.log('Finished distributing rewards, remaining reward fund: ', treasury.rewardFund);
+  let rewardPool = await Eth.getParam('rewardPool', { noConvert: true });
+  let distPool = await Eth.getParam('distributedRewards', { noConvert: true });
+
+  // console.log('distributedRewards Pool', distPool);
+  console.log('Finished distributing rewards, remaining reward fund: ', rewardPool);
   return payouts;
 }
 
