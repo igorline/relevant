@@ -493,7 +493,9 @@ exports.updateHandle = async (req, res, next) => {
     // this throws sometimes
     console.log('user id', user._id);
     console.log('user.twitterId', user.twitterId);
-    if (user._id.toString() !== user.twitterId.toString()) throw new Error('TwitterId doesn\'t match user', user._id, user.twitterId);
+    if (user._id.toString() !== user.twitterId.toString() &&
+      user._id.toString() !== user.twitter.id_str
+    ) throw new Error('TwitterId doesn\'t match user', user._id, user.twitterId);
 
     let handle = req.body.user.handle;
     if (!handle) throw new Error('missing handle');

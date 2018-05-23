@@ -24,8 +24,13 @@ const TwitterFeed = require('../../api/twitterFeed/twitterFeed.model');
 // })
 // .catch(err => console.log(err));
 
-User.findOne({ twitterHandle: '4REALGLOBAL' }).remove().exec();
-User.findOne({ email: 'contact@4real.io' }).remove().exec();
+// User.findOne({ twitterId: 806193163333300224 }).remove();
+// .then(u => console.log(u));
+
+
+// User.findOne({ twitterHandle: '4REALGLOBAL' }).remove().exec();
+// User.findOne({ email: 'contact@4real.io' }).remove().exec();
+
 // User.findOne({ email: 'contact@4real.io' }, 'twitterHandle').then(u => console.log(u));
 
 // User.find({ email: { $exists: false }}).then(users => {
@@ -198,6 +203,9 @@ exports.setup = () => {
     },
     async (req, token, tokenSecret, profile, done) => {
       try {
+        console.log('profile ', profile);
+        console.log('profile json ', profile._json);
+
         console.log('profile id ', profile.id);
         let user = await User.findOne({
           $or: [{ twitterId: profile.id }, { email: profile._json.email, confirmed: true }]
