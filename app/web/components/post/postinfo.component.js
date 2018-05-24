@@ -51,6 +51,7 @@ export default function (props) {
     return (
       <a
         href={url}
+        // onClick={e => e.stopPropagation()}
         target="_blank"
         rel="noopener noreferrer"
       >

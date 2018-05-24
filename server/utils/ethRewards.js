@@ -6,8 +6,8 @@ import apnData from '../pushNotifications';
 import Notification from '../api/notification/notification.model';
 import Earnings from '../api/earnings/earnings.model';
 import * as Eth from './ethereum';
-
 import { INTERVAL_INFLAITION, INIT_COIN, SHARE_DECAY } from '../config/globalConstants';
+import * as numbers from '../../app/utils/numbers';
 
 async function initTreasury(community) {
   let treasury = new Treasury({
@@ -93,8 +93,12 @@ async function rewardUser(props) {
 
   let s = reward === 1 ? '' : 's';
   let action = type === 'vote' ? 'upvoting ' : '';
-  let text = `You earned ${reward} coin${s} from ${action}this post`;
-  let alertText = `You earned ${reward} coin${s} from ${action}a post`;
+
+  let amount = numbers.abbreviateNumber(reward);
+  // let amount = reward;
+  let text = `You earned ${amount} coin${s} from ${action}this post`;
+  let alertText = `You earned ${amount} coin${s} from ${action}a post`;
+  console.log(text);
 
   await Earnings.updateRewardsRecord({
     user: user._id,

@@ -157,6 +157,10 @@ export default function (props) {
       action = 'decreased';
       also = '';
     }
+    let coinAmount;
+    if (singleActivity.coin) {
+      coinAmount = numbers.abbreviateNumber(singleActivity.coin);
+    }
 
     switch (singleActivity.type) {
       case 'upvote':
@@ -235,6 +239,13 @@ export default function (props) {
         return (
           <Text style={styles.activityText}>
             In case you missed this top-ranked post:
+          </Text>
+        );
+
+      case 'reward':
+        return (
+          <Text style={styles.activityText}>
+            {`You earned ${coinAmount} coins from this post`}
           </Text>
         );
 
