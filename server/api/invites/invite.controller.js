@@ -138,11 +138,11 @@ exports.sendEmailFunc = async function inviteEamil(_invite) {
       ${hi}${intro}
       <p>
 
+      <hr/>
+
       <p>
       <b>Mobile</b>: Download Relevant from the app store:
       </p>
-
-      <hr/>
 
       <p>
         <a
