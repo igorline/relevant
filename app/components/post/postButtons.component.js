@@ -181,11 +181,11 @@ class PostButtons extends Component {
       // this.props.actions.triggerAnimation('invest');
       if (!this.props.auth || !this.props.auth.user) return;
       let user = this.props.auth.user;
-      if (user.balance <= 0) {
-        Alert.alert('You don\'t have enough coins to vote 🙁', 'But don\'t worry, you should get a payout in a few days!');
-        return;
-      }
-      let amount = Math.floor(Math.max(1, user.balance * 0.07));
+      // if (user.balance <= 0) {
+      //   Alert.alert('You don\'t have enough coins to vote 🙁', 'But don\'t worry, you should get a payout in a few days!');
+      //   return;
+      // }
+      let amount = 1;
       // this.props.actions.triggerAnimation('invest', { amount: investment });
 
       // this.investButton.measureInWindow((x, y, w, h) => {

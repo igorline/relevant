@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
+// import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { BondedTokenUtils } from 'bonded-token';
-// import NewMessage from '../message/newMessage';
 import Avatar from '../common/avatar.component';
-// import * as MessageActions from '../../../actions/message.actions';
+import { numbers } from '../../../utils';
 
 if (process.env.BROWSER === true) {
   require('./profile.css');
@@ -27,15 +25,10 @@ class Profile extends Component {
     const user = props.user.users[props.params.id];
     if (!user) return null;
     let tokens = user.balance + user.tokenBalance;
-    // if (props.community === 'crypto') {
-    //   tokens = 0;
-    // }
-    // let owner = props.auth.user;
-    // let account = props.account;
-    // if (account && props.community === 'crypto' && owner && owner._id === user._id && user.ethAddress) {
-    //   if (account !== user.ethAddress[0]) return { tokens: 0 };
-    //   tokens = BondedTokenUtils.getValue(props.RelevantCoin, 'balanceOf', account);
-    // }
+    let owner = props.auth.user;
+    if (owner && owner._id === user._id && user.ethAddress[0] && nextProps.wallet.connectedBalance) {
+      tokens = nextProps.wallet.connectedBalance + user.balance;
+    }
     return { tokens };
   }
 
@@ -52,6 +45,7 @@ class Profile extends Component {
   // }
 
   render() {
+    const fixed = n => numbers.abbreviateNumber(n, 2);
     const user = this.props.user.users[this.props.params.id];
     if (!user) {
       return (<div className="profileContainer">
@@ -73,7 +67,7 @@ class Profile extends Component {
             <img src="/img/r-emoji.png" alt="Relevance" className="r" />
             {Math.round(user.relevance || 0)}
             <img src="/img/relevantcoin.png" alt="Coins" className="coin" />
-            {Math.round(this.state.tokens || 0)}
+            {fixed(this.state.tokens) || 0}
           </div>
           <div className="subscribers">
             {'Subscribers: '}<b>{user.followers}</b>

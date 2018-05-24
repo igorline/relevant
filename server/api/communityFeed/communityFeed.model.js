@@ -55,8 +55,8 @@ CommunityFeedSchema.statics.updateRank = async function updateRank(_id, communit
     // create new feed item if needed
     if (!feedItem || !feedItem.metaPost) {
       if (community === 'twitter') community = 'relevant';
-      let meta = this.model('MetaPost').findOne({ _id });
-      feedItem = new this.model('CommuintyFeed')({
+      let meta = await this.model('MetaPost').findOne({ _id });
+      feedItem = new this({
         metaPost: meta._id,
         community,
         latestPost: meta.latestPost,
@@ -64,7 +64,7 @@ CommunityFeedSchema.statics.updateRank = async function updateRank(_id, communit
         categories: meta.categories,
         keywords: meta.keywords,
         rank: meta.rank,
-      })
+      });
       feedItem = await feedItem.save();
     }
 

@@ -2,3 +2,4 @@
 /android
 /ios
 /tests
+*.jsbundle
