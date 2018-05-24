@@ -46,7 +46,8 @@ async function distributeRewards(community, rewardPool) {
   let treasury = await Treasury.findOne({ community });
   let now = new Date();
 
-  let posts = await Post.find({ twitter: { $ne: true }, community, paidOut: false, payoutTime: { $lte: now } });
+  // DO all posts (not really using community here)
+  let posts = await Post.find({ twitter: { $ne: true }, paidOut: false, payoutTime: { $lte: now } });
   let estimatePosts = await Post.find({ twitter: { $ne: true }, paidOut: false, payoutTime: { $gt: now } });
 
   // decay current reward shares
@@ -134,6 +135,10 @@ async function distributeUserRewards(posts, community) {
       console.log(vote.voteWeight);
     });
 
+    if (totalWeights === 0) {
+      return;
+    }
+
     console.log('totalWeights ', totalWeights);
 
     let author = await User.findOne({ _id: post.user }, 'name balance deviceTokens badge ethAddress');
@@ -146,7 +151,9 @@ async function distributeUserRewards(posts, community) {
     // is it better to use post share or post payout?
     // let curationReward = post.payout * (1 - authorShare);
 
-    let authorShare = 1 / totalWeights;
+    let authorShare = 0;
+    if (totalWeights > 0) authorShare = 1 / totalWeights;
+
     let authorPayout = Math.floor(authorShare * post.payout);
     let curationReward = post.payout;
 
@@ -155,6 +162,7 @@ async function distributeUserRewards(posts, community) {
     payouts[author._id] = payouts[author._id] ? payouts[author._id] + authorPayout : authorPayout;
 
     // TODO diff decimal
+    console.log('author payout ', authorPayout / (10 ** 18));
     author.balance += authorPayout / (10 ** 18);
     await author.save();
 
@@ -252,7 +260,8 @@ exports.rewards = async () => {
   }
   computingRewards = true;
   try {
-    let community = 'crypto';
+    // TODO - we right now everything will be global;
+    let community = 'relevant';
 
     let treasury = await Treasury.findOne({ community });
     if (!treasury) treasury = await initTreasury(community);

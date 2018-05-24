@@ -6,6 +6,7 @@ import UserPosts from './userPosts.component';
 import * as MessageActions from '../../../actions/message.actions';
 import * as UserActions from '../../../actions/user.actions';
 import * as PostActions from '../../../actions/post.actions';
+import Eth from '../ethTools/eth.context';
 
 const pageSize = 10;
 
@@ -39,7 +40,9 @@ class ProfileContainer extends Component {
   render() {
     return (
       <div style={{ flex: 1 }}>
-        <Profile {...this.props} />
+        <Eth.Consumer>
+          {wallet => <Profile wallet={wallet} {...this.props} />}
+        </Eth.Consumer>
         <UserPosts {...this.props} load={this.grabPosts} pageSize={pageSize} />
       </div>
     );

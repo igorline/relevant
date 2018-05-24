@@ -26,7 +26,7 @@ class EthTools extends Component {
     balance: 0,
   }
 
-  static getDerivedStateFromProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, prevState) {
     let props = nextProps;
     let user = nextProps.user;
     let balance = 0;
@@ -53,6 +53,7 @@ class EthTools extends Component {
     if (connectedAccount) {
       connectedBalance = BondedTokenUtils.getValue(props.RelevantCoin, 'balanceOf', connectedAccount);
     }
+
     // nonce won't be correct the first time
     if (props.RelevantCoin && props.RelevantCoin.methods && connectedAccount) {
       nonce = props.RelevantCoin.methods.nonceOf.cacheCall(connectedAccount);
@@ -60,6 +61,12 @@ class EthTools extends Component {
     }
     return { nonce, balance, account, connectedAccount, connectedBalance, differentAccount, network, status };
   }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (this.state.connectedBalance !== prevState.connectedBalance) {
+      
+  //   }
+  // }
 
   render() {
     return (

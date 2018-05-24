@@ -24,7 +24,8 @@ const TwitterFeed = require('../../api/twitterFeed/twitterFeed.model');
 // })
 // .catch(err => console.log(err));
 
-// User.findOne({ twitterId: 806193163333300224 }).remove();
+// User.findOne({ twitterId: 806193163333300224 })
+// .remove();
 // .then(u => console.log(u));
 
 
@@ -79,8 +80,8 @@ export async function addTwitterProfile(param) {
   let image = profile._json.profile_image_url_https;
   let twitterHandle = profile.username;
   let twitterEmail = profile._json.email;
-  console.log(twitterEmail);
   let twitterImage = image.replace('_normal', '');
+
   let twitterId = profile.id;
 
   // TODO include twitter bio URL?
@@ -225,7 +226,7 @@ exports.setup = () => {
         if (!user) {
           user = new User({
             role: 'temp',
-            _id: profile.id,
+            _id: profile._json.id,
             handle,
             confirmed: true,
             provider: 'twitter',

@@ -34,7 +34,6 @@ function currentUser(req, res) {
     } else if (req.query && req.query.hasOwnProperty('access_token')) {
       req.headers.authorization = 'Bearer ' + req.query.access_token;
     }
-    console.log('user auth');
     validateJwt(req, res, (err, decoded) => {
       if (err || !req.user) return next();
       User.findById(req.user._id, (err, user) => {

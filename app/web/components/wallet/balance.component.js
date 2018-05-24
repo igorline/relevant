@@ -53,7 +53,7 @@ export default class Balance extends Component {
     }
 
     // TODO cache value in backend
-    tokenBalance = user.tokenBalance || connectedBalance || 0;
+    tokenBalance = connectedBalance || user.tokenBalance || 0;
     let total = rewardBalance + tokenBalance;
 
     if (tokenBalance < .0000001) tokenBalance = 0;
