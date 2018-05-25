@@ -18,6 +18,21 @@ header {
   }
 }
 
+.profileMenu {
+  top: 60px;
+  right: 10px;
+  display: none;
+  /*transform: translateX(50%);*/
+  @extend %popupMenu;
+}
+.profileMenuParent:hover {
+  position: relative;
+  .profileMenu {
+    display: block;
+  }
+}
+
+
 .subHeader{
   background: $darkBg;
   color: white;
@@ -159,7 +174,7 @@ header a {
 .tabs {
   display: flex;
   height: 100%;
-  width: 300px;
+  width: 250px;
   flex-direction: row;
   justify-content: space-around;
   list-style-type: none;

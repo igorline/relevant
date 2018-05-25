@@ -6,21 +6,10 @@
   user-select: none;
 }
 .popupOptions {
-  position: absolute;
-  background: white;
   min-width: 140px;
-  top: 10px;
+  top: 25px;
   right: 0;
-  /*padding: 10px 0px;*/
-  div {
-    font-size: 14px;
-    font-family: Arial;
-    padding: 10px 20px;
-    @extend %flatBorderBottom;
-    pointer: cursor;
-  }
-
-  @extend %popupBorder;
+  @extend %popupMenu;
   a {
     display: block;
   }
