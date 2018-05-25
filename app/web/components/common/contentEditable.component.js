@@ -3,6 +3,7 @@ import React from 'react';
 const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
 
 function stripContentEditableHTML(text) {
+  console.log('edit text ', text);
   return (text || '')
     .replace(/<div><br>/g, '\n')
     .replace(/<div>/g, '\n')
