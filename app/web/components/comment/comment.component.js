@@ -19,7 +19,7 @@ class Comment extends Component {
           user={{ ...comment.embeddedUser, _id: comment.user }}
           date={comment.createdAt}
         />
-        <p className='body'>{comment.text}</p>
+        <div className='body'><pre>{comment.text}</pre></div>
       </div>
     );
   }

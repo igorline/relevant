@@ -159,7 +159,7 @@ function PostBody(props) {
   ));
   return (
     <div>
-      <span>{body}</span>
+      <pre>{body}</pre>
       {tags}
     </div>
   );

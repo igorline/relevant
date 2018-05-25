@@ -174,6 +174,7 @@ exports.create = async (req, res) => {
         relevance: 0,
         rankRelevance: 0,
         embeddedUser: {
+          handle: user.handle,
           name: user.name,
           image: user.image,
         },
@@ -273,6 +274,7 @@ exports.create = async (req, res) => {
     user = await User.findOne({ _id: user });
 
     comment.embeddedUser = {
+      handle: user.handle,
       name: user.name,
       image: user.image
     };
@@ -310,6 +312,8 @@ exports.create = async (req, res) => {
     voters = voters || [];
     otherCommentors = otherCommentors || [];
     otherCommentors = [...otherCommentors, ...voters];
+    // filter out nulls
+    otherCommentors = otherCommentors.filter(u => u);
     console.log('otherCommentors ', otherCommentors);
 
     // filter out duplicates

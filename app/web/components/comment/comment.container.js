@@ -25,11 +25,7 @@ class Comments extends Component {
     comments = comments.data;
     return (
       <div className='comments'>
-        <NewCommentForm
-          {...this.props}
-          onCommentSubmit={this.handleCommentSubmit}
-          scrollToBottom={this.scrollToBottom.bind(this)}
-        />
+
         {(comments.length !== 0) ?
             <div>{comments.map((comment, i) => {
               return (
@@ -44,6 +40,11 @@ class Comments extends Component {
           </div>
           */
         }
+        <NewCommentForm
+          {...this.props}
+          onCommentSubmit={this.handleCommentSubmit}
+          scrollToBottom={this.scrollToBottom.bind(this)}
+        />
       </div>
     );
   }
