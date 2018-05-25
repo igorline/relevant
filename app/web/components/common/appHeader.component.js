@@ -137,17 +137,16 @@ class AppHeader extends Component {
   }
 
   render() {
-    let desktopApp = false;
-    if (process.env.DEVTOOLS) {
-      desktopApp = true;
-    }
-
+    // let desktopApp = false;
+    // if (process.env.DEVTOOLS) {
+    //   desktopApp = true;
+    // }
     return (
       <div className="headerContainer appHeader">
         <header>
           <div className="headerInner row">
             <div>
-              <Link to={this.props.isAuthenticated && desktopApp ? '/discover/new' : '/'}>
+              <Link to={this.props.isAuthenticated ? '/discover/new' : '/'}>
                 <img src={'/img/logo.svg'} className={'logo'} alt={'Relevant'} />
               </Link>
             </div>

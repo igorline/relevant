@@ -278,6 +278,35 @@ select.shadowButton, button.shadowButton {
   }
 }
 
+.mobileSplash {
+  display: none;
+}
+
+@media screen
+  and (max-width: 714px) {
+
+  .mobileSplash {
+    position: fixed;
+    z-index: 1;
+    background: white;
+    height: calc(100vh);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10%;
+    h1 {
+      text-align: center;
+      /*margin-bottom: 100px;*/
+      /*width: 90%*/
+    }
+    img {
+      max-width: 200px;
+      margin: auto;
+      display: block;
+    }
+  }
+}
 
 @media screen
   and (max-device-width: 414px) {

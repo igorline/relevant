@@ -81,6 +81,36 @@ class App extends Component {
 
   render() {
     const location = this.props.location;
+
+    let mobileEl = (
+      <div className="mobileSplash">
+        <h1>Relevant browser version doesn't currently support mobile devices</h1>
+        <p>Please download a dedicated mobile app:</p>
+        <p>
+          <a
+            href="https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051?mt=8"
+            target="_blank"
+          >
+            <img
+              alt="iOS App Store"
+              src="https://relevant.community/img/appstore.png"
+            />
+          </a>
+
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <a
+            href="https://play.google.com/store/apps/details?id=com.relevantnative&amp;pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"
+            target="_blank"
+          >
+            <img
+              alt="Google Play Store"
+              src="https://relevant.community/img/googleplaystore.png"
+            />
+          </a>
+        </p>
+      </div>
+    );
+
     let header =
       <AppHeader
         location={location}
@@ -92,6 +122,7 @@ class App extends Component {
         params={this.props.params}
         toggleLogin={this.toggleLogin.bind(this)}
       />;
+      mobileEl = null;
     }
 
     let user = this.props.user;
@@ -103,6 +134,7 @@ class App extends Component {
       <main>
         <EthTools>
           {header}
+          {mobileEl}
           <div style={{ display: 'flex', width: '100%' }}>
             {this.props.children}
           </div>
