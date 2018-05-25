@@ -49,6 +49,12 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
+pre {
+  font-family: inherit;
+  font-size: inherit;
+  white-space: pre-wrap;
+}
+
 textarea {
   font-family: Arial, sans-serif;
 }
