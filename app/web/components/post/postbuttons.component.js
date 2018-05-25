@@ -95,13 +95,15 @@ class PostButtons extends Component {
     let votedUp;
     let votedDown;
     let buttonOpacity = { opacity: 1 };
+    let upvoteBtn = '/img/upvote.png';
 
     if (this.props.myPostInv) {
-      vote = this.props.myPostInv[post.id] || !this.props.isAuthenticated;
+      vote = this.props.myPostInv[post.id] || !this.props.auth.isAuthenticated;
       if (vote) {
         votedUp = vote.amount > 0;
         votedDown = vote.amount < 0;
         buttonOpacity = { opacity: 0.5 };
+        upvoteBtn = '/img/upvote-shadow.svg';
       }
     }
 
@@ -115,7 +117,7 @@ class PostButtons extends Component {
             style={buttonOpacity}
             onClick={e => vote ? e.stopPropagation() : this.vote(e)}
           >
-            <img alt="Upvote" src={votedUp ? '/img/upvoteActive.png' : '/img/upvote-shadow.svg'} className="upvote" />
+            <img alt="Upvote" src={votedUp ? '/img/upvoteActive.png' : upvoteBtn} className="upvote" />
           </a>
           <div className="fraction">
 {/*            <div className="num">

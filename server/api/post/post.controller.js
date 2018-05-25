@@ -464,8 +464,12 @@ exports.related = async req => {
 
 exports.update = async (req, res, next) => {
   try {
+    console.log('tags ', req.body.tags);
+
     let tags = req.body.tags.filter(tag => tag);
+
     tags = tags.map(tag => tag.replace('_category_tag', '').trim());
+
     let mentions = req.body.mentions || [];
     let newMentions;
     let newTags;
@@ -549,7 +553,6 @@ exports.create = (req, res) => {
   // }
 
   if (category) tags.push(category);
-
   req.body.tags.forEach(tag => {
     if (tag) {
       tags.push(tag.replace('_category_tag', '').trim());

@@ -43,6 +43,7 @@ class CreatePostContainer extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.validateInput = this.validateInput.bind(this);
     this.clearPost = this.clearPost.bind(this);
+    this.selectTags = this.selectTags.bind(this);
     this.state = {
       body: '',
       category: '',
@@ -79,6 +80,15 @@ class CreatePostContainer extends Component {
     if (newState.body !== this.state.body) {
       this.parseBody(newState);
     }
+  }
+
+  selectTags(tag) {
+    if (!tag || !tag.length) return;
+    if (typeof tag === 'string') tag = [tag];
+    let selectedTags = this.state.selectedTags;
+    selectedTags = [...new Set([...selectedTags, ...tag])];
+    console.log(selectedTags);
+    this.setState({ selectedTags });
   }
 
   clearPost() {
@@ -135,10 +145,12 @@ class CreatePostContainer extends Component {
       const allTags = this.tags.concat(this.state.selectedTags);
       const tags = Array.from(new Set(allTags));
 
+      let body = this.state.body.replace(/&nbsp;/gi, '');
+
       let post = {
         link: this.state.postUrl || this.props.postUrl,
         tags,
-        body: this.state.body,
+        body,
         title: this.state.urlPreview ? this.state.urlPreview.title : null,
         description: this.state.urlPreview ? this.state.urlPreview.description : null,
         category: this.state.category,
@@ -150,10 +162,10 @@ class CreatePostContainer extends Component {
       if (this.props.createPost.edit) {
         post = { ...this.props.createPost.editPost, ...post };
         let success = await this.props.actions.editPost(post);
-        if (this.props.close) this.props.close();
-        this.props.router.push(this.props.location.pathname);
         if (success) {
           this.clearPost();
+          this.props.router.push(this.props.location.pathname);
+          if (this.props.close) this.props.close();
         }
         return;
       }
@@ -392,12 +404,7 @@ class CreatePostContainer extends Component {
           />
           <TagInput
             selectedTags={this.state.selectedTags}
-            selectTag={tag => {
-              if (!tag || !tag.length) return;
-              let selectedTags = this.state.selectedTags;
-              selectedTags = [...new Set([...selectedTags, tag])];
-              this.setState({ selectedTags });
-            }}
+            selectTag={this.selectTags}
             deselectTag={tag => {
               let selectedTags = this.state.selectedTags;
               selectedTags = selectedTags.filter(t => t !== tag);
@@ -427,12 +434,7 @@ class CreatePostContainer extends Component {
             text={'Suggested article tags'}
             tags={this.state.keywords}
             selectedTags={this.state.selectedTags}
-            selectTag={tag => {
-              if (!tag || !tag.length) return;
-              let selectedTags = this.state.selectedTags;
-              selectedTags = [...new Set([...selectedTags, tag])];
-              this.setState({ selectedTags });
-            }}
+            selectTag={this.selectTags}
             deselectTag={tag => {
               let selectedTags = this.state.selectedTags;
               selectedTags = selectedTags.filter(t => t !== tag);
@@ -444,12 +446,7 @@ class CreatePostContainer extends Component {
             text={'Suggested community tags'}
             tags={this.props.tags.parentTags.map(t => t._id)}
             selectedTags={this.state.selectedTags}
-            selectTag={tag => {
-              if (!tag || !tag.length) return;
-              let selectedTags = this.state.selectedTags;
-              selectedTags = [...new Set([...selectedTags, tag])];
-              this.setState({ selectedTags });
-            }}
+            selectTag={this.selectTags}
             deselectTag={(tag) => {
               let selectedTags = this.state.selectedTags;
               selectedTags = selectedTags.filter(t => t !== tag);

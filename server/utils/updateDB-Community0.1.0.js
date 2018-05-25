@@ -172,8 +172,9 @@ async function updatePostUserHandle() {
     select: 'handle',
   });
   let updatedPosts = posts.map(async post => {
-    if (!post.embeddedUser || !post.user) return;
-    post.embeddedUser.handle = post.user.handle;
+    if (!post.embeddedUser) return null;
+    if (!post.user) post.embeddedUser.handle = post.embeddedUser.id;
+    else post.embeddedUser.handle = post.user.handle;
     return post.save();
   });
   return Promise.all(updatedPosts);

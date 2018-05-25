@@ -101,7 +101,7 @@ class Post extends Component {
       user.image = post.embeddedUser.image;
       user.name = post.embeddedUser.name;
       user.relevance = post.embeddedUser.relevance ? post.embeddedUser.relevance.relevance : null;
-      user.handle = post.embeddedUser.handle;
+      user.handle = post.embeddedUser.handle || post.embeddedUser.id;
     }
     if (!user && post.twitter) {
       user = post.embeddedUser;
@@ -160,7 +160,7 @@ function PostBody(props) {
   return (
     <div>
       <pre>{body}</pre>
-      {tags}
+      {' '}{tags}
     </div>
   );
 }
