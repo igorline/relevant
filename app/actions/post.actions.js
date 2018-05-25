@@ -441,7 +441,7 @@ export function deleteComment(token, id, postId) {
 export function getComments(postId, skip, limit) {
   return function(dispatch) {
     if (!skip) skip = 0;
-    if (!limit) limit = 5;
+    if (!limit) limit = 0;
 
     fetch(process.env.API_SERVER+'/api/comment?post='+postId+'&skip='+skip+'&limit='+limit, {
       credentials: 'include',

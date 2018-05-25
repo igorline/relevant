@@ -25,14 +25,13 @@ class Comments extends Component {
     comments = comments.data;
     return (
       <div className='comments'>
-
         {(comments.length !== 0) ?
-            <div>{comments.map((comment, i) => {
-              return (
-                <Comment key={comment._id} auth={this.props.auth} data={comment} />
-              );
-            })}
-            </div>
+          <div>{comments.map((comment, i) => {
+            return (
+              <Comment key={comment._id} auth={this.props.auth} data={comment} />
+            );
+          })}
+          </div>
           : null
 /*
           <div className='empty'>
