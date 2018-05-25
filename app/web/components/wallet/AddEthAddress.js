@@ -43,6 +43,12 @@ export default class AddEthAddress extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (!prevProps.balance && this.props.balance > 0 && this.state.modal === false) {
+      this.setState({ modal: true });
+    }
+  }
+
   renderModal() {
     let footer = (
       <button className="shadowButton"
@@ -75,8 +81,12 @@ export default class AddEthAddress extends Component {
 
 
   render() {
-    let { user, connectedAccount, account } = this.props;
-    if (user && !connectedAccount && account && !user.ethAddress[0] || this.props.connectAccount) {
+    let { user, connectedAccount, account, balance } = this.props;
+    if ((user &&
+      !connectedAccount &&
+      balance &&
+      account &&
+      !user.ethAddress[0]) || this.props.connectAccount) {
       return this.renderModal();
     }
     return null;
