@@ -227,6 +227,7 @@ async function processTweet(tweet, user) {
       postDate: originalTweet.created_at,
 
       embeddedUser: {
+        handle: tweet.user.screen_name,
         name: tweet.user.name,
         id: tweet.user.screen_name,
         image: tweet.user.profile_image_url_https.replace('_normal', '')

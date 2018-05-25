@@ -16,6 +16,7 @@ $shadowBorderGrey: hsl(0,0%,70%);
 
 $darkBg: #444445;
 $lightBg: hsl(0,0%,92%);
+$bodyBg: hsl(240,15%,97%);
 
 $twitterBlue: #00aced;
 
@@ -47,7 +48,7 @@ $postOffsetPadding: 0;
 %popupBorder {
   box-shadow: 0px 0px 0px .5px $shadowBorderGrey,
   -.1px -.1px 0px .5px $shadowBorderGrey,
-  0 0px 20px -8px $darkGrey;
+  0 0px 20px -5px $darkGrey;
 }
 
 %flatBorder {
@@ -56,7 +57,34 @@ $postOffsetPadding: 0;
 }
 
 %flatBorderBottom {
-  box-shadow: 0px .5px 0px 0px $lightGrey;
+  box-shadow: 0px .5px 0px 0px $lightBg;
+}
+
+%popupMenu {
+  position: absolute;
+  background: white;
+  min-width: 140px;
+  text-align: center;
+  div, a {
+    font-size: 14px;
+    font-family: Arial;
+    padding: 10px 20px;
+    @extend %flatBorderBottom;
+    pointer: cursor;
+    color: $blue;
+    &:last-of-kind {
+      border: none;
+      box-shadow: none;
+    }
+    &:hover {
+      background-color: $bodyBg;
+    }
+  }
+
+  @extend %popupBorder;
+  a {
+    display: block;
+  }
 }
 
 %input {

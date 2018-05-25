@@ -43,14 +43,26 @@ export default class TagInput extends Component {
             value={this.state.input}
             onKeyDown={e => {
               if (e.keyCode === 13) {
-                props.selectTag(e.target.value);
+                let tag = e.target.value.trim().replace('#', '');
+                props.selectTag(tag);
                 return this.setState({ input: '' });
               }
               return;
             }}
+            onBlur={e => {
+              let tags = e.target.value.split(/\,|#/);
+              tags = tags.map(t => t.trim().replace('#', ''))
+              .filter(t => t.length);
+              if (tags.length) {
+                props.selectTag(tags);
+              }
+              return this.setState({ input: '' });
+            }}
             onChange={e => {
               let tags = e.target.value;
-              let tagsArr = tags.split(',');
+              let tagsArr = tags.split(/\,|#/);
+              tagsArr = tagsArr.map(t => t.trim())
+              .filter(t => t.length);
               if (tagsArr.length > 1) {
                 props.selectTag(tagsArr[0]);
                 return this.setState({ input: tagsArr[1] });

@@ -63,8 +63,25 @@ class AppHeader extends Component {
     );
 
     return (<div className="navInner">
-      <div className={'navLink'}>
+      <div className={'navLink profileMenuParent'}>
         <Avatar size={42} user={this.props.user} noName />
+
+{/*        <div
+          className={'profileMenu'}
+        >
+          <Link
+            to={'/profile/' + this.props.user.handle}
+          >
+            Profile
+          </Link>
+
+          <div
+            onClick={() => this.props.actions.logoutAction(this.props.user)}
+          >
+            Logout
+          </div>
+
+        </div>*/}
       </div>
       <div
         className={'navLink'}

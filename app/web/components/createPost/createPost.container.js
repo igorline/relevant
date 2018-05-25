@@ -393,6 +393,7 @@ class CreatePostContainer extends Component {
           <TagInput
             selectedTags={this.state.selectedTags}
             selectTag={tag => {
+              if (!tag || !tag.length) return;
               let selectedTags = this.state.selectedTags;
               selectedTags = [...new Set([...selectedTags, tag])];
               this.setState({ selectedTags });
@@ -427,6 +428,7 @@ class CreatePostContainer extends Component {
             tags={this.state.keywords}
             selectedTags={this.state.selectedTags}
             selectTag={tag => {
+              if (!tag || !tag.length) return;
               let selectedTags = this.state.selectedTags;
               selectedTags = [...new Set([...selectedTags, tag])];
               this.setState({ selectedTags });
@@ -443,6 +445,7 @@ class CreatePostContainer extends Component {
             tags={this.props.tags.parentTags.map(t => t._id)}
             selectedTags={this.state.selectedTags}
             selectTag={tag => {
+              if (!tag || !tag.length) return;
               let selectedTags = this.state.selectedTags;
               selectedTags = [...new Set([...selectedTags, tag])];
               this.setState({ selectedTags });
