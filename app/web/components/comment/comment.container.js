@@ -23,6 +23,7 @@ class Comments extends Component {
     let comments = this.props.comments.commentsById[this.props.params.id];
     if (!comments) return null;
     comments = comments.data;
+    if(!comments) return null;
     return (
       <div className='comments'>
         {(comments.length !== 0) ?
