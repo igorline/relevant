@@ -200,7 +200,7 @@ async function runUpdates() {
     // await createRelevantCommunityFeed();
     // await updateTreasury();
     // await updatePostUserHandle();
-    await updateCommentUserHandle();
+    // await updateCommentUserHandle();
 
     // await removeEmptyCommunityFeedEls()
     console.log('finished db updates');
@@ -209,4 +209,4 @@ async function runUpdates() {
   }
 }
 
-runUpdates();
+// runUpdates();
