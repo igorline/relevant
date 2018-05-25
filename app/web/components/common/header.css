@@ -217,15 +217,20 @@ header a {
     height: 24px;
     margin: 13px;
   }
-
   header {
     height: 50px;
   }
   .headerContainer {
-    height: 50px;
+    padding-top: 50px;
   }
-  header > div:last-child * {
+  .headerInner {
+    justify-content: center;
+  }
+  .headerInner > div.rightNav {
     display: none;
+  }
+  .headerInner > div.tabContainer {
+    display: none !important;
   }
 
 }

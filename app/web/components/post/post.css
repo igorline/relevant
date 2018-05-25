@@ -332,21 +332,21 @@
     padding: 0;
   }
   .post .shadowBox {
-    padding: 0;
-    position: relative;
-    border: 0;
-    min-height: 240px;
-    box-shadow: 0 0;
-    margin-bottom: 0;
+    /*padding: 0;*/
+    /*position: relative;*/
+    /*border: 0;*/
+    /*min-height: 240px;*/
+    /*box-shadow: 0 0;*/
+    /*margin-bottom: 0;*/
   }
   .post .image {
-    position: absolute;
+/*    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: 0;
-    background-color: #212121;
+    background-color: #212121;*/
   }
   .post .shadowBox > div {
     width: 100%;
