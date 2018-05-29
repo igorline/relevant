@@ -69,6 +69,10 @@ class App extends Component {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       window.scrollTo(0, 0);
     }
+    if (prevProps.auth.user !== this.props.auth.user) {
+      let userId = this.props.auth.user ? this.props.auth.user._id : null;
+      this.props.actions.userToSocket(userId);
+    }
   }
 
   toggleLogin() {

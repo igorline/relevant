@@ -703,3 +703,10 @@ export function cashOut() {
     }
   };
 }
+
+
+export function userToSocket(user) {
+  return dispatch => {
+    dispatch({ type: 'server/storeUser', payload: user });
+  };
+}
