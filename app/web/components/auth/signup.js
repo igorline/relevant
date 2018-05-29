@@ -12,7 +12,8 @@ class SignupForm extends Component {
       email: '',
       password: '',
       cPassword: '',
-      errors: {}
+      errors: {},
+      provider: 'twitter'
     };
 
     this.errors = {
@@ -25,6 +26,7 @@ class SignupForm extends Component {
     this.checkUser = this.checkUser.bind(this);
     this.submit = this.submit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.renderEmailForm = this.renderEmailForm.bind(this);
   }
 
   checkEmail() {
@@ -99,28 +101,18 @@ class SignupForm extends Component {
     this.props.parentFunction(this.state);
   }
 
-  render() {
+  renderEmailForm() {
     let errors = this.state.errors;
-    if (this.props.user && this.props.user.role === 'temp') {
-      return <SetHandle
-        checkUser={this.checkUser}
-        nameError={this.nameError}
-        user={this.props.user}
-        {...this.props}
-      />;
-    }
-    return (
-      <div className="innerForm">
-        <div style={{ width: '100%' }}>
-          <a
-            className={'twitterButton'}
-            href="/auth/twitter"
-          >
-              Sign up with Twitter
-          </a>
-          <span className={'or'}>or</span>
-        </div>
+    let signUpWithEmail = <a
+      className={'smallText middle'}
+      onClick={() => this.setState({ provider: 'email' })}>
+        Sign up with Email
+    </a>;
 
+    if (this.state.provider !== 'email') return signUpWithEmail;
+
+    return (
+      <div>
         <div>
           <input
             className="blueInput special"
@@ -188,6 +180,34 @@ class SignupForm extends Component {
             Sign Up
           </ShadowButton>
         </div>
+      </div>
+    );
+  }
+
+  render() {
+    if (this.props.user && this.props.user.role === 'temp') {
+      return <SetHandle
+        checkUser={this.checkUser}
+        nameError={this.nameError}
+        user={this.props.user}
+        {...this.props}
+      />;
+    }
+
+
+    return (
+      <div className="innerForm">
+        <div style={{ width: '100%' }}>
+          <a
+            className={'twitterButton'}
+            href="/auth/twitter"
+          >
+              Sign up with Twitter
+          </a>
+          <span className={'or'}>or</span>
+        </div>
+
+        {this.renderEmailForm()}
 
         <div className={'smallText'}>
           Already registered? <Link

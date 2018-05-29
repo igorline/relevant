@@ -313,6 +313,11 @@ export default function post(state = initialState, action) {
       });
     }
 
+    // this wipes feed on login
+    // case types.LOGIN_USER_SUCCESS: {
+    //   return { ...initialState };
+    // }
+
     // this wipes feed on logout
     // case types.LOGOUT_USER: {
     //   return { ...initialState };

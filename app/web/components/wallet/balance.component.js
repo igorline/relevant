@@ -71,7 +71,7 @@ export default class Balance extends Component {
         <Link
           to={'/wallet#connectAccount'}
         >
-          <button className={'basicButton smallButton'}>
+          <button className={'shadowButton'}>
             Connect Account
           </button>
         </Link>
@@ -84,7 +84,7 @@ export default class Balance extends Component {
         <Link
           to={'/wallet#connectAccount'}
         >
-          <button className={'basicButton smallButton'}>
+          <button className={'shadowButton'}>
             Connect Account
           </button>
         </Link>

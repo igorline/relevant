@@ -67,6 +67,9 @@ export class Discover extends Component {
     if (this.props.params.tag !== prevProps.params.tag) {
       this.load(this.props.params.sort, this.props);
     }
+    if (this.props.auth.user !== prevProps.auth.user) {
+      this.load(this.props.params.sort, this.props);
+    }
   }
 
 
