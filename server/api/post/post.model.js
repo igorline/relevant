@@ -214,6 +214,14 @@ PostSchema.methods.updateClient = function updateClient(user) {
   this.model('Post').events.emit('postEvent', postNote);
 };
 
+// PostSchema.methods.newPost = function newPost() {
+//   let newPostEvent = {
+//     type: 'SET_NEW_POSTS_STATUS',
+//     payload: 1,
+//   };
+//   this.model('Post').events.emit('postEvent', newPostEvent);
+// };
+
 PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId) {
   let meta;
   try {
@@ -320,8 +328,14 @@ PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId) {
         },
         { upsert: true, new: true }
       );
-    }
 
+      // notify front end there is a new post
+      let newPostEvent = {
+        type: 'SET_NEW_POSTS_STATUS',
+        payload: { community },
+      };
+      this.model('Post').events.emit('postEvent', newPostEvent);
+    }
   } catch (err) {
     console.log('error creating / updating metapost ', err);
   }

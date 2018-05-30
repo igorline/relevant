@@ -7,6 +7,7 @@ import { Drizzle } from 'drizzle';
 import Header from './common/header.component';
 import AppHeader from './common/appHeader.component';
 import * as routerActions from 'react-router-redux';
+import * as navigationActions from '../../actions/navigation.actions';
 
 // import Footer from './common/footer.component';
 import * as authActions from '../../actions/auth.actions';
@@ -63,14 +64,22 @@ class App extends Component {
     // document.body.classList.remove('loading')
     this.props.actions.getUser();
     new Drizzle(options, this.context.store);
+
+    // this will be harsh...
+    // window.addEventListener('focus', () => {
+    //   if (this.props.newPosts)
+    //   this.props.actions.refreshTab('discover');
+    // });
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       window.scrollTo(0, 0);
     }
-    if (prevProps.auth.user !== this.props.auth.user) {
-      let userId = this.props.auth.user ? this.props.auth.user._id : null;
+    let userId = this.props.auth.user ? this.props.auth.user._id : null;
+    let PrevUserId = prevProps.auth.user ? prevProps.auth.user._id : null;
+
+    if (userId !== PrevUserId) {
       this.props.actions.userToSocket(userId);
     }
   }
@@ -138,7 +147,6 @@ class App extends Component {
       <main>
         <EthTools>
           {header}
-          {mobileEl}
           <div style={{ display: 'flex', width: '100%' }}>
             {this.props.children}
           </div>
@@ -165,6 +173,7 @@ class App extends Component {
         >
           <CreatePost modal />
         </Modal>
+        {mobileEl}
       </main>
     );
   }
@@ -177,6 +186,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators({
+    ...navigationActions,
     ...routerActions,
     ...authActions,
   }, dispatch)

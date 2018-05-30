@@ -42,16 +42,16 @@ function removeClient(socket, currentUser) {
       { _id: currentUser },
       { online: false })
     .exec()
-    .then((online) => {
-      let data = {
-        type: 'UPDATE_USER',
-        payload: {
-          _id: online._id,
-          online: false
-        }
-      };
-      NotificationEvents.emit('notification', data);
-    })
+    // .then((online) => {
+    //   let data = {
+    //     type: 'UPDATE_USER',
+    //     payload: {
+    //       _id: online._id,
+    //       online: false
+    //     }
+    //   };
+    //   NotificationEvents.emit('notification', data);
+    // })
     .catch(err => console.log(err));
   }
 
@@ -70,18 +70,18 @@ function addClient(socket, currentUser) {
       { _id: currentUser },
       { online: true })
       .exec()
-      .then(online => {
-        if (online) {
-          let data = {
-            type: 'UPDATE_USER',
-            payload: {
-              _id: online._id,
-              online: true
-            }
-          };
-          NotificationEvents.emit('notification', data);
-        }
-      })
+      // .then(online => {
+      //   if (online) {
+      //     let data = {
+      //       type: 'UPDATE_USER',
+      //       payload: {
+      //         _id: online._id,
+      //         online: true
+      //       }
+      //     };
+      //     NotificationEvents.emit('notification', data);
+      //   }
+      // })
       .catch(err => console.log(err));
   }
 }
