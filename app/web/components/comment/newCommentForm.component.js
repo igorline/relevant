@@ -69,7 +69,7 @@ class NewCommentForm extends Component {
         this.textInput.focus();
         return;
       }
-      this.props.scrollToBottom();
+      // this.props.scrollToBottom();
     });
 
     // this.props.onCommentSubmit(commentObj);
