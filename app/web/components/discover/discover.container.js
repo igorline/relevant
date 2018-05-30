@@ -51,25 +51,33 @@ export class Discover extends Component {
     this.lastRefresh = 0;
   }
 
-  componentDidMount() {
-    this.load();
-  }
+  // componentDidMount() {
+  // }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     return discoverHelper.getDiscoverState(nextProps, prevState);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
+    let alreadyLoading;
+
     if (this.props.refresh && this.props.refresh > this.lastRefresh) {
       this.lastRefresh = this.props.refresh;
       this.load(this.props.params.sort, this.props);
+      alreadyLoading = true;
     }
     if (this.props.params.tag !== prevProps.params.tag) {
       this.load(this.props.params.sort, this.props);
+      alreadyLoading = true;
     }
-    if (this.props.auth.user !== prevProps.auth.user) {
+    let userId = this.props.auth.user ? this.props.auth.user._id : null;
+    let prevUserId = prevProps.auth.user ? prevProps.auth.user._id : null;
+
+    // TODO should we do this w refresh instead? when we log in / out?
+    if (userId !== prevUserId && !alreadyLoading) {
       this.load(this.props.params.sort, this.props);
     }
+
   }
 
 
@@ -141,6 +149,7 @@ export class Discover extends Component {
     return (
       <div className="discoverContainer row pageContainer">
 
+
 {/*        <nav>
           communities:
             <ul>
@@ -155,6 +164,7 @@ export class Discover extends Component {
               <h3><Link to='/discover/new'>{this.props.auth.community}</Link> - #{tag}</h3>
             }
             <CreatePost {...this.props} />
+
             { this.renderFeed() }
             {/* isLoaded ? this.renderFeed() : <Loading />*/}
           </div>

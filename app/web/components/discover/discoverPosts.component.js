@@ -83,16 +83,26 @@ class DiscoverPosts extends Component {
       posts = this.renderDiscover(sort, tag);
     }
     let length = posts.length;
+    let newPosts = this.props.posts.newPostsAvailable[this.props.auth.community];
+    let refreshPosts = (<a
+      className="refresh"
+      onClick={() => this.props.actions.refreshTab('discover')}
+    >
+      Load latests Posts
+    </a>);
 
     return (
-      <InfScroll
-        className={'parent'}
-        data={data}
-        loadMore={(p) => this.load(p, length)}
-        hasMore={this.hasMore}
-      >
-        {posts}
-      </InfScroll>
+      <div style={{ position: 'relative' }}>
+        {newPosts ? refreshPosts : null}
+        <InfScroll
+          className={'parent'}
+          data={data}
+          loadMore={(p) => this.load(p, length)}
+          hasMore={this.hasMore}
+        >
+          {posts}
+        </InfScroll>
+      </div>
     );
   }
 }
