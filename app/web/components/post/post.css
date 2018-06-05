@@ -4,6 +4,7 @@
   /*max-width: 800px;*/
   flex: 1;
   display: flex;
+  min-width: 0;
   flex-direction: column;
   /*align-self: center;*/
   padding-bottom: 100px;

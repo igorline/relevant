@@ -54,7 +54,9 @@ pre {
   font-size: inherit;
   white-space: pre-wrap;
   margin: 0;
-  display: inline;
+  display: inline-block;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 textarea {
