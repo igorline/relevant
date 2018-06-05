@@ -118,7 +118,7 @@ class Post extends Component {
 {/*          <div className="postMeta">
           </div>*/}
 
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
 
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <AvatarBox user={user} auth={this.props.auth} date={post.postDate} />
