@@ -95,7 +95,12 @@
   }
 }
 
-
+.removeUrl {
+  font-size: 12px;
+  position: absolute;
+  right: 5px;
+  bottom: -20px;
+}
 
 .createOptions {
   position: relative;

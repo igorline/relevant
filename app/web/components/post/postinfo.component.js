@@ -29,14 +29,21 @@ export default function (props) {
   let small = props.small ? 'small' : '';
   let preview = props.preview ? 'preview' : '';
 
+  // let closeEl;
+  // if (props.close) {
+  //   closeEl = <div className="close"><div onClick={props.close}></div></div>;
+  // }
+
   const postContent = (
-    <div className={'minimalPost postinfo ' + small + ' ' + preview}>
-      <div className='image'><div style={postImage}></div></div>
-      <div className={'headlineContainer'}>
-        <h3 className="headline bebasRegular">{post.title}</h3>
-        {post.domain &&
-          <div className="domain">{post.domain}</div>
-        }
+    <div style={{ position: 'relative' }}>
+      <div className={'minimalPost postinfo ' + small + ' ' + preview}>
+        <div className='image'><div style={postImage}></div></div>
+        <div className={'headlineContainer'}>
+          <h3 className="headline bebasRegular">{post.title}</h3>
+          {post.domain &&
+            <div className="domain">{post.domain}</div>
+          }
+        </div>
       </div>
     </div>
   );

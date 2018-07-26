@@ -19,12 +19,29 @@
   /*box-shadow: 2px 2px 0 0 #000;*/
 }
 
+.close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+
+  background-image: url('/img/x.png');
+  background-size: cover;
+  pointer-events: none;
+  div {
+    pointer-events: auto;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+  }
+}
+
 /*.singlePost .postContainer  {
   margin: 0 0 0 $leftMargin;
 }*/
 
 .postinfo {
   margin-bottom: 10px;
+  position: relative;
   &.shadowBox {
     display: flex;
     flex-direction: row;
@@ -124,10 +141,10 @@
   &.preview {
     padding: 0px;
     border: none;
-    box-shadow: 0px 0px 0px 0.5px $borderGrey;
+    box-shadow: 0px 0px 0px 1px $borderGrey;
     align-items: center;
     &:hover {
-      box-shadow: 0px 0px 0px .5px $borderGrey;
+      box-shadow: 0px 0px 0px 1px $borderGrey;
     };
     .image {
       width: 90px;

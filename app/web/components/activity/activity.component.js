@@ -17,12 +17,12 @@ export default class SingleActivity extends Component {
     if (user && activity.totalUsers - 1) {
       let s = '';
       if (activity.totalUsers - 1 > 1) s = 's';
-      return (<span>
+      return (<div>
         <Link to={'/profile/' + user._id} >
           {user.name}{' '}
         </Link>
-        and {activity.totalUsers - 1} other{s}
-      </span>);
+         and {activity.totalUsers - 1} other{s}
+      </div>);
     }
 
     return (

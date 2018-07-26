@@ -37,7 +37,7 @@ let PostSchema = new Schema({
     href: String,
   }],
   publisher: String,
-
+  keywords: [String],
   repost: {
     post: { type: String, ref: 'Post' },
     comment: { type: Schema.Types.ObjectId, ref: 'Comment' },
@@ -61,27 +61,36 @@ let PostSchema = new Schema({
   mentions: [{ type: String, ref: 'User' }],
   // investments: [{ type: Schema.Types.ObjectId, ref: 'Invest' }],
   // comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
+
+  // separate table for community
   rank: { type: Number, default: 0 },
+  // what is this?
   lastPost: [{ type: String, ref: 'User' }],
+
+  // deprecated
   categoryName: String,
   categoryEmoji: String,
+
+  // store metadata here only
   metaPost: { type: Schema.Types.ObjectId, ref: 'MetaPost' },
   postDate: { type: Date, index: true, default: new Date() },
+
+  // separate table for community
   relevance: { type: Number, default: 0 },
   relevanceNeg: { type: Number, default: 0 },
   rankRelevance: { type: Number, default: 0 },
   commentCount: { type: Number, default: 0 },
   upVotes: { type: Number, default: 0 },
   downVotes: { type: Number, default: 0 },
-  keywords: [String],
 
+  // should be diff table - diff communities will have diff payouts
   paidOut: { type: Boolean, default: false },
   payoutTime: { type: Date },
   payout: { type: Number, default: 0 },
   payOutShare: { type: Number, default: 0 },
-
   balance: { type: Number, default: 0 },
 
+  // meta
   twitter: { type: Boolean, default: false },
   twitterUser: Number,
   twitterId: Number,

@@ -227,43 +227,43 @@ exports.create = async (req, res) => {
 
   async function sendOutComments(commentor) {
     try {
-      if (user._id != commentor._id) {
-        let type = 'comment';
-        let ownPost = false;
+      if (user._id === commentor._id) return;
 
-        if (commentor._id == postAuthor._id) ownPost = true;
-        type = !ownPost ? type += 'Also' : type;
+      let type = 'comment';
+      let ownPost = false;
 
-        if (comment.repost && ownPost) type = 'repost';
+      if (postAuthor && commentor._id == postAuthor._id) ownPost = true;
+      type = !ownPost ? type += 'Also' : type;
 
-        const dbNotificationObj = {
-          post: post._id,
-          forUser: commentor._id,
-          byUser: user._id,
-          comment: comment._id,
-          amount: null,
-          type,
-          personal: true,
-          read: false,
-        };
+      if (comment.repost && ownPost) type = 'repost';
 
-        const newDbNotification = new Notification(dbNotificationObj);
-        let note = await newDbNotification.save();
+      const dbNotificationObj = {
+        post: post._id,
+        forUser: commentor._id,
+        byUser: user._id,
+        comment: comment._id,
+        amount: null,
+        type,
+        personal: true,
+        read: false,
+      };
 
-        const newNotifsObj = {
-          _id: commentor._id,
-          type: 'ADD_ACTIVITY',
-          payload: note,
-        };
-        CommentEvents.emit('comment', newNotifsObj);
+      const newDbNotification = new Notification(dbNotificationObj);
+      let note = await newDbNotification.save();
 
-        let action = ` commented on ${ownPost ? 'your' : 'a'} post`;
-        if (comment.repost && ownPost) action = ' reposted your post';
+      const newNotifsObj = {
+        _id: commentor._id,
+        type: 'ADD_ACTIVITY',
+        payload: note,
+      };
+      CommentEvents.emit('comment', newNotifsObj);
 
-        let alert = user.name + action;
-        let payload = { commentFrom: req.user.name };
-        apnData.sendNotification(commentor, alert, payload);
-      }
+      let action = ` commented on ${ownPost ? 'your' : 'a'} post`;
+      if (comment.repost && ownPost) action = ' reposted your post';
+
+      let alert = user.name + action;
+      let payload = { commentFrom: req.user.name };
+      apnData.sendNotification(commentor, alert, payload);
     } catch (err) {
       console.log('error sending comment notifications ', err);
     }

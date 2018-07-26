@@ -98,6 +98,15 @@ class CreatePostContainer extends Component {
     this.stateFromReducer();
   }
 
+  clearUrl() {
+    this.url = null;
+    this.urlPreview = null;
+    this.setState({
+      postUrl: null,
+      urlPreview: null
+    });
+  }
+
   componentDidUpdate() {
     this.lengthDelta = 0;
   }
@@ -261,7 +270,7 @@ class CreatePostContainer extends Component {
 
     let postUrl = words.find(word => URL_REGEX.test(word.toLowerCase()));
 
-    if (shouldParseUrl && postUrl && postUrl !== this.url) {
+    if (!this.state.postUrl && shouldParseUrl && postUrl && postUrl !== this.url) {
       this.url = postUrl;
       this.createPreview();
     }
@@ -349,7 +358,10 @@ class CreatePostContainer extends Component {
   renderPreview() {
     if (!this.state.urlPreview) return null;
     return (
-      <PostInfo small post={this.state.urlPreview} />
+      <div style={{ position: 'relative' }}>
+        <PostInfo small close={this.clearUrl.bind(this)} post={this.state.urlPreview} />
+        <a onClick={this.clearUrl.bind(this)} className='removeUrl'>remove url</a>
+      </div>
     );
   }
 
