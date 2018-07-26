@@ -158,8 +158,8 @@ exports.login = async (req, res, next) => {
     } else if (req.body.profile.signup) {
       profile = await getProfile(req.body.profile);
       // check invite
-      if (!req.body.invite) throw new Error('No user found, please make sure you sign up first');
-      let invite = await Invite.checkInvite(req.body.invite);
+      // if (!req.body.invite) throw new Error('No user found, please make sure you sign up first');
+      // let invite = await Invite.checkInvite(req.body.invite);
 
       if (req.body.profile.userName === 'everyone') {
         return res.json(200, { needHandle: true });
@@ -179,7 +179,7 @@ exports.login = async (req, res, next) => {
 
       // async fetch tweets
       await TwitterWorker.updateTwitterPosts(user._id);
-      await invite.registered(user);
+      // await invite.registered(user);
 
       await user.save();
       let token = auth.signToken(user._id, user.role);
