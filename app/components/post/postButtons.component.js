@@ -178,8 +178,8 @@ class PostButtons extends Component {
   async invest() {
     try {
       // DEBUG ANIMATION
-      // this.props.actions.triggerAnimation('invest');
-      if (!this.props.auth || !this.props.auth.user) return;
+      // this.props.actions.triggerAnimation('invest'); return;
+      // if (!this.props.auth || !this.props.auth.user) return;
       let user = this.props.auth.user;
       // if (user.balance <= 0) {
       //   Alert.alert('You don\'t have enough coins to vote 🙁', 'But don\'t worry, you should get a payout in a few days!');
@@ -195,11 +195,11 @@ class PostButtons extends Component {
       // });
       // return;
 
-      await this.props.actions.vote(
-        amount,
-        this.props.post,
-        this.props.auth.user
-      );
+      // await this.props.actions.vote(
+      //   amount,
+      //   this.props.post,
+      //   this.props.auth.user
+      // );
 
       this.investButton.measureInWindow((x, y, w, h) => {
         let parent = { x, y, w, h };
