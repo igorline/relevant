@@ -3,24 +3,33 @@ import * as tokenUtil from './token';
 let post;
 let routes = {};
 
+// let postApi = '';
+// let userApi = '';
+
+console.log('BROWSER ', process.env.BROWSER);
+console.log('WEB ', process.env.WEB);
+
 if (process.env.BROWSER || process.env.WEB !== 'true') {
   // this is a weird hack that makes conditional require work in react-native
+  // routes.post = require(postApi);
+  // routes.user = require(userApi);
 } else {
-  console.log('LOAD NODE DIRECT ROUTER');
+  // Desktop ONLY!!!
+  // the if statment doesn't work anymore - user reat-native field in package.json
+  // prevent react native from loading these modules
   let postApi = '../../server/api/post/post.controller';
   let userApi = '../../server/api/user/user.controller';
   // post = require(postApi);
-  routes.post = require(postApi);
-  routes.user = require(userApi);
+  routes.post = require(postApi) || {};
+  routes.user = require(userApi) || {};
 }
-
 
 const queryParams = (params) => {
   if (!params) return '';
   let paramString = Object.keys(params)
-    .filter(p => params[p])
-    .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-    .join('&');
+  .filter(p => params[p])
+  .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
+  .join('&');
   if (paramString && paramString.length) return '?' + paramString;
   return '';
 };
@@ -36,11 +45,12 @@ export function env() {
 
 export function Alert() {
   if (process.env.WEB !== 'true') {
-    let Platform = require('react-native').Platform;
+    let ReactNative = require('react-native');
+    let Platform = ReactNative.Platform;
     if (Platform.OS === 'ios') {
-      return require('react-native').AlertIOS;
+      return ReactNative.AlertIOS;
     }
-    return require('react-native').Alert;
+    return ReactNative.Alert;
   } else if (process.env.BROWSER) {
     return window;
   }

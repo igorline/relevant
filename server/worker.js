@@ -14,4 +14,6 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 require('./config/db.connect');
 
+require('./utils/ethereum').init();
+
 require('./queue');

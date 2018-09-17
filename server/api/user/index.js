@@ -16,7 +16,11 @@ router.get('/check/user', controller.checkUser);
 router.get('/onboarding/:step', auth.isAuthenticated(), controller.onboarding);
 
 router.post('/', controller.create);
+router.post('/cashOut', auth.isAuthenticated(), controller.cashOut);
 
+router.put('/updateUserTokenBalance', auth.isAuthenticated(), controller.updateUserTokenBalance);
+router.put('/updateHandle', auth.isAuthenticated(), controller.updateHandle, auth.setTokenCookieDesktop);
+router.put('/ethAddress', auth.isAuthenticated(), controller.ethAddress);
 router.put('/confirm', controller.confirm);
 router.put('/forgot', controller.forgot);
 router.put('/resetPassword', controller.resetPassword);

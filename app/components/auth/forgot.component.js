@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform
 } from 'react-native';
+import PropTypes from 'prop-types';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
 import { globalStyles } from '../../styles/global';
 import CustomSpinner from '../CustomSpinner.component';
@@ -123,7 +124,7 @@ class Forgot extends Component {
 }
 
 Forgot.propTypes = {
-  actions: React.PropTypes.object,
+  actions: PropTypes.object,
 };
 
 let localStyles = StyleSheet.create({

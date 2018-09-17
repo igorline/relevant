@@ -3,6 +3,7 @@ import React from 'react';
 const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
 
 function stripContentEditableHTML(text) {
+  console.log('edit text ', text);
   return (text || '')
     .replace(/<div><br>/g, '\n')
     .replace(/<div>/g, '\n')
@@ -31,9 +32,9 @@ function onPaste(e) {
 
   // get text representation of clipboard
   const text = e.clipboardData.getData('text/plain')
-    .replace(/&/g, '&amp')
-    .replace(/</g, '&lt')
-    .replace(/>/g, '&gt');
+  .replace(/&/g, '&amp')
+  .replace(/</g, '&lt')
+  .replace(/>/g, '&gt');
 
   // insert text manually
   document.execCommand('insertHTML', false, text);
@@ -134,12 +135,13 @@ export default class ContentEditable extends React.Component {
     this.el.focus();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(lastProps) {
     // if (this.el && this.props.html !== this.el.innerHTML) {
     //   // Perhaps React (whose VDOM gets outdated because we often prevent
     //   // rerendering) did not update the DOM. So we update it manually now.
     //   this.el.innerHTML = this.lastHTML;
     // }
+    if (lastProps.body === this.props.body) return;
     const lengthWithoutNewlines = this.props.body.replace(/\n/, '').replace(/&[^;]+;/g, ' ').length + 1;
     const newPosition = this.position + (this.hitEnter ? 1 : 0);
     // console.log(this.position, lengthWithoutNewlines);

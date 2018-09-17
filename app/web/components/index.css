@@ -1,6 +1,30 @@
+@import './global.css';
+
 * {
   box-sizing: border-box;
   /*user-select: none;*/
+}
+
+
+.row {
+  /*flex: 1;*/
+  /*margin: calc(50% - 75rem);*/
+  max-width: 75rem;
+  margin: auto;
+  /*padding: 0 20px;*/
+}
+
+row {
+  display: flex;
+}
+column {
+  display: flex;
+  justify-content: column;
+}
+
+.pageContainer {
+  margin: 40px auto;
+  padding: 0 $leftMargin;
 }
 
 html {
@@ -11,13 +35,32 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 0;
-  color: black;
-  font-family: sans-serif;
+  color: $darkGrey;
+  font-family: Arial, sans-serif;
   min-height: 100%;
-  background-color: #f8f8f8;
+  font-size: 16px;
+  line-height: 1.5;
+  /*background-color: #f8f8f8;*/
+  background: hsl(240,15%,97%);
+
   position:relative;
   overflow-y: auto;
   flex: 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+pre {
+  font-family: inherit;
+  font-size: inherit;
+  white-space: pre-wrap;
+  margin: 0;
+  display: inline-block;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+textarea {
+  font-family: Arial, sans-serif;
 }
 
 #app, main {
@@ -27,6 +70,10 @@ html, body {
   min-height: 100%;
   position: relative;
   width: 100%;
+}
+
+.column {
+  display: flex;
 }
 
 container, .parent {
@@ -39,8 +86,8 @@ container, .parent {
   width: 100%;
 
   ul {
-    padding-left: 20px;
-  }
+/*    padding-left: 20px;
+*/  }
   &.main {
     padding: 0;
     margin: 0;
@@ -83,38 +130,96 @@ a {
   text-decoration: none;
 }
 
-button.shadowButton {
+
+select.shadowButton, button.shadowButton {
+  -webkit-appearance: none;
   font-family: Arial;
   font-weight: bold;
   font-size: 18px;
+  border-radius: 0px;
 
   justify-content: center;
   align-items: center;
-  border: 2px solid black;
+  border: 2px solid;
   justify-content: center;
   align-items: center;
-  background-color: #EDEDED;
+  background-color: transparent;
 
-  box-shadow: 5px 5px 0px 0px black;
+  box-shadow: 4px 4px 0px 0px;
   min-width: 150px;
   padding: 0 30px;
   height: 40px;
   cursor: pointer;
+  color: $blue;
+  outline: none;
+  /*transition: all 200ms easeOutQuad;*/
 
-  &:hover {
-    /*box-shadow: 4px 4px 0px 0px !important;*/
-    /*transform: translateX(1px) translateY(1px);*/
+  height: 45px;
+  /*font-weight: normal;*/
+  /*border: 1px solid;*/
+  box-shadow: 4px 4px 24px -12px;
+
+  &:hover, .hover {
+    box-shadow: none;
+  }
+
+/*  &:hover, .hover {
+    box-shadow: 5px 5px 0px !important;
+    transform: translateX(-1px) translateY(-1px);
   }
 
   &:active, .active {
-    box-shadow: 0px 0px 0px 0px black !important;
+    box-shadow: 0px 0px 0px 0px !important;
     transform: translateX(5px) translateY(5px);
+  }*/
+
+  &:disabled {
+    box-shadow: 0px 0px 0px 0px;
+    opacity: .4;
+    /*transform: translateX(5px) translateY(5px);*/
+    /*color: $lightGrey;*/
+  };
+}
+
+.basicButton {
+  -webkit-appearance: none;
+  font-family: Arial;
+  font-size: 18px;
+  border-radius: 0px;
+
+  justify-content: center;
+  align-items: center;
+  border: none;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  display: flex;
+
+  min-width: 150px;
+  padding: 0 30px;
+  /*font-family: Bebas;*/
+  cursor: pointer;
+  color: $blue;
+  outline: none;
+
+  height: 45px;
+  /*font-weight: normal;*/
+  border: 1px solid;
+  /*box-shadow: 4px 4px 24px -12px;*/
+
+  &:hover, .hover {
+    box-shadow: none;
+  }
+  &.smallButton {
+    height: 30px;
+    font-size: 14px;
+    padding: 0 20px;
   }
 }
 
 .blueInput {
   -webkit-appearance: none;
-  border-bottom: 2px solid #3E3EFF;
+  border-bottom: 2px solid $blue;
   background-color: transparent;
   border-top: none;
   border-left: none;
@@ -123,8 +228,8 @@ button.shadowButton {
   height: 40px;
   margin: 0 15px 0 0;
   outline: none;
-  color: #3E3EFF;
-  font-family: Helvetica;
+  color: $blue;
+  font-family: Arial;
   font-weight: bold;
   font-size: 18px;
 }
@@ -138,59 +243,71 @@ button.shadowButton {
 }
 
 ::-webkit-input-placeholder {
-  color: #3E3EFF;
+  color: $greyText;
 }
 
 :-ms-input-placeholder {
-  color: #3E3EFF;
+  color: $greyText;
 }
 
 ::-moz-placeholder {
-  color: #3E3EFF;
+  color: $greyText;
   opacity: 1;
 }
 
 :-moz-placeholder {
-  color: #3E3EFF;
+  color: $greyText;
   opacity: 1;
 }
 
-.modalParent {
+.blueInput {
+  &::-webkit-input-placeholder {
+    color: #3E3EFF;
+  }
+
+  &:-ms-input-placeholder {
+    color: #3E3EFF;
+  }
+
+  &::-moz-placeholder {
+    color: #3E3EFF;
+    opacity: 1;
+  }
+
+  &:-moz-placeholder {
+    color: #3E3EFF;
+    opacity: 1;
+  }
+}
+
+.mobileSplash {
+  display: none;
+}
+
+@media screen
+  and (max-width: 714px) {
+
+  .mobileSplash {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(62, 62, 255, 0.5);
-    z-index: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal {
-    background-color: white;
-    position: relative;
-    width: 600px;
-    height: 350px;
-    z-index: 5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-.modal .x {
-    position: absolute;
-    top: 40px;
-    right: 40px;
-    cursor: pointer;
-    object-fit: contain;
-}
-
-.modal .form {
+    z-index: 1;
+    background: white;
+    height: calc(100vh);
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10%;
+    h1 {
+      text-align: center;
+      /*margin-bottom: 100px;*/
+      /*width: 90%*/
+    }
+    img {
+      max-width: 200px;
+      margin: auto;
+      display: block;
+    }
+  }
 }
 
 @media screen

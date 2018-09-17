@@ -289,7 +289,7 @@ export function setComments(postId, comments, index, total) {
 }
 
 // this function queries the meta posts
-export function getPosts(skip, tags, sort, limit) {
+export function getPosts(skip, tags, sort, limit, community) {
   // console.log(skip, tags, sort);
   let tagsString = '';
   if (!skip) skip = 0;
@@ -300,6 +300,9 @@ export function getPosts(skip, tags, sort, limit) {
   // change this if we want to store top and new in separate places
   const type = sort ? 'top' : 'new';
   let endpoint = 'metaPost';
+  // TODO migrate community
+  // if (community === 'crypto')
+  endpoint = 'communityFeed';
   let topic;
 
   if (tags && tags.length) {
@@ -388,14 +391,20 @@ export function updateComment(comment) {
 }
 
 export function editPost(post) {
-  return dispatch =>
-    utils.api.request({
-      method: 'PUT',
-      endpoint: 'post',
-      body: JSON.stringify(post),
-    })
-    .then(res => dispatch(updatePost(res)))
-    .catch(err => Alert.alert('Post error please try again'));
+  return async dispatch => {
+    try {
+      let response = await utils.api.request({
+        method: 'PUT',
+        endpoint: 'post',
+        body: JSON.stringify(post),
+      });
+      dispatch(updatePost(response));
+      return true;
+    } catch (err) {
+      Alert.alert('Post error please try again');
+      return false;
+    }
+  };
 }
 
 export function removeCommentEl(postId, commentId) {
@@ -432,7 +441,7 @@ export function deleteComment(token, id, postId) {
 export function getComments(postId, skip, limit) {
   return function(dispatch) {
     if (!skip) skip = 0;
-    if (!limit) limit = 5;
+    if (!limit) limit = 0;
 
     fetch(process.env.API_SERVER+'/api/comment?post='+postId+'&skip='+skip+'&limit='+limit, {
       credentials: 'include',

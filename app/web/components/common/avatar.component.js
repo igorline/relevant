@@ -10,13 +10,12 @@ export default class Avatar extends Component {
   render() {
     if (!this.props.user) return null;
     let profileLink = '/profile/' + this.props.user._id;
-    // temp - not logged in - redirect to home
-    if (this.props.auth && !this.props.auth.user) {
-      profileLink = '/';
-    }
+
     let image = this.props.user.image || '/img/default_user.jpg';
     const avatarBackgroundImage = {
       backgroundImage: 'url(' + image + ')',
+      width: this.props.size,
+      height: this.props.size,
     };
     if (this.props.nolink) {
       return (
@@ -24,17 +23,18 @@ export default class Avatar extends Component {
           className={'avatar'}
           style={avatarBackgroundImage}
         >
-          {this.props.user.name}
+          {this.props.noName ? null : this.props.user.name}
         </span>
       );
     }
     return (
       <Link
+        onClick={e => e.stopPropagation()}
         className={'avatar'}
         to={profileLink}
         style={avatarBackgroundImage}
       >
-        {this.props.user.name}
+        {this.props.noName ? null : this.props.user.name}
       </Link>
     );
   }

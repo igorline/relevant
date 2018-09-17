@@ -220,6 +220,11 @@ class PostInfo extends Component {
       user._id = post.user || (post.embeddedUser.id + ' via twitter');
       user.image = post.embeddedUser.image;
       user.name = post.embeddedUser.name;
+
+      // this is the new way w non-populated user
+      if (post.embeddedUser.relevance && post.embeddedUser.relevance.relevance) {
+        user.relevance = post.embeddedUser.relevance.relevance;
+      }
     }
 
     let userEl = (

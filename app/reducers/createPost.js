@@ -18,7 +18,8 @@ const initialState = {
   postId: null,
   editPost: null,
   keywords: [],
-  createPreview: {}
+  createPreview: {},
+  selectedTags: [],
 };
 
 export default function createPost(state = initialState, action) {

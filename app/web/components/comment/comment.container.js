@@ -7,40 +7,44 @@ import Divider from '../common/divider.component'
 import * as postActions from '../../../actions/post.actions';
 
 class Comments extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.actions.getComments(this.props.params.id);
   }
 
   handleCommentSubmit(commentObj) {
-    this.props.actions.createComment(this.auth.token, commentObj)
+    this.props.actions.createComment(this.auth.token, commentObj);
+  }
+
+  scrollToBottom() {
+    window.scrollTo(0, document.body.scrollHeight);
   }
 
   render() {
     let comments = this.props.comments.commentsById[this.props.params.id];
     if (!comments) return null;
     comments = comments.data;
+    if(!comments) return null;
     return (
       <div className='comments'>
-        <NewCommentForm {...this.props} onCommentSubmit={this.handleCommentSubmit} />
         {(comments.length !== 0) ?
-          <div>
-            {comments.map((comment, i) => {
-              return (
-                <div key={i}>
-                  <Comment auth={this.props.auth} data={comment} />
-                </div>
-              );
-            })}
+          <div>{comments.map((comment, i) => {
+            return (
+              <Comment key={comment._id} auth={this.props.auth} data={comment} />
+            );
+          })}
           </div>
-        :
+          : null
+/*
           <div className='empty'>
             <Divider>No comments</Divider>
           </div>
+          */
         }
+        <NewCommentForm
+          {...this.props}
+          onCommentSubmit={this.handleCommentSubmit}
+          scrollToBottom={this.scrollToBottom.bind(this)}
+        />
       </div>
     );
   }

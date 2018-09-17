@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Prompt from 'react-native-prompt';
+import Prompt from 'rn-prompt';
 import { globalStyles, fullWidth, fullHeight, smallScreen } from '../../styles/global';
 
 let styles;
@@ -61,50 +61,50 @@ class Auth extends Component {
   }
 
   signup() {
-    if (this.props.admin.currentInvite) {
+    // if (this.props.admin.currentInvite) {
       return this.props.actions.push({
         key: 'twitterSignup',
         title: 'Signup',
         showBackButton: true,
         back: true,
-        code: this.props.admin.currentInvite.code,
-        email: this.props.admin.currentInvite.email
+        // code: this.props.admin.currentInvite.code,
+        // email: this.props.admin.currentInvite.email
       }, 'auth');
-    }
+    // }
 
-    // Android
-    if (Platform.OS === 'android') {
-      this.promptTitle = 'Enter invitation code';
-      this.setState({ promptVisible: true });
-      return null;
-    }
+    // // Android
+    // if (Platform.OS === 'android') {
+    //   this.promptTitle = 'Enter invitation code';
+    //   this.setState({ promptVisible: true });
+    //   return null;
+    // }
 
-    // IOS
-    AlertIOS.prompt(
-      'Enter invitiation code',
-      'Relevant is an invitation-only community',
-      [
-        { text: 'Cancel',
-          onPress: () => null,
-          style: 'cancel'
-        },
-        { text: 'OK',
-          onPress: code => {
-            let action = this.props.actions.checkInviteCode(code);
-            action.then(invite => {
-              if (invite) {
-                this.props.actions.push({
-                  key: 'twitterSignup',
-                  title: 'Signup',
-                  showBackButton: true,
-                  back: true,
-                  email: invite.email,
-                  code: invite.code
-                }, 'auth');
-              }
-            });
-          } }
-      ]);
+    // // IOS
+    // AlertIOS.prompt(
+    //   'Enter invitiation code',
+    //   'Relevant is an invitation-only community',
+    //   [
+    //     { text: 'Cancel',
+    //       onPress: () => null,
+    //       style: 'cancel'
+    //     },
+    //     { text: 'OK',
+    //       onPress: code => {
+    //         let action = this.props.actions.checkInviteCode(code);
+    //         action.then(invite => {
+    //           if (invite) {
+    //             this.props.actions.push({
+    //               key: 'twitterSignup',
+    //               title: 'Signup',
+    //               showBackButton: true,
+    //               back: true,
+    //               email: invite.email,
+    //               code: invite.code
+    //             }, 'auth');
+    //           }
+    //         });
+    //       } }
+    //   ]);
   }
 
   changeRow(event, changed) {
@@ -387,8 +387,8 @@ const localStyles = StyleSheet.create({
     borderTopColor: 'black',
   },
   logoContainer: {
-    marginTop: 10,
-    height: 90,
+    marginTop: fullHeight / 40,
+    height: fullHeight / 8,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 20,

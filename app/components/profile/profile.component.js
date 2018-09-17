@@ -64,7 +64,6 @@ class ProfileComponent extends Component {
     (buttonIndex) => {
       switch (buttonIndex) {
         case 0:
-          console.log(this.props.actions);
           this.props.actions.updateBlock(id);
           break;
         default:
@@ -116,7 +115,7 @@ class ProfileComponent extends Component {
       following = this.props.user.following;
       if (user.image) userImage = user.image;
       if (user.relevance) relevance = user.relevance.toFixed(1);
-      if (user.balance) balance = user.balance.toFixed(0);
+      if (user) balance = (user.balance + user.tokenBalance).toFixed(0);
 
       if (user.topTags) {
         topTags = user.topTags.map((tag, i) => (
@@ -166,7 +165,7 @@ class ProfileComponent extends Component {
         >
           <Image
             resizeMode={'contain'}
-            style={[styles.r, { width: 22, height: 25 }]}
+            style={[styles.r, { width: 24, height: 22 }]}
             source={require('../../assets/images/r.png')}
           />
           <Text
@@ -189,7 +188,7 @@ class ProfileComponent extends Component {
         <View style={styles.textRow}>
           <Image
             resizeMode={'contain'}
-            style={[styles.coin, { width: 22, height: 24 }]}
+            style={[styles.coin, { width: 23, height: 23 }]}
             source={require('../../assets/images/relevantcoin.png')}
           />
           <Text style={[styles.largeNumber]}>

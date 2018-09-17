@@ -105,10 +105,6 @@ export default function (props) {
       </Text>);
     }
 
-    // if (singleActivity.amount < 0) {
-    //   return <Text style={styles.activityText}>someone</Text>;
-    // }
-
     return (<Text style={[styles.link, styles.activityText]} onPress={() => setSelected(user)}>
       {user.name}
     </Text>);
@@ -116,12 +112,6 @@ export default function (props) {
 
   let renderPost = (post) => {
     if (!post) return null;
-    // return (<Text
-    //   onPress={() => goToPost(post)}
-    //   style={[styles.link, { fontStyle: 'italic' }]}
-    // >
-    //   {post.title}
-    // </Text>);
     let previewProps = { urlPreview: post, domain: post.domain };
     return (
       <View style={{ marginLeft: 55, marginRight: mainPadding }}>
@@ -144,7 +134,7 @@ export default function (props) {
             source={require('../../assets/images/r.png')}
           />
         </View>
-        );
+      );
       return image;
     } else if (!user) return null;
 
@@ -166,6 +156,10 @@ export default function (props) {
     if (singleActivity.amount < 0) {
       action = 'decreased';
       also = '';
+    }
+    let coinAmount;
+    if (singleActivity.coin) {
+      coinAmount = numbers.abbreviateNumber(singleActivity.coin);
     }
 
     switch (singleActivity.type) {
@@ -245,6 +239,13 @@ export default function (props) {
         return (
           <Text style={styles.activityText}>
             In case you missed this top-ranked post:
+          </Text>
+        );
+
+      case 'reward':
+        return (
+          <Text style={styles.activityText}>
+            {`You earned ${coinAmount} coins from this post`}
           </Text>
         );
 
@@ -332,12 +333,10 @@ export default function (props) {
 
   let renderLeft = () => {
     switch (singleActivity.type) {
-
       case 'upvote':
       case 'partialUpvote':
       case 'downvote':
       case 'partialDownvote':
-        // console.log(singleActivity);
         return (
           <View style={styles.activityLeft}>
             <View style={styles.activityLeft}>
@@ -351,17 +350,6 @@ export default function (props) {
             </View>
           </View>
         );
-
-      // case 'downvote':
-      // case 'partialDownvote':
-      //   return (
-      //     <View style={styles.activityLeft}>
-      //       <Text allowFontScaling={false} style={styles.incomeEmoji}>😡</Text>
-      //       <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
-      //         {getText(singleActivity)}
-      //       </Text>
-      //     </View>
-      //   );
 
       // DEPRICATED
       case 'partialEarning':

@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import * as navigationActions from '../../../actions/navigation.actions';
 import ContentEditable from '../common/contentEditable.component';
 import * as userActions from '../../../actions/user.actions';
-import * as postActions from '../../../actions/createPost.actions';
+import * as createPostActions from '../../../actions/createPost.actions';
+import * as postActions from '../../../actions/post.actions';
 import * as tagActions from '../../../actions/tag.actions';
 import * as utils from '../../../utils';
 
@@ -12,7 +14,7 @@ import CreatePostTeaser from './createPostTeaser.component';
 import AvatarBox from '../common/avatarbox.component';
 import PostInfo from '../post/postinfo.component';
 import UserSearch from './userSearch.component';
-import SelectCategory from './selectCategory.component';
+import TagInput from './TagInput.component';
 import SelectTags from './selectTags.component';
 
 if (process.env.BROWSER === true) {
@@ -23,8 +25,8 @@ if (process.env.BROWSER === true) {
 // eslint-disable-next-line no-useless-escape, max-len
 const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,16}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
 
-const urlPlaceholder = 'What\'s relevant?  Add a link to post commentary';
-const textPlaceholder = 'Enter your commentary';
+const urlPlaceholder = 'What\'s relevant?  Paste article URL.';
+const textPlaceholder = 'Add your commentary, opinion, summary \nor a relevant quote from the article';
 
 class CreatePostContainer extends Component {
   constructor(props) {
@@ -39,20 +41,28 @@ class CreatePostContainer extends Component {
     this.renderPreview = this.renderPreview.bind(this);
     this.createPost = this.createPost.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.validateInput = this.validateInput.bind(this);
+    this.clearPost = this.clearPost.bind(this);
+    this.selectTags = this.selectTags.bind(this);
     this.state = {
       body: '',
       category: '',
       domain: null,
       urlPreview: null,
-      addedTextFromLink: false,
       loadingPreview: false,
       userSearchIndex: -1,
+      selectedTags: []
+      // active: true
     };
     this.body = '';
     this.tags = null;
     this.url = null;
     this.mention = null;
     this.urlPreview = null;
+  }
+
+  componentWillMount() {
+    this.stateFromReducer();
   }
 
   componentDidMount() {
@@ -70,49 +80,122 @@ class CreatePostContainer extends Component {
     if (newState.body !== this.state.body) {
       this.parseBody(newState);
     }
-    if (newState.urlPreview !== this.state.urlPreview) {
-      this.renderPreview(newState);
-    }
+  }
+
+  selectTags(tag) {
+    if (!tag || !tag.length) return;
+    if (typeof tag === 'string') tag = [tag];
+    let selectedTags = this.state.selectedTags;
+    selectedTags = [...new Set([...selectedTags, ...tag])];
+    console.log(selectedTags);
+    this.setState({ selectedTags });
+  }
+
+  clearPost() {
+    this.url = null;
+    this.urlPreview = null;
+    this.props.actions.clearCreatePost();
+    this.stateFromReducer();
+  }
+
+  clearUrl() {
+    this.url = null;
+    this.urlPreview = null;
+    this.setState({
+      postUrl: null,
+      urlPreview: null
+    });
   }
 
   componentDidUpdate() {
     this.lengthDelta = 0;
   }
 
-  async createPost() {
-    const allTags = this.tags.concat(this.props.tags.selectedTags.map(tag => tag._id));
+  componentWillUnmount() {
+    this.updateReducer();
+  }
+
+  stateFromReducer() {
+    let props = this.props.createPost;
+    this.setState({
+      ...props,
+      body: props.postBody,
+      category: props.postCategory,
+      tags: props.allTags,
+    });
+    this.parseBody(this.state);
+  }
+
+  updateReducer() {
+    const allTags = this.tags ? this.tags.concat(this.state.selectedTags) : [];
     const tags = Array.from(new Set(allTags));
 
-    let post = {
-      link: this.state.postUrl || this.props.postUrl,
-      tags,
-      body: this.state.body,
-      title: this.state.urlPreview ? this.state.urlPreview.title : null,
-      description: this.state.urlPreview ? this.state.urlPreview.description : null,
-      category: this.state.category,
-      image: this.state.urlPreview ? this.state.urlPreview.image : null,
-      mentions: this.mentions,
-      investments: [],
-      domain: this.state.domain
+    let state = {
+      ...this.state,
+      postBody: this.state.body,
+      postCategory: this.state.category,
+      allTags: tags,
+      postImage: this.state.urlPreview ? this.state.urlPreview.image : null,
     };
+    this.props.actions.setCreaPostState(state);
+  }
 
-    this.props.actions.submitPost(post, await utils.token.get())
-      .then((res) => {
-        if (!res) {
-          alert('Post error please try again');
-          this.setState({ creatingPost: false });
-          return null;
+  validateInput() {
+    if (!this.state.selectedTags.length) {
+      return this.setSate({ validate: 'Please select at least one topic' });
+    }
+    if (!this.props.body && !this.state.postUrl) {
+      return this.setSate({ validate: 'Please paste article link' });
+    }
+  }
+
+  async createPost() {
+    try {
+      const allTags = this.tags.concat(this.state.selectedTags);
+      const tags = Array.from(new Set(allTags));
+
+      let body = this.state.body.replace(/&nbsp;/gi, '');
+
+      let post = {
+        link: this.state.postUrl || this.props.postUrl,
+        tags,
+        body,
+        title: this.state.urlPreview ? this.state.urlPreview.title : null,
+        description: this.state.urlPreview ? this.state.urlPreview.description : null,
+        category: this.state.category,
+        image: this.state.urlPreview ? this.state.urlPreview.image : null,
+        mentions: this.mentions,
+        domain: this.state.domain
+      };
+
+      if (this.props.createPost.edit) {
+        post = { ...this.props.createPost.editPost, ...post };
+        let success = await this.props.actions.editPost(post);
+        if (success) {
+          this.clearPost();
+          this.props.router.push(this.props.location.pathname);
+          if (this.props.close) this.props.close();
         }
-        return res.json();
-      }).then((data) => {
-        if (!data) return;
-        // console.log(data)
-        if (this.props.close) this.props.close();
-        this.props.router.push('/post/' + data.id);
-        // Analytics.logEvent('newPost', {
-        //   viaShare: this.props.share
-        // });
-      });
+        return;
+      }
+
+      let newPost = await this.props.actions.submitPost(post);
+
+      if (this.props.close) this.props.close();
+      if (newPost) {
+        this.clearPost();
+      }
+
+      // this.props.actions.replace(this.props.location.pathname);
+      this.props.router.push('/discover/new/');
+      this.props.actions.refreshTab('discover');
+
+      // Analytics.logEvent('newPost', {
+      //   viaShare: this.props.share
+      // });
+    } catch (err) {
+      alert(err.message);
+    }
   }
 
   handleChange(field, data) {
@@ -157,12 +240,14 @@ class CreatePostContainer extends Component {
 
   handleBodyChange(e) {
     const body = e.target.value;
-    this.setState({ body });
+    if (body !== this.state.body) {
+      this.setState({ body });
+    }
   }
 
   handleSetMention(user) {
     if (!user) return;
-     // replace the partial @username with @username plus a nbsp
+    // replace the partial @username with @username plus a nbsp
     this.lengthDelta = user._id.length - this.mention.length + 2;
     const body = this.state.body.replace(this.mention, '@' + user._id + '\u00A0'); // nbsp
     this.setState({ body, userSearchIndex: -1 });
@@ -176,9 +261,16 @@ class CreatePostContainer extends Component {
     let words = [];
     lines.forEach(line => words = words.concat(line.split(' ')));
 
+    let shouldParseUrl = false;
+    let prevLength = this.body.length || 0;
+
+    if (postBody.length - prevLength > 1) shouldParseUrl = true;
+    if (words[words.length - 1] == '') shouldParseUrl = true;
+    if (postBody[postBody.length - 1] == '\n') shouldParseUrl = true;
+
     let postUrl = words.find(word => URL_REGEX.test(word.toLowerCase()));
 
-    if (postUrl && postUrl !== this.url) {
+    if (!this.state.postUrl && shouldParseUrl && postUrl && postUrl !== this.url) {
       this.url = postUrl;
       this.createPreview();
     }
@@ -218,7 +310,6 @@ class CreatePostContainer extends Component {
     const description = '"' + utils.text.stripHTML(this.state.urlPreview.description) + '"';
     this.setState({
       body: description,
-      addedTextFromLink: true,
     });
   }
 
@@ -241,6 +332,8 @@ class CreatePostContainer extends Component {
           domain: results.domain,
           postUrl: results.url,
           loadingPreview: false,
+          keywords: results.keywords,
+          postTags: results.tags,
           urlPreview: {
             image: imageURL,
             title: results.title || 'Untitled',
@@ -262,15 +355,19 @@ class CreatePostContainer extends Component {
     });
   }
 
-  renderPreview(newState) {
-    this.urlPreview = (
-      <PostInfo post={newState.urlPreview} />
+  renderPreview() {
+    if (!this.state.urlPreview) return null;
+    return (
+      <div style={{ position: 'relative' }}>
+        <PostInfo small close={this.clearUrl.bind(this)} post={this.state.urlPreview} />
+        <a onClick={this.clearUrl.bind(this)} className='removeUrl'>remove url</a>
+      </div>
     );
   }
 
   render() {
     const placeholder = this.state.urlPreview ? textPlaceholder : urlPlaceholder;
-    if (!this.state.active) {
+    if (!this.state.active && !this.props.modal) {
       return (
         <CreatePostTeaser
           user={this.props.auth.user}
@@ -279,54 +376,95 @@ class CreatePostContainer extends Component {
       );
     }
     return (
-      <div className="postContainer createPostContainer">
+      <div className="createPostContainer">
         <div className="urlPreview">
-          {this.urlPreview}
-          <AvatarBox user={this.props.auth.user} auth={this.props.auth} />
+          {this.renderPreview()}
         </div>
-        <ContentEditable
-          className="editor"
-          body={this.state.body}
-          placeholder={placeholder}
-          onChange={this.handleBodyChange}
-          onKeyDown={this.handleKeyDown}
-          lengthDelta={this.lengthDelta}
-          autoFocus
-        />
+        <AvatarBox user={this.props.auth.user} auth={this.props.auth} />
+
+        <div style={{ position: 'relative' }}>
+          <ContentEditable
+            className="editor"
+            body={this.state.body}
+            placeholder={placeholder}
+            onChange={this.handleBodyChange}
+            onKeyDown={this.handleKeyDown}
+            lengthDelta={this.lengthDelta}
+            onBlur={e => {
+              if (!this.state.body.length && !this.state.postUrl) {
+                this.setState({ active: false });
+              }
+              // e.preventDefault();
+            }}
+          />
+          <div className='addFromLink'>
+            {this.state.urlPreview &&
+              this.state.body === '' &&
+              this.state.urlPreview.description &&
+              <button onClick={this.addTextFromLink} className="addTextFromLink">
+                Paste article description
+              </button>
+            }
+          </div>
+        </div>
+
         <div className="createOptions">
           <UserSearch
             users={this.props.userSearch}
             onChange={this.handleSetMention}
             userSearchIndex={this.state.userSearchIndex}
           />
-          <div>
-            {this.state.urlPreview &&
-              !this.state.addedTextFromLink &&
-              this.state.urlPreview.description &&
-              <button onClick={this.addTextFromLink} className="addTextFromLink">
-                Add text from link
-              </button>
-            }
-          </div>
-          <div>
-            <SelectCategory
-              categories={this.props.tags.parentTags}
-              onChange={this.setCategory}
-            />
+          <TagInput
+            selectedTags={this.state.selectedTags}
+            selectTag={this.selectTags}
+            deselectTag={tag => {
+              let selectedTags = this.state.selectedTags;
+              selectedTags = selectedTags.filter(t => t !== tag);
+              this.setState({ selectedTags });
+            }}
+          />
+
+          <row>
             <button
-              onClick={() => this.createPost()}
-              disabled={!(this.state.category && this.body.length)}
+              className="basicButton"
+              onClick={this.clearPost}
             >
-              Create Post
+              Clear
             </button>
-            {this.state.category &&
-              <SelectTags
-                tags={this.state.category.children}
-                selectedTags={this.props.tags.selectedTags}
-                actions={this.props.actions}
-              />
-            }
-          </div>
+
+            <button
+              className="shadowButton"
+              onClick={() => this.createPost()}
+              disabled={!this.state.selectedTags.length || (!this.body.length && !this.state.postUrl)}
+            >
+              {this.props.createPost.edit ? 'Update Post' : 'Create Post'}
+            </button>
+          </row>
+
+          <SelectTags
+            className="shadowButton"
+            text={'Suggested article tags'}
+            tags={this.state.keywords}
+            selectedTags={this.state.selectedTags}
+            selectTag={this.selectTags}
+            deselectTag={tag => {
+              let selectedTags = this.state.selectedTags;
+              selectedTags = selectedTags.filter(t => t !== tag);
+              this.setState({ selectedTags });
+            }}
+          />
+          <SelectTags
+            className="shadowButton"
+            text={'Suggested community tags'}
+            tags={this.props.tags.parentTags.map(t => t._id)}
+            selectedTags={this.state.selectedTags}
+            selectTag={this.selectTags}
+            deselectTag={(tag) => {
+              let selectedTags = this.state.selectedTags;
+              selectedTags = selectedTags.filter(t => t !== tag);
+              this.setState({ selectedTags });
+            }}
+          />
         </div>
       </div>
     );
@@ -334,12 +472,7 @@ class CreatePostContainer extends Component {
 }
 
 function mapStateToProps(state) {
-  // console.log(state);
   return {
-    // isPosting: state.createPost.isPosting,
-    // textError: state.createPost.textError,
-    // linkError: state.createPost.linkError,
-    // imageError: state.createPost.imageError,
     createPost: state.createPost,
     auth: state.auth,
     users: state.user,
@@ -352,11 +485,14 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       {
+        ...navigationActions,
+        ...createPostActions,
         ...postActions,
         ...userActions,
         ...tagActions,
       },
-      dispatch),
+      dispatch
+    ),
   };
 }
 

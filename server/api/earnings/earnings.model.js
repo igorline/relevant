@@ -14,8 +14,9 @@ let EarningsSchema = new Schema({
   earned: { type: Number, default: 0 },
   type: String,
 }, {
-  timestamps: true
+  timestamps: true,
 });
+
 
 EarningsSchema.index({ from: 1 });
 EarningsSchema.index({ user: 1 });

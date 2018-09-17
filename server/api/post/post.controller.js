@@ -5,6 +5,7 @@ import request from 'request';
 import { EventEmitter } from 'events';
 import * as proxyHelpers from './html';
 import MetaPost from '../metaPost/metaPost.model';
+import Relevance from '../relevance/relevance.model';
 
 import Post from './post.model';
 import User from '../user/user.model';
@@ -21,62 +22,7 @@ import { PAYOUT_TIME } from '../../config/globalConstants';
 
 let requestAsync = promisify(request);
 
-// requestAsync('https://news.google.com/rss/story/dbtBhhEGtGqVUXM?ned=us&gl=US&hl=en')
-// .then(res => {
-//   // console.log(res.body)
-//   let $ = cheerio.load(res.body);
-//   $('item').each((i, item) => {
-//     let $item = $(item);
-//     $item.children().each((i, c) => {
-//       let $c = $(c);
-//       if ($c.prop("tagName") === 'LINK') console.log('LINK : ', $c[0].next.data)
-//       else {
-//         console.log($c.prop("tagName"), ' : ', $c.text());
-//       }
-//     });
-//     let $$ = cheerio.load($item.children('description').text());
-//     // console.log(description.html())
-//     console.log('IMAGE : ', $$('img').attr('src'));
-//     $$('a').each((i, el) => {
-//       let $el = $(el);
-//       console.log($el.text(), ' : ',  $el.attr('href'));
-//     })
-//   })
-
-// })
-// .catch(err => console.log(err));
-
-// Post.find({ })
-// .then(posts => {
-//   posts.forEach(p => {
-//     MetaPost.find({ _id: p.metaPost }).then(m => {
-//       console.log(p.metaPost);
-//       console.log(m._id);
-//     });
-//   });
-// });
-
-// MetaPost.find({})
-// .populate('commentary')
-// .then(metas => metas.forEach(m => {
-//   m.commentary.forEach(c => {
-//     // console.log(c.metaPost);
-//     c.metaPost = m._id;
-//     c.save();
-//   });
-//   // console.log(m.commentary);
-// }));
-
-
-require('../../processing/posts');
-// Post.collection.createIndex({ title: 'text', shortText: 'text', description: 'text', keywords: 'text', tags: 'text'});
-// Post.collection.indexes(function (err, indexes) {
-//   console.log(indexes);
-// });
-
-// Post.collection.dropIndexes(function (err, results) {
-//   console.log(err);
-// });
+// require('../../processing/posts');
 
 async function findRelatedPosts(metaId) {
   try {
@@ -95,8 +41,6 @@ async function findRelatedPosts(metaId) {
     .limit(5);
     posts.forEach((p, i) => {
       console.log(i, ' ' + p.title);
-      // console.log(p.description);
-      // console.log(p.keywords);
     });
     return posts;
   } catch (err) {
@@ -182,8 +126,7 @@ request.defaults({ maxRedirects: 22, jar: true });
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return (err) => {
-    console.log(err);
-    res.status(statusCode).send(err);
+    throw err;
   };
 }
 
@@ -315,8 +258,8 @@ exports.index = async (req, res) => {
   try {
     posts = await Post.find(query)
     .populate({
-      path: 'user',
-      select: 'name image relevance',
+      path: 'embeddedUser.relevance',
+      select: 'relevance'
     })
     .limit(limit)
     .skip(skip)
@@ -324,7 +267,7 @@ exports.index = async (req, res) => {
 
     res.status(200).json(posts);
   } catch (err) {
-    return res.send(500, err);
+    return handleError(res)(err);
   }
 
   // TODO worker thread
@@ -362,20 +305,26 @@ exports.userPosts = async (req, res) => {
     .populate({
       path: 'repost.post',
       populate: {
-        path: 'user',
-        select: 'name image relevance',
+        path: 'embeddedUser.relevance',
+        select: 'relevance'
+        // path: 'user',
+        // select: 'name image relevance',
       }
     })
     .populate({
-      path: 'user',
-      select: 'name image relevance',
+      path: 'embeddedUser.relevance',
+      select: 'relevance'
     })
+    // .populate({
+    //   path: 'user',
+    //   select: 'name image relevance',
+    // })
     .limit(limit)
     .skip(skip)
     .sort(sortQuery);
   } catch (err) {
     console.log(err);
-    return res.send(500, err);
+    return handleError(res)(err);
   }
 
   res.status(200).json(posts);
@@ -494,8 +443,8 @@ exports.findById = async req => {
 
   post = await Post.findOne({ _id: req.params.id, user: { $nin: blocked } })
   .populate({
-    path: 'user',
-    select: 'name image relevance',
+    path: 'embeddedUser.relevance',
+    select: 'relevance'
   });
 
   // TODO worker thread
@@ -513,24 +462,27 @@ exports.related = async req => {
   return await findRelatedPosts(id);
 };
 
-exports.update = async (req, res) => {
-  console.log('init update');
-  let tags = req.body.tags.filter(tag => tag);
-  tags = tags.map(
-    tag => tag.replace('_category_tag', '').trim()
-  );
-  let mentions = req.body.mentions || [];
-  let newMentions;
-  let newTags;
-  let category = req.body.category;
-  let newPost;
+exports.update = async (req, res, next) => {
   try {
+    console.log('tags ', req.body.tags);
+
+    let tags = req.body.tags.filter(tag => tag);
+
+    tags = tags.map(tag => tag.replace('_category_tag', '').trim());
+
+    let mentions = req.body.mentions || [];
+    let newMentions;
+    let newTags;
+    let category = req.body.category;
+    let newPost;
+
     newPost = await Post.findOne({ _id: req.body._id });
     let prevMentions = [...newPost.mentions];
-    let prevTags = [...newPost.tags];
+
+    // let prevTags = [...newPost.tags];
     newMentions = mentions.filter(m => prevMentions.indexOf(m) < 0);
-    // TODO enable editing tags when editing post
-    newPost.tags = [...new Set([...tags, ...prevTags])];
+
+    newPost.tags = tags;
     newPost.mentions = mentions;
     newPost.body = req.body.body;
     newPost.title = req.body.title;
@@ -554,12 +506,9 @@ exports.update = async (req, res) => {
     newPost.metaPost = metaPost._id;
 
     newPost = await newPost.save();
-  } catch (err) {
-    return handleError(res)(err);
-  }
-  res.status(200).json(newPost);
+    res.status(200).json(newPost);
 
-  try {
+    // some post processing
     newTags = newTags || [];
     newMentions = newMentions || [];
     let pTags = newTags.map(tag =>
@@ -581,7 +530,7 @@ exports.update = async (req, res) => {
 
     return await Promise.all([...pTags, ...pMentions]);
   } catch (err) {
-    return console.log('tag or mentions error during post edit ', err);
+    next(err);
   }
 };
 
@@ -596,32 +545,31 @@ exports.create = (req, res) => {
   let categoryEmoji = req.body.category ? req.body.category.emoji : null;
   let tags = [];
   let keywords = req.body.keywords || [];
+  let community = req.subdomain || 'relevant';
 
-  if (req.user.balance < 1) {
-    return handleError(res)(new Error('You need to have at least one coin to post'));
-  }
+  // TODO rate limiting
+  // if (req.user.balance < 1) {
+  //   throw new Error('You need to have at least one coin to post');
+  // }
 
   if (category) tags.push(category);
-
   req.body.tags.forEach(tag => {
     if (tag) {
       tags.push(tag.replace('_category_tag', '').trim());
     }
   });
   tags = [...new Set(tags)];
-  console.log('tags ', tags);
   let author;
 
-  // console.log('Post category ', category);
   let link = req.body.link;
 
   let now = new Date();
   let payoutDate = new Date();
 
   let payoutTime = process.env.NODE_ENV === 'production' ?
-      new Date(now.getTime() + PAYOUT_TIME) :
-      // TODO remove this in case of dev on live server
-      new Date(payoutDate.getTime() + 1000 * 60 * 5); // 5 minutes when in dev mode for testing
+    new Date(now.getTime() + PAYOUT_TIME) :
+    // TODO remove this in case of dev on live server
+    new Date(payoutDate.getTime() + 1000 * 60 * 5); // 5 minutes when in dev mode for testing
 
   if (process.env.NODE_ENV === 'test' && req.body.payoutTime) {
     payoutTime = req.body.payoutTime;
@@ -638,6 +586,7 @@ exports.create = (req, res) => {
     image: req.body.image ? req.body.image : null,
     articleAuthor: req.body.articleAuthor,
     shortText: req.body.shortText,
+    community,
 
     category,
     categoryName,
@@ -693,9 +642,19 @@ exports.create = (req, res) => {
   })
   .then((user) => {
     author = user;
+    return Relevance.findOneAndUpdate({
+      user: user._id,
+      community: newPost.community,
+      global: true
+    }, {}, { new: true, upsert: true });
+  })
+  .then(relevance => {
     newPost.embeddedUser = {
-      name: user.name,
-      image: user.image
+      id: author._id,
+      handle: author.handle,
+      name: author.name,
+      image: author.image,
+      relevance: relevance._id,
     };
     return newPost.save();
   })
@@ -715,6 +674,7 @@ exports.create = (req, res) => {
   .then((subscribers) => {
     let promises = [];
     subscribers.forEach(async subscription => {
+      if (!subscription.follower) return;
       try {
         let updateFeed;
         /**
@@ -798,7 +758,11 @@ exports.create = (req, res) => {
   .then(() => {
     // creates an invest(vote) record for pots author
     return Invest.createVote({
-      post: newPost, user: author, amount: 0, relevanceToAdd: 0
+      post: newPost,
+      user: author,
+      amount: 0,
+      relevanceToAdd: 0,
+      userBalance: author.balance
     });
   })
   .then(() => {
@@ -807,7 +771,9 @@ exports.create = (req, res) => {
   })
   // this happens async
   .then(() => Post.sendOutMentions(mentions, newPost, author))
-  .catch(handleError(res));
+  .catch(err => {
+    throw err;
+  });
 };
 
 exports.delete = (req, res) => {

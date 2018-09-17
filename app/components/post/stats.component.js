@@ -61,7 +61,7 @@ class Stats extends Component {
     let { type, entity } = this.props;
 
     let statsStyle = [
-      { fontSize: 17, lineHeight: 17 },
+      { fontSize: 17, lineHeight: 17, height: 17 },
       styles.bebas,
       styles.quarterLetterSpacing,
     ];
@@ -91,7 +91,7 @@ class Stats extends Component {
           source={require('../../assets/images/relevantcoin.png')}
         />
         <Text style={[this.props.textStyle, statsStyle, styles.darkGrey]}>
-          {numbers.abbreviateNumber(entity.value || entity.balance || 0)}
+          {numbers.abbreviateNumber(entity.value || entity.balance + entity.tokenBalance || 0)}
         </Text>
       </TouchableOpacity>
     );
@@ -154,7 +154,7 @@ let localStyles = StyleSheet.create({
   statInner: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignItems: 'flex-end',
+    alignItems: 'center',
   }
 });
 

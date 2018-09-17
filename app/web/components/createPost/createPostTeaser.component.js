@@ -1,23 +1,25 @@
 import React from 'react';
-
+import { Link, withRouter } from 'react-router';
 import Avatar from '../common/avatar.component';
 
 if (process.env.BROWSER === true) {
   require('./createPostTeaser.css');
 }
 
-export default function CreatePostTeaser(props) {
+function CreatePostTeaser(props) {
+  if (!props.user) return null;
   return (
-    <div
+    <Link
+      to={props.location.pathname + '#newpost'}
       className="createPostTeaser"
       role="button"
-      onClick={props.onClick}
     >
-      <Avatar user={props.user} />
+      <Avatar size={44} user={props.user} nolink />
       <div className="textarea">
-        {'What\'s relevant?'}
+        {'Have you read anything good lately?'}
       </div>
-      <button>Post</button>
-    </div>
+    </Link>
   );
 }
+
+export default withRouter(CreatePostTeaser);

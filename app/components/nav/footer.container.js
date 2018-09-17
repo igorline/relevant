@@ -10,6 +10,8 @@ import * as navigationActions from '../../actions/navigation.actions';
 import CardContainer from './tabView.container';
 import * as userActions from '../../actions/user.actions';
 import Footer from './footer.component';
+import { IphoneX } from '../../styles/global';
+
 
 class Tabs extends Component {
   constructor(props, context) {
@@ -25,18 +27,19 @@ class Tabs extends Component {
 
     // This is if we want to make create post a separate scene
     if (key === 'createPost') {
-      if (this.props.auth.user.balance < 1) {
-        return Alert.alert('You need to have at least one coin to post');
-      }
+      // if (this.props.auth.user.balance < 1) {
+      //   return Alert.alert('You need to have at least one coin to post');
+      // }
       this.props.actions.push({
-        key,
+        key: 'createPost',
         back: true,
         title: 'New Post',
         next: 'Post',
         direction: 'vertical',
       }, 'home');
+
       // need to to do this because the navigator renderer
-      // is using this object to display info and above to render transition
+      // is using this object to display info above and to render transition
       this.props.actions.replaceRoute({
         key: 'createPost',
         component: 'createPost',
@@ -46,6 +49,7 @@ class Tabs extends Component {
         next: 'Next',
         direction: 'vertical'
       }, 0, 'createPost');
+
     } else {
       if (tab.key === key) {
         if (this.props.navigation[key].routes.length === 1) {
@@ -96,11 +100,12 @@ class Tabs extends Component {
     return Object.keys(this.tabs).map(k => {
       let tab = this.tabs[k];
       let active = tab.key === key;
+      let margin = IphoneX ? 83 : 50;
       return (
         <View
           key={tab.key}
           style={[
-            active ? { flex: 1, marginBottom: 50 } : { flex: 0 }
+            active ? { flex: 1, marginBottom: margin } : { flex: 0 }
           ]}
         >
           <CardContainer

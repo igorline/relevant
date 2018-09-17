@@ -15,10 +15,15 @@ export default class InfScroll extends Component {
     this.pageLoaded = this.props.pageStart;
     this.attachScrollListener();
     this.props.loadMore(this.pageLoaded);
+    this.data = this.props.data;
   }
 
   componentDidUpdate() {
-    this.attachScrollListener();
+    if (this.data.length !== this.props.data.length) {
+      this.attachScrollListener();
+      this.data = this.props.data;
+    }
+    if (!this.props.data.length < this.data.length) this.pageLoaded = this.props.pageStart;
   }
 
   componentWillUnmount() {
@@ -32,7 +37,6 @@ export default class InfScroll extends Component {
 
   detachScrollListener() {
     let scrollEl = window;
-    console.log('detach');
     if (this.props.useWindow === false) {
       scrollEl = this.scrollComponent.parentNode;
     }
@@ -67,15 +71,16 @@ export default class InfScroll extends Component {
     let offset;
     if (this.props.useWindow) {
       const scrollTop = (scrollEl.pageYOffset !== undefined) ?
-       scrollEl.pageYOffset :
-       (document.documentElement || document.body.parentNode || document.body).scrollTop;
+        scrollEl.pageYOffset :
+        (document.documentElement || document.body.parentNode || document.body).scrollTop;
       if (this.props.isReverse) {
         offset = scrollTop;
       } else {
         offset = this.calculateTopPosition(el) +
                      (el.offsetHeight -
                      scrollTop -
-                     window.innerHeight);
+                     window.innerHeight
+                     );
       }
     } else if (this.props.isReverse) {
       offset = el.parentNode.scrollTop;
@@ -87,7 +92,6 @@ export default class InfScroll extends Component {
       this.detachScrollListener();
       // Call loadMore after detachScrollListener to allow for non-async loadMore functions
       if (typeof this.props.loadMore === 'function') {
-        console.log('load page ', this.pageLoaded);
         this.props.loadMore(this.pageLoaded += 1);
       }
     }
@@ -121,10 +125,10 @@ export default class InfScroll extends Component {
     };
 
     return React.createElement(
-        element,
-        props,
-        children,
-        hasMore && (loader || this.defaultLoader),
+      element,
+      props,
+      children,
+      hasMore && (loader || this.defaultLoader),
     );
   }
 }

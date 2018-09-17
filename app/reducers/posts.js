@@ -18,7 +18,7 @@ const initialState = {
     topics: {}
   },
   newFeedAvailable: false,
-  newPostsAvailable: false,
+  newPostsAvailable: {},
   userPosts: {},
   metaPosts: {
     new: {},
@@ -170,7 +170,8 @@ export default function post(state = initialState, action) {
         loaded: {
           ...state.loaded,
           [type]: true,
-        }
+        },
+        newPostsAvailable: {}
       };
     }
 
@@ -253,9 +254,13 @@ export default function post(state = initialState, action) {
     }
 
     case 'SET_NEW_POSTS_STATUS': {
-      return Object.assign({}, state, {
-        newPostsAvailable: action.payload,
-      });
+      return {
+        ...state,
+        newPostsAvailable: {
+          ...state.newPostsAvailable,
+          [action.payload.community]: state.newPostsAvailable[action.payload.community] || 0 + 1,
+        }
+      };
     }
 
     case types.POST_ERROR: {
@@ -313,9 +318,15 @@ export default function post(state = initialState, action) {
       });
     }
 
-    case types.LOGOUT_USER: {
-      return { ...initialState };
-    }
+    // this wipes feed on login
+    // case types.LOGIN_USER_SUCCESS: {
+    //   return { ...initialState };
+    // }
+
+    // this wipes feed on logout
+    // case types.LOGOUT_USER: {
+    //   return { ...initialState };
+    // }
 
     default:
       return state;

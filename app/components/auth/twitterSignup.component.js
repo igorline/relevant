@@ -160,7 +160,11 @@ export default class TwitterSignup extends Component {
           {this.props.auth.twitter ? this.renderUserName() : this.renderCTA() }
           {this.props.auth.twitter ? button : null }
 
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              this.props.actions.goToUrl('https://relevant.community/eula.html')
+            }
+          >
             <Text
               style={[
                 styles.signInText,
@@ -170,9 +174,6 @@ export default class TwitterSignup extends Component {
               By signing up, you agree to our{' '}
               <Text
                 style={[styles.signInText, styles.active, styles.font12]}
-                onPress={() =>
-                  this.props.actions.goToUrl('https://relevant.community/eula.html')
-                }
               >
                 Terms of Use
               </Text>

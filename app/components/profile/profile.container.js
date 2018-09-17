@@ -4,6 +4,7 @@ import {
   View,
   InteractionManager,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { globalStyles } from '../../styles/global';
@@ -257,7 +258,7 @@ class Profile extends Component {
 }
 
 Profile.propTypes = {
-  actions: React.PropTypes.object,
+  actions: PropTypes.object,
 };
 
 function mapStateToProps(state) {

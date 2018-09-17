@@ -10,9 +10,9 @@ import {
   StatusBar,
   FlatList,
   Keyboard,
-  InteractionManager
+  InteractionManager,
 } from 'react-native';
-import { globalStyles, fullHeight } from '../../styles/global';
+import { globalStyles, fullHeight, IphoneX } from '../../styles/global';
 import Comment from './comment.component';
 import Post from './post.component';
 import CommentInput from './commentInput.component';
@@ -20,6 +20,8 @@ import UserSearchComponent from '../createPost/userSearch.component';
 import UrlPreview from '../createPost/urlPreview.component';
 
 let styles;
+
+let inputOffset = IphoneX ? 59 + 33 : 59;
 
 class SinglePostComments extends Component {
   constructor(props) {
@@ -152,7 +154,7 @@ class SinglePostComments extends Component {
         ref={c => this.scrollView = c}
         data={this.comments}
         renderItem={this.renderRow}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item, index) => index.toString()}
         removeClippedSubviews
 
         keyboardShouldPersistTaps={'always'}
@@ -277,7 +279,7 @@ class SinglePostComments extends Component {
             }}
           >
             <UserSearchComponent
-              style={{ paddingTop: 59 }}
+              style={{ paddingTop: inputOffset }}
               setSelected={this.input.setMention}
               users={this.props.users.search}
             />
@@ -289,11 +291,12 @@ class SinglePostComments extends Component {
   }
 
   render() {
+
     return (
       <KeyboardAvoidingView
         behavior={'padding'}
         style={{ flex: 1, backgroundColor: 'white' }}
-        keyboardVerticalOffset={59 + (Platform.OS === 'android' ? StatusBar.currentHeight / 2 : 0)}
+        keyboardVerticalOffset={inputOffset + (Platform.OS === 'android' ? StatusBar.currentHeight / 2 : 0)}
       >
         {this.renderComments()}
         {this.renderUserSuggestions()}
