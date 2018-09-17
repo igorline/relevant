@@ -19,10 +19,14 @@ import admin from './admin';
 
 let navigation = {};
 let routing = {};
+let drizzleReducers = {};
 if (process.env.WEB != 'true') {
   navigation = require('./navigation').default;
 } else {
+  // block these imports in package.json in react-native field
   routing = require('react-router-redux').routerReducer;
+  let drizzle = require('drizzle');
+  drizzleReducers = drizzle ? drizzle.drizzleReducers : {};
 }
 
 const rootReducer = combineReducers({
@@ -44,7 +48,8 @@ const rootReducer = combineReducers({
   tags,
   tooltip,
   subscriptions,
-  admin
+  admin,
+  ...drizzleReducers,
 });
 
 export default rootReducer;

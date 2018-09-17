@@ -18,9 +18,11 @@ export default class Level extends Component {
 
   componentWillReceiveProps(next) {
     let level = Math.floor(next.level / 10);
-    if (this.scrollView) {
-      this.scrollView.scrollToIndex({ index: level, viewPosition: 0.5, animated: true });
-    }
+    // if (this.scrollView && this.scrollView.getItemLayout) {
+    //   this.scrollView.getItemLayout(() => {
+    //     this.scrollView.scrollToIndex({ index: level, viewPosition: 0.5, animated: true });
+    //   });
+    // }
   }
 
   render() {
@@ -62,7 +64,7 @@ export default class Level extends Component {
         renderItem={renderItem}
         ListHeaderComponent={() => <View style={{ flex: 1, width: fullWidth / 2 }} />}
         ListFooterComponent={() => <View style={{ flex: 1, width: fullWidth / 2 }} />}
-        keyExtractor={(item) => item.level}
+        keyExtractor={(item) => item.level.toString()}
         style={{ marginTop: 35 }}
         scrollEnabled={false}
         showsHorizontalScrollIndicator={false}

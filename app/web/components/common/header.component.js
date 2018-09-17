@@ -17,7 +17,6 @@ class Header extends Component {
     this.state = {
       modal: false
     };
-    this.renderModal = this.renderModal.bind(this);
     this.login = this.login.bind(this);
   }
 
@@ -32,71 +31,28 @@ class Header extends Component {
     this.setState({ modal: !this.state.modal });
   }
 
-  renderModal() {
-    return (
-      <Modal
-        visible={this.state.modal}
-        close={() => this.setState({ modal: false })}
-        title={'login'}
-      >
-        <p className="loginText">{this.props.title}</p>
-        <input
-          className="blueInput special"
-          value={this.username}
-          onChange={(username) => {
-            this.username = username.target.value;
-          }}
-          type="text"
-          name="username"
-          placeholder="username"
-        />
-        <input
-          className="blueInput special pass"
-          value={this.password}
-          onChange={(password) => {
-            this.password = password.target.value;
-          }}
-          type="password"
-          name="password"
-          placeholder="password"
-        />
-        <ShadowButton
-          backgroundColor={'white'}
-          color={'#3E3EFF'}
-          onClick={this.login}
-        >
-          Login
-        </ShadowButton>
-      </Modal>
-    );
-  }
-
   renderLoginButton() {
-    if (this.props.user) {
-      return (
-        <div>
-          <a onClick={() => this.props.actions.logoutAction()} >Logout</a>
-          <Avatar user={this.props.user} />
-        </div>
-      );
-    }
-    return (
-      <div>
-        <a onClick={() => this.setState({ modal: true })} >Login</a>
+    if (!this.props.isAuthenticated || !this.props.user) return (
+      <div className={'navLink'}>
+        <div onClick={this.props.toggleLogin}>Login</div>
       </div>
+    );
+
+    return (<div className="navInner">
+      <div className={'navLink'}>
+        <Avatar size={42} user={this.props.user} noName />
+      </div>
+      <div
+        className={'navLink'}
+        onClick={() => this.props.actions.logoutAction(this.props.user)}
+      >
+        Logout
+      </div>
+    </div>
     );
   }
 
   renderPostButton() {
-    // if (this.props.user) {
-    //   return (
-    //     <div>
-    //       <Link to={'/post/new'}>
-    //         Create Post
-    //       </Link>
-    //     </div>
-    //   );
-    // }
     return <div />;
   }
 
@@ -109,16 +65,17 @@ class Header extends Component {
 
     return (
       <div className="headerContainer">
-        <header>
+        <header style={{ padding: '0 30px' }}>
           {this.renderPostButton()}
           <div>
             <Link to={this.props.isAuthenticated && desktopApp ? '/home' : '/'}>
               <img src={'/img/logo-white.svg'} className={'logo'} alt={'Relevant'} />
             </Link>
           </div>
+          <div className={'rightNav'}>
           {desktopApp ? this.renderLoginButton() : <div></div>}
+          </div>
         </header>
-        {this.renderModal()}
       </div>
     );
   }

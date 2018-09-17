@@ -14,20 +14,9 @@ const {
   Card: NavigationCard,
 } = NavigationExperimental;
 
-// const {
-  // PagerPanResponder: NavigationPagerPanResponder,
-  // CardStackPanResponder: NavigationCardStackPanResponder,
-  // PagerStyleInterpolator: NavigationPagerStyleInterpolator,
-//   CardStackStyleInterpolator: NavigationCardStackStyleInterpolator
-// } = NavigationCard;
-
-// console.log(NavigationCard)
-// console.log(NavigationExperimental)
-
 let styles;
 
 class Card extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.getAnimatedStyle = this.getAnimatedStyle.bind(this);

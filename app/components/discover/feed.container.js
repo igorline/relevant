@@ -85,7 +85,7 @@ class Read extends Component {
 
   scrollToTop() {
     let view = this.listview;
-    if (view) view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
+    if (view && view.listview) view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
   }
 
   load(view, length) {

@@ -115,7 +115,7 @@ class NavPanResponder {
       config[name] = fn;
     }, this);
 
-    this._panResponder = PanResponder.create(config)
+    this._panResponder = PanResponder.create(config);
     this.panHandlers = this._panResponder.panHandlers;
   }
 
@@ -123,50 +123,50 @@ class NavPanResponder {
     const props = this._props;
     const layout = props.layout;
 
-      if (props.position._value !== parseInt(props.position._value)) return false;
+    if (props.position._value !== parseInt(props.position._value)) return false;
 
-      if (props.scrolling) return false;
+    if (props.scrolling) return false;
 
-      if (props.navigation.state.index !== props.scene.index) {
-        return false;
-      }
+    if (props.navigation.state.index !== props.scene.index) {
+      return false;
+    }
 
-      const isVertical = this._isVertical;
-      const index = props.navigation.state.index;
+    const isVertical = this._isVertical;
+    const index = props.navigation.state.index;
 
-      const immediateIndex = this._immediateIndex == null
-        ? index
-        : this._immediateIndex;
-      const currentDragDistance = gesture[isVertical ? 'dy' : 'dx'];
-      const currentDragPosition = event.nativeEvent[
-        isVertical ? 'pageY' : 'pageX'
-      ];
-      const axisLength = isVertical
-        ? layout.height.__getValue()
-        : layout.width.__getValue();
-      const axisHasBeenMeasured = !!axisLength;
+    const immediateIndex = this._immediateIndex == null
+      ? index
+      : this._immediateIndex;
+    const currentDragDistance = gesture[isVertical ? 'dy' : 'dx'];
+    const currentDragPosition = event.nativeEvent[
+      isVertical ? 'pageY' : 'pageX'
+    ];
+    const axisLength = isVertical
+      ? layout.height.__getValue()
+      : layout.width.__getValue();
+    const axisHasBeenMeasured = !!axisLength;
 
-      // Measure the distance from the touch to the edge of the screen
-      const screenEdgeDistance = currentDragPosition - currentDragDistance;
-      // Compare to the gesture distance relavant to card or modal
-      const gestureResponseDistance = isVertical
-        ? props.gestureResponseDistance
-        : props.gestureResponseDistance || 30;
-      // GESTURE_RESPONSE_DISTANCE is about 30 or 35. Or 135 for modals
-      if (screenEdgeDistance > gestureResponseDistance) {
-        // Reject touches that started in the middle of the screen
-        return false;
-      }
+    // Measure the distance from the touch to the edge of the screen
+    const screenEdgeDistance = currentDragPosition - currentDragDistance;
+    // Compare to the gesture distance relavant to card or modal
+    const gestureResponseDistance = isVertical
+      ? props.gestureResponseDistance
+      : props.gestureResponseDistance || 30;
+    // GESTURE_RESPONSE_DISTANCE is about 30 or 35. Or 135 for modals
+    if (screenEdgeDistance > gestureResponseDistance) {
+      // Reject touches that started in the middle of the screen
+      return false;
+    }
 
-      const hasDraggedEnough = Math.abs(currentDragDistance) >
-        RESPOND_THRESHOLD;
+    const hasDraggedEnough = Math.abs(currentDragDistance) >
+      RESPOND_THRESHOLD;
 
-      const isOnFirstCard = immediateIndex === 0;
-      const shouldSetResponder = hasDraggedEnough &&
-        axisHasBeenMeasured &&
-        !isOnFirstCard;
+    const isOnFirstCard = immediateIndex === 0;
+    const shouldSetResponder = hasDraggedEnough &&
+      axisHasBeenMeasured &&
+      !isOnFirstCard;
 
-      return shouldSetResponder;
+    return shouldSetResponder;
   }
 
   onPanResponderGrant(event: any, gesture: any) {
@@ -259,7 +259,7 @@ class NavPanResponder {
       duration: ANIMATION_DURATION,
       useNativeDriver: props.position.__isNative,
       velocity: velocity * GESTURE_ANIMATED_VELOCITY_RATIO,
-      bounciness: 0,
+      overshootClamping: true,
     }).start();
   }
 
@@ -280,18 +280,19 @@ class NavPanResponder {
       useNativeDriver: position.__isNative,
       velocity: velocity * GESTURE_ANIMATED_VELOCITY_RATIO,
       bounciness: 0,
+      overshootClamping: true
     }).start(() => {
       this._immediateIndex = null;
       const backFromScene = scenes.find((s: *) => s.index === toValue + 1);
       if (!this._isResponding && backFromScene) {
         this.animating = false;
         // navigation.dispatch(
-          // props.onNavigateBack()
-          // NavigationActions.back({ key: backFromScene.route.key }),
+        // props.onNavigateBack()
+        // NavigationActions.back({ key: backFromScene.route.key }),
         // );
       }
     });
-    props.onNavigateBack()
+    props.onNavigateBack();
   }
 
   _addNativeListener(animatedValue) {

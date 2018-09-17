@@ -92,9 +92,9 @@ exports.text.coin = function (props) {
   if (!props.auth.user) return null;
 
   let data = [
-    'You spend coins when you upvote posts',
+    'You stake coins when you upvote posts',
     'You earn coins when you create or upvote quality posts (it takes a few days)',
-    'The more coins you spend on a vote, the more rewards you\'ll earn'
+    'The more coins you stake on a vote, the more rewards you\'ll earn'
   ];
 
   let dataEl = data.map(txt => renderRow(props, txt));
@@ -117,7 +117,7 @@ exports.text.coin = function (props) {
             styles.title,
           ]}
         >
-          {numbers.abbreviateNumber(props.auth.user.balance)}
+          {numbers.abbreviateNumber(props.auth.user.balance + props.auth.user.tokenBalance)}
         </Text>
       </View>
       <View style={styles.ulParent}>
@@ -238,12 +238,12 @@ exports.data.shareTip = {
   noButton: true,
 };
 
-exports.text.shareTip = function (props) {
-  let width = (fullWidth - 20) / 2;
+exports.text.shareTip = function shareTip() {
+  let width = (fullWidth) / 2.4;
   const Video = require('react-native-video').default;
   return (
     <View style={styles.videoTip}>
-      <View style={{ flex: 0.5 }}>
+      <View style={{ flex: 1 }}>
         <View style={styles.ol}>
           <Text allowFontScaling={false} style={[styles.textP, { fontWeight: 'bold', fontSize: 14 }]}>Enable posting from Chrome, Safari and other apps:</Text>
         </View>
@@ -268,7 +268,7 @@ exports.text.shareTip = function (props) {
         </View>
       </View>
       <View
-        style={{ width, height: width + 40, overflow: 'hidden' }}
+        style={{ flex: 0, width, height: width + 40, overflow: 'hidden' }}
       >
         <Video
           resizeMode={'contain'}

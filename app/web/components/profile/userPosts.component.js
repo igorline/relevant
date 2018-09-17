@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
+import InfScroll from '../common/infScroll.component';
 
 import Post from '../post/post.component';
 
@@ -15,7 +16,9 @@ class UserPosts extends Component {
       postsToRender: [],
       isInfiniteLoading: false
     };
-    this.loadMorePosts = this.loadMorePosts.bind(this);
+    // this.loadMorePosts = this.loadMorePosts.bind(this);
+    this.load = this.load.bind(this);
+
   }
 
   componentDidUpdate(prevProps) {
@@ -28,27 +31,34 @@ class UserPosts extends Component {
   }
 
   // Extends postsToRender on scroll
-  loadMorePosts() {
-    // console.log(this.props, this.state)
+  // loadMorePosts() {
+  //   // console.log(this.props, this.state)
 
-    this.setState({
-      isInfiniteLoading: true
-    });
+  //   this.setState({
+  //     isInfiniteLoading: true
+  //   });
 
-    const postsLength = this.state.postsToRender.length;
+  //   const postsLength = this.state.postsToRender.length;
 
-    // console.log(this.state.postsToRender)
-    if (! this.state.postsToRender.length) {
-      return
+  //   // console.log(this.state.postsToRender)
+  //   if (! this.state.postsToRender.length) {
+  //     return
+  //   }
+
+  //   // Grab next slice of posts to concat
+  //   // const newPosts = this.props.posts.userPosts.slice(postsLength, postsLength + postUpdateAmt);
+  //   //
+  //   // this.setState({
+  //   //   isInfiniteLoading: false,
+  //   //   postsToRender: this.state.postsToRender.concat(newPosts)
+  //   // });
+  // }
+
+  load(page, length) {
+    this.hasMore = (page) * this.props.pageSize <= length;
+    if (this.hasMore) {
+      this.props.load(length);
     }
-
-    // Grab next slice of posts to concat
-    // const newPosts = this.props.posts.userPosts.slice(postsLength, postsLength + postUpdateAmt);
-    //
-    // this.setState({
-    //   isInfiniteLoading: false,
-    //   postsToRender: this.state.postsToRender.concat(newPosts)
-    // });
   }
 
   // render() {
@@ -89,10 +99,11 @@ class UserPosts extends Component {
 
   render() {
     const userId = this.props.params.id;
-    const postIds = this.props.posts.userPosts[userId] || []
+    const postIds = this.props.posts.userPosts[userId] || [];
 
     const posts = postIds.map(id => {
       const post = this.props.posts.posts[id];
+      if (!post) return null;
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
       const postUser = {
         ...post.embeddedUser,
@@ -109,16 +120,21 @@ class UserPosts extends Component {
       );
     });
 
+    let length = posts.length;
     // if (!this.props.user) return null;
     return (
-      <div className='parent'>
-        <div className='postContainer'>
+        <InfScroll
+          data={postIds}
+          loadMore={(p) => this.load(p, length)}
+          hasMore={this.hasMore}
+        >
+          <div className={'postContainer userPosts'}>
+
           {posts}
-        </div>
-      </div>
+          </div>
+        </InfScroll>
     );
   }
-
 }
 
 export default UserPosts;

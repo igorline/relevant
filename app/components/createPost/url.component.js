@@ -273,9 +273,9 @@ export default class UrlComponent extends Component {
           <TextInput
             ref={(c) => { this.input = c; }}
             style={[
+              { flex: 1 },
               styles.font15,
               styles.createPostInput,
-              this.props.postBody && this.props.postBody.length ? { flex: 1 } : { flex: 0 },
               { maxHeight: 280 }
             ]}
             underlineColorAndroid={'transparent'}
@@ -285,7 +285,6 @@ export default class UrlComponent extends Component {
             clearButtonMode={'while-editing'}
             onChangeText={postBody => {
               this.processInput(postBody, false);
-              // this.okToSubmit = false;
             }}
             onBlur={() => this.processInput(null, true)}
             returnKeyType={'default'}

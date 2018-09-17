@@ -6,17 +6,15 @@ import Avatar from './avatar.component';
 
 export default function AvatarBox(props) {
   const user = props.user;
-  let profileLink = '/profile/' + user._id;
-  // temp - not logged in - redirect to home
-  if (!props.auth.user) {
-    profileLink = '/';
-  }
+  const reverse = props.reverse;
+  let profileLink = user ? '/profile/' + user.handle : null;
+
   let timestamp;
   if (props.date) {
     timestamp = ' • ' + numbers.timeSince(Date.parse(props.date)) + ' ago';
   }
   let premsg;
-  let className;
+  let className = reverse ? 'reverse ' : '';
   if (props.isRepost) {
     className = 'repost';
     premsg = 'reposted by ';
@@ -43,18 +41,20 @@ export default function AvatarBox(props) {
   }
   return (
     <div className={['avatarBox', className].join(' ')}>
-      <Avatar auth={props.auth} user={user} />
+      { !reverse ? <Avatar auth={props.auth} user={user} /> : null}
       <div className="userBox">
         <div className="bebasRegular username">
           {premsg}
-          <Link to={profileLink}>{user.name}</Link>
+          <Link onClick={e => e.stopPropagation()} to={profileLink}>{user.name}</Link>
           {relevance}
         </div>
         <div className="gray">
-          @<Link to={profileLink}>{user._id}</Link>
+          @<Link to={profileLink} onClick={e => e.stopPropagation()}
+>{user.handle}</Link>
           {timestamp}
         </div>
       </div>
+      { reverse ? <Avatar auth={props.auth} user={user} /> : null}
     </div>
   );
 }

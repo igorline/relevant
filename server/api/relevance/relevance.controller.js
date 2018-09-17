@@ -1,8 +1,8 @@
 
 let Relevance = require('./relevance.model');
 
-// Relevance.find({ _id: '58545d5478ee31e893ffecb8' }).remove().exec();
-// .then(tag => console.log('empty tag', tag));
+import User from '../user/user.model';
+
 
 function handleError(res, err) {
   console.log(err);
@@ -19,10 +19,12 @@ exports.index = (req, res) => {
 };
 
 exports.stats = async (req, res) => {
+  let community = req.subdomain ||  'relevant';
+  if(req.query.community !== '') community = req.query.community;
   let user = req.user;
   let stats;
   try {
-    stats = await Relevance.find({ user: user._id, tag: { $in: user.topTopics } })
+    stats = await Relevance.find({ user: user._id, community, tag: { $in: user.topTopics } })
     .sort('-relevance');
   } catch (err) {
     handleError(err);

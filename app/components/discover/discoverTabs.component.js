@@ -76,7 +76,7 @@ class DiscoverTabs extends Component {
   }
 
   componentDidMount() {
-    if (this.tabView && this.initialTab) this.tabView.goToPage(this.initialTab);
+    // if (this.tabView && this.initialTab) this.tabView.goToPage(this.initialTab);
   }
 
   componentWillReceiveProps(next) {
@@ -209,6 +209,7 @@ class DiscoverTabs extends Component {
             borderBottomWidth: StyleSheet.hairlineWidth,
             borderColor: 'black'
           }}
+          textStyle={{}}
           initialTab={this.initialTab}
           renderBadge={this.renderBadge}
           topic={this.topicId || 'default'}
@@ -251,6 +252,7 @@ class DiscoverTabs extends Component {
           ref={c => this.tabView = c}
           tabBarTextStyle={[styles.tabFont]}
           tabBarActiveTextColor={blue}
+          initialPage={this.initialTab}
           // initialPage={this.initialTab}
           tabBarUnderlineStyle={{ backgroundColor: blue }}
           onChangeTab={(tab) => {

@@ -56,11 +56,14 @@ class TextEdit extends Component {
         onFocus={this.props.onFocus}
         onBlur={this.props.onBlur}
         onChange={(evt) => this.setState({
-          height: Math.max(evt.nativeEvent.contentSize.height, 50),
           text: evt.nativeEvent.text
         })}
-        onContentSizeChange={this.props.onContentSizeChange}
-
+        onContentSizeChange={(e) => {
+          this.setState({
+            height: Math.max(e.nativeEvent.contentSize.height, 50)
+          });
+          if (this.props.onContentSizeChange) this.props.onContentSizeChange();
+        }}
         // fix for android enter bug!
         blurOnSubmit={false}
         onSubmitEditing={() => {

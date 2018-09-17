@@ -26,25 +26,42 @@ export function clearCreatePost() {
   };
 }
 
-export function submitPost(post, token) {
-  return (dispatch) => {
-    return fetch(apiServer + 'post?access_token=' + token,
-      {
-        credentials: 'include',
+
+export function submitPost(post) {
+  return async () => {
+    try {
+      await utils.api.request({
         method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
+        endpoint: 'post',
         body: JSON.stringify(post)
-      })
-    .then((response) => {
-      // console.log(response, 'submitPost response');
-      if (response.status === 200) {
-        return response;
-      }
-      return false;
-    })
-    .catch(error => false);
+      });
+      return true;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   };
 }
+
+// export function submitPost(post, token) {
+//   return (dispatch) => {
+//     return fetch(apiServer + 'post?access_token=' + token,
+//       {
+//         credentials: 'include',
+//         method: 'POST',
+//         headers: {
+//           Accept: 'application/json',
+//           'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify(post)
+//       })
+//     .then((response) => {
+//       // console.log(response, 'submitPost response');
+//       if (response.status === 200) {
+//         return response;
+//       }
+//       return false;
+//     })
+//     .catch(error => false);
+//   };
+// }

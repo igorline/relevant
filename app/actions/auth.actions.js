@@ -4,7 +4,7 @@ import * as errorActions from './error.actions';
 import * as navigationActions from './navigation.actions';
 
 let AlertIOS = utils.api.Alert();
-let rn = {};
+let ReactNative = {};
 let PushNotification;
 let userDefaults;
 
@@ -14,10 +14,10 @@ let Platform;
 let okToRequestPermissions = true;;
 
 if (process.env.WEB != 'true') {
-  rn = require('react-native');
+  ReactNative = require('react-native');
   Analytics = require('react-native-firebase-analytics');
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
-  Platform = require('react-native').Platform;
+  Platform = ReactNative.Platform;
   PushNotification = require('react-native-push-notification');
 }
 
@@ -184,19 +184,21 @@ export function loginUser(user) {
     .then(response => response.json())
     .then((responseJSON) => {
       if (responseJSON.token) {
-        utils.token.set(responseJSON.token)
+        return utils.token.set(responseJSON.token)
         .then(() => {
           dispatch(loginUserSuccess(responseJSON.token));
           dispatch(getUser());
+          return true;
         });
-      } else {
-        AlertIOS.alert(responseJSON.message);
-        dispatch(loginUserFailure(responseJSON.message));
       }
+      AlertIOS.alert(responseJSON.message);
+      dispatch(loginUserFailure(responseJSON.message));
+      return false;
     })
     .catch((error) => {
       console.log(error, 'login error');
       AlertIOS.alert(error.message);
+      return false;
     });
   };
 }
@@ -247,8 +249,7 @@ function checkUser(string, type) {
 }
 
 
-export
-function createUser(user, invite) {
+export function createUser(user, invite) {
   return (dispatch) => {
     return fetch(process.env.API_SERVER + '/api/user', {
       credentials: 'include',
@@ -263,18 +264,20 @@ function createUser(user, invite) {
     .then(response => response.json())
     .then((responseJSON) => {
       if (responseJSON.token) {
-        utils.token.set(responseJSON.token)
+        return utils.token.set(responseJSON.token)
         .then(() => {
           dispatch(loginUserSuccess(responseJSON.token));
           dispatch(getUser());
+          return true;
         });
       } else if (responseJSON.errors) {
         let errors = responseJSON.errors;
         let message = '';
         Object.keys(errors).map((key, index) => {
-           if (errors[key].message) message += errors[key].message;
+          if (errors[key].message) message += errors[key].message;
         });
         AlertIOS.alert(message);
+        return false;
       }
     })
     .catch(error => {
@@ -282,7 +285,29 @@ function createUser(user, invite) {
         dispatch(updateInvite(null));
       }
       AlertIOS.alert(error.message);
+      return false;
     });
+  };
+}
+
+export function updateHandle(user) {
+  return async dispatch => {
+    try {
+      let result = await utils.api.request({
+        method: 'PUT',
+        endpoint: 'user',
+        path: `/updateHandle`,
+        body: JSON.stringify({ user })
+      });
+      await utils.token.set(result.token);
+      dispatch(loginUserSuccess(result.token));
+      dispatch(getUser());
+      return true;
+    } catch (err) {
+      console.log('error updating handle');
+      AlertIOS.alert(err.message);
+      return false;
+    }
   };
 }
 
@@ -342,6 +367,7 @@ export function getUser(callback) {
 
     return utils.token.get()
     .then((newToken) => {
+      console.log("got token! ", newToken);
       dispatch(loginUserSuccess(newToken));
       return fetchUser(newToken);
     })
@@ -611,7 +637,6 @@ export function setLoading(loading) {
   };
 }
 
-
 export function twitterAuth(profile, invite) {
   return async dispatch => {
     try {
@@ -639,5 +664,49 @@ export function twitterAuth(profile, invite) {
       AlertIOS.alert(error.message);
       return false;
     }
+  };
+}
+
+export function addEthAddress(msg, sig, acc) {
+  return async dispatch => {
+    try {
+      let result = await utils.api.request({
+        method: 'PUT',
+        endpoint: 'user',
+        path: `/ethAddress`,
+        body: JSON.stringify({ msg, sig, acc })
+      });
+      dispatch(updateAuthUser(result));
+      return true;
+    } catch(err) {
+      console.log('error updating key');
+      AlertIOS.alert(err.message);
+      return false;
+    }
+  };
+}
+
+export function cashOut() {
+  return async dispatch => {
+    try {
+      let result = await utils.api.request({
+        method: 'POST',
+        endpoint: 'user',
+        path: `/cashOut`,
+      });
+      dispatch(updateAuthUser(result));
+      return result.cashOut;
+    } catch (err) {
+      console.log('error cashing out');
+      AlertIOS.alert(err.message);
+      return false;
+    }
+  };
+}
+
+
+export function userToSocket(user) {
+  return dispatch => {
+    dispatch({ type: 'server/storeUser', payload: user });
   };
 }

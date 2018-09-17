@@ -9,21 +9,22 @@ import {
   Image,
   Platform
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Analytics from 'react-native-firebase-analytics';
 import Share from 'react-native-share';
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
-import IconE from 'react-native-vector-icons/EvilIcons';
-import IconEn from 'react-native-vector-icons/Entypo';
 import IconI from 'react-native-vector-icons/Ionicons';
-import IconO from 'react-native-vector-icons/Octicons';
+import RNBottomSheet from 'react-native-bottom-sheet';
 
+// import Icon from 'react-native-vector-icons/SimpleLineIcons';
+// import IconE from 'react-native-vector-icons/EvilIcons';
+// import IconEn from 'react-native-vector-icons/Entypo';
+// import IconO from 'react-native-vector-icons/Octicons';
 
 
 import { globalStyles, greyText, fullHeight } from '../../styles/global';
 import InvestModal from './investModal.component';
 import { numbers } from '../../utils';
 
-import RNBottomSheet from 'react-native-bottom-sheet';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -174,55 +175,51 @@ class PostButtons extends Component {
     this.setState({ modalVisible: bool });
   }
 
-  invest() {
-    let investAmount = 1;
-    // DEBUG ANIMATION
-    // this.props.actions.triggerAnimation('invest');
-    if (!this.props.auth || !this.props.auth.user) return;
-    let user = this.props.auth.user;
-    if (user.balance <= 0) {
-      return Alert.alert('You don\'t have enough coins to vote 🙁', 'But don\'t worry, you should get a payout in a few days!');
-    }
-    let investment = Math.floor(Math.max(1, user.balance * 0.07));
-    // this.props.actions.triggerAnimation('invest', { amount: investment });
+  async invest() {
+    try {
+      // DEBUG ANIMATION
+      // this.props.actions.triggerAnimation('invest'); return;
+      // if (!this.props.auth || !this.props.auth.user) return;
+      let user = this.props.auth.user;
+      // if (user.balance <= 0) {
+      //   Alert.alert('You don\'t have enough coins to vote 🙁', 'But don\'t worry, you should get a payout in a few days!');
+      //   return;
+      // }
+      let amount = 1;
+      // this.props.actions.triggerAnimation('invest', { amount: investment });
 
-    // this.investButton.measureInWindow((x, y, w, h) => {
-    //   let parent = { x, y, w, h };
-    //   if (x + y + w + h === 0) return;
-    //   this.props.actions.triggerAnimation('upvote', { parent, amount: investment });
-    // });
-    // return;
+      // this.investButton.measureInWindow((x, y, w, h) => {
+      //   let parent = { x, y, w, h };
+      //   if (x + y + w + h === 0) return;
+      //   this.props.actions.triggerAnimation('upvote', { parent, amount: investment });
+      // });
+      // return;
 
-    this.props.actions.invest(
-      this.props.auth.token,
-      investAmount,
-      this.props.post,
-      this.props.auth.user
-    )
-    .then((results) => {
-      if (results) {
+      // await this.props.actions.vote(
+      //   amount,
+      //   this.props.post,
+      //   this.props.auth.user
+      // );
 
-        this.investButton.measureInWindow((x, y, w, h) => {
-          let parent = { x, y, w, h };
-          if (x + y + w + h === 0) return;
-          this.props.actions.triggerAnimation('upvote', { parent, amount: investment });
-        });
-
-        setTimeout(() => {
-          // this.props.actions.reloadTab('read');
-          // let name = this.props.post.embeddedUser.name;
-          // Alert.alert('You have subscribed to receive ' + results.subscription.amount + ' posts from ' + name);
-          Analytics.logEvent('upvote');
-        }, 1500);
-      }
-    })
-    .catch(err => {
+      this.investButton.measureInWindow((x, y, w, h) => {
+        let parent = { x, y, w, h };
+        if (x + y + w + h === 0) return;
+        this.props.actions.triggerAnimation('upvote', { parent, amount });
+      });
+      setTimeout(() => {
+        // this.props.actions.reloadTab('read');
+        // let name = this.props.post.embeddedUser.name;
+        // Alert.alert('You have subscribed to receive ' +
+        //  results.subscription.amount + ' posts from ' + name);
+        Analytics.logEvent('upvote');
+      }, 1500);
+    } catch (err) {
       let text1 = err.message;
       if (text1.match('coin')) {
         text1 = 'Oops! Looks like you ran out of coins, but don\'t worry, you\'ll get more tomorrow';
       }
       Alert.alert(text1);
-    });
+    }
   }
 
 
@@ -244,25 +241,22 @@ class PostButtons extends Component {
     );
   }
 
-  irrelevant() {
-    // this.props.actions.triggerAnimation('invest', -1);
-    // this.props.actions.triggerAnimation('irrelevant', -1);
-    // return;
+  async irrelevant() {
+    try {
+      // this.props.actions.triggerAnimation('invest', -1);
+      // this.props.actions.triggerAnimation('irrelevant', -1);
+      // return;
 
-    this.props.actions.invest(this.props.auth.token, -1, this.props.post, this.props.auth.user)
-    .then((results) => {
-      if (results) {
-        this.props.actions.triggerAnimation('invest', -1);
-        this.props.actions.triggerAnimation('irrelevant', -1);
-      }
-    })
-    .catch(err => {
+      await this.props.actions.vote(-1, this.props.post, this.props.auth.user);
+      this.props.actions.triggerAnimation('invest', -1);
+      this.props.actions.triggerAnimation('irrelevant', -1);
+    } catch (err) {
       let text1 = err.message;
       if (text1.match('coin')) {
         text1 = 'Oops! Looks like you ran out of coins, but don\'t worry, you\'ll get more tomorrow';
       }
       Alert.alert(text1);
-    });
+    }
   }
 
   showActionSheet() {
@@ -387,10 +381,12 @@ class PostButtons extends Component {
     let irrelevantButton;
     let commentString = '';
     let myVote;
-    let myPost = false;
-    if (post && post.user && post.user._id === this.props.auth.user._id) {
-      myPost = true;
-    }
+
+    // let myPost = false;
+    // if (post && post.user && post.user._id === this.props.auth.user._id) {
+    //   myPost = true;
+    // }
+
     if (post && this.props.auth.user) {
       if (!post.user || post.user._id !== this.props.auth.user._id) {
         if (!this.props.myPostInv) {
@@ -408,7 +404,8 @@ class PostButtons extends Component {
       }
     }
     let canBet;
-    let now = new Date();
+
+    // let now = new Date();
     // if (!myPost && !investable && now - new Date(post.createdAt) < 6 * 60 * 60 * 1000) {
     //   canBet = true;
     // }
@@ -529,7 +526,7 @@ class PostButtons extends Component {
       style={{ paddingHorizontal: 12 }}
     >
 
-      <View style={[{flexDirection: 'row', alignItems: 'center' }]}>
+      <View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
 
         <IconI
           style={{ transform: [
@@ -538,10 +535,11 @@ class PostButtons extends Component {
           }}
           name="ios-redo-outline"
           size={28}
-          color={greyText} />
+          color={greyText}
+        />
         <Text style={styles.smallInfo}> {commentString}</Text>
 
-        {/*<Text style={styles.smallInfo}>reply</Text>*/}
+        {/* <Text style={styles.smallInfo}>reply</Text>*/}
       </View>
 
     </TouchableOpacity>);
@@ -565,7 +563,7 @@ class PostButtons extends Component {
             color={greyText}
           />
 
-          {/*<Text style={styles.smallInfo}></Text>*/}
+          {/* <Text style={styles.smallInfo}></Text>*/}
         </View>
 
 
@@ -577,8 +575,8 @@ class PostButtons extends Component {
         style={{ paddingRight: 8 }}
         onPress={() => this.repostUrl()}
       >
-        {/*<Icon name="pencil" size={18} color={greyText} />*/}
-        <View style={[{flexDirection: 'column', alignItems: 'center' }]}>
+        {/* <Icon name="pencil" size={18} color={greyText} />*/}
+        <View style={[{ flexDirection: 'column', alignItems: 'center' }]}>
           <Image
             resizeMode={'contain'}
             style={styles.vote}
@@ -617,6 +615,17 @@ class PostButtons extends Component {
     </View>);
   }
 }
+
+PostButtons.propTypes = {
+  actions: PropTypes.object,
+  post: PropTypes.object,
+  tooltip: PropTypes.bool,
+  metaPost: PropTypes.object,
+  myPostInv: PropTypes.object,
+  auth: PropTypes.object,
+  scene: PropTypes.object,
+  focusInput: PropTypes.func,
+};
 
 export default PostButtons;
 

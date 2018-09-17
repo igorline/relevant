@@ -1,14 +1,22 @@
 {
-    "extends": "airbnb",
+    "extends": "airbnb-base",
     "plugins": [
         "react",
         "jsx-a11y",
-        "import"
+        "import",
+        "class-property"
     ],
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true,
+            "classes": true,
+        }
+    },
     "rules": {
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "react/forbid-prop-types": "off",
-        //"react/prop-types": "off",
+        "react/jsx-uses-vars": 2,
         "no-underscore-dangle": 0,
         "comma-dangle": ["error", "only-multiline"],
         "prefer-const": "off",
@@ -21,8 +29,16 @@
         "no-nested-ternary": 0,
         "no-mixed-operators": 0,
         "no-confusing-arrow": 0,
+        "prefer-destructuring": 0,
+        indent: ["error", 2, { "MemberExpression": 0, "SwitchCase": 1 }],
+        "object-curly-newline": [1, { "multiline": true }],
+        "class-methods-use-this": 0
     },
     env: {
-        browser: true
-    }
+        browser: true,
+        node: true
+    },
+    "globals" : {
+        "web3": false
+  },
 }

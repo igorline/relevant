@@ -24,13 +24,16 @@ if (process.env.WEB != 'true') {
   dismissKeyboard = require('react-native-dismiss-keyboard');
   safariView = require('react-native-safari-view').default;
 
-  console.log(Orientation);
-  // safariView.addEventListener(
-  //   'onDismiss',
-  //   () => {
-  //     Orientation.lockToPortrait();
-  //   }
-  // );
+  // console.log('Orientation ', Orientation);
+  // console.log('safariView.addEventListener ', safariView.addEventListener);
+  // if (safariView.addEventListener) {
+  //   safariView.addEventListener(
+  //     'onDismiss',
+  //     () => {
+  //       Orientation.lockToPortrait();
+  //     }
+  //   );
+  // }
 }
 
 export function push(route, key, animation = 'vertical') {

@@ -92,11 +92,9 @@ export default function UserName(props) {
         {repostIcon}
         <View>
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-end', marginBottom: 2 }}>
-            <View>
-              <Text style={[styles.font17, styles.darkGrey, styles.bebas]}>
-                {props.user.name}{' '} {twitterIcon}
-              </Text>
-            </View>
+            <Text style={[styles.font17, styles.darkGrey, styles.bebas]}>
+              {props.user.name}{' '} {twitterIcon}
+            </Text>
             {stats}
           </View>
           {handleEl}

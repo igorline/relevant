@@ -33,7 +33,7 @@ let localStyles = StyleSheet.create({
   statRow: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   row: {
