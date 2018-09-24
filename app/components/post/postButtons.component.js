@@ -195,11 +195,11 @@ class PostButtons extends Component {
       // });
       // return;
 
-      // await this.props.actions.vote(
-      //   amount,
-      //   this.props.post,
-      //   this.props.auth.user
-      // );
+      await this.props.actions.vote(
+        amount,
+        this.props.post,
+        this.props.auth.user
+      );
 
       this.investButton.measureInWindow((x, y, w, h) => {
         let parent = { x, y, w, h };
