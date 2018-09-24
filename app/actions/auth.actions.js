@@ -346,46 +346,28 @@ function setupUser(user, dispatch) {
 }
 
 export function getUser(callback) {
-  return (dispatch) => {
-    function fetchUser(token) {
-      return fetch(process.env.API_SERVER + '/api/user/me', {
-        credentials: 'include',
+  return async dispatch => {
+    try {
+      let user = await utils.api.request({
         method: 'GET',
-        timeout: 0,
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      .then(utils.api.handleErrors)
-      .then(response => response.json())
-      .then((user) => {
-        setupUser(user, dispatch);
-        if (callback) callback(user);
-        return user;
-      })
-      .catch((error) => {
-        console.log('get user error ', error);
-        dispatch(errorActions.setError('universal', true, error.message));
-        dispatch(loginUserFailure('Server error'));
-        if (callback) callback({ ok: false });
-        // need this in case user is logged in but there is an error getting account
-        if (error.message !== 'Network request failed') {
-          dispatch(logoutAction());
-        }
+        endpoint: 'user',
+        path: '/me',
       });
+      setupUser(user, dispatch);
+      if (callback) callback(user);
+      return user;
+    } catch (error) {
+      dispatch(errorActions.setError('universal', true, error.message));
+      dispatch(loginUserFailure('Server error'));
+      if (callback) callback({ ok: false });
+      // need this in case user is logged in but there is an error getting account
+      if (error.message !== 'Network request failed') {
+        dispatch(logoutAction());
+      }
     }
-
-    return utils.token.get()
-    .then((newToken) => {
-      console.log("got token! ", newToken);
-      dispatch(loginUserSuccess(newToken));
-      return fetchUser(newToken);
-    })
-    .catch((error) => {
-      console.log('no token');
-    });
   };
 }
+
 
 export
 function setDeviceToken(token) {

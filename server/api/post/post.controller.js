@@ -556,7 +556,7 @@ async function processSubscriptions(newPost) {
           type: 'INC_FEED_COUNT',
         };
         PostEvents.emit('post', newFeedPost);
-      
+
       } catch (err) {
         console.log('error updating subscription ', err);
       }
@@ -575,7 +575,7 @@ exports.create = async (req, res) => {
     // TODO rate limiting
 
     // TODO fetch community id
-    let community = req.subdomain || 'relevant';
+    let community = req.query.community || 'relevant';
 
     let mentions = req.body.mentions || [];
     let tags = [];

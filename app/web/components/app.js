@@ -22,6 +22,7 @@ import Modal from './common/modal';
 import CreatePost from './createPost/createPost.container';
 import Eth from './ethTools/eth.context';
 import CommunityNav from './community/communityNav.component';
+import { api } from '../../utils';
 
 if (process.env.BROWSER === true) {
   console.log('BROWSER, import css');
@@ -68,6 +69,7 @@ class App extends Component {
 
   componentDidMount() {
     // document.body.classList.remove('loading')
+    api.setCommunity(this.props.auth.community);
     this.props.actions.getUser();
     new Drizzle(options, this.context.store);
 
@@ -81,9 +83,6 @@ class App extends Component {
   componentDidUpdate(prevProps) {
     let community = this.props.params.community;
     if (community && this.props.auth.community !== community) {
-      console.log('auth community ', this.props.auth.community);
-      console.log('community ', community);
-
       this.props.actions.setCommunity(community);
     };
 

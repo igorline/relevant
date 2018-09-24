@@ -119,7 +119,8 @@ export default function handleRender(req, res) {
   let auth = {};
   // console.log('req ', req.unconfirmed);
   if (req.unconfirmed) auth.confirmed = false;
-  auth.community = req.subdomain || 'relevant';
+  // TODO how to deal with this better?
+  auth.community = req.query.community || 'relevant';
   const initialState = { auth };
 
   // Create a new Redux store instance

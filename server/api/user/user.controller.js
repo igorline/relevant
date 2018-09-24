@@ -317,7 +317,7 @@ exports.list = async (req, res) => {
   }
 
   try {
-    let community = req.subdomain || 'relevant';
+    let community = req.query.community || 'relevant';
     let query;
     if (topic && topic !== 'null') {
       // TODO should topic relevance be limited to community? maybe not?
@@ -355,7 +355,7 @@ exports.list = async (req, res) => {
  */
 exports.create = async (req, res, next) => {
   try {
-    let community = req.subdomain || 'relevant';
+    let community = req.query.community || 'relevant';
 
     let token;
     let rand = await crypto.randomBytes(32);
@@ -424,7 +424,7 @@ exports.show = async function show(req, res, next) {
       me = true;
     }
 
-    let community = req.subdomain || 'relevant';
+    let community = req.query.community || 'relevant';
     // don't show blocked user;
     let blocked = [];
     if (req.user) {
@@ -599,26 +599,6 @@ exports.update = async (req, res, next) => {
   }
 };
 
-/**
- * Get my info
- */
-// exports.me = async (req, res) => {
-//   try {
-//     let community = req.subdomain || 'relevant';
-//     let userId = req.user._id;
-//     let user = await User.findOne({ _id: userId }, '-salt -hashedPassword');
-//     if (!user) return res.json(401);
-//     // TODO this is depricated
-//     user = await user.getRelevance(community);
-//     user = await user.getSubscriptions();
-
-//     res.status(200).json(user);
-
-//     return null;
-//   } catch (err) {
-//     return handleError(res, err);
-//   }
-// };
 
 
 exports.block = async (req, res) => {
