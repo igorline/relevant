@@ -130,18 +130,24 @@ class CreatePostContainer extends Component {
 
   validateInput() {
     if (!this.state.selectedTags.length) {
-      return this.setSate({ validate: 'Please select at least one topic' });
+      this.setSate({ validate: 'Please select at least one topic' });
+      return 'Please select at least one topic';
     }
-    if (!this.props.body && !this.state.postUrl) {
-      return this.setSate({ validate: 'Please paste article link' });
+    if (!this.state.body && !this.state.postUrl) {
+      this.setState({ validate: 'Please paste article link' });
+      return 'Can not create empty post';
     }
+    return true;
   }
 
   async createPost() {
     let { auth, close, actions, router, location, createPost } = this.props;
     let { tags, body, selectedTags, postUrl, urlPreview, category, mentions, domain } = this.state;
     try {
-      this.validateInput();
+      let validate = this.validateInput();
+      if (validate !== true) {
+        throw new Error(validate);
+      }
       const allTags = tags.concat(selectedTags);
       tags = Array.from(new Set(allTags));
 
@@ -185,6 +191,7 @@ class CreatePostContainer extends Component {
       //   viaShare: this.props.share
       // });
     } catch (err) {
+      console.log(err);
       alert(err.message);
     }
   }

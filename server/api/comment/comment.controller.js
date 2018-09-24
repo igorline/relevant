@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
 
-const Comment = require('./comment.model');
 const Post = require('../post/post.model');
 const User = require('../user/user.model');
 const Notification = require('../notification/notification.model');
@@ -289,7 +288,6 @@ exports.create = async (req, res) => {
 
     // TODO increase the post's relevance **but only if its user's first comment!
     // this auto-updates comment count
-    console.log(parentPost);
     parentPost = await parentPost.save();
     parentPost.updateClient();
 

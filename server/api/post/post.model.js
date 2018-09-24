@@ -194,6 +194,12 @@ PostSchema.pre('remove', async function remove(next) {
       { multi: true, new: true }
     );
 
+    // remove notifications
+    if (this.isComment || this.isRepost) {
+      await this.model('Notification').remove({ comment: this._id });
+    }
+
+
     if (meta && meta.commentary.length === 0) {
       await meta.remove();
       meta = null;
@@ -242,6 +248,7 @@ PostSchema.methods.updateClient = function updateClient(user) {
 
 PostSchema.methods.addUserInfo = async function addUserInfo(user) {
   try {
+    console.log('comment community ', this.community)
     let relevance = await this.model('Relevance').findOneAndUpdate({
       user: user._id,
       // TODO update to use id

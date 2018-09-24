@@ -19,8 +19,7 @@ exports.index = (req, res) => {
 };
 
 exports.stats = async (req, res) => {
-  let community = req.subdomain || 'relevant';
-  if(req.query.community !== '') community = req.query.community;
+  let community = req.query.community || 'relevant';
   let user = req.user;
   let stats;
   try {

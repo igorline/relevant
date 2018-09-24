@@ -222,7 +222,7 @@ exports.create = async (req, res) => {
   let userBalance;
 
   // TODO - update both - voter community and post community
-  let voterCommunity = req.subdomain || 'relevant';
+  let voterCommunity = req.query.community || 'relevant';
 
   function InvestException(message) {
     this.message = message;

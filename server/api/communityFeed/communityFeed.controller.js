@@ -11,7 +11,6 @@ function handleError(res, statusCode) {
 
 exports.get = async (req, res) => {
   try {
-    // let community = req.subdomain || 'relevant';
     let community = req.query.community;
     let user = req.user;
 
