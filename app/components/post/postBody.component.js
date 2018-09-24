@@ -71,6 +71,12 @@ class PostBody extends Component {
       postStyle = styles.previewText;
     }
 
+    if (this.props.comment) {
+      // numberOfLines = 2;
+      // maxTextLength = 10;
+      postStyle = styles.repostText;
+    }
+
     let upvotes = <Text style={{ paddingTop: 10 }}/>;
     if ((post.downVotes || post.upVotes) && !this.props.repost && !this.props.preview) {
       let r = Math.round(post.relevance);
@@ -87,36 +93,34 @@ class PostBody extends Component {
     }
 
     let textBody;
-    // if (body) {
-      textBody = (
-        <TouchableWithoutFeedback
-          style={{ flex: 1 }}
-          onPressIn={e =>{
-            this.touchable1x = e.nativeEvent.pageX;
-          }}
-          onPress={(e) => {
-            let x = e.nativeEvent.pageX;
-            if (Math.abs(this.touchable1x - x) > 5) {
-              return;
-            }
-            this.goToPost();
-          }}
-        >
-          <View style={[styles.postBody, this.props.preview ? { marginTop: 10 } : null]}>
-            <Text style={[styles.darkGrey, postStyle]}>
-              <TextBody
-                style={postStyle}
-                numberOfLines={numberOfLines}
-                maxTextLength={maxTextLength}
-                post={post}
-                body={body}
-                {...this.props}
-              />
-            </Text>
-          </View>
-        </TouchableWithoutFeedback>
-      );
-    // }
+    textBody = (
+      <TouchableWithoutFeedback
+        style={{ flex: 1 }}
+        onPressIn={e => {
+          this.touchable1x = e.nativeEvent.pageX;
+        }}
+        onPress={(e) => {
+          let x = e.nativeEvent.pageX;
+          if (Math.abs(this.touchable1x - x) > 5) {
+            return;
+          }
+          this.goToPost();
+        }}
+      >
+        <View style={[styles.postBody, this.props.preview ? { marginTop: 10 } : null]}>
+          <Text style={[styles.darkGrey, postStyle]}>
+            <TextBody
+              style={postStyle}
+              numberOfLines={numberOfLines}
+              maxTextLength={maxTextLength}
+              post={post}
+              body={body}
+              {...this.props}
+            />
+          </Text>
+        </View>
+      </TouchableWithoutFeedback>
+    );
 
     return (
       <View style={{ flex: 1 }}>
@@ -133,7 +137,8 @@ const localStyles = StyleSheet.create({
   postBody: {
     marginTop: 24,
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: 15,
   },
   bodyText: {
     fontFamily: 'Georgia',

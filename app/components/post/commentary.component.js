@@ -71,6 +71,7 @@ export default class Commentary extends Component {
             actions={this.props.actions}
             auth={this.props.auth}
             post={post}
+            users={this.props.users}
           />
           <PostBody
             repost
@@ -113,6 +114,7 @@ export default class Commentary extends Component {
     }
 
     let myPostInv = this.props.myPostInv[post._id];
+    post.metaPost = this.props.metaPost;
 
     return (
       <View
@@ -131,6 +133,7 @@ export default class Commentary extends Component {
               actions={this.props.actions}
               auth={this.props.auth}
               singlePost={this.props.singlePost}
+              users={this.props.users}
             />
             <PostBody
               short

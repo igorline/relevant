@@ -16,6 +16,7 @@ import tags from './tags';
 import tooltip from './tooltip';
 import subscriptions from './subscriptions';
 import admin from './admin';
+import community from './community';
 
 let navigation = {};
 let routing = {};
@@ -29,7 +30,9 @@ if (process.env.WEB != 'true') {
   drizzleReducers = drizzle ? drizzle.drizzleReducers : {};
 }
 
-const rootReducer = combineReducers({
+let communityState = {};
+
+const appReducer = combineReducers({
   auth,
   posts,
   user,
@@ -49,8 +52,52 @@ const rootReducer = combineReducers({
   tooltip,
   subscriptions,
   admin,
+  community,
   ...drizzleReducers,
 });
+
+const rootReducer = (state, action) => {
+  if (action.type === 'SET_COMMUNITY') {
+    const {
+      routing,
+      auth,
+      community,
+      // keep drizzle stuff - really need a nested state!
+      contracts,
+      drizzleStatus,
+      transactions,
+      transactionStack,
+      web3,
+      accounts,
+      accountBalances,
+      socket
+    } = state;
+
+    if (auth.community) {
+      communityState = {
+        ...communityState,
+        [auth.community]: state
+      };
+    }
+
+    state = {
+      ...communityState[action.payload],
+      routing,
+      auth: {...auth, community: action.payload },
+      community,
+      contracts,
+      drizzleStatus,
+      transactions,
+      transactionStack,
+      web3,
+      accounts,
+      accountBalances,
+      // TODO needs work?
+      socket
+    };
+  }
+  return appReducer(state, action);
+};
 
 export default rootReducer;
 

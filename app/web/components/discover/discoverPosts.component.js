@@ -57,12 +57,11 @@ class DiscoverPosts extends Component {
       if (!post) return null;
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
 
-      // console.log(post.twitter);
+      post.metaPost = metaPost;
 
       return (
         <Post
           key={id}
-          metaPost={metaPost}
           post={post}
           repost={repost}
           {...this.props}
@@ -95,6 +94,8 @@ class DiscoverPosts extends Component {
       <div style={{ position: 'relative' }}>
         {newPosts ? refreshPosts : null}
         <InfScroll
+          // this resets the inf scroll with community
+          key={this.props.auth.community}
           className={'parent'}
           data={data}
           loadMore={(p) => this.load(p, length)}

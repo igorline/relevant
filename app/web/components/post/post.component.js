@@ -20,13 +20,15 @@ class Post extends Component {
     repost: PropTypes.object,
     metaPost: PropTypes.object,
   }
+
   deletePost() {
     // TODO custom confirm
     let okToDelete = confirm('Are you sure you want to delete this post?');
-    if (!okToDelete) return null;
+    if (!okToDelete) return;
     this.props.actions.deletePost(this.props.post);
   }
-  editPost(e) {
+
+  editPost() {
     let post = this.props.post;
     this.props.actions.clearCreatePost();
     let editPost = {
@@ -35,25 +37,27 @@ class Post extends Component {
       postBody: post.body,
       postCategory: post.category,
       allTags: post.tags,
-      postImage: post.image,
-      postUrl: post.link,
       selectedTags: post.tags,
+      // do we need these here?
+      postImage: post.metaPost.image,
+      postUrl: post.metaPost.url,
       urlPreview: {
-        title: post.title,
-        url: post.link,
-        image: post.image,
-        domain: post.domain
+        title: post.metaPost.title,
+        url: post.metaPost.url,
+        image: post.metaPost.image,
+        domain: post.metaPost.domain
       }
     };
     this.props.actions.setCreaPostState(editPost);
-
     this.props.actions.push(this.props.location.pathname + '#newpost');
   }
+
   render() {
     const post = this.props.post;
     const repost = this.props.repost;
-    const metaPost = this.props.metaPost;
+    const metaPost = this.props.metaPost || post.metaPost;
     const auth = this.props.auth;
+    const community = auth.community;
     let popup;
 
     if (post === 'notFound') {
@@ -67,8 +71,6 @@ class Post extends Component {
         <PostInfo post={metaPost} />
       );
     } else if (repost) {
-      // console.log(repost)
-      // console.log(this.props.posts.posts[post.repost.post])
       postInfo = (
         <PostInfo post={repost} />
       );
@@ -96,53 +98,55 @@ class Post extends Component {
     user = this.props.user.users[user] || user;
 
     if (user && !user._id) {
-      user = {};
-      user._id = post.user;
-      user.image = post.embeddedUser.image;
-      user.name = post.embeddedUser.name;
-      user.relevance = post.embeddedUser.relevance ? post.embeddedUser.relevance.relevance : null;
-      user.handle = post.embeddedUser.handle || post.embeddedUser.id;
+      user = post.embeddedUser;
     }
+
+    // TODO better?
     if (!user && post.twitter) {
       user = post.embeddedUser;
     }
 
+    let openPost = repost ? repost._id : post._id;
+
     return (
       <div
         className="post"
-        onClick={() => this.props.actions.push('/post/' + post._id)}
+        onClick={() => this.props.actions.push('/' + community + '/post/' + openPost)}
       >
         {postInfo}
         <div className="postContent">
 
-{/*          <div className="postMeta">
-          </div>*/}
-
           <div style={{ flex: 1, minWidth: 0 }}>
 
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <AvatarBox user={user} auth={this.props.auth} date={post.postDate} />
-              {repost && (
-                <AvatarBox user={user} auth={this.props.auth} date={post.postDate} isRepost />
-              )}
+              <AvatarBox
+                user={user}
+                auth={this.props.auth}
+                date={post.postDate}
+                isRepost={repost} />
               {popup}
             </div>
 
             <div className="postBody">
+              <PostBody auth={this.props.auth} repost={repost} post={post} />
               {repost && (
-                <div>
-                  <div className="repostBody">
+                <div className="repostBody">
+                  <AvatarBox
+                    user={repost.embeddedUser}
+                    auth={this.props.auth}
+                    date={post.postDate}/>
+                  <div>
                     <PostBody post={repost} />
                   </div>
-                  <div className="repostComment">{post.repost.commentBody}</div>
                 </div>
               )}
+
+
               {this.props.showDescription && (
                 <div className="postDescription">
                   {post.description}
                 </div>
               )}
-              <PostBody auth={this.props.auth} post={post} />
               <PostButtons post={post} {...this.props} />
             </div>
           </div>
@@ -158,7 +162,7 @@ function PostBody(props) {
     <Tag {...props} name={tag} key={tag} />
   ));
   return (
-    <div>
+    <div className={props.repost ? 'repostText' : ''}>
       <pre>{body}</pre>
       {' '}{tags}
     </div>
@@ -166,8 +170,7 @@ function PostBody(props) {
 }
 
 export default connect(
-  state => ({
-  }),
+  state => ({}),
   dispatch => ({
     actions: bindActionCreators({
       ...createPostActions,
@@ -177,4 +180,3 @@ export default connect(
     }, dispatch)
   })
 )(Post);
-// export default Post;

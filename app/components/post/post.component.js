@@ -35,9 +35,12 @@ class Post extends PureComponent {
     if (!this.props.auth.user) return null;
 
     let blocked = <View style={{ height: StyleSheet.hairlineWidth }} />;
-    post = this.props.metaPost || this.props.post;
+    post = this.props.post;
+    let metaPost = this.props.metaPost || post.metaPost;
 
-    if (!post || !post._id) {
+    // post = this.props.metaPost || this.props.post;
+
+    if (!metaPost && (!post || !post._id)) {
       return blocked;
     }
 
@@ -51,18 +54,18 @@ class Post extends PureComponent {
       return null;
     }
 
-    if (post.repost) {
+    if (post && post.repost) {
       let repost = this.props.posts.posts[post.repost.post];
       if (!repost) repost = { body: '[deleted]' };
       post = { ...repost };
     }
 
-    if (post.link || post.url || post.image) {
+    if (metaPost && (metaPost.link || metaPost.url || metaPost.image)) {
       imageEl = (<PostImage
-        key={post._id}
+        key={metaPost._id}
         singlePost={this.props.singlePost}
         actions={this.props.actions}
-        post={post}
+        post={metaPost}
       />);
     }
 

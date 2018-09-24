@@ -1,7 +1,7 @@
 .userSearch {
-  position: absolute;
-  top: -1px;
-  left: 5px;
+  /*position: absolute;*/
+  /*top: -1px;*/
+  /*left: 5px;*/
   max-height: 250px;
   min-width: 250px;
   overflow-y: scroll;
@@ -9,12 +9,14 @@
   border: 1px solid #bbb;
   background: white;
   border-radius: 2px;
+  display: flex;
+  flex-wrap: wrap;
   button {
     display: block;
     height: auto;
     margin: 0;
     border: 0;
-    width: 100%;
+    /*width: 100%;*/
     background: transparent;
     text-align: left;
     font-family: Helvetica, sans-serif;

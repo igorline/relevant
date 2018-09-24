@@ -7,7 +7,7 @@ import Avatar from './avatar.component';
 export default function AvatarBox(props) {
   const user = props.user;
   const reverse = props.reverse;
-  let profileLink = user ? '/profile/' + user.handle : null;
+  let profileLink = user ? '/user/profile/' + user.handle : null;
 
   let timestamp;
   if (props.date) {
@@ -18,6 +18,9 @@ export default function AvatarBox(props) {
   if (props.isRepost) {
     className = 'repost';
     premsg = 'reposted by ';
+  }
+  if (props.small) {
+    className += ' small';
   }
   if (props.topic) {
     timestamp = (
@@ -35,13 +38,13 @@ export default function AvatarBox(props) {
     relevance = (
       <span>
         <img src="/img/r-emoji.png" alt="R" className="r" />
-        {Math.round(user.relevance)}
+        {Math.round(user.relevance.relevance || user.relevance)}
       </span>
     );
   }
   return (
     <div className={['avatarBox', className].join(' ')}>
-      { !reverse ? <Avatar auth={props.auth} user={user} /> : null}
+      { !reverse && !props.noPic ? <Avatar auth={props.auth} user={user} /> : null}
       <div className="userBox">
         <div className="bebasRegular username">
           {premsg}
@@ -49,8 +52,9 @@ export default function AvatarBox(props) {
           {relevance}
         </div>
         <div className="gray">
-          @<Link to={profileLink} onClick={e => e.stopPropagation()}
->{user.handle}</Link>
+          @<Link to={profileLink} onClick={e => e.stopPropagation()}>
+            {user.handle}
+          </Link>
           {timestamp}
         </div>
       </div>

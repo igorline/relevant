@@ -8,6 +8,7 @@ import Header from './common/header.component';
 import AppHeader from './common/appHeader.component';
 import * as routerActions from 'react-router-redux';
 import * as navigationActions from '../../actions/navigation.actions';
+import { Link } from 'react-router';
 
 // import Footer from './common/footer.component';
 import * as authActions from '../../actions/auth.actions';
@@ -20,6 +21,7 @@ import EthTools from './ethTools/tools.container';
 import Modal from './common/modal';
 import CreatePost from './createPost/createPost.container';
 import Eth from './ethTools/eth.context';
+import CommunityNav from './community/communityNav.component';
 
 if (process.env.BROWSER === true) {
   console.log('BROWSER, import css');
@@ -27,7 +29,6 @@ if (process.env.BROWSER === true) {
   require('./fonts.css');
   require('./splash/splash.css');
 }
-
 
 let options = {
   contracts: [
@@ -60,6 +61,11 @@ class App extends Component {
     openLoginModal: false
   }
 
+  componentWillMount() {
+    let community = this.props.params.community;
+    this.props.actions.setCommunity(community);
+  }
+
   componentDidMount() {
     // document.body.classList.remove('loading')
     this.props.actions.getUser();
@@ -73,6 +79,14 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    let community = this.props.params.community;
+    if (community && this.props.auth.community !== community) {
+      console.log('auth community ', this.props.auth.community);
+      console.log('community ', community);
+
+      this.props.actions.setCommunity(community);
+    };
+
     if (this.props.location.pathname !== prevProps.location.pathname) {
       window.scrollTo(0, 0);
     }
@@ -145,9 +159,11 @@ class App extends Component {
 
     return (
       <main>
+
         <EthTools>
           {header}
           <div style={{ display: 'flex', width: '100%' }}>
+            <CommunityNav {...this.props} />
             {this.props.children}
           </div>
           <AuthContainer

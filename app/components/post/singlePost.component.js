@@ -205,11 +205,14 @@ class SinglePostComments extends Component {
     let headerEl;
     let loadEarlier;
 
+    // console.log(this.props.post);
+
     headerEl = (<Post
       singlePost
       key={0}
       scene={this.props.scene}
       post={this.props.post}
+      metaPost={this.props.metaPost}
       actions={this.props.actions}
       focusInput={() => this.input.textInput.focus()}
     />);
@@ -244,16 +247,19 @@ class SinglePostComments extends Component {
 
 
   renderRow({ item, index }) {
+    let comment = this.props.posts.posts[item];
+    if (!comment) return null;
     return (
       <Comment
         {...this.props}
-        key={item._id}
+        key={item}
         parentEditing={this.toggleEditing}
         index={index}
         scrollToComment={() => this.scrollToComment(index)}
         parentId={this.id}
-        comment={item}
+        comment={comment}
         parentView={this.scrollView}
+        users={this.props.users}
       />
     );
   }

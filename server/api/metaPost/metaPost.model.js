@@ -70,8 +70,9 @@ MetaPostSchema.pre('remove', async function remove(next) {
   }
 });
 
-MetaPostSchema.statics.updateRank = async function updateRank(_id, twitter) {
+MetaPostSchema.statics.updateRank = async function updateRank(metaPost, twitter) {
   try {
+    let _id = metaPost._id || metaPost;
     let meta = await this.findOne({ _id })
     .populate({
       path: 'commentary',

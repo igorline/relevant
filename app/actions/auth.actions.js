@@ -40,6 +40,16 @@ const reqOptions = async () => {
   };
 };
 
+export function setCommunity(community) {
+  return dispatch => {
+    utils.api.setCommunity(community);
+    return dispatch({
+      type: types.SET_COMMUNITY,
+      payload: community
+    });
+  };
+}
+
 export function updateInvite(invite) {
   return {
     type: types.UPDATE_INVITE,

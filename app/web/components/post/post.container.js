@@ -28,6 +28,7 @@ class Posts extends Component {
   }
 
   componentDidMount() {
+    this.post = this.props.posts.posts[this.props.params.id];
     if (!this.post) {
       this.props.actions.getSelectedPost(this.props.params.id);
     }

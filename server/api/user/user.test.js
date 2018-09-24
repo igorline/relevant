@@ -3,6 +3,8 @@ import test from 'ava';
 let request = require('supertest');
 
 process.env.NODE_ENV = 'test';
+process.env.WEB = 'true';
+
 process.chdir(__dirname + '/../../../');
 
 let r;
@@ -49,6 +51,36 @@ test.serial('Send invite to user', async (t) => {
   inviteId = invite.body[0]._id;
   inviteObj = invite.body[0];
   t.is(invite.body[0].status, 'email sent', 'status should be invited');
+});
+
+test.serial('Should fail with incorrect username', async (t) => {
+  t.plan(2);
+
+  const signup = await r
+  .post('/api/user')
+  .send({
+    invite: inviteObj,
+    user: {
+      name: 'test signup',
+      email: 'testSignup@email.com',
+      password: 'testSignup'
+    }
+  });
+
+  t.is(signup.status, 500, 'should fail');
+
+  const signup2 = await r
+  .post('/api/user')
+  .send({
+    invite: inviteObj,
+    user: {
+      name: 'test.signup',
+      email: 'testSignup@email.com',
+      password: 'testSignup'
+    }
+  });
+
+  t.is(signup2.status, 500, 'should fail');
 });
 
 // TODO signup

@@ -28,10 +28,9 @@ let metaPostSchema;
 
 const postSchema = new schema.Entity('posts',
   {
-    comments: [commentSchema],
     user: userSchema,
     repost: { post: repostSchema },
-    metaPost: metaPostSchema
+    // metaPost: metaPostSchema
   },
   { idAttribute: '_id' }
 );
@@ -370,12 +369,10 @@ export function getUserPosts(skip, limit, userId) {
   };
 }
 
-export function addUpdatedComment(updatedComment) {
+export function addUpdatedComment(comment) {
   return {
     type: 'UPDATE_COMMENT',
-    payload: {
-      data: updatedComment,
-    }
+    payload: comment
   };
 }
 
@@ -386,7 +383,7 @@ export function updateComment(comment) {
       endpoint: 'comment',
       body: JSON.stringify(comment),
     })
-    .then(res => dispatch(addUpdatedComment(res)))
+    .then(res => dispatch(updatePost(res)))
     .catch(error => Alert.alert(error.message));
 }
 
@@ -407,59 +404,60 @@ export function editPost(post) {
   };
 }
 
-export function removeCommentEl(postId, commentId) {
-  if (!postId || !commentId) return;
-  return {
-    type: 'REMOVE_COMMENT',
-    payload: {
-      postId,
-      commentId,
+export function deleteComment(id) {
+  return async dispatch => {
+    try {
+      let response = await utils.api.request({
+        method: 'DELETE',
+        endpoint: 'comment',
+        path: '/' + id,
+      });
+      dispatch(removePost(id));
+    } catch (err) {
+      return false;
     }
-  };
+  }
+
+  // }
+  //   fetch(process.env.API_SERVER + '/api/comment/' + id + '?access_token=' + token, {
+  //     credentials: 'include',
+  //     headers: {
+  //       Accept: 'application/json',
+  //       'Content-Type': 'application/json'
+  //     },
+  //     method: 'DELETE',
+  //   })
+  //   .then((response) => {
+  //     dispatch(removePost(id));
+  //   })
+  //   .catch((error) => {
+  //     Alert.alert(error.message);
+  //     console.log(error, 'error');
+  //   });
 }
 
-export function deleteComment(token, id, postId) {
-  return dispatch =>
-    fetch(process.env.API_SERVER + '/api/comment/' + id + '?access_token=' + token, {
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'DELETE',
-    })
-    .then((response) => {
-      dispatch(removeCommentEl(postId, id));
-    })
-    .catch((error) => {
-      Alert.alert(error.message);
-      console.log(error, 'error');
-    });
-}
 
+export function getComments(post, skip, limit) {
+  return async dispatch => {
+    try {
+      if (!skip) skip = 0;
+      if (!limit) limit = 0;
 
-export function getComments(postId, skip, limit) {
-  return function(dispatch) {
-    if (!skip) skip = 0;
-    if (!limit) limit = 0;
+      let responseJSON = await utils.api.request({
+        method: 'GET',
+        endpoint: 'comment',
+        query: { post, skip, limit }
+      });
 
-    fetch(process.env.API_SERVER+'/api/comment?post='+postId+'&skip='+skip+'&limit='+limit, {
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'GET',
-    })
-    .then(response => response.json())
-    .then((responseJSON) => {
       dispatch(errorActions.setError('comments', false));
-      dispatch(setComments(postId, responseJSON.data, skip, responseJSON.total));
-    })
-    .catch((error) => {
-      console.log(error, 'error');
-      dispatch(errorActions.setError('comments', true, error.message));
-    });
+      let data = normalize(
+        { [post]: responseJSON.data },
+        { [post]: [commentSchema] }
+      );
+      dispatch(setComments(post, data, skip, responseJSON.total));
+    } catch (err) {
+      dispatch(errorActions.setError('comments', true, err.message));
+    }
   };
 }
 
@@ -477,7 +475,7 @@ export function createComment(token, commentObj) {
     .then(utils.api.handleErrors)
     .then(response => response.json())
     .then((responseJSON) => {
-      dispatch(addComment(responseJSON.post, responseJSON));
+      dispatch(addComment(responseJSON.parentPost, responseJSON));
       return true;
     })
     .catch((error) => {

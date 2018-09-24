@@ -1,3 +1,9 @@
+
+export const ADD_COMMUNITY = 'ADD_COMMUNITY';
+export const SET_COMMUNITIES = 'SET_COMMUNITIES';
+
+// careful this one sets active community in admin reducer
+export const SET_COMMUNITY = 'SET_COMMUNITY';
 export const LOGIN_USER_REQUEST = 'LOGIN_USER_REQUEST';
 export const LOGIN_USER_FAILURE = 'LOGIN_USER_FAILURE';
 export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
@@ -15,6 +21,7 @@ export const SET_STATS = 'SET_STATS';
 export const SET_SELECTED_USER_DATA = 'SET_SELECTED_USER_DATA';
 export const SET_TWITTER = 'SET_TWITTER';
 export const SET_LOADING = 'SET_LOADING';
+
 
 export const SET_ACTIVE_POST = 'SET_ACTIVE_POST';
 export const SET_RECENT_POSTS = 'SET_RECENT_POSTS';

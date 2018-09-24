@@ -195,11 +195,11 @@ class PostButtons extends Component {
       // });
       // return;
 
-      // await this.props.actions.vote(
-      //   amount,
-      //   this.props.post,
-      //   this.props.auth.user
-      // );
+      await this.props.actions.vote(
+        amount,
+        this.props.post,
+        this.props.auth.user
+      );
 
       this.investButton.measureInWindow((x, y, w, h) => {
         let parent = { x, y, w, h };
@@ -388,7 +388,7 @@ class PostButtons extends Component {
     // }
 
     if (post && this.props.auth.user) {
-      if (!post.user || post.user._id !== this.props.auth.user._id) {
+      if (!post.user || post.user !== this.props.auth.user._id) {
         if (!this.props.myPostInv) {
           investable = true;
         } else {
@@ -457,16 +457,16 @@ class PostButtons extends Component {
 
 
     let totalVotes = post.upVotes + post.downVotes;
-    let s = 's';
-    if (totalVotes === 1) s = '';
-    let votes = (
-      <View>
-        <View style={{ alignSelf: 'center', width: 30, borderBottomWidth: 1, borderColor: greyText }} />
-        <Text style={styles.smallInfo}>
-          {numbers.abbreviateNumber(totalVotes || 0)} vote{s}
-        </Text>
-      </View>
-    );
+    // let s = 's';
+    // if (totalVotes === 1) s = '';
+    // let votes = (
+    //   <View>
+    //     <View style={{ alignSelf: 'center', width: 30, borderBottomWidth: 1, borderColor: greyText }} />
+    //     <Text style={styles.smallInfo}>
+    //       {numbers.abbreviateNumber(totalVotes || 0)} vote{s}
+    //     </Text>
+    //   </View>
+    // );
 
     if (canBet) {
       r = 'Place Bet!';
@@ -496,7 +496,6 @@ class PostButtons extends Component {
               {isNaN(r) ? r : numbers.abbreviateNumber(r)}
             </Text>
           </View>
-          {votes}
         </View>
       </TouchableOpacity>
     );
@@ -601,9 +600,9 @@ class PostButtons extends Component {
         </View>
 
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          {post.link ? newCommentary : null}
-          {twitter ? null : comments}
-          {twitter ? null : repost}
+          {(metaPost && metaPost.url) || !post.parentPost ? newCommentary : null}
+          {twitter || post.parentPost ? null : comments}
+          {twitter || post.parentPost ? null : repost}
         </View>
 
         <InvestModal
@@ -635,8 +634,8 @@ const localStyles = StyleSheet.create({
     height: 23,
   },
   smallerR: {
-    width: 20,
-    height: 18,
+    width: 24,
+    height: 24,
     marginRight: 0
   },
   investImage: {
@@ -664,7 +663,7 @@ const localStyles = StyleSheet.create({
   },
   postButtonsContainer: {
     paddingBottom: 10,
-    marginTop: 30,
+    marginTop: 15,
   }
 });
 
