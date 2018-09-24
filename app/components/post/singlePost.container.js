@@ -58,14 +58,16 @@ class SinglePostContainer extends Component {
     let dataEl = null;
 
     this.postData = this.props.posts.posts[this.postId];
-    this.commentsData = this.props.comments.commentsById[this.postId];
+    this.commentIds = this.props.comments.commentsById[this.postId];
     let related = this.props.posts.related[this.postId] || [];
+    let metaPost = this.props.posts.metaPosts.all[this.postData.metaPost];
 
     if (this.postData) {
       dataEl = (<SinglePost
         postId={this.postId}
         post={this.postData}
-        postComments={this.commentsData}
+        metaPost={metaPost}
+        postComments={this.commentIds}
         scene={this.props.scene}
         actions={this.props.actions}
         singlePostEditing={this.setEditing}
@@ -101,8 +103,9 @@ function mapStateToProps(state) {
     user: state.user,
     error: state.error.singlepost,
     comments: state.comments,
-    users: state.user,
+    users: state.user.users,
     tags: state.tags,
+    myPostInv: state.investments.myPostInv,
   };
 }
 

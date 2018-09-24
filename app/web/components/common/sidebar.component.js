@@ -33,9 +33,9 @@ class Sidebar extends Component {
           </Link>
           <h3>How Relevant works:</h3>
           <ul>
-            <li>Earn Relevance (reputation) for providing interesting commentary, analysis or synopsis of the links you share</li>
-            <li>Get Relevant Tokens via Metamask to start earning curation rewards</li>
-            <li>Build your Relevance to increase your earnings when you share and upvote posts</li>
+            <li>Earn Relevance (reputation) by posting quality comments</li>
+            <li>Get Relevant Tokens by upvoting quality links and comments and downvoting spam</li>
+            <li>The higher your Relevance score, the more impact your votes have and the more tokens you can earn</li>
           </ul>
         </div>
       </sidebar>

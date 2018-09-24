@@ -18,40 +18,40 @@ let Schema = mongoose.Schema;
 const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
 let PostSchema = new Schema({
-  title: { type: String, default: '' },
-  description: String,
-  image: String,
-  link: String,
-  tags: [{ type: String, ref: 'Tag' }],
-  body: String,
-  domain: String,
-  community: String,
+  // title: { type: String, default: '' },
+  // description: String,
+  // image: String,
+  // link: String,
+  // domain: String,
+  // shortText: { type: String },
+  // longText: { type: String },
+  // articleDate: Date,
+  // articleAuthor: [String],
+  // copyright: String,
+  // publisher: String,
+  // keywords: [String],
 
-  shortText: { type: String },
-  longText: { type: String },
-  articleDate: Date,
-  articleAuthor: [String],
-  copyright: String,
-  links: [{
-    text: String,
-    href: String,
-  }],
-  publisher: String,
-  keywords: [String],
+  body: String,
+
+  community: String,
+  tags: [{ type: String, ref: 'Tag' }],
+  category: { type: String, ref: 'Tag' },
+
   repost: {
-    post: { type: String, ref: 'Post' },
+    post: { type: Schema.Types.ObjectId, ref: 'Post' },
     comment: { type: Schema.Types.ObjectId, ref: 'Comment' },
     commentBody: String
   },
-  value: { type: Number, default: 0 },
-  category: { type: String, ref: 'Tag' },
+
+  // value: { type: Number, default: 0 },
+  // category: { type: String, ref: 'Tag' },
   user: { type: String, ref: 'User', index: true },
   embeddedUser: {
     handle: String,
     id: String,
     name: String,
     image: String,
-    relevance: { type: String, ref: 'Relevance' },
+    relevance: { type: Schema.Types.ObjectId, ref: 'Relevance' },
   },
 
   flagged: { type: Boolean, default: false },
@@ -59,44 +59,59 @@ let PostSchema = new Schema({
   flaggedTime: Date,
 
   mentions: [{ type: String, ref: 'User' }],
-  // investments: [{ type: Schema.Types.ObjectId, ref: 'Invest' }],
-  // comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
 
-  // separate table for community
-  rank: { type: Number, default: 0 },
   // what is this?
-  lastPost: [{ type: String, ref: 'User' }],
+  // lastPost: [{ type: String, ref: 'User' }],
 
   // deprecated
-  categoryName: String,
-  categoryEmoji: String,
+  // categoryName: String,
+  // categoryEmoji: String,
+
 
   // store metadata here only
   metaPost: { type: Schema.Types.ObjectId, ref: 'MetaPost' },
+
+  // Should be array of links used instead of metaPost
+  // not implemented yet
+  links: [{
+    text: String,
+    href: String,
+    position: Number,
+    metaPost: { type: Schema.Types.ObjectId, ref: 'MetaPost' }
+  }],
+
+  parentPost: { type: Schema.Types.ObjectId, ref: 'Post' },
+  parentComment: { type: Schema.Types.ObjectId, ref: 'Post' },
+
   postDate: { type: Date, index: true, default: new Date() },
 
   // separate table for community
+  // relevanceNeg: { type: Number, default: 0 },
+
+  rank: { type: Number, default: 0 },
   relevance: { type: Number, default: 0 },
-  relevanceNeg: { type: Number, default: 0 },
-  rankRelevance: { type: Number, default: 0 },
+
   commentCount: { type: Number, default: 0 },
   upVotes: { type: Number, default: 0 },
   downVotes: { type: Number, default: 0 },
 
-  // should be diff table - diff communities will have diff payouts
+  // todo should be diff table - diff communities will have diff payouts
   paidOut: { type: Boolean, default: false },
   payoutTime: { type: Date },
   payout: { type: Number, default: 0 },
   payOutShare: { type: Number, default: 0 },
   balance: { type: Number, default: 0 },
 
-  // meta
+  // Twitter stuff - do we need this?
   twitter: { type: Boolean, default: false },
   twitterUser: Number,
   twitterId: Number,
   twitterScore: Number,
   feedRelevance: Number,
   twitterUrl: String,
+  isRepost: { type: Boolean, default: false },
+  isComment: { type: Boolean, default: false },
+
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
@@ -143,17 +158,19 @@ PostSchema.index({ paidOut: 1, payoutTime: 1 });
 
 PostSchema.pre('save', async function save(next) {
   try {
+
+    // rank should be computed for community...
+    // TODO USE postData
     let sign = 1;
-    if (this.rankRelevance < 0) {
+    if (this.relevance < 0) {
       sign = -1;
     }
-    if (!this.rankRelevance) this.rankRelevance = 0;
-    let rank = Math.abs(this.rankRelevance);
+    if (!this.relevance) this.relevance = 0;
+    let rank = Math.abs(this.relevance);
     let newRank = (this.postDate.getTime() / TENTH_LIFE) + (sign * Math.log10(rank + 1));
-
     this.rank = Math.round(newRank * 1000) / 1000;
 
-    this.commentCount = await this.model('Comment').count({ post: this._id });
+    this.commentCount = await this.model('Post').count({ parentPost: this._id });
   } catch (err) {
     console.log(err);
     return next();
@@ -205,10 +222,10 @@ PostSchema.pre('remove', async function remove(next) {
 
     let promises = [note, feed, comment, meta, twitterFeed];
     await Promise.all(promises);
+    next();
   } catch (err) {
     console.log('error deleting post references ', err);
   }
-  next();
 });
 
 PostSchema.statics.events = PostSchemaEvents;
@@ -223,15 +240,32 @@ PostSchema.methods.updateClient = function updateClient(user) {
   this.model('Post').events.emit('postEvent', postNote);
 };
 
-// PostSchema.methods.newPost = function newPost() {
-//   let newPostEvent = {
-//     type: 'SET_NEW_POSTS_STATUS',
-//     payload: 1,
-//   };
-//   this.model('Post').events.emit('postEvent', newPostEvent);
-// };
+PostSchema.methods.addUserInfo = async function addUserInfo(user) {
+  try {
+    let relevance = await this.model('Relevance').findOneAndUpdate({
+      user: user._id,
+      // TODO update to use id
+      community: this.community,
+      global: true
+    }, {}, { new: true, upsert: true });
 
-PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId) {
+    this.embeddedUser = {
+      id: user._id,
+      handle: user.handle,
+      name: user.name,
+      image: user.image,
+      relevance,
+    };
+
+    return this;
+  } catch (err) {
+    console.log('error adding embedded user', err);
+    return this;
+  }
+};
+
+
+PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkObject) {
   let meta;
   try {
     if (metaId) meta = await MetaPost.findOne({ _id: metaId });
@@ -243,19 +277,22 @@ PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId) {
         meta.rank = this.rank;
         meta.topCommentary = this._id;
       }
+
+      // replace below with:
+      meta = { ...meta, ...linkObject };
       // only do this when we create new post!
-      if (!meta.tags) meta.tags = [];
-      let tags = [...meta.tags, ...this.tags];
-      tags = [...new Set(tags)];
-      meta.tags = tags;
+      // if (!meta.tags) meta.tags = [];
+      // let tags = [...meta.tags, ...this.tags];
+      // tags = [...new Set(tags)];
+      // meta.tags = tags;
 
-      if (!meta.categories) meta.categories = [];
-      let cats = [...meta.categories, this.category];
-      cats = [...new Set(cats)];
-      meta.categories = cats;
+      // if (!meta.categories) meta.categories = [];
+      // let cats = [...meta.categories, this.category];
+      // cats = [...new Set(cats)];
+      // meta.categories = cats;
 
-      meta.keywords = [...new Set([...meta.keywords, ...this.keywords || []])];
-      meta.articleAuthor = this.articleAuthor;
+      // meta.keywords = [...new Set([...meta.keywords, ...this.keywords || []])];
+      // meta.articleAuthor = this.articleAuthor;
 
       if (!this.twitter) {
         meta.commentaryCount++;
@@ -281,25 +318,18 @@ PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId) {
       meta = await meta.save();
     } else {
       meta = {
-        url: this.link,
+        ...linkObject,
         rank: this.rank,
         newCommentary: this._id,
         topCommentary: this._id,
+        commentary: [this._id],
+
         latestPost: this.postDate,
         commentaryCount: 1,
         tags: this.tags,
-        categories: [this.category],
-        // may not need to do this if meta is pre-populated
-        articleAuthor: this.articleAuthor,
-        shortText: this.shortText,
-        domain: this.domain,
-        commentary: [this._id],
 
-        // commentary: this.twitter ? null : [this._id],
-        title: this.title,
-        description: this.description,
-        image: this.image,
-        keywords: this.keywords,
+        // deprecate
+        // categories: [this.category],
       };
       if (this.twitter) {
         meta = {

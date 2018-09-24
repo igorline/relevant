@@ -1,7 +1,7 @@
 let userDefaults;
 let cookie;
 
-if (process.env.WEB != 'true') {
+if (process.env.WEB != 'true' && process.env.NODE_ENV !== 'test') {
   // userDefaults = require('react-native-user-defaults').default;
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
 } else {

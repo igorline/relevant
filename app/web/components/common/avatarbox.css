@@ -32,6 +32,13 @@
   height: 42px;
   margin-right: 8px;
 }
+
+.avatarBox.repost .avatar, .avatarBox.small .avatar {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+}
+
 .userBox {
   flex-grow: 1;
   font-size: 17px;

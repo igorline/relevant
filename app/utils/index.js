@@ -4,6 +4,7 @@ import * as api from './api';
 import * as token from './token';
 import * as numbers from './numbers';
 import * as text from './text';
+import * as img from './img';
 
 let transitionConfig = {};
 
@@ -18,5 +19,6 @@ export {
   token,
   numbers,
   text,
-  transitionConfig
+  transitionConfig,
+  img
 };

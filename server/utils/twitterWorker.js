@@ -210,19 +210,24 @@ async function processTweet(tweet, user) {
     .replace(/&amp;/, '&');
 
     let tags = tweet.entities.hashtags.map(t => t.text);
-    post = new Post({
-      // for now only pull tweets for relevant
-      community: 'relevant',
+    let linkObject = {
       title: processed.title,
-      link: processed.url,
+      url: processed.url,
       description: processed.description,
       image: processed.image,
       articleAuthor: processed.articleAuthor,
       domain: processed.domain,
       // TODO we are not using this
       shortText: processed.shortText,
-      body,
       keywords: processed.keywords,
+    };
+
+    post = new Post({
+      // for now only pull tweets for relevant
+      community: 'relevant',
+
+
+      body,
       tags,
       postDate: originalTweet.created_at,
 
@@ -244,7 +249,7 @@ async function processTweet(tweet, user) {
       twitterUrl: tweet.entities.urls[0].expanded_url
     });
     // console.log(post);
-    metaPost = await post.upsertMetaPost();
+    metaPost = await post.upsertMetaPost(null, linkObject);
     post.metaPost = metaPost._id;
 
     // let heapUsed = process.memoryUsage().heapUsed;

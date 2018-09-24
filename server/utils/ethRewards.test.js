@@ -40,7 +40,6 @@ test.before(async () => {
   r = request(app);
 
   require('dotenv').config({ silent: true });
-  console.log(process.env.NODE_ENV);
   // just in case
   await cleanupData();
   await setupData();

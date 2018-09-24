@@ -7,54 +7,16 @@
   border: none;
 }
 
+.postInput {
+  min-height: 200px;
+  padding: 15px;
+}
+
 .createPostContainer {
   border-bottom: 1px solid $borderGrey;
   padding-bottom: 40px;
   margin-top: 0px;
   /*padding-top: 20px;*/
-  .tagInput input {
-    font-size: 15px;
-    line-height: 1.5;
-    padding: 8px 15px;
-    margin: 10px 0 0 0;
-    background: white;
-    box-shadow: 0 0 0 .5px $borderGrey, inset 0 0 10px -4px $grey;
-    border-radius: 0px;
-    white-space: pre-line;
-    border: none;
-    font-size: 15px;
-    outline: none;
-    width: 100%;
-  }
-  .editor {
-    font-size: 16px;
-    line-height: 1.5;
-    padding: 15px;
-    margin: 20px 0 0 0;
-    background: white;
-    box-shadow: 0 0 0 .5px $borderGrey, inset 0 0 10px -4px $grey;
-    border-radius: 0px;
-    min-height: 200px;
-    white-space: pre-line;
-    outline: 0;
-    p {
-      margin: 0;
-    }
-    b {
-      color: #3E3EFF;
-      font-weight: normal;
-    }
-    &:empty:before {
-      content: attr(placeholder);
-      font-family: Arial, sans-serif;
-      display: block;
-      color: #888888;
-    }
-  }
-
-  .editor:focus, .editor.active, .tagInput input:focus, .tagInput input.active {
-    box-shadow: 0 0 0 .5px $borderGrey, 0 0 4px 1px $blue;
-  }
 
   .addFromLink {
     position: absolute;

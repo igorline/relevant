@@ -84,7 +84,7 @@ class PostButtons extends Component {
   }
 
   render() {
-    let post = this.props.post;
+    let { post, auth } = this.props;
 
     if (post === 'notFound') {
       return null;
@@ -99,6 +99,7 @@ class PostButtons extends Component {
 
     if (this.props.myPostInv) {
       vote = this.props.myPostInv[post.id] || !this.props.auth.isAuthenticated;
+      if (auth.user && auth.user._id === post.user) vote = true;
       if (vote) {
         votedUp = vote.amount > 0;
         votedDown = vote.amount < 0;
@@ -110,6 +111,11 @@ class PostButtons extends Component {
     let comments = post.commentCount || '';
     let commentText = comments > 1 ? comments + ' comments' : comments + ' comment';
 
+    let commentEl = <Link className="commentcount details" to={'/post/' + post._id}>
+      <img alt="Comment" src="/img/comment.svg" />
+      <span>{commentText}</span>
+    </Link>;
+
     return (
       <div className="postbuttons">
         <div className="left">
@@ -120,9 +126,6 @@ class PostButtons extends Component {
             <img alt="Upvote" src={votedUp ? '/img/upvoteActive.png' : upvoteBtn} className="upvote" />
           </a>
           <div className="fraction">
-{/*            <div className="num">
-              {post.upVotes}
-            </div>*/}
             <div className="dem">
               {post.relevance}
               <img alt="R" src="/img/r-gray.svg" />
@@ -136,13 +139,7 @@ class PostButtons extends Component {
           </a>
         </div>
         <div className="right">
-          <Link className="commentcount details" to={'/post/' + post._id}>
-            <img alt="Comment" src="/img/comment.svg" />
-            <span>{commentText}</span>
-          </Link>
-{/*          <Link to={'/post/' + post._id}>
-            <img alt="Share" src="/img/share.png" className="share" />
-          </Link>*/}
+          {post.parentPost ? '' : commentEl}
         </div>
       </div>
     );

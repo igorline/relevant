@@ -121,13 +121,15 @@ class Profile extends Component {
       this.props.actions.getUserPosts(
         length,
         5,
-        this.userId);
+        this.userId
+      );
     } else {
       this.props.actions.getInvestments(
         this.props.auth.token,
         this.userId,
         length,
-        10);
+        10
+      );
     }
   }
 
@@ -136,11 +138,11 @@ class Profile extends Component {
 
     let post = this.props.posts.posts[rowData];
 
-    if (view === 0) return (<Post post={post} {...this.props} scene={scene} />);
+    if (view === 0) return (<Post post={post} metaPost={post.metaPost} {...this.props} scene={scene} />);
     if (view === 1) {
       let investment = this.props.investments.investments[rowData];
       post = this.props.posts.posts[investment.post];
-      return (<Post post={post} {...this.props} />);
+      return (<Post post={post} metaPost={post.metaPost} {...this.props} />);
     }
     return null;
   }

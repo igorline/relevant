@@ -262,11 +262,15 @@
   content: '\0020';
 }
 .repostBody {
-  font-size: 14px;
+  /*font-size: 14px;*/
   line-height: 21px;
   padding-left: 10px;
   border-left: 1px solid #b4b4b5;
-  margin-bottom: 10px;
+  margin: 20px 0 10px 0;
+}
+
+.repostText {
+  font-size: 16px;
 }
 
 .postbuttons {

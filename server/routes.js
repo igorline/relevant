@@ -65,6 +65,8 @@ module.exports = (app) => {
   app.use('/api/twitterFeed', require('./api/twitterFeed'));
   app.use('/api/communityFeed', require('./api/communityFeed'));
 
+  app.use('/api/community', require('./api/community'));
+
   app.get('/confirm/:user/:code', userController.confirm);
 
   // Default response middleware

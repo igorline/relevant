@@ -14,8 +14,10 @@ export default class InfScroll extends Component {
   componentDidMount() {
     this.pageLoaded = this.props.pageStart;
     this.attachScrollListener();
-    this.props.loadMore(this.pageLoaded);
     this.data = this.props.data;
+    if (!this.data || !this.data.length) {
+      this.props.loadMore(this.pageLoaded);
+    }
   }
 
   componentDidUpdate() {

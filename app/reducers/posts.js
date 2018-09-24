@@ -24,17 +24,13 @@ const initialState = {
     new: {},
     top: {},
     flagged: {},
+    all: {},
   },
   topics: {
     new: {},
     top: {}
   },
   posts: {},
-  comments: {},
-  // commentary: {
-  //   top: {},
-  //   new: {},
-  // },
   topPosts: [],
   related: {},
 };
@@ -118,12 +114,15 @@ export default function post(state = initialState, action) {
         },
         metaPosts: {
           ...state.metaPosts,
+          all: {
+            ...state.metaPosts.all,
+            ...action.payload.data.entities.metaPosts
+          },
           [type]: {
             ...state.metaPosts[type],
             ...action.payload.data.entities.metaPosts
           },
         },
-        comments: { ...state.comments, ...action.payload.data.entities.comments },
         posts: { ...state.posts, ...posts },
         loaded: {
           ...state.loaded,
@@ -150,22 +149,15 @@ export default function post(state = initialState, action) {
         ],
         metaPosts: {
           ...state.metaPosts,
-          // all: {
-          //   ...state.metaPosts.all,
-          //   ...action.payload.data.entities.metaPosts
-          // },
+          all: {
+            ...state.metaPosts.all,
+            ...action.payload.data.entities.metaPosts
+          },
           [type]: {
             ...state.metaPosts[type],
             ...action.payload.data.entities.metaPosts
           },
         },
-        // commentary: {
-        //   [type]: {
-        //     ...state.metaPosts[type],
-        //     ...action.payload.data.entities.metaPosts
-        //   },
-        // },
-        comments: { ...state.comments, ...action.payload.data.entities.comments },
         posts: { ...state.posts, ...posts },
         loaded: {
           ...state.loaded,
@@ -190,6 +182,10 @@ export default function post(state = initialState, action) {
       // need to do this so reposted = null doesen't over-write existing value
       let reposted = action.payload.reposted;
       if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
+      let metaPost = state.posts[id] ? state.posts[id].metaPost : undefined;
+      if (typeof action.payload.metaPost === 'object') {
+        metaPost = action.payload.metaPost;
+      }
       return {
         ...state,
         posts: {
@@ -197,6 +193,7 @@ export default function post(state = initialState, action) {
           [id]: {
             ...state.posts[id],
             ...action.payload,
+            metaPost,
             reposted
           }
         }
@@ -204,12 +201,15 @@ export default function post(state = initialState, action) {
     }
 
     case types.REMOVE_POST: {
-      let id = action.payload._id;
+      let id = action.payload._id || action.payload;
       let newPosts = { ...state.posts };
       delete newPosts[id];
       return {
         ...state,
-        posts: newPosts
+        posts: {
+          ...state.posts,
+          [id]: null
+        }
       };
     }
 
@@ -317,6 +317,28 @@ export default function post(state = initialState, action) {
         userPosts: {},
       });
     }
+
+    // we store comments in post state
+    case types.SET_COMMENTS: {
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          ...action.payload.data.entities.comments
+        }
+      };
+    }
+
+    case types.ADD_COMMENT: {
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          [action.payload.comment._id]: action.payload.comment
+        }
+      };
+    }
+
 
     // this wipes feed on login
     // case types.LOGIN_USER_SUCCESS: {

@@ -25,6 +25,7 @@ let InvestEvents = new EventEmitter();
 // }
 // removeDownvotes();
 
+
 const COIN = true;
 
 // function convertInvest() {
@@ -242,7 +243,6 @@ exports.create = async (req, res) => {
     console.log('adding ', relevanceToAdd, ' to post ', post._id);
 
     post.relevance += relevanceToAdd;
-    post.rankRelevance += relevanceToAdd;
     if (irrelevant) {
       post.relevanceNeg += relevanceToAdd;
     }
@@ -308,13 +308,13 @@ exports.create = async (req, res) => {
       });
 
       if (subscription) {
-        subscription.amount += 3;
-        if (subscription.amount > 15) subscription.amount = 15;
+        subscription.amount += 4;
+        if (subscription.amount > 20) subscription.amount = 20;
       } else {
         subscription = new Subscription({
           follower: user._id,
           following: post.user,
-          amount: 3,
+          amount: 4,
         });
       }
       subscription = await subscription.save();
