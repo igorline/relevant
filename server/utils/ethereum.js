@@ -20,6 +20,7 @@ let account;
 let key;
 let web3;
 let initialized = false;
+let nextNonce = 0;
 
 export function isInitialized() {
   return initialized;
@@ -71,7 +72,11 @@ export async function getParam(param, opt) {
 async function sendTx(params) {
   try {
     let { acc, accKey, value, data, fn } = params;
-    const nonce = await web3.eth.getTransactionCount(acc);
+    let nonce = await web3.eth.getTransactionCount(acc);
+
+    // hack to update nonce, but could still fail
+    nonce = Math.max(nonce, nextNonce);
+    nextNonce = nonce + 1;
     const pk = Buffer.from(accKey, 'hex');
 
     const txParams = {

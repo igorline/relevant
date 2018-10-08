@@ -6,6 +6,7 @@ import Avatar from './avatar.component';
 
 export default function AvatarBox(props) {
   const user = props.user;
+  if (!user) return null;
   const reverse = props.reverse;
   let profileLink = user ? '/user/profile/' + user.handle : null;
 

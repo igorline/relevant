@@ -1,11 +1,9 @@
 import { EventEmitter } from 'events';
 
-import MetaPost from '../metaPost/metaPost.model';
+import MetaPost from '../links/link.model';
 import User from '../user/user.model';
 import Notification from '../notification/notification.model';
 import Invest from '../invest/invest.model';
-import Comment from '../comment/comment.model';
-import CommunityFeed from '../communityFeed/communityFeed.model';
 
 
 let apnData = require('../../pushNotifications');
@@ -18,61 +16,40 @@ let Schema = mongoose.Schema;
 const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
 let PostSchema = new Schema({
-  // title: { type: String, default: '' },
-  // description: String,
-  // image: String,
-  // link: String,
-  // domain: String,
-  // shortText: { type: String },
-  // longText: { type: String },
-  // articleDate: Date,
-  // articleAuthor: [String],
-  // copyright: String,
-  // publisher: String,
-  // keywords: [String],
-
   body: String,
-
+  title: String,
   community: String,
+  communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
   tags: [{ type: String, ref: 'Tag' }],
   category: { type: String, ref: 'Tag' },
-
   repost: {
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
     comment: { type: Schema.Types.ObjectId, ref: 'Comment' },
     commentBody: String
   },
-
-  // value: { type: Number, default: 0 },
-  // category: { type: String, ref: 'Tag' },
   user: { type: String, ref: 'User', index: true },
   embeddedUser: {
     handle: String,
-    id: String,
+    _id: String,
+    // id: String,
     name: String,
     image: String,
-    relevance: { type: Schema.Types.ObjectId, ref: 'Relevance' },
   },
 
   flagged: { type: Boolean, default: false },
   flaggedBy: [{ type: String, ref: 'User', select: false }],
   flaggedTime: Date,
-
   mentions: [{ type: String, ref: 'User' }],
 
-  // what is this?
-  // lastPost: [{ type: String, ref: 'User' }],
-
-  // deprecated
-  // categoryName: String,
-  // categoryEmoji: String,
-
-
-  // store metadata here only
+  // store link info here
   metaPost: { type: Schema.Types.ObjectId, ref: 'MetaPost' },
+  url: { type: String, unique: false },
+
+  // TEMP Deprecate remove after migrate 0.20
+  link: { type: String, unique: false },
 
   // Should be array of links used instead of metaPost
-  // not implemented yet
+  // TODO: Implement this
   links: [{
     text: String,
     href: String,
@@ -80,38 +57,44 @@ let PostSchema = new Schema({
     metaPost: { type: Schema.Types.ObjectId, ref: 'MetaPost' }
   }],
 
+  aboutLink: { type: Schema.Types.ObjectId, ref: 'Post' },
+  linkParent: { type: Schema.Types.ObjectId, ref: 'Post' },
   parentPost: { type: Schema.Types.ObjectId, ref: 'Post' },
   parentComment: { type: Schema.Types.ObjectId, ref: 'Post' },
 
-  postDate: { type: Date, index: true, default: new Date() },
+  postDate: { type: Date, index: true },
+  latestComment: { type: Date, index: true },
+  commentCount: { type: Number, default: 0 },
 
-  // separate table for community
-  // relevanceNeg: { type: Number, default: 0 },
+  // todo should be diff table - diff communities will have diff payouts
 
   rank: { type: Number, default: 0 },
   relevance: { type: Number, default: 0 },
-
-  commentCount: { type: Number, default: 0 },
   upVotes: { type: Number, default: 0 },
   downVotes: { type: Number, default: 0 },
 
-  // todo should be diff table - diff communities will have diff payouts
   paidOut: { type: Boolean, default: false },
   payoutTime: { type: Date },
-  payout: { type: Number, default: 0 },
-  payOutShare: { type: Number, default: 0 },
-  balance: { type: Number, default: 0 },
+  // payout: { type: Number, default: 0 },
+  // payOutShare: { type: Number, default: 0 },
 
-  // Twitter stuff - do we need this?
+  // TODO - separate table per community!
+  // shares: { type: Number, default: 0 },
+  // balance: { type: Number, default: 0 },
+
+  // TODO twitter stuff should go into data model
   twitter: { type: Boolean, default: false },
   twitterUser: Number,
   twitterId: Number,
-  twitterScore: Number,
-  feedRelevance: Number,
+  twitterScore: { type: Number, default: 0 },
+  // feedRelevance: Number,
   twitterUrl: String,
-  isRepost: { type: Boolean, default: false },
-  isComment: { type: Boolean, default: false },
+  seenInFeedNumber: { type: Number, default: 0 },
 
+  // link, comment, repost, post
+  type: { type: String, default: 'post' },
+
+  version: { type: String, default: 'metaRework' }
 }, {
   timestamps: true,
   toJSON: { virtuals: true },
@@ -123,25 +106,27 @@ PostSchema.virtual('reposted', {
   localField: '_id',
   foreignField: 'repost.post'
 });
-// PostSchema.virtual('posts', {
-//   ref: 'BlogPost',
-//   localField: '_id',
-//   foreignField: 'author'
-// });
-// PostSchema.virtual('embeddedUser.reputation')
-// .get(async function() {
-//   let community = this.community || 'relevant';
-//   let reputationRecord = await this.model('Relevance').findOne({ community, user: this.user, global: true });
-//   console.log(reputationRecord);
-//   return reputationRecord ? reputationRecord.relevance : 0;
-// });
 
-// PostSchema.fill('embeddedUser.reputation', async function(callback){
-//   let community = this.community || 'relevant';
-//   let reputationRecord = await this.model('Relevance').findOne({ community, user: this.user, global: true });
-//   console.log(reputationRecord);
-//   return callback(null, reputationRecord ? reputationRecord.relevance : 0);
-// });
+PostSchema.virtual('commentary', {
+  ref: 'Post',
+  localField: '_id',
+  foreignField: 'linkParent'
+});
+
+
+PostSchema.virtual('embeddedUser.relevance', {
+  ref: 'Relevance',
+  localField: 'user',
+  foreignField: 'user',
+  justOne: true,
+});
+
+PostSchema.virtual('data', {
+  ref: 'PostData',
+  localField: '_id',
+  foreignField: 'post',
+  justOne: true,
+});
 
 PostSchema.index({ twitter: 1 });
 PostSchema.index({ twitter: 1, twitterId: 1 });
@@ -153,24 +138,18 @@ PostSchema.index({ postDate: 1, tags: 1 });
 PostSchema.index({ rank: 1, tags: 1 });
 PostSchema.index({ paidOut: 1, payoutTime: 1 });
 
-// PostSchema.createIndex({"subject":"text","content":"text"})
 // PostSchema.index({ title: 'text', body: 'text' });
 
 PostSchema.pre('save', async function save(next) {
   try {
-
-    // rank should be computed for community...
-    // TODO USE postData
-    let sign = 1;
-    if (this.relevance < 0) {
-      sign = -1;
+    // TODO do we need this? don't thinks so...
+    // await this.updateRank();
+    let countQuery = { parentPost: this._id };
+    if (this.type === 'link') {
+      countQuery = { aboutLink: this._id };
     }
-    if (!this.relevance) this.relevance = 0;
-    let rank = Math.abs(this.relevance);
-    let newRank = (this.postDate.getTime() / TENTH_LIFE) + (sign * Math.log10(rank + 1));
-    this.rank = Math.round(newRank * 1000) / 1000;
-
-    this.commentCount = await this.model('Post').count({ parentPost: this._id });
+    this.commentCount = await this.model('Post').count(countQuery);
+    // if (!this.latestComment) this.latestComment = this.postDate;
   } catch (err) {
     console.log(err);
     return next();
@@ -179,45 +158,93 @@ PostSchema.pre('save', async function save(next) {
 });
 
 
-PostSchema.pre('remove', async function remove(next) {
-  try {
-    let note = this.model('Notification').remove({ post: this._id });
+PostSchema.methods.addPostData = async function addPostData(community) {
+  let eligibleForReward = this.type === 'comment' || this.type === 'post' || this.type === 'repost';
+  eligibleForReward = !this.twitter && eligibleForReward;
+  let data = new (this.model('PostData'))({
+    eligibleForReward,
+    postDate: this.postDate || this.createdAt,
+    payoutTime: this.payoutTime,
+    post: this._id,
+    community: community ? community.slug : this.community,
+    communityId: community ? community._id : this.communityId,
+    relevance: this.relevance,
+    rank: this.rank,
+    relevanceNeg: this.relevanceNeg,
+    latestComment: this.latestComment || this.postDate,
+  });
+  await data.save();
+  this.data = data;
+  return this;
+};
 
+// Update parent feed status (only for link posts)
+PostSchema.statics.updateFeedStatus = async function updateFeedStatus(postId, community) {
+  try {
+    let linkPost = await this.model('Post').findOne({ _id: postId })
+    .populate({
+      path: 'commentary',
+      sort: { postDate: -1 }
+    });
+
+    if (!linkPost) return;
+    let count = linkPost.commentary.length;
+
+    if (!count && linkPost) {
+      await this.model('CommunityFeed').removeFromAllFeeds(linkPost);
+      await this.model('MetaPost').remove({ _id: linkPost.metaPost }).exec();
+    }
+
+    let communityPosts = linkPost.commentary.filter(c => c.community === community);
+    // console.log('found ', communityPosts.length + ' community posts');
+    if (!communityPosts.length) {
+      await this.model('CommunityFeed').removeFromCommunityFeed(linkPost, community);
+      // remove empty link posts
+      await linkPost.remove();
+    } else {
+      // Update the date of post in feed
+      let newFeedItem = await this.model('CommunityFeed').findOneAndUpdate(
+        { community, post: linkPost._id },
+        { latestPost: communityPosts[0].postDate },
+        { new: true }
+      );
+
+      // TODO can maybe make this more efficient?
+      await linkPost.updateRank(community);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+PostSchema.post('remove', async function postRemove(doc) {
+  try {
+    if (doc.linkParent) {
+      await this.model('Post').updateFeedStatus(doc.linkParent, this.community);
+    }
+    await this.model('CommunityFeed').removeFromAllFeeds(doc);
+
+    let note = this.model('Notification').remove({ post: this._id });
     let feed = await this.model('Feed').remove({ post: this._id });
     let twitterFeed = await this.model('TwitterFeed').remove({ post: this._id });
-
     let comment = this.model('Comment').remove({ post: this._id });
 
-    let meta = await this.model('MetaPost').findOneAndUpdate(
-      { _id: this.metaPost },
-      { $pull: { commentary: this._id }, $inc: { commentaryCount: -1 } },
-      { multi: true, new: true }
-    );
+    await this.model('PostData').remove({ post: doc._id });
 
     // remove notifications
-    if (this.isComment || this.isRepost) {
+    if (this.type === 'comment' || this.type === 'repost') {
       await this.model('Notification').remove({ comment: this._id });
     }
 
-
-    if (meta && meta.commentary.length === 0) {
-      await meta.remove();
-      meta = null;
-    }
-
-    // problem: if meta includes post from a diff community it wont be removed;
-    if (meta) {
-      meta.pruneCommunityFeed(this.community);
-    }
-
+    // TODO better tag management and per community
     if (!this.twitter) {
       this.tags.forEach((tag) => {
         this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
-          if (!foundTag) return next();
+          if (!foundTag) return;
           if (foundTag.count > 1) {
             foundTag.count--;
-            foundTag.save(err => {
-              if (err) console.log('saving tag error');
+            foundTag.save(error => {
+              if (error) console.log('saving tag error');
             });
           } else {
             foundTag.remove();
@@ -226,11 +253,11 @@ PostSchema.pre('remove', async function remove(next) {
       });
     }
 
-    let promises = [note, feed, comment, meta, twitterFeed];
+    // this makes it faster (don't need all awaits)
+    let promises = [note, feed, comment, twitterFeed];
     await Promise.all(promises);
-    next();
   } catch (err) {
-    console.log('error deleting post references ', err);
+    console.log(err);
   }
 });
 
@@ -248,20 +275,12 @@ PostSchema.methods.updateClient = function updateClient(user) {
 
 PostSchema.methods.addUserInfo = async function addUserInfo(user) {
   try {
-    console.log('comment community ', this.community)
-    let relevance = await this.model('Relevance').findOneAndUpdate({
-      user: user._id,
-      // TODO update to use id
-      community: this.community,
-      global: true
-    }, {}, { new: true, upsert: true });
-
     this.embeddedUser = {
       id: user._id,
+      _id: user._id,
       handle: user.handle,
       name: user.name,
       image: user.image,
-      relevance,
     };
 
     return this;
@@ -271,119 +290,165 @@ PostSchema.methods.addUserInfo = async function addUserInfo(user) {
   }
 };
 
+// TODO work on this
+PostSchema.methods.updateRank = async function updateRank(community) {
+  try {
+    if (!this.data) {
+      this.data = await this.model('PostData').find({ post: this._id, community });
+    }
+
+    let sign = 1;
+    if (this.data.relevance < 0) {
+      sign = -1;
+    }
+    if (!this.data.relevance) this.data.relevance = 0;
+    let rank = Math.abs(this.data.relevance);
+
+    let newRank = (this.data.postDate.getTime() / TENTH_LIFE) + (sign * Math.log10(rank + 1));
+    rank = Math.round(newRank * 1000) / 1000;
+
+    // also get max rank of children
+    let topComment = await this.model('Post').findOne({ parentPost: this._id, community }, 'rank')
+    .sort({ rank: -1 })
+    .populate({ path: 'data', match: { community } });
+
+    if (topComment) {
+      // TODO remove this (only for migration)
+      let commentRank = topComment.data ? topComment.data.rank : 0;
+      rank = Math.max(rank, commentRank);
+    }
+
+    // THIS will update the rank in the feed
+    if (community && !this.parentPost) {
+      console.log('updating post rank ', rank);
+      await this.model('CommunityFeed').updateRank(this, community, rank);
+    }
+
+    this.data.rank = rank;
+    await this.data.save();
+    return this;
+  } catch (err) {
+    console.log('error updating post rank ', err);
+  }
+};
+
+PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject) {
+  try {
+    if (!linkObject.url) return console.log('missing url ', linkObject);
+    let { tags, category, postDate, payoutTime } = this;
+    let parentObj = {
+      url: linkObject.url,
+      // top level comments only
+      tags,
+      postDate,
+      latestComment: postDate,
+      payoutTime,
+      type: 'link'
+    };
+
+    let parent = await this.model('Post').findOne({ url: linkObject.url, type: 'link' })
+    .populate({ path: 'data', match: { community: this.community } });
+
+    // -------- BRAND NEW LINK --------
+    if (!parent) {
+      parent = await new (this.model('Post'))(parentObj);
+      // let data = new (this.model('PostData'))(postData);
+    }
+
+    if (!parent.data) {
+      parent = await parent.addPostData({ slug: this.community, _id: this.communityId });
+    }
+
+    // console.log('parent ', parent);
+    if (parent.latestComment < postDate) {
+      parent.latestComment = postDate;
+      parent.data.latestComment = postDate;
+      console.log('updated data latestComment ', parent.data.latestComment);
+      // await this.model('CommunityFeed').updateDate(parent._id, this.community, postDate);
+    }
+
+
+    // TODO figure out what to do with payoutTime should old post reset?
+    // for now we don't update payout time
+
+
+    if (this.twitter) {
+      parent.twitterScore = Math.max(parent.twitterScore, this.twitterScore);
+      parent.seenInFeedNumber += 1;
+    } else {
+      // this also inserts a posts into the community feed
+      await parent.updateRank(this.community);
+    }
+
+    parent.data = await parent.data.save();
+    parent = await parent.save();
+
+    // write link metadata
+    parent = await parent.upsertMetaPost(this.metaPost, linkObject);
+
+    this.linkParent = parent;
+    this.parentPost = parent;
+    this.aboutLink = parent;
+
+    this.metaPost = parent.metaPost;
+    await this.save();
+
+    return this;
+  } catch (err) {
+    console.log('error upserting parent ', err);
+  }
+};
+
+PostSchema.methods.insertIntoFeed = async function insertIntoFeed(community) {
+  try {
+    if (!this.data) this.data = await this.model('PostData').find({ post: this._id, community });
+    let feedItem = await this.model('CommunityFeed').findOneAndUpdate(
+      { community, post: this._id },
+      {
+        latestPost: this.data.latestComment || this.data.postDate,
+        tags: this.tags,
+        // categories: this.categories,
+        // keywords: meta.keywords,
+        rank: this.data.rank,
+      },
+      { upsert: true, new: true }
+    );
+    console.log('inserted feed item ', feedItem);
+    // notify front end there is a new post
+    let newPostEvent = {
+      type: 'SET_NEW_POSTS_STATUS',
+      payload: { community },
+    };
+    this.model('Post').events.emit('postEvent', newPostEvent);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 
 PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkObject) {
   let meta;
   try {
     if (metaId) meta = await MetaPost.findOne({ _id: metaId });
-    if (this.link && !meta) {
-      meta = await MetaPost.findOne({ url: this.link });
+    let url = linkObject.url || this.url || this.link;
+    if (url && !meta) {
+      meta = await MetaPost.findOne({ url });
     }
     if (meta) {
-      if (meta.rank < this.rank) {
-        meta.rank = this.rank;
-        meta.topCommentary = this._id;
-      }
-
-      // replace below with:
-      meta = { ...meta, ...linkObject };
-      // only do this when we create new post!
-      // if (!meta.tags) meta.tags = [];
-      // let tags = [...meta.tags, ...this.tags];
-      // tags = [...new Set(tags)];
-      // meta.tags = tags;
-
-      // if (!meta.categories) meta.categories = [];
-      // let cats = [...meta.categories, this.category];
-      // cats = [...new Set(cats)];
-      // meta.categories = cats;
-
-      // meta.keywords = [...new Set([...meta.keywords, ...this.keywords || []])];
-      // meta.articleAuthor = this.articleAuthor;
-
-      if (!this.twitter) {
-        meta.commentaryCount++;
-        meta.newCommentary = this._id;
-        meta.commentary.push(this);
-        meta.latestPost = this.postDate;
-        meta.twitter = false;
-        // meta.url = this.post.link;
-      } else {
-        // meta.latestPost = this.postDate;
-        meta.latestTweet = this.postDate;
-        meta.tweetCount++;
-        meta.commentary.push(this);
-        // meta.twitterCommentary.push(this);
-        meta.seenInFeedNumber++;
-        meta.twitterScore = Math.max(meta.twitterScore, this.twitterScore);
-        meta.feedRelevance = Math.max(meta.feedRelevance, this.feedRelevance);
-      }
-
-      if (this.image) {
-        meta.image = this.image;
-      }
+      meta.set(linkObject);
       meta = await meta.save();
     } else {
       meta = {
         ...linkObject,
-        rank: this.rank,
-        newCommentary: this._id,
-        topCommentary: this._id,
-        commentary: [this._id],
-
-        latestPost: this.postDate,
-        commentaryCount: 1,
         tags: this.tags,
-
-        // deprecate
-        // categories: [this.category],
       };
-      if (this.twitter) {
-        meta = {
-          ...meta,
-          tweetCount: 1,
-          seenInFeedNumber: 1,
-          // twitterCommentary: [this._id],
-          latestTweet: this.postDate,
-          twitterScore: this.twitterScore,
-          feedRelevance: this.feedRelevance,
-          twitter: true,
-          twitterUrl: this.twitterUrl
-        };
-      }
-      let metaPost = new MetaPost(meta);
-      // console.log(meta);
-      meta = await metaPost.save();
-
-      this.metaPost = metaPost._id;
-      // console.log('meta tags', meta.tags);
+      meta = new MetaPost(meta);
+      meta = await meta.save();
     }
-
-    // don't add post to community feed from twitter
-    if (this.twitter != true) {
-      let community = this.community || 'relevant';
-
-      let feedItem = await this.model('CommunityFeed').findOneAndUpdate(
-        { community, metaPost: meta._id },
-        {
-          latestPost: this.postDate,
-          tags: meta.tags,
-          categories: meta.categories,
-          keywords: meta.keywords,
-          rank: meta.rank,
-        },
-        { upsert: true, new: true }
-      );
-
-      // notify front end there is a new post
-      let newPostEvent = {
-        type: 'SET_NEW_POSTS_STATUS',
-        payload: { community },
-      };
-      this.model('Post').events.emit('postEvent', newPostEvent);
-    }
+    this.metaPost = meta._id;
+    return this;
   } catch (err) {
-    console.log('error creating / updating metapost ', err);
+    console.log('error creating / updating link ', err);
   }
   return meta;
 };
@@ -393,34 +458,13 @@ PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds,
     let investments = await Invest.find(
       { investor: userId, post: { $in: postIds } }
     );
-    let postInv = investments.map(inv => inv.post);
 
-    // DEPRICATED (HANDLE OLDER CLIENTS WHILE THEY UPDATE)
-    let updatePostsDep = {
-      _id: userId,
-      type: 'UPDATE_POSTS_INVEST',
-      payload: postInv
-    };
-    this.events.emit('postEvent', updatePostsDep);
-
-    // NEW
     let updatePosts = {
       _id: userId,
       type: 'UPDATE_POST_INVESTMENTS',
       payload: investments
     };
     this.events.emit('postEvent', updatePosts);
-
-    // let earnings = await Earnings.find({
-    //   user: userId, post: { $in: postIds }
-    // });
-
-    // let earningsEvent = {
-    //   _id: userId,
-    //   type: 'UPDATE_EARNINGS',
-    //   payload: earnings
-    // };
-    // this.events.emit('postEvent', earningsEvent);
   } catch (err) {
     console.log(err);
   }

@@ -23,16 +23,53 @@ export async function index(req, res, next) {
   }
 }
 
-export async function showMemebers(req, res, next) {
+export async function members(req, res, next) {
   try {
-    let slug = req.params.slug;
-    let admins = await CommunityMember.find({ slug })
+    let community = req.params.slug;
+    let users = await CommunityMember.find({ community })
     .sort('role reputation');
-    res.status(200).json(admins);
+    res.status(200).json(users);
   } catch (err) {
     next(err);
   }
 }
+
+export async function membership(req, res, next) {
+  try {
+    let user = req.user._id;
+    let m = await CommunityMember.find({ user })
+    .sort('role reputation');
+    res.status(200).json(m);
+  } catch (err) {
+    next(err);
+  }
+}
+
+
+export async function join(req, res, next) {
+  try {
+    let userId = req.user._id;
+    let slug = req.params.slug;
+    let community = await Community.findOne({ slug });
+    let member = await community.join(userId);
+    res.status(200).json(member);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function leave(req, res, next) {
+  try {
+    let userId = req.user._id;
+    let slug = req.params.slug;
+    let community = await Community.findOne({ slug });
+    await community.leave(userId);
+    res.sendStatus(200);
+  } catch (err) {
+    next(err);
+  }
+}
+
 
 export async function showAdmins(req, res, next) {
   try {
@@ -58,16 +95,17 @@ export async function create(req, res, next) {
     community = new Community(community);
     community = await community.save();
 
-    // TODO check that admin exists?
-    admins = admins.map(admin => ({
-      user: admin._id,
-      communityId: community._id,
-      community: community.slug,
-      role: 'admin',
-      reputation: 0
-    }));
+    // TODO - this should create an invitation!
+    admins = admins.map(async admin => {
+      try {
+        return await community.join(admin._id, 'admin');
+      } catch (err) {
+        console.log('error adding admin ', err);
+        return null;
+      }
+    });
 
-    await CommunityMember.insertMany(admins);
+    admins = await Promise.all(admins);
 
     res.status(200).json(community);
   } catch (err) {
@@ -77,8 +115,14 @@ export async function create(req, res, next) {
 
 export async function remove(req, res, next) {
   try {
+    if (process.env.NODE_ENV !== 'test') throw new Error('deleting communities is disabled in production');
+    let userId = req.user._id;
     let slug = req.params.slug;
-    await Community.findOne({ slug }).remove().exec();
+    // check that user is an admin
+    let admin = CommunityMember.findOne({ community: slug, user: userId, role: 'admin' });
+    if (!admin) throw new Error('you don\'t have permission to delete this community');
+    // funky syntax - need this to trigger remove
+    (await Community.findOne({ slug })).remove();
     res.sendStatus(200);
   } catch (err) {
     next(err);

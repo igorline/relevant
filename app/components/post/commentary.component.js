@@ -46,6 +46,7 @@ export default class Commentary extends Component {
   }
 
   renderItem({ item, index }) {
+    let link = this.props.link;
     let post = item;
     let i = index;
     let repostEl;
@@ -85,7 +86,7 @@ export default class Commentary extends Component {
     }
 
     let repostedBy;
-    if (post.reposted && post.reposted.length && this.props.metaPost) {
+    if (post.reposted && post.reposted.length && this.props.link) {
       let and = '';
       if (post.reposted.length > 2) {
         and = ' and ' + (post.reposted.length - 1) + ' others';
@@ -114,7 +115,6 @@ export default class Commentary extends Component {
     }
 
     let myPostInv = this.props.myPostInv[post._id];
-    post.metaPost = this.props.metaPost;
 
     return (
       <View
@@ -145,7 +145,7 @@ export default class Commentary extends Component {
             />
             <PostButtons
               post={post}
-              metaPost={this.props.metaPost}
+              link={link}
               tooltip={index === 0 ? this.props.tooltip : null}
               // tooltip={this.props.tooltip}
               comments={post.comments || null}
@@ -162,12 +162,13 @@ export default class Commentary extends Component {
 
 
   render() {
+    let { commentary } = this.props
     let pills = (
       <View style={{ marginVertical: 15 }}>
         <Pills
           changed={this.state.changed}
           currentIndex={this.state.currentIndex}
-          slides={this.props.commentary.map((c, i) => i + 1)}
+          slides={commentary.map((c, i) => i + 1)}
           scrollToPage={this.scrollToPage}
         />
 {/*       <Text style={[styles.smallInfo, {textAlign: 'center'}]}>
@@ -179,10 +180,10 @@ export default class Commentary extends Component {
       <View>
         <FlatList
           ref={c => this.scrollView = c}
-          scrollEnabled={this.props.commentary.length > 1}
+          scrollEnabled={commentary.length > 1}
           keyExtractor={(item, index) => index.toString()}
           horizontal
-          data={this.props.commentary}
+          data={commentary}
           renderItem={this.renderItem}
           pagingEnabled
           contentContainerStyle={[styles.postScroll]}
@@ -190,7 +191,7 @@ export default class Commentary extends Component {
           onMomentumScrollEnd={this.onScrollEnd}
           // columnWrapperStyle={{ flex: 1 }}
         />
-        {this.props.commentary.length > 1 ? pills : null }
+        {commentary.length > 1 ? pills : null }
       </View>
 
     );

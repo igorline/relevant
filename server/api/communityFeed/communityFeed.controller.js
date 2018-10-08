@@ -11,6 +11,10 @@ function handleError(res, statusCode) {
 
 exports.get = async (req, res) => {
   try {
+    // TODO - right now sorting commentary by latest and relevance
+    // only works for community's own posts
+    // solution: populate postData then populate with postData post
+    // TODO - for now isolate commentary to given community
     let community = req.query.community;
     let user = req.user;
 
@@ -34,9 +38,9 @@ exports.get = async (req, res) => {
       blocked = [...req.user.blocked || [], ...req.user.blockedBy || []];
     }
 
-    let query = { community };
+    let query = { community, post: { $exists: true } };
 
-    if (tag) query = { tags: tag };
+    if (tag) query = { tags: tag, community };
     let feed;
     let posts = [];
 
@@ -45,13 +49,14 @@ exports.get = async (req, res) => {
     .skip(skip)
     .limit(limit)
     .populate({
-      path: 'metaPost',
+      path: 'post',
       populate: [
+        { path: 'data' },
         {
           path: 'commentary',
           match: {
-            // this is a temp problem for twitter
-            // community,
+            // TODO implement intra-community commentary
+            community,
 
             // TODO - we should probably sort the non-community commentary
             // with some randomness on client side
@@ -60,17 +65,28 @@ exports.get = async (req, res) => {
             $or: [{ twitter: { $ne: true } }, { relevance: { $gt: 0 } }],
           },
           options: { sort: commentarySort },
-          populate: {
-            path: 'embeddedUser.relevance',
-            select: 'relevance'
-          },
+          populate: [
+            { path: 'data' },
+            {
+              path: 'embeddedUser.relevance',
+              select: 'relevance',
+              match: { community, global: true },
+            },
+          ]
+        },
+        { path: 'metaPost' },
+        {
+          path: 'embeddedUser.relevance',
+          select: 'relevance',
+          match: { community, global: true },
         },
       ]
     });
 
     feed.forEach(async (f) => {
-      if (f.metaPost) {
-        posts.push(f.metaPost);
+      if (f.post) {
+        posts.push(f.post);
+        console.log('rank ', f.post.body, f.post.data.rank);
       } else { // just in case - this shouldn't happen
         console.log('error: metapost is null!');
         await f.remove();
@@ -81,8 +97,8 @@ exports.get = async (req, res) => {
     if (user) {
       let postIds = [];
       posts.forEach(meta => {
+        postIds.push(meta._id);
         meta.commentary.forEach(post => {
-          // post.user = post.embeddedUser.id;
           postIds.push(post._id || post);
         });
       });

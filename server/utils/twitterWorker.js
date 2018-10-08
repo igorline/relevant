@@ -1,4 +1,5 @@
-import Meta from '../api/metaPost/metaPost.model';
+// TODO rename to link
+import Meta from '../api/links/link.model';
 import Post from '../api/post/post.model';
 import * as postController from '../api/post/post.controller';
 import TwitterFeed from '../api/twitterFeed/twitterFeed.model';
@@ -104,10 +105,10 @@ let twitterCount = 0;
 //   avgTwitterScore
 // }
 
-async function computeRank(metaPost) {
+async function computeRank(linkPost) {
   let rank = 0
-    + metaPost.seenInFeedNumber
-    + Math.log(metaPost.twitterScore + 1) * 5;
+    + linkPost.seenInFeedNumber
+    + Math.log(linkPost.twitterScore + 1) * 5;
 
   // use user's relevance score to rank feed?
   // let feedRelevance = metaPost.feedRelevance ? Math.log(metaPost.feedRelevance + 1) : 0;
@@ -117,8 +118,8 @@ async function computeRank(metaPost) {
   twitterCount++;
   let personalize = avgTwitterScore * 10;
 
-  let newRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
-  let inFeedRank = (metaPost.latestTweet.getTime() / TENTH_LIFE) + Math.log10(personalize + rank + 1);
+  let newRank = (linkPost.latestComment.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
+  let inFeedRank = (linkPost.latestComment.getTime() / TENTH_LIFE) + Math.log10(personalize + rank + 1);
   newRank = Math.round(newRank * 1000) / 1000;
   inFeedRank = Math.round(inFeedRank * 1000) / 1000;
 
@@ -185,11 +186,12 @@ async function processTweet(tweet, user) {
   // check if tw post exists
   // if it does, update feed and increment 'seen in feed counter'
   let post = await Post.findOne({ twitter: true, twitterId: tweet.id });
-  let metaPost;
+  // let metaPost;
+  let linkParent;
 
   if (post) {
-    metaPost = await Meta.findOne({ _id: post.metaPost });
-    if (metaPost) metaPost.seenInFeedNumber += 1;
+    linkParent = await Meta.findOne({ _id: post.linkParent });
+    // if (parentPost) parentPost.seenInFeedNumber += 1;
     // await metaPost.save();
   } else {
     let processed = await Meta.findOne({ twitterUrl: tweet.entities.urls[0].expanded_url });
@@ -226,7 +228,6 @@ async function processTweet(tweet, user) {
       // for now only pull tweets for relevant
       community: 'relevant',
 
-
       body,
       tags,
       postDate: originalTweet.created_at,
@@ -237,20 +238,27 @@ async function processTweet(tweet, user) {
         id: tweet.user.screen_name,
         image: tweet.user.profile_image_url_https.replace('_normal', '')
       },
+      category: [],
+
       twitterUser: tweet.user.id,
       twitterId: tweet.id,
-      twitterRetweets: tweet.retweet_count,
-      twitterFavs: tweet.favorite_count,
+      // twitterRetweets: tweet.retweet_count,
+      // twitterFavs: tweet.favorite_count,
       // TODO do we know user? use relevance!
-      twitterScore: tweet.retweet_count + tweet.favorite_count,
+      twitterScore: 2 * tweet.retweet_count + tweet.favorite_count,
       twitter: true,
-      category: [],
-      feedRelevance: user.relevance || 0,
-      twitterUrl: tweet.entities.urls[0].expanded_url
+      // feedRelevance: user.relevance || 0,
+      twitterUrl: tweet.entities.urls[0].expanded_url,
+      seenInFeedNumber: 1,
     });
+
+
+    post = await post.upsertLinkParent(linkObject);
+
+    linkParent = post.linkParent;
     // console.log(post);
-    metaPost = await post.upsertMetaPost(null, linkObject);
-    post.metaPost = metaPost._id;
+    // metaPost = await post.upsertMetaPost(null, linkObject);
+    // post.metaPost = metaPost._id;
 
     // let heapUsed = process.memoryUsage().heapUsed;
     // let mb = Math.round(100 * heapUsed / 1048576) / 100;
@@ -260,18 +268,19 @@ async function processTweet(tweet, user) {
     await post.save();
   }
 
-  let { newRank, inFeedRank } = await computeRank(metaPost, user);
+  let parentId = linkParent._id;
+  let { newRank, inFeedRank } = await computeRank(linkParent, user);
 
   let feedObject = {
-    post: post._id,
+    // post: post._id,
     rank: newRank,
-    tweetDate: metaPost.latestTweet,
+    tweetDate: linkParent.latestComment,
   };
 
   // make sure everyone gets it
 
   await TwitterFeed.update(
-    { user: '_common_Feed_', metaPost: metaPost._id },
+    { user: '_common_Feed_', post: parentId },
     feedObject,
     { upsert: true }
   ).exec();
@@ -279,7 +288,7 @@ async function processTweet(tweet, user) {
 
   let updateAllUsers = allUsers.map(async u =>
     await TwitterFeed.update(
-      { user: u, metaPost: metaPost._id },
+      { user: u, post: parentId },
       feedObject,
       { upsert: true }
     ).exec()
@@ -289,14 +298,14 @@ async function processTweet(tweet, user) {
 
   // update current user
   await TwitterFeed.findOneAndUpdate(
-    { user: user._id, metaPost: metaPost._id },
+    { user: user._id, post: parentId },
     { ...feedObject, inTimeline: true, rank: inFeedRank },
     { upsert: true, new: true }
   );
 
   // update rank of existing posts
   await TwitterFeed.update(
-    { metaPost: metaPost._id, inTimeline: true },
+    { post: parentId, inTimeline: true },
     { ...feedObject, rank: inFeedRank },
     { upsert: false, multi: true }
   );
@@ -324,12 +333,9 @@ async function getUserFeed(user, i) {
     let feed = await client.get('statuses/home_timeline', params);
 
     if (feed && feed.length) {
-      // let lastId = feed[feed.length - 1].id;
       let lastId = feed[0].id;
-      // console.log('last id ', lastId);
       user.lastTweetId = lastId;
       user = await user.save();
-      // console.log(user.lastTweetId);
     }
 
     if (!feed) feed = [];
@@ -455,7 +461,7 @@ async function getUsers(userId) {
   }
 }
 
-// setTimeout(getUsers, 5000);
+// setTimeout(getUsers, 3000);
 // getUsers();
 module.exports = {
   updateTwitterPosts: getUsers

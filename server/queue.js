@@ -25,7 +25,7 @@ const TwitterWorker = require('./utils/twitterWorker');
 const DECAY = 0.99621947473649;
 
 let q = queue({
-  concurrency: 5,
+  // concurrency: 5,
   concurrency: 1,
 });
 

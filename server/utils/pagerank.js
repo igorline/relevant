@@ -146,9 +146,9 @@ function pagerank(G, params) {
         // console.log(d);
         // let adjust = 1 + Math.log(params.users[nbr].postCount + 1);
         // todo - adjust this to account for time discounting - is this personalization?
-        let adjust = Math.max(MIN_DEGREE, params.users[nbr].postCount + 1);
-        adjust = Math.log(adjust);
-        // let adjust = 1;
+        // let adjust = Math.max(MIN_DEGREE, params.users[nbr].postCount + 1);
+        // adjust = Math.log(adjust);
+        let adjust = 1;
 
         x[nbr] += params.alpha * xlast[node] * W[node][nbr]['weight'] / adjust;
       }

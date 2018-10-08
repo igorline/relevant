@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events';
 import apnData from '../../pushNotifications';
-import MetaPost from '../metaPost/metaPost.model';
-import { VOTE_COST_RATIO } from '../../config/globalConstants';
+import { VOTE_COST_RATIO, POWER_REGEN_INTERVAL } from '../../config/globalConstants';
 import * as ethUtils from '../../utils/ethereum';
 
 let Post = require('../post/post.model');
@@ -185,7 +184,6 @@ exports.destroy = (req, res) => {
     }
   }).then(() => Post.findOne({ _id: req.body.post }))
   .then((foundPost) => {
-    console.log(foundPost, 'foundpost');
     foundPost.investments.forEach((investment, i) => {
       if (JSON.stringify(investment) === JSON.stringify(investmentId)) {
         console.log('removing investment from post array');
@@ -207,9 +205,14 @@ exports.destroy = (req, res) => {
 };
 
 exports.create = async (req, res) => {
+  let { community, communityId } = req.communityMember;
+
   let user = req.user._id;
   let post = req.body.post;
   let amount = req.body.amount;
+  // amount should be on a scale of -1 to 1 to prevent abuse;
+  amount = Math.max(-1, amount);
+  amount = Math.min(1, amount);
   let relevanceToAdd = 0;
   let existingInvestments = [];
   let irrelevant = false;
@@ -217,12 +220,7 @@ exports.create = async (req, res) => {
   let investmentExists;
   let subscription;
   let author;
-  let postCommunity;
   let userRelevance;
-  let userBalance;
-
-  // TODO - update both - voter community and post community
-  let voterCommunity = req.query.community || 'relevant';
 
   function InvestException(message) {
     this.message = message;
@@ -231,10 +229,10 @@ exports.create = async (req, res) => {
 
   async function updateInvestment() {
     Invest.createVote({
-      post, user, amount, relevanceToAdd, userBalance
+      post, user, amount, relevanceToAdd
     });
 
-    // when do we need this?
+    // TODO deal with this later
     if (investmentExists) {
       // TODO if also commented, increase investment?
       investmentExists.amount = amount;
@@ -242,15 +240,20 @@ exports.create = async (req, res) => {
 
     console.log('adding ', relevanceToAdd, ' to post ', post._id);
 
-    post.relevance += relevanceToAdd;
+    post.data.relevance += relevanceToAdd;
+    communityId.toString() === post.communityId.toString() ?
+      post.relevance = post.data.relevance : null;
     if (irrelevant) {
-      post.relevanceNeg += relevanceToAdd;
+      post.data.relevanceNeg += relevanceToAdd;
+      communityId.toString() === post.communityId.toString() ?
+        post.relevanceNeg = post.data.relevanceToAdd : null;
     }
     if (relevanceToAdd !== 0) {
-      if (irrelevant) post.downVotes++;
-      else post.upVotes++;
+      if (irrelevant) post.data.downVotes++;
+      else post.data.upVotes++;
     }
-    post.value += amount;
+    console.log('post relevance', post.relevance);
+    post.data.value += 1;
   }
 
   async function investCheck() {
@@ -260,7 +263,7 @@ exports.create = async (req, res) => {
       amount = -3;
       let now = new Date();
       // don't let users downvote posts older than one week
-      if (post.postDate < now.getTime() - 1000 * 60 * 60 * 24 * 7) {
+      if (post.data.postDate < now.getTime() - 1000 * 60 * 60 * 24 * 7) {
         throw new InvestException('you cannot downvote posts older than one week');
       }
     }
@@ -268,11 +271,6 @@ exports.create = async (req, res) => {
     if (user._id === post.user) {
       throw new InvestException('You can not ' + type + 'your own post');
     }
-
-    // TODO - instead user token-based rate-limiting
-    // if (userBalance < Math.abs(amount)) {
-    //   throw new InvestException('coin');
-    // }
 
     // if (user.relevance < Math.abs(amount)) {
     //   throw new InvestException('You do not have enough relevance to ' + type + '!');
@@ -332,7 +330,7 @@ exports.create = async (req, res) => {
     if (!author) return null;
 
     let authorRelevance = await Relevance.findOne({
-      community: post.community,
+      community,
       global: true,
       user: post.user
     }, 'relevance');
@@ -355,7 +353,7 @@ exports.create = async (req, res) => {
 
     if (adjust !== 0) {
       authorRelevance = await Relevance.updateUserRelevance(post.user, post, adjust);
-      author = await author.updateRelevanceRecord(postCommunity);
+      author = await author.updateRelevanceRecord(community);
       // TODO update author community rel
     }
 
@@ -406,7 +404,6 @@ exports.create = async (req, res) => {
     // temp relevance storage for update
     author.relevance = authorRelevance;
     author.updateClient(user);
-    console.log('updated author');
 
     return author;
   }
@@ -432,7 +429,7 @@ exports.create = async (req, res) => {
         // need this to determine relevance increase;
         // TODO also do voter community
         let existingInvestorRelevance = await Relevance.findOne({
-          community: postCommunity,
+          community,
           user: investment.investor,
           global: true
         }, 'relevance');
@@ -472,7 +469,7 @@ exports.create = async (req, res) => {
           // add to relevance tag record
           // TODO also do voter community
           let relevance = await Relevance.updateUserRelevance(existingInvestor._id, post, earnings.relevance);
-          existingInvestor = await existingInvestor.updateRelevanceRecord(postCommunity);
+          existingInvestor = await existingInvestor.updateRelevanceRecord(community);
 
           // TODO remove deprecated
           existingInvestor.relevance += relevanceEarning;
@@ -507,44 +504,28 @@ exports.create = async (req, res) => {
 
   try {
     // ------ post ------
-    post = await Post.findOne({ _id: post._id }, '-comments');
+    post = await Post.findOne({ _id: post._id }, '-comments')
+    .populate({ path: 'parentPost' })
+    .populate({ path: 'data', match: { communityId } });
     // .populate('investments').exec();
-    postCommunity = post.community || 'relevant';
+    // postCommunity = post.community || 'relevant';
 
     // ------ investor ------
-    user = await User.findOne({ _id: user }, 'relevance name balance ethAddress image');
-    userBalance = 0;
-
-    // TODO migrate all
-    let ethAddress = user.ethAddress[0];
-    if (ethAddress) {
-      userBalance = await ethUtils.getBalance(ethAddress);
-    }
-
-    // console.log('user ', user._id);
-    // console.log('got userBalance from ethereum ', userBalance);
-    user.tokenBalance = userBalance;
-    userBalance += user.balance;
-
-    userRelevance = await Relevance.findOne(
-      { user: user._id, community: voterCommunity, global: true },
-      'relevance'
+    user = await User.findOne(
+      { _id: user },
+      'relevance name balance ethAddress image lastVote votePower handle tokenBalance'
     );
-    userRelevance = userRelevance ? userRelevance.relevance : 0;
+
+    user = user.updatePower();
 
     // ------ get existing investment ------
     investmentExists = await investCheck(user, post);
 
-    // ------- everything is fine, deduct user's balance ---
-    // DEPRECATED
-    // let payment = userBalance * VOTE_COST_RATIO;
-    // send payment back to reward fund
-    // let treasuryUpdate = await Treasury.findOneAndUpdate(
-    //   {},
-    //   { $inc: { rewardFund: payment } },
-    //   { new: true }
-    // );
-    // else userRelevance -= Math.abs(amount);
+    userRelevance = await Relevance.findOne(
+      { user: user._id, community, global: true },
+      'relevance'
+    );
+    userRelevance = userRelevance ? userRelevance.relevance : 0;
 
     // ------ add or remove post to feed ------
     // await updateUserFeed(user, post, irrelevant);
@@ -561,21 +542,21 @@ exports.create = async (req, res) => {
     // ------ update investment records ------
     await updateInvestment();
 
+    post.data = await post.data.save();
+    // console.log('updated post data: ', post.data);
+
+    await post.updateRank(community);
     post = await post.save();
 
-    // async update meta post rank
-    // console.log('meta post ', post.metaPost);
-    MetaPost.updateRank(post.metaPost, post.twitter, post);
-    await CommunityFeed.updateRank(post.metaPost, post.community);
+    if (post.parentPost) {
+      // TODO - work on nesting here
+      // TODO source community?
+      await post.parentPost.updateRank(community);
+      await post.parentPost.save();
+    }
 
-    // if (post.twitter) {
-    //   let updateM = await MetaPost.findOneAndUpdate(
-    //    { _id: post.metaPost },
-    //    { twitter: false },
-    //    { new: true }
-    //   );
-    //   console.log(updateM);
-    // }
+    // TODO handle twitter upvote
+
     // updates user investments
     user.investmentCount = await Invest.count({ investor: user._id, amount: { $gt: 0 } });
 

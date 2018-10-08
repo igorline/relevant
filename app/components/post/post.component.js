@@ -31,27 +31,31 @@ class Post extends PureComponent {
       />);
     let commentaryEl;
     let reposted;
+    let link = this.props.link;
 
     if (!this.props.auth.user) return null;
 
     let blocked = <View style={{ height: StyleSheet.hairlineWidth }} />;
     post = this.props.post;
-    let metaPost = this.props.metaPost || post.metaPost;
 
+    // let metaPost = this.props.metaPost || post.metaPost;
     // post = this.props.metaPost || this.props.post;
 
-    if (!metaPost && (!post || !post._id)) {
+    if (!post || !post._id) {
       return blocked;
     }
 
-    // if we have a repost, don't render the original post
-    let commentary = this.props.commentary || [this.props.post];
-    commentary = commentary.filter(p => p && p._id !== reposted);
 
-    if (commentary.length) {
+    // if we have a repost, don't render the original post
+    let commentary = this.props.commentary;
+
+    // TODO... need to filter out reposted
+    // commentary = commentary.filter(p => p && p._id !== reposted);
+
+    if (commentary && commentary.length) {
       commentaryEl = <Commentary {...this.props} commentary={commentary} />;
     } else {
-      return null;
+      commentaryEl = <Commentary {...this.props} commentary={[post]} />;
     }
 
     if (post && post.repost) {
@@ -60,12 +64,12 @@ class Post extends PureComponent {
       post = { ...repost };
     }
 
-    if (metaPost && (metaPost.link || metaPost.url || metaPost.image)) {
+    if (link && (link.url || link.image)) {
       imageEl = (<PostImage
-        key={metaPost._id}
+        key={link._id}
         singlePost={this.props.singlePost}
         actions={this.props.actions}
-        post={metaPost}
+        post={link}
       />);
     }
 

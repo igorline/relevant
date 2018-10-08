@@ -3,7 +3,7 @@ import * as types from '../actions/actionTypes';
 
 const CommunitySchema = new schema.Entity('communities',
   {},
-  { idAttribute: '_id' }
+  { idAttribute: 'slug' }
 );
 
 const initialState = {

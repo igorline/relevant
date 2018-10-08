@@ -22,12 +22,13 @@ class Community extends Component {
       let community = communities[id];
       let active = currentCommunity === community.slug;
       let className = active ? 'active' : null;
-      return <Link
+      return <div><Link
         className={className}
         key={community._id}
         to={'/' + community.slug + '/new'}>
         {community.name}
-      </Link>;
+      </Link>
+      </div>;
     });
   }
 

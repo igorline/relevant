@@ -15,12 +15,16 @@ exports.get = async (req, res) => {
   let skip = parseInt(req.query.skip, 10) || 0;
   let limit = parseInt(req.query.limit, 10) || 5;
   let tag = req.query.tag || null;
+  let twitterUser = user;
 
   // let query = { user: { $in : [user, '_common_Feed_'] } };
-  let query = { user };
-  if (!req.user.twitterId) query = { user: '_common_Feed_' };
+  let query = { user, post: { $exists: true } };
+  if (!req.user.twitterId) {
+    twitterUser = '_common_Feed_';
+  }
+  query = { ...query, user: twitterUser };
 
-  if (tag) query = { tags: tag, user };
+  if (tag) query = { ...query, tags: tag, user };
   let feed;
   let posts = [];
 
@@ -30,18 +34,19 @@ exports.get = async (req, res) => {
     .skip(skip)
     .limit(limit)
     .populate({
-      path: 'metaPost',
+      path: 'post',
       populate: [
         {
           path: 'commentary',
           match: { repost: { $exists: false } },
           options: { sort: { postDate: -1 } },
         },
+        { path: 'metaPost' }
       ]
     });
 
     feed.forEach((f) => {
-      if (f.metaPost) posts.push(f.metaPost);
+      if (f.post) posts.push(f.post);
       // console.log('title ', f.metaPost.title);
       // console.log('rank ', f.rank);
       // console.log('metapost rank ', f.metaPost.rank);
@@ -54,8 +59,9 @@ exports.get = async (req, res) => {
     // TODO worker thread
     if (user) {
       let postIds = [];
-      posts.forEach(meta => {
-        meta.commentary.forEach(post => {
+      posts.forEach(p => {
+        console.log(p.commentary);
+        p.commentary.forEach(post => {
           post.user = post.embeddedUser.id;
           postIds.push(post._id || post);
         });
@@ -92,11 +98,11 @@ exports.markRead = (req, res) => {
 exports.post = (req, res) => {
   let postId = req.params.id;
   Feed.find({ post: postId })
-      .sort({ createdAt: -1 })
-      // .populate('post')
-      .then(feed => {
-        res.status(200).json(feed);
-      })
-      .catch(handleError(res));
+  .sort({ createdAt: -1 })
+  // .populate('post')
+  .then(feed => {
+    res.status(200).json(feed);
+  })
+  .catch(handleError(res));
 };
 

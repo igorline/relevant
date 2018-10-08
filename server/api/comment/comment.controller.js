@@ -12,20 +12,13 @@ const PostEvents = new EventEmitter();
 const CommentEvents = new EventEmitter();
 const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
-// Post.find({ _id: '5ba013195f3191012d7bb074'}).then(console.log);
-// async function updateRepostMeta() {
-//   try {
-//     let reposts = await Post.find({ repost: { $exists: true } });
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-// updateRepostMeta();
 
 exports.get = async (req, res, next) => {
   try {
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const skip = parseInt(req.query.skip, 10) || 0;
+    // TODO - not paginated
+    let community = req.query.community;
+    // const limit = parseInt(req.query.limit, 10) || 10;
+    // const skip = parseInt(req.query.skip, 10) || 0;
     let query = null;
     let parentPost = null;
     let sort = 1;
@@ -38,18 +31,19 @@ exports.get = async (req, res, next) => {
 
     let total = await Post.count(query);
 
-    if (total > 10) sort = -1;
+    // if (total > 10) sort = -1;
     let comments = await Post.find(query)
     .populate({
       path: 'embeddedUser.relevance',
-      select: 'relevance'
+      select: 'relevance',
+      match: { community, global: true }
     })
-    .sort({ createdAt: sort })
-    .limit(limit)
-    .skip(skip);
+    .sort({ createdAt: sort });
+    // .limit(limit)
+    // .skip(skip);
 
     let toSend = comments;
-    if (total > 10) toSend = comments.reverse();
+    // if (total > 10) toSend = comments.reverse();
     res.status(200).json({ data: toSend, total });
 
     // TODO worker thread
@@ -148,7 +142,10 @@ async function createRepost(comment, post, user) {
       postDate: new Date(),
       relevance: 0,
       parentPost: post._id,
+      aboutLink: post.aboutLink,
       body: comment.body,
+      type: 'repost',
+      eligibleForRewards: true,
       repost: {
         post: post._id,
         commentBody: comment.body
@@ -218,8 +215,9 @@ exports.create = async (req, res) => {
     parentPost,
     parentComment,
     user,
-    isRepost: repost || false,
-    isComment: !repost || false,
+    type: 'comment',
+    eligibleForRewards: true,
+    postDate: new Date(),
   };
 
   async function sendOutComments(commentor) {
@@ -270,23 +268,29 @@ exports.create = async (req, res) => {
     comment = new Post(commentObj);
     user = await User.findOne({ _id: user });
 
-
     parentPost = await Post.findOne({ _id: parentPost });
 
-    comment.community = parentPost.community;
-    comment = await comment.addUserInfo(user);
 
     if (repost) {
       comment = await createRepost(comment, parentPost, user);
     }
+
+    comment.community = parentPost.community;
+    comment.aboutLink = parentPost.aboutLink;
+
+    comment = await comment.addUserInfo(user);
+
     // this will also save the new comment
     comment = await Post.sendOutMentions(mentions, parentPost, user, comment);
-    comment.metaPost = parentPost.metaPost;
 
-    // TODO increment post comment count here?
-    // post.commentCount++;
+    await Invest.createVote({
+      post: comment,
+      user,
+      amount: 0,
+      relevanceToAdd: 0,
+    });
 
-    // TODO increase the post's relevance **but only if its user's first comment!
+    // TODO increase the post's relevance? **but only if its user's first comment!
     // this auto-updates comment count
     parentPost = await parentPost.save();
     parentPost.updateClient();
@@ -294,7 +298,7 @@ exports.create = async (req, res) => {
     postAuthor = await User.findOne({ _id: parentPost.user }, 'name _id deviceTokens');
 
 
-    let otherCommentors = await Comment.find({ post: parentPost._id })
+    let otherCommentors = await Post.find({ post: parentPost._id })
     .populate('user', 'name _id deviceTokens');
 
     otherCommentors = otherCommentors

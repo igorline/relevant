@@ -39,12 +39,20 @@ class CommunityAdmin extends Component {
     this.setState({ admins: data.mentions, adminsText });
   }
 
-  createCommunity() {
-    this.props.actions.createCommunity(this.state);
+  async createCommunity() {
+    try {
+      let image = await this.imageUploader.uploadImage();
+      if (image) return;
+      this.props.actions.createCommunity(this.state);
+    } catch (err) {
+      console.log('error creating community ', err);
+    }
   }
 
   render() {
     let { name, slug, description, topics, adminsText, image } = this.state;
+    let preview = this.imageUploader && this.imageUploader.state.preview;
+    if (preview) image = preview;
     return (
       <div>
         <div className="communityForm">
@@ -97,6 +105,7 @@ class CommunityAdmin extends Component {
           {image ? <img src={image} /> : null}
           <ImageUpload
             onUpload={img => this.setState({ image: img })}
+            ref={c => this.imageUploader = c}
           />
           <br/>
           <button className={'shadowButton'} onClick={this.createCommunity.bind(this)}>

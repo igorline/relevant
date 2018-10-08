@@ -297,13 +297,14 @@ class PostButtons extends Component {
   }
 
   repostCommentary() {
+    let { link } = this.props;
     this.props.actions.setCreaPostState({
       postBody: '',
       repost: this.props.post,
       urlPreview: {
-        image: this.props.post.image,
-        title: this.props.post.title ? this.props.post.title : 'Untitled',
-        description: this.props.post.description,
+        image: link.image,
+        title: link.title ? link.title : 'Untitled',
+        description: link.description,
       }
     });
     this.props.actions.push({
@@ -327,16 +328,17 @@ class PostButtons extends Component {
   }
 
   repostUrl() {
+    let { link } = this.props;
     this.props.actions.setCreaPostState({
       postBody: '',
       component: 'createPost',
       nativeImage: true,
-      postUrl: this.props.post.link,
-      postImage: this.props.post.image,
+      postUrl: link.url,
+      postImage: link.image,
       urlPreview: {
-        image: this.props.post.image,
-        title: this.props.post.title ? this.props.post.title : 'Untitled',
-        description: this.props.post.description,
+        image: link.image,
+        title: link.title ? link.title : 'Untitled',
+        description: link.description,
       }
     });
     this.props.actions.push({
@@ -586,8 +588,9 @@ class PostButtons extends Component {
       </TouchableOpacity>
     );
 
-    let metaPost = this.props.metaPost;
-    let twitter = (metaPost && metaPost.twitter === true);
+    let link = this.props.link;
+    let twitter = (link && link.twitter === true);
+    let isComment = post.type === 'comment';
 
     return (<View style={styles.postButtonsContainer}>
       <View style={styles.postButtons}>
@@ -600,9 +603,9 @@ class PostButtons extends Component {
         </View>
 
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          {(metaPost && metaPost.url) || !post.parentPost ? newCommentary : null}
-          {twitter || post.parentPost ? null : comments}
-          {twitter || post.parentPost ? null : repost}
+          {(link && link.url) || !isComment ? newCommentary : null}
+          {twitter || isComment ? null : comments}
+          {twitter || isComment ? null : repost}
         </View>
 
         <InvestModal
@@ -619,7 +622,7 @@ PostButtons.propTypes = {
   actions: PropTypes.object,
   post: PropTypes.object,
   tooltip: PropTypes.bool,
-  metaPost: PropTypes.object,
+  link: PropTypes.object,
   myPostInv: PropTypes.object,
   auth: PropTypes.object,
   scene: PropTypes.object,

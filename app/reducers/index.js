@@ -58,43 +58,78 @@ const appReducer = combineReducers({
 
 const rootReducer = (state, action) => {
   if (action.type === 'SET_COMMUNITY') {
-    const {
-      routing,
-      auth,
-      community,
-      // keep drizzle stuff - really need a nested state!
-      contracts,
-      drizzleStatus,
-      transactions,
-      transactionStack,
-      web3,
-      accounts,
-      accountBalances,
-      socket
-    } = state;
 
-    if (auth.community) {
-      communityState = {
-        ...communityState,
-        [auth.community]: state
+    if (process.env.WEB != 'true') {
+
+      const {
+        auth,
+        community,
+        socket,
+
+        //MOBILE
+        navigation,
+
+      } = state;
+
+      if (auth.community) {
+        communityState = {
+          ...communityState,
+          [auth.community]: state
+        };
+      }
+
+      state = {
+        ...communityState[action.payload],
+        // TODO needs work?
+        socket,
+        auth: {...auth, community: action.payload },
+        navigation
+      };
+
+
+    } else {
+      const {
+        auth,
+        community,
+        socket,
+
+        //DESKTOP
+        // keep drizzle stuff - really need a nested state!
+        routing,
+        contracts,
+        drizzleStatus,
+        transactions,
+        transactionStack,
+        web3,
+        accounts,
+        accountBalances,
+      } = state;
+
+      if (auth.community) {
+        communityState = {
+          ...communityState,
+          [auth.community]: state
+        };
+      }
+
+      state = {
+        ...communityState[action.payload],
+        // TODO needs work?
+        socket,
+        auth: {...auth, community: action.payload },
+
+        routing,
+        community,
+        contracts,
+        drizzleStatus,
+        transactions,
+        transactionStack,
+        web3,
+        accounts,
+        accountBalances,
       };
     }
 
-    state = {
-      ...communityState[action.payload],
-      routing,
-      auth: {...auth, community: action.payload },
-      community,
-      contracts,
-      drizzleStatus,
-      transactions,
-      transactionStack,
-      web3,
-      accounts,
-      accountBalances,
-      // TODO needs work?
-      socket
-    };
   }
   return appReducer(state, action);
 };
