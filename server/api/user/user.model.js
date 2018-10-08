@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
-import { NEW_USER_COINS } from '../../config/globalConstants';
+import { NEW_USER_COINS, POWER_REGEN_INTERVAL } from '../../config/globalConstants';
 import { NAME_PATTERN } from '../../../app/utils/text';
+import * as ethUtils from '../../utils/ethereum';
 
 const crypto = require('crypto');
 
@@ -21,8 +22,10 @@ const UserSchema = new Schema({
   },
   online: { type: Boolean, default: false },
   messages: { type: Number, default: 0 },
+
   // keep this - hack to keep relevance out, but not have it overridden by toObject
-  relevance: { type: Number, default: 0, select: false },
+  // relevance: { type: Number, default: 0, select: false },
+
   balance: { type: Number, default: 0 },
   deviceTokens: {
     // select: false,
@@ -50,6 +53,9 @@ const UserSchema = new Schema({
   resetPasswordExpires: { type: Date, select: false },
   following: Number,
   followers: Number,
+
+  votePower: { type: Number, default: 1 },
+  lastVote: { type: Date, default: new Date() },
 
   bio: { type: String, default: '' },
 
@@ -90,6 +96,8 @@ const UserSchema = new Schema({
     amount: Number,
   },
 }, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
   timestamps: true,
 });
 
@@ -101,21 +109,26 @@ UserSchema.statics.events = new EventEmitter();
 /**
  * Virtuals
  */
-UserSchema
-.virtual('password')
-.set(function (password) {
+// TODO use this in controller
+UserSchema.virtual('relevance', {
+  ref: 'Relevance',
+  localField: '_id',
+  foreignField: 'user'
+});
+
+UserSchema.virtual('password')
+.set(function setPassword(password) {
   this._password = password;
   this.salt = this.makeSalt();
   this.hashedPassword = this.encryptPassword(password);
 })
-.get(function () {
+.get(function getPassword() {
   return this._password;
 });
 
 // Public profile information
-UserSchema
-.virtual('profile')
-.get(function () {
+UserSchema.virtual('profile')
+.get(function getProfile() {
   return {
     name: this.name,
     role: this.role
@@ -123,9 +136,8 @@ UserSchema
 });
 
 // Non-sensitive info we'll be putting in the token
-UserSchema
-.virtual('token')
-.get(function () {
+UserSchema.virtual('token')
+.get(function getToken() {
   return {
     _id: this._id,
     role: this.role
@@ -190,21 +202,31 @@ let validatePresenceOf = value => value && value.length;
 /**
  * Pre-save hook
  */
-UserSchema
-  .pre('save', async function (next) {
-    try {
-      this.postCount = await this.model('Post').count({ user: this._id });
-      if (!this.isNew) return next();
+UserSchema.pre('save', async function preSave(next) {
+  try {
+    this.postCount = await this.model('Post').count({ user: this._id });
+    if (!this.isNew) return next();
 
-      if (!validatePresenceOf(this.hashedPassword) && authTypes.indexOf(this.provider) === -1) {
-        next(new Error('Invalid password'));
-      } else next();
-    } catch (err) {
-      console.log(err);
-      next(err);
-    }
-    return null;
-  });
+    if (!validatePresenceOf(this.hashedPassword) && authTypes.indexOf(this.provider) === -1) {
+      next(new Error('Invalid password'));
+    } else next();
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+  return null;
+});
+
+UserSchema.pre('remove', async function preRemove(next) {
+  try {
+    await this.model('CommunityMember').remove({ user: this._id });
+    next();
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+  return null;
+});
 
 
 /**
@@ -349,6 +371,31 @@ UserSchema.methods.initialCoins = async function initialCoins() {
   ).exec();
 
   this.balance += NEW_USER_COINS;
+  return this;
+};
+
+UserSchema.methods.updateBalance = async function updateBalance() {
+  let ethAddress = this.ethAddress[0];
+  if (ethAddress) {
+    this.tokenBalance = await ethUtils.getBalance(ethAddress);
+  }
+  return this;
+};
+
+UserSchema.methods.updatePower = function updatePower() {
+  // elapsed time in seconds
+  // prevent votes from being more often than 5s apart
+  let now = new Date();
+  let elapsedTime = (new Date(now)).getTime() - (new Date(this.lastVote)).getTime();
+  console.log('elapsed time ', elapsedTime / 1000, 's');
+  if (elapsedTime < 5 * 1000 && process.env.NODE_ENV === 'production') {
+    throw new Error('you cannot up-vote posts more often than 5s');
+  }
+  this.lastVote = now;
+  let voteRegen = Math.max(elapsedTime / POWER_REGEN_INTERVAL * 1);
+  console.log('voteRegen ', voteRegen);
+  let votePower = Math.min(this.votePower + voteRegen, 1);
+  this.votePower = votePower;
   return this;
 };
 

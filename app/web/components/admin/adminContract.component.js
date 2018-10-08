@@ -32,7 +32,7 @@ export default class AdminContract extends Component {
   onChange(e) {
     let value = e.target.value;
     value = value.length ? parseFloat(value) : '';
-    if (value > e.target.max) {
+    if (e.target.max && value > e.target.max) {
       value = e.target.max;
     }
     this.setState({ [e.target.name]: value });

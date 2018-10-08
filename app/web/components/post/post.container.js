@@ -36,6 +36,8 @@ class Posts extends Component {
 
   render() {
     this.post = this.props.posts.posts[this.props.params.id];
+    if (!this.post) return null;
+    let link = this.props.posts.links[this.post.metaPost];
     const hasPost = this.post && this.post !== 'notFound';
 
     return (
@@ -43,7 +45,7 @@ class Posts extends Component {
         <div className="singlePost row column pageContainer">
           {hasPost &&
             <div className="postContainer">
-              <Post post={this.post} {...this.props} />
+              <Post post={this.post} link={link} {...this.props} />
               <Comments post={this.post} {...this.props} />
             </div>
           }

@@ -38,7 +38,7 @@ test.before(async () => {
 });
 
 test.after(async () => {
-  // await cleanupData();
+  await cleanupData();
 });
 
 test('post:Index', async t => {
@@ -96,8 +96,6 @@ test.serial('Create Post', async (t) => {
   });
 
   t.is(correctMetapost, true);
-
-  console.log(post.body.embeddedUser);
 });
 
 

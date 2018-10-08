@@ -9,40 +9,63 @@ const Alert = utils.api.Alert();
 utils.api.env();
 const apiServer = process.env.API_SERVER + '/api/';
 
-const commentSchema = new schema.Entity('comments',
+const commentSchema = new schema.Entity(
+  'comments',
   {},
   { idAttribute: '_id' }
 );
 
-const userSchema = new schema.Entity('users',
+const userSchema = new schema.Entity(
+  'users',
   {},
   { idAttribute: '_id' }
 );
 
-const repostSchema = new schema.Entity('posts',
-  { comments: [commentSchema], user: userSchema },
+const repostSchema = new schema.Entity(
+  'posts',
   { idAttribute: '_id' }
 );
 
 let metaPostSchema;
+let postSchema;
 
-const postSchema = new schema.Entity('posts',
+const linkSchema = new schema.Entity(
+  'links',
+  {},
+  { idAttribute: '_id' }
+);
+
+
+postSchema = new schema.Entity(
+  'posts',
   {
     user: userSchema,
     repost: { post: repostSchema },
-    // metaPost: metaPostSchema
+    metaPost: linkSchema
   },
   { idAttribute: '_id' }
 );
 
-metaPostSchema = new schema.Entity('metaPosts',
+const feedSchema = new schema.Entity(
+  'posts',
   {
     commentary: [postSchema],
+    new: [postSchema],
+    top: [postSchema],
+    twitterFeed: [postSchema],
+
+    user: userSchema,
+    repost: { post: repostSchema },
+    metaPost: linkSchema
     // twitterCommentary: [postSchema],
-    // new: [postSchema],
-    // top: [postSchema],
   },
-  { idAttribute: '_id' }
+  { idAttribute: '_id',
+    processStrategy: (value, parent, key) => {
+      value[key] = value.commentary;
+      // console.log(value)
+      return value;
+    }
+  }
 );
 
 const reqOptions = (token) => {
@@ -190,7 +213,7 @@ export function getTwitterFeed(skip, _tag) {
     .then(res => {
       let data = normalize(
         { twitterFeed: res },
-        { twitterFeed: [metaPostSchema] }
+        { twitterFeed: [feedSchema] }
       );
       dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('read', false));
@@ -288,8 +311,7 @@ export function setComments(postId, comments, index, total) {
 }
 
 // this function queries the meta posts
-export function getPosts(skip, tags, sort, limit, community) {
-  // console.log(skip, tags, sort);
+export function getPosts(skip, tags, sort, limit) {
   let tagsString = '';
   if (!skip) skip = 0;
   if (!limit) limit = DEFAULT_LIMIT;
@@ -318,7 +340,7 @@ export function getPosts(skip, tags, sort, limit, community) {
       query: { skip, sort, limit, tag }
     })
     .then((responseJSON) => {
-      let dataType = metaPostSchema;
+      let dataType = feedSchema;
       let data = normalize(
         { [type]: responseJSON },
         { [type]: [dataType] }
@@ -537,35 +559,36 @@ export function setFeedCount(data) {
   };
 }
 
+// ------------- OLD FEED STUFF -------------
+// 
+// export function markFeedRead() {
+//   return dispatch =>
+//     utils.token.get()
+//     .then(token =>
+//       fetch(`${apiServer}feed/markread`, {
+//         ...reqOptions(token),
+//         method: 'PUT',
+//       })
+//     )
+//     .then((res) => {
+//       dispatch(setFeedCount(null));
+//     })
+//     .catch(error => console.log('error', error));
+// }
 
-export function markFeedRead() {
-  return dispatch =>
-    utils.token.get()
-    .then(token =>
-      fetch(`${apiServer}feed/markread`, {
-        ...reqOptions(token),
-        method: 'PUT',
-      })
-    )
-    .then((res) => {
-      dispatch(setFeedCount(null));
-    })
-    .catch(error => console.log('error', error));
-}
-
-export function getFeedCount() {
-  return dispatch =>
-    utils.token.get()
-    .then(token =>
-      fetch(`${apiServer}feed/unread`, {
-        ...reqOptions(token),
-        method: 'GET'
-      })
-    )
-    .then(response => response.json())
-    .then(responseJSON => dispatch(setFeedCount(responseJSON.unread)))
-    .catch(err => console.log('Notification count error', err));
-}
+// export function getFeedCount() {
+//   return dispatch =>
+//     utils.token.get()
+//     .then(token =>
+//       fetch(`${apiServer}feed/unread`, {
+//         ...reqOptions(token),
+//         method: 'GET'
+//       })
+//     )
+//     .then(response => response.json())
+//     .then(responseJSON => dispatch(setFeedCount(responseJSON.unread)))
+//     .catch(err => console.log('Notification count error', err));
+// }
 
 export function setSubscriptions(data) {
   return {
@@ -631,58 +654,6 @@ export function setTopPosts(data) {
   };
 }
 
-export function getTopPosts() {
-  return async dispatch => {
-    try {
-      let responseJSON = await utils.api.request({
-        method: 'GET',
-        endpoint: 'post',
-        path: '/topPosts',
-      });
-      // console.log('top posts ', responseJSON);
-      return dispatch(setTopPosts(responseJSON));
-    } catch (error) {
-      return false;
-    }
-  };
-}
-
-export function sendPostNotification(post) {
-  return async dispatch => {
-    try {
-      let responseJSON = await utils.api.request({
-        method: 'POST',
-        endpoint: 'post',
-        path: '/sendPostNotification',
-        body: JSON.stringify(post),
-      });
-      Alert.alert('Notification sent!');
-      // return dispatch(setTopPosts(responseJSON));
-    } catch (error) {
-      return false;
-    }
-  };
-}
-
-
-// export function getPostHtml(post) {
-//   return dispatch =>
-//     // fetch(post.link, {
-//     fetch('https://mercury.postlight.com/parser?url=' + post.link, {
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'x-api-key': process.env.READER_API
-//       },
-//       method: 'GET'
-//     })
-//     .then(response => response.json())
-//     .then(responseJSON => {
-//       console.log(responseJSON);
-//       dispatch(updatePost({ ...post, html: responseJSON.content }));
-//     })
-//     .catch(err => console.log('Subscription error', err));
-// }
-
 export function getFlaggedPosts(skip) {
   if (!skip) skip = 0;
   let type = 'flagged';
@@ -716,3 +687,22 @@ export function getFlaggedPosts(skip) {
     });
   };
 }
+
+
+export function getTopPosts() {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.api.request({
+        method: 'GET',
+        endpoint: 'post',
+        path: '/topPosts',
+      });
+      // console.log('top posts ', responseJSON);
+      return dispatch(setTopPosts(responseJSON));
+    } catch (error) {
+      return false;
+    }
+  };
+}
+
+

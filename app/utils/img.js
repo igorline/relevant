@@ -73,7 +73,7 @@ function getOrientation(uri) {
   const arr = base64ToUint8Array(base64String, 0, 2 ** 17);
   try {
     const tags = ExifReader.load(arr.buffer);
-    return tags['Orientation'].value;
+    return tags.Orientation.value;
   } catch (err) {
     return 1;
   }
@@ -124,8 +124,10 @@ export function renderToCanvas(img, options) {
   const ctx = canvas.getContext('2d');
   const initialScale = options.scale || 1;
   // Scale to needed to constrain canvas to max size
-  let scale = getScale(img.width * initialScale, img.height * initialScale,
-    MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION, true);
+  let scale = getScale(
+    img.width * initialScale, img.height * initialScale,
+    MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION, true
+  );
   // Still need to apply the user defined scale
   scale *= initialScale;
   canvas.width = Math.round(img.width * scale);
@@ -159,6 +161,7 @@ export function downsample(img) {
   let quality = 0.8;
   do {
     dataURL = resized.toDataURL('image/jpeg', quality);
+    console.log(dataURL);
     buf = dataUriToBuffer(dataURL);
     quality -= 0.05;
     console.log('image size', buf.length);
@@ -186,10 +189,11 @@ export function loadImage(file) {
             img.onerror = null;
             resolve(downsample(img));
           };
-          img.onerror = () => {
+          img.onerror = (err) => {
+            console.log(err);
             img.onload = null;
             img.onerror = null;
-            reject()
+            reject();
           };
           img.src = dataURL;
         }

@@ -127,7 +127,7 @@ class PostButtons extends Component {
           </a>
           <div className="fraction">
             <div className="dem">
-              {post.relevance}
+              {post.data ? post.data.relevance : null}
               <img alt="R" src="/img/r-gray.svg" />
             </div>
           </div>
@@ -139,7 +139,7 @@ class PostButtons extends Component {
           </a>
         </div>
         <div className="right">
-          {post.parentPost ? '' : commentEl}
+          {post.type === 'comment' ? '' : commentEl}
         </div>
       </div>
     );

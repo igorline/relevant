@@ -243,10 +243,20 @@ class CreatePostContainer extends Component {
   }
 
   createPreview() {
-    let { url, failedUrl } = this.state;
+    let { url } = this.state;
     // better logic?
-    if (url === failedUrl) return;
+    if (this.state.loadingPreview) return;
+
     let postUrl = url;
+    this.setState({
+      body: this.state.body.replace(postUrl, '').trim(),
+      loadingPreview: true,
+      urlPreview: {
+        loading: true,
+      }
+    });
+
+
     utils.post.generatePreviewServer(postUrl)
     .then((results) => {
       if (results && results.url) {
@@ -258,6 +268,7 @@ class CreatePostContainer extends Component {
         this.setState({
           domain: results.domain,
           postUrl: results.url,
+          url: results.url,
           loadingPreview: false,
           keywords: results.keywords,
           postTags: results.tags,
@@ -270,14 +281,7 @@ class CreatePostContainer extends Component {
           },
         });
       } else {
-        this.setState({ failedUrl: this.state.url });
-      }
-    });
-    this.setState({
-      body: this.state.body.replace(postUrl, '').trim(),
-      loadingPreview: true,
-      urlPreview: {
-        loading: true,
+        this.setState({ failedUrl: this.state.url, loadingPreview: false });
       }
     });
   }

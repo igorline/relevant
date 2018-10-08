@@ -54,9 +54,9 @@ class SinglePostComments extends Component {
   componentWillMount() {
     this.id = this.props.postId;
 
-    let comments = this.props.postComments;
+    let comments = this.props.postComments.data || [];
     if (comments) {
-      this.comments = comments.data;
+      this.comments = comments.map(c => this.props.posts.posts[c]);
       this.total = comments.total || 0;
       if (this.total > 10) this.longFormat = true;
     }
@@ -87,7 +87,8 @@ class SinglePostComments extends Component {
       if (!this.comments && this.props.scene.openComment) {
         this.scrollToBottom(true);
       }
-      this.comments = next.postComments.data;
+      let comments = next.postComments.data || [];
+      this.comments = comments.map(c => this.props.posts.posts[c]);
 
       this.total = next.postComments.total;
       if (this.total > 10) this.longFormat = true;
@@ -205,14 +206,12 @@ class SinglePostComments extends Component {
     let headerEl;
     let loadEarlier;
 
-    // console.log(this.props.post);
-
     headerEl = (<Post
       singlePost
       key={0}
       scene={this.props.scene}
       post={this.props.post}
-      metaPost={this.props.metaPost}
+      link={this.props.link}
       actions={this.props.actions}
       focusInput={() => this.input.textInput.focus()}
     />);
@@ -247,12 +246,13 @@ class SinglePostComments extends Component {
 
 
   renderRow({ item, index }) {
-    let comment = this.props.posts.posts[item];
+    let comment = item;
+    // let comment = this.props.posts.posts[item];
     if (!comment) return null;
     return (
       <Comment
         {...this.props}
-        key={item}
+        key={item._id}
         parentEditing={this.toggleEditing}
         index={index}
         scrollToComment={() => this.scrollToComment(index)}
@@ -297,7 +297,6 @@ class SinglePostComments extends Component {
   }
 
   render() {
-
     return (
       <KeyboardAvoidingView
         behavior={'padding'}

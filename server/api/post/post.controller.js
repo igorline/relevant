@@ -4,11 +4,13 @@ import url from 'url';
 import request from 'request';
 import { EventEmitter } from 'events';
 import * as proxyHelpers from './html';
-import MetaPost from '../metaPost/metaPost.model';
+import MetaPost from '../links/link.model';
 import Relevance from '../relevance/relevance.model';
 
 import Post from './post.model';
 import User from '../user/user.model';
+import PostData from './postData.model';
+
 import Subscriptiton from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import Tag from '../tag/tag.model';
@@ -21,6 +23,18 @@ import { PAYOUT_TIME } from '../../config/globalConstants';
 
 let requestAsync = promisify(request);
 
+
+// Post.collection.dropIndex({ url: 1 }, function(err, result) {
+//     if (err) {
+//         console.log('Error in dropping index!', err);
+//     }
+// });
+
+// PostData.collection.dropIndex({ post: 1 }, function(err, result) {
+//     if (err) {
+//         console.log('Error in dropping index!', err);
+//     }
+// });
 
 async function findRelatedPosts(metaId) {
   try {
@@ -59,13 +73,19 @@ function handleError(res, statusCode) {
 }
 
 exports.topPosts = async (req, res) => {
+  let community = req.query.community;
   let posts;
   try {
     let now = new Date();
     now.setDate(now.getDate() - 7);
-    posts = await Post.find({ createdAt: { $gt: now } }).sort('-relevance').limit(20);
-    // posts.forEach(post => {
-    // });
+    posts = await Post.find({ createdAt: { $gt: now } })
+    .populate({
+      path: 'embeddedUser.relevance',
+      match: { community, global: true },
+      select: 'relevance'
+    })
+    .sort('-relevance').limit(20);
+
     res.status(200).json(posts);
   } catch (err) {
     handleError(res)(err);
@@ -155,7 +175,7 @@ exports.flag = async (req, res) => {
 exports.index = async (req, res) => {
   let id;
   if (req.user) id = req.user._id;
-
+  let community = req.query.community;
   let limit = parseInt(req.query.limit, 10) || 15;
   let skip = parseInt(req.query.skip, 10) || 0;
   let tags = req.query.tag || null;
@@ -177,7 +197,8 @@ exports.index = async (req, res) => {
     posts = await Post.find(query)
     .populate({
       path: 'embeddedUser.relevance',
-      select: 'relevance'
+      select: 'relevance',
+      match: { community, global: true },
     })
     .limit(limit)
     .skip(skip)
@@ -202,6 +223,7 @@ exports.index = async (req, res) => {
 
 exports.userPosts = async (req, res, next) => {
   try {
+    let community = req.query.community;
     let id;
     let blocked = [];
     if (req.user) {
@@ -213,7 +235,7 @@ exports.userPosts = async (req, res, next) => {
     let skip = parseInt(req.query.skip, 10);
     let userId = req.params.id || null;
     let sortQuery = { _id: -1 };
-    let query = { user: userId, isComment: { $ne: true } };
+    let query = { user: userId, type: { $ne: 'comment' } };
     let posts;
 
     if (blocked.find(u => u === userId)) {
@@ -225,15 +247,17 @@ exports.userPosts = async (req, res, next) => {
       path: 'repost.post',
       populate: [{
         path: 'embeddedUser.relevance',
-        select: 'relevance'
-      },{
+        select: 'relevance',
+        match: { community, global: true },
+      }, {
         path: 'metaPost'
       }]
     })
-    .populate({ path: 'metaPost '})
+    .populate({ path: 'metaPost ' })
     .populate({
       path: 'embeddedUser.relevance',
-      select: 'relevance'
+      select: 'relevance',
+      match: { community, global: true },
     })
     .limit(limit)
     .skip(skip)
@@ -347,6 +371,7 @@ exports.readable = async (req, res) => {
 };
 
 exports.findById = async req => {
+  let community = req.query.community;
   let id;
   let user = req.user;
   let post;
@@ -358,7 +383,9 @@ exports.findById = async req => {
   post = await Post.findOne({ _id: req.params.id, user: { $nin: blocked } })
   .populate({
     path: 'embeddedUser.relevance',
-    select: 'relevance'
+    select: 'relevance',
+    match: { community, global: true },
+
   })
   .populate({ path: 'metaPost' });
 
@@ -383,6 +410,7 @@ exports.update = async (req, res, next) => {
   try {
     let tags = req.body.tags.filter(tag => tag);
 
+    // DEPRECATED old mobile
     tags = tags.map(tag => tag.replace('_category_tag', '').trim());
 
     let mentions = req.body.mentions || [];
@@ -395,47 +423,32 @@ exports.update = async (req, res, next) => {
     newPost = await Post.findOne({ _id: req.body._id });
     let prevMentions = [...newPost.mentions];
 
-    // let prevTags = [...newPost.tags];
     newMentions = mentions.filter(m => prevMentions.indexOf(m) < 0);
 
     newPost.tags = tags;
     newPost.mentions = mentions;
     newPost.body = req.body.body;
 
-    // newPost.title = req.body.title;
-
-
     if (newPost.link !== req.body.link) {
       linkObject = {
-        link: req.body.link,
+        url: req.body.link,
         title: req.body.title || null,
         description: req.body.description || null,
         image: req.body.image || null,
         articleAuthor: req.body.articleAuthor,
         shortText: req.body.shortText,
         categories: [category],
+        domain: req.body.domain
       };
 
-      // newPost.link = req.body.link;
-      // newPost.title = req.body.title || null;
-      // newPost.description = req.body.description || null;
-      // newPost.image = req.body.image || null;
-      // newPost.articleAuthor = req.body.articleAuthor;
-      // newPost.shortText = req.body.shortText;
+      // let oldParentId = newPost.parentPost;
+      let oldLinkParent = newPost.linkParent;
 
-      let meta = await MetaPost.findOne({ _id: newPost.metaPost });
-      if (meta.commentary.length === 1) {
-        newPost.metaPost = undefined;
-        await meta.remove();
-      } else {
-        await meta.update({ $pull: { commentayr: newPost._id } });
-      }
-    }
+      // upsert new parent post
+      newPost = await newPost.upsertLinkParent(linkObject);
 
-    // update metapost if this is a top-level post
-    if (!newPost.parentPost) {
-      let metaPost = await newPost.upsertMetaPost(newPost.metaPost, linkObject);
-      newPost.metaPost = metaPost;
+      // update old parent post & feeds
+      await Post.updateFeedStatus(oldLinkParent, newPost.community);
     }
 
     await newPost.save();
@@ -444,6 +457,8 @@ exports.update = async (req, res, next) => {
     // some post processing
     newTags = newTags || [];
     newMentions = newMentions || [];
+
+    // TODO redo tag processing stuff
     let pTags = newTags.map(tag =>
       Tag.update(
         { _id: tag },
@@ -570,38 +585,50 @@ async function processSubscriptions(newPost) {
 /**
  * Creates a new post
  */
-exports.create = async (req, res) => {
+exports.create = async (req, res, next) => {
   try {
     // TODO rate limiting
+    // current rate limiting is 5s via invest
 
     // TODO fetch community id
-    let community = req.query.community || 'relevant';
+    // let community = req.query.community || 'relevant';
+    let { community, communityId } = req.communityMember;
 
     let mentions = req.body.mentions || [];
     let tags = [];
     let keywords = req.body.keywords || [];
     let category = req.body.category ? req.body.category._id : null;
-
-    if (category) tags.push(category);
-
-    // Deprecate this (old category tag stuff from mobile)
-    req.body.tags.forEach(tag => {
-      if (tag) {
-        tags.push(tag.replace('_category_tag', '').trim());
-      }
-    });
-
-    tags = [...new Set(tags)];
-
     let author;
-    let postUrl = req.body.url || req.body.link;
 
+    let postUrl = req.body.url || req.body.link;
     let now = new Date();
 
     let payoutTime = new Date(now.getTime() + PAYOUT_TIME);
     if (process.env.NODE_ENV === 'test' && req.body.payoutTime) {
       payoutTime = req.body.payoutTime;
     }
+
+    // TODO clean up tag stuff
+    if (category) tags.push(category);
+    // Deprecate this (old category tag stuff from mobile)
+    req.body.tags.forEach(tag => {
+      if (tag) {
+        tags.push(tag.replace('_category_tag', '').trim());
+      }
+    });
+    tags = [...new Set(tags)];
+    // TODO work on & test tags & community tag stats!
+    // async
+    tags.map(tag =>
+      Tag.update(
+        { _id: tag },
+        {
+          $addToSet: { parents: category },
+          $inc: { count: 1 },
+        },
+        { upsert: true }
+      ).exec()
+    );
 
     let linkObject = {
       // this is stored in metaPost
@@ -617,64 +644,53 @@ exports.create = async (req, res) => {
     };
 
     let newPostObj = {
+      url: postUrl,
+      title: req.body.title ? req.body.title : '',
       body: req.body.body ? req.body.body : null,
       tags,
       community,
+      communityId,
       category,
-      // categoryName,
-      // categoryEmoji,
       relevance: 0,
       user: req.user._id,
       mentions: req.body.mentions,
       postDate: now,
-      payoutTime
+      payoutTime,
+      eligibleForRewards: true,
     };
 
     // TODO Work on better length limits
     let postString = JSON.stringify(newPostObj);
-    let newPost;
     if (postString.length > 100000) {
       res.status(500).json('post is too long');
       return;
     }
 
-    // TODO work on & test tags & community tag stats!
-    // async
-    tags.map(tag =>
-      Tag.update(
-        { _id: tag },
-        {
-          $addToSet: { parents: category },
-          $inc: { count: 1 },
-        },
-        { upsert: true }
-      ).exec()
-    );
-
-    newPost = new Post(newPostObj);
-
-    // create and populate meta post
-    let metaPost = await newPost.upsertMetaPost(null, linkObject);
-    newPost.metaPost = metaPost;
+    let newPost = new Post(newPostObj);
 
     author = await User.findOne({ _id: newPost.user });
     newPost = await newPost.addUserInfo(author);
+    newPost = await newPost.addPostData();
+    newPost = await newPost.save();
 
-    let savedPost = await newPost.save();
-
-    await MetaPost.updateRank(savedPost.metaPost);
+    if (postUrl) {
+      console.log('inserting link parent ', postUrl);
+      newPost = await newPost.upsertLinkParent(linkObject);
+    } else {
+      // TODO - do we want to put this into the ranked feed? maybe not...
+      // await newPost.updateRank(newPost.community);
+      await newPost.insertIntoFeed(newPost.community);
+    }
 
     await author.updatePostCount();
 
-
-
     // creates an invest(vote) record for pots author
+    // should we invest into parent post (link also)?
     await Invest.createVote({
       post: newPost,
       user: author,
-      amount: 0,
+      amount: 1,
       relevanceToAdd: 0,
-      userBalance: author.balance
     });
 
     res.status(200).json(newPost);
@@ -683,7 +699,7 @@ exports.create = async (req, res) => {
     // this happens async
     Post.sendOutMentions(mentions, newPost, author);
   } catch (err) {
-    throw err;
+    next(err);
   }
 };
 

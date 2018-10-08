@@ -1,10 +1,33 @@
+import { normalize, schema } from 'normalizr';
 import * as types from '../actions/actionTypes';
+
+const repostSchema = new schema.Entity(
+  'posts',
+  // { comments: [commentSchema], user: userSchema },
+  { idAttribute: '_id' }
+);
+
+const linkSchema = new schema.Entity(
+  'links',
+  {},
+  { idAttribute: '_id' }
+);
+
+const postSchema = new schema.Entity(
+  'posts',
+  {
+    repost: { post: repostSchema },
+    metaPost: linkSchema
+  },
+  { idAttribute: '_id' }
+);
 
 const initialState = {
   postError: null,
   feedUnread: null,
   feed: [],
   twitterFeed: [],
+  // store top & bottom arrays here for feed render
   top: [],
   new: [],
   flagged: [],
@@ -20,19 +43,15 @@ const initialState = {
   newFeedAvailable: false,
   newPostsAvailable: {},
   userPosts: {},
-  metaPosts: {
-    new: {},
-    top: {},
-    flagged: {},
-    all: {},
-  },
   topics: {
     new: {},
-    top: {}
+    top: {},
+    all: {}
   },
   posts: {},
   topPosts: [],
   related: {},
+  links: {},
 };
 
 function mergePosts(posts, state) {
@@ -53,7 +72,6 @@ function mergePosts(posts, state) {
 
 export default function post(state = initialState, action) {
   switch (action.type) {
-
     case types.SET_RELATED: {
       return {
         ...state,
@@ -112,17 +130,6 @@ export default function post(state = initialState, action) {
             ]
           }
         },
-        metaPosts: {
-          ...state.metaPosts,
-          all: {
-            ...state.metaPosts.all,
-            ...action.payload.data.entities.metaPosts
-          },
-          [type]: {
-            ...state.metaPosts[type],
-            ...action.payload.data.entities.metaPosts
-          },
-        },
         posts: { ...state.posts, ...posts },
         loaded: {
           ...state.loaded,
@@ -147,21 +154,14 @@ export default function post(state = initialState, action) {
           ...state[type].slice(0, action.payload.index),
           ...action.payload.data.result[type],
         ],
-        metaPosts: {
-          ...state.metaPosts,
-          all: {
-            ...state.metaPosts.all,
-            ...action.payload.data.entities.metaPosts
-          },
-          [type]: {
-            ...state.metaPosts[type],
-            ...action.payload.data.entities.metaPosts
-          },
-        },
         posts: { ...state.posts, ...posts },
         loaded: {
           ...state.loaded,
           [type]: true,
+        },
+        links: {
+          ...state.links,
+          ...action.payload.data.entities.links
         },
         newPostsAvailable: {}
       };
@@ -179,21 +179,24 @@ export default function post(state = initialState, action) {
 
     case types.UPDATE_POST: {
       let id = action.payload._id;
+      let data = normalize(action.payload, postSchema);
+      let updatePost = data.entities.posts[id];
+
       // need to do this so reposted = null doesen't over-write existing value
       let reposted = action.payload.reposted;
       if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
-      let metaPost = state.posts[id] ? state.posts[id].metaPost : undefined;
-      if (typeof action.payload.metaPost === 'object') {
-        metaPost = action.payload.metaPost;
-      }
+
       return {
         ...state,
+        links: {
+          ...state.links,
+          ...data.entities.links
+        },
         posts: {
           ...state.posts,
           [id]: {
             ...state.posts[id],
-            ...action.payload,
-            metaPost,
+            ...updatePost,
             reposted
           }
         }
@@ -225,6 +228,10 @@ export default function post(state = initialState, action) {
             ...currentPosts.slice(0, action.payload.index),
             ...action.payload.data.result[id]
           ]
+        },
+        links: {
+          ...state.links,
+          ...action.payload.data.entities.links,
         },
         posts: { ...state.posts, ...posts },
         loaded: {

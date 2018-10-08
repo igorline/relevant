@@ -3,6 +3,7 @@ import expressJwt from 'express-jwt';
 import compose from 'composable-middleware';
 import config from '../config/config';
 import User from '../api/user/user.model';
+import CommunityMember from '../api/community/community.member.model';
 
 let validateJwt = expressJwt({ secret: process.env.SESSION_SECRET, ignoreExpiration: true });
 
@@ -43,6 +44,24 @@ function currentUser(req, res) {
         return next();
       });
     });
+  });
+}
+
+function communityMember(req, res) {
+  return compose()
+  .use(async (req, res, next) => {
+    try {
+      let user = req.user._id;
+      if (!user) throw new Error('missing user credentials');
+      let community = req.query.community;
+      let member = await CommunityMember.findOne({ user, community });
+      if (!member) throw new Error('you are not a member of this community');
+      // TODO grab user reputation & figure out permission level
+      req.communityMember = member;
+      return next();
+    } catch (err) {
+      next(err);
+    }
   });
 }
 
@@ -149,4 +168,5 @@ exports.authMiddleware = authMiddleware;
 exports.currentUser = currentUser;
 exports.blocked = blocked;
 exports.setTokenCookieDesktop = setTokenCookieDesktop;
+exports.communityMember = communityMember;
 

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import * as adminActions from '../../../actions/admin.actions';
 import * as postActions from '../../../actions/post.actions';
+
 import Post from '../post/post.component';
 
 let styles;
@@ -51,6 +53,6 @@ export default connect(
     user: state.user,
   }),
   dispatch => ({
-    actions: bindActionCreators(postActions, dispatch)
+    actions: bindActionCreators({ ...adminActions, ...postActions }, dispatch)
   })
 )(TopPosts);

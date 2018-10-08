@@ -18,7 +18,7 @@ class Post extends Component {
   static propTypes = {
     post: PropTypes.object,
     repost: PropTypes.object,
-    metaPost: PropTypes.object,
+    link: PropTypes.object
   }
 
   deletePost() {
@@ -29,7 +29,7 @@ class Post extends Component {
   }
 
   editPost() {
-    let post = this.props.post;
+    let { post, link } = this.props;
     this.props.actions.clearCreatePost();
     let editPost = {
       edit: true,
@@ -39,13 +39,13 @@ class Post extends Component {
       allTags: post.tags,
       selectedTags: post.tags,
       // do we need these here?
-      postImage: post.metaPost.image,
-      postUrl: post.metaPost.url,
+      postImage: link.image,
+      postUrl: link.url,
       urlPreview: {
-        title: post.metaPost.title,
-        url: post.metaPost.url,
-        image: post.metaPost.image,
-        domain: post.metaPost.domain
+        title: link.title,
+        url: link.url,
+        image: link.image,
+        domain: link.domain
       }
     };
     this.props.actions.setCreaPostState(editPost);
@@ -53,11 +53,9 @@ class Post extends Component {
   }
 
   render() {
-    const post = this.props.post;
-    const repost = this.props.repost;
-    const metaPost = this.props.metaPost || post.metaPost;
-    const auth = this.props.auth;
+    const { post, repost, link, auth } = this.props;
     const community = auth.community;
+
     let popup;
 
     if (post === 'notFound') {
@@ -66,9 +64,9 @@ class Post extends Component {
     if (!post) return null;
 
     let postInfo;
-    if (metaPost) {
+    if (link) {
       postInfo = (
-        <PostInfo post={metaPost} />
+        <PostInfo post={link} />
       );
     } else if (repost) {
       postInfo = (

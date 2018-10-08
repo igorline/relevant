@@ -163,6 +163,8 @@ class PostInfo extends Component {
 
     post = this.props.post;
 
+    if (!post.embeddedUser) return null;
+
     let postTime = moment(post.createdAt);
     postTime = ' • ' + numbers.timeSince(postTime) + ' ago';
 
@@ -175,8 +177,6 @@ class PostInfo extends Component {
       </TouchableOpacity>);
     }
 
-    // console.log(this.props.users);
-    // let user;
     let userId = post.user ? post.user._id || post.user : post.twitterUser;
     let user = this.props.users[userId];
 

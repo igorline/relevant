@@ -11,17 +11,20 @@ if (process.env.BROWSER === true) {
 class Sidebar extends Component {
   render() {
     const props = this.props;
-    const community = props.auth.community;
-    const introText = <span>
+    const slug = props.auth.community;
+{/*     const introText = <span>
       This is a community for curating and discussing links related to critical analysis of
       {' '}<Link to={'/discover/tag/technology/new'}>#technology</Link>
       , <Link to={'/discover/tag/society/new'}>#society</Link> and <Link to={'/discover/tag/culture/new'}>#culture</Link>.
-    </span>;
+    </span>; */}
+    let community = props.community.communities[slug] || {};
+
+    let introText = community.description;
 
     return (
       <sidebar>
         <div className={'innerSidebar'}>
-          <h3>Welcome to the #{community} community!</h3>
+          <h3>Welcome to the #{slug} community!</h3>
           {introText}
           <Link to={this.props.location.pathname + '#newpost'}>
             <button
@@ -45,6 +48,7 @@ class Sidebar extends Component {
 
 const mapStateToProps = (state) => ({
   routing: state.routing,
+  community: state.community
 });
 
 const mapDispatchToProps = (dispatch) => ( Object.assign({}, { dispatch }, {

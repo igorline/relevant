@@ -91,7 +91,10 @@ function fetchMeta(initialState) {
   if (initialState.posts.posts) {
     const post_id = Object.keys(initialState.posts.posts)[0];
     if (post_id) {
-      const post = initialState.posts.posts[post_id];
+      let post = initialState.posts.posts[post_id];
+      if (post.metaPost) {
+        post = initialState.posts.links[post.metaPost] || {};
+      }
       title = post.title;
       image = post.image;
       description = post.body;
