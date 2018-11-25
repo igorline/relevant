@@ -119,6 +119,7 @@ export async function computeApproxPageRank(params) {
     let N = com.numberOfElements;
     let { maxUserRank, maxPostRank } = com;
     let userR = user.relevance.pagerankRaw || 0;
+    let authorId = author ? author._id : null;
 
     let yearAgo = new Date().setFullYear(new Date().getFullYear() - 2);
     let upvotes = await Invest.find({
@@ -194,7 +195,7 @@ export async function computeApproxPageRank(params) {
         post.data.pagerankRaw = 0;
         await post.data.save();
       }
-      userVotes = await Invest.count({ author: author._id, ownPost: false });
+      userVotes = await Invest.count({ author: authorId, ownPost: false });
       console.log('userVotes ', userVotes);
       if (!userVotes) {
         author.relevance.pagerank = 0;
@@ -209,7 +210,7 @@ export async function computeApproxPageRank(params) {
     // console.log(userObj);
     degree = degree || 1;
 
-    let w = userObj[author._id] ? userObj[author._id].w : 0;
+    let w = userObj[authorId] ? userObj[authorId].w : 0;
     let userWeight = w / degree;
     let postWeight;
     let oldWeight;
@@ -219,15 +220,17 @@ export async function computeApproxPageRank(params) {
       if (undoInvest) {
         postWeight = 1 / (degree + 2);
         oldWeight = (w + 1) / (degree + 2);
-        author.relevance.pagerankRaw = Math.max(
-          author.relevance.pagerankRaw + userR * (userWeight - oldWeight),
-          0
-        );
+        if (author) {
+          author.relevance.pagerankRaw = Math.max(
+            author.relevance.pagerankRaw + userR * (userWeight - oldWeight),
+            0
+          );
+        }
         post.data.pagerankRaw = Math.max(post.data.pagerankRaw - userR * postWeight, 0);
       } else {
         postWeight = 1 / degree;
         oldWeight = Math.max(w - 1, 0) / Math.max(degree - 2, 1);
-        if (userVotes) author.relevance.pagerankRaw += userR * (userWeight - oldWeight);
+        if (userVotes && author) author.relevance.pagerankRaw += userR * (userWeight - oldWeight);
         if (postVotes) post.data.pagerankRaw += userR * postWeight;
       }
     } else if (amount < 0) {
@@ -243,7 +246,7 @@ export async function computeApproxPageRank(params) {
         // console.log('oldWeight', oldWeight);
         // console.log('userWeight', userWeight);
         // console.log('w', w);
-        if (userVotes) author.relevance.pagerankRaw += userR * (userWeight - oldWeight);
+        if (userVotes && author) author.relevance.pagerankRaw += userR * (userWeight - oldWeight);
         if (postVotes) post.data.pagerankRaw += userR * postWeight;
       } else {
         oldWeight = (w - 1) / (degree - 1);
@@ -251,22 +254,24 @@ export async function computeApproxPageRank(params) {
         // console.log('userWeight', userWeight);
         // console.log('w', w);
         postWeight = 1 / degree;
-        author.relevance.pagerankRaw -= userR * (userWeight - oldWeight);
+        if (author) author.relevance.pagerankRaw -= userR * (userWeight - oldWeight);
         post.data.pagerankRaw -= userR * postWeight;
       }
     }
 
-    let rA = Math.max(author.relevance.pagerankRaw, 0);
-    let pA = Math.max(post.data.pagerankRaw, 0);
+    if (author) {
+      let rA = author ? Math.max(author.relevance.pagerankRaw, 0) : 0;
+      author.relevance.pagerank =
+        100 * Math.log(N * rA + 1) /
+        Math.log(N * maxUserRank + 1);
+    }
 
-    author.relevance.pagerank =
-      100 * Math.log(N * rA + 1) /
-      Math.log(N * maxUserRank + 1);
+    let pA = Math.max(post.data.pagerankRaw, 0);
     post.data.pagerank =
       100 * Math.log(N * pA + 1) /
       Math.log(N * maxPostRank + 1);
 
-    await Promise.all([post.data.save(), author.relevance.save()]);
+    await Promise.all([post.data.save(), author ? author.relevance.save() : null]);
 
     return { author, post };
   } catch (err) {

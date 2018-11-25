@@ -1,21 +1,8 @@
 {
-  "presets": [
-    "env",
-    "stage-2",
-    "react",
-  ],
+  "presets": ["react-native"],
   "env": {
-    "development": {
-      "plugins": [
-        "espower",
-        "transform-runtime",
-      ],
-    },
     "production": {
-      "plugins": [
-        "espower",
-        "transform-runtime"
-      ],
+      "plugins": ["transform-remove-console"]
     }
-  },
+  }
 }

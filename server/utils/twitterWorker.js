@@ -195,6 +195,10 @@ async function processTweet(tweet, user) {
 
   if (post) {
     linkParent = await Post.findOne({ _id: post.linkParent });
+    if (!linkParent) {
+      console.log('post exists but missing link parent ', post);
+      return;
+    }
     // if (parentPost) parentPost.seenInFeedNumber += 1;
     // await metaPost.save();
   } else {
@@ -257,8 +261,6 @@ async function processTweet(tweet, user) {
 
     post = await post.addPostData();
     post = await post.upsertLinkParent(linkObject);
-
-    console.log('post data ', post.data);
 
     linkParent = post.linkParent;
     // let heapUsed = process.memoryUsage().heapUsed;
