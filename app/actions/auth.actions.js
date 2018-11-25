@@ -181,35 +181,26 @@ export function setOnboardingStep(step) {
 }
 
 export function loginUser(user) {
-  return (dispatch) => {
-    return fetch(process.env.API_SERVER + '/auth/local', {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(user)
-    })
-    .then(response => response.json())
-    .then((responseJSON) => {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.api.request({
+        method: 'POST',
+        endpoint: '/auth',
+        path: '/local',
+        body: JSON.stringify(user)
+      });
       if (responseJSON.token) {
-        return utils.token.set(responseJSON.token)
-        .then(() => {
-          dispatch(loginUserSuccess(responseJSON.token));
-          dispatch(getUser());
-          return true;
-        });
+        await utils.token.set(responseJSON.token);
+        dispatch(loginUserSuccess(responseJSON.token));
+        dispatch(getUser());
+        return true;
       }
       AlertIOS.alert(responseJSON.message);
       dispatch(loginUserFailure(responseJSON.message));
       return false;
-    })
-    .catch((error) => {
-      console.log(error, 'login error');
-      AlertIOS.alert(error.message);
+    } catch (error) {
       return false;
-    });
+    }
   };
 }
 

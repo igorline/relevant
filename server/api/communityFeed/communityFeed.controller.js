@@ -9,6 +9,8 @@ function handleError(res, statusCode) {
   };
 }
 
+// Feed.findOne({ metaPost: null }).then(console.log);
+
 exports.get = async (req, res) => {
   try {
     // TODO - right now sorting commentary by latest and relevance
@@ -27,7 +29,8 @@ exports.get = async (req, res) => {
 
     if (sort === 'rank') {
       sortQuery = { rank: -1 };
-      commentarySort = { relevance: -1 };
+      // commentarySort = { relevance: -1 };
+      commentarySort = { pagerank: -1 };
     } else {
       sortQuery = { latestPost: -1 };
       commentarySort = { postDate: -1 };
@@ -62,14 +65,14 @@ exports.get = async (req, res) => {
             // with some randomness on client side
             repost: { $exists: false },
             user: { $nin: blocked },
-            $or: [{ twitter: { $ne: true } }, { relevance: { $gt: 0 } }],
+            $or: [{ hidden: { $ne: true } }],
           },
           options: { sort: commentarySort },
           populate: [
             { path: 'data' },
             {
               path: 'embeddedUser.relevance',
-              select: 'relevance',
+              select: 'pagerank',
               match: { community, global: true },
             },
           ]
@@ -77,7 +80,7 @@ exports.get = async (req, res) => {
         { path: 'metaPost' },
         {
           path: 'embeddedUser.relevance',
-          select: 'relevance',
+          select: 'pagerank',
           match: { community, global: true },
         },
       ]
@@ -86,7 +89,6 @@ exports.get = async (req, res) => {
     feed.forEach(async (f) => {
       if (f.post) {
         posts.push(f.post);
-        console.log('rank ', f.post.body, f.post.data.rank);
       } else { // just in case - this shouldn't happen
         console.log('error: metapost is null!');
         await f.remove();

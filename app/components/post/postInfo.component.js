@@ -177,18 +177,15 @@ class PostInfo extends Component {
       </TouchableOpacity>);
     }
 
-    let userId = post.user ? post.user._id || post.user : post.twitterUser;
+    let userId = post.user ? post.user._id || post.user : null;
+    if (post.twitterUser) userId = post.twitterUser;
     let user = this.props.users[userId];
 
     if (!user || !user._id) {
       user = {};
-      user._id = post.user || (post.embeddedUser.id + ' via twitter');
-      user.image = post.embeddedUser.image;
-      user.name = post.embeddedUser.name;
-
-      // this is the new way w non-populated user
-      if (post.embeddedUser.relevance && post.embeddedUser.relevance.relevance) {
-        user.relevance = post.embeddedUser.relevance.relevance;
+      user = post.embeddedUser;
+      if (post.twitter) {
+        user._id = user.handle;
       }
     }
 

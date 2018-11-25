@@ -70,11 +70,13 @@ let PostSchema = new Schema({
 
   rank: { type: Number, default: 0 },
   relevance: { type: Number, default: 0 },
+  pagerank: { type: Number, default: 0 },
   upVotes: { type: Number, default: 0 },
   downVotes: { type: Number, default: 0 },
 
   paidOut: { type: Boolean, default: false },
   payoutTime: { type: Date },
+
   // payout: { type: Number, default: 0 },
   // payOutShare: { type: Number, default: 0 },
 
@@ -84,6 +86,10 @@ let PostSchema = new Schema({
 
   // TODO twitter stuff should go into data model
   twitter: { type: Boolean, default: false },
+  // Use this to hide twitter posts
+  // TODO this should also go into a data model
+  // and data should be used to query community feed
+  hidden: { type: Boolean, default: false },
   twitterUser: Number,
   twitterId: Number,
   twitterScore: { type: Number, default: 0 },
@@ -231,6 +237,10 @@ PostSchema.post('remove', async function postRemove(doc) {
 
     await this.model('PostData').remove({ post: doc._id });
 
+    // should invest info be removed?
+    // probably not - a chance to erase rep...
+    // await this.model('Invest').remove({ post: doc._id });
+
     // remove notifications
     if (this.type === 'comment' || this.type === 'repost') {
       await this.model('Notification').remove({ comment: this._id });
@@ -291,23 +301,24 @@ PostSchema.methods.addUserInfo = async function addUserInfo(user) {
 };
 
 // TODO work on this
-PostSchema.methods.updateRank = async function updateRank(community) {
+PostSchema.methods.updateRank = async function updateRank(community, dontInsert) {
   try {
     if (!this.data) {
       this.data = await this.model('PostData').find({ post: this._id, community });
     }
 
     let sign = 1;
-    if (this.data.relevance < 0) {
+    if (this.data.pagerank < 0) {
       sign = -1;
     }
-    if (!this.data.relevance) this.data.relevance = 0;
-    let rank = Math.abs(this.data.relevance);
+    if (!this.data.pagerank) this.data.pagerank = 0;
+    let rank = Math.abs(this.data.pagerank);
 
     let newRank = (this.data.postDate.getTime() / TENTH_LIFE) + (sign * Math.log10(rank + 1));
     rank = Math.round(newRank * 1000) / 1000;
 
     // also get max rank of children
+    // This will not return top comment because rank is inside data
     let topComment = await this.model('Post').findOne({ parentPost: this._id, community }, 'rank')
     .sort({ rank: -1 })
     .populate({ path: 'data', match: { community } });
@@ -319,13 +330,18 @@ PostSchema.methods.updateRank = async function updateRank(community) {
     }
 
     // THIS will update the rank in the feed
-    if (community && !this.parentPost) {
+    if (community && !this.parentPost && !dontInsert) {
       console.log('updating post rank ', rank);
       await this.model('CommunityFeed').updateRank(this, community, rank);
     }
 
     this.data.rank = rank;
+    this.rank = rank;
+    if (this.community === community) {
+      this.pagerank = this.data.pagerank;
+    }
     await this.data.save();
+    await this.save();
     return this;
   } catch (err) {
     console.log('error updating post rank ', err);
@@ -375,16 +391,19 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
     if (this.twitter) {
       parent.twitterScore = Math.max(parent.twitterScore, this.twitterScore);
       parent.seenInFeedNumber += 1;
-    } else {
+    }
+
+    // USED FOR TWITTER
+    if (!this.hidden) {
       // this also inserts a posts into the community feed
       await parent.updateRank(this.community);
     }
 
-    parent.data = await parent.data.save();
-    parent = await parent.save();
-
     // write link metadata
     parent = await parent.upsertMetaPost(this.metaPost, linkObject);
+
+    parent.data = await parent.data.save();
+    parent = await parent.save();
 
     this.linkParent = parent;
     this.parentPost = parent;

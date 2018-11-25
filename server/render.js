@@ -123,11 +123,14 @@ export default function handleRender(req, res) {
   // console.log('req ', req.unconfirmed);
   if (req.unconfirmed) auth.confirmed = false;
   // TODO how to deal with this better?
-  auth.community = req.query.community || 'relevant';
+  auth.community = 'relevant';
   const initialState = { auth };
 
   // Create a new Redux store instance
   const store = configureStore(initialState);
+
+  // TODO check this! better to use 'default user community'
+  store.dispatch(setUser(auth.community));
   if (req.user) store.dispatch(setUser(req.user));
 
   match(

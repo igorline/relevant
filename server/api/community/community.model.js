@@ -16,6 +16,8 @@ let CommunitySchema = new Schema({
 
   rewardFund: { type: Number, default: 0 },
   currentShares: { type: Number, default: 0 },
+  topPostShares: { type: Number, default: 0 },
+
   postCount: { type: Number, default: 0 },
   lastRewardFundUpdate: { type: Date, default: new Date() },
 
@@ -23,6 +25,9 @@ let CommunitySchema = new Schema({
   avgTwitterScore: { type: Number, default: 0 },
   twitterCount: { type: Number, default: 0 },
   lastTwitterUpdate: { type: Date },
+  maxUserRank: { type: Number },
+  maxPostRank: { type: Number },
+  numberOfElements: { type: Number },
 }, {
   timestamps: true
 });

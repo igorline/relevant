@@ -46,21 +46,22 @@ exports.index = (req, res) => {
   });
 };
 
-exports.user = async (req, res) => {
-  let stats;
+exports.user = async (req, res, next) => {
   try {
+    let stats;
+    let { communityId } = req.communityMember;
     let user = req.user._id;
     let start = new Date(req.query.start);
     let end = new Date(req.query.end);
-    stats = await Stats.find({ user, date: { $gte: start, $lt: end } }, 'aggregateRelevance totalSamples date');
+    stats = await Stats.find({ user, date: { $gte: start, $lt: end }, communityId }, 'aggregateRelevance totalSamples date communityId');
+    console.log('sats ', stats);
+    res.status(200).json(stats);
   } catch (err) {
-    handleError(res, err);
+    next(err);
   }
-  // console.log('sats ', stats);
-  res.status(200).json(stats);
 };
 
-exports.change = function(req, res) {
+exports.change = (req, res) => {
   let id = req.params.id;
   if (!id) id = req.user._id;
   if (!id) return handleError(res, 'No user id');
@@ -71,21 +72,21 @@ exports.change = function(req, res) {
   Stats.find(query)
   .exec((err, stats) => {
     if (err || !stats.length) return handleError(res, err);
-    var startDate = new Date(req.query.startTime);
-    var startHour = startDate.getHours();
-    var endHour = (new Date(req.query.endTime)).getHours();
-    var startObject = stats.find( s => {
+    let startDate = new Date(req.query.startTime);
+    let startHour = startDate.getHours();
+    let endHour = (new Date(req.query.endTime)).getHours();
+    let startObject = stats.find( s => {
       // console.log(s.startTime == new Date(startTime))
       // console.log('STAT START ', s.startTime.getTime());
       // console.log(startTime);
-      return (s.startTime.getTime() == startTime)
+      return (s.startTime.getTime() == startTime);
     });
     console.log("START TIME OBJECT ", startObject);
-    var startAmount;
+    let startAmount;
     if (!startObject) startAmount = 0;
     else startAmount = startObject.hours[startHour] || 0;
-    var endAmount = stats[stats.length - 1].hours[endHour] || 0;
-    var change
+    let endAmount = stats[stats.length - 1].hours[endHour] || 0;
+    let change;
     if (startAmount) change = (endAmount - startAmount) * 100 / startAmount;
     else change = 0;
     let response = {

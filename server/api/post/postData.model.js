@@ -16,6 +16,8 @@ let PostDataSchema = new Schema({
 
   rank: { type: Number, default: 0 },
   relevance: { type: Number, default: 0 },
+  pagerank: { type: Number, default: 0 },
+  pagerankRaw: { type: Number, default: 0 },
   relevanceNeg: { type: Number, default: 0 },
 
   // should we track community comments separately?
@@ -33,10 +35,13 @@ let PostDataSchema = new Schema({
 
   shares: { type: Number, default: 0 },
   balance: { type: Number, default: 0 },
-
+  totalShares: { type: Number, default: 0 }, // track positive and negative here
 }, {
   timestamps: true,
 });
+
+PostDataSchema.index({ post: 1 });
+PostDataSchema.index({ post: 1, communityId: 1 });
 
 
 module.exports = mongoose.model('PostData', PostDataSchema);

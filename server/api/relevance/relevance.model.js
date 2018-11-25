@@ -9,9 +9,16 @@ let RelevanceSchema = new Schema({
   tag: { type: String, ref: 'Tag' },
   global: { type: Boolean, default: false },
   topTopic: { type: Boolean, deafault: false },
+
   community: { type: String },
+  communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
+
   category: { type: String, ref: 'Tag' },
   relevance: { type: Number, default: 0 },
+
+  pagerank: { type: Number, default: 0 },
+  pagerankRaw: { type: Number, default: 0 },
+
   rank: Number,
   totalUsers: Number,
   level: Number,
@@ -20,33 +27,35 @@ let RelevanceSchema = new Schema({
     relevance: Number,
     time: Date,
   }],
+  topTopics: [{ type: String, ref: 'Tag' }],
 }, {
   timestamps: true
 });
 
 RelevanceSchema.index({ user: 1, relevance: 1 });
-RelevanceSchema.index({ user: 1, community: 1 });
+// RelevanceSchema.index({ user: 1, community: 1 });
+RelevanceSchema.index({ user: 1, communityId: 1 });
 
-  // update user relevance and save record
-RelevanceSchema.methods.updateRelevanceRecord = function () {
+// update user relevance and save record
+RelevanceSchema.methods.updateRelevanceRecord = function updateRelevanceRecord() {
   let relevanceRecord = this.relevanceRecord;
   if (!relevanceRecord) relevanceRecord = [];
   relevanceRecord.unshift({
     time: new Date(),
-    relevance: this.relevance
+    relevance: this.pagerank
   });
   relevanceRecord = this.relevanceRecord.slice(0, 10);
   this.relevanceRecord = relevanceRecord;
   return this;
 };
 
-RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance(user, post, relevanceToAdd) {
+RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance(user, post, relevanceToAdd, communityId) {
   let tagRelevance;
   // TODO await?
   // TODO right now we are updating reputation based on post community
   // but we can also do it based on voter's diff community reputations!
   try {
-    let community = post.community;
+    // let community = post.community;
     let cats = await Tag.find({ category: true });
     let tagsAndCat = [...new Set([...post.tags, post.category])];
     tagRelevance = tagsAndCat.map(tag => {
@@ -62,7 +71,7 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
       });
       let topTopic = { topTopic: index > -1 };
       return this.update(
-        { user, tag, community },
+        { user, tag, communityId },
         { $inc: { relevance: relevanceToAdd }, topTopic },
         { upsert: true },
       ).exec();
@@ -71,20 +80,20 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
     // update category reputation
     tagRelevance.push(
       this.update(
-        { user, category: post.category, community },
+        { user, category: post.category, communityId },
         { $inc: { relevance: relevanceToAdd } },
         { upsert: true },
       ).exec());
 
     // update global reputation
     let relevance = await this.findOneAndUpdate(
-      { user, community, global: true },
+      { user, communityId, global: true },
       { $inc: { relevance: relevanceToAdd } },
       { upsert: true, new: true },
     );
 
     // return Promise.all(tagRelevance);
-    return relevance.relevance;
+    return relevance;
   } catch (err) {
     console.log('relevance error ', err);
     return null;

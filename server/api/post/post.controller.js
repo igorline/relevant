@@ -10,7 +10,6 @@ import Relevance from '../relevance/relevance.model';
 import Post from './post.model';
 import User from '../user/user.model';
 import PostData from './postData.model';
-
 import Subscriptiton from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import Tag from '../tag/tag.model';
@@ -23,6 +22,19 @@ import { PAYOUT_TIME } from '../../config/globalConstants';
 
 let requestAsync = promisify(request);
 
+PostData.find({ balance: { $lt: 0 } }).then(posts => {
+  posts.forEach(p => {
+    p.balance = 0;
+    p.save();
+  });
+});
+
+// Post.find().populate({ path: 'data' }).then(posts => {
+//   posts.forEach(p => {
+//     p.pagerank = p.data.pagerank;
+//     p.save();
+//   });
+// });
 
 // Post.collection.dropIndex({ url: 1 }, function(err, result) {
 //     if (err) {
@@ -82,7 +94,7 @@ exports.topPosts = async (req, res) => {
     .populate({
       path: 'embeddedUser.relevance',
       match: { community, global: true },
-      select: 'relevance'
+      select: 'pagerank'
     })
     .sort('-relevance').limit(20);
 
@@ -197,7 +209,7 @@ exports.index = async (req, res) => {
     posts = await Post.find(query)
     .populate({
       path: 'embeddedUser.relevance',
-      select: 'relevance',
+      select: 'pagerank',
       match: { community, global: true },
     })
     .limit(limit)
@@ -242,12 +254,14 @@ exports.userPosts = async (req, res, next) => {
       return res.status(200).json({});
     }
 
+    console.log('community ', community);
+
     posts = await Post.find(query)
     .populate({
       path: 'repost.post',
       populate: [{
         path: 'embeddedUser.relevance',
-        select: 'relevance',
+        select: 'pagerank',
         match: { community, global: true },
       }, {
         path: 'metaPost'
@@ -256,8 +270,12 @@ exports.userPosts = async (req, res, next) => {
     .populate({ path: 'metaPost ' })
     .populate({
       path: 'embeddedUser.relevance',
-      select: 'relevance',
+      select: 'pagerank',
       match: { community, global: true },
+    })
+    .populate({
+      path: 'data',
+      match: { community },
     })
     .limit(limit)
     .skip(skip)
@@ -383,19 +401,20 @@ exports.findById = async req => {
   post = await Post.findOne({ _id: req.params.id, user: { $nin: blocked } })
   .populate({
     path: 'embeddedUser.relevance',
-    select: 'relevance',
+    select: 'pagerank',
     match: { community, global: true },
-
   })
-  .populate({ path: 'metaPost' });
+  .populate({ path: 'metaPost' })
+  .populate({
+    path: 'data',
+    match: { community },
+  });
 
   // TODO worker thread
   // TODO check if we recieve this in time for server rendering!
   if (id && post) {
     Post.sendOutInvestInfo([post._id], id);
   }
-
-  console.log(post);
   // let related = await findRelatedPosts(post.metaPost);
   // return { post, related };
   return post;
@@ -587,11 +606,9 @@ async function processSubscriptions(newPost) {
  */
 exports.create = async (req, res, next) => {
   try {
-    // TODO rate limiting
+    // TODO rate limiting?
     // current rate limiting is 5s via invest
 
-    // TODO fetch community id
-    // let community = req.query.community || 'relevant';
     let { community, communityId } = req.communityMember;
 
     let mentions = req.body.mentions || [];
@@ -691,6 +708,8 @@ exports.create = async (req, res, next) => {
       user: author,
       amount: 1,
       relevanceToAdd: 0,
+      community,
+      communityId,
     });
 
     res.status(200).json(newPost);

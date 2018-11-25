@@ -35,8 +35,12 @@ exports.get = async (req, res, next) => {
     let comments = await Post.find(query)
     .populate({
       path: 'embeddedUser.relevance',
-      select: 'relevance',
+      select: 'pagerank',
       match: { community, global: true }
+    })
+    .populate({
+      path: 'data',
+      match: { community }
     })
     .sort({ createdAt: sort });
     // .limit(limit)
@@ -198,6 +202,8 @@ async function createRepost(comment, post, user) {
 // for testing
 exports.create = async (req, res) => {
   let user = req.user._id;
+  let { community, communityId } = req.communityMember;
+
   const body = req.body.text;
   let parentPost = req.body.post;
   let parentComment = req.body.parentComment;
@@ -218,6 +224,8 @@ exports.create = async (req, res) => {
     type: 'comment',
     eligibleForRewards: true,
     postDate: new Date(),
+    community,
+    communityId
   };
 
   async function sendOutComments(commentor) {
@@ -275,10 +283,11 @@ exports.create = async (req, res) => {
       comment = await createRepost(comment, parentPost, user);
     }
 
-    comment.community = parentPost.community;
+    // comment.community = parentPost.community;
     comment.aboutLink = parentPost.aboutLink;
 
     comment = await comment.addUserInfo(user);
+    comment = await comment.addPostData();
 
     // this will also save the new comment
     comment = await Post.sendOutMentions(mentions, parentPost, user, comment);
@@ -286,8 +295,10 @@ exports.create = async (req, res) => {
     await Invest.createVote({
       post: comment,
       user,
-      amount: 0,
+      amount: 1,
       relevanceToAdd: 0,
+      community,
+      communityId,
     });
 
     // TODO increase the post's relevance? **but only if its user's first comment!
@@ -314,7 +325,7 @@ exports.create = async (req, res) => {
     otherCommentors = [...otherCommentors, ...voters];
     // filter out nulls
     otherCommentors = otherCommentors.filter(u => u);
-    console.log('otherCommentors ', otherCommentors);
+    // console.log('otherCommentors ', otherCommentors);
 
     // filter out duplicates
     otherCommentors = otherCommentors.filter((u, i) => {
@@ -323,7 +334,7 @@ exports.create = async (req, res) => {
     });
 
     // filter out mentions
-    console.log('mentions ', mentions);
+    // console.log('mentions ', mentions);
     // console.log(otherCommentors);
     otherCommentors = otherCommentors.filter(u => {
       return !mentions.find(m => m === u._id);
@@ -334,12 +345,10 @@ exports.create = async (req, res) => {
 
     await comment.save();
     res.status(200).json(comment);
-
   } catch (error) {
     console.log(error);
     return res.status(500).send(error);
   }
-
 };
 
 function handleError(res, statusCode) {

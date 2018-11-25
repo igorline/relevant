@@ -61,10 +61,12 @@ function mergePosts(posts, state) {
     // need to do this so reposted = null doesen't over-write existing value
     let reposted = posts[id].reposted;
     if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
+    let postData = (posts[id] && posts[id].data) || (state.posts[id] && state.posts[id].data);
     mPosts[id] = {
       ...state.posts[id],
       ...posts[id],
-      reposted
+      reposted,
+      postData
     };
   });
   return mPosts;
@@ -105,10 +107,14 @@ export default function post(state = initialState, action) {
     }
 
     case types.SET_POSTS_SIMPLE: {
-      let posts = mergePosts(action.payload, state);
+      let posts = mergePosts(action.payload.data.entities.posts, state);
       return {
         ...state,
         posts: { ...state.posts, ...posts },
+        links: {
+          ...state.links,
+          ...action.payload.data.entities.links
+        },
       };
     }
 
@@ -185,6 +191,14 @@ export default function post(state = initialState, action) {
       // need to do this so reposted = null doesen't over-write existing value
       let reposted = action.payload.reposted;
       if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
+      let postData = updatePost.data || state.posts[id].data;
+      let embeddedUser = state.posts[id] ? state.posts[id].embeddedUser : null;
+      // TODO normalize this — should keep this in users store
+      if (updatePost.embeddedUser &&
+        updatePost.embeddedUser.relevance &&
+        updatePost.embeddedUser.relevance.pagerank !== undefined) {
+        embeddedUser = updatePost.embeddedUser;
+      }
 
       return {
         ...state,
@@ -197,7 +211,9 @@ export default function post(state = initialState, action) {
           [id]: {
             ...state.posts[id],
             ...updatePost,
-            reposted
+            reposted,
+            data: postData,
+            embeddedUser
           }
         }
       };

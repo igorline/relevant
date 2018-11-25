@@ -2,6 +2,8 @@ import Community from './community.model';
 import CommunityMember from './community.member.model';
 import User from '../user/user.model';
 
+// Community.update({}, { currentShares: 0, postCount: 0 }, { multi: true }).exec();
+
 const RESERVED = [
   'user',
   'admin',

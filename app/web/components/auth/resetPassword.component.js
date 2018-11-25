@@ -58,7 +58,7 @@ class ResetPassword extends Component {
     }
     this.props.actions.resetPassword(this.state.password, this.token)
     .then(success => {
-      if (success) this.props.actions.push('/login');
+      if (success) this.props.actions.push('/user/login');
     });
   }
 

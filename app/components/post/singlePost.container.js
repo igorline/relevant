@@ -41,7 +41,7 @@ class SinglePostContainer extends Component {
       if (!post) {
         this.props.actions.getSelectedPost(id);
       }
-      this.props.actions.getComments(id, 0, 10);
+      this.props.actions.getComments(id);
     });
   }
 
@@ -52,7 +52,7 @@ class SinglePostContainer extends Component {
   reload() {
     let id = this.props.scene.id;
     this.props.actions.getSelectedPost(id);
-    this.props.actions.getComments(id, 0, 10);
+    this.props.actions.getComments(id);
   }
 
   render() {

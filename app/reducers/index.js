@@ -58,9 +58,7 @@ const appReducer = combineReducers({
 
 const rootReducer = (state, action) => {
   if (action.type === 'SET_COMMUNITY') {
-
     if (process.env.WEB != 'true') {
-
       const {
         auth,
         community,
@@ -85,8 +83,6 @@ const rootReducer = (state, action) => {
         auth: {...auth, community: action.payload },
         navigation
       };
-
-
     } else {
       const {
         auth,

@@ -14,8 +14,12 @@ import Invite from '../invites/invite.model';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
+import Community from '../community/community.model';
 
 const TwitterWorker = require('../../utils/twitterWorker');
+
+// User.findOne({ _id: 'z' }).then(u => u.remove());
+
 
 // User.findOne({ _id: 'test'}, 'hashedPassword')
 // .then(u => console.log(u))
@@ -63,7 +67,7 @@ async function sendConfirmation(user, newUser) {
   if (newUser) text = 'Welcome to Relevant! ';
   try {
     console.log('sending email', user.email);
-    let url = `${process.env.API_SERVER}/confirm/${user.handle}/${user.confirmCode}`;
+    let url = `${process.env.API_SERVER}/user/confirm/${user.handle}/${user.confirmCode}`;
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
@@ -88,7 +92,7 @@ async function sendConfirmation(user, newUser) {
 async function sendResetEmail(user) {
   let status;
   try {
-    let url = `${process.env.API_SERVER}/resetPassword/${user.resetPasswordToken}`;
+    let url = `${process.env.API_SERVER}/user/resetPassword/${user.resetPasswordToken}`;
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
@@ -305,58 +309,62 @@ exports.checkUser = (req, res) => {
 };
 
 exports.list = async (req, res) => {
-  let limit = parseInt(req.query.limit, 10) || 5;
-  let skip = parseInt(req.query.skip, 10) || 0;
-  let topic = req.query.topic || null;
-  let users;
-
-  let blocked = [];
-  if (req.user) {
-    let user = req.user;
-    blocked = [...user.blocked, ...user.blockedBy];
-  }
-
   try {
+    let limit = parseInt(req.query.limit, 10) || 5;
+    let skip = parseInt(req.query.skip, 10) || 0;
+    let topic = req.query.topic || null;
+    let users;
+
+    let blocked = [];
+    if (req.user) {
+      let user = req.user;
+      blocked = [...user.blocked, ...user.blockedBy];
+    }
+
     let community = req.query.community || 'relevant';
     let query;
+    let sort;
     if (topic && topic !== 'null') {
       // TODO should topic relevance be limited to community? maybe not?
-      query = { tag: topic, user: { $nin: blocked } };
-    } else query = { global: true, community, user: { $nin: blocked } };
+      query = { tag: topic, community, user: { $nin: blocked } };
+      sort = { relevance: -1 };
+    } else {
+      topic = null;
+      sort = { pagerank: -1 };
+      query = { global: true, community, user: { $nin: blocked } };
+    }
 
     let rel = await Relevance.find(query)
     .limit(limit)
     .skip(skip)
-    .sort({ relevance: -1 })
+    .sort(sort)
     .populate('user');
+
     users = rel.map(r => {
       r = r.toObject();
-      r.user[topic + '_relevance'] = r.relevance;
-      return r.user;
+      if (!r.user) return null;
+      let user = { ...r.user };
+      user.relevance = {};
+      delete r.user;
+      if (topic) user[topic + '_relevance'] = r.relevance;
+      else user.relevance = r;
+      return user;
     });
-    // } else {
-    //   users = await User.find({ _id: { $nin: blocked } })
-    //   .limit(limit)
-    //   .skip(skip)
-    //   .sort({ relevance: -1 });
-    // }
-    // console.log('got users ', users);
+    return res.status(200).json(users);
   } catch (err) {
     console.log('user list error ', err);
     res.status(500).json(err);
   }
 
-  return res.status(200).json(users);
 };
 
 
 /**
  * Creates a new user
+ * make sure to mimic logic in updateHandle TODO - refactor
  */
 exports.create = async (req, res, next) => {
   try {
-    let community = req.query.community || 'relevant';
-
     let token;
     let rand = await crypto.randomBytes(32);
     let confirmCode = rand.toString('hex');
@@ -425,6 +433,7 @@ exports.show = async function show(req, res, next) {
     }
 
     let community = req.query.community || 'relevant';
+
     // don't show blocked user;
     let blocked = [];
     if (req.user) {
@@ -435,11 +444,17 @@ exports.show = async function show(req, res, next) {
       }
     }
 
-    let user = await User.findOne({ handle });
+    let user = await User.findOne({ handle })
+    .populate({
+      path: 'relevance',
+      match: { community, global: true },
+      select: 'pagerank relevanceRecord'
+    });
+
     if (!user) throw new Error('no such user ', handle);
     user = await user.getSubscriptions();
 
-    user = await user.getRelevance(community);
+    // user = await user.getRelevance(community);
 
     // topic relevance
     let relevance = await Relevance.find({ user: handle, tag: { $ne: null } })
@@ -484,6 +499,7 @@ exports.destroy = async (req, res, next) => {
   }
 };
 
+// TODO refactor to use same logic as create
 exports.updateHandle = async (req, res, next) => {
   try {
     let user = req.user;
@@ -598,7 +614,6 @@ exports.update = async (req, res, next) => {
     return next(err);
   }
 };
-
 
 
 exports.block = async (req, res) => {

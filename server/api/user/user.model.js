@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
-import { NEW_USER_COINS, POWER_REGEN_INTERVAL } from '../../config/globalConstants';
+import { NEW_USER_COINS, POWER_REGEN_INTERVAL, VOTE_COST_RATIO } from '../../config/globalConstants';
 import { NAME_PATTERN } from '../../../app/utils/text';
 import * as ethUtils from '../../utils/ethereum';
 
@@ -84,6 +84,8 @@ const UserSchema = new Schema({
   twitterAuthToken: { type: String, select: false },
   twitterAuthSecret: { type: String, select: false },
   twitterId: { type: Number, unique: true, index: true, sparse: true },
+
+  // used to query twitter feed
   lastTweetId: { type: Number },
 
   tokenBalance: { type: Number, default: 0 },
@@ -113,7 +115,8 @@ UserSchema.statics.events = new EventEmitter();
 UserSchema.virtual('relevance', {
   ref: 'Relevance',
   localField: '_id',
-  foreignField: 'user'
+  foreignField: 'user',
+  justOne: true,
 });
 
 UserSchema.virtual('password')
@@ -268,20 +271,21 @@ UserSchema.methods = {
   },
 
   // update user relevance and save record
-  updateRelevanceRecord: async function updateRelevanceRecord(community) {
-    if (!community) community = 'relevant';
 
-    // TODO test updateRelevanceRecord
-    let relevance = await this.model('Relevance')
-    .findOneAndUpdate(
-      { user: this._id, community, global: true },
-      { upsert: true, new: true }
-    );
+  // updateRelevanceRecord: async function updateRelevanceRecord(communityId) {
+  //   if (!community) community = 'relevant';
 
-    relevance.updateRelevanceRecord();
-    await relevance.save();
-    return this;
-  },
+  //   // TODO test updateRelevanceRecord
+  //   let relevance = await this.model('Relevance')
+  //   .findOneAndUpdate(
+  //     { user: this._id, communityId, global: true },
+  //     { upsert: true, new: true }
+  //   );
+
+  //   relevance.updateRelevanceRecord();
+  //   await relevance.save();
+  //   return this;
+  // },
 
   // get following and followers
   getSubscriptions: function getSubscriptions() {
@@ -330,7 +334,6 @@ UserSchema.methods.updateClient = function updateClient(actor) {
     payload: this
   };
   this.model('User').events.emit('userEvent', userData);
-
   if (actor) {
     userData._id = actor._id;
     this.model('User').events.emit('userEvent', userData);
@@ -395,7 +398,9 @@ UserSchema.methods.updatePower = function updatePower() {
   let voteRegen = Math.max(elapsedTime / POWER_REGEN_INTERVAL * 1);
   console.log('voteRegen ', voteRegen);
   let votePower = Math.min(this.votePower + voteRegen, 1);
-  this.votePower = votePower;
+  this.votePower = votePower * VOTE_COST_RATIO;
+  // async?
+  this.save();
   return this;
 };
 

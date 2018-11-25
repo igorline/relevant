@@ -39,6 +39,9 @@ export default class SingleActivity extends Component {
     let { coin, relevance } = activityHelper.getStatParams(activity);
     let icon = 'rup.png';
     let color = 'green';
+
+    if (amount <= 0) return null;
+
     if (activity.amount < 0) {
       color = 'red';
       icon = 'rdown.png';
@@ -78,6 +81,7 @@ export default class SingleActivity extends Component {
   }
 
   renderPostPreview(activity) {
+    let { auth } = this.props;
     let postTitle = 'Untitled';
     if (activity.post) {
       if (activity.post.title) {
@@ -88,8 +92,12 @@ export default class SingleActivity extends Component {
       }
       activity.post.title = postTitle;
     }
+    let postId = activity.post._id;
+    if (activity.post.type === 'comment') {
+      postId = activity.post.parentPost;
+    }
     return <PostInfo
-      link={`/post/${activity.post._id}`}
+      link={`/${auth.community}/post/${postId}`}
       className={'activityPreview'}
       preview post={activity.post}
     />;

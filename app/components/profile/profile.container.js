@@ -136,13 +136,17 @@ class Profile extends Component {
   renderRow(rowData, view) {
     let scene = this.props.scene || { route: { id: this.userId } };
 
-    let post = this.props.posts.posts[rowData];
-    let link = this.props.posts.links[post.metaPost];
-
-    if (view === 0) return (<Post post={post} link={link} {...this.props} scene={scene} />);
+    if (view === 0) {
+      let post = this.props.posts.posts[rowData];
+      if (!post) return null;
+      let link = this.props.posts.links[post.metaPost];
+      return (<Post post={post} link={link} {...this.props} scene={scene} />);
+    }
     if (view === 1) {
       let investment = this.props.investments.investments[rowData];
-      post = this.props.posts.posts[investment.post];
+      let post = this.props.posts.posts[investment.post];
+      if (!post) return null;
+      let link = this.props.posts.links[post.metaPost];
       return (<Post post={post} link={link} {...this.props} />);
     }
     return null;

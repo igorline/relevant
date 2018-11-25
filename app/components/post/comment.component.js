@@ -220,19 +220,19 @@ class Comment extends Component {
           {this.state.editing ? editingEl : textBody}
       </View>
 
-          <PostButtons
-            comment
-            post={comment}
-            isComment
-            // metaPost={this.props.metaPost}
-            // tooltip={index === 0 ? this.props.tooltip : null}
-            // tooltip={this.props.tooltip}
-            actions={this.props.actions}
-            auth={this.props.auth}
-            myPostInv={myPostInv}
-            focusInput={this.props.focusInput}
-          />
-          </View>
+      <PostButtons
+        comment
+        post={comment}
+        isComment
+        // metaPost={this.props.metaPost}
+        // tooltip={index === 0 ? this.props.tooltip : null}
+        // tooltip={this.props.tooltip}
+        actions={this.props.actions}
+        auth={this.props.auth}
+        myPostInv={myPostInv}
+        focusInput={this.props.focusInput}
+      />
+      </View>
 
     );
   }

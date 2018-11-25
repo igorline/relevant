@@ -14,47 +14,69 @@ let InvestSchema = new Schema({
   ownPost: { type: Boolean, default: false },
   amount: Number,
 
+  community: String,
+  communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
+  // voteWeight is DEPRECATED same as shares - shares is better
+  // TODO convert this in old data
+  // voteWeight: { type: Number, default: 0 },
+  shares: { type: Number, default: 0 },
+  stakedTokens: { type: Number, default: 0 },
+
+  paidOut: { type: Boolean, default: false },
+  payoutDate: { type: Date },
+
+
+  // EVERYTHING BELOW SHOULD BE REMOVED - DEPRECATED
+
   // vote weight
   relevantPoints: { type: Number, default: 0 },
+  rankChange: { type: Number, default: 0 },
 
-  // this info helps us determin how much the
+  // this info helps us determine how much the
   // investor (or author) has earned from this post
-
   upvotes: { type: Number, default: 0 },
   downVotes: { type: Number, default: 0 },
   lastInvestor: { type: String, ref: 'User' },
   partialUsers: { type: Number, default: 0 },
   relevance: { type: Number, default: 0 },
   partialRelevance: { type: Number, default: 0 },
-
-  // voteWeight is DEPRECATED same as shares - shares is better
-  // TODO convert this in old data
-  voteWeight: { type: Number, default: 0 },
-  shares: { type: Number, default: 0 },
-  stakedTokens: { type: Number, default: 0 },
-
-  paidOut: { type: Boolean, default: false },
-  payoutDate: { type: Date },
 }, {
   timestamps: true
 });
 
 
+// InvestSchema.index({ community: 1 });
 InvestSchema.index({ post: 1 });
 InvestSchema.index({ investor: 1 });
+InvestSchema.index({ communityId: 1, investor: 1 });
+InvestSchema.index({ communityId: 1, investor: 1, createdAt: 1 });
 InvestSchema.index({ post: 1, investor: 1, ownPost: 1 });
+InvestSchema.index({ post: 1, investor: 1, communityId: 1 });
 
 InvestSchema.statics.events = InvestSchemaEvents;
 
 InvestSchema.statics.createVote = async function createVote(props) {
-  let { user, post, relevanceToAdd, amount } = props;
+  let { user, post, relevanceToAdd, amount, investment, community, communityId } = props;
+
+  // undo investment
+  if (investment) {
+    // TODO remove notification
+    if (amount > 0) {
+      post.data.shares -= investment.shares;
+      post.data.balance -= investment.stakedTokens;
+    }
+    post.data.totalStaked -= investment.stakedTokens;
+    await investment.remove();
+    return investment;
+  }
 
   user = user.updatePower();
   user = await user.updateBalance();
-  let userBalance = user.balance //+ user.tokenBalance;
+  let userBalance = user.balance + user.tokenBalance;
   console.log(user.handle, 'balance', userBalance);
 
   let shares = 0;
+  // TODO analyze ways to get around this via sybil nodes
   let votePower = user.votePower;
   amount *= votePower;
 
@@ -63,19 +85,33 @@ InvestSchema.statics.createVote = async function createVote(props) {
   userBalance *= communityMember.weight;
 
   console.log('vote power ', votePower);
-  let stakedTokens = userBalance * VOTE_COST_RATIO * votePower * amount;
+  let stakedTokens = userBalance * votePower * Math.abs(amount);
+  console.log('staked tokens', stakedTokens);
+  console.log('post.data.balance', post.data.balance);
+  console.log('amount ', amount);
+  // TODO downvotes!
+  let sign = 1;
+  if (amount !== 0) sign = Math.abs(amount) / amount;
 
-  // use price = supply^2 curve
-  let nexp = EXPONENT + 1;
-  console.log('current balance ', post.data.balance);
-  shares = ((post.data.balance + stakedTokens) / SLOPE * nexp) ** (1 / nexp) - post.data.shares;
-  console.log(user.handle, ' got ', shares, ' for ', stakedTokens, ' staked tokens ');
+  // only compute shares for upvotes
+  // for downvotes only track staked tokens
+  // we can use totalStaked to rank by stake
+  if (amount > 0) {
+    let nexp = EXPONENT + 1;
+    shares = ((post.data.balance + stakedTokens) / SLOPE * nexp) ** (1 / nexp) - (post.data.shares || 0);
+    console.log(user.handle, ' got ', shares, ' for ', stakedTokens, ' staked tokens ');
 
-  post.data.shares += shares;
-  post.data.balance += stakedTokens;
+    shares *= sign;
+    stakedTokens *= sign;
+
+    post.data.shares += shares;
+    post.data.balance += stakedTokens;
+  }
+
+  post.data.totalStaked += stakedTokens;
   await post.data.save();
 
-  let investment = await this.findOneAndUpdate(
+  investment = await this.findOneAndUpdate(
     {
       investor: user._id,
       post: post._id
@@ -89,6 +125,8 @@ InvestSchema.statics.createVote = async function createVote(props) {
       ownPost: post.user === user._id,
       shares,
       stakedTokens,
+      community,
+      communityId,
       // TODO track parentPost && linkPost/aboutLink?
       // parentPost: post.parentPost,
       // linkPost: post.linkPost,
@@ -105,6 +143,7 @@ InvestSchema.statics.createVote = async function createVote(props) {
 
 
 /**
+ * DEPRECATED - NOT USED WITH PAGERANK
  * When the amount is not a whole number, we save add up the increments and save the list of users
  * once we reach a whole number we send the update to the user
  */
@@ -117,8 +156,8 @@ InvestSchema.statics.updateUserInvestment = async function updateEarnings(
     earnings = await this.findOne({ investor: investor._id, post: post._id });
 
     if (!earnings) {
-      // TODO do this when we create post?
-      // when does this happen - author?
+      // DEPRECATED should never be called,
+      // but should check and update older posts
       earnings = new this({
         investor: investor._id,
         post: post._id,

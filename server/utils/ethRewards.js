@@ -7,21 +7,26 @@ import Notification from '../api/notification/notification.model';
 import Earnings from '../api/earnings/earnings.model';
 import Community from '../api/community/community.model';
 import * as Eth from './ethereum';
-import { INTERVAL_INFLAITION, INIT_COIN, SHARE_DECAY } from '../config/globalConstants';
+import { INTERVAL_INFLAITION, INIT_COIN, SHARE_DECAY, MINIMUM_RANK } from '../config/globalConstants';
 import * as numbers from '../../app/utils/numbers';
 import PostData from '../api/post/postData.model';
+import computePageRank from './pagerankCompute';
 
 let totalDistributedRewards;
 
+// ANALYSIS — attack scenario community with low-quality posts to bring down the average?
 async function computePostPayout(posts, community) {
   // let posts = await Post.find({ paidOut: false, payoutTime: { $lt: now } });
   let updatedPosts = posts.map(async post => {
-    // posts w negative relevance don't get rewards
-    if (post.relevance <= 0) {
+
+    let average = community.currentShares / community.postCount;
+    // only reward above-average posts
+    console.log('rank vs average ', post.pagerank, average);
+    if (post.pagerank < average) {
       return post.save();
     }
     // linear reward curve
-    post.payoutShare = post.relevance / community.currentShares;
+    post.payoutShare = post.pagerank / (community.topPostShares || 1 );
     post.payout = community.rewardFund * post.payoutShare;
     // post.balance = 0;
     return post.save();
@@ -70,13 +75,16 @@ async function distributeRewards(community, rewardPool) {
   community.currentShares *= (1 - Math.min(1, decay));
   community.postCount *= (1 - Math.min(1, decay));
   console.log('total shares ', community.currentShares);
-  let currentShares = 0;
 
   // add post relevance to treasury
   posts.forEach(post => {
-    if (post.relevance > 0) {
-      community.currentShares += post.relevance;
+    // cut off low-ranking posts
+    if (post.pagerank > MINIMUM_RANK) {
+      community.currentShares += post.pagerank;
       community.postCount += 1;
+      if (post.pagerank >= community.currentShares / community.postCount) {
+        community.topPostShares += post.pagerank;
+      }
       console.log('average post shares ', community.currentShares / community.postCount);
     }
     post.paidOut = true;
@@ -213,7 +221,7 @@ async function distributeUserRewards(posts, community) {
 
       console.log('weight ', curationWeight);
       console.log('payout ', curationPayout);
-      if (curationPayout === 0) return;
+      if (curationPayout === 0) return null;
 
       payouts[user._id] = payouts[user._id] ? payouts[user._id] + curationPayout : curationPayout;
 
@@ -259,6 +267,7 @@ async function distributeUserRewards(posts, community) {
 //
 
 async function computeCommunityRewards(community, _rewardPool, balances) {
+  await computePageRank({ communityId: community._id, community: community.slug, debug: true });
   let totalBalance = balances.reduce((a, c) => c.balance + a, 0);
   let communityBalance = balances.find(c => c._id === community.slug).balance;
 
@@ -274,7 +283,7 @@ async function computeCommunityRewards(community, _rewardPool, balances) {
     title: p.post,
     payout: p.payout,
     payoutShare: p.payoutShare,
-    relevance: p.relevance,
+    rank: p.pagerank,
   }));
 
   console.log('\x1b[32m', 'allocated rewards to ', community.slug, ' ', communityRewardPool);

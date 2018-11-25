@@ -75,7 +75,6 @@ class CreatePostContainer extends Component {
   componentWillUpdate(newProps, newState) {
     if (newState.body !== this.state.body) {
       this.parseBody(newState);
-      console.log(newState);
     }
   }
 
