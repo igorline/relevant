@@ -2,30 +2,34 @@
 export function getText(activity, amount, coinAmount) {
   let action = 'increased';
   let also = 'also ';
-  if (activity.amount < 0) {
+  if (amount < 0) {
     action = 'decreased';
     also = '';
   }
+  let postType = activity.post ? activity.post.type : 'post';
 
   switch (activity.type) {
     case 'upvote':
+      // coinText is deprecated
       let coinText = activity.coin ? 'you got a coin and ' : '';
-      return `upvoted your post → ${coinText}your relevance increased by ${amount}`;
+      let relText = amount > 0 ? `→ ${coinText}your relevance increased by ${amount}` : '';
+      return `upvoted your ${postType} ${relText}`;
 
+    // downvote, partialUpvote, partialDownvote basicIncome are deprecated
     case 'downvote':
-      return `downvoted your post → your relevance decreased by ${amount}`;
+      return `downvoted your ${postType} → your relevance decreased by ${amount}`;
 
     case 'partialUpvote':
-      return `${also}upvoted this post → your relevance ${action} by ${amount}`;
+      return `${also}upvoted this ${postType} → your relevance ${action} by ${amount}`;
 
     case 'partialDownvote':
-      return `${also}downvoted this post → your relevance ${action} by ${amount}`;
+      return `${also}downvoted this ${postType} → your relevance ${action} by ${amount}`;
 
     case 'basicIncome':
       return `You got ${activity.coin} extra coin${activity.coin > 1 ? 's' : ''} so you can upvote more posts!`;
 
     case 'commentAlso':
-      return 'commented on a post';
+      return `commented on a ${postType}`;
 
     case 'comment':
       return 'commented on your post';
@@ -33,15 +37,18 @@ export function getText(activity, amount, coinAmount) {
     case 'repost':
       return 'reposted your post';
 
+    case 'commentMention':
     case 'postMention':
     case 'mention':
-      return 'mentioned you in the post';
+      return `mentioned you in the ${postType}`;
 
-    case 'commentMention':
-      return 'mentioned you in a comment';
+      // return 'mentioned you in a comment';
 
     case 'topPost':
       return 'In case you missed this top-ranked post:';
+
+    case 'reward':
+      return `You earned ${activity.coin} coins from this post`;
 
     default:
       if (activity.text) return activity.text;

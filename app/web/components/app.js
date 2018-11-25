@@ -8,6 +8,7 @@ import Header from './common/header.component';
 import AppHeader from './common/appHeader.component';
 import * as routerActions from 'react-router-redux';
 import * as navigationActions from '../../actions/navigation.actions';
+import { Link } from 'react-router';
 
 // import Footer from './common/footer.component';
 import * as authActions from '../../actions/auth.actions';
@@ -20,6 +21,8 @@ import EthTools from './ethTools/tools.container';
 import Modal from './common/modal';
 import CreatePost from './createPost/createPost.container';
 import Eth from './ethTools/eth.context';
+import CommunityNav from './community/communityNav.component';
+import { api } from '../../utils';
 
 if (process.env.BROWSER === true) {
   console.log('BROWSER, import css');
@@ -28,6 +31,7 @@ if (process.env.BROWSER === true) {
   require('./splash/splash.css');
 }
 
+const networkId = 4;
 
 let options = {
   contracts: [
@@ -35,21 +39,24 @@ let options = {
   ],
   events: {},
   polls: {
-    blocks: 300,
+    blocks: 100,
     accounts: 300,
   },
-  networkId: 4,
+  networkId,
   web3: {
+    ignoreMetamask: true,
     useMetamask: true,
-    block: false,
-    fallback: {
-      type: 'ws',
-      url: 'wss://rinkeby.infura.io/_ws'
+    fallback: global.web3 ? null : {
+      type: 'https',
+      url: 'https://rinkeby.infura.io/' + 'eAeL7I8caPNjDe66XRTq',
+      // type: 'ws',
+      // url: 'ws://rinkeby.infura.io/_ws',
+      networkId: 4,
     }
   }
 };
 
-const ThemeContext = React.createContext('light');
+// const ThemeContext = React.createContext('light');
 
 class App extends Component {
   static contextTypes = {
@@ -60,12 +67,19 @@ class App extends Component {
     openLoginModal: false
   }
 
+  componentWillMount() {
+    let community = this.props.params.community;
+    if (community) this.props.actions.setCommunity(community);
+  }
+
   componentDidMount() {
     // document.body.classList.remove('loading')
+    let community = this.props.auth.community;
+    api.setCommunity(community);
     this.props.actions.getUser();
     new Drizzle(options, this.context.store);
 
-    // this will be harsh...
+    // TODO do this after a timeout
     // window.addEventListener('focus', () => {
     //   if (this.props.newPosts)
     //   this.props.actions.refreshTab('discover');
@@ -73,6 +87,11 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    let community = this.props.params.community;
+    if (community && this.props.auth.community !== community) {
+      this.props.actions.setCommunity(community);
+    };
+
     if (this.props.location.pathname !== prevProps.location.pathname) {
       window.scrollTo(0, 0);
     }
@@ -148,6 +167,7 @@ class App extends Component {
         <EthTools>
           {header}
           <div style={{ display: 'flex', width: '100%' }}>
+            {/*<CommunityNav {...this.props} />*/}
             {this.props.children}
           </div>
           <AuthContainer

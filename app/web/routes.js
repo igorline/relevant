@@ -23,34 +23,31 @@ import Email from './components/admin/email.component';
 import TopPosts from './components/admin/topPosts.component';
 import Wallet from './components/wallet/wallet.container';
 import AdminWallet from './components/admin/admin.main.component';
+import CommuntiyAdmin from './components/admin/communityAdmin.component';
 
-import { connectedRouterRedirect } from 'redux-auth-wrapper/history3/redirect'
-
-
-// import BondingCurve from './bonding-curve-ui/src/App';
+import { connectedRouterRedirect } from 'redux-auth-wrapper/history3/redirect';
 
 // Redirects to /login by default
 const userIsAuthenticated = connectedRouterRedirect({
-  // authSelector: state => state.auth.user, // how to get the user state
-  // redirectAction: routerActions.replace, // the redux action to dispatch for redirect
-  // wrapperDisplayName: 'UserIsAuthenticated' // a nice name for this auth check
-
   redirectPath: '/login',
   authenticatedSelector: state => state.auth.user !== null,
   // authenticatingSelector: state => state.user.isLoading,
   // AuthenticatingComponent: Loading,
   redirectAction: routerActions.replace,
   wrapperDisplayName: 'UserIsAuthenticated'
-
 });
 
+// community slug blacklist
+// user
+// admin
+// info
+// api
+// img
+// fonts
+// files
+// home
+
 const userIsAdmin = connectedRouterRedirect({
-  // authSelector: state => state.auth.user,
-  // wrapperDisplayName: 'UserIsAdmin',
-  // redirectAction: routerActions.replace,
-  // failureRedirectPath: '/login',
-  // // allowRedirectBack: false,
-  // predicate: user => user.role === 'admin'
   redirectPath: '/login',
   allowRedirectBack: false,
   authenticatedSelector: state => state.auth.user && state.auth.user.role === 'admin',
@@ -67,19 +64,20 @@ let routes = (store) => {
     component: App,
     indexRoute: { component: Splash },
     childRoutes: [
-      { path: 'faq', component: Faq },
-      { path: 'login', component: Auth },
-      { path: 'signup', component: Auth },
-      { path: 'splash', component: Splash },
-      { path: 'home', component: Discover },
-      { path: 'discover', component: Discover },
-      { path: 'discover', component: Discover },
-      { path: 'discover/:sort', component: Discover },
-      { path: 'discover/tag/:tag/::sort', component: Discover },
-      { path: 'discover/tag/:tag/:sort', component: Discover },
+      { path: 'user',
+        childRoutes: [
+          { path: 'login', component: Auth },
+          { path: 'signup', component: Auth },
+          { path: 'wallet', component: Wallet },
+          { path: 'profile/:id', component: ProfileContainer },
+          { path: 'invite/:code', component: Invite },
+          { path: 'resetPassword/:token', component: Auth },
+          { path: 'confirm/:user/:code', component: Auth },
+          { path: 'forgot', component: Auth },
+        ]
+      },
       { path: 'admin',
         component: userIsAuthenticated(userIsAdmin(AdminHeader)),
-        // onEnter: connect(userIsAuthenticated.onEnter),
         indexRoute: { component: AdminWallet },
         childRoutes: [
           { path: 'flagged', component: Flagged },
@@ -89,28 +87,27 @@ let routes = (store) => {
           { path: 'invites', component: Invites },
           { path: 'email', component: Email },
           { path: 'topPosts', component: TopPosts },
+          { path: 'community', component: CommuntiyAdmin },
         ]
       },
-      { path: 'wallet', component: Wallet },
-      { path: 'invite/:code', component: Invite },
-      { path: 'profile',
-        component: userIsAuthenticated(ProfileContainer),
-        // onEnter: connect(userIsAuthenticated.onEnter)
+      { path: 'info',
+        childRoutes: [
+          { path: 'faq', component: Faq },
+        ]
       },
-      { path: 'profile/:id', component: ProfileContainer },
-      // { path: 'messages', component: userIsAuthenticated(MessageContainer),
-      // // onEnter: connect(userIsAuthenticated.onEnter) },
-      // },
-      { path: 'post/new',
-        component: userIsAuthenticated(CreatePostContainer),
-        // onEnter: connect(userIsAuthenticated.onEnter)
+      { path: ':community',
+        indexRoute: { component: Discover },
+        childRoutes: [
+          { path: ':sort', component: Discover },
+          { path: 'tag/:tag/::sort', component: Discover },
+          { path: 'tag/:tag/:sort', component: Discover },
+          { path: 'post/new',
+            component: userIsAuthenticated(CreatePostContainer),
+          },
+          { path: 'post/:id', component: PostContainer },
+        ]
+
       },
-      { path: 'post/:id', component: PostContainer },
-      // { path: 'discover', component: DiscoverContainer },
-      { path: 'resetPassword/:token', component: Auth },
-      { path: 'confirm/:user/:code', component: Auth },
-      { path: 'forgot', component: Auth },
-      // { path: 'bonding', component: BondingCurve },
       { path: '*', component: NotFound }
     ]
   };

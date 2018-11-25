@@ -2,6 +2,7 @@ import * as tokenUtil from './token';
 
 let post;
 let routes = {};
+let community;
 
 // let postApi = '';
 // let userApi = '';
@@ -33,6 +34,11 @@ const queryParams = (params) => {
   if (paramString && paramString.length) return '?' + paramString;
   return '';
 };
+
+
+export function setCommunity(_community) {
+  community = _community;
+}
 
 
 export function env() {
@@ -68,7 +74,7 @@ export function Alert() {
  * body: body
  */
 export async function request(options) {
-  let query = queryParams(options.query);
+  let query = queryParams({ ...options.query, community });
   let apiPath = '/api/';
   if (options.endpoint.match('auth')) apiPath = '';
   let uri = options.uri || process.env.API_SERVER + apiPath + options.endpoint;

@@ -68,7 +68,7 @@ class Header extends Component {
         <header style={{ padding: '0 30px' }}>
           {this.renderPostButton()}
           <div>
-            <Link to={this.props.isAuthenticated && desktopApp ? '/home' : '/'}>
+            <Link to={this.props.isAuthenticated && desktopApp ? '/relevant' : '/'}>
               <img src={'/img/logo-white.svg'} className={'logo'} alt={'Relevant'} />
             </Link>
           </div>

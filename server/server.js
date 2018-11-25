@@ -103,7 +103,7 @@ if (process.env.NODE_ENV !== 'test') {
   socketServer(server, { pingTimeout: 30000 });
 }
 
-require('./utils/updateDB-Community0.1.0');
+require('./utils/updateDB-Community0.2.0');
 require('./utils/ethereum').init();
 
 exports.app = app;

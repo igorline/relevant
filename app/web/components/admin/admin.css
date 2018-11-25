@@ -83,3 +83,18 @@
   font-weight: bold;
   line-height: auto;
 }
+
+.communityForm {
+  display: flex;
+  flex-direction: column;
+  margin:auto;
+  width: 600px;
+  margin-bottom: 100px;
+  label {
+    margin-top: 20px;
+    font-size: 12px;
+  }
+  img {
+    max-width: 100%;
+  }
+}

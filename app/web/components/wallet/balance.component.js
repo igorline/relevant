@@ -4,17 +4,16 @@ import React, {
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { numbers } from '../../../utils';
+import { BondingCurveContext } from 'bonded-token';
 
 export default class Balance extends Component {
   // this context comes from the BondedTokenContainer
-  static contextTypes = {
-    contractParams: PropTypes.object,
-  }
+  static contextType = BondingCurveContext
 
   async cashOut() {
     try {
       let user = this.props.user;
-      let decimals = this.props.RelevantCoin.methods.decimals.cacheCall();
+      let decimals = this.props.contract.methods.decimals.cacheCall();
 
       let cashOut = await this.props.actions.cashOut();
       cashOut = cashOut || user.cashOut;
@@ -24,11 +23,10 @@ export default class Balance extends Component {
       let mult = new web3.utils.BN(10 ** (decimals / 2));
       mult = mult.mul(mult);
       amount = amount.mul(mult);
-      console.log('amount ', amount.toString());
 
       // let result = await this.props.RelevantCoin.methods.cashOut(amount, sig).call();
       // console.log(result);
-      this.props.RelevantCoin.methods.cashOut.cacheSend(amount, sig, {
+      this.props.contract.methods.cashOut.cacheSend(amount, sig, {
         from: user.ethAddress[0]
       });
       // console.log(result);
@@ -42,6 +40,8 @@ export default class Balance extends Component {
     const user = this.props.user;
     if (!user) return null;
     let rewardBalance = this.props.user.balance;
+
+    // if (!this.context.contractParams) return null;
 
     let { tokenBalance, symbol, priceDollar } = this.context.contractParams;
     let { connectedBalance, connectedAccount, nonce } = this.props.wallet;

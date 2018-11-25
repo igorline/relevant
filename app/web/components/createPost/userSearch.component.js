@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Avatar from '../common/avatar.component';
 
 if (process.env.BROWSER === true) {
-  // require('./divider.css');
+  require('./userSearch.css');
 }
 
 const USER_ELEMENT_HEIGHT = 38;

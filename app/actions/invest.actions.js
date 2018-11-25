@@ -8,8 +8,14 @@ const AlertIOS = utils.api.Alert();
 
 let apiServer = process.env.API_SERVER + '/api/';
 
-const postSchema = new schema.Entity('posts',
+const linkSchema = new schema.Entity(
+  'links',
   {},
+  { idAttribute: '_id' }
+);
+
+const postSchema = new schema.Entity('posts',
+  { metaPost: linkSchema },
   { idAttribute: '_id' }
 );
 
@@ -19,7 +25,10 @@ const userSchema = new schema.Entity('users',
 );
 
 const investmentSchema = new schema.Entity('investments',
-  { post: postSchema, investor: userSchema },
+  {
+    post: postSchema,
+    investor: userSchema
+  },
   { idAttribute: '_id' }
 );
 
@@ -37,10 +46,10 @@ export function undoPostVote(post) {
   };
 }
 
-export function setPosts(posts) {
+export function setPosts(data) {
   return {
     type: 'SET_POSTS_SIMPLE',
-    payload: posts
+    payload: { data }
   };
 }
 
@@ -55,10 +64,12 @@ export function setInvestments(investments, userId, index) {
   };
 }
 
-export function vote(amount, post, user) {
+// optimistic ui
+export function vote(amount, post, user, undo) {
   return async dispatch => {
     try {
-      dispatch(updatePostVote({ post: post._id, amount }));
+      if (undo) dispatch(undoPostVote(post._id));
+      else dispatch(updatePostVote({ post: post._id, amount }));
       let responseJSON = await utils.api.request({
         method: 'POST',
         endpoint: 'invest',
@@ -69,9 +80,13 @@ export function vote(amount, post, user) {
           post
         }),
       });
+      // if (responseJSON.undoInvest) {
+      //   dispatch(undoPostVote(post._id));
+      // }
       return responseJSON;
     } catch (error) {
-      dispatch(undoPostVote(post._id));
+      if (undo) dispatch(updatePostVote({ post: post._id, amount }));
+      else dispatch(undoPostVote(post._id));
       throw new Error(error.message);
     }
   };
@@ -84,27 +99,25 @@ export function loadingInvestments() {
 }
 
 
-export function getInvestments(token, userId, skip, limit, type){
+export function getInvestments(token, userId, skip, limit) {
   return async dispatch => {
-    dispatch(loadingInvestments());
-    return fetch(apiServer + 'invest/' + userId + '?skip=' + skip + '&limit=' + limit, {
-      method: 'GET',
-      ...await utils.api.reqOptions()
-    })
-    .then(response => response.json())
-    .then((responseJSON) => {
-      // dispatch(refreshInvestments(responseJSON, userId, skip));
-
+    try {
+      dispatch(loadingInvestments());
+      let responseJSON = await utils.api.request({
+        method: 'GET',
+        endpoint: 'invest',
+        path: '/' + userId,
+        query: { skip, limit }
+      });
       let data = normalize(
         { investments: responseJSON },
         { investments: [investmentSchema] }
       );
-      dispatch(setPosts(data.entities.posts));
+      dispatch(setPosts(data));
       dispatch(setInvestments(data, userId, skip));
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+    } catch (err) {
+      console.log(err);
+    }
   };
 }
 

@@ -113,7 +113,9 @@ header .logo {
   /*$leftMargin;*/
   /*max-width: $postOffsetPadding;*/
   /*box-sizing: content-box;*/
+  /*max-width: 270px;*/
   max-width: 160px;
+
 }
 .headerInner > div {
   display: flex;

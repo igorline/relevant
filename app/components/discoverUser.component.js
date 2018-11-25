@@ -26,13 +26,15 @@ class DiscoverUser extends Component {
 
   render() {
     let user = this.props.user;
+    if (!user) return null;
     let relevance = this.props.topic ? user[this.props.topic + '_relevance'] : user.relevance;
     let bioEl;
 
     let statsUser = { ...user, relevance };
     let stats = (<Stats
       type={'percent'}
-      entity={statsUser}
+      topic={this.props.topic}
+      entity={user}
       renderLeft={this.props.topic ? <Text/> : null}
       // renderLeft={this.props.topic ? <Text style={[styles.bebas, styles.font17]}>{this.props.topic} </Text> : null}
     />);

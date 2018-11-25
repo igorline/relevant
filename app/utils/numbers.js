@@ -1,3 +1,14 @@
+
+export function toNumber(num, dec) {
+  if (num === undefined || dec === undefined) return null;
+  return num / (10 ** dec);
+}
+
+export function toFixed(num, dec) {
+  if (!num) return 0;
+  return num.toFixed(dec);
+}
+
 export function percentChange(user) {
   let totalPercent = 0;
 
@@ -6,7 +17,7 @@ export function percentChange(user) {
   user.relevanceRecord.forEach((record, i) => {
     let percent = 0;
     let endInterval = new Date();
-    let endRelevance = user.relevance;
+    let endRelevance = user.pagerank;
     let last = record;
     let oldRel = Math.abs(last.relevance);
     if (oldRel === 0) return;
