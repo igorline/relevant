@@ -14,18 +14,19 @@ let RelevanceStatsSchema = new Schema({
   views: { type: Number, default: 0 },
   linkViews: { type: Number, default: 0 },
   community: { type: String },
+  communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
 }, {
   timestamps: true
 });
 
 RelevanceStatsSchema.index({ user: 1, date: 1 });
 
-RelevanceStatsSchema.statics.updateUserStats = async function (user, relevance, community) {
+RelevanceStatsSchema.statics.updateUserStats = async function updateUserStats(user, relevance, communityId, community) {
   try {
-    community = community || 'relevant';
+    // community = community || 'relevant';
     let date = new Date();
     date = date.setUTCHours(0, 0, 0, 0);
-    let stat = await this.findOne({ user: user._id, date, community });
+    let stat = await this.findOne({ user: user._id, date, communityId });
     if (!stat) {
       stat = new this({ user: user._id, date });
     }

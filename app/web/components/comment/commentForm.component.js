@@ -4,7 +4,7 @@ import Comments from '../comment/comment.container'
 import Avatar from '../common/avatar.component'
 import * as utils from '../../../utils';
 
-class NewCommentForm extends Component {
+class CommentForm extends Component {
   constructor(props, context) {
     super(props, context);
     this.setMention = this.setMention.bind(this);
@@ -19,24 +19,26 @@ class NewCommentForm extends Component {
     };
   }
 
+  componentDidMount() {
+    if (this.props.edit && this.props.comment) {
+      this.setState({ comment: this.props.comment.body });
+      console.log(this.textArea);
+      this.textArea.focus();
+    }
+  }
+
   handleChange(e) {
     this.setState({ comment: e.target.value });
   }
 
   handleKeydown(e) {
-    if (e.keyCode == 13 && e.shiftKey == false) {
-      // this.handleSubmit(e);
-    }
-  }
-
-  componentWillUnmount() {
-    // this.props.actions.setUserSearch([]);
+    // if (e.keyCode == 13 && e.shiftKey == false) {
+    // }
   }
 
   setMention(user) {
     let comment = this.state.comment.replace(this.mention, '@' + user._id);
     this.setState({ comment });
-    // this.props.actions.setUserSearch([]);
   }
 
   async createComment() {
@@ -48,9 +50,8 @@ class NewCommentForm extends Component {
     }
 
     let comment = this.state.comment.trim();
-    console.log(this.props);
     let commentObj = {
-      post: this.props.post._id,
+      post: this.props.post.id,
       text: comment,
       tags: this.commentTags,
       mentions: this.commentMentions,
@@ -58,21 +59,37 @@ class NewCommentForm extends Component {
     };
 
     this.setState({ comment: '', inputHeight: 50 });
-    // this.textInput.blur();
-    // this.props.onFocus('new');
-    // this.props.actions.setUserSearch([]);
 
     this.props.actions.createComment(await utils.token.get(), commentObj)
     .then(success => {
       if (!success) {
         this.setState({ comment, inputHeight: 50 });
         this.textInput.focus();
-        return;
       }
-      // this.props.scrollToBottom();
     });
+  }
 
-    // this.props.onCommentSubmit(commentObj);
+  async updateComment() {
+    let comment = this.props.comment;
+    let body = this.state.comment;
+    if (comment.body === body) {
+      return this.props.cancel();
+    }
+    let words = utils.text.getWords(body);
+    let mentions = utils.text.getMentions(words);
+    let originalText = comment.body;
+    comment.body = body;
+    comment.mentions = mentions;
+
+    this.props.actions.updateComment(comment)
+    .then((results) => {
+      if (results) {
+        this.props.cancel();
+      } else {
+        comment.body = originalText;
+        window.alert('Error updating comment');
+      }
+    });
   }
 
   processInput(comment) {
@@ -92,37 +109,46 @@ class NewCommentForm extends Component {
   }
 
   handleSubmit(e) {
-    console.log('submit', this.state.comment);
     e.preventDefault();
-    this.createComment();
+    if (this.props.edit) return this.updateComment();
+    return this.createComment();
   }
 
   render() {
     if (! this.props.auth.isAuthenticated) return null;
     return (
-      <div className={'formContainer'}>
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
         <form onSubmit={this.handleSubmit}>
-          <Avatar auth={this.props.auth} user={this.props.auth.user} />
           <Textarea
-            style={{ margin: '0 15px', minHeight: '60px' }}
+            inputRef={c => this.textArea = c}
+            style={{ minHeight: '60px' }}
             rows={2}
             placeholder="Enter comment..."
             value={this.state.comment}
             onKeyDown={this.handleKeydown}
             onChange={this.handleChange}
           />
-          {/*this.props.comment.failureMsg && <div>{ this.props.comment.failureMsg }</div>*/}
         </form>
+        <div style={{ alignSelf: 'flex-end' }}>
+        {this.props.cancel && <button
+          onClick={this.props.cancel}
+          className={'shadowButton'}
+          disabled={!this.props.auth.isAuthenticated}
+        >
+          Cancel
+        </button>
+        }
         <button
           onClick={this.handleSubmit}
           className={'shadowButton'}
           disabled={!this.props.auth.isAuthenticated}
         >
-          Reply
+          { this.props.text }
         </button>
+        </div>
       </div>
     );
   }
 }
 
-export default NewCommentForm;
+export default CommentForm;

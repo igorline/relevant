@@ -40,6 +40,16 @@ const reqOptions = async () => {
   };
 };
 
+export function setCommunity(community) {
+  return dispatch => {
+    utils.api.setCommunity(community);
+    return dispatch({
+      type: types.SET_COMMUNITY,
+      payload: community
+    });
+  };
+}
+
 export function updateInvite(invite) {
   return {
     type: types.UPDATE_INVITE,
@@ -171,35 +181,26 @@ export function setOnboardingStep(step) {
 }
 
 export function loginUser(user) {
-  return (dispatch) => {
-    return fetch(process.env.API_SERVER + '/auth/local', {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(user)
-    })
-    .then(response => response.json())
-    .then((responseJSON) => {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.api.request({
+        method: 'POST',
+        endpoint: '/auth',
+        path: '/local',
+        body: JSON.stringify(user)
+      });
       if (responseJSON.token) {
-        return utils.token.set(responseJSON.token)
-        .then(() => {
-          dispatch(loginUserSuccess(responseJSON.token));
-          dispatch(getUser());
-          return true;
-        });
+        await utils.token.set(responseJSON.token);
+        dispatch(loginUserSuccess(responseJSON.token));
+        dispatch(getUser());
+        return true;
       }
       AlertIOS.alert(responseJSON.message);
       dispatch(loginUserFailure(responseJSON.message));
       return false;
-    })
-    .catch((error) => {
-      console.log(error, 'login error');
-      AlertIOS.alert(error.message);
+    } catch (error) {
       return false;
-    });
+    }
   };
 }
 
@@ -336,46 +337,28 @@ function setupUser(user, dispatch) {
 }
 
 export function getUser(callback) {
-  return (dispatch) => {
-    function fetchUser(token) {
-      return fetch(process.env.API_SERVER + '/api/user/me', {
-        credentials: 'include',
+  return async dispatch => {
+    try {
+      let user = await utils.api.request({
         method: 'GET',
-        timeout: 0,
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      .then(utils.api.handleErrors)
-      .then(response => response.json())
-      .then((user) => {
-        setupUser(user, dispatch);
-        if (callback) callback(user);
-        return user;
-      })
-      .catch((error) => {
-        console.log('get user error ', error);
-        dispatch(errorActions.setError('universal', true, error.message));
-        dispatch(loginUserFailure('Server error'));
-        if (callback) callback({ ok: false });
-        // need this in case user is logged in but there is an error getting account
-        if (error.message !== 'Network request failed') {
-          dispatch(logoutAction());
-        }
+        endpoint: 'user',
+        path: '/me',
       });
+      setupUser(user, dispatch);
+      if (callback) callback(user);
+      return user;
+    } catch (error) {
+      dispatch(errorActions.setError('universal', true, error.message));
+      dispatch(loginUserFailure('Server error'));
+      if (callback) callback({ ok: false });
+      // need this in case user is logged in but there is an error getting account
+      if (error.message !== 'Network request failed') {
+        dispatch(logoutAction());
+      }
     }
-
-    return utils.token.get()
-    .then((newToken) => {
-      console.log("got token! ", newToken);
-      dispatch(loginUserSuccess(newToken));
-      return fetchUser(newToken);
-    })
-    .catch((error) => {
-      console.log('no token');
-    });
   };
 }
+
 
 export
 function setDeviceToken(token) {

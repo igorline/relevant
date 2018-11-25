@@ -2,7 +2,7 @@ import Auth from '../../auth/auth.service';
 
 let asyncMiddleware = require('../../utils/middlewares').asyncMiddleware;
 let express = require('express');
-let controller = require('./metaPost.controller');
+let controller = require('./link.controller');
 
 let router = express.Router();
 

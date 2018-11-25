@@ -32,6 +32,10 @@ class PostImage extends Component {
     let image = null;
     let link;
     let post = this.props.metaPost || this.props.post;
+    if (post.metaPost) {
+      post = post.metaPost;
+    }
+    // console.log(post)
     let single = false; // this.props.singlePost;
     let smallerImg; // = this.props.singlePost;
     let title = null;
@@ -48,7 +52,6 @@ class PostImage extends Component {
       if (post.articleAuthor && post.articleAuthor.length) {
         // test this
         author = post.articleAuthor.join(', ');
-    
         authorEl = (
           <Text
             numberOfLines={1}

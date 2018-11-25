@@ -32,17 +32,16 @@ class SinglePostContainer extends Component {
   }
 
   componentWillMount() {
-    this.postId = this.props.scene.id;
-    this.postData = this.props.posts.posts[this.postId];
-    this.related = this.props.posts.related[this.postId];
+    let { posts } = this.props;
+    let id = this.props.scene.id;
+    let post = posts.posts[id];
+    // let related = posts.related[id];
 
     InteractionManager.runAfterInteractions(() => {
-      if (!this.postData) {
-        this.props.actions.getSelectedPost(this.postId);
-      } if (!this.related) {
-        // this.props.actions.getRelated(this.postId, 0, 10);
+      if (!post) {
+        this.props.actions.getSelectedPost(id);
       }
-      this.props.actions.getComments(this.postId, 0, 10);
+      this.props.actions.getComments(id);
     });
   }
 
@@ -51,21 +50,27 @@ class SinglePostContainer extends Component {
   }
 
   reload() {
-    this.props.actions.getSelectedPost(this.postId);
+    let id = this.props.scene.id;
+    this.props.actions.getSelectedPost(id);
+    this.props.actions.getComments(id);
   }
 
   render() {
     let dataEl = null;
+    let id = this.props.scene.id;
+    let { posts } = this.props;
+    let post = posts.posts[id];
 
-    this.postData = this.props.posts.posts[this.postId];
-    this.commentsData = this.props.comments.commentsById[this.postId];
-    let related = this.props.posts.related[this.postId] || [];
+    let commentIds = this.props.comments.commentsById[id] || {};
+    let related = posts.related[id] || [];
+    let link = post && posts.links[post.metaPost];
 
-    if (this.postData) {
+    if (post) {
       dataEl = (<SinglePost
-        postId={this.postId}
-        post={this.postData}
-        postComments={this.commentsData}
+        postId={id}
+        post={post}
+        link={link}
+        postComments={commentIds}
         scene={this.props.scene}
         actions={this.props.actions}
         singlePostEditing={this.setEditing}
@@ -87,7 +92,7 @@ class SinglePostContainer extends Component {
       >
         {dataEl}
         <CustomSpinnerRelative
-          visible={(!this.postData) && !this.props.error}
+          visible={(!post) && !this.props.error}
         />
       </View>
     );
@@ -101,8 +106,9 @@ function mapStateToProps(state) {
     user: state.user,
     error: state.error.singlepost,
     comments: state.comments,
-    users: state.user,
+    users: state.user.users,
     tags: state.tags,
+    myPostInv: state.investments.myPostInv,
   };
 }
 

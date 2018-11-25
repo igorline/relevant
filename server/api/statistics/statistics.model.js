@@ -1,9 +1,9 @@
-'use strict';
+const mongoose = require('mongoose');
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-var StaticsticsSchema = new Schema({
+let StaticsticsSchema = new Schema({
+  communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
   date: { type: Date, index: true },
   startTime: { type: Date, index: true },
   endTime: { type: Date, index: true },

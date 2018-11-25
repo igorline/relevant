@@ -3,17 +3,18 @@
 sidebar{
   /*width: 40%;*/
   /*max-width: 400px;*/
-  flex: .7;
+  /*flex: .7;*/
   position: relative;
   margin-top: 1px;
   display: block;
   .innerSidebar {
-    /*background: hsl(240,20%,95%);*/
+    /*background: hsl(0,0%,0%);*/
+    /*color: white;*/
     background: $lightBg;
-    padding: 9%;
+    padding: 20px;
     padding-top: 20px;
+    width: 270px;
     margin: 0 0 0 $globalMargin;
-    width: 300px;
 
     button {
       width: 100%;

@@ -18,7 +18,7 @@ let FeedSchema = new Schema({
 FeedSchema.index({ userId: 1, createdAt: 1 });
 FeedSchema.index({ userId: 1, createdAt: 1, tags: 1 });
 
-FeedSchema.statics.processExpired = async function (user) {
+FeedSchema.statics.processExpired = async function processExpired(user) {
   let updateFeed;
   try {
     let oldestUnread = await this.findOne({ userId: user, read: false })

@@ -1,29 +1,29 @@
 import React from 'react';
 
+const sanitizeHtml = require('sanitize-html');
+
 const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
 
 function stripContentEditableHTML(text) {
-  console.log('edit text ', text);
   return (text || '')
-    .replace(/<div><br>/g, '\n')
-    .replace(/<div>/g, '\n')
-    .replace(/<br>\u200B/g, '\n')
-    .replace(HTML_REGEX, '');
+  .replace(/<div><br>/g, '\n')
+  .replace(/<div>/g, '\n')
+  .replace(/<br>\u200B/g, '\n')
+  .replace(HTML_REGEX, '');
 }
 
 function renderBody(lines) {
   return lines.split('\n')
-    .map((line) =>
-      line.split(' ')
-        .map((word) => {
-          if (word[0] === '#' || word[0] === '@') {
-            return '<b>' + word + '</b>';
-          }
-          return word;
-        })
-        .join(' ')
-    )
-    .join('<br>\u200B');
+  .map((line) =>
+    line.split(' ')
+    .map((word) => {
+      if (word[0] === '#' || word[0] === '@') {
+        return '<b>' + word + '</b>';
+      }
+      return word;
+    })
+    .join(' '))
+  .join('<br/>\u200B');
 }
 
 function onPaste(e) {
@@ -40,46 +40,21 @@ function onPaste(e) {
   document.execCommand('insertHTML', false, text);
 }
 
-function isChildOf(node, parentId) {
-  while (node !== null) {
-    if (node.id === parentId) {
-      return true;
-    }
-    node = node.parentNode;
-  }
-
-  return false;
-}
 
 function getCurrentCursorPosition(parentId) {
-  let selection = window.getSelection();
-  let charCount = -1;
-  let node;
-
-  if (selection.focusNode) {
-    if (isChildOf(selection.focusNode, parentId)) {
-      node = selection.focusNode;
-      charCount = selection.focusOffset;
-
-      while (node) {
-        if (node.id === parentId) {
-          break;
-        }
-        if (node.previousSibling) {
-          node = node.previousSibling;
-          charCount += node.textContent.length;
-        } else {
-          node = node.parentNode;
-          if (node === null) {
-            break;
-          }
-        }
-      }
-    }
+  let el = document.getElementById(parentId);
+  let caretOffset = 0;
+  if (typeof window.getSelection !== 'undefined') {
+    let range = window.getSelection().getRangeAt(0);
+    let selected = range.toString().length;
+    let preCaretRange = range.cloneRange();
+    preCaretRange.selectNodeContents(el);
+    preCaretRange.setEnd(range.endContainer, range.endOffset);
+    caretOffset = preCaretRange.toString().length - selected;
   }
-
-  return charCount;
+  return caretOffset;
 }
+
 
 function createRange(node, chars, range) {
   if (!range) {
@@ -142,9 +117,11 @@ export default class ContentEditable extends React.Component {
     //   this.el.innerHTML = this.lastHTML;
     // }
     if (lastProps.body === this.props.body) return;
+
     const lengthWithoutNewlines = this.props.body.replace(/\n/, '').replace(/&[^;]+;/g, ' ').length + 1;
+
     const newPosition = this.position + (this.hitEnter ? 1 : 0);
-    // console.log(this.position, lengthWithoutNewlines);
+
     if (this.props.lengthDelta) {
       setCurrentCursorPosition(this.el, this.position += this.props.lengthDelta);
     } else if (newPosition <= lengthWithoutNewlines) {
@@ -168,7 +145,10 @@ export default class ContentEditable extends React.Component {
     if (!this.el) return;
     const html = this.el.innerHTML;
     if (this.props.onChange && html !== this.lastHtml) {
-      e.target = { value: stripContentEditableHTML(html) };
+      let value = stripContentEditableHTML(html);
+      // let value = sanitizeHtml(html, { allowedTags: [], allowedAttributes: [] });
+
+      e.target = { value };
       this.props.onChange(e);
     }
     this.lastHtml = html;

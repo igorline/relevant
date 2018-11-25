@@ -1,4 +1,4 @@
-import MetaPost from './metaPost.model';
+import MetaPost from './link.model';
 import Post from '../post/post.model';
 
 

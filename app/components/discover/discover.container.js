@@ -168,28 +168,25 @@ class Discover extends Component {
   }
 
   renderRow(rowData, view, i) {
+    let { posts } = this.props;
     let type = this.myTabs[view].type;
     if (view !== 2) {
-      let posts = [];
-      let metaPost = this.props.posts.metaPosts[type][rowData];
-      if (metaPost) posts = metaPost.commentary.map(p => this.props.posts.posts[p]);
-      // else if (metaPost && view === 3) posts = metaPost.twitterCommentary.map(p => this.props.posts.posts[p]);
-      else return null;
-
-      // if (view === 3) {
-      //   console.log(posts);
-      // }
+      let post = posts.posts[rowData];
+      let link = posts.links[post.metaPost];
+      let commentary = post[type].map(c => posts.posts[c]);
 
       let showReposts = false;
       if (type === 'new') showReposts = true;
 
       return (<Post
         tooltip={parseInt(i) === 0 || false}
-        metaPost={metaPost}
+        post={post}
+        commentary={commentary}
+        link={link}
         showReposts={showReposts}
-        commentary={posts}
         actions={this.props.actions}
         styles={styles}
+        posts={posts}
       />);
     }
     let topic = this.topic ? this.topic._id : null;

@@ -1,12 +1,10 @@
-'use strict';
+let express = require('express');
+let controller = require('./comment.controller');
+let auth = require('../../auth/auth.service');
+let router = express.Router();
 
-var express = require('express');
-var controller = require('./comment.controller');
-var auth = require('../../auth/auth.service');
-var router = express.Router();
-
-router.get('/', controller.get);
-router.post('/', auth.isAuthenticated(), controller.create);
+router.get('/', auth.blocked(), controller.get);
+router.post('/', auth.isAuthenticated(), auth.communityMember(), controller.create);
 router.delete('/:id', auth.isAuthenticated(), controller.delete);
 router.put('/', auth.isAuthenticated(), controller.update);
 

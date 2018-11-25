@@ -91,7 +91,10 @@ function fetchMeta(initialState) {
   if (initialState.posts.posts) {
     const post_id = Object.keys(initialState.posts.posts)[0];
     if (post_id) {
-      const post = initialState.posts.posts[post_id];
+      let post = initialState.posts.posts[post_id];
+      if (post.metaPost) {
+        post = initialState.posts.links[post.metaPost] || {};
+      }
       title = post.title;
       image = post.image;
       description = post.body;
@@ -119,11 +122,15 @@ export default function handleRender(req, res) {
   let auth = {};
   // console.log('req ', req.unconfirmed);
   if (req.unconfirmed) auth.confirmed = false;
-  auth.community = req.subdomain || 'relevant';
+  // TODO how to deal with this better?
+  auth.community = 'relevant';
   const initialState = { auth };
 
   // Create a new Redux store instance
   const store = configureStore(initialState);
+
+  // TODO check this! better to use 'default user community'
+  store.dispatch(setUser(auth.community));
   if (req.user) store.dispatch(setUser(req.user));
 
   match(

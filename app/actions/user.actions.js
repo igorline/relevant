@@ -106,46 +106,25 @@ export function searchUser(userName) {
 
 export function getSelectedUser(userName) {
   return async dispatch => {
-    dispatch(getUserLoading());
-    return fetch(process.env.API_SERVER + '/api/user/user/' + userName, {
-      method: 'GET',
-      ...await utils.api.reqOptions()
-    })
-    .then(response => response.json())
-    .then((responseJSON) => {
-      dispatch(setSelectedUserData(responseJSON));
+    try {
+      dispatch(getUserLoading());
+      let user = await utils.api.request({
+        method: 'GET',
+        endpoint: 'user',
+        path: '/user/' + userName,
+      });
+      dispatch(setSelectedUserData(user));
       dispatch(errorActions.setError('profile', false));
       return true;
-    })
-    .catch((error) => {
-      console.log(error, 'error');
-      dispatch(errorActions.setError('profile', true, error.message));
-    });
+    } catch (err) {
+      dispatch(errorActions.setError('profile', true, err.message));
+      return false;
+    }
   };
 }
 
-// export
-// function getOnlineUsers(userArray, token) {
-//   return (dispatch) => {
-//     return fetch(
-//       process.env.API_SERVER +
-//       '/api/user/mulitiple' + userId +
-//       '?access_token=' + token,
-//       getOptions
-//     )
-//     .then((response) => response.json())
-//     .then((responseJSON) => {
-//       return { status: true, data: responseJSON };
-//     })
-//     .catch((error) => {
-//       console.log(error, 'error');
-//       return { status: false, data: error };
-//     });
-//   };
-// }
 
-export
-function getOnlineUser(userId) {
+export function getOnlineUser(userId) {
   return async dispatch => {
     return fetch(
       process.env.API_SERVER +
@@ -165,25 +144,6 @@ function getOnlineUser(userId) {
   };
 }
 
-export
-function getPostUser(userId, token) {
-  return (dispatch) => {
-    return fetch(
-      process.env.API_SERVER +
-      '/api/user/user/' + userId +
-      '?access_token=' + token,
-      getOptions
-    )
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then((responseJSON) => {
-      return responseJSON;
-    })
-    .catch((error) => {
-      console.log(error, 'error');
-    });
-  };
-}
 
 export function getUsers(skip, limit, tags) {
   if (!skip) skip = 0;

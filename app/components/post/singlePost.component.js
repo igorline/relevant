@@ -54,9 +54,9 @@ class SinglePostComments extends Component {
   componentWillMount() {
     this.id = this.props.postId;
 
-    let comments = this.props.postComments;
+    let comments = this.props.postComments.data || [];
     if (comments) {
-      this.comments = comments.data;
+      this.comments = comments.map(c => this.props.posts.posts[c]);
       this.total = comments.total || 0;
       if (this.total > 10) this.longFormat = true;
     }
@@ -87,7 +87,6 @@ class SinglePostComments extends Component {
       if (!this.comments && this.props.scene.openComment) {
         this.scrollToBottom(true);
       }
-      this.comments = next.postComments.data;
 
       this.total = next.postComments.total;
       if (this.total > 10) this.longFormat = true;
@@ -149,6 +148,9 @@ class SinglePostComments extends Component {
   }
 
   renderComments() {
+    let comments = this.props.postComments.data || [];
+    this.comments = comments.map(c => this.props.posts.posts[c]);
+
     if (this.props.post) {
       return (<FlatList
         ref={c => this.scrollView = c}
@@ -156,6 +158,9 @@ class SinglePostComments extends Component {
         renderItem={this.renderRow}
         keyExtractor={(item, index) => index.toString()}
         removeClippedSubviews
+
+        pageSize={1}
+        initialListSize={10}
 
         keyboardShouldPersistTaps={'always'}
         keyboardDismissMode={'interactive'}
@@ -210,6 +215,7 @@ class SinglePostComments extends Component {
       key={0}
       scene={this.props.scene}
       post={this.props.post}
+      link={this.props.link}
       actions={this.props.actions}
       focusInput={() => this.input.textInput.focus()}
     />);
@@ -244,6 +250,9 @@ class SinglePostComments extends Component {
 
 
   renderRow({ item, index }) {
+    let comment = item;
+    // let comment = this.props.posts.posts[item];
+    if (!comment) return null;
     return (
       <Comment
         {...this.props}
@@ -252,8 +261,9 @@ class SinglePostComments extends Component {
         index={index}
         scrollToComment={() => this.scrollToComment(index)}
         parentId={this.id}
-        comment={item}
+        comment={comment}
         parentView={this.scrollView}
+        users={this.props.users}
       />
     );
   }
@@ -291,7 +301,6 @@ class SinglePostComments extends Component {
   }
 
   render() {
-
     return (
       <KeyboardAvoidingView
         behavior={'padding'}

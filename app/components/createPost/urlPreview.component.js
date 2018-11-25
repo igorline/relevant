@@ -62,6 +62,8 @@ export default class UrlPreviewComponent extends Component {
       imageFlex = 0.25;
       fontSize = 13;
     }
+    let body = this.props.post && this.props.post.body;
+    body = this.props.urlPreview.title || body;
 
     if (this.props.urlPreview && (this.props.urlPreview.image || this.props.size !== 'small')) {
       let previewImage = this.props.urlPreview.image;
@@ -98,7 +100,7 @@ export default class UrlPreviewComponent extends Component {
                 numberOfLines={maxLines}
                 style={{ color: greyText, fontSize }}
               >
-                {this.props.urlPreview.title ? this.props.urlPreview.title.trim() : ''}
+                {body}
               </Text>
               {domain}
             </View>

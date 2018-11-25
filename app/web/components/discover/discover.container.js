@@ -66,18 +66,20 @@ export class Discover extends Component {
       this.load(this.props.params.sort, this.props);
       alreadyLoading = true;
     }
-    if (this.props.params.tag !== prevProps.params.tag) {
-      this.load(this.props.params.sort, this.props);
-      alreadyLoading = true;
-    }
+
     let userId = this.props.auth.user ? this.props.auth.user._id : null;
     let prevUserId = prevProps.auth.user ? prevProps.auth.user._id : null;
 
     // TODO should we do this w refresh instead? when we log in / out?
     if (userId !== prevUserId && !alreadyLoading) {
       this.load(this.props.params.sort, this.props);
+      alreadyLoading = true;
     }
 
+    if (this.props.params.tag !== prevProps.params.tag) {
+      this.load(this.props.params.sort, this.props);
+      alreadyLoading = true;
+    }
   }
 
 

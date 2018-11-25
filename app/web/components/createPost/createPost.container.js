@@ -3,7 +3,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import * as navigationActions from '../../../actions/navigation.actions';
-import ContentEditable from '../common/contentEditable.component';
+// import ContentEditable from '../common/contentEditable.component';
+import RichText from '../common/richText.component';
+
 import * as userActions from '../../../actions/user.actions';
 import * as createPostActions from '../../../actions/createPost.actions';
 import * as postActions from '../../../actions/post.actions';
@@ -13,7 +15,6 @@ import * as utils from '../../../utils';
 import CreatePostTeaser from './createPostTeaser.component';
 import AvatarBox from '../common/avatarbox.component';
 import PostInfo from '../post/postinfo.component';
-import UserSearch from './userSearch.component';
 import TagInput from './TagInput.component';
 import SelectTags from './selectTags.component';
 
@@ -35,12 +36,10 @@ class CreatePostContainer extends Component {
     this.handleBodyChange = this.handleBodyChange.bind(this);
     this.parseBody = this.parseBody.bind(this);
     this.createPreview = this.createPreview.bind(this);
-    this.handleSetMention = this.handleSetMention.bind(this);
     this.addTextFromLink = this.addTextFromLink.bind(this);
     this.setCategory = this.setCategory.bind(this);
     this.renderPreview = this.renderPreview.bind(this);
     this.createPost = this.createPost.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.validateInput = this.validateInput.bind(this);
     this.clearPost = this.clearPost.bind(this);
     this.selectTags = this.selectTags.bind(this);
@@ -50,15 +49,12 @@ class CreatePostContainer extends Component {
       domain: null,
       urlPreview: null,
       loadingPreview: false,
-      userSearchIndex: -1,
-      selectedTags: []
-      // active: true
+      selectedTags: [],
+      tags: null,
+      url: null,
+      mentions: null,
+      failedUrl: null,
     };
-    this.body = '';
-    this.tags = null;
-    this.url = null;
-    this.mention = null;
-    this.urlPreview = null;
   }
 
   componentWillMount() {
@@ -87,28 +83,19 @@ class CreatePostContainer extends Component {
     if (typeof tag === 'string') tag = [tag];
     let selectedTags = this.state.selectedTags;
     selectedTags = [...new Set([...selectedTags, ...tag])];
-    console.log(selectedTags);
     this.setState({ selectedTags });
   }
 
   clearPost() {
-    this.url = null;
-    this.urlPreview = null;
     this.props.actions.clearCreatePost();
     this.stateFromReducer();
   }
 
   clearUrl() {
-    this.url = null;
-    this.urlPreview = null;
     this.setState({
       postUrl: null,
       urlPreview: null
     });
-  }
-
-  componentDidUpdate() {
-    this.lengthDelta = 0;
   }
 
   componentWillUnmount() {
@@ -119,7 +106,7 @@ class CreatePostContainer extends Component {
     let props = this.props.createPost;
     this.setState({
       ...props,
-      body: props.postBody,
+      body: props.postBody || '',
       category: props.postCategory,
       tags: props.allTags,
     });
@@ -127,7 +114,7 @@ class CreatePostContainer extends Component {
   }
 
   updateReducer() {
-    const allTags = this.tags ? this.tags.concat(this.state.selectedTags) : [];
+    const allTags = this.state.tags ? this.state.tags.concat(this.state.selectedTags) : [];
     const tags = Array.from(new Set(allTags));
 
     let state = {
@@ -142,58 +129,68 @@ class CreatePostContainer extends Component {
 
   validateInput() {
     if (!this.state.selectedTags.length) {
-      return this.setSate({ validate: 'Please select at least one topic' });
+      this.setSate({ validate: 'Please select at least one topic' });
+      return 'Please select at least one topic';
     }
-    if (!this.props.body && !this.state.postUrl) {
-      return this.setSate({ validate: 'Please paste article link' });
+    if (!this.state.body && !this.state.postUrl) {
+      this.setState({ validate: 'Please paste article link' });
+      return 'Can not create empty post';
     }
+    return true;
   }
 
   async createPost() {
+    let { auth, close, actions, router, location, createPost } = this.props;
+    let { tags, body, selectedTags, postUrl, urlPreview, category, mentions, domain } = this.state;
     try {
-      const allTags = this.tags.concat(this.state.selectedTags);
-      const tags = Array.from(new Set(allTags));
+      let validate = this.validateInput();
+      if (validate !== true) {
+        throw new Error(validate);
+      }
+      const allTags = tags.concat(selectedTags);
+      tags = Array.from(new Set(allTags));
 
-      let body = this.state.body.replace(/&nbsp;/gi, '');
+      body = body.replace(/&nbsp;/gi, '');
 
       let post = {
-        link: this.state.postUrl || this.props.postUrl,
+        link: postUrl || postUrl,
         tags,
         body,
-        title: this.state.urlPreview ? this.state.urlPreview.title : null,
-        description: this.state.urlPreview ? this.state.urlPreview.description : null,
-        category: this.state.category,
-        image: this.state.urlPreview ? this.state.urlPreview.image : null,
-        mentions: this.mentions,
-        domain: this.state.domain
+        title: urlPreview ? urlPreview.title : null,
+        description: urlPreview ? urlPreview.description : null,
+        category,
+        image: urlPreview ? urlPreview.image : null,
+        mentions,
+        domain
       };
 
-      if (this.props.createPost.edit) {
-        post = { ...this.props.createPost.editPost, ...post };
-        let success = await this.props.actions.editPost(post);
+      if (createPost.edit) {
+        post = { ...createPost.editPost, ...post };
+        let success = await actions.editPost(post);
         if (success) {
           this.clearPost();
-          this.props.router.push(this.props.location.pathname);
-          if (this.props.close) this.props.close();
+          router.push(location.pathname);
+          if (close) close();
         }
         return;
       }
 
-      let newPost = await this.props.actions.submitPost(post);
+      let newPost = await actions.submitPost(post);
 
-      if (this.props.close) this.props.close();
+      if (close) close();
       if (newPost) {
         this.clearPost();
       }
 
       // this.props.actions.replace(this.props.location.pathname);
-      this.props.router.push('/discover/new/');
-      this.props.actions.refreshTab('discover');
+      router.push(`/${auth.community}/new/`);
+      actions.refreshTab('discover');
 
       // Analytics.logEvent('newPost', {
       //   viaShare: this.props.share
       // });
     } catch (err) {
+      console.log(err);
       alert(err.message);
     }
   }
@@ -202,108 +199,34 @@ class CreatePostContainer extends Component {
     this.setState({ [field]: data });
   }
 
-  handleKeyDown(e) {
-    // console.log(e.keyCode);
-    const userCount = this.props.userSearch.length;
-    switch (e.keyCode) {
-      case 37: // left
-      case 38: // up
-        if (this.props.userSearch.length) {
-          e.preventDefault();
-          this.setState({
-            userSearchIndex: (this.state.userSearchIndex - 1 + userCount) % userCount,
-          });
-        }
-        break;
-      case 39: // right
-      case 40: // down
-        if (this.props.userSearch.length) {
-          e.preventDefault();
-          this.setState({
-            userSearchIndex: (this.state.userSearchIndex + 1) % userCount,
-          });
-        }
-        break;
-      case 13: // enter
-        if (this.props.userSearch.length) {
-          e.preventDefault();
-          const userIndex = Math.max(this.state.userSearchIndex, 0);
-          const user = this.props.userSearch[userIndex];
-          this.handleSetMention(user);
-        }
-        break;
-      default:
-        break;
-    }
-    return true;
-  }
 
-  handleBodyChange(e) {
-    const body = e.target.value;
+  handleBodyChange(body, data) {
     if (body !== this.state.body) {
-      this.setState({ body });
+      this.setState({ ...data, body });
     }
   }
 
-  handleSetMention(user) {
-    if (!user) return;
-    // replace the partial @username with @username plus a nbsp
-    this.lengthDelta = user._id.length - this.mention.length + 2;
-    const body = this.state.body.replace(this.mention, '@' + user._id + '\u00A0'); // nbsp
-    this.setState({ body, userSearchIndex: -1 });
-    this.props.actions.setUserSearch([]);
-  }
 
   parseBody(newState) {
-    let postBody = '';
-    if (newState) postBody = newState.body;
+    let postBody = newState.body;
+    if (postBody === '') return;
     let lines = postBody.replace(/&nbsp;/g, ' ').split('\n');
     let words = [];
     lines.forEach(line => words = words.concat(line.split(' ')));
 
     let shouldParseUrl = false;
-    let prevLength = this.body.length || 0;
+    let prevLength = this.state.body.length || 0;
 
     if (postBody.length - prevLength > 1) shouldParseUrl = true;
     if (words[words.length - 1] == '') shouldParseUrl = true;
     if (postBody[postBody.length - 1] == '\n') shouldParseUrl = true;
 
-    let postUrl = words.find(word => URL_REGEX.test(word.toLowerCase()));
-
-    if (!this.state.postUrl && shouldParseUrl && postUrl && postUrl !== this.url) {
-      this.url = postUrl;
+    if (this.state.url &&
+      !this.state.postUrl &&
+      shouldParseUrl &&
+      this.state.postUrl !== this.state.url) {
       this.createPreview();
     }
-
-    let lastWord = words[words.length - 1];
-    if (lastWord.match(/^@\S+/g) && lastWord.length > 1) {
-      this.mention = lastWord;
-      this.props.actions.searchUser(lastWord.replace('@', ''));
-    } else {
-      this.props.actions.setUserSearch([]);
-    }
-
-    let bodyTags = words.map((word) => {
-      if (word.match(/^#\S+/g)) {
-        return word.replace('#', '').replace(/(,|\.|!|\?)\s*$/, '');
-      }
-      return null;
-    })
-    .filter(el => el !== null);
-
-
-    let bodyMentions = words.map((word) => {
-      if (word.match(/^@\S+/g)) {
-        return word.replace('@', '').replace(/(,|\.|!|\?)\s*$/, '');
-      }
-      return null;
-    })
-    .filter(el => el !== null);
-
-    this.body = postBody;
-    this.tags = bodyTags;
-    this.mentions = bodyMentions;
-    // console.log(this.body, this.tags, this.mentions)
   }
 
   addTextFromLink() {
@@ -319,7 +242,20 @@ class CreatePostContainer extends Component {
   }
 
   createPreview() {
-    let postUrl = this.url;
+    let { url } = this.state;
+    // better logic?
+    if (this.state.loadingPreview) return;
+
+    let postUrl = url;
+    this.setState({
+      body: this.state.body.replace(postUrl, '').trim(),
+      loadingPreview: true,
+      urlPreview: {
+        loading: true,
+      }
+    });
+
+
     utils.post.generatePreviewServer(postUrl)
     .then((results) => {
       if (results && results.url) {
@@ -331,6 +267,7 @@ class CreatePostContainer extends Component {
         this.setState({
           domain: results.domain,
           postUrl: results.url,
+          url: results.url,
           loadingPreview: false,
           keywords: results.keywords,
           postTags: results.tags,
@@ -343,14 +280,7 @@ class CreatePostContainer extends Component {
           },
         });
       } else {
-        this.url = null;
-      }
-    });
-    this.setState({
-      body: this.state.body.replace(postUrl, '').trim(),
-      loadingPreview: true,
-      urlPreview: {
-        loading: true,
+        this.setState({ failedUrl: this.state.url, loadingPreview: false });
       }
     });
   }
@@ -383,18 +313,15 @@ class CreatePostContainer extends Component {
         <AvatarBox user={this.props.auth.user} auth={this.props.auth} />
 
         <div style={{ position: 'relative' }}>
-          <ContentEditable
-            className="editor"
+          <RichText
+            className="postInput"
             body={this.state.body}
             placeholder={placeholder}
             onChange={this.handleBodyChange}
-            onKeyDown={this.handleKeyDown}
-            lengthDelta={this.lengthDelta}
             onBlur={e => {
               if (!this.state.body.length && !this.state.postUrl) {
                 this.setState({ active: false });
               }
-              // e.preventDefault();
             }}
           />
           <div className='addFromLink'>
@@ -409,11 +336,6 @@ class CreatePostContainer extends Component {
         </div>
 
         <div className="createOptions">
-          <UserSearch
-            users={this.props.userSearch}
-            onChange={this.handleSetMention}
-            userSearchIndex={this.state.userSearchIndex}
-          />
           <TagInput
             selectedTags={this.state.selectedTags}
             selectTag={this.selectTags}
@@ -422,6 +344,7 @@ class CreatePostContainer extends Component {
               selectedTags = selectedTags.filter(t => t !== tag);
               this.setState({ selectedTags });
             }}
+            placeholderText={!this.state.selectedTags ? 'Please add at least one tag' : ''}
           />
 
           <row>
@@ -435,7 +358,7 @@ class CreatePostContainer extends Component {
             <button
               className="shadowButton"
               onClick={() => this.createPost()}
-              disabled={!this.state.selectedTags.length || (!this.body.length && !this.state.postUrl)}
+              disabled={!this.state.selectedTags.length || (!this.state.body.length && !this.state.postUrl)}
             >
               {this.props.createPost.edit ? 'Update Post' : 'Create Post'}
             </button>

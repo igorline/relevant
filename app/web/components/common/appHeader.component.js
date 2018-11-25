@@ -95,11 +95,11 @@ class AppHeader extends Component {
 
   renderWallet() {
     if (!this.props.isAuthenticated) return null;
-    let active = this.props.location.pathname === '/wallet';
+    let active = this.props.location.pathname === '/user/wallet';
     active = active ? 'active' : '';
     return (
       <Link
-        to={'/wallet'}
+        to={'/user/wallet'}
         className={'navLink ' + active}
       >
         Wallet
@@ -122,7 +122,7 @@ class AppHeader extends Component {
             Read more about Relevant
           </a>
         </div>
-        <Link to="/signup">
+        <Link to="/user/signup">
           <ShadowButton>
             Sign Up
           </ShadowButton>
@@ -146,14 +146,18 @@ class AppHeader extends Component {
         <header>
           <div className="headerInner row">
             <div>
-              <Link to={this.props.isAuthenticated ? '/discover/new' : '/'}>
+              <Link to={this.props.isAuthenticated ? '/relevant/new' : '/'}>
                 <img src={'/img/logo.svg'} className={'logo'} alt={'Relevant'} />
               </Link>
             </div>
 {/*            <h3>#{this.props.auth.community}</h3>
 */}
             <div className="tabContainer">
-              <DiscoverTabs params={this.props.params} location={this.props.location} />
+              <DiscoverTabs
+                params={this.props.params}
+                location={this.props.location}
+                auth={this.props.auth}
+              />
             </div>
 
             <div className={'rightNav'}>

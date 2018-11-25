@@ -1,10 +1,33 @@
+import { normalize, schema } from 'normalizr';
 import * as types from '../actions/actionTypes';
+
+const repostSchema = new schema.Entity(
+  'posts',
+  // { comments: [commentSchema], user: userSchema },
+  { idAttribute: '_id' }
+);
+
+const linkSchema = new schema.Entity(
+  'links',
+  {},
+  { idAttribute: '_id' }
+);
+
+const postSchema = new schema.Entity(
+  'posts',
+  {
+    repost: { post: repostSchema },
+    metaPost: linkSchema
+  },
+  { idAttribute: '_id' }
+);
 
 const initialState = {
   postError: null,
   feedUnread: null,
   feed: [],
   twitterFeed: [],
+  // store top & bottom arrays here for feed render
   top: [],
   new: [],
   flagged: [],
@@ -20,23 +43,15 @@ const initialState = {
   newFeedAvailable: false,
   newPostsAvailable: {},
   userPosts: {},
-  metaPosts: {
-    new: {},
-    top: {},
-    flagged: {},
-  },
   topics: {
     new: {},
-    top: {}
+    top: {},
+    all: {}
   },
   posts: {},
-  comments: {},
-  // commentary: {
-  //   top: {},
-  //   new: {},
-  // },
   topPosts: [],
   related: {},
+  links: {},
 };
 
 function mergePosts(posts, state) {
@@ -46,10 +61,12 @@ function mergePosts(posts, state) {
     // need to do this so reposted = null doesen't over-write existing value
     let reposted = posts[id].reposted;
     if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
+    let postData = (posts[id] && posts[id].data) || (state.posts[id] && state.posts[id].data);
     mPosts[id] = {
       ...state.posts[id],
       ...posts[id],
-      reposted
+      reposted,
+      postData
     };
   });
   return mPosts;
@@ -57,7 +74,6 @@ function mergePosts(posts, state) {
 
 export default function post(state = initialState, action) {
   switch (action.type) {
-
     case types.SET_RELATED: {
       return {
         ...state,
@@ -91,10 +107,14 @@ export default function post(state = initialState, action) {
     }
 
     case types.SET_POSTS_SIMPLE: {
-      let posts = mergePosts(action.payload, state);
+      let posts = mergePosts(action.payload.data.entities.posts, state);
       return {
         ...state,
         posts: { ...state.posts, ...posts },
+        links: {
+          ...state.links,
+          ...action.payload.data.entities.links
+        },
       };
     }
 
@@ -116,14 +136,6 @@ export default function post(state = initialState, action) {
             ]
           }
         },
-        metaPosts: {
-          ...state.metaPosts,
-          [type]: {
-            ...state.metaPosts[type],
-            ...action.payload.data.entities.metaPosts
-          },
-        },
-        comments: { ...state.comments, ...action.payload.data.entities.comments },
         posts: { ...state.posts, ...posts },
         loaded: {
           ...state.loaded,
@@ -148,28 +160,14 @@ export default function post(state = initialState, action) {
           ...state[type].slice(0, action.payload.index),
           ...action.payload.data.result[type],
         ],
-        metaPosts: {
-          ...state.metaPosts,
-          // all: {
-          //   ...state.metaPosts.all,
-          //   ...action.payload.data.entities.metaPosts
-          // },
-          [type]: {
-            ...state.metaPosts[type],
-            ...action.payload.data.entities.metaPosts
-          },
-        },
-        // commentary: {
-        //   [type]: {
-        //     ...state.metaPosts[type],
-        //     ...action.payload.data.entities.metaPosts
-        //   },
-        // },
-        comments: { ...state.comments, ...action.payload.data.entities.comments },
         posts: { ...state.posts, ...posts },
         loaded: {
           ...state.loaded,
           [type]: true,
+        },
+        links: {
+          ...state.links,
+          ...action.payload.data.entities.links
         },
         newPostsAvailable: {}
       };
@@ -187,29 +185,50 @@ export default function post(state = initialState, action) {
 
     case types.UPDATE_POST: {
       let id = action.payload._id;
+      let data = normalize(action.payload, postSchema);
+      let updatePost = data.entities.posts[id];
+
       // need to do this so reposted = null doesen't over-write existing value
       let reposted = action.payload.reposted;
       if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
+      let postData = updatePost.data || state.posts[id].data;
+      let embeddedUser = state.posts[id] ? state.posts[id].embeddedUser : null;
+      // TODO normalize this — should keep this in users store
+      if (updatePost.embeddedUser &&
+        updatePost.embeddedUser.relevance &&
+        updatePost.embeddedUser.relevance.pagerank !== undefined) {
+        embeddedUser = updatePost.embeddedUser;
+      }
+
       return {
         ...state,
+        links: {
+          ...state.links,
+          ...data.entities.links
+        },
         posts: {
           ...state.posts,
           [id]: {
             ...state.posts[id],
-            ...action.payload,
-            reposted
+            ...updatePost,
+            reposted,
+            data: postData,
+            embeddedUser
           }
         }
       };
     }
 
     case types.REMOVE_POST: {
-      let id = action.payload._id;
+      let id = action.payload._id || action.payload;
       let newPosts = { ...state.posts };
       delete newPosts[id];
       return {
         ...state,
-        posts: newPosts
+        posts: {
+          ...state.posts,
+          [id]: null
+        }
       };
     }
 
@@ -225,6 +244,10 @@ export default function post(state = initialState, action) {
             ...currentPosts.slice(0, action.payload.index),
             ...action.payload.data.result[id]
           ]
+        },
+        links: {
+          ...state.links,
+          ...action.payload.data.entities.links,
         },
         posts: { ...state.posts, ...posts },
         loaded: {
@@ -317,6 +340,28 @@ export default function post(state = initialState, action) {
         userPosts: {},
       });
     }
+
+    // we store comments in post state
+    case types.SET_COMMENTS: {
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          ...action.payload.data.entities.comments
+        }
+      };
+    }
+
+    case types.ADD_COMMENT: {
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          [action.payload.comment._id]: action.payload.comment
+        }
+      };
+    }
+
 
     // this wipes feed on login
     // case types.LOGIN_USER_SUCCESS: {
