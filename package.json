@@ -154,7 +154,7 @@
     "universal-cookie-express": "^2.1.2",
     "uuid": "^3.0.1",
     "voucher-code-generator": "^1.1.1",
-    "web3": "^1.0.0-beta.34",
+    "web3": "1.0.0-beta.33",
     "webpack": "^4.4.1",
     "whatwg-fetch": "^2.0.1"
   },
@@ -203,8 +203,8 @@
     "precss": "^3.1.2",
     "react-hot-loader": "^4.0.0",
     "react-native-debugger-open": "^0.3.11",
-    "react-native-twitter-signin": "git+https://github.com/balasan/react-native-twitter-signin.git",
     "react-native-mock": "^0.2.7",
+    "react-native-twitter-signin": "git+https://github.com/balasan/react-native-twitter-signin.git",
     "redux-mock-store": "^1.0.2",
     "style-loader": "^0.13.0",
     "supertest": "^3.0.0",
