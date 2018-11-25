@@ -557,7 +557,6 @@ exports.updateHandle = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     let role = req.user.role;
-    let savedUser = null;
     let authUser = JSON.stringify(req.user._id);
     let reqUser = JSON.stringify(req.body._id);
     let updateImage = false;
@@ -567,7 +566,7 @@ exports.update = async (req, res, next) => {
     if (authUser !== reqUser && role !== 'admin') {
       throw new Error('Not authorized to edit this user');
     }
-    user = await User.findOne({ _id: req.body._id }, '-salt -hashedPassword');
+    user = await User.findOne({ _id: req.body._id }, '-salt -hashedPassword -relevance');
     if (!user) throw new Error('user not found');
 
     if (user.name !== req.body.name) {
@@ -609,7 +608,7 @@ exports.update = async (req, res, next) => {
         { multi: true }
       );
     }
-    return res.status(200).json(savedUser);
+    return res.status(200).json(user);
   } catch (err) {
     return next(err);
   }

@@ -78,15 +78,6 @@ export default function auth(state = initialState, action) {
         statusText: action.payload
       };
 
-    case types.UPDATE_USER:
-      if (!state.user || action.payload._id !== state.user._id) return state;
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          ...action.payload
-        }
-      };
 
     case types.SET_SELECTED_USER_DATA: {
       if (!state.user || state.user._id !== action.payload._id) return state;
@@ -105,17 +96,19 @@ export default function auth(state = initialState, action) {
         preUser: null,
       };
 
+    case types.UPDATE_USER:
     case types.UPDATE_AUTH_USER: {
       let id = action.payload._id;
+      if (state.user && id !== state.user._id) return state;
       let relevance = action.payload.relevance;
-      if ((!relevance || !relevance.pagerank)
-        && state.users[id]) relevance = state.users[id].relevance;
+      if ((!relevance || relevance.pagerank === undefined)
+        && state.user) relevance = state.user.relevance;
       return {
         ...state,
         user: {
           ...state.user,
           ...action.payload,
-          ...relevance
+          relevance
         }
       };
     }

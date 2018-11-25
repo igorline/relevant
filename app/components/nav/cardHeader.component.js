@@ -228,7 +228,6 @@ class CardHeader extends Component {
     let key = this.props.defaultContainer;
 
     if (this.props.auth && this.props.auth.user) {
-      console.log('user ', this.props.auth.user);
       let component = props.scene.route.component;
       statsEl = (
         <Stats
