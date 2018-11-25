@@ -250,7 +250,6 @@ async function investCheck(params) {
 
   // TODO undo invest
   if (investment) {
-    console.log('found investment ', investment);
     let now = new Date();
     let timeElapsed = now.getTime() - (new Date(investment.createdAt)).getTime();
 
@@ -410,7 +409,6 @@ exports.create = async (req, res, next) => {
       path: 'relevance',
       match: { communityId, global: true }
     });
-    user = user.updatePower();
 
     let author = await User.findOne(
       { _id: post.user },
@@ -424,7 +422,7 @@ exports.create = async (req, res, next) => {
 
     // Init user relevance
     // TODO: should this be done upon joining a community?
-    if (!author.relevance) {
+    if (author && !author.relevance) {
       author.relevance = new Relevance({
         user: author._id, communityId, global: true
       });
