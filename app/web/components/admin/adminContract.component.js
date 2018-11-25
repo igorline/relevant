@@ -4,13 +4,11 @@ import React, {
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import { numbers } from '../../../utils';
+import { BondingCurveContext } from 'bonded-token';
 
 export default class AdminContract extends Component {
   // this context comes from the BondedTokenContainer
-  static contextTypes = {
-    contractParams: PropTypes.object,
-    accountInfo: PropTypes.object,
-  }
+  static contextType = BondingCurveContext;
 
   state = {
     buyAmount: '',
@@ -53,10 +51,9 @@ export default class AdminContract extends Component {
       virtualSupply,
       virtualBalance,
       distributedRewards,
-      rewardPool
+      rewardPool,
+      walletBalance
     } = this.context.contractParams;
-
-    let { walletBalance } = this.context.accountInfo;
 
     let { connectedBalance, connectedAccount, nonce } = this.props.wallet;
 

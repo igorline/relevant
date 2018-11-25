@@ -31,27 +31,32 @@ if (process.env.BROWSER === true) {
   require('./splash/splash.css');
 }
 
+const networkId = 4;
+
 let options = {
   contracts: [
     RelevantCoin
   ],
   events: {},
   polls: {
-    blocks: 300,
+    blocks: 100,
     accounts: 300,
   },
-  networkId: 4,
+  networkId,
   web3: {
+    ignoreMetamask: true,
     useMetamask: true,
-    block: false,
-    fallback: {
-      type: 'ws',
-      url: 'wss://rinkeby.infura.io/_ws'
+    fallback: global.web3 ? null : {
+      type: 'https',
+      url: 'https://rinkeby.infura.io/' + 'eAeL7I8caPNjDe66XRTq',
+      // type: 'ws',
+      // url: 'ws://rinkeby.infura.io/_ws',
+      networkId: 4,
     }
   }
 };
 
-const ThemeContext = React.createContext('light');
+// const ThemeContext = React.createContext('light');
 
 class App extends Component {
   static contextTypes = {
@@ -64,16 +69,17 @@ class App extends Component {
 
   componentWillMount() {
     let community = this.props.params.community;
-    this.props.actions.setCommunity(community);
+    if (community) this.props.actions.setCommunity(community);
   }
 
   componentDidMount() {
     // document.body.classList.remove('loading')
-    api.setCommunity(this.props.auth.community);
+    let community = this.props.auth.community;
+    api.setCommunity(community);
     this.props.actions.getUser();
     new Drizzle(options, this.context.store);
 
-    // this will be harsh...
+    // TODO do this after a timeout
     // window.addEventListener('focus', () => {
     //   if (this.props.newPosts)
     //   this.props.actions.refreshTab('discover');
@@ -158,11 +164,10 @@ class App extends Component {
 
     return (
       <main>
-
         <EthTools>
           {header}
           <div style={{ display: 'flex', width: '100%' }}>
-            <CommunityNav {...this.props} />
+            {/*<CommunityNav {...this.props} />*/}
             {this.props.children}
           </div>
           <AuthContainer

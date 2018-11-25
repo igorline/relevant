@@ -5,8 +5,12 @@ import * as postController from '../api/post/post.controller';
 import TwitterFeed from '../api/twitterFeed/twitterFeed.model';
 import Treasury from '../api/treasury/treasury.model';
 import Relevance from '../api/relevance/relevance.model';
+import Community from '../api/community/community.model';
 
 import { TWITTER_DECAY } from '../config/globalConstants';
+
+let DEFAULT_COMMINITY = 'relevant';
+let DEFAULT_COMMINITY_ID;
 
 const TENTH_LIFE = 1 * 6 * 60 * 60 * 1000;
 
@@ -190,7 +194,7 @@ async function processTweet(tweet, user) {
   let linkParent;
 
   if (post) {
-    linkParent = await Meta.findOne({ _id: post.linkParent });
+    linkParent = await Post.findOne({ _id: post.linkParent });
     // if (parentPost) parentPost.seenInFeedNumber += 1;
     // await metaPost.save();
   } else {
@@ -226,8 +230,9 @@ async function processTweet(tweet, user) {
 
     post = new Post({
       // for now only pull tweets for relevant
-      community: 'relevant',
-
+      community: DEFAULT_COMMINITY,
+      communityId: DEFAULT_COMMINITY_ID,
+      title: processed.title,
       body,
       tags,
       postDate: originalTweet.created_at,
@@ -242,24 +247,20 @@ async function processTweet(tweet, user) {
 
       twitterUser: tweet.user.id,
       twitterId: tweet.id,
-      // twitterRetweets: tweet.retweet_count,
-      // twitterFavs: tweet.favorite_count,
-      // TODO do we know user? use relevance!
       twitterScore: 2 * tweet.retweet_count + tweet.favorite_count,
       twitter: true,
       // feedRelevance: user.relevance || 0,
       twitterUrl: tweet.entities.urls[0].expanded_url,
       seenInFeedNumber: 1,
+      hidden: true,
     });
 
-
+    post = await post.addPostData();
     post = await post.upsertLinkParent(linkObject);
 
-    linkParent = post.linkParent;
-    // console.log(post);
-    // metaPost = await post.upsertMetaPost(null, linkObject);
-    // post.metaPost = metaPost._id;
+    console.log('post data ', post.data);
 
+    linkParent = post.linkParent;
     // let heapUsed = process.memoryUsage().heapUsed;
     // let mb = Math.round(100 * heapUsed / 1048576) / 100;
     // console.log('Program is using ' + mb + 'MB of Heap.');
@@ -319,7 +320,6 @@ async function getUserFeed(user, i) {
       access_token_key: user.twitterAuthToken,
       access_token_secret: user.twitterAuthSecret
     });
-
     // console.log(user.lastTweetId.toString());
 
     const params = {
@@ -364,16 +364,19 @@ async function getUserFeed(user, i) {
 
 async function cleanup(users) {
   let now = new Date();
+
+  // TODO fix this
   let posts = await Post.find({
     twitter: true,
-    relevance: { $lte: 0 },
-    postDate: { $lt: now.getTime() - 3 * 24 * 60 * 60 * 1000 } })
+    hidden: true,
+    postDate: { $lt: now.getTime() - 3 * 24 * 60 * 60 * 1000 }
+  })
   .limit(1000);
 
-  console.log('clearing ', posts.length, ' posts');
+  console.log('clearing twitter posts ', posts.length, ' posts');
   let removePosts = await posts.map(p => p.remove());
 
-  await Promise.all(removePosts)
+  await Promise.all(removePosts);
 
   console.log('processing ', users.length, ' users');
   let processedUsers = users.map(async (u, i) => {
@@ -403,11 +406,14 @@ async function cleanup(users) {
 
 async function getUsers(userId) {
   try {
+    let community = await Community.findOne({ slug: DEFAULT_COMMINITY });
+    DEFAULT_COMMINITY_ID = community._id;
+
     // for now we are only pulling tweets for the relevant community
     let userList = await Relevance.find({ community: 'relevant', global: true, relevance: { $gt: 1 }});
     userList = userList.map(u => u.user);
 
-    let query = userId ? { _id: userId } : { _id: { $in: userList }};
+    let query = userId ? { _id: userId } : { _id: { $in: userList } };
 
     let users = await User.find(
       { twitterHandle: { $exists: true }, ...query },

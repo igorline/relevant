@@ -38,8 +38,8 @@ export default function AvatarBox(props) {
   if (user.relevance && !props.dontShowRelevance) {
     relevance = (
       <span>
-        <img src="/img/r-emoji.png" alt="R" className="r" />
-        {Math.round(user.relevance.relevance || user.relevance)}
+        <span style={{ backgroundImage: 'url(/img/r-emoji.png)'}} alt="R" className="r" />
+        {Math.round(user.relevance.pagerank)}
       </span>
     );
   }

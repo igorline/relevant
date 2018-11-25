@@ -26,7 +26,9 @@ class AuthContainer extends Component {
     this.authNav = this.authNav.bind(this);
     this.close = this.close.bind(this);
 
-    const redirectRoute = this.props.location.query.redirect || '/discover/new';
+    let defaultRoute = '/' + this.props.auth.community + '/new';
+
+    const redirectRoute = this.props.location.query.redirect || defaultRoute;
 
     this.state = {
       redirectTo: redirectRoute,
@@ -56,9 +58,12 @@ class AuthContainer extends Component {
   }
 
   authNav(type) {
+    // type = type;
+    console.log('is modal', this.props.modal);
+
     if (this.props.modal) {
       this.setState({ type });
-    } else this.props.actions.push(type);
+    } else this.props.actions.push('/user/' + type);
   }
 
   async signup(data) {
@@ -110,6 +115,7 @@ class AuthContainer extends Component {
     }
 
     let title = '';
+    console.log('path', path);
 
     if (path === 'confirm/:user/:code') {
       confirm = true;

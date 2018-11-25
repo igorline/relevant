@@ -65,7 +65,7 @@ class Profile extends Component {
           <div className="name">{user.name}</div>
           <div className="relevance">
             <img src="/img/r-emoji.png" alt="Relevance" className="r" />
-            {Math.round(user.relevance || 0)}
+            {Math.round(user.relevance ? user.relevance.pagerank || 0 : 0)}
             <img src="/img/relevantcoin.png" alt="Coins" className="coin" />
             {fixed(this.state.tokens) || 0}
           </div>

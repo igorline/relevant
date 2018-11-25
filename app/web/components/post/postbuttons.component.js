@@ -18,7 +18,7 @@ class PostButtons extends Component {
     this.share = this.share.bind(this);
   }
 
-  async vote(e) {
+  async vote(e, vote) {
     try {
       e && e.preventDefault();
       e.stopPropagation();
@@ -29,9 +29,10 @@ class PostButtons extends Component {
       await this.props.actions.vote(
         amount,
         this.props.post,
-        this.props.auth.user
+        this.props.auth.user,
+        vote
       );
-      alert('Success!');
+      // alert('Success!');
 
       // TODO animation & analytics
       // Analytics.logEvent('upvote');
@@ -52,7 +53,7 @@ class PostButtons extends Component {
     return null;
   }
 
-  async irrelevant(e) {
+  async irrelevant(e, vote) {
     try {
       e && e.preventDefault();
       e.stopPropagation();
@@ -63,8 +64,8 @@ class PostButtons extends Component {
       // this.props.actions.triggerAnimation('irrelevant', -1);
       // return;
 
-      await this.props.actions.vote(-1, this.props.post, this.props.auth.user);
-      alert('Success!');
+      await this.props.actions.vote(-1, this.props.post, this.props.auth.user, vote);
+      // alert('Success!');
 
       // TODO animations
       // this.props.actions.triggerAnimation('vote', -1);
@@ -121,19 +122,19 @@ class PostButtons extends Component {
         <div className="left">
           <a
             style={buttonOpacity}
-            onClick={e => vote ? e.stopPropagation() : this.vote(e)}
+            onClick={e => this.vote(e, vote)}
           >
             <img alt="Upvote" src={votedUp ? '/img/upvoteActive.png' : upvoteBtn} className="upvote" />
           </a>
           <div className="fraction">
             <div className="dem">
-              {post.data ? post.data.relevance : null}
+              {post.data ? Math.round(post.data.pagerank) : null}
               <img alt="R" src="/img/r-gray.svg" />
             </div>
           </div>
           <a
             style={buttonOpacity}
-            onClick={e => vote ? e.stopPropagation() : this.irrelevant(e)}
+            onClick={e => this.irrelevant(e, vote)}
           >
             <img alt="Downvote" src={votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg'} className="downvote" />
           </a>

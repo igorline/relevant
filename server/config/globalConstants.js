@@ -17,3 +17,6 @@ export const NEW_USER_COINS = 20; // amount of coins new users get
 export const SLOPE = 1 / 1; // slope of bonding curve for posts
 export const EXPONENT = 1; // exponent for bonding curve price formula
 export const POWER_REGEN_INTERVAL = 24 * 60 * 60 * 1000; // 1 day to fully regenerate vote power
+
+export const RELEVANCE_DECAY = 90 * DAYS; // half life of relevance
+export const MINIMUM_RANK = 1; // minimum rank to be considered for rewards

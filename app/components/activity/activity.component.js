@@ -68,6 +68,7 @@ export default class SingleActivity extends Component {
   }
 
   renderStat(activity) {
+    if (activity.amount <= 0) return null;
     let { coin, relevance } = activityHelper.getStatParams(activity);
     let icon = require('../../assets/images/rup.png');
     let color = { color: green };

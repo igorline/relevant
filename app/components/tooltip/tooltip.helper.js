@@ -42,7 +42,7 @@ function renderRow(props, txt) {
   );
 }
 
-exports.text.relevance = function (props) {
+exports.text.relevance = function relevance(props) {
   if (!props.auth.user) return null;
 
   let data = [
@@ -51,6 +51,8 @@ exports.text.relevance = function (props) {
   ];
 
   let dataEl = data.map(txt => renderRow(props, txt));
+  let { user } = props.auth;
+  let rel = user.relevance ? user.relevance.pagerank || 0 : 0;
 
   return (
     <View>
@@ -70,7 +72,7 @@ exports.text.relevance = function (props) {
             styles.title,
           ]}
         >
-          {numbers.abbreviateNumber(props.auth.user.relevance)}
+          {numbers.abbreviateNumber(rel)}
         </Text>
       </View>
       <View style={styles.ulParent}>

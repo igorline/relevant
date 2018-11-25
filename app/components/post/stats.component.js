@@ -98,6 +98,9 @@ class Stats extends Component {
 
     let percent = <View style={styles.statInner}><Percent fontSize={17} user={entity} /></View>;
 
+    // This is in order to display topic relevance correctly
+    entity.relevance = entity.relevance || {};
+    let rank = this.props.topic ? entity[this.props.topic + '_relevance'] : entity.relevance.pagerank || 0;
     let relevance = (
       <TouchableOpacity
         ref={(c) => this.tooltipParent.relevance = c}
@@ -110,7 +113,7 @@ class Stats extends Component {
           source={require('../../assets/images/r.png')}
         />
         <Text style={[this.props.textStyle, statsStyle, styles.darkGrey]}>
-          {numbers.abbreviateNumber(entity.relevance)}
+          {numbers.abbreviateNumber(rank)}
         </Text>
       </TouchableOpacity>
     );

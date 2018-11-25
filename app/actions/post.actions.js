@@ -438,24 +438,7 @@ export function deleteComment(id) {
     } catch (err) {
       return false;
     }
-  }
-
-  // }
-  //   fetch(process.env.API_SERVER + '/api/comment/' + id + '?access_token=' + token, {
-  //     credentials: 'include',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json'
-  //     },
-  //     method: 'DELETE',
-  //   })
-  //   .then((response) => {
-  //     dispatch(removePost(id));
-  //   })
-  //   .catch((error) => {
-  //     Alert.alert(error.message);
-  //     console.log(error, 'error');
-  //   });
+  };
 }
 
 
@@ -484,27 +467,19 @@ export function getComments(post, skip, limit) {
 }
 
 export function createComment(token, commentObj) {
-  return function(dispatch) {
-    return fetch(process.env.API_SERVER + '/api/comment?access_token=' + token, {
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'POST',
-      body: JSON.stringify(commentObj)
-    })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then((responseJSON) => {
-      dispatch(addComment(responseJSON.parentPost, responseJSON));
+  return async dispatch => {
+    try {
+      let response = await utils.api.request({
+        method: 'POST',
+        endpoint: 'comment',
+        path: '/',
+        body: JSON.stringify(commentObj)
+      });
+      dispatch(addComment(response.parentPost, response));
       return true;
-    })
-    .catch((error) => {
-      console.log(error, 'error');
-      Alert.alert(error.message);
+    } catch (err) {
       return false;
-    });
+    }
   };
 }
 

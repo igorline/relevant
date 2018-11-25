@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 function pagerank(G, params) {
   // based on networkx.pagerank 1.9.1 (Python)
   // https://github.com/networkx/networkx/blob/master/networkx/algorithms/link_analysis/pagerank_alg.py
@@ -9,16 +11,17 @@ function pagerank(G, params) {
   if (!params.max_iter) params.max_iter = 100;
   if (!params.tol) params.tol = 1.0e-6;
   if (!params.weight) params.weight = 'weight';
+  if (!params.negativeWeights) params.negativeWeights = {};
 
   // Begin tools
-  var values = function(obj) {
-    var xs = [];
-    for (var key in obj) xs.push(obj[key]);
+  let values = function values(obj) {
+    let xs = [];
+    for (let key in obj) xs.push(obj[key]);
     return xs;
   };
 
-  var sum = function(xs) {
-    return xs.reduce(function(prev, current, idx, xs) {
+  let sum = function sum(xs) {
+    return xs.reduce((prev, current, idx, xs) => {
       return prev + current;
     });
   };
@@ -29,39 +32,38 @@ function pagerank(G, params) {
 
   // Create a copy in (right) stochastic form
   var W = {};
-  var averageWeight = 0;
-  var numberWithWeight = 0;
+  var P = params.negativeWeights; // negative link
+
   for (var node in G) {
     var nodes = G[node];
     var nodeW = 0;
+
+    // downvotes
+    var nodesN = P[node] || {};
+    var nodeWN = 0;
+
     for (var node_ in nodes) {
       nodeW += nodes[node_][params.weight];
-      averageWeight += nodes[node_][params.weight];
-    }
-    if (nodeW >= 1) {
-      numberWithWeight += 1;
+
+      // downvotes
+      nodeWN += nodesN[node_][params.weight] || 0;
     }
   }
-  var w1 = averageWeight / numberWithWeight;
-  var w2 = averageWeight / N;
 
-  // TODO need to check this more
-  // let MIN_DEGREE = w1; //w2 * 2;
+
+  // TODO what should this be?
   let MIN_DEGREE = 15;
 
   for (var node in G) {
     var nodes = G[node];
     var new_nodes = {};
     var node_degree = 0.0;
+    var node_degree_negative = 0.0;
     for (var node_ in nodes) {
       node_degree += nodes[node_][params.weight];
     }
-    averageWeight += node_degree;
     for (var node_ in nodes) {
       let adjust = 1;
-      // let adjust = 1 + Math.log(params.users[node_].postCount + 1);
-      // let adjust = 1 + Math.log(params.users[node_].postCount + 1);
-
       new_nodes[node_] = {
         'weight':
           (params.weight ? nodes[node_][params.weight] : 1.0) / Math.max(MIN_DEGREE, node_degree * adjust)
@@ -69,17 +71,6 @@ function pagerank(G, params) {
     }
     W[node] = new_nodes;
   }
-  // for (var node in G) {
-  //   var nodes = G[node];
-  //   for (var node_ in nodes) {
-  //     new_nodes[node_] = {
-  //       'weight':
-  //         (params.weight ? nodes[node_][params.weight] : 1.0) / averageWeight
-  //     };
-  //   }
-  //   W[node] = new_nodes;
-  // }
-  // console.log(W);
 
   // Choose fixed starting vector if not given
   var x = {};
@@ -101,9 +92,12 @@ function pagerank(G, params) {
   }
   else {
     // TODO: check missing nodes
+    for (var node in W) p[node] = 0;
     var sum_ = sum(Object.values(params.personalization));
-    for (var node in params.personalization)
+    for (var node in params.personalization) {
       p[node] = params.personalization[node] / sum_;
+      console.log(node, p[node]);
+    }
   }
 
   var dangling_weights = {};
@@ -135,24 +129,33 @@ function pagerank(G, params) {
     });
     var danglesum = params.alpha * sum_;
 
+    let mean = 0;
+    for (var node in xlast) {
+      if (!xlast[node]) xlast[node] = 0;
+      mean += xlast[node]
+    }
+
+    // console.log(xlast);
+    mean /= Object.keys(xlast).length;
+    // console.log('mean', mean);
+
     for (var node in x) {
       // this matrix multiply looks odd because it is
       // doing a left multiply x^T=xlast^T*W
       for (var nbr in W[node]) {
-        // let d = xlast[node] - xlast[nbr] || 0;
-        // d = Math.max(0, d);
-        // d += 1;
-        // d = Math.pow(d, 10 / 3);
-        // console.log(d);
-        // let adjust = 1 + Math.log(params.users[nbr].postCount + 1);
-        // todo - adjust this to account for time discounting - is this personalization?
+        // todo - adjust this to account for time discounting
         // let adjust = Math.max(MIN_DEGREE, params.users[nbr].postCount + 1);
         // adjust = Math.log(adjust);
         let adjust = 1;
 
+        // if (!xlast[node]) xlast[node] = 0;
+
         x[nbr] += params.alpha * xlast[node] * W[node][nbr]['weight'] / adjust;
       }
+
       x[node] += danglesum * dangling_weights[node] + (1.0 - params.alpha) * p[node];
+      // normalize
+      x[node] /= mean;
     }
 
     // check convergence, l1 norm
@@ -160,7 +163,7 @@ function pagerank(G, params) {
     Object.keys(x).forEach(function(node) {
       err += Math.abs(x[node] - xlast[node]);
     });
-    if (err < N*params.tol)
+    if (err < N * params.tol)
       return x;
   }
 

@@ -113,14 +113,28 @@ export async function setupData(communities) {
     user = await user.save();
     let joined = communities.map(async community => {
       let c = await Community.findOne({ slug: community });
+
+      // create an upvote from test so we have some relevance
+      let vote = new Invest({
+        investor: 'test',
+        author: user.handle,
+        amount: 10,
+        ownPost: false,
+        communityId: c._id
+      });
+      await vote.save();
+
       return c.join(user._id);
     });
+
+
     await Promise.all(joined);
   }) || [];
   let saveSub = dummySubscriptions.map((sub) => {
     let subObj = new Subscription(sub);
     return subObj.save();
   }) || [];
+
 
   return Promise.all([...saveUsers, ...saveSub]);
 }

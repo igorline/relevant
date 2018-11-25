@@ -2,7 +2,7 @@
 export function getText(activity, amount, coinAmount) {
   let action = 'increased';
   let also = 'also ';
-  if (activity.amount < 0) {
+  if (amount < 0) {
     action = 'decreased';
     also = '';
   }
@@ -10,9 +10,12 @@ export function getText(activity, amount, coinAmount) {
 
   switch (activity.type) {
     case 'upvote':
+      // coinText is deprecated
       let coinText = activity.coin ? 'you got a coin and ' : '';
-      return `upvoted your ${postType} → ${coinText}your relevance increased by ${amount}`;
+      let relText = amount > 0 ? `→ ${coinText}your relevance increased by ${amount}` : '';
+      return `upvoted your ${postType} ${relText}`;
 
+    // downvote, partialUpvote, partialDownvote basicIncome are deprecated
     case 'downvote':
       return `downvoted your ${postType} → your relevance decreased by ${amount}`;
 
@@ -43,6 +46,9 @@ export function getText(activity, amount, coinAmount) {
 
     case 'topPost':
       return 'In case you missed this top-ranked post:';
+
+    case 'reward':
+      return `You earned ${activity.coin} coins from this post`;
 
     default:
       if (activity.text) return activity.text;

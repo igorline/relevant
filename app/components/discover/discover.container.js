@@ -173,9 +173,7 @@ class Discover extends Component {
     if (view !== 2) {
       let post = posts.posts[rowData];
       let link = posts.links[post.metaPost];
-      console.log(type);
       let commentary = post[type].map(c => posts.posts[c]);
-      console.log(commentary);
 
       let showReposts = false;
       if (type === 'new') showReposts = true;

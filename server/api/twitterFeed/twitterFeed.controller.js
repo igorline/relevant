@@ -60,7 +60,7 @@ exports.get = async (req, res) => {
     if (user) {
       let postIds = [];
       posts.forEach(p => {
-        console.log(p.commentary);
+        // console.log(p.commentary);
         p.commentary.forEach(post => {
           post.user = post.embeddedUser.id;
           postIds.push(post._id || post);

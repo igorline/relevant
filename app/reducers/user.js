@@ -24,7 +24,7 @@ const initialState = {
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
-    case types.SET_USER_SEARCH : {
+    case types.SET_USER_SEARCH: {
       return {
         ...state,
         search: action.payload.length ? action.payload : initialState.search
@@ -82,6 +82,12 @@ export default function auth(state = initialState, action) {
     }
 
     case types.UPDATE_USER: {
+      let id = action.payload._id;
+      // prevents legacy relevance field overwrites
+      // TODO should normalize this and store separately
+      let relevance = action.payload.relevance;
+      if ((!relevance || relevance.pagerank === undefined) &&
+        state.users[id]) relevance = state.users[id].relevance;
       return {
         ...state,
         users: {
@@ -89,6 +95,7 @@ export default function auth(state = initialState, action) {
           [action.payload._id]: {
             ...state.users[action.payload._id],
             ...action.payload,
+            relevance
           }
         }
       };

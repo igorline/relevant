@@ -34,6 +34,7 @@ export default function configureStore(initialState = {}, history) {
   // Compose final middleware and use devtools in debug environment
   // let socketIoMiddleware = str => next => action => next(action);
   let middleware;
+  console.log('initialState', initialState)
 
   const sagaMiddleware = createSagaMiddleware();
 

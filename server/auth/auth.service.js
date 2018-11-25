@@ -4,6 +4,7 @@ import compose from 'composable-middleware';
 import config from '../config/config';
 import User from '../api/user/user.model';
 import CommunityMember from '../api/community/community.member.model';
+import Community from '../api/community/community.model';
 
 let validateJwt = expressJwt({ secret: process.env.SESSION_SECRET, ignoreExpiration: true });
 
@@ -55,6 +56,15 @@ function communityMember(req, res) {
       if (!user) throw new Error('missing user credentials');
       let community = req.query.community;
       let member = await CommunityMember.findOne({ user, community });
+
+      // add member to default community
+      if (community === 'relevant' && !member) {
+        // TODO join community that one is signing up with
+        let com = await Community.findOne({ slug: 'relevant' });
+        await com.join(user);
+        member = await CommunityMember.findOne({ user, community });
+      }
+
       if (!member) throw new Error('you are not a member of this community');
       // TODO grab user reputation & figure out permission level
       req.communityMember = member;

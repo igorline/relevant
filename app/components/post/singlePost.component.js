@@ -87,8 +87,6 @@ class SinglePostComments extends Component {
       if (!this.comments && this.props.scene.openComment) {
         this.scrollToBottom(true);
       }
-      let comments = next.postComments.data || [];
-      this.comments = comments.map(c => this.props.posts.posts[c]);
 
       this.total = next.postComments.total;
       if (this.total > 10) this.longFormat = true;
@@ -150,6 +148,9 @@ class SinglePostComments extends Component {
   }
 
   renderComments() {
+    let comments = this.props.postComments.data || [];
+    this.comments = comments.map(c => this.props.posts.posts[c]);
+
     if (this.props.post) {
       return (<FlatList
         ref={c => this.scrollView = c}
@@ -157,6 +158,9 @@ class SinglePostComments extends Component {
         renderItem={this.renderRow}
         keyExtractor={(item, index) => index.toString()}
         removeClippedSubviews
+
+        pageSize={1}
+        initialListSize={10}
 
         keyboardShouldPersistTaps={'always'}
         keyboardDismissMode={'interactive'}
