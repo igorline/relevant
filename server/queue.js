@@ -292,7 +292,7 @@ function startTwitterUpdate() {
   TwitterWorker.updateTwitterPosts();
 }
 
-basicIncome(updateReputation);
+// basicIncome(updateReputation);
 // updateUserStats();
 // startStatsUpdate();
 // startTwitterUpdate();
