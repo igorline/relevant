@@ -54,7 +54,8 @@ function communityMember(req, res) {
     try {
       let user = req.user._id;
       if (!user) throw new Error('missing user credentials');
-      let community = req.query.community;
+      // TODO make sure share extension supports this
+      let community = req.query.community || 'relevant';
       let member = await CommunityMember.findOne({ user, community });
 
       // add member to default community
