@@ -4,18 +4,8 @@
     "stage-2",
     "react",
   ],
-  "env": {
-    "development": {
-      "plugins": [
-        "espower",
-        "transform-runtime",
-      ],
-    },
-    "production": {
-      "plugins": [
-        "espower",
-        "transform-runtime"
-      ],
-    }
-  },
+  "plugins": [
+    "espower",
+    "transform-runtime"
+  ],
 }
