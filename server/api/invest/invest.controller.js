@@ -75,20 +75,28 @@ function handleError(res, err) {
 // }
 
 exports.postInvestments = async (req, res) => {
-  let postId = req.params.postId;
-  let limit = parseInt(req.query.limit, 10);
-  let skip = parseInt(req.query.skip, 10);
-  let investments;
-
   try {
-    investments = await Invest.find({ post: postId, ownPost: false })
+    let postId = req.params.postId;
+    let limit = parseInt(req.query.limit, 10);
+    let skip = parseInt(req.query.skip, 10);
+    let community = req.query.community;
+
+    console.log('community ', community);
+
+    let investments = await Invest.find({ post: postId, ownPost: false })
     .limit(limit)
     .skip(skip)
     .sort({ createdAt: -1 })
     .populate({
       path: 'investor',
-      select: 'relevance name image'
+      select: 'relevance name image',
+      populate: {
+        path: 'relevance',
+        match: { global: true, community }
+      }
     });
+
+    console.log(investments);
 
     // investments = investments.map(inv => {
     //   inv = inv.toObject();
@@ -97,10 +105,11 @@ exports.postInvestments = async (req, res) => {
     // });
 
     // investments = investments.filter(inv => inv.investor ? inv.author != inv.investor._id : true);
+
+    return res.status(200).json(investments);
   } catch (err) {
     handleError(res, err);
   }
-  return res.status(200).json(investments);
 };
 
 exports.downvotes = async (req, res) => {
@@ -168,7 +177,7 @@ exports.show = async (req, res, next) => {
     postIds = postIds.filter(postId => postId);
     Post.sendOutInvestInfo(postIds, id);
   } catch (err) {
-    next(err)
+    next(err);
   }
 };
 

@@ -429,6 +429,7 @@ class PostButtons extends Component {
 
 
     let r = post.data ? post.data.pagerank : null;
+    let rel = r;
 
     let rIcon = (<Image
       resizeMode={'contain'}
@@ -462,7 +463,7 @@ class PostButtons extends Component {
 
     let stat = (
       <TouchableOpacity
-        onPress={() => totalVotes !== 0 ? this.showInvestors() : this.toggleTooltip('vote')}
+        onPress={() => totalVotes !== 0 || rel ? this.showInvestors() : this.toggleTooltip('vote')}
       >
         <View
           style={{
@@ -570,10 +571,6 @@ class PostButtons extends Component {
     let link = this.props.link;
     let twitter = (link && link.twitter === true);
     let isComment = post.type === 'comment';
-
-    if (post.twitter) {
-      console.log(post)
-    }
 
     return (<View style={styles.postButtonsContainer}>
       <View style={styles.postButtons}>

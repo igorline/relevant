@@ -369,35 +369,33 @@ function setDeviceToken(token) {
 }
 
 export function updateUser(user, preventLocalUpdate) {
-  return async dispatch =>
-    fetch(process.env.API_SERVER + '/api/user', {
-      method: 'PUT',
-      ...await reqOptions(),
-      body: JSON.stringify(user)
-    })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then((responseJSON) => {
-      if (!preventLocalUpdate) dispatch(updateAuthUser(responseJSON));
+  return async dispatch => {
+    try {
+      let res = await utils.api.request({
+        method: 'PUT',
+        endpoint: 'user',
+        path: '/',
+        body: JSON.stringify(user)
+      });
+      if (!preventLocalUpdate) dispatch(updateAuthUser(res));
       return true;
-    })
-    .catch((err) => {
-      console.log(err, 'error');
+    } catch (err) {
       AlertIOS.alert(err.message);
       return false;
-    });
+    }
+  };
 }
 
 export function addDeviceToken(user) {
   return (dispatch) => {
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
-      onRegister: function(token) {
-        console.log( 'TOKEN:', token );
+      onRegister: token => {
+        console.log('TOKEN:', token);
       },
 
       // (required) Called when a remote or local notification is opened or received
-      onNotification: function(notification) {
+      onNotification: notification => {
         let { foreground, userInteraction, message, data } = notification;
         if (!userInteraction) return;
         if (data && data.type === 'postLink') {
@@ -405,7 +403,9 @@ export function addDeviceToken(user) {
         }
       },
 
-      // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
+      // ANDROID ONLY: GCM Sender ID
+      // (optional - not required for local notifications,
+      // but is need to receive remote push notifications)
       senderID: '271994332492',
 
       // IOS ONLY (optional): default: all - Permissions to register.
@@ -440,7 +440,7 @@ export function addDeviceToken(user) {
       if (user.deviceTokens && user.deviceTokens.indexOf(token) < 0) {
         newUser.deviceTokens.push(token);
         dispatch(updateUser(newUser));
-      } else {
+      } else if (user.deviceTokens.indexOf(token) < 0) {
         newUser.deviceTokens = [token];
         dispatch(updateUser(newUser));
       }

@@ -63,7 +63,7 @@ export default class UrlPreviewComponent extends Component {
       fontSize = 13;
     }
     let body = this.props.post && this.props.post.body;
-    body = this.props.urlPreview.title || body;
+    body = this.props.urlPreview ? this.props.urlPreview.title || body : null;
 
     if (this.props.urlPreview && (this.props.urlPreview.image || this.props.size !== 'small')) {
       let previewImage = this.props.urlPreview.image;
