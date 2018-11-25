@@ -22,7 +22,6 @@
     "stagingIOS": "code-push release-react Relevant-iOS ios -d Staging"
   },
   "dependencies": {
-    "@babel/preset-env": "^7.1.6",
     "apn": "^1.7.6",
     "aws-sdk": "^2.2.46",
     "babel": "^6.x.x",
