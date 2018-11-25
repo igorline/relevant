@@ -389,11 +389,9 @@ UserSchema.methods.updatePower = function updatePower() {
   // elapsed time in seconds
   // prevent votes from being more often than 5s apart
   let now = new Date();
-  // this.lastVote = null;
   let elapsedTime = (new Date(now)).getTime() - (new Date(this.lastVote)).getTime();
-  console.log(this.lastVote);
   console.log('elapsed time since last upvote ', elapsedTime / 1000, 's');
-  if (elapsedTime < 5 * 1000) {
+  if (elapsedTime < 5 * 1000 && process.env.NODE_ENV === 'production') {
     throw new Error('you cannot up-vote posts more often than 5s');
   }
   this.lastVote = now;
