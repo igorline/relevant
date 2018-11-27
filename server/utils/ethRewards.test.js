@@ -6,7 +6,6 @@ let request = require('supertest');
 
 process.env.NODE_ENV = 'test';
 process.env.WEB = 'true';
-
 process.chdir(__dirname + '/../../');
 
 let r;
@@ -14,7 +13,6 @@ let token;
 let authorToken;
 let postId;
 let postId2;
-let savedPost;
 let comms = ['crypto', 'relevant'];
 
 function getPostObj() {
@@ -67,7 +65,6 @@ test.serial('Payout Create Post', async (t) => {
   .send(getPostObj());
 
   postId = newPost.body._id;
-  savedPost = newPost.body;
 
   const newPost2 = await r
   .post(`/api/post?access_token=${authorToken}&community=${comms[1]}`)
@@ -106,7 +103,6 @@ test.serial('Upvote 2', async (t) => {
   const login = await r
   .post('/auth/local')
   .send({ name: 'dummy3', password: 'test' });
-
 
   token = login.body.token;
 
@@ -153,6 +149,8 @@ test.serial('Payout Upvote', async (t) => {
     console.log(err);
   }
 });
+
+// TODO add reward notification test (that format is correct)
 
 test.serial('Delete post', async (t) => {
   t.plan(2);
