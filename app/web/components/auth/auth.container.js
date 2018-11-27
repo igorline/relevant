@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as authActions from '../../../actions/auth.actions';
 import * as routerActions from 'react-router-redux';
+import * as authActions from '../../../actions/auth.actions';
 import LoginForm from './login';
 import SignupForm from './signup';
 import ConfirmEmail from './confirmEmail.component';
@@ -98,7 +98,7 @@ class AuthContainer extends Component {
   }
 
   render() {
-    const { isAuthenticated, user, route, statusText } = this.props;
+    const { user, route } = this.props;
     let confirm;
     let auth;
     let visible = true;
@@ -115,7 +115,6 @@ class AuthContainer extends Component {
     }
 
     let title = '';
-    console.log('path', path);
 
     if (path === 'confirm/:user/:code') {
       confirm = true;
@@ -162,7 +161,7 @@ styles = {
   }
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   isAuthenticating: state.auth.isAuthenticating,
   isAuthenticated: state.auth.isAuthenticated,
   statusText: state.auth.statusText,
@@ -171,8 +170,11 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-const mapDispatchToProps = (dispatch) => ( Object.assign({}, { dispatch }, {
-  actions: bindActionCreators(Object.assign({}, authActions, routerActions), dispatch)
-}));
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({
+    ...authActions,
+    ...routerActions
+  }, dispatch)
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthContainer);

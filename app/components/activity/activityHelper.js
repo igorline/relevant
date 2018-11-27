@@ -1,5 +1,6 @@
+import { numbers } from '../../utils';
 
-export function getText(activity, amount, coinAmount) {
+export function getText(activity, amount) {
   let action = 'increased';
   let also = 'also ';
   if (amount < 0) {
@@ -7,13 +8,15 @@ export function getText(activity, amount, coinAmount) {
     also = '';
   }
   let postType = activity.post ? activity.post.type : 'post';
+  let coin = numbers.abbreviateNumber(activity.coin);
 
   switch (activity.type) {
-    case 'upvote':
+    case 'upvote': {
       // coinText is deprecated
       let coinText = activity.coin ? 'you got a coin and ' : '';
       let relText = amount > 0 ? `→ ${coinText}your relevance increased by ${amount}` : '';
       return `upvoted your ${postType} ${relText}`;
+    }
 
     // downvote, partialUpvote, partialDownvote basicIncome are deprecated
     case 'downvote':
@@ -26,7 +29,7 @@ export function getText(activity, amount, coinAmount) {
       return `${also}downvoted this ${postType} → your relevance ${action} by ${amount}`;
 
     case 'basicIncome':
-      return `You got ${activity.coin} extra coin${activity.coin > 1 ? 's' : ''} so you can upvote more posts!`;
+      return `You got ${coin} extra coin${activity.coin > 1 ? 's' : ''} so you can upvote more posts!`;
 
     case 'commentAlso':
       return `commented on a ${postType}`;
@@ -48,7 +51,7 @@ export function getText(activity, amount, coinAmount) {
       return 'In case you missed this top-ranked post:';
 
     case 'reward':
-      return `You earned ${activity.coin} coins from this post`;
+      return `You earned ${coin} coins from this post`;
 
     default:
       if (activity.text) return activity.text;

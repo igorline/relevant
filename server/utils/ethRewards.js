@@ -122,13 +122,13 @@ async function rewardUser(props) {
 
   await Earnings.updateRewardsRecord({
     user: user._id,
-    post: post._id,
+    post,
     earned: reward,
     community,
   });
 
   Notification.createNotification({
-    post: post._id,
+    post,
     forUser: user._id,
     type: 'reward',
     coin: reward,
@@ -142,10 +142,7 @@ async function rewardUser(props) {
 }
 
 async function distributeUserRewards(posts, community) {
-  // let treasury = await Treasury.findOne({ community });
   let payouts = {};
-  // let ethAccounts = [];
-  // let ethBalances = [];
   let notifications = [];
   let distributedRewards = 0;
 
@@ -165,44 +162,6 @@ async function distributeUserRewards(posts, community) {
     console.log('totalShares ', totalShares);
     console.log('post shares ', post.shares);
     let curationReward = post.payout;
-
-    // let author = await User.findOne({ _id: post.user }, 'name balance deviceTokens badge ethAddress');
-
-    // // Current code considers author as the first voter
-    // // alternately we can use a fixed percentage of reward
-    // // need to edit the way shares is computed in invest.model createVote()
-
-    // // let authorShare = Math.max(AUTHOR_SHARE, author.shares / totalShares);
-    // // is it better to use post share or post payout?
-    // // let curationReward = post.payout * (1 - authorShare);
-
-    // let authorShare = 0;
-    // if (totalShares > 0) authorShare = 1 / totalShares;
-
-    // let authorPayout = Math.floor(authorShare * post.payout);
-
-    // distributedRewards += authorPayout;
-
-    // payouts[author._id] = payouts[author._id] ? payouts[author._id] + authorPayout : authorPayout;
-
-    // // TODO diff decimal
-    // console.log('author payout ', authorPayout / (10 ** 18));
-    // author.balance += authorPayout / (10 ** 18);
-    // await author.save();
-
-    // if (authorPayout > 0) {
-    //   // await rewardUser({ user: author, reward: authorPayout, treasury, post, community });
-    //   notifications.push({
-    //     user: author,
-    //     reward: authorPayout / (10 ** 18),
-    //     // treasury,
-    //     post: post.post,
-    //     community,
-    //   });
-    //   ethAccounts.push(author.ethAddress[0]);
-    //   ethBalances.push(authorPayout);
-    // }
-
 
     //  ---------- Curation rewards ------------
 
@@ -267,7 +226,7 @@ async function distributeUserRewards(posts, community) {
 //
 
 async function computeCommunityRewards(community, _rewardPool, balances) {
-  await computePageRank({ communityId: community._id, community: community.slug, debug: true });
+  await computePageRank({ communityId: community._id, community: community.slug });
   let totalBalance = balances.reduce((a, c) => c.balance + a, 0);
   let communityBalance = balances.find(c => c._id === community.slug).balance;
 

@@ -1,14 +1,7 @@
 const queue = require('queue');
-const User = require('./api/user/user.model');
 const Stats = require('./api/statistics/statistics.model');
-const Earnings = require('./api/earnings/earnings.model');
-const apnData = require('./pushNotifications');
-const Notification = require('./api/notification/notification.model');
 const Relevance = require('./api/relevance/relevance.model');
-// const proxyHelpers = require('./api/post/html');
-// const RelevanceStats = require('./api/relevanceStats/relevanceStats.model');
-const computePageRank = require('./utils/pagerankCompute').default;
-const Invest = require('./api/invest/invest.model');
+// const computePageRank = require('./utils/pagerankCompute').default;
 const Community = require('./api/community/community.model').default;
 const ethRewards = require('./utils/ethRewards.js');
 
@@ -30,7 +23,6 @@ q.on('timeout', (next, job) => {
 
 async function updateUserStats() {
   Relevance.find({ global: true })
-  // User.find({}, { _id: 1, relevance: 1 })
   .exec((err, res) => {
     if (err || !res) {
       console.log('db error', err);
@@ -59,13 +51,13 @@ async function updateUserStats() {
           upsert: true,
           setDefaultsOnInsert: true
         })
-        .exec((statsError, stat) => {
+        .exec((statsError) => {
           if (!statsError) cb();
           else throw statsError;
         });
       });
     });
-    q.start((queErr, results) => {
+    q.start((queErr) => {
       if (queErr) return console.log(queErr);
       return console.log('done updating stats');
     });
@@ -86,9 +78,9 @@ async function getCommunityUserRank(community) {
     return users.forEach(user => {
       q.push(async cb => {
         try {
-          let rank = await Relevance.find({ pagerank: { $lt: user.pagerank, $gt: 0 }, communityId }).count();
-          // let tied = await User.find({ relevance: user.relevance }).count();
-
+          let rank = await Relevance.count({
+            pagerank: { $lt: user.pagerank, $gt: 0 }, communityId
+          });
           let percentRank = Math.round(((rank) * 100) / (totalUsers));
           let level = Math.round(1000 * user.pagerank / topR) / 10;
 
@@ -96,29 +88,6 @@ async function getCommunityUserRank(community) {
           user.rank = totalUsers - rank;
           user.level = level;
           user.totalUsers = totalUsers;
-
-          // let comsRel = await Relevance.find({ user: user._id, global: true });
-          // comsRel.forEach(async comRel => {
-          //   // cache this
-          //   let cRank = await Relevance.find({
-          //     community: comRel.community,
-          //     global: true,
-          //     relevance: { $lt: comRel.pagerank, $gt: 0 }
-          //   }).count();
-          //   let cTotal = Relevance.find({
-          //     community: comRel.community,
-          //     global: true
-          //   }).count();
-          //   let cPercentRank = Math.round(((cRank) * 100) / (cTotal));
-          //   let cLevel = Math.round(1000 * comRel.pagerank / topR) / 10;
-
-          //   comRel.percentRank = cPercentRank;
-          //   comRel.rank = cTotal - cRank;
-          //   comRel.level = cLevel;
-          //   comRel.totalUsers = topR;
-          //   return comRel;
-          // });
-
 
           // this will update both global and local reps
           let topicRelevance = await Relevance.find({
@@ -139,17 +108,22 @@ async function getCommunityUserRank(community) {
             let topTopicR = topTopicUser.relevance;
 
             let totalTopicUsers = await Relevance.find({ tag: tR.tag }).count();
-            let topicRank = await Relevance.find({ tag: tR.tag, relevance: { $lt: tR.relevance } }).count();
+            let topicRank = await Relevance.count({
+              tag: tR.tag, relevance: { $lt: tR.relevance }
+            });
+
             let topicPercentRank = Math.round((topicRank * 100) / (totalTopicUsers));
-            let level = Math.round(1000 * (tR.relevance / topTopicR)) / 10;
+
+            tR.percentRank = topicPercentRank;
+            tR.level = Math.round(1000 * (tR.relevance / topTopicR)) / 10;
+            tR.rank = (totalTopicUsers - topicRank);
+            tR.totalUsers = totalTopicUsers;
+
             // console.log('_TAGS_', user.user, ' ', tR.tag);
             // console.log('percent ', topicPercentRank);
             // console.log('rank ', (totalTopicUsers - topicRank));
-            // console.log('level ', level);
-            tR.percentRank = topicPercentRank;
-            tR.level = level;
-            tR.rank = (totalTopicUsers - topicRank);
-            tR.totalUsers = totalTopicUsers;
+            // console.log('level ', tR.level);
+
             return tR.save();
           });
 
@@ -157,20 +131,20 @@ async function getCommunityUserRank(community) {
             user.onboarding = 0;
           }
 
-          await Promise.all([ ...topicPromises ]);
+          await Promise.all([...topicPromises]);
 
           await user.save();
           // console.log('percentRank', user.user, ' ', percentRank);
           // console.log('rank', user.user, ' ', user.rank);
           // console.log('level', user.user, ' ', level);
         } catch (err) {
-          console.log(err);
+          return console.log(err);
         }
-        cb();
+        return cb();
       });
     });
   } catch (err) {
-    console.log('error computing rank for ', community.slug, err);
+    return console.log('error computing rank for ', community.slug, err);
   }
 }
 
@@ -178,11 +152,13 @@ async function getCommunityUserRank(community) {
 async function updateReputation() {
   try {
     let communities = await Community.find({});
-    let computed = communities.map(community => {
-      console.log('community ', community.slug)
-      return computePageRank({ communityId: community._id, community: community.slug });
-    });
-    await Promise.all(computed);
+
+    // WE DO THIS IN REWARDS
+    // let computed = communities.map(community => {
+    //   console.log('community ', community.slug)
+    //   return computePageRank({ communityId: community._id, community: community.slug });
+    // });
+    // await Promise.all(computed);
 
     let communityRank = communities.map(getCommunityUserRank);
     await Promise.all(communityRank);
@@ -222,13 +198,13 @@ async function basicIncome(done) {
 
   topicRelevance.forEach(updateTopicRelevance());
 
-  q.start((queErr, results) => {
+  q.start((queErr) => {
     if (queErr) return console.log(queErr);
     if (done) done();
     return console.log('all finished basic income: ');
   });
 
-  q.on('timeout', function(next, job) {
+  q.on('timeout', (next, job) => {
     console.log('error: queue timeout', job);
     next();
   });
@@ -262,9 +238,7 @@ function getNextUpdateTime() {
 getNextUpdateTime();
 
 function startBasicIncomeUpdate() {
-  // setInterval(basicIncome, 24 * 60 * 60 * 1000);
-
-  // DEPRECATED
+  // basic income is DEPRECATED
   basicIncome(updateReputation);
   setTimeout(() => {
     startBasicIncomeUpdate();
