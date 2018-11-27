@@ -19,8 +19,6 @@ import Community from '../community/community.model';
 const TwitterWorker = require('../../utils/twitterWorker');
 
 // User.findOne({ _id: 'z' }).then(u => u.remove());
-
-
 // User.findOne({ _id: 'test'}, 'hashedPassword')
 // .then(u => console.log(u))
 
@@ -308,7 +306,31 @@ exports.checkUser = (req, res) => {
   .catch(err => handleError(res, err));
 };
 
-exports.list = async (req, res) => {
+exports.testData = async (req, res, next) => {
+  try {
+    let limit = parseInt(req.query.limit, 10) || 5;
+    let skip = parseInt(req.query.skip, 10) || 0;
+
+    let community = req.query.community || 'relevant';
+    let query = { global: true, community, pagerank: { $gt: 0 } };
+    // let sort = { pagerank: -1 };
+
+    let rel = await Relevance.find(query)
+    .limit(limit)
+    .skip(skip)
+    // .sort(sort)
+    .populate({
+      path: 'user',
+      select: 'handle name relevance votePower'
+    });
+
+    return res.status(200).json(rel);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.list = async (req, res, next) => {
   try {
     let limit = parseInt(req.query.limit, 10) || 5;
     let skip = parseInt(req.query.skip, 10) || 0;
@@ -320,8 +342,8 @@ exports.list = async (req, res) => {
       let user = req.user;
       blocked = [...user.blocked, ...user.blockedBy];
     }
-
     let community = req.query.community || 'relevant';
+
     let query;
     let sort;
     if (topic && topic !== 'null') {
@@ -338,7 +360,10 @@ exports.list = async (req, res) => {
     .limit(limit)
     .skip(skip)
     .sort(sort)
-    .populate('user');
+    .populate({
+      path: 'user',
+      select: 'handle name relevance votePower'
+    });
 
     users = rel.map(r => {
       r = r.toObject();
@@ -350,12 +375,11 @@ exports.list = async (req, res) => {
       else user.relevance = r;
       return user;
     });
+
     return res.status(200).json(users);
   } catch (err) {
-    console.log('user list error ', err);
-    res.status(500).json(err);
+    return next(err);
   }
-
 };
 
 
