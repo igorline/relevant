@@ -68,14 +68,17 @@ class App extends Component {
   }
 
   componentWillMount() {
-    let community = this.props.params.community;
-    if (community) this.props.actions.setCommunity(community);
+    let community = this.props.auth.community;
+    if (community && community !== 'home')
+      this.props.actions.setCommunity(community);
   }
 
   componentDidMount() {
     // document.body.classList.remove('loading')
     let community = this.props.auth.community;
-    api.setCommunity(community);
+    // api.setCommunity(community);
+    this.props.actions.setCommunity(community);
+
     this.props.actions.getUser();
     new Drizzle(options, this.context.store);
 
@@ -89,12 +92,17 @@ class App extends Component {
   componentDidUpdate(prevProps) {
     let community = this.props.params.community;
     if (community && this.props.auth.community !== community) {
-      this.props.actions.setCommunity(community);
-    };
+      if (community === 'home') prevProps.actions.push(`/${this.props.auth.community}/new`);
+      else this.props.actions.setCommunity(community);
+    }
 
     if (this.props.location.pathname !== prevProps.location.pathname) {
       window.scrollTo(0, 0);
     }
+    // if (this.props.location.pathname === '/home') {
+    //   this.props.actions.push(this.props.auth.community + '/new');
+    // }
+
     let userId = this.props.auth.user ? this.props.auth.user._id : null;
     let PrevUserId = prevProps.auth.user ? prevProps.auth.user._id : null;
 

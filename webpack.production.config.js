@@ -13,7 +13,7 @@ delete prodConfig.devtool;
 prodConfig.entry = ['./index.webNew.js', 'whatwg-fetch'];
 
 prodConfig.plugins = [
-  new ExtractTextPlugin("styles.css"),
+  new ExtractTextPlugin('styles.css'),
   new webpack.DefinePlugin({
     'process.env': {
       BROWSER: JSON.stringify(true),

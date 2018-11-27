@@ -88,17 +88,18 @@ function renderFullPage(html, initialState) {
 
 function fetchMeta(initialState) {
   let title, description, image, url;
+  const { community } = initialState.auth;
   if (initialState.posts.posts) {
-    const post_id = Object.keys(initialState.posts.posts)[0];
-    if (post_id) {
-      let post = initialState.posts.posts[post_id];
+    const postId = Object.keys(initialState.posts.posts)[0];
+    if (postId) {
+      let post = initialState.posts.posts[postId];
       if (post.metaPost) {
         post = initialState.posts.links[post.metaPost] || {};
       }
       title = post.title;
       image = post.image;
       description = post.body;
-      url = 'https://relevant.community/post/' + post_id;
+      url = `https://relevant.community/${community}/post/${postId}`;
     }
   }
   title = title || 'Relevant: A Social News Reader';
@@ -156,19 +157,18 @@ export default function handleRender(req, res) {
           return renderToString(component);
         };
 
-        console.log('NEW RENDER!!! ', renderProps.params);
+        console.log('NEW RENDER!!! ', 'params: ', renderProps.params);
         // This code pre-fills the data on the server
         fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
-          .then((data) => {
-            console.log('GOT DATA, RENDERING COMPONENTS');
-            // Here we can use the data to render the appropriate meta tags
-            res.send(renderFullPage(renderHtml(data), store.getState()));
-          })
-          .catch(err => {
-            console.log(err);
-            return res.end(err.message);
-          });
-
+        .then((data) => {
+          console.log('GOT DATA, RENDERING COMPONENTS');
+          // Here we can use the data to render the appropriate meta tags
+          res.send(renderFullPage(renderHtml(data), store.getState()));
+        })
+        .catch(err => {
+          console.log(err);
+          return res.end(err.message);
+        });
         // res.send(renderFullPage(renderHtml(), store.getState()));
       }
     }

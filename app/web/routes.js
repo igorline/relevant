@@ -1,6 +1,7 @@
 import React from 'react';
 import { push, routerActions } from 'react-router-redux';
 import { UserAuthWrapper } from 'redux-auth-wrapper';
+import { Redirect } from 'react-router';
 import App from './components/app';
 import Splash from './components/splash/splash.container';
 import Discover from './components/discover/discover.container';
