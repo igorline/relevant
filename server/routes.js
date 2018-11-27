@@ -51,6 +51,10 @@ module.exports = (app) => {
   app.use('/api/community', require('./api/community'));
   app.get('/confirm/:user/:code', userController.confirm);
 
+  // TODO - check if community exists here and redirect if not
+  app.use('/home', (req, res) => res.redirect('/relevant/new'));
+
+
   // Default response middleware
   app.use((req, res, next) => {
     if (res.jsonResponse) {
