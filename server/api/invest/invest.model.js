@@ -85,10 +85,12 @@ InvestSchema.statics.createVote = async function createVote(props) {
   userBalance *= communityMember.weight;
 
   console.log('vote power ', votePower);
-  let stakedTokens = userBalance * votePower * Math.abs(amount);
+  let stakedTokens = userBalance * Math.abs(amount) * VOTE_COST_RATIO;
+  console.log('user balance', userBalance);
   console.log('staked tokens', stakedTokens);
   console.log('post.data.balance', post.data.balance);
   console.log('amount ', amount);
+
   // TODO downvotes!
   let sign = 1;
   if (amount !== 0) sign = Math.abs(amount) / amount;

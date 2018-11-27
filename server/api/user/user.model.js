@@ -36,7 +36,7 @@ const UserSchema = new Schema({
   provider: String,
   salt: { type: String, select: false },
   facebook: {},
-  twitter: {},
+  twitter: { type: Object, select: false },
   google: {},
   github: {},
   relevanceRecord: [{
@@ -389,7 +389,8 @@ UserSchema.methods.updatePower = function updatePower() {
   // elapsed time in seconds
   // prevent votes from being more often than 5s apart
   let now = new Date();
-  let elapsedTime = (new Date(now)).getTime() - (new Date(this.lastVote)).getTime();
+  console.log('lastVote', this.lastVote);
+  let elapsedTime = (new Date(now)).getTime() - (new Date(this.lastVote || 0)).getTime();
   console.log('elapsed time since last upvote ', elapsedTime / 1000, 's');
   if (elapsedTime < 5 * 1000 && process.env.NODE_ENV === 'production') {
     throw new Error('you cannot up-vote posts more often than 5s');
@@ -398,7 +399,7 @@ UserSchema.methods.updatePower = function updatePower() {
   let voteRegen = Math.max(elapsedTime / POWER_REGEN_INTERVAL * 1);
   console.log('voteRegen ', voteRegen);
   let votePower = Math.min(this.votePower + voteRegen, 1);
-  this.votePower = votePower * VOTE_COST_RATIO;
+  this.votePower = votePower;
   // async?
   this.save();
   return this;

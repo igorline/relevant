@@ -17,6 +17,7 @@
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "react/forbid-prop-types": "off",
         "react/jsx-uses-vars": 2,
+        "react/jsx-uses-react": 1,
         "no-underscore-dangle": 0,
         "comma-dangle": ["error", "only-multiline"],
         "prefer-const": "off",

@@ -40,7 +40,8 @@ export default function configureStore(initialState = {}, history) {
     // only use the socket middleware on client and not on server
     let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
     middleware = applyMiddleware(
-      thunk, routerMiddleware(history),
+      thunk,
+      routerMiddleware(history),
       socketIoMiddleware,
       sagaMiddleware
     );

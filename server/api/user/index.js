@@ -12,6 +12,8 @@ router.get('/me', auth.isAuthenticated(), controller.show);
 router.get('/blocked', auth.isAuthenticated(), controller.blocked);
 router.get('/user/:id', auth.blocked(), controller.show);
 router.get('/general/list', auth.blocked(), controller.list);
+router.get('/testData', controller.testData);
+
 router.get('/check/user', controller.checkUser);
 router.get('/onboarding/:step', auth.isAuthenticated(), controller.onboarding);
 
