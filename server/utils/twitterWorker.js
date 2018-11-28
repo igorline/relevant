@@ -125,6 +125,7 @@ async function processTweet(tweet, user) {
   if (post) {
     linkParent = await Post.findOne({ _id: post.linkParent });
     if (!linkParent) {
+      console.log('existing post with no parent', post);
       post = await post.populate('metaPost');
       let processed = post.metaPost;
 
@@ -145,12 +146,11 @@ async function processTweet(tweet, user) {
         keywords: processed.keywords,
         seenInFeedNumber: 2,
       };
-
-      if (!post.data) {
-        post = await post.addPostData();
-      }
-      post = await post.upsertLinkParent(linkObject);
-      linkParent = post.linkParent;
+      // if (!post.data) {
+      //   post = await post.addPostData();
+      // }
+      // post = await post.upsertLinkParent(linkObject);
+      // linkParent = post.linkParent;
     } else {
       linkParent.seenInFeedNumber += 1;
       await linkParent.save();
