@@ -228,13 +228,16 @@ PostSchema.post('remove', async function postRemove(doc) {
     if (doc.linkParent) {
       await this.model('Post').updateFeedStatus(doc.linkParent, this.community);
     }
-    // error here hm...
     await this.model('CommunityFeed').removeFromAllFeeds(doc);
 
     let note = this.model('Notification').remove({ post: this._id });
     let feed = await this.model('Feed').remove({ post: this._id });
     let twitterFeed = await this.model('TwitterFeed').remove({ post: this._id });
-    let comment = this.model('Comment').remove({ post: this._id });
+
+    // TODO we should replace post with a dummy post on delete
+    // should we remove post comment also!?!
+    // probably not...
+    // let comment = this.model('Post').remove({ post: this._id });
 
     await this.model('PostData').remove({ post: doc._id });
 
@@ -264,8 +267,8 @@ PostSchema.post('remove', async function postRemove(doc) {
       });
     }
 
-    // this makes it faster (don't need all awaits)
-    let promises = [note, feed, comment, twitterFeed];
+    // this makes it faster (don't need all awaits)?
+    let promises = [note, feed, twitterFeed];
     await Promise.all(promises);
   } catch (err) {
     console.log(err);
@@ -352,7 +355,7 @@ PostSchema.methods.updateRank = async function updateRank(community, dontInsert)
 PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject) {
   try {
     if (!linkObject.url) return console.log('missing url ', linkObject);
-    let { tags, category, postDate, payoutTime } = this;
+    let { tags, postDate, payoutTime } = this;
     let parentObj = {
       url: linkObject.url,
       // top level comments only
