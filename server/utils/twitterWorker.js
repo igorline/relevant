@@ -119,6 +119,7 @@ async function processTweet(tweet, user) {
     path: 'data',
     match: { communityId: DEFAULT_COMMINITY_ID }
   });
+
   // let metaPost;
   let linkParent;
 
@@ -146,11 +147,11 @@ async function processTweet(tweet, user) {
         keywords: processed.keywords,
         seenInFeedNumber: 2,
       };
-      // if (!post.data) {
-      //   post = await post.addPostData();
-      // }
-      // post = await post.upsertLinkParent(linkObject);
-      // linkParent = post.linkParent;
+       if (!post.data) {
+        post = await post.addPostData();
+      }
+      post = await post.upsertLinkParent(linkObject);
+      linkParent = post.linkParent;
     } else {
       linkParent.seenInFeedNumber += 1;
       await linkParent.save();
@@ -313,7 +314,7 @@ async function getUserFeed(user) {
   }
 }
 
-async function cleanup(users) {
+async function cleanup() {
   let now = new Date();
 
   // TODO fix this
@@ -321,14 +322,29 @@ async function cleanup(users) {
     twitter: true,
     hidden: true,
     postDate: { $lt: now.getTime() - 3 * 24 * 60 * 60 * 1000 }
-  })
-  .limit(1000);
+  });
+  // .sort({ postDate: -1 })
+  // .limit(1000);
 
   console.log('clearing twitter posts ', posts.length, ' posts');
-  let removePosts = await posts.map(p => p.remove());
+  let removePosts = await posts.map((p, i) =>
+    q.push(async cb => {
+      try {
+        console.log('removing post', i);
+        await p.remove();
+        cb();
+        return p;
+      } catch (err) {
+        console.log(err);
+        return null;
+      }
+    })
+  );
 
   await Promise.all(removePosts);
+}
 
+async function processTweets(users) {
   console.log('processing ', users.length, ' users');
   let processedUsers = users.map(async (u, i) => {
     try {
@@ -354,6 +370,20 @@ async function cleanup(users) {
   await Promise.all(processedUsers);
 }
 
+async function updateTreasury(treasury) {
+  // TODO should be getting this from community
+  treasury.twitterCount = twitterCount;
+  treasury.avgTwitterScore = avgTwitterScore;
+  treasury.lastTwitterUpdate = new Date();
+
+  let finished = new Date();
+  let time = finished.getTime() - now.getTime();
+  time /= (1000 * 60);
+  console.log('processed ', processedTweets, ' tweets', ' in ', time, 'min');
+
+  await treasury.save();
+  return console.log('finished processing tweets');
+}
 
 async function getUsers(userId) {
   try {
@@ -390,25 +420,13 @@ async function getUsers(userId) {
     userCounter = 0;
     processedTweets = 0;
 
-    await cleanup(users);
+    await cleanup();
+    await processTweets(users);
 
     q.start(async queErr => {
       try {
         if (queErr) return console.log(queErr);
-
-        // TODO should be getting this from community
-        treasury.twitterCount = twitterCount;
-        treasury.avgTwitterScore = avgTwitterScore;
-        treasury.lastTwitterUpdate = new Date();
-
-        let finished = new Date();
-        let time = finished.getTime() - now.getTime();
-        time /= (1000 * 60);
-        console.log('processed ', processedTweets, ' tweets', ' in ', time, 'min');
-
-        await treasury.save();
-
-        return console.log('finished processing tweets');
+        await updateTreasury();
       } catch (err) {
         return console.log(err);
       }

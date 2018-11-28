@@ -185,7 +185,7 @@ PostSchema.methods.addPostData = async function addPostData(community) {
 };
 
 // Update parent feed status (only for link posts)
-PostSchema.statics.updateFeedStatus = async function updateFeedStatus(postId, community) {
+PostSchema.statics.updateFeedStatus = async function updateFeedStatus(postId, community, remove) {
   try {
     let linkPost = await this.model('Post').findOne({ _id: postId })
     .populate({
@@ -207,14 +207,14 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(postId, co
       await this.model('CommunityFeed').removeFromCommunityFeed(linkPost, community);
       // remove empty link posts
       await linkPost.remove();
-    } else {
+    } else if (!remove) {
+      // TODO this is messy
       // Update the date of post in feed
       let newFeedItem = await this.model('CommunityFeed').findOneAndUpdate(
         { community, post: linkPost._id },
         { latestPost: communityPosts[0].postDate },
         { new: true }
       );
-
       // TODO can maybe make this more efficient?
       await linkPost.updateRank(community);
     }
@@ -226,7 +226,7 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(postId, co
 PostSchema.post('remove', async function postRemove(doc) {
   try {
     if (doc.linkParent) {
-      await this.model('Post').updateFeedStatus(doc.linkParent, this.community);
+      await this.model('Post').updateFeedStatus(doc.linkParent, this.community, true);
     }
     await this.model('CommunityFeed').removeFromAllFeeds(doc);
 
