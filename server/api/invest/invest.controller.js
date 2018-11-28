@@ -333,7 +333,6 @@ async function updateAuthor(params) {
   // await Invest.updateUserInvestment(user, author, post, adjust, amount);
   author.relevance.relevance = authorRelevance;
   author = await author.save();
-  console.log(author.relevance);
   author.updateClient(user);
 
   // Remove notification if undo;
