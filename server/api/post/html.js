@@ -102,6 +102,7 @@ exports.generatePreview = async (body, uri, reqUrl) => {
     exports.extractDomain(redirectUrl) !== '' &&
     exports.extractDomain(redirectUrl) !== exports.extractDomain(uri) &&
     reqUrl !== redirectUrl) {
+    console.log('redirect to redirectUrl', redirectUrl);
     return {
       redirect: true,
       uri: redirectUrl
@@ -128,6 +129,7 @@ exports.generatePreview = async (body, uri, reqUrl) => {
     canonical.href.match('http') &&
     exports.extractDomain(canonical.href) !== exports.extractDomain(uri) &&
     reqUrl !== canonical.href) {
+    console.log('redirect to canonical.href', canonical.href);
     return {
       redirect: true,
       uri: canonical.href
@@ -376,7 +378,7 @@ exports.generatePreview = async (body, uri, reqUrl) => {
   };
 
   if (!image || !title) {
-    console.log('url parse incomplete');
+    // console.log('url parse incomplete');
     // console.log(data);
     // console.log(uri);
     // console.log($('head').html());

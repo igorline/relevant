@@ -361,7 +361,8 @@ async function getUsers(userId) {
     DEFAULT_COMMINITY_ID = community._id;
 
     // for now we are only pulling tweets for the relevant community
-    let userList = await Relevance.find({ community: 'relevant', global: true, pagerank: { $gt: 1 } });
+    let userList = await Relevance.find({ community: 'relevant', global: true, pagerank: { $gt: 1 } })
+    .sort({ pagerank: -1 });
     userList = userList.map(u => u.user);
 
     let query = userId ? { _id: userId } : { _id: { $in: userList } };

@@ -292,6 +292,8 @@ if (process.env.NODE_ENV === 'production') {
   }, getNextUpdateTime());
 }
 
+// setTimeout(TwitterWorker.updateTwitterPosts, 5000);
+
 module.exports = {
   updateUserStats,
   basicIncome,
