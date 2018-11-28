@@ -33,7 +33,8 @@
         "prefer-destructuring": 0,
         indent: ["error", 2, { "MemberExpression": 0, "SwitchCase": 1 }],
         "object-curly-newline": [1, { "multiline": true }],
-        "class-methods-use-this": 0
+        "class-methods-use-this": 0,
+        "function-paren-newline": 0
     },
     env: {
         browser: true,
