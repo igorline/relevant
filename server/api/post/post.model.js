@@ -228,6 +228,7 @@ PostSchema.post('remove', async function postRemove(doc) {
     if (doc.linkParent) {
       await this.model('Post').updateFeedStatus(doc.linkParent, this.community);
     }
+    // error here hm...
     await this.model('CommunityFeed').removeFromAllFeeds(doc);
 
     let note = this.model('Notification').remove({ post: this._id });

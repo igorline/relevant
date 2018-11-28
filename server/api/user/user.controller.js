@@ -311,17 +311,19 @@ exports.testData = async (req, res, next) => {
     let limit = parseInt(req.query.limit, 10) || 5;
     let skip = parseInt(req.query.skip, 10) || 0;
 
+    console.log(req.query);
+
     let community = req.query.community || 'relevant';
     let query = { global: true, community, pagerank: { $gt: 0 } };
     // let sort = { pagerank: -1 };
 
-    let rel = await Relevance.find(query)
+    let rel = await Relevance.find(query, 'pagerank level community communityId pagerankRaw')
     .limit(limit)
     .skip(skip)
     // .sort(sort)
     .populate({
       path: 'user',
-      select: 'handle name relevance votePower'
+      select: 'handle name votePower image bio'
     });
 
     return res.status(200).json(rel);
@@ -362,7 +364,7 @@ exports.list = async (req, res, next) => {
     .sort(sort)
     .populate({
       path: 'user',
-      select: 'handle name relevance votePower'
+      select: 'handle name votePower image bio'
     });
 
     users = rel.map(r => {

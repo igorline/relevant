@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
-import { NEW_USER_COINS, POWER_REGEN_INTERVAL, VOTE_COST_RATIO } from '../../config/globalConstants';
+import { NEW_USER_COINS, POWER_REGEN_INTERVAL } from '../../config/globalConstants';
 import { NAME_PATTERN } from '../../../app/utils/text';
 import * as ethUtils from '../../utils/ethereum';
 
@@ -171,7 +171,7 @@ UserSchema
 // Validate empty email
 UserSchema
 .path('email')
-.validate(function (email) {
+.validate(function vEmail(email) {
   if (authTypes.indexOf(this.provider) !== -1) return true;
   return email.length;
 }, 'Email cannot be blank');
@@ -179,7 +179,7 @@ UserSchema
 // Validate empty password
 UserSchema
 .path('hashedPassword')
-.validate(function (hashedPassword) {
+.validate(function vHashedPassword(hashedPassword) {
   if (authTypes.indexOf(this.provider) !== -1) return true;
   return hashedPassword.length;
 }, 'Password cannot be blank');
@@ -187,12 +187,11 @@ UserSchema
 // Validate email is not taken
 UserSchema
 .path('email')
-.validate(function (value) {
-  let self = this;
-  this.constructor.findOne({ email: value }, function (err, user) {
+.validate(function vEmailTaken(value) {
+  this.constructor.findOne({ email: value }, (err, user) => {
     if (err) throw err;
     if (user) {
-      if (self.id === user.id) return true;
+      if (this.id === user.id) return true;
       return false;
     }
     return true;
@@ -313,6 +312,7 @@ UserSchema.methods.getRelevance = async function getRelevance(community) {
     return this;
   } catch (err) {
     console.log('failed get relevance ', err);
+    return null;
   }
 };
 
@@ -321,10 +321,11 @@ UserSchema.methods.updatePostCount = async function updatePostCount() {
     this.postCount = await this.model('Post').count({ user: this._id });
     await this.save();
     await this.updateClient();
+    return this;
   } catch (err) {
     console.log('failed to update post count ', err);
+    return null;
   }
-  return this;
 };
 
 UserSchema.methods.updateClient = function updateClient(actor) {

@@ -1,11 +1,14 @@
-// TODO rename to link
 import Meta from '../api/links/link.model';
 import Post from '../api/post/post.model';
 import * as postController from '../api/post/post.controller';
 import TwitterFeed from '../api/twitterFeed/twitterFeed.model';
+// TODO replace this with community
 import Treasury from '../api/treasury/treasury.model';
 import Relevance from '../api/relevance/relevance.model';
 import Community from '../api/community/community.model';
+// this is needed inside post.model (when removing posts);
+// eslint-disable-next-line
+import CommunityFeed from '../api/communityFeed/communityFeed.model';
 
 import { TWITTER_DECAY } from '../config/globalConstants';
 
@@ -24,78 +27,7 @@ let allUsers;
 let userCounter = 0;
 let processedTweets = 0;
 
-
-// User.find({ _id: '4REALGLOBAL' }).then(u => console.log(u));
-
-// TwitterFeed.find({ user: 'balasan', inTimeline: true }).then(posts => {
-//   console.log(posts);
-// })
-
-// Post.find({ twitter: true }).sort('title').then(posts => {
-//   posts.forEach(p => {
-//     console.log('title ', p.title);
-//     console.log('meta ', p.metaPost);
-//   });
-// });
-
-// Post.find().then(posts => {
-//   posts.forEach(p => {
-//     p.upsertMetaPost();
-//   });
-// });
-
-// Post.find({ twitter: true }).remove().exec();
-// TwitterFeed.find({}).remove().exec();
-// Meta.find({ twitter: true }).remove().exec();
-// Meta.find({ twitterCommentary: { $exists: true } })
-// .remove().exec();
-
-
-// User.find({ twitterId: { $exists: true } }).then(users => {
-//   users.map(u => {
-//     console.log(u.twitterId);
-//     let feed = new TwitterFeed
-//   });
-// });
-
-// let now = new Date();
-// Post.find({
-//   twitter: true,
-//   relevance: { $lte: 0 },
-//   postDate: { $lt: now.getTime() - 3 * 24 * 60 * 60 * 1000 } })
-// .limit(1000)
-// .then(posts => {
-//   console.log(posts.length)
-//   posts.forEach(p => {
-//     console.log(p.title);
-//     console.log(p.postDate);
-//     console.log(p.relevance);
-//     p.remove();
-//   });
-// })
-// .catch(err => console.log(err));
-
-// let now = new Date();
-// Meta.find({
-//   twitter: true,
-//   // relevance: { $lte: 0 },
-//   latestTweet: { $lt: now.getTime() - 3 * 24 * 60 * 60 * 1000 } })
-// .populate('commentary')
-// .limit(1000)
-// .then(posts => {
-//   posts.forEach(p => {
-//     console.log(p.title);
-//     console.log(p.latestTweet);
-//     console.log(p.commentary);
-//     if (!p.commentary.leght) {
-//       p.remove();
-//     }
-//   });
-// });
-
-let q = queue({
-  concurrency: 1,
-});
+let q = queue({ concurrency: 1 });
 
 q.on('timeout', (next, job) => {
   console.log('job timed out:', job.toString().replace(/\n/g, ''));
@@ -104,10 +36,6 @@ q.on('timeout', (next, job) => {
 
 let avgTwitterScore = 0;
 let twitterCount = 0;
-
-// updateAvg() {
-//   avgTwitterScore
-// }
 
 async function computeRank(linkPost) {
   let rank = 0
@@ -123,7 +51,8 @@ async function computeRank(linkPost) {
   let personalize = avgTwitterScore * 10;
 
   let newRank = (linkPost.latestComment.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
-  let inFeedRank = (linkPost.latestComment.getTime() / TENTH_LIFE) + Math.log10(personalize + rank + 1);
+  let inFeedRank = (linkPost.latestComment.getTime() / TENTH_LIFE) +
+    Math.log10(personalize + rank + 1);
   newRank = Math.round(newRank * 1000) / 1000;
   inFeedRank = Math.round(inFeedRank * 1000) / 1000;
 
@@ -165,7 +94,7 @@ async function updateRank() {
       );
     });
   } catch (err) {
-    // console.log('error updating twitter rank ', err);
+    return console.log('error updating twitter rank ', err);
   }
 }
 
@@ -176,7 +105,6 @@ async function processTweet(tweet, user) {
   if (tweet.retweeted_status) {
     tweet = tweet.retweeted_status;
   }
-  // console.log('processing tweet');
 
   if (!tweet.entities.urls.length || !tweet.entities.urls[0].url) {
     return;
@@ -184,26 +112,51 @@ async function processTweet(tweet, user) {
 
   if (tweet.entities.urls[0].expanded_url.match('twitter.com')) return;
 
-  // console.log('extended ', tweet.extended_entities);
-  // console.log('regular ', tweet.entities);
-
   // check if tw post exists
   // if it does, update feed and increment 'seen in feed counter'
-  let post = await Post.findOne({ twitter: true, twitterId: tweet.id });
+  let post = await Post.findOne({ twitter: true, twitterId: tweet.id })
+  .populate({
+    path: 'data',
+    match: { communityId: DEFAULT_COMMINITY_ID }
+  });
   // let metaPost;
   let linkParent;
 
   if (post) {
     linkParent = await Post.findOne({ _id: post.linkParent });
     if (!linkParent) {
-      console.log('post exists but missing link parent ', post);
-      return;
+      post = await post.populate('metaPost');
+      let processed = post.metaPost;
+
+      if (!processed) {
+        console.log('missing metapost', post);
+        return;
+      }
+
+      let linkObject = {
+        title: processed.title,
+        url: processed.url,
+        description: processed.description,
+        image: processed.image,
+        articleAuthor: processed.articleAuthor,
+        domain: processed.domain,
+        // TODO we are not using this
+        shortText: processed.shortText,
+        keywords: processed.keywords,
+        seenInFeedNumber: 2,
+      };
+
+      if (!post.data) {
+        post = await post.addPostData();
+      }
+      post = await post.upsertLinkParent(linkObject);
+      linkParent = post.linkParent;
+    } else {
+      linkParent.seenInFeedNumber += 1;
+      await linkParent.save();
     }
-    // if (parentPost) parentPost.seenInFeedNumber += 1;
-    // await metaPost.save();
   } else {
     let processed = await Meta.findOne({ twitterUrl: tweet.entities.urls[0].expanded_url });
-    // if (processed) console.log('found existing ');
 
     if (!processed) {
       processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);
@@ -212,8 +165,6 @@ async function processTweet(tweet, user) {
 
     let dupPost = await Post.findOne({ twitterUser: tweet.user.id, link: processed.url });
     if (dupPost) return;
-    // console.log(tweet.full_text);
-    // console.log(tweet.entities.urls);
 
     let body = tweet.full_text
     .replace(new RegExp(tweet.entities.urls[0].url, 'g'), '')
@@ -233,7 +184,7 @@ async function processTweet(tweet, user) {
     };
 
     post = new Post({
-      // for now only pull tweets for relevant
+      // for now only pull tweets for relevant community
       community: DEFAULT_COMMINITY,
       communityId: DEFAULT_COMMINITY_ID,
       title: processed.title,
@@ -275,13 +226,11 @@ async function processTweet(tweet, user) {
   let { newRank, inFeedRank } = await computeRank(linkParent, user);
 
   let feedObject = {
-    // post: post._id,
     rank: newRank,
     tweetDate: linkParent.latestComment,
   };
 
   // make sure everyone gets it
-
   await TwitterFeed.update(
     { user: '_common_Feed_', post: parentId },
     feedObject,
@@ -289,13 +238,13 @@ async function processTweet(tweet, user) {
   ).exec();
 
 
-  let updateAllUsers = allUsers.map(async u =>
-    await TwitterFeed.update(
+  let updateAllUsers = allUsers.map(async u => {
+    return TwitterFeed.update(
       { user: u, post: parentId },
       feedObject,
       { upsert: true }
-    ).exec()
-  );
+    ).exec();
+  });
 
   await Promise.all(updateAllUsers);
 
@@ -314,7 +263,7 @@ async function processTweet(tweet, user) {
   );
 }
 
-async function getUserFeed(user, i) {
+async function getUserFeed(user) {
   try {
     const client = new Twitter({
       consumer_key: process.env.TWITTER_ID,
@@ -360,7 +309,7 @@ async function getUserFeed(user, i) {
     );
     return Promise.all(feed);
   } catch (err) {
-    console.log('couldn\'t get user feed ', err);
+    return console.log('couldn\'t get user feed ', err);
   }
 }
 
@@ -412,7 +361,7 @@ async function getUsers(userId) {
     DEFAULT_COMMINITY_ID = community._id;
 
     // for now we are only pulling tweets for the relevant community
-    let userList = await Relevance.find({ community: 'relevant', global: true, relevance: { $gt: 1 }});
+    let userList = await Relevance.find({ community: 'relevant', global: true, pagerank: { $gt: 1 } });
     userList = userList.map(u => u.user);
 
     let query = userId ? { _id: userId } : { _id: { $in: userList } };
@@ -442,16 +391,15 @@ async function getUsers(userId) {
 
     await cleanup(users);
 
-    q.start(async (queErr, results) => {
+    q.start(async queErr => {
       try {
         if (queErr) return console.log(queErr);
 
+        // TODO should be getting this from community
         treasury.twitterCount = twitterCount;
         treasury.avgTwitterScore = avgTwitterScore;
         treasury.lastTwitterUpdate = new Date();
 
-        // console.log('new avg score from db ', avgTwitterScore);
-        // console.log('new count from db ', twitterCount);
         let finished = new Date();
         let time = finished.getTime() - now.getTime();
         time /= (1000 * 60);
@@ -461,7 +409,7 @@ async function getUsers(userId) {
 
         return console.log('finished processing tweets');
       } catch (err) {
-        console.log(err);
+        return console.log(err);
       }
     });
   } catch (err) {
@@ -470,7 +418,6 @@ async function getUsers(userId) {
 }
 
 // setTimeout(getUsers, 3000);
-// getUsers();
 module.exports = {
   updateTwitterPosts: getUsers
 };

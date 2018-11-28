@@ -33,5 +33,4 @@ router.put('/unblock', auth.isAuthenticated(), controller.unblock);
 
 router.delete('/:id', auth.isAuthenticated(), controller.destroy);
 
-
 module.exports = router;
