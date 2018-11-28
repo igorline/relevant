@@ -88,9 +88,14 @@ exports.get = async (req, res) => {
 
     feed.forEach(async (f) => {
       if (f.post) {
+        // if (!f.post.commentary.length && !f.post.type === 'link') {
+        //   console.log(f);
+        //   // f.remove();
+        // }
         posts.push(f.post);
-      } else { // just in case - this shouldn't happen
-        console.log('error: metapost is null!');
+      } else {
+        // just in case - this shouldn't happen
+        console.log('error: post is null!');
         await f.remove();
       }
     });
