@@ -272,8 +272,6 @@ function startTwitterUpdate() {
 // startTwitterUpdate();
 
 if (process.env.NODE_ENV === 'production') {
-  updateUserStats();
-
   // start interval on the hour
   let minutesTillHour = 60 - (new Date()).getMinutes();
   setTimeout(() => {

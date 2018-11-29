@@ -691,13 +691,14 @@ exports.create = async (req, res, next) => {
     newPost = await newPost.save();
 
     if (postUrl) {
-      console.log('inserting link parent ', postUrl);
       newPost = await newPost.upsertLinkParent(linkObject);
+      await newPost.parentPost.insertIntoFeed(newPost.community);
     } else {
       // TODO - do we want to put this into the ranked feed? maybe not...
       // await newPost.updateRank(newPost.community);
       await newPost.insertIntoFeed(newPost.community);
     }
+
 
     await author.updatePostCount();
 

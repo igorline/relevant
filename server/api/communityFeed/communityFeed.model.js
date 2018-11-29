@@ -40,28 +40,30 @@ CommunityFeedSchema.statics.updateDate = async function updateDate(_id, communit
   }
 };
 
-CommunityFeedSchema.statics.updateRank = async function updateRank(post, community, rank) {
+// CommunityFeedSchema.statics.addToFeed = async function addToFeed(post, community) {
+//   try {
+//     if (community === 'twitter') community = 'relevant';
+//     let feedItem = new this({
+//       post: post._id,
+//       community,
+//       latestPost: post.data.latestComment,
+//       tags: post.tags,
+//       categories: post.categories,
+//       rank: post.data.rank,
+//     });
+//     return await feedItem.save();
+//   } catch (err) {
+//     throw err;
+//   }
+// };
+
+CommunityFeedSchema.statics.updateRank = async function updateRank(post, community) {
   try {
     let feedItem = await this.findOne({ post: post._id, community });
 
-    // create new feed item if needed (this is for twitter feed)
-    if (!feedItem) {
-      if (community === 'twitter') community = 'relevant';
-      feedItem = new this({
-        post: post._id,
-        community,
-        latestPost: post.data.latestComment,
-        tags: post.tags,
-        categories: post.categories,
-        // not used
-        // keywords: post.keywords,
-        rank,
-      });
-      return await feedItem.save();
-    }
-
-    // TODO - post rank should be tracked in a separate table so that we are not grabbing stuff from a diff communities
-    feedItem.rank = rank;
+    // TODO - post rank should be tracked in a separate table
+    // so that we are not grabbing stuff from a diff communities
+    feedItem.rank = post.data.rank;
     feedItem.latestPost = post.data.latestComment;
     return await feedItem.save();
   } catch (err) {

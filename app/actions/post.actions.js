@@ -332,29 +332,32 @@ export function getPosts(skip, tags, sort, limit) {
     if (tags.length === 1) topic = tags[0];
   }
 
-  return dispatch => {
-    dispatch(getPostsAction(type));
-    return utils.api.request({
-      method: 'GET',
-      endpoint,
-      query: { skip, sort, limit, tag }
-    })
-    .then((responseJSON) => {
+  return async dispatch => {
+    try {
+      dispatch(getPostsAction(type));
+      console.log({ skip, sort, limit, tag });
+
+      let res = await utils.api.request({
+        method: 'GET',
+        endpoint,
+        query: { skip, sort, limit, tag }
+      });
       let dataType = feedSchema;
       let data = normalize(
-        { [type]: responseJSON },
+        { [type]: res },
         { [type]: [dataType] }
       );
+
       dispatch(setUsers(data.entities.users));
+
       if (topic) {
         dispatch(setTopic(data, type, skip, topic));
       } else dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('discover', false));
-    })
-    .catch((error) => {
+    } catch (error) {
       console.log(error, 'error');
       dispatch(errorActions.setError('discover', true, error.message));
-    });
+    }
   };
 }
 
@@ -679,5 +682,4 @@ export function getTopPosts() {
     }
   };
 }
-
 
