@@ -1,3 +1,4 @@
+const queue = require('queue');
 const pagerank = require('../utils/pagerankClean').default;
 // const pagerank = require('../utils/pagerankCleanMat').default;
 const User = require('../api/user/user.model');
@@ -9,7 +10,9 @@ const Relevance = require('../api/relevance/relevance.model');
 const RELEVANCE_DECAY = require('../config/globalConstants').RELEVANCE_DECAY;
 const Community = require('../api/community/community.model').default;
 
-function updateItemRank(props) {
+let q = queue({ concurrency: 5 });
+
+async function updateItemRank(props) {
   let { min, max, minPost, maxPost, u, N, debug, communityId, community, maxRel } = props;
   min = 0;
   minPost = 0;
@@ -476,17 +479,32 @@ export default async function computePageRank(params) {
       post.data.pagerank = u.pagerank;
     }
 
-    let updatedUsers = array.map(u => {
-      return updateItemRank({
-        min, max, minPost, maxPost, u, N, debug, communityId, community, maxRel
+    array.forEach(async u => {
+      q.push(async cb => {
+        try {
+          let x = await updateItemRank({
+            min, max, minPost, maxPost, u, N, debug, communityId, community, maxRel
+          });
+        } catch (err) {
+          console.log('error ', err);
+          throw err;
+        }
+        cb();
       });
     });
-    // await author.reputation.save();
-    // await post.data.save();
-    if (author || post) {
-      return { author, post };
-    }
-    updatedUsers = await Promise.all(updatedUsers);
+
+
+    return new Promise((resolve, reject) =>
+      q.start(err => {
+        if (err) reject(err);
+        resolve({ author, post });
+      })
+    );
+
+    // if (author || post) {
+    //   return { author, post };
+    // }
+    // updatedUsers = await Promise.all(updatedUsers);
     // console.log(updatedUsers);
   } catch (err) {
     console.log(err);

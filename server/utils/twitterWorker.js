@@ -27,7 +27,7 @@ let allUsers;
 let userCounter = 0;
 let processedTweets = 0;
 
-let q = queue({ concurrency: 5 });
+let q = queue({ concurrency: 10 });
 
 q.on('timeout', (next, job) => {
   console.log('job timed out:', job.toString().replace(/\n/g, ''));
@@ -410,7 +410,7 @@ async function getUsers(userId) {
         if (queErr) return console.log('twitter update error ', queErr);
         await updateTreasury(treasury, startTime);
       } catch (err) {
-        return console.log(err);
+        console.log(err);
       }
     });
   } catch (err) {

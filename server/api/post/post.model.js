@@ -148,14 +148,11 @@ PostSchema.index({ paidOut: 1, payoutTime: 1 });
 
 PostSchema.pre('save', async function save(next) {
   try {
-    // TODO do we need this? don't thinks so...
-    // await this.updateRank();
     let countQuery = { parentPost: this._id };
     if (this.type === 'link') {
       countQuery = { aboutLink: this._id };
     }
     this.commentCount = await this.model('Post').count(countQuery);
-    // if (!this.latestComment) this.latestComment = this.postDate;
   } catch (err) {
     console.log(err);
     return next();
@@ -208,7 +205,7 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(postId, co
       // remove empty link posts
       await linkPost.remove();
     } else if (!remove) {
-      // TODO this is messy - it will push a new post in the feed
+      // TODO this is messy - it will bump a new post in the feed
       // Update the date of post in feed
       let newFeedItem = await this.model('CommunityFeed').findOneAndUpdate(
         { community, post: linkPost._id },
@@ -225,7 +222,7 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(postId, co
 
 PostSchema.post('remove', async function postRemove(doc) {
   try {
-    if (doc.linkParent) {
+    if (!doc.hidden && doc.linkParent) {
       await this.model('Post').updateFeedStatus(doc.linkParent, this.community, true);
     }
     await this.model('CommunityFeed').removeFromAllFeeds(doc);
@@ -333,15 +330,13 @@ PostSchema.methods.updateRank = async function updateRank(community, dontInsert)
       rank = Math.max(rank, commentRank);
     }
 
-    // THIS will update the rank in the feed
-    // Will also create new feed item if its not there already!
-    // Messy!
-    if (community && !this.parentPost && !dontInsert) {
-      await this.model('CommunityFeed').updateRank(this, community, rank);
+    this.data.rank = rank;
+
+    // this will update the 'new' date and rank
+    if (community && !this.parentPost && !dontInsert && !this.hidden) {
+      await this.model('CommunityFeed').updateRank(this, community);
     }
 
-    this.data.rank = rank;
-    this.rank = rank;
     if (this.community === community) {
       this.pagerank = this.data.pagerank;
     }
@@ -425,15 +420,23 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
 
 PostSchema.methods.insertIntoFeed = async function insertIntoFeed(community) {
   try {
-    if (!this.data) this.data = await this.model('PostData').find({ post: this._id, community });
+    let post = this;
+    if (post.parentPost) {
+      post = this.model('Post').findOne({ _id: post.parentPost })
+      .populate({
+        path: 'data',
+        match: community
+      });
+    }
+    if (!post.data) post.data = await this.model('PostData').find({ post: post._id, community });
     let feedItem = await this.model('CommunityFeed').findOneAndUpdate(
       { community, post: this._id },
       {
-        latestPost: this.data.latestComment || this.data.postDate,
-        tags: this.tags,
+        latestPost: post.data.latestComment || post.data.postDate,
+        tags: post.tags,
         // categories: this.categories,
         // keywords: meta.keywords,
-        rank: this.data.rank,
+        rank: post.data.rank,
       },
       { upsert: true, new: true }
     );
