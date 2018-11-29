@@ -13,7 +13,7 @@ const DECAY = 0.99621947473649;
 
 let q = queue({
   // concurrency: 5,
-  concurrency: 1,
+  concurrency: 5,
 });
 
 q.on('timeout', (next, job) => {

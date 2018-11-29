@@ -208,7 +208,7 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(postId, co
       // remove empty link posts
       await linkPost.remove();
     } else if (!remove) {
-      // TODO this is messy
+      // TODO this is messy - it will push a new post in the feed
       // Update the date of post in feed
       let newFeedItem = await this.model('CommunityFeed').findOneAndUpdate(
         { community, post: linkPost._id },
@@ -334,8 +334,9 @@ PostSchema.methods.updateRank = async function updateRank(community, dontInsert)
     }
 
     // THIS will update the rank in the feed
+    // Will also create new feed item if its not there already!
+    // Messy!
     if (community && !this.parentPost && !dontInsert) {
-      console.log('updating post rank ', rank);
       await this.model('CommunityFeed').updateRank(this, community, rank);
     }
 
