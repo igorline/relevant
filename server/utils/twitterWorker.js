@@ -324,29 +324,32 @@ async function cleanup() {
 }
 
 async function processTweets(users) {
-  console.log('processing ', users.length, ' users');
-  let processedUsers = users.map(async (u, i) => {
+  console.log('processing', users.length, 'users');
+  let trim = await TwitterFeed.find({ user: '_common_Feed_' })
+  .sort({ rank: -1 })
+  .skip(1000);
+  let ids = trim.map(t => t._id);
+  await TwitterFeed.remove({ _id: { $in: ids } });
+
+  users.forEach((u, i) => {
     try {
-      let trim = await TwitterFeed.find({ user: '_common_Feed_' })
-      .sort({ rank: -1 })
-      .skip(1000);
-      let ids = trim.map(t => t._id);
-      await TwitterFeed.remove({ _id: { $in: ids } });
-
-      trim = await TwitterFeed.find({ user: u._id })
-      .sort({ rank: -1 })
-      .skip(1000);
-      ids = trim.map(t => t._id);
-      await TwitterFeed.remove({ _id: { $in: ids } });
-
-      return await getUserFeed(u, i);
+      q.push(async cb => {
+        try {
+          trim = await TwitterFeed.find({ user: u._id })
+          .sort({ rank: -1 })
+          .skip(1000);
+          ids = trim.map(t => t._id);
+          await TwitterFeed.remove({ _id: { $in: ids } });
+          await getUserFeed(u, i);
+          cb();
+        } catch (err) {
+          throw err;
+        }
+      });
     } catch (err) {
       console.log('error getting user feed ', err);
-      return null;
     }
   });
-
-  await Promise.all(processedUsers);
 }
 
 async function updateTreasury(treasury, startTime) {
