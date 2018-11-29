@@ -118,7 +118,11 @@ export async function computeApproxPageRank(params) {
     if (investment) ({ amount } = investment);
     let N = com.numberOfElements;
     let { maxUserRank, maxPostRank } = com;
-    let userR = user.relevance.pagerankRaw || 0;
+    // if user relevance object doesn't exist, there is nothing to update
+    if (!user.relevance || user.relevance.pagerankRaw <= 0) {
+      return { author, post };
+    }
+    let userR = user.relevance ? user.relevance.pagerankRaw : 0;
     let authorId = author ? author._id : null;
 
     let yearAgo = new Date().setFullYear(new Date().getFullYear() - 2);

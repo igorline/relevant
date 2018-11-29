@@ -27,7 +27,7 @@ let allUsers;
 let userCounter = 0;
 let processedTweets = 0;
 
-let q = queue({ concurrency: 1 });
+let q = queue({ concurrency: 5 });
 
 q.on('timeout', (next, job) => {
   console.log('job timed out:', job.toString().replace(/\n/g, ''));
@@ -99,6 +99,27 @@ async function updateRank() {
 }
 
 // updateRank();
+async function createLinkObj(tweet) {
+  let processed = await Meta.findOne({ twitterUrl: tweet.entities.urls[0].expanded_url });
+
+  if (!processed) {
+    processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);
+    processedTweets++;
+  }
+
+  let linkObject = {
+    title: processed.title,
+    url: processed.url,
+    description: processed.description,
+    image: processed.image,
+    articleAuthor: processed.articleAuthor,
+    domain: processed.domain,
+    // TODO we are not using this
+    shortText: processed.shortText,
+    keywords: processed.keywords,
+  };
+  return { linkObject, processed };
+}
 
 async function processTweet(tweet, user) {
   let originalTweet = tweet;
@@ -126,28 +147,8 @@ async function processTweet(tweet, user) {
   if (post) {
     linkParent = await Post.findOne({ _id: post.linkParent });
     if (!linkParent) {
-      console.log('existing post with no parent', post);
-      post = await post.populate('metaPost');
-      let processed = post.metaPost;
-
-      if (!processed) {
-        console.log('missing metapost', post);
-        return;
-      }
-
-      let linkObject = {
-        title: processed.title,
-        url: processed.url,
-        description: processed.description,
-        image: processed.image,
-        articleAuthor: processed.articleAuthor,
-        domain: processed.domain,
-        // TODO we are not using this
-        shortText: processed.shortText,
-        keywords: processed.keywords,
-        seenInFeedNumber: 2,
-      };
-       if (!post.data) {
+      let { linkObject } = await createLinkObj(tweet);
+      if (!post.data) {
         post = await post.addPostData();
       }
       post = await post.upsertLinkParent(linkObject);
@@ -157,12 +158,8 @@ async function processTweet(tweet, user) {
       await linkParent.save();
     }
   } else {
-    let processed = await Meta.findOne({ twitterUrl: tweet.entities.urls[0].expanded_url });
-
-    if (!processed) {
-      processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);
-      processedTweets++;
-    }
+    let { linkObject, processed } = await createLinkObj(tweet);
+    let tags = tweet.entities.hashtags.map(t => t.text);
 
     let dupPost = await Post.findOne({ twitterUser: tweet.user.id, link: processed.url });
     if (dupPost) return;
@@ -170,19 +167,6 @@ async function processTweet(tweet, user) {
     let body = tweet.full_text
     .replace(new RegExp(tweet.entities.urls[0].url, 'g'), '')
     .replace(/&amp;/, '&');
-
-    let tags = tweet.entities.hashtags.map(t => t.text);
-    let linkObject = {
-      title: processed.title,
-      url: processed.url,
-      description: processed.description,
-      image: processed.image,
-      articleAuthor: processed.articleAuthor,
-      domain: processed.domain,
-      // TODO we are not using this
-      shortText: processed.shortText,
-      keywords: processed.keywords,
-    };
 
     post = new Post({
       // for now only pull tweets for relevant community
@@ -238,7 +222,6 @@ async function processTweet(tweet, user) {
     { upsert: true }
   ).exec();
 
-
   let updateAllUsers = allUsers.map(async u => {
     return TwitterFeed.update(
       { user: u, post: parentId },
@@ -272,7 +255,6 @@ async function getUserFeed(user) {
       access_token_key: user.twitterAuthToken,
       access_token_secret: user.twitterAuthSecret
     });
-    // console.log(user.lastTweetId.toString());
 
     const params = {
       since_id: user.lastTweetId ? user.lastTweetId.toString() : undefined,
@@ -297,7 +279,7 @@ async function getUserFeed(user) {
         try {
           let post = await processTweet(tweet, user);
           if (j === feed.length - 1) {
-            console.log('processing user ', userCounter + 1, ' out of ', allUsers.length, ' tweets: ', feed.length);
+            console.log('processing user', userCounter + 1, ' out of', allUsers.length, 'tweets:', feed.length);
             userCounter++;
           }
           cb();
@@ -310,27 +292,24 @@ async function getUserFeed(user) {
     );
     return Promise.all(feed);
   } catch (err) {
+    // TODO remove expired twitter tokens
     return console.log('couldn\'t get user feed ', err);
   }
 }
 
 async function cleanup() {
   let now = new Date();
-
-  // TODO fix this
   let posts = await Post.find({
     twitter: true,
     hidden: true,
-    postDate: { $lt: now.getTime() - 3 * 24 * 60 * 60 * 1000 }
-  });
-  // .sort({ postDate: -1 })
-  // .limit(1000);
+    postDate: { $lt: now.getTime() - 3 * 24 * 60 * 60 * 1000 } },
+  'metaPost linkParent parentPost type tags'
+  );
 
   console.log('clearing twitter posts ', posts.length, ' posts');
-  let removePosts = await posts.map((p, i) =>
+  let removePosts = await posts.map(p =>
     q.push(async cb => {
       try {
-        console.log('removing post', i);
         await p.remove();
         cb();
         return p;
@@ -370,14 +349,14 @@ async function processTweets(users) {
   await Promise.all(processedUsers);
 }
 
-async function updateTreasury(treasury) {
+async function updateTreasury(treasury, startTime) {
   // TODO should be getting this from community
   treasury.twitterCount = twitterCount;
   treasury.avgTwitterScore = avgTwitterScore;
   treasury.lastTwitterUpdate = new Date();
 
   let finished = new Date();
-  let time = finished.getTime() - now.getTime();
+  let time = finished.getTime() - startTime.getTime();
   time /= (1000 * 60);
   console.log('processed ', processedTweets, ' tweets', ' in ', time, 'min');
 
@@ -404,16 +383,16 @@ async function getUsers(userId) {
 
     let treasury = await Treasury.findOne();
 
-    let now = new Date();
+    let startTime = new Date();
     let lastUpdate = treasury.lastTwitterUpdate ? treasury.lastTwitterUpdate.getTime() : 0;
 
-    let decay = (now.getTime() - lastUpdate) / TWITTER_DECAY;
+    let decay = (startTime.getTime() - lastUpdate) / TWITTER_DECAY;
 
     avgTwitterScore = treasury.avgTwitterScore * (1 - Math.min(1, decay)) || 0;
     twitterCount = treasury.twitterCount * (1 - Math.min(1, decay)) || 0;
 
-    console.log('avg score from db ', avgTwitterScore);
-    console.log('avg count from db ', twitterCount);
+    console.log('avg score from db ', treasury.avgTwitterScore, decay, avgTwitterScore);
+    console.log('avg count from db ', treasury.twitterCount, decay, twitterCount);
 
     allUsers = users.map(u => u._id);
 
@@ -425,8 +404,8 @@ async function getUsers(userId) {
 
     q.start(async queErr => {
       try {
-        if (queErr) return console.log(queErr);
-        await updateTreasury();
+        if (queErr) return console.log('twitter update error ', queErr);
+        await updateTreasury(treasury, startTime);
       } catch (err) {
         return console.log(err);
       }

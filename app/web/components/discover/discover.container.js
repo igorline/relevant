@@ -27,7 +27,7 @@ import * as discoverHelper from './discoverHelper';
 import ShadowButton from '../common/ShadowButton';
 import Sidebar from '../common/sidebar.component';
 
-const POST_PAGE_SIZE = 5;
+const POST_PAGE_SIZE = 15;
 
 if (process.env.BROWSER === true) {
   require('../post/post.css');

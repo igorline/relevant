@@ -484,9 +484,16 @@ exports.create = async (req, res, next) => {
 
     let initialPostRank = post.data.pagerank;
     // TODO make sure this doesn't take too long
-    // ({ author, post } = await computePageRank({ communityId, community, author, post, investment, fast: amount >= 0 || false }));
-    ({ author, post } = await computeApproxPageRank({ communityId, author, post, investment, user, undoInvest }));
+    // ({ author, post } = await computePageRank({
+    //   communityId, community, author, post, investment, fast: amount >= 0 || false
+    // }));
+    let updatePageRank = await computeApproxPageRank({
+      communityId, author, post, investment, user, undoInvest
+    });
 
+    if (updatePageRank) {
+      ({ author, post } = updatePageRank);
+    }
     if (investment) {
       investment.rankChange = initialPostRank - post.data.pagerank;
       console.log('rankChange ', initialPostRank - post.data.pagerank);

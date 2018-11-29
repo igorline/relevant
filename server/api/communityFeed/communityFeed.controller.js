@@ -88,10 +88,10 @@ exports.get = async (req, res) => {
 
     feed.forEach(async (f) => {
       if (f.post) {
-        // if (!f.post.commentary.length && !f.post.type === 'link') {
-        //   console.log(f);
-        //   // f.remove();
-        // }
+        if (!f.post.commentary.length && f.post.type === 'link') {
+          console.log(f);
+          await f.remove();
+        }
         posts.push(f.post);
       } else {
         // just in case - this shouldn't happen
