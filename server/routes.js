@@ -2,13 +2,6 @@ import handleRender from './render';
 import { currentUser } from './auth/auth.service';
 import userController from './api/user/user.controller';
 
-let express = require('express');
-
-function handleError(res, err) {
-  console.log(err);
-  return res.status(500).json({ message: err.message });
-}
-
 let base;
 if (process.env.NODE_ENV === 'production') {
   base = 'relevant.community';
@@ -20,11 +13,6 @@ const subdomainOptions = { base, removeWWW: true };
 
 module.exports = (app) => {
   app.use(require('./utils/subdomain')(subdomainOptions));
-
-  // app.use('/subdomain/:subdomain', (req, res, next) => {
-  //   req.community = req.query.subdomain;
-  //   next();
-  // });
 
   // API
   app.use('/api/user', require('./api/user'));
@@ -63,6 +51,8 @@ module.exports = (app) => {
   });
 
   // Error handler route
+  // (need next for this to work)
+  // eslint-disable-next-line
   app.use((err, req, res, next) => {
     console.error(err);
     return res.status(500).json({ message: err.message });
@@ -70,5 +60,4 @@ module.exports = (app) => {
 
   // app.get('/subdomain/:subdomain/*', currentUser(), handleRender);
   app.get('/*', currentUser(), handleRender);
-
 };

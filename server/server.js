@@ -2,13 +2,14 @@
 import Express from 'express';
 import morgan from 'morgan';
 
-let bodyParser = require('body-parser');
-let mongoose = require('mongoose');
-let cookieParser = require('cookie-parser');
-let session = require('express-session');
-let favicon = require('serve-favicon');
-let MongoStore = require('connect-mongo')(session);
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const favicon = require('serve-favicon');
+const MongoStore = require('connect-mongo')(session);
 const cookiesMiddleware = require('universal-cookie-express');
+const path = require('path');
 
 const app = new Express();
 mongoose.Promise = global.Promise;
@@ -81,10 +82,8 @@ function requireHTTPS(req, res, next) {
 app.use(requireHTTPS);
 
 // public folder
-app.use(Express.static(__dirname + '/../app/web/public'));
+app.use(Express.static(path.join(__dirname, '/../app/web/public')));
 app.use(cookiesMiddleware());
-
-console.log('loading routes');
 
 let port = process.env.PORT || 3000;
 
@@ -99,7 +98,10 @@ if (process.env.NODE_ENV !== 'test') {
       console.error(error);
     } else {
       console.info(`==> 🌎  Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`);
+      let now = new Date();
       require('./routes')(app);
+      let time = (new Date()).getTime() - now.getTime();
+      console.log('done loading routes', time / 1000, 's');
     }
   });
   socketServer(server, { pingTimeout: 30000 });

@@ -49,6 +49,7 @@ RelevanceSchema.methods.updateRelevanceRecord = function updateRelevanceRecord()
   return this;
 };
 
+// DEPRECATED
 RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance(user, post, relevanceToAdd, communityId) {
   let tagRelevance;
   // TODO await?

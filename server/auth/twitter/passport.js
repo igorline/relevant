@@ -122,7 +122,7 @@ exports.login = async (req, res, next) => {
 
     let user = await User.findOne(
       { twitterId: parseInt(profile.userID, 10) },
-      ['+twitterAuthToken +twitterAuthSecret +twitter']
+      ['+twitterAuthToken', '+twitterAuthSecret', '+twitter']
     );
 
     if (user && relUser && relUser._id !== user._id) {

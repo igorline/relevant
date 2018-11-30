@@ -1,54 +1,16 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto-promise';
 import sigUtil from 'eth-sig-util';
-
 import User from './user.model';
 import Comment from '../comment/comment.model';
 import Post from '../post/post.model';
-import config from '../../config/config';
-// import Treasury from '../treasury/treasury.model';
-// import Earnings from '../earnings/earnings.model';
 import Relevance from '../relevance/relevance.model';
 import mail from '../../mail';
-import Invite from '../invites/invite.model';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
-import Community from '../community/community.model';
 
 const TwitterWorker = require('../../utils/twitterWorker');
-
-// User.findOne({ _id: 'z' }).then(u => u.remove());
-// User.findOne({ _id: 'test'}, 'hashedPassword')
-// .then(u => console.log(u))
-
-// User.collection.dropIndexes(function (err, results) {
-//   console.log(err);
-// });
-
-// User.findOneAndUpdate({ _id: 'slava' }, { role: 'admin' }).exec();
-// User.findOneAndUpdate({ _id: 'Analisa' }, { role: 'admin' }).exec();
-// User.findOneAndUpdate({ _id: 'jay' }, { role: 'user' }).exec();
-// User.findOneAndUpdate({ _id: 'phillip' }, { role: 'user' }).exec();
-// User.findOneAndUpdate({ _id: 'balasan' }, { role: 'admin' }).exec();
-// User.findOneAndUpdate({ _id: 'test' }, { role: 'admin', confirmed: true }).exec();
-// async function notifications() {
-//   try {
-//     let users = await User.find({ 'deviceTokens.0': { $exists: true } });
-//     console.log('not enabled ', users.length)
-//     users.forEach(user => {
-//       console.log(user._id);
-//     });
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-// notifications();
-
-// User.update({}, { onboarding: 0 }, { multi: true }).exec();
-
-// User.find({ confirmed: false }, '_id')
-// .then(users => console.log(users));
 
 let validationError = (res, err) => {
   console.log(err);
@@ -107,12 +69,13 @@ async function sendResetEmail(user) {
   return status;
 }
 
-exports.forgot = async (req, res) => {
-  let string = req.body.user;
-  let user;
+exports.forgot = async (req, res, next) => {
   let email;
   try {
+    let string = req.body.user;
+    let user;
     let query;
+
     email = /^.+@.+\..+$/.test(string);
     query = email ? { email: string } : { handle: string };
     user = await User.findOne(query, 'resetPasswordToken resetPasswordExpires email');
@@ -122,14 +85,14 @@ exports.forgot = async (req, res) => {
     user.resetPasswordExpires = Date.now() + 3600000;
     user = await user.save();
     await sendResetEmail(user);
+    return res.status(200).json({ email: user.email, username: user.handle });
   } catch (err) {
     let error = new Error('Couldn\'t find user with this name ', err);
     if (email) {
       error = new Error('No user with this email exists');
     }
-    return handleError(res, error);
+    return next(error);
   }
-  res.status(200).json({ email: user.email, username: user.handle });
 };
 
 exports.confirm = async (req, res, next) => {
@@ -156,20 +119,18 @@ exports.confirm = async (req, res, next) => {
   return middleware ? next() : res.status(200).json(user);
 };
 
-exports.sendConfirmationCode = async (req, res) => {
-  let status;
+exports.sendConfirmationCode = async (req, res, next) => {
   try {
     let user = await User.findOne({ handle: req.user.handle }, 'email confirmCode');
     let rand = await crypto.randomBytes(32);
     let token = rand.toString('hex');
     user.confirmCode = token;
     user = await user.save();
-    status = await sendConfirmation(user);
+    let status = await sendConfirmation(user);
+    return res.status(200).json(status);
   } catch (err) {
-    return handleError(res, err);
+    return next(err);
   }
-  console.log('status ', status);
-  res.status(200).json(status);
 };
 
 exports.onboarding = (req, res) => {
@@ -298,7 +259,7 @@ exports.checkUser = (req, res) => {
     query = { email };
   }
 
-  User.findOne(query, 'handle')
+  return User.findOne(query, 'handle')
   .then((user) => {
     if (user) res.status(200).json({ type });
     else res.status(200).json(null);
@@ -442,7 +403,7 @@ exports.create = async (req, res, next) => {
 
     return res.status(200).json({ token, user });
   } catch (err) {
-    return handleError(res, err);
+    return next(err);
   }
 };
 
@@ -503,7 +464,7 @@ exports.show = async function show(req, res, next) {
       }
     }
   } catch (err) {
-    handleError(res, err);
+    next(err);
   }
 };
 
@@ -521,7 +482,7 @@ exports.destroy = async (req, res, next) => {
     await User.findOne({ handle: req.params.id }).remove();
     return res.sendStatus(204);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
