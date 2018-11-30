@@ -23,7 +23,7 @@ function objectToMatrix(_inputs, params) {
   let g = {};
   let neg = {};
   let P = [];
-  let avoid = {};
+  let avoid = [];
   let danglingNodes = [];
   let danglingObj = {};
 
@@ -66,7 +66,7 @@ function objectToMatrix(_inputs, params) {
         neg[i] = neg[i] || {};
         neg[i][dictionary[vote]] = n;
 
-        avoid[i] = true;
+        avoid = [...new Set([...avoid, i])];
 
         downvotes[dictionary[vote]] = n;
         g[j].inputsN[id_i] = n;
@@ -84,6 +84,11 @@ function objectToMatrix(_inputs, params) {
   // });
   // printM(G, 'G');
   // printM(P, 'P');
+
+  let heapUsed = process.memoryUsage().heapUsed;
+  let mb = Math.round(100 * heapUsed / 1048576) / 100;
+  console.log('Matrix - program is using', mb, 'MB of Heap.');
+
   return { neg, g, G, N, P, dictionary, danglingNodes, avoid, danglingObj };
 }
 
@@ -173,11 +178,17 @@ export default function pagerank(inputs, params) {
   console.log('matrix setup time ', ((new Date()).getTime() - now) / 1000 + 's');
 
   let xlast;
+  let lastP;
+  let upvotes;
+  let transitions;
+  let Ti;
   for (iter = 0; iter < params.max_iter; iter++) {
     xlast = [...x];
 
+    x = null;
     x = new Array(N).fill(0);
-    let lastP = P.map(arr => arr.slice());
+    lastP = null;
+    lastP = P.map(arr => arr.slice());
 
     danglesum = 0;
     danglingNodes.forEach(node => danglesum += xlast[node]);
@@ -185,13 +196,12 @@ export default function pagerank(inputs, params) {
 
     // Iterate through nodes;
     for (let i = 0; i < N; i++) {
-      let Ti = {};
+      Ti = {};
       if (p[i]) {
         // Optimized TNi
         xlast.map((xl, j) => Ti[j] = xl * params.M * (1 - params.alpha) * p[i]);
       }
-
-      let upvotes = [];
+      upvotes = [];
       if (g[i]) {
         upvotes = Object.keys(g[i].inputs) || [];
       }
@@ -202,7 +212,7 @@ export default function pagerank(inputs, params) {
         Ti[j] = (Ti[j] || 0) + params.alpha * g[i].inputs[j] * xlast[j];
       });
 
-      let transitions = Object.keys(Ti) || [];
+      transitions = Object.keys(Ti) || [];
 
       x[i] += (1.0 - params.alpha) * p[i] + danglesum * danglingWeights[i];
 
@@ -217,7 +227,7 @@ export default function pagerank(inputs, params) {
       // UPDATE tildeP
       // TODO can use cacheTildeP but need to create one per community
       if (!params.fast) {
-        Object.keys(avoid).forEach(j => {
+        avoid.forEach(j => {
           tildeP[i][j] = 0;
 
           transitions.forEach(k => {
@@ -229,14 +239,20 @@ export default function pagerank(inputs, params) {
           else if (i === j) P[i][j] = 0;
           else P[i][j] = tildeP[i][j];
 
-          if (P[i][j] > 0.0 && !danglingObj[i]) {
-            avoid[i] = true;
+          if (P[i][j] > 0.0 && !danglingObj[i] && avoid.indexOf(i) < 0) {
+            avoid = [...new Set([...avoid, i])];
           }
         });
       }
+      upvotes = null;
+      Ti = null;
     }
 
-    console.log('avoid length', Object.keys(avoid).length, N);
+    let heapUsed = process.memoryUsage().heapUsed;
+    let mb = Math.round(100 * heapUsed / 1048576) / 100;
+    console.log('Iter - program is using', mb, 'MB of Heap.');
+
+    console.log('avoid length', avoid.length, N);
 
     // normalize
     let sum = x.reduce((prev, next) => prev + next, 0);

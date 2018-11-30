@@ -294,12 +294,16 @@ export default async function computePageRank(params) {
 
     if (!community) throw new Error('missing community name');
 
+
+    let heapUsed = process.memoryUsage().heapUsed;
+    let mb = Math.round(100 * heapUsed / 1048576) / 100;
+    console.log('Program is using ' + mb + 'MB of Heap.');
     // let users = await User.find({})
     // .populate({ path: 'relevance', match: { communityId, global: true } });
 
     let now = new Date();
 
-    let admins = await CommunityMember.find({ role: 'admin', communityId: communityId })
+    let admins = await CommunityMember.find({ role: 'admin', communityId })
     .populate({
       path: 'user',
       select: 'relevance',
@@ -315,6 +319,7 @@ export default async function computePageRank(params) {
     let negativeWeights = {};
     let originalRelevance = {};
     let originalUsers = {};
+    let originalPosts = {};
     let rankedPosts = {};
     let nstart = {};
     // let results = users.map(async user => {
@@ -361,26 +366,29 @@ export default async function computePageRank(params) {
 
     upvotes.forEach(upvote => {
       let user = upvote.investor;
-      let author = upvote.author;
-      if (user && !originalUsers[user._id]) {
-        originalUsers[user._id] = user;
-        originalRelevance[user._id] = user.relevance ? user.relevance.relevance : 0;
+      let postAuthor = upvote.author;
+      let post = upvote.post;
+      // if (user && !originalUsers[user._id]) {
+      //   originalUsers[user._id] = user;
+      //   originalRelevance[user._id] = user.relevance ? user.relevance.relevance : 0;
+      // }
+      if (post && !originalPosts[post._id]) {
+        originalPosts[post._id] = post._id;
       }
-      if (author && !originalUsers[author._id]) {
-        originalUsers[author._id] = author;
-        originalRelevance[author._id] = author.relevance ? author.relevance.relevance : 0;
+      if (postAuthor && !originalUsers[postAuthor._id]) {
+        originalUsers[postAuthor._id] = postAuthor;
+        originalRelevance[postAuthor._id] = postAuthor.relevance ? postAuthor.relevance.relevance : 0;
       }
       processUpvote({
         rankedNodes, rankedPosts, nstart, upvote, user, now
       });
     });
-    // return upvotes;
-    // });
 
-    await Promise.all(upvotes);
 
+    // TODO prune users with no upvotes
     Object.keys(rankedNodes).forEach(u => {
-      // if (!originalUsers[u]) return delete rankedNodes[u];
+      if (!originalUsers[u] && !originalPosts[u])
+        return delete rankedNodes[u];
       Object.keys(rankedNodes[u]).forEach(name => {
         // fills any missing names in list
         if (!rankedNodes[name]) {
@@ -410,8 +418,10 @@ export default async function computePageRank(params) {
       }
     });
 
-    // console.log('personalization', personalization);
-    // console.log('nstart', nstart)
+
+    heapUsed = process.memoryUsage().heapUsed;
+    mb = Math.round(100 * heapUsed / 1048576) / 100;
+    console.log('Program is using ' + mb + 'MB of Heap.');
 
     console.log('user query time ', ((new Date()).getTime() - now) / 1000 + 's');
 
@@ -426,6 +436,10 @@ export default async function computePageRank(params) {
         fast
       }
     );
+
+    heapUsed = process.memoryUsage().heapUsed;
+    mb = Math.round(100 * heapUsed / 1048576) / 100;
+    console.log('Program is using ' + mb + 'MB of Heap.');
 
     let max = 0;
     let min = 0;
