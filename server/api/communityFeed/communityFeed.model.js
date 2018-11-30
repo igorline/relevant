@@ -54,7 +54,6 @@ CommunityFeedSchema.statics.addToFeed = async function addToFeed(post, community
       },
       { upsert: true, new: true }
     );
-    return await feedItem.save();
   } catch (err) {
     throw err;
   }
@@ -62,6 +61,7 @@ CommunityFeedSchema.statics.addToFeed = async function addToFeed(post, community
 
 CommunityFeedSchema.statics.updateRank = async function updateRank(post, community) {
   try {
+    if (!community) throw new Error('missing community');
     let feedItem = await this.findOne({ post: post._id, community });
     if (!feedItem) return null;
     // TODO - post rank should be tracked in a separate table

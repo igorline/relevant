@@ -9,8 +9,6 @@ function handleError(res, statusCode) {
   };
 }
 
-// Feed.findOne({ metaPost: null }).then(console.log);
-
 exports.get = async (req, res) => {
   try {
     // TODO - right now sorting commentary by latest and relevance

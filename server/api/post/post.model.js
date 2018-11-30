@@ -325,6 +325,8 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
     parent.data = await parent.data.save();
     parent = await parent.save();
 
+    console.log(parent);
+
     this.linkParent = parent;
     this.parentPost = parent;
     this.aboutLink = parent;
@@ -355,7 +357,7 @@ PostSchema.methods.insertIntoFeed = async function insertIntoFeed(community) {
     }
     if (!post.data) post.data = await this.model('PostData').findOne({ post: post._id, community });
 
-    this.model('CommunityFeed').addToFeed(this, community);
+    this.model('CommunityFeed').addToFeed(post, community);
 
     let newPostEvent = {
       type: 'SET_NEW_POSTS_STATUS',
@@ -536,8 +538,6 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(parent, po
 PostSchema.post('remove', async function postRemove(doc) {
   try {
     if (doc.linkParent) {
-      console.log('hidden ', doc.hidden);
-      console.log('linkParent ', doc.linkParent);
       await this.model('Post').updateFeedStatus(doc.linkParent, this);
     }
 
