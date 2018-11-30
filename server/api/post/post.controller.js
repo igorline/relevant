@@ -21,38 +21,27 @@ let requestAsync = promisify(request);
 
 async function fixPost() {
   try {
-    let posts = await Post.find(
-      { twitter: false, type: 'post', parentPost: { $exists: true } },
-      'title body user postDate'
-    )
-    .populate('parentPost')
-    .populate('metaPost');
+    // let posts = await Post.find(
+    //   { twitter: false, type: 'post', parentPost: { $exists: true } },
+    //   'title body user postDate'
+    // )
+    // .populate('parentPost')
+    // .populate('metaPost');
 
-    posts.forEach(async p => {
-      try {
-        if (!p.parentPost) {
-          console.log(p);
-          // p = await p.upsertLinkParent(p.metaPost);
-          // await p.insertIntoFeed(p.community);
-          // await p.updateRank(p.community);
-          // await p.parentPost.updateRank(p.community);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    // let post = await Post.findOne({ _id: '5bfe6d080f00520013263da9' })
-    // .populate('parentPost');
-    // console.log(post);
-    // await post.updateRank(post.community);
-    // // await post.parentPost.updateRank(post.community);
-
-    // console.log('post.rank', post.rank);
-    // console.log('post.parentPost.rank', post.parentPost.rank);
-
+    // posts.forEach(async p => {
+    //   try {
+    //     if (!p.parentPost) {
+    //       console.log(p);
+    //       // p = await p.upsertLinkParent(p.metaPost);
+    //       // await p.insertIntoFeed(p.community);
+    //       // await p.updateRank(p.community);
+    //       // await p.parentPost.updateRank(p.community);
+    //     }
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // });
     // await post.upsertLinkParent(post.metaPost);
-    // await post.insertIntoFeed(post.community);
   } catch (err) {
     console.log(err);
   }
