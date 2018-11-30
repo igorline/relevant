@@ -404,7 +404,7 @@ exports.create = async (req, res, next) => {
     // postCommunity = post.community || 'relevant';
 
     // unhide twitter commentary
-    if (amount > 0) {
+    if (amount > 0 && post.hidden) {
       await post.parentPost.insertIntoFeed(community);
       post.hidden = false;
     }

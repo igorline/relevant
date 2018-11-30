@@ -60,7 +60,7 @@ CommunityFeedSchema.statics.updateDate = async function updateDate(_id, communit
 CommunityFeedSchema.statics.updateRank = async function updateRank(post, community) {
   try {
     let feedItem = await this.findOne({ post: post._id, community });
-
+    if (!feedItem) return null;
     // TODO - post rank should be tracked in a separate table
     // so that we are not grabbing stuff from a diff communities
     feedItem.rank = post.data.rank;
