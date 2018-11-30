@@ -48,7 +48,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(favicon(__dirname + '/../app/web/public/img/favicon.ico'));
+app.use(favicon(path.join(__dirname, '/../app/web/public/img/favicon.ico')));
 
 // Connect to db
 require('./config/db.connect');
@@ -105,6 +105,8 @@ if (process.env.NODE_ENV !== 'test') {
     }
   });
   socketServer(server, { pingTimeout: 30000 });
+} else {
+  require('./routes')(app);
 }
 
 require('./utils/updateDB-Community0.2.0');

@@ -42,8 +42,6 @@ async function computeRank(linkPost) {
     + linkPost.seenInFeedNumber
     + Math.log(linkPost.twitterScore + 1) * 5;
 
-  console.log('seenInFeedNumber ', linkPost.seenInFeedNumber);
-  console.log('twitterScore ', linkPost.twitterScore);
   // use user's relevance score to rank feed?
   // let feedRelevance = metaPost.feedRelevance ? Math.log(metaPost.feedRelevance + 1) : 0;
   // rank += feedRelevance * 3;

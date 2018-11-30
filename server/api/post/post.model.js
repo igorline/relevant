@@ -325,8 +325,6 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
     parent.data = await parent.data.save();
     parent = await parent.save();
 
-    console.log(parent);
-
     this.linkParent = parent;
     this.parentPost = parent;
     this.aboutLink = parent;
