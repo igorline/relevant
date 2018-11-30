@@ -12,13 +12,15 @@ import * as numbers from '../../app/utils/numbers';
 import PostData from '../api/post/postData.model';
 import computePageRank from './pagerankCompute';
 
+const queue = require('queue');
+let q = queue({ concurrency: 1 });
+
 let totalDistributedRewards;
 
 // ANALYSIS — attack scenario community with low-quality posts to bring down the average?
 async function computePostPayout(posts, community) {
   // let posts = await Post.find({ paidOut: false, payoutTime: { $lt: now } });
   let updatedPosts = posts.map(async post => {
-
     let average = community.currentShares / community.postCount;
     // only reward above-average posts
     console.log('rank vs average ', post.pagerank, average);
@@ -156,7 +158,7 @@ async function distributeUserRewards(posts, community) {
     });
 
     if (totalShares === 0) {
-      return;
+      return null;
     }
 
     console.log('totalShares ', totalShares);
@@ -180,7 +182,7 @@ async function distributeUserRewards(posts, community) {
 
       console.log('weight ', curationWeight);
       console.log('payout ', curationPayout);
-      if (curationPayout === 0) return null;
+      if (curationPayout === 0) return;
 
       payouts[user._id] = payouts[user._id] ? payouts[user._id] + curationPayout : curationPayout;
 
@@ -226,7 +228,9 @@ async function distributeUserRewards(posts, community) {
 //
 
 async function computeCommunityRewards(community, _rewardPool, balances) {
+
   await computePageRank({ communityId: community._id, community: community.slug });
+
   let totalBalance = balances.reduce((a, c) => c.balance + a, 0);
   let communityBalance = balances.find(c => c._id === community.slug).balance;
 
@@ -265,8 +269,26 @@ exports.rewards = async () => {
     let communities = await Community.find({});
     let rewardPool = await allocateRewards();
     let balances = await Community.getBalances();
-    communities = await communities.map(c => computeCommunityRewards(c, rewardPool, balances));
-    communities = await Promise.all(communities);
+    communities.forEach(c =>
+      q.push(async cb => {
+        try {
+          let res = await computeCommunityRewards(c, rewardPool, balances);
+          return cb(null, res);
+        } catch (err) {
+          throw new Error(err);
+        }
+      })
+    );
+    // communities = await Promise.all(communities);
+
+    // start loop
+    communities = await (new Promise((resolve, reject) =>
+      q.start((err, results) => {
+        if (err) reject(err);
+        resolve(results);
+      })
+    ));
+    console.log('end loop');
     computingRewards = false;
 
     if (totalDistributedRewards > 0) {
