@@ -5,11 +5,8 @@ import request from 'request';
 import { EventEmitter } from 'events';
 import * as proxyHelpers from './html';
 import MetaPost from '../links/link.model';
-import Relevance from '../relevance/relevance.model';
-
 import Post from './post.model';
 import User from '../user/user.model';
-import PostData from './postData.model';
 import Subscriptiton from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import Tag from '../tag/tag.model';

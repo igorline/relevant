@@ -1,7 +1,5 @@
 import { EventEmitter } from 'events';
 import apnData from '../../pushNotifications';
-import { VOTE_COST_RATIO, POWER_REGEN_INTERVAL } from '../../config/globalConstants';
-import * as ethUtils from '../../utils/ethereum';
 import { computeApproxPageRank } from '../../utils/pagerankCompute';
 
 let Post = require('../post/post.model');
@@ -10,78 +8,20 @@ let Subscription = require('../subscription/subscription.model');
 let Notification = require('../notification/notification.model');
 let Invest = require('./invest.model');
 let Relevance = require('../relevance/relevance.model');
-// let Feed = require('../feed/feed.model');
-let Treasury = require('../treasury/treasury.model');
-let CommunityFeed = require('../communityFeed/communityFeed.model');
 
 let InvestEvents = new EventEmitter();
-
-// async function removeDownvotes() {
-//   try {
-//     let notes = await Notification.find({ type: 'downvote' }).remove();
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-// removeDownvotes();
-
-
-const COIN = true;
-
-// function convertInvest() {
-//   Invest.find({})
-//   .then(invs => {
-//     invs.forEach(inv => {
-//       // inv.author = inv.poster;
-//       if (inv.author == inv.investor) {
-//         console.log(inv);
-//         inv.ownPost = true;
-//       } else inv.ownPost = false;
-//       inv.save();
-//     });
-//   });
-// }
-// convertInvest();
-
-// RESET ALL USERS
-// function resetUsers() {
-//   User.update({}, { balance: 7 }, { multi: true }).exec();
-// }
-// resetUsers();
-
-// User.update({ relevance: { $lt: 10 } }, { relevance: 10 }, { multi: true }).exec();
 
 function handleError(res, err) {
   console.log(err);
   return res.status(500).send(err);
 }
 
-// function updateUserFeed(user, post, irrelevant) {
-//   if (!irrelevant) {
-//     return Feed.findOneAndUpdate(
-//       {
-//         userId: user._id,
-//         post: post._id,
-//         metaPost: post.metaPost
-//       },
-//       { tags: post.tags, createdAt: new Date() },
-//       { upsert: true },
-//     ).exec();
-//   }
-//   return Feed.find({
-//     userId: user._id,
-//     post: post._id,
-//   }).remove();
-// }
-
-exports.postInvestments = async (req, res) => {
+exports.postInvestments = async (req, res, next) => {
   try {
     let postId = req.params.postId;
     let limit = parseInt(req.query.limit, 10);
     let skip = parseInt(req.query.skip, 10);
     let community = req.query.community;
-
-    console.log('community ', community);
 
     let investments = await Invest.find({ post: postId, ownPost: false })
     .limit(limit)
@@ -96,20 +36,13 @@ exports.postInvestments = async (req, res) => {
       }
     });
 
-    // investments = investments.map(inv => {
-    //   inv = inv.toObject();
-    //   if (inv.amount < 1) inv.investor = { name: 'Someone' };
-    //   return inv;
-    // });
-    // investments = investments.filter(inv => inv.investor ? inv.author != inv.investor._id : true);
-
     return res.status(200).json(investments);
   } catch (err) {
-    handleError(res, err);
+    return next(err);
   }
 };
 
-exports.downvotes = async (req, res) => {
+exports.downvotes = async (req, res, next) => {
   let limit = parseInt(req.query.limit, 10) || null;
   let skip = parseInt(req.query.skip, 10) || null;
   let downvotes;
@@ -119,10 +52,11 @@ exports.downvotes = async (req, res) => {
     .skip(skip)
     .limit(limit)
     .populate('post');
+
+    return res.status(200).json(downvotes);
   } catch (err) {
-    return handleError(res, err);
+    return next(err);
   }
-  return res.status(200).json(downvotes);
 };
 
 exports.show = async (req, res, next) => {
@@ -169,12 +103,11 @@ exports.show = async (req, res, next) => {
     .sort(sortQuery);
     res.status(200).json(investments);
 
-
     let postIds = investments.map(inv => inv.post ? inv.post._id : null);
     postIds = postIds.filter(postId => postId);
-    Post.sendOutInvestInfo(postIds, id);
+    return Post.sendOutInvestInfo(postIds, id);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
@@ -293,7 +226,7 @@ async function updateSubscriptions(params) {
 async function updateAuthor(params) {
   let {
     author,
-    community,
+    // community,
     post,
     user,
     amount,
@@ -465,7 +398,9 @@ exports.create = async (req, res, next) => {
     // }
 
     // ------ update investment records ------
-    investment = await updateInvestment({ post, user, amount, relevanceToAdd, investment, community, communityId });
+    investment = await updateInvestment({
+      post, user, amount, relevanceToAdd, investment, community, communityId
+    });
 
     post.data = await post.data.save();
     // console.log('updated post data: ', post.data);
@@ -552,7 +487,9 @@ exports.create = async (req, res, next) => {
 
 //   existingInvestments.forEach(async investment => {
 //     try {
-//       let existingInvestor = await User.findOne({ _id: investment.investor }, 'relevance name image');
+//       let existingInvestor = await User.findOne(
+//        { _id: investment.investor },'relevance name image'
+//       );
 //       let ratio = 1 / existingInvestments.length;
 
 //       let relevanceEarning = 0;
@@ -600,7 +537,9 @@ exports.create = async (req, res, next) => {
 
 //         // add to relevance tag record
 //         // TODO also do voter community
-//         let relevance = await Relevance.updateUserRelevance(existingInvestor._id, post, earnings.relevance);
+//         let relevance = await Relevance.updateUserRelevance(
+//          existingInvestor._id, post, earnings.relevance
+//         );
 //         existingInvestor = await existingInvestor.updateRelevanceRecord(community);
 
 

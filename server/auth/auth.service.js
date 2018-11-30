@@ -152,7 +152,7 @@ function setTokenCookieDesktop(req, res) {
 
   res.cookie('token', token);
   // console.log('query params ', req.query);
-  let redirect = req.query.redirect || '/discover/new';
+  let redirect = req.query.redirect || '/relevant/new';
   return res.redirect(redirect);
 }
 
