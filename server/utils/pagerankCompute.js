@@ -10,7 +10,7 @@ const Relevance = require('../api/relevance/relevance.model');
 const RELEVANCE_DECAY = require('../config/globalConstants').RELEVANCE_DECAY;
 const Community = require('../api/community/community.model').default;
 
-let q = queue({ concurrency: 5 });
+let q = queue({ concurrency: 20 });
 
 async function updateItemRank(props) {
   let { min, max, minPost, maxPost, u, N, debug, communityId, community, maxRel } = props;
