@@ -58,7 +58,7 @@ class StatsContainer extends Component {
     this.start = new Date();
     this.relStart = new Date();
 
-    this.end.setUTCHours(0, 0, 0, 0);
+    // this.end.setUTCHours(0, 0, 0, 0);
     this.start.setUTCHours(0, 0, 0, 0);
     this.relStart.setUTCHours(0, 0, 0, 0);
 

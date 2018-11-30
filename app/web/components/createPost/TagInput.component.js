@@ -39,7 +39,7 @@ export default class TagInput extends Component {
         Tags: <span className="selectTags">{tagEls}</span>
         <div className='tagInput'>
           <input
-            placeholder={!selectedTags.length ? 'Please add at least one tag' : ''}
+            placeholder={this.props.placeholderText}
             value={this.state.input}
             onKeyDown={e => {
               if (e.keyCode === 13) {

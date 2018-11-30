@@ -13,6 +13,7 @@ let TagSchema = new Schema({
   emoji: String,
   children: [{ type: String, ref: 'Tag' }],
   main: [{ type: String, ref: 'Tag' }],
+  communityId: { type: String, ref: 'Community' }
 }, {
   timestamps: true
 });

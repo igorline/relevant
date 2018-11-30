@@ -21,7 +21,6 @@ const initialState = {
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
-
     case types.SET_LOADING: {
       return {
         ...state,
@@ -53,9 +52,10 @@ export default function auth(state = initialState, action) {
       });
 
     case 'SET_PRE_USER':
-      return Object.assign({}, state, {
+      return {
+        ...state,
         preUser: action.payload,
-      });
+      };
 
     case types.LOGIN_USER_SUCCESS:
       return Object.assign({}, state, {
@@ -70,23 +70,14 @@ export default function auth(state = initialState, action) {
         isAuthenticating: false,
         isAuthenticated: false,
         user: null,
-        //'statusText': action.payload.statusText
       });
 
     case 'SET_AUTH_STATUS_TEXT':
-      return Object.assign({}, state, {
-        statusText: action.payload
-      });
-
-    case types.UPDATE_USER:
-      if (!state.user || action.payload._id !== state.user._id) return state;
       return {
         ...state,
-        user: {
-          ...state.user,
-          ...action.payload
-        }
+        statusText: action.payload
       };
+
 
     case types.SET_SELECTED_USER_DATA: {
       if (!state.user || state.user._id !== action.payload._id) return state;
@@ -100,32 +91,39 @@ export default function auth(state = initialState, action) {
       return {
         ...state,
         isAuthenticating: false,
-        isAuthenticated: action.payload ? true : false,
+        isAuthenticated: action.payload || false,
         user: action.payload,
         preUser: null,
       };
 
-    case types.UPDATE_AUTH_USER:
-      // console.log('update auth user', state.user, action.payload);
-      // console.log('old user', state.user);
-      // console.log('new user', action.payload);
+    case types.UPDATE_USER:
+    case types.UPDATE_AUTH_USER: {
+      let id = action.payload._id;
+      if (state.user && id !== state.user._id) return state;
+      let relevance = action.payload.relevance;
+      if ((!relevance || relevance.pagerank === undefined)
+        && state.user) relevance = state.user.relevance;
       return {
         ...state,
         user: {
           ...state.user,
-          ...action.payload
+          ...action.payload,
+          relevance
         }
       };
+    }
 
     case 'SET_DEVICE_TOKEN':
-      return Object.assign({}, state, {
+      return {
+        ...state,
         deviceToken: action.payload
-      });
+      };
 
     case types.SET_CONTACTS:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         contacts: action.payload
-      });
+      };
 
     case types.LOGOUT_USER: {
       return { ...initialState, community: state.community };

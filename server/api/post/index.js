@@ -5,7 +5,7 @@ let asyncMiddleware = require('../../utils/middlewares').asyncMiddleware;
 
 let router = express.Router();
 
-router.post('/', auth.isAuthenticated(), controller.create);
+router.post('/', auth.isAuthenticated(), auth.communityMember(), controller.create);
 router.post('/sendPostNotification', auth.hasRole('admin'), controller.sendPostNotification);
 router.put('/', auth.isAuthenticated(), controller.update);
 router.put('/flag', auth.isAuthenticated(), controller.flag);

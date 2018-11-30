@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as authActions from '../../../actions/auth.actions';
 import * as routerActions from 'react-router-redux';
+import * as authActions from '../../../actions/auth.actions';
 import LoginForm from './login';
 import SignupForm from './signup';
 import ConfirmEmail from './confirmEmail.component';
@@ -26,7 +26,9 @@ class AuthContainer extends Component {
     this.authNav = this.authNav.bind(this);
     this.close = this.close.bind(this);
 
-    const redirectRoute = this.props.location.query.redirect || '/discover/new';
+    let defaultRoute = '/' + this.props.auth.community + '/new';
+
+    const redirectRoute = this.props.location.query.redirect || defaultRoute;
 
     this.state = {
       redirectTo: redirectRoute,
@@ -56,9 +58,12 @@ class AuthContainer extends Component {
   }
 
   authNav(type) {
+    // type = type;
+    console.log('is modal', this.props.modal);
+
     if (this.props.modal) {
       this.setState({ type });
-    } else this.props.actions.push(type);
+    } else this.props.actions.push('/user/' + type);
   }
 
   async signup(data) {
@@ -93,7 +98,7 @@ class AuthContainer extends Component {
   }
 
   render() {
-    const { isAuthenticated, user, route, statusText } = this.props;
+    const { user, route } = this.props;
     let confirm;
     let auth;
     let visible = true;
@@ -156,7 +161,7 @@ styles = {
   }
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   isAuthenticating: state.auth.isAuthenticating,
   isAuthenticated: state.auth.isAuthenticated,
   statusText: state.auth.statusText,
@@ -165,8 +170,11 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-const mapDispatchToProps = (dispatch) => ( Object.assign({}, { dispatch }, {
-  actions: bindActionCreators(Object.assign({}, authActions, routerActions), dispatch)
-}));
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({
+    ...authActions,
+    ...routerActions
+  }, dispatch)
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthContainer);

@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { BondedTokenUtils } from 'bonded-token';
+// import { BondedTokenUtils } from 'bonded-token';
 import * as authActions from '../../../actions/auth.actions';
 import Eth from './eth.context';
+import { toNumber } from '../../../utils/numbers';
 
 class EthTools extends Component {
   static propTypes = {
@@ -26,47 +27,74 @@ class EthTools extends Component {
     balance: 0,
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    let props = nextProps;
-    let user = nextProps.user;
+  queryBalance(address) {
+    let { RelevantCoin } = this.props;
+    if (address && RelevantCoin && RelevantCoin.initialized) {
+      RelevantCoin.methods.balanceOf.cacheCall(address);
+      RelevantCoin.methods.nonceOf.fromCache(address);
+    }
+  }
+
+  static getDerivedStateFromProps(nextProps) {
+    let { account, RelevantCoin, network, status, user } = nextProps;
+
+    if (!RelevantCoin || !RelevantCoin.initialized) return null;
+
     let balance = 0;
     let connectedAccount = null;
-    let account = null;
     let connectedBalance;
-    const network = nextProps.network;
-    const status = nextProps.status;
     let differentAccount = true;
     let nonce = null;
 
-    account = props.account;
     if (!user) {
       return this.initialState;
     }
+
+    let decimals = toNumber(RelevantCoin.methods.decimals.fromCache(), 0);
+
     connectedAccount = user.ethAddress ? user.ethAddress[0] : null;
 
     if (!connectedAccount && !account) return this.initialState;
 
     if (account) {
-      balance = BondedTokenUtils.getValue(props.RelevantCoin, 'balanceOf', account);
+      balance = toNumber(RelevantCoin.methods.balanceOf.fromCache(account), decimals);
     }
-    differentAccount = account !== connectedAccount;
+
     if (connectedAccount) {
-      connectedBalance = BondedTokenUtils.getValue(props.RelevantCoin, 'balanceOf', connectedAccount);
+      connectedBalance =
+        toNumber(RelevantCoin.methods.balanceOf.fromCache(connectedAccount), decimals);
     }
+
+    differentAccount = account !== connectedAccount;
 
     // nonce won't be correct the first time
-    if (props.RelevantCoin && props.RelevantCoin.methods && connectedAccount) {
-      nonce = props.RelevantCoin.methods.nonceOf.cacheCall(connectedAccount);
+    if (RelevantCoin && RelevantCoin.methods && connectedAccount) {
+      nonce = RelevantCoin.methods.nonceOf.fromCache(connectedAccount);
       nonce = parseInt(nonce, 0);
     }
-    return { nonce, balance, account, connectedAccount, connectedBalance, differentAccount, network, status };
+    return {
+      nonce,
+      balance,
+      account,
+      connectedAccount,
+      connectedBalance,
+      differentAccount,
+      network,
+      status
+    };
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (this.state.connectedBalance !== prevState.connectedBalance) {
-      
-  //   }
-  // }
+  componentDidUpdate(prevProps, prevState) {
+    let { account, user } = this.props;
+    if (!user) return;
+    let connectedAccount = user.ethAddress ? user.ethAddress[0] : null;
+    if (connectedAccount && connectedAccount !== prevState.connectedAccount) {
+      this.queryBalance(connectedAccount);
+    }
+    if (account && account !== prevState.account) {
+      this.queryBalance(account);
+    }
+  }
 
   render() {
     return (

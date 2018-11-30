@@ -20,10 +20,12 @@ socket.on('reconnect_attempt', () => {
   socket.io.opts.transports = ['polling', 'websocket'];
 });
 
+let store;
+
 export default function configureStore() {
   let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
 
-  let store = applyMiddleware(screenTracking, thunk, socketIoMiddleware)(createStore)(
+  store = applyMiddleware(screenTracking, thunk, socketIoMiddleware)(createStore)(
     rootReducer,
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   );
@@ -46,3 +48,6 @@ export default function configureStore() {
   }
   return store;
 }
+
+exports.STORE = store;
+

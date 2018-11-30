@@ -39,6 +39,9 @@ export default class SingleActivity extends Component {
     let { coin, relevance } = activityHelper.getStatParams(activity);
     let icon = 'rup.png';
     let color = 'green';
+
+    if (amount <= 0) return null;
+
     if (activity.amount < 0) {
       color = 'red';
       icon = 'rdown.png';
@@ -78,20 +81,20 @@ export default class SingleActivity extends Component {
   }
 
   renderPostPreview(activity) {
-    let postTitle = 'Untitled';
-    if (activity.post) {
-      if (activity.post.title) {
-        postTitle = activity.post.title;
-      } else if (activity.post.body) {
-        postTitle = activity.post.body.substring(0, 130);
-        if (activity.post.body.length > 130) postTitle += '...';
-      }
-      activity.post.title = postTitle;
+    let { auth } = this.props;
+    let { post } = activity;
+
+    let postId = post._id;
+    if (post.type === 'comment') postId = post.parentPost;
+
+    if (!post.title && post.body) {
+      post.title = post.body.substring(0, 130);
+      if (post.body.length > 130) post.title += '...';
     }
     return <PostInfo
-      link={`/post/${activity.post._id}`}
+      link={`/${auth.community}/post/${postId}`}
       className={'activityPreview'}
-      preview post={activity.post}
+      preview post={post}
     />;
   }
 
@@ -99,6 +102,10 @@ export default class SingleActivity extends Component {
     let { emoji, userImage, post, image, userName } = activityHelper.getActivityParams(activity);
     let amount = numbers.abbreviateNumber(activity.amount);
     let coinAmount = numbers.abbreviateNumber(activity.coin);
+
+    if (activity.type === 'reward') {
+      console.log(activity);
+    }
 
     return (<div className={'activityInner'}>
       <div className={'topRow'}>

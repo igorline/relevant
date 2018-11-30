@@ -13,6 +13,8 @@ let CommunityFeedSchema = new Schema({
   keywords: [String],
   categories: [{ type: String, ref: 'Tag' }],
 }, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
   timestamps: false
 });
 
@@ -27,7 +29,7 @@ CommunityFeedSchema.index({ community: 1, latestPost: 1 });
 CommunityFeedSchema.statics.updateDate = async function updateDate(_id, community, date) {
   try {
     let feedItem = await this.findOneAndUpdate(
-      { _id, community },
+      { post: _id, community },
       { latestPost: date },
       { new: true }
     );
@@ -38,45 +40,57 @@ CommunityFeedSchema.statics.updateDate = async function updateDate(_id, communit
   }
 };
 
-CommunityFeedSchema.statics.updateRank = async function updateRank(_id, community) {
+CommunityFeedSchema.statics.addToFeed = async function addToFeed(post, community) {
   try {
-    let feedItem = await this.findOne({ metaPost: _id, community })
-    .populate({
-      path: 'metaPost',
-      populate: [
-        {
-          path: 'commentary',
-          match: { community },
-          options: { sort: { rank: -1 }, limit: 1 },
-        }
-      ]
-    });
+    if (community === 'twitter') community = 'relevant';
+    if (!community) throw new Error('missing community');
+    let feedItem = await this.findOneAndUpdate(
+      { community, post: post._id },
+      {
+        latestPost: post.data.latestComment || post.data.postDate,
+        tags: post.tags,
+        // categories: post.categories,
+        rank: post.data.rank,
+      },
+      { upsert: true, new: true }
+    );
+    return await feedItem.save();
+  } catch (err) {
+    throw err;
+  }
+};
 
-    // create new feed item if needed
-    if (!feedItem || !feedItem.metaPost) {
-      if (community === 'twitter') community = 'relevant';
-      let meta = await this.model('MetaPost').findOne({ _id });
-      feedItem = new this({
-        metaPost: meta._id,
-        community,
-        latestPost: meta.latestPost,
-        tags: meta.tags,
-        categories: meta.categories,
-        keywords: meta.keywords,
-        rank: meta.rank,
-      });
-      feedItem = await feedItem.save();
-    }
-
-    // TODO - post rank should be tracked in a separate table so that we are not grabbing stuff from a diff communities
-    let highestRank = feedItem.metaPost.commentary && feedItem.metaPost.commentary.length ?
-      feedItem.metaPost.commentary[0].rank : 0;
-
-    feedItem.rank = highestRank;
-    feedItem = await feedItem.save();
-    return feedItem;
+CommunityFeedSchema.statics.updateRank = async function updateRank(post, community) {
+  try {
+    let feedItem = await this.findOne({ post: post._id, community });
+    if (!feedItem) return null;
+    // TODO - post rank should be tracked in a separate table
+    // so that we are not grabbing stuff from a diff communities
+    feedItem.rank = post.data.rank;
+    feedItem.latestPost = post.data.latestComment || post.data.postDate;
+    return await feedItem.save();
   } catch (err) {
     console.log('error updating feedItem rank ', err);
+    return null;
+  }
+};
+
+
+CommunityFeedSchema.statics.removeFromCommunityFeed =
+async function removeFromCommunityFeed(_id, community) {
+  try {
+    return await this.remove({ post: _id, community });
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+};
+
+CommunityFeedSchema.statics.removeFromAllFeeds = async function removeFromFeed(_id) {
+  try {
+    return await this.remove({ post: _id });
+  } catch (err) {
+    console.log(err);
     return null;
   }
 };

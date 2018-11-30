@@ -32,6 +32,13 @@
   height: 42px;
   margin-right: 8px;
 }
+
+.avatarBox.repost .avatar, .avatarBox.small .avatar {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+}
+
 .userBox {
   flex-grow: 1;
   font-size: 17px;
@@ -40,9 +47,13 @@
   color: #000;
 }
 .userBox .r {
+  display: inline-block;
   width: 14px;
-  height: 13px;
-  margin: 0 5px;
+  margin: 0 2px -1px 5px;
+  height: 15px;
+  background-size: auto 88%;
+  background-position: center 82%;
+  background-repeat: no-repeat;
 }
 .gray,
 .userBox .gray a {

@@ -40,6 +40,16 @@ const reqOptions = async () => {
   };
 };
 
+export function setCommunity(community) {
+  return dispatch => {
+    utils.api.setCommunity(community);
+    return dispatch({
+      type: types.SET_COMMUNITY,
+      payload: community
+    });
+  };
+}
+
 export function updateInvite(invite) {
   return {
     type: types.UPDATE_INVITE,
@@ -171,35 +181,26 @@ export function setOnboardingStep(step) {
 }
 
 export function loginUser(user) {
-  return (dispatch) => {
-    return fetch(process.env.API_SERVER + '/auth/local', {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(user)
-    })
-    .then(response => response.json())
-    .then((responseJSON) => {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.api.request({
+        method: 'POST',
+        endpoint: '/auth',
+        path: '/local',
+        body: JSON.stringify(user)
+      });
       if (responseJSON.token) {
-        return utils.token.set(responseJSON.token)
-        .then(() => {
-          dispatch(loginUserSuccess(responseJSON.token));
-          dispatch(getUser());
-          return true;
-        });
+        await utils.token.set(responseJSON.token);
+        dispatch(loginUserSuccess(responseJSON.token));
+        dispatch(getUser());
+        return true;
       }
       AlertIOS.alert(responseJSON.message);
       dispatch(loginUserFailure(responseJSON.message));
       return false;
-    })
-    .catch((error) => {
-      console.log(error, 'login error');
-      AlertIOS.alert(error.message);
+    } catch (error) {
       return false;
-    });
+    }
   };
 }
 
@@ -336,46 +337,28 @@ function setupUser(user, dispatch) {
 }
 
 export function getUser(callback) {
-  return (dispatch) => {
-    function fetchUser(token) {
-      return fetch(process.env.API_SERVER + '/api/user/me', {
-        credentials: 'include',
+  return async dispatch => {
+    try {
+      let user = await utils.api.request({
         method: 'GET',
-        timeout: 0,
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      .then(utils.api.handleErrors)
-      .then(response => response.json())
-      .then((user) => {
-        setupUser(user, dispatch);
-        if (callback) callback(user);
-        return user;
-      })
-      .catch((error) => {
-        console.log('get user error ', error);
-        dispatch(errorActions.setError('universal', true, error.message));
-        dispatch(loginUserFailure('Server error'));
-        if (callback) callback({ ok: false });
-        // need this in case user is logged in but there is an error getting account
-        if (error.message !== 'Network request failed') {
-          dispatch(logoutAction());
-        }
+        endpoint: 'user',
+        path: '/me',
       });
+      setupUser(user, dispatch);
+      if (callback) callback(user);
+      return user;
+    } catch (error) {
+      dispatch(errorActions.setError('universal', true, error.message));
+      dispatch(loginUserFailure('Server error'));
+      if (callback) callback({ ok: false });
+      // need this in case user is logged in but there is an error getting account
+      if (error.message !== 'Network request failed') {
+        dispatch(logoutAction());
+      }
     }
-
-    return utils.token.get()
-    .then((newToken) => {
-      console.log("got token! ", newToken);
-      dispatch(loginUserSuccess(newToken));
-      return fetchUser(newToken);
-    })
-    .catch((error) => {
-      console.log('no token');
-    });
   };
 }
+
 
 export
 function setDeviceToken(token) {
@@ -386,35 +369,33 @@ function setDeviceToken(token) {
 }
 
 export function updateUser(user, preventLocalUpdate) {
-  return async dispatch =>
-    fetch(process.env.API_SERVER + '/api/user', {
-      method: 'PUT',
-      ...await reqOptions(),
-      body: JSON.stringify(user)
-    })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then((responseJSON) => {
-      if (!preventLocalUpdate) dispatch(updateAuthUser(responseJSON));
+  return async dispatch => {
+    try {
+      let res = await utils.api.request({
+        method: 'PUT',
+        endpoint: 'user',
+        path: '/',
+        body: JSON.stringify(user)
+      });
+      if (!preventLocalUpdate) dispatch(updateAuthUser(res));
       return true;
-    })
-    .catch((err) => {
-      console.log(err, 'error');
+    } catch (err) {
       AlertIOS.alert(err.message);
       return false;
-    });
+    }
+  };
 }
 
 export function addDeviceToken(user) {
   return (dispatch) => {
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
-      onRegister: function(token) {
-        console.log( 'TOKEN:', token );
+      onRegister: token => {
+        console.log('TOKEN:', token);
       },
 
       // (required) Called when a remote or local notification is opened or received
-      onNotification: function(notification) {
+      onNotification: notification => {
         let { foreground, userInteraction, message, data } = notification;
         if (!userInteraction) return;
         if (data && data.type === 'postLink') {
@@ -422,7 +403,9 @@ export function addDeviceToken(user) {
         }
       },
 
-      // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
+      // ANDROID ONLY: GCM Sender ID
+      // (optional - not required for local notifications,
+      // but is need to receive remote push notifications)
       senderID: '271994332492',
 
       // IOS ONLY (optional): default: all - Permissions to register.
@@ -457,7 +440,7 @@ export function addDeviceToken(user) {
       if (user.deviceTokens && user.deviceTokens.indexOf(token) < 0) {
         newUser.deviceTokens.push(token);
         dispatch(updateUser(newUser));
-      } else {
+      } else if (user.deviceTokens.indexOf(token) < 0) {
         newUser.deviceTokens = [token];
         dispatch(updateUser(newUser));
       }

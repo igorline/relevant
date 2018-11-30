@@ -1,6 +1,5 @@
 const express = require('express');
 const controller = require('./user.controller');
-// const config = require('../../config/config');
 const auth = require('../../auth/auth.service');
 
 const router = express.Router();
@@ -12,6 +11,8 @@ router.get('/me', auth.isAuthenticated(), controller.show);
 router.get('/blocked', auth.isAuthenticated(), controller.blocked);
 router.get('/user/:id', auth.blocked(), controller.show);
 router.get('/general/list', auth.blocked(), controller.list);
+router.get('/testData', controller.testData);
+
 router.get('/check/user', controller.checkUser);
 router.get('/onboarding/:step', auth.isAuthenticated(), controller.onboarding);
 
@@ -30,6 +31,5 @@ router.put('/block', auth.isAuthenticated(), controller.block);
 router.put('/unblock', auth.isAuthenticated(), controller.unblock);
 
 router.delete('/:id', auth.isAuthenticated(), controller.destroy);
-
 
 module.exports = router;

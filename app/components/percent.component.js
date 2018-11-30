@@ -12,7 +12,7 @@ let styles;
 class Percent extends Component {
 
   componentDidMount() {
-    this.percent = numbers.percentChange(this.props.user);
+    this.percent = numbers.percentChange(this.props.user.relevance);
     this.percentPretty = numbers.abbreviateNumber(this.percent);
     this.animate();
   }
@@ -22,7 +22,7 @@ class Percent extends Component {
   }
 
   animate() {
-    let newPercent = numbers.percentChange(this.props.user);
+    let newPercent = numbers.percentChange(this.props.user.relevance);
     let newPercentPretty = numbers.abbreviateNumber(newPercent);
 
     if (parseFloat(this.percentPretty) !== parseFloat(newPercentPretty)) {
@@ -33,7 +33,8 @@ class Percent extends Component {
   }
 
   render() {
-    let user = this.props.user;
+    let user = this.props.user.relevance;
+    // console.log(user);
     let fontSize = this.props.fontSize || 17;
     // let arrowSize = this.props.fontSize - 1;
     if (!user) return null;
@@ -46,7 +47,7 @@ class Percent extends Component {
 
     let percentComponent = null;
 
-    if (percent > 0) {
+    if (percent >= 0) {
       percentComponent = (
         <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
           <Text style={{ fontSize, color: green, marginBottom: -3 }}>▲</Text>
@@ -55,7 +56,7 @@ class Percent extends Component {
           </Text>
         </View>
       );
-    } else if (percent <= 0) {
+    } else if (percent < 0) {
       percentComponent = (
         <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
           <Text style={{ fontSize, color: 'red', marginBottom: -3 }}>▼</Text>

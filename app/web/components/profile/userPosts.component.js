@@ -103,6 +103,7 @@ class UserPosts extends Component {
 
     const posts = postIds.map(id => {
       const post = this.props.posts.posts[id];
+      const link = this.props.posts.links[post.metaPost];
       if (!post) return null;
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
       const postUser = {
@@ -113,6 +114,7 @@ class UserPosts extends Component {
       return (
         <Post key={id}
           post={post}
+          link={link}
           repost={repost}
           postUser={postUser}
           {...this.props}
@@ -123,16 +125,15 @@ class UserPosts extends Component {
     let length = posts.length;
     // if (!this.props.user) return null;
     return (
-        <InfScroll
-          data={postIds}
-          loadMore={(p) => this.load(p, length)}
-          hasMore={this.hasMore}
-        >
-          <div className={'postContainer userPosts'}>
-
-          {posts}
-          </div>
-        </InfScroll>
+      <InfScroll
+        data={postIds}
+        loadMore={(p) => this.load(p, length)}
+        hasMore={this.hasMore}
+      >
+        <div className={'postContainer userPosts'}>
+        {posts}
+        </div>
+      </InfScroll>
     );
   }
 }

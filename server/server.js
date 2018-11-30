@@ -2,13 +2,14 @@
 import Express from 'express';
 import morgan from 'morgan';
 
-let bodyParser = require('body-parser');
-let mongoose = require('mongoose');
-let cookieParser = require('cookie-parser');
-let session = require('express-session');
-let favicon = require('serve-favicon');
-let MongoStore = require('connect-mongo')(session);
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const favicon = require('serve-favicon');
+const MongoStore = require('connect-mongo')(session);
 const cookiesMiddleware = require('universal-cookie-express');
+const path = require('path');
 
 const app = new Express();
 mongoose.Promise = global.Promise;
@@ -16,6 +17,7 @@ mongoose.Promise = global.Promise;
 require('dotenv').config({ silent: true });
 
 console.log('NODE_ENV', process.env.NODE_ENV);
+
 require('events').EventEmitter.prototype._maxListeners = 100;
 
 
@@ -41,12 +43,11 @@ if (isDevelopment) {
   }));
   app.use(webpackHotMiddleware(compiler));
 }
-app.use(morgan('dev'));
 
+app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-
 app.use(favicon(__dirname + '/../app/web/public/img/favicon.ico'));
 
 // Connect to db
@@ -81,9 +82,8 @@ function requireHTTPS(req, res, next) {
 app.use(requireHTTPS);
 
 // public folder
-app.use(Express.static(__dirname + '/../app/web/public'));
+app.use(Express.static(path.join(__dirname, '/../app/web/public')));
 app.use(cookiesMiddleware());
-let routes = require('./routes')(app);
 
 let port = process.env.PORT || 3000;
 
@@ -98,12 +98,16 @@ if (process.env.NODE_ENV !== 'test') {
       console.error(error);
     } else {
       console.info(`==> 🌎  Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`);
+      let now = new Date();
+      require('./routes')(app);
+      let time = (new Date()).getTime() - now.getTime();
+      console.log('done loading routes', time / 1000, 's');
     }
   });
   socketServer(server, { pingTimeout: 30000 });
 }
 
-require('./utils/updateDB-Community0.1.0');
+require('./utils/updateDB-Community0.2.0');
 require('./utils/ethereum').init();
 
 exports.app = app;

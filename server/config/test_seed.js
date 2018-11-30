@@ -4,9 +4,10 @@ let Post = require('../api/post/post.model');
 let Feed = require('../api/feed/feed.model');
 let Notification = require('../api/notification/notification.model');
 let Invest = require('../api/invest/invest.model');
-let MetaPost = require('../api/metaPost/metaPost.model');
 let Earnings = require('../api/earnings/earnings.model');
 let Relevance = require('../api/relevance/relevance.model');
+let Community = require('../api/community/community.model').default;
+
 let Eth = require('../utils/ethereum');
 
 export const testAccounts = [
@@ -36,7 +37,7 @@ export const dummyUsers = [
     password: 'test',
     salt: '1juLhuAPx0BY9ZrWz2B7Vg==',
     relevance: 10,
-    balance: 30,
+    balance: 500,
     role: 'user',
     __v: 224,
     ethAddress: [testAccounts[0].address]
@@ -52,7 +53,7 @@ export const dummyUsers = [
     password: 'test',
     salt: '1juLhuAPx0BY9ZrWz2B7Vg==',
     relevance: 100,
-    balance: 10000,
+    balance: 500,
     role: 'user',
     __v: 224,
     ethAddress: [testAccounts[1].address]
@@ -106,15 +107,34 @@ let dummySubscriptions = [
   },
 ];
 
-export function setupData() {
-  let saveUsers = dummyUsers.map((user) => {
-    let userObj = new User(user);
-    return userObj.save();
+export async function setupData(communities) {
+  let saveUsers = dummyUsers.map(async user => {
+    user = new User(user);
+    user = await user.save();
+    let joined = communities.map(async community => {
+      let c = await Community.findOne({ slug: community });
+
+      // create an upvote from test so we have some relevance
+      let vote = new Invest({
+        investor: 'test',
+        author: user.handle,
+        amount: 10,
+        ownPost: false,
+        communityId: c._id
+      });
+      await vote.save();
+
+      return c.join(user._id);
+    });
+
+
+    await Promise.all(joined);
   }) || [];
   let saveSub = dummySubscriptions.map((sub) => {
     let subObj = new Subscription(sub);
     return subObj.save();
   }) || [];
+
 
   return Promise.all([...saveUsers, ...saveSub]);
 }
@@ -122,9 +142,14 @@ export function setupData() {
 export async function cleanupData() {
   console.log('CLEAN UP DATA');
   let clearFeed = [];
-  let clearUsers = dummyUsers.map((user) => {
-    clearFeed.push(Feed.findOne({ user: user._id }).remove().exec());
-    return User.findByIdAndRemove(user._id).exec();
+  let clearUsers = dummyUsers.map(async user => {
+    try {
+      clearFeed.push(Feed.findOne({ user: user._id }).remove().exec());
+      user = await User.findOne({ _id: user._id });
+      return user && user.remove();
+    } catch (err) {
+      console.log(err);
+    }
   }) || [];
   let clearSub = dummySubscriptions.map(sub =>
     Subscription.findByIdAndRemove(sub._id).exec()
@@ -140,10 +165,15 @@ export async function cleanupData() {
     ]
   }).remove();
 
-  let posts = await Post.find({ title: 'Test post title' });
+  let posts = await Post.find({ body: 'Hotties' });
+  // Have to do this in order to trigger remove hooks;
   let clearPosts = posts.map(async post => post.remove());
   let clearEarnings = Earnings.find({ user: { $in: dummies } }).remove().exec() || null;
   let clearRelevance = Relevance.find({ user: { $in: dummies } }).remove().exec() || null;
+
+  let clearCommunity = await Community.find({ slug: { $in: ['test_community1', 'test_community2', 'test_community3' ] } });
+  clearCommunity = clearCommunity.map(async c => c.remove());
+  // let clearCommunityFeed = CommunityFeed.remove({})
 
   return Promise.all([
     ...clearUsers,
@@ -153,7 +183,8 @@ export async function cleanupData() {
     clearNotifications,
     clearUpvotes,
     clearEarnings,
-    clearRelevance
+    clearRelevance,
+    ...clearCommunity
   ]);
 }
 
