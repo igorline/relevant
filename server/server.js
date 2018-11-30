@@ -16,6 +16,7 @@ mongoose.Promise = global.Promise;
 require('dotenv').config({ silent: true });
 
 console.log('NODE_ENV', process.env.NODE_ENV);
+
 require('events').EventEmitter.prototype._maxListeners = 100;
 
 
@@ -41,12 +42,11 @@ if (isDevelopment) {
   }));
   app.use(webpackHotMiddleware(compiler));
 }
-app.use(morgan('dev'));
 
+app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-
 app.use(favicon(__dirname + '/../app/web/public/img/favicon.ico'));
 
 // Connect to db
@@ -83,7 +83,8 @@ app.use(requireHTTPS);
 // public folder
 app.use(Express.static(__dirname + '/../app/web/public'));
 app.use(cookiesMiddleware());
-let routes = require('./routes')(app);
+
+console.log('loading routes');
 
 let port = process.env.PORT || 3000;
 
@@ -98,6 +99,7 @@ if (process.env.NODE_ENV !== 'test') {
       console.error(error);
     } else {
       console.info(`==> 🌎  Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`);
+      require('./routes')(app);
     }
   });
   socketServer(server, { pingTimeout: 30000 });
