@@ -289,6 +289,19 @@ async function hideTwitterPosts() {
   return posts;
 }
 
+async function postUrl() {
+  try {
+    let posts = await Post.find({
+      url: { $exists: false }, link: { $exists: true }
+    });
+    posts.forEach(p => {
+      console.log(p.url);
+      console.log(p.link);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 async function runUpdates() {
   try {
@@ -308,6 +321,7 @@ async function runUpdates() {
     // await updateActualStats();
     // await cleanRelevance();
     // await hideTwitterPosts();
+    // await postUrl();
     console.log('finished db updates');
   } catch (err) {
     console.log(err);

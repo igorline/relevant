@@ -42,6 +42,8 @@ async function computeRank(linkPost) {
     + linkPost.seenInFeedNumber
     + Math.log(linkPost.twitterScore + 1) * 5;
 
+  console.log('seenInFeedNumber ', linkPost.seenInFeedNumber);
+  console.log('twitterScore ', linkPost.twitterScore);
   // use user's relevance score to rank feed?
   // let feedRelevance = metaPost.feedRelevance ? Math.log(metaPost.feedRelevance + 1) : 0;
   // rank += feedRelevance * 3;
@@ -67,36 +69,36 @@ async function computeRank(linkPost) {
   return { newRank, inFeedRank };
 }
 
-async function updateRank() {
-  try {
-    let treasury = await Treasury.findOne();
+// async function updateRank() {
+//   try {
+//     let treasury = await Treasury.findOne();
 
-    let now = new Date();
-    let lastUpdate = treasury.lastTwitterUpdate ? treasury.lastTwitterUpdate.getTime() : 0;
-    let decay = (now.getTime() - lastUpdate) / TWITTER_DECAY;
+//     let now = new Date();
+//     let lastUpdate = treasury.lastTwitterUpdate ? treasury.lastTwitterUpdate.getTime() : 0;
+//     let decay = (now.getTime() - lastUpdate) / TWITTER_DECAY;
 
-    avgTwitterScore = treasury.avgTwitterScore * (1 - Math.min(1, decay)) || 0;
-    twitterCount = treasury.twitterCount * (1 - Math.min(1, decay)) || 0;
+//     avgTwitterScore = treasury.avgTwitterScore * (1 - Math.min(1, decay)) || 0;
+//     twitterCount = treasury.twitterCount * (1 - Math.min(1, decay)) || 0;
 
-    let metaPosts = await Meta.find({ twitter: true }).sort({ lastTwitterUpdate: -1 }).limit(20000);
-    // console.log('got posts, updating...');
-    metaPosts.forEach(async metaPost => {
-      let { newRank, inFeedRank } = await computeRank(metaPost);
-      await TwitterFeed.update(
-        { metaPost: metaPost._id, inTimeline: { $ne: true } },
-        { rank: newRank },
-        { upsert: false, multi: true }
-      );
-      await TwitterFeed.update(
-        { metaPost: metaPost._id, inTimeline: true },
-        { rank: inFeedRank },
-        { upsert: false, multi: true }
-      );
-    });
-  } catch (err) {
-    return console.log('error updating twitter rank ', err);
-  }
-}
+//     let metaPosts = await Meta.find({ twitter: true }).sort({ lastTwitterUpdate: -1 }).limit(20000);
+//     // console.log('got posts, updating...');
+//     metaPosts.forEach(async metaPost => {
+//       let { newRank, inFeedRank } = await computeRank(metaPost);
+//       await TwitterFeed.update(
+//         { metaPost: metaPost._id, inTimeline: { $ne: true } },
+//         { rank: newRank },
+//         { upsert: false, multi: true }
+//       );
+//       await TwitterFeed.update(
+//         { metaPost: metaPost._id, inTimeline: true },
+//         { rank: inFeedRank },
+//         { upsert: false, multi: true }
+//       );
+//     });
+//   } catch (err) {
+//     return console.log('error updating twitter rank ', err);
+//   }
+// }
 
 // updateRank();
 async function createLinkObj(tweet) {
@@ -300,10 +302,11 @@ async function getUserFeed(user) {
 
 async function cleanup() {
   let now = new Date();
+  let cutoffDate = now.getTime() - 30 * 24 * 60 * 60 * 1000;
   let posts = await Post.find({
     twitter: true,
     hidden: true,
-    postDate: { $lt: now.getTime() - 3 * 24 * 60 * 60 * 1000 } },
+    postDate: { $lt: cutoffDate } },
   'metaPost linkParent parentPost linkPost metaPost type tags community hidden twitter'
   );
 

@@ -19,7 +19,6 @@ import { PAYOUT_TIME } from '../../config/globalConstants';
 
 let requestAsync = promisify(request);
 
-
 async function fixPost() {
   try {
     let posts = await Post.find(
@@ -460,7 +459,7 @@ exports.update = async (req, res, next) => {
     newPost.mentions = mentions;
     newPost.body = req.body.body;
 
-    if (newPost.link !== req.body.link) {
+    if (newPost.url !== req.body.url) {
       linkObject = {
         url: req.body.link,
         title: req.body.title || null,
@@ -479,7 +478,7 @@ exports.update = async (req, res, next) => {
       newPost = await newPost.upsertLinkParent(linkObject);
 
       // update old parent post & feeds
-      await Post.updateFeedStatus(oldLinkParent, newPost.community);
+      await Post.updateFeedStatus(oldLinkParent, newPost);
     }
 
     await newPost.save();

@@ -40,22 +40,25 @@ CommunityFeedSchema.statics.updateDate = async function updateDate(_id, communit
   }
 };
 
-// CommunityFeedSchema.statics.addToFeed = async function addToFeed(post, community) {
-//   try {
-//     if (community === 'twitter') community = 'relevant';
-//     let feedItem = new this({
-//       post: post._id,
-//       community,
-//       latestPost: post.data.latestComment,
-//       tags: post.tags,
-//       categories: post.categories,
-//       rank: post.data.rank,
-//     });
-//     return await feedItem.save();
-//   } catch (err) {
-//     throw err;
-//   }
-// };
+CommunityFeedSchema.statics.addToFeed = async function addToFeed(post, community) {
+  try {
+    if (community === 'twitter') community = 'relevant';
+    if (!community) throw new Error('missing community');
+    let feedItem = await this.findOneAndUpdate(
+      { community, post: post._id },
+      {
+        latestPost: post.data.latestComment || post.data.postDate,
+        tags: post.tags,
+        // categories: post.categories,
+        rank: post.data.rank,
+      },
+      { upsert: true, new: true }
+    );
+    return await feedItem.save();
+  } catch (err) {
+    throw err;
+  }
+};
 
 CommunityFeedSchema.statics.updateRank = async function updateRank(post, community) {
   try {
@@ -64,7 +67,7 @@ CommunityFeedSchema.statics.updateRank = async function updateRank(post, communi
     // TODO - post rank should be tracked in a separate table
     // so that we are not grabbing stuff from a diff communities
     feedItem.rank = post.data.rank;
-    feedItem.latestPost = post.data.latestComment;
+    feedItem.latestPost = post.data.latestComment || post.data.postDate;
     return await feedItem.save();
   } catch (err) {
     console.log('error updating feedItem rank ', err);
