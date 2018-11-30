@@ -29,7 +29,7 @@ if (localStorage) localStorage.debug = '';
 render(
   <Provider store={store}>
     <div className="parent">
-      <Router routes={routes(store)} history={history} />
+      <Router routes={routes(store)} history={history}/>
     </div>
   </Provider>,
   rootElement

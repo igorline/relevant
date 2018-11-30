@@ -27,7 +27,7 @@ import * as discoverHelper from './discoverHelper';
 import ShadowButton from '../common/ShadowButton';
 import Sidebar from '../common/sidebar.component';
 
-const POST_PAGE_SIZE = 5;
+const POST_PAGE_SIZE = 15;
 
 if (process.env.BROWSER === true) {
   require('../post/post.css');
@@ -66,18 +66,20 @@ export class Discover extends Component {
       this.load(this.props.params.sort, this.props);
       alreadyLoading = true;
     }
-    if (this.props.params.tag !== prevProps.params.tag) {
-      this.load(this.props.params.sort, this.props);
-      alreadyLoading = true;
-    }
+
     let userId = this.props.auth.user ? this.props.auth.user._id : null;
     let prevUserId = prevProps.auth.user ? prevProps.auth.user._id : null;
 
     // TODO should we do this w refresh instead? when we log in / out?
     if (userId !== prevUserId && !alreadyLoading) {
       this.load(this.props.params.sort, this.props);
+      alreadyLoading = true;
     }
 
+    if (this.props.params.tag !== prevProps.params.tag) {
+      this.load(this.props.params.sort, this.props);
+      alreadyLoading = true;
+    }
   }
 
 

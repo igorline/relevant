@@ -44,7 +44,8 @@ class ShareContainer extends Component {
   }
 
   componentWillMount() {
-    console.log('will mount');
+    let community = 'relevant';
+    this.props.actions.setCommunity(community);
     utils.token.get()
     .then(() => {
       this.props.actions.replaceRoute({

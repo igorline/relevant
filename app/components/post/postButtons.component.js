@@ -147,47 +147,18 @@ class PostButtons extends Component {
     });
   }
 
-  // toggleTooltip() {
-  //   let your = 'upvote';
-  //   if (this.props.post.user._id === this.props.auth.user._id) {
-  //     your = 'post';
-  //   }
-  //   this.tooltipData = {
-  //     vertical: 'top',
-  //     horizontal: 'left',
-  //     horizontalOffset: 3,
-  //     name: 'earnings',
-  //     verticalOffset: 16,
-  //     text: 'This is how much\nrelevance you earned\nfrom your ' + your
-  //   };
-
-  //   this.tooltipParent.measureInWindow((x, y, w, h) => {
-  //     let parent = { x, y, w, h };
-  //     this.props.actions.showTooltip({
-  //       ...this.tooltipData,
-  //       parent
-  //     });
-  //   });
-  // }
-
   toggleModal(bool) {
     if (!bool) bool = !this.state.modalVisible;
     this.setState({ modalVisible: bool });
   }
 
-  async invest() {
+  async invest(newVote) {
     try {
       // DEBUG ANIMATION
-      // this.props.actions.triggerAnimation('invest'); return;
-      // if (!this.props.auth || !this.props.auth.user) return;
-      let user = this.props.auth.user;
-      // if (user.balance <= 0) {
-      //   Alert.alert('You don\'t have enough coins to vote 🙁', 'But don\'t worry, you should get a payout in a few days!');
-      //   return;
-      // }
+      if (!this.props.auth || !this.props.auth.user) return;
       let amount = 1;
-      // this.props.actions.triggerAnimation('invest', { amount: investment });
 
+      // this.props.actions.triggerAnimation('invest', { amount: investment });
       // this.investButton.measureInWindow((x, y, w, h) => {
       //   let parent = { x, y, w, h };
       //   if (x + y + w + h === 0) return;
@@ -198,7 +169,8 @@ class PostButtons extends Component {
       await this.props.actions.vote(
         amount,
         this.props.post,
-        this.props.auth.user
+        this.props.auth.user,
+        !newVote
       );
 
       this.investButton.measureInWindow((x, y, w, h) => {
@@ -223,7 +195,9 @@ class PostButtons extends Component {
   }
 
 
-  irrelevantPrompt() {
+  irrelevantPrompt(newVote) {
+    if (!newVote) return this.irrelevant(newVote);
+
     let t1 = 'Downvote poor quality content to reduce the post\'s relevant score.';
     let t2 = 'If you see something innapropriate, you can notify the admins by pressing "REPORT".';
     if (Platform.OS === 'android') {
@@ -235,20 +209,21 @@ class PostButtons extends Component {
       t2,
       [
         { text: 'Cancel', onPress: () => {}, style: 'cancel' },
-        { text: 'Downvote', onPress: () => this.irrelevant() },
+        { text: 'Downvote', onPress: () => this.irrelevant(newVote) },
         { text: '🚫Report', onPress: () => this.flag() },
       ]
     );
   }
 
-  async irrelevant() {
+  async irrelevant(newVote) {
     try {
       // this.props.actions.triggerAnimation('invest', -1);
       // this.props.actions.triggerAnimation('irrelevant', -1);
       // return;
 
-      await this.props.actions.vote(-1, this.props.post, this.props.auth.user);
-      this.props.actions.triggerAnimation('invest', -1);
+      await this.props.actions.vote(-1, this.props.post, this.props.auth.user, !newVote);
+      if (!newVote) return;
+      // this.props.actions.triggerAnimation('invest', -1);
       this.props.actions.triggerAnimation('irrelevant', -1);
     } catch (err) {
       let text1 = err.message;
@@ -297,13 +272,14 @@ class PostButtons extends Component {
   }
 
   repostCommentary() {
+    let { link } = this.props;
     this.props.actions.setCreaPostState({
       postBody: '',
       repost: this.props.post,
       urlPreview: {
-        image: this.props.post.image,
-        title: this.props.post.title ? this.props.post.title : 'Untitled',
-        description: this.props.post.description,
+        image: link.image,
+        title: link.title ? link.title : 'Untitled',
+        description: link.description,
       }
     });
     this.props.actions.push({
@@ -327,16 +303,17 @@ class PostButtons extends Component {
   }
 
   repostUrl() {
+    let { link } = this.props;
     this.props.actions.setCreaPostState({
       postBody: '',
       component: 'createPost',
       nativeImage: true,
-      postUrl: this.props.post.link,
-      postImage: this.props.post.image,
+      postUrl: link.url,
+      postImage: link.image,
       urlPreview: {
-        image: this.props.post.image,
-        title: this.props.post.title ? this.props.post.title : 'Untitled',
-        description: this.props.post.description,
+        image: link.image,
+        title: link.title ? link.title : 'Untitled',
+        description: link.description,
       }
     });
     this.props.actions.push({
@@ -377,7 +354,7 @@ class PostButtons extends Component {
   render() {
     let investButtonEl = null;
     let post = this.props.post;
-    let investable = false;
+    let investible = false;
     let irrelevantButton;
     let commentString = '';
     let myVote;
@@ -386,11 +363,14 @@ class PostButtons extends Component {
     // if (post && post.user && post.user._id === this.props.auth.user._id) {
     //   myPost = true;
     // }
+    // if (post.body.match('Trust')) {
+    //   console.log('myPostInv ', this.props.myPostInv);
+    // }
 
     if (post && this.props.auth.user) {
-      if (!post.user || post.user._id !== this.props.auth.user._id) {
+      if (!post.user || post.user !== this.props.auth.user._id) {
         if (!this.props.myPostInv) {
-          investable = true;
+          investible = true;
         } else {
           myVote = this.props.myPostInv;
         }
@@ -406,25 +386,26 @@ class PostButtons extends Component {
     let canBet;
 
     // let now = new Date();
-    // if (!myPost && !investable && now - new Date(post.createdAt) < 6 * 60 * 60 * 1000) {
+    // if (!myPost && !investible && now - new Date(post.createdAt) < 6 * 60 * 60 * 1000) {
     //   canBet = true;
     // }
 
     // invest section spacing
     let space = 8;
-    let opacity = investable ? 1 : 0.3;
+    // let opacity = investible ? 1 : 0.3;
+    let opacity = 1;
     let upvoteIcon = require('../../assets/images/icons/upvote.png');
     if (myVote && myVote.amount > 0) {
       upvoteIcon = require('../../assets/images/icons/upvoteActive.png');
-    } // else if (!investable) opacity = .3;
+    } // else if (!investible) opacity = .3;
 
-    let investAction = canBet ? this.toggleModal : (investable ? this.invest : null);
+    // let investAction = canBet ? this.toggleModal : (investible ? this.invest : null);
 
     investButtonEl = (
       <TouchableOpacity
         style={{ paddingRight: space }}
         ref={c => this.investButton = c}
-        onPress={investAction}
+        onPress={() => this.invest(investible)}
       >
         { canBet ? <Image
           resizeMode={'contain'}
@@ -447,7 +428,8 @@ class PostButtons extends Component {
         // </View>
 
 
-    let r = post.relevance;
+    let r = post.data ? post.data.pagerank : null;
+    let rel = r;
 
     let rIcon = (<Image
       resizeMode={'contain'}
@@ -456,23 +438,23 @@ class PostButtons extends Component {
     />);
 
 
-    let totalVotes = post.upVotes + post.downVotes;
-    let s = 's';
-    if (totalVotes === 1) s = '';
-    let votes = (
-      <View>
-        <View style={{ alignSelf: 'center', width: 30, borderBottomWidth: 1, borderColor: greyText }} />
-        <Text style={styles.smallInfo}>
-          {numbers.abbreviateNumber(totalVotes || 0)} vote{s}
-        </Text>
-      </View>
-    );
+    let totalVotes = post.data ? post.data.upVotes + post.data.downVotes : 0;
+    // let s = 's';
+    // if (totalVotes === 1) s = '';
+    // let votes = (
+    //   <View>
+    //     <View style={{ alignSelf: 'center', width: 30, borderBottomWidth: 1, borderColor: greyText }} />
+    //     <Text style={styles.smallInfo}>
+    //       {numbers.abbreviateNumber(totalVotes || 0)} vote{s}
+    //     </Text>
+    //   </View>
+    // );
 
     if (canBet) {
       r = 'Place Bet!';
       rIcon = null;
       votes = null;
-    } else if (totalVotes === 0) {
+    } else if (!r) {
       r = 'Vote';
       rIcon = null;
       votes = null;
@@ -481,7 +463,7 @@ class PostButtons extends Component {
 
     let stat = (
       <TouchableOpacity
-        onPress={() => totalVotes !== 0 ? this.showInvestors() : this.toggleTooltip('vote')}
+        onPress={() => totalVotes !== 0 || rel ? this.showInvestors() : this.toggleTooltip('vote')}
       >
         <View
           style={{
@@ -496,7 +478,6 @@ class PostButtons extends Component {
               {isNaN(r) ? r : numbers.abbreviateNumber(r)}
             </Text>
           </View>
-          {votes}
         </View>
       </TouchableOpacity>
     );
@@ -506,11 +487,11 @@ class PostButtons extends Component {
     if (myVote && myVote.amount < 0) {
       downvoteIcon = require('../../assets/images/icons/downvoteActive.png');
     }
-    // else if (!investable) opacity = .3;
+    // else if (!investible) opacity = .3;
     irrelevantButton = (
       <TouchableOpacity
         style={{ paddingLeft: space }}
-        onPress={() => investable ? this.irrelevantPrompt() : null}
+        onPress={() => this.irrelevantPrompt(investible)}
       >
         <Image
           resizeMode={'contain'}
@@ -587,8 +568,9 @@ class PostButtons extends Component {
       </TouchableOpacity>
     );
 
-    let metaPost = this.props.metaPost;
-    let twitter = (metaPost && metaPost.twitter === true);
+    let link = this.props.link;
+    let twitter = (link && link.twitter === true);
+    let isComment = post.type === 'comment';
 
     return (<View style={styles.postButtonsContainer}>
       <View style={styles.postButtons}>
@@ -601,9 +583,9 @@ class PostButtons extends Component {
         </View>
 
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          {post.link ? newCommentary : null}
-          {twitter ? null : comments}
-          {twitter ? null : repost}
+          {(link && link.url) || !isComment ? newCommentary : null}
+          {twitter || isComment ? null : comments}
+          {twitter || isComment ? null : repost}
         </View>
 
         <InvestModal
@@ -620,7 +602,7 @@ PostButtons.propTypes = {
   actions: PropTypes.object,
   post: PropTypes.object,
   tooltip: PropTypes.bool,
-  metaPost: PropTypes.object,
+  link: PropTypes.object,
   myPostInv: PropTypes.object,
   auth: PropTypes.object,
   scene: PropTypes.object,
@@ -635,8 +617,8 @@ const localStyles = StyleSheet.create({
     height: 23,
   },
   smallerR: {
-    width: 20,
-    height: 18,
+    width: 24,
+    height: 24,
     marginRight: 0
   },
   investImage: {
@@ -664,7 +646,7 @@ const localStyles = StyleSheet.create({
   },
   postButtonsContainer: {
     paddingBottom: 10,
-    marginTop: 30,
+    marginTop: 15,
   }
 });
 

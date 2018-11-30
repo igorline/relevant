@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
-import { VOTE_COST_RATIO } from '../../config/globalConstants';
+import { VOTE_COST_RATIO, SLOPE, EXPONENT } from '../../config/globalConstants';
 import Earnigns from '../earnings/earnings.model';
 
 const InvestSchemaEvents = new EventEmitter();
@@ -14,58 +14,106 @@ let InvestSchema = new Schema({
   ownPost: { type: Boolean, default: false },
   amount: Number,
 
+  community: String,
+  communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
+  // voteWeight is DEPRECATED same as shares - shares is better
+  // TODO convert this in old data
+  // voteWeight: { type: Number, default: 0 },
+  shares: { type: Number, default: 0 },
+  stakedTokens: { type: Number, default: 0 },
+
+  paidOut: { type: Boolean, default: false },
+  payoutDate: { type: Date },
+
+
+  // EVERYTHING BELOW SHOULD BE REMOVED - DEPRECATED
+
   // vote weight
   relevantPoints: { type: Number, default: 0 },
+  rankChange: { type: Number, default: 0 },
 
-  // this info helps us determin how much the
+  // this info helps us determine how much the
   // investor (or author) has earned from this post
-
   upvotes: { type: Number, default: 0 },
   downVotes: { type: Number, default: 0 },
   lastInvestor: { type: String, ref: 'User' },
   partialUsers: { type: Number, default: 0 },
   relevance: { type: Number, default: 0 },
   partialRelevance: { type: Number, default: 0 },
-
-  voteWeight: { type: Number, default: 0 },
-
-  paidOut: { type: Boolean, default: false },
-  payoutDate: { type: Date },
 }, {
   timestamps: true
 });
 
 
+// InvestSchema.index({ community: 1 });
 InvestSchema.index({ post: 1 });
 InvestSchema.index({ investor: 1 });
+InvestSchema.index({ communityId: 1, investor: 1 });
+InvestSchema.index({ communityId: 1, investor: 1, createdAt: 1 });
 InvestSchema.index({ post: 1, investor: 1, ownPost: 1 });
+InvestSchema.index({ post: 1, investor: 1, communityId: 1 });
 
 InvestSchema.statics.events = InvestSchemaEvents;
 
-InvestSchema.statics.createVote = async function updateEarnings(props) {
-  let { user, post, relevanceToAdd, amount, userBalance } = props;
+InvestSchema.statics.createVote = async function createVote(props) {
+  let { user, post, relevanceToAdd, amount, investment, community, communityId } = props;
 
-  let voteWeight = 0;
-  // author gets first curation vote weight
-  if ((amount > 0 || post.user === user._id) && userBalance > 0) {
-    let payment = userBalance * VOTE_COST_RATIO;
-    voteWeight = payment / (post.balance + payment);
-
-    // TODO - this should be implemented later and differently
-    // user.balance -= payment;
-    // post.balance += payment;
-
-    // await Earnigns.updateRewardsRecord({
-    //   user: user._id,
-    //   post: post._id,
-    //   spent: payment,
-    // });
-
-    // await user.save();
-    // await post.save();
+  // undo investment
+  if (investment) {
+    // TODO remove notification
+    if (amount > 0) {
+      post.data.shares -= investment.shares;
+      post.data.balance -= investment.stakedTokens;
+    }
+    post.data.totalStaked -= investment.stakedTokens;
+    await investment.remove();
+    return investment;
   }
 
-  let investment = await this.findOneAndUpdate(
+  user = user.updatePower();
+  user = await user.updateBalance();
+  let userBalance = user.balance + user.tokenBalance;
+  console.log(user.handle, 'balance', userBalance);
+
+  let shares = 0;
+  // TODO analyze ways to get around this via sybil nodes
+  let votePower = user.votePower;
+  amount *= votePower;
+
+  // compute tokens allocated to this specific community
+  let communityMember = await this.model('CommunityMember').findOne({ user: user._id, community: post.community }, 'weight');
+  userBalance *= communityMember.weight;
+
+  console.log('vote power ', votePower);
+  let stakedTokens = userBalance * Math.abs(amount) * VOTE_COST_RATIO;
+  console.log('user balance', userBalance);
+  console.log('staked tokens', stakedTokens);
+  console.log('post.data.balance', post.data.balance);
+  console.log('amount ', amount);
+
+  // TODO downvotes!
+  let sign = 1;
+  if (amount !== 0) sign = Math.abs(amount) / amount;
+
+  // only compute shares for upvotes
+  // for downvotes only track staked tokens
+  // we can use totalStaked to rank by stake
+  if (amount > 0) {
+    let nexp = EXPONENT + 1;
+    shares = ((post.data.balance + stakedTokens) / SLOPE * nexp) ** (1 / nexp) - (post.data.shares || 0);
+    console.log(user.handle, ' got ', shares, ' for ', stakedTokens, ' staked tokens ');
+
+    shares *= sign;
+    stakedTokens *= sign;
+
+    post.data.shares += shares;
+    post.data.balance += stakedTokens;
+  }
+
+  post.data.totalStaked += stakedTokens;
+  await post.data.save();
+
+  investment = await this.findOneAndUpdate(
     {
       investor: user._id,
       post: post._id
@@ -77,9 +125,15 @@ InvestSchema.statics.createVote = async function updateEarnings(props) {
       relevantPoints: relevanceToAdd,
       post: post._id,
       ownPost: post.user === user._id,
-      voteWeight,
-      payoutDate: post.payoutDate,
-      paidOut: post.paidOut,
+      shares,
+      stakedTokens,
+      community,
+      communityId,
+      // TODO track parentPost && linkPost/aboutLink?
+      // parentPost: post.parentPost,
+      // linkPost: post.linkPost,
+      payoutDate: post.data.payoutDate,
+      paidOut: post.data.paidOut,
     },
     {
       new: true,
@@ -91,6 +145,7 @@ InvestSchema.statics.createVote = async function updateEarnings(props) {
 
 
 /**
+ * DEPRECATED - NOT USED WITH PAGERANK
  * When the amount is not a whole number, we save add up the increments and save the list of users
  * once we reach a whole number we send the update to the user
  */
@@ -103,8 +158,8 @@ InvestSchema.statics.updateUserInvestment = async function updateEarnings(
     earnings = await this.findOne({ investor: investor._id, post: post._id });
 
     if (!earnings) {
-      // TODO do this when we create post?
-      // when does this happen - author?
+      // DEPRECATED should never be called,
+      // but should check and update older posts
       earnings = new this({
         investor: investor._id,
         post: post._id,

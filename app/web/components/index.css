@@ -9,7 +9,7 @@
 .row {
   /*flex: 1;*/
   /*margin: calc(50% - 75rem);*/
-  max-width: 75rem;
+  /*max-width: 75rem;*/
   margin: auto;
   /*padding: 0 20px;*/
 }
@@ -38,7 +38,7 @@ html, body {
   color: $darkGrey;
   font-family: Arial, sans-serif;
   min-height: 100%;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.5;
   /*background-color: #f8f8f8;*/
   background: hsl(240,15%,97%);
@@ -308,6 +308,10 @@ select.shadowButton, button.shadowButton {
       display: block;
     }
   }
+}
+
+input.basic {
+  @extend %input;
 }
 
 @media screen

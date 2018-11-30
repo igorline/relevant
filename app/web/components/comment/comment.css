@@ -19,14 +19,14 @@
 .formContainer {
   margin: 20px 0;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   box-shadow: $postShadow;
 
   /*align-items: flex-end;*/
   button {
     /*float: right;*/
     align-self: flex-end;
-    margin: 5px 15px;
+    margin: 5px 0px;
   }
   background: white;
   padding: 20px;
@@ -38,9 +38,9 @@
   width: 37px;
   height: 37px;
 }
-.comments form textarea {
+.comments form textarea, .comment textarea {
   @extend %input;
-  width: 100%;
+  /*width: 100%;*/
   flex: 1;
   margin: 0;
 }
@@ -65,6 +65,8 @@
   background:white;
   box-shadow: $postShadow;
 
+  display: flex;
+  flex-direction: row;
   /*background: white;*/
 }
 

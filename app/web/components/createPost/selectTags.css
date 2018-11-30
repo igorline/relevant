@@ -28,3 +28,22 @@
     }
   }
 }
+
+.tagInput input {
+  font-size: 15px;
+  line-height: 1.5;
+  padding: 8px 15px;
+  margin: 10px 0 0 0;
+  background: white;
+  box-shadow: 0 0 0 .5px $borderGrey, inset 0 0 10px -4px $grey;
+  border-radius: 0px;
+  white-space: pre-line;
+  border: none;
+  font-size: 15px;
+  outline: none;
+  width: 100%;
+}
+
+.tagInput input:focus, .tagInput input.active {
+  @extend %activeInput;
+}

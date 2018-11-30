@@ -103,6 +103,12 @@ class Application extends Component {
     this.handleOpenURL = this.handleOpenURL.bind(this);
   }
 
+  componentWillMount() {
+    // hard-code community for now
+    let community = 'relevant';
+    this.props.actions.setCommunity(community);
+  }
+
   componentDidMount() {
     this.props.actions.getUser();
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
@@ -137,7 +143,7 @@ class Application extends Component {
       // codePush.allowRestart();
       this.props.actions.userToSocket(next.auth.user._id);
       this.props.actions.getNotificationCount();
-      this.props.actions.getFeedCount();
+      // this.props.actions.getFeedCount();
 
       if (next.auth.user.onboarding === 0) {
         this.props.actions.changeTab('discover');
@@ -371,7 +377,7 @@ class Application extends Component {
     if (currentAppState === 'active' && this.props.auth.user) {
       this.props.actions.userToSocket(this.props.auth.user._id);
       this.props.actions.getNotificationCount();
-      this.props.actions.getFeedCount();
+      // this.props.actions.getFeedCount();
 
       this.props.actions.tooltipReady(true);
 

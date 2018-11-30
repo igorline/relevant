@@ -294,6 +294,26 @@ export function deleteWaitlistUser(user) {
   };
 }
 
+export function sendPostNotification(post) {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.api.request({
+        method: 'POST',
+        endpoint: 'post',
+        path: '/sendPostNotification',
+        body: JSON.stringify(post),
+      });
+      Alert.alert('Notification sent!');
+    } catch (error) {
+      return false;
+    }
+  };
+}
+
+
+
+
+
 // export function updateWaitlist(user) {
 //   return async dispatch =>
 //   fetch(API + '/list/' + user._id, {

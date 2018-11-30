@@ -15,6 +15,9 @@ import TextEdit from '../common/textEdit.component';
 import UserName from '../userNameSmall.component';
 import { numbers, text as textUtil } from '../../utils';
 import TextBody from './textBody.component';
+import PostInfo from './postInfo.component';
+import PostButtons from './postButtons.component';
+import PostBody from './postBody.component';
 
 let moment = require('moment');
 
@@ -49,31 +52,31 @@ class Comment extends Component {
   }
 
   componentDidMount() {
-    if (this.props.comment.text) {
-      let text = this.props.comment.text;
-      this.setState({ editedText: text });
+    if (this.props.comment.body) {
+      let body = this.props.comment.body;
+      this.setState({ editedText: body });
     }
     this.setSelected = this.setSelected.bind(this);
   }
 
-  saveEdit(text) {
+  saveEdit(body) {
     let comment = this.props.comment;
-    if (comment.text === text) {
+    if (comment.body === body) {
       return this.editComment();
     }
-    let words = textUtil.getWords(text);
+    let words = textUtil.getWords(body);
     let mentions = textUtil.getMentions(words);
-    let originalText = comment.text;
-    comment.text = text;
+    let originalText = comment.body;
+    comment.body = body;
     comment.mentions = mentions;
-    this.setState({ editing: false, editedText: text });
+    this.setState({ editing: false, editedText: body });
     this.props.actions.updateComment(comment)
     .then((results) => {
       if (results) {
         this.setState({ editedText: null });
         Alert.alert('Comment updated');
       } else {
-        comment.text = originalText;
+        comment.body = originalText;
         this.setState({ editing: true });
       }
     });
@@ -107,12 +110,7 @@ class Comment extends Component {
 
 
   deleteComment() {
-    const self = this;
-    this.props.actions.deleteComment(
-      self.props.auth.token,
-      self.props.comment._id,
-      self.props.comment.post
-    );
+    this.props.actions.deleteComment(this.props.comment._id);
   }
 
   setTag(tag) {
@@ -130,7 +128,7 @@ class Comment extends Component {
     if (!this.state.editing) {
       this.props.scrollToComment();
     }
-    this.setState({ editedText: this.props.comment.text, editing: !this.state.editing });
+    this.setState({ editedText: this.props.comment.body, editing: !this.state.editing });
   }
 
   render() {
@@ -149,7 +147,7 @@ class Comment extends Component {
     if (this.state.editing) {
       editingEl = (<TextEdit
         style={[styles.darkGrey, styles.editingInput]}
-        text={this.state.editedText || comment.text}
+        text={this.state.editedText || comment.body}
         toggleFunction={this.editComment}
         saveEditFunction={this.saveEdit}
         // onFocus={() => this.props.scrollToComment()}
@@ -191,10 +189,11 @@ class Comment extends Component {
         {...this.props}
         style={styles.commentBodyText}
         post={comment}
-        body={comment.text}
+        body={comment.body}
       />
     );
 
+    let myPostInv = this.props.myPostInv[comment._id];
     return (
       <View
         ref={(c) => { this.singleComment = c; }}
@@ -205,23 +204,36 @@ class Comment extends Component {
         <View
           style={styles.commentHeader}
         >
-          <UserName
-            repost={comment.repost}
-            size={'small'}
-            user={{
-              image: comment.embeddedUser.image,
-              name: comment.embeddedUser.name,
-              _id: comment.user
-            }}
-            setSelected={this.setSelected}
+          <PostInfo
+            post={comment}
+            actions={this.props.actions}
+            auth={this.props.auth}
+            singlePost={this.props.singlePost}
+            delete={this.deleteComment}
+            edit={this.editComment}
+            users={this.props.users}
           />
-          <Text style={[{ fontSize: 12 }, styles.timestampGray]}>{timestamp}</Text>
+          {optionsEl}
         </View>
+
         <View style={{ paddingLeft: 33, paddingRight: 10 }}>
           {this.state.editing ? editingEl : textBody}
-        </View>
-        {optionsEl}
       </View>
+
+      <PostButtons
+        comment
+        post={comment}
+        isComment
+        // metaPost={this.props.metaPost}
+        // tooltip={index === 0 ? this.props.tooltip : null}
+        // tooltip={this.props.tooltip}
+        actions={this.props.actions}
+        auth={this.props.auth}
+        myPostInv={myPostInv}
+        focusInput={this.props.focusInput}
+      />
+      </View>
+
     );
   }
 }

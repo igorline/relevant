@@ -9,41 +9,63 @@ const Alert = utils.api.Alert();
 utils.api.env();
 const apiServer = process.env.API_SERVER + '/api/';
 
-const commentSchema = new schema.Entity('comments',
+const commentSchema = new schema.Entity(
+  'comments',
   {},
   { idAttribute: '_id' }
 );
 
-const userSchema = new schema.Entity('users',
+const userSchema = new schema.Entity(
+  'users',
   {},
   { idAttribute: '_id' }
 );
 
-const repostSchema = new schema.Entity('posts',
-  { comments: [commentSchema], user: userSchema },
+const repostSchema = new schema.Entity(
+  'posts',
   { idAttribute: '_id' }
 );
 
 let metaPostSchema;
+let postSchema;
 
-const postSchema = new schema.Entity('posts',
+const linkSchema = new schema.Entity(
+  'links',
+  {},
+  { idAttribute: '_id' }
+);
+
+
+postSchema = new schema.Entity(
+  'posts',
   {
-    comments: [commentSchema],
     user: userSchema,
     repost: { post: repostSchema },
-    metaPost: metaPostSchema
+    metaPost: linkSchema
   },
   { idAttribute: '_id' }
 );
 
-metaPostSchema = new schema.Entity('metaPosts',
+const feedSchema = new schema.Entity(
+  'posts',
   {
     commentary: [postSchema],
+    new: [postSchema],
+    top: [postSchema],
+    twitterFeed: [postSchema],
+
+    user: userSchema,
+    repost: { post: repostSchema },
+    metaPost: linkSchema
     // twitterCommentary: [postSchema],
-    // new: [postSchema],
-    // top: [postSchema],
   },
-  { idAttribute: '_id' }
+  { idAttribute: '_id',
+    processStrategy: (value, parent, key) => {
+      value[key] = value.commentary;
+      // console.log(value)
+      return value;
+    }
+  }
 );
 
 const reqOptions = (token) => {
@@ -191,7 +213,7 @@ export function getTwitterFeed(skip, _tag) {
     .then(res => {
       let data = normalize(
         { twitterFeed: res },
-        { twitterFeed: [metaPostSchema] }
+        { twitterFeed: [feedSchema] }
       );
       dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('read', false));
@@ -289,8 +311,7 @@ export function setComments(postId, comments, index, total) {
 }
 
 // this function queries the meta posts
-export function getPosts(skip, tags, sort, limit, community) {
-  // console.log(skip, tags, sort);
+export function getPosts(skip, tags, sort, limit) {
   let tagsString = '';
   if (!skip) skip = 0;
   if (!limit) limit = DEFAULT_LIMIT;
@@ -311,29 +332,32 @@ export function getPosts(skip, tags, sort, limit, community) {
     if (tags.length === 1) topic = tags[0];
   }
 
-  return dispatch => {
-    dispatch(getPostsAction(type));
-    return utils.api.request({
-      method: 'GET',
-      endpoint,
-      query: { skip, sort, limit, tag }
-    })
-    .then((responseJSON) => {
-      let dataType = metaPostSchema;
+  return async dispatch => {
+    try {
+      dispatch(getPostsAction(type));
+      console.log({ skip, sort, limit, tag });
+
+      let res = await utils.api.request({
+        method: 'GET',
+        endpoint,
+        query: { skip, sort, limit, tag }
+      });
+      let dataType = feedSchema;
       let data = normalize(
-        { [type]: responseJSON },
+        { [type]: res },
         { [type]: [dataType] }
       );
+
       dispatch(setUsers(data.entities.users));
+
       if (topic) {
         dispatch(setTopic(data, type, skip, topic));
       } else dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('discover', false));
-    })
-    .catch((error) => {
+    } catch (error) {
       console.log(error, 'error');
       dispatch(errorActions.setError('discover', true, error.message));
-    });
+    }
   };
 }
 
@@ -370,12 +394,10 @@ export function getUserPosts(skip, limit, userId) {
   };
 }
 
-export function addUpdatedComment(updatedComment) {
+export function addUpdatedComment(comment) {
   return {
     type: 'UPDATE_COMMENT',
-    payload: {
-      data: updatedComment,
-    }
+    payload: comment
   };
 }
 
@@ -386,7 +408,7 @@ export function updateComment(comment) {
       endpoint: 'comment',
       body: JSON.stringify(comment),
     })
-    .then(res => dispatch(addUpdatedComment(res)))
+    .then(res => dispatch(updatePost(res)))
     .catch(error => Alert.alert(error.message));
 }
 
@@ -407,84 +429,60 @@ export function editPost(post) {
   };
 }
 
-export function removeCommentEl(postId, commentId) {
-  if (!postId || !commentId) return;
-  return {
-    type: 'REMOVE_COMMENT',
-    payload: {
-      postId,
-      commentId,
+export function deleteComment(id) {
+  return async dispatch => {
+    try {
+      let response = await utils.api.request({
+        method: 'DELETE',
+        endpoint: 'comment',
+        path: '/' + id,
+      });
+      dispatch(removePost(id));
+    } catch (err) {
+      return false;
     }
   };
 }
 
-export function deleteComment(token, id, postId) {
-  return dispatch =>
-    fetch(process.env.API_SERVER + '/api/comment/' + id + '?access_token=' + token, {
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'DELETE',
-    })
-    .then((response) => {
-      dispatch(removeCommentEl(postId, id));
-    })
-    .catch((error) => {
-      Alert.alert(error.message);
-      console.log(error, 'error');
-    });
-}
 
+export function getComments(post, skip, limit) {
+  return async dispatch => {
+    try {
+      if (!skip) skip = 0;
+      if (!limit) limit = 0;
 
-export function getComments(postId, skip, limit) {
-  return function(dispatch) {
-    if (!skip) skip = 0;
-    if (!limit) limit = 0;
+      let responseJSON = await utils.api.request({
+        method: 'GET',
+        endpoint: 'comment',
+        query: { post, skip, limit }
+      });
 
-    fetch(process.env.API_SERVER+'/api/comment?post='+postId+'&skip='+skip+'&limit='+limit, {
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'GET',
-    })
-    .then(response => response.json())
-    .then((responseJSON) => {
       dispatch(errorActions.setError('comments', false));
-      dispatch(setComments(postId, responseJSON.data, skip, responseJSON.total));
-    })
-    .catch((error) => {
-      console.log(error, 'error');
-      dispatch(errorActions.setError('comments', true, error.message));
-    });
+      let data = normalize(
+        { [post]: responseJSON.data },
+        { [post]: [commentSchema] }
+      );
+      dispatch(setComments(post, data, skip, responseJSON.total));
+    } catch (err) {
+      dispatch(errorActions.setError('comments', true, err.message));
+    }
   };
 }
 
 export function createComment(token, commentObj) {
-  return function(dispatch) {
-    return fetch(process.env.API_SERVER + '/api/comment?access_token=' + token, {
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'POST',
-      body: JSON.stringify(commentObj)
-    })
-    .then(utils.api.handleErrors)
-    .then(response => response.json())
-    .then((responseJSON) => {
-      dispatch(addComment(responseJSON.post, responseJSON));
+  return async dispatch => {
+    try {
+      let response = await utils.api.request({
+        method: 'POST',
+        endpoint: 'comment',
+        path: '/',
+        body: JSON.stringify(commentObj)
+      });
+      dispatch(addComment(response.parentPost, response));
       return true;
-    })
-    .catch((error) => {
-      console.log(error, 'error');
-      Alert.alert(error.message);
+    } catch (err) {
       return false;
-    });
+    }
   };
 }
 
@@ -539,35 +537,36 @@ export function setFeedCount(data) {
   };
 }
 
+// ------------- OLD FEED STUFF -------------
+// 
+// export function markFeedRead() {
+//   return dispatch =>
+//     utils.token.get()
+//     .then(token =>
+//       fetch(`${apiServer}feed/markread`, {
+//         ...reqOptions(token),
+//         method: 'PUT',
+//       })
+//     )
+//     .then((res) => {
+//       dispatch(setFeedCount(null));
+//     })
+//     .catch(error => console.log('error', error));
+// }
 
-export function markFeedRead() {
-  return dispatch =>
-    utils.token.get()
-    .then(token =>
-      fetch(`${apiServer}feed/markread`, {
-        ...reqOptions(token),
-        method: 'PUT',
-      })
-    )
-    .then((res) => {
-      dispatch(setFeedCount(null));
-    })
-    .catch(error => console.log('error', error));
-}
-
-export function getFeedCount() {
-  return dispatch =>
-    utils.token.get()
-    .then(token =>
-      fetch(`${apiServer}feed/unread`, {
-        ...reqOptions(token),
-        method: 'GET'
-      })
-    )
-    .then(response => response.json())
-    .then(responseJSON => dispatch(setFeedCount(responseJSON.unread)))
-    .catch(err => console.log('Notification count error', err));
-}
+// export function getFeedCount() {
+//   return dispatch =>
+//     utils.token.get()
+//     .then(token =>
+//       fetch(`${apiServer}feed/unread`, {
+//         ...reqOptions(token),
+//         method: 'GET'
+//       })
+//     )
+//     .then(response => response.json())
+//     .then(responseJSON => dispatch(setFeedCount(responseJSON.unread)))
+//     .catch(err => console.log('Notification count error', err));
+// }
 
 export function setSubscriptions(data) {
   return {
@@ -633,58 +632,6 @@ export function setTopPosts(data) {
   };
 }
 
-export function getTopPosts() {
-  return async dispatch => {
-    try {
-      let responseJSON = await utils.api.request({
-        method: 'GET',
-        endpoint: 'post',
-        path: '/topPosts',
-      });
-      // console.log('top posts ', responseJSON);
-      return dispatch(setTopPosts(responseJSON));
-    } catch (error) {
-      return false;
-    }
-  };
-}
-
-export function sendPostNotification(post) {
-  return async dispatch => {
-    try {
-      let responseJSON = await utils.api.request({
-        method: 'POST',
-        endpoint: 'post',
-        path: '/sendPostNotification',
-        body: JSON.stringify(post),
-      });
-      Alert.alert('Notification sent!');
-      // return dispatch(setTopPosts(responseJSON));
-    } catch (error) {
-      return false;
-    }
-  };
-}
-
-
-// export function getPostHtml(post) {
-//   return dispatch =>
-//     // fetch(post.link, {
-//     fetch('https://mercury.postlight.com/parser?url=' + post.link, {
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'x-api-key': process.env.READER_API
-//       },
-//       method: 'GET'
-//     })
-//     .then(response => response.json())
-//     .then(responseJSON => {
-//       console.log(responseJSON);
-//       dispatch(updatePost({ ...post, html: responseJSON.content }));
-//     })
-//     .catch(err => console.log('Subscription error', err));
-// }
-
 export function getFlaggedPosts(skip) {
   if (!skip) skip = 0;
   let type = 'flagged';
@@ -718,3 +665,21 @@ export function getFlaggedPosts(skip) {
     });
   };
 }
+
+
+export function getTopPosts() {
+  return async dispatch => {
+    try {
+      let responseJSON = await utils.api.request({
+        method: 'GET',
+        endpoint: 'post',
+        path: '/topPosts',
+      });
+      // console.log('top posts ', responseJSON);
+      return dispatch(setTopPosts(responseJSON));
+    } catch (error) {
+      return false;
+    }
+  };
+}
+

@@ -121,26 +121,33 @@ class Profile extends Component {
       this.props.actions.getUserPosts(
         length,
         5,
-        this.userId);
+        this.userId
+      );
     } else {
       this.props.actions.getInvestments(
         this.props.auth.token,
         this.userId,
         length,
-        10);
+        10
+      );
     }
   }
 
   renderRow(rowData, view) {
     let scene = this.props.scene || { route: { id: this.userId } };
 
-    let post = this.props.posts.posts[rowData];
-
-    if (view === 0) return (<Post post={post} {...this.props} scene={scene} />);
+    if (view === 0) {
+      let post = this.props.posts.posts[rowData];
+      if (!post) return null;
+      let link = this.props.posts.links[post.metaPost];
+      return (<Post post={post} link={link} {...this.props} scene={scene} />);
+    }
     if (view === 1) {
       let investment = this.props.investments.investments[rowData];
-      post = this.props.posts.posts[investment.post];
-      return (<Post post={post} {...this.props} />);
+      let post = this.props.posts.posts[investment.post];
+      if (!post) return null;
+      let link = this.props.posts.links[post.metaPost];
+      return (<Post post={post} link={link} {...this.props} />);
     }
     return null;
   }

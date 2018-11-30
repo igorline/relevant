@@ -18,9 +18,10 @@ class DiscoverTabs extends Component {
   }
 
   render() {
-    let tag = this.props.params.tag;
+    let { tag } = this.props.params;
+    let { community } = this.props.auth;
     const tabs = this.state.routes.map((tab, i) => {
-      let dest = '/discover';
+      let dest = '/' + community;
       if (this.props.tag) {
         dest += '/tag/' + tag;
       }

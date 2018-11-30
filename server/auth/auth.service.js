@@ -3,6 +3,8 @@ import expressJwt from 'express-jwt';
 import compose from 'composable-middleware';
 import config from '../config/config';
 import User from '../api/user/user.model';
+import CommunityMember from '../api/community/community.member.model';
+import Community from '../api/community/community.model';
 
 let validateJwt = expressJwt({ secret: process.env.SESSION_SECRET, ignoreExpiration: true });
 
@@ -43,6 +45,34 @@ function currentUser(req, res) {
         return next();
       });
     });
+  });
+}
+
+function communityMember(req, res) {
+  return compose()
+  .use(async (req, res, next) => {
+    try {
+      let user = req.user._id;
+      if (!user) throw new Error('missing user credentials');
+      // TODO make sure share extension supports this
+      let community = req.query.community || 'relevant';
+      let member = await CommunityMember.findOne({ user, community });
+
+      // add member to default community
+      if (community === 'relevant' && !member) {
+        // TODO join community that one is signing up with
+        let com = await Community.findOne({ slug: 'relevant' });
+        await com.join(user);
+        member = await CommunityMember.findOne({ user, community });
+      }
+
+      if (!member) throw new Error('you are not a member of this community');
+      // TODO grab user reputation & figure out permission level
+      req.communityMember = member;
+      return next();
+    } catch (err) {
+      next(err);
+    }
   });
 }
 
@@ -122,7 +152,7 @@ function setTokenCookieDesktop(req, res) {
 
   res.cookie('token', token);
   // console.log('query params ', req.query);
-  let redirect = req.query.redirect || '/discover/new';
+  let redirect = req.query.redirect || '/relevant/new';
   return res.redirect(redirect);
 }
 
@@ -149,4 +179,5 @@ exports.authMiddleware = authMiddleware;
 exports.currentUser = currentUser;
 exports.blocked = blocked;
 exports.setTokenCookieDesktop = setTokenCookieDesktop;
+exports.communityMember = communityMember;
 

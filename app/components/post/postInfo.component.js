@@ -54,12 +54,12 @@ class PostInfo extends Component {
 
   componentDidMount() {
     if (this.props.post) this.checkTime(this.props);
-
-    if (this.props.auth && this.props.post.user && this.props.post.user._id && this.props.auth.user._id) {
-      if (this.props.post.user._id === this.props.auth.user._id) {
-        this.menu = this.ownerMenu;
-        this.myPost = true;
-      }
+    let user = this.props.post.user;
+    if (!user) return;
+    let userId = user || user._id;
+    if (this.props.auth && userId && userId === this.props.auth.user._id) {
+      this.menu = this.ownerMenu;
+      this.myPost = true;
     }
   }
 
@@ -106,7 +106,7 @@ class PostInfo extends Component {
     if (!this.props.actions) return;
 
     if (this.props.post.twitter) {
-      return Linking.openURL('https://twitter.com/' + this.props.post.embeddedUser.id)
+      return Linking.openURL('https://twitter.com/' + this.props.post.embeddedUser.id);
     }
 
     this.props.actions.goToProfile({
@@ -145,10 +145,10 @@ class PostInfo extends Component {
       (buttonIndex) => {
         switch (buttonIndex) {
           case 0:
-            this.toggleEditing();
+            this.props.edit ? this.props.edit() :this.toggleEditing();
             break;
           case 1:
-            this.deletePost();
+            this.props.delete ? this.props.delete() : this.deletePost();
             break;
           default:
             return;
@@ -163,15 +163,10 @@ class PostInfo extends Component {
 
     post = this.props.post;
 
+    if (!post.embeddedUser) return null;
+
     let postTime = moment(post.createdAt);
     postTime = ' • ' + numbers.timeSince(postTime) + ' ago';
-
-        // <Text
-        //   allowFontScaling={false}
-        //   style={[styles.greyText, styles.postButtonText, styles.dots]}
-        // >
-        //   ...
-        // </Text>
 
     if (this.myPost) {
       postActions = (<TouchableOpacity
@@ -182,48 +177,15 @@ class PostInfo extends Component {
       </TouchableOpacity>);
     }
 
-    // if (this.state.passed) {
-    //   postInfo = (<Stats type={'value'} entity={post} />);
-    // } else {
-    //   postInfo = (
-    //     <View style={[styles.countdown]}>
-    //       <ToolTip
-    //         ref={(tooltip) => { this.tooltip = tooltip; }}
-    //         actions={[
-    //           { text: 'Post value revealed 6 hours after creation' }
-    //         ]}
-    //         underlayColor={'transparent'}
-    //         arrowDirection={'up'}
-    //       >
-    //         <View style={{ flexDirection: 'row' }}>
-    //           <Progress.Pie
-    //             style={styles.progressCirc}
-    //             color={'#4d4eff'}
-    //             progress={this.state.timePassedPercent}
-    //             size={17}
-    //           />
-    //           <Text
-    //             style={[styles.font17, styles.textRight, styles.darkGrey, styles.bebas]}
-    //           >
-    //             {this.state.timeUntilString}
-    //           </Text>
-    //         </View>
-    //       </ToolTip>
-    //     </View>
-    //   );
-    // }
+    let userId = post.user ? post.user._id || post.user : null;
+    if (post.twitterUser) userId = post.twitterUser;
+    let user = this.props.users[userId];
 
-
-    let user = post.user || post.twitterUser;
-    if (user && !user.name) {
+    if (!user || !user._id) {
       user = {};
-      user._id = post.user || (post.embeddedUser.id + ' via twitter');
-      user.image = post.embeddedUser.image;
-      user.name = post.embeddedUser.name;
-
-      // this is the new way w non-populated user
-      if (post.embeddedUser.relevance && post.embeddedUser.relevance.relevance) {
-        user.relevance = post.embeddedUser.relevance.relevance;
+      user = post.embeddedUser;
+      if (post.twitter) {
+        user._id = user.handle;
       }
     }
 
@@ -270,7 +232,6 @@ class PostInfo extends Component {
       );
     }
 
-    // return this.myPost ? info : null;
     return info;
   }
 }

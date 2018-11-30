@@ -10,7 +10,7 @@ import Eth from '../ethTools/eth.context';
 import Balance from './balance.component';
 import Footer from '../common/footer.component';
 import MetaMaskCta from '../splash/metaMaskCta.component';
-import { BondedTokenContainer } from 'bonded-token';
+import { BondedTokenContainer, BondedTokenTransact } from 'bonded-token';
 
 if (process.env.BROWSER === true) {
   require('./wallet.css');
@@ -32,7 +32,7 @@ class WalletContainer extends Component {
         <div className={'banner'}>
           {this.renderHeader()}
         </div>
-        <BondedTokenContainer {...this.props}>
+        <BondedTokenContainer {...this.props} >
           <div className={'row pageContainer column'}>
             <Eth.Consumer>
               {wallet => <Balance wallet={wallet} { ...this.props } />}
@@ -50,8 +50,9 @@ function mapStateToProps(state) {
   return {
     user: state.auth.user,
     drizzleStatus: state.drizzleStatus,
-    RelevantCoin: state.contracts.RelevantCoin,
+    contract: state.contracts.RelevantCoin,
     accounts: state.accounts,
+    contracts: state.contracts,
     accountBalances: state.accountBalances,
     drizzle: {
       transactions: state.transactions,

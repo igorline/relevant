@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,55 +11,193 @@ import {
 import { numbers } from '../../utils';
 import { globalStyles, fullWidth, green, smallScreen, greyText, mainPadding } from '../../styles/global';
 import UrlPreview from '../createPost/urlPreview.component';
+import * as activityHelper from './activityHelper';
 
 let moment = require('moment');
 
 let styles;
 
-export default function (props) {
-  let singleActivity = props.singleActivity;
-  let amount = numbers.abbreviateNumber(singleActivity.amount);
-  if (!singleActivity) return null;
-
-  let fromNow = moment(singleActivity.createdAt).fromNow();
-  // let fromNow = numbers.timeSince(activityTime);
-  let postTitle = 'Untitled';
-  let tooltipParent = {};
-
-  if (singleActivity.post) {
-    if (singleActivity.post.title) {
-      postTitle = singleActivity.post.title;
-    } else if (singleActivity.post.body) {
-      postTitle = singleActivity.post.body.substring(0, 130);
-      if (singleActivity.post.body.length > 130) postTitle += '...';
-    }
-    singleActivity.post.title = postTitle;
-  }
-
-  let toggleTooltip = (name, type) => {
+export default class SingleActivity extends Component {
+  toggleTooltip(name, type) {
+    let tooltipParent = this.tooltipParent;
     if (!tooltipParent[name]) return;
     tooltipParent[name].measureInWindow((x, y, w, h) => {
       let parent = { x, y, w, h };
       if (x + y + w + h === 0) return;
-      props.navigator.setTooltipData({
+      this.props.navigator.setTooltipData({
         name,
         parent,
         type
       });
-      props.navigator.showTooltip(name);
+      this.props.navigator.showTooltip(name);
     });
-  };
+  }
 
-  let setSelected = (user) => {
-    props.navigator.goToProfile(user);
-  };
+  setSelected(user) {
+    this.props.navigator.goToProfile(user);
+  }
 
-  let goToPost = (post) => {
-    props.navigator.goToPost(post);
-  };
+  goToPost(post) {
+    this.props.navigator.goToPost(post);
+  }
 
-  let renderRight = () => {
-    if (singleActivity.type) {
+  renderName(activity, user) {
+    if (!user && activity.totalUsers) {
+      let s = '';
+      if (activity.totalUsers > 1) s = 's';
+      return <Text style={styles.activityText}>{activity.totalUsers} user{s} </Text>;
+    }
+
+    if (user && activity.totalUsers - 1) {
+      let s = '';
+      if (activity.totalUsers - 1 > 1) s = 's';
+      return (<Text style={styles.activityText}>
+        <Text
+          style={[styles.link, styles.activityText]}
+          onPress={() => this.setSelected(user)}
+        >
+          {user.name}{' '}
+        </Text>
+        and {activity.totalUsers - 1} other{s}
+      </Text>);
+    }
+
+    return (<Text style={[styles.link, styles.activityText]} onPress={() => this.setSelected(user)}>
+      {user.name}{' '}
+    </Text>);
+  }
+
+  renderStat(activity) {
+    if (activity.amount <= 0) return null;
+    let { coin, relevance } = activityHelper.getStatParams(activity);
+    let icon = require('../../assets/images/rup.png');
+    let color = { color: green };
+    if (activity.amount < 0) {
+      color = { color: 'red' };
+      icon = require('../../assets/images/rdown.png');
+    }
+    this.tooltipParent = {};
+
+    if (coin) {
+      return (
+        <View
+          style={[smallScreen ? styles.activityMiddleSmall : styles.activityMiddle]}
+          // ref={(c) => this.tooltipParent.activity = c}
+          onLayout={() => null}
+        >
+          <TouchableOpacity
+            key={activity._id}
+            onPress={() => this.toggleTooltip('activity')}
+            allowFontScaling={false}
+            style={styles.textRow}
+          >
+            <Image
+              resizeMode={'contain'}
+              style={[styles.r, { height: 15, width: 22 }]}
+              source={require('../../assets/images/coinup.png')}
+            />
+            <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
+              {numbers.abbreviateNumber(Math.abs(coin))}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    if (relevance) {
+      return (
+        <View
+          style={[smallScreen ? styles.activityMiddleSmall : styles.activityMiddle]}
+          ref={(c) => this.tooltipParent.activity = c}
+          onLayout={() => null}
+        >
+          <TouchableOpacity
+            onPress={() => this.toggleTooltip('activity', activity.type)}
+            allowFontScaling={false}
+            style={styles.textRow}
+          >
+            <Image
+              resizeMode={'contain'}
+              style={[styles.r, { height: 16, width: 20 }]}
+              source={icon}
+            />
+            <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
+              {Math.abs(numbers.abbreviateNumber(activity.amount))}
+            </Text>
+          </TouchableOpacity>
+
+        </View>
+      );
+    }
+
+    return (<View style={[styles.activityMiddle]} />);
+  }
+
+  renderIcon(img) {
+    return (<View style={styles.activityImage}>
+      <Image
+        resizeMode={'contain'}
+        style={styles.activityImage}
+        source={img}
+      />
+    </View>);
+  }
+
+  renderUserImage(activity) {
+    let user = activity.byUser;
+    let image = user.image ? { uri: user.image } : require('../../assets/images/default_user.jpg');
+    return (<TouchableWithoutFeedback onPress={() => this.setSelected(activity.byUser)}>
+      <Image style={styles.activityImage} source={image} />
+    </TouchableWithoutFeedback>);
+  }
+
+
+  renderPostPreview(activity) {
+    let post = activity.post;
+    if (!post) return null;
+    let link = this.props.posts.links[post.metaPost];
+    let previewProps = { urlPreview: link || post, post };
+    let goTo = post.type === 'post' ? post : { _id: post.parentPost };
+    return (
+      <View style={{ marginLeft: 55, marginRight: mainPadding }}>
+        <UrlPreview
+          onPress={() => this.goToPost(goTo)}
+          size={'small'}
+          {...previewProps}
+        />
+      </View>
+    );
+  }
+
+  renderActivity(activity) {
+    let { emoji, userImage, post, image, userName } = activityHelper.getActivityParams(activity);
+    let amount = numbers.abbreviateNumber(activity.amount);
+    let coinAmount = numbers.abbreviateNumber(activity.coin);
+
+    return (
+      <View>
+        <View style={[styles.singleActivity]}>
+          <View style={styles.activityLeft}>
+            {userImage && this.renderUserImage(activity)}
+            {image && this.renderIcon(image)}
+            {emoji &&
+              <Text allowFontScaling={false} style={styles.incomeEmoji}>
+                {emoji}
+              </Text>}
+            <Text style={[{ flex: 1 }, styles.activityText]}>
+              {userName && this.renderName(activity, userName)}
+              {activityHelper.getText(activity, amount, coinAmount)}
+            </Text>
+            {this.renderStat(activity)}
+          </View>
+        </View>
+        {post && this.renderPostPreview(activity)}
+      </View>
+    );
+  }
+
+  renderBorder(activity) {
+    let fromNow = moment(activity.createdAt).fromNow();
+    if (activity.type) {
       return (<View style={styles.time}>
         <View style={styles.border} />
         <Text
@@ -77,339 +215,21 @@ export default function (props) {
       </View>);
     }
     return null;
-  };
+  }
 
-  let renderName = (user) => {
-    // TODO depricated!
-    if (!user && singleActivity.byUsers) {
-      return <Text style={styles.activityText}>{singleActivity.byUsers.length} users</Text>;
-    }
 
-    if (!user && singleActivity.totalUsers) {
-      let s = '';
-      if (singleActivity.totalUsers > 1) s = 's';
-      return <Text style={styles.activityText}>{singleActivity.totalUsers} user{s}</Text>;
-    }
-
-    if (user && singleActivity.totalUsers - 1) {
-      let s = '';
-      if (singleActivity.totalUsers - 1 > 1) s = 's';
-      return (<Text style={styles.activityText}>
-        <Text
-          style={[styles.link, styles.activityText]}
-          onPress={() => setSelected(user)}
-        >
-          {user.name}{' '}
-        </Text>
-        and {singleActivity.totalUsers - 1} other{s}
-      </Text>);
-    }
-
-    return (<Text style={[styles.link, styles.activityText]} onPress={() => setSelected(user)}>
-      {user.name}
-    </Text>);
-  };
-
-  let renderPost = (post) => {
-    if (!post) return null;
-    let previewProps = { urlPreview: post, domain: post.domain };
+  render() {
+    let activity = this.props.singleActivity;
+    if (!activity) return null;
     return (
-      <View style={{ marginLeft: 55, marginRight: mainPadding }}>
-        <UrlPreview
-          onPress={() => goToPost(post)}
-          size={'small'}
-          {...previewProps}
-        />
+      <View>
+        <View>
+          {this.renderActivity(activity)}
+        </View>
+        {this.renderBorder(activity)}
       </View>
     );
-  };
-
-  let renderImage = (user) => {
-    if (!user && singleActivity.byUsers) {
-      let image = (
-        <View style={styles.activityImage}>
-          <Image
-            resizeMode={'contain'}
-            style={styles.activityImage}
-            source={require('../../assets/images/r.png')}
-          />
-        </View>
-      );
-      return image;
-    } else if (!user) return null;
-
-    let image = (
-      <TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
-        <Image style={styles.activityImage} source={require('../../assets/images/default_user.jpg')} />
-      </TouchableWithoutFeedback>);
-    if (user && user.image) {
-      image = (<TouchableWithoutFeedback onPress={() => setSelected(singleActivity.byUser)}>
-        <Image style={styles.activityImage} source={{ uri: singleActivity.byUser.image }} />
-      </TouchableWithoutFeedback>);
-    }
-    return image;
-  };
-
-  let getText = () => {
-    let action = 'increased';
-    let also = 'also ';
-    if (singleActivity.amount < 0) {
-      action = 'decreased';
-      also = '';
-    }
-    let coinAmount;
-    if (singleActivity.coin) {
-      coinAmount = numbers.abbreviateNumber(singleActivity.coin);
-    }
-
-    switch (singleActivity.type) {
-      case 'upvote':
-        let coinText = singleActivity.coin ? 'you got a coin and ' : '';
-        return (
-          <Text style={styles.activityText}>
-            {renderName(singleActivity.byUser)} upvoted your post → {coinText}your relevance increased by {amount}
-          </Text>
-        );
-
-      case 'downvote':
-        return (
-          <Text style={styles.activityText}>
-            {renderName(singleActivity.byUser)} downvoted your post → your relevance decreased by {amount}
-          </Text>
-        );
-
-      case 'partialUpvote':
-        return (
-          <Text style={styles.activityText}>
-            {renderName(singleActivity.byUser)} {also}upvoted this post → your relevance {action} by {amount}
-          </Text>
-        );
-
-      case 'partialDownvote':
-        return (
-          <Text style={styles.activityText}>
-            {renderName(singleActivity.byUser)} {also}downvoted this post → your relevance {action} by {amount}
-          </Text>
-        );
-
-      case 'basicIncome':
-        return (
-          <Text style={styles.activityText}>
-            You got {singleActivity.coin} extra coin{singleActivity.coin > 1 ? 's' : ''} so you can upvote more posts!
-          </Text>
-        );
-
-      case 'commentAlso':
-        return (
-          <Text style={styles.activityText}>
-            &nbsp;commented on a post
-          </Text>
-        );
-
-      case 'comment':
-        return (
-          <Text style={styles.activityText}>
-            &nbsp;commented on your post
-          </Text>
-        );
-
-      case 'repost':
-        return (
-          <Text style={styles.activityText}>
-            &nbsp;reposted your post
-          </Text>
-        );
-
-      case 'postMention':
-      case 'mention':
-        return (
-          <Text style={styles.activityText}>
-            &nbsp;mentioned you in the post
-          </Text>
-        );
-
-      case 'commentMention':
-        return (
-          <Text style={styles.activityText}>
-            &nbsp;mentioned you in a comment
-          </Text>
-        );
-
-      case 'topPost':
-        return (
-          <Text style={styles.activityText}>
-            In case you missed this top-ranked post:
-          </Text>
-        );
-
-      case 'reward':
-        return (
-          <Text style={styles.activityText}>
-            {`You earned ${coinAmount} coins from this post`}
-          </Text>
-        );
-
-      default:
-        if (singleActivity.text) {
-          return <Text style={styles.activityText}>{singleActivity.text}</Text>;
-        }
-        return null;
-    }
-  };
-
-  let renderMiddle = () => {
-    let icon = require('../../assets/images/rup.png');
-    let color = { color: green };
-    let coin;
-    if (singleActivity.amount < 0) {
-      color = { color: 'red' };
-      icon = require('../../assets/images/rdown.png');
-    }
-    if (singleActivity.coin) {
-      coin = (
-        <TouchableOpacity
-          key={singleActivity._id}
-          onPress={() => toggleTooltip('activity')}
-          allowFontScaling={false}
-          style={styles.textRow}
-        >
-          <Image
-            resizeMode={'contain'}
-            style={[styles.r, { height: 15, width: 22 }]}
-            source={require('../../assets/images/coinup.png')}
-          />
-          <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
-            {numbers.abbreviateNumber(Math.abs(singleActivity.coin))}
-            { !smallScreen && singleActivity.amount ?
-              <Text style={styles.darkGrey}>{'•'}</Text> : null}
-          </Text>
-        </TouchableOpacity>
-      );
-    }
-
-    switch (singleActivity.type) {
-      case 'upvote':
-      case 'partialUpvote':
-      case 'downvote':
-      case 'partialDownvote':
-        return (
-          <View
-            style={[smallScreen ? styles.activityMiddleSmall : styles.activityMiddle]}
-            ref={(c) => tooltipParent.activity = c}
-            onLayout={() => null}
-          >
-            { coin }
-            {coin && smallScreen ?
-              <View style={styles.divide} /> : null
-            }
-            <TouchableOpacity
-              onPress={() => toggleTooltip('activity', singleActivity.type)}
-              allowFontScaling={false}
-              style={styles.textRow}
-            >
-              <Image
-                resizeMode={'contain'}
-                style={[styles.r, { height: 16, width: 20 }]}
-                source={icon}
-              />
-              <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
-                {Math.abs(numbers.abbreviateNumber(singleActivity.amount))}
-              </Text>
-            </TouchableOpacity>
-
-          </View>
-        );
-      case 'basicIncome':
-        return (
-          <View style={[styles.activityMiddle]}>
-            {coin}
-          </View>
-        );
-      default:
-        if (singleActivity.coin) return <View style={[styles.activityMiddle]} >{coin}</View>;
-        return <View style={[styles.activityMiddle]} />;
-    }
-  };
-
-  let renderLeft = () => {
-    switch (singleActivity.type) {
-      case 'upvote':
-      case 'partialUpvote':
-      case 'downvote':
-      case 'partialDownvote':
-        return (
-          <View style={styles.activityLeft}>
-            <View style={styles.activityLeft}>
-              {singleActivity.byUser ? renderImage(singleActivity.byUser) :
-                (<Text allowFontScaling={false} style={styles.incomeEmoji}>
-                  🤑
-                </Text>)}
-              <Text style={[{ flex: 1 }, styles.activityText]}>
-                {getText(singleActivity)}
-              </Text>
-            </View>
-          </View>
-        );
-
-      // DEPRICATED
-      case 'partialEarning':
-        return (
-          <View style={styles.activityLeft}>
-            <Text allowFontScaling={false} style={styles.incomeEmoji}>🤑</Text>
-            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
-              {getText(singleActivity)}
-            </Text>
-            {renderPost(singleActivity.post)}
-          </View>
-        );
-      case 'basicIncome':
-      case 'reward':
-        return (
-          <View style={styles.activityLeft}>
-            <Text allowFontScaling={false} style={styles.incomeEmoji}>🤑</Text>
-
-            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
-              {getText(singleActivity)}
-            </Text>
-          </View>
-        );
-      case 'topPost':
-        return (
-          <View style={styles.activityLeft}>
-            <Image
-              style={[styles.activityImage, { borderRadius: 0, width: 25, height: 25 }]}
-              resizeMode={'contain'} source={require('../../assets/images/r.png')}
-            />
-            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
-              {getText(singleActivity)}
-            </Text>
-          </View>
-        );
-      default:
-        return (
-          <View style={styles.activityLeft}>
-            {renderImage(singleActivity.byUser)}
-            <Text numberOfLines={2} style={[{ flex: 1 }, styles.darkGrey, styles.georgia]}>
-              {renderName(singleActivity.byUser)}
-              {getText(singleActivity)}
-            </Text>
-          </View>
-        );
-    }
-  };
-
-  return (
-    <View>
-      <View style={[styles.singleActivity]}>
-        {renderLeft()}
-        {renderMiddle()}
-      </View>
-      {renderPost(singleActivity.post)}
-      <View>
-        {renderRight()}
-      </View>
-    </View>
-  );
+  }
 }
 
 const localStyles = StyleSheet.create({
@@ -440,7 +260,7 @@ const localStyles = StyleSheet.create({
     paddingTop: 15,
     width: fullWidth,
     justifyContent: 'space-between',
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'stretch',
     flex: 1,
     overflow: 'visible',

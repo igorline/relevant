@@ -170,7 +170,8 @@ function mapStateToProps(state) {
     error: state.error.activity,
     refresh: state.navigation.activity.refresh,
     reload: state.navigation.activity.reload,
-    tabs: state.navigation.tabs
+    tabs: state.navigation.tabs,
+    posts: state.posts,
   };
 }
 

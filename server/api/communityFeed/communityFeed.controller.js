@@ -9,9 +9,15 @@ function handleError(res, statusCode) {
   };
 }
 
+// Feed.findOne({ metaPost: null }).then(console.log);
+
 exports.get = async (req, res) => {
   try {
-    let community = req.subdomain || 'relevant';
+    // TODO - right now sorting commentary by latest and relevance
+    // only works for community's own posts
+    // solution: populate postData then populate with postData post
+    // TODO - for now isolate commentary to given community
+    let community = req.query.community;
     let user = req.user;
 
     let skip = parseInt(req.query.skip, 10) || 0;
@@ -23,7 +29,8 @@ exports.get = async (req, res) => {
 
     if (sort === 'rank') {
       sortQuery = { rank: -1 };
-      commentarySort = { relevance: -1 };
+      // commentarySort = { relevance: -1 };
+      commentarySort = { pagerank: -1 };
     } else {
       sortQuery = { latestPost: -1 };
       commentarySort = { postDate: -1 };
@@ -34,9 +41,9 @@ exports.get = async (req, res) => {
       blocked = [...req.user.blocked || [], ...req.user.blockedBy || []];
     }
 
-    let query = { community };
+    let query = { community, post: { $exists: true } };
 
-    if (tag) query = { tags: tag };
+    if (tag) query = { tags: tag, community };
     let feed;
     let posts = [];
 
@@ -45,34 +52,85 @@ exports.get = async (req, res) => {
     .skip(skip)
     .limit(limit)
     .populate({
-      path: 'metaPost',
+      path: 'post',
       populate: [
+        { path: 'data' },
         {
           path: 'commentary',
           match: {
-            // this is a temp problem for twitter
-            // community,
+            // TODO implement intra-community commentary
+            community,
 
             // TODO - we should probably sort the non-community commentary
             // with some randomness on client side
             repost: { $exists: false },
             user: { $nin: blocked },
-            $or: [{ twitter: { $ne: true } }, { relevance: { $gt: 0 } }],
+            $or: [{ hidden: { $ne: true } }],
           },
           options: { sort: commentarySort },
-          populate: {
-            path: 'embeddedUser.relevance',
-            select: 'relevance'
-          },
+          populate: [
+            { path: 'data' },
+            {
+              path: 'embeddedUser.relevance',
+              select: 'pagerank',
+              match: { community, global: true },
+            },
+          ]
+        },
+        { path: 'metaPost' },
+        {
+          path: 'embeddedUser.relevance',
+          select: 'pagerank',
+          match: { community, global: true },
         },
       ]
     });
 
     feed.forEach(async (f) => {
-      if (f.metaPost) {
-        posts.push(f.metaPost);
-      } else { // just in case - this shouldn't happen
-        console.log('error: metapost is null!');
+      if (f.post) {
+        // --------- fix random twitter posts
+        // if (!f.post.commentary.length && f.post.type === 'link') {
+        //   console.log(f);
+        //   // await f.remove();
+        // }
+
+        // ------- fix wrong time
+
+        // let com = f.post.commentary;
+        // let latest = f.latestPost;
+        // let latestPost = 0;
+        // com.forEach(c => {
+        //   let date = c.data.postDate;
+        //   if (new Date(date).getTime() > new Date(latestPost).getTime()) {
+        //     latestPost = date;
+        //   }
+        // });
+        // let diff = new Date(latest).getTime() - new Date(latestPost).getTime();
+        // if (diff > 0) {
+        //   console.log('difference ', diff / (1000 * 60 * 60), 'h');
+        //   console.log('latestPost ', latestPost);
+        //   console.log('fix latest', latest);
+        //   console.log('fix post', f.post.data.latestComment);
+        //   console.log(f);
+        //   f.latestPost = latestPost;
+        //   await f.save();
+        //   f.post.data.latestComment = latestPost;
+        //   await f.post.data.save();
+        // }
+        posts.push(f.post);
+
+        // let com = f.post.commentary;
+        // com.forEach(async c => {
+        //   if (c.twitter && c.data.pagerank === 0 && c.upVotes === 0) {
+        //     console.log(c);
+        //     await f.remove();
+        //     c.hidden = true;
+        //     await c.save();
+        //   }
+        // });
+      } else {
+        // just in case - this shouldn't happen
+        console.log('error: post is null!');
         await f.remove();
       }
     });
@@ -81,8 +139,8 @@ exports.get = async (req, res) => {
     if (user) {
       let postIds = [];
       posts.forEach(meta => {
+        postIds.push(meta._id);
         meta.commentary.forEach(post => {
-          // post.user = post.embeddedUser.id;
           postIds.push(post._id || post);
         });
       });

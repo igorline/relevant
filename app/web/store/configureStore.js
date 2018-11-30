@@ -2,9 +2,8 @@ import { routerMiddleware } from 'react-router-redux';
 import createSocketIoMiddleware from 'redux-socket.io';
 import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
-import drizzle from 'drizzle';
 import createSagaMiddleware from 'redux-saga';
-import { drizzleReducers, drizzleSagas } from 'drizzle';
+import { drizzleSagas } from 'drizzle';
 import { all, fork } from 'redux-saga/effects';
 import rootReducer from '../../reducers';
 
@@ -40,7 +39,12 @@ export default function configureStore(initialState = {}, history) {
   if (process.env.BROWSER) {
     // only use the socket middleware on client and not on server
     let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
-    middleware = applyMiddleware(thunk, routerMiddleware(history), socketIoMiddleware, sagaMiddleware);
+    middleware = applyMiddleware(
+      thunk,
+      routerMiddleware(history),
+      socketIoMiddleware,
+      sagaMiddleware
+    );
   } else {
     middleware = applyMiddleware(thunk, routerMiddleware(history), sagaMiddleware);
   }

@@ -1,52 +1,16 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto-promise';
 import sigUtil from 'eth-sig-util';
-
 import User from './user.model';
 import Comment from '../comment/comment.model';
 import Post from '../post/post.model';
-import config from '../../config/config';
-// import Treasury from '../treasury/treasury.model';
-// import Earnings from '../earnings/earnings.model';
 import Relevance from '../relevance/relevance.model';
 import mail from '../../mail';
-import Invite from '../invites/invite.model';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
 import * as ethUtils from '../../utils/ethereum';
 
 const TwitterWorker = require('../../utils/twitterWorker');
-
-// User.findOne({ _id: 'test'}, 'hashedPassword')
-// .then(u => console.log(u))
-
-// User.collection.dropIndexes(function (err, results) {
-//   console.log(err);
-// });
-
-// User.findOneAndUpdate({ _id: 'slava' }, { role: 'admin' }).exec();
-// User.findOneAndUpdate({ _id: 'Analisa' }, { role: 'admin' }).exec();
-// User.findOneAndUpdate({ _id: 'jay' }, { role: 'user' }).exec();
-// User.findOneAndUpdate({ _id: 'phillip' }, { role: 'user' }).exec();
-// User.findOneAndUpdate({ _id: 'balasan' }, { role: 'admin' }).exec();
-// User.findOneAndUpdate({ _id: 'test' }, { role: 'admin', confirmed: true }).exec();
-// async function notifications() {
-//   try {
-//     let users = await User.find({ 'deviceTokens.0': { $exists: true } });
-//     console.log('not enabled ', users.length)
-//     users.forEach(user => {
-//       console.log(user._id);
-//     });
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-// notifications();
-
-// User.update({}, { onboarding: 0 }, { multi: true }).exec();
-
-// User.find({ confirmed: false }, '_id')
-// .then(users => console.log(users));
 
 let validationError = (res, err) => {
   console.log(err);
@@ -63,7 +27,7 @@ async function sendConfirmation(user, newUser) {
   if (newUser) text = 'Welcome to Relevant! ';
   try {
     console.log('sending email', user.email);
-    let url = `${process.env.API_SERVER}/confirm/${user.handle}/${user.confirmCode}`;
+    let url = `${process.env.API_SERVER}/user/confirm/${user.handle}/${user.confirmCode}`;
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
@@ -88,7 +52,7 @@ async function sendConfirmation(user, newUser) {
 async function sendResetEmail(user) {
   let status;
   try {
-    let url = `${process.env.API_SERVER}/resetPassword/${user.resetPasswordToken}`;
+    let url = `${process.env.API_SERVER}/user/resetPassword/${user.resetPasswordToken}`;
     let data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
@@ -105,12 +69,13 @@ async function sendResetEmail(user) {
   return status;
 }
 
-exports.forgot = async (req, res) => {
-  let string = req.body.user;
-  let user;
+exports.forgot = async (req, res, next) => {
   let email;
   try {
+    let string = req.body.user;
+    let user;
     let query;
+
     email = /^.+@.+\..+$/.test(string);
     query = email ? { email: string } : { handle: string };
     user = await User.findOne(query, 'resetPasswordToken resetPasswordExpires email');
@@ -120,14 +85,14 @@ exports.forgot = async (req, res) => {
     user.resetPasswordExpires = Date.now() + 3600000;
     user = await user.save();
     await sendResetEmail(user);
+    return res.status(200).json({ email: user.email, username: user.handle });
   } catch (err) {
     let error = new Error('Couldn\'t find user with this name ', err);
     if (email) {
       error = new Error('No user with this email exists');
     }
-    return handleError(res, error);
+    return next(error);
   }
-  res.status(200).json({ email: user.email, username: user.handle });
 };
 
 exports.confirm = async (req, res, next) => {
@@ -154,20 +119,18 @@ exports.confirm = async (req, res, next) => {
   return middleware ? next() : res.status(200).json(user);
 };
 
-exports.sendConfirmationCode = async (req, res) => {
-  let status;
+exports.sendConfirmationCode = async (req, res, next) => {
   try {
     let user = await User.findOne({ handle: req.user.handle }, 'email confirmCode');
     let rand = await crypto.randomBytes(32);
     let token = rand.toString('hex');
     user.confirmCode = token;
     user = await user.save();
-    status = await sendConfirmation(user);
+    let status = await sendConfirmation(user);
+    return res.status(200).json(status);
   } catch (err) {
-    return handleError(res, err);
+    return next(err);
   }
-  console.log('status ', status);
-  res.status(200).json(status);
 };
 
 exports.onboarding = (req, res) => {
@@ -296,7 +259,7 @@ exports.checkUser = (req, res) => {
     query = { email };
   }
 
-  User.findOne(query, 'handle')
+  return User.findOne(query, 'handle')
   .then((user) => {
     if (user) res.status(200).json({ type });
     else res.status(200).json(null);
@@ -304,59 +267,91 @@ exports.checkUser = (req, res) => {
   .catch(err => handleError(res, err));
 };
 
-exports.list = async (req, res) => {
-  let limit = parseInt(req.query.limit, 10) || 5;
-  let skip = parseInt(req.query.skip, 10) || 0;
-  let topic = req.query.topic || null;
-  let users;
-
-  let blocked = [];
-  if (req.user) {
-    let user = req.user;
-    blocked = [...user.blocked, ...user.blockedBy];
-  }
-
+exports.testData = async (req, res, next) => {
   try {
-    let community = req.subdomain || 'relevant';
+    let limit = parseInt(req.query.limit, 10) || 5;
+    let skip = parseInt(req.query.skip, 10) || 0;
+
+    console.log(req.query);
+
+    let community = req.query.community || 'relevant';
+    let query = { global: true, community, pagerank: { $gt: 0 } };
+    // let sort = { pagerank: -1 };
+
+    let rel = await Relevance.find(query, 'pagerank level community communityId pagerankRaw')
+    .limit(limit)
+    .skip(skip)
+    // .sort(sort)
+    .populate({
+      path: 'user',
+      select: 'handle name votePower image bio'
+    });
+
+    return res.status(200).json(rel);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.list = async (req, res, next) => {
+  try {
+    let limit = parseInt(req.query.limit, 10) || 5;
+    let skip = parseInt(req.query.skip, 10) || 0;
+    let topic = req.query.topic || null;
+    let users;
+
+    let blocked = [];
+    if (req.user) {
+      let user = req.user;
+      blocked = [...user.blocked, ...user.blockedBy];
+    }
+    let community = req.query.community || 'relevant';
+
     let query;
+    let sort;
     if (topic && topic !== 'null') {
       // TODO should topic relevance be limited to community? maybe not?
-      query = { tag: topic, user: { $nin: blocked } };
-    } else query = { global: true, community, user: { $nin: blocked } };
+      query = { tag: topic, community, user: { $nin: blocked } };
+      sort = { relevance: -1 };
+    } else {
+      topic = null;
+      sort = { pagerank: -1 };
+      query = { global: true, community, user: { $nin: blocked } };
+    }
 
     let rel = await Relevance.find(query)
     .limit(limit)
     .skip(skip)
-    .sort({ relevance: -1 })
-    .populate('user');
+    .sort(sort)
+    .populate({
+      path: 'user',
+      select: 'handle name votePower image bio'
+    });
+
     users = rel.map(r => {
       r = r.toObject();
-      r.user[topic + '_relevance'] = r.relevance;
-      return r.user;
+      if (!r.user) return null;
+      let user = { ...r.user };
+      user.relevance = {};
+      delete r.user;
+      if (topic) user[topic + '_relevance'] = r.relevance;
+      else user.relevance = r;
+      return user;
     });
-    // } else {
-    //   users = await User.find({ _id: { $nin: blocked } })
-    //   .limit(limit)
-    //   .skip(skip)
-    //   .sort({ relevance: -1 });
-    // }
-    // console.log('got users ', users);
-  } catch (err) {
-    console.log('user list error ', err);
-    res.status(500).json(err);
-  }
 
-  return res.status(200).json(users);
+    return res.status(200).json(users);
+  } catch (err) {
+    return next(err);
+  }
 };
 
 
 /**
  * Creates a new user
+ * make sure to mimic logic in updateHandle TODO - refactor
  */
 exports.create = async (req, res, next) => {
   try {
-    let community = req.subdomain || 'relevant';
-
     let token;
     let rand = await crypto.randomBytes(32);
     let confirmCode = rand.toString('hex');
@@ -408,7 +403,7 @@ exports.create = async (req, res, next) => {
 
     return res.status(200).json({ token, user });
   } catch (err) {
-    return handleError(res, err);
+    return next(err);
   }
 };
 
@@ -424,7 +419,8 @@ exports.show = async function show(req, res, next) {
       me = true;
     }
 
-    let community = req.subdomain || 'relevant';
+    let community = req.query.community || 'relevant';
+
     // don't show blocked user;
     let blocked = [];
     if (req.user) {
@@ -435,11 +431,17 @@ exports.show = async function show(req, res, next) {
       }
     }
 
-    let user = await User.findOne({ handle });
+    let user = await User.findOne({ handle })
+    .populate({
+      path: 'relevance',
+      match: { community, global: true },
+      select: 'pagerank relevanceRecord'
+    });
+
     if (!user) throw new Error('no such user ', handle);
     user = await user.getSubscriptions();
 
-    user = await user.getRelevance(community);
+    // user = await user.getRelevance(community);
 
     // topic relevance
     let relevance = await Relevance.find({ user: handle, tag: { $ne: null } })
@@ -462,7 +464,7 @@ exports.show = async function show(req, res, next) {
       }
     }
   } catch (err) {
-    handleError(res, err);
+    next(err);
   }
 };
 
@@ -480,10 +482,11 @@ exports.destroy = async (req, res, next) => {
     await User.findOne({ handle: req.params.id }).remove();
     return res.sendStatus(204);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
+// TODO refactor to use same logic as create
 exports.updateHandle = async (req, res, next) => {
   try {
     let user = req.user;
@@ -541,7 +544,6 @@ exports.updateHandle = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     let role = req.user.role;
-    let savedUser = null;
     let authUser = JSON.stringify(req.user._id);
     let reqUser = JSON.stringify(req.body._id);
     let updateImage = false;
@@ -551,7 +553,7 @@ exports.update = async (req, res, next) => {
     if (authUser !== reqUser && role !== 'admin') {
       throw new Error('Not authorized to edit this user');
     }
-    user = await User.findOne({ _id: req.body._id }, '-salt -hashedPassword');
+    user = await User.findOne({ _id: req.body._id }, '-salt -hashedPassword -relevance');
     if (!user) throw new Error('user not found');
 
     if (user.name !== req.body.name) {
@@ -593,32 +595,11 @@ exports.update = async (req, res, next) => {
         { multi: true }
       );
     }
-    return res.status(200).json(savedUser);
+    return res.status(200).json(user);
   } catch (err) {
     return next(err);
   }
 };
-
-/**
- * Get my info
- */
-// exports.me = async (req, res) => {
-//   try {
-//     let community = req.subdomain || 'relevant';
-//     let userId = req.user._id;
-//     let user = await User.findOne({ _id: userId }, '-salt -hashedPassword');
-//     if (!user) return res.json(401);
-//     // TODO this is depricated
-//     user = await user.getRelevance(community);
-//     user = await user.getSubscriptions();
-
-//     res.status(200).json(user);
-
-//     return null;
-//   } catch (err) {
-//     return handleError(res, err);
-//   }
-// };
 
 
 exports.block = async (req, res) => {
