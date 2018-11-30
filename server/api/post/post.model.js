@@ -376,7 +376,7 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
     }
 
     // console.log('parent ', parent);
-    if (parent.latestComment < postDate) {
+    if (!this.hidden && parent.latestComment < postDate) {
       parent.latestComment = postDate;
       parent.data.latestComment = postDate;
       console.log('updated data latestComment ', parent.data.latestComment);

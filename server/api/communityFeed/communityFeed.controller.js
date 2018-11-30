@@ -88,10 +88,35 @@ exports.get = async (req, res) => {
 
     feed.forEach(async (f) => {
       if (f.post) {
-        if (!f.post.commentary.length && f.post.type === 'link') {
-          console.log(f);
-          await f.remove();
-        }
+        // --------- fix random twitter posts
+        // if (!f.post.commentary.length && f.post.type === 'link') {
+        //   console.log(f);
+        //   await f.remove();
+        // }
+
+        // ------- fix wrong time
+
+        // let com = f.post.commentary;
+        // let latest = f.latestPost;
+        // let latestPost = 0;
+        // com.forEach(c => {
+        //   let date = c.data.postDate;
+        //   if (new Date(date).getTime() > new Date(latestPost).getTime()) {
+        //     latestPost = date;
+        //   }
+        // });
+        // let diff = new Date(latest).getTime() - new Date(latestPost).getTime();
+        // if (diff > 0) {
+        //   console.log('difference ', diff / (1000 * 60 * 60), 'h');
+        //   console.log('latestPost ', latestPost);
+        //   console.log('fix latest', latest);
+        //   console.log('fix post', f.post.data.latestComment);
+        //   console.log(f);
+        //   f.latestPost = latestPost;
+        //   await f.save();
+        //   f.post.data.latestComment = latestPost;
+        //   await f.post.data.save();
+        // }
         posts.push(f.post);
       } else {
         // just in case - this shouldn't happen
