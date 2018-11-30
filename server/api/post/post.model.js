@@ -181,102 +181,6 @@ PostSchema.methods.addPostData = async function addPostData(community) {
   return this;
 };
 
-// Update parent feed status (only for link posts)
-PostSchema.statics.updateFeedStatus = async function updateFeedStatus(postId, community, remove) {
-  try {
-    let linkPost = await this.model('Post').findOne({ _id: postId })
-    .populate({
-      path: 'commentary',
-      sort: { postDate: -1 }
-    });
-
-    if (!linkPost) return;
-    let count = linkPost.commentary.length;
-
-    if (!count && linkPost) {
-      console.log('REMOVING POST FROM ALL FEEDS! ', community, linkPost);
-      await this.model('CommunityFeed').removeFromAllFeeds(linkPost);
-      await this.model('MetaPost').remove({ _id: linkPost.metaPost });
-      // remove empty link posts
-      await linkPost.remove();
-    }
-
-    let communityPosts = linkPost.commentary.filter(c => c.community === community);
-    // console.log('found ', communityPosts.length + ' community posts');
-    if (!communityPosts.length && community) {
-      console.log('REMOVING POST FROM COMMUNITY FEED! ', community, linkPost);
-      await this.model('CommunityFeed').removeFromCommunityFeed(linkPost, community);
-    } else if (!remove) {
-      // TODO this is messy - it will bump a new post in the feed
-      // Update the date of post in feed
-      let newFeedItem = await this.model('CommunityFeed').findOneAndUpdate(
-        { community, post: linkPost._id },
-        { latestPost: communityPosts[0].postDate },
-        { new: true }
-      );
-      // TODO can maybe make this more efficient?
-      await linkPost.updateRank(community);
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-PostSchema.post('remove', async function postRemove(doc) {
-  try {
-    if (!doc.hidden && doc.linkParent) {
-      console.log('hidden ', doc.hidden);
-      console.log('linkParent ', doc.linkParent);
-
-      await this.model('Post').updateFeedStatus(doc.linkParent, this.community, true);
-    }
-    await this.model('CommunityFeed').removeFromAllFeeds(doc);
-
-    let note = this.model('Notification').remove({ post: this._id });
-    let feed = await this.model('Feed').remove({ post: this._id });
-    let twitterFeed = await this.model('TwitterFeed').remove({ post: this._id });
-
-    // TODO we should replace post with a dummy post on delete
-    // should we remove post comment also!?!
-    // probably not...
-    // let comment = this.model('Post').remove({ post: this._id });
-
-    await this.model('PostData').remove({ post: doc._id });
-
-    // should invest info be removed?
-    // probably not - a chance to erase rep...
-    // await this.model('Invest').remove({ post: doc._id });
-
-    // remove notifications
-    if (this.type === 'comment' || this.type === 'repost') {
-      await this.model('Notification').remove({ comment: this._id });
-    }
-
-    // TODO better tag management and per community
-    if (!this.twitter) {
-      this.tags.forEach((tag) => {
-        this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
-          if (!foundTag) return;
-          if (foundTag.count > 1) {
-            foundTag.count--;
-            foundTag.save(error => {
-              if (error) console.log('saving tag error');
-            });
-          } else {
-            foundTag.remove();
-          }
-        });
-      });
-    }
-
-    // this makes it faster (don't need all awaits)?
-    let promises = [note, feed, twitterFeed];
-    await Promise.all(promises);
-  } catch (err) {
-    console.log(err);
-  }
-});
-
 PostSchema.statics.events = PostSchemaEvents;
 
 PostSchema.methods.updateClient = function updateClient(user) {
@@ -307,40 +211,50 @@ PostSchema.methods.addUserInfo = async function addUserInfo(user) {
 };
 
 // TODO work on this
-PostSchema.methods.updateRank = async function updateRank(community, dontInsert) {
+PostSchema.methods.updateRank = async function updateRank(community, updateTime) {
   try {
     if (!this.data) {
       this.data = await this.model('PostData').find({ post: this._id, community });
     }
 
     let sign = 1;
-    if (this.data.pagerank < 0) {
-      sign = -1;
-    }
+    if (this.data.pagerank < 0) sign = -1;
     if (!this.data.pagerank) this.data.pagerank = 0;
     let rank = Math.abs(this.data.pagerank);
 
-    let newRank = (this.data.postDate.getTime() / TENTH_LIFE) + (sign * Math.log10(rank + 1));
+    // TODO refactor to use data table?
+    // alternately we duplicate comments
+    if (updateTime && this.type === 'link') {
+      let latestComment = await this.model('Post')
+      .findOne({ parentPost: this._id, community, hidden: false }, 'postDate')
+      .sort({ postDate: -1 });
+      if (latestComment) {
+        this.data.latestComment = latestComment.postDate;
+        this.latestComment = latestComment.postDate;
+      }
+    }
+
+    let postDate = this.data.latestComment || this.data.postDate;
+
+    let newRank = (postDate.getTime() / TENTH_LIFE) + (sign * Math.log10(rank + 1));
     rank = Math.round(newRank * 1000) / 1000;
 
-    // also get max rank of children
-    // This will not return top comment because rank is inside data
-    let topComment = await this.model('Post').findOne({ parentPost: this._id, community, hidden: false }, 'rank')
-    .sort({ rank: -1 })
-    .populate({ path: 'data', match: { community } });
+    // TODO refactor to use data table?
+    let topComment = await this.model('Post')
+    .findOne({ parentPost: this._id, community, hidden: false }, 'rank')
+    .sort({ rank: -1 });
 
     if (topComment) {
-      // TODO remove this (only for migration)
-      let commentRank = topComment.data ? topComment.data.rank : 0;
-      rank = Math.max(rank, commentRank);
+      // TODO implement own rank (so we can undo ranking after deletion)
+      // own rank whould be own upvotes only
+      rank = Math.max(rank, topComment.rank);
     }
 
     this.data.rank = rank;
     this.rank = rank;
 
-    // this will update the 'new' date and rank
-    if (community && !this.parentPost && !dontInsert) {
-      console.log(this)
+    // this will update date and rank
+    if (community && !this.parentPost) {
       await this.model('CommunityFeed').updateRank(this, community);
     }
 
@@ -400,9 +314,8 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
       parent.seenInFeedNumber += 1;
     }
 
-    // USED FOR TWITTER
+    // DON'T UPDATE RANK FOR TWITTER
     if (!this.hidden) {
-      // this also inserts a posts into the community feed
       await parent.updateRank(this.community);
     }
 
@@ -440,23 +353,10 @@ PostSchema.methods.insertIntoFeed = async function insertIntoFeed(community) {
         });
       }
     }
-    console.log(post);
     if (!post.data) post.data = await this.model('PostData').findOne({ post: post._id, community });
-    console.log(post.data);
 
-    let feedItem = await this.model('CommunityFeed').findOneAndUpdate(
-      { community, post: this._id },
-      {
-        latestPost: post.data.latestComment || post.data.postDate,
-        tags: post.tags,
-        // categories: this.categories,
-        // keywords: meta.keywords,
-        rank: post.data.rank,
-      },
-      { upsert: true, new: true }
-    );
-    console.log('inserted feed item ', feedItem);
-    // notify front end there is a new post
+    this.model('CommunityFeed').addToFeed(this, community);
+
     let newPostEvent = {
       type: 'SET_NEW_POSTS_STATUS',
       payload: { community },
@@ -473,9 +373,8 @@ PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkOb
   try {
     if (metaId) meta = await MetaPost.findOne({ _id: metaId });
     let url = linkObject.url || this.url || this.link;
-    if (url && !meta) {
-      meta = await MetaPost.findOne({ url });
-    }
+    if (url && !meta) meta = await MetaPost.findOne({ url });
+
     if (meta) {
       meta.set(linkObject);
       meta = await meta.save();
@@ -485,14 +384,14 @@ PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkOb
         tags: this.tags,
       };
       meta = new MetaPost(meta);
-      meta = await meta.save();
     }
+
+    meta = await meta.save();
     this.metaPost = meta._id;
     return this;
   } catch (err) {
-    console.log('error creating / updating link ', err);
+    return console.log('error creating / updating link ', err);
   }
-  return meta;
 };
 
 PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds, userId) {
@@ -512,7 +411,9 @@ PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds,
   }
 };
 
-PostSchema.statics.sendOutMentions = async function sendOutMentions(mentions, post, mUser, comment) {
+PostSchema.statics.sendOutMentions = async function sendOutMentions(
+  mentions, post, mUser, comment
+) {
   let textParent = comment || post;
   try {
     let promises = mentions.map(async mention => {
@@ -583,5 +484,108 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(mentions, po
 
   return textParent;
 };
+
+// Update parent feed status (only for link posts)
+PostSchema.statics.updateFeedStatus = async function updateFeedStatus(parent, post) {
+  try {
+    let parentId = parent._id || parent;
+    if (!post) throw new Error('missing post');
+    let { community, hidden } = post;
+    if (!community) throw new Error('missing community');
+
+    // Thread has no children - remove everything
+    let count = await this.model('Post').findOne({ linkPost: parentId });
+    if (!count) {
+      console.log('REMOVING POST FROM ALL FEEDS! ', community);
+      await this.model('CommunityFeed').removeFromAllFeeds(parentId);
+      await this.model('MetaPost').remove({ _id: post.metaPost });
+      // remove empty link post
+      await this.model('Post').remove({ _id: parentId });
+      return;
+    }
+
+    let communityCount = await this.model('Post')
+    .count({ linkPost: parentId, community });
+
+
+    if (!communityCount && community) {
+      console.log('REMOVING POST FROM COMMUNITY FEED! ', community, parentId);
+      await this.model('CommunityFeed').removeFromCommunityFeed(parentId, community);
+    } else if (!hidden) {
+      let linkParent = await this.model('Post').findOne({ _id: parentId })
+      .populate({ path: 'data', match: { community } });
+      // children exist, we need to update thread rank
+      // let latestPost = communityPosts[0];
+      // this.data.latestPost = latestPost.data.latestComment || latestPost.data.postDate;
+
+      // // update post date
+      // this.model('CommunityFeed').updateDate(this, community, this.data.latestPost);
+
+      // TODO can maybe make this more efficient?
+      let updateTime;
+      if (new Date(post.postDate).getTime() === linkParent.data.latestComment) {
+        updateTime = true;
+      }
+      await linkParent.updateRank(community, updateTime);
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+PostSchema.post('remove', async function postRemove(doc) {
+  try {
+    if (doc.linkParent) {
+      console.log('hidden ', doc.hidden);
+      console.log('linkParent ', doc.linkParent);
+      await this.model('Post').updateFeedStatus(doc.linkParent, this);
+    }
+
+    await this.model('CommunityFeed').removeFromAllFeeds(doc);
+
+    let note = this.model('Notification').remove({ post: this._id });
+    let feed = await this.model('Feed').remove({ post: this._id });
+    let twitterFeed = await this.model('TwitterFeed').remove({ post: this._id });
+
+    // TODO we should replace post with a dummy post on delete
+    // should we remove post comment also!?!
+    // probably not...
+    // let comment = this.model('Post').remove({ post: this._id });
+
+    await this.model('PostData').remove({ post: doc._id });
+
+    // should invest info be removed?
+    // probably not - a chance to erase rep...
+    // await this.model('Invest').remove({ post: doc._id });
+
+    // remove notifications
+    if (this.type === 'comment' || this.type === 'repost') {
+      await this.model('Notification').remove({ comment: this._id });
+    }
+
+    // TODO better tag management and per community
+    if (!this.twitter) {
+      this.tags.forEach((tag) => {
+        this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
+          if (!foundTag) return;
+          if (foundTag.count > 1) {
+            foundTag.count--;
+            foundTag.save(error => {
+              if (error) console.log('saving tag error');
+            });
+          } else {
+            foundTag.remove();
+          }
+        });
+      });
+    }
+
+    // this makes it faster (don't need all awaits)?
+    let promises = [note, feed, twitterFeed];
+    await Promise.all(promises);
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 module.exports = mongoose.model('Post', PostSchema);
