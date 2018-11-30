@@ -22,31 +22,46 @@ import { PAYOUT_TIME } from '../../config/globalConstants';
 
 let requestAsync = promisify(request);
 
-PostData.find({ balance: { $lt: 0 } }).then(posts => {
-  posts.forEach(p => {
-    p.balance = 0;
-    p.save();
-  });
-});
 
-// Post.find().populate({ path: 'data' }).then(posts => {
-//   posts.forEach(p => {
-//     p.pagerank = p.data.pagerank;
-//     p.save();
-//   });
-// });
+async function fixPost() {
+  try {
+    let posts = await Post.find(
+      { twitter: false, type: 'post', parentPost: { $exists: true } },
+      'title body user postDate'
+    )
+    .populate('parentPost')
+    .populate('metaPost');
 
-// Post.collection.dropIndex({ url: 1 }, function(err, result) {
-//     if (err) {
-//         console.log('Error in dropping index!', err);
-//     }
-// });
+    posts.forEach(async p => {
+      try {
+        if (!p.parentPost) {
+          console.log(p);
+          // p = await p.upsertLinkParent(p.metaPost);
+          // await p.insertIntoFeed(p.community);
+          // await p.updateRank(p.community);
+          // await p.parentPost.updateRank(p.community);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    });
 
-// PostData.collection.dropIndex({ post: 1 }, function(err, result) {
-//     if (err) {
-//         console.log('Error in dropping index!', err);
-//     }
-// });
+    // let post = await Post.findOne({ _id: '5bfe6d080f00520013263da9' })
+    // .populate('parentPost');
+    // console.log(post);
+    // await post.updateRank(post.community);
+    // // await post.parentPost.updateRank(post.community);
+
+    // console.log('post.rank', post.rank);
+    // console.log('post.parentPost.rank', post.parentPost.rank);
+
+    // await post.upsertLinkParent(post.metaPost);
+    // await post.insertIntoFeed(post.community);
+  } catch (err) {
+    console.log(err);
+  }
+}
+// fixPost();
 
 async function findRelatedPosts(metaId) {
   try {

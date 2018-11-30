@@ -194,6 +194,7 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(postId, co
     let count = linkPost.commentary.length;
 
     if (!count && linkPost) {
+      console.log('REMOVING POST FROM ALL FEEDS! ', community, linkPost);
       await this.model('CommunityFeed').removeFromAllFeeds(linkPost);
       await this.model('MetaPost').remove({ _id: linkPost.metaPost }).exec();
     }
@@ -201,6 +202,7 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(postId, co
     let communityPosts = linkPost.commentary.filter(c => c.community === community);
     // console.log('found ', communityPosts.length + ' community posts');
     if (!communityPosts.length) {
+      console.log('REMOVING POST FROM COMMUNITY FEED! ', community, linkPost);
       await this.model('CommunityFeed').removeFromCommunityFeed(linkPost, community);
       // remove empty link posts
       await linkPost.remove();
@@ -331,9 +333,11 @@ PostSchema.methods.updateRank = async function updateRank(community, dontInsert)
     }
 
     this.data.rank = rank;
+    this.rank = rank;
 
     // this will update the 'new' date and rank
     if (community && !this.parentPost && !dontInsert) {
+      console.log(this)
       await this.model('CommunityFeed').updateRank(this, community);
     }
 
@@ -421,14 +425,22 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
 PostSchema.methods.insertIntoFeed = async function insertIntoFeed(community) {
   try {
     let post = this;
+    if (post.type === 'comment') return;
     if (post.parentPost) {
-      post = this.model('Post').findOne({ _id: post.parentPost })
-      .populate({
-        path: 'data',
-        match: community
-      });
+      if (post.parentPost._id) {
+        post = post.parentPost;
+      } else {
+        post = await this.model('Post').findOne({ _id: post.parentPost })
+        .populate({
+          path: 'data',
+          match: { community }
+        });
+      }
     }
-    if (!post.data) post.data = await this.model('PostData').find({ post: post._id, community });
+    console.log(post);
+    if (!post.data) post.data = await this.model('PostData').findOne({ post: post._id, community });
+    console.log(post.data);
+
     let feedItem = await this.model('CommunityFeed').findOneAndUpdate(
       { community, post: this._id },
       {
