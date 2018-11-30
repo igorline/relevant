@@ -147,6 +147,7 @@ async function processTweet(tweet, user) {
   if (post) {
     linkParent = await Post.findOne({ _id: post.linkParent });
     if (!linkParent) {
+      console.log('found post with no parent ', post.twitter, post.hidden, post.body);
       let { linkObject } = await createLinkObj(tweet);
       if (!post.data) {
         post = await post.addPostData();

@@ -320,7 +320,7 @@ PostSchema.methods.updateRank = async function updateRank(community, dontInsert)
 
     // also get max rank of children
     // This will not return top comment because rank is inside data
-    let topComment = await this.model('Post').findOne({ parentPost: this._id, community }, 'rank')
+    let topComment = await this.model('Post').findOne({ parentPost: this._id, community, hidden: false }, 'rank')
     .sort({ rank: -1 })
     .populate({ path: 'data', match: { community } });
 
@@ -333,7 +333,7 @@ PostSchema.methods.updateRank = async function updateRank(community, dontInsert)
     this.data.rank = rank;
 
     // this will update the 'new' date and rank
-    if (community && !this.parentPost && !dontInsert && !this.hidden) {
+    if (community && !this.parentPost && !dontInsert) {
       await this.model('CommunityFeed').updateRank(this, community);
     }
 
@@ -506,7 +506,8 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(mentions, po
         let type = comment ? 'comment' : 'post';
 
         mUser = await User.findOne({ _id: mUser._id || mUser }, 'blockedBy blocked name role');
-        blocked = mUser.blockedBy.find(u => u === mention) || mUser.blocked.find(u => u === mention);
+        blocked = mUser.blockedBy.find(u => u === mention) ||
+          mUser.blocked.find(u => u === mention);
         if (blocked) {
           textParent.mentions = textParent.mentions.filter(m => m !== blocked);
         }

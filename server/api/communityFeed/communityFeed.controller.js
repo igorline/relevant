@@ -91,7 +91,7 @@ exports.get = async (req, res) => {
         // --------- fix random twitter posts
         // if (!f.post.commentary.length && f.post.type === 'link') {
         //   console.log(f);
-        //   await f.remove();
+        //   // await f.remove();
         // }
 
         // ------- fix wrong time
@@ -118,6 +118,16 @@ exports.get = async (req, res) => {
         //   await f.post.data.save();
         // }
         posts.push(f.post);
+
+        // let com = f.post.commentary;
+        // com.forEach(async c => {
+        //   if (c.twitter && c.data.pagerank === 0 && c.upVotes === 0) {
+        //     console.log(c);
+        //     await f.remove();
+        //     c.hidden = true;
+        //     await c.save();
+        //   }
+        // });
       } else {
         // just in case - this shouldn't happen
         console.log('error: post is null!');
