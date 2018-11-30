@@ -27,7 +27,7 @@ let allUsers;
 let userCounter = 0;
 let processedTweets = 0;
 
-let q = queue({ concurrency: 20 });
+let q = queue({ concurrency: 10 });
 
 q.on('timeout', (next, job) => {
   console.log('job timed out:', job.toString().replace(/\n/g, ''));
@@ -304,7 +304,7 @@ async function cleanup() {
     twitter: true,
     hidden: true,
     postDate: { $lt: now.getTime() - 3 * 24 * 60 * 60 * 1000 } },
-  'metaPost linkParent parentPost type tags'
+  'metaPost linkParent parentPost linkPost metaPost type tags community hidden twitter'
   );
 
   console.log('clearing twitter posts ', posts.length, ' posts');

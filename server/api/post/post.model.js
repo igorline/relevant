@@ -196,16 +196,16 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(postId, co
     if (!count && linkPost) {
       console.log('REMOVING POST FROM ALL FEEDS! ', community, linkPost);
       await this.model('CommunityFeed').removeFromAllFeeds(linkPost);
-      await this.model('MetaPost').remove({ _id: linkPost.metaPost }).exec();
+      await this.model('MetaPost').remove({ _id: linkPost.metaPost });
+      // remove empty link posts
+      await linkPost.remove();
     }
 
     let communityPosts = linkPost.commentary.filter(c => c.community === community);
     // console.log('found ', communityPosts.length + ' community posts');
-    if (!communityPosts.length) {
+    if (!communityPosts.length && community) {
       console.log('REMOVING POST FROM COMMUNITY FEED! ', community, linkPost);
       await this.model('CommunityFeed').removeFromCommunityFeed(linkPost, community);
-      // remove empty link posts
-      await linkPost.remove();
     } else if (!remove) {
       // TODO this is messy - it will bump a new post in the feed
       // Update the date of post in feed
@@ -225,6 +225,9 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(postId, co
 PostSchema.post('remove', async function postRemove(doc) {
   try {
     if (!doc.hidden && doc.linkParent) {
+      console.log('hidden ', doc.hidden);
+      console.log('linkParent ', doc.linkParent);
+
       await this.model('Post').updateFeedStatus(doc.linkParent, this.community, true);
     }
     await this.model('CommunityFeed').removeFromAllFeeds(doc);
