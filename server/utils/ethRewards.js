@@ -260,7 +260,7 @@ let computingRewards = false;
 exports.rewards = async () => {
   // safeguard
   if (computingRewards) {
-    console.log('Computing eth rewards in progress');
+    throw new Error('computing rewards is already in progress!');
     return null;
   }
   computingRewards = true;
@@ -304,6 +304,7 @@ exports.rewards = async () => {
     return communities;
   } catch (error) {
     console.log('rewards error', error);
+    computingRewards = true;
     return null;
   }
 };

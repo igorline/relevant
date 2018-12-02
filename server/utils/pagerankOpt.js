@@ -105,99 +105,74 @@ function runLoop(loopParams, params) {
     tildeP,
     P,
     g,
-    N,
-    danglingNodes,
     avoid,
     danglingWeights,
     danglingObj,
-    neg
+    neg,
+    xlast,
+    danglesum,
+    i,
+    lastP
   } = loopParams;
 
   let upvotes;
   let transitions;
   let Ti;
 
-  let xlast = [...x];
-
-  x = new Array(N).fill(0);
-  let lastP = P.map(arr => arr.slice());
-
-  let danglesum = 0;
-  danglingNodes.forEach(node => danglesum += xlast[node]);
-  danglesum *= params.alpha;
-
   // Iterate through nodes;
-  for (let i = 0; i < N; i++) {
-    Ti = {};
-    if (p[i]) {
-      // Optimized TNi
-      xlast.map((xl, j) => Ti[j] = xl * params.M * (1 - params.alpha) * p[i]);
-    }
-    upvotes = [];
-    if (g[i]) {
-      upvotes = Object.keys(g[i].inputs) || [];
-    }
-
-    upvotes.forEach(j => {
-      x[i] += params.alpha * g[i].inputs[j] * xlast[j];
-      // Optimized TNi
-      Ti[j] = (Ti[j] || 0) + params.alpha * g[i].inputs[j] * xlast[j];
-    });
-
-    transitions = Object.keys(Ti) || [];
-
-    x[i] += (1.0 - params.alpha) * p[i] + danglesum * danglingWeights[i];
-
-    // if (dictionary['ann'] === i) {
-    //   console.log(tildeP[i][i]);
-    // }
-
-    let denom = x[i] || 1;
-
-    x[i] *= (1 - tildeP[i][i]) ** params.beta;
-
-    // UPDATE tildeP
-    // TODO can use cacheTildeP but need to create one per community
-    if (!params.fast) {
-      avoid.forEach(j => {
-        tildeP[i][j] = 0;
-
-        transitions.forEach(k => {
-          tildeP[i][j] += Ti[k] / denom * lastP[k][j];
-        });
-
-        // UPDATE P
-        if (neg[i] && neg[i][j]) P[i][j] = neg[i][j];
-        else if (i === j) P[i][j] = 0;
-        else P[i][j] = tildeP[i][j];
-
-        if (P[i][j] > 0.0 && !danglingObj[i] && avoid.indexOf(i) < 0) {
-          avoid = [...new Set([...avoid, i])];
-        }
-      });
-    }
-    upvotes = null;
-    Ti = null;
+  Ti = {};
+  if (p[i]) {
+    // Optimized TNi
+    xlast.map((xl, j) => Ti[j] = xl * params.M * (1 - params.alpha) * p[i]);
+  }
+  upvotes = [];
+  if (g[i]) {
+    upvotes = Object.keys(g[i].inputs) || [];
   }
 
-  let heapUsed = process.memoryUsage().heapUsed;
-  let mb = Math.round(100 * heapUsed / 1048576) / 100;
-  console.log('Iter - program is using', mb, 'MB of Heap.');
-
-  console.log('avoid length', avoid.length, N);
-
-  // normalize
-  let sum = x.reduce((prev, next) => prev + next, 0);
-  // console.log('sum', sum);
-
-  let err = 0.0;
-  x = x.map((el, i) => {
-    el /= sum;
-    err += Math.abs(el - xlast[i]);
-    return el;
+  upvotes.forEach(j => {
+    x[i] += params.alpha * g[i].inputs[j] * xlast[j];
+    // Optimized TNi
+    Ti[j] = (Ti[j] || 0) + params.alpha * g[i].inputs[j] * xlast[j];
   });
 
-  return { x, err };
+  transitions = Object.keys(Ti) || [];
+
+  x[i] += (1.0 - params.alpha) * p[i] + danglesum * danglingWeights[i];
+
+  // if (dictionary['ann'] === i) {
+  //   console.log(tildeP[i][i]);
+  // }
+
+  let denom = x[i] || 1;
+  x[i] *= (1 - tildeP[i][i]) ** params.beta;
+
+  // UPDATE tildeP
+  // TODO can use cacheTildeP but need to create one per community
+  if (!params.fast) {
+    avoid.forEach(j => {
+      tildeP[i][j] = 0;
+
+      transitions.forEach(k => {
+        tildeP[i][j] += Ti[k] / denom * lastP[k][j];
+      });
+
+      // UPDATE P
+      if (neg[i] && neg[i][j]) P[i][j] = neg[i][j];
+      else if (i === j) P[i][j] = 0;
+      else P[i][j] = tildeP[i][j];
+
+      if (P[i][j] > 0.0 && !danglingObj[i] && avoid.indexOf(i) < 0) {
+        avoid = [...new Set([...avoid, i])];
+      }
+    });
+  }
+  upvotes = null;
+  transitions = null;
+  Ti = null;
+  xlast = null;
+  lastP = null;
+  return { x, P, tildeP, avoid };
 }
 
 export default function pagerank(inputs, params) {
@@ -274,32 +249,58 @@ export default function pagerank(inputs, params) {
   let err;
 
   for (iter = 0; iter < params.max_iter; iter++) {
-    // this enables garbage collector to free up memory
-    // between iterations
-    ({ x, err } = runLoop({
-      x,
-      p,
-      tildeP,
-      P,
-      g,
-      N,
-      danglingNodes,
-      avoid,
-      danglingWeights,
-      danglingObj,
-      neg,
-      iter,
-    }, params));
+    let xlast = [...x];
+
+    x = new Array(N).fill(0);
+    let lastP = P.map(arr => arr.slice());
+
+    let danglesum = 0;
+    danglingNodes.forEach(node => danglesum += xlast[node]);
+    danglesum *= params.alpha;
+
+    for (let i = 0; i < N; i++) {
+      // this enables garbage collector to free up memory
+      // between iterations
+      ({ x, P, tildeP, avoid } = runLoop({
+        x,
+        p,
+        tildeP,
+        P,
+        g,
+        N,
+        danglingNodes,
+        avoid,
+        danglingWeights,
+        danglingObj,
+        neg,
+        iter,
+        xlast,
+        danglesum,
+        i,
+        lastP
+      }, params));
+    }
+
+    let heapUsed = process.memoryUsage().heapUsed;
+    let mb = Math.round(100 * heapUsed / 1048576) / 100;
+    console.log('Iter - program is using', mb, 'MB of Heap.');
+    console.log('avoid length', avoid.length, N);
+
+    // normalize
+    let sum = x.reduce((prev, next) => prev + next, 0);
+    console.log('sum', sum);
+
+    err = 0.0;
+    x = x.map((el, i) => {
+      el /= sum;
+      err += Math.abs(el - xlast[i]);
+      return el;
+    });
+
 
     if (err < N * params.tol && iter > 1) {
       console.log('iterations ', iter);
       console.log(err);
-      // printM(T, 'T');
-      // printM(P, 'P');
-      // cacheP = P;
-      // cacheT = T;
-      // cacheTildeP = tildeP;
-
       let elapsed = (new Date()).getTime() - now.getTime();
       console.log('elapsed time: ', elapsed / 1000, 's');
       return formatOutput(x, dictionary, inputs, params);
