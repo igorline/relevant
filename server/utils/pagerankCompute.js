@@ -1,5 +1,5 @@
 const queue = require('queue');
-const pagerank = require('../utils/pagerankClean').default;
+const pagerank = require('../utils/pagerank').default;
 // const pagerank = require('../utils/pagerankCleanMat').default;
 const User = require('../api/user/user.model');
 const Invest = require('../api/invest/invest.model');
@@ -10,7 +10,7 @@ const Relevance = require('../api/relevance/relevance.model');
 const RELEVANCE_DECAY = require('../config/globalConstants').RELEVANCE_DECAY;
 const Community = require('../api/community/community.model').default;
 
-let q = queue({ concurrency: 20 });
+let q = queue({ concurrency: 10 });
 
 async function updateItemRank(props) {
   let { min, max, minPost, maxPost, u, N, debug, communityId, community, maxRel } = props;
