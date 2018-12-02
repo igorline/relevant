@@ -1,35 +1,53 @@
 import Feed from './twitterFeed.model';
 import Post from '../post/post.model';
 
-function handleError(res, statusCode) {
-  statusCode = statusCode || 500;
-  return (err) => {
-    console.log(err);
-    res.status(statusCode).send(err);
-  };
-}
-
-exports.get = async (req, res) => {
-  let user = req.user._id;
-
-  let skip = parseInt(req.query.skip, 10) || 0;
-  let limit = parseInt(req.query.limit, 10) || 5;
-  let tag = req.query.tag || null;
-  let twitterUser = user;
-
-  // let query = { user: { $in : [user, '_common_Feed_'] } };
-  let query = { user, post: { $exists: true } };
-  if (!req.user.twitterId) {
-    twitterUser = '_common_Feed_';
-  }
-  query = { ...query, user: twitterUser };
-
-  if (tag) query = { ...query, tags: tag, user };
-  let feed;
-  let posts = [];
-
+async function test() {
   try {
-    feed = await Feed.find(query)
+    let empty = await Feed.count({ post: { $exists: false } });
+    console.log('empty', empty);
+
+    let feed = await Feed.find({ user: '_common_Feed_' })
+    .sort({ rank: -1 })
+    .limit(100)
+    .populate({
+      path: 'post',
+      select: 'seenInFeedNumber commentary',
+      populate: [
+        {
+          path: 'commentary',
+          match: { repost: { $exists: false } },
+          options: { sort: { postDate: -1 } },
+        },
+      ]
+    });
+    feed.forEach(f => {
+      if (!f.post) console.log('missing post');
+      else console.log('seenInFeed', f.post.seenInFeedNumber, f.post.commentary.length);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+// test();
+
+exports.get = async (req, res, next) => {
+  try {
+    let user = req.user._id;
+
+    let skip = parseInt(req.query.skip, 10) || 0;
+    let limit = parseInt(req.query.limit, 10) || 5;
+    let twitterUser = user;
+
+    // let query = { user: { $in : [user, '_common_Feed_'] } };
+    let query = { user, post: { $exists: true } };
+    if (!req.user.twitterId) {
+      twitterUser = '_common_Feed_';
+    }
+    query = { ...query, user: twitterUser };
+
+    let posts = [];
+
+    let feed = await Feed.find(query)
     .sort({ rank: -1 })
     .skip(skip)
     .limit(limit)
@@ -71,11 +89,11 @@ exports.get = async (req, res) => {
 
     res.status(200).json(posts);
   } catch (err) {
-    handleError(res)(err);
+    next(err);
   }
 };
 
-exports.unread = (req, res) => {
+exports.unread = (req, res, next) => {
   let query = null;
   let userId = req.user._id;
   if (userId) {
@@ -84,18 +102,19 @@ exports.unread = (req, res) => {
   Feed.count(query)
   .then((unread) => {
     res.status(200).json({ unread });
-  });
+  })
+  .catch(next);
 };
 
-exports.markRead = (req, res) => {
+exports.markRead = (req, res, next) => {
   let query = { userId: req.user._id, read: false };
   return Feed.update(query, { read: true }, { multi: true })
   .then(() => res.status(200).send())
-  .catch(err => handleError(res, err));
+  .catch(next);
 };
 
 // for testing
-exports.post = (req, res) => {
+exports.post = (req, res, next) => {
   let postId = req.params.id;
   Feed.find({ post: postId })
   .sort({ createdAt: -1 })
@@ -103,6 +122,6 @@ exports.post = (req, res) => {
   .then(feed => {
     res.status(200).json(feed);
   })
-  .catch(handleError(res));
+  .catch(next);
 };
 

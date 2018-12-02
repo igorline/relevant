@@ -281,12 +281,12 @@ async function cleanRelevance() {
 }
 
 async function hideTwitterPosts() {
-  let posts = await Post.update(
-    { twitter: true, relevance: { $lte: 0 } },
-    { hidden: true },
-    { multi: true }
-  );
-  return posts;
+  // let posts = await Post.update(
+//     { twitter: true, relevance: { $lte: 0 } },
+//     { hidden: true },
+//     { multi: true }
+//   );
+//   return posts;
 }
 
 async function postUrl() {

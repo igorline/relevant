@@ -36,6 +36,8 @@ let PostDataSchema = new Schema({
   shares: { type: Number, default: 0 },
   balance: { type: Number, default: 0 },
   totalShares: { type: Number, default: 0 }, // track positive and negative here
+
+  latestTweet: { type: Date },
 }, {
   timestamps: true,
 });

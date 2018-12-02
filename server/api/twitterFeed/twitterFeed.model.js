@@ -15,9 +15,11 @@ let TwitterFeedSchema = new Schema({
 });
 
 TwitterFeedSchema.index({ user: 1 });
-TwitterFeedSchema.index({ metaPost: 1 });
+// TwitterFeedSchema.index({ metaPost: 1 });
+TwitterFeedSchema.index({ post: 1 });
+
 TwitterFeedSchema.index({ user: 1, rank: 1 });
-TwitterFeedSchema.index({ user: 1, metaPost: 1 });
-TwitterFeedSchema.index({ user: 1, rank: 1, metaPost: 1 });
+TwitterFeedSchema.index({ user: 1, post: 1 });
+TwitterFeedSchema.index({ user: 1, rank: 1, post: 1 });
 
 module.exports = mongoose.model('TwitterFeed', TwitterFeedSchema);
