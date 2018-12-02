@@ -205,8 +205,7 @@ PostSchema.methods.addUserInfo = async function addUserInfo(user) {
 
     return this;
   } catch (err) {
-    console.log('error adding embedded user', err);
-    return this;
+    throw new Error(err);
   }
 };
 
@@ -265,7 +264,7 @@ PostSchema.methods.updateRank = async function updateRank(community, updateTime)
     await this.save();
     return this;
   } catch (err) {
-    console.log('error updating post rank ', err);
+    throw new Error(err);
   }
 };
 
@@ -293,25 +292,17 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
     }
 
     if (!parent.data) {
-      parent = await parent.addPostData({ slug: this.community, _id: this.communityId });
+      parent = await parent.addPostData({
+        slug: this.community, _id: this.communityId
+      });
     }
-
-    // console.log('parent ', parent);
-    if (!this.hidden && parent.latestComment < postDate) {
-      parent.latestComment = postDate;
-      parent.data.latestComment = postDate;
-      console.log('updated data latestComment ', parent.data.latestComment);
-      // await this.model('CommunityFeed').updateDate(parent._id, this.community, postDate);
-    }
-
 
     // TODO figure out what to do with payoutTime should old post reset?
     // for now we don't update payout time
-
-
-    if (this.twitter) {
-      parent.twitterScore = Math.max(parent.twitterScore, this.twitterScore);
-      parent.seenInFeedNumber += 1;
+    if (!this.hidden && parent.latestComment < postDate) {
+      parent.latestComment = postDate;
+      parent.data.latestComment = postDate;
+      // Could potentially update feed date here
     }
 
     // DON'T UPDATE RANK FOR TWITTER
@@ -334,7 +325,7 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
 
     return this;
   } catch (err) {
-    console.log('error upserting parent ', err);
+    throw new Error(err);
   }
 };
 

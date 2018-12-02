@@ -39,8 +39,8 @@ let twitterCount = 0;
 
 async function computeRank(linkPost) {
   let rank = 0
-    + linkPost.seenInFeedNumber
-    + Math.log(linkPost.twitterScore + 1) * 5;
+    + linkPost.data.seenInFeedNumber
+    + Math.log(linkPost.data.twitterScore + 1) * 5;
 
   // use user's relevance score to rank feed?
   // let feedRelevance = metaPost.feedRelevance ? Math.log(metaPost.feedRelevance + 1) : 0;
@@ -50,8 +50,8 @@ async function computeRank(linkPost) {
   twitterCount++;
   let personalize = avgTwitterScore * 10;
 
-  let newRank = (linkPost.latestComment.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
-  let inFeedRank = (linkPost.latestComment.getTime() / TENTH_LIFE) +
+  let newRank = (linkPost.data.latestTweet.getTime() / TENTH_LIFE) + Math.log10(rank + 1);
+  let inFeedRank = (linkPost.data.latestTweet.getTime() / TENTH_LIFE) +
     Math.log10(personalize + rank + 1);
   newRank = Math.round(newRank * 1000) / 1000;
   inFeedRank = Math.round(inFeedRank * 1000) / 1000;
@@ -145,18 +145,17 @@ async function processTweet(tweet, user) {
   let linkParent;
 
   if (post) {
-    linkParent = await Post.findOne({ _id: post.linkParent });
+    linkParent = await Post.findOne({ _id: post.linkParent })
+    .populate({
+      path: 'data',
+      match: { communityId: DEFAULT_COMMINITY_ID }
+    });
     if (!linkParent) {
-      console.log('found post with no parent ', post.twitter, post.hidden, post.body);
+      console.log('found post with no parent ', post);
       let { linkObject } = await createLinkObj(tweet);
-      if (!post.data) {
-        post = await post.addPostData();
-      }
+      if (!post.data) post = await post.addPostData();
       post = await post.upsertLinkParent(linkObject);
       linkParent = post.linkParent;
-    } else {
-      linkParent.seenInFeedNumber += 1;
-      await linkParent.save();
     }
   } else {
     let { linkObject, processed } = await createLinkObj(tweet);
@@ -176,6 +175,7 @@ async function processTweet(tweet, user) {
       title: processed.title,
       body,
       tags,
+      url: processed.url,
       postDate: originalTweet.created_at,
 
       embeddedUser: {
@@ -208,12 +208,23 @@ async function processTweet(tweet, user) {
     await post.save();
   }
 
+  // TEMPORARY
+  linkParent.data.seenInFeedNumber = linkParent.data.seenInFeedNumber || linkParent.seenInFeedNumber || 1;
+  linkParent.data.twitterScore = linkParent.data.twitterScore || linkParent.twitterScore || 0;
+
+  linkParent.data.twitterScore = Math.max(linkParent.data.twitterScore, post.twitterScore);
+  linkParent.data.seenInFeedNumber += 1;
+  if (!linkParent.data.latestTweet || linkParent.data.latestTweet < post.postDate) {
+    linkParent.data.latestTweet = post.postDate;
+  }
+  await linkParent.data.save();
+
   let parentId = linkParent._id;
   let { newRank, inFeedRank } = await computeRank(linkParent, user);
 
   let feedObject = {
     rank: newRank,
-    tweetDate: linkParent.latestComment,
+    tweetDate: linkParent.data.latestTweet,
   };
 
   // make sure everyone gets it
@@ -223,13 +234,13 @@ async function processTweet(tweet, user) {
     { upsert: true }
   ).exec();
 
-  let updateAllUsers = allUsers.map(async u => {
-    return TwitterFeed.update(
+  let updateAllUsers = allUsers.map(async u =>
+    TwitterFeed.update(
       { user: u, post: parentId },
       feedObject,
       { upsert: true }
-    ).exec();
-  });
+    ).exec()
+  );
 
   await Promise.all(updateAllUsers);
 
