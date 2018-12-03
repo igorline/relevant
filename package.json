@@ -176,6 +176,7 @@
     "autoprefixer": "^6.1.1",
     "ava": "^0.16.0",
     "babel-eslint": "^8.2.2",
+    "babel-plugin-transform-exponentiation-operator": "^6.24.1",
     "babel-preset-latest": "^6.24.1",
     "babel-register": "^6.7.2",
     "css-loader": "^0.23.0",
