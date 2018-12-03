@@ -187,6 +187,8 @@ class Application extends Component {
     let part1 = event.url.split('/')[3];
     let part2 = event.url.split('/')[4];
     let part3 = event.url.split('/')[5];
+    let part4 = event.url.split('/')[6];
+
     let paramsLookup = {};
     if (params) {
       params = params.split('&');
@@ -198,7 +200,7 @@ class Application extends Component {
     if (part1 === 'faq') {
       this.props.actions.goToUrl('https://relevant.community/faq');
     }
-    if (part1 === 'resetPassword' && part2) {
+    if (part1 === 'user' && part2 === 'resetPassword' && part3) {
       // Handle reset password link
       this.props.actions.replaceRoute({
         key: 'auth',
@@ -211,12 +213,12 @@ class Application extends Component {
         component: 'resetPassword',
         title: 'Reset Password',
         back: true,
-        token: part2
+        token: part3
       }, 'auth');
-    } else if (part1 === 'confirm' && part2 && part3) {
+    } else if (part1 === 'user' && part2 === 'confirm' && part3 && part4) {
       // Handle confirm email link
-      this.props.actions.confirmEmail(part2, part3);
-    } else if (part1 === 'invite' && part2) {
+      this.props.actions.confirmEmail(part3, part4);
+    } else if (part1 === 'user' && part2 === 'invite' && part3) {
       // Handle invite link
       this.props.actions.replaceRoute({
         key: 'auth',
@@ -225,7 +227,7 @@ class Application extends Component {
       }, 0, 'home');
       this.props.actions.resetRoutes('auth');
 
-      this.props.actions.checkInviteCode(part2)
+      this.props.actions.checkInviteCode(part3)
       .then(invite => {
         if (!invite) return;
         this.props.actions.push({
@@ -233,7 +235,7 @@ class Application extends Component {
           component: 'signup',
           title: 'Signup',
           back: true,
-          code: part2,
+          code: part3,
           email: invite.email
         }, 'auth');
       });

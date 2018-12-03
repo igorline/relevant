@@ -71,10 +71,11 @@ let routes = (store) => {
           { path: 'signup', component: Auth },
           { path: 'wallet', component: Wallet },
           { path: 'profile/:id', component: ProfileContainer },
-          { path: 'invite/:code', component: Invite },
+          { path: 'forgot', component: Auth },
+          // WARNING THESE ROUTE MUST MACH MOBILE APP!
           { path: 'resetPassword/:token', component: Auth },
           { path: 'confirm/:user/:code', component: Auth },
-          { path: 'forgot', component: Auth },
+          { path: 'invite/:code', component: Invite },
         ]
       },
       { path: 'admin',
