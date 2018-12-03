@@ -1,7 +1,7 @@
 
 export function toNumber(num, dec) {
   if (num === undefined || dec === undefined) return null;
-  return num / (10 ** dec);
+  return num / (Math.pow(10, dec));
 }
 
 export function toFixed(num, dec) {

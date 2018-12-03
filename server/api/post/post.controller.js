@@ -321,8 +321,9 @@ exports.previewDataAsync = async (previewUrl, noReadability) => {
     let fbHeader = {
       'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php) Facebot',
     };
-    let noFb = uri.match('apple.news'); // || uri.match('flip.it');
-    if (noFb) return {};
+    let noFb = uri.match('apple.news') || uri.match('bloomberg.com');
+
+    if (noFb) return { };
     return fbHeader;
   }
 
