@@ -31,7 +31,6 @@ let PostSchema = new Schema({
   embeddedUser: {
     handle: String,
     _id: String,
-    // id: String,
     name: String,
     image: String,
   },

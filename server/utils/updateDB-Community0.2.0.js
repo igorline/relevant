@@ -281,6 +281,9 @@ async function cleanRelevance() {
 }
 
 async function hideTwitterPosts() {
+  let posts = await Post.find({ twitter: true, hidden: false })
+  console.log(posts);
+
   // let posts = await Post.update(
 //     { twitter: true, relevance: { $lte: 0 } },
 //     { hidden: true },

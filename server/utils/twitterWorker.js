@@ -103,7 +103,9 @@ async function createLinkObj(tweet) {
   let processed = await Meta.findOne({ twitterUrl: tweet.entities.urls[0].expanded_url });
 
   if (!processed) {
-    processed = await postController.previewDataAsync(tweet.entities.urls[0].expanded_url);
+    let noReadability = true;
+    processed = await postController
+    .previewDataAsync(tweet.entities.urls[0].expanded_url, noReadability);
     processedTweets++;
   }
 
@@ -181,7 +183,7 @@ async function processTweet(tweet, user) {
       embeddedUser: {
         handle: tweet.user.screen_name,
         name: tweet.user.name,
-        id: tweet.user.screen_name,
+        _id: tweet.user.id,
         image: tweet.user.profile_image_url_https.replace('_normal', '')
       },
       category: [],
@@ -209,7 +211,8 @@ async function processTweet(tweet, user) {
   }
 
   // TEMPORARY
-  linkParent.data.seenInFeedNumber = linkParent.data.seenInFeedNumber || linkParent.seenInFeedNumber || 1;
+  linkParent.data.seenInFeedNumber = linkParent.data.seenInFeedNumber ||
+    linkParent.seenInFeedNumber || 1;
   linkParent.data.twitterScore = linkParent.data.twitterScore || linkParent.twitterScore || 0;
 
   linkParent.data.twitterScore = Math.max(linkParent.data.twitterScore, post.twitterScore);

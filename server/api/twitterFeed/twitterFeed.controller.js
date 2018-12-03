@@ -1,35 +1,6 @@
 import Feed from './twitterFeed.model';
 import Post from '../post/post.model';
 
-async function test() {
-  try {
-    let empty = await Feed.count({ post: { $exists: false } });
-    console.log('empty', empty);
-
-    let feed = await Feed.find({ user: '_common_Feed_' })
-    .sort({ rank: -1 })
-    .limit(100)
-    .populate({
-      path: 'post',
-      select: 'seenInFeedNumber commentary',
-      populate: [
-        {
-          path: 'commentary',
-          match: { repost: { $exists: false } },
-          options: { sort: { postDate: -1 } },
-        },
-      ]
-    });
-    feed.forEach(f => {
-      if (!f.post) console.log('missing post');
-      else console.log('seenInFeed', f.post.seenInFeedNumber, f.post.commentary.length);
-    });
-  } catch (err) {
-    console.log(err);
-  }
-}
-// test();
-
 exports.get = async (req, res, next) => {
   try {
     let user = req.user._id;

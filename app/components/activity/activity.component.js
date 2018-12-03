@@ -97,7 +97,7 @@ export default class SingleActivity extends Component {
               source={require('../../assets/images/coinup.png')}
             />
             <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
-              {numbers.abbreviateNumber(Math.abs(coin))}
+              {numbers.abbreviateNumber(Math.abs(activity.coin))}
             </Text>
           </TouchableOpacity>
         </View>
@@ -149,7 +149,6 @@ export default class SingleActivity extends Component {
       <Image style={styles.activityImage} source={image} />
     </TouchableWithoutFeedback>);
   }
-
 
   renderPostPreview(activity) {
     let post = activity.post;
@@ -216,7 +215,6 @@ export default class SingleActivity extends Component {
     }
     return null;
   }
-
 
   render() {
     let activity = this.props.singleActivity;
