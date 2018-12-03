@@ -53,10 +53,10 @@ class PostInfo extends Component {
   }
 
   componentDidMount() {
-    if (this.props.post) this.checkTime(this.props);
+    // if (this.props.post) this.checkTime(this.props);
     let user = this.props.post.user;
     if (!user) return;
-    let userId = user || user._id;
+    let userId = user._id || user;
     if (this.props.auth && userId && userId === this.props.auth.user._id) {
       this.menu = this.ownerMenu;
       this.myPost = true;
@@ -64,7 +64,7 @@ class PostInfo extends Component {
   }
 
   componentWillReceiveProps(next) {
-    this.checkTime(next);
+    // this.checkTime(next);
   }
 
   deletePost() {
@@ -103,37 +103,37 @@ class PostInfo extends Component {
   }
 
   setSelected() {
-    if (!this.props.actions) return;
+    if (!this.props.actions) return null;
 
     if (this.props.post.twitter) {
-      return Linking.openURL('https://twitter.com/' + this.props.post.embeddedUser.id);
+      return Linking.openURL('https://twitter.com/' + this.props.post.embeddedUser.handle);
     }
 
-    this.props.actions.goToProfile({
+    return this.props.actions.goToProfile({
       name: this.props.post.embeddedUser.name,
       _id: this.props.post.user._id || this.props.post.user
     });
   }
 
-  checkTime(props) {
-    if (props.post) {
-      let postTime = moment(props.post.createdAt);
-      let fromNow = postTime.fromNow();
-      let timeNow = moment();
-      let dif = timeNow.diff(postTime);
-      let threshold = 21600000;
-      let passed = true;
-      // if (dif >= threshold) passed = true;
+  // checkTime(props) {
+  //   if (props.post) {
+  //     let postTime = moment(props.post.createdAt);
+  //     let fromNow = postTime.fromNow();
+  //     let timeNow = moment();
+  //     let dif = timeNow.diff(postTime);
+  //     let threshold = 21600000;
+  //     let passed = true;
+  //     // if (dif >= threshold) passed = true;
 
-      this.setState({
-        passed,
-        timeUntilString: moment.duration(threshold - dif).humanize(),
-        timePassedPercent: dif / threshold,
-      });
+  //     this.setState({
+  //       passed,
+  //       timeUntilString: moment.duration(threshold - dif).humanize(),
+  //       timePassedPercent: dif / threshold,
+  //     });
 
-      this.setState({ posted: fromNow });
-    }
-  }
+  //     this.setState({ posted: fromNow });
+  //   }
+  // }
 
   showActionSheet() {
     if (this.myPost) {

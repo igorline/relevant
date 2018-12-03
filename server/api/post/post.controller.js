@@ -312,8 +312,7 @@ exports.preview = async (req, res) => {
 };
 
 
-exports.previewDataAsync = async previewUrl => {
-
+exports.previewDataAsync = async (previewUrl, noReadability) => {
   if (!previewUrl.match(/http:\/\//i) && !previewUrl.match(/https:\/\//i)) {
     previewUrl = 'http://' + previewUrl;
   }
@@ -341,12 +340,12 @@ exports.previewDataAsync = async previewUrl => {
     });
 
     let uri = response.request.uri.href;
-    let processed = await proxyHelpers.generatePreview(response.body, uri, _url);
+    let processed = await proxyHelpers.generatePreview(response.body, uri, _url, noReadability);
 
     if (processed.redirect && processed.uri) {
       console.log('redirect ', processed.uri);
       uri = processed.uri;
-      return await queryUrl(uri);
+      return queryUrl(uri);
     }
     return Promise.resolve(processed.result);
   }
@@ -360,7 +359,7 @@ exports.previewDataAsync = async previewUrl => {
     };
   }
 
-  return await queryUrl(previewUrl);
+  return queryUrl(previewUrl);
 };
 
 // async function test() {
@@ -372,7 +371,6 @@ exports.previewDataAsync = async previewUrl => {
 //   }
 // }
 // test();
-
 
 
 exports.readable = async (req, res) => {

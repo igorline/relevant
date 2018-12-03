@@ -77,6 +77,7 @@ project.ext.react = [
     entryFile: "index.js"
 ]
 
+
 apply from: "../../node_modules/react-native/react.gradle"
 apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
@@ -96,15 +97,15 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.relevantnative"
-        minSdkVersion 16
-        targetSdkVersion 22
-        versionCode 8
-        versionName "1.0.8"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 9
+        versionName "1.0.9"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -132,16 +133,16 @@ android {
             // Note: CodePush updates should not be tested in Debug mode as they are overriden by the RN packager. However, because CodePush checks for updates in all modes, we must supply a key.
             buildConfigField "String", "CODEPUSH_KEY", '""'
         }
-        releaseStaging {
-            buildConfigField "String", "CODEPUSH_KEY", '"WJJcwSc5ZQe2A8gNeizsJ_uBOIFY52aae8fd-4800-425e-b2b2-b3be3d883f42"'
-            // applicationIdSuffix ".debug"
-        }
         release {
             buildConfigField "String", "CODEPUSH_KEY", '"xVr64HAXULO11o_wGbgZfg8wC_k152aae8fd-4800-425e-b2b2-b3be3d883f42"'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
         }
+        // releaseStaging {
+        //     buildConfigField "String", "CODEPUSH_KEY", '"WJJcwSc5ZQe2A8gNeizsJ_uBOIFY52aae8fd-4800-425e-b2b2-b3be3d883f42"'
+        //     // applicationIdSuffix ".debug"
+        // }
     }
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
@@ -159,6 +160,70 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-video')
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-swiss-knife')
+    compile project(':react-native-svg')
+    compile project(':react-native-share-menu')
+    compile project(':react-native-share-extension')
+    compile project(':react-native-share')
+    compile project(':react-native-push-notification')
+    compile project(':react-native-orientation')
+    compile project(':react-native-linear-gradient')
+    compile project(':react-native-image-picker')
+    compile project(':react-native-firebase-analytics')
+    compile project(':react-native-fetch-blob')
+    compile project(':react-native-contacts')
+    compile project(':react-native-bottom-sheet')
+    compile project(':react-native-video')
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-swiss-knife')
+    compile project(':react-native-svg')
+    compile project(':react-native-share-menu')
+    compile project(':react-native-share-extension')
+    compile project(':react-native-share')
+    compile project(':react-native-push-notification')
+    compile project(':react-native-orientation')
+    compile project(':react-native-linear-gradient')
+    compile project(':react-native-image-picker')
+    compile project(':react-native-firebase-analytics')
+    compile project(':react-native-fetch-blob')
+    compile project(':react-native-contacts')
+    compile project(':react-native-bottom-sheet')
+    compile project(':react-native-video')
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-swiss-knife')
+    compile project(':react-native-svg')
+    compile project(':react-native-share-menu')
+    compile project(':react-native-share-extension')
+    compile project(':react-native-share')
+    compile project(':react-native-push-notification')
+    compile project(':react-native-orientation')
+    compile project(':react-native-linear-gradient')
+    compile project(':react-native-image-picker')
+    compile project(':react-native-firebase-analytics')
+    compile project(':react-native-fetch-blob')
+    compile project(':react-native-contacts')
+    compile project(':react-native-bottom-sheet')
+    compile project(':react-native-share')
+    compile project(':react-native-share')
+    compile project(':react-native-video')
+    compile project(':react-native-vector-icons')
+    compile project(':react-native-swiss-knife')
+    compile project(':react-native-svg')
+    compile project(':react-native-share-menu')
+    compile project(':react-native-share-extension')
+    compile project(':react-native-share')
+    compile project(':react-native-push-notification')
+    compile project(':react-native-orientation')
+    compile project(':react-native-linear-gradient')
+    compile project(':react-native-image-picker')
+    compile project(':react-native-firebase-analytics')
+    compile project(':react-native-fetch-blob')
+    compile project(':react-native-contacts')
+    compile project(':react-native-bottom-sheet')
+    compile project(':react-native-share')
+    compile project(':react-native-twitter-signin')
     compile project(':react-native-video')
     compile project(':react-native-vector-icons')
     compile project(':react-native-twitter-signin')
@@ -192,9 +257,9 @@ dependencies {
     compile project(':react-native-share')
     compile project(':react-native-image-picker')
     compile project(':react-native-contacts')
-    compile fileTree(dir: "libs", include: ["*.jar"])
-    compile "com.android.support:appcompat-v7:23.0.1"
-    compile "com.facebook.react:react-native:+"  // From node_modules
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+    implementation "com.facebook.react:react-native:+"  // From node_modules
 }
 
 // Run this once to be able to run the application with BUCK

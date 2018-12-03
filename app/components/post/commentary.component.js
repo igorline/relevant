@@ -196,7 +196,6 @@ export default class Commentary extends Component {
 
     );
   }
-
 }
 
 const localStyles = StyleSheet.create({

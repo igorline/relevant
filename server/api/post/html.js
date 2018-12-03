@@ -80,7 +80,7 @@ exports.trimToLength = (doc, length) => {
   return doc;
 };
 
-exports.generatePreview = async (body, uri, reqUrl) => {
+exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
   // console.log('Generate Preview ', uri);
 
   body = body.replace('<!--', '').replace('-->', '');
@@ -225,9 +225,10 @@ exports.generatePreview = async (body, uri, reqUrl) => {
   let originalUrl = parseUrl(uri);
   let cannonicalUrl = parseUrl(url);
 
-  let k1 = data['keywords'] ? data['keywords'].split(',').map(k => k.trim()) : [];
-  let k2 = data['news_keywords'] ? data['news_keywords'].split(',').map(k => k.trim()) : [];
+  let k1 = data.keywords ? data.keywords.split(',').map(k => k.trim()) : [];
+  let k2 = data.news_keywords ? data.news_keywords.split(',').map(k => k.trim()) : [];
   let k3 = data['article:tag'] ?
+
   data['article:tag']
   .split(',')
   .map(k => k.replace('--primarykeyword-', '').trim())
@@ -269,11 +270,11 @@ exports.generatePreview = async (body, uri, reqUrl) => {
   // console.log('regular keywords ', keywords);
   // console.log('amp keywords', ampKeywords);
 
-  data['author'] = data['author'] || '';
+  data.author = data.author || '';
 
   data['article:author'] = data['article:author'] || '';
 
-  let metaAuthor = data['author']
+  let metaAuthor = data.author
   .split(/,|\sand\s/)
   .map(a => a.trim())
   .filter(a => a !== '');
@@ -297,7 +298,7 @@ exports.generatePreview = async (body, uri, reqUrl) => {
 
   // console.log(keywords);
 
-  if (!data['author'] && ampAuthor) {
+  if (!data.author && ampAuthor) {
     // console.log('AMP AUTHOR');
     // console.log(ampAuthor);
   }
@@ -311,10 +312,12 @@ exports.generatePreview = async (body, uri, reqUrl) => {
 
   let article;
 
-  try {
-    article = new Readability(url, doc).parse();
-  } catch (err) {
-    console.log('Readability ERR ', err);
+  if (!noReadability) {
+    try {
+      article = new Readability(url, doc).parse();
+    } catch (err) {
+      console.log('Readability ERR ', err);
+    }
   }
 
   let short;
