@@ -1,7 +1,7 @@
 
 export function toNumber(num, dec) {
   if (num === undefined || dec === undefined) return null;
-  return num / (Math.pow(10, dec));
+  return num / (10 ** dec);
 }
 
 export function toFixed(num, dec) {
@@ -14,7 +14,7 @@ export function percentChange(user) {
 
   if (!user || !user.relevanceRecord || !user.relevanceRecord.length) return 0;
 
-  user.relevanceRecord.forEach((record, i) => {
+  user.relevanceRecord.forEach((record) => {
     let percent = 0;
     let endInterval = new Date();
     let endRelevance = user.pagerank;
@@ -29,25 +29,7 @@ export function percentChange(user) {
   });
 
   let total = totalPercent / user.relevanceRecord.length;
-  // if (total < 10) total = Math.round(total * 10) / 10;
-  // else if (total < 1) total = Math.round(total * 100) / 100;
-  // else total = Math.round(total);
-
   return total;
-
-  // let percent = 0;
-  // if (user.relevanceRecord && user.relevanceRecord[0]) {
-  //   let last = user.relevanceRecord[0];
-  //   let oldRel = last.relevance;
-  //   percent = ((user.relevance - oldRel) * 100) / oldRel;
-  //   let timeInteraval = new Date() - new Date(last.time);
-  //   let scale = ( 1 * 24 * 60 * 60 * 1000) / timeInteraval;
-  //   percent *= scale;
-  //   if (percent < 10) percent = Math.round(percent * 10) / 10;
-  //   else if (percent < 1) percent = Math.round(percent * 100) / 100;
-  //   else percent = Math.round(percent);
-  // }
-  // return percent;
 }
 
 export function abbreviateNumber(num, _fixed) {
@@ -71,7 +53,6 @@ export function timeSince(date) {
   let d = new Date(date);
   let seconds = Math.floor((new Date() - d) / 1000);
   let interval = Math.floor(seconds / 31536000);
-  let s;
   if (interval >= 1) {
     return interval + 'y';
   }
