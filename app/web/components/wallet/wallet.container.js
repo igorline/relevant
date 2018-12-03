@@ -18,7 +18,9 @@ if (process.env.BROWSER === true) {
 
 class WalletContainer extends Component {
   renderHeader() {
-    if (this.props.user && this.props.user.ethAddress[0]) return null;
+    if (this.props.user && this.props.user.ethAddress && this.props.user.ethAddress[0]) {
+      return null;
+    }
     return (
       <Eth.Consumer>
         {wallet => (<MetaMaskCta { ...wallet } />)}
