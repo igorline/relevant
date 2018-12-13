@@ -3,10 +3,10 @@ import Post from '../post/post.model';
 
 exports.get = async (req, res, next) => {
   try {
-    let user = req.user._id;
+    const user = req.user._id;
 
-    let skip = parseInt(req.query.skip, 10) || 0;
-    let limit = parseInt(req.query.limit, 10) || 5;
+    const skip = parseInt(req.query.skip, 10) || 0;
+    const limit = parseInt(req.query.limit, 10) || 5;
     let twitterUser = user;
 
     // let query = { user: { $in : [user, '_common_Feed_'] } };
@@ -16,23 +16,23 @@ exports.get = async (req, res, next) => {
     }
     query = { ...query, user: twitterUser };
 
-    let posts = [];
+    const posts = [];
 
-    let feed = await Feed.find(query)
-    .sort({ rank: -1 })
-    .skip(skip)
-    .limit(limit)
-    .populate({
-      path: 'post',
-      populate: [
-        {
-          path: 'commentary',
-          match: { repost: { $exists: false } },
-          options: { sort: { postDate: -1 } },
-        },
-        { path: 'metaPost' }
-      ]
-    });
+    const feed = await Feed.find(query)
+      .sort({ rank: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate({
+        path: 'post',
+        populate: [
+          {
+            path: 'commentary',
+            match: { repost: { $exists: false } },
+            options: { sort: { postDate: -1 } },
+          },
+          { path: 'metaPost' }
+        ]
+      });
 
     feed.forEach((f) => {
       if (f.post) posts.push(f.post);
@@ -47,7 +47,7 @@ exports.get = async (req, res, next) => {
     // TODO worker thread?
     // TODO worker thread
     if (user) {
-      let postIds = [];
+      const postIds = [];
       posts.forEach(p => {
         // console.log(p.commentary);
         p.commentary.forEach(post => {
@@ -66,33 +66,33 @@ exports.get = async (req, res, next) => {
 
 exports.unread = (req, res, next) => {
   let query = null;
-  let userId = req.user._id;
+  const userId = req.user._id;
   if (userId) {
     query = { userId, read: false };
   }
   Feed.count(query)
-  .then((unread) => {
-    res.status(200).json({ unread });
-  })
-  .catch(next);
+    .then((unread) => {
+      res.status(200).json({ unread });
+    })
+    .catch(next);
 };
 
 exports.markRead = (req, res, next) => {
-  let query = { userId: req.user._id, read: false };
+  const query = { userId: req.user._id, read: false };
   return Feed.update(query, { read: true }, { multi: true })
-  .then(() => res.status(200).send())
-  .catch(next);
+    .then(() => res.status(200).send())
+    .catch(next);
 };
 
 // for testing
 exports.post = (req, res, next) => {
-  let postId = req.params.id;
+  const postId = req.params.id;
   Feed.find({ post: postId })
-  .sort({ createdAt: -1 })
+    .sort({ createdAt: -1 })
   // .populate('post')
-  .then(feed => {
-    res.status(200).json(feed);
-  })
-  .catch(next);
+    .then(feed => {
+      res.status(200).json(feed);
+    })
+    .catch(next);
 };
 

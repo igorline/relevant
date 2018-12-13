@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import Post from './post.component';
-import * as authActions from '../../../actions/auth.actions';
-import * as userActions from '../../../actions/user.actions';
 import * as postActions from '../../../actions/post.actions';
-import * as statsActions from '../../../actions/stats.actions';
-import * as tagActions from '../../../actions/tag.actions';
 import * as investActions from '../../../actions/invest.actions';
-import * as createPostActions from '../../../actions/createPost.actions';
-import * as navigationActions from '../../../actions/navigation.actions';
-import * as animationActions from '../../../actions/animation.actions';
 import Comments from '../comment/comment.container';
-import RequestInvite from '../splash/requestInvite.component';
 import Footer from '../common/footer.component';
 import Sidebar from '../common/sidebar.component';
 
@@ -21,8 +14,14 @@ if (process.env.BROWSER === true) {
 }
 
 class Posts extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    posts: PropTypes.object,
+    params: PropTypes.object,
+    location: PropTypes.object
+  };
+
   static fetchData(dispatch, params) {
-    console.log('calling fetchData ', params);
     if (!params.id || params.id === undefined) return null;
     return dispatch(postActions.getSelectedPost(params.id));
   }
@@ -37,24 +36,20 @@ class Posts extends Component {
   render() {
     this.post = this.props.posts.posts[this.props.params.id];
     if (!this.post) return null;
-    let link = this.props.posts.links[this.post.metaPost];
+    const link = this.props.posts.links[this.post.metaPost];
     const hasPost = this.post && this.post !== 'notFound';
 
     return (
       <div style={{ flex: 1 }}>
         <div className="singlePost row column pageContainer">
-          {hasPost &&
+          {hasPost && (
             <div className="postContainer">
               <Post post={this.post} link={link} {...this.props} />
               <Comments post={this.post} {...this.props} />
             </div>
-          }
+          )}
           <Sidebar {...this.props} />
-
         </div>
-{/*        {!this.props.isAuthenticated &&
-          <RequestInvite {...this.props} />
-        }*/}
         <Footer location={this.props.location} />
       </div>
     );
@@ -68,12 +63,15 @@ export default connect(
     user: state.user,
     investments: state.investments,
     myPostInv: state.investments.myPostInv,
-    isAuthenticated: state.auth.isAuthenticated,
+    isAuthenticated: state.auth.isAuthenticated
   }),
   dispatch => ({
-    actions: bindActionCreators({
-      ...postActions,
-      ...investActions,
-    }, dispatch)
+    actions: bindActionCreators(
+      {
+        ...postActions,
+        ...investActions
+      },
+      dispatch
+    )
   })
 )(Posts);

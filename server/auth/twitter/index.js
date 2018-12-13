@@ -4,7 +4,7 @@ const auth = require('../auth.service');
 const Controller = require('./passport');
 
 // var Twitter = require('twitter');
-let router = express.Router();
+const router = express.Router();
 
 
 router.get('/', (req, res, next) => {

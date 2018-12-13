@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-} from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { globalStyles, blue } from '../../styles/global';
@@ -21,6 +18,19 @@ import CustomListView from '../customList.component';
 let styles;
 
 class Read extends Component {
+  static propTypes = {
+    refresh: PropTypes.object,
+    active: PropTypes.object,
+    reload: PropTypes.object,
+    reloadFeed: PropTypes.object,
+    actions: PropTypes.object,
+    offsetY: PropTypes.number,
+    posts: PropTypes.object,
+    subscriptions: PropTypes.object,
+    onScroll: PropTypes.func,
+    error: PropTypes.string
+  };
+
   constructor(props, context) {
     super(props, context);
     this.renderRow = this.renderRow.bind(this);
@@ -30,13 +40,10 @@ class Read extends Component {
     this.tooltipParent = {};
     this.toggleTooltip = this.toggleTooltip.bind(this);
     this.initTooltips = this.initTooltips.bind(this);
-    this.tabs = [
-      { id: 0, title: 'Feed', type: 'feed' },
-    ];
+    this.tabs = [{ id: 0, title: 'Feed', type: 'feed' }];
   }
 
-  componentWillMount() {
-  }
+  componentWillMount() {}
 
   componentWillReceiveProps(next) {
     if (this.props.refresh !== next.refresh && this.props.active) {
@@ -50,8 +57,7 @@ class Read extends Component {
       this.props.actions.getSubscriptions();
     }
 
-    if (next.posts.feedUnread &&
-      next.active && !this.props.active) {
+    if (next.posts.feedUnread && next.active && !this.props.active) {
       this.needsReload = new Date().getTime();
     }
   }
@@ -73,7 +79,7 @@ class Read extends Component {
   toggleTooltip(name) {
     if (!this.tooltipParent[name]) return;
     this.tooltipParent[name].measureInWindow((x, y, w, h) => {
-      let parent = { x, y, w, h };
+      const parent = { x, y, w, h };
       if (x + y + w + h === 0) return;
       this.props.actions.setTooltipData({
         name,
@@ -84,7 +90,7 @@ class Read extends Component {
   }
 
   scrollToTop() {
-    let view = this.listview;
+    const view = this.listview;
     if (view && view.listview) view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
   }
 
@@ -101,62 +107,68 @@ class Read extends Component {
   }
 
   renderHeader() {
-    let { total, totalUsers } = this.props.subscriptions;
+    const { total, totalUsers } = this.props.subscriptions;
     if (!total) return null;
     setTimeout(this.initTooltips, 0);
 
     return (
-      <View
-        style={styles.feedHeader}
-        ref={c => this.tooltipParent.subscriptions = c}
-      >
+      <View style={styles.feedHeader} ref={c => (this.tooltipParent.subscriptions = c)}>
         <Text
           onPress={() => this.toggleTooltip('subscriptions')}
           style={[styles.font10, { color: 'white' }]}
         >
-          You are subscribed to {total} post{total > 1 ? 's' : ''} from {totalUsers} user{totalUsers > 1 ? 's' : ''}
+          You are subscribed to {total} post{total > 1 ? 's' : ''} from {totalUsers} user
+          {totalUsers > 1 ? 's' : ''}
         </Text>
       </View>
     );
   }
 
   renderRow(rowData) {
-    let post = this.props.posts.posts[rowData];
-    return (
-      <Post post={post} {...this.props} styles={styles} />
-    );
+    const post = this.props.posts.posts[rowData];
+    return <Post post={post} {...this.props} styles={styles} />;
   }
 
   render() {
-    let feedEl = [];
+    const feedEl = [];
     let filler;
-    let { total, totalUsers } = this.props.subscriptions;
+    const { total, totalUsers } = this.props.subscriptions;
 
     filler = (
       <View>
         <Text
           style={[styles.georgia, styles.darkGrey, styles.emptyText, styles.quarterLetterSpacing]}
         >
-          {!total ?
-            'You have not subscribed to anyone yet' :
-            'You have subscribed to ' + totalUsers + ' user' + (totalUsers > 1 ? 's' : '') + ' — find their future posts here!'}
+          {!total
+            ? 'You have not subscribed to anyone yet'
+            : 'You have subscribed to ' +
+              totalUsers +
+              ' user' +
+              (totalUsers > 1 ? 's' : '') +
+              ' — find their future posts here!'}
         </Text>
         <Text
-          onPress={() => { this.props.actions.setView('discover', 1); }}
+          onPress={() => {
+            this.props.actions.setView('discover', 1);
+          }}
           style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}
         >
-          {!total ? '😎\nUpvote posts to subscribe to users' : '😛\nKeep upvoting to subscribe to more users'}
+          {!total
+            ? '😎\nUpvote posts to subscribe to users'
+            : '😛\nKeep upvoting to subscribe to more users'}
         </Text>
       </View>
     );
 
-    this.tabs.forEach((tab) => {
-      let tabData = this.props.posts.feed;
-      let loaded = this.props.posts.loaded.feed;
+    this.tabs.forEach(tab => {
+      const tabData = this.props.posts.feed;
+      const loaded = this.props.posts.loaded.feed;
 
       feedEl.push(
         <CustomListView
-          ref={(c) => { this.listview = c; }}
+          ref={c => {
+            this.listview = c;
+          }}
           key={tab.id}
           data={tabData}
           loaded={loaded}
@@ -179,9 +191,7 @@ class Read extends Component {
     });
 
     return (
-      <View style={[styles.fullContainer, { backgroundColor: 'hsl(0,0%,100%)' }]}>
-        {feedEl}
-      </View>
+      <View style={[styles.fullContainer, { backgroundColor: 'hsl(0,0%,100%)' }]}>{feedEl}</View>
     );
   }
 }
@@ -190,7 +200,7 @@ const localStyles = StyleSheet.create({
   feedHeader: {
     padding: 10,
     alignItems: 'center',
-    backgroundColor: blue,
+    backgroundColor: blue
   },
   thirstyHeader: {
     alignItems: 'center',
@@ -207,15 +217,14 @@ const localStyles = StyleSheet.create({
     justifyContent: 'center'
   },
   recentNames: {
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   recentName: {
     color: 'gray'
   },
   readHeader: {
     marginBottom: 10
-  },
-
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };
@@ -230,23 +239,29 @@ function mapStateToProps(state) {
     reloadFeed: state.navigation.read.reload,
     error: state.error.read,
     tabs: state.navigation.tabs,
-    subscriptions: state.subscriptions,
+    subscriptions: state.subscriptions
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...postActions,
-      ...animationActions,
-      ...investActions,
-      ...userActions,
-      ...tagActions,
-      ...navigationActions,
-      ...authActions,
-      ...createPostActions
-    }, dispatch)
+    actions: bindActionCreators(
+      {
+        ...postActions,
+        ...animationActions,
+        ...investActions,
+        ...userActions,
+        ...tagActions,
+        ...navigationActions,
+        ...authActions,
+        ...createPostActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Read);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Read);

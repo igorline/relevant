@@ -10,21 +10,21 @@ const Relevance = require('../api/relevance/relevance.model');
 const RELEVANCE_DECAY = require('../config/globalConstants').RELEVANCE_DECAY;
 const Community = require('../api/community/community.model').default;
 
-let q = queue({ concurrency: 10 });
+const q = queue({ concurrency: 10 });
 
 async function updateItemRank(props) {
   let { min, max, minPost, maxPost, u, N, debug, communityId, community, maxRel } = props;
   min = 0;
   minPost = 0;
   let rank = 100 * Math.log(N * (u.rank - min) + 1) / Math.log(N * (max - min) + 1);
-  let postRank = 100 * Math.log(N * (u.rank - minPost) + 1) / Math.log(N * (maxPost - minPost) + 1);
+  const postRank = 100 * Math.log(N * (u.rank - minPost) + 1) / Math.log(N * (maxPost - minPost) + 1);
 
   if (u.type === 'post') {
     rank = postRank;
   }
 
   rank = rank.toFixed(2);
-  let rel = u.relevance;
+  const rel = u.relevance;
 
   if (debug && u.type !== 'post') {
     console.log('name: ', u.id);
@@ -60,10 +60,10 @@ async function updateItemRank(props) {
 
 
 function processUpvote(params) {
-  let { rankedNodes, rankedPosts, nstart, upvote, user, now } = params;
-  let { post, ownPost, author, amount } = upvote;
-  let authorId = author ? author._id : null;
-  let userId = user._id;
+  const { rankedNodes, rankedPosts, nstart, upvote, user, now } = params;
+  const { post, ownPost, author, amount } = upvote;
+  const authorId = author ? author._id : null;
+  const userId = user._id;
   // TODO in query
   // if (ownPost) return;
   // same as OWN?
@@ -77,7 +77,7 @@ function processUpvote(params) {
   if (!a) a = 1;
 
   // time discount (RELEVANCE_DECAY month half-life)
-  let t = now.getTime() - upvote.createdAt.getTime();
+  const t = now.getTime() - upvote.createdAt.getTime();
   a *= (1 / 2) ** (t / RELEVANCE_DECAY);
 
   if (!rankedNodes[userId]) {
@@ -90,7 +90,7 @@ function processUpvote(params) {
   }
 
   if (post) {
-    let { _id, data } = post;
+    const { _id, data } = post;
     rankedNodes[_id] = {};
     rankedPosts[_id] = post;
     if (!rankedNodes[user._id][_id]) {
@@ -115,75 +115,75 @@ function processUpvote(params) {
 
 export async function computeApproxPageRank(params) {
   try {
-    let { author, post, user, communityId, investment, undoInvest } = params;
-    let com = await Community.findOne({ _id: communityId }, 'maxUserRank maxPostRank numberOfElements');
+    const { author, post, user, communityId, investment, undoInvest } = params;
+    const com = await Community.findOne({ _id: communityId }, 'maxUserRank maxPostRank numberOfElements');
     let amount;
     if (investment) ({ amount } = investment);
-    let N = com.numberOfElements;
-    let { maxUserRank, maxPostRank } = com;
+    const N = com.numberOfElements;
+    const { maxUserRank, maxPostRank } = com;
     // if user relevance object doesn't exist, there is nothing to update
     if (!user.relevance || user.relevance.pagerankRaw <= 0) {
       return { author, post };
     }
-    let userR = user.relevance ? user.relevance.pagerankRaw : 0;
-    let authorId = author ? author._id : null;
+    const userR = user.relevance ? user.relevance.pagerankRaw : 0;
+    const authorId = author ? author._id : null;
 
-    let yearAgo = new Date().setFullYear(new Date().getFullYear() - 2);
-    let upvotes = await Invest.find({
+    const yearAgo = new Date().setFullYear(new Date().getFullYear() - 2);
+    const upvotes = await Invest.find({
       investor: user._id, communityId, createdAt: { $gt: yearAgo }
     })
-    .populate({
-      path: 'investor',
-      select: 'relevance',
-      populate: {
-        path: 'relevance',
-        match: { communityId, global: true },
-        select: 'pagerank pagerankRaw relevance'
-      }
-    })
-    .populate({
-      path: 'author',
-      select: 'relevance',
-      populate: {
-        path: 'relevance',
-        match: { communityId, global: true },
-        select: 'pagerank pagerankRaw relevance'
-      }
-    })
-    .populate({
-      path: 'post',
-      options: { select: 'data body' },
-      populate: {
-        path: 'data',
-        select: 'pagerank relevance pagerankRaw'
-      }
-    });
+      .populate({
+        path: 'investor',
+        select: 'relevance',
+        populate: {
+          path: 'relevance',
+          match: { communityId, global: true },
+          select: 'pagerank pagerankRaw relevance'
+        }
+      })
+      .populate({
+        path: 'author',
+        select: 'relevance',
+        populate: {
+          path: 'relevance',
+          match: { communityId, global: true },
+          select: 'pagerank pagerankRaw relevance'
+        }
+      })
+      .populate({
+        path: 'post',
+        options: { select: 'data body' },
+        populate: {
+          path: 'data',
+          select: 'pagerank relevance pagerankRaw'
+        }
+      });
 
-    let rankedNodes = {};
-    let rankedPosts = {};
-    let nstart = {};
-    let now = new Date();
+    const rankedNodes = {};
+    const rankedPosts = {};
+    const nstart = {};
+    const now = new Date();
 
     if (investment) {
       investment.post = await Post.findOne({ _id: investment.post }, 'data body')
-      .populate({
-        path: 'data',
-        select: 'pagerank relevance pagerankRaw'
-      });
+        .populate({
+          path: 'data',
+          select: 'pagerank relevance pagerankRaw'
+        });
     }
 
     upvotes.forEach(upvote => processUpvote({
       rankedNodes, rankedPosts, nstart, upvote, user, now
     }));
 
-    let userObj = rankedNodes[user._id];
+    const userObj = rankedNodes[user._id];
 
     let degree = 0;
 
     // TODO: can we optimize this by storing degree in relevance table?
     Object.keys(userObj).forEach(vote => {
       let w = userObj[vote].weight;
-      let n = userObj[vote].negative || 0;
+      const n = userObj[vote].negative || 0;
       // eigentrust++ weights
       // w = Math.max((w - n) / (w + n), 0);
       w = Math.max((w - n), 0);
@@ -217,8 +217,8 @@ export async function computeApproxPageRank(params) {
     // console.log(userObj);
     degree = degree || 1;
 
-    let w = userObj[authorId] ? userObj[authorId].w : 0;
-    let userWeight = w / degree;
+    const w = userObj[authorId] ? userObj[authorId].w : 0;
+    const userWeight = w / degree;
     let postWeight;
     let oldWeight;
 
@@ -267,13 +267,13 @@ export async function computeApproxPageRank(params) {
     }
 
     if (author) {
-      let rA = author ? Math.max(author.relevance.pagerankRaw, 0) : 0;
+      const rA = author ? Math.max(author.relevance.pagerankRaw, 0) : 0;
       author.relevance.pagerank =
         100 * Math.log(N * rA + 1) /
         Math.log(N * maxUserRank + 1);
     }
 
-    let pA = Math.max(post.data.pagerankRaw, 0);
+    const pA = Math.max(post.data.pagerankRaw, 0);
     post.data.pagerank =
       100 * Math.log(N * pA + 1) /
       Math.log(N * maxPostRank + 1);
@@ -290,7 +290,7 @@ export async function computeApproxPageRank(params) {
 // compute relevance using pagerank
 export default async function computePageRank(params) {
   try {
-    let { author, post, debug, communityId, community, fast } = params;
+    const { author, post, debug, communityId, community, fast } = params;
 
     if (!community) throw new Error('missing community name');
 
@@ -301,73 +301,73 @@ export default async function computePageRank(params) {
     // let users = await User.find({})
     // .populate({ path: 'relevance', match: { communityId, global: true } });
 
-    let now = new Date();
+    const now = new Date();
 
-    let admins = await CommunityMember.find({ role: 'admin', communityId })
-    .populate({
-      path: 'user',
-      select: 'relevance',
-      populate: {
-        path: 'relevance',
-        match: { communityId, global: true },
-        select: 'pagerank pagerankRaw relevance'
-      }
-    });
+    const admins = await CommunityMember.find({ role: 'admin', communityId })
+      .populate({
+        path: 'user',
+        select: 'relevance',
+        populate: {
+          path: 'relevance',
+          match: { communityId, global: true },
+          select: 'pagerank pagerankRaw relevance'
+        }
+      });
     // let N = users.length;
 
-    let rankedNodes = {};
-    let negativeWeights = {};
-    let originalRelevance = {};
-    let originalUsers = {};
-    let originalPosts = {};
-    let rankedPosts = {};
-    let nstart = {};
+    const rankedNodes = {};
+    const negativeWeights = {};
+    const originalRelevance = {};
+    const originalUsers = {};
+    const originalPosts = {};
+    const rankedPosts = {};
+    const nstart = {};
     // let results = users.map(async user => {
     // originalUsers[user._id] = user;
     // originalRelevance[user._id] = user.relevance ? user.relevance.relevance : 0;
 
     // // only look at votes up to a year ago
-    let timeLimit = new Date().setFullYear(new Date().getFullYear() - 2);
+    const timeLimit = new Date().setFullYear(new Date().getFullYear() - 2);
 
-    let upvotes = await Invest.find({
+    const upvotes = await Invest.find({
       communityId,
       createdAt: { $gt: timeLimit },
       ownPost: { $ne: true },
       // author: { $exists: true },
       investor: { $exists: true }
     })
-    .populate({
-      path: 'investor',
-      select: 'relevance',
-      populate: {
-        path: 'relevance',
-        match: { communityId, global: true },
-        select: 'pagerank pagerankRaw relevance'
-      }
-    })
-    .populate({
-      path: 'author',
-      select: 'relevance',
-      populate: {
-        path: 'relevance',
-        match: { communityId, global: true },
-        select: 'pagerank pagerankRaw relevance'
-      }
-    })
-    .populate({
-      path: 'post',
-      select: 'data title',
-      options: { select: 'data body' },
-      populate: {
-        path: 'data',
-        select: 'pagerank relevance pagerankRaw body'
-      }
-    });
+      .populate({
+        path: 'investor',
+        select: 'relevance',
+        populate: {
+          path: 'relevance',
+          match: { communityId, global: true },
+          select: 'pagerank pagerankRaw relevance'
+        }
+      })
+      .populate({
+        path: 'author',
+        select: 'relevance',
+        populate: {
+          path: 'relevance',
+          match: { communityId, global: true },
+          select: 'pagerank pagerankRaw relevance'
+        }
+      })
+      .populate({
+        path: 'post',
+        select: 'data title',
+        options: { select: 'data body' },
+        populate: {
+          path: 'data',
+          select: 'pagerank relevance pagerankRaw body'
+        }
+      });
 
     upvotes.forEach(upvote => {
-      let user = upvote.investor;
-      let postAuthor = upvote.author;
-      let post = upvote.post;
+      const user = upvote.investor;
+      const postAuthor = upvote.author;
+      const post = upvote.post;
       // if (user && !originalUsers[user._id]) {
       //   originalUsers[user._id] = user;
       //   originalRelevance[user._id] = user.relevance ? user.relevance.relevance : 0;
@@ -387,8 +387,7 @@ export default async function computePageRank(params) {
 
     // TODO prune users with no upvotes
     Object.keys(rankedNodes).forEach(u => {
-      if (!originalUsers[u] && !originalPosts[u])
-        return delete rankedNodes[u];
+      if (!originalUsers[u] && !originalPosts[u]) { return delete rankedNodes[u]; }
       Object.keys(rankedNodes[u]).forEach(name => {
         // fills any missing names in list
         if (!rankedNodes[name]) {
@@ -397,7 +396,7 @@ export default async function computePageRank(params) {
             delete rankedNodes[u][name];
           } else {
             // console.log('adding ', name);
-            let user = originalUsers[name];
+            const user = originalUsers[name];
             nstart[name] = user.relevance ? Math.max(user.relevance.pagerankRaw, 0) : 0;
             rankedNodes[name] = {};
           }
@@ -405,9 +404,9 @@ export default async function computePageRank(params) {
       });
     });
 
-    let personalization = {};
+    const personalization = {};
     admins.forEach(a => {
-      let userId = a.user._id;
+      const userId = a.user._id;
       if (!rankedNodes[userId]) rankedNodes[userId] = {};
       personalization[userId] = 1;
       if (!nstart[userId]) {
@@ -425,7 +424,7 @@ export default async function computePageRank(params) {
 
     console.log('user query time ', ((new Date()).getTime() - now) / 1000 + 's');
 
-    let scores = pagerank(
+    const scores = pagerank(
       rankedNodes,
       {
         alpha: 0.85,
@@ -442,9 +441,9 @@ export default async function computePageRank(params) {
     console.log('Program is using ' + mb + 'MB of Heap.');
 
     let max = 0;
-    let min = 0;
+    const min = 0;
     let maxPost = 0;
-    let minPost = 0;
+    const minPost = 0;
 
     let array = [];
     Object.keys(scores).forEach(id => {
@@ -453,7 +452,7 @@ export default async function computePageRank(params) {
         postNode = rankedPosts[id];
       }
 
-      let u = scores[id];
+      const u = scores[id];
       if (postNode) maxPost = Math.max(u, maxPost);
 
       else max = Math.max(u, max);
@@ -466,14 +465,14 @@ export default async function computePageRank(params) {
       });
     });
 
-    let N = array.length;
+    const N = array.length;
 
     await Community.findOneAndUpdate(
       { _id: communityId },
       { maxPostRank: maxPost, maxUserRank: max, numberOfElements: N }
     );
 
-    let maxRel = array.reduce((p, n) => Math.max(p, n.relevance || 0), 0);
+    const maxRel = array.reduce((p, n) => Math.max(p, n.relevance || 0), 0);
     array = array.sort((a, b) => a.rank - b.rank);
 
     if (author) {
@@ -496,7 +495,7 @@ export default async function computePageRank(params) {
     array.forEach(async u => {
       q.push(async cb => {
         try {
-          let x = await updateItemRank({
+          const x = await updateItemRank({
             min, max, minPost, maxPost, u, N, debug, communityId, community, maxRel
           });
         } catch (err) {

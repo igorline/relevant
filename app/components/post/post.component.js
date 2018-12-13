@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import PropTypes from 'prop-types';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import { globalStyles } from '../../styles/global';
@@ -12,6 +10,16 @@ import Commentary from './commentary.component';
 let styles;
 
 class Post extends PureComponent {
+  static propTypes = {
+    link: PropTypes.object,
+    auth: PropTypes.object,
+    post: PropTypes.object,
+    commentary: PropTypes.object,
+    posts: PropTypes.object,
+    singlePost: PropTypes.bool,
+    actions: PropTypes.object
+  };
+
   render() {
     let post;
     let imageEl;
@@ -24,18 +32,19 @@ class Post extends PureComponent {
     //     ]} style={[styles.separator]}
     //   />);
 
-    let separator = (
+    const separator = (
       <View
         style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)' }]}
         // style={[{ height: 30, backgroundColor: 'hsl(238,20%,95%)'}]}
-      />);
+      />
+    );
     let commentaryEl;
     let reposted;
-    let link = this.props.link;
+    const link = this.props.link;
 
     if (!this.props.auth.user) return null;
 
-    let blocked = <View style={{ height: StyleSheet.hairlineWidth }} />;
+    const blocked = <View style={{ height: StyleSheet.hairlineWidth }} />;
     post = this.props.post;
 
     // let metaPost = this.props.metaPost || post.metaPost;
@@ -45,9 +54,8 @@ class Post extends PureComponent {
       return blocked;
     }
 
-
     // if we have a repost, don't render the original post
-    let commentary = this.props.commentary;
+    const commentary = this.props.commentary;
 
     // TODO... need to filter out reposted
     // commentary = commentary.filter(p => p && p._id !== reposted);
@@ -65,12 +73,14 @@ class Post extends PureComponent {
     }
 
     if (link && (link.url || link.image)) {
-      imageEl = (<PostImage
-        key={link._id}
-        singlePost={this.props.singlePost}
-        actions={this.props.actions}
-        post={link}
-      />);
+      imageEl = (
+        <PostImage
+          key={link._id}
+          singlePost={this.props.singlePost}
+          actions={this.props.actions}
+          post={link}
+        />
+      );
     }
 
     return (
@@ -87,7 +97,7 @@ class Post extends PureComponent {
 
 const localStyles = StyleSheet.create({
   postContainer: {
-    paddingBottom: 20,
+    paddingBottom: 20
   },
   tagsRow: {
     flexDirection: 'row',
@@ -95,20 +105,22 @@ const localStyles = StyleSheet.create({
     paddingBottom: 10,
     alignItems: 'center',
     flexWrap: 'wrap',
-    flex: 1,
-  },
+    flex: 1
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };
-
 
 function mapStateToProps(state) {
   return {
     auth: state.auth,
     myPostInv: state.investments.myPostInv,
-    users: state.user.users,
+    users: state.user.users
     // tooltip: state.tooltip.buttonId
   };
 }
 
-export default connect(mapStateToProps, {})(Post);
+export default connect(
+  mapStateToProps,
+  {}
+)(Post);

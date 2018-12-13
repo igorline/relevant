@@ -15,26 +15,26 @@ function printM(m, name) {
 // let full = true;
 
 function objectToMatrix(_inputs, params) {
-  let inputs = Object.keys(_inputs);
-  let dictionary = {};
+  const inputs = Object.keys(_inputs);
+  const dictionary = {};
   inputs.forEach((key, i) => dictionary[key] = i);
-  let N = inputs.length;
-  let G = [];
-  let g = {};
-  let neg = {};
-  let P = [];
+  const N = inputs.length;
+  const G = [];
+  const g = {};
+  const neg = {};
+  const P = [];
   let avoid = [];
-  let danglingNodes = [];
-  let danglingObj = {};
+  const danglingNodes = [];
+  const danglingObj = {};
 
   inputs.forEach((el, i) => {
-    let upvotes = new Array(N).fill(0);
-    let downvotes = new Array(N).fill(0);
+    const upvotes = new Array(N).fill(0);
+    const downvotes = new Array(N).fill(0);
 
     let degree = 0;
     Object.keys(_inputs[el]).forEach(vote => {
       let w = _inputs[el][vote][params.weight];
-      let n = _inputs[el][vote][params.negative] || 0;
+      const n = _inputs[el][vote][params.negative] || 0;
       // eigentrust++ weights
       // w = Math.max((w - n) / (w + n), 0);
       // eigentrust weights
@@ -48,13 +48,13 @@ function objectToMatrix(_inputs, params) {
       danglingObj[i] = true;
       degree = 1;
     }
-    let id_i = dictionary[el];
+    const id_i = dictionary[el];
 
     Object.keys(_inputs[el]).forEach(vote => {
-      let w = _inputs[el][vote].w;
+      const w = _inputs[el][vote].w;
       let n = _inputs[el][vote][params.negative] || 0;
       upvotes[dictionary[vote]] = w / degree;
-      let j = dictionary[vote];
+      const j = dictionary[vote];
 
       g[j] = g[j] || {};
       g[j].inputs = g[j].inputs || {};
@@ -85,15 +85,15 @@ function objectToMatrix(_inputs, params) {
   // printM(G, 'G');
   // printM(P, 'P');
 
-  let heapUsed = process.memoryUsage().heapUsed;
-  let mb = Math.round(100 * heapUsed / 1048576) / 100;
+  const heapUsed = process.memoryUsage().heapUsed;
+  const mb = Math.round(100 * heapUsed / 1048576) / 100;
   console.log('Matrix - program is using', mb, 'MB of Heap.');
 
   return { neg, g, G, N, P, dictionary, danglingNodes, avoid, danglingObj };
 }
 
 function formatOutput(x, dictionary, inputs) {
-  let result = {};
+  const result = {};
   Object.keys(inputs).forEach((node, i) => result[node] = x[i]);
   return result;
 }
@@ -117,10 +117,10 @@ function runLoop(loopParams, params) {
   let transitions;
   let Ti;
 
-  let xlast = [...x];
+  const xlast = [...x];
 
   x = new Array(N).fill(0);
-  let lastP = P.map(arr => arr.slice());
+  const lastP = P.map(arr => arr.slice());
 
   let danglesum = 0;
   danglingNodes.forEach(node => danglesum += xlast[node]);
@@ -152,7 +152,7 @@ function runLoop(loopParams, params) {
     //   console.log(tildeP[i][i]);
     // }
 
-    let denom = x[i] || 1;
+    const denom = x[i] || 1;
 
     x[i] *= (1 - tildeP[i][i]) ** params.beta;
 
@@ -180,14 +180,14 @@ function runLoop(loopParams, params) {
     Ti = null;
   }
 
-  let heapUsed = process.memoryUsage().heapUsed;
-  let mb = Math.round(100 * heapUsed / 1048576) / 100;
+  const heapUsed = process.memoryUsage().heapUsed;
+  const mb = Math.round(100 * heapUsed / 1048576) / 100;
   console.log('Iter - program is using', mb, 'MB of Heap.');
 
   console.log('avoid length', avoid.length, N);
 
   // normalize
-  let sum = x.reduce((prev, next) => prev + next, 0);
+  const sum = x.reduce((prev, next) => prev + next, 0);
   // console.log('sum', sum);
 
   let err = 0.0;
@@ -212,9 +212,9 @@ export default function pagerank(inputs, params) {
   if (!params.M) params.M = 1;
   if (!params.fast) params.fast = false;
 
-  let now = new Date();
+  const now = new Date();
 
-  let {
+  const {
     neg,
     g,
     P,
@@ -229,8 +229,8 @@ export default function pagerank(inputs, params) {
   if (!params.personalization) {
     p = new Array(N).fill(1.0 / N);
   } else {
-    let keys = Object.keys(params.personalization);
-    let degree = keys.reduce((prev, key) => prev + params.personalization[key], 0);
+    const keys = Object.keys(params.personalization);
+    const degree = keys.reduce((prev, key) => prev + params.personalization[key], 0);
     keys.forEach(key => {
       p[dictionary[key]] = params.personalization[key] / degree;
       for (let j = 0; j < N; j++) {
@@ -255,12 +255,12 @@ export default function pagerank(inputs, params) {
   } else {
     // console.log('start ', params.nstart);
     x = new Array(N).fill(0);
-    let keys = Object.keys(params.nstart);
-    let degree = keys.reduce((prev, key) => params.nstart[key] + prev, 0);
+    const keys = Object.keys(params.nstart);
+    const degree = keys.reduce((prev, key) => params.nstart[key] + prev, 0);
     let sum = 0;
     keys.forEach(key => {
       if (!degree) return;
-      let i = dictionary[key];
+      const i = dictionary[key];
       x[i] = params.nstart[key];
       sum += x[i];
     });
@@ -269,7 +269,7 @@ export default function pagerank(inputs, params) {
 
   console.log('matrix setup time ', ((new Date()).getTime() - now) / 1000 + 's');
 
-  let tildeP = P.map(arr => arr.slice());
+  const tildeP = P.map(arr => arr.slice());
   let iter;
   let err;
 
@@ -300,7 +300,7 @@ export default function pagerank(inputs, params) {
       // cacheT = T;
       // cacheTildeP = tildeP;
 
-      let elapsed = (new Date()).getTime() - now.getTime();
+      const elapsed = (new Date()).getTime() - now.getTime();
       console.log('elapsed time: ', elapsed / 1000, 's');
       return formatOutput(x, dictionary, inputs, params);
     }

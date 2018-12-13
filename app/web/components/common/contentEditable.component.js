@@ -1,6 +1,5 @@
 import React from 'react';
-
-const sanitizeHtml = require('sanitize-html');
+import PropTypes from 'prop-types';
 
 const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
 
@@ -13,16 +12,19 @@ function stripContentEditableHTML(text) {
 }
 
 function renderBody(lines) {
-  return lines.split('\n')
-  .map((line) =>
-    line.split(' ')
-    .map((word) => {
+  return lines
+  .split('\n')
+  .map(line =>
+    line
+    .split(' ')
+    .map(word => {
       if (word[0] === '#' || word[0] === '@') {
         return '<b>' + word + '</b>';
       }
       return word;
     })
-    .join(' '))
+    .join(' ')
+  )
   .join('<br/>\u200B');
 }
 
@@ -31,7 +33,8 @@ function onPaste(e) {
   e.preventDefault();
 
   // get text representation of clipboard
-  const text = e.clipboardData.getData('text/plain')
+  const text = e.clipboardData
+  .getData('text/plain')
   .replace(/&/g, '&amp')
   .replace(/</g, '&lt')
   .replace(/>/g, '&gt');
@@ -40,21 +43,19 @@ function onPaste(e) {
   document.execCommand('insertHTML', false, text);
 }
 
-
 function getCurrentCursorPosition(parentId) {
-  let el = document.getElementById(parentId);
+  const el = document.getElementById(parentId);
   let caretOffset = 0;
   if (typeof window.getSelection !== 'undefined') {
-    let range = window.getSelection().getRangeAt(0);
-    let selected = range.toString().length;
-    let preCaretRange = range.cloneRange();
+    const range = window.getSelection().getRangeAt(0);
+    const selected = range.toString().length;
+    const preCaretRange = range.cloneRange();
     preCaretRange.selectNodeContents(el);
     preCaretRange.setEnd(range.endContainer, range.endOffset);
     caretOffset = preCaretRange.toString().length - selected;
   }
   return caretOffset;
 }
-
 
 function createRange(node, chars, range) {
   if (!range) {
@@ -100,6 +101,17 @@ function setCurrentCursorPosition(node, chars) {
 }
 
 export default class ContentEditable extends React.Component {
+  static propTypes = {
+    body: PropTypes.string,
+    lengthDelta: PropTypes.number,
+    onKeyDown: PropTypes.func,
+    onChange: PropTypes.func,
+    className: PropTypes.string,
+    placeholder: PropTypes.string,
+    onBlur: PropTypes.func,
+    disabled: PropTypes.object
+  };
+
   constructor() {
     super();
     this.emitChange = this.emitChange.bind(this);
@@ -118,12 +130,13 @@ export default class ContentEditable extends React.Component {
     // }
     if (lastProps.body === this.props.body) return;
 
-    const lengthWithoutNewlines = this.props.body.replace(/\n/, '').replace(/&[^;]+;/g, ' ').length + 1;
+    const lengthWithoutNewlines =
+      this.props.body.replace(/\n/, '').replace(/&[^;]+;/g, ' ').length + 1;
 
     const newPosition = this.position + (this.hitEnter ? 1 : 0);
 
     if (this.props.lengthDelta) {
-      setCurrentCursorPosition(this.el, this.position += this.props.lengthDelta);
+      setCurrentCursorPosition(this.el, (this.position += this.props.lengthDelta));
     } else if (newPosition <= lengthWithoutNewlines) {
       setCurrentCursorPosition(this.el, newPosition);
       this.hitEnter = false;
@@ -145,8 +158,7 @@ export default class ContentEditable extends React.Component {
     if (!this.el) return;
     const html = this.el.innerHTML;
     if (this.props.onChange && html !== this.lastHtml) {
-      let value = stripContentEditableHTML(html);
-      // let value = sanitizeHtml(html, { allowedTags: [], allowedAttributes: [] });
+      const value = stripContentEditableHTML(html);
 
       e.target = { value };
       this.props.onChange(e);
@@ -160,18 +172,20 @@ export default class ContentEditable extends React.Component {
     const className = [this.props.className];
     if (this.props.body.length) className.push('active');
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions react/no-danger
-    return (<div
-      id="editor"
-      className={this.props.className}
-      placeholder={this.props.placeholder}
-      role="textbox"
-      ref={(el) => this.el = el}
-      onInput={this.emitChange}
-      onKeyDown={this.handleKeyDown}
-      onBlur={this.props.onBlur || this.emitChange}
-      onPaste={onPaste}
-      contentEditable={!this.props.disabled}
-      dangerouslySetInnerHTML={{ __html: this.lastHTML }}
-    />);
+    return (
+      <div
+        id="editor"
+        className={this.props.className}
+        placeholder={this.props.placeholder}
+        role="textbox"
+        ref={el => (this.el = el)}
+        onInput={this.emitChange}
+        onKeyDown={this.handleKeyDown}
+        onBlur={this.props.onBlur || this.emitChange}
+        onPaste={onPaste}
+        contentEditable={!this.props.disabled}
+        dangerouslySetInnerHTML={{ __html: this.lastHTML }}
+      />
+    );
   }
 }

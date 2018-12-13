@@ -6,16 +6,16 @@ import Notification from '../notification/notification.model';
 import Invest from '../invest/invest.model';
 
 
-let apnData = require('../../pushNotifications');
-let mongoose = require('mongoose');
+const apnData = require('../../pushNotifications');
+const mongoose = require('mongoose');
 // var mongoose = require('mongoose-fill')
 
-let PostSchemaEvents = new EventEmitter();
-let Schema = mongoose.Schema;
+const PostSchemaEvents = new EventEmitter();
+const Schema = mongoose.Schema;
 
 const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
-let PostSchema = new Schema({
+const PostSchema = new Schema({
   body: String,
   title: String,
   community: String,
@@ -163,7 +163,7 @@ PostSchema.pre('save', async function save(next) {
 PostSchema.methods.addPostData = async function addPostData(community) {
   let eligibleForReward = this.type === 'comment' || this.type === 'post' || this.type === 'repost';
   eligibleForReward = !this.twitter && eligibleForReward;
-  let data = new (this.model('PostData'))({
+  const data = new (this.model('PostData'))({
     eligibleForReward,
     postDate: this.postDate || this.createdAt,
     payoutTime: this.payoutTime,
@@ -184,7 +184,7 @@ PostSchema.statics.events = PostSchemaEvents;
 
 PostSchema.methods.updateClient = function updateClient(user) {
   if (this.user && this.user._id) this.user = this.user._id;
-  let postNote = {
+  const postNote = {
     _id: user ? user._id : null,
     type: 'UPDATE_POST',
     payload: this,
@@ -223,24 +223,24 @@ PostSchema.methods.updateRank = async function updateRank(community, updateTime)
     // TODO refactor to use data table?
     // alternately we duplicate comments
     if (updateTime && this.type === 'link') {
-      let latestComment = await this.model('Post')
-      .findOne({ parentPost: this._id, community, hidden: false }, 'postDate')
-      .sort({ postDate: -1 });
+      const latestComment = await this.model('Post')
+        .findOne({ parentPost: this._id, community, hidden: false }, 'postDate')
+        .sort({ postDate: -1 });
       if (latestComment) {
         this.data.latestComment = latestComment.postDate;
         this.latestComment = latestComment.postDate;
       }
     }
 
-    let postDate = this.data.latestComment || this.data.postDate;
+    const postDate = this.data.latestComment || this.data.postDate;
 
-    let newRank = (postDate.getTime() / TENTH_LIFE) + (sign * Math.log10(rank + 1));
+    const newRank = (postDate.getTime() / TENTH_LIFE) + (sign * Math.log10(rank + 1));
     rank = Math.round(newRank * 1000) / 1000;
 
     // TODO refactor to use data table?
-    let topComment = await this.model('Post')
-    .findOne({ parentPost: this._id, community, hidden: false }, 'rank')
-    .sort({ rank: -1 });
+    const topComment = await this.model('Post')
+      .findOne({ parentPost: this._id, community, hidden: false }, 'rank')
+      .sort({ rank: -1 });
 
     if (topComment) {
       // TODO implement own rank (so we can undo ranking after deletion)
@@ -270,8 +270,8 @@ PostSchema.methods.updateRank = async function updateRank(community, updateTime)
 PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject) {
   try {
     if (!linkObject.url) return console.log('missing url ', linkObject);
-    let { tags, postDate, payoutTime } = this;
-    let parentObj = {
+    const { tags, postDate, payoutTime } = this;
+    const parentObj = {
       url: linkObject.url,
       // top level comments only
       tags,
@@ -282,7 +282,7 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
     };
 
     let parent = await this.model('Post').findOne({ url: linkObject.url, type: 'link' })
-    .populate({ path: 'data', match: { community: this.community } });
+      .populate({ path: 'data', match: { community: this.community } });
 
     // -------- BRAND NEW LINK --------
     if (!parent) {
@@ -337,17 +337,17 @@ PostSchema.methods.insertIntoFeed = async function insertIntoFeed(community) {
         post = post.parentPost;
       } else {
         post = await this.model('Post').findOne({ _id: post.parentPost })
-        .populate({
-          path: 'data',
-          match: { community }
-        });
+          .populate({
+            path: 'data',
+            match: { community }
+          });
       }
     }
     if (!post.data) post.data = await this.model('PostData').findOne({ post: post._id, community });
 
     this.model('CommunityFeed').addToFeed(post, community);
 
-    let newPostEvent = {
+    const newPostEvent = {
       type: 'SET_NEW_POSTS_STATUS',
       payload: { community },
     };
@@ -362,7 +362,7 @@ PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkOb
   let meta;
   try {
     if (metaId) meta = await MetaPost.findOne({ _id: metaId });
-    let url = linkObject.url || this.url || this.link;
+    const url = linkObject.url || this.url || this.link;
     if (url && !meta) meta = await MetaPost.findOne({ url });
 
     if (meta) {
@@ -386,11 +386,11 @@ PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkOb
 
 PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds, userId) {
   try {
-    let investments = await Invest.find(
+    const investments = await Invest.find(
       { investor: userId, post: { $in: postIds } }
     );
 
-    let updatePosts = {
+    const updatePosts = {
       _id: userId,
       type: 'UPDATE_POST_INVESTMENTS',
       payload: investments
@@ -406,10 +406,10 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
 ) {
   let textParent = comment || post;
   try {
-    let promises = mentions.map(async mention => {
+    const promises = mentions.map(async mention => {
       try {
         let blocked;
-        let type = comment ? 'comment' : 'post';
+        const type = comment ? 'comment' : 'post';
 
         mUser = await User.findOne({ _id: mUser._id || mUser }, 'blockedBy blocked name role');
         blocked = mUser.blockedBy.find(u => u === mention) ||
@@ -425,18 +425,18 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
         }
 
         User.find(query, 'deviceTokens')
-        .then((users) => {
-          users.forEach(user => {
-            let alert = (mUser.name || mUser) + ' mentioned you in a ' + type;
-            if (mention === 'everyone' && post.body) alert = post.body;
-            let payload = { 'Mention from': textParent.embeddedUser.name };
-            apnData.sendNotification(user, alert, payload);
+          .then((users) => {
+            users.forEach(user => {
+              let alert = (mUser.name || mUser) + ' mentioned you in a ' + type;
+              if (mention === 'everyone' && post.body) alert = post.body;
+              const payload = { 'Mention from': textParent.embeddedUser.name };
+              apnData.sendNotification(user, alert, payload);
+            });
           });
-        });
 
         // if (mention === 'everyone') return null;
 
-        let dbNotificationObj = {
+        const dbNotificationObj = {
           post: post._id,
           forUser: mention,
           byUser: mUser._id || mUser,
@@ -446,10 +446,10 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
           read: false
         };
 
-        let newDbNotification = new Notification(dbNotificationObj);
-        let note = await newDbNotification.save();
+        const newDbNotification = new Notification(dbNotificationObj);
+        const note = await newDbNotification.save();
 
-        let newNotifObj = {
+        const newNotifObj = {
           _id: mention === 'everyone' ? null : mention,
           type: 'ADD_ACTIVITY',
           payload: note
@@ -478,13 +478,13 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
 // Update parent feed status (only for link posts)
 PostSchema.statics.updateFeedStatus = async function updateFeedStatus(parent, post) {
   try {
-    let parentId = parent._id || parent;
+    const parentId = parent._id || parent;
     if (!post) throw new Error('missing post');
-    let { community, hidden } = post;
+    const { community, hidden } = post;
     if (!community) throw new Error('missing community');
 
     // Thread has no children - remove everything
-    let count = await this.model('Post').findOne({ linkPost: parentId });
+    const count = await this.model('Post').findOne({ linkPost: parentId });
     if (!count) {
       console.log('REMOVING POST FROM ALL FEEDS! ', community);
       await this.model('CommunityFeed').removeFromAllFeeds(parentId);
@@ -494,16 +494,16 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(parent, po
       return;
     }
 
-    let communityCount = await this.model('Post')
-    .count({ linkPost: parentId, community });
+    const communityCount = await this.model('Post')
+      .count({ linkPost: parentId, community });
 
 
     if (!communityCount && community) {
       console.log('REMOVING POST FROM COMMUNITY FEED! ', community, parentId);
       await this.model('CommunityFeed').removeFromCommunityFeed(parentId, community);
     } else if (!hidden) {
-      let linkParent = await this.model('Post').findOne({ _id: parentId })
-      .populate({ path: 'data', match: { community } });
+      const linkParent = await this.model('Post').findOne({ _id: parentId })
+        .populate({ path: 'data', match: { community } });
       // children exist, we need to update thread rank
       // let latestPost = communityPosts[0];
       // this.data.latestPost = latestPost.data.latestComment || latestPost.data.postDate;
@@ -531,9 +531,9 @@ PostSchema.post('remove', async function postRemove(doc) {
 
     await this.model('CommunityFeed').removeFromAllFeeds(doc);
 
-    let note = this.model('Notification').remove({ post: this._id });
-    let feed = await this.model('Feed').remove({ post: this._id });
-    let twitterFeed = await this.model('TwitterFeed').remove({ post: this._id });
+    const note = this.model('Notification').remove({ post: this._id });
+    const feed = await this.model('Feed').remove({ post: this._id });
+    const twitterFeed = await this.model('TwitterFeed').remove({ post: this._id });
 
     // TODO we should replace post with a dummy post on delete
     // should we remove post comment also!?!
@@ -569,7 +569,7 @@ PostSchema.post('remove', async function postRemove(doc) {
     }
 
     // this makes it faster (don't need all awaits)?
-    let promises = [note, feed, twitterFeed];
+    const promises = [note, feed, twitterFeed];
     await Promise.all(promises);
   } catch (err) {
     console.log(err);

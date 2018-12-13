@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import ContentEditable from './contentEditable.component';
 import { text as textUtils, post } from '../../../utils';
 import UserSearch from '../createPost/userSearch.component';
 import * as userActions from '../../../actions/user.actions';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 
 if (process.env.BROWSER === true) {
   require('./richText.css');
@@ -12,10 +13,20 @@ if (process.env.BROWSER === true) {
 
 // NOT USED
 class RichText extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    onChange: PropTypes.func,
+    userSearch: PropTypes.array,
+    className: PropTypes.string,
+    placeholder: PropTypes.string,
+    onBlur: PropTypes.func,
+    onFocus: PropTypes.func
+  };
+
   state = {
     body: '',
     userSearchIndex: -1
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -29,19 +40,19 @@ class RichText extends Component {
     this.lengthDelta = 0;
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps) {
     return {
       body: nextProps.body
     };
   }
 
   parseBody(text = '') {
-    text = text.replace(/&nbsp;/gi,' ');
-    let words = textUtils.getWords(text);
+    text = text.replace(/&nbsp;/gi, ' ');
+    const words = textUtils.getWords(text);
 
-    let url = words.find(word => post.URL_REGEX.test(word.toLowerCase()));
+    const url = words.find(word => post.URL_REGEX.test(word.toLowerCase()));
 
-    let lastWord = words[words.length - 1];
+    const lastWord = words[words.length - 1];
     if (lastWord.match(/^@\S+/g) && lastWord.length > 1) {
       this.mention = lastWord;
       this.props.actions.searchUser(lastWord.replace('@', ''));
@@ -49,8 +60,8 @@ class RichText extends Component {
       this.props.actions.setUserSearch([]);
     }
 
-    let tags = textUtils.getTags(words);
-    let mentions = textUtils.getMentions(words);
+    const tags = textUtils.getTags(words);
+    const mentions = textUtils.getMentions(words);
 
     return {
       url,
@@ -60,7 +71,7 @@ class RichText extends Component {
   }
 
   handleChange(e) {
-    let data = this.parseBody(e.target.value);
+    const data = this.parseBody(e.target.value);
     this.props.onChange(e.target.value, data);
   }
 
@@ -74,7 +85,7 @@ class RichText extends Component {
     const body = this.state.body.slice(0, -this.mention.length) + '@' + user._id + '\u00A0';
 
     this.setState({ body, userSearchIndex: -1 });
-    let data = this.parseBody(body);
+    const data = this.parseBody(body);
     this.props.onChange(body, data);
     this.props.actions.setUserSearch([]);
   }
@@ -88,7 +99,7 @@ class RichText extends Component {
         if (this.props.userSearch.length) {
           e.preventDefault();
           this.setState({
-            userSearchIndex: (this.state.userSearchIndex - 1 + userCount) % userCount,
+            userSearchIndex: (this.state.userSearchIndex - 1 + userCount) % userCount
           });
         }
         break;
@@ -97,7 +108,7 @@ class RichText extends Component {
         if (this.props.userSearch.length) {
           e.preventDefault();
           this.setState({
-            userSearchIndex: (this.state.userSearchIndex + 1) % userCount,
+            userSearchIndex: (this.state.userSearchIndex + 1) % userCount
           });
         }
         break;
@@ -140,7 +151,7 @@ class RichText extends Component {
 
 function mapStateToProps(state) {
   return {
-    userSearch: state.user.search,
+    userSearch: state.user.search
   };
 }
 
@@ -148,11 +159,14 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       {
-        ...userActions,
+        ...userActions
       },
       dispatch
-    ),
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RichText);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RichText);

@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
-import { reduxForm } from 'redux-form';
-import { Link } from 'react-router';
+import PropTypes from 'prop-types';
 import ShadowButton from '../common/ShadowButton';
 
-
 class LoginForm extends Component {
+  static propTypes = {
+    user: PropTypes.object,
+    actions: PropTypes.object,
+    checkUser: PropTypes.object,
+    nameError: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      username: props.user.handle || '',
+      username: props.user.handle || ''
     };
     this.handleChange = this.handleChange.bind(this);
     this.submit = this.submit.bind(this);
@@ -23,13 +28,12 @@ class LoginForm extends Component {
       alert('username requied');
       return;
     }
-    let user = this.props.user;
+    const user = this.props.user;
     user.handle = this.state.username;
     this.props.actions.updateHandle(user);
   }
 
   render() {
-    let { username } = this.state;
     return (
       <div className="innerForm">
         <div className="authStatus">Choose your handle:</div>
@@ -39,8 +43,8 @@ class LoginForm extends Component {
             type="text"
             placeholder="username"
             value={'@' + this.state.username}
-            onChange={(e) => {
-              let username = e.target.value.trim().replace('@', '');
+            onChange={e => {
+              const username = e.target.value.trim().replace('@', '');
               this.props.checkUser(username.trim());
               this.handleChange('username', username);
             }}
@@ -54,11 +58,7 @@ class LoginForm extends Component {
         </div>
 
         <div style={{ width: '100%' }}>
-          <ShadowButton
-            onClick={this.submit}
-          >
-            Finish
-          </ShadowButton>
+          <ShadowButton onClick={this.submit}>Finish</ShadowButton>
         </div>
       </div>
     );

@@ -1,16 +1,5 @@
 import * as types from '../actions/actionTypes';
 
-const maxGarbage = 10;
-
-const addItems = (arr, newArr) => {
-  if (!arr.length) return newArr;
-  const removeDuplicates = newArr.filter((el) => {
-    return arr.indexOf(el) < 0;
-  });
-  let finalArr = arr.concat(removeDuplicates);
-  return finalArr;
-};
-
 const initialState = {
   error: false,
   users: {},
@@ -19,7 +8,7 @@ const initialState = {
   online: [],
   loading: false,
   garbage: [],
-  search: [],
+  search: []
 };
 
 export default function auth(state = initialState, action) {
@@ -32,7 +21,7 @@ export default function auth(state = initialState, action) {
     }
 
     case types.SET_USERS: {
-      let users = {};
+      const users = {};
       if (!action.payload) return state;
       Object.keys(action.payload).forEach(id => {
         users[id] = { ...state.users[id], ...action.payload[id] };
@@ -53,7 +42,7 @@ export default function auth(state = initialState, action) {
           ...state.users,
           [action.payload._id]: {
             ...state.users[action.payload._id],
-            ...action.payload,
+            ...action.payload
           }
         }
       };
@@ -61,33 +50,31 @@ export default function auth(state = initialState, action) {
 
     case 'GET_USER_LIST': {
       return Object.assign({}, state, {
-        loading: true,
+        loading: true
       });
     }
 
     case 'SET_USER_LIST': {
-      let topic = action.payload.topic || 'all';
-      let currentList = state.list[topic] || [];
+      const topic = action.payload.topic || 'all';
+      const currentList = state.list[topic] || [];
       return {
         ...state,
         list: {
           ...state.list,
-          [topic]: [
-            ...currentList.slice(0, action.payload.index),
-            ...action.payload.users
-          ],
+          [topic]: [...currentList.slice(0, action.payload.index), ...action.payload.users]
         },
-        loading: false,
+        loading: false
       };
     }
 
     case types.UPDATE_USER: {
-      let id = action.payload._id;
+      const id = action.payload._id;
       // prevents legacy relevance field overwrites
       // TODO should normalize this and store separately
       let relevance = action.payload.relevance;
-      if ((!relevance || relevance.pagerank === undefined) &&
-        state.users[id]) relevance = state.users[id].relevance;
+      if ((!relevance || relevance.pagerank === undefined) && state.users[id]) {
+        relevance = state.users[id].relevance;
+      }
       return {
         ...state,
         users: {
@@ -103,7 +90,7 @@ export default function auth(state = initialState, action) {
 
     case 'CLEAR_USER_LIST': {
       return Object.assign({}, state, {
-        list: [],
+        list: []
       });
     }
 

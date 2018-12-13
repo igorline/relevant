@@ -6,40 +6,42 @@ import Modal from '../common/modal';
 import ShadowButton from '../common/ShadowButton';
 import * as authActions from '../../../actions/auth.actions';
 
-
 class LoginModal extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    toggleLogin: PropTypes.func,
+    open: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       username: '',
       password: '',
-      open: false,
+      open: false
     };
     this.renderModal = this.renderModal.bind(this);
     this.login = this.login.bind(this);
   }
 
   async login() {
+    const { actions, toggleLogin } = this.props;
     try {
-      let user = {
+      const user = {
         name: this.state.username,
         password: this.state.password
       };
-      let loggedIn = await this.props.actions.loginUser(user);
-      if (loggedIn) this.props.toggleLogin();
+      const loggedIn = await actions.loginUser(user);
+      if (loggedIn) toggleLogin();
     } catch (err) {
-      console.log('error logging in ', err);
+      console.error('error logging in ', err);
     }
   }
 
   renderModal() {
-    let modalHeader = <p className="loginText">Log In</p>;
-    let modalFooter = (
-      <ShadowButton
-        backgroundColor={'white'}
-        color={'#3E3EFF'}
-        onClick={this.login}
-      >
+    const modalHeader = <p className="loginText">Log In</p>;
+    const modalFooter = (
+      <ShadowButton backgroundColor={'white'} color={'#3E3EFF'} onClick={this.login}>
         Login
       </ShadowButton>
     );
@@ -55,7 +57,7 @@ class LoginModal extends Component {
         <input
           className="blueInput special"
           value={this.state.username}
-          onChange={(username) => {
+          onChange={username => {
             this.setState({ username: username.target.value });
           }}
           type="text"
@@ -65,7 +67,7 @@ class LoginModal extends Component {
         <input
           className="blueInput special pass"
           value={this.state.password}
-          onChange={(password) => {
+          onChange={password => {
             this.setState({ password: password.target.value });
           }}
           type="password"
@@ -81,12 +83,15 @@ class LoginModal extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
 });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators({ ...authActions }, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginModal);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LoginModal);

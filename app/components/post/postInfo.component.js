@@ -9,6 +9,7 @@ import {
   Platform,
   Linking
 } from 'react-native';
+import PropTypes from 'prop-types';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
@@ -24,6 +25,19 @@ if (Platform.OS === 'android') {
 let styles;
 
 class PostInfo extends Component {
+  static propTypes = {
+    post: PropTypes.object,
+    auth: PropTypes.object,
+    singlePost: PropTypes.bool,
+    actions: PropTypes.object,
+    edit: PropTypes.bool,
+    delete: PropTypes.func,
+    users: PropTypes.array,
+    big: PropTypes.bool,
+    preview: PropTypes.bool,
+    repost: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.setTag = this.setTag.bind(this);
@@ -40,13 +54,9 @@ class PostInfo extends Component {
 
     this.ownerMenu = {
       myPost: true,
-      buttons: [
-        'Edit',
-        'Delete',
-        'Cancel',
-      ],
+      buttons: ['Edit', 'Delete', 'Cancel'],
       destructiveIndex: 2,
-      cancelIndex: 3,
+      cancelIndex: 3
     };
 
     this.showActionSheet = this.showActionSheet.bind(this);
@@ -54,9 +64,9 @@ class PostInfo extends Component {
 
   componentDidMount() {
     // if (this.props.post) this.checkTime(this.props);
-    let user = this.props.post.user;
+    const user = this.props.post.user;
     if (!user) return;
-    let userId = user._id || user;
+    const userId = user._id || user;
     if (this.props.auth && userId && userId === this.props.auth.user._id) {
       this.menu = this.ownerMenu;
       this.myPost = true;
@@ -83,17 +93,20 @@ class PostInfo extends Component {
       urlPreview: {
         image: this.props.post.image,
         title: this.props.post.title ? this.props.post.title : 'Untitled',
-        description: this.props.post.description,
+        description: this.props.post.description
       },
       edit: true,
-      editPost: this.props.post,
+      editPost: this.props.post
     });
-    this.props.actions.push({
-      key: 'createPost',
-      back: true,
-      title: 'Edit Post',
-      next: 'Update'
-    }, 'home');
+    this.props.actions.push(
+      {
+        key: 'createPost',
+        back: true,
+        title: 'Edit Post',
+        next: 'Update'
+      },
+      'home'
+    );
   }
 
   setTag(tag) {
@@ -137,23 +150,24 @@ class PostInfo extends Component {
 
   showActionSheet() {
     if (this.myPost) {
-      ActionSheet.showActionSheetWithOptions({
-        options: this.menu.buttons,
-        cancelButtonIndex: this.menu.cancelIndex,
-        destructiveButtonIndex: this.menu.destructiveIndex,
-      },
-      (buttonIndex) => {
-        switch (buttonIndex) {
-          case 0:
-            this.props.edit ? this.props.edit() :this.toggleEditing();
-            break;
-          case 1:
-            this.props.delete ? this.props.delete() : this.deletePost();
-            break;
-          default:
-            return;
+      ActionSheet.showActionSheetWithOptions(
+        {
+          options: this.menu.buttons,
+          cancelButtonIndex: this.menu.cancelIndex,
+          destructiveButtonIndex: this.menu.destructiveIndex
+        },
+        buttonIndex => {
+          switch (buttonIndex) {
+            case 0:
+              this.props.edit ? this.props.edit() : this.toggleEditing();
+              break;
+            case 1:
+              this.props.delete ? this.props.delete() : this.deletePost();
+              break;
+            default:
+          }
         }
-      });
+      );
     }
   }
 
@@ -169,12 +183,14 @@ class PostInfo extends Component {
     postTime = ' • ' + numbers.timeSince(postTime) + ' ago';
 
     if (this.myPost) {
-      postActions = (<TouchableOpacity
-        style={[styles.postButton, { paddingRight: 10 }]}
-        onPress={() => this.showActionSheet()}
-      >
-        <Icon name="ios-more" size={24} color={greyText} />
-      </TouchableOpacity>);
+      postActions = (
+        <TouchableOpacity
+          style={[styles.postButton, { paddingRight: 10 }]}
+          onPress={() => this.showActionSheet()}
+        >
+          <Icon name="ios-more" size={24} color={greyText} />
+        </TouchableOpacity>
+      );
     }
 
     let userId = post.user ? post.user._id || post.user : null;
@@ -189,7 +205,7 @@ class PostInfo extends Component {
       }
     }
 
-    let userEl = (
+    const userEl = (
       <UserName
         big={this.props.big}
         user={user}
@@ -199,16 +215,13 @@ class PostInfo extends Component {
       />
     );
 
-    let info = (<View style={[styles.postHeader, this.props.preview ? { paddingTop: 10 } : null]}>
-      <View style={styles.postInfo}>
-        {userEl}
-        <View
-          style={[styles.infoRight]}
-        >
-          {this.props.repost ? null : postActions}
+    let info = (
+      <View style={[styles.postHeader, this.props.preview ? { paddingTop: 10 } : null]}>
+        <View style={styles.postInfo}>
+          {userEl}
+          <View style={[styles.infoRight]}>{this.props.repost ? null : postActions}</View>
         </View>
       </View>
-    </View>
     );
 
     if (this.props.repost) {
@@ -222,11 +235,7 @@ class PostInfo extends Component {
               setSelected={this.setSelected}
               postTime={postTime}
             />
-            <View
-              style={[styles.infoRight]}
-            >
-              {this.props.repost ? null : postActions}
-            </View>
+            <View style={[styles.infoRight]}>{this.props.repost ? null : postActions}</View>
           </View>
         </View>
       );
@@ -242,44 +251,43 @@ const localStyles = StyleSheet.create({
   countdown: {
     justifyContent: 'flex-end',
     alignItems: 'center',
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   postInfo: {
     flex: 1,
     flexDirection: 'row',
     overflow: 'visible',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   repost: {
     flexDirection: 'row',
     alignItems: 'center',
     overflow: 'visible',
     paddingTop: 5,
-    paddingBottom: 0,
+    paddingBottom: 0
   },
   postHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     overflow: 'visible',
-    paddingTop: 20,
+    paddingTop: 20
   },
   progressCirc: {
     marginTop: -1,
-    marginRight: 5,
+    marginRight: 5
   },
   infoLeft: {
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-start'
   },
   infoRight: {
     justifyContent: 'flex-end',
-    overflow: 'visible',
+    overflow: 'visible'
   },
   innerInfo: {
     flex: 1,
-    overflow: 'visible',
-  },
+    overflow: 'visible'
+  }
 });
 
 styles = { ...globalStyles, ...localStyles };
-

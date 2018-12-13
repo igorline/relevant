@@ -1,24 +1,29 @@
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import { numbers } from '../../../utils';
 import { BondingCurveContext } from 'bonded-token';
+import { numbers } from '../../../utils';
 
 export default class Balance extends Component {
+  static propTypes = {
+    user: PropTypes.object,
+    contract: PropTypes.object,
+    actions: PropTypes.object,
+    wallet: PropTypes.object
+  };
+
   // this context comes from the BondedTokenContainer
-  static contextType = BondingCurveContext
+  static contextType = BondingCurveContext;
 
   async cashOut() {
+    const { actions, user, contract } = this.props;
     try {
-      let user = this.props.user;
-      let decimals = this.props.contract.methods.decimals.cacheCall();
+      const decimals = contract.methods.decimals.cacheCall();
 
-      let cashOut = await this.props.actions.cashOut();
+      let cashOut = await actions.cashOut();
       cashOut = cashOut || user.cashOut;
 
-      let sig = cashOut.sig;
+      const sig = cashOut.sig;
       let amount = new web3.utils.BN(cashOut.amount.toString());
       let mult = new web3.utils.BN(10 ** (decimals / 2));
       mult = mult.mul(mult);
@@ -26,12 +31,12 @@ export default class Balance extends Component {
 
       // let result = await this.props.RelevantCoin.methods.cashOut(amount, sig).call();
       // console.log(result);
-      this.props.contract.methods.cashOut.cacheSend(amount, sig, {
+      contract.methods.cashOut.cacheSend(amount, sig, {
         from: user.ethAddress[0]
       });
       // console.log(result);
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   }
 
@@ -41,10 +46,9 @@ export default class Balance extends Component {
     if (!user) return null;
     let rewardBalance = this.props.user.balance;
 
-    // if (!this.context.contractParams) return null;
-
-    let { tokenBalance, symbol, priceDollar } = this.context.contractParams;
-    let { connectedBalance, connectedAccount, nonce } = this.props.wallet;
+    let { tokenBalance } = this.context.contractParams;
+    const { symbol, priceDollar } = this.context.contractParams;
+    const { connectedBalance, connectedAccount, nonce } = this.props.wallet;
 
     this.needSig = true;
     if (user.cashOut && nonce === user.cashOut.nonce) {
@@ -54,41 +58,37 @@ export default class Balance extends Component {
 
     // TODO cache value in backend
     tokenBalance = connectedBalance || user.tokenBalance || 0;
-    let total = rewardBalance + tokenBalance;
+    const total = rewardBalance + tokenBalance;
 
-    if (tokenBalance < .0000001) tokenBalance = 0;
+    if (tokenBalance < 0.0000001) tokenBalance = 0;
 
-    let usd = total * priceDollar;
+    const usd = total * priceDollar;
     let accountWarning;
 
-    let canCachOut = rewardBalance >= 100 || (user.cashOut && nonce === user.cashOut.nonce);
+    const canCachOut = rewardBalance >= 100 || (user.cashOut && nonce === user.cashOut.nonce);
 
     if (this.props.wallet.differentAccount) {
-      accountWarning = (<div className='warningRow'>
-        <span>
-        Warning: Your connected account doesn't not match the current Metamask account
-        </span>
-        <Link
-          to={'/wallet#connectAccount'}
-        >
-          <button className={'shadowButton'}>
-            Connect Account
-          </button>
-        </Link>
-      </div>);
+      accountWarning = (
+        <div className="warningRow">
+          <span>
+            Warning: Your connected account doesn't not match the current Metamask account
+          </span>
+          <Link to={'/wallet#connectAccount'}>
+            <button className={'shadowButton'}>Connect Account</button>
+          </Link>
+        </div>
+      );
     }
 
     if (!connectedAccount) {
-      accountWarning = <div className='warningRow'>
-        <span>Warning: your Metamask account is not connected to Relevant</span>
-        <Link
-          to={'/wallet#connectAccount'}
-        >
-          <button className={'shadowButton'}>
-            Connect Account
-          </button>
-        </Link>
-      </div>;
+      accountWarning = (
+        <div className="warningRow">
+          <span>Warning: your Metamask account is not connected to Relevant</span>
+          <Link to={'/wallet#connectAccount'}>
+            <button className={'shadowButton'}>Connect Account</button>
+          </Link>
+        </div>
+      );
     }
 
     return (
@@ -97,32 +97,36 @@ export default class Balance extends Component {
 
         <div className="balanceList">
           <section>
-            <row>
+            <div className={'row'}>
               <div>
                 <h4>Relevant Tokens:</h4>
                 <p>
                   These are tokens held in your connected Ethereum account
-                  <br />{connectedAccount}
+                  <br />
+                  {connectedAccount}
                 </p>
               </div>
-              <span className="coin">{fixed(tokenBalance)} {symbol}</span>
-            </row>
-            {accountWarning ? <div className="warning">
-              {accountWarning}
-            </div> : null}
+              <span className="coin">
+                {fixed(tokenBalance)} {symbol}
+              </span>
+            </div>
+            {accountWarning ? <div className="warning">{accountWarning}</div> : null}
           </section>
 
           <section>
-            <row>
+            <div className={'row'}>
               <div>
                 <h4>Reward Tokens:</h4>
                 <p>
-                  These are tokens you earned as rewards.<br />
+                  These are tokens you earned as rewards.
+                  <br />
                   Once you have more than 100, you can transfer them to your Ethereum account.
                 </p>
               </div>
-              <span className="coin">{fixed(rewardBalance)} {symbol}</span>
-            </row>
+              <span className="coin">
+                {fixed(rewardBalance)} {symbol}
+              </span>
+            </div>
             <div className="transferTokens">
               <button
                 disabled={!canCachOut}
@@ -135,29 +139,31 @@ export default class Balance extends Component {
           </section>
 
           <section>
-            <row>
+            <div className={'row'}>
               <div>
                 <h4>Total:</h4>
                 <p>
-                  This is your total amount of tokens.<br />
-                  You can use these tokens to stake on your votes.<br />
+                  This is your total amount of tokens.
+                  <br />
+                  You can use these tokens to stake on your votes.
+                  <br />
                   The more you stake the more you can earn).
                 </p>
               </div>
-              <span className="coin">{fixed(total) } {symbol}</span>
-            </row>
+              <span className="coin">
+                {fixed(total)} {symbol}
+              </span>
+            </div>
           </section>
 
           <section>
-            <row>
+            <div className={'row'}>
               <div>
                 <h4>Estimated Account Value:</h4>
-                <p>
-                  This is the estimated account value denominated in USD.
-                </p>
+                <p>This is the estimated account value denominated in USD.</p>
               </div>
               <span>$ {fixed(usd)} USD</span>
-            </row>
+            </div>
           </section>
         </div>
       </div>

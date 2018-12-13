@@ -2,14 +2,14 @@ import { EventEmitter } from 'events';
 import apnData from '../../pushNotifications';
 import { computeApproxPageRank } from '../../utils/pagerankCompute';
 
-let Post = require('../post/post.model');
-let User = require('../user/user.model');
-let Subscription = require('../subscription/subscription.model');
-let Notification = require('../notification/notification.model');
-let Invest = require('./invest.model');
-let Relevance = require('../relevance/relevance.model');
+const Post = require('../post/post.model');
+const User = require('../user/user.model');
+const Subscription = require('../subscription/subscription.model');
+const Notification = require('../notification/notification.model');
+const Invest = require('./invest.model');
+const Relevance = require('../relevance/relevance.model');
 
-let InvestEvents = new EventEmitter();
+const InvestEvents = new EventEmitter();
 
 function handleError(res, err) {
   console.log(err);
@@ -18,23 +18,23 @@ function handleError(res, err) {
 
 exports.postInvestments = async (req, res, next) => {
   try {
-    let postId = req.params.postId;
-    let limit = parseInt(req.query.limit, 10);
-    let skip = parseInt(req.query.skip, 10);
-    let community = req.query.community;
+    const postId = req.params.postId;
+    const limit = parseInt(req.query.limit, 10);
+    const skip = parseInt(req.query.skip, 10);
+    const community = req.query.community;
 
-    let investments = await Invest.find({ post: postId, ownPost: false })
-    .limit(limit)
-    .skip(skip)
-    .sort({ createdAt: -1 })
-    .populate({
-      path: 'investor',
-      select: 'relevance name image',
-      populate: {
-        path: 'relevance',
-        match: { global: true, community }
-      }
-    });
+    const investments = await Invest.find({ post: postId, ownPost: false })
+      .limit(limit)
+      .skip(skip)
+      .sort({ createdAt: -1 })
+      .populate({
+        path: 'investor',
+        select: 'relevance name image',
+        populate: {
+          path: 'relevance',
+          match: { global: true, community }
+        }
+      });
 
     return res.status(200).json(investments);
   } catch (err) {
@@ -43,15 +43,15 @@ exports.postInvestments = async (req, res, next) => {
 };
 
 exports.downvotes = async (req, res, next) => {
-  let limit = parseInt(req.query.limit, 10) || null;
-  let skip = parseInt(req.query.skip, 10) || null;
+  const limit = parseInt(req.query.limit, 10) || null;
+  const skip = parseInt(req.query.skip, 10) || null;
   let downvotes;
   try {
     downvotes = await Invest.find({ amount: { $lt: 0 } })
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .populate('post');
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate('post');
 
     return res.status(200).json(downvotes);
   } catch (err) {
@@ -61,22 +61,22 @@ exports.downvotes = async (req, res, next) => {
 
 exports.show = async (req, res, next) => {
   try {
-    let { communityId } = req.communityMember;
+    const { communityId } = req.communityMember;
 
     let id;
 
     let blocked = [];
     if (req.user) {
-      let user = req.user;
+      const user = req.user;
       blocked = [...user.blocked, ...user.blockedBy];
       id = req.user._id;
     }
 
-    let limit = parseInt(req.query.limit, 10);
-    let skip = parseInt(req.query.skip, 10);
-    let userId = req.params.userId || null;
-    let sortQuery = { createdAt: -1 };
-    let query = { investor: userId, amount: { $gt: 0 } };
+    const limit = parseInt(req.query.limit, 10);
+    const skip = parseInt(req.query.skip, 10);
+    const userId = req.params.userId || null;
+    const sortQuery = { createdAt: -1 };
+    const query = { investor: userId, amount: { $gt: 0 } };
     let investments;
 
     if (blocked.find(u => u === userId)) {
@@ -84,23 +84,23 @@ exports.show = async (req, res, next) => {
     }
 
     investments = await Invest.find(query)
-    .populate({
-      path: 'post',
-      populate: [{
-        path: 'embeddedUser.relevance',
-        match: { communityId, global: true }
-      },
-      {
-        path: 'data',
-        select: 'pagerank'
-      },
-      {
-        path: 'metaPost',
-      }]
-    })
-    .limit(limit)
-    .skip(skip)
-    .sort(sortQuery);
+      .populate({
+        path: 'post',
+        populate: [{
+          path: 'embeddedUser.relevance',
+          match: { communityId, global: true }
+        },
+        {
+          path: 'data',
+          select: 'pagerank'
+        },
+        {
+          path: 'metaPost',
+        }]
+      })
+      .limit(limit)
+      .skip(skip)
+      .sort(sortQuery);
     res.status(200).json(investments);
 
     let postIds = investments.map(inv => inv.post ? inv.post._id : null);
@@ -112,45 +112,45 @@ exports.show = async (req, res, next) => {
 };
 
 exports.destroy = (req, res) => {
-  let query = {
+  const query = {
     investor: req.body.investor,
     post: req.body.post
   };
   let investmentId = null;
 
   Invest.find(query).then((invests) => invests)
-  .then((invests) => {
-    if (invests.length) {
-      invests.forEach((investment) => {
-        User.findOne({ _id: investment.investor })
-        .then((investor) => {
-          investor.balance += investment.amount;
-          investor.save();
+    .then((invests) => {
+      if (invests.length) {
+        invests.forEach((investment) => {
+          User.findOne({ _id: investment.investor })
+            .then((investor) => {
+              investor.balance += investment.amount;
+              investor.save();
+            });
+          investmentId = investment._id;
+          return investment.remove();
         });
-        investmentId = investment._id;
-        return investment.remove();
-      });
-    }
-  }).then(() => Post.findOne({ _id: req.body.post }))
-  .then((foundPost) => {
-    foundPost.investments.forEach((investment, i) => {
-      if (JSON.stringify(investment) === JSON.stringify(investmentId)) {
-        console.log('removing investment from post array');
-        foundPost.investments.splice(i, 1);
       }
-    });
-    return foundPost.save();
-  })
-  .then((savedPost) =>
-    Post.findOne({ _id: savedPost._id })
-    .populate('user tags investments mentions')
-    .exec((err, populatedPost) => populatedPost)
-  )
-  .then((populatedPost) => {
-    populatedPost.updateClient();
-    res.json(200, true);
-  })
-  .catch(err => handleError(res, err));
+    }).then(() => Post.findOne({ _id: req.body.post }))
+    .then((foundPost) => {
+      foundPost.investments.forEach((investment, i) => {
+        if (JSON.stringify(investment) === JSON.stringify(investmentId)) {
+          console.log('removing investment from post array');
+          foundPost.investments.splice(i, 1);
+        }
+      });
+      return foundPost.save();
+    })
+    .then((savedPost) =>
+      Post.findOne({ _id: savedPost._id })
+        .populate('user tags investments mentions')
+        .exec((err, populatedPost) => populatedPost)
+    )
+    .then((populatedPost) => {
+      populatedPost.updateClient();
+      res.json(200, true);
+    })
+    .catch(err => handleError(res, err));
 };
 
 async function updateInvestment(params) {
@@ -170,13 +170,13 @@ async function updateInvestment(params) {
 }
 
 async function investCheck(params) {
-  let { user, post, amount, communityId } = params;
+  const { user, post, amount, communityId } = params;
   let type = 'upvote';
   if (amount < 0) {
     type = 'downvote';
     // Do we still want this limit for older posts?
     // don't let users downvote posts older than one week
-    let now = new Date();
+    const now = new Date();
     if (post.data.postDate < now.getTime() - 1000 * 60 * 60 * 24 * 7 && process.env.NODE_ENV === 'production') {
       throw new Error('you cannot downvote posts older than one week');
     }
@@ -185,12 +185,12 @@ async function investCheck(params) {
     throw new Error('You can not ' + type + 'your own post');
   }
 
-  let investment = await Invest.findOne({ investor: user._id, post: post._id, communityId });
+  const investment = await Invest.findOne({ investor: user._id, post: post._id, communityId });
 
   // TODO undo invest
   if (investment) {
-    let now = new Date();
-    let timeElapsed = now.getTime() - (new Date(investment.createdAt)).getTime();
+    const now = new Date();
+    const timeElapsed = now.getTime() - (new Date(investment.createdAt)).getTime();
 
     // TODO 15m to update post is this fine?
     if (timeElapsed > 15 * 60 * 1000 && process.env.NODE_ENV === 'production') {
@@ -204,7 +204,7 @@ async function investCheck(params) {
 }
 
 async function updateSubscriptions(params) {
-  let { post, user, amount, undoInvest } = params;
+  const { post, user, amount, undoInvest } = params;
   if (amount < 0) return null;
   let subscription = await Subscription.findOne({
     follower: user._id,
@@ -218,7 +218,7 @@ async function updateSubscriptions(params) {
       amount: 0,
     });
   }
-  let inc = undoInvest ? Math.max(-4, -subscription.amount) : 4;
+  const inc = undoInvest ? Math.max(-4, -subscription.amount) : 4;
   subscription.amount = Math.max(subscription.amount + inc, 20);
   return subscription.save();
 }
@@ -240,7 +240,7 @@ async function updateAuthor(params) {
 
   // --------- start DEPRECATED ------------
   let authorRelevance = author.relevance ? author.relevance.relevance : 0;
-  let diff = userRelevance - authorRelevance;
+  const diff = userRelevance - authorRelevance;
   let adjust = 1;
   if (diff > 0) adjust = (diff ** (1 / 4)) + 1;
   if (amount < 0) adjust *= -1;
@@ -255,7 +255,7 @@ async function updateAuthor(params) {
   }
   // --------- end DEPRECATED ------------
 
-  let pageRankChange = author.relevance.pagerank - authorPagerank;
+  const pageRankChange = author.relevance.pagerank - authorPagerank;
   console.log('adding ', pageRankChange, ' relevance to ', author.name);
 
 
@@ -287,11 +287,11 @@ async function updateAuthor(params) {
     });
 
     let alert = user.name + ' thinks your post is relevant';
-    let payload = { 'Relevance from': user.name };
+    const payload = { 'Relevance from': user.name };
     try {
       // TEST - don't send notification after upvote
       apnData.sendNotification(author, alert, payload);
-      let now = new Date();
+      const now = new Date();
       if (post.createdAt > now.getTime() - 7 * 24 * 60 * 60 * 1000) {
         alert = null;
       }
@@ -320,7 +320,7 @@ async function updateAuthor(params) {
 // Partial solution: prevent undoing vote after payout
 exports.create = async (req, res, next) => {
   try {
-    let { community, communityId } = req.communityMember;
+    const { community, communityId } = req.communityMember;
 
     let user = req.user._id;
     let { post, amount } = req.body;
@@ -331,8 +331,8 @@ exports.create = async (req, res, next) => {
 
     // ------ post ------
     post = await Post.findOne({ _id: post._id }, '-comments')
-    .populate({ path: 'parentPost' })
-    .populate({ path: 'data', match: { community } });
+      .populate({ path: 'parentPost' })
+      .populate({ path: 'data', match: { community } });
     // .populate('investments').exec();
     // postCommunity = post.community || 'relevant';
 
@@ -377,7 +377,7 @@ exports.create = async (req, res, next) => {
     // await updateUserFeed(user, post, irrelevant);
 
     // Deprecated - keep around for comparison analysis?
-    let userRelevance = user.relevance ? user.relevance.relevance : 0;
+    const userRelevance = user.relevance ? user.relevance.relevance : 0;
     let relevanceToAdd;
     if (userRelevance < 0) relevanceToAdd = 0;
     else {
@@ -411,7 +411,7 @@ exports.create = async (req, res, next) => {
     }
 
     // update subscriptions
-    let subscription = await updateSubscriptions({ post, user, amount });
+    const subscription = await updateSubscriptions({ post, user, amount });
 
     console.log('sending invest response');
     res.status(200).json({
@@ -420,12 +420,12 @@ exports.create = async (req, res, next) => {
       undoInvest
     });
 
-    let initialPostRank = post.data.pagerank;
+    const initialPostRank = post.data.pagerank;
     // TODO make sure this doesn't take too long
     // ({ author, post } = await computePageRank({
     //   communityId, community, author, post, investment, fast: amount >= 0 || false
     // }));
-    let updatePageRank = await computeApproxPageRank({
+    const updatePageRank = await computeApproxPageRank({
       communityId, author, post, investment, user, undoInvest
     });
 

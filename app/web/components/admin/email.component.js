@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-// import Quill from 'quill';
 import * as adminActions from '../../../actions/admin.actions';
 import ShadowButton from '../common/ShadowButton';
 
@@ -13,22 +12,28 @@ if (process.env.BROWSER === true) {
   require('./admin.css');
 }
 
-const customEntityTransform = (entity, text) => {
-  switch (entity.type) {
-    case 'IMAGE':
-      return `<img src="${entity.data.src}" style="margin:auto;display:block;float:${entity.data.alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/>`;
-    default: break;
-  }
-};
+// const customEntityTransform = (entity, text) => {
+//   switch (entity.type) {
+//     case 'IMAGE':
+//       return `<img src="${entity.data.src}" style="margin:auto;display:block;float:${entity.data
+//        .alignment || 'none'};height: ${entity.data.height};width: ${entity.data.width}"/>`;
+//     default:
+//       break;
+//   }
+// };
 
 class Email extends Component {
+  static propTypes = {
+    actions: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       html: '',
       email: '',
       subject: '',
-      campaign: '',
+      campaign: ''
     };
     this.handleChange = this.handleChange.bind(this);
     this.submit = this.submit.bind(this);
@@ -96,7 +101,7 @@ class Email extends Component {
           name: 'clear',
           result: () => pell.exec('removeFormat')
         }
-      ],
+      ]
       // classes: {
       //   actionbar: 'pell-actionbar-custom-name',
       //   button: 'pell-button-custom-name',
@@ -106,25 +111,24 @@ class Email extends Component {
   }
 
   saveEmail() {
-    let { email, subject, campaign, html } = this.state;
+    const { email, subject, campaign, html } = this.state;
     this.props.actions.saveEmail({
       email,
       subject,
       campaign,
-      html,
+      html
     });
   }
 
   loadEmail() {
-    this.props.actions.loadEmail()
-    .then(email => {
+    this.props.actions.loadEmail().then(email => {
       this.setState(email);
       this.editor.content.innerHTML = email.html;
     });
   }
 
   submit() {
-    let { email, subject, campaign, html } = this.state;
+    const { email, subject, campaign, html } = this.state;
     this.props.actions.sendEmail({ email, subject, campaign, html });
     this.saveEmail();
   }
@@ -144,7 +148,7 @@ class Email extends Component {
             display: 'flex',
             flexDirection: 'column',
             alignSelf: 'flex-start',
-            marginLeft: 20,
+            marginLeft: 20
           }}
         >
           <input
@@ -174,8 +178,7 @@ class Email extends Component {
         </div>
         <div style={{ display: 'flex', flex: 1, flexDirection: 'row', width: '100%' }}>
           <div style={{ flex: 1, margin: 20 }}>
-            <div id="email-editor">
-            </div>
+            <div id="email-editor" />
           </div>
           <textarea
             style={{ flex: 1, margin: 20 }}
@@ -191,28 +194,16 @@ class Email extends Component {
             justifyContent: 'flex-end',
             alignSelf: 'flex-start',
             margin: 20,
-            marginBottom: 60,
+            marginBottom: 60
           }}
         >
-          <ShadowButton
-            backgroundColor={'white'}
-            color={'#3E3EFF'}
-            onClick={this.submit}
-          >
+          <ShadowButton backgroundColor={'white'} color={'#3E3EFF'} onClick={this.submit}>
             Send email
           </ShadowButton>
-          <ShadowButton
-            backgroundColor={'white'}
-            color={'#3E3EFF'}
-            onClick={this.saveEmail}
-          >
+          <ShadowButton backgroundColor={'white'} color={'#3E3EFF'} onClick={this.saveEmail}>
             Save draft
           </ShadowButton>
-          <ShadowButton
-            backgroundColor={'white'}
-            color={'#3E3EFF'}
-            onClick={this.loadEmail}
-          >
+          <ShadowButton backgroundColor={'white'} color={'#3E3EFF'} onClick={this.loadEmail}>
             Load
           </ShadowButton>
         </div>

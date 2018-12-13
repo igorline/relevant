@@ -4,7 +4,7 @@ import { EventEmitter } from 'events';
 const Schema = mongoose.Schema;
 const EarningsSchemaEvents = new EventEmitter();
 
-let EarningsSchema = new Schema({
+const EarningsSchema = new Schema({
   user: { type: String, ref: 'User' },
   // from: [{ type: String, ref: 'User' }],
   source: { type: String, default: 'post' },
@@ -26,13 +26,13 @@ EarningsSchema.statics.events = EarningsSchemaEvents;
 
 EarningsSchema.statics.updateRewardsRecord = async function updateRewardsRecord(earning) {
   try {
-    let defaults = {
+    const defaults = {
       type: 'coins',
       source: 'post',
     };
     // earning.amount = earning.earned - earning.spent;
     earning = { ...defaults, ...earning };
-    let newEarning = await this.findOneAndUpdate(
+    const newEarning = await this.findOneAndUpdate(
       { user: earning.user, post: earning.post },
       { ...earning },
       { new: true, upsert: true }

@@ -1,10 +1,20 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Textarea from 'react-textarea-autosize';
-import Comments from '../comment/comment.container'
-import Avatar from '../common/avatar.component'
 import * as utils from '../../../utils';
 
 class CommentForm extends Component {
+  static propTypes = {
+    edit: PropTypes.boolean,
+    comment: PropTypes.object,
+    auth: PropTypes.object,
+    post: PropTypes.object,
+    actions: PropTypes.object,
+    cancel: PropTypes.func,
+    updatePosition: PropTypes.func,
+    text: PropTypes.string
+  };
+
   constructor(props, context) {
     super(props, context);
     this.setMention = this.setMention.bind(this);
@@ -15,14 +25,13 @@ class CommentForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {
       inputHeight: 50,
-      comment: '',
+      comment: ''
     };
   }
 
   componentDidMount() {
     if (this.props.edit && this.props.comment) {
       this.setState({ comment: this.props.comment.body });
-      console.log(this.textArea);
       this.textArea.focus();
     }
   }
@@ -31,13 +40,14 @@ class CommentForm extends Component {
     this.setState({ comment: e.target.value });
   }
 
-  handleKeydown(e) {
-    // if (e.keyCode == 13 && e.shiftKey == false) {
-    // }
-  }
+  // TODO do we need his?
+  // handleKeydown(e) {
+  //  if (e.keyCode == 13 && e.shiftKey == false) {
+  //  }
+  // }
 
   setMention(user) {
-    let comment = this.state.comment.replace(this.mention, '@' + user._id);
+    const comment = this.state.comment.replace(this.mention, '@' + user._id);
     this.setState({ comment });
   }
 
@@ -49,8 +59,8 @@ class CommentForm extends Component {
       return alert('no comment');
     }
 
-    let comment = this.state.comment.trim();
-    let commentObj = {
+    const comment = this.state.comment.trim();
+    const commentObj = {
       post: this.props.post.id,
       text: comment,
       tags: this.commentTags,
@@ -60,8 +70,7 @@ class CommentForm extends Component {
 
     this.setState({ comment: '', inputHeight: 50 });
 
-    this.props.actions.createComment(await utils.token.get(), commentObj)
-    .then(success => {
+    return this.props.actions.createComment(await utils.token.get(), commentObj).then(success => {
       if (!success) {
         this.setState({ comment, inputHeight: 50 });
         this.textInput.focus();
@@ -70,19 +79,18 @@ class CommentForm extends Component {
   }
 
   async updateComment() {
-    let comment = this.props.comment;
-    let body = this.state.comment;
+    const comment = this.props.comment;
+    const body = this.state.comment;
     if (comment.body === body) {
       return this.props.cancel();
     }
-    let words = utils.text.getWords(body);
-    let mentions = utils.text.getMentions(words);
-    let originalText = comment.body;
+    const words = utils.text.getWords(body);
+    const mentions = utils.text.getMentions(words);
+    const originalText = comment.body;
     comment.body = body;
     comment.mentions = mentions;
 
-    this.props.actions.updateComment(comment)
-    .then((results) => {
+    return this.props.actions.updateComment(comment).then(results => {
       if (results) {
         this.props.cancel();
       } else {
@@ -93,18 +101,19 @@ class CommentForm extends Component {
   }
 
   processInput(comment) {
-    let words = utils.text.getWords(comment);
+    const words = utils.text.getWords(comment);
 
-    let lastWord = words[words.length - 1];
+    const lastWord = words[words.length - 1];
     if (lastWord.match(/@\S+/g) && lastWord.length > 1) {
       this.mention = lastWord;
       this.props.actions.searchUser(lastWord.replace('@', ''));
-    }// else this.props.actions.setUserSearch([]);
+    } // else this.props.actions.setUserSearch([]);
 
     this.commentTags = utils.text.getTags(words);
     this.commentMentions = utils.text.getMentions(words);
     this.props.updatePosition({
-      inputHeight: this.state.inputHeight, top: this.top
+      inputHeight: this.state.inputHeight,
+      top: this.top
     });
   }
 
@@ -115,12 +124,12 @@ class CommentForm extends Component {
   }
 
   render() {
-    if (! this.props.auth.isAuthenticated) return null;
+    if (!this.props.auth.isAuthenticated) return null;
     return (
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
         <form onSubmit={this.handleSubmit}>
           <Textarea
-            inputRef={c => this.textArea = c}
+            inputRef={c => (this.textArea = c)}
             style={{ minHeight: '60px' }}
             rows={2}
             placeholder="Enter comment..."
@@ -130,21 +139,22 @@ class CommentForm extends Component {
           />
         </form>
         <div style={{ alignSelf: 'flex-end' }}>
-        {this.props.cancel && <button
-          onClick={this.props.cancel}
-          className={'shadowButton'}
-          disabled={!this.props.auth.isAuthenticated}
-        >
-          Cancel
-        </button>
-        }
-        <button
-          onClick={this.handleSubmit}
-          className={'shadowButton'}
-          disabled={!this.props.auth.isAuthenticated}
-        >
-          { this.props.text }
-        </button>
+          {this.props.cancel && (
+            <button
+              onClick={this.props.cancel}
+              className={'shadowButton'}
+              disabled={!this.props.auth.isAuthenticated}
+            >
+              Cancel
+            </button>
+          )}
+          <button
+            onClick={this.handleSubmit}
+            className={'shadowButton'}
+            disabled={!this.props.auth.isAuthenticated}
+          >
+            {this.props.text}
+          </button>
         </div>
       </div>
     );

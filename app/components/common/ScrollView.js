@@ -7,6 +7,8 @@
  * @providesModule ScrollViewCustom
  * @flow
  */
+import type { NativeMethodsMixinType } from 'ReactNativeTypes';
+
 'use strict';
 
 const AnimatedImplementation = require('AnimatedImplementation');
@@ -36,8 +38,6 @@ const requireNativeComponent = require('requireNativeComponent');
  * run Flow. */
 const warning = require('fbjs/lib/warning');
 const resolveAssetSource = require('resolveAssetSource');
-
-import type {NativeMethodsMixinType} from 'ReactNativeTypes';
 
 /**
  * Component that wraps platform ScrollView while providing
@@ -448,7 +448,7 @@ const ScrollView = createReactClass({
      */
     scrollPerfTag: PropTypes.string,
 
-     /**
+    /**
      * Used to override default value of overScroll mode.
      *
      * Possible values:
@@ -486,13 +486,13 @@ const ScrollView = createReactClass({
      * `import IMAGE from './image.jpg'`.
      * @platform vr
      */
-     scrollBarThumbImage: PropTypes.oneOfType([
-       PropTypes.shape({
-         uri: PropTypes.string,
-       }),
-       // Opaque type returned by import IMAGE from './image.jpg'
-       PropTypes.number,
-     ]),
+    scrollBarThumbImage: PropTypes.oneOfType([
+      PropTypes.shape({
+        uri: PropTypes.string,
+      }),
+      // Opaque type returned by import IMAGE from './image.jpg'
+      PropTypes.number,
+    ]),
   },
 
   mixins: [ScrollResponder.Mixin],
@@ -501,35 +501,35 @@ const ScrollView = createReactClass({
   _scrollAnimatedValueAttachment: (null: ?{detach: () => void}),
   _stickyHeaderRefs: (new Map(): Map<number, ScrollViewStickyHeader>),
   _headerLayoutYs: (new Map(): Map<string, number>),
-  getInitialState: function() {
+  getInitialState() {
     return {
       ...this.scrollResponderMixinGetInitialState(),
       layoutHeight: null,
     };
   },
 
-  UNSAFE_componentWillMount: function() {
+  UNSAFE_componentWillMount() {
     this._scrollAnimatedValue = new AnimatedImplementation.Value(this.props.contentOffset ? this.props.contentOffset.y : 0);
     this._scrollAnimatedValue.setOffset(this.props.contentInset ? this.props.contentInset.top : 0);
     this._stickyHeaderRefs = new Map();
     this._headerLayoutYs = new Map();
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this._updateAnimatedNodeAttachment();
   },
 
-  componentDidUpdate: function() {
+  componentDidUpdate() {
     this._updateAnimatedNodeAttachment();
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     if (this._scrollAnimatedValueAttachment) {
       this._scrollAnimatedValueAttachment.detach();
     }
   },
 
-  setNativeProps: function(props: Object) {
+  setNativeProps(props: Object) {
     this._scrollViewRef && this._scrollViewRef.setNativeProps(props);
   },
 
@@ -539,15 +539,15 @@ const ScrollView = createReactClass({
    * implement this method so that they can be composed while providing access
    * to the underlying scroll responder's methods.
    */
-  getScrollResponder: function(): ScrollView {
+  getScrollResponder(): ScrollView {
     return this;
   },
 
-  getScrollableNode: function(): any {
+  getScrollableNode(): any {
     return ReactNative.findNodeHandle(this._scrollViewRef);
   },
 
-  getInnerViewNode: function(): any {
+  getInnerViewNode(): any {
     return ReactNative.findNodeHandle(this._innerViewRef);
   },
 
@@ -562,7 +562,7 @@ const ScrollView = createReactClass({
    * the function also accepts separate arguments as an alternative to the options object.
    * This is deprecated due to ambiguity (y before x), and SHOULD NOT BE USED.
    */
-  scrollTo: function(
+  scrollTo(
     y?: number | { x?: number, y?: number, animated?: boolean },
     x?: number,
     animated?: boolean
@@ -571,10 +571,10 @@ const ScrollView = createReactClass({
       console.warn('`scrollTo(y, x, animated)` is deprecated. Use `scrollTo({x: 5, y: 5, ' +
         'animated: true})` instead.');
     } else {
-      ({x, y, animated} = y || {});
+      ({ x, y, animated } = y || {});
     }
     this.getScrollResponder().scrollResponderScrollTo(
-      {x: x || 0, y: y || 0, animated: animated !== false}
+      { x: x || 0, y: y || 0, animated: animated !== false }
     );
   },
 
@@ -586,22 +586,22 @@ const ScrollView = createReactClass({
    * `scrollToEnd({animated: false})` for immediate scrolling.
    * If no options are passed, `animated` defaults to true.
    */
-  scrollToEnd: function(
+  scrollToEnd(
     options?: { animated?: boolean },
   ) {
     // Default to true
     const animated = (options && options.animated) !== false;
     this.getScrollResponder().scrollResponderScrollToEnd({
-      animated: animated,
+      animated,
     });
   },
 
   /**
    * Deprecated, use `scrollTo` instead.
    */
-  scrollWithoutAnimationTo: function(y: number = 0, x: number = 0) {
+  scrollWithoutAnimationTo(y: number = 0, x: number = 0) {
     console.warn('`scrollWithoutAnimationTo` is deprecated. Use `scrollTo` instead');
-    this.scrollTo({x, y, animated: false});
+    this.scrollTo({ x, y, animated: false });
   },
 
   /**
@@ -609,16 +609,16 @@ const ScrollView = createReactClass({
    *
    * @platform ios
    */
-  flashScrollIndicators: function() {
+  flashScrollIndicators() {
     this.getScrollResponder().scrollResponderFlashScrollIndicators();
   },
 
-  _getKeyForIndex: function(index, childArray) {
+  _getKeyForIndex(index, childArray) {
     const child = childArray[index];
     return child && child.key;
   },
 
-  _updateAnimatedNodeAttachment: function() {
+  _updateAnimatedNodeAttachment() {
     if (this._scrollAnimatedValueAttachment) {
       this._scrollAnimatedValueAttachment.detach();
     }
@@ -626,12 +626,12 @@ const ScrollView = createReactClass({
       this._scrollAnimatedValueAttachment = AnimatedImplementation.attachNativeEvent(
         this._scrollViewRef,
         'onScroll',
-        [{nativeEvent: {contentOffset: {y: this._scrollAnimatedValue}}}]
+        [{ nativeEvent: { contentOffset: { y: this._scrollAnimatedValue } } }]
       );
     }
   },
 
-  _setStickyHeaderRef: function(key, ref) {
+  _setStickyHeaderRef(key, ref) {
     if (ref) {
       this._stickyHeaderRefs.set(key, ref);
     } else {
@@ -639,7 +639,7 @@ const ScrollView = createReactClass({
     }
   },
 
-  _onStickyHeaderLayout: function(index, event, key) {
+  _onStickyHeaderLayout(index, event, key) {
     if (!this.props.stickyHeaderIndices) {
       return;
     }
@@ -662,7 +662,7 @@ const ScrollView = createReactClass({
     }
   },
 
-  _handleScroll: function(e: Object) {
+  _handleScroll(e: Object) {
     if (__DEV__) {
       if (this.props.onScroll && this.props.scrollEventThrottle == null && Platform.OS === 'ios') {
         console.log(
@@ -682,7 +682,7 @@ const ScrollView = createReactClass({
     this.scrollResponderHandleScroll(e);
   },
 
-  _handleLayout: function(e: Object) {
+  _handleLayout(e: Object) {
     if (this.props.invertStickyHeaders) {
       this.setState({ layoutHeight: e.nativeEvent.layout.height });
     }
@@ -691,22 +691,22 @@ const ScrollView = createReactClass({
     }
   },
 
-  _handleContentOnLayout: function(e: Object) {
-    const {width, height} = e.nativeEvent.layout;
+  _handleContentOnLayout(e: Object) {
+    const { width, height } = e.nativeEvent.layout;
     this.props.onContentSizeChange && this.props.onContentSizeChange(width, height);
   },
 
   _scrollViewRef: (null: ?ScrollView),
-  _setScrollViewRef: function(ref: ?ScrollView) {
+  _setScrollViewRef(ref: ?ScrollView) {
     this._scrollViewRef = ref;
   },
 
   _innerViewRef: (null: ?NativeMethodsMixinType),
-  _setInnerViewRef: function(ref: ?NativeMethodsMixinType) {
+  _setInnerViewRef(ref: ?NativeMethodsMixinType) {
     this._innerViewRef = ref;
   },
 
-  render: function() {
+  render() {
     let ScrollViewClass;
     let ScrollContentContainerViewClass;
     if (Platform.OS === 'android') {
@@ -740,11 +740,12 @@ const ScrollView = createReactClass({
       this.props.horizontal && styles.contentContainerHorizontal,
       this.props.contentContainerStyle,
     ];
-    let style, childLayoutProps;
+    let style,
+      childLayoutProps;
     if (__DEV__ && this.props.style) {
       style = flattenStyle(this.props.style);
       childLayoutProps = ['alignItems', 'justifyContent']
-        .filter((prop) => style && style[prop] !== undefined);
+      .filter((prop) => style && style[prop] !== undefined);
       invariant(
         childLayoutProps.length === 0,
         'ScrollView child layout (' + JSON.stringify(childLayoutProps) +
@@ -759,7 +760,7 @@ const ScrollView = createReactClass({
       };
     }
 
-    const {stickyHeaderIndices} = this.props;
+    const { stickyHeaderIndices } = this.props;
     const hasStickyHeaders = stickyHeaderIndices && stickyHeaderIndices.length > 0;
     const childArray = hasStickyHeaders && React.Children.toArray(this.props.children);
     const children = hasStickyHeaders ?
@@ -782,9 +783,8 @@ const ScrollView = createReactClass({
               {child}
             </ScrollViewStickyHeader>
           );
-        } else {
-          return child;
         }
+        return child;
       }) :
       this.props.children;
     const contentContainer =
@@ -844,15 +844,14 @@ const ScrollView = createReactClass({
       // onTouchStart: this.scrollResponderHandleTouchStart,
       onTouchStart: () => {
         if (this.props.forceSetResponder) {
-            this.props.forceSetResponder()
+          this.props.forceSetResponder();
         }
-        return this.scrollResponderHandleTouchStart()
+        return this.scrollResponderHandleTouchStart();
       },
       onTouchCancel: this.scrollResponderHandleTouchCancel,
       scrollBarThumbImage: resolveAssetSource(this.props.scrollBarThumbImage),
       scrollEventThrottle: hasStickyHeaders ? 1 : this.props.scrollEventThrottle,
-      sendMomentumEvents: (this.props.onMomentumScrollBegin || this.props.onMomentumScrollEnd) ?
-        true : false,
+      sendMomentumEvents: !!((this.props.onMomentumScrollBegin || this.props.onMomentumScrollEnd)),
       DEPRECATED_sendUpdatedChildFrames,
     };
 
@@ -882,7 +881,7 @@ const ScrollView = createReactClass({
 
         return React.cloneElement(
           refreshControl,
-          {style: props.style},
+          { style: props.style },
           <ScrollViewClass {...props} style={baseStyle} ref={this._setScrollViewRef}>
             {contentContainer}
           </ScrollViewClass>
@@ -944,7 +943,7 @@ if (Platform.OS === 'android') {
   nativeOnlyProps = {
     nativeOnly: {
       onMomentumScrollBegin: true,
-      onMomentumScrollEnd : true,
+      onMomentumScrollEnd: true,
       onScrollBeginDrag: true,
       onScrollEndDrag: true,
     }

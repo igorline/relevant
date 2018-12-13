@@ -1,19 +1,18 @@
 import apn from 'apn';
 import Notification from './api/notification/notification.model';
-import Feed from './api/feed/feed.model';
 import User from './api/user/user.model';
 
-let options = {
+const options = {
   cert: process.env.APN_CERT,
   key: process.env.APN_KEY,
   production: process.env.NODE_ENV === 'production'
 };
 
-let KEY = process.env.ANDROID_KEY;
+const KEY = process.env.ANDROID_KEY;
 
 const settings = {
   gcm: {
-    id: KEY,
+    id: KEY
   },
   apn: {
     cert: process.env.APN_CERT,
@@ -23,6 +22,7 @@ const settings = {
 };
 
 const PushNotifications = require('node-pushnotifications');
+
 const push = new PushNotifications(settings);
 
 const service = new apn.Connection(options);
@@ -36,12 +36,21 @@ service.on('transmitted', (notification, device) => {
 });
 
 service.on('transmissionError', (errCode, notification, device) => {
-  console.error('Notification caused error: ' + errCode + ' for device ', device, notification);
+  console.error(
+    'Notification caused error: ' + errCode + ' for device ',
+    device,
+    notification
+  );
   if (errCode === 8) {
-    let deviceToken = device.toString('utf8');
+    const deviceToken = device.toString('utf8');
     console.log('device id', deviceToken);
-    User.findOneAndUpdate({ _id: notification.payload.toUser }, { $pull : { deviceTokens: deviceToken } }).exec();
-    console.log('A error code of 8 indicates that the device token is invalid. This could be for a number of reasons - are you using the correct environment? i.e. Production vs. Sandbox');
+    User.findOneAndUpdate(
+      { _id: notification.payload.toUser },
+      { $pull: { deviceTokens: deviceToken } }
+    ).exec();
+    console.log(
+      'A error code of 8 indicates that the device token is invalid. This could be for a number of reasons - are you using the correct environment? i.e. Production vs. Sandbox'
+    );
   }
 });
 
@@ -58,16 +67,19 @@ service.on('socketError', console.error);
 async function sendNotification(user, alert, payload) {
   try {
     if (user && user.deviceTokens && user.deviceTokens.length) {
-      let badge = await Notification.count({ forUser: user._id, read: false });
+      const badge = await Notification.count({
+        forUser: user._id,
+        read: false
+      });
       // badge += await Feed.count({ userId: user._id, read: false });
 
       const registrationIds = [];
-      user.deviceTokens.forEach((deviceToken) => {
+      user.deviceTokens.forEach(deviceToken => {
         registrationIds.push(deviceToken);
         console.log('pushing to device tokens ', deviceToken);
       });
 
-      let data = {
+      const data = {
         body: alert,
         expiry: Math.floor(Date.now() / 1000) + 3600,
         custom: { ...payload, toUser: user._id },
@@ -80,12 +92,12 @@ async function sendNotification(user, alert, payload) {
         contentAvailable: 1
       };
 
-      let results = await push.send(registrationIds, data);
+      const results = await push.send(registrationIds, data);
 
       if (!results) {
         console.log('notification error');
       }
-      let updatedTokens = user.deviceTokens;
+      const updatedTokens = user.deviceTokens;
       results.forEach(result => {
         result.message.forEach(message => {
           if (message.error) {
@@ -101,7 +113,9 @@ async function sendNotification(user, alert, payload) {
         await user.save();
       }
     }
-  } catch (err) { console.log(err) };
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 module.exports = {

@@ -4,7 +4,7 @@ import Tag from './tag.model';
 
 
 function handleError(res, statusCode) {
-  let status = statusCode || 500;
+  const status = statusCode || 500;
   return (err) => {
     console.log('tag error ', err);
     res.status(status).send(err);
@@ -25,8 +25,8 @@ function handleError(res, statusCode) {
 
 exports.update = async (req, res) => {
   let tag;
-  let newId = req.body.newId;
-  let oldId = req.body._id;
+  const newId = req.body.newId;
+  const oldId = req.body._id;
   let updatedTag = req.body;
   delete updatedTag.newId;
   try {
@@ -87,7 +87,7 @@ exports.update = async (req, res) => {
 };
 
 exports.create = (req, res) => {
-  let newTag = new Tag(req.body);
+  const newTag = new Tag(req.body);
   newTag.save((err, tag) => {
     if (err) return handleError(res)(err);
     return res.status(200).json(tag);
@@ -95,40 +95,40 @@ exports.create = (req, res) => {
 };
 
 exports.index = (req, res) => {
-  let sort = req.query.sort;
+  const sort = req.query.sort;
   let sortObj = null;
 
   if (sort === 'count') sortObj = { count: -1 };
 
   Tag.find()
-  .sort(sortObj)
-  .exec((err, tags) => {
-    if (err) return handleError(res)(err);
-    return res.json(200, tags);
-  });
+    .sort(sortObj)
+    .exec((err, tags) => {
+      if (err) return handleError(res)(err);
+      return res.json(200, tags);
+    });
 };
 
 exports.categories = (req, res) => {
-  let active = req.query.active;
+  const active = req.query.active;
   let query = { category: true };
   if (active !== undefined) query = { category: true, active: true };
 
   Tag.find(query)
   // .sort('_id')
-  .sort({ count: -1 })
-  .then(categories => res.status(200).json(categories))
-  .catch(err => handleError(res)(err));
+    .sort({ count: -1 })
+    .then(categories => res.status(200).json(categories))
+    .catch(err => handleError(res)(err));
 };
 
 exports.search = (req, res) => {
-  let term = req.params.term;
+  const term = req.params.term;
   Tag.find({
     _id: {
       $regex: term,
       $options: 'i'
     }
   })
-  .then(foundTags => res.json(200, foundTags))
-  .catch(err => handleError(res)(err));
+    .then(foundTags => res.json(200, foundTags))
+    .catch(err => handleError(res)(err));
 };
 

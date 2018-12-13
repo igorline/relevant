@@ -12,7 +12,9 @@ class EthTools extends Component {
     account: PropTypes.string,
     user: PropTypes.object,
     RelevantCoin: PropTypes.object,
-  }
+    children: PropTypes.node
+  };
+
   initialState = {
     balance: 0,
     connectedBalance: 0,
@@ -21,14 +23,14 @@ class EthTools extends Component {
     differentAccount: null,
     network: null,
     status: null,
-    nonce: null,
-  }
+    nonce: null
+  };
   state = {
-    balance: 0,
-  }
+    balance: 0
+  };
 
   queryBalance(address) {
-    let { RelevantCoin } = this.props;
+    const { RelevantCoin } = this.props;
     if (address && RelevantCoin && RelevantCoin.initialized) {
       RelevantCoin.methods.balanceOf.cacheCall(address);
       RelevantCoin.methods.nonceOf.fromCache(address);
@@ -36,7 +38,7 @@ class EthTools extends Component {
   }
 
   static getDerivedStateFromProps(nextProps) {
-    let { account, RelevantCoin, network, status, user } = nextProps;
+    const { account, RelevantCoin, network, status, user } = nextProps;
 
     if (!RelevantCoin || !RelevantCoin.initialized) return null;
 
@@ -50,7 +52,7 @@ class EthTools extends Component {
       return this.initialState;
     }
 
-    let decimals = toNumber(RelevantCoin.methods.decimals.fromCache(), 0);
+    const decimals = toNumber(RelevantCoin.methods.decimals.fromCache(), 0);
 
     connectedAccount = user.ethAddress ? user.ethAddress[0] : null;
 
@@ -61,8 +63,10 @@ class EthTools extends Component {
     }
 
     if (connectedAccount) {
-      connectedBalance =
-        toNumber(RelevantCoin.methods.balanceOf.fromCache(connectedAccount), decimals);
+      connectedBalance = toNumber(
+        RelevantCoin.methods.balanceOf.fromCache(connectedAccount),
+        decimals
+      );
     }
 
     differentAccount = account !== connectedAccount;
@@ -85,9 +89,9 @@ class EthTools extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let { account, user } = this.props;
+    const { account, user } = this.props;
     if (!user) return;
-    let connectedAccount = user.ethAddress ? user.ethAddress[0] : null;
+    const connectedAccount = user.ethAddress ? user.ethAddress[0] : null;
     if (connectedAccount && connectedAccount !== prevState.connectedAccount) {
       this.queryBalance(connectedAccount);
     }
@@ -97,15 +101,11 @@ class EthTools extends Component {
   }
 
   render() {
-    return (
-      <Eth.Provider value={this.state}>
-        {this.props.children}
-      </Eth.Provider>
-    );
+    return <Eth.Provider value={this.state}>{this.props.children}</Eth.Provider>;
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   user: state.auth.user,
   account: state.accounts[0],
   RelevantCoin: state.contracts.RelevantCoin,
@@ -113,8 +113,11 @@ const mapStateToProps = (state) => ({
   status: state.web3.status
 });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators({ ...authActions }, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EthTools);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EthTools);

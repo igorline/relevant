@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 // import {
 //   // Easing
 // } from 'react-native';
@@ -25,6 +26,12 @@ import { transitionConfig } from '../../utils';
 let styles;
 
 class AuthContainer extends Component {
+  static propTypes = {
+    navigation: PropTypes.object,
+    actions: PropTypes.object,
+    share: PropTypes.bool,
+    scene: PropTypes.object
+  };
 
   constructor(props, context) {
     super(props, context);
@@ -37,7 +44,7 @@ class AuthContainer extends Component {
   }
 
   renderScene(props) {
-    let component = props.scene.route.component;
+    const component = props.scene.route.component;
 
     switch (component) {
       case 'auth':
@@ -73,25 +80,27 @@ class AuthContainer extends Component {
   }
 
   render() {
-    let scene = this.props.navigation;
+    const scene = this.props.navigation;
 
-    return (<Transitioner
-      style={{ backgroundColor: 'black' }}
-      navigation={{ state: scene }}
-      configureTransition={transitionConfig}
-      render={transitionProps => (
-        <Card
-          renderScene={this.renderScene}
-          back={this.back}
-          {...this.props}
-          scroll={this.props.navigation.scroll}
-          header
-          share={this.props.share}
-          {...transitionProps}
-        />)}
-    />);
+    return (
+      <Transitioner
+        style={{ backgroundColor: 'black' }}
+        navigation={{ state: scene }}
+        configureTransition={transitionConfig}
+        render={transitionProps => (
+          <Card
+            renderScene={this.renderScene}
+            back={this.back}
+            {...this.props}
+            scroll={this.props.navigation.scroll}
+            header
+            share={this.props.share}
+            {...transitionProps}
+          />
+        )}
+      />
+    );
   }
-
 }
 
 styles = { ...localStyles, ...globalStyles };
@@ -112,9 +121,12 @@ function mapDispatchToProps(dispatch) {
         ...navigationActions,
         ...adminActions
       },
-      dispatch),
+      dispatch
+    )
   };
 }
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(AuthContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AuthContainer);

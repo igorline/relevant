@@ -32,7 +32,7 @@ exports.addWaitlist = async (req, res) => {
     let email = req.body.email;
     if (!email) throw new Error('no email');
     email = email.trim();
-    let waitlist = await List.findOneAndUpdate({ email }, req.body, { upsert: true, new: true }).exec();
+    const waitlist = await List.findOneAndUpdate({ email }, req.body, { upsert: true, new: true }).exec();
     res.status(200).json(waitlist);
   } catch (err) {
     handleError(res)(err);
@@ -61,7 +61,7 @@ exports.invite = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    let id = req.params.id;
+    const id = req.params.id;
     await List.findOne({ _id: id }).remove();
     res.sendStatus(200);
   } catch (err) {

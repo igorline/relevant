@@ -1,9 +1,11 @@
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export default class InfScroll extends Component {
+  static propTypes = {
+    data: PropTypes.array
+  };
+
   constructor(props) {
     super(props);
 
@@ -72,17 +74,14 @@ export default class InfScroll extends Component {
 
     let offset;
     if (this.props.useWindow) {
-      const scrollTop = (scrollEl.pageYOffset !== undefined) ?
-        scrollEl.pageYOffset :
-        (document.documentElement || document.body.parentNode || document.body).scrollTop;
+      const scrollTop =
+        scrollEl.pageYOffset !== undefined
+          ? scrollEl.pageYOffset
+          : (document.documentElement || document.body.parentNode || document.body).scrollTop;
       if (this.props.isReverse) {
         offset = scrollTop;
       } else {
-        offset = this.calculateTopPosition(el) +
-                     (el.offsetHeight -
-                     scrollTop -
-                     window.innerHeight
-                     );
+        offset = this.calculateTopPosition(el) + (el.offsetHeight - scrollTop - window.innerHeight);
       }
     } else if (this.props.isReverse) {
       offset = el.parentNode.scrollTop;
@@ -94,7 +93,7 @@ export default class InfScroll extends Component {
       this.detachScrollListener();
       // Call loadMore after detachScrollListener to allow for non-async loadMore functions
       if (typeof this.props.loadMore === 'function') {
-        this.props.loadMore(this.pageLoaded += 1);
+        this.props.loadMore((this.pageLoaded += 1));
       }
     }
   }
@@ -122,16 +121,11 @@ export default class InfScroll extends Component {
       ...props
     } = this.props;
 
-    props.ref = (node) => {
+    props.ref = node => {
       this.scrollComponent = node;
     };
 
-    return React.createElement(
-      element,
-      props,
-      children,
-      hasMore && (loader || this.defaultLoader),
-    );
+    return React.createElement(element, props, children, hasMore && (loader || this.defaultLoader));
   }
 }
 
@@ -145,11 +139,8 @@ InfScroll.propTypes = {
   threshold: PropTypes.number,
   useCapture: PropTypes.bool,
   useWindow: PropTypes.bool,
-  children: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.array,
-  ]).isRequired,
-  loader: PropTypes.object,
+  children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+  loader: PropTypes.object
 };
 
 InfScroll.defaultProps = {
@@ -161,5 +152,5 @@ InfScroll.defaultProps = {
   useWindow: true,
   isReverse: false,
   useCapture: false,
-  loader: null,
+  loader: null
 };

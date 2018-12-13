@@ -56,7 +56,7 @@ export async function init() {
 }
 
 export async function getBalance(address) {
-  let balance = await instance.balanceOf.call(address);
+  const balance = await instance.balanceOf.call(address);
   console.log(`balance is of ${address} is ${balance.toNumber() / (10 ** decimals)}`);
   return balance.div((10 ** decimals)).toNumber();
 }
@@ -71,7 +71,7 @@ export async function getParam(param, opt) {
 
 async function sendTx(params) {
   try {
-    let { acc, accKey, value, data, fn } = params;
+    const { acc, accKey, value, data, fn } = params;
     let nonce = await web3.eth.getTransactionCount(acc);
 
     // hack to update nonce, but could still fail
@@ -95,15 +95,15 @@ async function sendTx(params) {
     const serializedTx = tx.serialize();
 
     const transactionHash = await web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-    .on('receipt', r => {
+      .on('receipt', r => {
       // r.logs.forEach(l => {
       //   console.log(l.topics);
       // });
       // console.log(r);
-      console.log(`status : ${r.status}`);
-      console.log(`gas used by ${fn}: ${r.gasUsed}`);
-    })
-    .on('error', console.error);
+        console.log(`status : ${r.status}`);
+        console.log(`gas used by ${fn}: ${r.gasUsed}`);
+      })
+      .on('error', console.error);
 
     return true;
   } catch (err) {
@@ -140,20 +140,20 @@ export async function allocateRewards(_amount) {
 }
 
 export async function getNonce(_account) {
-  let nonce = await instance.nonceOf.call(_account);
+  const nonce = await instance.nonceOf.call(_account);
   return nonce.toNumber();
 }
 
 export async function sign(_account, _amount) {
-  let nonce = await getNonce(_account);
+  const nonce = await getNonce(_account);
   let amnt = new web3.utils.BN(_amount.toString());
   let mult = new web3.utils.BN(10 ** (decimals / 2));
   mult = mult.mul(mult);
   amnt = amnt.mul(mult);
   console.log('amnt ', amnt.toString());
-  let hash = web3.utils.soliditySha3(amnt, _account, nonce);
+  const hash = web3.utils.soliditySha3(amnt, _account, nonce);
   console.log(hash);
-  let sig = web3.eth.accounts.sign(hash, '0x' + key);
+  const sig = web3.eth.accounts.sign(hash, '0x' + key);
   console.log(sig);
   return sig.signature;
 }

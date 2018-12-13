@@ -9,7 +9,7 @@ import {
   ListView,
   AlertIOS,
   Platform,
-  TouchableOpacity,
+  TouchableOpacity
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Prompt from 'rn-prompt';
@@ -18,9 +18,15 @@ import { globalStyles, fullWidth, fullHeight, smallScreen } from '../../styles/g
 let styles;
 
 class Auth extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    auth: PropTypes.object,
+    share: PropTypes.bool
+  };
+
   constructor(props, context) {
     super(props, context);
-    let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.slides = [1, 2, 3, 4];
     this.state = {
       visibleHeight: Dimensions.get('window').height,
@@ -43,33 +49,39 @@ class Auth extends Component {
   }
 
   onScrollEnd(e) {
-    let contentOffset = e.nativeEvent.contentOffset;
-    let viewSize = e.nativeEvent.layoutMeasurement;
+    const contentOffset = e.nativeEvent.contentOffset;
+    const viewSize = e.nativeEvent.layoutMeasurement;
 
     // Divide the horizontal offset by the width of the view to see which page is visible
-    let pageNum = Math.floor(contentOffset.x / viewSize.width);
+    const pageNum = Math.floor(contentOffset.x / viewSize.width);
     this.setState({ currentIndex: pageNum });
   }
 
   login() {
-    this.props.actions.push({
-      key: 'login',
-      title: 'Login',
-      showBackButton: true,
-      back: true
-    }, 'auth');
+    this.props.actions.push(
+      {
+        key: 'login',
+        title: 'Login',
+        showBackButton: true,
+        back: true
+      },
+      'auth'
+    );
   }
 
   signup() {
     // if (this.props.admin.currentInvite) {
-      return this.props.actions.push({
+    return this.props.actions.push(
+      {
         key: 'twitterSignup',
         title: 'Signup',
         showBackButton: true,
-        back: true,
+        back: true
         // code: this.props.admin.currentInvite.code,
         // email: this.props.admin.currentInvite.email
-      }, 'auth');
+      },
+      'auth'
+    );
     // }
 
     // // Android
@@ -113,20 +125,22 @@ class Auth extends Component {
   }
 
   scrollToPage(index) {
-    let num = (index * (fullWidth));
+    const num = index * fullWidth;
     this.setState({ currentIndex: index });
     this.listview.scrollTo({ x: num, animated: true });
   }
 
   renderIndicator() {
-    let indicator = [];
+    const indicator = [];
     if (!this.slides) return indicator;
     if (this.slides.length) {
       this.slides.forEach((slide, i) => {
-        let active = this.state.currentIndex === i;
-        indicator.push(<TouchableWithoutFeedback onPress={() => this.scrollToPage(i)} key={i} >
-          <View style={[styles.indicatorItem, { backgroundColor: active ? 'black' : 'white' }]} />
-        </TouchableWithoutFeedback>);
+        const active = this.state.currentIndex === i;
+        indicator.push(
+          <TouchableWithoutFeedback onPress={() => this.scrollToPage(i)} key={i}>
+            <View style={[styles.indicatorItem, { backgroundColor: active ? 'black' : 'white' }]} />
+          </TouchableWithoutFeedback>
+        );
       });
     }
     return indicator;
@@ -134,8 +148,8 @@ class Auth extends Component {
 
   renderRow(data, section, i) {
     function sentance(text, special) {
-      let words = text.split(/\s/);
-      let l = words.length - 1;
+      const words = text.split(/\s/);
+      const l = words.length - 1;
       return words.map((t, j) => {
         if (special.find(w => t === w)) {
           return (
@@ -144,9 +158,11 @@ class Auth extends Component {
             </Text>
           );
         }
-        return (<Text key={j + t} allowFontScaling={false} style={[styles.slideText]}>
-          {t + (l === j ? '' : ' ')}
-        </Text>);
+        return (
+          <Text key={j + t} allowFontScaling={false} style={[styles.slideText]}>
+            {t + (l === j ? '' : ' ')}
+          </Text>
+        );
       });
     }
 
@@ -155,13 +171,15 @@ class Auth extends Component {
         return (
           <View>
             <View key={i} style={styles.authSlide}>
-              {sentance('Relevant is a social news reader that values quality over clicks', ['Relevant', 'quality', 'clicks'])}
+              {sentance('Relevant is a social news reader that values quality over clicks', [
+                'Relevant',
+                'quality',
+                'clicks'
+              ])}
               <Text allowFontScaling={false} style={styles.slideText} />
             </View>
             <View style={styles.splashEmojiContainer}>
-              <Text style={styles.splashEmoji}>
-                ✌️
-              </Text>
+              <Text style={styles.splashEmoji}>✌️</Text>
             </View>
           </View>
         );
@@ -169,7 +187,10 @@ class Auth extends Component {
         return (
           <View>
             <View key={i} style={styles.authSlide}>
-              {sentance('Discover relevant content and silence the noise of the attention economy', ['relevant', 'noise', 'content'])}
+              {sentance(
+                'Discover relevant content and silence the noise of the attention economy',
+                ['relevant', 'noise', 'content']
+              )}
               <Text allowFontScaling={false} style={styles.slideText} />
             </View>
           </View>
@@ -178,22 +199,33 @@ class Auth extends Component {
         return (
           <View>
             <View key={i} style={styles.authSlide}>
-              {sentance('Earn rewards by sharing articles that are worth reading', ['rewards', 'Earn', 'worth', 'reading'])}
+              {sentance('Earn rewards by sharing articles that are worth reading', [
+                'rewards',
+                'Earn',
+                'worth',
+                'reading'
+              ])}
               <Text allowFontScaling={false} style={styles.slideText} />
             </View>
-            { /* <Image
+            {/* <Image
               resizeMode={'contain'}
               style={[styles.r, { width: 60, height: 60, marginTop: 10, alignSelf: 'center' }]}
               source={require('../../assets/images/relevantcoin.png')}
-            />*/}
+            /> */}
           </View>
         );
       case '3':
-        return (<View key={i} style={styles.authSlide}>
-          {sentance('Join the community and help us build a better information environment for all', ['Join', 'community', 'for', 'all'])}
-          <Text allowFontScaling={false} style={styles.slideText} />
-        </View>);
-      default: return <View key={i} style={styles.authSlide} />;
+        return (
+          <View key={i} style={styles.authSlide}>
+            {sentance(
+              'Join the community and help us build a better information environment for all',
+              ['Join', 'community', 'for', 'all']
+            )}
+            <Text allowFontScaling={false} style={styles.slideText} />
+          </View>
+        );
+      default:
+        return <View key={i} style={styles.authSlide} />;
     }
   }
 
@@ -205,7 +237,9 @@ class Auth extends Component {
         <ListView
           horizontal
           scrollEnabled
-          ref={(c) => { this.listview = c; }}
+          ref={c => {
+            this.listview = c;
+          }}
           decelerationRate={'fast'}
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
@@ -215,9 +249,7 @@ class Auth extends Component {
           onMomentumScrollEnd={this.onScrollEnd}
           pagingEnabled
         />
-        <View style={styles.indicatorParent}>
-          {this.renderIndicator()}
-        </View>
+        <View style={styles.indicatorParent}>{this.renderIndicator()}</View>
       </View>
     );
     // let intro = (
@@ -234,19 +266,11 @@ class Auth extends Component {
 
     let cta = (
       <View style={styles.authPadding}>
-        <TouchableOpacity
-          onPress={this.signup}
-          style={styles.largeButton}
-        >
-          <Text style={styles.largeButtonText}>
-            Sign Up Now
-          </Text>
+        <TouchableOpacity onPress={this.signup} style={styles.largeButton}>
+          <Text style={styles.largeButtonText}>Sign Up Now</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={{}}
-          onPress={this.login}
-        >
+        <TouchableOpacity style={{}} onPress={this.login}>
           <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
             <Text allowFontScaling={false} style={styles.signInText}>
               Already have an account?
@@ -267,7 +291,7 @@ class Auth extends Component {
               alignSelf: 'center',
               textAlign: 'center',
               padding: 20,
-              lineHeight: 44,
+              lineHeight: 44
             }}
           >
             Ooops{'\n'}You are not logged in{'\n'}Please sign in via{'\n'}Relevant App
@@ -278,8 +302,10 @@ class Auth extends Component {
 
     return (
       <View
-        style={[{
-          height: isAuthenticated ? this.state.visibleHeight - 60 : this.state.visibleHeight },
+        style={[
+          {
+            height: isAuthenticated ? this.state.visibleHeight - 60 : this.state.visibleHeight
+          },
           styles.authParent
         ]}
       >
@@ -305,17 +331,19 @@ class Auth extends Component {
           visible={this.state.promptVisible}
           onCancel={() => this.setState({ promptVisible: false })}
           onSubmit={code => {
-            this.props.actions.checkInviteCode(code)
-            .then(invite => {
+            this.props.actions.checkInviteCode(code).then(invite => {
               if (invite) {
-                this.props.actions.push({
-                  key: 'twitterSignup',
-                  title: 'Signup',
-                  showBackButton: true,
-                  back: true,
-                  email: invite.email,
-                  code: invite.code
-                }, 'auth');
+                this.props.actions.push(
+                  {
+                    key: 'twitterSignup',
+                    title: 'Signup',
+                    showBackButton: true,
+                    back: true,
+                    email: invite.email,
+                    code: invite.code
+                  },
+                  'auth'
+                );
               }
               this.setState({ promptVisible: false });
             });
@@ -329,12 +357,12 @@ class Auth extends Component {
 const localStyles = StyleSheet.create({
   adjust: {
     fontSize: 38,
-    lineHeight: 30,
+    lineHeight: 30
   },
   strokeText: {
     fontSize: smallScreen ? 32 : 36,
     fontFamily: 'HelveticaNeueLTStd-BdOu',
-    lineHeight: Platform.OS === 'ios' ? (smallScreen ? 47 : 55) : (smallScreen ? 39 : 46),
+    lineHeight: Platform.OS === 'ios' ? (smallScreen ? 47 : 55) : smallScreen ? 39 : 46
     // lineHeight: 45,rr
     // flexDirection: 'row',
     // alignSelf: 'flex-start'
@@ -346,7 +374,7 @@ const localStyles = StyleSheet.create({
     lineHeight: smallScreen ? 40 : 45
   },
   relevant: {
-    height: smallScreen ? 40 : 45,
+    height: smallScreen ? 40 : 45
     // width: 200,
   },
   authSlidesParent: {
@@ -359,8 +387,8 @@ const localStyles = StyleSheet.create({
   authSlide: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: (fullWidth - 40),
-    marginHorizontal: 20,
+    width: fullWidth - 40,
+    marginHorizontal: 20
   },
   indicatorParent: {
     flexDirection: 'row',
@@ -375,7 +403,7 @@ const localStyles = StyleSheet.create({
     width: 8,
     borderRadius: 4,
     borderColor: 'black',
-    borderWidth: 1,
+    borderWidth: 1
   },
   authDivider: {
     height: 5,
@@ -384,7 +412,7 @@ const localStyles = StyleSheet.create({
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderBottomColor: 'black',
-    borderTopColor: 'black',
+    borderTopColor: 'black'
   },
   logoContainer: {
     marginTop: fullHeight / 40,
@@ -393,11 +421,11 @@ const localStyles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
     width: 'auto',
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   authLogo: {
     resizeMode: 'contain',
-    flex: 1,
+    flex: 1
   },
   authParent: {
     backgroundColor: 'white',
@@ -408,7 +436,7 @@ const localStyles = StyleSheet.create({
     paddingVertical: 20
   },
   authPadding: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 20
   },
   splashEmojiContainer: {
     flexDirection: 'column',
@@ -419,9 +447,8 @@ const localStyles = StyleSheet.create({
   splashEmoji: {
     alignSelf: 'center',
     fontSize: Platform.OS === 'android' ? 50 : 65,
-    fontFamily: Platform.OS === 'android' ? 'NotoColorEmoji' : 'Georgia',
+    fontFamily: Platform.OS === 'android' ? 'NotoColorEmoji' : 'Georgia'
   }
-
 });
 
 Auth.propTypes = {
@@ -429,11 +456,9 @@ Auth.propTypes = {
   actions: PropTypes.object,
   navigation: PropTypes.object, // need this prop to pass to child components
   admin: PropTypes.object,
-  share: PropTypes.bool, // flag for share extension
+  share: PropTypes.bool // flag for share extension
 };
-
 
 styles = { ...localStyles, ...globalStyles };
 
 export default Auth;
-

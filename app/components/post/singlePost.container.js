@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import {
-  View,
-  InteractionManager,
-} from 'react-native';
+import { View, InteractionManager } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as authActions from '../../actions/auth.actions';
@@ -18,23 +16,32 @@ import CustomSpinnerRelative from '../customSpinnerRelative.component';
 import ErrorComponent from '../error.component';
 import SinglePost from './singlePost.component';
 
-
 class SinglePostContainer extends Component {
+  static propTypes = {
+    scene: PropTypes.object,
+    actions: PropTypes.object,
+    comments: PropTypes.object,
+    users: PropTypes.array,
+    auth: PropTypes.object,
+    error: PropTypes.string,
+    posts: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
       inputHeight: 0,
       editing: false,
-      comment: null,
+      comment: null
     };
     this.setEditing = this.setEditing.bind(this);
     this.reload = this.reload.bind(this);
   }
 
   componentWillMount() {
-    let { posts } = this.props;
-    let id = this.props.scene.id;
-    let post = posts.posts[id];
+    const { posts } = this.props;
+    const id = this.props.scene.id;
+    const post = posts.posts[id];
     // let related = posts.related[id];
 
     InteractionManager.runAfterInteractions(() => {
@@ -50,50 +57,54 @@ class SinglePostContainer extends Component {
   }
 
   reload() {
-    let id = this.props.scene.id;
+    const id = this.props.scene.id;
     this.props.actions.getSelectedPost(id);
     this.props.actions.getComments(id);
   }
 
   render() {
     let dataEl = null;
-    let id = this.props.scene.id;
-    let { posts } = this.props;
-    let post = posts.posts[id];
+    const id = this.props.scene.id;
+    const { posts } = this.props;
+    const post = posts.posts[id];
 
-    let commentIds = this.props.comments.commentsById[id] || {};
-    let related = posts.related[id] || [];
-    let link = post && posts.links[post.metaPost];
+    const commentIds = this.props.comments.commentsById[id] || {};
+    const related = posts.related[id] || [];
+    const link = post && posts.links[post.metaPost];
 
     if (post) {
-      dataEl = (<SinglePost
-        postId={id}
-        post={post}
-        link={link}
-        postComments={commentIds}
-        scene={this.props.scene}
-        actions={this.props.actions}
-        singlePostEditing={this.setEditing}
-        error={this.error}
-        users={this.props.users}
-        auth={this.props.auth}
-        related={related}
-        {...this.props}
-      />);
+      dataEl = (
+        <SinglePost
+          postId={id}
+          post={post}
+          link={link}
+          postComments={commentIds}
+          scene={this.props.scene}
+          actions={this.props.actions}
+          singlePostEditing={this.setEditing}
+          error={this.error}
+          users={this.props.users}
+          auth={this.props.auth}
+          related={related}
+          {...this.props}
+        />
+      );
     }
 
     if (this.props.error && !this.postData) {
-      return <ErrorComponent error={this.props.error} parent={'singlepost'} reloadFunction={this.reload} />;
+      return (
+        <ErrorComponent
+          error={this.props.error}
+          parent={'singlepost'}
+          reloadFunction={this.reload}
+        />
+      );
     }
 
     return (
-      <View
-        style={{ flex: 1 }}
-      >
+      <View style={{ flex: 1 }}>
         {dataEl}
-        <CustomSpinnerRelative
-          visible={(!post) && !this.props.error}
-        />
+        <CustomSpinnerRelative visible={!post && !this.props.error} />
       </View>
     );
   }
@@ -108,24 +119,30 @@ function mapStateToProps(state) {
     comments: state.comments,
     users: state.user.users,
     tags: state.tags,
-    myPostInv: state.investments.myPostInv,
+    myPostInv: state.investments.myPostInv
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...statsActions,
-      ...tagActions,
-      ...authActions,
-      ...postActions,
-      ...animationActions,
-      ...investActions,
-      ...userActions,
-      ...createPostActions,
-      ...navigationActions,
-    }, dispatch),
+    actions: bindActionCreators(
+      {
+        ...statsActions,
+        ...tagActions,
+        ...authActions,
+        ...postActions,
+        ...animationActions,
+        ...investActions,
+        ...userActions,
+        ...createPostActions,
+        ...navigationActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SinglePostContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SinglePostContainer);

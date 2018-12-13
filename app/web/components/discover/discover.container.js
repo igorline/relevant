@@ -1,6 +1,4 @@
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -10,7 +8,6 @@ import * as authActions from '../../../actions/auth.actions';
 import * as adminActions from '../../../actions/admin.actions';
 import * as postActions from '../../../actions/post.actions';
 import * as userActions from '../../../actions/user.actions';
-import * as onlineActions from '../../../actions/online.actions';
 import * as notifActions from '../../../actions/notif.actions';
 import * as tagActions from '../../../actions/tag.actions';
 import * as messageActions from '../../../actions/message.actions';
@@ -18,13 +15,9 @@ import * as investActions from '../../../actions/invest.actions';
 import * as navigationActions from '../../../actions/navigation.actions';
 
 import CreatePost from '../createPost/createPost.container';
-import DiscoverTabs from './discoverTabs.component';
 import DiscoverPosts from './discoverPosts.component';
 import DiscoverUsers from './discoverUsers.component';
-// import Loading from '../common/loading.component';
-import Wallet from '../wallet/wallet.container';
 import * as discoverHelper from './discoverHelper';
-import ShadowButton from '../common/ShadowButton';
 import Sidebar from '../common/sidebar.component';
 
 const POST_PAGE_SIZE = 15;
@@ -35,12 +28,20 @@ if (process.env.BROWSER === true) {
 }
 
 export class Discover extends Component {
+  static propTypes = {
+    params: PropTypes.object,
+    refresh: PropTypes.object,
+    auth: PropTypes.object,
+    posts: PropTypes.object,
+    user: PropTypes.object,
+    actions: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
       tabIndex: 1,
-      routes: this.props.params.tag ?
-        discoverHelper.tagRoutes : discoverHelper.standardRoutes,
+      routes: this.props.params.tag ? discoverHelper.tagRoutes : discoverHelper.standardRoutes
     };
     if (this.props.params.sort) {
       const sort = this.props.params.sort;
@@ -67,8 +68,8 @@ export class Discover extends Component {
       alreadyLoading = true;
     }
 
-    let userId = this.props.auth.user ? this.props.auth.user._id : null;
-    let prevUserId = prevProps.auth.user ? prevProps.auth.user._id : null;
+    const userId = this.props.auth.user ? this.props.auth.user._id : null;
+    const prevUserId = prevProps.auth.user ? prevProps.auth.user._id : null;
 
     // TODO should we do this w refresh instead? when we log in / out?
     if (userId !== prevUserId && !alreadyLoading) {
@@ -82,11 +83,10 @@ export class Discover extends Component {
     }
   }
 
-
   getLoadedState() {
     const sort = this.state.routes[this.state.tabIndex].key;
     const tag = this.props.params.tag;
-    let loadLookup = tag ? this.props.posts.loaded.topics[tag] : this.props.posts.loaded;
+    const loadLookup = tag ? this.props.posts.loaded.topics[tag] : this.props.posts.loaded;
     switch (sort) {
       case 'people':
         return !this.props.user.loading;
@@ -97,11 +97,11 @@ export class Discover extends Component {
 
   load(sort, props, _length) {
     if (!this.state.routes[this.state.tabIndex]) return;
-    let community = this.props.auth.community;
+    const community = this.props.auth.community;
     sort = sort || this.state.routes[this.state.tabIndex].key;
     props = props || this.props;
     const tags = props.params.tag ? [props.params.tag] : [];
-    let length = _length || 0;
+    const length = _length || 0;
     switch (sort) {
       case 'feed':
         this.props.actions.getFeed(length, tags);
@@ -116,7 +116,7 @@ export class Discover extends Component {
         if (this.props.auth.user) this.props.actions.getUsers(length, POST_PAGE_SIZE * 2, tags);
         break;
       default:
-        return;
+        break;
     }
   }
 
@@ -125,50 +125,39 @@ export class Discover extends Component {
     const tag = this.props.params.tag;
     switch (sort) {
       case 'people':
-        return (<DiscoverUsers
-          key={'users' + tag}
-          tag={tag}
-          pageSize={POST_PAGE_SIZE}
-          {...this.props}
-        />);
+        return (
+          <DiscoverUsers key={'users' + tag} tag={tag} pageSize={POST_PAGE_SIZE} {...this.props} />
+        );
       default:
-        return (<DiscoverPosts
-          key={'posts' + sort + tag}
-          sort={sort}
-          load={this.load}
-          tag={tag}
-          pageSize={POST_PAGE_SIZE}
-          {...this.props}
-        />);
+        return (
+          <DiscoverPosts
+            key={'posts' + sort + tag}
+            sort={sort}
+            load={this.load}
+            tag={tag}
+            pageSize={POST_PAGE_SIZE}
+            {...this.props}
+          />
+        );
     }
   }
 
   render() {
     if (!this.state.routes[this.state.tabIndex]) return null;
     const tag = this.props.params.tag;
-    let sidebar = <Sidebar {...this.props} />;
 
     return (
       <div className="discoverContainer row pageContainer">
-
-
-{/*        <nav>
-          communities:
-            <ul>
-              <a href="localhost:3000/discover/new">relevant</a>
-              <a href="crypto.z.localhost:3000/discover/new">crypto</a>
-            </ul>
-        </nav>*/}
-
         <div className="discoverInner">
           <div className="postContainer">
-            {tag &&
-              <h3><Link to='/discover/new'>{this.props.auth.community}</Link> - #{tag}</h3>
-            }
+            {tag && (
+              <h3>
+                <Link to="/discover/new">{this.props.auth.community}</Link> - #{tag}
+              </h3>
+            )}
             <CreatePost {...this.props} />
 
-            { this.renderFeed() }
-            {/* isLoaded ? this.renderFeed() : <Loading />*/}
+            {this.renderFeed()}
           </div>
         </div>
         <Sidebar {...this.props} />
@@ -182,7 +171,7 @@ Discover.propTypes = {
   params: PropTypes.object,
   user: PropTypes.object,
   auth: PropTypes.object,
-  actions: PropTypes.object,
+  actions: PropTypes.object
 };
 
 function mapStateToProps(state) {
@@ -200,19 +189,24 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...authActions,
-      ...postActions,
-      ...onlineActions,
-      ...notifActions,
-      ...messageActions,
-      ...userActions,
-      ...investActions,
-      ...navigationActions,
-      ...tagActions,
-      ...adminActions,
-    }, dispatch)
+    actions: bindActionCreators(
+      {
+        ...authActions,
+        ...postActions,
+        ...notifActions,
+        ...messageActions,
+        ...userActions,
+        ...investActions,
+        ...navigationActions,
+        ...tagActions,
+        ...adminActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Discover);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Discover);

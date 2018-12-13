@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-import {
-  ListView,
-  RefreshControl,
-  View,
-  StyleSheet,
-  FlatList
-} from 'react-native';
+import { ListView, RefreshControl, View, StyleSheet, FlatList } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles, fullWidth, fullHeight } from '../styles/global';
 import CustomSpinner from '../components/CustomSpinner.component';
 import EmptyList from '../components/emptyList.component';
@@ -13,19 +8,37 @@ import EmptyList from '../components/emptyList.component';
 let styles;
 
 export default class ActivityView extends Component {
+  static propTypes = {
+    data: PropTypes.array,
+    active: PropTypes.object,
+    load: PropTypes.func,
+    view: PropTypes.number,
+    onReload: PropTypes.func,
+    loaded: PropTypes.bool,
+    scrollableTab: PropTypes.object,
+    type: PropTypes.string,
+    children: PropTypes.node,
+    parent: PropTypes.object,
+    stickyHeaderIndices: PropTypes.object,
+    renderRow: PropTypes.func,
+    YOffset: PropTypes.number,
+    renderHeader: PropTypes.func,
+    onScroll: PropTypes.func
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
       reloading: false,
       none: false,
-      page: 0,
+      page: 0
     };
     this.height = fullHeight;
     this.reload = this.reload.bind(this);
     this.loadMore = this.loadMore.bind(this);
     this.dataSource = null;
     this.lastReload = 0;
-    let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.tpmDataSource = ds.cloneWithRows([]);
   }
 
@@ -40,15 +53,16 @@ export default class ActivityView extends Component {
     }
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   componentWillReceiveProps(next) {
     if (this.props.data !== next.data) {
       this.updateData(next.data);
       clearTimeout(this.stateTimeout);
-      this.stateTimeout = setTimeout(() =>
-        this.setState({ reloading: false, loading: false }), 1000);
+      this.stateTimeout = setTimeout(
+        () => this.setState({ reloading: false, loading: false }),
+        1000
+      );
       if (!next.data.length) this.setState({ none: true });
     } else {
       // need to update data either way for list to re-render
@@ -73,14 +87,14 @@ export default class ActivityView extends Component {
   }
 
   updateData(data) {
-    let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.dataSource = ds.cloneWithRows(data);
   }
 
   reload() {
     if (this.state.loading || this.state.reloading) return;
     this.setState({ reloading: true });
-    this.lastReload = (new Date()).getTime();
+    this.lastReload = new Date().getTime();
     this.props.load(this.props.view, 0);
     if (this.props.onReload) this.props.onReload();
   }
@@ -98,7 +112,7 @@ export default class ActivityView extends Component {
   render() {
     let listEl = null;
     let emptyEl = null;
-    let spinnerEl = (<CustomSpinner visible={!this.props.data.length && this.props.active} />);
+    let spinnerEl = <CustomSpinner visible={!this.props.data.length && this.props.active} />;
 
     let listStyle = [styles.commonList, styles.hiddenList];
 
@@ -112,19 +126,19 @@ export default class ActivityView extends Component {
     if (this.props.loaded) spinnerEl = null;
 
     if (this.props.loaded && !this.props.data.length) {
-      emptyEl = (<EmptyList
-        visible
-        emoji={'😔'}
-        type={type}
-      >
-        {this.props.children}
-      </EmptyList>);
+      emptyEl = (
+        <EmptyList visible emoji={'😔'} type={type}>
+          {this.props.children}
+        </EmptyList>
+      );
       if (this.props.parent !== 'profile') listEl = null;
     }
 
     listEl = (
       <FlatList
-        ref={(c) => { this.listview = c; }}
+        ref={c => {
+          this.listview = c;
+        }}
         enableEmptySections
         removeClippedSubviews
         pageSize={1}
@@ -140,11 +154,11 @@ export default class ActivityView extends Component {
         style={{
           flex: 0.5,
           width: fullWidth,
-          backgroundColor: 'white',
+          backgroundColor: 'white'
         }}
         keyboardShouldPersistTaps={'always'}
         keyboardDismissMode={'on-drag'}
-        onScroll={(e) => {
+        onScroll={e => {
           if (this.props.onScroll) {
             this.props.onScroll(e, this.props.view || 0);
           }
@@ -154,7 +168,10 @@ export default class ActivityView extends Component {
         renderFooter={() => emptyEl}
         refreshControl={
           <RefreshControl
-            style={[{ backgroundColor: 'hsl(238,20%,95%)' }, this.props.data.length ? null : styles.hideReload]}
+            style={[
+              { backgroundColor: 'hsl(238,20%,95%)' },
+              this.props.data.length ? null : styles.hideReload
+            ]}
             refreshing={this.state.reloading}
             onRefresh={this.reload}
             tintColor="#000000"
@@ -189,7 +206,7 @@ const localStyles = StyleSheet.create({
     height: 0,
     width: 0,
     position: 'absolute'
-  },
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };

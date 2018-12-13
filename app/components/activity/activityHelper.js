@@ -7,14 +7,14 @@ export function getText(activity, amount) {
     action = 'decreased';
     also = '';
   }
-  let postType = activity.post ? activity.post.type : 'post';
-  let coin = numbers.abbreviateNumber(activity.coin);
+  const postType = activity.post ? activity.post.type : 'post';
+  const coin = numbers.abbreviateNumber(activity.coin);
 
   switch (activity.type) {
     case 'upvote': {
       // coinText is deprecated
-      let coinText = activity.coin ? 'you got a coin and ' : '';
-      let relText = amount > 0 ? `→ ${coinText}your relevance increased by ${amount}` : '';
+      const coinText = activity.coin ? 'you got a coin and ' : '';
+      const relText = amount > 0 ? `→ ${coinText}your relevance increased by ${amount}` : '';
       return `upvoted your ${postType} ${relText}`;
     }
 
@@ -29,7 +29,9 @@ export function getText(activity, amount) {
       return `${also}downvoted this ${postType} → your relevance ${action} by ${amount}`;
 
     case 'basicIncome':
-      return `You got ${coin} extra coin${activity.coin > 1 ? 's' : ''} so you can upvote more posts!`;
+      return `You got ${coin} extra coin${
+        activity.coin > 1 ? 's' : ''
+      } so you can upvote more posts!`;
 
     case 'commentAlso':
       return `commented on a ${postType}`;
@@ -45,7 +47,7 @@ export function getText(activity, amount) {
     case 'mention':
       return `mentioned you in the ${postType}`;
 
-      // return 'mentioned you in a comment';
+    // return 'mentioned you in a comment';
 
     case 'topPost':
       return 'In case you missed this top-ranked post:';
@@ -79,11 +81,10 @@ export function getStatParams(activity) {
   return { relevance, coin };
 }
 
-
 export function getActivityParams(activity) {
   let emoji;
   let userImage;
-  let post = activity.post;
+  const post = activity.post;
   let image;
   let userName;
 
@@ -92,7 +93,8 @@ export function getActivityParams(activity) {
     case 'partialUpvote':
     case 'downvote':
     case 'partialDownvote':
-      activity.byUser ? userImage = activity.byUser : emoji = '🤑';
+      if (activity.byUser) userImage = activity.byUser;
+      else emoji = '🤑';
       userName = activity.byUser;
       break;
     case 'basicIncome':

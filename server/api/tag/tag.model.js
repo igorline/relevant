@@ -1,8 +1,8 @@
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-let TagSchema = new Schema({
+const TagSchema = new Schema({
   _id: { type: String, trim: true },
   parents: [{ type: String, ref: 'Tag' }],
   categoryName: { type: String },

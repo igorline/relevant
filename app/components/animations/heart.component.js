@@ -1,21 +1,23 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Animated,
-  Easing
-} from 'react-native';
+import { StyleSheet, Animated, Easing } from 'react-native';
+import PropTypes from 'prop-types';
 import { fullHeight, fullWidth } from '../../styles/global';
 
 let styles;
 
 class Heart extends Component {
+  static propTypes = {
+    specialKey: PropTypes.number,
+    delay: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
       opacity: new Animated.Value(1),
       yVal: new Animated.Value(0),
       xVal: new Animated.Value(0),
-      scale: new Animated.Value(0),
+      scale: new Animated.Value(0)
     };
   }
 
@@ -28,14 +30,14 @@ class Heart extends Component {
         toValue: -fullHeight / 1.5,
         delay: delay * i,
         duration: 1000,
-        easing: Easing.quad,
+        easing: Easing.quad
         // useNativeDriver: true,
       }),
       Animated.timing(this.state.opacity, {
         toValue: 0,
         delay: delay * i,
         duration: 1000,
-        easing: Easing.in(Easing.exp),
+        easing: Easing.in(Easing.exp)
         // useNativeDriver: true,
       }),
       Animated.sequence([
@@ -43,9 +45,9 @@ class Heart extends Component {
           toValue: (Math.random() - 0.5) * 40,
           delay: delay * i,
           duration: 1000,
-          easing: Easing.ease,
+          easing: Easing.ease
           // useNativeDriver: true,
-        }),
+        })
         // Animated.timing(this.state.xVal, {
         //   toValue: (Math.random() - 0.5) * 20,
         //   delay: 500,
@@ -58,16 +60,16 @@ class Heart extends Component {
           toValue: 0.5,
           delay: delay * i,
           duration: 100,
-          easing: Easing.in(Easing.exp),
+          easing: Easing.in(Easing.exp)
           // useNativeDriver: true,
         }),
         Animated.timing(this.state.scale, {
           toValue: 1,
           delay: 100,
           duration: 500,
-          easing: Easing.ease,
+          easing: Easing.ease
           // useNativeDriver: true,
-        }),
+        })
       ]).start()
     ]).start();
   }
@@ -79,14 +81,17 @@ class Heart extends Component {
       <Animated.Text
         pointerEvents={'none'}
         key={key}
-        style={[styles.aniHeart,
-          { transform: [
-            { scale: this.state.scale },
-            { translateY: this.state.yVal },
-            { translateX: this.state.xVal },
-          ],
-          opacity: this.state.opacity
-        }]}
+        style={[
+          styles.aniHeart,
+          {
+            transform: [
+              { scale: this.state.scale },
+              { translateY: this.state.yVal },
+              { translateX: this.state.xVal }
+            ],
+            opacity: this.state.opacity
+          }
+        ]}
       >
         ❤️
       </Animated.Text>
@@ -103,5 +108,5 @@ styles = StyleSheet.create({
     fontSize: 12 * 2,
     bottom: 40,
     backgroundColor: 'transparent'
-  },
+  }
 });

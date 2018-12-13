@@ -1,9 +1,9 @@
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 // TODO check for unused fields
-let MetaPostSchema = new Schema({
+const MetaPostSchema = new Schema({
   title: String,
   description: String,
   image: String,

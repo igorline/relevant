@@ -6,9 +6,9 @@ import Post from '../api/post/post.model';
 import * as proxyHelpers from '../api/post/html';
 import { text } from '../../app/utils';
 
-let requestAsync = promisify(request);
+const requestAsync = promisify(request);
 
-let q = queue({
+const q = queue({
   concurrency: 20,
 });
 
@@ -18,13 +18,12 @@ q.on('timeout', (next, job) => {
 });
 
 
-
 async function populateMeta() {
   // let fbHeader = {
   //   'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
   // };
   try {
-    let all = await Meta.find({ url: { $ne: null } });
+    const all = await Meta.find({ url: { $ne: null } });
     all.forEach(meta => {
       q.push(async cb => {
         try {
@@ -39,11 +38,11 @@ async function populateMeta() {
           //   url = 'http://';
           // }
 
-          let url = meta.url;
+          const url = meta.url;
 
           // console.log('url: ', url);
-          let article = await proxyHelpers.getReadable(url);
-          let short = proxyHelpers.trimToLength(article.article, 140);
+          const article = await proxyHelpers.getReadable(url);
+          const short = proxyHelpers.trimToLength(article.article, 140);
           meta.shortText = short.innerHTML;
           meta.articleAuthor = article.byline;
           console.log('author ', meta.shortText.length);
@@ -64,7 +63,6 @@ async function populateMeta() {
           // meta.links = unfluff.links;
           // console.log(short);
           meta = await meta.save();
-
         } catch (err) {
           console.log(err.message);
         }
@@ -83,22 +81,22 @@ async function populateMeta() {
 
 
 function getHeader(uri) {
-  let fbHeader = {
+  const fbHeader = {
     'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php) Facebot',
   };
-  let noFb = uri.match('apple.news'); // || uri.match('flip.it');
+  const noFb = uri.match('apple.news'); // || uri.match('flip.it');
   if (noFb) return {};
   return fbHeader;
 }
 
 async function updatePostData() {
   try {
-    let all = await Post.find({ link: { $ne: null } });
+    const all = await Post.find({ link: { $ne: null } });
     console.log(all.length);
     all.forEach(post => {
       q.push(async cb => {
         try {
-          let result = await requestAsync({
+          const result = await requestAsync({
             url: post.link,
             maxRedirects: 22,
             jar: true,
@@ -106,7 +104,7 @@ async function updatePostData() {
             headers: getHeader(post.link),
             rejectUnauthorized: false,
           });
-          let data = proxyHelpers.generatePreview(result.body, post.link);
+          const data = proxyHelpers.generatePreview(result.body, post.link);
           if (data.result) {
             post.keywords = data.result.keywords;
             post.articleAuthor = data.result.articleAuthor;
@@ -121,7 +119,7 @@ async function updatePostData() {
           // console.log('mp ', meta.image);
           // console.log(meta.keywords);
 
-          let meta = await post.upsertMetaPost(post.meta);
+          const meta = await post.upsertMetaPost(post.meta);
           // if (!meta.image) {
           //   console.log('meta ', meta.url);
           //   console.log('meta ', meta.title);
@@ -147,13 +145,13 @@ async function updatePostData() {
 // updatePostData();
 
 async function processTags() {
-  let posts = await Post.find({});
-  let processed = posts.map(async post => {
-    if(!post.body) return;
-    let words = text.getWords(post.body);
-    let bodyTags = text.getTags(words);
+  const posts = await Post.find({});
+  const processed = posts.map(async post => {
+    if (!post.body) return;
+    const words = text.getWords(post.body);
+    const bodyTags = text.getTags(words);
     if (!bodyTags.length) return;
-    let newTags = [...new Set([...post.tags, ...bodyTags])];
+    const newTags = [...new Set([...post.tags, ...bodyTags])];
     if (newTags.length !== post.tags.length) {
       console.log('found tags');
       console.log(bodyTags);

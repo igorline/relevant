@@ -4,12 +4,17 @@ import { Link } from 'react-router';
 import * as discoverHelper from './discoverHelper';
 
 class DiscoverTabs extends Component {
+  static propTypes = {
+    params: PropTypes.object,
+    auth: PropTypes.object,
+    tag: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
       tabIndex: 1,
-      routes: this.props.params.tag ?
-        discoverHelper.tagRoutes : discoverHelper.standardRoutes,
+      routes: this.props.params.tag ? discoverHelper.tagRoutes : discoverHelper.standardRoutes
     };
   }
 
@@ -18,8 +23,8 @@ class DiscoverTabs extends Component {
   }
 
   render() {
-    let { tag } = this.props.params;
-    let { community } = this.props.auth;
+    const { tag } = this.props.params;
+    const { community } = this.props.auth;
     const tabs = this.state.routes.map((tab, i) => {
       let dest = '/' + community;
       if (this.props.tag) {
@@ -27,22 +32,12 @@ class DiscoverTabs extends Component {
       }
       dest += '/' + tab.key;
       return (
-        <Link
-          key={tab.key}
-          className={i === this.state.tabIndex ? 'selected' : ''}
-          to={dest}
-        >
-          <li>
-            {tab.title}
-          </li>
+        <Link key={tab.key} className={i === this.state.tabIndex ? 'selected' : ''} to={dest}>
+          <li>{tab.title}</li>
         </Link>
       );
     });
-    return (
-      <ul className='tabs'>
-        {tabs}
-      </ul>
-    );
+    return <ul className="tabs">{tabs}</ul>;
   }
 }
 

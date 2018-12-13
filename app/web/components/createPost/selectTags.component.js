@@ -1,39 +1,46 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 if (process.env.BROWSER === true) {
   require('./selectTags.css');
 }
 
 export default class SelectTags extends Component {
+  static propTypes = {
+    tags: PropTypes.array,
+    selectedTags: PropTypes.array,
+    text: PropTypes.string,
+    deselectTag: PropTypes.func,
+    selectTag: PropTypes.func
+  };
+
   shouldComponentUpdate(nextProps) {
-    return this.props.tags !== nextProps.tags
-      || this.props.selectedTags.length !== nextProps.selectedTags.length;
+    return (
+      this.props.tags !== nextProps.tags ||
+      this.props.selectedTags.length !== nextProps.selectedTags.length
+    );
   }
   render() {
-    const props = this.props;
-    if (!props.tags || !props.tags.length) return null;
-    const selectedTags = props.selectedTags;
+    const { tags, selectedTags, selectTag, deselectTag } = this.props;
+    if (!tags || !tags.length) return null;
 
-    let inner = props.tags.map((tag, i) => {
+    const inner = tags.map((tag, i) => {
       tag = tag.replace(/\s/g, '');
       const selected = selectedTags.indexOf(tag) !== -1;
       if (selected) return null;
       return (
-        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
         <span
           key={i}
           className={selected ? 'selected' : ''}
           role="checkbox"
           aria-checked={selected}
           onClick={() => {
-            if (selected) {
-              props.deselectTag(tag);
-            } else {
-              props.selectTag(tag);
-            }
+            if (selected) return deselectTag(tag);
+            return selectTag(tag);
           }}
         >
-          {'#'}{tag}
+          {'#'}
+          {tag}
         </span>
       );
     });

@@ -1,7 +1,7 @@
-let Tagparent = require('./tagParent.model');
+const Tagparent = require('./tagParent.model');
 
 function handleError(res, statusCode) {
-  let status = statusCode || 500;
+  const status = statusCode || 500;
   return (err) => {
     console.log('tag error ', err);
     res.status(status).send(err);

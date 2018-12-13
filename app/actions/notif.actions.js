@@ -7,16 +7,14 @@ import * as authActions from './auth.actions';
 utils.api.env();
 const apiServer = `${process.env.API_SERVER}/api/notification`;
 
-const reqOptions = (token) => {
-  return {
-    credentials: 'include',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    }
-  };
-};
+const reqOptions = token => ({
+  credentials: 'include',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`
+  }
+});
 
 export function setActivity(data, type, index) {
   return {
@@ -49,50 +47,45 @@ export function setCount(data) {
   };
 }
 
-export
-function getActivity(skip) {
-  let type = 'personal';
+export function getActivity(skip) {
+  const type = 'personal';
   return dispatch =>
-    utils.token.get()
+    utils.token
+    .get()
     .then(token =>
       fetch(`${apiServer}?skip=${skip}`, {
         ...reqOptions(token),
-        method: 'GET',
+        method: 'GET'
       })
     )
     .then(response => response.json())
-    .then((responseJSON) => {
+    .then(responseJSON => {
       dispatch(setActivity(responseJSON, type, skip));
       dispatch(errorActions.setError('activity', false));
     })
-    .catch((error) => {
-      console.log('error', error);
-      dispatch(errorActions.setError('activity', true, error.message));
-    });
+    .catch(error => dispatch(errorActions.setError('activity', true, error.message)));
 }
 
 export function markRead() {
   return dispatch =>
-    utils.token.get()
+    utils.token
+    .get()
     .then(token =>
       fetch(`${apiServer}/markread`, {
         ...reqOptions(token),
-        method: 'PUT',
+        method: 'PUT'
       })
     )
-    .then((res) => {
-      // console.log('updated mark read ', res);
+    .then(() => {
       dispatch(clearCount());
     })
-    // .then((responseJSON) => {
-      // console.log(responseJSON);
-    // })
-    .catch(error => console.log('error', error));
+    .catch(null);
 }
 
 export function createNotification(obj) {
   return () =>
-    utils.token.get()
+    utils.token
+    .get()
     .then(token =>
       fetch(`${apiServer}`, {
         ...reqOptions(token),
@@ -100,13 +93,13 @@ export function createNotification(obj) {
         body: JSON.stringify(obj)
       })
     )
-    .then(() => console.log('created notif'))
-    .catch(err => console.log('create notification error ', err));
+    .catch(null);
 }
 
 export function getNotificationCount() {
   return dispatch =>
-    utils.token.get()
+    utils.token
+    .get()
     .then(token =>
       fetch(`${apiServer}/unread`, {
         ...reqOptions(token),
@@ -120,6 +113,5 @@ export function getNotificationCount() {
       }
       dispatch(setCount(responseJSON.unread));
     })
-    .catch(err => console.log('Notification count error', err));
+    .catch(null);
 }
-

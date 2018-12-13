@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-import {
-  View,
-  InteractionManager,
-  Text,
-  StyleSheet,
-  Image
-} from 'react-native';
+import { View, InteractionManager, Text, StyleSheet, Image } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -21,6 +16,13 @@ import { numbers } from '../../utils';
 let styles;
 
 class PostPeople extends Component {
+  static propTypes = {
+    scene: PropTypes.object,
+    invest: PropTypes.object,
+    actions: PropTypes.object,
+    users: PropTypes.array
+  };
+
   constructor(props, context) {
     super(props, context);
     this.renderRow = this.renderRow.bind(this);
@@ -43,12 +45,12 @@ class PostPeople extends Component {
   }
 
   getViewData() {
-    let inv = this.props.invest.posts[this.postId];
+    const inv = this.props.invest.posts[this.postId];
     let data = [];
     if (inv) {
       data = inv.map(id => this.props.invest.investments[id]);
     }
-    let loaded = this.props.invest.loaded[this.postId];
+    const loaded = this.props.invest.loaded[this.postId];
     return {
       data,
       loaded
@@ -61,21 +63,23 @@ class PostPeople extends Component {
   }
 
   renderRow(rowData) {
-    let user = this.props.users[rowData.investor];
+    const user = this.props.users[rowData.investor];
     if (!user || !rowData) return null;
-    return (<DiscoverUser
-      relevance
-      user={user}
-      {...this.props}
-      renderRight={() => this.renderRight(rowData)}
-    />);
+    return (
+      <DiscoverUser
+        relevance
+        user={user}
+        {...this.props}
+        renderRight={() => this.renderRight(rowData)}
+      />
+    );
   }
 
   renderRight(props) {
-    let { amount, relevantPoints } = props;
+    const { amount, relevantPoints } = props;
 
     let icon = require('../../assets/images/rup.png');
-    let color = { color: darkGrey };
+    const color = { color: darkGrey };
     let coin;
     if (amount < 0) {
       // color = { color: 'red' };
@@ -84,27 +88,18 @@ class PostPeople extends Component {
 
     let inner = (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={[styles.statNumber, color]}>
-        +{' '}
-        </Text>
-        <Image
-          resizeMode={'contain'}
-          style={[styles.r, { height: 16, width: 20 }]}
-          source={icon}
-        />
+        <Text style={[styles.statNumber, color]}>+ </Text>
+        <Image resizeMode={'contain'} style={[styles.r, { height: 16, width: 20 }]} source={icon} />
         <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
           {Math.abs(numbers.abbreviateNumber(relevantPoints))}
         </Text>
       </View>
     );
 
-
     if (amount < 0) {
       inner = (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={[styles.statNumber, color]}>
-          -{' '}
-          </Text>
+          <Text style={[styles.statNumber, color]}>- </Text>
           <Image
             resizeMode={'contain'}
             style={[styles.r, { height: 16, width: 20 }]}
@@ -120,7 +115,7 @@ class PostPeople extends Component {
   }
 
   render() {
-    let data = this.getViewData();
+    const data = this.getViewData();
     let listEl = <CustomSpinner />;
 
     if (!this.loading) {
@@ -139,30 +134,25 @@ class PostPeople extends Component {
       );
     }
 
-    return (
-      <View style={{ flex: 1 }}>
-        {listEl}
-      </View>
-    );
+    return <View style={{ flex: 1 }}>{listEl}</View>;
   }
 }
 
 const localStyles = StyleSheet.create({
   votes: {
     alignSelf: 'flex-end',
-    fontSize: 17,
-  },
+    fontSize: 17
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };
-
 
 function mapStateToProps(state) {
   return {
     invest: state.investments,
     users: state.user.users,
     error: state.error.discover,
-    tabs: state.navigation.tabs,
+    tabs: state.navigation.tabs
   };
 }
 
@@ -171,10 +161,14 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(
       {
         ...investActions,
-        ...navigationActions,
-      }, dispatch),
+        ...navigationActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostPeople);
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PostPeople);

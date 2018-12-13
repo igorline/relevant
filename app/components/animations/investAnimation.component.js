@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as animationActions from '../../actions/animation.actions';
@@ -15,7 +13,7 @@ const localStyles = StyleSheet.create({
     top: 0,
     right: 0,
     height: fullHeight,
-    width: fullWidth,
+    width: fullWidth
     // backgroundColor: 'blue'
   }
 });
@@ -23,6 +21,10 @@ const localStyles = StyleSheet.create({
 const styles = { ...globalStyles, ...localStyles };
 
 class InvestAnimation extends Component {
+  static propTypes = {
+    animation: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.enabled = true;
@@ -57,7 +59,7 @@ class InvestAnimation extends Component {
 
   investAni() {
     this.clearEls();
-    let newArr = [];
+    const newArr = [];
     for (let i = 0; i < this.amount; i++) {
       newArr.push(
         <Dollar
@@ -65,11 +67,12 @@ class InvestAnimation extends Component {
           amount={this.amount}
           key={i + Math.random()}
           specialKey={i}
-      />);
+        />
+      );
       // let newNum = this.state.num += 1;
       this.setState({ investAni: newArr });
       // setTimeout(() => this.investAni(), 50 * Math.random());
-    // } else {
+      // } else {
     }
 
     // if (this.state.num < 10) {
@@ -94,16 +97,22 @@ class InvestAnimation extends Component {
 
 function mapStateToProps(state) {
   return {
-    animation: state.animation,
+    animation: state.animation
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...animationActions,
-    }, dispatch)
+    actions: bindActionCreators(
+      {
+        ...animationActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvestAnimation);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(InvestAnimation);

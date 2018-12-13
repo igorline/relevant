@@ -1,24 +1,30 @@
-import React, { Component, PropTypes } from 'react';
-// import { numbers } from '../../../utils';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import AvatarBox from '../common/avatarbox.component';
-import Avatar from '../common/avatar.component';
 import Popup from '../common/popup';
 import CommentForm from './commentForm.component';
 import PostButtons from '../post/postbuttons.component';
-
 
 if (process.env.BROWSER === true) {
   require('./comment.css');
 }
 
 class Comment extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    comment: PropTypes.object,
+    user: PropTypes.object,
+    auth: PropTypes.object
+  };
+
   state = {
-    editing: false,
-  }
+    editing: false
+  };
 
   deletePost() {
     // TODO custom confirm
-    let okToDelete = confirm('Are you sure you want to delete this post?');
+    // eslint-disable-next-line
+    const okToDelete = confirm('Are you sure you want to delete this post?');
     if (!okToDelete) return;
     this.props.actions.deleteComment(this.props.comment._id);
   }
@@ -28,8 +34,8 @@ class Comment extends Component {
   }
 
   render() {
-    let { auth, comment } = this.props;
-    let { editing } = this.state;
+    const { auth, comment } = this.props;
+    const { editing } = this.state;
     let popup;
 
     if (auth.user && auth.user._id === comment.user) {
@@ -37,7 +43,7 @@ class Comment extends Component {
         <Popup
           options={[
             { text: 'Edit Post', action: this.editPost.bind(this) },
-            { text: 'Delete Post', action: this.deletePost.bind(this) },
+            { text: 'Delete Post', action: this.deletePost.bind(this) }
           ]}
         >
           <span className={'optionDots'}>...</span>
@@ -45,14 +51,20 @@ class Comment extends Component {
       );
     }
 
-    let body = <div className='body'><pre>{comment.body}</pre></div>;
-    let edit = (<CommentForm
-      edit
-      comment={comment}
-      text={'Update'}
-      cancel={() => this.setState({ editing: false })}
-      {...this.props}
-    />);
+    const body = (
+      <div className="body">
+        <pre>{comment.body}</pre>
+      </div>
+    );
+    const edit = (
+      <CommentForm
+        edit
+        comment={comment}
+        text={'Update'}
+        cancel={() => this.setState({ editing: false })}
+        {...this.props}
+      />
+    );
 
     let user = this.props.user.users[comment.user] || comment.user;
 
@@ -61,9 +73,10 @@ class Comment extends Component {
     }
 
     return (
-      <div className='comment'>
-{/*        <Avatar auth={this.props.auth} user={user} />
-*/}        <div style={{ flex: 1, marginLeft: '10px' }}>
+      <div className="comment">
+        {/*        <Avatar auth={this.props.auth} user={user} />
+         */}{' '}
+        <div style={{ flex: 1, marginLeft: '10px' }}>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <AvatarBox
               small
@@ -74,7 +87,7 @@ class Comment extends Component {
             />
             {popup}
           </div>
-          { editing ? edit : body }
+          {editing ? edit : body}
           <PostButtons post={comment} {...this.props} />
         </div>
       </div>
@@ -83,4 +96,3 @@ class Comment extends Component {
 }
 
 export default Comment;
-

@@ -1,53 +1,58 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableHighlight,
-  Animated
-} from 'react-native';
+import { StyleSheet, Text, View, TouchableHighlight, Animated } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles, fullWidth } from '../styles/global';
 
 let styles;
 
 class Tabs extends Component {
+  static propTypes = {
+    scrollValue: PropTypes.object,
+    tabs: PropTypes.array,
+    active: PropTypes.object,
+    handleChange: PropTypes.object
+  };
 
   render() {
-    let props = this.props;
-    let tabWidth = fullWidth / props.tabs.length;
+    const props = this.props;
+    const tabWidth = fullWidth / props.tabs.length;
 
     const tabUnderlineStyle = {
       position: 'absolute',
       width: tabWidth,
       height: 4,
       backgroundColor: '#3E3EFF',
-      bottom: 0,
+      bottom: 0
     };
 
     let left;
     // console.log(this.props.scrollValue);
     if (this.props.scrollValue) {
       left = this.props.scrollValue.interpolate({
-        inputRange: [0, 1], outputRange: [0, tabWidth],
+        inputRange: [0, 1],
+        outputRange: [0, tabWidth]
       });
     } else {
       left = props.active * tabWidth;
     }
 
-    const tabs = props.tabs.map((tab) => {
-      let active = props.active === tab.id;
+    const tabs = props.tabs.map(tab => {
+      const active = props.active === tab.id;
       return (
         <TouchableHighlight
           key={tab.id}
           underlayColor={'white'}
-          style={[
-            styles.typeParent,
-            { alignItems: 'stretch' },
-            styles.inactiveBorder,
-          ]}
+          style={[styles.typeParent, { alignItems: 'stretch' }, styles.inactiveBorder]}
           onPress={() => props.handleChange(tab.id)}
         >
-          <View style={{ position: 'relative', alignItems: 'stretch', flex: 1, justifyContent: 'center' }}>
+          <View
+            style={{
+              position: 'relative',
+              alignItems: 'stretch',
+              flex: 1,
+              justifyContent: 'center'
+            }}
+          >
             <Text
               style={[
                 styles.darkGrey,
@@ -82,11 +87,11 @@ const localStyles = StyleSheet.create({
   },
   tabsParent: {
     backgroundColor: 'white',
-    height: 50,
+    height: 50
   },
   inactiveBorder: {
     borderBottomColor: 'black',
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: StyleSheet.hairlineWidth
   }
 });
 

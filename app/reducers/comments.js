@@ -1,17 +1,17 @@
 import * as types from '../actions/actionTypes';
 
 const initialState = {
-  commentsById: {},
+  commentsById: {}
 };
 
 // NOTE: comment objects are stored in posts state
 export default function comments(state = initialState, action) {
   switch (action.type) {
     case types.SET_COMMENTS: {
-      let total = action.payload.total;
-      let id = action.payload.postId;
-      let currentComments = state.commentsById[id] ? state.commentsById[id].data : [];
-      let postCommentList = action.payload.data.result[id];
+      const total = action.payload.total;
+      const id = action.payload.postId;
+      const currentComments = state.commentsById[id] ? state.commentsById[id].data : [];
+      const postCommentList = action.payload.data.result[id];
 
       return {
         ...state,
@@ -26,8 +26,8 @@ export default function comments(state = initialState, action) {
     }
 
     case 'ADD_COMMENT': {
-      let newComment = action.payload.comment;
-      let postId = action.payload.postId;
+      const newComment = action.payload.comment;
+      const postId = action.payload.postId;
       let postComments = state.commentsById[postId];
       if (!state.commentsById[postId]) {
         postComments = {
@@ -36,15 +36,12 @@ export default function comments(state = initialState, action) {
         };
       }
 
-      let newState = {
+      const newState = {
         ...state,
         commentsById: {
           ...state.commentsById,
           [postId]: {
-            data: [
-              ...postComments.data,
-              newComment._id
-            ],
+            data: [...postComments.data, newComment._id],
             total: postComments.total + 1
           }
         }
@@ -56,4 +53,3 @@ export default function comments(state = initialState, action) {
       return state;
   }
 }
-

@@ -21,6 +21,13 @@ let localStyles;
 let styles;
 
 class Login extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    auth: PropTypes.object,
+    navigation: PropTypes.object,
+    share: PropTypes.bool
+  };
+
   constructor(props, context) {
     super(props, context);
     this.back = this.back.bind(this);
@@ -29,7 +36,7 @@ class Login extends Component {
       bool: false,
       notifText: null,
       username: null,
-      password: null,
+      password: null
     };
   }
 
@@ -72,34 +79,30 @@ class Login extends Component {
       KBView = View;
     }
 
-    let local = this.state.username
-      && this.state.password
-      && this.state.username.length
-      && this.state.password.length;
+    let local =
+      this.state.username &&
+      this.state.password &&
+      this.state.username.length &&
+      this.state.password.length;
 
     if (this.props.auth.twitter) local = true;
 
-    let twitterConnect = (
+    const twitterConnect = (
       <View style={[{ justifyContent: 'center', alignItems: 'center' }]}>
         <Text style={styles.signInText}>Sign with your Relevant account to finish</Text>
       </View>
     );
 
-    let twitter = (
+    const twitter = (
       <View style={{ flex: 1 }}>
         <Text style={styles.signInText}>or</Text>
         <TwitterButton auth={this.props.auth} actions={this.props.actions} />
       </View>
     );
 
-    let signIn = (
-      <TouchableOpacity
-        onPress={this.login}
-        style={[styles.largeButton]}
-      >
-        <Text style={styles.largeButtonText}>
-          sign in
-        </Text>
+    const signIn = (
+      <TouchableOpacity onPress={this.login} style={[styles.largeButton]}>
+        <Text style={styles.largeButtonText}>sign in</Text>
       </TouchableOpacity>
     );
 
@@ -118,11 +121,10 @@ class Login extends Component {
           keyboardDismissMode={'interactive'}
           contentContainerStyle={styles.authScrollContent}
         >
-
           <View style={styles.fieldsInner}>
             <View style={styles.fieldsInputParent}>
               <TextInput
-                ref={c => this.userInput = c}
+                ref={c => (this.userInput = c)}
                 underlineColorAndroid={'transparent'}
                 autoCorrect={false}
                 autoCapitalize={'none'}
@@ -136,7 +138,7 @@ class Login extends Component {
 
             <View style={styles.fieldsInputParent}>
               <TextInput
-                ref={c => this.passInput = c}
+                ref={c => (this.passInput = c)}
                 underlineColorAndroid={'transparent'}
                 autoCapitalize={'none'}
                 autoCorrect={false}
@@ -157,11 +159,14 @@ class Login extends Component {
 
           <TouchableOpacity
             onPress={() => {
-              this.props.actions.push({
-                key: 'forgot',
-                title: 'Forgot Pass',
-                back: true
-              }, 'auth');
+              this.props.actions.push(
+                {
+                  key: 'forgot',
+                  title: 'Forgot Pass',
+                  back: true
+                },
+                'auth'
+              );
             }}
           >
             <Text style={[styles.signInText, styles.active]}>Forgot your password?</Text>
@@ -176,7 +181,7 @@ Login.propTypes = {
   auth: PropTypes.object,
   actions: PropTypes.object,
   navigation: PropTypes.object,
-  share: PropTypes.bool, // flag for share extension
+  share: PropTypes.bool // flag for share extension
 };
 
 localStyles = StyleSheet.create({
@@ -185,6 +190,5 @@ localStyles = StyleSheet.create({
     marginTop: 5
   }
 });
-
 
 export default Login;

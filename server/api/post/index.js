@@ -1,9 +1,9 @@
-let express = require('express');
-let controller = require('./post.controller');
-let auth = require('../../auth/auth.service');
-let asyncMiddleware = require('../../utils/middlewares').asyncMiddleware;
+const express = require('express');
+const controller = require('./post.controller');
+const auth = require('../../auth/auth.service');
+const asyncMiddleware = require('../../utils/middlewares').asyncMiddleware;
 
-let router = express.Router();
+const router = express.Router();
 
 router.post('/', auth.isAuthenticated(), auth.communityMember(), controller.create);
 router.post('/sendPostNotification', auth.hasRole('admin'), controller.sendPostNotification);

@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import {
-  View,
-  StyleSheet,
-} from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles } from '../../styles/global';
 import Topics from './topics.component';
 
 export default class Categories extends Component {
+  static propTypes = {
+    createPost: PropTypes.object,
+    actions: PropTypes.object,
+    tags: PropTypes.array
+  };
+
   constructor(props, context) {
     super(props, context);
     this.setTopic = this.setTopic.bind(this);
@@ -32,28 +36,25 @@ export default class Categories extends Component {
 
   render() {
     let categoryEl;
-    let selectedTopic = this.selectedTopic;
+    const selectedTopic = this.selectedTopic;
 
     if (this.props.tags) {
-      categoryEl = (<Topics
-        ref={c => this.topicsEl = c}
-        topics={this.props.tags}
-        selectedTopic={selectedTopic}
-        type={'create'}
-        action={this.setTopic}
-        actions={this.props.actions}
-        createPost={this.props.createPost}
-      />);
+      categoryEl = (
+        <Topics
+          ref={c => (this.topicsEl = c)}
+          topics={this.props.tags}
+          selectedTopic={selectedTopic}
+          type={'create'}
+          action={this.setTopic}
+          actions={this.props.actions}
+          createPost={this.props.createPost}
+        />
+      );
     }
 
     return (
-      <View
-        style={{ flex: 1 }}
-        behavior={'padding'}
-      >
-        <View style={{ flex: 1 }}>
-          {categoryEl}
-        </View>
+      <View style={{ flex: 1 }} behavior={'padding'}>
+        <View style={{ flex: 1 }}>{categoryEl}</View>
       </View>
     );
   }

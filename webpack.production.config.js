@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const devConfig = require('./webpack.config');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-let prodConfig = {};
+const prodConfig = {};
 
 Object.keys(devConfig).forEach((key) => {
   prodConfig[key] = devConfig[key];

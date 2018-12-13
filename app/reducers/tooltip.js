@@ -18,7 +18,6 @@ const initialState = {
 
 export default function tooltip(state = initialState, action) {
   switch (action.type) {
-
     case types.SET_BUTTON_TOOLTIP: {
       return {
         ...state,
@@ -32,14 +31,14 @@ export default function tooltip(state = initialState, action) {
     case types.TOOLTIP_READY: {
       return {
         ...state,
-        ready: action.payload,
+        ready: action.payload
       };
     }
 
     case types.SET_ONBOARDING_STEP: {
       return {
         ...state,
-        current: action.payload,
+        current: action.payload
       };
     }
 
@@ -50,7 +49,7 @@ export default function tooltip(state = initialState, action) {
           ...state.data,
           [action.payload.name]: {
             ...state.data[action.payload.name],
-            ...action.payload,
+            ...action.payload
           }
         }
       };
@@ -72,6 +71,7 @@ export default function tooltip(state = initialState, action) {
       return { ...initialState };
     }
 
-    default: return state;
+    default:
+      return state;
   }
 }

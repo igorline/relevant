@@ -13,29 +13,21 @@
  */
 
 import React, { Component } from 'react';
-import {
-  View,
-  Dimensions,
-  WebView,
-} from 'react-native';
+import { View, Dimensions, WebView } from 'react-native';
 
 const injectedScript = function() {
   // window.postMessage = String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage');
   function waitForBridge() {
-    if (window.postMessage.length !== 1){
+    if (window.postMessage.length !== 1) {
       setTimeout(waitForBridge, 200);
-    }
-    else {
+    } else {
       let height = 0;
-      if(document.documentElement.clientHeight>document.body.clientHeight)
-      {
-        height = document.documentElement.clientHeight
+      if (document.documentElement.clientHeight > document.body.clientHeight) {
+        height = document.documentElement.clientHeight;
+      } else {
+        height = document.body.clientHeight;
       }
-      else
-      {
-        height = document.body.clientHeight
-      }
-      postMessage(height)
+      postMessage(height);
     }
   }
   // document.addEventListener('load', () => waitForBridge());
@@ -49,14 +41,14 @@ export default class MyWebView extends Component {
   };
 
   static defaultProps = {
-      autoHeight: true,
-  }
+    autoHeight: true
+  };
 
-  constructor (props: Object) {
+  constructor(props: Object) {
     super(props);
     this.state = {
       webViewHeight: this.props.defaultHeight
-    }
+    };
 
     this._onMessage = this._onMessage.bind(this);
   }
@@ -71,7 +63,7 @@ export default class MyWebView extends Component {
     });
   }
 
-  render () {
+  render() {
     const _w = this.props.width || Dimensions.get('window').width;
     const _h = this.props.autoHeight ? this.state.webViewHeight : this.props.defaultHeight;
     return (
@@ -82,8 +74,8 @@ export default class MyWebView extends Component {
         javaScriptEnabled={true}
         // automaticallyAdjustContentInsets={true}
         {...this.props}
-        style={[{width: _w}, this.props.style, {height: _h}]}
+        style={[{ width: _w }, this.props.style, { height: _h }]}
       />
-    )
+    );
   }
 }

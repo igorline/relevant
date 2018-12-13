@@ -3,29 +3,22 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Drizzle } from 'drizzle';
-// import { DrizzleProvider, drizzleConnect } from 'drizzle-react';
+import * as routerActions from 'react-router-redux';
 import Header from './common/header.component';
 import AppHeader from './common/appHeader.component';
-import * as routerActions from 'react-router-redux';
 import * as navigationActions from '../../actions/navigation.actions';
-import { Link } from 'react-router';
-
-// import Footer from './common/footer.component';
 import * as authActions from '../../actions/auth.actions';
 import RelevantCoin from '../../contracts/RelevantCoin.json';
 import AddEthAddress from './wallet/AddEthAddress';
-import LoginModal from './auth/loginModal.component';
 import AuthContainer from './auth/auth.container';
-import Sidebar from './common/sidebar.component';
+// import Sidebar from './common/sidebar.component';
 import EthTools from './ethTools/tools.container';
 import Modal from './common/modal';
 import CreatePost from './createPost/createPost.container';
 import Eth from './ethTools/eth.context';
-import CommunityNav from './community/communityNav.component';
-import { api } from '../../utils';
+// import CommunityNav from './community/communityNav.component';
 
 if (process.env.BROWSER === true) {
-  console.log('BROWSER, import css');
   require('./index.css');
   require('./fonts.css');
   require('./splash/splash.css');
@@ -33,53 +26,61 @@ if (process.env.BROWSER === true) {
 
 const networkId = 4;
 
-let options = {
-  contracts: [
-    RelevantCoin
-  ],
+const options = {
+  contracts: [RelevantCoin],
   events: {},
   polls: {
     blocks: 100,
-    accounts: 300,
+    accounts: 300
   },
   networkId,
   web3: {
     ignoreMetamask: true,
     useMetamask: true,
-    fallback: global.web3 ? null : {
-      type: 'https',
-      url: 'https://rinkeby.infura.io/' + 'eAeL7I8caPNjDe66XRTq',
-      // type: 'ws',
-      // url: 'ws://rinkeby.infura.io/_ws',
-      networkId: 4,
-    }
+    fallback: global.web3
+      ? null
+      : {
+        type: 'https',
+        // TODO ENV?
+        url: 'https://rinkeby.infura.io/eAeL7I8caPNjDe66XRTq',
+        // type: 'ws',
+        // url: 'ws://rinkeby.infura.io/_ws',
+        networkId: 4
+      }
   }
 };
 
-// const ThemeContext = React.createContext('light');
-
 class App extends Component {
+  static propTypes = {
+    auth: PropTypes.object,
+    actions: PropTypes.object,
+    params: PropTypes.object,
+    location: PropTypes.object,
+    user: PropTypes.object,
+    children: PropTypes.node
+  };
+
   static contextTypes = {
     store: PropTypes.object
-  }
+  };
 
   state = {
     openLoginModal: false
-  }
+  };
 
   componentWillMount() {
-    let community = this.props.auth.community;
-    if (community && community !== 'home')
+    const community = this.props.auth.community;
+    if (community && community !== 'home') {
       this.props.actions.setCommunity(community);
+    }
   }
 
   componentDidMount() {
-    // document.body.classList.remove('loading')
-    let community = this.props.auth.community;
-    // api.setCommunity(community);
+    const community = this.props.auth.community;
     this.props.actions.setCommunity(community);
 
     this.props.actions.getUser();
+    // eslint-disable-next-line
     new Drizzle(options, this.context.store);
 
     // TODO do this after a timeout
@@ -90,7 +91,7 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    let community = this.props.params.community;
+    const community = this.props.params.community;
     if (community && this.props.auth.community !== community) {
       if (community === 'home') prevProps.actions.push(`/${this.props.auth.community}/new`);
       else this.props.actions.setCommunity(community);
@@ -99,12 +100,9 @@ class App extends Component {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       window.scrollTo(0, 0);
     }
-    // if (this.props.location.pathname === '/home') {
-    //   this.props.actions.push(this.props.auth.community + '/new');
-    // }
 
-    let userId = this.props.auth.user ? this.props.auth.user._id : null;
-    let PrevUserId = prevProps.auth.user ? prevProps.auth.user._id : null;
+    const userId = this.props.auth.user ? this.props.auth.user._id : null;
+    const PrevUserId = prevProps.auth.user ? prevProps.auth.user._id : null;
 
     if (userId !== PrevUserId) {
       this.props.actions.userToSocket(userId);
@@ -131,42 +129,33 @@ class App extends Component {
             href="https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051?mt=8"
             target="_blank"
           >
-            <img
-              alt="iOS App Store"
-              src="https://relevant.community/img/appstore.png"
-            />
+            <img alt="iOS App Store" src="https://relevant.community/img/appstore.png" />
           </a>
-
           &nbsp;&nbsp;&nbsp;&nbsp;
           <a
             href="https://play.google.com/store/apps/details?id=com.relevantnative&amp;pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"
             target="_blank"
           >
-            <img
-              alt="Google Play Store"
-              src="https://relevant.community/img/googleplaystore.png"
-            />
+            <img alt="Google Play Store" src="https://relevant.community/img/googleplaystore.png" />
           </a>
         </p>
       </div>
     );
 
-    let header =
+    let header = (
       <AppHeader
         location={location}
         params={this.props.params}
         toggleLogin={this.toggleLogin.bind(this)}
-      />;
+      />
+    );
     if (location.pathname === '/') {
-      header = <Header
-        params={this.props.params}
-        toggleLogin={this.toggleLogin.bind(this)}
-      />;
+      header = <Header params={this.props.params} toggleLogin={this.toggleLogin.bind(this)} />;
       mobileEl = null;
     }
 
-    let user = this.props.user;
-    let temp = user && user.role === 'temp';
+    const user = this.props.user;
+    const temp = user && user.role === 'temp';
     const create = location.hash === '#newpost';
     const connectAccount = location.hash === '#connectAccount';
 
@@ -175,7 +164,7 @@ class App extends Component {
         <EthTools>
           {header}
           <div style={{ display: 'flex', width: '100%' }}>
-            {/*<CommunityNav {...this.props} />*/}
+            {/* <CommunityNav {...this.props} /> */}
             {this.props.children}
           </div>
           <AuthContainer
@@ -185,12 +174,14 @@ class App extends Component {
             {...this.props}
           />
           <Eth.Consumer>
-            {wallet => <AddEthAddress
-              connectAccount={connectAccount}
-              closeModal={this.closeModal.bind(this)}
-              {...this.props}
-              {...wallet}
-            />}
+            {wallet => (
+              <AddEthAddress
+                connectAccount={connectAccount}
+                closeModal={this.closeModal.bind(this)}
+                {...this.props}
+                {...wallet}
+              />
+            )}
           </Eth.Consumer>
         </EthTools>
         <Modal
@@ -213,11 +204,17 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators({
-    ...navigationActions,
-    ...routerActions,
-    ...authActions,
-  }, dispatch)
+  actions: bindActionCreators(
+    {
+      ...navigationActions,
+      ...routerActions,
+      ...authActions
+    },
+    dispatch
+  )
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

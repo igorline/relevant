@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  RefreshControl,
-  FlatList,
-  Platform
-} from 'react-native';
+import { StyleSheet, Text, View, RefreshControl, FlatList, Platform } from 'react-native';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -23,6 +17,13 @@ import Level from './level.component';
 let styles;
 
 class StatsContainer extends Component {
+  static propTypes = {
+    auth: PropTypes.object,
+    refresh: PropTypes.object,
+    actions: PropTypes.object,
+    error: PropTypes.string
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -65,7 +66,6 @@ class StatsContainer extends Component {
     this.relStart.setDate(this.start.getDate() - 28);
     this.start.setDate(this.start.getDate() - 14);
 
-
     this.props.actions.getChart(this.start, this.end);
 
     this.props.actions.getRelChart(this.start, this.end);
@@ -76,7 +76,7 @@ class StatsContainer extends Component {
 
   renderHeader() {
     if (this.filler) return this.filler;
-    let nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
+    const nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
     // let chart;
     let relChart;
 
@@ -97,38 +97,34 @@ class StatsContainer extends Component {
     //   />)}
     // />);
 
-    relChart = (<Chart
-      start={this.relStart}
-      end={this.end}
-      type={'smooth'}
-      dataKey={'aggregateRelevance'}
-      data={this.props.auth.relChart}
-      renderHeader={() => (
-        <Text style={[styles.statNumber, { alignSelf: 'center', marginTop: 45 }]}>Relevance</Text>
-      )}
-      renderFooter={() => (<View style={styles.break} />)}
-    />);
+    relChart = (
+      <Chart
+        start={this.relStart}
+        end={this.end}
+        type={'smooth'}
+        dataKey={'aggregateRelevance'}
+        data={this.props.auth.relChart}
+        renderHeader={() => (
+          <Text style={[styles.statNumber, { alignSelf: 'center', marginTop: 45 }]}>Relevance</Text>
+        )}
+        renderFooter={() => <View style={styles.break} />}
+      />
+    );
 
     return (
       <View>
-        <View style={styles.nextUpdate}><Text
-          style={[styles.smallInfo, { color: 'white' }]}
-        >
-          {nextUpdate} until next update
-        </Text></View>
+        <View style={styles.nextUpdate}>
+          <Text style={[styles.smallInfo, { color: 'white' }]}>{nextUpdate} until next update</Text>
+        </View>
 
         <Level level={this.props.auth.user.level} />
 
-        <StatCategory
-          index={0}
-          stats={this.props.auth.user}
-          actions={this.props.actions}
-        />
+        <StatCategory index={0} stats={this.props.auth.user} actions={this.props.actions} />
 
         <View style={styles.break} />
 
         {relChart}
-        {/*chart*/}
+        {/* chart */}
       </View>
     );
   }
@@ -136,70 +132,66 @@ class StatsContainer extends Component {
   renderItem({ item, index }) {
     return (
       <View>
-        <StatCategory
-          index={index + 1}
-          stats={item}
-          actions={this.props.actions}
-        />
+        <StatCategory index={index + 1} stats={item} actions={this.props.actions} />
         <View style={styles.break} />
       </View>
     );
   }
 
   render() {
-    let stats = this.props.auth.stats || [];
-    let user = this.props.auth.user;
+    const stats = this.props.auth.stats || [];
+    const user = this.props.auth.user;
     this.filler = null;
 
     if (this.props.error && !this.props.auth.user) {
-      return (<ErrorComponent error={this.props.error} parent={'stats'} reloadFunction={this.load} />);
+      return (
+        <ErrorComponent error={this.props.error} parent={'stats'} reloadFunction={this.load} />
+      );
     }
 
     if (this.state.loading) {
-      return (<CustomSpinner visible />);
+      return <CustomSpinner visible />;
     }
 
     if (!this.props.auth.user.level) {
-      let nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
-      this.filler = (<EmptyList visible style={styles.emptyList}>
-        <Text
-          style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}
-        >
-          You will see your stats here soon
-        </Text>
-        <Text
-          style={[styles.georgia, styles.emptyText, styles.quarterLetterSpacing]}
-        >
-          {nextUpdate} until next update
-        </Text>
-      </EmptyList>
+      const nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
+      this.filler = (
+        <EmptyList visible style={styles.emptyList}>
+          <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
+            You will see your stats here soon
+          </Text>
+          <Text style={[styles.georgia, styles.emptyText, styles.quarterLetterSpacing]}>
+            {nextUpdate} until next update
+          </Text>
+        </EmptyList>
       );
     }
 
     if (user.relevance < 5) {
-      this.filler = (<EmptyList visible style={styles.emptyList}>
-        <Text
-          style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}
-        >
-          Earn 5 relevant points to see your stats!
-        </Text>
-        <Text
-          style={[styles.georgia, styles.darkGrey, styles.emptyText, styles.quarterLetterSpacing]}
-        >
-          Tip: {Platform.OS === 'android' ? '😎' : '🤓'} You can earn relevance by being one of the first to upvote a quality post
-        </Text>
-      </EmptyList>);
+      this.filler = (
+        <EmptyList visible style={styles.emptyList}>
+          <Text style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}>
+            Earn 5 relevant points to see your stats!
+          </Text>
+          <Text
+            style={[styles.georgia, styles.darkGrey, styles.emptyText, styles.quarterLetterSpacing]}
+          >
+            Tip: {Platform.OS === 'android' ? '😎' : '🤓'} You can earn relevance by being one of
+            the first to upvote a quality post
+          </Text>
+        </EmptyList>
+      );
     }
 
     return (
       <FlatList
-        ref={c => this.list = c}
+        ref={c => (this.list = c)}
         style={{ flex: 1 }}
         keyExtractor={(item, index) => index.toString()}
         extraData={{ ...this.props, ...this.state }}
         data={stats}
         ListHeaderComponent={this.renderHeader}
-        renderItem={item => !this.filler ? this.renderItem(item) : null}
+        renderItem={item => (!this.filler ? this.renderItem(item) : null)}
         refreshControl={
           <RefreshControl
             style={[{ backgroundColor: 'hsl(238,20%,95%)' }]}
@@ -215,9 +207,9 @@ class StatsContainer extends Component {
   }
 }
 
-let localStyles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   rowTitle: {
     fontSize: 17,
@@ -240,7 +232,7 @@ let localStyles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     backgroundColor: blue,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: StyleSheet.hairlineWidth
     // borderBottomColor: 'lightgrey',
   }
 });
@@ -261,10 +253,14 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(
       {
         ...authActions,
-        ...navigationActions,
-      }, dispatch),
+        ...navigationActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StatsContainer);
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(StatsContainer);

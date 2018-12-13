@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import ShadowButton from '../common/ShadowButton';
 
-let styles;
-
 export default class Forgot extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    authNav: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -17,7 +21,7 @@ export default class Forgot extends Component {
   }
 
   async sendEmail() {
-    let res = await this.props.actions.forgotPassword(this.state.username);
+    const res = await this.props.actions.forgotPassword(this.state.username);
     if (res && res.email) {
       this.setState({ sentEmailTo: res.email });
     }
@@ -27,10 +31,13 @@ export default class Forgot extends Component {
     let content;
 
     if (this.state.sentEmailTo) {
-      content = <div>
-        We have set an email to {this.state.sentEmailTo}<br />
-      with a link to reset your password.
-      </div>;
+      content = (
+        <div>
+          We have set an email to {this.state.sentEmailTo}
+          <br />
+          with a link to reset your password.
+        </div>
+      );
     } else {
       content = (
         <div className="innerForm">
@@ -38,7 +45,7 @@ export default class Forgot extends Component {
             className="blueInput special"
             type="text"
             value={this.state.username}
-            onChange={(username) => {
+            onChange={username => {
               this.handleChange('username', username.target.value);
             }}
             placeholder="Username or Email"
@@ -56,20 +63,12 @@ export default class Forgot extends Component {
             Send Recovery Email
           </ShadowButton>
           <div className={'smallText'}>
-            Back to <a
-              onClick={() => this.props.authNav('login')}
-            >
-              Sign in
-            </a>
+            Back to <a onClick={() => this.props.authNav('login')}>Sign in</a>
           </div>
         </div>
       );
     }
 
-    return (
-      <div>
-        {content}
-      </div>
-    );
+    return <div>{content}</div>;
   }
 }

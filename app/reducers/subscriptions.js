@@ -3,7 +3,7 @@ import * as types from '../actions/actionTypes';
 const initialState = {
   total: null,
   totalUsers: null,
-  users: 0,
+  users: 0
 };
 
 export default function subscriptions(state = initialState, action) {
@@ -11,7 +11,7 @@ export default function subscriptions(state = initialState, action) {
     case types.SET_SUBSCRIPTIONS: {
       let total = 0;
       let totalUsers = 0;
-      let users = {};
+      const users = {};
       action.payload.forEach(sub => {
         users[sub.following] = sub;
         total += sub.amount;
@@ -28,6 +28,7 @@ export default function subscriptions(state = initialState, action) {
       return { ...initialState };
     }
 
-    default: return state;
+    default:
+      return state;
   }
 }

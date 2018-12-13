@@ -1,9 +1,9 @@
 
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-let CommunityFeedSchema = new Schema({
+const CommunityFeedSchema = new Schema({
   community: String,
   post: { type: Schema.Types.ObjectId, ref: 'Post' },
   metaPost: { type: Schema.Types.ObjectId, ref: 'MetaPost' },
@@ -28,7 +28,7 @@ CommunityFeedSchema.index({ community: 1, latestPost: 1 });
 
 CommunityFeedSchema.statics.updateDate = async function updateDate(_id, community, date) {
   try {
-    let feedItem = await this.findOneAndUpdate(
+    const feedItem = await this.findOneAndUpdate(
       { post: _id, community },
       { latestPost: date },
       { new: true }
@@ -44,7 +44,7 @@ CommunityFeedSchema.statics.addToFeed = async function addToFeed(post, community
   try {
     if (community === 'twitter') community = 'relevant';
     if (!community) throw new Error('missing community');
-    let feedItem = await this.findOneAndUpdate(
+    const feedItem = await this.findOneAndUpdate(
       { community, post: post._id },
       {
         latestPost: post.data.latestComment || post.data.postDate,
@@ -62,7 +62,7 @@ CommunityFeedSchema.statics.addToFeed = async function addToFeed(post, community
 CommunityFeedSchema.statics.updateRank = async function updateRank(post, community) {
   try {
     if (!community) throw new Error('missing community');
-    let feedItem = await this.findOne({ post: post._id, community });
+    const feedItem = await this.findOne({ post: post._id, community });
     if (!feedItem) return null;
     // TODO - post rank should be tracked in a separate table
     // so that we are not grabbing stuff from a diff communities

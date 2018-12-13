@@ -9,12 +9,22 @@ import {
   Keyboard,
   Platform
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles } from '../../styles/global';
 import TagSelection from './tagSelection.component';
 
 let styles;
 
 export default class topics extends Component {
+  static propTypes = {
+    topics: PropTypes.object,
+    actions: PropTypes.object,
+    selectedTopic: PropTypes.object,
+    type: PropTypes.string,
+    createPost: PropTypes.object,
+    action: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     this.renderItem = this.renderItem.bind(this);
@@ -30,22 +40,21 @@ export default class topics extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (next.selectedTopic &&
-      (!this.props.selectedTopic ||
-        this.props.selectedTopic._id !== next.selectedTopic._id)
-      ) {
+    if (
+      next.selectedTopic &&
+      (!this.props.selectedTopic || this.props.selectedTopic._id !== next.selectedTopic._id)
+    ) {
       this.goToElement = true;
     } else this.goToElement = false;
   }
 
   renderItem({ item, index }) {
-    let topic = item;
-    let i = index;
+    const topic = item;
+    const i = index;
     let active = false;
     let innerView;
 
-    if (this.props.selectedTopic &&
-      topic._id === this.props.selectedTopic._id) {
+    if (this.props.selectedTopic && topic._id === this.props.selectedTopic._id) {
       active = true;
     }
 
@@ -56,11 +65,8 @@ export default class topics extends Component {
           topic={topic}
           scrollToElement={() => {
             this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
-            let scroll = () => {
-              setTimeout(() =>
-                this.scrollView.scrollToIndex({ viewPosition: 0.1, index }),
-                1
-              );
+            const scroll = () => {
+              setTimeout(() => this.scrollView.scrollToIndex({ viewPosition: 0.1, index }), 1);
               Keyboard.removeListener('keyboardDidShow', scroll);
             };
             if (Platform.OS === 'android') {
@@ -80,23 +86,21 @@ export default class topics extends Component {
     }
 
     return (
-      <View
-        key={i}
-      >
+      <View key={i}>
         <TouchableHighlight
           onPress={() => this.props.action(topic)}
           underlayColor={'transparent'}
-          style={[
-            styles.categoryItem,
-            { backgroundColor: active ? '#4d4eff' : 'white' }
-          ]}
+          style={[styles.categoryItem, { backgroundColor: active ? '#4d4eff' : 'white' }]}
         >
           <View
             style={{
-              alignItems: 'center',
+              alignItems: 'center'
             }}
           >
-            <Text style={[active ? { color: 'white' } : null]}>{Platform.OS === 'android' ? '#' : topic.emoji + ' '}{topic.categoryName}</Text>
+            <Text style={[active ? { color: 'white' } : null]}>
+              {Platform.OS === 'android' ? '#' : topic.emoji + ' '}
+              {topic.categoryName}
+            </Text>
           </View>
         </TouchableHighlight>
         {innerView}
@@ -109,7 +113,7 @@ export default class topics extends Component {
       <FlatList
         style={{ flex: 1 }}
         container
-        ref={c => this.scrollView = c}
+        ref={c => (this.scrollView = c)}
         keyboardDismissMode={'interactive'}
         keyboardShouldPersistTaps={'always'}
         data={this.props.topics}
@@ -124,8 +128,6 @@ export default class topics extends Component {
   }
 }
 
-const localStyles = StyleSheet.create({
-
-});
+const localStyles = StyleSheet.create({});
 
 styles = { ...localStyles, ...globalStyles };

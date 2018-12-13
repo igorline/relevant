@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableHighlight,
-} from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { globalStyles } from '../styles/global';
@@ -14,6 +9,13 @@ import * as errorActions from '../actions/error.actions';
 let styles;
 
 class ErrorComponent extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    parent: PropTypes.object,
+    reloadFunction: PropTypes.func,
+    error: PropTypes.string
+  };
+
   constructor(props, context) {
     super(props, context);
     this.reload = this.reload.bind(this);
@@ -33,16 +35,21 @@ class ErrorComponent extends Component {
     let errorEl = null;
 
     if (this.props.error) {
-      errorEl = (<TouchableHighlight underlayColor={'transparent'} onPress={() => this.reload()}>
-        <View>
-          <Image source={require('../assets/images/reload.png')} style={styles.reloadIcon} />
-          <Text style={{ fontSize: 20, textAlign: 'center' }}>Reload</Text>
-        </View>
-      </TouchableHighlight>);
+      errorEl = (
+        <TouchableHighlight underlayColor={'transparent'} onPress={() => this.reload()}>
+          <View>
+            <Image source={require('../assets/images/reload.png')} style={styles.reloadIcon} />
+            <Text style={{ fontSize: 20, textAlign: 'center' }}>Reload</Text>
+          </View>
+        </TouchableHighlight>
+      );
     }
 
     return (
-      <View pointerEvents={this.props.error ? 'auto' : 'none'} style={styles.errorComponentContainer}>
+      <View
+        pointerEvents={this.props.error ? 'auto' : 'none'}
+        style={styles.errorComponentContainer}
+      >
         {errorEl}
       </View>
     );
@@ -58,24 +65,29 @@ const localStyles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0
-  },
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };
 
 function mapStateToProps(state) {
   return {
-    error: state.error,
+    error: state.error
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...errorActions,
-    }, dispatch),
+    actions: bindActionCreators(
+      {
+        ...errorActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ErrorComponent);
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ErrorComponent);

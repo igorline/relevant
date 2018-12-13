@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-} from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles, fullWidth, darkGrey } from '../../styles/global';
 import Percent from '../../components/percent.component';
 import { numbers } from '../../utils';
 import Bio from './bio.component';
 
-let defaultImg = require('../../assets/images/default_user.jpg');
+const defaultImg = require('../../assets/images/default_user.jpg');
+
 let styles;
 
 class ProfileComponent extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    navigator: PropTypes.object,
+    user: PropTypes.object,
+    myProfile: PropTypes.object
+  };
 
   constructor(props, context) {
     super(props, context);
@@ -28,8 +31,8 @@ class ProfileComponent extends Component {
   }
 
   goToTopic(tag) {
-    let name = tag.replace('#', '').trim();
-    let topic = {
+    const name = tag.replace('#', '').trim();
+    const topic = {
       _id: name,
       categoryName: '#' + name
     };
@@ -62,11 +65,12 @@ class ProfileComponent extends Component {
       name: 'relevance',
       verticalOffset: 0,
       width: 240,
-      text: 'See your relevance? The higher your relevance the more your upvotes count and the more coins you\'ll get each day.'
+      text:
+        "See your relevance? The higher your relevance the more your upvotes count and the more coins you'll get each day."
     };
 
     this.tooltipParent.measureInWindow((x, y, w, h) => {
-      let parent = { x, y, w, h };
+      const parent = { x, y, w, h };
       this.props.navigator.showTooltip({
         ...this.tooltipData,
         parent
@@ -98,42 +102,35 @@ class ProfileComponent extends Component {
       if (user.topTags) {
         topTags = user.topTags.map((tag, i) => (
           <Text key={tag._id}>
-            <Text
-              onPress={() => this.goToTopic(tag.tag)}
-              style={styles.active}
-            >
+            <Text onPress={() => this.goToTopic(tag.tag)} style={styles.active}>
               #{tag.tag}
-            </Text>{i !== user.topTags.length - 1 ? ', ' : ''}
+            </Text>
+            {i !== user.topTags.length - 1 ? ', ' : ''}
           </Text>
-          )
-        );
+        ));
       }
       if (user.topCategory) {
         topCat = (
           <Text>
-            <Text
-              onPress={() => this.goToTopic(user.topCategory.category)}
-              style={styles.active}
-            >
+            <Text onPress={() => this.goToTopic(user.topCategory.category)} style={styles.active}>
               {user.topCategory.category.replace('_category_tag', '')}
-            </Text>{user.topTags.length ? ', ' : null}
+            </Text>
+            {user.topTags.length ? ', ' : null}
           </Text>
         );
       }
     }
 
     if (userImage) {
-      userImageEl = (<Image source={{ uri: userImage }} style={styles.uploadAvatar} />);
+      userImageEl = <Image source={{ uri: userImage }} style={styles.uploadAvatar} />;
     } else {
-      userImageEl = (<Image source={defaultImg} style={styles.uploadAvatar} />);
+      userImageEl = <Image source={defaultImg} style={styles.uploadAvatar} />;
     }
 
-    let balanceEl = (
+    const balanceEl = (
       <View style={[styles.profileRowContainer]}>
         <View style={styles.textRow}>
-          <Text style={[styles.font12, styles.darkGrey]}>
-            Coins:{' '}
-          </Text>
+          <Text style={[styles.font12, styles.darkGrey]}>Coins: </Text>
           <Image
             resizeMode={'contain'}
             style={[styles.coin, { width: 14, height: 14 }]}
@@ -146,7 +143,7 @@ class ProfileComponent extends Component {
       </View>
     );
 
-    let small = fullWidth <= 320 || false;
+    const small = fullWidth <= 320 || false;
 
     relevanceEl = (
       <View style={[styles.profileRow, styles.profileRowContainer]}>
@@ -168,8 +165,7 @@ class ProfileComponent extends Component {
             // onPress={() => this.toggleTooltip()}
             style={[styles.profileBig, styles.bebas, styles.darkGrey]}
           >
-            {numbers.abbreviateNumber(relevance)}
-            {' '}
+            {numbers.abbreviateNumber(relevance)}{' '}
           </Text>
         </View>
 
@@ -186,9 +182,7 @@ class ProfileComponent extends Component {
         <View style={{ padding: 0 }}>
           <Text style={[styles.font12, styles.darkGrey]}>
             <Text>{user.topTags.length ? 'Expertise: ' : null}</Text>
-            <Text style={[styles.font14, styles.georgia]}>
-              {topTags}
-            </Text>
+            <Text style={[styles.font14, styles.georgia]}>{topTags}</Text>
           </Text>
         </View>
       );
@@ -197,20 +191,21 @@ class ProfileComponent extends Component {
     return (
       <View>
         <View
-          style={[{
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-            alignItems: 'flex-start',
-            padding: 10,
-            paddingTop: 15,
-            backgroundColor: 'white',
-          }]}
+          style={[
+            {
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
+              padding: 10,
+              paddingTop: 15,
+              backgroundColor: 'white'
+            }
+          ]}
         >
           <View
             style={{
               paddingRight: 10,
-              borderRightWidth:
-              StyleSheet.hairlineWidth,
+              borderRightWidth: StyleSheet.hairlineWidth,
               borderRightColor: '#242425'
             }}
           >
@@ -225,60 +220,62 @@ class ProfileComponent extends Component {
               marginTop: -10
             }}
           >
-            <View ref={(c) => this.tooltipParent = c}>
-              {relevanceEl}
-            </View>
+            <View ref={c => (this.tooltipParent = c)}>{relevanceEl}</View>
             <View style={[styles.profileRowContainer]}>
-              <View style={[styles.profileRow, fullWidth <= 320 ? { flexDirection: 'column', alignItems: 'flex-start' } : null]}>
+              <View
+                style={[
+                  styles.profileRow,
+                  fullWidth <= 320 ? { flexDirection: 'column', alignItems: 'flex-start' } : null
+                ]}
+              >
                 <Text style={[styles.font12, styles.darkGrey, styles.profileColumn]}>
-                  Subscribers: <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(followers || 0)}</Text>
+                  Subscribers:{' '}
+                  <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(followers || 0)}</Text>
                 </Text>
                 <Text style={[styles.font12, styles.darkGrey, styles.profileColumn]}>
-                  Subscribed to: <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(following || 0)}</Text>
+                  Subscribed to:{' '}
+                  <Text style={[styles.bebasBold]}>{numbers.abbreviateNumber(following || 0)}</Text>
                 </Text>
               </View>
             </View>
 
             {balanceEl}
 
-            <View style={[styles.profileRowContainer, styles.lastRow]}>
-              {bottomSection}
-            </View>
+            <View style={[styles.profileRowContainer, styles.lastRow]}>{bottomSection}</View>
           </View>
-
         </View>
-        <Bio user={user} actions={this.props.actions} myProfile={this.props.myProfile}/>
+        <Bio user={user} actions={this.props.actions} myProfile={this.props.myProfile} />
       </View>
     );
   }
 }
 
-            // <View style={styles.onlineRow}>
-            //   <Text style={[styles.darkGrey, styles.georgia]}>
-            //     {user.online ? 'Online' : 'Offline'}
-            //   </Text>
-            //   <View style={user.online ? styles.onlineCirc : styles.offlineCirc} />
-            // </View>
+// <View style={styles.onlineRow}>
+//   <Text style={[styles.darkGrey, styles.georgia]}>
+//     {user.online ? 'Online' : 'Offline'}
+//   </Text>
+//   <View style={user.online ? styles.onlineCirc : styles.offlineCirc} />
+// </View>
 
-let localStyles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   uploadAvatar: {
     height: fullWidth / 3.2,
     width: fullWidth / 3.2,
     borderRadius: fullWidth / (3.2 * 2),
-    resizeMode: 'cover',
+    resizeMode: 'cover'
   },
   profileRowContainer: {
     paddingVertical: 5,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'black',
+    borderBottomColor: 'black'
   },
   profileRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'flex-end',
+    alignItems: 'flex-end'
   },
   lastRow: {
-    borderBottomWidth: 0,
+    borderBottomWidth: 0
   },
   profileColumn: {
     flex: 1
@@ -286,14 +283,14 @@ let localStyles = StyleSheet.create({
   profileBig: {
     marginTop: 3,
     fontSize: 26,
-    lineHeight: 26,
+    lineHeight: 26
   },
   textRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     flex: 1,
     alignItems: 'flex-end',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-start'
   }
 });
 

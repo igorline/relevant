@@ -27,7 +27,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         BROWSER: JSON.stringify(true),
-        DEVTOOLS: JSON.stringify(true),  // <-------- DISABLE redux-devtools HERE
+        DEVTOOLS: JSON.stringify(true), // <-------- DISABLE redux-devtools HERE
         NODE_ENV: JSON.stringify('development'),
         WEB: JSON.stringify('true'),
         API_SERVER: JSON.stringify('')

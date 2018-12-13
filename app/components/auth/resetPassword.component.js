@@ -7,16 +7,21 @@ import {
   Alert,
   StyleSheet,
   KeyboardAvoidingView,
-  ScrollView,
+  ScrollView
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles, fullHeight } from '../../styles/global';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
+
+import { globalStyles, fullHeight } from '../../styles/global';
 
 let localStyles;
 let styles;
 
 class ResetPassword extends Component {
+  static propTypes = {
+    actions: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.back = this.back.bind(this);
@@ -24,7 +29,7 @@ class ResetPassword extends Component {
     this.state = {
       message: '',
       password: null,
-      cPassword: null,
+      cPassword: null
     };
   }
 
@@ -47,16 +52,19 @@ class ResetPassword extends Component {
       return;
     }
     dismissKeyboard();
-    this.props.actions.resetPassword(this.state.password, this.token)
-    .then(success => {
+    this.props.actions.resetPassword(this.state.password, this.token).then(success => {
       if (success) {
-        this.props.actions.replaceRoute({
-          key: 'login',
-          component: 'login',
-          title: 'Login',
-          showBackButton: true,
-          back: true
-        }, 1, 'auth');
+        this.props.actions.replaceRoute(
+          {
+            key: 'login',
+            component: 'login',
+            title: 'Login',
+            showBackButton: true,
+            back: true
+          },
+          1,
+          'auth'
+        );
       }
     });
   }
@@ -65,17 +73,13 @@ class ResetPassword extends Component {
     styles = { ...localStyles, ...globalStyles };
 
     return (
-      <KeyboardAvoidingView
-        behavior={'padding'}
-        style={{ height: fullHeight - 60 }}
-      >
+      <KeyboardAvoidingView behavior={'padding'} style={{ height: fullHeight - 60 }}>
         <ScrollView
           keyboardShouldPersistTaps={'always'}
           keyboardDismissMode={'interactive'}
           scrollEnabled={false}
           contentContainerStyle={styles.fieldsParent}
         >
-
           <View style={styles.fieldsInner}>
             <View style={styles.fieldsInputParent}>
               <TextInput
@@ -111,16 +115,11 @@ class ResetPassword extends Component {
           >
             <Text style={styles.largeButtonText}>next</Text>
           </TouchableHighlight>
-
         </ScrollView>
       </KeyboardAvoidingView>
     );
   }
 }
-
-ResetPassword.propTypes = {
-  actions: PropTypes.object,
-};
 
 localStyles = StyleSheet.create({
   error: {
@@ -132,4 +131,3 @@ localStyles = StyleSheet.create({
 styles = { ...globalStyles, ...localStyles };
 
 export default ResetPassword;
-

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-let StaticsticsSchema = new Schema({
+const StaticsticsSchema = new Schema({
   communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
   date: { type: Date, index: true },
   startTime: { type: Date, index: true },

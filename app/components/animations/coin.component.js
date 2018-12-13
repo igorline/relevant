@@ -1,26 +1,27 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Animated,
-  Easing,
-  Image,
-  Text
-} from 'react-native';
+import { StyleSheet, Animated, Easing, Image, Text } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 
 let styles;
-let ENDY = fullHeight * 0.7;
+const ENDY = fullHeight * 0.7;
 
 class Dollar extends Component {
+  static propTypes = {
+    specialKey: PropTypes.number,
+    amount: PropTypes.object,
+    destroy: PropTypes.func
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
-      position: new Animated.Value(0),
+      position: new Animated.Value(0)
     };
   }
 
   componentWillMount() {
-    let ENDX = -(fullWidth / 3) + ((Math.random() - 0.5) * 50);
+    const ENDX = -(fullWidth / 3) + (Math.random() - 0.5) * 50;
 
     this.y = this.state.position.interpolate({
       inputRange: [0, 1],
@@ -31,7 +32,7 @@ class Dollar extends Component {
     this.x = this.state.position.interpolate({
       inputRange: [0, 1],
       outputRange: [0, ENDX],
-      easing: Easing.out(Easing.ease),
+      easing: Easing.out(Easing.ease)
     });
 
     this.opacity = 1;
@@ -50,39 +51,32 @@ class Dollar extends Component {
   }
 
   componentDidMount() {
-    let i = this.props.specialKey;
-    let r = Math.random();
-    let amount = this.props.amount;
+    const i = this.props.specialKey;
+    const r = Math.random();
+    const amount = this.props.amount;
 
     Animated.timing(this.state.position, {
       toValue: 1,
-      delay: r * 30 + i * 100 * 10 / amount,
-      duration: 1000,
+      delay: r * 30 + (i * 100 * 10) / amount,
+      duration: 1000
     }).start(() => this.props.destroy(i));
   }
 
   render() {
-    let specialKey = this.props.specialKey;
+    const specialKey = this.props.specialKey;
     let img;
 
-    let icon = require('../../assets/images/relevantcoin.png');
+    const icon = require('../../assets/images/relevantcoin.png');
 
-    img = (<Image
-      style={[styles.coin, { width: 30, height: 30 }]}
-      source={icon}
-    />);
+    img = <Image style={[styles.coin, { width: 30, height: 30 }]} source={icon} />;
 
     return (
       <Animated.View
         key={specialKey}
         style={[
           styles.aniMoney,
-          { transform: [
-            { translateX: this.x },
-            { translateY: this.y },
-            { scale: this.scale },
-
-          ],
+          {
+            transform: [{ translateX: this.x }, { translateY: this.y }, { scale: this.scale }],
             opacity: this.opacity
           }
         ]}
@@ -101,8 +95,7 @@ const localStyles = StyleSheet.create({
     top: 25,
     right: 45,
     backgroundColor: 'transparent'
-  },
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };
-

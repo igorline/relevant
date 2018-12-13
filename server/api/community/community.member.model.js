@@ -1,8 +1,8 @@
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-let CommunityMemberSchema = new Schema({
+const CommunityMemberSchema = new Schema({
   user: { type: String, ref: 'User', index: true },
   embeddedUser: {
     _id: String,

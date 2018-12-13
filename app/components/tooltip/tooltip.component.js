@@ -8,18 +8,32 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { globalStyles, darkGrey, fullHeight, fullWidth, blue, smallScreen } from '../../styles/global';
+import {
+  globalStyles,
+  darkGrey,
+  fullHeight,
+  fullWidth,
+  blue,
+  smallScreen
+} from '../../styles/global';
 import * as authActions from '../../actions/auth.actions';
 import * as navigationActions from '../../actions/navigation.actions';
 import * as helper from './tooltip.helper';
 
 let styles;
 const TOOLTIP_MARGIN = smallScreen ? 4 : 10;
-const TOOLTIP_WIDTH = fullWidth - (2 * TOOLTIP_MARGIN);
+const TOOLTIP_WIDTH = fullWidth - 2 * TOOLTIP_MARGIN;
 
 class Tooltip extends Component {
+  static propTypes = {
+    tooltip: PropTypes.object,
+    auth: PropTypes.object,
+    actions: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -27,36 +41,33 @@ class Tooltip extends Component {
       scale: new Animated.Value(0),
       opacity: new Animated.Value(0),
       x: new Animated.Value(0),
-      width: 0,
+      width: 0
     };
     this.offset = 15;
     this.nextOnboarding = this.nextOnboarding.bind(this);
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   componentWillReceiveProps(next) {
     if (!this.props.tooltip.ready && next.tooltip.ready) {
-    // if (!this.props.auth.user && next.auth.user) {
+      // if (!this.props.auth.user && next.auth.user) {
       this.initTooltipData(next);
     }
-
 
     if (!this.props.auth.user) return;
     this.step = this.props.auth.user.onboarding;
 
-
-    let id = next.tooltip.current;
-    let tooltipId = next.tooltip.onboarding[id];
-    let nextT = next.tooltip.data[tooltipId];
+    const id = next.tooltip.current;
+    const tooltipId = next.tooltip.onboarding[id];
+    const nextT = next.tooltip.data[tooltipId];
     if (nextT && nextT.toggle && tooltipId !== next.tooltip.showing.name) {
       clearTimeout(this.timeout);
       this.timeout = setTimeout(() => nextT.toggle(), 300);
     }
 
     if (next.tooltip.showing.name !== this.props.tooltip.showing.name) {
-      let tooltip = next.tooltip.showing;
+      const tooltip = next.tooltip.showing;
 
       if (tooltip && tooltip.name) {
         Animated.spring(this.state.scale, {
@@ -71,12 +82,12 @@ class Tooltip extends Component {
           delay: 0,
           velocity: 25,
           friction: 10,
-          useNativeDriver: true,
+          useNativeDriver: true
         }).start();
       } else {
         this.setState({
           scale: new Animated.Value(0.0),
-          x: new Animated.Value(0),
+          x: new Animated.Value(0)
         });
       }
     }
@@ -93,9 +104,9 @@ class Tooltip extends Component {
   }
 
   nextOnboarding() {
-    let current = this.props.tooltip.showing.name;
+    const current = this.props.tooltip.showing.name;
 
-    let index = this.props.tooltip.onboarding.findIndex(t => t === current);
+    const index = this.props.tooltip.onboarding.findIndex(t => t === current);
 
     this.props.actions.showTooltip(null);
 
@@ -110,7 +121,6 @@ class Tooltip extends Component {
       this.props.actions.setOnboardingStep(this.step);
     }
 
-
     // if (this.step >= 3) {
     //   this.props.actions.setOnboardingStep(0);
     // }
@@ -118,14 +128,14 @@ class Tooltip extends Component {
 
   render() {
     if (!this.props.auth.user) return null;
-    let tooltip = this.props.tooltip.showing;
+    const tooltip = this.props.tooltip.showing;
     if (!tooltip || !tooltip.name) return null;
     if (!tooltip.parent) return null;
     let style = { opacity: this.state.opacity };
     let arrowStyle = [];
     let transform = [{ scale: this.state.scale }];
 
-    let parent = tooltip.parent;
+    const parent = tooltip.parent;
 
     if (parent.y < fullHeight / 2) {
       tooltip.vertical = 'bottom';
@@ -134,59 +144,42 @@ class Tooltip extends Component {
     }
 
     if (tooltip.vertical === 'bottom') {
-      transform = [...transform,
-        { translateY: this.state.height / 2 }
-      ];
+      transform = [...transform, { translateY: this.state.height / 2 }];
       style = {
         ...style,
-        top: -10 + parent.y + parent.h + tooltip.verticalOffset - (this.state.height / 2),
+        top: -10 + parent.y + parent.h + tooltip.verticalOffset - this.state.height / 2,
         transform
       };
-      arrowStyle = [
-        ...arrowStyle,
-        { top: Platform.OS === 'android' ? 5 : 4 },
-      ];
+      arrowStyle = [...arrowStyle, { top: Platform.OS === 'android' ? 5 : 4 }];
     }
 
     if (tooltip.vertical === 'top') {
-      transform = [...transform,
-        { translateY: -this.state.height / 2 }
-      ];
+      transform = [...transform, { translateY: -this.state.height / 2 }];
       style = {
         ...style,
         top: 10 + parent.y - this.state.height / 2 - tooltip.verticalOffset,
         transform
       };
-      arrowStyle = [
-        ...arrowStyle,
-        styles.arrowBottom,
-        { bottom: Platform.OS === 'ios' ? 9 : 5 }
-      ];
+      arrowStyle = [...arrowStyle, styles.arrowBottom, { bottom: Platform.OS === 'ios' ? 9 : 5 }];
     }
 
     if (tooltip.horizontal === 'right') {
-      let offset = tooltip.horizontalOffset;
-      let px = parent.w / 2 + parent.x + offset * 2;
-      let o = fullWidth - px - TOOLTIP_MARGIN;
+      const offset = tooltip.horizontalOffset;
+      const px = parent.w / 2 + parent.x + offset * 2;
+      const o = fullWidth - px - TOOLTIP_MARGIN;
 
-      let x = this.state.scale.interpolate({
+      const x = this.state.scale.interpolate({
         inputRange: [0, 1],
-        outputRange: [0, -TOOLTIP_WIDTH + TOOLTIP_WIDTH / 2 + o + TOOLTIP_MARGIN],
+        outputRange: [0, -TOOLTIP_WIDTH + TOOLTIP_WIDTH / 2 + o + TOOLTIP_MARGIN]
       });
 
-      transform = [
-        { translateX: x },
-        ...transform,
-      ];
+      transform = [{ translateX: x }, ...transform];
       style = {
         ...style,
-        left: px - (TOOLTIP_WIDTH / 2) - TOOLTIP_MARGIN,
-        transform,
+        left: px - TOOLTIP_WIDTH / 2 - TOOLTIP_MARGIN,
+        transform
       };
-      arrowStyle = [
-        ...arrowStyle,
-        { right: fullWidth - px - TOOLTIP_MARGIN - 6 },
-      ];
+      arrowStyle = [...arrowStyle, { right: fullWidth - px - TOOLTIP_MARGIN - 6 }];
     }
 
     if (tooltip.horizontal === 'left') {
@@ -195,27 +188,20 @@ class Tooltip extends Component {
         left: parent.x + tooltip.horizontalOffset,
         transform
       };
-      arrowStyle = [
-        ...arrowStyle,
-        { left: 8 },
-      ];
+      arrowStyle = [...arrowStyle, { left: 8 }];
     }
 
     if (tooltip.horizontal === 'center') {
       style = {
         ...style,
         width: tooltip.width,
-        left: parent.x + (parent.w / 2) - (this.state.width / 2) + tooltip.horizontalOffset,
+        left: parent.x + parent.w / 2 - this.state.width / 2 + tooltip.horizontalOffset,
         transform
       };
-      arrowStyle = [
-        ...arrowStyle,
-        ...styles.arrowBottom,
-        { left: this.state.width / 2 },
-      ];
+      arrowStyle = [...arrowStyle, ...styles.arrowBottom, { left: this.state.width / 2 }];
     }
 
-    let button = (
+    const button = (
       <TouchableOpacity
         style={[styles.mediumButton, { borderColor: 'white' }]}
         onPress={this.nextOnboarding}
@@ -224,7 +210,7 @@ class Tooltip extends Component {
         <Text style={[styles.mediumButtonText, { color: 'white' }]}>Got It</Text>
       </TouchableOpacity>
     );
-    let dismiss = helper.data[tooltip.name].noButton || false;
+    const dismiss = helper.data[tooltip.name].noButton || false;
 
     return (
       <TouchableHighlight
@@ -244,8 +230,8 @@ class Tooltip extends Component {
         >
           <Animated.View
             style={[styles.tooltip, style]}
-            onLayout={(e) => {
-              let { width, height } = e.nativeEvent.layout;
+            onLayout={e => {
+              const { width, height } = e.nativeEvent.layout;
               this.setState({ height, width });
             }}
           >
@@ -271,7 +257,7 @@ class Tooltip extends Component {
   }
 }
 
-let localStyles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   overlay: {
     position: 'absolute',
     width: fullWidth,
@@ -279,7 +265,7 @@ let localStyles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 0
   },
   tooltipCard: {
     // backgroundColor: 'white',
@@ -288,18 +274,18 @@ let localStyles = StyleSheet.create({
     paddingVertical: 20,
     paddingTop: 25,
     zIndex: 1000000,
-    width: TOOLTIP_WIDTH,
+    width: TOOLTIP_WIDTH
   },
   tooltip: {
     position: 'absolute',
-    paddingVertical: 10,
+    paddingVertical: 10
   },
   tooltipText: {
     // fontWeight: '100',
     fontSize: 15,
     lineHeight: 20,
     // color: darkGrey,
-    color: 'white',
+    color: 'white'
     // flexDirection: 'row',
     // alignItems: 'center'
   },
@@ -307,15 +293,15 @@ let localStyles = StyleSheet.create({
     width: 10,
     height: 10,
     position: 'absolute',
-    transform: Platform.OS === 'android' ?
-      [{ rotate: '45deg' }] :
-      [{ rotate: '35deg' }, { skewY: '45deg' }, { translateY: 3 }],
+    transform:
+      Platform.OS === 'android'
+        ? [{ rotate: '45deg' }]
+        : [{ rotate: '35deg' }, { skewY: '45deg' }, { translateY: 3 }],
     // backgroundColor: 'white',
-    backgroundColor: blue,
-
+    backgroundColor: blue
   },
   arrowBottom: {
-    shadowOffset: { width: 1, height: 1 },
+    shadowOffset: { width: 1, height: 1 }
   }
 });
 
@@ -331,11 +317,17 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...authActions,
-      ...navigationActions,
-    }, dispatch)
+    actions: bindActionCreators(
+      {
+        ...authActions,
+        ...navigationActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Tooltip);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Tooltip);

@@ -5,7 +5,7 @@
  * keep shipping next()
  */
 
-module.exports = function(options) {
+module.exports = function (options) {
   // options?
   options = options || {};
 
@@ -19,10 +19,10 @@ module.exports = function(options) {
   }
 
   // return middleware
-  return function(request, response, next) {
+  return function (request, response, next) {
     // get host & protocol
-    let host = request.headers.host;
-    let protocol = request.socket.encrypted ? 'https' : 'http';
+    const host = request.headers.host;
+    const protocol = request.socket.encrypted ? 'https' : 'http';
     // Invalid request, since headers.host should be set, most likely a malicious attempt
     if (!host) {
       return response.sendStatus(400);
@@ -41,7 +41,7 @@ module.exports = function(options) {
       next();
     } else {
       // test for subdomain
-      let matches = host.match(new RegExp('(.*)\.' + options.base));
+      const matches = host.match(new RegExp('(.*)\.' + options.base));
       // subdomain
       if (matches && matches.length === 2) {
         // request.url = '/' + options.prefix + '/' + matches[1] + request.url;

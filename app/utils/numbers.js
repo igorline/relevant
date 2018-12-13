@@ -1,7 +1,6 @@
-
 export function toNumber(num, dec) {
   if (num === undefined || dec === undefined) return null;
-  return num / (10 ** dec);
+  return num / 10 ** dec;
 }
 
 export function toFixed(num, dec) {
@@ -14,21 +13,21 @@ export function percentChange(user) {
 
   if (!user || !user.relevanceRecord || !user.relevanceRecord.length) return 0;
 
-  user.relevanceRecord.forEach((record) => {
+  user.relevanceRecord.forEach(record => {
     let percent = 0;
-    let endInterval = new Date();
-    let endRelevance = user.pagerank;
-    let last = record;
-    let oldRel = Math.abs(last.relevance);
+    const endInterval = new Date();
+    const endRelevance = user.pagerank;
+    const last = record;
+    const oldRel = Math.abs(last.relevance);
     if (oldRel === 0) return;
     percent = ((endRelevance - oldRel) * 100) / oldRel;
-    let timeInteraval = endInterval - new Date(last.time);
-    let scale = (1 * 24 * 60 * 60 * 1000) / timeInteraval;
+    const timeInteraval = endInterval - new Date(last.time);
+    const scale = (1 * 24 * 60 * 60 * 1000) / timeInteraval;
     percent *= scale;
     totalPercent += percent;
   });
 
-  let total = totalPercent / user.relevanceRecord.length;
+  const total = totalPercent / user.relevanceRecord.length;
   return total;
 }
 
@@ -37,21 +36,27 @@ export function abbreviateNumber(num, _fixed) {
   if (Math.abs(num) < 100) fixed = 1;
   if (Math.abs(num) < 10) fixed = 1;
   if (typeof _fixed === 'number') fixed = _fixed;
-  if (num === null) { return null; } // terminate early
-  if (num === 0) { return '0'; } // terminate early
+  if (num === null) {
+    return null;
+  } // terminate early
+  if (num === 0) {
+    return '0';
+  } // terminate early
   if (typeof num !== 'number') num = Number(num);
-  fixed = (!fixed || fixed < 0) ? 0 : fixed; // number of decimal places to show
-  let b = (num).toPrecision(2).split('e'); // get power
-  let k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3); // floor at decimals, ceiling at trillions
-  let c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, k * 3)).toFixed(2 + fixed); // divide by power
-  let d = c < 0 ? -Math.abs(c) : Math.abs(c); // enforce -0 is 0 and trim .00s
-  let e = d + ['', 'K', 'M', 'B', 'T'][k]; // append power
+  fixed = !fixed || fixed < 0 ? 0 : fixed; // number of decimal places to show
+  const b = num.toPrecision(2).split('e'); // get power
+  // floor at decimals, ceiling at trillions
+  const k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3);
+  // divide by power
+  const c = k < 1 ? num.toFixed(0 + fixed) : (num / 10 ** (k * 3)).toFixed(2 + fixed);
+  const d = c < 0 ? -Math.abs(c) : Math.abs(c); // enforce -0 is 0 and trim .00s
+  const e = d + ['', 'K', 'M', 'B', 'T'][k]; // append power
   return e;
 }
 
 export function timeSince(date) {
-  let d = new Date(date);
-  let seconds = Math.floor((new Date() - d) / 1000);
+  const d = new Date(date);
+  const seconds = Math.floor((new Date() - d) / 1000);
   let interval = Math.floor(seconds / 31536000);
   if (interval >= 1) {
     return interval + 'y';
@@ -76,9 +81,9 @@ export function timeSince(date) {
 }
 
 export function guid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    let r = Math.random() * 16 | 0;
-    let v = c === 'x' ? r : (r&0x3|0x8);
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0; // eslint-disable-line
+    const v = c === 'x' ? r : (r & 0x3) | 0x8; // eslint-disable-line
     return v.toString(16);
   });
 }

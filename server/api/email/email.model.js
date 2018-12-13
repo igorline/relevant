@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-let EmailSchema = new Schema({
+const EmailSchema = new Schema({
   html: String,
   email: String,
   subject: String,

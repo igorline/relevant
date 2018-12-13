@@ -7,22 +7,35 @@ import {
   Image,
   TouchableOpacity
 } from 'react-native';
-
+import PropTypes from 'prop-types';
 import { numbers } from '../../utils';
-import { globalStyles, fullWidth, green, smallScreen, greyText, mainPadding } from '../../styles/global';
+import {
+  globalStyles,
+  fullWidth,
+  green,
+  smallScreen,
+  greyText,
+  mainPadding
+} from '../../styles/global';
 import UrlPreview from '../createPost/urlPreview.component';
 import * as activityHelper from './activityHelper';
 
-let moment = require('moment');
+const moment = require('moment');
 
 let styles;
 
 export default class SingleActivity extends Component {
+  static propTypes = {
+    navigator: PropTypes.object,
+    posts: PropTypes.object,
+    singleActivity: PropTypes.object
+  };
+
   toggleTooltip(name, type) {
-    let tooltipParent = this.tooltipParent;
+    const tooltipParent = this.tooltipParent;
     if (!tooltipParent[name]) return;
     tooltipParent[name].measureInWindow((x, y, w, h) => {
-      let parent = { x, y, w, h };
+      const parent = { x, y, w, h };
       if (x + y + w + h === 0) return;
       this.props.navigator.setTooltipData({
         name,
@@ -45,31 +58,36 @@ export default class SingleActivity extends Component {
     if (!user && activity.totalUsers) {
       let s = '';
       if (activity.totalUsers > 1) s = 's';
-      return <Text style={styles.activityText}>{activity.totalUsers} user{s} </Text>;
+      return (
+        <Text style={styles.activityText}>
+          {activity.totalUsers} user{s}{' '}
+        </Text>
+      );
     }
 
     if (user && activity.totalUsers - 1) {
       let s = '';
       if (activity.totalUsers - 1 > 1) s = 's';
-      return (<Text style={styles.activityText}>
-        <Text
-          style={[styles.link, styles.activityText]}
-          onPress={() => this.setSelected(user)}
-        >
-          {user.name}{' '}
+      return (
+        <Text style={styles.activityText}>
+          <Text style={[styles.link, styles.activityText]} onPress={() => this.setSelected(user)}>
+            {user.name}{' '}
+          </Text>
+          and {activity.totalUsers - 1} other{s}
         </Text>
-        and {activity.totalUsers - 1} other{s}
-      </Text>);
+      );
     }
 
-    return (<Text style={[styles.link, styles.activityText]} onPress={() => this.setSelected(user)}>
-      {user.name}{' '}
-    </Text>);
+    return (
+      <Text style={[styles.link, styles.activityText]} onPress={() => this.setSelected(user)}>
+        {user.name}{' '}
+      </Text>
+    );
   }
 
   renderStat(activity) {
     if (activity.amount <= 0) return null;
-    let { coin, relevance } = activityHelper.getStatParams(activity);
+    const { coin, relevance } = activityHelper.getStatParams(activity);
     let icon = require('../../assets/images/rup.png');
     let color = { color: green };
     if (activity.amount < 0) {
@@ -107,7 +125,7 @@ export default class SingleActivity extends Component {
       return (
         <View
           style={[smallScreen ? styles.activityMiddleSmall : styles.activityMiddle]}
-          ref={(c) => this.tooltipParent.activity = c}
+          ref={c => (this.tooltipParent.activity = c)}
           onLayout={() => null}
         >
           <TouchableOpacity
@@ -124,53 +142,50 @@ export default class SingleActivity extends Component {
               {Math.abs(numbers.abbreviateNumber(activity.amount))}
             </Text>
           </TouchableOpacity>
-
         </View>
       );
     }
 
-    return (<View style={[styles.activityMiddle]} />);
+    return <View style={[styles.activityMiddle]} />;
   }
 
   renderIcon(img) {
-    return (<View style={styles.activityImage}>
-      <Image
-        resizeMode={'contain'}
-        style={styles.activityImage}
-        source={img}
-      />
-    </View>);
+    return (
+      <View style={styles.activityImage}>
+        <Image resizeMode={'contain'} style={styles.activityImage} source={img} />
+      </View>
+    );
   }
 
   renderUserImage(activity) {
-    let user = activity.byUser;
-    let image = user.image ? { uri: user.image } : require('../../assets/images/default_user.jpg');
-    return (<TouchableWithoutFeedback onPress={() => this.setSelected(activity.byUser)}>
-      <Image style={styles.activityImage} source={image} />
-    </TouchableWithoutFeedback>);
+    const user = activity.byUser;
+    const image = user.image
+      ? { uri: user.image }
+      : require('../../assets/images/default_user.jpg');
+    return (
+      <TouchableWithoutFeedback onPress={() => this.setSelected(activity.byUser)}>
+        <Image style={styles.activityImage} source={image} />
+      </TouchableWithoutFeedback>
+    );
   }
 
   renderPostPreview(activity) {
-    let post = activity.post;
+    const post = activity.post;
     if (!post) return null;
-    let link = this.props.posts.links[post.metaPost];
-    let previewProps = { urlPreview: link || post, post };
-    let goTo = post.type === 'post' ? post : { _id: post.parentPost };
+    const link = this.props.posts.links[post.metaPost];
+    const previewProps = { urlPreview: link || post, post };
+    const goTo = post.type === 'post' ? post : { _id: post.parentPost };
     return (
       <View style={{ marginLeft: 55, marginRight: mainPadding }}>
-        <UrlPreview
-          onPress={() => this.goToPost(goTo)}
-          size={'small'}
-          {...previewProps}
-        />
+        <UrlPreview onPress={() => this.goToPost(goTo)} size={'small'} {...previewProps} />
       </View>
     );
   }
 
   renderActivity(activity) {
-    let { emoji, userImage, post, image, userName } = activityHelper.getActivityParams(activity);
-    let amount = numbers.abbreviateNumber(activity.amount);
-    let coinAmount = numbers.abbreviateNumber(activity.coin);
+    const { emoji, userImage, post, image, userName } = activityHelper.getActivityParams(activity);
+    const amount = numbers.abbreviateNumber(activity.amount);
+    const coinAmount = numbers.abbreviateNumber(activity.coin);
 
     return (
       <View>
@@ -178,10 +193,11 @@ export default class SingleActivity extends Component {
           <View style={styles.activityLeft}>
             {userImage && this.renderUserImage(activity)}
             {image && this.renderIcon(image)}
-            {emoji &&
+            {emoji && (
               <Text allowFontScaling={false} style={styles.incomeEmoji}>
                 {emoji}
-              </Text>}
+              </Text>
+            )}
             <Text style={[{ flex: 1 }, styles.activityText]}>
               {userName && this.renderName(activity, userName)}
               {activityHelper.getText(activity, amount, coinAmount)}
@@ -195,35 +211,37 @@ export default class SingleActivity extends Component {
   }
 
   renderBorder(activity) {
-    let fromNow = moment(activity.createdAt).fromNow();
+    const fromNow = moment(activity.createdAt).fromNow();
     if (activity.type) {
-      return (<View style={styles.time}>
-        <View style={styles.border} />
-        <Text
-          style={[{
-            paddingHorizontal: 5,
-            // marginBottom: -6,
-            fontSize: 10,
-            color: greyText,
-            textAlign: 'center',
-            backgroundColor: 'white'
-          }]}
-        >
-          {fromNow}
-        </Text>
-      </View>);
+      return (
+        <View style={styles.time}>
+          <View style={styles.border} />
+          <Text
+            style={[
+              {
+                paddingHorizontal: 5,
+                // marginBottom: -6,
+                fontSize: 10,
+                color: greyText,
+                textAlign: 'center',
+                backgroundColor: 'white'
+              }
+            ]}
+          >
+            {fromNow}
+          </Text>
+        </View>
+      );
     }
     return null;
   }
 
   render() {
-    let activity = this.props.singleActivity;
+    const activity = this.props.singleActivity;
     if (!activity) return null;
     return (
       <View>
-        <View>
-          {this.renderActivity(activity)}
-        </View>
+        <View>{this.renderActivity(activity)}</View>
         {this.renderBorder(activity)}
       </View>
     );
@@ -233,7 +251,7 @@ export default class SingleActivity extends Component {
 const localStyles = StyleSheet.create({
   divide: {
     width: 25,
-    margin: 2,
+    margin: 2
   },
   activityText: {
     fontSize: 15,
@@ -242,7 +260,7 @@ const localStyles = StyleSheet.create({
   time: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 15,
+    marginTop: 15
   },
   border: {
     alignItems: 'center',
@@ -251,7 +269,7 @@ const localStyles = StyleSheet.create({
     marginHorizontal: 60,
     position: 'absolute',
     width: fullWidth - 120,
-    bottom: 6,
+    bottom: 6
   },
   singleActivity: {
     padding: mainPadding,
@@ -261,58 +279,57 @@ const localStyles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'stretch',
     flex: 1,
-    overflow: 'visible',
+    overflow: 'visible'
     // backgroundColor: 'white'
   },
   activityMiddleSmall: {
     flex: 0.16,
     justifyContent: 'center',
     alignItems: 'flex-end',
-    marginLeft: 3,
+    marginLeft: 3
   },
   activityMiddle: {
     flex: 0.25,
     justifyContent: 'flex-end',
     alignItems: 'center',
     flexDirection: 'row',
-    marginLeft: 5,
+    marginLeft: 5
   },
   activityRight: {
     flex: 0.1,
     alignItems: 'center',
     justifyContent: 'flex-end',
     flexDirection: 'row',
-    marginLeft: 5,
+    marginLeft: 5
   },
   activityLeft: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-start'
   },
   link: {
-    color: '#4d4eff',
+    color: '#4d4eff'
   },
   incomeEmoji: {
     width: 30,
     height: 30,
     marginRight: 10,
     textAlign: 'center',
-    fontSize: 24,
+    fontSize: 24
   },
   activityImage: {
     width: 30,
     height: 30,
     borderRadius: 15,
-    marginRight: 10,
+    marginRight: 10
   },
   activityImagePlaceholder: {
     height: 30,
     width: 30,
     marginRight: 10,
     backgroundColor: 'lightgrey',
-    borderRadius: 15,
+    borderRadius: 15
   }
 });
 styles = { ...localStyles, ...globalStyles };
-

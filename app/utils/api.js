@@ -1,11 +1,7 @@
 import * as tokenUtil from './token';
 
-let post;
-let routes = {};
+const routes = {};
 let community;
-
-// let postApi = '';
-// let userApi = '';
 
 console.log('BROWSER ', process.env.BROWSER);
 console.log('WEB ', process.env.WEB);
@@ -18,16 +14,16 @@ if (process.env.BROWSER || process.env.WEB !== 'true') {
   // Desktop ONLY!!!
   // the if statment doesn't work anymore - user reat-native field in package.json
   // prevent react native from loading these modules
-  let postApi = '../../server/api/post/post.controller';
-  let userApi = '../../server/api/user/user.controller';
+  const postApi = '../../server/api/post/post.controller';
+  const userApi = '../../server/api/user/user.controller';
   // post = require(postApi);
-  routes.post = require(postApi) || {};
-  routes.user = require(userApi) || {};
+  routes.post = require(postApi) || {}; // eslint-disable-line
+  routes.user = require(userApi) || {}; // eslint-disable-line
 }
 
-const queryParams = (params) => {
+const queryParams = params => {
   if (!params) return '';
-  let paramString = Object.keys(params)
+  const paramString = Object.keys(params)
   .filter(p => params[p])
   .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
   .join('&');
@@ -35,11 +31,9 @@ const queryParams = (params) => {
   return '';
 };
 
-
 export function setCommunity(_community) {
   community = _community;
 }
-
 
 export function env() {
   if (process.env.WEB !== 'true') {
@@ -51,8 +45,8 @@ export function env() {
 
 export function Alert() {
   if (process.env.WEB !== 'true') {
-    let ReactNative = require('react-native');
-    let Platform = ReactNative.Platform;
+    const ReactNative = require('react-native');
+    const Platform = ReactNative.Platform;
     if (Platform.OS === 'ios') {
       return ReactNative.AlertIOS;
     }
@@ -74,11 +68,11 @@ export function Alert() {
  * body: body
  */
 export async function request(options) {
-  let query = queryParams({ ...options.query, community });
+  const query = queryParams({ ...options.query, community });
   let apiPath = '/api/';
   if (options.endpoint.match('auth')) apiPath = '';
   let uri = options.uri || process.env.API_SERVER + apiPath + options.endpoint;
-  let path = options.path || '';
+  const path = options.path || '';
   uri += path;
 
   try {
@@ -95,27 +89,26 @@ export async function request(options) {
     // This is the case when request is orginating from nodejs
     // ---------------------------------------------
 
-
     if (!process.env.BROWSER && process.env.WEB === 'true') {
       if (options.path === '' && options.params) options.path = 'findById';
-      let req = {
+      const req = {
         params: options.params,
         body: options.body,
-        query: options.query,
+        query: options.query
       };
-      let next = () => null;
-      let res = null;
+      const next = () => null;
+      const res = null;
       responseJSON = await routes[options.endpoint][options.path](req, res, next);
       // in case we get a mongoose object back
       if (responseJSON && responseJSON.toObject) responseJSON = responseJSON.toObject();
 
-    // ---------------------------------------------
-    // This is the case when request is orginating from client
-    // ---------------------------------------------
+      // ---------------------------------------------
+      // This is the case when request is orginating from client
+      // ---------------------------------------------
     } else {
       response = await fetch(uri + query, {
         method: options.method,
-        ...await exports.reqOptions(),
+        ...(await exports.reqOptions()),
         body: options.body
       });
       response = await exports.handleErrors(response);
@@ -130,27 +123,32 @@ export async function request(options) {
 }
 
 export async function reqOptions() {
-  let token;
   try {
-    token = await tokenUtil.get();
+    const token = await tokenUtil.get();
+    return {
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
+    };
   } catch (err) {
-    console.log('no token');
+    return {
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    };
   }
-  return {
-    credentials: 'include',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    }
-  };
 }
 
 export async function handleErrors(response) {
   if (!response.ok) {
     let error = response.statusText;
     try {
-      let json = await response.json();
+      const json = await response.json();
       if (json) {
         error = json.message;
         throw Error(error);

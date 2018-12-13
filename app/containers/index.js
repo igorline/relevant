@@ -5,7 +5,7 @@ import Application from './app.container';
 import configureStore from '../store/configureStore';
 
 const store = configureStore();
-let codePushOptions = {
+const codePushOptions = {
   checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
   installMode: codePush.InstallMode.IMMEDIATE
 };
@@ -21,4 +21,3 @@ class AppContainer extends Component {
 }
 
 export default codePush(codePushOptions)(AppContainer);
-

@@ -4,6 +4,16 @@ import InfScroll from '../common/infScroll.component';
 import Post from '../post/post.component';
 
 class DiscoverPosts extends Component {
+  static propTypes = {
+    posts: PropTypes.object,
+    pageSize: PropTypes.number,
+    load: PropTypes.func,
+    sort: PropTypes.object,
+    tag: PropTypes.object,
+    auth: PropTypes.object,
+    actions: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
 
@@ -22,7 +32,7 @@ class DiscoverPosts extends Component {
   }
 
   load(page, length) {
-    this.hasMore = (page) * this.props.pageSize <= length;
+    this.hasMore = page * this.props.pageSize <= length;
     if (this.hasMore) {
       this.props.load(null, null, length);
     }
@@ -33,14 +43,7 @@ class DiscoverPosts extends Component {
       const post = this.props.posts.posts[id];
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
 
-      return (
-        <Post
-          key={id}
-          post={post}
-          repost={repost}
-          {...this.props}
-        />
-      );
+      return <Post key={id} post={post} repost={repost} {...this.props} />;
     });
   }
 
@@ -49,11 +52,10 @@ class DiscoverPosts extends Component {
     const posts = this.props.posts.posts;
 
     return (postIds || []).map(id => {
-
       let post = posts[id];
       if (!post) return null;
 
-      let link = this.props.posts.links[post.metaPost];
+      const link = this.props.posts.links[post.metaPost];
       if (post[sort] && post[sort].length) {
         post = this.props.posts.posts[post[sort][0]];
         if (!post) return null;
@@ -66,15 +68,7 @@ class DiscoverPosts extends Component {
 
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
 
-      return (
-        <Post
-          key={id}
-          post={post}
-          link={link}
-          repost={repost}
-          {...this.props}
-        />
-      );
+      return <Post key={id} post={post} link={link} repost={repost} {...this.props} />;
     });
   }
 
@@ -83,20 +77,19 @@ class DiscoverPosts extends Component {
     const tag = this.props.tag;
     let posts;
 
-    let data = this.getData(sort, tag);
+    const data = this.getData(sort, tag);
     if (sort === 'feed') {
       posts = this.renderFeed();
     } else {
       posts = this.renderDiscover(sort, tag);
     }
-    let length = posts.length;
-    let newPosts = this.props.posts.newPostsAvailable[this.props.auth.community];
-    let refreshPosts = (<a
-      className="refresh"
-      onClick={() => this.props.actions.refreshTab('discover')}
-    >
-      Load latests Posts
-    </a>);
+    const length = posts.length;
+    const newPosts = this.props.posts.newPostsAvailable[this.props.auth.community];
+    const refreshPosts = (
+      <a className="refresh" onClick={() => this.props.actions.refreshTab('discover')}>
+        Load latests Posts
+      </a>
+    );
 
     return (
       <div style={{ position: 'relative' }}>
@@ -106,7 +99,7 @@ class DiscoverPosts extends Component {
           key={this.props.auth.community}
           className={'parent'}
           data={data}
-          loadMore={(p) => this.load(p, length)}
+          loadMore={p => this.load(p, length)}
           hasMore={this.hasMore}
         >
           {posts}
@@ -121,7 +114,7 @@ DiscoverPosts.propTypes = {
   load: PropTypes.func,
   posts: PropTypes.object,
   sort: PropTypes.string,
-  tag: PropTypes.string,
+  tag: PropTypes.string
 };
 
 export default DiscoverPosts;

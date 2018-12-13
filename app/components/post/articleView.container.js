@@ -8,8 +8,9 @@ import {
   ActivityIndicator,
   StatusBar,
   InteractionManager,
-  Platform,
+  Platform
 } from 'react-native';
+import PropTypes from 'prop-types';
 // import WKWebView from 'react-native-wkwebview-reborn';
 import Share from 'react-native-share';
 import Orientation from 'react-native-orientation';
@@ -29,6 +30,11 @@ if (Platform.OS === 'android') {
 }
 
 class ArticleView extends Component {
+  static propTypes = {
+    scene: PropTypes.object,
+    actions: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     // this.showInvestors = this.showInvestors.bind(this);
@@ -41,7 +47,7 @@ class ArticleView extends Component {
       initalUrl: null,
       status: '',
       loading: true,
-      progress: 0,
+      progress: 0
     };
   }
 
@@ -49,7 +55,7 @@ class ArticleView extends Component {
     this.onInteraction = InteractionManager.runAfterInteractions(() => {
       this.setState({
         initalUrl: this.props.scene.uri,
-        url: this.props.scene.uri,
+        url: this.props.scene.uri
       });
     });
     Orientation.unlockAllOrientations();
@@ -83,14 +89,13 @@ class ArticleView extends Component {
       url: this.url,
       subject: 'Article from Relevant',
       message: this.url
-    })
-    .catch(err => {
+    }).catch(err => {
       console.log(err);
     });
   }
 
   renderBack() {
-    let back = (
+    const back = (
       <View style={{ paddingHorizontal: 10, marginLeft: -10 }}>
         <Image
           resizeMode={'contain'}
@@ -137,7 +142,7 @@ class ArticleView extends Component {
     );
   }
 
-  render () {
+  render() {
     let activity;
     let progressEl;
 
@@ -152,35 +157,51 @@ class ArticleView extends Component {
             animating={this.state.loading}
             size={'small'}
           />
-        </View>);
+        </View>
+      );
     }
 
     let webView = <View style={{ flex: 1 }} />;
     if (this.state.progress > 0 && this.state.progress < 1) {
-      progressEl = <View style={{ position: 'absolute', height: 3, width: fullWidth * this.state.progress, backgroundColor: blue }} />;
+      progressEl = (
+        <View
+          style={{
+            position: 'absolute',
+            height: 3,
+            width: fullWidth * this.state.progress,
+            backgroundColor: blue
+          }}
+        />
+      );
       activity = null;
     }
 
     if (this.state.initalUrl) {
-      webView = (<RWebView
-        ref={(ref) => { this.webview = ref; }}
-        scalesPageToFit
-        onNavigationStateChange={(navState) => {
-          this.url = navState.url;
-          this.backButtonEnabled = navState.canGoBack;
-        }}
-        onError={(err) => {
-          console.log(err);
-        }}
-        renderError={(err) => {
-          console.log('webview error', err);
-        }}
-        onLoadStart={() => this.setState({ loading: true })}
-        onLoadEnd={() => this.setState({ loading: false })}
-        style={{ flex: 1, backgroundColor: 'transparent', marginTop: 0 }}
-        source={{ uri: this.state.initalUrl }}
-        onProgress={progress => progress ? this.setState({ progress }) : this.setState({ progress: 0 }) }
-      />);
+      webView = (
+        <RWebView
+          ref={ref => {
+            this.webview = ref;
+          }}
+          scalesPageToFit
+          onNavigationStateChange={navState => {
+            this.url = navState.url;
+            this.backButtonEnabled = navState.canGoBack;
+          }}
+          onError={err => {
+            console.log(err);
+          }}
+          renderError={err => {
+            console.log('webview error', err);
+          }}
+          onLoadStart={() => this.setState({ loading: true })}
+          onLoadEnd={() => this.setState({ loading: false })}
+          style={{ flex: 1, backgroundColor: 'transparent', marginTop: 0 }}
+          source={{ uri: this.state.initalUrl }}
+          onProgress={progress =>
+            progress ? this.setState({ progress }) : this.setState({ progress: 0 })
+          }
+        />
+      );
     }
 
     return (
@@ -197,7 +218,7 @@ class ArticleView extends Component {
       </View>
     );
   }
-};
+}
 
 const localStyles = StyleSheet.create({
   webMenu: {
@@ -216,9 +237,9 @@ const localStyles = StyleSheet.create({
     flex: 0,
     width: 50,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
     // paddingVertical: 10,
-  },
+  }
 });
 
 styles = { ...globalStyles, ...localStyles };

@@ -10,12 +10,19 @@ import {
   ScrollView,
   Alert
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles } from '../../styles/global';
 import CustomSpinner from '../../components/CustomSpinner.component';
 
 let styles;
 
 export default class InviteComponent extends Component {
+  static propTypes = {
+    auth: PropTypes.object,
+    actions: PropTypes.object,
+    inviteList: PropTypes.array
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -30,19 +37,18 @@ export default class InviteComponent extends Component {
   createInvite() {
     if (this.state.sending) return;
     this.setState({ sending: true });
-    let { email, name, invitedByString } = this.state;
+    const { email, name, invitedByString } = this.state;
     if (!name || !email || !invitedByString) {
       this.setState({ sending: false });
       return Alert.alert('Make sure all feilds are complete');
     }
-    let invite = {
+    const invite = {
       email,
       name,
       invitedByString,
-      invitedBy: this.props.auth.user._id,
+      invitedBy: this.props.auth.user._id
     };
-    return this.props.actions.createInvite(invite)
-    .then(createdInvite => {
+    return this.props.actions.createInvite(invite).then(createdInvite => {
       this.setState({ sending: false });
       if (createdInvite) {
         this.setState({ name: null, email: null, invitedByString: null });
@@ -58,7 +64,6 @@ export default class InviteComponent extends Component {
         style={{ flex: 1 }}
         keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0}
       >
-
         <ScrollView
           keyboardShouldPersistTaps={'always'}
           keyboardDismissMode={'interactive'}
@@ -68,7 +73,7 @@ export default class InviteComponent extends Component {
           <View style={styles.fieldsInner}>
             <View style={styles.fieldsInputParent}>
               <TextInput
-                ref={c => this.userInput = c}
+                ref={c => (this.userInput = c)}
                 underlineColorAndroid={'transparent'}
                 autoCorrect={false}
                 autoCapitalize={'none'}
@@ -83,7 +88,7 @@ export default class InviteComponent extends Component {
 
             <View style={styles.fieldsInputParent}>
               <TextInput
-                ref={c => this.passInput = c}
+                ref={c => (this.passInput = c)}
                 underlineColorAndroid={'transparent'}
                 autoCapitalize={'none'}
                 autoCorrect={false}
@@ -98,23 +103,22 @@ export default class InviteComponent extends Component {
 
             <View style={styles.fieldsInputParent}>
               <TextInput
-                ref={c => this.passInput = c}
+                ref={c => (this.passInput = c)}
                 underlineColorAndroid={'transparent'}
                 autoCapitalize={'none'}
                 autoCorrect={false}
                 keyboardType={'default'}
                 clearTextOnFocus={false}
                 placeholder="your name"
-                onChangeText={invitedByString => this.setState({ invitedByString: invitedByString.trim() })}
+                onChangeText={invitedByString =>
+                  this.setState({ invitedByString: invitedByString.trim() })
+                }
                 value={this.state.invitedByString}
                 style={styles.fieldsInput}
               />
             </View>
 
-            <Text
-              style={[styles.active, styles.link]}
-              onPress={this.props.actions.goToInviteList}
-            >
+            <Text style={[styles.active, styles.link]} onPress={this.props.actions.goToInviteList}>
               You invited {this.props.inviteList.length} people
             </Text>
           </View>
@@ -126,11 +130,8 @@ export default class InviteComponent extends Component {
             underlayColor={'transparent'}
             style={[styles.largeButton]}
           >
-            <Text style={styles.largeButtonText}>
-              Send Invitation
-            </Text>
+            <Text style={styles.largeButtonText}>Send Invitation</Text>
           </TouchableHighlight>
-
         </ScrollView>
       </KeyboardAvoidingView>
     );
@@ -140,20 +141,19 @@ export default class InviteComponent extends Component {
 const localStyles = StyleSheet.create({
   votes: {
     alignSelf: 'center',
-    fontSize: 17,
+    fontSize: 17
   },
   link: {
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 20
   },
   button: {
     alignSelf: 'center',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderColor: 'grey',
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: StyleSheet.hairlineWidth
   }
 });
 
 styles = { ...localStyles, ...globalStyles };
-

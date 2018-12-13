@@ -1,21 +1,18 @@
 import * as types from './actionTypes';
-// require('../publicenv');
 import * as utils from '../utils';
-import * as authActions from './auth.actions';
 
 utils.api.env();
 
-
 export function setStats(data) {
   return {
-    type: 'SET_STATS',
+    type: types.SET_STATS,
     payload: data
   };
 }
 
 export function addStats(data) {
   return {
-    type: 'ADD_STATS',
+    type: types.ADD_STATS,
     payload: {
       user: data.user,
       data: data.data
@@ -24,11 +21,11 @@ export function addStats(data) {
 }
 
 export function parseStats(data) {
-  return (dispatch) => {
-    let d = new Date();
+  return dispatch => {
+    const d = new Date();
     let currentHour = d.getHours();
-    let prevHour = currentHour--;
-    let dataObj = {};
+    const prevHour = currentHour--;
+    const dataObj = {};
     data.stats.forEach(item => {
       dataObj[item.user] = {};
       dataObj[item.user].value = 0;
@@ -41,33 +38,31 @@ export function parseStats(data) {
 export function getAllStats() {
   return async dispatch => {
     try {
-      let responseJSON = await utils.api.request({
+      const responseJSON = await utils.api.request({
         method: 'GET',
         endpoint: 'statistics',
-        path: '/all',
+        path: '/all'
       });
-      dispatch(parseStats(responseJSON));
+      return dispatch(parseStats(responseJSON));
     } catch (err) {
-      console.log(err, 'error');
+      return null;
     }
   };
 }
-
 
 export function getStats(id) {
-  let present = new Date();
-  let past = new Date(present - 1000 * 60 * 60 * 1);
+  const present = new Date();
+  const past = new Date(present - 1000 * 60 * 60 * 1);
   return async dispatch => {
     try {
-      let res = await utils.api.request({
+      const res = await utils.api.request({
         method: 'GET',
         endpoint: 'statistics',
-        path: `/change/${id}?startTime=${past}'&endTime=${present}`,
+        path: `/change/${id}?startTime=${past}'&endTime=${present}`
       });
-      dispatch(addStats({ user: id, data: res }));
+      return dispatch(addStats({ user: id, data: res }));
     } catch (err) {
-      console.log(err, 'error');
+      return null;
     }
   };
 }
-

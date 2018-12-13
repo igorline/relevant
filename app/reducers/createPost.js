@@ -19,7 +19,7 @@ const initialState = {
   editPost: null,
   keywords: [],
   createPreview: {},
-  selectedTags: [],
+  selectedTags: []
 };
 
 export default function createPost(state = initialState, action) {
@@ -34,7 +34,7 @@ export default function createPost(state = initialState, action) {
     case types.SET_POST_CATEGORY: {
       return {
         ...state,
-        postCategory: action.payload,
+        postCategory: action.payload
       };
     }
 

@@ -1,9 +1,10 @@
+/* eslint-disable no-console */
 import * as types from './actionTypes';
 import * as utils from '../utils';
 import * as errorActions from './error.actions';
 import * as navigationActions from './navigation.actions';
 
-let AlertIOS = utils.api.Alert();
+const AlertIOS = utils.api.Alert();
 let ReactNative = {};
 let PushNotification;
 let userDefaults;
@@ -11,9 +12,9 @@ let userDefaults;
 utils.api.env();
 let Analytics;
 let Platform;
-let okToRequestPermissions = true;;
+let okToRequestPermissions = true;
 
-if (process.env.WEB != 'true') {
+if (process.env.WEB !== 'true') {
   ReactNative = require('react-native');
   Analytics = require('react-native-firebase-analytics');
   userDefaults = require('react-native-swiss-knife').RNSKBucket;
@@ -28,14 +29,14 @@ const reqOptions = async () => {
   try {
     token = await utils.token.get();
   } catch (err) {
-    console.log('no token');
+    console.log('no token'); // eslint-disable-line
   }
   return {
     credentials: 'include',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`
     }
   };
 };
@@ -57,47 +58,41 @@ export function updateInvite(invite) {
   };
 }
 
-export
-function sendPong() {
+export function sendPong() {
   return {
-    type: 'server/pong',
+    type: 'server/pong'
   };
 }
 
-export
-function updateAuthUser(user) {
+export function updateAuthUser(user) {
   return {
     type: types.UPDATE_AUTH_USER,
     payload: user
   };
 }
 
-export
-function setUser(user) {
+export function setUser(user) {
   return {
     type: types.SET_USER,
     payload: user
   };
 }
 
-export
-function setSelectedUserData(data) {
+export function setSelectedUserData(data) {
   return {
     type: 'SET_SELECTED_USER_DATA',
     payload: data
   };
 }
 
-export
-function setUserIndex(userIndex) {
+export function setUserIndex(userIndex) {
   return {
     type: types.SET_USER_INDEX,
     payload: userIndex
   };
 }
 
-export
-function setPreUser(preUser) {
+export function setPreUser(preUser) {
   return {
     type: 'SET_PRE_USER',
     payload: preUser
@@ -139,9 +134,8 @@ export function logout() {
 }
 
 export function logoutAction(user) {
-  return (dispatch) => {
-    utils.token.remove()
-    .then(() => {
+  return dispatch => {
+    utils.token.remove().then(() => {
       // websocket message
       if (user && user._id) {
         dispatch({
@@ -161,29 +155,180 @@ export function setCurrentTooltip(step) {
   };
 }
 
-export function setOnboardingStep(step) {
+export function updateUser(user, preventLocalUpdate) {
   return async dispatch => {
-    return fetch(process.env.API_SERVER + '/api/user/onboarding/' + step, {
+    try {
+      const res = await utils.api.request({
+        method: 'PUT',
+        endpoint: 'user',
+        path: '/',
+        body: JSON.stringify(user)
+      });
+      if (!preventLocalUpdate) dispatch(updateAuthUser(res));
+      return true;
+    } catch (err) {
+      AlertIOS.alert(err.message);
+      return false;
+    }
+  };
+}
+
+export function setDeviceToken(token) {
+  return {
+    type: 'SET_DEVICE_TOKEN',
+    payload: token
+  };
+}
+
+export function removeDeviceToken(auth) {
+  if (!auth) return null;
+  return dispatch => {
+    const user = auth.user;
+    if (user.deviceTokens) {
+      const index = user.deviceTokens.indexOf(auth.deviceToken);
+      if (index > -1) {
+        user.deviceTokens.splice(index, 1);
+        dispatch(updateUser(user, true));
+      }
+    }
+  };
+}
+
+export function addDeviceToken(user) {
+  return dispatch => {
+    PushNotification.configure({
+      // (optional) Called when Token is generated (iOS and Android)
+      onRegister: token => {
+        console.log('TOKEN:', token);
+      },
+
+      // (required) Called when a remote or local notification is opened or received
+      onNotification: notification => {
+        // other params: foreground, message
+        const { userInteraction, data } = notification;
+        if (!userInteraction) return;
+        if (data && data.type === 'postLink') {
+          dispatch(navigationActions.goToPost({ _id: data._id, title: data.title }));
+        }
+      },
+
+      // ANDROID ONLY: GCM Sender ID
+      // (optional - not required for local notifications,
+      // but is need to receive remote push notifications)
+      senderID: '271994332492',
+
+      // IOS ONLY (optional): default: all - Permissions to register.
+      permissions: {
+        alert: true,
+        badge: true,
+        sound: true
+      },
+      popInitialNotification: true,
+      requestPermissions: Platform.OS !== 'ios'
+    });
+
+    if (Platform.OS === 'ios') {
+      if (okToRequestPermissions) {
+        okToRequestPermissions = false;
+        PushNotification.requestPermissions().then(() => {
+          okToRequestPermissions = true;
+          dispatch(navigationActions.tooltipReady(true));
+        });
+      }
+    } else {
+      dispatch(navigationActions.tooltipReady(true));
+    }
+
+    PushNotification.onRegister = deviceToken => {
+      console.log('registered notification');
+      const token = deviceToken.token;
+      userDefaults.set('deviceToken', token, APP_GROUP_ID);
+      dispatch(setDeviceToken(token));
+      const newUser = user;
+      if (user.deviceTokens && user.deviceTokens.indexOf(token) < 0) {
+        newUser.deviceTokens.push(token);
+        dispatch(updateUser(newUser));
+      } else if (user.deviceTokens.indexOf(token) < 0) {
+        newUser.deviceTokens = [token];
+        dispatch(updateUser(newUser));
+      }
+    };
+  };
+}
+
+function setupUser(user, dispatch) {
+  dispatch(setUser(user));
+  if (Analytics) {
+    let r = user.relevance;
+    let p = user.postCount;
+    let i = user.investmentCount;
+
+    r = r === 0 ? '0' : r < 25 ? '25' : r < 200 ? '200' : 'manu';
+    p = p === 0 ? '0' : p < 10 ? '10' : p < 30 ? '30' : 'many';
+    i = i === 0 ? '0' : i < 25 ? '75' : i < 200 ? '200' : 'many';
+
+    Analytics.setUserProperty('relevance', r);
+    Analytics.setUserProperty('posts', p);
+    Analytics.setUserProperty('upvotes', i);
+  }
+
+  dispatch(setSelectedUserData(user));
+  if (process.env.WEB !== 'true') {
+    dispatch(addDeviceToken(user));
+  }
+  dispatch(errorActions.setError('universal', false));
+  return user;
+}
+
+export function getUser(callback) {
+  return async dispatch => {
+    try {
+      const token = await utils.token.get();
+      if (!token) return null;
+      const user = await utils.api.request({
+        method: 'GET',
+        endpoint: 'user',
+        path: '/me'
+      });
+      setupUser(user, dispatch);
+      if (callback) callback(user);
+      return user;
+    } catch (error) {
+      dispatch(errorActions.setError('universal', true, error.message));
+      dispatch(loginUserFailure('Server error'));
+      if (callback) callback({ ok: false });
+
+      // need this in case user is logged in but there is an error getting account
+      // if (error.message !== 'Network request failed') {
+      //   dispatch(logoutAction());
+      // }
+      return null;
+    }
+  };
+}
+
+export function setOnboardingStep(step) {
+  return async dispatch =>
+    fetch(process.env.API_SERVER + '/api/user/onboarding/' + step, {
       credentials: 'include',
       method: 'GET',
-      ...await reqOptions()
+      ...(await reqOptions())
     })
     .then(response => response.json())
-    .then((responseJSON) => {
+    .then(responseJSON => {
       dispatch(updateAuthUser(responseJSON));
       return true;
     })
     .catch(err => {
-      console.log(err);
+        console.log(err); // eslint-disable-line
       return false;
     });
-  };
 }
 
 export function loginUser(user) {
   return async dispatch => {
     try {
-      let responseJSON = await utils.api.request({
+      const responseJSON = await utils.api.request({
         method: 'POST',
         endpoint: '/auth',
         path: '/local',
@@ -204,55 +349,48 @@ export function loginUser(user) {
   };
 }
 
-export
-function userOnline(user, token) {
-  return dispatch => {
-    return fetch(process.env.API_SERVER + '/notification/online/' + user._id + '?access_token=' + token, {
+export function userOnline(user, token) {
+  return () =>
+    fetch(process.env.API_SERVER + '/notification/online/' + user._id + '?access_token=' + token, {
       credentials: 'include',
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
-      },
+      }
     })
-    .then((response) => response.json())
-    .then((responseJSON) => {
-    })
+    .then(response => response.json())
     .catch(error => {
       console.log(error, 'error');
     });
-  };
 }
 
-export
-function checkUser(string, type) {
-  return (dispatch) => {
-    return fetch(`${process.env.API_SERVER}/api/user/check/user/?${type}=${string}`, {
+export function checkUser(string, type) {
+  return () =>
+    fetch(`${process.env.API_SERVER}/api/user/check/user/?${type}=${string}`, {
       credentials: 'include',
       method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
-      },
+      }
     })
     .then(response => response.json())
-    .then((responseJSON) => {
+    .then(responseJSON => {
       if (responseJSON) {
         return false;
       }
       return true;
     })
-    .catch((error) => {
+    .catch(error => {
       console.log(error, 'error');
       AlertIOS.alert(error.message);
     });
-  };
 }
 
-
 export function createUser(user, invite) {
-  return (dispatch) => {
-    return fetch(process.env.API_SERVER + '/api/user', {
+  return dispatch =>
+    fetch(process.env.API_SERVER + '/api/user', {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -263,23 +401,23 @@ export function createUser(user, invite) {
     })
     .then(utils.api.handleErrors)
     .then(response => response.json())
-    .then((responseJSON) => {
+    .then(responseJSON => {
       if (responseJSON.token) {
-        return utils.token.set(responseJSON.token)
-        .then(() => {
+        return utils.token.set(responseJSON.token).then(() => {
           dispatch(loginUserSuccess(responseJSON.token));
           dispatch(getUser());
           return true;
         });
       } else if (responseJSON.errors) {
-        let errors = responseJSON.errors;
+        const errors = responseJSON.errors;
         let message = '';
-        Object.keys(errors).map((key, index) => {
+        Object.keys(errors).forEach(key => {
           if (errors[key].message) message += errors[key].message;
         });
         AlertIOS.alert(message);
         return false;
       }
+      return false;
     })
     .catch(error => {
       if (error.message.match('invitation code')) {
@@ -288,16 +426,15 @@ export function createUser(user, invite) {
       AlertIOS.alert(error.message);
       return false;
     });
-  };
 }
 
 export function updateHandle(user) {
   return async dispatch => {
     try {
-      let result = await utils.api.request({
+      const result = await utils.api.request({
         method: 'PUT',
         endpoint: 'user',
-        path: `/updateHandle`,
+        path: '/updateHandle',
         body: JSON.stringify({ user })
       });
       await utils.token.set(result.token);
@@ -312,165 +449,15 @@ export function updateHandle(user) {
   };
 }
 
-function setupUser(user, dispatch) {
-  dispatch(setUser(user));
-  if (Analytics) {
-    let r = user.relevance;
-    let p = user.postCount;
-    let i = user.investmentCount;
-
-    r = r === 0 ? '0' : (r < 25 ? '25' : (r < 200 ? '200' : 'manu'));
-    p = p === 0 ? '0' : (p < 10 ? '10' : (p < 30 ? '30' : 'many'));
-    i = i === 0 ? '0' : (i < 25 ? '75' : (i < 200 ? '200' : 'many'));
-
-    Analytics.setUserProperty('relevance', r);
-    Analytics.setUserProperty('posts', p);
-    Analytics.setUserProperty('upvotes', i);
-  }
-
-  dispatch(setSelectedUserData(user));
-  if (process.env.WEB != 'true') {
-    dispatch(addDeviceToken(user));
-  }
-  dispatch(errorActions.setError('universal', false));
-  return user;
-}
-
-export function getUser(callback) {
-  return async dispatch => {
-    try {
-      let user = await utils.api.request({
-        method: 'GET',
-        endpoint: 'user',
-        path: '/me',
-      });
-      setupUser(user, dispatch);
-      if (callback) callback(user);
-      return user;
-    } catch (error) {
-      dispatch(errorActions.setError('universal', true, error.message));
-      dispatch(loginUserFailure('Server error'));
-      if (callback) callback({ ok: false });
-      // need this in case user is logged in but there is an error getting account
-      if (error.message !== 'Network request failed') {
-        dispatch(logoutAction());
-      }
-    }
-  };
-}
-
-
-export
-function setDeviceToken(token) {
-  return {
-    type: 'SET_DEVICE_TOKEN',
-    payload: token
-  };
-}
-
-export function updateUser(user, preventLocalUpdate) {
-  return async dispatch => {
-    try {
-      let res = await utils.api.request({
-        method: 'PUT',
-        endpoint: 'user',
-        path: '/',
-        body: JSON.stringify(user)
-      });
-      if (!preventLocalUpdate) dispatch(updateAuthUser(res));
-      return true;
-    } catch (err) {
-      AlertIOS.alert(err.message);
-      return false;
-    }
-  };
-}
-
-export function addDeviceToken(user) {
-  return (dispatch) => {
-    PushNotification.configure({
-      // (optional) Called when Token is generated (iOS and Android)
-      onRegister: token => {
-        console.log('TOKEN:', token);
-      },
-
-      // (required) Called when a remote or local notification is opened or received
-      onNotification: notification => {
-        let { foreground, userInteraction, message, data } = notification;
-        if (!userInteraction) return;
-        if (data && data.type === 'postLink') {
-          dispatch(navigationActions.goToPost({ _id: data._id, title: data.title }));
-        }
-      },
-
-      // ANDROID ONLY: GCM Sender ID
-      // (optional - not required for local notifications,
-      // but is need to receive remote push notifications)
-      senderID: '271994332492',
-
-      // IOS ONLY (optional): default: all - Permissions to register.
-      permissions: {
-        alert: true,
-        badge: true,
-        sound: true
-      },
-      popInitialNotification: true,
-      requestPermissions: Platform.OS === 'ios' ? false : true,
-    });
-
-    if (Platform.OS === 'ios') {
-      if (okToRequestPermissions) {
-        okToRequestPermissions = false;
-        PushNotification.requestPermissions()
-        .then(() => {
-          okToRequestPermissions = true;
-          dispatch(navigationActions.tooltipReady(true));
-        });
-      }
-    } else {
-      dispatch(navigationActions.tooltipReady(true));
-    }
-
-    PushNotification.onRegister = (deviceToken) => {
-      console.log('registered notification');
-      let token = deviceToken.token;
-      userDefaults.set('deviceToken', token, APP_GROUP_ID);
-      dispatch(setDeviceToken(token));
-      let newUser = user;
-      if (user.deviceTokens && user.deviceTokens.indexOf(token) < 0) {
-        newUser.deviceTokens.push(token);
-        dispatch(updateUser(newUser));
-      } else if (user.deviceTokens.indexOf(token) < 0) {
-        newUser.deviceTokens = [token];
-        dispatch(updateUser(newUser));
-      }
-    };
-  };
-}
-
-export function removeDeviceToken(auth) {
-  if (!auth) return null;
-  return dispatch => {
-    let user = auth.user;
-    if (user.deviceTokens) {
-      let index = user.deviceTokens.indexOf(auth.deviceToken);
-      if (index > -1) {
-        user.deviceTokens.splice(index, 1);
-        dispatch(updateUser(user, true));
-      }
-    }
-  };
-}
-
 export function sendConfirmation() {
-  return async dispatch =>
+  return async () =>
     fetch(process.env.API_SERVER + '/api/user/sendConfirmation', {
       method: 'GET',
-      ...await reqOptions()
+      ...(await reqOptions())
     })
     .then(utils.api.handleErrors)
     .then(response => response.json())
-    .then((responseJSON) => {
+    .then(responseJSON => {
       AlertIOS.alert('A confirmation email has been sent to ' + responseJSON.email);
       return true;
     })
@@ -482,17 +469,15 @@ export function sendConfirmation() {
 }
 
 export function forgotPassword(user) {
-  return async dispatch =>
+  return async () =>
     fetch(process.env.API_SERVER + '/api/user/forgot', {
       method: 'PUT',
-      ...await reqOptions(),
+      ...(await reqOptions()),
       body: JSON.stringify({ user })
     })
     .then(utils.api.handleErrors)
     .then(response => response.json())
-    .then((responseJSON) => {
-      return responseJSON;
-    })
+    .then(responseJSON => responseJSON)
     .catch(err => {
       AlertIOS.alert(err.message);
       console.log(err);
@@ -501,15 +486,15 @@ export function forgotPassword(user) {
 }
 
 export function resetPassword(password, token) {
-  return async dispatch =>
+  return async () =>
     fetch(process.env.API_SERVER + '/api/user/resetPassword', {
       method: 'PUT',
-      ...await reqOptions(),
+      ...(await reqOptions()),
       body: JSON.stringify({ password, token })
     })
     .then(utils.api.handleErrors)
     .then(response => response.json())
-    .then((responseJSON) => {
+    .then(() => {
       AlertIOS.alert('Your password has been updated! Try loggin in.');
       return true;
     })
@@ -524,12 +509,12 @@ export function confirmEmail(user, code) {
   return async dispatch =>
     fetch(process.env.API_SERVER + '/api/user/confirm', {
       method: 'PUT',
-      ...await reqOptions(),
+      ...(await reqOptions()),
       body: JSON.stringify({ user, code })
     })
     .then(utils.api.handleErrors)
     .then(response => response.json())
-    .then((responseJSON) => {
+    .then(responseJSON => {
       AlertIOS.alert('Your email has been confirmed');
       dispatch(updateAuthUser(responseJSON));
       return true;
@@ -548,14 +533,13 @@ export function setStats(stats) {
   };
 }
 
-
 export function getChart(start, end) {
   return async dispatch => {
     try {
-      let chart = await utils.api.request({
+      const chart = await utils.api.request({
         method: 'GET',
         endpoint: 'relevanceStats',
-        path: `/user`,
+        path: '/user',
         query: { start, end }
       });
       dispatch(setStats({ chart }));
@@ -572,10 +556,10 @@ export function getChart(start, end) {
 export function getStats(user) {
   return async dispatch => {
     try {
-      let stats = await utils.api.request({
+      const stats = await utils.api.request({
         method: 'GET',
         endpoint: 'relevance',
-        path: `/user/${user._id}/stats`,
+        path: `/user/${user._id}/stats`
       });
       dispatch(setStats(stats));
       dispatch(errorActions.setError('stats', false));
@@ -590,10 +574,10 @@ export function getStats(user) {
 export function getRelChart(start, end) {
   return async dispatch => {
     try {
-      let relChart = await utils.api.request({
+      const relChart = await utils.api.request({
         method: 'GET',
         endpoint: 'statistics',
-        path: `/user`,
+        path: '/user',
         query: { start, end }
       });
       dispatch(setStats({ relChart }));
@@ -609,14 +593,14 @@ export function getRelChart(start, end) {
 export function setTwitter(profile) {
   return {
     type: types.SET_TWITTER,
-    payload: profile,
+    payload: profile
   };
 }
 
 export function setLoading(loading) {
   return {
     type: types.SET_LOADING,
-    payload: loading,
+    payload: loading
   };
 }
 
@@ -624,10 +608,10 @@ export function twitterAuth(profile, invite) {
   return async dispatch => {
     try {
       dispatch(setLoading(true));
-      let result = await utils.api.request({
+      const result = await utils.api.request({
         method: 'POST',
         endpoint: '/auth/',
-        path: `twitter/login`,
+        path: 'twitter/login',
         body: JSON.stringify({ profile, invite })
       });
       dispatch(setLoading(false));
@@ -653,15 +637,15 @@ export function twitterAuth(profile, invite) {
 export function addEthAddress(msg, sig, acc) {
   return async dispatch => {
     try {
-      let result = await utils.api.request({
+      const result = await utils.api.request({
         method: 'PUT',
         endpoint: 'user',
-        path: `/ethAddress`,
+        path: '/ethAddress',
         body: JSON.stringify({ msg, sig, acc })
       });
       dispatch(updateAuthUser(result));
       return true;
-    } catch(err) {
+    } catch (err) {
       console.log('error updating key');
       AlertIOS.alert(err.message);
       return false;
@@ -672,10 +656,10 @@ export function addEthAddress(msg, sig, acc) {
 export function cashOut() {
   return async dispatch => {
     try {
-      let result = await utils.api.request({
+      const result = await utils.api.request({
         method: 'POST',
         endpoint: 'user',
-        path: `/cashOut`,
+        path: '/cashOut'
       });
       dispatch(updateAuthUser(result));
       return result.cashOut;
@@ -686,7 +670,6 @@ export function cashOut() {
     }
   };
 }
-
 
 export function userToSocket(user) {
   return dispatch => {

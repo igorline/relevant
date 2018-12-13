@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import * as routerActions from 'react-router-redux';
 import AvatarBox from '../common/avatarbox.component';
 import PostButtons from './postbuttons.component';
 import PostInfo from './postinfo.component';
 import Tag from '../tag/tag.component';
 
-import * as routerActions from 'react-router-redux';
 import * as postActions from '../../../actions/post.actions';
 import * as investActions from '../../../actions/invest.actions';
 import * as createPostActions from '../../../actions/createPost.actions';
@@ -18,20 +18,26 @@ class Post extends Component {
   static propTypes = {
     post: PropTypes.object,
     repost: PropTypes.object,
-    link: PropTypes.object
-  }
+    link: PropTypes.object,
+    actions: PropTypes.object,
+    auth: PropTypes.object,
+    location: PropTypes.object,
+    user: PropTypes.object,
+    showDescription: PropTypes.bool
+  };
 
   deletePost() {
     // TODO custom confirm
-    let okToDelete = confirm('Are you sure you want to delete this post?');
+    // eslint-disable-next-line
+    const okToDelete = confirm('Are you sure you want to delete this post?');
     if (!okToDelete) return;
     this.props.actions.deletePost(this.props.post);
   }
 
   editPost() {
-    let { post, link } = this.props;
+    const { post, link } = this.props;
     this.props.actions.clearCreatePost();
-    let editPost = {
+    const editPost = {
       edit: true,
       editPost: post,
       postBody: post.body,
@@ -59,23 +65,21 @@ class Post extends Component {
     let popup;
 
     if (post === 'notFound') {
-      return (<div><h1>Post not found</h1></div>);
+      return (
+        <div>
+          <h1>Post not found</h1>
+        </div>
+      );
     }
     if (!post) return null;
 
     let postInfo;
     if (link) {
-      postInfo = (
-        <PostInfo post={link} />
-      );
+      postInfo = <PostInfo post={link} />;
     } else if (repost) {
-      postInfo = (
-        <PostInfo post={repost} />
-      );
+      postInfo = <PostInfo post={repost} />;
     } else {
-      postInfo = (
-        <PostInfo post={post} />
-      );
+      postInfo = <PostInfo post={post} />;
     }
 
     let user = post.user || post.twitterUser;
@@ -85,7 +89,7 @@ class Post extends Component {
         <Popup
           options={[
             { text: 'Edit Post', action: this.editPost.bind(this) },
-            { text: 'Delete Post', action: this.deletePost.bind(this) },
+            { text: 'Delete Post', action: this.deletePost.bind(this) }
           ]}
         >
           <span className={'optionDots'}>...</span>
@@ -104,7 +108,7 @@ class Post extends Component {
       user = post.embeddedUser;
     }
 
-    let openPost = repost ? repost._id : post._id;
+    const openPost = repost ? repost._id : post._id;
 
     return (
       <div
@@ -113,15 +117,14 @@ class Post extends Component {
       >
         {postInfo}
         <div className="postContent">
-
           <div style={{ flex: 1, minWidth: 0 }}>
-
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <AvatarBox
                 user={user}
                 auth={this.props.auth}
                 date={post.postDate}
-                isRepost={repost} />
+                isRepost={repost}
+              />
               {popup}
             </div>
 
@@ -132,18 +135,16 @@ class Post extends Component {
                   <AvatarBox
                     user={repost.embeddedUser}
                     auth={this.props.auth}
-                    date={post.postDate}/>
+                    date={post.postDate}
+                  />
                   <div>
                     <PostBody post={repost} />
                   </div>
                 </div>
               )}
 
-
               {this.props.showDescription && (
-                <div className="postDescription">
-                  {post.description}
-                </div>
+                <div className="postDescription">{post.description}</div>
               )}
               <PostButtons post={post} {...this.props} />
             </div>
@@ -156,25 +157,30 @@ class Post extends Component {
 
 function PostBody(props) {
   const body = props.post.body;
-  const tags = (props.post.tags || []).map((tag) => (
-    <Tag {...props} name={tag} key={tag} />
-  ));
+  const tags = (props.post.tags || []).map(tag => <Tag {...props} name={tag} key={tag} />);
   return (
     <div className={props.repost ? 'repostText' : ''}>
-      <pre>{body}</pre>
-      {' '}{tags}
+      <pre>{body}</pre> {tags}
     </div>
   );
 }
 
+PostBody.propTypes = {
+  post: PropTypes.object,
+  repost: PropTypes.bool
+};
+
 export default connect(
-  state => ({}),
+  () => ({}),
   dispatch => ({
-    actions: bindActionCreators({
-      ...createPostActions,
-      ...routerActions,
-      ...postActions,
-      ...investActions,
-    }, dispatch)
+    actions: bindActionCreators(
+      {
+        ...createPostActions,
+        ...routerActions,
+        ...postActions,
+        ...investActions
+      },
+      dispatch
+    )
   })
 )(Post);

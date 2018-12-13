@@ -10,6 +10,11 @@ if (process.env.BROWSER === true) {
 }
 
 class Waitlist extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    admin: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -24,13 +29,13 @@ class Waitlist extends Component {
   }
 
   destroy(invite) {
-    let c = window.confirm('Are you sure you would like to delete this invite?');
+    const c = window.confirm('Are you sure you would like to delete this invite?');
     if (c) this.props.actions.destroy(invite);
   }
 
   sendInvites() {
-    let userIds = this.props.admin.waitList.slice(0, this.state.number);
-    let users = userIds.map(id => this.props.admin.wait[id]);
+    const userIds = this.props.admin.waitList.slice(0, this.state.number);
+    const users = userIds.map(id => this.props.admin.wait[id]);
     this.props.actions.inviteFromWaitlist(users);
   }
 
@@ -39,31 +44,21 @@ class Waitlist extends Component {
   }
 
   renderWaitlist(waitlistId) {
-    let user = this.props.admin.wait[waitlistId];
+    const user = this.props.admin.wait[waitlistId];
     if (!user) return null;
     return (
       <div key={waitlistId} className={'adminRow'}>
         <span>{user.name}</span>
         <span>{user.email}</span>
         <span>{user.status}</span>
-        <button
-          onClick={() => this.props.actions.inviteFromWaitlist([user])}
-        >
-          Send Invite
-        </button>
-        <button
-          onClick={() => this.props.actions.deleteWaitlistUser(user)}
-        >
-          Remove
-        </button>
+        <button onClick={() => this.props.actions.inviteFromWaitlist([user])}>Send Invite</button>
+        <button onClick={() => this.props.actions.deleteWaitlistUser(user)}>Remove</button>
       </div>
     );
   }
 
   render() {
-
-    let waitlist = this.props.admin.waitList
-    .map(id => this.renderWaitlist(id));
+    const waitlist = this.props.admin.waitList.map(id => this.renderWaitlist(id));
 
     return (
       <div className="adminContainer">
@@ -80,11 +75,7 @@ class Waitlist extends Component {
             onChange={this.handleChange}
           />
 
-          <ShadowButton
-            backgroundColor={'white'}
-            color={'#3E3EFF'}
-            onClick={this.sendInvites}
-          >
+          <ShadowButton backgroundColor={'white'} color={'#3E3EFF'} onClick={this.sendInvites}>
             {'Invite the next ' + (this.state.number === 1 ? 'user' : this.state.number + ' users')}
           </ShadowButton>
         </div>
@@ -103,7 +94,7 @@ class Waitlist extends Component {
 
 Waitlist.propTypes = {
   actions: PropTypes.object,
-  admin: PropTypes.object,
+  admin: PropTypes.object
 };
 
 export default connect(

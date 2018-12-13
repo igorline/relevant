@@ -1,8 +1,8 @@
-let express = require('express');
-let controller = require('./community.controller');
-let auth = require('../../auth/auth.service');
+const express = require('express');
+const controller = require('./community.controller');
+const auth = require('../../auth/auth.service');
 
-let router = express.Router();
+const router = express.Router();
 
 router.post('/', auth.isAuthenticated(), controller.create);
 

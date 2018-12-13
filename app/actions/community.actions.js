@@ -4,31 +4,27 @@ import * as utils from '../utils';
 export function addCommunity(community) {
   return {
     type: types.ADD_COMMUNITY,
-    payload: community,
+    payload: community
   };
 }
 
 export function setCommunities(communities) {
   return {
     type: types.SET_COMMUNITIES,
-    payload: communities,
+    payload: communities
   };
 }
 
-export function getCommunityAdmins() {
+export function getCommunityAdmins() {}
 
-}
-
-export function getCommunityMembers() {
-
-}
+export function getCommunityMembers() {}
 
 export function getCommunities() {
   return async dispatch => {
     try {
-      let res = await utils.api.request({
+      const res = await utils.api.request({
         method: 'GET',
-        endpoint: 'community',
+        endpoint: 'community'
       });
       // let ids = responseJSON.map(c => c._id);
       return dispatch(setCommunities(res));
@@ -41,10 +37,10 @@ export function getCommunities() {
 export function createCommunity(community) {
   return async dispatch => {
     try {
-      let responseJSON = await utils.api.request({
+      const responseJSON = await utils.api.request({
         method: 'POST',
         endpoint: 'community',
-        body: JSON.stringify(community),
+        body: JSON.stringify(community)
       });
       return dispatch(addCommunity(responseJSON));
     } catch (error) {

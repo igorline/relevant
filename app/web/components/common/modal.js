@@ -1,20 +1,22 @@
-import React, {
-  Component,
-  PropTypes
-} from 'react';
-import { Motion, spring, presets } from 'react-motion';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 if (process.env.BROWSER === true) {
   require('./modal.css');
 }
 
 export default class Modal extends Component {
-  constructor(props, context) {
-    super(props, context);
-  }
+  static propTypes = {
+    header: PropTypes.object,
+    title: PropTypes.string,
+    visible: PropTypes.bool,
+    close: PropTypes.func,
+    children: PropTypes.node,
+    footer: PropTypes.node
+  };
 
   render() {
-    let header = this.props.header || this.props.title;
+    const header = this.props.header || this.props.title;
     if (!this.props.visible) return null;
     return (
       <div className="modalParent">
@@ -26,15 +28,11 @@ export default class Modal extends Component {
               onClick={() => this.props.close()}
               className="x"
             />
-            {header ? <div className={'modalHeader'}>
-              {this.props.header || this.props.title}
-            </div> : null}
-            <div className={'modalBody'}>
-              {this.props.children}
-            </div>
-            <div className={'modalFooter'}>
-              {this.props.footer}
-            </div>
+            {header ? (
+              <div className={'modalHeader'}>{this.props.header || this.props.title}</div>
+            ) : null}
+            <div className={'modalBody'}>{this.props.children}</div>
+            <div className={'modalFooter'}>{this.props.footer}</div>
           </div>
         </div>
       </div>

@@ -14,10 +14,10 @@
   /*padding: 0 20px;*/
 }
 
-row {
+.row {
   display: flex;
 }
-column {
+.column {
   display: flex;
   justify-content: column;
 }

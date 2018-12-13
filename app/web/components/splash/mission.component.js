@@ -1,12 +1,12 @@
-import React, {
-  Component,
-} from 'react';
-import MissionText from './missionText.component';
-import ShadowButton from '../common/ShadowButton';
-import InviteCta from './inviteCta.component';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Footer from '../common/footer.component';
 
 export default class Mission extends Component {
+  static propTypes = {
+    location: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -20,40 +20,34 @@ export default class Mission extends Component {
         <panel className={'dark center mission'}>
           <img src={'/img/rWhite.svg'} />
 
-
           <div className={'libre pitch'}>
-          <p>
-Our mission is to create a token-backed <b>qualitative metric</b> for the information economy — making the <b>human values</b> of veracity, expertise and agency <b>economically valuable</b>
-          </p>
-{/*          <p>
-By backing it with a token — we can make the human values of veracity, expertise and agency economically valuable.
-          </p>*/}
-
+            <p>
+              Our mission is to create a token-backed <b>qualitative metric</b> for the information
+              economy — making the <b>human values</b> of veracity, expertise and agency{' '}
+              <b>economically valuable</b>
+            </p>
           </div>
-
-
         </panel>
-
 
         <panel className={'grey center mission'}>
-
-
-          <a className={'cta'} href="https://blog.relevant.community/relevant-an-introduction-5b79ef7afa9"
+          <a
+            className={'cta'}
+            href="https://blog.relevant.community/relevant-an-introduction-5b79ef7afa9"
             target={'_blank'}
           >
-            Read<br/>Introduction<br/>Paper
+            Read
+            <br />
+            Introduction
+            <br />
+            Paper
           </a>
-
         </panel>
 
-{/*        <MissionText state={this.state} setLi={state => this.setState(state)} />
+        {/*        <MissionText state={this.state} setLi={state => this.setState(state)} />
 
 */}
 
-
-
-
-{/*        <panel>
+        {/*        <panel>
           <h1>Development Roadmap</h1>
           <div className={'innerPanel'}>
             <ol>
@@ -87,9 +81,8 @@ Decentralized Relevant database fully integrated with Currency - Fall 2018
             </ol>
 
           </div>
-        </panel>*/}
-      <Footer location={this.props.location} />
-
+        </panel> */}
+        <Footer location={this.props.location} />
       </div>
     );
   }

@@ -17,11 +17,11 @@ import * as messageActions from '../actions/message.actions';
 const localStyles = StyleSheet.create({
   commentInputParent: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   chooseTagContainer: {
     flex: 0.9,
-    padding: 10,
+    padding: 10
   },
   thirstInput: {
     flex: 0.9,
@@ -31,11 +31,11 @@ const localStyles = StyleSheet.create({
   thirstSubmit: {
     flex: 0.1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   }
 });
 
-let styles = { ...localStyles, ...globalStyles };
+const styles = { ...localStyles, ...globalStyles };
 
 class Thirst extends Component {
   constructor(props, context) {
@@ -65,7 +65,7 @@ class Thirst extends Component {
   }
 
   keyboardWillShow(e) {
-    let newSize = (Dimensions.get('window').height - e.endCoordinates.height) - 60;
+    const newSize = Dimensions.get('window').height - e.endCoordinates.height - 60;
     this.setState({ visibleHeight: newSize });
   }
 
@@ -75,7 +75,7 @@ class Thirst extends Component {
       AlertIOS.alert('Add text');
       return;
     }
-    let messageObj = {
+    const messageObj = {
       to: self.props.users.selectedUser._id,
       from: self.props.auth.user._id,
       type: 'thirst',
@@ -83,7 +83,7 @@ class Thirst extends Component {
       tag: null
     };
 
-    self.props.actions.createMessage(self.props.auth.token, messageObj).then((data) => {
+    self.props.actions.createMessage(self.props.auth.token, messageObj).then(data => {
       console.log(data, 'thirty data');
       if (data.status) {
         AlertIOS.alert('Message sent');
@@ -117,16 +117,16 @@ class Thirst extends Component {
       if (self.props.users.selectedUser) user = self.props.users.selectedUser;
       if (user) name = user.name;
     }
-    let tagEl = null;
+    const tagEl = null;
 
     return (
       <View style={[{ height: self.state.visibleHeight, backgroundColor: 'white' }]}>
-        <View style={{ flex: 1}}>
+        <View style={{ flex: 1 }}>
           <TextInput
             style={[styles.thirstInput, styles.font15]}
             placeholder={'Enter your message for ' + name}
             multiline
-            onChangeText={(text) => this.setState({ text })}
+            onChangeText={text => this.setState({ text })}
             value={self.state.text}
             returnKeyType={'done'}
           />
@@ -135,11 +135,7 @@ class Thirst extends Component {
             style={[styles.thirstSubmit]}
             onPress={() => self.sendThirst}
           >
-            <Text
-              style={[styles.font15, styles.active]}
-            >
-              Send
-            </Text>
+            <Text style={[styles.font15, styles.active]}>Send</Text>
           </TouchableHighlight>
         </View>
       </View>
@@ -150,16 +146,17 @@ class Thirst extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    messages: state.messages,
+    messages: state.messages
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(
-      { ...messageActions,
-      }, dispatch),
+    actions: bindActionCreators({ ...messageActions }, dispatch)
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Thirst);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Thirst);

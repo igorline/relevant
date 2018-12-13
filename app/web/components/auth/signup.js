@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import ShadowButton from '../common/ShadowButton';
 import { NAME_PATTERN } from '../../../utils/text';
 import SetHandle from './handle.component';
 
 class SignupForm extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    parentFunction: PropTypes.func,
+    user: PropTypes.object,
+    authNav: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -20,7 +28,7 @@ class SignupForm extends Component {
       username: null,
       email: null,
       cPassword: null,
-      password: null,
+      password: null
     };
 
     this.checkUser = this.checkUser.bind(this);
@@ -30,13 +38,12 @@ class SignupForm extends Component {
   }
 
   checkEmail() {
-    let string = this.state.email;
+    const string = this.state.email;
     if (!string.length) return null;
-    let valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(string);
+    const valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(string);
     if (!valid) return this.setState({ errors: { email: 'invalid email' } });
 
-    return this.props.actions.checkUser(string, 'email')
-    .then((results) => {
+    return this.props.actions.checkUser(string, 'email').then(results => {
       if (!results) {
         return this.setState({ errors: { email: 'This email has already been used' } });
       }
@@ -46,13 +53,12 @@ class SignupForm extends Component {
 
   checkUser(name) {
     this.nameError = null;
-    let toCheck = name || this.state.name;
+    const toCheck = name || this.state.name;
     if (toCheck) {
-      let string = toCheck;
-      let match = NAME_PATTERN.test(string);
+      const string = toCheck;
+      const match = NAME_PATTERN.test(string);
       if (match) {
-        this.props.actions.checkUser(string, 'name')
-        .then((results) => {
+        this.props.actions.checkUser(string, 'name').then(results => {
           if (!results) {
             this.usernameExists = true;
             this.nameError = 'This username is already taken';
@@ -102,12 +108,12 @@ class SignupForm extends Component {
   }
 
   renderEmailForm() {
-    let errors = this.state.errors;
-    let signUpWithEmail = <a
-      className={'smallText middle'}
-      onClick={() => this.setState({ provider: 'email' })}>
+    const errors = this.state.errors;
+    const signUpWithEmail = (
+      <a className={'smallText middle'} onClick={() => this.setState({ provider: 'email' })}>
         Sign up with Email
-    </a>;
+      </a>
+    );
 
     if (this.state.provider !== 'email') return signUpWithEmail;
 
@@ -119,8 +125,8 @@ class SignupForm extends Component {
             type="text"
             placeholder="username"
             value={this.state.username}
-            onChange={(e) => {
-              let username = e.target.value.trim();
+            onChange={e => {
+              const username = e.target.value.trim();
               this.checkUser(username.trim());
               this.handleChange('username', username);
             }}
@@ -133,7 +139,7 @@ class SignupForm extends Component {
             className="blueInput special"
             type="text"
             value={this.state.email}
-            onChange={(email) => {
+            onChange={email => {
               this.handleChange('email', email.target.value);
             }}
             onBlur={this.checkEmail.bind(this)}
@@ -149,7 +155,7 @@ class SignupForm extends Component {
             type="password"
             placeholder="password"
             value={this.state.password}
-            onChange={(password) => {
+            onChange={password => {
               this.handleChange('password', password.target.value);
             }}
           />
@@ -161,7 +167,7 @@ class SignupForm extends Component {
             type="password"
             placeholder="confirm password"
             value={this.state.cPassword}
-            onChange={(cPassword) => {
+            onChange={cPassword => {
               this.handleChange('cPassword', cPassword.target.value);
             }}
             onKeyDown={e => {
@@ -174,11 +180,7 @@ class SignupForm extends Component {
         </div>
 
         <div style={{ width: '100%' }}>
-          <ShadowButton
-            onClick={this.submit}
-          >
-            Sign Up
-          </ShadowButton>
+          <ShadowButton onClick={this.submit}>Sign Up</ShadowButton>
         </div>
       </div>
     );
@@ -186,23 +188,21 @@ class SignupForm extends Component {
 
   render() {
     if (this.props.user && this.props.user.role === 'temp') {
-      return <SetHandle
-        checkUser={this.checkUser}
-        nameError={this.nameError}
-        user={this.props.user}
-        {...this.props}
-      />;
+      return (
+        <SetHandle
+          checkUser={this.checkUser}
+          nameError={this.nameError}
+          user={this.props.user}
+          {...this.props}
+        />
+      );
     }
-
 
     return (
       <div className="innerForm">
         <div style={{ width: '100%' }}>
-          <a
-            className={'twitterButton'}
-            href="/auth/twitter"
-          >
-              Sign up with Twitter
+          <a className={'twitterButton'} href="/auth/twitter">
+            Sign up with Twitter
           </a>
           <span className={'or'}>or</span>
         </div>
@@ -210,16 +210,11 @@ class SignupForm extends Component {
         {this.renderEmailForm()}
 
         <div className={'smallText'}>
-          Already registered? <Link
-            onClick={() => this.props.authNav('login')}
-          >
-            Sign in
-          </Link>
+          Already registered? <Link onClick={() => this.props.authNav('login')}>Sign in</Link>
         </div>
       </div>
     );
   }
 }
-
 
 export default SignupForm;

@@ -8,7 +8,6 @@ const initialState = {
   // profile: 1
 };
 
-
 export default function auth(state = initialState, action) {
   switch (action.type) {
     case types.REFRESH_ROUTE: {
@@ -49,11 +48,9 @@ export default function auth(state = initialState, action) {
         //   })
         //   break;
 
-
         case types.LOGOUT_USER: {
           return { ...initialState };
         }
-
 
         default:
           return state;
@@ -64,4 +61,3 @@ export default function auth(state = initialState, action) {
       return state;
   }
 }
-

@@ -4,8 +4,8 @@ import Earnings from './earnings.model';
 
 exports.get = async (req, res) => {
   // let query = req.query;
-  let earnings = await Earnings.find({})
-  .sort({ createdAt: -1 });
+  const earnings = await Earnings.find({})
+    .sort({ createdAt: -1 });
   // .populate('post user');
   return earnings;
 };

@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import PropTypes from 'prop-types';
 import { numbers } from '../utils';
 import { globalStyles, green } from '../styles/global';
 
 let styles;
 
 class Percent extends Component {
+  static propTypes = {
+    user: PropTypes.object,
+    fontSize: PropTypes.object,
+    fontFamily: PropTypes.object
+  };
 
   componentDidMount() {
     this.percent = numbers.percentChange(this.props.user.relevance);
@@ -22,8 +24,8 @@ class Percent extends Component {
   }
 
   animate() {
-    let newPercent = numbers.percentChange(this.props.user.relevance);
-    let newPercentPretty = numbers.abbreviateNumber(newPercent);
+    const newPercent = numbers.percentChange(this.props.user.relevance);
+    const newPercentPretty = numbers.abbreviateNumber(newPercent);
 
     if (parseFloat(this.percentPretty) !== parseFloat(newPercentPretty)) {
       this.percent = newPercent;
@@ -33,9 +35,9 @@ class Percent extends Component {
   }
 
   render() {
-    let user = this.props.user.relevance;
+    const user = this.props.user.relevance;
     // console.log(user);
-    let fontSize = this.props.fontSize || 17;
+    const fontSize = this.props.fontSize || 17;
     // let arrowSize = this.props.fontSize - 1;
     if (!user) return null;
     let fontFamily;
@@ -43,7 +45,7 @@ class Percent extends Component {
       fontFamily = { fontFamily: this.props.fontFamily, letterSpacing: 0 };
     }
 
-    let percent = numbers.percentChange(user);
+    const percent = numbers.percentChange(user);
 
     let percentComponent = null;
 
@@ -73,8 +75,6 @@ class Percent extends Component {
 
 export default Percent;
 
-const localStyles = StyleSheet.create({
-});
+const localStyles = StyleSheet.create({});
 
 styles = { ...globalStyles, ...localStyles };
-

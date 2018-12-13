@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-  TouchableHighlight,
-  Text
-} from 'react-native';
+import { StyleSheet, View, TouchableHighlight, Text } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles, mainPadding } from '../styles/global';
 import Stats from '../components/post/stats.component';
 import UserName from './userNameSmall.component';
@@ -13,6 +9,16 @@ import TextBody from './post/textBody.component';
 let styles;
 
 class DiscoverUser extends Component {
+  static propTypes = {
+    type: PropTypes.string,
+    user: PropTypes.object,
+    actions: PropTypes.object,
+    topic: PropTypes.string,
+    renderRight: PropTypes.func,
+    bio: PropTypes.object,
+    relevance: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.setSelected = this.setSelected.bind(this);
@@ -25,22 +31,21 @@ class DiscoverUser extends Component {
   }
 
   render() {
-    let user = this.props.user;
+    const user = this.props.user;
     if (!user) return null;
-    let relevance = this.props.topic ? user[this.props.topic + '_relevance'] : user.relevance;
-    let bioEl;
+    const relevance = this.props.topic ? user[this.props.topic + '_relevance'] : user.relevance;
 
-    let statsUser = { ...user, relevance };
-    let stats = (<Stats
-      type={'percent'}
-      topic={this.props.topic}
-      entity={user}
-      renderLeft={this.props.topic ? <Text/> : null}
-      // renderLeft={this.props.topic ? <Text style={[styles.bebas, styles.font17]}>{this.props.topic} </Text> : null}
-    />);
-    let right = this.props.renderRight ? this.props.renderRight() : stats;
+    const stats = (
+      <Stats
+        type={'percent'}
+        topic={this.props.topic}
+        entity={user}
+        renderLeft={this.props.topic ? <Text /> : null}
+      />
+    );
+    const right = this.props.renderRight ? this.props.renderRight() : stats;
 
-    bioEl = (
+    const bioEl = (
       <View style={styles.bioContainer}>
         <TextBody
           actions={this.props.actions}
@@ -53,10 +58,7 @@ class DiscoverUser extends Component {
     );
 
     return (
-      <TouchableHighlight
-        underlayColor={'transparent'}
-        onPress={() => this.setSelected()}
-      >
+      <TouchableHighlight underlayColor={'transparent'} onPress={() => this.setSelected()}>
         <View style={styles.discoverUserContainer}>
           <View style={[styles.discoverUser]}>
             <UserName
@@ -64,11 +66,17 @@ class DiscoverUser extends Component {
               big
               type={this.props.type}
               relevance={this.props.topic ? false : this.props.relevance}
-              user={{...user, relevance}}
+              user={{ ...user, relevance }}
               setSelected={this.setSelected}
               // topic={{ topic: this.props.topic, relevance }}
             />
-            <View style={{ flex: 1, alignItems: 'flex-end', justifyContent: 'center' }}>
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'flex-end',
+                justifyContent: 'center'
+              }}
+            >
               {right}
             </View>
           </View>
@@ -83,28 +91,25 @@ export default DiscoverUser;
 
 const localStyles = StyleSheet.create({
   bioContainer: {
-    marginLeft: 51,
+    marginLeft: 51
   },
   discoverBio: {
     fontFamily: 'Georgia',
     fontSize: 30 / 2,
     lineHeight: 40 / 2,
     paddingTop: 15,
-    paddingBottom: 5,
-    // textAlign: 'right'
+    paddingBottom: 5
   },
   discoverUser: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   discoverUserContainer: {
     paddingVertical: 20,
     paddingHorizontal: mainPadding,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#242425',
-    // backgroundColor: 'white'
+    borderBottomColor: '#242425'
   }
 });
 
 styles = { ...localStyles, ...globalStyles };
-

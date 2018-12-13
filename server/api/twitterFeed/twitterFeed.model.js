@@ -1,9 +1,9 @@
 
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-let TwitterFeedSchema = new Schema({
+const TwitterFeedSchema = new Schema({
   user: { type: String, ref: 'User' },
   post: { type: Schema.Types.ObjectId, ref: 'Post' },
   metaPost: { type: Schema.Types.ObjectId, ref: 'MetaPost' },

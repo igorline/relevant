@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'development') {
   window.reduxDebug.enable('*'); // this should be activated only on development env
 }
 
-let initialState = window.__INITIAL_STATE__ || undefined;
+const initialState = window.__INITIAL_STATE__ || undefined;
 const store = configureStore(initialState, browserHistory);
 const history = syncHistoryWithStore(browserHistory, store);
 

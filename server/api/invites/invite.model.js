@@ -4,7 +4,7 @@ import mail from '../../mail';
 
 const Schema = mongoose.Schema;
 
-let InviteSchema = new Schema({
+const InviteSchema = new Schema({
   email: { type: String },
   name: { type: String },
   code: { type: String, index: true },
@@ -21,11 +21,11 @@ let InviteSchema = new Schema({
 
 async function sendInviteCodes(user, codes) {
   let status;
-  let codesString = '<b>' + codes.join('<br />') + '</b>';
+  const codesString = '<b>' + codes.join('<br />') + '</b>';
   try {
-    let appStoreUrl = 'https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051';
+    const appStoreUrl = 'https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051';
     // let url = `${process.env.API_SERVER}/invite/${invite.code}`;
-    let data = {
+    const data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
       subject: 'Invitation Codes!',
@@ -69,15 +69,15 @@ InviteSchema.methods.registered = async function (user) {
 };
 
 InviteSchema.statics.generateCodes = async function (user) {
-  let invites = [];
+  const invites = [];
   try {
-    let codes = voucherCodes.generate({
+    const codes = voucherCodes.generate({
       length: 5,
       count: 3,
       charset: voucherCodes.charset('alphabetic')
     });
     let savedCodes = codes.map(async code => {
-      let invite = new this({ invitedBy: user._id, code });
+      const invite = new this({ invitedBy: user._id, code });
       return await invite.save();
     });
     savedCodes = await Promise.all(savedCodes);

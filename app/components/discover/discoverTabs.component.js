@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  InteractionManager,
-  View,
-  Platform,
-  StatusBar
-} from 'react-native';
+import { StyleSheet, Text, InteractionManager, View, Platform, StatusBar } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
@@ -22,6 +16,15 @@ let styles;
 const SUB_TITLE = 'Via Twitter';
 
 class DiscoverTabs extends Component {
+  static propTypes = {
+    scene: PropTypes.object,
+    view: PropTypes.number,
+    actions: PropTypes.object,
+    feedUnread: PropTypes.number,
+    topics: PropTypes.object,
+    tags: PropTypes.array
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -29,9 +32,9 @@ class DiscoverTabs extends Component {
       routes: [
         { key: 'feed', title: SUB_TITLE },
         { key: 'new', title: 'New' },
-        { key: 'top', title: 'Trending' },
+        { key: 'top', title: 'Trending' }
       ],
-      headerHeight: 50,
+      headerHeight: 50
     };
     this.renderHeader = this.renderHeader.bind(this);
     this.handleChangeTab = this.handleChangeTab.bind(this);
@@ -45,7 +48,7 @@ class DiscoverTabs extends Component {
       this.state.routes = [
         { key: 'new', title: 'New' },
         { key: 'top', title: 'Trending' },
-        { key: 'people', title: 'People' },
+        { key: 'people', title: 'People' }
       ];
     }
     this.loaded = false;
@@ -80,7 +83,8 @@ class DiscoverTabs extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (next.view.discover !== this.props.view.discover &&
+    if (
+      next.view.discover !== this.props.view.discover &&
       next.view.discover.tab !== this.state.index
     ) {
       this.tabView.goToPage(next.view.discover.tab);
@@ -102,8 +106,8 @@ class DiscoverTabs extends Component {
   }
 
   renderScene(route) {
-    let index = this.state.index;
-    let currentRoute = this.state.routes[index] || {};
+    const index = this.state.index;
+    const currentRoute = this.state.routes[index] || {};
     if (!this.loaded) return <View key={route.key} />;
     switch (route.key) {
       case 'feed':
@@ -172,7 +176,7 @@ class DiscoverTabs extends Component {
   renderBadge(title) {
     return null;
     if (title !== SUB_TITLE) return null;
-    let count = this.props.feedUnread;
+    const count = this.props.feedUnread;
     if (typeof count === 'number') {
       this.totalBadge += count;
     }
@@ -187,7 +191,8 @@ class DiscoverTabs extends Component {
           color: 'red',
           // color: blue,
           top: -1,
-          right: -10 }}
+          right: -10
+        }}
       >
         {'•'}
       </Text>
@@ -197,10 +202,7 @@ class DiscoverTabs extends Component {
   renderHeader(props) {
     if (!this.loaded) return <View {...props} />;
     return (
-      <DiscoverHeader
-        ref={(c => this.header = c)}
-        setPostTop={this.setPostTop}
-      >
+      <DiscoverHeader ref={c => (this.header = c)} setPostTop={this.setPostTop}>
         <DefaultTabBar
           tabStyle={{ paddingBottom: 0 }}
           style={{
@@ -220,26 +222,29 @@ class DiscoverTabs extends Component {
   }
 
   render() {
-    let tabs = this.state.routes.map(route => this.renderScene(route));
+    const tabs = this.state.routes.map(route => this.renderScene(route));
 
     let topics = null;
     if (this.props.topics) {
-      topics = (<View
-        style={{
-          position: 'absolute',
-          backgroundColor: 'white',
-          width: fullWidth,
-          height: fullHeight - 108 - (Platform.OS === 'android' ? StatusBar.currentHeight - 14 : 0),
-        }}
-      >
-        <Topics
-          topics={this.props.tags.parentTags}
-          action={(topic) => {
-            this.props.actions.goToTopic(topic);
+      topics = (
+        <View
+          style={{
+            position: 'absolute',
+            backgroundColor: 'white',
+            width: fullWidth,
+            height:
+              fullHeight - 108 - (Platform.OS === 'android' ? StatusBar.currentHeight - 14 : 0)
           }}
-          actions={this.props.actions}
-        />
-      </View>);
+        >
+          <Topics
+            topics={this.props.tags.parentTags}
+            action={topic => {
+              this.props.actions.goToTopic(topic);
+            }}
+            actions={this.props.actions}
+          />
+        </View>
+      );
     }
 
     // if (!this.loaded) {
@@ -249,13 +254,13 @@ class DiscoverTabs extends Component {
     return (
       <View style={{ flex: 1 }}>
         <ScrollableTabView
-          ref={c => this.tabView = c}
+          ref={c => (this.tabView = c)}
           tabBarTextStyle={[styles.tabFont]}
           tabBarActiveTextColor={blue}
           initialPage={this.initialTab}
           // initialPage={this.initialTab}
           tabBarUnderlineStyle={{ backgroundColor: blue }}
-          onChangeTab={(tab) => {
+          onChangeTab={tab => {
             this.setState({ index: tab.i });
             if (this.header) {
               this.header.showHeader();
@@ -267,11 +272,10 @@ class DiscoverTabs extends Component {
             forceSetResponder: () => {
               this.props.actions.scrolling(true);
               clearTimeout(this.scrollTimeout);
-              this.scrollTimeout = setTimeout(
-                () => this.props.actions.scrolling(false), 80);
+              this.scrollTimeout = setTimeout(() => this.props.actions.scrolling(false), 80);
             }
           }}
-          renderTabBar={(props) => this.renderHeader(props)}
+          renderTabBar={props => this.renderHeader(props)}
         >
           {tabs}
         </ScrollableTabView>
@@ -282,10 +286,10 @@ class DiscoverTabs extends Component {
   }
 }
 
-let localStyles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
+    flex: 1
+  }
 });
 
 styles = { ...globalStyles, ...localStyles };
@@ -315,4 +319,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DiscoverTabs);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DiscoverTabs);

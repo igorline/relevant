@@ -16,6 +16,17 @@ import TextBody from '../post/textBody.component';
 let styles;
 
 class TextEdit extends Component {
+  static propTypes = {
+    text: PropTypes.string,
+    placeholder: PropTypes.string,
+    style: PropTypes.object,
+    onFocus: PropTypes.func,
+    onBlur: PropTypes.func,
+    onContentSizeChange: PropTypes.func,
+    toggleFunction: PropTypes.func,
+    saveEditFunction: PropTypes.func
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -35,75 +46,81 @@ class TextEdit extends Component {
     let buttonAdjust = 0;
     if (Platform.OS === 'android') buttonAdjust = 80;
 
-    return (<View style={{ flex: 1 }}>
-      <TextInput
-        multiline
-        underlineColorAndroid={'transparent'}
-        placeholder={this.props.placeholder}
-        placeholderTextColor={greyText}
-        ref={c => this.textInput = c}
-        style={[
-          {
-            height: Math.min(this.state.height, 120) + buttonAdjust,
-            maxHeight: 120 + buttonAdjust,
-            minHeight: 50,
-            paddingBottom: buttonAdjust,
-            paddingHorizontal: 0,
-          },
-          this.props.style
-        ]}
-        textAlignVertical={'top'}
-        onFocus={this.props.onFocus}
-        onBlur={this.props.onBlur}
-        onChange={(evt) => this.setState({
-          text: evt.nativeEvent.text
-        })}
-        onContentSizeChange={(e) => {
-          this.setState({
-            height: Math.max(e.nativeEvent.contentSize.height, 50)
-          });
-          if (this.props.onContentSizeChange) this.props.onContentSizeChange();
-        }}
-        // fix for android enter bug!
-        blurOnSubmit={false}
-        onSubmitEditing={() => {
-          if (this.bug) {
-            let text = this.state.text;
-            text += '\n';
+    return (
+      <View style={{ flex: 1 }}>
+        <TextInput
+          multiline
+          underlineColorAndroid={'transparent'}
+          placeholder={this.props.placeholder}
+          placeholderTextColor={greyText}
+          ref={c => (this.textInput = c)}
+          style={[
+            {
+              height: Math.min(this.state.height, 120) + buttonAdjust,
+              maxHeight: 120 + buttonAdjust,
+              minHeight: 50,
+              paddingBottom: buttonAdjust,
+              paddingHorizontal: 0
+            },
+            this.props.style
+          ]}
+          textAlignVertical={'top'}
+          onFocus={this.props.onFocus}
+          onBlur={this.props.onBlur}
+          onChange={evt =>
             this.setState({
-              text,
-            });
-
-            return this.bug = false;
+              text: evt.nativeEvent.text
+            })
           }
-          return this.bug = true;
-        }}
-      >
-        <TextBody style={{ flex: 1 }} showAllMentions>{this.state.text}</TextBody>
-      </TextInput>
+          onContentSizeChange={e => {
+            this.setState({
+              height: Math.max(e.nativeEvent.contentSize.height, 50)
+            });
+            if (this.props.onContentSizeChange) this.props.onContentSizeChange();
+          }}
+          // fix for android enter bug!
+          blurOnSubmit={false}
+          onSubmitEditing={() => {
+            if (this.bug) {
+              let text = this.state.text;
+              text += '\n';
+              this.setState({
+                text
+              });
 
-      <View style={[ styles.editingCommentButtons, { marginTop: -1 * buttonAdjust }]}>
-
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          onPress={() => { this.props.toggleFunction(); }}
-          style={styles.editingCommentButton}
+              return (this.bug = false);
+            }
+            return (this.bug = true);
+          }}
         >
-          <Text style={[styles.font10, styles.editingCommentButtonText]}>Cancel</Text>
-        </TouchableHighlight>
+          <TextBody style={{ flex: 1 }} showAllMentions>
+            {this.state.text}
+          </TextBody>
+        </TextInput>
 
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={styles.editingCommentButton}
-          onPress={() => this.props.saveEditFunction(this.state.text)}
-        >
-          <Text style={[styles.font10, styles.editingCommentButtonText]}>Save changes</Text>
-        </TouchableHighlight>
+        <View style={[styles.editingCommentButtons, { marginTop: -1 * buttonAdjust }]}>
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            onPress={() => {
+              this.props.toggleFunction();
+            }}
+            style={styles.editingCommentButton}
+          >
+            <Text style={[styles.font10, styles.editingCommentButtonText]}>Cancel</Text>
+          </TouchableHighlight>
+
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            style={styles.editingCommentButton}
+            onPress={() => this.props.saveEditFunction(this.state.text)}
+          >
+            <Text style={[styles.font10, styles.editingCommentButtonText]}>Save changes</Text>
+          </TouchableHighlight>
+        </View>
       </View>
-    </View>);
+    );
   }
 }
-
 
 const localStyles = StyleSheet.create({
   editingCommentButtons: {
@@ -126,7 +143,7 @@ const localStyles = StyleSheet.create({
   },
   editingCommentButtonText: {
     color: blue
-  },
+  }
 });
 
 TextEdit.propTypes = {
@@ -134,10 +151,9 @@ TextEdit.propTypes = {
   placeholder: PropTypes.string,
   toggleFunction: PropTypes.func,
   saveEditFunction: PropTypes.func,
-  style: PropTypes.array,
+  style: PropTypes.array
 };
 
 styles = { ...localStyles, ...globalStyles };
 
 export default TextEdit;
-

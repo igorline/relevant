@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Animated,
-  Easing,
-} from 'react-native';
-import { globalStyles, fullWidth } from '../styles/global';
+import { Animated, Easing } from 'react-native';
+import { PropTypes } from 'prop-types';
 import Tabs from './tabs.component';
 
-let styles;
-
 export default class DiscoverHeader extends Component {
+  static propTypes = {
+    setPostTop: PropTypes.func,
+    scrollValue: PropTypes.number,
+    view: PropTypes.number,
+    changeView: PropTypes.func
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
       searchTerm: null,
       transY: new Animated.Value(0),
-      offsetY: new Animated.Value(0),
+      offsetY: new Animated.Value(0)
     };
     this.headerHeight = 50;
     this.lastOffset = -50;
@@ -30,7 +31,7 @@ export default class DiscoverHeader extends Component {
       return;
     }
 
-    let diff = this.lastOffset - this.currentOffset;
+    const diff = this.lastOffset - this.currentOffset;
 
     let top = Math.max(this.state.offsetY._value + diff, -this.headerHeight);
     top = Math.min(top, 0);
@@ -50,27 +51,21 @@ export default class DiscoverHeader extends Component {
 
   hideHeader() {
     const moveHeader = this.headerHeight * -1;
-    Animated.timing(
-      this.state.offsetY,
-      {
-        toValue: moveHeader,
-        duration: 200,
-        easing: Easing.quad,
-        useNativeDriver: true,
-      }
-     ).start();
+    Animated.timing(this.state.offsetY, {
+      toValue: moveHeader,
+      duration: 200,
+      easing: Easing.quad,
+      useNativeDriver: true
+    }).start();
   }
 
   showHeader() {
-    Animated.timing(
-      this.state.offsetY,
-      {
-        toValue: 0,
-        duration: 200,
-        easing: Easing.quad,
-        useNativeDriver: true,
-      }
-     ).start();
+    Animated.timing(this.state.offsetY, {
+      toValue: 0,
+      duration: 200,
+      easing: Easing.quad,
+      useNativeDriver: true
+    }).start();
   }
 
   render() {
@@ -80,21 +75,20 @@ export default class DiscoverHeader extends Component {
           position: 'absolute',
           top: 0,
           zIndex: 1000,
-          backgroundColor:
-          'white',
+          backgroundColor: 'white',
           transform: [{ translateY: this.state.offsetY }],
-          overflow: 'hidden',
+          overflow: 'hidden'
         }}
-        ref={(c) => { this.header = c; }}
-        onLayout={
-          (event) => {
-            const { height } = event.nativeEvent.layout;
-            if (this.headerHeight === height) return;
-            this.headerHeight = height;
-            this.props.setPostTop(this.headerHeight);
-            this.layout = true;
-          }
-        }
+        ref={c => {
+          this.header = c;
+        }}
+        onLayout={event => {
+          const { height } = event.nativeEvent.layout;
+          if (this.headerHeight === height) return;
+          this.headerHeight = height;
+          this.props.setPostTop(this.headerHeight);
+          this.layout = true;
+        }}
       >
         <Tabs
           tabs={this.props.myTabs}
@@ -106,18 +100,3 @@ export default class DiscoverHeader extends Component {
     );
   }
 }
-
-
-const localStyles = StyleSheet.create({
-  transformContainer: {
-    overflow: 'hidden',
-  },
-  searchParent: {
-    width: fullWidth,
-    backgroundColor: '#F0F0F0',
-    overflow: 'hidden',
-    padding: 5,
-  },
-});
-
-styles = { ...localStyles, ...globalStyles };

@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Alert
-} from 'react-native';
+import { View, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -12,8 +9,15 @@ import * as userActions from '../../actions/user.actions';
 import Footer from './footer.component';
 import { IphoneX } from '../../styles/global';
 
-
 class Tabs extends Component {
+  static propTypes = {
+    showActionSheet: PropTypes.func,
+    navigation: PropTypes.object,
+    actions: PropTypes.object,
+    notif: PropTypes.object,
+    feedUnread: PropTypes.number
+  };
+
   constructor(props, context) {
     super(props, context);
     this.props.showActionSheet = this.props.showActionSheet.bind(this);
@@ -22,7 +26,7 @@ class Tabs extends Component {
   }
 
   changeTab(key) {
-    let tab = this.props.navigation.tabs.routes[this.props.navigation.tabs.index];
+    const tab = this.props.navigation.tabs.routes[this.props.navigation.tabs.index];
     this.props.actions.toggleTopics(false);
 
     // This is if we want to make create post a separate scene
@@ -30,26 +34,32 @@ class Tabs extends Component {
       // if (this.props.auth.user.balance < 1) {
       //   return Alert.alert('You need to have at least one coin to post');
       // }
-      this.props.actions.push({
-        key: 'createPost',
-        back: true,
-        title: 'New Post',
-        next: 'Post',
-        direction: 'vertical',
-      }, 'home');
+      this.props.actions.push(
+        {
+          key: 'createPost',
+          back: true,
+          title: 'New Post',
+          next: 'Post',
+          direction: 'vertical'
+        },
+        'home'
+      );
 
       // need to to do this because the navigator renderer
       // is using this object to display info above and to render transition
-      this.props.actions.replaceRoute({
-        key: 'createPost',
-        component: 'createPost',
-        back: true,
-        left: 'Cancel',
-        title: 'New Post',
-        next: 'Next',
-        direction: 'vertical'
-      }, 0, 'createPost');
-
+      this.props.actions.replaceRoute(
+        {
+          key: 'createPost',
+          component: 'createPost',
+          back: true,
+          left: 'Cancel',
+          title: 'New Post',
+          next: 'Next',
+          direction: 'vertical'
+        },
+        0,
+        'createPost'
+      );
     } else {
       if (tab.key === key) {
         if (this.props.navigation[key].routes.length === 1) {
@@ -57,8 +67,8 @@ class Tabs extends Component {
         }
 
         if (key === 'discover') {
-          let index = this.props.navigation[key].index;
-          let route = this.props.navigation[key].routes[index];
+          const index = this.props.navigation[key].index;
+          const route = this.props.navigation[key].routes[index];
           if (route.component === 'discover') {
             this.props.actions.refreshTab(key);
           } else {
@@ -85,12 +95,14 @@ class Tabs extends Component {
   }
 
   initNavView(key) {
-    let tabView = (<CardContainer
-      style={{ flex: 1 }}
-      defaultContainer={key}
-      key={key}
-      showActionSheet={this.props.showActionSheet}
-    />);
+    const tabView = (
+      <CardContainer
+        style={{ flex: 1 }}
+        defaultContainer={key}
+        key={key}
+        showActionSheet={this.props.showActionSheet}
+      />
+    );
     this.tabs[key] = { key, view: tabView };
     return tabView;
   }
@@ -98,16 +110,11 @@ class Tabs extends Component {
   renderTabContent(key) {
     if (!this.tabs[key]) this.initNavView(key);
     return Object.keys(this.tabs).map(k => {
-      let tab = this.tabs[k];
-      let active = tab.key === key;
-      let margin = IphoneX ? 83 : 50;
+      const tab = this.tabs[k];
+      const active = tab.key === key;
+      const margin = IphoneX ? 83 : 50;
       return (
-        <View
-          key={tab.key}
-          style={[
-            active ? { flex: 1, marginBottom: margin } : { flex: 0 }
-          ]}
-        >
+        <View key={tab.key} style={[active ? { flex: 1, marginBottom: margin } : { flex: 0 }]}>
           <CardContainer
             defaultContainer={tab.key}
             active={active}
@@ -120,7 +127,7 @@ class Tabs extends Component {
   }
 
   render() {
-    let tab = this.props.navigation.tabs.routes[this.props.navigation.tabs.index];
+    const tab = this.props.navigation.tabs.routes[this.props.navigation.tabs.index];
 
     return (
       <View style={{ flex: 1 }}>
@@ -154,10 +161,14 @@ function mapDispatchToProps(dispatch) {
     actions: bindActionCreators(
       {
         ...navigationActions,
-        ...userActions,
-      }, dispatch),
+        ...userActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Tabs);
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Tabs);

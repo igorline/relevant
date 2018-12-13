@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as postActions from '../../actions/post.actions';
@@ -12,17 +10,27 @@ import { globalStyles } from '../../styles/global';
 import * as notifActions from '../../actions/notif.actions';
 import SingleActivity from './activity.component';
 import DiscoverUser from '../../components/discoverUser.component';
-import Tabs from '../../components/tabs.component';
 import CustomListView from '../../components/customList.component';
 
 const localStyles = StyleSheet.create({});
 const styles = { ...localStyles, ...globalStyles };
 
 class Activity extends Component {
+  static propTypes = {
+    auth: PropTypes.object,
+    notif: PropTypes.object,
+    actions: PropTypes.object,
+    refresh: PropTypes.object,
+    reload: PropTypes.object,
+    error: PropTypes.string,
+    online: PropTypes.object,
+    loaded: PropTypes.bool
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
-      view: 0,
+      view: 0
     };
     this.renderRow = this.renderRow.bind(this);
     this.changeView = this.changeView.bind(this);
@@ -32,8 +40,7 @@ class Activity extends Component {
     this.scrollToTop = this.scrollToTop.bind(this);
 
     this.tabs = [
-      { id: 0, title: 'Personal' },
-      // { id: 1, title: 'Online' }
+      { id: 0, title: 'Personal' }
     ];
   }
 
@@ -54,25 +61,14 @@ class Activity extends Component {
   }
 
   shouldComponentUpdate(next) {
-    let tab = next.tabs.routes[next.tabs.index];
+    const tab = next.tabs.routes[next.tabs.index];
     if (tab.key !== 'activity') return false;
-
-    // console.log('updating activity');
-    // for (let p in next) {
-    //   if (next[p] !== this.props[p]) {
-    //     console.log(p);
-    //     for (let pp in next[p]) {
-    //       if (next[p][pp] !== this.props[p][pp]) console.log('--> ',pp);
-    //     }
-    //   }
-    // }
-
     return true;
   }
 
   scrollToTop() {
     if (this.tabs[this.state.view].component) {
-      let view = this.tabs[this.state.view].component.listview;
+      const view = this.tabs[this.state.view].component.listview;
       if (view) view.scrollTo({ y: 0, animated: true });
     }
   }
@@ -94,40 +90,39 @@ class Activity extends Component {
         this.props.actions.getUsers(length, null, 'online');
         break;
       default:
-        return;
     }
   }
 
   renderRow(rowData) {
     if (this.state.view === 0) {
-      return (
-        <SingleActivity singleActivity={rowData} {...this.props} styles={styles} />
-      );
+      return <SingleActivity singleActivity={rowData} {...this.props} styles={styles} />;
     }
-    return (<DiscoverUser user={rowData} {...this.props} styles={styles} />);
+    return <DiscoverUser user={rowData} {...this.props} styles={styles} />;
   }
 
   getViewData(props, view) {
+    const { loaded, notif, online } = this.props;
     switch (view) {
       case 0:
-        return { data: props.notif.personal, loaded: props.notif.loaded };
+        return { data: notif.personal, loaded: notif.loaded };
       case 1:
-        return { data: props.online, loaded: props.loaded };
+        return { data: online, loaded };
       default:
         return null;
     }
   }
 
   render() {
-    let tabsEl = null;
-    let activityEl = [];
-    this.tabs.forEach((tab) => {
-      let tabData = this.getViewData(this.props, tab.id) || [];
-      let active = this.state.view === tab.id;
+    const activityEl = [];
+    this.tabs.forEach(tab => {
+      const tabData = this.getViewData(tab.id) || [];
+      const active = this.state.view === tab.id;
 
       activityEl.push(
         <CustomListView
-          ref={(c) => { this.tabs[tab.id].component = c; }}
+          ref={c => {
+            this.tabs[tab.id].component = c;
+          }}
           key={tab.id}
           data={tabData.data}
           loaded={tabData.loaded}
@@ -143,50 +138,33 @@ class Activity extends Component {
       );
     });
 
-    tabsEl = (
-      <Tabs
-        tabs={this.tabs}
-        active={this.state.view}
-        handleChange={this.changeView}
-      />
-    );
-
-    return (
-      <View style={[styles.fullContainer]}>
-        {activityEl}
-      </View>
-    );
+    return <View style={[styles.fullContainer]}>{activityEl}</View>;
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    notif: state.notif,
-    // users: state.user,
-    loaded: state.user.loaded,
-    online: state.user.online,
-    stats: state.stats,
-    error: state.error.activity,
-    refresh: state.navigation.activity.refresh,
-    reload: state.navigation.activity.reload,
-    tabs: state.navigation.tabs,
-    posts: state.posts,
-  };
-}
+const mapStateToProps = state => ({
+  auth: state.auth,
+  notif: state.notif,
+  loaded: state.user.loaded,
+  online: state.user.online,
+  stats: state.stats,
+  error: state.error.activity,
+  refresh: state.navigation.activity.refresh,
+  reload: state.navigation.activity.reload,
+  tabs: state.navigation.tabs,
+  posts: state.posts
+});
 
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators({
-      ...postActions,
-      ...notifActions,
-      ...statsActions,
-      ...userActions
-    },
-    dispatch),
-  };
-}
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({
+    ...postActions,
+    ...notifActions,
+    ...statsActions,
+    ...userActions
+  }, dispatch)
+});
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(Activity);
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Activity);

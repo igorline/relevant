@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 if (process.env.BROWSER === true) {
   require('./selectTags.css');
@@ -8,63 +9,62 @@ if (process.env.BROWSER === true) {
   // require('./divider.css');
 }
 
-
 export default class TagInput extends Component {
+  static propTypes = {
+    placeholderText: PropTypes.string,
+    selectedTags: PropTypes.array,
+    deselectTag: PropTypes.func,
+    selectTag: PropTypes.function
+  };
+
   state = {
     input: ''
-  }
+  };
 
   render() {
-    let props = this.props;
-    const selectedTags = props.selectedTags;
-    const tagEls = selectedTags.map((tag, i) => {
-      // tag = tag.replace(/\s/g, '');
-      return (
-        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-        <span
-          key={i}
-          className={'selected'}
-          role="checkbox"
-          aria-checked
-          onClick={() => props.deselectTag(tag)}
-        >
-          #{tag}
-        </span>
-      );
-    });
-    let input = this.state.input || '';
+    const { selectedTags, deselectTag, selectTag } = this.props;
+    const tagEls = selectedTags.map((tag, i) => (
+      <span
+        key={i}
+        className={'selected'}
+        role={'checkbox'}
+        aria-checked
+        onClick={() => deselectTag(tag)}
+      >
+        #{tag}
+      </span>
+    ));
+    const input = this.state.input || '';
 
     return (
       <div>
         Tags: <span className="selectTags">{tagEls}</span>
-        <div className='tagInput'>
+        <div className="tagInput">
           <input
             placeholder={this.props.placeholderText}
             value={this.state.input}
             onKeyDown={e => {
               if (e.keyCode === 13) {
-                let tag = e.target.value.trim().replace('#', '');
-                props.selectTag(tag);
+                const tag = e.target.value.trim().replace('#', '');
+                selectTag(tag);
                 return this.setState({ input: '' });
               }
-              return;
+              return null;
             }}
             onBlur={e => {
-              let tags = e.target.value.split(/\,|#/);
-              tags = tags.map(t => t.trim().replace('#', ''))
-              .filter(t => t.length);
+              let tags = e.target.value.split(/,|#/);
+              tags = tags.map(t => t.trim().replace('#', '')).filter(t => t.length);
               if (tags.length) {
-                props.selectTag(tags);
+                selectTag(tags);
               }
               return this.setState({ input: '' });
             }}
             onChange={e => {
-              let tags = e.target.value;
-              let tagsArr = tags.split(/\,|#/);
-              tagsArr = tagsArr.map(t => t.trim())
-              .filter(t => t.length);
+              const tags = e.target.value;
+              let tagsArr = tags.split(/,|#/);
+              tagsArr = tagsArr.map(t => t.trim()).filter(t => t.length);
               if (tagsArr.length > 1) {
-                props.selectTag(tagsArr[0]);
+                selectTag(tagsArr[0]);
                 return this.setState({ input: tagsArr[1] });
               }
               return this.setState({ input: tags });

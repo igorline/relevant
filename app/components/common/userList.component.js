@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
-import {
-  View,
-  InteractionManager,
-} from 'react-native';
+import { View, InteractionManager } from 'react-native';
 import PropTypes from 'prop-types';
 
 import CustomListView from '../customList.component';
 import CustomSpinner from '../CustomSpinner.component';
 
 export default class UserList extends Component {
+  static propTypes = {
+    getDataAction: PropTypes.func,
+    getViewData: PropTypes.func,
+    renderRow: PropTypes.func,
+    type: PropTypes.string
+  };
+
   constructor(props, context) {
     super(props, context);
     this.load = this.load.bind(this);
@@ -34,7 +38,7 @@ export default class UserList extends Component {
   }
 
   render() {
-    let data = this.props.getViewData();
+    const data = this.props.getViewData();
     let listEl = <CustomSpinner />;
 
     if (!this.loading) {
@@ -53,11 +57,7 @@ export default class UserList extends Component {
       );
     }
 
-    return (
-      <View style={{ flex: 1 }}>
-        {listEl}
-      </View>
-    );
+    return <View style={{ flex: 1 }}>{listEl}</View>;
   }
 }
 
@@ -65,6 +65,5 @@ UserList.propTypes = {
   getViewData: PropTypes.func,
   renderRow: PropTypes.func,
   getDataAction: PropTypes.func,
-  type: PropTypes.string,
+  type: PropTypes.string
 };
-

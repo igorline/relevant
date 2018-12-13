@@ -18,6 +18,12 @@ import CustomSpinner from '../CustomSpinner.component';
 let styles;
 
 class Forgot extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    navigation: PropTypes.object,
+    share: PropTypes.bool
+  };
+
   constructor(props, context) {
     super(props, context);
     this.back = this.back.bind(this);
@@ -48,12 +54,15 @@ class Forgot extends Component {
 
       this.setState({ sendingEmail: true });
 
-      let res = await this.props.actions.forgotPassword(this.state.username);
+      const res = await this.props.actions.forgotPassword(this.state.username);
       if (res && res.email) {
         this.props.actions.pop('auth');
         this.setState({ sendingEmail: false });
-        Alert.alert('Success', `We have set an email to ${res.email}
-      with a link to reset the password for ${res.username}.`);
+        Alert.alert(
+          'Success',
+          `We have set an email to ${res.email}
+      with a link to reset the password for ${res.username}.`
+        );
       }
     } catch (err) {
       console.log(err);
@@ -79,7 +88,7 @@ class Forgot extends Component {
       <KBView
         behavior={'padding'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0 }
+        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0}
       >
         <ScrollView
           keyboardShouldPersistTaps={'always'}
@@ -88,10 +97,9 @@ class Forgot extends Component {
           contentContainerStyle={styles.fieldsParent}
         >
           <View style={styles.fieldsInner}>
-
             <View style={styles.fieldsInputParent}>
               <TextInput
-                ref={c => this.userInput = c}
+                ref={c => (this.userInput = c)}
                 underlineColorAndroid={'transparent'}
                 autoCorrect={false}
                 autoCapitalize={'none'}
@@ -110,13 +118,10 @@ class Forgot extends Component {
             underlayColor={'transparent'}
             style={[styles.largeButton]}
           >
-            <Text style={styles.largeButtonText}>
-              Send Password Reset Link
-            </Text>
+            <Text style={styles.largeButtonText}>Send Password Reset Link</Text>
           </TouchableHighlight>
 
           {spinner}
-
         </ScrollView>
       </KBView>
     );
@@ -124,12 +129,10 @@ class Forgot extends Component {
 }
 
 Forgot.propTypes = {
-  actions: PropTypes.object,
+  actions: PropTypes.object
 };
 
-let localStyles = StyleSheet.create({
-});
+const localStyles = StyleSheet.create({});
 styles = { ...localStyles, ...globalStyles };
-
 
 export default Forgot;

@@ -5,7 +5,7 @@ import ShareContainer from './share.container';
 import configureStore from '../store/configureShareStore';
 
 const store = configureStore();
-let codePushOptions = {
+const codePushOptions = {
   checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
   installMode: codePush.InstallMode.IMMEDIATE
 };

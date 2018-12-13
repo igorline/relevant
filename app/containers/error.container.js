@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Image,
-  Text,
-  TouchableHighlight
-} from 'react-native';
+import { View, Image, Text, TouchableHighlight } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as authActions from '../actions/auth.actions';
@@ -20,7 +15,7 @@ class ErrorContainer extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      loading: false,
+      loading: false
     };
     this.reload = this.reload.bind(this);
   }
@@ -42,12 +37,14 @@ class ErrorContainer extends Component {
   render() {
     let reloadEl = null;
     if (!this.state.loading) {
-      reloadEl = (<TouchableHighlight underlayColor={'transparent'} onPress={() => this.reload()}>
-        <View>
-          <Image source={require('../assets/images/reload.png')} style={styles.reloadIcon} />
-          <Text style={{ fontSize: 20, textAlign: 'center' }}>Reload</Text>
-        </View>
-      </TouchableHighlight>);
+      reloadEl = (
+        <TouchableHighlight underlayColor={'transparent'} onPress={() => this.reload()}>
+          <View>
+            <Image source={require('../assets/images/reload.png')} style={styles.reloadIcon} />
+            <Text style={{ fontSize: 20, textAlign: 'center' }}>Reload</Text>
+          </View>
+        </TouchableHighlight>
+      );
     }
 
     return (
@@ -56,7 +53,8 @@ class ErrorContainer extends Component {
           flex: 1,
           backgroundColor: 'white',
           alignItems: 'center',
-          justifyContent: 'center' }}
+          justifyContent: 'center'
+        }}
       >
         {reloadEl}
         <CustomSpinner visible={this.state.loading} />
@@ -69,7 +67,7 @@ styles = { ...localStyles, ...globalStyles };
 
 function mapStateToProps(state) {
   return {
-    error: state.error,
+    error: state.error
   };
 }
 
@@ -81,9 +79,12 @@ function mapDispatchToProps(dispatch) {
         ...navigationActions,
         ...errorActions
       },
-      dispatch),
+      dispatch
+    )
   };
 }
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(ErrorContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ErrorContainer);

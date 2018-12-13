@@ -8,6 +8,7 @@ import {
   Platform,
   ScrollView
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles, mainPadding, fullWidth, greyText, borderGrey } from '../../styles/global';
 import * as utils from '../../utils';
 import UrlPreview from './urlPreview.component';
@@ -17,13 +18,25 @@ import PostBody from './../post/postBody.component';
 import PostInfo from './../post/postInfo.component';
 import TextBody from './../post/textBody.component';
 
-let Video = require('react-native-video').default;
+const Video = require('react-native-video').default;
 
 let styles;
-const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/);
-
+const URL_REGEX = new RegExp(
+  /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
+);
 
 export default class UrlComponent extends Component {
+  static propTypes = {
+    postUrl: PropTypes.object,
+    share: PropTypes.bool,
+    createPreview: PropTypes.object,
+    actions: PropTypes.object,
+    postBody: PropTypes.object,
+    urlPreview: PropTypes.object,
+    repost: PropTypes.object,
+    users: PropTypes.array,
+    user: PropTypes.object
+  };
 
   constructor(props, context) {
     super(props, context);
@@ -58,7 +71,7 @@ export default class UrlComponent extends Component {
   toggleTooltip(parentEl, name) {
     if (!parentEl) return;
     parentEl.measureInWindow((x, y, w, h) => {
-      let parent = { x, y, w, h };
+      const parent = { x, y, w, h };
       if (x + y + w + h === 0) return;
       this.props.actions.setTooltipData({
         name,
@@ -69,21 +82,21 @@ export default class UrlComponent extends Component {
   }
 
   setMention(user) {
-    let postBody = this.props.postBody.replace(this.mention, '@' + user._id);
+    const postBody = this.props.postBody.replace(this.mention, '@' + user._id);
     this.props.actions.setCreaPostState({ postBody });
     this.props.actions.setUserSearch([]);
     this.input.focus();
   }
 
   processInput(postBody, doneTyping) {
-    let length = postBody ? postBody.length : 0;
+    const length = postBody ? postBody.length : 0;
 
     if (doneTyping) postBody = this.props.postBody;
-    let words = utils.text.getWords(postBody);
+    const words = utils.text.getWords(postBody);
 
     let shouldParseUrl = false;
 
-    let prevLength = this.props.postBody.length || 0;
+    const prevLength = this.props.postBody.length || 0;
 
     if (length - prevLength > 1) shouldParseUrl = true;
     if (postBody[postBody.length - 1] == ' ') shouldParseUrl = true;
@@ -91,14 +104,14 @@ export default class UrlComponent extends Component {
 
     if (!this.props.postUrl && shouldParseUrl) {
       let postUrl;
-      let possibleUrls = words.filter(word => URL_REGEX.test(word));
+      const possibleUrls = words.filter(word => URL_REGEX.test(word));
       postUrl = possibleUrls[0];
 
       // pick the 'best' url (ex: when copying and pasting website domain)
       possibleUrls.forEach(u => {
         if (!u) return null;
         if ((u.match('http://') || u.match('https://')) && !postUrl.match('http')) {
-          return postUrl = u;
+          return (postUrl = u);
         }
         if (u.length > postUrl.length) postUrl = u;
         return null;
@@ -109,15 +122,15 @@ export default class UrlComponent extends Component {
       }
     }
 
-    let lastWord = words[words.length - 1];
+    const lastWord = words[words.length - 1];
     if (lastWord.match(/^@\S+/g) && lastWord.length > 1) {
       this.mention = lastWord;
       this.props.actions.searchUser(lastWord.replace('@', ''));
     } else this.props.actions.setUserSearch([]);
 
-    let bodyTags = utils.text.getTags(words);
+    const bodyTags = utils.text.getTags(words);
 
-    let bodyMentions = utils.text.getMentions(words);
+    const bodyMentions = utils.text.getMentions(words);
 
     if (this.props.urlPreview && this.props.postUrl && postBody.match(this.props.postUrl)) {
       postBody = postBody.replace(`${this.props.postUrl}`, '').trim();
@@ -127,27 +140,38 @@ export default class UrlComponent extends Component {
   }
 
   createPreview(postUrl) {
-    utils.post.generatePreviewServer(postUrl)
-    .then((results) => {
+    utils.post.generatePreviewServer(postUrl).then(results => {
       if (results) {
-        let newBody = this.props.postBody ? this.props.postBody.replace(`${postUrl}`, '').trim() : '';
+        const newBody = this.props.postBody
+          ? this.props.postBody.replace(`${postUrl}`, '').trim()
+          : '';
         let tags = [];
         if (results.tags) {
           tags = results.tags.split(',');
         }
-        let keywords = [...tags];
+        const keywords = [...tags];
         let pKeywords = [];
         keywords.forEach(k => {
           pKeywords = [...k.trim().split(';'), ...pKeywords];
         });
         pKeywords = pKeywords.map(tag => tag.trim());
 
-        tags = tags.map(tag => tag.trim().toLowerCase().replace(/\s/g, ''));
+        tags = tags.map(tag =>
+          tag
+          .trim()
+          .toLowerCase()
+          .replace(/\s/g, '')
+        );
         let pTags = [];
         tags.forEach(tag => {
           pTags = [...pTags, ...tag.split(';')];
         });
-        pTags = pTags.map(tag => tag.trim().toLowerCase().replace(/\s/g, ''));
+        pTags = pTags.map(tag =>
+          tag
+          .trim()
+          .toLowerCase()
+          .replace(/\s/g, '')
+        );
 
         this.props.actions.setCreaPostState({
           postBody: newBody,
@@ -160,7 +184,7 @@ export default class UrlComponent extends Component {
           urlPreview: {
             image: results.image,
             title: results.title ? results.title : 'Untitled',
-            description: results.description,
+            description: results.description
           }
         });
       } else {
@@ -178,7 +202,8 @@ export default class UrlComponent extends Component {
         <View style={{ flex: 0, width: fullWidth - 20, paddingBottom: 20 }}>
           <PostInfo preview post={this.props.repost} users={this.props.users} />
           <PostBody preview post={this.props.repost} />
-        </View>);
+        </View>
+      );
     }
 
     let urlPlaceholder = 'Article URL.';
@@ -196,11 +221,7 @@ export default class UrlComponent extends Component {
       userHeader = (
         <View style={styles.createPostUser}>
           <View style={styles.innerBorder}>
-            <UserName
-              style={styles.innerBorder}
-              user={this.props.user}
-              setSelected={() => null}
-            />
+            <UserName style={styles.innerBorder} user={this.props.user} setSelected={() => null} />
           </View>
         </View>
       );
@@ -211,23 +232,27 @@ export default class UrlComponent extends Component {
     if (this.props.users.search && this.props.users.search.length) {
       userSearch = (
         <View style={{ flex: 1, maxHeight: 220 }}>
-          <UserSearchComponent
-            setSelected={this.setMention}
-            users={this.props.users.search}
-          />
+          <UserSearchComponent setSelected={this.setMention} users={this.props.users.search} />
         </View>
       );
     }
 
     let addP = null;
 
-    if (this.props.urlPreview && this.props.urlPreview.description && this.props.postBody === '' && !this.props.repost) {
+    if (
+      this.props.urlPreview &&
+      this.props.urlPreview.description &&
+      this.props.postBody === '' &&
+      !this.props.repost
+    ) {
       addP = (
         <TouchableHighlight
           underlayColor={'transparent'}
           style={styles.postButton}
           onPress={() =>
-            this.props.actions.setCreaPostState({ postBody: '"' + this.props.urlPreview.description + '"' })
+            this.props.actions.setCreaPostState({
+              postBody: '"' + this.props.urlPreview.description + '"'
+            })
           }
         >
           <Text style={[styles.font12, styles.active]}>Add text from link</Text>
@@ -236,17 +261,20 @@ export default class UrlComponent extends Component {
     }
 
     let tipCTA;
-    if (Platform.OS === 'ios' && !this.props.urlPreview && this.props.postBody === '' && !this.props.share) {
+    if (
+      Platform.OS === 'ios' &&
+      !this.props.urlPreview &&
+      this.props.postBody === '' &&
+      !this.props.share
+    ) {
       tipCTA = (
         <TouchableHighlight
-          ref={c => this.shareTip = c}
+          ref={c => (this.shareTip = c)}
           underlayColor={'transparent'}
           style={[styles.postButtonShare]}
           onPress={() => this.toggleTooltip(this.shareTip, 'shareTip')}
         >
-          <Text
-            style={[styles.font12, styles.active, { textAlign: 'center' }]}
-          >
+          <Text style={[styles.font12, styles.active, { textAlign: 'center' }]}>
             How to post from Chrome, Safari & other apps
           </Text>
         </TouchableHighlight>
@@ -256,28 +284,20 @@ export default class UrlComponent extends Component {
     input = (
       <ScrollView
         keyboardShouldPersistTaps={'always'}
-        ref={c => this.scrollView = c}
+        ref={c => (this.scrollView = c)}
         style={{
           flex: 1,
-          paddingHorizontal: mainPadding,
+          paddingHorizontal: mainPadding
         }}
         contentContainerStyle={{ flexGrow: 1, height: 'auto', minHeight: 260 }}
-
       >
         {userHeader}
-        <View
-          style={[
-            { flex: 1 }]
-          }
-        >
+        <View style={[{ flex: 1 }]}>
           <TextInput
-            ref={(c) => { this.input = c; }}
-            style={[
-              { flex: 1 },
-              styles.font15,
-              styles.createPostInput,
-              { maxHeight: 280 }
-            ]}
+            ref={c => {
+              this.input = c;
+            }}
+            style={[{ flex: 1 }, styles.font15, styles.createPostInput, { maxHeight: 280 }]}
             underlineColorAndroid={'transparent'}
             placeholder={urlPlaceholder}
             placeholderTextColor={greyText}
@@ -292,7 +312,6 @@ export default class UrlComponent extends Component {
             keyboardShouldPersistTaps={'never'}
             disableFullscreenUI
             textAlignVertical={'top'}
-
             // fix for android enter bug!
             blurOnSubmit={false}
             onSubmitEditing={() => {
@@ -300,37 +319,32 @@ export default class UrlComponent extends Component {
                 let postBody = this.props.postBody;
                 postBody += '\n';
                 this.processInput(postBody, false);
-                return this.okToSubmit = false;
+                return (this.okToSubmit = false);
               }
-              return this.okToSubmit = true;
+              return (this.okToSubmit = true);
             }}
           >
-            <TextBody showAllMentions>
-              {this.props.postBody}
-            </TextBody>
+            <TextBody showAllMentions>{this.props.postBody}</TextBody>
           </TextInput>
           {addP}
           {tipCTA}
         </View>
         {userSearch}
         {repostBody}
-        {this.props.postUrl && !this.props.users.search.length && !this.props.repost ?
-          <UrlPreview size={'small'} {...this.props} actions={this.props.actions} /> :
-          null
-        }
+        {this.props.postUrl && !this.props.users.search.length && !this.props.repost ? (
+          <UrlPreview size={'small'} {...this.props} actions={this.props.actions} />
+        ) : null}
       </ScrollView>
     );
 
-    return (
-      input
-    );
+    return input;
   }
 }
 
 const localStyles = StyleSheet.create({
   textP: {
     flex: 0,
-    marginBottom: 10,
+    marginBottom: 10
   },
   videoTip: {
     borderColor: 'lightgrey',
@@ -341,7 +355,7 @@ const localStyles = StyleSheet.create({
     padding: 10
   },
   createPostUser: {
-    height: 55,
+    height: 55
   },
   postButtonShare: {
     position: 'absolute',
@@ -367,7 +381,7 @@ const localStyles = StyleSheet.create({
     borderBottomColor: borderGrey
   },
   noBorder: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: StyleSheet.hairlineWidth
   },
   inputBox: {
     flex: 1,
@@ -376,4 +390,3 @@ const localStyles = StyleSheet.create({
 });
 
 styles = { ...localStyles, ...globalStyles };
-

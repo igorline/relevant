@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as routerActions from 'react-router-redux';
 import * as communityActions from '../../../actions/community.actions';
 
 import TagInput from '../createPost/TagInput.component';
-// import UserSearch from '../createPost/userSearch.component';
 import RichText from '../common/richText.component';
 import ImageUpload from '../common/imageUpload.component';
 
 class CommunityAdmin extends Component {
+  static propTypes = {
+    actions: PropTypes.object
+  };
+
   state = {
     name: '',
     slug: '',
@@ -20,7 +23,7 @@ class CommunityAdmin extends Component {
     image: '',
     description: '',
     adminsText: ''
-  }
+  };
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -41,17 +44,18 @@ class CommunityAdmin extends Component {
 
   async createCommunity() {
     try {
-      let image = await this.imageUploader.uploadImage();
+      const image = await this.imageUploader.uploadImage();
       if (image) return;
       this.props.actions.createCommunity(this.state);
     } catch (err) {
-      console.log('error creating community ', err);
+      // TODO error handling
     }
   }
 
   render() {
-    let { name, slug, description, topics, adminsText, image } = this.state;
-    let preview = this.imageUploader && this.imageUploader.state.preview;
+    const { name, slug, description, adminsText } = this.state;
+    let { topics, image } = this.state;
+    const preview = this.imageUploader && this.imageUploader.state.preview;
     if (preview) image = preview;
     return (
       <div>
@@ -86,8 +90,8 @@ class CommunityAdmin extends Component {
           <label>Topics</label>
           <TagInput
             selectedTags={this.state.topics}
-            selectTag={(topic) => this.setState({ topics: [...topics, topic] })}
-            deselectTag={(topic) => {
+            selectTag={topic => this.setState({ topics: [...topics, topic] })}
+            deselectTag={topic => {
               topics = topics.filter(t => t !== topic);
               this.setState({ topics });
             }}
@@ -105,9 +109,9 @@ class CommunityAdmin extends Component {
           {image ? <img src={image} /> : null}
           <ImageUpload
             onUpload={img => this.setState({ image: img })}
-            ref={c => this.imageUploader = c}
+            ref={c => (this.imageUploader = c)}
           />
-          <br/>
+          <br />
           <button className={'shadowButton'} onClick={this.createCommunity.bind(this)}>
             Create Community
           </button>
@@ -117,15 +121,23 @@ class CommunityAdmin extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   routing: state.routing,
-  communities: state.community,
+  communities: state.community
 });
 
-const mapDispatchToProps = (dispatch) => ( Object.assign({}, { dispatch }, {
-  actions: bindActionCreators({
-    ...communityActions,
-  }, dispatch)
-}));
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      ...communityActions
+    },
+    dispatch
+  )
+});
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CommunityAdmin));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(CommunityAdmin)
+);

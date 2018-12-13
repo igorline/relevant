@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Animated,
-  Easing
-} from 'react-native';
+import { StyleSheet, Animated, Easing } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 
 let styles;
 
 class Heart extends Component {
+  static propTypes = {
+    id: PropTypes.object,
+    destroy: PropTypes.func,
+    specialKey: PropTypes.number
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
       opacity: new Animated.Value(1),
-      scale: new Animated.Value(0),
+      scale: new Animated.Value(0)
     };
   }
 
@@ -26,14 +29,14 @@ class Heart extends Component {
         delay: 500,
         duration: 300,
         easing: Easing.in(Easing.ease),
-        useNativeDriver: true,
+        useNativeDriver: true
       }),
       Animated.timing(this.state.scale, {
         toValue: 1,
         delay: 0,
         duration: 500,
         easing: Easing.elastic(2),
-        useNativeDriver: true,
+        useNativeDriver: true
       }).start()
     ]).start();
 
@@ -47,14 +50,17 @@ class Heart extends Component {
       <Animated.Text
         pointerEvents={'none'}
         key={key}
-        style={[styles.aniHeart,
-          {transform: [
-            { scale: this.state.scale },
-            // { translateY: this.state.yVal },
-            // { translateX: this.state.xVal },
-          ],
-          opacity: this.state.opacity,
-        }]}
+        style={[
+          styles.aniHeart,
+          {
+            transform: [
+              { scale: this.state.scale }
+              // { translateY: this.state.yVal },
+              // { translateX: this.state.xVal },
+            ],
+            opacity: this.state.opacity
+          }
+        ]}
       >
         👎
       </Animated.Text>
@@ -72,5 +78,5 @@ styles = StyleSheet.create({
     fontSize: 100,
     // bottom: 40,
     backgroundColor: 'transparent'
-  },
+  }
 });

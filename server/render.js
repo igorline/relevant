@@ -2,29 +2,48 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { RouterContext, match } from 'react-router';
 import { Provider } from 'react-redux';
-// import qs from 'qs';
 import routes from '../app/web/routes';
 import configureStore from '../app/web/store/configureStore';
-// import App from '../app/web/components/app';
-import { setUser } from '../app/actions/auth.actions';
+import { setUser, setCommunity } from '../app/actions/auth.actions';
 
-
-// console.log(router)
-// router.stack.forEach(l => {
-//   console.log(l.route)
-// })
+function fetchMeta(initialState) {
+  let title;
+  let description;
+  let image;
+  let url;
+  const { community } = initialState.auth;
+  if (initialState.posts.posts) {
+    const postId = Object.keys(initialState.posts.posts)[0];
+    if (postId) {
+      let post = initialState.posts.posts[postId];
+      if (post.metaPost) {
+        post = initialState.posts.links[post.metaPost] || {};
+      }
+      title = post.title;
+      image = post.image;
+      description = post.body;
+      url = `https://relevant.community/${community}/post/${postId}`;
+    }
+  }
+  title = title || 'Relevant: A Social News Reader';
+  image = image || 'https://relevant.community/img/fbimg.png';
+  url = url || 'https://relevant.community/';
+  description =
+    description ||
+    'Relevant is a social news reader that values quality over clicks. Our mission is to create a token-backed qualitative metric for the information economy — making the human values of veracity, expertise and agency economically valuable.';
+  return { title, description, image, url };
+}
 
 function renderFullPage(html, initialState) {
   let styles;
-  // html = ''
 
   // load extracted styles in head when in production
   if (process.env.NODE_ENV === 'development') styles = '';
   else styles = '<link rel="stylesheet" href="/styles.css" />';
 
-  let meta = fetchMeta(initialState);
+  const meta = fetchMeta(initialState);
 
-  let app = `<!doctype html>
+  const app = `<!doctype html>
     <html>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -86,29 +105,6 @@ function renderFullPage(html, initialState) {
   return app;
 }
 
-function fetchMeta(initialState) {
-  let title, description, image, url;
-  const { community } = initialState.auth;
-  if (initialState.posts.posts) {
-    const postId = Object.keys(initialState.posts.posts)[0];
-    if (postId) {
-      let post = initialState.posts.posts[postId];
-      if (post.metaPost) {
-        post = initialState.posts.links[post.metaPost] || {};
-      }
-      title = post.title;
-      image = post.image;
-      description = post.body;
-      url = `https://relevant.community/${community}/post/${postId}`;
-    }
-  }
-  title = title || 'Relevant: A Social News Reader';
-  image = image || 'https://relevant.community/img/fbimg.png';
-  url = url || 'https://relevant.community/';
-  description = description || 'Relevant is a social news reader that values quality over clicks. Our mission is to create a token-backed qualitative metric for the information economy — making the human values of veracity, expertise and agency economically valuable.';
-  return { title, description, image, url };
-}
-
 function fetchComponentData(dispatch, components, params, req) {
   const promises = components
   .filter(component => component && component.fetchData)
@@ -119,10 +115,9 @@ function fetchComponentData(dispatch, components, params, req) {
 
 export default function handleRender(req, res) {
   // const params = qs.parse(req.query);
-  // this sets the inital auth state
-  let auth = {};
-  // console.log('req ', req.unconfirmed);
+  const auth = {};
   if (req.unconfirmed) auth.confirmed = false;
+
   // TODO how to deal with this better?
   auth.community = 'relevant';
   const initialState = { auth };
@@ -131,22 +126,25 @@ export default function handleRender(req, res) {
   const store = configureStore(initialState);
 
   // TODO check this! better to use 'default user community'
-  store.dispatch(setUser(auth.community));
+  // or most recent community
+  store.dispatch(setCommunity(auth.community));
+
   if (req.user) store.dispatch(setUser(req.user));
 
   match(
     { routes: routes(store), location: req.originalUrl },
-    (error, redirectLocation, renderProps) => {
+    (err, redirectLocation, renderProps) => {
       if (redirectLocation) {
         res.redirect(redirectLocation.pathname + redirectLocation.search);
-      } else if (error) {
-        console.error('ROUTER ERROR:', error);
-        res.status(500);
+      } else if (err) {
+        // console.error('ROUTER ERROR:', error);
+        // res.status(500);
+        return res.end(err.message);
       } else if (!renderProps) {
-        res.status(500);
+        // res.status(500);
+        return res.end(new Error('missing render props'));
       } else {
-        // console.log("RENDERING", req.originalUrl)
-        let renderHtml = () => {
+        const renderHtml = () => {
           const component = (
             <Provider store={store}>
               <div className="parent">
@@ -157,19 +155,13 @@ export default function handleRender(req, res) {
           return renderToString(component);
         };
 
-        console.log('NEW RENDER!!! ', 'params: ', renderProps.params);
         // This code pre-fills the data on the server
-        fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
-        .then((data) => {
-          console.log('GOT DATA, RENDERING COMPONENTS');
+        return fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
+        .then(data => {
           // Here we can use the data to render the appropriate meta tags
           res.send(renderFullPage(renderHtml(data), store.getState()));
         })
-        .catch(err => {
-          console.log(err);
-          return res.end(err.message);
-        });
-        // res.send(renderFullPage(renderHtml(), store.getState()));
+        .catch(error => res.end(error.message));
       }
     }
   );

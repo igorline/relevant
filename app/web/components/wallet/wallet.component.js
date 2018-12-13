@@ -1,12 +1,6 @@
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  BondedTokenHeader,
-  BondedTokenTransact,
-  BondedTokenBalance
-} from 'bonded-token';
+import { BondedTokenHeader, BondedTokenTransact, BondedTokenBalance } from 'bonded-token';
 import ShadowButton from '../common/ShadowButton';
 
 if (process.env.BROWSER === true) {
@@ -15,6 +9,11 @@ if (process.env.BROWSER === true) {
 }
 
 export default class Wallet extends Component {
+  static propTypes = {
+    okToRender: PropTypes.bool,
+    user: PropTypes.object
+  };
+
   componentDidMount() {
     this.okToRender = true;
   }
@@ -24,22 +23,14 @@ export default class Wallet extends Component {
     if (!this.props.user) return null;
     return (
       <div className="walletContainer">
-        <span className='balanceImage' ><img src='/img/r.png' /></span>
+        <span className="balanceImage">
+          <img src="/img/r.png" />
+        </span>
         <BondedTokenBalance />
-        <BondedTokenHeader
-          title={'Relevant Wallet'}
-          accentColor={'#3E3EFF'}
-        />
-        <BondedTokenTransact
-          accentColor={'#3E3EFF'}
-          network={'Rinkeby'}
-        >
+        <BondedTokenHeader title={'Relevant Wallet'} accentColor={'#3E3EFF'} />
+        <BondedTokenTransact accentColor={'#3E3EFF'} network={'Rinkeby'}>
           <div>
-            <ShadowButton
-              style={{ margin: '10px 0 10px 0', width: '100%' }}
-            >
-              Submit
-            </ShadowButton>
+            <ShadowButton style={{ margin: '10px 0 10px 0', width: '100%' }}>Submit</ShadowButton>
           </div>
         </BondedTokenTransact>
         <div className="smallText">
@@ -48,7 +39,10 @@ export default class Wallet extends Component {
             <br />
           </p>
           <p>
-            You can get some free test Ether here: <a target="_blank" href='https://faucet.rinkeby.io' >https://faucet.rinkeby.io</a>
+            You can get some free test Ether here:{' '}
+            <a target="_blank" href="https://faucet.rinkeby.io">
+              https://faucet.rinkeby.io
+            </a>
             <br />
             (pro-tip: use your GooglePlus account)
           </p>

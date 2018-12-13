@@ -13,27 +13,16 @@ import {
   SCROLL,
   SET_TOOLTIP_DATA,
   TOOLTIP_READY,
-  SET_BUTTON_TOOLTIP,
+  SET_BUTTON_TOOLTIP
 } from './actionTypes';
 
 let dismissKeyboard;
 let safariView;
 let Orientation;
-if (process.env.WEB != 'true') {
+if (process.env.WEB !== 'true') {
   Orientation = require('react-native-orientation');
   dismissKeyboard = require('react-native-dismiss-keyboard');
   safariView = require('react-native-safari-view').default;
-
-  // console.log('Orientation ', Orientation);
-  // console.log('safariView.addEventListener ', safariView.addEventListener);
-  // if (safariView.addEventListener) {
-  //   safariView.addEventListener(
-  //     'onDismiss',
-  //     () => {
-  //       Orientation.lockToPortrait();
-  //     }
-  //   );
-  // }
 }
 
 export function push(route, key, animation = 'vertical') {
@@ -56,7 +45,7 @@ export function scrolling(scroll) {
 export function toggleTopics(showTopics) {
   return {
     type: TOGGLE_TOPICS,
-    payload: showTopics,
+    payload: showTopics
   };
 }
 
@@ -82,14 +71,16 @@ export function changeTab(key) {
 export function goToTopic(topic) {
   return dispatch => {
     // dispatch(changeTab('discover'));
-    dispatch(push({
-      key: 'discover',
-      title: topic.categoryName,
-      back: true,
-      id: topic._id,
-      topic,
-      gestureResponseDistance: 150,
-    }));
+    dispatch(
+      push({
+        key: 'discover',
+        title: topic.categoryName,
+        back: true,
+        id: topic._id,
+        topic,
+        gestureResponseDistance: 150
+      })
+    );
     dispatch(toggleTopics(false));
   };
 }
@@ -110,7 +101,6 @@ export function setButtonTooltip(type, id) {
     payload: { id, type }
   };
 }
-
 
 export function tooltipReady(ready) {
   return {
@@ -133,17 +123,18 @@ export function showTooltip(name) {
   };
 }
 
-
 export function createToggleAction(name, el) {
   return dispatch => {
     if (!el) return;
     el.measureInWindow((x, y, w, h) => {
-      let parent = { x, y, w, h };
+      const parent = { x, y, w, h };
       if (x + y + w + h === 0) return;
-      dispatch(setTooltipData({
-        name,
-        parent
-      }));
+      dispatch(
+        setTooltipData({
+          name,
+          parent
+        })
+      );
       dispatch(showTooltip(name));
     });
   };
@@ -165,10 +156,9 @@ export function reloadTab(key) {
 
 export function reloadAllTabs() {
   return {
-    type: RELOAD_ALL_TABS,
+    type: RELOAD_ALL_TABS
   };
 }
-
 
 export function resetRoutes(key) {
   return {
@@ -194,50 +184,58 @@ export function goToPeople(topic) {
     component: 'peopleView',
     title: topic ? '#' + topic : 'People',
     back: true,
-    id: topic + '_' + 'people',
-    topic: topic ? { _id: topic.toLowerCase() } : null,
+    id: topic + '_people',
+    topic: topic ? { _id: topic.toLowerCase() } : null
   });
 }
-
 
 export function goToUrl(url, id) {
   return dispatch => {
     dispatch(setButtonTooltip('upvote', id));
     if (safariView) {
-      safariView.isAvailable()
+      safariView
+      .isAvailable()
       .then(() => {
         Orientation.unlockAllOrientations();
         safariView.show({
           url,
-          readerMode: true, // optional,
+          readerMode: true // optional,
           // tintColor: '#ffffff', // optional
           // barTintColor: '#ffffff' // optional
         });
-        // dispatch(tooltipReady());
       })
-      .catch(err => {
-        console.log(err);
+      .catch(() => {
+        // console.log(err);
         // dispatch(tooltipReady());
-        dispatch(push({
-          key: 'articleView',
-          component: 'articleView',
-          back: true,
-          uri: url,
-          id: url,
-          gestureResponseDistance: 120
-        }, 'home'));
+        dispatch(
+          push(
+            {
+              key: 'articleView',
+              component: 'articleView',
+              back: true,
+              uri: url,
+              id: url,
+              gestureResponseDistance: 120
+            },
+            'home'
+          )
+        );
       });
     }
   };
 }
 
 export function goToComments(post, key, animation) {
-  return push({
-    key: 'comment',
-    title: 'Comments',
-    back: true,
-    id: post._id
-  }, key, animation);
+  return push(
+    {
+      key: 'comment',
+      title: 'Comments',
+      back: true,
+      id: post._id
+    },
+    key,
+    animation
+  );
 }
 
 export function goToPost(post, openComment) {
@@ -252,13 +250,17 @@ export function goToPost(post, openComment) {
 }
 
 export function goToProfile(user, key, animation) {
-  let handle = user._id || user.replace('@', '');
-  return push({
-    key: 'profile',
-    title: user.name || handle,
-    back: true,
-    id: handle,
-  }, key, animation);
+  const handle = user._id || user.replace('@', '');
+  return push(
+    {
+      key: 'profile',
+      title: user.name || handle,
+      back: true,
+      id: handle
+    },
+    key,
+    animation
+  );
 }
 
 export function viewBlocked() {
@@ -266,7 +268,7 @@ export function viewBlocked() {
     key: 'blocked',
     title: 'Blocked Users',
     id: 'blocked',
-    back: true,
+    back: true
   });
 }
 
@@ -275,7 +277,7 @@ export function viewInvites() {
     key: 'invites',
     title: 'Invite Friends',
     id: 'invites',
-    back: true,
+    back: true
   });
 }
 
@@ -284,8 +286,6 @@ export function goToInviteList() {
     key: 'inviteList',
     title: 'Invite List',
     id: 'inviteList',
-    back: true,
+    back: true
   });
 }
-
-

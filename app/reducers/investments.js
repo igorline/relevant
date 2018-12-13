@@ -14,31 +14,30 @@ const initialState = {
 
 export default function investments(state = initialState, action) {
   switch (action.type) {
-
     case types.LOADING_POST_INVESTMENTS: {
       return {
         ...state,
         loaded: {
           ...state.loaded,
-          [action.payload]: false,
+          [action.payload]: false
         }
       };
     }
 
     case types.SET_POST_INVESTMENTS: {
-      let post = state.posts[action.payload.postId] || [];
+      const post = state.posts[action.payload.postId] || [];
       return {
         ...state,
         posts: {
           ...state.posts,
           [action.payload.postId]: [
             ...post.slice(0, action.payload.index),
-            ...action.payload.data.result.investments,
+            ...action.payload.data.result.investments
           ]
         },
         loaded: {
           ...state.loaded,
-          [action.payload.postId]: true,
+          [action.payload.postId]: true
         },
         investments: {
           ...state.investments,
@@ -48,7 +47,7 @@ export default function investments(state = initialState, action) {
     }
 
     case types.UPDATE_EARNINGS: {
-      let earnings = {};
+      const earnings = {};
       action.payload.forEach(earning => {
         earnings[earning.post] = earning;
       });
@@ -62,7 +61,7 @@ export default function investments(state = initialState, action) {
     }
 
     case types.UNDO_POST_INVESTMENT: {
-      let myPostInvList = state.myPostInvList.filter(p => p !== action.payload);
+      const myPostInvList = state.myPostInvList.filter(p => p !== action.payload);
       return {
         ...state,
         myPostInvList,
@@ -73,10 +72,9 @@ export default function investments(state = initialState, action) {
       };
     }
 
-
     case types.UPDATE_POST_INVESTMENTS: {
-      let postsInv = {};
-      let postInvList = action.payload.map(i => {
+      const postsInv = {};
+      const postInvList = action.payload.map(i => {
         postsInv[i.post] = i;
         return i.post;
       });
@@ -85,15 +83,14 @@ export default function investments(state = initialState, action) {
         myPostInvList: [...new Set([...state.myInvestments, ...postInvList])],
         myPostInv: {
           ...state.myPostInv,
-          ...postsInv,
+          ...postsInv
         }
       };
     }
 
-
     case 'SET_INVESTMENTS': {
-      let id = action.payload.userId;
-      let currentInvestments = state.userInvestments[id] || [];
+      const id = action.payload.userId;
+      const currentInvestments = state.userInvestments[id] || [];
       return {
         ...state,
         userInvestments: {
@@ -101,20 +98,20 @@ export default function investments(state = initialState, action) {
           [id]: [
             ...currentInvestments.slice(0, action.payload.index),
             ...action.payload.investments.result.investments
-          ],
+          ]
         },
         investments: {
           ...state.investments,
           ...action.payload.investments.entities.investments
         },
-        loadedProfileInv: true,
+        loadedProfileInv: true
       };
     }
 
     case 'LOADING_INVESTMENTS': {
       return {
         ...state,
-        loadedProfileInv: false,
+        loadedProfileInv: false
       };
     }
 

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as adminActions from '../../actions/admin.actions';
@@ -8,12 +9,18 @@ import InviteComponent from './invites.component';
 import InviteList from './inviteList.component';
 
 class Invites extends Component {
+  static propTypes = {
+    inviteList: PropTypes.array,
+    actions: PropTypes.object,
+    inviteListView: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
   }
 
   componentWillMount() {
-    let skip = this.props.inviteList.length;
+    const skip = this.props.inviteList.length;
     this.props.actions.getInvites(skip, 100);
   }
 
@@ -38,10 +45,14 @@ function mapDispatchToProps(dispatch) {
       {
         ...postActions,
         ...adminActions,
-        ...navigationActions,
-      }, dispatch),
+        ...navigationActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Invites);
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Invites);

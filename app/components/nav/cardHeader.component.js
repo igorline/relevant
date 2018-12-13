@@ -10,15 +10,28 @@ import {
   TouchableOpacity,
   Platform
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Search from './search.component';
 import { globalStyles, fullWidth, darkGrey, mainPadding, smallScreen } from '../../styles/global';
 import Stats from '../post/stats.component';
 
-
 let styles;
 
 class CardHeader extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    scene: PropTypes.object,
+    back: PropTypes.object,
+    users: PropTypes.array,
+    auth: PropTypes.object,
+    defaultContainer: PropTypes.object,
+    showActionSheet: PropTypes.func,
+    share: PropTypes.bool,
+    renderRight: PropTypes.func,
+    style: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -35,12 +48,12 @@ class CardHeader extends Component {
   }
 
   renderLeft(props) {
-    let leftEl = <View style={styles.leftButton} />;
+    const leftEl = <View style={styles.leftButton} />;
     let back;
     let backEl;
     let options;
-    let key = props.scene.route.key;
-    let component = props.scene.route.component;
+    const key = props.scene.route.key;
+    const component = props.scene.route.component;
 
     if (key === 'discover' || key === 'mainDiscover' || component === 'discover') {
       options = (
@@ -56,27 +69,18 @@ class CardHeader extends Component {
     if (props.scene.route.back) {
       back = <Icon name="ios-arrow-back" size={28} color={darkGrey} />;
 
-//         <View>
-// {/*          <Image
-//             resizeMode={'contain'}
-//             style={{ width: 11, height: 19 }}
-//             source={require('../../assets/images/backarrow.png')}
-//           />*/}
-//           <Icon name="ios-arrow-back" size={28} color={darkGrey} />
-//         </View>
-//       );
+      //         <View>
+      // {/*          <Image
+      //             resizeMode={'contain'}
+      //             style={{ width: 11, height: 19 }}
+      //             source={require('../../assets/images/backarrow.png')}
+      //           />*/}
+      //           <Icon name="ios-arrow-back" size={28} color={darkGrey} />
+      //         </View>
+      //       );
 
       if (this.props.scene.route.left) {
-        back = (
-          <Text
-            style={[
-              { fontSize: 17 },
-              styles.active,
-            ]}
-          >
-            {this.props.scene.route.left}
-          </Text>
-        );
+        back = <Text style={[{ fontSize: 17 }, styles.active]}>{this.props.scene.route.left}</Text>;
       }
 
       backEl = (
@@ -141,8 +145,8 @@ class CardHeader extends Component {
   renderTitle(props) {
     if (this.state.search) return null;
     let title = props.scene.route ? props.scene.route.title : '';
-    let component = props.scene.route.component;
-    let key = props.scene.route.key;
+    const component = props.scene.route.component;
+    const key = props.scene.route.key;
     let id;
 
     title = title ? title.trim() : null;
@@ -161,7 +165,7 @@ class CardHeader extends Component {
         return (
           <TouchableOpacity
             style={{
-              alignItems: 'center',
+              alignItems: 'center'
             }}
             onPress={this.titleAction}
           >
@@ -188,11 +192,13 @@ class CardHeader extends Component {
       clipped += '...';
     }
 
-    if (title === 'Read' ||
+    if (
+      title === 'Read' ||
       component === 'login' ||
       component === 'signup' ||
       component === 'imageUpload' ||
-      component === 'twitterSignup') {
+      component === 'twitterSignup'
+    ) {
       return (
         <View style={{ alignItems: 'center', paddingVertical: 6, backgroundColor: 'transparent' }}>
           <Image
@@ -205,16 +211,9 @@ class CardHeader extends Component {
     }
 
     return (
-      <View
-        ref={c => this.title = c}
-        style={[styles.titleComponent]}
-      >
-        <TouchableOpacity
-          onPress={this.titleAction ? this.titleAction : () => null}
-        >
-          <Text style={[styles.navTitle]}>
-            {clipped}
-          </Text>
+      <View ref={c => (this.title = c)} style={[styles.titleComponent]}>
+        <TouchableOpacity onPress={this.titleAction ? this.titleAction : () => null}>
+          <Text style={[styles.navTitle]}>{clipped}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -225,10 +224,10 @@ class CardHeader extends Component {
     let statsEl = null;
     let rightEl;
 
-    let key = this.props.defaultContainer;
+    const key = this.props.defaultContainer;
 
     if (this.props.auth && this.props.auth.user) {
-      let component = props.scene.route.component;
+      const component = props.scene.route.component;
       statsEl = (
         <Stats
           type={'nav'}
@@ -263,23 +262,23 @@ class CardHeader extends Component {
     //   this.props.auth.user &&
     //   props.scene.route.id !== this.props.auth.user._id) {
     //   rightEl = null;
-      // rightEl = (
-      //   <View style={styles.gear}>
-      //     <TouchableHighlight
-      //       underlayColor={'transparent'}
-      //       onPress={() => this.thirsty()}
-      //     >
-      //       <Text>thirsty</Text>
-      //     </TouchableHighlight>
-      //   </View>
-      // );
+    // rightEl = (
+    //   <View style={styles.gear}>
+    //     <TouchableHighlight
+    //       underlayColor={'transparent'}
+    //       onPress={() => this.thirsty()}
+    //     >
+    //       <Text>thirsty</Text>
+    //     </TouchableHighlight>
+    //   </View>
+    // );
     // }
 
-    return <View style={styles.rightButton}>
-      <View style={{ paddingRight: 10 }}>
-        {rightEl}
+    return (
+      <View style={styles.rightButton}>
+        <View style={{ paddingRight: 10 }}>{rightEl}</View>
       </View>
-    </View>;
+    );
   }
 
   renderHeader(props, headerStyle) {
@@ -289,16 +288,12 @@ class CardHeader extends Component {
     }
 
     return (
-      <Animated.View
-        style={[headerStyle, style]}
-      >
-        <StatusBar
-          hidden={false}
-        />
+      <Animated.View style={[headerStyle, style]}>
+        <StatusBar hidden={false} />
         {this.renderLeft(props)}
         {this.renderTitle(props)}
         {this.props.renderRight ? this.props.renderRight(props) : this.renderRight(props)}
-        {/*this.renderBottomArrow()*/}
+        {/* this.renderBottomArrow() */}
       </Animated.View>
     );
   }
@@ -311,27 +306,27 @@ class CardHeader extends Component {
 const localStyles = StyleSheet.create({
   titleComponent: {
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   arrow: {
     alignSelf: 'center',
     backgroundColor: 'transparent',
     width: 22,
-    height: 15,
+    height: 15
   },
   backArrow: {
-    paddingTop: 4,
+    paddingTop: 4
   },
   leftButton: {
     flex: 1,
     marginLeft: mainPadding - 10,
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   rightButton: {
     flex: 1,
     marginRight: mainPadding - 10,
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   gearImg: {
     height: 20,
@@ -346,7 +341,7 @@ const localStyles = StyleSheet.create({
   searchInput: {
     flex: 1,
     textAlign: 'left',
-    paddingLeft: 10,
+    paddingLeft: 10
   },
   closeParent: {
     position: 'absolute',
@@ -370,4 +365,3 @@ const localStyles = StyleSheet.create({
 styles = { ...localStyles, ...globalStyles };
 
 export default CardHeader;
-

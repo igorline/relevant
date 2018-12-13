@@ -1,16 +1,12 @@
 import React from 'react';
-import {
-  TouchableWithoutFeedback,
-  StyleSheet,
-  View
-} from 'react-native';
+import { TouchableWithoutFeedback, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { blue } from '../../styles/global';
 
 let styles;
 
 export default function Pills(props) {
-  let indicator = [];
+  const indicator = [];
   if (!props.slides) return null;
   if (props.slides.length) {
     props.slides.forEach((slide, i) => {
@@ -18,9 +14,11 @@ export default function Pills(props) {
 
       if (props.currentIndex === i) active = true;
 
-      indicator.push(<TouchableWithoutFeedback onPress={() => props.scrollToPage(i)} key={i} >
-        <View style={[styles.indicatorItem, { backgroundColor: active ? blue : 'lightgrey' }]} />
-      </TouchableWithoutFeedback>);
+      indicator.push(
+        <TouchableWithoutFeedback onPress={() => props.scrollToPage(i)} key={i}>
+          <View style={[styles.indicatorItem, { backgroundColor: active ? blue : 'lightgrey' }]} />
+        </TouchableWithoutFeedback>
+      );
     });
   }
   return <View style={styles.pillContainer}>{indicator}</View>;
@@ -37,10 +35,9 @@ styles = StyleSheet.create({
     marginRight: 3,
     height: 5,
     width: 5,
-    borderRadius: 5,
-  },
+    borderRadius: 5
+  }
 });
-
 
 Pills.propTypes = {
   slides: PropTypes.array,

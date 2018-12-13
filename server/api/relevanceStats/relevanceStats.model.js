@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
-let RelevanceStatsSchema = new Schema({
+const RelevanceStatsSchema = new Schema({
   date: Date,
   user: { type: String, ref: 'User' },
   samples: { type: Number, default: 0 },

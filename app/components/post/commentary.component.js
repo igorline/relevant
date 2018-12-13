@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-  Image,
-  Text,
-  FlatList,
-  TouchableOpacity
-} from 'react-native';
+import { StyleSheet, View, Image, Text, FlatList, TouchableOpacity } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles, fullWidth, mainPadding, borderGrey } from '../../styles/global';
 import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
@@ -17,10 +11,24 @@ import Tags from '../tags.component';
 let styles;
 
 export default class Commentary extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    post: PropTypes.object,
+    link: PropTypes.object,
+    users: PropTypes.array,
+    posts: PropTypes.object,
+    auth: PropTypes.object,
+    myPostInv: PropTypes.array,
+    singlePost: PropTypes.bool,
+    tooltip: PropTypes.object,
+    focusInput: PropTypes.func,
+    commentary: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      currentIndex: 0,
+      currentIndex: 0
     };
     this.renderItem = this.renderItem.bind(this);
     this.onScrollEnd = this.onScrollEnd.bind(this);
@@ -28,11 +36,11 @@ export default class Commentary extends Component {
   }
 
   onScrollEnd(e) {
-    let contentOffset = e.nativeEvent.contentOffset;
-    let viewSize = e.nativeEvent.layoutMeasurement;
+    const contentOffset = e.nativeEvent.contentOffset;
+    const viewSize = e.nativeEvent.layoutMeasurement;
 
     // Divide the horizontal offset by the width of the view to see which page is visible
-    let pageNum = Math.floor(contentOffset.x / viewSize.width);
+    const pageNum = Math.floor(contentOffset.x / viewSize.width);
     this.setState({ currentIndex: pageNum });
   }
 
@@ -46,9 +54,9 @@ export default class Commentary extends Component {
   }
 
   renderItem({ item, index }) {
-    let link = this.props.link;
+    const link = this.props.link;
     let post = item;
-    let i = index;
+    const i = index;
     let repostEl;
     let postStyle;
 
@@ -96,9 +104,7 @@ export default class Commentary extends Component {
       }
       repostedBy = (
         <View>
-          <TouchableOpacity
-            onPress={() => this.props.actions.goToPost(post)}
-          >
+          <TouchableOpacity onPress={() => this.props.actions.goToPost(post)}>
             <View style={styles.textRow}>
               <Image
                 resizeMode={'contain'}
@@ -106,7 +112,8 @@ export default class Commentary extends Component {
                 style={{ width: 8, height: 13 }}
               />
               <Text style={[styles.font12, styles.darkGrey, { lineHeight: 14 }]}>
-                {' '}reposted by @{post.reposted[0].user + and}
+                {' '}
+                reposted by @{post.reposted[0].user + and}
               </Text>
             </View>
           </TouchableOpacity>
@@ -114,16 +121,11 @@ export default class Commentary extends Component {
       );
     }
 
-    let myPostInv = this.props.myPostInv[post._id];
+    const myPostInv = this.props.myPostInv[post._id];
 
     return (
-      <View
-        key={post._id + i}
-        style={styles.commentaryContainer}
-      >
-        <View
-          style={[styles.commentary]}
-        >
+      <View key={post._id + i} style={styles.commentaryContainer}>
+        <View style={[styles.commentary]}>
           {repostEl}
           {repostedBy}
           <View style={[{ flex: 1 }, postStyle]}>
@@ -160,10 +162,9 @@ export default class Commentary extends Component {
     );
   }
 
-
   render() {
-    let { commentary } = this.props
-    let pills = (
+    const { commentary } = this.props;
+    const pills = (
       <View style={{ marginVertical: 15 }}>
         <Pills
           changed={this.state.changed}
@@ -171,15 +172,15 @@ export default class Commentary extends Component {
           slides={commentary.map((c, i) => i + 1)}
           scrollToPage={this.scrollToPage}
         />
-{/*       <Text style={[styles.smallInfo, {textAlign: 'center'}]}>
+        {/*       <Text style={[styles.smallInfo, {textAlign: 'center'}]}>
           Swipe for other's commentary 🤔
-        </Text>*/}
+        </Text> */}
       </View>
     );
     return (
       <View>
         <FlatList
-          ref={c => this.scrollView = c}
+          ref={c => (this.scrollView = c)}
           scrollEnabled={commentary.length > 1}
           keyExtractor={(item, index) => index.toString()}
           horizontal
@@ -191,9 +192,8 @@ export default class Commentary extends Component {
           onMomentumScrollEnd={this.onScrollEnd}
           // columnWrapperStyle={{ flex: 1 }}
         />
-        {commentary.length > 1 ? pills : null }
+        {commentary.length > 1 ? pills : null}
       </View>
-
     );
   }
 }
@@ -204,7 +204,7 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     width: fullWidth - mainPadding * 2,
-    marginHorizontal: mainPadding,
+    marginHorizontal: mainPadding
   },
   postScroll: {
     flexDirection: 'row',
@@ -219,14 +219,13 @@ const localStyles = StyleSheet.create({
     // flex: 1,
     marginTop: 10,
     marginBottom: 10,
-    flexDirection: 'column',
+    flexDirection: 'column'
   },
   repost: {
     borderLeftColor: borderGrey,
     borderLeftWidth: StyleSheet.hairlineWidth,
-    paddingLeft: 10,
-  },
+    paddingLeft: 10
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };
-

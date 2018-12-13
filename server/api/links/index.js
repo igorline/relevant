@@ -1,10 +1,10 @@
 import Auth from '../../auth/auth.service';
 
-let asyncMiddleware = require('../../utils/middlewares').asyncMiddleware;
-let express = require('express');
-let controller = require('./link.controller');
+const asyncMiddleware = require('../../utils/middlewares').asyncMiddleware;
+const express = require('express');
+const controller = require('./link.controller');
 
-let router = express.Router();
+const router = express.Router();
 
 router.get('/flagged', Auth.hasRole('admin'), controller.flagged);
 router.get('/related/:id', asyncMiddleware(controller.related));
