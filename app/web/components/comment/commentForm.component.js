@@ -5,7 +5,7 @@ import * as utils from '../../../utils';
 
 class CommentForm extends Component {
   static propTypes = {
-    edit: PropTypes.boolean,
+    edit: PropTypes.bool,
     comment: PropTypes.object,
     auth: PropTypes.object,
     post: PropTypes.object,
@@ -21,8 +21,8 @@ class CommentForm extends Component {
     this.createComment = this.createComment.bind(this);
     this.processInput = this.processInput.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleKeydown = this.handleKeydown.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    // this.handleKeydown = this.handleKeydown.bind(this);
     this.state = {
       inputHeight: 50,
       comment: ''

@@ -35,7 +35,8 @@ export function get() {
       token = newToken;
       return resolve(token);
     }
-    return reject();
+    return resolve(token);
+    // reject(new Error('not logged in'));
   });
 }
 

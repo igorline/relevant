@@ -4,7 +4,7 @@ import * as utils from '../utils';
 import * as errorActions from './error.actions';
 import * as navigationActions from './navigation.actions';
 
-const AlertIOS = utils.api.Alert();
+const Alert = utils.api.Alert();
 let ReactNative = {};
 let PushNotification;
 let userDefaults;
@@ -167,7 +167,7 @@ export function updateUser(user, preventLocalUpdate) {
       if (!preventLocalUpdate) dispatch(updateAuthUser(res));
       return true;
     } catch (err) {
-      AlertIOS.alert(err.message);
+      Alert.alert(err.message);
       return false;
     }
   };
@@ -340,10 +340,11 @@ export function loginUser(user) {
         dispatch(getUser());
         return true;
       }
-      AlertIOS.alert(responseJSON.message);
       dispatch(loginUserFailure(responseJSON.message));
+      Alert.alert(responseJSON.message);
       return false;
-    } catch (error) {
+    } catch (err) {
+      Alert.alert(err.message);
       return false;
     }
   };
@@ -384,7 +385,7 @@ export function checkUser(string, type) {
     })
     .catch(error => {
       console.log(error, 'error');
-      AlertIOS.alert(error.message);
+      Alert.alert(error.message);
     });
 }
 
@@ -414,7 +415,7 @@ export function createUser(user, invite) {
         Object.keys(errors).forEach(key => {
           if (errors[key].message) message += errors[key].message;
         });
-        AlertIOS.alert(message);
+        Alert.alert(message);
         return false;
       }
       return false;
@@ -423,7 +424,7 @@ export function createUser(user, invite) {
       if (error.message.match('invitation code')) {
         dispatch(updateInvite(null));
       }
-      AlertIOS.alert(error.message);
+      Alert.alert(error.message);
       return false;
     });
 }
@@ -443,7 +444,7 @@ export function updateHandle(user) {
       return true;
     } catch (err) {
       console.log('error updating handle');
-      AlertIOS.alert(err.message);
+      Alert.alert(err.message);
       return false;
     }
   };
@@ -458,11 +459,11 @@ export function sendConfirmation() {
     .then(utils.api.handleErrors)
     .then(response => response.json())
     .then(responseJSON => {
-      AlertIOS.alert('A confirmation email has been sent to ' + responseJSON.email);
+      Alert.alert('A confirmation email has been sent to ' + responseJSON.email);
       return true;
     })
     .catch(err => {
-      AlertIOS.alert('Error sending email, please try again');
+      Alert.alert('Error sending email, please try again');
       console.log(err);
       return false;
     });
@@ -479,7 +480,7 @@ export function forgotPassword(user) {
     .then(response => response.json())
     .then(responseJSON => responseJSON)
     .catch(err => {
-      AlertIOS.alert(err.message);
+      Alert.alert(err.message);
       console.log(err);
       return false;
     });
@@ -495,11 +496,11 @@ export function resetPassword(password, token) {
     .then(utils.api.handleErrors)
     .then(response => response.json())
     .then(() => {
-      AlertIOS.alert('Your password has been updated! Try loggin in.');
+      Alert.alert('Your password has been updated! Try loggin in.');
       return true;
     })
     .catch(err => {
-      AlertIOS.alert(err.message);
+      Alert.alert(err.message);
       console.log(err);
       return false;
     });
@@ -515,12 +516,12 @@ export function confirmEmail(user, code) {
     .then(utils.api.handleErrors)
     .then(response => response.json())
     .then(responseJSON => {
-      AlertIOS.alert('Your email has been confirmed');
+      Alert.alert('Your email has been confirmed');
       dispatch(updateAuthUser(responseJSON));
       return true;
     })
     .catch(err => {
-      AlertIOS.alert(err.message);
+      Alert.alert(err.message);
       console.log(err);
       return false;
     });
@@ -628,7 +629,7 @@ export function twitterAuth(profile, invite) {
       dispatch(setTwitter(null));
       dispatch(setLoading(false));
       console.log(error);
-      AlertIOS.alert(error.message);
+      Alert.alert(error.message);
       return false;
     }
   };
@@ -647,7 +648,7 @@ export function addEthAddress(msg, sig, acc) {
       return true;
     } catch (err) {
       console.log('error updating key');
-      AlertIOS.alert(err.message);
+      Alert.alert(err.message);
       return false;
     }
   };
@@ -665,7 +666,7 @@ export function cashOut() {
       return result.cashOut;
     } catch (err) {
       console.log('error cashing out');
-      AlertIOS.alert(err.message);
+      Alert.alert(err.message);
       return false;
     }
   };
@@ -673,6 +674,7 @@ export function cashOut() {
 
 export function userToSocket(user) {
   return dispatch => {
+    if (!user) return;
     dispatch({ type: 'server/storeUser', payload: user });
   };
 }

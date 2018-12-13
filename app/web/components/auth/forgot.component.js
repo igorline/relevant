@@ -5,7 +5,7 @@ import ShadowButton from '../common/ShadowButton';
 export default class Forgot extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    authNav: PropTypes.object
+    authNav: PropTypes.func
   };
 
   constructor(props) {

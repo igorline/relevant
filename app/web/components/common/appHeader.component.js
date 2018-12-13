@@ -18,7 +18,7 @@ if (process.env.BROWSER === true) {
 class AppHeader extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    isAuthenticated: PropTypes.object,
+    isAuthenticated: PropTypes.bool,
     notif: PropTypes.object,
     user: PropTypes.object,
     toggleLogin: PropTypes.func,
@@ -29,14 +29,16 @@ class AppHeader extends Component {
 
   state = {
     activity: false,
-    wallet: false
+    wallet: false,
+    timeSinceNotificationCount: 0
   };
 
   componentDidMount() {
-    this.props.actions.getNotificationCount();
+    this.getNotificationCount();
     window.addEventListener('focus', () => {
-      this.props.actions.getNotificationCount();
+      this.getNotificationCount();
     });
+
     window.addEventListener('click', e => {
       if (e.target.classList.contains('activityButton')) return true;
       if (this.state.activity) {
@@ -44,6 +46,21 @@ class AppHeader extends Component {
       }
       return null;
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    const wasNotAuthenticated = !prevProps.auth.isAuthenticated;
+    const isAuthenticated = this.props.auth.isAuthenticated;
+    if (wasNotAuthenticated && isAuthenticated) this.getNotificationCount();
+  }
+
+  getNotificationCount() {
+    const now = new Date();
+    if (now - this.state.timeSinceNotificationCount < 5000) return;
+    if (this.props.auth.isAuthenticated) {
+      this.props.actions.getNotificationCount();
+      this.setState({ timeSinceNotificationCount: now });
+    }
   }
 
   renderActivity() {

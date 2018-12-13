@@ -135,7 +135,7 @@ export default function handleRender(req, res) {
     { routes: routes(store), location: req.originalUrl },
     (err, redirectLocation, renderProps) => {
       if (redirectLocation) {
-        res.redirect(redirectLocation.pathname + redirectLocation.search);
+        return res.redirect(redirectLocation.pathname + redirectLocation.search);
       } else if (err) {
         // console.error('ROUTER ERROR:', error);
         // res.status(500);
@@ -143,26 +143,26 @@ export default function handleRender(req, res) {
       } else if (!renderProps) {
         // res.status(500);
         return res.end(new Error('missing render props'));
-      } else {
-        const renderHtml = () => {
-          const component = (
-            <Provider store={store}>
-              <div className="parent">
-                <RouterContext {...renderProps} />
-              </div>
-            </Provider>
-          );
-          return renderToString(component);
-        };
-
-        // This code pre-fills the data on the server
-        return fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
-        .then(data => {
-          // Here we can use the data to render the appropriate meta tags
-          res.send(renderFullPage(renderHtml(data), store.getState()));
-        })
-        .catch(error => res.end(error.message));
       }
+
+      const renderHtml = () => {
+        const component = (
+          <Provider store={store}>
+            <div className="parent">
+              <RouterContext {...renderProps} />
+            </div>
+          </Provider>
+        );
+        return renderToString(component);
+      };
+
+      // This code pre-fills the data on the server
+      return fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
+      .then(data => {
+        // Here we can use the data to render the appropriate meta tags
+        res.send(renderFullPage(renderHtml(data), store.getState()));
+      })
+      .catch(error => res.end(error.message));
     }
   );
 }

@@ -1,10 +1,9 @@
 import * as types from './actionTypes';
 import * as errorActions from './error.actions';
 import * as utils from '../utils';
-import * as authActions from './auth.actions';
 
-// require('../publicenv');
 utils.api.env();
+const Alert = utils.api.Alert().alert;
 const apiServer = `${process.env.API_SERVER}/api/notification`;
 
 const reqOptions = token => ({
@@ -97,21 +96,15 @@ export function createNotification(obj) {
 }
 
 export function getNotificationCount() {
-  return dispatch =>
-    utils.token
-    .get()
-    .then(token =>
-      fetch(`${apiServer}/unread`, {
-        ...reqOptions(token),
-        method: 'GET'
-      })
-    )
-    .then(response => response.json())
-    .then(responseJSON => {
-      if (responseJSON.unread > 0) {
-        dispatch(authActions.getUser());
-      }
-      dispatch(setCount(responseJSON.unread));
-    })
-    .catch(null);
+  return async dispatch => {
+    try {
+      const res = await utils.api.request({
+        method: 'GET',
+        endpoint: 'notification',
+        path: '/unread',
+        auth: true
+      });
+      dispatch(setCount(res.unread));
+    } catch (err) {} // eslint-disable-line
+  };
 }

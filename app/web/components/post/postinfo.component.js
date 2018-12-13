@@ -61,7 +61,7 @@ export default function PostInfo(props) {
 }
 
 PostInfo.propTypes = {
-  link: PropTypes.object,
+  link: PropTypes.string,
   post: PropTypes.object,
   small: PropTypes.bool,
   preview: PropTypes.bool
