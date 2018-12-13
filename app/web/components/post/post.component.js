@@ -123,7 +123,7 @@ class Post extends Component {
                 user={user}
                 auth={this.props.auth}
                 date={post.postDate}
-                isRepost={repost}
+                repost={repost}
               />
               {popup}
             </div>
@@ -167,7 +167,7 @@ function PostBody(props) {
 
 PostBody.propTypes = {
   post: PropTypes.object,
-  repost: PropTypes.bool
+  repost: PropTypes.object
 };
 
 export default connect(

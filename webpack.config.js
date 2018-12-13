@@ -2,7 +2,8 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  devtool: 'cheap-eval-source-map',
+  devtool: 'source-map',
+  // devtool: 'cheap-eval-source-map',
   entry: {
     app: [
       './index.webNew.js',

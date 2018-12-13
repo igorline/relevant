@@ -10,7 +10,7 @@ class SignupForm extends Component {
     actions: PropTypes.object,
     parentFunction: PropTypes.func,
     user: PropTypes.object,
-    authNav: PropTypes.object
+    authNav: PropTypes.func
   };
 
   constructor(props) {

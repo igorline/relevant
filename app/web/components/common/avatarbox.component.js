@@ -17,7 +17,7 @@ export default function AvatarBox(props) {
   }
   let premsg;
   let className = reverse ? 'reverse ' : '';
-  if (props.isRepost) {
+  if (props.repost) {
     className = 'repost';
     premsg = 'reposted by ';
   }
@@ -71,10 +71,10 @@ AvatarBox.propTypes = {
   user: PropTypes.object,
   noPic: PropTypes.bool,
   auth: PropTypes.object,
-  date: PropTypes.object,
+  date: PropTypes.string,
   small: PropTypes.bool,
   topic: PropTypes.string,
-  isRepost: PropTypes.bool,
+  repost: PropTypes.object,
   reverse: PropTypes.bool,
   dontShowRelevance: PropTypes.bool
 };
