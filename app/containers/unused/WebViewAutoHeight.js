@@ -17,7 +17,6 @@
 import React from 'react';
 import { WebView, View, Text } from 'react-native';
 
-
 const BODY_TAG_PATTERN = /\<\/ *body\>/;
 
 // Do not add any comments to this! It will break because all line breaks will removed for
@@ -48,7 +47,6 @@ const script = `
 }());
 `;
 
-
 const style = `
 <style>
 body, html, #height-wrapper {
@@ -67,8 +65,7 @@ ${script}
 </script>
 `;
 
-const codeInject = (html) => html.replace(BODY_TAG_PATTERN, style + '</body>');
-
+const codeInject = html => html.replace(BODY_TAG_PATTERN, style + '</body>');
 
 /**
  * Wrapped Webview which automatically sets the height according to the
@@ -83,7 +80,7 @@ const WebViewAutoHeight = React.createClass({
     injectedJavaScript: React.PropTypes.string,
     minHeight: React.PropTypes.number,
     onNavigationStateChange: React.PropTypes.func,
-    style: WebView.propTypes.style,
+    style: WebView.propTypes.style
   },
 
   getDefaultProps() {
@@ -92,7 +89,7 @@ const WebViewAutoHeight = React.createClass({
 
   getInitialState() {
     return {
-      realContentHeight: this.props.minHeight,
+      realContentHeight: this.props.minHeight
     };
   },
 
@@ -130,8 +127,7 @@ const WebViewAutoHeight = React.createClass({
         />
       </View>
     );
-  },
-
+  }
 });
 
 export default WebViewAutoHeight;

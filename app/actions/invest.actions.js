@@ -1,26 +1,15 @@
+/* eslint-disable no-console */
 import { normalize, schema } from 'normalizr';
 import * as types from './actionTypes';
 import * as utils from '../utils';
 
 utils.api.env();
 
-const linkSchema = new schema.Entity(
-  'links',
-  {},
-  { idAttribute: '_id' }
-);
+const linkSchema = new schema.Entity('links', {}, { idAttribute: '_id' });
 
-const postSchema = new schema.Entity(
-  'posts',
-  { metaPost: linkSchema },
-  { idAttribute: '_id' }
-);
+const postSchema = new schema.Entity('posts', { metaPost: linkSchema }, { idAttribute: '_id' });
 
-const userSchema = new schema.Entity(
-  'users',
-  {},
-  { idAttribute: '_id' }
-);
+const userSchema = new schema.Entity('users', {}, { idAttribute: '_id' });
 
 const investmentSchema = new schema.Entity(
   'investments',
@@ -31,10 +20,10 @@ const investmentSchema = new schema.Entity(
   { idAttribute: '_id' }
 );
 
-export function updatePostVote(vote) {
+export function updatePostVote(voteObj) {
   return {
     type: types.UPDATE_POST_INVESTMENTS,
-    payload: [vote]
+    payload: [voteObj]
   };
 }
 
@@ -65,7 +54,7 @@ export function setInvestments(investments, userId, index) {
 
 export function loadingInvestments() {
   return {
-    type: types.LOADING_INVESTMENTS,
+    type: types.LOADING_INVESTMENTS
   };
 }
 
@@ -75,7 +64,7 @@ export function setPostInvestments(data, postId, skip) {
     payload: {
       postId,
       data,
-      index: skip,
+      index: skip
     }
   };
 }
@@ -93,7 +82,7 @@ export function vote(amount, post, user, undo) {
     try {
       if (undo) dispatch(undoPostVote(post._id));
       else dispatch(updatePostVote({ post: post._id, amount }));
-      let res = await utils.api.request({
+      const res = await utils.api.request({
         method: 'POST',
         endpoint: 'invest',
         path: '/',
@@ -101,7 +90,7 @@ export function vote(amount, post, user, undo) {
           investor: user._id,
           amount,
           post
-        }),
+        })
       });
       return res;
     } catch (error) {
@@ -116,16 +105,13 @@ export function getInvestments(token, userId, skip, limit) {
   return async dispatch => {
     try {
       dispatch(loadingInvestments());
-      let res = await utils.api.request({
+      const res = await utils.api.request({
         method: 'GET',
         endpoint: 'invest',
         path: '/' + userId,
         query: { skip, limit }
       });
-      let data = normalize(
-        { investments: res },
-        { investments: [investmentSchema] }
-      );
+      const data = normalize({ investments: res }, { investments: [investmentSchema] });
       dispatch(setPosts(data));
       dispatch(setInvestments(data, userId, skip));
     } catch (err) {
@@ -141,51 +127,21 @@ export function loadingPostInvestments(postId) {
   };
 }
 
-
 export function getPostInvestments(postId, limit, skip) {
-  return async (dispatch) => {
+  return async dispatch => {
     try {
       dispatch(loadingPostInvestments(postId));
-      let res = await utils.api.request({
+      const res = await utils.api.request({
         method: 'GET',
         endpoint: 'invest',
         query: { skip, limit },
-        path: `/post/${postId}`,
+        path: `/post/${postId}`
       });
-      let data = normalize(
-        { investments: res },
-        { investments: [investmentSchema] }
-      );
+      const data = normalize({ investments: res }, { investments: [investmentSchema] });
       dispatch(setUsers(data.entities.users));
       dispatch(setPostInvestments(data, postId, skip));
-    } catch (error) {
-      console.warn(error);
+    } catch (err) {
+      console.warn(err);
     }
   };
 }
-
-
-// export function destroyInvestment(token, amount, post, investingUser) {
-//   return dispatch => {
-//     return fetch( process.env.API_SERVER + '/api/invest/destroy?access_token='+token, {
-//       credentials: 'include',
-//       method: 'DELETE',
-//       headers: {
-//         Accept: 'application/json',
-//         'Content-Type': 'application/json'
-//       },
-//       body: JSON.stringify({
-//         investor: investingUser._id,
-//         poster: post.user._id,
-//         amount,
-//         post: post._id
-//       })
-//     })
-//     .then((response) => response.json())
-//     .then(() => true)
-//     .catch((error) => {
-//       console.log(error);
-//       return false;
-//     });
-//   };
-// }

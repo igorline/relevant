@@ -1,12 +1,15 @@
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as adminActions from '../../../actions/admin.actions';
 import ShadowButton from '../common/ShadowButton';
 
 class InviteCta extends Component {
+  static propTypes = {
+    actions: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.submit = this.submit.bind(this);
@@ -22,11 +25,18 @@ class InviteCta extends Component {
   }
 
   submit() {
-    let { name, email } = this.state;
-    if (!name || name == '') {
+    const { name, email } = this.state;
+    if (!name || name === '') {
+      // TODO error handling
       return window.alert('missing name');
     }
-    if (!email || !email.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+    if (
+      !email ||
+      !email.match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      )
+    ) {
+      // TODO error handling
       return window.alert('bad email');
     }
     this.props.actions.signupForMailingList({
@@ -36,52 +46,47 @@ class InviteCta extends Component {
     this.setState({ email: '', name: '' });
 
     window.fbq('track', 'waitlist', {
-      name,
+      name
     });
+    return null;
   }
 
   render() {
     return (
       <section className="invitation">
         <div>
-{/*          <p>
+          {/*          <p>
             Sign up for your invitation to Relevant.
-          </p>*/}
+          </p> */}
 
-            <input
-              className="blueInput"
-              value={this.state.name}
-              onChange={(e) => {
-                this.setState({ name: e.target.value });
-              }}
-              autoCorrect="off"
-              type="text"
-              name="name"
-              placeholder="Your name"
-            />
+          <input
+            className="blueInput"
+            value={this.state.name}
+            onChange={e => {
+              this.setState({ name: e.target.value });
+            }}
+            autoCorrect="off"
+            type="text"
+            name="name"
+            placeholder="Your name"
+          />
 
-            <br />
+          <br />
 
-            <input
-              className="blueInput"
-              value={this.state.email}
-              onChange={(e) => {
-                this.setState({ email: e.target.value });
-              }}
-              autoCapitalize="off"
-              autoCorrect="off"
-              type="email"
-              name="email"
-              placeholder="Your email"
-            />
+          <input
+            className="blueInput"
+            value={this.state.email}
+            onChange={e => {
+              this.setState({ email: e.target.value });
+            }}
+            autoCapitalize="off"
+            autoCorrect="off"
+            type="email"
+            name="email"
+            placeholder="Your email"
+          />
 
-
-
-          <ShadowButton
-            style={{ margin: '10px 0 10px 0' }}
-            color={'#3E3EFF'}
-            onClick={this.submit}
-          >
+          <ShadowButton style={{ margin: '10px 0 10px 0' }} color={'#3E3EFF'} onClick={this.submit}>
             Get Invitation
           </ShadowButton>
         </div>
@@ -90,12 +95,13 @@ class InviteCta extends Component {
   }
 }
 
+const mapStateToProps = () => ({});
 
-const mapStateToProps = (state) => ({
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators({ ...adminActions }, dispatch)
 });
 
-const mapDispatchToProps = (dispatch) => (Object.assign({}, { dispatch }, {
-  actions: bindActionCreators({ ...adminActions }, dispatch)
-}));
-
-export default connect(mapStateToProps, mapDispatchToProps)(InviteCta);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(InviteCta);

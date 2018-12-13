@@ -18,7 +18,7 @@ const RESERVED = [
 
 export async function index(req, res, next) {
   try {
-    let communties = await Community.find({});
+    const communties = await Community.find({});
     res.status(200).json(communties);
   } catch (err) {
     next(err);
@@ -27,9 +27,9 @@ export async function index(req, res, next) {
 
 export async function members(req, res, next) {
   try {
-    let community = req.params.slug;
-    let users = await CommunityMember.find({ community })
-    .sort('role reputation');
+    const community = req.params.slug;
+    const users = await CommunityMember.find({ community })
+      .sort('role reputation');
     res.status(200).json(users);
   } catch (err) {
     next(err);
@@ -38,9 +38,9 @@ export async function members(req, res, next) {
 
 export async function membership(req, res, next) {
   try {
-    let user = req.user._id;
-    let m = await CommunityMember.find({ user })
-    .sort('role reputation');
+    const user = req.user._id;
+    const m = await CommunityMember.find({ user })
+      .sort('role reputation');
     res.status(200).json(m);
   } catch (err) {
     next(err);
@@ -50,10 +50,10 @@ export async function membership(req, res, next) {
 
 export async function join(req, res, next) {
   try {
-    let userId = req.user._id;
-    let slug = req.params.slug;
-    let community = await Community.findOne({ slug });
-    let member = await community.join(userId);
+    const userId = req.user._id;
+    const slug = req.params.slug;
+    const community = await Community.findOne({ slug });
+    const member = await community.join(userId);
     res.status(200).json(member);
   } catch (err) {
     next(err);
@@ -62,9 +62,9 @@ export async function join(req, res, next) {
 
 export async function leave(req, res, next) {
   try {
-    let userId = req.user._id;
-    let slug = req.params.slug;
-    let community = await Community.findOne({ slug });
+    const userId = req.user._id;
+    const slug = req.params.slug;
+    const community = await Community.findOne({ slug });
     await community.leave(userId);
     res.sendStatus(200);
   } catch (err) {
@@ -75,8 +75,8 @@ export async function leave(req, res, next) {
 
 export async function showAdmins(req, res, next) {
   try {
-    let slug = req.params.slug;
-    let admins = await CommunityMember.find({ slug, role: 'admin' });
+    const slug = req.params.slug;
+    const admins = await CommunityMember.find({ slug, role: 'admin' });
     res.status(200).json(admins);
   } catch (err) {
     next(err);
@@ -118,10 +118,10 @@ export async function create(req, res, next) {
 export async function remove(req, res, next) {
   try {
     if (process.env.NODE_ENV !== 'test') throw new Error('deleting communities is disabled in production');
-    let userId = req.user._id;
-    let slug = req.params.slug;
+    const userId = req.user._id;
+    const slug = req.params.slug;
     // check that user is an admin
-    let admin = CommunityMember.findOne({ community: slug, user: userId, role: 'admin' });
+    const admin = CommunityMember.findOne({ community: slug, user: userId, role: 'admin' });
     if (!admin) throw new Error('you don\'t have permission to delete this community');
     // funky syntax - need this to trigger remove
     (await Community.findOne({ slug })).remove();

@@ -1,6 +1,6 @@
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 
 // 52.001429 weeks in a year;
@@ -8,7 +8,7 @@ let Schema = mongoose.Schema;
 // 0.0009615 based on 5% yearly
 // 0.0002611578760678 daily
 
-let TreasurySchema = new Schema({
+const TreasurySchema = new Schema({
   balance: { type: Number, default: 0 },
   // out: { type: Number, default: 0 },
   // in: { type: Number, default: 0 },

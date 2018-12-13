@@ -7,15 +7,6 @@ if (process.env.BROWSER === true) {
 let styles;
 
 export default class Invite extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  // componentDidMount() {
-  //   this.token = this.props.routeParams.token;
-  // }
-
-
   render() {
     return (
       <div style={styles.confirm}>

@@ -10,13 +10,10 @@ const initialState = {
 export default function auth(state = initialState, action) {
   switch (action.type) {
     case types.SET_ACTIVITY: {
-      let type = action.payload.type;
+      const type = action.payload.type;
       return {
         ...state,
-        [type]: [
-          ...state[type].slice(0, action.payload.index),
-          ...action.payload.data
-        ],
+        [type]: [...state[type].slice(0, action.payload.index), ...action.payload.data],
         loaded: true
       };
     }

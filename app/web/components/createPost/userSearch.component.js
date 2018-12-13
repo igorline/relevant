@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Avatar from '../common/avatar.component';
 
 if (process.env.BROWSER === true) {
@@ -8,6 +9,12 @@ if (process.env.BROWSER === true) {
 const USER_ELEMENT_HEIGHT = 38;
 
 export default class UserSuggestion extends Component {
+  static propTypes = {
+    userSearchIndex: PropTypes.number,
+    users: PropTypes.array,
+    onChange: PropTypes.func
+  };
+
   componentDidMount() {
     this.updateScrollPosition();
   }
@@ -23,7 +30,7 @@ export default class UserSuggestion extends Component {
       return null;
     }
     const selected = this.props.userSearchIndex;
-    let inner = this.props.users.map((user, i) => (
+    const inner = this.props.users.map((user, i) => (
       <button
         key={i}
         className={selected === i ? 'selected' : ''}
@@ -35,7 +42,9 @@ export default class UserSuggestion extends Component {
     ));
     return (
       <div
-        ref={(el) => { this.el = el; }}
+        ref={el => {
+          this.el = el;
+        }}
         className="userSearch"
       >
         {inner}

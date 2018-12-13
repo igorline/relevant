@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 
 const Schema = mongoose.Schema;
 
-let NotificationSchema = new Schema({
+const NotificationSchema = new Schema({
   post: { type: Schema.Types.ObjectId, ref: 'Post' },
   forUser: { type: String, ref: 'User' },
   byUser: { type: String, ref: 'User' },
@@ -31,14 +31,14 @@ NotificationSchema.index({ forUser: 1, _id: 1, createdAt: 1 });
 
 NotificationSchema.statics.createNotification = async function createNotification(
   notificationObject
-  ) {
+) {
   let notification;
 
   try {
     notification = new this(notificationObject);
-    let saveNotification = await notification.save();
+    const saveNotification = await notification.save();
 
-    let earningNotificationEvent = {
+    const earningNotificationEvent = {
       _id: notificationObject.forUser,
       type: 'ADD_ACTIVITY',
       payload: saveNotification
@@ -56,11 +56,11 @@ NotificationSchema.pre('save', function limitNotifications(next) {
   this.model('Notification').count({ forUser: this.forUser }, (err, c) => {
     if (c >= 500) {
       this.model('Notification')
-      .find({ forUser: this.forUser })
-      .sort({ _id: 1 })
-      .then((results) => {
-        results[0].remove();
-      });
+        .find({ forUser: this.forUser })
+        .sort({ _id: 1 })
+        .then((results) => {
+          results[0].remove();
+        });
       next();
     } else {
       next();

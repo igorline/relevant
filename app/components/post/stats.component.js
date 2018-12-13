@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity
-} from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { globalStyles, fullWidth, smallScreen } from '../../styles/global';
@@ -15,8 +10,21 @@ import * as navigationActions from '../../actions/navigation.actions';
 
 let styles;
 
-
 class Stats extends Component {
+  static propTypes = {
+    type: PropTypes.string,
+    discover: PropTypes.object,
+    parent: PropTypes.object,
+    actions: PropTypes.object,
+    currentView: PropTypes.object,
+    size: PropTypes.string,
+    textStyle: PropTypes.object,
+    topic: PropTypes.object,
+    renderLeft: PropTypes.func,
+    style: PropTypes.object,
+    entity: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.initTooltips = this.initTooltips.bind(this);
@@ -47,7 +55,7 @@ class Stats extends Component {
     if (this.props.type !== 'nav') return;
     if (!this.tooltipParent[name]) return;
     this.tooltipParent[name].measureInWindow((x, y, w, h) => {
-      let parent = { x, y, w, h };
+      const parent = { x, y, w, h };
       if (x + y + w + h === 0) return;
       this.props.actions.setTooltipData({
         name,
@@ -58,12 +66,12 @@ class Stats extends Component {
   }
 
   render() {
-    let { type, entity } = this.props;
+    const { type, entity } = this.props;
 
     let statsStyle = [
       { fontSize: 17, lineHeight: 17, height: 17 },
       styles.bebas,
-      styles.quarterLetterSpacing,
+      styles.quarterLetterSpacing
     ];
     let iconStyle = [];
     let coinStyle = [];
@@ -79,9 +87,9 @@ class Stats extends Component {
       // coinStyle = [{ width: 18, height: 15, marginBottom: -6 }];
     }
 
-    let value = (
+    const value = (
       <TouchableOpacity
-        ref={(c) => this.tooltipParent.coin = c}
+        ref={c => (this.tooltipParent.coin = c)}
         onPress={() => this.toggleTooltip('coin')}
         style={styles.statInner}
       >
@@ -96,14 +104,20 @@ class Stats extends Component {
       </TouchableOpacity>
     );
 
-    let percent = <View style={styles.statInner}><Percent fontSize={17} user={entity} /></View>;
+    const percent = (
+      <View style={styles.statInner}>
+        <Percent fontSize={17} user={entity} />
+      </View>
+    );
 
     // This is in order to display topic relevance correctly
     entity.relevance = entity.relevance || {};
-    let rank = this.props.topic ? entity[this.props.topic + '_relevance'] : entity.relevance.pagerank || 0;
-    let relevance = (
+    const rank = this.props.topic
+      ? entity[this.props.topic + '_relevance']
+      : entity.relevance.pagerank || 0;
+    const relevance = (
       <TouchableOpacity
-        ref={(c) => this.tooltipParent.relevance = c}
+        ref={c => (this.tooltipParent.relevance = c)}
         onPress={() => this.toggleTooltip('relevance')}
         style={styles.statInner}
       >
@@ -118,7 +132,7 @@ class Stats extends Component {
       </TouchableOpacity>
     );
 
-    let getLeft = () => {
+    const getLeft = () => {
       if (type === 'relevance') return null;
       if (type === 'value') return value;
       if (type === 'percent') return this.props.renderLeft || percent;
@@ -126,7 +140,7 @@ class Stats extends Component {
       return null;
     };
 
-    let getRight = () => {
+    const getRight = () => {
       if (type === 'value') return relevance;
       if (type === 'percent') return relevance;
       if (type === 'nav') return relevance;
@@ -134,12 +148,14 @@ class Stats extends Component {
       return null;
     };
 
-    let br = <View style={styles.statInner}><Text style={statsStyle}>{smallScreen ? '•' : ' • '}</Text></View>;
+    const br = (
+      <View style={styles.statInner}>
+        <Text style={statsStyle}>{smallScreen ? '•' : ' • '}</Text>
+      </View>
+    );
 
     return (
-      <View
-        style={[styles.stats, this.props.style]}
-      >
+      <View style={[styles.stats, this.props.style]}>
         {getLeft()}
         {getLeft() && !this.props.renderLeft ? br : null}
         {getRight()}
@@ -148,16 +164,16 @@ class Stats extends Component {
   }
 }
 
-let localStyles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   stats: {
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   statInner: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    alignItems: 'center',
+    alignItems: 'center'
   }
 });
 
@@ -165,14 +181,17 @@ styles = { ...globalStyles, ...localStyles };
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...navigationActions,
-    }, dispatch)
+    actions: bindActionCreators(
+      {
+        ...navigationActions
+      },
+      dispatch
+    )
   };
 }
 
 export default connect(
-  (state) => ({
+  state => ({
     auth: state.auth,
     currentView: state.navigation.currentView
   }),

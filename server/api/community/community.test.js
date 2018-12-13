@@ -1,7 +1,7 @@
 import test from 'ava';
 import { setupData, cleanupData, dummyUsers } from '../../config/test_seed';
 
-let request = require('supertest');
+const request = require('supertest');
 
 process.env.NODE_ENV = 'test';
 process.env.WEB = 'true';
@@ -12,7 +12,7 @@ let r;
 let token;
 let userToken;
 
-let community = {
+const community = {
   name: 'Test',
   slug: 'test community',
   image: 'img',
@@ -22,7 +22,7 @@ let community = {
   admins: ['test', 'slava', 'balasan']
 };
 
-let community2 = {
+const community2 = {
   name: 'Test',
   slug: 'test_community2',
   image: 'img',
@@ -32,7 +32,7 @@ let community2 = {
   admins: ['test', 'slava', 'balasan']
 };
 
-let community3 = {
+const community3 = {
   name: 'Test',
   slug: 'test_community3',
   image: 'img',
@@ -43,14 +43,14 @@ let community3 = {
 };
 
 test.before(async () => {
-  let app = require('../../server.js').app;
+  const app = require('../../server.js').app;
   r = request(app);
 
   await cleanupData();
 
   const res = await r
-  .post('/auth/local')
-  .send({ name: 'test', password: 'test' });
+    .post('/auth/local')
+    .send({ name: 'test', password: 'test' });
 
   token = res.body.token;
 });
@@ -63,8 +63,8 @@ test.serial('Should not create community with bad slug', async (t) => {
   t.plan(1);
 
   const res = await r
-  .post(`/api/community?access_token=${token}`)
-  .send(community);
+    .post(`/api/community?access_token=${token}`)
+    .send(community);
 
   t.is(res.status, 500);
 });
@@ -75,8 +75,8 @@ test.serial('Should not create community with reserved slug', async (t) => {
   community.slug = 'admin';
 
   const res = await r
-  .post(`/api/community?access_token=${token}`)
-  .send(community);
+    .post(`/api/community?access_token=${token}`)
+    .send(community);
 
   t.is(res.status, 500);
 });
@@ -87,8 +87,8 @@ test.serial('Should create community with correct slug', async (t) => {
   community.slug = 'test_community1';
 
   const res = await r
-  .post(`/api/community?access_token=${token}`)
-  .send(community);
+    .post(`/api/community?access_token=${token}`)
+    .send(community);
 
   t.is(res.status, 200);
 });
@@ -97,8 +97,8 @@ test.serial('Should get communities', async (t) => {
   t.plan(1);
 
   const res = await r
-  .get(`/api/community`)
-  .send();
+    .get('/api/community')
+    .send();
 
   t.is(res.status, 200);
 });
@@ -110,15 +110,15 @@ test.serial('Should get members', async (t) => {
   t.plan(2);
 
   let res = await r
-  .get(`/api/community/${community.slug}/members?access_token=${token}`)
-  .send();
+    .get(`/api/community/${community.slug}/members?access_token=${token}`)
+    .send();
 
   testBalance = res.body.find(m => m.user === 'test').balance;
 
   t.is(res.status, 200);
 
   res = await r
-  .get(`/api/community/membership/test?access_token=${token}`);
+    .get(`/api/community/membership/test?access_token=${token}`);
 
   t.is(res.status, 200);
 
@@ -132,14 +132,14 @@ test.serial('Should distribute tokens correctly', async (t) => {
 
 
   let res = await r
-  .post(`/api/community?access_token=${token}`)
-  .send(community2);
+    .post(`/api/community?access_token=${token}`)
+    .send(community2);
 
   t.is(res.status, 200);
 
   res = await r
-  .get(`/api/community/${community2.slug}/members?access_token=${token}`)
-  .send();
+    .get(`/api/community/${community2.slug}/members?access_token=${token}`)
+    .send();
 
   t.is(res.status, 200);
 
@@ -151,12 +151,12 @@ test.serial('Should distribute tokens correctly', async (t) => {
   // -------- CREATE THIRD COMMUNITY ----------
 
   res = await r
-  .post(`/api/community?access_token=${token}`)
-  .send(community3);
+    .post(`/api/community?access_token=${token}`)
+    .send(community3);
 
   res = await r
-  .get(`/api/community/${community3.slug}/members?access_token=${token}`)
-  .send();
+    .get(`/api/community/${community3.slug}/members?access_token=${token}`)
+    .send();
 
   testBalanceNew = res.body.find(m => m.user === 'test').balance;
 
@@ -165,12 +165,12 @@ test.serial('Should distribute tokens correctly', async (t) => {
   // -------- LEAVE FIRST COMMUNITY ----------
 
   res = await r
-  .put(`/api/community/${community.slug}/leave?access_token=${token}`)
-  .send();
+    .put(`/api/community/${community.slug}/leave?access_token=${token}`)
+    .send();
 
   res = await r
-  .get(`/api/community/${community3.slug}/members?access_token=${token}`)
-  .send();
+    .get(`/api/community/${community3.slug}/members?access_token=${token}`)
+    .send();
 
   testBalanceNew = res.body.find(m => m.user === 'test').balance;
 
@@ -185,14 +185,14 @@ test.serial('Should join community', async (t) => {
   t.plan(1);
 
   let res = await r
-  .post('/auth/local')
-  .send({ name: 'x', password: 'x' });
+    .post('/auth/local')
+    .send({ name: 'x', password: 'x' });
 
   userToken = res.body.token;
 
   res = await r
-  .put(`/api/community/${community.slug}/join?access_token=${userToken}`)
-  .send();
+    .put(`/api/community/${community.slug}/join?access_token=${userToken}`)
+    .send();
 
   t.is(res.status, 200);
 });
@@ -201,9 +201,9 @@ test.serial('Should join community', async (t) => {
 test.serial('Should leave community', async (t) => {
   t.plan(1);
 
-  let res = await r
-  .put(`/api/community/${community.slug}/leave?access_token=${userToken}`)
-  .send();
+  const res = await r
+    .put(`/api/community/${community.slug}/leave?access_token=${userToken}`)
+    .send();
 
   t.is(res.status, 200);
 });
@@ -212,20 +212,20 @@ test.serial('Should delete community', async (t) => {
   t.plan(3);
 
   let res = await r
-  .delete(`/api/community/${community.slug}?access_token=${token}`)
-  .send();
+    .delete(`/api/community/${community.slug}?access_token=${token}`)
+    .send();
 
   t.is(res.status, 200);
 
   res = await r
-  .delete(`/api/community/${community2.slug}?access_token=${token}`)
-  .send();
+    .delete(`/api/community/${community2.slug}?access_token=${token}`)
+    .send();
 
   t.is(res.status, 200);
 
   res = await r
-  .delete(`/api/community/${community3.slug}?access_token=${token}`)
-  .send();
+    .delete(`/api/community/${community3.slug}?access_token=${token}`)
+    .send();
 
   t.is(res.status, 200);
 });

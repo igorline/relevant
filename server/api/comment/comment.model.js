@@ -1,9 +1,10 @@
 import { EventEmitter } from 'events';
-let mongoose = require('mongoose');
 
-let Schema = mongoose.Schema;
+const mongoose = require('mongoose');
 
-let CommentSchema = new Schema({
+const Schema = mongoose.Schema;
+
+const CommentSchema = new Schema({
   user: { type: String, ref: 'User' },
   post: { type: Schema.Types.ObjectId, ref: 'Post' },
   text: String,
@@ -35,7 +36,7 @@ CommentSchema.pre('remove', function (next) {
 
 CommentSchema.methods.updateClient = function (user) {
   if (this.user._id) this.user = this.user._id;
-  let commentNote = {
+  const commentNote = {
     _id: user ? user._id : null,
     type: 'UPDATE_COMMENT',
     payload: { data: this },

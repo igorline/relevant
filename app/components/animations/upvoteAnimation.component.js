@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as animationActions from '../../actions/animation.actions';
@@ -16,19 +14,23 @@ const localStyles = StyleSheet.create({
     top: 0,
     right: 0,
     height: fullHeight,
-    width: fullWidth,
+    width: fullWidth
   }
 });
 
 const styles = { ...globalStyles, ...localStyles };
 
 class UpvoteAnimation extends Component {
+  static propTypes = {
+    animation: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.enabled = true;
     this.state = {
       investAni: [],
-      coinAni: [],
+      coinAni: []
     };
     this.clearEls = this.clearEls.bind(this);
     this.destroy = this.destroy.bind(this);
@@ -61,25 +63,22 @@ class UpvoteAnimation extends Component {
 
   investAni() {
     // this.clearEls();
-    let newArr = [];
-    let coinArr = [];
+    const newArr = [];
+    const coinArr = [];
     for (let i = 0; i <= 10; i++) {
-      newArr.push(<Vote
-        destroy={this.destroy}
-        parent={this.parent}
-        key={i}
-        specialKey={i}
-      />);
+      newArr.push(<Vote destroy={this.destroy} parent={this.parent} key={i} specialKey={i} />);
     }
 
     for (let i = 0; i < this.amount; i++) {
-      coinArr.push(<Coin
-        destroy={this.destroy}
-        parent={this.parent}
-        amount={this.amount}
-        key={i}
-        specialKey={i}
-      />);
+      coinArr.push(
+        <Coin
+          destroy={this.destroy}
+          parent={this.parent}
+          amount={this.amount}
+          key={i}
+          specialKey={i}
+        />
+      );
     }
     this.setState({ coinAni: coinArr, investAni: newArr });
   }
@@ -96,16 +95,22 @@ class UpvoteAnimation extends Component {
 
 function mapStateToProps(state) {
   return {
-    animation: state.animation,
+    animation: state.animation
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...animationActions,
-    }, dispatch)
+    actions: bindActionCreators(
+      {
+        ...animationActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UpvoteAnimation);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UpvoteAnimation);

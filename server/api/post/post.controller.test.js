@@ -1,7 +1,7 @@
 import test from 'ava';
 import { setupData, cleanupData, dummyUsers } from '../../config/test_seed';
 
-let request = require('supertest');
+const request = require('supertest');
 
 process.env.NODE_ENV = 'test';
 process.chdir(__dirname + '/../../../');
@@ -14,7 +14,7 @@ let postId;
 let savedPost;
 
 function getPostObj() {
-  let now = new Date();
+  const now = new Date();
   return {
     url: 'https://www.washingtonpost.com/news/checkpoint/wp/2016/05/12/three-deaths-linked-to-recent-navy-seal-training-classes/?hpid=hp_hp-top-table-main_navyseals-118pm%3Ahomepage%2Fstory',
     body: 'Hotties',
@@ -27,7 +27,7 @@ function getPostObj() {
 }
 
 test.before(async () => {
-  let app = require('../../server.js').app;
+  const app = require('../../server.js').app;
   r = request(app);
 
   require('dotenv').config({ silent: true });
@@ -45,9 +45,9 @@ test('post:Index', async t => {
   t.plan(2);
 
   const res = await r
-  .get('/api/post');
+    .get('/api/post');
 
-  let array = res.body instanceof Object;
+  const array = res.body instanceof Object;
   t.is(res.status, 200, 'Return correct status');
   t.is(array, true, 'Return array/object');
 });
@@ -63,11 +63,11 @@ test('post:Index', async t => {
 
 test.serial('Create Post', async (t) => {
   t.plan(5);
-  let postObject = getPostObj();
+  const postObject = getPostObj();
 
   const res = await r
-  .post('/auth/local')
-  .send({ name: 'dummy1', password: 'test' });
+    .post('/auth/local')
+    .send({ name: 'dummy1', password: 'test' });
 
   authorToken = res.body.token;
 
@@ -75,8 +75,8 @@ test.serial('Create Post', async (t) => {
   t.truthy(authorToken, 'Token should not be null');
 
   const newPost = await r
-  .post(`/api/post?access_token=${authorToken}`)
-  .send(postObject);
+    .post(`/api/post?access_token=${authorToken}`)
+    .send(postObject);
 
   postId = newPost.body._id;
   savedPost = newPost.body;
@@ -84,11 +84,11 @@ test.serial('Create Post', async (t) => {
   t.is(newPost.status, 200);
 
   const post = await r
-  .get('/api/post/' + postId);
+    .get('/api/post/' + postId);
 
   t.is(res.status, 200);
 
-  let correctMetapost = Object.keys(postObject).every(key => {
+  const correctMetapost = Object.keys(postObject).every(key => {
     if (key === 'body' || key === 'payoutTime') {
       return JSON.stringify(postObject[key]) === JSON.stringify(post.body[key]);
     }
@@ -103,7 +103,7 @@ test.serial('Delete post', async (t) => {
   t.plan(1);
 
   const res = await r
-  .delete(`/api/post/${postId}?access_token=${authorToken}`);
+    .delete(`/api/post/${postId}?access_token=${authorToken}`);
 
   t.is(res.status, 200);
 });

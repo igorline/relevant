@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import Tag from '../tag/tag.model';
 
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 
-let RelevanceSchema = new Schema({
+const RelevanceSchema = new Schema({
   user: { type: String, ref: 'User', index: true },
   tag: { type: String, ref: 'Tag' },
   global: { type: Boolean, default: false },
@@ -57,10 +57,10 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
   // but we can also do it based on voter's diff community reputations!
   try {
     // let community = post.community;
-    let cats = await Tag.find({ category: true });
-    let tagsAndCat = [...new Set([...post.tags, post.category])];
+    const cats = await Tag.find({ category: true });
+    const tagsAndCat = [...new Set([...post.tags, post.category])];
     tagRelevance = tagsAndCat.map(tag => {
-      let index = cats.findIndex(cat => {
+      const index = cats.findIndex(cat => {
         if (cat._id === tag) return true;
 
         // Depricated - no more main
@@ -70,7 +70,7 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
 
         return false;
       });
-      let topTopic = { topTopic: index > -1 };
+      const topTopic = { topTopic: index > -1 };
       return this.update(
         { user, tag, communityId },
         { $inc: { relevance: relevanceToAdd }, topTopic },
@@ -87,7 +87,7 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
       ).exec());
 
     // update global reputation
-    let relevance = await this.findOneAndUpdate(
+    const relevance = await this.findOneAndUpdate(
       { user, communityId, global: true },
       { $inc: { relevance: relevanceToAdd } },
       { upsert: true, new: true },
@@ -103,7 +103,7 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
 
 RelevanceSchema.statics.mergeDuplicates = async function mergeDuplicates() {
   try {
-    let rel = await this.find({});
+    const rel = await this.find({});
     rel.forEach((rel1, i) => {
       rel.forEach((rel2, j) => {
         if (i <= j) return false;

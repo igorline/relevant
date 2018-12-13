@@ -4,9 +4,9 @@ import { VOTE_COST_RATIO, SLOPE, EXPONENT } from '../../config/globalConstants';
 import Earnigns from '../earnings/earnings.model';
 
 const InvestSchemaEvents = new EventEmitter();
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-let InvestSchema = new Schema({
+const InvestSchema = new Schema({
   investor: { type: String, ref: 'User' },
   post: { type: Schema.Types.ObjectId, ref: 'Post' },
   poster: { type: String, ref: 'User' },
@@ -77,11 +77,11 @@ InvestSchema.statics.createVote = async function createVote(props) {
 
   let shares = 0;
   // TODO analyze ways to get around this via sybil nodes
-  let votePower = user.votePower;
+  const votePower = user.votePower;
   amount *= votePower;
 
   // compute tokens allocated to this specific community
-  let communityMember = await this.model('CommunityMember').findOne({ user: user._id, community: post.community }, 'weight');
+  const communityMember = await this.model('CommunityMember').findOne({ user: user._id, community: post.community }, 'weight');
   userBalance *= communityMember.weight;
 
   console.log('vote power ', votePower);
@@ -99,7 +99,7 @@ InvestSchema.statics.createVote = async function createVote(props) {
   // for downvotes only track staked tokens
   // we can use totalStaked to rank by stake
   if (amount > 0) {
-    let nexp = EXPONENT + 1;
+    const nexp = EXPONENT + 1;
     shares = ((post.data.balance + stakedTokens) / SLOPE * nexp) ** (1 / nexp) - (post.data.shares || 0);
     console.log(user.handle, ' got ', shares, ' for ', stakedTokens, ' staked tokens ');
 
@@ -208,7 +208,7 @@ InvestSchema.statics.updateUserInvestment = async function updateEarnings(
     // console.log(earnings.investor, ' ', earnings.partialRelevance, ' ', relevance);
 
     if (Math.abs(relevance) >= 1) {
-      let earningsEvent = {
+      const earningsEvent = {
         _id: user._id,
         type: 'UPDATE_EARNINGS',
         payload: [earnings]

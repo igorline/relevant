@@ -1,9 +1,9 @@
 
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-let FeedSchema = new Schema({
+const FeedSchema = new Schema({
   userId: { type: String, ref: 'User' },
   from: { type: String, ref: 'User' },
   post: { type: Schema.Types.ObjectId, ref: 'Post' },
@@ -21,9 +21,9 @@ FeedSchema.index({ userId: 1, createdAt: 1, tags: 1 });
 FeedSchema.statics.processExpired = async function processExpired(user) {
   let updateFeed;
   try {
-    let oldestUnread = await this.findOne({ userId: user, read: false })
-    .sort({ createdAt: 1 })
-    .limit(1);
+    const oldestUnread = await this.findOne({ userId: user, read: false })
+      .sort({ createdAt: 1 })
+      .limit(1);
     if (oldestUnread) {
       oldestUnread.remove();
       updateFeed = true;

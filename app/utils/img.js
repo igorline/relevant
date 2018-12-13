@@ -1,7 +1,6 @@
 import ExifReader from 'exifreader';
 import dataUriToBuffer from 'data-uri-to-buffer';
 
-
 /* Image resize / EXIF processing functions */
 
 export const MAX_IMAGE_DIMENSION = 1024;
@@ -23,7 +22,7 @@ function getScale(width, height, viewportWidth, viewportHeight, fillViewport) {
     return viewportHeight / height;
   }
   fillViewport = !!fillViewport;
-  const landscape = (width / height) > (viewportWidth / viewportHeight);
+  const landscape = width / height > viewportWidth / viewportHeight;
   if (landscape) {
     if (fillViewport) {
       return fitVertical();
@@ -125,8 +124,11 @@ export function renderToCanvas(img, options) {
   const initialScale = options.scale || 1;
   // Scale to needed to constrain canvas to max size
   let scale = getScale(
-    img.width * initialScale, img.height * initialScale,
-    MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION, true
+    img.width * initialScale,
+    img.height * initialScale,
+    MAX_IMAGE_DIMENSION,
+    MAX_IMAGE_DIMENSION,
+    true
   );
   // Still need to apply the user defined scale
   scale *= initialScale;
@@ -161,13 +163,9 @@ export function downsample(img) {
   let quality = 0.8;
   do {
     dataURL = resized.toDataURL('image/jpeg', quality);
-    console.log(dataURL);
     buf = dataUriToBuffer(dataURL);
     quality -= 0.05;
-    console.log('image size', buf.length);
-    console.log('image quality', quality);
   } while (buf.length > MAX_FILE_SIZE && quality > 0.1);
-  console.log('final image size', buf.length);
   return dataURL;
 }
 
@@ -178,8 +176,8 @@ export function loadImage(file) {
       reader.onload = e => {
         reader.onload = null;
         reader.onerror = null;
-        let dataURL = e.target.result;
-        let buf = dataUriToBuffer(dataURL);
+        const dataURL = e.target.result;
+        const buf = dataUriToBuffer(dataURL);
         if (buf.length <= MAX_FILE_SIZE) {
           resolve(dataURL);
         } else {
@@ -189,8 +187,7 @@ export function loadImage(file) {
             img.onerror = null;
             resolve(downsample(img));
           };
-          img.onerror = (err) => {
-            console.log(err);
+          img.onerror = () => {
             img.onload = null;
             img.onerror = null;
             reject();

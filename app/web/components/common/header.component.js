@@ -1,10 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import Avatar from './avatar.component';
-import Modal from '../common/modal';
-import ShadowButton from '../common/ShadowButton';
 import * as authActions from '../../../actions/auth.actions';
 
 if (process.env.BROWSER === true) {
@@ -12,6 +11,13 @@ if (process.env.BROWSER === true) {
 }
 
 class Header extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    isAuthenticated: PropTypes.bool,
+    user: PropTypes.object,
+    toggleLogin: PropTypes.func
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -20,9 +26,8 @@ class Header extends Component {
     this.login = this.login.bind(this);
   }
 
-
   login() {
-    let user = {
+    const user = {
       name: this.username,
       password: this.password
     };
@@ -32,23 +37,23 @@ class Header extends Component {
   }
 
   renderLoginButton() {
-    if (!this.props.isAuthenticated || !this.props.user) return (
-      <div className={'navLink'}>
-        <div onClick={this.props.toggleLogin}>Login</div>
-      </div>
-    );
+    if (!this.props.isAuthenticated || !this.props.user) {
+      return (
+        <div className={'navLink'}>
+          <div onClick={this.props.toggleLogin}>Login</div>
+        </div>
+      );
+    }
 
-    return (<div className="navInner">
-      <div className={'navLink'}>
-        <Avatar size={42} user={this.props.user} noName />
+    return (
+      <div className="navInner">
+        <div className={'navLink'}>
+          <Avatar size={42} user={this.props.user} noName />
+        </div>
+        <div className={'navLink'} onClick={() => this.props.actions.logoutAction(this.props.user)}>
+          Logout
+        </div>
       </div>
-      <div
-        className={'navLink'}
-        onClick={() => this.props.actions.logoutAction(this.props.user)}
-      >
-        Logout
-      </div>
-    </div>
     );
   }
 
@@ -57,7 +62,6 @@ class Header extends Component {
   }
 
   render() {
-
     let desktopApp = false;
     if (process.env.DEVTOOLS) {
       desktopApp = true;
@@ -72,24 +76,23 @@ class Header extends Component {
               <img src={'/img/logo-white.svg'} className={'logo'} alt={'Relevant'} />
             </Link>
           </div>
-          <div className={'rightNav'}>
-          {desktopApp ? this.renderLoginButton() : <div></div>}
-          </div>
+          <div className={'rightNav'}>{desktopApp ? this.renderLoginButton() : <div />}</div>
         </header>
       </div>
     );
   }
-
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   user: state.auth.user,
-  isAuthenticated: state.auth.isAuthenticated,
+  isAuthenticated: state.auth.isAuthenticated
 });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators({ ...authActions }, dispatch)
-
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Header);

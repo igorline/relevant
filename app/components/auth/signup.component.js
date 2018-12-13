@@ -20,6 +20,13 @@ let localStyles;
 let styles;
 
 class SignUp extends Component {
+  static propTypes = {
+    auth: PropTypes.object,
+    scene: PropTypes.object,
+    actions: PropTypes.object,
+    navigation: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.back = this.back.bind(this);
@@ -35,7 +42,7 @@ class SignUp extends Component {
       cPassword: null,
       nameError: null,
       emailError: null,
-      twitter: true,
+      twitter: true
     };
   }
 
@@ -76,12 +83,11 @@ class SignUp extends Component {
   }
 
   checkEmail() {
-    let string = this.state.email;
-    let valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(string);
+    const string = this.state.email;
+    const valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(string);
     if (!valid) return this.setState({ emailError: 'invalid email' });
 
-    this.props.actions.checkUser(string, 'email')
-    .then((results) => {
+    this.props.actions.checkUser(string, 'email').then(results => {
       if (!results) {
         this.setState({ emailError: 'This email has already been used' });
       }
@@ -91,13 +97,12 @@ class SignUp extends Component {
 
   checkUser(name) {
     this.nameError = null;
-    let toCheck = name || this.state.name;
+    const toCheck = name || this.state.name;
     if (toCheck) {
-      let string = toCheck;
-      let match = NAME_PATTERN.test(string);
+      const string = toCheck;
+      const match = NAME_PATTERN.test(string);
       if (match) {
-        this.props.actions.checkUser(string, 'name')
-        .then((results) => {
+        this.props.actions.checkUser(string, 'name').then(results => {
           if (!results) {
             this.usernameExists = true;
             this.nameError = 'This username is already taken';
@@ -165,20 +170,23 @@ class SignUp extends Component {
     this.props.actions.setPreUser(user);
     console.log('saving pre user ', user);
     dismissKeyboard();
-    this.props.actions.push({
-      key: 'imageUpload',
-      title: 'image',
-      component: 'image',
-      back: true
-    }, 'auth');
+    this.props.actions.push(
+      {
+        key: 'imageUpload',
+        title: 'image',
+        component: 'image',
+        back: true
+      },
+      'auth'
+    );
 
     return null;
   }
 
   devSkip() {
-    let randomNum = String(Math.floor(Math.random() * 1000));
-    let randomName = 'test' + randomNum;
-    let randomEmail = 'test' + randomNum + '@test.com';
+    const randomNum = String(Math.floor(Math.random() * 1000));
+    const randomName = 'test' + randomNum;
+    const randomEmail = 'test' + randomNum + '@test.com';
     this.setState({
       name: randomName,
       email: randomEmail,
@@ -209,9 +217,7 @@ class SignUp extends Component {
           style={{ flex: 1 }}
           contentContainerStyle={styles.authScrollContent}
         >
-
           <View style={styles.fieldsInner}>
-
             <View style={styles.fieldsInputParent}>
               <TextInput
                 underlineColorAndroid={'transparent'}
@@ -220,7 +226,7 @@ class SignUp extends Component {
                 keyboardType={'default'}
                 clearTextOnFocus={false}
                 placeholder="username"
-                onChangeText={(name) => {
+                onChangeText={name => {
                   this.setState({ name: name.trim() });
                   this.checkUser(name.trim());
                 }}
@@ -228,10 +234,9 @@ class SignUp extends Component {
                 style={styles.fieldsInput}
               />
             </View>
-            { this.nameError ?
-              <Text style={[styles.smallInfo, styles.error]}>{this.nameError}</Text> :
-              null
-            }
+            {this.nameError ? (
+              <Text style={[styles.smallInfo, styles.error]}>{this.nameError}</Text>
+            ) : null}
             <View style={styles.fieldsInputParent}>
               <TextInput
                 underlineColorAndroid={'transparent'}
@@ -246,10 +251,9 @@ class SignUp extends Component {
                 style={styles.fieldsInput}
               />
             </View>
-            { this.state.emailError ?
-              <Text style={[styles.smallInfo, styles.error]}>{this.state.emailError}</Text> :
-              null
-            }
+            {this.state.emailError ? (
+              <Text style={[styles.smallInfo, styles.error]}>{this.state.emailError}</Text>
+            ) : null}
 
             <View style={styles.fieldsInputParent}>
               <TextInput
@@ -279,30 +283,16 @@ class SignUp extends Component {
             </View>
           </View>
 
-          <TouchableOpacity
-            style={[styles.largeButton, { marginTop: 20 }]}
-            onPress={this.validate}
-          >
+          <TouchableOpacity style={[styles.largeButton, { marginTop: 20 }]} onPress={this.validate}>
             <Text style={styles.largeButtonText}>next</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() =>
-              this.props.actions.goToUrl('https://relevant.community/eula.html')
-            }
+            onPress={() => this.props.actions.goToUrl('https://relevant.community/eula.html')}
           >
-            <Text
-              style={[
-                styles.signInText,
-                styles.font12
-              ]}
-            >
+            <Text style={[styles.signInText, styles.font12]}>
               By signing up, you agree to our{' '}
-              <Text
-                style={[styles.signInText, styles.active, styles.font12]}
-              >
-                Terms of Use
-              </Text>
+              <Text style={[styles.signInText, styles.active, styles.font12]}>Terms of Use</Text>
             </Text>
           </TouchableOpacity>
         </ScrollView>
@@ -315,9 +305,8 @@ SignUp.propTypes = {
   actions: PropTypes.object,
   auth: PropTypes.object,
   scene: PropTypes.object,
-  navigation: PropTypes.object, //navigation store
+  navigation: PropTypes.object // navigation store
 };
-
 
 localStyles = StyleSheet.create({
   error: {
@@ -330,4 +319,3 @@ localStyles = StyleSheet.create({
 styles = { ...globalStyles, ...localStyles };
 
 export default SignUp;
-

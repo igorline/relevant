@@ -20,11 +20,9 @@ import RNBottomSheet from 'react-native-bottom-sheet';
 // import IconEn from 'react-native-vector-icons/Entypo';
 // import IconO from 'react-native-vector-icons/Octicons';
 
-
 import { globalStyles, greyText, fullHeight } from '../../styles/global';
 import InvestModal from './investModal.component';
 import { numbers } from '../../utils';
-
 
 let ActionSheet = ActionSheetIOS;
 
@@ -36,6 +34,17 @@ if (Platform.OS === 'android') {
 let styles;
 
 class PostButtons extends Component {
+  static propTypes = {
+    post: PropTypes.object,
+    tooltip: PropTypes.object,
+    actions: PropTypes.object,
+    auth: PropTypes.object,
+    scene: PropTypes.object,
+    focusInput: PropTypes.func,
+    myPostInv: PropTypes.array,
+    link: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.onShare = this.onShare.bind(this);
@@ -45,7 +54,7 @@ class PostButtons extends Component {
     this.state = {
       editing: false,
       modalVisible: false,
-      expanded: false,
+      expanded: false
     };
 
     this.linkMenu = {
@@ -53,30 +62,25 @@ class PostButtons extends Component {
         // 'New Post',
         'Repost with Comment',
         // 'Share via...',
-        'Cancel',
+        'Cancel'
       ],
-      cancelIndex: 3,
+      cancelIndex: 3
     };
 
     this.menu = {
       buttons: [
         'Repost',
         // 'Share',
-        'Cancel',
+        'Cancel'
       ],
-      cancelIndex: 2,
+      cancelIndex: 2
     };
 
     this.ownerMenu = {
       myPost: true,
-      buttons: [
-        'Share',
-        'Edit',
-        'Delete',
-        'Cancel',
-      ],
+      buttons: ['Share', 'Edit', 'Delete', 'Cancel'],
       destructiveIndex: 2,
-      cancelIndex: 3,
+      cancelIndex: 3
     };
 
     this.toggleModal = this.toggleModal.bind(this);
@@ -126,7 +130,7 @@ class PostButtons extends Component {
   toggleTooltip(name) {
     if (!this.investButton) return;
     this.investButton.measureInWindow((x, y, w, h) => {
-      let parent = { x, y, w, h };
+      const parent = { x, y, w, h };
       if (x + y + w + h === 0) return;
       if (y > fullHeight - 50) return;
       this.props.actions.setTooltipData({
@@ -156,7 +160,7 @@ class PostButtons extends Component {
     try {
       // DEBUG ANIMATION
       if (!this.props.auth || !this.props.auth.user) return;
-      let amount = 1;
+      const amount = 1;
 
       // this.props.actions.triggerAnimation('invest', { amount: investment });
       // this.investButton.measureInWindow((x, y, w, h) => {
@@ -166,15 +170,10 @@ class PostButtons extends Component {
       // });
       // return;
 
-      await this.props.actions.vote(
-        amount,
-        this.props.post,
-        this.props.auth.user,
-        !newVote
-      );
+      await this.props.actions.vote(amount, this.props.post, this.props.auth.user, !newVote);
 
       this.investButton.measureInWindow((x, y, w, h) => {
-        let parent = { x, y, w, h };
+        const parent = { x, y, w, h };
         if (x + y + w + h === 0) return;
         this.props.actions.triggerAnimation('upvote', { parent, amount });
       });
@@ -188,31 +187,27 @@ class PostButtons extends Component {
     } catch (err) {
       let text1 = err.message;
       if (text1.match('coin')) {
-        text1 = 'Oops! Looks like you ran out of coins, but don\'t worry, you\'ll get more tomorrow';
+        text1 = "Oops! Looks like you ran out of coins, but don't worry, you'll get more tomorrow";
       }
       Alert.alert(text1);
     }
   }
 
-
   irrelevantPrompt(newVote) {
     if (!newVote) return this.irrelevant(newVote);
 
-    let t1 = 'Downvote poor quality content to reduce the post\'s relevant score.';
+    let t1 = "Downvote poor quality content to reduce the post's relevant score.";
     let t2 = 'If you see something innapropriate, you can notify the admins by pressing "REPORT".';
     if (Platform.OS === 'android') {
       t1 = null;
-      t2 = 'Downvote poor quality content to reduce the post\'s relevant score.\n\nIf you see something innapropriate, you can notify the admins by pressing "REPORT".';
+      t2 =
+        'Downvote poor quality content to reduce the post\'s relevant score.\n\nIf you see something innapropriate, you can notify the admins by pressing "REPORT".';
     }
-    Alert.alert(
-      t1,
-      t2,
-      [
-        { text: 'Cancel', onPress: () => {}, style: 'cancel' },
-        { text: 'Downvote', onPress: () => this.irrelevant(newVote) },
-        { text: '🚫Report', onPress: () => this.flag() },
-      ]
-    );
+    Alert.alert(t1, t2, [
+      { text: 'Cancel', onPress: () => {}, style: 'cancel' },
+      { text: 'Downvote', onPress: () => this.irrelevant(newVote) },
+      { text: '🚫Report', onPress: () => this.flag() }
+    ]);
   }
 
   async irrelevant(newVote) {
@@ -228,82 +223,89 @@ class PostButtons extends Component {
     } catch (err) {
       let text1 = err.message;
       if (text1.match('coin')) {
-        text1 = 'Oops! Looks like you ran out of coins, but don\'t worry, you\'ll get more tomorrow';
+        text1 = "Oops! Looks like you ran out of coins, but don't worry, you'll get more tomorrow";
       }
       Alert.alert(text1);
     }
   }
 
   showActionSheet() {
-    ActionSheet.showActionSheetWithOptions({
-      options: this.menu.buttons,
-      cancelButtonIndex: this.menu.cancelIndex,
-      destructiveButtonIndex: this.menu.destructiveIndex,
-    },
-    (buttonIndex) => {
-      if (this.props.post.link) {
-        switch (buttonIndex) {
-          case 0:
-            if (this.props.post.link) this.repostUrl();
-            else return;
-            break;
-          case 1:
-            this.repostCommentary();
-            break;
-          // case 2:
-          //   this.onShare();
-          //   break;
-          default:
-            return;
-        }
-      } else {
-        switch (buttonIndex) {
-          case 0:
-            this.repostCommentary();
-            break;
-          case 1:
-            this.onShare();
-            break;
-          default:
-            return;
+    ActionSheet.showActionSheetWithOptions(
+      {
+        options: this.menu.buttons,
+        cancelButtonIndex: this.menu.cancelIndex,
+        destructiveButtonIndex: this.menu.destructiveIndex
+      },
+      buttonIndex => {
+        if (this.props.post.link) {
+          switch (buttonIndex) {
+            case 0:
+              if (this.props.post.link) this.repostUrl();
+              else return;
+              break;
+            case 1:
+              this.repostCommentary();
+              break;
+            // case 2:
+            //   this.onShare();
+            //   break;
+            default:
+          }
+        } else {
+          switch (buttonIndex) {
+            case 0:
+              this.repostCommentary();
+              break;
+            case 1:
+              this.onShare();
+              break;
+            default:
+          }
         }
       }
-    });
+    );
   }
 
   repostCommentary() {
-    let { link } = this.props;
+    const { link } = this.props;
     this.props.actions.setCreaPostState({
       postBody: '',
       repost: this.props.post,
       urlPreview: {
         image: link.image,
         title: link.title ? link.title : 'Untitled',
-        description: link.description,
+        description: link.description
       }
     });
-    this.props.actions.push({
-      key: 'createPost',
-      component: 'createPost',
-      back: 'Cancel',
-      title: 'Repost',
-      next: 'Post',
-      direction: 'vertical',
-      left: 'Cancel',
-    }, 'home');
-    this.props.actions.replaceRoute({
-      key: 'createPost',
-      component: 'createPost',
-      back: true,
-      left: 'Cancel',
-      title: 'Repost',
-      next: 'Post',
-      direction: 'vertical'
-    }, 0, 'createPost');
+    this.props.actions.push(
+      {
+        key: 'createPost',
+        component: 'createPost',
+        back: 'Cancel',
+        title: 'Repost',
+        next: 'Post',
+        direction: 'vertical',
+        left: 'Cancel'
+      },
+      'home'
+    );
+    this.props.actions.replaceRoute(
+      {
+        key: 'createPost',
+        component: 'createPost',
+        back: true,
+        left: 'Cancel',
+        title: 'Repost',
+        next: 'Post',
+        direction: 'vertical'
+      },
+      0,
+      'createPost'
+    );
   }
 
   repostUrl() {
-    let { link } = this.props;
+    const { link } = this.props;
     this.props.actions.setCreaPostState({
       postBody: '',
       component: 'createPost',
@@ -313,25 +315,32 @@ class PostButtons extends Component {
       urlPreview: {
         image: link.image,
         title: link.title ? link.title : 'Untitled',
-        description: link.description,
+        description: link.description
       }
     });
-    this.props.actions.push({
-      key: 'createPost',
-      back: true,
-      title: 'Add Commentary',
-      next: 'Next',
-      direction: 'vertical'
-    }, 'home');
-    this.props.actions.replaceRoute({
-      key: 'createPost',
-      component: 'createPost',
-      back: true,
-      left: 'Cancel',
-      title: 'New Commentary',
-      next: 'Next',
-      direction: 'vertical'
-    }, 0, 'createPost');
+    this.props.actions.push(
+      {
+        key: 'createPost',
+        back: true,
+        title: 'Add Commentary',
+        next: 'Next',
+        direction: 'vertical'
+      },
+      'home'
+    );
+    this.props.actions.replaceRoute(
+      {
+        key: 'createPost',
+        component: 'createPost',
+        back: true,
+        left: 'Cancel',
+        title: 'New Commentary',
+        next: 'Next',
+        direction: 'vertical'
+      },
+      0,
+      'createPost'
+    );
   }
 
   goToPost(comment) {
@@ -350,10 +359,9 @@ class PostButtons extends Component {
     this.props.actions.flag(this.props.post);
   }
 
-
   render() {
     let investButtonEl = null;
-    let post = this.props.post;
+    const post = this.props.post;
     let investible = false;
     let irrelevantButton;
     let commentString = '';
@@ -391,9 +399,9 @@ class PostButtons extends Component {
     // }
 
     // invest section spacing
-    let space = 8;
+    const space = 8;
     // let opacity = investible ? 1 : 0.3;
-    let opacity = 1;
+    const opacity = 1;
     let upvoteIcon = require('../../assets/images/icons/upvote.png');
     if (myVote && myVote.amount > 0) {
       upvoteIcon = require('../../assets/images/icons/upvoteActive.png');
@@ -404,41 +412,41 @@ class PostButtons extends Component {
     investButtonEl = (
       <TouchableOpacity
         style={{ paddingRight: space }}
-        ref={c => this.investButton = c}
+        ref={c => (this.investButton = c)}
         onPress={() => this.invest(investible)}
       >
-        { canBet ? <Image
-          resizeMode={'contain'}
-          style={[styles.r, { width: 20, height: 20, zIndex: 1, position: 'absolute', bottom: 1, right: 0 }]}
-          source={require('../../assets/images/relevantcoin.png')}
-        /> : null }
-        <Image
-          resizeMode={'contain'}
-          style={[styles.vote, { opacity }]}
-          source={upvoteIcon}
-        />
-
+        {canBet ? (
+          <Image
+            resizeMode={'contain'}
+            style={[
+              styles.r,
+              { width: 20, height: 20, zIndex: 1, position: 'absolute', bottom: 1, right: 0 }
+            ]}
+            source={require('../../assets/images/relevantcoin.png')}
+          />
+        ) : null}
+        <Image resizeMode={'contain'} style={[styles.vote, { opacity }]} source={upvoteIcon} />
       </TouchableOpacity>
     );
 
-          // <Text style={styles.smallInfo}>
-          //   {post.upVotes + post.downVotes}
-          // </Text>
-          // <View style={{ width: 15, borderBottomWidth: 1, borderColor: greyText }} />
-        // </View>
-
+    // <Text style={styles.smallInfo}>
+    //   {post.upVotes + post.downVotes}
+    // </Text>
+    // <View style={{ width: 15, borderBottomWidth: 1, borderColor: greyText }} />
+    // </View>
 
     let r = post.data ? post.data.pagerank : null;
-    let rel = r;
+    const rel = r;
 
-    let rIcon = (<Image
-      resizeMode={'contain'}
-      style={styles.smallR}
-      source={require('../../assets/images/icons/smallR.png')}
-    />);
+    let rIcon = (
+      <Image
+        resizeMode={'contain'}
+        style={styles.smallR}
+        source={require('../../assets/images/icons/smallR.png')}
+      />
+    );
 
-
-    let totalVotes = post.data ? post.data.upVotes + post.data.downVotes : 0;
+    const totalVotes = post.data ? post.data.upVotes + post.data.downVotes : 0;
     // let s = 's';
     // if (totalVotes === 1) s = '';
     // let votes = (
@@ -460,10 +468,11 @@ class PostButtons extends Component {
       votes = null;
     }
 
-
-    let stat = (
+    const stat = (
       <TouchableOpacity
-        onPress={() => totalVotes !== 0 || rel ? this.showInvestors() : this.toggleTooltip('vote')}
+        onPress={() =>
+          totalVotes !== 0 || rel ? this.showInvestors() : this.toggleTooltip('vote')
+        }
       >
         <View
           style={{
@@ -493,108 +502,85 @@ class PostButtons extends Component {
         style={{ paddingLeft: space }}
         onPress={() => this.irrelevantPrompt(investible)}
       >
-        <Image
-          resizeMode={'contain'}
-          style={[styles.vote, { opacity }]}
-          source={downvoteIcon}
-        />
+        <Image resizeMode={'contain'} style={[styles.vote, { opacity }]} source={downvoteIcon} />
       </TouchableOpacity>
     );
 
+    const comments = (
+      <TouchableOpacity onPress={() => this.goToPost(true)} style={{ paddingHorizontal: 12 }}>
+        <View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
+          <IconI
+            style={{ transform: [{ scaleX: -1 }] }}
+            name="ios-redo-outline"
+            size={28}
+            color={greyText}
+          />
+          <Text style={styles.smallInfo}> {commentString}</Text>
 
-    let comments = (<TouchableOpacity
-      onPress={() => this.goToPost(true)}
-      style={{ paddingHorizontal: 12 }}
-    >
+          {/* <Text style={styles.smallInfo}>reply</Text> */}
+        </View>
+      </TouchableOpacity>
+    );
 
-      <View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
+    // <Image
+    //   resizeMode={'contain'}
+    //   style={styles.vote}
+    //   source={require('../../assets/images/icons/share.png')}
+    // />
 
-        <IconI
-          style={{ transform: [
-            { scaleX: -1 },
-          ]
-          }}
-          name="ios-redo-outline"
-          size={28}
-          color={greyText}
-        />
-        <Text style={styles.smallInfo}> {commentString}</Text>
-
-        {/* <Text style={styles.smallInfo}>reply</Text>*/}
-      </View>
-
-    </TouchableOpacity>);
-
-        // <Image
-        //   resizeMode={'contain'}
-        //   style={styles.vote}
-        //   source={require('../../assets/images/icons/share.png')}
-        // />
-
-    let repost = (
+    const repost = (
       <TouchableOpacity
         style={{ paddingLeft: 10, paddingRight: 5 }}
         onPress={() => this.repostCommentary()}
       >
         <View style={[styles.textRow, { alignItems: 'center' }]}>
+          <IconI name="ios-quote-outline" size={24} color={greyText} />
 
-          <IconI
-            name="ios-quote-outline"
-            size={24}
-            color={greyText}
-          />
-
-          {/* <Text style={styles.smallInfo}></Text>*/}
+          {/* <Text style={styles.smallInfo}></Text> */}
         </View>
-
-
       </TouchableOpacity>
     );
 
-    let newCommentary = (
-      <TouchableOpacity
-        style={{ paddingRight: 8 }}
-        onPress={() => this.repostUrl()}
-      >
-        {/* <Icon name="pencil" size={18} color={greyText} />*/}
+    const newCommentary = (
+      <TouchableOpacity style={{ paddingRight: 8 }} onPress={() => this.repostUrl()}>
+        {/* <Icon name="pencil" size={18} color={greyText} /> */}
         <View style={[{ flexDirection: 'column', alignItems: 'center' }]}>
           <Image
             resizeMode={'contain'}
             style={styles.vote}
             source={require('../../assets/images/icons/comment.png')}
           />
-
         </View>
       </TouchableOpacity>
     );
 
-    let link = this.props.link;
-    let twitter = (link && link.twitter === true);
-    let isComment = post.type === 'comment';
+    const link = this.props.link;
+    const twitter = link && link.twitter === true;
+    const isComment = post.type === 'comment';
 
-    return (<View style={styles.postButtonsContainer}>
-      <View style={styles.postButtons}>
-        <View
-          style={{ flexDirection: 'row', alignItems: 'center' }}
-        >
-          {investButtonEl}
-          {stat}
-          {irrelevantButton}
+    return (
+      <View style={styles.postButtonsContainer}>
+        <View style={styles.postButtons}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {investButtonEl}
+            {stat}
+            {irrelevantButton}
+          </View>
+
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {(link && link.url) || !isComment ? newCommentary : null}
+            {twitter || isComment ? null : comments}
+            {twitter || isComment ? null : repost}
+          </View>
+
+          <InvestModal
+            toggleFunction={this.toggleModal}
+            post={this.props.post}
+            visible={this.state.modalVisible}
+          />
         </View>
-
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          {(link && link.url) || !isComment ? newCommentary : null}
-          {twitter || isComment ? null : comments}
-          {twitter || isComment ? null : repost}
-        </View>
-
-        <InvestModal
-          toggleFunction={this.toggleModal}
-          post={this.props.post}
-          visible={this.state.modalVisible}
-        />
       </View>
-    </View>);
+    );
   }
 }
 
@@ -606,7 +592,7 @@ PostButtons.propTypes = {
   myPostInv: PropTypes.object,
   auth: PropTypes.object,
   scene: PropTypes.object,
-  focusInput: PropTypes.func,
+  focusInput: PropTypes.func
 };
 
 export default PostButtons;
@@ -614,7 +600,7 @@ export default PostButtons;
 const localStyles = StyleSheet.create({
   vote: {
     width: 25,
-    height: 23,
+    height: 23
   },
   smallerR: {
     width: 24,
@@ -636,7 +622,7 @@ const localStyles = StyleSheet.create({
     marginRight: 0,
     width: 14,
     height: 20,
-    resizeMode: 'contain',
+    resizeMode: 'contain'
   },
   postButtons: {
     flexDirection: 'row',
@@ -646,7 +632,7 @@ const localStyles = StyleSheet.create({
   },
   postButtonsContainer: {
     paddingBottom: 10,
-    marginTop: 15,
+    marginTop: 15
   }
 });
 

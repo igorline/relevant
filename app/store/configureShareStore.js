@@ -7,9 +7,8 @@ window.navigator.userAgent = 'react-native';
 // require('../publicenv');
 
 export default function configureStore() {
-
   // let store = applyMiddleware(thunk)(createStore)(rootReducer);
-  let store = applyMiddleware(thunk)(createStore)(
+  const store = applyMiddleware(thunk)(createStore)(
     rootReducer,
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   );

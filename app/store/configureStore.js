@@ -7,9 +7,9 @@ import screenTracking from './screenTracking';
 window.navigator.userAgent = 'react-native';
 const io = require('socket.io-client/socket.io');
 
-let socket = io(process.env.API_SERVER, {
+const socket = io(process.env.API_SERVER, {
   transports: ['websocket'],
-  jsonp: false,
+  jsonp: false
 });
 
 socket.on('pingKeepAlive', () => {
@@ -23,7 +23,7 @@ socket.on('reconnect_attempt', () => {
 let store;
 
 export default function configureStore() {
-  let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
+  const socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
 
   store = applyMiddleware(screenTracking, thunk, socketIoMiddleware)(createStore)(
     rootReducer,
@@ -31,7 +31,7 @@ export default function configureStore() {
   );
 
   socket.on('connect', () => {
-    let s = store.getState();
+    const s = store.getState();
     if (s.auth && s.auth.user) {
       socket.emit('action', {
         type: 'server/storeUser',
@@ -50,4 +50,3 @@ export default function configureStore() {
 }
 
 exports.STORE = store;
-

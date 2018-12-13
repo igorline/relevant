@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
@@ -15,35 +16,47 @@ if (process.env.BROWSER === true) {
 }
 
 class AppHeader extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    isAuthenticated: PropTypes.object,
+    notif: PropTypes.object,
+    user: PropTypes.object,
+    toggleLogin: PropTypes.func,
+    location: PropTypes.object,
+    auth: PropTypes.object,
+    params: PropTypes.object
+  };
+
   state = {
     activity: false,
     wallet: false
-  }
+  };
 
   componentDidMount() {
     this.props.actions.getNotificationCount();
     window.addEventListener('focus', () => {
       this.props.actions.getNotificationCount();
     });
-    window.addEventListener('click', (e) => {
+    window.addEventListener('click', e => {
       if (e.target.classList.contains('activityButton')) return true;
       if (this.state.activity) {
         this.setState({ activity: false });
       }
+      return null;
     });
   }
 
   renderActivity() {
     if (!this.props.isAuthenticated) return null;
-    let activity = this.state.activity ?
-      <Activity close={() => this.setState({ activity: false })} /> :
-      null;
-    let count = this.props.notif.count;
-    let badge = count ? <span className={'badge'}>{count}</span> : null;
+    const activity = this.state.activity ? (
+      <Activity close={() => this.setState({ activity: false })} />
+    ) : null;
+    const count = this.props.notif.count;
+    const badge = count ? <span className={'badge'}>{count}</span> : null;
     return (
       <div
         className={'navLink activityButton'}
-        onClick={(e) => {
+        onClick={() => {
           this.setState({ activity: !this.state.activity });
           return false;
         }}
@@ -56,40 +69,23 @@ class AppHeader extends Component {
   }
 
   renderLoginButton() {
-    if (!this.props.isAuthenticated || !this.props.user) return (
-      <div className={'navLink'}>
-        <div onClick={this.props.toggleLogin}>Login</div>
+    if (!this.props.isAuthenticated || !this.props.user) {
+      return (
+        <div className={'navLink'}>
+          <div onClick={this.props.toggleLogin}>Login</div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="navInner">
+        <div className={'navLink profileMenuParent'}>
+          <Avatar size={42} user={this.props.user} noName />
+        </div>
+        <div className={'navLink'} onClick={() => this.props.actions.logoutAction(this.props.user)}>
+          Logout
+        </div>
       </div>
-    );
-
-    return (<div className="navInner">
-      <div className={'navLink profileMenuParent'}>
-        <Avatar size={42} user={this.props.user} noName />
-
-{/*        <div
-          className={'profileMenu'}
-        >
-          <Link
-            to={'/profile/' + this.props.user.handle}
-          >
-            Profile
-          </Link>
-
-          <div
-            onClick={() => this.props.actions.logoutAction(this.props.user)}
-          >
-            Logout
-          </div>
-
-        </div>*/}
-      </div>
-      <div
-        className={'navLink'}
-        onClick={() => this.props.actions.logoutAction(this.props.user)}
-      >
-        Logout
-      </div>
-    </div>
     );
   }
 
@@ -98,10 +94,7 @@ class AppHeader extends Component {
     let active = this.props.location.pathname === '/user/wallet';
     active = active ? 'active' : '';
     return (
-      <Link
-        to={'/user/wallet'}
-        className={'navLink ' + active}
-      >
+      <Link to={'/user/wallet'} className={'navLink ' + active}>
         Wallet
       </Link>
     );
@@ -112,20 +105,18 @@ class AppHeader extends Component {
   }
 
   renderSubHeaer() {
-    let loggedIn = this.props.auth.isAuthenticated;
+    const loggedIn = this.props.auth.isAuthenticated;
     let cta;
 
-    let signup = (
+    const signup = (
       <div className="signupCTA">
         <div className="basicButton">
-          <a target="_blank" href='https://hackernoon.com/relevant-an-introduction-5b79ef7afa9'>
+          <a target="_blank" href="https://hackernoon.com/relevant-an-introduction-5b79ef7afa9">
             Read more about Relevant
           </a>
         </div>
         <Link to="/user/signup">
-          <ShadowButton>
-            Sign Up
-          </ShadowButton>
+          <ShadowButton>Sign Up</ShadowButton>
         </Link>
       </div>
     );
@@ -137,10 +128,6 @@ class AppHeader extends Component {
   }
 
   render() {
-    // let desktopApp = false;
-    // if (process.env.DEVTOOLS) {
-    //   desktopApp = true;
-    // }
     return (
       <div className="headerContainer appHeader">
         <header>
@@ -150,8 +137,6 @@ class AppHeader extends Component {
                 <img src={'/img/logo.svg'} className={'logo'} alt={'Relevant'} />
               </Link>
             </div>
-{/*            <h3>#{this.props.auth.community}</h3>
-*/}
             <div className="tabContainer">
               <DiscoverTabs
                 params={this.props.params}
@@ -167,35 +152,30 @@ class AppHeader extends Component {
             </div>
           </div>
         </header>
-        <div className={'banner'}>
-          {this.renderSubHeaer()}
-        </div>
-{/*        <div className="subHeader">
-          Welcome to Relevant!
-          <Link to="/signup">
-            <ShadowButton
-            >
-              Sign Up
-            </ShadowButton>
-          </Link>
-        </div>*/}
+        <div className={'banner'}>{this.renderSubHeaer()}</div>
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   auth: state.auth,
   user: state.auth.user,
   isAuthenticated: state.auth.isAuthenticated,
-  notif: state.notif,
+  notif: state.notif
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({
-    ...authActions,
-    ...notifActions
-  }, dispatch)
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      ...authActions,
+      ...notifActions
+    },
+    dispatch
+  )
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppHeader);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AppHeader);

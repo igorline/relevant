@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Platform
-} from 'react-native';
+import { StyleSheet, Text, View, Platform } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles, fullHeight } from '../styles/global';
 
 let styles;
 
-
 class EmptyList extends Component {
+  static propTypes = {
+    type: PropTypes.string,
+    emoji: PropTypes.object,
+    visible: PropTypes.bool,
+    children: PropTypes.node,
+    text: PropTypes.string,
+    YOffset: PropTypes.number
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -20,10 +24,10 @@ class EmptyList extends Component {
   }
 
   render() {
-    let type = this.props.type || '';
-    let emoji = this.props.emoji || (Platform.OS === 'android' ? '😮' : '😶');
-    let visible = this.props.visible;
-    let content = this.props.children || (
+    const type = this.props.type || '';
+    const emoji = this.props.emoji || (Platform.OS === 'android' ? '😮' : '😶');
+    const visible = this.props.visible;
+    const content = this.props.children || (
       <Text style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}>
         {this.props.text ? this.props.text : 'Sorry, no ' + type + ' ' + emoji}
       </Text>
@@ -32,10 +36,10 @@ class EmptyList extends Component {
       <View
         style={[
           visible && this.state.ready ? styles.emptyList : styles.hideEmptyList,
-          { height: fullHeight - ((59 * 2) + this.state.top + (this.props.YOffset || 0)) },
+          { height: fullHeight - (59 * 2 + this.state.top + (this.props.YOffset || 0)) }
         ]}
         pointerEvents={visible ? 'auto' : 'none'}
-        onLayout={(e) => {
+        onLayout={e => {
           this.setState({ top: e.nativeEvent.layout.y });
           this.setState({ ready: true });
         }}
@@ -50,8 +54,8 @@ const localStyles = StyleSheet.create({
   hideEmptyList: {
     flex: 0,
     opacity: 0,
-    position: 'absolute',
-  },
+    position: 'absolute'
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };

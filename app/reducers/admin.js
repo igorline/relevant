@@ -6,14 +6,13 @@ const initialState = {
   waitList: [],
   wait: {},
   currentInvite: null,
-  downvotes: [],
+  downvotes: []
 };
 
 export default function admin(state = initialState, action) {
   switch (action.type) {
-
     case types.DESTROY_INVITE: {
-      let invites = { ...state.invites };
+      const invites = { ...state.invites };
       delete invites[action.payload._id];
       return {
         ...state,
@@ -22,9 +21,9 @@ export default function admin(state = initialState, action) {
     }
 
     case types.DELETE_WAITLIST_USER: {
-      let users = {};
-      action.payload.forEach(u => users[u._id] = null);
-      let waitList = state.waitList.filter(u => users[u] !== null);
+      const users = {};
+      action.payload.forEach(u => (users[u._id] = null));
+      const waitList = state.waitList.filter(u => users[u] !== null);
       return {
         ...state,
         wait: {
@@ -38,10 +37,7 @@ export default function admin(state = initialState, action) {
     case types.SET_WAITLIST: {
       return {
         ...state,
-        waitList: [
-          ...action.payload.result.wait,
-          ...state.waitList,
-        ],
+        waitList: [...action.payload.result.wait, ...state.waitList],
         wait: {
           ...state.wait,
           ...action.payload.entities.wait
@@ -52,10 +48,7 @@ export default function admin(state = initialState, action) {
     case types.SET_INVITES: {
       return {
         ...state,
-        inviteList: [
-          ...state.inviteList,
-          ...action.payload.result.invites,
-        ],
+        inviteList: [...state.inviteList, ...action.payload.result.invites],
         invites: {
           ...state.invites,
           ...action.payload.entities.invites
@@ -73,9 +66,7 @@ export default function admin(state = initialState, action) {
       return {
         ...state,
         currentInvite: action.payload,
-        inviteList: [
-          ...new Set([action.payload._id, ...state.inviteList])
-        ],
+        inviteList: [...new Set([action.payload._id, ...state.inviteList])],
         invites: {
           ...state.invites,
           [action.payload._id]: {
@@ -89,10 +80,7 @@ export default function admin(state = initialState, action) {
     case types.SET_DOWNVOTES: {
       return {
         ...state,
-        downvotes: [
-          ...state.downvotes,
-          ...action.payload,
-        ],
+        downvotes: [...state.downvotes, ...action.payload]
       };
     }
 
@@ -104,4 +92,3 @@ export default function admin(state = initialState, action) {
       return state;
   }
 }
-

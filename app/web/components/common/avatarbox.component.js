@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
+import PropTypes from 'prop-types';
 import { numbers } from '../../../utils';
 
 import Avatar from './avatar.component';
@@ -8,7 +9,7 @@ export default function AvatarBox(props) {
   const user = props.user;
   if (!user) return null;
   const reverse = props.reverse;
-  let profileLink = user ? '/user/profile/' + user.handle : null;
+  const profileLink = user ? '/user/profile/' + user.handle : null;
 
   let timestamp;
   if (props.date) {
@@ -29,8 +30,7 @@ export default function AvatarBox(props) {
         {' • '}
         <img src="/img/r-emoji.png" alt="R" className="r" />
         {Math.round(props.topic.relevance)}
-        in
-        #{props.topic.name}
+        in #{props.topic.name}
       </span>
     );
   }
@@ -38,28 +38,43 @@ export default function AvatarBox(props) {
   if (user.relevance && !props.dontShowRelevance) {
     relevance = (
       <span>
-        <span style={{ backgroundImage: 'url(/img/r-emoji.png)'}} alt="R" className="r" />
+        <span style={{ backgroundImage: 'url(/img/r-emoji.png)' }} alt="R" className="r" />
         {Math.round(user.relevance.pagerank)}
       </span>
     );
   }
   return (
     <div className={['avatarBox', className].join(' ')}>
-      { !reverse && !props.noPic ? <Avatar auth={props.auth} user={user} /> : null}
+      {!reverse && !props.noPic ? <Avatar auth={props.auth} user={user} /> : null}
       <div className="userBox">
         <div className="bebasRegular username">
           {premsg}
-          <Link onClick={e => e.stopPropagation()} to={profileLink}>{user.name}</Link>
+          <Link onClick={e => e.stopPropagation()} to={profileLink}>
+            {user.name}
+          </Link>
           {relevance}
         </div>
         <div className="gray">
-          @<Link to={profileLink} onClick={e => e.stopPropagation()}>
+          @
+          <Link to={profileLink} onClick={e => e.stopPropagation()}>
             {user.handle}
           </Link>
           {timestamp}
         </div>
       </div>
-      { reverse ? <Avatar auth={props.auth} user={user} /> : null}
+      {reverse ? <Avatar auth={props.auth} user={user} /> : null}
     </div>
   );
 }
+
+AvatarBox.propTypes = {
+  user: PropTypes.object,
+  noPic: PropTypes.bool,
+  auth: PropTypes.object,
+  date: PropTypes.object,
+  small: PropTypes.bool,
+  topic: PropTypes.string,
+  isRepost: PropTypes.bool,
+  reverse: PropTypes.bool,
+  dontShowRelevance: PropTypes.bool
+};

@@ -1,15 +1,25 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  Linking
-} from 'react-native';
+import { StyleSheet, Text, Linking } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles } from '../../styles/global';
 import * as utils from '../../utils';
 
 let styles;
 
 class TextBody extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    scene: PropTypes.object,
+    post: PropTypes.object,
+    body: PropTypes.string,
+    children: PropTypes.node,
+    singlePost: PropTypes.bool,
+    maxTextLength: PropTypes.object,
+    showAllMentions: PropTypes.bool,
+    style: PropTypes.object,
+    numberOfLines: PropTypes.number
+  };
+
   constructor(props, context) {
     super(props, context);
     this.goToPost = this.goToPost.bind(this);
@@ -24,14 +34,14 @@ class TextBody extends Component {
 
   setSelected(user) {
     if (!this.props.actions) return;
-    let userId = user._id || user.replace('@', '');
+    const userId = user._id || user.replace('@', '');
     if (!user) return;
     if (this.props.scene && this.props.scene.id === userId) return;
     this.props.actions.goToProfile(user);
   }
 
   goToTopic(tag) {
-    let topic = {
+    const topic = {
       _id: tag.replace('#', '').trim(),
       categoryName: tag
     };
@@ -45,8 +55,7 @@ class TextBody extends Component {
   }
 
   shouldComponentUpdate(next) {
-    if (this.props.body !== next.body ||
-      this.props.children !== next.children) {
+    if (this.props.body !== next.body || this.props.children !== next.children) {
       return true;
     }
     return false;
@@ -54,28 +63,28 @@ class TextBody extends Component {
 
   render() {
     const expanded = this.props.singlePost;
-    let maxTextLength = this.props.maxTextLength || Math.pow(100, 10);
-    let body = this.props.body || this.props.children || '';
-    let post = this.props.post || {};
-    let showAllMentions = this.props.showAllMentions;
+    const maxTextLength = this.props.maxTextLength || Math.pow(100, 10);
+    const body = this.props.body || this.props.children || '';
+    const post = this.props.post || {};
+    const showAllMentions = this.props.showAllMentions;
 
     let bodyEl = null;
 
-    let bodyObj = [];
+    const bodyObj = [];
 
-    let extraTags = post.tags || [];
+    const extraTags = post.tags || [];
 
-    let textArr = utils.text.getWords(body);
+    const textArr = utils.text.getWords(body);
 
-    textArr.forEach((section) => {
-      let word = {};
+    textArr.forEach(section => {
+      const word = {};
       word.text = section;
       if (section.match(/^#/)) {
         word.type = 'hashtag';
-        let ind = extraTags.indexOf(word.text.replace('#', '').trim());
+        const ind = extraTags.indexOf(word.text.replace('#', '').trim());
         if (ind > -1) extraTags.splice(ind, 1);
       } else if (section.match(/^@/)) {
-        let m = section.replace('@', '');
+        const m = section.replace('@', '');
         if (post.mentions && post.mentions.find(mention => mention === m)) {
           word.type = 'mention';
         }
@@ -94,7 +103,7 @@ class TextBody extends Component {
       bodyObj.push({ type: 'hashtag', text: ' #' + tag });
     });
 
-    let reduced = [];
+    const reduced = [];
     let currentText = '';
     bodyObj.forEach((word, i) => {
       if (word.type === 'text' && i <= maxTextLength) {
@@ -117,48 +126,66 @@ class TextBody extends Component {
 
       if (word.type === 'hashtag') {
         if (i >= maxTextLength) tagsOnEnd = true;
-        return (<Text
-          key={i}
-          onPress={() => this.goToTopic(word.text)}
-          style={[this.props.style, styles.active]}
-        >
-          {word.text + space}
-        </Text>);
+        return (
+          <Text
+            key={i}
+            onPress={() => this.goToTopic(word.text)}
+            style={[this.props.style, styles.active]}
+          >
+            {word.text + space}
+          </Text>
+        );
       } else if (word.type === 'mention') {
         if (i >= maxTextLength) tagsOnEnd = true;
-        return (<Text
-          key={i}
-          onPress={() => this.setSelected(word.text)}
-          style={[this.props.style, styles.active]}
-        >
-          {word.text + space}
-        </Text>);
+        return (
+          <Text
+            key={i}
+            onPress={() => this.setSelected(word.text)}
+            style={[this.props.style, styles.active]}
+          >
+            {word.text + space}
+          </Text>
+        );
       } else if (word.type === 'url') {
-        return (<Text
-          key={i}
-          onPress={() => {
-            let link = word.text;
-            if (!link.match(/http:\/\//i) && !link.match(/https:\/\//i)) {
-              word.text = 'http://' + word.text;
-            }
-            return Linking.openURL(word.text);
-          }}
-          style={[this.props.style, styles.active]}
-        >
-          {word.text + space}
-        </Text>);
+        return (
+          <Text
+            key={i}
+            onPress={() => {
+              const link = word.text;
+              if (!link.match(/http:\/\//i) && !link.match(/https:\/\//i)) {
+                word.text = 'http://' + word.text;
+              }
+              return Linking.openURL(word.text);
+            }}
+            style={[this.props.style, styles.active]}
+          >
+            {word.text + space}
+          </Text>
+        );
       }
       if (i < maxTextLength || expanded) {
-        return (<Text style={this.props.style} key={i}>{word.text}</Text>);
+        return (
+          <Text style={this.props.style} key={i}>
+            {word.text}
+          </Text>
+        );
       } else if (!breakText) {
         breakText = i;
-        return <Text style={this.props.style} key={'break'}>... </Text>;
+        return (
+          <Text style={this.props.style} key={'break'}>
+            ...{' '}
+          </Text>
+        );
       }
       return null;
     });
 
     if (breakText) {
-      bodyEl.push(<Text style={[...this.props.style, styles.greyText]} key={'readmore'}>{tagsOnEnd ? '...' : ''}read more</Text>);
+      bodyEl.push(
+        <Text style={[...this.props.style, styles.greyText]} key={'readmore'}>
+          {tagsOnEnd ? '...' : ''}read more
+        </Text>
+      );
     }
 
     // console.log('rendering', reduced)
@@ -173,12 +200,10 @@ class TextBody extends Component {
       </Text>
     );
   }
-
 }
 
 export default TextBody;
 
-const localStyles = StyleSheet.create({
-});
+const localStyles = StyleSheet.create({});
 
 styles = { ...globalStyles, ...localStyles };

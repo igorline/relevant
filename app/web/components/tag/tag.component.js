@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
-import ProtTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 
 class Tag extends Component {
+  static propTypes = {
+    name: PropTypes.string
+  };
+
   render() {
-    let link = '/discover/tag/' + this.props.name + '/top';
+    const link = '/discover/tag/' + this.props.name + '/top';
     return (
       <Link to={link} onClick={e => e.stopPropagation()}>
-        {'#'}{this.props.name}
+        {'#'}
+        {this.props.name}
       </Link>
     );
   }

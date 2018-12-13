@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-  InteractionManager,
-} from 'react-native';
+import { StyleSheet, View, InteractionManager } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -18,7 +14,6 @@ import * as createPostActions from '../../actions/createPost.actions';
 import * as tagActions from '../../actions/tag.actions';
 import * as userActions from '../../actions/user.actions';
 import * as statsActions from '../../actions/stats.actions';
-import * as onlineActions from '../../actions/online.actions';
 import * as notifActions from '../../actions/notif.actions';
 import * as errorActions from '../../actions/error.actions';
 import * as messageActions from '../../actions/message.actions';
@@ -32,6 +27,18 @@ let styles;
 let localStyles;
 
 class Profile extends Component {
+  static propTypes = {
+    scene: PropTypes.object,
+    users: PropTypes.array,
+    auth: PropTypes.object,
+    refresh: PropTypes.object,
+    reload: PropTypes.object,
+    actions: PropTypes.object,
+    posts: PropTypes.object,
+    investments: PropTypes.object,
+    error: PropTypes.string
+  };
+
   constructor(props, context) {
     super(props, context);
     this.renderHeader = this.renderHeader.bind(this);
@@ -41,15 +48,12 @@ class Profile extends Component {
     this.changeView = this.changeView.bind(this);
     this.offset = 0;
     this.state = {
-      view: 0,
+      view: 0
     };
     this.userData = null;
     this.userId = null;
     this.needsReload = new Date().getTime();
-    this.tabs = [
-      { id: 0, title: 'Posts' },
-      { id: 1, title: 'Upvotes' },
-    ];
+    this.tabs = [{ id: 0, title: 'Posts' }, { id: 1, title: 'Upvotes' }];
     this.loaded = false;
     this.scrollTo = this.scrollTo.bind(this);
   }
@@ -90,7 +94,7 @@ class Profile extends Component {
   }
 
   shouldComponentUpdate(next) {
-    let tab = next.tabs.routes[next.tabs.index];
+    const tab = next.tabs.routes[next.tabs.index];
     if (tab.key !== 'myProfile' && !next.scene) return false;
     // console.log('updating profile');
     // for (let p in next) {
@@ -118,54 +122,45 @@ class Profile extends Component {
     if (length === undefined) length = 0;
 
     if (this.state.view === 0) {
-      this.props.actions.getUserPosts(
-        length,
-        5,
-        this.userId
-      );
+      this.props.actions.getUserPosts(length, 5, this.userId);
     } else {
-      this.props.actions.getInvestments(
-        this.props.auth.token,
-        this.userId,
-        length,
-        10
-      );
+      this.props.actions.getInvestments(this.props.auth.token, this.userId, length, 10);
     }
   }
 
   renderRow(rowData, view) {
-    let scene = this.props.scene || { route: { id: this.userId } };
+    const scene = this.props.scene || { route: { id: this.userId } };
 
     if (view === 0) {
-      let post = this.props.posts.posts[rowData];
+      const post = this.props.posts.posts[rowData];
       if (!post) return null;
-      let link = this.props.posts.links[post.metaPost];
-      return (<Post post={post} link={link} {...this.props} scene={scene} />);
+      const link = this.props.posts.links[post.metaPost];
+      return <Post post={post} link={link} {...this.props} scene={scene} />;
     }
     if (view === 1) {
-      let investment = this.props.investments.investments[rowData];
-      let post = this.props.posts.posts[investment.post];
+      const investment = this.props.investments.investments[rowData];
+      const post = this.props.posts.posts[investment.post];
       if (!post) return null;
-      let link = this.props.posts.links[post.metaPost];
-      return (<Post post={post} link={link} {...this.props} />);
+      const link = this.props.posts.links[post.metaPost];
+      return <Post post={post} link={link} {...this.props} />;
     }
     return null;
   }
 
   scrollToTop() {
-    let view = this.tabs[this.state.view].component.listview;
+    const view = this.tabs[this.state.view].component.listview;
     if (view) view.scrollTo({ y: 0, animated: true });
   }
 
   scrollTo(y) {
-    let view = this.tabs[this.state.view].component.listview;
+    const view = this.tabs[this.state.view].component.listview;
     if (view) view.scrollTo({ y, animated: true });
   }
 
   renderHeader() {
     let header = null;
     if (this.userId && this.userData) {
-      header = ([
+      header = [
         <ProfileComponent
           key={0}
           {...this.props}
@@ -174,14 +169,9 @@ class Profile extends Component {
           styles={styles}
           scrollTo={this.scrollTo}
         />,
-        <Tabs
-          key={1}
-          tabs={this.tabs}
-          active={this.state.view}
-          handleChange={this.changeView}
-        />,
+        <Tabs key={1} tabs={this.tabs} active={this.state.view} handleChange={this.changeView} />,
         <View key={2} style={{ height: 0 }} />
-      ]);
+      ];
     }
     return header;
   }
@@ -191,12 +181,12 @@ class Profile extends Component {
       case 0:
         return {
           data: this.props.posts.userPosts[this.userId],
-          loaded: this.props.posts.loaded.userPosts,
+          loaded: this.props.posts.loaded.userPosts
         };
       case 1:
         return {
           data: this.props.investments.userInvestments[this.userId],
-          loaded: this.props.investments.loadedProfileInv,
+          loaded: this.props.investments.loadedProfileInv
         };
       default:
         return null;
@@ -216,14 +206,15 @@ class Profile extends Component {
 
     if (this.userData && this.loaded) {
       listEl = [];
-      this.tabs.forEach((tab) => {
-        let tabData = this.getViewData(this.props, tab.id);
-        let active = this.state.view === tab.id;
+      this.tabs.forEach(tab => {
+        const tabData = this.getViewData(this.props, tab.id);
+        const active = this.state.view === tab.id;
         let data = tabData.data || [];
         if (!this.loaded) data = [];
-        let loaded = tabData.loaded && this.loaded;
-        let postCount = this.userData.postCount !== undefined ? this.userData.postCount : '';
-        let Upvotes = this.userData.investmentCount !== undefined ? this.userData.investmentCount : '';
+        const loaded = tabData.loaded && this.loaded;
+        const postCount = this.userData.postCount !== undefined ? this.userData.postCount : '';
+        const Upvotes =
+          this.userData.investmentCount !== undefined ? this.userData.investmentCount : '';
 
         if (tab.id === 0) {
           tab.title = 'Posts ' + postCount;
@@ -234,38 +225,37 @@ class Profile extends Component {
           tab.type = 'upvotes';
         }
 
-        listEl.push(<CustomListView
-          ref={(c) => { this.tabs[tab.id].component = c; }}
-          key={tab.id}
-          data={data}
-          parent={'profile'}
-          loaded={loaded}
-          renderRow={this.renderRow}
-          load={this.load}
-          view={tab.id}
-          stickyHeaderIndices={[1]}
-          type={tab.type}
-          active={active}
-          renderHeader={this.renderHeader}
-          needsReload={this.needsReload}
-          onReload={this.loadUser}
-          error={this.props.error}
-          headerData={this.userData}
-        />
+        listEl.push(
+          <CustomListView
+            ref={c => {
+              this.tabs[tab.id].component = c;
+            }}
+            key={tab.id}
+            data={data}
+            parent={'profile'}
+            loaded={loaded}
+            renderRow={this.renderRow}
+            load={this.load}
+            view={tab.id}
+            stickyHeaderIndices={[1]}
+            type={tab.type}
+            active={active}
+            renderHeader={this.renderHeader}
+            needsReload={this.needsReload}
+            onReload={this.loadUser}
+            error={this.props.error}
+            headerData={this.userData}
+          />
         );
       });
     }
 
-    return (
-      <View style={styles.profileContainer}>
-        {listEl}
-      </View>
-    );
+    return <View style={styles.profileContainer}>{listEl}</View>;
   }
 }
 
 Profile.propTypes = {
-  actions: PropTypes.object,
+  actions: PropTypes.object
 };
 
 function mapStateToProps(state) {
@@ -280,52 +270,57 @@ function mapStateToProps(state) {
     investments: state.investments,
     refresh: state.navigation.myProfile.refresh,
     reload: state.navigation.myProfile.reload,
-    tabs: state.navigation.tabs,
+    tabs: state.navigation.tabs
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...statsActions,
-      ...authActions,
-      ...postActions,
-      ...onlineActions,
-      ...notifActions,
-      ...errorActions,
-      ...animationActions,
-      ...messageActions,
-      ...tagActions,
-      ...userActions,
-      ...investActions,
-      ...createPostActions,
-      ...navigationActions,
-    }, dispatch),
+    actions: bindActionCreators(
+      {
+        ...statsActions,
+        ...authActions,
+        ...postActions,
+        ...notifActions,
+        ...errorActions,
+        ...animationActions,
+        ...messageActions,
+        ...tagActions,
+        ...userActions,
+        ...investActions,
+        ...createPostActions,
+        ...navigationActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Profile);
 
 localStyles = StyleSheet.create({
   postsHeader: {
-    padding: 10,
+    padding: 10
   },
   profileContainer: {
     position: 'relative',
     flex: 1,
     flexGrow: 1,
     alignItems: 'stretch',
-    backgroundColor: 'white',
+    backgroundColor: 'white'
   },
   wrap: {
     flexDirection: 'row',
-    flexWrap: 'nowrap',
+    flexWrap: 'nowrap'
   },
   centering: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 8,
-  },
+    padding: 8
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };

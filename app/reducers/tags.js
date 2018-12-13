@@ -3,20 +3,19 @@ import * as types from '../actions/actionTypes';
 const initialState = {
   tags: [],
   selectedTags: [],
-  parentTags: [],
+  parentTags: []
 };
 
 export default function tags(state = initialState, action) {
   switch (action.type) {
-
     case types.SET_DISCOVER_TAGS: {
       return Object.assign({}, state, {
-        tags: action.payload,
+        tags: action.payload
       });
     }
 
     case types.SELECT_TAG: {
-      let index = state.selectedTags.findIndex(tag => action.payload._id === tag._id);
+      const index = state.selectedTags.findIndex(tag => action.payload._id === tag._id);
       if (index > -1) return state;
       return {
         ...state,
@@ -25,7 +24,7 @@ export default function tags(state = initialState, action) {
     }
 
     case types.DESELECT_TAG: {
-      let index = state.selectedTags.findIndex(tag => action.payload._id === tag._id);
+      const index = state.selectedTags.findIndex(tag => action.payload._id === tag._id);
       return {
         ...state,
         selectedTags: [
@@ -36,7 +35,7 @@ export default function tags(state = initialState, action) {
     }
 
     case types.UPDATE_PARENT_TAG: {
-      let index = state.parentTags.findIndex(tag => tag._id === action.payload._id);
+      const index = state.parentTags.findIndex(tag => tag._id === action.payload._id);
       return {
         ...state,
         parentTags: [
@@ -50,10 +49,7 @@ export default function tags(state = initialState, action) {
     case types.SET_PARENT_TAGS: {
       return {
         ...state,
-        parentTags: [
-          ...action.payload,
-          ...state.parentTags,
-        ]
+        parentTags: [...action.payload, ...state.parentTags]
       };
     }
 
@@ -61,6 +57,7 @@ export default function tags(state = initialState, action) {
       return { ...initialState };
     }
 
-    default: return state;
+    default:
+      return state;
   }
 }

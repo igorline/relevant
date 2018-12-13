@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
-import {
-  Easing,
-} from 'react-native';
+import { Easing } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Discover from '../discover/discoverTabs.component';
@@ -29,6 +28,13 @@ import * as userActions from '../../actions/user.actions';
 import PostPeople from '../post/people.container';
 
 class CardContainer extends PureComponent {
+  static propTypes = {
+    defaultContainer: PropTypes.object,
+    actions: PropTypes.object,
+    auth: PropTypes.object,
+    navigation: PropTypes.object,
+    scene: PropTypes.object
+  };
 
   constructor(props, context) {
     super(props, context);
@@ -43,7 +49,7 @@ class CardContainer extends PureComponent {
   // }
 
   getDefaultComponent(props) {
-    let key = this.default;
+    const key = this.default;
     switch (key) {
       case 'discover':
         return <Discover key={key} actions={this.props.actions} />;
@@ -63,7 +69,7 @@ class CardContainer extends PureComponent {
   }
 
   renderScene(props) {
-    let component = props.scene.route.component;
+    const component = props.scene.route.component;
 
     switch (component) {
       // case 'comment':
@@ -78,7 +84,13 @@ class CardContainer extends PureComponent {
       // case 'messages':
       //   return <Messages navigator={this.props.actions} />;
       case 'discover':
-        return <Discover key={props.scene.route.key} actions={this.props.actions} scene={props.scene.route} />;
+        return (
+          <Discover
+            key={props.scene.route.key}
+            actions={this.props.actions}
+            scene={props.scene.route}
+          />
+        );
 
       case 'profile':
         return <Profile navigator={this.props.actions} scene={props.scene.route} />;
@@ -87,15 +99,17 @@ class CardContainer extends PureComponent {
         return <PostPeople scene={props.scene.route} />;
 
       case 'peopleView':
-        return (<DiscoverComponent
-          active
-          type={'people'}
-          key={'people'}
-          scene={props.scene.route}
-          // onScroll={this.onScroll}
-          // offsetY={this.state.headerHeight}
-          // tabLabel={props.scene.route.title}
-        />);
+        return (
+          <DiscoverComponent
+            active
+            type={'people'}
+            key={'people'}
+            scene={props.scene.route}
+            // onScroll={this.onScroll}
+            // offsetY={this.state.headerHeight}
+            // tabLabel={props.scene.route.title}
+          />
+        );
 
       case 'blocked':
         return <Blocked scene={props.scene.route} />;
@@ -112,7 +126,6 @@ class CardContainer extends PureComponent {
   }
 
   thirsty() {
-
     // this.props.actions.push({
     //   key: 'signup',
     //   title: 'Signup',
@@ -143,7 +156,8 @@ class CardContainer extends PureComponent {
             {...this.props}
             {...transitionProps}
             header
-          />)}
+          />
+        )}
       />
     );
   }
@@ -154,7 +168,7 @@ function mapStateToProps(state) {
     navigation: state.navigation,
     auth: state.auth,
     users: state.user,
-    tags: state.tags,
+    tags: state.tags
   };
 }
 
@@ -164,9 +178,14 @@ function mapDispatchToProps(dispatch) {
       {
         ...userActions,
         ...navigationActions,
-        ...tagActions,
-      }, dispatch),
+        ...tagActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CardContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CardContainer);

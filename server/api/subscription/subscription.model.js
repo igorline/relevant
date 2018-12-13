@@ -1,9 +1,10 @@
-'use strict';
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 
-var SubscriptionSchema = new Schema({
+const mongoose = require('mongoose');
+
+const Schema = mongoose.Schema;
+
+const SubscriptionSchema = new Schema({
   follower: { type: String, ref: 'User' },
   following: { type: String, ref: 'User' },
   amount: Number,

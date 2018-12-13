@@ -15,13 +15,13 @@ exports.get = async (req, res) => {
     // only works for community's own posts
     // solution: populate postData then populate with postData post
     // TODO - for now isolate commentary to given community
-    let community = req.query.community;
-    let user = req.user;
+    const community = req.query.community;
+    const user = req.user;
 
-    let skip = parseInt(req.query.skip, 10) || 0;
-    let limit = parseInt(req.query.limit, 10) || 5;
-    let tag = req.query.tag || null;
-    let sort = req.query.sort;
+    const skip = parseInt(req.query.skip, 10) || 0;
+    const limit = parseInt(req.query.limit, 10) || 5;
+    const tag = req.query.tag || null;
+    const sort = req.query.sort;
     let sortQuery;
     let commentarySort;
 
@@ -43,46 +43,46 @@ exports.get = async (req, res) => {
 
     if (tag) query = { tags: tag, community };
     let feed;
-    let posts = [];
+    const posts = [];
 
     feed = await Feed.find(query)
-    .sort(sortQuery)
-    .skip(skip)
-    .limit(limit)
-    .populate({
-      path: 'post',
-      populate: [
-        { path: 'data' },
-        {
-          path: 'commentary',
-          match: {
+      .sort(sortQuery)
+      .skip(skip)
+      .limit(limit)
+      .populate({
+        path: 'post',
+        populate: [
+          { path: 'data' },
+          {
+            path: 'commentary',
+            match: {
             // TODO implement intra-community commentary
-            community,
+              community,
 
-            // TODO - we should probably sort the non-community commentary
-            // with some randomness on client side
-            repost: { $exists: false },
-            user: { $nin: blocked },
-            $or: [{ hidden: { $ne: true } }],
-          },
-          options: { sort: commentarySort },
-          populate: [
-            { path: 'data' },
-            {
-              path: 'embeddedUser.relevance',
-              select: 'pagerank',
-              match: { community, global: true },
+              // TODO - we should probably sort the non-community commentary
+              // with some randomness on client side
+              repost: { $exists: false },
+              user: { $nin: blocked },
+              $or: [{ hidden: { $ne: true } }],
             },
-          ]
-        },
-        { path: 'metaPost' },
-        {
-          path: 'embeddedUser.relevance',
-          select: 'pagerank',
-          match: { community, global: true },
-        },
-      ]
-    });
+            options: { sort: commentarySort },
+            populate: [
+              { path: 'data' },
+              {
+                path: 'embeddedUser.relevance',
+                select: 'pagerank',
+                match: { community, global: true },
+              },
+            ]
+          },
+          { path: 'metaPost' },
+          {
+            path: 'embeddedUser.relevance',
+            select: 'pagerank',
+            match: { community, global: true },
+          },
+        ]
+      });
 
     feed.forEach(async (f) => {
       if (f.post) {
@@ -135,7 +135,7 @@ exports.get = async (req, res) => {
 
     // TODO worker thread?
     if (user) {
-      let postIds = [];
+      const postIds = [];
       posts.forEach(meta => {
         postIds.push(meta._id);
         meta.commentary.forEach(post => {

@@ -6,13 +6,12 @@ class PostButtons extends Component {
   static propTypes = {
     auth: PropTypes.object,
     myPostInv: PropTypes.object,
-    post: PropTypes.object,
+    post: PropTypes.object
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
     this.vote = this.vote.bind(this);
     this.irrelevant = this.irrelevant.bind(this);
     this.share = this.share.bind(this);
@@ -20,18 +19,13 @@ class PostButtons extends Component {
 
   async vote(e, vote) {
     try {
-      e && e.preventDefault();
+      e.preventDefault();
       e.stopPropagation();
 
       if (!this.props.auth.isAuthenticated) return null;
 
-      let amount = 1;
-      await this.props.actions.vote(
-        amount,
-        this.props.post,
-        this.props.auth.user,
-        vote
-      );
+      const amount = 1;
+      await this.props.actions.vote(amount, this.props.post, this.props.auth.user, vote);
       // alert('Success!');
 
       // TODO animation & analytics
@@ -40,22 +34,19 @@ class PostButtons extends Component {
       // setTimeout(() => {
       //   // this.props.actions.reloadTab('read');
       //   let name = this.props.post.embeddedUser.name;
-      //   alert('You have subscribed to receive ' + results.subscription.amount + ' posts from ' + name);
+      //   alert('You have subscribed to receive '
+      //   + results.subscription.amount + ' posts from ' + name);
       // }, 1500);
     } catch (err) {
-      console.log(err);
-      let text1 = err.message;
-      if (text1.match('coin')) {
-        text1 = 'Oops! Looks like you ran out of coins, but don\'t worry, you\'ll get more tomorrow';
-      }
-      alert(text1);
+      // TODO error handling
+      alert(err.message);
     }
     return null;
   }
 
   async irrelevant(e, vote) {
     try {
-      e && e.preventDefault();
+      e.preventDefault();
       e.stopPropagation();
 
       if (!this.props.auth.isAuthenticated) return;
@@ -71,21 +62,18 @@ class PostButtons extends Component {
       // this.props.actions.triggerAnimation('vote', -1);
       // this.props.actions.triggerAnimation('irrelevant', -1);
     } catch (err) {
-      let text1 = err.message;
-      if (text1.match('coin')) {
-        text1 = 'Oops! Looks like you ran out of coins, but don\'t worry, you\'ll get more tomorrow';
-      }
-      alert(text1);
+      // TODO error handling
+      alert(err.message);
     }
   }
 
   async share(e) {
-    e && e.preventDefault();
+    e.preventDefault();
     return null;
   }
 
   render() {
-    let { post, auth } = this.props;
+    const { post, auth } = this.props;
 
     if (post === 'notFound') {
       return null;
@@ -109,22 +97,25 @@ class PostButtons extends Component {
       }
     }
 
-    let comments = post.commentCount || '';
-    let commentText = comments > 1 ? comments + ' comments' : comments + ' comment';
+    const comments = post.commentCount || '';
+    const commentText = comments > 1 ? comments + ' comments' : comments + ' comment';
 
-    let commentEl = <Link className="commentcount details" to={'/post/' + post._id}>
-      <img alt="Comment" src="/img/comment.svg" />
-      <span>{commentText}</span>
-    </Link>;
+    const commentEl = (
+      <Link className="commentcount details" to={'/post/' + post._id}>
+        <img alt="Comment" src="/img/comment.svg" />
+        <span>{commentText}</span>
+      </Link>
+    );
 
     return (
       <div className="postbuttons">
         <div className="left">
-          <a
-            style={buttonOpacity}
-            onClick={e => this.vote(e, vote)}
-          >
-            <img alt="Upvote" src={votedUp ? '/img/upvoteActive.png' : upvoteBtn} className="upvote" />
+          <a style={buttonOpacity} onClick={e => this.vote(e, vote)}>
+            <img
+              alt="Upvote"
+              src={votedUp ? '/img/upvoteActive.png' : upvoteBtn}
+              className="upvote"
+            />
           </a>
           <div className="fraction">
             <div className="dem">
@@ -132,16 +123,15 @@ class PostButtons extends Component {
               <img alt="R" src="/img/r-gray.svg" />
             </div>
           </div>
-          <a
-            style={buttonOpacity}
-            onClick={e => this.irrelevant(e, vote)}
-          >
-            <img alt="Downvote" src={votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg'} className="downvote" />
+          <a style={buttonOpacity} onClick={e => this.irrelevant(e, vote)}>
+            <img
+              alt="Downvote"
+              src={votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg'}
+              className="downvote"
+            />
           </a>
         </div>
-        <div className="right">
-          {post.type === 'comment' ? '' : commentEl}
-        </div>
+        <div className="right">{post.type === 'comment' ? '' : commentEl}</div>
       </div>
     );
   }

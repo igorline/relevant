@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as routerActions from 'react-router-redux';
@@ -17,6 +18,18 @@ if (process.env.BROWSER === true) {
 }
 
 class AuthContainer extends Component {
+  static propTypes = {
+    auth: PropTypes.object,
+    location: PropTypes.object,
+    modal: PropTypes.bool,
+    actions: PropTypes.object,
+    dispatch: PropTypes.func,
+    toggleLogin: PropTypes.func,
+    user: PropTypes.object,
+    open: PropTypes.bool,
+    route: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     this.login = this.login.bind(this);
@@ -26,7 +39,7 @@ class AuthContainer extends Component {
     this.authNav = this.authNav.bind(this);
     this.close = this.close.bind(this);
 
-    let defaultRoute = '/' + this.props.auth.community + '/new';
+    const defaultRoute = '/' + this.props.auth.community + '/new';
 
     const redirectRoute = this.props.location.query.redirect || defaultRoute;
 
@@ -38,7 +51,7 @@ class AuthContainer extends Component {
 
   componentWillReceiveProps(next) {
     if (this.props.modal) return;
-    let redirectTo = this.props.location.query.redirect;
+    const redirectTo = this.props.location.query.redirect;
     if (!this.props.auth.user && next.auth.user && redirectTo) {
       this.props.actions.push(redirectTo);
     }
@@ -46,21 +59,18 @@ class AuthContainer extends Component {
 
   async login(data) {
     try {
-      let user = {
+      const user = {
         name: data.username,
         password: data.password
       };
-      let loggedIn = await this.props.actions.loginUser(user);
+      const loggedIn = await this.props.actions.loginUser(user);
       if (loggedIn) this.close();
     } catch (err) {
-      console.log(err);
+      // TODO error handling
     }
   }
 
   authNav(type) {
-    // type = type;
-    console.log('is modal', this.props.modal);
-
     if (this.props.modal) {
       this.setState({ type });
     } else this.props.actions.push('/user/' + type);
@@ -68,15 +78,15 @@ class AuthContainer extends Component {
 
   async signup(data) {
     try {
-      let user = {
+      const user = {
         name: data.username,
         email: data.email,
         password: data.password
       };
-      let signedUp = await this.props.actions.createUser(user);
+      const signedUp = await this.props.actions.createUser(user);
       if (signedUp) this.close();
     } catch (err) {
-      console.log('error signing up ', err);
+      // TODO error handling
     }
   }
 
@@ -123,8 +133,8 @@ class AuthContainer extends Component {
     } else if (path === 'forgot') {
       auth = <Forgot authNav={this.authNav} {...this.props} />;
       title = 'Recover Password';
-    // } else if (isAuthenticated) {
-    //   auth = <button onClick={() => this.logout()}>logout</button>;
+      // } else if (isAuthenticated) {
+      //   auth = <button onClick={() => this.logout()}>logout</button>;
     } else if (path === 'login') {
       auth = <LoginForm authNav={this.authNav} parentFunction={this.login} {...this.props} />;
       title = 'Sign In';
@@ -137,13 +147,13 @@ class AuthContainer extends Component {
     }
 
     return (
-      <Modal
-        visible={visible}
-        close={this.close.bind(this)}
-        title={title}
-      >
+      <Modal visible={visible} close={this.close.bind(this)} title={title}>
         <div className="authContainer" style={styles.authContainer}>
-          {user && !confirm ? <div className="authStatus">You are logged in as @{user.handle}</div> : ''}
+          {user && !confirm ? (
+            <div className="authStatus">You are logged in as @{user.handle}</div>
+          ) : (
+            ''
+          )}
           {auth}
         </div>
       </Modal>
@@ -167,14 +177,20 @@ const mapStateToProps = state => ({
   statusText: state.auth.statusText,
   user: state.auth.user,
   message: state.socket.message,
-  auth: state.auth,
+  auth: state.auth
 });
 
 const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators({
-    ...authActions,
-    ...routerActions
-  }, dispatch)
+  actions: bindActionCreators(
+    {
+      ...authActions,
+      ...routerActions
+    },
+    dispatch
+  )
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AuthContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AuthContainer);

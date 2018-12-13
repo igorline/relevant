@@ -11,11 +11,11 @@ const config = {
 
 function connectWithRetry() {
   mongoose.connect(process.env.MONGO_URI, config)
-  .catch(err => {
-    console.log('catch ', err);
-    console.error('Failed to connect to mongo on startup - retrying in 5 sec', err);
-    setTimeout(connectWithRetry, 5000);
-  });
+    .catch(err => {
+      console.log('catch ', err);
+      console.error('Failed to connect to mongo on startup - retrying in 5 sec', err);
+      setTimeout(connectWithRetry, 5000);
+    });
 }
 connectWithRetry();
 

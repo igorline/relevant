@@ -2,15 +2,16 @@ import * as types from './actionTypes';
 import * as utils from '../utils';
 
 utils.api.env();
+const Alert = utils.api.Alert();
 
 const reqOptions = async () => {
-  let token = await utils.token.get();
+  const token = await utils.token.get();
   return {
     credentials: 'include',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`
     }
   };
 };
@@ -21,12 +22,6 @@ export function setDiscoverTags(data) {
     payload: data
   };
 }
-
-// export function goToTag(tag) {
-//   return (dispatch) => {
-//     dispatch(setTag(tag));
-//   };
-// }
 
 export function selectTag(tag) {
   return {
@@ -49,7 +44,6 @@ export function updateParentTag(tag) {
   };
 }
 
-
 export function setParentTags(data) {
   return {
     type: types.SET_PARENT_TAGS,
@@ -68,18 +62,16 @@ export function getDiscoverTags() {
       }
     })
     .then(utils.api.handleErrors)
-    .then((response) => response.json())
-    .then((responseJSON) => {
+    .then(response => response.json())
+    .then(responseJSON => {
       dispatch(setDiscoverTags(responseJSON));
     })
-    .catch((error) => {
-      console.log(error, 'error');
-    });
+    .catch(err => Alert('Error getting tags ' + err.message));
   };
 }
 
 export function searchTags(tag) {
-  return (dispatch) => {
+  return dispatch => {
     if (!tag || tag === '') {
       return dispatch(setDiscoverTags([]));
     }
@@ -89,14 +81,14 @@ export function searchTags(tag) {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
-      },
+      }
     })
     .then(response => response.json())
-    .then((responseJSON) => {
+    .then(responseJSON => {
       dispatch(setDiscoverTags(responseJSON));
     })
     .catch(error => {
-      console.log('Search error ', error);
+      Alert('Search error ', error);
     });
   };
 }
@@ -104,16 +96,16 @@ export function searchTags(tag) {
 export function createTag(tag) {
   return async dispatch =>
     fetch(process.env.API_SERVER + '/api/tag', {
-      ...await reqOptions(),
+      ...(await reqOptions()),
       method: 'POST',
       body: JSON.stringify(tag)
     })
-    .then((response) => response.json())
-    .then((responseJSON) => {
+    .then(response => response.json())
+    .then(responseJSON => {
       dispatch(setParentTags([responseJSON]));
     })
-    .catch((error) => {
-      console.log('error creating tag ', error);
+    .catch(error => {
+      Alert('error creating tag ' + error);
       return { status: false, data: error };
     });
 }
@@ -121,28 +113,26 @@ export function createTag(tag) {
 export function updateTag(tag) {
   return async dispatch =>
     fetch(process.env.API_SERVER + '/api/tag/categories', {
-      ...await reqOptions(),
+      ...(await reqOptions()),
       method: 'PUT',
       body: JSON.stringify(tag)
     })
-    .then((response) => response.json())
-    .then((responseJSON) => {
+    .then(response => response.json())
+    .then(responseJSON => {
       dispatch(updateParentTag(responseJSON));
     });
 }
 
 export function getParentTags() {
-  return async (dispatch) => {
+  return async dispatch => {
     fetch(process.env.API_SERVER + '/api/tag/categories?active', {
       method: 'GET',
-      ...await reqOptions()
+      ...(await reqOptions())
     })
-    .then((response) => response.json())
-    .then((responseJSON) => {
+    .then(response => response.json())
+    .then(responseJSON => {
       dispatch(setParentTags(responseJSON));
     })
-    .catch((error) => {
-      console.log('parents error', error);
-    });
+    .catch(error => Alert('parents error', error));
   };
 }

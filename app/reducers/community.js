@@ -1,10 +1,7 @@
 import { normalize, schema } from 'normalizr';
 import * as types from '../actions/actionTypes';
 
-const CommunitySchema = new schema.Entity('communities',
-  {},
-  { idAttribute: 'slug' }
-);
+const CommunitySchema = new schema.Entity('communities', {}, { idAttribute: 'slug' });
 
 const initialState = {
   communities: {},
@@ -20,7 +17,7 @@ export default function comments(state = initialState, action) {
         ...state,
         communities: {
           ...state.communities,
-          ...normalized.entities.communities,
+          ...normalized.entities.communities
         },
         list: [...new Set([...state.list, ...normalized.result])]
       };

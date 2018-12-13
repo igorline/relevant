@@ -9,34 +9,17 @@ const Alert = utils.api.Alert();
 utils.api.env();
 const apiServer = process.env.API_SERVER + '/api/';
 
-const commentSchema = new schema.Entity(
-  'comments',
-  {},
-  { idAttribute: '_id' }
-);
+const commentSchema = new schema.Entity('comments', {}, { idAttribute: '_id' });
 
-const userSchema = new schema.Entity(
-  'users',
-  {},
-  { idAttribute: '_id' }
-);
+const userSchema = new schema.Entity('users', {}, { idAttribute: '_id' });
 
-const repostSchema = new schema.Entity(
-  'posts',
-  { idAttribute: '_id' }
-);
+const repostSchema = new schema.Entity('posts', { idAttribute: '_id' });
 
 let metaPostSchema;
-let postSchema;
 
-const linkSchema = new schema.Entity(
-  'links',
-  {},
-  { idAttribute: '_id' }
-);
+const linkSchema = new schema.Entity('links', {}, { idAttribute: '_id' });
 
-
-postSchema = new schema.Entity(
+const postSchema = new schema.Entity(
   'posts',
   {
     user: userSchema,
@@ -59,7 +42,8 @@ const feedSchema = new schema.Entity(
     metaPost: linkSchema
     // twitterCommentary: [postSchema],
   },
-  { idAttribute: '_id',
+  {
+    idAttribute: '_id',
     processStrategy: (value, parent, key) => {
       value[key] = value.commentary;
       // console.log(value)
@@ -68,17 +52,14 @@ const feedSchema = new schema.Entity(
   }
 );
 
-const reqOptions = (token) => {
-  return {
-    credentials: 'include',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    }
-  };
-};
-
+const reqOptions = token => ({
+  credentials: 'include',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`
+  }
+});
 
 // load 5 posts at a time
 const DEFAULT_LIMIT = 10;
@@ -136,10 +117,9 @@ export function removePost(post) {
   };
 }
 
-
 export function postError() {
   return {
-    type: types.POST_ERROR,
+    type: types.POST_ERROR
   };
 }
 
@@ -168,22 +148,20 @@ export function setPosts(data, type, index) {
 
 export function getFeed(skip, _tag) {
   if (!skip) skip = 0;
-  let type = 'feed';
-  let limit = DEFAULT_LIMIT;
-  let tag = _tag ? _tag._id : null;
+  const type = 'feed';
+  const limit = DEFAULT_LIMIT;
+  const tag = _tag ? _tag._id : null;
 
   return dispatch =>
-    utils.api.request({
+    utils.api
+    .request({
       method: 'GET',
       query: { skip, limit, tag },
       endpoint: 'feed',
-      path: '/',
+      path: '/'
     })
     .then(res => {
-      let data = normalize(
-        { feed: res },
-        { feed: [postSchema] }
-      );
+      const data = normalize({ feed: res }, { feed: [postSchema] });
       dispatch(setUsers(data.entities.users));
       dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('read', false));
@@ -196,25 +174,22 @@ export function getFeed(skip, _tag) {
     });
 }
 
-
 export function getTwitterFeed(skip, _tag) {
   if (!skip) skip = 0;
-  let type = 'twitterFeed';
-  let limit = DEFAULT_LIMIT;
-  let tag = _tag ? _tag._id : null;
+  const type = 'twitterFeed';
+  const limit = DEFAULT_LIMIT;
+  const tag = _tag ? _tag._id : null;
 
   return dispatch =>
-    utils.api.request({
+    utils.api
+    .request({
       method: 'GET',
       query: { skip, limit, tag },
       endpoint: 'twitterFeed',
-      path: '/',
+      path: '/'
     })
     .then(res => {
-      let data = normalize(
-        { twitterFeed: res },
-        { twitterFeed: [feedSchema] }
-      );
+      const data = normalize({ twitterFeed: res }, { twitterFeed: [feedSchema] });
       dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('read', false));
     })
@@ -226,10 +201,10 @@ export function getTwitterFeed(skip, _tag) {
     });
 }
 
-
 export function deletePost(post, redirect) {
   return dispatch =>
-    utils.api.request({
+    utils.api
+    .request({
       method: 'DELETE',
       endpoint: 'post',
       params: { id: post._id }
@@ -238,14 +213,14 @@ export function deletePost(post, redirect) {
       dispatch(removePost(post));
       if (redirect) dispatch(navigationActions.pop());
     })
-    .catch(error => console.log(error, 'error'));
+    .catch(null);
 }
 
 export function clearPosts(type) {
   return {
     type: types.CLEAR_POSTS,
     payload: {
-      type,
+      type
     }
   };
 }
@@ -253,10 +228,9 @@ export function clearPosts(type) {
 export function getPostsAction(type) {
   return {
     type: 'GET_POSTS',
-    payload: type,
+    payload: type
   };
 }
-
 
 export function setSelectedPost(id) {
   return {
@@ -305,7 +279,7 @@ export function setComments(postId, comments, index, total) {
       data: comments,
       index: num,
       postId,
-      total,
+      total
     }
   };
 }
@@ -335,18 +309,14 @@ export function getPosts(skip, tags, sort, limit) {
   return async dispatch => {
     try {
       dispatch(getPostsAction(type));
-      console.log({ skip, sort, limit, tag });
 
-      let res = await utils.api.request({
+      const res = await utils.api.request({
         method: 'GET',
         endpoint,
         query: { skip, sort, limit, tag }
       });
-      let dataType = feedSchema;
-      let data = normalize(
-        { [type]: res },
-        { [type]: [dataType] }
-      );
+      const dataType = feedSchema;
+      const data = normalize({ [type]: res }, { [type]: [dataType] });
 
       dispatch(setUsers(data.entities.users));
 
@@ -355,7 +325,6 @@ export function getPosts(skip, tags, sort, limit) {
       } else dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('discover', false));
     } catch (error) {
-      console.log(error, 'error');
       dispatch(errorActions.setError('discover', true, error.message));
     }
   };
@@ -363,32 +332,29 @@ export function getPosts(skip, tags, sort, limit) {
 
 export function loadingUserPosts() {
   return {
-    type: 'LOADING_USER_POSTS',
+    type: 'LOADING_USER_POSTS'
   };
 }
 
 export function getUserPosts(skip, limit, userId) {
   if (!skip) skip = 0;
   if (!limit) limit = 5;
-  return async (dispatch) => {
+  return async dispatch => {
     dispatch(loadingUserPosts());
-    return utils.api.request({
+    return utils.api
+    .request({
       method: 'GET',
       endpoint: 'post/user',
       params: { id: userId },
       query: { skip, limit }
     })
-    .then((responseJSON) => {
-      let data = normalize(
-        { [userId]: responseJSON },
-        { [userId]: [postSchema] }
-      );
+    .then(responseJSON => {
+      const data = normalize({ [userId]: responseJSON }, { [userId]: [postSchema] });
       dispatch(setUsers(data.entities.users));
       dispatch(setUserPosts(data, userId, skip));
       dispatch(errorActions.setError('profile', false));
     })
-    .catch((error) => {
-      console.log(error, 'error');
+    .catch(error => {
       dispatch(errorActions.setError('profile', true, error.message));
     });
   };
@@ -403,10 +369,11 @@ export function addUpdatedComment(comment) {
 
 export function updateComment(comment) {
   return dispatch =>
-    utils.api.request({
+    utils.api
+    .request({
       method: 'PUT',
       endpoint: 'comment',
-      body: JSON.stringify(comment),
+      body: JSON.stringify(comment)
     })
     .then(res => dispatch(updatePost(res)))
     .catch(error => Alert.alert(error.message));
@@ -415,10 +382,10 @@ export function updateComment(comment) {
 export function editPost(post) {
   return async dispatch => {
     try {
-      let response = await utils.api.request({
+      const response = await utils.api.request({
         method: 'PUT',
         endpoint: 'post',
-        body: JSON.stringify(post),
+        body: JSON.stringify(post)
       });
       dispatch(updatePost(response));
       return true;
@@ -432,18 +399,17 @@ export function editPost(post) {
 export function deleteComment(id) {
   return async dispatch => {
     try {
-      let response = await utils.api.request({
+      await utils.api.request({
         method: 'DELETE',
         endpoint: 'comment',
-        path: '/' + id,
+        path: '/' + id
       });
-      dispatch(removePost(id));
+      return dispatch(removePost(id));
     } catch (err) {
       return false;
     }
   };
 }
-
 
 export function getComments(post, skip, limit) {
   return async dispatch => {
@@ -451,17 +417,14 @@ export function getComments(post, skip, limit) {
       if (!skip) skip = 0;
       if (!limit) limit = 0;
 
-      let responseJSON = await utils.api.request({
+      const responseJSON = await utils.api.request({
         method: 'GET',
         endpoint: 'comment',
         query: { post, skip, limit }
       });
 
       dispatch(errorActions.setError('comments', false));
-      let data = normalize(
-        { [post]: responseJSON.data },
-        { [post]: [commentSchema] }
-      );
+      const data = normalize({ [post]: responseJSON.data }, { [post]: [commentSchema] });
       dispatch(setComments(post, data, skip, responseJSON.total));
     } catch (err) {
       dispatch(errorActions.setError('comments', true, err.message));
@@ -472,7 +435,7 @@ export function getComments(post, skip, limit) {
 export function createComment(token, commentObj) {
   return async dispatch => {
     try {
-      let response = await utils.api.request({
+      const response = await utils.api.request({
         method: 'POST',
         endpoint: 'comment',
         path: '/',
@@ -489,7 +452,7 @@ export function createComment(token, commentObj) {
 export function getSelectedPost(postId) {
   return async dispatch => {
     try {
-      let responseJSON = await utils.api.request({
+      const responseJSON = await utils.api.request({
         method: 'GET',
         endpoint: 'post',
         path: '',
@@ -512,23 +475,24 @@ export function getSelectedPost(postId) {
 export function getRelated(postId) {
   return async dispatch => {
     try {
-      let responseJSON = await utils.api.request({
+      const responseJSON = await utils.api.request({
         method: 'GET',
         endpoint: 'metaPost',
         path: '/related',
         params: { id: postId }
       });
-      dispatch(updateRelated({
-        related: responseJSON,
-        postId
-      }));
+      dispatch(
+        updateRelated({
+          related: responseJSON,
+          postId
+        })
+      );
       return responseJSON;
     } catch (error) {
       return false;
     }
   };
 }
-
 
 export function setFeedCount(data) {
   return {
@@ -537,47 +501,17 @@ export function setFeedCount(data) {
   };
 }
 
-// ------------- OLD FEED STUFF -------------
-// 
-// export function markFeedRead() {
-//   return dispatch =>
-//     utils.token.get()
-//     .then(token =>
-//       fetch(`${apiServer}feed/markread`, {
-//         ...reqOptions(token),
-//         method: 'PUT',
-//       })
-//     )
-//     .then((res) => {
-//       dispatch(setFeedCount(null));
-//     })
-//     .catch(error => console.log('error', error));
-// }
-
-// export function getFeedCount() {
-//   return dispatch =>
-//     utils.token.get()
-//     .then(token =>
-//       fetch(`${apiServer}feed/unread`, {
-//         ...reqOptions(token),
-//         method: 'GET'
-//       })
-//     )
-//     .then(response => response.json())
-//     .then(responseJSON => dispatch(setFeedCount(responseJSON.unread)))
-//     .catch(err => console.log('Notification count error', err));
-// }
-
 export function setSubscriptions(data) {
   return {
     type: types.SET_SUBSCRIPTIONS,
-    payload: data,
+    payload: data
   };
 }
 
 export function getSubscriptions() {
   return dispatch =>
-    utils.token.get()
+    utils.token
+    .get()
     .then(token =>
       fetch(`${apiServer}subscription/user`, {
         ...reqOptions(token),
@@ -586,12 +520,13 @@ export function getSubscriptions() {
     )
     .then(response => response.json())
     .then(responseJSON => dispatch(setSubscriptions(responseJSON)))
-    .catch(err => console.log('Subscription error', err));
+    .catch(null);
 }
 
 export function flag(post) {
   return dispatch =>
-    utils.token.get()
+    utils.token
+    .get()
     .then(token =>
       fetch(`${apiServer}post/flag`, {
         ...reqOptions(token),
@@ -604,40 +539,34 @@ export function flag(post) {
       Alert.alert('Thank you', 'Flagged posts will be reviewed by the administrators');
       dispatch(updatePost(responseJSON));
     })
-    .catch(err => console.log('Subscription error', err));
+    .catch(null);
 }
 
 export function getPostHtml(post) {
   return dispatch =>
-    // fetch(post.link, {
     fetch(`${apiServer}post/readable?uri=${post.link}`, {
-      headers: {
-        // 'Content-Type': 'application/json',
-        // 'x-api-key': process.env.READER_API
-      },
       method: 'GET'
     })
     .then(response => response.text())
     .then(html => {
-      console.log(html);
       dispatch(updatePost({ ...post, html }));
     })
-    .catch(err => console.log('Subscription error', err));
+    .catch(null);
 }
 
 export function setTopPosts(data) {
   return {
     type: types.SET_TOP_POSTS,
-    payload: data,
+    payload: data
   };
 }
 
 export function getFlaggedPosts(skip) {
   if (!skip) skip = 0;
-  let type = 'flagged';
+  const type = 'flagged';
 
   function getUrl() {
-    let url = `${apiServer}metaPost/flagged?skip=${skip}&limit=${DEFAULT_LIMIT}`;
+    const url = `${apiServer}metaPost/flagged?skip=${skip}&limit=${DEFAULT_LIMIT}`;
     return url;
   }
 
@@ -645,20 +574,17 @@ export function getFlaggedPosts(skip) {
     // dispatch(getPostsAction(type));
     fetch(getUrl(), {
       method: 'GET',
-      ...await utils.api.reqOptions()
+      ...(await utils.api.reqOptions())
     })
     .then(response => response.json())
-    .then((responseJSON) => {
-      let dataType = metaPostSchema;
-      let data = normalize(
-        { [type]: responseJSON },
-        { [type]: [dataType] }
-      );
+    .then(responseJSON => {
+      const dataType = metaPostSchema;
+      const data = normalize({ [type]: responseJSON }, { [type]: [dataType] });
       dispatch(setPosts(data, type, skip));
       // dispatch(errorActions.setError(type, false));
     })
-    .catch((error) => {
-      console.log('Feed error ', error);
+    .catch(error => {
+      Alert('Feed error ', error);
       if (!error.message.match('Get fail for key: token')) {
         // dispatch(errorActions.setError(type, true, error.message));
       }
@@ -666,14 +592,13 @@ export function getFlaggedPosts(skip) {
   };
 }
 
-
 export function getTopPosts() {
   return async dispatch => {
     try {
-      let responseJSON = await utils.api.request({
+      const responseJSON = await utils.api.request({
         method: 'GET',
         endpoint: 'post',
-        path: '/topPosts',
+        path: '/topPosts'
       });
       // console.log('top posts ', responseJSON);
       return dispatch(setTopPosts(responseJSON));
@@ -682,4 +607,3 @@ export function getTopPosts() {
     }
   };
 }
-

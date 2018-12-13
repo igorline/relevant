@@ -1,4 +1,5 @@
 import test from 'ava';
+
 const request = require('supertest');
 
 // need to swithc cdw to the main project directory
@@ -13,7 +14,7 @@ test.beforeEach(t => {
 });
 
 test.before(async t => {
-  let app = require('../../server.js').app;
+  const app = require('../../server.js').app;
   r = request(app);
   // var clean = await cleanupData();
   // await setupData();
@@ -23,8 +24,8 @@ test.serial('Auth', async t => {
   t.plan(2);
 
   const res = await r
-      .post('/auth/local')
-      .send({ name: 'test', password: 'test' });
+    .post('/auth/local')
+    .send({ name: 'test', password: 'test' });
 
   token = res.body.token;
   t.is(res.status, 200);
@@ -35,17 +36,17 @@ test.serial('Auth', async t => {
 test.serial('Get stats', async t => {
   t.plan(2);
 
-  let endTime = new Date();
-  let startTime = new Date(endTime - 1000 * 60 * 60 * 1);
+  const endTime = new Date();
+  const startTime = new Date(endTime - 1000 * 60 * 60 * 1);
 
   const res = await r
-      .get('/api/statistics'
+    .get('/api/statistics'
         + '?startTime=' + startTime
         + ';&endTime=' + endTime
         + ';&access_token=' + token)
-      .send();
+    .send();
 
-  let isCorrectType = res.body instanceof Object;
+  const isCorrectType = res.body instanceof Object;
   console.log('STATS RESPONCE ', res.body);
   t.is(res.status, 200);
   t.is(isCorrectType, true);

@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 if (process.env.BROWSER === true) {
   require('./popup.css');
 }
 
 export default class Popup extends Component {
+  static propTypes = {
+    options: PropTypes.array,
+    children: PropTypes.node
+  };
+
   state = {
     visible: false
-  }
+  };
 
   hidePopup(e) {
     if (this.el === e.target) return;
@@ -25,17 +31,21 @@ export default class Popup extends Component {
   }
 
   render() {
-    let visible = this.state.visible;
-    let popupOptions = (<div className={'popupOptions'}>
-      {this.props.options.map(option => (
-        <div key={option.text} onClick={option.action}>{option.text}</div>
-      ))}
-    </div>);
+    const visible = this.state.visible;
+    let popupOptions = (
+      <div className={'popupOptions'}>
+        {this.props.options.map(option => (
+          <div key={option.text} onClick={option.action}>
+            {option.text}
+          </div>
+        ))}
+      </div>
+    );
     if (!visible) popupOptions = null;
 
     return (
       <a
-        ref={c => this.el = c}
+        ref={c => (this.el = c)}
         onClick={e => {
           this.setState({ visible: !visible });
           e.preventDefault();

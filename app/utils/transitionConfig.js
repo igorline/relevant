@@ -1,7 +1,8 @@
 import { Animated } from 'react-native';
 
 let NativeAnimatedModule = null;
-if (process.env.WEB != 'true') {
+if (process.env.WEB !== 'true') {
+  // eslint-disable-next-line
   NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 }
 
@@ -11,6 +12,6 @@ export default function transtionConfig() {
     useNativeDriver: NativeAnimatedModule || false,
     speed: 20,
     bounciness: 0,
-    overshootClamping: true,
+    overshootClamping: true
   };
 }

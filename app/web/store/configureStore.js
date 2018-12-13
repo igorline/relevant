@@ -28,7 +28,6 @@ function* rootSaga() {
   yield all(drizzleSagas.map(saga => fork(saga)));
 }
 
-
 export default function configureStore(initialState = {}, history) {
   // Compose final middleware and use devtools in debug environment
   // let socketIoMiddleware = str => next => action => next(action);
@@ -38,7 +37,7 @@ export default function configureStore(initialState = {}, history) {
 
   if (process.env.BROWSER) {
     // only use the socket middleware on client and not on server
-    let socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
+    const socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
     middleware = applyMiddleware(
       thunk,
       routerMiddleware(history),
@@ -50,15 +49,21 @@ export default function configureStore(initialState = {}, history) {
   }
 
   if (process.env.BROWSER && process.env.DEVTOOLS) {
-    const devTools = typeof window === 'object' && typeof window.devToolsExtension !== 'undefined' ? window.devToolsExtension() : f => f;
-    middleware = compose(middleware, devTools);
+    const devTools =
+      typeof window === 'object' && typeof window.devToolsExtension !== 'undefined'
+        ? window.devToolsExtension()
+        : f => f;
+    middleware = compose(
+      middleware,
+      devTools
+    );
   }
   // Create final store and subscribe router in debug env ie. for devtools
   const store = middleware(createStore)(rootReducer, initialState);
 
   if (process.env.BROWSER) {
     socket.on('connect', () => {
-      let state = store.getState();
+      const state = store.getState();
       if (state.auth && state.auth.user) {
         socket.emit('action', {
           type: 'server/storeUser',

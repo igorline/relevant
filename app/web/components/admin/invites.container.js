@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as adminActions from '../../../actions/admin.actions';
@@ -11,9 +12,12 @@ if (process.env.BROWSER === true) {
 
 const PAGE_SIZE = 40;
 
-let styles;
-
 class Invites extends Component {
+  static propTypes = {
+    admin: PropTypes.object,
+    actions: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -26,15 +30,14 @@ class Invites extends Component {
       name: '',
       number: 1,
       filter: null,
-      invitedBy: '',
+      invitedBy: ''
     };
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   load(page) {
-    let l = this.props.admin.inviteList.length;
+    const l = this.props.admin.inviteList.length;
     this.hasMore = (page - 1) * PAGE_SIZE <= l;
 
     if (this.hasMore) {
@@ -44,7 +47,9 @@ class Invites extends Component {
 
   sendEmail(invite) {
     if (invite.status) {
-      let c = window.confirm('We have already sent one email to this user, are you sure you would like to send another one?');
+      const c = window.confirm(
+        'We have already sent one email to this user, are you sure you would like to send another one?'
+      );
       if (c) {
         this.props.actions.sendInvitationEmail(invite._id);
       }
@@ -54,12 +59,12 @@ class Invites extends Component {
   }
 
   destroy(invite) {
-    let c = window.confirm('Are you sure you would like to delete this invite?');
+    const c = window.confirm('Are you sure you would like to delete this invite?');
     if (c) this.props.actions.destroy(invite);
   }
 
   createInvite() {
-    let invite = {
+    const invite = {
       email: this.state.email,
       name: this.state.name,
       number: this.state.number,
@@ -74,35 +79,35 @@ class Invites extends Component {
   }
 
   renderInvite(inviteId) {
-    let invite = this.props.admin.invites[inviteId];
+    const invite = this.props.admin.invites[inviteId];
     if (!invite) return null;
     if (this.state.filter === 'original' && !invite.email) return null;
     if (this.state.filter === 'registered' && invite.status !== 'registered') return null;
-    if (this.state.filter === 'notregistered' && (invite.status === 'registered' || !invite.email)) return null;
+    if (
+      this.state.filter === 'notregistered' &&
+      (invite.status === 'registered' || !invite.email)
+    ) {
+      return null;
+    }
 
-    return (<div key={inviteId} className={'adminRow'}>
-      <span>{invite.invitedBy}</span>
-      <span>{invite.name}</span>
-      <span>{invite.email}</span>
-      <span>{invite.code}</span>
-      <span>{invite.status}</span>
-      <span style={{ width: '40px' }}>{invite.number}</span>
-      <button
-        onClick={() => this.sendEmail(invite)}
-      >
-        Resend Email
-      </button>
-      <button
-        className={'alert'}
-        onClick={() => this.destroy(invite)}
-      >
-        Delete
-      </button>
-    </div>);
+    return (
+      <div key={inviteId} className={'adminRow'}>
+        <span>{invite.invitedBy}</span>
+        <span>{invite.name}</span>
+        <span>{invite.email}</span>
+        <span>{invite.code}</span>
+        <span>{invite.status}</span>
+        <span style={{ width: '40px' }}>{invite.number}</span>
+        <button onClick={() => this.sendEmail(invite)}>Resend Email</button>
+        <button className={'alert'} onClick={() => this.destroy(invite)}>
+          Delete
+        </button>
+      </div>
+    );
   }
 
   render() {
-    let createInvite = (
+    const createInvite = (
       <div className="adminInner">
         <input
           className={'blueInput'}
@@ -137,18 +142,13 @@ class Invites extends Component {
           value={this.state.number}
           onChange={this.handleChange}
         />
-        <ShadowButton
-          backgroundColor={'white'}
-          color={'#3E3EFF'}
-          onClick={this.createInvite}
-        >
+        <ShadowButton backgroundColor={'white'} color={'#3E3EFF'} onClick={this.createInvite}>
           {this.state.email ? 'Send Invite Email' : 'Create Invite Code'}
         </ShadowButton>
       </div>
     );
 
-    let invites = this.props.admin.inviteList
-    .map(id => this.renderInvite(id));
+    const invites = this.props.admin.inviteList.map(id => this.renderInvite(id));
 
     return (
       <div className="adminContainer">

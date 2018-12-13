@@ -6,10 +6,7 @@ function eigenTrust(users, params) {
     maxIter: 200,
     initialTrust: [],
   };
-  let { alpha, error, maxIter, initalTrust } = { ...defaults, ...params };
-
-
-
+  const { alpha, error, maxIter, initalTrust } = { ...defaults, ...params };
 }
 
 export default eigenTrust;

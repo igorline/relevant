@@ -1,12 +1,11 @@
-import React, {
-  PropTypes
-} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-export default function (props) {
+export default function ShadowButton(props) {
   return (
     <button
       className="shadowButton"
-      onClick={() => props.onClick ? props.onClick() : null}
+      onClick={() => (props.onClick ? props.onClick() : null)}
       style={{
         ...props.style
       }}
@@ -15,3 +14,9 @@ export default function (props) {
     </button>
   );
 }
+
+ShadowButton.propTypes = {
+  onClick: PropTypes.func,
+  style: PropTypes.object,
+  children: PropTypes.node
+};

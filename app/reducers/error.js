@@ -8,12 +8,11 @@ const initialState = {
   activity: false,
   singlepost: false,
   comments: false,
-  stats: false,
+  stats: false
 };
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
-
     case 'SET_ERROR': {
       return Object.assign({}, state, {
         [action.payload.type]: action.payload.bool
@@ -27,4 +26,4 @@ export default function auth(state = initialState, action) {
     default:
       return state;
   }
-};
+}

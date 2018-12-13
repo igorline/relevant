@@ -13,7 +13,8 @@ import PostData from '../api/post/postData.model';
 import computePageRank from './pagerankCompute';
 
 const queue = require('queue');
-let q = queue({ concurrency: 1 });
+
+const q = queue({ concurrency: 1 });
 
 let totalDistributedRewards;
 
@@ -21,14 +22,14 @@ let totalDistributedRewards;
 async function computePostPayout(posts, community) {
   // let posts = await Post.find({ paidOut: false, payoutTime: { $lt: now } });
   let updatedPosts = posts.map(async post => {
-    let average = community.currentShares / community.postCount;
+    const average = community.currentShares / community.postCount;
     // only reward above-average posts
     console.log('rank vs average ', post.pagerank, average);
     if (post.pagerank < average) {
       return post.save();
     }
     // linear reward curve
-    post.payoutShare = post.pagerank / (community.topPostShares || 1 );
+    post.payoutShare = post.pagerank / (community.topPostShares || 1);
     post.payout = community.rewardFund * post.payoutShare;
     // post.balance = 0;
     return post.save();
@@ -40,14 +41,14 @@ async function computePostPayout(posts, community) {
 
 async function allocateRewards() {
   await Eth.mintRewardTokens();
-  let rewardPool = await Eth.getParam('rewardPool', { noConvert: true });
+  const rewardPool = await Eth.getParam('rewardPool', { noConvert: true });
   return rewardPool;
 }
 
 
 async function distributeRewards(community, rewardPool) {
   // let treasury = await Treasury.findOne({ community });
-  let now = new Date();
+  const now = new Date();
 
   // DO all posts (not really using community here)
   // let posts = await Post.find({
@@ -60,7 +61,7 @@ async function distributeRewards(community, rewardPool) {
   // let estimatePosts = await Post.find({ twitter: { $ne: true }, type: 'post', paidOut: false, payoutTime: { $gt: now } });
 
   // here posts represent post data
-  let posts = await PostData.find({
+  const posts = await PostData.find({
     eligibleForReward: true,
     paidOut: false,
     payoutTime: { $lte: now },
@@ -69,7 +70,7 @@ async function distributeRewards(community, rewardPool) {
   // console.log('posts eligible for rewads in ', community.slug, posts);
 
   // decay current reward shares
-  let decay = (now.getTime() - community.lastRewardFundUpdate.getTime()) / SHARE_DECAY;
+  const decay = (now.getTime() - community.lastRewardFundUpdate.getTime()) / SHARE_DECAY;
   // console.log(decay)
   // console.log('start shares ', treasury.currentShares);
 
@@ -95,14 +96,14 @@ async function distributeRewards(community, rewardPool) {
   community.lastRewardFundUpdate = now;
   community = await community.save();
 
-  let updatedPosts = await computePostPayout(posts, community);
+  const updatedPosts = await computePostPayout(posts, community);
   // estimatePosts = await computePostPayout(estimatePosts, community);
 
   return updatedPosts;
 }
 
 async function rewardUser(props) {
-  let { user, reward, post, community, type } = props;
+  const { user, reward, post, community, type } = props;
 
   // do we need checks against reward fund? don't think so since it comes from smart contract
   // treasury.rewardFund -= reward;
@@ -113,13 +114,13 @@ async function rewardUser(props) {
 
   console.log('Awarded ', user.name, ' ', reward, ' tokens for ', post);
 
-  let s = reward === 1 ? '' : 's';
-  let action = type === 'vote' ? 'upvoting ' : '';
+  const s = reward === 1 ? '' : 's';
+  const action = type === 'vote' ? 'upvoting ' : '';
 
-  let amount = numbers.abbreviateNumber(reward);
+  const amount = numbers.abbreviateNumber(reward);
   // let amount = reward;
-  let text = `You earned ${amount} coin${s} from ${action}this post`;
-  let alertText = `You earned ${amount} coin${s} from ${action}a post`;
+  const text = `You earned ${amount} coin${s} from ${action}this post`;
+  const alertText = `You earned ${amount} coin${s} from ${action}a post`;
   console.log(text);
 
   await Earnings.updateRewardsRecord({
@@ -144,12 +145,12 @@ async function rewardUser(props) {
 }
 
 async function distributeUserRewards(posts, community) {
-  let payouts = {};
-  let notifications = [];
+  const payouts = {};
+  const notifications = [];
   let distributedRewards = 0;
 
-  let updatedUsers = posts.map(async post => {
-    let votes = await Invest.find({ post: post.post });
+  const updatedUsers = posts.map(async post => {
+    const votes = await Invest.find({ post: post.post });
     // compute total vote shares
 
     let totalShares = 0;
@@ -163,20 +164,20 @@ async function distributeUserRewards(posts, community) {
 
     console.log('totalShares ', totalShares);
     console.log('post shares ', post.shares);
-    let curationReward = post.payout;
+    const curationReward = post.payout;
 
     //  ---------- Curation rewards ------------
 
     console.log('curationReward', curationReward);
 
-    let updatedVotes = votes.map(async vote => {
+    const updatedVotes = votes.map(async vote => {
       // don't count downvotes
       if (vote.amount < 0) return;
 
-      let user = await User.findOne({ _id: vote.investor }, 'name balance deviceTokens badge');
+      const user = await User.findOne({ _id: vote.investor }, 'name balance deviceTokens badge');
 
-      let curationWeight = vote.shares / totalShares;
-      let curationPayout = Math.floor(curationWeight * curationReward);
+      const curationWeight = vote.shares / totalShares;
+      const curationPayout = Math.floor(curationWeight * curationReward);
 
       distributedRewards += curationPayout;
 
@@ -213,7 +214,7 @@ async function distributeUserRewards(posts, community) {
 
 
   // we'll do this individually upon request to save on gas
-  let sendNotes = notifications.map(async n => rewardUser(n));
+  const sendNotes = notifications.map(async n => rewardUser(n));
   await Promise.all(sendNotes);
 
   totalDistributedRewards += distributedRewards;
@@ -228,21 +229,20 @@ async function distributeUserRewards(posts, community) {
 //
 
 async function computeCommunityRewards(community, _rewardPool, balances) {
-
   await computePageRank({ communityId: community._id, community: community.slug });
 
-  let totalBalance = balances.reduce((a, c) => c.balance + a, 0);
-  let communityBalance = balances.find(c => c._id === community.slug).balance;
+  const totalBalance = balances.reduce((a, c) => c.balance + a, 0);
+  const communityBalance = balances.find(c => c._id === community.slug).balance;
 
   // compute portion of reward pool allocated to community
-  let communityRewardPool = _rewardPool * communityBalance / totalBalance;
+  const communityRewardPool = _rewardPool * communityBalance / totalBalance;
 
   console.log('Rewards for ', community.slug, ' ', communityRewardPool);
 
-  let updatedPosts = await distributeRewards(community, communityRewardPool);
-  let payouts = await distributeUserRewards(updatedPosts, community.slug);
+  const updatedPosts = await distributeRewards(community, communityRewardPool);
+  const payouts = await distributeUserRewards(updatedPosts, community.slug);
 
-  let displayPosts = updatedPosts.map(p => ({
+  const displayPosts = updatedPosts.map(p => ({
     title: p.post,
     payout: p.payout,
     payoutShare: p.payoutShare,
@@ -268,11 +268,11 @@ exports.rewards = async () => {
     totalDistributedRewards = 0;
     let communities = await Community.find({});
     let rewardPool = await allocateRewards();
-    let balances = await Community.getBalances();
+    const balances = await Community.getBalances();
     communities.forEach(c =>
       q.push(async cb => {
         try {
-          let res = await computeCommunityRewards(c, rewardPool, balances);
+          const res = await computeCommunityRewards(c, rewardPool, balances);
           return cb(null, res);
         } catch (err) {
           throw new Error(err);
@@ -296,7 +296,7 @@ exports.rewards = async () => {
     }
 
     rewardPool = await Eth.getParam('rewardPool', { noConvert: true });
-    let distPool = await Eth.getParam('distributedRewards', { noConvert: true });
+    const distPool = await Eth.getParam('distributedRewards', { noConvert: true });
 
     // console.log('distributedRewards Pool', distPool);
     console.log('Finished distributing rewards, remaining reward fund: ', rewardPool);

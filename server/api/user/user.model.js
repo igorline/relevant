@@ -120,32 +120,32 @@ UserSchema.virtual('relevance', {
 });
 
 UserSchema.virtual('password')
-.set(function setPassword(password) {
-  this._password = password;
-  this.salt = this.makeSalt();
-  this.hashedPassword = this.encryptPassword(password);
-})
-.get(function getPassword() {
-  return this._password;
-});
+  .set(function setPassword(password) {
+    this._password = password;
+    this.salt = this.makeSalt();
+    this.hashedPassword = this.encryptPassword(password);
+  })
+  .get(function getPassword() {
+    return this._password;
+  });
 
 // Public profile information
 UserSchema.virtual('profile')
-.get(function getProfile() {
-  return {
-    name: this.name,
-    role: this.role
-  };
-});
+  .get(function getProfile() {
+    return {
+      name: this.name,
+      role: this.role
+    };
+  });
 
 // Non-sensitive info we'll be putting in the token
 UserSchema.virtual('token')
-.get(function getToken() {
-  return {
-    _id: this._id,
-    role: this.role
-  };
-});
+  .get(function getToken() {
+    return {
+      _id: this._id,
+      role: this.role
+    };
+  });
 
 /**
  * Validations
@@ -153,53 +153,53 @@ UserSchema.virtual('token')
 
 // Validate handle
 UserSchema
-.path('handle')
-.validate(
-  handle => NAME_PATTERN.test(handle),
-  'Username can only contain letters, numbers, dashes and underscores'
-);
+  .path('handle')
+  .validate(
+    handle => NAME_PATTERN.test(handle),
+    'Username can only contain letters, numbers, dashes and underscores'
+  );
 
 // Validate _id
 UserSchema
-.path('_id')
-.validate(
-  handle => NAME_PATTERN.test(handle),
-  'Username can only contain letters, numbers, dashes and underscores'
-);
+  .path('_id')
+  .validate(
+    handle => NAME_PATTERN.test(handle),
+    'Username can only contain letters, numbers, dashes and underscores'
+  );
 
 
 // Validate empty email
 UserSchema
-.path('email')
-.validate(function vEmail(email) {
-  if (authTypes.indexOf(this.provider) !== -1) return true;
-  return email.length;
-}, 'Email cannot be blank');
+  .path('email')
+  .validate(function vEmail(email) {
+    if (authTypes.indexOf(this.provider) !== -1) return true;
+    return email.length;
+  }, 'Email cannot be blank');
 
 // Validate empty password
 UserSchema
-.path('hashedPassword')
-.validate(function vHashedPassword(hashedPassword) {
-  if (authTypes.indexOf(this.provider) !== -1) return true;
-  return hashedPassword.length;
-}, 'Password cannot be blank');
+  .path('hashedPassword')
+  .validate(function vHashedPassword(hashedPassword) {
+    if (authTypes.indexOf(this.provider) !== -1) return true;
+    return hashedPassword.length;
+  }, 'Password cannot be blank');
 
 // Validate email is not taken
 UserSchema
-.path('email')
-.validate(function vEmailTaken(value) {
-  this.constructor.findOne({ email: value }, (err, user) => {
-    if (err) throw err;
-    if (user) {
-      if (this.id === user.id) return true;
-      return false;
-    }
-    return true;
-  });
-}, 'The specified email address is already in use.');
+  .path('email')
+  .validate(function vEmailTaken(value) {
+    this.constructor.findOne({ email: value }, (err, user) => {
+      if (err) throw err;
+      if (user) {
+        if (this.id === user.id) return true;
+        return false;
+      }
+      return true;
+    });
+  }, 'The specified email address is already in use.');
 
 
-let validatePresenceOf = value => value && value.length;
+const validatePresenceOf = value => value && value.length;
 
 /**
  * Pre-save hook
@@ -265,7 +265,7 @@ UserSchema.methods = {
    */
   encryptPassword: function encryptPassword(password) {
     if (!password || !this.salt) return '';
-    let salt = new Buffer(this.salt, 'base64');
+    const salt = new Buffer(this.salt, 'base64');
     return crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha1').toString('base64');
   },
 
@@ -290,24 +290,24 @@ UserSchema.methods = {
   getSubscriptions: function getSubscriptions() {
     // let user = this.toObject();
     return this.model('Subscription').count({ follower: this._id })
-    .then((following) => {
-      this.following = following;
-      return this.model('Subscription').count({ following: this._id });
-    })
-    .then((followers) => {
-      this.followers = followers;
-      return this;
-    })
-    .catch(err => {
-      console.log(err);
-      return this;
-    });
+      .then((following) => {
+        this.following = following;
+        return this.model('Subscription').count({ following: this._id });
+      })
+      .then((followers) => {
+        this.followers = followers;
+        return this;
+      })
+      .catch(err => {
+        console.log(err);
+        return this;
+      });
   },
 };
 
 UserSchema.methods.getRelevance = async function getRelevance(community) {
   try {
-    let rel = await this.model('Relevance').findOne({ community, user: this._id, global: true });
+    const rel = await this.model('Relevance').findOne({ community, user: this._id, global: true });
     this.relevance = rel ? rel.relevance : 0;
     return this;
   } catch (err) {
@@ -329,7 +329,7 @@ UserSchema.methods.updatePostCount = async function updatePostCount() {
 };
 
 UserSchema.methods.updateClient = function updateClient(actor) {
-  let userData = {
+  const userData = {
     _id: this._id,
     type: 'UPDATE_USER',
     payload: this
@@ -343,7 +343,7 @@ UserSchema.methods.updateClient = function updateClient(actor) {
 
 UserSchema.methods.updateMeta = async function updateMeta() {
   try {
-    let newUser = {
+    const newUser = {
       name: this.name,
       image: this.image
     };
@@ -379,7 +379,7 @@ UserSchema.methods.initialCoins = async function initialCoins() {
 };
 
 UserSchema.methods.updateBalance = async function updateBalance() {
-  let ethAddress = this.ethAddress[0];
+  const ethAddress = this.ethAddress[0];
   if (ethAddress) {
     this.tokenBalance = await ethUtils.getBalance(ethAddress);
   }
@@ -389,17 +389,17 @@ UserSchema.methods.updateBalance = async function updateBalance() {
 UserSchema.methods.updatePower = function updatePower() {
   // elapsed time in seconds
   // prevent votes from being more often than 5s apart
-  let now = new Date();
+  const now = new Date();
   console.log('lastVote', this.lastVote);
-  let elapsedTime = (new Date(now)).getTime() - (new Date(this.lastVote || 0)).getTime();
+  const elapsedTime = (new Date(now)).getTime() - (new Date(this.lastVote || 0)).getTime();
   console.log('elapsed time since last upvote ', elapsedTime / 1000, 's');
   if (elapsedTime < 5 * 1000 && process.env.NODE_ENV === 'production') {
     throw new Error('you cannot up-vote posts more often than 5s');
   }
   this.lastVote = now;
-  let voteRegen = Math.max(elapsedTime / POWER_REGEN_INTERVAL * 1);
+  const voteRegen = Math.max(elapsedTime / POWER_REGEN_INTERVAL * 1);
   console.log('voteRegen ', voteRegen);
-  let votePower = Math.min(this.votePower + voteRegen, 1);
+  const votePower = Math.min(this.votePower + voteRegen, 1);
   this.votePower = votePower;
   // async?
   this.save();

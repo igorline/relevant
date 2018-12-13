@@ -1,16 +1,14 @@
-import React from 'react';
-import { push, routerActions } from 'react-router-redux';
-import { UserAuthWrapper } from 'redux-auth-wrapper';
-import { Redirect } from 'react-router';
+// import React from 'react';
+import { routerActions } from 'react-router-redux';
+import { connectedRouterRedirect } from 'redux-auth-wrapper/history3/redirect';
+
 import App from './components/app';
-import Splash from './components/splash/splash.container';
-import Discover from './components/discover/discover.container';
+import SplashContainer from './components/splash/splash.container';
+import DiscoverContainer from './components/discover/discover.container';
 import Auth from './components/auth/auth.container';
 import ProfileContainer from './components/profile/profile.container';
-// import MessageContainer from './components/message/message.container';
 import PostContainer from './components/post/post.container';
 import CreatePostContainer from './components/createPost/createPost.container';
-// import DiscoverContainer from './components/discover/discover.container';
 import NotFound from './components/404';
 import TopicsAdmin from './components/admin/topics.container';
 import Invites from './components/admin/invites.container';
@@ -26,14 +24,10 @@ import Wallet from './components/wallet/wallet.container';
 import AdminWallet from './components/admin/admin.main.component';
 import CommuntiyAdmin from './components/admin/communityAdmin.component';
 
-import { connectedRouterRedirect } from 'redux-auth-wrapper/history3/redirect';
-
 // Redirects to /login by default
 const userIsAuthenticated = connectedRouterRedirect({
   redirectPath: '/login',
   authenticatedSelector: state => state.auth.user !== null,
-  // authenticatingSelector: state => state.user.isLoading,
-  // AuthenticatingComponent: Loading,
   redirectAction: routerActions.replace,
   wrapperDisplayName: 'UserIsAuthenticated'
 });
@@ -56,16 +50,16 @@ const userIsAdmin = connectedRouterRedirect({
   wrapperDisplayName: 'UserIsAdmin'
 });
 
-let routes = (store) => {
-  // console.log('router store', store)
-  const connect = (fn) => (nextState, replaceState) => fn(store, nextState, replaceState);
+const routes = () =>
+  // const connect = (fn) => (nextState, replaceState) => fn(store, nextState, replaceState);
 
-  return {
+  ({
     path: '/',
     component: App,
-    indexRoute: { component: Splash },
+    indexRoute: { component: SplashContainer },
     childRoutes: [
-      { path: 'user',
+      {
+        path: 'user',
         childRoutes: [
           { path: 'login', component: Auth },
           { path: 'signup', component: Auth },
@@ -75,10 +69,11 @@ let routes = (store) => {
           // WARNING THESE ROUTE MUST MACH MOBILE APP!
           { path: 'resetPassword/:token', component: Auth },
           { path: 'confirm/:user/:code', component: Auth },
-          { path: 'invite/:code', component: Invite },
+          { path: 'invite/:code', component: Invite }
         ]
       },
-      { path: 'admin',
+      {
+        path: 'admin',
         component: userIsAuthenticated(userIsAdmin(AdminHeader)),
         indexRoute: { component: AdminWallet },
         childRoutes: [
@@ -89,30 +84,25 @@ let routes = (store) => {
           { path: 'invites', component: Invites },
           { path: 'email', component: Email },
           { path: 'topPosts', component: TopPosts },
-          { path: 'community', component: CommuntiyAdmin },
+          { path: 'community', component: CommuntiyAdmin }
         ]
       },
-      { path: 'info',
+      { path: 'info', childRoutes: [{ path: 'faq', component: Faq }] },
+      {
+        path: ':community',
+        indexRoute: { component: DiscoverContainer },
         childRoutes: [
-          { path: 'faq', component: Faq },
-        ]
-      },
-      { path: ':community',
-        indexRoute: { component: Discover },
-        childRoutes: [
-          { path: ':sort', component: Discover },
-          { path: 'tag/:tag/::sort', component: Discover },
-          { path: 'tag/:tag/:sort', component: Discover },
-          { path: 'post/new',
-            component: userIsAuthenticated(CreatePostContainer),
+          { path: ':sort', component: DiscoverContainer },
+          { path: 'tag/:tag/::sort', component: DiscoverContainer },
+          { path: 'tag/:tag/:sort', component: DiscoverContainer },
+          {
+            path: 'post/new',
+            component: userIsAuthenticated(CreatePostContainer)
           },
-          { path: 'post/:id', component: PostContainer },
+          { path: 'post/:id', component: PostContainer }
         ]
-
       },
       { path: '*', component: NotFound }
     ]
-  };
-};
-
+  });
 module.exports = routes;

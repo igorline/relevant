@@ -10,12 +10,13 @@ import {
   RELOAD_ROUTE,
   RELOAD_ALL_TABS,
   TOGGLE_TOPICS,
-  SCROLL,
+  SCROLL
 } from '../actions/actionTypes';
+import { numbers } from '../utils';
 
-const {
-  StateUtils: NavigationStateUtils
-} = NavigationExperimental;
+const { StateUtils: NavigationStateUtils } = NavigationExperimental;
+
+/* eslint-disable max-len */
 
 // const scaleNum = 3.8;
 
@@ -44,7 +45,6 @@ const {
 //   uri: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGkAAABpCAYAAAA5gg06AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2hpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDowNTgwMTE3NDA3MjA2ODExOEMxNEQ4Q0YyNEMwQTBGNCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDoxRkJGOUMwMUVDQ0QxMUU2QUJDMDg2QTc1Qzc3MEM1RSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoxRkJGOUMwMEVDQ0QxMUU2QUJDMDg2QTc1Qzc3MEM1RSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChNYWNpbnRvc2gpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MDE4MDExNzQwNzIwNjgxMTgwODNGOUE2MTgxOTQ0NkYiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MDU4MDExNzQwNzIwNjgxMThDMTREOENGMjRDMEEwRjQiLz4gPC9yZGY6RGVzY3Jp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'
 // };
 
-
 const initialState = {
   showTopics: false,
   reload: 0,
@@ -63,26 +63,30 @@ const initialState = {
       { key: 'activity', icon: Platform.OS === 'android' ? '⚡' : '⚡', title: 'Activity' },
 
       { key: 'myProfile', icon: Platform.OS === 'android' ? '👤' : '👤', title: 'Profile' }
-    ],
+    ]
   },
   home: {
     index: 0,
     key: 'home',
-    routes: [{
-      key: 'home',
-      component: 'stallScreen',
-      title: 'Relevant'
-    }],
+    routes: [
+      {
+        key: 'home',
+        component: 'stallScreen',
+        title: 'Relevant'
+      }
+    ]
   },
   auth: {
     index: 0,
     key: 'auth',
-    routes: [{
-      key: 'auth',
-      component: 'auth',
-      title: null,
-      header: false,
-    }],
+    routes: [
+      {
+        key: 'auth',
+        component: 'auth',
+        title: null,
+        header: false
+      }
+    ]
   },
   read: {
     layout: 'horizontal',
@@ -90,11 +94,13 @@ const initialState = {
     key: 'read',
     refresh: null,
     reload: 0,
-    routes: [{
-      key: 'read',
-      component: 'read',
-      title: 'Read'
-    }],
+    routes: [
+      {
+        key: 'read',
+        component: 'read',
+        title: 'Read'
+      }
+    ]
   },
   stats: {
     layout: 'horizontal',
@@ -102,65 +108,67 @@ const initialState = {
     key: 'stats',
     refresh: null,
     reload: 0,
-    routes: [{
-      key: 'stats',
-      component: 'stats',
-      title: 'Your Stats'
-    }],
+    routes: [
+      {
+        key: 'stats',
+        component: 'stats',
+        title: 'Your Stats'
+      }
+    ]
   },
   discover: {
     index: 0,
     key: 'mainDiscover',
     refresh: null,
     reload: 0,
-    routes: [{
-      key: 'mainDiscover',
-      component: 'mainDiscover',
-      title: 'Discover'
-    }],
+    routes: [
+      {
+        key: 'mainDiscover',
+        component: 'mainDiscover',
+        title: 'Discover'
+      }
+    ]
   },
   createPost: {
     index: 0,
     key: 'createPost',
     reload: 0,
-    routes: [{
-      key: 'createPost',
-      component: 'createPost',
-      back: true,
-      left: 'Cancel'
-    }],
+    routes: [
+      {
+        key: 'createPost',
+        component: 'createPost',
+        back: true,
+        left: 'Cancel'
+      }
+    ]
   },
   activity: {
     index: 0,
     key: 'activity',
     refresh: null,
     reload: 0,
-    routes: [{
-      key: 'activity',
-      component: 'activity',
-      title: 'Activity'
-    }],
+    routes: [
+      {
+        key: 'activity',
+        component: 'activity',
+        title: 'Activity'
+      }
+    ]
   },
   myProfile: {
     index: 0,
     key: 'myProfile',
     refresh: null,
     reload: 0,
-    routes: [{
-      key: 'myProfile',
-      component: 'myProfile',
-      title: 'Profile'
-    }],
-  },
+    routes: [
+      {
+        key: 'myProfile',
+        component: 'myProfile',
+        title: 'Profile'
+      }
+    ]
+  }
 };
-
-function guid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    let r = Math.random() * 16 | 0;
-    let v = c === 'x' ? r : (r&0x3|0x8);
-    return v.toString(16);
-  });
-}
 
 function navigationState(state = initialState, action) {
   switch (action.type) {
@@ -185,23 +193,23 @@ function navigationState(state = initialState, action) {
       const scenes = {
         ...state[activeTabKey],
         animation: action.animation,
-        currentView: activeTabKey,
+        currentView: activeTabKey
       };
 
-      let route = action.route;
+      const route = action.route;
       route.component = action.route.key;
-      route.key = guid();
+      route.key = numbers.guid();
 
       const nextScenes = NavigationStateUtils.push(scenes, route);
       if (!route.id) route.id = route.title || route.key;
-      let nextRoute = scenes.routes[scenes.index];
+      const nextRoute = scenes.routes[scenes.index];
       if (route.id === nextRoute.id && route.component === nextRoute.component) return state;
 
       if (scenes !== nextScenes) {
         return {
           ...state,
           [activeTabKey]: nextScenes,
-          currentView: activeTabKey,
+          currentView: activeTabKey
         };
       }
 
@@ -210,7 +218,7 @@ function navigationState(state = initialState, action) {
 
     // pop from tab scene stack
     case POP_ROUTE: {
-      let key = action.key || state.tabs.routes[state.tabs.index].key;
+      const key = action.key || state.tabs.routes[state.tabs.index].key;
       const scenes = state[key];
       const nextScenes = NavigationStateUtils.pop(scenes);
 
@@ -218,7 +226,7 @@ function navigationState(state = initialState, action) {
         return {
           ...state,
           [key]: nextScenes,
-          currentView: key,
+          currentView: key
         };
       }
       return state;
@@ -228,7 +236,7 @@ function navigationState(state = initialState, action) {
       const key = action.key || state.tabs.routes[state.tabs.index].key;
       const prevScenes = {
         ...state[key],
-        animation: 'reset',
+        animation: 'reset'
       };
       const nextChildren = prevScenes.routes.slice(0, 1);
       const nextIndex = 0;
@@ -237,7 +245,7 @@ function navigationState(state = initialState, action) {
       return {
         ...state,
         [key]: nextScenes,
-        currentView: key,
+        currentView: key
       };
     }
 
@@ -248,7 +256,7 @@ function navigationState(state = initialState, action) {
         [key]: {
           ...state[key],
           refresh: new Date().getTime()
-        },
+        }
       };
     }
 
@@ -259,7 +267,7 @@ function navigationState(state = initialState, action) {
         [key]: {
           ...state[key],
           reload: new Date().getTime()
-        },
+        }
       };
     }
 
@@ -271,7 +279,7 @@ function navigationState(state = initialState, action) {
       return {
         ...state,
         tabs: nextTabs,
-        currentView: action.key,
+        currentView: action.key
       };
       // }
       // return state;
@@ -279,7 +287,7 @@ function navigationState(state = initialState, action) {
 
     case REPLACE_ROUTE: {
       const key = action.payload.key || state.tabs.routes[state.tabs.index].key;
-      let newScene = NavigationStateUtils.replaceAtIndex(
+      const newScene = NavigationStateUtils.replaceAtIndex(
         state[key],
         action.payload.index,
         action.payload.route
@@ -287,7 +295,7 @@ function navigationState(state = initialState, action) {
       return {
         ...state,
         [key]: newScene,
-        currentView: key,
+        currentView: key
       };
     }
 

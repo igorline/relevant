@@ -1,11 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Text,
-  View,
-  TouchableHighlight,
-  StyleSheet,
-  Image,
-} from 'react-native';
+import { Text, View, TouchableHighlight, StyleSheet, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles } from '../../styles/global';
 import { pickerOptions } from '../../utils/pickerOptions';
@@ -14,9 +8,15 @@ import CustomSpinnerRelative from '../customSpinnerRelative.component';
 
 let localStyles;
 let styles;
-let ImagePicker = require('react-native-image-picker');
+const ImagePicker = require('react-native-image-picker');
 
 class ImageUpload extends Component {
+  static propTypes = {
+    auth: PropTypes.object,
+    actions: PropTypes.object,
+    admin: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.renderButtons = this.renderButtons.bind(this);
@@ -39,7 +39,7 @@ class ImageUpload extends Component {
       }
       if (data) {
         self.setState({ uploading: true });
-        utils.s3.toS3Advanced(data, this.props.auth.token).then((results) => {
+        utils.s3.toS3Advanced(data, this.props.auth.token).then(results => {
           if (results.success) {
             self.setState({ image: results.url, uploading: false });
           } else {
@@ -51,7 +51,7 @@ class ImageUpload extends Component {
   }
 
   chooseImage(callback) {
-    ImagePicker.showImagePicker(pickerOptions, (response) => {
+    ImagePicker.showImagePicker(pickerOptions, response => {
       if (response.didCancel) {
         callback('cancelled');
       } else if (response.error) {
@@ -65,7 +65,7 @@ class ImageUpload extends Component {
   }
 
   createUser(user) {
-    let newUser = { ...this.props.auth.preUser };
+    const newUser = { ...this.props.auth.preUser };
     newUser.image = this.state.image;
     this.props.actions.createUser(newUser, this.props.admin.currentInvite);
   }
@@ -75,41 +75,41 @@ class ImageUpload extends Component {
     if (!this.state.uploading) {
       if (this.state.image) source = { uri: this.state.image };
       else source = require('../../assets/images/camera.png');
-      return (<Image
-        style={{ width: 200, height: 200 }}
-        resizeMode={'cover'}
-        source={source}
-      />);
+      return <Image style={{ width: 200, height: 200 }} resizeMode={'cover'} source={source} />;
     }
     return null;
   }
 
   renderButtons() {
     if (this.state.image) {
-      return (<View>
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={[styles.largeButton]}
-          onPress={this.initImage}
-        >
-          <Text style={styles.largeButtonText}>Choose different image</Text>
-        </TouchableHighlight>
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          style={[styles.largeButton, { marginTop: 10 }]}
-          onPress={this.createUser}
-        >
-          <Text style={styles.largeButtonText}>Create user</Text>
-        </TouchableHighlight>
-      </View>);
+      return (
+        <View>
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            style={[styles.largeButton]}
+            onPress={this.initImage}
+          >
+            <Text style={styles.largeButtonText}>Choose different image</Text>
+          </TouchableHighlight>
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            style={[styles.largeButton, { marginTop: 10 }]}
+            onPress={this.createUser}
+          >
+            <Text style={styles.largeButtonText}>Create user</Text>
+          </TouchableHighlight>
+        </View>
+      );
     }
-    return (<TouchableHighlight
-      underlayColor={'transparent'}
-      style={[styles.largeButton]}
-      onPress={this.initImage}
-    >
-      <Text style={styles.largeButtonText}>upload image</Text>
-    </TouchableHighlight>);
+    return (
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        style={[styles.largeButton]}
+        onPress={this.initImage}
+      >
+        <Text style={styles.largeButtonText}>upload image</Text>
+      </TouchableHighlight>
+    );
   }
 
   render() {
@@ -136,12 +136,9 @@ class ImageUpload extends Component {
 }
 
 ImageUpload.propTypes = {
-  actions: PropTypes.object,
+  actions: PropTypes.object
 };
 
-localStyles = StyleSheet.create({
-});
-
+localStyles = StyleSheet.create({});
 
 export default ImageUpload;
-

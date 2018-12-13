@@ -1,12 +1,12 @@
 import { fullWidth, blue, darkGrey } from '../../styles/global';
 
-let options = {
+const options = {
   width: fullWidth - 50,
   height: 100,
   margin: {
     top: 20,
     left: 30,
-    bottom: 50,
+    bottom: 50
     // right: 20
   },
   color: blue,
@@ -37,13 +37,13 @@ let options = {
       stroke: darkGrey,
       // fill: darkGrey,
       rotate: 0,
-      bold: false,
+      bold: false
     }
   },
   axisY: {
     // showAxis: true,
     // showLines: true,
-    //zeroAxis: false,
+    // zeroAxis: false,
     showLabels: true,
     color: blue,
     orient: 'left',
@@ -57,7 +57,7 @@ let options = {
       fontWeight: 0,
       stroke: darkGrey,
       strokeWeight: 0.5,
-      bold: false,
+      bold: false
     }
   }
 };

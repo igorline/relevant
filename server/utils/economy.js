@@ -11,7 +11,7 @@ import { INTERVAL_INFLAITION, INIT_COIN, SHARE_DECAY } from '../config/globalCon
 async function createCoins(community) {
   let treasury = await Treasury.findOne({ community });
   let outstanding = 0;
-  let users = await User.find({});
+  const users = await User.find({});
   users.forEach(u => outstanding += u.balance);
   treasury.balance = INIT_COIN - outstanding;
   treasury.totalTokens = INIT_COIN;
@@ -26,7 +26,7 @@ async function createCoins(community) {
 
 async function getUserBalances() {
   let outstanding = 0;
-  let users = await User.find({});
+  const users = await User.find({});
   users.forEach(u => outstanding += u.balance);
   console.log('total outstanding coins ', outstanding);
 }
@@ -59,8 +59,8 @@ async function computePostPayout(posts, treasury) {
 
 
 async function allocateRewards(community) {
-  let treasury = await Treasury.findOne({ community });
-  let newTokens = INTERVAL_INFLAITION * treasury.totalTokens;
+  const treasury = await Treasury.findOne({ community });
+  const newTokens = INTERVAL_INFLAITION * treasury.totalTokens;
   treasury.totalTokens += newTokens;
   treasury.rewardFund += newTokens;
   return treasury.save();
@@ -69,13 +69,13 @@ async function allocateRewards(community) {
 
 async function distributeRewards(community) {
   let treasury = await Treasury.findOne({ community });
-  let now = new Date();
+  const now = new Date();
 
-  let posts = await Post.find({ twitter: { $ne: true }, community: 'relevant', paidOut: false, payoutTime: { $lte: now } });
+  const posts = await Post.find({ twitter: { $ne: true }, community: 'relevant', paidOut: false, payoutTime: { $lte: now } });
   let estimatePosts = await Post.find({ twitter: { $ne: true }, paidOut: false, payoutTime: { $gt: now } });
 
   // decay current reward shares
-  let decay = (now.getTime() - treasury.lastRewardFundUpdate.getTime()) / SHARE_DECAY;
+  const decay = (now.getTime() - treasury.lastRewardFundUpdate.getTime()) / SHARE_DECAY;
   // console.log(decay)
   // console.log('start shares ', treasury.currentShares);
 
@@ -97,7 +97,7 @@ async function distributeRewards(community) {
   treasury.lastRewardFundUpdate = now;
   treasury = await treasury.save();
 
-  let updatedPosts = await computePostPayout(posts, treasury);
+  const updatedPosts = await computePostPayout(posts, treasury);
   estimatePosts = await computePostPayout(estimatePosts, treasury);
 
   return updatedPosts;
@@ -114,10 +114,10 @@ async function rewardUser(props) {
 
   console.log('Awarded ', user.name, ' ', reward, ' tokens for ', post.title);
 
-  let s = reward === 1 ? '' : 's';
-  let action = type === 'vote' ? 'upvoting ' : '';
-  let text = `You earned ${reward} coin${s} from ${action}this post`;
-  let alertText = `You earned ${reward} coin${s} from ${action}a post`;
+  const s = reward === 1 ? '' : 's';
+  const action = type === 'vote' ? 'upvoting ' : '';
+  const text = `You earned ${reward} coin${s} from ${action}this post`;
+  const alertText = `You earned ${reward} coin${s} from ${action}a post`;
 
   await Earnings.updateRewardsRecord({
     user: user._id,
@@ -138,10 +138,10 @@ async function rewardUser(props) {
 }
 
 async function distributeUserRewards(posts, community) {
-  let treasury = await Treasury.findOne({ community });
-  let payouts = {};
-  let updatedUsers = posts.map(async post => {
-    let votes = await Invest.find({ post: post._id });
+  const treasury = await Treasury.findOne({ community });
+  const payouts = {};
+  const updatedUsers = posts.map(async post => {
+    const votes = await Invest.find({ post: post._id });
     // compute total vote shares
 
     let totalWeights = 0;
@@ -152,7 +152,7 @@ async function distributeUserRewards(posts, community) {
 
     console.log('totalWeights ', totalWeights);
 
-    let author = await User.findOne({ _id: post.user }, 'name balance deviceTokens badge');
+    const author = await User.findOne({ _id: post.user }, 'name balance deviceTokens badge');
 
     // Current code reards author as the first voter
     // alternately we can use a fixed percentage of reward
@@ -162,9 +162,9 @@ async function distributeUserRewards(posts, community) {
     // is it better to use post share or post payout?
     // let curationReward = post.payout * (1 - authorShare);
 
-    let authorShare = 1 / totalWeights;
-    let authorPayout = Math.floor(authorShare * post.payout);
-    let curationReward = post.payout;
+    const authorShare = 1 / totalWeights;
+    const authorPayout = Math.floor(authorShare * post.payout);
+    const curationReward = post.payout;
 
     payouts[author._id] = payouts[author._id] ? payouts[author._id] + authorPayout : authorPayout;
 
@@ -182,10 +182,10 @@ async function distributeUserRewards(posts, community) {
       // don't count downvotes
       if (vote.amount <= 0) return;
 
-      let user = await User.findOne({ _id: vote.investor }, 'name balance deviceTokens badge');
+      const user = await User.findOne({ _id: vote.investor }, 'name balance deviceTokens badge');
 
-      let curationWeight = vote.voteWeight / totalWeights;
-      let curationPayout = Math.floor(curationWeight * curationReward);
+      const curationWeight = vote.voteWeight / totalWeights;
+      const curationPayout = Math.floor(curationWeight * curationReward);
 
       console.log('weight ', curationWeight);
       console.log('payout ', curationPayout);
@@ -220,12 +220,12 @@ exports.rewards = async () => {
   }
   computingRewards = true;
   try {
-    let community = 'relevant';
-    let rewardsAllocation = await allocateRewards(community);
-    let updatedPosts = await distributeRewards(community);
-    let payouts = await distributeUserRewards(updatedPosts, community);
+    const community = 'relevant';
+    const rewardsAllocation = await allocateRewards(community);
+    const updatedPosts = await distributeRewards(community);
+    const payouts = await distributeUserRewards(updatedPosts, community);
 
-    let displayPosts = updatedPosts.map(p => ({
+    const displayPosts = updatedPosts.map(p => ({
       title: p.title,
       payout: p.payout,
       payoutShare: p.payoutShare,

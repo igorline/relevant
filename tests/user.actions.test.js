@@ -1,30 +1,26 @@
 import test from 'ava';
-
+import nock from 'nock';
 import mockStore from './_mockStore';
 
 import * as types from '../app/actions/actionTypes';
-import * as postActions from '../app/actions/post.actions';
 import * as authActions from '../app/actions/auth.actions';
-import * as investActions from '../app/actions/invest.actions';
 
 require('../app/publicenv');
 
-import nock from 'nock';
-
 test('should create an action SET_USER', t => {
   const user = {
-    '_id': 1,
-    'name': 'testName',
-    'email': 'testEmail',
-    'phone': 'testPhone',
-    'role': 'user',
-    'messages': 69,
-    'relevance': 666,
-    'balance': 666,
-    'posts': ['testPostId'],
-    'deviceTokens': ['testDeviceToken'],
-    'image': 'testImageUrl',
-    'hashedPassword': 'testHashedPass'
+    _id: 1,
+    name: 'testName',
+    email: 'testEmail',
+    phone: 'testPhone',
+    role: 'user',
+    messages: 69,
+    relevance: 666,
+    balance: 666,
+    posts: ['testPostId'],
+    deviceTokens: ['testDeviceToken'],
+    image: 'testImageUrl',
+    hashedPassword: 'testHashedPass'
   };
   const expectedAction = {
     type: 'SET_USER',
@@ -33,9 +29,7 @@ test('should create an action SET_USER', t => {
   t.deepEqual(authActions.setUser(user), expectedAction);
 });
 
-
 test('create SET_USER after new user is created', async t => {
-
   const token = 'some fake token';
 
   const newUser = {
@@ -75,14 +69,7 @@ test('create SET_USER after new user is created', async t => {
     deviceToken: null
   });
 
-
   await store.dispatch(authActions.createUser(newUser, false));
 
   t.deepEqual(store.getActions()[0], expectedActions[0]);
-
-  // await store.dispatch(authActions.getUser(token, false))
-
-  console.log('ACTIONS ', store.getActions());
-
-  // t.deepEqual(store.getActions()[1], expectedActions[1]);
-})
+});

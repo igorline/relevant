@@ -4,7 +4,6 @@ const initialState = {};
 
 export default function post(state = initialState, action) {
   switch (action.type) {
-
     case 'ADD_STATS': {
       return Object.assign({}, state, {
         [action.payload.user]: action.payload.data

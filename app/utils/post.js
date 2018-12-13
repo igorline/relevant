@@ -23,42 +23,37 @@ function extractDomain(url) {
 
 function getYoutubeLink(link) {
   let videoId = link.split('v=')[1];
-  let ampersandPosition = videoId.indexOf('&');
+  const ampersandPosition = videoId.indexOf('&');
   if (ampersandPosition !== -1) {
     videoId = videoId.substring(0, ampersandPosition);
   }
 
   // TODO should go in publicenv.js
-  let apiKey = '***REMOVED***';
-  let apiUrl = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id=' + videoId + '&key=' + apiKey;
+  const apiKey = '***REMOVED***';
+  const apiUrl =
+    'https://www.googleapis.com/youtube/v3/videos?part=snippet&id=' + videoId + '&key=' + apiKey;
 
   return fetch(apiUrl, {
     method: 'GET',
     headers: {
-      'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+      'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'
     }
   })
-  .then((response) => {
-    return response.json();
-  })
-  .then((responseJSON) => {
+  .then(response => response.json())
+  .then(responseJSON => {
     let image = null;
     let description = null;
     let title = null;
     let videoInfo = null;
 
-    if (responseJSON.items) {
-      if (responseJSON.items[0]) {
-        if (responseJSON.items[0].snippet) {
-          videoInfo = responseJSON.items[0].snippet;
-          if (videoInfo.title) title = videoInfo.title;
-          if (videoInfo.thumbnails) image = videoInfo.thumbnails.high.url;
-          if (videoInfo.description) description = videoInfo.description;
-        }
-      }
+    if (responseJSON.items && responseJSON.items[0] && responseJSON.items[0].snippet) {
+      videoInfo = responseJSON.items[0].snippet || {};
+      title = videoInfo.title;
+      image = videoInfo.thumbnails.high.url;
+      description = videoInfo.description;
     }
 
-    let obj = {
+    const obj = {
       image,
       description,
       title,
@@ -68,18 +63,17 @@ function getYoutubeLink(link) {
 
     return obj;
   })
-  .catch((error) => {
-    console.log(error, 'error');
-    return false;
-  });
+  .catch(false);
 }
 
-export const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%_\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+~#?&//=]*)/);
+export const URL_REGEX = new RegExp(
+  // eslint-disable-next-line
+  /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%_\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+~#?&//=]*)/
+);
 
 export function generatePreview(link) {
-  console.log('fetching ', link);
   let responseUrl;
-  let fbHeader = {
+  const fbHeader = {
     'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
     'Content-Type': 'application/x-www-form-urlencoded;charset=ISO-8859-15'
   };
@@ -97,14 +91,14 @@ export function generatePreview(link) {
     method: 'GET',
     headers: link.match('apple.news') ? {} : fbHeader
   })
-  .then((response) => {
+  .then(response => {
     responseUrl = response.url;
     return response.text();
   })
-  .then((responseTxt) => {
+  .then(responseTxt => {
     const $ = cheerio.load(responseTxt);
 
-    let redirect = $("meta[http-equiv='refresh']")[0];
+    const redirect = $("meta[http-equiv='refresh']")[0];
     let redirectUrl;
 
     if (redirect && redirect.attribs && redirect.attribs.content) {
@@ -120,7 +114,7 @@ export function generatePreview(link) {
       return generatePreview(canonical.href);
     }
 
-    let data = {
+    const data = {
       title: null,
       description: null,
       image: null,
@@ -137,44 +131,53 @@ export function generatePreview(link) {
       'twitter:description': null,
       'twitter:site': null,
       'twitter:creator': null,
-      'news_keywords': null,
-      'keywords': null,
+      news_keywords: null,
+      keywords: null
     };
     const meta = $('meta');
     const $title = $('title');
     const keys = Object.keys(meta);
 
-    let titleEl = $title.eq(0).text();
+    const titleEl = $title.eq(0).text();
 
-    for (let s in data) {
-      keys.forEach((key) => {
-        if (meta[key].attribs
-          && (meta[key].attribs.property === s
-          || meta[key].attribs.name === s
-          || meta[key].attribs.itemprop === s)
+    Object(data).keys(k => {
+      keys.forEach(key => {
+        if (
+          meta[key].attribs &&
+            (meta[key].attribs.property === k ||
+              meta[key].attribs.name === k ||
+              meta[key].attribs.itemprop === k)
         ) {
-          data[s] = meta[key].attribs.content;
+          data[k] = meta[key].attribs.content;
         }
       });
-    }
+    });
 
-    if (data.image && data.image.indexOf('http://') !== 0 &&
-        data.image.indexOf('https://') !== 0) {
+    if (
+      data.image &&
+        data.image.indexOf('http://') !== 0 &&
+        data.image.indexOf('https://') !== 0
+    ) {
       data.image = responseUrl + data.image;
     }
 
-    let title = data.title || data['og:title'] || data['twitter:title'] || titleEl;
-    let description = data.description || data['og:description'] || data['twitter:description'];
-    let image = data['og:image'] || data['og:image:url'] || data['twitter:image'] || data['og:image:src'] || data.image;
-    let url = data['al:web:url'] || data['og:url'] || responseUrl;
-    let tags = data['news_keywords'];
-    let domain = extractDomain(url);
+    const title = data.title || data['og:title'] || data['twitter:title'] || titleEl;
+    const description = data.description || data['og:description'] || data['twitter:description'];
+    let image =
+        data['og:image'] ||
+        data['og:image:url'] ||
+        data['twitter:image'] ||
+        data['og:image:src'] ||
+        data.image;
+    const url = data['al:web:url'] || data['og:url'] || responseUrl;
+    const tags = data.news_keywords;
+    const domain = extractDomain(url);
 
     if (image && image.match(/^\/\//)) {
       image = image.replace(/^\/\//, '');
     }
 
-    let obj = {
+    const obj = {
       image,
       description,
       title,
@@ -183,35 +186,25 @@ export function generatePreview(link) {
       tags
     };
 
-    if (!image || !description || !title) {
-      console.log('url parse error');
-      console.log(data);
-    }
-
     return obj;
   })
-  .catch((error) => {
-    console.log(error, 'error');
-    return false;
-  });
+  .catch(false);
 }
 
+// TODO update to use api util
 export function generatePreviewServer(link) {
-  let responseUrl;
-  return fetch(process.env.API_SERVER + '/api/post/preview/generate?url=' + encodeURIComponent(link), {
-    method: 'GET',
-  })
-  .then((response) => {
-    // console.log(response, 'response');
-    return response.json();
-  })
-  .then((responseJSON) => {
+  return fetch(
+    process.env.API_SERVER + '/api/post/preview/generate?url=' + encodeURIComponent(link),
+    { method: 'GET' }
+  )
+  .then(response =>
+  // console.log(response, 'response');
+    response.json()
+  )
+  .then(
+    responseJSON =>
     // console.log(responseJSON, 'responseJSON');
-    return responseJSON;
-  })
-  .catch((error) => {
-    console.log(error, 'error');
-    return false;
-  });
+      responseJSON
+  )
+  .catch(false);
 }
-

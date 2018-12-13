@@ -6,12 +6,11 @@ import User from '../api/user/user.model';
 import CommunityMember from '../api/community/community.member.model';
 import Community from '../api/community/community.model';
 
-let validateJwt = expressJwt({ secret: process.env.SESSION_SECRET, ignoreExpiration: true });
+const validateJwt = expressJwt({ secret: process.env.SESSION_SECRET, ignoreExpiration: true });
 
 function blocked(req, res) {
-  return compose()
-  .use((req, res, next) => {
-    let token = req.cookies.token;
+  return compose().use((req, res, next) => {
+    const token = req.cookies.token;
     if (token) {
       req.headers.authorization = 'Bearer ' + token;
     }
@@ -28,9 +27,8 @@ function blocked(req, res) {
 }
 
 function currentUser(req, res) {
-  return compose()
-  .use((req, res, next) => {
-    let token = req.cookies.token;
+  return compose().use((req, res, next) => {
+    const token = req.cookies.token;
     if (token) {
       req.headers.authorization = 'Bearer ' + token;
     } else if (req.query && req.query.hasOwnProperty('access_token')) {
@@ -49,19 +47,18 @@ function currentUser(req, res) {
 }
 
 function communityMember(req, res) {
-  return compose()
-  .use(async (req, res, next) => {
+  return compose().use(async (req, res, next) => {
     try {
-      let user = req.user._id;
+      const user = req.user._id;
       if (!user) throw new Error('missing user credentials');
       // TODO make sure share extension supports this
-      let community = req.query.community || 'relevant';
+      const community = req.query.community || 'relevant';
       let member = await CommunityMember.findOne({ user, community });
 
       // add member to default community
       if (community === 'relevant' && !member) {
         // TODO join community that one is signing up with
-        let com = await Community.findOne({ slug: 'relevant' });
+        const com = await Community.findOne({ slug: 'relevant' });
         await com.join(user);
         member = await CommunityMember.findOne({ user, community });
       }
@@ -77,47 +74,50 @@ function communityMember(req, res) {
 }
 
 function authMiddleware(req, res) {
-  return compose()
+  return (
+    compose()
     // Validate jwt
-  .use((req, res, next) => {
-    // allow access_token to be passed through query parameter as well
-    if (req.query && req.query.hasOwnProperty('access_token')) {
-      req.headers.authorization = 'Bearer ' + req.query.access_token;
-    }
-
-    validateJwt(req, res, (err, decoded) => {
-      if (!err && decoded) {
-        req.user = decoded;
+    .use((req, res, next) => {
+      // allow access_token to be passed through query parameter as well
+      if (req.query && req.query.hasOwnProperty('access_token')) {
+        req.headers.authorization = 'Bearer ' + req.query.access_token;
       }
-      next();
-    });
-  });
-}
 
+      validateJwt(req, res, (err, decoded) => {
+        if (!err && decoded) {
+          req.user = decoded;
+        }
+        next();
+      });
+    })
+  );
+}
 
 /**
  * Attaches the user object to the request if authenticated
  * Otherwise returns 403
  */
 function isAuthenticated() {
-  return compose()
-  // Validate jwt
-  .use((req, res, next) => {
-    // allow access_token to be passed through query parameter as well
-    if (req.query && req.query.hasOwnProperty('access_token')) {
-      req.headers.authorization = 'Bearer ' + req.query.access_token;
-    }
-    validateJwt(req, res, next);
-  })
-  // Attach user to request
-  .use((req, res, next) => {
-    User.findById(req.user._id, (err, user) => {
-      if (err) return next(err);
-      if (!user) return res.status(401).json({ message: 'Authentication failed.' });
-      req.user = user;
-      return next();
-    });
-  });
+  return (
+    compose()
+    // Validate jwt
+    .use((req, res, next) => {
+      // allow access_token to be passed through query parameter as well
+      if (req.query && req.query.hasOwnProperty('access_token')) {
+        req.headers.authorization = 'Bearer ' + req.query.access_token;
+      }
+      validateJwt(req, res, next);
+    })
+    // Attach user to request
+    .use((req, res, next) => {
+      User.findById(req.user._id, (err, user) => {
+        if (err) return next(err);
+        if (!user) return res.status(401).json({ message: 'Authentication failed.' });
+        req.user = user;
+        return next();
+      });
+    })
+  );
 }
 
 /**
@@ -144,15 +144,14 @@ function signToken(id, role) {
   return jwt.sign({ _id: id, role }, process.env.SESSION_SECRET, { expiresIn: '7 days' });
 }
 
-
 function setTokenCookieDesktop(req, res) {
   if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.' });
 
-  let token = signToken(req.user._id, req.user.role);
+  const token = signToken(req.user._id, req.user.role);
 
   res.cookie('token', token);
   // console.log('query params ', req.query);
-  let redirect = req.query.redirect || '/relevant/new';
+  const redirect = req.query.redirect || '/relevant/new';
   return res.redirect(redirect);
 }
 
@@ -162,7 +161,7 @@ function setTokenCookieDesktop(req, res) {
 function setTokenCookie(req, res) {
   if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.' });
 
-  let token = signToken(req.user._id, req.user.role);
+  const token = signToken(req.user._id, req.user.role);
   if (req.user.type === 'temp') {
     return res.json({ tmpUser: token });
   }
@@ -180,4 +179,3 @@ exports.currentUser = currentUser;
 exports.blocked = blocked;
 exports.setTokenCookieDesktop = setTokenCookieDesktop;
 exports.communityMember = communityMember;
-

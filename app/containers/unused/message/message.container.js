@@ -1,34 +1,33 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Message from './message';
 import * as MessageActions from '../../actions/message.actions';
 
 class MessageContainer extends Component {
-  constructor(props) {
-    super(props);
-  }
+  static propTypes = {
+    getMessages: PropTypes.func,
+    auth: PropTypes.object
+  };
 
   componentWillMount() {
     this.props.getMessages(this.props.auth.user._id);
   }
 
-  render () {
+  render() {
     return (
       <div>
-        <Message { ...this.props} />
+        <Message {...this.props} />
       </div>
     );
   }
 }
 
 export default connect(
-  state => {
-    return {
-      auth: state.auth,
-      message: state.message
-    }
-  },
-  dispatch => {
-    return Object.assign({}, { dispatch },  bindActionCreators(MessageActions, dispatch))
-})(MessageContainer);
+  state => ({
+    auth: state.auth,
+    message: state.message
+  }),
+  dispatch => Object.assign({}, { dispatch }, bindActionCreators(MessageActions, dispatch))
+)(MessageContainer);

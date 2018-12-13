@@ -1,30 +1,30 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  ActivityIndicator,
-} from 'react-native';
-
-import { globalStyles, fullWidth, fullHeight } from '../styles/global';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import PropTypes from 'prop-types';
+import { globalStyles } from '../styles/global';
 
 let styles;
 
-export default function (props) {
+export default function Spinner(props) {
   return (
-    <View pointerEvents={'none'} style={props.visible ? styles.spinnerContainerRelative : styles.hideSpinner}>
-      <ActivityIndicator
-        animating={props.visible}
-        size="large"
-      />
+    <View
+      pointerEvents={'none'}
+      style={props.visible ? styles.spinnerContainerRelative : styles.hideSpinner}
+    >
+      <ActivityIndicator animating={props.visible} size="large" />
     </View>
   );
 }
+
+Spinner.propTypes = {
+  visible: PropTypes.bool
+};
 
 const localStyles = StyleSheet.create({
   spinnerContainerRelative: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   hideSpinner: {
     position: 'absolute'

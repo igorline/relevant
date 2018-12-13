@@ -1,15 +1,9 @@
 import React from 'react';
-import {
-  Image,
-  View,
-  Text,
-  TouchableWithoutFeedback,
-  StyleSheet
-} from 'react-native';
+import { Image, View, Text, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
 import { globalStyles } from '../styles/global';
 import Stats from './post/stats.component';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 let styles;
 
@@ -33,13 +27,17 @@ export default function UserName(props) {
     stats = <Stats entity={props.user} type={'relevance'} />;
   }
   let handle;
-  if (props.user._id) handle = (props.type !== 'invite' ? '@' : '') + props.user._id;
+  if (props.user._id) {
+    handle = (props.type !== 'invite' ? '@' : '') + props.user._id;
+  }
 
-  let rIcon = (<Image
-    resizeMode={'contain'}
-    style={[styles.smallR, { width: 10, height: 12, marginRight: 1 }]}
-    source={require('../assets/images/icons/smallR.png')}
-  />);
+  const rIcon = (
+    <Image
+      resizeMode={'contain'}
+      style={[styles.smallR, { width: 10, height: 12, marginRight: 1 }]}
+      source={require('../assets/images/icons/smallR.png')}
+    />
+  );
 
   if (handle) {
     handleEl = (
@@ -51,7 +49,8 @@ export default function UserName(props) {
       handleEl = (
         <View style={styles.textRow}>
           <Text style={[styles.font10, styles.greyText]}>
-            {handle}{' • '}
+            {handle}
+            {' • '}
           </Text>
           {rIcon}
           <Text style={[styles.font10, styles.greyText]}>
@@ -74,12 +73,15 @@ export default function UserName(props) {
 
   let twitterIcon;
   if (props.twitter) {
-    twitterIcon = (<Icon
-      borderRadius={0}
-      name={'logo-twitter'}
-      size={17} color={'#00aced'}
-      style={styles.icon}
-    />);
+    twitterIcon = (
+      <Icon
+        borderRadius={0}
+        name={'logo-twitter'}
+        size={17}
+        color={'#00aced'}
+        style={styles.icon}
+      />
+    );
   }
 
   return (
@@ -91,9 +93,16 @@ export default function UserName(props) {
         <Image source={imageSource} style={imageStyle} />
         {repostIcon}
         <View>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-end', marginBottom: 2 }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              alignItems: 'flex-end',
+              marginBottom: 2
+            }}
+          >
             <Text style={[styles.font17, styles.darkGrey, styles.bebas]}>
-              {props.user.name}{' '} {twitterIcon}
+              {props.user.name} {twitterIcon}
             </Text>
             {stats}
           </View>
@@ -105,34 +114,33 @@ export default function UserName(props) {
 }
 
 UserName.propTypes = {
+  topic: PropTypes.object,
+  twitter: PropTypes.bool,
+  type: PropTypes.string,
   user: PropTypes.object,
   big: PropTypes.bool,
-  relevance: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.bool,
-  ]),
+  relevance: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   repost: PropTypes.bool,
   postTime: PropTypes.string,
-  setSelected: PropTypes.func,
+  setSelected: PropTypes.func
 };
 
 const localStyles = StyleSheet.create({
   icon: {
-    marginLeft: 5,
+    marginLeft: 5
   },
   userImageBig: {
     height: 42,
     width: 42,
     borderRadius: 21,
-    marginRight: 7,
+    marginRight: 7
   },
   postInfo: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    // backgroundColor: 'white'
-  },
+    justifyContent: 'flex-start'
+  }
 });
 
 styles = { ...globalStyles, ...localStyles };

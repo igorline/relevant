@@ -1,11 +1,15 @@
-import React, {
-  Component,
-} from 'react';
-import { BondedTokenUtils } from 'bonded-token';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 const NETWORK = 4;
 
 export default class MetaMaskCTA extends Component {
+  static propTypes = {
+    network: PropTypes.number,
+    status: PropTypes.object,
+    account: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.onScroll = this.onScroll.bind(this);
@@ -16,60 +20,57 @@ export default class MetaMaskCTA extends Component {
     this.onScroll();
   }
 
-  onScroll(e) {
+  onScroll() {
     if (!this.phone) return;
     this.phone.style.transform = '';
-    let top = this.phone.getBoundingClientRect().top - 169;
-    let y = Math.max(-top / 3, 0);
+    const top = this.phone.getBoundingClientRect().top - 169;
+    const y = Math.max(-top / 3, 0);
     this.phone.style.transform = `translateX(0) translateY(${y}px)`;
   }
 
-  getMessage() {
-
-  }
+  getMessage() {}
 
   renderBody() {
-    let metamask = typeof web3 !== 'undefined';
-    let network = this.props.network && NETWORK === this.props.network;
-    let { account, balance } = this.props;
-    let body;
     let msg;
+    const metamask = typeof web3 !== 'undefined';
+    const network = this.props.network && NETWORK === this.props.network;
+
+    const { account } = this.props;
 
     if (this.props.status !== 'initialized' || !this.props.network) return null;
 
     let button;
 
     if (!metamask) {
-      return body = (
+      return (
         <section className="body smaller">
           <p className="libre big">
-            Did you know you can earn <span className="outline">Relevant Tokens</span> for curating quality content?
+            Did you know you can earn <span className="outline">Relevant Tokens</span> for curating
+            quality content?
           </p>
 
           <p className="subH">
-            Relevant Tokens live on the Ethereum blockchain<br />
-            Download and install <a target="_blank" href='http://metamask.io'>MetaMask</a> to get some.
+            Relevant Tokens live on the Ethereum blockchain
+            <br />
+            Download and install{' '}
+            <a target="_blank" href="http://metamask.io">
+              MetaMask
+            </a>{' '}
+            to get some.
             <br />
           </p>
-{/*          <p className="subH note">
-            *Tokens are currently on the testnet and have no monetary value
-          </p>*/}
         </section>
       );
     }
 
-    // if (account && !balance) {
-    //   msg = 'Launch your wallet to buy Relevant Tokens.';
-    //   button = (
-    //     <button onClick={this.props.toggleWallet} className="shadowButton">
-    //     Open Wallet</button>);
-    // }
-
     if (!network) {
       button = null;
-      msg = (<span>
-        Relevant tokens are currently on the test network. Please connect MetaMask to the Rinkeby network.
-      </span>);
+      msg = (
+        <span>
+          Relevant tokens are currently on the test network. Please connect MetaMask to the Rinkeby
+          network.
+        </span>
+      );
     }
 
     if (!account) {
@@ -78,36 +79,34 @@ export default class MetaMaskCTA extends Component {
     }
 
     if (msg) {
-      return body = (
+      return (
         <section className="body smaller">
           <p className="libre big">
-            Did you know you can earn <span className="outline">Relevant Tokens</span> for curating quality content?
+            Did you know you can earn <span className="outline">Relevant Tokens</span> for curating
+            quality content?
           </p>
 
           <p className="subH">
-            {msg}          {button}
-
+            {msg} {button}
           </p>
-{/*          <p className="subH note">
-            *Tokens are currently on the test network and have no monetary value
-          </p>*/}
         </section>
       );
     }
+    return null;
   }
 
   render() {
-    let img = "/img/metamask.png";
-    let body = this.renderBody();
+    const img = '/img/metamask.png';
+    const body = this.renderBody();
     if (!body) return null;
 
     return (
-      <div ref={c => this.container = c} className="splashContent metamask">
-        <mainSection>
+      <div ref={c => (this.container = c)} className="splashContent metamask">
+        <div className="mainSection">
           {body}
-        </mainSection>
+        </div>
         <div className="phone">
-          <img onLoad={this.onScroll} ref={c => this.phone = c} src={img} alt="phone" />
+          <img onLoad={this.onScroll} ref={c => (this.phone = c)} src={img} alt="phone" />
         </div>
       </div>
     );

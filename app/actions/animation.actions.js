@@ -6,8 +6,7 @@ export function triggerAnimation(type, params) {
     payload: {
       type,
       amount: params && params.amount ? params.amount : 1,
-      parent: params && params.parent ? params.parent : null,
+      parent: params && params.parent ? params.parent : null
     }
   };
 }
-

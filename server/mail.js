@@ -10,7 +10,7 @@ const mailgun = require('mailgun-js')({
 //   .catch(err => console.log(err)); // logs any error
 
 exports.test = () => {
-  let data = {
+  const data = {
     from: 'Relevant <noreply@mail.relevant.community>',
     to: 'slava@4real.io',
     subject: 'Message from relevant',
@@ -20,18 +20,18 @@ exports.test = () => {
 };
 
 exports.send = data => {
-  let text = htmlToText.fromString(data.html);
+  const text = htmlToText.fromString(data.html);
   data = { ...data, text };
   // console.log('env ', process.env.NODE_ENV)
   if (process.env.NODE_ENV === 'test') {
     return Promise.resolve();
   }
   return mailgun.messages()
-  .send(data)
-  .catch(err => {
+    .send(data)
+    .catch(err => {
     // console.log('mail error ', err);
-    throw err;
-  });
+      throw err;
+    });
 };
 
 exports.mailgun = mailgun;

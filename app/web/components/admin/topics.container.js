@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as tagActions from '../../../actions/tag.actions';
@@ -8,11 +9,16 @@ import * as tagActions from '../../../actions/tag.actions';
 let styles;
 
 class TopicsAdmin extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    tags: PropTypes.array
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       topic: '',
-      emoji: '',
+      emoji: ''
     };
     this.handleChange = this.handleChange.bind(this);
     this.updateTag = this.updateTag.bind(this);
@@ -43,7 +49,7 @@ class TopicsAdmin extends Component {
   }
 
   newTag() {
-    let tag = {
+    const tag = {
       _id: this.state.topic + '_category_tag',
       categoryName: this.state.topic,
       category: true,
@@ -54,10 +60,7 @@ class TopicsAdmin extends Component {
 
   render() {
     let tags = this.props.tags.parentTags || [];
-    tags = [
-      ...tags.filter(tag => tag.active),
-      ...tags.filter(tag => !tag.active),
-    ];
+    tags = [...tags.filter(tag => tag.active), ...tags.filter(tag => !tag.active)];
 
     return (
       <div style={styles.topicsContainerStyle}>
@@ -75,7 +78,7 @@ class TopicsAdmin extends Component {
           value={this.state.emoji}
           onChange={this.handleChange}
         />
-        <button onClick={() => this.newTag()} >Add new category</button>
+        <button onClick={() => this.newTag()}>Add new category</button>
         {tags.map(tag => {
           if (!tag.newId) tag.newId = tag._id;
           if (tag.main && typeof tag.main !== 'string') {
@@ -139,10 +142,9 @@ styles = {
   topicsContainerStyle: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'center'
   }
 };
-
 
 export default connect(
   state => ({

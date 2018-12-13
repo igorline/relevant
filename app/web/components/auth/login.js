@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
-import { reduxForm } from 'redux-form';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import ShadowButton from '../common/ShadowButton';
 
-
 class LoginForm extends Component {
+  static propTypes = {
+    parentFunction: PropTypes.func,
+    authNav: PropTypes.func,
+    location: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     // this.validate = this.validate.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.state = {
       username: '',
-      password: '',
+      password: ''
     };
     this.submit = this.submit.bind(this);
   }
@@ -33,8 +38,8 @@ class LoginForm extends Component {
   }
 
   render() {
-    let { username, password } = this.state;
-    let local = username.length && password.length;
+    const { username, password } = this.state;
+    const local = username.length && password.length;
     return (
       <div className="innerForm">
         <input
@@ -71,24 +76,16 @@ class LoginForm extends Component {
             className={'twitterButton'}
             href={`/auth/twitter?redirect=${this.props.location.pathname}`}
           >
-              Sign in with Twitter
+            Sign in with Twitter
           </a>
         </div>
 
         <div style={{ width: '100%', visibility: local ? 'visible' : 'hidden' }}>
-          <ShadowButton
-            onClick={this.submit}
-          >
-            Sign In
-          </ShadowButton>
+          <ShadowButton onClick={this.submit}>Sign In</ShadowButton>
         </div>
 
         <div className={'smallText'}>
-          Not registered yet? <Link
-            onClick={() => this.props.authNav('signup')}
-          >
-            Sign up
-          </Link>
+          Not registered yet? <Link onClick={() => this.props.authNav('signup')}>Sign up</Link>
         </div>
       </div>
     );

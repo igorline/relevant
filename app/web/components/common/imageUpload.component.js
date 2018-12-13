@@ -4,18 +4,24 @@ import { img, s3, Alert } from '../../../utils';
 export default class ImageUpload extends Component {
   state = {
     preview: null,
-    fileName: null,
-  }
+    fileName: null
+  };
 
   processImage() {
     const file = this.fileInput.files[0];
-    img.loadImage(file)
+    img
+    .loadImage(file)
     .then(dataURL => {
-      let extension = dataURL.split(',')[0].split('/')[1].split(';')[0];
+      const extension = dataURL
+      .split(',')[0]
+      .split('/')[1]
+      .split(';')[0];
       file.name = file.name.substr(0, extension.lastIndexOf('.')) + '.' + extension;
       this.setState({ preview: dataURL, fileName: file.name });
-    }).catch((e) => {
-      console.log(e);
+    })
+    .catch(e => {
+      console.error(e);
+      // TODO error handling
     });
   }
 
@@ -24,18 +30,16 @@ export default class ImageUpload extends Component {
       Alert('Please select an image');
       return null;
     }
-    let res = await s3.toS3Advanced(this.state.preview, this.state.fileName);
-    console.log('uploaded url ', res.url);
-    this.setState({ preview: null, fileName: null });
-    // this.props.onUpload();
+    await s3.toS3Advanced(this.state.preview, this.state.fileName);
+    return this.setState({ preview: null, fileName: null });
   }
 
   render() {
-    let { preview } = this.state;
+    const { preview } = this.state;
 
     return (
       <div>
-        {preview ? <img src={preview} /> : null }
+        {preview ? <img src={preview} /> : null}
         <input
           ref={c => (this.fileInput = c)}
           onChange={this.processImage.bind(this)}
@@ -43,10 +47,10 @@ export default class ImageUpload extends Component {
           name={'img'}
           type={'file'}
         />
-        <div>
-        </div>
-{/*        {preview ? <button onClick={this.uploadImage.bind(this)}>Upload</button> : null }
-*/}      </div>
+        <div />
+        {/*        {preview ? <button onClick={this.uploadImage.bind(this)}>Upload</button> : null }
+         */}{' '}
+      </div>
     );
   }
 }

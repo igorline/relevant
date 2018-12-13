@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text
-} from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
+
+import PropTypes from 'prop-types';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -27,11 +25,27 @@ let styles;
 const POST_PAGE_SIZE = 15;
 
 class Discover extends Component {
+  static propTypes = {
+    type: PropTypes.string,
+    scene: PropTypes.object,
+    tags: PropTypes.array,
+    refresh: PropTypes.object,
+    active: PropTypes.object,
+    reload: PropTypes.object,
+    offsetY: PropTypes.number,
+    actions: PropTypes.object,
+    auth: PropTypes.object,
+    onScroll: PropTypes.func,
+    error: PropTypes.string,
+    posts: PropTypes.object,
+    userList: PropTypes.array
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
       offsetY: 50,
-      view: 0,
+      view: 0
     };
     this.renderRow = this.renderRow.bind(this);
     this.renderHeader = this.renderHeader.bind(this);
@@ -43,7 +57,7 @@ class Discover extends Component {
       { id: 0, title: 'Trending', type: 'top' },
       { id: 1, title: 'New', type: 'new' },
       { id: 2, title: 'People', type: 'people' },
-      { id: 3, title: 'Twitter', type: 'twitterFeed' },
+      { id: 3, title: 'Twitter', type: 'twitterFeed' }
     ];
     this.loaded = true;
     this.type = this.props.type;
@@ -58,7 +72,7 @@ class Discover extends Component {
   }
 
   componentWillReceiveProps(next) {
-    let type = this.myTabs[this.state.view].type;
+    const type = this.myTabs[this.state.view].type;
     if (this.props.tags.selectedTags !== next.tags.selectedTags && type !== 'people') {
       this.filter = next.tags.selectedTags;
       this.needsReload = new Date().getTime();
@@ -86,20 +100,22 @@ class Discover extends Component {
         if (this.topic) {
           return {
             data: props.posts.topics.top[this.topic._id],
-            loaded: props.posts.loaded.topics[this.topic._id] ?
-              props.posts.loaded.topics[this.topic._id].top : false,
+            loaded: props.posts.loaded.topics[this.topic._id]
+              ? props.posts.loaded.topics[this.topic._id].top
+              : false
           };
         }
         return {
           data: props.posts.top,
-          loaded: props.posts.loaded.top,
+          loaded: props.posts.loaded.top
         };
       case 1:
         if (this.topic) {
           return {
             data: props.posts.topics.new[this.topic._id],
-            loaded: props.posts.loaded.topics[this.topic._id] ?
-              props.posts.loaded.topics[this.topic._id].new : false
+            loaded: props.posts.loaded.topics[this.topic._id]
+              ? props.posts.loaded.topics[this.topic._id].new
+              : false
           };
         }
         return {
@@ -121,7 +137,7 @@ class Discover extends Component {
         // }
         return {
           data: props.posts.twitterFeed,
-          loaded: props.posts.loaded.twitterFeed,
+          loaded: props.posts.loaded.twitterFeed
         };
       default:
         return null;
@@ -129,7 +145,7 @@ class Discover extends Component {
   }
 
   scrollToTop() {
-    let view = this.listview;
+    const view = this.listview;
     if (view && view.listview) view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
   }
 
@@ -151,62 +167,67 @@ class Discover extends Component {
         this.props.actions.getTwitterFeed(length, tags);
         break;
       default:
-        return;
     }
   }
 
   renderHeader() {
     if (this.state.view !== 3 || this.props.auth.user.twitterId) return null;
     return (
-      <View style={{ paddingBottom: 20, paddingHorizontal: mainPadding}}>
+      <View style={{ paddingBottom: 20, paddingHorizontal: mainPadding }}>
         <TwitterButton auth={this.props.auth} actions={this.props.actions}>
           Connect Twitter Account
         </TwitterButton>
-        <Text style={[styles.smallInfo, { paddingTop: 5, textAlign: 'center' }]}>Connect your accont to see relevant post from your twitter feed</Text>
+        <Text style={[styles.smallInfo, { paddingTop: 5, textAlign: 'center' }]}>
+          Connect your accont to see relevant post from your twitter feed
+        </Text>
       </View>
     );
   }
 
   renderRow(rowData, view, i) {
-    let { posts } = this.props;
-    let type = this.myTabs[view].type;
+    const { posts } = this.props;
+    const type = this.myTabs[view].type;
     if (view !== 2) {
-      let post = posts.posts[rowData];
-      let link = posts.links[post.metaPost];
-      let commentary = post[type].map(c => posts.posts[c]);
+      const post = posts.posts[rowData];
+      const link = posts.links[post.metaPost];
+      const commentary = post[type].map(c => posts.posts[c]);
 
       let showReposts = false;
       if (type === 'new') showReposts = true;
 
-      return (<Post
-        tooltip={parseInt(i) === 0 || false}
-        post={post}
-        commentary={commentary}
-        link={link}
-        showReposts={showReposts}
-        actions={this.props.actions}
-        styles={styles}
-        posts={posts}
-      />);
+      return (
+        <Post
+          tooltip={parseInt(i) === 0 || false}
+          post={post}
+          commentary={commentary}
+          link={link}
+          showReposts={showReposts}
+          actions={this.props.actions}
+          styles={styles}
+          posts={posts}
+        />
+      );
     }
-    let topic = this.topic ? this.topic._id : null;
-    return (<DiscoverUser
-      bio
-      relevance={this.topic || false}
-      topic={topic}
-      user={rowData}
-      {...this.props}
-    />);
+    const topic = this.topic ? this.topic._id : null;
+    return (
+      <DiscoverUser
+        bio
+        relevance={this.topic || false}
+        topic={topic}
+        user={rowData}
+        {...this.props}
+      />
+    );
   }
 
   render() {
     let dataEl = [];
 
     if (this.loaded) {
-      let tabData = this.getViewData(this.props, this.state.view) || [];
+      const tabData = this.getViewData(this.props, this.state.view) || [];
       dataEl = (
         <CustomListView
-          ref={c => this.listview = c}
+          ref={c => (this.listview = c)}
           key={this.state.view}
           data={tabData.data || []}
           loaded={tabData.loaded}
@@ -222,34 +243,31 @@ class Discover extends Component {
           needsReload={this.needsReload}
           scrollableTab
           error={this.props.error}
-        />);
+        />
+      );
     }
 
     // if (!this.loaded) dataEl = <CustomSpinner />;
 
-    return (
-      <View style={{ backgroundColor: 'hsl(0,0%,100%)', flex: 1 }}>
-        {dataEl}
-      </View>
-    );
+    return <View style={{ backgroundColor: 'hsl(0,0%,100%)', flex: 1 }}>{dataEl}</View>;
   }
 }
 
 const localStyles = StyleSheet.create({
   padding20: {
-    padding: 20,
+    padding: 20
   },
   listStyle: {
-    height: 100,
+    height: 100
   },
   listScroll: {
     height: 100,
     borderWidth: 1,
-    borderColor: 'red',
+    borderColor: 'red'
   },
   scrollPadding: {
-    marginTop: 300,
-  },
+    marginTop: 300
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };
@@ -274,7 +292,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
-      { ...postActions,
+      {
+        ...postActions,
         ...animationActions,
         ...tagActions,
         ...investActions,
@@ -282,9 +301,14 @@ function mapDispatchToProps(dispatch) {
         ...statsActions,
         ...authActions,
         ...navigationActions,
-        ...createPostActions,
-      }, dispatch),
+        ...createPostActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Discover);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Discover);

@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableHighlight,
-  Linking
-} from 'react-native';
+import { StyleSheet, View, Text, TouchableHighlight, Linking } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { globalStyles, fullWidth, blue, darkGrey } from '../../styles/global';
 import WebViewAuto from './WebViewAuto1';
@@ -13,9 +7,9 @@ import WebViewAuto from './WebViewAuto1';
 let styles;
 
 export default function Excerpt(props) {
-  let post = props.post;
+  const post = props.post;
 
-  let html = `
+  const html = `
     <style>
       body {
         font-family: '-apple-system','HelveticaNeue';
@@ -41,12 +35,15 @@ export default function Excerpt(props) {
   `;
 
   function openLink(url) {
-    props.actions.push({
-      key: 'articleView',
-      component: 'articleView',
-      back: true,
-      uri: url,
-    }, 'home');
+    props.actions.push(
+      {
+        key: 'articleView',
+        component: 'articleView',
+        back: true,
+        uri: url
+      },
+      'home'
+    );
   }
 
   return (
@@ -67,10 +64,7 @@ export default function Excerpt(props) {
           source={{ html: html + post.shortText }}
         />
         <LinearGradient
-          colors={[
-            'hsla(0, 0%, 100%, 0)',
-            'hsla(0, 0%, 100%, .94)',
-            'hsla(0, 0%, 100%, 1)']}
+          colors={['hsla(0, 0%, 100%, 0)', 'hsla(0, 0%, 100%, .94)', 'hsla(0, 0%, 100%, 1)']}
           style={styles.linearGradient}
         >
           <TouchableHighlight
@@ -79,9 +73,7 @@ export default function Excerpt(props) {
             style={styles.readMore}
             onPress={() => openLink(post.link)}
           >
-            <Text style={styles.readMoreText}>
-              Read Full Article
-            </Text>
+            <Text style={styles.readMoreText}>Read Full Article</Text>
           </TouchableHighlight>
         </LinearGradient>
       </View>
@@ -92,25 +84,25 @@ export default function Excerpt(props) {
 
 const localStyles = StyleSheet.create({
   excerpt: {
-    marginTop: 10,
+    marginTop: 10
   },
   divider: {
     marginTop: 10,
     marginHorizontal: 20,
     borderBottomColor: 'black',
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: StyleSheet.hairlineWidth
   },
   readMoreText: {
     fontSize: 16,
     // fontFamily: 'BebasNeueRelevantRegular',
-    color: blue,
+    color: blue
     // marginBottom: -3
   },
   readMore: {
     borderColor: blue,
     borderWidth: 1,
     paddingHorizontal: 20,
-    paddingVertical: 5,
+    paddingVertical: 5
     // borderRadius: 5,
   },
   linearGradient: {
@@ -120,7 +112,7 @@ const localStyles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     justifyContent: 'flex-end'
-  },
+  }
 });
 
 styles = { ...localStyles, ...globalStyles };

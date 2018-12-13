@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import InfScroll from '../common/infScroll.component';
@@ -12,10 +13,16 @@ if (process.env.BROWSER === true) {
 }
 
 class Activity extends Component {
+  static propTypes = {
+    auth: PropTypes.object,
+    notif: PropTypes.object,
+    actions: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
-      view: 0,
+      view: 0
     };
     this.renderRow = this.renderRow.bind(this);
     this.getViewData = this.getViewData.bind(this);
@@ -28,46 +35,35 @@ class Activity extends Component {
     this.ready = false;
   }
 
-
   componentDidMount() {
     if (this.props.auth.user && this.props.notif.count) {
       this.props.actions.markRead();
     }
     this.ready = true;
     this.load(0, 0);
-
-    // window.addEventListener('mousedown', () => {
-    //   this.props.close();
-    // });
   }
 
-  componentWillReceiveProps(next) {
-    // TODO implement this for browser - also for discover
-    // if (this.props.refresh !== next.refresh) {
-    //   this.scrollToTop();
-    // }
-    // if (this.props.reload !== next.reload) {
-    //   this.props.actions.markRead();
-    //   this.needsReload = new Date().getTime();
-    // }
-  }
+  // TODO implement this for browser - also for discover
+  // componentWillReceiveProps(next) {
+  //   if (this.props.refresh !== next.refresh) {
+  //     this.scrollToTop();
+  //   }
+  //   if (this.props.reload !== next.reload) {
+  //     this.props.actions.markRead();
+  //     this.needsReload = new Date().getTime();
+  //   }
+  // }
 
   load(page, length) {
     if (!this.ready) return;
-    this.hasMore = (page) * this.pageSize <= length;
+    this.hasMore = page * this.pageSize <= length;
     if (this.hasMore) {
       this.props.actions.getActivity(length, this.pageSize);
     }
   }
 
   renderRow(rowData) {
-    return (
-      <SingleActivity
-        key={rowData._id}
-        singleActivity={rowData}
-        {...this.props}
-      />
-    );
+    return <SingleActivity key={rowData._id} singleActivity={rowData} {...this.props} />;
   }
 
   getViewData(props) {
@@ -75,16 +71,16 @@ class Activity extends Component {
   }
 
   render() {
-    let { data, loaded } = this.getViewData(this.props);
-    let activity = data.map(a => this.renderRow(a));
-    let length = activity.length;
+    const { data } = this.getViewData(this.props);
+    const activity = data.map(a => this.renderRow(a));
+    const length = activity.length;
     return (
       <div className={'activityPopup'}>
-        <div className={'activityArrow'}></div>
+        <div className={'activityArrow'} />
         <InfScroll
           className={'activityContainer'}
           data={data}
-          loadMore={(p) => this.load(p, length)}
+          loadMore={p => this.load(p, length)}
           hasMore={this.hasMore}
           useWindow={false}
         >
@@ -102,7 +98,7 @@ function mapStateToProps(state) {
     loaded: state.user.loaded,
     online: state.user.online,
     stats: state.stats,
-    error: state.error.activity,
+    error: state.error.activity
 
     // TODO how do we deal with these?
     // refresh: state.navigation.activity.refresh,
@@ -112,14 +108,18 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...postActions,
-      ...notifActions,
-      ...userActions
-    }, dispatch),
+    actions: bindActionCreators(
+      {
+        ...postActions,
+        ...notifActions,
+        ...userActions
+      },
+      dispatch
+    )
   };
 }
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(Activity);
-
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Activity);

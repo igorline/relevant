@@ -7,6 +7,7 @@ import {
   InteractionManager,
   Alert
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Transitioner from '../nav/Transitioner';
 import Analytics from 'react-native-firebase-analytics';
 import { bindActionCreators } from 'redux';
@@ -30,6 +31,34 @@ const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 let styles;
 
 class CreatePostContainer extends Component {
+  static propTypes = {
+    tags: PropTypes.array,
+    actions: PropTypes.object,
+    createPost: PropTypes.object,
+    navigation: PropTypes.object,
+    close: PropTypes.func,
+    navigator: PropTypes.object,
+    auth: PropTypes.object,
+    share: PropTypes.bool,
+    user: PropTypes.object,
+    editPost: PropTypes.object,
+    allTags: PropTypes.array,
+    postBody: PropTypes.object,
+    bodyMentions: PropTypes.array,
+    repost: PropTypes.object,
+    postCategory: PropTypes.string,
+    urlPreview: PropTypes.object,
+    nativeImage: PropTypes.object,
+    postImage: PropTypes.string,
+    postUrl: PropTypes.object,
+    bodyTags: PropTypes.array,
+    domain: PropTypes.string,
+    keywords: PropTypes.array,
+    articleAuthor: PropTypes.object,
+    shortText: PropTypes.object,
+    edit: PropTypes.bool,
+    scene: PropTypes.object
+  };
 
   constructor(props, context) {
     super(props, context);
@@ -79,19 +108,16 @@ class CreatePostContainer extends Component {
 
   next() {
     if (!this.skipUrl && this.props.createPost.postUrl && !this.props.createPost.urlPreview) {
-      Alert.alert(
-        'Url is still loading, please give it a few more seconds',
-        null,
-        [
-          { text: 'Continue Anyway',
-            onPress: () => {
-              this.skipUrl = true;
-              return this.next(true);
-            }
-          },
-          { text: 'Wait', onPress: () => null },
-        ]
-      );
+      Alert.alert('Url is still loading, please give it a few more seconds', null, [
+        {
+          text: 'Continue Anyway',
+          onPress: () => {
+            this.skipUrl = true;
+            return this.next(true);
+          }
+        },
+        { text: 'Wait', onPress: () => null }
+      ]);
       return null;
     }
     this.skipUrl = false;
@@ -104,24 +130,27 @@ class CreatePostContainer extends Component {
     }
 
     if (this.props.navigation.index === 0 && this.enableNext) {
-      this.props.navigator.push({
-        key: 'categories',
-        back: true,
-        title: 'Post Category',
-        next: 'Post',
-        // left: this.props.share ? 'Back' : null
-      }, 'createPost');
+      this.props.navigator.push(
+        {
+          key: 'categories',
+          back: true,
+          title: 'Post Category',
+          next: 'Post'
+          // left: this.props.share ? 'Back' : null
+        },
+        'createPost'
+      );
     }
     return null;
   }
 
   editPost() {
-    let props = this.props.createPost;
-    let postBody = {
+    const props = this.props.createPost;
+    const postBody = {
       ...props.editPost,
       tags: [...new Set(props.allTags.map(tag => tag._id))],
       body: props.postBody,
-      mentions: props.bodyMentions,
+      mentions: props.bodyMentions
       // link: props.postUrl,
       // title: props.urlPreview ? props.urlPreview.title.trim() : null,
       // description: props.urlPreview ? props.urlPreview.description : null,
@@ -132,7 +161,8 @@ class CreatePostContainer extends Component {
       // articleAuthor: props.articleAuthor,
       // shortText: props.shortText,
     };
-    this.props.actions.editPost(postBody, this.props.auth.token)
+    this.props.actions
+    .editPost(postBody, this.props.auth.token)
     .then(res => {
       if (!res) return;
       Alert.alert('Success!');
@@ -148,17 +178,16 @@ class CreatePostContainer extends Component {
   createRepost() {
     if (this.state.creatingPost) return;
 
-    let props = this.props.createPost;
+    const props = this.props.createPost;
 
-    let commentObj = {
+    const commentObj = {
       post: props.repost._id,
       text: props.postBody,
       repost: true
     };
 
     this.setState({ creatingPost: true });
-    this.props.actions.createComment(this.props.auth.token, commentObj)
-    .then(() => {
+    this.props.actions.createComment(this.props.auth.token, commentObj).then(() => {
       this.props.actions.clearCreatePost();
       this.props.actions.resetRoutes('home');
       this.props.actions.resetRoutes('discover');
@@ -177,7 +206,7 @@ class CreatePostContainer extends Component {
 
     if (this.state.creatingPost) return;
 
-    let props = this.props.createPost;
+    const props = this.props.createPost;
     this.image = null;
 
     if (!props.postCategory) {
@@ -187,8 +216,9 @@ class CreatePostContainer extends Component {
 
     this.setState({ creatingPost: true });
     if (props.urlPreview && props.urlPreview.image && !props.nativeImage) {
-      utils.s3.toS3Advanced(props.urlPreview.image)
-      .then((results) => {
+      utils.s3
+      .toS3Advanced(props.urlPreview.image)
+      .then(results => {
         if (results.success) {
           this.image = results.url;
           this.uploadPost();
@@ -202,15 +232,14 @@ class CreatePostContainer extends Component {
         this.setState({ creatingPost: false });
       });
     } else {
-      this.image = props.urlPreview && props.urlPreview.image ?
-        props.urlPreview.image :
-        props.postImage;
+      this.image =
+        props.urlPreview && props.urlPreview.image ? props.urlPreview.image : props.postImage;
       this.uploadPost();
     }
   }
 
   uploadPost() {
-    let props = this.props.createPost;
+    const props = this.props.createPost;
 
     console.log('creating post ', props.postCategory);
 
@@ -229,40 +258,38 @@ class CreatePostContainer extends Component {
       domain: props.domain,
       keywords: props.keywords,
       articleAuthor: props.articleAuthor,
-      shortText: props.shortText,
+      shortText: props.shortText
     };
 
     if (props.edit) {
       postBody = { ...props.editPost, ...postBody };
-      return this.props.actions.editPost(postBody, this.props.auth.token)
-        .then((res) => {
-          if (!res) return;
-          Alert.alert('Success!');
-          this.props.actions.clearCreatePost();
-          this.props.actions.resetRoutes('createPost');
-          this.props.navigator.resetRoutes('home');
-        });
+      return this.props.actions.editPost(postBody, this.props.auth.token).then(res => {
+        if (!res) return;
+        Alert.alert('Success!');
+        this.props.actions.clearCreatePost();
+        this.props.actions.resetRoutes('createPost');
+        this.props.navigator.resetRoutes('home');
+      });
     }
 
-    this.props.actions.submitPost(postBody, this.props.auth.token)
-      .then((results) => {
-        if (!results) {
-          Alert.alert('Post error please try again');
-          this.setState({ creatingPost: false });
-        } else {
-          if (this.props.close) this.props.close();
-          this.props.actions.clearCreatePost();
-          this.props.navigator.resetRoutes('home');
-          this.props.actions.resetRoutes('discover');
-          this.props.actions.resetRoutes('createPost');
-          this.props.navigator.changeTab('discover');
-          this.props.navigator.reloadTab('discover');
-          this.props.navigator.setView('discover', 1);
-          Analytics.logEvent('newPost', {
-            viaShare: this.props.share
-          });
-        }
-      });
+    this.props.actions.submitPost(postBody, this.props.auth.token).then(results => {
+      if (!results) {
+        Alert.alert('Post error please try again');
+        this.setState({ creatingPost: false });
+      } else {
+        if (this.props.close) this.props.close();
+        this.props.actions.clearCreatePost();
+        this.props.navigator.resetRoutes('home');
+        this.props.actions.resetRoutes('discover');
+        this.props.actions.resetRoutes('createPost');
+        this.props.navigator.changeTab('discover');
+        this.props.navigator.reloadTab('discover');
+        this.props.navigator.setView('discover', 1);
+        Analytics.logEvent('newPost', {
+          viaShare: this.props.share
+        });
+      }
+    });
   }
 
   renderRight(props) {
@@ -278,7 +305,7 @@ class CreatePostContainer extends Component {
     }
     if (this.state.creatingPost) this.enabledNext = false;
 
-    let rightText = props.scene.route.next || 'Post';
+    const rightText = props.scene.route.next || 'Post';
 
     let enabled;
     let rightAction;
@@ -288,9 +315,7 @@ class CreatePostContainer extends Component {
       rightAction = p => this.next(p);
     } else {
       enabled = this.props.createPost.postCategory && !this.state.creatingPost;
-      rightAction = () => {
-        return this.createPost();
-      };
+      rightAction = () => this.createPost();
     }
 
     return (
@@ -299,13 +324,7 @@ class CreatePostContainer extends Component {
         style={[styles.rightButton]}
         onPress={() => rightAction(props)}
       >
-        <Text
-          style={[
-            { opacity: enabled ? 1 : 0.6 },
-            styles.active,
-            styles.rightButtonText,
-          ]}
-        >
+        <Text style={[{ opacity: enabled ? 1 : 0.6 }, styles.active, styles.rightButtonText]}>
           {rightText}
         </Text>
       </TouchableOpacity>
@@ -313,21 +332,25 @@ class CreatePostContainer extends Component {
   }
 
   renderScene(props) {
-    let component = props.scene.route.component;
+    const component = props.scene.route.component;
 
     if (this.state.creatingPost) return <CustomSpinner />;
 
     switch (component) {
       case 'createPost':
         this.current = 'url';
-        return (<UrlComponent
-          ref={(c) => { this.urlComponent = c; }}
-          share={this.props.share}
-          users={this.props.user}
-          user={this.props.auth.user}
-          {...this.props.createPost}
-          actions={this.props.actions}
-        />);
+        return (
+          <UrlComponent
+            ref={c => {
+              this.urlComponent = c;
+            }}
+            share={this.props.share}
+            users={this.props.user}
+            user={this.props.auth.user}
+            {...this.props.createPost}
+            actions={this.props.actions}
+          />
+        );
       case 'categories':
         this.current = 'categories';
         return <Categories done={this.createPost} {...this.props} />;
@@ -343,20 +366,20 @@ class CreatePostContainer extends Component {
     return {
       duration: 220,
       easing,
-      useNativeDriver: !!NativeAnimatedModule ? true : false
+      useNativeDriver: !!NativeAnimatedModule
     };
   }
 
   render() {
-    let scene = this.props.navigation;
+    const scene = this.props.navigation;
 
-    return (<Transitioner
-      key='CreatePost'
-      style={{ backgroundColor: 'white' }}
-      navigation={{ state: scene }}
-      configureTransition={utils.transitionConfig}
-      render={transitionProps => {
-        return (
+    return (
+      <Transitioner
+        key="CreatePost"
+        style={{ backgroundColor: 'white' }}
+        navigation={{ state: scene }}
+        configureTransition={utils.transitionConfig}
+        render={transitionProps => (
           <Card
             style={{ backgroundColor: 'white' }}
             renderScene={this.renderScene}
@@ -367,10 +390,10 @@ class CreatePostContainer extends Component {
             share={this.props.share}
             header
             {...transitionProps}
-          />);
-        }
-      }
-    />);
+          />
+        )}
+      />
+    );
   }
 }
 
@@ -378,16 +401,15 @@ const localStyles = StyleSheet.create({
   rightButton: {
     flex: 1,
     marginRight: mainPadding - 10,
-    paddingVertical: 10,
+    paddingVertical: 10
   },
   rightButtonText: {
     textAlign: 'right',
     fontSize: 17,
     fontFamily: 'Helvetica',
-    paddingRight: 10,
+    paddingRight: 10
   }
 });
-
 
 styles = { ...localStyles, ...globalStyles };
 
@@ -398,7 +420,7 @@ function mapStateToProps(state) {
     home: state.navigation.home,
     createPost: state.createPost,
     user: state.user,
-    tags: state.tags.parentTags,
+    tags: state.tags.parentTags
   };
 }
 
@@ -411,10 +433,14 @@ function mapDispatchToProps(dispatch) {
         ...createPostActions,
         ...postActions,
         ...tagActions,
-        ...userActions,
+        ...userActions
       },
-      dispatch),
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreatePostContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreatePostContainer);

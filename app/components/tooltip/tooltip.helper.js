@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  Image,
-  View,
-  StyleSheet,
-  Platform
-} from 'react-native';
+import { Text, Image, View, StyleSheet, Platform } from 'react-native';
 import { globalStyles, fullWidth } from '../../styles/global';
 import { numbers } from '../../utils';
 
@@ -15,29 +9,25 @@ exports.data = {};
 exports.text = {};
 
 // list of tooltips to initalize on app load
-exports.tooltips = [
-  'relevance',
-  'coin',
-  'topics',
-  'subscriptions',
-  'activity',
-  'shareTip',
-  'vote',
-];
+exports.tooltips = ['relevance', 'coin', 'topics', 'subscriptions', 'activity', 'shareTip', 'vote'];
 
 exports.data.relevance = {
   name: 'relevance',
   vertical: 'bottom',
   horizontal: 'right',
   horizontalOffset: 0,
-  verticalOffset: 10,
+  verticalOffset: 10
 };
 
 function renderRow(props, txt) {
   return (
     <View key={txt} style={{ flexDirection: 'row' }}>
-      <Text allowFontScaling={false} style={[props.style]}>{'\u2022'}</Text>
-      <Text allowFontScaling={false} style={[props.style, styles.ul]}>{txt}</Text>
+      <Text allowFontScaling={false} style={[props.style]}>
+        {'\u2022'}
+      </Text>
+      <Text allowFontScaling={false} style={[props.style, styles.ul]}>
+        {txt}
+      </Text>
     </View>
   );
 }
@@ -45,14 +35,14 @@ function renderRow(props, txt) {
 exports.text.relevance = function relevance(props) {
   if (!props.auth.user) return null;
 
-  let data = [
+  const data = [
     'You earn Relevance when you post or upvote quality articles',
-    'The more Relevant you are, the more weight your votes have',
+    'The more Relevant you are, the more weight your votes have'
   ];
 
-  let dataEl = data.map(txt => renderRow(props, txt));
-  let { user } = props.auth;
-  let rel = user.relevance ? user.relevance.pagerank || 0 : 0;
+  const dataEl = data.map(txt => renderRow(props, txt));
+  const { user } = props.auth;
+  const rel = user.relevance ? user.relevance.pagerank || 0 : 0;
 
   return (
     <View>
@@ -67,17 +57,17 @@ exports.text.relevance = function relevance(props) {
         />
         <Text
           allowFontScaling={false}
-          style={[styles.bebas,
-            props.style, Platform.OS === 'android' ? { marginBottom: 0 } : null,
-            styles.title,
+          style={[
+            styles.bebas,
+            props.style,
+            Platform.OS === 'android' ? { marginBottom: 0 } : null,
+            styles.title
           ]}
         >
           {numbers.abbreviateNumber(rel)}
         </Text>
       </View>
-      <View style={styles.ulParent}>
-        {dataEl}
-      </View>
+      <View style={styles.ulParent}>{dataEl}</View>
     </View>
   );
 };
@@ -87,26 +77,24 @@ exports.data.coin = {
   vertical: 'bottom',
   horizontal: 'right',
   horizontalOffset: 0,
-  verticalOffset: 10,
+  verticalOffset: 10
 };
 
-exports.text.coin = function (props) {
+exports.text.coin = function(props) {
   if (!props.auth.user) return null;
 
-  let data = [
+  const data = [
     'You stake coins when you upvote posts',
     'You earn coins when you create or upvote quality posts (it takes a few days)',
-    'The more coins you stake on a vote, the more rewards you\'ll earn'
+    "The more coins you stake on a vote, the more rewards you'll earn"
   ];
 
-  let dataEl = data.map(txt => renderRow(props, txt));
+  const dataEl = data.map(txt => renderRow(props, txt));
 
   return (
     <View>
       <View allowFontScaling={false} style={[styles.textRow]}>
-        <Text style={[ props.style, styles.title]}>
-          These are your coins:{' '}
-        </Text>
+        <Text style={[props.style, styles.title]}>These are your coins: </Text>
         <Image
           resizeMode={'contain'}
           style={[styles.r, { width: 20, height: 18, marginBottom: 1 }]}
@@ -114,17 +102,17 @@ exports.text.coin = function (props) {
         />
         <Text
           allowFontScaling={false}
-          style={[styles.bebas,
-            props.style, Platform.OS === 'android' ? { marginBottom: 0 } : null,
-            styles.title,
+          style={[
+            styles.bebas,
+            props.style,
+            Platform.OS === 'android' ? { marginBottom: 0 } : null,
+            styles.title
           ]}
         >
           {numbers.abbreviateNumber(props.auth.user.balance + props.auth.user.tokenBalance)}
         </Text>
       </View>
-      <View style={styles.ulParent}>
-        {dataEl}
-      </View>
+      <View style={styles.ulParent}>{dataEl}</View>
     </View>
   );
 };
@@ -134,10 +122,10 @@ exports.data.topics = {
   vertical: 'bottom',
   horizontal: 'right',
   horizontalOffset: 0,
-  verticalOffset: 10,
+  verticalOffset: 10
 };
 
-exports.text.topics = function (props) {
+exports.text.topics = function(props) {
   if (!props.auth.user) return null;
   return (
     <Text style={[props.style, { textAlign: 'center' }]}>
@@ -151,10 +139,10 @@ exports.data.subscriptions = {
   vertical: 'bottom',
   horizontal: 'right',
   horizontalOffset: 0,
-  verticalOffset: 10,
+  verticalOffset: 10
 };
 
-exports.text.subscriptions = function (props) {
+exports.text.subscriptions = function(props) {
   if (!props.auth.user) return null;
   return (
     <Text allowFontScaling={false} style={[props.style, { textAlign: 'center' }]}>
@@ -168,28 +156,26 @@ exports.data.vote = {
   vertical: 'top',
   horizontal: 'right',
   horizontalOffset: -2,
-  verticalOffset: 15,
+  verticalOffset: 15
 };
 
-exports.text.vote = function (props) {
+exports.text.vote = function(props) {
   if (!props.auth.user) return null;
 
-  let data = [
+  const data = [
     'Upvote important articles to let others know they are worth reading',
     'Downvote if it was a waste of your time',
-    'Voters will earn coins based on the article\'s Relevance after 3 days'
+    "Voters will earn coins based on the article's Relevance after 3 days"
   ];
 
-  let dataEl = data.map(txt => renderRow(props, txt));
+  const dataEl = data.map(txt => renderRow(props, txt));
 
   return (
     <View>
       <Text allowFontScaling={false} style={[props.style, styles.title]}>
         Was it worth reading?
       </Text>
-      <View style={styles.ulParent}>
-        {dataEl}
-      </View>
+      <View style={styles.ulParent}>{dataEl}</View>
     </View>
   );
 };
@@ -199,10 +185,10 @@ exports.data.activity = {
   vertical: 'top',
   horizontal: 'right',
   horizontalOffset: 0,
-  verticalOffset: 0,
+  verticalOffset: 0
 };
 
-exports.text.activity = function (props) {
+exports.text.activity = function(props) {
   if (!props.auth.user) return null;
 
   let data = [
@@ -217,16 +203,14 @@ exports.text.activity = function (props) {
     ];
   }
 
-  let dataEl = data.map(txt => renderRow(props, txt));
+  const dataEl = data.map(txt => renderRow(props, txt));
 
   return (
     <View>
       <Text allowFontScaling={false} style={[props.style, styles.title]}>
         Relevance
       </Text>
-      <View style={styles.ulParent}>
-        {dataEl}
-      </View>
+      <View style={styles.ulParent}>{dataEl}</View>
     </View>
   );
 };
@@ -237,45 +221,64 @@ exports.data.shareTip = {
   horizontal: 'right',
   horizontalOffset: 0,
   verticalOffset: 4,
-  noButton: true,
+  noButton: true
 };
 
 exports.text.shareTip = function shareTip() {
-  let width = (fullWidth) / 2.4;
+  const width = fullWidth / 2.4;
   const Video = require('react-native-video').default;
   return (
     <View style={styles.videoTip}>
       <View style={{ flex: 1 }}>
         <View style={styles.ol}>
-          <Text allowFontScaling={false} style={[styles.textP, { fontWeight: 'bold', fontSize: 14 }]}>Enable posting from Chrome, Safari and other apps:</Text>
+          <Text
+            allowFontScaling={false}
+            style={[styles.textP, { fontWeight: 'bold', fontSize: 14 }]}
+          >
+            Enable posting from Chrome, Safari and other apps:
+          </Text>
         </View>
         <View style={styles.ol}>
-          <Text allowFontScaling={false} style={styles.textP}>1 </Text>
-          <Text allowFontScaling={false} style={styles.textP}>Tap on share icon</Text>
+          <Text allowFontScaling={false} style={styles.textP}>
+            1{' '}
+          </Text>
+          <Text allowFontScaling={false} style={styles.textP}>
+            Tap on share icon
+          </Text>
         </View>
 
         <View style={styles.ol}>
-          <Text allowFontScaling={false} style={styles.textP}>2 </Text>
-          <Text allowFontScaling={false} style={styles.textP}>Tap on 'More'</Text>
+          <Text allowFontScaling={false} style={styles.textP}>
+            2{' '}
+          </Text>
+          <Text allowFontScaling={false} style={styles.textP}>
+            Tap on 'More'
+          </Text>
         </View>
 
         <View style={styles.ol}>
-          <Text allowFontScaling={false} style={styles.textP}>3 </Text>
-          <Text allowFontScaling={false} style={styles.textP}>Find and toggle Relevant app</Text>
+          <Text allowFontScaling={false} style={styles.textP}>
+            3{' '}
+          </Text>
+          <Text allowFontScaling={false} style={styles.textP}>
+            Find and toggle Relevant app
+          </Text>
         </View>
 
         <View style={styles.ol}>
-          <Text allowFontScaling={false} style={styles.textP}>4 </Text>
-          <Text allowFontScaling={false} style={styles.textP}>Rearrange Relevant icon as you like</Text>
+          <Text allowFontScaling={false} style={styles.textP}>
+            4{' '}
+          </Text>
+          <Text allowFontScaling={false} style={styles.textP}>
+            Rearrange Relevant icon as you like
+          </Text>
         </View>
       </View>
-      <View
-        style={{ flex: 0, width, height: width + 40, overflow: 'hidden' }}
-      >
+      <View style={{ flex: 0, width, height: width + 40, overflow: 'hidden' }}>
         <Video
           resizeMode={'contain'}
           source={require('../../assets/images/shareTip.mp4')}
-          style={{ width, height: width * 16 / 9, bottom: 0, position: 'absolute' }}
+          style={{ width, height: (width * 16) / 9, bottom: 0, position: 'absolute' }}
           repeat
         />
       </View>
@@ -286,11 +289,11 @@ exports.text.shareTip = function shareTip() {
 const localStyles = StyleSheet.create({
   ol: {
     flexDirection: 'row',
-    paddingRight: 15,
+    paddingRight: 15
     // alignItems: 'center'
   },
   tooltipText: {
-    fontSize: 15,
+    fontSize: 15
   },
   title: {
     fontSize: 20,
@@ -303,23 +306,21 @@ const localStyles = StyleSheet.create({
     fontSize: 12,
     flex: 0,
     marginBottom: 10,
-    color: 'white',
+    color: 'white'
   },
   videoTip: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   ul: {
     flex: 1,
     paddingLeft: 10,
-    marginBottom: 10,
+    marginBottom: 10
   },
   ulParent: {
     flexDirection: 'column',
     marginTop: 20
-  },
-
+  }
 });
 
 styles = { ...globalStyles, ...localStyles };
-

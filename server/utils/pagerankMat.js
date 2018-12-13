@@ -8,24 +8,24 @@ function printM(m, name) {
 }
 
 function objectToMatrix(_inputs, params) {
-  let inputs = Object.keys(_inputs);
-  let dictionary = {};
+  const inputs = Object.keys(_inputs);
+  const dictionary = {};
   inputs.forEach((key, i) => dictionary[key] = i);
-  let N = inputs.length;
-  let G = [];
-  let g = {};
-  let neg = {};
-  let P = [];
-  let danglingNodes = [];
+  const N = inputs.length;
+  const G = [];
+  const g = {};
+  const neg = {};
+  const P = [];
+  const danglingNodes = [];
 
   inputs.forEach((el, i) => {
-    let upvotes = new Array(N).fill(0);
-    let downvotes = new Array(N).fill(0);
+    const upvotes = new Array(N).fill(0);
+    const downvotes = new Array(N).fill(0);
 
     let degree = 0;
     Object.keys(_inputs[el]).forEach(vote => {
       let w = _inputs[el][vote][params.weight];
-      let n = _inputs[el][vote][params.negative] || 0;
+      const n = _inputs[el][vote][params.negative] || 0;
       // eigentrust++ weights
       w = Math.max((w - n) / (w + n), 0);
       _inputs[el][vote].w = w;
@@ -38,7 +38,7 @@ function objectToMatrix(_inputs, params) {
     }
 
     Object.keys(_inputs[el]).forEach(vote => {
-      let w = _inputs[el][vote].w;
+      const w = _inputs[el][vote].w;
       let n = _inputs[el][vote][params.negative] || 0;
       upvotes[dictionary[vote]] = w / degree;
       if (n) {
@@ -58,17 +58,17 @@ function objectToMatrix(_inputs, params) {
 }
 
 function formatOutput(x, dictionary, inputs, params) {
-  let result = {};
+  const result = {};
   // let e = 0;
   // let sum = 0;
-  Object.keys(inputs).forEach((node, i) => {
+  Object.keys(inputs).forEach((node, i) =>
     // e += x[i] - params.nstart[node];
     // if (x[i] - params.nstart[node] > 1e17) {
     //   console.log(x[i] - params.nstart[node], node);
     // }
     // sum += x[i];
-    return result[node] = x[i];
-  });
+    result[node] = x[i]
+  );
   return result;
 }
 
@@ -84,16 +84,16 @@ export default function pagerank(inputs, params) {
   if (!params.beta) params.beta = 2;
   if (!params.M) params.M = 1;
 
-  let now = new Date();
+  const now = new Date();
 
-  let { neg, g, G, P, N, dictionary, danglingNodes } = objectToMatrix(inputs, params);
+  const { neg, g, G, P, N, dictionary, danglingNodes } = objectToMatrix(inputs, params);
 
   let p = new Array(N).fill(0);
   if (!params.personalization) {
     p = new Array(N).fill(1.0 / N);
   } else {
-    let keys = Object.keys(params.personalization);
-    let degree = keys.reduce((prev, key) => prev + params.personalization[key], 0);
+    const keys = Object.keys(params.personalization);
+    const degree = keys.reduce((prev, key) => prev + params.personalization[key], 0);
     keys.forEach(key => {
       p[dictionary[key]] = params.personalization[key] / degree;
     });
@@ -114,21 +114,21 @@ export default function pagerank(inputs, params) {
   } else {
     // console.log('start ', params.nstart);
     x = new Array(N).fill(0);
-    let keys = Object.keys(params.nstart);
-    let degree = keys.reduce((prev, key) => params.nstart[key] + prev, 0);
+    const keys = Object.keys(params.nstart);
+    const degree = keys.reduce((prev, key) => params.nstart[key] + prev, 0);
     let sum = 0;
     keys.forEach(key => {
       if (!degree) return;
-      let i = dictionary[key];
+      const i = dictionary[key];
       x[i] = params.nstart[key];
       sum += params.nstart[key];
     });
     console.log('start sum ', sum);
   }
 
-  let tildeP = P.map(arr => arr.slice());
+  const tildeP = P.map(arr => arr.slice());
   let iter;
-  let T = new Array(N).fill(0).map(() => new Array(N).fill(0));
+  const T = new Array(N).fill(0).map(() => new Array(N).fill(0));
 
   let danglesum = 0;
 
@@ -139,7 +139,7 @@ export default function pagerank(inputs, params) {
     xlast = [...x];
 
     x = new Array(N).fill(0);
-    let lastP = P.map(arr => arr.slice());
+    const lastP = P.map(arr => arr.slice());
 
     danglesum = 0;
     danglingNodes.forEach(node => danglesum += xlast[node]);
@@ -147,7 +147,7 @@ export default function pagerank(inputs, params) {
 
     // Iterate through nodes;
     for (let i = 0; i < N; i++) {
-      let TNi = new Array(N).fill(0);
+      const TNi = new Array(N).fill(0);
 
       for (let j = 0; j < N; j++) {
         x[i] += params.alpha * G[j][i] * xlast[j];
@@ -159,7 +159,7 @@ export default function pagerank(inputs, params) {
 
 
       for (let j = 0; j < N; j++) {
-        let denom = x[i] || 1;
+        const denom = x[i] || 1;
         T[i][j] = TNi[j] / denom;
       }
 
@@ -181,7 +181,7 @@ export default function pagerank(inputs, params) {
 
 
     // normalize
-    let sum = x.reduce((prev, next) => prev + next, 0);
+    const sum = x.reduce((prev, next) => prev + next, 0);
     console.log('sum', sum);
 
     let err = 0.0;
@@ -196,7 +196,7 @@ export default function pagerank(inputs, params) {
       console.log(err);
       // printM(T, 'T');
       // printM(tildeP, 'tildeP');
-      let elapsed = (new Date()).getTime() - now.getTime();
+      const elapsed = (new Date()).getTime() - now.getTime();
       console.log('elapsed time: ', elapsed / 1000, 's');
       return formatOutput(x, dictionary, inputs, params);
     }

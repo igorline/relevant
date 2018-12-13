@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
-import {
-  View,
-  TextInput,
-  Alert,
-  StyleSheet,
-} from 'react-native';
+import { View, TextInput, Alert, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles } from '../../styles/global';
 import Tags from '../tags.component';
 
 let styles;
 
 class TagSelection extends Component {
+  static propTypes = {
+    createPost: PropTypes.object,
+    actions: PropTypes.object,
+    scrollToElement: PropTypes.object,
+    bodyTags: PropTypes.array,
+    articleTags: PropTypes.array,
+    postCategory: PropTypes.string
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -27,14 +32,12 @@ class TagSelection extends Component {
   }
 
   componentWillMount() {
-    let props = this.props.createPost;
+    const props = this.props.createPost;
     if (props) {
-      this.bodyTags = props.bodyTags.map(tag => (
-        { _id: tag, bodyTag: true }
-      ));
+      this.bodyTags = props.bodyTags.map(tag => ({ _id: tag, bodyTag: true }));
 
-      this.tags = props.articleTags.map((tag) => {
-        let tagObj = { _id: tag };
+      this.tags = props.articleTags.map(tag => {
+        const tagObj = { _id: tag };
         // this code pre-selects first three tags
         // if (i < 3) this.bodyTags.push(tagObj);
         return tagObj;
@@ -57,7 +60,7 @@ class TagSelection extends Component {
     this.topicTags = [...main, ...children];
 
     if (updateSelected) {
-      let bodyTags = this.bodyTags.filter(tag => main.findIndex(t => tag._id === t._id) === -1);
+      const bodyTags = this.bodyTags.filter(tag => main.findIndex(t => tag._id === t._id) === -1);
       this.selectedTags = [...new Set([...main, ...bodyTags])];
     }
   }
@@ -68,10 +71,14 @@ class TagSelection extends Component {
       this.inputTags = [];
       this.props.actions.setCreaPostState({ allTags: [...this.inputTags, ...this.selectedTags] });
     }
-    let words = input.split(' ');
+    const words = input.split(' ');
     // if (input[input.length - 1] !== ' ' && input[input.length - 1] !== ',') return null;
-    let tags = words.map((word) => {
-      word = word.replace('#', '').replace(/(,|\.|!|\?)\s*$/, '').toLowerCase();
+    const tags = words
+    .map(word => {
+      word = word
+      .replace('#', '')
+      .replace(/(,|\.|!|\?)\s*$/, '')
+      .toLowerCase();
       if (word === '') return null;
       return { _id: word };
     })
@@ -85,10 +92,13 @@ class TagSelection extends Component {
   }
 
   toggleTag(tag) {
-    let index = this.selectedTags.findIndex(t => t._id === tag);
-    let indexInput = this.inputTags.findIndex(t => t._id === tag);
+    const index = this.selectedTags.findIndex(t => t._id === tag);
+    const indexInput = this.inputTags.findIndex(t => t._id === tag);
     if (tag.bodyTag) {
-      return Alert.alert('text tag', 'You can remove this topic by going back and editing the text');
+      return Alert.alert(
+        'text tag',
+        'You can remove this topic by going back and editing the text'
+      );
     }
     if (index > -1) {
       this.selectedTags.splice(index, 1);
@@ -99,15 +109,18 @@ class TagSelection extends Component {
       this.selectedTags.push({ _id: tag });
     }
 
-    this.props.actions.setCreaPostState({ allTags: [...this.inputTags, ...this.selectedTags], selectedTags: this.selectedTags });
+    this.props.actions.setCreaPostState({
+      allTags: [...this.inputTags, ...this.selectedTags],
+      selectedTags: this.selectedTags
+    });
     this.forceUpdate();
     return null;
   }
 
   render() {
-    let selectedTopic = this.selectedTopic;
+    const selectedTopic = this.selectedTopic;
 
-    let selectedTags = [...this.selectedTags, ...this.inputTags];
+    const selectedTags = [...this.selectedTags, ...this.inputTags];
     let tags = [...this.inputTags, ...this.topicTags, ...this.tags];
 
     tags = [...new Set(tags.map(t => t._id))];
@@ -124,35 +137,31 @@ class TagSelection extends Component {
           underlineColorAndroid={'transparent'}
           onFocus={() => this.props.scrollToElement()}
           onChangeText={input => this.processInput(input)}
-          ref={(c) => { this.input = c; }}
+          ref={c => {
+            this.input = c;
+          }}
           style={[styles.font15, styles.topicInput]}
           value={this.state.input}
           multiline={false}
           placeholder={'Select additional topics or create your own'}
         />
         <View style={styles.break} />
-        <Tags
-          noReorder
-          noScroll
-          toggleTag={this.toggleTag}
-          tags={{ tags, selectedTags }}
-        />
+        <Tags noReorder noScroll toggleTag={this.toggleTag} tags={{ tags, selectedTags }} />
         <View style={styles.break} />
       </View>
     );
   }
-
 }
 
 const localStyles = StyleSheet.create({
   topicInput: {
     height: 45,
     padding: 10,
-    backgroundColor: 'white',
+    backgroundColor: 'white'
   },
   break: {
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: '#F0F0F0'
   }
 });
 

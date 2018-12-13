@@ -4,7 +4,6 @@ import posts from './posts';
 import user from './user';
 import socket from './socket';
 import notif from './notif';
-import messages from './messages';
 import animation from './animation';
 import error from './error';
 import view from './view';
@@ -21,12 +20,12 @@ import community from './community';
 let navigation = {};
 let routing = {};
 let drizzleReducers = {};
-if (process.env.WEB != 'true') {
+if (process.env.WEB !== 'true') {
   navigation = require('./navigation').default;
 } else {
   // block these imports in package.json in react-native field
   routing = require('react-router-redux').routerReducer;
-  let drizzle = require('drizzle');
+  const drizzle = require('drizzle');
   drizzleReducers = drizzle ? drizzle.drizzleReducers : {};
 }
 
@@ -39,7 +38,6 @@ const appReducer = combineReducers({
   socket,
   notif,
   error,
-  messages,
   animation,
   view,
   investments,
@@ -53,20 +51,20 @@ const appReducer = combineReducers({
   subscriptions,
   admin,
   community,
-  ...drizzleReducers,
+  ...drizzleReducers
 });
 
+/* eslint-disable */
 const rootReducer = (state, action) => {
   if (action.type === 'SET_COMMUNITY') {
     if (process.env.WEB != 'true') {
-      const {
+      let {
         auth,
         community,
         socket,
 
-        //MOBILE
-        navigation,
-
+        // MOBILE
+        navigation
       } = state;
 
       if (auth.community) {
@@ -80,16 +78,16 @@ const rootReducer = (state, action) => {
         ...communityState[action.payload],
         // TODO needs work?
         socket,
-        auth: {...auth, community: action.payload },
+        auth: { ...auth, community: action.payload },
         navigation
       };
     } else {
-      const {
+      let {
         auth,
         community,
         socket,
 
-        //DESKTOP
+        // DESKTOP
         // keep drizzle stuff - really need a nested state!
         routing,
         contracts,
@@ -98,7 +96,7 @@ const rootReducer = (state, action) => {
         transactionStack,
         web3,
         accounts,
-        accountBalances,
+        accountBalances
       } = state;
 
       if (auth.community) {
@@ -112,7 +110,7 @@ const rootReducer = (state, action) => {
         ...communityState[action.payload],
         // TODO needs work?
         socket,
-        auth: {...auth, community: action.payload },
+        auth: { ...auth, community: action.payload },
 
         routing,
         community,
@@ -122,13 +120,11 @@ const rootReducer = (state, action) => {
         transactionStack,
         web3,
         accounts,
-        accountBalances,
+        accountBalances
       };
     }
-
   }
   return appReducer(state, action);
 };
 
 export default rootReducer;
-

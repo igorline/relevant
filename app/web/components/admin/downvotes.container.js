@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import * as adminActions from '../../../actions/admin.actions';
 import InfScroll from '../common/infScroll.component';
 
-let styles;
 const PAGE_SIZE = 40;
 
 class Downvotes extends Component {
+  static propTypes = {
+    admin: PropTypes.object,
+    actions: PropTypes.object
+  };
+
   constructor(props) {
     super(props);
     this.renderDownvote = this.renderDownvote.bind(this);
@@ -22,13 +27,15 @@ class Downvotes extends Component {
         <div className={'dUser'}>{downvote.investor}</div>
         <div>- {downvote.author}</div>
         <div>{moment(downvote.createdAt).format('MMMM Do, h:mm a')}</div>
-        <div>{downvote.post ? moment(downvote.post.createdAt).format('MMMM Do, h:mm a') : '[deleted]'}</div>
+        <div>
+          {downvote.post ? moment(downvote.post.createdAt).format('MMMM Do, h:mm a') : '[deleted]'}
+        </div>
       </div>
-    )
+    );
   }
 
   load(page) {
-    let l = this.props.admin.downvotes.length;
+    const l = this.props.admin.downvotes.length;
     this.hasMore = (page - 1) * PAGE_SIZE <= l;
     if (this.hasMore) {
       this.props.actions.getDownvotes(l, PAGE_SIZE);
@@ -36,8 +43,7 @@ class Downvotes extends Component {
   }
 
   render() {
-    let downvoteEl = this.props.admin.downvotes
-    .map(d => this.renderDownvote(d));
+    const downvoteEl = this.props.admin.downvotes.map(d => this.renderDownvote(d));
 
     return (
       <div>
@@ -64,4 +70,3 @@ export default connect(
     actions: bindActionCreators(adminActions, dispatch)
   })
 )(Downvotes);
-

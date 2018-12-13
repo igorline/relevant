@@ -1,13 +1,13 @@
 import { EventEmitter } from 'events';
 
-let mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 // const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 
 // TODO USE THIS
-let PostDataSchema = new Schema({
+const PostDataSchema = new Schema({
   post: { type: Schema.Types.ObjectId, ref: 'post' },
   community: String,
   communityId: { type: Schema.Types.ObjectId, ref: 'Community' },

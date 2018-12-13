@@ -4,7 +4,7 @@ import { JSDOMParser, Readability } from 'readability/index';
 import cheerio from 'cheerio';
 import { parse as parseUrl } from 'url';
 
-let fbHeader = {
+const fbHeader = {
   'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
 };
 
@@ -35,7 +35,7 @@ function stripHTML(text) {
 exports.getReadable = async (uri) => {
   let article;
   try {
-    let body = await request({
+    const body = await request({
       url: uri,
       jar: true,
       headers: fbHeader
@@ -43,7 +43,7 @@ exports.getReadable = async (uri) => {
 
     // let doc = new JSDOMParser().parse(body);
 
-    let doc = jsdom.jsdom(body, {
+    const doc = jsdom.jsdom(body, {
       features: {
         FetchExternalResources: false,
         ProcessExternalResources: false
@@ -61,22 +61,22 @@ exports.getReadable = async (uri) => {
 
 exports.trimToLength = (doc, length) => {
   Array.prototype.slice.call(doc.getElementsByTagName('figure'))
-  .forEach(item => item.remove());
+    .forEach(item => item.remove());
 
   let totalLength = 0;
   Array.prototype.slice.call(doc.getElementsByTagName('*'))
-  .forEach(el => {
-    if (totalLength > length) return el.remove();
-    let elChildNode = el.childNodes;
-    elChildNode.forEach(child => {
-      if (child.nodeType === 3) {
-        let text = child.textContent;
-        let l = text.split(/\s+/).length;
-        if (l > 4) totalLength += l;
-      }
+    .forEach(el => {
+      if (totalLength > length) return el.remove();
+      const elChildNode = el.childNodes;
+      elChildNode.forEach(child => {
+        if (child.nodeType === 3) {
+          const text = child.textContent;
+          const l = text.split(/\s+/).length;
+          if (l > 4) totalLength += l;
+        }
+      });
+      return null;
     });
-    return null;
-  });
   return doc;
 };
 
@@ -86,7 +86,7 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
   body = body.replace('<!--', '').replace('-->', '');
   let $ = cheerio.load(body);
 
-  let redirect = $("meta[http-equiv='refresh']")[0];
+  const redirect = $("meta[http-equiv='refresh']")[0];
   let redirectUrl;
 
   if (redirect && redirect.attribs && redirect.attribs.content) {
@@ -138,7 +138,7 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
 
   if (uri.match('apple.news')) {
     try {
-      let articleUrl = body.match(/redirectToUrl\("(.*)"/)[0].replace(/redirectToUrl\(|"/g, '');
+      const articleUrl = body.match(/redirectToUrl\("(.*)"/)[0].replace(/redirectToUrl\(|"/g, '');
       if (articleUrl) {
         return {
           redirect: true,
@@ -219,20 +219,20 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
     url = data['al:web:url'] || data['og:url'] || uri;
   }
   url = uri || data['al:web:url'] || data['og:url'];
-  let tags = data.news_keywords || data.keywords;
-  let domain = exports.extractDomain(url);
+  const tags = data.news_keywords || data.keywords;
+  const domain = exports.extractDomain(url);
 
-  let originalUrl = parseUrl(uri);
-  let cannonicalUrl = parseUrl(url);
+  const originalUrl = parseUrl(uri);
+  const cannonicalUrl = parseUrl(url);
 
-  let k1 = data.keywords ? data.keywords.split(',').map(k => k.trim()) : [];
-  let k2 = data.news_keywords ? data.news_keywords.split(',').map(k => k.trim()) : [];
-  let k3 = data['article:tag'] ?
+  const k1 = data.keywords ? data.keywords.split(',').map(k => k.trim()) : [];
+  const k2 = data.news_keywords ? data.news_keywords.split(',').map(k => k.trim()) : [];
+  const k3 = data['article:tag'] ?
 
-  data['article:tag']
-  .split(',')
-  .map(k => k.replace('--primarykeyword-', '').trim())
-  .filter(k => !k.match('--')) : [];
+    data['article:tag']
+      .split(',')
+      .map(k => k.replace('--primarykeyword-', '').trim())
+      .filter(k => !k.match('--')) : [];
 
   let keywords = [...new Set([...k1, ...k2, ...k3])];
 
@@ -247,10 +247,10 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
   if (amp) {
     try {
       amp = amp.replace('//<![CDATA[', '')
-      .replace('// <![CDATA[', '')
-      .replace('//]]>', '')
-      .replace('// ]]>', '')
-      .trim();
+        .replace('// <![CDATA[', '')
+        .replace('//]]>', '')
+        .replace('// ]]>', '')
+        .trim();
       amp = JSON.parse(amp);
       if (!amp) throw new Error('no amp');
       ampAuthor = amp.author ? amp.author.name : null;
@@ -274,10 +274,10 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
 
   data['article:author'] = data['article:author'] || '';
 
-  let metaAuthor = data.author
-  .split(/,|\sand\s/)
-  .map(a => a.trim())
-  .filter(a => a !== '');
+  const metaAuthor = data.author
+    .split(/,|\sand\s/)
+    .map(a => a.trim())
+    .filter(a => a !== '');
 
   ampAuthor = ampAuthor || [];
 
@@ -328,16 +328,16 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
       console.log(err);
     }
     if (!author.length && article.byline) {
-      let by = article.byline.split(/\n|\,|•/)
-      .map(a => a.replace(/by|by:\s/i, '').trim())
-      .filter(a => a !== '' &&
+      const by = article.byline.split(/\n|\,|•/)
+        .map(a => a.replace(/by|by:\s/i, '').trim())
+        .filter(a => a !== '' &&
         !a.match(/^by$/i) &&
         a.length > 2 &&
         !a.match('UTC')
         && (isNaN(new Date(a).getTime()))
         && !a.match('http')
         // && !a.match(/2017|2016|2015|2018/)
-      );
+        );
       // .map(a => new Date(a))
       // console.log(by);
       author = by[0] ? [by[0]] : [];
@@ -402,36 +402,36 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
   };
 };
 
-  // method 1
-  // let req = http.request(previewUrl, function(res) {
-  //   response.writeHead(res.statusCode, res.headers);
-  //   return res.pipe(response, { end: true });
-  // });
-  // request.pipe(req, { end: true });
+// method 1
+// let req = http.request(previewUrl, function(res) {
+//   response.writeHead(res.statusCode, res.headers);
+//   return res.pipe(response, { end: true });
+// });
+// request.pipe(req, { end: true });
 
 
-  // method 2
-  // request.pause();
-  // var options = url.parse(request.url);
-  // options.headers = request.headers;
-  // options.method = request.method;
-  // options.agent = false;
-  // var connector = http.request(previewUrl, function(serverResponse) {
-  //   serverResponse.pause();
-  //   response.writeHeader(serverResponse.statusCode, serverResponse.headers);
-  //   serverResponse.pipe(response);
-  //   serverResponse.resume();
-  // });
-  // request.pipe(connector);
-  // request.resume();
+// method 2
+// request.pause();
+// var options = url.parse(request.url);
+// options.headers = request.headers;
+// options.method = request.method;
+// options.agent = false;
+// var connector = http.request(previewUrl, function(serverResponse) {
+//   serverResponse.pause();
+//   response.writeHeader(serverResponse.statusCode, serverResponse.headers);
+//   serverResponse.pipe(response);
+//   serverResponse.resume();
+// });
+// request.pipe(connector);
+// request.resume();
 
 
-  // method 3
-  // let proxy = http.createClient(80, request.headers['host'])
-  // let proxy_request = proxy.request(request.method, request.params.url, request.headers);
-  // proxy_request.on('response', function (proxy_response) {
-  //   proxy_response.pipe(response);
-  //   response.writeHead(proxy_response.statusCode, proxy_response.headers);
-  // });
+// method 3
+// let proxy = http.createClient(80, request.headers['host'])
+// let proxy_request = proxy.request(request.method, request.params.url, request.headers);
+// proxy_request.on('response', function (proxy_response) {
+//   proxy_response.pipe(response);
+//   response.writeHead(proxy_response.statusCode, proxy_response.headers);
+// });
 
-  // response.pipe(proxy_request);
+// response.pipe(proxy_request);

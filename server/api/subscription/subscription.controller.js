@@ -8,7 +8,7 @@ function handleError(res, err) {
 exports.index = async (req, res) => {
   let subscriptions;
   try {
-    let user = req.user._id;
+    const user = req.user._id;
     subscriptions = await Subscription.find({ follower: user, amount: { $ne: 0 } });
   } catch (err) {
     handleError(res, err);
@@ -17,7 +17,7 @@ exports.index = async (req, res) => {
 };
 
 exports.search = (req, res) => {
-  let query = req.query;
+  const query = req.query;
   console.log(query, 'query');
 
   Subscription.find(query).then((subscriptions) => {

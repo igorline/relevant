@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as animationActions from '../../actions/animation.actions';
@@ -12,18 +10,22 @@ import Heart from './heart.component';
 let styles;
 
 class heartAnimation extends Component {
+  static propTypes = {
+    notif: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.heartAni = this.heartAni.bind(this);
     this.num = 0;
     this.state = {
-      heartAni: [],
+      heartAni: []
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.notif.count && this.props.notif.count < nextProps.notif.count) {
-      let newNotifications = nextProps.notif.count - this.props.notif.count;
+      const newNotifications = nextProps.notif.count - this.props.notif.count;
       this.num = newNotifications;
       this.heartAni();
     }
@@ -39,15 +41,21 @@ class heartAnimation extends Component {
   }
 
   heartAni() {
-    let length = this.state.heartAni.length;
-    let delay = 500 / this.num;
+    const length = this.state.heartAni.length;
+    const delay = 500 / this.num;
 
     if (length < this.num) {
-      let newArr = this.state.heartAni;
+      const newArr = this.state.heartAni;
       newArr.push(<Heart delay={delay} key={length} specialKey={length} />);
       this.setState({ heartAni: newArr });
-      setTimeout(() => { this.heartAni(); }, delay);
-    } else setTimeout(() => { this.clearEls(); }, 2000);
+      setTimeout(() => {
+        this.heartAni();
+      }, delay);
+    } else {
+      setTimeout(() => {
+        this.clearEls();
+      }, 2000);
+    }
   }
 
   render() {
@@ -62,15 +70,18 @@ class heartAnimation extends Component {
 function mapStateToProps(state) {
   return {
     animation: state.animation,
-    notif: state.notif,
+    notif: state.notif
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...animationActions,
-    }, dispatch)
+    actions: bindActionCreators(
+      {
+        ...animationActions
+      },
+      dispatch
+    )
   };
 }
 
@@ -81,10 +92,13 @@ const localStyles = StyleSheet.create({
     top: 0,
     left: 0,
     height: fullHeight,
-    width: fullWidth,
-  },
+    width: fullWidth
+  }
 });
 
 styles = { ...globalStyles, ...localStyles };
 
-export default connect(mapStateToProps, mapDispatchToProps)(heartAnimation);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(heartAnimation);

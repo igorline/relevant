@@ -2,7 +2,7 @@ import test from 'ava';
 
 import { setupData, cleanupData, dummyUsers } from '../../config/test_seed';
 
-let request = require('supertest');
+const request = require('supertest');
 
 process.env.NODE_ENV = 'test';
 process.chdir(__dirname + '/../../../');
@@ -14,7 +14,7 @@ let postId;
 let savedPost;
 
 function getPostObj() {
-  let now = new Date();
+  const now = new Date();
   return {
     link: 'https://www.washingtonpost.com/news/checkpoint/wp/2016/05/12/three-deaths-linked-to-recent-navy-seal-training-classes/?hpid=hp_hp-top-table-main_navyseals-118pm%3Ahomepage%2Fstory',
     body: 'Hotties',
@@ -36,7 +36,7 @@ function getUpvoteObj(id) {
 
 
 test.before(async () => {
-  let app = require('../../server.js').app;
+  const app = require('../../server.js').app;
   r = request(app);
   // just in case
   await cleanupData();
@@ -51,16 +51,16 @@ test.serial('Community Create Post', async (t) => {
   t.plan(3);
 
   const res = await r
-  .post('/auth/local')
-  .set('Host', 'crypto.localhost:3000')
-  .send({ name: 'dummy1', password: 'test' });
+    .post('/auth/local')
+    .set('Host', 'crypto.localhost:3000')
+    .send({ name: 'dummy1', password: 'test' });
 
   authorToken = res.body.token;
 
   const newPost = await r
-  .post(`/api/post?access_token=${authorToken}`)
-  .set('Host', 'crypto.localhost:3000')
-  .send(getPostObj());
+    .post(`/api/post?access_token=${authorToken}`)
+    .set('Host', 'crypto.localhost:3000')
+    .send(getPostObj());
 
   postId = newPost.body._id;
   savedPost = newPost.body;
@@ -75,18 +75,18 @@ test.serial('Upvote 1', async (t) => {
   t.plan(2);
 
   const login = await r
-  .post('/auth/local')
-  .set('Host', 'crypto.localhost:3000')
-  .send({ name: 'dummy2', password: 'test' });
+    .post('/auth/local')
+    .set('Host', 'crypto.localhost:3000')
+    .send({ name: 'dummy2', password: 'test' });
 
   token = login.body.token;
 
   t.is(login.status, 200);
 
   const upvote = await r
-  .post(`/api/invest?access_token=${token}`)
-  .set('Host', 'crypto.localhost:3000')
-  .send(getUpvoteObj(postId));
+    .post(`/api/invest?access_token=${token}`)
+    .set('Host', 'crypto.localhost:3000')
+    .send(getUpvoteObj(postId));
 
   t.is(upvote.status, 200);
 });
@@ -95,17 +95,17 @@ test.serial('Upvote 2', async (t) => {
   t.plan(2);
 
   const login = await r
-  .post('/auth/local')
-  .set('Host', 'crypto.localhost:3000')
-  .send({ name: 'dummy3', password: 'test' });
+    .post('/auth/local')
+    .set('Host', 'crypto.localhost:3000')
+    .send({ name: 'dummy3', password: 'test' });
 
   token = login.body.token;
   t.is(login.status, 200);
 
   const upvote = await r
-  .post(`/api/invest?access_token=${token}`)
-  .set('Host', 'crypto.localhost:3000')
-  .send(getUpvoteObj(postId));
+    .post(`/api/invest?access_token=${token}`)
+    .set('Host', 'crypto.localhost:3000')
+    .send(getUpvoteObj(postId));
 
   t.is(upvote.status, 200);
 });
@@ -115,13 +115,13 @@ test.serial('Community Get Feed', async (t) => {
   t.plan(6);
 
   const res = await r
-  .get('/api/communityFeed')
-  .set('Host', 'crypto.localhost:3000');
+    .get('/api/communityFeed')
+    .set('Host', 'crypto.localhost:3000');
 
   t.is(res.status, 200, 'should not return error');
   t.truthy(res.body.length, 'there should be a feed');
 
-  let post = res.body[0].commentary[0];
+  const post = res.body[0].commentary[0];
 
   t.is(post._id, postId, 'new post should be first one in the feed');
   t.true(res.body[0].rank > 0, 'rank should be bigger than 0 after upvote');
@@ -136,8 +136,8 @@ test.serial('Should get author relevance correctly', async (t) => {
   t.plan(3);
 
   const res = await r
-  .get('/api/user/user/dummy1')
-  .set('Host', 'crypto.localhost:3000');
+    .get('/api/user/user/dummy1')
+    .set('Host', 'crypto.localhost:3000');
 
   t.is(res.status, 200);
   t.truthy(res.body);
@@ -148,8 +148,8 @@ test.serial('Should get voter relevance correctly', async (t) => {
   t.plan(3);
 
   const res = await r
-  .get('/api/user/user/dummy2')
-  .set('Host', 'crypto.localhost:3000');
+    .get('/api/user/user/dummy2')
+    .set('Host', 'crypto.localhost:3000');
 
   t.is(res.status, 200);
   t.truthy(res.body);
@@ -160,7 +160,7 @@ test.serial('Delete post', async (t) => {
   t.plan(1);
 
   const res = await r
-  .delete(`/api/post/${postId}?access_token=${authorToken}`);
+    .delete(`/api/post/${postId}?access_token=${authorToken}`);
 
   t.is(res.status, 200);
 });
@@ -169,8 +169,8 @@ test.serial('Make sure post is removed from feed', async (t) => {
   t.plan(2);
 
   const res = await r
-  .get('/api/communityFeed')
-  .set('Host', 'crypto.localhost:3000');
+    .get('/api/communityFeed')
+    .set('Host', 'crypto.localhost:3000');
 
   t.is(res.status, 200);
   if (res.body.length > 0) {

@@ -1,7 +1,8 @@
-let mongoose = require('mongoose');
-let Schema = mongoose.Schema;
+const mongoose = require('mongoose');
 
-let TagparentSchema = new Schema({
+const Schema = mongoose.Schema;
+
+const TagparentSchema = new Schema({
   name: String
 }, {
   timestamps: true

@@ -2,6 +2,7 @@ import mail from '../../mail';
 import Email from './email.model';
 import Invite from '../invites/invite.model';
 import User from '../user/user.model';
+
 const inlineCss = require('inline-css');
 const { emailStyle } = require('../../utils/emailStyle');
 
@@ -44,19 +45,19 @@ async function generateList(type) {
     let query;
     let users;
     if (type === 'notregistered') {
-      let now = new Date();
+      const now = new Date();
       now.setDate(now.getDate() - 5);
       query = { status: 'email sent', createdAt: { $lt: now } };
       users = await Invite.find(query);
     } else if (type === 'registered') {
-      let now = new Date();
+      const now = new Date();
       now.setDate(now.getDate() - 5);
       query = { createdAt: { $lt: now } };
       users = await User.find(query, 'email code twitterEmail twitter');
     }
 
     try {
-      let oldList = mailgun.lists(type + '@mail.relevant.community');
+      const oldList = mailgun.lists(type + '@mail.relevant.community');
 
       // clear old list (needs to run a few times because only returns 100 at a time)
       // list.members().list(function(err, members) {
@@ -85,14 +86,14 @@ async function generateList(type) {
       if (!user.email) {
         console.log(user);
       }
-      let u = {
+      const u = {
         subscribed: true,
         address: user.email || user.twitterEmail,
         name: type === 'notregistered' ? user.name : '@' + user._id,
         vars
       };
       // console.log(u);
-      list.members().create(u, function (err, data) {
+      list.members().create(u, (err, data) => {
         if (err) console.log(err);
         // else console.log(data);
       });
@@ -151,7 +152,7 @@ function handleError(res, err) {
 }
 
 exports.validate = function (req, res, next) {
-  let body = req.body;
+  const body = req.body;
 
   if (!mailgun.validateWebhook(body.timestamp, body.token, body.signature)) {
     console.error('Request came, but not from Mailgun');
@@ -165,7 +166,7 @@ exports.validate = function (req, res, next) {
 exports.index = async (req, res) => {
   let status;
   try {
-    let email = req.body.email;
+    const email = req.body.email;
     let html = emailStyle + req.body.html;
 
     html = await inlineCss(html, { url: 'https://relevant.community' });
@@ -173,7 +174,7 @@ exports.index = async (req, res) => {
     if (!email) throw new Error('no email');
     if (!html) throw new Error('no html');
 
-    let data = {
+    const data = {
       'o:tag': [req.body.campaign],
       from: 'Relevant <noreply@mail.relevant.community>',
       to: req.body.email,
@@ -191,7 +192,7 @@ exports.index = async (req, res) => {
 exports.save = async (req, res) => {
   try {
     await Email.find({}).remove();
-    let draft = new Email(req.body);
+    const draft = new Email(req.body);
     await draft.save();
   } catch (err) {
     handleError(res, err);
@@ -209,5 +210,4 @@ exports.load = async (req, res) => {
   }
   return res.status(200).json(email);
 };
-
 

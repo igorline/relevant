@@ -45,11 +45,11 @@ const TwitterFeed = require('../../api/twitterFeed/twitterFeed.model');
 // });
 
 export async function getProfile(props) {
-  let authToken = props.authToken;
-  let authTokenSecret = props.authTokenSecret;
-  let user_id = props.userID;
-  let url = 'https://api.twitter.com/1.1/users/show.json';
-  let twitter = new TwitterStrategy({
+  const authToken = props.authToken;
+  const authTokenSecret = props.authTokenSecret;
+  const user_id = props.userID;
+  const url = 'https://api.twitter.com/1.1/users/show.json';
+  const twitter = new TwitterStrategy({
     consumerKey: process.env.TWITTER_ID,
     consumerSecret: process.env.TWITTER_SECRET,
     callbackURL: config.twitter.callbackURL,
@@ -58,9 +58,9 @@ export async function getProfile(props) {
   }, () => null);
 
   // need to bind original object
-  let userProfile = promisify(twitter.userProfile.bind(twitter));
+  const userProfile = promisify(twitter.userProfile.bind(twitter));
 
-  let profile = await userProfile(
+  const profile = await userProfile(
     authToken,
     authTokenSecret,
     { url, user_id },
@@ -77,12 +77,12 @@ export async function addTwitterProfile(param) {
       // console.log(description);
     });
   }
-  let image = profile._json.profile_image_url_https;
-  let twitterHandle = profile.username;
-  let twitterEmail = profile._json.email;
-  let twitterImage = image.replace('_normal', '');
+  const image = profile._json.profile_image_url_https;
+  const twitterHandle = profile.username;
+  const twitterEmail = profile._json.email;
+  const twitterImage = image.replace('_normal', '');
 
-  let twitterId = profile.id;
+  const twitterId = profile.id;
 
   // TODO include twitter bio URL?
   // console.log(profile._json.entities.url.urls);
@@ -118,7 +118,7 @@ exports.login = async (req, res, next) => {
   try {
     let profile = req.body.profile;
     if (!profile || !profile.userID) throw new Error('missing twitter id');
-    let relUser = req.user;
+    const relUser = req.user;
 
     let user = await User.findOne(
       { twitterId: parseInt(profile.userID, 10) },
@@ -152,7 +152,7 @@ exports.login = async (req, res, next) => {
         user.twitterAuthSecret = req.body.authSecret;
         await user.save();
       }
-      let token = auth.signToken(user._id, user.role);
+      const token = auth.signToken(user._id, user.role);
       return res.json({ token, user });
     } else if (req.body.profile.signup) {
       profile = await getProfile(req.body.profile);
@@ -181,7 +181,7 @@ exports.login = async (req, res, next) => {
       // await invite.registered(user);
 
       await user.save();
-      let token = auth.signToken(user._id, user.role);
+      const token = auth.signToken(user._id, user.role);
       return res.json({ token, user });
     }
 
@@ -217,7 +217,7 @@ exports.setup = () => {
         // }
 
         let handle = profile.username;
-        let handleExists = await User.findOne({ handle });
+        const handleExists = await User.findOne({ handle });
         if (handleExists) {
           handle = Math.random().toString(36).substr(2, 5);
         }
@@ -232,7 +232,7 @@ exports.setup = () => {
           });
         }
 
-        let params = {
+        const params = {
           profile,
           user,
           twitterAuth: {

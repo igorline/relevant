@@ -13,9 +13,9 @@ import Notification from '../api/notification/notification.model';
 import Comment from '../api/comment/comment.model';
 
 // TODO store list of clients in Mongo;
-let clients = {};
+const clients = {};
 
-let events = {
+const events = {
   comment: CommentEvents,
   invest: InvestEvents,
   post: PostEvents,
@@ -32,7 +32,7 @@ let events = {
 function removeClient(socket, currentUser) {
   if (!currentUser || !clients[currentUser]) return;
 
-  let userSockets = clients[currentUser];
+  const userSockets = clients[currentUser];
   delete userSockets[socket.id];
 
   if (Object.keys(userSockets).length === 0) {
@@ -41,7 +41,7 @@ function removeClient(socket, currentUser) {
     User.findOneAndUpdate(
       { _id: currentUser },
       { online: false })
-    .exec()
+      .exec()
     // .then((online) => {
     //   let data = {
     //     type: 'UPDATE_USER',
@@ -52,7 +52,7 @@ function removeClient(socket, currentUser) {
     //   };
     //   NotificationEvents.emit('notification', data);
     // })
-    .catch(err => console.log(err));
+      .catch(err => console.log(err));
   }
 
   console.log('socket disconnected');
@@ -61,7 +61,7 @@ function removeClient(socket, currentUser) {
 function addClient(socket, currentUser) {
   console.log('user connected ', currentUser);
 
-  let userSockets = clients[currentUser] = clients[currentUser] || {};
+  const userSockets = clients[currentUser] = clients[currentUser] || {};
   userSockets[socket.id] = socket;
 
   // update online status and send socket
@@ -89,10 +89,10 @@ function addClient(socket, currentUser) {
 function createListener(io) {
   return (data) => {
     if (data._id) {
-      let sockets = clients[data._id];
+      const sockets = clients[data._id];
       if (!sockets) return;
       Object.keys(sockets).forEach((id) => {
-        let socket = sockets[id];
+        const socket = sockets[id];
         console.log('emit to ', data._id, ' ', data.type);
         socket.emit('action', data);
       });
@@ -105,8 +105,8 @@ function createListener(io) {
 
 function registerEvents(io) {
   Object.keys(events).forEach((event) => {
-    let eventListener = events[event];
-    let listener = createListener(io);
+    const eventListener = events[event];
+    const listener = createListener(io);
     eventListener.on(event, listener);
   });
 }
@@ -120,7 +120,7 @@ function onConnect(socket) {
 }
 
 export default function (server) {
-  let io = socketIo();
+  const io = socketIo();
   io.attach(server);
 
   registerEvents(io);

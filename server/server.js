@@ -22,7 +22,7 @@ require('events').EventEmitter.prototype._maxListeners = 100;
 
 
 // -------------Dev server watch and hot reload---------------
-let isDevelopment = (process.env.NODE_ENV !== 'production' &&
+const isDevelopment = (process.env.NODE_ENV !== 'production' &&
   process.env.NODE_ENV !== 'test' &&
   process.env.NODE_ENV !== 'native');
 
@@ -31,10 +31,10 @@ if (isDevelopment) {
   // can test queue in development
   require('./queue');
 
-  let webpack = require('webpack');
-  let webpackDevMiddleware = require('webpack-dev-middleware');
-  let webpackHotMiddleware = require('webpack-hot-middleware');
-  let webpackConfig = require('../webpack.config');
+  const webpack = require('webpack');
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
+  const webpackConfig = require('../webpack.config');
   // Use this middleware to set up hot module reloading via webpack.
   const compiler = webpack(webpackConfig);
   app.use(webpackDevMiddleware(compiler, {
@@ -85,12 +85,12 @@ app.use(requireHTTPS);
 app.use(Express.static(path.join(__dirname, '/../app/web/public')));
 app.use(cookiesMiddleware());
 
-let port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 console.log('WEB CONCURRENCY ', process.env.WEB_CONCURRENCY);
 
 let server;
-let socketServer = require('./socket').default;
+const socketServer = require('./socket').default;
 
 if (process.env.NODE_ENV !== 'test') {
   server = app.listen(port, (error) => {
@@ -98,9 +98,9 @@ if (process.env.NODE_ENV !== 'test') {
       console.error(error);
     } else {
       console.info(`==> 🌎  Listening on port ${port}. Open up http://localhost:${port}/ in your browser.`);
-      let now = new Date();
+      const now = new Date();
       require('./routes')(app);
-      let time = (new Date()).getTime() - now.getTime();
+      const time = (new Date()).getTime() - now.getTime();
       console.log('done loading routes', time / 1000, 's');
     }
   });

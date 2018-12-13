@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react';
-import {
-  StyleSheet,
-  Text,
-  InteractionManager
-} from 'react-native';
+import { StyleSheet, Text, InteractionManager } from 'react-native';
+import PropTypes from 'prop-types';
 import { TabViewAnimated, TabBar } from 'react-native-tab-view';
 import Feed from './feed.container';
 import Discover from './discover.container';
@@ -13,6 +10,12 @@ import { globalStyles, blue, fullWidth } from '../../styles/global';
 let styles;
 
 export default class DiscoverTabs extends PureComponent {
+  static propTypes = {
+    scene: PropTypes.object,
+    error: PropTypes.string,
+    navigationState: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -20,9 +23,9 @@ export default class DiscoverTabs extends PureComponent {
       routes: [
         { key: 'feed', title: 'Subscriptions' },
         { key: 'new', title: 'New' },
-        { key: 'trending', title: 'Trending' },
+        { key: 'trending', title: 'Trending' }
       ],
-      headerHeight: 50,
+      headerHeight: 50
     };
     this.renderHeader = this.renderHeader.bind(this);
     this.handleChangeTab = this.handleChangeTab.bind(this);
@@ -83,8 +86,8 @@ export default class DiscoverTabs extends PureComponent {
   }
 
   renderScene({ route }) {
-    let index = this.state.index;
-    let currentRoute = this.state.routes[index];
+    const index = this.state.index;
+    const currentRoute = this.state.routes[index];
     switch (route.key) {
       case 'feed':
         return (
@@ -117,32 +120,26 @@ export default class DiscoverTabs extends PureComponent {
       default:
         return null;
     }
-  };
+  }
 
   renderHeader(props) {
     if (this.props.error) return null;
-    let index = props.navigationState.index;
-    let currentRoute = props.navigationState.routes[index];
+    const index = props.navigationState.index;
+    const currentRoute = props.navigationState.routes[index];
     return (
-      <DiscoverHeader
-        ref={(c => this.header = c)}
-        setPostTop={this.setPostTop}
-      >
+      <DiscoverHeader ref={c => (this.header = c)} setPostTop={this.setPostTop}>
         <TabBar
-          getLabelText={({ route }) => route.title ? route.title : null}
+          getLabelText={({ route }) => (route.title ? route.title : null)}
           renderLabel={({ route }) => {
-            let active = currentRoute.key === route.key;
-            return (<Text
-              style={[
-                styles.tabFont,
-                active ? styles.active : null,
-                { textAlign: 'center' }
-              ]}
-            >
-              {route.title}
-            </Text>);
-          }
-          }
+            const active = currentRoute.key === route.key;
+            return (
+              <Text
+                style={[styles.tabFont, active ? styles.active : null, { textAlign: 'center' }]}
+              >
+                {route.title}
+              </Text>
+            );
+          }}
           style={{ backgroundColor: 'white' }}
           tabStyle={{
             height: 50,
@@ -171,11 +168,10 @@ export default class DiscoverTabs extends PureComponent {
   }
 }
 
-let localStyles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
+    flex: 1
+  }
 });
 
 styles = { ...globalStyles, ...localStyles };
-

@@ -9,32 +9,21 @@ import {
   Platform,
   Alert,
   StatusBar,
-  Dimensions,
   Animated,
-  YellowBox,
+  YellowBox
 } from 'react-native';
-
-import {
-  // setCustomView,
-  // setCustomTextInput,
-  setCustomText,
-  // setCustomImage,
-  // setCustomTouchableOpacity
-} from 'react-native-global-props';
-import StatusBarSizeIOS from 'react-native-status-bar-size';
-// import codePush from 'react-native-code-push';
+import { setCustomText } from 'react-native-global-props';
+import PropTypes from 'prop-types';
 import Orientation from 'react-native-orientation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Analytics from 'react-native-firebase-analytics';
-
-// import * as NavigationExperimental from 'react-navigation';
-// import { Transitioner } from 'react-navigation';
-import Transitioner from '../components/nav/Transitioner';
-
+// import Analytics from 'react-native-firebase-analytics';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import Prompt from 'rn-prompt';
 import PushNotification from 'react-native-push-notification';
+import SafariView from 'react-native-safari-view';
+
+import Transitioner from '../components/nav/Transitioner';
 
 import Auth from '../components/auth/auth.container';
 import CreatePostContainer from '../components/createPost/createPost.container';
@@ -50,7 +39,6 @@ import * as authActions from '../actions/auth.actions';
 import * as adminActions from '../actions/admin.actions';
 import * as postActions from '../actions/post.actions';
 import * as userActions from '../actions/user.actions';
-import * as onlineActions from '../actions/online.actions';
 import * as notifActions from '../actions/notif.actions';
 import * as tagActions from '../actions/tag.actions';
 import * as messageActions from '../actions/message.actions';
@@ -61,8 +49,7 @@ import { pickerOptions } from '../utils/pickerOptions';
 import Card from './../components/nav/card.component';
 import IrrelevantAnimation from '../components/animations/irrelevantAnimation.component';
 import Tooltip from '../components/tooltip/tooltip.component';
-import { fullWidth, fullHeight } from '../styles/global';
-import SafariView from 'react-native-safari-view';
+import { fullHeight } from '../styles/global';
 
 // Setting default styles for all Text components.
 const customTextProps = {
@@ -76,6 +63,7 @@ setCustomText(customTextProps);
 
 YellowBox.ignoreWarnings(['Setting a timer']);
 
+// eslint-disable-next-line
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
 let ActionSheet = ActionSheetIOS;
@@ -85,14 +73,21 @@ if (Platform.OS === 'android') {
   ActionSheet.showActionSheetWithOptions = RNBottomSheet.showBottomSheetWithOptions;
 }
 
-let ImagePicker = require('react-native-image-picker');
+const ImagePicker = require('react-native-image-picker');
 
 class Application extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    auth: PropTypes.object,
+    error: PropTypes.bool,
+    navigation: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
       newName: null,
-      height: fullHeight,
+      height: fullHeight
     };
     this.logoutRedirect = this.logoutRedirect.bind(this);
     this.backgroundTime = 0;
@@ -105,20 +100,23 @@ class Application extends Component {
 
   componentWillMount() {
     // hard-code community for now
-    let community = 'relevant';
+    const community = 'relevant';
     this.props.actions.setCommunity(community);
   }
 
   componentDidMount() {
     this.props.actions.getUser();
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
-    utils.token.get()
-    .catch(() => {
-      this.props.actions.replaceRoute({
-        key: 'auth',
-        component: 'auth',
-        header: false
-      }, 0, 'home');
+    utils.token.get().catch(() => {
+      this.props.actions.replaceRoute(
+        {
+          key: 'auth',
+          component: 'auth',
+          header: false
+        },
+        0,
+        'home'
+      );
     });
     PushNotification.setApplicationIconBadgeNumber(0);
 
@@ -129,12 +127,9 @@ class Application extends Component {
     Orientation.lockToPortrait();
 
     if (SafariView.addEventListener) {
-      SafariView.addEventListener(
-        'onDismiss',
-        () => {
-          Orientation.lockToPortrait();
-        }
-      );
+      SafariView.addEventListener('onDismiss', () => {
+        Orientation.lockToPortrait();
+      });
     }
   }
 
@@ -153,27 +148,39 @@ class Application extends Component {
       }
       this.props.actions.resetRoutes();
 
-      this.props.actions.replaceRoute({
-        key: 'tabs',
-        component: 'tabs',
-        header: false
-      }, 0, 'home');
+      this.props.actions.replaceRoute(
+        {
+          key: 'tabs',
+          component: 'tabs',
+          header: false
+        },
+        0,
+        'home'
+      );
     }
 
     if (!this.props.error && next.error && next.auth.token) {
-      this.props.actions.replaceRoute({
-        key: 'error',
-        component: 'error',
-      }, 0, 'home');
+      this.props.actions.replaceRoute(
+        {
+          key: 'error',
+          component: 'error'
+        },
+        0,
+        'home'
+      );
       this.props.actions.resetRoutes('home');
     }
 
     if (this.props.auth.token && !next.auth.token) {
-      this.props.actions.replaceRoute({
-        key: 'auth',
-        component: 'auth',
-        header: false
-      }, 0, 'home');
+      this.props.actions.replaceRoute(
+        {
+          key: 'auth',
+          component: 'auth',
+          header: false
+        },
+        0,
+        'home'
+      );
     }
   }
 
@@ -184,12 +191,12 @@ class Application extends Component {
 
   handleOpenURL(event) {
     let params = event.url.split('?')[1];
-    let part1 = event.url.split('/')[3];
-    let part2 = event.url.split('/')[4];
-    let part3 = event.url.split('/')[5];
-    let part4 = event.url.split('/')[6];
+    const part1 = event.url.split('/')[3];
+    const part2 = event.url.split('/')[4];
+    const part3 = event.url.split('/')[5];
+    const part4 = event.url.split('/')[6];
 
-    let paramsLookup = {};
+    const paramsLookup = {};
     if (params) {
       params = params.split('&');
       params.forEach(p => {
@@ -202,48 +209,61 @@ class Application extends Component {
     }
     if (part1 === 'user' && part2 === 'resetPassword' && part3) {
       // Handle reset password link
-      this.props.actions.replaceRoute({
-        key: 'auth',
-        component: 'auth',
-        header: false
-      }, 0, 'home');
+      this.props.actions.replaceRoute(
+        {
+          key: 'auth',
+          component: 'auth',
+          header: false
+        },
+        0,
+        'home'
+      );
       this.props.actions.resetRoutes('auth');
-      this.props.actions.push({
-        key: 'resetPassword',
-        component: 'resetPassword',
-        title: 'Reset Password',
-        back: true,
-        token: part3
-      }, 'auth');
+      this.props.actions.push(
+        {
+          key: 'resetPassword',
+          component: 'resetPassword',
+          title: 'Reset Password',
+          back: true,
+          token: part3
+        },
+        'auth'
+      );
     } else if (part1 === 'user' && part2 === 'confirm' && part3 && part4) {
       // Handle confirm email link
       this.props.actions.confirmEmail(part3, part4);
     } else if (part1 === 'user' && part2 === 'invite' && part3) {
       // Handle invite link
-      this.props.actions.replaceRoute({
-        key: 'auth',
-        component: 'auth',
-        header: false
-      }, 0, 'home');
+      this.props.actions.replaceRoute(
+        {
+          key: 'auth',
+          component: 'auth',
+          header: false
+        },
+        0,
+        'home'
+      );
       this.props.actions.resetRoutes('auth');
 
-      this.props.actions.checkInviteCode(part3)
-      .then(invite => {
+      this.props.actions.checkInviteCode(part3).then(invite => {
         if (!invite) return;
-        this.props.actions.push({
-          key: 'signup',
-          component: 'signup',
-          title: 'Signup',
-          back: true,
-          code: part3,
-          email: invite.email
-        }, 'auth');
+        this.props.actions.push(
+          {
+            key: 'signup',
+            component: 'signup',
+            title: 'Signup',
+            back: true,
+            code: part3,
+            email: invite.email
+          },
+          'auth'
+        );
       });
     }
   }
 
   changeName() {
-    let user = this.props.auth.user;
+    const user = this.props.auth.user;
 
     // ANDROID
     if (Platform.OS === 'android') {
@@ -253,36 +273,30 @@ class Application extends Component {
     }
 
     // IOS
-    AlertIOS.prompt(
-      'Enter new name',
-      user.name,
-      [
-        { text: 'Cancel',
-          style: 'cancel'
-        },
-        { text: 'OK',
-          onPress: (newName) => {
-            user.name = newName;
-            this.props.actions.updateUser(user);
-            this.setState({ newName });
-          }
-        },
-      ],
-    );
+    AlertIOS.prompt('Enter new name', user.name, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'OK',
+        onPress: newName => {
+          user.name = newName;
+          this.props.actions.updateUser(user);
+          this.setState({ newName });
+        }
+      }
+    ]);
   }
 
   initImage() {
     this.chooseImage((err, data) => {
       if (data) {
-        utils.s3.toS3Advanced(data, this.props.auth.token).then((results) => {
+        utils.s3.toS3Advanced(data, this.props.auth.token).then(results => {
           if (results.success) {
-            let newUser = this.props.auth.user;
+            const newUser = this.props.auth.user;
             newUser.image = results.url;
             this.props.actions.updateUser(newUser);
             setTimeout(() => this.props.actions.getSelectedUser(newUser._id), 250);
           } else {
             Alert.alert('Error uploading image');
-            console.log('image error ', results);
           }
         });
       }
@@ -290,7 +304,7 @@ class Application extends Component {
   }
 
   chooseImage(callback) {
-    ImagePicker.showImagePicker(pickerOptions, (response) => {
+    ImagePicker.showImagePicker(pickerOptions, response => {
       if (response.didCancel) {
         callback('cancelled');
       } else if (response.error) {
@@ -304,57 +318,56 @@ class Application extends Component {
   }
 
   showActionSheet() {
-    ActionSheet.showActionSheetWithOptions({
-      options: [
-        'Change display name',
-        'Add new photo',
-        'Invite Friends',
-        'Blocked Users',
-        'FAQ',
-        'Logout',
-        'Cancel',
-      ],
-      cancelButtonIndex: 6,
-      destructiveButtonIndex: 5,
-    },
-    (buttonIndex) => {
-      switch (buttonIndex) {
-        case 0:
-          this.changeName();
-          break;
-        case 1:
-          this.initImage();
-          break;
-        case 2:
-          this.props.actions.getUser()
-          .then(user => {
-            if (!user.confirmed) {
-              Alert.alert(
-                'Please confirm your email first',
-                '',
-                [
+    ActionSheet.showActionSheetWithOptions(
+      {
+        options: [
+          'Change display name',
+          'Add new photo',
+          'Invite Friends',
+          'Blocked Users',
+          'FAQ',
+          'Logout',
+          'Cancel'
+        ],
+        cancelButtonIndex: 6,
+        destructiveButtonIndex: 5
+      },
+      buttonIndex => {
+        switch (buttonIndex) {
+          case 0:
+            this.changeName();
+            break;
+          case 1:
+            this.initImage();
+            break;
+          case 2:
+            this.props.actions.getUser().then(user => {
+              if (!user.confirmed) {
+                Alert.alert('Please confirm your email first', '', [
                   { text: 'Cancel', onPress: () => {}, style: 'cancel' },
-                  { text: 'Resend Email', onPress: () => this.props.actions.sendConfirmation() },
-                ]
-              );
-            } else {
-              this.props.actions.viewInvites();
-            }
-          });
-          break;
-        case 3:
-          this.props.actions.viewBlocked();
-          break;
-        case 4:
-          this.props.actions.goToUrl('https://relevant.community/faq');
-          break;
-        case 5:
-          this.logoutRedirect();
-          break;
-        default:
-          return;
+                  {
+                    text: 'Resend Email',
+                    onPress: () => this.props.actions.sendConfirmation()
+                  }
+                ]);
+              } else {
+                this.props.actions.viewInvites();
+              }
+            });
+            break;
+          case 3:
+            this.props.actions.viewBlocked();
+            break;
+          case 4:
+            this.props.actions.goToUrl('https://relevant.community/faq');
+            break;
+          case 5:
+            this.logoutRedirect();
+            break;
+          default:
+        }
       }
-    });
+    );
   }
 
   logoutRedirect() {
@@ -366,10 +379,14 @@ class Application extends Component {
     this.props.actions.resetRoutes('read');
     this.props.actions.resetRoutes('createPost');
 
-    this.props.actions.replaceRoute({
-      key: 'auth',
-      component: 'auth'
-    }, 0, 'home');
+    this.props.actions.replaceRoute(
+      {
+        key: 'auth',
+        component: 'auth'
+      },
+      0,
+      'home'
+    );
     // this.props.actions.changeTab('read');
     this.props.actions.logoutAction(this.props.auth.user, this.props.auth.token);
   }
@@ -386,9 +403,9 @@ class Application extends Component {
       PushNotification.setApplicationIconBadgeNumber(0);
 
       // refresh after 5 minutes of inactivity
-      let now = new Date().getTime();
+      const now = new Date().getTime();
       // if (this.backgroundTime + (1000) < now) {
-      if (this.backgroundTime + (10 * 60 * 1000) < now) {
+      if (this.backgroundTime + 10 * 60 * 1000 < now) {
         // reload current tab
         // reload all other tabs on focus
         this.props.actions.reloadAllTabs();
@@ -404,45 +421,31 @@ class Application extends Component {
   }
 
   renderScene(props) {
-    let component = props.scene.route.component;
-    let createPost;
+    const component = props.scene.route.component;
 
-    // if (Platform.OS === 'ios') {
-      createPost = (
-        <KeyboardAvoidingView
-          behavior={'padding'}
-          style={{
-            flex: 1,
-          }}
-          keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0 }
-        >
-          <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
-        </KeyboardAvoidingView>
-      );
-    // } else {
-    //   createPost = (
-    //     <View
-    //       behavior={'padding'}
-    //       style={{
-    //         flex: 1,
-    //         // backgroundColor: 'red'
-    //       }}
-    //     >
-    //       <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
-    //     </View>
-    //   );
-    // }
+    const createPost = (
+      <KeyboardAvoidingView
+        behavior={'padding'}
+        style={{
+          flex: 1
+        }}
+        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0}
+      >
+        <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
+      </KeyboardAvoidingView>
+    );
 
     switch (component) {
       case 'auth':
         return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
       case 'createPost':
         return createPost;
+
       case 'categories':
-        return (<CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />);
+        return <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />;
 
       case 'articleView':
-        return (<ArticleView scene={props.scene.route} navigator={this.props.actions} />);
+        return <ArticleView scene={props.scene.route} navigator={this.props.actions} />;
 
       case 'tabs':
         return <Footer showActionSheet={this.showActionSheet} />;
@@ -460,11 +463,11 @@ class Application extends Component {
 
   configureTransition() {
     return {
-      useNativeDriver: !!NativeAnimatedModule ? true : false,
+      useNativeDriver: !!NativeAnimatedModule || false,
       speed: 20,
       timing: Animated.spring,
       bounciness: 0,
-      overshootClamping: true,
+      overshootClamping: true
     };
   }
 
@@ -473,16 +476,16 @@ class Application extends Component {
   }
 
   render() {
-    let scene = this.props.navigation;
+    const scene = this.props.navigation;
 
     // handle hidden bar in android here
-    let route = scene.routes[scene.index];
+    const route = scene.routes[scene.index];
     let statusBarHeight = StatusBar.currentHeight;
     if (route.component === 'articleView') {
       statusBarHeight = 0;
     }
     // android only
-    let height = this.state.height - statusBarHeight;
+    const height = this.state.height - statusBarHeight;
 
     let platformStyles = {};
     if (Platform.OS === 'android') {
@@ -493,25 +496,26 @@ class Application extends Component {
     // main app view has to be absolute to make android keyboard work
     // could be relative for ios?
     return (
-      <View
-        style={{ ...platformStyles, backgroundColor: 'black' }}
-      >
+      <View style={{ ...platformStyles, backgroundColor: 'black' }}>
         <Transitioner
-          key='Home'
+          key="Home"
           style={{ backgroundColor: 'black' }}
           navigation={{ state: scene }}
           configureTransition={this.configureTransition}
-          render={transitionProps => transitionProps.scene.route.ownCard ?
-            this.renderScene(transitionProps) :
-            (<Card
-              style={{ backgroundColor: 'black' }}
-              renderScene={this.renderScene}
-              back={this.back}
-              {...this.props}
-              header={false}
-              scroll={this.props.navigation.sroll}
-              {...transitionProps}
-            />)
+          render={transitionProps =>
+            transitionProps.scene.route.ownCard ? (
+              this.renderScene(transitionProps)
+            ) : (
+              <Card
+                style={{ backgroundColor: 'black' }}
+                renderScene={this.renderScene}
+                back={this.back}
+                {...this.props}
+                header={false}
+                scroll={this.props.navigation.sroll}
+                {...transitionProps}
+              />
+            )
           }
         />
         <Tooltip />
@@ -534,36 +538,39 @@ class Application extends Component {
         <HeartAnimation />
         <IrrelevantAnimation />
         <UpvoteAnimation />
-
       </View>
     );
   }
-
 }
 
 function mapStateToProps(state) {
   return {
     auth: state.auth,
     navigation: state.navigation.home,
-    error: state.error.universal,
+    error: state.error.universal
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...authActions,
-      ...postActions,
-      ...onlineActions,
-      ...notifActions,
-      ...messageActions,
-      ...userActions,
-      ...investActions,
-      ...navigationActions,
-      ...tagActions,
-      ...adminActions,
-    }, dispatch)
+    actions: bindActionCreators(
+      {
+        ...authActions,
+        ...postActions,
+        ...notifActions,
+        ...messageActions,
+        ...userActions,
+        ...investActions,
+        ...navigationActions,
+        ...tagActions,
+        ...adminActions
+      },
+      dispatch
+    )
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Application);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Application);

@@ -1,4 +1,3 @@
-
 export const ADD_COMMUNITY = 'ADD_COMMUNITY';
 export const SET_COMMUNITIES = 'SET_COMMUNITIES';
 
@@ -18,10 +17,10 @@ export const SET_USER_INDEX = 'SET_USER_INDEX';
 export const UPDATE_USER = 'UPDATE_USER';
 export const UPDATE_AUTH_USER = 'UPDATE_AUTH_USER';
 export const SET_STATS = 'SET_STATS';
+export const ADD_STATS = 'ADD_STATS';
 export const SET_SELECTED_USER_DATA = 'SET_SELECTED_USER_DATA';
 export const SET_TWITTER = 'SET_TWITTER';
 export const SET_LOADING = 'SET_LOADING';
-
 
 export const SET_ACTIVE_POST = 'SET_ACTIVE_POST';
 export const SET_RECENT_POSTS = 'SET_RECENT_POSTS';
@@ -111,3 +110,4 @@ export const SET_WAITLIST = 'SET_WAITLIST';
 export const SET_DOWNVOTES = 'SET_DOWNVOTES';
 export const DELETE_WAITLIST_USER = 'DELETE_WAITLIST_USER';
 
+export const SET_ERROR = 'SET_ERROR';

@@ -1,24 +1,29 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
+import * as routerActions from 'react-router-redux';
 import CommentForm from './commentForm.component';
 import Comment from './comment.component';
-// import Divider from '../common/divider.component'
 import * as postActions from '../../../actions/post.actions';
 import * as investActions from '../../../actions/invest.actions';
-import * as routerActions from 'react-router-redux';
 import * as createPostActions from '../../../actions/createPost.actions';
-import Avatar from '../common/avatar.component';
 
 class Comments extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    params: PropTypes.object,
+    comments: PropTypes.object,
+    posts: PropTypes.object,
+    auth: PropTypes.object,
+    location: PropTypes.object,
+    myPostInv: PropTypes.object,
+    user: PropTypes.object
+  };
+
   componentDidMount() {
     this.props.actions.getComments(this.props.params.id);
   }
-
-  // handleCommentSubmit(commentObj) {
-  //   this.props.actions.createComment(this.auth.token, commentObj);
-  // }
 
   scrollToBottom() {
     window.scrollTo(0, document.body.scrollHeight);
@@ -30,32 +35,28 @@ class Comments extends Component {
     comments = comments.data;
     if (!comments) return null;
     return (
-      <div className='comments'>
-        {(comments.length !== 0) ?
-          <div>{comments.map((id) => {
-            let comment = this.props.posts.posts[id];
-            if (!comment) return null;
-            return (
-              <Comment
-                key={id}
-                auth={this.props.auth}
-                comment={comment}
-                actions={this.props.actions}
-                location={this.props.location}
-                myPostInv={this.props.myPostInv}
-                user={this.props.user}
-              />
-            );
-          })}
+      <div className="comments">
+        {comments.length !== 0 ? (
+          <div>
+            {comments.map(id => {
+              const comment = this.props.posts.posts[id];
+              if (!comment) return null;
+              return (
+                <Comment
+                  key={id}
+                  auth={this.props.auth}
+                  comment={comment}
+                  actions={this.props.actions}
+                  location={this.props.location}
+                  myPostInv={this.props.myPostInv}
+                  user={this.props.user}
+                />
+              );
+            })}
           </div>
-          : null
-        }
+        ) : null}
         <div className={'formContainer'}>
-{/*          <Avatar auth={this.props.auth} user={this.props.auth.user} />
-*/}          <CommentForm
-            text={'Reply'}
-            {...this.props}
-          />
+          <CommentForm text={'Reply'} {...this.props} />
         </div>
       </div>
     );
@@ -67,14 +68,17 @@ export default connect(
     auth: state.auth,
     comments: state.comments,
     myPostInv: state.investments.myPostInv,
-    user: state.user,
+    user: state.user
   }),
   dispatch => ({
-    actions: bindActionCreators({
-      ...postActions,
-      ...routerActions,
-      ...createPostActions,
-      ...investActions
-    }, dispatch)
+    actions: bindActionCreators(
+      {
+        ...postActions,
+        ...routerActions,
+        ...createPostActions,
+        ...investActions
+      },
+      dispatch
+    )
   })
 )(Comments);

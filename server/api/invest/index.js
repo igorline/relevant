@@ -2,7 +2,7 @@ import express from 'express';
 import controller from './invest.controller';
 import auth from '../../auth/auth.service';
 
-let router = express.Router();
+const router = express.Router();
 
 router.post('/', auth.isAuthenticated(), auth.communityMember(), controller.create);
 router.delete('/destroy', auth.isAuthenticated(), controller.destroy);

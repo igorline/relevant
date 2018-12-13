@@ -33,25 +33,24 @@ const RESPOND_THRESHOLD = 12;
  */
 const DISTANCE_THRESHOLD = 35;
 
-
 const GESTURE_ANIMATED_VELOCITY_RATIO = -4;
 
 /**
  * Primitive gesture directions.
  */
 const Directions = {
-  'HORIZONTAL': 'horizontal',
-  'VERTICAL': 'vertical',
+  HORIZONTAL: 'horizontal',
+  VERTICAL: 'vertical'
 };
 
-export type NavigationGestureDirection =  'horizontal' | 'vertical';
+export type NavigationGestureDirection = 'horizontal' | 'vertical';
 
 type Props = NavigationSceneRendererProps & {
   onNavigateBack: ?Function,
   /**
-  * The distance from the edge of the navigator which gesture response can start for.
-  **/
-  gestureResponseDistance: ?number,
+   * The distance from the edge of the navigator which gesture response can start for.
+   * */
+  gestureResponseDistance: ?number
 };
 
 /**
@@ -69,16 +68,12 @@ type Props = NavigationSceneRendererProps & {
  *     +------------+
  */
 class NavPanResponder {
-
   _isResponding: boolean;
   _isVertical: boolean;
   _props: Props;
   _startValue: number;
 
-  constructor(
-    direction: NavigationGestureDirection,
-    props: Props,
-  ) {
+  constructor(direction: NavigationGestureDirection, props: Props) {
     // super();
     this._isResponding = false;
     this._isVertical = direction === Directions.VERTICAL;
@@ -105,7 +100,7 @@ class NavPanResponder {
       onPanResponderTerminationRequest: null,
       onPanResponderMove: null,
       onPanResponderRelease: null,
-      onPanResponderTerminate: null,
+      onPanResponderTerminate: null
     };
 
     const config = {};
@@ -134,16 +129,10 @@ class NavPanResponder {
     const isVertical = this._isVertical;
     const index = props.navigation.state.index;
 
-    const immediateIndex = this._immediateIndex == null
-      ? index
-      : this._immediateIndex;
+    const immediateIndex = this._immediateIndex == null ? index : this._immediateIndex;
     const currentDragDistance = gesture[isVertical ? 'dy' : 'dx'];
-    const currentDragPosition = event.nativeEvent[
-      isVertical ? 'pageY' : 'pageX'
-    ];
-    const axisLength = isVertical
-      ? layout.height.__getValue()
-      : layout.width.__getValue();
+    const currentDragPosition = event.nativeEvent[isVertical ? 'pageY' : 'pageX'];
+    const axisLength = isVertical ? layout.height.__getValue() : layout.width.__getValue();
     const axisHasBeenMeasured = !!axisLength;
 
     // Measure the distance from the touch to the edge of the screen
@@ -158,13 +147,10 @@ class NavPanResponder {
       return false;
     }
 
-    const hasDraggedEnough = Math.abs(currentDragDistance) >
-      RESPOND_THRESHOLD;
+    const hasDraggedEnough = Math.abs(currentDragDistance) > RESPOND_THRESHOLD;
 
     const isOnFirstCard = immediateIndex === 0;
-    const shouldSetResponder = hasDraggedEnough &&
-      axisHasBeenMeasured &&
-      !isOnFirstCard;
+    const shouldSetResponder = hasDraggedEnough && axisHasBeenMeasured && !isOnFirstCard;
 
     return shouldSetResponder;
   }
@@ -193,12 +179,11 @@ class NavPanResponder {
     const isVertical = this._isVertical;
     const startValue = this._startValue;
     const axis = isVertical ? 'dy' : 'dx';
-    const distance = isVertical
-      ? layout.height.__getValue()
-      : layout.width.__getValue();
-    const currentValue = I18nManager.isRTL && axis === 'dx'
-      ? startValue + gesture[axis] / distance
-      : startValue - gesture[axis] / distance;
+    const distance = isVertical ? layout.height.__getValue() : layout.width.__getValue();
+    const currentValue =
+      I18nManager.isRTL && axis === 'dx'
+        ? startValue + gesture[axis] / distance
+        : startValue - gesture[axis] / distance;
     const value = clamp(index - 1, currentValue, index);
     props.position.setValue(value);
   }
@@ -219,9 +204,7 @@ class NavPanResponder {
     const isVertical = this._isVertical;
     const index = props.navigation.state.index;
     const velocity = gesture[isVertical ? 'vy' : 'vx'];
-    const immediateIndex = this._immediateIndex == null
-      ? index
-      : this._immediateIndex;
+    const immediateIndex = this._immediateIndex == null ? index : this._immediateIndex;
 
     // To asyncronously get the current animated value, we need to run stopAnimation:
     props.position.stopAnimation((value: number) => {
@@ -259,7 +242,7 @@ class NavPanResponder {
       duration: ANIMATION_DURATION,
       useNativeDriver: props.position.__isNative,
       velocity: velocity * GESTURE_ANIMATED_VELOCITY_RATIO,
-      overshootClamping: true,
+      overshootClamping: true
     }).start();
   }
 
@@ -308,21 +291,17 @@ class NavPanResponder {
 
 function createPanHandlers(
   direction: NavigationGestureDirection,
-  props: Props,
+  props: Props
 ): NavigationPanPanHandlers {
   const responder = new NavPanResponder(direction, props);
   return responder.panHandlers;
 }
 
-function forHorizontal(
-  props: Props,
-): NavigationPanPanHandlers {
+function forHorizontal(props: Props): NavigationPanPanHandlers {
   return createPanHandlers(Directions.HORIZONTAL, props);
 }
 
-function forVertical(
-  props: Props,
-): NavigationPanPanHandlers {
+function forVertical(props: Props): NavigationPanPanHandlers {
   return createPanHandlers(Directions.VERTICAL, props);
 }
 
@@ -338,5 +317,5 @@ module.exports = {
 
   // methods.
   forHorizontal,
-  forVertical,
+  forVertical
 };

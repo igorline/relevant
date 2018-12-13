@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet
-} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
 import { Bar, SmoothLine, StockLine } from 'react-native-pathjs-charts';
 import moment from 'moment';
 import chartOptions from './chartOptions';
@@ -12,6 +9,15 @@ import { globalStyles, blue } from '../../styles/global';
 let styles;
 
 export default class Chart extends Component {
+  static propTypes = {
+    data: PropTypes.array,
+    type: PropTypes.string,
+    actions: PropTypes.object,
+    auth: PropTypes.object,
+    renderHeader: PropTypes.func,
+    renderFooter: PropTypes.func
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -54,9 +60,9 @@ export default class Chart extends Component {
   }
 
   chartData(props) {
-    let { type, data, start, end, dataKey } = props;
+    const { type, data, start, end, dataKey } = props;
 
-    let current = new Date(start);
+    const current = new Date(start);
     let min;
     let max;
     this.data = [];
@@ -64,9 +70,7 @@ export default class Chart extends Component {
     let x = 0;
 
     while (current < end) {
-      let entry = data.find(el => {
-        return new Date(el.date).getTime() === current.getTime();
-      });
+      const entry = data.find(el => new Date(el.date).getTime() === current.getTime());
       let value;
       if (type === 'bar') {
         value = entry ? entry[dataKey] : 0;
@@ -82,7 +86,9 @@ export default class Chart extends Component {
       if (type === 'bar') {
         this.data.push({
           v: value,
-          name: moment(current).utcOffset(0).format('M/D', 'utc')
+          name: moment(current)
+          .utcOffset(0)
+          .format('M/D', 'utc')
         });
       } else if (entry) {
         this.data.push({
@@ -96,7 +102,7 @@ export default class Chart extends Component {
     max = Math.ceil(max);
     min = Math.floor(min);
 
-    let tickCount = Math.min(min < 0 ? (max - min) + 1 : max + 1, 6);
+    let tickCount = Math.min(min < 0 ? max - min + 1 : max + 1, 6);
     if (max - min < 1) tickCount = 6;
 
     if (typeof max !== 'number' || Math.abs(max) < 1) max = 1;
@@ -110,30 +116,29 @@ export default class Chart extends Component {
       axisY: {
         ...chartOptions.axisY,
         tickCount,
-        labelFunction: val => (max - min) > 1 ? Math.round(val) : val,
+        labelFunction: val => (max - min > 1 ? Math.round(val) : val),
         scale: 10,
         min,
-        max,
+        max
       },
       axisX: {
         ...chartOptions.axisX,
-        labelFunction: val => moment(new Date(val)).utcOffset(0).format('M/D', 'utc')
+        labelFunction: val =>
+          moment(new Date(val))
+          .utcOffset(0)
+          .format('M/D', 'utc')
       }
     };
   }
 
   render() {
-    let { type } = this.props;
+    const { type } = this.props;
     let chart;
 
     if (type === 'bar' && this.data.length > 1) {
       chart = (
         <View>
-          <Bar
-            data={[this.data]}
-            options={this.chartOptions}
-            accessorKey={'v'}
-          />
+          <Bar data={[this.data]} options={this.chartOptions} accessorKey={'v'} />
         </View>
       );
     } else if (type === 'smooth' && this.data.length > 1) {
@@ -164,14 +169,12 @@ export default class Chart extends Component {
   }
 }
 
-
-let localStyles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   noData: {
     flex: 1,
     textAlign: 'center',
-    paddingVertical: 30,
-  },
+    paddingVertical: 30
+  }
 });
 
 styles = { ...globalStyles, ...localStyles };
-

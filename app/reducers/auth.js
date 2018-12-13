@@ -16,7 +16,7 @@ const initialState = {
   twitter: null,
   currentInvite: null,
   loading: false,
-  community: null,
+  community: null
 };
 
 export default function auth(state = initialState, action) {
@@ -41,7 +41,7 @@ export default function auth(state = initialState, action) {
         stats: action.payload.stats || state.stats,
         nextUpdate: action.payload.nextUpdate || state.nextUpdate,
         chart: action.payload.chart || state.chart,
-        relChart: action.payload.relChart || state.relChart,
+        relChart: action.payload.relChart || state.relChart
       };
     }
 
@@ -54,7 +54,7 @@ export default function auth(state = initialState, action) {
     case 'SET_PRE_USER':
       return {
         ...state,
-        preUser: action.payload,
+        preUser: action.payload
       };
 
     case types.LOGIN_USER_SUCCESS:
@@ -69,7 +69,7 @@ export default function auth(state = initialState, action) {
       return Object.assign({}, state, {
         isAuthenticating: false,
         isAuthenticated: false,
-        user: null,
+        user: null
       });
 
     case 'SET_AUTH_STATUS_TEXT':
@@ -77,7 +77,6 @@ export default function auth(state = initialState, action) {
         ...state,
         statusText: action.payload
       };
-
 
     case types.SET_SELECTED_USER_DATA: {
       if (!state.user || state.user._id !== action.payload._id) return state;
@@ -91,18 +90,19 @@ export default function auth(state = initialState, action) {
       return {
         ...state,
         isAuthenticating: false,
-        isAuthenticated: action.payload || false,
+        isAuthenticated: !!action.payload || false,
         user: action.payload,
-        preUser: null,
+        preUser: null
       };
 
     case types.UPDATE_USER:
     case types.UPDATE_AUTH_USER: {
-      let id = action.payload._id;
+      const id = action.payload._id;
       if (state.user && id !== state.user._id) return state;
       let relevance = action.payload.relevance;
-      if ((!relevance || relevance.pagerank === undefined)
-        && state.user) relevance = state.user.relevance;
+      if ((!relevance || relevance.pagerank === undefined) && state.user) {
+        relevance = state.user.relevance;
+      }
       return {
         ...state,
         user: {
@@ -138,7 +138,7 @@ export default function auth(state = initialState, action) {
       }
       return {
         ...state,
-        currentInvite: action.payload,
+        currentInvite: action.payload
       };
     }
 

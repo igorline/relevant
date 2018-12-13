@@ -7,11 +7,7 @@ const repostSchema = new schema.Entity(
   { idAttribute: '_id' }
 );
 
-const linkSchema = new schema.Entity(
-  'links',
-  {},
-  { idAttribute: '_id' }
-);
+const linkSchema = new schema.Entity('links', {}, { idAttribute: '_id' });
 
 const postSchema = new schema.Entity(
   'posts',
@@ -51,17 +47,17 @@ const initialState = {
   posts: {},
   topPosts: [],
   related: {},
-  links: {},
+  links: {}
 };
 
 function mergePosts(posts, state) {
-  let mPosts = {};
+  const mPosts = {};
   if (!posts) return mPosts;
   Object.keys(posts).forEach(id => {
     // need to do this so reposted = null doesen't over-write existing value
     let reposted = posts[id].reposted;
     if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
-    let postData = (posts[id] && posts[id].data) || (state.posts[id] && state.posts[id].data);
+    const postData = (posts[id] && posts[id].data) || (state.posts[id] && state.posts[id].data);
     mPosts[id] = {
       ...state.posts[id],
       ...posts[id],
@@ -92,10 +88,10 @@ export default function post(state = initialState, action) {
     }
 
     case types.INC_FEED_COUNT: {
-      let unread = state.feedUnread || 0;
+      const unread = state.feedUnread || 0;
       return {
         ...state,
-        feedUnread: unread + 1,
+        feedUnread: unread + 1
       };
     }
 
@@ -107,14 +103,14 @@ export default function post(state = initialState, action) {
     }
 
     case types.SET_POSTS_SIMPLE: {
-      let posts = mergePosts(action.payload.data.entities.posts, state);
+      const posts = mergePosts(action.payload.data.entities.posts, state);
       return {
         ...state,
         posts: { ...state.posts, ...posts },
         links: {
           ...state.links,
           ...action.payload.data.entities.links
-        },
+        }
       };
     }
 
@@ -122,7 +118,7 @@ export default function post(state = initialState, action) {
       const type = action.payload.type;
       const topic = action.payload.topic;
       const index = action.payload.index;
-      let posts = mergePosts(action.payload.data.entities.posts, state);
+      const posts = mergePosts(action.payload.data.entities.posts, state);
       if (!state.topics[type][topic]) state.topics[type][topic] = [];
       return {
         ...state,
@@ -132,7 +128,7 @@ export default function post(state = initialState, action) {
             ...state.topics[type],
             [topic]: [
               ...state.topics[type][topic].slice(0, index),
-              ...action.payload.data.result[type],
+              ...action.payload.data.result[type]
             ]
           }
         },
@@ -153,17 +149,17 @@ export default function post(state = initialState, action) {
 
     case types.SET_POSTS: {
       const type = action.payload.type;
-      let posts = mergePosts(action.payload.data.entities.posts, state);
+      const posts = mergePosts(action.payload.data.entities.posts, state);
       return {
         ...state,
         [type]: [
           ...state[type].slice(0, action.payload.index),
-          ...action.payload.data.result[type],
+          ...action.payload.data.result[type]
         ],
         posts: { ...state.posts, ...posts },
         loaded: {
           ...state.loaded,
-          [type]: true,
+          [type]: true
         },
         links: {
           ...state.links,
@@ -184,19 +180,21 @@ export default function post(state = initialState, action) {
     }
 
     case types.UPDATE_POST: {
-      let id = action.payload._id;
-      let data = normalize(action.payload, postSchema);
-      let updatePost = data.entities.posts[id];
+      const id = action.payload._id;
+      const data = normalize(action.payload, postSchema);
+      const updatePost = data.entities.posts[id];
 
       // need to do this so reposted = null doesen't over-write existing value
       let reposted = action.payload.reposted;
       if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
-      let postData = updatePost.data || state.posts[id].data;
+      const postData = updatePost.data || state.posts[id].data;
       let embeddedUser = state.posts[id] ? state.posts[id].embeddedUser : null;
       // TODO normalize this — should keep this in users store
-      if (updatePost.embeddedUser &&
+      if (
+        updatePost.embeddedUser &&
         updatePost.embeddedUser.relevance &&
-        updatePost.embeddedUser.relevance.pagerank !== undefined) {
+        updatePost.embeddedUser.relevance.pagerank !== undefined
+      ) {
         embeddedUser = updatePost.embeddedUser;
       }
 
@@ -220,8 +218,8 @@ export default function post(state = initialState, action) {
     }
 
     case types.REMOVE_POST: {
-      let id = action.payload._id || action.payload;
-      let newPosts = { ...state.posts };
+      const id = action.payload._id || action.payload;
+      const newPosts = { ...state.posts };
       delete newPosts[id];
       return {
         ...state,
@@ -233,46 +231,41 @@ export default function post(state = initialState, action) {
     }
 
     case 'SET_USER_POSTS': {
-      let id = action.payload.id;
-      let currentPosts = state.userPosts[id] || [];
-      let posts = mergePosts(action.payload.data.entities.posts, state);
+      const id = action.payload.id;
+      const currentPosts = state.userPosts[id] || [];
+      const posts = mergePosts(action.payload.data.entities.posts, state);
       return {
         ...state,
         userPosts: {
           ...state.userPosts,
-          [id]: [
-            ...currentPosts.slice(0, action.payload.index),
-            ...action.payload.data.result[id]
-          ]
+          [id]: [...currentPosts.slice(0, action.payload.index), ...action.payload.data.result[id]]
         },
         links: {
           ...state.links,
-          ...action.payload.data.entities.links,
+          ...action.payload.data.entities.links
         },
         posts: { ...state.posts, ...posts },
         loaded: {
           ...state.loaded,
-          userPosts: true,
+          userPosts: true
         }
       };
     }
-
 
     case 'LOADING_USER_POSTS': {
       return {
         ...state,
         loaded: {
           ...state.loaded,
-          userPosts: false,
+          userPosts: false
         }
       };
     }
 
-
     case types.CLEAR_POSTS: {
       const type = action.payload.type;
       return Object.assign({}, state, {
-        [type]: [],
+        [type]: []
       });
     }
 
@@ -281,31 +274,31 @@ export default function post(state = initialState, action) {
         ...state,
         newPostsAvailable: {
           ...state.newPostsAvailable,
-          [action.payload.community]: state.newPostsAvailable[action.payload.community] || 0 + 1,
+          [action.payload.community]: state.newPostsAvailable[action.payload.community] || 0 + 1
         }
       };
     }
 
     case types.POST_ERROR: {
       return Object.assign({}, state, {
-        postError: action.payload,
+        postError: action.payload
       });
     }
 
     case types.SET_DISCOVER_TAGS: {
       return Object.assign({}, state, {
-        discoverTags: action.payload,
+        discoverTags: action.payload
       });
     }
 
     case 'SET_SELECTED_POST': {
       return Object.assign({}, state, {
-        selectedPostId: action.payload,
+        selectedPostId: action.payload
       });
     }
 
     case 'SET_SELECTED_POST_DATA': {
-      let id = action.payload._id;
+      const id = action.payload._id;
       let reposted = action.payload.reposted;
       if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
       return {
@@ -331,13 +324,13 @@ export default function post(state = initialState, action) {
     case 'SET_NEW_FEED_STATUS': {
       console.log('SET_NEW_FEED_STATUS');
       return Object.assign({}, state, {
-        newFeedAvailable: action.payload,
+        newFeedAvailable: action.payload
       });
     }
 
     case 'CLEAR_USER_POSTS': {
       return Object.assign({}, state, {
-        userPosts: {},
+        userPosts: {}
       });
     }
 
@@ -361,7 +354,6 @@ export default function post(state = initialState, action) {
         }
       };
     }
-
 
     // this wipes feed on login
     // case types.LOGIN_USER_SUCCESS: {

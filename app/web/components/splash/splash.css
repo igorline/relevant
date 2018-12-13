@@ -16,7 +16,7 @@
     width: 100%;
   }
 
-  mainSection {
+  .mainSection {
     position: relative;
     flex: .5;
     display: flex;
@@ -564,7 +564,7 @@ b {
   and (max-width: 1000px) {
 
   .splashContent {
-    mainSection {
+    .mainSection {
       flex: .8;
     }
   }
@@ -629,7 +629,7 @@ b {
     width: 100vw;
     min-height: none;
 
-    mainSection {
+    .mainSection {
       display: flex;
       width: 90vw;
       padding-bottom: 30px;
@@ -660,7 +660,7 @@ b {
   }
 
 
-  .splashContent mainSection {
+  .splashContent .mainSection {
     flex: 1;
     padding-left: 0;
   }

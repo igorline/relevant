@@ -1,30 +1,35 @@
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router';
-import { numbers } from '../../../utils';
 import { BondingCurveContext } from 'bonded-token';
+import { numbers } from '../../../utils';
 
 export default class AdminContract extends Component {
+  static propTypes = {
+    RelevantCoin: PropTypes.object,
+    user: PropTypes.object
+  };
+
   // this context comes from the BondedTokenContainer
   static contextType = BondingCurveContext;
 
   state = {
     buyAmount: '',
-    rewardsAmount: '',
-  }
+    rewardsAmount: ''
+  };
 
   async addRewards() {
-    let { connectedAccount } = this.props.wallet;
-    let amount = web3.utils.toWei(this.state.rewardsAmount.toString());
+    const { connectedAccount } = this.props.wallet;
+    const amount = web3.utils.toWei(this.state.rewardsAmount.toString());
     this.props.RelevantCoin.methods.addRewards.cacheSend(amount, { from: connectedAccount });
   }
 
   async buyVirtual() {
-    let { connectedAccount } = this.props.wallet;
-    let amount = web3.utils.toWei(this.state.buyAmount.toString());
-    this.props.RelevantCoin.methods.buyVirtualTokens.cacheSend({ value: amount, from: connectedAccount });
+    const { connectedAccount } = this.props.wallet;
+    const amount = web3.utils.toWei(this.state.buyAmount.toString());
+    this.props.RelevantCoin.methods.buyVirtualTokens.cacheSend({
+      value: amount,
+      from: connectedAccount
+    });
   }
 
   onChange(e) {
@@ -41,13 +46,11 @@ export default class AdminContract extends Component {
     const user = this.props.user;
     if (!user) return null;
 
-    let {
+    const {
       tokenBalance,
       symbol,
-      priceDollar,
       poolBalance,
       totalSupply,
-      inflationSupply,
       virtualSupply,
       virtualBalance,
       distributedRewards,
@@ -55,47 +58,49 @@ export default class AdminContract extends Component {
       walletBalance
     } = this.context.contractParams;
 
-    let { connectedBalance, connectedAccount, nonce } = this.props.wallet;
-
     return (
       <div className={'balances'}>
         <h3>Contract Params</h3>
 
         <div className="balanceList">
           <section>
-            <row>
+            <div className={'row'}>
               <div>
                 <h4>Pool Balance:</h4>
               </div>
               <span className="coin">{fixed(poolBalance)} ETH</span>
-            </row>
+            </div>
           </section>
 
           <section>
-            <row>
+            <div className={'row'}>
               <div>
                 <h4>Total Supply:</h4>
               </div>
-              <span className="coin">{fixed(totalSupply)} {symbol}</span>
-            </row>
+              <span className="coin">
+                {fixed(totalSupply)} {symbol}
+              </span>
+            </div>
           </section>
 
           <section>
-            <row>
+            <div className={'row'}>
               <div>
                 <h4>Virtual Balance:</h4>
               </div>
               <span className="coin">{fixed(virtualBalance)} ETH</span>
-            </row>
+            </div>
           </section>
 
           <section>
-            <row>
+            <div className={'row'}>
               <div>
                 <h4>Virtual Supply:</h4>
               </div>
-              <span className="coin">{fixed(virtualSupply)} {symbol}</span>
-            </row>
+              <span className="coin">
+                {fixed(virtualSupply)} {symbol}
+              </span>
+            </div>
 
             <div className="transferTokens">
               <input
@@ -107,32 +112,32 @@ export default class AdminContract extends Component {
                 max={walletBalance}
                 min={0}
               />
-              <button
-                className={'shadowButton'}
-                onClick={this.buyVirtual.bind(this)}
-              >
+              <button className={'shadowButton'} onClick={this.buyVirtual.bind(this)}>
                 Buy Virtual Tokens
               </button>
             </div>
-
           </section>
 
           <section>
-            <row>
+            <div className={'row'}>
               <div>
                 <h4>Reward Pool:</h4>
               </div>
-              <span className="coin">{fixed(rewardPool)} {symbol}</span>
-            </row>
+              <span className="coin">
+                {fixed(rewardPool)} {symbol}
+              </span>
+            </div>
           </section>
 
           <section>
-            <row>
+            <div className={'row'}>
               <div>
                 <h4>Distributed Rewards:</h4>
               </div>
-              <span className="coin">{fixed(distributedRewards)} {symbol}</span>
-            </row>
+              <span className="coin">
+                {fixed(distributedRewards)} {symbol}
+              </span>
+            </div>
 
             <div className="transferTokens">
               <input
@@ -144,16 +149,11 @@ export default class AdminContract extends Component {
                 max={tokenBalance}
                 min={0}
               />
-              <button
-                className={'shadowButton'}
-                onClick={this.addRewards.bind(this)}
-              >
+              <button className={'shadowButton'} onClick={this.addRewards.bind(this)}>
                 Add Rewards
               </button>
             </div>
-
           </section>
-
         </div>
       </div>
     );

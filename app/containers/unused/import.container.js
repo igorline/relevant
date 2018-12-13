@@ -1,14 +1,5 @@
-'use strict';
-
 import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  ScrollView
-} from 'react-native';
+import { AppRegistry, StyleSheet, Text, View, TextInput, ScrollView } from 'react-native';
 
 import { connect } from 'react-redux';
 import Button from 'react-native-button';
@@ -18,52 +9,50 @@ import { bindActionCreators } from 'redux';
 import { globalStyles } from '../styles/global';
 
 class Import extends Component {
-  constructor (props, context) {
-    super(props, context)
+  constructor(props, context) {
+    super(props, context);
     this.state = {
       userIndex: null
-    }
+    };
   }
 
-  componentDidMount(){
-    this.userIndex()
+  componentDidMount() {
+    this.userIndex();
   }
 
   userIndex() {
-    var self = this;
-    fetch(process.env.API_SERVER+'/api/user', {
-        credentials: 'include',
-        method: 'GET'
-      })
-      .then((response) => response.json())
-      .then((responseJSON) => {
-        self.setState({userIndex: responseJSON});
-      })
-      .catch((error) => {
-        console.log(error, 'error');
-      });
+    const self = this;
+    fetch(process.env.API_SERVER + '/api/user', {
+      credentials: 'include',
+      method: 'GET'
+    })
+    .then(response => response.json())
+    .then(responseJSON => {
+      self.setState({ userIndex: responseJSON });
+    })
+    .catch(error => {
+      console.log(error, 'error');
+    });
   }
 
   render() {
-    var self = this;
-    var contactsEl = null;
-    var contacts = self.props.auth.contacts;
+    const self = this;
+    let contactsEl = null;
+    const contacts = self.props.auth.contacts;
     const { getContacts } = this.props.actions;
-     const { actions } = this.props;
+    const { actions } = this.props;
 
     if (contacts) {
-      contactsEl = contacts.map(function(contact, i) {
-      return (
+      contactsEl = contacts.map((contact, i) => (
         <Contact key={i} {...contact} userIndex={self.state.userIndex} styles={styles} />
-      );
-    });
+      ));
     }
 
     return (
       <ScrollView contentContainerStyle={styles.contentContainer}>
-      <View>
-        {contacts ? null : <Button onPress={getContacts}>Import contacts</Button>}
-        {contactsEl}
+        <View>
+          {contacts ? null : <Button onPress={getContacts}>Import contacts</Button>}
+          {contactsEl}
         </View>
       </ScrollView>
     );
@@ -74,19 +63,20 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     router: state.routerReducer
-   }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(authActions, dispatch)
-  }
+  };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Import)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Import);
 
-const localStyles = StyleSheet.create({
-});
+const localStyles = StyleSheet.create({});
 
-var styles = {...localStyles, ...globalStyles};
-
+var styles = { ...localStyles, ...globalStyles };

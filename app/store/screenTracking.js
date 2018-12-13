@@ -1,5 +1,5 @@
-import * as types from '../actions/actionTypes';
 import Analytics from 'react-native-firebase-analytics';
+import * as types from '../actions/actionTypes';
 
 // gets the current screen from navigation state
 function getCurrentRouteName(navigationState) {
@@ -14,25 +14,24 @@ function getCurrentRouteName(navigationState) {
   return route.component || route.key;
 }
 
-
-const screenTracking = ({ getState }) => next => (action) => {
+const screenTracking = ({ getState }) => next => action => {
   if (
-    action.type !== types.PUSH_ROUTE
-    && action.type !== types.POP_ROUTE
-    && action.type !== types.RESET_ROUTES
-    && action.type !== types.REPLACE_ROUTE
-    && action.type !== types.CHANGE_TAB
+    action.type !== types.PUSH_ROUTE &&
+    action.type !== types.POP_ROUTE &&
+    action.type !== types.RESET_ROUTES &&
+    action.type !== types.REPLACE_ROUTE &&
+    action.type !== types.CHANGE_TAB
   ) {
     return next(action);
   }
-  let oldState = getState();
+  const oldState = getState();
   let nav = oldState.navigation;
   let view = nav.currentView;
   let route = nav[view];
   const currentScreen = getCurrentRouteName(route);
   const result = next(action);
 
-  let newState = getState();
+  const newState = getState();
   nav = newState.navigation;
   view = nav.currentView;
   route = nav[view];

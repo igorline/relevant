@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as animationActions from '../../actions/animation.actions';
@@ -13,13 +11,16 @@ import { numbers } from '../../utils';
 let styles;
 
 class IrrelevantAnimation extends Component {
+  static propTypes = {
+    animation: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.destroy = this.destroy.bind(this);
     this.num = 0;
     this.state = {
-      thumbs: {
-      },
+      thumbs: {}
     };
   }
 
@@ -44,14 +45,14 @@ class IrrelevantAnimation extends Component {
   }
 
   runAnimation() {
-    let key = numbers.guid();
+    const key = numbers.guid();
 
     this.state.thumbs[key] = <Thumb destroy={this.destroy} key={key} id={key} />;
     this.setState({ thumbs: this.state.thumbs });
   }
 
   render() {
-    let thumbs = Object.keys(this.state.thumbs).map(key => this.state.thumbs[key]);
+    const thumbs = Object.keys(this.state.thumbs).map(key => this.state.thumbs[key]);
     return (
       <View pointerEvents="none" style={styles.heartsContainer}>
         {thumbs}
@@ -62,15 +63,18 @@ class IrrelevantAnimation extends Component {
 
 function mapStateToProps(state) {
   return {
-    animation: state.animation.irrelevant,
+    animation: state.animation.irrelevant
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators({
-      ...animationActions,
-    }, dispatch)
+    actions: bindActionCreators(
+      {
+        ...animationActions
+      },
+      dispatch
+    )
   };
 }
 
@@ -83,12 +87,15 @@ const localStyles = StyleSheet.create({
     top: 0,
     left: 0,
     height: fullHeight,
-    width: fullWidth,
-  },
+    width: fullWidth
+  }
 });
 
 styles = { ...globalStyles, ...localStyles };
 
 // export default IrrelevantAnimation;
 
-export default connect(mapStateToProps, mapDispatchToProps)(IrrelevantAnimation);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(IrrelevantAnimation);

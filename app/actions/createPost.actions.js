@@ -1,8 +1,8 @@
+/* eslint-disable no-console */
 import * as types from './actionTypes';
 import * as utils from '../utils';
 
 utils.api.env();
-const apiServer = process.env.API_SERVER + '/api/';
 
 export function setCreaPostState(state) {
   return {
@@ -11,21 +11,19 @@ export function setCreaPostState(state) {
   };
 }
 
-
 export function setPostCategory(tag) {
   const set = tag || null;
   return {
     type: 'SET_POST_CATEGORY',
-    payload: set,
+    payload: set
   };
 }
 
 export function clearCreatePost() {
   return {
-    type: 'CLEAR_CREATE_POST',
+    type: 'CLEAR_CREATE_POST'
   };
 }
-
 
 export function submitPost(post) {
   return async () => {
@@ -38,30 +36,7 @@ export function submitPost(post) {
       return true;
     } catch (err) {
       console.log(err);
-      throw err;
+      return false;
     }
   };
 }
-
-// export function submitPost(post, token) {
-//   return (dispatch) => {
-//     return fetch(apiServer + 'post?access_token=' + token,
-//       {
-//         credentials: 'include',
-//         method: 'POST',
-//         headers: {
-//           Accept: 'application/json',
-//           'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify(post)
-//       })
-//     .then((response) => {
-//       // console.log(response, 'submitPost response');
-//       if (response.status === 200) {
-//         return response;
-//       }
-//       return false;
-//     })
-//     .catch(error => false);
-//   };
-// }
