@@ -49,6 +49,7 @@ const options = {
       }
   }
 };
+let drizzle;
 
 class App extends Component {
   static propTypes = {
@@ -77,11 +78,16 @@ class App extends Component {
 
   componentDidMount() {
     const community = this.props.auth.community;
+    const { isAuthenticated } = this.props.auth;
+
     this.props.actions.setCommunity(community);
 
     this.props.actions.getUser();
-    // eslint-disable-next-line
-    new Drizzle(options, this.context.store);
+
+    if (isAuthenticated) {
+      // eslint-disable-next-line
+      drizzle = new Drizzle(options, this.context.store);
+    }
 
     // TODO do this after a timeout
     // window.addEventListener('focus', () => {
@@ -91,7 +97,8 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const community = this.props.params.community;
+    const { community } = this.props.params;
+    const { isAuthenticated } = this.props.auth;
     if (community && this.props.auth.community !== community) {
       if (community === 'home') prevProps.actions.push(`/${this.props.auth.community}/new`);
       else this.props.actions.setCommunity(community);
@@ -106,6 +113,10 @@ class App extends Component {
 
     if (userId !== PrevUserId) {
       this.props.actions.userToSocket(userId);
+    }
+
+    if (isAuthenticated && !prevProps.auth.isAuthenticated && !drizzle) {
+      drizzle = new Drizzle(options, this.context.store);
     }
   }
 
