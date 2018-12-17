@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { View, Alert } from 'react-native';
+import { View } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as navigationActions from '../../actions/navigation.actions';
-import CardContainer from './tabView.container';
+import TabView from './tabView.container';
 import * as userActions from '../../actions/user.actions';
 import Footer from './footer.component';
 import { IphoneX } from '../../styles/global';
@@ -31,9 +31,6 @@ class Tabs extends Component {
 
     // This is if we want to make create post a separate scene
     if (key === 'createPost') {
-      // if (this.props.auth.user.balance < 1) {
-      //   return Alert.alert('You need to have at least one coin to post');
-      // }
       this.props.actions.push(
         {
           key: 'createPost',
@@ -67,7 +64,7 @@ class Tabs extends Component {
         }
 
         if (key === 'discover') {
-          const index = this.props.navigation[key].index;
+          const { index } = this.props.navigation[key];
           const route = this.props.navigation[key].routes[index];
           if (route.component === 'discover') {
             this.props.actions.refreshTab(key);
@@ -96,7 +93,7 @@ class Tabs extends Component {
 
   initNavView(key) {
     const tabView = (
-      <CardContainer
+      <TabView
         style={{ flex: 1 }}
         defaultContainer={key}
         key={key}
@@ -109,13 +106,17 @@ class Tabs extends Component {
 
   renderTabContent(key) {
     if (!this.tabs[key]) this.initNavView(key);
-    return Object.keys(this.tabs).map(k => {
+    return Object.keys(this.tabs)
+    .map(k => {
       const tab = this.tabs[k];
       const active = tab.key === key;
       const margin = IphoneX ? 83 : 50;
       return (
-        <View key={tab.key} style={[active ? { flex: 1, marginBottom: margin } : { flex: 0 }]}>
-          <CardContainer
+        <View
+          key={tab.key}
+          style={[active ? { flex: 1, marginBottom: margin } : { flex: 0 }]}
+        >
+          <TabView
             defaultContainer={tab.key}
             active={active}
             key={tab.key}
@@ -137,15 +138,6 @@ class Tabs extends Component {
     );
   }
 }
-
-Tabs.propTypes = {
-  showActionSheet: PropTypes.func,
-  actions: PropTypes.object,
-  auth: PropTypes.object,
-  navigation: PropTypes.object,
-  notif: PropTypes.object,
-  feedUnread: PropTypes.number
-};
 
 function mapStateToProps(state) {
   return {

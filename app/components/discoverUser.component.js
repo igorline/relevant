@@ -15,7 +15,7 @@ class DiscoverUser extends Component {
     actions: PropTypes.object,
     topic: PropTypes.string,
     renderRight: PropTypes.func,
-    bio: PropTypes.object,
+    bio: PropTypes.bool,
     relevance: PropTypes.object
   };
 
@@ -31,9 +31,11 @@ class DiscoverUser extends Component {
   }
 
   render() {
-    const user = this.props.user;
+    const { user } = this.props;
     if (!user) return null;
-    const relevance = this.props.topic ? user[this.props.topic + '_relevance'] : user.relevance;
+    const relevance = this.props.topic
+      ? user[this.props.topic + '_relevance']
+      : user.relevance;
 
     const stats = (
       <Stats
@@ -58,7 +60,10 @@ class DiscoverUser extends Component {
     );
 
     return (
-      <TouchableHighlight underlayColor={'transparent'} onPress={() => this.setSelected()}>
+      <TouchableHighlight
+        underlayColor={'transparent'}
+        onPress={() => this.setSelected()}
+      >
         <View style={styles.discoverUserContainer}>
           <View style={[styles.discoverUser]}>
             <UserName

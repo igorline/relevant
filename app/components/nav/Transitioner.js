@@ -1,10 +1,10 @@
 import React from 'react';
-import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { Animated, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import invariant from 'react-navigation/src/utils/invariant';
 import NavigationScenesReducer from 'react-navigation/src/views/ScenesReducer';
 
-// Used for all animations unless overriden
+// Used for all animations unless overridden
 const DefaultTransitionSpec = {
   // duration: 250,
   // easing: Easing.inOut(Easing.ease),
@@ -12,6 +12,36 @@ const DefaultTransitionSpec = {
   speed: 20
   // useNativeDriver: true,
 };
+
+let styles;
+
+function isSceneNotStale(scene) {
+  return !scene.isStale;
+}
+
+function isSceneActive(scene) {
+  return scene.isActive;
+}
+
+function buildTransitionProps(props, state) {
+  const { navigation } = props;
+
+  const { layout, position, progress, scenes } = state;
+
+  const scene = scenes.find(isSceneActive);
+
+  invariant(scene, 'Could not find active scene');
+
+  return {
+    layout,
+    navigation,
+    position,
+    progress,
+    scenes,
+    scene,
+    index: scene.index
+  };
+}
 
 class Transitioner extends React.Component {
   static propTypes = {
@@ -73,7 +103,8 @@ class Transitioner extends React.Component {
       return;
     }
 
-    const indexHasChanged = nextProps.navigation.state.index !== this.props.navigation.state.index;
+    const indexHasChanged =
+      nextProps.navigation.state.index !== this.props.navigation.state.index;
     if (this._isTransitionRunning) {
       this._queuedTransition = { nextProps, nextScenes, indexHasChanged };
       return;
@@ -139,7 +170,8 @@ class Transitioner extends React.Component {
           await result;
         }
       }
-      Animated.parallel(animations).start(this._onTransitionEnd);
+      Animated.parallel(animations)
+      .start(this._onTransitionEnd);
     });
   }
 
@@ -153,7 +185,10 @@ class Transitioner extends React.Component {
 
   _onLayout(event) {
     const { height, width } = event.nativeEvent.layout;
-    if (this.state.layout.initWidth === width && this.state.layout.initHeight === height) {
+    if (
+      this.state.layout.initWidth === width &&
+      this.state.layout.initHeight === height
+    ) {
       return;
     }
     const layout = {
@@ -200,7 +235,10 @@ class Transitioner extends React.Component {
 
     this.setState(nextState, async () => {
       if (this.props.onTransitionEnd) {
-        const result = this.props.onTransitionEnd(this._transitionProps, prevTransitionProps);
+        const result = this.props.onTransitionEnd(
+          this._transitionProps,
+          prevTransitionProps
+        );
 
         if (result instanceof Promise) {
           await result;
@@ -221,35 +259,7 @@ class Transitioner extends React.Component {
   }
 }
 
-function buildTransitionProps(props, state) {
-  const { navigation } = props;
-
-  const { layout, position, progress, scenes } = state;
-
-  const scene = scenes.find(isSceneActive);
-
-  invariant(scene, 'Could not find active scene');
-
-  return {
-    layout,
-    navigation,
-    position,
-    progress,
-    scenes,
-    scene,
-    index: scene.index
-  };
-}
-
-function isSceneNotStale(scene) {
-  return !scene.isStale;
-}
-
-function isSceneActive(scene) {
-  return scene.isActive;
-}
-
-const styles = StyleSheet.create({
+styles = StyleSheet.create({
   main: {
     flex: 1
   }

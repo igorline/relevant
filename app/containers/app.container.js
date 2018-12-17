@@ -263,7 +263,7 @@ class Application extends Component {
   }
 
   changeName() {
-    const user = this.props.auth.user;
+    const { user } = this.props.auth;
 
     // ANDROID
     if (Platform.OS === 'android') {
@@ -421,7 +421,7 @@ class Application extends Component {
   }
 
   renderScene(props) {
-    const component = props.scene.route.component;
+    const { component } = props.scene.route;
 
     const createPost = (
       <KeyboardAvoidingView
@@ -431,18 +431,30 @@ class Application extends Component {
         }}
         keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0}
       >
-        <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />
+        <CreatePostContainer
+          step={'url'}
+          navProps={props}
+          navigator={this.props.actions}
+        />
       </KeyboardAvoidingView>
     );
 
     switch (component) {
       case 'auth':
-        return <Auth authType={component} navProps={props} navigator={this.props.actions} />;
+        return (
+          <Auth authType={component} navProps={props} navigator={this.props.actions} />
+        );
       case 'createPost':
         return createPost;
 
       case 'categories':
-        return <CreatePostContainer step={'url'} navProps={props} navigator={this.props.actions} />;
+        return (
+          <CreatePostContainer
+            step={'url'}
+            navProps={props}
+            navigator={this.props.actions}
+          />
+        );
 
       case 'articleView':
         return <ArticleView scene={props.scene.route} navigator={this.props.actions} />;

@@ -9,11 +9,10 @@ import {
   Platform,
   StatusBar,
   FlatList,
-  Keyboard,
-  InteractionManager
+  Keyboard
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles, fullHeight, IphoneX } from '../../styles/global';
+import { globalStyles, IphoneX } from '../../styles/global';
 import Comment from './comment.component';
 import Post from './post.component';
 import CommentInput from './commentInput.component';
@@ -24,18 +23,18 @@ let styles;
 
 const inputOffset = IphoneX ? 59 + 33 : 59;
 
-class SinglePostComments extends Component {
+class SinglePostComponent extends Component {
   static propTypes = {
-    postId: PropTypes.object,
+    postId: PropTypes.string,
     postComments: PropTypes.object,
     posts: PropTypes.object,
     scene: PropTypes.object,
     post: PropTypes.object,
-    error: PropTypes.string,
+    error: PropTypes.bool,
     actions: PropTypes.object,
-    related: PropTypes.object,
+    related: PropTypes.array,
     link: PropTypes.object,
-    users: PropTypes.array
+    users: PropTypes.object
   };
 
   constructor(props) {
@@ -113,7 +112,9 @@ class SinglePostComments extends Component {
 
   loadMoreComments() {
     let length = 0;
-    if (this.comments && this.comments.length) length = this.comments.length;
+    if (this.comments) {
+      length = this.comments.length || 0;
+    }
     this.props.actions.getComments(this.id, length, 10);
   }
 
@@ -133,12 +134,10 @@ class SinglePostComments extends Component {
     }
   }
 
-  scrollToBottom(init) {
+  scrollToBottom() {
     this.scrollTimeout = setTimeout(() => {
       if (!this.scrollView) return;
-      const l = this.scrollView._listRef._totalCellLength + this.scrollView._listRef._headerLength;
       if (this.comments && this.comments.length) {
-        // let offset = Math.min(0, l);
         this.scrollView.scrollToEnd();
       } else if (!this.comments || this.comments.length === 0) {
         const offset = Math.max(0, this.headerHeight - this.scrollHeight);
@@ -155,7 +154,6 @@ class SinglePostComments extends Component {
     this.reloading = true;
     this.props.actions.getComments(this.id, 0, 10);
     this.props.actions.getSelectedPost(this.id);
-    // this.props.actions.getRelated(this.id);
   }
 
   renderComments() {
@@ -215,10 +213,9 @@ class SinglePostComments extends Component {
   }
 
   renderHeader() {
-    let headerEl;
     let loadEarlier;
 
-    headerEl = (
+    const headerEl = (
       <Post
         singlePost
         key={0}
@@ -262,7 +259,6 @@ class SinglePostComments extends Component {
 
   renderRow({ item, index }) {
     const comment = item;
-    // let comment = this.props.posts.posts[item];
     if (!comment) return null;
     return (
       <Comment
@@ -340,8 +336,6 @@ class SinglePostComments extends Component {
   }
 }
 
-export default SinglePostComments;
-
 const localStyles = StyleSheet.create({
   postScroll: {
     flexDirection: 'row',
@@ -376,3 +370,6 @@ const localStyles = StyleSheet.create({
 });
 
 styles = { ...localStyles, ...globalStyles };
+
+export default SinglePostComponent;
+

@@ -70,7 +70,9 @@ class CommentForm extends Component {
 
     this.setState({ comment: '', inputHeight: 50 });
 
-    return this.props.actions.createComment(await utils.token.get(), commentObj).then(success => {
+    return this.props.actions
+    .createComment(await utils.token.get(), commentObj)
+    .then(success => {
       if (!success) {
         this.setState({ comment, inputHeight: 50 });
         this.textInput.focus();
@@ -79,7 +81,7 @@ class CommentForm extends Component {
   }
 
   async updateComment() {
-    const comment = this.props.comment;
+    const { comment } = this.props;
     const body = this.state.comment;
     if (comment.body === body) {
       return this.props.cancel();

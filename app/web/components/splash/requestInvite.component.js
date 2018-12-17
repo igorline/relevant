@@ -32,7 +32,7 @@ export default class RequestInvite extends Component {
     let cta = <InviteCta />;
     if (this.props.type === 'app') {
       img = '/img/hand-transparent.png';
-      cta = this.props.cta;
+      ({ cta } = this.props.cta);
     }
     return (
       <div ref={c => (this.container = c)} className="splashContent">
@@ -43,7 +43,8 @@ export default class RequestInvite extends Component {
               <span className="outline">quality</span> over clicks.
             </p>
             <p className="subH">
-              Join the community and help us build a better information environment for all.
+              Join the community and help us build a better information environment for
+              all.
             </p>
             {/* <a href="http://www.apple.com" className="download">
                 <img src="/img/apple.png" />

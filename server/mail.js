@@ -1,9 +1,8 @@
 const htmlToText = require('html-to-text');
 const mailgun = require('mailgun-js')({
   apiKey: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN,
+  domain: process.env.MAILGUN_DOMAIN
 });
-
 
 // mailgun.domains.updateTracking('mail.relevant.community', 'click', { active: true })
 //   .then(msg => console.log(msg)) // logs response data
@@ -26,12 +25,13 @@ exports.send = data => {
   if (process.env.NODE_ENV === 'test') {
     return Promise.resolve();
   }
-  return mailgun.messages()
-    .send(data)
-    .catch(err => {
+  return mailgun
+  .messages()
+  .send(data)
+  .catch(err => {
     // console.log('mail error ', err);
-      throw err;
-    });
+    throw err;
+  });
 };
 
 exports.mailgun = mailgun;

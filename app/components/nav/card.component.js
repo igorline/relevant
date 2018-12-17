@@ -1,27 +1,17 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
 import PropTypes from 'prop-types';
-import * as NavigationExperimental from 'react-navigation';
-// import CardStackStyleInterpolator from 'react-navigation/lib/views/CardStack/CardStackStyleInterpolator';
 import { globalStyles, fullWidth, headerHeight } from '../../styles/global';
 import CardHeader from './cardHeader.component';
 import NavPanResponder from './navPanResponder';
-
-const { Card: NavigationCard } = NavigationExperimental;
 
 let styles;
 
 class Card extends Component {
   static propTypes = {
-    scroll: PropTypes.object,
+    scroll: PropTypes.bool,
     share: PropTypes.bool,
-    style: PropTypes.object,
-    scene: PropTypes.object,
-    scenes: PropTypes.array,
-    back: PropTypes.object,
-    header: PropTypes.object,
-    renderRight: PropTypes.func,
-    renderScene: PropTypes.func
+    style: PropTypes.object
   };
 
   constructor(props, context) {
@@ -93,9 +83,8 @@ class Card extends Component {
   }
 
   render() {
-    const props = this.props;
+    const { props } = this;
     const headers = [];
-    const index = props.scene.index;
 
     const scenes = props.scenes.map((scene, i) => {
       const sceneProps = {
@@ -104,20 +93,16 @@ class Card extends Component {
       };
 
       let cardTransitionStyle = this.getAnimatedStyle(sceneProps);
-      // let cardTransitionStyle = NavigationCardStackStyleInterpolator.forHorizontal(sceneProps);
 
       const panDistance = sceneProps.scene.route.gestureResponseDistance || fullWidth;
 
       const scrolling = this.props.scroll;
-      // if (scrolling) panDistance = 50;
 
       let panHandlers = NavPanResponder.forHorizontal({
-        // let panHandlers = NavigationPagerPanResponder.forHorizontal({
         ...sceneProps,
         scrolling,
         gestureResponseDistance: panDistance,
         onNavigateBack: () => props.back()
-        // onNavigateForward: () => navigate('forward'),
       });
 
       // we have to change animation style for both top card and the previous card based
@@ -128,20 +113,14 @@ class Card extends Component {
       if (topScene && topScene.route.direction === 'vertical') vertical = true;
 
       if (vertical) {
-        // cardTransitionStyle = CardStackStyleInterpolator.forVertical(sceneProps);
         cardTransitionStyle = this.getAnimatedStyleVertical(sceneProps);
-        // panHandlers = NavPanResponder.forVertical({
         panHandlers = NavPanResponder.forVertical({
           ...sceneProps,
           scrolling,
           gestureResponseDistance: fullWidth,
           onNavigateBack: () => props.back()
-          // onNavigateForward: () => navigate('forward'),
         });
 
-        // if (this.props.navigation) {
-        //   if (this.props.navigation.createPost.index > 0) panHandlers = null;
-        // }
         panHandlers = {};
       }
 

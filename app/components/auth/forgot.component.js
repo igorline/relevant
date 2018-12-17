@@ -65,7 +65,7 @@ class Forgot extends Component {
         );
       }
     } catch (err) {
-      console.log(err);
+      Alert.alert(err);
     }
   }
 

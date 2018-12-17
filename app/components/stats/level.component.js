@@ -5,30 +5,16 @@ import { globalStyles, fullWidth, borderGrey } from '../../styles/global';
 
 let styles;
 
-// export default function Level(props) {
 export default class Level extends Component {
   static propTypes = {
     level: PropTypes.number
   };
 
-  constructor(props, context) {
-    super(props, context);
-  }
-
-  componentWillReceiveProps(next) {
-    const level = Math.floor(next.level / 10);
-    // if (this.scrollView && this.scrollView.getItemLayout) {
-    //   this.scrollView.getItemLayout(() => {
-    //     this.scrollView.scrollToIndex({ index: level, viewPosition: 0.5, animated: true });
-    //   });
-    // }
-  }
-
   render() {
-    const props = this.props;
+    let { level } = this.props;
     const data = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(l => ({ level: l }));
 
-    const level = Math.floor(props.level / 10);
+    level = Math.floor(level / 10);
     const img = require('../../assets/images/icons/lock.png');
 
     const renderItem = ({ item }) => {
@@ -37,12 +23,19 @@ export default class Level extends Component {
         style = [styles.statNumber, { fontSize: 175, marginBottom: -30 }];
       }
       const divider = <View style={styles.statSeparator} />;
-      let itemEl = <Text style={[...style, { paddingHorizontal: 23 }]}>{item.level}</Text>;
+      let itemEl = (
+        <Text style={[...style, { paddingHorizontal: 23 }]}>{item.level}</Text>
+      );
       if (item.level > level) {
         itemEl = (
           <Image
             source={img}
-            style={{ width: 14, height: 11, resizeMode: 'contain', paddingHorizontal: 23 }}
+            style={{
+              width: 14,
+              height: 11,
+              resizeMode: 'contain',
+              paddingHorizontal: 23
+            }}
           />
         );
       }
@@ -73,7 +66,11 @@ export default class Level extends Component {
         initialNumToRender={20}
         onLayout={() => {
           setTimeout(() => {
-            this.scrollView.scrollToIndex({ index: level, viewPosition: 0.5, animated: true });
+            this.scrollView.scrollToIndex({
+              index: level,
+              viewPosition: 0.5,
+              animated: true
+            });
           }, 1);
         }}
       />

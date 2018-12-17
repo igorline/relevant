@@ -14,14 +14,7 @@ import Analytics from 'react-native-firebase-analytics';
 import Share from 'react-native-share';
 import IconI from 'react-native-vector-icons/Ionicons';
 import RNBottomSheet from 'react-native-bottom-sheet';
-
-// import Icon from 'react-native-vector-icons/SimpleLineIcons';
-// import IconE from 'react-native-vector-icons/EvilIcons';
-// import IconEn from 'react-native-vector-icons/Entypo';
-// import IconO from 'react-native-vector-icons/Octicons';
-
 import { globalStyles, greyText, fullHeight } from '../../styles/global';
-import InvestModal from './investModal.component';
 import { numbers } from '../../utils';
 
 let ActionSheet = ActionSheetIOS;
@@ -33,6 +26,7 @@ if (Platform.OS === 'android') {
 
 let styles;
 
+// TODO refactor this
 class PostButtons extends Component {
   static propTypes = {
     post: PropTypes.object,
@@ -58,21 +52,12 @@ class PostButtons extends Component {
     };
 
     this.linkMenu = {
-      buttons: [
-        // 'New Post',
-        'Repost with Comment',
-        // 'Share via...',
-        'Cancel'
-      ],
+      buttons: ['Repost with Comment', 'Cancel'],
       cancelIndex: 3
     };
 
     this.menu = {
-      buttons: [
-        'Repost',
-        // 'Share',
-        'Cancel'
-      ],
+      buttons: ['Repost', 'Cancel'],
       cancelIndex: 2
     };
 
@@ -95,26 +80,21 @@ class PostButtons extends Component {
 
   componentDidMount() {
     if (this.props.post.link) this.menu = this.linkMenu;
-    // let post = this.props.metaPost || this.props.post;
-    // if (this.props.tooltip.upvote === post._id) {
     if (this.props.tooltip) {
       this.initTooltips();
     }
   }
 
-  // componentWillReceiveProps(newProps) {
-  //   let post = newProps.metaPost || newProps.post;
-  //   if (this.props.tooltip.upvote === post._id) {
-  //     this.initTooltips();
-  //   }
-  // }
-
   onShare() {
     Share.open({
       title: 'Relevant',
-      url: this.props.post.link ? this.props.post.link : 'http://relevant-community.herokuapp.com/',
+      url: this.props.post.link
+        ? this.props.post.link
+        : 'http://relevant-community.herokuapp.com/',
       subject: 'Share Link',
-      message: this.props.post.title ? 'Relevant post: ' + this.props.post.title : 'Relevant post:'
+      message: this.props.post.title
+        ? 'Relevant post: ' + this.props.post.title
+        : 'Relevant post:'
     });
   }
 
@@ -158,10 +138,10 @@ class PostButtons extends Component {
 
   async invest(newVote) {
     try {
-      // DEBUG ANIMATION
       if (!this.props.auth || !this.props.auth.user) return;
       const amount = 1;
 
+      // DEBUG ANIMATION
       // this.props.actions.triggerAnimation('invest', { amount: investment });
       // this.investButton.measureInWindow((x, y, w, h) => {
       //   let parent = { x, y, w, h };
@@ -170,7 +150,12 @@ class PostButtons extends Component {
       // });
       // return;
 
-      await this.props.actions.vote(amount, this.props.post, this.props.auth.user, !newVote);
+      await this.props.actions.vote(
+        amount,
+        this.props.post,
+        this.props.auth.user,
+        !newVote
+      );
 
       this.investButton.measureInWindow((x, y, w, h) => {
         const parent = { x, y, w, h };
@@ -187,7 +172,8 @@ class PostButtons extends Component {
     } catch (err) {
       let text1 = err.message;
       if (text1.match('coin')) {
-        text1 = "Oops! Looks like you ran out of coins, but don't worry, you'll get more tomorrow";
+        text1 =
+          "Oops! Looks like you ran out of coins, but don't worry, you'll get more tomorrow";
       }
       Alert.alert(text1);
     }
@@ -197,13 +183,14 @@ class PostButtons extends Component {
     if (!newVote) return this.irrelevant(newVote);
 
     let t1 = "Downvote poor quality content to reduce the post's relevant score.";
-    let t2 = 'If you see something innapropriate, you can notify the admins by pressing "REPORT".';
+    let t2 =
+      'If you see something innapropriate, you can notify the admins by pressing "REPORT".';
     if (Platform.OS === 'android') {
       t1 = null;
       t2 =
         'Downvote poor quality content to reduce the post\'s relevant score.\n\nIf you see something innapropriate, you can notify the admins by pressing "REPORT".';
     }
-    Alert.alert(t1, t2, [
+    return Alert.alert(t1, t2, [
       { text: 'Cancel', onPress: () => {}, style: 'cancel' },
       { text: 'Downvote', onPress: () => this.irrelevant(newVote) },
       { text: '🚫Report', onPress: () => this.flag() }
@@ -212,18 +199,18 @@ class PostButtons extends Component {
 
   async irrelevant(newVote) {
     try {
-      // this.props.actions.triggerAnimation('invest', -1);
+      // DEBUG
       // this.props.actions.triggerAnimation('irrelevant', -1);
       // return;
 
       await this.props.actions.vote(-1, this.props.post, this.props.auth.user, !newVote);
       if (!newVote) return;
-      // this.props.actions.triggerAnimation('invest', -1);
       this.props.actions.triggerAnimation('irrelevant', -1);
     } catch (err) {
       let text1 = err.message;
       if (text1.match('coin')) {
-        text1 = "Oops! Looks like you ran out of coins, but don't worry, you'll get more tomorrow";
+        text1 =
+          "Oops! Looks like you ran out of coins, but don't worry, you'll get more tomorrow";
       }
       Alert.alert(text1);
     }
@@ -241,14 +228,10 @@ class PostButtons extends Component {
           switch (buttonIndex) {
             case 0:
               if (this.props.post.link) this.repostUrl();
-              else return;
               break;
             case 1:
               this.repostCommentary();
               break;
-            // case 2:
-            //   this.onShare();
-            //   break;
             default:
           }
         } else {
@@ -360,27 +343,18 @@ class PostButtons extends Component {
   }
 
   render() {
+    const { post, auth, myPostInv, link } = this.props;
     let investButtonEl = null;
-    const post = this.props.post;
     let investible = false;
-    let irrelevantButton;
     let commentString = '';
     let myVote;
 
-    // let myPost = false;
-    // if (post && post.user && post.user._id === this.props.auth.user._id) {
-    //   myPost = true;
-    // }
-    // if (post.body.match('Trust')) {
-    //   console.log('myPostInv ', this.props.myPostInv);
-    // }
-
-    if (post && this.props.auth.user) {
-      if (!post.user || post.user !== this.props.auth.user._id) {
-        if (!this.props.myPostInv) {
+    if (post && auth.user) {
+      if (!post.user || post.user !== auth.user._id) {
+        if (!myPostInv) {
           investible = true;
         } else {
-          myVote = this.props.myPostInv;
+          myVote = myPostInv;
         }
       }
     }
@@ -392,22 +366,13 @@ class PostButtons extends Component {
       }
     }
     let canBet;
-
-    // let now = new Date();
-    // if (!myPost && !investible && now - new Date(post.createdAt) < 6 * 60 * 60 * 1000) {
-    //   canBet = true;
-    // }
-
-    // invest section spacing
     const space = 8;
-    // let opacity = investible ? 1 : 0.3;
+
     const opacity = 1;
     let upvoteIcon = require('../../assets/images/icons/upvote.png');
     if (myVote && myVote.amount > 0) {
       upvoteIcon = require('../../assets/images/icons/upvoteActive.png');
-    } // else if (!investible) opacity = .3;
-
-    // let investAction = canBet ? this.toggleModal : (investible ? this.invest : null);
+    }
 
     investButtonEl = (
       <TouchableOpacity
@@ -420,20 +385,25 @@ class PostButtons extends Component {
             resizeMode={'contain'}
             style={[
               styles.r,
-              { width: 20, height: 20, zIndex: 1, position: 'absolute', bottom: 1, right: 0 }
+              {
+                width: 20,
+                height: 20,
+                zIndex: 1,
+                position: 'absolute',
+                bottom: 1,
+                right: 0
+              }
             ]}
             source={require('../../assets/images/relevantcoin.png')}
           />
         ) : null}
-        <Image resizeMode={'contain'} style={[styles.vote, { opacity }]} source={upvoteIcon} />
+        <Image
+          resizeMode={'contain'}
+          style={[styles.vote, { opacity }]}
+          source={upvoteIcon}
+        />
       </TouchableOpacity>
     );
-
-    // <Text style={styles.smallInfo}>
-    //   {post.upVotes + post.downVotes}
-    // </Text>
-    // <View style={{ width: 15, borderBottomWidth: 1, borderColor: greyText }} />
-    // </View>
 
     let r = post.data ? post.data.pagerank : null;
     const rel = r;
@@ -447,25 +417,13 @@ class PostButtons extends Component {
     );
 
     const totalVotes = post.data ? post.data.upVotes + post.data.downVotes : 0;
-    // let s = 's';
-    // if (totalVotes === 1) s = '';
-    // let votes = (
-    //   <View>
-    //     <View style={{ alignSelf: 'center', width: 30, borderBottomWidth: 1, borderColor: greyText }} />
-    //     <Text style={styles.smallInfo}>
-    //       {numbers.abbreviateNumber(totalVotes || 0)} vote{s}
-    //     </Text>
-    //   </View>
-    // );
 
     if (canBet) {
       r = 'Place Bet!';
       rIcon = null;
-      votes = null;
     } else if (!r) {
       r = 'Vote';
       rIcon = null;
-      votes = null;
     }
 
     const stat = (
@@ -484,30 +442,36 @@ class PostButtons extends Component {
           <View style={[styles.textRow, { alignItems: 'center' }]}>
             {rIcon}
             <Text style={[styles.smallInfo, styles.greyText]}>
-              {isNaN(r) ? r : numbers.abbreviateNumber(r)}
+              {typeof r !== 'number' ? r : numbers.abbreviateNumber(r)}
             </Text>
           </View>
         </View>
       </TouchableOpacity>
     );
 
-    // opacity = 1;
     let downvoteIcon = require('../../assets/images/icons/downvote.png');
     if (myVote && myVote.amount < 0) {
       downvoteIcon = require('../../assets/images/icons/downvoteActive.png');
     }
-    // else if (!investible) opacity = .3;
-    irrelevantButton = (
+
+    const irrelevantButton = (
       <TouchableOpacity
         style={{ paddingLeft: space }}
         onPress={() => this.irrelevantPrompt(investible)}
       >
-        <Image resizeMode={'contain'} style={[styles.vote, { opacity }]} source={downvoteIcon} />
+        <Image
+          resizeMode={'contain'}
+          style={[styles.vote, { opacity }]}
+          source={downvoteIcon}
+        />
       </TouchableOpacity>
     );
 
     const comments = (
-      <TouchableOpacity onPress={() => this.goToPost(true)} style={{ paddingHorizontal: 12 }}>
+      <TouchableOpacity
+        onPress={() => this.goToPost(true)}
+        style={{ paddingHorizontal: 12 }}
+      >
         <View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
           <IconI
             style={{ transform: [{ scaleX: -1 }] }}
@@ -516,17 +480,9 @@ class PostButtons extends Component {
             color={greyText}
           />
           <Text style={styles.smallInfo}> {commentString}</Text>
-
-          {/* <Text style={styles.smallInfo}>reply</Text> */}
         </View>
       </TouchableOpacity>
     );
-
-    // <Image
-    //   resizeMode={'contain'}
-    //   style={styles.vote}
-    //   source={require('../../assets/images/icons/share.png')}
-    // />
 
     const repost = (
       <TouchableOpacity
@@ -535,8 +491,6 @@ class PostButtons extends Component {
       >
         <View style={[styles.textRow, { alignItems: 'center' }]}>
           <IconI name="ios-quote-outline" size={24} color={greyText} />
-
-          {/* <Text style={styles.smallInfo}></Text> */}
         </View>
       </TouchableOpacity>
     );
@@ -554,7 +508,6 @@ class PostButtons extends Component {
       </TouchableOpacity>
     );
 
-    const link = this.props.link;
     const twitter = link && link.twitter === true;
     const isComment = post.type === 'comment';
 
@@ -573,11 +526,11 @@ class PostButtons extends Component {
             {twitter || isComment ? null : repost}
           </View>
 
-          <InvestModal
+          {/*          <InvestModal
             toggleFunction={this.toggleModal}
             post={this.props.post}
             visible={this.state.modalVisible}
-          />
+          /> */}
         </View>
       </View>
     );

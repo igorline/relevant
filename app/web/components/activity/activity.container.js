@@ -27,7 +27,8 @@ class Activity extends Component {
     this.renderRow = this.renderRow.bind(this);
     this.getViewData = this.getViewData.bind(this);
     this.load = this.load.bind(this);
-    this.needsReload = new Date().getTime();
+    this.needsReload = new Date()
+    .getTime();
     this.hasMore = true;
 
     // TODO should set it here and not on server
@@ -73,7 +74,7 @@ class Activity extends Component {
   render() {
     const { data } = this.getViewData(this.props);
     const activity = data.map(a => this.renderRow(a));
-    const length = activity.length;
+    const { length } = activity;
     return (
       <div className={'activityPopup'}>
         <div className={'activityArrow'} />

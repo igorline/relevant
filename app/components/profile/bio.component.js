@@ -10,7 +10,7 @@ let styles;
 
 class Bio extends Component {
   static propTypes = {
-    myProfile: PropTypes.object,
+    myProfile: PropTypes.bool,
     user: PropTypes.object,
     actions: PropTypes.object,
     scrollTo: PropTypes.func
@@ -31,7 +31,7 @@ class Bio extends Component {
   }
 
   async updateBio(text) {
-    const user = this.props.user;
+    const { user } = this.props;
     const bio = text;
     const oldBio = user.bio;
     try {
@@ -40,7 +40,6 @@ class Bio extends Component {
       const success = await this.props.actions.updateUser({ ...user, bio });
       if (success) {
         this.bio = null;
-        // this.setState({ editing: false });
       } else {
         this.bio = bio;
         user.bio = oldBio;
@@ -50,7 +49,6 @@ class Bio extends Component {
       this.bio = bio;
       user.bio = oldBio;
       this.setState({ editing: true });
-      console.log(err);
     }
   }
 
@@ -62,7 +60,9 @@ class Bio extends Component {
       <TextEdit
         style={[styles.bioText]}
         text={this.bio || user.bio}
-        placeholder={'Add your credentials - what are the topics you know most about and why'}
+        placeholder={
+          'Add your credentials - what are the topics you know most about and why'
+        }
         toggleFunction={() => {
           this.bio = null;
           this.setState({ editing: false });
@@ -139,7 +139,6 @@ const localStyles = StyleSheet.create({
     paddingTop: 5
   },
   bio: {
-    // marginHorizontal: 15,
     paddingVertical: 10,
     flexDirection: 'row',
     alignItems: 'center',

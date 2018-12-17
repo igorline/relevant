@@ -1,5 +1,5 @@
+/* eslint no-console: 0 */
 import socketIo from 'socket.io';
-
 import { InvestEvents } from '../api/invest/invest.controller';
 import { PostEvents } from '../api/post/post.controller';
 import { CommentEvents } from '../api/comment/comment.controller';
@@ -10,7 +10,6 @@ import Post from '../api/post/post.model';
 import Earnings from '../api/earnings/earnings.model';
 import Invest from '../api/invest/invest.model';
 import Notification from '../api/notification/notification.model';
-import Comment from '../api/comment/comment.model';
 
 // TODO store list of clients in Mongo;
 const clients = {};
@@ -25,8 +24,7 @@ const events = {
   earningsEvent: Earnings.events,
   investEvents: Invest.events,
   notificationEvent: Notification.events,
-  userEvent: User.events,
-  commentEvent: Comment.events,
+  userEvent: User.events
 };
 
 function removeClient(socket, currentUser) {
@@ -38,60 +36,33 @@ function removeClient(socket, currentUser) {
   if (Object.keys(userSockets).length === 0) {
     delete clients[currentUser];
 
-    User.findOneAndUpdate(
-      { _id: currentUser },
-      { online: false })
-      .exec()
-    // .then((online) => {
-    //   let data = {
-    //     type: 'UPDATE_USER',
-    //     payload: {
-    //       _id: online._id,
-    //       online: false
-    //     }
-    //   };
-    //   NotificationEvents.emit('notification', data);
-    // })
-      .catch(err => console.log(err));
+    User.findOneAndUpdate({ _id: currentUser }, { online: false })
+    .exec()
+    .catch(err => console.log(err));
   }
-
   console.log('socket disconnected');
 }
 
 function addClient(socket, currentUser) {
   console.log('user connected ', currentUser);
 
-  const userSockets = clients[currentUser] = clients[currentUser] || {};
+  const userSockets = clients[currentUser] || {};
   userSockets[socket.id] = socket;
 
   // update online status and send socket
   if (Object.keys(userSockets).length === 1) {
-    User.findOneAndUpdate(
-      { _id: currentUser },
-      { online: true })
-      .exec()
-      // .then(online => {
-      //   if (online) {
-      //     let data = {
-      //       type: 'UPDATE_USER',
-      //       payload: {
-      //         _id: online._id,
-      //         online: true
-      //       }
-      //     };
-      //     NotificationEvents.emit('notification', data);
-      //   }
-      // })
-      .catch(err => console.log(err));
+    User.findOneAndUpdate({ _id: currentUser }, { online: true })
+    .exec()
+    .catch(err => console.log(err));
   }
 }
 
 function createListener(io) {
-  return (data) => {
+  return data => {
     if (data._id) {
       const sockets = clients[data._id];
       if (!sockets) return;
-      Object.keys(sockets).forEach((id) => {
+      Object.keys(sockets).forEach(id => {
         const socket = sockets[id];
         console.log('emit to ', data._id, ' ', data.type);
         socket.emit('action', data);
@@ -104,7 +75,7 @@ function createListener(io) {
 }
 
 function registerEvents(io) {
-  Object.keys(events).forEach((event) => {
+  Object.keys(events).forEach(event => {
     const eventListener = events[event];
     const listener = createListener(io);
     eventListener.on(event, listener);
@@ -114,12 +85,12 @@ function registerEvents(io) {
 // When the user connects.. perform this
 function onConnect(socket) {
   // When the client emits 'info', this listens and executes
-  socket.on('info', (data) => {
+  socket.on('info', data => {
     socket.log(JSON.stringify(data, null, 2));
   });
 }
 
-export default function (server) {
+export default function(server) {
   const io = socketIo();
   io.attach(server);
 
@@ -131,9 +102,11 @@ export default function (server) {
   }
   setTimeout(sendHeartbeat, 30000);
 
-  io.on('connection', (socket) => {
-    socket.address = socket.request.connection.remoteAddress +
-      ':' + socket.request.connection.remotePort;
+  io.on('connection', socket => {
+    socket.address =
+      socket.request.connection.remoteAddress +
+      ':' +
+      socket.request.connection.remotePort;
 
     socket.connectedAt = new Date();
 
@@ -150,7 +123,7 @@ export default function (server) {
       // console.log('Pong received from client');
     });
 
-    socket.on('action', (action) => {
+    socket.on('action', action => {
       if (action.type === 'server/storeUser') {
         currentUser = action.payload;
         addClient(socket, currentUser);

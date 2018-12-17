@@ -41,7 +41,7 @@ class heartAnimation extends Component {
   }
 
   heartAni() {
-    const length = this.state.heartAni.length;
+    const { length } = this.state.heartAni;
     const delay = 500 / this.num;
 
     if (length < this.num) {

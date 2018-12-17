@@ -53,9 +53,13 @@ class UserPosts extends Component {
       );
     });
 
-    const length = posts.length;
+    const { length } = posts;
     return (
-      <InfScroll data={postIds} loadMore={p => this.load(p, length)} hasMore={this.hasMore}>
+      <InfScroll
+        data={postIds}
+        loadMore={p => this.load(p, length)}
+        hasMore={this.hasMore}
+      >
         <div className={'postContainer userPosts'}>{posts}</div>
       </InfScroll>
     );

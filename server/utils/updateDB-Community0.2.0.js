@@ -5,7 +5,6 @@ import Relevance from '../api/relevance/relevance.model';
 import Post from '../api/post/post.model';
 import CommunityFeed from '../api/communityFeed/communityFeed.model';
 import Treasury from '../api/treasury/treasury.model';
-import Comment from '../api/comment/comment.model';
 import PostData from '../api/post/postData.model';
 import Community from '../api/community/community.model';
 import Invest from '../api/invest/invest.model';
@@ -18,12 +17,11 @@ let DEFAULT_COMMINITY_ID;
 const queue = require('queue');
 
 const q = queue({
-  concurrency: 20,
+  concurrency: 20
 });
 
-// Post.findOne({ body: '@jay #test 22222' }).then(console.log);
-// PostData.findOne({ post: '5bbaa60b2a22fe381a66598c' }).remove().exec();
-// CommunityFeed.find({ community: 'relevant' }).remove().exec();
+/* eslint no-unused-vars: 0 */
+/* eslint no-console: 0 */
 
 async function cleanNewerPosts() {
   await Post.find({ type: 'link' }).remove();
@@ -43,10 +41,11 @@ async function communityMembers() {
 }
 
 async function migratePosts() {
-  const posts = await Post.find({ $or: [{ twitter: { $ne: true } }, { relevance: { $gt: 0 } }] })
-    .populate('metaPost');
+  const posts = await Post.find({
+    $or: [{ twitter: { $ne: true } }, { relevance: { $gt: 0 } }]
+  }).populate('metaPost');
   // return console.log(posts);
-  const processed = posts.map((post, i) => {
+  const processed = posts.map((post, i) =>
     q.push(async cb => {
       console.log('processing ', i, ' out of ', posts.length);
       const tmpId = post.parentPost || post._id;
@@ -62,7 +61,6 @@ async function migratePosts() {
         console.log('type ', post.type);
         return;
       }
-
 
       if (post.community === 'twitter') post.community = 'relevant';
       if (post.community === 'relevant') {
@@ -107,22 +105,24 @@ async function migratePosts() {
         }
       }
       cb();
-    });
-  });
+    })
+  );
 
   q.start((queErr, results) => {
     if (queErr) return console.log(queErr);
     return console.log('finished queue');
   });
-  // await Promise.all(processed);
 }
-
 
 async function updateComments() {
   const comments = await Comment.find({ repost: false });
   const processed = comments.map(async comment => {
     try {
-      const exists = await Post.findOne({ body: comment.text, user: comment.user, parentPost: comment.post });
+      const exists = await Post.findOne({
+        body: comment.text,
+        user: comment.user,
+        parentPost: comment.post
+      });
       if (exists) return null;
       if (!exists) {
         return console.log(comment);
@@ -132,7 +132,7 @@ async function updateComments() {
       comment.parentPost = comment.post;
       const parentPost = await Post.findOne({ _id: comment.post });
       console.log('has parent');
-      if (!parentPost) return;
+      if (!parentPost) return null;
       comment.body = comment.text;
       let post = new Post(comment);
       post.community = parentPost.community;
@@ -145,9 +145,9 @@ async function updateComments() {
       post = await post.save();
       console.log(post);
 
-      await parentPost.save();
+      return parentPost.save();
     } catch (err) {
-      console.log(err);
+      throw err;
     }
   });
   await Promise.all(processed);
@@ -163,7 +163,6 @@ async function updateComments() {
     }
   });
   await Promise.all(reposts);
-  // console.log(reposts);
 }
 
 async function cleanCommentPosts() {
@@ -171,16 +170,17 @@ async function cleanCommentPosts() {
 }
 
 async function updateInvestments() {
-  let investments = await Invest.find({})
-    .populate({ path: 'post', select: 'community communityId' });
+  let investments = await Invest.find({}).populate({
+    path: 'post',
+    select: 'community communityId'
+  });
 
   investments = investments.map(async inv => {
-    const post = inv.post;
+    const { post } = inv;
     if (!post) {
       inv.community = DEFAULT_COMMINITY;
       inv.communityId = DEFAULT_COMMINITY_ID;
       return inv.save();
-      console.log('missing post ', inv);
     }
     inv.community = post.community;
     if (!post.communityId) {
@@ -229,7 +229,8 @@ async function updateRelevance() {
 // }
 
 async function updateStats() {
-  const stats = await RelevanceStats.update({},
+  const stats = await RelevanceStats.update(
+    {},
     {
       community: DEFAULT_COMMINITY,
       communityId: DEFAULT_COMMINITY_ID
@@ -255,27 +256,27 @@ async function cleanRelevance() {
   let users = await User.find({});
   users = users.map(async u => {
     const count = await Relevance.count({ user: u._id, global: true });
-    if (count > 1) {
-      let rel = await Relevance.find({ user: u.handle, global: true }).sort('-relevance');
-      const existingC = {};
-      const existingU = {};
-      rel = rel.map(r => {
-        if (existingC[r.communityId]) {
-          console.log('double! ');
-          console.log(r.user, r.community, r.communityId, r);
-          console.log(existingC[r.communityId].relevance);
-          // test first!
-          // return r.remove();
-        }
-        if (existingU[r.user]) {
-          console.log('double user!');
-          console.log(r.user, r.community, r);
-        }
-        existingC[r.communityId] = r;
-        existingU[r.user] = r;
-      });
-      return Promise.all(rel);
-    }
+    if (count <= 1) return null;
+    let rel = await Relevance.find({ user: u.handle, global: true }).sort('-relevance');
+    const existingC = {};
+    const existingU = {};
+    rel = rel.map(r => {
+      if (existingC[r.communityId]) {
+        console.log('double! ');
+        console.log(r.user, r.community, r.communityId, r);
+        console.log(existingC[r.communityId].relevance);
+        // test first!
+        // return r.remove();
+      }
+      if (existingU[r.user]) {
+        console.log('double user!');
+        console.log(r.user, r.community, r);
+      }
+      existingC[r.communityId] = r;
+      existingU[r.user] = r;
+      return null;
+    });
+    return Promise.all(rel);
   });
   return Promise.all(users);
 }
@@ -285,17 +286,18 @@ async function hideTwitterPosts() {
   console.log(posts);
 
   // let posts = await Post.update(
-//     { twitter: true, relevance: { $lte: 0 } },
-//     { hidden: true },
-//     { multi: true }
-//   );
-//   return posts;
+  //     { twitter: true, relevance: { $lte: 0 } },
+  //     { hidden: true },
+  //     { multi: true }
+  //   );
+  //   return posts;
 }
 
 async function postUrl() {
   try {
     const posts = await Post.find({
-      url: { $exists: false }, link: { $exists: true }
+      url: { $exists: false },
+      link: { $exists: true }
     });
     posts.forEach(p => {
       console.log(p.url);

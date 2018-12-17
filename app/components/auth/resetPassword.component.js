@@ -19,7 +19,9 @@ let styles;
 
 class ResetPassword extends Component {
   static propTypes = {
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    scene: PropTypes.object,
+    navigation: PropTypes.object
   };
 
   constructor(props, context) {
@@ -52,7 +54,8 @@ class ResetPassword extends Component {
       return;
     }
     dismissKeyboard();
-    this.props.actions.resetPassword(this.state.password, this.token).then(success => {
+    this.props.actions.resetPassword(this.state.password, this.token)
+    .then(success => {
       if (success) {
         this.props.actions.replaceRoute(
           {

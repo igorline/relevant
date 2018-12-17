@@ -139,11 +139,18 @@ class ShareContainer extends Component {
   }
 
   renderScene(props) {
-    const component = props.scene.route.component;
+    const { component } = props.scene.route;
 
     switch (component) {
       case 'login':
-        return <Auth share authType={component} navProps={props} navigator={this.props.actions} />;
+        return (
+          <Auth
+            share
+            authType={component}
+            navProps={props}
+            navigator={this.props.actions}
+          />
+        );
       case 'createPost':
         return (
           <CreatePost
@@ -156,7 +163,12 @@ class ShareContainer extends Component {
         );
       case 'categories':
         return (
-          <CreatePost share step={'categories'} navProps={props} navigator={this.props.actions} />
+          <CreatePost
+            share
+            step={'categories'}
+            navProps={props}
+            navigator={this.props.actions}
+          />
         );
       case 'createPostFinish':
         return (

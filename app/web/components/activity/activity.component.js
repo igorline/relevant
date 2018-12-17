@@ -74,7 +74,10 @@ export default class SingleActivity extends Component {
 
   renderIcon(img) {
     return (
-      <span style={{ backgroundImage: `url(/img/${img})` }} className={'avatar leftImage icon'} />
+      <span
+        style={{ backgroundImage: `url(/img/${img})` }}
+        className={'avatar leftImage icon'}
+      />
     );
   }
 
@@ -110,7 +113,9 @@ export default class SingleActivity extends Component {
   }
 
   renderActivity(activity) {
-    const { emoji, userImage, post, image, userName } = activityHelper.getActivityParams(activity);
+    const { emoji, userImage, post, image, userName } = activityHelper.getActivityParams(
+      activity
+    );
     const amount = numbers.abbreviateNumber(activity.amount);
     const coinAmount = numbers.abbreviateNumber(activity.coin);
 
@@ -132,7 +137,8 @@ export default class SingleActivity extends Component {
   }
 
   renderBorder(activity) {
-    const fromNow = moment(activity.createdAt).fromNow();
+    const fromNow = moment(activity.createdAt)
+    .fromNow();
     if (activity.type) {
       return (
         <div className={'time'}>

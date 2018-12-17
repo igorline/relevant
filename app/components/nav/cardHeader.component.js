@@ -12,8 +12,13 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Search from './search.component';
-import { globalStyles, fullWidth, darkGrey, mainPadding, smallScreen } from '../../styles/global';
+import {
+  globalStyles,
+  fullWidth,
+  darkGrey,
+  mainPadding,
+  smallScreen
+} from '../../styles/global';
 import Stats from '../post/stats.component';
 
 let styles;
@@ -22,14 +27,14 @@ class CardHeader extends Component {
   static propTypes = {
     actions: PropTypes.object,
     scene: PropTypes.object,
-    back: PropTypes.object,
-    users: PropTypes.array,
+    back: PropTypes.func,
+    users: PropTypes.object,
     auth: PropTypes.object,
-    defaultContainer: PropTypes.object,
+    defaultContainer: PropTypes.string,
     showActionSheet: PropTypes.func,
     share: PropTypes.bool,
     renderRight: PropTypes.func,
-    style: PropTypes.object
+    style: PropTypes.array
   };
 
   constructor(props, context) {
@@ -48,12 +53,10 @@ class CardHeader extends Component {
   }
 
   renderLeft(props) {
-    const leftEl = <View style={styles.leftButton} />;
     let back;
     let backEl;
     let options;
-    const key = props.scene.route.key;
-    const component = props.scene.route.component;
+    const { key, component } = props.scene.route;
 
     if (key === 'discover' || key === 'mainDiscover' || component === 'discover') {
       options = (
@@ -69,18 +72,12 @@ class CardHeader extends Component {
     if (props.scene.route.back) {
       back = <Icon name="ios-arrow-back" size={28} color={darkGrey} />;
 
-      //         <View>
-      // {/*          <Image
-      //             resizeMode={'contain'}
-      //             style={{ width: 11, height: 19 }}
-      //             source={require('../../assets/images/backarrow.png')}
-      //           />*/}
-      //           <Icon name="ios-arrow-back" size={28} color={darkGrey} />
-      //         </View>
-      //       );
-
       if (this.props.scene.route.left) {
-        back = <Text style={[{ fontSize: 17 }, styles.active]}>{this.props.scene.route.left}</Text>;
+        back = (
+          <Text style={[{ fontSize: 17 }, styles.active]}>
+            {this.props.scene.route.left}
+          </Text>
+        );
       }
 
       backEl = (
@@ -92,32 +89,6 @@ class CardHeader extends Component {
         </TouchableOpacity>
       );
     }
-
-    // if (this.props.scene.route.title === 'Discover') {
-    //   leftEl = [];
-    //   leftEl.push(
-    //     <View
-    //       key={0}
-    //       style={[styles.leftButton, { flex: this.state.search ? 0.06 : 1 }]}
-    //     >
-    //       <TouchableHighlight
-    //         underlayColor={'transparent'}
-    //         onPress={() => this.toggleSearch()}
-    //       >
-    //         <Text style={{ paddingBottom: 5 }}>🔎</Text>
-    //       </TouchableHighlight>
-    //     </View>);
-    //   if (this.state.search) {
-    //     leftEl.push(
-    //       <Search
-    //         key={'search'}
-    //         toggleSearch={this.toggleSearch}
-    //         {...this.props}
-    //       />
-    //     );
-    //   }
-    // }
-    //
     return (
       <View style={[styles.leftButton, { flexDirection: 'row' }]}>
         {backEl}
@@ -145,22 +116,17 @@ class CardHeader extends Component {
   renderTitle(props) {
     if (this.state.search) return null;
     let title = props.scene.route ? props.scene.route.title : '';
-    const component = props.scene.route.component;
-    const key = props.scene.route.key;
-    let id;
+    const { component, key } = props.scene.route;
 
     title = title ? title.trim() : null;
 
     if (component === 'profile') {
       if (this.props.users.users[props.scene.route.id]) {
         title = this.props.users.users[props.scene.route.id].name;
-        id = this.props.users.users[props.scene.route.id]._id;
       }
     }
 
     if (key === 'discover' || key === 'mainDiscover' || component === 'discover') {
-      // this.titleAction = () => this.props.actions.toggleTopics();
-
       if (key === 'mainDiscover') {
         return (
           <TouchableOpacity
@@ -200,7 +166,13 @@ class CardHeader extends Component {
       component === 'twitterSignup'
     ) {
       return (
-        <View style={{ alignItems: 'center', paddingVertical: 6, backgroundColor: 'transparent' }}>
+        <View
+          style={{
+            alignItems: 'center',
+            paddingVertical: 6,
+            backgroundColor: 'transparent'
+          }}
+        >
           <Image
             source={require('../../assets/images/logo.png')}
             resizeMode={'contain'}
@@ -227,7 +199,7 @@ class CardHeader extends Component {
     const key = this.props.defaultContainer;
 
     if (this.props.auth && this.props.auth.user) {
-      const component = props.scene.route.component;
+      const { component } = props.scene.route;
       statsEl = (
         <Stats
           type={'nav'}
@@ -257,22 +229,6 @@ class CardHeader extends Component {
         </TouchableHighlight>
       );
     }
-
-    // if (props.scene.route.component === 'profile' &&
-    //   this.props.auth.user &&
-    //   props.scene.route.id !== this.props.auth.user._id) {
-    //   rightEl = null;
-    // rightEl = (
-    //   <View style={styles.gear}>
-    //     <TouchableHighlight
-    //       underlayColor={'transparent'}
-    //       onPress={() => this.thirsty()}
-    //     >
-    //       <Text>thirsty</Text>
-    //     </TouchableHighlight>
-    //   </View>
-    // );
-    // }
 
     return (
       <View style={styles.rightButton}>

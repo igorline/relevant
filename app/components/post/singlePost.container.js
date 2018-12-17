@@ -21,9 +21,9 @@ class SinglePostContainer extends Component {
     scene: PropTypes.object,
     actions: PropTypes.object,
     comments: PropTypes.object,
-    users: PropTypes.array,
+    users: PropTypes.object,
     auth: PropTypes.object,
-    error: PropTypes.string,
+    error: PropTypes.bool,
     posts: PropTypes.object
   };
 
@@ -39,10 +39,9 @@ class SinglePostContainer extends Component {
   }
 
   componentWillMount() {
-    const { posts } = this.props;
-    const id = this.props.scene.id;
+    const { posts, scene } = this.props;
+    const { id } = scene;
     const post = posts.posts[id];
-    // let related = posts.related[id];
 
     InteractionManager.runAfterInteractions(() => {
       if (!post) {
@@ -57,14 +56,14 @@ class SinglePostContainer extends Component {
   }
 
   reload() {
-    const id = this.props.scene.id;
+    const { id } = this.props.scene;
     this.props.actions.getSelectedPost(id);
     this.props.actions.getComments(id);
   }
 
   render() {
     let dataEl = null;
-    const id = this.props.scene.id;
+    const { id } = this.props.scene;
     const { posts } = this.props;
     const post = posts.posts[id];
 

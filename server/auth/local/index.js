@@ -9,14 +9,19 @@ router.post('/', (req, res, next) => {
   passport.authenticate('local', async (err, user, info) => {
     try {
       const error = err || info;
-      console.log(error);
       if (error) return res.status(401).json(error);
-      if (!user) return res.status(404).json({ message: 'Something went wrong, please try again.' });
+      if (!user) {
+        return res
+        .status(404)
+        .json({ message: 'Something went wrong, please try again.' });
+      }
 
       if (req.body.twitter) {
         const profile = await twitter.getProfile(req.body.twitter);
-        const updatedUser = await twitter.addTwitterProfile({
-          user, profile, twitterAuth: req.body.twitter
+        await twitter.addTwitterProfile({
+          user,
+          profile,
+          twitterAuth: req.body.twitter
         });
       }
 
@@ -28,9 +33,9 @@ router.post('/', (req, res, next) => {
 
       const token = auth.signToken(user._id, user.role);
 
-      res.json({ token });
+      return res.json({ token });
     } catch (error) {
-      console.log(error);
+      return res.status(404).json({ message: 'Something went wrong, please try again.' });
     }
   })(req, res, next);
 });

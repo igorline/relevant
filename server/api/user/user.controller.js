@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto-promise';
 import sigUtil from 'eth-sig-util';
 import User from './user.model';
-import Comment from '../comment/comment.model';
 import Post from '../post/post.model';
 import Relevance from '../relevance/relevance.model';
 import mail from '../../mail';
@@ -16,7 +15,9 @@ async function sendConfirmation(user, newUser) {
   let text = '';
   if (newUser) text = 'Welcome to Relevant! ';
   try {
-    const url = `${process.env.API_SERVER}/user/confirm/${user.handle}/${user.confirmCode}`;
+    const url = `${process.env.API_SERVER}/user/confirm/${user.handle}/${
+      user.confirmCode
+    }`;
     const data = {
       from: 'Relevant <noreply@mail.relevant.community>',
       to: user.email,
@@ -61,12 +62,12 @@ exports.forgot = async (req, res, next) => {
   let email;
   try {
     const string = req.body.user;
-    let user;
-    let query;
-
     email = /^.+@.+\..+$/.test(string);
-    query = email ? { email: string } : { handle: string };
-    user = await User.findOne(query, 'resetPasswordToken resetPasswordExpires email handle');
+    const query = email ? { email: string } : { handle: string };
+    let user = await User.findOne(
+      query,
+      'resetPasswordToken resetPasswordExpires email handle'
+    );
     const rand = await crypto.randomBytes(32);
     const token = rand.toString('hex');
     user.resetPasswordToken = token;
@@ -75,7 +76,7 @@ exports.forgot = async (req, res, next) => {
     await sendResetEmail(user);
     return res.status(200).json({ email: user.email, username: user.handle });
   } catch (err) {
-    let error = new Error('Couldn\'t find user with this name ', err);
+    let error = new Error("Couldn't find user with this name ", err);
     if (email) {
       error = new Error('No user with this email exists');
     }
@@ -101,7 +102,7 @@ exports.confirm = async (req, res, next) => {
     }
     if (!user) throw new Error('Wrong confirmation code');
   } catch (err) {
-    return middleware ? next() : (err);
+    return middleware ? next() : err;
   }
   return middleware ? next() : res.status(200).json(user);
 };
@@ -121,17 +122,17 @@ exports.sendConfirmationCode = async (req, res, next) => {
 };
 
 exports.onboarding = (req, res, next) => {
-  const handle = req.user.handle;
-  const step = req.params.step;
+  const { handle } = req.user;
+  const { step } = req.params;
   User.findOneAndUpdate(
     { handle },
     { onboarding: step },
     { projection: 'onboarding', new: true }
   )
-    .then(newUser => {
-      res.status(200).json(newUser);
-    })
-    .catch(next);
+  .then(newUser => {
+    res.status(200).json(newUser);
+  })
+  .catch(next);
 };
 
 /**
@@ -139,12 +140,11 @@ exports.onboarding = (req, res, next) => {
  */
 exports.resetPassword = async (req, res, next) => {
   try {
-    const token = req.body.token;
+    const { token, password } = req.body;
     if (!token) throw new Error('token missing');
     let user = await User.findOne({ resetPasswordToken: token });
     if (!user) throw new Error('No user found');
     if (!user.onboarding) user.onboarding = 0;
-    const password = req.body.password;
     if (user.resetPasswordExpires > Date.now()) {
       throw new Error('Password reset time has expired');
     }
@@ -155,7 +155,6 @@ exports.resetPassword = async (req, res, next) => {
     next(err);
   }
 };
-
 
 /**
  * Change a users password
@@ -179,56 +178,48 @@ exports.changePassword = async (req, res, next) => {
 
 exports.search = (req, res, next) => {
   let blocked = [];
-  if (req.user) {
-    const user = req.user;
+  const { user } = req;
+  if (user) {
     blocked = [...user.blocked, ...user.blockedBy];
   }
 
-  const search = req.query.search;
-  const limit = req.query.limit;
+  const { search, limit } = req.query;
   const name = new RegExp(search, 'i');
   const query = {
-    $and: [
-      { $or: [
-        { name },
-        { handle: name }
-      ] },
-      { handle: { $nin: blocked } }
-    ]
+    $and: [{ $or: [{ name }, { handle: name }] }, { handle: { $nin: blocked } }]
   };
   User.find(query, 'name image')
-    .sort({ handle: 1 })
-    .limit(parseInt(limit, 10))
-    .then((users) => {
-      res.json(200, users);
-    })
-    .catch(next);
+  .sort({ handle: 1 })
+  .limit(parseInt(limit, 10))
+  .then(users => {
+    res.json(200, users);
+  })
+  .catch(next);
 };
-
 
 /**
  * Get list of users
  * restriction: 'admin'
  */
 exports.index = (req, res, next) => {
-  const search = req.query.search;
+  const { search } = req.query;
   let query = {};
   if (search) {
     const name = new RegExp(req.query.name, 'i');
     query = { name };
   }
 
-  User.find(query, '-salt -hashedPassword').sort({ rank: -1 })
-    .then((users) => {
-      res.status(200).json(users);
-    })
-    .catch(next);
+  User.find(query, '-salt -hashedPassword')
+  .sort({ rank: -1 })
+  .then(users => {
+    res.status(200).json(users);
+  })
+  .catch(next);
 };
 
 exports.checkUser = async (req, res, next) => {
   try {
-    const name = req.query.name;
-    const email = req.query.email;
+    const { name, email } = req.query;
     let query = {};
     let type;
 
@@ -260,14 +251,17 @@ exports.testData = async (req, res, next) => {
     const community = req.query.community || 'relevant';
     const query = { global: true, community, pagerank: { $gt: 0 } };
 
-    const rel = await Relevance.find(query, 'pagerank level community communityId pagerankRaw')
-      .limit(limit)
-      .skip(skip)
+    const rel = await Relevance.find(
+      query,
+      'pagerank level community communityId pagerankRaw'
+    )
+    .limit(limit)
+    .skip(skip)
     // .sort(sort)
-      .populate({
-        path: 'user',
-        select: 'handle name votePower image bio'
-      });
+    .populate({
+      path: 'user',
+      select: 'handle name votePower image bio'
+    });
 
     return res.status(200).json(rel);
   } catch (err) {
@@ -277,14 +271,13 @@ exports.testData = async (req, res, next) => {
 
 exports.list = async (req, res, next) => {
   try {
+    const { user } = req;
     const limit = parseInt(req.query.limit, 10) || 5;
     const skip = parseInt(req.query.skip, 10) || 0;
     let topic = req.query.topic || null;
-    let users;
 
     let blocked = [];
-    if (req.user) {
-      const user = req.user;
+    if (user) {
       blocked = [...user.blocked, ...user.blockedBy];
     }
     const community = req.query.community || 'relevant';
@@ -302,23 +295,23 @@ exports.list = async (req, res, next) => {
     }
 
     const rel = await Relevance.find(query)
-      .limit(limit)
-      .skip(skip)
-      .sort(sort)
-      .populate({
-        path: 'user',
-        select: 'handle name votePower image bio'
-      });
+    .limit(limit)
+    .skip(skip)
+    .sort(sort)
+    .populate({
+      path: 'user',
+      select: 'handle name votePower image bio'
+    });
 
-    users = rel.map(r => {
+    const users = rel.map(r => {
       r = r.toObject();
       if (!r.user) return null;
-      const user = { ...r.user };
-      user.relevance = {};
+      let u = { ...r.user }; // eslint-disable-line
+      u.relevance = {};
       delete r.user;
-      if (topic) user[topic + '_relevance'] = r.relevance;
-      else user.relevance = r;
-      return user;
+      if (topic) u[topic + '_relevance'] = r.relevance;
+      else u.relevance = r;
+      return u;
     });
 
     return res.status(200).json(users);
@@ -327,18 +320,15 @@ exports.list = async (req, res, next) => {
   }
 };
 
-
 /**
  * Creates a new user
  * make sure to mimic logic in updateHandle TODO - refactor
  */
 exports.create = async (req, res, next) => {
   try {
-    let token;
     const rand = await crypto.randomBytes(32);
     const confirmCode = rand.toString('hex');
-
-    let user = req.body.user;
+    let { user } = req.body;
 
     let invite;
     // if (community === 'relevant') {
@@ -371,11 +361,9 @@ exports.create = async (req, res, next) => {
       await invite.registered(user);
     }
 
-    token = jwt.sign(
-      { _id: user._id },
-      process.env.SESSION_SECRET,
-      { expiresIn: 60 * 5 * 60 }
-    );
+    const token = jwt.sign({ _id: user._id }, process.env.SESSION_SECRET, {
+      expiresIn: 60 * 5 * 60
+    });
 
     if (!confirmed) sendConfirmation(user, true);
     // else Invite.generateCodes(user);
@@ -394,6 +382,7 @@ exports.create = async (req, res, next) => {
  */
 exports.show = async function show(req, res, next) {
   try {
+    let { user } = req;
     let handle = req.params.id;
     let me = null;
     if (!handle) {
@@ -405,28 +394,26 @@ exports.show = async function show(req, res, next) {
 
     // don't show blocked user;
     let blocked = [];
-    if (req.user) {
-      const user = req.user;
-      blocked = [...user.blocked || [], ...user.blockedBy || []];
+    if (user) {
+      blocked = [...(user.blocked || []), ...(user.blockedBy || [])];
       if (blocked.find(u => u === handle)) {
         return res.status(200).json({});
       }
     }
 
-    let user = await User.findOne({ handle })
-      .populate({
-        path: 'relevance',
-        match: { community, global: true },
-        select: 'pagerank relevanceRecord'
-      });
+    user = await User.findOne({ handle }).populate({
+      path: 'relevance',
+      match: { community, global: true },
+      select: 'pagerank relevanceRecord'
+    });
 
     if (!user) throw new Error('no such user ', handle);
     user = await user.getSubscriptions();
 
     // topic relevance
     const relevance = await Relevance.find({ user: handle, tag: { $ne: null } })
-      .sort('-relevance')
-      .limit(5);
+    .sort('-relevance')
+    .limit(5);
     const userObj = user.toObject();
     userObj.topTags = relevance || [];
 
@@ -454,9 +441,10 @@ exports.show = async function show(req, res, next) {
  */
 exports.destroy = async (req, res, next) => {
   try {
-    if (!req.user ||
-      (!req.user.role === 'admin' &&
-      req.user.handle !== req.params.handle)) {
+    if (
+      !req.user ||
+      (!req.user.role === 'admin' && req.user.handle !== req.params.handle)
+    ) {
       throw new Error('no right to delete');
     }
     await User.findOne({ handle: req.params.id }).remove();
@@ -469,19 +457,22 @@ exports.destroy = async (req, res, next) => {
 // TODO refactor to use same logic as create
 exports.updateHandle = async (req, res, next) => {
   try {
-    let user = req.user;
+    let { user } = req;
     const twitterId = user._id;
     if (user.role !== 'temp') throw new Error('Cannot change user handle');
 
-    if (user._id.toString() !== user.twitterId.toString() &&
+    if (
+      user._id.toString() !== user.twitterId.toString() &&
       user._id.toString() !== user.twitter.id_str
-    ) throw new Error('TwitterId doesn\'t match user', user._id, user.twitterId);
+    ) {
+      throw new Error("TwitterId doesn't match user", user._id, user.twitterId);
+    }
 
-    const handle = req.body.user.handle;
+    const { handle } = req.body.user;
     if (!handle) throw new Error('missing handle');
 
     // make sure its not used
-    if (handle !== req.user.handle) {
+    if (handle !== user.handle) {
       const used = await User.findOne({ handle });
       if (used) throw new Error('This handle is already taken');
     }
@@ -520,7 +511,7 @@ exports.updateHandle = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
   try {
-    const role = req.user.role;
+    const { role } = req.user;
     const authUser = JSON.stringify(req.user._id);
     const reqUser = JSON.stringify(req.body._id);
     let updateImage = false;
@@ -564,12 +555,6 @@ exports.update = async (req, res, next) => {
         { embeddedUser: newUser },
         { multi: true }
       );
-
-      await Comment.update(
-        { user: user.handle },
-        { embeddedUser: newUser },
-        { multi: true }
-      );
     }
     return res.status(200).json(user);
   } catch (err) {
@@ -577,13 +562,12 @@ exports.update = async (req, res, next) => {
   }
 };
 
-
 exports.block = async (req, res, next) => {
   try {
-    let user = req.user;
-    const block = req.body.block;
+    let { user } = req;
+    const { block } = req.body;
 
-    if (user.handle === block) throw new Error('You can\'t block yourself!');
+    if (user.handle === block) throw new Error("You can't block yourself!");
 
     const userPromise = User.findOneAndUpdate(
       { handle: user.handle },
@@ -602,7 +586,14 @@ exports.block = async (req, res, next) => {
     const feed1 = Feed.remove({ userId: user.handle, from: block });
     const feed2 = Feed.remove({ userId: block, from: user.handle });
 
-    const results = await Promise.all([userPromise, blockPromise, sub1, sub2, feed1, feed2]);
+    const results = await Promise.all([
+      userPromise,
+      blockPromise,
+      sub1,
+      sub2,
+      feed1,
+      feed2
+    ]);
     user = results[0];
     return res.status(200).json(user);
   } catch (err) {
@@ -612,8 +603,8 @@ exports.block = async (req, res, next) => {
 
 exports.unblock = async (req, res, next) => {
   try {
-    let user = req.user;
-    let block = req.body.block;
+    let { user } = req;
+    let { block } = req.body;
     user = await User.findOneAndUpdate(
       { handle: user.handle },
       { $pull: { blocked: block } },
@@ -621,7 +612,7 @@ exports.unblock = async (req, res, next) => {
     );
     block = await User.findOneAndUpdate(
       { handle: block },
-      { $pull: { blockedBy: user.handle } },
+      { $pull: { blockedBy: user.handle } }
     );
     res.status(200).json(user);
   } catch (err) {
@@ -631,7 +622,7 @@ exports.unblock = async (req, res, next) => {
 
 exports.blocked = async (req, res, next) => {
   try {
-    let user = req.user;
+    let { user } = req;
     user = await User.findOne({ handle: user.handle }).populate('blocked');
     res.status(200).json(user);
   } catch (err) {
@@ -641,8 +632,10 @@ exports.blocked = async (req, res, next) => {
 
 exports.updateUserTokenBalance = async (req, res, next) => {
   try {
-    const user = req.user;
-    if (!user.ethAddress || !user.ethAddress.legnth) throw new Error('missing connected Ethereum address');
+    const { user } = req;
+    if (!user.ethAddress || !user.ethAddress.legnth) {
+      throw new Error('missing connected Ethereum address');
+    }
     const userBalance = await ethUtils.getBalance(user.ethAddress[0]);
     user.tokenBalance = userBalance;
     await user.save();
@@ -654,7 +647,7 @@ exports.updateUserTokenBalance = async (req, res, next) => {
 
 exports.ethAddress = async (req, res, next) => {
   try {
-    let user = req.user;
+    let { user } = req;
     const { msg, sig, acc } = req.body;
     const recovered = sigUtil.recoverTypedSignature({
       data: msg,
@@ -679,7 +672,7 @@ exports.ethAddress = async (req, res, next) => {
 
 exports.cashOut = async (req, res, next) => {
   try {
-    const user = req.user;
+    const { user } = req;
     if (!user) throw new Error('missing user');
     if (!user.ethAddress[0]) throw new Error('No Ethereum address connected');
     let amount = user.balance;
@@ -695,7 +688,9 @@ exports.cashOut = async (req, res, next) => {
     if (amount < 100) throw new Error('Balance is too small to withdraw');
     const distributedRewards = await ethUtils.getParam('distributedRewards');
 
-    if (distributedRewards < amount) throw new Error('There are not enough funds in contract at the moment');
+    if (distributedRewards < amount) {
+      throw new Error('There are not enough funds in contract at the moment');
+    }
 
     // make sure we 0 out the balance
     user.balance = 0;

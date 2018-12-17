@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableHighlight, StyleSheet, Image } from 'react-native';
+import { Text, View, TouchableHighlight, StyleSheet, Image, Alert } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles } from '../../styles/global';
 import { pickerOptions } from '../../utils/pickerOptions';
@@ -33,20 +33,19 @@ class ImageUpload extends Component {
   initImage() {
     const self = this;
     this.chooseImage((err, data) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
+      if (err) return Alert.alert(err.message);
       if (data) {
         self.setState({ uploading: true });
-        utils.s3.toS3Advanced(data, this.props.auth.token).then(results => {
+        utils.s3.toS3Advanced(data, this.props.auth.token)
+        .then(results => {
           if (results.success) {
             self.setState({ image: results.url, uploading: false });
           } else {
-            console.log('image error ', results);
+            Alert.alert('image error ', results);
           }
         });
       }
+      return null;
     });
   }
 
@@ -64,7 +63,7 @@ class ImageUpload extends Component {
     });
   }
 
-  createUser(user) {
+  createUser() {
     const newUser = { ...this.props.auth.preUser };
     newUser.image = this.state.image;
     this.props.actions.createUser(newUser, this.props.admin.currentInvite);
@@ -75,7 +74,9 @@ class ImageUpload extends Component {
     if (!this.state.uploading) {
       if (this.state.image) source = { uri: this.state.image };
       else source = require('../../assets/images/camera.png');
-      return <Image style={{ width: 200, height: 200 }} resizeMode={'cover'} source={source} />;
+      return (
+        <Image style={{ width: 200, height: 200 }} resizeMode={'cover'} source={source} />
+      );
     }
     return null;
   }

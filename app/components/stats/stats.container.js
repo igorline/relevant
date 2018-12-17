@@ -21,7 +21,7 @@ class StatsContainer extends Component {
     auth: PropTypes.object,
     refresh: PropTypes.object,
     actions: PropTypes.object,
-    error: PropTypes.string
+    error: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -62,42 +62,18 @@ class StatsContainer extends Component {
     // this.end.setUTCHours(0, 0, 0, 0);
     this.start.setUTCHours(0, 0, 0, 0);
     this.relStart.setUTCHours(0, 0, 0, 0);
-
     this.relStart.setDate(this.start.getDate() - 28);
     this.start.setDate(this.start.getDate() - 14);
-
     this.props.actions.getChart(this.start, this.end);
-
     this.props.actions.getRelChart(this.start, this.end);
-    // this.props.actions.getRelChart(this.relStart, this.end);
-
     this.props.actions.getStats(this.props.auth.user);
   }
 
   renderHeader() {
     if (this.filler) return this.filler;
-    const nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
-    // let chart;
-    let relChart;
-
-    // chart = (<Chart
-    //   start={this.start}
-    //   end={this.end}
-    //   type={'bar'}
-    //   dataKey={'change'}
-    //   data={this.props.auth.chart}
-    //   renderHeader={() => <Text style={styles.rowTitle}>Relevance - Daily Change</Text>}
-    //   renderFooter={() => (<LinearGradient
-    //     colors={[
-    //       'hsla(240, 0%, 60%, 1)',
-    //       'hsla(240, 20%, 96%, 1)',
-    //       'hsla(240, 20%, 100%, 1)',
-    //     ]}
-    //     style={[styles.separator]}
-    //   />)}
-    // />);
-
-    relChart = (
+    const nextUpdate = moment(this.props.auth.nextUpdate)
+    .fromNow(true);
+    const relChart = (
       <Chart
         start={this.relStart}
         end={this.end}
@@ -105,7 +81,9 @@ class StatsContainer extends Component {
         dataKey={'aggregateRelevance'}
         data={this.props.auth.relChart}
         renderHeader={() => (
-          <Text style={[styles.statNumber, { alignSelf: 'center', marginTop: 45 }]}>Relevance</Text>
+          <Text style={[styles.statNumber, { alignSelf: 'center', marginTop: 45 }]}>
+            Relevance
+          </Text>
         )}
         renderFooter={() => <View style={styles.break} />}
       />
@@ -114,12 +92,18 @@ class StatsContainer extends Component {
     return (
       <View>
         <View style={styles.nextUpdate}>
-          <Text style={[styles.smallInfo, { color: 'white' }]}>{nextUpdate} until next update</Text>
+          <Text style={[styles.smallInfo, { color: 'white' }]}>
+            {nextUpdate} until next update
+          </Text>
         </View>
 
         <Level level={this.props.auth.user.level} />
 
-        <StatCategory index={0} stats={this.props.auth.user} actions={this.props.actions} />
+        <StatCategory
+          index={0}
+          stats={this.props.auth.user}
+          actions={this.props.actions}
+        />
 
         <View style={styles.break} />
 
@@ -139,13 +123,18 @@ class StatsContainer extends Component {
   }
 
   render() {
-    const stats = this.props.auth.stats || [];
-    const user = this.props.auth.user;
+    const { auth } = this.props;
+    const stats = auth.stats || [];
+    const { user } = auth;
     this.filler = null;
 
     if (this.props.error && !this.props.auth.user) {
       return (
-        <ErrorComponent error={this.props.error} parent={'stats'} reloadFunction={this.load} />
+        <ErrorComponent
+          error={this.props.error}
+          parent={'stats'}
+          reloadFunction={this.load}
+        />
       );
     }
 
@@ -154,7 +143,8 @@ class StatsContainer extends Component {
     }
 
     if (!this.props.auth.user.level) {
-      const nextUpdate = moment(this.props.auth.nextUpdate).fromNow(true);
+      const nextUpdate = moment(this.props.auth.nextUpdate)
+      .fromNow(true);
       this.filler = (
         <EmptyList visible style={styles.emptyList}>
           <Text style={[styles.libre, { fontSize: 40, textAlign: 'center' }]}>
@@ -170,14 +160,21 @@ class StatsContainer extends Component {
     if (user.relevance < 5) {
       this.filler = (
         <EmptyList visible style={styles.emptyList}>
-          <Text style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}>
+          <Text
+            style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}
+          >
             Earn 5 relevant points to see your stats!
           </Text>
           <Text
-            style={[styles.georgia, styles.darkGrey, styles.emptyText, styles.quarterLetterSpacing]}
+            style={[
+              styles.georgia,
+              styles.darkGrey,
+              styles.emptyText,
+              styles.quarterLetterSpacing
+            ]}
           >
-            Tip: {Platform.OS === 'android' ? '😎' : '🤓'} You can earn relevance by being one of
-            the first to upvote a quality post
+            Tip: {Platform.OS === 'android' ? '😎' : '🤓'} You can earn relevance by being
+            one of the first to upvote a quality post
           </Text>
         </EmptyList>
       );
@@ -233,7 +230,6 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: blue,
     borderBottomWidth: StyleSheet.hairlineWidth
-    // borderBottomColor: 'lightgrey',
   }
 });
 

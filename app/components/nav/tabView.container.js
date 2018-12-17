@@ -1,24 +1,16 @@
 import React, { PureComponent } from 'react';
-import { Easing } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Discover from '../discover/discoverTabs.component';
 import DiscoverComponent from '../discover/discover.container';
-
 import Stats from '../stats/stats.container';
-
 import SinglePost from '../post/singlePost.container';
 import Activity from '../activity/activity.container';
-// import Messages from './messages.container';
-// import Thirst from './thirst.container';
 import Profile from '../profile/profile.container';
 import Blocked from '../profile/blocked.container';
 import Invites from '../invites/invites.container';
-
 import Transitioner from '../nav/Transitioner';
-// import{ Transitioner } from 'react-navigation';
-
 import { transitionConfig } from '../../utils';
 import Card from './card.component';
 import * as navigationActions from '../../actions/navigation.actions';
@@ -27,13 +19,12 @@ import * as userActions from '../../actions/user.actions';
 
 import PostPeople from '../post/people.container';
 
-class CardContainer extends PureComponent {
+class TabView extends PureComponent {
   static propTypes = {
-    defaultContainer: PropTypes.object,
+    defaultContainer: PropTypes.string,
     actions: PropTypes.object,
     auth: PropTypes.object,
-    navigation: PropTypes.object,
-    scene: PropTypes.object
+    navigation: PropTypes.object
   };
 
   constructor(props, context) {
@@ -41,22 +32,18 @@ class CardContainer extends PureComponent {
     this.default = this.props.defaultContainer;
     this.renderScene = this.renderScene.bind(this);
     this.back = this.back.bind(this);
-    this.thirsty = this.thirsty.bind(this);
   }
 
-  // shouldComponentUpdate(next) {
-  //   return next.active;
-  // }
-
-  getDefaultComponent(props) {
+  getDefaultComponent() {
+    const { actions } = this.props;
     const key = this.default;
     switch (key) {
       case 'discover':
-        return <Discover key={key} actions={this.props.actions} />;
+        return <Discover key={key} actions={actions} />;
       case 'myProfile':
-        return <Profile key={key} navigator={this.props.actions} />;
+        return <Profile key={key} navigator={actions} />;
       case 'activity':
-        return <Activity key={key} navigator={this.props.actions} />;
+        return <Activity key={key} navigator={actions} />;
       case 'stats':
         return <Stats key={key} />;
       default:
@@ -69,20 +56,12 @@ class CardContainer extends PureComponent {
   }
 
   renderScene(props) {
-    const component = props.scene.route.component;
+    const { component } = props.scene.route;
 
     switch (component) {
-      // case 'comment':
-      //   return <Comments navigator={this.props.actions} isTop={props.isTop} scene={props.scene.route} />;
-
-      // case 'thirst':
-      //   return <Thirst navigator={this.props.actions} scene={props.scene.route} />;
-
       case 'singlePost':
         return <SinglePost navigator={this.props.actions} scene={props.scene.route} />;
 
-      // case 'messages':
-      //   return <Messages navigator={this.props.actions} />;
       case 'discover':
         return (
           <Discover
@@ -105,9 +84,6 @@ class CardContainer extends PureComponent {
             type={'people'}
             key={'people'}
             scene={props.scene.route}
-            // onScroll={this.onScroll}
-            // offsetY={this.state.headerHeight}
-            // tabLabel={props.scene.route.title}
           />
         );
 
@@ -123,21 +99,6 @@ class CardContainer extends PureComponent {
       default:
         return this.getDefaultComponent(props);
     }
-  }
-
-  thirsty() {
-    // this.props.actions.push({
-    //   key: 'signup',
-    //   title: 'Signup',
-    //   showBackButton: true
-    // }, this.props.navigation.main);
-
-    console.log('thirsty');
-    // this.props.actions.push({
-    //     key: 'thirst',
-    //     showBackButton: true,
-    //     title: 'thirsty message',
-    //   }, 'home');
   }
 
   render() {
@@ -188,4 +149,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CardContainer);
+)(TabView);

@@ -8,10 +8,10 @@ import {
   Alert
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Transitioner from '../nav/Transitioner';
 import Analytics from 'react-native-firebase-analytics';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import Transitioner from '../nav/Transitioner';
 import * as authActions from '../../actions/auth.actions';
 import * as createPostActions from '../../actions/createPost.actions';
 import * as postActions from '../../actions/post.actions';
@@ -26,6 +26,7 @@ import CustomSpinner from '../CustomSpinner.component';
 
 import { globalStyles, mainPadding } from '../../styles/global';
 
+// eslint-disable-next-line
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
 let styles;
@@ -42,22 +43,12 @@ class CreatePostContainer extends Component {
     share: PropTypes.bool,
     user: PropTypes.object,
     editPost: PropTypes.object,
-    allTags: PropTypes.array,
     postBody: PropTypes.object,
-    bodyMentions: PropTypes.array,
     repost: PropTypes.object,
     postCategory: PropTypes.string,
     urlPreview: PropTypes.object,
-    nativeImage: PropTypes.object,
-    postImage: PropTypes.string,
     postUrl: PropTypes.object,
-    bodyTags: PropTypes.array,
-    domain: PropTypes.string,
-    keywords: PropTypes.array,
-    articleAuthor: PropTypes.object,
-    shortText: PropTypes.object,
-    edit: PropTypes.bool,
-    scene: PropTypes.object
+    edit: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -86,7 +77,10 @@ class CreatePostContainer extends Component {
     if (next.navProps.scene.isActive === false) {
       if (this.urlComponent) this.urlComponent.input.blur();
     }
-    if (this.props.createPost.edit && this.props.createPost.postUrl !== next.createPost.postUrl) {
+    if (
+      this.props.createPost.edit &&
+      this.props.createPost.postUrl !== next.createPost.postUrl
+    ) {
       this.newUrl = true;
     }
   }
@@ -107,7 +101,11 @@ class CreatePostContainer extends Component {
   }
 
   next() {
-    if (!this.skipUrl && this.props.createPost.postUrl && !this.props.createPost.urlPreview) {
+    if (
+      !this.skipUrl &&
+      this.props.createPost.postUrl &&
+      !this.props.createPost.urlPreview
+    ) {
       Alert.alert('Url is still loading, please give it a few more seconds', null, [
         {
           text: 'Continue Anyway',
@@ -161,17 +159,13 @@ class CreatePostContainer extends Component {
       // articleAuthor: props.articleAuthor,
       // shortText: props.shortText,
     };
-    this.props.actions
-    .editPost(postBody, this.props.auth.token)
+    this.props.actions.editPost(postBody, this.props.auth.token)
     .then(res => {
       if (!res) return;
       Alert.alert('Success!');
       this.props.actions.clearCreatePost();
       this.props.navigator.resetRoutes('home');
       this.props.actions.setUserSearch([]);
-    })
-    .catch(err => {
-      console.log(err);
     });
   }
 
@@ -187,7 +181,8 @@ class CreatePostContainer extends Component {
     };
 
     this.setState({ creatingPost: true });
-    this.props.actions.createComment(this.props.auth.token, commentObj).then(() => {
+    this.props.actions.createComment(this.props.auth.token, commentObj)
+    .then(() => {
       this.props.actions.clearCreatePost();
       this.props.actions.resetRoutes('home');
       this.props.actions.resetRoutes('discover');
@@ -228,12 +223,14 @@ class CreatePostContainer extends Component {
         }
       })
       .catch(err => {
-        Alert.alert('Error uploading image, please try again');
+        Alert.alert('Error uploading image: ', err.message);
         this.setState({ creatingPost: false });
       });
     } else {
       this.image =
-        props.urlPreview && props.urlPreview.image ? props.urlPreview.image : props.postImage;
+        props.urlPreview && props.urlPreview.image
+          ? props.urlPreview.image
+          : props.postImage;
       this.uploadPost();
     }
   }
@@ -241,13 +238,9 @@ class CreatePostContainer extends Component {
   uploadPost() {
     const props = this.props.createPost;
 
-    console.log('creating post ', props.postCategory);
-
     let postBody = {
       link: props.postUrl,
-
       tags: [...new Set([...props.allTags.map(tag => tag._id), ...props.bodyTags])],
-
       body: props.postBody,
       title: props.urlPreview ? props.urlPreview.title.trim() : null,
       description: props.urlPreview ? props.urlPreview.description : null,
@@ -263,7 +256,8 @@ class CreatePostContainer extends Component {
 
     if (props.edit) {
       postBody = { ...props.editPost, ...postBody };
-      return this.props.actions.editPost(postBody, this.props.auth.token).then(res => {
+      return this.props.actions.editPost(postBody, this.props.auth.token)
+      .then(res => {
         if (!res) return;
         Alert.alert('Success!');
         this.props.actions.clearCreatePost();
@@ -272,24 +266,27 @@ class CreatePostContainer extends Component {
       });
     }
 
-    this.props.actions.submitPost(postBody, this.props.auth.token).then(results => {
+    this.props.actions.submitPost(postBody, this.props.auth.token)
+    .then(results => {
       if (!results) {
         Alert.alert('Post error please try again');
-        this.setState({ creatingPost: false });
-      } else {
-        if (this.props.close) this.props.close();
-        this.props.actions.clearCreatePost();
-        this.props.navigator.resetRoutes('home');
-        this.props.actions.resetRoutes('discover');
-        this.props.actions.resetRoutes('createPost');
-        this.props.navigator.changeTab('discover');
-        this.props.navigator.reloadTab('discover');
-        this.props.navigator.setView('discover', 1);
-        Analytics.logEvent('newPost', {
-          viaShare: this.props.share
-        });
+        return this.setState({ creatingPost: false });
       }
+
+      if (this.props.close) this.props.close();
+      this.props.actions.clearCreatePost();
+      this.props.navigator.resetRoutes('home');
+      this.props.actions.resetRoutes('discover');
+      this.props.actions.resetRoutes('createPost');
+      this.props.navigator.changeTab('discover');
+      this.props.navigator.reloadTab('discover');
+      this.props.navigator.setView('discover', 1);
+      Analytics.logEvent('newPost', {
+        viaShare: this.props.share
+      });
+      return null;
     });
+    return null;
   }
 
   renderRight(props) {
@@ -324,7 +321,9 @@ class CreatePostContainer extends Component {
         style={[styles.rightButton]}
         onPress={() => rightAction(props)}
       >
-        <Text style={[{ opacity: enabled ? 1 : 0.6 }, styles.active, styles.rightButtonText]}>
+        <Text
+          style={[{ opacity: enabled ? 1 : 0.6 }, styles.active, styles.rightButtonText]}
+        >
           {rightText}
         </Text>
       </TouchableOpacity>
@@ -332,7 +331,7 @@ class CreatePostContainer extends Component {
   }
 
   renderScene(props) {
-    const component = props.scene.route.component;
+    const { component } = props.scene.route;
 
     if (this.state.creatingPost) return <CustomSpinner />;
 

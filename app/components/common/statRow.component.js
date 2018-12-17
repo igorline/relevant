@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import PropTypes from 'prop-types';
 import { globalStyles } from '../../styles/global';
 
 let styles;
@@ -36,5 +37,9 @@ const localStyles = StyleSheet.create({
     justifyContent: 'center'
   }
 });
+
+StatRow.propTypes = {
+  elements: PropTypes.array
+};
 
 styles = { ...globalStyles, ...localStyles };

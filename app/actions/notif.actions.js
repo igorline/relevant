@@ -3,7 +3,6 @@ import * as errorActions from './error.actions';
 import * as utils from '../utils';
 
 utils.api.env();
-const Alert = utils.api.Alert().alert;
 const apiServer = `${process.env.API_SERVER}/api/notification`;
 
 const reqOptions = token => ({

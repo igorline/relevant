@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Animated, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Animated, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 
 let styles;
@@ -10,21 +10,21 @@ class DefaultTabBar extends Component {
     activeTab: PropTypes.number,
     tabs: PropTypes.array,
     backgroundColor: PropTypes.string,
-    activeTextColor: PropTypes.string,
-    inactiveTextColor: PropTypes.string,
     textStyle: PropTypes.array,
     tabStyle: PropTypes.object,
     renderTab: PropTypes.func,
-    underlineStyle: PropTypes.object
+    underlineStyle: PropTypes.object,
+    initialTab: PropTypes.number,
+    scrollValue: PropTypes.object,
+    containerWidth: PropTypes.number,
+    renderBadge: PropTypes.func,
+    style: PropTypes.object
   };
 
   static defaultProps = {
-    activeTextColor: 'navy',
     inactiveTextColor: 'black',
     backgroundColor: null
   };
-
-  // nonNativeScroll = new Animated.Value(0);
 
   constructor(props) {
     super(props);
@@ -67,7 +67,15 @@ class DefaultTabBar extends Component {
   }
 
   render() {
-    const containerWidth = this.props.containerWidth;
+    const {
+      containerWidth,
+      backgroundColor,
+      scrollValue,
+      style,
+      activeTab,
+      goToPage
+    } = this.props;
+
     const numberOfTabs = this.props.tabs.length;
     const tabUnderlineStyle = {
       position: 'absolute',
@@ -77,15 +85,13 @@ class DefaultTabBar extends Component {
       bottom: 0
     };
 
-    const left = this.props.scrollValue.interpolate({
+    const left = scrollValue.interpolate({
       inputRange: [0, 1],
       outputRange: [0, containerWidth / numberOfTabs]
     });
 
     return (
-      <View
-        style={[styles.tabs, { backgroundColor: this.props.backgroundColor }, this.props.style]}
-      >
+      <View style={[styles.tabs, { backgroundColor }, style]}>
         {this.props.tabs.map((name, page) => {
           const inputRange = [0, 1, 2];
           const outputRange = inputRange.map(i => (i === page ? 1 : 0));
@@ -99,9 +105,9 @@ class DefaultTabBar extends Component {
             inputRange: [0, 1],
             outputRange: ['rgba(35, 31, 32, 1)', 'rgba(77, 78, 255, 1)']
           });
-          const isTabActive = this.props.activeTab === page;
+          const isTabActive = activeTab === page;
           const renderTab = this.props.renderTab || this.renderTab.bind(this);
-          return renderTab(name, page, isTabActive, this.props.goToPage, textColor);
+          return renderTab(name, page, isTabActive, goToPage, textColor);
         })}
         <Animated.View
           style={[

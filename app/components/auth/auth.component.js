@@ -7,7 +7,6 @@ import {
   Image,
   TouchableWithoutFeedback,
   ListView,
-  AlertIOS,
   Platform,
   TouchableOpacity
 } from 'react-native';
@@ -19,9 +18,13 @@ let styles;
 
 class Auth extends Component {
   static propTypes = {
-    actions: PropTypes.object,
     auth: PropTypes.object,
-    share: PropTypes.bool
+    actions: PropTypes.object,
+    // need this prop to pass to child components
+    // eslint-disable-next-line
+    navigation: PropTypes.object,
+    // admin: PropTypes.object,
+    share: PropTypes.bool // flag for share extension
   };
 
   constructor(props, context) {
@@ -49,7 +52,7 @@ class Auth extends Component {
   }
 
   onScrollEnd(e) {
-    const contentOffset = e.nativeEvent.contentOffset;
+    const { contentOffset } = e.nativeEvent;
     const viewSize = e.nativeEvent.layoutMeasurement;
 
     // Divide the horizontal offset by the width of the view to see which page is visible
@@ -138,7 +141,12 @@ class Auth extends Component {
         const active = this.state.currentIndex === i;
         indicator.push(
           <TouchableWithoutFeedback onPress={() => this.scrollToPage(i)} key={i}>
-            <View style={[styles.indicatorItem, { backgroundColor: active ? 'black' : 'white' }]} />
+            <View
+              style={[
+                styles.indicatorItem,
+                { backgroundColor: active ? 'black' : 'white' }
+              ]}
+            />
           </TouchableWithoutFeedback>
         );
       });
@@ -153,7 +161,11 @@ class Auth extends Component {
       return words.map((t, j) => {
         if (special.find(w => t === w)) {
           return (
-            <Text key={j + t} allowFontScaling={false} style={[styles.strokeText, styles.relevant]}>
+            <Text
+              key={j + t}
+              allowFontScaling={false}
+              style={[styles.strokeText, styles.relevant]}
+            >
               {t + (l === j ? '' : ' ')}
             </Text>
           );
@@ -171,11 +183,10 @@ class Auth extends Component {
         return (
           <View>
             <View key={i} style={styles.authSlide}>
-              {sentance('Relevant is a social news reader that values quality over clicks', [
-                'Relevant',
-                'quality',
-                'clicks'
-              ])}
+              {sentance(
+                'Relevant is a social news reader that values quality over clicks',
+                ['Relevant', 'quality', 'clicks']
+              )}
               <Text allowFontScaling={false} style={styles.slideText} />
             </View>
             <View style={styles.splashEmojiContainer}>
@@ -207,11 +218,6 @@ class Auth extends Component {
               ])}
               <Text allowFontScaling={false} style={styles.slideText} />
             </View>
-            {/* <Image
-              resizeMode={'contain'}
-              style={[styles.r, { width: 60, height: 60, marginTop: 10, alignSelf: 'center' }]}
-              source={require('../../assets/images/relevantcoin.png')}
-            /> */}
           </View>
         );
       case '3':
@@ -252,15 +258,6 @@ class Auth extends Component {
         <View style={styles.indicatorParent}>{this.renderIndicator()}</View>
       </View>
     );
-    // let intro = (
-    //   <View style={{ flex: 1, paddingHorizontal: 20, alignItems: 'stretch' }}>
-    //     <Image
-    //       resizeMode={'contain'}
-    //       style={{ flex: 1, width: null, height: null }}
-    //       source={require('../../assets/images/intro3.jpg')}
-    //     />
-    //   </View>
-    // );
 
     if (this.props.share) intro = <View style={{ flex: 1 }} />;
 
@@ -304,7 +301,9 @@ class Auth extends Component {
       <View
         style={[
           {
-            height: isAuthenticated ? this.state.visibleHeight - 60 : this.state.visibleHeight
+            height: isAuthenticated
+              ? this.state.visibleHeight - 60
+              : this.state.visibleHeight
           },
           styles.authParent
         ]}
@@ -326,12 +325,11 @@ class Auth extends Component {
 
         <Prompt
           title={this.promptTitle || ''}
-          // placeholder=""
-          // defaultValue="Hello"
           visible={this.state.promptVisible}
           onCancel={() => this.setState({ promptVisible: false })}
           onSubmit={code => {
-            this.props.actions.checkInviteCode(code).then(invite => {
+            this.props.actions.checkInviteCode(code)
+            .then(invite => {
               if (invite) {
                 this.props.actions.push(
                   {
@@ -363,10 +361,6 @@ const localStyles = StyleSheet.create({
     fontSize: smallScreen ? 32 : 36,
     fontFamily: 'HelveticaNeueLTStd-BdOu',
     lineHeight: Platform.OS === 'ios' ? (smallScreen ? 47 : 55) : smallScreen ? 39 : 46
-    // lineHeight: 45,rr
-    // flexDirection: 'row',
-    // alignSelf: 'flex-start'
-    // marginTop: 8
   },
   slideText: {
     fontFamily: 'Libre Caslon Display',
@@ -450,14 +444,6 @@ const localStyles = StyleSheet.create({
     fontFamily: Platform.OS === 'android' ? 'NotoColorEmoji' : 'Georgia'
   }
 });
-
-Auth.propTypes = {
-  auth: PropTypes.object,
-  actions: PropTypes.object,
-  navigation: PropTypes.object, // need this prop to pass to child components
-  admin: PropTypes.object,
-  share: PropTypes.bool // flag for share extension
-};
 
 styles = { ...localStyles, ...globalStyles };
 

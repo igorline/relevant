@@ -2,28 +2,31 @@ import mongoose from 'mongoose';
 import voucherCodes from 'voucher-code-generator';
 import mail from '../../mail';
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
-const InviteSchema = new Schema({
-  email: { type: String },
-  name: { type: String },
-  code: { type: String, index: true },
-  redeemed: { type: Boolean, default: false },
-  number: { type: Number, default: 1 },
-  status: { type: String },
-  invitedBy: { type: String, ref: 'User' },
-  registeredAs: { type: String, ref: 'User' },
-  invitedByString: { type: String },
-}, {
-  timestamps: true
-});
-
+const InviteSchema = new Schema(
+  {
+    email: { type: String },
+    name: { type: String },
+    code: { type: String, index: true },
+    redeemed: { type: Boolean, default: false },
+    number: { type: Number, default: 1 },
+    status: { type: String },
+    invitedBy: { type: String, ref: 'User' },
+    registeredAs: { type: String, ref: 'User' },
+    invitedByString: { type: String }
+  },
+  {
+    timestamps: true
+  }
+);
 
 async function sendInviteCodes(user, codes) {
   let status;
   const codesString = '<b>' + codes.join('<br />') + '</b>';
   try {
-    const appStoreUrl = 'https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051';
+    const appStoreUrl =
+      'https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051';
     // let url = `${process.env.API_SERVER}/invite/${invite.code}`;
     const data = {
       from: 'Relevant <noreply@mail.relevant.community>',
@@ -46,29 +49,29 @@ async function sendInviteCodes(user, codes) {
     };
     status = await mail.send(data);
   } catch (err) {
-    console.log('error sending out invite email ', err);
+    throw err;
   }
   return status;
 }
 
-InviteSchema.statics.checkInvite = async function (invite) {
+InviteSchema.statics.checkInvite = async function checkInvite(invite) {
   if (!invite) throw new Error('No invitation code found');
   invite = await this.findOne({ _id: invite._id, redeemed: false });
   if (!invite) throw new Error('No invitation code found');
   return invite;
 };
 
-InviteSchema.methods.registered = async function (user) {
+InviteSchema.methods.registered = async function registered(user) {
   this.status = 'registered';
   this.number -= 1;
   if (this.number === 0) {
     this.redeemed = true;
   }
   this.registeredAs = user._id;
-  return await this.save();
+  return this.save();
 };
 
-InviteSchema.statics.generateCodes = async function (user) {
+InviteSchema.statics.generateCodes = async function generateCodes(user) {
   const invites = [];
   try {
     const codes = voucherCodes.generate({
@@ -76,18 +79,16 @@ InviteSchema.statics.generateCodes = async function (user) {
       count: 3,
       charset: voucherCodes.charset('alphabetic')
     });
-    let savedCodes = codes.map(async code => {
+    const savedCodes = codes.map(async code => {
       const invite = new this({ invitedBy: user._id, code });
-      return await invite.save();
+      return invite.save();
     });
-    savedCodes = await Promise.all(savedCodes);
-    console.log(savedCodes);
+    await Promise.all(savedCodes);
     await sendInviteCodes(user, codes);
   } catch (err) {
-    console.log('error generating invites ', err);
+    throw err;
   }
   return invites;
 };
 
 module.exports = mongoose.model('Invite', InviteSchema);
-

@@ -1,27 +1,19 @@
 import Feed from './communityFeed.model';
 import Post from '../post/post.model';
 
-function handleError(res, statusCode) {
-  statusCode = statusCode || 500;
-  return (err) => {
-    console.log(err);
-    res.status(statusCode).send(err);
-  };
-}
-
-exports.get = async (req, res) => {
+exports.get = async (req, res, next) => {
   try {
     // TODO - right now sorting commentary by latest and relevance
     // only works for community's own posts
     // solution: populate postData then populate with postData post
     // TODO - for now isolate commentary to given community
-    const community = req.query.community;
-    const user = req.user;
+    const { community } = req.query;
+    const { user } = req;
 
     const skip = parseInt(req.query.skip, 10) || 0;
     const limit = parseInt(req.query.limit, 10) || 5;
     const tag = req.query.tag || null;
-    const sort = req.query.sort;
+    const { sort } = req.query;
     let sortQuery;
     let commentarySort;
 
@@ -36,99 +28,59 @@ exports.get = async (req, res) => {
 
     let blocked = [];
     if (req.user) {
-      blocked = [...req.user.blocked || [], ...req.user.blockedBy || []];
+      blocked = [...(req.user.blocked || []), ...(req.user.blockedBy || [])];
     }
 
     let query = { community, post: { $exists: true } };
 
     if (tag) query = { tags: tag, community };
-    let feed;
-    const posts = [];
 
-    feed = await Feed.find(query)
-      .sort(sortQuery)
-      .skip(skip)
-      .limit(limit)
-      .populate({
-        path: 'post',
-        populate: [
-          { path: 'data' },
-          {
-            path: 'commentary',
-            match: {
+    const feed = await Feed.find(query)
+    .sort(sortQuery)
+    .skip(skip)
+    .limit(limit)
+    .populate({
+      path: 'post',
+      populate: [
+        { path: 'data' },
+        {
+          path: 'commentary',
+          match: {
             // TODO implement intra-community commentary
-              community,
+            community,
 
-              // TODO - we should probably sort the non-community commentary
-              // with some randomness on client side
-              repost: { $exists: false },
-              user: { $nin: blocked },
-              $or: [{ hidden: { $ne: true } }],
-            },
-            options: { sort: commentarySort },
-            populate: [
-              { path: 'data' },
-              {
-                path: 'embeddedUser.relevance',
-                select: 'pagerank',
-                match: { community, global: true },
-              },
-            ]
+            // TODO - we should probably sort the non-community commentary
+            // with some randomness on client side
+            repost: { $exists: false },
+            user: { $nin: blocked },
+            $or: [{ hidden: { $ne: true } }]
           },
-          { path: 'metaPost' },
-          {
-            path: 'embeddedUser.relevance',
-            select: 'pagerank',
-            match: { community, global: true },
-          },
-        ]
-      });
+          options: { sort: commentarySort },
+          populate: [
+            { path: 'data' },
+            {
+              path: 'embeddedUser.relevance',
+              select: 'pagerank',
+              match: { community, global: true }
+            }
+          ]
+        },
+        { path: 'metaPost' },
+        {
+          path: 'embeddedUser.relevance',
+          select: 'pagerank',
+          match: { community, global: true }
+        }
+      ]
+    });
 
-    feed.forEach(async (f) => {
+    const posts = [];
+    feed.forEach(async f => {
       if (f.post) {
-        // --------- fix random twitter posts
-        // if (!f.post.commentary.length && f.post.type === 'link') {
-        //   console.log(f);
-        //   // await f.remove();
-        // }
-
-        // ------- fix wrong time
-
-        // let com = f.post.commentary;
-        // let latest = f.latestPost;
-        // let latestPost = 0;
-        // com.forEach(c => {
-        //   let date = c.data.postDate;
-        //   if (new Date(date).getTime() > new Date(latestPost).getTime()) {
-        //     latestPost = date;
-        //   }
-        // });
-        // let diff = new Date(latest).getTime() - new Date(latestPost).getTime();
-        // if (diff > 0) {
-        //   console.log('difference ', diff / (1000 * 60 * 60), 'h');
-        //   console.log('latestPost ', latestPost);
-        //   console.log('fix latest', latest);
-        //   console.log('fix post', f.post.data.latestComment);
-        //   console.log(f);
-        //   f.latestPost = latestPost;
-        //   await f.save();
-        //   f.post.data.latestComment = latestPost;
-        //   await f.post.data.save();
-        // }
         posts.push(f.post);
-
-        // let com = f.post.commentary;
-        // com.forEach(async c => {
-        //   if (c.twitter && c.data.pagerank === 0 && c.upVotes === 0) {
-        //     console.log(c);
-        //     await f.remove();
-        //     c.hidden = true;
-        //     await c.save();
-        //   }
-        // });
       } else {
         // just in case - this shouldn't happen
-        console.log('error: post is null!');
+        console.log('error: post is null!'); // eslint-disable-line
         await f.remove();
       }
     });
@@ -147,7 +99,6 @@ exports.get = async (req, res) => {
 
     res.status(200).json(posts);
   } catch (err) {
-    handleError(res)(err);
+    next(err);
   }
 };
-

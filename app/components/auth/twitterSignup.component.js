@@ -56,7 +56,7 @@ export default class TwitterSignup extends Component {
     loginData.userName = this.state.username;
     loginData.signup = true;
     loginData.invite = this.props.auth.currentInvite;
-    this.props.actions.twitterAuth(
+    return this.props.actions.twitterAuth(
       loginData,
       this.props.admin ? this.props.admin.currentInvite : null
     );
@@ -69,7 +69,8 @@ export default class TwitterSignup extends Component {
       const string = toCheck;
       const match = NAME_PATTERN.test(string);
       if (match) {
-        this.props.actions.checkUser(string, 'name').then(results => {
+        this.props.actions.checkUser(string, 'name')
+        .then(results => {
           if (!results) {
             this.usernameExists = true;
             this.nameError = 'This handle is already taken';
@@ -77,7 +78,8 @@ export default class TwitterSignup extends Component {
           this.setState({});
         });
       } else {
-        this.nameError = 'username can only contain letters, numbers, dashes and underscores';
+        this.nameError =
+          'username can only contain letters, numbers, dashes and underscores';
       }
     }
   }
@@ -95,7 +97,8 @@ export default class TwitterSignup extends Component {
             clearTextOnFocus={false}
             placeholder="username"
             onChangeText={username => {
-              username = username.replace('@', '').trim();
+              username = username.replace('@', '')
+              .trim();
               this.setState({ username });
               this.checkUser(username.trim());
             }}
@@ -113,7 +116,12 @@ export default class TwitterSignup extends Component {
   renderCTA() {
     return (
       <View
-        style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
+        style={{
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
       >
         <TwitterButton
           type={'signup'}
@@ -169,11 +177,15 @@ export default class TwitterSignup extends Component {
           {this.props.auth.twitter ? button : null}
 
           <TouchableOpacity
-            onPress={() => this.props.actions.goToUrl('https://relevant.community/eula.html')}
+            onPress={() =>
+              this.props.actions.goToUrl('https://relevant.community/eula.html')
+            }
           >
             <Text style={[styles.signInText, styles.font12]}>
               By signing up, you agree to our{' '}
-              <Text style={[styles.signInText, styles.active, styles.font12]}>Terms of Use</Text>
+              <Text style={[styles.signInText, styles.active, styles.font12]}>
+                Terms of Use
+              </Text>
             </Text>
           </TouchableOpacity>
         </ScrollView>

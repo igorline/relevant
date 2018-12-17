@@ -1,18 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import {
-//   // Easing
-// } from 'react-native';
 import codePush from 'react-native-code-push';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
 import Transitioner from '../nav/Transitioner';
 import Auth from './auth.component';
 import Login from './login.component';
 import SignUp from './signup.component';
 import TwitterSignup from './twitterSignup.component';
-
 import ImageUpload from './imageUpload.component';
 import Forgot from './forgot.component';
 import ResetPassword from './resetPassword.component';
@@ -20,17 +15,13 @@ import * as adminActions from '../../actions/admin.actions';
 import * as authActions from '../../actions/auth.actions';
 import * as navigationActions from '../../actions/navigation.actions';
 import Card from '../nav/card.component';
-import { globalStyles, localStyles } from '../../styles/global';
 import { transitionConfig } from '../../utils';
-
-let styles;
 
 class AuthContainer extends Component {
   static propTypes = {
     navigation: PropTypes.object,
     actions: PropTypes.object,
-    share: PropTypes.bool,
-    scene: PropTypes.object
+    share: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -44,7 +35,7 @@ class AuthContainer extends Component {
   }
 
   renderScene(props) {
-    const component = props.scene.route.component;
+    const { component } = props.scene.route;
 
     switch (component) {
       case 'auth':
@@ -103,28 +94,22 @@ class AuthContainer extends Component {
   }
 }
 
-styles = { ...localStyles, ...globalStyles };
+const mapStateToProps = state => ({
+  auth: state.auth,
+  navigation: state.navigation.auth,
+  admin: state.admin
+});
 
-function mapStateToProps(state) {
-  return {
-    auth: state.auth,
-    navigation: state.navigation.auth,
-    admin: state.admin
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(
-      {
-        ...authActions,
-        ...navigationActions,
-        ...adminActions
-      },
-      dispatch
-    )
-  };
-}
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      ...authActions,
+      ...navigationActions,
+      ...adminActions
+    },
+    dispatch
+  )
+});
 
 export default connect(
   mapStateToProps,

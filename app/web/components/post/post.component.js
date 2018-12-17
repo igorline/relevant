@@ -60,7 +60,7 @@ class Post extends Component {
 
   render() {
     const { post, repost, link, auth } = this.props;
-    const community = auth.community;
+    const { community } = auth;
 
     let popup;
 
@@ -156,8 +156,10 @@ class Post extends Component {
 }
 
 function PostBody(props) {
-  const body = props.post.body;
-  const tags = (props.post.tags || []).map(tag => <Tag {...props} name={tag} key={tag} />);
+  const { body } = props.post;
+  const tags = (props.post.tags || []).map(tag => (
+    <Tag {...props} name={tag} key={tag} />
+  ));
   return (
     <div className={props.repost ? 'repostText' : ''}>
       <pre>{body}</pre> {tags}

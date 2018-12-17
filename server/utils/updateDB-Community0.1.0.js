@@ -3,16 +3,17 @@ import RelevanceStats from '../api/relevanceStats/relevanceStats.model';
 import Relevance from '../api/relevance/relevance.model';
 import Post from '../api/post/post.model';
 import CommunityFeed from '../api/communityFeed/communityFeed.model';
-import MetaPost from '../api/metaPost/metaPost.model';
+import MetaPost from '../api/post/link.model';
 import Treasury from '../api/treasury/treasury.model';
-import Comment from '../api/comment/comment.model';
 
 // CommunityFeed.find({ community: 'relevant' }).remove().exec();
+
+/* eslint no-unused-vars: 0 */
+/* eslint no-console: 0 */
 
 async function updateTreasury() {
   const t = await Treasury.findOne({ community: { $exists: false } });
   if (!t) return true;
-  console.log('treasury to update ', );
   t.community = 'relevant';
   return t.save();
 }
@@ -20,43 +21,39 @@ async function updateTreasury() {
 async function removeEmptyCommunityFeedEls() {
   const community = 'relevant';
 
-  const cf = await CommunityFeed.find({}, 'metaPost')
-    .populate({
-      path: 'metaPost',
-      select: 'commentary title latestPost',
-      populate: [
-        {
-          path: 'commentary',
-          match: { community, repost: { $exists: false } },
-          // options: { sort: commentarySort },
-          populate: {
-            path: 'embeddedUser.relevance',
-            select: 'relevance'
-          },
-        },
-      ]
-    });
+  const cf = await CommunityFeed.find({}, 'metaPost').populate({
+    path: 'metaPost',
+    select: 'commentary title latestPost',
+    populate: [
+      {
+        path: 'commentary',
+        match: { community, repost: { $exists: false } },
+        // options: { sort: commentarySort },
+        populate: {
+          path: 'embeddedUser.relevance',
+          select: 'relevance'
+        }
+      }
+    ]
+  });
 
   const filtered = cf.filter(el => !el.metaPost.commentary.length);
   const removeItems = filtered.map(f => f.remove());
   return Promise.all(removeItems);
 }
 
-
 async function updateUserHandles() {
-  console.log('POPULATING HANDLES');
   const users = await User.find({}, '_id handle');
   const update = users.map(async user => {
     user.handle = user._id;
-    console.log(user);
-    return await user.save();
+    return user.save();
   });
-  return await Promise.all(update);
+  return Promise.all(update);
 }
 
 async function addStatCommuntyField() {
   console.log('ADDING STAT COMMUNITY FIELD');
-  return await RelevanceStats.update(
+  return RelevanceStats.update(
     { community: { $exists: false } },
     { community: 'relevant' },
     { multi: true }
@@ -72,8 +69,8 @@ async function migrateToCommunityReputation() {
       { community: 'relevant' },
       { multi: true }
     );
-    // await Relevance.update({ community: { $exists: false }, twitter: true }, { community: 'twitter' });
-
+    // await Relevance
+    // .update({ community: { $exists: false }, twitter: true }, { community: 'twitter' });
     // let allDone = users.map(async u => {
     //   try {
     //     let newRep = await Relevance.findOneAndUpdate(
@@ -94,10 +91,9 @@ async function migrateToCommunityReputation() {
     // });
     // return Promise.all(allDone);
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 }
-
 
 async function connectReputation() {
   try {
@@ -114,22 +110,20 @@ async function connectReputation() {
     const posts = await Post.find({});
     const allDone = await posts.map(async p => {
       try {
-        const community = p.community;
+        const { community } = p;
         const rep = await Relevance.findOne({ user: p.user, community, global: true });
         if (!rep) return console.log('no rep!');
         p.embeddedUser.relevance = rep._id;
-        console.log(p.embeddedUser);
         return await p.save();
       } catch (err) {
-        console.log(err);
+        throw err;
       }
     });
-    return await Promise.all(allDone);
+    return Promise.all(allDone);
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 }
-
 
 async function createRelevantCommunityFeed() {
   const community = 'relevant';
@@ -163,13 +157,13 @@ async function createRelevantCommunityFeed() {
     // console.log(feedItem);
     return feedItem;
   });
-  return await Promise.all(allDone);
+  return Promise.all(allDone);
 }
 
 async function updatePostUserHandle() {
   const posts = await Post.find({}).populate({
     path: 'user',
-    select: 'handle',
+    select: 'handle'
   });
   const updatedPosts = posts.map(async post => {
     if (!post.embeddedUser) return null;
@@ -183,7 +177,7 @@ async function updatePostUserHandle() {
 async function updateCommentUserHandle() {
   const comments = await Comment.find({}).populate({
     path: 'user',
-    select: 'handle',
+    select: 'handle'
   });
   const updatedComments = comments.map(async comment => {
     comment.embeddedUser.handle = comment.user.handle;
@@ -206,7 +200,7 @@ async function runUpdates() {
     // await removeEmptyCommunityFeedEls()
     console.log('finished db updates');
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 }
 

@@ -32,7 +32,7 @@ class ProfileComponent extends Component {
   static propTypes = {
     actions: PropTypes.object,
     user: PropTypes.object,
-    myProfile: PropTypes.object,
+    myProfile: PropTypes.bool,
     scrollTo: PropTypes.func
   };
 
@@ -42,14 +42,6 @@ class ProfileComponent extends Component {
     this.showActionSheet = this.showActionSheet.bind(this);
     this.initTooltips = this.initTooltips.bind(this);
     this.toggleTooltip = this.toggleTooltip.bind(this);
-  }
-
-  componentDidMount() {
-    // if (this.props.auth.user &&
-    //   this.props.auth.user.onboarding === 'relevance') {
-    //   setTimeout(() => this.toggleTooltip(), 1000);
-    // }
-    // setTimeout(this.initTooltips, 1000);
   }
 
   toggleTooltip() {
@@ -100,7 +92,8 @@ class ProfileComponent extends Component {
   }
 
   goToTopic(tag) {
-    const name = tag.replace('#', '').trim();
+    const name = tag.replace('#', '')
+    .trim();
     const topic = {
       _id: name,
       categoryName: '#' + name
@@ -109,8 +102,8 @@ class ProfileComponent extends Component {
   }
 
   render() {
+    const { user } = this.props;
     let followers = 0;
-    let user = null;
     let userImage = null;
     let relevance = 0;
     let balance = null;
@@ -118,10 +111,8 @@ class ProfileComponent extends Component {
     let following = 0;
     let topTags;
 
-    if (this.props.user) {
-      user = this.props.user;
-      followers = this.props.user.followers;
-      following = this.props.user.following;
+    if (user) {
+      ({ followers, following } = this.props.user);
       if (user.image) userImage = user.image;
       if (user.relevance) relevance = user.relevance.pagerank || 0;
       if (user) balance = (user.balance + user.tokenBalance).toFixed(0);
@@ -129,7 +120,10 @@ class ProfileComponent extends Component {
       if (user.topTags) {
         topTags = user.topTags.map((tag, i) => (
           <Text style={[styles.font10, styles.active]} key={tag._id}>
-            <Text onPress={() => this.goToTopic(tag.tag)} style={[styles.font10, styles.active]}>
+            <Text
+              onPress={() => this.goToTopic(tag.tag)}
+              style={[styles.font10, styles.active]}
+            >
               #{tag.tag}
             </Text>
             {i !== user.topTags.length - 1 ? ', ' : ''}
@@ -181,10 +175,7 @@ class ProfileComponent extends Component {
               style={[styles.r, { width: 24, height: 22 }]}
               source={require('../../assets/images/r.png')}
             />
-            <Text
-              // onPress={() => this.toggleTooltip()}
-              style={[styles.largeNumber]}
-            >
+            <Text style={[styles.largeNumber]}>
               {numbers.abbreviateNumber(relevance)}{' '}
             </Text>
           </TouchableOpacity>
@@ -205,7 +196,9 @@ class ProfileComponent extends Component {
               style={[styles.coin, { width: 23, height: 23 }]}
               source={require('../../assets/images/relevantcoin.png')}
             />
-            <Text style={[styles.largeNumber]}>{numbers.abbreviateNumber(balance) || 0}</Text>
+            <Text style={[styles.largeNumber]}>
+              {numbers.abbreviateNumber(balance) || 0}
+            </Text>
           </View>
         )
       }
@@ -230,7 +223,6 @@ class ProfileComponent extends Component {
       <View
         style={[
           {
-            // paddingTop: 15,
             padding: mainPadding,
             paddingBottom: 0,
             backgroundColor: 'white'

@@ -6,7 +6,6 @@ import PostBody from './postBody.component';
 import PostInfo from './postInfo.component';
 import PostButtons from './postButtons.component';
 import Pills from '../common/pills.component';
-import Tags from '../tags.component';
 
 let styles;
 
@@ -15,14 +14,14 @@ export default class Commentary extends Component {
     actions: PropTypes.object,
     post: PropTypes.object,
     link: PropTypes.object,
-    users: PropTypes.array,
+    users: PropTypes.object,
     posts: PropTypes.object,
     auth: PropTypes.object,
-    myPostInv: PropTypes.array,
+    myPostInv: PropTypes.object,
     singlePost: PropTypes.bool,
-    tooltip: PropTypes.object,
+    tooltip: PropTypes.bool,
     focusInput: PropTypes.func,
-    commentary: PropTypes.object
+    commentary: PropTypes.array
   };
 
   constructor(props) {
@@ -36,7 +35,7 @@ export default class Commentary extends Component {
   }
 
   onScrollEnd(e) {
-    const contentOffset = e.nativeEvent.contentOffset;
+    const { contentOffset } = e.nativeEvent;
     const viewSize = e.nativeEvent.layoutMeasurement;
 
     // Divide the horizontal offset by the width of the view to see which page is visible
@@ -45,8 +44,9 @@ export default class Commentary extends Component {
   }
 
   goToPost() {
-    if (!this.props.actions || !this.props.post || !this.props.post._id) return;
-    this.props.actions.goToPost(this.props.post);
+    const { post, actions } = this.props;
+    if (!post || !post._id) return;
+    actions.goToPost(post);
   }
 
   scrollToPage(p) {
@@ -54,39 +54,45 @@ export default class Commentary extends Component {
   }
 
   renderItem({ item, index }) {
-    const link = this.props.link;
-    let post = item;
+    const {
+      link,
+      users,
+      posts,
+      actions,
+      auth,
+      singlePost,
+      focusInput,
+      tooltip
+    } = this.props;
+
     const i = index;
     let repostEl;
     let postStyle;
 
-    post = { ...post };
-    if (post.user && this.props.users[post.user]) post.user = this.props.users[post.user];
+    let post = { ...item };
+    if (post.user && users[post.user]) {
+      post.user = users[post.user];
+    }
 
     if (post.repost) {
-      // console.log(post)
-      // if(!this.props.posts) return null;
       postStyle = [styles.repost];
-      let repost = this.props.posts.posts[post.repost.post];
+      let repost = posts.posts[post.repost.post];
       if (!repost) repost = { body: '[deleted]' };
-      if (repost.user && this.props.users[repost.user]) {
-        repost.user = this.props.users[repost.user];
+      if (repost.user && users[repost.user]) {
+        repost.user = users[repost.user];
       }
 
       repostEl = (
         <View style={{ marginBottom: 0 }}>
-          <PostInfo
-            repost
-            actions={this.props.actions}
-            auth={this.props.auth}
-            post={post}
-            users={this.props.users}
-          />
+          <PostInfo repost actions={actions} auth={auth} post={post} users={users} />
           <PostBody
             repost
-            actions={this.props.actions}
-            auth={this.props.auth}
-            post={{ _id: repost._id, body: post.repost.commentBody }}
+            actions={actions}
+            auth={auth}
+            post={{
+              _id: repost._id,
+              body: post.repost.commentBody
+            }}
           />
         </View>
       );
@@ -104,7 +110,7 @@ export default class Commentary extends Component {
       }
       repostedBy = (
         <View>
-          <TouchableOpacity onPress={() => this.props.actions.goToPost(post)}>
+          <TouchableOpacity onPress={() => actions.goToPost(post)}>
             <View style={styles.textRow}>
               <Image
                 resizeMode={'contain'}
@@ -132,29 +138,28 @@ export default class Commentary extends Component {
             <PostInfo
               big
               post={post}
-              actions={this.props.actions}
-              auth={this.props.auth}
-              singlePost={this.props.singlePost}
-              users={this.props.users}
+              actions={actions}
+              auth={auth}
+              singlePost={singlePost}
+              users={users}
             />
             <PostBody
               short
               post={post}
               editing={false}
-              actions={this.props.actions}
-              auth={this.props.auth}
-              singlePost={this.props.singlePost}
+              actions={actions}
+              auth={auth}
+              singlePost={singlePost}
             />
             <PostButtons
               post={post}
               link={link}
-              tooltip={index === 0 ? this.props.tooltip : null}
-              // tooltip={this.props.tooltip}
+              tooltip={index === 0 ? tooltip : null}
               comments={post.comments || null}
-              actions={this.props.actions}
-              auth={this.props.auth}
+              actions={actions}
+              auth={auth}
               myPostInv={myPostInv}
-              focusInput={this.props.focusInput}
+              focusInput={focusInput}
             />
           </View>
         </View>
@@ -172,9 +177,6 @@ export default class Commentary extends Component {
           slides={commentary.map((c, i) => i + 1)}
           scrollToPage={this.scrollToPage}
         />
-        {/*       <Text style={[styles.smallInfo, {textAlign: 'center'}]}>
-          Swipe for other's commentary 🤔
-        </Text> */}
       </View>
     );
     return (
@@ -190,7 +192,6 @@ export default class Commentary extends Component {
           contentContainerStyle={[styles.postScroll]}
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={this.onScrollEnd}
-          // columnWrapperStyle={{ flex: 1 }}
         />
         {commentary.length > 1 ? pills : null}
       </View>
@@ -216,7 +217,6 @@ const localStyles = StyleSheet.create({
   },
   commentary: {
     flexGrow: 1,
-    // flex: 1,
     marginTop: 10,
     marginBottom: 10,
     flexDirection: 'column'

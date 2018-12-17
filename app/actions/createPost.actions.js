@@ -3,6 +3,7 @@ import * as types from './actionTypes';
 import * as utils from '../utils';
 
 utils.api.env();
+const Alert = utils.api.Alert();
 
 export function setCreaPostState(state) {
   return {
@@ -35,7 +36,7 @@ export function submitPost(post) {
       });
       return true;
     } catch (err) {
-      console.log(err);
+      Alert.alert('Error creating post', err.message);
       return false;
     }
   };

@@ -30,7 +30,8 @@ export default class AddEthAddress extends Component {
   async addKey() {
     const { actions, account } = this.props;
     try {
-      const salt = crypto.randomBytes(16).toString('hex');
+      const salt = crypto.randomBytes(16)
+      .toString('hex');
       const msgParams = [
         {
           type: 'string',
@@ -79,7 +80,8 @@ export default class AddEthAddress extends Component {
         <div className="ethAddress">
           <p>Looks like you got some Relevant Tokens!</p>
           <p>
-            Connect your Ethereum address to your Relevant account in order to start earning rewards
+            Connect your Ethereum address to your Relevant account in order to start
+            earning rewards
           </p>
           <div className="smallInfo">
             <p>-This is not a transaction and is totally free-</p>

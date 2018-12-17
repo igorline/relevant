@@ -1,17 +1,22 @@
 import request from 'request-promise-any';
 import jsdom from 'jsdom';
-import { JSDOMParser, Readability } from 'readability/index';
+import { Readability } from 'readability/index';
 import cheerio from 'cheerio';
 import { parse as parseUrl } from 'url';
 
+/* eslint no-console: 0 */
+
 const fbHeader = {
-  'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+  'User-Agent':
+    'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'
 };
 
-const URL_REGEX = new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%_\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+~#?&//=]*)/);
+const URL_REGEX = new RegExp(
+  /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%_+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_+~#?&//=]*)/
+);
 const HTML_REGEX = new RegExp(/<[^>]*>/, 'gm');
 
-exports.extractDomain = (url) => {
+exports.extractDomain = url => {
   let domain;
   if (url.indexOf('://') > -1) {
     domain = url.split('/')[2];
@@ -32,7 +37,7 @@ function stripHTML(text) {
   return (text || '').replace(HTML_REGEX, '');
 }
 
-exports.getReadable = async (uri) => {
+exports.getReadable = async uri => {
   let article;
   try {
     const body = await request({
@@ -50,7 +55,7 @@ exports.getReadable = async (uri) => {
       }
     });
     article = new Readability(uri, doc).parse();
-    if (!article) throw new Error('Couldn\'t parse doc');
+    if (!article) throw new Error("Couldn't parse doc");
     // console.log(article.byline);
   } catch (err) {
     console.log('ERROR getting readable version', uri);
@@ -60,23 +65,23 @@ exports.getReadable = async (uri) => {
 };
 
 exports.trimToLength = (doc, length) => {
-  Array.prototype.slice.call(doc.getElementsByTagName('figure'))
-    .forEach(item => item.remove());
+  Array.prototype.slice
+  .call(doc.getElementsByTagName('figure'))
+  .forEach(item => item.remove());
 
   let totalLength = 0;
-  Array.prototype.slice.call(doc.getElementsByTagName('*'))
-    .forEach(el => {
-      if (totalLength > length) return el.remove();
-      const elChildNode = el.childNodes;
-      elChildNode.forEach(child => {
-        if (child.nodeType === 3) {
-          const text = child.textContent;
-          const l = text.split(/\s+/).length;
-          if (l > 4) totalLength += l;
-        }
-      });
-      return null;
+  Array.prototype.slice.call(doc.getElementsByTagName('*')).forEach(el => {
+    if (totalLength > length) return el.remove();
+    const elChildNode = el.childNodes;
+    elChildNode.forEach(child => {
+      if (child.nodeType === 3) {
+        const text = child.textContent;
+        const l = text.split(/\s+/).length;
+        if (l > 4) totalLength += l;
+      }
     });
+    return null;
+  });
   return doc;
 };
 
@@ -91,18 +96,23 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
 
   if (redirect && redirect.attribs && redirect.attribs.content) {
     redirectUrl = redirect.attribs.content.split('URL=')[1];
-    if (redirectUrl) redirectUrl = redirectUrl.replace(/\'/g, '');
-    if (redirectUrl && uri.match('twitter.com') && redirectUrl.match('mobile.twitter.com')) {
+    if (redirectUrl) redirectUrl = redirectUrl.replace(/'/g, '');
+    if (
+      redirectUrl &&
+      uri.match('twitter.com') &&
+      redirectUrl.match('mobile.twitter.com')
+    ) {
       redirectUrl = uri;
     }
   }
 
-  if (redirectUrl &&
+  if (
+    redirectUrl &&
     redirectUrl.match('http') &&
     exports.extractDomain(redirectUrl) !== '' &&
     exports.extractDomain(redirectUrl) !== exports.extractDomain(uri) &&
-    reqUrl !== redirectUrl) {
-    console.log('redirect to redirectUrl', redirectUrl);
+    reqUrl !== redirectUrl
+  ) {
     return {
       redirect: true,
       uri: redirectUrl
@@ -114,22 +124,18 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
   else canonical = null;
 
   if (canonical && canonical.href) {
-    // console.log('check if valid canonical url');
     if (!URL_REGEX.test(canonical.href)) {
       canonical.href = exports.extractDomain(uri) + canonical.href;
     }
   }
 
-  // console.log('reqUrl ', reqUrl);
-  // console.log('canonical url ', canonical.href);
-  // console.log('original url  ', uri);
-
-  if (canonical &&
+  if (
+    canonical &&
     canonical.href &&
     canonical.href.match('http') &&
     exports.extractDomain(canonical.href) !== exports.extractDomain(uri) &&
-    reqUrl !== canonical.href) {
-    console.log('redirect to canonical.href', canonical.href);
+    reqUrl !== canonical.href
+  ) {
     return {
       redirect: true,
       uri: canonical.href
@@ -138,7 +144,9 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
 
   if (uri.match('apple.news')) {
     try {
-      const articleUrl = body.match(/redirectToUrl\("(.*)"/)[0].replace(/redirectToUrl\(|"/g, '');
+      const articleUrl = body
+      .match(/redirectToUrl\("(.*)"/)[0]
+      .replace(/redirectToUrl\(|"/g, '');
       if (articleUrl) {
         return {
           redirect: true,
@@ -149,8 +157,6 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
       console.log(err);
     }
   }
-
-  // console.log(body);
 
   let data = {
     title: null,
@@ -173,8 +179,9 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
     keywords: null,
     'article:tag': null,
     author: null,
-    'article:author': null,
+    'article:author': null
   };
+
   // ads milti element concotenation
   const miltiElement = [
     'news_keywords',
@@ -190,11 +197,12 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
   data.title = $title.eq(0).text();
 
   Object.keys(data).forEach(s => {
-    keys.forEach((key) => {
-      if (meta[key].attribs
-        && (meta[key].attribs.property === s
-        || meta[key].attribs.name === s
-        || meta[key].attribs.itemprop === s)
+    keys.forEach(key => {
+      if (
+        meta[key].attribs &&
+        (meta[key].attribs.property === s ||
+          meta[key].attribs.name === s ||
+          meta[key].attribs.itemprop === s)
       ) {
         if (!data[s]) data[s] = meta[key].attribs.content;
         else if (miltiElement.find(m => m === s)) {
@@ -204,14 +212,20 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
     });
   });
 
-
   let description = null;
   let title = null;
   let image = null;
 
   title = data['og:title'] || data['twitter:title'] || data.title;
-  description = stripHTML(data.description || data['og:description'] || data['twitter:description']).trim();
-  image = data['og:image'] || data['og:image:url'] || data['twitter:image'] || data['twitter:image:src'] || data.image;
+  description = stripHTML(
+    data.description || data['og:description'] || data['twitter:description']
+  ).trim();
+  image =
+    data['og:image'] ||
+    data['og:image:url'] ||
+    data['twitter:image'] ||
+    data['twitter:image:src'] ||
+    data.image;
 
   // why prioritise og tags? flipboard?
   let url;
@@ -227,12 +241,12 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
 
   const k1 = data.keywords ? data.keywords.split(',').map(k => k.trim()) : [];
   const k2 = data.news_keywords ? data.news_keywords.split(',').map(k => k.trim()) : [];
-  const k3 = data['article:tag'] ?
-
-    data['article:tag']
-      .split(',')
-      .map(k => k.replace('--primarykeyword-', '').trim())
-      .filter(k => !k.match('--')) : [];
+  const k3 = data['article:tag']
+    ? data['article:tag']
+    .split(',')
+    .map(k => k.replace('--primarykeyword-', '').trim())
+    .filter(k => !k.match('--'))
+    : [];
 
   let keywords = [...new Set([...k1, ...k2, ...k3])];
 
@@ -241,16 +255,19 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
     url = originalUrl.protocol + '//' + originalUrl.host + originalUrl.pathname;
   }
 
-  let amp = $('[type="application/ld+json"]').eq(0).text();
+  let amp = $('[type="application/ld+json"]')
+  .eq(0)
+  .text();
   let ampKeywords;
   let ampAuthor;
   if (amp) {
     try {
-      amp = amp.replace('//<![CDATA[', '')
-        .replace('// <![CDATA[', '')
-        .replace('//]]>', '')
-        .replace('// ]]>', '')
-        .trim();
+      amp = amp
+      .replace('//<![CDATA[', '')
+      .replace('// <![CDATA[', '')
+      .replace('//]]>', '')
+      .replace('// ]]>', '')
+      .trim();
       amp = JSON.parse(amp);
       if (!amp) throw new Error('no amp');
       ampAuthor = amp.author ? amp.author.name : null;
@@ -275,33 +292,23 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
   data['article:author'] = data['article:author'] || '';
 
   const metaAuthor = data.author
-    .split(/,|\sand\s/)
-    .map(a => a.trim())
-    .filter(a => a !== '');
+  .split(/,|\sand\s/)
+  .map(a => a.trim())
+  .filter(a => a !== '');
 
   ampAuthor = ampAuthor || [];
-
 
   let author = [...ampAuthor, ...metaAuthor];
   author = [...new Set(author)].filter(a => !a.match('http'));
 
-
   if (ampKeywords && ampKeywords.length && !keywords.length) {
-    if (typeof keywords !== 'array') {
-    } else {
+    if (Array.isArray(ampKeywords)) {
       keywords = ampKeywords.filter(k => !k.match('@'));
     }
   }
 
   keywords = keywords.map(k => k.toLowerCase());
   keywords = [...new Set(keywords)];
-
-  // console.log(keywords);
-
-  if (!data.author && ampAuthor) {
-    // console.log('AMP AUTHOR');
-    // console.log(ampAuthor);
-  }
 
   let doc = jsdom.jsdom(body, {
     features: {
@@ -328,41 +335,26 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
       console.log(err);
     }
     if (!author.length && article.byline) {
-      const by = article.byline.split(/\n|\,|•/)
-        .map(a => a.replace(/by|by:\s/i, '').trim())
-        .filter(a => a !== '' &&
-        !a.match(/^by$/i) &&
-        a.length > 2 &&
-        !a.match('UTC')
-        && (isNaN(new Date(a).getTime()))
-        && !a.match('http')
+      const by = article.byline
+      .split(/\n|,|•/)
+      .map(a => a.replace(/by|by:\s/i, '').trim())
+      .filter(
+        a =>
+          a !== '' &&
+            !a.match(/^by$/i) &&
+            a.length > 2 &&
+            !a.match('UTC') &&
+            Number.isNaN(new Date(a).getTime()) &&
+            !a.match('http')
         // && !a.match(/2017|2016|2015|2018/)
-        );
-      // .map(a => new Date(a))
-      // console.log(by);
+      );
       author = by[0] ? [by[0]] : [];
     }
-  } else {
-    // console.log('couldn\'t parse url ', url);
   }
 
-  // console.log('author ', article.byline);
-
-  // if (!image && article && article.content) {
-  //   image = article.content.match(/(http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/);
-  //   image = image ? image[0] : null;
-  //   console.log('found image ', image);
-  // } else if (!image) {
-  //   image = $('img').eq(0).attr('src');
-  //   console.log('found alt image', image);
-  // }
-
-
-  if (image && image.indexOf('http://') !== 0 &&
-      image.indexOf('https://') !== 0) {
+  if (image && image.indexOf('http://') !== 0 && image.indexOf('https://') !== 0) {
     image = 'http://' + domain + image;
   }
-
 
   if (!title && url.match('.pdf')) {
     title = url.substring(url.lastIndexOf('/') + 1);
@@ -387,9 +379,6 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
     // console.log($('head').html());
   }
 
-  // console.log(obj);
-  // console.log($('head').html());
-  // console.log(body);
   $ = null;
   body = null;
   article = null;
@@ -401,37 +390,3 @@ exports.generatePreview = async (body, uri, reqUrl, noReadability) => {
     result: obj
   };
 };
-
-// method 1
-// let req = http.request(previewUrl, function(res) {
-//   response.writeHead(res.statusCode, res.headers);
-//   return res.pipe(response, { end: true });
-// });
-// request.pipe(req, { end: true });
-
-
-// method 2
-// request.pause();
-// var options = url.parse(request.url);
-// options.headers = request.headers;
-// options.method = request.method;
-// options.agent = false;
-// var connector = http.request(previewUrl, function(serverResponse) {
-//   serverResponse.pause();
-//   response.writeHeader(serverResponse.statusCode, serverResponse.headers);
-//   serverResponse.pipe(response);
-//   serverResponse.resume();
-// });
-// request.pipe(connector);
-// request.resume();
-
-
-// method 3
-// let proxy = http.createClient(80, request.headers['host'])
-// let proxy_request = proxy.request(request.method, request.params.url, request.headers);
-// proxy_request.on('response', function (proxy_response) {
-//   proxy_response.pipe(response);
-//   response.writeHead(proxy_response.statusCode, proxy_response.headers);
-// });
-
-// response.pipe(proxy_request);

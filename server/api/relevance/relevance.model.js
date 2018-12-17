@@ -1,44 +1,48 @@
 import mongoose from 'mongoose';
 import Tag from '../tag/tag.model';
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
+// TODO move this to Community Member
+const RelevanceSchema = new Schema(
+  {
+    user: { type: String, ref: 'User', index: true },
+    tag: { type: String, ref: 'Tag' },
+    global: { type: Boolean, default: false },
+    topTopic: { type: Boolean, deafault: false },
 
-const RelevanceSchema = new Schema({
-  user: { type: String, ref: 'User', index: true },
-  tag: { type: String, ref: 'Tag' },
-  global: { type: Boolean, default: false },
-  topTopic: { type: Boolean, deafault: false },
+    community: { type: String },
+    communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
 
-  community: { type: String },
-  communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
+    category: { type: String, ref: 'Tag' },
+    relevance: { type: Number, default: 0 },
 
-  category: { type: String, ref: 'Tag' },
-  relevance: { type: Number, default: 0 },
+    pagerank: { type: Number, default: 0 },
+    pagerankRaw: { type: Number, default: 0 },
 
-  pagerank: { type: Number, default: 0 },
-  pagerankRaw: { type: Number, default: 0 },
-
-  rank: Number,
-  totalUsers: Number,
-  level: Number,
-  percentRank: Number,
-  relevanceRecord: [{
-    relevance: Number,
-    time: Date,
-  }],
-  topTopics: [{ type: String, ref: 'Tag' }],
-}, {
-  timestamps: true
-});
+    rank: Number,
+    totalUsers: Number,
+    level: Number,
+    percentRank: Number,
+    relevanceRecord: [
+      {
+        relevance: Number,
+        time: Date
+      }
+    ],
+    topTopics: [{ type: String, ref: 'Tag' }]
+  },
+  {
+    timestamps: true
+  }
+);
 
 RelevanceSchema.index({ user: 1, relevance: 1 });
-// RelevanceSchema.index({ user: 1, community: 1 });
 RelevanceSchema.index({ user: 1, communityId: 1 });
 
 // update user relevance and save record
 RelevanceSchema.methods.updateRelevanceRecord = function updateRelevanceRecord() {
-  let relevanceRecord = this.relevanceRecord;
+  let { relevanceRecord } = this;
   if (!relevanceRecord) relevanceRecord = [];
   relevanceRecord.unshift({
     time: new Date(),
@@ -50,7 +54,12 @@ RelevanceSchema.methods.updateRelevanceRecord = function updateRelevanceRecord()
 };
 
 // DEPRECATED
-RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance(user, post, relevanceToAdd, communityId) {
+RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance(
+  user,
+  post,
+  relevanceToAdd,
+  communityId
+) {
   let tagRelevance;
   // TODO await?
   // TODO right now we are updating reputation based on post community
@@ -62,7 +71,6 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
     tagRelevance = tagsAndCat.map(tag => {
       const index = cats.findIndex(cat => {
         if (cat._id === tag) return true;
-
         // Depricated - no more main
         else if (cat.main.findIndex(main => tag === main._id) > -1) {
           return true;
@@ -74,7 +82,7 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
       return this.update(
         { user, tag, communityId },
         { $inc: { relevance: relevanceToAdd }, topTopic },
-        { upsert: true },
+        { upsert: true }
       ).exec();
     });
 
@@ -83,21 +91,21 @@ RelevanceSchema.statics.updateUserRelevance = async function updateUserRelevance
       this.update(
         { user, category: post.category, communityId },
         { $inc: { relevance: relevanceToAdd } },
-        { upsert: true },
-      ).exec());
+        { upsert: true }
+      ).exec()
+    );
 
     // update global reputation
     const relevance = await this.findOneAndUpdate(
       { user, communityId, global: true },
       { $inc: { relevance: relevanceToAdd } },
-      { upsert: true, new: true },
+      { upsert: true, new: true }
     );
 
     // return Promise.all(tagRelevance);
     return relevance;
   } catch (err) {
-    console.log('relevance error ', err);
-    return null;
+    throw err;
   }
 };
 
@@ -108,16 +116,16 @@ RelevanceSchema.statics.mergeDuplicates = async function mergeDuplicates() {
       rel.forEach((rel2, j) => {
         if (i <= j) return false;
         if (rel1.tag && rel2.tag === rel1.tag && rel1.user === rel2.user) {
-          console.log(rel2, ' is a dup of ', rel1);
           rel1.relevance = Math.max(rel1.relevance, rel2.relevance);
           rel1.save();
           rel2.remove();
           return true;
         }
+        return false;
       });
     });
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 };
 

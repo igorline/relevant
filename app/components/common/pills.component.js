@@ -6,21 +6,19 @@ import { blue } from '../../styles/global';
 let styles;
 
 export default function Pills(props) {
-  const indicator = [];
-  if (!props.slides) return null;
-  if (props.slides.length) {
-    props.slides.forEach((slide, i) => {
-      let active = false;
+  const { scrollToPage, currentIndex, slides } = props;
+  if (!slides || !slides.length) return null;
 
-      if (props.currentIndex === i) active = true;
+  const indicator = props.slides.map((slide, i) => {
+    let active = false;
+    if (currentIndex === i) active = true;
 
-      indicator.push(
-        <TouchableWithoutFeedback onPress={() => props.scrollToPage(i)} key={i}>
-          <View style={[styles.indicatorItem, { backgroundColor: active ? blue : 'lightgrey' }]} />
-        </TouchableWithoutFeedback>
-      );
-    });
-  }
+    return (
+      <TouchableWithoutFeedback onPress={() => scrollToPage(i)} key={i}>
+        <View style={[styles.indicatorItem, { backgroundColor: active ? blue : 'lightgrey' }]} />
+      </TouchableWithoutFeedback>
+    );
+  });
   return <View style={styles.pillContainer}>{indicator}</View>;
 }
 

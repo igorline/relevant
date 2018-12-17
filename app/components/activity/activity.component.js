@@ -32,7 +32,7 @@ export default class SingleActivity extends Component {
   };
 
   toggleTooltip(name, type) {
-    const tooltipParent = this.tooltipParent;
+    const { tooltipParent } = this;
     if (!tooltipParent[name]) return;
     tooltipParent[name].measureInWindow((x, y, w, h) => {
       const parent = { x, y, w, h };
@@ -70,7 +70,10 @@ export default class SingleActivity extends Component {
       if (activity.totalUsers - 1 > 1) s = 's';
       return (
         <Text style={styles.activityText}>
-          <Text style={[styles.link, styles.activityText]} onPress={() => this.setSelected(user)}>
+          <Text
+            style={[styles.link, styles.activityText]}
+            onPress={() => this.setSelected(user)}
+          >
             {user.name}{' '}
           </Text>
           and {activity.totalUsers - 1} other{s}
@@ -79,7 +82,10 @@ export default class SingleActivity extends Component {
     }
 
     return (
-      <Text style={[styles.link, styles.activityText]} onPress={() => this.setSelected(user)}>
+      <Text
+        style={[styles.link, styles.activityText]}
+        onPress={() => this.setSelected(user)}
+      >
         {user.name}{' '}
       </Text>
     );
@@ -170,20 +176,27 @@ export default class SingleActivity extends Component {
   }
 
   renderPostPreview(activity) {
-    const post = activity.post;
+    const { post } = activity;
+    const { posts } = this.props;
     if (!post) return null;
-    const link = this.props.posts.links[post.metaPost];
+    const link = posts.links[post.metaPost];
     const previewProps = { urlPreview: link || post, post };
     const goTo = post.type === 'post' ? post : { _id: post.parentPost };
     return (
       <View style={{ marginLeft: 55, marginRight: mainPadding }}>
-        <UrlPreview onPress={() => this.goToPost(goTo)} size={'small'} {...previewProps} />
+        <UrlPreview
+          onPress={() => this.goToPost(goTo)}
+          size={'small'}
+          {...previewProps}
+        />
       </View>
     );
   }
 
   renderActivity(activity) {
-    const { emoji, userImage, post, image, userName } = activityHelper.getActivityParams(activity);
+    const { emoji, userImage, post, image, userName } = activityHelper.getActivityParams(
+      activity
+    );
     const amount = numbers.abbreviateNumber(activity.amount);
     const coinAmount = numbers.abbreviateNumber(activity.coin);
 
@@ -211,7 +224,8 @@ export default class SingleActivity extends Component {
   }
 
   renderBorder(activity) {
-    const fromNow = moment(activity.createdAt).fromNow();
+    const fromNow = moment(activity.createdAt)
+    .fromNow();
     if (activity.type) {
       return (
         <View style={styles.time}>
@@ -280,7 +294,6 @@ const localStyles = StyleSheet.create({
     alignItems: 'stretch',
     flex: 1,
     overflow: 'visible'
-    // backgroundColor: 'white'
   },
   activityMiddleSmall: {
     flex: 0.16,

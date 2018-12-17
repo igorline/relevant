@@ -25,12 +25,7 @@ if (process.env.WEB !== 'true') {
 const APP_GROUP_ID = 'group.com.4real.relevant';
 
 const reqOptions = async () => {
-  let token;
-  try {
-    token = await utils.token.get();
-  } catch (err) {
-    console.log('no token'); // eslint-disable-line
-  }
+  const token = await utils.token.get();
   return {
     credentials: 'include',
     headers: {
@@ -183,7 +178,7 @@ export function setDeviceToken(token) {
 export function removeDeviceToken(auth) {
   if (!auth) return null;
   return dispatch => {
-    const user = auth.user;
+    const { user } = auth;
     if (user.deviceTokens) {
       const index = user.deviceTokens.indexOf(auth.deviceToken);
       if (index > -1) {
@@ -241,7 +236,7 @@ export function addDeviceToken(user) {
 
     PushNotification.onRegister = deviceToken => {
       console.log('registered notification');
-      const token = deviceToken.token;
+      const { token } = deviceToken;
       userDefaults.set('deviceToken', token, APP_GROUP_ID);
       dispatch(setDeviceToken(token));
       const newUser = user;
@@ -352,14 +347,21 @@ export function loginUser(user) {
 
 export function userOnline(user, token) {
   return () =>
-    fetch(process.env.API_SERVER + '/notification/online/' + user._id + '?access_token=' + token, {
-      credentials: 'include',
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
+    fetch(
+      process.env.API_SERVER +
+        '/notification/online/' +
+        user._id +
+        '?access_token=' +
+        token,
+      {
+        credentials: 'include',
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
       }
-    })
+    )
     .then(response => response.json())
     .catch(error => {
       console.log(error, 'error');
@@ -410,7 +412,7 @@ export function createUser(user, invite) {
           return true;
         });
       } else if (responseJSON.errors) {
-        const errors = responseJSON.errors;
+        const { errors } = responseJSON;
         let message = '';
         Object.keys(errors).forEach(key => {
           if (errors[key].message) message += errors[key].message;

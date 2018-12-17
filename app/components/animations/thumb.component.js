@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Animated, Easing } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
 
 let styles;
 
@@ -37,8 +36,10 @@ class Heart extends Component {
         duration: 500,
         easing: Easing.elastic(2),
         useNativeDriver: true
-      }).start()
-    ]).start();
+      })
+      .start()
+    ])
+    .start();
 
     setTimeout(() => this.props.destroy(key), 2000);
   }

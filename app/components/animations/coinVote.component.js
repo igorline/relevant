@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Animated, Easing, Image, Text } from 'react-native';
+import { StyleSheet, Animated, Easing, Image } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
+import { globalStyles, fullHeight } from '../../styles/global';
 
 let styles;
 const ENDY = fullHeight * 0.5;
@@ -22,7 +22,7 @@ class Coin extends Component {
   }
 
   componentWillMount() {
-    const { x, y, w, h } = this.props.parent;
+    const { x, y } = this.props.parent;
     const ENDX = Math.random() * 50;
 
     this.y = this.state.position.interpolate({
@@ -56,24 +56,22 @@ class Coin extends Component {
   }
 
   componentDidMount() {
+    const { amount } = this.props;
     const i = this.props.specialKey;
     const r = Math.random();
-    const amount = this.props.amount;
 
     Animated.timing(this.state.position, {
       toValue: 1,
       delay: r * 30 + (i * 100 * 10) / amount,
       duration: 1000
-    }).start(() => this.props.destroy(null, i));
+    })
+    .start(() => this.props.destroy(null, i));
   }
 
   render() {
-    const specialKey = this.props.specialKey;
-    let img;
-
+    const { specialKey } = this.props;
     const icon = require('../../assets/images/relevantcoin.png');
-
-    img = <Image style={[styles.coin, { width: 20, height: 20 }]} source={icon} />;
+    const img = <Image style={[styles.coin, { width: 20, height: 20 }]} source={icon} />;
 
     return (
       <Animated.View
@@ -81,7 +79,11 @@ class Coin extends Component {
         style={[
           styles.aniMoney,
           {
-            transform: [{ translateX: this.x }, { translateY: this.y }, { scale: this.scale }],
+            transform: [
+              { translateX: this.x },
+              { translateY: this.y },
+              { scale: this.scale }
+            ],
             opacity: this.opacity
           }
         ]}

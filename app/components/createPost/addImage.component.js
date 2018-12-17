@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { StyleSheet, TextInput, View, TouchableHighlight, Image, Text } from 'react-native';
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  TouchableHighlight,
+  Image,
+  Text,
+  Alert
+} from 'react-native';
 import PropTypes from 'prop-types';
 import ImagePicker from 'react-native-image-picker';
 import { globalStyles } from '../../styles/global';
@@ -29,7 +37,8 @@ export default class CreatePostComponent extends Component {
     this.currentTags = this.props.postTags;
     if (!this.props.postTags.length) this.currentTags = this.props.bodyTags;
     if (this.currentTags) {
-      this.currentTags = this.currentTags.toString().replace(/,/g, ', ');
+      this.currentTags = this.currentTags.toString()
+      .replace(/,/g, ', ');
       this.updateTags(this.currentTags);
     }
   }
@@ -37,18 +46,18 @@ export default class CreatePostComponent extends Component {
   chooseImage() {
     this.pickImage((err, data) => {
       if (data) {
-        utils.s3.toS3Advanced(data).then(results => {
+        utils.s3.toS3Advanced(data)
+        .then(results => {
           if (results.success) {
             if (this.props.urlPreview) {
               const urlPreview = { ...this.props.urlPreview, image: results.url };
-              this.props.actions.setCreaPostState({ urlPreview });
-            } else {
-              const postImage = results.url;
-              this.props.actions.setCreaPostState({ postImage });
+              return this.props.actions.setCreaPostState({ urlPreview });
             }
-          } else {
-            console.log('err');
+            const postImage = results.url;
+            return this.props.actions.setCreaPostState({ postImage });
           }
+          if (err) return Alert.alert(err.message);
+          return null;
         });
       }
     });
@@ -119,7 +128,9 @@ export default class CreatePostComponent extends Component {
         {tagsInput}
         {postImage}
         {this.props.postImage && !this.props.urlPreview ? imagePreview : null}
-        {this.props.urlPreview ? <UrlPreview {...this.props} actions={this.props.actions} /> : null}
+        {this.props.urlPreview ? (
+          <UrlPreview {...this.props} actions={this.props.actions} />
+        ) : null}
       </View>
     );
   }

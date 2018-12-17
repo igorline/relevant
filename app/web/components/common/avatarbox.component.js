@@ -6,9 +6,8 @@ import { numbers } from '../../../utils';
 import Avatar from './avatar.component';
 
 export default function AvatarBox(props) {
-  const user = props.user;
+  const { user, reverse } = props;
   if (!user) return null;
-  const reverse = props.reverse;
   const profileLink = user ? '/user/profile/' + user.handle : null;
 
   let timestamp;
@@ -38,7 +37,11 @@ export default function AvatarBox(props) {
   if (user.relevance && !props.dontShowRelevance) {
     relevance = (
       <span>
-        <span style={{ backgroundImage: 'url(/img/r-emoji.png)' }} alt="R" className="r" />
+        <span
+          style={{ backgroundImage: 'url(/img/r-emoji.png)' }}
+          alt="R"
+          className="r"
+        />
         {Math.round(user.relevance.pagerank)}
       </span>
     );

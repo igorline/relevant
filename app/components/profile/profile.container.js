@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { globalStyles } from '../../styles/global';
-// import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Post from '../../components/post/post.component';
 import ProfileComponent from './profile.component';
 import CustomSpinner from '../../components/CustomSpinner.component';
@@ -24,19 +23,18 @@ import Tabs from '../../components/tabs.component';
 import CustomListView from '../../components/customList.component';
 
 let styles;
-let localStyles;
 
 class Profile extends Component {
   static propTypes = {
     scene: PropTypes.object,
-    users: PropTypes.array,
+    users: PropTypes.object,
     auth: PropTypes.object,
     refresh: PropTypes.object,
-    reload: PropTypes.object,
+    reload: PropTypes.number,
     actions: PropTypes.object,
     posts: PropTypes.object,
     investments: PropTypes.object,
-    error: PropTypes.string
+    error: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -52,7 +50,8 @@ class Profile extends Component {
     };
     this.userData = null;
     this.userId = null;
-    this.needsReload = new Date().getTime();
+    this.needsReload = new Date()
+    .getTime();
     this.tabs = [{ id: 0, title: 'Posts' }, { id: 1, title: 'Upvotes' }];
     this.loaded = false;
     this.scrollTo = this.scrollTo.bind(this);
@@ -88,7 +87,8 @@ class Profile extends Component {
       this.scrollToTop();
     }
     if (this.props.reload !== next.reload) {
-      this.needsReload = new Date().getTime();
+      this.needsReload = new Date()
+      .getTime();
       // this.loadUser();
     }
   }
@@ -96,15 +96,6 @@ class Profile extends Component {
   shouldComponentUpdate(next) {
     const tab = next.tabs.routes[next.tabs.index];
     if (tab.key !== 'myProfile' && !next.scene) return false;
-    // console.log('updating profile');
-    // for (let p in next) {
-    //   if (next[p] !== this.props[p]) {
-    //     console.log(p);
-    //     for (let pp in next[p]) {
-    //       if (next[p][pp] !== this.props[p][pp]) console.log('--> ',pp);
-    //     }
-    //   }
-    // }
     return true;
   }
 
@@ -117,7 +108,6 @@ class Profile extends Component {
   }
 
   load(view, length) {
-    // if (!this.loaded) return;
     if (view === undefined) view = this.state.view;
     if (length === undefined) length = 0;
 
@@ -169,7 +159,12 @@ class Profile extends Component {
           styles={styles}
           scrollTo={this.scrollTo}
         />,
-        <Tabs key={1} tabs={this.tabs} active={this.state.view} handleChange={this.changeView} />,
+        <Tabs
+          key={1}
+          tabs={this.tabs}
+          active={this.state.view}
+          handleChange={this.changeView}
+        />,
         <View key={2} style={{ height: 0 }} />
       ];
     }
@@ -212,9 +207,12 @@ class Profile extends Component {
         let data = tabData.data || [];
         if (!this.loaded) data = [];
         const loaded = tabData.loaded && this.loaded;
-        const postCount = this.userData.postCount !== undefined ? this.userData.postCount : '';
+        const postCount =
+          this.userData.postCount !== undefined ? this.userData.postCount : '';
         const Upvotes =
-          this.userData.investmentCount !== undefined ? this.userData.investmentCount : '';
+          this.userData.investmentCount !== undefined
+            ? this.userData.investmentCount
+            : '';
 
         if (tab.id === 0) {
           tab.title = 'Posts ' + postCount;
@@ -253,10 +251,6 @@ class Profile extends Component {
     return <View style={styles.profileContainer}>{listEl}</View>;
   }
 }
-
-Profile.propTypes = {
-  actions: PropTypes.object
-};
 
 function mapStateToProps(state) {
   return {
@@ -301,7 +295,7 @@ export default connect(
   mapDispatchToProps
 )(Profile);
 
-localStyles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   postsHeader: {
     padding: 10
   },

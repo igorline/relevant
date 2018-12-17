@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Animated, Easing, Platform } from 'react-native';
+import { Animated, Easing, Platform } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles, fullWidth } from '../../styles/global';
-import Tabs from '../tabs.component';
-
-let styles;
+import { fullWidth } from '../../styles/global';
 
 export default class DiscoverHeader extends Component {
   static propTypes = {
@@ -58,7 +55,8 @@ export default class DiscoverHeader extends Component {
       duration: 200,
       easing: Easing.quad,
       useNativeDriver: true
-    }).start();
+    })
+    .start();
   }
 
   showHeader() {
@@ -67,11 +65,11 @@ export default class DiscoverHeader extends Component {
       duration: 200,
       easing: Easing.quad,
       useNativeDriver: true
-    }).start();
+    })
+    .start();
   }
 
   render() {
-    // return this.props.children;
     return (
       <Animated.View
         style={{
@@ -99,17 +97,3 @@ export default class DiscoverHeader extends Component {
     );
   }
 }
-
-const localStyles = StyleSheet.create({
-  transformContainer: {
-    overflow: 'hidden'
-  },
-  searchParent: {
-    width: fullWidth,
-    backgroundColor: '#F0F0F0',
-    overflow: 'hidden',
-    padding: 5
-  }
-});
-
-styles = { ...localStyles, ...globalStyles };

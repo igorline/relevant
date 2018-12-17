@@ -5,11 +5,21 @@ import { numbers } from '../../utils';
 
 let styles;
 
+/* eslint react/prop-types: 0 */
+
 exports.data = {};
 exports.text = {};
 
 // list of tooltips to initalize on app load
-exports.tooltips = ['relevance', 'coin', 'topics', 'subscriptions', 'activity', 'shareTip', 'vote'];
+exports.tooltips = [
+  'relevance',
+  'coin',
+  'topics',
+  'subscriptions',
+  'activity',
+  'shareTip',
+  'vote'
+];
 
 exports.data.relevance = {
   name: 'relevance',
@@ -80,7 +90,7 @@ exports.data.coin = {
   verticalOffset: 10
 };
 
-exports.text.coin = function(props) {
+exports.text.coin = function coin(props) {
   if (!props.auth.user) return null;
 
   const data = [
@@ -109,7 +119,9 @@ exports.text.coin = function(props) {
             styles.title
           ]}
         >
-          {numbers.abbreviateNumber(props.auth.user.balance + props.auth.user.tokenBalance)}
+          {numbers.abbreviateNumber(
+            props.auth.user.balance + props.auth.user.tokenBalance
+          )}
         </Text>
       </View>
       <View style={styles.ulParent}>{dataEl}</View>
@@ -125,7 +137,7 @@ exports.data.topics = {
   verticalOffset: 10
 };
 
-exports.text.topics = function(props) {
+exports.text.topics = function topics(props) {
   if (!props.auth.user) return null;
   return (
     <Text style={[props.style, { textAlign: 'center' }]}>
@@ -142,7 +154,7 @@ exports.data.subscriptions = {
   verticalOffset: 10
 };
 
-exports.text.subscriptions = function(props) {
+exports.text.subscriptions = function subscription(props) {
   if (!props.auth.user) return null;
   return (
     <Text allowFontScaling={false} style={[props.style, { textAlign: 'center' }]}>
@@ -159,7 +171,7 @@ exports.data.vote = {
   verticalOffset: 15
 };
 
-exports.text.vote = function(props) {
+exports.text.vote = function vote(props) {
   if (!props.auth.user) return null;
 
   const data = [
@@ -188,7 +200,7 @@ exports.data.activity = {
   verticalOffset: 0
 };
 
-exports.text.activity = function(props) {
+exports.text.activity = function activity(props) {
   if (!props.auth.user) return null;
 
   let data = [
@@ -290,15 +302,12 @@ const localStyles = StyleSheet.create({
   ol: {
     flexDirection: 'row',
     paddingRight: 15
-    // alignItems: 'center'
   },
   tooltipText: {
     fontSize: 15
   },
   title: {
     fontSize: 20,
-    // fontFamily: 'BebasNeueRelevantRegular',
-    // letterSpacing: .5,
     lineHeight: 22,
     fontWeight: 'bold'
   },

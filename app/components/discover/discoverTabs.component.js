@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, InteractionManager, View, Platform, StatusBar } from 'react-native';
+import { StyleSheet, View, Platform, StatusBar } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import DefaultTabBar from './discoverTabBar.component';
-import Feed from './feed.container';
 import Discover from './discover.container';
 import DiscoverHeader from './discoverHeader.component';
 import { globalStyles, fullWidth, fullHeight, blue } from '../../styles/global';
@@ -18,11 +16,11 @@ const SUB_TITLE = 'Via Twitter';
 class DiscoverTabs extends Component {
   static propTypes = {
     scene: PropTypes.object,
-    view: PropTypes.number,
+    view: PropTypes.object,
     actions: PropTypes.object,
-    feedUnread: PropTypes.number,
-    topics: PropTypes.object,
-    tags: PropTypes.array
+    // feedUnread: PropTypes.number,
+    topics: PropTypes.bool,
+    tags: PropTypes.object
   };
 
   constructor(props, context) {
@@ -64,11 +62,6 @@ class DiscoverTabs extends Component {
       this.loaded = false;
       this.needsReload = new Date().getTime();
 
-      // this.onInteraction = InteractionManager.runAfterInteractions(() => {
-      //   this.loaded = true;
-      //   this.setState({});
-      // });
-
       requestAnimationFrame(() => {
         this.loaded = true;
         this.setState({});
@@ -76,10 +69,6 @@ class DiscoverTabs extends Component {
     } else {
       this.loaded = true;
     }
-  }
-
-  componentDidMount() {
-    // if (this.tabView && this.initialTab) this.tabView.goToPage(this.initialTab);
   }
 
   componentWillReceiveProps(next) {
@@ -106,7 +95,7 @@ class DiscoverTabs extends Component {
   }
 
   renderScene(route) {
-    const index = this.state.index;
+    const { index } = this.state;
     const currentRoute = this.state.routes[index] || {};
     if (!this.loaded) return <View key={route.key} />;
     switch (route.key) {
@@ -122,16 +111,7 @@ class DiscoverTabs extends Component {
             tabLabel={route.title}
           />
         );
-      // case 'feed':
-      //   return (
-      //     <Feed
-      //       key={'feed'}
-      //       active={currentRoute.key === route.key}
-      //       onScroll={this.onScroll}
-      //       offsetY={this.state.headerHeight}
-      //       tabLabel={route.title}
-      //     />
-      //   );
+
       case 'new':
         return (
           <Discover
@@ -173,30 +153,29 @@ class DiscoverTabs extends Component {
     }
   }
 
-  renderBadge(title) {
-    return null;
-    if (title !== SUB_TITLE) return null;
-    const count = this.props.feedUnread;
-    if (typeof count === 'number') {
-      this.totalBadge += count;
-    }
-    if (!count) return null;
-    return (
-      <Text
-        style={{
-          backgroundColor: 'transparent',
-          fontSize: 14,
-          fontWeight: 'bold',
-          position: 'absolute',
-          color: 'red',
-          // color: blue,
-          top: -1,
-          right: -10
-        }}
-      >
-        {'•'}
-      </Text>
-    );
+  renderBadge() {
+    // if (title !== SUB_TITLE) return null;
+    // const count = this.props.feedUnread;
+    // if (typeof count === 'number') {
+    //   this.totalBadge += count;
+    // }
+    // if (!count) return null;
+    // return (
+    //   <Text
+    //     style={{
+    //       backgroundColor: 'transparent',
+    //       fontSize: 14,
+    //       fontWeight: 'bold',
+    //       position: 'absolute',
+    //       color: 'red',
+    //       // color: blue,
+    //       top: -1,
+    //       right: -10
+    //     }}
+    //   >
+    //     {'•'}
+    //   </Text>
+    // );
   }
 
   renderHeader(props) {
@@ -233,7 +212,9 @@ class DiscoverTabs extends Component {
             backgroundColor: 'white',
             width: fullWidth,
             height:
-              fullHeight - 108 - (Platform.OS === 'android' ? StatusBar.currentHeight - 14 : 0)
+              fullHeight -
+              108 -
+              (Platform.OS === 'android' ? StatusBar.currentHeight - 14 : 0)
           }}
         >
           <Topics
@@ -272,7 +253,10 @@ class DiscoverTabs extends Component {
             forceSetResponder: () => {
               this.props.actions.scrolling(true);
               clearTimeout(this.scrollTimeout);
-              this.scrollTimeout = setTimeout(() => this.props.actions.scrolling(false), 80);
+              this.scrollTimeout = setTimeout(
+                () => this.props.actions.scrolling(false),
+                80
+              );
             }
           }}
           renderTabBar={props => this.renderHeader(props)}
@@ -303,7 +287,7 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps() {
   return {
     // actions: bindActionCreators(
     //   { ...postActions,

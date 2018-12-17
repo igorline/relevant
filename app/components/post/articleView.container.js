@@ -8,13 +8,12 @@ import {
   ActivityIndicator,
   StatusBar,
   InteractionManager,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 import PropTypes from 'prop-types';
-// import WKWebView from 'react-native-wkwebview-reborn';
 import Share from 'react-native-share';
 import Orientation from 'react-native-orientation';
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { globalStyles, fullWidth, blue } from '../../styles/global';
@@ -89,8 +88,9 @@ class ArticleView extends Component {
       url: this.url,
       subject: 'Article from Relevant',
       message: this.url
-    }).catch(err => {
-      console.log(err);
+    })
+    .catch(err => {
+      Alert.alert(err);
     });
   }
 
@@ -188,10 +188,7 @@ class ArticleView extends Component {
             this.backButtonEnabled = navState.canGoBack;
           }}
           onError={err => {
-            console.log(err);
-          }}
-          renderError={err => {
-            console.log('webview error', err);
+            Alert.error(err);
           }}
           onLoadStart={() => this.setState({ loading: true })}
           onLoadEnd={() => this.setState({ loading: false })}
@@ -232,23 +229,17 @@ const localStyles = StyleSheet.create({
     zIndex: 1
   },
   leftButton: {
-    // borderColor: 'red',
-    // borderWidth: 1,
     flex: 0,
     width: 50,
     alignItems: 'center',
     justifyContent: 'center'
-    // paddingVertical: 10,
   }
 });
 
 styles = { ...globalStyles, ...localStyles };
 
 export default connect(
-  state => ({
-    // auth: state.auth,
-    // admin: state.admin
-  }),
+  () => null,
   dispatch => ({
     actions: bindActionCreators(navigationActions, dispatch)
   })

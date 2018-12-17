@@ -23,7 +23,7 @@ export default class Balance extends Component {
       let cashOut = await actions.cashOut();
       cashOut = cashOut || user.cashOut;
 
-      const sig = cashOut.sig;
+      const { sig } = cashOut;
       let amount = new web3.utils.BN(cashOut.amount.toString());
       let mult = new web3.utils.BN(10 ** (decimals / 2));
       mult = mult.mul(mult);
@@ -42,9 +42,9 @@ export default class Balance extends Component {
 
   render() {
     const fixed = n => numbers.abbreviateNumber(n, 2);
-    const user = this.props.user;
+    const { user, wallet } = this.props;
     if (!user) return null;
-    let rewardBalance = this.props.user.balance;
+    let rewardBalance = user.balance;
 
     let { tokenBalance } = this.context.contractParams;
     const { symbol, priceDollar } = this.context.contractParams;
@@ -65,9 +65,10 @@ export default class Balance extends Component {
     const usd = total * priceDollar;
     let accountWarning;
 
-    const canCachOut = rewardBalance >= 100 || (user.cashOut && nonce === user.cashOut.nonce);
+    const canCachOut =
+      rewardBalance >= 100 || (user.cashOut && nonce === user.cashOut.nonce);
 
-    if (this.props.wallet.differentAccount) {
+    if (wallet.differentAccount) {
       accountWarning = (
         <div className="warningRow">
           <span>
@@ -120,7 +121,8 @@ export default class Balance extends Component {
                 <p>
                   These are tokens you earned as rewards.
                   <br />
-                  Once you have more than 100, you can transfer them to your Ethereum account.
+                  Once you have more than 100, you can transfer them to your Ethereum
+                  account.
                 </p>
               </div>
               <span className="coin">

@@ -99,7 +99,7 @@ export default function auth(state = initialState, action) {
     case types.UPDATE_AUTH_USER: {
       const id = action.payload._id;
       if (state.user && id !== state.user._id) return state;
-      let relevance = action.payload.relevance;
+      let { relevance } = action.payload;
       if ((!relevance || relevance.pagerank === undefined) && state.user) {
         relevance = state.user.relevance;
       }

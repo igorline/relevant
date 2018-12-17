@@ -9,7 +9,7 @@ export default function Divider(props) {
   return (
     <div className="divider">
       <div />
-      <div className="ts">{props.children}</div>
+      <div className="ts">{props.children /* eslint-disable-line */}</div>
       <div />
     </div>
   );

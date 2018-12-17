@@ -21,9 +21,9 @@ class Activity extends Component {
     notif: PropTypes.object,
     actions: PropTypes.object,
     refresh: PropTypes.object,
-    reload: PropTypes.object,
-    error: PropTypes.string,
-    online: PropTypes.object,
+    reload: PropTypes.number,
+    error: PropTypes.bool,
+    online: PropTypes.array,
     loaded: PropTypes.bool
   };
 
@@ -36,12 +36,11 @@ class Activity extends Component {
     this.changeView = this.changeView.bind(this);
     this.getViewData = this.getViewData.bind(this);
     this.load = this.load.bind(this);
-    this.needsReload = new Date().getTime();
+    this.needsReload = new Date()
+    .getTime();
     this.scrollToTop = this.scrollToTop.bind(this);
 
-    this.tabs = [
-      { id: 0, title: 'Personal' }
-    ];
+    this.tabs = [{ id: 0, title: 'Personal' }];
   }
 
   componentWillMount() {
@@ -56,7 +55,8 @@ class Activity extends Component {
     }
     if (this.props.reload !== next.reload) {
       this.props.actions.markRead();
-      this.needsReload = new Date().getTime();
+      this.needsReload = new Date()
+      .getTime();
     }
   }
 
@@ -100,7 +100,7 @@ class Activity extends Component {
     return <DiscoverUser user={rowData} {...this.props} styles={styles} />;
   }
 
-  getViewData(props, view) {
+  getViewData(view) {
     const { loaded, notif, online } = this.props;
     switch (view) {
       case 0:
@@ -115,7 +115,7 @@ class Activity extends Component {
   render() {
     const activityEl = [];
     this.tabs.forEach(tab => {
-      const tabData = this.getViewData(tab.id) || [];
+      const tabData = this.getViewData(tab.id) || { data: [] };
       const active = this.state.view === tab.id;
 
       activityEl.push(
@@ -156,12 +156,15 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  actions: bindActionCreators({
-    ...postActions,
-    ...notifActions,
-    ...statsActions,
-    ...userActions
-  }, dispatch)
+  actions: bindActionCreators(
+    {
+      ...postActions,
+      ...notifActions,
+      ...statsActions,
+      ...userActions
+    },
+    dispatch
+  )
 });
 
 export default connect(

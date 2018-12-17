@@ -3,9 +3,6 @@ import * as tokenUtil from './token';
 const routes = {};
 let community;
 
-console.log('BROWSER ', process.env.BROWSER);
-console.log('WEB ', process.env.WEB);
-
 if (process.env.BROWSER || process.env.WEB !== 'true') {
   // this is a weird hack that makes conditional require work in react-native
   // routes.post = require(postApi);
@@ -46,7 +43,7 @@ export function env() {
 export function Alert() {
   if (process.env.WEB !== 'true') {
     const ReactNative = require('react-native');
-    const Platform = ReactNative.Platform;
+    const { Platform } = ReactNative;
     if (Platform.OS === 'ios') {
       return ReactNative.AlertIOS;
     }
@@ -54,6 +51,7 @@ export function Alert() {
   } else if (process.env.BROWSER) {
     return window;
   }
+  // eslint-disable-next-line
   return { alert: (a, b) => console.log(a, ' ', b) };
 }
 
@@ -68,7 +66,9 @@ export function Alert() {
  * body: body
  */
 export async function request(options) {
-  const query = queryParams({ ...options.query, community });
+  // Add community query parameter
+  options.query = { ...options.query, community };
+  const query = queryParams(options.query);
   let apiPath = '/api/';
   if (options.endpoint.match('auth')) apiPath = '';
   let uri = options.uri || process.env.API_SERVER + apiPath + options.endpoint;
@@ -77,7 +77,8 @@ export async function request(options) {
 
   try {
     if (options.params) {
-      Object.keys(options.params).forEach(key => {
+      Object.keys(options.params)
+      .forEach(key => {
         uri += '/' + options.params[key];
       });
     }
@@ -114,10 +115,9 @@ export async function request(options) {
       response = await exports.handleErrors(response);
       responseJSON = await response.json();
     }
-    // throw new Error('omg');
     return responseJSON;
   } catch (error) {
-    console.log('api error', uri, error);
+    // console.log('api error', uri, error);
     throw error;
   }
 }

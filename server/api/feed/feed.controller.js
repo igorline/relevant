@@ -3,7 +3,7 @@ import Post from '../post/post.model';
 
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
-  return (err) => {
+  return err => {
     res.status(statusCode).send(err);
   };
 }
@@ -20,26 +20,27 @@ exports.get = async (req, res) => {
 
   try {
     feed = await Feed.find(query)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .populate({
-        path: 'post',
-        populate: [
-          {
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .populate({
+      path: 'post',
+      populate: [
+        {
+          path: 'user',
+          select: 'name image relevance'
+        },
+        {
+          path: 'repost.post',
+          populate: {
             path: 'user',
-            select: 'name image relevance',
-          },
-          { path: 'repost.post',
-            populate: {
-              path: 'user',
-              select: 'name image relevance',
-            }
+            select: 'name image relevance'
           }
-        ]
-      });
+        }
+      ]
+    });
 
-    feed.forEach((f) => {
+    feed.forEach(f => {
       if (f.post) posts.push(f.post);
     });
     res.status(200).json(posts);
@@ -66,28 +67,26 @@ exports.unread = (req, res) => {
   if (userId) {
     query = { userId, read: false };
   }
-  Feed.count(query)
-    .then((unread) => {
-      res.status(200).json({ unread });
-    });
+  Feed.count(query).then(unread => {
+    res.status(200).json({ unread });
+  });
 };
 
 exports.markRead = (req, res) => {
   const query = { userId: req.user._id, read: false };
   return Feed.update(query, { read: true }, { multi: true })
-    .then(() => res.status(200).send())
-    .catch(err => handleError(res, err));
+  .then(() => res.status(200).send())
+  .catch(err => handleError(res, err));
 };
 
 // for testing
 exports.post = (req, res) => {
   const postId = req.params.id;
   Feed.find({ post: postId })
-    .sort({ createdAt: -1 })
+  .sort({ createdAt: -1 })
   // .populate('post')
-    .then(feed => {
-      res.status(200).json(feed);
-    })
-    .catch(handleError(res));
+  .then(feed => {
+    res.status(200).json(feed);
+  })
+  .catch(handleError(res));
 };
-

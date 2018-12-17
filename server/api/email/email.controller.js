@@ -6,40 +6,14 @@ import User from '../user/user.model';
 const inlineCss = require('inline-css');
 const { emailStyle } = require('../../utils/emailStyle');
 
-// let emailStyle = `
-// <style>
-//   p {
-//     font-size: 18px;
-//     line-height: 27.5px;
-//     font-family: Georgia;
-//     max-width: 667px;
-//   }
-//   p img {
-//     max-width: 100%;
-//     margin: auto;
-//     text-align: center;
-//   }
-//   a {
-//     color: #3E3EFF;
-//   }
-//   a span {
-//     font-weight: bold;
-//     font-size: 24px;
-//     border: 3px solid #3E3EFF;
-//     padding: 15px 20px;
-//     display: inline-block;
-//     margin: 15px 0;
-//     font-family: Arial;
-//   }
-// </style>
-// `;
-
-
 const mailgun = require('mailgun-js')({
   apiKey: process.env.MAILGUN_API_KEY,
   domain: process.env.MAILGUN_DOMAIN
 });
 
+/* eslint no-console: 0 */
+
+// eslint-disable-next-line
 async function generateList(type) {
   try {
     let query;
@@ -74,7 +48,7 @@ async function generateList(type) {
     let list = await mailgun.lists().create({
       address: type + '@mail.relevant.community',
       name: type,
-      description: type,
+      description: type
     });
     list = mailgun.lists(type + '@mail.relevant.community');
 
@@ -92,14 +66,12 @@ async function generateList(type) {
         name: type === 'notregistered' ? user.name : '@' + user._id,
         vars
       };
-      // console.log(u);
-      list.members().create(u, (err, data) => {
-        if (err) console.log(err);
-        // else console.log(data);
+      list.members().create(u, err => {
+        if (err) throw err;
       });
     });
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 }
 
@@ -145,28 +117,19 @@ async function generateList(type) {
 //   console.log(body);
 // });
 
-
-function handleError(res, err) {
-  console.log(err);
-  return res.status(500).send(err);
-}
-
-exports.validate = function (req, res, next) {
-  const body = req.body;
-
+// need this?
+exports.validate = function validate(req, res, next) {
+  const { body } = req;
   if (!mailgun.validateWebhook(body.timestamp, body.token, body.signature)) {
-    console.error('Request came, but not from Mailgun');
     res.send({ error: { message: 'Invalid signature. Are you even Mailgun?' } });
     return;
   }
-
   next();
 };
 
-exports.index = async (req, res) => {
-  let status;
+exports.index = async (req, res, next) => {
   try {
-    const email = req.body.email;
+    const { email } = req.body;
     let html = emailStyle + req.body.html;
 
     html = await inlineCss(html, { url: 'https://relevant.community' });
@@ -181,33 +144,29 @@ exports.index = async (req, res) => {
       subject: req.body.subject,
       html
     };
-    status = await mail.send(data);
+    const status = await mail.send(data);
+    return res.status(200).json(status);
   } catch (err) {
-    console.log(err);
-    handleError(res, err);
+    return next(err);
   }
-  return res.status(200).json(status);
 };
 
-exports.save = async (req, res) => {
+exports.save = async (req, res, next) => {
   try {
     await Email.find({}).remove();
     const draft = new Email(req.body);
     await draft.save();
+    return res.sendStatus(200);
   } catch (err) {
-    handleError(res, err);
+    return next(err);
   }
-  return res.sendStatus(200);
 };
 
-exports.load = async (req, res) => {
-  let email;
+exports.load = async (req, res, next) => {
   try {
-    email = await Email.findOne({});
-    console.log(email);
+    const email = await Email.findOne({});
+    return res.status(200).json(email);
   } catch (err) {
-    handleError(res, err);
+    return next(err);
   }
-  return res.status(200).json(email);
 };
-

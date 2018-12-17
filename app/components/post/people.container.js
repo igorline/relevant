@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { globalStyles, green, darkGrey } from '../../styles/global';
+import { globalStyles, darkGrey } from '../../styles/global';
 import * as investActions from '../../actions/invest.actions';
 import * as navigationActions from '../../actions/navigation.actions';
 
@@ -77,19 +77,20 @@ class PostPeople extends Component {
 
   renderRight(props) {
     const { amount, relevantPoints } = props;
-
     let icon = require('../../assets/images/rup.png');
     const color = { color: darkGrey };
-    let coin;
     if (amount < 0) {
-      // color = { color: 'red' };
       icon = require('../../assets/images/rdown.png');
     }
 
     let inner = (
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text style={[styles.statNumber, color]}>+ </Text>
-        <Image resizeMode={'contain'} style={[styles.r, { height: 16, width: 20 }]} source={icon} />
+        <Image
+          resizeMode={'contain'}
+          style={[styles.r, { height: 16, width: 20 }]}
+          source={icon}
+        />
         <Text style={[styles.bebas, color, { lineHeight: 17, fontSize: 17 }]}>
           {Math.abs(numbers.abbreviateNumber(relevantPoints))}
         </Text>

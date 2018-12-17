@@ -6,51 +6,85 @@ import User from '../api/user/user.model';
 import CommunityMember from '../api/community/community.member.model';
 import Community from '../api/community/community.model';
 
-const validateJwt = expressJwt({ secret: process.env.SESSION_SECRET, ignoreExpiration: true });
+const validateJwt = expressJwt({
+  secret: process.env.SESSION_SECRET,
+  ignoreExpiration: true
+});
 
-function blocked(req, res) {
-  return compose().use((req, res, next) => {
-    const token = req.cookies.token;
-    if (token) {
-      req.headers.authorization = 'Bearer ' + token;
-    }
-    validateJwt(req, res, (err, decoded) => {
-      if (err || !req.user) return next();
-      User.findById(req.user._id, 'blocked blockedBy', (err, user) => {
-        if (err) return next();
-        if (!user) return next();
-        req.user = user;
-        return next();
-      });
-    });
-  });
+// doesn't throw error if user is not authenticated
+function validateTokenLenient(req, res, next) {
+  const { token } = req.cookies;
+  if (token) {
+    req.headers.authorization = 'Bearer ' + token;
+  } else if (
+    req.query &&
+    Object.prototype.hasOwnProperty.call(req.query, 'access_token')
+  ) {
+    req.headers.authorization = 'Bearer ' + req.query.access_token;
+  }
+  return validateJwt(req, res, () => next());
 }
 
-function currentUser(req, res) {
-  return compose().use((req, res, next) => {
-    const token = req.cookies.token;
-    if (token) {
-      req.headers.authorization = 'Bearer ' + token;
-    } else if (req.query && req.query.hasOwnProperty('access_token')) {
-      req.headers.authorization = 'Bearer ' + req.query.access_token;
-    }
-    validateJwt(req, res, (err, decoded) => {
-      if (err || !req.user) return next();
-      User.findById(req.user._id, (err, user) => {
-        if (err) return next();
-        if (!user) return next();
-        req.user = user;
-        return next();
-      });
-    });
-  });
+// throws error if user is not authenticated
+function validateTokenStrict(req, res, next) {
+  const { token } = req.cookies;
+  if (token) {
+    req.headers.authorization = 'Bearer ' + token;
+  } else if (
+    req.query &&
+    Object.prototype.hasOwnProperty.call(req.query, 'access_token')
+  ) {
+    req.headers.authorization = 'Bearer ' + req.query.access_token;
+  }
+  return validateJwt(req, res, next);
 }
 
-function communityMember(req, res) {
-  return compose().use(async (req, res, next) => {
+function getUser(select) {
+  return async (req, res, next) => {
     try {
+      if (!req.user) return next();
+      const user = await User.findById(req.user._id, select);
+      req.user = user;
+      return next();
+    } catch (err) {
+      return next(err);
+    }
+  };
+}
+
+function blocked() {
+  return compose()
+  .use(validateTokenLenient)
+  .use(getUser('blocked blockedBy'));
+}
+
+function currentUser() {
+  return compose()
+  .use(validateTokenLenient)
+  .use(getUser());
+}
+
+function authMiddleware() {
+  return validateTokenStrict;
+}
+
+/**
+ * Attaches the user object to the request if authenticated
+ * Otherwise returns 403
+ */
+function isAuthenticated() {
+  return compose()
+  .use(validateTokenStrict)
+  .use(getUser());
+}
+
+function communityMember() {
+  return async (req, res, next) => {
+    try {
+      if (!req.user || !req.user._id) {
+        throw new Error('missing user credentials');
+      }
       const user = req.user._id;
-      if (!user) throw new Error('missing user credentials');
       // TODO make sure share extension supports this
       const community = req.query.community || 'relevant';
       let member = await CommunityMember.findOne({ user, community });
@@ -68,56 +102,9 @@ function communityMember(req, res) {
       req.communityMember = member;
       return next();
     } catch (err) {
-      next(err);
+      return next(err);
     }
-  });
-}
-
-function authMiddleware(req, res) {
-  return (
-    compose()
-    // Validate jwt
-    .use((req, res, next) => {
-      // allow access_token to be passed through query parameter as well
-      if (req.query && req.query.hasOwnProperty('access_token')) {
-        req.headers.authorization = 'Bearer ' + req.query.access_token;
-      }
-
-      validateJwt(req, res, (err, decoded) => {
-        if (!err && decoded) {
-          req.user = decoded;
-        }
-        next();
-      });
-    })
-  );
-}
-
-/**
- * Attaches the user object to the request if authenticated
- * Otherwise returns 403
- */
-function isAuthenticated() {
-  return (
-    compose()
-    // Validate jwt
-    .use((req, res, next) => {
-      // allow access_token to be passed through query parameter as well
-      if (req.query && req.query.hasOwnProperty('access_token')) {
-        req.headers.authorization = 'Bearer ' + req.query.access_token;
-      }
-      validateJwt(req, res, next);
-    })
-    // Attach user to request
-    .use((req, res, next) => {
-      User.findById(req.user._id, (err, user) => {
-        if (err) return next(err);
-        if (!user) return res.status(401).json({ message: 'Authentication failed.' });
-        req.user = user;
-        return next();
-      });
-    })
-  );
+  };
 }
 
 /**
@@ -125,11 +112,12 @@ function isAuthenticated() {
  */
 function hasRole(roleRequired) {
   if (!roleRequired) throw new Error('Required role needs to be set');
-
   return compose()
   .use(isAuthenticated())
   .use((req, res, next) => {
-    if (config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)) {
+    if (
+      config.userRoles.indexOf(req.user.role) >= config.userRoles.indexOf(roleRequired)
+    ) {
       next();
     } else {
       res.sendStatus(403);
@@ -145,7 +133,9 @@ function signToken(id, role) {
 }
 
 function setTokenCookieDesktop(req, res) {
-  if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.' });
+  if (!req.user) {
+    return res.json(404, { message: 'Something went wrong, please try again.' });
+  }
 
   const token = signToken(req.user._id, req.user.role);
 
@@ -159,7 +149,9 @@ function setTokenCookieDesktop(req, res) {
  * Set token cookie directly for oAuth strategies
  */
 function setTokenCookie(req, res) {
-  if (!req.user) return res.json(404, { message: 'Something went wrong, please try again.' });
+  if (!req.user) {
+    return res.json(404, { message: 'Something went wrong, please try again.' });
+  }
 
   const token = signToken(req.user._id, req.user.role);
   if (req.user.type === 'temp') {

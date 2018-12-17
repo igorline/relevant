@@ -40,12 +40,12 @@ test('create SET_USER after new user is created', async t => {
   };
 
   nock(process.env.API_SERVER)
-    .post('/api/user')
-    .reply(200, { token });
+  .post('/api/user')
+  .reply(200, { token });
 
   nock(process.env.API_SERVER)
-    .get('/api/user/me')
-    .reply(200, newUser);
+  .get('/api/user/me')
+  .reply(200, newUser);
 
   const expectedActions = [
     {

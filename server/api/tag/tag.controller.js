@@ -2,30 +2,9 @@ import Post from '../post/post.model';
 import Relevance from '../relevance/relevance.model';
 import Tag from './tag.model';
 
-
-function handleError(res, statusCode) {
-  const status = statusCode || 500;
-  return (err) => {
-    console.log('tag error ', err);
-    res.status(status).send(err);
-  };
-}
-
-// Tag.findOne({ _id: 'fashion'})
-// .then(love => {
-//   console.log(love)
-//   love.emoji = '✌️';
-//   // love.category = true;
-//   // love.parents = [];
-//   // love.main = ['sex', 'romance'];
-//   // love.categoryName = 'Love';
-//   love.save();
-//   console.log(love)
-// })
-
-exports.update = async (req, res) => {
+exports.update = async (req, res, next) => {
   let tag;
-  const newId = req.body.newId;
+  const { newId } = req.body;
   const oldId = req.body._id;
   let updatedTag = req.body;
   delete updatedTag.newId;
@@ -36,7 +15,6 @@ exports.update = async (req, res) => {
         updatedTag.count = sameIdTag.count;
         updatedTag.parents = sameIdTag.parents;
         updatedTag = Math.max(sameIdTag.count, updatedTag.count);
-        console.log('remove ', sameIdTag);
         sameIdTag = await sameIdTag.remove();
       }
     }
@@ -54,8 +32,6 @@ exports.update = async (req, res) => {
       await tag.remove();
       tag = newTag;
     }
-
-    console.log('new tag ', tag);
 
     await Post.update(
       { category: oldId },
@@ -82,53 +58,53 @@ exports.update = async (req, res) => {
     ).exec();
 
     await Relevance.mergeDuplicates();
-  } catch (err) { return handleError(res)(err); }
+  } catch (err) {
+    return next(err);
+  }
   return res.status(200).json(tag);
 };
 
-exports.create = (req, res) => {
+exports.create = (req, res, next) => {
   const newTag = new Tag(req.body);
   newTag.save((err, tag) => {
-    if (err) return handleError(res)(err);
+    if (err) return next(err);
     return res.status(200).json(tag);
   });
 };
 
-exports.index = (req, res) => {
-  const sort = req.query.sort;
+exports.index = (req, res, next) => {
+  const { sort } = req.query;
   let sortObj = null;
 
   if (sort === 'count') sortObj = { count: -1 };
 
   Tag.find()
-    .sort(sortObj)
-    .exec((err, tags) => {
-      if (err) return handleError(res)(err);
-      return res.json(200, tags);
-    });
+  .sort(sortObj)
+  .exec((err, tags) => {
+    if (err) return next(err);
+    return res.json(200, tags);
+  });
 };
 
-exports.categories = (req, res) => {
-  const active = req.query.active;
+exports.categories = (req, res, next) => {
+  const { active } = req.query;
   let query = { category: true };
   if (active !== undefined) query = { category: true, active: true };
 
   Tag.find(query)
-  // .sort('_id')
-    .sort({ count: -1 })
-    .then(categories => res.status(200).json(categories))
-    .catch(err => handleError(res)(err));
+  .sort({ count: -1 })
+  .then(categories => res.status(200).json(categories))
+  .catch(next);
 };
 
-exports.search = (req, res) => {
-  const term = req.params.term;
+exports.search = (req, res, next) => {
+  const { term } = req.params;
   Tag.find({
     _id: {
       $regex: term,
       $options: 'i'
     }
   })
-    .then(foundTags => res.json(200, foundTags))
-    .catch(err => handleError(res)(err));
+  .then(foundTags => res.json(200, foundTags))
+  .catch(next);
 };
-

@@ -87,7 +87,8 @@ class SignUp extends Component {
     const valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(string);
     if (!valid) return this.setState({ emailError: 'invalid email' });
 
-    this.props.actions.checkUser(string, 'email').then(results => {
+    this.props.actions.checkUser(string, 'email')
+    .then(results => {
       if (!results) {
         this.setState({ emailError: 'This email has already been used' });
       }
@@ -102,7 +103,8 @@ class SignUp extends Component {
       const string = toCheck;
       const match = NAME_PATTERN.test(string);
       if (match) {
-        this.props.actions.checkUser(string, 'name').then(results => {
+        this.props.actions.checkUser(string, 'name')
+        .then(results => {
           if (!results) {
             this.usernameExists = true;
             this.nameError = 'This username is already taken';
@@ -110,14 +112,11 @@ class SignUp extends Component {
           this.setState({});
         });
       } else {
-        this.nameError = 'username can only contain letters, numbers, dashes and underscores';
+        this.nameError =
+          'username can only contain letters, numbers, dashes and underscores';
       }
     }
   }
-
-  // userError() {
-  //   if (this.usernameExists) Alert.alert('Username already in use');
-  // }
 
   back() {
     this.props.actions.pop(this.props.navigation.main);
@@ -136,7 +135,9 @@ class SignUp extends Component {
     }
 
     if (!NAME_PATTERN.test(this.state.name)) {
-      return Alert.alert('username can only contain letters, numbers, dashes and underscores');
+      return Alert.alert(
+        'username can only contain letters, numbers, dashes and underscores'
+      );
     }
 
     if (this.state.name) {
@@ -168,7 +169,6 @@ class SignUp extends Component {
       return Alert.alert('Password required');
     }
     this.props.actions.setPreUser(user);
-    console.log('saving pre user ', user);
     dismissKeyboard();
     this.props.actions.push(
       {
@@ -193,13 +193,6 @@ class SignUp extends Component {
       password: 'test',
       cPassword: 'test'
     });
-
-    // this.props.actions.setPreUser(user);
-    // this.props.actions.push({
-    //   key: 'imageUpload',
-    //   title: 'image',
-    //   showBackButton: true
-    // }, this.props.navigation.main);
   }
 
   render() {
@@ -246,13 +239,17 @@ class SignUp extends Component {
                 clearTextOnFocus={false}
                 placeholder="email"
                 onBlur={() => this.checkEmail()}
-                onChangeText={email => this.setState({ email: email.trim(), emailError: null })}
+                onChangeText={email =>
+                  this.setState({ email: email.trim(), emailError: null })
+                }
                 value={this.state.email}
                 style={styles.fieldsInput}
               />
             </View>
             {this.state.emailError ? (
-              <Text style={[styles.smallInfo, styles.error]}>{this.state.emailError}</Text>
+              <Text style={[styles.smallInfo, styles.error]}>
+                {this.state.emailError}
+              </Text>
             ) : null}
 
             <View style={styles.fieldsInputParent}>
@@ -283,16 +280,23 @@ class SignUp extends Component {
             </View>
           </View>
 
-          <TouchableOpacity style={[styles.largeButton, { marginTop: 20 }]} onPress={this.validate}>
+          <TouchableOpacity
+            style={[styles.largeButton, { marginTop: 20 }]}
+            onPress={this.validate}
+          >
             <Text style={styles.largeButtonText}>next</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.props.actions.goToUrl('https://relevant.community/eula.html')}
+            onPress={() =>
+              this.props.actions.goToUrl('https://relevant.community/eula.html')
+            }
           >
             <Text style={[styles.signInText, styles.font12]}>
               By signing up, you agree to our{' '}
-              <Text style={[styles.signInText, styles.active, styles.font12]}>Terms of Use</Text>
+              <Text style={[styles.signInText, styles.active, styles.font12]}>
+                Terms of Use
+              </Text>
             </Text>
           </TouchableOpacity>
         </ScrollView>

@@ -55,9 +55,10 @@ function mergePosts(posts, state) {
   if (!posts) return mPosts;
   Object.keys(posts).forEach(id => {
     // need to do this so reposted = null doesen't over-write existing value
-    let reposted = posts[id].reposted;
+    let { reposted } = posts[id];
     if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
-    const postData = (posts[id] && posts[id].data) || (state.posts[id] && state.posts[id].data);
+    const postData =
+      (posts[id] && posts[id].data) || (state.posts[id] && state.posts[id].data);
     mPosts[id] = {
       ...state.posts[id],
       ...posts[id],
@@ -115,9 +116,7 @@ export default function post(state = initialState, action) {
     }
 
     case types.SET_TOPIC_POSTS: {
-      const type = action.payload.type;
-      const topic = action.payload.topic;
-      const index = action.payload.index;
+      const { type, topic, index } = action.payload;
       const posts = mergePosts(action.payload.data.entities.posts, state);
       if (!state.topics[type][topic]) state.topics[type][topic] = [];
       return {
@@ -148,7 +147,7 @@ export default function post(state = initialState, action) {
     }
 
     case types.SET_POSTS: {
-      const type = action.payload.type;
+      const { type } = action.payload;
       const posts = mergePosts(action.payload.data.entities.posts, state);
       return {
         ...state,
@@ -185,7 +184,7 @@ export default function post(state = initialState, action) {
       const updatePost = data.entities.posts[id];
 
       // need to do this so reposted = null doesen't over-write existing value
-      let reposted = action.payload.reposted;
+      let { reposted } = action.payload;
       if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
       const postData = updatePost.data || state.posts[id].data;
       let embeddedUser = state.posts[id] ? state.posts[id].embeddedUser : null;
@@ -231,14 +230,17 @@ export default function post(state = initialState, action) {
     }
 
     case 'SET_USER_POSTS': {
-      const id = action.payload.id;
+      const { id } = action.payload;
       const currentPosts = state.userPosts[id] || [];
       const posts = mergePosts(action.payload.data.entities.posts, state);
       return {
         ...state,
         userPosts: {
           ...state.userPosts,
-          [id]: [...currentPosts.slice(0, action.payload.index), ...action.payload.data.result[id]]
+          [id]: [
+            ...currentPosts.slice(0, action.payload.index),
+            ...action.payload.data.result[id]
+          ]
         },
         links: {
           ...state.links,
@@ -263,7 +265,7 @@ export default function post(state = initialState, action) {
     }
 
     case types.CLEAR_POSTS: {
-      const type = action.payload.type;
+      const { type } = action.payload;
       return Object.assign({}, state, {
         [type]: []
       });
@@ -274,7 +276,8 @@ export default function post(state = initialState, action) {
         ...state,
         newPostsAvailable: {
           ...state.newPostsAvailable,
-          [action.payload.community]: state.newPostsAvailable[action.payload.community] || 0 + 1
+          [action.payload.community]:
+            state.newPostsAvailable[action.payload.community] || 0 + 1
         }
       };
     }
@@ -299,7 +302,7 @@ export default function post(state = initialState, action) {
 
     case 'SET_SELECTED_POST_DATA': {
       const id = action.payload._id;
-      let reposted = action.payload.reposted;
+      let { reposted } = action.payload;
       if (!reposted) reposted = state.posts[id] ? state.posts[id].reposted : undefined;
       return {
         ...state,
@@ -322,7 +325,6 @@ export default function post(state = initialState, action) {
     }
 
     case 'SET_NEW_FEED_STATUS': {
-      console.log('SET_NEW_FEED_STATUS');
       return Object.assign({}, state, {
         newFeedAvailable: action.payload
       });

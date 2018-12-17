@@ -73,7 +73,9 @@ class CreatePostContainer extends Component {
 
   componentDidMount() {
     // console.log(this.props)
-    if (!this.props.tags || !this.props.tags.parentTags.length) this.props.actions.getParentTags();
+    if (!this.props.tags || !this.props.tags.parentTags.length) {
+      this.props.actions.getParentTags();
+    }
   }
 
   componentWillReceiveProps(newProps) {
@@ -91,7 +93,7 @@ class CreatePostContainer extends Component {
   selectTags(tag) {
     if (!tag || !tag.length) return;
     if (typeof tag === 'string') tag = [tag];
-    let selectedTags = this.state.selectedTags;
+    let { selectedTags } = this.state;
     selectedTags = [...new Set([...selectedTags, ...tag])];
     this.setState({ selectedTags });
   }
@@ -103,6 +105,7 @@ class CreatePostContainer extends Component {
 
   clearUrl() {
     this.setState({
+      url: null,
       postUrl: null,
       urlPreview: null
     });
@@ -124,7 +127,9 @@ class CreatePostContainer extends Component {
   }
 
   updateReducer() {
-    const allTags = this.state.tags ? this.state.tags.concat(this.state.selectedTags) : [];
+    const allTags = this.state.tags
+      ? this.state.tags.concat(this.state.selectedTags)
+      : [];
     const tags = Array.from(new Set(allTags));
 
     const state = {
@@ -152,7 +157,7 @@ class CreatePostContainer extends Component {
   async createPost() {
     const { auth, close, actions, router, location, createPost } = this.props;
     const { selectedTags, postUrl, urlPreview, category, mentions, domain } = this.state;
-    let { tags, body } = this.state();
+    let { tags, body } = this.state;
     try {
       const validate = this.validateInput();
       if (validate !== true) {
@@ -218,7 +223,8 @@ class CreatePostContainer extends Component {
   parseBody(newState) {
     const postBody = newState.body;
     if (postBody === '') return;
-    const lines = postBody.replace(/&nbsp;/g, ' ').split('\n');
+    const lines = postBody.replace(/&nbsp;/g, ' ')
+    .split('\n');
     let words = [];
     lines.forEach(line => (words = words.concat(line.split(' '))));
 
@@ -240,7 +246,8 @@ class CreatePostContainer extends Component {
   }
 
   addTextFromLink() {
-    const description = '"' + utils.text.stripHTML(this.state.urlPreview.description) + '"';
+    const description =
+      '"' + utils.text.stripHTML(this.state.urlPreview.description) + '"';
     this.setState({
       body: description
     });
@@ -258,14 +265,16 @@ class CreatePostContainer extends Component {
 
     const postUrl = url;
     this.setState({
-      body: this.state.body.replace(postUrl, '').trim(),
+      body: this.state.body.replace(postUrl, '')
+      .trim(),
       loadingPreview: true,
       urlPreview: {
         loading: true
       }
     });
 
-    utils.post.generatePreviewServer(postUrl).then(results => {
+    utils.post.generatePreviewServer(postUrl)
+    .then(results => {
       if (results && results.url) {
         // console.log('set preview', postUrl);
         let imageURL = results.image;
@@ -333,9 +342,11 @@ class CreatePostContainer extends Component {
             }}
           />
           <div className="addFromLink">
-            {this.state.urlPreview && this.state.body === '' && this.state.urlPreview.description && (
+            {this.state.urlPreview &&
+              this.state.body === '' &&
+              this.state.urlPreview.description && (
               <button onClick={this.addTextFromLink} className="addTextFromLink">
-                Paste article description
+                  Paste article description
               </button>
             )}
           </div>
@@ -346,11 +357,13 @@ class CreatePostContainer extends Component {
             selectedTags={this.state.selectedTags}
             selectTag={this.selectTags}
             deselectTag={tag => {
-              let selectedTags = this.state.selectedTags;
+              let { selectedTags } = this.state;
               selectedTags = selectedTags.filter(t => t !== tag);
               this.setState({ selectedTags });
             }}
-            placeholderText={!this.state.selectedTags ? 'Please add at least one tag' : ''}
+            placeholderText={
+              !this.state.selectedTags ? 'Please add at least one tag' : ''
+            }
           />
 
           <div className={'row'}>
@@ -362,7 +375,8 @@ class CreatePostContainer extends Component {
               className="shadowButton"
               onClick={() => this.createPost()}
               disabled={
-                !this.state.selectedTags.length || (!this.state.body.length && !this.state.postUrl)
+                !this.state.selectedTags.length ||
+                (!this.state.body.length && !this.state.postUrl)
               }
             >
               {this.props.createPost.edit ? 'Update Post' : 'Create Post'}
@@ -376,7 +390,7 @@ class CreatePostContainer extends Component {
             selectedTags={this.state.selectedTags}
             selectTag={this.selectTags}
             deselectTag={tag => {
-              let selectedTags = this.state.selectedTags;
+              let { selectedTags } = this.state;
               selectedTags = selectedTags.filter(t => t !== tag);
               this.setState({ selectedTags });
             }}
@@ -388,7 +402,7 @@ class CreatePostContainer extends Component {
             selectedTags={this.state.selectedTags}
             selectTag={this.selectTags}
             deselectTag={tag => {
-              let selectedTags = this.state.selectedTags;
+              let { selectedTags } = this.state.selectedTags;
               selectedTags = selectedTags.filter(t => t !== tag);
               this.setState({ selectedTags });
             }}

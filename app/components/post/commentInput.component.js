@@ -6,8 +6,7 @@ import {
   TextInput,
   Image,
   Alert,
-  TouchableHighlight,
-  Platform
+  TouchableHighlight
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, greyText, mainPadding } from '../../styles/global';
@@ -19,7 +18,7 @@ let styles;
 class CommentInput extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    postId: PropTypes.object,
+    postId: PropTypes.string,
     auth: PropTypes.object,
     onFocus: PropTypes.func,
     scrollToBottom: PropTypes.func,
@@ -67,7 +66,9 @@ class CommentInput extends Component {
     this.props.onFocus('new');
     this.props.actions.setUserSearch([]);
 
-    this.props.actions.createComment(this.props.auth.token, commentObj).then(success => {
+    return this.props.actions
+    .createComment(this.props.auth.token, commentObj)
+    .then(success => {
       if (!success) {
         this.setState({ comment, inputHeight: 50 });
         this.textInput.focus();
@@ -95,10 +96,13 @@ class CommentInput extends Component {
   }
 
   renderInput() {
-    if (!this.props.editing) {
+    const { auth, editing } = this.props;
+    const { user } = auth;
+    const { inputHeight } = this.state;
+    if (!editing) {
       let inputImage = null;
-      if (this.props.auth.user.image) {
-        const imageUrl = this.props.auth.user.image;
+      if (user.image) {
+        const imageUrl = user.image;
         inputImage = <Image style={styles.inputImage} source={{ uri: imageUrl }} />;
       }
       return (
@@ -106,11 +110,11 @@ class CommentInput extends Component {
           onLayout={e => {
             this.top = e.nativeEvent.layout.y;
             this.props.updatePosition({
-              inputHeight: this.state.inputHeight,
+              inputHeight,
               top: this.top
             });
           }}
-          style={[styles.commentInputParent, { height: Math.min(this.state.inputHeight, 120) }]}
+          style={[styles.commentInputParent, { height: Math.min(inputHeight, 120) }]}
         >
           {inputImage}
           <TextInput
@@ -130,7 +134,7 @@ class CommentInput extends Component {
                 minHeight: 50,
                 flexDirection: 'row',
                 alignItems: 'center',
-                height: Math.min(this.state.inputHeight, 120)
+                height: Math.min(inputHeight, 120)
               }
             ]}
             placeholder="Enter reply..."
@@ -152,7 +156,7 @@ class CommentInput extends Component {
             blurOnSubmit={false}
             onSubmitEditing={() => {
               if (this.okToSubmit) {
-                let comment = this.state.comment;
+                let { comment } = this.state;
                 comment += '\n';
                 this.processInput(comment, false);
                 this.setState({ comment });
