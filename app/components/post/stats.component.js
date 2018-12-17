@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { globalStyles, fullWidth, smallScreen } from '../../styles/global';
+import { globalStyles, smallScreen } from '../../styles/global';
 import Percent from '../percent.component';
 import { numbers } from '../../utils';
 import * as navigationActions from '../../actions/navigation.actions';
@@ -13,14 +13,14 @@ let styles;
 class Stats extends Component {
   static propTypes = {
     type: PropTypes.string,
-    discover: PropTypes.object,
+    discover: PropTypes.bool,
     parent: PropTypes.object,
     actions: PropTypes.object,
-    currentView: PropTypes.object,
+    currentView: PropTypes.string,
     size: PropTypes.string,
     textStyle: PropTypes.object,
-    topic: PropTypes.object,
-    renderLeft: PropTypes.func,
+    topic: PropTypes.string,
+    renderLeft: PropTypes.object,
     style: PropTypes.object,
     entity: PropTypes.object
   };
@@ -49,7 +49,10 @@ class Stats extends Component {
   }
 
   toggleTooltip(name) {
-    if ((name === 'relevance' || name === 'coin') && this.props.currentView !== 'discover') {
+    if (
+      (name === 'relevance' || name === 'coin') &&
+      this.props.currentView !== 'discover'
+    ) {
       return;
     }
     if (this.props.type !== 'nav') return;
@@ -77,12 +80,20 @@ class Stats extends Component {
     let coinStyle = [];
 
     if (this.props.size === 'small' || (smallScreen && type === 'nav')) {
-      statsStyle = [{ fontSize: 15, lineHeight: 15 }, styles.bebas, styles.quarterLetterSpacing];
+      statsStyle = [
+        { fontSize: 15, lineHeight: 15 },
+        styles.bebas,
+        styles.quarterLetterSpacing
+      ];
       iconStyle = [{ width: 15, height: 15 }];
       coinStyle = [{ width: 15, height: 15 }];
     }
     if (this.props.size === 'tiny') {
-      statsStyle = [{ fontSize: 13, lineHeight: 13 }, styles.bebas, styles.quarterLetterSpacing];
+      statsStyle = [
+        { fontSize: 13, lineHeight: 13 },
+        styles.bebas,
+        styles.quarterLetterSpacing
+      ];
       iconStyle = [{ width: 14, height: 14 }];
       // coinStyle = [{ width: 18, height: 15, marginBottom: -6 }];
     }
@@ -99,7 +110,9 @@ class Stats extends Component {
           source={require('../../assets/images/relevantcoin.png')}
         />
         <Text style={[this.props.textStyle, statsStyle, styles.darkGrey]}>
-          {numbers.abbreviateNumber(entity.value || entity.balance + entity.tokenBalance || 0)}
+          {numbers.abbreviateNumber(
+            entity.value || entity.balance + entity.tokenBalance || 0
+          )}
         </Text>
       </TouchableOpacity>
     );

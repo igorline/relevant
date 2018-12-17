@@ -1,3 +1,4 @@
+/* eslint-disable */
 const Animated = require('Animated');
 const I18nManager = require('I18nManager');
 const PanResponder = require('PanResponder');
@@ -155,7 +156,7 @@ class NavPanResponder {
     return shouldSetResponder;
   }
 
-  onPanResponderGrant(event: any, gesture: any) {
+  onPanResponderGrant(event: any) {
     this._props.position.stopAnimation((value: number) => {
       this._isResponding = true;
 
@@ -248,7 +249,7 @@ class NavPanResponder {
 
   _goBack(backFromIndex: number, velocity: number) {
     const props = this._props;
-    const { navigation, position, scenes } = props;
+    const { position, scenes } = props;
     const toValue = Math.max(backFromIndex - 1, 0);
 
     // set temporary index for gesture handler to respect until the action is

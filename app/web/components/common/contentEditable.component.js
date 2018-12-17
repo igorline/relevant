@@ -47,7 +47,8 @@ function getCurrentCursorPosition(parentId) {
   const el = document.getElementById(parentId);
   let caretOffset = 0;
   if (typeof window.getSelection !== 'undefined') {
-    const range = window.getSelection().getRangeAt(0);
+    const range = window.getSelection()
+    .getRangeAt(0);
     const selected = range.toString().length;
     const preCaretRange = range.cloneRange();
     preCaretRange.selectNodeContents(el);
@@ -131,7 +132,8 @@ export default class ContentEditable extends React.Component {
     if (lastProps.body === this.props.body) return;
 
     const lengthWithoutNewlines =
-      this.props.body.replace(/\n/, '').replace(/&[^;]+;/g, ' ').length + 1;
+      this.props.body.replace(/\n/, '')
+      .replace(/&[^;]+;/g, ' ').length + 1;
 
     const newPosition = this.position + (this.hitEnter ? 1 : 0);
 

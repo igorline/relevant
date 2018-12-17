@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, ListView, View } from 'react-native';
+import { ListView, View } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles, fullWidth } from '../../styles/global';
 import UserName from '../userNameSmall.component';
-
-let styles;
 
 export default class UserSearchComponent extends Component {
   static propTypes = {

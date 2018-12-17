@@ -4,20 +4,14 @@
 // And eigentrust/egentrust++
 
 /* eslint no-loop-func: 0 */
-
-function printM(m, name) {
-  console.log(name, ':\n', JSON.stringify(m).replace(/\]\,\[/g, '],\n['));
-}
-
-// let cacheP;
-// let cacheT;
-// let cacheTildeP;
-// let full = true;
+/* eslint camelcase: 0 */
+/* eslint no-console: 0 */
+/* eslint prefer-const: 0 */
 
 function objectToMatrix(_inputs, params) {
   const inputs = Object.keys(_inputs);
   const dictionary = {};
-  inputs.forEach((key, i) => dictionary[key] = i);
+  inputs.forEach((key, i) => (dictionary[key] = i));
   const N = inputs.length;
   const G = [];
   const g = {};
@@ -38,7 +32,7 @@ function objectToMatrix(_inputs, params) {
       // eigentrust++ weights
       // w = Math.max((w - n) / (w + n), 0);
       // eigentrust weights
-      w = Math.max((w - n), 0);
+      w = Math.max(w - n, 0);
       _inputs[el][vote].w = w;
       if (w > 0) degree += w;
     });
@@ -51,7 +45,7 @@ function objectToMatrix(_inputs, params) {
     const id_i = dictionary[el];
 
     Object.keys(_inputs[el]).forEach(vote => {
-      const w = _inputs[el][vote].w;
+      const { w } = _inputs[el][vote];
       let n = _inputs[el][vote][params.negative] || 0;
       upvotes[dictionary[vote]] = w / degree;
       const j = dictionary[vote];
@@ -85,8 +79,8 @@ function objectToMatrix(_inputs, params) {
   // printM(G, 'G');
   // printM(P, 'P');
 
-  const heapUsed = process.memoryUsage().heapUsed;
-  const mb = Math.round(100 * heapUsed / 1048576) / 100;
+  const { heapUsed } = process.memoryUsage();
+  const mb = Math.round((100 * heapUsed) / 1048576) / 100;
   console.log('Matrix - program is using', mb, 'MB of Heap.');
 
   return { neg, g, G, N, P, dictionary, danglingNodes, avoid, danglingObj };
@@ -94,26 +88,24 @@ function objectToMatrix(_inputs, params) {
 
 function formatOutput(x, dictionary, inputs) {
   const result = {};
-  Object.keys(inputs).forEach((node, i) => result[node] = x[i]);
+  Object.keys(inputs).forEach((node, i) => (result[node] = x[i]));
   return result;
 }
 
 function runLoop(loopParams, params) {
-  let {
+  const {
     x,
     p,
     tildeP,
     P,
     g,
-    avoid,
     danglingWeights,
     danglingObj,
     neg,
-    xlast,
     danglesum,
-    i,
-    lastP
+    i
   } = loopParams;
+  let { lastP, xlast, avoid } = loopParams;
 
   let upvotes;
   let transitions;
@@ -123,7 +115,7 @@ function runLoop(loopParams, params) {
   Ti = {};
   if (p[i]) {
     // Optimized TNi
-    xlast.map((xl, j) => Ti[j] = xl * params.M * (1 - params.alpha) * p[i]);
+    xlast.map((xl, j) => (Ti[j] = xl * params.M * (1 - params.alpha) * p[i]));
   }
   upvotes = [];
   if (g[i]) {
@@ -140,10 +132,6 @@ function runLoop(loopParams, params) {
 
   x[i] += (1.0 - params.alpha) * p[i] + danglesum * danglingWeights[i];
 
-  // if (dictionary['ann'] === i) {
-  //   console.log(tildeP[i][i]);
-  // }
-
   const denom = x[i] || 1;
   x[i] *= (1 - tildeP[i][i]) ** params.beta;
 
@@ -154,7 +142,7 @@ function runLoop(loopParams, params) {
       tildeP[i][j] = 0;
 
       transitions.forEach(k => {
-        tildeP[i][j] += Ti[k] / denom * lastP[k][j];
+        tildeP[i][j] += (Ti[k] / denom) * lastP[k][j];
       });
 
       // UPDATE P
@@ -189,16 +177,11 @@ export default function pagerank(inputs, params) {
 
   const now = new Date();
 
-  let {
-    neg,
-    g,
-    P,
-    N,
-    dictionary,
-    danglingNodes,
-    avoid,
-    danglingObj
-  } = objectToMatrix(inputs, params);
+  // eslint-disable-next-line;
+  let { neg, g, P, N, dictionary, danglingNodes, avoid, danglingObj } = objectToMatrix(
+    inputs,
+    params
+  ); // eslint-disable-line;
 
   let p = new Array(N).fill(0);
   if (!params.personalization) {
@@ -242,7 +225,7 @@ export default function pagerank(inputs, params) {
     console.log('start sum ', sum);
   }
 
-  console.log('matrix setup time ', ((new Date()).getTime() - now) / 1000 + 's');
+  console.log('matrix setup time ', (new Date().getTime() - now) / 1000 + 's');
 
   let tildeP = P.map(arr => arr.slice());
   let iter;
@@ -255,34 +238,37 @@ export default function pagerank(inputs, params) {
     const lastP = P.map(arr => arr.slice());
 
     let danglesum = 0;
-    danglingNodes.forEach(node => danglesum += xlast[node]);
+    danglingNodes.forEach(node => (danglesum += xlast[node]));
     danglesum *= params.alpha;
 
     for (let i = 0; i < N; i++) {
       // this enables garbage collector to free up memory
       // between iterations
-      ({ x, P, tildeP, avoid } = runLoop({
-        x,
-        p,
-        tildeP,
-        P,
-        g,
-        N,
-        danglingNodes,
-        avoid,
-        danglingWeights,
-        danglingObj,
-        neg,
-        iter,
-        xlast,
-        danglesum,
-        i,
-        lastP
-      }, params));
+      ({ x, P, tildeP, avoid } = runLoop(
+        {
+          x,
+          p,
+          tildeP,
+          P,
+          g,
+          N,
+          danglingNodes,
+          avoid,
+          danglingWeights,
+          danglingObj,
+          neg,
+          iter,
+          xlast,
+          danglesum,
+          i,
+          lastP
+        },
+        params
+      ));
     }
 
-    const heapUsed = process.memoryUsage().heapUsed;
-    const mb = Math.round(100 * heapUsed / 1048576) / 100;
+    const { heapUsed } = process.memoryUsage();
+    const mb = Math.round((100 * heapUsed) / 1048576) / 100;
     console.log('Iter - program is using', mb, 'MB of Heap.');
     console.log('avoid length', avoid.length, N);
 
@@ -297,11 +283,10 @@ export default function pagerank(inputs, params) {
       return el;
     });
 
-
     if (err < N * params.tol && iter > 1) {
       console.log('iterations ', iter);
       console.log(err);
-      const elapsed = (new Date()).getTime() - now.getTime();
+      const elapsed = new Date().getTime() - now.getTime();
       console.log('elapsed time: ', elapsed / 1000, 's');
       return formatOutput(x, dictionary, inputs, params);
     }
@@ -309,7 +294,8 @@ export default function pagerank(inputs, params) {
 
   // printM(T, 'T');
   // printM(tildeP, 'tildeP');
-  console.warn('pagerank: power iteration failed to converge in ' +
-               params.iter_max + ' iterations.');
+  console.warn(
+    'pagerank: power iteration failed to converge in ' + params.iter_max + ' iterations.'
+  );
   return formatOutput(x, dictionary, inputs, params);
 }

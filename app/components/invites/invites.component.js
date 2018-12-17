@@ -35,12 +35,12 @@ export default class InviteComponent extends Component {
   }
 
   createInvite() {
-    if (this.state.sending) return;
+    if (this.state.sending) return null;
     this.setState({ sending: true });
     const { email, name, invitedByString } = this.state;
     if (!name || !email || !invitedByString) {
       this.setState({ sending: false });
-      return Alert.alert('Make sure all feilds are complete');
+      return Alert.alert('Make sure all fields are complete');
     }
     const invite = {
       email,
@@ -48,12 +48,12 @@ export default class InviteComponent extends Component {
       invitedByString,
       invitedBy: this.props.auth.user._id
     };
-    return this.props.actions.createInvite(invite).then(createdInvite => {
+    return this.props.actions.createInvite(invite)
+    .then(createdInvite => {
       this.setState({ sending: false });
       if (createdInvite) {
         this.setState({ name: null, email: null, invitedByString: null });
       }
-      // if (createdInvite) this.sendInvite(createdInvite);
     });
   }
 
@@ -118,7 +118,10 @@ export default class InviteComponent extends Component {
               />
             </View>
 
-            <Text style={[styles.active, styles.link]} onPress={this.props.actions.goToInviteList}>
+            <Text
+              style={[styles.active, styles.link]}
+              onPress={this.props.actions.goToInviteList}
+            >
               You invited {this.props.inviteList.length} people
             </Text>
           </View>

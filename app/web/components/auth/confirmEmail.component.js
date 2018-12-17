@@ -19,7 +19,8 @@ export default class EmailConfirm extends Component {
 
   sendConfirmation() {
     this.setState({ sending: true });
-    this.props.actions.sendConfirmation().then(success => {
+    this.props.actions.sendConfirmation()
+    .then(success => {
       this.setState({ sending: false });
       if (success) {
         window.alert('Confirmation email sent');
@@ -34,7 +35,10 @@ export default class EmailConfirm extends Component {
       text = 'Oops... something went wrong';
       if (this.props.auth.user && !this.state.sending) {
         resend = (
-          <ShadowButton style={{ marginTop: '20px' }} onClick={() => this.sendConfirmation()}>
+          <ShadowButton
+            style={{ marginTop: '20px' }}
+            onClick={() => this.sendConfirmation()}
+          >
             Resend email confirmation code
           </ShadowButton>
         );

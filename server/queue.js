@@ -1,19 +1,17 @@
 const queue = require('queue');
 const Stats = require('./api/statistics/statistics.model');
 const Relevance = require('./api/relevance/relevance.model');
-// const computePageRank = require('./utils/pagerankCompute').default;
 const Community = require('./api/community/community.model').default;
 const ethRewards = require('./utils/ethRewards.js');
 
-const { PAYOUT_FREQUENCY } = require('./config/globalConstants');
+const { PAYOUT_FREQUENCY, RELEVANCE_DECAY, DAYS } = require('./config/globalConstants');
 
 const TwitterWorker = require('./utils/twitterWorker');
 
-const DECAY = 0.99621947473649;
+/* eslint no-console: 0 */
 
 const q = queue({
-  // concurrency: 5,
-  concurrency: 5,
+  concurrency: 5
 });
 
 q.on('timeout', (next, job) => {
@@ -22,46 +20,44 @@ q.on('timeout', (next, job) => {
 });
 
 async function updateUserStats() {
-  Relevance.find({ global: true })
-    .exec((err, res) => {
-      if (err || !res) {
-        console.log('db error', err);
-        return;
-      }
-      res.forEach((rel) => {
-        q.push((cb) => {
-          const date = new Date();
-          const hour = date.getHours();
-          const day = date.setUTCHours(0, 0, 0, 0);
-          const endTime = day + (24 * 60 * 60 * 1000);
-          const query = {
-            user: rel.user,
-            date: day,
-            endTime,
-            communityId: rel.communityId,
-          };
-          const set = {};
-          set['hours.' + hour] = rel.pagerank || 0;
-          const update = {
-            $set: set,
-            $inc: { aggregateRelevance: rel.pagerank, totalSamples: 1 }
-          };
-          Stats.findOneAndUpdate(query, update, {
-            new: true,
-            upsert: true,
-            setDefaultsOnInsert: true
-          })
-            .exec((statsError) => {
-              if (!statsError) cb();
-              else throw statsError;
-            });
+  Relevance.find({ global: true }).exec((err, res) => {
+    if (err || !res) {
+      console.log('db error', err);
+      return;
+    }
+    res.forEach(rel => {
+      q.push(cb => {
+        const date = new Date();
+        const hour = date.getHours();
+        const day = date.setUTCHours(0, 0, 0, 0);
+        const endTime = day + 24 * 60 * 60 * 1000;
+        const query = {
+          user: rel.user,
+          date: day,
+          endTime,
+          communityId: rel.communityId
+        };
+        const set = {};
+        set['hours.' + hour] = rel.pagerank || 0;
+        const update = {
+          $set: set,
+          $inc: { aggregateRelevance: rel.pagerank, totalSamples: 1 }
+        };
+        Stats.findOneAndUpdate(query, update, {
+          new: true,
+          upsert: true,
+          setDefaultsOnInsert: true
+        }).exec(statsError => {
+          if (!statsError) cb();
+          else throw statsError;
         });
       });
-      q.start((queErr) => {
-        if (queErr) return console.log(queErr);
-        return console.log('done updating stats');
-      });
     });
+    q.start(queErr => {
+      if (queErr) return console.log(queErr);
+      return console.log('done updating stats');
+    });
+  });
 }
 
 // setTimeout(basicIncome, 10000);
@@ -69,9 +65,15 @@ async function updateUserStats() {
 async function getCommunityUserRank(community) {
   try {
     const communityId = community._id;
-    const totalUsers = await Relevance.count({ pagerank: { $gt: 0 }, global: true, communityId });
+    const totalUsers = await Relevance.count({
+      pagerank: { $gt: 0 },
+      global: true,
+      communityId
+    });
     // let grandTotal = await Relevance.count({ global: true, communityId });
-    const topUser = await Relevance.findOne({}).sort('-pagerank').limit(1);
+    const topUser = await Relevance.findOne({})
+    .sort('-pagerank')
+    .limit(1);
     const topR = topUser.pagerank;
     const users = await Relevance.find({ global: true, communityId });
 
@@ -79,10 +81,11 @@ async function getCommunityUserRank(community) {
       q.push(async cb => {
         try {
           const rank = await Relevance.count({
-            pagerank: { $lt: user.pagerank, $gt: 0 }, communityId
+            pagerank: { $lt: user.pagerank, $gt: 0 },
+            communityId
           });
-          const percentRank = Math.round(((rank) * 100) / (totalUsers));
-          const level = Math.round(1000 * user.pagerank / topR) / 10;
+          const percentRank = Math.round((rank * 100) / totalUsers);
+          const level = Math.round((1000 * user.pagerank) / topR) / 10;
 
           user.percentRank = percentRank;
           user.rank = totalUsers - rank;
@@ -95,28 +98,29 @@ async function getCommunityUserRank(community) {
             tag: { $ne: null },
             communityId
           })
-            .sort('-relevance')
-            .limit(5);
+          .sort('-relevance')
+          .limit(5);
 
           user.topTopics = topicRelevance.map(tR => tR.tag);
 
           // TODO this may not work!
           const topicPromises = topicRelevance.map(async tR => {
             const topTopicUser = await Relevance.findOne({ tag: tR.tag, communityId })
-              .sort('-relevance')
-              .limit(1);
+            .sort('-relevance')
+            .limit(1);
             const topTopicR = topTopicUser.relevance;
 
             const totalTopicUsers = await Relevance.find({ tag: tR.tag }).count();
             const topicRank = await Relevance.count({
-              tag: tR.tag, relevance: { $lt: tR.relevance }
+              tag: tR.tag,
+              relevance: { $lt: tR.relevance }
             });
 
-            const topicPercentRank = Math.round((topicRank * 100) / (totalTopicUsers));
+            const topicPercentRank = Math.round((topicRank * 100) / totalTopicUsers);
 
             tR.percentRank = topicPercentRank;
             tR.level = Math.round(1000 * (tR.relevance / topTopicR)) / 10;
-            tR.rank = (totalTopicUsers - topicRank);
+            tR.rank = totalTopicUsers - topicRank;
             tR.totalUsers = totalTopicUsers;
 
             // console.log('_TAGS_', user.user, ' ', tR.tag);
@@ -173,10 +177,10 @@ async function basicIncome(done) {
 
   function updateTopicRelevance() {
     console.log('updating topic relevance');
-    return (topic) => {
+    return topic => {
       q.push(async cb => {
         try {
-          const r = topic.relevance * DECAY;
+          const r = topic.relevance * (1 / 2) ** (DAYS / RELEVANCE_DECAY);
           const diff = r - topic.relevance;
           topic.relevance += diff;
           if (topic.global === true) {
@@ -198,7 +202,7 @@ async function basicIncome(done) {
 
   topicRelevance.forEach(updateTopicRelevance());
 
-  q.start((queErr) => {
+  q.start(queErr => {
     if (queErr) return console.log(queErr);
     if (done) done();
     return console.log('all finished basic income: ');
@@ -209,7 +213,6 @@ async function basicIncome(done) {
     next();
   });
 }
-
 
 function getNextUpdateTime() {
   console.log('get next time');
@@ -233,7 +236,6 @@ function getNextUpdateTime() {
   global.nextUpdate = nextUpdate;
   return timeToUpdate;
 }
-
 
 getNextUpdateTime();
 
@@ -273,7 +275,7 @@ function startTwitterUpdate() {
 
 if (process.env.NODE_ENV === 'production') {
   // start interval on the hour
-  const minutesTillHour = 60 - (new Date()).getMinutes();
+  const minutesTillHour = 60 - new Date().getMinutes();
   setTimeout(() => {
     startStatsUpdate();
     startRewards();

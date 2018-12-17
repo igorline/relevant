@@ -12,7 +12,7 @@ let styles;
 
 class IrrelevantAnimation extends Component {
   static propTypes = {
-    animation: PropTypes.object
+    animation: PropTypes.number
   };
 
   constructor(props, context) {
@@ -52,7 +52,8 @@ class IrrelevantAnimation extends Component {
   }
 
   render() {
-    const thumbs = Object.keys(this.state.thumbs).map(key => this.state.thumbs[key]);
+    const thumbs = Object.keys(this.state.thumbs)
+    .map(key => this.state.thumbs[key]);
     return (
       <View pointerEvents="none" style={styles.heartsContainer}>
         {thumbs}
@@ -92,8 +93,6 @@ const localStyles = StyleSheet.create({
 });
 
 styles = { ...globalStyles, ...localStyles };
-
-// export default IrrelevantAnimation;
 
 export default connect(
   mapStateToProps,

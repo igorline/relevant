@@ -390,7 +390,7 @@ export function editPost(post) {
       dispatch(updatePost(response));
       return true;
     } catch (err) {
-      Alert.alert('Post error please try again');
+      Alert.alert('Post error please try again', err.message);
       return false;
     }
   };

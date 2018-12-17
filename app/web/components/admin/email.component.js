@@ -121,7 +121,8 @@ class Email extends Component {
   }
 
   loadEmail() {
-    this.props.actions.loadEmail().then(email => {
+    this.props.actions.loadEmail()
+    .then(email => {
       this.setState(email);
       this.editor.content.innerHTML = email.html;
     });
@@ -200,10 +201,18 @@ class Email extends Component {
           <ShadowButton backgroundColor={'white'} color={'#3E3EFF'} onClick={this.submit}>
             Send email
           </ShadowButton>
-          <ShadowButton backgroundColor={'white'} color={'#3E3EFF'} onClick={this.saveEmail}>
+          <ShadowButton
+            backgroundColor={'white'}
+            color={'#3E3EFF'}
+            onClick={this.saveEmail}
+          >
             Save draft
           </ShadowButton>
-          <ShadowButton backgroundColor={'white'} color={'#3E3EFF'} onClick={this.loadEmail}>
+          <ShadowButton
+            backgroundColor={'white'}
+            color={'#3E3EFF'}
+            onClick={this.loadEmail}
+          >
             Load
           </ShadowButton>
         </div>

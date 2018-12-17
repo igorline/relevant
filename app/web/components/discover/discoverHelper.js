@@ -11,7 +11,7 @@ export const tagRoutes = [
 ];
 
 export function getDiscoverState(nextProps, prevState) {
-  let sort = nextProps.params.sort;
+  let { sort } = nextProps.params;
   if (nextProps.location && nextProps.location.pathname === '/home') {
     sort = 'new';
   }

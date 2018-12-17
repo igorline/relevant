@@ -3,17 +3,16 @@
 // http://perso.uclouvain.be/paul.vandooren/publications/deKerchoveV08b.pdf
 // And eigentrust/egentrust++
 
-function printM(m, name) {
-  console.log(name, ':\n', JSON.stringify(m).replace(/\]\,\[/g, '],\n['));
-}
+/* eslint no-loop-func: 0 */
+/* eslint camelcase: 0 */
+/* eslint no-console: 0 */
 
 function objectToMatrix(_inputs, params) {
   const inputs = Object.keys(_inputs);
   const dictionary = {};
-  inputs.forEach((key, i) => dictionary[key] = i);
+  inputs.forEach((key, i) => (dictionary[key] = i));
   const N = inputs.length;
   const G = [];
-  const g = {};
   const neg = {};
   const P = [];
   const danglingNodes = [];
@@ -38,7 +37,7 @@ function objectToMatrix(_inputs, params) {
     }
 
     Object.keys(_inputs[el]).forEach(vote => {
-      const w = _inputs[el][vote].w;
+      const { w } = _inputs[el][vote];
       let n = _inputs[el][vote][params.negative] || 0;
       upvotes[dictionary[vote]] = w / degree;
       if (n) {
@@ -54,24 +53,14 @@ function objectToMatrix(_inputs, params) {
   });
   // printM(G, 'G');
   // printM(P, 'P');
-  return { neg, g, G, N, P, dictionary, danglingNodes };
+  return { neg, G, N, P, dictionary, danglingNodes };
 }
 
-function formatOutput(x, dictionary, inputs, params) {
+function formatOutput(x, dictionary, inputs) {
   const result = {};
-  // let e = 0;
-  // let sum = 0;
-  Object.keys(inputs).forEach((node, i) =>
-    // e += x[i] - params.nstart[node];
-    // if (x[i] - params.nstart[node] > 1e17) {
-    //   console.log(x[i] - params.nstart[node], node);
-    // }
-    // sum += x[i];
-    result[node] = x[i]
-  );
+  Object.keys(inputs).forEach((node, i) => (result[node] = x[i]));
   return result;
 }
-
 
 export default function pagerank(inputs, params) {
   if (!params) params = {};
@@ -86,7 +75,7 @@ export default function pagerank(inputs, params) {
 
   const now = new Date();
 
-  const { neg, g, G, P, N, dictionary, danglingNodes } = objectToMatrix(inputs, params);
+  const { neg, G, P, N, dictionary, danglingNodes } = objectToMatrix(inputs, params);
 
   let p = new Array(N).fill(0);
   if (!params.personalization) {
@@ -128,11 +117,12 @@ export default function pagerank(inputs, params) {
 
   const tildeP = P.map(arr => arr.slice());
   let iter;
-  const T = new Array(N).fill(0).map(() => new Array(N).fill(0));
+  const T = new Array(N).fill(0)
+  .map(() => new Array(N).fill(0));
 
   let danglesum = 0;
 
-  console.log('matrix setup time ', ((new Date()).getTime() - now) / 1000 + 's');
+  console.log('matrix setup time ', (new Date().getTime() - now) / 1000 + 's');
 
   let xlast;
   for (iter = 0; iter < params.max_iter; iter++) {
@@ -142,7 +132,7 @@ export default function pagerank(inputs, params) {
     const lastP = P.map(arr => arr.slice());
 
     danglesum = 0;
-    danglingNodes.forEach(node => danglesum += xlast[node]);
+    danglingNodes.forEach(node => (danglesum += xlast[node]));
     danglesum *= params.alpha;
 
     // Iterate through nodes;
@@ -152,11 +142,11 @@ export default function pagerank(inputs, params) {
       for (let j = 0; j < N; j++) {
         x[i] += params.alpha * G[j][i] * xlast[j];
 
-        TNi[j] = params.alpha * G[j][i] * xlast[j] +
+        TNi[j] =
+          params.alpha * G[j][i] * xlast[j] +
           xlast[j] * params.M * (1 - params.alpha) * p[i];
       }
       x[i] += (1.0 - params.alpha) * p[i] + danglesum * danglingWeights[i];
-
 
       for (let j = 0; j < N; j++) {
         const denom = x[i] || 1;
@@ -164,7 +154,6 @@ export default function pagerank(inputs, params) {
       }
 
       // x[i] *= (1 - tildeP[i][i]) ** params.beta;
-
 
       // UPDATE tildeP
       for (let j = 0; j < N; j++) {
@@ -178,7 +167,6 @@ export default function pagerank(inputs, params) {
         else P[i][j] = tildeP[i][j];
       }
     }
-
 
     // normalize
     const sum = x.reduce((prev, next) => prev + next, 0);
@@ -196,7 +184,7 @@ export default function pagerank(inputs, params) {
       console.log(err);
       // printM(T, 'T');
       // printM(tildeP, 'tildeP');
-      const elapsed = (new Date()).getTime() - now.getTime();
+      const elapsed = new Date().getTime() - now.getTime();
       console.log('elapsed time: ', elapsed / 1000, 's');
       return formatOutput(x, dictionary, inputs, params);
     }
@@ -205,7 +193,8 @@ export default function pagerank(inputs, params) {
 
   // printM(T, 'T');
   // printM(tildeP, 'tildeP');
-  console.warn('pagerank: power iteration failed to converge in ' +
-               params.iter_max + ' iterations.');
+  console.warn(
+    'pagerank: power iteration failed to converge in ' + params.iter_max + ' iterations.'
+  );
   return formatOutput(x, dictionary, inputs, params);
 }

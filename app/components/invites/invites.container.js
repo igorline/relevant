@@ -15,10 +15,6 @@ class Invites extends Component {
     inviteListView: PropTypes.object
   };
 
-  constructor(props, context) {
-    super(props, context);
-  }
-
   componentWillMount() {
     const skip = this.props.inviteList.length;
     this.props.actions.getInvites(skip, 100);

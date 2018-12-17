@@ -5,9 +5,7 @@ import {
   View,
   TextInput,
   TouchableHighlight,
-  Platform,
-  Keyboard,
-  InteractionManager
+  Platform
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles, blue, greyText } from '../../styles/global';
@@ -82,12 +80,11 @@ class TextEdit extends Component {
           blurOnSubmit={false}
           onSubmitEditing={() => {
             if (this.bug) {
-              let text = this.state.text;
+              let { text } = this.state.text;
               text += '\n';
               this.setState({
                 text
               });
-
               return (this.bug = false);
             }
             return (this.bug = true);
@@ -114,7 +111,9 @@ class TextEdit extends Component {
             style={styles.editingCommentButton}
             onPress={() => this.props.saveEditFunction(this.state.text)}
           >
-            <Text style={[styles.font10, styles.editingCommentButtonText]}>Save changes</Text>
+            <Text style={[styles.font10, styles.editingCommentButtonText]}>
+              Save changes
+            </Text>
           </TouchableHighlight>
         </View>
       </View>

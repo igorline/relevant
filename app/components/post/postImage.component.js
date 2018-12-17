@@ -28,16 +28,13 @@ class PostImage extends Component {
 
   render() {
     let image = null;
-    let link;
     let post = this.props.metaPost || this.props.post;
     if (post.metaPost) {
       post = post.metaPost;
     }
-    // console.log(post)
     const single = false; // this.props.singlePost;
     let smallerImg; // = this.props.singlePost;
     let title = null;
-    // let lastPost = false;
     let linkEl = null;
     let time;
     let author;
@@ -53,60 +50,35 @@ class PostImage extends Component {
         authorEl = (
           <Text
             numberOfLines={1}
-            style={[
-              styles.font12,
-              styles.articleTitle,
-              single ? styles.darkGrey : null
-              // styles.darkGrey
-            ]}
+            style={[styles.font12, styles.articleTitle, single ? styles.darkGrey : null]}
           >
             {author || ''}
           </Text>
         );
       }
-      if (post.image && !post.image.match('gif')) { image = post.image.match('http') ? post.image : 'https:' + post.image; }
+      if (post.image && !post.image.match('gif')) {
+        image = post.image.match('http') ? post.image : 'https:' + post.image;
+      }
       if (post.link || post.url) {
-        link = post.link || post.url;
         linkEl = (
           <View>
             <Text
-              // numberOfLines={2}
               style={[
                 styles.font12,
                 styles.articleTitle,
                 single ? styles.darkGrey : null
-                // styles.darkGrey
               ]}
             >
               {post.publisher || post.domain}
               {time ? ' · ' + time : ''}
               {authorEl ? ' · ' : null}
               {authorEl}
-              {/* post.description ? ' · ' + post.description : null */}
             </Text>
           </View>
         );
       }
       title = post.title ? post.title.trim() : '';
     }
-
-    // let description;
-
-    // if (post.description) {
-    //   description = (
-    //     <Text
-    //       numberOfLines={3}
-    //       style={[styles.font12,
-    //         // styles.georgia,
-    //         styles.whiteText
-    //         // styles.darkGrey,
-    //         // { padding: 10 }
-    //       ]}
-    //     >
-    //       {post.description}
-    //     </Text>
-    //   );
-    // }
 
     const titleEl = (
       <View style={[styles.textContainer]}>
@@ -124,7 +96,6 @@ class PostImage extends Component {
             {title || 'Untitled'}
           </Text>
           {linkEl}
-          {/* description */}
         </View>
       </View>
     );
@@ -144,9 +115,9 @@ class PostImage extends Component {
     color = (color % 220) + 200 || 200;
     color = Math.max(100, color);
     const colors = [
-      'hsla(' + parseInt(color - 30) + ', 100%, 50%, 1)',
-      'hsla(' + parseInt(color) + ',      100%, 50%, 1)',
-      'hsla(' + parseInt(color + 30) + ', 100%, 50%, 1)'
+      'hsla(' + parseInt(color - 30, 10) + ', 100%, 50%, 1)',
+      'hsla(' + parseInt(color, 10) + ',      100%, 50%, 1)',
+      'hsla(' + parseInt(color + 30, 10) + ', 100%, 50%, 1)'
     ];
     const start = { x: 0.8, y: 0.0 };
     const end = { x: 0.2, y: 1.0 };
@@ -198,14 +169,8 @@ class PostImage extends Component {
         pressRetentionOffset={{ top: 100, left: 100, right: 100, bottom: 100 }}
       >
         <View style={[styles.postImageContainer]}>
-          {/* linkEl */}
           {imageEl}
-
           {single ? titleEl : null}
-
-          {/* lastPost ? <Text style={[styles.lastPost, styles.white]}>
-            Last subscribed post❗️
-          </Text> : null */}
         </View>
       </TouchableHighlight>
     );

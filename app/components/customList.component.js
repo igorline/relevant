@@ -8,7 +8,7 @@ import ErrorComponent from './error.component';
 
 let styles;
 
-export default class ActivityView extends Component {
+export default class CustomListView extends Component {
   static propTypes = {
     data: PropTypes.array,
     active: PropTypes.bool,
@@ -18,10 +18,10 @@ export default class ActivityView extends Component {
     loaded: PropTypes.bool,
     headerData: PropTypes.object,
     parent: PropTypes.string,
-    error: PropTypes.string,
+    error: PropTypes.bool,
     scrollableTab: PropTypes.bool,
     YOffset: PropTypes.number,
-    stickyHeaderIndices: PropTypes.object,
+    stickyHeaderIndices: PropTypes.array,
     onScroll: PropTypes.func,
     renderHeader: PropTypes.func,
     renderRow: PropTypes.func,
@@ -119,13 +119,10 @@ export default class ActivityView extends Component {
   }
 
   render() {
+    const { data, active, headerData } = this.props;
     let listEl = null;
     let emptyEl = null;
-    let spinnerEl = (
-      <CustomSpinner
-        visible={!this.props.data.length && this.props.active && !this.props.headerData}
-      />
-    );
+    let spinnerEl = <CustomSpinner visible={!data.length && active && !headerData} />;
 
     let listStyle = [styles.commonList, styles.hiddenList];
 

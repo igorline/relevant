@@ -50,14 +50,15 @@ class AppHeader extends Component {
 
   componentDidUpdate(prevProps) {
     const wasNotAuthenticated = !prevProps.auth.isAuthenticated;
-    const isAuthenticated = this.props.auth.isAuthenticated;
+    const { isAuthenticated } = this.props.auth;
     if (wasNotAuthenticated && isAuthenticated) this.getNotificationCount();
   }
 
   getNotificationCount() {
     const now = new Date();
+    const { isAuthenticated } = this.props.auth;
     if (now - this.state.timeSinceNotificationCount < 5000) return;
-    if (this.props.auth.isAuthenticated) {
+    if (isAuthenticated) {
       this.props.actions.getNotificationCount();
       this.setState({ timeSinceNotificationCount: now });
     }
@@ -68,7 +69,7 @@ class AppHeader extends Component {
     const activity = this.state.activity ? (
       <Activity close={() => this.setState({ activity: false })} />
     ) : null;
-    const count = this.props.notif.count;
+    const { count } = this.props.notif;
     const badge = count ? <span className={'badge'}>{count}</span> : null;
     return (
       <div
@@ -99,7 +100,10 @@ class AppHeader extends Component {
         <div className={'navLink profileMenuParent'}>
           <Avatar size={42} user={this.props.user} noName />
         </div>
-        <div className={'navLink'} onClick={() => this.props.actions.logoutAction(this.props.user)}>
+        <div
+          className={'navLink'}
+          onClick={() => this.props.actions.logoutAction(this.props.user)}
+        >
           Logout
         </div>
       </div>
@@ -128,7 +132,10 @@ class AppHeader extends Component {
     const signup = (
       <div className="signupCTA">
         <div className="basicButton">
-          <a target="_blank" href="https://hackernoon.com/relevant-an-introduction-5b79ef7afa9">
+          <a
+            target="_blank"
+            href="https://hackernoon.com/relevant-an-introduction-5b79ef7afa9"
+          >
             Read more about Relevant
           </a>
         </div>

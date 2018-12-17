@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-
 import PropTypes from 'prop-types';
-
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import CustomSpinner from '../CustomSpinner.component';
 import Post from '../post/post.component';
 import DiscoverUser from '../discoverUser.component';
 import * as userActions from '../../actions/user.actions';
@@ -28,17 +25,16 @@ class Discover extends Component {
   static propTypes = {
     type: PropTypes.string,
     scene: PropTypes.object,
-    tags: PropTypes.array,
-    refresh: PropTypes.object,
-    active: PropTypes.object,
-    reload: PropTypes.object,
+    tags: PropTypes.object,
+    refresh: PropTypes.number,
+    active: PropTypes.bool,
+    reload: PropTypes.number,
     offsetY: PropTypes.number,
     actions: PropTypes.object,
     auth: PropTypes.object,
     onScroll: PropTypes.func,
-    error: PropTypes.string,
-    posts: PropTypes.object,
-    userList: PropTypes.array
+    error: PropTypes.bool,
+    posts: PropTypes.object
   };
 
   constructor(props, context) {
@@ -52,7 +48,8 @@ class Discover extends Component {
     this.load = this.load.bind(this);
     this.scrollToTop = this.scrollToTop.bind(this);
 
-    this.needsReload = new Date().getTime();
+    this.needsReload = new Date()
+    .getTime();
     this.myTabs = [
       { id: 0, title: 'Trending', type: 'top' },
       { id: 1, title: 'New', type: 'new' },
@@ -72,10 +69,11 @@ class Discover extends Component {
   }
 
   componentWillReceiveProps(next) {
-    const type = this.myTabs[this.state.view].type;
+    const { type } = this.myTabs[this.state.view];
     if (this.props.tags.selectedTags !== next.tags.selectedTags && type !== 'people') {
       this.filter = next.tags.selectedTags;
-      this.needsReload = new Date().getTime();
+      this.needsReload = new Date()
+      .getTime();
     }
     if (this.props.refresh !== next.refresh && this.props.active) {
       if (this.scrollOffset === -50) {
@@ -85,7 +83,8 @@ class Discover extends Component {
       }
     }
     if (this.props.reload !== next.reload) {
-      this.needsReload = new Date().getTime();
+      this.needsReload = new Date()
+      .getTime();
     }
   }
 
@@ -146,7 +145,9 @@ class Discover extends Component {
 
   scrollToTop() {
     const view = this.listview;
-    if (view && view.listview) view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
+    if (view && view.listview) {
+      view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
+    }
   }
 
   load(view, length) {
@@ -161,7 +162,9 @@ class Discover extends Component {
         this.props.actions.getPosts(length, tags, null, POST_PAGE_SIZE);
         break;
       case 2:
-        if (this.props.auth.user) this.props.actions.getUsers(length, POST_PAGE_SIZE * 2, tags);
+        if (this.props.auth.user) {
+          this.props.actions.getUsers(length, POST_PAGE_SIZE * 2, tags);
+        }
         break;
       case 3:
         this.props.actions.getTwitterFeed(length, tags);
@@ -186,7 +189,7 @@ class Discover extends Component {
 
   renderRow(rowData, view, i) {
     const { posts } = this.props;
-    const type = this.myTabs[view].type;
+    const { type } = this.myTabs[view];
     if (view !== 2) {
       const post = posts.posts[rowData];
       const link = posts.links[post.metaPost];
@@ -197,7 +200,7 @@ class Discover extends Component {
 
       return (
         <Post
-          tooltip={parseInt(i) === 0 || false}
+          tooltip={parseInt(i, 10) === 0 || false}
           post={post}
           commentary={commentary}
           link={link}
@@ -246,8 +249,6 @@ class Discover extends Component {
         />
       );
     }
-
-    // if (!this.loaded) dataEl = <CustomSpinner />;
 
     return <View style={{ backgroundColor: 'hsl(0,0%,100%)', flex: 1 }}>{dataEl}</View>;
   }

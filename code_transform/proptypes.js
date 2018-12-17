@@ -17,14 +17,19 @@ module.exports = function transformPropTypes(file, api, options) {
   const localPropTypesName = 'PropTypes';
 
   function guessType(prop) {
-    const firstPart = prop.replace(/([a-z\xE0-\xFF])([A-Z\xC0\xDF])/g, '$1 $2').split(' ')[0];
-    if (firstPart === 'on'
-      || firstPart === 'toggle'
-      || firstPart === 'get'
-      || firstPart === 'focus'
-      || firstPart === 'render'
-      || firstPart === 'set'
-    ) return 'func';
+    const firstPart = prop
+    .replace(/([a-z\xE0-\xFF])([A-Z\xC0\xDF])/g, '$1 $2')
+    .split(' ')[0];
+    if (
+      firstPart === 'on' ||
+      firstPart === 'toggle' ||
+      firstPart === 'get' ||
+      firstPart === 'focus' ||
+      firstPart === 'render' ||
+      firstPart === 'set'
+    ) {
+      return 'func';
+    }
     if (firstPart === 'is' || firstPart === 'no') return 'bool';
     if (firstPart === 'render') return 'func';
 
@@ -128,41 +133,38 @@ module.exports = function transformPropTypes(file, api, options) {
   }
 
   function hasReactImport() {
-    return root
-      .find(j.ImportDeclaration, {
+    return (
+      root.find(j.ImportDeclaration, {
         source: { value: 'react' }
-      })
-      .length > 0;
+      }).length > 0
+    );
   }
 
   function hasPropTypesImport() {
-    return root
-      .find(j.ImportDeclaration, {
+    return (
+      root.find(j.ImportDeclaration, {
         source: { value: 'prop-types' }
-      })
-      .length > 0;
+      }).length > 0
+    );
   }
 
   // Program uses ES import syntax
   function useImportSyntax() {
-    return root
-      .find(j.ImportDeclaration, {
+    return (
+      root.find(j.ImportDeclaration, {
         importKind: 'value'
-      })
-      .length > 0;
+      }).length > 0
+    );
   }
-
 
   let hasModifications = false;
 
   function findReactImport() {
     let target;
-    root
-      .find(j.ImportDeclaration)
-      .forEach(path => {
-        const name = path.value.source.value.toLowerCase();
-        if (name === 'react-native' || name === 'react') target = path;
-      });
+    root.find(j.ImportDeclaration).forEach(path => {
+      const name = path.value.source.value.toLowerCase();
+      if (name === 'react-native' || name === 'react') target = path;
+    });
 
     return target;
   }
@@ -200,47 +202,43 @@ module.exports = function transformPropTypes(file, api, options) {
   function findAllProps() {
     const allProps = new Set();
     root
-      .find(j.MemberExpression, { object: { type: 'MemberExpression' } })
-      .filter(path =>
-        path.node.object && path.node.object.property.name === 'props'
-      )
-      .forEach(path => {
-        allProps.add(path.node.property.name);
-      });
+    .find(j.MemberExpression, { object: { type: 'MemberExpression' } })
+    .filter(path => path.node.object && path.node.object.property.name === 'props')
+    .forEach(path => {
+      allProps.add(path.node.property.name);
+    });
 
     root
-      .find(j.MemberExpression)
-      .filter(path =>
-        path.node.object.name === 'props'
-      )
-      .forEach(path => {
-        allProps.add(path.node.property.name);
-      });
+    .find(j.MemberExpression)
+    .filter(path => path.node.object.name === 'props')
+    .forEach(path => {
+      allProps.add(path.node.property.name);
+    });
 
     root
-      .find(j.VariableDeclarator, { id: { type: 'ObjectPattern' } })
-      .filter(path =>
-        path.node.init.object
-        && path.node.init.object.type === 'ThisExpression'
-        && path.node.init.property.name === 'props'
-
-      )
-      .forEach(path => {
-        path.node.id.properties.forEach(p => p.key && allProps.add(p.key.name));
-      });
+    .find(j.VariableDeclarator, { id: { type: 'ObjectPattern' } })
+    .filter(
+      path =>
+        path.node.init.object &&
+          path.node.init.object.type === 'ThisExpression' &&
+          path.node.init.property.name === 'props'
+    )
+    .forEach(path => {
+      path.node.id.properties.forEach(p => p.key && allProps.add(p.key.name));
+    });
 
     return [...allProps];
   }
 
   function isClass() {
-    return root.find(j.ClassDeclaration)
-      .length > 0;
+    return root.find(j.ClassDeclaration).length > 0;
   }
 
   function hasPropsTypesProperty() {
-    return root.find(j.ClassProperty)
-      .filter(path => path.node.key.name === 'propTypes')
-      .length > 0;
+    return (
+      root.find(j.ClassProperty).filter(path => path.node.key.name === 'propTypes')
+      .length > 0
+    );
   }
 
   function generatPropTypesObject(props) {
@@ -249,27 +247,23 @@ module.exports = function transformPropTypes(file, api, options) {
       return j.property(
         'init',
         j.identifier(prop),
-        j.memberExpression(
-          j.identifier('PropTypes'),
-          j.identifier(guessType(prop))
-        )
+        j.memberExpression(j.identifier('PropTypes'), j.identifier(guessType(prop)))
       );
     });
   }
 
   function addPropTypesProperty(props) {
-    root.find(j.ClassBody)
-      .forEach(path => {
-        const classBody = path.get('body');
-        const newClassProp = j.classProperty(
-          j.identifier('propTypes'),
-          j.objectExpression(generatPropTypesObject(props)),
-          null, // typeAnnotation
-          true, // static
-        );
+    root.find(j.ClassBody).forEach(path => {
+      const classBody = path.get('body');
+      const newClassProp = j.classProperty(
+        j.identifier('propTypes'),
+        j.objectExpression(generatPropTypesObject(props)),
+        null, // typeAnnotation
+        true // static
+      );
 
-        classBody.value.unshift(newClassProp);
-      });
+      classBody.value.unshift(newClassProp);
+    });
     hasModifications = true;
   }
 
@@ -287,8 +281,5 @@ module.exports = function transformPropTypes(file, api, options) {
     addPropTypesProperty(foundProps);
   }
 
-  return hasModifications
-    ? root.toSource({ quote: 'single' })
-    : null;
+  return hasModifications ? root.toSource({ quote: 'single' }) : null;
 };
-

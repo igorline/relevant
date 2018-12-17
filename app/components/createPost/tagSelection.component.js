@@ -10,10 +10,7 @@ class TagSelection extends Component {
   static propTypes = {
     createPost: PropTypes.object,
     actions: PropTypes.object,
-    scrollToElement: PropTypes.object,
-    bodyTags: PropTypes.array,
-    articleTags: PropTypes.array,
-    postCategory: PropTypes.string
+    scrollToElement: PropTypes.func
   };
 
   constructor(props, context) {
@@ -60,7 +57,9 @@ class TagSelection extends Component {
     this.topicTags = [...main, ...children];
 
     if (updateSelected) {
-      const bodyTags = this.bodyTags.filter(tag => main.findIndex(t => tag._id === t._id) === -1);
+      const bodyTags = this.bodyTags.filter(
+        tag => main.findIndex(t => tag._id === t._id) === -1
+      );
       this.selectedTags = [...new Set([...main, ...bodyTags])];
     }
   }
@@ -69,7 +68,9 @@ class TagSelection extends Component {
     this.setState({ input: input.toLowerCase() });
     if (input === '') {
       this.inputTags = [];
-      this.props.actions.setCreaPostState({ allTags: [...this.inputTags, ...this.selectedTags] });
+      this.props.actions.setCreaPostState({
+        allTags: [...this.inputTags, ...this.selectedTags]
+      });
     }
     const words = input.split(' ');
     // if (input[input.length - 1] !== ' ' && input[input.length - 1] !== ',') return null;
@@ -87,7 +88,9 @@ class TagSelection extends Component {
       return Alert.alert('👋 too many topics!');
     }
     this.inputTags = tags;
-    this.props.actions.setCreaPostState({ allTags: [...this.inputTags, ...this.selectedTags] });
+    this.props.actions.setCreaPostState({
+      allTags: [...this.inputTags, ...this.selectedTags]
+    });
     return null;
   }
 
@@ -118,8 +121,7 @@ class TagSelection extends Component {
   }
 
   render() {
-    const selectedTopic = this.selectedTopic;
-
+    const { selectedTopic } = this;
     const selectedTags = [...this.selectedTags, ...this.inputTags];
     let tags = [...this.inputTags, ...this.topicTags, ...this.tags];
 
@@ -146,7 +148,12 @@ class TagSelection extends Component {
           placeholder={'Select additional topics or create your own'}
         />
         <View style={styles.break} />
-        <Tags noReorder noScroll toggleTag={this.toggleTag} tags={{ tags, selectedTags }} />
+        <Tags
+          noReorder
+          noScroll
+          toggleTag={this.toggleTag}
+          tags={{ tags, selectedTags }}
+        />
         <View style={styles.break} />
       </View>
     );

@@ -42,8 +42,8 @@ test('should return setPosts action', async t => {
   };
 
   nock(process.env.API_SERVER)
-    .post('/api/invest?access_token=0')
-    .reply(201, { _id: 0 });
+  .post('/api/invest?access_token=0')
+  .reply(201, { _id: 0 });
 
   const investAction = {
     type: 'server/notification',
@@ -56,9 +56,7 @@ test('should return setPosts action', async t => {
   const expectedActions = [investAction];
   const store = mockStore({ post });
 
-  await store.dispatch(
-    investActions.invest(token, amount, post, investingUser)
-  );
+  await store.dispatch(investActions.invest(token, amount, post, investingUser));
 
   t.deepEqual(store.getActions(), expectedActions);
 });

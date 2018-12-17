@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { StyleSheet, Animated, Easing, Image, Text } from 'react-native';
+import { StyleSheet, Animated, Easing, Image } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles, fullWidth, fullHeight } from '../../styles/global';
+import { globalStyles, fullHeight } from '../../styles/global';
 
 let styles;
 const ENDY = fullHeight * 0.5;
@@ -21,10 +21,7 @@ class Vote extends Component {
   }
 
   componentWillMount() {
-    const { x, y, w, h } = this.props.parent;
-    // x += w / 2;
-    // y -= h / 2;
-
+    const { x, y } = this.props.parent;
     const ENDX = Math.random() * 50;
 
     this.y = this.state.position.interpolate({
@@ -65,25 +62,20 @@ class Vote extends Component {
       toValue: 1,
       delay: i * (75 + r * 50),
       duration: 1000
-    }).start(() => this.props.destroy(i));
+    })
+    .start(() => this.props.destroy(i));
   }
 
   render() {
-    const specialKey = this.props.specialKey;
-    let img;
-
+    const { specialKey } = this.props;
     const icon = require('../../assets/images/icons/upvoteActive.png');
-    img = (
-      <Image resizeMode={'contain'} style={[styles.r, { width: 28, height: 28 }]} source={icon} />
+    const img = (
+      <Image
+        resizeMode={'contain'}
+        style={[styles.r, { width: 28, height: 28 }]}
+        source={icon}
+      />
     );
-
-    // let icon = require('../../assets/images/relevantcoin.png');
-    // if (specialKey === 10) {
-    //   img = (<Image
-    //     style={[styles.coin, { zIndex: 10, width: 30, height: 30 }]}
-    //     source={require('../../assets/images/relevantcoin.png')}
-    //   />);
-    // }
 
     return (
       <Animated.View

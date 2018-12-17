@@ -44,7 +44,9 @@ export default class Tags extends Component {
       >
         <View style={{ flexDirection: 'row' }}>
           {/* <Text style={[styles.font15, styles.emoji]}>{tag.emoji}</Text> */}
-          <Text style={[styles.font15, { color: selected ? 'white' : '#808080' }]}>{name}</Text>
+          <Text style={[styles.font15, { color: selected ? 'white' : '#808080' }]}>
+            {name}
+          </Text>
         </View>
       </TouchableHighlight>
     );
@@ -54,8 +56,7 @@ export default class Tags extends Component {
     let tagsEl = null;
     let el = null;
     let selectedEl = null;
-    const tags = this.props.tags.tags;
-    const selectedTags = this.props.tags.selectedTags;
+    const { tags, selectedTags } = this.props.tags;
     let allTags;
     this.selectedLookup = {};
 
@@ -87,7 +88,10 @@ export default class Tags extends Component {
           keyboardShouldPersistTaps={'always'}
           showsHorizontalScrollIndicator={false}
           automaticallyAdjustContentInsets={false}
-          contentContainerStyle={[styles.tags, this.props.noScroll ? { flexWrap: 'wrap' } : null]}
+          contentContainerStyle={[
+            styles.tags,
+            this.props.noScroll ? { flexWrap: 'wrap' } : null
+          ]}
         >
           {allTags}
         </ScrollView>

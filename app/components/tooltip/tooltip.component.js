@@ -13,7 +13,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   globalStyles,
-  darkGrey,
   fullHeight,
   fullWidth,
   blue,
@@ -47,11 +46,8 @@ class Tooltip extends Component {
     this.nextOnboarding = this.nextOnboarding.bind(this);
   }
 
-  componentDidMount() {}
-
   componentWillReceiveProps(next) {
     if (!this.props.tooltip.ready && next.tooltip.ready) {
-      // if (!this.props.auth.user && next.auth.user) {
       this.initTooltipData(next);
     }
 
@@ -76,14 +72,16 @@ class Tooltip extends Component {
           useNativeDriver: true,
           velocity: 25,
           friction: 10
-        }).start();
+        })
+        .start();
         Animated.spring(this.state.opacity, {
           toValue: 1,
           delay: 0,
           velocity: 25,
           friction: 10,
           useNativeDriver: true
-        }).start();
+        })
+        .start();
       } else {
         this.setState({
           scale: new Animated.Value(0.0),
@@ -112,7 +110,10 @@ class Tooltip extends Component {
 
     if (index === this.step) {
       let inc = 1;
-      if (this.props.tooltip.onboarding[index + 1] === 'shareTip' && Platform.OS === 'android') {
+      if (
+        this.props.tooltip.onboarding[index + 1] === 'shareTip' &&
+        Platform.OS === 'android'
+      ) {
         inc = 2;
       }
       this.step += inc;
@@ -120,14 +121,11 @@ class Tooltip extends Component {
       this.props.actions.tooltipReady(false);
       this.props.actions.setOnboardingStep(this.step);
     }
-
-    // if (this.step >= 3) {
-    //   this.props.actions.setOnboardingStep(0);
-    // }
   }
 
   render() {
-    if (!this.props.auth.user) return null;
+    const { auth } = this.props;
+    if (!auth.user) return null;
     const tooltip = this.props.tooltip.showing;
     if (!tooltip || !tooltip.name) return null;
     if (!tooltip.parent) return null;
@@ -135,7 +133,7 @@ class Tooltip extends Component {
     let arrowStyle = [];
     let transform = [{ scale: this.state.scale }];
 
-    const parent = tooltip.parent;
+    const { parent } = tooltip;
 
     if (parent.y < fullHeight / 2) {
       tooltip.vertical = 'bottom';
@@ -160,7 +158,11 @@ class Tooltip extends Component {
         top: 10 + parent.y - this.state.height / 2 - tooltip.verticalOffset,
         transform
       };
-      arrowStyle = [...arrowStyle, styles.arrowBottom, { bottom: Platform.OS === 'ios' ? 9 : 5 }];
+      arrowStyle = [
+        ...arrowStyle,
+        styles.arrowBottom,
+        { bottom: Platform.OS === 'ios' ? 9 : 5 }
+      ];
     }
 
     if (tooltip.horizontal === 'right') {
@@ -268,7 +270,6 @@ const localStyles = StyleSheet.create({
     bottom: 0
   },
   tooltipCard: {
-    // backgroundColor: 'white',
     backgroundColor: blue,
     padding: 15,
     paddingVertical: 20,
@@ -281,13 +282,9 @@ const localStyles = StyleSheet.create({
     paddingVertical: 10
   },
   tooltipText: {
-    // fontWeight: '100',
     fontSize: 15,
     lineHeight: 20,
-    // color: darkGrey,
     color: 'white'
-    // flexDirection: 'row',
-    // alignItems: 'center'
   },
   arrow: {
     width: 10,
@@ -297,7 +294,6 @@ const localStyles = StyleSheet.create({
       Platform.OS === 'android'
         ? [{ rotate: '45deg' }]
         : [{ rotate: '35deg' }, { skewY: '45deg' }, { translateY: 3 }],
-    // backgroundColor: 'white',
     backgroundColor: blue
   },
   arrowBottom: {

@@ -35,7 +35,8 @@ class Read extends Component {
     super(props, context);
     this.renderRow = this.renderRow.bind(this);
     this.load = this.load.bind(this);
-    this.needsReload = new Date().getTime();
+    this.needsReload = new Date()
+    .getTime();
     this.renderHeader = this.renderHeader.bind(this);
     this.tooltipParent = {};
     this.toggleTooltip = this.toggleTooltip.bind(this);
@@ -50,7 +51,8 @@ class Read extends Component {
       this.scrollToTop();
     }
     if (this.props.reload !== next.reload) {
-      this.needsReload = new Date().getTime();
+      this.needsReload = new Date()
+      .getTime();
     }
 
     if (this.props.reloadFeed !== next.reloadFeed) {
@@ -58,7 +60,8 @@ class Read extends Component {
     }
 
     if (next.posts.feedUnread && next.active && !this.props.active) {
-      this.needsReload = new Date().getTime();
+      this.needsReload = new Date()
+      .getTime();
     }
   }
 
@@ -91,18 +94,20 @@ class Read extends Component {
 
   scrollToTop() {
     const view = this.listview;
-    if (view && view.listview) view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
+    if (view && view.listview) {
+      view.listview.scrollTo({ y: -this.props.offsetY, animated: true });
+    }
   }
 
   load(view, length) {
-    const tag = this.props.posts.tag;
+    const { tag, actions, posts } = this.props.posts;
     if (!length) length = 0;
 
-    if (length === 0) this.props.actions.getSubscriptions();
+    if (length === 0) actions.getSubscriptions();
 
-    this.props.actions.getFeed(length, tag);
-    if (this.props.posts.feedUnread) {
-      this.props.actions.markFeedRead();
+    actions.getFeed(length, tag);
+    if (posts.feedUnread) {
+      actions.markFeedRead();
     }
   }
 
@@ -130,14 +135,18 @@ class Read extends Component {
   }
 
   render() {
-    const feedEl = [];
-    let filler;
     const { total, totalUsers } = this.props.subscriptions;
+    const feedEl = [];
 
-    filler = (
+    const filler = (
       <View>
         <Text
-          style={[styles.georgia, styles.darkGrey, styles.emptyText, styles.quarterLetterSpacing]}
+          style={[
+            styles.georgia,
+            styles.darkGrey,
+            styles.emptyText,
+            styles.quarterLetterSpacing
+          ]}
         >
           {!total
             ? 'You have not subscribed to anyone yet'
@@ -191,7 +200,9 @@ class Read extends Component {
     });
 
     return (
-      <View style={[styles.fullContainer, { backgroundColor: 'hsl(0,0%,100%)' }]}>{feedEl}</View>
+      <View style={[styles.fullContainer, { backgroundColor: 'hsl(0,0%,100%)' }]}>
+        {feedEl}
+      </View>
     );
   }
 }

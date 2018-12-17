@@ -90,11 +90,10 @@ async function uploadToS3(uri, policy, signature, url, publicUrl, signedObjectNa
     return { success: true, url: publicUrl };
   })
   .catch(error => {
-    console.log(error, 'error');
     if (Platform.OS === 'android') {
       RNFetchBlob.session('uploads').dispose();
     }
-    return { success: false, url: null };
+    return { success: false, url: null, error };
   });
 }
 
@@ -110,7 +109,7 @@ function executeOnSignedUrl(uri, fileName) {
     signedPutUrl +
       '?s3_object_type=' +
       'multipart/form-data' +
-      '&signedObjectName=' +
+      '&s3_object_name=' +
       signedObjectName,
     {
       credentials: 'include',
@@ -119,7 +118,6 @@ function executeOnSignedUrl(uri, fileName) {
   )
   .then(response => response.json())
   .then(responseJSON =>
-  // console.log(responseJSON, 'execute on signed url response');
     uploadToS3(
       uri,
       responseJSON.signature.s3Policy,
@@ -129,10 +127,7 @@ function executeOnSignedUrl(uri, fileName) {
       signedObjectName
     )
   )
-  .catch(error => {
-    console.log(error, 'error');
-    return { success: false, url: null };
-  });
+  .catch(error => ({ success: false, url: null, error }));
 }
 
 export function toS3Advanced(uri, fileName) {

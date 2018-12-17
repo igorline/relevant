@@ -12,7 +12,7 @@ if (process.env.BROWSER === true) {
 class Profile extends Component {
   static propTypes = {
     user: PropTypes.object,
-    auth: PropTypes.object,
+    // auth: PropTypes.object,
     params: PropTypes.object
   };
 
@@ -24,7 +24,12 @@ class Profile extends Component {
     if (!user) return null;
     let tokens = user.balance + user.tokenBalance;
     const owner = auth.user;
-    if (owner && owner._id === user._id && user.ethAddress[0] && wallet.connectedBalance) {
+    if (
+      owner &&
+      owner._id === user._id &&
+      user.ethAddress[0] &&
+      wallet.connectedBalance
+    ) {
       tokens = wallet.connectedBalance + user.balance;
     }
     return { tokens };
@@ -79,12 +84,6 @@ const mapStateToProps = state => ({
   user: state.user,
   auth: state.auth
 });
-
-// const mapDispatchToProps = (dispatch) => ({
-//   actions: bindActionCreators({
-//     ...MessageActions
-//   }, dispatch)
-// });
 
 export default connect(
   mapStateToProps,

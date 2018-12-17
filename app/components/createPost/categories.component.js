@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles } from '../../styles/global';
 import Topics from './topics.component';
 
 export default class Categories extends Component {
@@ -23,7 +22,6 @@ export default class Categories extends Component {
   }
 
   setTopic(topic) {
-    console.log('set topic ', topic);
     if (this.props.createPost.postCategory === topic) {
       this.selectedTopic = null;
       this.props.actions.setPostCategory(null);
@@ -35,19 +33,20 @@ export default class Categories extends Component {
   }
 
   render() {
+    const { createPost, actions, tags } = this.props;
+    const { selectedTopic } = this;
     let categoryEl;
-    const selectedTopic = this.selectedTopic;
 
     if (this.props.tags) {
       categoryEl = (
         <Topics
           ref={c => (this.topicsEl = c)}
-          topics={this.props.tags}
+          topics={tags}
           selectedTopic={selectedTopic}
           type={'create'}
           action={this.setTopic}
-          actions={this.props.actions}
-          createPost={this.props.createPost}
+          actions={actions}
+          createPost={createPost}
         />
       );
     }

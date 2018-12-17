@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
-import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 import { globalStyles } from '../../styles/global';
 import PostImage from './postImage.component';
@@ -14,50 +13,31 @@ class Post extends PureComponent {
     link: PropTypes.object,
     auth: PropTypes.object,
     post: PropTypes.object,
-    commentary: PropTypes.object,
+    commentary: PropTypes.array,
     posts: PropTypes.object,
     singlePost: PropTypes.bool,
     actions: PropTypes.object
   };
 
   render() {
-    let post;
+    const { link, commentary } = this.props;
+    let { post } = this.props;
     let imageEl;
-    // let separator = (
-    //   <LinearGradient
-    //     colors={[
-    //       'hsla(240, 0%, 60%, 1)',
-    //       'hsla(240, 20%, 96%, 1)',
-    //       'hsla(240, 20%, 100%, 1)'
-    //     ]} style={[styles.separator]}
-    //   />);
 
     const separator = (
-      <View
-        style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)' }]}
-        // style={[{ height: 30, backgroundColor: 'hsl(238,20%,95%)'}]}
-      />
+      <View style={[{ height: 30, backgroundColor: 'rgba(0,0,0,.03)' }]} />
     );
     let commentaryEl;
-    let reposted;
-    const link = this.props.link;
 
     if (!this.props.auth.user) return null;
 
     const blocked = <View style={{ height: StyleSheet.hairlineWidth }} />;
-    post = this.props.post;
-
-    // let metaPost = this.props.metaPost || post.metaPost;
-    // post = this.props.metaPost || this.props.post;
 
     if (!post || !post._id) {
       return blocked;
     }
 
-    // if we have a repost, don't render the original post
-    const commentary = this.props.commentary;
-
-    // TODO... need to filter out reposted
+    // TODO... need to filter out reposted?
     // commentary = commentary.filter(p => p && p._id !== reposted);
 
     if (commentary && commentary.length) {
@@ -116,7 +96,6 @@ function mapStateToProps(state) {
     auth: state.auth,
     myPostInv: state.investments.myPostInv,
     users: state.user.users
-    // tooltip: state.tooltip.buttonId
   };
 }
 

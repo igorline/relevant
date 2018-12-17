@@ -9,8 +9,8 @@ let styles;
 class Percent extends Component {
   static propTypes = {
     user: PropTypes.object,
-    fontSize: PropTypes.object,
-    fontFamily: PropTypes.object
+    fontSize: PropTypes.number,
+    fontFamily: PropTypes.string
   };
 
   componentDidMount() {

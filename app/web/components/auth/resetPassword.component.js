@@ -60,7 +60,8 @@ class ResetPassword extends Component {
       alert("passwords don't match");
       return;
     }
-    this.props.actions.resetPassword(this.state.password, this.token).then(success => {
+    this.props.actions.resetPassword(this.state.password, this.token)
+    .then(success => {
       if (success) this.props.actions.push('/user/login');
     });
   }

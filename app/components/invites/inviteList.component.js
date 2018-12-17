@@ -11,9 +11,7 @@ export default class InviteList extends Component {
   static propTypes = {
     inviteList: PropTypes.array,
     invites: PropTypes.object,
-    actions: PropTypes.object,
-    status: PropTypes.object,
-    redeemed: PropTypes.bool
+    actions: PropTypes.object
   };
 
   constructor(props, context) {

@@ -9,7 +9,13 @@ import {
   ScrollView
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { globalStyles, mainPadding, fullWidth, greyText, borderGrey } from '../../styles/global';
+import {
+  globalStyles,
+  mainPadding,
+  fullWidth,
+  greyText,
+  borderGrey
+} from '../../styles/global';
 import * as utils from '../../utils';
 import UrlPreview from './urlPreview.component';
 import UserName from '../userNameSmall.component';
@@ -18,23 +24,21 @@ import PostBody from './../post/postBody.component';
 import PostInfo from './../post/postInfo.component';
 import TextBody from './../post/textBody.component';
 
-const Video = require('react-native-video').default;
-
 let styles;
 const URL_REGEX = new RegExp(
-  /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
+  /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,10}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/
 );
 
 export default class UrlComponent extends Component {
   static propTypes = {
-    postUrl: PropTypes.object,
+    postUrl: PropTypes.string,
     share: PropTypes.bool,
     createPreview: PropTypes.object,
     actions: PropTypes.object,
-    postBody: PropTypes.object,
+    postBody: PropTypes.string,
     urlPreview: PropTypes.object,
     repost: PropTypes.object,
-    users: PropTypes.array,
+    users: PropTypes.object,
     user: PropTypes.object
   };
 
@@ -99,7 +103,10 @@ export default class UrlComponent extends Component {
     const prevLength = this.props.postBody.length || 0;
 
     if (length - prevLength > 1) shouldParseUrl = true;
+
+    // eslint-disable-next-line
     if (postBody[postBody.length - 1] == ' ') shouldParseUrl = true;
+    // eslint-disable-next-line
     if (postBody[postBody.length - 1] == '\n') shouldParseUrl = true;
 
     if (!this.props.postUrl && shouldParseUrl) {
@@ -132,7 +139,11 @@ export default class UrlComponent extends Component {
 
     const bodyMentions = utils.text.getMentions(words);
 
-    if (this.props.urlPreview && this.props.postUrl && postBody.match(this.props.postUrl)) {
+    if (
+      this.props.urlPreview &&
+      this.props.postUrl &&
+      postBody.match(this.props.postUrl)
+    ) {
       postBody = postBody.replace(`${this.props.postUrl}`, '').trim();
     }
 
@@ -194,7 +205,6 @@ export default class UrlComponent extends Component {
   }
 
   render() {
-    let input;
     let repostBody;
 
     if (this.props.repost) {
@@ -221,7 +231,11 @@ export default class UrlComponent extends Component {
       userHeader = (
         <View style={styles.createPostUser}>
           <View style={styles.innerBorder}>
-            <UserName style={styles.innerBorder} user={this.props.user} setSelected={() => null} />
+            <UserName
+              style={styles.innerBorder}
+              user={this.props.user}
+              setSelected={() => null}
+            />
           </View>
         </View>
       );
@@ -232,7 +246,10 @@ export default class UrlComponent extends Component {
     if (this.props.users.search && this.props.users.search.length) {
       userSearch = (
         <View style={{ flex: 1, maxHeight: 220 }}>
-          <UserSearchComponent setSelected={this.setMention} users={this.props.users.search} />
+          <UserSearchComponent
+            setSelected={this.setMention}
+            users={this.props.users.search}
+          />
         </View>
       );
     }
@@ -281,7 +298,7 @@ export default class UrlComponent extends Component {
       );
     }
 
-    input = (
+    const input = (
       <ScrollView
         keyboardShouldPersistTaps={'always'}
         ref={c => (this.scrollView = c)}
@@ -297,7 +314,12 @@ export default class UrlComponent extends Component {
             ref={c => {
               this.input = c;
             }}
-            style={[{ flex: 1 }, styles.font15, styles.createPostInput, { maxHeight: 280 }]}
+            style={[
+              { flex: 1 },
+              styles.font15,
+              styles.createPostInput,
+              { maxHeight: 280 }
+            ]}
             underlineColorAndroid={'transparent'}
             placeholder={urlPlaceholder}
             placeholderTextColor={greyText}
@@ -316,7 +338,7 @@ export default class UrlComponent extends Component {
             blurOnSubmit={false}
             onSubmitEditing={() => {
               if (this.okToSubmit) {
-                let postBody = this.props.postBody;
+                let { postBody } = this.props;
                 postBody += '\n';
                 this.processInput(postBody, false);
                 return (this.okToSubmit = false);

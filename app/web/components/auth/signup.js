@@ -43,7 +43,8 @@ class SignupForm extends Component {
     const valid = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(string);
     if (!valid) return this.setState({ errors: { email: 'invalid email' } });
 
-    return this.props.actions.checkUser(string, 'email').then(results => {
+    return this.props.actions.checkUser(string, 'email')
+    .then(results => {
       if (!results) {
         return this.setState({ errors: { email: 'This email has already been used' } });
       }
@@ -58,7 +59,8 @@ class SignupForm extends Component {
       const string = toCheck;
       const match = NAME_PATTERN.test(string);
       if (match) {
-        this.props.actions.checkUser(string, 'name').then(results => {
+        this.props.actions.checkUser(string, 'name')
+        .then(results => {
           if (!results) {
             this.usernameExists = true;
             this.nameError = 'This username is already taken';
@@ -66,7 +68,8 @@ class SignupForm extends Component {
           this.setState({});
         });
       } else {
-        this.nameError = 'username can only contain letters, \nnumbers, dashes and underscores';
+        this.nameError =
+          'username can only contain letters, \nnumbers, dashes and underscores';
         console.log(this.nameError);
         this.setState({});
       }
@@ -108,9 +111,12 @@ class SignupForm extends Component {
   }
 
   renderEmailForm() {
-    const errors = this.state.errors;
+    const { errors } = this.state;
     const signUpWithEmail = (
-      <a className={'smallText middle'} onClick={() => this.setState({ provider: 'email' })}>
+      <a
+        className={'smallText middle'}
+        onClick={() => this.setState({ provider: 'email' })}
+      >
         Sign up with Email
       </a>
     );
@@ -159,7 +165,9 @@ class SignupForm extends Component {
               this.handleChange('password', password.target.value);
             }}
           />
-          {this.errors.password ? <div className={'error'}>{this.errors.password}</div> : null}
+          {this.errors.password ? (
+            <div className={'error'}>{this.errors.password}</div>
+          ) : null}
         </div>
         <div>
           <input
@@ -176,7 +184,9 @@ class SignupForm extends Component {
               }
             }}
           />
-          {this.errors.cPassword ? <div className={'error'}>{this.errors.cPassword}</div> : null}
+          {this.errors.cPassword ? (
+            <div className={'error'}>{this.errors.cPassword}</div>
+          ) : null}
         </div>
 
         <div style={{ width: '100%' }}>
@@ -210,7 +220,8 @@ class SignupForm extends Component {
         {this.renderEmailForm()}
 
         <div className={'smallText'}>
-          Already registered? <Link onClick={() => this.props.authNav('login')}>Sign in</Link>
+          Already registered?{' '}
+          <Link onClick={() => this.props.authNav('login')}>Sign in</Link>
         </div>
       </div>
     );

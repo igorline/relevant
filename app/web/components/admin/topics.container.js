@@ -43,8 +43,10 @@ class TopicsAdmin extends Component {
   }
 
   saveTag(tag) {
-    tag.main = tag.main.split(', ').filter(t => t !== '');
-    tag.children = tag.children.split(', ').filter(t => t !== '');
+    tag.main = tag.main.split(', ')
+    .filter(t => t !== '');
+    tag.children = tag.children.split(', ')
+    .filter(t => t !== '');
     this.props.actions.updateTag(tag);
   }
 
@@ -88,7 +90,10 @@ class TopicsAdmin extends Component {
             tag.children = tag.children.join(', ');
           }
           return (
-            <div style={tag.active ? null : { textDecoration: 'line-through' }} key={tag._id}>
+            <div
+              style={tag.active ? null : { textDecoration: 'line-through' }}
+              key={tag._id}
+            >
               {tag.emoji}
               &nbsp;
               <input

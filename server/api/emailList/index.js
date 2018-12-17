@@ -2,7 +2,7 @@ import express from 'express';
 import controller from './list.controller';
 import auth from '../../auth/auth.service';
 
-const asyncMiddleware = require('../../utils/middlewares').asyncMiddleware;
+const { asyncMiddleware } = require('../../utils/middlewares');
 
 const router = express.Router();
 

@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   ActionSheetIOS,
   TouchableHighlight,
   Platform,
@@ -13,14 +12,10 @@ import PropTypes from 'prop-types';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import { globalStyles, darkGrey } from '../../styles/global';
 import TextEdit from '../common/textEdit.component';
-import UserName from '../userNameSmall.component';
-import { numbers, text as textUtil } from '../../utils';
+import { text as textUtil } from '../../utils';
 import TextBody from './textBody.component';
 import PostInfo from './postInfo.component';
 import PostButtons from './postButtons.component';
-import PostBody from './postBody.component';
-
-const moment = require('moment');
 
 let ActionSheet = ActionSheetIOS;
 
@@ -34,14 +29,14 @@ class Comment extends Component {
   static propTypes = {
     comment: PropTypes.object,
     actions: PropTypes.object,
-    parentEditing: PropTypes.bool,
+    parentEditing: PropTypes.func,
     navigator: PropTypes.object,
     scene: PropTypes.object,
     scrollToComment: PropTypes.func,
     auth: PropTypes.object,
-    myPostInv: PropTypes.array,
+    myPostInv: PropTypes.object,
     singlePost: PropTypes.bool,
-    users: PropTypes.array,
+    users: PropTypes.object,
     focusInput: PropTypes.func
   };
 
@@ -63,25 +58,24 @@ class Comment extends Component {
   }
 
   componentDidMount() {
-    if (this.props.comment.body) {
-      const body = this.props.comment.body;
+    const { body } = this.props.comment;
+    if (body) {
       this.setState({ editedText: body });
     }
     this.setSelected = this.setSelected.bind(this);
   }
 
   saveEdit(body) {
-    const comment = this.props.comment;
-    if (comment.body === body) {
-      return this.editComment();
-    }
+    const { comment } = this.props;
+    if (comment.body === body) return this.editComment();
     const words = textUtil.getWords(body);
     const mentions = textUtil.getMentions(words);
     const originalText = comment.body;
     comment.body = body;
     comment.mentions = mentions;
     this.setState({ editing: false, editedText: body });
-    this.props.actions.updateComment(comment).then(results => {
+    return this.props.actions.updateComment(comment)
+    .then(results => {
       if (results) {
         this.setState({ editedText: null });
         Alert.alert('Comment updated');
@@ -138,21 +132,21 @@ class Comment extends Component {
     if (!this.state.editing) {
       this.props.scrollToComment();
     }
-    this.setState({ editedText: this.props.comment.body, editing: !this.state.editing });
+    this.setState({
+      editedText: this.props.comment.body,
+      editing: !this.state.editing
+    });
   }
 
   render() {
-    const comment = this.props.comment;
-    const user = this.props.auth.user;
+    const { comment, auth } = this.props;
+    const { user } = auth;
 
     if (!comment) return null;
-    const postTime = moment(comment.createdAt);
-    const timestamp = numbers.timeSince(postTime);
     let optionsEl = null;
     let editingEl = null;
     let owner = false;
     let commentUserId = null;
-    let textBody;
 
     if (this.state.editing) {
       editingEl = (
@@ -161,12 +155,10 @@ class Comment extends Component {
           text={this.state.editedText || comment.body}
           toggleFunction={this.editComment}
           saveEditFunction={this.saveEdit}
-          // onFocus={() => this.props.scrollToComment()}
           onChange={e => {
             const h = e.nativeEvent.contentSize.height;
             if (h !== this.height) {
               this.height = h;
-              // this.props.scrollToComment();
             }
           }}
         />
@@ -193,7 +185,7 @@ class Comment extends Component {
       );
     }
 
-    textBody = (
+    const textBody = (
       <TextBody {...this.props} style={styles.commentBodyText} post={comment} body={comment.body} />
     );
 
@@ -203,7 +195,6 @@ class Comment extends Component {
         ref={c => {
           this.singleComment = c;
         }}
-        // need this for measure to work on android
         onLayout={() => null}
         style={[styles.commentContainer]}
       >
@@ -228,9 +219,6 @@ class Comment extends Component {
           comment
           post={comment}
           isComment
-          // metaPost={this.props.metaPost}
-          // tooltip={index === 0 ? this.props.tooltip : null}
-          // tooltip={this.props.tooltip}
           actions={this.props.actions}
           auth={this.props.auth}
           myPostInv={myPostInv}
@@ -260,7 +248,6 @@ const localStyles = StyleSheet.create({
     marginRight: 10
   },
   commentBodyText: {
-    // lineHeight: 20,
     color: darkGrey,
     fontFamily: 'Georgia',
     fontSize: 30 / 2,

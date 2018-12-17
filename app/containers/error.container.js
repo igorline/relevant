@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Image, Text, TouchableHighlight } from 'react-native';
 import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as authActions from '../actions/auth.actions';
 import * as errorActions from '../actions/error.actions';
@@ -12,6 +13,11 @@ import { globalStyles, localStyles } from '../styles/global';
 let styles;
 
 class ErrorContainer extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    error: PropTypes.object
+  };
+
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -25,7 +31,9 @@ class ErrorContainer extends Component {
   }
 
   componentWillReceiveProps(next) {
-    if (!this.props.error.universal && next.error.universal) this.setState({ loading: false });
+    if (!this.props.error.universal && next.error.universal) {
+      this.setState({ loading: false });
+    }
   }
 
   reload() {
@@ -40,7 +48,10 @@ class ErrorContainer extends Component {
       reloadEl = (
         <TouchableHighlight underlayColor={'transparent'} onPress={() => this.reload()}>
           <View>
-            <Image source={require('../assets/images/reload.png')} style={styles.reloadIcon} />
+            <Image
+              source={require('../assets/images/reload.png')}
+              style={styles.reloadIcon}
+            />
             <Text style={{ fontSize: 20, textAlign: 'center' }}>Reload</Text>
           </View>
         </TouchableHighlight>

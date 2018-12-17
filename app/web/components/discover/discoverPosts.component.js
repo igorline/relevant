@@ -49,7 +49,7 @@ class DiscoverPosts extends Component {
 
   renderDiscover(sort, tag) {
     const postIds = tag ? this.props.posts.topics[sort][tag] : this.props.posts[sort];
-    const posts = this.props.posts.posts;
+    const { posts } = this.props.posts;
 
     return (postIds || []).map(id => {
       let post = posts[id];
@@ -73,8 +73,7 @@ class DiscoverPosts extends Component {
   }
 
   render() {
-    const sort = this.props.sort;
-    const tag = this.props.tag;
+    const { sort, tag } = this.props;
     let posts;
 
     const data = this.getData(sort, tag);
@@ -83,7 +82,7 @@ class DiscoverPosts extends Component {
     } else {
       posts = this.renderDiscover(sort, tag);
     }
-    const length = posts.length;
+    const { length } = posts;
     const newPosts = this.props.posts.newPostsAvailable[this.props.auth.community];
     const refreshPosts = (
       <a className="refresh" onClick={() => this.props.actions.refreshTab('discover')}>

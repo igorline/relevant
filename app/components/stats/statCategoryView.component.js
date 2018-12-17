@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, InteractionManager, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
-import LinearGradient from 'react-native-linear-gradient';
 import * as Progress from 'react-native-progress';
-import { globalStyles, blue, fullWidth, darkGrey } from '../../styles/global';
+import { globalStyles, fullWidth, darkGrey } from '../../styles/global';
 import Stats from '../post/stats.component';
-import { numbers } from '../../utils';
 
 let styles;
 
@@ -32,38 +30,38 @@ export default class StatCategory extends Component {
   }
 
   render() {
-    const stats = this.props.stats;
-    let rank;
+    const { stats } = this.props;
     let title;
     let button;
 
     if (typeof stats.level !== 'number') return null;
 
     if (stats.tag) {
-      title = stats.tag.charAt(0).toUpperCase() + stats.tag.slice(1);
+      title = stats.tag.charAt(0)
+      .toUpperCase() + stats.tag.slice(1);
       button = (
-        <Text onPress={() => this.goToPeople(title)} style={[styles.button, styles.active]}>
+        <Text
+          onPress={() => this.goToPeople(title)}
+          style={[styles.button, styles.active]}
+        >
           See top users in {title}
         </Text>
       );
     } else {
       title = 'Relevance Stats';
       button = (
-        <Text onPress={() => this.goToPeople(null)} style={[styles.button, styles.active]}>
+        <Text
+          onPress={() => this.goToPeople(null)}
+          style={[styles.button, styles.active]}
+        >
           See all users
         </Text>
       );
     }
 
-    if (stats.rank < 10) rank = '#' + stats.rank;
-    else rank = stats.level;
-
-    rank = stats.level;
     const untilNext = Math.round((10 * stats.level) % 100) / 100;
-
     const level = Math.floor(stats.level / 10);
     const color = this.props.index * 80 + 240;
-
     const relGoal = Math.round((stats.relevance / stats.level) * (level + 1) * 10);
 
     return (
@@ -92,10 +90,6 @@ export default class StatCategory extends Component {
                 entity={stats}
                 renderLeft={title ? title + '  ' : null}
               />
-              {/* <Text style={[styles.rowText, styles.numberText]}>
-                        {numbers.abbreviateNumber(Math.round(stats.relevance))}
-                      </Text> */}
-              {/* <Text style={[styles.rowText]}>Relevance</Text> */}
             </View>
           </View>
 
@@ -103,7 +97,8 @@ export default class StatCategory extends Component {
             <View style={styles.statRow}>
               <Text style={[styles.rowText, { marginBottom: 5 }]}>Next Goal:</Text>
               <Text style={[styles.rowText]}>
-                Level: <Text style={[styles.rowText, styles.numberText]}>{level + 1}</Text>
+                Level:{' '}
+                <Text style={[styles.rowText, styles.numberText]}>{level + 1}</Text>
               </Text>
               <Progress.Circle
                 style={{ marginVertical: 10 }}
@@ -195,19 +190,9 @@ const localStyles = StyleSheet.create({
   },
   button: {
     flex: 0,
-    // borderRadius: 3,
     marginBottom: 20,
     paddingVertical: 8,
     paddingHorizontal: 10
-
-    // shadowColor: blue,
-    // shadowOffset: { width: 2, height: 2 },
-    // shadowRadius: 0,
-    // shadowOpacity: 1,
-
-    // borderColor: blue,
-    // borderWidth: StyleSheet.hairlineWidth,
-    // marginHorizontal: 20
   }
 });
 

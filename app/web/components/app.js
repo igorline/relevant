@@ -11,7 +11,6 @@ import * as authActions from '../../actions/auth.actions';
 import RelevantCoin from '../../contracts/RelevantCoin.json';
 import AddEthAddress from './wallet/AddEthAddress';
 import AuthContainer from './auth/auth.container';
-// import Sidebar from './common/sidebar.component';
 import EthTools from './ethTools/tools.container';
 import Modal from './common/modal';
 import CreatePost from './createPost/createPost.container';
@@ -70,19 +69,18 @@ class App extends Component {
   };
 
   componentWillMount() {
-    const community = this.props.auth.community;
+    const { community } = this.props.auth;
     if (community && community !== 'home') {
       this.props.actions.setCommunity(community);
     }
   }
 
   componentDidMount() {
-    const community = this.props.auth.community;
-    const { isAuthenticated } = this.props.auth;
+    const { actions, auth } = this.props;
+    const { community, isAuthenticated } = auth;
 
-    this.props.actions.setCommunity(community);
-
-    this.props.actions.getUser();
+    actions.setCommunity(community);
+    actions.getUser();
 
     if (isAuthenticated) {
       // eslint-disable-next-line
@@ -97,22 +95,24 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    const { actions, auth, location } = this.props;
     const { community } = this.props.params;
-    const { isAuthenticated } = this.props.auth;
-    if (community && this.props.auth.community !== community) {
-      if (community === 'home') prevProps.actions.push(`/${this.props.auth.community}/new`);
-      else this.props.actions.setCommunity(community);
+    const { isAuthenticated } = auth;
+    if (community && auth.community !== community) {
+      if (community === 'home') {
+        prevProps.actions.push(`/${auth.community}/new`);
+      } else actions.setCommunity(community);
     }
 
-    if (this.props.location.pathname !== prevProps.location.pathname) {
+    if (location.pathname !== prevProps.location.pathname) {
       window.scrollTo(0, 0);
     }
 
-    const userId = this.props.auth.user ? this.props.auth.user._id : null;
+    const userId = auth.user ? auth.user._id : null;
     const PrevUserId = prevProps.auth.user ? prevProps.auth.user._id : null;
 
     if (userId !== PrevUserId) {
-      this.props.actions.userToSocket(userId);
+      actions.userToSocket(userId);
     }
 
     if (isAuthenticated && !prevProps.auth.isAuthenticated && !drizzle) {
@@ -129,7 +129,10 @@ class App extends Component {
   }
 
   render() {
-    const location = this.props.location;
+    const { location, user, params, children, actions } = this.props;
+    const temp = user && user.role === 'temp';
+    const create = location.hash === '#newpost';
+    const connectAccount = location.hash === '#connectAccount';
 
     let mobileEl = (
       <div className="mobileSplash">
@@ -147,7 +150,10 @@ class App extends Component {
             href="https://play.google.com/store/apps/details?id=com.relevantnative&amp;pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"
             target="_blank"
           >
-            <img alt="Google Play Store" src="https://relevant.community/img/googleplaystore.png" />
+            <img
+              alt="Google Play Store"
+              src="https://relevant.community/img/googleplaystore.png"
+            />
           </a>
         </p>
       </div>
@@ -156,19 +162,14 @@ class App extends Component {
     let header = (
       <AppHeader
         location={location}
-        params={this.props.params}
+        params={params}
         toggleLogin={this.toggleLogin.bind(this)}
       />
     );
     if (location.pathname === '/') {
-      header = <Header params={this.props.params} toggleLogin={this.toggleLogin.bind(this)} />;
+      header = <Header params={params} toggleLogin={this.toggleLogin.bind(this)} />;
       mobileEl = null;
     }
-
-    const user = this.props.user;
-    const temp = user && user.role === 'temp';
-    const create = location.hash === '#newpost';
-    const connectAccount = location.hash === '#connectAccount';
 
     return (
       <main>
@@ -176,7 +177,7 @@ class App extends Component {
           {header}
           <div style={{ display: 'flex', width: '100%' }}>
             {/* <CommunityNav {...this.props} /> */}
-            {this.props.children}
+            {children}
           </div>
           <AuthContainer
             toggleLogin={this.toggleLogin.bind(this)}
@@ -199,7 +200,7 @@ class App extends Component {
           title="New Post"
           visible={create}
           className="createPostModal"
-          close={() => this.props.actions.push(location.pathname)}
+          close={() => actions.push(location.pathname)}
         >
           <CreatePost modal />
         </Modal>

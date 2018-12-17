@@ -59,10 +59,22 @@ const initialState = {
       { key: 'discover', icon: Platform.OS === 'android' ? '📰' : '📰', title: 'Read' },
       { key: 'stats', icon: Platform.OS === 'android' ? '📈' : '📈', title: 'Stats' },
 
-      { key: 'createPost', icon: Platform.OS === 'android' ? '📝' : '✍️', title: 'New Post' },
-      { key: 'activity', icon: Platform.OS === 'android' ? '⚡' : '⚡', title: 'Activity' },
+      {
+        key: 'createPost',
+        icon: Platform.OS === 'android' ? '📝' : '✍️',
+        title: 'New Post'
+      },
+      {
+        key: 'activity',
+        icon: Platform.OS === 'android' ? '⚡' : '⚡',
+        title: 'Activity'
+      },
 
-      { key: 'myProfile', icon: Platform.OS === 'android' ? '👤' : '👤', title: 'Profile' }
+      {
+        key: 'myProfile',
+        icon: Platform.OS === 'android' ? '👤' : '👤',
+        title: 'Profile'
+      }
     ]
   },
   home: {
@@ -196,14 +208,16 @@ function navigationState(state = initialState, action) {
         currentView: activeTabKey
       };
 
-      const route = action.route;
+      const { route } = action;
       route.component = action.route.key;
       route.key = numbers.guid();
 
       const nextScenes = NavigationStateUtils.push(scenes, route);
       if (!route.id) route.id = route.title || route.key;
       const nextRoute = scenes.routes[scenes.index];
-      if (route.id === nextRoute.id && route.component === nextRoute.component) return state;
+      if (route.id === nextRoute.id && route.component === nextRoute.component) {
+        return state;
+      }
 
       if (scenes !== nextScenes) {
         return {

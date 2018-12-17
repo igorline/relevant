@@ -61,7 +61,10 @@ export default function auth(state = initialState, action) {
         ...state,
         list: {
           ...state.list,
-          [topic]: [...currentList.slice(0, action.payload.index), ...action.payload.users]
+          [topic]: [
+            ...currentList.slice(0, action.payload.index),
+            ...action.payload.users
+          ]
         },
         loading: false
       };
@@ -71,7 +74,7 @@ export default function auth(state = initialState, action) {
       const id = action.payload._id;
       // prevents legacy relevance field overwrites
       // TODO should normalize this and store separately
-      let relevance = action.payload.relevance;
+      let { relevance } = action.payload;
       if ((!relevance || relevance.pagerank === undefined) && state.users[id]) {
         relevance = state.users[id].relevance;
       }

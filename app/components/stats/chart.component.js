@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import PropTypes from 'prop-types';
-import { Bar, SmoothLine, StockLine } from 'react-native-pathjs-charts';
+import { Bar, StockLine } from 'react-native-pathjs-charts';
 import moment from 'moment';
 import chartOptions from './chartOptions';
-import { globalStyles, blue } from '../../styles/global';
-
-let styles;
 
 export default class Chart extends Component {
   static propTypes = {
@@ -61,16 +58,14 @@ export default class Chart extends Component {
 
   chartData(props) {
     const { type, data, start, end, dataKey } = props;
-
     const current = new Date(start);
     let min;
     let max;
     this.data = [];
 
-    let x = 0;
-
     while (current < end) {
-      const entry = data.find(el => new Date(el.date).getTime() === current.getTime());
+      const entry = data.find(el => new Date(el.date)
+      .getTime() === current.getTime());
       let value;
       if (type === 'bar') {
         value = entry ? entry[dataKey] : 0;
@@ -95,7 +90,6 @@ export default class Chart extends Component {
           y: value,
           x: current.getTime()
         });
-        x += 1;
       }
       current.setDate(current.getDate() + 1);
     }
@@ -112,7 +106,6 @@ export default class Chart extends Component {
       ...chartOptions,
       min: min || 0,
       max: max || 1,
-      // color: blue,
       axisY: {
         ...chartOptions.axisY,
         tickCount,
@@ -155,9 +148,6 @@ export default class Chart extends Component {
       );
     } else {
       return null;
-      // chart = (<View>
-      //   <Text style={styles.noData}>There is not enough data to display this chart</Text>
-      // </View>);
     }
     return (
       <View>
@@ -168,13 +158,3 @@ export default class Chart extends Component {
     );
   }
 }
-
-const localStyles = StyleSheet.create({
-  noData: {
-    flex: 1,
-    textAlign: 'center',
-    paddingVertical: 30
-  }
-});
-
-styles = { ...globalStyles, ...localStyles };

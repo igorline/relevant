@@ -3,9 +3,7 @@ const passport = require('passport');
 const auth = require('../auth.service');
 const Controller = require('./passport');
 
-// var Twitter = require('twitter');
 const router = express.Router();
-
 
 router.get('/', (req, res, next) => {
   passport.authenticate('twitter', {
@@ -14,10 +12,15 @@ router.get('/', (req, res, next) => {
   })(req, res, next);
 });
 
-router.get('/callback', auth.currentUser(), passport.authenticate('twitter', {
-  failureRedirect: '/login',
-  session: false
-}), auth.setTokenCookieDesktop);
+router.get(
+  '/callback',
+  auth.currentUser(),
+  passport.authenticate('twitter', {
+    failureRedirect: '/login',
+    session: false
+  }),
+  auth.setTokenCookieDesktop
+);
 
 router.post('/login', auth.currentUser(), Controller.login, auth.setTokenCookie);
 

@@ -4,8 +4,6 @@ import {
   View,
   ActionSheetIOS,
   TouchableOpacity,
-  Text,
-  Image,
   Platform,
   Linking
 } from 'react-native';
@@ -30,9 +28,9 @@ class PostInfo extends Component {
     auth: PropTypes.object,
     singlePost: PropTypes.bool,
     actions: PropTypes.object,
-    edit: PropTypes.bool,
+    edit: PropTypes.func,
     delete: PropTypes.func,
-    users: PropTypes.array,
+    users: PropTypes.object,
     big: PropTypes.bool,
     preview: PropTypes.bool,
     repost: PropTypes.object
@@ -63,42 +61,40 @@ class PostInfo extends Component {
   }
 
   componentDidMount() {
-    // if (this.props.post) this.checkTime(this.props);
-    const user = this.props.post.user;
+    const { post, auth } = this.props;
+    const { user } = post;
     if (!user) return;
     const userId = user._id || user;
-    if (this.props.auth && userId && userId === this.props.auth.user._id) {
+    if (auth && userId && userId === auth.user._id) {
       this.menu = this.ownerMenu;
       this.myPost = true;
     }
   }
 
-  componentWillReceiveProps(next) {
-    // this.checkTime(next);
-  }
-
   deletePost() {
+    const { singlePost, actions, post } = this.props;
     let redirect = false;
-    if (this.props.singlePost) redirect = true;
-    this.props.actions.deletePost(this.props.post, redirect);
+    if (singlePost) redirect = true;
+    actions.deletePost(post, redirect);
   }
 
   toggleEditing() {
-    this.props.actions.setCreaPostState({
-      postBody: this.props.post.body,
+    const { post, actions } = this.props;
+    actions.setCreaPostState({
+      postBody: post.body,
       nativeImage: true,
-      postUrl: this.props.post.link,
-      postImage: this.props.post.image,
-      allTags: this.props.post.tags,
+      postUrl: post.link,
+      postImage: post.image,
+      allTags: post.tags,
       urlPreview: {
-        image: this.props.post.image,
-        title: this.props.post.title ? this.props.post.title : 'Untitled',
-        description: this.props.post.description
+        image: post.image,
+        title: post.title ? post.title : 'Untitled',
+        description: post.description
       },
       edit: true,
-      editPost: this.props.post
+      editPost: post
     });
-    this.props.actions.push(
+    actions.push(
       {
         key: 'createPost',
         back: true,
@@ -110,43 +106,25 @@ class PostInfo extends Component {
   }
 
   setTag(tag) {
+    const { actions } = this.props;
     if (!tag) return;
-    this.props.actions.selectTag(tag);
-    this.props.actions.changeTab('discover');
+    actions.selectTag(tag);
+    actions.changeTab('discover');
   }
 
   setSelected() {
-    if (!this.props.actions) return null;
+    const { actions, post } = this.props;
+    if (!actions) return null;
 
     if (this.props.post.twitter) {
-      return Linking.openURL('https://twitter.com/' + this.props.post.embeddedUser.handle);
+      return Linking.openURL('https://twitter.com/' + post.embeddedUser.handle);
     }
 
-    return this.props.actions.goToProfile({
-      name: this.props.post.embeddedUser.name,
-      _id: this.props.post.user._id || this.props.post.user
+    return actions.goToProfile({
+      name: post.embeddedUser.name,
+      _id: post.user._id || post.user
     });
   }
-
-  // checkTime(props) {
-  //   if (props.post) {
-  //     let postTime = moment(props.post.createdAt);
-  //     let fromNow = postTime.fromNow();
-  //     let timeNow = moment();
-  //     let dif = timeNow.diff(postTime);
-  //     let threshold = 21600000;
-  //     let passed = true;
-  //     // if (dif >= threshold) passed = true;
-
-  //     this.setState({
-  //       passed,
-  //       timeUntilString: moment.duration(threshold - dif).humanize(),
-  //       timePassedPercent: dif / threshold,
-  //     });
-
-  //     this.setState({ posted: fromNow });
-  //   }
-  // }
 
   showActionSheet() {
     if (this.myPost) {
@@ -159,10 +137,12 @@ class PostInfo extends Component {
         buttonIndex => {
           switch (buttonIndex) {
             case 0:
-              this.props.edit ? this.props.edit() : this.toggleEditing();
+              if (this.props.edit) this.props.edit();
+              else this.toggleEditing();
               break;
             case 1:
-              this.props.delete ? this.props.delete() : this.deletePost();
+              if (this.props.delete) this.props.delete();
+              else this.deletePost();
               break;
             default:
           }
@@ -172,10 +152,8 @@ class PostInfo extends Component {
   }
 
   render() {
-    let post = null;
+    const { post, users, big, preview, repost } = this.props;
     let postActions;
-
-    post = this.props.post;
 
     if (!post.embeddedUser) return null;
 
@@ -195,7 +173,7 @@ class PostInfo extends Component {
 
     let userId = post.user ? post.user._id || post.user : null;
     if (post.twitterUser) userId = post.twitterUser;
-    let user = this.props.users[userId];
+    let user = users[userId];
 
     if (!user || !user._id) {
       user = {};
@@ -207,7 +185,7 @@ class PostInfo extends Component {
 
     const userEl = (
       <UserName
-        big={this.props.big}
+        big={big}
         user={user}
         setSelected={this.setSelected}
         postTime={postTime}
@@ -216,26 +194,28 @@ class PostInfo extends Component {
     );
 
     let info = (
-      <View style={[styles.postHeader, this.props.preview ? { paddingTop: 10 } : null]}>
+      <View style={[styles.postHeader, preview ? { paddingTop: 10 } : null]}>
         <View style={styles.postInfo}>
           {userEl}
-          <View style={[styles.infoRight]}>{this.props.repost ? null : postActions}</View>
+          <View style={[styles.infoRight]}>{repost ? null : postActions}</View>
         </View>
       </View>
     );
 
-    if (this.props.repost) {
+    if (repost) {
       info = (
         <View style={styles.repost}>
           <View style={styles.postInfo}>
             <UserName
               repost
-              big={this.props.big}
+              big={big}
               user={user}
               setSelected={this.setSelected}
               postTime={postTime}
             />
-            <View style={[styles.infoRight]}>{this.props.repost ? null : postActions}</View>
+            <View style={[styles.infoRight]}>
+              {this.props.repost ? null : postActions}
+            </View>
           </View>
         </View>
       );

@@ -7,10 +7,10 @@ const initialState = {
   general: []
 };
 
-export default function auth(state = initialState, action) {
+export default function notifications(state = initialState, action) {
   switch (action.type) {
     case types.SET_ACTIVITY: {
-      const type = action.payload.type;
+      const { type } = action.payload;
       return {
         ...state,
         [type]: [...state[type].slice(0, action.payload.index), ...action.payload.data],
@@ -25,20 +25,6 @@ export default function auth(state = initialState, action) {
       };
     }
 
-    // case types.ADD_UNREAD_ACTIVITIES: {
-    //   return {
-    //     ...state,
-    //     count: action.payload
-    //   };
-    // }
-
-    // case 'RESET_ACTIVITY': {
-    //   return Object.assign({}, state, {
-    //     'personal': action.payload,
-    //     'count': countUnread(action.payload)
-    //   })
-    // }
-
     case 'CLEAR_COUNT': {
       return {
         ...state,
@@ -52,18 +38,6 @@ export default function auth(state = initialState, action) {
         count: state.count + 1
       };
     }
-
-    // case 'SET_GENERAL_ACTIVITY': {
-    //   return Object.assign({}, state, {
-    //     'general': addItems(state.general, action.payload),
-    //   })
-    // }
-
-    // case 'ADD_GENERAL_ACTIVITY': {
-    //   return Object.assign({}, state, {
-    //     'general': addItems(state.general, [action.payload]),
-    //   })
-    // }
 
     case types.LOGOUT_USER: {
       return { ...initialState };

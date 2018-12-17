@@ -5,7 +5,7 @@ import rootReducer from '../reducers';
 import screenTracking from './screenTracking';
 
 window.navigator.userAgent = 'react-native';
-const io = require('socket.io-client/socket.io');
+const io = require('socket.io-client/dist/socket.io');
 
 const socket = io(process.env.API_SERVER, {
   transports: ['websocket'],

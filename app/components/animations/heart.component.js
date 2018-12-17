@@ -8,7 +8,7 @@ let styles;
 class Heart extends Component {
   static propTypes = {
     specialKey: PropTypes.number,
-    delay: PropTypes.object
+    delay: PropTypes.number
   };
 
   constructor(props, context) {
@@ -70,8 +70,10 @@ class Heart extends Component {
           easing: Easing.ease
           // useNativeDriver: true,
         })
-      ]).start()
-    ]).start();
+      ])
+      .start()
+    ])
+    .start();
   }
 
   render() {

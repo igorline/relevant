@@ -2,6 +2,8 @@ import apn from 'apn';
 import Notification from './api/notification/notification.model';
 import User from './api/user/user.model';
 
+/* eslint no-console: 0 */
+
 const options = {
   cert: process.env.APN_CERT,
   key: process.env.APN_KEY,
@@ -114,7 +116,7 @@ async function sendNotification(user, alert, payload) {
       }
     }
   } catch (err) {
-    console.log(err);
+    console.log('push notifications error', err);
   }
 }
 

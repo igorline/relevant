@@ -2,24 +2,23 @@ import handleRender from './render';
 import { currentUser } from './auth/auth.service';
 import userController from './api/user/user.controller';
 
-let base;
-if (process.env.NODE_ENV === 'production') {
-  base = 'relevant.community';
-} else {
-  base = 'localhost';
-}
+// let base;
+// if (process.env.NODE_ENV === 'production') {
+//   base = 'relevant.community';
+// } else {
+//   base = 'localhost';
+// }
 
-const subdomainOptions = { base, removeWWW: true };
+// const subdomainOptions = { base, removeWWW: true };
 
-module.exports = (app) => {
-  app.use(require('./utils/subdomain')(subdomainOptions));
+module.exports = app => {
+  // app.use(require('./utils/subdomain')(subdomainOptions));
 
   // API
   app.use('/api/user', require('./api/user'));
   app.use('/api/s3', require('./api/s3'));
   app.use('/auth', require('./auth'));
   app.use('/api/post', require('./api/post'));
-  app.use('/api/links', require('./api/links'));
   app.use('/api/feed', require('./api/feed'));
   app.use('/api/subscription', require('./api/subscription'));
   app.use('/api/invest', require('./api/invest'));
@@ -41,7 +40,6 @@ module.exports = (app) => {
 
   // TODO - check if community exists here and redirect if not
   app.use('/home', (req, res) => res.redirect('/relevant/new'));
-
 
   // Default response middleware
   app.use((req, res, next) => {

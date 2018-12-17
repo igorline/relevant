@@ -15,8 +15,7 @@ let styles;
 class Blocked extends Component {
   static propTypes = {
     auth: PropTypes.object,
-    actions: PropTypes.object,
-    _id: PropTypes.string
+    actions: PropTypes.object
   };
 
   constructor(props, context) {
@@ -33,14 +32,13 @@ class Blocked extends Component {
       data = this.props.auth.user.blocked;
     }
     const loaded = true;
-    // let loaded = this.props.auth.user.loaded;
     return {
       data,
       loaded
     };
   }
 
-  getDataAction(view, length) {
+  getDataAction() {
     this.props.actions.getBlocked();
   }
 

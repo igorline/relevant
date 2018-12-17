@@ -14,7 +14,6 @@ const localStyles = StyleSheet.create({
     right: 0,
     height: fullHeight,
     width: fullWidth
-    // backgroundColor: 'blue'
   }
 });
 
@@ -69,21 +68,8 @@ class InvestAnimation extends Component {
           specialKey={i}
         />
       );
-      // let newNum = this.state.num += 1;
       this.setState({ investAni: newArr });
-      // setTimeout(() => this.investAni(), 50 * Math.random());
-      // } else {
     }
-
-    // if (this.state.num < 10) {
-    //   let newArr = this.state.investAni;
-    //   newArr.push(<Dollar amount={this.amount} key={this.state.num} specialKey={this.state.num} />);
-    //   let newNum = this.state.num += 1;
-    //   this.setState({ num: newNum, investAni: newArr });
-    //   setTimeout(() => this.investAni(), 50 * Math.random());
-    // } else {
-    //   setTimeout(() => this.clearEls(), 1000);
-    // }
   }
 
   render() {

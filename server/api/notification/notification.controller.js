@@ -4,14 +4,7 @@ const Notification = require('./notification.model');
 
 const NotificationEvents = new EventEmitter();
 
-function handleError(res, err) {
-  console.log(err);
-  return res.status(500).send(err);
-}
-
-exports.create = (req, res) => {
-  const notificationObj = req.body;
-
+exports.create = (req, res, next) => {
   const dbNotificationObj = {
     post: req.body.post ? req.body.post : null,
     forUser: req.body.forUser ? req.body.forUser : null,
@@ -24,59 +17,54 @@ exports.create = (req, res) => {
   };
 
   const newNotification = new Notification(dbNotificationObj);
-  return newNotification.save()
-    .then(newNotif => {
-      const newNotifObj = {
-        _id: req.body.forUser,
-        type: 'ADD_ACTIVITY',
-      };
-      if (newNotification.personal) {
-        NotificationEvents.emit('notification', newNotifObj);
-      }
-      res.send(200).send();
-    });
+  return newNotification
+  .save()
+  .then(() => {
+    const newNotifObj = {
+      _id: req.body.forUser,
+      type: 'ADD_ACTIVITY'
+    };
+    if (newNotification.personal) {
+      NotificationEvents.emit('notification', newNotifObj);
+    }
+    res.send(200).send();
+  })
+  .catch(next);
 };
 
-exports.show = (req, res) => {
+exports.show = (req, res, next) => {
   let query = null;
   const userId = req.user._id;
   const skip = parseInt(req.query.skip, 10) || 0;
   const limit = 20;
 
   if (userId) {
-    query = { $or: [
-      { forUser: userId },
-      { forUser: 'everyone' },
-    ]
-    };
+    query = { $or: [{ forUser: userId }, { forUser: 'everyone' }] };
   }
 
-  // Uncomment to hide previous @everyone notifications - these maybe usefull onboarding?
-  // if (req.user.createdAt) {
-  //   query = { ...query, createdAt: { $gt: new Date(req.user.createdAt) } };
-  // }
-
   Notification.find(query)
-    .limit(limit)
-    .skip(skip)
-    .sort({ _id: -1 })
-    .populate('byUser forUser post')
-    .then(notifications => res.status(200).json(notifications));
+  .limit(limit)
+  .skip(skip)
+  .sort({ _id: -1 })
+  .populate('byUser forUser post')
+  .then(notifications => res.status(200).json(notifications))
+  .catch(next);
 };
 
-exports.unread = (req, res) => {
+exports.unread = (req, res, next) => {
   let query = null;
   const userId = req.user._id;
   if (userId) {
     query = { forUser: userId, read: false };
   }
   Notification.count(query)
-    .then((unread) => {
-      res.status(200).json({ unread });
-    });
+  .then(unread => {
+    res.status(200).json({ unread });
+  })
+  .catch(next);
 };
 
-exports.showGeneral = (req, res) => {
+exports.showGeneral = (req, res, next) => {
   const avoidUser = req.user._id;
   const skip = parseInt(req.query.skip, 10) || 0;
   const limit = 20;
@@ -84,26 +72,19 @@ exports.showGeneral = (req, res) => {
   if (avoidUser) query = { $and: [{ personal: false }, { byUser: { $ne: avoidUser } }] };
 
   Notification.find(query)
-    .limit(limit)
-    .skip(skip)
-    .sort({ _id: -1 })
-    .populate('byUser forUser post tag')
-    .then(notifications => res.status(200).json(notifications));
+  .limit(limit)
+  .skip(skip)
+  .sort({ _id: -1 })
+  .populate('byUser forUser post tag')
+  .then(notifications => res.status(200).json(notifications))
+  .catch(next);
 };
 
-exports.markRead = (req, res) => {
+exports.markRead = (req, res, next) => {
   const query = { forUser: req.user._id, read: false };
   return Notification.update(query, { read: true }, { multi: true })
-    .then(() => res.status(200).send())
-    .catch(err => handleError(res, err));
+  .then(() => res.status(200).send())
+  .catch(next);
 };
 
-// Notification.update(query, { read: true }, { multi: true }, function (err, raw) {
-//   if (err) return handleError(err);
-//   console.log('The raw response from Mongo was ', raw);
-//   res.status(200).send(true);
-// });
-// }
-
 exports.NotificationEvents = NotificationEvents;
-

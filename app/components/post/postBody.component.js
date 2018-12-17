@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles } from '../../styles/global';
-import Stats from './stats.component';
 import TextBody from './textBody.component';
 
 let styles;
@@ -41,15 +40,11 @@ class PostBody extends Component {
   }
 
   render() {
-    const post = this.props.post;
+    const { post, short, repost, preview, comment } = this.props;
     let body;
     if (post) {
       if (post.body) body = post.body.trim();
       if (body === '') body = null;
-      // else return null;
-      // else if (post.description) body = '\"' + post.description + '\"';
-      // if (this.props.preview)
-      // console.log(body)
     }
 
     let maxTextLength = 100;
@@ -57,49 +52,28 @@ class PostBody extends Component {
     let numberOfLines = 9999999999999;
     let postStyle = styles.bodyText;
 
-    if (this.props.short) {
-      // numberOfLines = 2;
+    if (short) {
       maxTextLength = 60;
       postStyle = styles.commentaryText;
     }
 
-    if (this.props.repost) {
+    if (repost) {
       numberOfLines = 2;
       maxTextLength = 60;
       postStyle = styles.repostText;
     }
 
-    if (this.props.preview) {
+    if (preview) {
       numberOfLines = 2;
       maxTextLength = 10;
       postStyle = styles.previewText;
     }
 
-    if (this.props.comment) {
-      // numberOfLines = 2;
-      // maxTextLength = 10;
+    if (comment) {
       postStyle = styles.repostText;
     }
 
-    let upvotes = <Text style={{ paddingTop: 10 }} />;
-    if ((post.downVotes || post.upVotes) && !this.props.repost && !this.props.preview) {
-      const r = Math.round(post.relevance);
-      upvotes = (
-        <Text
-          onPress={this.showInvestors}
-          style={[styles.font12, styles.greyText, { paddingTop: 15, paddingBottom: 10 }]}
-        >
-          {post.upVotes ? post.upVotes + ' upvote' + (post.upVotes > 1 ? 's' : '') + ' • ' : null}
-          {post.downVotes
-            ? post.downVotes + ' downvote' + (post.downVotes > 1 ? 's' : '') + ' • '
-            : ''}
-          {r + ' relevant point' + (Math.abs(r) > 1 ? 's' : '')}
-        </Text>
-      );
-    }
-
-    let textBody;
-    textBody = (
+    const textBody = (
       <TouchableWithoutFeedback
         style={{ flex: 1 }}
         onPressIn={e => {
@@ -128,12 +102,7 @@ class PostBody extends Component {
       </TouchableWithoutFeedback>
     );
 
-    return (
-      <View style={{ flex: 1 }}>
-        {textBody}
-        {/*! this.props.preview && !this.props.repost ? upvotes : null */}
-      </View>
-    );
+    return <View style={{ flex: 1 }}>{textBody}</View>;
   }
 }
 
@@ -167,7 +136,6 @@ const localStyles = StyleSheet.create({
     fontFamily: 'Georgia',
     fontSize: 30 / 2,
     lineHeight: 40 / 2
-    // marginTop: -10,
   },
   shortBodyText: {
     fontFamily: 'Libre Caslon Display',

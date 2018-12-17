@@ -8,7 +8,7 @@ let styles;
 class EmptyList extends Component {
   static propTypes = {
     type: PropTypes.string,
-    emoji: PropTypes.object,
+    emoji: PropTypes.string,
     visible: PropTypes.bool,
     children: PropTypes.node,
     text: PropTypes.string,
@@ -26,9 +26,11 @@ class EmptyList extends Component {
   render() {
     const type = this.props.type || '';
     const emoji = this.props.emoji || (Platform.OS === 'android' ? '😮' : '😶');
-    const visible = this.props.visible;
+    const { visible } = this.props;
     const content = this.props.children || (
-      <Text style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}>
+      <Text
+        style={[styles.libre, styles.darkGrey, { fontSize: 40, textAlign: 'center' }]}
+      >
         {this.props.text ? this.props.text : 'Sorry, no ' + type + ' ' + emoji}
       </Text>
     );

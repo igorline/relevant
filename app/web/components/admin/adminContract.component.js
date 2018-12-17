@@ -20,7 +20,9 @@ export default class AdminContract extends Component {
   async addRewards() {
     const { connectedAccount } = this.props.wallet;
     const amount = web3.utils.toWei(this.state.rewardsAmount.toString());
-    this.props.RelevantCoin.methods.addRewards.cacheSend(amount, { from: connectedAccount });
+    this.props.RelevantCoin.methods.addRewards.cacheSend(amount, {
+      from: connectedAccount
+    });
   }
 
   async buyVirtual() {
@@ -33,7 +35,7 @@ export default class AdminContract extends Component {
   }
 
   onChange(e) {
-    let value = e.target.value;
+    let { value } = e.target;
     value = value.length ? parseFloat(value) : '';
     if (e.target.max && value > e.target.max) {
       value = e.target.max;
@@ -43,7 +45,7 @@ export default class AdminContract extends Component {
 
   render() {
     const fixed = n => numbers.abbreviateNumber(n, 2);
-    const user = this.props.user;
+    const { user } = this.props;
     if (!user) return null;
 
     const {

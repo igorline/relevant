@@ -3,7 +3,7 @@ import url from 'url';
 import request from 'request';
 import { EventEmitter } from 'events';
 import * as proxyHelpers from './html';
-import MetaPost from '../links/link.model';
+import MetaPost from './link.model';
 import Post from './post.model';
 import User from '../user/user.model';
 import Subscriptiton from '../subscription/subscription.model';
@@ -31,9 +31,10 @@ async function findRelatedPosts(metaId) {
 
     const posts = await MetaPost.find(
       { $text: { $search: search }, _id: { $ne: metaId } },
-      { score: { $meta: 'textScore' } })
-      .sort({ score: { $meta: 'textScore' } })
-      .limit(5);
+      { score: { $meta: 'textScore' } }
+    )
+    .sort({ score: { $meta: 'textScore' } })
+    .limit(5);
     return posts;
   } catch (err) {
     throw new Error(err);
@@ -41,18 +42,19 @@ async function findRelatedPosts(metaId) {
 }
 
 exports.topPosts = async (req, res, next) => {
-  const community = req.query.community;
+  const { community } = req.query;
   let posts;
   try {
     const now = new Date();
     now.setDate(now.getDate() - 7);
     posts = await Post.find({ createdAt: { $gt: now } })
-      .populate({
-        path: 'embeddedUser.relevance',
-        match: { community, global: true },
-        select: 'pagerank'
-      })
-      .sort('-relevance').limit(20);
+    .populate({
+      path: 'embeddedUser.relevance',
+      match: { community, global: true },
+      select: 'pagerank'
+    })
+    .sort('-relevance')
+    .limit(20);
     res.status(200).json(posts);
   } catch (err) {
     next(err);
@@ -65,11 +67,13 @@ exports.sendPostNotification = async (req, res, next) => {
     const post = req.body;
     const users = await User.find({});
 
-    const alert = `In case you missed this top-ranked post from @${post.user}: ${post.title}`;
+    const alert = `In case you missed this top-ranked post from @${post.user}: ${
+      post.title
+    }`;
     const payload = {
       type: 'postLink',
       _id: post._id,
-      title: post.title,
+      title: post.title
     };
 
     // TODO - optimize this or put in queue so we don't create a bottle neck;
@@ -84,7 +88,7 @@ exports.sendPostNotification = async (req, res, next) => {
         post: post._id,
         forUser: user._id,
         byUser: post.user,
-        type: 'topPost',
+        type: 'topPost'
       });
     });
     await Promise.all(finished);
@@ -118,7 +122,7 @@ async function sendFlagEmail() {
 exports.flag = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const postId = req.body.postId;
+    const { postId } = req.body;
     const post = await Post.findOneAndUpdate(
       { _id: postId },
       { flagged: true, $addToSet: { flaggedBy: userId }, flaggedTime: Date.now() },
@@ -140,7 +144,7 @@ exports.index = async (req, res, next) => {
   try {
     let id;
     if (req.user) id = req.user._id;
-    const community = req.query.community;
+    const { community } = req.query;
     const limit = parseInt(req.query.limit, 10) || 15;
     const skip = parseInt(req.query.skip, 10) || 0;
     const tags = req.query.tag || null;
@@ -158,14 +162,14 @@ exports.index = async (req, res, next) => {
     } else if (category) query = { category };
 
     const posts = await Post.find(query)
-      .populate({
-        path: 'embeddedUser.relevance',
-        select: 'pagerank',
-        match: { community, global: true },
-      })
-      .limit(limit)
-      .skip(skip)
-      .sort(sortQuery);
+    .populate({
+      path: 'embeddedUser.relevance',
+      select: 'pagerank',
+      match: { community, global: true }
+    })
+    .limit(limit)
+    .skip(skip)
+    .sort(sortQuery);
 
     res.status(200).json(posts);
 
@@ -186,49 +190,51 @@ exports.index = async (req, res, next) => {
 
 exports.userPosts = async (req, res, next) => {
   try {
-    const community = req.query.community;
+    const { community } = req.query;
+    const { user } = req;
     let id;
     let blocked = [];
-    if (req.user) {
-      const user = req.user;
+    if (user) {
       blocked = [...user.blocked, ...user.blockedBy];
-      id = req.user._id;
+      id = user._id;
     }
     const limit = parseInt(req.query.limit, 10);
     const skip = parseInt(req.query.skip, 10);
     const userId = req.params.id || null;
     const sortQuery = { _id: -1 };
     const query = { user: userId, type: { $ne: 'comment' } };
-    let posts;
 
     if (blocked.find(u => u === userId)) {
       return res.status(200).json({});
     }
 
-    posts = await Post.find(query)
-      .populate({
-        path: 'repost.post',
-        populate: [{
+    const posts = await Post.find(query)
+    .populate({
+      path: 'repost.post',
+      populate: [
+        {
           path: 'embeddedUser.relevance',
           select: 'pagerank',
-          match: { community, global: true },
-        }, {
+          match: { community, global: true }
+        },
+        {
           path: 'metaPost'
-        }]
-      })
-      .populate({ path: 'metaPost ' })
-      .populate({
-        path: 'embeddedUser.relevance',
-        select: 'pagerank',
-        match: { community, global: true },
-      })
-      .populate({
-        path: 'data',
-        match: { community },
-      })
-      .limit(limit)
-      .skip(skip)
-      .sort(sortQuery);
+        }
+      ]
+    })
+    .populate({ path: 'metaPost ' })
+    .populate({
+      path: 'embeddedUser.relevance',
+      select: 'pagerank',
+      match: { community, global: true }
+    })
+    .populate({
+      path: 'data',
+      match: { community }
+    })
+    .limit(limit)
+    .skip(skip)
+    .sort(sortQuery);
 
     res.status(200).json(posts);
 
@@ -252,7 +258,7 @@ exports.userPosts = async (req, res, next) => {
 exports.preview = async (req, res, next) => {
   try {
     const urlParts = url.parse(req.url, false);
-    const query = urlParts.query;
+    const { query } = urlParts;
     const previewUrl = decodeURIComponent(query.replace('url=', ''));
     const result = await exports.previewDataAsync(previewUrl);
     res.status(200).json(result);
@@ -261,7 +267,6 @@ exports.preview = async (req, res, next) => {
   }
 };
 
-
 exports.previewDataAsync = async (previewUrl, noReadability) => {
   if (!previewUrl.match(/http:\/\//i) && !previewUrl.match(/https:\/\//i)) {
     previewUrl = 'http://' + previewUrl;
@@ -269,11 +274,12 @@ exports.previewDataAsync = async (previewUrl, noReadability) => {
 
   function getHeader(uri) {
     const fbHeader = {
-      'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php) Facebot',
+      'User-Agent':
+        'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php) Facebot'
     };
     const noFb = uri.match('apple.news') || uri.match('bloomberg.com');
 
-    if (noFb) return { };
+    if (noFb) return {};
     return fbHeader;
   }
 
@@ -292,7 +298,12 @@ exports.previewDataAsync = async (previewUrl, noReadability) => {
     });
 
     let uri = response.request.uri.href;
-    const processed = await proxyHelpers.generatePreview(response.body, uri, _url, noReadability);
+    const processed = await proxyHelpers.generatePreview(
+      response.body,
+      uri,
+      _url,
+      noReadability
+    );
 
     if (processed.redirect && processed.uri) {
       console.log('redirect ', processed.uri);
@@ -314,10 +325,9 @@ exports.previewDataAsync = async (previewUrl, noReadability) => {
   return queryUrl(previewUrl);
 };
 
-
 exports.readable = async (req, res, next) => {
   try {
-    const uri = req.query.uri;
+    const { uri } = req.query;
     const article = await proxyHelpers.getReadable(uri);
     // let short = proxyHelpers.trimToLength(article.article, 140);
     res.send(article.content);
@@ -327,26 +337,25 @@ exports.readable = async (req, res, next) => {
 };
 
 exports.findById = async req => {
-  const community = req.query.community;
+  const { community } = req.query;
   let id;
-  const user = req.user;
-  let post;
+  const { user } = req;
 
-  if (user) id = req.user._id;
+  if (user) id = user._id;
   let blocked = [];
   if (user) blocked = [...user.blocked, ...user.blockedBy];
 
-  post = await Post.findOne({ _id: req.params.id, user: { $nin: blocked } })
-    .populate({
-      path: 'embeddedUser.relevance',
-      select: 'pagerank',
-      match: { community, global: true },
-    })
-    .populate({ path: 'metaPost' })
-    .populate({
-      path: 'data',
-      match: { community },
-    });
+  const post = await Post.findOne({ _id: req.params.id, user: { $nin: blocked } })
+  .populate({
+    path: 'embeddedUser.relevance',
+    select: 'pagerank',
+    match: { community, global: true }
+  })
+  .populate({ path: 'metaPost' })
+  .populate({
+    path: 'data',
+    match: { community }
+  });
 
   // TODO worker thread
   // TODO check if we recieve this in time for server rendering!
@@ -360,7 +369,7 @@ exports.findById = async req => {
 
 // NOT USED RN
 exports.related = async req => {
-  const id = req.params.id;
+  const { id } = req.params;
   return findRelatedPosts(id);
 };
 
@@ -374,14 +383,16 @@ exports.update = async (req, res, next) => {
     const mentions = req.body.mentions || [];
     let newMentions;
     let newTags;
-    const category = req.body.category;
+    const { category } = req.body;
     let newPost;
     let linkObject;
 
     newPost = await Post.findOne({ _id: req.body._id });
     const prevMentions = [...newPost.mentions];
+    const prevTags = [...newPost.mentions];
 
     newMentions = mentions.filter(m => prevMentions.indexOf(m) < 0);
+    newTags = tags.filter(t => prevTags.indexOf(t) < 0);
 
     newPost.tags = tags;
     newPost.mentions = mentions;
@@ -420,19 +431,18 @@ exports.update = async (req, res, next) => {
     const pTags = newTags.map(tag =>
       Tag.update(
         { _id: tag },
-        { $addToSet:
-          { parents: category },
+        {
+          $addToSet: { parents: category },
           $inc: { count: 1 } // eslint-disable-line
         },
         { upsert: true }
       ).exec()
     );
 
-    const pMentions = Post.sendOutMentions(
-      newMentions,
-      newPost,
-      { _id: newPost.user, name: newPost.embeddedUser.name }
-    );
+    const pMentions = Post.sendOutMentions(newMentions, newPost, {
+      _id: newPost.user,
+      name: newPost.embeddedUser.name
+    });
 
     return await Promise.all([...pTags, ...pMentions]);
   } catch (err) {
@@ -440,15 +450,13 @@ exports.update = async (req, res, next) => {
   }
 };
 
-
 async function processSubscriptions(newPost) {
   try {
     const author = newPost.embeddedUser;
     const subscribers = await Subscriptiton.find({
-      following: newPost.user,
+      following: newPost.user
       // category: newPostObj.category
-    })
-      .populate('follower', '_id deviceTokens badge lastFeedNotification');
+    }).populate('follower', '_id deviceTokens badge lastFeedNotification');
 
     const promises = subscribers.map(async subscription => {
       if (!subscription.follower) return null;
@@ -484,13 +492,13 @@ async function processSubscriptions(newPost) {
 
         const now = new Date();
 
-        const follower = subscription.follower;
+        const { follower } = subscription;
         // TODO put it on a queue, only certain hours of the day
-        if (now - (12 * 60 * 60 * 1000) > new Date(follower.lastFeedNotification)) {
+        if (now - 12 * 60 * 60 * 1000 > new Date(follower.lastFeedNotification)) {
           const unread = await Feed.find({
             userId: follower._id,
             read: false,
-            createdAt: { $gte: now - (24 * 60 * 60 * 1000) }
+            createdAt: { $gte: now - 24 * 60 * 60 * 1000 }
           });
           const n = unread.length;
           await Feed.update(
@@ -507,14 +515,15 @@ async function processSubscriptions(newPost) {
             if (from.length === 1) {
               alert = 'There are new posts from ' + author.name + ' in your feed!';
             } else {
-              alert = 'There are new posts from ' + author.name + ' and others in your feed!';
+              alert =
+                'There are new posts from ' + author.name + ' and others in your feed!';
             }
           }
           const payload = {
             type: 'newFeedpost',
             id: newPost._id,
             author: author.name,
-            number: n,
+            number: n
           };
           // console.log('New post in feed alert', alert);
           apnData.sendNotification(follower, alert, payload);
@@ -524,7 +533,7 @@ async function processSubscriptions(newPost) {
 
         const newFeedPost = {
           _id: subscription.follower._id,
-          type: 'INC_FEED_COUNT',
+          type: 'INC_FEED_COUNT'
         };
         PostEvents.emit('post', newFeedPost);
         return null;
@@ -555,7 +564,6 @@ exports.create = async (req, res, next) => {
     let tags = [];
     const keywords = req.body.keywords || [];
     const category = req.body.category ? req.body.category._id : null;
-    let author;
 
     const postUrl = req.body.url || req.body.link;
     const now = new Date();
@@ -581,7 +589,7 @@ exports.create = async (req, res, next) => {
         { _id: tag },
         {
           $addToSet: { parents: category },
-          $inc: { count: 1 },
+          $inc: { count: 1 }
         },
         { upsert: true }
       ).exec()
@@ -597,7 +605,7 @@ exports.create = async (req, res, next) => {
       shortText: req.body.shortText,
       keywords,
       domain: req.body.domain,
-      categories: [category],
+      categories: [category]
     };
 
     const newPostObj = {
@@ -613,7 +621,7 @@ exports.create = async (req, res, next) => {
       mentions: req.body.mentions,
       postDate: now,
       payoutTime,
-      eligibleForRewards: true,
+      eligibleForRewards: true
     };
 
     // TODO Work on better length limits
@@ -625,7 +633,7 @@ exports.create = async (req, res, next) => {
 
     let newPost = new Post(newPostObj);
 
-    author = await User.findOne({ _id: newPost.user });
+    const author = await User.findOne({ _id: newPost.user });
     newPost = await newPost.addUserInfo(author);
     newPost = await newPost.addPostData();
     newPost = await newPost.save();
@@ -639,7 +647,6 @@ exports.create = async (req, res, next) => {
       await newPost.insertIntoFeed(newPost.community);
     }
 
-
     await author.updatePostCount();
 
     // creates an invest(vote) record for pots author
@@ -650,7 +657,7 @@ exports.create = async (req, res, next) => {
       amount: 1,
       relevanceToAdd: 0,
       community,
-      communityId,
+      communityId
     });
 
     res.status(200).json(newPost);
@@ -663,37 +670,35 @@ exports.create = async (req, res, next) => {
   }
 };
 
-
 exports.delete = (req, res) => {
   const userId = req.user._id;
-  const id = req.params.id;
+  const { id } = req.params;
   let query = { _id: id, user: userId };
 
   if (req.user.role === 'admin') {
     query = { _id: id };
   }
 
-  Post.findOne(query)
-    .then((foundPost) => {
-      if (!foundPost) {
-        res.json(404, 'no found post');
-      } else {
-        foundPost.remove((err) => {
-          if (!err) {
-            const newPostEvent = {
-              type: 'REMOVE_POST',
-              notMe: true,
-              payload: foundPost
-            };
-            PostEvents.emit('post', newPostEvent);
-            req.user.updatePostCount();
-            res.status(200).json('removed');
-          } else {
-            res.status(404).json('deletion error');
-          }
-        });
-      }
-    });
+  Post.findOne(query).then(foundPost => {
+    if (!foundPost) {
+      res.json(404, 'no found post');
+    } else {
+      foundPost.remove(err => {
+        if (!err) {
+          const newPostEvent = {
+            type: 'REMOVE_POST',
+            notMe: true,
+            payload: foundPost
+          };
+          PostEvents.emit('post', newPostEvent);
+          req.user.updatePostCount();
+          res.status(200).json('removed');
+        } else {
+          res.status(404).json('deletion error');
+        }
+      });
+    }
+  });
 };
 
 exports.PostEvents = PostEvents;

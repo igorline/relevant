@@ -8,7 +8,7 @@ const initialState = {
 export default function comments(state = initialState, action) {
   switch (action.type) {
     case types.SET_COMMENTS: {
-      const total = action.payload.total;
+      const { total } = action.payload;
       const id = action.payload.postId;
       const currentComments = state.commentsById[id] ? state.commentsById[id].data : [];
       const postCommentList = action.payload.data.result[id];
@@ -27,7 +27,7 @@ export default function comments(state = initialState, action) {
 
     case 'ADD_COMMENT': {
       const newComment = action.payload.comment;
-      const postId = action.payload.postId;
+      const { postId } = action.payload;
       let postComments = state.commentsById[postId];
       if (!state.commentsById[postId]) {
         postComments = {

@@ -41,19 +41,18 @@ export class Discover extends Component {
     super(props, context);
     this.state = {
       tabIndex: 1,
-      routes: this.props.params.tag ? discoverHelper.tagRoutes : discoverHelper.standardRoutes
+      routes: this.props.params.tag
+        ? discoverHelper.tagRoutes
+        : discoverHelper.standardRoutes
     };
-    if (this.props.params.sort) {
-      const sort = this.props.params.sort;
+    const { sort } = this.props.params;
+    if (sort) {
       this.state.tabIndex = this.state.routes.findIndex(tab => tab.key === sort);
     }
     this.load = this.load.bind(this);
     this.renderFeed = this.renderFeed.bind(this);
     this.lastRefresh = 0;
   }
-
-  // componentDidMount() {
-  // }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     return discoverHelper.getDiscoverState(nextProps, prevState);
@@ -85,8 +84,10 @@ export class Discover extends Component {
 
   getLoadedState() {
     const sort = this.state.routes[this.state.tabIndex].key;
-    const tag = this.props.params.tag;
-    const loadLookup = tag ? this.props.posts.loaded.topics[tag] : this.props.posts.loaded;
+    const { tag } = this.props.params;
+    const loadLookup = tag
+      ? this.props.posts.loaded.topics[tag]
+      : this.props.posts.loaded;
     switch (sort) {
       case 'people':
         return !this.props.user.loading;
@@ -97,7 +98,7 @@ export class Discover extends Component {
 
   load(sort, props, _length) {
     if (!this.state.routes[this.state.tabIndex]) return;
-    const community = this.props.auth.community;
+    const { community } = this.props.auth;
     sort = sort || this.state.routes[this.state.tabIndex].key;
     props = props || this.props;
     const tags = props.params.tag ? [props.params.tag] : [];
@@ -113,7 +114,9 @@ export class Discover extends Component {
         this.props.actions.getPosts(length, tags, 'rank', POST_PAGE_SIZE, community);
         break;
       case 'people':
-        if (this.props.auth.user) this.props.actions.getUsers(length, POST_PAGE_SIZE * 2, tags);
+        if (this.props.auth.user) {
+          this.props.actions.getUsers(length, POST_PAGE_SIZE * 2, tags);
+        }
         break;
       default:
         break;
@@ -122,11 +125,16 @@ export class Discover extends Component {
 
   renderFeed() {
     const sort = this.state.routes[this.state.tabIndex].key;
-    const tag = this.props.params.tag;
+    const { tag } = this.props.params;
     switch (sort) {
       case 'people':
         return (
-          <DiscoverUsers key={'users' + tag} tag={tag} pageSize={POST_PAGE_SIZE} {...this.props} />
+          <DiscoverUsers
+            key={'users' + tag}
+            tag={tag}
+            pageSize={POST_PAGE_SIZE}
+            {...this.props}
+          />
         );
       default:
         return (
@@ -144,7 +152,8 @@ export class Discover extends Component {
 
   render() {
     if (!this.state.routes[this.state.tabIndex]) return null;
-    const tag = this.props.params.tag;
+    const { auth, params } = this.props;
+    const { tag } = params;
 
     return (
       <div className="discoverContainer row pageContainer">
@@ -152,11 +161,10 @@ export class Discover extends Component {
           <div className="postContainer">
             {tag && (
               <h3>
-                <Link to="/discover/new">{this.props.auth.community}</Link> - #{tag}
+                <Link to="/discover/new">{auth.community}</Link> - #{tag}
               </h3>
             )}
             <CreatePost {...this.props} />
-
             {this.renderFeed()}
           </div>
         </div>

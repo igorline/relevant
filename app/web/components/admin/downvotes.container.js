@@ -26,9 +26,13 @@ class Downvotes extends Component {
       <div className={'downvoteList'} key={downvote._id}>
         <div className={'dUser'}>{downvote.investor}</div>
         <div>- {downvote.author}</div>
-        <div>{moment(downvote.createdAt).format('MMMM Do, h:mm a')}</div>
+        <div>{moment(downvote.createdAt)
+        .format('MMMM Do, h:mm a')}</div>
         <div>
-          {downvote.post ? moment(downvote.post.createdAt).format('MMMM Do, h:mm a') : '[deleted]'}
+          {downvote.post
+            ? moment(downvote.post.createdAt)
+            .format('MMMM Do, h:mm a')
+            : '[deleted]'}
         </div>
       </div>
     );

@@ -17,12 +17,12 @@ let styles;
 
 export default class topics extends Component {
   static propTypes = {
-    topics: PropTypes.object,
+    topics: PropTypes.array,
     actions: PropTypes.object,
     selectedTopic: PropTypes.object,
     type: PropTypes.string,
     createPost: PropTypes.object,
-    action: PropTypes.object
+    action: PropTypes.func
   };
 
   constructor(props) {

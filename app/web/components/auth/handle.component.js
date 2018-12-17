@@ -24,13 +24,13 @@ class LoginForm extends Component {
   }
 
   submit() {
+    const { user, actions } = this.props;
     if (!this.state.username) {
       alert('username requied');
       return;
     }
-    const user = this.props.user;
     user.handle = this.state.username;
-    this.props.actions.updateHandle(user);
+    actions.updateHandle(user);
   }
 
   render() {
@@ -44,7 +44,8 @@ class LoginForm extends Component {
             placeholder="username"
             value={'@' + this.state.username}
             onChange={e => {
-              const username = e.target.value.trim().replace('@', '');
+              const username = e.target.value.trim()
+              .replace('@', '');
               this.props.checkUser(username.trim());
               this.handleChange('username', username);
             }}
@@ -54,7 +55,9 @@ class LoginForm extends Component {
               }
             }}
           />
-          {this.props.nameError ? <div className={'error'}>{this.props.nameError}</div> : null}
+          {this.props.nameError ? (
+            <div className={'error'}>{this.props.nameError}</div>
+          ) : null}
         </div>
 
         <div style={{ width: '100%' }}>

@@ -11,7 +11,7 @@ const initialState = {
 export default function auth(state = initialState, action) {
   switch (action.type) {
     case types.SET_ANIMATION: {
-      const type = action.payload.type;
+      const { type } = action.payload;
       return {
         ...state,
         [type]: state[type] + 1,

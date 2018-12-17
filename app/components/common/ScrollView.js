@@ -7,6 +7,8 @@
  * @providesModule ScrollViewCustom
  * @flow
  */
+
+/* eslint-disable */
 import type { NativeMethodsMixinType } from 'ReactNativeTypes';
 
 'use strict';

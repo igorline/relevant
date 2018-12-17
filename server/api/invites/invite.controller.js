@@ -5,20 +5,14 @@ import mail from '../../mail';
 const inlineCss = require('inline-css');
 const { emailStyle } = require('../../utils/emailStyle');
 
-// Invite.collection.dropIndexes(function (err, results) {
-//   console.log(err);
-// });
-
-
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
-  return (err) => {
-    console.log(err);
+  return err => {
     res.status(statusCode).json({ message: err.message });
   };
 }
 
-exports.index = async (req, res) => {
+exports.index = async (req, res, next) => {
   let invites;
 
   const limit = parseInt(req.query.limit, 0) || null;
@@ -30,18 +24,18 @@ exports.index = async (req, res) => {
       query = { invitedBy: req.user._id };
     }
     invites = await Invite.find(query)
-      .populate('registeredAs')
-      .sort({ updatedAt: -1 })
-      .skip(skip)
-      .limit(limit);
+    .populate('registeredAs')
+    .sort({ updatedAt: -1 })
+    .skip(skip)
+    .limit(limit);
   } catch (err) {
-    return handleError(res)(err);
+    return next(err);
   }
   return res.status(200).json(invites);
 };
 
 // Takes array of invites;
-exports.createInvites = async (invites) => {
+exports.createInvites = async invites => {
   invites = invites.map(async invite => {
     const code = voucherCodes.generate({
       length: 5,
@@ -74,7 +68,7 @@ exports.createInvites = async (invites) => {
 exports.create = async (req, res) => {
   let invite;
   try {
-    const user = req.user;
+    const { user } = req;
     if (!user.confirmed) {
       throw new Error('please confirm your email before sending invites');
     }
@@ -111,27 +105,32 @@ exports.sendEmail = async (req, res) => {
 };
 
 exports.sendEmailFunc = async function inviteEamil(_invite) {
-  let status;
-  let invite = _invite;
   try {
-    // let appStoreUrl = 'http://itunes.com/apps/relevant';
-    const appStoreUrl = 'https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051';
+    let invite = _invite;
+    // const appStoreUrl =
+    //  'https://itunes.apple.com/us/app/relevant-a-social-news-reader/id1173025051';
 
     if (invite && !invite._id) {
       invite = await Invite.findById(invite);
     }
+    // const webUrl = 'https://relevant.community';
 
-    const webUrl = 'https://relevant.community';
     if (!invite || !invite.code) throw new Error('no invite or code');
-    const url = `${process.env.API_SERVER}/invite/${invite.code}`;
-    const androidStoreUrl = 'https://play.google.com/store/apps/details?id=com.relevantnative';
+    // const url = `${process.env.API_SERVER}/invite/${invite.code}`;
+    // const androidStoreUrl =
+    //  'https://play.google.com/store/apps/details?id=com.relevantnative';
     let name = invite.name ? invite.name.split(' ')[0] : null;
     if (name) name = name.charAt(0).toUpperCase() + name.slice(1);
     let hi = 'Hi!<br /><br />';
-    if (name) hi = `<span style="text-transform: capitalize;">Hi ${name}!</span><br /><br />`;
-    let intro = 'You are invited to join Relevant, a social news reader that values <i>quality</i> over <i>clicks</i>.';
+    if (name) {
+      hi = `<span style="text-transform: capitalize;">Hi ${name}!</span><br /><br />`;
+    }
+    let intro =
+      'You are invited to join Relevant, a social news reader that values <i>quality</i> over <i>clicks</i>.';
     if (invite.invitedByString && invite.invitedByString !== '') {
-      intro = `${invite.invitedByString} invited you to join Relevant, a social news reader that values <i>quality</i> over <i>clicks</i>.`;
+      intro = `${
+        invite.invitedByString
+      } invited you to join Relevant, a social news reader that values <i>quality</i> over <i>clicks</i>.`;
     }
 
     let html = `
@@ -208,22 +207,20 @@ exports.sendEmailFunc = async function inviteEamil(_invite) {
       subject: 'Your Relevant Invitation',
       html
     };
-    // <b>Step 2</b>: <a href="${url}" target="_blank">Open this link</a> from your phone to redeem invitation (or manually enter the code when prompted)
 
-    status = await mail.send(data);
-    console.log(status);
+    await mail.send(data);
     invite.status = 'email sent';
     invite = await invite.save();
+    return invite;
   } catch (err) {
     throw err;
   }
-  return invite;
 };
 
 exports.checkInviteCode = async (req, res) => {
   let invite;
   try {
-    const code = req.body.code;
+    const { code } = req.body;
     if (!code) throw new Error('No invitation code');
     invite = await Invite.findOne({ code, redeemed: false });
     if (!invite) throw new Error('Invalid invitation code');
@@ -245,4 +242,3 @@ exports.destroy = async (req, res) => {
   }
   return res.sendStatus(200);
 };
-

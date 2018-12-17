@@ -69,20 +69,19 @@ export function setUserSearch(data) {
 
 export function searchUser(userName) {
   const limit = 50;
-  const url =
-    process.env.API_SERVER + '/api/user/search' + '?limit=' + limit + '&search=' + userName;
-  return async dispatch =>
-    fetch(url, {
-      method: 'GET',
-      ...(await utils.api.reqOptions())
-    })
-    .then(response => response.json())
-    .then(responseJSON => {
-      dispatch(setUserSearch(responseJSON));
-    })
-    .catch(error => {
-      dispatch(errorActions.setError('activity', true, error.message));
-    });
+  return async dispatch => {
+    try {
+      const res = await utils.api.request({
+        method: 'GET',
+        endpoint: 'user',
+        path: '/search',
+        query: { limit, search: userName }
+      });
+      dispatch(setUserSearch(res));
+    } catch (err) {
+      dispatch(errorActions.setError('activity', true, err.message));
+    }
+  };
 }
 
 export function getSelectedUser(userName) {
@@ -123,7 +122,9 @@ export function getUsers(skip, limit, tags) {
     topic = tags[0]._id || tags[0];
   }
   const url =
-    process.env.API_SERVER + '/api/user/general/list?' + queryParams({ skip, limit, topic });
+    process.env.API_SERVER +
+    '/api/user/general/list?' +
+    queryParams({ skip, limit, topic });
 
   return async dispatch => {
     dispatch(getUsersLoading());

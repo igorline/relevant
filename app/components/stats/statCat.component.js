@@ -29,8 +29,7 @@ export default class StatCategory extends Component {
   }
 
   render() {
-    const stats = this.props.stats;
-    let rank;
+    const { stats } = this.props;
     let title;
     let button;
     let titleAction = () => null;
@@ -40,15 +39,20 @@ export default class StatCategory extends Component {
     if (typeof stats.level !== 'number') return null;
 
     if (stats.tag) {
-      title = '#' + stats.tag.charAt(0).toUpperCase() + stats.tag.slice(1);
+      title = '#' + stats.tag.charAt(0)
+      .toUpperCase() + stats.tag.slice(1);
       button = (
-        <Text onPress={() => this.goToPeople(stats.tag)} style={[styles.button, styles.active]}>
+        <Text
+          onPress={() => this.goToPeople(stats.tag)}
+          style={[styles.button, styles.active]}
+        >
           See top users.
         </Text>
       );
 
       const topic = {
-        _id: stats.tag.replace('#', '').trim(),
+        _id: stats.tag.replace('#', '')
+        .trim(),
         categoryName: stats.tag
       };
       titleAction = () => this.props.actions.goToTopic(topic);
@@ -56,20 +60,17 @@ export default class StatCategory extends Component {
     } else {
       title = 'Level Progress';
       button = (
-        <Text onPress={() => this.goToPeople(null)} style={[styles.button, styles.active]}>
+        <Text
+          onPress={() => this.goToPeople(null)}
+          style={[styles.button, styles.active]}
+        >
           See all users.
         </Text>
       );
     }
 
-    if (stats.rank < 10) rank = '#' + stats.rank;
-    else rank = stats.level;
-
-    rank = stats.level;
     const untilNext = Math.round((10 * stats.level) % 100) / 100;
-
     const level = Math.floor(stats.level / 10);
-
     const relGoal = Math.round((stats.relevance / stats.level) * (level + 1) * 10);
     const relMore = Math.round(relGoal - stats.relevance);
 
@@ -85,7 +86,13 @@ export default class StatCategory extends Component {
         >
           <Image
             resizeMode={'contain'}
-            style={{ position: 'absolute', top: 0, zIndex: -1, width: fullWidth - 30, height: 7 }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              zIndex: -1,
+              width: fullWidth - 30,
+              height: 7
+            }}
             source={require('../../assets/images/icons/dashedbg.png')}
           />
         </Progress.Bar>
@@ -109,7 +116,11 @@ export default class StatCategory extends Component {
         el: (
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
             <Text
-              style={[styles.statNumber, styles.statRowNumber, { fontSize: 16, lineHeight: 18 }]}
+              style={[
+                styles.statNumber,
+                styles.statRowNumber,
+                { fontSize: 16, lineHeight: 18 }
+              ]}
             >
               #
             </Text>
@@ -125,7 +136,11 @@ export default class StatCategory extends Component {
               {Math.round(untilNext * 100)}
             </Text>
             <Text
-              style={[styles.statNumber, styles.statRowNumber, { fontSize: 16, lineHeight: 18 }]}
+              style={[
+                styles.statNumber,
+                styles.statRowNumber,
+                { fontSize: 16, lineHeight: 18 }
+              ]}
             >
               %
             </Text>
@@ -138,7 +153,10 @@ export default class StatCategory extends Component {
     return (
       <View style={[styles.container, styles.statSection]}>
         <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-          <Text onPress={titleAction} style={[styles.statNumber, styles.rowTitle, titleStyle]}>
+          <Text
+            onPress={titleAction}
+            style={[styles.statNumber, styles.rowTitle, titleStyle]}
+          >
             {title}
           </Text>
           <View style={[styles.textRow]}>

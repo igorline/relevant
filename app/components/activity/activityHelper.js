@@ -14,7 +14,8 @@ export function getText(activity, amount) {
     case 'upvote': {
       // coinText is deprecated
       const coinText = activity.coin ? 'you got a coin and ' : '';
-      const relText = amount > 0 ? `→ ${coinText}your relevance increased by ${amount}` : '';
+      const relText =
+        amount > 0 ? `→ ${coinText}your relevance increased by ${amount}` : '';
       return `upvoted your ${postType} ${relText}`;
     }
 
@@ -82,9 +83,9 @@ export function getStatParams(activity) {
 }
 
 export function getActivityParams(activity) {
+  const { post } = activity;
   let emoji;
   let userImage;
-  const post = activity.post;
   let image;
   let userName;
 
@@ -111,24 +112,4 @@ export function getActivityParams(activity) {
   }
 
   return { emoji, userImage, post, image, userName };
-
-  // TODO rework native
-  // return (
-  //   <View style={styles.activityLeft}>
-  //     <View style={styles.activityLeft}>
-  //       {userImage ? renderLeftImage(userImage) : null }
-  //       {image ? renderLeftImage(image) : null }
-  //       {emoji ?
-  //         <Text allowFontScaling={false} style={styles.incomeEmoji}>
-  //           {emoji}
-  //         </Text> : null
-  //       }
-  //       <Text style={[{ flex: 1 }, styles.activityText]}>
-  //         {userName ? renderName(userName) : null}
-  //         {getText()}
-  //       </Text>
-  //       {post ? renderPost(activity.post) : null}
-  //     </View>
-  //   </View>
-  // );
 }

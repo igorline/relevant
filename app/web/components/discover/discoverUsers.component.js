@@ -15,7 +15,12 @@ class DiscoverUsers extends Component {
   render() {
     const users = this.props.user.list[this.props.tag || 'all'] || [];
     const userRows = users.map((user, i) => (
-      <DiscoverUser key={i} relevance={this.props.tag || false} tag={this.props.tag} user={user} />
+      <DiscoverUser
+        key={i}
+        relevance={this.props.tag || false}
+        tag={this.props.tag}
+        user={user}
+      />
     ));
     return <div className="discoverUsers">{userRows}</div>;
   }
@@ -28,9 +33,11 @@ class DiscoverUser extends Component {
   };
 
   render() {
-    const user = this.props.user;
-    const relevance = this.props.tag ? user[this.props.tag + '_relevance'] : user.relevance;
-    const bio = user.bio;
+    const { user } = this.props;
+    const relevance = this.props.tag
+      ? user[this.props.tag + '_relevance']
+      : user.relevance;
+    const { bio } = user;
 
     return (
       <div className="discoverUserContainer">

@@ -9,13 +9,13 @@ class Tabs extends Component {
   static propTypes = {
     scrollValue: PropTypes.object,
     tabs: PropTypes.array,
-    active: PropTypes.object,
-    handleChange: PropTypes.object
+    active: PropTypes.number,
+    handleChange: PropTypes.func
   };
 
   render() {
-    const props = this.props;
-    const tabWidth = fullWidth / props.tabs.length;
+    const { handleChange, active, tabs, scrollValue } = this.props;
+    const tabWidth = fullWidth / tabs.length;
 
     const tabUnderlineStyle = {
       position: 'absolute',
@@ -26,24 +26,23 @@ class Tabs extends Component {
     };
 
     let left;
-    // console.log(this.props.scrollValue);
-    if (this.props.scrollValue) {
-      left = this.props.scrollValue.interpolate({
+    if (scrollValue) {
+      left = scrollValue.interpolate({
         inputRange: [0, 1],
         outputRange: [0, tabWidth]
       });
     } else {
-      left = props.active * tabWidth;
+      left = active * tabWidth;
     }
 
-    const tabs = props.tabs.map(tab => {
-      const active = props.active === tab.id;
+    const tabsEl = tabs.map(tab => {
+      const isActive = active === tab.id;
       return (
         <TouchableHighlight
           key={tab.id}
           underlayColor={'white'}
           style={[styles.typeParent, { alignItems: 'stretch' }, styles.inactiveBorder]}
-          onPress={() => props.handleChange(tab.id)}
+          onPress={() => handleChange(tab.id)}
         >
           <View
             style={{
@@ -59,7 +58,7 @@ class Tabs extends Component {
                 styles.tabFont,
                 styles.quarterLetterSpacing,
                 styles.font15,
-                active ? styles.active : null,
+                isActive ? styles.active : null,
                 { textAlign: 'center' }
               ]}
             >
@@ -72,7 +71,7 @@ class Tabs extends Component {
 
     return (
       <View style={[styles.row, styles.tabsParent, { width: fullWidth }]}>
-        {tabs}
+        {tabsEl}
         <Animated.View style={[tabUnderlineStyle, { left }]} />
       </View>
     );
