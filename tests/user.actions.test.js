@@ -1,9 +1,9 @@
 import test from 'ava';
 import nock from 'nock';
-import mockStore from './_mockStore';
 
-import * as types from '../app/actions/actionTypes';
-import * as authActions from '../app/actions/auth.actions';
+import * as types from 'core/actionTypes';
+import * as authActions from 'modules/auth/auth.actions';
+import mockStore from './_mockStore';
 
 require('../app/publicenv');
 

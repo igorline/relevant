@@ -25,7 +25,7 @@ export function get() {
           token = newToken;
           return resolve(token);
         }
-        return reject();
+        return resolve(null);
       })
       .catch(err => reject(err));
     }

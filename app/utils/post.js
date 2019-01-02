@@ -1,7 +1,6 @@
 import * as api from './api';
 
 api.env();
-
 const cheerio = require('cheerio-without-node-native');
 
 function extractDomain(url) {

@@ -1,6 +1,6 @@
 export function toNumber(num, dec) {
   if (num === undefined || dec === undefined) return null;
-  return num / Math.pow(10, dec);
+  return num / (10 ** dec);
 }
 
 export function toFixed(num, dec) {
@@ -48,7 +48,7 @@ export function abbreviateNumber(num, _fixed) {
   // floor at decimals, ceiling at trillions
   const k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3);
   // divide by power
-  const c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, (k * 3))).toFixed(2 + fixed);
+  const c = k < 1 ? num.toFixed(0 + fixed) : (num / (10 ** (k * 3))).toFixed(2 + fixed);
   const d = c < 0 ? -Math.abs(c) : Math.abs(c); // enforce -0 is 0 and trim .00s
   const e = d + ['', 'K', 'M', 'B', 'T'][k]; // append power
   return e;

@@ -69,7 +69,7 @@ function getOrientation(uri) {
   const base64String = uri.split(',')[1];
   // Read off first 128KB, which is all we need to
   // get the EXIF data
-  const arr = base64ToUint8Array(base64String, 0, Math.pow(2, 17));
+  const arr = base64ToUint8Array(base64String, 0, 2 ** 17);
   try {
     const tags = ExifReader.load(arr.buffer);
     return tags.Orientation.value;

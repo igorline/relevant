@@ -1,0 +1,143 @@
+@import 'styles/global.css';
+
+.activityPopup {
+  @extend %popupBorder;
+  position: absolute;
+  top: 60px;
+  right: 30px;
+  transform: translateX(40%);
+  /*box-shadow: 1px 1px 30px -10px $darkGrey;*/
+  /*box-shadow: 0 1px 2px rgba(0,0,0,.25), 0 0 1px rgba(0,0,0,.35);*/
+}
+
+.activityBg {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  /*background: yellow;*/
+}
+
+.activityButton {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.activityContainer {
+  width: 400px;
+  height: calc(100vh - 90px);
+  background: white;
+  overflow: scroll;
+  padding: 20px 20px;
+  cursor: default;
+
+}
+
+.activityArrow {
+  position: absolute;
+  top: -6px;
+  right: 40%;
+  clip: rect(-4px 18px 6px -4px);
+  &::after {
+    content: '';
+    display: block;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    background: white;
+    transform: rotate(45deg);
+    /*box-shadow: -1px -1px 1px -1px rgba(0,0,0,.54);*/
+    /*box-shadow: 0px 0px 0px .5px $shadowBorderGrey;*/
+    @extend %popupBorder;
+  }
+}
+.badge {
+  color: white;
+  background: red;
+  position: absolute;
+  font-weight: bold;
+  top: 3px;
+  right: -3px;
+  font-size: 12px;
+  padding: 0px 4px;
+  border-radius: 2px;
+}
+
+.activityInner {
+  display: flex;
+  flex-direction: column;
+  color: $darkGrey;
+  font-size: 14px;
+  line-height: 18px;
+  font-family: 'Georgia';
+  .preview {
+    margin: 15px 0 15px 40px;
+  }
+  .topRow {
+    display:flex;
+    align-items: center;
+    margin: 10px 0;
+
+    span:first-child {
+      margin: 0 15px 0 0;
+      display: flex;
+    }
+    .activityEmoji {
+      font-size: 27px;
+    }
+    .stat {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      font-family: Bebas;
+      font-size: 18px;
+      flex: 1;
+      margin-left: 10px;
+      min-width: 50px;
+      div {
+        @extend %bebasFont;
+      }
+      img {
+        height: 15px;
+        margin-right: 2px;
+      }
+      &.green {
+        color: $green;
+      }
+      &.red {
+        color: red;
+      }
+    }
+  }
+}
+
+.time {
+  text-align: center;
+  margin: 20px 0 0px;
+  span {
+    padding: 0 5px;
+    font-size: 10px;
+    text-align: center;
+    background-color: white;
+    display: inline-block;
+    transform: translateY(-13px);
+    color: $greyText;
+  }
+  .border {
+    display:flex;
+    height: 2px;
+    box-shadow: 0 .5px 0 0px $borderGrey;
+  }
+}
+
+
+.leftImage {
+  &.icon {
+    background-size: contain;
+    border-radius: 0;
+    background-repeat: no-repeat;
+  }
+}

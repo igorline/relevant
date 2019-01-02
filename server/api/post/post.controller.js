@@ -1,4 +1,4 @@
-import { promisify } from 'util';
+// import { promisify } from 'util';
 import url from 'url';
 import request from 'request';
 import { EventEmitter } from 'events';
@@ -15,6 +15,9 @@ import Notification from '../notification/notification.model';
 import Invest from '../invest/invest.model';
 
 import { PAYOUT_TIME } from '../../config/globalConstants';
+
+const { promisify } = require('util');
+
 
 const requestAsync = promisify(request);
 request.defaults({ maxRedirects: 22, jar: true });

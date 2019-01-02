@@ -4,4 +4,4 @@ import { AppRegistry } from 'react-native';
 
 // AppRegistry.registerComponent('relevantNative',
 // () => require('./app/containers/index.share').default);
-AppRegistry.registerComponent('Relevant', () => require('./app/containers/index.share').default);
+AppRegistry.registerComponent('Relevant', () => require('./app/modules/_app/mobile/share.index').default);

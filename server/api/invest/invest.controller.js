@@ -191,7 +191,7 @@ async function investCheck(params) {
     }
   }
   if (user._id === post.user) {
-    throw new Error('You can not ' + type + 'your own post');
+    throw new Error('You can not ' + type + ' your own post');
   }
 
   const investment = await Invest.findOne({
