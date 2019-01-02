@@ -40,8 +40,9 @@ if (isDevelopment) {
   const compiler = webpack(webpackConfig);
   app.use(
     webpackDevMiddleware(compiler, {
-      noInfo: true,
-      publicPath: webpackConfig.output.publicPath
+      // noInfo: true,
+      publicPath: webpackConfig.output.publicPath,
+      writeToDisk: filePath => /loadable-stats\.json$/.test(filePath)
     })
   );
   app.use(webpackHotMiddleware(compiler));
@@ -51,7 +52,7 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(favicon(path.join(__dirname, '/../app/web/public/img/favicon.ico')));
+app.use(favicon(path.join(__dirname, '/../app/public/img/favicon.ico')));
 
 // Connect to db
 require('./config/db.connect');
@@ -86,7 +87,7 @@ function requireHTTPS(req, res, next) {
 app.use(requireHTTPS);
 
 // public folder
-app.use(Express.static(path.join(__dirname, '/../app/web/public')));
+app.use(Express.static(path.join(__dirname, '/../app/public')));
 app.use(cookiesMiddleware());
 
 const port = process.env.PORT || 3000;
@@ -110,8 +111,8 @@ if (process.env.NODE_ENV !== 'test') {
       .getTime() - now.getTime();
       console.log('done loading routes', time / 1000, 's');
     }
+    socketServer(server, { pingTimeout: 30000 });
   });
-  socketServer(server, { pingTimeout: 30000 });
 } else {
   require('./routes')(app);
 }

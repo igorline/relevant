@@ -1,0 +1,33 @@
+{
+  "presets": ["react-native"],
+  "plugins": [
+    // "syntax-dynamic-import",
+    // [
+    //   "import-inspector",
+    //   {
+    //     "serverSideRequirePath": true
+    //   }
+    // ],
+    "transform-exponentiation-operator",
+    // "@loadable/babel-plugin",
+    ["module-resolver", {
+      "root": ["./app", "./app/modules"],
+      "alias": {
+        "server": "./server",
+        "modules": "./app/modules",
+        "core": "./app/core",
+        "app": "./app",
+      },
+      "cwd": "babelrc",
+    }]
+  ],
+  "env": {
+    "development": {
+    },
+    "production": {
+      "plugins": [
+        "transform-remove-console",
+      ]
+    }
+  },
+}

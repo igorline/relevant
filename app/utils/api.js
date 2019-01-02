@@ -3,6 +3,15 @@ import * as tokenUtil from './token';
 const routes = {};
 let community;
 
+export function env() {
+  if (process.env.WEB !== 'true') {
+    require('../publicenv');
+    return process.env;
+  }
+  return process.env;
+}
+env();
+
 if (process.env.BROWSER || process.env.WEB !== 'true') {
   // this is a weird hack that makes conditional require work in react-native
   // routes.post = require(postApi);
@@ -30,96 +39,6 @@ const queryParams = params => {
 
 export function setCommunity(_community) {
   community = _community;
-}
-
-export function env() {
-  if (process.env.WEB !== 'true') {
-    require('../publicenv');
-    return process.env;
-  }
-  return process.env;
-}
-
-export function Alert() {
-  if (process.env.WEB !== 'true') {
-    const ReactNative = require('react-native');
-    const { Platform } = ReactNative;
-    if (Platform.OS === 'ios') {
-      return ReactNative.AlertIOS;
-    }
-    return ReactNative.Alert;
-  } else if (process.env.BROWSER) {
-    return window;
-  }
-  // eslint-disable-next-line
-  return { alert: (a, b) => console.log(a, ' ', b) };
-}
-
-/**
- * send request to api
- * @param  {[type]} options
- * query - Object of url query params
- * params - url params
- * endpoint - api endpoint
- * uri - optional - custom url
- * method - REST method
- * body: body
- */
-export async function request(options) {
-  // Add community query parameter
-  options.query = { ...options.query, community };
-  const query = queryParams(options.query);
-  let apiPath = '/api/';
-  if (options.endpoint.match('auth')) apiPath = '';
-  let uri = options.uri || process.env.API_SERVER + apiPath + options.endpoint;
-  const path = options.path || '';
-  uri += path;
-
-  try {
-    if (options.params) {
-      Object.keys(options.params)
-      .forEach(key => {
-        uri += '/' + options.params[key];
-      });
-    }
-
-    let response;
-    let responseJSON;
-
-    // ---------------------------------------------
-    // This is the case when request is orginating from nodejs
-    // ---------------------------------------------
-
-    if (!process.env.BROWSER && process.env.WEB === 'true') {
-      if (options.path === '' && options.params) options.path = 'findById';
-      const req = {
-        params: options.params,
-        body: options.body,
-        query: options.query
-      };
-      const next = () => null;
-      const res = null;
-      responseJSON = await routes[options.endpoint][options.path](req, res, next);
-      // in case we get a mongoose object back
-      if (responseJSON && responseJSON.toObject) responseJSON = responseJSON.toObject();
-
-      // ---------------------------------------------
-      // This is the case when request is orginating from client
-      // ---------------------------------------------
-    } else {
-      response = await fetch(uri + query, {
-        method: options.method,
-        ...(await exports.reqOptions()),
-        body: options.body
-      });
-      response = await exports.handleErrors(response);
-      responseJSON = await response.json();
-    }
-    return responseJSON;
-  } catch (error) {
-    // console.log('api error', uri, error);
-    throw error;
-  }
 }
 
 export async function reqOptions() {
@@ -158,4 +77,71 @@ export async function handleErrors(response) {
     }
   }
   return response;
+}
+
+/**
+ * send request to api
+ * @param  {[type]} options
+ * query - Object of url query params
+ * params - url params
+ * endpoint - api endpoint
+ * uri - optional - custom url
+ * method - REST method
+ * body: body
+ */
+export async function request(options) {
+  try {
+    // Add community query parameter
+    options.query = { ...options.query, community };
+    const query = queryParams(options.query);
+    let apiPath = '/api/';
+    if (options.endpoint.match('auth')) apiPath = '';
+    let uri = options.uri || process.env.API_SERVER + apiPath + options.endpoint;
+    const path = options.path || '';
+    uri += path;
+
+    if (options.params) {
+      Object.keys(options.params)
+      .forEach(key => {
+        uri += '/' + options.params[key];
+      });
+    }
+
+    let response;
+    let responseJSON;
+
+    // ---------------------------------------------
+    // This is the case when request is orginating from nodejs
+    // ---------------------------------------------
+
+    if (!process.env.BROWSER && process.env.WEB === 'true') {
+      if (options.path === '' && options.params) options.path = 'findById';
+      const req = {
+        params: options.params,
+        body: options.body,
+        query: options.query
+      };
+      const next = () => null;
+      const res = null;
+      responseJSON = await routes[options.endpoint][options.path](req, res, next);
+      // in case we get a mongoose object back
+      if (responseJSON && responseJSON.toObject) responseJSON = responseJSON.toObject();
+
+      // ---------------------------------------------
+      // This is the case when request is orginating from client
+      // ---------------------------------------------
+    } else {
+      response = await fetch(uri + query, {
+        method: options.method,
+        ...(await reqOptions()),
+        body: options.body
+      });
+      response = await handleErrors(response);
+      responseJSON = await response.json();
+    }
+    return responseJSON;
+  } catch (error) {
+    // console.log('api error', uri, error);
+    throw error;
+  }
 }

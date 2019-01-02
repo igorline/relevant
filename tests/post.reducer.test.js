@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import reducer from '../app/reducers/posts';
+import reducer from 'modules/post/post.reducer';
 
 test('add new post to index', t => {
   const state = reducer(

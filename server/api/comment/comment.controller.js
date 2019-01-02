@@ -17,7 +17,7 @@ const TENTH_LIFE = 3 * 24 * 60 * 60 * 1000;
 exports.get = async (req, res, next) => {
   try {
     // TODO - not paginated
-    const { community } = req.query.community;
+    const { community } = req.query;
     // const limit = parseInt(req.query.limit, 10) || 10;
     // const skip = parseInt(req.query.skip, 10) || 0;
     let query = null;
@@ -41,7 +41,7 @@ exports.get = async (req, res, next) => {
     })
     .populate({
       path: 'data',
-      match: { community }
+      // match: { community }
     })
     .sort({ createdAt: sort });
     // .limit(limit)

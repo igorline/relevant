@@ -6,8 +6,8 @@
     "startApp": "REACT_DEBUGGER=\"rndebugger-open --open --port 8081\" node node_modules/react-native/local-cli/cli.js start",
     "start": "node server/index.js",
     "worker": "node server/worker.js",
-    "dev": "nodemon server/index.js && onchange '**/*.js' -- prettier --write {{changed}}",
-    "devServer": "NODE_ENV='native' nodemon server/index.js && onchange '**/*.js' -- prettier --write {{changed}}",
+    "dev": "nodemon server/index.js",
+    "devServer": "NODE_ENV='native' nodemon server/index.js",
     "native": "NODE_ENV='native' nodemon server/index.js",
     "build": "webpack --config ./webpack.production.config.js --progress --colors -p",
     "build-dev": "webpack --config ./webpack.config.js --progress --colors -p",
@@ -24,25 +24,18 @@
     "lint": "eslint . --fix",
     "prettier-watch": "onchange '**/*.js' -- prettier-eslint --write {{changed}}",
     "formatAll": "prettier-eslint 'app/**/**/*.js' --write",
-    "start-ganache": "ganache-cli -i 7545"
+    "start-ganache": "ganache-cli -i 7545",
+    "analyze": "BUNDLE_ANALYZE=true webpack --config ./webpack.production.config.js --progress --colors -p"
   },
   "dependencies": {
+    "@babel/core": "^7.2.2",
+    "@loadable/component": "^5.2.2",
+    "@loadable/server": "^5.2.2",
     "apn": "^1.7.6",
     "aws-sdk": "^2.2.46",
-    "babel": "^6.x.x",
-    "babel-core": "^6.x.x",
-    "babel-loader": "^7.1.4",
+    "babel-loader": "^8.0.4",
     "babel-plugin-espower": "^2.1.2",
-    "babel-plugin-transform-inline-environment-variables": "0.0.2",
     "babel-plugin-transform-remove-console": "^6.8.5",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "^6.8.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.5.0",
-    "babel-preset-react-hmre": "^1.1.1",
-    "babel-preset-react-native": "^1.9.2",
-    "babel-preset-stage-2": "^6.5.0",
-    "babel-runtime": "^6.26.0",
     "body-parser": "^1.18.1",
     "bonded-token": "^0.1.0",
     "cheerio": "^0.22.0",
@@ -64,7 +57,7 @@
     "express": "^4.13.3",
     "express-jwt": "^3.3.0",
     "express-session": "^1.13.0",
-    "history": "^3.3.0",
+    "history": "^4.7.2",
     "html-to-draftjs": "0.1.0-beta7",
     "html-to-text": "^3.2.0",
     "inline-css": "^2.2.3",
@@ -85,6 +78,7 @@
     "path": "^0.12.7",
     "pell": "^0.7.0",
     "prop-types": "^15.5.7",
+    "query-string": "^6.2.0",
     "queue": "^4.0.0",
     "raw-loader": "^0.5.1",
     "react": "^16.6.0",
@@ -92,11 +86,12 @@
     "react-dom": "^16.6.0",
     "react-draft-wysiwyg": "^1.10.0",
     "react-infinite": "^0.12.1",
+    "react-loadable": "^5.5.0",
     "react-motion": "^0.4.7",
-    "react-native": "0.53.3",
+    "react-native": "^0.57.0",
     "react-native-bottom-sheet": "^1.0.1",
     "react-native-button": "^1.4.2",
-    "react-native-code-push": "5.3.x",
+    "react-native-code-push": "^5.5.1",
     "react-native-contacts": "^0.2.3",
     "react-native-custom-action-sheet": "0.0.11",
     "react-native-dismiss-keyboard": "^1.0.0",
@@ -112,7 +107,7 @@
     "react-native-progress": "^3.1.0",
     "react-native-push-notification": "^3.0.0",
     "react-native-safari-view": "git+https://github.com/balasan/react-native-safari-view.git",
-    "react-native-scrollable-tab-view": "^0.8.0",
+    "react-native-scrollable-tab-view": "^0.9.0",
     "react-native-share": "^1.0.10",
     "react-native-share-extension": "https://github.com/balasan/react-native-share-extension.git",
     "react-native-share-menu": "^2.1.2",
@@ -125,10 +120,13 @@
     "react-native-video": "^3.0.0",
     "react-navigation": "^1.0.0-beta.9",
     "react-redux": "^5.0.7",
-    "react-router": "^3.0.4",
+    "react-router": "^4.3.1",
+    "react-router-config": "^4.4.0-beta.6",
+    "react-router-dom": "^4.3.1",
     "react-router-redux": "^4.0.8",
     "react-svg-inline": "^2.0.0",
     "react-textarea-autosize": "^5.1.0",
+    "react-toastify": "^4.5.1",
     "readability": "git+https://github.com/balasan/readability-1.git",
     "redux": "^3.7.2",
     "redux-auth-wrapper": "^2.0.2",
@@ -150,7 +148,7 @@
     "universal-cookie-express": "^2.1.2",
     "uuid": "^3.3.2",
     "voucher-code-generator": "^1.1.1",
-    "web3": "1.0.0-beta.33",
+    "web3": "^1.0.0-beta.37",
     "whatwg-fetch": "^2.0.1"
   },
   "react-native": {
@@ -162,18 +160,36 @@
     "web3": false
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.2.3",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-exponentiation-operator": "^7.2.0",
+    "@babel/plugin-transform-flow-strip-types": "^7.2.3",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/polyfill": "^7.2.5",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "@loadable/babel-plugin": "^5.2.2",
+    "@loadable/webpack-plugin": "^5.2.2",
     "autoprefixer": "^6.1.1",
     "ava": "^0.16.0",
     "babel-eslint": "^8.2.2",
-    "babel-plugin-transform-exponentiation-operator": "^6.24.1",
-    "babel-register": "^6.7.2",
+    "babel-plugin-module-resolver": "^3.1.1",
     "css-loader": "^0.23.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-import-resolver-babel-module": "^5.0.0-beta.1",
+    "eslint-import-resolver-webpack": "^0.10.1",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-react": "^6.4.1",
+    "extract-css-chunks-webpack-plugin": "^3.2.1",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "husky": "^1.2.1",
+    "import-inspector": "^2.0.0",
     "isomorphic-fetch": "^2.2.1",
+    "lint-staged": "^8.1.0",
+    "metro-react-native-babel-preset": "^0.51.1",
+    "mini-css-extract-plugin": "^0.5.0",
     "mockery": "^2.0.0",
     "nock": "^10.0.4",
     "node-fetch": "^1.5.1",
@@ -191,13 +207,16 @@
     "react-hot-loader": "^4.0.0",
     "react-native-debugger-open": "^0.3.11",
     "react-native-mock": "^0.2.7",
-    "react-native-twitter-signin": "git+https://github.com/balasan/react-native-twitter-signin.git",
+    "react-native-twitter-signin": "https://github.com/balasan/react-native-twitter-signin",
     "redux-mock-store": "^1.0.2",
+    "schedule": "^0.4.0",
     "style-loader": "^0.13.0",
     "supertest": "^3.0.0",
     "webpack": "^4.4.1",
+    "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
     "webpack-dev-middleware": "^3.1.0",
+    "webpack-dev-server": "^3.1.14",
     "webpack-hot-middleware": "^2.21.2"
   },
   "engines": {
@@ -223,7 +242,8 @@
     "bundle.js",
     "/node_modules",
     "/ios",
-    "/android"
+    "/android",
+    "/app/public/build"
   ],
   "repository": {
     "type": "git",
@@ -234,6 +254,23 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/balasan/relevant-native/issues"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "linters": {
+      "*.{js}": [
+        "prettier --write",
+        "eslint --fix",
+        "git add"
+      ]
+    },
+    "ignore": [
+      "**/bundle.js"
+    ]
   },
   "homepage": "https://github.com/balasan/relevant-native#readme"
 }

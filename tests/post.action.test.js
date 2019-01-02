@@ -1,10 +1,9 @@
 import test from 'ava';
 import nock from 'nock';
 
-import * as types from '../app/actions/actionTypes';
-import * as postActions from '../app/actions/post.actions';
-
-import * as investActions from '../app/actions/invest.actions';
+import * as types from 'core/actionTypes';
+import * as postActions from 'modules/post/post.actions';
+import * as investActions from 'modules/post/invest.actions';
 
 import mockStore from './_mockStore';
 

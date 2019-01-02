@@ -5,6 +5,7 @@ publicenv.js
 app/publicenv.js
 .env
 *.pem
+app/public/dist
 
 #ios
 ios/Pods/
@@ -61,6 +62,6 @@ android/app/libs
 */fastlane/screenshots
 
 # Bundle artifact
-# *.jsbundle
+*.jsbundle
 
 gradle.properties

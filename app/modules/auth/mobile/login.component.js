@@ -1,0 +1,194 @@
+import React, { Component } from 'react';
+import {
+  Text,
+  View,
+  TextInput,
+  Alert,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity
+} from 'react-native';
+import PropTypes from 'prop-types';
+import codePush from 'react-native-code-push';
+import dismissKeyboard from 'react-native-dismiss-keyboard';
+import { globalStyles } from 'app/styles/global';
+import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
+import TwitterButton from './TwitterButton.component';
+
+let localStyles;
+let styles;
+
+class Login extends Component {
+  static propTypes = {
+    actions: PropTypes.object,
+    auth: PropTypes.object,
+    navigation: PropTypes.object,
+    share: PropTypes.bool
+  };
+
+  constructor(props, context) {
+    super(props, context);
+    this.back = this.back.bind(this);
+    this.login = this.login.bind(this);
+    this.state = {
+      bool: false,
+      notifText: null,
+      username: null,
+      password: null
+    };
+  }
+
+  componentDidMount() {
+    // this.userInput.focus();
+    codePush.disallowRestart();
+  }
+
+  componentWillUnmount() {
+    this.props.actions.setAuthStatusText();
+  }
+
+  login() {
+    if (!this.state.username) {
+      Alert.alert('must enter username');
+      return;
+    }
+
+    if (!this.state.password) {
+      Alert.alert('must enter password');
+      return;
+    }
+    dismissKeyboard();
+    this.props.actions.loginUser({
+      name: this.state.username,
+      password: this.state.password,
+      twitter: this.props.auth.twitter
+    });
+  }
+
+  back() {
+    this.props.actions.pop(this.props.navigation.main);
+  }
+
+  render() {
+    styles = { ...localStyles, ...globalStyles };
+
+    let KBView = KeyboardAvoidingView;
+    if (this.props.share) {
+      KBView = View;
+    }
+
+    let local =
+      this.state.username &&
+      this.state.password &&
+      this.state.username.length &&
+      this.state.password.length;
+
+    if (this.props.auth.twitter) local = true;
+
+    const twitterConnect = (
+      <View style={[{ justifyContent: 'center', alignItems: 'center' }]}>
+        <Text style={styles.signInText}>Sign with your Relevant account to finish</Text>
+      </View>
+    );
+
+    const twitter = (
+      <View style={{ flex: 1 }}>
+        <Text style={styles.signInText}>or</Text>
+        <TwitterButton auth={this.props.auth} actions={this.props.actions} />
+      </View>
+    );
+
+    const signIn = (
+      <TouchableOpacity onPress={this.login} style={[styles.largeButton]}>
+        <Text style={styles.largeButtonText}>sign in</Text>
+      </TouchableOpacity>
+    );
+
+    if (this.props.auth.loading) {
+      return <CustomSpinner />;
+    }
+
+    return (
+      <KBView
+        behavior={'padding'}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0}
+      >
+        <ScrollView
+          keyboardShouldPersistTaps={'always'}
+          keyboardDismissMode={'interactive'}
+          contentContainerStyle={styles.authScrollContent}
+        >
+          <View style={styles.fieldsInner}>
+            <View style={styles.fieldsInputParent}>
+              <TextInput
+                ref={c => (this.userInput = c)}
+                underlineColorAndroid={'transparent'}
+                autoCorrect={false}
+                autoCapitalize={'none'}
+                clearTextOnFocus={false}
+                placeholder="username or email"
+                onChangeText={username => this.setState({ username: username.trim() })}
+                value={this.state.username}
+                style={styles.fieldsInput}
+              />
+            </View>
+
+            <View style={styles.fieldsInputParent}>
+              <TextInput
+                ref={c => (this.passInput = c)}
+                underlineColorAndroid={'transparent'}
+                autoCapitalize={'none'}
+                autoCorrect={false}
+                secureTextEntry
+                keyboardType={'default'}
+                clearTextOnFocus={false}
+                placeholder="password"
+                onChangeText={password => this.setState({ password: password.trim() })}
+                value={this.state.password}
+                style={styles.fieldsInput}
+              />
+            </View>
+            {local ? null : twitter}
+            {this.props.auth.twitter ? twitterConnect : null}
+          </View>
+
+          {local ? signIn : null}
+
+          <TouchableOpacity
+            onPress={() => {
+              this.props.actions.push(
+                {
+                  key: 'forgot',
+                  title: 'Forgot Pass',
+                  back: true
+                },
+                'auth'
+              );
+            }}
+          >
+            <Text style={[styles.signInText, styles.active]}>Forgot your password?</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KBView>
+    );
+  }
+}
+
+Login.propTypes = {
+  auth: PropTypes.object,
+  actions: PropTypes.object,
+  navigation: PropTypes.object,
+  share: PropTypes.bool // flag for share extension
+};
+
+localStyles = StyleSheet.create({
+  forgot: {
+    textAlign: 'center',
+    marginTop: 5
+  }
+});
+
+export default Login;

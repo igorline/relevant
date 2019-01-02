@@ -1,0 +1,23 @@
+@import 'styles/global.css';
+
+.editor {
+  @extend %input;
+  p {
+    margin: 0;
+  }
+  b {
+    color: #3E3EFF;
+    font-weight: normal;
+  }
+  &:empty:before {
+    content: attr(placeholder);
+    font-family: system-ui, Arial, sans-serif;
+    display: block;
+    font-size: 15px;
+    color: $greyText;
+  }
+}
+
+.editor:focus, .editor.active {
+  @extend %activeInput;
+}

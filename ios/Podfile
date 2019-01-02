@@ -25,6 +25,4 @@ target 'relevantNative' do
   pod 'Firebase/Core'
   pod 'TwitterKit'
 
-  pod 'react-native-wkwebview', :path => '../node_modules/react-native-wkwebview-reborn'
-
 end
