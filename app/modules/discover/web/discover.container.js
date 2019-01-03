@@ -3,6 +3,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import get from 'lodash.get';
 import * as authActions from 'modules/auth/auth.actions';
 import * as adminActions from 'modules/admin/admin.actions';
 import * as postActions from 'modules/post/post.actions';
@@ -56,7 +58,16 @@ export class Discover extends Component {
 
   componentDidUpdate(prevProps) {
     let alreadyLoading;
-    const { tag, sort } = this.props.match.params;
+    const { tag, sort, community } = this.props.match.params;
+    const prevTag = get(prevProps, 'match.params.tag', null);
+    const prevSort = get(prevProps, 'match.params.sort', null);
+    const prevCommunity = get(prevProps, 'match.params.community', null);
+    if (tag !== prevTag
+      || sort !== prevSort
+      || community !== prevCommunity) {
+        this.props.actions.setWebView('discover', this.props.match.params);
+    }
+
 
     if (this.props.refresh && this.props.refresh > this.lastRefresh) {
       this.lastRefresh = this.props.refresh;
@@ -194,14 +205,14 @@ function mapDispatchToProps(dispatch) {
         ...investActions,
         ...navigationActions,
         ...tagActions,
-        ...adminActions
+        ...adminActions,
       },
       dispatch
     )
   };
 }
 
-export default connect(
+export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Discover);
+)(Discover));
