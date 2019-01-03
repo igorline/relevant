@@ -102,6 +102,7 @@ export const SET_ONBOARDING_STEP = 'SET_ONBOARDING_STEP';
 export const SET_BUTTON_TOOLTIP = 'SET_BUTTON_TOOLTIP';
 
 export const SET_VIEW = 'SET_VIEW';
+export const SET_WEB_VIEW = 'SET_WEB_VIEW';
 
 export const SET_INVITES = 'SET_INVITES';
 export const UPDATE_INVITE = 'UPDATE_INVITE';
