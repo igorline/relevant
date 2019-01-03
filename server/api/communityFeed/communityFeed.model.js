@@ -6,7 +6,7 @@ const CommunityFeedSchema = new Schema(
   {
     community: String,
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
-    metaPost: { type: Schema.Types.ObjectId, ref: 'MetaPost' },
+    // metaPost: { type: Schema.Types.ObjectId, ref: 'MetaPost' },
     rank: { type: Number, default: 0 },
     latestPost: { type: Date },
     tags: [{ type: String, ref: 'Tag' }],

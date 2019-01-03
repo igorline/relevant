@@ -14,11 +14,8 @@ const path = require('path');
 const app = new Express();
 mongoose.Promise = global.Promise;
 
-
 require('dotenv')
 .config({ silent: true });
-
-console.log('process.env.BABEL_ENV', process.env.BABEL_ENV);
 
 console.log('NODE_ENV', process.env.NODE_ENV);
 

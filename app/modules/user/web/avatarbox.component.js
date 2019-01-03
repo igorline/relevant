@@ -75,7 +75,7 @@ AvatarBox.propTypes = {
   noPic: PropTypes.bool,
   auth: PropTypes.object,
   date: PropTypes.oneOfType([
-    PropTypes.date,
+    PropTypes.string,
     PropTypes.instanceOf(Date)
   ]),
   small: PropTypes.bool,
