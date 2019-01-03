@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link, withRouter } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 import Avatar from 'modules/user/web/avatar.component';
 import ShadowButton from 'modules/ui/web/ShadowButton';
 import * as authActions from 'modules/auth/auth.actions';
@@ -13,6 +13,13 @@ import RequestInvite from 'modules/web_splash/requestInvite.component';
 import { matchPath } from 'react-router';
 import styled from 'styled-components';
 
+
+// This could be react-router-dom's Link for example
+const CustomLink = ({ className, children }) => (
+  <a className={className}>
+    {children}
+  </a>
+);
 
 const Nav = styled.nav`
   width: 100%;
@@ -26,7 +33,7 @@ const SubNav = styled.div`
   margin: 1em;
 `;
 
-const NavItem = styled.a`
+const NavItem = styled('span')`
   color: blue;
   margin: 0 1em;
 `;
@@ -36,12 +43,12 @@ const ContentHeader = (props) => {
   return (
     <Nav>
       <SubNav>
-        <NavItem href="/new">New</NavItem>
-        <NavItem href="/trending">Trending</NavItem>
+        <NavLink to="/relevant/new"><NavItem>New</NavItem></NavLink>
+        <NavLink to="/relevant/top"><NavItem>Trending</NavItem></NavLink>
       </SubNav>
       <SubNav>
-        <NavItem href="/new">Activity</NavItem>
-        <NavItem href="/trending">New Post</NavItem>
+        <NavLink to="/new"><NavItem>Activity</NavItem></NavLink>
+        <NavLink to="/trending"><NavItem>New Post</NavItem></NavLink>
       </SubNav>
     </Nav>
   );
