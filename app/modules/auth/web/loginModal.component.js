@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Modal from 'modules/ui/web/modal';
 import ShadowButton from 'modules/ui/web/ShadowButton';
 import * as authActions from 'modules/auth/auth.actions';
+import { browserAlerts } from 'app/utils/alert';
 
 class LoginModal extends Component {
   static propTypes = {
@@ -34,7 +35,7 @@ class LoginModal extends Component {
       const loggedIn = await actions.loginUser(user);
       if (loggedIn) toggleLogin();
     } catch (err) {
-      console.error('error logging in ', err);
+      browserAlerts.alert('There was an error logging in: ' + err);
     }
   }
 

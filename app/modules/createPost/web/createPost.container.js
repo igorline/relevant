@@ -167,7 +167,7 @@ class CreatePostContainer extends Component {
 
       body = body.replace(/&nbsp;/gi, '');
 
-      let post = {
+      let newPost = {
         link: postUrl || postUrl,
         tags,
         body,
@@ -180,8 +180,8 @@ class CreatePostContainer extends Component {
       };
 
       if (createPost.edit) {
-        post = { ...createPost.editPost, ...post };
-        const success = await actions.editPost(post);
+        newPost = { ...createPost.editPost, ...newPost };
+        const success = await actions.editPost(newPost);
         if (success) {
           this.clearPost();
           history.push(location.pathname);
@@ -190,7 +190,7 @@ class CreatePostContainer extends Component {
         return;
       }
 
-      const newPost = await actions.submitPost(post);
+      newPost = await actions.submitPost(newPost);
 
       if (close) close();
       if (newPost) {
