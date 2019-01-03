@@ -2,11 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { renderRoutes } from 'react-router-config';
 import styled from 'styled-components';
+import ContentHeader from 'modules/navigation/web/contentHeader.component';
 
 const ContentContainer = styled.section`
-  width: 100vw;
+  max-width: 100vw;
   display: flex;
   background: blue;
+  position: relative;
 `;
 
 const SideNav = styled.div`
@@ -16,17 +18,11 @@ const SideNav = styled.div`
 `;
 
 const MainContent = styled.section`
-  width: 100%;
-  background: green,
-  display: flex;
-  flex-flow: column;
+  flex: 1;
+  background: orange;
+  /* display: flex; */
+  /* flex-flow: column; */
 `;
-
-const TopNav = styled.div`
-  width: 100%;
-  background: green;
-`;
-
 
 const MainNav = (props) => {
   const test = 'pk';
@@ -34,22 +30,13 @@ const MainNav = (props) => {
     <ContentContainer>
       <SideNav>Hello</SideNav>
       <MainContent>
-        <TopNav>Top Nav </TopNav>
+        <ContentHeader />
         {renderRoutes(props.route.routes)}
       </MainContent>
     </ContentContainer>
   );
 };
 
-// const MainNav = (props) => {
-//   const test = 'pk';
-//   return (
-//     <div>
-//       <h1>Hello</h1>
-//       {renderRoutes(props.route.routes)}
-//     </div>
-//   );
-// };
 
 MainNav.propTypes = {
   route: PropTypes.object,
