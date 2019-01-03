@@ -12,7 +12,6 @@ import * as tagActions from 'modules/tag/tag.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import CreatePost from 'modules/createPost/web/createPost.container';
-import Sidebar from 'modules/navigation/web/sidebar.component';
 import DiscoverPosts from './discoverPosts.component';
 import DiscoverUsers from './discoverUsers.component';
 import * as discoverHelper from './discoverHelper';
@@ -166,7 +165,6 @@ export class Discover extends Component {
             {this.renderFeed()}
           </div>
         </div>
-        <Sidebar {...this.props} />
       </div>
     );
   }

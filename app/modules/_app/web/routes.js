@@ -18,6 +18,8 @@ const TopPosts = loadable(() => import('modules/admin/web/topPosts.component'));
 const CommuntiyAdmin = loadable(() => import('modules/admin/web/communityAdmin.component'));
 const ProfileContainer = loadable(() => import('modules/profile/web/profile.container'));
 const SplashContainer = loadable(() => import('modules/web_splash/splash.container'));
+const MainNav = loadable(() => import('modules/navigation/web/mainNav.component'));
+
 const PostContainer = loadable(() => import(
   'modules/post/web/post.container'
 ));
@@ -55,16 +57,37 @@ const routes = [
         exact: true
       },
 
-      // USER
-      { path: '/user/login', component: Auth, exact: true },
-      { path: '/user/signup', component: Auth, exact: true },
-      { path: '/user/wallet', component: Wallet, exact: true },
-      { path: '/user/profile/:id', component: ProfileContainer, exact: true },
-      { path: '/user/forgot', component: Auth, exact: true },
-      // WARNING THESE ROUTES MUST MACH MOBILE APP!
-      { path: '/user/resetPassword/:token', component: Auth, exact: true },
-      { path: '/user/confirm/:user/:code', component: Auth, exact: true },
-      { path: '/user/invite/:code', component: Invite, exact: true },
+      {
+        path: '/',
+        component: MainNav,
+        routes: [
+          // USER
+          { path: '/user/login', component: Auth, exact: true },
+          { path: '/user/signup', component: Auth, exact: true },
+          { path: '/user/wallet', component: Wallet, exact: true },
+          { path: '/user/profile/:id', component: ProfileContainer, exact: true },
+          { path: '/user/forgot', component: Auth, exact: true },
+          // WARNING THESE ROUTES MUST MACH MOBILE APP!
+          { path: '/user/resetPassword/:token', component: Auth, exact: true },
+          { path: '/user/confirm/:user/:code', component: Auth, exact: true },
+          { path: '/user/invite/:code', component: Invite, exact: true },
+          { path: '/:community/post/:id', component: PostContainer, exact: true },
+
+          // INFO
+          { path: '/info', routes: [{ path: 'faq', component: Faq, exact: true }] },
+
+          // DISCOVER
+          // TODO - parent route doesn't have access to child params
+          { path: '/:community/', component: DiscoverContainer, exact: true },
+          { path: '/:community/:sort/:tag?', component: DiscoverContainer, exact: true },
+          {
+            path: '/:community/post/new',
+            exact: true,
+            component: withAuth(CreatePostContainer)
+            // component: CreatePostContainer
+          },
+        ]
+      },
 
       {
         path: '/admin',
@@ -81,22 +104,7 @@ const routes = [
           { path: '/user/community', component: CommuntiyAdmin }
         ]
       },
-      { path: '/:community/post/:id', component: PostContainer, exact: true },
-
-      // INFO
-      { path: '/info', routes: [{ path: 'faq', component: Faq, exact: true }] },
-
-      // DISCOVER
-      // TODO - parent route doesn't have access to child params
-      { path: '/:community/', component: DiscoverContainer, exact: true },
-      { path: '/:community/:sort/:tag?', component: DiscoverContainer, exact: true },
-      {
-        path: '/:community/post/new',
-        exact: true,
-        component: withAuth(CreatePostContainer)
-        // component: CreatePostContainer
-      },
-      { path: '*', component: NotFound }
+      { path: '*', component: NotFound },
     ]
   }
 ];
