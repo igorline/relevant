@@ -14,14 +14,7 @@ import { matchPath } from 'react-router';
 import styled from 'styled-components';
 
 
-// This could be react-router-dom's Link for example
-const CustomLink = ({ className, children }) => (
-  <a className={className}>
-    {children}
-  </a>
-);
-
-const Nav = styled.nav`
+const Nav = styled.section`
   width: 100%;
   background: white;
   display: flex;
@@ -38,20 +31,31 @@ const NavItem = styled('span')`
   margin: 0 1em;
 `;
 
-
 const ContentHeader = (props) => {
+  const { match, location } = props;
+  console.log('props', props)
   return (
     <Nav>
       <SubNav>
-        <NavLink to="/relevant/new"><NavItem>New</NavItem></NavLink>
-        <NavLink to="/relevant/top"><NavItem>Trending</NavItem></NavLink>
+        <DiscoverTabs
+          match={match || { params: {} } }
+          location={location}
+          auth={{}}
+        />
+        <NavLink to="/relevant/new">New</NavLink>
+        <NavLink to="/relevant/top">Trending</NavLink>
       </SubNav>
       <SubNav>
-        <NavLink to="/new"><NavItem>Activity</NavItem></NavLink>
-        <NavLink to="/trending"><NavItem>New Post</NavItem></NavLink>
+        <NavLink to="/">Activity</NavLink>
+        <NavLink to="/">New Post</NavLink>
       </SubNav>
     </Nav>
   );
+};
+
+ContentHeader.propTypes = {
+  match: PropTypes.object,
+  location: PropTypes.object,
 };
 
 export default ContentHeader;
