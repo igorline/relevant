@@ -67,7 +67,6 @@ module.exports = {
         NODE_ENV: JSON.stringify('development'),
         WEB: JSON.stringify('true'),
         API_SERVER: JSON.stringify(''),
-        BABEL_ENV: JSON.stringify('development_web')
       }
     }),
     new LoadablePlugin(),

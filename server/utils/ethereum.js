@@ -31,6 +31,9 @@ export async function init() {
     let rpcUrl = `https://${process.env.INFURA_NETWORK}.infura.io/${
       process.env.INFURA_API_KEY
     }`;
+
+    console.log('rpcUrl ', rpcUrl);
+
     key = process.env.OWNER_KEY;
     account = process.env.OWNER_ACC;
 
@@ -52,6 +55,7 @@ export async function init() {
     initialized = true;
     return true;
   } catch (err) {
+    console.log('eth init error');
     throw err;
   }
 }
