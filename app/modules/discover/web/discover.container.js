@@ -178,7 +178,7 @@ function mapStateToProps(state) {
     user: state.user,
     posts: state.posts,
     tags: state.tags,
-    error: state.error.universal,
+    error: state.error.discover,
     investments: state.investments,
     myPostInv: state.investments.myPostInv,
     refresh: state.view.refresh.discover

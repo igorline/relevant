@@ -160,6 +160,7 @@ android {
 }
 
 dependencies {
+    compile project(':rn-fetch-blob')
     compile project(':react-native-video')
     compile project(':react-native-vector-icons')
     compile project(':react-native-swiss-knife')
@@ -170,7 +171,6 @@ dependencies {
     compile project(':react-native-orientation')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-image-picker')
-    compile project(':react-native-fetch-blob')
     compile project(':react-native-contacts')
     compile project(':react-native-bottom-sheet')
     compile project(':react-native-video')
@@ -183,7 +183,6 @@ dependencies {
     compile project(':react-native-orientation')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-image-picker')
-    compile project(':react-native-fetch-blob')
     compile project(':react-native-contacts')
     compile project(':react-native-bottom-sheet')
     compile project(':react-native-video')
@@ -197,7 +196,6 @@ dependencies {
     compile project(':react-native-linear-gradient')
     compile project(':react-native-image-picker')
     compile project(':react-native-firebase-analytics')
-    compile project(':react-native-fetch-blob')
     compile project(':react-native-contacts')
     compile project(':react-native-bottom-sheet')
     compile project(':react-native-share')
@@ -212,7 +210,6 @@ dependencies {
     compile project(':react-native-orientation')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-image-picker')
-    compile project(':react-native-fetch-blob')
     compile project(':react-native-contacts')
     compile project(':react-native-bottom-sheet')
     compile project(':react-native-share')
@@ -227,11 +224,9 @@ dependencies {
     compile project(':react-native-orientation')
     compile project(':react-native-linear-gradient')
     compile project(':react-native-image-picker')
-    compile project(':react-native-fetch-blob')
     compile project(':react-native-contacts')
     compile project(':react-native-bottom-sheet')
     compile project(':react-native-code-push')
-    compile project(':react-native-fetch-blob')
     compile project(':react-native-push-notification')
     compile project(':react-native-bottom-sheet')
     compile project(':react-native-swiss-knife')
@@ -247,7 +242,7 @@ dependencies {
     compile project(':react-native-contacts')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-    implementation ("com.facebook.react:react-native:0.53.3") { force = true }  // From node_modules
+    implementation ("com.facebook.react:react-native:0.57.0") { force = true }  // From node_modules
 }
 
 // Run this once to be able to run the application with BUCK

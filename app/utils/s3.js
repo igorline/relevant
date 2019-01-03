@@ -1,3 +1,5 @@
+import { Alert } from 'app/utils/alert';
+
 require('./api').env();
 
 let RNFetchBlob;
@@ -6,7 +8,7 @@ let Platform = {};
 if (process.env.WEB !== 'true') {
   Platform = require('react-native').Platform;
   if (Platform.OS === 'android') {
-    RNFetchBlob = require('react-native-fetch-blob').default;
+    RNFetchBlob = require('rn-fetch-blob').default;
   }
 }
 
@@ -53,7 +55,7 @@ async function uploadToS3(uri, policy, signature, url, publicUrl, signedObjectNa
       uri = 'file://' + res.path();
     }
   } catch (err) {
-    console.log(err);
+    Alert().alert('Error uploading image ', err);
   }
 
   let file = {
