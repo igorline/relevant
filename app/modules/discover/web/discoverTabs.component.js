@@ -2,14 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import { connect } from 'react-redux';
+import { greyText, darkGrey } from 'app/styles/colors';
+import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { standardRoutes } from './discoverHelper';
-import styled from 'styled-components';
 
 const activeStyle = {
-  color: 'red',
+  color: darkGrey,
   fontWeight: 'bold',
 };
+
+// const linkStyle = {
+//   color: `hsl(0, 0%, 80%)`,
+//   margin: '1em 0',
+// };
 
 const DiscoverTab = (props) => {
   const { linkData, community, sort, tag } = props;
@@ -28,18 +34,41 @@ const DiscoverTab = (props) => {
     </NavLink>);
 };
 
-const StyledUl = styled.ul`
-  margin: 1em;
+DiscoverTab.propTypes = {
+  linkData: PropTypes.object,
+  community: PropTypes.string,
+  sort: PropTypes.string,
+  tag: PropTypes.string,
+};
+
+const CustomLi = ({ className, children }) => (
+  <li className={className}>
+    {children}
+  </li>
+);
+
+
+const StyledLi = styled(CustomLi)`
+  margin: 1em 0;
+  color: green;
+  font-weight: bold;
+  a {
+    margin: 1em 0,
+    color: hsl(0, 0%, 50%);
+    :hover {
+      color: ${darkGrey};
+    }
+  }
 `;
 
 const DiscoverTabs = (props) => (
-  <StyledUl className="tabs">
+  <ul className="tabs">
     {standardRoutes.map((linkData) => (
-      <li key={linkData.key}>
+      <StyledLi key={linkData.key}>
         <DiscoverTab {...get(props, 'view.discover')} linkData={linkData} />
-      </li>
+      </StyledLi>
     ))}
-  </StyledUl>
+  </ul>
 );
 
 
