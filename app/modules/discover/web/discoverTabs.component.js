@@ -4,17 +4,12 @@ import get from 'lodash.get';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
+import { tabStyles } from 'modules/navigation/web/contentheader.component';
 import { standardRoutes } from './discoverHelper';
 
 const StyledNavLink = styled(NavLink)`
+  ${tabStyles}
   margin-right: 1em;
-  color: hsl(0, 0%, 80%);
-  font-weight: bold;
-  font-size: 24px;
-  &.${'active'} {
-    color: black;
-    fontWeight: 'bold'
-  }
 `;
 
 const DiscoverTab = (props) => {
@@ -23,13 +18,13 @@ const DiscoverTab = (props) => {
   if (tag) {
     url += `/${tag}`;
   }
+
   return <StyledNavLink to={url}>{linkData.title}</StyledNavLink>;
 };
 
 DiscoverTab.propTypes = {
   linkData: PropTypes.object,
   community: PropTypes.string,
-  sort: PropTypes.string,
   tag: PropTypes.string,
 };
 
@@ -39,15 +34,13 @@ const StyledUl = styled.ul`
   padding: 0;
 `;
 
-const DiscoverTabs = ({ view, community }) => {
-  return (
-    <StyledUl>
-      {standardRoutes.map((linkData, i) => (
-        <DiscoverTab key={i} tag={get(view, 'discover.tag')} community={community} linkData={linkData} />
-      ))}
-    </StyledUl>
-  );
-};
+const DiscoverTabs = ({ view, community }) => (
+  <StyledUl>
+    {standardRoutes.map((linkData, i) => (
+      <DiscoverTab key={i} tag={get(view, 'discover.tag')} community={community} tabStyles={tabStyles} linkData={linkData} />
+    ))}
+  </StyledUl>
+);
 
 
 DiscoverTabs.propTypes = {
