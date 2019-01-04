@@ -56,6 +56,11 @@ export class Discover extends Component {
     return discoverHelper.getDiscoverState(nextProps, prevState);
   }
 
+  componentDidMount() {
+    this.props.actions.setWebView('discover', this.props.match.params);
+  }
+
+
   componentDidUpdate(prevProps) {
     let alreadyLoading;
     const { tag, sort, community } = this.props.match.params;
@@ -65,7 +70,7 @@ export class Discover extends Component {
     if (tag !== prevTag
       || sort !== prevSort
       || community !== prevCommunity) {
-        this.props.actions.setWebView('discover', this.props.match.params);
+      this.props.actions.setWebView('discover', this.props.match.params);
     }
 
 
@@ -88,6 +93,9 @@ export class Discover extends Component {
       this.load(sort, this.props);
       alreadyLoading = true;
     }
+  }
+  componentWillUnmount() {
+    this.props.actions.setWebView('discover', {});
   }
 
   getLoadedState() {
@@ -187,7 +195,6 @@ function mapStateToProps(state) {
     user: state.user,
     posts: state.posts,
     tags: state.tags,
-    error: state.error.discover,
     investments: state.investments,
     myPostInv: state.investments.myPostInv,
     refresh: state.view.refresh.discover

@@ -36,22 +36,26 @@ DiscoverTab.propTypes = {
 };
 
 
-const DiscoverTabs = (props) => (
-  <ul>
-    {standardRoutes.map((linkData, i) => (
-      <DiscoverTab key={i} {...get(props, 'view.discover')} linkData={linkData} />
-    ))}
-  </ul>
-);
+const DiscoverTabs = ({ view, community }) => {
+  return (
+    <ul>
+      {standardRoutes.map((linkData, i) => (
+        <DiscoverTab key={i} {...get(view, 'discover')} community={community} linkData={linkData} />
+      ))}
+    </ul>
+  );
+};
 
 
 DiscoverTabs.propTypes = {
   view: PropTypes.object,
+  community: PropTypes.string,
 };
 
 function mapStateToProps(state) {
   return {
     view: state.view,
+    community: state.community.active,
   };
 }
 
