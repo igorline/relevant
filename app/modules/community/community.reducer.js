@@ -5,11 +5,11 @@ const CommunitySchema = new schema.Entity('communities', {}, { idAttribute: 'slu
 
 const initialState = {
   communities: {},
-  list: []
+  list: [],
+  active: null,
 };
 
-// NOTE: comment objects are stored in posts state
-export default function comments(state = initialState, action) {
+export default function community(state = initialState, action) {
   switch (action.type) {
     case types.SET_COMMUNITIES: {
       const normalized = normalize(action.payload, [CommunitySchema]);
@@ -20,6 +20,13 @@ export default function comments(state = initialState, action) {
           ...normalized.entities.communities
         },
         list: [...new Set([...state.list, ...normalized.result])]
+      };
+    }
+
+    case types.SET_COMMUNITY: {
+      return {
+        ...state,
+        active: action.payload
       };
     }
 
