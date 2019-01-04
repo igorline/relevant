@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import NavProfile from 'modules/profile/web/navProfile.component';
+import Community from 'modules/community/web/communityNav.component';
+
 
 const borderColor = '#D8D8D8';
 
@@ -51,6 +53,9 @@ const SideNav = (props) => {
       </SideNavSection>
       <SideNavSection>
         <NavProfile />
+      </SideNavSection>
+      <SideNavSection>
+        <Community />
       </SideNavSection>
     </SideNavContent>
   );

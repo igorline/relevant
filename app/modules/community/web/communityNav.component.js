@@ -4,10 +4,26 @@ import { Link, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as communityActions from 'modules/community/community.actions';
+import styled, { css } from 'styled-components/primitives';
 
-if (process.env.BROWSER === true) {
-  // require('./community.css');
-}
+const StyledTouchable = styled.Touchable`
+`;
+
+const StyledView = styled.View`
+  background: red;
+`;
+
+const StyledText = styled.Text`
+  background: red;
+`;
+
+const StyledImage = styled.Image`
+  width: 30,
+`;
+
+const StyledCommunityList = styled.View`
+`;
+
 
 class Community extends Component {
   static propTypes = {
@@ -25,26 +41,32 @@ class Community extends Component {
     const currentCommunity = this.props.auth.community;
     return list.map(id => {
       const community = communities[id];
-      const active = currentCommunity === community.slug;
-      const className = active ? 'active' : null;
+      // const active = currentCommunity === community.slug;
+      // const className = active ? 'active' : null;
       return (
-        <div>
-          <Link className={className} key={community._id} to={'/' + community.slug + '/new'}>
-            {community.name}
-          </Link>
-        </div>
+        <StyledTouchable key={community._id}> href={'/' + community.slug + '/new'} to={'/' + community.slug + '/new'}>
+          <StyledView>
+            <StyledText>{community.name}</StyledText>
+          </StyledView>
+        </StyledTouchable>
       );
     });
   }
 
+  // <StyledImage src={community.image} alt={`${community.name} logo`} />
+
   render() {
-    return <div className="communitySidebar">{this.renderCommunities()}</div>;
+    return (
+      <StyledView>
+        {this.renderCommunities()}
+      </StyledView>);
   }
 }
 
 const mapStateToProps = state => ({
   routing: state.routing,
-  community: state.community
+  community: state.community,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = dispatch => ({
