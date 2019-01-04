@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { renderRoutes } from 'react-router-config';
 import styled from 'styled-components';
 import ContentHeader from 'modules/navigation/web/contentHeader.component';
+import SideNav from 'modules/navigation/web/sideNav.component';
 
 const ContentContainer = styled.section`
   max-width: 100vw;
@@ -11,10 +12,9 @@ const ContentContainer = styled.section`
   position: relative;
 `;
 
-const SideNav = styled.div`
-  display: inline-block;
+const StyledSideNav = styled(SideNav)`
   width: 300px;
-  background: pink;
+  display: inline-block;
 `;
 
 const MainContent = styled.section`
@@ -25,10 +25,9 @@ const MainContent = styled.section`
 `;
 
 const MainNav = (props) => {
-  const test = 'pk';
   return (
     <ContentContainer>
-      <SideNav>Hello</SideNav>
+      <StyledSideNav>Hello</StyledSideNav>
       <MainContent>
         <ContentHeader />
         {renderRoutes(props.route.routes)}
