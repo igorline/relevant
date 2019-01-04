@@ -3,14 +3,22 @@ import PropTypes from 'prop-types';
 import Activity from 'modules/activity/web/activity.container';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { tabStyles } from 'modules/navigation/web/contentheader.component';
+import { tabStyles } from 'modules/navigation/web/tabStyles';
 
 const StyledSpan = styled.span`
   ${tabStyles}
   margin-right: 1em;
   cursor: pointer;
+  :active {
+    color: black;
+  }
+  :hover {
+    color: black;
+  }
+  &.active {
+    color: black;
+  }
 `;
-
 
 class ActivityButton extends Component {
   static propTypes = {
@@ -45,7 +53,7 @@ class ActivityButton extends Component {
           this.setState({ activity: !this.state.activity });
           return false;
         }}
-        className="activityButton"
+        className={`activityButton ${this.state.activity ? 'active' : ''}`}
       >
         Activity
         {badge}

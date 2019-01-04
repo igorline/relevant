@@ -6,8 +6,7 @@ import ActivityButton from 'modules/activity/web/activityButton.component';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-
-const Nav = styled.section`
+const Nav = styled.nav`
   width: 100%;
   background: white;
   display: flex;
@@ -41,24 +40,15 @@ const ActivityButtonContainer = styled.span`
   z-index: 1;
 `;
 
-export const tabStyles = `
-  color: hsl(0, 0%, 80%);
-  font-weight: bold;
-  font-size: 24px;
-  &.${'active'} {
-    color: black;
-    fontWeight: 'bold'
-  }
-`;
 
 const ContentHeader = (props) => {
   const { location, auth } = props;
   return (
     <Nav>
-      <DiscoverTabs tabStyles={tabStyles} />
+      <DiscoverTabs />
       <SubNav>
         <ActivityButtonContainer>
-          <ActivityButton tabStyles={tabStyles} />
+          <ActivityButton />
         </ActivityButtonContainer>
         <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
           <NewPost >
