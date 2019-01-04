@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
 import DiscoverTabs from 'modules/discover/web/discoverTabs.component';
+import ActivityButton from 'modules/activity/web/activityButton.component';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
@@ -30,19 +31,41 @@ const NewPost = styled.button`
   }
 `;
 
+const SubNav = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const ActivityButtonContainer = styled.span`
+  position: relative;
+  z-index: 1;
+`;
+
+export const tabStyles = `
+  color: hsl(0, 0%, 80%);
+  font-weight: bold;
+  font-size: 24px;
+  &.${'active'} {
+    color: black;
+    fontWeight: 'bold'
+  }
+`;
+
 const ContentHeader = (props) => {
   const { location, auth } = props;
   return (
     <Nav>
-      <DiscoverTabs />
-      <div>
+      <DiscoverTabs tabStyles={tabStyles} />
+      <SubNav>
+        <ActivityButtonContainer>
+          <ActivityButton tabStyles={tabStyles} />
+        </ActivityButtonContainer>
         <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
           <NewPost >
               New Post
           </NewPost>
         </Link>
-      </div>
-
+      </SubNav>
     </Nav>
   );
 };
