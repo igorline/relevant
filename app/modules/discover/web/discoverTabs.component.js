@@ -43,7 +43,7 @@ const DiscoverTabs = ({ view, community }) => {
   return (
     <StyledUl>
       {standardRoutes.map((linkData, i) => (
-        <DiscoverTab key={i} tag={(view, 'discover.tag')} community={community} linkData={linkData} />
+        <DiscoverTab key={i} tag={get(view, 'discover.tag')} community={community} linkData={linkData} />
       ))}
     </StyledUl>
   );
