@@ -7,31 +7,25 @@ import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { standardRoutes } from './discoverHelper';
 
-const activeStyle = {
-  color: darkGrey,
-  fontWeight: 'bold',
-};
-
-// const linkStyle = {
-//   color: `hsl(0, 0%, 80%)`,
-//   margin: '1em 0',
-// };
+const StyledNavLink = styled(NavLink)`
+  margin: 1em 1em 1em 0;
+  color: hsl(0, 0%, 80%);
+  font-weight: bold;
+  &.${'active'} {
+    color: black;
+    fontWeight: 'bold'
+  }
+`;
 
 const DiscoverTab = (props) => {
-  const { linkData, community, sort, tag } = props;
-  const isActive = () => linkData.key === sort;
+  const { linkData, community, tag, sort } = props;
+  // const isActive = () => linkData.key === sort;
+
   let url = `/${community}/${linkData.key}`;
   if (tag) {
     url += `/${tag}`;
   }
-  return (
-    <NavLink
-      to={url}
-      activeStyle={activeStyle}
-      isActive={isActive}
-    >
-      {linkData.title}
-    </NavLink>);
+  return <StyledNavLink to={url}>{linkData.title}</StyledNavLink>;
 };
 
 DiscoverTab.propTypes = {
@@ -41,32 +35,11 @@ DiscoverTab.propTypes = {
   tag: PropTypes.string,
 };
 
-const CustomLi = ({ className, children }) => (
-  <li className={className}>
-    {children}
-  </li>
-);
-
-
-const StyledLi = styled(CustomLi)`
-  margin: 1em 0;
-  color: green;
-  font-weight: bold;
-  a {
-    margin: 1em 0,
-    color: hsl(0, 0%, 50%);
-    :hover {
-      color: ${darkGrey};
-    }
-  }
-`;
 
 const DiscoverTabs = (props) => (
-  <ul className="tabs">
-    {standardRoutes.map((linkData) => (
-      <StyledLi key={linkData.key}>
-        <DiscoverTab {...get(props, 'view.discover')} linkData={linkData} />
-      </StyledLi>
+  <ul>
+    {standardRoutes.map((linkData, i) => (
+      <DiscoverTab key={i} {...get(props, 'view.discover')} linkData={linkData} />
     ))}
   </ul>
 );

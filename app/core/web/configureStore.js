@@ -44,14 +44,8 @@ export default function configureStore(initialState = {}) {
   }
 
   if (process.env.BROWSER && process.env.DEVTOOLS) {
-    const devTools =
-      typeof window === 'object' && typeof window.devToolsExtension !== 'undefined'
-        ? window.devToolsExtension()
-        : f => f;
-    middleware = compose(
-      middleware,
-      devTools
-    );
+    const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+    middleware = composeEnhancers(middleware);
   }
   // Create final store and subscribe router in debug env ie. for devtools
   const store = middleware(createStore)(rootReducer, initialState);
