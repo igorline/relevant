@@ -101,16 +101,15 @@ class Post extends Component {
       );
     }
 
-    user = this.props.user.users[user] || user;
+    user = this.props.user.users[user] || post.embeddedUser;
 
-    if (user && !user._id) {
-      user = post.embeddedUser;
-    }
-
-    // TODO better?
-    if (!user && post.twitter) {
-      user = post.embeddedUser;
-    }
+    // if (user && !user._id) {
+    //   user = post.embeddedUser;
+    // }
+    // // TODO better?
+    // if (!user && post.twitter) {
+    //   user = post.embeddedUser;
+    // }
 
     const openPost = repost ? repost._id : post._id;
 
@@ -178,7 +177,9 @@ PostBody.propTypes = {
 };
 
 export default withRouter(connect(
-  () => ({}),
+  state => ({
+    community: state.community.communities[state.community.active]
+  }),
   dispatch => ({
     actions: bindActionCreators(
       {
