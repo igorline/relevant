@@ -8,8 +8,8 @@ import SideNav from 'modules/navigation/web/sideNav.component';
 const ContentContainer = styled.section`
   max-width: 100vw;
   display: flex;
-  background: blue;
   position: relative;
+  background: white;
 `;
 
 const StyledSideNav = styled(SideNav)`
@@ -19,9 +19,6 @@ const StyledSideNav = styled(SideNav)`
 
 const MainContent = styled.section`
   flex: 1;
-  background: orange;
-  /* display: flex; */
-  /* flex-flow: column; */
 `;
 
 const MainNav = (props) => {

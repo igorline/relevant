@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import NavProfile from 'modules/profile/web/navProfile.component';
 
 const borderColor = '#D8D8D8';
 
@@ -24,7 +25,7 @@ const SideNavSection = styled.div`
 const LogoContainer = styled.div`
   height: 101px;
   display: flex;
-  padding-left: 1em;
+  padding-left: 2em;
   padding-right: 5em;
   align-items: center;
 `;
@@ -49,9 +50,7 @@ const SideNav = (props) => {
         </LogoContainer>
       </SideNavSection>
       <SideNavSection>
-        <p>
-          Hello there!
-        </p>
+        <NavProfile />
       </SideNavSection>
     </SideNavContent>
   );
@@ -70,5 +69,3 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
 )(SideNav);
-
-// export default SideNav;
