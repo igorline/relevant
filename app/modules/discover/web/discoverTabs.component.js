@@ -4,7 +4,7 @@ import get from 'lodash.get';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
-import { tabStyles } from 'modules/navigation/web/contentheader.component';
+import { tabStyles } from 'modules/navigation/web/tabStyles';
 import { standardRoutes } from './discoverHelper';
 
 const StyledNavLink = styled(NavLink)`
