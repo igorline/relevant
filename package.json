@@ -11,7 +11,7 @@
     "native": "NODE_ENV='native' nodemon server/index.js",
     "build": "webpack --config ./webpack.production.config.js --progress --colors -p",
     "build-dev": "webpack --config ./webpack.config.js --progress --colors -p",
-    "test": "ava --watch",
+    "test": "ava --watch --verbose",
     "testServer": "WEB='true' ava --watch",
     "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean",
     "uninstall": "adb uninstall com.relevantnative",
@@ -172,7 +172,7 @@
     "@loadable/babel-plugin": "^5.2.2",
     "@loadable/webpack-plugin": "^5.2.2",
     "autoprefixer": "^6.1.1",
-    "ava": "^0.16.0",
+    "ava": "^1.0.1",
     "babel-eslint": "^8.2.2",
     "babel-plugin-module-resolver": "^3.1.1",
     "css-loader": "^0.23.0",
@@ -223,14 +223,13 @@
     "node": "11.4.0"
   },
   "ava": {
-    "babel": "inherit",
+    "require": [
+      "@babel/register",
+      "@babel/polyfill"
+    ],
     "files": [
       "**/**.test.js",
       "!tests/**/*"
-    ],
-    "require": [
-      "babel-register",
-      "babel-polyfill"
     ]
   },
   "description": "Xcode 7.0 or higher is required. It can be installed from the App Store.",

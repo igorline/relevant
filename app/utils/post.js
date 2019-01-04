@@ -207,3 +207,11 @@ export function generatePreviewServer(link) {
   )
   .catch(false);
 }
+
+export function computePayout(postData, community) {
+  if (!community || !postData) return null;
+  postData.payoutShare = postData.pagerank / (community.topPostShares || 1);
+  postData.payout = community.rewardFund * postData.payoutShare;
+  return postData.payout / (10 ** 18);
+}
+

@@ -61,7 +61,7 @@ export default connect(
     user: state.user,
     investments: state.investments,
     myPostInv: state.investments.myPostInv,
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
   }),
   dispatch => ({
     actions: bindActionCreators(
