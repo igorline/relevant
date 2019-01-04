@@ -32,26 +32,23 @@ const NavItem = styled('span')`
 `;
 
 const ContentHeader = (props) => {
-  const { match, location } = props;
-  console.log('props', props)
+  // const { match, location } = props;
   return (
     <Nav>
-      <SubNav>
-        <DiscoverTabs
-          match={match || { params: {} } }
-          location={location}
-          auth={{}}
-        />
-        <NavLink to="/relevant/new">New</NavLink>
-        <NavLink to="/relevant/top">Trending</NavLink>
-      </SubNav>
-      <SubNav>
-        <NavLink to="/">Activity</NavLink>
-        <NavLink to="/">New Post</NavLink>
-      </SubNav>
+      <DiscoverTabs />
+
     </Nav>
   );
 };
+
+// <SubNav>
+//   <NavLink to="/relevant/new">New</NavLink>
+//   <NavLink to="/relevant/top">Trending</NavLink>
+// </SubNav>
+// <SubNav>
+//   <NavLink to="/">Activity</NavLink>
+//   <NavLink to="/">New Post</NavLink>
+// </SubNav>
 
 ContentHeader.propTypes = {
   match: PropTypes.object,
