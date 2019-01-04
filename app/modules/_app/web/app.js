@@ -8,6 +8,7 @@ import Header from 'modules/navigation/web/header.component';
 import AppHeader from 'modules/navigation/web/appHeader.component';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
+import { getCommunities } from 'modules/community/community.actions';
 import AddEthAddress from 'modules/wallet/web/AddEthAddress';
 import AuthContainer from 'modules/auth/web/auth.container';
 import Modal from 'modules/ui/web/modal';
@@ -32,7 +33,8 @@ class App extends Component {
     user: PropTypes.object,
     children: PropTypes.node,
     history: PropTypes.object,
-    route: PropTypes.object
+    route: PropTypes.object,
+    activeCommunity: PropTypes.string
   };
 
   state = {
@@ -51,6 +53,7 @@ class App extends Component {
     const { community } = auth;
 
     actions.setCommunity(community);
+    actions.getCommunities();
     actions.getUser();
 
     // TODO do this after a timeout
@@ -61,12 +64,11 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { actions, auth, location, match } = this.props;
+    const { actions, auth, location, match, activeCommunity } = this.props;
     const { community } = match.params;
-    // const { isAuthenticated } = auth;
-    if (community && auth.community !== community) {
+    if (community && activeCommunity !== community) {
       if (community === 'home') {
-        this.props.history.push(`/${auth.community}/new`);
+        this.props.history.push(`/${activeCommunity}/new`);
       } else actions.setCommunity(community);
     }
 
@@ -176,14 +178,16 @@ class App extends Component {
 
 const mapStateToProps = state => ({
   user: state.auth.user,
-  auth: state.auth
+  auth: state.auth,
+  activeCommunity: state.community.active
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       ...navigationActions,
-      ...authActions
+      ...authActions,
+      getCommunities
     },
     dispatch
   )

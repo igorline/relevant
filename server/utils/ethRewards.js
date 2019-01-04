@@ -1,4 +1,3 @@
-/* eslint no-console: 0 */
 import User from '../api/user/user.model';
 import Invest from '../api/invest/invest.model';
 import apnData from '../pushNotifications';
@@ -11,6 +10,8 @@ import * as numbers from '../../app/utils/numbers';
 import PostData from '../api/post/postData.model';
 import computePageRank from './pagerankCompute';
 
+/* eslint no-console: 0 */
+
 const queue = require('queue');
 
 const q = queue({ concurrency: 1 });
@@ -22,15 +23,16 @@ async function computePostPayout(posts, community) {
   // let posts = await Post.find({ paidOut: false, payoutTime: { $lt: now } });
   let updatedPosts = posts.map(async post => {
     const average = community.currentShares / community.postCount;
+
     // only reward above-average posts
     console.log('rank vs average ', post.pagerank, average);
     if (post.pagerank < average) {
+      post.payout = 0;
       return post.save();
     }
     // linear reward curve
     post.payoutShare = post.pagerank / (community.topPostShares || 1);
     post.payout = community.rewardFund * post.payoutShare;
-    // post.balance = 0;
     return post.save();
   });
   updatedPosts = await Promise.all(updatedPosts);
@@ -47,22 +49,18 @@ async function distributeRewards(community, rewardPool) {
   // let treasury = await Treasury.findOne({ community });
   const now = new Date();
 
-  // TODO - expected rewards all posts (not really using community here)
-  // let posts = await Post.find({
-  //   twitter: { $ne: true },
-  //   type: 'post',
-  //   paidOut: false,
-  //   payoutTime: { $lte: now }
-  // })
-  // .populate({ path: 'data', community, paidOut: false,  payoutTime: { $lte: now } });
-  // let estimatePosts = await Post.find(
-  // { twitter: { $ne: true }, type: 'post', paidOut: false, payoutTime: { $gt: now } });
-
-  // here posts represent post data
+  // use postData as post
   const posts = await PostData.find({
     eligibleForReward: true,
     paidOut: false,
     payoutTime: { $lte: now },
+    communityId: community._id
+  });
+
+  const pendingPayouts = await PostData.find({
+    eligibleForReward: true,
+    paidOut: false,
+    payoutTime: { $gt: now },
     communityId: community._id
   });
 
@@ -92,7 +90,8 @@ async function distributeRewards(community, rewardPool) {
   community = await community.save();
 
   const updatedPosts = await computePostPayout(posts, community);
-  // estimatePosts = await computePostPayout(estimatePosts, community);
+  // estimates post payout
+  await computePostPayout(pendingPayouts, community);
 
   return updatedPosts;
 }
@@ -259,6 +258,7 @@ async function computeCommunityRewards(community, _rewardPool, balances) {
 }
 
 let computingRewards = false;
+
 exports.rewards = async () => {
   // safeguard
   if (computingRewards) {

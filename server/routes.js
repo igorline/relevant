@@ -52,7 +52,7 @@ module.exports = app => {
   // (need next for this to work)
   // eslint-disable-next-line
   app.use((err, req, res, next) => {
-    console.error(err);
+    console.error(err); // eslint-disable-line
     return res.status(500).json({ message: err.message });
   });
 

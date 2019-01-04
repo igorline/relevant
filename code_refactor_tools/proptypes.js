@@ -242,8 +242,9 @@ module.exports = function transformPropTypes(file, api, options) {
   }
 
   function generatPropTypesObject(props) {
+    // eslint-disable-next-line
     return props.map(prop => {
-      console.log(prop, ':', guessType(prop));
+      // console.log(prop, ':', guessType(prop));
       return j.property(
         'init',
         j.identifier(prop),

@@ -35,9 +35,10 @@ exports.upload = (req, res) => {
   };
   const uploader = client.uploadFile(params);
   uploader.on('error', err => {
-    console.error('unable to upload:', err.stack);
+    console.error('unable to upload:', err.stack); // eslint-disable-line
   });
   uploader.on('progress', () => {
+    // eslint-disable-next-line
     console.log(
       'progress',
       uploader.progressMd5Amount,
