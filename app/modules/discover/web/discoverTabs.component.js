@@ -2,15 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import { connect } from 'react-redux';
-import { greyText, darkGrey } from 'app/styles/colors';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { standardRoutes } from './discoverHelper';
 
 const StyledNavLink = styled(NavLink)`
-  margin: 1em 1em 1em 0;
+  margin-right: 1em;
   color: hsl(0, 0%, 80%);
   font-weight: bold;
+  font-size: 24px;
   &.${'active'} {
     color: black;
     fontWeight: 'bold'
@@ -18,9 +18,7 @@ const StyledNavLink = styled(NavLink)`
 `;
 
 const DiscoverTab = (props) => {
-  const { linkData, community, tag, sort } = props;
-  // const isActive = () => linkData.key === sort;
-
+  const { linkData, community, tag } = props;
   let url = `/${community}/${linkData.key}`;
   if (tag) {
     url += `/${tag}`;
@@ -36,13 +34,18 @@ DiscoverTab.propTypes = {
 };
 
 
+const StyledUl = styled.ul`
+  margin: 0;
+  padding: 0;
+`;
+
 const DiscoverTabs = ({ view, community }) => {
   return (
-    <ul>
+    <StyledUl>
       {standardRoutes.map((linkData, i) => (
-        <DiscoverTab key={i} {...get(view, 'discover')} community={community} linkData={linkData} />
+        <DiscoverTab key={i} tag={(view, 'discover.tag')} community={community} linkData={linkData} />
       ))}
-    </ul>
+    </StyledUl>
   );
 };
 
