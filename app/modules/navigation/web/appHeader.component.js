@@ -179,11 +179,6 @@ class AppHeader extends Component {
               </Link>
             </div>
             <div className="tabContainer">
-              <DiscoverTabs
-                match={match || { params: {} } }
-                location={this.props.location}
-                auth={this.props.auth}
-              />
             </div>
 
             <div className={'rightNav'}>
