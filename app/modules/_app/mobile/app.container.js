@@ -109,13 +109,12 @@ class Application extends Component {
   componentDidMount() {
     AppState.addEventListener('change', this.handleAppStateChange.bind(this));
     this.props.actions.getUser()
-    .catch(async () => {
-      const token = await utils.token.get();
-      if (token) {
+    .then(async user => {
+      if (!user) {
         return this.props.actions.replaceRoute(
           {
-            key: 'error',
-            component: 'error',
+            key: 'auth',
+            component: 'auth',
             header: false
           },
           0,
@@ -125,8 +124,8 @@ class Application extends Component {
 
       return this.props.actions.replaceRoute(
         {
-          key: 'auth',
-          component: 'auth',
+          key: 'tabs',
+          component: 'tabs',
           header: false
         },
         0,
@@ -151,10 +150,8 @@ class Application extends Component {
 
   componentWillReceiveProps(next) {
     if (!this.props.auth.user && next.auth.user) {
-      // codePush.allowRestart();
       this.props.actions.userToSocket(next.auth.user._id);
       this.props.actions.getNotificationCount();
-      // this.props.actions.getFeedCount();
 
       if (next.auth.user.onboarding === 0) {
         this.props.actions.changeTab('discover');
@@ -438,6 +435,14 @@ class Application extends Component {
 
   renderScene(props) {
     const { component } = props.scene.route;
+
+    const { error } = this.props;
+    if (error) {
+      return <ErrorComponent
+        parent="universal"
+        reloadFunction={this.props.actions.getUser}
+      />;
+    }
 
     const createPost = (
       <KeyboardAvoidingView

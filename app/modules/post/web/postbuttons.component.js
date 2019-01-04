@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
+import { computePayout } from 'app/utils/post';
+import { abbreviateNumber } from 'app/utils/numbers';
 
 class PostButtons extends Component {
   static propTypes = {
     auth: PropTypes.object,
     myPostInv: PropTypes.object,
-    post: PropTypes.object
+    post: PropTypes.object,
+    community: PropTypes.object,
   };
 
   constructor(props) {
@@ -73,7 +76,7 @@ class PostButtons extends Component {
   }
 
   render() {
-    const { post, auth } = this.props;
+    const { post, auth, community } = this.props;
 
     if (post === 'notFound') {
       return null;
@@ -97,6 +100,11 @@ class PostButtons extends Component {
       }
     }
 
+    let payout;
+    if (post.data && post.data.paidOut) payout = post.data.payout;
+    else payout = computePayout(post.data, community);
+    if (post.data.parentPost) payout = null;
+
     const comments = post.commentCount || '';
     const commentText = comments > 1 ? comments + ' comments' : comments + ' comment';
 
@@ -119,9 +127,13 @@ class PostButtons extends Component {
           </a>
           <div className="fraction">
             <div className="dem">
-              {post.data ? Math.round(post.data.pagerank) : null}
               <img alt="R" src="/img/r-gray.svg" />
+              {post.data ? Math.round(post.data.pagerank) : null}
             </div>
+
+            {payout > 0 && <div className="dem">
+              ${abbreviateNumber(payout)}
+            </div>}
           </div>
           <a style={buttonOpacity} onClick={e => this.irrelevant(e, vote)}>
             <img

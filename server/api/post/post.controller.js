@@ -309,7 +309,7 @@ exports.previewDataAsync = async (previewUrl, noReadability) => {
     );
 
     if (processed.redirect && processed.uri) {
-      console.log('redirect ', processed.uri);
+      console.log('redirect ', processed.uri); // eslint-disable-line
       uri = processed.uri;
       return queryUrl(uri);
     }

@@ -21,13 +21,9 @@ class ErrorComponent extends Component {
     this.reload = this.reload.bind(this);
   }
 
-  componentWillUnmount() {
-    this.props.actions.setError(this.props.parent, false);
-  }
-
   reload() {
-    this.props.actions.setError(this.props.parent, false);
     this.setState({ loading: true });
+    this.props.actions.setError(this.props.parent, false);
     this.props.reloadFunction();
   }
 
