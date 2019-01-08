@@ -5,12 +5,15 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as communityActions from 'modules/community/community.actions';
 import styled, { css } from 'styled-components/primitives';
+import ULink from 'modules/navigation/link.component';
 
-const StyledTouchable = styled.Touchable`
+const StyledULink = styled(ULink)`
+  display: inline;
 `;
 
 const StyledView = styled.View`
   background: red;
+  display: flex;
 `;
 
 const StyledText = styled.Text`
@@ -19,6 +22,10 @@ const StyledText = styled.Text`
 
 const StyledImage = styled.Image`
   width: 30,
+  height: 30,
+  display: 'inline-block';
+  padding: 3em;
+  background: blue;
 `;
 
 const StyledCommunityList = styled.View`
@@ -44,16 +51,21 @@ class Community extends Component {
       // const active = currentCommunity === community.slug;
       // const className = active ? 'active' : null;
       return (
-        <StyledTouchable key={community._id}> href={'/' + community.slug + '/new'} to={'/' + community.slug + '/new'}>
-          <StyledView>
+        <StyledView key={community._id}>
+          <StyledULink
+            key={community._id}
+            to={'/' + community.slug + '/new'}
+            to={'/' + community.slug + '/new'}
+            onPress={() => {}}
+          >
+            <StyledImage source={{ uri: community.image }}/>
             <StyledText>{community.name}</StyledText>
-          </StyledView>
-        </StyledTouchable>
+          </StyledULink>
+        </StyledView>
       );
     });
   }
 
-  // <StyledImage src={community.image} alt={`${community.name} logo`} />
 
   render() {
     return (
