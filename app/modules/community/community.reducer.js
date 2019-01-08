@@ -30,6 +30,19 @@ export default function community(state = initialState, action) {
       };
     }
 
+    case types.SET_COMMUNITY_MEMBERS: {
+      return {
+        ...state,
+        communities: {
+          ...state.communities,
+          [action.payload.slug]: {
+            ...state.communities[action.payload.slug],
+            members: action.payload.members,
+          }
+        }
+      };
+    }
+
     case types.ADD_COMMUNITY: {
       return {
         ...state,
