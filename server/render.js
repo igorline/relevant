@@ -170,7 +170,7 @@ export default function handleRender(req, res) {
     res.send(renderFullPage(content, store.getState()));
   })
   .catch(err => {
-    console.log('RENDER ERROR', err);
+    console.log('RENDER ERROR', err); // eslint-disable-line
     res.send(renderFullPage('', store.getState()));
   });
 }

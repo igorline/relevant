@@ -4,6 +4,7 @@ import User from '../user/user.model';
 import Notification from '../notification/notification.model';
 import Invest from '../invest/invest.model';
 
+/* eslint no-console: 0 */
 const mongoose = require('mongoose');
 
 const PostSchemaEvents = new EventEmitter();

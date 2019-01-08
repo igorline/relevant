@@ -71,7 +71,6 @@ class SignupForm extends Component {
       } else {
         this.nameError =
           'username can only contain letters, \nnumbers, dashes and underscores';
-        console.log(this.nameError);
         this.setState({});
       }
     }

@@ -1,58 +1,77 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { NavLink, withRouter } from 'react-router-dom';
-import Avatar from 'modules/user/web/avatar.component';
-import ShadowButton from 'modules/ui/web/ShadowButton';
-import * as authActions from 'modules/auth/auth.actions';
-import * as notifActions from 'modules/activity/activity.actions';
+import { withRouter, Link } from 'react-router-dom';
 import DiscoverTabs from 'modules/discover/web/discoverTabs.component';
-import Activity from 'modules/activity/web/activity.container';
-import RequestInvite from 'modules/web_splash/requestInvite.component';
-import { matchPath } from 'react-router';
+import ActivityButton from 'modules/activity/web/activityButton.component';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 
-
-const Nav = styled.section`
+const Nav = styled.nav`
   width: 100%;
   background: white;
   display: flex;
+  padding: 1.5em;
   justify-content: space-between;
+  line-height: 20px;
+  align-items: center;
+`;
+
+const NewPost = styled.button`
+  background: blue;
+  color: white;
+  display: flex;
+  border: none;
+  justify-content: space-between;
+  height: 4em;
+  padding: 0 3em;
+  font-size: 14px;
+  a {
+    color: white;
+  }
 `;
 
 const SubNav = styled.div`
-  display: inline-block;
-  margin: 1em;
+  display: flex;
+  flex-direction: row;
 `;
 
-const NavItem = styled('span')`
-  color: blue;
-  margin: 0 1em;
+const ActivityButtonContainer = styled.span`
+  position: relative;
+  z-index: 1;
 `;
+
 
 const ContentHeader = (props) => {
-  // const { match, location } = props;
+  const { location, auth } = props;
   return (
     <Nav>
       <DiscoverTabs />
-
+      <SubNav>
+        <ActivityButtonContainer>
+          <ActivityButton />
+        </ActivityButtonContainer>
+        <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
+          <NewPost >
+              New Post
+          </NewPost>
+        </Link>
+      </SubNav>
     </Nav>
   );
 };
 
-// <SubNav>
-//   <NavLink to="/relevant/new">New</NavLink>
-//   <NavLink to="/relevant/top">Trending</NavLink>
-// </SubNav>
-// <SubNav>
-//   <NavLink to="/">Activity</NavLink>
-//   <NavLink to="/">New Post</NavLink>
-// </SubNav>
-
 ContentHeader.propTypes = {
-  match: PropTypes.object,
   location: PropTypes.object,
+  auth: PropTypes.object,
 };
 
-export default ContentHeader;
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+  };
+}
+
+
+export default withRouter(connect(
+  mapStateToProps,
+)(ContentHeader));

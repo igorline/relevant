@@ -3,6 +3,8 @@ import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
 import { api, alert } from 'app/utils';
 
+const Alert = alert.Alert();
+
 const linkSchema = new schema.Entity('links', {}, { idAttribute: '_id' });
 
 const postSchema = new schema.Entity('posts', { metaPost: linkSchema }, { idAttribute: '_id' });
@@ -94,8 +96,7 @@ export function vote(amount, post, user, undo) {
     } catch (error) {
       if (undo) dispatch(updatePostVote({ post: post._id, amount }));
       else dispatch(undoPostVote(post._id));
-      alert.Alert().alert(error.message);
-      // throw new Error(error.message);
+      return Alert.alert(error.message);
     }
   };
 }
@@ -114,7 +115,7 @@ export function getInvestments(token, userId, skip, limit) {
       dispatch(setPosts(data));
       dispatch(setInvestments(data, userId, skip));
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 }
@@ -140,7 +141,7 @@ export function getPostInvestments(postId, limit, skip) {
       dispatch(setUsers(data.entities.users));
       dispatch(setPostInvestments(data, postId, skip));
     } catch (err) {
-      console.warn(err);
+      // console.warn(err);
     }
   };
 }

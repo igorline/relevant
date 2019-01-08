@@ -1,5 +1,5 @@
 import * as types from 'core/actionTypes';
-import * as utils from 'app/utils';
+import { api } from 'app/utils';
 
 export function addCommunity(community) {
   return {
@@ -15,6 +15,17 @@ export function setCommunities(communities) {
   };
 }
 
+// currently in auth, should move to community
+// export function setCommunity(community) {
+//   return dispatch => {
+//     api.setCommunity(community);
+//     return dispatch({
+//       type: types.SET_COMMUNITY,
+//       payload: community
+//     });
+//   };
+// }
+
 export function getCommunityAdmins() {}
 
 export function getCommunityMembers() {}
@@ -22,7 +33,7 @@ export function getCommunityMembers() {}
 export function getCommunities() {
   return async dispatch => {
     try {
-      const res = await utils.api.request({
+      const res = await api.request({
         method: 'GET',
         endpoint: 'community'
       });
@@ -37,7 +48,7 @@ export function getCommunities() {
 export function createCommunity(community) {
   return async dispatch => {
     try {
-      const responseJSON = await utils.api.request({
+      const responseJSON = await api.request({
         method: 'POST',
         endpoint: 'community',
         body: JSON.stringify(community)

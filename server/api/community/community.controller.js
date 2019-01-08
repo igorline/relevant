@@ -16,6 +16,16 @@ const RESERVED = [
   'undefined'
 ];
 
+export async function findOne(req, res, next) {
+  try {
+    const { slug } = req.params;
+    const community = await findOne({ slug });
+    res.status(200).json(community);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function index(req, res, next) {
   try {
     const communties = await Community.find({});
