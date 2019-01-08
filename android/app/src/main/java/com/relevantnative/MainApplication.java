@@ -17,7 +17,6 @@ import com.github.yamill.orientation.OrientationPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.evollu.react.fa.FIRAnalyticsPackage;
-import com.RNFetchBlob.RNFetchBlobPackage;
 import com.rt2zz.reactnativecontacts.ReactNativeContacts;
 import com.gnet.bottomsheet.RNBottomSheetPackage;
 import com.microsoft.codepush.react.CodePush;
@@ -26,6 +25,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.RNFetchBlob.RNFetchBlobPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -61,10 +61,9 @@ public class MainApplication extends Application implements ReactApplication {
             new LinearGradientPackage(),
             new ImagePickerPackage(),
             new FIRAnalyticsPackage(),
-            new RNFetchBlobPackage(),
             new ReactNativeContacts(),
             new RNBottomSheetPackage(),
-
+            new RNFetchBlobPackage(),
             new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG) // Add/change this line.
         );
     }

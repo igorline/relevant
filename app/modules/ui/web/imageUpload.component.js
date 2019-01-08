@@ -22,8 +22,7 @@ export default class ImageUpload extends Component {
       this.setState({ preview: dataURL, fileName: file.name });
     })
     .catch(e => {
-      console.error(e);
-      // TODO error handling
+      Alert.alert('Error uploading image ' + e);
     });
   }
 

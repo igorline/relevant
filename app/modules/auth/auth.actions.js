@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import * as types from 'core/actionTypes';
 import * as utils from 'app/utils';
 import * as errorActions from 'modules/ui/error.actions';
@@ -193,9 +192,9 @@ export function addDeviceToken(user) {
   return dispatch => {
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
-      onRegister: token => {
-        console.log('TOKEN:', token);
-      },
+      // onRegister: token => {
+      //   console.log('TOKEN:', token);
+      // },
 
       // (required) Called when a remote or local notification is opened or received
       onNotification: notification => {
@@ -235,7 +234,6 @@ export function addDeviceToken(user) {
     }
 
     PushNotification.onRegister = deviceToken => {
-      console.log('registered notification');
       const { token } = deviceToken;
       userDefaults.set('deviceToken', token, APP_GROUP_ID);
       dispatch(setDeviceToken(token));
@@ -279,7 +277,7 @@ export function getUser(callback) {
   return async dispatch => {
     try {
       const token = await utils.token.get();
-      if (!token) throw new Error();
+      if (!token) return null;
       dispatch(loginUserSuccess(token));
       const user = await utils.api.request({
         method: 'GET',
@@ -298,7 +296,8 @@ export function getUser(callback) {
       // if (error.message !== 'Network request failed') {
       //   dispatch(logoutAction());
       // }
-      throw error;
+      // throw error;
+      return null;
     }
   };
 }
@@ -315,10 +314,7 @@ export function setOnboardingStep(step) {
       dispatch(updateAuthUser(responseJSON));
       return true;
     })
-    .catch(err => {
-        console.log(err); // eslint-disable-line
-      return false;
-    });
+    .catch(() => false);
 }
 
 export function loginUser(user) {
@@ -364,8 +360,8 @@ export function userOnline(user, token) {
       }
     )
     .then(response => response.json())
-    .catch(error => {
-      console.log(error, 'error');
+    .catch(() => {
+      // Handle error?
     });
 }
 
@@ -387,7 +383,6 @@ export function checkUser(string, type) {
       return true;
     })
     .catch(error => {
-      console.log(error, 'error');
       Alert.alert(error.message);
     });
 }
@@ -446,7 +441,6 @@ export function updateHandle(user) {
       dispatch(getUser());
       return true;
     } catch (err) {
-      console.log('error updating handle');
       Alert.alert(err.message);
       return false;
     }
@@ -466,8 +460,7 @@ export function sendConfirmation() {
       return true;
     })
     .catch(err => {
-      Alert.alert('Error sending email, please try again');
-      console.log(err);
+      Alert.alert('Error sending email, please try again ', err.message);
       return false;
     });
 }
@@ -484,7 +477,6 @@ export function forgotPassword(user) {
     .then(responseJSON => responseJSON)
     .catch(err => {
       Alert.alert(err.message);
-      console.log(err);
       return false;
     });
 }
@@ -504,7 +496,6 @@ export function resetPassword(password, token) {
     })
     .catch(err => {
       Alert.alert(err.message);
-      console.log(err);
       return false;
     });
 }
@@ -525,7 +516,6 @@ export function confirmEmail(user, code) {
     })
     .catch(err => {
       Alert.alert(err.message);
-      console.log(err);
       return false;
     });
 }
@@ -550,7 +540,6 @@ export function getChart(start, end) {
       dispatch(errorActions.setError('stats', false));
       return true;
     } catch (error) {
-      console.log(error);
       dispatch(errorActions.setError('stats', true, error.message));
       return false;
     }
@@ -631,7 +620,6 @@ export function twitterAuth(profile, invite) {
     } catch (error) {
       dispatch(setTwitter(null));
       dispatch(setLoading(false));
-      console.log(error);
       Alert.alert(error.message);
       return false;
     }
@@ -650,7 +638,6 @@ export function addEthAddress(msg, sig, acc) {
       dispatch(updateAuthUser(result));
       return true;
     } catch (err) {
-      console.log('error updating key');
       Alert.alert(err.message);
       return false;
     }
@@ -668,7 +655,6 @@ export function cashOut() {
       dispatch(updateAuthUser(result));
       return result.cashOut;
     } catch (err) {
-      console.log('error cashing out');
       Alert.alert(err.message);
       return false;
     }
