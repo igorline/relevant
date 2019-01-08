@@ -5,30 +5,32 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as communityActions from 'modules/community/community.actions';
 import styled, { css } from 'styled-components/primitives';
+import { colors } from 'app/styles/globalStyles';
 import ULink from 'modules/navigation/link.component';
 
 const StyledULink = styled(ULink)`
-  display: inline;
+  display: flex;
+  align-items: center;
+  color: ${colors.black};
 `;
 
 const StyledView = styled.View`
-  background: red;
-  display: flex;
+  margin-bottom: 1em;
 `;
 
 const StyledText = styled.Text`
-  background: red;
+  display: inline;
 `;
 
 const StyledImage = styled.Image`
-  width: 30,
-  height: 30,
-  display: 'inline-block';
-  padding: 3em;
-  background: blue;
+  width: 30;
+  height: 30;
+  display: inline-block;
+  margin-right: 1em;
 `;
 
 const StyledCommunityList = styled.View`
+  margin: 2em;
 `;
 
 
@@ -69,9 +71,9 @@ class Community extends Component {
 
   render() {
     return (
-      <StyledView>
+      <StyledCommunityList>
         {this.renderCommunities()}
-      </StyledView>);
+      </StyledCommunityList>);
   }
 }
 
