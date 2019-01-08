@@ -15,6 +15,13 @@ export function setCommunities(communities) {
   };
 }
 
+export function setCommunityMembers(slug, members) {
+  return {
+    type: types.SET_COMMUNITY_MEMBERS,
+    payload: { slug, members },
+  };
+}
+
 // currently in auth, should move to community
 // export function setCommunity(community) {
 //   return dispatch => {
@@ -28,7 +35,23 @@ export function setCommunities(communities) {
 
 export function getCommunityAdmins() {}
 
-export function getCommunityMembers() {}
+export function getCommunityMembers(slug) {
+  return async dispatch => {
+    try {
+      const members = await api.request({
+        method: 'GET',
+        endpoint: 'community',
+        params: {
+          slug,
+          members: 'members',
+        },
+      });
+      return dispatch(setCommunityMembers(slug, members));
+    } catch (error) {
+      return false;
+    }
+  };
+}
 
 export function getCommunities() {
   return async dispatch => {

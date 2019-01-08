@@ -8,12 +8,19 @@ import styled, { css } from 'styled-components/primitives';
 import { colors } from 'app/styles/globalStyles';
 import ULink from 'modules/navigation/link.component';
 import CommunityActive from 'modules/community/web/communityActive.component';
+import get from 'lodash.get';
 
-const StyledULink = styled(ULink)`
-  display: flex;
-  align-items: center;
-  color: ${colors.black};
-`;
+// const StyledULink = styled(ULink)`
+//   display: flex;
+//   align-items: center;
+//   color: ${colors.black};
+// `;
+
+const linkStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  color: `${colors.black}`,
+};
 
 const StyledView = styled.View`
   margin-bottom: 1em;
@@ -39,7 +46,6 @@ class Community extends Component {
   static propTypes = {
     actions: PropTypes.object,
     community: PropTypes.object,
-    auth: PropTypes.object
   };
 
   componentDidMount() {
@@ -47,6 +53,7 @@ class Community extends Component {
   }
 
   renderCommunities() {
+    const { actions } = this.props;
     const { communities, list } = this.props.community;
     return list.map(id => {
       const community = communities[id];
@@ -55,15 +62,16 @@ class Community extends Component {
       // const className = active ? 'active' : null;
       return (
         <StyledView key={community._id}>
-          <StyledULink
+          <ULink
+            style={linkStyle}
             key={community._id}
             to={'/' + community.slug + '/new'}
             onPress={() => {}}
           >
             <StyledImage source={{ uri: community.image }}/>
             <StyledText>{community.name}</StyledText>
-          </StyledULink>
-          {isActive ? <CommunityActive community={community} /> : null}
+          </ULink>
+          {isActive ? <CommunityActive community={community} getCommunityMembers={get(actions, 'getCommunityMembers', null)} /> : null}
         </StyledView>
       );
     });

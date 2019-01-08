@@ -10,10 +10,10 @@ if (process.env.WEB !== 'true') {
 
 export default function ULink(props) {
   if (environment === 'web') {
-    return <Link className={props.className} onClick={props.onClick} to={props.to}>{props.children}</Link>;
+    return <Link style={props.style} onClick={props.onClick} to={props.to}>{props.children}</Link>;
   }
   return (
-    <Touchable className={props.className} onPress={props.onPress}>
+    <Touchable style={props.style} onPress={props.onPress}>
       {props.children}
     </Touchable>
   );
@@ -23,5 +23,6 @@ ULink.propTypes = {
   children: PropTypes.node,
   to: PropTypes.string,
   onPress: PropTypes.func,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  style: PropTypes.object,
 };
