@@ -7,6 +7,7 @@ import * as communityActions from 'modules/community/community.actions';
 import styled, { css } from 'styled-components/primitives';
 import { colors } from 'app/styles/globalStyles';
 import ULink from 'modules/navigation/link.component';
+import CommunityActive from 'modules/community/web/communityActive.component';
 
 const StyledULink = styled(ULink)`
   display: flex;
@@ -47,9 +48,9 @@ class Community extends Component {
 
   renderCommunities() {
     const { communities, list } = this.props.community;
-    const currentCommunity = this.props.auth.community;
     return list.map(id => {
       const community = communities[id];
+      const isActive = this.props.community.active === community.slug;
       // const active = currentCommunity === community.slug;
       // const className = active ? 'active' : null;
       return (
@@ -57,12 +58,12 @@ class Community extends Component {
           <StyledULink
             key={community._id}
             to={'/' + community.slug + '/new'}
-            to={'/' + community.slug + '/new'}
             onPress={() => {}}
           >
             <StyledImage source={{ uri: community.image }}/>
             <StyledText>{community.name}</StyledText>
           </StyledULink>
+          {isActive ? <CommunityActive community={community} /> : null}
         </StyledView>
       );
     });
