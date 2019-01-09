@@ -29,7 +29,7 @@ export default class UAvatar extends Component {
     noLink: PropTypes.bool,
     noName: PropTypes.bool,
     className: PropTypes.string,
-    style: PropTypes.string,
+    // style: PropTypes.string,
   };
 
   render() {
