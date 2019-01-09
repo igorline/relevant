@@ -16,6 +16,8 @@ import get from 'lodash.get';
 //   color: ${colors.black};
 // `;
 
+const BORDER_COLOR = '#979797';
+
 const linkStyle = {
   display: 'flex',
   alignItems: 'center',
@@ -24,6 +26,8 @@ const linkStyle = {
 
 const StyledView = styled.View`
   margin-bottom: 1em;
+  background: ${props => props.active ? '#D8D8D8' : 'transparent'};
+  /* padding: 2em; */
 `;
 
 const StyledText = styled.Text`
@@ -38,8 +42,19 @@ const StyledImage = styled.Image`
 `;
 
 const StyledCommunityList = styled.View`
-  margin: 2em;
 `;
+
+const CommunityLink = ({ community }) => (
+  <ULink
+    style={linkStyle}
+    key={community._id}
+    to={'/' + community.slug + '/new'}
+    onPress={() => {}}
+  >
+    <StyledImage source={{ uri: community.image }}/>
+    <StyledText>{community.name}</StyledText>
+  </ULink>
+);
 
 
 class Community extends Component {
@@ -61,17 +76,15 @@ class Community extends Component {
       // const active = currentCommunity === community.slug;
       // const className = active ? 'active' : null;
       return (
-        <StyledView key={community._id}>
-          <ULink
-            style={linkStyle}
-            key={community._id}
-            to={'/' + community.slug + '/new'}
-            onPress={() => {}}
-          >
-            <StyledImage source={{ uri: community.image }}/>
-            <StyledText>{community.name}</StyledText>
-          </ULink>
-          {isActive ? <CommunityActive community={community} getCommunityMembers={get(actions, 'getCommunityMembers', null)} /> : null}
+        <StyledView key={community._id} active={isActive} >
+          {isActive ?
+            <CommunityActive
+              community={community}
+              getCommunityMembers={get(actions, 'getCommunityMembers', null)}
+            >
+              <CommunityLink community={community} />
+            </CommunityActive>
+            : <CommunityLink community={community} />}
         </StyledView>
       );
     });
