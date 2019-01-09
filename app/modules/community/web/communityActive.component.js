@@ -27,10 +27,6 @@ const TopicsContainer = styled.View`
   margin: 1em;
 `;
 
-// const StyledText = styled.Text`
-//   display: inline;
-// `;
-
 const MemberCount = styled.Text`
   font-weight: bold;
   color: black;
