@@ -15,7 +15,7 @@ const Waitlist = loadable(() => import('modules/admin/web/waitlist.component'));
 const Downvotes = loadable(() => import('modules/admin/web/downvotes.container'));
 const Email = loadable(() => import('modules/admin/web/email.component'));
 const TopPosts = loadable(() => import('modules/admin/web/topPosts.component'));
-const CommuntiyAdmin = loadable(() => import('modules/admin/web/communityAdmin.component'));
+const CommunityAdmin = loadable(() => import('modules/admin/web/communityAdmin.component'));
 const ProfileContainer = loadable(() => import('modules/profile/web/profile.container'));
 const SplashContainer = loadable(() => import('modules/web_splash/splash.container'));
 const MainNav = loadable(() => import('modules/navigation/web/mainNav.component'));
@@ -101,7 +101,7 @@ const routes = [
           { path: '/user/invites', component: Invites },
           { path: '/user/email', component: Email },
           { path: '/user/topPosts', component: TopPosts },
-          { path: '/user/community', component: CommuntiyAdmin }
+          { path: '/user/community', component: CommunityAdmin }
         ]
       },
       { path: '*', component: NotFound },
