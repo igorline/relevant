@@ -5,9 +5,10 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import NavProfile from 'modules/profile/web/navProfile.component';
 import Community from 'modules/community/web/communityNav.component';
+import SideNavFooter from 'modules/navigation/web/sideNavFooter.component';
 
 
-const borderColor = '#D8D8D8';
+const borderColor = '#979797';
 
 const SideNavContent = styled.div`
   background: #FAFBFC;
@@ -57,6 +58,7 @@ const SideNav = (props) => {
       <SideNavSection>
         <Community />
       </SideNavSection>
+      <SideNavFooter />
     </SideNavContent>
   );
 };

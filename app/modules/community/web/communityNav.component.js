@@ -16,7 +16,7 @@ import get from 'lodash.get';
 //   color: ${colors.black};
 // `;
 
-const BORDER_COLOR = '#979797';
+const borderColor = '#979797';
 
 const linkStyle = {
   display: 'flex',
