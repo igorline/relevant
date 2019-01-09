@@ -1,23 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
-import { Link, withRouter } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import * as communityActions from 'modules/community/community.actions';
-import styled, { css } from 'styled-components/primitives';
+import styled from 'styled-components/primitives';
 import { colors } from 'app/styles/globalStyles';
 import ULink from 'modules/navigation/link.component';
 import UAvatar from 'modules/user/web/UAvatar.component';
 
 const StyledAvatar = styled(UAvatar)`
-  margin-right: 0.5em;
-`;
-
-const StyledULink = styled(ULink)`
-  display: flex;
-  align-items: center;
-  color: ${colors.black};
   margin-right: 0.5em;
 `;
 
@@ -34,6 +23,10 @@ const MemberContainer = styled.View`
   flex-wrap: wrap;
 `;
 
+const TopicsContainer = styled.View`
+  margin: 1em;
+`;
+
 // const StyledText = styled.Text`
 //   display: inline;
 // `;
@@ -46,6 +39,19 @@ const MemberCount = styled.Text`
 
 const StyledTopic = styled.Text`
   margin-left: 1em;
+  color: #717171;
+  font-weight: bold;
+  &:hover: {
+    color: red;
+  }
+  &:hover: {
+    color: black;
+    background: green;
+  };
+  &:active: {
+    color: black;
+    background: green;
+  };
 `;
 
 const StyledCommunityList = styled.View`
@@ -76,11 +82,13 @@ class CommunityActive extends Component {
       <StyledCommunityList>
         <NavSection>
           {children}
-          {topics.map(topic => (
-            <ULink key={topic} to={`/${community.slug}/new/${topic}`} style={linkStyles}>
-              <StyledTopic >#{topic}</StyledTopic>
-            </ULink>
-          ))}
+          <TopicsContainer>
+            {topics.map(topic => (
+              <ULink key={topic} to={`/${community.slug}/new/${topic}`} style={linkStyles}>
+                <StyledTopic >#{topic}</StyledTopic>
+              </ULink>
+            ))}
+          </TopicsContainer>
         </NavSection>
         <NavSection>
           <MemberCount>{`${totalMembers} Members`}</MemberCount>
