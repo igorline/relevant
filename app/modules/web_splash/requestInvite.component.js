@@ -32,7 +32,7 @@ export default class RequestInvite extends Component {
     let cta = <InviteCta />;
     if (this.props.type === 'app') {
       img = '/img/hand-transparent.png';
-      ({ cta } = this.props.cta);
+      cta = this.props.cta;
     }
     return (
       <div ref={c => (this.container = c)} className="splashContent">

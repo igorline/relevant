@@ -41,7 +41,6 @@ test.serial('Get stats', async t => {
   .send();
 
   const isCorrectType = res.body instanceof Object;
-  console.log('STATS RESPONCE ', res.body);
   t.is(res.status, 200);
   t.is(isCorrectType, true);
 });

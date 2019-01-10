@@ -2,6 +2,7 @@
 import url from 'url';
 import request from 'request';
 import { EventEmitter } from 'events';
+import { get } from 'lodash';
 import * as proxyHelpers from './html';
 import MetaPost from './link.model';
 import Post from './post.model';
@@ -13,11 +14,10 @@ import apnData from '../../pushNotifications';
 import mail from '../../mail';
 import Notification from '../notification/notification.model';
 import Invest from '../invest/invest.model';
-
+import PostData from './postData.model';
 import { PAYOUT_TIME } from '../../config/globalConstants';
 
 const { promisify } = require('util');
-
 
 const requestAsync = promisify(request);
 request.defaults({ maxRedirects: 22, jar: true });
@@ -45,19 +45,40 @@ async function findRelatedPosts(metaId) {
 }
 
 exports.topPosts = async (req, res, next) => {
-  const { community } = req.query;
-  let posts;
   try {
+    const { community } = req.query;
+    let posts;
     const now = new Date();
     now.setDate(now.getDate() - 7);
-    posts = await Post.find({ createdAt: { $gt: now } })
+    posts = await PostData.find({ createdAt: { $gt: now }, community })
     .populate({
-      path: 'embeddedUser.relevance',
-      match: { community, global: true },
-      select: 'pagerank'
+      path: 'post',
+      populate: [
+        {
+          path: 'commentary',
+          match: {
+            // TODO implement intra-community commentary
+            community,
+
+            // TODO - we should probably sort the non-community commentary
+            // with some randomness on client side
+            repost: { $exists: false },
+            $or: [{ hidden: { $ne: true } }]
+          },
+        },
+        {
+          path: 'embeddedUser.relevance',
+          match: { community, global: true },
+          select: 'pagerank'
+        },
+        { path: 'metaPost' },
+      ]
     })
-    .sort('-relevance')
+    .sort('-pagerank')
     .limit(20);
+
+    // TODO do this on frontend?
+    posts = posts.map(d => ({ ...d.post.toObject(), data: { ...d.toObject(), post: get(d, 'post._id') } }));
     res.status(200).json(posts);
   } catch (err) {
     next(err);

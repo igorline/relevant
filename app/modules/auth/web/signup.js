@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import ShadowButton from 'modules/ui/web/ShadowButton';
 import { NAME_PATTERN } from 'app/utils/text';
 import { browserAlerts } from 'app/utils/alert';
@@ -221,7 +220,7 @@ class SignupForm extends Component {
 
         <div className={'smallText'}>
           Already registered?{' '}
-          <Link onClick={() => this.props.authNav('login')}>Sign in</Link>
+          <a onClick={() => this.props.authNav('login')}>Sign in</a>
         </div>
       </div>
     );
