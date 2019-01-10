@@ -15,7 +15,6 @@ const ContentContainer = styled.section`
 `;
 
 const StyledSideNav = styled(SideNav)`
-  width: 300px;
   display: inline-block;
   z-index: 10;
   border-right: ${layout.borderStyles(colors.borderColor)};

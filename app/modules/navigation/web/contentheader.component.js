@@ -5,15 +5,18 @@ import DiscoverTabs from 'modules/discover/web/discoverTabs.component';
 import ActivityButton from 'modules/activity/web/activityButton.component';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { colors, layout } from 'app/styles/globalStyles';
 
 const Nav = styled.nav`
   width: 100%;
   background: white;
   display: flex;
-  padding: 1.5em;
+  padding: 0 1.5em;
   justify-content: space-between;
   line-height: 20px;
   align-items: center;
+  height: ${layout.headerHeight};
+  border-bottom: ${layout.borderStyles(colors.borderColor)};
 `;
 
 const NewPost = styled.button`
