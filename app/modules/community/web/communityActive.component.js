@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import styled from 'styled-components/primitives';
-import { colors } from 'app/styles/globalStyles';
+import { colors, layout } from 'app/styles/globalStyles';
 import ULink from 'modules/navigation/link.component';
 import ULink2 from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/web/UAvatar.component';
@@ -13,8 +13,7 @@ const StyledAvatar = styled(UAvatar)`
 
 const NavSection = styled.View`
   padding: 2em;
-  /* margin-bottom: 1em; */
-  border: 1px solid black;
+  border-bottom: ${layout.borderStyles(colors.borderColor)};
 `;
 
 const MemberContainer = styled.View`
