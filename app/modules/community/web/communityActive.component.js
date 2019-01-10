@@ -6,6 +6,8 @@ import { colors, layout } from 'app/styles/globalStyles';
 import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/web/UAvatar.component';
 
+const greyText = '#717171';
+
 const StyledAvatar = styled(UAvatar)`
   margin-right: 0.5em;
 `;
@@ -23,7 +25,7 @@ const MemberContainer = styled.View`
 `;
 
 const TopicsContainer = styled.View`
-  margin: 1em;
+  margin: 1em 0 0 1em;
 `;
 
 const MemberCount = styled.Text`
@@ -33,13 +35,12 @@ const MemberCount = styled.Text`
 `;
 
 const topicStyles = `
-  color: red;
+  color: ${greyText};
   &:hover {
-    color: blue !important;
-    background: purple;
+    color: black;
   }
   &.active {
-    font-weight: bold;
+    color: black;
   }
 `;
 

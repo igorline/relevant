@@ -7,7 +7,7 @@ import EmailIcon from 'app/public/img/email.svg';
 
 const greyText = '#717171';
 
-const StyledLink = styled(Link)`
+const StyledLink = styled.a`
   color: ${greyText};
   text-decoration: underline;
   &:hover {
@@ -18,8 +18,8 @@ const StyledLink = styled(Link)`
 const StyledIconLink = styled(StyledLink)`
   color: black;
   font-weight: bold;
-  height: 20px;
-  width: 20px;
+  height: 32px;
+  width: 32px;
   margin-right: 2em;
   &:hover svg * {
     fill: grey;
@@ -47,7 +47,7 @@ const IconContainer = styled.div`
 
 const FooterIcon = ({ href, Image, target }) => {
   return (
-    <StyledIconLink to={href} target={target || '_self'}>
+    <StyledIconLink href={`${href}`} target={target || '_self'}>
       <Image />
     </StyledIconLink>
   );
