@@ -68,18 +68,16 @@ const icons = [
   }
 ];
 
-const SideNavFooter = (props) => {
-  return (
-    <Footer>
-      <p>© 2018 Relevant Community Inc.</p>
-      <p>
-        <StyledLink to="/eula.html" target="_blank">Content Policy</StyledLink> | <StyledLink to="/privacy.html" target="_blank"> Privacy Policy</StyledLink>
-      </p>
-      <IconContainer>
-        {icons.map(icon => <FooterIcon {...icon} />)}
-      </IconContainer>
-    </Footer>
-  );
-};
+const SideNavFooter = () => (
+  <Footer>
+    <p>© 2018 Relevant Community Inc.</p>
+    <p>
+      <StyledLink to="/eula.html" target="_blank">Content Policy</StyledLink> | <StyledLink to="/privacy.html" target="_blank"> Privacy Policy</StyledLink>
+    </p>
+    <IconContainer>
+      {icons.map(icon => <FooterIcon {...icon} />)}
+    </IconContainer>
+  </Footer>
+);
 
 export default SideNavFooter;

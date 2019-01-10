@@ -9,9 +9,11 @@ if (process.env.WEB !== 'true') {
 }
 
 export default function ULink(props) {
+  // const StyledLink = styled(Link)`${props.styles}`
   if (environment === 'web') {
-    return <Link style={props.style} onClick={props.onClick} to={props.to}>{props.children}</Link>;
+    return <Link style={props.style} onClick={props.onClick, props.mobileStyles} to={props.to}>{props.children}</Link>;
   }
+  // const StyledTouchable = styled.Touchable`${{...props.styles, props.webStyles}}`;
   return (
     <Touchable style={props.style} onPress={props.onPress}>
       {props.children}
