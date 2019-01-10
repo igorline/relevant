@@ -10,8 +10,8 @@ import { colors, layout } from 'app/styles/globalStyles';
 
 const SideNavContent = styled.div`
   background: #FAFBFC;
-  width: 300px;
-  max-width: 300px;
+  width: ${layout.sideNavWidth};
+  max-width: ${layout.sideNavWidth};
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -24,7 +24,8 @@ const SideNavSection = styled.div`
 `;
 
 const LogoContainer = styled.div`
-  height: 101px;
+  height: ${layout.headerHeight};
+  /* height: 101px; */
   display: flex;
   padding-left: 2em;
   padding-right: 5em;
