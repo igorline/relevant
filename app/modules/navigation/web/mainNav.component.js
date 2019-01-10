@@ -24,17 +24,15 @@ const MainContent = styled.section`
   flex: 1;
 `;
 
-const MainNav = (props) => {
-  return (
-    <ContentContainer>
-      <StyledSideNav>Hello</StyledSideNav>
-      <MainContent>
-        <ContentHeader />
-        {renderRoutes(props.route.routes)}
-      </MainContent>
-    </ContentContainer>
-  );
-};
+const MainNav = (props) => (
+  <ContentContainer>
+    <StyledSideNav>Hello</StyledSideNav>
+    <MainContent>
+      <ContentHeader />
+      {renderRoutes(props.route.routes)}
+    </MainContent>
+  </ContentContainer>
+);
 
 
 MainNav.propTypes = {

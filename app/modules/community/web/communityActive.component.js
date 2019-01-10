@@ -57,10 +57,6 @@ const topicStyles = `
 const StyledCommunityList = styled.View`
 `;
 
-const linkStyles = {
-  color: 'black',
-};
-
 class CommunityActive extends Component {
   static propTypes = {
     community: PropTypes.object,
