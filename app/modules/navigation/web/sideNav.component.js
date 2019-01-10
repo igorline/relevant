@@ -6,9 +6,7 @@ import styled from 'styled-components';
 import NavProfile from 'modules/profile/web/navProfile.component';
 import Community from 'modules/community/web/communityNav.component';
 import SideNavFooter from 'modules/navigation/web/sideNavFooter.component';
-
-
-const borderColor = '#979797';
+import { colors, layout } from 'app/styles/globalStyles';
 
 const SideNavContent = styled.div`
   background: #FAFBFC;
@@ -17,12 +15,12 @@ const SideNavContent = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  border-top: 1px solid ${borderColor};
-  border-right: 1px solid ${borderColor};
+  z-index: 10;
+  border-right: ${layout.borderStyles(colors.borderColor)};
 `;
 
 const SideNavSection = styled.div`
-  border-bottom: 1px solid ${borderColor};
+  border-bottom: ${layout.borderStyles(colors.borderColor)};
 `;
 
 const LogoContainer = styled.div`
@@ -31,6 +29,7 @@ const LogoContainer = styled.div`
   padding-left: 2em;
   padding-right: 5em;
   align-items: center;
+  z-index: 10;
 `;
 
 const StyledLink = styled(Link)`
