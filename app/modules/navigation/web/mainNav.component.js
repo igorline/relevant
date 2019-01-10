@@ -22,13 +22,24 @@ const StyledSideNav = styled(SideNav)`
 
 const MainContent = styled.section`
   flex: 1;
+  position: relative;
+  padding-top: ${layout.headerHeight}
 `;
+
+const StyledContentHeader = styled(ContentHeader)`
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  width: calc(100vw - ${layout.sideNavWidth});
+  left: ${layout.sideNavWidth};
+`;
+
 
 const MainNav = (props) => (
   <ContentContainer>
     <StyledSideNav {...props} />
     <MainContent>
-      <ContentHeader />
+      <StyledContentHeader />
       {renderRoutes(props.route.routes)}
     </MainContent>
   </ContentContainer>

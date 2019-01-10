@@ -8,5 +8,6 @@ export default {
   black: 'black',
   white: 'white',
   darkGrey: '#979797',
-  borderColor: 'hsl(0, 0%, 68%)',
+  borderColor: 'hsl(0, 0%, 90%)',
+  sideNavBackground: '#FAFBFC',
 };
