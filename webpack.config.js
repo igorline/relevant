@@ -85,8 +85,8 @@ module.exports = {
     exprContextCritical: false,
     rules: [
       {
-        test: /\.svg$/,
-        loader: 'raw-loader'
+       test: /\.svg$/,
+       loader: 'svg-inline-loader'
       },
       {
         test: /\.js$/,
@@ -110,4 +110,3 @@ module.exports = {
     ]
   },
 };
-
