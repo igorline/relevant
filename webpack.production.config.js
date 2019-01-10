@@ -43,7 +43,7 @@ prodConfig.mode = 'production';
 prodConfig.module.rules = [
   {
     test: /\.svg$/,
-    use: 'raw-loader'
+    loader: 'svg-inline-loader'
   },
   {
     test: /\.css$|\.scss$/,
