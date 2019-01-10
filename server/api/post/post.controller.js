@@ -243,6 +243,10 @@ exports.userPosts = async (req, res, next) => {
         },
         {
           path: 'metaPost'
+        },
+        {
+          path: 'data',
+          match: { community }
         }
       ]
     })

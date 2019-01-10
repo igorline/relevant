@@ -9,7 +9,9 @@ class PostButtons extends Component {
   static propTypes = {
     auth: PropTypes.object,
     myPostInv: PropTypes.object,
-    post: PropTypes.object,
+    post: PropTypes.shape({
+      data: PropTypes.object
+    }),
     community: PropTypes.object,
   };
 
@@ -103,7 +105,7 @@ class PostButtons extends Component {
     let payout;
     if (post.data && post.data.paidOut) payout = post.data.payout;
     else payout = computePayout(post.data, community);
-    if (post.data.parentPost) payout = null;
+    if (post.data && post.data.parentPost) payout = null;
 
     const comments = post.commentCount || '';
     const commentText = comments > 1 ? comments + ' comments' : comments + ' comment';
