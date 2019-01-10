@@ -23,7 +23,7 @@ const SideNavSection = styled.div`
   border-bottom: ${layout.borderStyles(colors.borderColor)};
 `;
 
-const LogoContainer = styled.div`
+const LogoContainer = styled(SideNavSection)`
   height: ${layout.headerHeight};
   /* height: 101px; */
   display: flex;
@@ -45,13 +45,11 @@ const SideNav = (props) => {
   const logoLink = props.isAuthenticated ? '/relevant/new' : '/';
   return (
     <SideNavContent>
-      <SideNavSection>
-        <LogoContainer>
-          <StyledLink to={logoLink}>
-            <StyledImg src={'/img/logo.svg'} className={'logo'} alt={'Relevant'} />
-          </StyledLink>
-        </LogoContainer>
-      </SideNavSection>
+      <LogoContainer>
+        <StyledLink to={logoLink}>
+          <StyledImg src={'/img/logo.svg'} className={'logo'} alt={'Relevant'} />
+        </StyledLink>
+      </LogoContainer>
       <SideNavSection>
         <NavProfile />
       </SideNavSection>
