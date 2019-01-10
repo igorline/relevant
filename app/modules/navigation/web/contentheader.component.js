@@ -45,9 +45,9 @@ const ActivityButtonContainer = styled.span`
 
 
 const ContentHeader = (props) => {
-  const { location, auth } = props;
+  const { location, auth, className } = props;
   return (
-    <Nav>
+    <Nav className={className}>
       <DiscoverTabs />
       <SubNav>
         <ActivityButtonContainer>

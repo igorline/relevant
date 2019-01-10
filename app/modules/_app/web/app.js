@@ -123,13 +123,7 @@ class App extends Component {
       </div>
     );
 
-    let header = (
-      <AppHeader
-        location={location}
-        match={match}
-        toggleLogin={this.toggleLogin.bind(this)}
-      />
-    );
+    let header;
     if (location.pathname === '/') {
       header = <Header match={match} toggleLogin={this.toggleLogin.bind(this)} />;
       mobileEl = null;
