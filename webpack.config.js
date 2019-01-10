@@ -86,11 +86,7 @@ module.exports = {
     exprContextCritical: false,
     rules: [
       {
-       test: /\.svg$/,
-       loader: 'svg-inline-loader'
-      },
-      {
-        test: /\.js$/,
+        test: /\.(js|svg)$/,
         exclude: [/node_modules/],
         use: [{
           loader: 'babel-loader',

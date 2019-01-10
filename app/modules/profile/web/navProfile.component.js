@@ -6,7 +6,7 @@ import Avatar from 'modules/user/web/avatar.component';
 import { numbers } from 'app/utils';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
-import ULink from 'modules/navigation/link.component';
+import ULink from 'modules/navigation/ULink.component';
 
 const ProfileContainer = styled.div`
   margin: 2em;
@@ -38,11 +38,11 @@ const PendingPayouts = styled.div`
   font-size: 14px;
 `;
 
-const linkStyles = {
-  display: 'flex',
-  alignItems: 'center',
-  color: 'black',
-};
+const linkStyles = `
+  display: flex;
+  align-items: center;
+  color: black;
+`;
 
 
 class NavProfile extends Component {
@@ -84,7 +84,7 @@ class NavProfile extends Component {
         <PendingPayouts>PENDING PAYOUTS</PendingPayouts>
         <ProfileDetailsContainer>
           <StyledAvatar user={user} size={64} />
-          <ULink to="/user/wallet" style={linkStyles}>
+          <ULink to="/user/wallet" styles={linkStyles}>
             <StyledIconImg src="/img/r-emoji.png" alt="Relevance" />
             <span>{Math.round(user.relevance ? user.relevance.pagerank || 0 : 0)}</span>
             <StyledIconImg src="/img/relevantcoin.png" alt="Coins" />

@@ -1,51 +1,53 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Touchable } from 'react-primitives';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
-
-import styled from 'styled-components';
-// import styled from 'styled-components/primitives';
-
+let styled;
+let StyledLink;
+let StyledNavLink;
 let environment = 'web';
 if (process.env.WEB !== 'true') {
   environment = 'native';
+  styled = require('styled-components/primitives').default;
+  StyledLink = styled(Link)`
+    ${(p) => p.styles}
+  `;
+} else {
+  styled = require('styled-components').default;
+  StyledLink = styled(Link)`
+    ${(p) => p.styles}
+  `;
+  StyledNavLink = styled(NavLink)`
+    ${(p) => p.styles}
+  `;
 }
-// let styled;
-//
-// if (environment === 'web') {
-//   styled = require('styled-components').default;
-// } else {
-//   styled = require('styled-components/primitives').default;
-// }
 
-
-const StyledLink = styled(Link)`
-  ${(p) => p.styles}
-`;
-// const StyledTouchable = styled.Touchable`
-//   ${(p) => p.styles},
-// `;
-
-const ULink2 = (props) => {
-  const { onClick, onPress, to, styles, children } = props;
+const ULink = (props) => {
+  const { onClick, onPress, to, styles, children, navLink } = props;
   if (environment === 'web') {
-    return <StyledLink onClick={onClick} to={to} styles={styles || ''}>{children}</StyledLink>;
+    return navLink ?
+      <StyledNavLink onClick={onClick} to={to} styles={styles || ''}>
+        {children}
+      </StyledNavLink> :
+      <StyledLink onClick={onClick} to={to} styles={styles || ''}>
+        {children}
+      </StyledLink>;
   }
 
   return (
-    <StyledTouchable onPress={onPress} styles={styles || ''}>
+    <StyledLink onPress={onPress} styles={styles || ''}>
       {children}
-    </StyledTouchable>
+    </StyledLink>
   );
 };
 
-ULink2.propTypes = {
+ULink.propTypes = {
+  navLink: PropTypes.bool,
   children: PropTypes.node,
   to: PropTypes.string,
   onPress: PropTypes.func,
   onClick: PropTypes.func,
-  style: PropTypes.object,
+  styles: PropTypes.string,
 };
 
-export default ULink2;
+export default ULink;

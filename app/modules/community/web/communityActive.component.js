@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import styled from 'styled-components/primitives';
 import { colors } from 'app/styles/globalStyles';
-import ULink from 'modules/navigation/link.component';
-import ULink2 from 'modules/navigation/ULink.component';
+import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/web/UAvatar.component';
 
 const StyledAvatar = styled(UAvatar)`
@@ -34,33 +33,20 @@ const MemberCount = styled.Text`
   margin-bottom: 1em;
 `;
 
-const StyledTopic = styled.Text`
-  margin-left: 1em;
-  /* font-weight: bold */
-`;
-// color: #717171;
-
 const topicStyles = `
-  font-weight: bold;
   color: red;
-  a {
-    &:hover: {
-      background: purple;
-      color: blue !important;
-    }
-  }
-  &:hover: {
-    background: purple;
+  &:hover {
     color: blue !important;
+    background: purple;
+  }
+  &.active {
+    font-weight: bold;
   }
 `;
 
 const StyledCommunityList = styled.View`
 `;
 
-const linkStyles = {
-  color: 'black',
-};
 
 class CommunityActive extends Component {
   static propTypes = {
@@ -85,9 +71,9 @@ class CommunityActive extends Component {
           {children}
           <TopicsContainer>
             {topics.map(topic => (
-              <ULink2 key={topic} to={`/${community.slug}/new/${topic}`} styles={topicStyles}>
-                <StyledTopic >#{topic}</StyledTopic>
-              </ULink2>
+              <ULink navLink key={topic} to={`/${community.slug}/new/${topic}`} styles={topicStyles}>
+                #{topic}
+              </ULink>
             ))}
           </TopicsContainer>
         </NavSection>

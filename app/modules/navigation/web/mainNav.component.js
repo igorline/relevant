@@ -4,6 +4,7 @@ import { renderRoutes } from 'react-router-config';
 import styled from 'styled-components';
 import ContentHeader from 'modules/navigation/web/contentHeader.component';
 import SideNav from 'modules/navigation/web/sideNav.component';
+import { withRouter } from 'react-router-dom';
 
 const ContentContainer = styled.section`
   max-width: 100vw;
@@ -21,21 +22,19 @@ const MainContent = styled.section`
   flex: 1;
 `;
 
-const MainNav = (props) => {
-  return (
-    <ContentContainer>
-      <StyledSideNav>Hello</StyledSideNav>
-      <MainContent>
-        <ContentHeader />
-        {renderRoutes(props.route.routes)}
-      </MainContent>
-    </ContentContainer>
-  );
-};
+const MainNav = (props) => (
+  <ContentContainer>
+    <StyledSideNav {...props} />
+    <MainContent>
+      <ContentHeader />
+      {renderRoutes(props.route.routes)}
+    </MainContent>
+  </ContentContainer>
+);
 
 
 MainNav.propTypes = {
   route: PropTypes.object,
 };
 
-export default MainNav;
+export default withRouter(MainNav);

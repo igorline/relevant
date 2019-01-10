@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import * as communityActions from 'modules/community/community.actions';
 import styled, { css } from 'styled-components/primitives';
 import { colors } from 'app/styles/globalStyles';
-import ULink from 'modules/navigation/link.component';
+import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/web/communityActive.component';
 import get from 'lodash.get';
 
@@ -18,11 +18,11 @@ import get from 'lodash.get';
 
 const borderColor = '#979797';
 
-const linkStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  color: `${colors.black}`,
-};
+const linkStyle = `
+  display: flex;
+  align-items: center;
+  color: ${colors.black};
+`;
 
 const StyledView = styled.View`
   margin-bottom: 1em;
@@ -30,14 +30,9 @@ const StyledView = styled.View`
   /* padding: 2em; */
 `;
 
-const StyledText = styled.Text`
-  display: inline;
-`;
-
 const StyledImage = styled.Image`
   width: 30;
   height: 30;
-  display: inline-block;
   margin-right: 1em;
 `;
 
@@ -46,13 +41,13 @@ const StyledCommunityList = styled.View`
 
 const CommunityLink = ({ community }) => (
   <ULink
-    style={linkStyle}
+    styles={linkStyle}
     key={community._id}
     to={'/' + community.slug + '/new'}
     onPress={() => {}}
   >
     <StyledImage source={{ uri: community.image }}/>
-    <StyledText>{community.name}</StyledText>
+    {community.name}
   </ULink>
 );
 
