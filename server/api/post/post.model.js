@@ -529,16 +529,21 @@ PostSchema.post('remove', async function postRemove(doc) {
 
     await this.model('CommunityFeed').removeFromAllFeeds(doc);
 
-    const note = this.model('Notification').remove({ post: this._id });
-    const feed = await this.model('Feed').remove({ post: this._id });
-    const twitterFeed = await this.model('TwitterFeed').remove({ post: this._id });
+    const note = this.model('Notification')
+    .remove({ post: this._id });
+    const feed = await this.model('Feed')
+    .remove({ post: this._id });
+    const twitterFeed = await this.model('TwitterFeed')
+    .remove({ post: this._id });
 
     // TODO we should replace post with a dummy post on delete
     // should we remove post comment also!?!
     // probably not...
     // let comment = this.model('Post').remove({ post: this._id });
 
-    await this.model('PostData').remove({ post: doc._id });
+    await this.model('PostData')
+    .remove({ post: doc._id })
+    .exec();
 
     // should invest info be removed?
     // probably not - a chance to erase rep...

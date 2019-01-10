@@ -7,6 +7,7 @@ import Relevance from '../relevance/relevance.model';
 import mail from '../../mail';
 import Subscription from '../subscription/subscription.model';
 import Feed from '../feed/feed.model';
+import CommunityMember from '../community/community.member.model';
 import * as ethUtils from '../../utils/ethereum';
 
 const TwitterWorker = require('../../utils/twitterWorker');
@@ -551,7 +552,13 @@ exports.update = async (req, res, next) => {
 
       // Do this on a separate thread?
       await Post.update(
-        { user: user.handle },
+        { user: user._id },
+        { embeddedUser: newUser },
+        { multi: true }
+      );
+
+      await CommunityMember.update(
+        { user: user._id },
         { embeddedUser: newUser },
         { multi: true }
       );

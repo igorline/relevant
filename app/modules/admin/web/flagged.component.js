@@ -69,7 +69,6 @@ export default connect(
   state => ({
     auth: state.auth,
     flagged: state.posts.flagged,
-    metaPosts: state.posts.metaPosts.flagged,
     posts: state.posts.posts,
     all: state.posts
   }),

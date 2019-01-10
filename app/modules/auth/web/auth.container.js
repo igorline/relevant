@@ -28,7 +28,7 @@ class AuthContainer extends Component {
     toggleLogin: PropTypes.func,
     user: PropTypes.object,
     open: PropTypes.bool,
-    route: PropTypes.object,
+    match: PropTypes.object,
     history: PropTypes.object
   };
 
@@ -112,13 +112,12 @@ class AuthContainer extends Component {
   }
 
   render() {
-    const { user, route } = this.props;
+    const { user, match } = this.props;
     let confirm;
     let auth;
     let visible = true;
 
-    let path = this.props.modal ? this.state.type : route.path;
-    // route.path;
+    let path = this.props.modal ? this.state.type : match.path.replace('/user/', '');
 
     if (this.props.user && this.props.user.role === 'temp') {
       path = 'signup';
