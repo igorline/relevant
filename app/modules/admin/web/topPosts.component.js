@@ -9,7 +9,7 @@ import Post from 'modules/post/web/post.component';
 class TopPosts extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    topPosts: PropTypes.object
+    topPosts: PropTypes.array
   };
 
   componentDidMount() {

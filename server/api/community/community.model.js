@@ -28,7 +28,8 @@ const CommunitySchema = new Schema(
     lastTwitterUpdate: { type: Date },
     maxUserRank: { type: Number },
     maxPostRank: { type: Number },
-    numberOfElements: { type: Number }
+    numberOfElements: { type: Number },
+    memberCount: { type: Number }
   },
   {
     timestamps: true
@@ -58,9 +59,14 @@ CommunitySchema.pre('remove', async function remove(next) {
   }
 });
 
-// CommunitySchema.methods.updateMemberWeights = async function updateMemberWeights(members) {
-
-// }
+CommunitySchema.methods.updateMemeberCount = async function updateMemeberCount() {
+  try {
+    this.memberCount = await this.model('CommunityMember').count({ communityId: this._id });
+    return this.save();
+  } catch (err) {
+    throw err;
+  }
+};
 
 CommunitySchema.methods.leave = async function leave(userId) {
   try {
@@ -116,6 +122,7 @@ CommunitySchema.methods.leave = async function leave(userId) {
     });
 
     memberships = await Promise.all(updatedMemberships);
+    await this.updateMemeberCount();
   } catch (err) {
     throw err;
   }
@@ -125,7 +132,7 @@ CommunitySchema.methods.join = async function join(userId, role) {
   try {
     const user = await this.model('User').findOne(
       { _id: userId },
-      'name balance ethAddress image'
+      'name balance ethAddress image handle'
     );
     let member = await this.model('CommunityMember').findOne({
       user: userId,
@@ -160,7 +167,7 @@ CommunitySchema.methods.join = async function join(userId, role) {
 
     member = {
       user: userId,
-      embededUser: user,
+      embeddedUser: user,
       weight,
       balance: tokensToAdd,
       communityId: this._id,
@@ -183,6 +190,7 @@ CommunitySchema.methods.join = async function join(userId, role) {
     // console.log('totalWeights should be 1 ', totalWeight);
     // console.log('totalBalance should be ', userBalance, ' ', totalBalance);
 
+    await this.updateMemeberCount();
     return member;
   } catch (err) {
     throw err;

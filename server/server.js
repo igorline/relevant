@@ -117,7 +117,7 @@ if (process.env.NODE_ENV !== 'test') {
   require('./routes')(app);
 }
 
-require('./utils/updateDB-Community0.2.0');
+require('./utils/updateDB-Community0.3.0');
 require('./utils/ethereum')
 .init();
 

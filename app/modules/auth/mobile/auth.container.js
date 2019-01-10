@@ -9,7 +9,6 @@ import * as authActions from 'modules/auth/auth.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import Card from 'modules/navigation/mobile/card.component';
 import { transitionConfig } from 'app/utils';
-
 import TwitterSignup from './twitterSignup.component';
 import ImageUpload from './imageUpload.component';
 import Forgot from './forgot.component';
