@@ -16,7 +16,6 @@ const linkStyle = `
   color: ${colors.black};
 `;
 
-
 const StyledView = styled.View`
   margin-bottom: 1em;
   background: ${props => props.active ? 'hsl(0, 0%, 92%)' : 'transparent'};
