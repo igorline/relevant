@@ -19,7 +19,9 @@ if (process.env.BROWSER === true) {
 
 class Post extends Component {
   static propTypes = {
-    post: PropTypes.object,
+    post: PropTypes.shape({
+      data: PropTypes.object
+    }),
     repost: PropTypes.object,
     link: PropTypes.object,
     actions: PropTypes.object,
