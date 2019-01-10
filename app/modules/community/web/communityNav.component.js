@@ -3,20 +3,12 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { colors, layout } from 'app/styles/globalStyles';
 import * as communityActions from 'modules/community/community.actions';
 import styled, { css } from 'styled-components/primitives';
-import { colors } from 'app/styles/globalStyles';
 import ULink from 'modules/navigation/link.component';
 import CommunityActive from 'modules/community/web/communityActive.component';
 import get from 'lodash.get';
-
-// const StyledULink = styled(ULink)`
-//   display: flex;
-//   align-items: center;
-//   color: ${colors.black};
-// `;
-
-const borderColor = '#979797';
 
 const linkStyle = {
   display: 'flex',
@@ -26,8 +18,7 @@ const linkStyle = {
 
 const StyledView = styled.View`
   margin-bottom: 1em;
-  background: ${props => props.active ? '#D8D8D8' : 'transparent'};
-  /* padding: 2em; */
+  background: ${props => props.active ? 'hsl(0, 0%, 92%)' : 'transparent'};
 `;
 
 const StyledText = styled.Text`
