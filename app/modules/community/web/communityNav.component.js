@@ -1,22 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as communityActions from 'modules/community/community.actions';
-import styled, { css } from 'styled-components/primitives';
 import { colors } from 'app/styles/globalStyles';
+import * as communityActions from 'modules/community/community.actions';
+import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/web/communityActive.component';
 import get from 'lodash.get';
-
-// const StyledULink = styled(ULink)`
-//   display: flex;
-//   align-items: center;
-//   color: ${colors.black};
-// `;
-
-const borderColor = '#979797';
 
 const linkStyle = `
   display: flex;
@@ -24,10 +16,10 @@ const linkStyle = `
   color: ${colors.black};
 `;
 
+
 const StyledView = styled.View`
   margin-bottom: 1em;
-  background: ${props => props.active ? '#D8D8D8' : 'transparent'};
-  /* padding: 2em; */
+  background: ${props => props.active ? 'hsl(0, 0%, 92%)' : 'transparent'};
 `;
 
 const StyledImage = styled.Image`
@@ -68,8 +60,6 @@ class Community extends Component {
     return list.map(id => {
       const community = communities[id];
       const isActive = this.props.community.active === community.slug;
-      // const active = currentCommunity === community.slug;
-      // const className = active ? 'active' : null;
       return (
         <StyledView key={community._id} active={isActive} >
           {isActive ?
