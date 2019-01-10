@@ -163,10 +163,11 @@ class AppHeader extends Component {
       strict: false
     });
     if (
-      match.params.sort === 'post' ||
+      match &&
+      (match.params.sort === 'post' ||
       match.params.community === 'user' ||
       match.params.community === 'auth' ||
-      match.params.community === 'info'
+      match.params.community === 'info')
     ) match.params = {};
 
     return (

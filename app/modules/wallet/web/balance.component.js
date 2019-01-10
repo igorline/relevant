@@ -74,7 +74,7 @@ export default class Balance extends Component {
           <span>
             Warning: Your connected account doesn't not match the current Metamask account
           </span>
-          <Link to={'/wallet#connectAccount'}>
+          <Link to={'/user/wallet#connectAccount'}>
             <button className={'shadowButton'}>Connect Account</button>
           </Link>
         </div>
@@ -85,7 +85,7 @@ export default class Balance extends Component {
       accountWarning = (
         <div className="warningRow">
           <span>Warning: your Metamask account is not connected to Relevant</span>
-          <Link to={'/wallet#connectAccount'}>
+          <Link to={'/user/wallet#connectAccount'}>
             <button className={'shadowButton'}>Connect Account</button>
           </Link>
         </div>

@@ -94,14 +94,14 @@ const routes = [
         component: withAuth(AdminHeader, 'admin'),
         indexRoute: { component: AdminWallet },
         routes: [
-          { path: '/user/flagged', component: Flagged },
-          { path: '/user/waitlist', component: Waitlist },
-          { path: '/user/downvotes', component: Downvotes },
-          { path: '/user/topics', component: TopicsAdmin },
-          { path: '/user/invites', component: Invites },
-          { path: '/user/email', component: Email },
-          { path: '/user/topPosts', component: TopPosts },
-          { path: '/user/community', component: CommunityAdmin }
+          { path: '/admin/flagged', component: Flagged },
+          { path: '/admin/waitlist', component: Waitlist },
+          { path: '/admin/downvotes', component: Downvotes },
+          { path: '/admin/topics', component: TopicsAdmin },
+          { path: '/admin/invites', component: Invites },
+          { path: '/admin/email', component: Email },
+          { path: '/admin/topPosts', component: TopPosts },
+          { path: '/admin/community', component: CommunityAdmin }
         ]
       },
       { path: '*', component: NotFound },

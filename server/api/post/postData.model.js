@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 // TODO USE THIS
 const PostDataSchema = new Schema(
   {
-    post: { type: Schema.Types.ObjectId, ref: 'post' },
+    post: { type: Schema.Types.ObjectId, ref: 'Post' },
     community: String,
     communityId: { type: Schema.Types.ObjectId, ref: 'Community' },
 

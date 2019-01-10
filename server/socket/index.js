@@ -61,7 +61,6 @@ function addClient(socket, currentUser) {
 function createListener(io) {
   return data => {
     if (data._id) {
-      console.log('clients', clients);
       const sockets = clients[data._id];
       if (!sockets) {
         console.log('couldn\'t find any web socket clients');

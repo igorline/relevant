@@ -7,6 +7,7 @@ const Invest = require('../api/invest/invest.model');
 const Earnings = require('../api/earnings/earnings.model');
 const Relevance = require('../api/relevance/relevance.model');
 const Community = require('../api/community/community.model').default;
+const PostData = require('../api/post/postData.model.js');
 
 const Eth = require('../utils/ethereum');
 
@@ -169,6 +170,7 @@ export async function cleanupData() {
   .remove();
 
   const posts = await Post.find({ body: 'Hotties' });
+  const clearPostData = await PostData.remove({ post: { $in: posts.map(p => p._id) } }).exec();
 
   // Have to do this in order to trigger remove hooks;
   const clearPosts = posts.map(async post => post.remove());
@@ -196,7 +198,8 @@ export async function cleanupData() {
     clearUpvotes,
     clearEarnings,
     clearRelevance,
-    ...clearCommunity
+    ...clearCommunity,
+    clearPostData,
   ]);
 }
 
