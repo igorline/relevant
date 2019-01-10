@@ -179,6 +179,7 @@
     "autoprefixer": "^6.1.1",
     "ava": "^1.0.1",
     "babel-eslint": "^8.2.6",
+    "babel-plugin-inline-react-svg": "^1.0.1",
     "babel-plugin-module-resolver": "^3.1.1",
     "css-loader": "^0.23.0",
     "eslint": "^4.19.1",

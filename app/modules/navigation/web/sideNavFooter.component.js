@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import twitterIcon from 'app/public/img/twitter.svg';
-import slackIcon from 'app/public/img/slack-white.svg';
-import emailIcon from 'app/public/img/email.svg';
+import TwitterIcon from 'app/public/img/twitter.svg';
+import SlackIcon from 'app/public/img/slack-white.svg';
+import EmailIcon from 'app/public/img/email.svg';
 
 const greyText = '#717171';
 
@@ -21,11 +21,14 @@ const StyledIconLink = styled(StyledLink)`
   height: 20px;
   width: 20px;
   margin-right: 2em;
-`;
-
-const SVGContainer = styled.div`
+  &:hover svg * {
+    fill: grey;
+  }
   svg * {
     fill: black;
+
+  }
+  svg {
     height: 30px;
     width: 30px;
   }
@@ -42,10 +45,10 @@ const IconContainer = styled.div`
   align-items: center;
 `;
 
-const FooterIcon = ({ href, image, target }) => {
+const FooterIcon = ({ href, Image, target }) => {
   return (
-    <StyledIconLink to={href} target={target || '_self'} key={href}>
-      <SVGContainer dangerouslySetInnerHTML={{ __html: image }} />
+    <StyledIconLink to={href} target={target || '_self'}>
+      <Image />
     </StyledIconLink>
   );
 };
@@ -53,17 +56,17 @@ const FooterIcon = ({ href, image, target }) => {
 const icons = [
   {
     href: 'https://twitter.com/relevantfeed',
-    image: twitterIcon,
+    Image: TwitterIcon,
     target: '_blank',
   },
   {
     href: 'https://join.slack.com/t/relevantcommunity/shared_invite/enQtMjIwMjEwNzUzMjUzLTFkOTkwNzFjN2EzMjFhYTVkZDZmYzU1ZGFlZmY4MzdjNGMyOWIwYjhmYTE2OTQ1NmJlOWVmNjkyODNjM2I4YWI',
-    image: slackIcon,
+    Image: SlackIcon,
     target: '_blank',
   },
   {
     href: 'mailto:contact@4real.io',
-    image: emailIcon,
+    Image: EmailIcon,
     target: '_blank',
   }
 ];
@@ -75,7 +78,7 @@ const SideNavFooter = () => (
       <StyledLink to="/eula.html" target="_blank">Content Policy</StyledLink> | <StyledLink to="/privacy.html" target="_blank"> Privacy Policy</StyledLink>
     </p>
     <IconContainer>
-      {icons.map(icon => <FooterIcon {...icon} />)}
+      {icons.map(icon => <FooterIcon key={icon.href} {...icon} />)}
     </IconContainer>
   </Footer>
 );

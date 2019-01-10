@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ULink from 'modules/navigation/link.component';
+import ULink from 'modules/navigation/ULink.component';
 import styled from 'styled-components/primitives';
 
 const StyledText = styled.Text`
