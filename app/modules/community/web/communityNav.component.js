@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { colors, layout } from 'app/styles/globalStyles';
+import { colors } from 'app/styles/globalStyles';
 import * as communityActions from 'modules/community/community.actions';
-import styled, { css } from 'styled-components/primitives';
+import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/link.component';
 import CommunityActive from 'modules/community/web/communityActive.component';
 import get from 'lodash.get';
@@ -64,8 +64,6 @@ class Community extends Component {
     return list.map(id => {
       const community = communities[id];
       const isActive = this.props.community.active === community.slug;
-      // const active = currentCommunity === community.slug;
-      // const className = active ? 'active' : null;
       return (
         <StyledView key={community._id} active={isActive} >
           {isActive ?
