@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import styled from 'styled-components/primitives';
+import { StyleSheet } from 'react-primitives';
 import { colors, layout } from 'app/styles/globalStyles';
 import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/web/UAvatar.component';
@@ -14,7 +15,8 @@ const StyledAvatar = styled(UAvatar)`
 
 const NavSection = styled.View`
   padding: 2em;
-  border-bottom: ${layout.borderStyles(colors.borderColor)};
+  borderBottomColor: ${colors.borderColor};
+  borderBottomWidth: ${StyleSheet.hairlineWidth};
 `;
 
 const MemberContainer = styled.View`
