@@ -104,7 +104,7 @@ class PostButtons extends Component {
 
     let payout;
     if (post.data && post.data.paidOut) payout = post.data.payout;
-    else payout = computePayout(post.data, community);
+    payout = computePayout(post.data, community);
     if (post.data && post.data.parentPost) payout = null;
 
     const comments = post.commentCount || '';
