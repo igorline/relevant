@@ -25,7 +25,8 @@
     "prettier-watch": "onchange '**/*.js' -- prettier-eslint --write {{changed}}",
     "formatAll": "prettier-eslint 'app/**/**/*.js' --write",
     "start-ganache": "ganache-cli -i 7545",
-    "analyze": "BUNDLE_ANALYZE=true webpack --config ./webpack.production.config.js --progress --colors -p"
+    "analyze": "BUNDLE_ANALYZE=true webpack --config ./webpack.production.config.js --progress --colors -p",
+    "heroku-postbuild": "webpack --config ./webpack.production.config.js --progress --colors -p"
   },
   "dependencies": {
     "@babel/core": "^7.2.2",
