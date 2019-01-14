@@ -138,7 +138,7 @@ class CreatePostContainer extends Component {
       allTags: tags,
       postImage: this.state.urlPreview ? this.state.urlPreview.image : null
     };
-    this.props.actions.setCreaPostState(state);
+    this.props.actions.setCreatePostState(state);
   }
 
   validateInput() {

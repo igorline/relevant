@@ -64,9 +64,9 @@ export default class topics extends Component {
           key={topic._id}
           topic={topic}
           scrollToElement={() => {
-            this.scrollView.scrollToIndex({ viewPosition: 0.1, index });
+            this.scrollView.scrollToIndex({ viewPosition: 0.2, index });
             const scroll = () => {
-              setTimeout(() => this.scrollView.scrollToIndex({ viewPosition: 0.1, index }), 1);
+              setTimeout(() => this.scrollView.scrollToIndex({ viewPosition: 0.2, index }), 1);
               Keyboard.removeListener('keyboardDidShow', scroll);
             };
             if (Platform.OS === 'android') {

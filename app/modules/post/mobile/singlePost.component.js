@@ -28,7 +28,7 @@ class SinglePostComponent extends Component {
     postId: PropTypes.string,
     postComments: PropTypes.object,
     posts: PropTypes.object,
-    scene: PropTypes.object,
+    navigation: PropTypes.object,
     post: PropTypes.object,
     error: PropTypes.bool,
     actions: PropTypes.object,
@@ -83,10 +83,11 @@ class SinglePostComponent extends Component {
     });
 
     setTimeout(() => {
-      if (this.props.scene.openComment) {
-        if (this.props.scene.commentCount && this.comments) {
+      const { params } = this.props.navigation.state;
+      if (params && params.openComment) {
+        if (params.commentCount && this.comments) {
           this.scrollToBottom(true);
-        } else if (!this.props.scene.commentCount) {
+        } else if (!params.commentCount) {
           this.input.textInput.focus();
         }
       }
@@ -96,7 +97,7 @@ class SinglePostComponent extends Component {
 
   componentWillReceiveProps(next) {
     if (next.postComments && next.postComments !== this.props.postComments) {
-      if (!this.comments && this.props.scene.openComment) {
+      if (!this.comments && this.props.navigation.state.openComment) {
         this.scrollToBottom(true);
       }
 
@@ -219,7 +220,7 @@ class SinglePostComponent extends Component {
       <Post
         singlePost
         key={0}
-        scene={this.props.scene}
+        navigation={this.props.navigation}
         post={this.props.post}
         link={this.props.link}
         actions={this.props.actions}
@@ -286,6 +287,7 @@ class SinglePostComponent extends Component {
               top: this.state.top - this.state.suggestionHeight,
               left: 0,
               right: 0,
+              flex: 1,
               maxHeight: this.state.top,
               backgroundColor: 'white',
               borderTopWidth: 1,
@@ -313,7 +315,7 @@ class SinglePostComponent extends Component {
         behavior={'padding'}
         style={{ flex: 1, backgroundColor: 'white' }}
         keyboardVerticalOffset={
-          inputOffset + (Platform.OS === 'android' ? StatusBar.currentHeight / 2 : 0)
+          inputOffset + (Platform.OS === 'android' ? StatusBar.currentHeight : 0)
         }
       >
         {this.renderComments()}

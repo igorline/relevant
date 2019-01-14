@@ -14,7 +14,7 @@ import Percent from 'modules/stats/mobile/percent.component';
 
 let styles;
 
-export default class Footer extends Component {
+export default class TabBar extends Component {
   static propTypes = {
     auth: PropTypes.object,
     navigation: PropTypes.object,
@@ -44,14 +44,14 @@ export default class Footer extends Component {
   renderTab(tab) {
     const { notif, auth, navigation, changeTab } = this.props;
     const { user } = auth;
-    const currentTab = navigation.tabs.routes[navigation.tabs.index];
+    const currentTab = navigation.state ? navigation.state.routes[navigation.state.index] : null;
     let badge;
     const active = tab.key === currentTab.key;
     let activeText;
-    if (tab.key === 'activity' && notif.count) badge = notif.count;
+    if (tab.params.key === 'activity' && notif.count) badge = notif.count;
 
     let fontAdjust;
-    if (tab.title === 'Stats' && Platform.OS === 'ios') {
+    if (tab.params.title === 'Stats' && Platform.OS === 'ios') {
       fontAdjust = { fontSize: 15 };
     }
     let icon = (
@@ -63,14 +63,14 @@ export default class Footer extends Component {
           active ? styles.footerTextActive : null
         ]}
       >
-        {tab.icon}
+        {tab.params.icon}
       </Text>
     );
     let title = (
       <Text
         style={[styles.footerText, active || activeText ? styles.footerTextActive : null]}
       >
-        {tab.title}
+        {tab.params.title}
       </Text>
     );
     if (tab.key === 'myProfile') {
@@ -107,20 +107,16 @@ export default class Footer extends Component {
 
   render() {
     const { navigation } = this.props;
+    const tabs = [...navigation.state.routes];
     this.totalBadge = 0;
-    const tabs = [...navigation.tabs.routes];
-    let footerEl = null;
 
-    footerEl = tabs.map(t => this.renderTab(t));
-    return <View style={styles.footer}>{footerEl}</View>;
+    return <View style={styles.footer}>{tabs.map(t => this.renderTab(t))}</View>;
   }
 }
 
 const localStyles = StyleSheet.create({
   footer: {
-    position: 'absolute',
     width: fullWidth,
-    bottom: 0,
     height: IphoneX ? 83 : 50,
     flexDirection: 'row',
     alignItems: 'stretch',
@@ -150,16 +146,11 @@ const localStyles = StyleSheet.create({
     height: 25,
     width: 25,
     borderRadius: 12.5
-    // marginTop: -2,
   },
   icon: {
     fontSize: 20,
     color: greyText,
-    // height: 26,
-    // width: 20,
     fontFamily: Platform.OS === 'android' ? 'AndroidEmoji' : 'Georgia'
-    // lineHeight: 26,
-    // color: blue,
   },
   activeIcon: {},
   activityRow: {
@@ -169,7 +160,6 @@ const localStyles = StyleSheet.create({
   footerText: {
     paddingTop: 0,
     fontSize: 10,
-    // opacity: 0.7,
     color: greyText
   },
   footerTextActive: {

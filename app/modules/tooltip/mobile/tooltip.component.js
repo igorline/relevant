@@ -98,6 +98,7 @@ class Tooltip extends Component {
     });
 
     setTimeout(() => {
+      if (!props.auth.user) return;
       this.props.actions.setCurrentTooltip(props.auth.user.onboarding);
     }, 1100);
   }

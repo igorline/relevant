@@ -18,7 +18,7 @@ import socket from './socket.reducer';
 import view from './view.reducer';
 import subscriptions from './subscriptions.reducer';
 
-let navigation = {};
+let navigation = () => ({});
 let drizzleReducers = {};
 if (process.env.WEB !== 'true') {
   navigation = require('modules/navigation/navigation.reducer').default;

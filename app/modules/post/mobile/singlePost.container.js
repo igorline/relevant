@@ -19,7 +19,7 @@ import SinglePost from './singlePost.component';
 
 class SinglePostContainer extends Component {
   static propTypes = {
-    scene: PropTypes.object,
+    navigation: PropTypes.object,
     actions: PropTypes.object,
     comments: PropTypes.object,
     users: PropTypes.object,
@@ -40,9 +40,10 @@ class SinglePostContainer extends Component {
   }
 
   componentWillMount() {
-    const { posts, scene } = this.props;
-    const { id } = scene;
+    const { posts, navigation } = this.props;
+    const { id } = navigation.state.params;
     const post = posts.posts[id];
+    this.setTitle(this.props);
 
     InteractionManager.runAfterInteractions(() => {
       if (!post) {
@@ -52,19 +53,37 @@ class SinglePostContainer extends Component {
     });
   }
 
+  setTitle(props) {
+    const { posts, navigation } = props;
+    const { id } = navigation.state.params;
+    const post = posts.posts[id];
+    if (!post) return;
+
+    const title = post.title || post.body;
+    if (!this.props.navigation.state.params || title !== this.props.navigation.state.params.title) {
+      this.props.navigation.setParams({ title });
+    }
+  }
+
+  componentDidWillUpdate(next) {
+    if (!this.props.navigation.state.params || !this.props.navigation.state.params.title) {
+      this.setTitle(next);
+    }
+  }
+
   setEditing(bool) {
     this.setState({ editing: bool });
   }
 
   reload() {
-    const { id } = this.props.scene;
+    const { id } = this.props.navigation.state.params;
     this.props.actions.getSelectedPost(id);
     this.props.actions.getComments(id);
   }
 
   render() {
     let dataEl = null;
-    const { id } = this.props.scene;
+    const { id } = this.props.navigation.state.params;
     const { posts } = this.props;
     const post = posts.posts[id];
 
@@ -79,7 +98,6 @@ class SinglePostContainer extends Component {
           post={post}
           link={link}
           postComments={commentIds}
-          scene={this.props.scene}
           actions={this.props.actions}
           singlePostEditing={this.setEditing}
           error={this.error}
@@ -117,7 +135,7 @@ function mapStateToProps(state) {
     user: state.user,
     error: state.error.singlepost,
     comments: state.comments,
-    users: state.user.users,
+    users: state.user,
     tags: state.tags,
     myPostInv: state.investments.myPostInv
   };

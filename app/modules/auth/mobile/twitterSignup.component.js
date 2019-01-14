@@ -8,11 +8,12 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Alert
+  Alert,
+  StatusBar
 } from 'react-native';
 import PropTypes from 'prop-types';
 import codePush from 'react-native-code-push';
-import { globalStyles } from 'app/styles/global';
+import { globalStyles, IphoneX } from 'app/styles/global';
 import { NAME_PATTERN } from 'app/utils/text';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
 import TwitterButton from './TwitterButton.component';
@@ -23,7 +24,8 @@ export default class TwitterSignup extends Component {
   static propTypes = {
     auth: PropTypes.object,
     actions: PropTypes.object,
-    admin: PropTypes.object
+    admin: PropTypes.object,
+    navigation: PropTypes.object
   };
 
   constructor(props, context) {
@@ -133,15 +135,7 @@ export default class TwitterSignup extends Component {
         <TouchableOpacity
           // style={[styles.largeButton, {flex: 1}]}
           onPress={() => {
-            this.props.actions.push(
-              {
-                key: 'signup',
-                title: 'image',
-                component: 'image',
-                back: true
-              },
-              'auth'
-            );
+            this.props.navigation.navigate({ routeName: 'signup' });
           }}
         >
           <Text style={[styles.signInText, styles.active]}>Sign up with email</Text>
@@ -165,7 +159,9 @@ export default class TwitterSignup extends Component {
       <KeyboardAvoidingView
         behavior={'padding'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0}
+        keyboardVerticalOffset={Platform.OS === 'android' ?
+          StatusBar.currentHeight / 2 + 64 :
+          (IphoneX ? 88 : 64) }
       >
         <ScrollView
           keyboardShouldPersistTaps={'always'}

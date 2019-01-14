@@ -19,22 +19,33 @@ import * as animationActions from 'modules/animation/animation.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import CustomListView from 'modules/listview/mobile/customList.component';
 import Tabs from 'modules/navigation/mobile/tabs.component';
+import { get } from 'lodash';
 import ProfileComponent from './profile.component';
 
 let styles;
 
 class Profile extends Component {
   static propTypes = {
-    scene: PropTypes.object,
+    navigation: PropTypes.object,
     users: PropTypes.object,
     auth: PropTypes.object,
-    refresh: PropTypes.object,
+    refresh: PropTypes.number,
     reload: PropTypes.number,
     actions: PropTypes.object,
     posts: PropTypes.object,
     investments: PropTypes.object,
     error: PropTypes.bool
   };
+
+  // Doesn't work
+  // static navigationOptions = ({ navigation, navigationOptions }) => {
+  //   console.log('called nav options', navigationOptions);
+  //   // const { params } = navigation.state;
+
+  //   return {
+  //     title: navigation.getParam('id'),
+  //   };
+  // };
 
   constructor(props, context) {
     super(props, context);
@@ -57,9 +68,11 @@ class Profile extends Component {
   }
 
   componentWillMount() {
-    if (this.props.scene) {
-      this.userId = this.props.scene.id;
+    const { id } = get(this.props.navigation, 'state.params');
+    if (id) {
+      this.userId = id;
       this.userData = this.props.users[this.userId];
+      this.myProfile = id === get(this.props.auth, 'user._id');
 
       this.onInteraction = InteractionManager.runAfterInteractions(() => {
         this.loadUser();
@@ -72,11 +85,12 @@ class Profile extends Component {
       });
     } else {
       this.loaded = true;
-      this.userId = this.props.auth.user._id;
+      this.userId = get(this.props.auth, 'user.handle');
       this.userData = this.props.users[this.userId];
       this.myProfile = true;
       this.setState({});
     }
+    this.props.navigation.setParams({ title: this.userId });
   }
 
   componentWillReceiveProps(next) {
@@ -93,9 +107,7 @@ class Profile extends Component {
   }
 
   shouldComponentUpdate(next) {
-    const tab = next.tabs.routes[next.tabs.index];
-    if (tab.key !== 'myProfile' && !next.scene) return false;
-    return true;
+    return next.navigation.isFocused();
   }
 
   componentWillUnmount() {
@@ -118,13 +130,11 @@ class Profile extends Component {
   }
 
   renderRow(rowData, view) {
-    const scene = this.props.scene || { route: { id: this.userId } };
-
     if (view === 0) {
       const post = this.props.posts.posts[rowData];
       if (!post) return null;
       const link = this.props.posts.links[post.metaPost];
-      return <Post post={post} link={link} {...this.props} scene={scene} />;
+      return <Post post={post} link={link} {...this.props} />;
     }
     if (view === 1) {
       const investment = this.props.investments.investments[rowData];

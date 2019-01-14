@@ -7,26 +7,25 @@ import {
   Alert,
   StyleSheet,
   KeyboardAvoidingView,
-  ScrollView
+  ScrollView,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import dismissKeyboard from 'react-native-dismiss-keyboard';
+import { get } from 'lodash';
 
-import { globalStyles, fullHeight } from 'app/styles/global';
+import { globalStyles, IphoneX } from 'app/styles/global';
 
-let localStyles;
 let styles;
 
 class ResetPassword extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    scene: PropTypes.object,
     navigation: PropTypes.object
   };
 
   constructor(props, context) {
     super(props, context);
-    this.back = this.back.bind(this);
     this.validate = this.validate.bind(this);
     this.state = {
       message: '',
@@ -36,11 +35,8 @@ class ResetPassword extends Component {
   }
 
   componentDidMount() {
-    this.token = this.props.scene.route.token;
-  }
-
-  back() {
-    this.props.actions.pop(this.props.navigation.main);
+    const { index, routes } = this.props.navigation.state;
+    this.token = get(routes[index], 'params.token');
   }
 
   validate() {
@@ -53,34 +49,28 @@ class ResetPassword extends Component {
       Alert.alert('Password required');
       return;
     }
-    dismissKeyboard();
     this.props.actions.resetPassword(this.state.password, this.token)
     .then(success => {
       if (success) {
-        this.props.actions.replaceRoute(
-          {
-            key: 'login',
-            component: 'login',
-            title: 'Login',
-            showBackButton: true,
-            back: true
-          },
-          1,
-          'auth'
-        );
+        this.props.navigation.replace('login');
       }
-    });
+    })
+    .catch(Alert.alert);
   }
 
   render() {
-    styles = { ...localStyles, ...globalStyles };
-
     return (
-      <KeyboardAvoidingView behavior={'padding'} style={{ height: fullHeight - 60 }}>
+      <KeyboardAvoidingView
+        behavior={'padding'}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === 'android' ?
+          StatusBar.currentHeight / 2 + 64 :
+          (IphoneX ? 88 : 64) }
+      >
         <ScrollView
           keyboardShouldPersistTaps={'always'}
-          keyboardDismissMode={'interactive'}
           scrollEnabled={false}
+          keyboardDismissMode={'interactive'}
           contentContainerStyle={styles.fieldsParent}
         >
           <View style={styles.fieldsInner}>
@@ -124,7 +114,7 @@ class ResetPassword extends Component {
   }
 }
 
-localStyles = StyleSheet.create({
+const localStyles = StyleSheet.create({
   error: {
     color: 'red',
     textAlign: 'center'

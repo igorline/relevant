@@ -4,7 +4,7 @@ import * as utils from 'app/utils';
 
 const Alert = utils.alert.Alert();
 
-export function setCreaPostState(state) {
+export function setCreatePostState(state) {
   return {
     type: types.SET_CREATE_POST_STATE,
     payload: state

@@ -19,7 +19,7 @@ let styles;
 class StatsContainer extends Component {
   static propTypes = {
     auth: PropTypes.object,
-    refresh: PropTypes.object,
+    refresh: PropTypes.number,
     actions: PropTypes.object,
     error: PropTypes.bool
   };

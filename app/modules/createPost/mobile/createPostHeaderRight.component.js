@@ -3,46 +3,31 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Easing,
-  InteractionManager,
-  Alert
+  Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Analytics from 'react-native-firebase-analytics';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Transitioner from 'modules/navigation/mobile/Transitioner';
-import * as authActions from 'modules/auth/auth.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as postActions from 'modules/post/post.actions';
-import * as tagActions from 'modules/tag/tag.actions';
 import * as userActions from 'modules/user/user.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
-import * as tooltipActions from 'modules/tooltip/tooltip.actions';
-import Card from 'modules/navigation/mobile/card.component';
-import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
 import * as utils from 'app/utils';
 import { globalStyles, mainPadding } from 'app/styles/global';
-import UrlComponent from './url.component';
-import Categories from './categories.component';
-
 
 // eslint-disable-next-line
 const NativeAnimatedModule = require('NativeModules').NativeAnimatedModule;
 
 let styles;
 
-class CreatePostContainer extends Component {
+class CreatePostHeaderRight extends Component {
   static propTypes = {
-    tags: PropTypes.array,
     actions: PropTypes.object,
     createPost: PropTypes.object,
     navigation: PropTypes.object,
-    close: PropTypes.func,
-    navigator: PropTypes.object,
-    auth: PropTypes.object,
+    screenProps: PropTypes.object,
     share: PropTypes.bool,
-    user: PropTypes.object,
     editPost: PropTypes.object,
     postBody: PropTypes.object,
     repost: PropTypes.object,
@@ -59,25 +44,12 @@ class CreatePostContainer extends Component {
       creatingPost: false
     };
 
-    this.renderScene = this.renderScene.bind(this);
-    // this.renderRight = this.renderRight.bind(this);
-    this.back = this.back.bind(this);
-    this.next = this.next.bind(this);
+    this.rightButtonAction = this.rightButtonAction.bind(this);
     this.uploadPost = this.uploadPost.bind(this);
     this.createPost = this.createPost.bind(this);
-    this.configureTransition = this.configureTransition.bind(this);
-  }
-
-  componentDidMount() {
-    InteractionManager.runAfterInteractions(() => {
-      if (!this.props.tags.length) this.props.actions.getParentTags();
-    });
   }
 
   componentWillReceiveProps(next) {
-    if (next.navProps.scene.isActive === false) {
-      if (this.urlComponent) this.urlComponent.input.blur();
-    }
     if (
       this.props.createPost.edit &&
       this.props.createPost.postUrl !== next.createPost.postUrl
@@ -86,22 +58,7 @@ class CreatePostContainer extends Component {
     }
   }
 
-  back() {
-    if (this.urlComponent) this.urlComponent.input.blur();
-
-    let scene = 'home';
-    if (this.props.navigation.index > 0) scene = 'createPost';
-
-    if (this.props.navigation.index === 0) {
-      if (this.props.close) this.props.close();
-      // if (this.props.createPost.repost || this.props.createPost.edit) {
-      this.props.actions.clearCreatePost();
-      // }
-    }
-    this.props.actions.pop(scene);
-  }
-
-  next() {
+  rightButtonAction(props) {
     if (
       !this.skipUrl &&
       this.props.createPost.postUrl &&
@@ -112,7 +69,7 @@ class CreatePostContainer extends Component {
           text: 'Continue Anyway',
           onPress: () => {
             this.skipUrl = true;
-            return this.next(true);
+            return this.rightButtonAction(true);
           }
         },
         { text: 'Wait', onPress: () => null }
@@ -121,24 +78,19 @@ class CreatePostContainer extends Component {
     }
     this.skipUrl = false;
 
-    this.urlComponent.input.blur();
-
     if (this.props.createPost.repost) return this.createRepost();
     if (this.props.createPost.edit && !this.newUrl) {
       return this.editPost();
     }
 
-    if (this.props.navigation.index === 0 && this.enableNext) {
-      this.props.navigator.push(
-        {
-          key: 'categories',
-          back: true,
+    if (this.enableNext) {
+      props.navigation.navigate({
+        routeName: 'createPostTags',
+        params: {
           title: 'Post Category',
           next: 'Post'
-          // left: this.props.share ? 'Back' : null
-        },
-        'createPost'
-      );
+        }
+      });
     }
     return null;
   }
@@ -150,22 +102,13 @@ class CreatePostContainer extends Component {
       tags: [...new Set(props.allTags.map(tag => tag._id))],
       body: props.postBody,
       mentions: props.bodyMentions
-      // link: props.postUrl,
-      // title: props.urlPreview ? props.urlPreview.title.trim() : null,
-      // description: props.urlPreview ? props.urlPreview.description : null,
-      // category: props.postCategory,
-      // image: this.image,
-      // domain: props.domain,
-      // keywords: props.keywords,
-      // articleAuthor: props.articleAuthor,
-      // shortText: props.shortText,
     };
-    this.props.actions.editPost(postBody, this.props.auth.token)
+    this.props.actions.editPost(postBody)
     .then(res => {
       if (!res) return;
       Alert.alert('Success!');
       this.props.actions.clearCreatePost();
-      this.props.navigator.resetRoutes('home');
+      this.props.navigation.navigate('main');
       this.props.actions.setUserSearch([]);
     });
   }
@@ -182,24 +125,26 @@ class CreatePostContainer extends Component {
     };
 
     this.setState({ creatingPost: true });
-    this.props.actions.createComment(this.props.auth.token, commentObj)
+    this.props.actions.createComment(commentObj)
     .then(() => {
       this.props.actions.clearCreatePost();
-      this.props.actions.resetRoutes('home');
-      this.props.actions.resetRoutes('discover');
-      this.props.actions.changeTab('discover');
+      this.props.actions.setUserSearch([]);
+      this.setState({ creatingPost: false });
+
+      if (this.props.screenProps.close) {
+        return this.props.screenProps.close();
+      }
+
+      this.props.navigation.navigate('main');
+      this.props.navigation.navigate('discover');
+      this.props.navigation.popToTop();
       this.props.actions.reloadTab('discover');
       this.props.actions.setView('discover', 1);
-      this.props.actions.setUserSearch([]);
-      if (this.props.close) this.props.close();
-      this.setState({ creatingPost: false });
+      return null;
     });
   }
 
   createPost() {
-    // console.log(this.props.createPost.allTags.map(tag => tag._id));
-    // return;
-
     if (this.state.creatingPost) return;
 
     const props = this.props.createPost;
@@ -248,7 +193,6 @@ class CreatePostContainer extends Component {
       category: props.postCategory,
       image: this.image,
       mentions: props.bodyMentions,
-      investments: [],
       domain: props.domain,
       keywords: props.keywords,
       articleAuthor: props.articleAuthor,
@@ -257,40 +201,52 @@ class CreatePostContainer extends Component {
 
     if (props.edit) {
       postBody = { ...props.editPost, ...postBody };
-      return this.props.actions.editPost(postBody, this.props.auth.token)
+      return this.props.actions.editPost(postBody)
       .then(res => {
         if (!res) return;
         Alert.alert('Success!');
         this.props.actions.clearCreatePost();
-        this.props.actions.resetRoutes('createPost');
-        this.props.navigator.resetRoutes('home');
+        this.props.navigation.navigate('main');
+        this.props.actions.setUserSearch([]);
       });
     }
 
-    this.props.actions.submitPost(postBody, this.props.auth.token)
+    this.props.actions.submitPost(postBody)
     .then(results => {
       if (!results) {
         Alert.alert('Post error please try again');
         return this.setState({ creatingPost: false });
       }
 
-      if (this.props.close) this.props.close();
+      this.props.actions.setUserSearch([]);
       this.props.actions.clearCreatePost();
-      this.props.navigator.resetRoutes('home');
-      this.props.actions.resetRoutes('discover');
-      this.props.actions.resetRoutes('createPost');
-      this.props.navigator.changeTab('discover');
-      this.props.navigator.reloadTab('discover');
-      this.props.navigator.setView('discover', 1);
       Analytics.logEvent('newPost', {
         viaShare: this.props.share
       });
+
+      if (this.props.screenProps.close) {
+        return this.props.screenProps.close();
+      }
+
+      this.props.navigation.navigate('main');
+      this.props.navigation.navigate('discover');
+      this.props.navigation.popToTop();
+      this.props.actions.reloadTab('discover');
+      this.props.actions.setView('discover', 1);
       return null;
     });
     return null;
   }
 
-  renderRight(props) {
+  render() {
+    const { state } = this.props.navigation;
+    const { params } = state;
+
+    if (state.routeName === 'shareAuth') {
+      return null;
+    }
+
+
     this.enableNext = false;
     if (this.props.createPost.postBody && this.props.createPost.postBody.length) {
       this.enableNext = true;
@@ -303,14 +259,14 @@ class CreatePostContainer extends Component {
     }
     if (this.state.creatingPost) this.enabledNext = false;
 
-    const rightText = props.scene.route.next || 'Post';
+    const rightText = params && params.next ? params.next : 'Post';
 
     let enabled;
     let rightAction;
 
-    if (props.scene.route.key === 'createPost') {
+    if (state.routeName === 'createPostUrl') {
       enabled = this.enableNext;
-      rightAction = p => this.next(p);
+      rightAction = p => this.rightButtonAction(p);
     } else {
       enabled = this.props.createPost.postCategory && !this.state.creatingPost;
       rightAction = () => this.createPost();
@@ -318,9 +274,9 @@ class CreatePostContainer extends Component {
 
     return (
       <TouchableOpacity
-        key={props.scene.route.key}
+        key={state.routeName}
         style={[styles.rightButton]}
-        onPress={() => rightAction(props)}
+        onPress={() => rightAction(this.props)}
       >
         <Text
           style={[{ opacity: enabled ? 1 : 0.6 }, styles.active, styles.rightButtonText]}
@@ -328,71 +284,6 @@ class CreatePostContainer extends Component {
           {rightText}
         </Text>
       </TouchableOpacity>
-    );
-  }
-
-  renderScene(props) {
-    const { component } = props.scene.route;
-
-    if (this.state.creatingPost) return <CustomSpinner />;
-
-    switch (component) {
-      case 'createPost':
-        this.current = 'url';
-        return (
-          <UrlComponent
-            ref={c => {
-              this.urlComponent = c;
-            }}
-            share={this.props.share}
-            users={this.props.user}
-            user={this.props.auth.user}
-            {...this.props.createPost}
-            actions={this.props.actions}
-          />
-        );
-      case 'categories':
-        this.current = 'categories';
-        return <Categories done={this.createPost} {...this.props} />;
-      default:
-        return null;
-    }
-  }
-
-  configureTransition() {
-    // const easing = Easing.out(Easing.ease);
-    const easing = Easing.bezier(0.0, 0, 0.58, 1);
-
-    return {
-      duration: 220,
-      easing,
-      useNativeDriver: !!NativeAnimatedModule
-    };
-  }
-
-  render() {
-    const scene = this.props.navigation;
-
-    return (
-      <Transitioner
-        key="CreatePost"
-        style={{ backgroundColor: 'white' }}
-        navigation={{ state: scene }}
-        configureTransition={utils.transitionConfig}
-        render={transitionProps => (
-          <Card
-            style={{ backgroundColor: 'white' }}
-            renderScene={this.renderScene}
-            back={this.back}
-            scroll={this.props.navigation.scroll}
-            next={this.next}
-            renderRight={props => this.renderRight(props)}
-            share={this.props.share}
-            header
-            {...transitionProps}
-          />
-        )}
-      />
     );
   }
 }
@@ -415,12 +306,7 @@ styles = { ...localStyles, ...globalStyles };
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth,
-    navigation: state.navigation.createPost,
-    home: state.navigation.home,
     createPost: state.createPost,
-    user: state.user,
-    tags: state.tags.parentTags
   };
 }
 
@@ -428,13 +314,10 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       {
-        ...authActions,
         ...navigationActions,
         ...createPostActions,
         ...postActions,
-        ...tagActions,
         ...userActions,
-        ...tooltipActions
       },
       dispatch
     )
@@ -444,4 +327,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CreatePostContainer);
+)(CreatePostHeaderRight);

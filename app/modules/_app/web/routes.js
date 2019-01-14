@@ -2,7 +2,7 @@ import loadable from '@loadable/component';
 
 import App from './app';
 import NotFound from './404';
-import withAuth from './auth';
+import withAuth from './withAuth';
 
 const DiscoverContainer = loadable(() => import('modules/discover/web/discover.container'));
 const TopicsAdmin = loadable(() => import('modules/admin/web/topics.container'));

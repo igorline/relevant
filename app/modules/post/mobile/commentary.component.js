@@ -21,7 +21,8 @@ export default class Commentary extends Component {
     singlePost: PropTypes.bool,
     tooltip: PropTypes.bool,
     focusInput: PropTypes.func,
-    commentary: PropTypes.array
+    commentary: PropTypes.array,
+    navigation: PropTypes.object
   };
 
   constructor(props) {
@@ -84,7 +85,14 @@ export default class Commentary extends Component {
 
       repostEl = (
         <View style={{ marginBottom: 0 }}>
-          <PostInfo repost actions={actions} auth={auth} post={post} users={users} />
+          <PostInfo
+            repost
+            actions={actions}
+            auth={auth}
+            post={post}
+            users={users}
+            navigation={this.props.navigation}
+          />
           <PostBody
             repost
             actions={actions}
@@ -93,6 +101,7 @@ export default class Commentary extends Component {
               _id: repost._id,
               body: post.repost.commentBody
             }}
+            navigation={this.props.navigation}
           />
         </View>
       );
@@ -142,6 +151,7 @@ export default class Commentary extends Component {
               auth={auth}
               singlePost={singlePost}
               users={users}
+              navigation={this.props.navigation}
             />
             <PostBody
               short
@@ -150,6 +160,7 @@ export default class Commentary extends Component {
               actions={actions}
               auth={auth}
               singlePost={singlePost}
+              navigation={this.props.navigation}
             />
             <PostButtons
               post={post}
@@ -160,6 +171,7 @@ export default class Commentary extends Component {
               auth={auth}
               myPostInv={myPostInv}
               focusInput={focusInput}
+              navigation={this.props.navigation}
             />
           </View>
         </View>
