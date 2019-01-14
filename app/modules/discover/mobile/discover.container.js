@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Post from 'modules/post/mobile/post.component';
+import { get } from 'lodash';
 import * as userActions from 'modules/user/user.actions';
 import * as statsActions from 'modules/stats/stats.actions';
 import * as authActions from 'modules/auth/auth.actions';
@@ -24,7 +25,7 @@ const POST_PAGE_SIZE = 15;
 class Discover extends Component {
   static propTypes = {
     type: PropTypes.string,
-    scene: PropTypes.object,
+    navigation: PropTypes.object,
     tags: PropTypes.object,
     refresh: PropTypes.number,
     active: PropTypes.bool,
@@ -62,8 +63,9 @@ class Discover extends Component {
   }
 
   componentWillMount() {
-    if (this.props.scene) {
-      this.topic = this.props.scene.topic;
+    if (this.props.navigation.state.params) {
+      this.topic = this.props.navigation.state.params.topic;
+      this.topic = this.topic && this.topic._id ? this.topic._id : this.topic;
       this.filter = this.topic ? [this.topic] : [];
     }
   }
@@ -98,9 +100,9 @@ class Discover extends Component {
       case 0:
         if (this.topic) {
           return {
-            data: props.posts.topics.top[this.topic._id],
-            loaded: props.posts.loaded.topics[this.topic._id]
-              ? props.posts.loaded.topics[this.topic._id].top
+            data: props.posts.topics.top[this.topic],
+            loaded: props.posts.loaded.topics[this.topic]
+              ? props.posts.loaded.topics[this.topic].top
               : false
           };
         }
@@ -111,9 +113,9 @@ class Discover extends Component {
       case 1:
         if (this.topic) {
           return {
-            data: props.posts.topics.new[this.topic._id],
-            loaded: props.posts.loaded.topics[this.topic._id]
-              ? props.posts.loaded.topics[this.topic._id].new
+            data: props.posts.topics.new[this.topic],
+            loaded: props.posts.loaded.topics[this.topic]
+              ? props.posts.loaded.topics[this.topic].new
               : false
           };
         }
@@ -123,7 +125,7 @@ class Discover extends Component {
         };
       case 2:
         return {
-          data: props.userList[this.topic ? this.topic._id : 'all'],
+          data: props.userList[this.topic || 'all'],
           loaded: null
         };
       case 3:
@@ -174,7 +176,10 @@ class Discover extends Component {
   }
 
   renderHeader() {
-    if (this.state.view !== 3 || this.props.auth.user.twitterId) return null;
+    if (this.state.view !== 3 ||
+      get(this.props.auth, 'user.twitterId')) {
+      return null;
+    }
     return (
       <View style={{ paddingBottom: 20, paddingHorizontal: mainPadding }}>
         <TwitterButton auth={this.props.auth} actions={this.props.actions}>
@@ -192,6 +197,7 @@ class Discover extends Component {
     const { type } = this.myTabs[view];
     if (view !== 2) {
       const post = posts.posts[rowData];
+      if (!post) return null;
       const link = posts.links[post.metaPost];
       const commentary = post[type].map(c => posts.posts[c]);
 
@@ -208,10 +214,11 @@ class Discover extends Component {
           actions={this.props.actions}
           styles={styles}
           posts={posts}
+          navigation={this.props.navigation}
         />
       );
     }
-    const topic = this.topic ? this.topic._id : null;
+    const { topic } = this.topic;
     return (
       <DiscoverUser
         bio
@@ -285,7 +292,6 @@ function mapStateToProps(state) {
     error: state.error.discover,
     refresh: state.navigation.discover.refresh,
     reload: state.navigation.discover.reload,
-    tabs: state.navigation.tabs,
     topics: state.navigation.showTopics
   };
 }

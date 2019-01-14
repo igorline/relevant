@@ -8,12 +8,13 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
+  StatusBar
 } from 'react-native';
 import PropTypes from 'prop-types';
 import codePush from 'react-native-code-push';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
-import { globalStyles } from 'app/styles/global';
+import { globalStyles, IphoneX } from 'app/styles/global';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
 import TwitterButton from './TwitterButton.component';
 
@@ -30,7 +31,6 @@ class Login extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.back = this.back.bind(this);
     this.login = this.login.bind(this);
     this.state = {
       bool: false,
@@ -65,10 +65,6 @@ class Login extends Component {
       password: this.state.password,
       twitter: this.props.auth.twitter
     });
-  }
-
-  back() {
-    this.props.actions.pop(this.props.navigation.main);
   }
 
   render() {
@@ -114,7 +110,9 @@ class Login extends Component {
       <KBView
         behavior={'padding'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0}
+        keyboardVerticalOffset={Platform.OS === 'android' ?
+          StatusBar.currentHeight / 2 + 64 :
+          (IphoneX ? 88 : 64) }
       >
         <ScrollView
           keyboardShouldPersistTaps={'always'}
@@ -159,13 +157,11 @@ class Login extends Component {
 
           <TouchableOpacity
             onPress={() => {
-              this.props.actions.push(
+              this.props.navigation.navigate(
                 {
-                  key: 'forgot',
-                  title: 'Forgot Pass',
-                  back: true
+                  routeName: 'forgot',
+                  params: { title: 'Forgot Password' },
                 },
-                'auth'
               );
             }}
           >

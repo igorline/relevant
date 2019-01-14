@@ -1,36 +1,25 @@
 import {
-  POP_ROUTE,
-  PUSH_ROUTE,
-  CHANGE_TAB,
-  RESET_ROUTES,
   REFRESH_ROUTE,
-  REPLACE_ROUTE,
   RELOAD_ROUTE,
   RELOAD_ALL_TABS,
   SET_VIEW,
   TOGGLE_TOPICS,
   SCROLL
 } from 'core/actionTypes';
-
 import { setButtonTooltip } from 'modules/tooltip/tooltip.actions';
+import { dispatchNavigatorAction } from 'app/utils/nav';
 
 let dismissKeyboard;
 let safariView;
 let Orientation;
+let NavigationActions;
+let StackActions;
 if (process.env.WEB !== 'true') {
   Orientation = require('react-native-orientation');
   dismissKeyboard = require('react-native-dismiss-keyboard');
   safariView = require('react-native-safari-view').default;
-}
-
-export function push(route, key, animation = 'vertical') {
-  if (dismissKeyboard) dismissKeyboard();
-  return {
-    type: PUSH_ROUTE,
-    route,
-    key,
-    animation
-  };
+  NavigationActions = require('react-navigation').NavigationActions;
+  StackActions = require('react-navigation').StackActions;
 }
 
 export function scrolling(scroll) {
@@ -40,6 +29,28 @@ export function scrolling(scroll) {
   };
 }
 
+export function push(route) {
+  return () => {
+    // check if we need this
+    if (dismissKeyboard) dismissKeyboard();
+    dispatchNavigatorAction(NavigationActions.navigate({ routeName: route.key, params: route }));
+  };
+}
+
+export function pop() {
+  return () => {
+    dispatchNavigatorAction(NavigationActions.back());
+  };
+}
+
+
+export function replace(key) {
+  return () => {
+    dispatchNavigatorAction(StackActions.replace({ routeName: key }));
+  };
+}
+
+
 export function toggleTopics(showTopics) {
   return {
     type: TOGGLE_TOPICS,
@@ -47,34 +58,18 @@ export function toggleTopics(showTopics) {
   };
 }
 
-export function pop(key) {
-  return dispatch => {
-    if (dismissKeyboard) dismissKeyboard();
-    dispatch(toggleTopics(false));
-    dispatch({
-      type: POP_ROUTE,
-      key
-    });
-  };
-}
-
-export function changeTab(key) {
-  if (dismissKeyboard) dismissKeyboard();
-  return {
-    type: CHANGE_TAB,
-    key
-  };
-}
-
 export function goToTopic(topic) {
   return dispatch => {
-    // dispatch(changeTab('discover'));
+    dispatchNavigatorAction(NavigationActions.navigate({
+      routeName: 'discover' }
+    ));
+
     dispatch(
       push({
-        key: 'discover',
+        key: 'discoverTag',
         title: topic.categoryName,
         back: true,
-        id: topic._id,
+        id: topic._id || topic.topic,
         topic,
         gestureResponseDistance: 150
       })
@@ -113,23 +108,6 @@ export function reloadAllTabs() {
   };
 }
 
-export function resetRoutes(key) {
-  return {
-    type: RESET_ROUTES,
-    key
-  };
-}
-
-export function replaceRoute(route, index, key) {
-  return {
-    type: REPLACE_ROUTE,
-    payload: {
-      key,
-      index,
-      route
-    }
-  };
-}
 
 export function goToPeople(topic) {
   return push({

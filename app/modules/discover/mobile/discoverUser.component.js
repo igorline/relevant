@@ -16,7 +16,7 @@ class DiscoverUser extends Component {
     topic: PropTypes.string,
     renderRight: PropTypes.func,
     bio: PropTypes.bool,
-    relevance: PropTypes.object
+    relevance: PropTypes.number
   };
 
   constructor(props, context) {

@@ -23,7 +23,8 @@ class Post extends PureComponent {
     commentary: PropTypes.array,
     posts: PropTypes.object,
     singlePost: PropTypes.bool,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    navigation: PropTypes.object.isRequired // eslint-disable-line
   };
 
   render() {

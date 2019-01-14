@@ -25,6 +25,17 @@
   font-weight: bold;
 }
 
+@font-face {
+  font-family: 'BebasNeueRelevantRegular';
+  src: url('/fonts/BebasNeue-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'BebasNeueRelevantBold';
+  src: url('/fonts/BebasNeue-Bold.otf') format('opentype');
+  font-weight: bold;
+}
+
 
 
 .libre {

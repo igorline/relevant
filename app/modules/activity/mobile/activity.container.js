@@ -11,6 +11,7 @@ import * as navigationActions from 'modules/navigation/navigation.actions';
 import { globalStyles } from 'app/styles/global';
 import DiscoverUser from 'modules/discover/mobile/discoverUser.component';
 import CustomListView from 'modules/listview/mobile/customList.component';
+import { withNavigation } from 'react-navigation';
 import SingleActivity from './activity.component';
 import * as notifActions from './../activity.actions';
 
@@ -22,7 +23,7 @@ class Activity extends Component {
     auth: PropTypes.object,
     notif: PropTypes.object,
     actions: PropTypes.object,
-    refresh: PropTypes.object,
+    refresh: PropTypes.number,
     reload: PropTypes.number,
     error: PropTypes.bool,
     online: PropTypes.array,
@@ -63,9 +64,7 @@ class Activity extends Component {
   }
 
   shouldComponentUpdate(next) {
-    const tab = next.tabs.routes[next.tabs.index];
-    if (tab.key !== 'activity') return false;
-    return true;
+    return next.navigation.isFocused();
   }
 
   scrollToTop() {
@@ -153,7 +152,6 @@ const mapStateToProps = state => ({
   error: state.error.activity,
   refresh: state.navigation.activity.refresh,
   reload: state.navigation.activity.reload,
-  tabs: state.navigation.tabs,
   posts: state.posts
 });
 
@@ -171,7 +169,7 @@ const mapDispatchToProps = dispatch => ({
   )
 });
 
-export default connect(
+export default withNavigation(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Activity);
+)(Activity));

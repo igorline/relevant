@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, InteractionManager } from 'react-native';
 import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as createPostActions from 'modules/createPost/createPost.actions';
+import * as tagActions from 'modules/tag/tag.actions';
 import Topics from './topics.component';
 
-export default class Categories extends Component {
+class Categories extends Component {
   static propTypes = {
     createPost: PropTypes.object,
     actions: PropTypes.object,
@@ -16,6 +20,11 @@ export default class Categories extends Component {
   }
 
   componentWillMount() {
+    // TODO check this works
+    InteractionManager.runAfterInteractions(() => {
+      if (!this.props.tags.length) this.props.actions.getParentTags();
+    });
+
     if (this.props.createPost.postCategory) {
       this.selectedTopic = this.props.createPost.postCategory;
     }
@@ -58,3 +67,28 @@ export default class Categories extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    createPost: state.createPost,
+    user: state.user,
+    tags: state.tags.parentTags
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(
+      {
+        ...createPostActions,
+        ...tagActions,
+      },
+      dispatch
+    )
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Categories);

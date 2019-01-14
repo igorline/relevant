@@ -24,12 +24,6 @@ class Bio extends Component {
     this.updateBio = this.updateBio.bind(this);
   }
 
-  componentDidMount() {
-    if (this.props.myProfile && !this.props.user.bio) {
-      // this.setState({ editing: true });
-    }
-  }
-
   async updateBio(text) {
     const { user } = this.props;
     const bio = text;

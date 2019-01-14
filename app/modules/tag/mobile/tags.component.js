@@ -10,7 +10,6 @@ export default class Tags extends Component {
     toggleTag: PropTypes.func,
     actions: PropTypes.object,
     tags: PropTypes.object,
-    noReorder: PropTypes.bool,
     noScroll: PropTypes.bool
   };
 
@@ -43,7 +42,6 @@ export default class Tags extends Component {
         key={i}
       >
         <View style={{ flexDirection: 'row' }}>
-          {/* <Text style={[styles.font15, styles.emoji]}>{tag.emoji}</Text> */}
           <Text style={[styles.font15, { color: selected ? 'white' : '#808080' }]}>
             {name}
           </Text>
@@ -53,51 +51,30 @@ export default class Tags extends Component {
   }
 
   render() {
-    let tagsEl = null;
-    let el = null;
-    let selectedEl = null;
     const { tags, selectedTags } = this.props.tags;
-    let allTags;
+    if (selectedTags.length + tags.length === 0) return null;
+
     this.selectedLookup = {};
-
-    selectedEl = selectedTags.map((tag, i) => {
+    selectedTags.forEach(tag => {
       this.selectedLookup[tag._id] = tag;
-      return this.renderTag(tag, i);
     });
 
-    tagsEl = tags.map((tag, i) => {
-      if (!this.selectedLookup[tag._id]) {
-        return this.renderTag(tag, i);
-      }
-      return null;
-    });
+    const allTags = tags.map((tag, i) => this.renderTag(tag, i));
 
-    allTags = [...new Set([...selectedEl, tagsEl])];
-
-    if (this.props.noReorder) {
-      allTags = tags.map((tag, i) => this.renderTag(tag, i));
-    }
-
-    if (selectedTags.length + tags.length > 0) {
-      let horizontal = true;
-      if (this.props.noScroll) horizontal = false;
-      el = (
-        <ScrollView
-          horizontal={horizontal}
-          scrollEnabled
-          keyboardShouldPersistTaps={'always'}
-          showsHorizontalScrollIndicator={false}
-          automaticallyAdjustContentInsets={false}
-          contentContainerStyle={[
-            styles.tags,
-            this.props.noScroll ? { flexWrap: 'wrap' } : null
-          ]}
-        >
-          {allTags}
-        </ScrollView>
-      );
-    }
-
-    return el;
+    return (
+      <ScrollView
+        horizontal={!this.props.noScroll}
+        scrollEnabled
+        keyboardShouldPersistTaps={'always'}
+        showsHorizontalScrollIndicator={false}
+        automaticallyAdjustContentInsets={false}
+        contentContainerStyle={[
+          styles.tags,
+          this.props.noScroll ? { flexWrap: 'wrap' } : null
+        ]}
+      >
+        {allTags}
+      </ScrollView>
+    );
   }
 }

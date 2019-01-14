@@ -12,19 +12,22 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Prompt from 'rn-prompt';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as adminActions from 'modules/admin/admin.actions';
+import * as authActions from 'modules/auth/auth.actions';
 import { globalStyles, fullWidth, fullHeight, smallScreen } from 'app/styles/global';
+import { get } from 'lodash';
 
 let styles;
 
 class Auth extends Component {
   static propTypes = {
     auth: PropTypes.object,
-    actions: PropTypes.object,
+    // actions: PropTypes.object,
     // need this prop to pass to child components
     // eslint-disable-next-line
     navigation: PropTypes.object,
-    // admin: PropTypes.object,
-    share: PropTypes.bool // flag for share extension
   };
 
   constructor(props, context) {
@@ -61,30 +64,15 @@ class Auth extends Component {
   }
 
   login() {
-    this.props.actions.push(
-      {
-        key: 'login',
-        title: 'Login',
-        showBackButton: true,
-        back: true
-      },
-      'auth'
-    );
+    this.props.navigation.navigate({ routeName: 'login' });
   }
 
   signup() {
     // if (this.props.admin.currentInvite) {
-    return this.props.actions.push(
-      {
-        key: 'twitterSignup',
-        title: 'Signup',
-        showBackButton: true,
-        back: true
-        // code: this.props.admin.currentInvite.code,
-        // email: this.props.admin.currentInvite.email
-      },
-      'auth'
-    );
+    return this.props.navigation.navigate({
+      routeName: 'twitterSignup',
+      title: 'Signup',
+    });
     // }
 
     // // Android
@@ -236,7 +224,9 @@ class Auth extends Component {
   }
 
   render() {
-    const { isAuthenticated } = this.props.auth;
+    const share = get(this.props.navigation, 'state.params');
+    const { auth } = this.props;
+    const { isAuthenticated } = auth;
 
     let intro = (
       <View style={{ flex: 1, justifyContent: 'center' }}>
@@ -259,7 +249,7 @@ class Auth extends Component {
       </View>
     );
 
-    if (this.props.share) intro = <View style={{ flex: 1 }} />;
+    if (share) intro = <View style={{ flex: 1 }} />;
 
     let cta = (
       <View style={styles.authPadding}>
@@ -278,7 +268,7 @@ class Auth extends Component {
       </View>
     );
 
-    if (this.props.share) {
+    if (share) {
       cta = (
         <View style={{ flex: 1, alignSelf: 'center' }}>
           <Text
@@ -319,7 +309,7 @@ class Auth extends Component {
           <View style={styles.authDivider} />
         </View>
 
-        {this.props.share ? null : intro}
+        {share ? null : intro}
 
         {cta}
 
@@ -327,24 +317,23 @@ class Auth extends Component {
           title={this.promptTitle || ''}
           visible={this.state.promptVisible}
           onCancel={() => this.setState({ promptVisible: false })}
-          onSubmit={code => {
-            this.props.actions.checkInviteCode(code)
-            .then(invite => {
-              if (invite) {
-                this.props.actions.push(
-                  {
-                    key: 'twitterSignup',
-                    title: 'Signup',
-                    showBackButton: true,
-                    back: true,
-                    email: invite.email,
-                    code: invite.code
-                  },
-                  'auth'
-                );
-              }
-              this.setState({ promptVisible: false });
-            });
+          onSubmit={() => {
+            // this.props.actions.checkInviteCode(code)
+            // .then(invite => {
+            //   if (invite) {
+            this.props.navigation.navigate(
+              {
+                key: 'twitterSignup',
+                title: 'Signup',
+              },
+              // {
+              //   email: invite.email,
+              //   code: invite.code
+              // },
+            );
+            // }
+            this.setState({ promptVisible: false });
+            // });
           }}
         />
       </View>
@@ -447,4 +436,22 @@ const localStyles = StyleSheet.create({
 
 styles = { ...localStyles, ...globalStyles };
 
-export default Auth;
+const mapStateToProps = state => ({
+  auth: state.auth,
+  admin: state.admin
+});
+
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(
+    {
+      ...authActions,
+      ...adminActions
+    },
+    dispatch
+  )
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Auth);

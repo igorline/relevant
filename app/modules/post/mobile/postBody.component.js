@@ -11,7 +11,7 @@ class PostBody extends Component {
     actions: PropTypes.object,
     post: PropTypes.object,
     short: PropTypes.bool,
-    repost: PropTypes.object,
+    repost: PropTypes.bool,
     preview: PropTypes.bool,
     comment: PropTypes.object
   };

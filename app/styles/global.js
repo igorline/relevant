@@ -37,33 +37,42 @@ if (IphoneX) {
   headerHeight = 89;
 }
 
-const font = StyleSheet.create({
+export const font = {
   font10: {
-    fontSize: 10
+    fontSize: 10,
+    lineHeight: 10
   },
   font12: {
-    fontSize: 12
+    fontSize: 12,
+    lineHeight: 12
   },
   font13: {
-    fontSize: 13
+    fontSize: 13,
+    lineHeight: 13
   },
   font14: {
-    fontSize: 14
+    fontSize: 14,
+    lineHeight: 14
   },
   font15: {
-    fontSize: 15
+    fontSize: 15,
+    lineHeight: 15
   },
   font17: {
-    fontSize: 17
+    fontSize: 17,
+    lineHeight: 17
   },
   font20: {
-    fontSize: 20
+    fontSize: 20,
+    lineHeight: 20
   },
   font25: {
-    fontSize: 25
+    fontSize: 25,
+    lineHeight: 25
   },
   font40: {
-    fontSize: 40
+    fontSize: 40,
+    lineHeight: 40
   },
   bold: {
     fontWeight: 'bold'
@@ -85,16 +94,6 @@ const font = StyleSheet.create({
     lineHeight: 25,
     fontFamily: 'BebasNeueRelevantRegular',
     marginBottom: -2
-  },
-
-  navTitle: {
-    fontSize: 22.5,
-    fontFamily: 'BebasNeueRelevantRegular',
-    fontWeight: 'bold',
-    letterSpacing: 0.15,
-    // marginTop: 3,
-    marginBottom: -2,
-    color: darkGrey
   },
   headerInner: {
     flex: 1,
@@ -175,9 +174,9 @@ const font = StyleSheet.create({
     fontSize: 15,
     color: darkGrey
   }
-});
+};
 
-const colors = StyleSheet.create({
+export const colors = {
   active: {
     color: blue
   },
@@ -190,9 +189,9 @@ const colors = StyleSheet.create({
   greyText: {
     color: greyText
   }
-});
+};
 
-const alignment = StyleSheet.create({
+export const alignment = {
   textCenter: {
     textAlign: 'center'
   },
@@ -203,26 +202,9 @@ const alignment = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   }
-});
+};
 
-const layout = StyleSheet.create({
-  commentInputParent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: 'lightgrey',
-    backgroundColor: 'white'
-  },
-  commentInput: {
-    flex: 1,
-    padding: 10
-  },
-  commentSubmit: {
-    flex: 0,
-    width: 75,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
+export const layout = {
   loadMoreButton: {
     padding: 5,
     justifyContent: 'center',
@@ -577,9 +559,11 @@ const layout = StyleSheet.create({
     paddingTop: 15,
     flexGrow: 1
   }
-});
+};
 
-const globalStyles = { ...colors, ...font, ...alignment, ...layout };
+const globalStyles = StyleSheet.create(
+  { ...colors, ...font, ...alignment, ...layout }
+);
 
 export {
   globalStyles,

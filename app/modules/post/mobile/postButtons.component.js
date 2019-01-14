@@ -16,6 +16,7 @@ import IconI from 'react-native-vector-icons/Ionicons';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import { globalStyles, greyText, fullHeight } from 'app/styles/global';
 import { numbers } from 'app/utils';
+import { get } from 'lodash';
 
 let ActionSheet = ActionSheetIOS;
 
@@ -30,10 +31,10 @@ let styles;
 class PostButtons extends Component {
   static propTypes = {
     post: PropTypes.object,
-    tooltip: PropTypes.object,
+    tooltip: PropTypes.bool,
     actions: PropTypes.object,
     auth: PropTypes.object,
-    scene: PropTypes.object,
+    navigation: PropTypes.object,
     focusInput: PropTypes.func,
     myPostInv: PropTypes.array,
     link: PropTypes.object
@@ -248,7 +249,7 @@ class PostButtons extends Component {
   repostCommentary() {
     let { link } = this.props;
     if (!link) link = {};
-    this.props.actions.setCreaPostState({
+    this.props.actions.setCreatePostState({
       postBody: '',
       repost: this.props.post,
       urlPreview: {
@@ -266,28 +267,14 @@ class PostButtons extends Component {
         next: 'Post',
         direction: 'vertical',
         left: 'Cancel'
-      },
-      'home'
-    );
-    this.props.actions.replaceRoute(
-      {
-        key: 'createPost',
-        component: 'createPost',
-        back: true,
-        left: 'Cancel',
-        title: 'Repost',
-        next: 'Post',
-        direction: 'vertical'
-      },
-      0,
-      'createPost'
+      }
     );
   }
 
   repostUrl() {
     const { link } = this.props;
     if (!link) return;
-    this.props.actions.setCreaPostState({
+    this.props.actions.setCreatePostState({
       postBody: '',
       component: 'createPost',
       nativeImage: true,
@@ -305,31 +292,16 @@ class PostButtons extends Component {
         back: true,
         title: 'Add Commentary',
         next: 'Next',
-        direction: 'vertical'
-      },
-      'home'
-    );
-    this.props.actions.replaceRoute(
-      {
-        key: 'createPost',
-        component: 'createPost',
-        back: true,
-        left: 'Cancel',
-        title: 'New Commentary',
-        next: 'Next',
-        direction: 'vertical'
-      },
-      0,
-      'createPost'
+        direction: 'vertical',
+        left: 'Cancel'
+      }
     );
   }
 
   goToPost(comment) {
-    if (this.props.scene) {
-      if (this.props.scene.id === this.props.post._id) {
-        if (this.props.focusInput) this.props.focusInput();
-        return;
-      }
+    if (get(this.props.navigation, 'state.params.id') === this.props.post._id) {
+      if (this.props.focusInput) this.props.focusInput();
+      return;
     }
     let openComment = false;
     if (comment) openComment = true;
@@ -534,17 +506,6 @@ class PostButtons extends Component {
     );
   }
 }
-
-PostButtons.propTypes = {
-  actions: PropTypes.object,
-  post: PropTypes.object,
-  tooltip: PropTypes.bool,
-  link: PropTypes.object,
-  myPostInv: PropTypes.object,
-  auth: PropTypes.object,
-  scene: PropTypes.object,
-  focusInput: PropTypes.func
-};
 
 export default PostButtons;
 

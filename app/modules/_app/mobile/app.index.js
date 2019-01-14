@@ -2,7 +2,26 @@ import React, { Component } from 'react';
 import codePush from 'react-native-code-push';
 import { Provider } from 'react-redux';
 import configureStore from 'app/core/mobile/configureStore';
-import Application from './app.container';
+import AppContainer from 'modules/_app/mobile/app.container';
+import {
+  createAppContainer,
+  createStackNavigator
+} from 'react-navigation';
+import Analytics from 'react-native-firebase-analytics';
+import { setTopLevelNavigator } from 'app/utils/nav';
+
+// gets the current screen from navigation state
+function getActiveRouteName(navigationState) {
+  if (!navigationState) {
+    return null;
+  }
+  const route = navigationState.routes[navigationState.index];
+  // dive into nested navigators
+  if (route.routes) {
+    return getActiveRouteName(route);
+  }
+  return route.routeName;
+}
 
 const store = configureStore();
 const codePushOptions = {
@@ -10,14 +29,45 @@ const codePushOptions = {
   installMode: codePush.InstallMode.IMMEDIATE
 };
 
-class AppContainer extends Component {
+
+export const MainStack = createStackNavigator(
+  {
+    container: {
+      screen: AppContainer,
+      path: '',
+      navigationOptions: {
+        header: null,
+      }
+    },
+  },
+);
+
+const MainNavigator = createAppContainer(MainStack);
+
+
+class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Application />
+        <MainNavigator
+          uriPrefix={'https://relevant.community/'}
+          ref={navigatorRef => {
+            setTopLevelNavigator(navigatorRef);
+          }}
+          nNavigationStateChange={(prevState, currentState) => {
+            const currentScreen = getActiveRouteName(currentState);
+            const prevScreen = getActiveRouteName(prevState);
+
+            if (prevScreen !== currentScreen) {
+              Analytics.logEvent('screenView', {
+                viewName: currentScreen
+              });
+            }
+          }}
+        />
       </Provider>
     );
   }
 }
 
-export default codePush(codePushOptions)(AppContainer);
+export default codePush(codePushOptions)(App);

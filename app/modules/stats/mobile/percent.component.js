@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { numbers } from 'app/utils';
 import { globalStyles, green } from 'app/styles/global';
+import { get } from 'lodash';
 
 let styles;
 
@@ -14,7 +15,7 @@ class Percent extends Component {
   };
 
   componentDidMount() {
-    this.percent = numbers.percentChange(this.props.user.relevance);
+    this.percent = numbers.percentChange(get(this.props.user, 'relevance'));
     this.percentPretty = numbers.abbreviateNumber(this.percent);
     this.animate();
   }
@@ -24,7 +25,7 @@ class Percent extends Component {
   }
 
   animate() {
-    const newPercent = numbers.percentChange(this.props.user.relevance);
+    const newPercent = numbers.percentChange(get(this.props.user, 'relevance'));
     const newPercentPretty = numbers.abbreviateNumber(newPercent);
 
     if (parseFloat(this.percentPretty) !== parseFloat(newPercentPretty)) {
@@ -35,7 +36,7 @@ class Percent extends Component {
   }
 
   render() {
-    const user = this.props.user.relevance;
+    const user = get(this.props.user, 'relevance');
     // console.log(user);
     const fontSize = this.props.fontSize || 17;
     // let arrowSize = this.props.fontSize - 1;
