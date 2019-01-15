@@ -2,7 +2,6 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import createSocketIoMiddleware from 'redux-socket.io';
 import rootReducer from 'core/reducers';
-import screenTracking from './screenTracking';
 
 window.navigator.userAgent = 'react-native';
 const io = require('socket.io-client/dist/socket.io');
@@ -25,7 +24,7 @@ let store;
 export default function configureStore() {
   const socketIoMiddleware = createSocketIoMiddleware(socket, 'server/');
 
-  store = applyMiddleware(screenTracking, thunk, socketIoMiddleware)(createStore)(
+  store = applyMiddleware(thunk, socketIoMiddleware)(createStore)(
     rootReducer,
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
   );

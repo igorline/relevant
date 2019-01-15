@@ -3,13 +3,14 @@ import { StyleSheet, Text, Linking } from 'react-native';
 import PropTypes from 'prop-types';
 import { globalStyles } from 'app/styles/global';
 import * as utils from 'app/utils';
+import { get } from 'lodash';
 
 let styles;
 
 class TextBody extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    scene: PropTypes.object,
+    navigation: PropTypes.object,
     post: PropTypes.object,
     body: PropTypes.string,
     children: PropTypes.node,
@@ -36,7 +37,8 @@ class TextBody extends Component {
     if (!this.props.actions) return;
     const userId = user._id || user.replace('@', '');
     if (!user) return;
-    if (this.props.scene && this.props.scene.id === userId) return;
+    const params = get(this.props.navigation, 'state.params');
+    if (params && params.id === userId) return;
     this.props.actions.goToProfile(user);
   }
 
@@ -51,7 +53,8 @@ class TextBody extends Component {
 
   goToPost() {
     if (!this.props.actions || !this.props.post || !this.props.post._id) return;
-    if (this.props.scene && this.props.scene.id === this.props.post._id) return;
+    const params = get(this.props.navigation, 'state.params');
+    if (params && params.id === this.props.post._id) return;
     this.props.actions.goToPost(this.props.post);
   }
 
@@ -181,7 +184,7 @@ class TextBody extends Component {
 
     if (breakText) {
       bodyEl.push(
-        <Text style={[...this.props.style, styles.greyText]} key={'readmore'}>
+        <Text style={[this.props.style, styles.greyText]} key={'readmore'}>
           {tagsOnEnd ? '...' : ''}read more
         </Text>
       );

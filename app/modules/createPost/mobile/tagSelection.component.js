@@ -32,13 +32,7 @@ class TagSelection extends Component {
     const props = this.props.createPost;
     if (props) {
       this.bodyTags = props.bodyTags.map(tag => ({ _id: tag, bodyTag: true }));
-
-      this.tags = props.articleTags.map(tag => {
-        const tagObj = { _id: tag };
-        // this code pre-selects first three tags
-        // if (i < 3) this.bodyTags.push(tagObj);
-        return tagObj;
-      });
+      this.tags = props.keywords.map(tag => ({ _id: tag }));
       if (props.postCategory) this.setTopicTags(props.postCategory, true);
       else this.selectedTags = [...new Set(this.bodyTags)];
     }
@@ -68,7 +62,7 @@ class TagSelection extends Component {
     this.setState({ input: input.toLowerCase() });
     if (input === '') {
       this.inputTags = [];
-      this.props.actions.setCreaPostState({
+      this.props.actions.setCreatePostState({
         allTags: [...this.inputTags, ...this.selectedTags]
       });
     }
@@ -88,7 +82,7 @@ class TagSelection extends Component {
       return Alert.alert('👋 too many topics!');
     }
     this.inputTags = tags;
-    this.props.actions.setCreaPostState({
+    this.props.actions.setCreatePostState({
       allTags: [...this.inputTags, ...this.selectedTags]
     });
     return null;
@@ -112,7 +106,7 @@ class TagSelection extends Component {
       this.selectedTags.push({ _id: tag });
     }
 
-    this.props.actions.setCreaPostState({
+    this.props.actions.setCreatePostState({
       allTags: [...this.inputTags, ...this.selectedTags],
       selectedTags: this.selectedTags
     });
@@ -149,7 +143,6 @@ class TagSelection extends Component {
         />
         <View style={styles.break} />
         <Tags
-          noReorder
           noScroll
           toggleTag={this.toggleTag}
           tags={{ tags, selectedTags }}

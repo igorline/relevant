@@ -6,7 +6,6 @@ import {
   Image,
   TouchableHighlight,
   ActivityIndicator,
-  StatusBar,
   InteractionManager,
   Platform,
   Alert
@@ -30,7 +29,7 @@ if (Platform.OS === 'android') {
 
 class ArticleView extends Component {
   static propTypes = {
-    scene: PropTypes.object,
+    navigation: PropTypes.object,
     actions: PropTypes.object
   };
 
@@ -53,8 +52,8 @@ class ArticleView extends Component {
   componentWillMount() {
     this.onInteraction = InteractionManager.runAfterInteractions(() => {
       this.setState({
-        initalUrl: this.props.scene.uri,
-        url: this.props.scene.uri
+        initalUrl: this.props.navigation.state.params.uri,
+        url: this.props.navigation.state.params.uri
       });
     });
     Orientation.unlockAllOrientations();
@@ -203,11 +202,6 @@ class ArticleView extends Component {
 
     return (
       <View style={{ flex: 1, backgroundColor: 'white', paddingTop: 0 }}>
-        <StatusBar
-          hidden
-          networkActivityIndicatorVisible
-          // backgroundColor={'white'}
-        />
         {progressEl}
         {activity}
         {webView}
@@ -239,7 +233,7 @@ const localStyles = StyleSheet.create({
 styles = { ...globalStyles, ...localStyles };
 
 export default connect(
-  () => null,
+  () => ({}),
   dispatch => ({
     actions: bindActionCreators(navigationActions, dispatch)
   })

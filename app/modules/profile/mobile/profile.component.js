@@ -252,7 +252,7 @@ class ProfileComponent extends Component {
           {bottomSection}
         </View>
 
-        {user.bio !== '' ? (
+        {user.bio !== '' || this.props.myProfile ? (
           <Bio
             scrollTo={this.props.scrollTo}
             user={user}

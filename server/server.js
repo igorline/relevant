@@ -84,7 +84,10 @@ function requireHTTPS(req, res, next) {
   }
   return next();
 }
-app.use(requireHTTPS);
+
+if (!process.env.NO_SSL) {
+  app.use(requireHTTPS);
+}
 
 // public folder
 app.use(Express.static(path.join(__dirname, '/../app/public')));

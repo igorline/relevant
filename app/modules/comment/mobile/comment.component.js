@@ -31,13 +31,12 @@ class Comment extends Component {
     actions: PropTypes.object,
     parentEditing: PropTypes.func,
     navigator: PropTypes.object,
-    scene: PropTypes.object,
     scrollToComment: PropTypes.func,
     auth: PropTypes.object,
     myPostInv: PropTypes.object,
     singlePost: PropTypes.bool,
     users: PropTypes.object,
-    focusInput: PropTypes.func
+    focusInput: PropTypes.func,
   };
 
   constructor(props, context) {
@@ -124,7 +123,8 @@ class Comment extends Component {
 
   setSelected(user) {
     if (!user) return;
-    if (this.props.scene && this.props.scene.id === user._id) return;
+    // const { params } = this.props.navigation.state;
+    // if (params && params.id === user._id) return;
     this.props.actions.goToProfile(user);
   }
 

@@ -431,7 +431,7 @@ export function getComments(post, skip, limit) {
   };
 }
 
-export function createComment(tk, commentObj) {
+export function createComment(commentObj) {
   return async dispatch => {
     try {
       const response = await api.request({

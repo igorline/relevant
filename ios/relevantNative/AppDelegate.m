@@ -52,14 +52,22 @@
                       sourceApplication:sourceApplication annotation:annotation];
 }
 
-// twitter
+// twitter + url
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
-  return [[Twitter sharedInstance] application:app openURL:url options:options];
+
+  NSString* stringURL = [url absoluteString];
+
+  BOOL UrlHandled = [RCTLinkingManager application:app openURL:url options:options] &&
+  ([stringURL hasPrefix:@"Relevant://"] == YES || [stringURL hasPrefix:@"https://relevant.community/"] == YES);
+
+  BOOL TwitterHandled = [[Twitter sharedInstance] application:app openURL:url options:options];
+
+  return UrlHandled || TwitterHandled;
 }
 
 // Used for universal links
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity
- restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler
+ restorationHandler:(void(^)(NSArray * _Nullable))restorationHandler
 {
   return [RCTLinkingManager application:application
                    continueUserActivity:userActivity

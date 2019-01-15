@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import AvatarBox from 'modules/user/web/avatarbox.component';
+// import AvatarBox from 'modules/user/avatarbox.component.styled';
 import Tag from 'modules/tag/web/tag.component';
 import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
@@ -60,7 +61,7 @@ class Post extends Component {
         domain: link.domain
       }
     };
-    this.props.actions.setCreaPostState(editPost);
+    this.props.actions.setCreatePostState(editPost);
     this.props.history.push(this.props.location.pathname + '#newpost');
   }
 
@@ -129,6 +130,7 @@ class Post extends Component {
                 auth={this.props.auth}
                 date={post.postDate}
                 repost={repost}
+                big
               />
               {popup}
             </div>

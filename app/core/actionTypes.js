@@ -86,12 +86,7 @@ export const SET_POST_CATEGORY = 'SET_POST_CATEGORY';
 export const CLEAR_CREATE_POST = 'CLEAR_CREATE_POST';
 export const SET_TOPIC_POSTS = 'SET_TOPIC_POSTS';
 
-export const PUSH_ROUTE = 'PUSH_ROUTE';
-export const POP_ROUTE = 'POP_ROUTE';
-export const CHANGE_TAB = 'CHANGE_TAB';
-export const RESET_ROUTES = 'RESET_ROUTES';
 export const REFRESH_ROUTE = 'REFRESH_ROUTE';
-export const REPLACE_ROUTE = 'REPLACE_ROUTE';
 export const RELOAD_ROUTE = 'RELOAD_ROUTE';
 export const RELOAD_ALL_TABS = 'RELOAD_ALL_TABS';
 export const SHOW_TOOLTIP = 'SHOW_TOOLTIP';

@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
-import UserName from 'modules/user/mobile/avatar.component';
+import UserName from 'modules/user/avatarbox.component.styled';
 import { globalStyles, greyText } from 'app/styles/global';
 import { numbers } from 'app/utils';
 
@@ -33,7 +33,7 @@ class PostInfo extends Component {
     users: PropTypes.object,
     big: PropTypes.bool,
     preview: PropTypes.bool,
-    repost: PropTypes.object
+    repost: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -80,7 +80,7 @@ class PostInfo extends Component {
 
   toggleEditing() {
     const { post, actions } = this.props;
-    actions.setCreaPostState({
+    actions.setCreatePostState({
       postBody: post.body,
       nativeImage: true,
       postUrl: post.link,
@@ -99,9 +99,9 @@ class PostInfo extends Component {
         key: 'createPost',
         back: true,
         title: 'Edit Post',
-        next: 'Update'
-      },
-      'home'
+        next: 'Update',
+        left: 'Cancel'
+      }
     );
   }
 

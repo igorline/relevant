@@ -40,7 +40,7 @@ export default class UrlPreviewComponent extends Component {
   }
 
   removeUrlPreview() {
-    this.props.actions.setCreaPostState({ urlPreview: null, postUrl: null });
+    this.props.actions.setCreatePostState({ urlPreview: null, postUrl: null });
   }
 
   previewMenu() {
