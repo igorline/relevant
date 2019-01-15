@@ -39,7 +39,6 @@ export async function members(req, res, next) {
   try {
     const community = req.params.slug;
     const users = await CommunityMember.find({ community }).sort('role reputation')
-    .populate('user', 'handle name image');
     res.status(200).json(users);
   } catch (err) {
     next(err);

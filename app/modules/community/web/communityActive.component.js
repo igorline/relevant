@@ -64,7 +64,7 @@ class CommunityActive extends Component {
     const { community, children } = this.props;
     const topics = get(community, 'topics', []);
     const members = get(community, 'members', []);
-    const totalMembers = members.length;
+    const totalMembers = get(community, 'memberCount', 0);
     const limitedMembers = members.slice(0, 12);
     return (
       <StyledCommunityList>
@@ -84,7 +84,7 @@ class CommunityActive extends Component {
             {limitedMembers.map(member => (
               <StyledAvatar
                 key={member._id}
-                user={member.user}
+                user={member.embeddedUser}
                 size={32}
                 noName
               />
