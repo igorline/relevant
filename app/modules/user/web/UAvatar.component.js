@@ -14,7 +14,7 @@ const StyledImage = styled.Image`
   height: ${props => props.size ? props.size : '30px'};
   border-radius: 50;
   display: inline-block;
-  background: green;
+  background: black;
 `;
 
 
