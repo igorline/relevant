@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import styled from 'styled-components/primitives';
 import { StyleSheet } from 'react-primitives';
-import { colors, layout } from 'app/styles/globalStyles';
+import { colors } from 'app/styles/globalStyles';
 import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/web/UAvatar.component';
 
@@ -30,6 +30,7 @@ const TopicsContainer = styled.View`
   margin: 1em 0 0 1em;
 `;
 
+// TODO: match to style guide once we get it e.g. h2, h3
 const MemberCount = styled.Text`
   font-weight: bold;
   color: black;
