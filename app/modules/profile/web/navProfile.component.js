@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import { connect } from 'react-redux';
-import Avatar from 'modules/user/web/avatar.component';
+import UAvatar from 'modules/user/UAvatar.component';
 import { numbers } from 'app/utils';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
@@ -26,9 +26,8 @@ const StyledIconImg = styled.img`
   margin: 0 0.3em 0 1em ;
 `;
 
-const StyledAvatar = styled(Avatar)`
-  background: red;
-  margin: 0 1em;
+const StyledAvatar = styled(UAvatar)`
+
 `;
 
 
@@ -83,7 +82,7 @@ class NavProfile extends Component {
         <div>{user.name}</div>
         <PendingPayouts>PENDING PAYOUTS</PendingPayouts>
         <ProfileDetailsContainer>
-          <StyledAvatar user={user} size={64} />
+          <StyledAvatar user={user} size={64} noName />
           <ULink to="/user/wallet" styles={linkStyles}>
             <StyledIconImg src="/img/r-emoji.png" alt="Relevance" />
             <span>{Math.round(user.relevance ? user.relevance.pagerank || 0 : 0)}</span>
