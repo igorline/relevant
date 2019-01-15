@@ -7,6 +7,7 @@ import * as PostActions from 'modules/post/post.actions';
 import Eth from 'modules/web_ethTools/eth.context';
 import Profile from './profile.component';
 import UserPosts from './userPosts.component';
+import { logoutAction } from 'modules/auth/auth.actions';
 
 const pageSize = 10;
 
@@ -74,7 +75,8 @@ const mapDispatchToProps = dispatch =>
           {},
           {
             ...UserActions,
-            ...PostActions
+            ...PostActions,
+            logoutAction,
           }
         ),
         dispatch

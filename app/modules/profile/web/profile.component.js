@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import { bindActionCreators } from 'redux';
+import get from 'lodash.get';
 import { connect } from 'react-redux';
 import Avatar from 'modules/user/web/avatar.component';
 import { numbers } from 'app/utils';
+import styled from 'styled-components';
 
 if (process.env.BROWSER === true) {
   require('./profile.css');
 }
+
+const Logout = styled.a`
+  display: inline-block;
+  width: 100%;
+  text-align: right;
+  padding-right: 2em;
+`;
 
 class Profile extends Component {
   static propTypes = {
@@ -39,6 +47,8 @@ class Profile extends Component {
     const fixed = n => numbers.abbreviateNumber(n, 2);
     const { id } = this.props.match.params;
     const user = this.props.user.users[id];
+    const { actions, auth } = this.props;
+    const isOwnProfile = get(user, 'id') === get(auth, 'user.id');
     if (!user) {
       return <div className="profileContainer">User not found!</div>;
     }
@@ -51,7 +61,11 @@ class Profile extends Component {
 
     return (
       <div className="profileContainer">
+
         <div className="profileHero">
+          { isOwnProfile ?
+            <Logout onClick={() => { actions.logoutAction(user); }}> Logout</Logout> : null
+          }
           <Avatar user={user} />
           <div className="name">{user.name}</div>
           <div className="relevance">
@@ -86,7 +100,8 @@ const mapStateToProps = state => ({
   auth: state.auth
 });
 
+
 export default connect(
   mapStateToProps,
-  {}
+  {},
 )(Profile);
