@@ -29,9 +29,14 @@ const NewPost = styled.button`
   height: 4em;
   padding: 0 3em;
   font-size: 14px;
+  font-weight: bold;
   a {
     color: white;
   }
+`;
+
+const Login = styled.a`
+  ${layout.linkStyle}
 `;
 
 const SubNav = styled.div`
@@ -81,9 +86,7 @@ class ContentHeader extends Component {
                 </NewPost>
               </Link>
               :
-              <div>
-                <div onClick={this.toggleLogin}>Login</div>
-              </div>
+              <Login onClick={this.toggleLogin} color={colors.blue}>Login</Login>
           }
 
         </SubNav>

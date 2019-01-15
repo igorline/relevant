@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Avatar from 'modules/user/web/avatar.component';
 import { numbers } from 'app/utils';
 import styled from 'styled-components';
+import { layout, colors } from 'app/styles/globalStyles';
 
 if (process.env.BROWSER === true) {
   require('./profile.css');
@@ -15,6 +16,7 @@ const Logout = styled.a`
   width: 100%;
   text-align: right;
   padding-right: 2em;
+  ${layout.linkStyle}
 `;
 
 class Profile extends Component {
@@ -64,7 +66,7 @@ class Profile extends Component {
 
         <div className="profileHero">
           { isOwnProfile ?
-            <Logout onClick={() => { actions.logoutAction(user); }}> Logout</Logout> : null
+            <Logout onClick={() => { actions.logoutAction(user); }} color={colors.blue}> Logout</Logout> : null
           }
           <Avatar user={user} />
           <div className="name">{user.name}</div>

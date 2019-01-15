@@ -8,4 +8,8 @@ export default {
   borderStyles: (color) => `1px solid ${color || 'black'}`,
   headerHeight: '100px',
   sideNavWidth: '300px',
+  linkStyle: `
+  text-decoration: none;
+    color: ${(props) => props.color || 'black'}
+  `,
 };
