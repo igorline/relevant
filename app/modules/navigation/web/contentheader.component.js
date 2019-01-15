@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter, Link } from 'react-router-dom';
 import DiscoverTabs from 'modules/discover/web/discoverTabs.component';
 import ActivityButton from 'modules/activity/web/activityButton.component';
+import AuthContainer from 'modules/auth/web/auth.container';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { colors, layout } from 'app/styles/globalStyles';
@@ -44,28 +45,65 @@ const ActivityButtonContainer = styled.span`
 `;
 
 
-const ContentHeader = (props) => {
-  const { location, auth, className } = props;
-  return (
-    <Nav className={className}>
-      <DiscoverTabs />
-      <SubNav>
-        <ActivityButtonContainer>
-          <ActivityButton />
-        </ActivityButtonContainer>
-        <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
-          <NewPost >
-              New Post
-          </NewPost>
-        </Link>
-      </SubNav>
-    </Nav>
-  );
-};
+class ContentHeader extends Component {
+  static propTypes = {
+    // auth: PropTypes.object,
+  };
+
+  state = {
+    openLoginModal: false
+  };
+
+  toggleLogin = () => {
+    this.setState({ openLoginModal: !this.state.openLoginModal });
+  }
+
+  closeModal() {
+    this.props.history.push(this.props.location.pathname);
+  }
+
+  render() {
+    const { location, auth, className } = this.props;
+    const { user } = auth;
+    const temp = user && user.role === 'temp';
+    return (
+      <Nav className={className}>
+        <DiscoverTabs />
+        <SubNav>
+          <ActivityButtonContainer>
+            <ActivityButton />
+          </ActivityButtonContainer>
+          {
+            auth.isAuthenticated ?
+              <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
+                <NewPost >
+                    New Post
+                </NewPost>
+              </Link>
+              :
+              <div>
+                <div onClick={this.toggleLogin}>Login</div>
+              </div>
+          }
+
+        </SubNav>
+        <AuthContainer
+          toggleLogin={this.toggleLogin.bind(this)}
+          open={this.state.openLoginModal || temp}
+          modal
+          {...this.props}
+        />
+      </Nav>
+    );
+  }
+}
+
 
 ContentHeader.propTypes = {
   location: PropTypes.object,
   auth: PropTypes.object,
+  history: PropTypes.object,
+  className: PropTypes.string,
 };
 
 function mapStateToProps(state) {
