@@ -42,6 +42,10 @@ const CommunityLink = ({ community }) => (
   </ULink>
 );
 
+CommunityLink.propTypes = {
+  community: PropTypes.object,
+};
+
 
 class Community extends Component {
   static propTypes = {

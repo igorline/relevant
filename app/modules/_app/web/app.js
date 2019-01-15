@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import Header from 'modules/navigation/web/header.component';
-import AppHeader from 'modules/navigation/web/appHeader.component';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
 import { getCommunities } from 'modules/community/community.actions';

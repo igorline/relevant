@@ -8,7 +8,6 @@ import { logoutAction } from 'modules/auth/auth.actions';
 import Eth from 'modules/web_ethTools/eth.context';
 import Profile from './profile.component';
 import UserPosts from './userPosts.component';
-import { layout, colors } from 'app/styles/globalStyles';
 
 const pageSize = 10;
 

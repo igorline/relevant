@@ -22,14 +22,17 @@ if (process.env.BROWSER === true) {
   require('./avatarbox.css');
 }
 
-export default class UAvatar extends Component {
+class UAvatar extends Component {
   static propTypes = {
     user: PropTypes.object,
     size: PropTypes.number,
     noLink: PropTypes.bool,
     noName: PropTypes.bool,
     className: PropTypes.string,
-    // style: PropTypes.string,
+    style: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.array,
+    ]),
   };
 
   render() {
@@ -60,3 +63,5 @@ export default class UAvatar extends Component {
     );
   }
 }
+
+export default UAvatar;
