@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Textarea from 'react-textarea-autosize';
-import { alert, token, text } from 'app/utils';
+import { alert, text } from 'app/utils';
 
 class CommentForm extends Component {
   static propTypes = {
@@ -71,7 +71,7 @@ class CommentForm extends Component {
     this.setState({ comment: '', inputHeight: 50 });
 
     return this.props.actions
-    .createComment(await token.get(), commentObj)
+    .createComment(commentObj)
     .then(success => {
       if (!success) {
         this.setState({ comment, inputHeight: 50 });

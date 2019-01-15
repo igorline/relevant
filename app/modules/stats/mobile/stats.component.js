@@ -16,13 +16,14 @@ class Stats extends Component {
     discover: PropTypes.bool,
     parent: PropTypes.object,
     actions: PropTypes.object,
-    currentView: PropTypes.string,
+    // currentView: PropTypes.string,
     size: PropTypes.string,
     textStyle: PropTypes.object,
     topic: PropTypes.string,
     renderLeft: PropTypes.object,
     style: PropTypes.object,
-    entity: PropTypes.object
+    entity: PropTypes.object,
+    auth: PropTypes.object
   };
 
   constructor(props, context) {
@@ -49,12 +50,14 @@ class Stats extends Component {
   }
 
   toggleTooltip(name) {
-    if (
-      (name === 'relevance' || name === 'coin') &&
-      this.props.currentView !== 'discover'
-    ) {
-      return;
-    }
+    // TODO test the onboarding here — might need this
+    // console.log('toggle toolitp ', name);
+    // if (
+    //   (name === 'relevance' || name === 'coin') &&
+    //   // this.props.currentView !== 'discover'
+    // ) {
+    //   return;
+    // }
     if (this.props.type !== 'nav') return;
     if (!this.tooltipParent[name]) return;
     this.tooltipParent[name].measureInWindow((x, y, w, h) => {
@@ -69,7 +72,9 @@ class Stats extends Component {
   }
 
   render() {
-    const { type, entity } = this.props;
+    const { type } = this.props;
+    const entity = this.props.entity || this.props.auth.user;
+    if (!entity) return null;
 
     let statsStyle = [
       { fontSize: 17, lineHeight: 17, height: 17 },
@@ -206,7 +211,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   state => ({
     auth: state.auth,
-    currentView: state.navigation.currentView
+    // currentView: state.navigation.currentView
   }),
   mapDispatchToProps
 )(Stats);

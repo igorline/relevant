@@ -67,7 +67,7 @@ class CommentInput extends Component {
     this.props.actions.setUserSearch([]);
 
     return this.props.actions
-    .createComment(this.props.auth.token, commentObj)
+    .createComment(commentObj)
     .then(success => {
       if (!success) {
         this.setState({ comment, inputHeight: 50 });
@@ -190,12 +190,31 @@ class CommentInput extends Component {
 export default CommentInput;
 
 const localStyles = StyleSheet.create({
+  commentInput: {
+    flex: 1,
+    padding: 10,
+    height: 200
+  },
+  commentInputParent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: 'lightgrey',
+    backgroundColor: 'white',
+    height: 180,
+  },
   inputImage: {
     height: 25,
     width: 25,
     borderRadius: 12.5,
     marginLeft: mainPadding
-  }
+  },
+  commentSubmit: {
+    flex: 0,
+    width: 75,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
 });
 
 styles = { ...localStyles, ...globalStyles };

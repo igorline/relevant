@@ -8,13 +8,15 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
-  TouchableOpacity
+  TouchableOpacity,
+  StatusBar
 } from 'react-native';
 import PropTypes from 'prop-types';
 import codePush from 'react-native-code-push';
 import dismissKeyboard from 'react-native-dismiss-keyboard';
-import { globalStyles } from 'app/styles/global';
+import { globalStyles, IphoneX } from 'app/styles/global';
 import { NAME_PATTERN } from 'app/utils/text';
+import { get } from 'lodash';
 
 let localStyles;
 let styles;
@@ -22,14 +24,12 @@ let styles;
 class SignUp extends Component {
   static propTypes = {
     auth: PropTypes.object,
-    scene: PropTypes.object,
     actions: PropTypes.object,
     navigation: PropTypes.object
   };
 
   constructor(props, context) {
     super(props, context);
-    this.back = this.back.bind(this);
     this.validate = this.validate.bind(this);
     this.checkUser = this.checkUser.bind(this);
     this.devSkip = this.devSkip.bind(this);
@@ -47,6 +47,7 @@ class SignUp extends Component {
   }
 
   componentWillMount() {
+    const params = get(this.props.navigation, 'state.params');
     if (this.props.auth.preUser) {
       this.setState({
         name: this.props.auth.preUser.name || null,
@@ -56,10 +57,10 @@ class SignUp extends Component {
         cPassword: this.props.auth.preUser.password || null
       });
     }
-    if (this.props.scene && this.props.scene.email) {
+    if (params && params.email) {
       this.setState({
-        email: this.props.scene.email.trim(),
-        code: this.props.scene.code
+        email: params.email.trim(),
+        code: params.code
       });
       setTimeout(() => this.checkEmail(), 100);
     }
@@ -118,10 +119,6 @@ class SignUp extends Component {
     }
   }
 
-  back() {
-    this.props.actions.pop(this.props.navigation.main);
-  }
-
   validate() {
     const user = {
       name: this.state.name,
@@ -174,10 +171,7 @@ class SignUp extends Component {
       {
         key: 'imageUpload',
         title: 'image',
-        component: 'image',
-        back: true
       },
-      'auth'
     );
 
     return null;
@@ -202,7 +196,9 @@ class SignUp extends Component {
       <KeyboardAvoidingView
         behavior={'padding'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'android' ? 24 : 0}
+        keyboardVerticalOffset={Platform.OS === 'android' ?
+          StatusBar.currentHeight / 2 + 64 :
+          (IphoneX ? 88 : 64) }
       >
         <ScrollView
           keyboardDismissMode={'interactive'}
@@ -304,13 +300,6 @@ class SignUp extends Component {
     );
   }
 }
-
-SignUp.propTypes = {
-  actions: PropTypes.object,
-  auth: PropTypes.object,
-  scene: PropTypes.object,
-  navigation: PropTypes.object // navigation store
-};
 
 localStyles = StyleSheet.create({
   error: {

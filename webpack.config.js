@@ -77,7 +77,8 @@ module.exports = {
     symlinks: false,
     alias: {
       react: path.resolve('./node_modules/react'),
-      'react-dom': path.resolve('./node_modules/react-dom')
+      'react-dom': path.resolve('./node_modules/react-dom'),
+      'react-native$': 'react-native-web'
     },
   },
 
@@ -86,8 +87,20 @@ module.exports = {
     exprContextCritical: false,
     rules: [
       {
+        test: /\.(png|woff|woff2|eot|ttf|svg|jpg)$/,
+        loader: 'url-loader?limit=100000', // or directly file-loader
+        include: [
+          path.resolve(__dirname, 'app'),
+          path.resolve(__dirname, 'node_modules/react-native-vector-icons'),
+        ]
+      },
+      {
         test: /\.(js|svg)$/,
-        exclude: [/node_modules/],
+        include: [
+          path.resolve(__dirname, 'index.web.js'),
+          path.resolve(__dirname, 'app'),
+        ],
+
         use: [{
           loader: 'babel-loader',
           options: {

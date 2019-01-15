@@ -17,10 +17,10 @@ let styles;
 
 class VoterList extends Component {
   static propTypes = {
-    scene: PropTypes.object,
+    navigation: PropTypes.object,
     invest: PropTypes.object,
     actions: PropTypes.object,
-    users: PropTypes.array
+    users: PropTypes.object
   };
 
   constructor(props, context) {
@@ -33,7 +33,7 @@ class VoterList extends Component {
   }
 
   componentWillMount() {
-    this.postId = this.props.scene.id;
+    this.postId = this.props.navigation.state.params.id;
     this.onInteraction = InteractionManager.runAfterInteractions(() => {
       this.load();
       this.forceUpdate();

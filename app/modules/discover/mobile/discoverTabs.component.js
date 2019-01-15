@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Platform, StatusBar } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import { globalStyles, fullWidth, fullHeight, blue } from 'app/styles/global';
+import { getParentTags } from 'modules/tag/tag.actions';
+import { goToTopic } from 'modules/navigation/navigation.actions';
 import Topics from 'modules/createPost/mobile/topics.component';
 import CustomSpinner from 'modules/ui/mobile/CustomSpinner.component';
+import { get } from 'lodash';
 import DefaultTabBar from './discoverTabBar.component';
 import Discover from './discover.container';
 import DiscoverHeader from './discoverHeader.component';
@@ -15,10 +19,9 @@ const SUB_TITLE = 'Via Twitter';
 
 class DiscoverTabs extends Component {
   static propTypes = {
-    scene: PropTypes.object,
+    navigation: PropTypes.object,
     view: PropTypes.object,
     actions: PropTypes.object,
-    // feedUnread: PropTypes.number,
     topics: PropTypes.bool,
     tags: PropTypes.object
   };
@@ -42,7 +45,12 @@ class DiscoverTabs extends Component {
     this.renderBadge = this.renderBadge.bind(this);
     this.scrollOffset = {};
     this.initialTab = 1;
-    if (this.props.scene) {
+
+    const { params } = this.props.navigation.state;
+    if (params && params.topic) {
+      this.mainDiscover = false;
+      this.topicView = true;
+      this.topicId = params.id;
       this.state.routes = [
         { key: 'new', title: 'New' },
         { key: 'top', title: 'Trending' },
@@ -53,15 +61,8 @@ class DiscoverTabs extends Component {
   }
 
   componentWillMount() {
-    if (this.props.scene && this.props.scene.topic) {
-      this.mainDiscover = false;
-      this.topicView = true;
-      this.filter = [this.props.scene.topic];
-      this.topic = this.props.scene.topic;
-      this.topicId = this.props.scene.topic._id;
-      this.loaded = false;
+    if (this.topicId) {
       this.needsReload = new Date().getTime();
-
       requestAnimationFrame(() => {
         this.loaded = true;
         this.setState({});
@@ -72,11 +73,19 @@ class DiscoverTabs extends Component {
   }
 
   componentWillReceiveProps(next) {
+    const newSortUrlParam = get(next.navigation, 'state.params.sort');
+    const oldSortUrlParam = get(this.props.navigation, 'state.params.sort');
+
+    let tabId = next.view.discover.tab;
+    if (newSortUrlParam && newSortUrlParam !== oldSortUrlParam) {
+      tabId = this.state.routes.findIndex(r => r.key === newSortUrlParam);
+    }
     if (
-      next.view.discover !== this.props.view.discover &&
-      next.view.discover.tab !== this.state.index
+      tabId > -1 &&
+      tabId !== this.props.view.discover.tab &&
+      tabId !== this.state.index
     ) {
-      this.tabView.goToPage(next.view.discover.tab);
+      this.tabView.goToPage(tabId);
     }
   }
 
@@ -105,7 +114,7 @@ class DiscoverTabs extends Component {
             active={currentRoute.key === route.key}
             type={'twitterFeed'}
             key={'twitterFeed'}
-            scene={this.props.scene}
+            navigation={this.props.navigation}
             onScroll={this.onScroll}
             offsetY={this.state.headerHeight}
             tabLabel={route.title}
@@ -118,7 +127,7 @@ class DiscoverTabs extends Component {
             active={currentRoute.key === route.key}
             type={'new'}
             key={'new'}
-            scene={this.props.scene}
+            navigation={this.props.navigation}
             onScroll={this.onScroll}
             offsetY={this.state.headerHeight}
             tabLabel={route.title}
@@ -130,10 +139,10 @@ class DiscoverTabs extends Component {
             active={currentRoute.key === route.key}
             type={'top'}
             key={'top'}
-            scene={this.props.scene}
             onScroll={this.onScroll}
             offsetY={this.state.headerHeight}
             tabLabel={route.title}
+            navigation={this.props.navigation}
           />
         );
       case 'people':
@@ -142,10 +151,10 @@ class DiscoverTabs extends Component {
             active={currentRoute.key === route.key}
             type={'people'}
             key={'people'}
-            scene={this.props.scene}
             onScroll={this.onScroll}
             offsetY={this.state.headerHeight}
             tabLabel={route.title}
+            navigation={this.props.navigation}
           />
         );
       default:
@@ -287,19 +296,13 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps() {
+function mapDispatchToProps(dispatch) {
   return {
-    // actions: bindActionCreators(
-    //   { ...postActions,
-    //     ...animationActions,
-    //     ...tagActions,
-    //     ...investActions,
-    //     ...userActions,
-    //     ...statsActions,
-    //     ...authActions,
-    //     ...navigationActions,
-    //     ...createPostActions,
-    //   }, dispatch),
+    actions: bindActionCreators(
+      {
+        getParentTags,
+        goToTopic,
+      }, dispatch),
   };
 }
 
