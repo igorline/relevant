@@ -5,7 +5,7 @@ import styled from 'styled-components/primitives';
 import { StyleSheet } from 'react-primitives';
 import { colors } from 'app/styles/globalStyles';
 import ULink from 'modules/navigation/ULink.component';
-import UAvatar from 'modules/user/web/UAvatar.component';
+import UAvatar from 'modules/user/UAvatar.component';
 
 const greyText = '#717171';
 
