@@ -1,6 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import TwitterIcon from 'app/public/img/twitter.svg';
 import SlackIcon from 'app/public/img/slack-white.svg';
 import EmailIcon from 'app/public/img/email.svg';
@@ -50,6 +50,15 @@ const FooterIcon = ({ href, Image, target }) => (
     <Image />
   </StyledIconLink>
 );
+
+FooterIcon.propTypes = {
+  href: PropTypes.string,
+  Image: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.func,
+  ]),
+  target: PropTypes.string,
+};
 
 const icons = [
   {

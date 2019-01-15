@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { renderRoutes } from 'react-router-config';
 import styled from 'styled-components';
-import ContentHeader from 'modules/navigation/web/contentHeader.component';
+import ContentHeader from 'modules/navigation/web/contentheader.component';
 import SideNav from 'modules/navigation/web/sideNav.component';
 import { withRouter } from 'react-router-dom';
 import { colors, layout } from 'app/styles/globalStyles';
 
-const ContentContainer = styled.section`
+const ContentContainer = styled.div`
   max-width: 100vw;
   display: flex;
   position: relative;
@@ -20,7 +20,7 @@ const StyledSideNav = styled(SideNav)`
   border-right: ${layout.borderStyles(colors.borderColor)};
 `;
 
-const MainContent = styled.section`
+const MainContent = styled.div`
   flex: 1;
   position: relative;
   padding-top: ${layout.headerHeight}

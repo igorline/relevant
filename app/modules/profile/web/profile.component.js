@@ -22,7 +22,8 @@ const Logout = styled.a`
 class Profile extends Component {
   static propTypes = {
     user: PropTypes.object,
-    // auth: PropTypes.object,
+    auth: PropTypes.object,
+    actions: PropTypes.object,
     match: PropTypes.object
   };
 
@@ -66,7 +67,11 @@ class Profile extends Component {
 
         <div className="profileHero">
           { isOwnProfile ?
-            <Logout onClick={() => { actions.logoutAction(user); }} color={colors.blue}> Logout</Logout> : null
+            (<Logout
+              onClick={() => { actions.logoutAction(user); }}
+              color={colors.blue}> Logout
+            </Logout>)
+            : null
           }
           <Avatar user={user} />
           <div className="name">{user.name}</div>
