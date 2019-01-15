@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, StyleSheet, Touchable, Text } from 'react-primitives';
+import { View, Image, StyleSheet, Text } from 'react-primitives';
 import Icon from 'react-native-vector-icons/dist/Ionicons';
 import PropTypes from 'prop-types';
 import { globalStyles, darkGrey } from 'app/styles/global';
@@ -18,33 +18,31 @@ const font17 = css`
   lineHeight: 17px;
 `;
 
-const Name = styled.Text`
-  color: ${darkGrey};
+export const Name = styled.Text`
+  color: '${darkGrey}';
   ${font17}
   ${bebas}
 `;
 
+export const HandleText = styled.Text`
+  ${globalStyles.font10}
+  ${globalStyles.greyText}
+`;
+
+export const Wrapper = styled.Touchable`
+`;
+
 export default function UserName(props) {
-  let repostIcon;
-  let handleEl;
-  if (!props.user) return null;
+  const { user, relevance, type, topic, setSelected, big, postTime, repost, twitter } = props;
 
-  let imageSource;
-  if (props.user && props.user.image) {
-    imageSource = { uri: props.user.image };
-  } else imageSource = require('app/public/img/default_user.jpg');
+  if (!user) return null;
 
-  let imageStyle = styles.userImage;
-  if (props.big) imageStyle = styles.userImageBig;
+  const { userImageBig, userImage, postInfo } = styles;
+  const imageSource = user.image ? { uri: user.image } : require('app/public/img/default_user.jpg');
+  const imageStyle = big ? userImageBig : userImage;
 
-  let stats;
-  if (props.user && props.user.relevance && props.relevance !== false) {
-    stats = <Stats entity={props.user} type={'relevance'} />;
-  }
-  let handle;
-  if (props.user._id) {
-    handle = (props.type !== 'invite' ? '@' : '') + props.user._id;
-  }
+  let { handle } = user;
+  if (type !== 'invite' && handle) handle = `@${handle}`;
 
   const rIcon = (
     <Image
@@ -54,57 +52,44 @@ export default function UserName(props) {
     />
   );
 
-  if (handle) {
-    handleEl = (
+  const handleEl = handle && topic && topic.topic ? ( // TODO WILL BE DEPRECATED
+    <View style={styles.textRow}>
+      <HandleText>
+        {handle + ' • '}
+      </HandleText>
+      {rIcon}
       <Text style={[styles.font10, styles.greyText]}>
-        {handle} {props.postTime}
+        {Math.round(topic.relevance)} in #{topic.topic}
       </Text>
-    );
-    if (props.topic && props.topic.topic) {
-      handleEl = (
-        <View style={styles.textRow}>
-          <Text style={[styles.font10, styles.greyText]}>
-            {handle}
-            {' • '}
-          </Text>
-          {rIcon}
-          <Text style={[styles.font10, styles.greyText]}>
-            {Math.round(props.topic.relevance)} in #{props.topic.topic}
-          </Text>
-        </View>
-      );
-    }
-  }
+    </View>
+  ) : handle && <HandleText style={[styles.font10, styles.greyText]}>
+    {handle} {postTime}
+  </HandleText>;
 
-  if (props.repost) {
-    repostIcon = (
-      <Image
-        resizeMode={'contain'}
-        source={require('app/public/img/reposted.png')}
-        style={{ width: 15, height: 15, marginRight: 3, marginBottom: 14 }}
-      />
-    );
-  }
 
-  let twitterIcon;
-  if (props.twitter) {
-    twitterIcon = (
-      <Icon
-        borderRadius={0}
-        name={'logo-twitter'}
-        size={17}
-        color={'#00aced'}
-        style={styles.icon}
-      />
-    );
-  }
+  const repostIcon = repost && (
+    <Image
+      resizeMode={'contain'}
+      source={require('app/public/img/reposted.png')}
+      style={{ width: 15, height: 15, marginRight: 3, marginBottom: 14 }}
+    />
+  );
+
+  const twitterIcon = twitter && (
+    <Icon
+      borderRadius={0}
+      name={'logo-twitter'}
+      size={17}
+      color={'#00aced'}
+      style={styles.icon}
+    />
+  );
 
   return (
-    <Touchable
-      onPress={() => props.setSelected(props.user)}
-      // style={{ flex: 1 }}
+    <Wrapper
+      onPress={() => setSelected(user)}
     >
-      <View style={styles.postInfo}>
+      <View style={postInfo}>
         <Image source={imageSource} style={imageStyle} />
         {repostIcon}
         <View>
@@ -117,14 +102,14 @@ export default function UserName(props) {
             }}
           >
             <Name>
-              {props.user.name} {twitterIcon}
+              {user.name}{twitterIcon && ' ' + twitterIcon}
             </Name>
-            {stats}
+            {user.relevance && relevance && <Stats entity={user} type={'relevance'} />}
           </View>
           {handleEl}
         </View>
       </View>
-    </Touchable>
+    </Wrapper>
   );
 }
 
