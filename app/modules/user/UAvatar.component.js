@@ -19,7 +19,7 @@ const StyledImage = styled.Image`
 
 
 if (process.env.BROWSER === true) {
-  require('./avatarbox.css');
+  require('./web/avatarbox.css');
 }
 
 class UAvatar extends Component {
