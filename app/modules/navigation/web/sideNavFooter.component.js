@@ -45,13 +45,11 @@ const IconContainer = styled.div`
   align-items: center;
 `;
 
-const FooterIcon = ({ href, Image, target }) => {
-  return (
-    <StyledIconLink href={`${href}`} target={target || '_self'}>
-      <Image />
-    </StyledIconLink>
-  );
-};
+const FooterIcon = ({ href, Image, target }) => (
+  <StyledIconLink href={`${href}`} target={target || '_self'}>
+    <Image />
+  </StyledIconLink>
+);
 
 const icons = [
   {
