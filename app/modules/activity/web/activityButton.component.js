@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { tabStyles } from 'modules/navigation/web/tabStyles';
 
-const StyledSpan = styled.span`
+const Wrapper = styled.span`
   ${tabStyles}
   margin-right: 1em;
   cursor: pointer;
@@ -48,7 +48,7 @@ class ActivityButton extends Component {
     const { count } = notif;
     const badge = count ? <span className={'badge'}>{count}</span> : null;
     return (
-      <StyledSpan
+      <Wrapper
         onClick={() => {
           this.setState({ activity: !this.state.activity });
           return false;
@@ -58,7 +58,7 @@ class ActivityButton extends Component {
         Activity
         {badge}
         {activity}
-      </StyledSpan>
+      </Wrapper>
     );
   }
 }

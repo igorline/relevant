@@ -6,7 +6,7 @@ import styled from 'styled-components/primitives';
 const StyledText = styled.Text`
 `;
 
-const StyledView = styled.View`
+const Wrapper = styled.View`
 `;
 
 const StyledImage = styled.Image`
@@ -40,14 +40,14 @@ export default class UAvatar extends Component {
     const AvatarImage = <StyledImage source={{ uri: image }} size={this.props.size} />;
     if (this.props.noLink) {
       return (
-        <StyledView style={this.props.style} className={this.props.className}>
+        <Wrapper style={this.props.style} className={this.props.className}>
           {AvatarImage}
           {this.props.noName ? null : <StyledText>{this.props.user.name}</StyledText>}
-        </StyledView>
+        </Wrapper>
       );
     }
     return (
-      <StyledView style={this.props.style} className={this.props.className}>
+      <Wrapper style={this.props.style} className={this.props.className}>
         <ULink
           onClick={e => e.stopPropagation()}
           className={'avatar'}
@@ -56,7 +56,7 @@ export default class UAvatar extends Component {
           {AvatarImage}
           {this.props.noName ? null : this.props.user.name}
         </ULink>
-      </StyledView>
+      </Wrapper>
     );
   }
 }
