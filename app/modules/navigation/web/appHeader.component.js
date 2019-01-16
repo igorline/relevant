@@ -7,7 +7,6 @@ import Avatar from 'modules/user/web/avatar.component';
 import ShadowButton from 'modules/ui/web/ShadowButton';
 import * as authActions from 'modules/auth/auth.actions';
 import * as notifActions from 'modules/activity/activity.actions';
-import DiscoverTabs from 'modules/discover/web/discoverTabs.component';
 import Activity from 'modules/activity/web/activity.container';
 import RequestInvite from 'modules/web_splash/requestInvite.component';
 import { matchPath } from 'react-router';
@@ -180,11 +179,6 @@ class AppHeader extends Component {
               </Link>
             </div>
             <div className="tabContainer">
-              <DiscoverTabs
-                match={match || { params: {} } }
-                location={this.props.location}
-                auth={this.props.auth}
-              />
             </div>
 
             <div className={'rightNav'}>

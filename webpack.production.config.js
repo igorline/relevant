@@ -42,10 +42,6 @@ prodConfig.mode = 'production';
 
 prodConfig.module.rules = [
   {
-    test: /\.svg$/,
-    use: 'raw-loader'
-  },
-  {
     test: /\.css$|\.scss$/,
     use: [
       {
@@ -58,7 +54,7 @@ prodConfig.module.rules = [
     ]
   },
   {
-    test: /\.js$/,
+    test: /\.(js|svg)$/,
     use: [{
       loader: 'babel-loader',
       options: {

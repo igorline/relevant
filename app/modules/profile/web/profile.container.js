@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as UserActions from 'modules/user/user.actions';
 import * as PostActions from 'modules/post/post.actions';
+import { logoutAction } from 'modules/auth/auth.actions';
 import Eth from 'modules/web_ethTools/eth.context';
 import Profile from './profile.component';
 import UserPosts from './userPosts.component';
@@ -74,7 +75,8 @@ const mapDispatchToProps = dispatch =>
           {},
           {
             ...UserActions,
-            ...PostActions
+            ...PostActions,
+            logoutAction,
           }
         ),
         dispatch

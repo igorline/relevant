@@ -6,7 +6,6 @@ import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import Comments from 'modules/comment/web/comment.container';
 import Footer from 'modules/navigation/web/footer.component';
-import Sidebar from 'modules/navigation/web/sidebar.component';
 import Post from './post.component';
 
 class Posts extends Component {
@@ -46,7 +45,6 @@ class Posts extends Component {
               <Comments post={this.post} {...this.props} />
             </div>
           )}
-          <Sidebar {...this.props} />
         </div>
         <Footer location={this.props.location} />
       </div>
