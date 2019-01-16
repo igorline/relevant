@@ -15,12 +15,23 @@
         "modules": "./app/modules",
         "core": "./app/core",
         "app": "./app",
+        "^react-native$": "react-native-web"
       },
       "cwd": "babelrc",
     }]
   ],
   "env": {
+    "test": {
+      "plugins": [
+        ["styled-components"]
+      ],
+      "presets": [
+        "@babel/preset-env",
+        "@babel/preset-react",
+      ],
+    },
     "development_web": {
+      "plugins": ["styled-components"],
       "presets": [
         "@babel/preset-env",
         "@babel/preset-react",
