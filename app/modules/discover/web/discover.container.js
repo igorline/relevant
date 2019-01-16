@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import get from 'lodash.get';
 import * as authActions from 'modules/auth/auth.actions';
 import * as adminActions from 'modules/admin/admin.actions';
 import * as postActions from 'modules/post/post.actions';
@@ -12,7 +13,6 @@ import * as tagActions from 'modules/tag/tag.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import CreatePost from 'modules/createPost/web/createPost.container';
-import Sidebar from 'modules/navigation/web/sidebar.component';
 import DiscoverPosts from './discoverPosts.component';
 import DiscoverUsers from './discoverUsers.component';
 import * as discoverHelper from './discoverHelper';
@@ -55,9 +55,23 @@ export class Discover extends Component {
     return discoverHelper.getDiscoverState(nextProps, prevState);
   }
 
+  componentDidMount() {
+    this.props.actions.setWebView('discover', this.props.match.params);
+  }
+
+
   componentDidUpdate(prevProps) {
     let alreadyLoading;
-    const { tag, sort } = this.props.match.params;
+    const { tag, sort, community } = this.props.match.params;
+    const prevTag = get(prevProps, 'match.params.tag', null);
+    const prevSort = get(prevProps, 'match.params.sort', null);
+    const prevCommunity = get(prevProps, 'match.params.community', null);
+    if (tag !== prevTag
+      || sort !== prevSort
+      || community !== prevCommunity) {
+      this.props.actions.setWebView('discover', this.props.match.params);
+    }
+
 
     if (this.props.refresh && this.props.refresh > this.lastRefresh) {
       this.lastRefresh = this.props.refresh;
@@ -78,6 +92,9 @@ export class Discover extends Component {
       this.load(sort, this.props);
       alreadyLoading = true;
     }
+  }
+  componentWillUnmount() {
+    this.props.actions.setWebView('discover', {});
   }
 
   getLoadedState() {
@@ -166,7 +183,6 @@ export class Discover extends Component {
             {this.renderFeed()}
           </div>
         </div>
-        <Sidebar {...this.props} />
       </div>
     );
   }
@@ -178,7 +194,6 @@ function mapStateToProps(state) {
     user: state.user,
     posts: state.posts,
     tags: state.tags,
-    error: state.error.discover,
     investments: state.investments,
     myPostInv: state.investments.myPostInv,
     refresh: state.view.refresh.discover
@@ -196,14 +211,14 @@ function mapDispatchToProps(dispatch) {
         ...investActions,
         ...navigationActions,
         ...tagActions,
-        ...adminActions
+        ...adminActions,
       },
       dispatch
     )
   };
 }
 
-export default connect(
+export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(Discover);
+)(Discover));

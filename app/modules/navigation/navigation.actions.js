@@ -4,7 +4,8 @@ import {
   RELOAD_ALL_TABS,
   SET_VIEW,
   TOGGLE_TOPICS,
-  SCROLL
+  SCROLL,
+  SET_WEB_VIEW,
 } from 'core/actionTypes';
 import { setButtonTooltip } from 'modules/tooltip/tooltip.actions';
 import { dispatchNavigatorAction } from 'app/utils/nav';
@@ -82,8 +83,18 @@ export function setView(type, view) {
   return {
     type: SET_VIEW,
     payload: {
+      type,
       view,
-      type
+    }
+  };
+}
+
+export function setWebView(type, params) {
+  return {
+    type: SET_WEB_VIEW,
+    payload: {
+      type,
+      params,
     }
   };
 }

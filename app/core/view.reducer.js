@@ -19,7 +19,17 @@ export default function auth(state = initialState, action) {
         }
       };
     }
-
+    case types.SET_WEB_VIEW: {
+      switch (action.payload.type) {
+        case 'discover':
+          return {
+            ...state,
+            discover: action.payload.params,
+          };
+        default:
+          return state;
+      }
+    }
     case types.SET_VIEW: {
       switch (action.payload.type) {
         // case 'read':
@@ -32,9 +42,14 @@ export default function auth(state = initialState, action) {
           return {
             ...state,
             discover: {
-              tab: action.payload.view
-            }
+              // ...state.discover,
+              tab: action.payload.view,
+            },
+            // discover: {
+            //   tab: action.payload.view
+            // }
           };
+
 
         // case 'post':
         //   return Object.assign({}, state, {

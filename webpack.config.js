@@ -87,10 +87,6 @@ module.exports = {
     exprContextCritical: false,
     rules: [
       {
-        test: /\.svg$/,
-        loader: 'raw-loader'
-      },
-      {
         test: /\.(png|woff|woff2|eot|ttf|svg|jpg)$/,
         loader: 'url-loader?limit=100000', // or directly file-loader
         include: [
@@ -99,11 +95,12 @@ module.exports = {
         ]
       },
       {
-        test: /\.js$/,
+        test: /\.(js|svg)$/,
         include: [
           path.resolve(__dirname, 'index.web.js'),
           path.resolve(__dirname, 'app'),
         ],
+
         use: [{
           loader: 'babel-loader',
           options: {
@@ -123,4 +120,3 @@ module.exports = {
     ]
   },
 };
-

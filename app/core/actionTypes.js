@@ -8,6 +8,7 @@ export const LOGIN_USER_FAILURE = 'LOGIN_USER_FAILURE';
 export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 export const LOGOUT_USER = 'LOGOUT_USER';
 export const SHOW_LOADER = 'SHOW_LOADER';
+export const SET_COMMUNITY_MEMBERS = 'SET_COMMUNITY_MEMBERS';
 
 export const SET_USER_SEARCH = 'SET_USER_SEARCH';
 export const SET_USER = 'SET_USER';
@@ -97,6 +98,7 @@ export const SET_ONBOARDING_STEP = 'SET_ONBOARDING_STEP';
 export const SET_BUTTON_TOOLTIP = 'SET_BUTTON_TOOLTIP';
 
 export const SET_VIEW = 'SET_VIEW';
+export const SET_WEB_VIEW = 'SET_WEB_VIEW';
 
 export const SET_INVITES = 'SET_INVITES';
 export const UPDATE_INVITE = 'UPDATE_INVITE';
