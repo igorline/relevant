@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { colors } from 'app/styles/globalStyles';
 import * as communityActions from 'modules/community/community.actions';
+import { setCommunity } from 'modules/auth/auth.actions';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/web/communityActive.component';
@@ -30,20 +31,24 @@ const StyledImage = styled.Image`
 const StyledCommunityList = styled.View`
 `;
 
-const CommunityLink = ({ community }) => (
-  <ULink
-    styles={linkStyle}
-    key={community._id}
-    to={'/' + community.slug + '/new'}
-    onPress={() => {}}
-  >
-    <StyledImage source={{ uri: community.image }}/>
-    {community.name}
-  </ULink>
-);
+const CommunityLink = ({ community, onClick }) => {
+  return (
+    <ULink
+      styles={linkStyle}
+      key={community._id}
+      to={'/' + community.slug + '/new'}
+      onPress={() => { onClick(community.slug); }}
+      onClick={() => { onClick(community.slug); }}
+    >
+      <StyledImage source={{ uri: community.image }}/>
+      {community.name}
+    </ULink>
+  );
+};
 
 CommunityLink.propTypes = {
   community: PropTypes.object,
+  setCommunity: PropTypes.func,
 };
 
 
@@ -70,9 +75,9 @@ class Community extends Component {
               community={community}
               getCommunityMembers={get(actions, 'getCommunityMembers', null)}
             >
-              <CommunityLink community={community} />
+              <CommunityLink community={community} onClick={actions.setCommunity} />
             </CommunityActive>
-            : <CommunityLink community={community} />}
+            : <CommunityLink community={community} onClick={actions.setCommunity} />}
         </StyledView>
       );
     });
@@ -96,7 +101,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      ...communityActions
+      ...communityActions,
+      setCommunity,
     },
     dispatch
   )
