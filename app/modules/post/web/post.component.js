@@ -10,13 +10,19 @@ import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import Popup from 'modules/ui/web/popup';
-
+import styled from 'styled-components/primitives';
 import PostButtons from './postbuttons.component';
 import PostInfo from './postinfo.component';
 
-if (process.env.BROWSER === true) {
-  require('./post.css');
-}
+const Wrapper = styled.View`
+  position: relative;
+  overflow: hidden;
+`;
+
+
+// if (process.env.BROWSER === true) {
+//   require('./post.css');
+// }
 
 class Post extends Component {
   static propTypes = {
@@ -81,13 +87,15 @@ class Post extends Component {
     if (!post) return null;
 
     let postInfo;
+    console.log('link and post', link, post);
     if (link) {
-      postInfo = <PostInfo post={link} />;
-    } else if (repost) {
-      postInfo = <PostInfo post={repost} />;
-    } else {
-      postInfo = <PostInfo post={post} />;
+      postInfo = <PostInfo post={link} date={post.postDate} user={post.embeddedUser} />;
     }
+    // else if (repost) {
+    //   postInfo = <PostInfo post={repost} />;
+    // } else {
+    //   postInfo = <PostInfo post={post} />;
+    // }
 
     let user = post.user || post.twitterUser;
 
@@ -117,8 +125,7 @@ class Post extends Component {
     const openPost = repost ? repost._id : post._id;
 
     return (
-      <div
-        className="post"
+      <Wrapper
         onClick={() => this.props.history.push('/' + community + '/post/' + openPost)}
       >
         {postInfo}
@@ -156,7 +163,7 @@ class Post extends Component {
             </div>
           </div>
         </div>
-      </div>
+      </Wrapper>
     );
   }
 }

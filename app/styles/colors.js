@@ -10,4 +10,5 @@ export default {
   darkGrey: '#979797',
   borderColor: 'hsl(0, 0%, 90%)',
   sideNavBackground: '#FAFBFC',
+  secondaryTextColor: '#4A4A4A',
 };

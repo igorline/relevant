@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import Comments from 'modules/comment/web/comment.container';
-import Footer from 'modules/navigation/web/footer.component';
 import Post from './post.component';
 
 class Posts extends Component {
@@ -13,7 +12,7 @@ class Posts extends Component {
     actions: PropTypes.object,
     posts: PropTypes.object,
     match: PropTypes.object,
-    location: PropTypes.object
+    location: PropTypes.object,
   };
 
   static fetchData(dispatch, params) {
@@ -46,7 +45,6 @@ class Posts extends Component {
             </div>
           )}
         </div>
-        <Footer location={this.props.location} />
       </div>
     );
   }
