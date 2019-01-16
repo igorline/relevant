@@ -17,8 +17,12 @@ const linkStyle = `
   color: ${colors.black};
 `;
 
+const CommunityContainer = styled.View`
+  margin: 1em 2em;
+`;
+
+
 const StyledView = styled.View`
-  margin-bottom: 1em;
   background: ${props => props.active ? 'hsl(0, 0%, 92%)' : 'transparent'};
 `;
 
@@ -26,29 +30,28 @@ const StyledImage = styled.Image`
   width: 30;
   height: 30;
   margin-right: 1em;
+  background: ${colors.black};
 `;
 
 const StyledCommunityList = styled.View`
 `;
 
-const CommunityLink = ({ community, onClick }) => {
-  return (
-    <ULink
-      styles={linkStyle}
-      key={community._id}
-      to={'/' + community.slug + '/new'}
-      onPress={() => { onClick(community.slug); }}
-      onClick={() => { onClick(community.slug); }}
-    >
-      <StyledImage source={{ uri: community.image }}/>
-      {community.name}
-    </ULink>
-  );
-};
+const CommunityLink = ({ community, onClick }) => (
+  <ULink
+    styles={linkStyle}
+    key={community._id}
+    to={'/' + community.slug + '/new'}
+    onPress={() => { onClick(community.slug); }}
+    onClick={() => { onClick(community.slug); }}
+  >
+    <StyledImage source={{ uri: community.image }}/>
+    {community.name}
+  </ULink>
+);
 
 CommunityLink.propTypes = {
   community: PropTypes.object,
-  setCommunity: PropTypes.func,
+  onClick: PropTypes.func,
 };
 
 
@@ -77,7 +80,11 @@ class Community extends Component {
             >
               <CommunityLink community={community} onClick={actions.setCommunity} />
             </CommunityActive>
-            : <CommunityLink community={community} onClick={actions.setCommunity} />}
+            : (
+              <CommunityContainer>
+                <CommunityLink community={community} onClick={actions.setCommunity} />
+              </CommunityContainer>)
+          }
         </StyledView>
       );
     });
