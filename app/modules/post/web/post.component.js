@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import AvatarBox from 'modules/user/web/avatarbox.component';
-// import AvatarBox from 'modules/user/avatarbox.component.styled';
+// import AvatarBox from 'modules/user/avatarbox.component';
 import Tag from 'modules/tag/web/tag.component';
 import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
@@ -18,7 +18,7 @@ if (process.env.BROWSER === true) {
   require('./post.css');
 }
 
-class Post extends Component {
+export class Post extends Component {
   static propTypes = {
     post: PropTypes.shape({
       data: PropTypes.object
