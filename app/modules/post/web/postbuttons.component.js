@@ -4,6 +4,36 @@ import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
 import { computePayout } from 'app/utils/post';
 import { abbreviateNumber } from 'app/utils/numbers';
+import styled from 'styled-components/primitives';
+import ULink from 'modules/navigation/ULink.component';
+
+const Wrapper = styled.View`
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 50px;
+`;
+
+const View = styled.View`
+`;
+
+const Touchable = styled.Touchable`
+`;
+
+const Text = styled.Text`
+  display: flex;
+  align-items: center;
+`;
+
+const Image = styled.Image`
+  width: 20px;
+  height: 20px;
+`;
+
+const VoteIcon = styled(Image)`
+  margin: 1em;
+`;
+
 
 class PostButtons extends Component {
   static propTypes = {
@@ -107,48 +137,43 @@ class PostButtons extends Component {
     payout = computePayout(post.data, community);
     if (post.data && post.data.parentPost) payout = null;
 
-    const comments = post.commentCount || '';
-    const commentText = comments > 1 ? comments + ' comments' : comments + ' comment';
-
-    const commentEl = (
-      <Link className="commentcount details" to={'/post/' + post._id}>
-        <img alt="Comment" src="/img/comment.svg" />
-        <span>{commentText}</span>
-      </Link>
-    );
-
     return (
-      <div className="postbuttons">
-        <div className="left">
-          <a style={buttonOpacity} onClick={e => this.vote(e, vote)}>
-            <img
-              alt="Upvote"
-              src={votedUp ? '/img/upvoteActive.png' : upvoteBtn}
-              className="upvote"
-            />
-          </a>
-          <div className="fraction">
-            <div className="dem">
-              <img alt="R" src="/img/r-gray.svg" />
-              {post.data ? Math.round(post.data.pagerank) : null}
-            </div>
-
-            {payout > 0 && <div className="dem">
-              ${abbreviateNumber(payout)}
-            </div>}
-          </div>
-          <a style={buttonOpacity} onClick={e => this.irrelevant(e, vote)}>
-            <img
-              alt="Downvote"
-              src={votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg'}
-              className="downvote"
-            />
-          </a>
-        </div>
-        <div className="right">{post.type === 'comment' ? '' : commentEl}</div>
-      </div>
+      <Wrapper>
+        <Touchable onClick={e => this.vote(e, vote)} to="#">
+          <VoteIcon
+            alt="Upvote"
+            source={{ uri: votedUp ? '/img/upvoteActive.png' : upvoteBtn }}
+          />
+        </Touchable>
+        <View>
+          <Text>
+            <Image alt="R" source={{ uri: '/img/r-gray.svg' }} /> {
+              post.data ? Math.round(post.data.pagerank) : null
+            }
+            {payout > 0 ? abbreviateNumber(payout) : null }
+          </Text>
+        </View>
+        <Touchable onClick={e => this.irrelevant(e, vote)} to="#">
+          <VoteIcon
+            alt="Downvote"
+            source={{ uri: votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg' }}
+          />
+        </Touchable>
+      </Wrapper>
     );
   }
 }
+
+
+// <div className="fraction">
+//   <div className="dem">
+//     <Image alt="R" source={{ uri: '/img/r-gray.svg' }} />
+//     {post.data ? Math.round(post.data.pagerank) : null}
+//   </div>
+//
+//   {payout > 0 && <div className="dem">
+//     ${abbreviateNumber(payout)}
+//   </div>}
+// </div>
 
 export default PostButtons;
