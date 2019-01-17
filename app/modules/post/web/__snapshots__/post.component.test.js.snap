@@ -16,7 +16,7 @@ exports[`Snapshot Post Web 1`] = `
   onClick={[Function]}
 >
   <a
-    href="https://example.com/test"
+    href="https://example.com/testPost1"
     rel="noopener noreferrer"
     target="_blank"
   >
@@ -36,7 +36,7 @@ exports[`Snapshot Post Web 1`] = `
           <div
             style={
               Object {
-                "backgroundImage": "url(link_img.jpg)",
+                "backgroundImage": "url(link_img1.jpg)",
               }
             }
           />
@@ -47,12 +47,12 @@ exports[`Snapshot Post Web 1`] = `
           <h3
             className="headline bebasRegular"
           >
-            postTitle
+            postTitle1
           </h3>
           <div
             className="domain"
           >
-            link.domain
+            link.domain1
           </div>
         </div>
       </div>
@@ -82,17 +82,17 @@ exports[`Snapshot Post Web 1`] = `
         >
           <a
             className="avatar"
-            href="/user/profile/handle"
+            href="/user/profile/handle1"
             onClick={[Function]}
             style={
               Object {
-                "backgroundImage": "url(/img/default_user.jpg)",
+                "backgroundImage": "url(userImage1.jpg)",
                 "height": undefined,
                 "width": undefined,
               }
             }
           >
-            Name
+            Name1
           </a>
           <div
             className="userBox"
@@ -101,10 +101,10 @@ exports[`Snapshot Post Web 1`] = `
               className="bebasRegular username"
             >
               <a
-                href="/user/profile/handle"
+                href="/user/profile/handle1"
                 onClick={[Function]}
               >
-                Name
+                Name1
               </a>
               <span>
                 <span
@@ -116,23 +116,33 @@ exports[`Snapshot Post Web 1`] = `
                     }
                   }
                 />
-                10
+                11
               </span>
             </div>
             <div
               className="c0"
             >
               <a
-                href="/user/profile/handle"
+                href="/user/profile/handle1"
                 onClick={[Function]}
               >
                 @
-                handle
+                handle1
               </a>
                • 0sec ago
             </div>
           </div>
         </div>
+        <a
+          className="popup"
+          onClick={[Function]}
+        >
+          <span
+            className="optionDots"
+          >
+            ...
+          </span>
+        </a>
       </div>
       <div
         className="postBody"
@@ -141,22 +151,22 @@ exports[`Snapshot Post Web 1`] = `
           className=""
         >
           <pre>
-            awesome post!
+            awesome post #1!
           </pre>
            
           <a
-            href="/testCommunity/top/tag1"
+            href="/testCommunity/top/tag11"
             onClick={[Function]}
           >
             #
-            tag1
+            tag11
           </a>
           <a
-            href="/testCommunity/top/tag2"
+            href="/testCommunity/top/tag12"
             onClick={[Function]}
           >
             #
-            tag2
+            tag12
           </a>
         </div>
         <div
@@ -212,7 +222,7 @@ exports[`Snapshot Post Web 1`] = `
           >
             <a
               className="commentcount details"
-              href="/post/234"
+              href="/post/1111"
               onClick={[Function]}
             >
               <img

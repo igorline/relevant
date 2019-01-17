@@ -9,8 +9,18 @@ const moment = require('moment');
 
 export default class SingleActivity extends Component {
   static propTypes = {
-    singleActivity: PropTypes.object,
-    auth: PropTypes.object
+    singleActivity: PropTypes.shape({
+      totlaUsers: PropTypes.number,
+      amount: PropTypes.number,
+      byUser: PropTypes.object, // TODO create user prop type validation
+      post: PropTypes.object, // TODO create post prop type validation
+      type: PropTypes.string,
+      text: PropTypes.string,
+      createdAt: PropTypes.object
+    }).isRequired,
+    auth: PropTypes.shape({
+      user: PropTypes.object.isRequired
+    }).isRequired
   };
 
   renderName(activity, user) {
