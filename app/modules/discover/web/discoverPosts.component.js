@@ -57,7 +57,8 @@ class DiscoverPosts extends Component {
 
       const link = this.props.posts.links[post.metaPost];
       if (post[sort] && post[sort].length) {
-        post = this.props.posts.posts[post[sort][0]];
+        // post
+        // post = this.props.posts.posts[post[sort][0]];
         if (!post) return null;
       }
       // TODO test this
