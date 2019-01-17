@@ -5,6 +5,7 @@ export const Title = styled.Text`
   font-weight: bold;
   font-size: 20;
   font-family: Arial;
+  font-family: Bebas;
   color: ${colors.black};
   color: ${(props) => props.color ? props.color : colors.black};
 `;

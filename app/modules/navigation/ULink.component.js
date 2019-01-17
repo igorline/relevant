@@ -5,6 +5,7 @@ import { Link, NavLink } from 'react-router-dom';
 let styled;
 let StyledLink;
 let StyledNavLink;
+let StyledA;
 let environment = 'web';
 if (process.env.WEB !== 'true') {
   environment = 'native';
@@ -20,18 +21,38 @@ if (process.env.WEB !== 'true') {
   StyledNavLink = styled(NavLink)`
     ${(p) => p.styles}
   `;
+  StyledA = styled.a`
+    ${(p) => p.styles}
+  `;
 }
 
 const ULink = (props) => {
-  const { onClick, onPress, to, styles, children, navLink } = props;
+  const {
+    onClick,
+    onPress,
+    to,
+    styles,
+    children,
+    navLink,
+    external,
+    target,
+  } = props;
   if (environment === 'web') {
-    return navLink ?
-      <StyledNavLink onClick={onClick} to={to} styles={styles || ''}>
+    if (navLink) {
+      return (
+        <StyledNavLink onClick={onClick} to={to} styles={styles || ''}>
+          {children}
+        </StyledNavLink>
+      );
+    }
+    if (external) {
+      return <StyledA onClick={onClick} href={to} target={target} styles={styles || ''}>{children}</StyledA>;
+    }
+
+    return (
+      <StyledLink onClick={onClick} to={to} target={target} styles={styles || ''}>
         {children}
-      </StyledNavLink> :
-      <StyledLink onClick={onClick} to={to} styles={styles || ''}>
-        {children}
-      </StyledLink>;
+      </StyledLink>);
   }
 
   return (
@@ -48,6 +69,8 @@ ULink.propTypes = {
   onPress: PropTypes.func,
   onClick: PropTypes.func,
   styles: PropTypes.string,
+  external: PropTypes.bool,
+  target: PropTypes.string,
 };
 
 export default ULink;

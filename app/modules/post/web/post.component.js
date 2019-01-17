@@ -5,12 +5,12 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import AvatarBox from 'modules/user/web/avatarbox.component';
 // import AvatarBox from 'modules/user/avatarbox.component.styled';
-import Tag from 'modules/tag/web/tag.component';
 import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import Popup from 'modules/ui/web/popup';
 import styled from 'styled-components/primitives';
+import PostComment from 'modules/post/web/postComment.component';
 import PostButtons from './postbuttons.component';
 import PostInfo from './postinfo.component';
 
@@ -141,51 +141,20 @@ class Post extends Component {
               />
               {popup}
             </div>
-
-            <div className="postBody">
-              <PostBody auth={this.props.auth} community={community} repost={repost} post={post} />
-              {repost && (
-                <div className="repostBody">
-                  <AvatarBox
-                    user={repost.embeddedUser}
-                    auth={this.props.auth}
-                    date={post.postDate}
-                  />
-                  <div>
-                    <PostBody post={repost} community={community} />
-                  </div>
-                </div>
-              )}
-              {this.props.showDescription && (
-                <div className="postDescription">{post.description}</div>
-              )}
-              <PostButtons post={post} {...this.props} />
-            </div>
+            <PostComment
+              auth={this.props.auth}
+              community={community}
+              repost={repost}
+              post={post}
+              date={post.postDate}
+            />
+            <PostButtons post={post} {...this.props} />
           </div>
         </div>
       </Wrapper>
     );
   }
 }
-
-function PostBody(props) {
-  const { post, community, repost } = props;
-  const { body } = post;
-  const tags = (post.tags || []).map(tag => (
-    <Tag {...props} name={tag} community={community} key={tag} />
-  ));
-  return (
-    <div className={repost ? 'repostText' : ''}>
-      <pre>{body}</pre> {tags}
-    </div>
-  );
-}
-
-PostBody.propTypes = {
-  post: PropTypes.object,
-  repost: PropTypes.object,
-  community: PropTypes.string
-};
 
 export default withRouter(connect(
   state => ({
