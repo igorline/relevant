@@ -16,13 +16,24 @@ import PostInfo from './postinfo.component';
 
 const Wrapper = styled.View`
   position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
 `;
 
+const PostInfoContainer = styled.View`
+  display: flex;
+  position: relative;
+  flex-shrink: 1;
+`;
 
-// if (process.env.BROWSER === true) {
-//   require('./post.css');
-// }
+const StyledPostButtons = styled(PostButtons)`
+  display: flex;
+  background: orange;
+`;
 
 class Post extends Component {
   static propTypes = {
@@ -86,15 +97,9 @@ class Post extends Component {
     }
     if (!post) return null;
 
-    let postInfo;
-    console.log('link and post', link, post);
-    if (link) {
-      postInfo = <PostInfo post={link} date={post.postDate} user={post.embeddedUser} />;
-    }
-    // else if (repost) {
-    //   postInfo = <PostInfo post={repost} />;
-    // } else {
-    //   postInfo = <PostInfo post={post} />;
+    // let postInfo;
+    // if (link) {
+    //   postInfo = <PostInfo post={link} date={post.postDate} user={post.embeddedUser} />;
     // }
 
     let user = post.user || post.twitterUser;
@@ -123,38 +128,31 @@ class Post extends Component {
     // }
 
     const openPost = repost ? repost._id : post._id;
-
+    const postUrl = `/${community}/post/${openPost}`;
     return (
-      <Wrapper
-        onClick={() => this.props.history.push('/' + community + '/post/' + openPost)}
-      >
-        {postInfo}
-        <div className="postContent">
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <AvatarBox
-                user={user}
-                auth={this.props.auth}
-                date={post.postDate}
-                repost={repost}
-                big
-              />
-              {popup}
-            </div>
-            <PostComment
-              auth={this.props.auth}
-              community={community}
-              repost={repost}
-              post={post}
-              date={post.postDate}
-            />
-            <PostButtons post={post} {...this.props} />
-          </div>
-        </div>
+      <Wrapper>
+        <StyledPostButtons post={post} {...this.props} />
+        <PostInfoContainer>
+          <PostInfo
+            post={post}
+            link={link}
+            community={community}
+            postUrl={postUrl}
+          />
+        </PostInfoContainer>
       </Wrapper>
     );
   }
 }
+
+
+// <PostComment
+//   auth={this.props.auth}
+//   community={community}
+//   repost={repost}
+//   post={post}
+//   date={post.postDate}
+// />
 
 export default withRouter(connect(
   state => ({

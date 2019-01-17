@@ -101,6 +101,7 @@ class DiscoverPosts extends Component {
           data={data}
           loadMore={p => this.load(p, length)}
           hasMore={this.hasMore}
+          style={{ position: 'relative' }}
         >
           {posts}
         </InfScroll>

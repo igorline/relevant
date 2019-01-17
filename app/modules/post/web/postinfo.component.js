@@ -15,29 +15,33 @@ if (process.env.BROWSER === true) {
 
 const Wrapper = styled.View`
   display: flex;
-  flex-flow: row;
-  width: 100%;
-  flex-wrap: wrap;
+  flex-direction: row;
+  max-width: 100%;
 `;
 
 const View = styled.View`
   position: relative;
 `;
 
-const PostText = styled.View`
-  /* margin: 0 1em; */
-`;
 
 const Image = styled.Image`
-  background-color: 'blue';
   height: 202;
   width: 368;
   margin-right: 1em;
   margin-bottom: 1em;
+  background: black;
+`;
+
+const PostText = styled.View`
+  flex-shrink: 1;
 `;
 
 
 const PostTitle = styled(Title)`
+  /* max-width: 100%; */
+  /* flex-shrink: 1 */
+  /* flex-wrap: wrap; */
+  /* flex: 1; */
 `;
 
 export default function PostInfo(props) {
@@ -59,38 +63,47 @@ export default function PostInfo(props) {
     timestamp = ' • ' + numbers.timeSince(Date.parse(post.postDate)) + ' ago';
   }
 
+  const imageUrl = link.image || null;
+
   const postContent = (
     <Wrapper>
-      <View>
-        <Image source={{ uri: link.image || '' }} />
-      </View>
+      {imageUrl ?
+        <View>
+          <ULink external to={post.url} target="_blank">
+            <Image source={{ uri: imageUrl }} />
+          </ULink>
+        </View>
+        : <View />}
       <PostText>
-        <PostTitle>{title}</PostTitle>
+        <ULink external to={post.url} external target="_blank">
+          <PostTitle>{title}</PostTitle>
+        </ULink>
         <SecondaryText>
           {get(post, 'embeddedUser.handle') ? `Posted by: @${get(post, 'embeddedUser.handle')} and HOW MANY OTHERS?` : null}
           {timestamp}
-          <ULink external to={post.url} target="_blank">
+          <ULink external to={post.url} external target="_blank">
             <SecondaryText>{link.domain && ` • ${link.domain} ↗`}</SecondaryText>
           </ULink>
         </SecondaryText>
         { post.commentCount ?
-          <SecondaryText color={colors.blue}>
-            {post.commentCount} Comments
-          </SecondaryText>
+          <ULink external to={postUrl} >
+            <SecondaryText color={colors.blue}>
+              {post.commentCount} Comments
+            </SecondaryText>
+          </ULink>
           : null}
         <SecondaryText>{
           post.tags.map(tag => <Tag name={tag} community={community} key={tag} />)}
         </SecondaryText>
       </PostText>
+
     </Wrapper>
   );
 
   if (post.url) {
     return (
       <View>
-        <ULink to={postUrl} rel="noopener noreferrer">
-          {postContent}
-        </ULink>
+        {postContent}
       </View>
     );
   }
@@ -101,7 +114,4 @@ PostInfo.propTypes = {
   link: PropTypes.object,
   post: PropTypes.object,
   community: PropTypes.string,
-  // date: PropTypes.string,
-  // small: PropTypes.bool,
-  // preview: PropTypes.bool
 };
