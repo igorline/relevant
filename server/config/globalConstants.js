@@ -1,8 +1,8 @@
-const HOURS = 60 * 60 * 1000;
-const DAYS = HOURS * 24;
+export const HOURS = 60 * 60 * 1000;
+export const DAYS = HOURS * 24;
 export const PAYOUT_FREQUENCY = 1 * HOURS; // how often we compute payouts
-const PAYOUT_FREQUENCY_FRACTION = 1 / (365 * 24); // fraction of year
-const YEARLY_INFLATION = 0.1; // 10%
+export const PAYOUT_FREQUENCY_FRACTION = 1 / (365 * 24); // fraction of year
+export const YEARLY_INFLATION = 0.1; // 10%
 export const INTERVAL_INFLAITION =
   (1 + YEARLY_INFLATION) ** PAYOUT_FREQUENCY_FRACTION - 1;
 export const INIT_COIN = 1000000;
