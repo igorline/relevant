@@ -19,7 +19,7 @@ const Logout = styled.a`
   ${layout.linkStyle}
 `;
 
-class Profile extends Component {
+export class Profile extends Component {
   static propTypes = {
     user: PropTypes.object,
     auth: PropTypes.object,
@@ -33,11 +33,13 @@ class Profile extends Component {
     const { auth, wallet, match } = props;
     const user = props.user.users[match.params.id];
     if (!user) return null;
-    let tokens = user.balance + user.tokenBalance;
+    let tokens = user.balance;
+    if (user.tokenBalance) tokens += user.tokenBalance;
     const owner = auth.user;
     if (
       owner &&
       owner._id === user._id &&
+      user.ethAddress &&
       user.ethAddress[0] &&
       wallet.connectedBalance
     ) {

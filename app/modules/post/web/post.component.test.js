@@ -3,27 +3,15 @@ import renderer from 'react-test-renderer';
 import { Post } from 'modules/post/web/post.component';
 import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
-
-const user = { _id: 123, handle: 'handle', name: 'Name', relevance: { pagerank: 10 } };
-const post = {
-  _id: 234,
-  user: 456,
-  title: 'postTitle',
-  embeddedUser: user,
-  tags: ['tag1', 'tag2'],
-  body: 'awesome post!',
-  postDate: new Date(),
-  data: { pagerank: 45, payout: 18 * (10 ** 18) },
-  link: { image: 'link_img.jpg', url: 'https://example.com/test', domain: 'link.domain', title: 'postTitle' }
-};
+import { auth, post1, usersState } from 'app/utils/testData';
 
 const props = {
-  post,
-  link: post.link,
+  post: post1,
+  link: post1.link,
   actions: {},
-  user: { users: { 123: user } },
-  auth: { community: 'testCommunity', user, isAuthenticated: true },
-  location: { pathname: 'post/' + post._id },
+  user: usersState,
+  auth,
+  location: { pathname: 'post/' + post1._id },
   history: { push: jest.fn() }
 };
 
