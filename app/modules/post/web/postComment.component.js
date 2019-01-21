@@ -4,7 +4,8 @@ import AvatarBox from 'modules/user/avatarbox.component';
 // import PostButtons from './postbuttons.component';
 import { ContentText } from 'modules/styled/Text.component';
 import styled from 'styled-components/primitives';
-import { layout, colors } from 'app/styles/globalStyles';
+import ULink from 'modules/navigation/ULink.component';
+import { colors } from 'app/styles/globalStyles';
 
 const Wrapper = styled.View`
   position: relative;
@@ -26,10 +27,11 @@ class PostComment extends Component {
   static propTypes = {
     auth: PropTypes.object,
     comment: PropTypes.object,
+    postUrl: PropTypes.string,
   };
 
   render() {
-    const { comment, auth } = this.props;
+    const { comment, auth, postUrl } = this.props;
     if (!comment) {
       return null;
     }
@@ -42,7 +44,9 @@ class PostComment extends Component {
             postTime={comment.postDate}
           />
         </View>
-        <ContentText>{comment.body}</ContentText>
+        <ULink to={postUrl}>
+          <ContentText>{comment.body}</ContentText>
+        </ULink>
       </Wrapper>
     );
   }
