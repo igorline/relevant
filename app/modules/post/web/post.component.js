@@ -170,6 +170,7 @@ export class Post extends Component {
                 comment={comment}
                 auth={this.props.auth}
                 community={community}
+                postUrl={postUrl}
               />
             </PostCommentContainer>
           </PostInfoContainer>
