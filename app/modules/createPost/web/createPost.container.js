@@ -36,7 +36,8 @@ class CreatePostContainer extends Component {
     modal: PropTypes.bool,
     auth: PropTypes.object,
     close: PropTypes.func,
-    location: PropTypes.object
+    location: PropTypes.object,
+    history: PropTypes.object,
   };
 
   constructor(props) {

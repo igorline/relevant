@@ -1,6 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import AvatarBox from 'modules/user/avatarbox.component.styled';
+import AvatarBox from 'modules/user/avatarbox.component';
 
 const user = { _id: 123, handle: 'handle', name: 'Name', relevance: { pagerank: 10 } };
 const postTime = '1 day ago';

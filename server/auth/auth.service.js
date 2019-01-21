@@ -90,9 +90,10 @@ function communityMember() {
       let member = await CommunityMember.findOne({ user, community });
 
       // add member to default community
-      if (community === 'relevant' && !member) {
+      if (!member) {
+      // if (community === 'relevant' && !member) {
         // TODO join community that one is signing up with
-        const com = await Community.findOne({ slug: 'relevant' });
+        const com = await Community.findOne({ slug: community });
         await com.join(user);
         member = await CommunityMember.findOne({ user, community });
       }

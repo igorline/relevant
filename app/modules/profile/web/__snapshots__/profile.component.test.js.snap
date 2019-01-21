@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Snapshot Post Web 1`] = `
+exports[`Snapshot Profile Web 1`] = `
 .c0 {
   display: inline-block;
   width: 100%;

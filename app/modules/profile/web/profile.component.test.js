@@ -7,12 +7,12 @@ import { auth, user1, usersState } from 'app/utils/testData';
 
 const props = {
   actions: { logout: jest.fn() },
-  user: usersState,
+  usersState,
   auth,
   match: { params: { id: user1.handle } }
 };
 
-test('Snapshot Post Web', () => {
+test('Snapshot Profile Web', () => {
   const tree = renderer.create(
     <MemoryRouter><Profile {...props} /></MemoryRouter>
   ).toJSON();

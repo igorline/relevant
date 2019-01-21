@@ -37,7 +37,7 @@ export default class UserSuggestion extends Component {
         onClick={() => this.props.onChange(user)}
       >
         <Avatar user={user} nolink />
-        <span className="username">{user._id}</span>
+        <span className="username">{user.handle}</span>
       </button>
     ));
     return (

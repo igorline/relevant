@@ -6,7 +6,7 @@ const { Schema } = mongoose;
 // TODO move this to Community Member
 const RelevanceSchema = new Schema(
   {
-    user: { type: String, ref: 'User', index: true },
+    user: { type: Schema.Types.ObjectId, ref: 'User', index: true },
     tag: { type: String, ref: 'Tag' },
     global: { type: Boolean, default: false },
     topTopic: { type: Boolean, deafault: false },

@@ -11,7 +11,8 @@ const { Schema } = mongoose;
 
 const UserSchema = new Schema(
   {
-    _id: { type: String, required: true },
+    _id: { type: Schema.Types.ObjectId, required: true },
+    // _id: { type: String, required: true },
     handle: { type: String, unique: true, required: true },
     publicKey: { type: String, unique: true, sparse: true },
     name: String,
@@ -86,7 +87,7 @@ const UserSchema = new Schema(
     twitterEmail: { type: String, select: false },
     twitterAuthToken: { type: String, select: false },
     twitterAuthSecret: { type: String, select: false },
-    twitterId: { type: Number, unique: true, index: true, sparse: true },
+    twitterId: { type: String, unique: true, index: true, sparse: true },
 
     // used to query twitter feed
     lastTweetId: { type: Number },
@@ -99,7 +100,8 @@ const UserSchema = new Schema(
       nonce: Number,
       sig: String,
       amount: Number
-    }
+    },
+    version: String,
   },
   {
     toJSON: { virtuals: true },

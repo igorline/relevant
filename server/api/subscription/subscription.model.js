@@ -4,8 +4,8 @@ const { Schema } = mongoose;
 
 const SubscriptionSchema = new Schema(
   {
-    follower: { type: String, ref: 'User' },
-    following: { type: String, ref: 'User' },
+    follower: { type: Schema.Types.ObjectId, ref: 'User' },
+    following: { type: Schema.Types.ObjectId, ref: 'User' },
     amount: Number,
     category: [{ type: String, ref: 'Tag' }]
   },
