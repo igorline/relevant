@@ -12,7 +12,7 @@
     "build": "BABEL_ENV='development_web' webpack --config ./webpack.production.config.js --progress --colors -p",
     "build-dev": "webpack --config ./webpack.config.js --progress --colors -p",
     "testServer": "WEB='true' ava --watch",
-    "testClient": "NODE_ENV=test jest",
+    "testClient": "NODE_ENV=test jest ./app",
     "testClient:watch": "jest --watch",
     "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean",
     "uninstall": "adb uninstall com.relevantnative",

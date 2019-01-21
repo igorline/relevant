@@ -24,6 +24,7 @@ const Coin = styled.Image`
   margin-right: 5px;
 `;
 
+const coinImage = require('app/public/img/relevantcoin.png');
 
 function CoinStat(props) {
   const { user, isOwner, wallet } = props;
@@ -40,7 +41,6 @@ function CoinStat(props) {
   ) {
     tokens = wallet.connectedBalance + user.balance;
   }
-  const coinImage = require('app/public/img/relevantcoin.png');
 
   return (
     <Wrapper>
