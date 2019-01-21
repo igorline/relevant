@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
 import { computePayout } from 'app/utils/post';
 import { abbreviateNumber } from 'app/utils/numbers';
+import { colors, fonts } from 'app/styles/globalStyles';
 import styled from 'styled-components/primitives';
 
 const Wrapper = styled.View`
@@ -16,6 +17,9 @@ const Container = styled.View`
 
 const View = styled.View`
   margin: 1em 0;
+  /* align-items: center; */
+  display: flex;
+  flex-direction: row;
 `;
 
 const Touchable = styled.Touchable`
@@ -23,11 +27,22 @@ const Touchable = styled.Touchable`
 
 const Text = styled.Text`
   display: flex;
+  color: ${colors.lightGrey}
+  margin-left: 0.3em;
+  ${fonts.Helvetica}
+  font-size: 14px;
+  line-height: 14px;
 `;
+
 
 const Image = styled.Image`
   width: 20px;
   height: 20px;
+`;
+
+const RLogoImage = styled.Image`
+  width: 14px;
+  height: 14px;
 `;
 
 const VoteIcon = styled(Image)`
@@ -149,8 +164,9 @@ class PostButtons extends Component {
             />
           </Touchable>
           <View>
+            <RLogoImage alt="R" source={{ uri: '/img/r-gray.svg' }} />
             <Text>
-              <Image alt="R" source={{ uri: '/img/r-gray.svg' }} /> {
+              {
                 post.data ? Math.round(post.data.pagerank) : null
               }
               {payout > 0 ? abbreviateNumber(payout) : null }

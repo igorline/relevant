@@ -23,7 +23,7 @@ const Wrapper = styled.View`
   max-width: 100%;
   overflow: hidden;
   /* border: 1px solid black; */
-  padding: 1em;
+  padding: 1em 0;
 `;
 
 const PostContainer = styled.View`
