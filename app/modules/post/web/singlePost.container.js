@@ -7,7 +7,7 @@ import * as investActions from 'modules/post/invest.actions';
 import Comments from 'modules/comment/web/comment.container';
 import PostContainer from './post.component';
 
-class Posts extends Component {
+class SinglePostContainer extends Component {
   static propTypes = {
     actions: PropTypes.object,
     posts: PropTypes.object,
@@ -32,7 +32,6 @@ class Posts extends Component {
     const { params } = this.props.match;
     this.post = this.props.posts.posts[params.id];
     if (!this.post) return null;
-    const link = this.props.posts.links[this.post.metaPost];
     const hasPost = this.post && this.post !== 'notFound';
 
     return (
@@ -40,7 +39,7 @@ class Posts extends Component {
         <div className="singlePost row column pageContainer">
           {hasPost && (
             <div className="postContainer">
-              <PostContainer post={this.post} link={link} {...this.props} />
+              <PostContainer post={this.post} {...this.props} />
               <Comments post={this.post} {...this.props} />
             </div>
           )}
@@ -68,4 +67,4 @@ export default connect(
       dispatch
     )
   })
-)(Posts);
+)(SinglePostContainer);
