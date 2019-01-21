@@ -5,7 +5,7 @@ import { ActivityIndicator } from 'react-native-web';
 import ULink from 'modules/navigation/ULink.component';
 import { Title, SecondaryText } from 'modules/styled/Text.component';
 import { colors } from 'app/styles/globalStyles';
-import { numbers } from 'app/utils';
+import { getTimestamp } from 'app/utils/numbers';
 import get from 'lodash.get';
 import Tag from 'modules/tag/tag.component';
 
@@ -61,7 +61,7 @@ export default function PostInfo(props) {
 
   let timestamp;
   if (post.postDate) {
-    timestamp = ' • ' + numbers.timeSince(Date.parse(post.postDate)) + ' ago';
+    timestamp = getTimestamp(post.postDate);
   }
 
   const imageUrl = get(link, 'image') || null;

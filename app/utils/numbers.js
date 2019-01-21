@@ -85,6 +85,11 @@ export function timeSince(date) {
   return Math.floor(seconds) + 'sec';
 }
 
+export function getTimestamp(date) {
+  const timestamp = ' • ' + timeSince(Date.parse(date)) + ' ago';
+  return timestamp;
+}
+
 export function guid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     const r = (Math.random() * 16) | 0; // eslint-disable-line
