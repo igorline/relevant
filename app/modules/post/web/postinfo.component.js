@@ -18,15 +18,22 @@ const Wrapper = styled.View`
 
 const View = styled.View`
   position: relative;
+  /* flex-direction: column; */
 `;
 
+const TextView = styled.View`
+  display: inline;
+`;
+
+const Text = styled.Text`
+  position: relative;
+`;
 
 const Image = styled.Image`
-  height: 202;
-  width: 368;
+  height: 202px;
+  width: 368px;
   margin-right: 1em;
   margin-bottom: 1em;
-  background: black;
 `;
 
 const PostText = styled.View`
@@ -69,7 +76,7 @@ export default function PostInfo(props) {
   } else if (get(firstPost, 'embeddedUser.handle')) {
     postUser = get(firstPost, 'embeddedUser');
   }
-  console.log(post)
+  const tags = post.tags && post.tags.length ? get(post, 'tags', []) : [];
   const postContent = (
     <Wrapper>
       {imageUrl ?
@@ -80,22 +87,24 @@ export default function PostInfo(props) {
         </View>
         : <View />}
       <PostText>
-        {title ?
+        {postUrl ?
           <ULink to={postUrl}>
             <PostTitle>{title}</PostTitle>
           </ULink>
-          : null}
+          : <PostTitle>{title}</PostTitle>}
         <SecondaryText>
 
           {get(postUser, 'handle') ?
-            (<ULink to={`/user/profile/${postUser.handle}`}>{`Posted by: @${get(postUser, 'handle')}`}</ULink>) : ''}
-          <ULink to={postUrl}>
-            {uniqueUsers > 1 ? `and ${uniqueUsers} others` : ''}
-            {timestamp}
-          </ULink>
+            (<TextView><Text>Posted by: </Text><ULink to={`/user/profile/${postUser.handle}`} disabled={!postUrl}>{`@${get(postUser, 'handle')}`}</ULink></TextView>) : ''}
+          { postUrl && (
+            <ULink to={postUrl}>
+              {uniqueUsers > 1 ? `and ${uniqueUsers} others` : ''}
+              {timestamp}
+            </ULink>)
+          }
           { get(link, 'domain') ?
-            <ULink external to={post.url} external target="_blank">
-              <SecondaryText>{link.domain && ` • ${link.domain} ↗`}</SecondaryText>
+            <ULink external to={post.url} external target="_blank" disabled={!postUrl} >
+              {link.domain && ` • ${link.domain} ↗`}
             </ULink>
             : null}
         </SecondaryText>
@@ -106,8 +115,9 @@ export default function PostInfo(props) {
             </SecondaryText>
           </ULink>
           : null}
-        <SecondaryText>{
-          (get(post, 'tags', []) || []).map(tag => <Tag name={tag} community={community} key={tag} />)}
+        <SecondaryText>{tags.length ?
+          tags.map(tag => <Tag name={tag} community={community} key={tag} />)
+          : null}
         </SecondaryText>
       </PostText>
 
@@ -128,6 +138,6 @@ PostInfo.propTypes = {
   link: PropTypes.object,
   post: PropTypes.object,
   community: PropTypes.string,
-  sort: PropTypes.string,
+  postUrl: PropTypes.string,
   firstPost: PropTypes.object,
 };
