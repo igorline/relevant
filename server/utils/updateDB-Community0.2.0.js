@@ -1,5 +1,4 @@
 import User from '../api/user/user.model';
-import RelevanceStats from '../api/relevanceStats/relevanceStats.model';
 import Stats from '../api/statistics/statistics.model';
 import Relevance from '../api/relevance/relevance.model';
 import Post from '../api/post/post.model';
@@ -228,17 +227,17 @@ async function updateRelevance() {
 //   });
 // }
 
-async function updateStats() {
-  const stats = await RelevanceStats.update(
-    {},
-    {
-      community: DEFAULT_COMMINITY,
-      communityId: DEFAULT_COMMINITY_ID
-    },
-    { multi: true }
-  );
-  return stats;
-}
+// async function updateStats() {
+//   const stats = await RelevanceStats.update(
+//     {},
+//     {
+//       community: DEFAULT_COMMINITY,
+//       communityId: DEFAULT_COMMINITY_ID
+//     },
+//     { multi: true }
+//   );
+//   return stats;
+// }
 
 async function updateActualStats() {
   const stats = await Stats.update(

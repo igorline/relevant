@@ -371,6 +371,7 @@ export default async function computePageRank(params) {
 
     upvotes.forEach(upvote => {
       const user = upvote.investor;
+      if (!user) return null;
       const postAuthor = upvote.author;
       const { post: postObj } = upvote;
       // if (user && !originalUsers[user._id]) {
@@ -386,7 +387,7 @@ export default async function computePageRank(params) {
           ? postAuthor.relevance.relevance
           : 0;
       }
-      processUpvote({
+      return processUpvote({
         rankedNodes,
         rankedPosts,
         nstart,

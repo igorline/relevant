@@ -1,5 +1,5 @@
 import User from '../api/user/user.model';
-import RelevanceStats from '../api/relevanceStats/relevanceStats.model';
+// import RelevanceStats from '../api/relevanceStats/relevanceStats.model';
 import Relevance from '../api/relevance/relevance.model';
 import Post from '../api/post/post.model';
 import CommunityFeed from '../api/communityFeed/communityFeed.model';
@@ -51,14 +51,14 @@ async function updateUserHandles() {
   return Promise.all(update);
 }
 
-async function addStatCommuntyField() {
-  console.log('ADDING STAT COMMUNITY FIELD');
-  return RelevanceStats.update(
-    { community: { $exists: false } },
-    { community: 'relevant' },
-    { multi: true }
-  ).exec();
-}
+// async function addStatCommuntyField() {
+//   console.log('ADDING STAT COMMUNITY FIELD');
+//   return RelevanceStats.update(
+//     { community: { $exists: false } },
+//     { community: 'relevant' },
+//     { multi: true }
+//   ).exec();
+// }
 
 async function migrateToCommunityReputation() {
   try {

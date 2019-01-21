@@ -181,10 +181,6 @@ async function basicIncome(done) {
       q.push(async cb => {
         try {
           const r = topic.relevance * (1 / 2) ** (DAYS / RELEVANCE_DECAY);
-          console.log('DAYS', DAYS);
-          console.log('RELEVANCE_DECAY', RELEVANCE_DECAY);
-          console.log('(1 / 2) ** (DAYS / RELEVANCE_DECAY)', (1 / 2) ** (DAYS / RELEVANCE_DECAY));
-
           const diff = r - topic.relevance;
           topic.relevance += diff;
           if (topic.global === true) {
@@ -272,7 +268,6 @@ function startTwitterUpdate() {
   TwitterWorker.updateTwitterPosts();
 }
 
-basicIncome(updateReputation);
 // updateUserStats();
 // startStatsUpdate();
 // startTwitterUpdate();

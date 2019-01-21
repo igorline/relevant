@@ -47,7 +47,8 @@ export const post2 = {
 
 
 export const usersState = {
-  users: { handle1: user1, handle2: user2 }
+  users: { [user1._id]: user1, [user2._id]: user2 },
+  handleToId: { [user1.handle]: user1._id, [user2.handle]: user2._id }
 };
 
 export const postsState = {

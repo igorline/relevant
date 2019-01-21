@@ -11,7 +11,9 @@ class EthTools extends Component {
     account: PropTypes.string,
     user: PropTypes.object,
     RelevantCoin: PropTypes.object,
-    children: PropTypes.node
+    children: PropTypes.node,
+    network: PropTypes.number,
+    status: PropTypes.object
   };
 
   initialState = {

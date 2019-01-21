@@ -98,7 +98,7 @@ export async function create(req, res, next) {
     }
     let community = req.body;
     let { admins } = community;
-    admins = await User.find({ _id: { $in: admins } }, '_id');
+    admins = await User.find({ handle: { $in: admins } }, '_id');
     community.slug = community.slug.toLowerCase();
     if (RESERVED.indexOf(community.slug) > -1) throw new Error('Reserved slug');
     if (!admins || !admins.length) throw new Error('Please set community admins');

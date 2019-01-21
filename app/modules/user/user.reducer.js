@@ -3,6 +3,7 @@ import * as types from 'core/actionTypes';
 const initialState = {
   error: false,
   users: {},
+  handleToId: {},
   list: [],
   listByTopic: {},
   online: [],
@@ -22,12 +23,18 @@ export default function auth(state = initialState, action) {
 
     case types.SET_USERS: {
       const users = {};
+      const handleToId = {};
       if (!action.payload) return state;
       Object.keys(action.payload).forEach(id => {
+        handleToId[action.payload[id].handle] = id;
         users[id] = { ...state.users[id], ...action.payload[id] };
       });
       return {
         ...state,
+        handleToId: {
+          ...state.handleToId,
+          ...handleToId
+        },
         users: {
           ...state.users,
           ...users
@@ -38,6 +45,10 @@ export default function auth(state = initialState, action) {
     case 'SET_SELECTED_USER_DATA': {
       return {
         ...state,
+        handleToId: {
+          ...state.handleToId,
+          [action.payload.handle]: action.payload._id
+        },
         users: {
           ...state.users,
           [action.payload._id]: {
@@ -80,6 +91,10 @@ export default function auth(state = initialState, action) {
       }
       return {
         ...state,
+        handleToId: {
+          ...state.handleToId,
+          [action.payload.handle]: action.payload._id
+        },
         users: {
           ...state.users,
           [action.payload._id]: {

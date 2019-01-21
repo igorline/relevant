@@ -11,10 +11,9 @@
     "native": "NODE_ENV='native' nodemon server/index.js",
     "build": "BABEL_ENV='development_web' webpack --config ./webpack.production.config.js --progress --colors -p",
     "build-dev": "webpack --config ./webpack.config.js --progress --colors -p",
-    "test": "ava --watch --verbose",
+    "testServer": "WEB='true' ava --watch",
     "testClient": "NODE_ENV=test jest",
     "testClient:watch": "jest --watch",
-    "testServer": "WEB='true' ava --watch",
     "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean",
     "uninstall": "adb uninstall com.relevantnative",
     "android": "react-native run-android",
@@ -253,7 +252,7 @@
       "@babel/polyfill"
     ],
     "files": [
-      "**/**.test.js",
+      "./server/**/**.test.js",
       "!tests/**/*"
     ]
   },

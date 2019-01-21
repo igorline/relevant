@@ -31,6 +31,7 @@ export class Post extends Component {
     user: PropTypes.object,
     showDescription: PropTypes.bool,
     history: PropTypes.object,
+    usersState: PropTypes.object,
   };
 
   deletePost() {
@@ -42,7 +43,7 @@ export class Post extends Component {
   }
 
   editPost() {
-    const { post, link } = this.props;
+    const { post, link = {} } = this.props;
     this.props.actions.clearCreatePost();
     const editPost = {
       edit: true,
@@ -104,7 +105,7 @@ export class Post extends Component {
       );
     }
 
-    user = this.props.user.users[user] || post.embeddedUser;
+    user = this.props.usersState.users[user] || post.embeddedUser;
 
     // if (user && !user._id) {
     //   user = post.embeddedUser;
@@ -182,7 +183,8 @@ PostBody.propTypes = {
 
 export default withRouter(connect(
   state => ({
-    community: state.community.communities[state.community.active]
+    community: state.community.communities[state.community.active],
+    usersState: state.user
   }),
   dispatch => ({
     actions: bindActionCreators(
