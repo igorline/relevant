@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import AvatarBox from 'modules/user/web/avatarbox.component';
+import AvatarBox from 'modules/user/avatarbox.component';
 // import PostButtons from './postbuttons.component';
 import styled from 'styled-components/primitives';
 import { layout, colors } from 'app/styles/globalStyles';
@@ -13,15 +13,19 @@ const Wrapper = styled.View`
   /* border-left: ${layout.borderStyles(colors.borderColor)} */
 `;
 
+const View = styled.View`
+`;
+
+const Text = styled.Text`
+`;
+
 class PostComment extends Component {
   static propTypes = {
-    post: PropTypes.shape({
-      data: PropTypes.object
-    }),
-    repost: PropTypes.object,
+    // post: PropTypes.shape({
+    //   data: PropTypes.object
+    // }),
     auth: PropTypes.object,
-    showDescription: PropTypes.bool,
-    // community: PropTypes.string,
+    comment: PropTypes.object,
   };
 
   render() {
@@ -30,16 +34,16 @@ class PostComment extends Component {
       return null;
     }
     return (
-      <Wrapper className="postBody">
-        <div className="repostBody">
+      <Wrapper>
+        <View>
           <AvatarBox
             user={comment.embeddedUser}
             auth={auth}
             date={comment.postDate}
           />
-        </div>
-        <div className="postDescription">{comment.description}</div>
-        <pre>{comment.body}</pre>
+        </View>
+        <Text className="postDescription">{comment.description}</Text>
+        <Text>{comment.body}</Text>
       </Wrapper>
     );
   }
