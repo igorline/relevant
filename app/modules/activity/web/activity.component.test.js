@@ -10,7 +10,7 @@ const props = {
   auth
 };
 
-test('Snapshot Post Web', () => {
+test('Snapshot Activity Web', () => {
   const tree = renderer.create(
     <MemoryRouter><Activity {...props} /></MemoryRouter>
   ).toJSON();

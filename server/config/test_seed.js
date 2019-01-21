@@ -11,6 +11,8 @@ const PostData = require('../api/post/postData.model.js');
 
 const Eth = require('../utils/ethereum');
 
+const testUserId = '5c4267177f81360b10b4b196';
+
 export const testAccounts = [
   {
     address: '0x627306090abaB3A6e1400e9345bC60c78a8BEf57',
@@ -28,7 +30,7 @@ export const testAccounts = [
 
 export const dummyUsers = [
   {
-    _id: 'dummy1',
+    _id: '572a37d72ae95bf66b3e32d1',
     handle: 'dummy1',
     provider: 'local',
     name: 'dummy1',
@@ -44,7 +46,7 @@ export const dummyUsers = [
     ethAddress: [testAccounts[0].address]
   },
   {
-    _id: 'dummy2',
+    _id: '572a37d72ae95bf66b3e32d2',
     handle: 'dummy2',
     provider: 'local',
     name: 'dummy2',
@@ -60,7 +62,7 @@ export const dummyUsers = [
     ethAddress: [testAccounts[1].address]
   },
   {
-    _id: 'dummy3',
+    _id: '572a37d72ae95bf66b3e32d3',
     handle: 'dummy3',
     provider: 'local',
     name: 'dummy3',
@@ -83,8 +85,8 @@ const dummySubscriptions = [
     _id: '572a37d72ae95bf66b3e32d1',
     updatedAt: '2016-05-16T16:16:21.340Z',
     createdAt: '2016-05-04T17:56:39.263Z',
-    follower: 'dummy1',
-    following: 'test',
+    follower: '572a37d72ae95bf66b3e32d1',
+    following: testUserId,
     amount: 1,
     __v: 0
   },
@@ -92,8 +94,8 @@ const dummySubscriptions = [
     _id: '572a37d72ae95bf66b3e32d2',
     updatedAt: '2016-05-16T16:16:21.340Z',
     createdAt: '2016-05-04T17:56:39.263Z',
-    follower: 'dummy2',
-    following: 'test',
+    follower: '572a37d72ae95bf66b3e32d2',
+    following: testUserId,
     amount: 4,
     __v: 0
   },
@@ -101,14 +103,14 @@ const dummySubscriptions = [
     _id: '572a37d72ae95bf66b3e32d3',
     updatedAt: '2016-05-16T16:16:21.340Z',
     createdAt: '2016-05-04T17:56:39.263Z',
-    follower: 'dummy3',
-    following: 'test',
+    follower: '572a37d72ae95bf66b3e32d3',
+    following: testUserId,
     amount: 4,
     __v: 0
   }
 ];
 
-export async function setupData(communities) {
+export async function setupData(communities = []) {
   const saveUsers =
     dummyUsers.map(async user => {
       user = new User(user);
@@ -118,8 +120,8 @@ export async function setupData(communities) {
 
         // create an upvote from test so we have some relevance
         const vote = new Invest({
-          investor: 'test',
-          author: user.handle,
+          investor: testUserId,
+          author: user._id,
           amount: 10,
           ownPost: false,
           communityId: c._id

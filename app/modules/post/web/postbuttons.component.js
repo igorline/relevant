@@ -13,6 +13,7 @@ class PostButtons extends Component {
       data: PropTypes.object
     }),
     community: PropTypes.object,
+    actions: PropTypes.object
   };
 
   constructor(props) {

@@ -39,14 +39,14 @@ exports.show = (req, res, next) => {
   const limit = 20;
 
   if (userId) {
-    query = { $or: [{ forUser: userId }, { forUser: 'everyone' }] };
+    query = { $or: [{ forUser: userId }, { group: 'everyone' }] };
   }
 
   Notification.find(query)
   .limit(limit)
   .skip(skip)
   .sort({ _id: -1 })
-  .populate('byUser forUser post')
+  .populate('byUser post')
   .then(notifications => res.status(200).json(notifications))
   .catch(next);
 };
@@ -75,7 +75,7 @@ exports.showGeneral = (req, res, next) => {
   .limit(limit)
   .skip(skip)
   .sort({ _id: -1 })
-  .populate('byUser forUser post tag')
+  .populate('byUser post tag')
   .then(notifications => res.status(200).json(notifications))
   .catch(next);
 };

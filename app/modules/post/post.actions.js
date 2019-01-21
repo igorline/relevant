@@ -321,7 +321,6 @@ export function getPosts(skip, tags, sort, limit) {
       } else dispatch(setPosts(data, type, skip));
       dispatch(errorActions.setError('discover', false));
     } catch (error) {
-      console.log(error);
       dispatch(errorActions.setError('discover', true, error.message));
     }
   };

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as postActions from 'modules/post/post.actions';
-import Post from 'modules/post/web/post.component';
+import PostComponent from 'modules/post/web/post.component';
 
 class Flagged extends Component {
   static propTypes = {
@@ -51,7 +51,7 @@ class Flagged extends Component {
 
     const postsEl = flaggedPosts.map(p => (
       <div>
-        <Post key={p._id} {...this.props} flagged={p.flagged} post={p} />
+        <PostComponent key={p._id} {...this.props} flagged={p.flagged} post={p} />
         {deleteEl(p)}
       </div>
     ));
