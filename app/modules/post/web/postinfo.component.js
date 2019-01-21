@@ -30,8 +30,8 @@ const Text = styled.Text`
 `;
 
 const Image = styled.Image`
-  height: 202px;
-  width: 368px;
+  height: 104px;
+  width: 208px;
   margin-right: 1em;
   margin-bottom: 1em;
 `;
