@@ -52,7 +52,7 @@ const PostCommentContainer = styled(PostContainer)`
   margin-left: 4em;
 `;
 
-class Post extends Component {
+export class Post extends Component {
   static propTypes = {
     post: PropTypes.shape({
       data: PropTypes.object
@@ -65,6 +65,7 @@ class Post extends Component {
     user: PropTypes.object,
     showDescription: PropTypes.bool,
     history: PropTypes.object,
+    usersState: PropTypes.object,
   };
 
   deletePost() {
@@ -76,7 +77,7 @@ class Post extends Component {
   }
 
   editPost() {
-    const { post, link } = this.props;
+    const { post, link = {} } = this.props;
     this.props.actions.clearCreatePost();
     const editPost = {
       edit: true,
@@ -134,7 +135,7 @@ class Post extends Component {
       );
     }
 
-    user = this.props.user.users[user] || post.embeddedUser;
+    user = this.props.usersState.users[user] || post.embeddedUser;
 
     // if (user && !user._id) {
     //   user = post.embeddedUser;
@@ -193,7 +194,8 @@ class Post extends Component {
 
 export default withRouter(connect(
   state => ({
-    community: state.community.communities[state.community.active]
+    community: state.community.communities[state.community.active],
+    usersState: state.user
   }),
   dispatch => ({
     actions: bindActionCreators(

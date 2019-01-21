@@ -189,7 +189,7 @@ exports.search = (req, res, next) => {
   const query = {
     $and: [{ $or: [{ name }, { handle: name }] }, { handle: { $nin: blocked } }]
   };
-  User.find(query, 'name image')
+  User.find(query, 'handle name image')
   .sort({ handle: 1 })
   .limit(parseInt(limit, 10))
   .then(users => {
@@ -412,7 +412,7 @@ exports.show = async function show(req, res, next) {
     user = await user.getSubscriptions();
 
     // topic relevance
-    const relevance = await Relevance.find({ user: handle, tag: { $ne: null } })
+    const relevance = await Relevance.find({ user: user._id, tag: { $ne: null } })
     .sort('-relevance')
     .limit(5);
     const userObj = user.toObject();

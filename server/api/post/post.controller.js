@@ -222,13 +222,17 @@ exports.userPosts = async (req, res, next) => {
       blocked = [...user.blocked, ...user.blockedBy];
       id = user._id;
     }
+
     const limit = parseInt(req.query.limit, 10);
     const skip = parseInt(req.query.skip, 10);
-    const userId = req.params.id || null;
-    const sortQuery = { _id: -1 };
-    const query = { user: userId, type: { $ne: 'comment' } };
 
-    if (blocked.find(u => u === userId)) {
+    const author = await User.findOne({ handle: req.params.id }, '_id');
+    if (!author) throw new Error('Missing user');
+
+    const sortQuery = { _id: -1 };
+    const query = { user: author._id, type: { $ne: 'comment' } };
+
+    if (blocked.find(u => u.toString() === author.id.toString())) {
       return res.status(200).json({});
     }
 
@@ -467,12 +471,12 @@ exports.update = async (req, res, next) => {
       ).exec()
     );
 
-    const pMentions = Post.sendOutMentions(newMentions, newPost, {
+    await Post.sendOutMentions(newMentions, newPost, {
       _id: newPost.user,
       name: newPost.embeddedUser.name
     });
 
-    return await Promise.all([...pTags, ...pMentions]);
+    return await Promise.all([...pTags]);
   } catch (err) {
     return next(err);
   }
@@ -484,7 +488,7 @@ async function processSubscriptions(newPost) {
     const subscribers = await Subscriptiton.find({
       following: newPost.user
       // category: newPostObj.category
-    }).populate('follower', '_id deviceTokens badge lastFeedNotification');
+    }).populate('follower', '_id handle name deviceTokens badge lastFeedNotification');
 
     const promises = subscribers.map(async subscription => {
       if (!subscription.follower) return null;
@@ -698,35 +702,34 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.delete = (req, res) => {
-  const userId = req.user._id;
-  const { id } = req.params;
-  let query = { _id: id, user: userId };
+exports.delete = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const { id } = req.params;
+    let query = { _id: id, user: userId };
 
-  if (req.user.role === 'admin') {
-    query = { _id: id };
-  }
-
-  Post.findOne(query).then(foundPost => {
-    if (!foundPost) {
-      res.json(404, 'no found post');
-    } else {
-      foundPost.remove(err => {
-        if (!err) {
-          const newPostEvent = {
-            type: 'REMOVE_POST',
-            notMe: true,
-            payload: foundPost
-          };
-          PostEvents.emit('post', newPostEvent);
-          req.user.updatePostCount();
-          res.status(200).json('removed');
-        } else {
-          res.status(404).json('deletion error');
-        }
-      });
+    if (req.user.role === 'admin') {
+      query = { _id: id };
     }
-  });
+
+    const post = await Post.findOne(query);
+    if (!post) throw new Error('No post found');
+
+    await post.remove();
+
+    const newPostEvent = {
+      type: 'REMOVE_POST',
+      notMe: true,
+      payload: post
+    };
+
+    PostEvents.emit('post', newPostEvent);
+    req.user.updatePostCount();
+
+    res.status(200).json('removed');
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.PostEvents = PostEvents;

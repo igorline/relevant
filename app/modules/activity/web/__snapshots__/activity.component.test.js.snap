@@ -1,0 +1,102 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot Activity Web 1`] = `
+<div
+  className="activityItem"
+>
+  <div>
+    <div
+      className="activityInner"
+    >
+      <div
+        className="topRow"
+      >
+        <a
+          href="/user/profile/handle2"
+          onClick={[Function]}
+        >
+          <span
+            className="avatar leftImage"
+            style={
+              Object {
+                "backgroundImage": "url(userImage2.jpg)",
+              }
+            }
+          />
+        </a>
+        <span
+          className="activityText"
+        >
+          <a
+            href="/user/profile/handle2"
+            onClick={[Function]}
+          >
+            Name2
+             
+          </a>
+          upvoted your comment → your relevance increased by 10
+        </span>
+        <div
+          className="stat green"
+        >
+          <img
+            src="/img/rup.png"
+          />
+          <div>
+            10
+          </div>
+        </div>
+      </div>
+      <a
+        href="/testCommunity/post/1111"
+        onClick={[Function]}
+      >
+        <div
+          style={
+            Object {
+              "position": "relative",
+            }
+          }
+        >
+          <div
+            className="minimalPost postinfo  preview"
+          >
+            <div
+              className="image"
+            >
+              <div
+                style={
+                  Object {
+                    "backgroundColor": "blue",
+                  }
+                }
+              />
+            </div>
+            <div
+              className="headlineContainer"
+            >
+              <h3
+                className="headline bebasRegular"
+              >
+                postTitle
+              </h3>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div>
+    <div
+      className="time"
+    >
+      <div
+        className="border"
+      />
+      <span>
+        a few seconds ago
+      </span>
+    </div>
+  </div>
+</div>
+`;

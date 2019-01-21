@@ -6,14 +6,15 @@ const { Schema } = mongoose;
 
 const InviteSchema = new Schema(
   {
+    // TODO
+    invitedBy: { type: String, ref: 'User' },
+    registeredAs: { type: String, ref: 'User' },
     email: { type: String },
     name: { type: String },
     code: { type: String, index: true },
     redeemed: { type: Boolean, default: false },
     number: { type: Number, default: 1 },
     status: { type: String },
-    invitedBy: { type: String, ref: 'User' },
-    registeredAs: { type: String, ref: 'User' },
     invitedByString: { type: String }
   },
   {

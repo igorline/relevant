@@ -293,10 +293,7 @@ export function getPosts(skip, tags, sort, limit) {
 
   // change this if we want to store top and new in separate places
   const type = sort ? 'top' : 'new';
-  let endpoint = 'metaPost';
-  // TODO migrate community
-  // if (community === 'crypto')
-  endpoint = 'communityFeed';
+  const endpoint = 'communityFeed';
   let topic;
 
   if (tags && tags.length) {
@@ -317,7 +314,7 @@ export function getPosts(skip, tags, sort, limit) {
       const dataType = feedSchema;
       const data = normalize({ [type]: res }, { [type]: [dataType] });
 
-      dispatch(setUsers(data.entities.users));
+      // dispatch(setUsers(data.entities.users));
 
       if (topic) {
         dispatch(setTopic(data, type, skip, topic));

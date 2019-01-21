@@ -1,5 +1,5 @@
-import { test, request } from './../../config/ava.config';
-import { setupData, cleanupData } from '../../config/test_seed';
+import { test, request } from 'server/config/ava.config';
+import { setupData, cleanupData } from 'server/config/test_seed';
 
 let r;
 let token;
@@ -31,11 +31,11 @@ function getUpvoteObj(id) {
 }
 
 test.before(async () => {
-  const { app } = require('../../server.js');
+  const { app } = require('server/server.js');
   r = request(app);
   // just in case
   await cleanupData();
-  await setupData();
+  await setupData(['crypto']);
 });
 
 test.after(async () => {
@@ -46,15 +46,13 @@ test.serial('Community Create Post', async t => {
   t.plan(3);
 
   const res = await r
-  .post('/auth/local')
-  .set('Host', 'crypto.localhost:3000')
+  .post('/auth/local?community=crypto')
   .send({ name: 'dummy1', password: 'test' });
 
   authorToken = res.body.token;
 
   const newPost = await r
-  .post(`/api/post?access_token=${authorToken}`)
-  .set('Host', 'crypto.localhost:3000')
+  .post(`/api/post?access_token=${authorToken}&community=crypto`)
   .send(getPostObj());
 
   postId = newPost.body._id;
@@ -62,53 +60,49 @@ test.serial('Community Create Post', async t => {
 
   t.truthy(savedPost.postDate);
 
-  t.is(newPost.status, 200);
-  t.is(savedPost.community, 'crypto');
+  t.is(newPost.status, 200, 'should get correct server response');
+  t.is(savedPost.community, 'crypto', 'push should have correct community');
 });
 
 test.serial('Upvote 1', async t => {
   t.plan(2);
 
   const login = await r
-  .post('/auth/local')
-  .set('Host', 'crypto.localhost:3000')
-  .send({ name: 'dummy2', password: 'test' });
+  .post('/auth/local?community=crypto')
+  .send({ name: 'test', password: 'test' });
 
   token = login.body.token;
 
-  t.is(login.status, 200);
+  t.is(login.status, 200, 'should get correct server response');
 
   const upvote = await r
-  .post(`/api/invest?access_token=${token}`)
-  .set('Host', 'crypto.localhost:3000')
+  .post(`/api/invest?access_token=${token}&community=crypto`)
   .send(getUpvoteObj(postId));
 
-  t.is(upvote.status, 200);
+  t.is(upvote.status, 200, 'should get correct server response');
 });
 
 test.serial('Upvote 2', async t => {
   t.plan(2);
 
   const login = await r
-  .post('/auth/local')
-  .set('Host', 'crypto.localhost:3000')
-  .send({ name: 'dummy3', password: 'test' });
+  .post('/auth/local?community=crypto')
+  .send({ name: 'slava', password: 'slava' });
 
   token = login.body.token;
   t.is(login.status, 200);
 
   const upvote = await r
-  .post(`/api/invest?access_token=${token}`)
-  .set('Host', 'crypto.localhost:3000')
+  .post(`/api/invest?access_token=${token}&community=crypto`)
   .send(getUpvoteObj(postId));
 
-  t.is(upvote.status, 200);
+  t.is(upvote.status, 200, 'should get correct server response');
 });
 
 test.serial('Community Get Feed', async t => {
   t.plan(6);
 
-  const res = await r.get('/api/communityFeed').set('Host', 'crypto.localhost:3000');
+  const res = await r.get('/api/communityFeed?community=crypto');
 
   t.is(res.status, 200, 'should not return error');
   t.truthy(res.body.length, 'there should be a feed');
@@ -120,15 +114,15 @@ test.serial('Community Get Feed', async t => {
   t.truthy(post.embeddedUser.relevance.relevance, 'should populate user relevance');
 
   // user is populated
-  t.is(res.body[0].commentary[0].user, 'dummy1');
+  t.is(post.embeddedUser.handle, 'dummy1');
 });
 
 test.serial('Should get author relevance correctly', async t => {
   t.plan(3);
 
-  const res = await r.get('/api/user/user/dummy1').set('Host', 'crypto.localhost:3000');
+  const res = await r.get('/api/user/user/dummy1?community=crypto');
 
-  t.is(res.status, 200);
+  t.is(res.status, 200, 'should get correct server response');
   t.truthy(res.body);
   t.is(res.body.relevance, 2, 'user relevance should be 2');
 });
@@ -136,9 +130,9 @@ test.serial('Should get author relevance correctly', async t => {
 test.serial('Should get voter relevance correctly', async t => {
   t.plan(3);
 
-  const res = await r.get('/api/user/user/dummy2').set('Host', 'crypto.localhost:3000');
+  const res = await r.get('/api/user/user/dummy2?community=crypto');
 
-  t.is(res.status, 200);
+  t.is(res.status, 200, 'should get correct server response');
   t.truthy(res.body);
   t.is(res.body.relevance, 1, 'voter relevance should be 1');
 });
@@ -146,18 +140,18 @@ test.serial('Should get voter relevance correctly', async t => {
 test.serial('Delete post', async t => {
   t.plan(1);
 
-  const res = await r.delete(`/api/post/${postId}?access_token=${authorToken}`);
+  const res = await r.delete(`/api/post/${postId}?access_token=${authorToken}&community=crypto`);
 
-  t.is(res.status, 200);
+  t.is(res.status, 200, 'should get correct server response');
 });
 
 test.serial('Make sure post is removed from feed', async t => {
   t.plan(2);
 
-  const res = await r.get('/api/communityFeed').set('Host', 'crypto.localhost:3000');
-
-  t.is(res.status, 200);
+  const res = await r.get('/api/communityFeed?community=crypto');
+  t.is(res.status, 200, 'should get correct server response');
   if (res.body.length > 0) {
+    // console.log('post parent', res.body[0]);
     t.not(res.body[0].commentary[0]._id, postId);
   } else {
     t.falsy(res.body.length);

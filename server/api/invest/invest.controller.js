@@ -77,7 +77,7 @@ exports.show = async (req, res, next) => {
     const sortQuery = { createdAt: -1 };
     const query = { investor: userId, amount: { $gt: 0 } };
 
-    if (blocked.find(u => u === userId)) {
+    if (blocked.find(u => u.toString() === userId.toString())) {
       return res.status(200).json({});
     }
 
@@ -190,7 +190,7 @@ async function investCheck(params) {
       throw new Error('you cannot downvote posts older than one week');
     }
   }
-  if (user._id === post.user) {
+  if (user._id.equals(post.user)) {
     throw new Error('You can not ' + type + ' your own post');
   }
 

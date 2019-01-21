@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot Profile Web 1`] = `
+.c0 {
+  display: inline-block;
+  width: 100%;
+  text-align: right;
+  padding-right: 2em;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+
+.c0 color:function (props) {
+  return: props.color || 'black';
+}
+
+<div
+  className="profileContainer"
+>
+  <div
+    className="profileHero"
+  >
+    <a
+      className="c0"
+      color="#4d4eff"
+      onClick={[Function]}
+    >
+       Logout
+    </a>
+    <a
+      className="avatar"
+      href="/user/profile/handle1"
+      onClick={[Function]}
+      style={
+        Object {
+          "backgroundImage": "url(userImage1.jpg)",
+          "height": undefined,
+          "width": undefined,
+        }
+      }
+    >
+      Name1
+    </a>
+    <div
+      className="name"
+    >
+      Name1
+    </div>
+    <div
+      className="relevance"
+    >
+      <img
+        alt="Relevance"
+        className="r"
+        src="/img/r-emoji.png"
+      />
+      11
+      <img
+        alt="Coins"
+        className="coin"
+        src="/img/relevantcoin.png"
+      />
+      111
+    </div>
+    <div
+      className="subscribers"
+    >
+      Subscribers: 
+      <b />
+       • 
+      Subscribed to: 
+      <b />
+    </div>
+    <div
+      className="tags"
+    >
+      Expertise: 
+    </div>
+  </div>
+</div>
+`;
