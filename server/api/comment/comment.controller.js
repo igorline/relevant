@@ -102,8 +102,7 @@ exports.update = async (req, res, next) => {
     let newMentions;
 
     const newComment = await Post.findOne({ _id: comment._id });
-
-    if (newComment.user !== user._id) throw new Error("Can't edit other's comments");
+    if (!user._id.equals(newComment.user)) throw new Error("Can't edit other's comments");
 
     newComment.body = req.body.body;
     newMentions = mentions.filter(m => newComment.mentions.indexOf(m) < 0);
@@ -220,12 +219,12 @@ exports.create = async (req, res, next) => {
 
   async function sendOutComments(commentor) {
     try {
-      if (user._id === commentor._id) return;
+      if (user._id.equals(commentor._id)) return;
 
       let type = 'comment';
       let ownPost = false;
 
-      if (postAuthor && commentor._id.toString() === postAuthor._id.toString()) {
+      if (postAuthor && commentor._id.equals(postAuthor._id)) {
         ownPost = true;
       }
       type = !ownPost ? (type += 'Also') : type;
@@ -320,14 +319,14 @@ exports.create = async (req, res, next) => {
 
     // filter out duplicates
     otherCommentors = otherCommentors.filter((u, i) => {
-      const index = otherCommentors.findIndex(c => (c ? c._id === u._id : false));
+      const index = otherCommentors.findIndex(c => (c ? c._id.equals(u._id) : false));
       return index === i;
     });
 
     await comment.save();
     res.status(200).json(comment);
 
-    otherCommentors = otherCommentors.filter(u => !mentions.find(m => m === u._id));
+    otherCommentors = otherCommentors.filter(u => !mentions.find(m => m === u.handle));
     otherCommentors.forEach(sendOutComments);
   } catch (err) {
     next(err);

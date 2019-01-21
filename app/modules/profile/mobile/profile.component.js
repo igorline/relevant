@@ -15,6 +15,7 @@ import { globalStyles, mainPadding, greyText } from 'app/styles/global';
 import { numbers } from 'app/utils';
 import Percent from 'modules/stats/mobile/percent.component';
 import StatRow from 'modules/stats/mobile/statRow.component';
+// import CoinStat from 'modules/stats/coinStat.component';
 import Bio from './bio.component';
 
 const defaultImg = require('app/public/img/default_user.jpg');

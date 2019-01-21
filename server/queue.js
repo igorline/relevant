@@ -268,7 +268,6 @@ function startTwitterUpdate() {
   TwitterWorker.updateTwitterPosts();
 }
 
-// basicIncome(updateReputation);
 // updateUserStats();
 // startStatsUpdate();
 // startTwitterUpdate();

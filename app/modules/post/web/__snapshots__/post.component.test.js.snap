@@ -1,0 +1,242 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot Post Web 1`] = `
+.c0 {
+  color: #9C9C9C;
+  font-size: 10px;
+  font-family: Arial,sans-serif;
+}
+
+.c0 a {
+  color: #9C9C9C;
+}
+
+<div
+  className="post"
+  onClick={[Function]}
+>
+  <a
+    href="https://example.com/testPost1"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    <div
+      style={
+        Object {
+          "position": "relative",
+        }
+      }
+    >
+      <div
+        className="minimalPost postinfo  "
+      >
+        <div
+          className="image"
+        >
+          <div
+            style={
+              Object {
+                "backgroundImage": "url(link_img1.jpg)",
+              }
+            }
+          />
+        </div>
+        <div
+          className="headlineContainer"
+        >
+          <h3
+            className="headline bebasRegular"
+          >
+            postTitle1
+          </h3>
+          <div
+            className="domain"
+          >
+            link.domain1
+          </div>
+        </div>
+      </div>
+    </div>
+  </a>
+  <div
+    className="postContent"
+  >
+    <div
+      style={
+        Object {
+          "flex": 1,
+          "minWidth": 0,
+        }
+      }
+    >
+      <div
+        style={
+          Object {
+            "display": "flex",
+            "justifyContent": "space-between",
+          }
+        }
+      >
+        <div
+          className="avatarBox "
+        >
+          <a
+            className="avatar"
+            href="/user/profile/handle1"
+            onClick={[Function]}
+            style={
+              Object {
+                "backgroundImage": "url(userImage1.jpg)",
+                "height": undefined,
+                "width": undefined,
+              }
+            }
+          >
+            Name1
+          </a>
+          <div
+            className="userBox"
+          >
+            <div
+              className="bebasRegular username"
+            >
+              <a
+                href="/user/profile/handle1"
+                onClick={[Function]}
+              >
+                Name1
+              </a>
+              <span>
+                <span
+                  alt="R"
+                  className="r"
+                  style={
+                    Object {
+                      "backgroundImage": "url(/img/r-emoji.png)",
+                    }
+                  }
+                />
+                11
+              </span>
+            </div>
+            <div
+              className="c0"
+            >
+              <a
+                href="/user/profile/handle1"
+                onClick={[Function]}
+              >
+                @
+                handle1
+              </a>
+               • 0sec ago
+            </div>
+          </div>
+        </div>
+        <a
+          className="popup"
+          onClick={[Function]}
+        >
+          <span
+            className="optionDots"
+          >
+            ...
+          </span>
+        </a>
+      </div>
+      <div
+        className="postBody"
+      >
+        <div
+          className=""
+        >
+          <pre>
+            awesome post #1!
+          </pre>
+           
+          <a
+            href="/testCommunity/top/tag11"
+            onClick={[Function]}
+          >
+            #
+            tag11
+          </a>
+          <a
+            href="/testCommunity/top/tag12"
+            onClick={[Function]}
+          >
+            #
+            tag12
+          </a>
+        </div>
+        <div
+          className="postbuttons"
+        >
+          <div
+            className="left"
+          >
+            <a
+              onClick={[Function]}
+              style={
+                Object {
+                  "opacity": 1,
+                }
+              }
+            >
+              <img
+                alt="Upvote"
+                className="upvote"
+                src="/img/upvote.png"
+              />
+            </a>
+            <div
+              className="fraction"
+            >
+              <div
+                className="dem"
+              >
+                <img
+                  alt="R"
+                  src="/img/r-gray.svg"
+                />
+                45
+              </div>
+            </div>
+            <a
+              onClick={[Function]}
+              style={
+                Object {
+                  "opacity": 1,
+                }
+              }
+            >
+              <img
+                alt="Downvote"
+                className="downvote"
+                src="/img/downvote-gray.svg"
+              />
+            </a>
+          </div>
+          <div
+            className="right"
+          >
+            <a
+              className="commentcount details"
+              href="/post/1111"
+              onClick={[Function]}
+            >
+              <img
+                alt="Comment"
+                src="/img/comment.svg"
+              />
+              <span>
+                 comment
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

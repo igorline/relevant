@@ -49,13 +49,12 @@ const StyledImg = styled.img`
 `;
 
 const SideNav = (props) => {
-  const { className } = props;
   const logoLink = props.isAuthenticated ? '/relevant/new' : '/';
   return (
-    <SideNavContent className={className} >
+    <SideNavContent>
       <LogoContainer>
         <StyledLink to={logoLink}>
-          <StyledImg src={'/img/logo.svg'} className={'logo'} alt={'Relevant'} />
+          <StyledImg src={'/img/logo.svg'} alt={'Relevant'} />
         </StyledLink>
       </LogoContainer>
       <SideNavSection>
@@ -72,7 +71,6 @@ const SideNav = (props) => {
 
 SideNav.propTypes = {
   isAuthenticated: PropTypes.bool,
-  className: PropTypes.string,
 };
 
 const mapStateToProps = state => ({

@@ -15,6 +15,7 @@ import CreatePost from 'modules/createPost/web/createPost.container';
 import EthTools from 'modules/web_ethTools/tools.container';
 import Eth from 'modules/web_ethTools/eth.context';
 import { ToastContainer } from 'react-toastify';
+import { GlobalStyle } from 'styles/globalStyles';
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -130,6 +131,7 @@ class App extends Component {
 
     return (
       <main>
+        <GlobalStyle />
         <EthTools>
           {header}
           <div style={{ display: 'flex', width: '100%' }}>

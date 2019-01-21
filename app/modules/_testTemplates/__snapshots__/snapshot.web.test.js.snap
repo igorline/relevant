@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot AvatarBox Web 1`] = `
+.c0 {
+  color: #9C9C9C;
+  font-size: 10px;
+  font-family: Arial,sans-serif;
+}
+
+.c0 a {
+  color: #9C9C9C;
+}
+
+<div
+  className="avatarBox "
+>
+  <a
+    className="avatar"
+    href="/user/profile/handle"
+    onClick={[Function]}
+    style={
+      Object {
+        "backgroundImage": "url(/img/default_user.jpg)",
+        "height": undefined,
+        "width": undefined,
+      }
+    }
+  >
+    Name
+  </a>
+  <div
+    className="userBox"
+  >
+    <div
+      className="bebasRegular username"
+    >
+      <a
+        href="/user/profile/handle"
+        onClick={[Function]}
+      >
+        Name
+      </a>
+      <span>
+        <span
+          alt="R"
+          className="r"
+          style={
+            Object {
+              "backgroundImage": "url(/img/r-emoji.png)",
+            }
+          }
+        />
+        10
+      </span>
+    </div>
+    <div
+      className="c0"
+    >
+      <a
+        href="/user/profile/handle"
+        onClick={[Function]}
+      >
+        @
+        handle
+      </a>
+       • 0sec ago
+    </div>
+  </div>
+</div>
+`;

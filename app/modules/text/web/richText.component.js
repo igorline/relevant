@@ -11,7 +11,6 @@ if (process.env.BROWSER === true) {
   require('./richText.css');
 }
 
-// NOT USED
 class RichText extends Component {
   static propTypes = {
     actions: PropTypes.object,
@@ -20,7 +19,8 @@ class RichText extends Component {
     className: PropTypes.string,
     placeholder: PropTypes.string,
     onBlur: PropTypes.func,
-    onFocus: PropTypes.func
+    onFocus: PropTypes.func,
+    body: PropTypes.string,
   };
 
   state = {
@@ -80,9 +80,7 @@ class RichText extends Component {
 
     // replace the partial @username with @username plus a nbsp
     this.lengthDelta = user._id.length - this.mention.length + 2;
-    // const body = this.state.body.replace(this.mention, '@' + user._id + '\u00A0'); // nbsp
-
-    const body = this.state.body.slice(0, -this.mention.length) + '@' + user._id + '\u00A0';
+    const body = this.state.body.slice(0, -this.mention.length) + '@' + user.handle + '\u00A0';
 
     this.setState({ body, userSearchIndex: -1 });
     const data = this.parseBody(body);

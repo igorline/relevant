@@ -2,8 +2,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { numbers } from 'app/utils';
-
+import styled from 'styled-components';
+import colors from 'app/styles/colors';
 import Avatar from './avatar.component';
+
+const Handle = styled.div`
+  a {
+    color: ${colors.greyText};
+  }
+  color: ${colors.greyText};
+  font-size: 10px;
+  font-family: Arial, sans-serif;
+`;
 
 export default function AvatarBox(props) {
   const { user, reverse } = props;
@@ -57,13 +67,12 @@ export default function AvatarBox(props) {
           </Link>
           {relevance}
         </div>
-        <div className="gray">
-          @
+        <Handle>
           <Link to={profileLink} onClick={e => e.stopPropagation()}>
-            {user.handle}
+            @{user.handle}
           </Link>
           {timestamp}
-        </div>
+        </Handle>
       </div>
       {reverse ? <Avatar auth={props.auth} user={user} /> : null}
     </div>

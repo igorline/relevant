@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import InfScroll from 'modules/listview/web/infScroll.component';
-import Post from 'modules/post/web/post.component';
+import PostComponent from 'modules/post/web/post.component';
 
 class UserPosts extends Component {
   static propTypes = {
@@ -42,7 +42,7 @@ class UserPosts extends Component {
       };
 
       return (
-        <Post
+        <PostComponent
           key={id}
           post={post}
           link={link}

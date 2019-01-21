@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import Comments from 'modules/comment/web/comment.container';
-import Post from './post.component';
+import PostContainer from './post.component';
 
 class Posts extends Component {
   static propTypes = {
@@ -40,7 +40,7 @@ class Posts extends Component {
         <div className="singlePost row column pageContainer">
           {hasPost && (
             <div className="postContainer">
-              <Post post={this.post} link={link} {...this.props} />
+              <PostContainer post={this.post} link={link} {...this.props} />
               <Comments post={this.post} {...this.props} />
             </div>
           )}

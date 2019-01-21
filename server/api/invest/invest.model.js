@@ -7,10 +7,10 @@ const { Schema } = mongoose;
 
 const InvestSchema = new Schema(
   {
-    investor: { type: String, ref: 'User' },
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
-    poster: { type: String, ref: 'User' },
-    author: { type: String, ref: 'User' },
+    investor: { type: Schema.Types.ObjectId, ref: 'User' },
+    author: { type: Schema.Types.ObjectId, ref: 'User' },
+
     ownPost: { type: Boolean, default: false },
     amount: Number,
 

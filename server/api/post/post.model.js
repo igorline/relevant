@@ -26,10 +26,10 @@ const PostSchema = new Schema(
       comment: { type: Schema.Types.ObjectId, ref: 'Comment' },
       commentBody: String
     },
-    user: { type: String, ref: 'User', index: true },
+    user: { type: Schema.Types.ObjectId, ref: 'User', index: true },
     embeddedUser: {
-      handle: String,
       _id: String,
+      handle: String,
       name: String,
       image: String
     },
@@ -409,8 +409,8 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
   mUser,
   comment
 ) {
-  let textParent = comment || post;
   try {
+    let textParent = comment || post;
     const promises = mentions.map(async mention => {
       try {
         const type = comment ? 'comment' : 'post';
@@ -427,13 +427,15 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
           textParent.mentions = textParent.mentions.filter(m => m !== blocked);
         }
 
-        let query = { _id: mention };
+        let query = { handle: mention };
+        let group;
         if (mention === 'everyone') {
-          query = {};
           if (mUser.role !== 'admin') return null;
+          query = {}; // TODO should this this as community
+          group = ['everyone'];
         }
 
-        const users = User.find(query, 'deviceTokens');
+        const users = await User.find(query, 'deviceTokens');
         users.forEach(user => {
           let alert = (mUser.name || mUser) + ' mentioned you in a ' + type;
           if (mention === 'everyone' && post.body) alert = post.body;
@@ -443,7 +445,8 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
 
         const dbNotificationObj = {
           post: post._id,
-          forUser: mention,
+          forUser: users._id,
+          group,
           byUser: mUser._id || mUser,
           amount: null,
           type: type + 'Mention',
@@ -455,7 +458,7 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
         const note = await newDbNotification.save();
 
         const newNotifObj = {
-          _id: mention === 'everyone' ? null : mention,
+          _id: group ? null : mention,
           type: 'ADD_ACTIVITY',
           payload: note
         };
@@ -470,11 +473,10 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
     await Promise.all(promises);
     textParent = await textParent.save();
     textParent.updateClient();
+    return textParent;
   } catch (err) {
-    console.log('error updating post after sending mentions ', err);
+    return console.log('error updating post after sending mentions ', err);
   }
-
-  return textParent;
 };
 
 // Update parent feed status (only for link posts)
@@ -488,7 +490,8 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(parent, po
     // Thread has no children - remove everything
     const count = await this.model('Post').findOne({ linkPost: parentId });
     if (!count) {
-      console.log('REMOVING POST FROM ALL FEEDS! ', community);
+      console.log('parentId', parentId, post.toObject());
+      console.warn('REMOVING POST FROM ALL FEEDS! ', community);
       await this.model('CommunityFeed').removeFromAllFeeds(parentId);
       await this.model('MetaPost').remove({ _id: post.metaPost });
       // remove empty link post
@@ -523,6 +526,7 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(parent, po
 
 PostSchema.post('remove', async function postRemove(doc) {
   try {
+    // console.log('link parent', doc.linkParent);
     if (doc.linkParent) {
       await this.model('Post').updateFeedStatus(doc.linkParent, this);
     }
