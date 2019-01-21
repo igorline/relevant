@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/dist/Ionicons';
 import PropTypes from 'prop-types';
 import { globalStyles, darkGrey } from 'app/styles/global';
 import Stats from 'modules/stats/mobile/stats.component';
+import { getTimestamp } from 'app/utils/numbers';
 import styled, { css } from 'styled-components/primitives';
 
 let styles;
@@ -44,6 +45,11 @@ export default function UserName(props) {
   let { handle } = user;
   if (type !== 'invite' && handle) handle = `@${handle}`;
 
+  let timestamp;
+  if (postTime) {
+    timestamp = getTimestamp(postTime);
+  }
+
   const rIcon = (
     <Image
       resizeMode={'contain'}
@@ -63,7 +69,7 @@ export default function UserName(props) {
       </Text>
     </View>
   ) : handle && <HandleText style={[styles.font10, styles.greyText]}>
-    {handle} {postTime}
+    {handle} {timestamp}
   </HandleText>;
 
 

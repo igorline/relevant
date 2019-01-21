@@ -19,10 +19,11 @@ export const SecondaryText = styled.Text`
 
 export const ContentText = styled.Text`
   font-size: 12;
-  font-family: 'Georgia', sans-serif;
+  font-family: serif;
+  font-family: 'Georgia';
+  /* font-family: "Times New Roman", Times, serif; */
   color: ${colors.secondaryTextColor};
   color: ${(props) => props.color ? props.color : colors.secondaryTextColor};
-
 `;
 
 export const PrimaryLink = styled.Text`

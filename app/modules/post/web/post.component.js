@@ -24,6 +24,7 @@ const Wrapper = styled.View`
   max-width: 100%;
   overflow: hidden;
   border: 1px solid black;
+  padding: 1em;
 `;
 
 const PostContainer = styled.View`
@@ -48,11 +49,13 @@ const Text = styled.Text`
 const StyledPostButtons = styled(PostButtons)`
   display: flex;
   background: orange;
+  width: 200px;
+  color: blue;
 `;
 
 const PostCommentContainer = styled(PostContainer)`
-  margin-bottom: 2em;
-  margin-left: 4em;
+  // margin-bottom: 2em;
+  padding-left: 4em;
 `;
 
 export class Post extends Component {
@@ -74,7 +77,7 @@ export class Post extends Component {
   };
 
   deletePost() {
-    // TODO custom confirm
+    // TODO: custom confirm
     // eslint-disable-next-line
     const okToDelete = confirm('Are you sure you want to delete this post?');
     if (!okToDelete) return;

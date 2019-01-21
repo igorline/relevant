@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 // import PostButtons from './postbuttons.component';
+import { ContentText } from 'modules/styled/Text.component';
 import styled from 'styled-components/primitives';
 import { layout, colors } from 'app/styles/globalStyles';
 
@@ -9,8 +10,10 @@ const Wrapper = styled.View`
   position: relative;
   overflow: hidden;
   padding-left: 1em;
-  margin-left: 1em;
-  /* border-left: ${layout.borderStyles(colors.borderColor)} */
+  flex-shrink: 1;
+  border-left-color: ${colors.borderColor};
+  border-left-width: 1px;
+  border-left-style: solid;
 `;
 
 const View = styled.View`
@@ -21,9 +24,6 @@ const Text = styled.Text`
 
 class PostComment extends Component {
   static propTypes = {
-    // post: PropTypes.shape({
-    //   data: PropTypes.object
-    // }),
     auth: PropTypes.object,
     comment: PropTypes.object,
   };
@@ -39,11 +39,10 @@ class PostComment extends Component {
           <AvatarBox
             user={comment.embeddedUser}
             auth={auth}
-            date={comment.postDate}
+            postTime={comment.postDate}
           />
         </View>
-        <Text className="postDescription">{comment.description}</Text>
-        <Text>{comment.body}</Text>
+        <ContentText>{comment.body}</ContentText>
       </Wrapper>
     );
   }

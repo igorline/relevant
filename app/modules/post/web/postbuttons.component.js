@@ -50,7 +50,8 @@ class PostButtons extends Component {
       data: PropTypes.object
     }),
     community: PropTypes.object,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    className: PropTypes.string,
   };
 
   constructor(props) {
@@ -116,7 +117,7 @@ class PostButtons extends Component {
   }
 
   render() {
-    const { post, auth, community } = this.props;
+    const { post, auth, community, className } = this.props;
 
     if (post === 'notFound') {
       return null;
@@ -146,7 +147,7 @@ class PostButtons extends Component {
     if (post.data && post.data.parentPost) payout = null;
 
     return (
-      <Wrapper>
+      <Wrapper className={className}>
         <Container>
           <Touchable onClick={e => this.vote(e, vote)} to="#">
             <VoteIcon
