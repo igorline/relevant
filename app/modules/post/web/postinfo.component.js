@@ -60,7 +60,7 @@ export default function PostInfo(props) {
   const imageUrl = get(link, 'image') || null;
 
   const userSet = new Set();
-  get(post, 'commentary').forEach(user => userSet.add(user.id));
+  (get(post, 'commentary', []) || []).forEach(user => userSet.add(user.id));
   const uniqueUsers = userSet.size - 1;
 
   const postUser = get(post, 'embeddedUser') || get(firstPost, 'embeddedUser');
