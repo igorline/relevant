@@ -9,7 +9,7 @@ const props = {
   post: post1,
   link: post1.link,
   actions: {},
-  user: usersState,
+  usersState,
   auth,
   location: { pathname: 'post/' + post1._id },
   history: { push: jest.fn() }
