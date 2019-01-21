@@ -42,6 +42,7 @@ class PostComment extends Component {
             user={comment.embeddedUser}
             auth={auth}
             postTime={comment.postDate}
+            setSelected={() => { console.log('TODO:'); }}
           />
         </View>
         <ULink to={postUrl}>
