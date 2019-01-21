@@ -1,16 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
+import { colors } from 'app/styles/globalStyles';
 
 let styled;
 let StyledLink;
 let StyledNavLink;
 let StyledA;
+let DisabledLink;
 let environment = 'web';
+
+
 if (process.env.WEB !== 'true') {
   environment = 'native';
   styled = require('styled-components/primitives').default;
   StyledLink = styled(Link)`
+    ${(p) => p.styles}
+  `;
+  DisabledLink = styled.Text`
+    color: ${colors.secondaryTextColor};
     ${(p) => p.styles}
   `;
 } else {
@@ -24,7 +32,13 @@ if (process.env.WEB !== 'true') {
   StyledA = styled.a`
     ${(p) => p.styles}
   `;
+  DisabledLink = styled.span`
+    color: ${colors.secondaryTextColor};
+    ${(p) => p.styles}
+  `;
 }
+
+
 
 const ULink = (props) => {
   const {
@@ -36,7 +50,11 @@ const ULink = (props) => {
     navLink,
     external,
     target,
+    disabled,
   } = props;
+  if (disabled) {
+    return <DisabledLink>{children}</DisabledLink>;
+  }
   if (environment === 'web') {
     if (navLink) {
       return (
@@ -71,6 +89,7 @@ ULink.propTypes = {
   styles: PropTypes.string,
   external: PropTypes.bool,
   target: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 export default ULink;
