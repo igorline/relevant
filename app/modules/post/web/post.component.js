@@ -4,13 +4,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import get from 'lodash.get';
-import AvatarBox from 'modules/user/web/avatarbox.component';
-// import AvatarBox from 'modules/user/avatarbox.component.styled';
 import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import Popup from 'modules/ui/web/popup';
 import styled from 'styled-components/primitives';
+import { colors } from 'app/styles/globalStyles';
 import PostComment from 'modules/post/web/postComment.component';
 import PostButtons from './postbuttons.component';
 import PostInfo from './postinfo.component';
@@ -23,7 +22,7 @@ const Wrapper = styled.View`
   width: 100%;
   max-width: 100%;
   overflow: hidden;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   padding: 1em;
 `;
 
@@ -41,6 +40,11 @@ const PostInfoContainer = styled.View`
   display: flex;
   position: relative;
   flex-shrink: 1;
+  width: 100%;
+  padding-bottom: 2em;
+  border-bottom-color: ${colors.borderColor};
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
 `;
 
 const Text = styled.Text`
@@ -55,7 +59,8 @@ const StyledPostButtons = styled(PostButtons)`
 
 const PostCommentContainer = styled(PostContainer)`
   // margin-bottom: 2em;
-  padding-left: 4em;
+  margin-top: 1em;
+  padding-left: 2em;
 `;
 
 export class Post extends Component {
@@ -160,15 +165,15 @@ export class Post extends Component {
               sort={sort}
               firstPost={firstPost}
             />
+            <PostCommentContainer>
+              <PostComment
+                comment={comment}
+                auth={this.props.auth}
+                community={community}
+              />
+            </PostCommentContainer>
           </PostInfoContainer>
         </PostContainer>
-        <PostCommentContainer>
-          <PostComment
-            comment={comment}
-            auth={this.props.auth}
-            community={community}
-          />
-        </PostCommentContainer>
       </Wrapper>
     );
   }

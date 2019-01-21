@@ -6,21 +6,16 @@ import { abbreviateNumber } from 'app/utils/numbers';
 import styled from 'styled-components/primitives';
 
 const Wrapper = styled.View`
-  justify-content: center;
-  /* min-width: 100px; */
-  /* padding-right: 2em; */
-  align-items: flex-start;
+  min-width: 70px;
+  margin-right: 1em;
 `;
 
 const Container = styled.View`
-  justify-content: center;
   align-items: center;
 `;
 
 const View = styled.View`
-  /* min-width: 100px; */
-  /* text-align: center; */
-  /* justify-content: center; */
+  margin: 1em 0;
 `;
 
 const Touchable = styled.Touchable`
@@ -28,8 +23,6 @@ const Touchable = styled.Touchable`
 
 const Text = styled.Text`
   display: flex;
-  /* align-items: center; */
-  /* justify-content: center; */
 `;
 
 const Image = styled.Image`
@@ -38,7 +31,7 @@ const Image = styled.Image`
 `;
 
 const VoteIcon = styled(Image)`
-  margin: 1em;
+  // margin: 1em;
 `;
 
 
