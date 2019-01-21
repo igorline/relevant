@@ -11,7 +11,7 @@ const Wrapper = styled.View`
   overflow: hidden;
   padding-left: 1em;
   margin-left: 1em;
-  border-left: ${layout.borderStyles(colors.borderColor)}
+  /* border-left: ${layout.borderStyles(colors.borderColor)} */
 `;
 
 function PostBody(props) {

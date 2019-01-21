@@ -42,7 +42,7 @@ const PostTitle = styled(Title)`
 `;
 
 export default function PostInfo(props) {
-  const { post, link, community, postUrl } = props;
+  const { post, link, community, postUrl, firstPost } = props;
   if (post.loading) {
     return (
       <View>
@@ -58,6 +58,12 @@ export default function PostInfo(props) {
   }
 
   const imageUrl = get(link, 'image') || null;
+
+  const userSet = new Set();
+  get(post, 'commentary').forEach(user => userSet.add(user.id));
+  const uniqueUsers = userSet.size - 1;
+
+  const postUser = get(post, 'embeddedUser') || get(firstPost, 'embeddedUser');
 
   const postContent = (
     <Wrapper>
@@ -75,7 +81,8 @@ export default function PostInfo(props) {
           </ULink>
           : null}
         <SecondaryText>
-          {get(post, 'embeddedUser.handle') ? `Posted by: @${get(post, 'embeddedUser.handle')} and HOW MANY OTHERS?` : null}
+          {get(postUser, 'handle') ? `Posted by: @${get(postUser, 'handle')}` : ''}
+          {uniqueUsers > 1 ? `and ${uniqueUsers} others` : ''}
           {timestamp}
           { get(link, 'domain') ?
             <ULink external to={post.url} external target="_blank">
@@ -112,4 +119,6 @@ PostInfo.propTypes = {
   link: PropTypes.object,
   post: PropTypes.object,
   community: PropTypes.string,
+  sort: PropTypes.string,
+  firstPost: PropTypes.object,
 };

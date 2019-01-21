@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import get from 'lodash.get';
 import AvatarBox from 'modules/user/web/avatarbox.component';
 // import AvatarBox from 'modules/user/avatarbox.component.styled';
 import * as postActions from 'modules/post/post.actions';
@@ -13,7 +14,6 @@ import styled from 'styled-components/primitives';
 import PostComment from 'modules/post/web/postComment.component';
 import PostButtons from './postbuttons.component';
 import PostInfo from './postinfo.component';
-
 
 const Wrapper = styled.View`
   position: relative;
@@ -57,6 +57,7 @@ export class Post extends Component {
     post: PropTypes.shape({
       data: PropTypes.object
     }),
+    postState: PropTypes.object,
     repost: PropTypes.object,
     link: PropTypes.object,
     actions: PropTypes.object,
@@ -66,6 +67,7 @@ export class Post extends Component {
     showDescription: PropTypes.bool,
     history: PropTypes.object,
     usersState: PropTypes.object,
+    sort: PropTypes.string,
   };
 
   deletePost() {
@@ -101,8 +103,15 @@ export class Post extends Component {
   }
 
   render() {
-    const { post, repost, link, auth } = this.props;
+    const { post, repost, auth, sort, postState } = this.props;
     const { community } = auth;
+
+    const link = postState.links[post.metaPost];
+    let firstPost;
+    if (post.new && post.new.length) {
+      const firstPostId = post.new[post.new.length - 1];
+      firstPost = postState.posts[firstPostId];
+    }
 
     let popup;
 
@@ -157,24 +166,24 @@ export class Post extends Component {
               link={link}
               community={community}
               postUrl={postUrl}
+              sort={sort}
+              firstPost={firstPost}
             />
           </PostInfoContainer>
         </PostContainer>
-
+        <PostCommentContainer>
+          <PostComment
+            auth={this.props.auth}
+            community={community}
+            repost={repost}
+            post={post}
+            date={post.postDate}
+          />
+        </PostCommentContainer>
       </Wrapper>
     );
   }
 }
-
-// <PostCommentContainer>
-//   <PostComment
-//     auth={this.props.auth}
-//     community={community}
-//     repost={repost}
-//     post={post}
-//     date={post.postDate}
-//   />
-// </PostCommentContainer>
 
 // <PostComment
 //   auth={this.props.auth}
@@ -195,7 +204,9 @@ export class Post extends Component {
 export default withRouter(connect(
   state => ({
     community: state.community.communities[state.community.active],
-    usersState: state.user
+    usersState: state.user,
+    sort: get(state.view, 'discover.sort'),
+    postState: state.posts,
   }),
   dispatch => ({
     actions: bindActionCreators(

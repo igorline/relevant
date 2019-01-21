@@ -130,7 +130,7 @@ class App extends Component {
     }
 
     return (
-      <main>
+      <div>
         <GlobalStyle />
         <EthTools>
           {header}
@@ -166,7 +166,7 @@ class App extends Component {
         <ToastContainer />
         {mobileEl}
         {renderRoutes(this.props.route.routes)}
-      </main>
+      </div>
     );
   }
 }
