@@ -42,6 +42,9 @@ const PostInfoContainer = styled.View`
   flex-shrink: 1;
 `;
 
+const Text = styled.Text`
+`;
+
 const StyledPostButtons = styled(PostButtons)`
   display: flex;
   background: orange;
@@ -117,19 +120,13 @@ export class Post extends Component {
 
     if (post === 'notFound') {
       return (
-        <div>
-          <h1>Post not found</h1>
-        </div>
+        <Wrapper>
+          <Text>Post not found</Text>
+        </Wrapper>
       );
     }
     if (!post) return null;
 
-    // let postInfo;
-    // if (link) {
-    //   postInfo = <PostInfo post={link} date={post.postDate} user={post.embeddedUser} />;
-    // }
-
-    let user = post.user || post.twitterUser;
 
     if (auth.user && auth.user._id === post.user) {
       popup = (
@@ -144,18 +141,10 @@ export class Post extends Component {
       );
     }
 
-    user = this.props.usersState.users[user] || post.embeddedUser;
-
-    // if (user && !user._id) {
-    //   user = post.embeddedUser;
-    // }
-    // // TODO better?
-    // if (!user && post.twitter) {
-    //   user = post.embeddedUser;
-    // }
-
     const openPost = repost ? repost._id : post._id;
     const postUrl = `/${community}/post/${openPost}`;
+    const commentId = get(post, `${sort}.0`);
+    const comment = postState.posts[commentId];
     return (
       <Wrapper>
         <PostContainer>
@@ -173,6 +162,7 @@ export class Post extends Component {
         </PostContainer>
         <PostCommentContainer>
           <PostComment
+            comment={comment}
             auth={this.props.auth}
             community={community}
             repost={repost}
@@ -184,22 +174,6 @@ export class Post extends Component {
     );
   }
 }
-
-// <PostComment
-//   auth={this.props.auth}
-//   community={community}
-//   repost={repost}
-//   post={post}
-//   date={post.postDate}
-// />
-
-// <PostComment
-//   auth={this.props.auth}
-//   community={community}
-//   repost={repost}
-//   post={post}
-//   date={post.postDate}
-// />
 
 export default withRouter(connect(
   state => ({
