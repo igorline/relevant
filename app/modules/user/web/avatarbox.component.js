@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { numbers } from 'app/utils';
 import styled from 'styled-components';
-import { greyText } from 'app/styles/global';
+import colors from 'app/styles/colors';
 import Avatar from './avatar.component';
 
 const Handle = styled.div`
   a {
-    color: ${greyText};
+    color: ${colors.greyText};
   }
-  color: ${greyText};
+  color: ${colors.greyText};
   font-size: 10px;
   font-family: Arial, sans-serif;
 `;

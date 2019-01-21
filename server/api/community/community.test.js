@@ -88,7 +88,7 @@ test.serial('Should get members', async t => {
   .get(`/api/community/${community.slug}/members?access_token=${token}`)
   .send();
 
-  testBalance = res.body.find(m => m.user === 'test').balance;
+  testBalance = res.body.find(m => m.embeddedUser.handle === 'test').balance;
 
   t.is(res.status, 200);
 
@@ -114,7 +114,7 @@ test.serial('Should distribute tokens correctly', async t => {
 
   t.is(res.status, 200);
 
-  let testBalanceNew = res.body.find(m => m.user === 'test').balance;
+  let testBalanceNew = res.body.find(m => m.embeddedUser.handle === 'test').balance;
 
   t.is(testBalanceNew * (memberships + 1), testBalance * memberships);
 
@@ -126,7 +126,7 @@ test.serial('Should distribute tokens correctly', async t => {
   .get(`/api/community/${community3.slug}/members?access_token=${token}`)
   .send();
 
-  testBalanceNew = res.body.find(m => m.user === 'test').balance;
+  testBalanceNew = res.body.find(m => m.embeddedUser.handle === 'test').balance;
 
   t.is(testBalanceNew * (memberships + 2), testBalance * memberships);
 
@@ -153,7 +153,7 @@ test.serial('Should distribute tokens correctly', async t => {
   .get(`/api/community/${community3.slug}/members?access_token=${token}`)
   .send();
 
-  testBalanceNew = res.body.find(m => m.user === 'test').balance;
+  testBalanceNew = res.body.find(m => m.embeddedUser.handle === 'test').balance;
 
   t.is(
     testBalanceNew * (memberships + 1),

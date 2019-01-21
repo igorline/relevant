@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import InfScroll from 'modules/listview/web/infScroll.component';
-import Post from 'modules/post/web/post.component';
+import PostContainer from 'modules/post/web/post.component';
 
 class DiscoverPosts extends Component {
   static propTypes = {
@@ -68,7 +68,7 @@ class DiscoverPosts extends Component {
 
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
 
-      return <Post key={id} post={post} link={link} repost={repost} {...this.props} />;
+      return <PostContainer key={id} post={post} link={link} repost={repost} {...this.props} />;
     });
   }
 

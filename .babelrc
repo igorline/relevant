@@ -16,7 +16,7 @@
         "modules": "./app/modules",
         "core": "./app/core",
         "app": "./app",
-        "^react-native$": "react-native-web"
+        // "^react-native$": "react-native-web"
       },
       "cwd": "babelrc",
     }]

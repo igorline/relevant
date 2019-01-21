@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
-import { connect } from 'react-redux';
 import Avatar from 'modules/user/web/avatar.component';
-import { numbers } from 'app/utils';
+import CoinStat from 'modules/stats/coinStat.component';
 import styled from 'styled-components';
 import { layout, colors } from 'app/styles/globalStyles';
+
 
 if (process.env.BROWSER === true) {
   require('./profile.css');
@@ -19,41 +18,15 @@ const Logout = styled.a`
   ${layout.linkStyle}
 `;
 
-export class Profile extends Component {
+export default class Profile extends Component {
   static propTypes = {
-    user: PropTypes.object,
-    auth: PropTypes.object,
     actions: PropTypes.object,
-    match: PropTypes.object
+    isOwner: PropTypes.bool,
+    user: PropTypes.object,
   };
 
-  state = { tokens: null };
-
-  static getDerivedStateFromProps(props) {
-    const { auth, wallet, match } = props;
-    const user = props.user.users[match.params.id];
-    if (!user) return null;
-    let tokens = user.balance;
-    if (user.tokenBalance) tokens += user.tokenBalance;
-    const owner = auth.user;
-    if (
-      owner &&
-      owner._id === user._id &&
-      user.ethAddress &&
-      user.ethAddress[0] &&
-      wallet.connectedBalance
-    ) {
-      tokens = wallet.connectedBalance + user.balance;
-    }
-    return { tokens };
-  }
-
   render() {
-    const fixed = n => numbers.abbreviateNumber(n, 2);
-    const { id } = this.props.match.params;
-    const user = this.props.user.users[id];
-    const { actions, auth } = this.props;
-    const isOwnProfile = get(user, 'id') === get(auth, 'user.id');
+    const { user, isOwner, actions } = this.props;
     if (!user) {
       return <div className="profileContainer">User not found!</div>;
     }
@@ -68,7 +41,7 @@ export class Profile extends Component {
       <div className="profileContainer">
 
         <div className="profileHero">
-          { isOwnProfile ?
+          { isOwner ?
             (<Logout
               onClick={() => { actions.logoutAction(user); }}
               color={colors.blue}> Logout
@@ -80,8 +53,7 @@ export class Profile extends Component {
           <div className="relevance">
             <img src="/img/r-emoji.png" alt="Relevance" className="r" />
             {Math.round(user.relevance ? user.relevance.pagerank || 0 : 0)}
-            <img src="/img/relevantcoin.png" alt="Coins" className="coin" />
-            {fixed(this.state.tokens) || 0}
+            <CoinStat user={user} isOwner={isOwner} />
           </div>
           <div className="subscribers">
             {'Subscribers: '}
@@ -103,14 +75,3 @@ export class Profile extends Component {
     );
   }
 }
-
-const mapStateToProps = state => ({
-  user: state.user,
-  auth: state.auth
-});
-
-
-export default connect(
-  mapStateToProps,
-  {},
-)(Profile);

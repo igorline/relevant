@@ -19,7 +19,7 @@ const font17 = css`
 `;
 
 export const Name = styled.Text`
-  color: '${darkGrey}';
+  color: ${darkGrey};
   ${font17}
   ${bebas}
 `;

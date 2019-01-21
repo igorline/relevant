@@ -4,8 +4,8 @@ const { Schema } = mongoose;
 
 const FeedSchema = new Schema(
   {
-    userId: { type: String, ref: 'User' },
-    from: { type: String, ref: 'User' },
+    userId: { type: Schema.Types.ObjectId, ref: 'User' },
+    from: { type: Schema.Types.ObjectId, ref: 'User' },
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
     metaPost: { type: Schema.Types.ObjectId, ref: 'metaPost' },
     tags: [{ type: String, ref: 'Tag' }],

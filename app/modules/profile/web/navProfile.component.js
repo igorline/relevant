@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import get from 'lodash.get';
 import { connect } from 'react-redux';
 import UAvatar from 'modules/user/UAvatar.component';
-import { numbers } from 'app/utils';
+import CoinStat from 'modules/stats/coinStat.component';
 import { withRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import ULink from 'modules/navigation/ULink.component';
@@ -47,35 +46,11 @@ const linkStyles = `
 class NavProfile extends Component {
   static propTypes = {
     user: PropTypes.object,
-    handle: PropTypes.string,
   };
 
-  state = { tokens: null };
-
-  static getDerivedStateFromProps(props) {
-    const { auth, wallet, match } = props;
-    const user = props.user.users[match.params.id];
-    if (!user) return null;
-    let tokens = user.balance + user.tokenBalance;
-    const owner = auth.user;
-    if (
-      owner &&
-      owner._id === user._id &&
-      user.ethAddress[0] &&
-      wallet.connectedBalance
-    ) {
-      tokens = wallet.connectedBalance + user.balance;
-    }
-    return { tokens };
-  }
-
   render() {
-    const fixed = n => numbers.abbreviateNumber(n, 2);
-    const id = this.props.handle;
-    const user = this.props.user.users[id];
-    if (!user) {
-      return null;
-    }
+    const { user } = this.props;
+    if (!user) return null;
 
     return (
       <ProfileContainer>
@@ -86,8 +61,7 @@ class NavProfile extends Component {
           <ULink to="/user/wallet" styles={linkStyles}>
             <StyledIconImg src="/img/r-emoji.png" alt="Relevance" />
             <span>{Math.round(user.relevance ? user.relevance.pagerank || 0 : 0)}</span>
-            <StyledIconImg src="/img/relevantcoin.png" alt="Coins" />
-            <span>{fixed(this.state.tokens) || 0}</span>
+            <CoinStat user={user} isOwner={true} />
           </ULink>
         </ProfileDetailsContainer>
       </ProfileContainer>
@@ -96,8 +70,7 @@ class NavProfile extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.user,
-  handle: get(state.auth, 'user.handle'),
+  user: state.auth.user,
 });
 
 export default withRouter(connect(

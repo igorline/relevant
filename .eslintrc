@@ -6,6 +6,9 @@
     settings: {
         "import/resolver": {
             "babel-module": {}
+        },
+        "react": {
+            "version": "detect"
         }
     },
     "parser": "babel-eslint",
