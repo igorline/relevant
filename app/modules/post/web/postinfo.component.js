@@ -63,8 +63,13 @@ export default function PostInfo(props) {
   (get(post, 'commentary', []) || []).forEach(user => userSet.add(user.id));
   const uniqueUsers = userSet.size - 1;
 
-  const postUser = get(post, 'embeddedUser') || get(firstPost, 'embeddedUser');
-
+  let postUser;
+  if (get(post, 'embeddedUser.handle')) {
+    postUser = get(post, 'embeddedUser');
+  } else if (get(firstPost, 'embeddedUser.handle')) {
+    postUser = get(firstPost, 'embeddedUser');
+  }
+  console.log(post)
   const postContent = (
     <Wrapper>
       {imageUrl ?
@@ -76,14 +81,18 @@ export default function PostInfo(props) {
         : <View />}
       <PostText>
         {title ?
-          <ULink external to={post.url} external target="_blank">
+          <ULink to={postUrl}>
             <PostTitle>{title}</PostTitle>
           </ULink>
           : null}
         <SecondaryText>
-          {get(postUser, 'handle') ? `Posted by: @${get(postUser, 'handle')}` : ''}
-          {uniqueUsers > 1 ? `and ${uniqueUsers} others` : ''}
-          {timestamp}
+
+          {get(postUser, 'handle') ?
+            (<ULink to={`/user/profile/${postUser.handle}`}>{`Posted by: @${get(postUser, 'handle')}`}</ULink>) : ''}
+          <ULink to={postUrl}>
+            {uniqueUsers > 1 ? `and ${uniqueUsers} others` : ''}
+            {timestamp}
+          </ULink>
           { get(link, 'domain') ?
             <ULink external to={post.url} external target="_blank">
               <SecondaryText>{link.domain && ` • ${link.domain} ↗`}</SecondaryText>
@@ -98,7 +107,7 @@ export default function PostInfo(props) {
           </ULink>
           : null}
         <SecondaryText>{
-          post.tags.map(tag => <Tag name={tag} community={community} key={tag} />)}
+          (get(post, 'tags', []) || []).map(tag => <Tag name={tag} community={community} key={tag} />)}
         </SecondaryText>
       </PostText>
 

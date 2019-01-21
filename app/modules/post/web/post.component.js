@@ -141,8 +141,7 @@ export class Post extends Component {
       );
     }
 
-    const openPost = repost ? repost._id : post._id;
-    const postUrl = `/${community}/post/${openPost}`;
+    const postUrl = `/${community}/post/${post._id}`;
     const commentId = get(post, `${sort}.0`);
     const comment = postState.posts[commentId];
     return (
@@ -165,9 +164,6 @@ export class Post extends Component {
             comment={comment}
             auth={this.props.auth}
             community={community}
-            repost={repost}
-            post={post}
-            date={post.postDate}
           />
         </PostCommentContainer>
       </Wrapper>
