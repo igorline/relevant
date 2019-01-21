@@ -14,7 +14,19 @@ import PostComment from 'modules/post/web/postComment.component';
 import PostButtons from './postbuttons.component';
 import PostInfo from './postinfo.component';
 
+
 const Wrapper = styled.View`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid black;
+`;
+
+const PostContainer = styled.View`
   position: relative;
   display: flex;
   flex-direction: row;
@@ -33,6 +45,11 @@ const PostInfoContainer = styled.View`
 const StyledPostButtons = styled(PostButtons)`
   display: flex;
   background: orange;
+`;
+
+const PostCommentContainer = styled(PostContainer)`
+  margin-bottom: 2em;
+  margin-left: 4em;
 `;
 
 class Post extends Component {
@@ -131,20 +148,40 @@ class Post extends Component {
     const postUrl = `/${community}/post/${openPost}`;
     return (
       <Wrapper>
-        <StyledPostButtons post={post} {...this.props} />
-        <PostInfoContainer>
-          <PostInfo
-            post={post}
-            link={link}
-            community={community}
-            postUrl={postUrl}
-          />
-        </PostInfoContainer>
+        <PostContainer>
+          <StyledPostButtons post={post} {...this.props} />
+          <PostInfoContainer>
+            <PostInfo
+              post={post}
+              link={link}
+              community={community}
+              postUrl={postUrl}
+            />
+          </PostInfoContainer>
+        </PostContainer>
+
       </Wrapper>
     );
   }
 }
 
+// <PostCommentContainer>
+//   <PostComment
+//     auth={this.props.auth}
+//     community={community}
+//     repost={repost}
+//     post={post}
+//     date={post.postDate}
+//   />
+// </PostCommentContainer>
+
+// <PostComment
+//   auth={this.props.auth}
+//   community={community}
+//   repost={repost}
+//   post={post}
+//   date={post.postDate}
+// />
 
 // <PostComment
 //   auth={this.props.auth}

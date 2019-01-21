@@ -1,20 +1,26 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
 import { computePayout } from 'app/utils/post';
 import { abbreviateNumber } from 'app/utils/numbers';
 import styled from 'styled-components/primitives';
-import ULink from 'modules/navigation/ULink.component';
 
 const Wrapper = styled.View`
   justify-content: center;
+  /* min-width: 100px; */
+  /* padding-right: 2em; */
+  align-items: flex-start;
+`;
+
+const Container = styled.View`
+  justify-content: center;
   align-items: center;
-  overflow: hidden;
-  width: 50px;
 `;
 
 const View = styled.View`
+  /* min-width: 100px; */
+  /* text-align: center; */
+  /* justify-content: center; */
 `;
 
 const Touchable = styled.Touchable`
@@ -22,7 +28,8 @@ const Touchable = styled.Touchable`
 
 const Text = styled.Text`
   display: flex;
-  align-items: center;
+  /* align-items: center; */
+  /* justify-content: center; */
 `;
 
 const Image = styled.Image`
@@ -139,41 +146,31 @@ class PostButtons extends Component {
 
     return (
       <Wrapper>
-        <Touchable onClick={e => this.vote(e, vote)} to="#">
-          <VoteIcon
-            alt="Upvote"
-            source={{ uri: votedUp ? '/img/upvoteActive.png' : upvoteBtn }}
-          />
-        </Touchable>
-        <View>
-          <Text>
-            <Image alt="R" source={{ uri: '/img/r-gray.svg' }} /> {
-              post.data ? Math.round(post.data.pagerank) : null
-            }
-            {payout > 0 ? abbreviateNumber(payout) : null }
-          </Text>
-        </View>
-        <Touchable onClick={e => this.irrelevant(e, vote)} to="#">
-          <VoteIcon
-            alt="Downvote"
-            source={{ uri: votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg' }}
-          />
-        </Touchable>
+        <Container>
+          <Touchable onClick={e => this.vote(e, vote)} to="#">
+            <VoteIcon
+              alt="Upvote"
+              source={{ uri: votedUp ? '/img/upvoteActive.png' : upvoteBtn }}
+            />
+          </Touchable>
+          <View>
+            <Text>
+              <Image alt="R" source={{ uri: '/img/r-gray.svg' }} /> {
+                post.data ? Math.round(post.data.pagerank) : null
+              }
+              {payout > 0 ? abbreviateNumber(payout) : null }
+            </Text>
+          </View>
+          <Touchable onClick={e => this.irrelevant(e, vote)} to="#">
+            <VoteIcon
+              alt="Downvote"
+              source={{ uri: votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg' }}
+            />
+          </Touchable>
+        </Container>
       </Wrapper>
     );
   }
 }
-
-
-// <div className="fraction">
-//   <div className="dem">
-//     <Image alt="R" source={{ uri: '/img/r-gray.svg' }} />
-//     {post.data ? Math.round(post.data.pagerank) : null}
-//   </div>
-//
-//   {payout > 0 && <div className="dem">
-//     ${abbreviateNumber(payout)}
-//   </div>}
-// </div>
 
 export default PostButtons;

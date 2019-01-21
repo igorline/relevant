@@ -9,9 +9,6 @@ import { numbers } from 'app/utils';
 import get from 'lodash.get';
 import Tag from 'modules/tag/tag.component';
 
-if (process.env.BROWSER === true) {
-  require('./post.css');
-}
 
 const Wrapper = styled.View`
   display: flex;
@@ -53,17 +50,14 @@ export default function PostInfo(props) {
       </View>
     );
   }
-  const title = get(link, 'title') || get(post, 'title');
-  if (!title) {
-    return <View />;
-  }
+  const title = get(link, 'title') || get(post, 'title') || get(post, 'body');
 
   let timestamp;
   if (post.postDate) {
     timestamp = ' • ' + numbers.timeSince(Date.parse(post.postDate)) + ' ago';
   }
 
-  const imageUrl = link.image || null;
+  const imageUrl = get(link, 'image') || null;
 
   const postContent = (
     <Wrapper>
@@ -75,15 +69,19 @@ export default function PostInfo(props) {
         </View>
         : <View />}
       <PostText>
-        <ULink external to={post.url} external target="_blank">
-          <PostTitle>{title}</PostTitle>
-        </ULink>
+        {title ?
+          <ULink external to={post.url} external target="_blank">
+            <PostTitle>{title}</PostTitle>
+          </ULink>
+          : null}
         <SecondaryText>
           {get(post, 'embeddedUser.handle') ? `Posted by: @${get(post, 'embeddedUser.handle')} and HOW MANY OTHERS?` : null}
           {timestamp}
-          <ULink external to={post.url} external target="_blank">
-            <SecondaryText>{link.domain && ` • ${link.domain} ↗`}</SecondaryText>
-          </ULink>
+          { get(link, 'domain') ?
+            <ULink external to={post.url} external target="_blank">
+              <SecondaryText>{link.domain && ` • ${link.domain} ↗`}</SecondaryText>
+            </ULink>
+            : null}
         </SecondaryText>
         { post.commentCount ?
           <ULink external to={postUrl} >
