@@ -1,8 +1,4 @@
 import colors from './colors';
-let isNative = true;
-if (process.env.WEB === 'true') {
-  isNative = false;
-}
 
 export default {
   borderRight: (color) => ({
@@ -23,10 +19,4 @@ export default {
   text-decoration: none;
     color: ${(props) => props.color || 'black'}
   `,
-  spacing: (unit) => {
-    if (isNative) {
-      return `${(unit * 8 / 10)}rem`;
-    }
-    return `${unit * 8}px`;
-  }
 };

@@ -1,6 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 import colors from 'app/styles/colors';
 import layout from 'app/styles/layout';
+import spacing from 'app/styles/spacing';
 import * as fonts from 'app/styles/fonts';
 
 // eslint-disable-next-line
@@ -37,6 +38,7 @@ export const GlobalStyle = createGlobalStyle`
 const mixins = {};
 
 export {
+  spacing,
   colors,
   layout,
   mixins,
