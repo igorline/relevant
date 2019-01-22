@@ -8,7 +8,7 @@ const Alert = alert.Alert();
 
 const apiServer = process.env.API_SERVER + '/api/';
 
-const commentSchema = new schema.Entity('comments', {}, { idAttribute: '_id' });
+const commentSchema = new schema.Entity('comments', { }, { idAttribute: '_id' });
 
 const userSchema = new schema.Entity('users', {}, { idAttribute: '_id' });
 
