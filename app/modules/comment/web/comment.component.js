@@ -1,20 +1,73 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import AvatarBox from 'modules/user/web/avatarbox.component';
+import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/web/postbuttons.component';
-import CommentForm from './commentForm.component';
+import { BodyText } from 'modules/styled/Text.component';
+import CommentForm from 'modules/comment/web/commentForm.component';
+import { layout, colors } from 'app/styles/globalStyles';
+import styled from 'styled-components/primitives';
 
 if (process.env.BROWSER === true) {
   require('./comment.css');
 }
+
+const Wrapper = styled.View`
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  padding: 2em;
+`;
+
+const Actions = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+`;
+
+const View = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  /* flex: 1; */
+  /* marginLeft: 10px; */
+`;
+
+const Text = styled.Text`
+  margin-right:  0.5em;
+  color: ${colors.blue};
+  /* flex: 1; */
+  /* marginLeft: 10px; */
+`;
+
+const Touchable = styled.Touchable`
+  /* flex: 1; */
+  /* marginLeft: 10px; */
+`;
+
+const StyledBody = styled(BodyText)`
+  margin: 1em 0;
+`;
+
+const Container = styled.View`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding-bottom: 2em;
+  // ${layout.universalBorder('left')}
+  ${layout.universalBorder('bottom')}
+`;
 
 class Comment extends Component {
   static propTypes = {
     actions: PropTypes.object,
     comment: PropTypes.object,
     user: PropTypes.object,
-    auth: PropTypes.object
+    auth: PropTypes.object,
+    activeComment: PropTypes.string,
+    setActiveComment: PropTypes.func,
   };
 
   state = {
@@ -34,9 +87,10 @@ class Comment extends Component {
   }
 
   render() {
-    const { auth, comment } = this.props;
+    const { auth, comment, activeComment, setActiveComment } = this.props;
     const { editing } = this.state;
     let popup;
+    const isActive = activeComment === comment.id;
 
     if (auth.user && auth.user._id === comment.user) {
       popup = (
@@ -52,9 +106,9 @@ class Comment extends Component {
     }
 
     const body = (
-      <div className="body">
-        <pre>{comment.body}</pre>
-      </div>
+      <StyledBody>
+        {comment.body}
+      </StyledBody>
     );
     const edit = (
       <CommentForm
@@ -73,26 +127,33 @@ class Comment extends Component {
     }
 
     return (
-      <div className="comment">
-        {/*        <Avatar auth={this.props.auth} user={user} />
-         */}{' '}
-        <div style={{ flex: 1, marginLeft: '10px' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+      <Wrapper>
+        <PostButtons post={comment} {...this.props} />
+        <Container>
+          <View>
             <AvatarBox
               small
-              // noPic
               auth={this.props.auth}
               user={{ ...user, _id: comment.user }}
-              date={comment.createdAt}
+              postTime={comment.createdAt}
             />
             {popup}
-          </div>
+          </View>
           {editing ? edit : body}
-          <PostButtons post={comment} {...this.props} />
-        </div>
-      </div>
+          <Actions>
+            <Touchable onPress={() => { setActiveComment(comment.id); }}>
+              <Text>Reply</Text>
+            </Touchable>
+            <Touchable>
+              <Text>Share </Text>
+            </Touchable>
+          </Actions>
+          {isActive && (
+            <CommentForm text={'Reply'} {...this.props} post={comment} />
+          ) }
+        </Container>
+      </Wrapper>
     );
   }
 }
-
 export default Comment;

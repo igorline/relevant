@@ -128,35 +128,37 @@ class CommentForm extends Component {
   render() {
     if (!this.props.auth.isAuthenticated) return null;
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-        <form onSubmit={this.handleSubmit}>
-          <Textarea
-            inputRef={c => (this.textArea = c)}
-            style={{ minHeight: '60px' }}
-            rows={2}
-            placeholder="Enter comment..."
-            value={this.state.comment}
-            onKeyDown={this.handleKeydown}
-            onChange={this.handleChange}
-          />
-        </form>
-        <div style={{ alignSelf: 'flex-end' }}>
-          {this.props.cancel && (
+      <div className="formContainer">
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+          <form onSubmit={this.handleSubmit}>
+            <Textarea
+              inputRef={c => (this.textArea = c)}
+              style={{ minHeight: '60px' }}
+              rows={2}
+              placeholder="Enter comment..."
+              value={this.state.comment}
+              onKeyDown={this.handleKeydown}
+              onChange={this.handleChange}
+            />
+          </form>
+          <div style={{ alignSelf: 'flex-end' }}>
+            {this.props.cancel && (
+              <button
+                onClick={this.props.cancel}
+                className={'shadowButton'}
+                disabled={!this.props.auth.isAuthenticated}
+              >
+                Cancel
+              </button>
+            )}
             <button
-              onClick={this.props.cancel}
+              onClick={this.handleSubmit}
               className={'shadowButton'}
               disabled={!this.props.auth.isAuthenticated}
             >
-              Cancel
+              {this.props.text}
             </button>
-          )}
-          <button
-            onClick={this.handleSubmit}
-            className={'shadowButton'}
-            disabled={!this.props.auth.isAuthenticated}
-          >
-            {this.props.text}
-          </button>
+          </div>
         </div>
       </div>
     );

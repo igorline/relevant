@@ -8,6 +8,10 @@ import * as createPostActions from 'modules/createPost/createPost.actions';
 import CommentForm from './commentForm.component';
 import Comment from './comment.component';
 
+if (process.env.BROWSER === true) {
+  require('./comment.css');
+}
+
 class Comments extends Component {
   static propTypes = {
     actions: PropTypes.object,
@@ -17,12 +21,22 @@ class Comments extends Component {
     auth: PropTypes.object,
     location: PropTypes.object,
     myPostInv: PropTypes.object,
-    user: PropTypes.object
+    user: PropTypes.object,
+
   };
+
+  state = {
+    activeComment: null,
+  }
 
   componentDidMount() {
     const { params } = this.props.match;
     this.props.actions.getComments(params.id);
+  }
+
+  setActiveComment = (commentId) => {
+    const activeComment = this.state.activeComment === commentId ? null : commentId;
+    this.setState({ activeComment });
   }
 
   scrollToBottom() {
@@ -37,6 +51,7 @@ class Comments extends Component {
     if (!comments) return null;
     return (
       <div className="comments">
+        <CommentForm text={'Reply'} {...this.props} />
         {comments.length !== 0 ? (
           <div>
             {comments.map(id => {
@@ -51,14 +66,13 @@ class Comments extends Component {
                   location={this.props.location}
                   myPostInv={this.props.myPostInv}
                   user={this.props.user}
+                  activeComment={this.state.activeComment}
+                  setActiveComment={this.setActiveComment}
                 />
               );
             })}
           </div>
         ) : null}
-        <div className={'formContainer'}>
-          <CommentForm text={'Reply'} {...this.props} />
-        </div>
       </div>
     );
   }
@@ -69,7 +83,7 @@ export default connect(
     auth: state.auth,
     comments: state.comments,
     myPostInv: state.investments.myPostInv,
-    user: state.user
+    user: state.user,
   }),
   dispatch => ({
     actions: bindActionCreators(
