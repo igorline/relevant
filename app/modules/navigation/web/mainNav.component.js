@@ -17,7 +17,7 @@ const ContentContainer = styled.div`
 const StyledSideNav = styled(SideNav)`
   display: inline-block;
   z-index: 10;
-  border-right: ${layout.borderStyles(colors.borderColor)};
+  border-right: ${layout.borderStyles(colors.lineColor)};
 `;
 
 const MainContent = styled.div`

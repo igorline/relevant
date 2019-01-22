@@ -9,19 +9,19 @@ import SideNavFooter from 'modules/navigation/web/sideNavFooter.component';
 import { colors, layout } from 'app/styles/globalStyles';
 
 const SideNavContent = styled.div`
-  background: ${colors.sideNavBackground};
+  background: ${colors.secondaryBG};
   width: ${layout.sideNavWidth};
   max-width: ${layout.sideNavWidth};
   overflow: hidden;
   display: flex;
   flex-direction: column;
   z-index: 10;
-  border-right: ${layout.borderStyles(colors.borderColor)};
+  border-right: ${layout.borderStyles(colors.lineColor)};
   padding-top: ${layout.headerHeight}
 `;
 
 const SideNavSection = styled.div`
-  border-bottom: ${layout.borderStyles(colors.borderColor)};
+  border-bottom: ${layout.borderStyles(colors.lineColor)};
 `;
 
 const LogoContainer = styled(SideNavSection)`
@@ -36,8 +36,8 @@ const LogoContainer = styled(SideNavSection)`
   top: 0;
   left: 0;
   width: ${layout.sideNavWidth};
-  background: ${colors.sideNavBackground};
-  border-right: ${layout.borderStyles(colors.borderColor)};
+  background: ${colors.secondaryBG};
+  border-right: ${layout.borderStyles(colors.lineColor)};
 `;
 
 const StyledLink = styled(Link)`

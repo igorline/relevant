@@ -18,7 +18,7 @@ if (process.env.WEB !== 'true') {
     ${(p) => p.styles}
   `;
   DisabledLink = styled.Text`
-    color: ${colors.secondaryTextColor};
+    color: ${colors.secondaryText};
     ${(p) => p.styles}
   `;
 } else {
@@ -33,7 +33,7 @@ if (process.env.WEB !== 'true') {
     ${(p) => p.styles}
   `;
   DisabledLink = styled.span`
-    color: ${colors.secondaryTextColor};
+    color: ${colors.secondaryText};
     ${(p) => p.styles}
   `;
 }

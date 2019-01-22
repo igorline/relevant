@@ -8,9 +8,9 @@ import Avatar from './avatar.component';
 
 const Handle = styled.div`
   a {
-    color: ${colors.greyText};
+    color: ${colors.secondaryText};
   }
-  color: ${colors.greyText};
+  color: ${colors.secondaryText};
   font-size: 10px;
   font-family: Arial, sans-serif;
 `;

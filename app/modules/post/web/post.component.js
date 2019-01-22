@@ -42,7 +42,7 @@ const PostInfoContainer = styled.View`
   flex-shrink: 1;
   width: 100%;
   padding-bottom: 2em;
-  border-bottom-color: ${colors.borderColor};
+  border-bottom-color: ${colors.lineColor};
   border-bottom-style: solid;
   border-bottom-width: 1px;
 `;

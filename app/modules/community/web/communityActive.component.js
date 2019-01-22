@@ -15,7 +15,7 @@ const StyledAvatar = styled(UAvatar)`
 
 const NavSection = styled.View`
   padding: 2em;
-  borderBottomColor: ${colors.borderColor};
+  borderBottomColor: ${colors.lineColor};
   borderBottomWidth: ${StyleSheet.hairlineWidth};
 `;
 

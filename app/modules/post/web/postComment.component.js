@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 // import PostButtons from './postbuttons.component';
-import { ContentText } from 'modules/styled/Text.component';
+import { BodyText } from 'modules/styled/Text.component';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import { colors } from 'app/styles/globalStyles';
@@ -12,7 +12,7 @@ const Wrapper = styled.View`
   overflow: hidden;
   padding-left: 1em;
   flex-shrink: 1;
-  border-left-color: ${colors.borderColor};
+  border-left-color: ${colors.lineColor};
   border-left-width: 1px;
   border-left-style: solid;
 `;
@@ -46,7 +46,7 @@ class PostComment extends Component {
           />
         </View>
         <ULink to={postUrl}>
-          <ContentText>{comment.body}</ContentText>
+          <BodyText>{comment.body}</BodyText>
         </ULink>
       </Wrapper>
     );
