@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/web/postbuttons.component';
-import { BodyText, SecondaryText } from 'modules/styled/Text.component';
+import { CommentText, SecondaryText } from 'modules/styled/Text.component';
 import CommentForm from 'modules/comment/web/commentForm.component';
 import { layout, colors } from 'app/styles/globalStyles';
 import styled from 'styled-components/primitives';
@@ -47,7 +47,7 @@ const Touchable = styled.Touchable`
   /* marginLeft: 10px; */
 `;
 
-const StyledBody = styled(BodyText)`
+const StyledBody = styled(CommentText)`
   margin: 1em 0;
 `;
 

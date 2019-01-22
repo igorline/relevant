@@ -1,11 +1,7 @@
 @import 'styles/global.css';
 
 
-.comments {
-  margin-left: $postOffsetPadding;
-  /*background: white;*/
-  /*padding: 0 25px;*/
-}
+
 .comments form {
   display: flex;
   flex-direction: row;
@@ -20,17 +16,16 @@
   margin: 20px 0;
   display: flex;
   flex-direction: row;
-  box-shadow: $postShadow;
+  /* box-shadow: $postShadow; */
 
   /*align-items: flex-end;*/
+  background-color: #F8F8F8;
   button {
     /*float: right;*/
     align-self: flex-end;
     margin: 5px 0px;
   }
-  background: white;
   padding: 20px;
-
 }
 
 .comments form .avatar {
@@ -55,35 +50,4 @@
   color: $blue;
   cursor: pointer;
   outline: none;
-}
-
-.comment {
-  /*margin: 40px;*/
-  /*@extend %flatBorderBottom;*/
-  padding: 20px 20px;
-  /*margin: 10px 0;*/
-  background:white;
-  box-shadow: $postShadow;
-
-  display: flex;
-  flex-direction: row;
-  /*background: white;*/
-}
-
-.comment:last-of-type {
-  /*box-shadow: none;*/
-  border: none;
-}
-
-.comment .body {
-  font-family: 'Georgia', serif;
-  font-size: 15px;
-  color: #242425;
-  margin: 15px 0 0px 0px;
-}
-
-@media screen and (max-width: 736px) {
-  .comments {
-    padding: 0 10px;
-  }
 }
