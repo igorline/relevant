@@ -13,7 +13,7 @@ class EthTools extends Component {
     RelevantCoin: PropTypes.object,
     children: PropTypes.node,
     network: PropTypes.number,
-    status: PropTypes.object
+    status: PropTypes.string
   };
 
   initialState = {
