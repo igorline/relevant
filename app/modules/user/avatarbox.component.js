@@ -1,34 +1,25 @@
 import React from 'react';
 import { View, Image, StyleSheet, Text } from 'react-primitives';
-import Icon from 'react-native-vector-icons/dist/Ionicons';
 import PropTypes from 'prop-types';
-import { globalStyles, darkGrey } from 'app/styles/global';
-import Stats from 'modules/stats/mobile/stats.component';
+// import { globalStyles, darkGrey } from 'app/styles/global';
+import { colors, sizing } from 'app/styles/globalStyles';
+// TODO: rewrite this as a universal component
+// import Stats from 'modules/stats/mobile/stats.component';
 import ULink from 'modules/navigation/ULink.component';
 import { getTimestamp } from 'app/utils/numbers';
-import styled, { css } from 'styled-components/primitives';
+// import { } from 'modules/styled/Text.component';
+import styled from 'styled-components/primitives';
 
 let styles;
 
-const bebas = css`
-  font-family: BebasNeueRelevantRegular;
-  margin-bottom: -2px;
-`;
-
-const font17 = css`
-  font-size: 17px;
-  lineHeight: 17px;
-`;
 
 export const Name = styled.Text`
-  color: ${darkGrey};
-  ${font17}
-  ${bebas}
+  color: ${colors.secondaryText};
 `;
 
 export const HandleText = styled.Text`
-  ${globalStyles.font10}
-  ${globalStyles.greyText}
+  font-size: ${sizing.byUnit(1.25)};
+  color: ${colors.secondaryText};
 `;
 
 export const Wrapper = styled.Touchable`
@@ -82,15 +73,17 @@ export default function UserName(props) {
     />
   );
 
-  const twitterIcon = twitter && (
-    <Icon
-      borderRadius={0}
-      name={'logo-twitter'}
-      size={17}
-      color={'#00aced'}
-      style={styles.icon}
-    />
-  );
+  const twitterIcon = null;
+  // TODO: Get Icons to work with SVG
+  // const twitterIcon = twitter && (
+  //   <Image
+  //     borderRadius={0}
+  //     name={'logo-twitter'}
+  //     size={17}
+  //     color={'#00aced'}
+  //     style={styles.icon}
+  //   />
+  // );
 
   return (
     <ULink to={`/user/profile/${user.handle}`}>
@@ -112,7 +105,7 @@ export default function UserName(props) {
               <Name>
                 {user.name}{twitterIcon && ' ' + twitterIcon}
               </Name>
-              {user.relevance && relevance && <Stats entity={user} type={'relevance'} />}
+              {user.relevance && relevance && 'STATS GO HERE'}
             </View>
             {handleEl}
           </View>
@@ -152,4 +145,4 @@ const localStyles = StyleSheet.create({
   }
 });
 
-styles = { ...localStyles, ...globalStyles };
+styles = { ...localStyles };
