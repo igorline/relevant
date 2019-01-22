@@ -91,8 +91,8 @@ async function updateUserIdType() {
     u.handle += '__DUP__';
     if (u.publicKey) u.publicKey += '__DUP__';
     console.log('Old User', u.toObject());
-    // await u.save();
-    // return newUser.save();
+    await u.save();
+    return newUser.save();
   });
   return Promise.all(users);
 }
@@ -167,7 +167,6 @@ async function updateUserEmbeds() {
     console.log(u._id);
     // -------- POSTS ------------
     // q.push(async cb => {
-    //   console.log(u._id);
     //   const posts = await Post.find({ user: u._id });
     //   console.log('found posts', u.handle, posts.length);
 
@@ -190,14 +189,14 @@ async function updateUserEmbeds() {
     //   cb();
     // });
 
-    // -------- NOTIFICATIONS ------------
+    // // -------- NOTIFICATIONS ------------
     // q.push(async cb => {
-    //   const notes = await Notification.find({ forUser: u.handle });
-    //   console.log('found notifications', u.handle, notes.length);
+    //   // const notes = await Notification.find({ forUser: u.handle });
+    //   // console.log('found notifications', u.handle, notes.length);
 
     //   await Notification.update(
     //     { forUser: u.handle },
-    //     { forUser: u._id },
+    //     { forUser: ObjectId(u._id) },
     //     { multi: true }
     //   );
     //   return cb();
@@ -205,7 +204,7 @@ async function updateUserEmbeds() {
     // q.push(async cb => {
     //   await Notification.update(
     //     { byUser: u.handle },
-    //     { byUser: u._id },
+    //     { byUser: ObjectId(u._id) },
     //     { multi: true }
     //   );
     //   return cb();
@@ -213,18 +212,25 @@ async function updateUserEmbeds() {
     // q.push(async cb => {
     //   await Notification.update(
     //     { byUsers: u.handle },
-    //     { $set: { 'byUsers.$': u._id } },
+    //     { $set: { 'byUsers.$': ObjectId(u._id) } },
+    //     { multi: true }
+    //   );
+    // });
+    // q.push(async cb => {
+    //   await Notification.update(
+    //     { forUser: 'everyone' },
+    //     { group: ['everyone'] },
     //     { multi: true }
     //   );
     //   return cb();
     // });
 
 
-    // -------- INVEST ------------
+    // // -------- INVEST ------------
     // q.push(async cb => {
     //   await Invest.update(
     //     { investor: u.handle },
-    //     { investor: u._id },
+    //     { investor: ObjectId(u._id) },
     //     { multi: true }
     //   );
     //   return cb();
@@ -233,41 +239,41 @@ async function updateUserEmbeds() {
     // q.push(async cb => {
     //   await Invest.update(
     //     { author: u.handle },
-    //     { author: u._id },
+    //     { author: ObjectId(u._id) },
     //     { multi: true }
     //   );
     //   return cb();
     // });
 
-    // -------- COMMUNITY MEMEBER ------------
+    // // -------- COMMUNITY MEMEBER ------------
     // q.push(async cb => {
     //   console.log(u._id);
     //   await CommunityMember.update(
     //     { user: u.handle },
-    //     { user: u._id },
+    //     { user: ObjectId(u._id) },
     //     { multi: true }
     //   );
     //   cb();
     // });
 
-    // -------- EARNINGS ------------
+    // // -------- EARNINGS ------------
     // q.push(async cb => {
     //   console.log(u._id);
     //   await Earnings.update(
     //     { user: u.handle },
-    //     { user: u._id },
+    //     { user: ObjectId(u._id) },
     //     { multi: true }
     //   );
     //   cb();
     // });
 
 
-    // -------- SUBSCRIPTION ------------
+    // // -------- SUBSCRIPTION ------------
     // q.push(async cb => {
     //   console.log(u._id);
     //   await Subscription.update(
     //     { follower: u.handle },
-    //     { follower: u._id },
+    //     { follower: ObjectId(u._id) },
     //     { multi: true }
     //   );
     //   cb();
@@ -277,38 +283,58 @@ async function updateUserEmbeds() {
     //   console.log(u._id);
     //   await Subscription.update(
     //     { following: u.handle },
-    //     { following: u._id },
+    //     { following: ObjectId(u._id) },
     //     { multi: true }
     //   );
     //   cb();
     // });
 
 
-    // -------- STATISTICS ------------
+    // // -------- STATISTICS ------------
     // q.push(async cb => {
     //   console.log(u._id);
     //   await Statistics.update(
     //     { user: u.handle },
-    //     { user: u._id },
+    //     { user: ObjectId(u._id) },
     //     { multi: true }
     //   );
     //   cb();
+    // });
 
 
-    // -------- INVEST ------------
+    // // -------- INVEST ------------
+    // q.push(async cb => {
+    //   await Feed.update(
+    //     { userId: u.handle },
+    //     { userId: ObjectId(u._id) },
+    //     { multi: true }
+    //   );
+    //   return cb();
+    // });
+
+    // q.push(async cb => {
+    //   await Feed.update(
+    //     { from: u.handle },
+    //     { from: ObjectId(u._id) },
+    //     { multi: true }
+    //   );
+    //   return cb();
+    // });
+
+    // -------- BLOCKED ------------
     q.push(async cb => {
-      await Feed.update(
-        { userId: u.handle },
-        { userId: u._id },
+      await User.update(
+        { blocked: u.handle },
+        { $set: { 'blocked.$': ObjectId(u._id) } },
         { multi: true }
       );
       return cb();
     });
 
     q.push(async cb => {
-      await Feed.update(
-        { from: u.handle },
-        { from: u._id },
+      await User.update(
+        { blockedBy: u.handle },
+        { $set: { 'blockedBy.$': ObjectId(u._id) } },
         { multi: true }
       );
       return cb();
@@ -326,7 +352,8 @@ async function processEntity(entity) {
     entity.user = ObjectId(entity.user);
     entity.markModified('user');
     console.log('entity for ', entity.user);
-    return entity.save();
+    return null;
+    // return entity.save();
   } catch (err) {
     console.log(err);
     return null;
@@ -354,35 +381,36 @@ async function convertStringToId() {
   // );
 
   // -------- NOTIFICATIONS ------------
-  // let entities = await Notification.find({ forUser: 'everyone' });
-  // entities = entities.map(entity =>
-  //   q.push(async cb => {
-  //     try {
-  //       if (entity.byUser) {
-  //        entity.byUser = ObjectId(entity.byUser);
-  //        entity.markModified('byUser');
-  //       }
-  //
-  //       if (entity.forUser) {
-  //        entity.forUser = ObjectId(entity.forUser);
-  //        entity.markModified('forUser');
-  //       }
+  let entities = await Notification.find({});
+  entities = entities.map(entity =>
+    q.push(async cb => {
+      try {
+        // if (entity.byUser) {
+        //   entity.byUser = ObjectId(entity.byUser);
+        //   entity.markModified('byUser');
+        // }
 
-  //       entity.byUsers = entity.byUsers.toObject().map(u => ObjectId(u));
-  //       entity.markModified('byUsers');
+        // if (entity.forUser) {
+        //   entity.forUser = ObjectId(entity.forUser);
+        //   entity.markModified('forUser');
+        // }
 
-  //       console.log(
-  //         entity.byUser,
-  //         entity.forUser,
-  //         entity.byUsers.toObject(),
-  //       );
-  //       // await entity.save();
-  //       setTimeout(cb, 1);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   })
-  // );
+        // entity.byUsers = entity.byUsers.toObject().map(u => ObjectId(u));
+        // entity.markModified('byUsers');
+
+        console.log(
+          entity.byUser,
+          entity.forUser,
+          entity.byUsers.toObject(),
+          entity.group.toObject()
+        );
+        // await entity.save();
+        setTimeout(cb, 1);
+      } catch (err) {
+        console.log(err);
+      }
+    })
+  );
 
   // -------- INVEST ------------
   // let entities = await Invest.find({});
@@ -469,28 +497,27 @@ async function convertStringToId() {
 
 
   // -------- FEED ------------
-  let entities = await Feed.find({});
-  entities = entities.map(entity =>
-    q.push(async cb => {
-      if (entity.userId) {
-        entity.userId = ObjectId(entity.userId);
-        entity.markModified('userId');
-      }
+  // let entities = await Feed.find({});
+  // entities = entities.map(entity =>
+  //   q.push(async cb => {
+  //     if (entity.userId) {
+  //       entity.userId = ObjectId(entity.userId);
+  //       entity.markModified('userId');
+  //     }
 
-      if (entity.from) {
-        entity.from = ObjectId(entity.from);
-        entity.markModified('from');
-      }
+  //     if (entity.from) {
+  //       entity.from = ObjectId(entity.from);
+  //       entity.markModified('from');
+  //     }
 
-      console.log(
-        entity.userId,
-        entity.from,
-      );
-      await entity.save();
-      setTimeout(cb, 1);
-      cb();
-    })
-  );
+  //     console.log(
+  //       entity.userId,
+  //       entity.from,
+  //     );
+  //     setTimeout(cb, 1);
+  //     cb();
+  //   })
+  // );
 
   q.start((queErr, results) => {
     if (queErr) return console.log(queErr);

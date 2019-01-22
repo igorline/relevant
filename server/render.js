@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderToString } from 'react-dom/server';
+import { renderToString, renderToStaticMarkup } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import { compose } from 'redux';
@@ -9,6 +9,7 @@ import routes from 'modules/_app/web/routes';
 import configureStore from 'core/web/configureStore';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
 import path from 'path';
+import { AppRegistry } from 'react-native-web';
 
 import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server';
 
@@ -46,8 +47,10 @@ export default async function handleRender(req, res) {
 
   try {
     await handleRouteData({ req, store });
-    const app = renderApp({ url: req.url, store });
-    const html = renderFullPage(app, store.getState());
+    const { app, css } = renderApp({ url: req.url, store });
+    // console.log('app', app);
+
+    const html = renderFullPage({ app, css, initialState: store.getState() });
     res.send(html);
   } catch (err) {
     console.log('RENDER ERROR', err) // eslint-disable-line
@@ -55,21 +58,17 @@ export default async function handleRender(req, res) {
   }
 }
 
-export function renderFullPage(html, initialState) {
-  let styleTags;
-  let styleComponentsTags;
+export function renderFullPage({ app, css, initialState }) {
+  let styleTags = '';
+  let styledComponentsTags = '';
 
   // load extracted styles in head when in production
   if (NODE_ENV === 'development') {
-    styleTags = '';
-    styleTags = '';
-
     extractor = new ChunkExtractor({ statsFile, entrypoints: 'app' });
   } else {
-    styleComponentsTags = sheet.getStyleTags();
+    styledComponentsTags = sheet.getStyleTags();
     styleTags = extractor.getStyleTags();
   }
-
   const meta = fetchMeta(initialState);
 
   const scriptTags = extractor.getScriptTags();
@@ -94,7 +93,8 @@ export function renderFullPage(html, initialState) {
         <meta name="twitter:image" content="${meta.image}" />
 
         ${styleTags}
-        ${styleComponentsTags}
+        ${css}
+        ${styledComponentsTags}
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51795165-6"></script>
@@ -125,7 +125,7 @@ export function renderFullPage(html, initialState) {
         <!-- End Facebook Pixel Code -->
       </head>
       <body>
-        <div id="app">${html}</div>
+        <div id="app">${app}</div>
         <script>
           window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
         </script>
@@ -180,19 +180,27 @@ export async function handleRouteData({ req, store }) {
 
 export function renderApp({ url, store }) {
   const context = {};
-  return renderToString(
+
+  const App = (<Provider store={store}>
+    <div className="parent">
+      <StaticRouter location={url} context={context}>
+        {renderRoutes(routes)}
+      </StaticRouter>
+    </div>
+  </Provider>);
+
+  AppRegistry.registerComponent('App', () => App);
+  const { getStyleElement } = AppRegistry.getApplication('App', store.getState());
+  const css = renderToStaticMarkup(getStyleElement());
+
+  const app = renderToString(
     <ChunkExtractorManager extractor={extractor}>
       <StyleSheetManager sheet={sheet.instance}>
-        <Provider store={store}>
-          <div className="parent">
-            <StaticRouter location={url} context={context}>
-              {renderRoutes(routes)}
-            </StaticRouter>
-          </div>
-        </Provider>
+        {App}
       </StyleSheetManager>
     </ChunkExtractorManager>
   );
+  return { app, css };
 }
 
 
