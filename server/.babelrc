@@ -9,6 +9,7 @@
     "@loadable/babel-plugin",
     "@babel/plugin-proposal-class-properties",
     "inline-react-svg",
+    ["styled-components"],
     ["module-resolver", {
       "alias": {
         "server": "./server",
