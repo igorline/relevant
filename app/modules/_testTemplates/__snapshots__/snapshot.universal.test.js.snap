@@ -288,6 +288,7 @@ exports[`Snapshot AvatarBox Styled 1`] = `
             "borderRightWidth": "0px",
             "borderTopWidth": "0px",
             "boxSizing": "border-box",
+            "color": "rgba(36,36,37,1.00)",
             "display": "inline",
             "fontFamily": "BebasNeueRelevantRegular",
             "fontSize": "17px",

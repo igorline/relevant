@@ -2,15 +2,18 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
+import { compose } from 'redux';
 import { Provider } from 'react-redux';
 import { setUser, setCommunity } from 'modules/auth/auth.actions';
 import routes from 'modules/_app/web/routes';
 import configureStore from 'core/web/configureStore';
+import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
 import path from 'path';
 
 import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server';
 
 const { NODE_ENV } = process.env;
+const sheet = new ServerStyleSheet();
 
 const statsFile = path.resolve('app/public/dist/loadable-stats.json');
 
@@ -18,50 +21,60 @@ const statsFile = path.resolve('app/public/dist/loadable-stats.json');
 // We create an extractor from the statsFile
 let extractor = new ChunkExtractor({ statsFile, entrypoints: 'app' });
 
-function fetchMeta(initialState) {
-  let title;
-  let description;
-  let image;
-  let url;
 
-  const { community } = initialState.auth;
-  if (initialState.posts.posts) {
-    const postId = Object.keys(initialState.posts.posts)[0];
-    if (postId) {
-      let post = initialState.posts.posts[postId];
-      if (post.metaPost) {
-        post = initialState.posts.links[post.metaPost] || {};
-      }
-      title = post.title;
-      image = post.image;
-      description = post.body;
-      url = `https://relevant.community/${community}/post/${postId}`;
+export function createInitialState(req) {
+  return {
+    auth: {
+      confirmed: !req.unconfirmed,
+      // TODO - get this from req.user
+      community: 'relevant'
     }
-  }
-  title = title || 'Relevant: A Social News Reader';
-  image = image || 'https://relevant.community/img/fbimg.png';
-  url = url || 'https://relevant.community/';
-  description =
-    description ||
-    'Relevant is a social news reader that values quality over clicks. Our mission is to create a token-backed qualitative metric for the information economy — making the human values of veracity, expertise and agency economically valuable.';
-  return { title, description, image, url };
+  };
 }
 
-function renderFullPage(html, initialState) {
-  let styleTags;
+export const initStore = compose(
+  configureStore,
+  createInitialState
+);
 
+export default async function handleRender(req, res) {
+  const store = initStore(req);
+  // TODO - get rid of this - need to convert util/api to middleware
+  // and populate user store with req.user
+  store.dispatch(setCommunity(store.getState().auth.community));
+  if (req.user) store.dispatch(setUser(req.user));
+
+  try {
+    await handleRouteData({ req, store });
+    const app = renderApp({ url: req.url, store });
+    const html = renderFullPage(app, store.getState());
+    res.send(html);
+  } catch (err) {
+    console.log('RENDER ERROR', err) // eslint-disable-line
+    res.send(renderFullPage('', store.getState()));
+  }
+}
+
+export function renderFullPage(html, initialState) {
+  let styleTags;
+  let styleComponentsTags;
 
   // load extracted styles in head when in production
   if (NODE_ENV === 'development') {
     styleTags = '';
+    styleTags = '';
+
     extractor = new ChunkExtractor({ statsFile, entrypoints: 'app' });
-  } else styleTags = extractor.getStyleTags();
+  } else {
+    styleComponentsTags = sheet.getStyleTags();
+    styleTags = extractor.getStyleTags();
+  }
 
   const meta = fetchMeta(initialState);
 
   const scriptTags = extractor.getScriptTags();
 
-  const app = `<!doctype html>
+  return `<!doctype html>
     <html>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -81,6 +94,7 @@ function renderFullPage(html, initialState) {
         <meta name="twitter:image" content="${meta.image}" />
 
         ${styleTags}
+        ${styleComponentsTags}
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-51795165-6"></script>
@@ -120,9 +134,67 @@ function renderFullPage(html, initialState) {
       </body>
     </html>
   `;
-
-  return app;
 }
+
+export function fetchMeta(initialState) {
+  let title;
+  let description;
+  let image;
+  let url;
+
+  const { community } = initialState.auth;
+  if (initialState.posts.posts) {
+    const postId = Object.keys(initialState.posts.posts)[0];
+    if (postId) {
+      let post = initialState.posts.posts[postId];
+      if (post.metaPost) {
+        post = initialState.posts.links[post.metaPost] || {};
+      }
+      title = post.title;
+      image = post.image;
+      description = post.body;
+      url = `https://relevant.community/${community}/post/${postId}`;
+    }
+  }
+  title = title || 'Relevant: A Social News Reader';
+  image = image || 'https://relevant.community/img/fbimg.png';
+  url = url || 'https://relevant.community/';
+  description =
+    description ||
+    'Relevant is a social news reader that values quality over clicks. Our mission is to create a token-backed qualitative metric for the information economy — making the human values of veracity, expertise and agency economically valuable.';
+  return { title, description, image, url };
+}
+
+
+export async function handleRouteData({ req, store }) {
+  const branch = matchRoutes(routes, req.url);
+  const promises = branch.map(async ({ route, match }) => {
+    const { params } = match;
+    const { fetchData } = route.component;
+    // TODO can you get away without sending params and send whole store?
+    return fetchData instanceof Function ?
+      fetchData(store.dispatch, params) : Promise.resolve(null);
+  });
+  return Promise.all(promises);
+}
+
+export function renderApp({ url, store }) {
+  const context = {};
+  return renderToString(
+    <ChunkExtractorManager extractor={extractor}>
+      <StyleSheetManager sheet={sheet.instance}>
+        <Provider store={store}>
+          <div className="parent">
+            <StaticRouter location={url} context={context}>
+              {renderRoutes(routes)}
+            </StaticRouter>
+          </div>
+        </Provider>
+      </StyleSheetManager>
+    </ChunkExtractorManager>
+  );
+}
+
 
 // Might be useful to go through the whole stack?
 // function fetchComponentData(dispatch, components, params, req) {
@@ -133,50 +205,3 @@ function renderFullPage(html, initialState) {
 //   return Promise.all(promises);
 // }
 
-export default function handleRender(req, res) {
-  const auth = {};
-  if (req.unconfirmed) auth.confirmed = false;
-
-  // TODO how to deal with this better?
-  auth.community = 'relevant';
-  const initialState = { auth };
-
-  // Create a new Redux store instance
-  const store = configureStore(initialState);
-
-  // TODO check this! better to use 'default user community'
-  // or most recent community
-  store.dispatch(setCommunity(auth.community));
-
-  if (req.user) store.dispatch(setUser(req.user));
-
-
-  const branch = matchRoutes(routes, req.url);
-  const promises = branch.map(async ({ route, match }) => {
-    const { params } = match;
-    const { fetchData } = route.component;
-    // TODO can you get away without sending params and send whole store?
-    return fetchData instanceof Function ?
-      fetchData(store.dispatch, params) : Promise.resolve(null);
-  });
-
-  return Promise.all(promises).then(() => {
-    const context = {};
-    const content = renderToString(
-      <ChunkExtractorManager extractor={extractor}>
-        <Provider store={store}>
-          <div className="parent">
-            <StaticRouter location={req.url} context={context}>
-              {renderRoutes(routes)}
-            </StaticRouter>
-          </div>
-        </Provider>
-      </ChunkExtractorManager>
-    );
-    res.send(renderFullPage(content, store.getState()));
-  })
-  .catch(err => {
-    console.log('RENDER ERROR', err); // eslint-disable-line
-    res.send(renderFullPage('', store.getState()));
-  });
-}

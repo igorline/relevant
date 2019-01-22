@@ -28,9 +28,7 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     color: ${colors.black};
     font-family: Arial, sans-serif;
-    min-height: 100%;
     position:relative;
-    overflow-y: auto;
     flex: 1;
     -webkit-font-smoothing: antialiased;
   }
