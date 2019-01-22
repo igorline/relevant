@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/web/postbuttons.component';
-import { BodyText } from 'modules/styled/Text.component';
+import { BodyText, SecondaryText } from 'modules/styled/Text.component';
 import CommentForm from 'modules/comment/web/commentForm.component';
 import { layout, colors } from 'app/styles/globalStyles';
 import styled from 'styled-components/primitives';
@@ -23,6 +23,7 @@ const Actions = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+  align-items: center;
 `;
 
 const View = styled.View`
@@ -71,7 +72,8 @@ class Comment extends Component {
   };
 
   state = {
-    editing: false
+    editing: false,
+    copied: false,
   };
 
   deletePost() {
@@ -86,9 +88,22 @@ class Comment extends Component {
     this.setState({ editing: true });
   }
 
+  copyToClipboard = () => {
+    const el = document.createElement('textarea');
+    el.value = window.location;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    this.setState({ copied: true });
+  }
+
   render() {
     const { auth, comment, activeComment, setActiveComment } = this.props;
-    const { editing } = this.state;
+    const { editing, copied } = this.state;
     let popup;
     const isActive = activeComment === comment.id;
 
@@ -144,9 +159,10 @@ class Comment extends Component {
             <Touchable onPress={() => { setActiveComment(comment.id); }}>
               <Text>Reply</Text>
             </Touchable>
-            <Touchable>
-              <Text>Share </Text>
+            <Touchable onPress={this.copyToClipboard}>
+              <Text>Share</Text>
             </Touchable>
+            {copied && (<SecondaryText> - Link copied to clipboard</SecondaryText>)}
           </Actions>
           {isActive && (
             <CommentForm text={'Reply'} {...this.props} post={comment} />
