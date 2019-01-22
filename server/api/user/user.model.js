@@ -12,7 +12,6 @@ const { Schema } = mongoose;
 const UserSchema = new Schema(
   {
     _id: { type: Schema.Types.ObjectId, required: true },
-    // _id: { type: String, required: true },
     handle: { type: String, unique: true, required: true },
     publicKey: { type: String, unique: true, sparse: true },
     name: String,
@@ -64,11 +63,11 @@ const UserSchema = new Schema(
     bio: { type: String, default: '' },
 
     blocked: {
-      type: [{ type: String, ref: 'User' }],
+      type: [{ type: Schema.Types.Object, ref: 'User' }],
       select: false
     },
     blockedBy: {
-      type: [{ type: String, ref: 'User' }],
+      type: [{ type: Schema.Types.Object, ref: 'User' }],
       select: false
     },
 
