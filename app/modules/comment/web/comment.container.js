@@ -45,9 +45,7 @@ class Comments extends Component {
 
   render() {
     const { params } = this.props.match;
-    let comments = this.props.comments.commentsById[params.id];
-    if (!comments) return null;
-    comments = comments.data;
+    const comments = this.props.comments.childComments[params.id];
     if (!comments) return null;
     return (
       <div className="comments">
