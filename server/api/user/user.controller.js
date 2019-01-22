@@ -386,8 +386,8 @@ exports.show = async function show(req, res, next) {
     let { user } = req;
     let handle = req.params.id;
     let me = null;
-    if (!handle) {
-      handle = req.user.handle;
+    if (!handle && user) {
+      handle = user.handle;
       me = true;
     }
 
