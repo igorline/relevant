@@ -232,7 +232,7 @@ exports.userPosts = async (req, res, next) => {
     const sortQuery = { _id: -1 };
     const query = { user: author._id, type: { $ne: 'comment' } };
 
-    if (blocked.find(u => u.toString() === author.id.toString())) {
+    if (blocked.find(u => author._id.equals(u))) {
       return res.status(200).json({});
     }
 

@@ -574,24 +574,24 @@ exports.block = async (req, res, next) => {
     let { user } = req;
     const { block } = req.body;
 
-    if (user.handle === block) throw new Error("You can't block yourself!");
+    if (user._id === block) throw new Error("You can't block yourself!");
 
     const userPromise = User.findOneAndUpdate(
-      { handle: user.handle },
+      { _id: user._id },
       { $addToSet: { blocked: block } },
       { new: true }
     );
     const blockPromise = User.findOneAndUpdate(
-      { handle: block },
-      { $addToSet: { blockedBy: user.handle } },
+      { _id: block },
+      { $addToSet: { blockedBy: user._id } },
       { new: true }
     );
 
     // clear any existing subscriptions
-    const sub1 = Subscription.remove({ following: user.handle, follower: block });
-    const sub2 = Subscription.remove({ following: block, follower: user.handle });
-    const feed1 = Feed.remove({ userId: user.handle, from: block });
-    const feed2 = Feed.remove({ userId: block, from: user.handle });
+    const sub1 = Subscription.remove({ following: user._id, follower: block });
+    const sub2 = Subscription.remove({ following: block, follower: user._id });
+    const feed1 = Feed.remove({ userId: user._id, from: block });
+    const feed2 = Feed.remove({ userId: block, from: user._id });
 
     const results = await Promise.all([
       userPromise,
@@ -618,8 +618,8 @@ exports.unblock = async (req, res, next) => {
       { new: true }
     );
     block = await User.findOneAndUpdate(
-      { handle: block },
-      { $pull: { blockedBy: user.handle } }
+      { _id: block },
+      { $pull: { blockedBy: user._id } }
     );
     res.status(200).json(user);
   } catch (err) {
@@ -630,7 +630,7 @@ exports.unblock = async (req, res, next) => {
 exports.blocked = async (req, res, next) => {
   try {
     let { user } = req;
-    user = await User.findOne({ handle: user.handle }).populate('blocked');
+    user = await User.findOne({ _id: user._id }).populate('blocked');
     res.status(200).json(user);
   } catch (err) {
     next(err);
