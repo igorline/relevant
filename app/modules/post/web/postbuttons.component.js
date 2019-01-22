@@ -34,7 +34,6 @@ const Text = styled.Text`
   line-height: 14px;
 `;
 
-
 const Image = styled.Image`
   width: 23px;
   height: 20px;
