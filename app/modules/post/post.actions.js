@@ -258,27 +258,22 @@ export function archiveComments(postId) {
   };
 }
 
-export function addComment(postId, newComment) {
+export function addComment(parentId, newComment) {
   return {
     type: types.ADD_COMMENT,
     payload: {
       comment: newComment,
-      postId
+      parentId
     }
   };
 }
 
-export function setComments(postId, comments, index, total) {
-  let num = 0;
-  if (!total) total = 0;
-  if (index) num = index;
+export function setComments({ comments, childComments }) {
   return {
     type: types.SET_COMMENTS,
     payload: {
-      data: comments,
-      index: num,
-      postId,
-      total
+      comments,
+      childComments
     }
   };
 }
@@ -407,6 +402,17 @@ export function deleteComment(id) {
   };
 }
 
+function filterComments(comments) {
+  const childComments = {};
+  comments.forEach(c => {
+    if (!c.parentComment || c.parentComment === c.parentPost) {
+      return childComments[c.parentPost] = [...(childComments[c.parentPost] || []), c._id];
+    }
+    return childComments[c.parentComment] = [...(childComments[c.parentComment] || []), c._id];
+  });
+  return childComments;
+}
+
 export function getComments(post, skip, limit) {
   return async dispatch => {
     try {
@@ -420,8 +426,10 @@ export function getComments(post, skip, limit) {
       });
 
       dispatch(errorActions.setError('comments', false));
-      const data = normalize({ [post]: responseJSON.data }, { [post]: [commentSchema] });
-      dispatch(setComments(post, data, skip, responseJSON.total));
+      const childComments = filterComments(responseJSON.data);
+      const { comments } = normalize(responseJSON.data, [commentSchema]).entities;
+      console.log(comments);
+      dispatch(setComments({ comments, childComments }));
     } catch (err) {
       dispatch(errorActions.setError('comments', true, err.message));
     }
@@ -431,13 +439,15 @@ export function getComments(post, skip, limit) {
 export function createComment(commentObj) {
   return async dispatch => {
     try {
-      const response = await api.request({
+      const comment = await api.request({
         method: 'POST',
         endpoint: 'comment',
         path: '/',
         body: JSON.stringify(commentObj)
       });
-      dispatch(addComment(response.parentPost, response));
+      const { parentComment, parentPost } = comment;
+      const parentId = !parentComment || parentComment === parentPost ? parentPost : parentComment;
+      dispatch(addComment(parentId, comment));
       return true;
     } catch (err) {
       return false;

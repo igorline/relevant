@@ -342,7 +342,7 @@ export default function post(state = initialState, action) {
         ...state,
         posts: {
           ...state.posts,
-          ...action.payload.data.entities.comments
+          ...action.payload.comments
         }
       };
     }
