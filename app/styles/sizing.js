@@ -4,7 +4,7 @@ if (process.env.WEB === 'true') {
 }
 
 export default {
-  spacing: (unit) => {
+  byUnit: (unit) => {
     if (isNative) {
       return `${(unit * 8 / 10)}rem`;
     }

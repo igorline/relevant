@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 // import PostButtons from './postbuttons.component';
-import { BodyText } from 'modules/styled/Text.component';
+import { CommentText, BodyText } from 'modules/styled/Text.component';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import { colors } from 'app/styles/globalStyles';
@@ -46,7 +46,7 @@ class PostComment extends Component {
           />
         </View>
         <ULink to={postUrl}>
-          <BodyText>{comment.body}</BodyText>
+          <CommentText>{comment.body}</CommentText>
         </ULink>
       </Wrapper>
     );
