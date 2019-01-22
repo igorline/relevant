@@ -428,7 +428,6 @@ export function getComments(post, skip, limit) {
       dispatch(errorActions.setError('comments', false));
       const childComments = filterComments(responseJSON.data);
       const { comments } = normalize(responseJSON.data, [commentSchema]).entities;
-      console.log(comments);
       dispatch(setComments({ comments, childComments }));
     } catch (err) {
       dispatch(errorActions.setError('comments', true, err.message));

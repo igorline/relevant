@@ -47,9 +47,10 @@ class Comments extends Component {
     const { params } = this.props.match;
     const comments = this.props.comments.childComments[params.id];
     if (!comments) return null;
+    const parentPost = params.id;
     return (
       <div className="comments">
-        <CommentForm text={'Reply'} {...this.props} />
+        <CommentForm text={'Reply'} {...this.props} parentPost={parentPost} />
         {comments.length !== 0 ? (
           <div>
             {comments.map(id => {
@@ -66,6 +67,7 @@ class Comments extends Component {
                   user={this.props.user}
                   activeComment={this.state.activeComment}
                   setActiveComment={this.setActiveComment}
+                  parentPost={parentPost}
                 />
               );
             })}
