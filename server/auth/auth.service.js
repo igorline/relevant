@@ -47,7 +47,8 @@ function getUser(select) {
       req.user = user;
       return next();
     } catch (err) {
-      return next(err);
+      console.log('Auth error - user doesn\'t exist'); // eslint-disable-line
+      return next();
     }
   };
 }

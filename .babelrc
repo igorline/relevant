@@ -8,6 +8,7 @@
     "@babel/transform-exponentiation-operator",
     "@loadable/babel-plugin",
     "inline-react-svg",
+    ["styled-components"],
     "@babel/plugin-proposal-class-properties",
     ["module-resolver", {
       "root": ["./app", "./app/modules"],
