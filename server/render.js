@@ -181,7 +181,7 @@ export async function handleRouteData({ req, store }) {
 export function renderApp({ url, store }) {
   const context = {};
 
-  const App = (<Provider store={store}>
+  const App = () => (<Provider store={store}>
     <div className="parent">
       <StaticRouter location={url} context={context}>
         {renderRoutes(routes)}
@@ -196,7 +196,7 @@ export function renderApp({ url, store }) {
   const app = renderToString(
     <ChunkExtractorManager extractor={extractor}>
       <StyleSheetManager sheet={sheet.instance}>
-        {App}
+        {App()}
       </StyleSheetManager>
     </ChunkExtractorManager>
   );
