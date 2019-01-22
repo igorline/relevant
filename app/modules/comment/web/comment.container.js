@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import * as postActions from 'modules/post/post.actions';
+import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import CommentForm from './commentForm.component';
@@ -86,7 +86,7 @@ export default connect(
   dispatch => ({
     actions: bindActionCreators(
       {
-        ...postActions,
+        ...commentActions,
         ...createPostActions,
         ...investActions
       },
