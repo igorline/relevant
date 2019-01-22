@@ -9,6 +9,6 @@
     ".env"
   ],
   "events": {
-    "start": "echo \"\\x1Bk\""
+    "start": "echo '\\033c\\033[3J'"
   }
 }

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 
 export const userProps = PropTypes.shape({
-  handle: PropTypes.string.isRequired,
+  handle: PropTypes.string,
   balance: PropTypes.number,
   image: PropTypes.string,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   // relevance: // TODO shape or null
 });
 

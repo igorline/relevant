@@ -51,7 +51,7 @@ function CoinStat(props) {
 }
 
 CoinStat.propTypes = {
-  user: userProps.isRequired,
+  user: userProps,
   isOwner: PropTypes.bool.isRequired,
   wallet: PropTypes.object
 };
