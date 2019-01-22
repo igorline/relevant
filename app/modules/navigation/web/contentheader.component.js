@@ -17,7 +17,7 @@ const Nav = styled.nav`
   line-height: 20px;
   align-items: center;
   height: ${layout.headerHeight};
-  border-bottom: ${layout.borderStyles(colors.borderColor)};
+  border-bottom: ${layout.borderStyles(colors.lineColor)};
 `;
 
 const NewPost = styled.button`

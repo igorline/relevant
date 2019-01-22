@@ -27,7 +27,7 @@ const Touchable = styled.Touchable`
 
 const Text = styled.Text`
   display: flex;
-  color: ${colors.lightGrey}
+  color: ${colors.secondaryText}
   margin-left: 0.3em;
   ${fonts.Helvetica}
   font-size: 14px;

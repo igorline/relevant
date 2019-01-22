@@ -1,6 +1,16 @@
 import styled from 'styled-components/primitives';
 import { colors, fonts } from 'app/styles/globalStyles';
 
+export const Header = styled.Text`
+  font-weight: bold;
+  font-size: 24;
+  font-family: Arial;
+  ${fonts.Helvetica}
+  color: ${colors.black};
+  color: ${(props) => props.color ? props.color : colors.black};
+`;
+
+
 export const Title = styled.Text`
   font-weight: bold;
   font-size: 20;
@@ -13,17 +23,17 @@ export const Title = styled.Text`
 export const SecondaryText = styled.Text`
   font-size: 12;
   font-family: Arial;
-  color: ${colors.secondaryTextColor};
-  color: ${(props) => props.color ? props.color : colors.secondaryTextColor};
+  color: ${colors.secondaryText};
+  color: ${(props) => props.color ? props.color : colors.secondaryText};
 `;
 
-export const ContentText = styled.Text`
+export const BodyText = styled.Text`
   font-size: 12;
   font-family: serif;
   font-family: 'Georgia';
   /* font-family: "Times New Roman", Times, serif; */
-  color: ${colors.secondaryTextColor};
-  color: ${(props) => props.color ? props.color : colors.secondaryTextColor};
+  color: ${colors.secondaryText};
+  color: ${(props) => props.color ? props.color : colors.secondaryText};
 `;
 
 export const PrimaryLink = styled.Text`
@@ -35,7 +45,7 @@ export const PrimaryLink = styled.Text`
 
 export const SecondaryLink = styled.Text`
   font-weight: 12;
-  color: ${colors.secondaryTextColor};
-  color: ${(props) => props.color ? props.color : colors.secondaryTextColor};
+  color: ${colors.secondaryText};
+  color: ${(props) => props.color ? props.color : colors.secondaryText};
   text-decoration: none;
 `;
