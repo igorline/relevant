@@ -36,7 +36,7 @@ const Text = styled.Text`
 
 
 const Image = styled.Image`
-  width: 20px;
+  width: 23px;
   height: 20px;
 `;
 

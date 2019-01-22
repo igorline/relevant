@@ -1,11 +1,11 @@
 import styled from 'styled-components/primitives';
-import { colors } from 'app/styles/globalStyles';
+import { colors, fonts } from 'app/styles/globalStyles';
 
 export const Title = styled.Text`
   font-weight: bold;
   font-size: 20;
   font-family: Arial;
-  font-family: Bebas;
+  ${fonts.Helvetica}
   color: ${colors.black};
   color: ${(props) => props.color ? props.color : colors.black};
 `;

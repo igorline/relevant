@@ -99,9 +99,10 @@ export default function PostInfo(props) {
           { postUrl && (
             <ULink to={postUrl}>
               {uniqueUsers > 1 ? `and ${uniqueUsers} others` : ''}
-              {timestamp}
+
             </ULink>)
           }
+          { postUrl && timestamp }
           { get(link, 'domain') ?
             <ULink external to={post.url} external target="_blank" disabled={!postUrl} >
               {link.domain && ` • ${link.domain} ↗`}

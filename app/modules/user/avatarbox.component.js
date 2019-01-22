@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/dist/Ionicons';
 import PropTypes from 'prop-types';
 import { globalStyles, darkGrey } from 'app/styles/global';
 import Stats from 'modules/stats/mobile/stats.component';
+import ULink from 'modules/navigation/ULink.component';
 import { getTimestamp } from 'app/utils/numbers';
 import styled, { css } from 'styled-components/primitives';
 
@@ -92,30 +93,32 @@ export default function UserName(props) {
   );
 
   return (
-    <Wrapper
-      onPress={() => setSelected(user)}
-    >
-      <View style={postInfo}>
-        <Image source={imageSource} style={imageStyle} />
-        {repostIcon}
-        <View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              alignItems: 'flex-end',
-              marginBottom: 2
-            }}
-          >
-            <Name>
-              {user.name}{twitterIcon && ' ' + twitterIcon}
-            </Name>
-            {user.relevance && relevance && <Stats entity={user} type={'relevance'} />}
+    <ULink to={`/user/profile/${user.handle}`}>
+      <Wrapper
+        onPress={() => setSelected(user)}
+      >
+        <View style={postInfo}>
+          <Image source={imageSource} style={imageStyle} />
+          {repostIcon}
+          <View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                alignItems: 'flex-end',
+                marginBottom: 2
+              }}
+            >
+              <Name>
+                {user.name}{twitterIcon && ' ' + twitterIcon}
+              </Name>
+              {user.relevance && relevance && <Stats entity={user} type={'relevance'} />}
+            </View>
+            {handleEl}
           </View>
-          {handleEl}
         </View>
-      </View>
-    </Wrapper>
+      </Wrapper>
+    </ULink>
   );
 }
 
