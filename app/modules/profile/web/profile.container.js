@@ -21,7 +21,8 @@ class ProfileContainer extends Component {
   };
 
   state = {
-    user: {}
+    user: {},
+    isOwner: false,
   }
 
   static getDerivedStateFromProps(props) {

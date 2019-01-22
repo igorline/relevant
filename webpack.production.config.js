@@ -42,6 +42,17 @@ prodConfig.mode = 'production';
 
 prodConfig.module.rules = [
   {
+    test: /\.(png|woff|woff2|eot|ttf|svg|jpg)$/,
+    use: [
+      {
+        loader: 'file-loader',
+        options: {
+          name: '[path][name].[ext]',
+        },
+      },
+    ]
+  },
+  {
     test: /\.css$|\.scss$/,
     use: [
       {
