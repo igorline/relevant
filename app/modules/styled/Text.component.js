@@ -1,51 +1,51 @@
 import styled from 'styled-components/primitives';
-import { colors, fonts } from 'app/styles/globalStyles';
+import { colors, fonts, spacing } from 'app/styles/globalStyles';
 
 export const Header = styled.Text`
-  font-weight: bold;
-  font-size: 24;
-  font-family: Arial;
-  ${fonts.Helvetica}
-  color: ${colors.black};
+  font-size: ${spacing.spacing(3)};
+  ${fonts.HelveticaNeueBold}
   color: ${(props) => props.color ? props.color : colors.black};
 `;
 
-
 export const Title = styled.Text`
-  font-weight: bold;
-  font-size: 20;
-  font-family: Arial;
+  font-size: ${spacing.spacing(2.5)};
+  ${fonts.HelveticaNeueCondensedBold};
+  color: ${(props) => props.color ? props.color : colors.black};
+`;
+
+export const NumericalValue = styled.Text`
+  font-size: ${spacing.spacing(1.75)};
+  ${fonts.HelveticaNeueCondensedBold};
+  color: ${(props) => props.color ? props.color : colors.secondaryText};
+`;
+
+export const LinkWithIcon = styled.Text`
+  font-size: ${spacing.spacing(1.5)};
+  ${fonts.HelveticaNeueMedium};
+  color: ${(props) => props.color ? props.color : colors.black};
+`;
+
+export const AltLinkTitle = styled.Text`
+  font-size: ${spacing.spacing(1.5)};
+  ${fonts.HelveticaNeueMedium}
+  color: ${(props) => props.color ? props.color : colors.black};
+  text-decoration: underline;
+`;
+
+export const BodyText = styled.Text`
+  font-size: ${spacing.spacing(1.5)};
   ${fonts.Helvetica}
-  color: ${colors.black};
   color: ${(props) => props.color ? props.color : colors.black};
 `;
 
 export const SecondaryText = styled.Text`
-  font-size: 12;
-  font-family: Arial;
-  color: ${colors.secondaryText};
+  font-size: ${spacing.spacing(1.5)};
+  ${fonts.Helvetica}
   color: ${(props) => props.color ? props.color : colors.secondaryText};
 `;
 
-export const BodyText = styled.Text`
-  font-size: 12;
-  font-family: serif;
-  font-family: 'Georgia';
-  /* font-family: "Times New Roman", Times, serif; */
-  color: ${colors.secondaryText};
-  color: ${(props) => props.color ? props.color : colors.secondaryText};
-`;
-
-export const PrimaryLink = styled.Text`
-  font-size: 12;
-  color: ${colors.blue};
+export const CTALink = styled.Text`
+  font-size: ${spacing.spacing(1.5)};
+  ${fonts.Helvetica}
   color: ${(props) => props.color ? props.color : colors.blue};
-  text-decoration: none;
-`;
-
-export const SecondaryLink = styled.Text`
-  font-weight: 12;
-  color: ${colors.secondaryText};
-  color: ${(props) => props.color ? props.color : colors.secondaryText};
-  text-decoration: none;
 `;
