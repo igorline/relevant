@@ -69,7 +69,9 @@ class Comment extends Component {
     auth: PropTypes.object,
     activeComment: PropTypes.string,
     setActiveComment: PropTypes.func,
+    parentPost: PropTypes.string,
   };
+
 
   state = {
     editing: false,
@@ -102,7 +104,7 @@ class Comment extends Component {
   }
 
   render() {
-    const { auth, comment, activeComment, setActiveComment } = this.props;
+    const { auth, comment, activeComment, setActiveComment, parentPost } = this.props;
     const { editing, copied } = this.state;
     let popup;
     const isActive = activeComment === comment.id;
@@ -165,7 +167,7 @@ class Comment extends Component {
             {copied && (<SecondaryText> - Link copied to clipboard</SecondaryText>)}
           </Actions>
           {isActive && (
-            <CommentForm text={'Reply'} {...this.props} post={comment} />
+            <CommentForm isReply text={'Reply'} {...this.props} post={comment} parentPost={parentPost} />
           ) }
         </Container>
       </Wrapper>

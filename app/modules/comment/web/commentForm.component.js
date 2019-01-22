@@ -12,7 +12,8 @@ class CommentForm extends Component {
     actions: PropTypes.object,
     cancel: PropTypes.func,
     updatePosition: PropTypes.func,
-    text: PropTypes.string
+    text: PropTypes.string,
+    isReply: PropTypes.bool,
   };
 
   constructor(props, context) {
@@ -61,12 +62,15 @@ class CommentForm extends Component {
 
     const comment = this.state.comment.trim();
     const commentObj = {
-      post: this.props.post.id,
+      parentPost: this.props.parentPost,
       text: comment,
       tags: this.commentTags,
       mentions: this.commentMentions,
       user: this.props.auth.user._id
     };
+    if (this.props.isReply) {
+      commentObj.parentComment = this.props.post.id;
+    }
 
     this.setState({ comment: '', inputHeight: 50 });
 
