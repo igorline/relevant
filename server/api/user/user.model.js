@@ -28,6 +28,8 @@ const UserSchema = new Schema(
     // relevance: { type: Number, default: 0, select: false },
 
     balance: { type: Number, default: 0 },
+    lockedTokens: { type: Number, default: 0 },
+
     deviceTokens: {
       // select: false,
       type: [String]

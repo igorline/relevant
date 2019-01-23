@@ -9,7 +9,8 @@ export default class Balance extends Component {
     user: PropTypes.object,
     contract: PropTypes.object,
     actions: PropTypes.object,
-    wallet: PropTypes.object
+    wallet: PropTypes.object,
+    earnings: PropTypes.object
   };
 
   // this context comes from the BondedTokenContainer
@@ -38,6 +39,13 @@ export default class Balance extends Component {
     } catch (err) {
       throw err;
     }
+  }
+
+  renderEarnigns() {
+    const { list } = this.props.earnings;
+    return list.map(earning => <div>
+      status: {earning.status} stakedTokens: {earning.stakedTokens} earned: {earning.earned}
+    </div>);
   }
 
   render() {
@@ -167,6 +175,8 @@ export default class Balance extends Component {
               <span>$ {fixed(usd)} USD</span>
             </div>
           </section>
+
+          {this.renderEarnigns()}
         </div>
       </div>
     );
