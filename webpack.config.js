@@ -57,7 +57,6 @@ module.exports = {
     }
   },
   plugins: [
-    // process.env.NODE_ENV === 'analyse' ? new BundleAnalyzerPlugin() : null,
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
@@ -70,8 +69,10 @@ module.exports = {
         BABEL_ENV: JSON.stringify('development_web'),
       }
     }),
-    new LoadablePlugin(),
-    // new BundleAnalyzerPlugin(),
+    new LoadablePlugin({
+      filename: 'loadable-stats-dev.json',
+      writeToDisk: true,
+    }),
   ],
   resolve: {
     symlinks: false,
