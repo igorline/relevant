@@ -80,9 +80,10 @@ InvestSchema.statics.createVote = async function createVote(props) {
   const { votePower } = user;
   amount *= votePower;
 
+  console.log('post should have community ', post.toObject());
   // compute tokens allocated to this specific community
   const communityMember = await this.model('CommunityMember').findOne(
-    { user: user._id, community: post.community },
+    { user: user._id, community: post.data.community },
     'weight'
   );
   userBalance *= communityMember.weight;
