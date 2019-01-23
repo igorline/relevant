@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
 import { computePayout } from 'app/utils/post';
 import { abbreviateNumber } from 'app/utils/numbers';
-import { colors, fonts } from 'app/styles/globalStyles';
+import { colors, fonts, sizing } from 'app/styles/globalStyles';
 import styled from 'styled-components/primitives';
 
 const Wrapper = styled.View`
-  min-width: 70px;
-  margin-right: 1em;
+  overflow: visible;
+  width: ${sizing.byUnit(4)};
 `;
 
 const Container = styled.View`
@@ -28,7 +28,6 @@ const Touchable = styled.Touchable`
 const Text = styled.Text`
   display: flex;
   color: ${colors.secondaryText}
-  margin-left: 0.3em;
   ${fonts.Helvetica}
   font-size: 14px;
   line-height: 14px;
@@ -163,7 +162,6 @@ class PostButtons extends Component {
             />
           </Touchable>
           <View>
-            <RLogoImage alt="R" source={{ uri: '/img/r-gray.svg' }} />
             <Text>
               {
                 post.data ? Math.round(post.data.pagerank) : null
