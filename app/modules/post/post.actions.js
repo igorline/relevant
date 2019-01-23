@@ -445,7 +445,10 @@ export function createComment(commentObj) {
         body: JSON.stringify(commentObj)
       });
       const { parentComment, parentPost } = comment;
-      const parentId = !parentComment || parentComment === parentPost ? parentPost : parentComment;
+      console.log('LOOK HERE', commentObj, comment);
+      const oldParentId = !parentComment || parentComment === parentPost ? parentPost : parentComment;
+      const parentId = parentComment || parentPost;
+      console.log('parentId', parentId, oldParentId);
       dispatch(addComment(parentId, comment));
       return true;
     } catch (err) {

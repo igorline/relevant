@@ -36,7 +36,7 @@ class SinglePostContainer extends Component {
 
     return (
       <div style={{ flex: 1 }}>
-        <div className="singlePost row column pageContainer">
+        <div className="">
           {hasPost && (
             <div className="postContainer">
               <PostContainer post={this.post} {...this.props} />
