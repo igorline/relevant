@@ -6,10 +6,16 @@ import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import Comments from 'modules/comment/web/comment.container';
 import styled from 'styled-components/primitives';
+import { sizing } from 'app/styles/globalStyles';
 import PostComponent from './post.component';
 
 const Wrapper = styled.View`
   flex: 1;
+`;
+
+const PostContainer = styled.View`
+  padding: ${sizing.byUnit(4)};
+  padding-bottom: 0;
 `;
 
 
@@ -44,7 +50,9 @@ class SinglePostContainer extends Component {
       <Wrapper>
         {hasPost && (
           <div>
-            <PostComponent post={this.post} {...this.props} />
+            <PostContainer>
+              <PostComponent detailView post={this.post} {...this.props} />
+            </PostContainer>
             <Comments post={this.post} {...this.props} />
           </div>
         )}

@@ -24,7 +24,7 @@ const Wrapper = styled.View`
   overflow: hidden;
   /* border: 1px solid black; */
   /* padding: 1em 0; */
-  padding: ${sizing.byUnit(4)};
+  padding-bottom: ${sizing.byUnit(4)};
 `;
 
 const PostContainer = styled.View`
@@ -42,7 +42,7 @@ const PostInfoContainer = styled.View`
   position: relative;
   flex-shrink: 1;
   width: 100%;
-  padding-bottom: 2em;
+  padding-bottom: ${(p) => p.detailView ? '' : sizing.byUnit(4)};
   border-bottom-color: ${colors.lineColor};
   border-bottom-style: solid;
   border-bottom-width: 1px;
@@ -112,7 +112,7 @@ export class Post extends Component {
   }
 
   render() {
-    const { post, repost, auth, sort, postState } = this.props;
+    const { post, repost, auth, sort, postState, detailView } = this.props;
     const { community } = auth;
 
     const link = postState.links[post.metaPost];
@@ -151,12 +151,12 @@ export class Post extends Component {
     const commentId = get(post, `${sort}.0`);
     const comment = postState.posts[commentId];
     return (
-      <Wrapper>
+      <Wrapper detailView={detailView}>
         <PostContainer>
           <PostButtonContainer>
             <PostButtons post={post} {...this.props} />
           </PostButtonContainer>
-          <PostInfoContainer>
+          <PostInfoContainer detailView={detailView}>
             <PostInfo
               post={post}
               link={link}
@@ -165,14 +165,18 @@ export class Post extends Component {
               sort={sort}
               firstPost={firstPost}
             />
-            <PostCommentContainer>
-              <PostComment
-                comment={comment}
-                auth={this.props.auth}
-                community={community}
-                postUrl={postUrl}
-              />
-            </PostCommentContainer>
+            {!detailView &&
+              (
+                <PostCommentContainer>
+                  <PostComment
+                    comment={comment}
+                    auth={this.props.auth}
+                    community={community}
+                    postUrl={postUrl}
+                  />
+                </PostCommentContainer>
+              )
+            }
           </PostInfoContainer>
         </PostContainer>
       </Wrapper>
