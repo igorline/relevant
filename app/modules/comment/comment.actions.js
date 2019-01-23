@@ -47,7 +47,7 @@ export function createComment(commentObj) {
         body: JSON.stringify(commentObj)
       });
       const { parentComment, parentPost } = comment;
-      const parentId = !parentComment || parentComment === parentPost ? parentPost : parentComment;
+      const parentId = parentComment || parentPost;
       dispatch(addComment(parentId, comment));
       return true;
     } catch (err) {
@@ -92,4 +92,3 @@ export function deleteComment(id) {
     }
   };
 }
-

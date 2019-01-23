@@ -59,7 +59,9 @@ const PostSchema = new Schema(
 
     aboutLink: { type: Schema.Types.ObjectId, ref: 'Post' },
     linkParent: { type: Schema.Types.ObjectId, ref: 'Post' },
+    // top-level comments have parent
     parentPost: { type: Schema.Types.ObjectId, ref: 'Post' },
+    // replies have parent comment
     parentComment: { type: Schema.Types.ObjectId, ref: 'Post' },
 
     postDate: { type: Date, index: true },
@@ -76,13 +78,6 @@ const PostSchema = new Schema(
 
     paidOut: { type: Boolean, default: false },
     payoutTime: { type: Date },
-
-    // payout: { type: Number, default: 0 },
-    // payOutShare: { type: Number, default: 0 },
-
-    // TODO - separate table per community!
-    // shares: { type: Number, default: 0 },
-    // balance: { type: Number, default: 0 },
 
     // TODO twitter stuff should go into data model
     twitter: { type: Boolean, default: false },

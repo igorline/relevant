@@ -138,7 +138,6 @@ async function createRepost(comment, post, user) {
       postDate: new Date(),
       relevance: 0,
       parentPost: post._id,
-      aboutLink: post.aboutLink,
       body: comment.body,
       type: 'repost',
       eligibleForRewards: true,
@@ -195,8 +194,9 @@ exports.create = async (req, res, next) => {
   let user = req.user._id;
   const { community, communityId } = req.communityMember;
   const body = req.body.text;
-  let parentPost = req.body.post;
-  const { parentComment } = req.body;
+  // let parentPost = req.body.post;
+  let { parentPost, parentComment } = req.body;
+  // const { parentComment } = req.body;
   const { tags } = req.body;
   const mentions = req.body.mentions || [];
   const repost = req.body.repost || false;
@@ -274,7 +274,6 @@ exports.create = async (req, res, next) => {
     }
 
     // comment.community = parentPost.community;
-    comment.aboutLink = parentPost.aboutLink;
 
     comment = await comment.addUserInfo(user);
     comment = await comment.addPostData();

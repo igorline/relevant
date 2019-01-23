@@ -13,6 +13,7 @@ import tags from 'modules/tag/tag.reducer';
 import stats from 'modules/stats/stats.reducer';
 import tooltip from 'modules/tooltip/tooltip.reducer';
 import error from 'modules/ui/error.reducer';
+import earnings from 'modules/wallet/earnings.reducer';
 
 import socket from './socket.reducer';
 import view from './view.reducer';
@@ -51,6 +52,7 @@ const appReducer = combineReducers({
   subscriptions,
   admin,
   community,
+  earnings,
   ...drizzleReducers
 });
 
@@ -62,7 +64,7 @@ const rootReducer = (state, action) => {
         auth,
         community,
         socket,
-
+        earnings,
         // MOBILE
         navigation
       } = state;
@@ -86,7 +88,7 @@ const rootReducer = (state, action) => {
         auth,
         community,
         socket,
-
+        earnings,
         // DESKTOP
         // keep drizzle stuff - really need a nested state!
         contracts,
