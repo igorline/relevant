@@ -54,6 +54,29 @@ CommunityLink.propTypes = {
   onClick: PropTypes.func,
 };
 
+const CommunityNav = ({ community, isActive, actions }) => (
+  <StyledView active={isActive} >
+    {isActive ?
+      <CommunityActive
+        community={community}
+        getCommunityMembers={get(actions, 'getCommunityMembers', null)}
+      >
+        <CommunityLink community={community} onClick={actions.setCommunity} />
+      </CommunityActive>
+      : (
+        <CommunityContainer>
+          <CommunityLink community={community} onClick={actions.setCommunity} />
+        </CommunityContainer>)
+    }
+  </StyledView>
+);
+
+CommunityNav.propTypes = {
+  community: PropTypes.object,
+  actions: PropTypes.object,
+  isActive: PropTypes.bool,
+};
+
 
 class Community extends Component {
   static propTypes = {
@@ -65,36 +88,37 @@ class Community extends Component {
     this.props.actions.getCommunities();
   }
 
-  renderCommunities() {
+  renderOtherCommunities() {
     const { actions } = this.props;
     const { communities, list } = this.props.community;
     return list.map(id => {
       const community = communities[id];
       const isActive = this.props.community.active === community.slug;
+      if (isActive) {
+        return null;
+      }
       return (
-        <StyledView key={community._id} active={isActive} >
-          {isActive ?
-            <CommunityActive
-              community={community}
-              getCommunityMembers={get(actions, 'getCommunityMembers', null)}
-            >
-              <CommunityLink community={community} onClick={actions.setCommunity} />
-            </CommunityActive>
-            : (
-              <CommunityContainer>
-                <CommunityLink community={community} onClick={actions.setCommunity} />
-              </CommunityContainer>)
-          }
-        </StyledView>
-      );
+        <CommunityNav
+          key={community._id}
+          community={community}
+          isActive={isActive}
+          actions={actions}
+        />);
     });
   }
 
-
   render() {
+    const { community, actions } = this.props;
+    const activeCommunity = community.communities[community.active];
     return (
       <StyledCommunityList>
-        {this.renderCommunities()}
+        <CommunityNav
+          key={activeCommunity._id}
+          community={activeCommunity}
+          isActive
+          actions={actions}
+        />
+        {this.renderOtherCommunities()}
       </StyledCommunityList>);
   }
 }
