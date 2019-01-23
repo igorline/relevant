@@ -97,7 +97,7 @@ async function distributeRewards(community, rewardPool) {
 }
 
 async function rewardUser(props) {
-  const { user, reward, post, community, type } = props;
+  const { user, reward, post, community, communityId, type } = props;
 
   // do we need checks against reward fund? don't think so since it comes from smart contract
   // treasury.rewardFund -= reward;
@@ -121,7 +121,9 @@ async function rewardUser(props) {
     user: user._id,
     post,
     earned: reward,
-    community
+    status: 'paidout',
+    community,
+    communityId,
   });
 
   Notification.createNotification({
@@ -131,7 +133,8 @@ async function rewardUser(props) {
     coin: reward,
     text,
     coinType: 'eth',
-    community
+    community,
+    communityId
   });
 
   apnData.sendNotification(user, alertText, {});
@@ -139,6 +142,7 @@ async function rewardUser(props) {
 }
 
 async function distributeUserRewards(posts, community) {
+  const { slug, communityId } = community;
   const payouts = {};
   const notifications = [];
   let distributedRewards = 0;
@@ -196,7 +200,8 @@ async function distributeUserRewards(posts, community) {
         // treasury,
         post: post.post,
         type: 'vote',
-        community
+        community: slug,
+        communityId,
       });
     });
     return Promise.all(updatedVotes);
@@ -235,7 +240,7 @@ async function computeCommunityRewards(community, _rewardPool, balances) {
   console.log('Rewards for ', community.slug, ' ', communityRewardPool);
 
   const updatedPosts = await distributeRewards(community, communityRewardPool);
-  const payouts = await distributeUserRewards(updatedPosts, community.slug);
+  const payouts = await distributeUserRewards(updatedPosts, community);
 
   const displayPosts = updatedPosts.map(p => ({
     title: p.post,

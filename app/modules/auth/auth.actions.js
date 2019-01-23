@@ -256,7 +256,7 @@ function setupUser(user, dispatch) {
     let p = user.postCount;
     let i = user.investmentCount;
 
-    r = r === 0 ? '0' : r < 25 ? '25' : r < 200 ? '200' : 'manu';
+    r = r === 0 ? '0' : r < 25 ? '25' : r < 200 ? '200' : 'many';
     p = p === 0 ? '0' : p < 10 ? '10' : p < 30 ? '30' : 'many';
     i = i === 0 ? '0' : i < 25 ? '75' : i < 200 ? '200' : 'many';
 

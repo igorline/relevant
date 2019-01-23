@@ -16,7 +16,7 @@ class EthTools extends Component {
     status: PropTypes.string
   };
 
-  initialState = {
+  state = {
     balance: 0,
     connectedBalance: 0,
     account: null,
@@ -25,9 +25,6 @@ class EthTools extends Component {
     network: null,
     status: null,
     nonce: null
-  };
-  state = {
-    balance: 0
   };
 
   queryBalance(address) {
@@ -49,9 +46,7 @@ class EthTools extends Component {
     let differentAccount = true;
     let nonce = null;
 
-    if (!user) {
-      return this.initialState;
-    }
+    if (!user) return null;
 
     const decimals = toNumber(RelevantCoin.methods.decimals.fromCache(), 0);
 

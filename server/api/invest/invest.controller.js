@@ -244,36 +244,12 @@ async function updateAuthor(params) {
     post,
     user,
     amount,
-    userRelevance,
     authorPagerank,
     undoInvest,
-    communityId
   } = params;
   let { author } = params;
 
   if (!author) return null;
-
-  // --------- start DEPRECATED ------------
-  let authorRelevance = author.relevance ? author.relevance.relevance : 0;
-  const diff = userRelevance - authorRelevance;
-  let adjust = 1;
-  if (diff > 0) adjust = diff ** (1 / 4) + 1;
-  if (amount < 0) adjust *= -1;
-  if (userRelevance < 0) {
-    adjust = 0;
-  }
-  authorRelevance += adjust;
-  if (adjust !== 0) {
-    authorRelevance = await Relevance.updateUserRelevance(
-      post.user,
-      post,
-      adjust,
-      communityId
-    );
-    await authorRelevance.updateRelevanceRecord();
-    authorRelevance = authorRelevance.relevance;
-  }
-  // --------- end DEPRECATED ------------
 
   const pageRankChange = author.relevance.pagerank - authorPagerank;
   console.log('adding ', pageRankChange, ' relevance to ', author.name);
@@ -281,9 +257,6 @@ async function updateAuthor(params) {
   let type = 'upvote';
   if (amount < 0) type = 'downvote';
 
-  // update user's earnings status
-  // await Invest.updateUserInvestment(user, author, post, adjust, amount);
-  author.relevance.relevance = authorRelevance;
   author = await author.save();
   author.updateClient(user);
 
@@ -401,12 +374,13 @@ exports.create = async (req, res, next) => {
     // await updateUserFeed(user, post, irrelevant);
 
     // Deprecated - keep around for comparison analysis?
-    const userRelevance = user.relevance ? user.relevance.relevance : 0;
+    const userRelevance = user.relevance ? user.relevance.pagerank : 0;
+
     let relevanceToAdd;
     if (userRelevance < 0) relevanceToAdd = 0;
     else {
       // use sqrt function for post relevance
-      relevanceToAdd = Math.round(Math.sqrt(userRelevance));
+      relevanceToAdd = Math.round(Math.sqrt(userRelevance * 4));
       relevanceToAdd = Math.max(1, relevanceToAdd);
     }
     if (amount < 0) relevanceToAdd *= -1;
@@ -416,10 +390,6 @@ exports.create = async (req, res, next) => {
       undoInvest = true;
       relevanceToAdd = -investment.relevantPoints;
     }
-    // if (investment) relevanceToAdd = 0;
-    // if (investment && Math.abs(investment.amount) < 0) {
-    //   relevanceToAdd = -investment.relevantPoints;
-    // }
 
     // ------ update investment records ------
     investment = await updateInvestment({
@@ -448,7 +418,9 @@ exports.create = async (req, res, next) => {
       subscription,
       undoInvest
     });
+    post.updateClient();
 
+    // TODO - put the rest into queue on worker;
     const initialPostRank = post.data.pagerank;
     // TODO make sure this doesn't take too long
     // ({ author, post } = await computePageRank({
@@ -480,6 +452,7 @@ exports.create = async (req, res, next) => {
       await post.parentPost.updateRank(community);
       await post.parentPost.save();
     }
+    post.updateClient();
 
     // updates user investments
     user.investmentCount = await Invest.count({ investor: user._id, amount: { $gt: 0 } });
@@ -490,7 +463,6 @@ exports.create = async (req, res, next) => {
     console.log('new page rank ', post.data.pagerank);
 
     user.updateClient();
-    post.updateClient();
 
     // updates author relevance
     author = await updateAuthor({
@@ -504,101 +476,10 @@ exports.create = async (req, res, next) => {
       undoInvest,
       communityId
     });
-
-    // updates previous user's relevance
-    // handleOtherInvestments();
   } catch (err) {
     next(err);
   }
 };
 
-// NOT USED ANYMORE
-// async function handleOtherInvestments() {
-//   let existingInvestments = await Invest.find({
-//     post: post._id,
-//     investor: { $nin: [user._id, post.user] }
-//   });
-
-//   existingInvestments.forEach(async investment => {
-//     try {
-//       let existingInvestor = await User.findOne(
-//        { _id: investment.investor },'relevance name image'
-//       );
-//       let ratio = 1 / existingInvestments.length;
-
-//       let relevanceEarning = 0;
-//       let earnings;
-
-//       // need this to determine relevance increase;
-//       // TODO also do voter community
-//       let existingInvestorRelevance = await Relevance.findOne({
-//         community,
-//         user: investment.investor,
-//         global: true
-//       }, 'relevance');
-//       existingInvestorRelevance = existingInvestorRelevance ?
-//         existingInvestorRelevance.relevance :
-//         0;
-
-//       if (relevanceToAdd !== 0) {
-//         let diff = userRelevance - existingInvestorRelevance;
-
-//         relevanceEarning = 1;
-//         if (diff > 0) relevanceEarning = Math.pow(diff, 1 / 4) + 1;
-//         console.log('adding relevance of ', relevanceEarning, ' to ', existingInvestor._id);
-
-//         // TODO: test this
-//         if (userRelevance < 0) relevanceEarning = 0;
-
-//         let previousSign = investment.amount / Math.abs(investment.amount);
-//         let thisSign = amount / Math.abs(amount);
-//         relevanceEarning *= thisSign * previousSign;
-
-//         relevanceEarning *= ratio;
-
-//         if (relevanceEarning < 0.05) return null;
-//         earnings = await Invest.updateUserInvestment(
-//           user,
-//           existingInvestor,
-//           post,
-//           relevanceEarning,
-//           amount
-//         );
-//       }
-
-//       if (Math.abs(earnings.relevance) >= 1) {
-//         relevanceEarning = earnings.relevance;
-
-//         // add to relevance tag record
-//         // TODO also do voter community
-//         let relevance = await Relevance.updateUserRelevance(
-//          existingInvestor._id, post, earnings.relevance
-//         );
-//         existingInvestor = await existingInvestor.updateRelevanceRecord(community);
-
-//         // TODO - need to update relevance here and test
-//         existingInvestor.relevance = relevance;
-//         existingInvestor.updateClient();
-
-//         let type = 'partialUpvote';
-//         if (irrelevant) type = 'partialDownvote';
-
-//         Notification.createNotification({
-//           post: post._id,
-//           forUser: existingInvestor._id,
-//           byUser: earnings.fromUser,
-//           amount: relevanceEarning,
-//           type,
-//           totalUsers: earnings.totalUsers,
-//         });
-//       }
-//     } catch (err) {
-//       console.log('error updating investors ', err);
-//     }
-//     console.log('updated previous investor');
-//     return null;
-//   });
-//   return null;
-// }
 
 exports.InvestEvents = InvestEvents;

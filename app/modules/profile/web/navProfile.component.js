@@ -26,9 +26,7 @@ const StyledIconImg = styled.img`
 `;
 
 const StyledAvatar = styled(UAvatar)`
-
 `;
-
 
 const PendingPayouts = styled.div`
   font-weight: normal;
@@ -46,16 +44,27 @@ const linkStyles = `
 class NavProfile extends Component {
   static propTypes = {
     user: PropTypes.object,
+    earnings: PropTypes.object
   };
 
   render() {
-    const { user } = this.props;
+    const { user, earnings } = this.props;
     if (!user) return null;
+
+    // TODO optimize this so its not on every render?
+    let pendingPayouts = 0;
+    earnings.pending.forEach(id => {
+      const reward = earnings.entities[id];
+      if (reward && reward.status === 'pending') {
+        // TODO include actual rewards here based on % share
+        pendingPayouts += reward.stakedTokens;
+      }
+    });
 
     return (
       <ProfileContainer>
         <div>{user.name}</div>
-        <PendingPayouts>PENDING PAYOUTS</PendingPayouts>
+        <PendingPayouts>PENDING PAYOUTS: {pendingPayouts}</PendingPayouts>
         <ProfileDetailsContainer>
           <StyledAvatar user={user} size={64} noName />
           <ULink to="/user/wallet" styles={linkStyles}>
@@ -71,6 +80,7 @@ class NavProfile extends Component {
 
 const mapStateToProps = state => ({
   user: state.auth.user,
+  earnings: state.earnings,
 });
 
 export default withRouter(connect(

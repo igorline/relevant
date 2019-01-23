@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import { BondedTokenContainer } from 'bonded-token';
 import * as authActions from 'modules/auth/auth.actions';
+import * as earningsActions from 'modules/wallet/earnings.actions';
 import Eth from 'modules/web_ethTools/eth.context';
 import Footer from 'modules/navigation/web/footer.component';
 import MetaMaskCta from 'modules/web_splash/metaMaskCta.component';
@@ -22,6 +23,7 @@ class WalletContainer extends Component {
     user: PropTypes.object,
     auth: PropTypes.object,
     contract: PropTypes.object,
+    actions: PropTypes.object,
   };
 
   static contextTypes = {
@@ -34,6 +36,7 @@ class WalletContainer extends Component {
       // eslint-disable-next-line
       drizzle = initDrizzle(this.context.store);
     }
+    this.props.actions.getEarnings();
   }
 
   componentDidUpdate(prevProps) {
@@ -80,6 +83,7 @@ function mapStateToProps(state) {
     accounts: state.accounts,
     contracts: state.contracts,
     accountBalances: state.accountBalances,
+    earnings: state.earnings,
     drizzle: {
       transactions: state.transactions,
       web3: state.web3,
@@ -91,7 +95,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      ...authActions
+      ...authActions,
+      ...earningsActions
     },
     dispatch
   )
