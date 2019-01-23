@@ -108,3 +108,8 @@ export const SET_DOWNVOTES = 'SET_DOWNVOTES';
 export const DELETE_WAITLIST_USER = 'DELETE_WAITLIST_USER';
 
 export const SET_ERROR = 'SET_ERROR';
+
+export const SET_EARNINGS = 'SET_EARNINGS';
+export const ADD_EARNING = 'ADD_EARNING';
+export const UPDATE_EARNING = 'UPDATE_EARNING';
+export const REMOVE_EARNING = 'REMOVE_EARNING';

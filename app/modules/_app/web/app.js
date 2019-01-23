@@ -7,6 +7,7 @@ import { renderRoutes } from 'react-router-config';
 import Header from 'modules/navigation/web/header.component';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
+import { getEarnings } from 'modules/wallet/earnings.actions';
 import { getCommunities } from 'modules/community/community.actions';
 import AddEthAddress from 'modules/wallet/web/AddEthAddress';
 import AuthContainer from 'modules/auth/web/auth.container';
@@ -55,6 +56,7 @@ class App extends Component {
     actions.setCommunity(community);
     actions.getCommunities();
     actions.getUser();
+    actions.getEarnings('pending');
 
     // TODO do this after a timeout
     // window.addEventListener('focus', () => {
@@ -182,7 +184,8 @@ const mapDispatchToProps = dispatch => ({
     {
       ...navigationActions,
       ...authActions,
-      getCommunities
+      getCommunities,
+      getEarnings
     },
     dispatch
   )

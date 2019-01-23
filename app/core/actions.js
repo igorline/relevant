@@ -10,6 +10,7 @@ import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as statsActions from 'modules/stats/stats.actions';
 import * as tooltipActions from 'modules/tooltip/tooltip.actions';
+import * as commentActions from 'modules/comment/comment.actions';
 
 export default {
   activityActions,
@@ -23,5 +24,6 @@ export default {
   navigationActions,
   investActions,
   statsActions,
-  tooltipActions
+  tooltipActions,
+  commentActions
 };

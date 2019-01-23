@@ -65,8 +65,12 @@ InvestSchema.statics.createVote = async function createVote(props) {
     if (amount > 0) {
       post.data.shares -= investment.shares;
       post.data.balance -= investment.stakedTokens;
+      user.lockedTokens = (user.lockedTokens || 0) - investment.stakedTokens;
+      user.balance += investment.stakedTokens;
+      post.data.totalStaked -= investment.stakedTokens;
+      const earning = await this.model('Earnings').findOne({ user: user._id, post: post._id });
+      await earning.remove();
     }
-    post.data.totalStaked -= investment.stakedTokens;
     await investment.remove();
     return investment;
   }
@@ -95,6 +99,7 @@ InvestSchema.statics.createVote = async function createVote(props) {
   console.log('post.data.balance', post.data.balance);
   console.log('amount ', amount);
 
+
   // TODO downvotes!
   let sign = 1;
   if (amount !== 0) sign = Math.abs(amount) / amount;
@@ -114,9 +119,25 @@ InvestSchema.statics.createVote = async function createVote(props) {
 
     post.data.shares += shares;
     post.data.balance += stakedTokens;
+
+    user.lockedTokens = (user.lockedTokens || 0) + stakedTokens;
+    user.balance -= stakedTokens;
+    post.data.totalStaked += stakedTokens;
+
+    const earning = await this.model('Earnings').findOneAndUpdate(
+      { user: user._id, post: post._id },
+      {
+        shares,
+        stakedTokens,
+        community,
+        communityId,
+        status: 'pending'
+      },
+      { new: true, upsert: true }
+    );
+    earning.updateClient({ actionType: 'ADD_EARNING' });
   }
 
-  post.data.totalStaked += stakedTokens;
   await post.data.save();
 
   investment = await this.findOneAndUpdate(
