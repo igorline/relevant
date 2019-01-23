@@ -133,7 +133,7 @@ class CommentForm extends Component {
   render() {
     if (!this.props.auth.isAuthenticated) return null;
     return (
-      <div className="formContainer">
+      <div className="comments formContainer">
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
           <form onSubmit={this.handleSubmit}>
             <Textarea

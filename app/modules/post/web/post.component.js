@@ -9,7 +9,7 @@ import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import Popup from 'modules/ui/web/popup';
 import styled from 'styled-components/primitives';
-import { colors } from 'app/styles/globalStyles';
+import { colors, sizing } from 'app/styles/globalStyles';
 import PostComment from 'modules/post/web/postComment.component';
 import PostButtons from './postbuttons.component';
 import PostInfo from './postinfo.component';
@@ -23,7 +23,8 @@ const Wrapper = styled.View`
   max-width: 100%;
   overflow: hidden;
   /* border: 1px solid black; */
-  padding: 1em 0;
+  /* padding: 1em 0; */
+  padding: ${sizing.byUnit(4)};
 `;
 
 const PostContainer = styled.View`
@@ -50,11 +51,8 @@ const PostInfoContainer = styled.View`
 const Text = styled.Text`
 `;
 
-const StyledPostButtons = styled(PostButtons)`
-  display: flex;
-  background: orange;
-  width: 200px;
-  color: blue;
+const PostButtonContainer = styled.View`
+  margin-right: 2em;
 `;
 
 const PostCommentContainer = styled(PostContainer)`
@@ -155,7 +153,9 @@ export class Post extends Component {
     return (
       <Wrapper>
         <PostContainer>
-          <StyledPostButtons post={post} {...this.props} />
+          <PostButtonContainer>
+            <PostButtons post={post} {...this.props} />
+          </PostButtonContainer>
           <PostInfoContainer>
             <PostInfo
               post={post}

@@ -6,7 +6,7 @@ import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/web/postbuttons.component';
 import { CommentText, SecondaryText } from 'modules/styled/Text.component';
 import CommentForm from 'modules/comment/web/commentForm.component';
-import { layout, colors } from 'app/styles/globalStyles';
+import { layout, colors, sizing } from 'app/styles/globalStyles';
 import styled from 'styled-components/primitives';
 
 if (process.env.BROWSER === true) {
@@ -15,9 +15,32 @@ if (process.env.BROWSER === true) {
 
 const Wrapper = styled.View`
   display: flex;
+  position: relative;
+  flex-direction: column;
+`;
+
+const Spacer = styled.View`
+  display: flex;
   flex-direction: row;
   position: relative;
-  padding: 2em;
+  background-color: ${(p) => p.bgColor || 'transparent'}
+  padding: ${(p) => sizing.byUnit(p.padding || 0)};
+  padding-left: ${(p) => p.nesting ? sizing.byUnit((p.nesting + 1) * 4) : sizing.byUnit(4)};
+  flex-grow: 1;
+  ${(p) => p.withBorder ? layout.universalBorder() : ''}
+`;
+
+const Container = styled.View`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding-bottom: ${sizing.byUnit(2)};
+  ${(p) => p.isActive ? '' : layout.universalBorder('bottom')}
+`;
+
+const PostButtonsContainer = styled.View`
+  margin-right: ${sizing.byUnit(4)};
 `;
 
 const Actions = styled.View`
@@ -32,35 +55,20 @@ const View = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
-  /* flex: 1; */
-  /* marginLeft: 10px; */
 `;
 
 const Text = styled.Text`
   margin-right:  0.5em;
   color: ${colors.blue};
-  /* flex: 1; */
-  /* marginLeft: 10px; */
 `;
 
 const Touchable = styled.Touchable`
-  /* flex: 1; */
-  /* marginLeft: 10px; */
 `;
 
 const StyledBody = styled(CommentText)`
   margin: 1em 0;
 `;
 
-const Container = styled.View`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  flex-shrink: 1;
-  padding-bottom: 2em;
-  // ${layout.universalBorder('left')}
-  ${layout.universalBorder('bottom')}
-`;
 
 class Comment extends Component {
   static propTypes = {
@@ -73,6 +81,7 @@ class Comment extends Component {
     parentPost: PropTypes.string,
     childComments: PropTypes.object,
     posts: PropTypes.object,
+    nesting: PropTypes.number,
   };
 
 
@@ -110,7 +119,7 @@ class Comment extends Component {
     const {
       auth, comment, activeComment,
       setActiveComment, parentPost, childComments,
-      posts,
+      posts, nesting,
     } = this.props;
     const { editing, copied } = this.state;
     let popup;
@@ -154,34 +163,46 @@ class Comment extends Component {
 
     return (
       <Wrapper>
-        <PostButtons post={comment} {...this.props} />
-        <Container>
-          <View>
-            <AvatarBox
-              small
-              auth={this.props.auth}
-              user={{ ...user, _id: comment.user }}
-              postTime={comment.createdAt}
-            />
-            {popup}
-          </View>
-          {editing ? edit : body}
-          <Actions>
-            <Touchable onPress={() => { setActiveComment(comment.id); }}>
-              <Text>Reply</Text>
-            </Touchable>
-            <Touchable onPress={this.copyToClipboard}>
-              <Text>Share</Text>
-            </Touchable>
-            {copied && (<SecondaryText> - Link copied to clipboard</SecondaryText>)}
-          </Actions>
-          {isActive && (
+        <Spacer nesting={nesting} padding={4}>
+          <PostButtonsContainer>
+            <PostButtons post={comment} {...this.props} />
+          </PostButtonsContainer>
+          <Container nesting={nesting} isActive={isActive}>
+            <View>
+              <AvatarBox
+                small
+                auth={this.props.auth}
+                user={{ ...user, _id: comment.user }}
+                postTime={comment.createdAt}
+              />
+              {popup}
+            </View>
+            {editing ? edit : body}
+            <Actions>
+              <Touchable onPress={() => { setActiveComment(comment.id); }}>
+                <Text>Reply</Text>
+              </Touchable>
+              <Touchable onPress={this.copyToClipboard}>
+                <Text>Share</Text>
+              </Touchable>
+              {copied && (<SecondaryText> - Link copied to clipboard</SecondaryText>)}
+            </Actions>
+          </Container>
+        </Spacer>
+
+        {isActive && (
+          <Spacer nesting={nesting + 2 } bgColor={colors.secondaryBG} padding={4} >
             <CommentForm isReply text={'Reply'} {...this.props} post={comment} parentPost={parentPost} />
-          ) }
-          {commentChildren.map(childId => (
-            <Comment {...this.props} comment={posts.posts[childId]} key={childId} />
-          ))}
-        </Container>
+          </Spacer>
+        ) }
+        {commentChildren.map(childId => (
+          <Comment
+            {...this.props}
+            comment={posts.posts[childId]}
+            key={childId}
+            nesting={ nesting + 1}
+          />
+        ))}
       </Wrapper>
     );
   }
