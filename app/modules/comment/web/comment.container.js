@@ -68,6 +68,8 @@ class Comments extends Component {
                   activeComment={this.state.activeComment}
                   setActiveComment={this.setActiveComment}
                   parentPost={parentPost}
+                  childComments={this.props.comments.childComments}
+                  posts={this.props.posts}
                 />
               );
             })}

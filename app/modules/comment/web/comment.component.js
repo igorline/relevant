@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import get from 'lodash.get';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
@@ -70,6 +71,8 @@ class Comment extends Component {
     activeComment: PropTypes.string,
     setActiveComment: PropTypes.func,
     parentPost: PropTypes.string,
+    childComments: PropTypes.object,
+    posts: PropTypes.object,
   };
 
 
@@ -104,7 +107,11 @@ class Comment extends Component {
   }
 
   render() {
-    const { auth, comment, activeComment, setActiveComment, parentPost } = this.props;
+    const {
+      auth, comment, activeComment,
+      setActiveComment, parentPost, childComments,
+      posts,
+    } = this.props;
     const { editing, copied } = this.state;
     let popup;
     const isActive = activeComment === comment.id;
@@ -143,6 +150,7 @@ class Comment extends Component {
       user = comment.embeddedUser;
     }
 
+    const commentChildren = get(childComments, comment.id) || [];
     return (
       <Wrapper>
         <PostButtons post={comment} {...this.props} />
@@ -169,6 +177,9 @@ class Comment extends Component {
           {isActive && (
             <CommentForm isReply text={'Reply'} {...this.props} post={comment} parentPost={parentPost} />
           ) }
+          {commentChildren.map(childId => (
+            <Comment {...this.props} comment={posts.posts[childId]} key={childId} />
+          ))}
         </Container>
       </Wrapper>
     );
