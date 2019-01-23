@@ -8,6 +8,7 @@ const initialState = {
 export default function comments(state = initialState, action) {
   switch (action.type) {
     case types.SET_COMMENTS: {
+      // console.log('set comments', state);
       return {
         ...state,
         childComments: {
@@ -17,17 +18,18 @@ export default function comments(state = initialState, action) {
       };
     }
 
-    case 'ADD_COMMENT': {
+    case types.ADD_COMMENT: {
       const newState = {
         ...state,
         childComments: {
           ...state.childComments,
-          parentId: [
+          [action.payload.parentId]: [
             ...state.childComments[action.payload.parentId],
             action.payload.comment._id
           ]
         }
       };
+      // console.log('add comment', state);
       return newState;
     }
 

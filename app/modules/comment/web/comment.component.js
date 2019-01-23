@@ -151,6 +151,8 @@ class Comment extends Component {
     }
 
     const commentChildren = get(childComments, comment.id) || [];
+    // console.log('CHILD COMMENTs', commentChildren);
+
     return (
       <Wrapper>
         <PostButtons post={comment} {...this.props} />

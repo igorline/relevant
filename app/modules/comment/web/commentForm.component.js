@@ -14,6 +14,7 @@ class CommentForm extends Component {
     updatePosition: PropTypes.func,
     text: PropTypes.string,
     isReply: PropTypes.bool,
+    parentPost: PropTypes.string,
   };
 
   constructor(props, context) {
