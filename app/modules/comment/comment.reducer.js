@@ -8,7 +8,6 @@ const initialState = {
 export default function comments(state = initialState, action) {
   switch (action.type) {
     case types.SET_COMMENTS: {
-      // console.log('set comments', state);
       return {
         ...state,
         childComments: {
@@ -29,7 +28,6 @@ export default function comments(state = initialState, action) {
           ]
         }
       };
-      // console.log('add comment', state);
       return newState;
     }
 
