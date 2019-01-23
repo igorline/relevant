@@ -375,7 +375,7 @@ class PostButtons extends Component {
       </TouchableOpacity>
     );
 
-    let r = post.data ? post.data.pagerank : null;
+    let r = post.data ? post.data.relevance : null;
     const rel = r;
 
     let rIcon = (

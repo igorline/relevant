@@ -42,7 +42,7 @@ if (isDevelopment) {
     webpackDevMiddleware(compiler, {
       // noInfo: true,
       publicPath: webpackConfig.output.publicPath,
-      writeToDisk: filePath => /loadable-stats\.json$/.test(filePath)
+      // writeToDisk: filePath => /loadable-stats-dev\.json$/.test(filePath)
     })
   );
   app.use(webpackHotMiddleware(compiler));

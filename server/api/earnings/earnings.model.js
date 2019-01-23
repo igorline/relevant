@@ -9,39 +9,60 @@ const EarningsSchema = new Schema(
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     source: { type: String, default: 'post' },
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
-    amount: { type: Number, default: 0 },
-    spent: { type: Number, default: 0 },
+    // amount: { type: Number, default: 0 },
+    // spent: { type: Number, default: 0 },
+    // pending: { type: Number, default: 0 },
+    stakedTokens: { type: Number, default: 0 },
+    shares: { type: Number, default: 0 },
     earned: { type: Number, default: 0 },
-    type: String
+    status: String,
+    type: { type: String, default: 'coins' },
+    community: { type: String },
+    communityId: { type: Schema.Types.ObjectId, ref: 'Community' }
   },
   {
     timestamps: true
   }
 );
 
-EarningsSchema.index({ from: 1 });
-EarningsSchema.index({ user: 1 });
-EarningsSchema.index({ user: 1, from: 1 });
+EarningsSchema.index({ post: 1 });
+EarningsSchema.index({ status: 1 });
+EarningsSchema.index({ user: 1, status: 1 });
+EarningsSchema.index({ user: 1, post: 1 });
 
 EarningsSchema.statics.events = EarningsSchemaEvents;
 
 EarningsSchema.statics.updateRewardsRecord = async function updateRewardsRecord(earning) {
   try {
-    const defaults = {
-      type: 'coins',
-      source: 'post'
-    };
-    // earning.amount = earning.earned - earning.spent;
-    earning = { ...defaults, ...earning };
-    return await this.findOneAndUpdate(
+    const updatedEarning = await this.findOneAndUpdate(
       { user: earning.user, post: earning.post },
       { ...earning },
       { new: true, upsert: true }
     );
+    updatedEarning.upcateClient({ actionType: 'UPDATE_EARNING' });
+    return updatedEarning;
   } catch (err) {
     throw err;
   }
 };
+
+EarningsSchema.methods.updateClient = function updateClient({ actionType }) {
+  const earningsAction = {
+    _id: this.user,
+    type: actionType,
+    payload: this
+  };
+  this.model('Earnings').events.emit('earningsEvent', earningsAction);
+};
+
+EarningsSchema.pre('remove', async function preRemove(next) {
+  try {
+    this.updateClient({ actionType: 'REMOVE_EARNING' });
+    next();
+  } catch (err) {
+    throw err;
+  }
+});
 
 EarningsSchema.statics.updateUserBalance = async function updateBalance(earning) {
   try {
