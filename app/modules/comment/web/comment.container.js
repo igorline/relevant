@@ -5,8 +5,16 @@ import { connect } from 'react-redux';
 import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
+import styled from 'styled-components/primitives';
+import { sizing, colors } from 'app/styles/globalStyles';
 import CommentForm from './commentForm.component';
 import Comment from './comment.component';
+
+const FormContainer = styled.View`
+  padding: ${sizing.byUnit(4)};
+  padding-left: ${sizing.byUnit(12)};
+  background-color: ${colors.secondaryBG};
+`;
 
 if (process.env.BROWSER === true) {
   require('./comment.css');
@@ -49,8 +57,10 @@ class Comments extends Component {
     if (!comments) return null;
     const parentPost = params.id;
     return (
-      <div className="comments">
-        <CommentForm text={'Reply'} {...this.props} parentPost={parentPost} />
+      <div>
+        <FormContainer>
+          <CommentForm text={'Reply'} {...this.props} parentPost={parentPost} />
+        </FormContainer>
         {comments.length !== 0 ? (
           <div>
             {comments.map(id => {
@@ -70,6 +80,7 @@ class Comments extends Component {
                   parentPost={parentPost}
                   childComments={this.props.comments.childComments}
                   posts={this.props.posts}
+                  nesting={0}
                 />
               );
             })}
