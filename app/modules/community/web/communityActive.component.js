@@ -53,7 +53,7 @@ const StyledCommunityList = styled.View`
 class CommunityActive extends Component {
   static propTypes = {
     community: PropTypes.object,
-    children: PropTypes.object,
+    children: PropTypes.array,
     getCommunityMembers: PropTypes.func,
   };
 

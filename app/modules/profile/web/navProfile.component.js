@@ -5,40 +5,69 @@ import { connect } from 'react-redux';
 import UAvatar from 'modules/user/UAvatar.component';
 import CoinStat from 'modules/stats/coinStat.component';
 import { withRouter } from 'react-router-dom';
-import styled from 'styled-components';
 import ULink from 'modules/navigation/ULink.component';
+import { Header } from 'modules/styled/Text.component';
+import styled from 'styled-components/primitives';
+import { sizing, colors } from 'app/styles/globalStyles';
 
-const ProfileContainer = styled.div`
-  margin: 2em;
-  font-weight: bold;
-  font-size: 18px;
+const View = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: ${sizing.byUnit(4)};
 `;
 
-const ProfileDetailsContainer = styled.div`
+const WalletInfo = styled.View`
+  display: flex;
+  flex-direction: column;
+  padding-left: ${sizing.byUnit(2)};
+  flex-shrink: 1;
+`;
+
+const StyledHeader = styled(Header)`
+`;
+
+const ProfileContainer = styled.View`
+  padding: ${sizing.byUnit(4)};
+`;
+
+const ProfileDetailsContainer = styled.View`
   display: flex;
   align-items: center;
-  margin-top: 1em;
+  flex-direction: row;
+  padding-top: ${sizing.byUnit(2)};
 `;
 
-const StyledIconImg = styled.img`
+const StyledIconImg = styled.Image`
   width: 30px;
   height: 30px;
-  margin: 0 0.3em 0 1em ;
+  margin: 0 0.3em 0 0 ;
 `;
 
 const StyledAvatar = styled(UAvatar)`
 `;
 
-const PendingPayouts = styled.div`
+const PendingPayouts = styled.Text`
   font-weight: normal;
   color: hsl(0, 0%, 55%);
-  font-size: 14px;
+  font-size: 12px;
+  line-height: 12px;
+  margin-top: ${sizing.byUnit(2)};
+`;
+
+const Text = styled.Text`
+  font-weight: bold;
 `;
 
 const linkStyles = `
   display: flex;
   align-items: center;
-  color: black;
+  color: ${colors.blue};
+`;
+
+const walletLinkStyles = `
+  ${linkStyles}
+  color: ${colors.black};
 `;
 
 
@@ -64,15 +93,21 @@ class NavProfile extends Component {
 
     return (
       <ProfileContainer>
-        <div>{user.name}</div>
-        <PendingPayouts>PENDING PAYOUTS: {pendingPayouts}</PendingPayouts>
+        <View>
+          <StyledHeader>{user.name}</StyledHeader>
+          <ULink to="/user/wallet" styles={linkStyles}> My Wallet</ULink>
+        </View>
+
         <ProfileDetailsContainer>
           <StyledAvatar user={user} size={64} noName />
-          <ULink to="/user/wallet" styles={linkStyles}>
-            <StyledIconImg src="/img/r-emoji.png" alt="Relevance" />
-            <span>{Math.round(user.relevance ? user.relevance.pagerank || 0 : 0)}</span>
-            <CoinStat user={user} isOwner={true} />
-          </ULink>
+          <WalletInfo>
+            <ULink to="/user/wallet" styles={walletLinkStyles}>
+              <StyledIconImg source={{ uri: '/img/r-emoji.png' }} alt="Relevance" />
+              <Text>{Math.round(user.relevance ? user.relevance.pagerank || 0 : 0)}</Text>
+              <CoinStat user={user} isOwner={true} />
+            </ULink>
+            <PendingPayouts>Pending Payouts: {pendingPayouts}</PendingPayouts>
+          </WalletInfo>
         </ProfileDetailsContainer>
       </ProfileContainer>
     );
