@@ -35,7 +35,7 @@ const InvestSchema = new Schema(
     // investor (or author) has earned from this post
     upvotes: { type: Number, default: 0 },
     downVotes: { type: Number, default: 0 },
-    lastInvestor: { type: String, ref: 'User' },
+    updatePowerInvestor: { type: String, ref: 'User' },
     partialUsers: { type: Number, default: 0 },
     relevance: { type: Number, default: 0 },
     partialRelevance: { type: Number, default: 0 }
@@ -59,32 +59,40 @@ InvestSchema.statics.createVote = async function createVote(props) {
   const { post, relevanceToAdd, community, communityId } = props;
   let { user, amount, investment } = props;
 
+  user = user.updatePower();
+  user = await user.updateBalance();
+  let userBalance = user.balance + user.tokenBalance;
+
+
+  investment = await this.findOne({ investor: user._id, post: post._id });
   // undo investment
   if (investment) {
     // TODO remove notification
     if (amount > 0) {
       post.data.shares -= investment.shares;
-      post.data.balance -= investment.stakedTokens;
-      user.lockedTokens = (user.lockedTokens || 0) - investment.stakedTokens;
-      user.balance += investment.stakedTokens;
+      post.data.balance = Math.max(post.data.balance - investment.stakedTokens, 0);
+      const returnTokens = Math.min(user.lockedTokens, investment.stakedTokens);
+      user.lockedTokens = (user.lockedTokens || 0) - returnTokens;
+      user.balance += returnTokens;
+      console.log('ADD TO BALANCE ', investment.stakedTokens, user.balance, user.lockedTokens);
+
       post.data.totalStaked -= investment.stakedTokens;
       const earning = await this.model('Earnings').findOne({ user: user._id, post: post._id });
-      await earning.remove();
+      if (earning) await earning.remove();
+      await user.save();
+      await post.save();
+      await investment.remove();
     }
-    await investment.remove();
     return investment;
   }
 
-  user = user.updatePower();
-  user = await user.updateBalance();
-  let userBalance = user.balance + user.tokenBalance;
 
   let shares = 0;
   // TODO analyze ways to get around this via sybil nodes
   const { votePower } = user;
   amount *= votePower;
 
-  console.log('post should have community ', post.toObject());
+  // console.log('post should have community ', post.toObject());
   // compute tokens allocated to this specific community
   const communityMember = await this.model('CommunityMember').findOne(
     { user: user._id, community: post.data.community },
@@ -93,37 +101,56 @@ InvestSchema.statics.createVote = async function createVote(props) {
   userBalance *= communityMember.weight;
 
   console.log('vote power ', votePower);
-  let stakedTokens = userBalance * Math.abs(amount) * VOTE_COST_RATIO;
+  const stakedTokens = userBalance * Math.abs(amount) * VOTE_COST_RATIO;
   console.log('user balance', userBalance);
   console.log('staked tokens', stakedTokens);
   console.log('post.data.balance', post.data.balance);
   console.log('amount ', amount);
 
 
-  // TODO downvotes!
-  let sign = 1;
-  if (amount !== 0) sign = Math.abs(amount) / amount;
-
   // only compute shares for upvotes
   // for downvotes only track staked tokens
   // we can use totalStaked to rank by stake
   if (amount > 0) {
+    const { balance, shares: postShares } = post.data;
     const nexp = EXPONENT + 1;
     shares =
-      (((post.data.balance + stakedTokens) / SLOPE) * nexp) ** (1 / nexp) -
-      (post.data.shares || 0);
+      (((Math.max(balance, 0) + stakedTokens) / SLOPE) * nexp) ** (1 / nexp) - (postShares || 0);
     console.log(user.handle, ' got ', shares, ' for ', stakedTokens, ' staked tokens ');
+  }
 
-    shares *= sign;
-    stakedTokens *= sign;
 
-    post.data.shares += shares;
-    post.data.balance += stakedTokens;
+  investment = new (this.model('Invest'))({
+    investor: user._id,
+    post: post._id,
+    author: post.user,
+    amount,
+    relevantPoints: relevanceToAdd,
+    ownPost: post.user === user._id,
+    shares,
+    stakedTokens,
+    community,
+    communityId,
+    // TODO track parentPost && linkPost/aboutLink?
+    // parentPost: post.parentPost,
+    // linkPost: post.linkPost,
+    payoutDate: post.data.payoutDate,
+    paidOut: post.data.paidOut
+  });
 
-    user.lockedTokens = (user.lockedTokens || 0) + stakedTokens;
-    user.balance -= stakedTokens;
-    post.data.totalStaked += stakedTokens;
+  await investment.save();
 
+
+  post.data.shares += shares;
+  post.data.balance += stakedTokens;
+  user.lockedTokens += stakedTokens;
+  user.balance -= stakedTokens;
+  post.data.totalStaked += stakedTokens;
+  console.log('SUBTRACT FROM BALANCE ', stakedTokens, 'balance:', user.balance, 'locked:', user.lockedTokens);
+  await user.save();
+  await post.data.save();
+
+  if (amount > 0) {
     const earning = await this.model('Earnings').findOneAndUpdate(
       { user: user._id, post: post._id },
       {
@@ -138,35 +165,6 @@ InvestSchema.statics.createVote = async function createVote(props) {
     earning.updateClient({ actionType: 'ADD_EARNING' });
   }
 
-  await post.data.save();
-
-  investment = await this.findOneAndUpdate(
-    {
-      investor: user._id,
-      post: post._id
-    },
-    {
-      investor: user._id,
-      author: post.user,
-      amount,
-      relevantPoints: relevanceToAdd,
-      post: post._id,
-      ownPost: post.user === user._id,
-      shares,
-      stakedTokens,
-      community,
-      communityId,
-      // TODO track parentPost && linkPost/aboutLink?
-      // parentPost: post.parentPost,
-      // linkPost: post.linkPost,
-      payoutDate: post.data.payoutDate,
-      paidOut: post.data.paidOut
-    },
-    {
-      new: true,
-      upsert: true
-    }
-  );
   return investment;
 };
 
