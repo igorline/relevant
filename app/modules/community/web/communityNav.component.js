@@ -3,18 +3,23 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { colors } from 'app/styles/globalStyles';
+import { colors, sizing } from 'app/styles/globalStyles';
 import * as communityActions from 'modules/community/community.actions';
 import { setCommunity } from 'modules/auth/auth.actions';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/web/communityActive.component';
+import { Header } from 'modules/styled/Text.component';
 import get from 'lodash.get';
 
 const linkStyle = `
   display: flex;
   align-items: center;
   color: ${colors.black};
+`;
+
+const StyledHeader = styled(Header)`
+  padding-bottom: ${sizing.byUnit(4)};
 `;
 
 const CommunityContainer = styled.View`
@@ -61,6 +66,7 @@ const CommunityNav = ({ community, isActive, actions }) => (
         community={community}
         getCommunityMembers={get(actions, 'getCommunityMembers', null)}
       >
+        <StyledHeader>Community</StyledHeader>
         <CommunityLink community={community} onClick={actions.setCommunity} />
       </CommunityActive>
       : (
@@ -112,12 +118,14 @@ class Community extends Component {
     const activeCommunity = community.communities[community.active];
     return (
       <StyledCommunityList>
-        <CommunityNav
-          key={activeCommunity._id}
-          community={activeCommunity}
-          isActive
-          actions={actions}
-        />
+        {activeCommunity &&
+          <CommunityNav
+            key={activeCommunity._id}
+            community={activeCommunity}
+            isActive
+            actions={actions}
+          />
+        }
         {this.renderOtherCommunities()}
       </StyledCommunityList>);
   }
