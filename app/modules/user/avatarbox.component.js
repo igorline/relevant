@@ -1,20 +1,23 @@
 import React from 'react';
-import { View, Image, StyleSheet, Text } from 'react-primitives';
+import { View, Image, Text } from 'react-primitives';
 import PropTypes from 'prop-types';
 // import { globalStyles, darkGrey } from 'app/styles/global';
 import { colors, sizing } from 'app/styles/globalStyles';
 // TODO: rewrite this as a universal component
 // import Stats from 'modules/stats/mobile/stats.component';
 import ULink from 'modules/navigation/ULink.component';
+import Avatar from 'modules/user/UAvatar.component';
+
 import { getTimestamp } from 'app/utils/numbers';
 // import { } from 'modules/styled/Text.component';
 import styled from 'styled-components/primitives';
 
-let styles;
-
+let styles = {};
 
 export const Name = styled.Text`
-  color: ${colors.secondaryText};
+  font-size: ${sizing.byUnit(2)};
+  line-height: ${sizing.byUnit(2)};
+  color: ${colors.blue};
 `;
 
 export const HandleText = styled.Text`
@@ -25,14 +28,25 @@ export const HandleText = styled.Text`
 export const Wrapper = styled.Touchable`
 `;
 
+export const AvatarContainer = styled.View`
+  display: flex;
+  flex: 1;
+  flexDirection: row;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
+export const TextContainer = styled.View`
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 0 0 0 5px;
+`;
+
 export default function UserName(props) {
-  const { user, relevance, type, topic, setSelected, big, postTime, repost, twitter } = props;
+  const { user, relevance, type, topic, setSelected, size, postTime, repost, twitter } = props;
 
   if (!user) return null;
-
-  const { userImageBig, userImage, postInfo } = styles;
-  const imageSource = user.image ? { uri: user.image } : require('app/public/img/default_user.jpg');
-  const imageStyle = big ? userImageBig : userImage;
 
   let { handle } = user;
   if (type !== 'invite' && handle) handle = `@${handle}`;
@@ -51,7 +65,7 @@ export default function UserName(props) {
   );
 
   const handleEl = handle && topic && topic.topic ? ( // TODO WILL BE DEPRECATED
-    <View style={styles.textRow}>
+    <View>
       <HandleText>
         {handle + ' • '}
       </HandleText>
@@ -90,26 +104,19 @@ export default function UserName(props) {
       <Wrapper
         onPress={() => setSelected(user)}
       >
-        <View style={postInfo}>
-          <Image source={imageSource} style={imageStyle} />
+        <AvatarContainer>
+          <Avatar size={size} user={user} noLink />
           {repostIcon}
-          <View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                alignItems: 'flex-end',
-                marginBottom: 2
-              }}
-            >
+          <TextContainer>
+            <View>
               <Name>
                 {user.name}{twitterIcon && ' ' + twitterIcon}
               </Name>
               {user.relevance && relevance && 'STATS GO HERE'}
             </View>
             {handleEl}
-          </View>
-        </View>
+          </TextContainer>
+        </AvatarContainer>
       </Wrapper>
     </ULink>
   );
@@ -120,29 +127,9 @@ UserName.propTypes = {
   twitter: PropTypes.bool,
   type: PropTypes.string,
   user: PropTypes.object,
-  big: PropTypes.bool,
+  size: PropTypes.number,
   relevance: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
   repost: PropTypes.bool,
   postTime: PropTypes.string,
   setSelected: PropTypes.func
 };
-
-const localStyles = StyleSheet.create({
-  icon: {
-    marginLeft: 5
-  },
-  userImageBig: {
-    height: 42,
-    width: 42,
-    borderRadius: 21,
-    marginRight: 7
-  },
-  postInfo: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start'
-  }
-});
-
-styles = { ...localStyles };

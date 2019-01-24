@@ -153,11 +153,11 @@ class Comment extends Component {
       />
     );
 
-    let user = this.props.user.users[comment.user] || comment.user;
+    const user = this.props.user.users[comment.embeddedUser.handle] || comment.embeddedUser;
 
-    if (user && !user._id) {
-      user = comment.embeddedUser;
-    }
+    // if (user && !user._id) {
+    //   user = comment.embeddedUser;
+    // }
 
     const commentChildren = get(childComments, comment.id) || [];
 
@@ -170,7 +170,6 @@ class Comment extends Component {
           <Container nesting={nesting} isActive={isActive}>
             <View>
               <AvatarBox
-                small
                 auth={this.props.auth}
                 user={{ ...user, _id: comment.user }}
                 postTime={comment.createdAt}

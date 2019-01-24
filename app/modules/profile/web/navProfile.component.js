@@ -67,7 +67,7 @@ class NavProfile extends Component {
         <div>{user.name}</div>
         <PendingPayouts>PENDING PAYOUTS: {pendingPayouts}</PendingPayouts>
         <ProfileDetailsContainer>
-          <StyledAvatar user={user} size={64} noName />
+          <StyledAvatar user={user} size={8} noName />
           <ULink to="/user/wallet" styles={linkStyles}>
             <StyledIconImg src="/img/r-emoji.png" alt="Relevance" />
             <span>{Math.round(user.relevance ? user.relevance.pagerank || 0 : 0)}</span>
