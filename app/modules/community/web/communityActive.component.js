@@ -86,8 +86,6 @@ class CommunityActive extends Component {
               <StyledAvatar
                 key={member._id}
                 user={member.embeddedUser}
-                size={32}
-                noName
               />
             ))}
           </MemberContainer>
