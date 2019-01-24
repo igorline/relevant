@@ -13,9 +13,16 @@ import * as tagActions from 'modules/tag/tag.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import CreatePost from 'modules/createPost/web/createPost.container';
+import { sizing } from 'app/styles/globalStyles';
+import styled from 'styled-components/primitives';
 import DiscoverPosts from './discoverPosts.component';
 import DiscoverUsers from './discoverUsers.component';
 import * as discoverHelper from './discoverHelper';
+
+
+const Wrapper = styled.View`
+  padding: ${sizing.byUnit(4)}
+`;
 
 const POST_PAGE_SIZE = 15;
 
@@ -171,7 +178,7 @@ export class Discover extends Component {
     const { tag } = match.params;
 
     return (
-      <div className="discoverContainer row pageContainer">
+      <Wrapper className="discoverContainer">
         <div className="discoverInner">
           <div className="postContainer">
             {tag && (
@@ -183,7 +190,7 @@ export class Discover extends Component {
             {this.renderFeed()}
           </div>
         </div>
-      </div>
+      </Wrapper>
     );
   }
 }

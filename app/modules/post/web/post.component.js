@@ -9,7 +9,7 @@ import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import Popup from 'modules/ui/web/popup';
 import styled from 'styled-components/primitives';
-import { colors } from 'app/styles/globalStyles';
+import { colors, sizing } from 'app/styles/globalStyles';
 import PostComment from 'modules/post/web/postComment.component';
 import PostButtons from './postbuttons.component';
 import PostInfo from './postinfo.component';
@@ -23,7 +23,8 @@ const Wrapper = styled.View`
   max-width: 100%;
   overflow: hidden;
   /* border: 1px solid black; */
-  padding: 1em 0;
+  /* padding: 1em 0; */
+  padding-bottom: ${sizing.byUnit(4)};
 `;
 
 const PostContainer = styled.View`
@@ -41,7 +42,7 @@ const PostInfoContainer = styled.View`
   position: relative;
   flex-shrink: 1;
   width: 100%;
-  padding-bottom: 2em;
+  padding-bottom: ${(p) => p.detailView ? '' : sizing.byUnit(4)};
   border-bottom-color: ${colors.lineColor};
   border-bottom-style: solid;
   border-bottom-width: 1px;
@@ -50,11 +51,8 @@ const PostInfoContainer = styled.View`
 const Text = styled.Text`
 `;
 
-const StyledPostButtons = styled(PostButtons)`
-  display: flex;
-  background: orange;
-  width: 200px;
-  color: blue;
+const PostButtonContainer = styled.View`
+  margin-right: 2em;
 `;
 
 const PostCommentContainer = styled(PostContainer)`
@@ -114,7 +112,7 @@ export class Post extends Component {
   }
 
   render() {
-    const { post, repost, auth, sort, postState } = this.props;
+    const { post, repost, auth, sort, postState, detailView } = this.props;
     const { community } = auth;
 
     const link = postState.links[post.metaPost];
@@ -153,10 +151,12 @@ export class Post extends Component {
     const commentId = get(post, `${sort}.0`);
     const comment = postState.posts[commentId];
     return (
-      <Wrapper>
+      <Wrapper detailView={detailView}>
         <PostContainer>
-          <StyledPostButtons post={post} {...this.props} />
-          <PostInfoContainer>
+          <PostButtonContainer>
+            <PostButtons post={post} {...this.props} />
+          </PostButtonContainer>
+          <PostInfoContainer detailView={detailView}>
             <PostInfo
               post={post}
               link={link}
@@ -165,14 +165,18 @@ export class Post extends Component {
               sort={sort}
               firstPost={firstPost}
             />
-            <PostCommentContainer>
-              <PostComment
-                comment={comment}
-                auth={this.props.auth}
-                community={community}
-                postUrl={postUrl}
-              />
-            </PostCommentContainer>
+            {!detailView &&
+              (
+                <PostCommentContainer>
+                  <PostComment
+                    comment={comment}
+                    auth={this.props.auth}
+                    community={community}
+                    postUrl={postUrl}
+                  />
+                </PostCommentContainer>
+              )
+            }
           </PostInfoContainer>
         </PostContainer>
       </Wrapper>

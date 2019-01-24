@@ -5,7 +5,19 @@ import PropTypes from 'prop-types';
 import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import Comments from 'modules/comment/web/comment.container';
-import PostContainer from './post.component';
+import styled from 'styled-components/primitives';
+import { sizing } from 'app/styles/globalStyles';
+import PostComponent from './post.component';
+
+const Wrapper = styled.View`
+  flex: 1;
+`;
+
+const PostContainer = styled.View`
+  padding: ${sizing.byUnit(4)};
+  padding-bottom: 0;
+`;
+
 
 class SinglePostContainer extends Component {
   static propTypes = {
@@ -35,16 +47,16 @@ class SinglePostContainer extends Component {
     const hasPost = this.post && this.post !== 'notFound';
 
     return (
-      <div style={{ flex: 1 }}>
-      <div className="singlePost row column pageContainer">
-          {hasPost && (
-            <div className="postContainer">
-              <PostContainer post={this.post} {...this.props} />
-              <Comments post={this.post} {...this.props} />
-            </div>
-          )}
-        </div>
-      </div>
+      <Wrapper>
+        {hasPost && (
+          <div>
+            <PostContainer>
+              <PostComponent detailView post={this.post} {...this.props} />
+            </PostContainer>
+            <Comments post={this.post} {...this.props} />
+          </div>
+        )}
+      </Wrapper>
     );
   }
 }

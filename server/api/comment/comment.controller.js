@@ -195,7 +195,8 @@ exports.create = async (req, res, next) => {
   const { community, communityId } = req.communityMember;
   const body = req.body.text;
   // let parentPost = req.body.post;
-  let { parentPost, parentComment } = req.body;
+  let { parentPost } = req.body;
+  const { parentComment } = req.body;
   // const { parentComment } = req.body;
   const { tags } = req.body;
   const mentions = req.body.mentions || [];

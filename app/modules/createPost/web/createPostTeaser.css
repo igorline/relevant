@@ -6,11 +6,9 @@
   justify-content: center;
   align-items: center;
   margin-top: 0px;
-  padding-bottom: 50px;
-  /*@extend %flatBorderBottom;*/
+  padding-bottom: 2em;
   margin-bottom: 0px;
   cursor: pointer;
-  /*margin-left: $postOffsetPadding;*/
   .avatar {
     margin-right: 5px;
   }
