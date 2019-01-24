@@ -35,7 +35,7 @@ const StyledImage = styled.Image`
   width: 30;
   height: 30;
   margin-right: 1em;
-  background: ${colors.black};
+  background: ${colors.grey};
 `;
 
 const StyledCommunityList = styled.View`
