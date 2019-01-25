@@ -325,18 +325,6 @@ export function addUpdatedComment(comment) {
   };
 }
 
-export function updateComment(comment) {
-  return dispatch =>
-    api
-    .request({
-      method: 'PUT',
-      endpoint: 'comment',
-      body: JSON.stringify(comment)
-    })
-    .then(res => dispatch(updatePost(res)))
-    .catch(error => Alert.alert(error.message));
-}
-
 export function editPost(post) {
   return async dispatch => {
     try {

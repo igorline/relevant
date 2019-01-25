@@ -1,8 +1,10 @@
 import { normalize, schema } from 'normalizr';
-import { api } from 'app/utils';
+import { api, alert } from 'app/utils';
 import * as types from 'core/actionTypes';
 import { setError } from 'modules/ui/error.actions';
-import { removePost } from 'modules/post/post.actions';
+import { removePost, updatePost } from 'modules/post/post.actions';
+
+const Alert = alert.Alert();
 
 const commentSchema = new schema.Entity('comments', {}, { idAttribute: '_id' });
 
@@ -78,6 +80,18 @@ export function getComments(post, skip, limit) {
   };
 }
 
+export function updateComment(comment) {
+  return dispatch =>
+    api
+    .request({
+      method: 'PUT',
+      endpoint: 'comment',
+      body: JSON.stringify(comment)
+    })
+    .then(res => dispatch(updatePost(res)))
+    .catch(error => Alert.alert(error.message));
+}
+
 export function deleteComment(id) {
   return async dispatch => {
     try {
@@ -88,7 +102,8 @@ export function deleteComment(id) {
       });
       return dispatch(removePost(id));
     } catch (err) {
-      return false;
+      console.log(err);
+      return Alert.alert(err.message);
     }
   };
 }

@@ -589,6 +589,7 @@ exports.create = async (req, res, next) => {
   try {
     // TODO rate limiting?
     // current rate limiting is 5s via invest
+    const hasChildComment = req.body.body && req.body.body.length;
 
     const { community, communityId } = req.communityMember;
 
@@ -643,7 +644,7 @@ exports.create = async (req, res, next) => {
     const newPostObj = {
       url: postUrl,
       title: req.body.title ? req.body.title : '',
-      body: req.body.body ? req.body.body : null,
+      body: hasChildComment ? req.body.body : null,
       tags,
       community,
       communityId,
@@ -667,34 +668,45 @@ exports.create = async (req, res, next) => {
 
     const author = await User.findOne({ _id: newPost.user });
     newPost = await newPost.addUserInfo(author);
-    newPost = await newPost.addPostData();
-    newPost = await newPost.save();
+
+    // Only save posts that have body!
+    if (hasChildComment) {
+      newPost = await newPost.addPostData();
+      newPost = await newPost.save();
+      await Invest.createVote({
+        post: newPost,
+        user: author,
+        amount: 1,
+        relevanceToAdd: 0,
+        community,
+        communityId
+      });
+    }
 
     if (postUrl) {
       newPost = await newPost.upsertLinkParent(linkObject);
       await newPost.parentPost.insertIntoFeed(newPost.community);
-    } else {
+
+      await Invest.createVote({
+        post: newPost.parentPost,
+        user: author,
+        amount: 1,
+        relevanceToAdd: 0,
+        community,
+        communityId
+      });
+
+      if (hasChildComment) newPost.save();
+    } else if (newPost.body && newPost.body.length) {
       // TODO - do we want to put this into the ranked feed? maybe not...
       // await newPost.updateRank(newPost.community);
       await newPost.insertIntoFeed(newPost.community);
     }
 
     await author.updatePostCount();
-
-    // creates an invest(vote) record for pots author
-    // should we invest into parent post (link also)?
-    await Invest.createVote({
-      post: newPost,
-      user: author,
-      amount: 1,
-      relevanceToAdd: 0,
-      community,
-      communityId
-    });
-
     res.status(200).json(newPost);
-
     processSubscriptions(newPost);
+
     // this happens async
     Post.sendOutMentions(mentions, newPost, author);
   } catch (err) {

@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-
 import PropTypes from 'prop-types';
-
 import InviteCta from './inviteCta.component';
+
+
+if (process.env.BROWSER === true) {
+  require('modules/navigation/web/header.css');
+}
 
 export default class RequestInvite extends Component {
   static propTypes = {
@@ -39,8 +42,7 @@ export default class RequestInvite extends Component {
         <div className="mainSection">
           <section className="body">
             <p className="libre big">
-              <span className="outline">Relevant</span> is a social platform that values{' '}
-              <span className="outline">quality</span> over clicks.
+              <div className="outline">Relevant</div> Curated by communities, not clicks
             </p>
             <p className="subH">
               Join the community and help us build a better information environment for

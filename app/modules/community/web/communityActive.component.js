@@ -58,7 +58,7 @@ class CommunityActive extends Component {
   };
 
   componentDidMount() {
-    this.props.getCommunityMembers(this.props.community.slug);
+    this.props.getCommunityMembers({ slug: this.props.community.slug });
   }
 
   render() {
@@ -86,8 +86,6 @@ class CommunityActive extends Component {
               <StyledAvatar
                 key={member._id}
                 user={member.embeddedUser}
-                size={32}
-                noName
               />
             ))}
           </MemberContainer>

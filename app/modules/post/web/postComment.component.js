@@ -1,26 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
-// import PostButtons from './postbuttons.component';
-import { CommentText } from 'modules/styled/Text.component';
+import { CommentText } from 'modules/styled';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
-import { colors } from 'app/styles/globalStyles';
+import { colors, sizing } from 'app/styles/globalStyles';
 
 const Wrapper = styled.View`
   position: relative;
   overflow: hidden;
-  padding-left: 1em;
+  padding-left: ${sizing.byUnit(2)};
   flex-shrink: 1;
   border-left-color: ${colors.lineColor};
   border-left-width: 1px;
   border-left-style: solid;
 `;
 
-const View = styled.View`
-`;
-
-const Text = styled.Text`
+const Container = styled.View`
+  padding: ${sizing.byUnit(1)} 0;
 `;
 
 class PostComment extends Component {
@@ -37,17 +34,18 @@ class PostComment extends Component {
     }
     return (
       <Wrapper>
-        <View>
-          <AvatarBox
-            user={comment.embeddedUser}
-            auth={auth}
-            postTime={comment.postDate}
-            setSelected={() => { console.log('TODO:'); }}
-          />
-        </View>
-        <ULink to={postUrl}>
-          <CommentText>{comment.body}</CommentText>
-        </ULink>
+        <AvatarBox
+          user={comment.embeddedUser}
+          auth={auth}
+          postTime={comment.postDate}
+          setSelected={() => { console.log('TODO:'); }}
+          showRelevance
+        />
+        <Container>
+          <ULink to={postUrl} >
+            <CommentText>{comment.body}</CommentText>
+          </ULink>
+        </Container>
       </Wrapper>
     );
   }

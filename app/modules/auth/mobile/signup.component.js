@@ -90,7 +90,7 @@ class SignUp extends Component {
 
     this.props.actions.checkUser(string, 'email')
     .then(results => {
-      if (!results) {
+      if (results) {
         this.setState({ emailError: 'This email has already been used' });
       }
     });

@@ -17,7 +17,14 @@ const SideNavContent = styled.div`
   flex-direction: column;
   z-index: 10;
   border-right: ${layout.borderStyles(colors.lineColor)};
-  padding-top: ${layout.headerHeight}
+`;
+
+const SideNavScroll = styled.div`
+  padding-top: ${layout.headerHeight};
+  height: 100vh;
+  overflow: scroll;
+  position: fixed;
+  width: 300px;
 `;
 
 const SideNavSection = styled.div`
@@ -49,30 +56,31 @@ const StyledImg = styled.img`
 `;
 
 const SideNav = (props) => {
-  const { className } = props;
   const logoLink = props.isAuthenticated ? '/relevant/new' : '/';
   return (
-    <SideNavContent className={className}>
-      <LogoContainer>
-        <StyledLink to={logoLink}>
-          <StyledImg src={'/img/logo.svg'} alt={'Relevant'} />
-        </StyledLink>
-      </LogoContainer>
-      <SideNavSection>
-        <NavProfile />
-      </SideNavSection>
-      <SideNavSection>
-        <Community />
-      </SideNavSection>
-      <SideNavFooter />
+    <SideNavContent className={props.className}>
+      <SideNavScroll>
+        <LogoContainer>
+          <StyledLink to={logoLink}>
+            <StyledImg src={'/img/logo.svg'} alt={'Relevant'} />
+          </StyledLink>
+        </LogoContainer>
+        <SideNavSection>
+          <NavProfile />
+        </SideNavSection>
+        <SideNavSection>
+          <Community />
+        </SideNavSection>
+        <SideNavFooter />
+      </SideNavScroll>
     </SideNavContent>
   );
 };
 
 
 SideNav.propTypes = {
-  isAuthenticated: PropTypes.bool,
   className: PropTypes.string,
+  isAuthenticated: PropTypes.bool,
 };
 
 const mapStateToProps = state => ({

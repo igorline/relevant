@@ -7,6 +7,7 @@ import AuthContainer from 'modules/auth/web/auth.container';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { colors, layout } from 'app/styles/globalStyles';
+import RequestInvite from 'modules/web_splash/requestInvite.component';
 
 const Nav = styled.nav`
   width: 100%;
@@ -59,6 +60,28 @@ class ContentHeader extends Component {
     openLoginModal: false
   };
 
+  renderSubHeader() {
+    const loggedIn = this.props.auth.isAuthenticated;
+    let cta;
+
+    const signup = (
+      <div className="signupCTA">
+        <Link to="/user/login">
+          <NewPost>Login</NewPost>
+        </Link>
+        <span>{' '}</span>
+        <Link to="/user/signup">
+          <NewPost>Sign Up</NewPost>
+        </Link>
+      </div>
+    );
+
+    if (!loggedIn) {
+      cta = <RequestInvite type={'app'} cta={signup} />;
+    }
+    return cta;
+  }
+
   toggleLogin = () => {
     this.setState({ openLoginModal: !this.state.openLoginModal });
   }
@@ -72,31 +95,34 @@ class ContentHeader extends Component {
     const { user } = auth;
     const temp = user && user.role === 'temp';
     return (
-      <Nav className={className}>
-        <DiscoverTabs />
-        <SubNav>
-          <ActivityButtonContainer>
-            <ActivityButton />
-          </ActivityButtonContainer>
-          {
-            auth.isAuthenticated ?
-              <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
-                <NewPost >
-                    New Post
-                </NewPost>
-              </Link>
-              :
-              <Login onClick={this.toggleLogin} color={colors.blue}>Login</Login>
-          }
+      <div>
+        <Nav className={className}>
+          <DiscoverTabs />
+          <SubNav>
+            <ActivityButtonContainer>
+              <ActivityButton />
+            </ActivityButtonContainer>
+            {
+              auth.isAuthenticated ?
+                <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
+                  <NewPost >
+                      New Post
+                  </NewPost>
+                </Link>
+                :
+                <Login onClick={this.toggleLogin} color={colors.blue}>Login</Login>
+            }
 
-        </SubNav>
-        <AuthContainer
-          toggleLogin={this.toggleLogin.bind(this)}
-          open={this.state.openLoginModal || temp}
-          modal
-          {...this.props}
-        />
-      </Nav>
+          </SubNav>
+          <AuthContainer
+            toggleLogin={this.toggleLogin.bind(this)}
+            open={this.state.openLoginModal || temp}
+            modal
+            {...this.props}
+          />
+        </Nav>
+        {this.renderSubHeader()}
+      </div>
     );
   }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { normalize, schema } from 'normalizr';
 import * as types from 'core/actionTypes';
 import { api, alert } from 'app/utils';

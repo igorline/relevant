@@ -12,7 +12,7 @@ import * as postActions from 'modules/post/post.actions';
 import * as tagActions from 'modules/tag/tag.actions';
 import { alert, text, post } from 'app/utils';
 
-import AvatarBox from 'modules/user/web/avatarbox.component';
+import AvatarBox from 'modules/user/avatarbox.component';
 import PostInfo from 'modules/post/web/postinfo.component';
 import CreatePostTeaser from './createPostTeaser.component';
 import TagInput from './TagInput.component';
@@ -287,8 +287,12 @@ class CreatePostContainer extends Component {
           keywords: results.keywords,
           postTags: results.tags,
           urlPreview: {
-            tags: [],
+            ...results,
+            image: imageURL,
+            title: results.title || 'Untitled',
+            loading: false,
             embeddedUser: auth.user,
+            tags: [],
           },
           linkPreview: {
             ...results,

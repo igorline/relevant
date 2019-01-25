@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components/primitives';
 import { ActivityIndicator } from 'react-native-web';
 import ULink from 'modules/navigation/ULink.component';
-import { Title, SecondaryText } from 'modules/styled/Text.component';
-import { colors } from 'app/styles/globalStyles';
+import { Title, SecondaryText } from 'modules/styled';
+import { colors, sizing } from 'app/styles/globalStyles';
 import { getTimestamp } from 'app/utils/numbers';
 import get from 'lodash.get';
 import Tag from 'modules/tag/tag.component';
@@ -38,14 +38,12 @@ const Image = styled.Image`
 
 const PostText = styled.View`
   flex-shrink: 1;
+  margin-bottom: ${sizing.byUnit(2)};
 `;
 
 
 const PostTitle = styled(Title)`
-  /* max-width: 100%; */
-  /* flex-shrink: 1 */
-  /* flex-wrap: wrap; */
-  /* flex: 1; */
+  padding-bottom: ${sizing.byUnit(1)}
 `;
 
 export default function PostInfo(props) {
@@ -72,9 +70,9 @@ export default function PostInfo(props) {
 
   let postUser;
   if (get(post, 'embeddedUser.handle')) {
-    postUser = get(post, 'embeddedUser');
+    postUser = post.embeddedUser;
   } else if (get(firstPost, 'embeddedUser.handle')) {
-    postUser = get(firstPost, 'embeddedUser');
+    postUser = firstPost.embeddedUser;
   }
   const tags = post.tags && post.tags.length ? get(post, 'tags', []) : [];
   const postContent = (
@@ -94,31 +92,40 @@ export default function PostInfo(props) {
           : <PostTitle>{title}</PostTitle>}
         <SecondaryText>
 
-          {get(postUser, 'handle') ?
-            (<TextView><Text>Posted by: </Text><ULink to={`/user/profile/${postUser.handle}`} disabled={!postUrl}>{`@${get(postUser, 'handle')}`}</ULink></TextView>) : ''}
-          { postUrl && (
-            <ULink to={postUrl}>
-              {uniqueUsers > 1 ? `and ${uniqueUsers} others` : ''}
-
-            </ULink>)
+          { get(postUser, 'handle') &&
+            <TextView>
+              <Text>Posted by: </Text>
+              <ULink to={`/user/profile/${postUser.handle}`} disabled={!postUrl}>
+                {`@${get(postUser, 'handle')}`}
+              </ULink>
+            </TextView>
           }
-          { postUrl && timestamp }
-          { get(link, 'domain') ?
+          { postUrl && (
+            <TextView>
+              <ULink to={postUrl}>
+                {uniqueUsers > 1 ? `and ${uniqueUsers} others` : ''}
+              </ULink>
+            </TextView>)
+          }
+          { postUrl && timestamp }{' • '}
+          { get(link, 'domain') &&
             <ULink external to={post.url} external target="_blank" disabled={!postUrl} >
-              {link.domain && ` • ${link.domain} ↗`}
+              {link.domain && `${link.domain} ↗`}
             </ULink>
-            : null}
+          }
         </SecondaryText>
-        { post.commentCount ?
-          <ULink external to={postUrl} >
-            <SecondaryText color={colors.blue}>
-              {post.commentCount} Comments
-            </SecondaryText>
-          </ULink>
-          : null}
-        <SecondaryText>{tags.length ?
-          tags.map(tag => <Tag name={tag} community={community} key={tag} />)
-          : null}
+        <SecondaryText color={colors.blue}>
+          { post.commentCount ?
+            <Text>
+              <ULink to={postUrl} styles={'text-decoration: underline'} >
+                {post.commentCount} Comments
+              </ULink>
+              <Text>  </Text>
+            </Text> : null
+          }
+          {tags.length ?
+            tags.map(tag => <Tag name={tag} community={community} key={tag} />)
+            : null}
         </SecondaryText>
       </PostText>
 

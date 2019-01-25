@@ -2,32 +2,22 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ULink from 'modules/navigation/ULink.component';
 import styled from 'styled-components/primitives';
-
-const StyledText = styled.Text`
-`;
+import sizing from 'app/styles/sizing';
 
 const Wrapper = styled.View`
 `;
 
 const StyledImage = styled.Image`
-  width: ${props => props.size ? props.size : '30px'};
-  height: ${props => props.size ? props.size : '30px'};
+  width: ${p => p.size ? sizing.byUnit(p.size) : sizing.byUnit(4)};
+  height: ${p => p.size ? sizing.byUnit(p.size) : sizing.byUnit(4)};
   border-radius: 50;
-  display: inline-block;
-  background: black;
 `;
-
-
-if (process.env.BROWSER === true) {
-  require('./web/avatarbox.css');
-}
 
 class UAvatar extends Component {
   static propTypes = {
     user: PropTypes.object,
     size: PropTypes.number,
     noLink: PropTypes.bool,
-    noName: PropTypes.bool,
     className: PropTypes.string,
     style: PropTypes.oneOfType([
       PropTypes.string,
@@ -45,7 +35,6 @@ class UAvatar extends Component {
       return (
         <Wrapper style={this.props.style} className={this.props.className}>
           {AvatarImage}
-          {this.props.noName ? null : <StyledText>{this.props.user.name}</StyledText>}
         </Wrapper>
       );
     }
@@ -57,7 +46,6 @@ class UAvatar extends Component {
           to={profileLink}
         >
           {AvatarImage}
-          {this.props.noName ? null : this.props.user.name}
         </ULink>
       </Wrapper>
     );

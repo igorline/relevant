@@ -63,12 +63,11 @@ class WalletContainer extends Component {
       <div style={{ flex: 1 }}>
         <div className={'banner'}>{this.renderHeader()}</div>
         <BondedTokenContainer {...this.props}>
-          <div className={'row pageContainer column'}>
+          <div className={'pageContainer column'} >
             <Eth.Consumer>{wallet => <Balance wallet={wallet} {...this.props} />}</Eth.Consumer>
             <Wallet user={this.props.user} />
           </div>
         </BondedTokenContainer>
-        <Footer />
       </div>
     );
   }

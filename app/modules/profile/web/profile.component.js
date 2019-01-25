@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import get from 'lodash.get';
-import { connect } from 'react-redux';
 import Avatar from 'modules/user/web/avatar.component';
-import { numbers } from 'app/utils';
 import styled from 'styled-components';
 import { layout, colors } from 'app/styles/globalStyles';
 import CoinStat from 'modules/stats/coinStat.component';
+import RStat from 'modules/stats/rStat.component';
 
 if (process.env.BROWSER === true) {
   require('./profile.css');
@@ -54,24 +52,8 @@ export default class Profile extends Component {
           <Avatar user={user} />
           <div className="name">{user.name}</div>
           <div className="relevance">
-            <img src="/img/r-emoji.png" alt="Relevance" className="r" />
-            {Math.round(user.relevance ? user.relevance.pagerank || 0 : 0)}
+            <RStat user={user} />
             <CoinStat user={user} isOwner={isOwner} />
-          </div>
-          <div className="subscribers">
-            {'Subscribers: '}
-            <b>{user.followers}</b>
-            {' • '}
-            {'Subscribed to: '}
-            <b>{user.following}</b>
-          </div>
-          <div className="tags">
-            {'Expertise: '}
-            {(user.topTags || []).map((tag, i) => (
-              <a className="tag" key={i}>
-                {'#' + tag.tag + ' '}
-              </a>
-            ))}
           </div>
         </div>
       </div>

@@ -21,7 +21,7 @@ import * as discoverHelper from './discoverHelper';
 
 
 const Wrapper = styled.View`
-  padding: ${sizing.byUnit(4)}
+  padding: ${sizing.byUnit(4)} 0;
 `;
 
 const POST_PAGE_SIZE = 15;

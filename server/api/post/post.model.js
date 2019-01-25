@@ -23,7 +23,7 @@ const PostSchema = new Schema(
     category: { type: String, ref: 'Tag' },
     repost: {
       post: { type: Schema.Types.ObjectId, ref: 'Post' },
-      comment: { type: Schema.Types.ObjectId, ref: 'Comment' },
+      comment: { type: Schema.Types.ObjectId, ref: 'Post' },
       commentBody: String
     },
     user: { type: Schema.Types.ObjectId, ref: 'User', index: true },
@@ -142,10 +142,10 @@ PostSchema.index({ paidOut: 1, payoutTime: 1 });
 
 PostSchema.pre('save', async function save(next) {
   try {
-    let countQuery = { parentPost: this._id };
-    if (this.type === 'link') {
-      countQuery = { aboutLink: this._id };
-    }
+    const countQuery = { parentPost: this._id, twitter: false };
+    // if (this.type === 'link') {
+    //   countQuery = { aboutLink: this._id };
+    // }
     this.commentCount = await this.model('Post').count(countQuery);
   } catch (err) {
     console.log(err);
@@ -317,8 +317,6 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
     this.aboutLink = parent;
 
     this.metaPost = parent.metaPost;
-    await this.save();
-
     return this;
   } catch (err) {
     throw new Error(err);
