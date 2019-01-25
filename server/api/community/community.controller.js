@@ -35,10 +35,15 @@ export async function index(req, res, next) {
   }
 }
 
+// CommunityMember.find()
+// .then(all => all.map(c => console.log(c.toObject())));
+
 export async function members(req, res, next) {
   try {
+    const limit = req.params.limit || 20;
     const community = req.params.slug;
-    const users = await CommunityMember.find({ community }).sort('role reputation');
+    const users = await CommunityMember.find({ community }).sort('role reputation')
+    .limit(limit);
     res.status(200).json(users);
   } catch (err) {
     next(err);

@@ -14,7 +14,7 @@ let environment = 'web';
 if (process.env.WEB !== 'true') {
   environment = 'native';
   styled = require('styled-components/primitives').default;
-  StyledLink = styled(Link)`
+  StyledLink = styled.Touchable`
     ${(p) => p.styles}
   `;
   DisabledLink = styled.Text`
@@ -37,7 +37,6 @@ if (process.env.WEB !== 'true') {
     ${(p) => p.styles}
   `;
 }
-
 
 
 const ULink = (props) => {

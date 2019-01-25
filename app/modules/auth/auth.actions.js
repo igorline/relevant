@@ -38,6 +38,7 @@ const reqOptions = async () => {
 export function setCommunity(community) {
   return dispatch => {
     utils.api.setCommunity(community);
+    dispatch(getUser());
     return dispatch({
       type: types.SET_COMMUNITY,
       payload: community
@@ -288,14 +289,15 @@ export function getUser(callback) {
       if (callback) callback(user);
       return user;
     } catch (error) {
+      console.log('getUSER error ', error.message);
       const message = error ? error.message : null;
       dispatch(errorActions.setError('universal', true, message));
       dispatch(loginUserFailure('Server error'));
       if (callback) callback({ ok: false });
       // need this in case user is logged in but there is an error getting account
-      // if (error.message !== 'Network request failed') {
-      //   dispatch(logoutAction());
-      // }
+      if (error.message !== 'Network request failed') {
+        dispatch(logoutAction());
+      }
       // throw error;
       return null;
     }
@@ -376,12 +378,7 @@ export function checkUser(string, type) {
       }
     })
     .then(response => response.json())
-    .then(responseJSON => {
-      if (responseJSON) {
-        return false;
-      }
-      return true;
-    })
+    .then(responseJSON => responseJSON)
     .catch(error => {
       Alert.alert(error.message);
     });
@@ -436,9 +433,7 @@ export function updateHandle(user) {
         path: '/updateHandle',
         body: JSON.stringify({ user })
       });
-      await utils.token.set(result.token);
-      dispatch(loginUserSuccess(result.token));
-      dispatch(getUser());
+      setupUser(result, dispatch);
       return true;
     } catch (err) {
       Alert.alert(err.message);
@@ -608,13 +603,17 @@ export function twitterAuth(profile, invite) {
         body: JSON.stringify({ profile, invite })
       });
       dispatch(setLoading(false));
-      if (result.token && result.user) {
+      if (result.user && result.user.role === 'temp') {
+        await utils.token.set(result.token);
+        dispatch(loginUserSuccess(result.token));
+
+        dispatch(setPreUser(result.user));
+        dispatch(setTwitter({ ...profile, token: result.token }));
+        return false;
+      } else if (result.token && result.user) {
         await utils.token.set(result.token);
         dispatch(loginUserSuccess(result.token));
         setupUser(result.user, dispatch);
-      }
-      if (result.twitter) {
-        dispatch(setTwitter(profile));
       }
       return true;
     } catch (error) {

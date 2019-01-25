@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import UAvatar from 'modules/user/UAvatar.component';
 import CoinStat from 'modules/stats/coinStat.component';
+import RStat from 'modules/stats/rStat.component';
 import { withRouter } from 'react-router-dom';
 import ULink from 'modules/navigation/ULink.component';
-import { Header } from 'modules/styled/Text.component';
+import { Header } from 'modules/styled';
 import styled from 'styled-components/primitives';
 import { sizing, colors } from 'app/styles/globalStyles';
 
@@ -14,7 +15,13 @@ const View = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: baseline;
   padding-bottom: ${sizing.byUnit(4)};
+`;
+
+const Text = styled.Text`
+  display: flex;
+  flex: 1;
 `;
 
 const WalletInfo = styled.View`
@@ -38,26 +45,20 @@ const ProfileDetailsContainer = styled.View`
   padding-top: ${sizing.byUnit(2)};
 `;
 
-const StyledIconImg = styled.Image`
-  width: 30px;
-  height: 30px;
-  margin: 0 0.3em 0 0 ;
-`;
-
 const StyledAvatar = styled(UAvatar)`
 `;
 
 const PendingPayouts = styled.Text`
+  display: flex;
+  align-items: flex-start;
   font-weight: normal;
+  justify-content: flex-start;
   color: hsl(0, 0%, 55%);
   font-size: 12px;
   line-height: 12px;
   margin-top: ${sizing.byUnit(2)};
 `;
 
-const Text = styled.Text`
-  font-weight: bold;
-`;
 
 const linkStyles = `
   display: flex;
@@ -85,7 +86,7 @@ class NavProfile extends Component {
     let pendingPayouts = 0;
     earnings.pending.forEach(id => {
       const reward = earnings.entities[id];
-      if (reward && reward.status === 'pending') {
+      if (reward && reward.stakedTokens) {
         // TODO include actual rewards here based on % share
         pendingPayouts += reward.stakedTokens;
       }
@@ -99,14 +100,16 @@ class NavProfile extends Component {
         </View>
 
         <ProfileDetailsContainer>
-          <StyledAvatar user={user} size={64} noName />
+          <StyledAvatar user={user} size={8} noName />
           <WalletInfo>
             <ULink to="/user/wallet" styles={walletLinkStyles}>
-              <StyledIconImg source={{ uri: '/img/r-emoji.png' }} alt="Relevance" />
-              <Text>{Math.round(user.relevance ? user.relevance.pagerank || 0 : 0)}</Text>
+              <RStat user={user} />
               <CoinStat user={user} isOwner={true} />
             </ULink>
-            <PendingPayouts>Pending Payouts: {pendingPayouts}</PendingPayouts>
+            <PendingPayouts>
+              <Text>Pending Rewards: </Text>
+              <CoinStat size={1.25} inherit amount={pendingPayouts} />
+            </PendingPayouts>
           </WalletInfo>
         </ProfileDetailsContainer>
       </ProfileContainer>

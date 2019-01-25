@@ -19,4 +19,9 @@ export default {
   text-decoration: none;
     color: ${(props) => props.color || 'black'}
   `,
+  textRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 };

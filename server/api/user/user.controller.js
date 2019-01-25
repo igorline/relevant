@@ -237,8 +237,8 @@ exports.checkUser = async (req, res, next) => {
       query = { email };
     }
 
-    const userExists = await User.findOne(query, 'handle');
-    if (userExists) return res.status(200).json({ type });
+    const userExists = await User.findOne(query, 'handle', '_id handle');
+    if (userExists) return res.status(200).json(userExists);
     return res.status(200).json(null);
   } catch (err) {
     return next(err);
@@ -455,19 +455,11 @@ exports.destroy = async (req, res, next) => {
   }
 };
 
-// TODO refactor to use same logic as create
 exports.updateHandle = async (req, res, next) => {
   try {
     let { user } = req;
-    const twitterId = user._id;
-    if (user.role !== 'temp') throw new Error('Cannot change user handle');
 
-    if (
-      user._id.toString() !== user.twitterId.toString() &&
-      user._id.toString() !== user.twitter.id_str
-    ) {
-      throw new Error("TwitterId doesn't match user", user._id, user.twitterId);
-    }
+    if (user.role !== 'temp') throw new Error('Cannot change user handle');
 
     const { handle } = req.body.user;
     if (!handle) throw new Error('missing handle');
@@ -478,33 +470,15 @@ exports.updateHandle = async (req, res, next) => {
       if (used) throw new Error('This handle is already taken');
     }
 
-    user = await User.findOne(
-      { _id: twitterId },
-      '+email +twitterAuthSecret +twitterAuthToken +twitterEmail'
-    );
-    user = user.toObject();
-    user.role = 'user';
     user.handle = handle;
-    user._id = handle;
+    user.role = 'user';
 
-    const updatedUser = new User(user);
+    // TODO - do we still want to do this?
+    // await TwitterWorker.updateTwitterPosts(user._id);
 
-    await User.findOne({ _id: twitterId }).remove();
-
-    user = updatedUser;
-
-    const token = jwt.sign(
-      { _id: user._id, role: user.role },
-      process.env.SESSION_SECRET,
-      { expiresIn: 60 * 5 * 60 }
-    );
-
-    await TwitterWorker.updateTwitterPosts(user._id);
-
-    user = await user.initialCoins();
     user = await user.save();
 
-    return res.status(200).json({ token, user });
+    return res.status(200).json(user);
   } catch (err) {
     return next(err);
   }

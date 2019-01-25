@@ -22,7 +22,7 @@ export default function AvatarBox(props) {
 
   let timestamp;
   if (props.date) {
-    timestamp = ' • ' + numbers.timeSince(Date.parse(props.date)) + ' ago';
+    timestamp = numbers.getTimestamp(Date.parse(props.date));
   }
   let premsg;
   let className = reverse ? 'reverse ' : '';

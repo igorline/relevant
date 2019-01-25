@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/web/postbuttons.component';
-import { CommentText, SecondaryText } from 'modules/styled/Text.component';
+import { CommentText, SecondaryText } from 'modules/styled';
 import CommentForm from 'modules/comment/web/commentForm.component';
 import { layout, colors, sizing } from 'app/styles/globalStyles';
 import styled from 'styled-components/primitives';
@@ -121,6 +121,7 @@ class Comment extends Component {
       setActiveComment, parentPost, childComments,
       posts, nesting,
     } = this.props;
+    if (!comment) return null;
     const { editing, copied } = this.state;
     let popup;
     const isActive = activeComment === comment.id;
@@ -153,11 +154,7 @@ class Comment extends Component {
       />
     );
 
-    let user = this.props.user.users[comment.user] || comment.user;
-
-    if (user && !user._id) {
-      user = comment.embeddedUser;
-    }
+    const user = this.props.user.users[comment.embeddedUser.handle] || comment.embeddedUser;
 
     const commentChildren = get(childComments, comment.id) || [];
 
@@ -170,10 +167,10 @@ class Comment extends Component {
           <Container nesting={nesting} isActive={isActive}>
             <View>
               <AvatarBox
-                small
                 auth={this.props.auth}
                 user={{ ...user, _id: comment.user }}
                 postTime={comment.createdAt}
+                showRelevance
               />
               {popup}
             </View>

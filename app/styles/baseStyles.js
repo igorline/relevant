@@ -20,7 +20,7 @@ export const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     color: ${colors.black};
-    font-family: Arial, sans-serif;
+    font-family: HelveticaNeue, sans-serif;
     position:relative;
     flex: 1;
     -webkit-font-smoothing: antialiased;

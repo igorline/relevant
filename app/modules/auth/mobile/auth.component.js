@@ -445,7 +445,7 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       ...authActions,
-      ...adminActions
+      ...adminActions,
     },
     dispatch
   )

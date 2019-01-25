@@ -52,11 +52,11 @@ const Text = styled.Text`
 `;
 
 const PostButtonContainer = styled.View`
-  margin-right: 2em;
+  width: ${sizing.byUnit(12)};
+  display: flex;
 `;
 
 const PostCommentContainer = styled(PostContainer)`
-  // margin-bottom: 2em;
   margin-top: 1em;
   padding-left: 2em;
 `;
@@ -190,6 +190,7 @@ export default withRouter(connect(
     usersState: state.user,
     sort: get(state.view, 'discover.sort'),
     postState: state.posts,
+    earnings: state.earnings,
   }),
   dispatch => ({
     actions: bindActionCreators(

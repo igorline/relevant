@@ -9,7 +9,7 @@ import { setCommunity } from 'modules/auth/auth.actions';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/web/communityActive.component';
-import { Header } from 'modules/styled/Text.component';
+import { Header } from 'modules/styled';
 import get from 'lodash.get';
 
 const linkStyle = `
@@ -35,7 +35,7 @@ const StyledImage = styled.Image`
   width: 30;
   height: 30;
   margin-right: 1em;
-  background: ${colors.grey};
+  background: ${p => p.image ? 'transparent' : colors.grey};
 `;
 
 const StyledCommunityList = styled.View`
@@ -49,7 +49,7 @@ const CommunityLink = ({ community, onClick }) => (
     onPress={() => { onClick(community.slug); }}
     onClick={() => { onClick(community.slug); }}
   >
-    <StyledImage source={{ uri: community.image }}/>
+    <StyledImage image={community.image} source={{ uri: community.image }}/>
     {community.name}
   </ULink>
 );
@@ -63,6 +63,7 @@ const CommunityNav = ({ community, isActive, actions }) => (
   <StyledView active={isActive} >
     {isActive ?
       <CommunityActive
+        key={community._id}
         community={community}
         getCommunityMembers={get(actions, 'getCommunityMembers', null)}
       >

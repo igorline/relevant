@@ -5,10 +5,10 @@ import { computePayout } from 'app/utils/post';
 import { abbreviateNumber } from 'app/utils/numbers';
 import { colors, fonts, sizing } from 'app/styles/globalStyles';
 import styled from 'styled-components/primitives';
+import CoinStat from 'modules/stats/coinStat.component';
 
 const Wrapper = styled.View`
   overflow: visible;
-  width: ${sizing.byUnit(4)};
 `;
 
 const Container = styled.View`
@@ -38,13 +38,17 @@ const Image = styled.Image`
   height: 20px;
 `;
 
-const RLogoImage = styled.Image`
-  width: 14px;
-  height: 14px;
+const SmallText = styled.Text`
+  font-size: ${sizing.byUnit(1.25)}
 `;
 
+
+// const RLogoImage = styled.Image`
+//   width: 14px;
+//   height: 14px;
+// `;
+
 const VoteIcon = styled(Image)`
-  // margin: 1em;
 `;
 
 
@@ -123,7 +127,16 @@ class PostButtons extends Component {
   }
 
   render() {
-    const { post, auth, community, className } = this.props;
+    const { post, auth, community, className, earnings } = this.props;
+
+    let pendingPayouts = 0;
+    if (earnings) {
+      earnings.pending.forEach(id => {
+        const reward = earnings.entities[id];
+        // TODO include actual rewards here based on % share
+        if (reward && reward.post === post._id) pendingPayouts += reward.stakedTokens;
+      });
+    }
 
     if (post === 'notFound') {
       return null;
@@ -175,6 +188,13 @@ class PostButtons extends Component {
               source={{ uri: votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg' }}
             />
           </Touchable>
+          { pendingPayouts ?
+            <View style={{ display: 'flex', flexDirection: 'column' }}>
+              <SmallText>your reward:</SmallText>
+              <CoinStat mr={0} size={1.25} inherit amount={pendingPayouts} />
+            </View> :
+            null
+          }
         </Container>
       </Wrapper>
     );
