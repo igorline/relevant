@@ -15,10 +15,10 @@ const StyledLink = styled.a`
 `;
 
 const StyledIconLink = styled(StyledLink)`
-  height: ${sizing.byUnit(3)};
-  width: ${sizing.byUnit(3)};
+  height: ${sizing(3)};
+  width: ${sizing(3)};
   color: ${colors.black};
-  margin-right: ${sizing.byUnit(2)};
+  margin-right: ${sizing(2)};
 
   &:hover svg * {
     fill: ${colors.grey};
@@ -27,15 +27,15 @@ const StyledIconLink = styled(StyledLink)`
     fill: ${colors.black};
   }
   svg {
-    height: ${sizing.byUnit(3)};
-    width: ${sizing.byUnit(3)};
+    height: ${sizing(3)};
+    width: ${sizing(3)};
   }
 `;
 
 const Footer = styled.div`
-  font-size: ${sizing.byUnit(1.5)};
-  line-height: ${sizing.byUnit(2)};
-  margin: ${sizing.byUnit(4)};
+  font-size: ${sizing(1.5)};
+  line-height: ${sizing(2)};
+  margin: ${sizing(4)};
 `;
 
 const IconContainer = styled.div`

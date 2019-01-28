@@ -26,23 +26,12 @@ const MainContent = styled.div`
   padding-top: ${layout.headerHeight}
 `;
 
-const StyledContentHeader = styled.div`
-  position: fixed;
-  display: flex;
-  z-index: 100;
-  top: 0;
-  right: 0px;
-  left: ${layout.sideNavWidth};
-`;
-
 
 const MainNav = props => (
   <ContentContainer>
     <StyledSideNav {...props} />
     <MainContent>
-      <StyledContentHeader>
-        <ContentHeader />
-      </StyledContentHeader>
+      <ContentHeader />
       {renderRoutes(props.route.routes)}
     </MainContent>
   </ContentContainer>

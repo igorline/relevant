@@ -12,14 +12,14 @@ const Wrapper = styled.View`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: ${sizing.byUnit(2)};
-  padding-left: ${sizing.byUnit(0)};
+  margin-top: ${sizing(2)};
+  padding-left: ${sizing(0)};
 `;
 
 // const Wrapper = styled.View`
 //   position: relative;
 //   overflow: hidden;
-//   padding-left: ${sizing.byUnit(0)};
+//   padding-left: ${sizing(0)};
 //   flex-shrink: 1;
 // /*  border-left-color: ${colors.lineColor};
 //   border-left-width: 1px;
@@ -27,9 +27,9 @@ const Wrapper = styled.View`
 // `;
 
 const Container = styled.View`
-  padding: 0 ${sizing.byUnit(1)};
+  padding: 0 ${sizing(1)};
   flex-shrink: 1;
-  max-height: ${sizing.byUnit(4.5)};
+  max-height: ${sizing(4.5)};
   overflow: hidden;
 `;
 

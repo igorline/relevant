@@ -10,7 +10,7 @@ import { standardRoutes } from './discoverHelper';
 
 const StyledNavLink = styled(NavLink)`
   ${tabStyles}
-  margin-right: ${sizing.byUnit(2)};
+  margin-right: ${sizing(2)};
   :hover {
     color: black;
   }

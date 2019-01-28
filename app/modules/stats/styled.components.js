@@ -2,9 +2,9 @@ import styled from 'styled-components/primitives';
 import sizing from 'app/styles/sizing';
 
 export const Icon = styled.Image`
-  width: ${p => p.size ? sizing.byUnit(p.size) : sizing.byUnit(3)};
-  height: ${p => p.size ? sizing.byUnit(p.size) : sizing.byUnit(3)};
-  margin-right: ${p => p.size ? sizing.byUnit(p.size / 4) : sizing.byUnit(3 / 4)};
+  width: ${p => p.size ? sizing(p.size) : sizing(3)};
+  height: ${p => p.size ? sizing(p.size) : sizing(3)};
+  margin-right: ${p => p.size ? sizing(p.size / 4) : sizing(3 / 4)};
 `;
 
 export const IconWrapper = styled.Text`
@@ -14,6 +14,6 @@ export const IconWrapper = styled.Text`
   justify-content: center;
   margin-right: ${p =>
     typeof p.mr === 'number' ?
-      sizing.byUnit(p.mr) :
-      sizing.byUnit(1.5)};
+      sizing(p.mr) :
+      sizing(1.5)};
 `;

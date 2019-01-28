@@ -24,8 +24,8 @@ const Spacer = styled.View`
   flex-direction: row;
   position: relative;
   background-color: ${(p) => p.bgColor || 'transparent'}
-  padding: ${(p) => sizing.byUnit(p.padding || 0)};
-  padding-left: ${(p) => p.nesting ? sizing.byUnit((p.nesting + 1) * 4) : sizing.byUnit(4)};
+  padding: ${(p) => sizing(p.padding || 0)};
+  padding-left: ${(p) => p.nesting ? sizing((p.nesting + 1) * 4) : sizing(4)};
   flex-grow: 1;
   ${(p) => p.withBorder ? layout.universalBorder() : ''}
 `;
@@ -35,12 +35,12 @@ const Container = styled.View`
   flex-direction: column;
   flex-grow: 1;
   flex-shrink: 1;
-  padding-bottom: ${sizing.byUnit(2)};
+  padding-bottom: ${sizing(2)};
   ${(p) => p.isActive ? '' : layout.universalBorder('bottom')}
 `;
 
 const PostButtonsContainer = styled.View`
-  margin-right: ${sizing.byUnit(4)};
+  margin-right: ${sizing(4)};
 `;
 
 const Actions = styled.View`

@@ -24,11 +24,11 @@ import * as discoverHelper from './discoverHelper';
 const Wrapper = styled.View`
   display: flex;
   flex-direction: column;
-  padding: ${sizing.byUnit(4)} ${sizing.byUnit(4)} ${sizing.byUnit(4)} 0;
+  padding: ${sizing(4)} ${sizing(4)} ${sizing(4)} 0;
 `;
 
 const BreadCrumbs = styled.Text`
-  margin: ${sizing.byUnit(-4)} ${sizing.byUnit(4)} ${sizing.byUnit(4)} ${sizing.byUnit(4)};
+  margin: ${sizing(-4)} ${sizing(4)} ${sizing(4)} ${sizing(4)};
 `;
 
 const POST_PAGE_SIZE = 15;

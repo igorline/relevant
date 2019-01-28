@@ -8,16 +8,20 @@ import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/UAvatar.component';
 import { LinkWithIcon, Header } from 'modules/styled';
 
+const IconLink = styled.Text`
+  ${LinkWithIcon}
+`;
+
 const StyledHeader = styled(Header)`
-  margin: ${sizing.byUnit(4)} ${sizing.byUnit(4)} ${sizing.byUnit(3)} ${sizing.byUnit(4)};
+  margin: ${sizing(4)} ${sizing(4)} ${sizing(3)} ${sizing(4)};
 `;
 
 const StyledAvatar = styled(UAvatar)`
-  margin: 0 ${sizing.byUnit(1)} ${sizing.byUnit(1)} 0;
+  margin: 0 ${sizing(1)} ${sizing(1)} 0;
 `;
 
 const NavSection = styled.View`
-  padding: 0 ${sizing.byUnit(4)} ${sizing.byUnit(4)};
+  padding: 0 ${sizing(4)} ${sizing(4)};
   borderBottomColor: ${colors.lineColor};
   borderBottomWidth: ${StyleSheet.hairlineWidth};
 `;
@@ -29,14 +33,14 @@ const MemberContainer = styled.View`
 `;
 
 const TopicsContainer = styled.View`
-  margin: ${sizing.byUnit(1)} 0 ${sizing.byUnit(6)} ${sizing.byUnit(5.5)};
+  margin: ${sizing(1)} 0 ${sizing(6)} ${sizing(5.5)};
 `;
 
 // TODO: match to style guide once we get it e.g. h2, h3
 const MemberCount = styled.Text`
   font-weight: bold;
   color: black;
-  margin-bottom: ${sizing.byUnit(2)};
+  margin-bottom: ${sizing(2)};
 `;
 
 const topicStyles = `
@@ -78,11 +82,11 @@ class CommunityActive extends Component {
         <NavSection>
           <TopicsContainer>
             {topics.map(topic => (
-              <LinkWithIcon key={topic}>
+              <IconLink key={topic}>
                 <ULink navLink to={`/${community.slug}/new/${topic}`} styles={topicStyles}>
                   #{topic}
                 </ULink>
-              </LinkWithIcon>
+              </IconLink>
             ))}
           </TopicsContainer>
           <MemberCount>{`${totalMembers} Members`}</MemberCount>

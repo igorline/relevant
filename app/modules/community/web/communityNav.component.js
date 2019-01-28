@@ -16,7 +16,7 @@ const linkStyle = `
   display: flex;
   align-items: center;
   color: ${colors.black};
-  padding: ${sizing.byUnit(1)} ${sizing.byUnit(4)};
+  padding: ${sizing(1)} ${sizing(4)};
   &:hover {
     font-weight: bold;
     background: white;
@@ -25,18 +25,19 @@ const linkStyle = `
 `;
 
 const CommunityContainer = styled.View`
-  margin: ${sizing.byUnit(3)} 0};
+  margin: ${sizing(3)} 0};
 `;
 
 const StyledImage = styled.Image`
-  width: ${sizing.byUnit(4)};
-  height: ${sizing.byUnit(4)};
-  margin-right:  ${sizing.byUnit(1.5)};
+  width: ${sizing(4)};
+  height: ${sizing(4)};
+  margin-right:  ${sizing(1.5)};
   background: ${p => p.image ? 'transparent' : colors.grey};
 `;
 
-const CommunityLinkTab = styled(LinkWithIcon)`
-  padding: ${sizing.byUnit(0)} ${sizing.byUnit(0)};
+const CommunityLinkTab = styled.Text`
+  ${LinkWithIcon}
+  padding: ${sizing(0)} ${sizing(0)};
 `;
 
 const StyledCommunityList = styled.View`

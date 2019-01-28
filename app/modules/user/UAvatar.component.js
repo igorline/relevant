@@ -8,8 +8,8 @@ const Wrapper = styled.View`
 `;
 
 const StyledImage = styled.Image`
-  width: ${p => p.size ? sizing.byUnit(p.size) : sizing.byUnit(4)};
-  height: ${p => p.size ? sizing.byUnit(p.size) : sizing.byUnit(4)};
+  width: ${p => p.size ? sizing(p.size) : sizing(4)};
+  height: ${p => p.size ? sizing(p.size) : sizing(4)};
   border-radius: 50;
 `;
 

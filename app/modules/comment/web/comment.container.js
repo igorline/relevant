@@ -11,8 +11,8 @@ import CommentForm from './commentForm.component';
 import Comment from './comment.component';
 
 const FormContainer = styled.View`
-  padding: ${sizing.byUnit(4)};
-  padding-left: ${sizing.byUnit(12)};
+  padding: ${sizing(4)};
+  padding-left: ${sizing(12)};
   background-color: ${colors.secondaryBG};
 `;
 

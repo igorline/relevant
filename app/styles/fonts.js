@@ -10,11 +10,11 @@ export const Georgia = "font-family: 'Georgia';";
 export const lh = 4 / 3;
 
 export const linkStyles = {
-  fontSize: sizing.byUnit(1.5),
-  lineHeight: sizing.byUnit(1.5 * lh),
+  fontSize: sizing(1.5),
+  lineHeight: sizing(1.5 * lh),
   fontFamily: 'HelveticaNeue-Medium',
   color: colors.grey,
-  padding: `${sizing.byUnit(0.5)} 0`,
+  padding: `${sizing(0.5)} 0`,
 };
 
 export const altLinkStyles = {
@@ -23,7 +23,7 @@ export const altLinkStyles = {
 };
 
 export const bodyStyle = {
-  fontSize: sizing.byUnit(1.5),
-  lineHeight: sizing.byUnit(1.5 * lh),
+  fontSize: sizing(1.5),
+  lineHeight: sizing(1.5 * lh),
   fontFamily: 'HelveticaNeue',
 };

@@ -3,11 +3,10 @@ if (process.env.WEB === 'true') {
   isNative = false;
 }
 
-export default {
-  byUnit: (unit) => {
-    if (!isNative) {
-      return `${(unit * 8 / 10)}rem`;
-    }
-    return `${unit * 8}px`;
+export default function(unit) {
+  if (!isNative) {
+    return `${(unit * 7.2)}px`;
   }
-};
+  return `${unit * 8}px`;
+}
+
