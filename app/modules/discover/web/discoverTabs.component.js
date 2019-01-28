@@ -5,11 +5,12 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { tabStyles } from 'modules/navigation/web/tabStyles';
+import { sizing } from 'app/styles';
 import { standardRoutes } from './discoverHelper';
 
 const StyledNavLink = styled(NavLink)`
   ${tabStyles}
-  margin-right: 1em;
+  margin-right: ${sizing.byUnit(2)};
   :hover {
     color: black;
   }

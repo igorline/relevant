@@ -289,7 +289,6 @@ export function getUser(callback) {
       if (callback) callback(user);
       return user;
     } catch (error) {
-      console.log('getUSER error ', error.message);
       const message = error ? error.message : null;
       dispatch(errorActions.setError('universal', true, message));
       dispatch(loginUserFailure('Server error'));

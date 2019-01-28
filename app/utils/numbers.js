@@ -62,6 +62,7 @@ export function abbreviateNumber(num, _fixed) {
 }
 
 export function getTimestamp(date) {
+  if (!date) return null;
   return ' • ' + moment(date).fromNow();
 }
 

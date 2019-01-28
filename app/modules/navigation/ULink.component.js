@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
-import { colors } from 'app/styles/globalStyles';
+import { colors } from 'app/styles';
 
 let styled;
 let StyledLink;

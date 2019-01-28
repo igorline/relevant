@@ -150,7 +150,7 @@ function mapDispatchToProps(dispatch) {
         ...tagActions,
         ...authActions,
         ...commentActions,
-        // ...postActions,
+        ...postActions,
         ...animationActions,
         ...investActions,
         ...userActions,

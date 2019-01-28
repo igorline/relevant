@@ -142,7 +142,11 @@ export default function post(state = initialState, action) {
               [type]: true
             }
           }
-        }
+        },
+        links: {
+          ...state.links,
+          ...action.payload.data.entities.links
+        },
       };
     }
 

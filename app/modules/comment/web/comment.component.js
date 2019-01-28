@@ -6,7 +6,7 @@ import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/web/postbuttons.component';
 import { CommentText, SecondaryText } from 'modules/styled';
 import CommentForm from 'modules/comment/web/commentForm.component';
-import { layout, colors, sizing } from 'app/styles/globalStyles';
+import { layout, colors, sizing } from 'app/styles';
 import styled from 'styled-components/primitives';
 
 if (process.env.BROWSER === true) {

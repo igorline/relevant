@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import get from 'lodash.get';
 import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
-import Popup from 'modules/ui/web/popup';
 import styled from 'styled-components/primitives';
-import { colors, sizing } from 'app/styles/globalStyles';
+import { colors, sizing } from 'app/styles';
 import PostComment from 'modules/post/web/postComment.component';
 import PostButtons from './postbuttons.component';
 import PostInfo from './postinfo.component';
@@ -22,8 +20,6 @@ const Wrapper = styled.View`
   width: 100%;
   max-width: 100%;
   overflow: hidden;
-  /* border: 1px solid black; */
-  /* padding: 1em 0; */
   padding-bottom: ${sizing.byUnit(4)};
 `;
 
@@ -52,14 +48,9 @@ const Text = styled.Text`
 `;
 
 const PostButtonContainer = styled.View`
-  width: ${sizing.byUnit(12)};
-  display: flex;
+  width: ${sizing.byUnit(13)};
 `;
 
-const PostCommentContainer = styled(PostContainer)`
-  margin-top: 1em;
-  padding-left: 2em;
-`;
 
 export class Post extends Component {
   static propTypes = {
@@ -77,6 +68,9 @@ export class Post extends Component {
     history: PropTypes.object,
     usersState: PropTypes.object,
     sort: PropTypes.string,
+    detailView: PropTypes.bool,
+    firstPost: PropTypes.object,
+    comment: PropTypes.object,
   };
 
   deletePost() {
@@ -112,17 +106,8 @@ export class Post extends Component {
   }
 
   render() {
-    const { post, repost, auth, sort, postState, detailView } = this.props;
+    const { post, auth, sort, detailView, link, firstPost, comment } = this.props;
     const { community } = auth;
-
-    const link = postState.links[post.metaPost];
-    let firstPost;
-    if (post.new && post.new.length) {
-      const firstPostId = post.new[post.new.length - 1];
-      firstPost = postState.posts[firstPostId];
-    }
-
-    let popup;
 
     if (post === 'notFound') {
       return (
@@ -133,23 +118,9 @@ export class Post extends Component {
     }
     if (!post) return null;
 
-
-    if (auth.user && auth.user._id === post.user) {
-      popup = (
-        <Popup
-          options={[
-            { text: 'Edit Post', action: this.editPost.bind(this) },
-            { text: 'Delete Post', action: this.deletePost.bind(this) }
-          ]}
-        >
-          <span className={'optionDots'}>...</span>
-        </Popup>
-      );
-    }
-
     const postUrl = `/${community}/post/${post._id}`;
-    const commentId = get(post, `${sort}.0`);
-    const comment = postState.posts[commentId];
+
+
     return (
       <Wrapper detailView={detailView}>
         <PostContainer>
@@ -164,19 +135,16 @@ export class Post extends Component {
               postUrl={postUrl}
               sort={sort}
               firstPost={firstPost}
-            />
-            {!detailView &&
-              (
-                <PostCommentContainer>
-                  <PostComment
-                    comment={comment}
-                    auth={this.props.auth}
-                    community={community}
-                    postUrl={postUrl}
-                  />
-                </PostCommentContainer>
-              )
-            }
+            >
+              {!detailView &&
+              <PostComment
+                comment={comment}
+                auth={this.props.auth}
+                community={community}
+                postUrl={postUrl}
+              />
+              }
+            </ PostInfo>
           </PostInfoContainer>
         </PostContainer>
       </Wrapper>
@@ -188,8 +156,7 @@ export default withRouter(connect(
   state => ({
     community: state.community.communities[state.community.active],
     usersState: state.user,
-    sort: get(state.view, 'discover.sort'),
-    postState: state.posts,
+    auth: state.auth,
     earnings: state.earnings,
   }),
   dispatch => ({

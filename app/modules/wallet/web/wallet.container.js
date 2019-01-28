@@ -6,7 +6,6 @@ import { BondedTokenContainer } from 'bonded-token';
 import * as authActions from 'modules/auth/auth.actions';
 import * as earningsActions from 'modules/wallet/earnings.actions';
 import Eth from 'modules/web_ethTools/eth.context';
-import Footer from 'modules/navigation/web/footer.component';
 import MetaMaskCta from 'modules/web_splash/metaMaskCta.component';
 import { initDrizzle } from 'app/utils/eth';
 import Wallet from './wallet.component';

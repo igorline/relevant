@@ -18,7 +18,6 @@ export default class TwitterButton extends Component {
   static propTypes = {
     type: PropTypes.string,
     actions: PropTypes.object,
-    admin: PropTypes.object,
     children: PropTypes.node,
     auth: PropTypes.object
   };

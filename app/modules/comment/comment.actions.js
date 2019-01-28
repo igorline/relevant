@@ -102,7 +102,6 @@ export function deleteComment(id) {
       });
       return dispatch(removePost(id));
     } catch (err) {
-      console.log(err);
       return Alert.alert(err.message);
     }
   };

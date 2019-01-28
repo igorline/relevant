@@ -4,11 +4,11 @@ import styled from 'styled-components/primitives';
 import { ActivityIndicator } from 'react-native-web';
 import ULink from 'modules/navigation/ULink.component';
 import { Title, SecondaryText } from 'modules/styled';
-import { colors, sizing } from 'app/styles/globalStyles';
-import { getTimestamp } from 'app/utils/numbers';
+import { sizing } from 'app/styles';
+// import { getTimestamp } from 'app/utils/numbers';
 import get from 'lodash.get';
 import Tag from 'modules/tag/tag.component';
-
+import Gradient from 'modules/post/gradient.component';
 
 const Wrapper = styled.View`
   display: flex;
@@ -18,32 +18,35 @@ const Wrapper = styled.View`
 
 const View = styled.View`
   position: relative;
-  /* flex-direction: column; */
 `;
 
-const TextView = styled.View`
-  display: inline;
-`;
+// const TextView = styled.View`
+//   display: flex;
+//   flex-direction: row;
+// `;
 
 const Text = styled.Text`
   position: relative;
 `;
 
+const ImageContainer = styled.View`
+  display: flex;
+  flex: 1;
+  width: ${sizing.byUnit(26)};
+  height: ${sizing.byUnit(13)};
+  margin-right: ${sizing.byUnit(2)};
+`;
+
 const Image = styled.Image`
-  height: 104px;
-  width: 208px;
-  margin-right: 1em;
-  margin-bottom: 1em;
+  flex: 1;
 `;
 
 const PostText = styled.View`
   flex-shrink: 1;
-  margin-bottom: ${sizing.byUnit(2)};
 `;
 
 
 const PostTitle = styled(Title)`
-  padding-bottom: ${sizing.byUnit(1)}
 `;
 
 export default function PostInfo(props) {
@@ -55,43 +58,48 @@ export default function PostInfo(props) {
       </View>
     );
   }
-  const title = get(link, 'title') || get(post, 'title') || get(post, 'body');
+  if (!post) return null;
+  let title =
+    get(link, 'title') ||
+    get(post, 'title') ||
+    get(post, 'body') ||
+    get(firstPost, 'body');
 
-  let timestamp;
-  if (post.postDate) {
-    timestamp = getTimestamp(post.postDate);
-  }
+  if (title && title.length > 160) title = title.substring(0, 160) + '...';
+  title = title && title.trim();
 
   const imageUrl = get(link, 'image') || null;
 
   const userSet = new Set();
   (get(post, 'commentary', []) || []).forEach(user => userSet.add(user.id));
-  const uniqueUsers = userSet.size - 1;
-
-  let postUser;
-  if (get(post, 'embeddedUser.handle')) {
-    postUser = post.embeddedUser;
-  } else if (get(firstPost, 'embeddedUser.handle')) {
-    postUser = firstPost.embeddedUser;
-  }
   const tags = post.tags && post.tags.length ? get(post, 'tags', []) : [];
+
+  // const timestamp = getTimestamp(post.postDate);
+  // const uniqueUsers = userSet.size - 1;
+  // let postUser;
+  // if (get(post, 'embeddedUser.handle')) {
+  //   postUser = post.embeddedUser;
+  // } else if (get(firstPost, 'embeddedUser.handle')) {
+  //   postUser = firstPost.embeddedUser;
+  // }
+
   const postContent = (
     <Wrapper>
-      {imageUrl ?
-        <View>
-          <ULink external to={post.url} target="_blank">
-            <Image source={{ uri: imageUrl }} />
-          </ULink>
-        </View>
-        : <View />}
+      <View>
+        <ULink external to={post.url} target="_blank">
+          <ImageContainer>
+            {imageUrl ? <Image source={{ uri: imageUrl }} /> : <Gradient title={title} />}
+          </ImageContainer>
+        </ULink>
+      </View>
       <PostText>
         {postUrl ?
           <ULink to={postUrl}>
             <PostTitle>{title}</PostTitle>
           </ULink>
-          : <PostTitle>{title}</PostTitle>}
-        <SecondaryText>
-
+          : <PostTitle>{title}</PostTitle>
+        }
+        {/* <SecondaryText>
           { get(postUser, 'handle') &&
             <TextView>
               <Text>Posted by: </Text>
@@ -99,36 +107,36 @@ export default function PostInfo(props) {
                 {`@${get(postUser, 'handle')}`}
               </ULink>
             </TextView>
-          }
-          { postUrl && (
-            <TextView>
-              <ULink to={postUrl}>
-                {uniqueUsers > 1 ? `and ${uniqueUsers} others` : ''}
-              </ULink>
-            </TextView>)
-          }
+          }}
           { postUrl && timestamp }{' • '}
-          { get(link, 'domain') &&
-            <ULink external to={post.url} external target="_blank" disabled={!postUrl} >
-              {link.domain && `${link.domain} ↗`}
-            </ULink>
-          }
-        </SecondaryText>
-        <SecondaryText color={colors.blue}>
-          { post.commentCount ?
+        </SecondaryText> */}
+
+        <SecondaryText>
+          { post.commentCount && postUrl ?
             <Text>
               <ULink to={postUrl} styles={'text-decoration: underline'} >
-                {post.commentCount} Comments
+                {post.commentCount} Comment{post.commentCount > 1 ? 's' : ''}
               </ULink>
-              <Text>  </Text>
+              <Text> • </Text>
             </Text> : null
           }
           {tags.length ?
-            tags.map(tag => <Tag name={tag} community={community} key={tag} />)
+            <Text>
+              {tags.map(tag => <Tag name={tag} community={community} key={tag} />)}
+              <Text>• </Text>
+            </Text>
             : null}
+          { get(link, 'domain') &&
+            <Text>
+              <ULink external to={post.url} external target="_blank" disabled={!postUrl} >
+                {link.domain && `${link.domain} ↗`}
+              </ULink>
+            </Text>
+          }
         </SecondaryText>
-      </PostText>
+        {props.children}
 
+      </PostText>
     </Wrapper>
   );
 

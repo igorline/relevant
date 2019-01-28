@@ -9,14 +9,14 @@ import { withRouter } from 'react-router-dom';
 import ULink from 'modules/navigation/ULink.component';
 import { Header } from 'modules/styled';
 import styled from 'styled-components/primitives';
-import { sizing, colors } from 'app/styles/globalStyles';
+import { sizing, colors } from 'app/styles';
 
 const View = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: baseline;
-  padding-bottom: ${sizing.byUnit(4)};
+  margin-bottom: ${sizing.byUnit(3)};
 `;
 
 const Text = styled.Text`
@@ -32,17 +32,19 @@ const WalletInfo = styled.View`
 `;
 
 const StyledHeader = styled(Header)`
+  margin-bottom: ${sizing.byUnit(0)};
 `;
 
 const ProfileContainer = styled.View`
   padding: ${sizing.byUnit(4)};
+  padding-bottom: ${sizing.byUnit(5)};
+
 `;
 
 const ProfileDetailsContainer = styled.View`
   display: flex;
   align-items: center;
   flex-direction: row;
-  padding-top: ${sizing.byUnit(2)};
 `;
 
 const StyledAvatar = styled(UAvatar)`
@@ -51,11 +53,10 @@ const StyledAvatar = styled(UAvatar)`
 const PendingPayouts = styled.Text`
   display: flex;
   align-items: flex-start;
-  font-weight: normal;
   justify-content: flex-start;
-  color: hsl(0, 0%, 55%);
-  font-size: 12px;
-  line-height: 12px;
+  color: ${colors.grey};
+  font-size: ${sizing.byUnit(1.5)};
+  line-height: ${sizing.byUnit(1.5)};
   margin-top: ${sizing.byUnit(2)};
 `;
 
@@ -63,6 +64,7 @@ const PendingPayouts = styled.Text`
 const linkStyles = `
   display: flex;
   align-items: center;
+  font-size: ${sizing.byUnit(1.5)}
   color: ${colors.blue};
 `;
 
@@ -108,7 +110,7 @@ class NavProfile extends Component {
             </ULink>
             <PendingPayouts>
               <Text>Pending Rewards: </Text>
-              <CoinStat size={1.25} inherit amount={pendingPayouts} />
+              <CoinStat size={1.5} inherit amount={pendingPayouts} />
             </PendingPayouts>
           </WalletInfo>
         </ProfileDetailsContainer>

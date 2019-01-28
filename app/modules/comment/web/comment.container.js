@@ -6,7 +6,7 @@ import * as commentActions from 'modules/comment/comment.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import styled from 'styled-components/primitives';
-import { sizing, colors } from 'app/styles/globalStyles';
+import { sizing, colors } from 'app/styles';
 import CommentForm from './commentForm.component';
 import Comment from './comment.component';
 

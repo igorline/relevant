@@ -6,34 +6,22 @@ import ActivityButton from 'modules/activity/web/activityButton.component';
 import AuthContainer from 'modules/auth/web/auth.container';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { colors, layout } from 'app/styles/globalStyles';
+import { colors, layout, sizing } from 'app/styles';
 import RequestInvite from 'modules/web_splash/requestInvite.component';
 
 const Nav = styled.nav`
   width: 100%;
-  background: white;
+  background-image: linear-gradient(hsla(0,0%,100%, 1) 70%, hsla(0,0%,100%, 0) 100%);
   display: flex;
-  padding: 0 1.5em;
+  padding: 0 ${sizing.byUnit(4)};
   justify-content: space-between;
-  line-height: 20px;
   align-items: center;
   height: ${layout.headerHeight};
-  border-bottom: ${layout.borderStyles(colors.lineColor)};
+  /* border-bottom: ${layout.borderStyles(colors.lineColor)}; */
 `;
 
 const NewPost = styled.button`
-  background: blue;
-  color: white;
-  display: flex;
-  border: none;
-  justify-content: space-between;
-  height: 4em;
-  padding: 0 3em;
-  font-size: 14px;
-  font-weight: bold;
-  a {
-    color: white;
-  }
+  ${layout.button}
 `;
 
 const Login = styled.a`

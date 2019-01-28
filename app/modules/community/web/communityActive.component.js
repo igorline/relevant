@@ -3,57 +3,61 @@ import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import styled from 'styled-components/primitives';
 import { StyleSheet } from 'react-primitives';
-import { colors } from 'app/styles/globalStyles';
+import { colors, sizing } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/UAvatar.component';
+import { LinkWithIcon, Header } from 'modules/styled';
 
-const greyText = '#717171';
+const StyledHeader = styled(Header)`
+  margin: ${sizing.byUnit(4)} ${sizing.byUnit(4)} ${sizing.byUnit(3)} ${sizing.byUnit(4)};
+`;
 
 const StyledAvatar = styled(UAvatar)`
-  margin-right: 0.5em;
+  margin: 0 ${sizing.byUnit(1)} ${sizing.byUnit(1)} 0;
 `;
 
 const NavSection = styled.View`
-  padding: 2em;
+  padding: 0 ${sizing.byUnit(4)} ${sizing.byUnit(4)};
   borderBottomColor: ${colors.lineColor};
   borderBottomWidth: ${StyleSheet.hairlineWidth};
 `;
 
 const MemberContainer = styled.View`
-  margin-bottom: 1em;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 `;
 
 const TopicsContainer = styled.View`
-  margin: 1em 0 0 1em;
+  margin: ${sizing.byUnit(1)} 0 ${sizing.byUnit(6)} ${sizing.byUnit(5.5)};
 `;
 
 // TODO: match to style guide once we get it e.g. h2, h3
 const MemberCount = styled.Text`
   font-weight: bold;
   color: black;
-  margin-bottom: 1em;
+  margin-bottom: ${sizing.byUnit(2)};
 `;
 
 const topicStyles = `
-  color: ${greyText};
+  color: ${colors.grey};
   &:hover {
-    color: black;
+    color: ${colors.black};
   }
   &.active {
-    color: black;
+    color: ${colors.black};
   }
 `;
 
-const StyledCommunityList = styled.View`
+const Wrapper = styled.View`
+  background: white;
+  margin-right: 1px;
 `;
 
 class CommunityActive extends Component {
   static propTypes = {
     community: PropTypes.object,
-    children: PropTypes.array,
+    children: PropTypes.node,
     getCommunityMembers: PropTypes.func,
   };
 
@@ -68,18 +72,19 @@ class CommunityActive extends Component {
     const totalMembers = get(community, 'memberCount', 0);
     const limitedMembers = members.slice(0, 12);
     return (
-      <StyledCommunityList>
+      <Wrapper>
+        <StyledHeader>Community</StyledHeader>
+        {children}
         <NavSection>
-          {children}
           <TopicsContainer>
             {topics.map(topic => (
-              <ULink navLink key={topic} to={`/${community.slug}/new/${topic}`} styles={topicStyles}>
-                #{topic}
-              </ULink>
+              <LinkWithIcon key={topic}>
+                <ULink navLink to={`/${community.slug}/new/${topic}`} styles={topicStyles}>
+                  #{topic}
+                </ULink>
+              </LinkWithIcon>
             ))}
           </TopicsContainer>
-        </NavSection>
-        <NavSection>
           <MemberCount>{`${totalMembers} Members`}</MemberCount>
           <MemberContainer>
             {limitedMembers.map(member => (
@@ -90,7 +95,7 @@ class CommunityActive extends Component {
             ))}
           </MemberContainer>
         </NavSection>
-      </StyledCommunityList>);
+      </Wrapper>);
   }
 }
 

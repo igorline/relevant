@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { numbers } from 'app/utils';
 import styled from 'styled-components';
-import colors from 'app/styles/colors';
+import * as colors from 'app/styles/colors';
 import Avatar from './avatar.component';
 
 const Handle = styled.div`

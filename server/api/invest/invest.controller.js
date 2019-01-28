@@ -1,3 +1,4 @@
+/* eslint no-console: 0 */
 import { EventEmitter } from 'events';
 import apnData from '../../pushNotifications';
 import { computeApproxPageRank } from '../../utils/pagerankCompute';
@@ -10,10 +11,6 @@ const Invest = require('./invest.model');
 const Relevance = require('../relevance/relevance.model');
 
 const InvestEvents = new EventEmitter();
-
-function handleError(res, err) {
-  return res.status(500).send(err);
-}
 
 const { NODE_ENV } = process.env;
 
