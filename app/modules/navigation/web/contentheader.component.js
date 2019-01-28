@@ -10,9 +10,9 @@ import { colors, layout, sizing } from 'app/styles';
 import RequestInvite from 'modules/web_splash/requestInvite.component';
 
 const Nav = styled.nav`
-  width: 100%;
   background-image: linear-gradient(hsla(0,0%,100%, 1) 70%, hsla(0,0%,100%, 0) 100%);
   display: flex;
+  flex: 1;
   padding: 0 ${sizing.byUnit(4)};
   justify-content: space-between;
   align-items: center;
@@ -83,7 +83,7 @@ class ContentHeader extends Component {
     const { user } = auth;
     const temp = user && user.role === 'temp';
     return (
-      <div>
+      <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
         <Nav className={className}>
           <DiscoverTabs />
           <SubNav>
@@ -91,10 +91,11 @@ class ContentHeader extends Component {
               <ActivityButton />
             </ActivityButtonContainer>
             {
-              auth.isAuthenticated ?
+              auth.isAuthenticated
+                ?
                 <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
                   <NewPost >
-                      New Post
+                    New Post
                   </NewPost>
                 </Link>
                 :
