@@ -32,9 +32,9 @@ const Text = styled.Text`
 const ImageContainer = styled.View`
   display: flex;
   flex: 1;
-  width: ${sizing.byUnit(26)};
-  height: ${sizing.byUnit(13)};
-  margin-right: ${sizing.byUnit(2)};
+  width: ${sizing(26)};
+  height: ${sizing(13)};
+  margin-right: ${sizing(2)};
 `;
 
 const Image = styled.Image`

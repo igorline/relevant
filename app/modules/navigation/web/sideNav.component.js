@@ -33,7 +33,7 @@ const SideNavSection = styled.div`
 const LogoContainer = styled(SideNavSection)`
   height: ${layout.headerHeight};
   display: flex;
-  padding-left: ${sizing.byUnit(4)};
+  padding-left: ${sizing(4)};
   align-items: center;
   z-index: 100;
   position: fixed;
@@ -51,7 +51,7 @@ const StyledLink = styled(Link)`
 
 const StyledImg = styled.img`
   max-width: 100%;
-  height: ${sizing.byUnit(4)};
+  height: ${sizing(4)};
 `;
 
 const SideNav = (props) => {

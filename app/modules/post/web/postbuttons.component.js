@@ -38,7 +38,7 @@ const Image = styled.Image`
 `;
 
 const SmallText = styled.Text`
-  font-size: ${sizing.byUnit(1.25)}
+  font-size: ${sizing(1.25)}
 `;
 
 

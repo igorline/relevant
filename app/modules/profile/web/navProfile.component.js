@@ -16,7 +16,7 @@ const View = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: ${sizing.byUnit(3)};
+  margin-bottom: ${sizing(3)};
 `;
 
 const Text = styled.Text`
@@ -27,17 +27,17 @@ const Text = styled.Text`
 const WalletInfo = styled.View`
   display: flex;
   flex-direction: column;
-  padding-left: ${sizing.byUnit(2)};
+  padding-left: ${sizing(2)};
   flex-shrink: 1;
 `;
 
 const StyledHeader = styled(Header)`
-  margin-bottom: ${sizing.byUnit(0)};
+  margin-bottom: ${sizing(0)};
 `;
 
 const ProfileContainer = styled.View`
-  padding: ${sizing.byUnit(4)};
-  padding-bottom: ${sizing.byUnit(5)};
+  padding: ${sizing(4)};
+  padding-bottom: ${sizing(5)};
 
 `;
 
@@ -55,16 +55,16 @@ const PendingPayouts = styled.Text`
   align-items: flex-start;
   justify-content: flex-start;
   color: ${colors.grey};
-  font-size: ${sizing.byUnit(1.5)};
-  line-height: ${sizing.byUnit(1.5)};
-  margin-top: ${sizing.byUnit(2)};
+  font-size: ${sizing(1.5)};
+  line-height: ${sizing(1.5)};
+  margin-top: ${sizing(2)};
 `;
 
 
 const linkStyles = `
   display: flex;
   align-items: center;
-  font-size: ${sizing.byUnit(1.5)}
+  font-size: ${sizing(1.5)}
   color: ${colors.blue};
 `;
 

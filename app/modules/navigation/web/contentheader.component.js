@@ -10,14 +10,19 @@ import { colors, layout, sizing } from 'app/styles';
 import RequestInvite from 'modules/web_splash/requestInvite.component';
 
 const Nav = styled.nav`
+  position: fixed;
   background-image: linear-gradient(hsla(0,0%,100%, 1) 70%, hsla(0,0%,100%, 0) 100%);
   display: flex;
   flex: 1;
-  padding: 0 ${sizing.byUnit(4)};
+  top: 0;
+  z-index: 100;
+  height: ${layout.headerHeight};
+  padding: 0 ${sizing(4)};
   justify-content: space-between;
   align-items: center;
-  height: ${layout.headerHeight};
-  /* border-bottom: ${layout.borderStyles(colors.lineColor)}; */
+  top: 0;
+  right: 0px;
+  left: ${layout.sideNavWidth};
 `;
 
 const NewPost = styled.button`

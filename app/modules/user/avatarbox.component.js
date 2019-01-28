@@ -10,16 +10,16 @@ import styled from 'styled-components/primitives';
 
 
 export const Name = styled.Text`
-  font-size: ${sizing.byUnit(2)};
-  line-height: ${sizing.byUnit(2)};
+  font-size: ${sizing(2)};
+  line-height: ${sizing(2)};
   color: ${colors.black};
   ${fonts.HelveticaNeueCondensedBold}
-  margin-right: ${sizing.byUnit(1)};
+  margin-right: ${sizing(1)};
 `;
 
 export const HandleText = styled.Text`
-  font-size: ${sizing.byUnit(1.25)};
-  line-height: ${sizing.byUnit(1.25)};
+  font-size: ${sizing(1.25)};
+  line-height: ${sizing(1.25)};
   color: ${colors.secondaryText};
 `;
 
@@ -38,7 +38,7 @@ export const TextContainer = styled.View`
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  margin: 0 0 0 ${sizing.byUnit(1)};
+  margin: 0 0 0 ${sizing(1)};
 `;
 
 const TextRow = styled.View`

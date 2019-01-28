@@ -20,7 +20,7 @@ const Wrapper = styled.View`
   width: 100%;
   max-width: 100%;
   overflow: hidden;
-  padding-bottom: ${sizing.byUnit(4)};
+  padding-bottom: ${sizing(4)};
 `;
 
 const PostContainer = styled.View`
@@ -38,7 +38,7 @@ const PostInfoContainer = styled.View`
   position: relative;
   flex-shrink: 1;
   width: 100%;
-  padding-bottom: ${(p) => p.detailView ? '' : sizing.byUnit(4)};
+  padding-bottom: ${(p) => p.detailView ? '' : sizing(4)};
   border-bottom-color: ${colors.lineColor};
   border-bottom-style: solid;
   border-bottom-width: 1px;
@@ -48,7 +48,7 @@ const Text = styled.Text`
 `;
 
 const PostButtonContainer = styled.View`
-  width: ${sizing.byUnit(13)};
+  width: ${sizing(13)};
 `;
 
 

@@ -8,9 +8,9 @@ export const linkStyle = `
   color: ${(props) => props.color || 'black'}
 `;
 
-export const headerHeight = sizing.byUnit(16);
-export const mainHeaderHeight = sizing.byUnit(12);
-export const sideNavWidth = sizing.byUnit(40);
+export const headerHeight = sizing(16);
+export const mainHeaderHeight = sizing(12);
+export const sideNavWidth = sizing(40);
 
 export const borderStyles = (color) => `1px solid ${color || 'black'}`;
 
@@ -41,10 +41,10 @@ export const button = {
   alignItems: 'center',
   border: 'none',
   justifyContent: 'center',
-  height: sizing.byUnit(6),
-  minWidth: sizing.byUnit(18),
-  padding: `0 ${sizing.byUnit(2)}`,
-  fontSize: sizing.byUnit(1.5),
+  height: sizing(6),
+  minWidth: sizing(18),
+  padding: `0 ${sizing(2)}`,
+  fontSize: sizing(1.5),
   fontFamily: 'HelveticaNeue-Medium'
 };
 

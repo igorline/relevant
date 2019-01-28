@@ -15,7 +15,7 @@ const Logout = styled.a`
   display: inline-block;
   width: 100%;
   text-align: right;
-  padding-right: ${sizing.byUnit(4)};
+  padding-right: ${sizing(4)};
   ${layout.linkStyle}
 `;
 
