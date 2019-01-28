@@ -16,7 +16,7 @@ const ContentContainer = styled.div`
 
 const StyledSideNav = styled(SideNav)`
   display: inline-block;
-  z-index: 10;
+  z-index: 100;
   border-right: ${layout.borderStyles(colors.lineColor)};
 `;
 
@@ -26,11 +26,12 @@ const MainContent = styled.div`
   padding-top: ${layout.headerHeight}
 `;
 
-const StyledContentHeader = styled(ContentHeader)`
+const StyledContentHeader = styled.div`
   position: fixed;
-  top: 0;
+  display: flex;
   z-index: 100;
-  width: calc(100vw - ${layout.sideNavWidth});
+  top: 0;
+  right: 0px;
   left: ${layout.sideNavWidth};
 `;
 
@@ -39,7 +40,9 @@ const MainNav = props => (
   <ContentContainer>
     <StyledSideNav {...props} />
     <MainContent>
-      <StyledContentHeader />
+      <StyledContentHeader>
+        <ContentHeader />
+      </StyledContentHeader>
       {renderRoutes(props.route.routes)}
     </MainContent>
   </ContentContainer>
