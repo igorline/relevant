@@ -10,10 +10,8 @@ import {
 import PropTypes from 'prop-types';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
-import moment from 'moment';
 import AvatarBox from 'modules/user/avatarbox.component';
 import { globalStyles, greyText } from 'app/styles/global';
-import { numbers } from 'app/utils';
 
 let ActionSheet = ActionSheetIOS;
 if (Platform.OS === 'android') {

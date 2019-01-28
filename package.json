@@ -123,6 +123,7 @@
     "react-native-vector-icons": "^4.0.1",
     "react-native-video": "^3.0.0",
     "react-native-web": "^0.9.13",
+    "react-native-web-linear-gradient": "^1.0.5",
     "react-navigation": "^3.0.9",
     "react-primitives": "^0.7.0",
     "react-redux": "^5.0.7",

@@ -1,3 +1,4 @@
+/* eslint no-console: 0 */
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
 import { VOTE_COST_RATIO, SLOPE, EXPONENT } from '../../config/globalConstants';

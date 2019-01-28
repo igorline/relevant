@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import PostContainer from 'modules/post/web/post.component';
+import get from 'lodash.get';
 
 class DiscoverPosts extends Component {
   static propTypes = {
     posts: PropTypes.object,
     pageSize: PropTypes.number,
     load: PropTypes.func,
-    sort: PropTypes.object,
-    tag: PropTypes.object,
+    sort: PropTypes.string,
+    tag: PropTypes.string,
     auth: PropTypes.object,
     actions: PropTypes.object
   };
@@ -43,7 +44,7 @@ class DiscoverPosts extends Component {
       const post = this.props.posts.posts[id];
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
 
-      return <Post key={id} post={post} repost={repost} {...this.props} />;
+      return <Post key={id} post={post} repost={repost} />;
     });
   }
 
@@ -52,37 +53,48 @@ class DiscoverPosts extends Component {
     const { posts } = this.props.posts;
 
     return (postIds || []).map(id => {
-      let post = posts[id];
+      const post = posts[id];
       if (!post) return null;
 
-      const link = this.props.posts.links[post.metaPost];
-      if (post[sort] && post[sort].length) {
-        // post
-        // post = this.props.posts.posts[post[sort][0]];
-        if (!post) return null;
-      }
       // TODO test this
-      if (post.twitterCommentary && post.twitterCommentary[0]) {
-        post = post.twitterCommentary[0];
-        if (!post) return null;
+      // if (post.twitterCommentary && post.twitterCommentary[0]) {
+      //   post = post.twitterCommentary[0];
+      //   if (!post) return null;
+      // }
+      // if (post[sort] && post[sort].length) {
+      //   if (!post) return null;
+      // }
+
+      let firstPost;
+      if (post.new && post.new.length) {
+        const firstPostId = post.new[post.new.length - 1];
+        firstPost = posts[firstPostId];
       }
+
+      const link = this.props.posts.links[post.metaPost];
+      const commentId = get(post, `${sort}.0`);
+      const comment = posts[commentId];
 
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
 
-      return <PostContainer key={id} post={post} link={link} repost={repost} {...this.props} />;
+      return <PostContainer
+        key={id}
+        post={post}
+        link={link}
+        repost={repost}
+        firstPost={firstPost}
+        comment={comment}
+        sort={sort}
+      />;
     });
   }
 
   render() {
     const { sort, tag } = this.props;
-    let posts;
 
     const data = this.getData(sort, tag);
-    if (sort === 'feed') {
-      posts = this.renderFeed();
-    } else {
-      posts = this.renderDiscover(sort, tag);
-    }
+    const posts = this.renderDiscover(sort, tag);
+
     const { length } = posts;
     const newPosts = this.props.posts.newPostsAvailable[this.props.auth.community];
     const refreshPosts = (
@@ -109,13 +121,5 @@ class DiscoverPosts extends Component {
     );
   }
 }
-
-DiscoverPosts.propTypes = {
-  pageSize: PropTypes.number,
-  load: PropTypes.func,
-  posts: PropTypes.object,
-  sort: PropTypes.string,
-  tag: PropTypes.string
-};
 
 export default DiscoverPosts;

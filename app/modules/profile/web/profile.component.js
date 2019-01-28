@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Avatar from 'modules/user/web/avatar.component';
 import styled from 'styled-components';
-import { layout, colors } from 'app/styles/globalStyles';
+import { layout, colors, sizing } from 'app/styles';
 import CoinStat from 'modules/stats/coinStat.component';
 import RStat from 'modules/stats/rStat.component';
 
@@ -15,7 +15,7 @@ const Logout = styled.a`
   display: inline-block;
   width: 100%;
   text-align: right;
-  padding-right: 2em;
+  padding-right: ${sizing.byUnit(4)};
   ${layout.linkStyle}
 `;
 

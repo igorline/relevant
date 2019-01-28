@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
-import { computePayout } from 'app/utils/post';
-import { abbreviateNumber } from 'app/utils/numbers';
-import { colors, fonts, sizing } from 'app/styles/globalStyles';
+// import { computePayout } from 'app/utils/post';
+import { colors, fonts, sizing } from 'app/styles';
 import styled from 'styled-components/primitives';
 import CoinStat from 'modules/stats/coinStat.component';
 
 const Wrapper = styled.View`
-  overflow: visible;
+  display: flex;
 `;
 
 const Container = styled.View`
@@ -62,6 +61,7 @@ class PostButtons extends Component {
     community: PropTypes.object,
     actions: PropTypes.object,
     className: PropTypes.string,
+    earnings: PropTypes.object,
   };
 
   constructor(props) {
@@ -127,7 +127,8 @@ class PostButtons extends Component {
   }
 
   render() {
-    const { post, auth, community, className, earnings } = this.props;
+    // eslint-disable-next-line
+    const { post, auth, community, className, earnings, myPostInv } = this.props;
 
     let pendingPayouts = 0;
     if (earnings) {
@@ -146,24 +147,24 @@ class PostButtons extends Component {
     let vote;
     let votedUp;
     let votedDown;
-    let buttonOpacity = { opacity: 1 };
+    // let buttonOpacity = { opacity: 1 };
     let upvoteBtn = '/img/upvote.png';
 
     if (this.props.myPostInv) {
-      vote = this.props.myPostInv[post.id] || !this.props.auth.isAuthenticated;
+      vote = myPostInv[post.id] || !this.props.auth.isAuthenticated;
       if (auth.user && auth.user._id === post.user) vote = true;
       if (vote) {
         votedUp = vote.amount > 0;
         votedDown = vote.amount < 0;
-        buttonOpacity = { opacity: 0.5 };
+        // buttonOpacity = { opacity: 0.5 };
         upvoteBtn = '/img/upvote-shadow.svg';
       }
     }
 
-    let payout;
-    if (post.data && post.data.paidOut) payout = post.data.payout;
-    payout = computePayout(post.data, community);
-    if (post.data && post.data.parentPost) payout = null;
+    // let payout;
+    // if (post.data && post.data.paidOut) payout = post.data.payout;
+    // payout = computePayout(post.data, community);
+    // if (post.data && post.data.parentPost) payout = null;
 
     return (
       <Wrapper className={className}>
@@ -177,9 +178,8 @@ class PostButtons extends Component {
           <View>
             <Text>
               {
-                post.data ? Math.round(post.data.pagerank) : null
+                post.data ? Math.round(post.data.relevance) : null
               }
-              {payout > 0 ? abbreviateNumber(payout) : null }
             </Text>
           </View>
           <Touchable onClick={e => this.irrelevant(e, vote)} to="#">

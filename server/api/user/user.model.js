@@ -370,6 +370,7 @@ UserSchema.methods.initialCoins = async function initialCoins() {
   )
   .exec();
 
+  // TODO NOTIFICATION!
   this.balance += NEW_USER_COINS;
   return this;
 };

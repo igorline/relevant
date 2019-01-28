@@ -6,13 +6,12 @@ import styled from 'styled-components';
 import NavProfile from 'modules/profile/web/navProfile.component';
 import Community from 'modules/community/web/communityNav.component';
 import SideNavFooter from 'modules/navigation/web/sideNavFooter.component';
-import { colors, layout } from 'app/styles/globalStyles';
+import { colors, layout, sizing } from 'app/styles';
 
 const SideNavContent = styled.div`
   background: ${colors.secondaryBG};
   width: ${layout.sideNavWidth};
   max-width: ${layout.sideNavWidth};
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   z-index: 10;
@@ -24,7 +23,7 @@ const SideNavScroll = styled.div`
   height: 100vh;
   overflow: scroll;
   position: fixed;
-  width: 300px;
+  width: ${layout.sideNavWidth};
 `;
 
 const SideNavSection = styled.div`
@@ -33,16 +32,15 @@ const SideNavSection = styled.div`
 
 const LogoContainer = styled(SideNavSection)`
   height: ${layout.headerHeight};
-  /* height: 101px; */
   display: flex;
-  padding-left: 2em;
-  padding-right: 5em;
+  padding-left: ${sizing.byUnit(4)};
   align-items: center;
   z-index: 100;
   position: fixed;
   top: 0;
   left: 0;
   width: ${layout.sideNavWidth};
+  borderStyle: solid;
   background: ${colors.secondaryBG};
   border-right: ${layout.borderStyles(colors.lineColor)};
 `;
@@ -53,6 +51,7 @@ const StyledLink = styled(Link)`
 
 const StyledImg = styled.img`
   max-width: 100%;
+  height: ${sizing.byUnit(4)};
 `;
 
 const SideNav = (props) => {

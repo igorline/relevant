@@ -3,85 +3,63 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { colors, sizing } from 'app/styles/globalStyles';
+import { colors, sizing } from 'app/styles';
 import * as communityActions from 'modules/community/community.actions';
 import { setCommunity } from 'modules/auth/auth.actions';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import CommunityActive from 'modules/community/web/communityActive.component';
-import { Header } from 'modules/styled';
+import { LinkWithIcon } from 'modules/styled';
 import get from 'lodash.get';
 
 const linkStyle = `
   display: flex;
   align-items: center;
   color: ${colors.black};
-`;
-
-const StyledHeader = styled(Header)`
-  padding-bottom: ${sizing.byUnit(4)};
+  padding: ${sizing.byUnit(1)} ${sizing.byUnit(4)};
+  &:hover {
+    font-weight: bold;
+    background: white;
+    margin-right: 1px;
+  }
 `;
 
 const CommunityContainer = styled.View`
-  margin: 1em 2em;
-`;
-
-
-const StyledView = styled.View`
-  background: ${props => props.active ? 'hsl(0, 0%, 92%)' : 'transparent'};
+  margin: ${sizing.byUnit(3)} 0};
 `;
 
 const StyledImage = styled.Image`
-  width: 30;
-  height: 30;
-  margin-right: 1em;
+  width: ${sizing.byUnit(4)};
+  height: ${sizing.byUnit(4)};
+  margin-right:  ${sizing.byUnit(1.5)};
   background: ${p => p.image ? 'transparent' : colors.grey};
+`;
+
+const CommunityLinkTab = styled(LinkWithIcon)`
+  padding: ${sizing.byUnit(0)} ${sizing.byUnit(0)};
 `;
 
 const StyledCommunityList = styled.View`
 `;
 
 const CommunityLink = ({ community, onClick }) => (
-  <ULink
-    styles={linkStyle}
-    key={community._id}
-    to={'/' + community.slug + '/new'}
-    onPress={() => { onClick(community.slug); }}
-    onClick={() => { onClick(community.slug); }}
-  >
-    <StyledImage image={community.image} source={{ uri: community.image }}/>
-    {community.name}
-  </ULink>
+  <CommunityLinkTab>
+    <ULink
+      styles={linkStyle}
+      key={community._id}
+      to={'/' + community.slug + '/new'}
+      onPress={() => { onClick(community.slug); }}
+      onClick={() => { onClick(community.slug); }}
+    >
+      <StyledImage image={community.image} source={{ uri: community.image }}/>
+      {community.name}
+    </ULink>
+  </CommunityLinkTab>
 );
 
 CommunityLink.propTypes = {
   community: PropTypes.object,
   onClick: PropTypes.func,
-};
-
-const CommunityNav = ({ community, isActive, actions }) => (
-  <StyledView active={isActive} >
-    {isActive ?
-      <CommunityActive
-        key={community._id}
-        community={community}
-        getCommunityMembers={get(actions, 'getCommunityMembers', null)}
-      >
-        <StyledHeader>Community</StyledHeader>
-        <CommunityLink community={community} onClick={actions.setCommunity} />
-      </CommunityActive>
-      : (
-        <CommunityContainer>
-          <CommunityLink community={community} onClick={actions.setCommunity} />
-        </CommunityContainer>)
-    }
-  </StyledView>
-);
-
-CommunityNav.propTypes = {
-  community: PropTypes.object,
-  actions: PropTypes.object,
-  isActive: PropTypes.bool,
 };
 
 
@@ -101,16 +79,12 @@ class Community extends Component {
     return list.map(id => {
       const community = communities[id];
       const isActive = this.props.community.active === community.slug;
-      if (isActive) {
-        return null;
-      }
-      return (
-        <CommunityNav
-          key={community._id}
-          community={community}
-          isActive={isActive}
-          actions={actions}
-        />);
+      if (isActive) return null;
+      return <CommunityLink
+        key={community._id}
+        community={community}
+        onClick={actions.setCommunity}
+      />;
     });
   }
 
@@ -120,14 +94,17 @@ class Community extends Component {
     return (
       <StyledCommunityList>
         {activeCommunity &&
-          <CommunityNav
+          <CommunityActive
             key={activeCommunity._id}
             community={activeCommunity}
-            isActive
-            actions={actions}
-          />
+            getCommunityMembers={get(actions, 'getCommunityMembers', null)}
+          >
+            <CommunityLink community={activeCommunity} onClick={actions.setCommunity} />
+          </CommunityActive>
         }
-        {this.renderOtherCommunities()}
+        <CommunityContainer>
+          {this.renderOtherCommunities()}
+        </CommunityContainer>
       </StyledCommunityList>);
   }
 }

@@ -6,7 +6,8 @@ import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import Comments from 'modules/comment/web/comment.container';
 import styled from 'styled-components/primitives';
-import { sizing } from 'app/styles/globalStyles';
+import { sizing } from 'app/styles';
+import get from 'lodash.get';
 import PostComponent from './post.component';
 
 const Wrapper = styled.View`
@@ -14,7 +15,7 @@ const Wrapper = styled.View`
 `;
 
 const PostContainer = styled.View`
-  padding: ${sizing.byUnit(4)};
+  padding: ${sizing.byUnit(4)} ${sizing.byUnit(4)} ${sizing.byUnit(4)} 0;
   padding-bottom: 0;
 `;
 
@@ -25,6 +26,7 @@ class SinglePostContainer extends Component {
     posts: PropTypes.object,
     match: PropTypes.object,
     location: PropTypes.object,
+    comments: PropTypes.object,
   };
 
   static fetchData(dispatch, params) {
@@ -34,26 +36,38 @@ class SinglePostContainer extends Component {
 
   componentDidMount() {
     const { params } = this.props.match;
-    this.post = this.props.posts.posts[params.id];
-    if (!this.post) {
+    const post = this.props.posts.posts[params.id];
+    if (!post) {
       this.props.actions.getSelectedPost(params.id);
     }
   }
 
   render() {
     const { params } = this.props.match;
-    this.post = this.props.posts.posts[params.id];
-    if (!this.post) return null;
-    const hasPost = this.post && this.post !== 'notFound';
+    const { posts, comments } = this.props;
+    const post = posts.posts[params.id];
+    if (!post) return null;
+    const hasPost = post && post !== 'notFound';
+
+    const firstPostId = get(comments.childComments, `${post._id}.0`);
+    const firstPost = posts.posts[firstPostId];
+    const link = posts.links[post.metaPost];
 
     return (
       <Wrapper>
         {hasPost && (
           <div>
             <PostContainer>
-              <PostComponent detailView post={this.post} {...this.props} />
+              <PostComponent
+                detailView
+                link={link}
+                post={post}
+                firstPost={firstPost}
+                {...this.props}
+
+              />
             </PostContainer>
-            <Comments post={this.post} {...this.props} />
+            <Comments post={post} {...this.props} />
           </div>
         )}
       </Wrapper>
@@ -63,6 +77,7 @@ class SinglePostContainer extends Component {
 
 export default connect(
   state => ({
+    comments: state.comments,
     auth: state.auth,
     posts: state.posts,
     user: state.user,

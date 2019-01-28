@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import ContentHeader from 'modules/navigation/web/contentheader.component';
 import SideNav from 'modules/navigation/web/sideNav.component';
 import { withRouter } from 'react-router-dom';
-import { colors, layout } from 'app/styles/globalStyles';
+import { colors, layout } from 'app/styles';
 
 const ContentContainer = styled.div`
   max-width: 100vw;
@@ -35,7 +35,7 @@ const StyledContentHeader = styled(ContentHeader)`
 `;
 
 
-const MainNav = (props) => (
+const MainNav = props => (
   <ContentContainer>
     <StyledSideNav {...props} />
     <MainContent>

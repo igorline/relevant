@@ -5,23 +5,30 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import get from 'lodash.get';
 import * as authActions from 'modules/auth/auth.actions';
-import * as adminActions from 'modules/admin/admin.actions';
 import * as postActions from 'modules/post/post.actions';
 import * as userActions from 'modules/user/user.actions';
-import * as notifActions from 'modules/activity/activity.actions';
-import * as tagActions from 'modules/tag/tag.actions';
-import * as investActions from 'modules/post/invest.actions';
+// import * as adminActions from 'modules/admin/admin.actions';
+// import * as notifActions from 'modules/activity/activity.actions';
+// import * as tagActions from 'modules/tag/tag.actions';
+// import * as investActions from 'modules/post/invest.actions';
+// import CreatePost from 'modules/createPost/web/createPost.container';
 import * as navigationActions from 'modules/navigation/navigation.actions';
-import CreatePost from 'modules/createPost/web/createPost.container';
-import { sizing } from 'app/styles/globalStyles';
+import { sizing } from 'app/styles';
 import styled from 'styled-components/primitives';
 import DiscoverPosts from './discoverPosts.component';
 import DiscoverUsers from './discoverUsers.component';
 import * as discoverHelper from './discoverHelper';
 
 
+// TODO probably don't want right padding either
 const Wrapper = styled.View`
-  padding: ${sizing.byUnit(4)} 0;
+  display: flex;
+  flex-direction: column;
+  padding: ${sizing.byUnit(4)} ${sizing.byUnit(4)} ${sizing.byUnit(4)} 0;
+`;
+
+const BreadCrumbs = styled.Text`
+  margin: ${sizing.byUnit(-4)} ${sizing.byUnit(4)} ${sizing.byUnit(4)} ${sizing.byUnit(4)};
 `;
 
 const POST_PAGE_SIZE = 15;
@@ -178,17 +185,15 @@ export class Discover extends Component {
     const { tag } = match.params;
 
     return (
-      <Wrapper className="discoverContainer">
-        <div className="discoverInner">
-          <div className="postContainer">
-            {tag && (
-              <h3>
-                <Link to="/discover/new">{auth.community}</Link> - #{tag}
-              </h3>
-            )}
-            <CreatePost {...this.props} />
-            {this.renderFeed()}
-          </div>
+      <Wrapper>
+        {tag && (
+          <BreadCrumbs>
+            <Link to="/discover/new">{auth.community}</Link> - #{tag}
+          </BreadCrumbs>
+        )}
+        <div className="postContainer">
+          {/* <CreatePost {...this.props} /> */}
+          {this.renderFeed()}
         </div>
       </Wrapper>
     );
@@ -213,12 +218,12 @@ function mapDispatchToProps(dispatch) {
       {
         ...authActions,
         ...postActions,
-        ...notifActions,
         ...userActions,
-        ...investActions,
         ...navigationActions,
-        ...tagActions,
-        ...adminActions,
+        // ...notifActions,
+        // ...investActions,
+        // ...tagActions,
+        // ...adminActions,
       },
       dispatch
     )

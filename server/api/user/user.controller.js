@@ -10,7 +10,8 @@ import Feed from '../feed/feed.model';
 import CommunityMember from '../community/community.member.model';
 import * as ethUtils from '../../utils/ethereum';
 
-const TwitterWorker = require('../../utils/twitterWorker');
+// const TwitterWorker = require('../../utils/twitterWorker');
+// User.find({ handle: 'q' }).remove().exec();
 
 async function sendConfirmation(user, newUser) {
   let text = '';
@@ -341,7 +342,6 @@ exports.create = async (req, res, next) => {
     if (user.name === 'everyone') throw new Error('username taken');
 
     const userObj = {
-      _id: user.name,
       handle: user.name,
       name: user.name,
       phone: user.phone,
