@@ -14,7 +14,6 @@ const Nav = styled.nav`
   background-image: linear-gradient(hsla(0,0%,100%, 1) 70%, hsla(0,0%,100%, 0) 100%);
   display: flex;
   flex: 1;
-  top: 0;
   z-index: 100;
   height: ${layout.headerHeight};
   padding: 0 ${sizing(4)};
