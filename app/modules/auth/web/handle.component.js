@@ -8,7 +8,7 @@ class LoginForm extends Component {
     user: PropTypes.object,
     actions: PropTypes.object,
     checkUser: PropTypes.object,
-    nameError: PropTypes.object
+    nameError: PropTypes.string
   };
 
   constructor(props) {

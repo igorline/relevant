@@ -142,7 +142,11 @@ export default function post(state = initialState, action) {
               [type]: true
             }
           }
-        }
+        },
+        links: {
+          ...state.links,
+          ...action.payload.data.entities.links
+        },
       };
     }
 
@@ -342,7 +346,7 @@ export default function post(state = initialState, action) {
         ...state,
         posts: {
           ...state.posts,
-          ...action.payload.data.entities.comments
+          ...action.payload.comments
         }
       };
     }

@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as adminActions from 'modules/admin/admin.actions';
 import * as authActions from 'modules/auth/auth.actions';
-import { goToUrl, push } from 'modules/navigation/navigation.actions';
+import { goToUrl, push, reloadTab } from 'modules/navigation/navigation.actions';
 
 import {
   StackActions,
@@ -82,7 +82,8 @@ const mapDispatchToProps = dispatch => ({
       ...authActions,
       ...adminActions,
       goToUrl,
-      push
+      push,
+      reloadTab
     },
     dispatch
   )

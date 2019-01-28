@@ -1,9 +1,55 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
-import { computePayout } from 'app/utils/post';
-import { abbreviateNumber } from 'app/utils/numbers';
+// import { computePayout } from 'app/utils/post';
+import { colors, fonts, sizing } from 'app/styles';
+import styled from 'styled-components/primitives';
+import CoinStat from 'modules/stats/coinStat.component';
+
+const Wrapper = styled.View`
+  display: flex;
+`;
+
+const Container = styled.View`
+  align-items: center;
+`;
+
+const View = styled.View`
+  margin: 1em 0;
+  /* align-items: center; */
+  display: flex;
+  flex-direction: row;
+`;
+
+const Touchable = styled.Touchable`
+`;
+
+const Text = styled.Text`
+  display: flex;
+  color: ${colors.secondaryText}
+  ${fonts.Helvetica}
+  font-size: 14px;
+  line-height: 14px;
+`;
+
+const Image = styled.Image`
+  width: 23px;
+  height: 20px;
+`;
+
+const SmallText = styled.Text`
+  font-size: ${sizing.byUnit(1.25)}
+`;
+
+
+// const RLogoImage = styled.Image`
+//   width: 14px;
+//   height: 14px;
+// `;
+
+const VoteIcon = styled(Image)`
+`;
+
 
 class PostButtons extends Component {
   static propTypes = {
@@ -13,7 +59,9 @@ class PostButtons extends Component {
       data: PropTypes.object
     }),
     community: PropTypes.object,
-    actions: PropTypes.object
+    actions: PropTypes.object,
+    className: PropTypes.string,
+    earnings: PropTypes.object,
   };
 
   constructor(props) {
@@ -79,7 +127,17 @@ class PostButtons extends Component {
   }
 
   render() {
-    const { post, auth, community } = this.props;
+    // eslint-disable-next-line
+    const { post, auth, community, className, earnings, myPostInv } = this.props;
+
+    let pendingPayouts = 0;
+    if (earnings) {
+      earnings.pending.forEach(id => {
+        const reward = earnings.entities[id];
+        // TODO include actual rewards here based on % share
+        if (reward && reward.post === post._id) pendingPayouts += reward.stakedTokens;
+      });
+    }
 
     if (post === 'notFound') {
       return null;
@@ -89,65 +147,56 @@ class PostButtons extends Component {
     let vote;
     let votedUp;
     let votedDown;
-    let buttonOpacity = { opacity: 1 };
+    // let buttonOpacity = { opacity: 1 };
     let upvoteBtn = '/img/upvote.png';
 
     if (this.props.myPostInv) {
-      vote = this.props.myPostInv[post.id] || !this.props.auth.isAuthenticated;
+      vote = myPostInv[post.id] || !this.props.auth.isAuthenticated;
       if (auth.user && auth.user._id === post.user) vote = true;
       if (vote) {
         votedUp = vote.amount > 0;
         votedDown = vote.amount < 0;
-        buttonOpacity = { opacity: 0.5 };
+        // buttonOpacity = { opacity: 0.5 };
         upvoteBtn = '/img/upvote-shadow.svg';
       }
     }
 
-    let payout;
-    if (post.data && post.data.paidOut) payout = post.data.payout;
-    payout = computePayout(post.data, community);
-    if (post.data && post.data.parentPost) payout = null;
-
-    const comments = post.commentCount || '';
-    const commentText = comments > 1 ? comments + ' comments' : comments + ' comment';
-
-    const commentEl = (
-      <Link className="commentcount details" to={'/post/' + post._id}>
-        <img alt="Comment" src="/img/comment.svg" />
-        <span>{commentText}</span>
-      </Link>
-    );
+    // let payout;
+    // if (post.data && post.data.paidOut) payout = post.data.payout;
+    // payout = computePayout(post.data, community);
+    // if (post.data && post.data.parentPost) payout = null;
 
     return (
-      <div className="postbuttons">
-        <div className="left">
-          <a style={buttonOpacity} onClick={e => this.vote(e, vote)}>
-            <img
+      <Wrapper className={className}>
+        <Container>
+          <Touchable onClick={e => this.vote(e, vote)} to="#">
+            <VoteIcon
               alt="Upvote"
-              src={votedUp ? '/img/upvoteActive.png' : upvoteBtn}
-              className="upvote"
+              source={{ uri: votedUp ? '/img/upvoteActive.png' : upvoteBtn }}
             />
-          </a>
-          <div className="fraction">
-            <div className="dem">
-              <img alt="R" src="/img/r-gray.svg" />
-              {post.data ? Math.round(post.data.pagerank) : null}
-            </div>
-
-            {payout > 0 && <div className="dem">
-              ${abbreviateNumber(payout)}
-            </div>}
-          </div>
-          <a style={buttonOpacity} onClick={e => this.irrelevant(e, vote)}>
-            <img
+          </Touchable>
+          <View>
+            <Text>
+              {
+                post.data ? Math.round(post.data.relevance) : null
+              }
+            </Text>
+          </View>
+          <Touchable onClick={e => this.irrelevant(e, vote)} to="#">
+            <VoteIcon
               alt="Downvote"
-              src={votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg'}
-              className="downvote"
+              source={{ uri: votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg' }}
             />
-          </a>
-        </div>
-        <div className="right">{post.type === 'comment' ? '' : commentEl}</div>
-      </div>
+          </Touchable>
+          { pendingPayouts ?
+            <View style={{ display: 'flex', flexDirection: 'column' }}>
+              <SmallText>your reward:</SmallText>
+              <CoinStat mr={0} size={1.25} inherit amount={pendingPayouts} />
+            </View> :
+            null
+          }
+        </Container>
+      </Wrapper>
     );
   }
 }

@@ -1,15 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
+import { colors } from 'app/styles';
 
 let styled;
 let StyledLink;
 let StyledNavLink;
+let StyledA;
+let DisabledLink;
 let environment = 'web';
+
+
 if (process.env.WEB !== 'true') {
   environment = 'native';
   styled = require('styled-components/primitives').default;
-  StyledLink = styled(Link)`
+  StyledLink = styled.Touchable`
+    ${(p) => p.styles}
+  `;
+  DisabledLink = styled.Text`
+    color: ${colors.secondaryText};
     ${(p) => p.styles}
   `;
 } else {
@@ -20,18 +29,47 @@ if (process.env.WEB !== 'true') {
   StyledNavLink = styled(NavLink)`
     ${(p) => p.styles}
   `;
+  StyledA = styled.a`
+    ${(p) => p.styles}
+  `;
+  DisabledLink = styled.span`
+    color: ${colors.secondaryText};
+    ${(p) => p.styles}
+  `;
 }
 
+
 const ULink = (props) => {
-  const { onClick, onPress, to, styles, children, navLink } = props;
+  const {
+    onClick,
+    onPress,
+    to,
+    styles,
+    children,
+    navLink,
+    external,
+    target,
+    disabled,
+  } = props;
+  if (disabled) {
+    return <DisabledLink>{children}</DisabledLink>;
+  }
   if (environment === 'web') {
-    return navLink ?
-      <StyledNavLink onClick={onClick} to={to} styles={styles || ''}>
+    if (navLink) {
+      return (
+        <StyledNavLink onClick={onClick} to={to} styles={styles || ''}>
+          {children}
+        </StyledNavLink>
+      );
+    }
+    if (external) {
+      return <StyledA onClick={onClick} href={to} target={target} styles={styles || ''}>{children}</StyledA>;
+    }
+
+    return (
+      <StyledLink onClick={onClick} to={to} target={target} styles={styles || ''}>
         {children}
-      </StyledNavLink> :
-      <StyledLink onClick={onClick} to={to} styles={styles || ''}>
-        {children}
-      </StyledLink>;
+      </StyledLink>);
   }
 
   return (
@@ -48,6 +86,9 @@ ULink.propTypes = {
   onPress: PropTypes.func,
   onClick: PropTypes.func,
   styles: PropTypes.string,
+  external: PropTypes.bool,
+  target: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 export default ULink;

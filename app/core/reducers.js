@@ -59,7 +59,7 @@ const appReducer = combineReducers({
 /* eslint-disable */
 const rootReducer = (state, action) => {
   if (action.type === 'SET_COMMUNITY') {
-    if (process.env.WEB != 'true') {
+    if (process.env.WEB !== 'true') {
       let {
         auth,
         community,

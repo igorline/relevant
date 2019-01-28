@@ -54,36 +54,34 @@ export default class TwitterSignup extends Component {
     if (this.usernameExists) {
       return Alert.alert('This handle is already taken');
     }
-    const loginData = this.props.auth.twitter;
-    loginData.userName = this.state.username;
-    loginData.signup = true;
-    loginData.invite = this.props.auth.currentInvite;
-    return this.props.actions.twitterAuth(
-      loginData,
-      this.props.admin ? this.props.admin.currentInvite : null
-    );
+    const twitterProfile = this.props.auth.twitter;
+    const { preUser } = this.props.auth;
+    preUser.handle = this.state.username;
+
+    this.props.actions.updateHandle(preUser, twitterProfile.token);
+    return null;
   }
 
   checkUser(name) {
+    const { preUser } = this.props.auth;
+    if (!preUser) return null;
     this.nameError = null;
-    const toCheck = name || this.state.username;
-    if (toCheck) {
-      const string = toCheck;
-      const match = NAME_PATTERN.test(string);
-      if (match) {
-        this.props.actions.checkUser(string, 'name')
-        .then(results => {
-          if (!results) {
-            this.usernameExists = true;
-            this.nameError = 'This handle is already taken';
-          } else this.usernameExists = false;
-          this.setState({});
-        });
-      } else {
-        this.nameError =
-          'username can only contain letters, numbers, dashes and underscores';
-      }
+    const string = name || this.state.username;
+    if (!string) return null;
+    const match = NAME_PATTERN.test(string);
+    if (!match) {
+      return this.nameError =
+        'username can only contain letters, numbers, dashes and underscores';
     }
+    this.props.actions.checkUser(string, 'name')
+    .then(results => {
+      if (results && (!preUser && results._id !== preUser._id)) {
+        this.usernameExists = true;
+        this.nameError = 'This handle is already taken';
+      } else this.usernameExists = false;
+      this.setState({});
+    });
+    return true;
   }
 
   renderUserName() {
@@ -189,12 +187,6 @@ export default class TwitterSignup extends Component {
     );
   }
 }
-
-TwitterSignup.propTypes = {
-  auth: PropTypes.object,
-  actions: PropTypes.object,
-  admin: PropTypes.object
-};
 
 const localStyles = StyleSheet.create({
   forgot: {

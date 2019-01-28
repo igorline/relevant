@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { numbers } from 'app/utils';
 import styled from 'styled-components';
-import colors from 'app/styles/colors';
+import * as colors from 'app/styles/colors';
 import Avatar from './avatar.component';
 
 const Handle = styled.div`
   a {
-    color: ${colors.greyText};
+    color: ${colors.secondaryText};
   }
-  color: ${colors.greyText};
+  color: ${colors.secondaryText};
   font-size: 10px;
   font-family: Arial, sans-serif;
 `;
@@ -22,7 +22,7 @@ export default function AvatarBox(props) {
 
   let timestamp;
   if (props.date) {
-    timestamp = ' • ' + numbers.timeSince(Date.parse(props.date)) + ' ago';
+    timestamp = numbers.getTimestamp(Date.parse(props.date));
   }
   let premsg;
   let className = reverse ? 'reverse ' : '';

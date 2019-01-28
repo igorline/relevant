@@ -1,3 +1,4 @@
+/* eslint no-console: 0 */
 import { EventEmitter } from 'events';
 import apnData from '../../pushNotifications';
 import { computeApproxPageRank } from '../../utils/pagerankCompute';
@@ -11,9 +12,7 @@ const Relevance = require('../relevance/relevance.model');
 
 const InvestEvents = new EventEmitter();
 
-function handleError(res, err) {
-  return res.status(500).send(err);
-}
+const { NODE_ENV } = process.env;
 
 exports.postInvestments = async (req, res, next) => {
   try {
@@ -111,48 +110,6 @@ exports.show = async (req, res, next) => {
   }
 };
 
-exports.destroy = (req, res) => {
-  const query = {
-    investor: req.body.investor,
-    post: req.body.post
-  };
-  let investmentId = null;
-
-  Invest.find(query)
-  .then(invests => invests)
-  .then(invests => {
-    if (invests.length) {
-      invests.forEach(investment => {
-        User.findOne({ _id: investment.investor }).then(investor => {
-          investor.balance += investment.amount;
-          investor.save();
-        });
-        investmentId = investment._id;
-        return investment.remove();
-      });
-    }
-  })
-  .then(() => Post.findOne({ _id: req.body.post }))
-  .then(foundPost => {
-    foundPost.investments.forEach((investment, i) => {
-      if (JSON.stringify(investment) === JSON.stringify(investmentId)) {
-        foundPost.investments.splice(i, 1);
-      }
-    });
-    return foundPost.save();
-  })
-  .then(savedPost =>
-    Post.findOne({ _id: savedPost._id })
-    .populate('user tags investments mentions')
-    .exec((err, populatedPost) => populatedPost)
-  )
-  .then(populatedPost => {
-    populatedPost.updateClient();
-    res.json(200, true);
-  })
-  .catch(err => handleError(res, err));
-};
-
 async function updateInvestment(params) {
   let { investment } = params;
   const { post, user, amount, relevanceToAdd, community, communityId } = params;
@@ -185,7 +142,7 @@ async function investCheck(params) {
     const now = new Date();
     if (
       post.data.postDate < now.getTime() - 1000 * 60 * 60 * 24 * 7 &&
-      process.env.NODE_ENV === 'production'
+      NODE_ENV === 'production'
     ) {
       throw new Error('you cannot downvote posts older than one week');
     }
@@ -206,12 +163,12 @@ async function investCheck(params) {
     const timeElapsed = now.getTime() - new Date(investment.createdAt).getTime();
 
     // TODO 15m to update post is this fine?
-    if (timeElapsed > 15 * 60 * 1000 && process.env.NODE_ENV === 'production') {
+    if (timeElapsed > 15 * 60 * 1000 && NODE_ENV === 'production') {
       throw new Error('You cannot change your vote after 15m');
     }
     if (
       new Date(post.data.payoutTime).getTime() < now.getTime() &&
-      process.env.NODE_ENV === 'production'
+      NODE_ENV === 'production'
     ) {
       throw new Error('you cannot change your vote after post payout');
     }
@@ -340,11 +297,17 @@ exports.create = async (req, res, next) => {
     // ------ investor ------
     user = await User.findOne(
       { _id: user },
-      'name balance ethAddress image lastVote votePower handle tokenBalance'
+      'name balance ethAddress image lastVote votePower handle tokenBalance lockedTokens'
     ).populate({
       path: 'relevance',
       match: { communityId, global: true }
     });
+
+    const now = new Date();
+    const elapsedTime = new Date(now).getTime() - new Date(user.lastVote || 0).getTime();
+    if (elapsedTime < 5 * 1000 && NODE_ENV === 'production') {
+      throw new Error('you cannot up-vote posts more often than 5s');
+    }
 
     let author = await User.findOne(
       { _id: post.user },

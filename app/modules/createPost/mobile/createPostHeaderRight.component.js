@@ -11,6 +11,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import * as postActions from 'modules/post/post.actions';
+import * as commentActions from 'modules/comment/comment.actions';
 import * as userActions from 'modules/user/user.actions';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as utils from 'app/utils';
@@ -314,6 +315,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: bindActionCreators(
       {
+        ...commentActions,
         ...navigationActions,
         ...createPostActions,
         ...postActions,

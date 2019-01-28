@@ -13,7 +13,7 @@ const NotificationSchema = new Schema(
     group: [String],
     totalUsers: Number,
     read: { type: Boolean, default: false },
-    comment: { type: Schema.Types.ObjectId, ref: 'Comment' },
+    // comment: { type: Schema.Types.ObjectId, ref: 'Comment' },
     amount: Number,
     coin: Number,
     source: { type: String, default: 'post' },

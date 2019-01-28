@@ -4,38 +4,38 @@ import styled from 'styled-components';
 import TwitterIcon from 'app/public/img/twitter.svg';
 import SlackIcon from 'app/public/img/slack-white.svg';
 import EmailIcon from 'app/public/img/email.svg';
-
-const greyText = '#717171';
+import { sizing, colors } from 'app/styles';
 
 const StyledLink = styled.a`
-  color: ${greyText};
+  color: ${colors.blue};
   text-decoration: underline;
   &:hover {
-    color: black;
+    text-decoration: none;
   }
 `;
 
 const StyledIconLink = styled(StyledLink)`
-  color: black;
-  font-weight: bold;
-  height: 32px;
-  width: 32px;
-  margin-right: 2em;
+  height: ${sizing.byUnit(3)};
+  width: ${sizing.byUnit(3)};
+  color: ${colors.black};
+  margin-right: ${sizing.byUnit(2)};
+
   &:hover svg * {
-    fill: grey;
+    fill: ${colors.grey};
   }
   svg * {
-    fill: black;
-
+    fill: ${colors.black};
   }
   svg {
-    height: 30px;
-    width: 30px;
+    height: ${sizing.byUnit(3)};
+    width: ${sizing.byUnit(3)};
   }
 `;
 
 const Footer = styled.div`
-  margin: 2em;
+  font-size: ${sizing.byUnit(1.5)};
+  line-height: ${sizing.byUnit(2)};
+  margin: ${sizing.byUnit(4)};
 `;
 
 const IconContainer = styled.div`
@@ -82,7 +82,11 @@ const SideNavFooter = () => (
   <Footer>
     <p>© 2018 Relevant Community Inc.</p>
     <p>
-      <StyledLink to="/eula.html" target="_blank">Content Policy</StyledLink> | <StyledLink to="/privacy.html" target="_blank"> Privacy Policy</StyledLink>
+      <StyledLink to="/eula.html" target="_blank">
+        Content Policy
+      </StyledLink> | <StyledLink to="/privacy.html" target="_blank">
+        Privacy Policy
+      </StyledLink>
     </p>
     <IconContainer>
       {icons.map(icon => <FooterIcon key={icon.href} {...icon} />)}

@@ -12,7 +12,9 @@ class CommentForm extends Component {
     actions: PropTypes.object,
     cancel: PropTypes.func,
     updatePosition: PropTypes.func,
-    text: PropTypes.string
+    text: PropTypes.string,
+    isReply: PropTypes.bool,
+    parentPost: PropTypes.string,
   };
 
   constructor(props, context) {
@@ -61,12 +63,15 @@ class CommentForm extends Component {
 
     const comment = this.state.comment.trim();
     const commentObj = {
-      post: this.props.post.id,
+      parentPost: this.props.parentPost,
       text: comment,
       tags: this.commentTags,
       mentions: this.commentMentions,
       user: this.props.auth.user._id
     };
+    if (this.props.isReply) {
+      commentObj.parentComment = this.props.post.id;
+    }
 
     this.setState({ comment: '', inputHeight: 50 });
 
@@ -128,35 +133,37 @@ class CommentForm extends Component {
   render() {
     if (!this.props.auth.isAuthenticated) return null;
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-        <form onSubmit={this.handleSubmit}>
-          <Textarea
-            inputRef={c => (this.textArea = c)}
-            style={{ minHeight: '60px' }}
-            rows={2}
-            placeholder="Enter comment..."
-            value={this.state.comment}
-            onKeyDown={this.handleKeydown}
-            onChange={this.handleChange}
-          />
-        </form>
-        <div style={{ alignSelf: 'flex-end' }}>
-          {this.props.cancel && (
+      <div className="comments formContainer">
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+          <form onSubmit={this.handleSubmit}>
+            <Textarea
+              inputRef={c => (this.textArea = c)}
+              style={{ minHeight: '60px' }}
+              rows={2}
+              placeholder="Enter comment..."
+              value={this.state.comment}
+              onKeyDown={this.handleKeydown}
+              onChange={this.handleChange}
+            />
+          </form>
+          <div style={{ alignSelf: 'flex-end' }}>
+            {this.props.cancel && (
+              <button
+                onClick={this.props.cancel}
+                className={'shadowButton'}
+                disabled={!this.props.auth.isAuthenticated}
+              >
+                Cancel
+              </button>
+            )}
             <button
-              onClick={this.props.cancel}
+              onClick={this.handleSubmit}
               className={'shadowButton'}
               disabled={!this.props.auth.isAuthenticated}
             >
-              Cancel
+              {this.props.text}
             </button>
-          )}
-          <button
-            onClick={this.handleSubmit}
-            className={'shadowButton'}
-            disabled={!this.props.auth.isAuthenticated}
-          >
-            {this.props.text}
-          </button>
+          </div>
         </div>
       </div>
     );

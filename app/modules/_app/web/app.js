@@ -16,7 +16,7 @@ import CreatePost from 'modules/createPost/web/createPost.container';
 import EthTools from 'modules/web_ethTools/tools.container';
 import Eth from 'modules/web_ethTools/eth.context';
 import { ToastContainer } from 'react-toastify';
-import { GlobalStyle } from 'styles/globalStyles';
+import { GlobalStyle } from 'app/styles';
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -132,7 +132,7 @@ class App extends Component {
     }
 
     return (
-      <main>
+      <div>
         <GlobalStyle />
         <EthTools>
           {header}
@@ -168,7 +168,7 @@ class App extends Component {
         <ToastContainer />
         {mobileEl}
         {renderRoutes(this.props.route.routes)}
-      </main>
+      </div>
     );
   }
 }

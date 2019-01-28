@@ -6,33 +6,22 @@ import ActivityButton from 'modules/activity/web/activityButton.component';
 import AuthContainer from 'modules/auth/web/auth.container';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { colors, layout } from 'app/styles/globalStyles';
+import { colors, layout, sizing } from 'app/styles';
+import RequestInvite from 'modules/web_splash/requestInvite.component';
 
 const Nav = styled.nav`
   width: 100%;
-  background: white;
+  background-image: linear-gradient(hsla(0,0%,100%, 1) 70%, hsla(0,0%,100%, 0) 100%);
   display: flex;
-  padding: 0 1.5em;
+  padding: 0 ${sizing.byUnit(4)};
   justify-content: space-between;
-  line-height: 20px;
   align-items: center;
   height: ${layout.headerHeight};
-  border-bottom: ${layout.borderStyles(colors.borderColor)};
+  /* border-bottom: ${layout.borderStyles(colors.lineColor)}; */
 `;
 
 const NewPost = styled.button`
-  background: blue;
-  color: white;
-  display: flex;
-  border: none;
-  justify-content: space-between;
-  height: 4em;
-  padding: 0 3em;
-  font-size: 14px;
-  font-weight: bold;
-  a {
-    color: white;
-  }
+  ${layout.button}
 `;
 
 const Login = styled.a`
@@ -59,6 +48,28 @@ class ContentHeader extends Component {
     openLoginModal: false
   };
 
+  renderSubHeader() {
+    const loggedIn = this.props.auth.isAuthenticated;
+    let cta;
+
+    const signup = (
+      <div className="signupCTA">
+        <Link to="/user/login">
+          <NewPost>Login</NewPost>
+        </Link>
+        <span>{' '}</span>
+        <Link to="/user/signup">
+          <NewPost>Sign Up</NewPost>
+        </Link>
+      </div>
+    );
+
+    if (!loggedIn) {
+      cta = <RequestInvite type={'app'} cta={signup} />;
+    }
+    return cta;
+  }
+
   toggleLogin = () => {
     this.setState({ openLoginModal: !this.state.openLoginModal });
   }
@@ -72,31 +83,34 @@ class ContentHeader extends Component {
     const { user } = auth;
     const temp = user && user.role === 'temp';
     return (
-      <Nav className={className}>
-        <DiscoverTabs />
-        <SubNav>
-          <ActivityButtonContainer>
-            <ActivityButton />
-          </ActivityButtonContainer>
-          {
-            auth.isAuthenticated ?
-              <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
-                <NewPost >
-                    New Post
-                </NewPost>
-              </Link>
-              :
-              <Login onClick={this.toggleLogin} color={colors.blue}>Login</Login>
-          }
+      <div>
+        <Nav className={className}>
+          <DiscoverTabs />
+          <SubNav>
+            <ActivityButtonContainer>
+              <ActivityButton />
+            </ActivityButtonContainer>
+            {
+              auth.isAuthenticated ?
+                <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
+                  <NewPost >
+                      New Post
+                  </NewPost>
+                </Link>
+                :
+                <Login onClick={this.toggleLogin} color={colors.blue}>Login</Login>
+            }
 
-        </SubNav>
-        <AuthContainer
-          toggleLogin={this.toggleLogin.bind(this)}
-          open={this.state.openLoginModal || temp}
-          modal
-          {...this.props}
-        />
-      </Nav>
+          </SubNav>
+          <AuthContainer
+            toggleLogin={this.toggleLogin.bind(this)}
+            open={this.state.openLoginModal || temp}
+            modal
+            {...this.props}
+          />
+        </Nav>
+        {this.renderSubHeader()}
+      </div>
     );
   }
 }

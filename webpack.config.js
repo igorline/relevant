@@ -79,7 +79,8 @@ module.exports = {
     alias: {
       react: path.resolve('./node_modules/react'),
       'react-dom': path.resolve('./node_modules/react-dom'),
-      'react-native$': 'react-native-web'
+      'react-native$': 'react-native-web',
+      'react-native-linear-gradient$': 'react-native-web-linear-gradient'
     },
   },
 

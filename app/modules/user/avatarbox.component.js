@@ -1,69 +1,75 @@
 import React from 'react';
-import { View, Image, StyleSheet, Text } from 'react-primitives';
-import Icon from 'react-native-vector-icons/dist/Ionicons';
+import { Image } from 'react-primitives';
 import PropTypes from 'prop-types';
-import { globalStyles, darkGrey } from 'app/styles/global';
-import Stats from 'modules/stats/mobile/stats.component';
-import styled, { css } from 'styled-components/primitives';
+import { colors, sizing, layout, fonts } from 'app/styles';
+import RStat from 'modules/stats/rStat.component';
+import ULink from 'modules/navigation/ULink.component';
+import Avatar from 'modules/user/UAvatar.component';
+import { getTimestamp } from 'app/utils/numbers';
+import styled from 'styled-components/primitives';
 
-let styles;
-
-const bebas = css`
-  font-family: BebasNeueRelevantRegular;
-  margin-bottom: -2px;
-`;
-
-const font17 = css`
-  font-size: 17px;
-  lineHeight: 17px;
-`;
 
 export const Name = styled.Text`
-  color: ${darkGrey};
-  ${font17}
-  ${bebas}
+  font-size: ${sizing.byUnit(2)};
+  line-height: ${sizing.byUnit(2)};
+  color: ${colors.black};
+  ${fonts.HelveticaNeueCondensedBold}
+  margin-right: ${sizing.byUnit(1)};
 `;
 
 export const HandleText = styled.Text`
-  ${globalStyles.font10}
-  ${globalStyles.greyText}
+  font-size: ${sizing.byUnit(1.25)};
+  line-height: ${sizing.byUnit(1.25)};
+  color: ${colors.secondaryText};
 `;
 
 export const Wrapper = styled.Touchable`
 `;
 
+export const AvatarContainer = styled.View`
+  display: flex;
+  flex: 1;
+  flexDirection: row;
+  align-items: center;
+  justify-content: flex-start;
+`;
+
+export const TextContainer = styled.View`
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 0 0 0 ${sizing.byUnit(1)};
+`;
+
+const TextRow = styled.View`
+  ${layout.textRow}
+  margin-bottom: 2px;
+`;
+
 export default function UserName(props) {
-  const { user, relevance, type, topic, setSelected, big, postTime, repost, twitter } = props;
+  const {
+    user,
+    showRelevance,
+    type,
+    setSelected,
+    size,
+    postTime,
+    repost,
+    // twitter
+  } = props;
 
   if (!user) return null;
-
-  const { userImageBig, userImage, postInfo } = styles;
-  const imageSource = user.image ? { uri: user.image } : require('app/public/img/default_user.jpg');
-  const imageStyle = big ? userImageBig : userImage;
 
   let { handle } = user;
   if (type !== 'invite' && handle) handle = `@${handle}`;
 
-  const rIcon = (
-    <Image
-      resizeMode={'contain'}
-      style={[styles.smallR, { width: 10, height: 12, marginRight: 1 }]}
-      source={require('app/public/img/icons/smallR.png')}
-    />
-  );
+  let timestamp;
+  if (postTime) {
+    timestamp = getTimestamp(postTime);
+  }
 
-  const handleEl = handle && topic && topic.topic ? ( // TODO WILL BE DEPRECATED
-    <View style={styles.textRow}>
-      <HandleText>
-        {handle + ' • '}
-      </HandleText>
-      {rIcon}
-      <Text style={[styles.font10, styles.greyText]}>
-        {Math.round(topic.relevance)} in #{topic.topic}
-      </Text>
-    </View>
-  ) : handle && <HandleText style={[styles.font10, styles.greyText]}>
-    {handle} {postTime}
+  const handleEl = handle && <HandleText>
+    {handle} {timestamp}
   </HandleText>;
 
 
@@ -75,72 +81,48 @@ export default function UserName(props) {
     />
   );
 
-  const twitterIcon = twitter && (
-    <Icon
-      borderRadius={0}
-      name={'logo-twitter'}
-      size={17}
-      color={'#00aced'}
-      style={styles.icon}
-    />
-  );
+  const twitterIcon = null;
+  // TODO: Get Icons to work with SVG
+  // const twitterIcon = twitter && (
+  //   <Image
+  //     borderRadius={0}
+  //     name={'logo-twitter'}
+  //     size={17}
+  //     color={'#00aced'}
+  //     style={styles.icon}
+  //   />
+  // );
 
   return (
-    <Wrapper
-      onPress={() => setSelected(user)}
-    >
-      <View style={postInfo}>
-        <Image source={imageSource} style={imageStyle} />
-        {repostIcon}
-        <View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              alignItems: 'flex-end',
-              marginBottom: 2
-            }}
-          >
-            <Name>
-              {user.name}{twitterIcon && ' ' + twitterIcon}
-            </Name>
-            {user.relevance && relevance && <Stats entity={user} type={'relevance'} />}
-          </View>
-          {handleEl}
-        </View>
-      </View>
-    </Wrapper>
+    <ULink to={`/user/profile/${user.handle}`}>
+      <Wrapper
+        onPress={() => setSelected(user)}
+      >
+        <AvatarContainer>
+          <Avatar size={size} user={user} noLink />
+          {repostIcon}
+          <TextContainer>
+            <TextRow>
+              <Name>
+                {user.name}{twitterIcon && ' ' + twitterIcon}
+              </Name>
+              {user.relevance && showRelevance && <RStat size={1.75} user={user} />}
+            </TextRow>
+            {handleEl}
+          </TextContainer>
+        </AvatarContainer>
+      </Wrapper>
+    </ULink>
   );
 }
 
 UserName.propTypes = {
-  topic: PropTypes.object,
-  twitter: PropTypes.bool,
+  // twitter: PropTypes.bool,
   type: PropTypes.string,
   user: PropTypes.object,
-  big: PropTypes.bool,
-  relevance: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  size: PropTypes.number,
+  showRelevance: PropTypes.bool,
   repost: PropTypes.bool,
   postTime: PropTypes.string,
   setSelected: PropTypes.func
 };
-
-const localStyles = StyleSheet.create({
-  icon: {
-    marginLeft: 5
-  },
-  userImageBig: {
-    height: 42,
-    width: 42,
-    borderRadius: 21,
-    marginRight: 7
-  },
-  postInfo: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start'
-  }
-});
-
-styles = { ...localStyles, ...globalStyles };

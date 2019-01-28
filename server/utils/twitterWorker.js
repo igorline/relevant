@@ -152,6 +152,7 @@ async function processTweet(tweet, user) {
       post = await post.upsertLinkParent(linkObject);
       linkParent = post.linkParent;
     }
+    await post.save();
   } else {
     const { linkObject, processed } = await createLinkObj(tweet);
     const tags = tweet.entities.hashtags.map(t => t.text);

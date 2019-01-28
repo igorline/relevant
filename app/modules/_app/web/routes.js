@@ -21,7 +21,7 @@ const SplashContainer = loadable(() => import('modules/web_splash/splash.contain
 const MainNav = loadable(() => import('modules/navigation/web/mainNav.component'));
 
 const PostContainer = loadable(() => import(
-  'modules/post/web/post.container'
+  'modules/post/web/singlePost.container'
 ));
 const Wallet = loadable(() => import(
   'modules/wallet/web/wallet.container'

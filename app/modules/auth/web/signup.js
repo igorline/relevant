@@ -10,7 +10,8 @@ class SignupForm extends Component {
     actions: PropTypes.object,
     parentFunction: PropTypes.func,
     user: PropTypes.object,
-    authNav: PropTypes.func
+    authNav: PropTypes.func,
+    auth: PropTypes.object
   };
 
   constructor(props) {
@@ -45,7 +46,7 @@ class SignupForm extends Component {
 
     return this.props.actions.checkUser(string, 'email')
     .then(results => {
-      if (!results) {
+      if (results) {
         return this.setState({ errors: { email: 'This email has already been used' } });
       }
       return null;
@@ -54,6 +55,7 @@ class SignupForm extends Component {
 
   checkUser(name) {
     this.nameError = null;
+    const { user } = this.props.auth;
     const toCheck = name || this.state.name;
     if (toCheck) {
       const string = toCheck;
@@ -61,7 +63,7 @@ class SignupForm extends Component {
       if (match) {
         this.props.actions.checkUser(string, 'name')
         .then(results => {
-          if (!results) {
+          if (results && (!user || user._id !== results._id)) {
             this.usernameExists = true;
             this.nameError = 'This username is already taken';
           } else this.usernameExists = false;

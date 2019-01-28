@@ -1,43 +1,76 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import { connect } from 'react-redux';
 import UAvatar from 'modules/user/UAvatar.component';
 import CoinStat from 'modules/stats/coinStat.component';
+import RStat from 'modules/stats/rStat.component';
 import { withRouter } from 'react-router-dom';
-import styled from 'styled-components';
 import ULink from 'modules/navigation/ULink.component';
+import { Header } from 'modules/styled';
+import styled from 'styled-components/primitives';
+import { sizing, colors } from 'app/styles';
 
-const ProfileContainer = styled.div`
-  margin: 2em;
-  font-weight: bold;
-  font-size: 18px;
+const View = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: ${sizing.byUnit(3)};
 `;
 
-const ProfileDetailsContainer = styled.div`
+const Text = styled.Text`
+  display: flex;
+  flex: 1;
+`;
+
+const WalletInfo = styled.View`
+  display: flex;
+  flex-direction: column;
+  padding-left: ${sizing.byUnit(2)};
+  flex-shrink: 1;
+`;
+
+const StyledHeader = styled(Header)`
+  margin-bottom: ${sizing.byUnit(0)};
+`;
+
+const ProfileContainer = styled.View`
+  padding: ${sizing.byUnit(4)};
+  padding-bottom: ${sizing.byUnit(5)};
+
+`;
+
+const ProfileDetailsContainer = styled.View`
   display: flex;
   align-items: center;
-  margin-top: 1em;
-`;
-
-const StyledIconImg = styled.img`
-  width: 30px;
-  height: 30px;
-  margin: 0 0.3em 0 1em ;
+  flex-direction: row;
 `;
 
 const StyledAvatar = styled(UAvatar)`
 `;
 
-const PendingPayouts = styled.div`
-  font-weight: normal;
-  color: hsl(0, 0%, 55%);
-  font-size: 14px;
+const PendingPayouts = styled.Text`
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  color: ${colors.grey};
+  font-size: ${sizing.byUnit(1.5)};
+  line-height: ${sizing.byUnit(1.5)};
+  margin-top: ${sizing.byUnit(2)};
 `;
+
 
 const linkStyles = `
   display: flex;
   align-items: center;
-  color: black;
+  font-size: ${sizing.byUnit(1.5)}
+  color: ${colors.blue};
+`;
+
+const walletLinkStyles = `
+  ${linkStyles}
+  color: ${colors.black};
 `;
 
 
@@ -55,7 +88,7 @@ class NavProfile extends Component {
     let pendingPayouts = 0;
     earnings.pending.forEach(id => {
       const reward = earnings.entities[id];
-      if (reward && reward.status === 'pending') {
+      if (reward && reward.stakedTokens) {
         // TODO include actual rewards here based on % share
         pendingPayouts += reward.stakedTokens;
       }
@@ -63,15 +96,23 @@ class NavProfile extends Component {
 
     return (
       <ProfileContainer>
-        <div>{user.name}</div>
-        <PendingPayouts>PENDING PAYOUTS: {pendingPayouts}</PendingPayouts>
+        <View>
+          <StyledHeader>{user.name}</StyledHeader>
+          <ULink to="/user/wallet" styles={linkStyles}> My Wallet</ULink>
+        </View>
+
         <ProfileDetailsContainer>
-          <StyledAvatar user={user} size={64} noName />
-          <ULink to="/user/wallet" styles={linkStyles}>
-            <StyledIconImg src="/img/r-emoji.png" alt="Relevance" />
-            <span>{Math.round(user.relevance ? user.relevance.pagerank || 0 : 0)}</span>
-            <CoinStat user={user} isOwner={true} />
-          </ULink>
+          <StyledAvatar user={user} size={8} noName />
+          <WalletInfo>
+            <ULink to="/user/wallet" styles={walletLinkStyles}>
+              <RStat user={user} />
+              <CoinStat user={user} isOwner={true} />
+            </ULink>
+            <PendingPayouts>
+              <Text>Pending Rewards: </Text>
+              <CoinStat size={1.5} inherit amount={pendingPayouts} />
+            </PendingPayouts>
+          </WalletInfo>
         </ProfileDetailsContainer>
       </ProfileContainer>
     );

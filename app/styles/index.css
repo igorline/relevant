@@ -1,5 +1,19 @@
 @import './global.css';
 
+@font-face {
+  font-family: 'HelveticaNeue-Medium';
+  src: url('/fonts/HelveticaNeueMedium.ttf');
+}
+@font-face {
+  font-family: 'HelveticaNeue-CondensedBold';
+  src: url('/fonts/HelveticaNeueCondensedBold.ttf');
+}
+@font-face {
+  font-family: 'HelveticaNeue-Bold';
+  src: url('/fonts/HelveticaNeueBold.ttf');
+}
+
+
 .row {
   /*flex: 1;*/
   /*margin: calc(50% - 75rem);*/

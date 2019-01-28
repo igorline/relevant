@@ -42,7 +42,7 @@ class PostImage extends Component {
 
     if (post) {
       if (post.articleDate) {
-        time = numbers.timeSince(Date.parse(post.articleDate));
+        time = numbers.getTimestamp(Date.parse(post.articleDate));
       }
       if (post.articleAuthor && post.articleAuthor.length) {
         // test this
