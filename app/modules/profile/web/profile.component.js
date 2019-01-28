@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Avatar from 'modules/user/web/avatar.component';
-import CoinStat from 'modules/stats/coinStat.component';
-import styled from 'styled-components';
-import { layout, colors } from 'app/styles/globalStyles';
 
+import Avatar from 'modules/user/web/avatar.component';
+import styled from 'styled-components';
+import { layout, colors, sizing } from 'app/styles';
+import CoinStat from 'modules/stats/coinStat.component';
+import RStat from 'modules/stats/rStat.component';
 
 if (process.env.BROWSER === true) {
   require('./profile.css');
@@ -14,7 +15,7 @@ const Logout = styled.a`
   display: inline-block;
   width: 100%;
   text-align: right;
-  padding-right: 2em;
+  padding-right: ${sizing.byUnit(4)};
   ${layout.linkStyle}
 `;
 
@@ -51,24 +52,8 @@ export default class Profile extends Component {
           <Avatar user={user} />
           <div className="name">{user.name}</div>
           <div className="relevance">
-            <img src="/img/r-emoji.png" alt="Relevance" className="r" />
-            {Math.round(user.relevance ? user.relevance.pagerank || 0 : 0)}
+            <RStat user={user} />
             <CoinStat user={user} isOwner={isOwner} />
-          </div>
-          <div className="subscribers">
-            {'Subscribers: '}
-            <b>{user.followers}</b>
-            {' • '}
-            {'Subscribed to: '}
-            <b>{user.following}</b>
-          </div>
-          <div className="tags">
-            {'Expertise: '}
-            {(user.topTags || []).map((tag, i) => (
-              <a className="tag" key={i}>
-                {'#' + tag.tag + ' '}
-              </a>
-            ))}
           </div>
         </div>
       </div>

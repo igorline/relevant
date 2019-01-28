@@ -12,7 +12,7 @@ import * as postActions from 'modules/post/post.actions';
 import * as tagActions from 'modules/tag/tag.actions';
 import { alert, text, post } from 'app/utils';
 
-import AvatarBox from 'modules/user/web/avatarbox.component';
+import AvatarBox from 'modules/user/avatarbox.component';
 import PostInfo from 'modules/post/web/postinfo.component';
 import CreatePostTeaser from './createPostTeaser.component';
 import TagInput from './TagInput.component';
@@ -259,6 +259,7 @@ class CreatePostContainer extends Component {
 
   createPreview() {
     const { url } = this.state;
+    const { auth } = this.props;
     // better logic?
     if (this.state.loadingPreview) return;
 
@@ -286,11 +287,16 @@ class CreatePostContainer extends Component {
           keywords: results.keywords,
           postTags: results.tags,
           urlPreview: {
+            ...results,
             image: imageURL,
             title: results.title || 'Untitled',
-            description: results.description,
-            domain: results.domain,
-            loading: false
+            loading: false,
+            embeddedUser: auth.user,
+            tags: [],
+          },
+          linkPreview: {
+            ...results,
+            image: imageURL,
           }
         });
       } else {
@@ -303,7 +309,12 @@ class CreatePostContainer extends Component {
     if (!this.state.urlPreview) return null;
     return (
       <div style={{ position: 'relative' }}>
-        <PostInfo small close={this.clearUrl.bind(this)} post={this.state.urlPreview} />
+        <PostInfo
+          small
+          close={this.clearUrl.bind(this)}
+          post={this.state.urlPreview}
+          link={this.state.linkPreview}
+        />
         <a onClick={this.clearUrl.bind(this)} className="removeUrl">
           remove url
         </a>
@@ -323,7 +334,7 @@ class CreatePostContainer extends Component {
     }
     return (
       <div className="createPostContainer">
-        <div className="urlPreview">{this.renderPreview()}</div>
+
         <AvatarBox user={this.props.auth.user} auth={this.props.auth} />
 
         <div style={{ position: 'relative' }}>
@@ -348,6 +359,8 @@ class CreatePostContainer extends Component {
             )}
           </div>
         </div>
+
+        <div className="urlPreview">{this.renderPreview()}</div>
 
         <div className="createOptions">
           <TagInput

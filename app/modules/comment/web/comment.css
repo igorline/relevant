@@ -1,51 +1,38 @@
 @import 'styles/global.css';
 
-
-.comments {
-  margin-left: $postOffsetPadding;
-  /*background: white;*/
-  /*padding: 0 25px;*/
+.formContainer {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  background-color: #F8F8F8;
+  button {
+    align-self: flex-end;
+    margin: 5px 0px;
+  }
 }
-.comments form {
+.formContainer form {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   justify-content: space-between;
   align-items: flex-start;
-  margin: 20px 0 20px 0;
+  margin: 0 0 20px 0;
   flex: 1;
 }
 
-.formContainer {
-  margin: 20px 0;
-  display: flex;
-  flex-direction: row;
-  box-shadow: $postShadow;
-
-  /*align-items: flex-end;*/
-  button {
-    /*float: right;*/
-    align-self: flex-end;
-    margin: 5px 0px;
-  }
-  background: white;
-  padding: 20px;
-
-}
-
-.comments form .avatar {
+.formContainer form .avatar {
   margin-right: 5px;
   width: 37px;
   height: 37px;
 }
-.comments form textarea, .comment textarea {
+.formContainer form textarea, .comment textarea {
   @extend %input;
   /*width: 100%;*/
   flex: 1;
   margin: 0;
 }
 
-.comments form input[type=submit] {
+.formContainer form input[type=submit] {
   border: 0;
   background: transparent;
   padding: 0px 0;
@@ -55,35 +42,4 @@
   color: $blue;
   cursor: pointer;
   outline: none;
-}
-
-.comment {
-  /*margin: 40px;*/
-  /*@extend %flatBorderBottom;*/
-  padding: 20px 20px;
-  /*margin: 10px 0;*/
-  background:white;
-  box-shadow: $postShadow;
-
-  display: flex;
-  flex-direction: row;
-  /*background: white;*/
-}
-
-.comment:last-of-type {
-  /*box-shadow: none;*/
-  border: none;
-}
-
-.comment .body {
-  font-family: 'Georgia', serif;
-  font-size: 15px;
-  color: #242425;
-  margin: 15px 0 0px 0px;
-}
-
-@media screen and (max-width: 736px) {
-  .comments {
-    padding: 0 10px;
-  }
 }

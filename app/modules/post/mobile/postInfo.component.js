@@ -10,10 +10,8 @@ import {
 import PropTypes from 'prop-types';
 import RNBottomSheet from 'react-native-bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
-import moment from 'moment';
-import UserName from 'modules/user/avatarbox.component';
+import AvatarBox from 'modules/user/avatarbox.component';
 import { globalStyles, greyText } from 'app/styles/global';
-import { numbers } from 'app/utils';
 
 let ActionSheet = ActionSheetIOS;
 if (Platform.OS === 'android') {
@@ -157,9 +155,6 @@ class PostInfo extends Component {
 
     if (!post.embeddedUser) return null;
 
-    let postTime = moment(post.createdAt);
-    postTime = ' • ' + numbers.timeSince(postTime) + ' ago';
-
     if (this.myPost) {
       postActions = (
         <TouchableOpacity
@@ -184,12 +179,12 @@ class PostInfo extends Component {
     }
 
     const userEl = (
-      <UserName
-        big={big}
+      <AvatarBox
         user={user}
         setSelected={this.setSelected}
-        postTime={postTime}
+        postTime={post.postDate}
         twitter={post.twitter}
+        showRelevance
       />
     );
 
@@ -211,7 +206,7 @@ class PostInfo extends Component {
               big={big}
               user={user}
               setSelected={this.setSelected}
-              postTime={postTime}
+              postTime={post.postDate}
             />
             <View style={[styles.infoRight]}>
               {this.props.repost ? null : postActions}

@@ -43,7 +43,7 @@ class DiscoverUser extends Component {
       <div className="discoverUserContainer">
         <div className="discoverUser">
           <div className="left">
-            <AvatarBox dontShowRelevance user={user} />
+            <AvatarBox user={user} />
           </div>
           <div className="right">
             <img src="/img/r-emoji.png" className="r" />

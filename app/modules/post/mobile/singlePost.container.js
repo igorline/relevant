@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import * as authActions from 'modules/auth/auth.actions';
 import * as userActions from 'modules/user/user.actions';
 import * as postActions from 'modules/post/post.actions';
+import * as commentActions from 'modules/comment/comment.actions';
 import * as statsActions from 'modules/stats/stats.actions';
 import * as tagActions from 'modules/tag/tag.actions';
 import * as investActions from 'modules/post/invest.actions';
@@ -148,6 +149,7 @@ function mapDispatchToProps(dispatch) {
         ...statsActions,
         ...tagActions,
         ...authActions,
+        ...commentActions,
         ...postActions,
         ...animationActions,
         ...investActions,

@@ -1,11 +1,13 @@
-import { css } from 'styled-components';
+import { colors, fonts, sizing } from 'app/styles';
 
-export const tabStyles = css`
-  color: hsl(0, 0%, 80%);
-  font-weight: bold;
-  font-size: 24px;
+// TODO how to best deal with this?
+export const tabStyles = `
+  color: ${colors.grey};
+  font-size: ${sizing.byUnit(3)};
+  line-height: ${sizing.byUnit(3 * fonts.lh)};
+  ${fonts.HelveticaNeueBold}
   &.active {
-    color: black;
+    color: ${colors.black};
     fontWeight: 'bold'
   }
 `;

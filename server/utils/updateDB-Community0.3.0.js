@@ -525,6 +525,10 @@ async function convertStringToId() {
   });
 }
 
+async function removeOldUsers() {
+  return User.remove({ version: 'stringID' }).exec();
+}
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
@@ -544,6 +548,8 @@ async function runUpdates() {
 
     // await updateUserEmbeds();
     // await convertStringToId();
+
+    // await removeOldUsers();
 
     console.log('finished db updates');
   } catch (err) {

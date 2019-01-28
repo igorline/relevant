@@ -13,7 +13,6 @@ import AuthContainer from 'modules/auth/mobile/auth.container';
 import ArticleView from 'modules/navigation/mobile/articleView.container';
 import ErrorComponent from 'modules/ui/mobile/error.component';
 import StallScreen from 'modules/navigation/mobile/stallScreen.component';
-// import MainView from 'modules/_app/mobile/app.container';
 import { CreatePostNavigator, CreatePostStack } from 'modules/_app/mobile/createPostRouter';
 import { TabContainer } from 'modules/_app/mobile/tabRouter';
 

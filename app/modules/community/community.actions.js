@@ -35,7 +35,7 @@ export function setCommunityMembers(slug, members) {
 
 export function getCommunityAdmins() {}
 
-export function getCommunityMembers(slug) {
+export function getCommunityMembers({ slug, skip, limit }) {
   return async dispatch => {
     try {
       const members = await api.request({
@@ -45,6 +45,10 @@ export function getCommunityMembers(slug) {
           slug,
           members: 'members',
         },
+        query: {
+          skip,
+          limit
+        }
       });
       return dispatch(setCommunityMembers(slug, members));
     } catch (error) {

@@ -3,26 +3,61 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import AvatarBox from 'modules/user/web/avatarbox.component';
-// import AvatarBox from 'modules/user/avatarbox.component';
-import Tag from 'modules/tag/web/tag.component';
 import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
-import Popup from 'modules/ui/web/popup';
-
+import styled from 'styled-components/primitives';
+import { colors, sizing } from 'app/styles';
+import PostComment from 'modules/post/web/postComment.component';
 import PostButtons from './postbuttons.component';
 import PostInfo from './postinfo.component';
 
-if (process.env.BROWSER === true) {
-  require('./post.css');
-}
+const Wrapper = styled.View`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  padding-bottom: ${sizing.byUnit(4)};
+`;
+
+const PostContainer = styled.View`
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+`;
+
+const PostInfoContainer = styled.View`
+  display: flex;
+  position: relative;
+  flex-shrink: 1;
+  width: 100%;
+  padding-bottom: ${(p) => p.detailView ? '' : sizing.byUnit(4)};
+  border-bottom-color: ${colors.lineColor};
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+`;
+
+const Text = styled.Text`
+`;
+
+const PostButtonContainer = styled.View`
+  width: ${sizing.byUnit(13)};
+`;
+
 
 export class Post extends Component {
   static propTypes = {
     post: PropTypes.shape({
       data: PropTypes.object
     }),
+    postState: PropTypes.object,
     repost: PropTypes.object,
     link: PropTypes.object,
     actions: PropTypes.object,
@@ -32,10 +67,14 @@ export class Post extends Component {
     showDescription: PropTypes.bool,
     history: PropTypes.object,
     usersState: PropTypes.object,
+    sort: PropTypes.string,
+    detailView: PropTypes.bool,
+    firstPost: PropTypes.object,
+    comment: PropTypes.object,
   };
 
   deletePost() {
-    // TODO custom confirm
+    // TODO: custom confirm
     // eslint-disable-next-line
     const okToDelete = confirm('Are you sure you want to delete this post?');
     if (!okToDelete) return;
@@ -67,124 +106,58 @@ export class Post extends Component {
   }
 
   render() {
-    const { post, repost, link, auth } = this.props;
+    const { post, auth, sort, detailView, link, firstPost, comment } = this.props;
     const { community } = auth;
-
-    let popup;
 
     if (post === 'notFound') {
       return (
-        <div>
-          <h1>Post not found</h1>
-        </div>
+        <Wrapper>
+          <Text>Post not found</Text>
+        </Wrapper>
       );
     }
     if (!post) return null;
 
-    let postInfo;
-    if (link) {
-      postInfo = <PostInfo post={link} />;
-    } else if (repost) {
-      postInfo = <PostInfo post={repost} />;
-    } else {
-      postInfo = <PostInfo post={post} />;
-    }
+    const postUrl = `/${community}/post/${post._id}`;
 
-    let user = post.user || post.twitterUser;
-
-    if (auth.user && auth.user._id === post.user) {
-      popup = (
-        <Popup
-          options={[
-            { text: 'Edit Post', action: this.editPost.bind(this) },
-            { text: 'Delete Post', action: this.deletePost.bind(this) }
-          ]}
-        >
-          <span className={'optionDots'}>...</span>
-        </Popup>
-      );
-    }
-
-    user = this.props.usersState.users[user] || post.embeddedUser;
-
-    // if (user && !user._id) {
-    //   user = post.embeddedUser;
-    // }
-    // // TODO better?
-    // if (!user && post.twitter) {
-    //   user = post.embeddedUser;
-    // }
-
-    const openPost = repost ? repost._id : post._id;
 
     return (
-      <div
-        className="post"
-        onClick={() => this.props.history.push('/' + community + '/post/' + openPost)}
-      >
-        {postInfo}
-        <div className="postContent">
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <AvatarBox
-                user={user}
+      <Wrapper detailView={detailView}>
+        <PostContainer>
+          <PostButtonContainer>
+            <PostButtons post={post} {...this.props} />
+          </PostButtonContainer>
+          <PostInfoContainer detailView={detailView}>
+            <PostInfo
+              post={post}
+              link={link}
+              community={community}
+              postUrl={postUrl}
+              sort={sort}
+              firstPost={firstPost}
+            >
+              {!detailView &&
+              <PostComment
+                comment={comment}
                 auth={this.props.auth}
-                date={post.postDate}
-                repost={repost}
-                big
+                community={community}
+                postUrl={postUrl}
               />
-              {popup}
-            </div>
-
-            <div className="postBody">
-              <PostBody auth={this.props.auth} community={community} repost={repost} post={post} />
-              {repost && (
-                <div className="repostBody">
-                  <AvatarBox
-                    user={repost.embeddedUser}
-                    auth={this.props.auth}
-                    date={post.postDate}
-                  />
-                  <div>
-                    <PostBody post={repost} community={community} />
-                  </div>
-                </div>
-              )}
-              {this.props.showDescription && (
-                <div className="postDescription">{post.description}</div>
-              )}
-              <PostButtons post={post} {...this.props} />
-            </div>
-          </div>
-        </div>
-      </div>
+              }
+            </ PostInfo>
+          </PostInfoContainer>
+        </PostContainer>
+      </Wrapper>
     );
   }
 }
 
-function PostBody(props) {
-  const { post, community, repost } = props;
-  const { body } = post;
-  const tags = (post.tags || []).map(tag => (
-    <Tag {...props} name={tag} community={community} key={tag} />
-  ));
-  return (
-    <div className={repost ? 'repostText' : ''}>
-      <pre>{body}</pre> {tags}
-    </div>
-  );
-}
-
-PostBody.propTypes = {
-  post: PropTypes.object,
-  repost: PropTypes.object,
-  community: PropTypes.string
-};
-
 export default withRouter(connect(
   state => ({
     community: state.community.communities[state.community.active],
-    usersState: state.user
+    usersState: state.user,
+    auth: state.auth,
+    earnings: state.earnings,
   }),
   dispatch => ({
     actions: bindActionCreators(

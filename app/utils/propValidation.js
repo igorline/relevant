@@ -23,7 +23,7 @@ export const postProps = PropTypes.shape({
 });
 
 export const authProps = PropTypes.shape({
-  isAuthenticated: PropTypes.bool.isRequired,
+  isAuthenticated: PropTypes.bool,
   user: userProps,
   community: PropTypes.string
 });
