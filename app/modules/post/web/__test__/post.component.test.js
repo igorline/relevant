@@ -3,15 +3,15 @@ import renderer from 'react-test-renderer';
 import { Post } from 'modules/post/web/post.component';
 import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
-import { auth, post1, usersState } from 'app/utils/testData';
+import { auth, post, user } from 'app/mockdata';
 
 const props = {
-  post: post1,
-  link: post1.link,
+  post: post.post1,
+  link: post.post1.link,
   actions: {},
-  usersState,
-  auth,
-  location: { pathname: 'post/' + post1._id },
+  userState: user.usersState,
+  auth: auth.auth,
+  location: { pathname: 'post/' + post.post1._id },
   history: { push: jest.fn() }
 };
 

@@ -28,13 +28,20 @@ const Wrapper = styled.View`
   flex-direction: column;
 `;
 
+const NESTING_UNIT = 8;
+
 const Spacer = styled.View`
   display: flex;
   flex-direction: row;
   position: relative;
   background-color: ${(p) => p.bgColor || 'transparent'}
-  padding: ${(p) => sizing(p.padding || 0)};
-  padding-left: ${(p) => p.nesting ? sizing((p.nesting + 1) * 4) : sizing(4)};
+  padding: ${(p) => p.padding || 0};
+  padding-left: ${(p) => {
+    if (p.nesting !== undefined && p.nesting !== null) {
+      return sizing((p.nesting) * NESTING_UNIT);
+    }
+    return sizing(NESTING_UNIT);
+  }}
   flex-grow: 1;
   ${(p) => p.withBorder ? layout.universalBorder() : ''}
 `;
@@ -44,12 +51,13 @@ const Container = styled.View`
   flex-direction: column;
   flex-grow: 1;
   flex-shrink: 1;
-  padding-bottom: ${sizing(2)};
+  padding-bottom: ${sizing(4)};
   ${(p) => p.isActive ? '' : layout.universalBorder('bottom')}
 `;
 
 const PostButtonsContainer = styled.View`
-  margin-right: ${sizing(4)};
+  /* margin-right: ${sizing(4)}; */
+  width: ${sizing(12)};
 `;
 
 const Actions = styled.View`
@@ -144,7 +152,7 @@ class Comment extends Component {
     }
 
     const body = (
-      <CommentText m={`${sizing(1)} 0`}>
+      <CommentText m={`${sizing(3)} 0`}>
         {comment.body}
       </CommentText>
     );
@@ -164,7 +172,7 @@ class Comment extends Component {
 
     return (
       <Wrapper>
-        <Spacer nesting={nesting} padding={4}>
+        <Spacer nesting={nesting} padding={`${sizing(4)} ${sizing(4)} 0 0`}>
           <PostButtonsContainer>
             <PostButtons post={comment} {...this.props} />
           </PostButtonsContainer>
@@ -192,7 +200,7 @@ class Comment extends Component {
         </Spacer>
 
         {isActive && (
-          <Spacer nesting={nesting + 2 } bgColor={colors.secondaryBG} padding={4} >
+          <Spacer nesting={nesting + 1.5} bgColor={colors.secondaryBG} padding={sizing(4)} >
             <CommentForm isReply text={'Reply'} {...this.props} post={comment} parentPost={parentPost} />
           </Spacer>
         ) }
