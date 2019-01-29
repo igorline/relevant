@@ -32,11 +32,26 @@
       ],
     },
     "development_web": {
-      "plugins": ["styled-components"],
+      "plugins": [
+        "styled-components",
+        ["module-resolver", {
+        "root": ["./app", "./app/modules"],
+          "alias": {
+            "server": "./server",
+            "modules": "./app/modules",
+            "core": "./app/core",
+            "app": "./app",
+            "react-native-linear-gradient": "react-native-web-linear-gradient"
+
+          },
+          "cwd": "babelrc",
+        }]
+      ],
       "presets": [
         "@babel/preset-env",
         "@babel/preset-react",
       ],
+
     },
     "development": {
       "presets": [
