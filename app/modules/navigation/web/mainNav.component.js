@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import ContentHeader from 'modules/navigation/web/contentheader.component';
 import SideNav from 'modules/navigation/web/sideNav.component';
 import { withRouter } from 'react-router-dom';
-import { colors, layout } from 'app/styles';
+import { layout } from 'app/styles';
 
 const ContentContainer = styled.div`
   max-width: 100vw;
@@ -17,7 +17,7 @@ const ContentContainer = styled.div`
 const StyledSideNav = styled(SideNav)`
   display: inline-block;
   z-index: 100;
-  border-right: ${layout.borderStyles(colors.lineColor)};
+  ${layout.universalBorder('right')}
 `;
 
 const MainContent = styled.div`

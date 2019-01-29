@@ -9,8 +9,8 @@ import * as createPostActions from 'modules/createPost/createPost.actions';
 import styled from 'styled-components/primitives';
 import { colors, sizing } from 'app/styles';
 import PostComment from 'modules/post/web/postComment.component';
-import PostButtons from './postbuttons.component';
-import PostInfo from './postinfo.component';
+import PostButtons from 'modules/post/postbuttons.component';
+import PostInfo from 'modules/post/postinfo.component';
 
 const Wrapper = styled.View`
   position: relative;

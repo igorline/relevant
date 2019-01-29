@@ -191,7 +191,7 @@ class PostButtons extends Component {
           { pendingPayouts ?
             <View style={{ display: 'flex', flexDirection: 'column' }}>
               <SmallText>your reward:</SmallText>
-              <CoinStat mr={0} size={1.25} inherit amount={pendingPayouts} />
+              <CoinStat mr={0} size={1.25} inheritfont amount={pendingPayouts} />
             </View> :
             null
           }

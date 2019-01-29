@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import NavProfile from 'modules/profile/web/navProfile.component';
-import Community from 'modules/community/web/communityNav.component';
+import NavProfile from 'modules/profile/navProfile.component';
+import Community from 'modules/community/communityNav.component';
 import SideNavFooter from 'modules/navigation/web/sideNavFooter.component';
 import { colors, layout, sizing } from 'app/styles';
 
@@ -15,7 +15,7 @@ const SideNavContent = styled.div`
   display: flex;
   flex-direction: column;
   z-index: 10;
-  border-right: ${layout.borderStyles(colors.lineColor)};
+  ${layout.universalBorder('right')}
 `;
 
 const SideNavScroll = styled.div`
@@ -27,7 +27,7 @@ const SideNavScroll = styled.div`
 `;
 
 const SideNavSection = styled.div`
-  border-bottom: ${layout.borderStyles(colors.lineColor)};
+  ${layout.universalBorder('bottom')}
 `;
 
 const LogoContainer = styled(SideNavSection)`
@@ -40,9 +40,8 @@ const LogoContainer = styled(SideNavSection)`
   top: 0;
   left: 0;
   width: ${layout.sideNavWidth};
-  borderStyle: solid;
   background: ${colors.secondaryBG};
-  border-right: ${layout.borderStyles(colors.lineColor)};
+  ${layout.universalBorder('right')}
 `;
 
 const StyledLink = styled(Link)`

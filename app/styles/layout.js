@@ -12,15 +12,6 @@ export const headerHeight = sizing(16);
 export const mainHeaderHeight = sizing(12);
 export const sideNavWidth = sizing(40);
 
-export const borderStyles = (color) => `1px solid ${color || 'black'}`;
-
-export const borderRight = (color) => ({
-  borderRight: `1px solid ${color || 'black'}`
-});
-
-export const borderBottom = (color) => ({
-  borderBottom: `1px solid ${color || 'black'}`
-});
 
 export const universalBorder = (side, color, width) => `
   border${side ? `-${side}` : ''}-color: ${color || colors.lineColor};
@@ -47,4 +38,3 @@ export const button = {
   fontSize: sizing(1.5),
   fontFamily: 'HelveticaNeue-Medium'
 };
-

@@ -1,14 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components/primitives';
-import { ActivityIndicator } from 'react-native-web';
-import ULink from 'modules/navigation/ULink.component';
-import { Title, SecondaryText } from 'modules/styled';
-import { sizing } from 'app/styles';
-// import { getTimestamp } from 'app/utils/numbers';
 import get from 'lodash.get';
+import ULink from 'modules/navigation/ULink.component';
 import Tag from 'modules/tag/tag.component';
 import Gradient from 'modules/post/gradient.component';
+import { ActivityIndicator } from 'react-native-web';
+import { sizing, fonts } from 'app/styles';
+import styled from 'styled-components/primitives';
+
+const Title = styled.Text`
+  ${fonts.title}
+`;
+
+const SecondaryText = styled.Text`
+  ${fonts.secondaryText}
+`;
 
 const Wrapper = styled.View`
   display: flex;
@@ -45,9 +51,6 @@ const PostText = styled.View`
   flex-shrink: 1;
 `;
 
-
-const PostTitle = styled(Title)`
-`;
 
 export default function PostInfo(props) {
   const { post, link, community, postUrl, firstPost } = props;
@@ -95,9 +98,9 @@ export default function PostInfo(props) {
       <PostText>
         {postUrl ?
           <ULink to={postUrl}>
-            <PostTitle>{title}</PostTitle>
+            <Title>{title}</Title>
           </ULink>
-          : <PostTitle>{title}</PostTitle>
+          : <Title>{title}</Title>
         }
         {/* <SecondaryText>
           { get(postUser, 'handle') &&

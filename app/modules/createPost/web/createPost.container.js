@@ -13,7 +13,7 @@ import * as tagActions from 'modules/tag/tag.actions';
 import { alert, text, post } from 'app/utils';
 
 import AvatarBox from 'modules/user/avatarbox.component';
-import PostInfo from 'modules/post/web/postinfo.component';
+import PostInfo from 'modules/post/postinfo.component';
 import CreatePostTeaser from './createPostTeaser.component';
 import TagInput from './TagInput.component';
 import SelectTags from './selectTags.component';

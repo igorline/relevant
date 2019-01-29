@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { numbers } from 'app/utils';
 import * as activityHelper from 'modules/activity/activityHelper';
-import PostInfo from 'modules/post/web/postinfo.component';
+import PostInfo from 'modules/post/postinfo.component';
 
 const moment = require('moment');
 
