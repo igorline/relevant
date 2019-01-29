@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ULink from 'modules/navigation/ULink.component';
-import styled from 'styled-components/primitives';
-import { Image } from 'modules/styled';
-import { mixins, sizing } from 'app/styles';
-
-const Wrapper = styled.View`
-  ${mixins.margin}
-`;
+import { Image, View } from 'modules/styled';
+import { sizing } from 'app/styles';
 
 class UAvatar extends Component {
   static propTypes = {
@@ -38,13 +33,13 @@ class UAvatar extends Component {
       />);
     if (this.props.noLink) {
       return (
-        <Wrapper style={this.props.style} className={this.props.className} m={m}>
+        <View style={this.props.style} className={this.props.className} m={m}>
           {AvatarImage}
-        </Wrapper>
+        </View>
       );
     }
     return (
-      <Wrapper style={this.props.style} className={this.props.className} m={m} >
+      <View style={this.props.style} className={this.props.className} m={m} >
         <ULink
           onClick={e => e.stopPropagation()}
           className={'avatar'}
@@ -52,7 +47,7 @@ class UAvatar extends Component {
         >
           {AvatarImage}
         </ULink>
-      </Wrapper>
+      </View>
     );
   }
 }
