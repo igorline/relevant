@@ -29,7 +29,7 @@ class UAvatar extends Component {
         source={{ uri: image }}
         h={sizing(imageSize)}
         w={sizing(imageSize)}
-        br={50}
+        br={sizing(imageSize / 2)}
       />);
     if (this.props.noLink) {
       return (
