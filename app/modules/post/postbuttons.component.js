@@ -42,15 +42,6 @@ const SmallText = styled.Text`
 `;
 
 
-// const RLogoImage = styled.Image`
-//   width: 14px;
-//   height: 14px;
-// `;
-
-const VoteIcon = styled(Image)`
-`;
-
-
 class PostButtons extends Component {
   static propTypes = {
     auth: PropTypes.object,
@@ -170,7 +161,7 @@ class PostButtons extends Component {
       <Wrapper className={className}>
         <Container>
           <Touchable onClick={e => this.vote(e, vote)} to="#">
-            <VoteIcon
+            <Image
               alt="Upvote"
               source={{ uri: votedUp ? '/img/upvoteActive.png' : upvoteBtn }}
             />
@@ -183,7 +174,7 @@ class PostButtons extends Component {
             </Text>
           </View>
           <Touchable onClick={e => this.irrelevant(e, vote)} to="#">
-            <VoteIcon
+            <Image
               alt="Downvote"
               source={{ uri: votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg' }}
             />

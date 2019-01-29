@@ -75,7 +75,7 @@ const walletLinkStyles = `
 `;
 
 
-class NavProfile extends Component {
+export class NavProfile extends Component {
   static propTypes = {
     user: PropTypes.object,
     earnings: PropTypes.object

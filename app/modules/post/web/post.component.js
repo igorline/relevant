@@ -48,7 +48,7 @@ const Text = styled.Text`
 `;
 
 const PostButtonContainer = styled.View`
-  width: ${sizing(13)};
+  width: ${sizing(12)};
 `;
 
 
