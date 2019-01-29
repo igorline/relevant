@@ -15,7 +15,7 @@ const Wrapper = styled.View`
 `;
 
 const PostContainer = styled.View`
-  padding: ${sizing(4)} ${sizing(4)} ${sizing(4)} 0;
+  padding: ${sizing(4)} ${sizing(4)} 0 0;
   padding-bottom: 0;
 `;
 

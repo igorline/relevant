@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { colors, sizing, fonts } from 'app/styles';
@@ -64,7 +63,7 @@ CommunityLink.propTypes = {
 };
 
 
-class Community extends Component {
+export class Community extends Component {
   static propTypes = {
     actions: PropTypes.object,
     community: PropTypes.object,
@@ -111,7 +110,6 @@ class Community extends Component {
 }
 
 const mapStateToProps = state => ({
-  routing: state.routing,
   community: state.community,
   auth: state.auth,
 });
@@ -126,9 +124,7 @@ const mapDispatchToProps = dispatch => ({
   )
 });
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Community)
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Community);
