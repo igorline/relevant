@@ -3,11 +3,11 @@ import renderer from 'react-test-renderer';
 import ProfileComponent from 'modules/profile/web/profile.component';
 import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
-import { user1 } from 'app/utils/testData';
+import { user } from 'app/mockdata';
 
 const props = {
   actions: { logout: jest.fn() },
-  user: user1,
+  user: user.user1,
   isOwner: false,
 };
 
