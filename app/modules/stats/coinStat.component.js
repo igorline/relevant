@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Eth from 'modules/web_ethTools/eth.context';
 import { abbreviateNumber } from 'app/utils/numbers';
 import { userProps } from 'app/utils/propValidation';
-import { Image, ImageWrapper } from 'modules/styled';
+import { Image, ImageWrapper } from 'modules/styled/uni';
 import { sizing, fonts, mixins } from 'app/styles';
 import styled from 'styled-components/primitives';
 

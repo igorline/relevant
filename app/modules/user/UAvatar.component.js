@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ULink from 'modules/navigation/ULink.component';
-import { Image, View } from 'modules/styled';
+import { Image, View } from 'modules/styled/uni';
 import { sizing } from 'app/styles';
 
 class UAvatar extends Component {

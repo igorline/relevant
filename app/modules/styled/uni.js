@@ -3,20 +3,14 @@ import { mixins, sizing } from 'app/styles';
 
 export const View = styled.View`
   ${mixins.margin}
-  ${mixins.height}
-  ${mixins.width}
   ${mixins.padding}
-  ${mixins.background}
-  ${mixins.borderRadius}
+  ${mixins.flex}
 `;
 
 export const Text = styled.Text`
   ${mixins.margin}
-  ${mixins.height}
-  ${mixins.width}
   ${mixins.padding}
-  ${mixins.background}
-  ${mixins.borderRadius}
+  ${mixins.flex}
 `;
 
 export const Image = styled.Image`

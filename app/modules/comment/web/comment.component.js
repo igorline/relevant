@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/postbuttons.component';
-// import { CommentText, SecondaryText } from 'modules/styled';
+// import { CommentText, SecondaryText } from 'modules/styled/uni';
 import CommentForm from 'modules/comment/web/commentForm.component';
 import { layout, colors, sizing, fonts, mixins } from 'app/styles';
 import styled from 'styled-components/primitives';
