@@ -25,9 +25,5 @@ target 'relevantNative' do
   pod 'Firebase/Core'
   pod 'TwitterKit'
 
-  pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
-
-  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
-
 end
 
