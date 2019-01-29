@@ -5,6 +5,7 @@ import Avatar from 'modules/user/UAvatar.component';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
 import { sizing, fonts } from 'app/styles';
+import { View } from 'modules/styled/uni';
 
 const CommentText = styled.Text`
   ${fonts.commentText}
@@ -48,7 +49,7 @@ class PostComment extends Component {
       return null;
     }
     return (
-      <Wrapper>
+      <View mt={sizing(2)} direction={'row'} align={'center'} >
         <Avatar
           user={comment.embeddedUser}
           auth={auth}
@@ -61,7 +62,7 @@ class PostComment extends Component {
             <CommentText>{comment.body}</CommentText>
           </ULink>
         </Container>
-      </Wrapper>
+      </View>
     );
   }
 }
