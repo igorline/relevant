@@ -32,9 +32,9 @@ class UAvatar extends Component {
     const AvatarImage = (
       <Image
         source={{ uri: image }}
-        h={sizing(imageSize)}
         w={sizing(imageSize)}
-        br={50}
+        h={sizing(imageSize)}
+        br={sizing(imageSize / 2)}
       />);
     if (this.props.noLink) {
       return (

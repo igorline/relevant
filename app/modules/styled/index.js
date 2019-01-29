@@ -1,9 +1,9 @@
 import styled from 'styled-components/primitives';
-import { mixins } from 'app/styles';
+import { mixins, sizing } from 'app/styles';
 
 export const Image = styled.Image`
-  height: sizing(3);
-  width: sizing(3);
+  height: ${sizing(3)};
+  width: ${sizing(3)};
   ${mixins.margin}
   ${mixins.height}
   ${mixins.width}

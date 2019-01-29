@@ -17,7 +17,6 @@
         "modules": "./app/modules",
         "core": "./app/core",
         "app": "./app",
-        "^react-native-linear-gradient": "react-native-web-linear-gradient"
       },
       "cwd": "babelrc",
     }]
