@@ -3,13 +3,19 @@ import PropTypes from 'prop-types';
 import Eth from 'modules/web_ethTools/eth.context';
 import { abbreviateNumber } from 'app/utils/numbers';
 import { userProps } from 'app/utils/propValidation';
-import { NumericalValue } from 'modules/styled';
-import { Icon, IconWrapper } from './styled.components';
+import { Image, ImageWrapper } from 'modules/styled';
+import { sizing, fonts, mixins } from 'app/styles';
+import styled from 'styled-components/primitives';
 
 const coinImage = require('app/public/img/relevantcoin.png');
 
+const NumericalValue = styled.Text`
+  ${fonts.numericalValue}
+  ${mixins.inheritfont}
+`;
+
 function CoinStat(props) {
-  const { user, isOwner, wallet, size, amount, inherit, mr } = props;
+  const { user, isOwner, wallet, size, amount, inheritfont, mr } = props;
 
   let tokens;
   if (typeof amount === 'number') tokens = amount;
@@ -26,21 +32,21 @@ function CoinStat(props) {
   ) {
     tokens = wallet.connectedBalance + user.balance;
   }
-
+  const iconSize = size || 3;
 
   return (
-    <IconWrapper mr={mr}>
-      <Icon source={coinImage} size={size} />
-      <NumericalValue size={size} inherit={inherit ? 1 : 0}>
+    <ImageWrapper mr={sizing(mr || 1.5)}>
+      <Image source={coinImage} h={sizing(iconSize)} w={sizing(iconSize)} mr={sizing(iconSize / 4)} />
+      <NumericalValue inheritfont={inheritfont ? 1 : 0}>
         {abbreviateNumber(tokens) || 0}
       </NumericalValue>
-    </IconWrapper>
+    </ImageWrapper>
   );
 }
 
 CoinStat.propTypes = {
   mr: PropTypes.number,
-  inherit: PropTypes.bool,
+  inheritfont: PropTypes.bool,
   amount: PropTypes.number,
   size: PropTypes.number,
   user: userProps,

@@ -1,29 +1,103 @@
 import sizing from './sizing';
 import * as colors from './colors';
 
-export const HelveticaNeueBold = "font-family: 'HelveticaNeue-Bold';";
-export const HelveticaNeueCondensedBold = "font-family: 'HelveticaNeue-CondensedBold';";
-export const HelveticaNeueMedium = "font-family: 'HelveticaNeue-Medium';";
-export const HelveticaNeue = "font-family: 'HelveticaNeue';";
-export const Georgia = "font-family: 'Georgia';";
+export const HELVETICA_NEUE_BOLD = 'HelveticaNeue-Bold';
+export const HELVETICA_NEUE_CONDENSED_BOLD = 'HelveticaNeue-CondensedBold';
+export const HELVETICA_NEUE_MEDIUM = 'HelveticaNeue-Medium';
+export const HELVETICA_NEUE = 'HelveticaNeue';
+export const HELVETICA_REGULAR = 'Helvetica';
+export const GEORGIA = 'Georgia';
+
+export const HelveticaNeueBold = `font-family: '${HELVETICA_NEUE_BOLD}';`;
+export const HelveticaNeueCondensedBold = `font-family: '${HELVETICA_NEUE_CONDENSED_BOLD}';`;
+export const HelveticaNeueMedium = `font-family: '${HELVETICA_NEUE_MEDIUM}';`;
+export const HelveticaNeue = `font-family: '${HELVETICA_NEUE}';`;
+export const Georgia = `font-family: '${GEORGIA}';`;
 
 export const lh = 4 / 3;
-
-export const linkStyles = {
-  fontSize: sizing(1.5),
-  lineHeight: sizing(1.5 * lh),
-  fontFamily: 'HelveticaNeue-Medium',
-  color: colors.grey,
-  padding: `${sizing(0.5)} 0`,
-};
-
-export const altLinkStyles = {
-  ...linkStyles,
-  textDecoration: 'underline',
-};
 
 export const bodyStyle = {
   fontSize: sizing(1.5),
   lineHeight: sizing(1.5 * lh),
   fontFamily: 'HelveticaNeue',
+};
+
+export const header = {
+  fontSize: sizing(3),
+  lineHeight: sizing(3 * lh),
+  fontFamily: HELVETICA_NEUE_BOLD,
+  color: colors.black,
+};
+
+export const title = {
+  display: 'flex',
+  fontSize: sizing(2.5),
+  lineHeight: sizing(2.5 * lh),
+  fontFamily: HELVETICA_NEUE_CONDENSED_BOLD,
+  color: colors.black,
+};
+
+// REQUIRES FONT-INHERIT
+export const numericalValue = {
+  fontSize: sizing(2),
+  lineHeight: sizing(2 * lh),
+  fontFamily: HELVETICA_NEUE_CONDENSED_BOLD,
+  color: colors.black,
+};
+
+export const link = {
+  fontSize: sizing(1.5),
+  lineHeight: sizing(1.5 * lh),
+  fontFamily: HELVETICA_NEUE_MEDIUM,
+  color: colors.grey,
+  padding: `${sizing(0.5)} 0`,
+};
+
+export const altLink = {
+  ...link,
+  textDecoration: 'underline',
+};
+
+export const bodyText = {
+  fontSize: sizing(1.5),
+  lineHeight: sizing(1.5 * lh),
+  fontFamily: HELVETICA_REGULAR,
+  color: colors.black,
+};
+
+export const commentText = {
+  fontSize: sizing(1.75),
+  lineHeight: sizing(1.75 * lh),
+  fontFamily: GEORGIA,
+  color: colors.black,
+};
+
+export const secondaryText = {
+  display: 'flex',
+  fontSize: sizing(1.5),
+  lineHeight: sizing(1.5 * lh),
+  fontFamily: HELVETICA_REGULAR,
+  color: colors.secondaryText,
+};
+
+export const CTALink = {
+  fontSize: sizing(1.5),
+  lineHeight: sizing(1.5 * lh),
+  fontFamily: HELVETICA_REGULAR,
+  color: colors.blue,
+};
+
+
+export const button = {
+  background: colors.blue,
+  color: colors.white,
+  display: 'flex',
+  alignItems: 'center',
+  border: 'none',
+  justifyContent: 'space-between',
+  height: sizing(16),
+  minWidth: sizing(18),
+  padding: `0  ${sizing(2)}`,
+  fontsize: sizing(1.5),
+  fontFamily: HELVETICA_NEUE_MEDIUM,
 };

@@ -7,9 +7,13 @@ import CoinStat from 'modules/stats/coinStat.component';
 import RStat from 'modules/stats/rStat.component';
 import { withRouter } from 'react-router-dom';
 import ULink from 'modules/navigation/ULink.component';
-import { Header } from 'modules/styled';
+import { sizing, colors, fonts, mixins } from 'app/styles';
 import styled from 'styled-components/primitives';
-import { sizing, colors } from 'app/styles';
+
+const Header = styled.Text`
+  ${fonts.header}
+  ${mixins.margin}
+`;
 
 const View = styled.View`
   display: flex;
@@ -31,9 +35,6 @@ const WalletInfo = styled.View`
   flex-shrink: 1;
 `;
 
-const StyledHeader = styled(Header)`
-  margin-bottom: ${sizing(0)};
-`;
 
 const ProfileContainer = styled.View`
   padding: ${sizing(4)};
@@ -97,7 +98,7 @@ class NavProfile extends Component {
     return (
       <ProfileContainer>
         <View>
-          <StyledHeader>{user.name}</StyledHeader>
+          <Header mb={0}>{user.name}</Header>
           <ULink to="/user/wallet" styles={linkStyles}> My Wallet</ULink>
         </View>
 
@@ -110,7 +111,7 @@ class NavProfile extends Component {
             </ULink>
             <PendingPayouts>
               <Text>Pending Rewards: </Text>
-              <CoinStat size={1.5} inherit amount={pendingPayouts} />
+              <CoinStat size={1.5} mr={1.5} inheritfont amount={pendingPayouts} />
             </PendingPayouts>
           </WalletInfo>
         </ProfileDetailsContainer>

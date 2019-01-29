@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { colors, sizing } from 'app/styles';
+import { colors, sizing, fonts } from 'app/styles';
 import * as communityActions from 'modules/community/community.actions';
 import { setCommunity } from 'modules/auth/auth.actions';
-import styled from 'styled-components/primitives';
+import styled, { css } from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
-import CommunityActive from 'modules/community/web/communityActive.component';
-import { LinkWithIcon } from 'modules/styled';
+import CommunityActive from 'modules/community/communityActive.component';
 import get from 'lodash.get';
 
-const linkStyle = `
+// TODO: change to work like in the communityActive component
+const linkStyle = css`
   display: flex;
   align-items: center;
   color: ${colors.black};
@@ -36,15 +36,15 @@ const StyledImage = styled.Image`
 `;
 
 const CommunityLinkTab = styled.Text`
-  ${LinkWithIcon}
-  padding: ${sizing(0)} ${sizing(0)};
+  ${fonts.fonts}
+  {padding}
 `;
 
 const StyledCommunityList = styled.View`
 `;
 
 const CommunityLink = ({ community, onClick }) => (
-  <CommunityLinkTab>
+  <CommunityLinkTab p={`${sizing(0)} ${sizing(0)}`}>
     <ULink
       styles={linkStyle}
       key={community._id}

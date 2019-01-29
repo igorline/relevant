@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 // import AvatarBox from 'modules/user/avatarbox.component';
 import Avatar from 'modules/user/UAvatar.component';
-import { CommentText } from 'modules/styled';
 import styled from 'styled-components/primitives';
 import ULink from 'modules/navigation/ULink.component';
-import { sizing } from 'app/styles';
+import { sizing, fonts } from 'app/styles';
 
+const CommentText = styled.Text`
+  ${fonts.commentText}
+`;
 
 const Wrapper = styled.View`
   display: flex;

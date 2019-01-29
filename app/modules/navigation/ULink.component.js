@@ -85,7 +85,10 @@ ULink.propTypes = {
   to: PropTypes.string,
   onPress: PropTypes.func,
   onClick: PropTypes.func,
-  styles: PropTypes.string,
+  styles: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+  ]),
   external: PropTypes.bool,
   target: PropTypes.string,
   disabled: PropTypes.bool,

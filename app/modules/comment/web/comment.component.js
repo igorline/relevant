@@ -3,15 +3,24 @@ import get from 'lodash.get';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
-import PostButtons from 'modules/post/web/postbuttons.component';
-import { CommentText, SecondaryText } from 'modules/styled';
+import PostButtons from 'modules/post/postbuttons.component';
+// import { CommentText, SecondaryText } from 'modules/styled';
 import CommentForm from 'modules/comment/web/commentForm.component';
-import { layout, colors, sizing } from 'app/styles';
+import { layout, colors, sizing, fonts, mixins } from 'app/styles';
 import styled from 'styled-components/primitives';
 
 if (process.env.BROWSER === true) {
   require('./comment.css');
 }
+
+const CommentText = styled.Text`
+  ${fonts.commentText}
+  ${mixins.margin}
+`;
+
+const SecondaryText = styled.Text`
+  ${fonts.secondaryText}
+`;
 
 const Wrapper = styled.View`
   display: flex;
@@ -64,11 +73,6 @@ const Text = styled.Text`
 
 const Touchable = styled.Touchable`
 `;
-
-const StyledBody = styled(CommentText)`
-  margin: 1em 0;
-`;
-
 
 class Comment extends Component {
   static propTypes = {
@@ -140,9 +144,9 @@ class Comment extends Component {
     }
 
     const body = (
-      <StyledBody>
+      <CommentText m={`${sizing(1)} 0`}>
         {comment.body}
-      </StyledBody>
+      </CommentText>
     );
     const edit = (
       <CommentForm
