@@ -4,11 +4,13 @@ import { mixins, sizing } from 'app/styles';
 export const View = styled.div`
   ${mixins.margin}
   ${mixins.padding}
+  ${mixins.flex}
 `;
 
 export const Text = styled.span`
   ${mixins.margin}
   ${mixins.padding}
+  ${mixins.flex}
 `;
 
 export const Image = styled.img`
