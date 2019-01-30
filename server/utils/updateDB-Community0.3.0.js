@@ -526,6 +526,7 @@ async function convertStringToId() {
 }
 
 async function removeOldUsers() {
+  // const users = await User.find({ version: 'stringID' });
   return User.remove({ version: 'stringID' }).exec();
 }
 
