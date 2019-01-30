@@ -72,7 +72,7 @@ class CommunityActive extends Component {
         <NavSection>
           <View m={`${sizing(1)} 0 ${sizing(4)} ${sizing(5.5)}`}>
             {topics.map(topic => (
-              <IconLink key={topic} p={`${sizing(.75)} 0`}>
+              <IconLink key={topic} p={`${sizing(0.75)} 0`}>
                 <ULink navLink to={`/${community.slug}/new/${topic}`} styles={topicStyles}>
                   #{topic}
                 </ULink>
