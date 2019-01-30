@@ -11,24 +11,6 @@ const CommentText = styled.Text`
   ${fonts.commentText}
 `;
 
-const Wrapper = styled.View`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-top: ${sizing(2)};
-  padding-left: ${sizing(0)};
-`;
-
-// const Wrapper = styled.View`
-//   position: relative;
-//   overflow: hidden;
-//   padding-left: ${sizing(0)};
-//   flex-shrink: 1;
-// /*  border-left-color: ${colors.lineColor};
-//   border-left-width: 1px;
-//   border-left-style: solid; */
-// `;
-
 const Container = styled.View`
   padding: 0 ${sizing(1)};
   flex-shrink: 1;

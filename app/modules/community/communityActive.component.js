@@ -8,7 +8,7 @@ import UAvatar from 'modules/user/UAvatar.component';
 
 const IconLink = styled.Text`
   ${fonts.link}
-  ${mixins.margin}
+  ${mixins.padding}
 `;
 
 const StyledHeader = styled.Text`
@@ -70,9 +70,9 @@ class CommunityActive extends Component {
         <StyledHeader m={`${sizing(4)} ${sizing(4)} ${sizing(3)} ${sizing(4)}`}>Community</StyledHeader>
         {children}
         <NavSection>
-          <View m={`${sizing(1)} 0 ${sizing(6)} ${sizing(5.5)}`}>
+          <View m={`${sizing(1)} 0 ${sizing(4)} ${sizing(5.5)}`}>
             {topics.map(topic => (
-              <IconLink key={topic} m={`${sizing(0.5)} 0`}>
+              <IconLink key={topic} p={`${sizing(.75)} 0`}>
                 <ULink navLink to={`/${community.slug}/new/${topic}`} styles={topicStyles}>
                   #{topic}
                 </ULink>
