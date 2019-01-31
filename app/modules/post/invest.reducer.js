@@ -74,7 +74,6 @@ export default function investments(state = initialState, action) {
 
     case types.UPDATE_POST_INVESTMENTS: {
       const postsInv = {};
-      console.log(action.payload);
       const postInvList = action.payload.map(i => {
         postsInv[i.post] = i;
         return i.post;
