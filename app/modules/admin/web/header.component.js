@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { renderRoutes } from 'react-router-config';
 
 function AdminHeader(props) {
   return (
@@ -34,7 +35,7 @@ function AdminHeader(props) {
           Community
         </Link>
       </div>
-      {props.children}
+      {renderRoutes(props.route.routes)}
     </container>
   );
 }

@@ -523,7 +523,7 @@ PostSchema.statics.updateFeedStatus = async function updateFeedStatus(parent, po
 PostSchema.post('remove', async function postRemove(doc) {
   try {
     if (doc.linkParent) {
-      await this.model('Post').updateFeedStatus(doc.linkParent, this);
+      await this.model('Post').updateFeedStatus(doc.linkParent, doc);
     }
 
     await this.model('CommunityFeed').removeFromAllFeeds(doc);

@@ -88,7 +88,7 @@ class InviteCta extends Component {
           />
 
           <ShadowButton style={{ margin: '10px 0 10px 0' }} color={'#3E3EFF'} onClick={this.submit}>
-            Get Invitation
+            Join Waitlist
           </ShadowButton>
         </div>
       </section>

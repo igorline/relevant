@@ -161,7 +161,7 @@ class AppHeader extends Component {
       path: '/:community/:sort/:tag?',
       exact: true,
       strict: false
-    });
+    }) || { params: {} };
     if (
       match.params.sort === 'post' ||
       match.params.community === 'user' ||

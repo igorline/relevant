@@ -39,12 +39,10 @@ export default class RequestInvite extends Component {
         <div className="mainSection">
           <section className="body">
             <p className="libre big">
-              <span className="outline">Relevant</span> is a social platform that values{' '}
-              <span className="outline">quality</span> over clicks.
+              <div className="outline">Relevant.</div>Curated by communities,<br /> not clicks.{' '}
             </p>
             <p className="subH">
-              Join the community and help us build a better information environment for
-              all.
+              Join the thought leaders, build trust and earn rewards.
             </p>
             {/* <a href="http://www.apple.com" className="download">
                 <img src="/img/apple.png" />

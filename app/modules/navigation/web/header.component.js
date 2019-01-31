@@ -35,6 +35,19 @@ class Header extends Component {
     this.setState({ modal: !this.state.modal });
   }
 
+  renderBlog() {
+    return (
+      <div className="navInner">
+        <a
+          className={'navLink'}
+          href="https://blog.relevant.community"
+        >
+          Blog
+        </a>
+      </div>
+    );
+  }
+
   renderLoginButton() {
     if (!this.props.isAuthenticated || !this.props.user) {
       return (
@@ -69,7 +82,7 @@ class Header extends Component {
     return (
       <div className="headerContainer">
         <header style={{ padding: '0 30px' }}>
-          {this.renderPostButton()}
+          {this.renderBlog()}
           <div>
             <Link to={this.props.isAuthenticated && desktopApp ? '/relevant' : '/'}>
               <img src={'/img/logo-white.svg'} className={'logo'} alt={'Relevant'} />

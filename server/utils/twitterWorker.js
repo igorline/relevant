@@ -125,6 +125,9 @@ async function processTweet(tweet, user) {
     return;
   }
 
+  const twitterScore = 2 * tweet.retweet_count + tweet.favorite_count;
+  if (twitterScore < 5) return;
+
   if (tweet.entities.urls[0].expanded_url.match('twitter.com')) return;
 
   // check if tw post exists
@@ -186,7 +189,7 @@ async function processTweet(tweet, user) {
 
       twitterUser: tweet.user.id,
       twitterId: tweet.id,
-      twitterScore: 2 * tweet.retweet_count + tweet.favorite_count,
+      twitterScore,
       twitter: true,
       // feedRelevance: user.relevance || 0,
       twitterUrl: tweet.entities.urls[0].expanded_url,
@@ -321,6 +324,7 @@ async function cleanup() {
     {
       twitter: true,
       hidden: true,
+      reputation: { $lte: 0 },
       postDate: { $lt: cutoffDate }
     },
     'metaPost linkParent parentPost linkPost metaPost type tags community hidden twitter'
@@ -397,7 +401,9 @@ async function getUsers(userId) {
       community: 'relevant',
       global: true,
       pagerank: { $gt: 1 }
-    }).sort({ pagerank: -1 });
+    })
+    .sort({ pagerank: -1 })
+    .limit(15);
     userList = userList.map(u => u.user);
 
     const query = userId ? { _id: userId } : { _id: { $in: userList } };
@@ -427,7 +433,7 @@ async function getUsers(userId) {
     userCounter = 0;
     processedTweets = 0;
 
-    await cleanup();
+    // await cleanup();
     await processTweets(users);
 
     q.start(async queErr => {
