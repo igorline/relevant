@@ -396,7 +396,6 @@ PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds,
       type: 'UPDATE_POST_INVESTMENTS',
       payload: investments
     };
-    console.log('sending investments', investments);
     this.events.emit('postEvent', updatePosts);
   } catch (err) {
     console.log(err);
