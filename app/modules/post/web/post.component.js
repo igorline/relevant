@@ -158,6 +158,7 @@ export default withRouter(connect(
     usersState: state.user,
     auth: state.auth,
     earnings: state.earnings,
+    myPostInv: state.investments.myPostInv
   }),
   dispatch => ({
     actions: bindActionCreators(
