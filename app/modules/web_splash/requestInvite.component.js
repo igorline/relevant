@@ -39,7 +39,9 @@ export default class RequestInvite extends Component {
         <div className="mainSection">
           <section className="body">
             <p className="libre big">
-              <div className="outline">Relevant.</div>Curated by communities,<br /> not clicks.{' '}
+              <div className="outline">Relevant.</div>
+              <div>Curated by communities.</div>
+              <div>Not clicks.</div>
             </p>
             <p className="subH">
               Join the thought leaders, build trust and earn rewards.
