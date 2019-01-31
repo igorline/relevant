@@ -45,9 +45,10 @@ function removeClient(socket, currentUser) {
 
 function addClient(socket, currentUser) {
   console.log('user connected ', currentUser);
+  clients[currentUser] = clients[currentUser] || {};
+  clients[currentUser][socket.id] = socket;
 
-  const userSockets = clients[currentUser] || {};
-  userSockets[socket.id] = socket;
+  const userSockets = clients[currentUser];
 
   // update online status and send socket
   if (Object.keys(userSockets).length === 1) {
@@ -61,7 +62,10 @@ function createListener(io) {
   return data => {
     if (data._id) {
       const sockets = clients[data._id];
-      if (!sockets) return;
+      if (!sockets) {
+        console.log('couldn\'t find any web socket clients');
+        return;
+      }
       Object.keys(sockets).forEach(id => {
         const socket = sockets[id];
         console.log('emit to ', data._id, ' ', data.type);
