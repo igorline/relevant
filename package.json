@@ -282,7 +282,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "npm testClient"
+      "pre-push": "npm run testClient"
     }
   },
   "lint-staged": {
