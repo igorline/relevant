@@ -9,7 +9,7 @@ import { getTimestamp } from 'app/utils/numbers';
 import styled from 'styled-components/primitives';
 import { Text, View, SecondaryText } from 'modules/styled/uni';
 
-const Name = styled(Text)`
+export const Name = styled(Text)`
   font-weight: bold'
 `;
 

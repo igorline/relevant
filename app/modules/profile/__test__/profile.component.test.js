@@ -1,6 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { Profile } from 'modules/profile/profile.component';
+import Profile from 'modules/profile/profile.component';
 import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
 import { auth } from 'app/mockdata';

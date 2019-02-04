@@ -112,9 +112,12 @@ export default class SingleActivity extends Component {
       post.title = post.body.substring(0, 130);
       if (post.body.length > 130) post.title += '...';
     }
+
+    // TODO implement this
+    const linkToPost = `/${auth.community}/post/${postId}`;
+
     return (
       <PostInfo
-        link={`/${auth.community}/post/${postId}`}
         className={'activityPreview'}
         preview
         post={post}

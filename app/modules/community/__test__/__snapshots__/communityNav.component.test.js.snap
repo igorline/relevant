@@ -28,8 +28,16 @@ exports[`Snapshot NavProfile 1`] = `
   color: #000000;
 }
 
+.c1:hover * {
+  fill: #000000;
+}
+
 .c1.active {
   color: #000000;
+}
+
+.c1.active * {
+  fill: #000000;
 }
 
 <div
@@ -86,6 +94,7 @@ exports[`Snapshot NavProfile 1`] = `
         "WebkitFlexDirection": "column",
         "WebkitFlexShrink": 0,
         "alignItems": "stretch",
+        "backgroundColor": "rgba(255,255,255,1.00)",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "0px",
         "borderLeftStyle": "solid",
@@ -101,7 +110,7 @@ exports[`Snapshot NavProfile 1`] = `
         "flexShrink": 0,
         "marginBottom": "0px",
         "marginLeft": "0px",
-        "marginRight": "0px",
+        "marginRight": "1px",
         "marginTop": "0px",
         "minHeight": "0px",
         "minWidth": "0px",
@@ -120,16 +129,20 @@ exports[`Snapshot NavProfile 1`] = `
   >
     <div
       dir="auto"
-      m="28.8px 28.8px 21.6px 28.8px"
+      m="4 4 3 4"
       style={
         Object {
+          "WebkitFlexBasis": "auto",
+          "WebkitFlexShrink": 0,
           "borderBottomWidth": "0px",
           "borderLeftWidth": "0px",
           "borderRightWidth": "0px",
           "borderTopWidth": "0px",
           "boxSizing": "border-box",
           "color": "rgba(0,0,0,1.00)",
-          "display": "inline",
+          "display": "flex",
+          "flexBasis": "auto",
+          "flexShrink": 0,
           "fontFamily": "HelveticaNeue-Bold",
           "fontSize": "21.6px",
           "fontStyle": "inherit",
@@ -140,10 +153,13 @@ exports[`Snapshot NavProfile 1`] = `
           "marginLeft": "28.8px",
           "marginRight": "28.8px",
           "marginTop": "28.8px",
+          "msFlexNegative": 0,
+          "msFlexPreferredSize": "auto",
           "paddingBottom": "0px",
           "paddingLeft": "0px",
           "paddingRight": "0px",
           "paddingTop": "0px",
+          "position": "relative",
           "textDecoration": "none",
           "whiteSpace": "pre-wrap",
           "wordWrap": "break-word",
@@ -383,10 +399,10 @@ exports[`Snapshot NavProfile 1`] = `
             "flexBasis": "auto",
             "flexDirection": "column",
             "flexShrink": 0,
-            "marginBottom": "0px",
-            "marginLeft": "0px",
+            "marginBottom": "36px",
+            "marginLeft": "39.6px",
             "marginRight": "0px",
-            "marginTop": "0px",
+            "marginTop": "7.2px",
             "minHeight": "0px",
             "minWidth": "0px",
             "msFlexAlign": "stretch",
@@ -404,15 +420,20 @@ exports[`Snapshot NavProfile 1`] = `
       >
         <div
           dir="auto"
+          p="0.75 0"
           style={
             Object {
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexShrink": 0,
               "borderBottomWidth": "0px",
               "borderLeftWidth": "0px",
               "borderRightWidth": "0px",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
               "color": "rgba(153,153,153,1.00)",
-              "display": "inline",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexShrink": 0,
               "fontFamily": "HelveticaNeue-Medium",
               "fontSize": "10.8px",
               "fontStyle": "inherit",
@@ -423,10 +444,13 @@ exports[`Snapshot NavProfile 1`] = `
               "marginLeft": "0px",
               "marginRight": "0px",
               "marginTop": "0px",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
               "paddingBottom": "3.6px",
               "paddingLeft": "0px",
               "paddingRight": "0px",
               "paddingTop": "3.6px",
+              "position": "relative",
               "textDecoration": "none",
               "whiteSpace": "pre-wrap",
               "wordWrap": "break-word",
@@ -434,19 +458,14 @@ exports[`Snapshot NavProfile 1`] = `
           }
         >
           <a
+            ac="#000000"
             aria-current={null}
             className="c1"
+            color="#999999"
+            hc="#000000"
             href="/relevant/new/technology"
             onClick={[Function]}
-            styles="
-  color: #999999;
-  &:hover {
-    color: #000000;
-  }
-  &.active {
-    color: #000000;
-  }
-"
+            styles=""
           >
             #
             technology
@@ -454,15 +473,20 @@ exports[`Snapshot NavProfile 1`] = `
         </div>
         <div
           dir="auto"
+          p="0.75 0"
           style={
             Object {
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexShrink": 0,
               "borderBottomWidth": "0px",
               "borderLeftWidth": "0px",
               "borderRightWidth": "0px",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
               "color": "rgba(153,153,153,1.00)",
-              "display": "inline",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexShrink": 0,
               "fontFamily": "HelveticaNeue-Medium",
               "fontSize": "10.8px",
               "fontStyle": "inherit",
@@ -473,10 +497,13 @@ exports[`Snapshot NavProfile 1`] = `
               "marginLeft": "0px",
               "marginRight": "0px",
               "marginTop": "0px",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
               "paddingBottom": "3.6px",
               "paddingLeft": "0px",
               "paddingRight": "0px",
               "paddingTop": "3.6px",
+              "position": "relative",
               "textDecoration": "none",
               "whiteSpace": "pre-wrap",
               "wordWrap": "break-word",
@@ -484,19 +511,14 @@ exports[`Snapshot NavProfile 1`] = `
           }
         >
           <a
+            ac="#000000"
             aria-current={null}
             className="c1"
+            color="#999999"
+            hc="#000000"
             href="/relevant/new/society"
             onClick={[Function]}
-            styles="
-  color: #999999;
-  &:hover {
-    color: #000000;
-  }
-  &.active {
-    color: #000000;
-  }
-"
+            styles=""
           >
             #
             society
@@ -504,15 +526,20 @@ exports[`Snapshot NavProfile 1`] = `
         </div>
         <div
           dir="auto"
+          p="0.75 0"
           style={
             Object {
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexShrink": 0,
               "borderBottomWidth": "0px",
               "borderLeftWidth": "0px",
               "borderRightWidth": "0px",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
               "color": "rgba(153,153,153,1.00)",
-              "display": "inline",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexShrink": 0,
               "fontFamily": "HelveticaNeue-Medium",
               "fontSize": "10.8px",
               "fontStyle": "inherit",
@@ -523,10 +550,13 @@ exports[`Snapshot NavProfile 1`] = `
               "marginLeft": "0px",
               "marginRight": "0px",
               "marginTop": "0px",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
               "paddingBottom": "3.6px",
               "paddingLeft": "0px",
               "paddingRight": "0px",
               "paddingTop": "3.6px",
+              "position": "relative",
               "textDecoration": "none",
               "whiteSpace": "pre-wrap",
               "wordWrap": "break-word",
@@ -534,19 +564,14 @@ exports[`Snapshot NavProfile 1`] = `
           }
         >
           <a
+            ac="#000000"
             aria-current={null}
             className="c1"
+            color="#999999"
+            hc="#000000"
             href="/relevant/new/culture"
             onClick={[Function]}
-            styles="
-  color: #999999;
-  &:hover {
-    color: #000000;
-  }
-  &.active {
-    color: #000000;
-  }
-"
+            styles=""
           >
             #
             culture
@@ -554,15 +579,20 @@ exports[`Snapshot NavProfile 1`] = `
         </div>
         <div
           dir="auto"
+          p="0.75 0"
           style={
             Object {
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexShrink": 0,
               "borderBottomWidth": "0px",
               "borderLeftWidth": "0px",
               "borderRightWidth": "0px",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
               "color": "rgba(153,153,153,1.00)",
-              "display": "inline",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexShrink": 0,
               "fontFamily": "HelveticaNeue-Medium",
               "fontSize": "10.8px",
               "fontStyle": "inherit",
@@ -573,10 +603,13 @@ exports[`Snapshot NavProfile 1`] = `
               "marginLeft": "0px",
               "marginRight": "0px",
               "marginTop": "0px",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
               "paddingBottom": "3.6px",
               "paddingLeft": "0px",
               "paddingRight": "0px",
               "paddingTop": "3.6px",
+              "position": "relative",
               "textDecoration": "none",
               "whiteSpace": "pre-wrap",
               "wordWrap": "break-word",
@@ -584,19 +617,14 @@ exports[`Snapshot NavProfile 1`] = `
           }
         >
           <a
+            ac="#000000"
             aria-current={null}
             className="c1"
+            color="#999999"
+            hc="#000000"
             href="/relevant/new/politics"
             onClick={[Function]}
-            styles="
-  color: #999999;
-  &:hover {
-    color: #000000;
-  }
-  &.active {
-    color: #000000;
-  }
-"
+            styles=""
           >
             #
             politics
@@ -604,15 +632,20 @@ exports[`Snapshot NavProfile 1`] = `
         </div>
         <div
           dir="auto"
+          p="0.75 0"
           style={
             Object {
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexShrink": 0,
               "borderBottomWidth": "0px",
               "borderLeftWidth": "0px",
               "borderRightWidth": "0px",
               "borderTopWidth": "0px",
               "boxSizing": "border-box",
               "color": "rgba(153,153,153,1.00)",
-              "display": "inline",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexShrink": 0,
               "fontFamily": "HelveticaNeue-Medium",
               "fontSize": "10.8px",
               "fontStyle": "inherit",
@@ -623,10 +656,13 @@ exports[`Snapshot NavProfile 1`] = `
               "marginLeft": "0px",
               "marginRight": "0px",
               "marginTop": "0px",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
               "paddingBottom": "3.6px",
               "paddingLeft": "0px",
               "paddingRight": "0px",
               "paddingTop": "3.6px",
+              "position": "relative",
               "textDecoration": "none",
               "whiteSpace": "pre-wrap",
               "wordWrap": "break-word",
@@ -634,19 +670,14 @@ exports[`Snapshot NavProfile 1`] = `
           }
         >
           <a
+            ac="#000000"
             aria-current={null}
             className="c1"
+            color="#999999"
+            hc="#000000"
             href="/relevant/new/altwoke"
             onClick={[Function]}
-            styles="
-  color: #999999;
-  &:hover {
-    color: #000000;
-  }
-  &.active {
-    color: #000000;
-  }
-"
+            styles=""
           >
             #
             altwoke
@@ -654,30 +685,39 @@ exports[`Snapshot NavProfile 1`] = `
         </div>
       </div>
       <div
+        c="#000000"
         dir="auto"
+        mb={2}
         style={
           Object {
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexShrink": 0,
             "borderBottomWidth": "0px",
             "borderLeftWidth": "0px",
             "borderRightWidth": "0px",
             "borderTopWidth": "0px",
             "boxSizing": "border-box",
             "color": "rgba(0,0,0,1.00)",
-            "display": "inline",
-            "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
-            "fontSize": "14px",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexShrink": 0,
+            "fontFamily": "HelveticaNeue-Medium",
+            "fontSize": "10.8px",
             "fontStyle": "inherit",
             "fontVariant": "inherit",
-            "fontWeight": "bold",
-            "lineHeight": "inherit",
+            "fontWeight": "inherit",
+            "lineHeight": "14.4px",
             "marginBottom": "14.4px",
             "marginLeft": "0px",
             "marginRight": "0px",
             "marginTop": "0px",
-            "paddingBottom": "0px",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "3.6px",
             "paddingLeft": "0px",
             "paddingRight": "0px",
-            "paddingTop": "0px",
+            "paddingTop": "3.6px",
+            "position": "relative",
             "textDecoration": "none",
             "whiteSpace": "pre-wrap",
             "wordWrap": "break-word",

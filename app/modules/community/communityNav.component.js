@@ -36,7 +36,6 @@ const StyledImage = styled.Image`
 
 const CommunityLinkTab = styled.Text`
   ${fonts.fonts}
-  {padding}
 `;
 
 const StyledCommunityList = styled.View`
