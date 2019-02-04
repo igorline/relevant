@@ -45,8 +45,7 @@ export default class RequestInvite extends Component {
               <div className="outline">Relevant</div> Curated by communities, not clicks
             </p>
             <p className="subH">
-              Join the community and help us build a better information environment for
-              all.
+              Join the thought leaders, build trust and earn rewards.
             </p>
             {/* <a href="http://www.apple.com" className="download">
                 <img src="/img/apple.png" />

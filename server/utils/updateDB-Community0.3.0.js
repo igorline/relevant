@@ -754,6 +754,16 @@ async function removeEmptyTwitterParents() {
   });
 }
 
+async function addTagsToData() {
+  const postData = await PostData.find({ isInFeed: true })
+  .populate('post');
+  const updated = postData.map(pd => {
+    pd.tags = pd.post.tags;
+    return pd.save();
+  });
+  return Promise.all(updated);
+}
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
@@ -779,6 +789,8 @@ async function runUpdates() {
     // checkMessedUpPost(); // shouldn't be necessary
     // await removeEmptyTwitterParents();
     // await udpatePostData();
+
+    // await addTagsToData();
 
     console.log('finished db updates');
   } catch (err) {
