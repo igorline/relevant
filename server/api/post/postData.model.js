@@ -43,6 +43,7 @@ const PostDataSchema = new Schema(
     parentPost: { type: Schema.Types.ObjectId, ref: 'Post' },
     parentComment: { type: Schema.Types.ObjectId, ref: 'Post' },
     hidden: { type: Boolean, default: false },
+    tags: [String],
     // parentPost: { type: Schema.Types.ObjectId, ref: 'Post' }
   },
   {

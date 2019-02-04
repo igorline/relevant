@@ -176,6 +176,7 @@ PostSchema.methods.addPostData = async function addPostData(community) {
     rank: this.rank,
     relevanceNeg: this.relevanceNeg,
     latestComment: this.latestComment || this.postDate,
+    tags: this.tags
   });
 
   await data.save();

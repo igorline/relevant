@@ -79,7 +79,7 @@ const SideNav = (props) => {
           <NavProfileComponent />
         </SideNavSection>
         <SideNavSection>
-          <CommunityNav />
+          <CommunityNav {...props} />
         </SideNavSection>
         <SideNavFooter />
       </SideNavScroll>
