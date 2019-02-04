@@ -13,7 +13,7 @@
     "build-dev": "webpack --config ./webpack.config.js --progress --colors -p",
     "testServer": "WEB='true' ava --watch",
     "testClient": "NODE_ENV=test jest ./app",
-    "testClient:watch": "jest --watch",
+    "testClient:watch": "jest ./app --watch",
     "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean",
     "uninstall": "adb uninstall com.relevantnative",
     "android": "react-native run-android",

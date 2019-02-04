@@ -5,6 +5,8 @@ import 'jest-styled-components';
 import { MemoryRouter } from 'react-router-dom';
 import { auth, post, user } from 'app/mockdata';
 
+jest.mock('modules/comment/web/singleComment.container', () => 'SingleCommnetContainer');
+
 const props = {
   post: post.post1,
   link: post.post1.link,

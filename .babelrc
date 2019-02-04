@@ -24,7 +24,17 @@
   "env": {
     "test": {
       "plugins": [
-        ["styled-components"]
+        ["styled-components"],
+        ["module-resolver", {
+          "root": ["./app", "./app/modules"],
+          "alias": {
+            "server": "./server",
+            "modules": "./app/modules",
+            "core": "./app/core",
+            "app": "./app",
+            "react-native-linear-gradient": "react-native-web-linear-gradient"
+          },
+        }]
       ],
       "presets": [
         ["@babel/preset-env"],
