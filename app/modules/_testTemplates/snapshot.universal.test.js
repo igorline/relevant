@@ -4,7 +4,7 @@ import AvatarBox from 'modules/user/avatarbox.component';
 import { MemoryRouter } from 'react-router-dom';
 
 const user = { _id: 123, handle: 'handle', name: 'Name', relevance: { pagerank: 10 } };
-const postTime = '1 day ago';
+const postTime = new Date().toISOString();
 
 const props = {
   user,

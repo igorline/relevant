@@ -77,8 +77,8 @@ export class Post extends Component {
     const { community } = auth;
     let { comment } = this.props;
 
-    const isLink = post.url ? true : false; // eslint-disable-line
-    comment = post.url ? comment : post;
+    const isLink = post.link || link ? true : false; // eslint-disable-line
+    comment = isLink ? comment : post;
 
     if (post === 'notFound') {
       return (

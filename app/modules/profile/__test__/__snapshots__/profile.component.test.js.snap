@@ -1,44 +1,38 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Snapshot NavProfile 1`] = `
+exports[`Snapshot other users Profile 1`] = `
 .c0 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
   font-size: 10.8px;
-  color: #0000ff;
+  line-height: 14.4px;
+  font-family: HelveticaNeue-Medium;
+  color: #999999;
+  padding: 3.6px 0;
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+  color: #000000;
 }
 
-.c1 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  font-size: 10.8px;
-  color: #0000ff;
-  color: #000000;
+.c0:hover {
+  color: #999999;
+}
+
+.c0:hover * {
+  fill: #999999;
 }
 
 <div
   style={
     Object {
-      "WebkitAlignItems": "stretch",
-      "WebkitBoxAlign": "stretch",
+      "WebkitAlignItems": "flex-start",
+      "WebkitBoxAlign": "start",
       "WebkitBoxDirection": "normal",
-      "WebkitBoxOrient": "vertical",
+      "WebkitBoxOrient": "horizontal",
+      "WebkitBoxPack": "justify",
       "WebkitFlexBasis": "auto",
-      "WebkitFlexDirection": "column",
+      "WebkitFlexDirection": "row",
       "WebkitFlexShrink": 0,
-      "alignItems": "stretch",
+      "WebkitJustifyContent": "space-between",
+      "alignItems": "flex-start",
       "borderBottomStyle": "solid",
       "borderBottomWidth": "0px",
       "borderLeftStyle": "solid",
@@ -50,22 +44,24 @@ exports[`Snapshot NavProfile 1`] = `
       "boxSizing": "border-box",
       "display": "flex",
       "flexBasis": "auto",
-      "flexDirection": "column",
+      "flexDirection": "row",
       "flexShrink": 0,
-      "marginBottom": "0px",
-      "marginLeft": "0px",
-      "marginRight": "0px",
-      "marginTop": "0px",
+      "justifyContent": "space-between",
+      "marginBottom": "28.8px",
+      "marginLeft": "28.8px",
+      "marginRight": "28.8px",
+      "marginTop": "28.8px",
       "minHeight": "0px",
       "minWidth": "0px",
-      "msFlexAlign": "stretch",
-      "msFlexDirection": "column",
+      "msFlexAlign": "start",
+      "msFlexDirection": "row",
       "msFlexNegative": 0,
+      "msFlexPack": "justify",
       "msFlexPreferredSize": "auto",
-      "paddingBottom": "36px",
-      "paddingLeft": "28.8px",
-      "paddingRight": "28.8px",
-      "paddingTop": "28.8px",
+      "paddingBottom": "0px",
+      "paddingLeft": "0px",
+      "paddingRight": "0px",
+      "paddingTop": "0px",
       "position": "relative",
       "zIndex": 0,
     }
@@ -74,16 +70,14 @@ exports[`Snapshot NavProfile 1`] = `
   <div
     style={
       Object {
-        "WebkitAlignItems": "baseline",
-        "WebkitBoxAlign": "baseline",
+        "WebkitAlignItems": "stretch",
+        "WebkitBoxAlign": "stretch",
         "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "horizontal",
-        "WebkitBoxPack": "justify",
+        "WebkitBoxOrient": "vertical",
         "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "row",
+        "WebkitFlexDirection": "column",
         "WebkitFlexShrink": 0,
-        "WebkitJustifyContent": "space-between",
-        "alignItems": "baseline",
+        "alignItems": "stretch",
         "borderBottomStyle": "solid",
         "borderBottomWidth": "0px",
         "borderLeftStyle": "solid",
@@ -95,100 +89,7 @@ exports[`Snapshot NavProfile 1`] = `
         "boxSizing": "border-box",
         "display": "flex",
         "flexBasis": "auto",
-        "flexDirection": "row",
-        "flexShrink": 0,
-        "justifyContent": "space-between",
-        "marginBottom": "21.6px",
-        "marginLeft": "0px",
-        "marginRight": "0px",
-        "marginTop": "0px",
-        "minHeight": "0px",
-        "minWidth": "0px",
-        "msFlexAlign": "baseline",
-        "msFlexDirection": "row",
-        "msFlexNegative": 0,
-        "msFlexPack": "justify",
-        "msFlexPreferredSize": "auto",
-        "paddingBottom": "0px",
-        "paddingLeft": "0px",
-        "paddingRight": "0px",
-        "paddingTop": "0px",
-        "position": "relative",
-        "zIndex": 0,
-      }
-    }
-  >
-    <div
-      dir="auto"
-      mb={0}
-      style={
-        Object {
-          "borderBottomWidth": "0px",
-          "borderLeftWidth": "0px",
-          "borderRightWidth": "0px",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
-          "color": "rgba(0,0,0,1.00)",
-          "display": "inline",
-          "fontFamily": "HelveticaNeue-Bold",
-          "fontSize": "21.6px",
-          "fontStyle": "inherit",
-          "fontVariant": "inherit",
-          "fontWeight": "inherit",
-          "lineHeight": "28.8px",
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
-          "textDecoration": "none",
-          "whiteSpace": "pre-wrap",
-          "wordWrap": "break-word",
-        }
-      }
-    >
-      Name1
-    </div>
-    <a
-      className="c0"
-      href="/user/wallet"
-      onClick={[Function]}
-      styles="
-  display: flex;
-  align-items: center;
-  font-size: 10.8px
-  color: #0000ff;
-"
-    >
-       My Wallet
-    </a>
-  </div>
-  <div
-    style={
-      Object {
-        "WebkitAlignItems": "center",
-        "WebkitBoxAlign": "center",
-        "WebkitBoxDirection": "normal",
-        "WebkitBoxOrient": "horizontal",
-        "WebkitFlexBasis": "auto",
-        "WebkitFlexDirection": "row",
-        "WebkitFlexShrink": 0,
-        "alignItems": "center",
-        "borderBottomStyle": "solid",
-        "borderBottomWidth": "0px",
-        "borderLeftStyle": "solid",
-        "borderLeftWidth": "0px",
-        "borderRightStyle": "solid",
-        "borderRightWidth": "0px",
-        "borderTopStyle": "solid",
-        "borderTopWidth": "0px",
-        "boxSizing": "border-box",
-        "display": "flex",
-        "flexBasis": "auto",
-        "flexDirection": "row",
+        "flexDirection": "column",
         "flexShrink": 0,
         "marginBottom": "0px",
         "marginLeft": "0px",
@@ -196,8 +97,8 @@ exports[`Snapshot NavProfile 1`] = `
         "marginTop": "0px",
         "minHeight": "0px",
         "minWidth": "0px",
-        "msFlexAlign": "center",
-        "msFlexDirection": "row",
+        "msFlexAlign": "stretch",
+        "msFlexDirection": "column",
         "msFlexNegative": 0,
         "msFlexPreferredSize": "auto",
         "paddingBottom": "0px",
@@ -209,54 +110,62 @@ exports[`Snapshot NavProfile 1`] = `
       }
     }
   >
-    <div
-      style={
-        Object {
-          "WebkitAlignItems": "stretch",
-          "WebkitBoxAlign": "stretch",
-          "WebkitBoxDirection": "normal",
-          "WebkitBoxOrient": "vertical",
-          "WebkitFlexBasis": "auto",
-          "WebkitFlexDirection": "column",
-          "WebkitFlexShrink": 0,
-          "alignItems": "stretch",
-          "borderBottomStyle": "solid",
-          "borderBottomWidth": "0px",
-          "borderLeftStyle": "solid",
-          "borderLeftWidth": "0px",
-          "borderRightStyle": "solid",
-          "borderRightWidth": "0px",
-          "borderTopStyle": "solid",
-          "borderTopWidth": "0px",
-          "boxSizing": "border-box",
-          "display": "flex",
-          "flexBasis": "auto",
-          "flexDirection": "column",
-          "flexShrink": 0,
-          "marginBottom": "0px",
-          "marginLeft": "0px",
-          "marginRight": "0px",
-          "marginTop": "0px",
-          "minHeight": "0px",
-          "minWidth": "0px",
-          "msFlexAlign": "stretch",
-          "msFlexDirection": "column",
-          "msFlexNegative": 0,
-          "msFlexPreferredSize": "auto",
-          "paddingBottom": "0px",
-          "paddingLeft": "0px",
-          "paddingRight": "0px",
-          "paddingTop": "0px",
-          "position": "relative",
-          "zIndex": 0,
-        }
-      }
+    <a
+      className=""
+      href="/user/profile/handle1"
+      onClick={[Function]}
+      styles=""
     >
-      <a
-        className=""
-        href="/user/profile/handle1"
-        onClick={[Function]}
-        styles=""
+      <div
+        style={
+          Object {
+            "WebkitAlignItems": "stretch",
+            "WebkitBoxAlign": "stretch",
+            "WebkitBoxDirection": "normal",
+            "WebkitBoxOrient": "vertical",
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexDirection": "column",
+            "WebkitFlexShrink": 0,
+            "alignItems": "stretch",
+            "borderBottomLeftRadius": "32.4px",
+            "borderBottomRightRadius": "32.4px",
+            "borderBottomStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftStyle": "solid",
+            "borderLeftWidth": "0px",
+            "borderRightStyle": "solid",
+            "borderRightWidth": "0px",
+            "borderTopLeftRadius": "32.4px",
+            "borderTopRightRadius": "32.4px",
+            "borderTopStyle": "solid",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexDirection": "column",
+            "flexShrink": 0,
+            "height": "64.8px",
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "minHeight": "0px",
+            "minWidth": "0px",
+            "msFlexAlign": "stretch",
+            "msFlexDirection": "column",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "width": "64.8px",
+            "zIndex": 0,
+          }
+        }
       >
         <div
           style={
@@ -269,24 +178,27 @@ exports[`Snapshot NavProfile 1`] = `
               "WebkitFlexDirection": "column",
               "WebkitFlexShrink": 0,
               "alignItems": "stretch",
-              "borderBottomLeftRadius": "28.8px",
-              "borderBottomRightRadius": "28.8px",
+              "backgroundColor": "rgba(0,0,0,0.00)",
+              "backgroundImage": "url(\\"userImage1.jpg\\")",
+              "backgroundPosition": "center",
+              "backgroundRepeat": "no-repeat",
+              "backgroundSize": "cover",
               "borderBottomStyle": "solid",
               "borderBottomWidth": "0px",
               "borderLeftStyle": "solid",
               "borderLeftWidth": "0px",
               "borderRightStyle": "solid",
               "borderRightWidth": "0px",
-              "borderTopLeftRadius": "28.8px",
-              "borderTopRightRadius": "28.8px",
               "borderTopStyle": "solid",
               "borderTopWidth": "0px",
+              "bottom": "0px",
               "boxSizing": "border-box",
               "display": "flex",
               "flexBasis": "auto",
               "flexDirection": "column",
               "flexShrink": 0,
-              "height": "57.6px",
+              "height": "100%",
+              "left": "0px",
               "marginBottom": "0px",
               "marginLeft": "0px",
               "marginRight": "0px",
@@ -297,104 +209,99 @@ exports[`Snapshot NavProfile 1`] = `
               "msFlexDirection": "column",
               "msFlexNegative": 0,
               "msFlexPreferredSize": "auto",
-              "overflowX": "hidden",
-              "overflowY": "hidden",
               "paddingBottom": "0px",
               "paddingLeft": "0px",
               "paddingRight": "0px",
               "paddingTop": "0px",
-              "position": "relative",
-              "width": "57.6px",
-              "zIndex": 0,
+              "position": "absolute",
+              "right": "0px",
+              "top": "0px",
+              "width": "100%",
+              "zIndex": -1,
             }
           }
-        >
-          <div
-            style={
-              Object {
-                "WebkitAlignItems": "stretch",
-                "WebkitBoxAlign": "stretch",
-                "WebkitBoxDirection": "normal",
-                "WebkitBoxOrient": "vertical",
-                "WebkitFlexBasis": "auto",
-                "WebkitFlexDirection": "column",
-                "WebkitFlexShrink": 0,
-                "alignItems": "stretch",
-                "backgroundColor": "rgba(0,0,0,0.00)",
-                "backgroundImage": "url(\\"userImage1.jpg\\")",
-                "backgroundPosition": "center",
-                "backgroundRepeat": "no-repeat",
-                "backgroundSize": "cover",
-                "borderBottomStyle": "solid",
-                "borderBottomWidth": "0px",
-                "borderLeftStyle": "solid",
-                "borderLeftWidth": "0px",
-                "borderRightStyle": "solid",
-                "borderRightWidth": "0px",
-                "borderTopStyle": "solid",
-                "borderTopWidth": "0px",
-                "bottom": "0px",
-                "boxSizing": "border-box",
-                "display": "flex",
-                "flexBasis": "auto",
-                "flexDirection": "column",
-                "flexShrink": 0,
-                "height": "100%",
-                "left": "0px",
-                "marginBottom": "0px",
-                "marginLeft": "0px",
-                "marginRight": "0px",
-                "marginTop": "0px",
-                "minHeight": "0px",
-                "minWidth": "0px",
-                "msFlexAlign": "stretch",
-                "msFlexDirection": "column",
-                "msFlexNegative": 0,
-                "msFlexPreferredSize": "auto",
-                "paddingBottom": "0px",
-                "paddingLeft": "0px",
-                "paddingRight": "0px",
-                "paddingTop": "0px",
-                "position": "absolute",
-                "right": "0px",
-                "top": "0px",
-                "width": "100%",
-                "zIndex": -1,
-              }
+        />
+        <img
+          alt=""
+          draggable={false}
+          src="userImage1.jpg"
+          style={
+            Object {
+              "bottom": "0px",
+              "height": "100%",
+              "left": "0px",
+              "opacity": 0,
+              "position": "absolute",
+              "right": "0px",
+              "top": "0px",
+              "width": "100%",
+              "zIndex": -1,
             }
-          />
-          <img
-            alt=""
-            draggable={false}
-            src="userImage1.jpg"
-            style={
-              Object {
-                "bottom": "0px",
-                "height": "100%",
-                "left": "0px",
-                "opacity": 0,
-                "position": "absolute",
-                "right": "0px",
-                "top": "0px",
-                "width": "100%",
-                "zIndex": -1,
-              }
-            }
-          />
-        </div>
-      </a>
-    </div>
+          }
+        />
+      </div>
+    </a>
+  </div>
+  <div
+    style={
+      Object {
+        "WebkitAlignItems": "stretch",
+        "WebkitBoxAlign": "stretch",
+        "WebkitBoxDirection": "normal",
+        "WebkitBoxFlex": 1,
+        "WebkitBoxOrient": "vertical",
+        "WebkitFlexBasis": "auto",
+        "WebkitFlexDirection": "column",
+        "WebkitFlexGrow": 1,
+        "WebkitFlexShrink": 0,
+        "alignItems": "stretch",
+        "borderBottomStyle": "solid",
+        "borderBottomWidth": "0px",
+        "borderLeftStyle": "solid",
+        "borderLeftWidth": "0px",
+        "borderRightStyle": "solid",
+        "borderRightWidth": "0px",
+        "borderTopStyle": "solid",
+        "borderTopWidth": "0px",
+        "boxSizing": "border-box",
+        "display": "flex",
+        "flexBasis": "auto",
+        "flexDirection": "column",
+        "flexGrow": 1,
+        "flexShrink": 0,
+        "marginBottom": "0px",
+        "marginLeft": "14.4px",
+        "marginRight": "0px",
+        "marginTop": "0px",
+        "minHeight": "0px",
+        "minWidth": "0px",
+        "msFlexAlign": "stretch",
+        "msFlexDirection": "column",
+        "msFlexNegative": 0,
+        "msFlexPositive": 1,
+        "msFlexPreferredSize": "auto",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px",
+        "paddingTop": "0px",
+        "position": "relative",
+        "zIndex": 0,
+      }
+    }
+  >
     <div
       style={
         Object {
-          "WebkitAlignItems": "stretch",
-          "WebkitBoxAlign": "stretch",
+          "WebkitAlignItems": "center",
+          "WebkitBoxAlign": "center",
           "WebkitBoxDirection": "normal",
-          "WebkitBoxOrient": "vertical",
+          "WebkitBoxOrient": "horizontal",
+          "WebkitBoxPack": "justify",
           "WebkitFlexBasis": "auto",
-          "WebkitFlexDirection": "column",
-          "WebkitFlexShrink": 1,
-          "alignItems": "stretch",
+          "WebkitFlexDirection": "row",
+          "WebkitFlexShrink": 0,
+          "WebkitJustifyContent": "space-between",
+          "alignItems": "center",
           "borderBottomStyle": "solid",
           "borderBottomWidth": "0px",
           "borderLeftStyle": "solid",
@@ -406,20 +313,22 @@ exports[`Snapshot NavProfile 1`] = `
           "boxSizing": "border-box",
           "display": "flex",
           "flexBasis": "auto",
-          "flexDirection": "column",
-          "flexShrink": 1,
+          "flexDirection": "row",
+          "flexShrink": 0,
+          "justifyContent": "space-between",
           "marginBottom": "0px",
           "marginLeft": "0px",
           "marginRight": "0px",
           "marginTop": "0px",
           "minHeight": "0px",
           "minWidth": "0px",
-          "msFlexAlign": "stretch",
-          "msFlexDirection": "column",
-          "msFlexNegative": 1,
+          "msFlexAlign": "center",
+          "msFlexDirection": "row",
+          "msFlexNegative": 0,
+          "msFlexPack": "justify",
           "msFlexPreferredSize": "auto",
           "paddingBottom": "0px",
-          "paddingLeft": "14.4px",
+          "paddingLeft": "0px",
           "paddingRight": "0px",
           "paddingTop": "0px",
           "position": "relative",
@@ -427,26 +336,98 @@ exports[`Snapshot NavProfile 1`] = `
         }
       }
     >
-      <a
-        className="c1"
-        href="/user/wallet"
-        onClick={[Function]}
-        styles="
-  
-  display: flex;
-  align-items: center;
-  font-size: 10.8px
-  color: #0000ff;
-
-  color: #000000;
-"
+      <div
+        style={
+          Object {
+            "WebkitAlignItems": "stretch",
+            "WebkitBoxAlign": "stretch",
+            "WebkitBoxDirection": "normal",
+            "WebkitBoxOrient": "horizontal",
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexDirection": "row",
+            "WebkitFlexShrink": 0,
+            "alignItems": "stretch",
+            "borderBottomStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftStyle": "solid",
+            "borderLeftWidth": "0px",
+            "borderRightStyle": "solid",
+            "borderRightWidth": "0px",
+            "borderTopStyle": "solid",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexDirection": "row",
+            "flexShrink": 0,
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "minHeight": "0px",
+            "minWidth": "0px",
+            "msFlexAlign": "stretch",
+            "msFlexDirection": "row",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "zIndex": 0,
+          }
+        }
       >
+        <div
+          dir="auto"
+          mr="14.4px"
+          style={
+            Object {
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexShrink": 0,
+              "borderBottomWidth": "0px",
+              "borderLeftWidth": "0px",
+              "borderRightWidth": "0px",
+              "borderTopWidth": "0px",
+              "boxSizing": "border-box",
+              "color": "rgba(0,0,0,1.00)",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexShrink": 0,
+              "fontFamily": "HelveticaNeue-Bold",
+              "fontSize": "21.6px",
+              "fontStyle": "inherit",
+              "fontVariant": "inherit",
+              "fontWeight": "inherit",
+              "lineHeight": "28.8px",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "marginRight": "14.4px",
+              "marginTop": "0px",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px",
+              "paddingRight": "0px",
+              "paddingTop": "0px",
+              "position": "relative",
+              "textDecoration": "none",
+              "whiteSpace": "pre-wrap",
+              "wordWrap": "break-word",
+            }
+          }
+        >
+          Name1
+        </div>
         <div
           align="center"
           dir="auto"
-          mr="10.8px"
+          mr="14.4px"
           props={
             Object {
+              "mr": 2,
+              "size": 2,
               "user": Object {
                 "_id": "111111111111111111111111",
                 "balance": 111,
@@ -487,7 +468,7 @@ exports[`Snapshot NavProfile 1`] = `
               "lineHeight": "inherit",
               "marginBottom": "0px",
               "marginLeft": "0px",
-              "marginRight": "10.8px",
+              "marginRight": "14.4px",
               "marginTop": "0px",
               "msFlexAlign": "center",
               "msFlexDirection": "row",
@@ -523,16 +504,16 @@ exports[`Snapshot NavProfile 1`] = `
                 "borderRightWidth": "0px",
                 "borderTopStyle": "solid",
                 "borderTopWidth": "0px",
-                "bottom": "NaNpx",
+                "bottom": "-1.4400000000000002px",
                 "boxSizing": "border-box",
                 "display": "flex",
                 "flexBasis": "auto",
                 "flexDirection": "column",
                 "flexShrink": 0,
-                "height": "21.6px",
+                "height": "14.4px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
-                "marginRight": "5.4px",
+                "marginRight": "3.6px",
                 "marginTop": "0px",
                 "minHeight": "0px",
                 "minWidth": "0px",
@@ -547,7 +528,7 @@ exports[`Snapshot NavProfile 1`] = `
                 "paddingRight": "0px",
                 "paddingTop": "0px",
                 "position": "relative",
-                "width": "21.6px",
+                "width": "14.4px",
                 "zIndex": 0,
               }
             }
@@ -662,6 +643,133 @@ exports[`Snapshot NavProfile 1`] = `
         </div>
         <div
           dir="auto"
+          style={
+            Object {
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexShrink": 0,
+              "borderBottomWidth": "0px",
+              "borderLeftWidth": "0px",
+              "borderRightWidth": "0px",
+              "borderTopWidth": "0px",
+              "boxSizing": "border-box",
+              "color": "inherit",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexShrink": 0,
+              "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
+              "fontSize": "14px",
+              "fontStyle": "inherit",
+              "fontVariant": "inherit",
+              "fontWeight": "inherit",
+              "lineHeight": "inherit",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "marginRight": "0px",
+              "marginTop": "0px",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px",
+              "paddingRight": "0px",
+              "paddingTop": "0px",
+              "position": "relative",
+              "textDecoration": "none",
+              "whiteSpace": "pre-wrap",
+              "wordWrap": "break-word",
+            }
+          }
+        >
+          <span
+            align="center"
+            dir="auto"
+            mr={2}
+            style={
+              Object {
+                "WebkitAlignItems": "center",
+                "WebkitBoxAlign": "center",
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
+                "alignItems": "center",
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "rgba(0,0,0,1.00)",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue-CondensedBold",
+                "fontSize": "14.4px",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "19.2px",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "14.4px",
+                "marginTop": "0px",
+                "msFlexAlign": "center",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "0px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "0px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "inherit",
+                "wordWrap": "break-word",
+              }
+            }
+          >
+            <span
+              c="#7ED321"
+              dir="auto"
+              style={
+                Object {
+                  "WebkitFlexBasis": "auto",
+                  "WebkitFlexShrink": 0,
+                  "borderBottomWidth": "0px",
+                  "borderLeftWidth": "0px",
+                  "borderRightWidth": "0px",
+                  "borderTopWidth": "0px",
+                  "boxSizing": "border-box",
+                  "color": "rgba(126,211,33,1.00)",
+                  "display": "flex",
+                  "flexBasis": "auto",
+                  "flexShrink": 0,
+                  "fontFamily": "inherit",
+                  "fontSize": "inherit",
+                  "fontStyle": "inherit",
+                  "fontVariant": "inherit",
+                  "fontWeight": "inherit",
+                  "lineHeight": "inherit",
+                  "marginBottom": "0px",
+                  "marginLeft": "0px",
+                  "marginRight": "0px",
+                  "marginTop": "0px",
+                  "msFlexNegative": 0,
+                  "msFlexPreferredSize": "auto",
+                  "paddingBottom": "0px",
+                  "paddingLeft": "0px",
+                  "paddingRight": "0px",
+                  "paddingTop": "0px",
+                  "position": "relative",
+                  "textDecoration": "none",
+                  "whiteSpace": "inherit",
+                  "wordWrap": "break-word",
+                }
+              }
+            >
+              ▲ 
+            </span>
+            0
+            %
+          </span>
+        </div>
+        <div
+          dir="auto"
           mr="10.8px"
           style={
             Object {
@@ -732,10 +840,10 @@ exports[`Snapshot NavProfile 1`] = `
                 "flexBasis": "auto",
                 "flexDirection": "column",
                 "flexShrink": 0,
-                "height": "21.6px",
+                "height": "14.4px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
-                "marginRight": "5.4px",
+                "marginRight": "3.6px",
                 "marginTop": "0px",
                 "minHeight": "0px",
                 "minWidth": "0px",
@@ -750,7 +858,7 @@ exports[`Snapshot NavProfile 1`] = `
                 "paddingRight": "0px",
                 "paddingTop": "0px",
                 "position": "relative",
-                "width": "21.6px",
+                "width": "14.4px",
                 "zIndex": 0,
               }
             }
@@ -857,18 +965,104 @@ exports[`Snapshot NavProfile 1`] = `
             111
           </span>
         </div>
-      </a>
+      </div>
       <div
-        dir="auto"
         style={
           Object {
-            "WebkitAlignItems": "flex-start",
-            "WebkitBoxAlign": "start",
-            "WebkitBoxPack": "start",
+            "WebkitAlignItems": "stretch",
+            "WebkitBoxAlign": "stretch",
+            "WebkitBoxDirection": "normal",
+            "WebkitBoxOrient": "vertical",
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexDirection": "column",
+            "WebkitFlexShrink": 0,
+            "alignItems": "stretch",
+            "borderBottomStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftStyle": "solid",
+            "borderLeftWidth": "0px",
+            "borderRightStyle": "solid",
+            "borderRightWidth": "0px",
+            "borderTopStyle": "solid",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexDirection": "column",
+            "flexShrink": 0,
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "minHeight": "0px",
+            "minWidth": "0px",
+            "msFlexAlign": "stretch",
+            "msFlexDirection": "column",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "zIndex": 0,
+          }
+        }
+      />
+    </div>
+    <div
+      style={
+        Object {
+          "WebkitAlignItems": "center",
+          "WebkitBoxAlign": "center",
+          "WebkitBoxDirection": "normal",
+          "WebkitBoxOrient": "horizontal",
+          "WebkitFlexBasis": "auto",
+          "WebkitFlexDirection": "row",
+          "WebkitFlexShrink": 0,
+          "alignItems": "center",
+          "borderBottomStyle": "solid",
+          "borderBottomWidth": "0px",
+          "borderLeftStyle": "solid",
+          "borderLeftWidth": "0px",
+          "borderRightStyle": "solid",
+          "borderRightWidth": "0px",
+          "borderTopStyle": "solid",
+          "borderTopWidth": "0px",
+          "boxSizing": "border-box",
+          "display": "flex",
+          "flexBasis": "auto",
+          "flexDirection": "row",
+          "flexShrink": 0,
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "marginTop": "0px",
+          "minHeight": "0px",
+          "minWidth": "0px",
+          "msFlexAlign": "center",
+          "msFlexDirection": "row",
+          "msFlexNegative": 0,
+          "msFlexPreferredSize": "auto",
+          "paddingBottom": "0px",
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "paddingTop": "0px",
+          "position": "relative",
+          "zIndex": 0,
+        }
+      }
+    >
+      <div
+        dir="auto"
+        ml="3.6px"
+        mr="3.6px"
+        style={
+          Object {
             "WebkitFlexBasis": "auto",
             "WebkitFlexShrink": 0,
-            "WebkitJustifyContent": "flex-start",
-            "alignItems": "flex-start",
+            "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
+            "WebkitTextDecorationStyle": "solid",
             "borderBottomWidth": "0px",
             "borderLeftWidth": "0px",
             "borderRightWidth": "0px",
@@ -878,39 +1072,798 @@ exports[`Snapshot NavProfile 1`] = `
             "display": "flex",
             "flexBasis": "auto",
             "flexShrink": 0,
-            "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
+            "fontFamily": "HelveticaNeue-Medium",
             "fontSize": "10.8px",
             "fontStyle": "inherit",
             "fontVariant": "inherit",
             "fontWeight": "inherit",
-            "justifyContent": "flex-start",
-            "lineHeight": "10.8px",
+            "lineHeight": "14.4px",
             "marginBottom": "0px",
-            "marginLeft": "0px",
-            "marginRight": "0px",
-            "marginTop": "14.4px",
-            "msFlexAlign": "start",
+            "marginLeft": "3.6px",
+            "marginRight": "3.6px",
+            "marginTop": "0px",
             "msFlexNegative": 0,
-            "msFlexPack": "start",
             "msFlexPreferredSize": "auto",
-            "paddingBottom": "0px",
+            "paddingBottom": "3.6px",
             "paddingLeft": "0px",
             "paddingRight": "0px",
-            "paddingTop": "0px",
-            "textDecoration": "none",
+            "paddingTop": "3.6px",
+            "position": "relative",
+            "textDecoration": "underline",
+            "textDecorationColor": "rgba(0,0,0,1.00)",
+            "textDecorationStyle": "solid",
             "whiteSpace": "pre-wrap",
             "wordWrap": "break-word",
           }
         }
       >
-        <span
-          dir="auto"
+        <a
+          c="#000000"
+          className="c0"
+          hc="#999999"
+          href="/settings"
+          onClick={[Function]}
+          styles={
+            Array [
+              "font-size: 10.8px; line-height: 14.4px; font-family: HelveticaNeue-Medium; color: #999999; padding: 3.6px 0; text-decoration: underline;",
+              " ",
+              [Function],
+              ";",
+            ]
+          }
+        >
+          <span
+            align="center"
+            dir="auto"
+            direction="row"
+            style={
+              Object {
+                "WebkitAlignItems": "center",
+                "WebkitBoxAlign": "center",
+                "WebkitBoxDirection": "normal",
+                "WebkitBoxOrient": "horizontal",
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexDirection": "row",
+                "WebkitFlexShrink": 0,
+                "alignItems": "center",
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "inherit",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexDirection": "row",
+                "flexShrink": 0,
+                "fontFamily": "inherit",
+                "fontSize": "inherit",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "inherit",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "msFlexAlign": "center",
+                "msFlexDirection": "row",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "0px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "0px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "inherit",
+                "wordWrap": "break-word",
+              }
+            }
+          >
+            <div
+              style={
+                Object {
+                  "WebkitAlignItems": "stretch",
+                  "WebkitBoxAlign": "stretch",
+                  "WebkitBoxDirection": "normal",
+                  "WebkitBoxOrient": "vertical",
+                  "WebkitFlexBasis": "auto",
+                  "WebkitFlexDirection": "column",
+                  "WebkitFlexShrink": 0,
+                  "alignItems": "stretch",
+                  "borderBottomStyle": "solid",
+                  "borderBottomWidth": "0px",
+                  "borderLeftStyle": "solid",
+                  "borderLeftWidth": "0px",
+                  "borderRightStyle": "solid",
+                  "borderRightWidth": "0px",
+                  "borderTopStyle": "solid",
+                  "borderTopWidth": "0px",
+                  "boxSizing": "border-box",
+                  "display": "flex",
+                  "flexBasis": "auto",
+                  "flexDirection": "column",
+                  "flexShrink": 0,
+                  "marginBottom": "0px",
+                  "marginLeft": "0px",
+                  "marginRight": "3.6px",
+                  "marginTop": "0px",
+                  "minHeight": "0px",
+                  "minWidth": "0px",
+                  "msFlexAlign": "stretch",
+                  "msFlexDirection": "column",
+                  "msFlexNegative": 0,
+                  "msFlexPreferredSize": "auto",
+                  "paddingBottom": "0px",
+                  "paddingLeft": "0px",
+                  "paddingRight": "0px",
+                  "paddingTop": "0px",
+                  "position": "relative",
+                  "zIndex": 0,
+                }
+              }
+            >
+              <svg
+                bg="#999999"
+                h="14.4px"
+                height="12"
+                viewBox="0 0 12 12"
+                w="14.4px"
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <title>
+                  Shape
+                </title>
+                <path
+                  d="M4.625.131l2.903.037-.018 1.41A4.79 4.79 0 0 1 9.265 2.61l1.243-.69 1.42 2.505-1.244.69c.14.674.127 1.363-.027 2.018l1.227.722-1.484 2.468-1.226-.721a4.805 4.805 0 0 1-1.78.987L7.373 12l-2.902-.036.018-1.411A4.788 4.788 0 0 1 2.735 9.52l-1.244.689-1.42-2.505 1.244-.689a4.676 4.676 0 0 1 .027-2.02l-1.225-.72L1.6 1.808l1.225.72a4.806 4.806 0 0 1 1.782-.988L4.625.131zm3.339 4.846a2.214 2.214 0 0 1-.864 3.03 2.265 2.265 0 0 1-3.064-.853 2.214 2.214 0 0 1 .863-3.031 2.265 2.265 0 0 1 3.065.854z"
+                  fill="#000"
+                  fillRule="evenodd"
+                />
+              </svg>
+            </div>
+            Settings
+          </span>
+        </a>
+      </div>
+      <div
+        dir="auto"
+        ml="3.6px"
+        mr="3.6px"
+        style={
+          Object {
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexShrink": 0,
+            "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
+            "WebkitTextDecorationStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftWidth": "0px",
+            "borderRightWidth": "0px",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "color": "rgba(153,153,153,1.00)",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexShrink": 0,
+            "fontFamily": "HelveticaNeue-Medium",
+            "fontSize": "10.8px",
+            "fontStyle": "inherit",
+            "fontVariant": "inherit",
+            "fontWeight": "inherit",
+            "lineHeight": "14.4px",
+            "marginBottom": "0px",
+            "marginLeft": "3.6px",
+            "marginRight": "3.6px",
+            "marginTop": "0px",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "3.6px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "3.6px",
+            "position": "relative",
+            "textDecoration": "underline",
+            "textDecorationColor": "rgba(0,0,0,1.00)",
+            "textDecorationStyle": "solid",
+            "whiteSpace": "pre-wrap",
+            "wordWrap": "break-word",
+          }
+        }
+      >
+        <a
+          c="#000000"
+          className="c0"
+          hc="#999999"
+          href="/invites"
+          onClick={[Function]}
+          styles={
+            Array [
+              "font-size: 10.8px; line-height: 14.4px; font-family: HelveticaNeue-Medium; color: #999999; padding: 3.6px 0; text-decoration: underline;",
+              " ",
+              [Function],
+              ";",
+            ]
+          }
+        >
+          <span
+            align="center"
+            dir="auto"
+            direction="row"
+            ml="7.2px"
+            style={
+              Object {
+                "WebkitAlignItems": "center",
+                "WebkitBoxAlign": "center",
+                "WebkitBoxDirection": "normal",
+                "WebkitBoxOrient": "horizontal",
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexDirection": "row",
+                "WebkitFlexShrink": 0,
+                "alignItems": "center",
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "inherit",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexDirection": "row",
+                "flexShrink": 0,
+                "fontFamily": "inherit",
+                "fontSize": "inherit",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "inherit",
+                "marginBottom": "0px",
+                "marginLeft": "7.2px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "msFlexAlign": "center",
+                "msFlexDirection": "row",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "0px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "0px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "inherit",
+                "wordWrap": "break-word",
+              }
+            }
+          >
+            <div
+              style={
+                Object {
+                  "WebkitAlignItems": "stretch",
+                  "WebkitBoxAlign": "stretch",
+                  "WebkitBoxDirection": "normal",
+                  "WebkitBoxOrient": "vertical",
+                  "WebkitFlexBasis": "auto",
+                  "WebkitFlexDirection": "column",
+                  "WebkitFlexShrink": 0,
+                  "alignItems": "stretch",
+                  "borderBottomStyle": "solid",
+                  "borderBottomWidth": "0px",
+                  "borderLeftStyle": "solid",
+                  "borderLeftWidth": "0px",
+                  "borderRightStyle": "solid",
+                  "borderRightWidth": "0px",
+                  "borderTopStyle": "solid",
+                  "borderTopWidth": "0px",
+                  "boxSizing": "border-box",
+                  "display": "flex",
+                  "flexBasis": "auto",
+                  "flexDirection": "column",
+                  "flexShrink": 0,
+                  "marginBottom": "0px",
+                  "marginLeft": "0px",
+                  "marginRight": "3.6px",
+                  "marginTop": "0px",
+                  "minHeight": "0px",
+                  "minWidth": "0px",
+                  "msFlexAlign": "stretch",
+                  "msFlexDirection": "column",
+                  "msFlexNegative": 0,
+                  "msFlexPreferredSize": "auto",
+                  "paddingBottom": "0px",
+                  "paddingLeft": "0px",
+                  "paddingRight": "0px",
+                  "paddingTop": "0px",
+                  "position": "relative",
+                  "zIndex": 0,
+                }
+              }
+            >
+              <svg
+                bg="#999999"
+                h="14.4px"
+                height="13"
+                viewBox="0 0 15 13"
+                w="14.4px"
+                width="15"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <title>
+                  Group 33
+                </title>
+                <g
+                  fill="#000"
+                  fillRule="evenodd"
+                >
+                  <path
+                    d="M5.463 7.444c1.439 0 2.605-1.765 2.605-3.163-.035-1.373-1.19-2.469-2.604-2.469-1.413 0-2.568 1.096-2.604 2.469-.002 1.39 1.165 3.163 2.603 3.163zM7.867 7.743h-.134c-.63.788-1.433 1.222-2.27 1.222-.836 0-1.638-.426-2.27-1.222H3.06c-.813 0-1.592.314-2.166.874A2.933 2.933 0 0 0 0 10.725v1.837h10.927v-1.837a2.933 2.933 0 0 0-.894-2.108 3.105 3.105 0 0 0-2.166-.874zM12.868 2.115V.042h-1.773v2.073H8.963v1.724h2.132V5.91h1.773V3.84H15V2.115z"
+                  />
+                </g>
+              </svg>
+            </div>
+            Invite Friend
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Snapshot own Profile 1`] = `
+.c0 {
+  color: #0000ff;
+}
+
+.c1 {
+  font-size: 10.8px;
+  line-height: 14.4px;
+  font-family: HelveticaNeue-Medium;
+  color: #999999;
+  padding: 3.6px 0;
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+  color: #000000;
+}
+
+.c1:hover {
+  color: #999999;
+}
+
+.c1:hover * {
+  fill: #999999;
+}
+
+<div
+  style={
+    Object {
+      "WebkitAlignItems": "flex-start",
+      "WebkitBoxAlign": "start",
+      "WebkitBoxDirection": "normal",
+      "WebkitBoxOrient": "horizontal",
+      "WebkitBoxPack": "justify",
+      "WebkitFlexBasis": "auto",
+      "WebkitFlexDirection": "row",
+      "WebkitFlexShrink": 0,
+      "WebkitJustifyContent": "space-between",
+      "alignItems": "flex-start",
+      "borderBottomStyle": "solid",
+      "borderBottomWidth": "0px",
+      "borderLeftStyle": "solid",
+      "borderLeftWidth": "0px",
+      "borderRightStyle": "solid",
+      "borderRightWidth": "0px",
+      "borderTopStyle": "solid",
+      "borderTopWidth": "0px",
+      "boxSizing": "border-box",
+      "display": "flex",
+      "flexBasis": "auto",
+      "flexDirection": "row",
+      "flexShrink": 0,
+      "justifyContent": "space-between",
+      "marginBottom": "28.8px",
+      "marginLeft": "28.8px",
+      "marginRight": "28.8px",
+      "marginTop": "28.8px",
+      "minHeight": "0px",
+      "minWidth": "0px",
+      "msFlexAlign": "start",
+      "msFlexDirection": "row",
+      "msFlexNegative": 0,
+      "msFlexPack": "justify",
+      "msFlexPreferredSize": "auto",
+      "paddingBottom": "0px",
+      "paddingLeft": "0px",
+      "paddingRight": "0px",
+      "paddingTop": "0px",
+      "position": "relative",
+      "zIndex": 0,
+    }
+  }
+>
+  <div
+    style={
+      Object {
+        "WebkitAlignItems": "stretch",
+        "WebkitBoxAlign": "stretch",
+        "WebkitBoxDirection": "normal",
+        "WebkitBoxOrient": "vertical",
+        "WebkitFlexBasis": "auto",
+        "WebkitFlexDirection": "column",
+        "WebkitFlexShrink": 0,
+        "alignItems": "stretch",
+        "borderBottomStyle": "solid",
+        "borderBottomWidth": "0px",
+        "borderLeftStyle": "solid",
+        "borderLeftWidth": "0px",
+        "borderRightStyle": "solid",
+        "borderRightWidth": "0px",
+        "borderTopStyle": "solid",
+        "borderTopWidth": "0px",
+        "boxSizing": "border-box",
+        "display": "flex",
+        "flexBasis": "auto",
+        "flexDirection": "column",
+        "flexShrink": 0,
+        "marginBottom": "0px",
+        "marginLeft": "0px",
+        "marginRight": "0px",
+        "marginTop": "0px",
+        "minHeight": "0px",
+        "minWidth": "0px",
+        "msFlexAlign": "stretch",
+        "msFlexDirection": "column",
+        "msFlexNegative": 0,
+        "msFlexPreferredSize": "auto",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px",
+        "paddingTop": "0px",
+        "position": "relative",
+        "zIndex": 0,
+      }
+    }
+  >
+    <a
+      className=""
+      href="/user/profile/handle1"
+      onClick={[Function]}
+      styles=""
+    >
+      <div
+        style={
+          Object {
+            "WebkitAlignItems": "stretch",
+            "WebkitBoxAlign": "stretch",
+            "WebkitBoxDirection": "normal",
+            "WebkitBoxOrient": "vertical",
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexDirection": "column",
+            "WebkitFlexShrink": 0,
+            "alignItems": "stretch",
+            "borderBottomLeftRadius": "32.4px",
+            "borderBottomRightRadius": "32.4px",
+            "borderBottomStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftStyle": "solid",
+            "borderLeftWidth": "0px",
+            "borderRightStyle": "solid",
+            "borderRightWidth": "0px",
+            "borderTopLeftRadius": "32.4px",
+            "borderTopRightRadius": "32.4px",
+            "borderTopStyle": "solid",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexDirection": "column",
+            "flexShrink": 0,
+            "height": "64.8px",
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "minHeight": "0px",
+            "minWidth": "0px",
+            "msFlexAlign": "stretch",
+            "msFlexDirection": "column",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "overflowX": "hidden",
+            "overflowY": "hidden",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "width": "64.8px",
+            "zIndex": 0,
+          }
+        }
+      >
+        <div
           style={
             Object {
-              "WebkitBoxFlex": 1,
-              "WebkitFlexBasis": "0px",
-              "WebkitFlexGrow": 1,
-              "WebkitFlexShrink": 1,
+              "WebkitAlignItems": "stretch",
+              "WebkitBoxAlign": "stretch",
+              "WebkitBoxDirection": "normal",
+              "WebkitBoxOrient": "vertical",
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexDirection": "column",
+              "WebkitFlexShrink": 0,
+              "alignItems": "stretch",
+              "backgroundColor": "rgba(0,0,0,0.00)",
+              "backgroundImage": "url(\\"userImage1.jpg\\")",
+              "backgroundPosition": "center",
+              "backgroundRepeat": "no-repeat",
+              "backgroundSize": "cover",
+              "borderBottomStyle": "solid",
+              "borderBottomWidth": "0px",
+              "borderLeftStyle": "solid",
+              "borderLeftWidth": "0px",
+              "borderRightStyle": "solid",
+              "borderRightWidth": "0px",
+              "borderTopStyle": "solid",
+              "borderTopWidth": "0px",
+              "bottom": "0px",
+              "boxSizing": "border-box",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexDirection": "column",
+              "flexShrink": 0,
+              "height": "100%",
+              "left": "0px",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "marginRight": "0px",
+              "marginTop": "0px",
+              "minHeight": "0px",
+              "minWidth": "0px",
+              "msFlexAlign": "stretch",
+              "msFlexDirection": "column",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px",
+              "paddingRight": "0px",
+              "paddingTop": "0px",
+              "position": "absolute",
+              "right": "0px",
+              "top": "0px",
+              "width": "100%",
+              "zIndex": -1,
+            }
+          }
+        />
+        <img
+          alt=""
+          draggable={false}
+          src="userImage1.jpg"
+          style={
+            Object {
+              "bottom": "0px",
+              "height": "100%",
+              "left": "0px",
+              "opacity": 0,
+              "position": "absolute",
+              "right": "0px",
+              "top": "0px",
+              "width": "100%",
+              "zIndex": -1,
+            }
+          }
+        />
+      </div>
+    </a>
+  </div>
+  <div
+    style={
+      Object {
+        "WebkitAlignItems": "stretch",
+        "WebkitBoxAlign": "stretch",
+        "WebkitBoxDirection": "normal",
+        "WebkitBoxFlex": 1,
+        "WebkitBoxOrient": "vertical",
+        "WebkitFlexBasis": "auto",
+        "WebkitFlexDirection": "column",
+        "WebkitFlexGrow": 1,
+        "WebkitFlexShrink": 0,
+        "alignItems": "stretch",
+        "borderBottomStyle": "solid",
+        "borderBottomWidth": "0px",
+        "borderLeftStyle": "solid",
+        "borderLeftWidth": "0px",
+        "borderRightStyle": "solid",
+        "borderRightWidth": "0px",
+        "borderTopStyle": "solid",
+        "borderTopWidth": "0px",
+        "boxSizing": "border-box",
+        "display": "flex",
+        "flexBasis": "auto",
+        "flexDirection": "column",
+        "flexGrow": 1,
+        "flexShrink": 0,
+        "marginBottom": "0px",
+        "marginLeft": "14.4px",
+        "marginRight": "0px",
+        "marginTop": "0px",
+        "minHeight": "0px",
+        "minWidth": "0px",
+        "msFlexAlign": "stretch",
+        "msFlexDirection": "column",
+        "msFlexNegative": 0,
+        "msFlexPositive": 1,
+        "msFlexPreferredSize": "auto",
+        "paddingBottom": "0px",
+        "paddingLeft": "0px",
+        "paddingRight": "0px",
+        "paddingTop": "0px",
+        "position": "relative",
+        "zIndex": 0,
+      }
+    }
+  >
+    <div
+      style={
+        Object {
+          "WebkitAlignItems": "center",
+          "WebkitBoxAlign": "center",
+          "WebkitBoxDirection": "normal",
+          "WebkitBoxOrient": "horizontal",
+          "WebkitBoxPack": "justify",
+          "WebkitFlexBasis": "auto",
+          "WebkitFlexDirection": "row",
+          "WebkitFlexShrink": 0,
+          "WebkitJustifyContent": "space-between",
+          "alignItems": "center",
+          "borderBottomStyle": "solid",
+          "borderBottomWidth": "0px",
+          "borderLeftStyle": "solid",
+          "borderLeftWidth": "0px",
+          "borderRightStyle": "solid",
+          "borderRightWidth": "0px",
+          "borderTopStyle": "solid",
+          "borderTopWidth": "0px",
+          "boxSizing": "border-box",
+          "display": "flex",
+          "flexBasis": "auto",
+          "flexDirection": "row",
+          "flexShrink": 0,
+          "justifyContent": "space-between",
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "marginTop": "0px",
+          "minHeight": "0px",
+          "minWidth": "0px",
+          "msFlexAlign": "center",
+          "msFlexDirection": "row",
+          "msFlexNegative": 0,
+          "msFlexPack": "justify",
+          "msFlexPreferredSize": "auto",
+          "paddingBottom": "0px",
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "paddingTop": "0px",
+          "position": "relative",
+          "zIndex": 0,
+        }
+      }
+    >
+      <div
+        style={
+          Object {
+            "WebkitAlignItems": "stretch",
+            "WebkitBoxAlign": "stretch",
+            "WebkitBoxDirection": "normal",
+            "WebkitBoxOrient": "horizontal",
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexDirection": "row",
+            "WebkitFlexShrink": 0,
+            "alignItems": "stretch",
+            "borderBottomStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftStyle": "solid",
+            "borderLeftWidth": "0px",
+            "borderRightStyle": "solid",
+            "borderRightWidth": "0px",
+            "borderTopStyle": "solid",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexDirection": "row",
+            "flexShrink": 0,
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "minHeight": "0px",
+            "minWidth": "0px",
+            "msFlexAlign": "stretch",
+            "msFlexDirection": "row",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "zIndex": 0,
+          }
+        }
+      >
+        <div
+          dir="auto"
+          mr="14.4px"
+          style={
+            Object {
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexShrink": 0,
+              "borderBottomWidth": "0px",
+              "borderLeftWidth": "0px",
+              "borderRightWidth": "0px",
+              "borderTopWidth": "0px",
+              "boxSizing": "border-box",
+              "color": "rgba(0,0,0,1.00)",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexShrink": 0,
+              "fontFamily": "HelveticaNeue-Bold",
+              "fontSize": "21.6px",
+              "fontStyle": "inherit",
+              "fontVariant": "inherit",
+              "fontWeight": "inherit",
+              "lineHeight": "28.8px",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "marginRight": "14.4px",
+              "marginTop": "0px",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px",
+              "paddingRight": "0px",
+              "paddingTop": "0px",
+              "position": "relative",
+              "textDecoration": "none",
+              "whiteSpace": "pre-wrap",
+              "wordWrap": "break-word",
+            }
+          }
+        >
+          Name1
+        </div>
+        <div
+          align="center"
+          dir="auto"
+          mr="14.4px"
+          props={
+            Object {
+              "mr": 2,
+              "size": 2,
+              "user": Object {
+                "_id": "111111111111111111111111",
+                "balance": 111,
+                "handle": "handle1",
+                "image": "userImage1.jpg",
+                "name": "Name1",
+                "relevance": Object {
+                  "pagerank": 11,
+                },
+              },
+            }
+          }
+          style={
+            Object {
+              "WebkitAlignItems": "center",
+              "WebkitBoxAlign": "center",
+              "WebkitBoxDirection": "normal",
+              "WebkitBoxOrient": "horizontal",
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexDirection": "row",
+              "WebkitFlexShrink": 0,
+              "alignItems": "center",
               "borderBottomWidth": "0px",
               "borderLeftWidth": "0px",
               "borderRightWidth": "0px",
@@ -918,11 +1871,207 @@ exports[`Snapshot NavProfile 1`] = `
               "boxSizing": "border-box",
               "color": "inherit",
               "display": "flex",
-              "flexBasis": "0px",
-              "flexGrow": 1,
-              "flexShrink": 1,
-              "fontFamily": "inherit",
-              "fontSize": "inherit",
+              "flexBasis": "auto",
+              "flexDirection": "row",
+              "flexShrink": 0,
+              "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
+              "fontSize": "14px",
+              "fontStyle": "inherit",
+              "fontVariant": "inherit",
+              "fontWeight": "inherit",
+              "lineHeight": "inherit",
+              "marginBottom": "0px",
+              "marginLeft": "0px",
+              "marginRight": "14.4px",
+              "marginTop": "0px",
+              "msFlexAlign": "center",
+              "msFlexDirection": "row",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
+              "paddingBottom": "0px",
+              "paddingLeft": "0px",
+              "paddingRight": "0px",
+              "paddingTop": "0px",
+              "position": "relative",
+              "textDecoration": "none",
+              "whiteSpace": "pre-wrap",
+              "wordWrap": "break-word",
+            }
+          }
+        >
+          <div
+            style={
+              Object {
+                "WebkitAlignItems": "stretch",
+                "WebkitBoxAlign": "stretch",
+                "WebkitBoxDirection": "normal",
+                "WebkitBoxOrient": "vertical",
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexDirection": "column",
+                "WebkitFlexShrink": 0,
+                "alignItems": "stretch",
+                "borderBottomStyle": "solid",
+                "borderBottomWidth": "0px",
+                "borderLeftStyle": "solid",
+                "borderLeftWidth": "0px",
+                "borderRightStyle": "solid",
+                "borderRightWidth": "0px",
+                "borderTopStyle": "solid",
+                "borderTopWidth": "0px",
+                "bottom": "-1.4400000000000002px",
+                "boxSizing": "border-box",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexDirection": "column",
+                "flexShrink": 0,
+                "height": "14.4px",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "3.6px",
+                "marginTop": "0px",
+                "minHeight": "0px",
+                "minWidth": "0px",
+                "msFlexAlign": "stretch",
+                "msFlexDirection": "column",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "overflowX": "hidden",
+                "overflowY": "hidden",
+                "paddingBottom": "0px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "0px",
+                "position": "relative",
+                "width": "14.4px",
+                "zIndex": 0,
+              }
+            }
+          >
+            <div
+              style={
+                Object {
+                  "WebkitAlignItems": "stretch",
+                  "WebkitBoxAlign": "stretch",
+                  "WebkitBoxDirection": "normal",
+                  "WebkitBoxOrient": "vertical",
+                  "WebkitFlexDirection": "column",
+                  "alignItems": "stretch",
+                  "backgroundColor": "rgba(0,0,0,0.00)",
+                  "backgroundImage": "url(\\"r-emoji.png\\")",
+                  "backgroundPosition": "center",
+                  "backgroundRepeat": "no-repeat",
+                  "backgroundSize": "cover",
+                  "borderBottomStyle": "solid",
+                  "borderBottomWidth": "0px",
+                  "borderLeftStyle": "solid",
+                  "borderLeftWidth": "0px",
+                  "borderRightStyle": "solid",
+                  "borderRightWidth": "0px",
+                  "borderTopStyle": "solid",
+                  "borderTopWidth": "0px",
+                  "bottom": "0px",
+                  "boxSizing": "border-box",
+                  "display": "inline-flex",
+                  "flexDirection": "column",
+                  "height": "100%",
+                  "left": "0px",
+                  "marginBottom": "0px",
+                  "marginLeft": "0px",
+                  "marginRight": "0px",
+                  "marginTop": "0px",
+                  "minHeight": "0px",
+                  "minWidth": "0px",
+                  "msFlexAlign": "stretch",
+                  "msFlexDirection": "column",
+                  "paddingBottom": "0px",
+                  "paddingLeft": "0px",
+                  "paddingRight": "0px",
+                  "paddingTop": "0px",
+                  "position": "absolute",
+                  "right": "0px",
+                  "top": "0px",
+                  "width": "100%",
+                  "zIndex": -1,
+                }
+              }
+            />
+            <img
+              alt=""
+              draggable={false}
+              src="r-emoji.png"
+              style={
+                Object {
+                  "bottom": "0px",
+                  "height": "100%",
+                  "left": "0px",
+                  "opacity": 0,
+                  "position": "absolute",
+                  "right": "0px",
+                  "top": "0px",
+                  "width": "100%",
+                  "zIndex": -1,
+                }
+              }
+            />
+          </div>
+          <span
+            dir="auto"
+            style={
+              Object {
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "rgba(0,0,0,1.00)",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue-CondensedBold",
+                "fontSize": "14.4px",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "19.2px",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "0px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "0px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "inherit",
+                "wordWrap": "break-word",
+              }
+            }
+          >
+            11
+          </span>
+        </div>
+        <div
+          dir="auto"
+          style={
+            Object {
+              "WebkitFlexBasis": "auto",
+              "WebkitFlexShrink": 0,
+              "borderBottomWidth": "0px",
+              "borderLeftWidth": "0px",
+              "borderRightWidth": "0px",
+              "borderTopWidth": "0px",
+              "boxSizing": "border-box",
+              "color": "inherit",
+              "display": "flex",
+              "flexBasis": "auto",
+              "flexShrink": 0,
+              "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
+              "fontSize": "14px",
               "fontStyle": "inherit",
               "fontVariant": "inherit",
               "fontWeight": "inherit",
@@ -931,22 +2080,109 @@ exports[`Snapshot NavProfile 1`] = `
               "marginLeft": "0px",
               "marginRight": "0px",
               "marginTop": "0px",
-              "msFlexNegative": 1,
-              "msFlexPositive": 1,
-              "msFlexPreferredSize": "0px",
+              "msFlexNegative": 0,
+              "msFlexPreferredSize": "auto",
               "paddingBottom": "0px",
               "paddingLeft": "0px",
               "paddingRight": "0px",
               "paddingTop": "0px",
+              "position": "relative",
               "textDecoration": "none",
-              "whiteSpace": "inherit",
+              "whiteSpace": "pre-wrap",
               "wordWrap": "break-word",
             }
           }
         >
-          Pending Rewards: 
-        </span>
-        <span
+          <span
+            align="center"
+            dir="auto"
+            mr={2}
+            style={
+              Object {
+                "WebkitAlignItems": "center",
+                "WebkitBoxAlign": "center",
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexShrink": 0,
+                "alignItems": "center",
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "rgba(0,0,0,1.00)",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexShrink": 0,
+                "fontFamily": "HelveticaNeue-CondensedBold",
+                "fontSize": "14.4px",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "19.2px",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "14.4px",
+                "marginTop": "0px",
+                "msFlexAlign": "center",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "0px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "0px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "inherit",
+                "wordWrap": "break-word",
+              }
+            }
+          >
+            <span
+              c="#7ED321"
+              dir="auto"
+              style={
+                Object {
+                  "WebkitFlexBasis": "auto",
+                  "WebkitFlexShrink": 0,
+                  "borderBottomWidth": "0px",
+                  "borderLeftWidth": "0px",
+                  "borderRightWidth": "0px",
+                  "borderTopWidth": "0px",
+                  "boxSizing": "border-box",
+                  "color": "rgba(126,211,33,1.00)",
+                  "display": "flex",
+                  "flexBasis": "auto",
+                  "flexShrink": 0,
+                  "fontFamily": "inherit",
+                  "fontSize": "inherit",
+                  "fontStyle": "inherit",
+                  "fontVariant": "inherit",
+                  "fontWeight": "inherit",
+                  "lineHeight": "inherit",
+                  "marginBottom": "0px",
+                  "marginLeft": "0px",
+                  "marginRight": "0px",
+                  "marginTop": "0px",
+                  "msFlexNegative": 0,
+                  "msFlexPreferredSize": "auto",
+                  "paddingBottom": "0px",
+                  "paddingLeft": "0px",
+                  "paddingRight": "0px",
+                  "paddingTop": "0px",
+                  "position": "relative",
+                  "textDecoration": "none",
+                  "whiteSpace": "inherit",
+                  "wordWrap": "break-word",
+                }
+              }
+            >
+              ▲ 
+            </span>
+            0
+            %
+          </span>
+        </div>
+        <div
           dir="auto"
           mr="10.8px"
           style={
@@ -969,8 +2205,8 @@ exports[`Snapshot NavProfile 1`] = `
               "flexBasis": "auto",
               "flexDirection": "row",
               "flexShrink": 0,
-              "fontFamily": "inherit",
-              "fontSize": "inherit",
+              "fontFamily": "system-ui, -apple-system, BlinkMacSystemFont, \\"Segoe UI\\", Roboto, Ubuntu, \\"Helvetica Neue\\", sans-serif",
+              "fontSize": "14px",
               "fontStyle": "inherit",
               "fontVariant": "inherit",
               "fontWeight": "inherit",
@@ -989,7 +2225,7 @@ exports[`Snapshot NavProfile 1`] = `
               "paddingTop": "0px",
               "position": "relative",
               "textDecoration": "none",
-              "whiteSpace": "inherit",
+              "whiteSpace": "pre-wrap",
               "wordWrap": "break-word",
             }
           }
@@ -1018,10 +2254,10 @@ exports[`Snapshot NavProfile 1`] = `
                 "flexBasis": "auto",
                 "flexDirection": "column",
                 "flexShrink": 0,
-                "height": "10.8px",
+                "height": "14.4px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
-                "marginRight": "2.7px",
+                "marginRight": "3.6px",
                 "marginTop": "0px",
                 "minHeight": "0px",
                 "minWidth": "0px",
@@ -1036,7 +2272,7 @@ exports[`Snapshot NavProfile 1`] = `
                 "paddingRight": "0px",
                 "paddingTop": "0px",
                 "position": "relative",
-                "width": "10.8px",
+                "width": "14.4px",
                 "zIndex": 0,
               }
             }
@@ -1110,7 +2346,7 @@ exports[`Snapshot NavProfile 1`] = `
           </div>
           <span
             dir="auto"
-            inheritfont={1}
+            inheritfont={0}
             style={
               Object {
                 "borderBottomWidth": "0px",
@@ -1120,12 +2356,12 @@ exports[`Snapshot NavProfile 1`] = `
                 "boxSizing": "border-box",
                 "color": "rgba(0,0,0,1.00)",
                 "display": "inline",
-                "fontFamily": "inherit",
-                "fontSize": "'inherit'",
+                "fontFamily": "HelveticaNeue-CondensedBold",
+                "fontSize": "14.4px",
                 "fontStyle": "inherit",
                 "fontVariant": "inherit",
                 "fontWeight": "inherit",
-                "lineHeight": "'inherit'",
+                "lineHeight": "19.2px",
                 "marginBottom": "0px",
                 "marginLeft": "0px",
                 "marginRight": "0px",
@@ -1140,9 +2376,458 @@ exports[`Snapshot NavProfile 1`] = `
               }
             }
           >
-            100
+            111
           </span>
-        </span>
+        </div>
+      </div>
+      <div
+        style={
+          Object {
+            "WebkitAlignItems": "center",
+            "WebkitBoxAlign": "center",
+            "WebkitBoxDirection": "normal",
+            "WebkitBoxOrient": "vertical",
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexDirection": "column",
+            "WebkitFlexShrink": 0,
+            "alignItems": "center",
+            "borderBottomStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftStyle": "solid",
+            "borderLeftWidth": "0px",
+            "borderRightStyle": "solid",
+            "borderRightWidth": "0px",
+            "borderTopStyle": "solid",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexDirection": "column",
+            "flexShrink": 0,
+            "marginBottom": "0px",
+            "marginLeft": "0px",
+            "marginRight": "0px",
+            "marginTop": "0px",
+            "minHeight": "0px",
+            "minWidth": "0px",
+            "msFlexAlign": "center",
+            "msFlexDirection": "column",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "0px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "0px",
+            "position": "relative",
+            "zIndex": 0,
+          }
+        }
+      >
+        <a
+          className="c0"
+          color="#0000ff"
+          href="/"
+          onClick={[Function]}
+          styles=""
+        >
+          Logout
+        </a>
+      </div>
+    </div>
+    <div
+      style={
+        Object {
+          "WebkitAlignItems": "center",
+          "WebkitBoxAlign": "center",
+          "WebkitBoxDirection": "normal",
+          "WebkitBoxOrient": "horizontal",
+          "WebkitFlexBasis": "auto",
+          "WebkitFlexDirection": "row",
+          "WebkitFlexShrink": 0,
+          "alignItems": "center",
+          "borderBottomStyle": "solid",
+          "borderBottomWidth": "0px",
+          "borderLeftStyle": "solid",
+          "borderLeftWidth": "0px",
+          "borderRightStyle": "solid",
+          "borderRightWidth": "0px",
+          "borderTopStyle": "solid",
+          "borderTopWidth": "0px",
+          "boxSizing": "border-box",
+          "display": "flex",
+          "flexBasis": "auto",
+          "flexDirection": "row",
+          "flexShrink": 0,
+          "marginBottom": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "marginTop": "0px",
+          "minHeight": "0px",
+          "minWidth": "0px",
+          "msFlexAlign": "center",
+          "msFlexDirection": "row",
+          "msFlexNegative": 0,
+          "msFlexPreferredSize": "auto",
+          "paddingBottom": "0px",
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "paddingTop": "0px",
+          "position": "relative",
+          "zIndex": 0,
+        }
+      }
+    >
+      <div
+        dir="auto"
+        ml="3.6px"
+        mr="3.6px"
+        style={
+          Object {
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexShrink": 0,
+            "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
+            "WebkitTextDecorationStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftWidth": "0px",
+            "borderRightWidth": "0px",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "color": "rgba(153,153,153,1.00)",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexShrink": 0,
+            "fontFamily": "HelveticaNeue-Medium",
+            "fontSize": "10.8px",
+            "fontStyle": "inherit",
+            "fontVariant": "inherit",
+            "fontWeight": "inherit",
+            "lineHeight": "14.4px",
+            "marginBottom": "0px",
+            "marginLeft": "3.6px",
+            "marginRight": "3.6px",
+            "marginTop": "0px",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "3.6px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "3.6px",
+            "position": "relative",
+            "textDecoration": "underline",
+            "textDecorationColor": "rgba(0,0,0,1.00)",
+            "textDecorationStyle": "solid",
+            "whiteSpace": "pre-wrap",
+            "wordWrap": "break-word",
+          }
+        }
+      >
+        <a
+          c="#000000"
+          className="c1"
+          hc="#999999"
+          href="/settings"
+          onClick={[Function]}
+          styles={
+            Array [
+              "font-size: 10.8px; line-height: 14.4px; font-family: HelveticaNeue-Medium; color: #999999; padding: 3.6px 0; text-decoration: underline;",
+              " ",
+              [Function],
+              ";",
+            ]
+          }
+        >
+          <span
+            align="center"
+            dir="auto"
+            direction="row"
+            style={
+              Object {
+                "WebkitAlignItems": "center",
+                "WebkitBoxAlign": "center",
+                "WebkitBoxDirection": "normal",
+                "WebkitBoxOrient": "horizontal",
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexDirection": "row",
+                "WebkitFlexShrink": 0,
+                "alignItems": "center",
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "inherit",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexDirection": "row",
+                "flexShrink": 0,
+                "fontFamily": "inherit",
+                "fontSize": "inherit",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "inherit",
+                "marginBottom": "0px",
+                "marginLeft": "0px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "msFlexAlign": "center",
+                "msFlexDirection": "row",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "0px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "0px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "inherit",
+                "wordWrap": "break-word",
+              }
+            }
+          >
+            <div
+              style={
+                Object {
+                  "WebkitAlignItems": "stretch",
+                  "WebkitBoxAlign": "stretch",
+                  "WebkitBoxDirection": "normal",
+                  "WebkitBoxOrient": "vertical",
+                  "WebkitFlexBasis": "auto",
+                  "WebkitFlexDirection": "column",
+                  "WebkitFlexShrink": 0,
+                  "alignItems": "stretch",
+                  "borderBottomStyle": "solid",
+                  "borderBottomWidth": "0px",
+                  "borderLeftStyle": "solid",
+                  "borderLeftWidth": "0px",
+                  "borderRightStyle": "solid",
+                  "borderRightWidth": "0px",
+                  "borderTopStyle": "solid",
+                  "borderTopWidth": "0px",
+                  "boxSizing": "border-box",
+                  "display": "flex",
+                  "flexBasis": "auto",
+                  "flexDirection": "column",
+                  "flexShrink": 0,
+                  "marginBottom": "0px",
+                  "marginLeft": "0px",
+                  "marginRight": "3.6px",
+                  "marginTop": "0px",
+                  "minHeight": "0px",
+                  "minWidth": "0px",
+                  "msFlexAlign": "stretch",
+                  "msFlexDirection": "column",
+                  "msFlexNegative": 0,
+                  "msFlexPreferredSize": "auto",
+                  "paddingBottom": "0px",
+                  "paddingLeft": "0px",
+                  "paddingRight": "0px",
+                  "paddingTop": "0px",
+                  "position": "relative",
+                  "zIndex": 0,
+                }
+              }
+            >
+              <svg
+                bg="#999999"
+                h="14.4px"
+                height="12"
+                viewBox="0 0 12 12"
+                w="14.4px"
+                width="12"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <title>
+                  Shape
+                </title>
+                <path
+                  d="M4.625.131l2.903.037-.018 1.41A4.79 4.79 0 0 1 9.265 2.61l1.243-.69 1.42 2.505-1.244.69c.14.674.127 1.363-.027 2.018l1.227.722-1.484 2.468-1.226-.721a4.805 4.805 0 0 1-1.78.987L7.373 12l-2.902-.036.018-1.411A4.788 4.788 0 0 1 2.735 9.52l-1.244.689-1.42-2.505 1.244-.689a4.676 4.676 0 0 1 .027-2.02l-1.225-.72L1.6 1.808l1.225.72a4.806 4.806 0 0 1 1.782-.988L4.625.131zm3.339 4.846a2.214 2.214 0 0 1-.864 3.03 2.265 2.265 0 0 1-3.064-.853 2.214 2.214 0 0 1 .863-3.031 2.265 2.265 0 0 1 3.065.854z"
+                  fill="#000"
+                  fillRule="evenodd"
+                />
+              </svg>
+            </div>
+            Settings
+          </span>
+        </a>
+      </div>
+      <div
+        dir="auto"
+        ml="3.6px"
+        mr="3.6px"
+        style={
+          Object {
+            "WebkitFlexBasis": "auto",
+            "WebkitFlexShrink": 0,
+            "WebkitTextDecorationColor": "rgba(0,0,0,1.00)",
+            "WebkitTextDecorationStyle": "solid",
+            "borderBottomWidth": "0px",
+            "borderLeftWidth": "0px",
+            "borderRightWidth": "0px",
+            "borderTopWidth": "0px",
+            "boxSizing": "border-box",
+            "color": "rgba(153,153,153,1.00)",
+            "display": "flex",
+            "flexBasis": "auto",
+            "flexShrink": 0,
+            "fontFamily": "HelveticaNeue-Medium",
+            "fontSize": "10.8px",
+            "fontStyle": "inherit",
+            "fontVariant": "inherit",
+            "fontWeight": "inherit",
+            "lineHeight": "14.4px",
+            "marginBottom": "0px",
+            "marginLeft": "3.6px",
+            "marginRight": "3.6px",
+            "marginTop": "0px",
+            "msFlexNegative": 0,
+            "msFlexPreferredSize": "auto",
+            "paddingBottom": "3.6px",
+            "paddingLeft": "0px",
+            "paddingRight": "0px",
+            "paddingTop": "3.6px",
+            "position": "relative",
+            "textDecoration": "underline",
+            "textDecorationColor": "rgba(0,0,0,1.00)",
+            "textDecorationStyle": "solid",
+            "whiteSpace": "pre-wrap",
+            "wordWrap": "break-word",
+          }
+        }
+      >
+        <a
+          c="#000000"
+          className="c1"
+          hc="#999999"
+          href="/invites"
+          onClick={[Function]}
+          styles={
+            Array [
+              "font-size: 10.8px; line-height: 14.4px; font-family: HelveticaNeue-Medium; color: #999999; padding: 3.6px 0; text-decoration: underline;",
+              " ",
+              [Function],
+              ";",
+            ]
+          }
+        >
+          <span
+            align="center"
+            dir="auto"
+            direction="row"
+            ml="7.2px"
+            style={
+              Object {
+                "WebkitAlignItems": "center",
+                "WebkitBoxAlign": "center",
+                "WebkitBoxDirection": "normal",
+                "WebkitBoxOrient": "horizontal",
+                "WebkitFlexBasis": "auto",
+                "WebkitFlexDirection": "row",
+                "WebkitFlexShrink": 0,
+                "alignItems": "center",
+                "borderBottomWidth": "0px",
+                "borderLeftWidth": "0px",
+                "borderRightWidth": "0px",
+                "borderTopWidth": "0px",
+                "boxSizing": "border-box",
+                "color": "inherit",
+                "display": "flex",
+                "flexBasis": "auto",
+                "flexDirection": "row",
+                "flexShrink": 0,
+                "fontFamily": "inherit",
+                "fontSize": "inherit",
+                "fontStyle": "inherit",
+                "fontVariant": "inherit",
+                "fontWeight": "inherit",
+                "lineHeight": "inherit",
+                "marginBottom": "0px",
+                "marginLeft": "7.2px",
+                "marginRight": "0px",
+                "marginTop": "0px",
+                "msFlexAlign": "center",
+                "msFlexDirection": "row",
+                "msFlexNegative": 0,
+                "msFlexPreferredSize": "auto",
+                "paddingBottom": "0px",
+                "paddingLeft": "0px",
+                "paddingRight": "0px",
+                "paddingTop": "0px",
+                "position": "relative",
+                "textDecoration": "none",
+                "whiteSpace": "inherit",
+                "wordWrap": "break-word",
+              }
+            }
+          >
+            <div
+              style={
+                Object {
+                  "WebkitAlignItems": "stretch",
+                  "WebkitBoxAlign": "stretch",
+                  "WebkitBoxDirection": "normal",
+                  "WebkitBoxOrient": "vertical",
+                  "WebkitFlexBasis": "auto",
+                  "WebkitFlexDirection": "column",
+                  "WebkitFlexShrink": 0,
+                  "alignItems": "stretch",
+                  "borderBottomStyle": "solid",
+                  "borderBottomWidth": "0px",
+                  "borderLeftStyle": "solid",
+                  "borderLeftWidth": "0px",
+                  "borderRightStyle": "solid",
+                  "borderRightWidth": "0px",
+                  "borderTopStyle": "solid",
+                  "borderTopWidth": "0px",
+                  "boxSizing": "border-box",
+                  "display": "flex",
+                  "flexBasis": "auto",
+                  "flexDirection": "column",
+                  "flexShrink": 0,
+                  "marginBottom": "0px",
+                  "marginLeft": "0px",
+                  "marginRight": "3.6px",
+                  "marginTop": "0px",
+                  "minHeight": "0px",
+                  "minWidth": "0px",
+                  "msFlexAlign": "stretch",
+                  "msFlexDirection": "column",
+                  "msFlexNegative": 0,
+                  "msFlexPreferredSize": "auto",
+                  "paddingBottom": "0px",
+                  "paddingLeft": "0px",
+                  "paddingRight": "0px",
+                  "paddingTop": "0px",
+                  "position": "relative",
+                  "zIndex": 0,
+                }
+              }
+            >
+              <svg
+                bg="#999999"
+                h="14.4px"
+                height="13"
+                viewBox="0 0 15 13"
+                w="14.4px"
+                width="15"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <title>
+                  Group 33
+                </title>
+                <g
+                  fill="#000"
+                  fillRule="evenodd"
+                >
+                  <path
+                    d="M5.463 7.444c1.439 0 2.605-1.765 2.605-3.163-.035-1.373-1.19-2.469-2.604-2.469-1.413 0-2.568 1.096-2.604 2.469-.002 1.39 1.165 3.163 2.603 3.163zM7.867 7.743h-.134c-.63.788-1.433 1.222-2.27 1.222-.836 0-1.638-.426-2.27-1.222H3.06c-.813 0-1.592.314-2.166.874A2.933 2.933 0 0 0 0 10.725v1.837h10.927v-1.837a2.933 2.933 0 0 0-.894-2.108 3.105 3.105 0 0 0-2.166-.874zM12.868 2.115V.042h-1.773v2.073H8.963v1.724h2.132V5.91h1.773V3.84H15V2.115z"
+                  />
+                </g>
+              </svg>
+            </div>
+            Invite Friend
+          </span>
+        </a>
       </div>
     </div>
   </div>
