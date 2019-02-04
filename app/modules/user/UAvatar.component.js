@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ULink from 'modules/navigation/ULink.component';
 import { Image, View } from 'modules/styled/uni';
-import { sizing } from 'app/styles';
 
 class UAvatar extends Component {
   static propTypes = {
@@ -27,9 +26,9 @@ class UAvatar extends Component {
     const AvatarImage = (
       <Image
         source={{ uri: image }}
-        h={sizing(imageSize)}
-        w={sizing(imageSize)}
-        br={sizing(imageSize / 2)}
+        h={imageSize}
+        w={imageSize}
+        bradius={imageSize / 2}
       />);
     if (this.props.noLink) {
       return (

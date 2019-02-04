@@ -18,7 +18,8 @@ let styles;
 class CommentInput extends Component {
   static propTypes = {
     actions: PropTypes.object,
-    postId: PropTypes.string,
+    parentPost: PropTypes.object,
+    commentParent: PropTypes.object,
     auth: PropTypes.object,
     onFocus: PropTypes.func,
     scrollToBottom: PropTypes.func,
@@ -48,23 +49,26 @@ class CommentInput extends Component {
   }
 
   createComment() {
+    const { parentPost, commentParent, auth, actions, onFocus, scrollToBottom } = this.props;
     if (!this.state.comment || !this.state.comment.length) {
       return Alert.alert('no comment');
     }
 
     const comment = this.state.comment.trim();
     const commentObj = {
-      post: this.props.postId,
+      parentPost: parentPost._id,
+      commentParent: commentParent._id,
+      linkParent: parentPost.type === 'link' ? parentPost._id : null,
       text: comment,
       tags: this.commentTags,
       mentions: this.commentMentions,
-      user: this.props.auth.user._id
+      user: auth.user._id
     };
 
     this.setState({ comment: '', inputHeight: 50 });
     this.textInput.blur();
-    this.props.onFocus('new');
-    this.props.actions.setUserSearch([]);
+    onFocus('new');
+    actions.setUserSearch([]);
 
     return this.props.actions
     .createComment(commentObj)
@@ -74,7 +78,7 @@ class CommentInput extends Component {
         this.textInput.focus();
         return;
       }
-      this.props.scrollToBottom();
+      scrollToBottom();
     });
   }
 

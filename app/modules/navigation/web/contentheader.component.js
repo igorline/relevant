@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import {
+  Button,
+  Header,
+} from 'modules/styled/web';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
 import DiscoverTabs from 'modules/discover/web/discoverTabs.component';
 import ActivityButton from 'modules/activity/web/activityButton.component';
 import AuthContainer from 'modules/auth/web/auth.container';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import { colors, layout, sizing } from 'app/styles';
 import RequestInvite from 'modules/web_splash/requestInvite.component';
+import { showModal } from 'modules/navigation/navigation.actions';
 
 const Nav = styled.nav`
   position: fixed;
@@ -24,17 +30,18 @@ const Nav = styled.nav`
   left: ${layout.sideNavWidth};
 `;
 
-const NewPost = styled.button`
-  ${layout.button}
-`;
-
-const Login = styled.a`
-  ${layout.linkStyle}
-`;
 
 const SubNav = styled.div`
   display: flex;
   flex-direction: row;
+`;
+
+const GetStarted = styled(Header)`
+  cursor: pointer;
+  color: ${colors.grey};
+  &:hover {
+    color: ${colors.black}
+  }
 `;
 
 const ActivityButtonContainer = styled.span`
@@ -58,12 +65,11 @@ class ContentHeader extends Component {
 
     const signup = (
       <div className="signupCTA">
-        <Link to="/user/login">
-          <NewPost>Login</NewPost>
+        <Link to="/user/login" >
+          <Button mr={4}>Login</Button>
         </Link>
-        <span>{' '}</span>
         <Link to="/user/signup">
-          <NewPost>Sign Up</NewPost>
+          <Button>Sign Up</Button>
         </Link>
       </div>
     );
@@ -83,14 +89,22 @@ class ContentHeader extends Component {
   }
 
   render() {
-    const { location, auth, className } = this.props;
+    const { location, auth, className, actions } = this.props;
     const { user } = auth;
     const temp = user && user.role === 'temp';
     return (
-      <div style={{ display: 'flex', flex: 1, flexDirection: 'column' }}>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
         <Nav className={className}>
           <DiscoverTabs />
           <SubNav>
+            <GetStarted
+              onClick={() => actions.showModal('onboarding')}
+              align={'center'}
+              mr={2}
+              c={colors.grey}
+            >
+              Get Started
+            </GetStarted>
             <ActivityButtonContainer>
               <ActivityButton />
             </ActivityButtonContainer>
@@ -98,12 +112,12 @@ class ContentHeader extends Component {
               auth.isAuthenticated
                 ?
                 <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
-                  <NewPost >
+                  <Button>
                     New Post
-                  </NewPost>
+                  </Button>
                 </Link>
                 :
-                <Login onClick={this.toggleLogin} color={colors.blue}>Login</Login>
+                <Button onPress={this.toggleLogin} color={colors.blue}>Login</Button>
             }
 
           </SubNav>
@@ -137,4 +151,7 @@ function mapStateToProps(state) {
 
 export default withRouter(connect(
   mapStateToProps,
+  dispatch => ({
+    actions: bindActionCreators({ showModal }, dispatch)
+  })
 )(ContentHeader));

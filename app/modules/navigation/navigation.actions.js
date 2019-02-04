@@ -6,6 +6,8 @@ import {
   TOGGLE_TOPICS,
   SCROLL,
   SET_WEB_VIEW,
+  SHOW_MODAL,
+  HIDE_MODAL
 } from 'core/actionTypes';
 import { setButtonTooltip } from 'modules/tooltip/tooltip.actions';
 import { dispatchNavigatorAction } from 'app/utils/nav';
@@ -21,6 +23,20 @@ if (process.env.WEB !== 'true') {
   safariView = require('react-native-safari-view').default;
   NavigationActions = require('react-navigation').NavigationActions;
   StackActions = require('react-navigation').StackActions;
+}
+
+export function showModal(modal) {
+  return {
+    type: SHOW_MODAL,
+    payload: modal
+  };
+}
+
+export function hideModal(modal) {
+  return {
+    type: HIDE_MODAL,
+    payload: modal
+  };
 }
 
 export function scrolling(scroll) {

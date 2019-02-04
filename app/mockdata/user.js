@@ -1,5 +1,5 @@
 export const user1 = {
-  _id: 111,
+  _id: '111111111111111111111111',
   image: 'userImage1.jpg',
   handle: 'handle1',
   name: 'Name1',
@@ -8,7 +8,7 @@ export const user1 = {
 };
 
 export const user2 = {
-  _id: 222,
+  _id: '222222222222222222222222',
   image: 'userImage2.jpg',
   handle: 'handle2',
   name: 'Name2',

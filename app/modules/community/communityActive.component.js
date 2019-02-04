@@ -1,52 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import get from 'lodash.get';
-import styled from 'styled-components/primitives';
-import { colors, sizing, mixins, fonts, layout } from 'app/styles';
+import { colors } from 'app/styles';
 import ULink from 'modules/navigation/ULink.component';
 import UAvatar from 'modules/user/UAvatar.component';
-
-const IconLink = styled.Text`
-  ${fonts.link}
-  ${mixins.padding}
-`;
-
-const StyledHeader = styled.Text`
-  ${fonts.header}
-  ${mixins.margin}
-`;
-
-const NavSection = styled.View`
-  padding: 0 ${sizing(4)} ${sizing(4)};
-  ${layout.universalBorder('bottom')}
-`;
-
-const MemberContainer = styled.View`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-`;
-
-const View = styled.View`
-  ${mixins.margin}
-`;
-
-// TODO: match to style guide once we get it e.g. h2, h3
-const MemberCount = styled.Text`
-  font-weight: bold;
-  color: black;
-  margin-bottom: ${sizing(2)};
-`;
-
-const topicStyles = `
-  color: ${colors.grey};
-  &:hover {
-    color: ${colors.black};
-  }
-  &.active {
-    color: ${colors.black};
-  }
-`;
+import { View, LinkFont, Header } from 'modules/styled/uni';
 
 class CommunityActive extends Component {
   static propTypes = {
@@ -66,31 +24,38 @@ class CommunityActive extends Component {
     const totalMembers = get(community, 'memberCount', 0);
     const limitedMembers = members.slice(0, 12);
     return (
-      <View c={colors.white} >
-        <StyledHeader m={`${sizing(4)} ${sizing(4)} ${sizing(3)} ${sizing(4)}`}>Community</StyledHeader>
+      <View bg={colors.white} mr={'1px'} >
+        <Header m={'4 4 3 4'}>Community</Header>
         {children}
-        <NavSection>
-          <View m={`${sizing(1)} 0 ${sizing(4)} ${sizing(5.5)}`}>
+        <View bb p={'0 4 4 4'}>
+          <View m={'1 0 5 5.5'}>
             {topics.map(topic => (
-              <IconLink key={topic} p={`${sizing(0.75)} 0`}>
-                <ULink navLink to={`/${community.slug}/new/${topic}`} styles={topicStyles}>
+              <LinkFont key={topic} p={'0.75 0'}>
+                <ULink
+                  color={colors.grey}
+                  hc={colors.black}
+                  ac={colors.black}
+                  navLink
+                  to={`/${community.slug}/new/${topic}`}>
                   #{topic}
                 </ULink>
-              </IconLink>
+              </LinkFont>
             ))}
           </View>
-          <MemberCount>{`${totalMembers} Members`}</MemberCount>
-          <MemberContainer>
+          <LinkFont mb={2} c={colors.black}>
+            {`${totalMembers} Members`}
+          </LinkFont>
+          <View direction={'row'} wrap>
             {limitedMembers.map(member => (
               <UAvatar
                 key={member._id}
                 user={member.embeddedUser}
                 size={4}
-                m={`0 ${sizing(1)} ${sizing(1)} 0`}
+                m={'0 1 1 0'}
               />
             ))}
-          </MemberContainer>
-        </NavSection>
+          </View>
+        </View>
       </View>);
   }
 }

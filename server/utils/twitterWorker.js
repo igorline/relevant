@@ -110,7 +110,7 @@ async function createLinkObj(tweet) {
     domain: processed.domain,
     // TODO we are not using this
     shortText: processed.shortText,
-    keywords: processed.keywords
+    keywords: processed.keywords,
   };
   return { linkObject, processed };
 }
@@ -317,6 +317,7 @@ async function getUserFeed(user) {
   }
 }
 
+// eslint-disable-next-line
 async function cleanup() {
   const now = new Date();
   const cutoffDate = now.getTime() - 30 * 24 * 60 * 60 * 1000;

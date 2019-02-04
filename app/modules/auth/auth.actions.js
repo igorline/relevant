@@ -318,6 +318,24 @@ export function setOnboardingStep(step) {
     .catch(() => false);
 }
 
+
+export function webOnboard(step) {
+  return async () => {
+    try {
+      await utils.api.request({
+        method: 'PUT',
+        endpoint: 'user',
+        path: '/webonboard',
+        params: { step }
+      });
+      return true;
+    } catch (err) {
+      Alert.alert(err.message);
+      return false;
+    }
+  };
+}
+
 export function loginUser(user) {
   return async dispatch => {
     try {

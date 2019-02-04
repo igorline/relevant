@@ -169,7 +169,7 @@ class CreatePostContainer extends Component {
       body = body.replace(/&nbsp;/gi, '');
 
       let newPost = {
-        link: postUrl || postUrl,
+        url: postUrl || postUrl,
         tags,
         body,
         title: urlPreview ? urlPreview.title : null,

@@ -7,50 +7,16 @@ import * as postActions from 'modules/post/post.actions';
 import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import styled from 'styled-components/primitives';
-import { colors, sizing } from 'app/styles';
-import PostComment from 'modules/post/web/postComment.component';
+import { sizing } from 'app/styles';
+import SingleComment from 'modules/comment/web/singleComment.container';
 import PostButtons from 'modules/post/postbuttons.component';
 import PostInfo from 'modules/post/postinfo.component';
-
-const Wrapper = styled.View`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-  padding-bottom: ${sizing(4)};
-`;
-
-const PostContainer = styled.View`
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-`;
-
-const PostInfoContainer = styled.View`
-  display: flex;
-  position: relative;
-  flex-shrink: 1;
-  width: 100%;
-  padding-bottom: ${(p) => p.detailView ? '' : sizing(4)};
-  border-bottom-color: ${colors.lineColor};
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-`;
-
-const Text = styled.Text`
-`;
+import { routing } from 'app/utils';
+import { View, Text, Divider } from 'modules/styled/uni';
 
 const PostButtonContainer = styled.View`
   width: ${sizing(12)};
 `;
-
 
 export class Post extends Component {
   static propTypes = {
@@ -68,9 +34,10 @@ export class Post extends Component {
     history: PropTypes.object,
     usersState: PropTypes.object,
     sort: PropTypes.string,
-    detailView: PropTypes.bool,
+    noComments: PropTypes.bool,
     firstPost: PropTypes.object,
     comment: PropTypes.object,
+    children: PropTypes.object,
   };
 
   deletePost() {
@@ -106,48 +73,55 @@ export class Post extends Component {
   }
 
   render() {
-    const { post, auth, sort, detailView, link, firstPost, comment } = this.props;
+    const { post, auth, sort, noComments, link, firstPost } = this.props;
     const { community } = auth;
+    let { comment } = this.props;
+
+    const isLink = post.url ? true : false; // eslint-disable-line
+    comment = post.url ? comment : post;
 
     if (post === 'notFound') {
       return (
-        <Wrapper>
+        <View>
           <Text>Post not found</Text>
-        </Wrapper>
+        </View>
       );
     }
     if (!post) return null;
 
-    const postUrl = `/${community}/post/${post._id}`;
+    const postUrl = routing.getPostUrl(community, post);
 
+    const commentEl = !noComments && comment || !post.url ?
+      <SingleComment
+        comment={comment}
+        postUrl={postUrl}
+        parentPost={post._id}
+        hidePostButtons={isLink}
+        hideBorder={isLink}
+        // condensedView
+      /> : null;
+
+    if (!isLink) return commentEl;
 
     return (
-      <Wrapper detailView={detailView}>
-        <PostContainer>
-          <PostButtonContainer>
-            <PostButtons post={post} {...this.props} />
-          </PostButtonContainer>
-          <PostInfoContainer detailView={detailView}>
-            <PostInfo
-              post={post}
-              link={link}
-              community={community}
-              postUrl={postUrl}
-              sort={sort}
-              firstPost={firstPost}
-            >
-              {!detailView &&
-              <PostComment
-                comment={comment}
-                auth={this.props.auth}
-                community={community}
-                postUrl={postUrl}
-              />
-              }
-            </ PostInfo>
-          </PostInfoContainer>
-        </PostContainer>
-      </Wrapper>
+      <View direction={'row'} mt={4}>
+        <PostButtonContainer>
+          <PostButtons post={post} {...this.props} />
+        </PostButtonContainer>
+        <View flex={1}>
+          <PostInfo
+            post={post}
+            link={link}
+            community={community}
+            postUrl={postUrl}
+            sort={sort}
+            firstPost={firstPost}
+          >
+          </PostInfo>
+          {commentEl}
+          <Divider mt={4}/>
+        </View>
+      </View>
     );
   }
 }

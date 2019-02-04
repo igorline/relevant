@@ -16,9 +16,6 @@ const props = {
   },
 };
 
-console.log('AUTH AND community', auth, community);
-
-
 test('Snapshot NavProfile', () => {
   const tree = renderer.create(
     <MemoryRouter>

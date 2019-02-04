@@ -34,7 +34,16 @@ const PostDataSchema = new Schema(
     balance: { type: Number, default: 0 },
     totalShares: { type: Number, default: 0 }, // track positive and negative here
 
-    latestTweet: { type: Date }
+    latestTweet: { type: Date },
+
+    // NEW
+    isInFeed: { type: Boolean, default: false },
+    repost: { type: Boolean, default: false },
+    type: { type: String, default: 'post' },
+    parentPost: { type: Schema.Types.ObjectId, ref: 'Post' },
+    parentComment: { type: Schema.Types.ObjectId, ref: 'Post' },
+    hidden: { type: Boolean, default: false },
+    // parentPost: { type: Schema.Types.ObjectId, ref: 'Post' }
   },
   {
     timestamps: true
@@ -42,6 +51,13 @@ const PostDataSchema = new Schema(
 );
 
 PostDataSchema.index({ post: 1 });
+
+PostDataSchema.index({ post: 1, community: 1 });
+PostDataSchema.index({ latestComment: 1, community: 1 });
+PostDataSchema.index({ isInFeed: 1, community: 1, latestComment: 1 });
+PostDataSchema.index({ isInFeed: 1, community: 1, rank: 1 });
+
 PostDataSchema.index({ post: 1, communityId: 1 });
+PostDataSchema.index({ isInFeed: 1, communityId: 1, rank: 1 });
 
 module.exports = mongoose.model('PostData', PostDataSchema);

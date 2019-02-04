@@ -13,12 +13,20 @@ const repostSchema = new schema.Entity('posts', { idAttribute: '_id' });
 let metaPostSchema;
 const linkSchema = new schema.Entity('links', {}, { idAttribute: '_id' });
 
+const parentPostSchema = new schema.Entity(
+  'posts',
+  {},
+  { idAttribute: '_id' }
+);
+
+
 const postSchema = new schema.Entity(
   'posts',
   {
     user: userSchema,
     repost: { post: repostSchema },
-    metaPost: linkSchema
+    metaPost: linkSchema,
+    parentPost: parentPostSchema,
   },
   { idAttribute: '_id' }
 );

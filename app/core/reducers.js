@@ -14,15 +14,15 @@ import stats from 'modules/stats/stats.reducer';
 import tooltip from 'modules/tooltip/tooltip.reducer';
 import error from 'modules/ui/error.reducer';
 import earnings from 'modules/wallet/earnings.reducer';
+import navigation from 'modules/navigation/navigation.reducer';
 
 import socket from './socket.reducer';
 import view from './view.reducer';
 import subscriptions from './subscriptions.reducer';
 
-let navigation = () => ({});
 let drizzleReducers = {};
 if (process.env.WEB !== 'true') {
-  navigation = require('modules/navigation/navigation.reducer').default;
+  // might need this form for conditional require
 } else {
   // block these imports in package.json in react-native field
   const drizzle = require('drizzle');
@@ -65,7 +65,6 @@ const rootReducer = (state, action) => {
         community,
         socket,
         earnings,
-        // MOBILE
         navigation
       } = state;
 

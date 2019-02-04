@@ -14,27 +14,29 @@ const NumericalValue = styled.Text`
 const iconImage = require('app/public/img/r-emoji.png');
 
 export default function RStat(props) {
-  const { size, user, color, mr } = props;
+  const { size, user, color, mr, align } = props;
   const { relevance } = user;
   const pagerank = relevance ? relevance.pagerank || 0 : 0;
 
   const iconSize = size || 3;
+  const imageMargin = align === 'center' ? 0 : sizing(-size / 10);
 
   return (
-    <ImageWrapper mr={sizing(mr || 1.5)} props={props}>
+    <ImageWrapper align={align || 'center'} mr={sizing(mr || 1.5)} props={props}>
       <Image
-        h={sizing(iconSize)}
-        w={sizing(iconSize)}
-        c={color}
+        h={iconSize}
+        w={iconSize}
         source={iconImage}
-        mr={sizing(iconSize / 4)}
+        mr={iconSize / 4}
+        style={{ bottom: imageMargin }}
       />
-      <NumericalValue>{abbreviateNumber(pagerank) || 0}</NumericalValue>
+      <NumericalValue c={color}>{abbreviateNumber(pagerank) || 0}</NumericalValue>
     </ImageWrapper>
   );
 }
 
 RStat.propTypes = {
+  align: PropTypes.string,
   mr: PropTypes.number,
   color: PropTypes.string,
   user: userProps,

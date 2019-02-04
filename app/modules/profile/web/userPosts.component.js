@@ -2,13 +2,18 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import PostComponent from 'modules/post/web/post.component';
+import SingleComment from 'modules/comment/web/singleComment.container';
+import { View } from 'modules/styled/uni';
+import { routing } from 'app/utils';
+// import { ActivityIndicator } from 'react-native-web';
 
 class UserPosts extends Component {
   static propTypes = {
     pageSize: PropTypes.number,
     load: PropTypes.func,
     match: PropTypes.object,
-    posts: PropTypes.object
+    posts: PropTypes.object,
+    community: PropTypes.string
   };
 
   constructor(props) {
@@ -28,28 +33,42 @@ class UserPosts extends Component {
   }
 
   render() {
+    const { community } = this.props;
     const userId = this.props.match.params.id;
     const postIds = this.props.posts.userPosts[userId] || [];
 
     const posts = postIds.map(id => {
       const post = this.props.posts.posts[id];
-      const link = this.props.posts.links[post.metaPost];
       if (!post) return null;
+      const link = this.props.posts.links[post.metaPost];
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
       const postUser = {
         ...post.embeddedUser,
         _id: post.user
       };
-
+      let parentPost;
+      if (post.parentPost) {
+        parentPost = this.props.posts.posts[post.parentPost];
+      }
+      const postUrl = routing.getPostUrl(community, post);
       return (
-        <PostComponent
-          key={id}
-          post={post}
-          link={link}
-          repost={repost}
-          postUser={postUser}
-          {...this.props}
-        />
+        <View shrink={1} key={id} direction="column">
+          <PostComponent
+            post={parentPost || post}
+            link={link}
+            repost={repost}
+            postUser={postUser}
+            {...this.props}
+          >
+            <SingleComment
+              comment={post}
+              community={community}
+              postUrl={postUrl}
+              parentPostId={parentPost ? parentPost.id : null}
+              hidePostButtons
+            />
+          </PostComponent>
+        </View>
       );
     });
 
@@ -60,7 +79,7 @@ class UserPosts extends Component {
         loadMore={p => this.load(p, length)}
         hasMore={this.hasMore}
       >
-        <div className={'postContainer userPosts'}>{posts}</div>
+        <View direction="column" shrink={1} >{posts}</View>
       </InfScroll>
     );
   }

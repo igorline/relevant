@@ -1,41 +1,36 @@
 import React, { Component } from 'react';
+import {
+  View,
+  Divider,
+  LinkFont,
+  CommentText,
+  SecondaryText,
+  Touchable
+} from 'modules/styled/uni';
 import get from 'lodash.get';
 import PropTypes from 'prop-types';
 import AvatarBox from 'modules/user/avatarbox.component';
 import Popup from 'modules/ui/web/popup';
 import PostButtons from 'modules/post/postbuttons.component';
-// import { CommentText, SecondaryText } from 'modules/styled/uni';
 import CommentForm from 'modules/comment/web/commentForm.component';
-import { layout, colors, sizing, fonts, mixins } from 'app/styles';
+import { colors, sizing, mixins } from 'app/styles';
 import styled from 'styled-components/primitives';
+
+import ULink from 'modules/navigation/ULink.component';
 
 if (process.env.BROWSER === true) {
   require('./comment.css');
 }
 
-const CommentText = styled.Text`
-  ${fonts.commentText}
-  ${mixins.margin}
-`;
-
-const SecondaryText = styled.Text`
-  ${fonts.secondaryText}
-`;
-
-const Wrapper = styled.View`
-  display: flex;
-  position: relative;
-  flex-direction: column;
-`;
-
 const NESTING_UNIT = 8;
 
 const Spacer = styled.View`
+  ${mixins.margin}
+  ${mixins.padding}
   display: flex;
   flex-direction: row;
   position: relative;
   background-color: ${(p) => p.bgColor || 'transparent'}
-  padding: ${(p) => p.padding || 0};
   padding-left: ${(p) => {
     if (p.nesting !== undefined && p.nesting !== null) {
       return sizing((p.nesting) * NESTING_UNIT);
@@ -43,7 +38,6 @@ const Spacer = styled.View`
     return sizing(NESTING_UNIT);
   }}
   flex-grow: 1;
-  ${(p) => p.withBorder ? layout.universalBorder() : ''}
 `;
 
 const Container = styled.View`
@@ -51,8 +45,6 @@ const Container = styled.View`
   flex-direction: column;
   flex-grow: 1;
   flex-shrink: 1;
-  padding-bottom: ${sizing(4)};
-  ${(p) => p.isActive ? '' : layout.universalBorder('bottom')}
 `;
 
 const PostButtonsContainer = styled.View`
@@ -60,27 +52,13 @@ const PostButtonsContainer = styled.View`
   width: ${sizing(12)};
 `;
 
-const Actions = styled.View`
+const Actions = styled(View)`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
 `;
 
-const View = styled.View`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-`;
-
-const Text = styled.Text`
-  margin-right:  0.5em;
-  color: ${colors.blue};
-`;
-
-const Touchable = styled.Touchable`
-`;
 
 class Comment extends Component {
   static propTypes = {
@@ -94,6 +72,8 @@ class Comment extends Component {
     childComments: PropTypes.object,
     posts: PropTypes.object,
     nesting: PropTypes.number,
+    hidePostButtons: PropTypes.bool,
+    condensedView: PropTypes.bool,
   };
 
 
@@ -114,6 +94,7 @@ class Comment extends Component {
     this.setState({ editing: true });
   }
 
+  // TODO utils
   copyToClipboard = () => {
     const el = document.createElement('textarea');
     el.value = window.location;
@@ -131,7 +112,7 @@ class Comment extends Component {
     const {
       auth, comment, activeComment,
       setActiveComment, parentPost, childComments,
-      posts, nesting,
+      posts, nesting, hidePostButtons, postUrl, condensedView, hideBorder
     } = this.props;
     if (!comment) return null;
     const { editing, copied } = this.state;
@@ -151,11 +132,19 @@ class Comment extends Component {
       );
     }
 
-    const body = (
-      <CommentText m={`${sizing(3)} 0`}>
+    const bodyMargin = condensedView ? '-0.5 0 2 5' : '3 0';
+    let body = (
+      <CommentText m={bodyMargin}>
         {comment.body}
       </CommentText>
     );
+
+    if (postUrl) {
+      body = <ULink to={postUrl} >
+        {body}
+      </ULink>;
+    }
+
     const edit = (
       <CommentForm
         edit
@@ -171,36 +160,42 @@ class Comment extends Component {
     const commentChildren = get(childComments, comment.id) || [];
 
     return (
-      <Wrapper>
-        <Spacer nesting={nesting} padding={`${sizing(4)} ${sizing(4)} 0 0`}>
-          <PostButtonsContainer>
+      <View>
+        <Spacer nesting={nesting} m={'4 4 0 0'}>
+          { !hidePostButtons ? <PostButtonsContainer>
             <PostButtons post={comment} {...this.props} />
-          </PostButtonsContainer>
-          <Container nesting={nesting} isActive={isActive}>
-            <View>
+          </PostButtonsContainer> : null}
+          <Container nesting={nesting}>
+            <View direction={'row'} justify={'space-between'}>
               <AvatarBox
-                auth={this.props.auth}
                 user={{ ...user, _id: comment.user }}
                 postTime={comment.createdAt}
                 showRelevance
+                condensedView={condensedView}
               />
               {popup}
             </View>
             {editing ? edit : body}
-            <Actions>
+            <Actions ml={condensedView ? 5 : 0}>
               <Touchable onPress={() => { setActiveComment(comment.id); }}>
-                <Text>Reply</Text>
+                <LinkFont mr={3} c={colors.blue}>Reply</LinkFont>
               </Touchable>
               <Touchable onPress={this.copyToClipboard}>
-                <Text>Share</Text>
+                <LinkFont mr={3} c={colors.blue}>Share</LinkFont>
               </Touchable>
               {copied && (<SecondaryText> - Link copied to clipboard</SecondaryText>)}
             </Actions>
+            {!isActive && !hideBorder && <Divider pt={sizing(4)}/> }
           </Container>
         </Spacer>
 
         {isActive && (
-          <Spacer nesting={nesting + 1.5} bgColor={colors.secondaryBG} padding={sizing(4)} >
+          <Spacer
+            nesting={nesting + 1.5}
+            bgColor={colors.secondaryBG}
+            p={4}
+            mt={4}
+          >
             <CommentForm isReply text={'Reply'} {...this.props} post={comment} parentPost={parentPost} />
           </Spacer>
         ) }
@@ -212,7 +207,7 @@ class Comment extends Component {
             nesting={ nesting + 1}
           />
         ))}
-      </Wrapper>
+      </View>
     );
   }
 }

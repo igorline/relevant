@@ -5,24 +5,8 @@ import { browserAlerts } from 'app/utils/alert';
 import { colors, fonts, sizing } from 'app/styles';
 import styled from 'styled-components/primitives';
 import CoinStat from 'modules/stats/coinStat.component';
+import { Image, View, Touchable } from 'modules/styled/uni';
 
-const Wrapper = styled.View`
-  display: flex;
-`;
-
-const Container = styled.View`
-  align-items: center;
-`;
-
-const View = styled.View`
-  margin: 1em 0;
-  /* align-items: center; */
-  display: flex;
-  flex-direction: row;
-`;
-
-const Touchable = styled.Touchable`
-`;
 
 const Text = styled.Text`
   display: flex;
@@ -30,15 +14,6 @@ const Text = styled.Text`
   ${fonts.Helvetica}
   font-size: 14px;
   line-height: 14px;
-`;
-
-const Image = styled.Image`
-  width: 23px;
-  height: 20px;
-`;
-
-const SmallText = styled.Text`
-  font-size: ${sizing(1.25)}
 `;
 
 
@@ -157,37 +132,39 @@ class PostButtons extends Component {
     // payout = computePayout(post.data, community);
     // if (post.data && post.data.parentPost) payout = null;
 
+    // const pendingEl = pendingPayouts ?
+    //   <View style={{ display: 'flex', flexDirection: 'column' }}>
+    //     <SmallText>your reward:</SmallText>
+    //     <CoinStat mr={0} size={1.25} inheritfont amount={pendingPayouts} />
+    //   </View> : null
+
+
     return (
-      <Wrapper className={className}>
-        <Container>
+      <View className={className}>
+        <View align='center'>
           <Touchable onClick={e => this.vote(e, vote)} to="#">
             <Image
+              w={3}
+              h={2.8}
               alt="Upvote"
               source={{ uri: votedUp ? '/img/upvoteActive.png' : upvoteBtn }}
             />
           </Touchable>
-          <View>
+          <View m={'1 0'}>
             <Text>
-              {
-                post.data ? Math.round(post.data.relevance) : null
-              }
+              {post.data ? Math.round(post.data.relevance) : null}
             </Text>
           </View>
           <Touchable onClick={e => this.irrelevant(e, vote)} to="#">
             <Image
+              w={3}
+              h={2.8}
               alt="Downvote"
               source={{ uri: votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg' }}
             />
           </Touchable>
-          { pendingPayouts ?
-            <View style={{ display: 'flex', flexDirection: 'column' }}>
-              <SmallText>your reward:</SmallText>
-              <CoinStat mr={0} size={1.25} inheritfont amount={pendingPayouts} />
-            </View> :
-            null
-          }
-        </Container>
-      </Wrapper>
+        </View>
+      </View>
     );
   }
 }

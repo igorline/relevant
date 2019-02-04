@@ -8,11 +8,15 @@ export const linkStyle = `
   color: ${(props) => props.color || 'black'}
 `;
 
+export const modalShadow = {
+  boxShadow: '0 2px 6px hsl(0,0%,70%)'
+};
+
 export const headerHeight = sizing(16);
 export const mainHeaderHeight = sizing(12);
 export const sideNavWidth = sizing(40);
 
-
+// this is handled by mixins now — deprecated
 export const universalBorder = (side, color, width) => `
   border${side ? `-${side}` : ''}-color: ${color || colors.lineColor};
   border${side ? `-${side}` : ''}-width: ${width || '1px'};
@@ -26,11 +30,11 @@ export const textRow = {
 };
 
 export const button = {
+  cursor: 'pointer',
   background: colors.blue,
   color: 'white',
   display: 'flex',
   alignItems: 'center',
-  border: 'none',
   justifyContent: 'center',
   height: sizing(6),
   minWidth: sizing(18),

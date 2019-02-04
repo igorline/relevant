@@ -6,8 +6,10 @@ import * as UserActions from 'modules/user/user.actions';
 import * as PostActions from 'modules/post/post.actions';
 import { logoutAction } from 'modules/auth/auth.actions';
 import { authProps } from 'app/utils/propValidation';
-import Profile from './profile.component';
-import UserPosts from './userPosts.component';
+import Profile from 'modules/profile/profile.component';
+import UserPosts from 'modules/profile/web/userPosts.component';
+import { Divider } from 'modules/styled/uni';
+import { sizing } from 'app/styles';
 
 const pageSize = 10;
 
@@ -65,6 +67,7 @@ class ProfileContainer extends Component {
           {...this.props}
           {...this.state}
         />
+        <Divider m={sizing(4)} />
         <UserPosts
           key={this.state.user._id}
           {...this.props}
@@ -83,7 +86,8 @@ const mapStateToProps = state => ({
   usersState: state.user,
   posts: state.posts,
   investments: state.investments,
-  myPostInv: state.investments.myPostInv
+  myPostInv: state.investments.myPostInv,
+  community: state.community,
 });
 
 const mapDispatchToProps = dispatch =>

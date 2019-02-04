@@ -14,11 +14,12 @@ router.get('/general/list', auth.blocked(), controller.list);
 router.get('/testData', controller.testData);
 
 router.get('/check/user', controller.checkUser);
-router.get('/onboarding/:step', auth.isAuthenticated(), controller.onboarding);
 
 router.post('/', controller.create);
 router.post('/cashOut', auth.isAuthenticated(), controller.cashOut);
 
+router.get('/onboarding/:step', auth.isAuthenticated(), controller.onboarding);
+router.put('/webonboard/:step', auth.isAuthenticated(), controller.webOnboard);
 router.put(
   '/updateUserTokenBalance',
   auth.isAuthenticated(),

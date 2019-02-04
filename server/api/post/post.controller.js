@@ -59,7 +59,6 @@ exports.topPosts = async (req, res, next) => {
           match: {
             // TODO implement intra-community commentary
             community,
-
             // TODO - we should probably sort the non-community commentary
             // with some randomness on client side
             repost: { $exists: false },
@@ -254,6 +253,7 @@ exports.userPosts = async (req, res, next) => {
         }
       ]
     })
+    .populate({ path: 'parentPost' })
     .populate({ path: 'metaPost ' })
     .populate({
       path: 'embeddedUser.relevance',
@@ -407,6 +407,7 @@ exports.related = async req => {
 
 exports.update = async (req, res, next) => {
   try {
+    const { communityId } = req.communityMember;
     let tags = req.body.tags.filter(tag => tag);
 
     // DEPRECATED old mobile
@@ -420,6 +421,9 @@ exports.update = async (req, res, next) => {
     let linkObject;
 
     newPost = await Post.findOne({ _id: req.body._id });
+
+    if (communityId !== newPost.communityId) throw new Error('Community doesn\'t match');
+
     const prevMentions = [...newPost.mentions];
     const prevTags = [...newPost.mentions];
 
@@ -439,17 +443,15 @@ exports.update = async (req, res, next) => {
         articleAuthor: req.body.articleAuthor,
         shortText: req.body.shortText,
         categories: [category],
-        domain: req.body.domain
+        domain: req.body.domain,
+        tags
       };
-
-      // let oldParentId = newPost.parentPost;
-      const oldLinkParent = newPost.linkParent;
 
       // upsert new parent post
       newPost = await newPost.upsertLinkParent(linkObject);
 
-      // update old parent post & feeds
-      await Post.updateFeedStatus(oldLinkParent, newPost);
+      const oldLinkParent = await Post.findOne({ _id: newPost.linkParent });
+      await oldLinkParent.pruneFeed({ communityId });
     }
 
     await newPost.save();
@@ -587,6 +589,7 @@ async function processSubscriptions(newPost) {
  */
 exports.create = async (req, res, next) => {
   try {
+    const { user } = req;
     // TODO rate limiting?
     // current rate limiting is 5s via invest
     const hasChildComment = req.body.body && req.body.body.length;
@@ -638,10 +641,11 @@ exports.create = async (req, res, next) => {
       shortText: req.body.shortText,
       keywords,
       domain: req.body.domain,
-      categories: [category]
+      categories: [category],
+      tags
     };
 
-    const newPostObj = {
+    const postObject = {
       url: postUrl,
       title: req.body.title ? req.body.title : '',
       body: hasChildComment ? req.body.body : null,
@@ -650,7 +654,7 @@ exports.create = async (req, res, next) => {
       communityId,
       category,
       relevance: 0,
-      user: req.user._id,
+      user: user._id,
       mentions: req.body.mentions,
       postDate: now,
       payoutTime,
@@ -658,59 +662,63 @@ exports.create = async (req, res, next) => {
     };
 
     // TODO Work on better length limits
-    const postString = JSON.stringify(newPostObj);
+    const postString = JSON.stringify(postObject);
     if (postString.length > 100000) {
-      res.status(500).json('post is too long');
-      return;
+      return res.status(500).json('post is too long');
     }
 
-    let newPost = new Post(newPostObj);
+    const author = await User.findOne({ _id: user._id });
 
-    const author = await User.findOne({ _id: newPost.user });
-    newPost = await newPost.addUserInfo(author);
-
-    // Only save posts that have body!
-    if (hasChildComment) {
-      newPost = await newPost.addPostData();
-      newPost = await newPost.save();
-      await Invest.createVote({
-        post: newPost,
-        user: author,
-        amount: 1,
-        relevanceToAdd: 0,
-        community,
-        communityId
-      });
-    }
-
+    let linkParent;
     if (postUrl) {
-      newPost = await newPost.upsertLinkParent(linkObject);
-      await newPost.parentPost.insertIntoFeed(newPost.community);
-
-      await Invest.createVote({
-        post: newPost.parentPost,
-        user: author,
-        amount: 1,
-        relevanceToAdd: 0,
-        community,
-        communityId
-      });
-
-      if (hasChildComment) newPost.save();
-    } else if (newPost.body && newPost.body.length) {
-      // TODO - do we want to put this into the ranked feed? maybe not...
-      // await newPost.updateRank(newPost.community);
-      await newPost.insertIntoFeed(newPost.community);
+      linkParent = await Post.newLinkPost({ linkObject, postObject });
+      await linkParent.insertIntoFeed(communityId);
+      // await Invest.createVote({
+      //   post: linkParent,
+      //   user: author,
+      //   amount: 1,
+      //   relevanceToAdd: 0,
+      //   community,
+      //   communityId
+      // });
     }
+
+    if (!hasChildComment) return res.status(200).json(linkParent);
+
+    let newPost = new Post(postObject);
+    newPost = await newPost.addPostData();
+
+    if (linkParent) {
+      newPost.linkParent = linkParent;
+      newPost.parentPost = linkParent;
+      newPost.data.parentPost = linkParent;
+      newPost.metaPost = linkParent.metaPost;
+      newPost = await newPost.save();
+      await linkParent.save();
+    }
+
+    newPost = await newPost.addUserInfo(author);
+    newPost = await newPost.save();
+
+    // TODO should you invest in own comment?
+    await Invest.createVote({
+      post: newPost,
+      user: author,
+      amount: 1,
+      relevanceToAdd: 0,
+      community,
+      communityId
+    });
+
+    if (!postUrl) await newPost.insertIntoFeed(communityId);
 
     await author.updatePostCount();
-    res.status(200).json(newPost);
-    processSubscriptions(newPost);
+    res.status(200).json(linkParent || newPost);
 
-    // this happens async
-    Post.sendOutMentions(mentions, newPost, author);
+    processSubscriptions(newPost);
+    return Post.sendOutMentions(mentions, newPost, author);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 

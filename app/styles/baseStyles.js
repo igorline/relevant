@@ -13,7 +13,7 @@ export const GlobalStyle = createGlobalStyle`
     display: flex;
   }
   body {
-    font-size: ${sizing(1.5)};
+    font-size: ${sizing(1.75)};
     line-height: ${sizing(2)};
   }
 

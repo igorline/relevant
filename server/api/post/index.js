@@ -11,7 +11,8 @@ router.post(
   auth.hasRole('admin'),
   controller.sendPostNotification
 );
-router.put('/', auth.isAuthenticated(), controller.update);
+
+router.put('/', auth.isAuthenticated(), auth.communityMember(), controller.update);
 router.put('/flag', auth.isAuthenticated(), controller.flag);
 
 router.get('/', auth.authMiddleware(), controller.index);

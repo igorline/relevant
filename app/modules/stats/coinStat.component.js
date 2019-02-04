@@ -36,7 +36,12 @@ function CoinStat(props) {
 
   return (
     <ImageWrapper mr={sizing(mr || 1.5)}>
-      <Image source={coinImage} h={sizing(iconSize)} w={sizing(iconSize)} mr={sizing(iconSize / 4)} />
+      <Image
+        source={coinImage}
+        h={sizing(iconSize)}
+        w={sizing(iconSize)}
+        mr={sizing(iconSize / 4)}
+      />
       <NumericalValue inheritfont={inheritfont ? 1 : 0}>
         {abbreviateNumber(tokens) || 0}
       </NumericalValue>

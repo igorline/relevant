@@ -181,7 +181,7 @@ export default class SingleActivity extends Component {
     if (!post) return null;
     const link = posts.links[post.metaPost];
     const previewProps = { urlPreview: link || post, post };
-    const goTo = post.type === 'post' ? post : { _id: post.parentPost };
+    const goTo = !post.parentPost ? post : { _id: post.parentPost };
     return (
       <View style={{ marginLeft: 55, marginRight: mainPadding }}>
         <UrlPreview

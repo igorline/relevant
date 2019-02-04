@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-if (process.env.BROWSER === true) {
-  require('./avatarbox.css');
-}
-
 export default class Avatar extends Component {
   static propTypes = {
     user: PropTypes.object,

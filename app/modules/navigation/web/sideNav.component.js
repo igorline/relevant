@@ -1,12 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import NavProfile from 'modules/profile/navProfile.component';
-import Community from 'modules/community/communityNav.component';
+import NavProfileComponent from 'modules/profile/navProfile.component';
+import CommunityNav from 'modules/community/communityNav.component';
 import SideNavFooter from 'modules/navigation/web/sideNavFooter.component';
 import { colors, layout, sizing } from 'app/styles';
+import { Text } from 'modules/styled/web';
+import { showModal } from 'modules/navigation/navigation.actions';
 
 const SideNavContent = styled.div`
   background: ${colors.secondaryBG};
@@ -14,7 +17,6 @@ const SideNavContent = styled.div`
   max-width: ${layout.sideNavWidth};
   display: flex;
   flex-direction: column;
-  z-index: 10;
   ${layout.universalBorder('right')}
 `;
 
@@ -35,7 +37,7 @@ const LogoContainer = styled(SideNavSection)`
   display: flex;
   padding-left: ${sizing(4)};
   align-items: center;
-  z-index: 100;
+  z-index: 10;
   position: fixed;
   top: 0;
   left: 0;
@@ -53,21 +55,31 @@ const StyledImg = styled.img`
   height: ${sizing(4)};
 `;
 
+const GetStarted = styled(Text)`
+  cursor: pointer;
+  margin-top: ${sizing(1.8)};
+  margin-left: ${sizing(1)};
+`;
+
 const SideNav = (props) => {
-  const logoLink = props.isAuthenticated ? '/relevant/new' : '/';
+  const openHelpModal = props.actions.showModal;
+  const logoLink = '/relevant/new';
   return (
     <SideNavContent className={props.className}>
       <SideNavScroll>
         <LogoContainer>
           <StyledLink to={logoLink}>
             <StyledImg src={'/img/logo.svg'} alt={'Relevant'} />
+            <GetStarted onClick={() => openHelpModal('onboarding')}>
+              <img src={'/img/info.svg'}/>
+            </GetStarted>
           </StyledLink>
         </LogoContainer>
         <SideNavSection>
-          <NavProfile />
+          <NavProfileComponent />
         </SideNavSection>
         <SideNavSection>
-          <Community />
+          <CommunityNav />
         </SideNavSection>
         <SideNavFooter />
       </SideNavScroll>
@@ -78,7 +90,7 @@ const SideNav = (props) => {
 
 SideNav.propTypes = {
   className: PropTypes.string,
-  isAuthenticated: PropTypes.bool,
+  actions: PropTypes.object
 };
 
 const mapStateToProps = state => ({
@@ -88,4 +100,7 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
+  dispatch => ({
+    actions: bindActionCreators({ showModal }, dispatch)
+  })
 )(SideNav);

@@ -4,7 +4,6 @@ import User from '../user/user.model';
 import Notification from '../notification/notification.model';
 import Invest from '../invest/invest.model';
 
-/* eslint no-console: 0 */
 const mongoose = require('mongoose');
 
 const PostSchemaEvents = new EventEmitter();
@@ -57,7 +56,7 @@ const PostSchema = new Schema(
       }
     ],
 
-    aboutLink: { type: Schema.Types.ObjectId, ref: 'Post' },
+    // aboutLink: { type: Schema.Types.ObjectId, ref: 'Post' },
     linkParent: { type: Schema.Types.ObjectId, ref: 'Post' },
     // top-level comments have parent
     parentPost: { type: Schema.Types.ObjectId, ref: 'Post' },
@@ -130,36 +129,44 @@ PostSchema.virtual('data', {
   justOne: true
 });
 
+PostSchema.virtual('children', {
+  ref: 'Post',
+  localField: '_id',
+  foreignField: 'parentPost',
+  justOne: false
+});
+
 PostSchema.index({ twitter: 1 });
+PostSchema.index({ parentPost: 1, hidden: 1 });
 PostSchema.index({ twitter: 1, twitterId: 1 });
 
 PostSchema.index({ rank: 1 });
 PostSchema.index({ postDate: 1 });
 PostSchema.index({ _id: 1, user: 1 });
+PostSchema.index({ _id: 1, community: 1, user: 1 });
 PostSchema.index({ postDate: 1, tags: 1 });
 PostSchema.index({ rank: 1, tags: 1 });
 PostSchema.index({ paidOut: 1, payoutTime: 1 });
 
 PostSchema.pre('save', async function save(next) {
   try {
-    const countQuery = { parentPost: this._id, twitter: false };
-    // if (this.type === 'link') {
-    //   countQuery = { aboutLink: this._id };
-    // }
+    const countQuery = { parentPost: this._id, hidden: false };
     this.commentCount = await this.model('Post').count(countQuery);
+    return next();
   } catch (err) {
-    console.log(err);
+    console.log('error updating post count', err) // eslint-disable-line
     return next();
   }
-  return next();
 });
 
 PostSchema.methods.addPostData = async function addPostData(community) {
-  let eligibleForReward =
-    this.type === 'comment' || this.type === 'post' || this.type === 'repost';
-  eligibleForReward = !this.twitter && eligibleForReward;
+  const eligibleForReward = !this.parentPost && !this.twitter;
+
   const data = new (this.model('PostData'))({
     eligibleForReward,
+    hidden: this.hidden,
+    type: this.type,
+    parentPost: this.parentPost,
     postDate: this.postDate || this.createdAt,
     payoutTime: this.payoutTime,
     post: this._id,
@@ -168,8 +175,9 @@ PostSchema.methods.addPostData = async function addPostData(community) {
     relevance: this.relevance,
     rank: this.rank,
     relevanceNeg: this.relevanceNeg,
-    latestComment: this.latestComment || this.postDate
+    latestComment: this.latestComment || this.postDate,
   });
+
   await data.save();
   this.data = data;
   return this;
@@ -203,188 +211,173 @@ PostSchema.methods.addUserInfo = async function addUserInfo(user) {
   }
 };
 
+async function updateLatestComment({ post, communityId }) {
+  if (post.parentPost) return post;
+
+  const latestComment = await post.model('PostData')
+  .findOne({ parentPost: post._id, communityId, hidden: false, type: 'post' }, 'postDate')
+  .sort({ postDate: -1 });
+
+  if (!latestComment) return post;
+
+  post.data.latestComment = latestComment.postDate;
+  post.latestComment = latestComment.postDate;
+
+  return post;
+}
+
 // TODO work on this
-PostSchema.methods.updateRank = async function updateRank(community, updateTime) {
+PostSchema.methods.updateRank = async function updateRank({ communityId, updateTime }) {
   try {
-    if (!this.data) {
-      this.data = await this.model('PostData').find({ post: this._id, community });
+    let post = this;
+    if (!post.data) {
+      post.data = await post.model('PostData').findOne({ post: post._id, communityId });
     }
+    const { pagerank } = post.data;
 
-    let sign = 1;
-    if (this.data.pagerank < 0) sign = -1;
-    if (!this.data.pagerank) this.data.pagerank = 0;
-    let rank = Math.abs(this.data.pagerank);
+    if (updateTime && !post.parentPost) post = await updateLatestComment({ post, communityId });
 
-    // TODO refactor to use data table?
-    // alternately we duplicate comments
-    if (updateTime && this.type === 'link') {
-      const latestComment = await this.model('Post')
-      .findOne({ parentPost: this._id, community, hidden: false }, 'postDate')
-      .sort({ postDate: -1 });
-      if (latestComment) {
-        this.data.latestComment = latestComment.postDate;
-        this.latestComment = latestComment.postDate;
-      }
-    }
+    // Don't use latestComment to compute post rank!
+    if (!post.data.postDate) post = await post.addPostData();
+    const { postDate } = post.data;
 
-    const postDate = this.data.latestComment || this.data.postDate;
+    let rank = postDate.getTime() / TENTH_LIFE + Math.log10(pagerank + 1);
+    rank = Math.round(rank * 1000) / 1000;
 
-    const newRank = postDate.getTime() / TENTH_LIFE + sign * Math.log10(rank + 1);
-    rank = Math.round(newRank * 1000) / 1000;
-
-    // TODO refactor to use data table?
-    const topComment = await this.model('Post')
-    .findOne({ parentPost: this._id, community, hidden: false }, 'rank')
+    // But if a comment ranks highly - update post rank
+    const topComment = await post.model('PostData')
+    .findOne({ parentPost: post._id, communityId }, 'rank')
     .sort({ rank: -1 });
 
-    if (topComment) {
-      // TODO implement own rank (so we can undo ranking after deletion)
-      // own rank whould be own upvotes only
-      rank = Math.max(rank, topComment.rank);
+    if (topComment) rank = Math.max(rank, topComment.rank);
+
+    post.data.rank = rank;
+
+    // TODO - deprecate this once we don't use this in the feed
+    post.rank = rank;
+    if (post.communityId === communityId) {
+      post.pagerank = post.data.pagerank;
     }
 
-    this.data.rank = rank;
-    this.rank = rank;
-
-    // this will update date and rank
-    if (community && !this.parentPost) {
-      await this.model('CommunityFeed').updateRank(this, community);
-    }
-
-    if (this.community === community) {
-      this.pagerank = this.data.pagerank;
-    }
-    await this.data.save();
-    await this.save();
-    return this;
+    await post.data.save();
+    await post.save();
+    return post;
   } catch (err) {
     throw new Error(err);
   }
 };
 
-PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject) {
+PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postObject }) {
   try {
-    if (!linkObject.url) return console.log('missing url ', linkObject);
-    const { tags, postDate, payoutTime } = this;
-    const parentObj = {
-      url: linkObject.url,
-      // top level comments only
-      tags,
-      postDate,
-      latestComment: postDate,
-      payoutTime,
-      type: 'link'
-    };
+    const { tags, postDate, payoutTime, hidden, url, communityId, community } = postObject;
 
-    let parent = await this.model('Post')
-    .findOne({ url: linkObject.url, type: 'link' })
-    .populate({ path: 'data', match: { community: this.community } });
+    let post = await this.model('Post')
+    .findOne({ url, type: 'link' })
+    .populate({ path: 'data', match: { communityId } });
 
-    // -------- BRAND NEW LINK --------
-    if (!parent) {
-      parent = await new (this.model('Post'))(parentObj);
-      // let data = new (this.model('PostData'))(postData);
+    if (!post) {
+      const parentObj = {
+        url,
+        tags,
+        postDate,
+        payoutTime,
+        hidden,
+        type: 'link',
+        latestComment: postDate,
+      };
+      post = await new (this.model('Post'))(parentObj);
     }
 
-    if (!parent.data) {
-      parent = await parent.addPostData({
-        slug: this.community,
-        _id: this.communityId
+    if (!post.data) {
+      post = await post.addPostData({
+        slug: community, _id: communityId
       });
     }
 
     // TODO figure out what to do with payoutTime should old post reset?
     // for now we don't update payout time
-    if (!this.hidden && parent.latestComment < postDate) {
-      parent.latestComment = postDate;
-      parent.data.latestComment = postDate;
-      // Could potentially update feed date here
+    if (!hidden && post.latestComment < postDate) {
+      post.latestComment = postDate;
+      post.data.latestComment = postDate;
     }
 
-    // DON'T UPDATE RANK FOR TWITTER
-    if (!this.hidden) {
-      await parent.updateRank(this.community);
-    }
+    if (!hidden) await post.updateRank({ communityId });
 
-    // write link metadata
-    parent = await parent.upsertMetaPost(this.metaPost, linkObject);
+    post = await post.upsertMetaPost(post.metaPost, linkObject);
+    post.data = await post.data.save();
+    post = await post.save();
 
-    parent.data = await parent.data.save();
-    parent = await parent.save();
-
-    this.linkParent = parent;
-    this.parentPost = parent;
-    this.aboutLink = parent;
-
-    this.metaPost = parent.metaPost;
-    return this;
+    return post;
   } catch (err) {
     throw new Error(err);
   }
 };
 
-PostSchema.methods.insertIntoFeed = async function insertIntoFeed(community) {
+
+PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject) {
   try {
-    let post = this;
-    if (post.type === 'comment') return;
-    if (post.parentPost) {
-      if (post.parentPost._id) {
-        post = post.parentPost;
-      } else {
-        post = await this.model('Post')
-        .findOne({ _id: post.parentPost })
-        .populate({
-          path: 'data',
-          match: { community }
-        });
-      }
-    }
-    if (!post.data) {
-      post.data = await this.model('PostData').findOne({ post: post._id, community });
-    }
+    const post = this;
 
-    this.model('CommunityFeed').addToFeed(post, community);
+    const parent = await this.model('Post').newLinkPost({ postObject: post, linkObject });
+    parent.commentCount++;
 
-    const newPostEvent = {
-      type: 'SET_NEW_POSTS_STATUS',
-      payload: { community }
-    };
-    this.model('Post').events.emit('postEvent', newPostEvent);
+    post.linkParent = parent;
+    post.parentPost = parent;
+    if (post.data) post.data.parentPost = parent;
+    post.metaPost = parent.metaPost;
+
+    return post;
   } catch (err) {
-    console.log(err);
+    throw new Error(err);
   }
 };
 
-PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkObject) {
-  let meta;
+PostSchema.methods.insertIntoFeed = async function insertIntoFeed(communityId) {
   try {
-    if (metaId) meta = await MetaPost.findOne({ _id: metaId });
+    const post = this;
+    if (post.parentPost) throw new Error('Child comments don\'t go in the feed');
+
+    await this.model('PostData').findOneAndUpdate(
+      { post: post._id, communityId },
+      { isInFeed: true }
+    );
+
+    const newPostEvent = {
+      type: 'SET_NEW_POSTS_STATUS',
+      payload: { communityId }
+    };
+    this.model('Post').events.emit('postEvent', newPostEvent);
+    return post;
+  } catch (err) {
+    return console.log('insertIntoFeed error', err); // eslint-disable-line
+  }
+};
+
+
+PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkObject) {
+  try {
+    let meta;
+    if (metaId) {
+      const _id = metaId.id || metaId;
+      if (typeof _id === 'string') meta = await MetaPost.findOne({ _id });
+    }
     const url = linkObject.url || this.url || this.link;
     if (url && !meta) meta = await MetaPost.findOne({ url });
 
-    if (meta) {
-      meta.set(linkObject);
-      meta = await meta.save();
-    } else {
-      meta = {
-        ...linkObject,
-        tags: this.tags
-      };
-      meta = new MetaPost(meta);
-    }
-
+    if (!meta) meta = new MetaPost();
+    meta.set(linkObject);
     meta = await meta.save();
-    this.metaPost = meta._id;
-    return this;
+
+    this.metaPost = meta;
+    return this.save();
   } catch (err) {
-    return console.log('error creating / updating link ', err);
+    return console.log('upsertMetaPost error', err); // eslint-disable-line
   }
 };
 
 PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds, userId) {
   try {
     const investments = await Invest.find({ investor: userId, post: { $in: postIds } });
-
     const updatePosts = {
       _id: userId,
       type: 'UPDATE_POST_INVESTMENTS',
@@ -392,7 +385,7 @@ PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds,
     };
     this.events.emit('postEvent', updatePosts);
   } catch (err) {
-    console.log(err);
+    console.log('sendOutInvestInfo error', err); // eslint-disable-line
   }
 };
 
@@ -416,11 +409,11 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
         const blocked =
           mUser.blockedBy.find(u => u === mention) ||
           mUser.blocked.find(u => u === mention);
-        if (blocked) {
-          textParent.mentions = textParent.mentions.filter(m => m !== blocked);
-        }
+
+        if (blocked) textParent.mentions = textParent.mentions.filter(m => m !== blocked);
 
         let query = { handle: mention };
+
         let group;
         if (mention === 'everyone') {
           if (mUser.role !== 'admin') return null;
@@ -429,6 +422,7 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
         }
 
         const users = await User.find(query, 'deviceTokens');
+
         users.forEach(user => {
           let alert = (mUser.name || mUser) + ' mentioned you in a ' + type;
           if (mention === 'everyone' && post.body) alert = post.body;
@@ -468,112 +462,154 @@ PostSchema.statics.sendOutMentions = async function sendOutMentions(
     textParent.updateClient();
     return textParent;
   } catch (err) {
-    return console.log('error updating post after sending mentions ', err);
+    return console.log('sendOutMentions error', err); // eslint-disable-line
   }
 };
 
-// Update parent feed status (only for link posts)
-PostSchema.statics.updateFeedStatus = async function updateFeedStatus(parent, post) {
+// pruneFeed (only for link posts)
+PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
   try {
-    const parentId = parent._id || parent;
-    if (!post) throw new Error('missing post');
-    const { community, hidden } = post;
-    if (!community) throw new Error('missing community');
+    const post = this;
+
+    post.data = await this.model('PostData').findOne({ post: post._id, communityId });
+    const { shares } = post.data;
+
+    if (post.type !== 'link') throw new Error('Should not prune anything but links');
+    if (!communityId) throw new Error('missing community');
 
     // Thread has no children - remove everything
-    const count = await this.model('Post').findOne({ linkPost: parentId });
-    if (!count) {
-      console.log('parentId', parentId, post.toObject());
-      console.warn('REMOVING POST FROM ALL FEEDS! ', community);
-      await this.model('CommunityFeed').removeFromAllFeeds(parentId);
-      await this.model('MetaPost').remove({ _id: post.metaPost });
-      // remove empty link post
-      await this.model('Post').remove({ _id: parentId });
-      return;
+    const children = await this.model('Post').count({ parentPost: post._id });
+
+    // there is no way to remove post link
+    // maybe we shouldn't 'invest in links automatically'?
+    if (!children && !shares) {
+      await post.remove();
+      return null;
     }
 
-    const communityCount = await this.model('Post').count({
-      linkPost: parentId,
-      community
+    const communityChildren = await this.model('Post').count({
+      communityId,
+      parentPost: post._id,
     });
 
-    if (!communityCount && community) {
-      console.log('REMOVING POST FROM COMMUNITY FEED! ', community, parentId);
-      await this.model('CommunityFeed').removeFromCommunityFeed(parentId, community);
-    } else if (!hidden) {
-      const linkParent = await this.model('Post')
-      .findOne({ _id: parentId })
-      .populate({ path: 'data', match: { community } });
+    if (communityChildren || shares) return post;
 
-      // TODO can maybe make this more efficient?
-      let updateTime;
-      if (new Date(post.postDate).getTime() === linkParent.data.latestComment) {
-        updateTime = true;
-      }
-      await linkParent.updateRank(community, updateTime);
-    }
+    await this.model('PostData').findOneAndUpdate(
+      { post: post._id, communityId },
+      { isInFeed: false }
+    );
+    return post;
   } catch (err) {
     throw err;
   }
 };
 
-PostSchema.post('remove', async function postRemove(doc) {
+async function updateParentPostOnRemovingChild(post) {
+  const { communityId } = post;
+  if (!communityId) {
+    throw new Error('error missing post community id!', post.toObject());
+  }
+  let parent = await post.model('Post').findOne({ _id: post.linkParent });
+  parent = await parent.pruneFeed({ communityId });
+
+  if (!parent) return null;
+
+  parent.data = await post.model('PostData').findOne({ post: parent._id, communityId });
+
+  if (!post.data) {
+    post.data = await post.model('PostData').findOne({ post: post._id, communityId });
+  }
+
+  if (!post.data || !parent.data) throw new Error('missing post data');
+
+  // TODO maybe always update the time?
+  const shouldUpdateTime = post.postDate === parent.data.latestComment;
+  const shouldUpdateRank = post.data.rank >= parent.data.rank;
+
+  if (shouldUpdateRank || shouldUpdateTime) {
+    parent = await parent.updateRank({ communityId, shouldUpdateTime });
+  }
+  return parent;
+}
+
+// TODO we should replace post with a dummy post if post has
+// comments or replies so we can preserver
+PostSchema.post('remove', async function postRemove(post) {
   try {
-    // console.log('link parent', doc.linkParent);
-    if (doc.linkParent) {
-      await this.model('Post').updateFeedStatus(doc.linkParent, this);
+    if (post.linkParent && post.type !== 'comment') {
+      await updateParentPostOnRemovingChild(post);
     }
 
-    await this.model('CommunityFeed').removeFromAllFeeds(doc);
+    // await this.model('CommunityFeed').removeFromAllFeeds(doc);
+    const note = this.model('Notification').remove({ post: post._id });
+    const feed = this.model('Feed').remove({ post: post._id });
+    const twitterFeed = this.model('TwitterFeed').remove({ post: post._id });
+    const data = this.model('PostData').remove({ post: post._id });
 
-    const note = this.model('Notification')
-    .remove({ post: this._id });
-    const feed = await this.model('Feed')
-    .remove({ post: this._id });
-    const twitterFeed = await this.model('TwitterFeed')
-    .remove({ post: this._id });
-
-    // TODO we should replace post with a dummy post on delete
-    // should we remove post comment also!?!
-    // probably not...
-    // let comment = this.model('Post').remove({ post: this._id });
-
-    await this.model('PostData')
-    .remove({ post: doc._id })
-    .exec();
-
-    // should invest info be removed?
-    // probably not - a chance to erase rep...
-    // await this.model('Invest').remove({ post: doc._id });
+    let metaPost;
+    let commentNote;
+    if (post.type === 'link' && !post.postParent) {
+      metaPost = await this.model('MetaPost').remove({ post: post._id });
+    }
 
     // remove notifications
-    if (this.type === 'comment' || this.type === 'repost') {
-      await this.model('Notification').remove({ comment: this._id });
+    if (post.type === 'comment' || post.type === 'repost') {
+      commentNote = this.model('Notification').remove({ comment: post._id });
     }
 
-    // TODO better tag management and per community
-    if (!this.twitter) {
-      this.tags.forEach(tag => {
-        this.model('Tag').findOne({ _id: tag }, (err, foundTag) => {
-          if (!foundTag) return;
-          if (foundTag.count > 1) {
-            foundTag.count--;
-            foundTag.save(error => {
-              if (error) console.log('saving tag error');
-            });
-          } else {
-            foundTag.remove();
-          }
-        });
-      });
-    }
-
-    // this makes it faster (don't need all awaits)?
-    const promises = [note, feed, twitterFeed];
-    await Promise.all(promises);
+    await Promise.all([note, feed, twitterFeed, data, metaPost, commentNote]);
   } catch (err) {
-    console.log(err);
+    throw err;
   }
 });
 
 module.exports = mongoose.model('Post', PostSchema);
+
+
+// Update parent feed status (only for link posts)
+// PostSchema.statics.updateFeedStatus = async function updateFeedStatus(parent, post) {
+//   try {
+//     const parentId = parent._id || parent;
+//     if (!post) throw new Error('missing post');
+
+//     const { community, hidden } = post;
+//     if (!community) throw new Error('missing community');
+
+//     // Thread has no children - remove everything
+//     const count = await this.model('Post').count({ parentPost: parentId });
+
+//     if (!count) {
+//       console.log('parentId', parentId, post.toObject());
+//       console.warn('REMOVING POST FROM ALL FEEDS! ', community);
+//       // await this.model('CommunityFeed').removeFromAllFeeds(parentId);
+
+//       await this.model('Post').remove({ _id: parentId });
+//       await this.model('MetaPost').remove({ _id: post.metaPost });
+//       return;
+//     }
+
+//     const communityCount = await this.model('Post').count({
+//       parentPost: parentId,
+//       community
+//     });
+
+//     if (!communityCount && community) {
+//       console.log('REMOVING POST FROM COMMUNITY FEED! ', community, parentId);
+//       // await this.model('CommunityFeed').removeFromCommunityFeed(parentId, community);
+//     } else if (!hidden) {
+//       const linkParent = await this.model('Post')
+//       .findOne({ _id: parentId })
+//       .populate({ path: 'data', match: { community } });
+
+//       // TODO can maybe make this more efficient?
+//       let updateTime;
+//       if (new Date(post.postDate).getTime() === linkParent.data.latestComment) {
+//         updateTime = true;
+//       }
+//       await linkParent.updateRank(community, updateTime);
+//     }
+//   } catch (err) {
+//     throw err;
+//   }
+// };
+//

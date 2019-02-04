@@ -1,8 +1,8 @@
 import { user1 } from 'app/mockdata/user';
 
 export const post1 = {
-  _id: 1111,
-  user: 111,
+  _id: '1',
+  user: '1',
   title: 'postTitle',
   embeddedUser: user1,
   tags: ['tag11', 'tag12'],
@@ -14,8 +14,8 @@ export const post1 = {
 };
 
 export const post2 = {
-  _id: 2222,
-  user: 2222,
+  _id: '2',
+  user: '2',
   title: 'postTitle2',
   embeddedUser: user1,
   tags: ['tag21', 'tag22'],
@@ -27,6 +27,16 @@ export const post2 = {
   type: 'comment',
 };
 
+export const createPost = {
+  url: 'https://example.com/testPost1',
+  image: 'link_img1.jpg',
+  tags: ['tag11', 'tag12'],
+  body: 'awesome post #1!',
+  title: 'postTitle',
+  description: 'my amazing post',
+  mentions: ['test', 'user1'],
+  domain: 'example.com'
+};
 
 export const postsState = {
   posts: { 234: post1 }

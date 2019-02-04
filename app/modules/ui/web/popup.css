@@ -2,13 +2,12 @@
 
 .popup {
   position: relative;
-  padding: 10px 15px;
   user-select: none;
 }
 .popupOptions {
   min-width: 140px;
   top: 25px;
-  right: 0;
+  right: 5px;
   @extend %popupMenu;
   a {
     display: block;
@@ -20,4 +19,3 @@
   color: $greyText;
   pointer-events: none;
 }
-
