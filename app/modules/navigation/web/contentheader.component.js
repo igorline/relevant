@@ -117,7 +117,7 @@ class ContentHeader extends Component {
                   </Button>
                 </Link>
                 :
-                <Button onPress={this.toggleLogin} color={colors.blue}>Login</Button>
+                <Button onClick={this.toggleLogin} color={colors.blue}>Login</Button>
             }
 
           </SubNav>
