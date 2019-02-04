@@ -147,7 +147,7 @@ async function investCheck(params) {
     }
   }
   if (user._id.equals(post.user)) {
-    throw new Error('You can not ' + type + ' your own post');
+    throw new Error('You can not ' + type + ' your own comment');
   }
 
   const investment = await Invest.findOne({
@@ -235,7 +235,7 @@ async function updateAuthor(params) {
       type
     });
 
-    let alert = user.name + ' thinks your post is relevant';
+    let alert = user.name + ' thinks your comment is relevant';
     const payload = { 'Relevance from': user.name };
     try {
       // TEST - don't send notification after upvote
