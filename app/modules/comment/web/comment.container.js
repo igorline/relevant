@@ -7,6 +7,7 @@ import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import styled from 'styled-components/primitives';
 import { sizing, colors } from 'app/styles';
+import get from 'lodash/get';
 import CommentForm from './commentForm.component';
 import Comment from './comment.component';
 
@@ -27,10 +28,9 @@ class Comments extends Component {
     comments: PropTypes.object,
     posts: PropTypes.object,
     auth: PropTypes.object,
-    location: PropTypes.object,
+    post: PropTypes.object,
     myPostInv: PropTypes.object,
     user: PropTypes.object,
-
   };
 
   state = {
@@ -52,35 +52,41 @@ class Comments extends Component {
   }
 
   render() {
-    const { params } = this.props.match;
-    const comments = this.props.comments.childComments[params.id];
-    if (!comments) return null;
-    const parentPost = params.id;
+    const { comments, posts, post, auth, actions, myPostInv, user } = this.props;
+    const children = comments.childComments[post._id] || [];
+    const parentPost = post._id;
+    const parentPostType = get(posts.posts, `${post._id}.type`);
     return (
       <div>
         <FormContainer>
-          <CommentForm text={'Reply'} {...this.props} parentPost={parentPost} />
+          <CommentForm
+            text={'Reply'}
+            {...this.props}
+            parentPost={parentPost}
+            parentPostType={parentPostType}
+          />
         </FormContainer>
-        {comments.length !== 0 ? (
+        {children.length !== 0 ? (
           <div>
-            {comments.map(id => {
-              const comment = this.props.posts.posts[id];
+            {children.map(id => {
+              const comment = posts.posts[id];
               if (!comment) return null;
               return (
                 <Comment
                   key={id}
-                  auth={this.props.auth}
+                  auth={auth}
                   comment={comment}
-                  actions={this.props.actions}
-                  location={this.props.location}
-                  myPostInv={this.props.myPostInv}
-                  user={this.props.user}
+                  actions={actions}
+                  myPostInv={myPostInv}
+                  user={user}
                   activeComment={this.state.activeComment}
                   setActiveComment={this.setActiveComment}
                   parentPost={parentPost}
-                  childComments={this.props.comments.childComments}
-                  posts={this.props.posts}
+                  childComments={comments.childComments}
+                  posts={posts}
+                  post={post}
                   nesting={0}
+                  parentPostType={parentPostType}
                 />
               );
             })}

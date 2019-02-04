@@ -15,6 +15,7 @@ class CommentForm extends Component {
     text: PropTypes.string,
     isReply: PropTypes.bool,
     parentPost: PropTypes.string,
+    parentPostType: PropTypes.string,
   };
 
   constructor(props, context) {
@@ -54,6 +55,7 @@ class CommentForm extends Component {
   }
 
   async createComment() {
+    const { isReply, post, parentPost, parentPostType } = this.props;
     if (!this.props.auth.isAuthenticated) {
       return alert.browserAlerts.alert('Please log in to post comments');
     }
@@ -63,16 +65,14 @@ class CommentForm extends Component {
 
     const comment = this.state.comment.trim();
     const commentObj = {
-      parentPost: this.props.parentPost,
+      parentPost,
+      parentComment: isReply ? post.id : null,
+      linkParent: parentPostType === 'link' ? parentPost : null,
       text: comment,
       tags: this.commentTags,
       mentions: this.commentMentions,
-      user: this.props.auth.user._id
+      user: this.props.auth.user._id,
     };
-    if (this.props.isReply) {
-      commentObj.parentComment = this.props.post.id;
-    }
-
     this.setState({ comment: '', inputHeight: 50 });
 
     return this.props.actions

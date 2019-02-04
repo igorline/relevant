@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image } from 'react-primitives';
+import { Image, Touchable } from 'react-primitives';
 import PropTypes from 'prop-types';
 import { colors, sizing, layout, fonts } from 'app/styles';
 import RStat from 'modules/stats/rStat.component';
@@ -7,43 +7,10 @@ import ULink from 'modules/navigation/ULink.component';
 import Avatar from 'modules/user/UAvatar.component';
 import { getTimestamp } from 'app/utils/numbers';
 import styled from 'styled-components/primitives';
+import { Text, View, SecondaryText } from 'modules/styled/uni';
 
-
-export const Name = styled.Text`
-  font-size: ${sizing(2)};
-  line-height: ${sizing(2)};
-  color: ${colors.black};
-  ${fonts.HelveticaNeueCondensedBold}
-  margin-right: ${sizing(1)};
-`;
-
-export const HandleText = styled.Text`
-  font-size: ${sizing(1.25)};
-  line-height: ${sizing(1.25)};
-  color: ${colors.secondaryText};
-`;
-
-export const Wrapper = styled.Touchable`
-`;
-
-export const AvatarContainer = styled.View`
-  display: flex;
-  flex: 1;
-  flexDirection: row;
-  align-items: center;
-  justify-content: flex-start;
-`;
-
-export const TextContainer = styled.View`
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  margin: 0 0 0 ${sizing(1)};
-`;
-
-const TextRow = styled.View`
-  ${layout.textRow}
-  margin-bottom: 2px;
+const Name = styled(Text)`
+  font-weight: bold'
 `;
 
 export default function UserName(props) {
@@ -55,6 +22,7 @@ export default function UserName(props) {
     size,
     postTime,
     repost,
+    condensedView
     // twitter
   } = props;
 
@@ -68,9 +36,9 @@ export default function UserName(props) {
     timestamp = getTimestamp(postTime);
   }
 
-  const handleEl = handle && <HandleText>
-    {handle} {timestamp}
-  </HandleText>;
+  const handleEl = handle && <SecondaryText >
+    <SecondaryText>{handle}</SecondaryText> {timestamp}
+  </SecondaryText>;
 
 
   const repostIcon = repost && (
@@ -95,29 +63,33 @@ export default function UserName(props) {
 
   return (
     <ULink to={`/user/profile/${user.handle}`}>
-      <Wrapper
+      <Touchable
         onPress={() => setSelected(user)}
       >
-        <AvatarContainer>
+        <View flex={1} direction={'row'}>
           <Avatar size={size} user={user} noLink />
           {repostIcon}
-          <TextContainer>
-            <TextRow>
-              <Name>
+          <View ml={1} justify={condensedView ? 'flex-start' : 'center'}>
+            <View direction={'row'} align={'baseline'}>
+              <Name mr={0.75} c={colors.black}>
                 {user.name}{twitterIcon && ' ' + twitterIcon}
               </Name>
-              {user.relevance && showRelevance && <RStat size={1.75} user={user} />}
-            </TextRow>
-            {handleEl}
-          </TextContainer>
-        </AvatarContainer>
-      </Wrapper>
+              {user.relevance &&
+                showRelevance &&
+                <RStat align='baseline' mr={0.75} size={1.75} user={user} />}
+              {condensedView && handleEl}
+            </View>
+            {!condensedView && handleEl}
+          </View>
+        </View>
+      </Touchable>
     </ULink>
   );
 }
 
 UserName.propTypes = {
   // twitter: PropTypes.bool,
+  condensedView: PropTypes.bool,
   type: PropTypes.string,
   user: PropTypes.object,
   size: PropTypes.number,

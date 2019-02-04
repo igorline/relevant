@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
-import { colors } from 'app/styles';
+import { colors, mixins } from 'app/styles';
 
 let styled;
 let StyledLink;
@@ -16,25 +16,31 @@ if (process.env.WEB !== 'true') {
   styled = require('styled-components/primitives').default;
   StyledLink = styled.Touchable`
     ${(p) => p.styles}
+    ${mixins.link}
   `;
   DisabledLink = styled.Text`
     color: ${colors.secondaryText};
     ${(p) => p.styles}
+    ${mixins.link}
   `;
 } else {
   styled = require('styled-components').default;
   StyledLink = styled(Link)`
     ${(p) => p.styles}
+    ${mixins.link}
   `;
   StyledNavLink = styled(NavLink)`
     ${(p) => p.styles}
+    ${mixins.link}
   `;
   StyledA = styled.a`
     ${(p) => p.styles}
+    ${mixins.link}
   `;
   DisabledLink = styled.span`
     color: ${colors.secondaryText};
     ${(p) => p.styles}
+    ${mixins.link}
   `;
 }
 
@@ -50,30 +56,31 @@ const ULink = (props) => {
     external,
     target,
     disabled,
+    ...rest
   } = props;
   if (disabled) {
-    return <DisabledLink>{children}</DisabledLink>;
+    return <DisabledLink {...rest}>{children}</DisabledLink>;
   }
   if (environment === 'web') {
     if (navLink) {
       return (
-        <StyledNavLink onClick={onClick} to={to} styles={styles || ''}>
+        <StyledNavLink {...rest} onClick={onClick} to={to} styles={styles || ''}>
           {children}
         </StyledNavLink>
       );
     }
     if (external) {
-      return <StyledA onClick={onClick} href={to} target={target} styles={styles || ''}>{children}</StyledA>;
+      return <StyledA {...rest} onClick={onClick} href={to} target={target} styles={styles || ''}>{children}</StyledA>;
     }
 
     return (
-      <StyledLink onClick={onClick} to={to} target={target} styles={styles || ''}>
+      <StyledLink {...rest} onClick={onClick} to={to} target={target} styles={styles || ''}>
         {children}
       </StyledLink>);
   }
 
   return (
-    <StyledLink onPress={onPress} styles={styles || ''}>
+    <StyledLink {...rest} onPress={onPress} styles={styles || ''}>
       {children}
     </StyledLink>
   );

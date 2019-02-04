@@ -22,7 +22,6 @@ const DiscoverTab = (props) => {
   if (tag) {
     url += `/${tag}`;
   }
-
   return <StyledNavLink to={url}>{linkData.title}</StyledNavLink>;
 };
 
@@ -32,7 +31,6 @@ DiscoverTab.propTypes = {
   tag: PropTypes.string,
 };
 
-
 const StyledUl = styled.ul`
   margin: 0;
   padding: 0;
@@ -41,7 +39,13 @@ const StyledUl = styled.ul`
 const DiscoverTabs = ({ view, community }) => (
   <StyledUl>
     {standardRoutes.map((linkData, i) => (
-      <DiscoverTab key={i} tag={get(view, 'discover.tag')} community={community} tabStyles={tabStyles} linkData={linkData} />
+      <DiscoverTab
+        key={i}
+        tag={get(view, 'discover.tag')}
+        community={community}
+        tabStyles={tabStyles}
+        linkData={linkData}
+      />
     ))}
   </StyledUl>
 );

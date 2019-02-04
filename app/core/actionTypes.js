@@ -113,3 +113,6 @@ export const SET_EARNINGS = 'SET_EARNINGS';
 export const ADD_EARNING = 'ADD_EARNING';
 export const UPDATE_EARNING = 'UPDATE_EARNING';
 export const REMOVE_EARNING = 'REMOVE_EARNING';
+
+export const SHOW_MODAL = 'SHOW_MODAL';
+export const HIDE_MODAL = 'HIDE_MODAL';

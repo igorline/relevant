@@ -48,10 +48,10 @@ export default async function handleRender(req, res) {
 
   try {
     await handleRouteData({ req, store });
-    const { app, css } = renderApp({ url: req.url, store });
+    const { app, rnWebStyles } = renderApp({ url: req.url, store });
     // console.log('app', app);
 
-    const html = renderFullPage({ app, css, initialState: store.getState() });
+    const html = renderFullPage({ app, rnWebStyles, initialState: store.getState() });
     res.send(html);
   } catch (err) {
     console.log('RENDER ERROR', err) // eslint-disable-line
@@ -59,8 +59,8 @@ export default async function handleRender(req, res) {
   }
 }
 
-export function renderFullPage({ app, css, initialState }) {
-  let styleTags = '';
+export function renderFullPage({ app, rnWebStyles, initialState }) {
+  let cssStyleTags = '';
   let styledComponentsTags = '';
 
   // load extracted styles in head when in production
@@ -68,7 +68,7 @@ export function renderFullPage({ app, css, initialState }) {
     extractor = new ChunkExtractor({ statsFile, entrypoints: 'app' });
   } else {
     styledComponentsTags = sheet.getStyleTags();
-    styleTags = extractor.getStyleTags();
+    cssStyleTags = extractor.getStyleTags();
   }
   const meta = fetchMeta(initialState);
 
@@ -93,8 +93,8 @@ export function renderFullPage({ app, css, initialState }) {
         <meta name="twitter:description" content="${meta.description}" />
         <meta name="twitter:image" content="${meta.image}" />
 
-        ${styleTags}
-        ${css}
+        ${cssStyleTags}
+        ${rnWebStyles}
         ${styledComponentsTags}
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -191,7 +191,7 @@ export function renderApp({ url, store }) {
 
   AppRegistry.registerComponent('App', () => App);
   const { getStyleElement } = AppRegistry.getApplication('App', store.getState());
-  const css = renderToStaticMarkup(getStyleElement());
+  const rnWebStyles = renderToStaticMarkup(getStyleElement());
 
   const app = renderToString(
     <ChunkExtractorManager extractor={extractor}>
@@ -200,7 +200,7 @@ export function renderApp({ url, store }) {
       </StyleSheetManager>
     </ChunkExtractorManager>
   );
-  return { app, css };
+  return { app, rnWebStyles };
 }
 
 

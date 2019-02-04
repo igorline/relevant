@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import * as authActions from 'modules/auth/auth.actions';
 import * as queryString from 'query-string';
 import Modal from 'modules/ui/web/modal';
+import { showModal } from 'modules/navigation/navigation.actions';
 import LoginForm from './login';
 import SignupForm from './signup';
 import ConfirmEmail from './confirmEmail.component';
@@ -81,14 +82,16 @@ class AuthContainer extends Component {
   }
 
   async signup(data) {
+    const { createUser, showModal } = this.props.actions;
     try {
       const user = {
         name: data.username,
         email: data.email,
         password: data.password
       };
-      const signedUp = await this.props.actions.createUser(user);
+      const signedUp = await createUser(user);
       if (signedUp) this.close();
+      // showModal('onboarding');
     } catch (err) {
       // TODO error handling
     }
@@ -187,6 +190,7 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
       ...authActions,
+      showModal,
     },
     dispatch
   )

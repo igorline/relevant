@@ -27,7 +27,7 @@ class PostComment extends Component {
 
   render() {
     const { comment, auth, postUrl } = this.props;
-    if (!comment || !comment.body || comment.body.length < 100) {
+    if (!comment || !comment.body) {
       return null;
     }
     return (

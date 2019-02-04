@@ -118,12 +118,22 @@ export default class InfScroll extends Component {
       threshold,
       useCapture,
       useWindow,
+      data,
       ...props
     } = this.props;
 
     props.ref = node => {
       this.scrollComponent = node;
     };
+
+    // This breaks activity ref above!
+    // TODO: get loading to work
+    // if (!data) {
+    //   return <div>...Loading</div>;
+    // }
+    // if (!data.length) {
+    //   return <div>...Loadig</div>;
+    // }
 
     return React.createElement(element, props, children, hasMore && (loader || this.defaultLoader));
   }

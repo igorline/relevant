@@ -5,7 +5,7 @@ export const HELVETICA_NEUE_BOLD = 'HelveticaNeue-Bold';
 export const HELVETICA_NEUE_CONDENSED_BOLD = 'HelveticaNeue-CondensedBold';
 export const HELVETICA_NEUE_MEDIUM = 'HelveticaNeue-Medium';
 export const HELVETICA_NEUE = 'HelveticaNeue';
-export const HELVETICA_REGULAR = 'Helvetica';
+export const HELVETICA_REGULAR = 'HelveticaNeue';
 export const GEORGIA = 'Georgia';
 
 export const HelveticaNeueBold = `font-family: '${HELVETICA_NEUE_BOLD}';`;
@@ -17,9 +17,9 @@ export const Georgia = `font-family: '${GEORGIA}';`;
 export const lh = 4 / 3;
 
 export const bodyStyle = {
-  fontSize: sizing(1.5),
-  lineHeight: sizing(1.5 * lh),
-  fontFamily: 'HelveticaNeue',
+  fontSize: sizing(1.75),
+  lineHeight: sizing(1.75 * lh),
+  fontFamily: HELVETICA_REGULAR,
 };
 
 export const header = {
@@ -66,8 +66,8 @@ export const bodyText = {
 };
 
 export const commentText = {
-  fontSize: sizing(1.75),
-  lineHeight: sizing(1.75 * lh),
+  fontSize: sizing(2),
+  lineHeight: sizing(2 * lh),
   fontFamily: GEORGIA,
   color: colors.black,
 };

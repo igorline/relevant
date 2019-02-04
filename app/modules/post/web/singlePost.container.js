@@ -8,14 +8,12 @@ import Comments from 'modules/comment/web/comment.container';
 import styled from 'styled-components/primitives';
 import { sizing } from 'app/styles';
 import get from 'lodash.get';
+import { View } from 'modules/styled/uni';
 import PostComponent from './post.component';
 
-const Wrapper = styled.View`
-  flex: 1;
-`;
 
 const PostContainer = styled.View`
-  padding: ${sizing(4)} ${sizing(4)} 0 0;
+  margin: ${sizing(4)} ${sizing(4)} ${sizing(4)} 0 ;
   padding-bottom: 0;
 `;
 
@@ -54,12 +52,12 @@ class SinglePostContainer extends Component {
     const link = posts.links[post.metaPost];
 
     return (
-      <Wrapper>
+      <View flex={1}>
         {hasPost && (
           <div>
             <PostContainer>
               <PostComponent
-                detailView
+                noComments
                 link={link}
                 post={post}
                 firstPost={firstPost}
@@ -70,7 +68,7 @@ class SinglePostContainer extends Component {
             <Comments post={post} {...this.props} />
           </div>
         )}
-      </Wrapper>
+      </View>
     );
   }
 }

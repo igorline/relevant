@@ -6,34 +6,25 @@ import ContentHeader from 'modules/navigation/web/contentheader.component';
 import SideNav from 'modules/navigation/web/sideNav.component';
 import { withRouter } from 'react-router-dom';
 import { layout } from 'app/styles';
+import { View } from 'modules/styled/uni';
 
 const ContentContainer = styled.div`
-  max-width: 100vw;
+  min-height: 100vh;
   display: flex;
-  position: relative;
   background: white;
 `;
 
 const StyledSideNav = styled(SideNav)`
-  display: inline-block;
-  z-index: 100;
   ${layout.universalBorder('right')}
 `;
-
-const MainContent = styled.div`
-  flex: 1;
-  position: relative;
-  padding-top: ${layout.headerHeight}
-`;
-
 
 const MainNav = props => (
   <ContentContainer>
     <StyledSideNav {...props} />
-    <MainContent>
+    <View flex={1} pt={layout.headerHeight}>
       <ContentHeader />
       {renderRoutes(props.route.routes)}
-    </MainContent>
+    </View>
   </ContentContainer>
 );
 

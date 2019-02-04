@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { layout, colors, sizing } from 'app/styles';
 import CoinStat from 'modules/stats/coinStat.component';
 import RStat from 'modules/stats/rStat.component';
-
+import { View }
 if (process.env.BROWSER === true) {
   require('./profile.css');
 }
@@ -40,7 +40,6 @@ export default class Profile extends Component {
 
     return (
       <div className="profileContainer">
-
         <div className="profileHero">
           { isOwner ?
             (<Logout

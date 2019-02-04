@@ -24,7 +24,7 @@ import * as discoverHelper from './discoverHelper';
 const Wrapper = styled.View`
   display: flex;
   flex-direction: column;
-  padding: ${sizing(4)} ${sizing(4)} ${sizing(4)} 0;
+  padding: 0 ${sizing(4)} ${sizing(4)} 0;
 `;
 
 const BreadCrumbs = styled.Text`
@@ -91,6 +91,7 @@ export class Discover extends Component {
       this.lastRefresh = this.props.refresh;
       this.load(sort, this.props);
       alreadyLoading = true;
+      return;
     }
 
     const userId = this.props.auth.user ? this.props.auth.user._id : null;
@@ -100,6 +101,7 @@ export class Discover extends Component {
     if (userId !== prevUserId && !alreadyLoading) {
       this.load(sort, this.props);
       alreadyLoading = true;
+      return;
     }
 
     if (tag !== prevProps.match.params.tag) {
@@ -107,6 +109,7 @@ export class Discover extends Component {
       alreadyLoading = true;
     }
   }
+
   componentWillUnmount() {
     this.props.actions.setWebView('discover', {});
   }

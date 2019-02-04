@@ -23,8 +23,8 @@ export default function comments(state = initialState, action) {
         childComments: {
           ...state.childComments,
           [action.payload.parentId]: [
+            ...state.childComments[action.payload.parentId] || [],
             action.payload.comment._id,
-            ...state.childComments[action.payload.parentId] || []
           ]
         }
       };

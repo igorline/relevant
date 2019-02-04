@@ -11,6 +11,7 @@ import Earnings from 'server/api/earnings/earnings.model';
 import Subscription from 'server/api/subscription/subscription.model';
 import Statistics from 'server/api/statistics/statistics.model';
 import Feed from 'server/api/feed/feed.model';
+import { previewDataAsync } from 'server/api/post/post.controller';
 
 const { ObjectId } = mongoose.Types;
 
@@ -530,6 +531,229 @@ async function removeOldUsers() {
   return User.remove({ version: 'stringID' }).exec();
 }
 
+
+async function udpatePostData() {
+  await PostData.update(
+    {},
+    { isInFeed: false, hidden: false },
+    { multi: true }
+  );
+
+  await Post.update(
+    { type: 'link', parentPost: { $exists: false } },
+    { hidden: true },
+    { multi: true }
+  );
+
+  // await Post.update(
+  //   { parentPost: { $exists: false }, type: 'link' },
+  //   { hidden: true },
+  //   { multi: true }
+  // );
+
+  const notHidden = await Post.find({ hidden: { $ne: true }, type: { $ne: 'comment' } })
+  .populate({ path: 'data', select: 'isInFeed type repost' })
+  .populate({
+    path: 'parentPost',
+    populate: [{
+      path: 'data',
+    },
+    {
+      path: 'metaPost'
+    }]
+  });
+  console.log('notHidden', notHidden.length);
+
+  notHidden.forEach((p, i) => {
+    q.push(async cb => {
+      const { communityId, type } = p;
+      let { parentPost, data } = p;
+      if (type === 'repost') {
+        return console.log('idk', p.toObject());
+      }
+
+      // if (type !== 'post' && !parentPost) return console.log('missing parent', p.toObject());
+      let parentData = parentPost ? parentPost.data : null;
+      if (!data) data = await p.addPostData();
+      if (parentPost && !parentData) parentData = await parentPost.addPostData();
+
+      if (p.link && !p.url) {
+        p.url = p.link;
+        await p.save();
+      }
+
+      if (p.type === 'post' && !parentPost) {
+        let linkObject = {};
+        if (p.url) {
+          let processed;
+          if (!p.metaPost) {
+            linkObject = await getLinkMetadata(p.url);
+          }
+          p = await p.upsertLinkParent(linkObject);
+          parentPost = p.parentPost;
+          parentData = parentPost.data;
+          await p.save();
+        }
+      }
+
+      if (parentPost) {
+        const { metaPost } = parentPost;
+        // TODO go to do image once
+        if (!metaPost || !metaPost.url || !metaPost.title) {
+          if (metaPost) console.log('incomplete metapost', metaPost.toObject());
+          const url = p.url || parentPost.url;
+          if (!url) console.log('missing url!');
+          const linkObject = await getLinkMetadata(url);
+          if (linkObject) {
+            p = await p.upsertLinkParent({ ...linkObject, tags: p.tags });
+            p = await p.save();
+            parentPost = p.parentPost;
+            console.log('new meta', parentPost.metaPost.toObject());
+          }
+        }
+
+        parentPost.title = p.title;
+
+        const updateTime = true;
+        await parentPost.updateRank({ communityId, updateTime });
+        parentPost.hidden = false;
+        await parentPost.save();
+      } else if (p.url) {
+        console.log('NO PARENT ', p.type);
+        console.log('', p.toObject());
+      }
+
+      if (!parentPost) {
+        data.isInFeed = true;
+        data.repost = p.type === 'repost' || false;
+        data.type = p.type;
+        data.hidden = p.hidden;
+        if (!data.community) data.community = p.community;
+        if (!data.communityId) data.communityId = p.communityId;
+      } else {
+        parentData.isInFeed = true;
+        parentData.repost = p.type === 'repost' || false;
+        parentData.hidden = p.hidden;
+        parentData.type = p.type;
+        parentData.parentPost = null;
+        if (!parentData.community) parentData.community = p.community;
+        if (!parentData.communityId) parentData.communityId = p.communityId;
+        data.parentPost = parentPost._id;
+      }
+
+      if (p.title && p.title.match('BuzzFeed to Cut 15% of Its Workforce')) {
+        console.log('post', p.title);
+        console.log('parentData', parentData.toObject());
+      }
+
+      if (data) await data.save();
+      if (parentData) await parentData.save();
+
+      console.log(p.type, p.twitter, 'in feed', data.isInFeed);
+      return setTimeout(cb, 1);
+    });
+  });
+
+
+  q.start((queErr, results) => {
+    if (queErr) return console.log(queErr);
+    return console.log('finished queue');
+  });
+}
+
+async function getLinkMetadata(url) {
+  if (!url) return null;
+  const noReadability = true;
+  const processed = await previewDataAsync(
+    url,
+    noReadability
+  );
+  return {
+    title: processed.title,
+    url: processed.url,
+    description: processed.description,
+    image: processed.image,
+    articleAuthor: processed.articleAuthor,
+    domain: processed.domain,
+    keywords: processed.keywords,
+    // TODO we are not using this
+    shortText: processed.shortText,
+  };
+}
+
+async function fixMessedUpPost() {
+  let posts = await Post.update(
+    {
+      twitter: true,
+      hidden: { $ne: false }
+    },
+    { hidden: true },
+    { multi: true }
+  );
+
+  posts = await Post.update(
+    {
+      twitter: true,
+      relevance: { $gt: 0 }
+    },
+    { hidden: false },
+    { multi: true }
+  );
+
+  posts = await Post.count({
+    twitter: true,
+    hidden: { $ne: true },
+    // relevance: { $gt: 0 } }
+  });
+  console.log('not hidden twitter posts', posts);
+  return posts;
+}
+
+let page = 0;
+const limit = 1000;
+async function removeEmptyTwitterParents() {
+  const total = await Post.count({
+    parentPost: { $exists: false },
+    hidden: false,
+    type: 'link',
+    twitter: { $ne: true }
+  });
+  console.log('total posts', total);
+
+  const posts = await Post.find({
+    parentPost: { $exists: false },
+    hidden: false,
+    twitter: { $ne: true }
+  },
+  'title url embeddedUser type twitter parentPost community postDate hidden')
+  .populate({ path: 'children', select: '_id twitter relevance' })
+  .skip(page * limit)
+  .limit(limit);
+  page++;
+
+  console.log('total', page * limit);
+  posts.forEach((p, i) => {
+    q.push(async cb => {
+      if (!p.children.length) {
+        console.log(p.toObject());
+        const remove = await p.remove();
+      } else {
+        const notTW = p.children.filter(c => !c.twitter || c.relevance > 0);
+        if (notTW.length) {
+          console.log('post has children', notTW.length);
+        }
+      }
+      if (i === limit - 1) removeEmptyTwitterParents();
+      return setTimeout(cb, 1);
+    });
+  });
+
+  q.start((queErr, results) => {
+    if (queErr) return console.log(queErr);
+    return console.log('finished queue');
+  });
+}
+
 async function runUpdates() {
   try {
     const dc = await Community.findOne({ slug: DEFAULT_COMMINITY });
@@ -551,6 +775,10 @@ async function runUpdates() {
     // await convertStringToId();
 
     // await removeOldUsers();
+
+    // checkMessedUpPost(); // shouldn't be necessary
+    // await removeEmptyTwitterParents();
+    // await udpatePostData();
 
     console.log('finished db updates');
   } catch (err) {

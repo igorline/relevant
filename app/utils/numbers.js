@@ -61,9 +61,15 @@ export function abbreviateNumber(num, _fixed) {
   return e;
 }
 
+function capitalize(string) {
+  return string.split(' ')
+  .map(s => s.charAt(0).toUpperCase() + s.slice(1))
+  .join(' ');
+}
+
 export function getTimestamp(date) {
   if (!date) return null;
-  return ' • ' + moment(date).fromNow();
+  return ' • ' + capitalize(moment(date).fromNow());
 }
 
 export function guid() {

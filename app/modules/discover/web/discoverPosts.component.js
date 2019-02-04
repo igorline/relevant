@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import InfScroll from 'modules/listview/web/infScroll.component';
-import PostContainer from 'modules/post/web/post.component';
+import PostComponent from 'modules/post/web/post.component';
 import get from 'lodash.get';
+import { View } from 'modules/styled/uni';
 
 class DiscoverPosts extends Component {
   static propTypes = {
@@ -77,15 +78,17 @@ class DiscoverPosts extends Component {
 
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
 
-      return <PostContainer
-        key={id}
-        post={post}
-        link={link}
-        repost={repost}
-        firstPost={firstPost}
-        comment={comment}
-        sort={sort}
-      />;
+      return (
+        <PostComponent
+          key={id}
+          post={post}
+          link={link}
+          repost={repost}
+          firstPost={firstPost}
+          comment={comment}
+          sort={sort}
+        />
+      );
     });
   }
 

@@ -5,51 +5,7 @@ import ULink from 'modules/navigation/ULink.component';
 import Tag from 'modules/tag/tag.component';
 import Gradient from 'modules/post/gradient.component';
 import { ActivityIndicator } from 'react-native-web';
-import { sizing, fonts } from 'app/styles';
-import styled from 'styled-components/primitives';
-
-const Title = styled.Text`
-  ${fonts.title}
-`;
-
-const SecondaryText = styled.Text`
-  ${fonts.secondaryText}
-`;
-
-const Wrapper = styled.View`
-  display: flex;
-  flex-direction: row;
-  max-width: 100%;
-`;
-
-const View = styled.View`
-  position: relative;
-`;
-
-// const TextView = styled.View`
-//   display: flex;
-//   flex-direction: row;
-// `;
-
-const Text = styled.Text`
-  position: relative;
-`;
-
-const ImageContainer = styled.View`
-  display: flex;
-  flex: 1;
-  width: ${sizing(26)};
-  height: ${sizing(13)};
-  margin-right: ${sizing(2)};
-`;
-
-const Image = styled.Image`
-  flex: 1;
-`;
-
-const PostText = styled.View`
-  flex-shrink: 1;
-`;
+import { View, Image, Title, SecondaryText, InlineText } from 'modules/styled/uni';
 
 
 export default function PostInfo(props) {
@@ -86,70 +42,65 @@ export default function PostInfo(props) {
   //   postUser = firstPost.embeddedUser;
   // }
 
-  const postContent = (
-    <Wrapper>
-      <View>
-        <ULink external to={post.url} target="_blank">
-          <ImageContainer>
-            {imageUrl ? <Image source={{ uri: imageUrl }} /> : <Gradient title={title} />}
-          </ImageContainer>
-        </ULink>
-      </View>
-      <PostText>
-        {postUrl ?
-          <ULink to={postUrl}>
-            <Title>{title}</Title>
-          </ULink>
-          : <Title>{title}</Title>
-        }
-        {/* <SecondaryText>
-          { get(postUser, 'handle') &&
-            <TextView>
-              <Text>Posted by: </Text>
-              <ULink to={`/user/profile/${postUser.handle}`} disabled={!postUrl}>
-                {`@${get(postUser, 'handle')}`}
-              </ULink>
-            </TextView>
-          }}
-          { postUrl && timestamp }{' • '}
-        </SecondaryText> */}
+  const titleEl = postUrl ?
+    <ULink to={postUrl}><Title flex={1}>{title}</Title></ULink> :
+    <Title flex={1}>{title}</Title>;
 
+  const commentEl = post.commentCount && postUrl ?
+    <InlineText>
+      <ULink to={postUrl} styles={'text-decoration: underline'} >
+        {post.commentCount} Comment{post.commentCount > 1 ? 's' : ''}
+      </ULink>
+      <InlineText> • </InlineText>
+    </InlineText> : null;
+
+  const tagEl = tags.length ?
+    <InlineText>
+      {tags.map(tag => <Tag name={tag} community={community} key={tag} />)}
+      <InlineText>• </InlineText>
+    </InlineText> : null;
+
+  const domainEl = get(link, 'domain') &&
+    <InlineText style={{ whiteSpace: 'nowrap' }}>
+      <ULink external to={post.url} target="_blank" disabled={!postUrl} >
+        {link.domain && `${link.domain} ↗`}
+      </ULink>
+    </InlineText>;
+
+  // const userEl = get(postUser, 'handle') &&
+  //   <TextView>
+  //     <Text>Posted by: </Text>
+  //     <ULink to={`/user/profile/${postUser.handle}`} disabled={!postUrl}>
+  //       {`@${get(postUser, 'handle')}`}
+  //     </ULink>
+  //   </TextView>;
+
+  const postContent = (
+    <View direction={'row'}>
+      <ULink external to={post.url} target="_blank">
+        <View flex={1} w={20} h={10} mr={2}>
+          {imageUrl ?
+            <Image flex={1} source={{ uri: imageUrl }} /> :
+            <Gradient flex={1} title={title} />}
+        </View>
+      </ULink>
+
+      <View flex={1} direction={'column'}>
+        {titleEl}
+        {/* {postUrl && timestamp }{' • '} */}
         <SecondaryText>
-          { post.commentCount && postUrl ?
-            <Text>
-              <ULink to={postUrl} styles={'text-decoration: underline'} >
-                {post.commentCount} Comment{post.commentCount > 1 ? 's' : ''}
-              </ULink>
-              <Text> • </Text>
-            </Text> : null
-          }
-          {tags.length ?
-            <Text>
-              {tags.map(tag => <Tag name={tag} community={community} key={tag} />)}
-              <Text>• </Text>
-            </Text>
-            : null}
-          { get(link, 'domain') &&
-            <Text>
-              <ULink external to={post.url} external target="_blank" disabled={!postUrl} >
-                {link.domain && `${link.domain} ↗`}
-              </ULink>
-            </Text>
-          }
+          <InlineText>
+            {commentEl}
+            {tagEl}
+            {domainEl}
+          </InlineText>
         </SecondaryText>
         {props.children}
-
-      </PostText>
-    </Wrapper>
+      </View>
+    </View>
   );
 
-  if (post.url) {
-    return (
-      <View>
-        {postContent}
-      </View>
-    );
-  }
+  if (post.url) return <View>{postContent}</View>;
   return postContent;
 }
 

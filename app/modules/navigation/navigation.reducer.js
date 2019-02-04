@@ -3,7 +3,9 @@ import {
   RELOAD_ROUTE,
   RELOAD_ALL_TABS,
   TOGGLE_TOPICS,
-  SCROLL
+  SCROLL,
+  SHOW_MODAL,
+  HIDE_MODAL
 } from 'core/actionTypes';
 
 const initialState = {
@@ -15,11 +17,26 @@ const initialState = {
   createPost: {},
   activity: {},
   profile: {},
-  myProfile: {}
+  myProfile: {},
+  modal: null
 };
 
 function navigationState(state = initialState, action) {
   switch (action.type) {
+    case SHOW_MODAL: {
+      return {
+        ...state,
+        modal: action.payload
+      };
+    }
+
+    case HIDE_MODAL: {
+      return {
+        ...state,
+        modal: null
+      };
+    }
+
     case SCROLL: {
       return {
         ...state,

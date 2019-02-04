@@ -52,6 +52,14 @@ const UserSchema = new Schema(
     postCount: { type: Number, default: 0 },
     investmentCount: { type: Number, default: 0 },
     onboarding: { type: Number, default: 0 },
+
+    webOnboard: {
+      type: Schema.Types.Mixed,
+      default: {
+        onboarding: false
+      }
+    },
+
     lastFeedNotification: { type: Date, default: new Date(0) },
     confirmed: { type: Boolean, default: false },
     confirmCode: { type: String, select: false },

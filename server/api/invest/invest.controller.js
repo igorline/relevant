@@ -1,4 +1,3 @@
-/* eslint no-console: 0 */
 import { EventEmitter } from 'events';
 import apnData from '../../pushNotifications';
 import { computeApproxPageRank } from '../../utils/pagerankCompute';
@@ -209,7 +208,6 @@ async function updateAuthor(params) {
   if (!author) return null;
 
   const pageRankChange = author.relevance.pagerank - authorPagerank;
-  console.log('adding ', pageRankChange, ' relevance to ', author.name);
 
   let type = 'upvote';
   if (amount < 0) type = 'downvote';
@@ -248,7 +246,7 @@ async function updateAuthor(params) {
       }
       apnData.sendNotification(author, alert, payload);
     } catch (err) {
-      console.log(err);
+      console.log(err); // eslint-disable-line
     }
   }
   return author;
@@ -290,7 +288,7 @@ exports.create = async (req, res, next) => {
 
     // unhide twitter commentary
     if (amount > 0 && post.hidden) {
-      await post.parentPost.insertIntoFeed(community);
+      await post.parentPost.insertIntoFeed(communityId);
       post.hidden = false;
     }
 
@@ -366,7 +364,6 @@ exports.create = async (req, res, next) => {
     });
 
     post.data = await post.data.save();
-    // console.log('updated post data: ', post.data);
 
     let authorPagerank;
     if (author) {
@@ -403,16 +400,13 @@ exports.create = async (req, res, next) => {
     }
     if (investment) {
       investment.rankChange = initialPostRank - post.data.pagerank;
-      console.log('rankChange ', initialPostRank - post.data.pagerank);
       await investment.save();
     }
 
-    await post.updateRank(community);
+    await post.updateRank({ communityId });
     post = await post.save();
     if (post.parentPost) {
-      // TODO - work on nesting here
-      // TODO source community?
-      await post.parentPost.updateRank(community);
+      await post.parentPost.updateRank({ communityId });
       await post.parentPost.save();
     }
     post.updateClient();
@@ -423,7 +417,6 @@ exports.create = async (req, res, next) => {
     // update subscriptions
     user = await user.getSubscriptions();
     user = await user.save();
-    console.log('new page rank ', post.data.pagerank);
 
     user.updateClient();
 

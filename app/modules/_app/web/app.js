@@ -5,18 +5,19 @@ import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import Header from 'modules/navigation/web/header.component';
+import AuthContainer from 'modules/auth/web/auth.container';
 import * as navigationActions from 'modules/navigation/navigation.actions';
 import * as authActions from 'modules/auth/auth.actions';
 import { getEarnings } from 'modules/wallet/earnings.actions';
 import { getCommunities } from 'modules/community/community.actions';
 import AddEthAddress from 'modules/wallet/web/AddEthAddress';
-import AuthContainer from 'modules/auth/web/auth.container';
 import Modal from 'modules/ui/web/modal';
 import CreatePost from 'modules/createPost/web/createPost.container';
 import EthTools from 'modules/web_ethTools/tools.container';
 import Eth from 'modules/web_ethTools/eth.context';
 import { ToastContainer } from 'react-toastify';
 import { GlobalStyle } from 'app/styles';
+import * as modals from 'modules/ui/modals';
 
 if (process.env.BROWSER === true) {
   require('app/styles/index.css');
@@ -35,7 +36,11 @@ class App extends Component {
     children: PropTypes.node,
     history: PropTypes.object,
     route: PropTypes.object,
-    activeCommunity: PropTypes.string
+    activeCommunity: PropTypes.string,
+    globalModal: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.string,
+    ])
   };
 
   state = {
@@ -58,6 +63,10 @@ class App extends Component {
     actions.getUser();
     actions.getEarnings('pending');
 
+    if (auth.user && !auth.user.webOnboard.onboarding) {
+      actions.showModal('onboarding');
+      actions.webOnboard('onboarding');
+    }
     // TODO do this after a timeout
     // window.addEventListener('focus', () => {
     //   if (this.props.newPosts)
@@ -84,6 +93,11 @@ class App extends Component {
     if (userId !== PrevUserId) {
       actions.userToSocket(userId);
     }
+
+    if (!prevProps.auth.user && auth.user && !auth.user.webOnboard.onboarding) {
+      actions.showModal('onboarding');
+      actions.webOnboard('onboarding');
+    }
   }
 
   toggleLogin() {
@@ -92,6 +106,24 @@ class App extends Component {
 
   closeModal() {
     this.props.history.push(this.props.location.pathname);
+  }
+
+
+  renderModal() {
+    let { globalModal } = this.props;
+    if (!globalModal) return null;
+    globalModal = modals[globalModal] || globalModal;
+    return (
+      <Modal
+        title={globalModal.title}
+        header={globalModal.header}
+        footer={globalModal.footer}
+        close={() => this.props.actions.hideModal()}
+        visible
+      >
+        {globalModal.body}
+      </Modal>
+    );
   }
 
   render() {
@@ -165,6 +197,7 @@ class App extends Component {
         >
           <CreatePost modal />
         </Modal>
+        {this.renderModal()}
         <ToastContainer />
         {mobileEl}
         {renderRoutes(this.props.route.routes)}
@@ -176,7 +209,9 @@ class App extends Component {
 const mapStateToProps = state => ({
   user: state.auth.user,
   auth: state.auth,
-  activeCommunity: state.community.active
+  activeCommunity: state.community.active,
+  navigation: state.navigation,
+  globalModal: state.navigation.modal
 });
 
 const mapDispatchToProps = dispatch => ({

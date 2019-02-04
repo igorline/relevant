@@ -123,6 +123,21 @@ exports.sendConfirmationCode = async (req, res, next) => {
   }
 };
 
+exports.webOnboard = (req, res, next) => {
+  const { handle } = req.user;
+  const { step } = req.params;
+  const path = `webOnboard.${step}`;
+  User.findOneAndUpdate(
+    { handle },
+    { $set: { [path]: true } },
+    { projection: 'webOnboard', new: true }
+  )
+  .then(newUser => {
+    res.status(200).json(newUser);
+  })
+  .catch(next);
+};
+
 exports.onboarding = (req, res, next) => {
   const { handle } = req.user;
   const { step } = req.params;
