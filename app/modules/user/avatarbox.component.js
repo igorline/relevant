@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, Touchable } from 'react-primitives';
 import PropTypes from 'prop-types';
-import { colors, sizing, layout, fonts } from 'app/styles';
+import { colors } from 'app/styles';
 import RStat from 'modules/stats/rStat.component';
 import ULink from 'modules/navigation/ULink.component';
 import Avatar from 'modules/user/UAvatar.component';
