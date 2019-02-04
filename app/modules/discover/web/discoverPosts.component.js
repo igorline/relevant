@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import PostComponent from 'modules/post/web/post.component';
 import get from 'lodash.get';
-import { View } from 'modules/styled/uni';
 
 class DiscoverPosts extends Component {
   static propTypes = {

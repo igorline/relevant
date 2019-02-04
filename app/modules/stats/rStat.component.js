@@ -2,14 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { abbreviateNumber } from 'app/utils/numbers';
 import { userProps } from 'app/utils/propValidation';
-import { fonts, mixins, sizing } from 'app/styles';
-import styled from 'styled-components/primitives';
-import { Image, ImageWrapper } from 'modules/styled/uni';
-
-const NumericalValue = styled.Text`
-  ${fonts.numericalValue}
-  ${mixins.inheritfont}
-`;
+import { sizing } from 'app/styles';
+import { Image, ImageWrapper, NumericalValue } from 'modules/styled/uni';
 
 const iconImage = require('app/public/img/r-emoji.png');
 

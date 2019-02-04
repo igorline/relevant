@@ -41,7 +41,6 @@ class UAvatar extends Component {
       <View style={this.props.style} className={this.props.className} m={m} >
         <ULink
           onClick={e => e.stopPropagation()}
-          className={'avatar'}
           to={profileLink}
         >
           {AvatarImage}

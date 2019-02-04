@@ -64,23 +64,46 @@ const ULink = (props) => {
   if (environment === 'web') {
     if (navLink) {
       return (
-        <StyledNavLink {...rest} onClick={onClick} to={to} styles={styles || ''}>
+        <StyledNavLink
+          {...rest}
+          onClick={onClick}
+          to={to}
+          styles={styles || ''}>
           {children}
         </StyledNavLink>
       );
     }
     if (external) {
-      return <StyledA {...rest} onClick={onClick} href={to} target={target} styles={styles || ''}>{children}</StyledA>;
+      return (
+        <StyledA
+          {...rest}
+          onClick={onClick}
+          href={to}
+          target={target}
+          styles={styles || ''}
+        >
+          {children}
+        </StyledA>);
     }
 
     return (
-      <StyledLink {...rest} onClick={onClick} to={to} target={target} styles={styles || ''}>
+      <StyledLink
+        {...rest}
+        onClick={onClick}
+        to={to}
+        target={target}
+        styles={styles || ''}
+      >
         {children}
       </StyledLink>);
   }
 
   return (
-    <StyledLink {...rest} onPress={onPress} styles={styles || ''}>
+    <StyledLink
+      {...rest}
+      onPress={onPress}
+      styles={styles || ''}
+    >
       {children}
     </StyledLink>
   );

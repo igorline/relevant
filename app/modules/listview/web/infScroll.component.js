@@ -132,7 +132,7 @@ export default class InfScroll extends Component {
     //   return <div>...Loading</div>;
     // }
     // if (!data.length) {
-    //   return <div>...Loadig</div>;
+    //   return <div>Nothing here</div>;
     // }
 
     return React.createElement(element, props, children, hasMore && (loader || this.defaultLoader));

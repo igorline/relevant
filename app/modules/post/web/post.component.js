@@ -104,7 +104,7 @@ export class Post extends Component {
     if (!isLink) return commentEl;
 
     return (
-      <View direction={'row'} mt={4}>
+      <View direction={'row'} m="4 4 0 0">
         <PostButtonContainer>
           <PostButtons post={post} {...this.props} />
         </PostButtonContainer>
