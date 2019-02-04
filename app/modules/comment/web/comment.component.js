@@ -163,7 +163,7 @@ class Comment extends Component {
       <View>
         <Spacer nesting={nesting} m={'4 4 0 0'}>
           { !hidePostButtons ? <PostButtonsContainer>
-            <PostButtons post={comment} {...this.props} />
+            <PostButtons {...this.props} post={comment}/>
           </PostButtonsContainer> : null}
           <Container nesting={nesting}>
             <View direction={'row'} justify={'space-between'}>
