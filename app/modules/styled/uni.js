@@ -102,3 +102,9 @@ export const Touchable = styled.Touchable`
 export const Button = styled(Text)`
   ${layout.button}
 `;
+
+export const NumericalValue = styled(Text)`
+  ${fonts.numericalValue}
+  ${mixins.inheritfont}
+  ${mixins.color}
+`;

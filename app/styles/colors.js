@@ -5,6 +5,8 @@ export const darkLightGrey = '#dddddd';
 export const lightGrey = '#f8f8f8';
 export const white = 'white';
 export const modalBackground = 'hsla(0, 0%, 100%, 0.7)';
+export const green = '#7ED321';
+export const red = '#D0021B';
 
 export const background = white;
 export const secondaryText = grey;

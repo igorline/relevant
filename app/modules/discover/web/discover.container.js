@@ -20,11 +20,10 @@ import DiscoverUsers from './discoverUsers.component';
 import * as discoverHelper from './discoverHelper';
 
 
-// TODO probably don't want right padding either
 const Wrapper = styled.View`
   display: flex;
   flex-direction: column;
-  padding: 0 ${sizing(4)} ${sizing(4)} 0;
+  padding: 0 0 ${sizing(4)} 0;
 `;
 
 const BreadCrumbs = styled.Text`
@@ -194,7 +193,7 @@ export class Discover extends Component {
             <Link to="/discover/new">{auth.community}</Link> - #{tag}
           </BreadCrumbs>
         )}
-        <div className="postContainer">
+        <div>
           {/* <CreatePost {...this.props} /> */}
           {this.renderFeed()}
         </div>

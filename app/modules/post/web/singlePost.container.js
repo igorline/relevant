@@ -13,7 +13,7 @@ import PostComponent from './post.component';
 
 
 const PostContainer = styled.View`
-  margin: ${sizing(4)} ${sizing(4)} ${sizing(4)} 0 ;
+  margin: ${sizing(4)} 0 ;
   padding-bottom: 0;
 `;
 

@@ -95,5 +95,7 @@ export const flex = css`
 export const link = css`
 ${p => p.color ? `color: ${p.color}` : ''};
 ${p => p.hc ? `&:hover { color: ${p.hc}; }` : ''};
+${p => p.hc ? `&:hover * { fill: ${p.hc}; }` : ''};
 ${p => p.ac ? `&.active { color: ${p.ac}; }` : ''};
+${p => p.ac ? `&.active * { fill: ${p.ac}; }` : ''};
 `;
