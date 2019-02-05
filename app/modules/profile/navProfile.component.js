@@ -88,10 +88,10 @@ export class NavProfile extends Component {
     // TODO optimize this so its not on every render?
     let pendingPayouts = 0;
     earnings.pending.forEach(id => {
-      const reward = earnings.entities[id];
-      if (reward && reward.stakedTokens) {
+      const r = earnings.entities[id];
+      if (r && r.estimatedPostPayout && r.totalPostShares) {
         // TODO include actual rewards here based on % share
-        pendingPayouts += reward.stakedTokens;
+        pendingPayouts += r.estimatedPostPayout * r.shares / r.totalPostShares;
       }
     });
 

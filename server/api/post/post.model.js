@@ -338,10 +338,13 @@ PostSchema.methods.insertIntoFeed = async function insertIntoFeed(communityId) {
     const post = this;
     if (post.parentPost) throw new Error('Child comments don\'t go in the feed');
 
-    await this.model('PostData').findOneAndUpdate(
+    post.data = await this.model('PostData').findOneAndUpdate(
       { post: post._id, communityId },
-      { isInFeed: true }
+      { isInFeed: true },
+      { new: true },
     );
+
+    this.model('CommunityFeed').addToFeed(post, post.data.community);
 
     const newPostEvent = {
       type: 'SET_NEW_POSTS_STATUS',
@@ -378,7 +381,7 @@ PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkOb
 
 PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds, userId) {
   try {
-    const investments = await Invest.find({ investor: userId, post: { $in: postIds } });
+    const investments = await this.model('Invest').find({ investor: userId, post: { $in: postIds } });
     const updatePosts = {
       _id: userId,
       type: 'UPDATE_POST_INVESTMENTS',

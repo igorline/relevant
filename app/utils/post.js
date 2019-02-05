@@ -209,7 +209,9 @@ export function generatePreviewServer(link) {
 }
 
 export function computePayout(postData, community) {
-  if (!community || !postData) return null;
+  if (!community || !postData || postData.parentPost) return null;
+  console.log('community.rewardFund', community.rewardFund);
+  console.log('ommunity.topPostShares', community.topPostShares);
   postData.payoutShare = postData.pagerank / (community.topPostShares || 1);
   postData.payout = community.rewardFund * postData.payoutShare;
   return postData.payout / (10 ** 18);
