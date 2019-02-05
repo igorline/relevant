@@ -29,6 +29,7 @@ const PostDataSchema = new Schema(
     payoutTime: { type: Date },
     payout: { type: Number, default: 0 },
     payOutShare: { type: Number, default: 0 },
+    expectedPayout: { type: Number, default: 0 },
 
     shares: { type: Number, default: 0 },
     balance: { type: Number, default: 0 },

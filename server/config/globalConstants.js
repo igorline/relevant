@@ -11,7 +11,7 @@ export const SHARE_DECAY = 6 * DAYS; // time it takes to decay payout post share
 export const TWITTER_DECAY = 12 * HOURS; // time it takes to decay payout post shares
 
 export const PAYOUT_TIME = 3 * DAYS; // time it takes for post to pay out
-export const VOTE_COST_RATIO = 0.07; // votes cost 7% of user balance
+export const VOTE_COST_RATIO = 0.1; // votes cost 10% of user balance
 export const NEW_USER_COINS = 20; // amount of coins new users get
 
 export const SLOPE = 1 / 1; // slope of bonding curve for posts

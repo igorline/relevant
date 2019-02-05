@@ -420,6 +420,7 @@ export default async function computePageRank(params) {
 
     const personalization = {};
     admins.forEach(a => {
+      if (!a.user) return;
       const userId = a.user._id;
       if (!rankedNodes[userId]) rankedNodes[userId] = {};
       personalization[userId] = 1;
