@@ -256,6 +256,8 @@ async function computeCommunityRewards(community, _rewardPool, balances) {
     ' ',
     communityRewardPool
   );
+  community.rewardFund = communityRewardPool;
+  await community.save();
   console.log('\x1b[32m', 'distributed rewards to posts ', displayPosts);
   console.log('\x1b[32m', payouts);
   console.log('\x1b[0m');
@@ -277,12 +279,12 @@ exports.rewards = async () => {
     const balances = await Community.getBalances();
     communities.forEach(c =>
       q.push(async cb => {
-        try {
-          const res = await computeCommunityRewards(c, rewardPool, balances);
-          return cb(null, res);
-        } catch (err) {
-          throw new Error(err);
-        }
+        // try {
+        const res = await computeCommunityRewards(c, rewardPool, balances);
+        return cb(null, res);
+        // } catch (err) {
+        // throw new Error(err);
+        // }
       })
     );
 

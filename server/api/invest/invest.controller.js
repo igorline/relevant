@@ -1,6 +1,9 @@
 import { EventEmitter } from 'events';
-import apnData from '../../pushNotifications';
-import { computeApproxPageRank } from '../../utils/pagerankCompute';
+import Earnings from 'server/api/earnings/earnings.model';
+import apnData from 'server/pushNotifications';
+import { computeApproxPageRank } from 'server/utils/pagerankCompute';
+import { computePayout } from 'app/utils/post';
+import Community from 'server/api/community/community.model';
 
 const Post = require('../post/post.model');
 const User = require('../user/user.model');
@@ -10,6 +13,7 @@ const Invest = require('./invest.model');
 const Relevance = require('../relevance/relevance.model');
 
 const InvestEvents = new EventEmitter();
+
 
 const { NODE_ENV } = process.env;
 
@@ -121,13 +125,6 @@ async function updateInvestment(params) {
     communityId,
     community
   });
-
-  // DEPRECATED - make sure we don't need this
-  post.data.relevance += relevanceToAdd;
-  if (relevanceToAdd !== 0) {
-    if (amount < 0) post.data.downVotes++;
-    else post.data.upVotes++;
-  }
   return investment;
 }
 
@@ -147,7 +144,7 @@ async function investCheck(params) {
     }
   }
   if (user._id.equals(post.user)) {
-    throw new Error('You can not ' + type + ' your own post');
+    throw new Error('You can not ' + type + ' your own comment');
   }
 
   const investment = await Invest.findOne({
@@ -235,7 +232,7 @@ async function updateAuthor(params) {
       type
     });
 
-    let alert = user.name + ' thinks your post is relevant';
+    let alert = user.name + ' thinks your comment is relevant';
     const payload = { 'Relevance from': user.name };
     try {
       // TEST - don't send notification after upvote
@@ -323,6 +320,7 @@ exports.create = async (req, res, next) => {
       author.relevance = new Relevance({
         user: author._id,
         communityId,
+        community,
         global: true
       });
       author.relevance = await author.relevance.save();
@@ -350,6 +348,11 @@ exports.create = async (req, res, next) => {
     if (investment) {
       undoInvest = true;
       relevanceToAdd = -investment.relevantPoints;
+    }
+    post.data.relevance += relevanceToAdd;
+    if (relevanceToAdd !== 0) {
+      if (amount < 0) post.data.downVotes++;
+      else post.data.upVotes++;
     }
 
     // ------ update investment records ------
@@ -404,12 +407,18 @@ exports.create = async (req, res, next) => {
     }
 
     await post.updateRank({ communityId });
+
+    const communityInstance = await Community.findOne({ _id: communityId });
+    post.data.expectedPayout = computePayout(post.data, communityInstance);
+    console.log('expectedPayout', post.data.expectedPayout);
+
     post = await post.save();
     if (post.parentPost) {
       await post.parentPost.updateRank({ communityId });
       await post.parentPost.save();
     }
     post.updateClient();
+    Earnings.updateEarnings({ post, communityId });
 
     // updates user investments
     user.investmentCount = await Invest.count({ investor: user._id, amount: { $gt: 0 } });

@@ -55,7 +55,7 @@ app.use(cookieParser());
 app.use(favicon(path.join(__dirname, '/../app/public/img/favicon.ico')));
 
 // Connect to db
-require('./config/db.connect');
+const { db } = require('./config/db.connect');
 
 // Persist sessions with MongoStore
 // We need to enable sessions for passport twitter because its an oauth 1.0 strategy
@@ -96,7 +96,6 @@ app.use(cookiesMiddleware());
 const port = process.env.PORT || 3000;
 
 console.log('WEB CONCURRENCY ', process.env.WEB_CONCURRENCY);
-
 let server;
 const socketServer = require('./socket').default;
 
@@ -119,6 +118,7 @@ if (process.env.NODE_ENV !== 'test') {
 } else {
   require('./routes')(app);
 }
+console.log('routes ready');
 
 require('./utils/updateDB-Community0.3.0');
 require('./utils/ethereum')
@@ -126,3 +126,4 @@ require('./utils/ethereum')
 
 exports.app = app;
 exports.server = server;
+exports.db = db;
