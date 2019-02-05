@@ -172,10 +172,10 @@ async function sendNotifications({ commentor, postAuthor, repost, parentPost, us
     if (repost && ownPost) type = 'repost';
 
     const dbNotificationObj = {
-      post: parentPost._id,
+      post: comment._id,
       forUser: commentor._id,
       byUser: user._id,
-      comment: comment._id,
+      // comment: comment._id,
       amount: null,
       type,
       personal: true,

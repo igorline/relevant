@@ -36,8 +36,12 @@ export default function earnings(state = initialState, action) {
     }
 
     case types.REMOVE_EARNING: {
+      const { _id } = action.payload;
+      const { pending, list } = state;
       return {
         ...state,
+        pending: remove(id => id === _id, pending),
+        list: remove(id => id === _id, list),
         entities: {
           ...state.entities,
           [action.payload._id]: null

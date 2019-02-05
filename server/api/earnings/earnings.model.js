@@ -13,6 +13,8 @@ const EarningsSchema = new Schema(
     // spent: { type: Number, default: 0 },
     // pending: { type: Number, default: 0 },
     stakedTokens: { type: Number, default: 0 },
+    totalPostShares: { type: Number, default: 0 },
+    estimatedPostPayout: { type: Number, default: 0 },
     shares: { type: Number, default: 0 },
     earned: { type: Number, default: 0 },
     status: String,
@@ -72,6 +74,23 @@ EarningsSchema.statics.updateUserBalance = async function updateBalance(earning)
   } catch (err) {
     throw err;
   }
+};
+
+EarningsSchema.statics.updateEarnings = async function updateEarnings({ post, communityId }) {
+  if (!post.data) {
+    post.data = await this.model('PostData').find({ post: post._id, communityId });
+  }
+  await this.model('Earnings').update(
+    { post: post._id, communityId },
+    {
+      estimatedPostPayout: post.data.expectedPayout,
+      totalPostShares: post.data.shares,
+    },
+    { multi: true }
+  );
+  const earnings = await this.find({ post: post._id, communityId });
+  earnings.forEach(e => e.updateClient({ actionType: 'ADD_EARNING' }));
+  return earnings;
 };
 
 module.exports = mongoose.model('Earnings', EarningsSchema);

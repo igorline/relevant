@@ -713,7 +713,7 @@ exports.create = async (req, res, next) => {
     if (!postUrl) await newPost.insertIntoFeed(communityId);
 
     await author.updatePostCount();
-    res.status(200).json(linkParent || newPost);
+    res.status(200).json(newPost || linkParent);
 
     processSubscriptions(newPost);
     return Post.sendOutMentions(mentions, newPost, author);
@@ -733,7 +733,7 @@ exports.delete = async (req, res, next) => {
     }
 
     const post = await Post.findOne(query);
-    if (!post) throw new Error('No post found');
+    if (!post) throw new Error('No post found', query);
 
     await post.remove();
 

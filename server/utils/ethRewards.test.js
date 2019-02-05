@@ -1,4 +1,7 @@
-import { test, request } from './../config/ava.config';
+/**
+ * @jest-environment node
+ */
+import request from 'supertest';
 import ethRewards from './ethRewards';
 import { setupData, cleanupData, dummyUsers, initEth } from '../config/test_seed';
 
@@ -7,12 +10,13 @@ let token;
 let authorToken;
 let postId;
 let postId2;
+let parentPost;
 const comms = ['crypto', 'relevant'];
 
 function getPostObj() {
   const now = new Date();
   return {
-    link:
+    url:
       'https://www.washingtonpost.com/news/checkpoint/wp/2016/05/12/three-deaths-linked-to-recent-navy-seal-training-classes/?hpid=hp_hp-top-table-main_navyseals-118pm%3Ahomepage%2Fstory',
     body: 'Hotties',
     title: 'Test post title',
@@ -32,8 +36,16 @@ function getUpvoteObj(id) {
   };
 }
 
-test.before(async () => {
-  const { app } = require('../server.js');
+const { app, db } = require('../server.js');
+
+
+// const flushPromises = () => {
+//   return new Promise(resolve => setImmediate(resolve));
+// };
+
+
+beforeAll(async () => {
+  await db;
   r = request(app);
 
   // just in case
@@ -42,109 +54,101 @@ test.before(async () => {
   await initEth();
 });
 
-test.after(async () => {
+afterAll(async () => {
   await cleanupData();
 });
 
-test.serial('Payout Create Post', async t => {
-  t.plan(3);
+describe('Rewards Test', () => {
+  test('Payout Create Post', async () => {
+    const res = await r.post('/auth/local').send({ name: 'dummy1', password: 'test' });
 
-  const res = await r.post('/auth/local').send({ name: 'dummy1', password: 'test' });
+    authorToken = res.body.token;
 
-  authorToken = res.body.token;
+    const newPost = await r
+    .post(`/api/post?access_token=${authorToken}&community=${comms[0]}`)
+    .send(getPostObj());
 
-  const newPost = await r
-  .post(`/api/post?access_token=${authorToken}&community=${comms[0]}`)
-  .send(getPostObj());
+    postId = newPost.body._id;
 
-  postId = newPost.body._id;
+    expect(newPost.body.parentPost).toBeTruthy();
+    parentPost = newPost.body.parentPost._id;
+    expect(parentPost).toBeTruthy();
 
-  const newPost2 = await r
-  .post(`/api/post?access_token=${authorToken}&community=${comms[1]}`)
-  .send(getPostObj());
+    const newPost2 = await r
+    .post(`/api/post?access_token=${authorToken}&community=${comms[1]}`)
+    .send(getPostObj());
 
-  t.is(res.status, 200);
-  t.truthy(authorToken, 'Token should not be null');
+    expect(res.status).toBe(200);
+    expect(authorToken).toBeTruthy();
 
-  postId2 = newPost2.body._id;
+    postId2 = newPost2.body._id;
 
-  t.is(newPost.status, 200);
-});
+    expect(newPost2.body.parentPost).toBeTruthy();
+    const parentPost2 = newPost2.body.parentPost._id;
 
-test.serial('Upvote 1', async t => {
-  t.plan(2);
+    expect(parentPost2).toBe(parentPost);
+    expect(newPost.status).toBe(200);
+  });
 
-  const login = await r.post('/auth/local').send({ name: 'dummy2', password: 'test' });
+  test('Upvote 1', async () => {
+    expect.assertions(2);
 
-  ({ token } = login.body);
+    const login = await r.post('/auth/local').send({ name: 'dummy2', password: 'test' });
 
-  t.is(login.status, 200);
+    ({ token } = login.body);
 
-  const upvote = await r
-  .post(`/api/invest?access_token=${token}&community=${comms[0]}`)
-  .send(getUpvoteObj(postId));
+    expect(login.status).toBe(200);
 
-  t.is(upvote.status, 200);
-});
+    const upvote = await r
+    .post(`/api/invest?access_token=${token}&community=${comms[0]}`)
+    .send(getUpvoteObj(parentPost));
 
-test.serial('Upvote 2', async t => {
-  t.plan(3);
+    expect(upvote.status).toBe(200);
+  });
 
-  const login = await r.post('/auth/local').send({ name: 'dummy3', password: 'test' });
+  test('Upvote 2', async () => {
+    expect.assertions(3);
 
-  ({ token } = login.body);
+    const login = await r.post('/auth/local').send({ name: 'dummy3', password: 'test' });
 
-  t.is(login.status, 200);
+    ({ token } = login.body);
 
-  const upvote = await r
-  .post(`/api/invest?access_token=${token}&community=${comms[0]}`)
-  .send(getUpvoteObj(postId));
+    expect(login.status).toBe(200);
 
-  const upvote2 = await r
-  .post(`/api/invest?access_token=${token}&community=${comms[1]}`)
-  .send(getUpvoteObj(postId2));
+    const upvote = await r
+    .post(`/api/invest?access_token=${token}&community=${comms[0]}`)
+    .send(getUpvoteObj(parentPost));
 
-  t.is(upvote.status, 200);
-  t.is(upvote2.status, 200);
-});
+    const upvote2 = await r
+    .post(`/api/invest?access_token=${token}&community=${comms[1]}`)
+    .send(getUpvoteObj(parentPost));
 
-test.serial('Check feed objects', async t => {
-  t.plan(3);
+    expect(upvote.status).toBe(200);
+    expect(upvote2.status).toBe(200);
+  });
 
-  const res = await r.get('/api/feed/post/' + postId + '?access_token=' + token);
 
-  const user = dummyUsers[1];
-  const find = res.body.find(u => u.userId.toString() === user._id.toString());
-  t.truthy(find);
+  test('Payout Upvote', async () => {
+    expect.assertions(1);
+    try {
+      const payouts = await ethRewards.rewards();
+      expect(typeof payouts).toBe('object');
+    } catch (err) {
+      throw err;
+    }
+  });
 
-  const { length } = res.body;
-  t.is(res.status, 200);
-  t.truthy(length);
-});
+  test('Delete post', async () => {
+    expect.assertions(2);
+    const res = await r.delete(
+      `/api/post/${postId}?access_token=${authorToken}&community=${comms[0]}`
+    );
 
-test.serial('Payout Upvote', async t => {
-  t.plan(1);
-  try {
-    const payouts = await ethRewards.rewards();
-    t.is(typeof payouts, 'object', 'should compute payouts');
-  } catch (err) {
-    throw err;
-  }
-});
+    const res2 = await r.delete(
+      `/api/post/${postId2}?access_token=${authorToken}&community=${comms[1]}`
+    );
 
-// TODO add reward notification test (that format is correct)
-
-test.serial('Delete post', async t => {
-  t.plan(2);
-
-  const res = await r.delete(
-    `/api/post/${postId}?access_token=${authorToken}&community=${comms[0]}`
-  );
-
-  const res2 = await r.delete(
-    `/api/post/${postId2}?access_token=${authorToken}&community=${comms[1]}`
-  );
-
-  t.is(res2.status, 200);
-  t.is(res.status, 200);
+    expect(res2.status).toBe(200);
+    expect(res.status).toBe(200);
+  });
 });

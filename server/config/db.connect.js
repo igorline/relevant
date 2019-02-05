@@ -11,7 +11,7 @@ const config = {
 };
 
 function connectWithRetry() {
-  mongoose
+  return mongoose
   .connect(
     process.env.MONGO_URI,
     config
@@ -22,7 +22,6 @@ function connectWithRetry() {
     setTimeout(connectWithRetry, 5000);
   });
 }
-connectWithRetry();
 
 db.on('connecting', () => {
   console.log('connecting to MongoDB...');
@@ -42,4 +41,6 @@ db.on('reconnected', () => {
   console.log('MongoDB reconnected!');
 });
 
-module.exports = {};
+module.exports = {
+  db: connectWithRetry()
+};
