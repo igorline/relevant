@@ -54,6 +54,10 @@ class App extends Component {
     }
   }
 
+
+
+  
+
   componentDidMount() {
     const { actions, auth } = this.props;
     const { community } = auth;
