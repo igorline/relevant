@@ -37,7 +37,7 @@ class PostComment extends Component {
           auth={auth}
           postTime={comment.postDate}
           setSelected={() => {
-            console.warning('TODO:');
+            console.warning('TODO:'); // eslint-disable-line
           }}
           showRelevance
         />
