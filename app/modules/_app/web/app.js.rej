@@ -1,0 +1,6 @@
+diff a/app/modules/_app/web/app.js b/app/modules/_app/web/app.js	(rejected hunks)
+@@ -41,4 +40,0 @@ class App extends Component {
+-
+-
+-
+-
