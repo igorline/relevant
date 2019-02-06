@@ -12,10 +12,11 @@ const coinImage = require('app/public/img/relevantcoin.png');
 const NumericalValue = styled.Text`
   ${fonts.numericalValue}
   ${mixins.inheritfont}
+  ${(p) => p.lineHeight ? `line-height: ${p.lineHeight};` : ''}
 `;
 
 function CoinStat(props) {
-  const { user, isOwner, wallet, size, amount, inheritfont, mr } = props;
+  const { user, isOwner, wallet, size, amount, inheritfont, mr, align, lineHeight, ...rest } = props;
 
   let tokens;
   if (typeof amount === 'number') tokens = amount;
@@ -33,16 +34,22 @@ function CoinStat(props) {
     tokens = wallet.connectedBalance + user.balance;
   }
   const iconSize = size || 3;
+  const imageMarginBottom = align === 'center' ? 0 : sizing(-size / 10);
 
   return (
-    <ImageWrapper mr={sizing(mr || 1.5)}>
+    <ImageWrapper mr={mr || 1.5} align={align} {...rest}>
       <Image
         source={coinImage}
-        h={sizing(iconSize)}
-        w={sizing(iconSize)}
-        mr={sizing(iconSize / 4)}
+        h={iconSize}
+        w={iconSize}
+        mr={iconSize / 4}
+        mb={imageMarginBottom}
+        resizeMode="contain"
       />
-      <NumericalValue inheritfont={inheritfont ? 1 : 0}>
+      <NumericalValue
+        inheritfont={inheritfont ? 1 : 0}
+        lineHeight={lineHeight ? sizing(lineHeight) : null}
+      >
         {abbreviateNumber(tokens) || 0}
       </NumericalValue>
     </ImageWrapper>

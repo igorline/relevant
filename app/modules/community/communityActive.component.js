@@ -10,7 +10,7 @@ class CommunityActive extends Component {
   static propTypes = {
     community: PropTypes.object,
     children: PropTypes.node,
-    getCommunityMembers: PropTypes.func,
+    getCommunityMembers: PropTypes.func
   };
 
   componentDidMount() {
@@ -24,7 +24,7 @@ class CommunityActive extends Component {
     const totalMembers = get(community, 'memberCount', 0);
     const limitedMembers = members.slice(0, 12);
     return (
-      <View bg={colors.white} mr={'1px'} >
+      <View bg={colors.white} mr={'1px'}>
         <Header m={'4 4 3 4'}>Community</Header>
         {children}
         <View bb p={'0 4 4 4'}>
@@ -36,7 +36,8 @@ class CommunityActive extends Component {
                   hc={colors.black}
                   ac={colors.black}
                   navLink
-                  to={`/${community.slug}/new/${topic}`}>
+                  to={`/${community.slug}/new/${topic}`}
+                >
                   #{topic}
                 </ULink>
               </LinkFont>
@@ -56,7 +57,8 @@ class CommunityActive extends Component {
             ))}
           </View>
         </View>
-      </View>);
+      </View>
+    );
   }
 }
 

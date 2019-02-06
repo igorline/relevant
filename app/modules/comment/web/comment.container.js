@@ -29,22 +29,22 @@ class Comments extends Component {
     auth: PropTypes.object,
     post: PropTypes.object,
     myPostInv: PropTypes.object,
-    user: PropTypes.object,
+    user: PropTypes.object
   };
 
   state = {
-    activeComment: null,
-  }
+    activeComment: null
+  };
 
   componentDidMount() {
     const { params } = this.props.match;
     this.props.actions.getComments(params.id);
   }
 
-  setActiveComment = (commentId) => {
+  setActiveComment = commentId => {
     const activeComment = this.state.activeComment === commentId ? null : commentId;
     this.setState({ activeComment });
-  }
+  };
 
   scrollToBottom() {
     window.scrollTo(0, document.body.scrollHeight);
@@ -56,11 +56,7 @@ class Comments extends Component {
     return (
       <div>
         <FormContainer>
-          <CommentForm
-            text={'Reply'}
-            {...this.props}
-            parentPost={post}
-          />
+          <CommentForm text={'Reply'} {...this.props} parentPost={post} />
         </FormContainer>
         {children.length !== 0 ? (
           <div>
@@ -97,7 +93,7 @@ export default connect(
     auth: state.auth,
     comments: state.comments,
     myPostInv: state.investments.myPostInv,
-    user: state.user,
+    user: state.user
   }),
   dispatch => ({
     actions: bindActionCreators(

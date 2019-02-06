@@ -46,7 +46,18 @@ exports.show = (req, res, next) => {
   .limit(limit)
   .skip(skip)
   .sort({ _id: -1 })
-  .populate('byUser post')
+  // .populate('byUser')
+  .populate({
+    path: 'byUser',
+    populate: {
+      path: 'relevance',
+      match: {
+        community: req.query.community,
+        global: true,
+      }
+    }
+  })
+  .populate({ path: 'post', populate: { path: 'metaPost' } })
   .then(notifications => res.status(200).json(notifications))
   .catch(next);
 };

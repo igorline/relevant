@@ -63,21 +63,24 @@ exports.topPosts = async (req, res, next) => {
             // with some randomness on client side
             repost: { $exists: false },
             $or: [{ hidden: { $ne: true } }]
-          },
+          }
         },
         {
           path: 'embeddedUser.relevance',
           match: { community, global: true },
           select: 'pagerank'
         },
-        { path: 'metaPost' },
+        { path: 'metaPost' }
       ]
     })
     .sort('-pagerank')
     .limit(20);
 
     // TODO do this on frontend?
-    posts = posts.map(d => ({ ...d.post.toObject(), data: { ...d.toObject(), post: get(d, 'post._id') } }));
+    posts = posts.map(d => ({
+      ...d.post.toObject(),
+      data: { ...d.toObject(), post: get(d, 'post._id') }
+    }));
     res.status(200).json(posts);
   } catch (err) {
     next(err);
@@ -423,7 +426,7 @@ exports.update = async (req, res, next) => {
 
     newPost = await Post.findOne({ _id: req.body._id });
 
-    if (communityId !== newPost.communityId) throw new Error('Community doesn\'t match');
+    if (communityId !== newPost.communityId) throw new Error("Community doesn't match");
 
     const prevMentions = [...newPost.mentions];
     const prevTags = [...newPost.mentions];

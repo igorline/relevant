@@ -17,6 +17,7 @@ const Email = loadable(() => import('modules/admin/web/email.component'));
 const TopPosts = loadable(() => import('modules/admin/web/topPosts.component'));
 const CommunityAdmin = loadable(() => import('modules/admin/web/communityAdmin.component'));
 const ProfileContainer = loadable(() => import('modules/profile/web/profile.container'));
+const ActivityContainer = loadable(() => import('modules/activity/activity.container'));
 const SplashContainer = loadable(() => import('modules/web_splash/splash.container'));
 const MainNav = loadable(() => import('modules/navigation/web/mainNav.component'));
 
@@ -66,6 +67,7 @@ const routes = [
           { path: '/user/signup', component: Auth, exact: true },
           { path: '/user/wallet', component: Wallet, exact: true },
           { path: '/user/profile/:id', component: ProfileContainer, exact: true },
+          { path: '/user/activity', component: ActivityContainer, exact: true },
           { path: '/user/forgot', component: Auth, exact: true },
           // WARNING THESE ROUTES MUST MACH MOBILE APP!
           { path: '/user/resetPassword/:token', component: Auth, exact: true },

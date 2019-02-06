@@ -7,7 +7,6 @@ import Gradient from 'modules/post/gradient.component';
 import { ActivityIndicator } from 'react-native-web';
 import { View, Image, Title, SecondaryText, InlineText } from 'modules/styled/uni';
 
-
 export default function PostInfo(props) {
   const { post, link, community, postUrl, firstPost } = props;
   if (post.loading) {
@@ -42,30 +41,40 @@ export default function PostInfo(props) {
   //   postUser = firstPost.embeddedUser;
   // }
 
-  const titleEl = postUrl ?
-    <ULink to={postUrl}><Title flex={1}>{title}</Title></ULink> :
-    <Title flex={1}>{title}</Title>;
+  const titleEl = postUrl ? (
+    <ULink to={postUrl}>
+      <Title flex={1}>{title}</Title>
+    </ULink>
+  ) : (
+    <Title flex={1}>{title}</Title>
+  );
 
-  const commentEl = post.commentCount && postUrl ?
-    <InlineText>
-      <ULink to={postUrl} styles={'text-decoration: underline'} >
-        {post.commentCount} Comment{post.commentCount > 1 ? 's' : ''}
-      </ULink>
-      <InlineText> • </InlineText>
-    </InlineText> : null;
+  const commentEl =
+    post.commentCount && postUrl ? (
+      <InlineText>
+        <ULink to={postUrl} styles={'text-decoration: underline'}>
+          {post.commentCount} Comment{post.commentCount > 1 ? 's' : ''}
+        </ULink>
+        <InlineText> • </InlineText>
+      </InlineText>
+    ) : null;
 
-  const tagEl = tags.length ?
+  const tagEl = tags.length ? (
     <InlineText>
-      {tags.map(tag => <Tag name={tag} community={community} key={tag} />)}
+      {tags.map(tag => (
+        <Tag name={tag} community={community} key={tag} />
+      ))}
       <InlineText>• </InlineText>
-    </InlineText> : null;
+    </InlineText>
+  ) : null;
 
-  const domainEl = get(link, 'domain') &&
+  const domainEl = get(link, 'domain') && (
     <InlineText style={{ whiteSpace: 'nowrap' }}>
-      <ULink external to={post.url} target="_blank" disabled={!postUrl} >
+      <ULink external to={post.url} target="_blank" disabled={!postUrl}>
         {link.domain && `${link.domain} ↗`}
       </ULink>
-    </InlineText>;
+    </InlineText>
+  );
 
   // const userEl = get(postUser, 'handle') &&
   //   <TextView>
@@ -79,9 +88,11 @@ export default function PostInfo(props) {
     <View fdirection={'row'}>
       <ULink external to={post.url} target="_blank">
         <View flex={1} w={20} h={10} mr={2}>
-          {imageUrl ?
-            <Image flex={1} source={{ uri: imageUrl }} /> :
-            <Gradient flex={1} title={title} />}
+          {imageUrl ? (
+            <Image flex={1} source={{ uri: imageUrl }} />
+          ) : (
+            <Gradient flex={1} title={title} />
+          )}
         </View>
       </ULink>
 
@@ -109,5 +120,5 @@ PostInfo.propTypes = {
   post: PropTypes.object,
   community: PropTypes.string,
   postUrl: PropTypes.string,
-  firstPost: PropTypes.object,
+  firstPost: PropTypes.object
 };

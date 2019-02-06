@@ -10,10 +10,7 @@ class UAvatar extends Component {
     noLink: PropTypes.bool,
     m: PropTypes.string,
     className: PropTypes.string,
-    style: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.array,
-    ]),
+    style: PropTypes.oneOfType([PropTypes.string, PropTypes.array])
   };
 
   render() {
@@ -26,12 +23,8 @@ class UAvatar extends Component {
       : require('app/public/img/default_user.jpg');
     const imageSize = size || 4;
     const AvatarImage = (
-      <Image
-        source={image}
-        h={imageSize}
-        w={imageSize}
-        bradius={imageSize / 2}
-      />);
+      <Image source={image} h={imageSize} w={imageSize} bradius={imageSize / 2} />
+    );
     if (this.props.noLink) {
       return (
         <View style={this.props.style} className={this.props.className} m={m}>
@@ -40,11 +33,8 @@ class UAvatar extends Component {
       );
     }
     return (
-      <View style={this.props.style} className={this.props.className} m={m} >
-        <ULink
-          onClick={e => e.stopPropagation()}
-          to={profileLink}
-        >
+      <View style={this.props.style} className={this.props.className} m={m}>
+        <ULink onClick={e => e.stopPropagation()} to={profileLink}>
           {AvatarImage}
         </ULink>
       </View>

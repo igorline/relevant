@@ -69,6 +69,7 @@ class UserPosts extends Component {
               postUrl={postUrl}
               parentPostId={parentPost ? parentPost.id : null}
               hidePostButtons
+              hideBorder
             />
           </PostComponent>
         </View>
@@ -82,7 +83,9 @@ class UserPosts extends Component {
         loadMore={p => this.load(p, length)}
         hasMore={this.hasMore}
       >
-        <View fdirection="column" shrink={1} >{posts}</View>
+        <View fdirection="column" shrink={1}>
+          {posts}
+        </View>
       </InfScroll>
     );
   }

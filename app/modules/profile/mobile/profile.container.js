@@ -43,7 +43,7 @@ class Profile extends Component {
     isOwner: false,
     view: 0,
     loaded: false
-  }
+  };
 
   constructor(props, context) {
     super(props, context);
@@ -53,8 +53,7 @@ class Profile extends Component {
     this.loadUser = this.loadUser.bind(this);
     this.changeView = this.changeView.bind(this);
     this.offset = 0;
-    this.needsReload = new Date()
-    .getTime();
+    this.needsReload = new Date().getTime();
     this.tabs = [{ id: 0, title: 'Posts' }, { id: 1, title: 'Upvotes' }];
     this.scrollTo = this.scrollTo.bind(this);
   }
@@ -161,12 +160,7 @@ class Profile extends Component {
           styles={styles}
           scrollTo={this.scrollTo}
         />,
-        <Tabs
-          key={1}
-          tabs={this.tabs}
-          active={view}
-          handleChange={this.changeView}
-        />,
+        <Tabs key={1} tabs={this.tabs} active={view} handleChange={this.changeView} />,
         <View key={2} style={{ height: 0 }} />
       ];
     }
@@ -208,12 +202,8 @@ class Profile extends Component {
         const tabData = this.getViewData(this.props, tab.id);
         const active = this.state.view === tab.id;
         const data = tabData.data || [];
-        const postCount =
-          user.postCount !== undefined ? user.postCount : '';
-        const Upvotes =
-          user.investmentCount !== undefined
-            ? user.investmentCount
-            : '';
+        const postCount = user.postCount !== undefined ? user.postCount : '';
+        const Upvotes = user.investmentCount !== undefined ? user.investmentCount : '';
 
         if (tab.id === 0) {
           tab.title = 'Posts ' + postCount;

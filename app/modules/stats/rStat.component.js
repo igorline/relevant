@@ -8,7 +8,10 @@ import { Image, ImageWrapper, NumericalValue } from 'modules/styled/uni';
 const iconImage = require('app/public/img/r-emoji.png');
 
 export default function RStat(props) {
-  const { size, user, color, mr, align } = props;
+  const { size, user, color, mr, align, ...rest } = props;
+  if (!user) {
+    return null;
+  }
   const { relevance } = user;
   const pagerank = relevance ? relevance.pagerank || 0 : 0;
 
@@ -16,7 +19,7 @@ export default function RStat(props) {
   const imageMargin = align === 'center' ? 0 : sizing(-size / 10);
 
   return (
-    <ImageWrapper align={align || 'center'} mr={sizing(mr || 1.5)} props={props}>
+    <ImageWrapper align={align || 'center'} mr={mr || 1.5} props={props} {...rest} >
       <Image
         h={iconSize}
         w={iconSize}

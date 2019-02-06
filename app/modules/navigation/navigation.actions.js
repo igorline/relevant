@@ -50,7 +50,9 @@ export function push(route) {
   return () => {
     // check if we need this
     if (dismissKeyboard) dismissKeyboard();
-    dispatchNavigatorAction(NavigationActions.navigate({ routeName: route.key, params: route }));
+    dispatchNavigatorAction(
+      NavigationActions.navigate({ routeName: route.key, params: route })
+    );
   };
 }
 
@@ -60,13 +62,11 @@ export function pop() {
   };
 }
 
-
 export function replace(key) {
   return () => {
     dispatchNavigatorAction(StackActions.replace({ routeName: key }));
   };
 }
-
 
 export function toggleTopics(showTopics) {
   return {
@@ -77,9 +77,11 @@ export function toggleTopics(showTopics) {
 
 export function goToTopic(topic) {
   return dispatch => {
-    dispatchNavigatorAction(NavigationActions.navigate({
-      routeName: 'discover' }
-    ));
+    dispatchNavigatorAction(
+      NavigationActions.navigate({
+        routeName: 'discover'
+      })
+    );
 
     dispatch(
       push({
@@ -100,7 +102,7 @@ export function setView(type, view) {
     type: SET_VIEW,
     payload: {
       type,
-      view,
+      view
     }
   };
 }
@@ -110,7 +112,7 @@ export function setWebView(type, params) {
     type: SET_WEB_VIEW,
     payload: {
       type,
-      params,
+      params
     }
   };
 }
@@ -134,7 +136,6 @@ export function reloadAllTabs() {
     type: RELOAD_ALL_TABS
   };
 }
-
 
 export function goToPeople(topic) {
   return push({

@@ -17,30 +17,42 @@ if (process.env.WEB !== 'true') {
   StyledLink = styled.Touchable`
     ${(p) => p.styles}
     ${mixins.link}
+    ${mixins.margin}
+    ${mixins.padding}
   `;
   DisabledLink = styled.Text`
     color: ${colors.secondaryText};
     ${(p) => p.styles}
     ${mixins.link}
+    ${mixins.margin}
+    ${mixins.padding}
   `;
 } else {
   styled = require('styled-components').default;
   StyledLink = styled(Link)`
     ${(p) => p.styles}
     ${mixins.link}
+    ${mixins.margin}
+    ${mixins.padding}
   `;
   StyledNavLink = styled(NavLink)`
     ${(p) => p.styles}
     ${mixins.link}
+    ${mixins.margin}
+    ${mixins.padding}
   `;
   StyledA = styled.a`
     ${(p) => p.styles}
     ${mixins.link}
+    ${mixins.margin}
+    ${mixins.padding}
   `;
   DisabledLink = styled.span`
     color: ${colors.secondaryText};
     ${(p) => p.styles}
     ${mixins.link}
+    ${mixins.margin}
+    ${mixins.padding}
   `;
 }
 

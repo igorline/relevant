@@ -34,8 +34,8 @@ const renderApp = appRoutes => {
       <Provider store={store}>
         <Router history={history}>{renderRoutes(appRoutes)}</Router>
       </Provider>
-    </AppContainer>
-    , rootElement
+    </AppContainer>,
+    rootElement
   );
 };
 

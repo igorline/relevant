@@ -93,8 +93,7 @@ class ProfileComponent extends Component {
   }
 
   goToTopic(tag) {
-    const name = tag.replace('#', '')
-    .trim();
+    const name = tag.replace('#', '').trim();
     const topic = {
       _id: name,
       categoryName: '#' + name
