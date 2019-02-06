@@ -22,7 +22,7 @@ class PostComment extends Component {
   static propTypes = {
     auth: PropTypes.object,
     comment: PropTypes.object,
-    postUrl: PropTypes.string,
+    postUrl: PropTypes.string
   };
 
   render() {
@@ -31,16 +31,18 @@ class PostComment extends Component {
       return null;
     }
     return (
-      <View mt={sizing(2)} fdirection={'row'} align={'center'} >
+      <View mt={sizing(2)} fdirection={'row'} align={'center'}>
         <Avatar
           user={comment.embeddedUser}
           auth={auth}
           postTime={comment.postDate}
-          setSelected={() => { console.log('TODO:'); }}
+          setSelected={() => {
+            console.warning('TODO:');
+          }}
           showRelevance
         />
         <Container>
-          <ULink to={postUrl} >
+          <ULink to={postUrl}>
             <CommentText>{comment.body}</CommentText>
           </ULink>
         </Container>

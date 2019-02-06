@@ -1,7 +1,7 @@
 import React from 'react';
 import Enzyme, { shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import AvatarBox, { Name, Wrapper, HandleText } from 'modules/user/avatarbox.component';
+import AvatarBox, { Name } from 'modules/user/avatarbox.component';
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -29,9 +29,14 @@ describe('components', () => {
     it('should render self and subcomponents', () => {
       const { enzymeWrapper } = setup();
 
-      expect(enzymeWrapper.find(Name.displayName).first()
-      .text()).toBe(`${user.name}`);
-      // expect(enzymeWrapper.find(HandleText.displayName).text()).toBe(`@${user.handle} ${postTime}`);
+      expect(
+        enzymeWrapper
+        .find(Name.displayName)
+        .first()
+        .text()
+      ).toBe(`${user.name}`);
+      // expect(enzymeWrapper
+      // .find(HandleText.displayName).text()).toBe(`@${user.handle} ${postTime}`);
     });
 
     // it('should call addTodo if length of text is greater than 0', () => {
@@ -46,4 +51,3 @@ describe('components', () => {
     // });
   });
 });
-
