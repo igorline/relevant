@@ -2,7 +2,6 @@ import { EventEmitter } from 'events';
 import MetaPost from './link.model';
 import User from '../user/user.model';
 import Notification from '../notification/notification.model';
-import Invest from '../invest/invest.model';
 
 const mongoose = require('mongoose');
 
@@ -154,7 +153,7 @@ PostSchema.pre('save', async function save(next) {
     this.commentCount = await this.model('Post').count(countQuery);
     return next();
   } catch (err) {
-    console.log('error updating post count', err) // eslint-disable-line
+    console.log('error updating post count', err); // eslint-disable-line
     return next();
   }
 });
@@ -215,8 +214,12 @@ PostSchema.methods.addUserInfo = async function addUserInfo(user) {
 async function updateLatestComment({ post, communityId }) {
   if (post.parentPost) return post;
 
-  const latestComment = await post.model('PostData')
-  .findOne({ parentPost: post._id, communityId, hidden: false, type: 'post' }, 'postDate')
+  const latestComment = await post
+  .model('PostData')
+  .findOne(
+    { parentPost: post._id, communityId, hidden: false, type: 'post' },
+    'postDate'
+  )
   .sort({ postDate: -1 });
 
   if (!latestComment) return post;
@@ -236,7 +239,7 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
     }
     const { pagerank } = post.data;
 
-    if (updateTime && !post.parentPost) post = await updateLatestComment({ post, communityId });
+    if (updateTime && !post.parentPost) { post = await updateLatestComment({ post, communityId }); }
 
     // Don't use latestComment to compute post rank!
     if (!post.data.postDate) post = await post.addPostData();
@@ -246,7 +249,8 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
     rank = Math.round(rank * 1000) / 1000;
 
     // But if a comment ranks highly - update post rank
-    const topComment = await post.model('PostData')
+    const topComment = await post
+    .model('PostData')
     .findOne({ parentPost: post._id, communityId }, 'rank')
     .sort({ rank: -1 });
 
@@ -270,7 +274,15 @@ PostSchema.methods.updateRank = async function updateRank({ communityId, updateT
 
 PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postObject }) {
   try {
-    const { tags, postDate, payoutTime, hidden, url, communityId, community } = postObject;
+    const {
+      tags,
+      postDate,
+      payoutTime,
+      hidden,
+      url,
+      communityId,
+      community
+    } = postObject;
 
     let post = await this.model('Post')
     .findOne({ url, type: 'link' })
@@ -284,14 +296,15 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
         payoutTime,
         hidden,
         type: 'link',
-        latestComment: postDate,
+        latestComment: postDate
       };
       post = await new (this.model('Post'))(parentObj);
     }
 
     if (!post.data) {
       post = await post.addPostData({
-        slug: community, _id: communityId
+        slug: community,
+        _id: communityId
       });
     }
 
@@ -314,7 +327,6 @@ PostSchema.statics.newLinkPost = async function newLinkPost({ linkObject, postOb
   }
 };
 
-
 PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject) {
   try {
     const post = this;
@@ -336,12 +348,12 @@ PostSchema.methods.upsertLinkParent = async function upsertLinkParent(linkObject
 PostSchema.methods.insertIntoFeed = async function insertIntoFeed(communityId) {
   try {
     const post = this;
-    if (post.parentPost) throw new Error('Child comments don\'t go in the feed');
+    if (post.parentPost) throw new Error("Child comments don't go in the feed");
 
     post.data = await this.model('PostData').findOneAndUpdate(
       { post: post._id, communityId },
       { isInFeed: true },
-      { new: true },
+      { new: true }
     );
 
     this.model('CommunityFeed').addToFeed(post, post.data.community);
@@ -356,7 +368,6 @@ PostSchema.methods.insertIntoFeed = async function insertIntoFeed(communityId) {
     return console.log('insertIntoFeed error', err); // eslint-disable-line
   }
 };
-
 
 PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkObject) {
   try {
@@ -381,7 +392,10 @@ PostSchema.methods.upsertMetaPost = async function upsertMetaPost(metaId, linkOb
 
 PostSchema.statics.sendOutInvestInfo = async function sendOutInvestInfo(postIds, userId) {
   try {
-    const investments = await this.model('Invest').find({ investor: userId, post: { $in: postIds } });
+    const investments = await this.model('Invest').find({
+      investor: userId,
+      post: { $in: postIds }
+    });
     const updatePosts = {
       _id: userId,
       type: 'UPDATE_POST_INVESTMENTS',
@@ -493,7 +507,7 @@ PostSchema.methods.pruneFeed = async function pruneFeed({ communityId }) {
 
     const communityChildren = await this.model('Post').count({
       communityId,
-      parentPost: post._id,
+      parentPost: post._id
     });
 
     if (communityChildren || shares) return post;
@@ -568,7 +582,6 @@ PostSchema.post('remove', async function postRemove(post) {
 });
 
 module.exports = mongoose.model('Post', PostSchema);
-
 
 // Update parent feed status (only for link posts)
 // PostSchema.statics.updateFeedStatus = async function updateFeedStatus(parent, post) {
