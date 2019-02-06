@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Button,
-  Header,
-} from 'modules/styled/web';
+import { Button, Header } from 'modules/styled/web';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
@@ -17,7 +14,7 @@ import { showModal } from 'modules/navigation/navigation.actions';
 
 const Nav = styled.nav`
   position: fixed;
-  background-image: linear-gradient(hsla(0,0%,100%, 1) 70%, hsla(0,0%,100%, 0) 100%);
+  background-image: linear-gradient(hsla(0, 0%, 100%, 1) 70%, hsla(0, 0%, 100%, 0) 100%);
   display: flex;
   flex: 1;
   z-index: 100;
@@ -30,7 +27,6 @@ const Nav = styled.nav`
   left: ${layout.sideNavWidth};
 `;
 
-
 const SubNav = styled.div`
   display: flex;
   flex-direction: row;
@@ -40,7 +36,7 @@ const GetStarted = styled(Header)`
   cursor: pointer;
   color: ${colors.grey};
   &:hover {
-    color: ${colors.black}
+    color: ${colors.black};
   }
 `;
 
@@ -48,7 +44,6 @@ const ActivityButtonContainer = styled.span`
   position: relative;
   z-index: 1;
 `;
-
 
 class ContentHeader extends Component {
   static propTypes = {
@@ -65,7 +60,7 @@ class ContentHeader extends Component {
 
     const signup = (
       <div className="signupCTA">
-        <Link to="/user/login" >
+        <Link to="/user/login">
           <Button mr={4}>Login</Button>
         </Link>
         <Link to="/user/signup">
@@ -82,7 +77,7 @@ class ContentHeader extends Component {
 
   toggleLogin = () => {
     this.setState({ openLoginModal: !this.state.openLoginModal });
-  }
+  };
 
   closeModal() {
     this.props.history.push(this.props.location.pathname);
@@ -108,18 +103,15 @@ class ContentHeader extends Component {
             <ActivityButtonContainer>
               <ActivityButton />
             </ActivityButtonContainer>
-            {
-              auth.isAuthenticated
-                ?
-                <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
-                  <Button>
-                    New Post
-                  </Button>
-                </Link>
-                :
-                <Button onClick={this.toggleLogin} color={colors.blue}>Login</Button>
-            }
-
+            {auth.isAuthenticated ? (
+              <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
+                <Button>New Post</Button>
+              </Link>
+            ) : (
+              <Button onClick={this.toggleLogin} color={colors.blue}>
+                Login
+              </Button>
+            )}
           </SubNav>
           <AuthContainer
             toggleLogin={this.toggleLogin.bind(this)}
@@ -134,24 +126,25 @@ class ContentHeader extends Component {
   }
 }
 
-
 ContentHeader.propTypes = {
   location: PropTypes.object,
   auth: PropTypes.object,
   history: PropTypes.object,
   className: PropTypes.string,
+  actions: PropTypes.object
 };
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth,
+    auth: state.auth
   };
 }
 
-
-export default withRouter(connect(
-  mapStateToProps,
-  dispatch => ({
-    actions: bindActionCreators({ showModal }, dispatch)
-  })
-)(ContentHeader));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    dispatch => ({
+      actions: bindActionCreators({ showModal }, dispatch)
+    })
+  )(ContentHeader)
+);
