@@ -7,7 +7,6 @@ import * as investActions from 'modules/post/invest.actions';
 import * as createPostActions from 'modules/createPost/createPost.actions';
 import styled from 'styled-components/primitives';
 import { sizing, colors } from 'app/styles';
-import get from 'lodash/get';
 import CommentForm from './commentForm.component';
 import Comment from './comment.component';
 
@@ -54,16 +53,13 @@ class Comments extends Component {
   render() {
     const { comments, posts, post, auth, actions, myPostInv, user } = this.props;
     const children = comments.childComments[post._id] || [];
-    const parentPost = post._id;
-    const parentPostType = get(posts.posts, `${post._id}.type`);
     return (
       <div>
         <FormContainer>
           <CommentForm
             text={'Reply'}
             {...this.props}
-            parentPost={parentPost}
-            parentPostType={parentPostType}
+            parentPost={post}
           />
         </FormContainer>
         {children.length !== 0 ? (
@@ -81,12 +77,11 @@ class Comments extends Component {
                   user={user}
                   activeComment={this.state.activeComment}
                   setActiveComment={this.setActiveComment}
-                  parentPost={parentPost}
+                  parentPost={post._id}
                   childComments={comments.childComments}
                   posts={posts}
                   post={post}
                   nesting={0}
-                  parentPostType={parentPostType}
                 />
               );
             })}

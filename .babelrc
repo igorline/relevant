@@ -7,9 +7,9 @@
     "@babel/plugin-syntax-dynamic-import",
     "@babel/transform-exponentiation-operator",
     "@loadable/babel-plugin",
-    "inline-react-svg",
     ["styled-components"],
     "@babel/plugin-proposal-class-properties",
+    "inline-react-svg",
     ["module-resolver", {
       "root": ["./app", "./app/modules"],
       "alias": {

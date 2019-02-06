@@ -45,7 +45,7 @@ class CommunityActive extends Component {
           <LinkFont mb={2} c={colors.black}>
             {`${totalMembers} Members`}
           </LinkFont>
-          <View direction={'row'} wrap>
+          <View fdirection={'row'} wrap>
             {limitedMembers.map(member => (
               <UAvatar
                 key={member._id}

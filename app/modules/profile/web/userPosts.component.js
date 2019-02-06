@@ -5,7 +5,6 @@ import PostComponent from 'modules/post/web/post.component';
 import SingleComment from 'modules/comment/web/singleComment.container';
 import { View } from 'modules/styled/uni';
 import { routing } from 'app/utils';
-// import { ActivityIndicator } from 'react-native-web';
 
 class UserPosts extends Component {
   static propTypes = {
@@ -13,7 +12,7 @@ class UserPosts extends Component {
     load: PropTypes.func,
     match: PropTypes.object,
     posts: PropTypes.object,
-    community: PropTypes.string
+    community: PropTypes.object
   };
 
   constructor(props) {
@@ -40,29 +39,33 @@ class UserPosts extends Component {
     const posts = postIds.map(id => {
       const post = this.props.posts.posts[id];
       if (!post) return null;
-      const link = this.props.posts.links[post.metaPost];
       const repost = post.repost ? this.props.posts.posts[post.repost.post] : null;
       const postUser = {
         ...post.embeddedUser,
         _id: post.user
       };
+      const link = this.props.posts.links[post.metaPost];
+
       let parentPost;
-      if (post.parentPost) {
-        parentPost = this.props.posts.posts[post.parentPost];
+      const parentId = post.parentPost;
+      if (parentId) {
+        parentPost = this.props.posts.posts[parentId];
       }
+
       const postUrl = routing.getPostUrl(community, post);
+
       return (
-        <View shrink={1} key={id} direction="column">
+        <View shrink={1} key={id} fdirection="column">
           <PostComponent
             post={parentPost || post}
-            link={link}
+            link={link} // TODO - metapost is a pain
             repost={repost}
             postUser={postUser}
             {...this.props}
           >
             <SingleComment
               comment={post}
-              community={community}
+              community={community._id}
               postUrl={postUrl}
               parentPostId={parentPost ? parentPost.id : null}
               hidePostButtons
@@ -79,7 +82,7 @@ class UserPosts extends Component {
         loadMore={p => this.load(p, length)}
         hasMore={this.hasMore}
       >
-        <View direction="column" shrink={1} >{posts}</View>
+        <View fdirection="column" shrink={1} >{posts}</View>
       </InfScroll>
     );
   }

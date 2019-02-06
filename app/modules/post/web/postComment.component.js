@@ -31,7 +31,7 @@ class PostComment extends Component {
       return null;
     }
     return (
-      <View mt={sizing(2)} direction={'row'} align={'center'} >
+      <View mt={sizing(2)} fdirection={'row'} align={'center'} >
         <Avatar
           user={comment.embeddedUser}
           auth={auth}

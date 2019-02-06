@@ -8,14 +8,13 @@ class CommentForm extends Component {
     edit: PropTypes.bool,
     comment: PropTypes.object,
     auth: PropTypes.object,
-    post: PropTypes.object,
     actions: PropTypes.object,
     cancel: PropTypes.func,
     updatePosition: PropTypes.func,
     text: PropTypes.string,
     isReply: PropTypes.bool,
-    parentPost: PropTypes.string,
-    parentPostType: PropTypes.string,
+    parentPost: PropTypes.object,
+    parentComment: PropTypes.object,
   };
 
   constructor(props, context) {
@@ -55,7 +54,7 @@ class CommentForm extends Component {
   }
 
   async createComment() {
-    const { isReply, post, parentPost, parentPostType } = this.props;
+    const { isReply, parentComment, parentPost, auth } = this.props;
     if (!this.props.auth.isAuthenticated) {
       return alert.browserAlerts.alert('Please log in to post comments');
     }
@@ -65,13 +64,14 @@ class CommentForm extends Component {
 
     const comment = this.state.comment.trim();
     const commentObj = {
-      parentPost,
-      parentComment: isReply ? post.id : null,
-      linkParent: parentPostType === 'link' ? parentPost : null,
+      parentPost: parentPost._id,
+      parentComment: isReply && parentComment ? parentComment._id : null,
+      linkParent: parentPost.type === 'link' ? parentPost._id : null,
       text: comment,
       tags: this.commentTags,
       mentions: this.commentMentions,
-      user: this.props.auth.user._id,
+      user: auth.user._id,
+      metaPost: parentPost.metaPost
     };
     this.setState({ comment: '', inputHeight: 50 });
 

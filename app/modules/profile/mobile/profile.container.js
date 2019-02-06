@@ -27,7 +27,7 @@ let styles;
 class Profile extends Component {
   static propTypes = {
     navigation: PropTypes.object,
-    users: PropTypes.object,
+    usersState: PropTypes.object,
     auth: PropTypes.object,
     refresh: PropTypes.number,
     reload: PropTypes.number,
@@ -37,15 +37,13 @@ class Profile extends Component {
     error: PropTypes.bool
   };
 
-  // Doesn't work
-  // static navigationOptions = ({ navigation, navigationOptions }) => {
-  //   console.log('called nav options', navigationOptions);
-  //   // const { params } = navigation.state;
-
-  //   return {
-  //     title: navigation.getParam('id'),
-  //   };
-  // };
+  state = {
+    user: {},
+    handle: null,
+    isOwner: false,
+    view: 0,
+    loaded: false
+  }
 
   constructor(props, context) {
     super(props, context);
@@ -55,54 +53,46 @@ class Profile extends Component {
     this.loadUser = this.loadUser.bind(this);
     this.changeView = this.changeView.bind(this);
     this.offset = 0;
-    this.state = {
-      view: 0
-    };
-    this.userData = null;
-    this.userId = null;
     this.needsReload = new Date()
     .getTime();
     this.tabs = [{ id: 0, title: 'Posts' }, { id: 1, title: 'Upvotes' }];
-    this.loaded = false;
     this.scrollTo = this.scrollTo.bind(this);
   }
 
-  componentWillMount() {
-    const { id } = get(this.props.navigation, 'state.params');
-    if (id) {
-      this.userId = id;
-      this.userData = this.props.users[this.userId];
-      this.myProfile = id === get(this.props.auth, 'user._id');
-
-      this.onInteraction = InteractionManager.runAfterInteractions(() => {
-        this.loadUser();
-        this.setState({});
-      });
-
-      requestAnimationFrame(() => {
-        this.loaded = true;
-        this.setState({});
-      });
-    } else {
-      this.loaded = true;
-      this.userId = get(this.props.auth, 'user.handle');
-      this.userData = this.props.users[this.userId];
-      this.myProfile = true;
-      this.setState({});
-    }
-    this.props.navigation.setParams({ title: this.userId });
+  static getDerivedStateFromProps(props) {
+    const { auth, navigation, usersState } = props;
+    let handle = get(navigation, 'state.params.id');
+    if (!handle && auth.user) handle = auth.user.handle;
+    const userId = usersState.handleToId[handle];
+    const user = usersState.users[userId];
+    if (!user) return { handle };
+    const isOwner = auth.user && user._id === auth.user._id;
+    const loaded = true;
+    return { user, isOwner, handle, loaded };
   }
 
-  componentWillReceiveProps(next) {
-    this.userData = next.users[this.userId];
+  componentDidMount() {
+    const { handle, isOwner, loaded } = this.state;
 
-    if (this.props.refresh !== next.refresh) {
+    this.onInteraction = InteractionManager.runAfterInteractions(() => {
+      this.loadUser();
+    });
+
+    if (!isOwner && !loaded) {
+      return requestAnimationFrame(() => {
+        this.setState({ loaded: true });
+      });
+    }
+    if (handle) return this.props.navigation.setParams({ title: handle });
+    return null;
+  }
+
+  componentDidUpdate(prev) {
+    if (this.props.refresh !== prev.refresh) {
       this.scrollToTop();
     }
-    if (this.props.reload !== next.reload) {
-      this.needsReload = new Date()
-      .getTime();
-      // this.loadUser();
+    if (this.props.reload !== prev.reload) {
+      this.needsReload = new Date().getTime();
     }
   }
 
@@ -115,32 +105,34 @@ class Profile extends Component {
   }
 
   loadUser() {
-    this.props.actions.getSelectedUser(this.userId);
+    this.props.actions.getSelectedUser(this.state.handle);
   }
 
   load(view, length) {
+    const { handle, user } = this.state;
     if (view === undefined) view = this.state.view;
     if (length === undefined) length = 0;
 
     if (this.state.view === 0) {
-      this.props.actions.getUserPosts(length, 5, this.userId);
+      this.props.actions.getUserPosts(length, 5, handle);
     } else {
-      this.props.actions.getInvestments(this.props.auth.token, this.userId, length, 10);
+      this.props.actions.getInvestments(user._id, length, 10);
     }
   }
 
   renderRow(rowData, view) {
+    const { posts, investments } = this.props;
     if (view === 0) {
-      const post = this.props.posts.posts[rowData];
+      const post = posts.posts[rowData];
       if (!post) return null;
-      const link = this.props.posts.links[post.metaPost];
+      const link = posts.links[post.metaPost];
       return <Post post={post} link={link} {...this.props} />;
     }
     if (view === 1) {
-      const investment = this.props.investments.investments[rowData];
-      const post = this.props.posts.posts[investment.post];
+      const investment = investments.investments[rowData];
+      const post = posts.posts[investment.post];
       if (!post) return null;
-      const link = this.props.posts.links[post.metaPost];
+      const link = posts.links[post.metaPost];
       return <Post post={post} link={link} {...this.props} />;
     }
     return null;
@@ -157,21 +149,22 @@ class Profile extends Component {
   }
 
   renderHeader() {
+    const { isOwner, user, view } = this.state;
     let header = null;
-    if (this.userId && this.userData) {
+    if (user) {
       header = [
         <ProfileComponent
           key={0}
           {...this.props}
-          myProfile={this.myProfile}
-          user={this.userData}
+          isOwner={isOwner}
+          user={user}
           styles={styles}
           scrollTo={this.scrollTo}
         />,
         <Tabs
           key={1}
           tabs={this.tabs}
-          active={this.state.view}
+          active={view}
           handleChange={this.changeView}
         />,
         <View key={2} style={{ height: 0 }} />
@@ -181,16 +174,18 @@ class Profile extends Component {
   }
 
   getViewData(props, view) {
+    const { posts, investments } = this.props;
+    const { handle, user } = this.state;
     switch (view) {
       case 0:
         return {
-          data: this.props.posts.userPosts[this.userId],
+          data: posts.userPosts[handle],
           loaded: this.props.posts.loaded.userPosts
         };
       case 1:
         return {
-          data: this.props.investments.userInvestments[this.userId],
-          loaded: this.props.investments.loadedProfileInv
+          data: investments.userInvestments[user._id],
+          loaded: investments.loadedProfileInv
         };
       default:
         return null;
@@ -203,24 +198,21 @@ class Profile extends Component {
   }
 
   render() {
+    const { error } = this.props;
+    const { user, loaded } = this.state;
     let listEl = <CustomSpinner />;
 
-    // solves logout bug
-    if (!this.props.auth.user) return null;
-
-    if (this.userData && this.loaded) {
+    if (user && loaded) {
       listEl = [];
       this.tabs.forEach(tab => {
         const tabData = this.getViewData(this.props, tab.id);
         const active = this.state.view === tab.id;
-        let data = tabData.data || [];
-        if (!this.loaded) data = [];
-        const loaded = tabData.loaded && this.loaded;
+        const data = tabData.data || [];
         const postCount =
-          this.userData.postCount !== undefined ? this.userData.postCount : '';
+          user.postCount !== undefined ? user.postCount : '';
         const Upvotes =
-          this.userData.investmentCount !== undefined
-            ? this.userData.investmentCount
+          user.investmentCount !== undefined
+            ? user.investmentCount
             : '';
 
         if (tab.id === 0) {
@@ -240,7 +232,7 @@ class Profile extends Component {
             key={tab.id}
             data={data}
             parent={'profile'}
-            loaded={loaded}
+            loaded={tabData.loaded}
             renderRow={this.renderRow}
             load={this.load}
             view={tab.id}
@@ -250,8 +242,8 @@ class Profile extends Component {
             renderHeader={this.renderHeader}
             needsReload={this.needsReload}
             onReload={this.loadUser}
-            error={this.props.error}
-            headerData={this.userData}
+            error={error}
+            headerData={user}
           />
         );
       });
@@ -265,7 +257,7 @@ function mapStateToProps(state) {
   return {
     auth: state.auth,
     posts: state.posts,
-    users: state.user.users,
+    usersState: state.user,
     online: state.online,
     error: state.error.profile,
     view: state.view,

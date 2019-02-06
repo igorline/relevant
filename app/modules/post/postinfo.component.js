@@ -76,7 +76,7 @@ export default function PostInfo(props) {
   //   </TextView>;
 
   const postContent = (
-    <View direction={'row'}>
+    <View fdirection={'row'}>
       <ULink external to={post.url} target="_blank">
         <View flex={1} w={20} h={10} mr={2}>
           {imageUrl ?
@@ -85,7 +85,7 @@ export default function PostInfo(props) {
         </View>
       </ULink>
 
-      <View flex={1} direction={'column'}>
+      <View flex={1} fdirection={'column'}>
         {titleEl}
         {/* {postUrl && timestamp }{' • '} */}
         <SecondaryText>

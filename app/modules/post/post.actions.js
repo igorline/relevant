@@ -15,7 +15,10 @@ const linkSchema = new schema.Entity('links', {}, { idAttribute: '_id' });
 
 const parentPostSchema = new schema.Entity(
   'posts',
-  {},
+  {
+    metaPost: linkSchema,
+    user: userSchema
+  },
   { idAttribute: '_id' }
 );
 
@@ -27,6 +30,7 @@ const postSchema = new schema.Entity(
     repost: { post: repostSchema },
     metaPost: linkSchema,
     parentPost: parentPostSchema,
+    commentPost: parentPostSchema,
   },
   { idAttribute: '_id' }
 );
