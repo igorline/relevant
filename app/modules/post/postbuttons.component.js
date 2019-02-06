@@ -128,7 +128,7 @@ class PostButtons extends Component {
           />
           <View m={'1 0'}>
             <NumericalValue c={colors.secondaryText} fs={2}>
-              {post.data ? Math.round(post.data.relevance) : null}
+              {post.data ? Math.round(post.data.relevance) : 0}
             </NumericalValue>
           </View>
           <PostButton
