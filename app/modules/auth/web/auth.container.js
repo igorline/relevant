@@ -6,7 +6,6 @@ import { withRouter } from 'react-router-dom';
 import * as authActions from 'modules/auth/auth.actions';
 import * as queryString from 'query-string';
 import Modal from 'modules/ui/web/modal';
-import { showModal } from 'modules/navigation/navigation.actions';
 import LoginForm from './login';
 import SignupForm from './signup';
 import ConfirmEmail from './confirmEmail.component';
@@ -82,7 +81,7 @@ class AuthContainer extends Component {
   }
 
   async signup(data) {
-    const { createUser, showModal } = this.props.actions;
+    const { createUser } = this.props.actions;
     try {
       const user = {
         name: data.username,
@@ -91,7 +90,6 @@ class AuthContainer extends Component {
       };
       const signedUp = await createUser(user);
       if (signedUp) this.close();
-      // showModal('onboarding');
     } catch (err) {
       // TODO error handling
     }
@@ -142,10 +140,14 @@ class AuthContainer extends Component {
       // } else if (isAuthenticated) {
       //   auth = <button onClick={() => this.logout()}>logout</button>;
     } else if (path === 'login') {
-      auth = <LoginForm authNav={this.authNav} parentFunction={this.login} {...this.props} />;
+      auth = (
+        <LoginForm authNav={this.authNav} parentFunction={this.login} {...this.props} />
+      );
       title = 'Sign In';
     } else if (path === 'signup') {
-      auth = <SignupForm authNav={this.authNav} parentFunction={this.signup} {...this.props} />;
+      auth = (
+        <SignupForm authNav={this.authNav} parentFunction={this.signup} {...this.props} />
+      );
       title = 'Sign Up';
     } else if (path === 'resetPassword/:token') {
       auth = <ResetPassword authNav={this.authNav} {...this.props} />;
@@ -189,14 +191,15 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(
     {
-      ...authActions,
-      showModal,
+      ...authActions
     },
     dispatch
   )
 });
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AuthContainer));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(AuthContainer)
+);

@@ -3,7 +3,7 @@
  */
 import request from 'supertest';
 import ethRewards from './ethRewards';
-import { setupData, cleanupData, dummyUsers, initEth } from '../config/test_seed';
+import { setupData, cleanupData, initEth } from '../config/test_seed';
 
 let r;
 let token;
@@ -38,11 +38,9 @@ function getUpvoteObj(id) {
 
 const { app, db } = require('../server.js');
 
-
 // const flushPromises = () => {
 //   return new Promise(resolve => setImmediate(resolve));
 // };
-
 
 beforeAll(async () => {
   await db;
@@ -126,7 +124,6 @@ describe('Rewards Test', () => {
     expect(upvote.status).toBe(200);
     expect(upvote2.status).toBe(200);
   });
-
 
   test('Payout Upvote', async () => {
     expect.assertions(1);

@@ -30,10 +30,10 @@ const Spacer = styled.View`
   display: flex;
   flex-direction: row;
   position: relative;
-  background-color: ${(p) => p.bgColor || 'transparent'}
-  padding-left: ${(p) => {
+  background-color: ${p => p.bgColor || 'transparent'}
+  padding-left: ${p => {
     if (p.nesting !== undefined && p.nesting !== null) {
-      return sizing((p.nesting) * NESTING_UNIT);
+      return sizing(p.nesting * NESTING_UNIT);
     }
     return sizing(NESTING_UNIT);
   }}
@@ -59,7 +59,6 @@ const Actions = styled(View)`
   align-items: center;
 `;
 
-
 class Comment extends Component {
   static propTypes = {
     actions: PropTypes.object,
@@ -74,12 +73,14 @@ class Comment extends Component {
     nesting: PropTypes.number,
     hidePostButtons: PropTypes.bool,
     condensedView: PropTypes.bool,
+    postUrl: PropTypes.string,
+    hideBorder: PropTypes.bool,
+    post: PropTypes.object
   };
-
 
   state = {
     editing: false,
-    copied: false,
+    copied: false
   };
 
   deletePost() {
@@ -106,13 +107,21 @@ class Comment extends Component {
     document.execCommand('copy');
     document.body.removeChild(el);
     this.setState({ copied: true });
-  }
+  };
 
   render() {
     const {
-      auth, comment, activeComment,
-      setActiveComment, childComments,
-      posts, nesting, hidePostButtons, postUrl, condensedView, hideBorder,
+      auth,
+      comment,
+      activeComment,
+      setActiveComment,
+      childComments,
+      posts,
+      nesting,
+      hidePostButtons,
+      postUrl,
+      condensedView,
+      hideBorder,
       post
     } = this.props;
     if (!comment) return null;
@@ -134,16 +143,10 @@ class Comment extends Component {
     }
 
     const bodyMargin = condensedView ? '-0.5 0 2 5' : '3 0';
-    let body = (
-      <CommentText m={bodyMargin}>
-        {comment.body}
-      </CommentText>
-    );
+    let body = <CommentText m={bodyMargin}>{comment.body}</CommentText>;
 
     if (postUrl) {
-      body = <ULink to={postUrl} >
-        {body}
-      </ULink>;
+      body = <ULink to={postUrl}>{body}</ULink>;
     }
 
     const edit = (
@@ -156,16 +159,19 @@ class Comment extends Component {
       />
     );
 
-    const user = this.props.user.users[comment.embeddedUser.handle] || comment.embeddedUser;
+    const user =
+      this.props.user.users[comment.embeddedUser.handle] || comment.embeddedUser;
 
     const commentChildren = get(childComments, comment.id) || [];
 
     return (
       <View>
         <Spacer nesting={nesting} m={'4 4 0 0'}>
-          { !hidePostButtons ? <PostButtonsContainer>
-            <PostButtons {...this.props} post={comment}/>
-          </PostButtonsContainer> : null}
+          {!hidePostButtons ? (
+            <PostButtonsContainer>
+              <PostButtons {...this.props} post={comment} />
+            </PostButtonsContainer>
+          ) : null}
           <Container nesting={nesting}>
             <View fdirection={'row'} justify={'space-between'}>
               <AvatarBox
@@ -178,25 +184,28 @@ class Comment extends Component {
             </View>
             {editing ? edit : body}
             <Actions ml={condensedView ? 5 : 0}>
-              <Touchable onPress={() => { setActiveComment(comment.id); }}>
-                <LinkFont mr={3} c={colors.blue}>Reply</LinkFont>
+              <Touchable
+                onPress={() => {
+                  setActiveComment(comment.id);
+                }}
+              >
+                <LinkFont mr={3} c={colors.blue}>
+                  Reply
+                </LinkFont>
               </Touchable>
               <Touchable onPress={this.copyToClipboard}>
-                <LinkFont mr={3} c={colors.blue}>Share</LinkFont>
+                <LinkFont mr={3} c={colors.blue}>
+                  Share
+                </LinkFont>
               </Touchable>
-              {copied && (<SecondaryText> - Link copied to clipboard</SecondaryText>)}
+              {copied && <SecondaryText> - Link copied to clipboard</SecondaryText>}
             </Actions>
-            {!isActive && !hideBorder && <Divider pt={sizing(4)}/> }
+            {!isActive && !hideBorder && <Divider pt={sizing(4)} />}
           </Container>
         </Spacer>
 
         {isActive && (
-          <Spacer
-            nesting={nesting + 1.5}
-            bgColor={colors.secondaryBG}
-            p={4}
-            mt={4}
-          >
+          <Spacer nesting={nesting + 1.5} bgColor={colors.secondaryBG} p={4} mt={4}>
             <CommentForm
               isReply
               text={'Reply'}
@@ -205,13 +214,13 @@ class Comment extends Component {
               parentPost={post}
             />
           </Spacer>
-        ) }
+        )}
         {commentChildren.map(childId => (
           <Comment
             {...this.props}
             comment={posts.posts[childId]}
             key={childId}
-            nesting={ nesting + 1}
+            nesting={nesting + 1}
           />
         ))}
       </View>

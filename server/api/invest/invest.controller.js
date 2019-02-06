@@ -14,7 +14,6 @@ const Relevance = require('../relevance/relevance.model');
 
 const InvestEvents = new EventEmitter();
 
-
 const { NODE_ENV } = process.env;
 
 exports.postInvestments = async (req, res, next) => {
@@ -193,13 +192,7 @@ async function updateSubscriptions(params) {
 }
 
 async function updateAuthor(params) {
-  const {
-    post,
-    user,
-    amount,
-    authorPagerank,
-    undoInvest,
-  } = params;
+  const { post, user, amount, authorPagerank, undoInvest } = params;
   let { author } = params;
 
   if (!author) return null;
@@ -410,7 +403,6 @@ exports.create = async (req, res, next) => {
 
     const communityInstance = await Community.findOne({ _id: communityId });
     post.data.expectedPayout = computePayout(post.data, communityInstance);
-    console.log('expectedPayout', post.data.expectedPayout);
 
     post = await post.save();
     if (post.parentPost) {
@@ -445,6 +437,5 @@ exports.create = async (req, res, next) => {
     next(err);
   }
 };
-
 
 exports.InvestEvents = InvestEvents;

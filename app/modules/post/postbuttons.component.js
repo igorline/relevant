@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
-// import { computePayout } from 'app/utils/post';
-import { colors, fonts, sizing } from 'app/styles';
+import { colors, fonts } from 'app/styles';
 import styled from 'styled-components/primitives';
-import CoinStat from 'modules/stats/coinStat.component';
+// import CoinStat from 'modules/stats/coinStat.component';
+// import { computePayout } from 'app/utils/post';
 import { Image, View, Touchable } from 'modules/styled/uni';
-
 
 const Text = styled.Text`
   display: flex;
@@ -15,7 +14,6 @@ const Text = styled.Text`
   font-size: 14px;
   line-height: 14px;
 `;
-
 
 class PostButtons extends Component {
   static propTypes = {
@@ -27,7 +25,7 @@ class PostButtons extends Component {
     community: PropTypes.object,
     actions: PropTypes.object,
     className: PropTypes.string,
-    earnings: PropTypes.object,
+    earnings: PropTypes.object
   };
 
   constructor(props) {
@@ -96,14 +94,14 @@ class PostButtons extends Component {
     // eslint-disable-next-line
     const { post, auth, community, className, earnings, myPostInv } = this.props;
 
-    let pendingPayouts = 0;
-    if (earnings) {
-      earnings.pending.forEach(id => {
-        const reward = earnings.entities[id];
-        // TODO include actual rewards here based on % share
-        if (reward && reward.post === post._id) pendingPayouts += reward.stakedTokens;
-      });
-    }
+    // let pendingPayouts = 0;
+    // if (earnings) {
+    //   earnings.pending.forEach(id => {
+    //     const reward = earnings.entities[id];
+    //     // TODO include actual rewards here based on % share
+    //     if (reward && reward.post === post._id) pendingPayouts += reward.stakedTokens;
+    //   });
+    // }
 
     if (post === 'notFound') {
       return null;
@@ -138,10 +136,9 @@ class PostButtons extends Component {
     //     <CoinStat mr={0} size={1.25} inheritfont amount={pendingPayouts} />
     //   </View> : null
 
-
     return (
       <View className={className}>
-        <View align='center'>
+        <View align="center">
           <Touchable onClick={e => this.vote(e, vote)} to="#">
             <Image
               w={3}
@@ -151,16 +148,16 @@ class PostButtons extends Component {
             />
           </Touchable>
           <View m={'1 0'}>
-            <Text>
-              {post.data ? Math.round(post.data.relevance) : null}
-            </Text>
+            <Text>{post.data ? Math.round(post.data.relevance) : null}</Text>
           </View>
           <Touchable onClick={e => this.irrelevant(e, vote)} to="#">
             <Image
               w={3}
               h={2.8}
               alt="Downvote"
-              source={{ uri: votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg' }}
+              source={{
+                uri: votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg'
+              }}
             />
           </Touchable>
         </View>

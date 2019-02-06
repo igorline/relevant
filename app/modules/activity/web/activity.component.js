@@ -102,11 +102,11 @@ export default class SingleActivity extends Component {
   }
 
   renderPostPreview(activity) {
-    const { auth } = this.props;
+    // const { auth } = this.props;
     const { post } = activity;
 
-    let postId = post._id;
-    if (post.type === 'comment') postId = post.parentPost;
+    // let postId = post._id;
+    // if (post.type === 'comment') postId = post.parentPost;
 
     if (!post.title && post.body) {
       post.title = post.body.substring(0, 130);
@@ -114,15 +114,9 @@ export default class SingleActivity extends Component {
     }
 
     // TODO implement this
-    const linkToPost = `/${auth.community}/post/${postId}`;
+    // const linkToPost = `/${auth.community}/post/${postId}`;
 
-    return (
-      <PostInfo
-        className={'activityPreview'}
-        preview
-        post={post}
-      />
-    );
+    return <PostInfo className={'activityPreview'} preview post={post} />;
   }
 
   renderActivity(activity) {
@@ -150,8 +144,7 @@ export default class SingleActivity extends Component {
   }
 
   renderBorder(activity) {
-    const fromNow = moment(activity.createdAt)
-    .fromNow();
+    const fromNow = moment(activity.createdAt).fromNow();
     if (activity.type) {
       return (
         <div className={'time'}>

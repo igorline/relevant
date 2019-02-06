@@ -30,12 +30,16 @@ function getYoutubeLink(link) {
   // TODO should go in publicenv.js
   const apiKey = '***REMOVED***';
   const apiUrl =
-    'https://www.googleapis.com/youtube/v3/videos?part=snippet&id=' + videoId + '&key=' + apiKey;
+    'https://www.googleapis.com/youtube/v3/videos?part=snippet&id=' +
+    videoId +
+    '&key=' +
+    apiKey;
 
   return fetch(apiUrl, {
     method: 'GET',
     headers: {
-      'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'
+      'User-Agent':
+        'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'
     }
   })
   .then(response => response.json())
@@ -73,7 +77,8 @@ export const URL_REGEX = new RegExp(
 export function generatePreview(link) {
   let responseUrl;
   const fbHeader = {
-    'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+    'User-Agent':
+      'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
     'Content-Type': 'application/x-www-form-urlencoded;charset=ISO-8859-15'
   };
 
@@ -161,7 +166,8 @@ export function generatePreview(link) {
     }
 
     const title = data.title || data['og:title'] || data['twitter:title'] || titleEl;
-    const description = data.description || data['og:description'] || data['twitter:description'];
+    const description =
+        data.description || data['og:description'] || data['twitter:description'];
     let image =
         data['og:image'] ||
         data['og:image:url'] ||
@@ -210,10 +216,7 @@ export function generatePreviewServer(link) {
 
 export function computePayout(postData, community) {
   if (!community || !postData || postData.parentPost) return null;
-  console.log('community.rewardFund', community.rewardFund);
-  console.log('ommunity.topPostShares', community.topPostShares);
   postData.payoutShare = postData.pagerank / (community.topPostShares || 1);
   postData.payout = community.rewardFund * postData.payoutShare;
-  return postData.payout / (10 ** 18);
+  return postData.payout / 10 ** 18;
 }
-
