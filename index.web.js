@@ -25,7 +25,7 @@ const initialState = window.__INITIAL_STATE__ || undefined;
 
 const store = configureStore(initialState);
 
-clientDebug('rehydrating app')
+clientDebug('rehydrating app');
 if (localStorage) localStorage.debug = '';
 
 const renderApp = appRoutes => {

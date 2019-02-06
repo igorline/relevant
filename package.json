@@ -258,7 +258,6 @@
     ]
   },
   "description": "Xcode 7.0 or higher is required. It can be installed from the App Store.",
-  "main": ".eslintrc.js",
   "directories": {
     "test": "tests"
   },
@@ -286,7 +285,7 @@
   },
   "lint-staged": {
     "linters": {
-      "*.{js}": [
+      "**/*.{js}": [
         "prettier --write",
         "eslint --fix",
         "git add"

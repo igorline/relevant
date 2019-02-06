@@ -114,7 +114,7 @@ class Comment extends Component {
       setActiveComment, childComments,
       posts, nesting, hidePostButtons, postUrl, condensedView, hideBorder,
       post
-   } = this.props;
+    } = this.props;
     if (!comment) return null;
     const { editing, copied } = this.state;
     let popup;
