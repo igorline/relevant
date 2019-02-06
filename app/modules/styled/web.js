@@ -1,5 +1,22 @@
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { mixins, layout, fonts } from 'app/styles';
+import { mixins, layout, fonts, colors } from 'app/styles';
+
+
+export const StyledNavLink = styled(NavLink)`
+  ${fonts.header};
+  color: ${colors.grey};
+  &.active {
+    color: ${colors.black};
+  }
+  :hover {
+    color: ${colors.black};
+  }
+  ${mixins.font}
+  ${mixins.color}
+  ${mixins.margin}
+`;
+
 
 export const View = styled.div`
   ${mixins.margin}
@@ -100,4 +117,3 @@ export const BodyText = styled(Text)`
 export const Button = styled(Text)`
   ${layout.button}
 `;
-

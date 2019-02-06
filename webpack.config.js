@@ -5,11 +5,7 @@ const webpack = require('webpack');
 module.exports = {
   devtool: 'source-map',
   entry: {
-    app: [
-      './index.web.js',
-      'whatwg-fetch',
-      'webpack-hot-middleware/client?quiet=true'
-    ],
+    app: ['./index.web.js', 'whatwg-fetch', 'webpack-hot-middleware/client?quiet=true']
   },
   output: {
     path: path.join(__dirname, '/app/public/dist/'),
@@ -35,7 +31,9 @@ module.exports = {
           name(module) {
             // get the name. E.g. node_modules/packageName/not/this/part.js
             // or node_modules/packageName
-            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+            const packageName = module.context.match(
+              /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+            )[1];
 
             // npm package names are URL-safe, but some servers don't like @ symbols
             return `npm.${packageName.replace('@', '')}`;
@@ -66,13 +64,13 @@ module.exports = {
         NODE_ENV: JSON.stringify('development'),
         WEB: JSON.stringify('true'),
         API_SERVER: JSON.stringify(''),
-        BABEL_ENV: JSON.stringify('development_web'),
+        BABEL_ENV: JSON.stringify('development_web')
       }
     }),
     new LoadablePlugin({
       filename: 'loadable-stats-dev.json',
-      writeToDisk: true,
-    }),
+      writeToDisk: true
+    })
   ],
   resolve: {
     symlinks: false,
@@ -81,7 +79,7 @@ module.exports = {
       'react-dom': path.resolve('./node_modules/react-dom'),
       'react-native$': 'react-native-web',
       'react-native-linear-gradient$': 'react-native-web-linear-gradient'
-    },
+    }
   },
 
   module: {
@@ -93,32 +91,34 @@ module.exports = {
         loader: 'url-loader?limit=100000', // or directly file-loader
         include: [
           path.resolve(__dirname, 'app'),
-          path.resolve(__dirname, 'node_modules/react-native-vector-icons'),
+          path.resolve(__dirname, 'node_modules/react-native-vector-icons')
         ]
       },
       {
         test: /\.(js|svg)$/,
         include: [
           path.resolve(__dirname, 'index.web.js'),
-          path.resolve(__dirname, 'app'),
+          path.resolve(__dirname, 'app')
         ],
 
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            babelrc: true,
-            // This is a feature of `babel-loader` for Webpack (not Babel itself).
-            // It enables caching results in ./node_modules/.cache/babel-loader/
-            // directory for faster rebuilds.
-            cacheDirectory: true,
-            plugins: ['react-hot-loader/babel'],
-          },
-        }],
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              babelrc: true,
+              // This is a feature of `babel-loader` for Webpack (not Babel itself).
+              // It enables caching results in ./node_modules/.cache/babel-loader/
+              // directory for faster rebuilds.
+              cacheDirectory: true,
+              plugins: ['react-hot-loader/babel']
+            }
+          }
+        ]
       },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader', 'postcss-loader']
       }
     ]
-  },
+  }
 };

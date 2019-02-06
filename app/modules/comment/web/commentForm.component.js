@@ -14,7 +14,7 @@ class CommentForm extends Component {
     text: PropTypes.string,
     isReply: PropTypes.bool,
     parentPost: PropTypes.object,
-    parentComment: PropTypes.object,
+    parentComment: PropTypes.object
   };
 
   constructor(props, context) {
@@ -75,9 +75,7 @@ class CommentForm extends Component {
     };
     this.setState({ comment: '', inputHeight: 50 });
 
-    return this.props.actions
-    .createComment(commentObj)
-    .then(success => {
+    return this.props.actions.createComment(commentObj).then(success => {
       if (!success) {
         this.setState({ comment, inputHeight: 50 });
         this.textInput.focus();

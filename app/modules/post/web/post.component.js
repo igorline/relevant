@@ -38,6 +38,7 @@ export class Post extends Component {
     firstPost: PropTypes.object,
     comment: PropTypes.object,
     children: PropTypes.object,
+    hideDivider: PropTypes.bool
   };
 
   deletePost() {
@@ -73,7 +74,7 @@ export class Post extends Component {
   }
 
   render() {
-    const { post, auth, sort, noComments, link, firstPost } = this.props;
+    const { post, auth, sort, noComments, link, firstPost, hideDivider } = this.props;
     const { community } = auth;
     let { comment } = this.props;
 
@@ -91,15 +92,17 @@ export class Post extends Component {
 
     const postUrl = routing.getPostUrl(community, post);
 
-    const commentEl = !noComments && comment || !post.url ?
-      <SingleComment
-        comment={comment}
-        postUrl={postUrl}
-        parentPost={post}
-        hidePostButtons={isLink}
-        hideBorder={isLink}
-        // condensedView
-      /> : null;
+    const commentEl =
+      (!noComments && comment) || !post.url ? (
+        <SingleComment
+          comment={comment}
+          postUrl={postUrl}
+          parentPost={post}
+          hidePostButtons={isLink}
+          hideBorder={isLink || hideDivider}
+          // condensedView
+        />
+      ) : null;
 
     if (!isLink) return commentEl;
 
@@ -116,32 +119,35 @@ export class Post extends Component {
             postUrl={postUrl}
             sort={sort}
             firstPost={firstPost}
-          >
-          </PostInfo>
+          />
           {commentEl}
-          {this.props.children || <Divider mt={4}/>}
+
+          {this.props.children}
+          {!hideDivider && <Divider mt={4} />}
         </View>
       </View>
     );
   }
 }
 
-export default withRouter(connect(
-  state => ({
-    community: state.community.communities[state.community.active],
-    usersState: state.user,
-    auth: state.auth,
-    earnings: state.earnings,
-    myPostInv: state.investments.myPostInv
-  }),
-  dispatch => ({
-    actions: bindActionCreators(
-      {
-        ...createPostActions,
-        ...postActions,
-        ...investActions
-      },
-      dispatch
-    )
-  })
-)(Post));
+export default withRouter(
+  connect(
+    state => ({
+      community: state.community.communities[state.community.active],
+      usersState: state.user,
+      auth: state.auth,
+      earnings: state.earnings,
+      myPostInv: state.investments.myPostInv
+    }),
+    dispatch => ({
+      actions: bindActionCreators(
+        {
+          ...createPostActions,
+          ...postActions,
+          ...investActions
+        },
+        dispatch
+      )
+    })
+  )(Post)
+);

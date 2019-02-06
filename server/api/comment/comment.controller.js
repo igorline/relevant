@@ -97,7 +97,7 @@ exports.create = async (req, res, next) => {
     postDate: new Date(),
     community,
     communityId,
-    metaPost,
+    metaPost
   };
 
   try {
@@ -129,10 +129,12 @@ exports.create = async (req, res, next) => {
     parentPost = await parentPost.save();
     parentPost.updateClient();
 
-    const postAuthor = await User.findOne({ _id: parentPost.user }, 'name _id deviceTokens');
+    const postAuthor = await User.findOne(
+      { _id: parentPost.user },
+      'name _id deviceTokens'
+    );
 
-    let otherCommentors = await Post.find({ post: parentPost._id })
-    .populate(
+    let otherCommentors = await Post.find({ post: parentPost._id }).populate(
       'user',
       'name _id deviceTokens'
     );
@@ -305,7 +307,6 @@ exports.update = async (req, res, next) => {
     next(err);
   }
 };
-
 
 exports.delete = async (req, res, next) => {
   try {

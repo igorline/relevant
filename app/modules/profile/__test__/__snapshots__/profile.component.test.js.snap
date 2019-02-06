@@ -423,7 +423,7 @@ exports[`Snapshot other users Profile 1`] = `
         <div
           align="center"
           dir="auto"
-          mr="14.4px"
+          mr={2}
           props={
             Object {
               "mr": 2,
@@ -770,7 +770,7 @@ exports[`Snapshot other users Profile 1`] = `
         </div>
         <div
           dir="auto"
-          mr="10.8px"
+          mr={1.5}
           style={
             Object {
               "WebkitAlignItems": "center",
@@ -841,7 +841,7 @@ exports[`Snapshot other users Profile 1`] = `
                 "flexDirection": "column",
                 "flexShrink": 0,
                 "height": "14.4px",
-                "marginBottom": "0px",
+                "marginBottom": "-1.4400000000000002px",
                 "marginLeft": "0px",
                 "marginRight": "3.6px",
                 "marginTop": "0px",
@@ -876,7 +876,7 @@ exports[`Snapshot other users Profile 1`] = `
                   "backgroundImage": "url(\\"relevantcoin.png\\")",
                   "backgroundPosition": "center",
                   "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "cover",
+                  "backgroundSize": "contain",
                   "borderBottomStyle": "solid",
                   "borderBottomWidth": "0px",
                   "borderLeftStyle": "solid",
@@ -933,6 +933,7 @@ exports[`Snapshot other users Profile 1`] = `
           <span
             dir="auto"
             inheritfont={0}
+            lineHeight={null}
             style={
               Object {
                 "borderBottomWidth": "0px",
@@ -1837,7 +1838,7 @@ exports[`Snapshot own Profile 1`] = `
         <div
           align="center"
           dir="auto"
-          mr="14.4px"
+          mr={2}
           props={
             Object {
               "mr": 2,
@@ -2184,7 +2185,7 @@ exports[`Snapshot own Profile 1`] = `
         </div>
         <div
           dir="auto"
-          mr="10.8px"
+          mr={1.5}
           style={
             Object {
               "WebkitAlignItems": "center",
@@ -2255,7 +2256,7 @@ exports[`Snapshot own Profile 1`] = `
                 "flexDirection": "column",
                 "flexShrink": 0,
                 "height": "14.4px",
-                "marginBottom": "0px",
+                "marginBottom": "-1.4400000000000002px",
                 "marginLeft": "0px",
                 "marginRight": "3.6px",
                 "marginTop": "0px",
@@ -2290,7 +2291,7 @@ exports[`Snapshot own Profile 1`] = `
                   "backgroundImage": "url(\\"relevantcoin.png\\")",
                   "backgroundPosition": "center",
                   "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "cover",
+                  "backgroundSize": "contain",
                   "borderBottomStyle": "solid",
                   "borderBottomWidth": "0px",
                   "borderLeftStyle": "solid",
@@ -2347,6 +2348,7 @@ exports[`Snapshot own Profile 1`] = `
           <span
             dir="auto"
             inheritfont={0}
+            lineHeight={null}
             style={
               Object {
                 "borderBottomWidth": "0px",

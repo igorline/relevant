@@ -5,12 +5,9 @@ import { bindActionCreators } from 'redux';
 import InfScroll from 'modules/listview/web/infScroll.component';
 import * as postActions from 'modules/post/post.actions';
 import * as userActions from 'modules/user/user.actions';
-import * as notifActions from './../activity.actions';
-import SingleActivity from './activity.component';
+import * as notifActions from 'modules/activity/activity.actions';
+import SingleActivity from 'modules/activity/activity.component';
 
-if (process.env.BROWSER === true) {
-  require('./activity.css');
-}
 
 class Activity extends Component {
   static propTypes = {
@@ -76,14 +73,13 @@ class Activity extends Component {
     const activity = data.map(a => this.renderRow(a));
     const { length } = activity;
     return (
-      <div className={'activityPopup'}>
-        <div className={'activityArrow'} />
+      <div>
         <InfScroll
           className={'activityContainer'}
           data={data}
           loadMore={p => this.load(p, length)}
           hasMore={this.hasMore}
-          useWindow={false}
+          useWindow
         >
           {activity}
         </InfScroll>
@@ -99,7 +95,8 @@ function mapStateToProps(state) {
     loaded: state.user.loaded,
     online: state.user.online,
     stats: state.stats,
-    error: state.error.activity
+    error: state.error.activity,
+    posts: state.posts,
 
     // TODO how do we deal with these?
     // refresh: state.navigation.activity.refresh,

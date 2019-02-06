@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Header } from 'modules/styled/web';
+import { Button, Header, StyledNavLink } from 'modules/styled/web';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
 import DiscoverTabs from 'modules/discover/web/discoverTabs.component';
-import ActivityButton from 'modules/activity/web/activityButton.component';
 import AuthContainer from 'modules/auth/web/auth.container';
+import RequestInvite from 'modules/web_splash/requestInvite.component';
+import { View } from 'modules/styled/uni';
 import styled from 'styled-components';
 import { colors, layout, sizing } from 'app/styles';
-import RequestInvite from 'modules/web_splash/requestInvite.component';
 import { showModal } from 'modules/navigation/navigation.actions';
 
 const Nav = styled.nav`
@@ -27,22 +27,12 @@ const Nav = styled.nav`
   left: ${layout.sideNavWidth};
 `;
 
-const SubNav = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
 const GetStarted = styled(Header)`
   cursor: pointer;
   color: ${colors.grey};
   &:hover {
     color: ${colors.black};
   }
-`;
-
-const ActivityButtonContainer = styled.span`
-  position: relative;
-  z-index: 1;
 `;
 
 class ContentHeader extends Component {
@@ -91,28 +81,37 @@ class ContentHeader extends Component {
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <Nav className={className}>
           <DiscoverTabs />
-          <SubNav>
-            <GetStarted
-              onClick={() => actions.showModal('onboarding')}
-              align={'center'}
-              mr={2}
-              c={colors.grey}
-            >
-              Get Started
-            </GetStarted>
-            <ActivityButtonContainer>
-              <ActivityButton />
-            </ActivityButtonContainer>
-            {auth.isAuthenticated ? (
-              <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
-                <Button>New Post</Button>
-              </Link>
-            ) : (
-              <Button onClick={this.toggleLogin} color={colors.blue}>
-                Login
-              </Button>
-            )}
-          </SubNav>
+          <View
+            justify="space-between"
+            display="flex"
+            direction="row"
+            flex={1}
+            grow={1}
+            align="center"
+          >
+            <StyledNavLink to="/user/activity" mr={2} hc={colors.black} c={colors.grey}>
+              Activity
+            </StyledNavLink>
+            <View direction="row" display="flex">
+              <GetStarted
+                onClick={() => actions.showModal('onboarding')}
+                align={'center'}
+                mr={2}
+                c={colors.grey}
+              >
+                Get Started
+              </GetStarted>
+              {auth.isAuthenticated ? (
+                <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
+                  <Button>New Post</Button>
+                </Link>
+              ) : (
+                <Button onPress={this.toggleLogin} color={colors.blue}>
+                  Login
+                </Button>
+              )}
+            </View>
+          </View>
           <AuthContainer
             toggleLogin={this.toggleLogin.bind(this)}
             open={this.state.openLoginModal || temp}

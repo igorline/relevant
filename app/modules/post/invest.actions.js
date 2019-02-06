@@ -6,7 +6,11 @@ const Alert = alert.Alert();
 
 const linkSchema = new schema.Entity('links', {}, { idAttribute: '_id' });
 
-const postSchema = new schema.Entity('posts', { metaPost: linkSchema }, { idAttribute: '_id' });
+const postSchema = new schema.Entity(
+  'posts',
+  { metaPost: linkSchema },
+  { idAttribute: '_id' }
+);
 
 const userSchema = new schema.Entity('users', {}, { idAttribute: '_id' });
 

@@ -22,7 +22,7 @@ export default class Profile extends Component {
   static propTypes = {
     actions: PropTypes.object,
     isOwner: PropTypes.bool,
-    user: PropTypes.object,
+    user: PropTypes.object
   };
 
   render() {
@@ -38,45 +38,59 @@ export default class Profile extends Component {
     // }
 
     return (
-      <View m={sizing(4)} display="flex" fdirection="row" align="flex-start" justify="space-between" >
-        <UAvatar user={user} size={9}/>
+      <View
+        m={sizing(4)}
+        display="flex"
+        fdirection="row"
+        align="flex-start"
+        justify="space-between"
+      >
+        <UAvatar user={user} size={9} />
         <View ml={sizing(2)} grow={1}>
           <View fdirection="row" display="flex" align={'center'} justify="space-between">
-            <View fdirection="row" display="flex" >
+            <View fdirection="row" display="flex">
               <Header mr={sizing(2)}>{user.name}</Header>
               <RStat size={2} user={user} mr={2} />
-              <Text><Percent user={user} /></Text>
+              <Text>
+                <Percent user={user} />
+              </Text>
               <CoinStat size={2} user={user} isOwner={isOwner} />
             </View>
-            { isOwner ?
-              (<View align={'center'}>
+            {isOwner ? (
+              <View align={'center'}>
                 <ULink
-                  onClick={() => { actions.logoutAction(user); }}
-                  onPress={() => { actions.logoutAction(user); }}
+                  onClick={() => {
+                    actions.logoutAction(user);
+                  }}
+                  onPress={() => {
+                    actions.logoutAction(user);
+                  }}
                   color={colors.blue}
                   to="#"
                 >
                   Logout
                 </ULink>
               </View>
-              )
-              : <View />
-            }
+            ) : (
+              <View />
+            )}
           </View>
-          { user.bio ?
-            <View><SecondaryText>{user.bio}</SecondaryText></View>
-            : null
-          }
-          <View fdirection="row" align="center" >
+          {user.bio ? (
+            <View>
+              <SecondaryText>{user.bio}</SecondaryText>
+            </View>
+          ) : null}
+          <View fdirection="row" align="center">
             <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
-              <ULink c={colors.black} to="/settings" hc={colors.secondaryText} styles={linkStyle}>
+              <ULink
+                c={colors.black}
+                to="/settings"
+                hc={colors.secondaryText}
+                styles={linkStyle}
+              >
                 <Text fdirection="row" align="center">
                   <View mr={sizing(0.5)}>
-                    <SettingsImage
-                      h={sizing(2)}
-                      w={sizing(2)}
-                      bg={colors.grey}
-                    />
+                    <SettingsImage h={sizing(2)} w={sizing(2)} bg={colors.grey} />
                   </View>
                   Settings
                 </Text>
@@ -84,16 +98,17 @@ export default class Profile extends Component {
             </AltLink>
 
             <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
-              <ULink c={colors.black} to="/invites" hc={colors.secondaryText} styles={linkStyle}>
+              <ULink
+                c={colors.black}
+                to="/invites"
+                hc={colors.secondaryText}
+                styles={linkStyle}
+              >
                 <Text fdirection="row" align="center" ml={sizing(1)}>
                   <View mr={sizing(0.5)}>
-                    <InviteImage
-                      h={sizing(2)}
-                      w={sizing(2)}
-                      bg={colors.grey}
-                    />
+                    <InviteImage h={sizing(2)} w={sizing(2)} bg={colors.grey} />
                   </View>
-                Invite Friend
+                  Invite Friend
                 </Text>
               </ULink>
             </AltLink>

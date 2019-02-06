@@ -92,15 +92,13 @@ class PostInfo extends Component {
       edit: true,
       editPost: post
     });
-    actions.push(
-      {
-        key: 'createPost',
-        back: true,
-        title: 'Edit Post',
-        next: 'Update',
-        left: 'Cancel'
-      }
-    );
+    actions.push({
+      key: 'createPost',
+      back: true,
+      title: 'Edit Post',
+      next: 'Update',
+      left: 'Cancel'
+    });
   }
 
   setTag(tag) {

@@ -22,7 +22,6 @@ const parentPostSchema = new schema.Entity(
   { idAttribute: '_id' }
 );
 
-
 const postSchema = new schema.Entity(
   'posts',
   {
@@ -30,7 +29,7 @@ const postSchema = new schema.Entity(
     repost: { post: repostSchema },
     metaPost: linkSchema,
     parentPost: parentPostSchema,
-    commentPost: parentPostSchema,
+    commentPost: parentPostSchema
   },
   { idAttribute: '_id' }
 );

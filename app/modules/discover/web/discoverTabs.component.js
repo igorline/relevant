@@ -3,18 +3,8 @@ import PropTypes from 'prop-types';
 import get from 'lodash.get';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
-import { tabStyles } from 'modules/navigation/web/tabStyles';
-import { sizing } from 'app/styles';
+import { StyledNavLink } from 'modules/styled/web';
 import { standardRoutes } from './discoverHelper';
-
-const StyledNavLink = styled(NavLink)`
-  ${tabStyles}
-  margin-right: ${sizing(2)};
-  :hover {
-    color: black;
-  }
-`;
 
 const DiscoverTab = (props) => {
   const { linkData, community, tag } = props;
@@ -22,7 +12,7 @@ const DiscoverTab = (props) => {
   if (tag) {
     url += `/${tag}`;
   }
-  return <StyledNavLink to={url}>{linkData.title}</StyledNavLink>;
+  return <StyledNavLink to={url} mr={2}>{linkData.title}</StyledNavLink>;
 };
 
 DiscoverTab.propTypes = {
@@ -43,7 +33,6 @@ const DiscoverTabs = ({ view, community }) => (
         key={i}
         tag={get(view, 'discover.tag')}
         community={community}
-        tabStyles={tabStyles}
         linkData={linkData}
       />
     ))}

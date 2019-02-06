@@ -444,7 +444,7 @@ exports[`Snapshot NavProfile 1`] = `
         <div
           align="center"
           dir="auto"
-          mr="10.8px"
+          mr={1.5}
           props={
             Object {
               "user": Object {
@@ -662,7 +662,7 @@ exports[`Snapshot NavProfile 1`] = `
         </div>
         <div
           dir="auto"
-          mr="10.8px"
+          mr={1.5}
           style={
             Object {
               "WebkitAlignItems": "center",
@@ -733,7 +733,7 @@ exports[`Snapshot NavProfile 1`] = `
                 "flexDirection": "column",
                 "flexShrink": 0,
                 "height": "21.6px",
-                "marginBottom": "0px",
+                "marginBottom": "NaNpx",
                 "marginLeft": "0px",
                 "marginRight": "5.4px",
                 "marginTop": "0px",
@@ -768,7 +768,7 @@ exports[`Snapshot NavProfile 1`] = `
                   "backgroundImage": "url(\\"relevantcoin.png\\")",
                   "backgroundPosition": "center",
                   "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "cover",
+                  "backgroundSize": "contain",
                   "borderBottomStyle": "solid",
                   "borderBottomWidth": "0px",
                   "borderLeftStyle": "solid",
@@ -825,6 +825,7 @@ exports[`Snapshot NavProfile 1`] = `
           <span
             dir="auto"
             inheritfont={0}
+            lineHeight={null}
             style={
               Object {
                 "borderBottomWidth": "0px",
@@ -948,7 +949,7 @@ exports[`Snapshot NavProfile 1`] = `
         </span>
         <span
           dir="auto"
-          mr="10.8px"
+          mr={1.5}
           style={
             Object {
               "WebkitAlignItems": "center",
@@ -1019,7 +1020,7 @@ exports[`Snapshot NavProfile 1`] = `
                 "flexDirection": "column",
                 "flexShrink": 0,
                 "height": "10.8px",
-                "marginBottom": "0px",
+                "marginBottom": "-1.08px",
                 "marginLeft": "0px",
                 "marginRight": "2.7px",
                 "marginTop": "0px",
@@ -1054,7 +1055,7 @@ exports[`Snapshot NavProfile 1`] = `
                   "backgroundImage": "url(\\"relevantcoin.png\\")",
                   "backgroundPosition": "center",
                   "backgroundRepeat": "no-repeat",
-                  "backgroundSize": "cover",
+                  "backgroundSize": "contain",
                   "borderBottomStyle": "solid",
                   "borderBottomWidth": "0px",
                   "borderLeftStyle": "solid",
@@ -1111,6 +1112,7 @@ exports[`Snapshot NavProfile 1`] = `
           <span
             dir="auto"
             inheritfont={1}
+            lineHeight={null}
             style={
               Object {
                 "borderBottomWidth": "0px",

@@ -5,8 +5,7 @@ if (process.env.WEB === 'true') {
 
 export default function(unit) {
   if (!isNative) {
-    return `${(unit * 7.2)}px`;
+    return `${unit * 7.2}px`;
   }
   return unit * 8;
 }
-
