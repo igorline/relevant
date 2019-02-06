@@ -3,20 +3,30 @@ import PropTypes from 'prop-types';
 import Eth from 'modules/web_ethTools/eth.context';
 import { abbreviateNumber } from 'app/utils/numbers';
 import { userProps } from 'app/utils/propValidation';
-import { Image, ImageWrapper } from 'modules/styled/uni';
-import { sizing, fonts, mixins } from 'app/styles';
+import { Image, ImageWrapper, NumericalValue } from 'modules/styled/uni';
+import { sizing, mixins } from 'app/styles';
 import styled from 'styled-components/primitives';
 
 const coinImage = require('app/public/img/relevantcoin.png');
 
-const NumericalValue = styled.Text`
-  ${fonts.numericalValue}
+const StyledNumericalValue = styled(NumericalValue)`
   ${mixins.inheritfont}
-  ${(p) => p.lineHeight ? `line-height: ${p.lineHeight};` : ''}
+  ${p => (p.lineheight ? `line-height: ${p.lineheight};` : '')}
 `;
 
 function CoinStat(props) {
-  const { user, isOwner, wallet, size, amount, inheritfont, mr, align, lineHeight, ...rest } = props;
+  const {
+    user,
+    isOwner,
+    wallet,
+    size,
+    amount,
+    inheritfont,
+    mr,
+    align,
+    lineheight,
+    ...rest
+  } = props;
 
   let tokens;
   if (typeof amount === 'number') tokens = amount;
@@ -25,12 +35,7 @@ function CoinStat(props) {
     if (user.tokenBalance) tokens += user.tokenBalance;
   }
 
-  if (
-    isOwner &&
-    user.ethAddress &&
-    user.ethAddress[0] &&
-    wallet.connectedBalance
-  ) {
+  if (isOwner && user.ethAddress && user.ethAddress[0] && wallet.connectedBalance) {
     tokens = wallet.connectedBalance + user.balance;
   }
   const iconSize = size || 3;
@@ -43,15 +48,15 @@ function CoinStat(props) {
         h={iconSize}
         w={iconSize}
         mr={iconSize / 4}
-        mb={imageMarginBottom}
+        style={{ bottom: imageMarginBottom }}
         resizeMode="contain"
       />
-      <NumericalValue
+      <StyledNumericalValue
         inheritfont={inheritfont ? 1 : 0}
-        lineHeight={lineHeight ? sizing(lineHeight) : null}
+        lineheight={lineheight ? sizing(lineheight) : null}
       >
         {abbreviateNumber(tokens) || 0}
-      </NumericalValue>
+      </StyledNumericalValue>
     </ImageWrapper>
   );
 }
@@ -63,12 +68,11 @@ CoinStat.propTypes = {
   size: PropTypes.number,
   user: userProps,
   isOwner: PropTypes.bool,
-  wallet: PropTypes.object
+  wallet: PropTypes.object,
+  align: PropTypes.string,
+  lineheight: PropTypes.string
 };
 
-export default props => <Eth.Consumer>{wallet =>
-  <CoinStat
-    wallet={wallet}
-    {...props}
-  />}
-</Eth.Consumer>;
+export default props => (
+  <Eth.Consumer>{wallet => <CoinStat wallet={wallet} {...props} />}</Eth.Consumer>
+);

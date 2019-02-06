@@ -47,14 +47,16 @@ export default class Profile extends Component {
       >
         <UAvatar user={user} size={9} />
         <View ml={sizing(2)} grow={1}>
-          <View fdirection="row" display="flex" align={'center'} justify="space-between">
-            <View fdirection="row" display="flex">
+          <View fdirection="row" display="flex" justify="space-between" align="baseline">
+            <View display="flex" fdirection="row" align="baseline">
               <Header mr={sizing(2)}>{user.name}</Header>
-              <RStat size={2} user={user} mr={2} />
-              <Text>
-                <Percent user={user} />
-              </Text>
-              <CoinStat size={2} user={user} isOwner={isOwner} />
+              <View display="flex" fdirection="row">
+                <RStat size={2} user={user} mr={2} align="baseline" />
+                <Text>
+                  <Percent size={2} user={user} align="baseline" />
+                </Text>
+                <CoinStat size={2} user={user} isOwner={isOwner} align="baseline" />
+              </View>
             </View>
             {isOwner ? (
               <View align={'center'}>
@@ -76,43 +78,45 @@ export default class Profile extends Component {
             )}
           </View>
           {user.bio ? (
-            <View>
+            <View mt={3}>
               <SecondaryText>{user.bio}</SecondaryText>
             </View>
           ) : null}
-          <View fdirection="row" align="center">
-            <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
-              <ULink
-                c={colors.black}
-                to="/settings"
-                hc={colors.secondaryText}
-                styles={linkStyle}
-              >
-                <Text fdirection="row" align="center">
-                  <View mr={sizing(0.5)}>
-                    <SettingsImage h={sizing(2)} w={sizing(2)} bg={colors.grey} />
-                  </View>
-                  Settings
-                </Text>
-              </ULink>
-            </AltLink>
+          {isOwner ? (
+            <View fdirection="row" align="center">
+              <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
+                <ULink
+                  c={colors.black}
+                  to="/settings"
+                  hc={colors.secondaryText}
+                  styles={linkStyle}
+                >
+                  <Text fdirection="row" align="center">
+                    <View mr={sizing(0.5)}>
+                      <SettingsImage h={sizing(2)} w={sizing(2)} bg={colors.grey} />
+                    </View>
+                    Settings
+                  </Text>
+                </ULink>
+              </AltLink>
 
-            <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
-              <ULink
-                c={colors.black}
-                to="/invites"
-                hc={colors.secondaryText}
-                styles={linkStyle}
-              >
-                <Text fdirection="row" align="center" ml={sizing(1)}>
-                  <View mr={sizing(0.5)}>
-                    <InviteImage h={sizing(2)} w={sizing(2)} bg={colors.grey} />
-                  </View>
-                  Invite Friend
-                </Text>
-              </ULink>
-            </AltLink>
-          </View>
+              <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
+                <ULink
+                  c={colors.black}
+                  to="/invites"
+                  hc={colors.secondaryText}
+                  styles={linkStyle}
+                >
+                  <Text fdirection="row" align="center" ml={sizing(1)}>
+                    <View mr={sizing(0.5)}>
+                      <InviteImage h={sizing(2)} w={sizing(2)} bg={colors.grey} />
+                    </View>
+                    Invite Friend
+                  </Text>
+                </ULink>
+              </AltLink>
+            </View>
+          ) : null}
         </View>
       </View>
     );

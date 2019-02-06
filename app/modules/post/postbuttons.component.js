@@ -1,19 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { browserAlerts } from 'app/utils/alert';
-import { colors, fonts } from 'app/styles';
-import styled from 'styled-components/primitives';
-// import CoinStat from 'modules/stats/coinStat.component';
-// import { computePayout } from 'app/utils/post';
-import { Image, View, Touchable } from 'modules/styled/uni';
-
-const Text = styled.Text`
-  display: flex;
-  color: ${colors.secondaryText}
-  ${fonts.Helvetica}
-  font-size: 14px;
-  line-height: 14px;
-`;
+import PostButton from 'modules/post/postbutton.component';
+import { View, NumericalValue } from 'modules/styled/uni';
+import { colors } from 'app/styles';
 
 class PostButtons extends Component {
   static propTypes = {
@@ -112,7 +102,10 @@ class PostButtons extends Component {
     let votedUp;
     let votedDown;
     // let buttonOpacity = { opacity: 1 };
-    let upvoteBtn = '/img/upvote.png';
+    // let upvoteBtn = '/img/upvote.png';
+    // const upvoteBtn = '/img/uparrow-blue.png';
+
+    // let downVoteBtn = '/img/downvote-red.svg';
 
     if (this.props.myPostInv) {
       vote = myPostInv[post.id] || !this.props.auth.isAuthenticated;
@@ -120,46 +113,31 @@ class PostButtons extends Component {
       if (vote) {
         votedUp = vote.amount > 0;
         votedDown = vote.amount < 0;
-        // buttonOpacity = { opacity: 0.5 };
-        upvoteBtn = '/img/upvote-shadow.svg';
       }
     }
-
-    // let payout;
-    // if (post.data && post.data.paidOut) payout = post.data.payout;
-    // payout = computePayout(post.data, community);
-    // if (post.data && post.data.parentPost) payout = null;
-
-    // const pendingEl = pendingPayouts ?
-    //   <View style={{ display: 'flex', flexDirection: 'column' }}>
-    //     <SmallText>your reward:</SmallText>
-    //     <CoinStat mr={0} size={1.25} inheritfont amount={pendingPayouts} />
-    //   </View> : null
 
     return (
       <View className={className}>
         <View align="center">
-          <Touchable onClick={e => this.vote(e, vote)} to="#">
-            <Image
-              w={3}
-              h={2.8}
-              alt="Upvote"
-              source={{ uri: votedUp ? '/img/upvoteActive.png' : upvoteBtn }}
-            />
-          </Touchable>
+          <PostButton
+            key={`${post.id}-up`}
+            imageSet="UPVOTE"
+            isActive={votedUp}
+            alt="Upvote"
+            onPress={e => this.vote(e, vote)}
+          />
           <View m={'1 0'}>
-            <Text>{post.data ? Math.round(post.data.relevance) : null}</Text>
+            <NumericalValue c={colors.secondaryText} fs={2}>
+              {post.data ? Math.round(post.data.relevance) : null}
+            </NumericalValue>
           </View>
-          <Touchable onClick={e => this.irrelevant(e, vote)} to="#">
-            <Image
-              w={3}
-              h={2.8}
-              alt="Downvote"
-              source={{
-                uri: votedDown ? '/img/downvote-blue.svg' : '/img/downvote-gray.svg'
-              }}
-            />
-          </Touchable>
+          <PostButton
+            key={`${post.id}-down`}
+            imageSet="DOWNVOTE"
+            isActive={votedDown}
+            alt="downvote"
+            onPress={e => this.irrelevant(e, vote)}
+          />
         </View>
       </View>
     );

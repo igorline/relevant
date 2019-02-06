@@ -102,4 +102,5 @@ export const link = css`
   ${p => (p.hc ? `&:hover * { fill: ${p.hc}; }` : '')};
   ${p => (p.ac ? `&.active { color: ${p.ac}; }` : '')};
   ${p => (p.ac ? `&.active * { fill: ${p.ac}; }` : '')};
+  ${p => (p.cursor ? `cursor: ${p.cursor}; }` : '')};
 `;
