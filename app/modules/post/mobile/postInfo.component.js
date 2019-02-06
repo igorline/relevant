@@ -118,10 +118,7 @@ class PostInfo extends Component {
       return Linking.openURL('https://twitter.com/' + post.embeddedUser.handle);
     }
 
-    return actions.goToProfile({
-      name: post.embeddedUser.name,
-      _id: post.user._id || post.user
-    });
+    return actions.goToProfile(post.embeddedUser);
   }
 
   showActionSheet() {

@@ -89,7 +89,7 @@ module.exports = {
     exprContextCritical: false,
     rules: [
       {
-        test: /\.(png|woff|woff2|eot|ttf|svg|jpg)$/,
+        test: /\.(png|woff|woff2|eot|ttf|jpg)$/,
         loader: 'url-loader?limit=100000', // or directly file-loader
         include: [
           path.resolve(__dirname, 'app'),

@@ -100,7 +100,7 @@ export function vote(amount, post, user, undo) {
   };
 }
 
-export function getInvestments(token, userId, skip, limit) {
+export function getInvestments(userId, skip, limit) {
   return async dispatch => {
     try {
       dispatch(loadingInvestments());

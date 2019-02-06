@@ -1,5 +1,4 @@
 import React from 'react';
-import { Image, Touchable } from 'react-primitives';
 import PropTypes from 'prop-types';
 import { colors } from 'app/styles';
 import RStat from 'modules/stats/rStat.component';
@@ -7,10 +6,14 @@ import ULink from 'modules/navigation/ULink.component';
 import Avatar from 'modules/user/UAvatar.component';
 import { getTimestamp } from 'app/utils/numbers';
 import styled from 'styled-components/primitives';
-import { Text, View, SecondaryText } from 'modules/styled/uni';
+import { Text, View, SecondaryText, Image, Touchable } from 'modules/styled/uni';
 
 export const Name = styled(Text)`
-  font-weight: bold'
+  font-weight: bold';
+  * {
+    fill: red;
+    stroke: green;
+  }
 `;
 
 export default function UserName(props) {
@@ -22,8 +25,8 @@ export default function UserName(props) {
     size,
     postTime,
     repost,
-    condensedView
-    // twitter
+    condensedView,
+    twitter
   } = props;
 
   if (!user) return null;
@@ -45,50 +48,50 @@ export default function UserName(props) {
     <Image
       resizeMode={'contain'}
       source={require('app/public/img/reposted.png')}
-      style={{ width: 15, height: 15, marginRight: 3, marginBottom: 14 }}
+      w={2}
+      h={2}
+      mr={0.2}
+      mb={2}
     />
   );
 
-  const twitterIcon = null;
-  // TODO: Get Icons to work with SVG
-  // const twitterIcon = twitter && (
-  //   <Image
-  //     borderRadius={0}
-  //     name={'logo-twitter'}
-  //     size={17}
-  //     color={'#00aced'}
-  //     style={styles.icon}
-  //   />
-  // );
+  const twitterIcon = twitter &&
+    <Image
+      resizeMode={'contain'}
+      w={1.75}
+      h={1.75}
+      ml={1.25}
+      mb={-0.1}
+      source={require('app/public/img/icons/twitter_blue.png')}
+    />;
 
   return (
-    <ULink to={`/user/profile/${user.handle}`}>
-      <Touchable
-        onPress={() => setSelected(user)}
-      >
-        <View flex={1} direction={'row'}>
-          <Avatar size={size} user={user} noLink />
-          {repostIcon}
-          <View ml={1} justify={condensedView ? 'flex-start' : 'center'}>
-            <View direction={'row'} align={'baseline'}>
-              <Name mr={0.75} c={colors.black}>
-                {user.name}{twitterIcon && ' ' + twitterIcon}
-              </Name>
-              {user.relevance &&
-                showRelevance &&
-                <RStat align='baseline' mr={0.75} size={1.75} user={user} />}
-              {condensedView && handleEl}
-            </View>
-            {!condensedView && handleEl}
+    <ULink
+      to={`/user/profile/${user.handle}`}
+      onPress={() => setSelected(user)}
+    >
+      <View flex={1} fdirection={'row'}>
+        <Avatar size={size} user={user} noLink />
+        {repostIcon}
+        <View ml={1} justify={condensedView ? 'flex-start' : 'center'}>
+          <View fdirection={'row'} align={'baseline'}>
+            <Name mr={0.75} c={colors.black}>
+              {user.name}{twitterIcon}
+            </Name>
+            {user.relevance &&
+              showRelevance &&
+              <RStat align='baseline' mr={0.75} size={1.75} user={user} />}
+            {condensedView && handleEl}
           </View>
+          {!condensedView && handleEl}
         </View>
-      </Touchable>
+      </View>
     </ULink>
   );
 }
 
 UserName.propTypes = {
-  // twitter: PropTypes.bool,
+  twitter: PropTypes.bool,
   condensedView: PropTypes.bool,
   type: PropTypes.string,
   user: PropTypes.object,

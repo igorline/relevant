@@ -33,7 +33,7 @@ class ProfileComponent extends Component {
   static propTypes = {
     actions: PropTypes.object,
     user: PropTypes.object,
-    myProfile: PropTypes.bool,
+    isOwner: PropTypes.bool,
     scrollTo: PropTypes.func
   };
 
@@ -141,7 +141,7 @@ class ProfileComponent extends Component {
 
     let optionsEl;
 
-    if (!this.props.myProfile) {
+    if (!this.props.isOwner) {
       optionsEl = (
         <TouchableOpacity
           style={{
@@ -253,12 +253,12 @@ class ProfileComponent extends Component {
           {bottomSection}
         </View>
 
-        {user.bio !== '' || this.props.myProfile ? (
+        {user.bio !== '' || this.props.isOwner ? (
           <Bio
             scrollTo={this.props.scrollTo}
             user={user}
             actions={this.props.actions}
-            myProfile={this.props.myProfile}
+            isOwner={this.props.isOwner}
           />
         ) : null}
 

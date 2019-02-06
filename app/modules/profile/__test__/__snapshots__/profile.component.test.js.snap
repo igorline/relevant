@@ -1115,7 +1115,7 @@ exports[`Snapshot other users Profile 1`] = `
           <span
             align="center"
             dir="auto"
-            direction="row"
+            fdirection="row"
             style={
               Object {
                 "WebkitAlignItems": "center",
@@ -1289,7 +1289,7 @@ exports[`Snapshot other users Profile 1`] = `
           <span
             align="center"
             dir="auto"
-            direction="row"
+            fdirection="row"
             ml="7.2px"
             style={
               Object {
@@ -2539,7 +2539,7 @@ exports[`Snapshot own Profile 1`] = `
           <span
             align="center"
             dir="auto"
-            direction="row"
+            fdirection="row"
             style={
               Object {
                 "WebkitAlignItems": "center",
@@ -2713,7 +2713,7 @@ exports[`Snapshot own Profile 1`] = `
           <span
             align="center"
             dir="auto"
-            direction="row"
+            fdirection="row"
             ml="7.2px"
             style={
               Object {

@@ -8,15 +8,6 @@ exports[`Snapshot AvatarBox Styled 1`] = `
   styles=""
 >
   <div
-    data-focusable={true}
-    onKeyDown={[Function]}
-    onKeyUp={[Function]}
-    onResponderGrant={[Function]}
-    onResponderMove={[Function]}
-    onResponderRelease={[Function]}
-    onResponderTerminate={[Function]}
-    onResponderTerminationRequest={[Function]}
-    onStartShouldSetResponder={[Function]}
     style={
       Object {
         "WebkitAlignItems": "stretch",
@@ -38,7 +29,6 @@ exports[`Snapshot AvatarBox Styled 1`] = `
         "borderTopStyle": "solid",
         "borderTopWidth": "0px",
         "boxSizing": "border-box",
-        "cursor": "pointer",
         "display": "flex",
         "flexBasis": "0px",
         "flexDirection": "row",
@@ -55,17 +45,14 @@ exports[`Snapshot AvatarBox Styled 1`] = `
         "msFlexNegative": 1,
         "msFlexPositive": 1,
         "msFlexPreferredSize": "0px",
-        "msTouchAction": "manipulation",
         "paddingBottom": "0px",
         "paddingLeft": "0px",
         "paddingRight": "0px",
         "paddingTop": "0px",
         "position": "relative",
-        "touchAction": "manipulation",
         "zIndex": 0,
       }
     }
-    tabIndex="0"
   >
     <div
       style={
@@ -173,7 +160,7 @@ exports[`Snapshot AvatarBox Styled 1`] = `
               "WebkitFlexShrink": 0,
               "alignItems": "stretch",
               "backgroundColor": "rgba(0,0,0,0.00)",
-              "backgroundImage": "url(\\"/img/default_user.jpg\\")",
+              "backgroundImage": "url(\\"default_user.jpg\\")",
               "backgroundPosition": "center",
               "backgroundRepeat": "no-repeat",
               "backgroundSize": "cover",
@@ -218,7 +205,7 @@ exports[`Snapshot AvatarBox Styled 1`] = `
         <img
           alt=""
           draggable={false}
-          src="/img/default_user.jpg"
+          src="default_user.jpg"
           style={
             Object {
               "bottom": "0px",
@@ -346,7 +333,7 @@ exports[`Snapshot AvatarBox Styled 1`] = `
               "fontSize": "14px",
               "fontStyle": "inherit",
               "fontVariant": "inherit",
-              "fontWeight": "bold",
+              "fontWeight": "inherit",
               "lineHeight": "inherit",
               "marginBottom": "0px",
               "marginLeft": "0px",

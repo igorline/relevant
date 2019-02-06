@@ -204,11 +204,11 @@ export function goToPost(post, openComment) {
 }
 
 export function goToProfile(user, key, animation) {
-  const handle = user._id || user.replace('@', '');
+  const handle = user.handle || user.replace('@', '');
   return push(
     {
       key: 'profile',
-      title: user.name || handle,
+      title: user.name,
       back: true,
       id: handle
     },

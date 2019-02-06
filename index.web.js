@@ -25,19 +25,17 @@ const initialState = window.__INITIAL_STATE__ || undefined;
 
 const store = configureStore(initialState);
 
-clientDebug('rehydrating app');
+clientDebug('rehydrating app')
 if (localStorage) localStorage.debug = '';
 
 const renderApp = appRoutes => {
   hydrate(
     <AppContainer>
       <Provider store={store}>
-        <div className="parent">
-          <Router history={history}>{renderRoutes(appRoutes)}</Router>
-        </div>
+        <Router history={history}>{renderRoutes(appRoutes)}</Router>
       </Provider>
-    </AppContainer>,
-    rootElement
+    </AppContainer>
+    , rootElement
   );
 };
 

@@ -1,0 +1,235 @@
+Searching 927 files for "direction=" (case sensitive)
+
+/Users/slavab/local/relevant/app/modules/comment/web/comment.component.js:
+  168            </PostButtonsContainer> : null}
+  169            <Container nesting={nesting}>
+  170:             <View direction={'row'} justify={'space-between'}>
+  171                <AvatarBox
+  172                  user={{ ...user, _id: comment.user }}
+
+/Users/slavab/local/relevant/app/modules/community/communityActive.component.js:
+   46              {`${totalMembers} Members`}
+   47            </LinkFont>
+   48:           <View direction={'row'} wrap>
+   49              {limitedMembers.map(member => (
+   50                <UAvatar
+
+/Users/slavab/local/relevant/app/modules/post/postinfo.component.js:
+   77  
+   78    const postContent = (
+   79:     <View direction={'row'}>
+   80        <ULink external to={post.url} target="_blank">
+   81          <View flex={1} w={20} h={10} mr={2}>
+   ..
+   86        </ULink>
+   87  
+   88:       <View flex={1} direction={'column'}>
+   89          {titleEl}
+   90          {/* {postUrl && timestamp }{' • '} */}
+
+/Users/slavab/local/relevant/app/modules/post/web/post.component.js:
+  105  
+  106      return (
+  107:       <View direction={'row'} m="4 4 0 0">
+  108          <PostButtonContainer>
+  109            <PostButtons post={post} {...this.props} />
+
+/Users/slavab/local/relevant/app/modules/post/web/postComment.component.js:
+   32      }
+   33      return (
+   34:       <View mt={sizing(2)} direction={'row'} align={'center'} >
+   35          <Avatar
+   36            user={comment.embeddedUser}
+
+/Users/slavab/local/relevant/app/modules/profile/profile.component.js:
+   39  
+   40      return (
+   41:       <View m={sizing(4)} display="flex" direction="row" align="flex-start" justify="space-between" >
+   42          <UAvatar user={user} size={9}/>
+   43          <View ml={sizing(2)} grow={1}>
+   44:           <View direction="row" display="flex" align={'center'} justify="space-between">
+   45:             <View direction="row" display="flex" >
+   46                <Header mr={sizing(2)}>{user.name}</Header>
+   47                <RStat size={2} user={user} mr={2} />
+   ..
+   68              : null
+   69            }
+   70:           <View direction="row" align="center" >
+   71              <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
+   72                <ULink c={colors.black} to="/settings" hc={colors.secondaryText} styles={linkStyle}>
+   73:                 <Text direction="row" align="center">
+   74                    <View mr={sizing(0.5)}>
+   75                      <SettingsImage
+   ..
+   86              <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
+   87                <ULink c={colors.black} to="/invites" hc={colors.secondaryText} styles={linkStyle}>
+   88:                 <Text direction="row" align="center" ml={sizing(1)}>
+   89                    <View mr={sizing(0.5)}>
+   90                      <InviteImage
+
+/Users/slavab/local/relevant/app/modules/profile/__test__/__snapshots__/profile.component.test.js.snap:
+ 1116              align="center"
+ 1117              dir="auto"
+ 1118:             direction="row"
+ 1119              style={
+ 1120                Object {
+ ....
+ 1290              align="center"
+ 1291              dir="auto"
+ 1292:             direction="row"
+ 1293              ml="7.2px"
+ 1294              style={
+ ....
+ 2540              align="center"
+ 2541              dir="auto"
+ 2542:             direction="row"
+ 2543              style={
+ 2544                Object {
+ ....
+ 2714              align="center"
+ 2715              dir="auto"
+ 2716:             direction="row"
+ 2717              ml="7.2px"
+ 2718              style={
+
+/Users/slavab/local/relevant/app/modules/profile/web/userPosts.component.js:
+   56  
+   57        return (
+   58:         <View shrink={1} key={id} direction="column">
+   59            <PostComponent
+   60              post={parentPost || post}
+   ..
+   83          hasMore={this.hasMore}
+   84        >
+   85:         <View direction="column" shrink={1} >{posts}</View>
+   86        </InfScroll>
+   87      );
+
+/Users/slavab/local/relevant/app/modules/user/avatarbox.component.js:
+   70          onPress={() => setSelected(user)}
+   71        >
+   72:         <View flex={1} direction={'row'}>
+   73            <Avatar size={size} user={user} noLink />
+   74            {repostIcon}
+   75            <View ml={1} justify={condensedView ? 'flex-start' : 'center'}>
+   76:             <View direction={'row'} align={'baseline'}>
+   77                <Name mr={0.75} c={colors.black}>
+   78                  {user.name}{twitterIcon && ' ' + twitterIcon}
+
+/Users/slavab/local/relevant/app/modules/comment/web/comment.component.js:
+  168            </PostButtonsContainer> : null}
+  169            <Container nesting={nesting}>
+  170:             <View direction={'row'} justify={'space-between'}>
+  171                <AvatarBox
+  172                  user={{ ...user, _id: comment.user }}
+
+/Users/slavab/local/relevant/app/modules/community/communityActive.component.js:
+   46              {`${totalMembers} Members`}
+   47            </LinkFont>
+   48:           <View direction={'row'} wrap>
+   49              {limitedMembers.map(member => (
+   50                <UAvatar
+
+/Users/slavab/local/relevant/app/modules/post/postinfo.component.js:
+   77  
+   78    const postContent = (
+   79:     <View direction={'row'}>
+   80        <ULink external to={post.url} target="_blank">
+   81          <View flex={1} w={20} h={10} mr={2}>
+   ..
+   86        </ULink>
+   87  
+   88:       <View flex={1} direction={'column'}>
+   89          {titleEl}
+   90          {/* {postUrl && timestamp }{' • '} */}
+
+/Users/slavab/local/relevant/app/modules/post/web/post.component.js:
+  105  
+  106      return (
+  107:       <View direction={'row'} m="4 4 0 0">
+  108          <PostButtonContainer>
+  109            <PostButtons post={post} {...this.props} />
+
+/Users/slavab/local/relevant/app/modules/post/web/postComment.component.js:
+   32      }
+   33      return (
+   34:       <View mt={sizing(2)} direction={'row'} align={'center'} >
+   35          <Avatar
+   36            user={comment.embeddedUser}
+
+/Users/slavab/local/relevant/app/modules/profile/profile.component.js:
+   39  
+   40      return (
+   41:       <View m={sizing(4)} display="flex" direction="row" align="flex-start" justify="space-between" >
+   42          <UAvatar user={user} size={9}/>
+   43          <View ml={sizing(2)} grow={1}>
+   44:           <View direction="row" display="flex" align={'center'} justify="space-between">
+   45:             <View direction="row" display="flex" >
+   46                <Header mr={sizing(2)}>{user.name}</Header>
+   47                <RStat size={2} user={user} mr={2} />
+   ..
+   68              : null
+   69            }
+   70:           <View direction="row" align="center" >
+   71              <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
+   72                <ULink c={colors.black} to="/settings" hc={colors.secondaryText} styles={linkStyle}>
+   73:                 <Text direction="row" align="center">
+   74                    <View mr={sizing(0.5)}>
+   75                      <SettingsImage
+   ..
+   86              <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
+   87                <ULink c={colors.black} to="/invites" hc={colors.secondaryText} styles={linkStyle}>
+   88:                 <Text direction="row" align="center" ml={sizing(1)}>
+   89                    <View mr={sizing(0.5)}>
+   90                      <InviteImage
+
+/Users/slavab/local/relevant/app/modules/profile/__test__/__snapshots__/profile.component.test.js.snap:
+ 1116              align="center"
+ 1117              dir="auto"
+ 1118:             direction="row"
+ 1119              style={
+ 1120                Object {
+ ....
+ 1290              align="center"
+ 1291              dir="auto"
+ 1292:             direction="row"
+ 1293              ml="7.2px"
+ 1294              style={
+ ....
+ 2540              align="center"
+ 2541              dir="auto"
+ 2542:             direction="row"
+ 2543              style={
+ 2544                Object {
+ ....
+ 2714              align="center"
+ 2715              dir="auto"
+ 2716:             direction="row"
+ 2717              ml="7.2px"
+ 2718              style={
+
+/Users/slavab/local/relevant/app/modules/profile/web/userPosts.component.js:
+   56  
+   57        return (
+   58:         <View shrink={1} key={id} direction="column">
+   59            <PostComponent
+   60              post={parentPost || post}
+   ..
+   83          hasMore={this.hasMore}
+   84        >
+   85:         <View direction="column" shrink={1} >{posts}</View>
+   86        </InfScroll>
+   87      );
+
+/Users/slavab/local/relevant/app/modules/user/avatarbox.component.js:
+   70          onPress={() => setSelected(user)}
+   71        >
+   72:         <View flex={1} direction={'row'}>
+   73            <Avatar size={size} user={user} noLink />
+   74            {repostIcon}
+   75            <View ml={1} justify={condensedView ? 'flex-start' : 'center'}>
+   76:             <View direction={'row'} align={'baseline'}>
+   77                <Name mr={0.75} c={colors.black}>
+   78                  {user.name}{twitterIcon && ' ' + twitterIcon}
+
+40 matches across 18 files

@@ -68,7 +68,7 @@ class Comment extends Component {
     auth: PropTypes.object,
     activeComment: PropTypes.string,
     setActiveComment: PropTypes.func,
-    parentPost: PropTypes.string,
+    parentPost: PropTypes.object,
     childComments: PropTypes.object,
     posts: PropTypes.object,
     nesting: PropTypes.number,
@@ -111,9 +111,10 @@ class Comment extends Component {
   render() {
     const {
       auth, comment, activeComment,
-      setActiveComment, parentPost, childComments,
-      posts, nesting, hidePostButtons, postUrl, condensedView, hideBorder
-    } = this.props;
+      setActiveComment, childComments,
+      posts, nesting, hidePostButtons, postUrl, condensedView, hideBorder,
+      post
+   } = this.props;
     if (!comment) return null;
     const { editing, copied } = this.state;
     let popup;
@@ -166,7 +167,7 @@ class Comment extends Component {
             <PostButtons {...this.props} post={comment}/>
           </PostButtonsContainer> : null}
           <Container nesting={nesting}>
-            <View direction={'row'} justify={'space-between'}>
+            <View fdirection={'row'} justify={'space-between'}>
               <AvatarBox
                 user={{ ...user, _id: comment.user }}
                 postTime={comment.createdAt}
@@ -196,7 +197,13 @@ class Comment extends Component {
             p={4}
             mt={4}
           >
-            <CommentForm isReply text={'Reply'} {...this.props} post={comment} parentPost={parentPost} />
+            <CommentForm
+              isReply
+              text={'Reply'}
+              {...this.props}
+              parentComment={comment}
+              parentPost={post}
+            />
           </Spacer>
         ) }
         {commentChildren.map(childId => (

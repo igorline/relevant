@@ -38,11 +38,11 @@ export default class Profile extends Component {
     // }
 
     return (
-      <View m={sizing(4)} display="flex" direction="row" align="flex-start" justify="space-between" >
+      <View m={sizing(4)} display="flex" fdirection="row" align="flex-start" justify="space-between" >
         <UAvatar user={user} size={9}/>
         <View ml={sizing(2)} grow={1}>
-          <View direction="row" display="flex" align={'center'} justify="space-between">
-            <View direction="row" display="flex" >
+          <View fdirection="row" display="flex" align={'center'} justify="space-between">
+            <View fdirection="row" display="flex" >
               <Header mr={sizing(2)}>{user.name}</Header>
               <RStat size={2} user={user} mr={2} />
               <Text><Percent user={user} /></Text>
@@ -67,10 +67,10 @@ export default class Profile extends Component {
             <View><SecondaryText>{user.bio}</SecondaryText></View>
             : null
           }
-          <View direction="row" align="center" >
+          <View fdirection="row" align="center" >
             <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
               <ULink c={colors.black} to="/settings" hc={colors.secondaryText} styles={linkStyle}>
-                <Text direction="row" align="center">
+                <Text fdirection="row" align="center">
                   <View mr={sizing(0.5)}>
                     <SettingsImage
                       h={sizing(2)}
@@ -85,7 +85,7 @@ export default class Profile extends Component {
 
             <AltLink ml={sizing(0.5)} mr={sizing(0.5)}>
               <ULink c={colors.black} to="/invites" hc={colors.secondaryText} styles={linkStyle}>
-                <Text direction="row" align="center" ml={sizing(1)}>
+                <Text fdirection="row" align="center" ml={sizing(1)}>
                   <View mr={sizing(0.5)}>
                     <InviteImage
                       h={sizing(2)}

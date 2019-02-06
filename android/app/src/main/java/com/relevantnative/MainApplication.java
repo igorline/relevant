@@ -4,12 +4,12 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.horcrux.svg.SvgPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.goldenowl.twittersignin.TwitterSigninPackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.github.alinz.rnsk.RNSKPackage;
-import com.horcrux.svg.SvgPackage;
 import com.meedan.ShareMenuPackage;
 import com.alinz.parkerdan.shareextension.SharePackage;
 import cl.json.RNSharePackage;
@@ -49,12 +49,12 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new SvgPackage(),
             new RNGestureHandlerPackage(),
             new TwitterSigninPackage(),
             new ReactVideoPackage(),
             new VectorIconsPackage(),
             new RNSKPackage(),
-            new SvgPackage(),
             new ShareMenuPackage(),
             new SharePackage(),
             new RNSharePackage(),

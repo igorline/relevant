@@ -21,11 +21,13 @@ class UAvatar extends Component {
     if (!user) return null;
     const profileLink = '/user/profile/' + this.props.user.handle;
 
-    const image = this.props.user.image || '/img/default_user.jpg';
+    const image = user.image
+      ? { uri: user.image }
+      : require('app/public/img/default_user.jpg');
     const imageSize = size || 4;
     const AvatarImage = (
       <Image
-        source={{ uri: image }}
+        source={image}
         h={imageSize}
         w={imageSize}
         bradius={imageSize / 2}

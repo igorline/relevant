@@ -160,6 +160,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-svg')
     compile project(':react-native-gesture-handler')
     compile project(':rn-fetch-blob')
     compile project(':react-native-video')
@@ -235,7 +236,6 @@ dependencies {
     compile project(':react-native-vector-icons')
     compile project(':react-native-video')
     compile project(':react-native-linear-gradient')
-    compile project(':react-native-svg')
     compile project(':react-native-share-menu')
     compile project(':react-native-share-extension')
     compile project(':react-native-share')

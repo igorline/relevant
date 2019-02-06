@@ -52,6 +52,7 @@ export default async function handleRender(req, res) {
     // console.log('app', app);
 
     const html = renderFullPage({ app, rnWebStyles, initialState: store.getState() });
+    console.log(html);
     res.send(html);
   } catch (err) {
     console.log('RENDER ERROR', err) // eslint-disable-line
@@ -127,9 +128,7 @@ export function renderFullPage({ app, rnWebStyles, initialState }) {
       </head>
       <body>
         <div id="app">${app}</div>
-        <script>
-          window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}
-        </script>
+        <script>window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}</script>
         ${scriptTags}
       </body>
     </html>
@@ -182,11 +181,9 @@ export function renderApp({ url, store }) {
   const context = {};
 
   const App = () => (<Provider store={store}>
-    <div className="parent">
-      <StaticRouter location={url} context={context}>
-        {renderRoutes(routes)}
-      </StaticRouter>
-    </div>
+    <StaticRouter location={url} context={context}>
+      {renderRoutes(routes)}
+    </StaticRouter>
   </Provider>);
 
   AppRegistry.registerComponent('App', () => App);
@@ -194,11 +191,11 @@ export function renderApp({ url, store }) {
   const rnWebStyles = renderToStaticMarkup(getStyleElement());
 
   const app = renderToString(
-    <ChunkExtractorManager extractor={extractor}>
-      <StyleSheetManager sheet={sheet.instance}>
+    <StyleSheetManager sheet={sheet.instance}>
+      <ChunkExtractorManager extractor={extractor}>
         {App()}
-      </StyleSheetManager>
-    </ChunkExtractorManager>
+      </ChunkExtractorManager>
+    </StyleSheetManager>
   );
   return { app, rnWebStyles };
 }

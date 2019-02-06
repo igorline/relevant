@@ -95,7 +95,7 @@ export class Post extends Component {
       <SingleComment
         comment={comment}
         postUrl={postUrl}
-        parentPost={post._id}
+        parentPost={post}
         hidePostButtons={isLink}
         hideBorder={isLink}
         // condensedView
@@ -104,7 +104,7 @@ export class Post extends Component {
     if (!isLink) return commentEl;
 
     return (
-      <View direction={'row'} m="4 4 0 0">
+      <View fdirection={'row'} m="4 4 0 0">
         <PostButtonContainer>
           <PostButtons post={post} {...this.props} />
         </PostButtonContainer>
@@ -119,7 +119,7 @@ export class Post extends Component {
           >
           </PostInfo>
           {commentEl}
-          <Divider mt={4}/>
+          {this.props.children || <Divider mt={4}/>}
         </View>
       </View>
     );

@@ -84,7 +84,7 @@ export const flex = css`
   display: flex;
   position: relative;
   ${p => p.flex ? `flex: ${p.flex}` : ''};
-  ${p => p.direction ? `flex-direction: ${p.direction}` : ''};
+  ${p => p.fdirection ? `flex-direction: ${p.fdirection}` : ''};
   ${p => p.justify ? `justify-content: ${p.justify}` : ''};
   ${p => p.align ? `align-items: ${p.align}` : ''};
   ${p => p.shrink ? `flex-shrink: ${p.grow}` : ''};

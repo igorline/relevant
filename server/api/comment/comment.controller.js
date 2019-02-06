@@ -71,7 +71,15 @@ exports.get = async (req, res, next) => {
 exports.create = async (req, res, next) => {
   let user = req.user._id;
   const { community, communityId } = req.communityMember;
-  const { parentComment, linkParent, text: body, tags, mentions = [], repost = false } = req.body;
+  const {
+    parentComment,
+    linkParent,
+    text: body,
+    tags,
+    mentions = [],
+    repost = false,
+    metaPost
+  } = req.body;
   let { parentPost } = req.body;
 
   const type = !parentComment || parentComment ? 'post' : 'comment';
@@ -89,6 +97,7 @@ exports.create = async (req, res, next) => {
     postDate: new Date(),
     community,
     communityId,
+    metaPost,
   };
 
   try {
@@ -157,7 +166,7 @@ exports.create = async (req, res, next) => {
   }
 };
 
-async function sendNotifications({ commentor, postAuthor, repost, parentPost, user, comment }) {
+async function sendNotifications({ commentor, postAuthor, repost, user, comment }) {
   try {
     if (user._id.equals(commentor._id)) return;
 
@@ -175,7 +184,6 @@ async function sendNotifications({ commentor, postAuthor, repost, parentPost, us
       post: comment._id,
       forUser: commentor._id,
       byUser: user._id,
-      // comment: comment._id,
       amount: null,
       type,
       personal: true,
@@ -318,7 +326,7 @@ exports.delete = async (req, res, next) => {
 
     await comment.remove();
 
-    post.updateClient();
+    if (post) post.updateClient();
     return res.json(200, true);
   } catch (err) {
     return next(err);
