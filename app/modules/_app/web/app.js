@@ -37,10 +37,7 @@ class App extends Component {
     history: PropTypes.object,
     route: PropTypes.object,
     activeCommunity: PropTypes.string,
-    globalModal: PropTypes.oneOfType([
-      PropTypes.object,
-      PropTypes.string,
-    ])
+    globalModal: PropTypes.oneOfType([PropTypes.object, PropTypes.string])
   };
 
   state = {
@@ -53,10 +50,6 @@ class App extends Component {
       this.props.actions.setCommunity(community);
     }
   }
-
-
-
-  
 
   componentDidMount() {
     const { actions, auth } = this.props;
@@ -111,7 +104,6 @@ class App extends Component {
   closeModal() {
     this.props.history.push(this.props.location.pathname);
   }
-
 
   renderModal() {
     let { globalModal } = this.props;
@@ -230,7 +222,9 @@ const mapDispatchToProps = dispatch => ({
   )
 });
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(App)
+);
