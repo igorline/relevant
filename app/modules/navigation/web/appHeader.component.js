@@ -7,7 +7,7 @@ import Avatar from 'modules/user/web/avatar.component';
 import ShadowButton from 'modules/ui/web/ShadowButton';
 import * as authActions from 'modules/auth/auth.actions';
 import * as notifActions from 'modules/activity/activity.actions';
-import Activity from 'modules/activity/web/activity.container';
+// import Activity from 'modules/activity/web/activity.container';
 import RequestInvite from 'modules/web_splash/requestInvite.component';
 import { matchPath } from 'react-router';
 
@@ -24,7 +24,7 @@ class AppHeader extends Component {
     toggleLogin: PropTypes.func,
     location: PropTypes.object,
     auth: PropTypes.object,
-    history: PropTypes.object,
+    history: PropTypes.object
   };
 
   state = {
@@ -66,9 +66,7 @@ class AppHeader extends Component {
 
   renderActivity() {
     if (!this.props.isAuthenticated) return null;
-    const activity = this.state.activity ? (
-      <Activity close={() => this.setState({ activity: false })} />
-    ) : null;
+    const activity = this.state.activity ? null : null;
     const { count } = this.props.notif;
     const badge = count ? <span className={'badge'}>{count}</span> : null;
     return (
@@ -164,10 +162,12 @@ class AppHeader extends Component {
     if (
       match &&
       (match.params.sort === 'post' ||
-      match.params.community === 'user' ||
-      match.params.community === 'auth' ||
-      match.params.community === 'info')
-    ) match.params = {};
+        match.params.community === 'user' ||
+        match.params.community === 'auth' ||
+        match.params.community === 'info')
+    ) {
+      match.params = {};
+    }
 
     return (
       <div className="headerContainer appHeader">
@@ -178,8 +178,7 @@ class AppHeader extends Component {
                 <img src={'/img/logo.svg'} className={'logo'} alt={'Relevant'} />
               </Link>
             </div>
-            <div className="tabContainer">
-            </div>
+            <div className="tabContainer" />
 
             <div className={'rightNav'}>
               {this.renderWallet()}
@@ -211,7 +210,9 @@ const mapDispatchToProps = dispatch => ({
   )
 });
 
-export default withRouter(connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AppHeader));
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(AppHeader)
+);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Header, StyledNavLink } from 'modules/styled/web';
+import { Button, StyledNavLink } from 'modules/styled/web';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter, Link } from 'react-router-dom';
@@ -25,14 +25,6 @@ const Nav = styled.nav`
   top: 0;
   right: 0px;
   left: ${layout.sideNavWidth};
-`;
-
-const GetStarted = styled(Header)`
-  cursor: pointer;
-  color: ${colors.grey};
-  &:hover {
-    color: ${colors.black};
-  }
 `;
 
 class ContentHeader extends Component {
@@ -84,7 +76,7 @@ class ContentHeader extends Component {
           <View
             justify="space-between"
             display="flex"
-            direction="row"
+            fdirection="row"
             flex={1}
             grow={1}
             align="center"
@@ -92,15 +84,26 @@ class ContentHeader extends Component {
             <StyledNavLink to="/user/activity" mr={2} hc={colors.black} c={colors.grey}>
               Activity
             </StyledNavLink>
-            <View direction="row" display="flex">
-              <GetStarted
-                onClick={() => actions.showModal('onboarding')}
+            <View
+              fdirection="row"
+              display="flex"
+              flex={1}
+              align="center"
+              justify="flex-end"
+            >
+              <StyledNavLink
+                onClick={e => {
+                  e.preventDefault();
+                  actions.showModal('onboarding');
+                }}
                 align={'center'}
                 mr={2}
+                hc={colors.black}
                 c={colors.grey}
+                to="/home"
               >
                 Get Started
-              </GetStarted>
+              </StyledNavLink>
               {auth.isAuthenticated ? (
                 <Link to={location.pathname + '#newpost'} disabled={!auth.user}>
                   <Button>New Post</Button>

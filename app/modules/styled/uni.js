@@ -35,6 +35,7 @@ export const Image = styled.Image`
   ${mixins.margin}
   ${mixins.height}
   ${mixins.width}
+  ${mixins.link}
   ${mixins.padding}
   ${mixins.background}
   ${mixins.borderRadius}
@@ -96,8 +97,7 @@ export const BodyText = styled(Text)`
   ${mixins.font}
 `;
 
-export const Touchable = styled.Touchable`
-`;
+export const Touchable = styled.Touchable``;
 
 export const Button = styled(Text)`
   ${layout.button}

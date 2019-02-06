@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { numbers } from 'app/utils';
 import Triangle from 'modules/icons/triangle.component';
 import { View, BodyText } from 'modules/styled/uni';
@@ -30,7 +31,7 @@ const ActivityText = ({ activity, amount }) => {
         );
       }
       return (
-        <View display="flex" direction="row">
+        <View display="flex" fdirection="row">
           <BodyText>
             {`upvoted your ${postType}`}
             {relText}
@@ -48,7 +49,8 @@ const ActivityText = ({ activity, amount }) => {
             <Triangle direction={triangleDirection} />
             {` ${amount}%`}
           </BodyText>
-        </View>);
+        </View>
+      );
 
     case 'partialUpvote':
       return (
@@ -70,7 +72,6 @@ const ActivityText = ({ activity, amount }) => {
             {` ${amount}%`}
           </BodyText>
         </View>
-
       );
 
     case 'basicIncome':
@@ -108,9 +109,16 @@ const ActivityText = ({ activity, amount }) => {
       // text = `You earned ${coin} coins from this post`;
       return (
         <View display="flex" mr={1} ml={1}>
-          <BodyText display="flex" align="center" >
+          <BodyText display="flex" align="center">
             {'You earned'}
-            <CoinStat size={2} lineHeight={2} amount={Number(coin)} mr={0.5} ml={0.5} align="center" />
+            <CoinStat
+              size={2}
+              lineHeight={2}
+              amount={Number(coin)}
+              mr={0.5}
+              ml={0.5}
+              align="center"
+            />
             {'coins from this post.'}
           </BodyText>
         </View>
@@ -122,6 +130,11 @@ const ActivityText = ({ activity, amount }) => {
       }
   }
   return <BodyText>{text}</BodyText>;
+};
+
+ActivityText.propTypes = {
+  activity: PropTypes.object,
+  amount: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 };
 
 export default ActivityText;
