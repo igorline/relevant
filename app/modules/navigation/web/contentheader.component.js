@@ -109,7 +109,7 @@ class ContentHeader extends Component {
                   <Button>New Post</Button>
                 </Link>
               ) : (
-                <Button onPress={this.toggleLogin} color={colors.blue}>
+                <Button onClick={this.toggleLogin} color={colors.blue}>
                   Login
                 </Button>
               )}
