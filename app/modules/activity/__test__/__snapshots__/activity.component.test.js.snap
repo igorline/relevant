@@ -378,6 +378,7 @@ exports[`Snapshot Activity Web 1`] = `
                   "handle": "handle2",
                   "image": "userImage2.jpg",
                   "name": "Name2",
+                  "password": "test",
                   "relevance": Object {
                     "pagerank": 22,
                   },
@@ -899,6 +900,7 @@ exports[`Snapshot Activity Web 1`] = `
             "handle": "handle1",
             "image": "userImage1.jpg",
             "name": "Name1",
+            "password": "test",
             "relevance": Object {
               "pagerank": 11,
             },

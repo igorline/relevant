@@ -8,7 +8,6 @@ import * as userActions from 'modules/user/user.actions';
 import * as notifActions from 'modules/activity/activity.actions';
 import SingleActivity from 'modules/activity/activity.component';
 
-
 class Activity extends Component {
   static propTypes = {
     auth: PropTypes.object,
@@ -24,8 +23,7 @@ class Activity extends Component {
     this.renderRow = this.renderRow.bind(this);
     this.getViewData = this.getViewData.bind(this);
     this.load = this.load.bind(this);
-    this.needsReload = new Date()
-    .getTime();
+    this.needsReload = new Date().getTime();
     this.hasMore = true;
 
     // TODO should set it here and not on server
@@ -96,7 +94,7 @@ function mapStateToProps(state) {
     online: state.user.online,
     stats: state.stats,
     error: state.error.activity,
-    posts: state.posts,
+    posts: state.posts
 
     // TODO how do we deal with these?
     // refresh: state.navigation.activity.refresh,

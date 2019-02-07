@@ -4,7 +4,9 @@ import App from './app';
 import NotFound from './404';
 import withAuth from './withAuth';
 
-const DiscoverContainer = loadable(() => import('modules/discover/web/discover.container'));
+const DiscoverContainer = loadable(() =>
+  import('modules/discover/web/discover.container')
+);
 const TopicsAdmin = loadable(() => import('modules/admin/web/topics.container'));
 const Invites = loadable(() => import('modules/admin/web/invites.container'));
 const Invite = loadable(() => import('modules/admin/web/invite.component'));
@@ -15,27 +17,21 @@ const Waitlist = loadable(() => import('modules/admin/web/waitlist.component'));
 const Downvotes = loadable(() => import('modules/admin/web/downvotes.container'));
 const Email = loadable(() => import('modules/admin/web/email.component'));
 const TopPosts = loadable(() => import('modules/admin/web/topPosts.component'));
-const CommunityAdmin = loadable(() => import('modules/admin/web/communityAdmin.component'));
+const CommunityAdmin = loadable(() =>
+  import('modules/admin/web/communityAdmin.component')
+);
 const ProfileContainer = loadable(() => import('modules/profile/web/profile.container'));
 const ActivityContainer = loadable(() => import('modules/activity/activity.container'));
 const SplashContainer = loadable(() => import('modules/web_splash/splash.container'));
 const MainNav = loadable(() => import('modules/navigation/web/mainNav.component'));
 
-const PostContainer = loadable(() => import(
-  'modules/post/web/singlePost.container'
-));
-const Wallet = loadable(() => import(
-  'modules/wallet/web/wallet.container'
-));
-const AdminWallet = loadable(() => import(
-  'modules/admin/web/admin.main.component',
-));
-const Auth = loadable(() => import(
-  'modules/auth/web/auth.container'
-));
-const CreatePostContainer = loadable(() => import(
-  'modules/createPost/web/createPost.container'
-));
+const PostContainer = loadable(() => import('modules/post/web/singlePost.container'));
+const Wallet = loadable(() => import('modules/wallet/web/wallet.container'));
+const AdminWallet = loadable(() => import('modules/admin/web/admin.main.component'));
+const Auth = loadable(() => import('modules/auth/web/auth.container'));
+const CreatePostContainer = loadable(() =>
+  import('modules/createPost/web/createPost.container')
+);
 
 // community slug blacklist
 // user
@@ -87,7 +83,7 @@ const routes = [
             exact: true,
             component: withAuth(CreatePostContainer)
             // component: CreatePostContainer
-          },
+          }
         ]
       },
 
@@ -106,7 +102,7 @@ const routes = [
           { path: '/admin/community', component: CommunityAdmin }
         ]
       },
-      { path: '*', component: NotFound },
+      { path: '*', component: NotFound }
     ]
   }
 ];

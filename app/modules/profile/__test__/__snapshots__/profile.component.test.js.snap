@@ -459,6 +459,7 @@ exports[`Snapshot other users Profile 1`] = `
                   "handle": "handle1",
                   "image": "userImage1.jpg",
                   "name": "Name1",
+                  "password": "test",
                   "relevance": Object {
                     "pagerank": 11,
                   },
@@ -1534,6 +1535,7 @@ exports[`Snapshot own Profile 1`] = `
                   "handle": "handle1",
                   "image": "userImage1.jpg",
                   "name": "Name1",
+                  "password": "test",
                   "relevance": Object {
                     "pagerank": 11,
                   },

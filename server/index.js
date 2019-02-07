@@ -8,5 +8,8 @@ require('@babel/register');
 require('@babel/polyfill');
 require('./server');
 
-// prevents require pngs
+// prevents require images
 require.extensions['.png'] = () => {};
+require.extensions['.jpg'] = () => {};
+require.extensions['.jpeg'] = () => {};
+require.extensions['.gif'] = () => {};
