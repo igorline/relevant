@@ -319,6 +319,11 @@ exports.create = async (req, res, next) => {
       author.relevance = await author.relevance.save();
     }
 
+    // THIS IS JUST EXTRA SECURITY, REMOVE LATER
+    if (author && !author.relevance.community) {
+      author.relevance.community = community;
+    }
+
     // ------ get existing investment ------
     let investment = await investCheck({ user, post, amount, communityId });
 

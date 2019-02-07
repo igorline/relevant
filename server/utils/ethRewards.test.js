@@ -38,10 +38,6 @@ function getUpvoteObj(id) {
 
 const { app, db } = require('../server.js');
 
-// const flushPromises = () => {
-//   return new Promise(resolve => setImmediate(resolve));
-// };
-
 beforeAll(async () => {
   await db;
   r = request(app);
@@ -59,7 +55,6 @@ afterAll(async () => {
 describe('Rewards Test', () => {
   test('Payout Create Post', async () => {
     const res = await r.post('/auth/local').send({ name: 'dummy1', password: 'test' });
-
     authorToken = res.body.token;
 
     const newPost = await r

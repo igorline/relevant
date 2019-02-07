@@ -19,7 +19,7 @@ export default function RStat(props) {
   const imageMargin = align === 'center' ? 0 : sizing(-size / 10);
 
   return (
-    <ImageWrapper align={align || 'center'} mr={mr || 1.5} props={props} {...rest} >
+    <ImageWrapper align={align || 'center'} mr={mr || 1.5} props={props} {...rest}>
       <Image
         h={iconSize}
         w={iconSize}
@@ -37,5 +37,5 @@ RStat.propTypes = {
   mr: PropTypes.number,
   color: PropTypes.string,
   user: userProps,
-  size: PropTypes.number,
+  size: PropTypes.number
 };

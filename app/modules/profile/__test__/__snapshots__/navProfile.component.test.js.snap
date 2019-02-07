@@ -453,6 +453,7 @@ exports[`Snapshot NavProfile 1`] = `
                 "handle": "handle1",
                 "image": "userImage1.jpg",
                 "name": "Name1",
+                "password": "test",
                 "relevance": Object {
                   "pagerank": 11,
                 },

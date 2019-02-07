@@ -53,7 +53,7 @@ exports.show = (req, res, next) => {
       path: 'relevance',
       match: {
         community: req.query.community,
-        global: true,
+        global: true
       }
     }
   })

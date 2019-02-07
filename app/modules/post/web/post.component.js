@@ -100,7 +100,6 @@ export class Post extends Component {
           parentPost={post}
           hidePostButtons={isLink}
           hideBorder={isLink || hideDivider}
-          // condensedView
         />
       ) : null;
 
@@ -121,7 +120,6 @@ export class Post extends Component {
             firstPost={firstPost}
           />
           {commentEl}
-
           {this.props.children}
           {!hideDivider && <Divider mt={4} />}
         </View>

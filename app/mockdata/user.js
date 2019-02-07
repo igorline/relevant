@@ -4,7 +4,8 @@ export const user1 = {
   handle: 'handle1',
   name: 'Name1',
   relevance: { pagerank: 11 },
-  balance: 111
+  balance: 111,
+  password: 'test'
 };
 
 export const user2 = {
@@ -13,7 +14,8 @@ export const user2 = {
   handle: 'handle2',
   name: 'Name2',
   relevance: { pagerank: 22 },
-  balance: 222
+  balance: 222,
+  password: 'test'
 };
 
 export const usersState = {

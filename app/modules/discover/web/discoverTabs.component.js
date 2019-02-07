@@ -6,19 +6,23 @@ import styled from 'styled-components';
 import { StyledNavLink } from 'modules/styled/web';
 import { standardRoutes } from './discoverHelper';
 
-const DiscoverTab = (props) => {
+const DiscoverTab = props => {
   const { linkData, community, tag } = props;
   let url = `/${community}/${linkData.key}`;
   if (tag) {
     url += `/${tag}`;
   }
-  return <StyledNavLink to={url} mr={2}>{linkData.title}</StyledNavLink>;
+  return (
+    <StyledNavLink to={url} mr={2}>
+      {linkData.title}
+    </StyledNavLink>
+  );
 };
 
 DiscoverTab.propTypes = {
   linkData: PropTypes.object,
   community: PropTypes.string,
-  tag: PropTypes.string,
+  tag: PropTypes.string
 };
 
 const StyledUl = styled.ul`
@@ -39,19 +43,16 @@ const DiscoverTabs = ({ view, community }) => (
   </StyledUl>
 );
 
-
 DiscoverTabs.propTypes = {
   view: PropTypes.object,
-  community: PropTypes.string,
+  community: PropTypes.string
 };
 
 function mapStateToProps(state) {
   return {
     view: state.view,
-    community: state.community.active,
+    community: state.community.active
   };
 }
 
-export default connect(
-  mapStateToProps,
-)(DiscoverTabs);
+export default connect(mapStateToProps)(DiscoverTabs);

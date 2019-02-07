@@ -2,7 +2,6 @@ import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { mixins, layout, fonts, colors } from 'app/styles';
 
-
 export const StyledNavLink = styled(NavLink)`
   ${fonts.header};
   color: ${colors.grey};
@@ -16,7 +15,6 @@ export const StyledNavLink = styled(NavLink)`
   ${mixins.color}
   ${mixins.margin}
 `;
-
 
 export const View = styled.div`
   ${mixins.margin}
@@ -112,7 +110,6 @@ export const BodyText = styled(Text)`
   ${mixins.color}
   ${mixins.font}
 `;
-
 
 export const Button = styled(Text)`
   ${layout.button}
