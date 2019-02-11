@@ -40,3 +40,24 @@ export function submitPost(post) {
     }
   };
 }
+
+// TODO update to use api util
+export function generatePreviewServer(link) {
+  return () =>
+    fetch(
+      process.env.API_SERVER +
+        '/api/post/preview/generate?url=' +
+        encodeURIComponent(link),
+      { method: 'GET' }
+    )
+    .then(response =>
+    // console.log(response, 'response');
+      response.json()
+    )
+    .then(
+      responseJSON =>
+      // console.log(responseJSON, 'responseJSON');
+        responseJSON
+    )
+    .catch(false);
+}

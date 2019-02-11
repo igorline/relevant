@@ -1,12 +1,17 @@
+process.env.WEB = 'true';
+
 module.exports = {
+  rootDir: './',
+  displayName: 'Server',
   testPathIgnorePatterns: ['<rootDir>/../node_modules/'],
-  globalSetup: '<rootDir>/.jest/setup',
-  globalTeardown: '<rootDir>/.jest/teardown',
-  testEnvironment: '<rootDir>/.jest/mongo.environment',
+  globalSetup: '<rootDir>/test/setup',
+  globalTeardown: '<rootDir>/test/teardown',
+  testEnvironment: '<rootDir>/test/mongo.environment',
   transform: {
-    '^.+\\.(js|jsx)$': '<rootDir>/../node_modules/babel-jest',
+    '^.+\\.(js|jsx|model)$': '<rootDir>/../node_modules/babel-jest',
     '^[./a-zA-Z0-9$_-]+\\.(bmp|gif|jpg|jpeg|png|psd|svg|webp)$':
       '<rootDir>/../__mocks__/fileTransformer.js'
   },
-  setupTestFrameworkScriptFile: '<rootDir>/.jest/testDbSetup'
+  transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$'],
+  setupTestFrameworkScriptFile: '<rootDir>/test/testDbSetup'
 };

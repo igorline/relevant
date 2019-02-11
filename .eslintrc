@@ -26,6 +26,7 @@
         "react/no-unused-prop-types": 2,
         "react/prop-types": 2,
         "no-console": 2,
+        "no-unused-expressions": 0,
         "import/no-extraneous-dependencies": 0,
         "import/prefer-default-export": 0,
         "no-underscore-dangle": 0,

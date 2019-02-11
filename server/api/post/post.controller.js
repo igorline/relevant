@@ -1,4 +1,3 @@
-// import { promisify } from 'util';
 import url from 'url';
 import request from 'request';
 import { EventEmitter } from 'events';
@@ -13,7 +12,6 @@ import Tag from '../tag/tag.model';
 import apnData from '../../pushNotifications';
 import mail from '../../mail';
 import Notification from '../notification/notification.model';
-import Invest from '../invest/invest.model';
 import PostData from './postData.model';
 import { PAYOUT_TIME } from '../../config/globalConstants';
 
@@ -599,12 +597,11 @@ async function processSubscriptions(newPost) {
 exports.create = async (req, res, next) => {
   try {
     const { user } = req;
+    const { community, communityId } = req.communityMember;
+
     // TODO rate limiting?
     // current rate limiting is 5s via invest
     const hasChildComment = req.body.body && req.body.body.length;
-
-    const { community, communityId } = req.communityMember;
-
     const mentions = req.body.mentions || [];
     let tags = [];
     const keywords = req.body.keywords || [];
@@ -710,14 +707,14 @@ exports.create = async (req, res, next) => {
     newPost = await newPost.save();
 
     // TODO should you invest in own comment?
-    await Invest.createVote({
-      post: newPost,
-      user: author,
-      amount: 1,
-      relevanceToAdd: 0,
-      community,
-      communityId
-    });
+    // await Invest.createVote({
+    //   post: newPost,
+    //   user: author,
+    //   amount: 1,
+    //   relevanceToAdd: 0,
+    //   community,
+    //   communityId
+    // });
 
     if (!postUrl) await newPost.insertIntoFeed(communityId);
 
@@ -731,7 +728,7 @@ exports.create = async (req, res, next) => {
   }
 };
 
-exports.delete = async (req, res, next) => {
+exports.remove = async (req, res, next) => {
   try {
     const userId = req.user._id;
     const { id } = req.params;
@@ -753,8 +750,7 @@ exports.delete = async (req, res, next) => {
     };
 
     PostEvents.emit('post', newPostEvent);
-    req.user.updatePostCount();
-
+    await req.user.updatePostCount();
     res.status(200).json('removed');
   } catch (err) {
     next(err);

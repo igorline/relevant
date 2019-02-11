@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const CommunityMemberSchema = new Schema(
   {
-    user: { type: Schema.Types.ObjectId, ref: 'User', index: true },
+    user: { type: Schema.Types.Mixed, ref: 'User', index: true },
     embeddedUser: {
       _id: String,
       name: String,

@@ -54,7 +54,7 @@ exports.get = async (req, res, next) => {
             // with some randomness on client side
             // repost: { $exists: false },
             user: { $nin: blocked },
-            // $or: [{ hidden: { $ne: true } }]
+            hidden: { $ne: true }
           },
           options: { sort: commentarySort },
           populate: [
@@ -108,7 +108,6 @@ exports.get = async (req, res, next) => {
     next(err);
   }
 };
-
 
 exports.getOld = async (req, res, next) => {
   try {

@@ -12,7 +12,7 @@ const { Schema } = mongoose;
 const UserSchema = new Schema(
   {
     // Comment out to automatically generate _id
-    // _id: { type: Schema.Types.ObjectId, required: true },
+    // _id: { type: Schema.Types.Mixed, required: true },
     handle: { type: String, unique: true, required: true },
     publicKey: { type: String, unique: true, sparse: true },
     name: String,
@@ -111,7 +111,7 @@ const UserSchema = new Schema(
       sig: String,
       amount: Number
     },
-    version: String,
+    version: String
   },
   {
     toJSON: { virtuals: true },

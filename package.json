@@ -11,10 +11,11 @@
     "native": "NODE_ENV='native' nodemon server/index.js",
     "build": "BABEL_ENV='development_web' webpack --config ./webpack.production.config.js --progress --colors -p",
     "build-dev": "webpack --config ./webpack.config.js --progress --colors -p",
-    "testServer": "NODE_ENV=test jest ./server -- --runInBand --verbose false --rootDir ./server",
-    "testServer:watch": "NODE_ENV=test jest --watch jest --config server/jest.config.js -- --runInBand",
+    "testServer": "NODE_ENV=test jest ./server --config server/jest.config.js",
+    "testServer:watch": "NODE_ENV=test jest --watch --config server/jest.config.js --",
     "testClient": "NODE_ENV=test jest ./app",
-    "testClient:watch": "jest ./app --watch",
+    "testClient:watch": "NODE_ENV=test jest ./app --watch",
+    "test": "NODE_ENV=test jest",
     "clean": "rm -rf $TMPDIR/react-* && watchman watch-del-all && npm cache clean",
     "uninstall": "adb uninstall com.relevantnative",
     "android": "react-native run-android",
@@ -207,12 +208,12 @@
     "isomorphic-fetch": "^2.2.1",
     "jest": "^23.6.0",
     "jest-canvas-mock": "^1.1.0",
+    "jest-mock-express": "^0.1.1",
     "jest-styled-components": "^6.3.1",
     "lint-staged": "^8.1.0",
     "metro-react-native-babel-preset": "^0.51.1",
     "mini-css-extract-plugin": "^0.5.0",
     "mockery": "^2.0.0",
-    "mockingoose": "^2.12.0",
     "mongodb-memory-server": "^3.0.0",
     "nock": "^10.0.4",
     "node-fetch": "^1.5.1",
@@ -281,7 +282,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && npm run testClient"
+      "pre-commit": "lint-staged",
+      "pre-push": "npm test"
     }
   },
   "lint-staged": {

@@ -22,6 +22,6 @@ router.get('/:id', auth.blocked(), asyncMiddleware(controller.findById));
 router.get('/user/:id', auth.blocked(), controller.userPosts);
 router.get('/preview/generate', controller.preview);
 
-router.delete('/:id', auth.isAuthenticated(), controller.delete);
+router.delete('/:id', auth.isAuthenticated(), controller.remove);
 
 module.exports = router;

@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 import { EventEmitter } from 'events';
 import { VOTE_COST_RATIO, SLOPE, EXPONENT } from 'server/config/globalConstants';
-import Community from 'server/api/community/community.model';
+// import Community from 'server/api/community/community.model';
 import Earnings from 'server/api/earnings/earnings.model';
 import { computePayout } from 'app/utils/post';
 
@@ -12,8 +12,8 @@ const { Schema } = mongoose;
 const InvestSchema = new Schema(
   {
     post: { type: Schema.Types.ObjectId, ref: 'Post' },
-    investor: { type: Schema.Types.ObjectId, ref: 'User' },
-    author: { type: Schema.Types.ObjectId, ref: 'User' },
+    investor: { type: Schema.Types.Mixed, ref: 'User' },
+    author: { type: Schema.Types.Mixed, ref: 'User' },
 
     ownPost: { type: Boolean, default: false },
     amount: Number,
@@ -96,12 +96,11 @@ InvestSchema.statics.createVote = async function createVote(props) {
   const canInvest = !post.postParent && user.lockedTokens + stakedTokens <= userBalance;
 
   if (!canInvest) stakedTokens = 0;
-  console.log('canInvest ', canInvest);
+  console.log('canInvest', canInvest);
 
   // TODO - total tokens staked within a community instead
-  const communityInstance = await Community.findOne({ _id: communityId });
+  const communityInstance = await this.model('Community').findOne({ _id: communityId });
   // userBalance *= communityMember.weight;
-
 
   // only compute shares for upvotes
   // for downvotes only track staked tokens
@@ -112,9 +111,9 @@ InvestSchema.statics.createVote = async function createVote(props) {
     const nexp = EXPONENT + 1;
     stakedTokens = userBalance * Math.abs(amount) * VOTE_COST_RATIO;
     shares =
-      (((Math.max(balance, 0) + stakedTokens) / SLOPE) * nexp) ** (1 / nexp) - (postShares || 0);
-    console.log(user.handle, ' got ', shares, ' for ', stakedTokens, ' staked tokens ');
-    console.log('user balance', userBalance);
+      (((Math.max(balance, 0) + stakedTokens) / SLOPE) * nexp) ** (1 / nexp) -
+      (postShares || 0);
+    console.log(user.handle, 'got', shares, 'for', stakedTokens, 'staked tokens');
   }
 
   investment = new (this.model('Invest'))({
@@ -142,7 +141,6 @@ InvestSchema.statics.createVote = async function createVote(props) {
   post.data.balance += stakedTokens;
   user.lockedTokens += stakedTokens;
   post.data.totalStaked += stakedTokens;
-  console.log('UPDATE LOCKED ', 'staked:', stakedTokens, 'locked:', user.lockedTokens);
   post.data.expectedPayout = computePayout(post.data, communityInstance);
 
   await user.save();
@@ -150,14 +148,26 @@ InvestSchema.statics.createVote = async function createVote(props) {
 
   if (amount > 0) {
     await updateUserEarnings({
-      user, post, shares, stakedTokens, community, communityId
+      user,
+      post,
+      shares,
+      stakedTokens,
+      community,
+      communityId
     });
   }
 
   return investment;
 };
 
-async function updateUserEarnings({ user, post, shares, stakedTokens, community, communityId }) {
+async function updateUserEarnings({
+  user,
+  post,
+  shares,
+  stakedTokens,
+  community,
+  communityId
+}) {
   const earning = await Earnings.findOneAndUpdate(
     { user: user._id, post: post._id },
     {
@@ -173,6 +183,5 @@ async function updateUserEarnings({ user, post, shares, stakedTokens, community,
   );
   earning.updateClient({ actionType: 'ADD_EARNING' });
 }
-
 
 module.exports = mongoose.model('Invest', InvestSchema);
